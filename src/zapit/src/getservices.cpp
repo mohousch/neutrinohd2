@@ -40,16 +40,15 @@
 
 #include <xmlinterface.h>
 
-/* system */
 #include <system/debug.h>
-#include <system/helpers.h>	/* needed for safe_mkdir */
+#include <system/helpers.h>	// needed for safe_mkdir
 #include <system/settings.h>
 
 
-extern xmlDocPtr scanInputParser;				/* defined in zapit.cpp */
-extern transponder_list_t transponders;				/* defined in zapit.cpp */ // from services.xml
-extern tallchans allchans;					/* defined in zapit.cpp */
-extern int scanSDT;						/* defined in zapit.cpp */
+extern xmlDocPtr scanInputParser;				// defined in zapit.cpp
+extern transponder_list_t transponders;				// defined in zapit.cpp // from services.xml
+extern tallchans allchans;					// defined in zapit.cpp
+extern int scanSDT;						// defined in zapit.cpp
 static int newfound;
 
 satellite_map_t satellitePositions;				// satellite position as specified in satellites.xml
@@ -59,7 +58,7 @@ int newtpid;
 int tcnt = 0;
 int scnt = 0;
 
-extern map<t_channel_id, audio_map_set_t> audio_map;		/* defined in zapit.cpp */
+extern map<t_channel_id, audio_map_set_t> audio_map;		// defined in zapit.cpp
 
 extern int FrontendCount;
 extern CFrontend * getFE(int index);
@@ -78,23 +77,23 @@ void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, 
 
 	memset(&feparams, 0, sizeof(FrontendParameters));
 
-	/* read all transponders */
+	// read all transponders
 	while ((node = xmlGetNextOccurence(node, "TS")) != NULL) 
 	{
-		/* common */
+		// common
 		transport_stream_id = xmlGetNumericAttribute(node, "id", 16);
 		original_network_id = xmlGetNumericAttribute(node, "on", 16);
 		feparams.frequency = xmlGetNumericAttribute(node, "frq", 0);
 		feparams.inversion = (fe_spectral_inversion) xmlGetNumericAttribute(node, "inv", 0);
 
-		/* DVB-C */
+		// DVB-C
 		if(Source == DVB_C)
 		{
 			feparams.u.qam.symbol_rate = xmlGetNumericAttribute(node, "sr", 0);
 			feparams.u.qam.fec_inner = (fe_code_rate_t) xmlGetNumericAttribute(node, "fec", 0);
 			feparams.u.qam.modulation = (fe_modulation_t) xmlGetNumericAttribute(node, "mod", 0);
 		}
-		/* DVB-T */
+		// DVB-T
 		else if(Source == DVB_T)
 		{
 			feparams.u.ofdm.bandwidth = (fe_bandwidth_t) xmlGetNumericAttribute(node, "band", 0);
@@ -105,7 +104,7 @@ void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, 
 			feparams.u.ofdm.guard_interval = (fe_guard_interval_t) xmlGetNumericAttribute(node, "guard", 0);
 			feparams.u.ofdm.hierarchy_information = (fe_hierarchy_t) xmlGetNumericAttribute(node, "hierarchy", 0);
 		}
-		/* DVB-S*/
+		// DVB-S
 		else if(Source == DVB_S)
 		{
 			feparams.u.qpsk.fec_inner = (fe_code_rate_t) xmlGetNumericAttribute(node, "fec", 0);
@@ -127,7 +126,7 @@ void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, 
 		else if(Source == DVB_T)
 			freq = feparams.frequency/1000000;
 
-		/* add current transponder to list */
+		// add current transponder to list
 		transponder_id_t tid = CREATE_TRANSPONDER_ID_FROM_SATELLITEPOSITION_ORIGINALNETWORK_TRANSPORTSTREAM_ID(freq, satellitePosition, original_network_id, transport_stream_id);
 
 		pair<map<transponder_id_t, transponder>::iterator, bool> ret;
@@ -137,10 +136,10 @@ void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, 
 		if (ret.second == false)
 			printf("[zapit] duplicate transponder id %llx freq %d\n", tid, feparams.frequency);
 
-		/* read channels that belong to the current transponder */
+		// read channels that belong to the current transponder
 		ParseChannels(node->xmlChildrenNode, transport_stream_id, original_network_id, satellitePosition, freq, polarization);
 
-		/* hop to next transponder */
+		// hop to next transponder
 		node = node->xmlNextNode;
 	}
 
@@ -601,7 +600,7 @@ int loadTransponders()
 				}
 
 				// parse sat TP
-				ParseSatTransponders(/*fe->getInfo()->type*/fe_type, search, position);
+				ParseSatTransponders(fe_type, search, position);
 				
 				position++;
 				
@@ -678,7 +677,7 @@ int loadTransponders()
 				}
 
 				// parse sat TP
-				ParseSatTransponders(/*fe->getInfo()->type*/fe_type, search, position);
+				ParseSatTransponders(fe_type, search, position);
 				
 				position++;
 				
@@ -812,15 +811,15 @@ void SaveServices(bool tocopy)
 		return;
 	}
 
-	/* headers */ 
+	// headers
 	fprintf(fd, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<zapit api=\"3\">\n");
 	
-	/* loop througth satpos */
+	// loop througth satpos
 	for (spos_it = satellitePositions.begin(); spos_it != satellitePositions.end(); spos_it++) 
 	{
 		satdone = 0;
 
-		/* loop througth TPs */
+		// loop througth TPs
 		for(tI = transponders.begin(); tI != transponders.end(); tI++) 
 		{
 			t_satellite_position satpos = GET_SATELLITEPOSITION_FROM_TRANSPONDER_ID(tI->first) & 0xFFF;

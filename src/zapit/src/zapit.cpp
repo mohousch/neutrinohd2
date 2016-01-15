@@ -22,7 +22,7 @@
  */
 
 
-/* system headers */
+// system headers
 #include <csignal>
 #include <fcntl.h>
 #include <sys/poll.h>
@@ -43,7 +43,7 @@
 
 #include <global.h>
 
-/* tuxbox headers */
+// tuxbox headers
 #include <configfile.h>
 #include <connection/basicserver.h>
 
@@ -77,8 +77,6 @@
 
 // opengl liveplayback
 #if defined (USE_OPENGL)
-//int lockOpenGLplayback();
-//void unlockOpenGLplayback();
 int startOpenGLplayback();
 void stopOpenGLplayback();
 #endif
@@ -160,14 +158,14 @@ xmlDocPtr scanInputParser = NULL;
 CBouquetManager * g_bouquetManager = NULL;
 
 // Audio/Video Decoder
-extern cVideo * videoDecoder;			/* defined in video_cs.pp (libdvbapi) */
-extern cAudio * audioDecoder;			/* defined in audio_cs.pp (libdvbapi) */
+extern cVideo * videoDecoder;			// defined in video_cs.pp (libdvbapi)
+extern cAudio * audioDecoder;			// defined in audio_cs.pp (libdvbapi)
 
 // Demuxes
-extern cDemux * audioDemux;			/* defined in dmx_cs.pp (libdvbapi) */
-extern cDemux * videoDemux;			/* defined in dmx_cs.pp (libdvbapi) */
-cDemux * pcrDemux = NULL;			/* defined in dmx_cs.pp (libdvbapi) */
-extern cDemux * pmtDemux;			/* defined in pmt.cpp */
+extern cDemux * audioDemux;			// defined in dmx_cs.pp (libdvbapi)
+extern cDemux * videoDemux;			// defined in dmx_cs.pp (libdvbapi)
+cDemux * pcrDemux = NULL;			// defined in dmx_cs.pp (libdvbapi)
+extern cDemux * pmtDemux;			// defined in pmt.cpp
 
 // map which stores the wanted scanned cables/satellites/terrestrials
 scan_list_t scanProviders;
@@ -369,7 +367,7 @@ void initTuner(CFrontend * fe)
 	}
 }
 
-/* compare polarization and band with fe values */
+// compare polarization and band with fe values
 bool loopCanTune(CFrontend * fe, CZapitChannel * thischannel)
 {
 	if(fe->getInfo()->type != FE_QPSK)
@@ -393,7 +391,7 @@ bool loopCanTune(CFrontend * fe, CZapitChannel * thischannel)
 // getPreferredFrontend
 CFrontend * getPreferredFrontend(CZapitChannel * thischannel)
 {
-	/* check for frontend */
+	// check for frontend
 	CFrontend * pref_frontend = NULL;
 	
 	t_satellite_position satellitePosition = thischannel->getSatellitePosition();
@@ -456,7 +454,7 @@ CFrontend * getFrontend(CZapitChannel * thischannel)
 		"NOTCONNECTED"
 	 };
 	 
-	/* check for frontend */
+	// check for frontend
 	CFrontend * free_frontend = NULL;
 	
 	t_satellite_position satellitePosition = thischannel->getSatellitePosition();
@@ -539,7 +537,7 @@ CFrontend * getRecordFrontend(CZapitChannel * thischannel)
 		"NOTCONNECTED"
 	 };
 	 
-	/* check for frontend */
+	// check for frontend
 	CFrontend * rec_frontend = NULL;
 	
 	t_satellite_position satellitePosition = thischannel->getSatellitePosition();
@@ -604,7 +602,6 @@ CFrontend * getRecordFrontend(CZapitChannel * thischannel)
 	
 	return rec_frontend;
 }
-//
 
 void lockFrontend(CFrontend *fe)
 {
@@ -874,7 +871,7 @@ void loadZapitSettings()
 
 	saveLastChannel = config.getBool("saveLastChannel", true);
 	lastChannelMode = config.getInt32("lastChannelMode", 1);
-	live_channel_id = config.getInt64("lastChannel", 0) & 0xFFFFFFFFFFFFULL;	// if readed from neutrinoMP
+	live_channel_id = config.getInt64("lastChannel", 0) & 0xFFFFFFFFFFFFULL;
 	lastChannelRadio = config.getInt32("lastChannelRadio", 0);
 	lastChannelTV = config.getInt32("lastChannelTV", 0);
 	
@@ -927,12 +924,12 @@ void sendCaPmtPlayBackStart(CZapitChannel * thischannel, CFrontend * fe)
 	{
 		if(rec_channel_id != live_channel_id) 
 		{
-			/* zap from rec. channel */
+			// zap from rec. channel
 			cam1->setCaPmt(thischannel, thischannel->getCaPmt(), demux_index, ca_mask); //start cam1
                 } 
                 else 
 		{
-			/* zap back to rec. channel */
+			// zap back to rec. channel
 			cam0->setCaPmt(thischannel, thischannel->getCaPmt(), demux_index, ca_mask, true); // update
 			cam1->sendMessage(0, 0); // stop/close
 		}
@@ -1634,7 +1631,7 @@ int change_audio_pid(uint8_t index)
 	volume_percent = getPidVolume(live_channel_id, live_channel->getAudioPid(), currentAudioChannel->audioChannelType == CZapitAudioChannel::AC3);
 	setVolumePercent(volume_percent);
 	
-	//FIXME: is is muted
+	//FIXME: is muted
 	if(current_muted)
 		audioDecoder->SetMute(true);
 			
@@ -1731,17 +1728,15 @@ int prepare_channels()
 	return 0;
 }
 
-void parseScanInputXml(/*int feindex*/fe_type_t fe_type)
+void parseScanInputXml(fe_type_t fe_type)
 {
 	if(scanInputParser) 
 	{
 		delete scanInputParser;
 		scanInputParser = NULL;
 	}
-	
-	//CFrontend * fe = getFE(feindex);
 		
-	switch ( /*fe->getInfo()->type*/fe_type) 
+	switch (fe_type) 
 	{
 		case FE_QPSK:
 			scanInputParser = parseXmlFile(SATELLITES_XML);
@@ -1756,7 +1751,7 @@ void parseScanInputXml(/*int feindex*/fe_type_t fe_type)
 			break;
 			
 		default:
-			dprintf(DEBUG_INFO, "[zapit] parseScanInputXml: Unknown type %d\n", /*getFE(feindex)->getInfo()->type*/fe_type);
+			dprintf(DEBUG_INFO, "[zapit] parseScanInputXml: Unknown type %d\n", fe_type);
 			return;
 	}
 }
@@ -1773,7 +1768,6 @@ int start_scan(CZapitMessages::commandStartScan StartScan)
                 delete scanInputParser;
                 scanInputParser = NULL;
 
-		//parseScanInputXml(StartScan.feindex);
 		CFrontend * fe = getFE(StartScan.feindex);
 		parseScanInputXml(fe->getInfo()->type);
 
@@ -2645,11 +2639,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 	
 		case CZapitMessages::CMD_SB_START_PLAYBACK:
 			startPlayBack(live_channel);
-			
-// opengl liveplayback
-//#if defined (USE_OPENGL)
-//			unlockOpenGLplayback();
-//#endif			
+						
 			break;
 	
 		case CZapitMessages::CMD_SB_STOP_PLAYBACK:
@@ -2658,11 +2648,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			CZapitMessages::responseCmd response;
 			response.cmd = CZapitMessages::CMD_READY;
 			CBasicServer::send_data(connfd, &response, sizeof(response));
-			
-// opengl liveplayback
-//#if defined (USE_OPENGL)
-//			lockOpenGLplayback();
-//#endif			
+						
 			break;
 	
 		case CZapitMessages::CMD_SB_LOCK_PLAYBACK:		
@@ -2673,11 +2659,6 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 #endif			
 			
 			playbackStopForced = true;
-			
-// opengl liveplayback
-//#if defined (USE_OPENGL)
-//			lockOpenGLplayback();
-//#endif
 
 			break;
 	
@@ -2697,12 +2678,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 #if defined (ENABLE_CI)	
 			if(live_fe != NULL)
 				ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
-#endif				
-			
-// opengl liveplayback
-//#if defined (USE_OPENGL)
-//			unlockOpenGLplayback();
-//#endif	
+#endif					
 
 #if defined (ENABLE_GSTREAMER)
 			if (! (currentMode & RECORD_MODE))
@@ -3310,7 +3286,6 @@ int startPlayBack(CZapitChannel * thisChannel)
 		// build channel url
 		std::string ChannelURL;
 
-		//ChannelURL = "http://192.168.0.12:31339/0,"; // g_settings.serverIP
 		ChannelURL = "http://";
 		ChannelURL += g_settings.satip_serverbox_ip;
 		ChannelURL += ":31339/0,";
@@ -3724,10 +3699,10 @@ void enterStandby(void)
 
 	standby = true;
 
-	/* save zapitconfig */
+	// save zapitconfig
 	saveZapitSettings(true, true);
 	
-	/* stop playback */
+	// stop playback
 	stopPlayBack(true);
 	
 #if !defined (PLATFORM_COOLSTREAM)
@@ -3806,7 +3781,6 @@ unsigned int zapTo_ChannelID(t_channel_id channel_id, bool isSubService)
 
 	dprintf(DEBUG_NORMAL, "zapTo_ChannelID: zapit OK, chid %llx\n", channel_id);
 	
-#if 0
 	if (isSubService) 
 	{
 		dprintf(DEBUG_NORMAL, "zapTo_ChannelID: isSubService chid %llx\n", channel_id);
@@ -3822,7 +3796,6 @@ unsigned int zapTo_ChannelID(t_channel_id channel_id, bool isSubService)
 		result |= CZapitClient::ZAP_IS_NVOD;
 	}
 	else
-#endif
 		eventServer->sendEvent(CZapitClient::EVT_ZAP_COMPLETE, CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
 
 	return result;
@@ -3857,7 +3830,7 @@ void sendConfig(int connfd)
 	Cfg.saveLastChannel = config.getBool("saveLastChannel", true);
 	Cfg.scanSDT = scanSDT;
 
-	/* send */
+	// send
 	CBasicServer::send_data(connfd, &Cfg, sizeof(Cfg));
 }
 

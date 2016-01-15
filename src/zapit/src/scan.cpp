@@ -29,10 +29,8 @@
 #include <cstdio>
 #include <cstring>
 
-/* system */
 #include <system/debug.h>
 
-/* libevent */
 #include <eventserver.h>
 
 #include <bouquets.h>
@@ -110,7 +108,6 @@ bool tuneFrequency(FrontendParameters *feparams, uint8_t polarization, t_satelli
 	
 	// init tuner
 	initTuner(getFE(feindex));
-	//
 	
 	//Set Input
 	getFE(feindex)->setInput(satellitePosition, feparams->frequency, polarization);
@@ -238,7 +235,7 @@ _repeat:
 
 		dprintf(DEBUG_INFO, "[scan] scanning: %llx\n", tI->first);
 
-		/* msg to neutrino */
+		// msg to neutrino
 		if( getFE(feindex)->getInfo()->type == FE_QAM)
 			actual_freq = tI->second.feparams.frequency;
 		else if( getFE(feindex)->getInfo()->type == FE_QPSK)
@@ -253,7 +250,7 @@ _repeat:
 		eventServer->sendEvent(CZapitClient::EVT_SCAN_SERVICENAME, CEventServer::INITID_ZAPIT, (void *) " ", 2);
 		eventServer->sendEvent(CZapitClient::EVT_SCAN_REPORT_FREQUENCY,CEventServer::INITID_ZAPIT, &actual_freq, sizeof(actual_freq));
 
-		/* by sat send pol to neutrino */
+		// by sat send pol to neutrino
 		if( getFE(feindex)->getInfo()->type == FE_QPSK)
 		{
 			actual_polarisation = ((tI->second.feparams.u.qpsk.symbol_rate/1000) << 16) | (tI->second.feparams.u.qpsk.fec_inner << 8) | (uint)tI->second.polarization;
@@ -261,7 +258,7 @@ _repeat:
 			eventServer->sendEvent(CZapitClient::EVT_SCAN_REPORT_FREQUENCYP, CEventServer::INITID_ZAPIT,&actual_polarisation,sizeof(actual_polarisation));
 		}
 		
-		/* tune TP */
+		// tune TP
 		if (!tuneFrequency(&(tI->second.feparams), tI->second.polarization, satellitePosition, feindex)) 
 		{
 			failed_transponders++;
@@ -429,7 +426,7 @@ void scan_provider(xmlNodePtr search, t_satellite_position satellitePosition, ui
 	
 	tps = search->xmlChildrenNode;
 
-	/* read all transponders */
+	// read all transponders
 	while ((tps = xmlGetNextOccurence(tps, "transponder")) != NULL) 
 	{
 		if(abort_scan)
@@ -437,7 +434,7 @@ void scan_provider(xmlNodePtr search, t_satellite_position satellitePosition, ui
 
 		scan_transponder(tps, diseqc_pos, satellitePosition, satfeed, feindex);
 
-		/* next transponder */
+		// next transponder
 		tps = tps->xmlNextNode;
 	}
 	
@@ -485,7 +482,7 @@ void stop_scan(const bool success)
 {
 	dprintf(DEBUG_NORMAL, "%s\n", __FUNCTION__);
 	
-	/* notify client about end of scan */
+	// notify client about end of scan
 	scan_runs = 0;
 	eventServer->sendEvent(success ? CZapitClient::EVT_SCAN_COMPLETE : CZapitClient::EVT_SCAN_FAILED, CEventServer::INITID_ZAPIT);
 	
@@ -550,7 +547,7 @@ void * start_scanthread(void *scanmode)
 	}
 	
 	// get provider position and name
-	parseScanInputXml(/*feindex*/getFE(feindex)->getInfo()->type);
+	parseScanInputXml(getFE(feindex)->getInfo()->type);
 	
 	xmlNodePtr search = xmlDocGetRootElement(scanInputParser)->xmlChildrenNode;
 
@@ -715,7 +712,7 @@ void * scan_transponder(void * arg)
 	else if( getFE(ScanTP.feindex)->getInfo()->type == FE_OFDM)
 		freq = TP->feparams.frequency/1000000;
 
-	/* read network information table */
+	// read network information table
 	fake_tid++; 
 	fake_nid++;
 
