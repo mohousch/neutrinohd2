@@ -25,10 +25,12 @@
 #include <pthread.h>
 
 #include <queue>
-
+#include <vector>
 #include <list>
+#include <set>
 
 #include <zapit/include/zapit/ci.h>
+#include <zapit/include/zapit/channel.h>
 
 #define MAX_MMI_ITEMS 20
 #define MAX_MMI_TEXT_LEN 255
@@ -40,6 +42,15 @@
 #define TUNER_D		3
 
 #define MAX_SLOTS	2
+
+typedef std::set<int> ca_map_t;
+typedef ca_map_t::iterator ca_map_iterator_t;
+
+typedef std::vector<uint16_t>			bSIDVector;
+
+typedef std::vector<uint16_t>			CaIdVector;
+typedef std::vector<uint16_t>::iterator		CaIdVectorIterator;
+typedef std::vector<uint16_t>::const_iterator	CaIdVectorConstIterator;
 
 typedef struct
 {
@@ -142,30 +153,44 @@ typedef struct
 	bool init;
  
 	int counter;
+	CaIdVector cam_caids;
 	std::priority_queue<queueData> sendqueue;
 
-	CCaPmt *caPmt;
 	int source;
 
+	bSIDVector bsids;
+	bool newCapmt;
+	bool inUse;
+	uint64_t chanId;
+	uint32_t pmtlen;
+	uint8_t pmtdata[1024];
+	uint8_t scrambled;
 	bool DataLast;
 	bool DataRCV;
+	bool SidBlackListed;
 } tSlot;
 
 eData sendData(tSlot *slot, unsigned char* data, int len);
+
+typedef std::list<tSlot*>::iterator SlotIt;
 
 typedef void (*SEND_MSG_HOOK) (unsigned int msg, unsigned int data);
 
 class cDvbCi {
 	private:
 		int slots;
-
 		std::list<tSlot*> slot_data;
 		pthread_t slot_thread;
+		bool StopRecordCI( uint64_t chanId, uint8_t source);
+		SlotIt FindFreeSlot(ca_map_t camap, uint8_t scrambled);
+		ca_map_t makeCaMap(CCaPmt *caPmt, uint8_t *buffer, int &len);
+		bool Send_CAPMT(tSlot* slot);
+		void Test(int slot, CaIdVector caids);
+		void DelTest(int slot);
 	public:
 		int ci_num;
 
-		bool SendCaPMT(CCaPmt *caPmt, int source = TUNER_A);
-
+		bool SendCaPMT(CCaPmt *caPmt, int source = TUNER_A, int rec_mode = 0, t_channel_id chan_id = 0, uint8_t scrambled = 0);
 		void slot_pollthread(void *c);
 		void setSource(int slot, int source);
 

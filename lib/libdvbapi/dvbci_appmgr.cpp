@@ -1,9 +1,12 @@
 /* DVB CI Application Manager */
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include <system/debug.h>
 
 #include "dvbci_appmgr.h"
+
+static const char * FILENAME = "[dvbci_appmgr.cpp]";
 
 eDVBCIApplicationManagerSession::eDVBCIApplicationManagerSession(tSlot *tslot)
 {
@@ -29,7 +32,7 @@ eDVBCIApplicationManagerSession::~eDVBCIApplicationManagerSession()
 
 int eDVBCIApplicationManagerSession::receivedAPDU(const unsigned char *tag,const void *data, int len)
 {
-	dprintf(DEBUG_DEBUG, "eDVBCIApplicationManagerSession::%s >\n", __func__);
+	dprintf(DEBUG_DEBUG, "%s > %s >\n", FILENAME, __func__);
 
 	printf("SESSION(%d)/APP %02x %02x %02x: ", session_nb, tag[0], tag[1], tag[2]);
 	for (int i=0; i<len; i++)
@@ -85,6 +88,7 @@ int eDVBCIApplicationManagerSession::doAction()
 	    		const unsigned char tag[3]={0x9F, 0x80, 0x20}; // application manager info e    sendAPDU(tag);
 			sendAPDU(tag);
 			state=stateFinal;
+			checkBlist();
 			dprintf(DEBUG_DEBUG, "%s <", __func__);
 			return 1;
 		}
@@ -110,15 +114,67 @@ int eDVBCIApplicationManagerSession::doAction()
 
 int eDVBCIApplicationManagerSession::startMMI()
 {
-	dprintf(DEBUG_DEBUG, "%s >\n", __func__);
-	dprintf(DEBUG_INFO, "in appmanager -> startmmi()\n");
+	dprintf(DEBUG_INFO, "%s > %s >\n", FILENAME, __func__);
 	const unsigned char tag[3]={0x9F, 0x80, 0x22};  // Tenter_menu
 	sendAPDU(tag);
-
 	slot->mmiOpened = true;
+	dprintf(DEBUG_DEBUG, "%s > %s <\n", FILENAME, __func__);
+	return 0;
+}
 
-	//fixme slot->mmiOpened();
-	dprintf(DEBUG_DEBUG, "%s <\n", __func__);
+bool eDVBCIApplicationManagerSession::readBlist()
+{
+	int rc, i;
+	char cSid[4] = {0,0,0,0};
+	uint16_t Sid;
+	FILE *fd;
+	char blacklist_file[32];
+
+	sprintf(blacklist_file,"/etc/blacklist_slot_%d",slot->slot);
+
+	if (access(blacklist_file, F_OK) != 0)
+		return false;
+	fd = fopen(blacklist_file,"r");
+	if (!fd)
+		return false;
+	else
+	{
+		do
+		{
+			for (i = 0; i < 4; i++)
+			{
+				rc = fgetc(fd);
+				if (rc == ',' || rc == EOF) break;
+				cSid[i] = (char)rc;
+			}
+			if (rc == EOF) goto fin;
+			if (i == 4)
+			{
+				Sid = (uint16_t)strtol(cSid, NULL, 16);
+				slot->bsids.push_back(Sid);
+			}
+		} while (rc != EOF);
+fin:
+		fclose(fd);
+	}
+	if (slot->bsids.size())
+		return true;
+	else
+		return false;
+}
+
+int eDVBCIApplicationManagerSession::checkBlist()
+{
+	if (readBlist())
+	{
+/* out commented: causes sometimes segfault when reboot....don't know why :( */
+#if 1
+		printf("Blacked sids: %d > ", slot->bsids.size());
+		for (unsigned int i = 0; i < slot->bsids.size(); i++)
+			printf("%04x ", slot->bsids[i]);
+		printf("\n");
+#endif
+	}
 	return 0;
 }
 

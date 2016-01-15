@@ -14,6 +14,8 @@ class eDVBCIApplicationManagerSession: public eDVBCISession
 	int wantmenu;
 	int receivedAPDU(const unsigned char *tag, const void *data, int len);
 	int doAction();
+	bool readBlist();
+	int checkBlist();
 public:
 	eDVBCIApplicationManagerSession(tSlot *tslot);
 	~eDVBCIApplicationManagerSession();

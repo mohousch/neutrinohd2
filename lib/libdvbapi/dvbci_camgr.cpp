@@ -36,15 +36,15 @@ int eDVBCICAManagerSession::receivedAPDU(const unsigned char *tag, const void *d
 		switch (tag[2])
 		{
 		case 0x31:
-			dprintf(DEBUG_NORMAL, "ca info: ");
+			dprintf(DEBUG_INFO, "ca info: ");
 			for (int i=0; i<len; i+=2)
 			{
-				dprintf(DEBUG_NORMAL, "%04x ", (((const unsigned char*)data)[i]<<8)|(((const unsigned char*)data)[i+1]));
+				dprintf(DEBUG_INFO, "%04x ", (((const unsigned char*)data)[i]<<8)|(((const unsigned char*)data)[i+1]));
 				caids.push_back((((const unsigned char*)data)[i]<<8)|(((const unsigned char*)data)[i+1]));
 			}
+			dprintf(DEBUG_INFO, "\n");
+
 			sort(caids.begin(), caids.end());
-			dprintf(DEBUG_NORMAL, "\n");
-			
 			slot->pollConnection = false;
 	                slot->hasCAManager = true;
                         slot->camgrSession = this;
