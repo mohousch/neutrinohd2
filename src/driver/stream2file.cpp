@@ -206,17 +206,6 @@ stream2file_error_msg_t stop_recording(const char * const info)
 	}
 	else
 		ret = STREAM2FILE_RECORDING_THREADS_FAILED;
-	
-#if defined (USE_OPENGL)
-	if(CNeutrinoApp::getInstance()->recordingstatus)
-	{
-		sprintf(buf, "rm -f %s.ts &", rec_filename);
-		sprintf(buf1, "%s.xml", rec_filename);
-
-		system(buf);
-		unlink(buf1);
-	}
-#endif
 
 	if( autoshift || CNeutrinoApp::getInstance()->timeshiftstatus) 
 	{

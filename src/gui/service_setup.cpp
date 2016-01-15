@@ -48,6 +48,7 @@
 #include <gui/scan_setup.h>
 #include <gui/cam_menu.h>
 #include <gui/imageinfo.h>
+#include <gui/satip_setup.h>
 
 #include <gui/bedit/bouqueteditor_bouquets.h>
 
@@ -132,6 +133,9 @@ void CServiceSetup::showMenu()
 #if defined (ENABLE_CI)
 	service.addItem(new CMenuForwarderExtended(LOCALE_CAM_SETTINGS, true, g_CamHandler, NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, NEUTRINO_ICON_MENUITEM_CAM, LOCALE_HELPTEXT_CAM ));
 #endif
+
+	// satip
+	service.addItem(new CMenuForwarderExtended("Sat <> IP", true, new CSatIPSetup(), NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, NEUTRINO_ICON_MENUITEM_SERVICE));
 	
 	// image info
 	service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_IMAGEINFO,  true, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_IMAGEINFO), false);

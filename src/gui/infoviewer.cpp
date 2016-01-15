@@ -283,7 +283,7 @@ void CInfoViewer::paintTime(bool show_dot, bool firstPaint, int posx, int posy, 
 			strcpy (old_timestr, timestr);
 	
 			if (!firstPaint) 
-				frameBuffer->paintBoxRel(posx - time_width - ICON_OFFSET, posy, time_width + ICON_OFFSET, time_height, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP);
+				frameBuffer->paintBoxRel(posx - time_width - ICON_OFFSET, posy, time_width + ICON_OFFSET, time_height, COL_INFOBAR_PLUS_0);
 	
 			timestr[2] = 0;
 			timeFont->RenderString(posx - time_width - ICON_OFFSET, posy + time_height, time_left_width, timestr, COL_INFOBAR);

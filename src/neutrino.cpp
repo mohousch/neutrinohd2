@@ -565,9 +565,9 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// end parentallock
 
 	// network
-	g_settings.network_ntpserver    = configfile.getString("network_ntpserver", "time.fu-berlin.de");
-        g_settings.network_ntprefresh   = configfile.getString("network_ntprefresh", "30" );
-        g_settings.network_ntpenable    = configfile.getBool("network_ntpenable", false);
+	g_settings.network_ntpserver = configfile.getString("network_ntpserver", "time.fu-berlin.de");
+        g_settings.network_ntprefresh = configfile.getString("network_ntprefresh", "30" );
+        g_settings.network_ntpenable = configfile.getBool("network_ntpenable", false);
 	
 	snprintf(g_settings.ifname, sizeof(g_settings.ifname), "%s", configfile.getString("ifname", "eth0").c_str());
 
@@ -947,11 +947,17 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	for (int i = 0; i < LCD_SETTING_COUNT; i++)
 		g_settings.lcd_setting[i] = configfile.getInt32(lcd_setting[i].name, lcd_setting[i].default_value);
 	
-	strcpy(g_settings.lcd_setting_dim_time, configfile.getString("lcd_dim_time","0").c_str());
+	strcpy(g_settings.lcd_setting_dim_time, configfile.getString("lcd_dim_time", "0").c_str());
 	g_settings.lcd_setting_dim_brightness = configfile.getInt32("lcd_dim_brightness", 0);
 	
 	g_settings.lcd_ledcolor = configfile.getInt32("lcd_ledcolor", 1);
 	// END VFD
+
+	// satip
+	g_settings.satip_allow_satip = configfile.getBool("satip_allow_satip", false);
+	g_settings.satip_serverbox_ip = configfile.getString("satip_serverbox_ip", "192.168.0.12");
+	//strcpy((char *)g_settings.satip_serverbox_ip.c_str(), (char *)configfile.getString("satip_serverbox_ip", "192.168.0.12").c_str());
+	g_settings.satip_serverbox_type = configfile.getInt32("satip_serverbox_type", DVB_C);
 	
 	//set OSD resolution
 #if defined (USE_OPENGL)
@@ -1012,7 +1018,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 
 	// AUDIO
 	configfile.setInt32( "audio_AnalogMode", g_settings.audio_AnalogMode );
-	configfile.setBool("audio_DolbyDigital", g_settings.audio_DolbyDigital   );
+	configfile.setBool("audio_DolbyDigital", g_settings.audio_DolbyDigital);
 	configfile.setInt32( "hdmi_dd", g_settings.hdmi_dd);
 	
 	configfile.setInt32( "avsync", g_settings.avsync);
@@ -1384,7 +1390,12 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32("lcd_dim_brightness", g_settings.lcd_setting_dim_brightness);
 	
 	configfile.setInt32("lcd_ledcolor", g_settings.lcd_ledcolor);
-	// END VFD	
+	// END VFD
+
+	// satip
+	configfile.setBool("satip_allow_satip", g_settings.satip_allow_satip);
+	configfile.setString("satip_serverbox_ip", g_settings.satip_serverbox_ip);
+	configfile.setInt32("satip_serverbox_type", g_settings.satip_serverbox_type);	
 
 	if(strcmp(fname, NEUTRINO_SETTINGS_FILE))
 		configfile.saveConfig(fname);
@@ -1830,56 +1841,59 @@ bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData
 #if defined (USE_OPENGL)
 int startOpenGLplayback()
 {
-	CTimerd::RecordingInfo eventinfo;
+	if(!g_settings.satip_allow_satip)
+	{
+		CTimerd::RecordingInfo eventinfo;
 
-	if( !CVCRControl::getInstance()->isDeviceRegistered() )
-		return 0;
+		if( !CVCRControl::getInstance()->isDeviceRegistered() )
+			return 0;
 
-	eventinfo.channel_id = live_channel_id;
-	CEPGData epgData;
+		eventinfo.channel_id = live_channel_id;
+		CEPGData epgData;
 	
-	if (sectionsd_getActualEPGServiceKey(live_channel_id&0xFFFFFFFFFFFFULL, &epgData ))
-	{
-		eventinfo.epgID = epgData.eventID;
-		eventinfo.epg_starttime = epgData.epg_times.startzeit;
-		strncpy(eventinfo.epgTitle, epgData.title.c_str(), EPG_TITLE_MAXLEN-1);
-		eventinfo.epgTitle[EPG_TITLE_MAXLEN - 1] = 0;
-	}
-	else 
-	{
-		eventinfo.epgID = 0;
-		eventinfo.epg_starttime = 0;
-		strcpy(eventinfo.epgTitle, "");
-	}
+		if (sectionsd_getActualEPGServiceKey(live_channel_id&0xFFFFFFFFFFFFULL, &epgData ))
+		{
+			eventinfo.epgID = epgData.eventID;
+			eventinfo.epg_starttime = epgData.epg_times.startzeit;
+			strncpy(eventinfo.epgTitle, epgData.title.c_str(), EPG_TITLE_MAXLEN-1);
+			eventinfo.epgTitle[EPG_TITLE_MAXLEN - 1] = 0;
+		}
+		else 
+		{
+			eventinfo.epgID = 0;
+			eventinfo.epg_starttime = 0;
+			strcpy(eventinfo.epgTitle, "");
+		}
 
-	eventinfo.apids = TIMERD_APIDS_CONF;
+		eventinfo.apids = TIMERD_APIDS_CONF;
 
-	(static_cast<CVCRControl::CFileDevice*>(recordingdevice))->Directory = timeshiftDir;
+		(static_cast<CVCRControl::CFileDevice*>(recordingdevice))->Directory = timeshiftDir;
 
-	if( CVCRControl::getInstance()->Record(&eventinfo))
-		CNeutrinoApp::getInstance()->playbackstatus = 1;
-	else
-		CNeutrinoApp::getInstance()->playbackstatus = 0;
+		if( CVCRControl::getInstance()->Record(&eventinfo))
+			CNeutrinoApp::getInstance()->playbackstatus = 1;
+		else
+			CNeutrinoApp::getInstance()->playbackstatus = 0;
 	
-	// start playback	
-	char fname[255];
-	int cnt = 10 * 1000000;
+		// start playback	
+		char fname[255];
+		int cnt = 10 * 1000000;
 
-	while (!strlen(rec_filename)) 
-	{
-		usleep(1000);
-		cnt -= 1000;
-		if (!cnt)
-			break;
-	}
+		while (!strlen(rec_filename)) 
+		{
+			usleep(1000);
+			cnt -= 1000;
+			if (!cnt)
+				break;
+		}
 
-	if(strlen(rec_filename))
-	{
-		sprintf(fname, "%s.ts", rec_filename);
+		if(strlen(rec_filename))
+		{
+			sprintf(fname, "%s.ts", rec_filename);
 		
-		usleep(10000000);
-		playback->Open();
-		playback->Start(fname);
+			usleep(10000000);
+			playback->Open();
+			playback->Start(fname);
+		}
 	} 
 	
 	return 0;
@@ -1887,53 +1901,33 @@ int startOpenGLplayback()
 
 void stopOpenGLplayback()
 {
-	// stop playback
-	playback->Close();
-	
-	// stop recording
-	if(CNeutrinoApp::getInstance()->playbackstatus) 
+	if(!g_settings.satip_allow_satip)
 	{
-		CNeutrinoApp::getInstance()->playbackstatus = 0;
-		
-		CVCRControl::getInstance()->Stop();
-		
-		if(CNeutrinoApp::getInstance()->recording_id) 
+		// stop playback
+		playback->Close();
+	
+		// stop recording
+		if(CNeutrinoApp::getInstance()->playbackstatus) 
 		{
-			CNeutrinoApp::getInstance()->recording_id = 0;
+			CNeutrinoApp::getInstance()->playbackstatus = 0;
+		
+			CVCRControl::getInstance()->Stop();
+		
+			if(CNeutrinoApp::getInstance()->recording_id) 
+			{
+				CNeutrinoApp::getInstance()->recording_id = 0;
+			}
+
+			char buf[1024];
+			char buf1[1024];
+
+			sprintf(buf, "rm -f %s.ts &", rec_filename);
+			sprintf(buf1, "%s.xml", rec_filename);
+
+			system(buf);
+			unlink(buf1);
 		}
 	}
-}
-
-int unlockOpenGLplayback()
-{
-	// start playback	
-	char fname[255];
-	int cnt = 10 * 1000000;
-
-	while (!strlen(rec_filename)) 
-	{
-		usleep(1000);
-		cnt -= 1000;
-		if (!cnt)
-			break;
-	}
-
-	if(strlen(rec_filename))
-	{
-		sprintf(fname, "%s.ts", rec_filename);
-		
-		usleep(10000000);
-		playback->Open();
-		playback->Start(fname);
-	} 
-	
-	return 0;
-}
-
-void lockOpenGLplayback()
-{
-	// stop playback
-	playback->Close();
 }
 #endif
 
@@ -2276,9 +2270,9 @@ void CNeutrinoApp::InitZapper()
 		g_RemoteControl->processAPIDnames();
 		
 		// opengl liveplayback
-#if defined (USE_OPENGL)
-		startOpenGLplayback();
-#endif		
+//#if defined (USE_OPENGL)
+//		startOpenGLplayback();
+//#endif		
 		// permenant timeshift
 		if(g_settings.auto_timeshift)
 			startAutoRecord(true);
@@ -2436,6 +2430,12 @@ int CNeutrinoApp::run(int argc, char **argv)
 
 	// show start up msg in vfd
 	CVFD::getInstance()->ShowText( (char *)"NHD2");	
+
+	// rc 
+	g_RCInput = new CRCInput;
+
+	// playback
+	playback = new cPlayback();
 	
 	// zapit	
 	Z_start_arg ZapStart_arg;
@@ -2518,12 +2518,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 	CVFD::getInstance()->setMuted(current_muted);
 #endif
 	
-	// playback
-	playback = new cPlayback();
-
-	// rc 
-	g_RCInput = new CRCInput;
-	
 	// sectionsd client
 	g_Sectionsd = new CSectionsdClient;
 	
@@ -2576,15 +2570,14 @@ int CNeutrinoApp::run(int argc, char **argv)
 	// init timerlist
 	Timerlist = new CTimerList;	// defined in neutrino.h
 
-	// setup recording device
-	setupRecordingDevice();
-	
 	// HDD mount devices
 	// assuming that mdev/fstab has mounted devices
 	CHDDDestExec * hdd = new CHDDDestExec();
 	hdd->exec(NULL, "");
-	
 	delete hdd;
+
+	// setup recording device
+	setupRecordingDevice();
 
 	// init main menu
 	CMenuWidget mainMenu(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
@@ -2715,22 +2708,10 @@ int CNeutrinoApp::run(int argc, char **argv)
 	InitZapper();
 	
 	// audio mute
-	AudioMute(current_muted, true);
-
-	// Cam-Ci
-#if defined (ENABLE_CI)	
-	cDvbCi::getInstance()->SetHook(CISendMessage);	
-#endif	
+	AudioMute(current_muted, true);	
 
 	// init webtv
 	webtv = new CWebTV();
-	
-	// set webtv as default mode if we dont have dvb devices
-	if(FrontendCount == 0)
-	{
-		if(webtv)
-			webtvMode();
-	}
 	
 	// init shutdown count
 	SHTDCNT::getInstance()->init();
@@ -2768,7 +2749,9 @@ void CNeutrinoApp::quickZap(int msg)
 void CNeutrinoApp::showInfo()
 {
 	StopSubtitles();
+
 	g_InfoViewer->showTitle(channelList->getActiveChannelNumber(), channelList->getActiveChannelName(), channelList->getActiveSatellitePosition(), channelList->getActiveChannel_ChannelID());
+
 	StartSubtitles();
 }
 
@@ -4920,9 +4903,9 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 			}
 			
 // opengl liveplayback
-#if defined (USE_OPENGL)
-			stopOpenGLplayback();
-#endif			
+//#if defined (USE_OPENGL)
+//			stopOpenGLplayback();
+//#endif			
 		}
 
 		//run script
@@ -5007,9 +4990,9 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 		AudioMute(current_muted, false );
 		
 // opengl liveplayback
-#if defined (USE_OPENGL)
-		startOpenGLplayback();
-#endif					
+//#if defined (USE_OPENGL)
+//		startOpenGLplayback();
+//#endif					
 
 		// start record if
 		if((mode == mode_tv) && wasshift) 

@@ -1061,7 +1061,7 @@ void CChannelList::setSelected( int nChannelNr)
 // -- Zap to channel with channel_id
 bool CChannelList::zapTo_ChannelID(const t_channel_id channel_id)
 {
-	printf("CChannelList::zapTo_ChannelID %llx\n", channel_id);
+	dprintf(DEBUG_NORMAL, "CChannelList::zapTo_ChannelID %llx\n", channel_id);
 	
 	for (unsigned int i = 0; i < chanlist.size(); i++) 
 	{
@@ -1093,7 +1093,7 @@ void CChannelList::zapTo(int pos, bool /*forceStoreToLastChannels*/)
 
 	CZapitChannel * chan = chanlist[pos];
 	
-	printf("CChannelList::zapTo me %s tuned %d new %d %s -> %llx\n", name.c_str(), tuned, pos, chan->name.c_str(), chan->channel_id);
+	dprintf(DEBUG_NORMAL, "CChannelList::zapTo me %s tuned %d new %d %s -> %llx\n", name.c_str(), tuned, pos, chan->name.c_str(), chan->channel_id);
 	
 	if ( pos != (int)tuned ) 
 	{  
@@ -1527,7 +1527,7 @@ void CChannelList::quickZap(int key, bool cycle)
                 selected = (selected+1)%chanlist.size();
         }
 
-	printf("CChannelList::quickZap: quick zap selected = %d getActiveBouquetNumber %d\n", selected, bouquetList->getActiveBouquetNumber());
+	dprintf(DEBUG_NORMAL, "CChannelList::quickZap: quick zap selected = %d getActiveBouquetNumber %d\n", selected, bouquetList->getActiveBouquetNumber());
 
 	if(cycle)
 		bouquetList->orgChannelList->zapTo(bouquetList->Bouquets[bouquetList->getActiveBouquetNumber()]->channelList->getKey(selected)-1);
@@ -1540,7 +1540,7 @@ void CChannelList::quickZap(int key, bool cycle)
 void CChannelList::paintDetails(int index)
 {
 	// itembox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
 	
 	if (chanlist.empty()) 
 		return;

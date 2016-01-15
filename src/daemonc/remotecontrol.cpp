@@ -738,7 +738,7 @@ void CRemoteControl::zapTo_ChannelID(const t_channel_id channel_id, const std::s
 	current_channel_id = channel_id;
 	current_channel_name = channame;
 	
-	dprintf(DEBUG_INFO, "CRemoteControl::zapTo_ChannelID: start_video: %d\n", start_video);
+	dprintf(DEBUG_NORMAL, "CRemoteControl::zapTo_ChannelID: start_video: %d\n", start_video);
 	
 	if (start_video)
 		startvideo();

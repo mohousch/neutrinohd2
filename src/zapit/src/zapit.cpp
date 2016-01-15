@@ -41,14 +41,17 @@
 #include <config.h>
 #endif
 
+#include <global.h>
+
 /* tuxbox headers */
 #include <configfile.h>
 #include <connection/basicserver.h>
 
-/* system */
+// system
 #include <system/debug.h>
+#include <system/settings.h>
 
-/* zapit headers */
+// zapit headers
 #include <cam.h>
 #include <client/msgtypes.h>
 #include <getservices.h>
@@ -60,10 +63,10 @@
 #include <satconfig.h>
 #include <frontend_c.h>
 
-/* libxmltree */
+// libxmltree
 #include <xmlinterface.h>
 
-/* libcoolstream */
+// libcoolstream
 #include <dmx_cs.h>
 #include <audio_cs.h>
 #include <video_cs.h>
@@ -74,27 +77,30 @@
 
 // opengl liveplayback
 #if defined (USE_OPENGL)
-int lockOpenGLplayback();
-void unlockOpenGLplayback();
+//int lockOpenGLplayback();
+//void unlockOpenGLplayback();
+int startOpenGLplayback();
+void stopOpenGLplayback();
 #endif
 
-/* globals */
+// globals 
 int zapit_ready;
 int abort_zapit;
 
-/* ci */
+// ci
 #if defined (ENABLE_CI)
 cDvbCi * ci;
+void CISendMessage(uint32_t msg, uint32_t data);
 #endif
 
-/* audio conf */
+// audio conf
 map<t_channel_id, audio_map_set_t> audio_map;
 map<t_channel_id, audio_map_set_t>::iterator audio_map_it;
 unsigned int volume_left = 100, volume_right = 100;
 int audio_mode = 0;
 int def_audio_mode = 0;
 
-/* volume percent conf */
+// volume percent conf
 #define VOLUME_DEFAULT_PCM 0
 #define VOLUME_DEFAULT_AC3 25
 typedef std::pair<int, int> pid_pair_t;
@@ -113,7 +119,7 @@ void setPidVolume(t_channel_id channel_id, int pid, int percent);
 
 void setVolumePercent(int percent);
 
-/* live/record channel id */
+// live/record channel id
 t_channel_id live_channel_id;
 t_channel_id rec_channel_id;
 
@@ -123,7 +129,7 @@ bool g_list_changed = false; 		/* flag to indicate, allchans was changed */
 
 int change_audio_pid(uint8_t index);
 
-/* SDT */
+// SDT
 int scanSDT;
 void * sdt_thread(void * arg);
 void SaveServices(bool tocopy);
@@ -131,42 +137,42 @@ pthread_t tsdt;
 pthread_mutex_t chan_mutex = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
 bool sdt_wakeup;
 
-/* the conditional access module */
+// the conditional access module
 CCam * cam0 = NULL;
 CCam * cam1 = NULL;
 
-/* the configuration file */
+// the configuration file
 CConfigFile config(',', false);
 
-/* the event server */
+// the event server
 CEventServer *eventServer = NULL;
 
-/* the current channel */
+// the current channel
 CZapitChannel * live_channel = NULL;
 
 // record channel
 CZapitChannel * rec_channel = NULL;
 
-/* the transponder scan xml input */
+// transponder scan xml input
 xmlDocPtr scanInputParser = NULL;
 
-/* the bouquet manager */
+// bouquet manager
 CBouquetManager * g_bouquetManager = NULL;
 
-/* Audio/Video Decoder */
+// Audio/Video Decoder
 extern cVideo * videoDecoder;			/* defined in video_cs.pp (libdvbapi) */
 extern cAudio * audioDecoder;			/* defined in audio_cs.pp (libdvbapi) */
 
-/* Demuxes */
+// Demuxes
 extern cDemux * audioDemux;			/* defined in dmx_cs.pp (libdvbapi) */
 extern cDemux * videoDemux;			/* defined in dmx_cs.pp (libdvbapi) */
 cDemux * pcrDemux = NULL;			/* defined in dmx_cs.pp (libdvbapi) */
 extern cDemux * pmtDemux;			/* defined in pmt.cpp */
 
-/* the map which stores the wanted scanned cables/satellites/terrestrials */
+// map which stores the wanted scanned cables/satellites/terrestrials
 scan_list_t scanProviders;
 
-/* current zapit mode */
+// zapit mode
 enum {
 	TV_MODE = 0x01,
 	RADIO_MODE = 0x02,
@@ -176,23 +182,23 @@ enum {
 int currentMode;
 bool playbackStopForced = false;
 
-/* list of near video on demand */
-tallchans nvodchannels;         	/* tallchans defined in "bouquets.h" */
+// list of near video on demand
+tallchans nvodchannels;         	// tallchans defined in "bouquets.h"
 bool current_is_nvod = false;
 
-/* list of all channels (services) */
-tallchans allchans;             	/* tallchans defined in "bouquets.h" */
-tallchans curchans;             	/* tallchans defined in "bouquets.h" */
+// list of all channels (services)
+tallchans allchans;             	// tallchans defined in "bouquets.h"
+tallchans curchans;             	// tallchans defined in "bouquets.h"
 
-/* transponder scan */
+// transponder scan
 transponder_list_t transponders;
 pthread_t scan_thread;
-extern int found_transponders;		/* defined in descriptors.cpp */
-extern int processed_transponders;	/* defined in scan.cpp */
-extern int found_channels;		/* defined in descriptors.cpp */
-extern short curr_sat;			/* defined in scan.cpp */
-extern short scan_runs;			/* defined in scan.cpp */
-extern short abort_scan;		/* defined in scan.cpp */
+extern int found_transponders;		// defined in descriptors.cpp
+extern int processed_transponders;	// defined in scan.cpp
+extern int found_channels;		// defined in descriptors.cpp
+extern short curr_sat;			// defined in scan.cpp
+extern short scan_runs;			// defined in scan.cpp
+extern short abort_scan;		// defined in scan.cpp
 
 CZapitClient::bouquetMode bouquetMode = CZapitClient::BM_UPDATEBOUQUETS;
 CZapitClient::scanType scanType = CZapitClient::ST_TVRADIO;
@@ -200,14 +206,14 @@ CZapitClient::scanType scanType = CZapitClient::ST_TVRADIO;
 bool standby = true;
 void * scan_transponder(void * arg);
 
-/* zapit config */
+// zapit config
 bool saveLastChannel;
 int lastChannelMode;
 uint32_t  lastChannelRadio;
 uint32_t  lastChannelTV;
 bool makeRemainingChannelsBouquet;
 
-/* set/get zapit.config */
+// set/get zapit.config
 void setZapitConfig(Zapit_config * Cfg);
 void sendConfig(int connfd);
 
@@ -242,7 +248,7 @@ CFrontend * record_fe = NULL;
 
 bool retune = false;
 
-/* variables for EN 50494 (a.k.a Unicable) */
+// variables for EN 50494 (a.k.a Unicable)
 //int uni_scr = -1;	/* the unicable SCR address,     -1 == no unicable */
 //int uni_qrg = 0;	/* the unicable frequency in MHz, 0 == from spec */
 
@@ -1126,7 +1132,7 @@ static bool parse_channel_pat_pmt(CZapitChannel * thischannel, CFrontend * fe)
 		}
 	}
 
-	/* parse program map table and store pids */
+	// parse program map table and store pids
 	if ( !failed && parse_pmt(thischannel, fe) < 0) 
 	{
 		dprintf(DEBUG_NORMAL, "[zapit] pmt parsing failed\n");	
@@ -1221,7 +1227,7 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0)
 	bool failed = false;
 	CZapitChannel * newchannel;
 
-	dprintf(DEBUG_INFO, "[zapit] zapto channel id %llx nvod %d\n", channel_id, in_nvod);
+	dprintf(DEBUG_NORMAL, "zapit: zapto channel id %llx nvod %d\n", channel_id, in_nvod);
 
 	// find channel to zap
 	if( (newchannel = find_channel_tozap(channel_id, in_nvod)) == NULL ) 
@@ -1238,107 +1244,122 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0)
 	firstzap = false;
 
 	// stop update pmt filter
-	pmt_stop_update_filter(&pmt_update_fd);
+	if(!g_settings.satip_allow_satip)
+	{
+		pmt_stop_update_filter(&pmt_update_fd);
+	}
 	
 	// FIXME: how to stop ci_capmt or we dont need this???
 	stopPlayBack(!forupdate);
 
-	if(!forupdate && live_channel)
-		live_channel->resetPids();
+	// reset channel pids
+	if(!g_settings.satip_allow_satip)
+	{
+		if(!forupdate && live_channel)
+			live_channel->resetPids();
+	}
 
 	live_channel = newchannel;
 
 	live_channel_id = live_channel->getChannelID();
+
 	saveZapitSettings(false, false);
 	
 	// find live_fe to tune
-	CFrontend * fe = getFrontend(live_channel);
-	if(fe == NULL) 
+	if(!g_settings.satip_allow_satip)
 	{
-		dprintf(DEBUG_INFO, "%s can not allocate live frontend\n", __FUNCTION__);
-		return -1;
-	}
+		CFrontend * fe = getFrontend(live_channel);
+		if(fe == NULL) 
+		{
+			dprintf(DEBUG_INFO, "%s can not allocate live frontend\n", __FUNCTION__);
+			return -1;
+		}
 	
-	live_fe = fe;
+		live_fe = fe;
 	
-	dprintf(DEBUG_NORMAL, "%s zap to %s(%llx) fe(%d,%d)\n", __FUNCTION__, live_channel->getName().c_str(), live_channel_id, live_fe->fe_adapter, live_fe->fenumber );
+		dprintf(DEBUG_NORMAL, "%s zap to %s(%llx) fe(%d,%d)\n", __FUNCTION__, live_channel->getName().c_str(), live_channel_id, live_fe->fe_adapter, live_fe->fenumber );
 
-	// tune live frontend
-	if(!tune_to_channel(live_fe, live_channel, transponder_change))
-		return -1;
+		// tune live frontend
+		if(!tune_to_channel(live_fe, live_channel, transponder_change))
+			return -1;
 
-	// check if nvod
-	if (live_channel->getServiceType() == ST_NVOD_REFERENCE_SERVICE) 
-	{
-		current_is_nvod = true;
-		return 0;
-	}
+		// check if nvod
+		if (live_channel->getServiceType() == ST_NVOD_REFERENCE_SERVICE) 
+		{
+			current_is_nvod = true;
+			return 0;
+		}
 		
 #if defined (ENABLE_CI)	
-	int retry = 5;
+		int retry = 5;
 #else
-	int retry = false;
+		int retry = false;
 #endif	
 tune_again:
-	// parse pat pmt
-	failed = !parse_channel_pat_pmt(live_channel, live_fe);
+		// parse pat pmt
+		failed = !parse_channel_pat_pmt(live_channel, live_fe);
 		
 #if defined (ENABLE_CI)	
-	if(failed && retry > 0)
-	{
-		usleep(25000);  /* give some 25000us for demuxer: borrowed from e2*/
-		retry--;
- 		dprintf(DEBUG_NORMAL, "[zapit] trying again\n");
- 		goto tune_again;
- 	}
+		if(failed && retry > 0)
+		{
+			usleep(25000);  /* give some 25000us for demuxer: borrowed from e2*/
+			retry--;
+	 		dprintf(DEBUG_NORMAL, "[zapit] trying again\n");
+	 		goto tune_again;
+	 	}
 #else
-	if(failed && !retry)
-	{
-		usleep(2500);  /* give some 2500us for demuxer: borrowed from e2*/
-		retry = true;
-		dprintf(DEBUG_NORMAL, "[zapit] trying again\n");
-		goto tune_again;
-	}	
+		if(failed && !retry)
+		{
+			usleep(2500);  /* give some 2500us for demuxer: borrowed from e2*/
+			retry = true;
+			dprintf(DEBUG_NORMAL, "[zapit] trying again\n");
+			goto tune_again;
+		}	
 #endif
-	if ((!failed) && (live_channel->getAudioPid() == 0) && (live_channel->getVideoPid() == 0)) 
-	{
-		dprintf(DEBUG_NORMAL, "[zapit] neither audio nor video pid found\n");
-		failed = true;
+		if ((!failed) && (live_channel->getAudioPid() == 0) && (live_channel->getVideoPid() == 0)) 
+		{
+			dprintf(DEBUG_NORMAL, "[zapit] neither audio nor video pid found\n");
+			failed = true;
+		}
+
+		/* 
+		 * start sdt scan even if the service was not found in pat or pmt
+		 * if the frontend did not tune, we don't get here, so this is fine 
+		 */
+		if (transponder_change)
+			sdt_wakeup = true;
+
+		if (failed)
+			return -1;
+
+		live_channel->getCaPmt()->ca_pmt_list_management = transponder_change ? 0x03 : 0x04;
 	}
 
-	/* 
-	 * start sdt scan even if the service was not found in pat or pmt
-	 * if the frontend did not tune, we don't get here, so this is fine 
-	 */
-	if (transponder_change)
-		sdt_wakeup = true;
-
-	if (failed)
-		return -1;
-
-	live_channel->getCaPmt()->ca_pmt_list_management = transponder_change ? 0x03 : 0x04;
-
+	// restore channel pids
 	restore_channel_pids(live_channel);
 
 	// start playback (live)
 	startPlayBack(live_channel);
 
-	// cam
-	sendCaPmtPlayBackStart(live_channel, live_fe);
+	if(!g_settings.satip_allow_satip)
+	{
+		// cam
+		sendCaPmtPlayBackStart(live_channel, live_fe);
 	
-	// ci cam
+		// ci cam
 #if defined (ENABLE_CI)	
-	if(live_fe != NULL)
-		ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
+		if(live_fe != NULL)
+			ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
 #endif		
 	
-	// send caid
-	int caid = 1;
+		// send caid
+		int caid = 1;
 
-	eventServer->sendEvent(CZapitClient::EVT_ZAP_CA_ID, CEventServer::INITID_ZAPIT, &caid, sizeof(int));
+		eventServer->sendEvent(CZapitClient::EVT_ZAP_CA_ID, CEventServer::INITID_ZAPIT, &caid, sizeof(int));
 
-	// start pmt update filter
-	pmt_set_update_filter(live_channel, &pmt_update_fd, live_fe);	
+		// start pmt update filter
+		pmt_set_update_filter(live_channel, &pmt_update_fd, live_fe);
+	}	
 
 	return 0;
 }
@@ -1402,7 +1423,7 @@ int zapTo_RecordID(const t_channel_id channel_id)
 	return 0;
 }
 
-/* set channel/pid volume percent, using current channel_id and pid */
+// set channel/pid volume percent, using current channel_id and pid
 void setPidVolume(t_channel_id channel_id, int pid, int percent)
 {
 	if (!channel_id)
@@ -1426,7 +1447,7 @@ void setPidVolume(t_channel_id channel_id, int pid, int percent)
 	vol_map.insert(volume_pair_t(channel_id, pid_pair_t(pid, percent)));
 }
 
-/* return channel/pid volume percent, using current channel_id and pid */
+// return channel/pid volume percent, using current channel_id and pid
 int getPidVolume(t_channel_id channel_id, int pid, bool ac3)
 {
 	int percent = -1;
@@ -1665,7 +1686,7 @@ void unsetRecordMode(void)
 	// unlock record frontend
 	unlockFrontend(record_fe);
 
-	/* zapit mode */
+	// zapit mode
 	currentMode &= ~RECORD_MODE;
  
 	eventServer->sendEvent(CZapitClient::EVT_RECORDMODE_DEACTIVATED, CEventServer::INITID_ZAPIT );
@@ -1675,25 +1696,25 @@ int prepare_channels()
 {
 	live_channel = 0;
 	
-	//clear all channels/bouquets/TP's lists
+	// clear all channels/bouquets/TP's lists
 	transponders.clear();
 	g_bouquetManager->clearAll();
 	allchans.clear();  				// <- this invalidates all bouquets, too!
 	
-	/* load frontend config */
+	// load frontend config
 	loadFrontendConfig();
         
         // load sats/tps
         loadTransponders();
 
 	// load services
-	if (LoadServices(false) < 0)
+	if (loadServices(false) < 0)
 	{
-		dprintf(DEBUG_NORMAL, "prepare_channels: LoadServices: failed\n");
+		dprintf(DEBUG_NORMAL, "prepare_channels: loadServices: failed\n");
 		return -1;
 	}
 
-	dprintf(DEBUG_INFO, "prepare_channels: LoadServices: success\n");
+	dprintf(DEBUG_INFO, "prepare_channels: loadServices: success\n");
 
 	// load bouquets
 	g_bouquetManager->loadBouquets();		// 2004.08.02 g_bouquetManager->storeBouquets();
@@ -1701,7 +1722,7 @@ int prepare_channels()
 	return 0;
 }
 
-void parseScanInputXml(int feindex)
+void parseScanInputXml(/*int feindex*/fe_type_t fe_type)
 {
 	if(scanInputParser) 
 	{
@@ -1709,9 +1730,9 @@ void parseScanInputXml(int feindex)
 		scanInputParser = NULL;
 	}
 	
-	CFrontend * fe = getFE(feindex);
+	//CFrontend * fe = getFE(feindex);
 		
-	switch ( fe->getInfo()->type) 
+	switch ( /*fe->getInfo()->type*/fe_type) 
 	{
 		case FE_QPSK:
 			scanInputParser = parseXmlFile(SATELLITES_XML);
@@ -1726,7 +1747,7 @@ void parseScanInputXml(int feindex)
 			break;
 			
 		default:
-			dprintf(DEBUG_INFO, "[zapit] parseScanInputXml: Unknown type %d\n", getFE(feindex)->getInfo()->type);
+			dprintf(DEBUG_INFO, "[zapit] parseScanInputXml: Unknown type %d\n", /*getFE(feindex)->getInfo()->type*/fe_type);
 			return;
 	}
 }
@@ -1743,7 +1764,9 @@ int start_scan(CZapitMessages::commandStartScan StartScan)
                 delete scanInputParser;
                 scanInputParser = NULL;
 
-		parseScanInputXml(StartScan.feindex);
+		//parseScanInputXml(StartScan.feindex);
+		CFrontend * fe = getFE(StartScan.feindex);
+		parseScanInputXml(fe->getInfo()->type);
 
 		if (!scanInputParser) 
 		{
@@ -2615,9 +2638,9 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			startPlayBack(live_channel);
 			
 // opengl liveplayback
-#if defined (USE_OPENGL)
-			unlockOpenGLplayback();
-#endif			
+//#if defined (USE_OPENGL)
+//			unlockOpenGLplayback();
+//#endif			
 			break;
 	
 		case CZapitMessages::CMD_SB_STOP_PLAYBACK:
@@ -2628,9 +2651,9 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			CBasicServer::send_data(connfd, &response, sizeof(response));
 			
 // opengl liveplayback
-#if defined (USE_OPENGL)
-			lockOpenGLplayback();
-#endif			
+//#if defined (USE_OPENGL)
+//			lockOpenGLplayback();
+//#endif			
 			break;
 	
 		case CZapitMessages::CMD_SB_LOCK_PLAYBACK:		
@@ -2643,9 +2666,9 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			playbackStopForced = true;
 			
 // opengl liveplayback
-#if defined (USE_OPENGL)
-			lockOpenGLplayback();
-#endif
+//#if defined (USE_OPENGL)
+//			lockOpenGLplayback();
+//#endif
 
 			break;
 	
@@ -2668,9 +2691,9 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 #endif				
 			
 // opengl liveplayback
-#if defined (USE_OPENGL)
-			unlockOpenGLplayback();
-#endif	
+//#if defined (USE_OPENGL)
+//			unlockOpenGLplayback();
+//#endif	
 
 #if defined (ENABLE_GSTREAMER)
 			if (! (currentMode & RECORD_MODE))
@@ -3265,9 +3288,32 @@ void sendChannels(int connfd, const CZapitClient::channelsMode mode, const CZapi
 	internalSendChannels(connfd, &channels, 0, false);
 }
 
+#include <playback_cs.h>
+#include <system/helpers.h>
+extern cPlayback *playback;
 // startplayback
 int startPlayBack(CZapitChannel * thisChannel)
 {
+#if 1
+	dprintf(DEBUG_NORMAL, "zapit:startPlayBack: pmtpid 0x%X videopid 0x%X audiopid 0x%X\n", thisChannel->getPmtPid(), thisChannel->getVideoPid(), thisChannel->getPreAudioPid() );
+
+	// build channel url
+	std::string ChannelURL;
+
+	//ChannelURL = "http://192.168.0.12:31339/0,"; // g_settings.serverIP
+	ChannelURL = "http://";
+	ChannelURL += g_settings.satip_serverbox_ip;
+	ChannelURL += ":31339/0,";
+
+	ChannelURL += to_hexstring(thisChannel->getPmtPid());
+	ChannelURL += ",";
+	ChannelURL += to_hexstring(thisChannel->getVideoPid());
+	ChannelURL += ",";
+	ChannelURL += to_hexstring(thisChannel->getPreAudioPid());
+
+	playback->Open();
+	playback->Start((char *)ChannelURL.c_str());
+#else
 	bool have_pcr = false;
 	bool have_audio = false;
 	bool have_video = false;
@@ -3305,6 +3351,10 @@ int startPlayBack(CZapitChannel * thisChannel)
 		thisChannel->setPcrPid(thisChannel->getVideoPid());
 		have_pcr = true;
 	}
+
+#if defined (USE_OPENGL)
+	startOpenGLplayback();
+#endif
 		
 	// pcr pid
 	if (have_pcr) 
@@ -3494,7 +3544,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 #if defined (__sh__)
 				videoDecoder->SetEncoding(VIDEO_ENCODING_MPEG2);
 #elif defined (PLATFORM_COOLSTREAM)
-				videoDecoder->SetStreamType(VIDEO_FORMAT_MPEG2);
+				g->SetStreamType(VIDEO_FORMAT_MPEG2);
 #else
 				videoDecoder->SetStreamType(VIDEO_STREAMTYPE_MPEG2);
 #endif
@@ -3529,6 +3579,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 #endif	
 		}
 	}
+#endif
 
 	playing = true;
 	
@@ -3539,6 +3590,7 @@ int stopPlayBack(bool sendPmt)
 {
 	dprintf(DEBUG_NORMAL, "[zapit] stopPlayBack: standby %d forced %d\n", standby, playbackStopForced);
 	
+#if 0
 	// capmt
 	sendcapmtPlayBackStop(sendPmt);
 
@@ -3547,6 +3599,10 @@ int stopPlayBack(bool sendPmt)
 
 	if (playbackStopForced)
 		return -1;
+
+#if defined (USE_OPENGL)
+	stopOpenGLplayback();
+#endif
 
 	// stop video
 	if (videoDemux)
@@ -3591,12 +3647,15 @@ int stopPlayBack(bool sendPmt)
 	{
 		dvbsub_stop();
 	}
+#endif
+	playback->Close();
 
 	return 0;
 }
 
 void closeAVDecoder(void)
 {
+#if 0
 	// close videodecoder
 	if(videoDecoder)
 		videoDecoder->Close();
@@ -3604,10 +3663,12 @@ void closeAVDecoder(void)
 	// close audiodecoder
 	if(audioDecoder)
 		audioDecoder->Close();
+#endif
 }
 
 void openAVDecoder(void)
 {
+#if 0
 	if(videoDecoder)
 	{
 		// open video decoder
@@ -3635,6 +3696,7 @@ void openAVDecoder(void)
 		audioDecoder->SetStreamType(STREAM_TYPE_TRANSPORT);
 #endif	
 	}
+#endif
 }
 
 void enterStandby(void)
@@ -3715,7 +3777,7 @@ unsigned int zapTo_ChannelID(t_channel_id channel_id, bool isSubService)
 
 	if (zapit(channel_id, isSubService) < 0) 
 	{
-		dprintf(DEBUG_NORMAL, "[zapit] zapit failed, chid %llx\n", channel_id);
+		dprintf(DEBUG_NORMAL, "zapTo_ChannelID: zapit failed, chid %llx\n", channel_id);
 		
 		eventServer->sendEvent((isSubService ? CZapitClient::EVT_ZAP_SUB_FAILED : CZapitClient::EVT_ZAP_FAILED), CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
 		
@@ -3724,23 +3786,25 @@ unsigned int zapTo_ChannelID(t_channel_id channel_id, bool isSubService)
 
 	result |= CZapitClient::ZAP_OK;
 
-	dprintf(DEBUG_NORMAL, "[zapit] zapit OK, chid %llx\n", channel_id);
+	dprintf(DEBUG_NORMAL, "zapTo_ChannelID: zapit OK, chid %llx\n", channel_id);
 	
+#if 0
 	if (isSubService) 
 	{
-		dprintf(DEBUG_NORMAL, "[zapit] isSubService chid %llx\n", channel_id);
+		dprintf(DEBUG_NORMAL, "zapTo_ChannelID: isSubService chid %llx\n", channel_id);
 		
 		eventServer->sendEvent(CZapitClient::EVT_ZAP_SUB_COMPLETE, CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
 	}
 	else if (current_is_nvod) 
 	{
-		dprintf(DEBUG_NORMAL, "[zapit] NVOD chid %llx\n", channel_id);
+		dprintf(DEBUG_NORMAL, "zapTo_ChannelID: NVOD chid %llx\n", channel_id);
 		
 		eventServer->sendEvent(CZapitClient::EVT_ZAP_COMPLETE_IS_NVOD, CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
 		
 		result |= CZapitClient::ZAP_IS_NVOD;
 	}
 	else
+#endif
 		eventServer->sendEvent(CZapitClient::EVT_ZAP_COMPLETE, CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
 
 	return result;
@@ -4146,6 +4210,7 @@ int zapit_main_thread(void *data)
 	//CI init
 #if defined (ENABLE_CI)	
 	ci = cDvbCi::getInstance();
+	ci->SetHook(CISendMessage);	
 #endif	
 	
 	//globals

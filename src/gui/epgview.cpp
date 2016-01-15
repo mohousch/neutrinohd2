@@ -169,9 +169,9 @@ void CEpgData::start()
 	int icon_w;
 	int icon_h;
 	
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+	frameBuffer->getIconSize(NEUTRINO_ICON_16_9, &icon_w, &icon_h);
 
-	int fheight = std::max(icon_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 6;
+	int fheight = std::max(icon_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 10;
 	sy = (((g_settings.screen_EndY - g_settings.screen_StartY) - (oy - topboxheight + fheight) ) / 2) + g_settings.screen_StartY; //30:buttonbar
 	toph = topboxheight;
 }
@@ -1166,10 +1166,10 @@ void CEpgData::showTimerEventBar(bool _show)
 	int icon_w;
 	int icon_h;
 	
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+	frameBuffer->getIconSize(NEUTRINO_ICON_16_9, &icon_w, &icon_h);
 
 	w = ox;
-	h = std::max(icon_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 6;
+	h = std::max(icon_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 10;
 	x = sx;
 	y = sy + oy;
 	h_offset = 5;
@@ -1193,7 +1193,7 @@ void CEpgData::showTimerEventBar(bool _show)
 	{
 		pos = 0;
 	
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, x + ICON_OFFSET + cellwidth*pos, y + h_offset );
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, x + ICON_OFFSET + cellwidth*pos, y + /*h_offset*/(h - icon_h)/2 );
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ICON_OFFSET + icon_w + ICON_OFFSET + cellwidth*pos, y + h_offset + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w - ICON_OFFSET - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_TIMERBAR_RECORDEVENT), COL_INFOBAR, 0, true); // UTF-8
 	}
@@ -1205,7 +1205,8 @@ void CEpgData::showTimerEventBar(bool _show)
 	// Button Yellow: Timer Channelswitch
 	pos = 2;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + ICON_OFFSET + cellwidth*pos, y + h_offset );
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + ICON_OFFSET + cellwidth*pos, y + /*h_offset*/(h - icon_h)/2 );
+
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ICON_OFFSET + cellwidth*pos + icon_w + ICON_OFFSET, y + h_offset + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w - ICON_OFFSET - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_TIMERBAR_CHANNELSWITCH), COL_INFOBAR, 0, true); // UTF-8
 	
 	

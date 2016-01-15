@@ -825,6 +825,7 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 	std::string extMessage;
 	std::string apids10;
 	std::string info1, info2;
+
 	if(!g_cMovieInfo)
 		g_cMovieInfo = new CMovieInfo();
 	if(!g_movieInfo)
@@ -889,7 +890,7 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 	processAPIDnames();
 
 	APIDList::iterator it;
-	for(unsigned int i= 0; i< pids.APIDs.size(); i++) 
+	for(unsigned int i = 0; i < pids.APIDs.size(); i++) 
 	{
 		for(it = apid_list.begin(); it != apid_list.end(); it++) 
 		{
@@ -899,6 +900,7 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 				audio_pids.epgAudioPidName = ZapitTools::UTF8_to_UTF8XML(pids.APIDs[i].desc);
 				audio_pids.atype = pids.APIDs[i].is_ac3;
 				audio_pids.selected = (audio_pids.epgAudioPid == (int) g_currentapid) ? 1 : 0;
+
 				g_movieInfo->audioPids.push_back(audio_pids);
 
 				if(pids.APIDs[i].is_ac3)
@@ -920,6 +922,7 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 		audio_pids.epgAudioPidName = ZapitTools::UTF8_to_UTF8XML(pids.APIDs[i].desc);
 		audio_pids.atype = pids.APIDs[i].is_ac3;
 		audio_pids.selected = 1;
+
 		g_movieInfo->audioPids.push_back(audio_pids);
 	}
 	g_movieInfo->epgVTXPID = si.vtxtpid;

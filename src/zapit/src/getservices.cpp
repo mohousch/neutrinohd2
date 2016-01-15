@@ -19,14 +19,6 @@
  *
  */
 
-#include <bouquets.h>
-#include <channel.h>
-#include <frontend_c.h>
-#include <getservices.h>
-#include <settings.h>
-#include <satconfig.h>
-#include <xmlinterface.h>
-
 #include <math.h>
 #include <sys/time.h>
 #include <set>
@@ -37,9 +29,21 @@
 
 #include <unistd.h>
 
+#include <global.h>
+
+#include <bouquets.h>
+#include <channel.h>
+#include <frontend_c.h>
+#include <getservices.h>
+#include <settings.h>
+#include <satconfig.h>
+
+#include <xmlinterface.h>
+
 /* system */
 #include <system/debug.h>
 #include <system/helpers.h>	/* needed for safe_mkdir */
+#include <system/settings.h>
 
 
 extern xmlDocPtr scanInputParser;				/* defined in zapit.cpp */
@@ -60,7 +64,7 @@ extern map<t_channel_id, audio_map_set_t> audio_map;		/* defined in zapit.cpp */
 extern int FrontendCount;
 extern CFrontend * getFE(int index);
 
-extern void parseScanInputXml(int feindex);
+extern void parseScanInputXml(/*int feindex*/fe_type_t fe_type);
 
 
 void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, uint8_t Source )
@@ -70,7 +74,7 @@ void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, 
 	FrontendParameters feparams;
 	uint8_t polarization = 0;
 	freq_id_t freq;
-	tcnt =0;
+	tcnt = 0;
 
 	memset(&feparams, 0, sizeof(FrontendParameters));
 
@@ -250,7 +254,7 @@ void FindTransponder(xmlNodePtr search)
 	bool have_c = false;
 	bool have_t = false;
 	
-	/* frontend type */
+	// frontend type
 	for(int i = 0; i < FrontendCount; i++)
 	{
 		CFrontend * fe = getFE(i);
@@ -262,6 +266,18 @@ void FindTransponder(xmlNodePtr search)
 		if( fe->getDeliverySystem() == DVB_T ) 
 			have_t = true;
 	}
+
+	// satip
+	if(g_settings.satip_allow_satip)
+	{
+		if(g_settings.satip_serverbox_type == DVB_C)
+			have_c = true;
+		else if(g_settings.satip_serverbox_type == DVB_S)
+			have_s = true;
+		else if(g_settings.satip_serverbox_type == DVB_T)
+			have_t = true;
+	}
+	
 	
 	while (search) 
 	{
@@ -401,7 +417,7 @@ void ParseSatTransponders(fe_type_t frontendType, xmlNodePtr search, t_satellite
 	}
 }
 
-int LoadMotorPositions(void)
+int loadMotorPositions(void)
 {
 	FILE *fd = NULL;
 	char buffer[256] = "";
@@ -513,12 +529,18 @@ int loadTransponders()
 
 	satcleared = 1;
 
-	// parse sat tp
-	for(int i = 0; i < FrontendCount; i++)
+	fe_type_t fe_type = FE_QAM;
+
+	if(g_settings.satip_allow_satip)
 	{
-		CFrontend * fe = getFE(i);
-		
-		parseScanInputXml(i);
+		if(g_settings.satip_serverbox_type == DVB_C)
+			fe_type = FE_QAM;
+		else if(g_settings.satip_serverbox_type == DVB_S)
+			fe_type = FE_QPSK;
+		else if(g_settings.satip_serverbox_type == DVB_T)
+			fe_type = FE_OFDM;
+
+		parseScanInputXml(fe_type);
 			
 		if ( scanInputParser != NULL ) 
 		{
@@ -579,7 +601,84 @@ int loadTransponders()
 				}
 
 				// parse sat TP
-				ParseSatTransponders( fe->getInfo()->type, search, position);
+				ParseSatTransponders(/*fe->getInfo()->type*/fe_type, search, position);
+				
+				position++;
+				
+				search = search->xmlNextNode;
+			}
+		}	
+	}
+
+	// parse sat tp
+	for(int i = 0; i < FrontendCount; i++)
+	{
+		CFrontend * fe = getFE(i);
+		fe_type = fe->getInfo()->type;
+
+		//parseScanInputXml(i);
+		parseScanInputXml(fe_type);
+			
+		if ( scanInputParser != NULL ) 
+		{
+			xmlNodePtr search = xmlDocGetRootElement(scanInputParser)->xmlChildrenNode;
+
+			while (search) 
+			{
+				if (!(strcmp(xmlGetName(search), "sat"))) 
+				{
+					// position
+					position = xmlGetSignedNumericAttribute(search, "position", 10);
+					
+					char * name = xmlGetAttribute(search, "name");
+
+					if(satellitePositions.find(position) == satellitePositions.end()) 
+					{
+						init_sat(position);
+					}
+
+					// name
+					satellitePositions[position].name = name;
+					
+					// type
+					satellitePositions[position].type = DVB_S;
+				}
+				else if(!(strcmp(xmlGetName(search), "cable"))) 
+				{
+					//flags ???
+					//satfeed ???
+					
+					char * name = xmlGetAttribute(search, "name");
+
+					if(satellitePositions.find(position) == satellitePositions.end()) 
+					{
+						init_sat(position);
+					}
+
+					// name
+					satellitePositions[position].name = name;
+					
+					// type //needed to resort list for scan menue
+					satellitePositions[position].type = DVB_C;
+				}
+				else if(!(strcmp(xmlGetName(search), "terrestrial"))) 
+				{
+					char * name = xmlGetAttribute(search, "name");
+
+					if(satellitePositions.find(position) == satellitePositions.end()) 
+					{
+						init_sat(position);
+					}
+
+					// name
+					satellitePositions[position].name = name;
+					
+					// type //needed to resort list for scan menue
+					satellitePositions[position].type = DVB_T;
+				}
+
+				// parse sat TP
+				ParseSatTransponders(/*fe->getInfo()->type*/fe_type, search, position);
 				
 				position++;
 				
@@ -592,12 +691,12 @@ int loadTransponders()
 }	
 
 // load services
-int LoadServices(bool only_current)
+int loadServices(bool only_current)
 {
 	xmlDocPtr parser;
 	scnt = 0;
 
-	dprintf(DEBUG_NORMAL, "getServices:LoadServices:\n");
+	dprintf(DEBUG_NORMAL, "getServices:loadServices:\n");
 
 	if(only_current)
 		goto do_current;
@@ -639,7 +738,7 @@ int LoadServices(bool only_current)
 	{
 		if( getFE(i)->getInfo()->type == FE_QPSK)
 		{
-			LoadMotorPositions();
+			loadMotorPositions();
 			break;
 		}
 	}
@@ -647,7 +746,7 @@ int LoadServices(bool only_current)
 	dprintf(DEBUG_NORMAL, "[zapit] %d services loaded (%d)...\n", scnt, allchans.size());
 
 do_current:
-	dprintf(DEBUG_DEBUG, "Loading current..\n");
+	dprintf(DEBUG_DEBUG, "loading current services\n");
 
 	if (scanSDT && (parser = parseXmlFile(CURRENTSERVICES_XML))) 
 	{

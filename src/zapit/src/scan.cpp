@@ -91,7 +91,7 @@ std::map <transponder_id_t, transponder> scantransponders;		/* TP list to scan *
 std::map <transponder_id_t, transponder> scanedtransponders;		/* global TP list for current scan */
 std::map <transponder_id_t, transponder> nittransponders;
 
-extern void parseScanInputXml(int feindex);
+extern void parseScanInputXml(/*int feindex*/fe_type_t fe_type);
 
 
 #define TIMER_START()			\
@@ -550,7 +550,7 @@ void * start_scanthread(void *scanmode)
 	}
 	
 	// get provider position and name
-	parseScanInputXml(feindex);
+	parseScanInputXml(/*feindex*/getFE(feindex)->getInfo()->type);
 	
 	xmlNodePtr search = xmlDocGetRootElement(scanInputParser)->xmlChildrenNode;
 

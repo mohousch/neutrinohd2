@@ -724,7 +724,8 @@ void CStreamInfo2::paint_techinfo(int xpos, int ypos)
 
 	//vpid
 	ypos+= sheight;
-	if ( g_RemoteControl->current_PIDs.PIDs.vpid > 0 ){
+	if ( g_RemoteControl->current_PIDs.PIDs.vpid > 0 )
+	{
 		sprintf((char*) buf, "0x%04x (%i)", g_RemoteControl->current_PIDs.PIDs.vpid, g_RemoteControl->current_PIDs.PIDs.vpid );
 	} else {
 		sprintf((char*) buf, "%s", g_Locale->getText(LOCALE_STREAMINFO_NOT_AVAILABLE));

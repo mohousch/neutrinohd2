@@ -348,7 +348,7 @@ void CScanSetup::showScanService()
 	
 	// load motor position
 	if( getFE(feindex)->getInfo()->type == FE_QPSK) 
-		LoadMotorPositions();
+		loadMotorPositions();
 	
 	// intros
 	scansetup->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
