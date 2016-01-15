@@ -3657,7 +3657,7 @@ _repeat:
 		
 #if defined (USE_OPENGL)
 		if(!playbackstatus)
-			recordingstatus = data;
+			playbackstatus = data;
 #else
 		recordingstatus = data;
 #endif
