@@ -2816,7 +2816,7 @@ void CNeutrinoApp::RealRun(CMenuWidget& _mainMenu)
 				
 				tuxtx_stop_subtitle();
 
-				tuxtx_main(g_RemoteControl->current_PIDs.PIDs.vtxtpid, 0, live_fe?live_fe->fenumber:0 );
+				tuxtx_main(g_RemoteControl->current_PIDs.PIDs.vtxtpid, 0, live_fe?live_fe->fenumber : 0 );
 
 				frameBuffer->paintBackground();
 
@@ -4170,6 +4170,15 @@ void CNeutrinoApp::ExitRun(int retcode)
 		// save epg
 		if(g_settings.epg_save ) 
 			saveEpg();
+
+		// stop dvbsub
+		dvbsub_close();
+
+		// stop txt
+		tuxtxt_stop();
+		tuxtxt_close();
+
+		tuxtx_stop_subtitle();
 		
 		dprintf(DEBUG_NORMAL, "CNeutrinoApp::ExitRun: entering off state (retcode:%d)\n", retcode);
 			
@@ -5080,11 +5089,13 @@ void stop_daemons()
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::stop_daemons\n");
 
 	// stop dvbsub
-	dvbsub_close();
+	//dvbsub_close();
 
 	// stop txt
-	tuxtxt_stop();
-	tuxtxt_close();
+	//tuxtxt_stop();
+	//tuxtxt_close();
+
+	//tuxtx_stop_subtitle();
 
 	// stop nhttpd	
 	dprintf(DEBUG_NORMAL, "stop_daemons: httpd shutdown\n");
@@ -5107,8 +5118,6 @@ void stop_daemons()
 	dprintf(DEBUG_NORMAL, "stop_daemons: sectionsd shutdown\n");
 	pthread_join(sections_thread, NULL);
 	dprintf(DEBUG_NORMAL, "stop_daemons: sectionsd shutdown done\n");
-
-	tuxtx_stop_subtitle();
 
 	// zapit stop	
 	dprintf(DEBUG_NORMAL, "stop_daemons: zapit shutdown\n");
@@ -5188,6 +5197,7 @@ void CNeutrinoApp::SelectSubtitles()
 
 		std::string temp(g_settings.pref_subs[i]);
 
+		// dvbsub
 		for(int j = 0 ; j < (int)cc->getSubtitleCount() ; j++) 
 		{
 			CZapitAbsSub* s = cc->getChannelSub(j);
@@ -5208,6 +5218,7 @@ void CNeutrinoApp::SelectSubtitles()
 			}
 		}
 		
+		// tuxtxtsub
 		for(int j = 0 ; j < (int)cc->getSubtitleCount() ; j++) 
 		{
 			CZapitAbsSub* s = cc->getChannelSub(j);
@@ -5221,7 +5232,9 @@ void CNeutrinoApp::SelectSubtitles()
 					{
 						int page = ((sd->teletext_magazine_number & 0xFF) << 8) | sd->teletext_page_number;
 						printf("CNeutrinoApp::SelectSubtitles: found TTX %s, pid %x page %03X\n", sd->ISO639_language_code.c_str(), sd->pId, page);
+
 						tuxtx_stop_subtitle();
+
 						tuxtx_set_pid(sd->pId, page, (char *) sd->ISO639_language_code.c_str());
 						return;
 					}
