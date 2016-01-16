@@ -5088,15 +5088,6 @@ void stop_daemons()
 {
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::stop_daemons\n");
 
-	// stop dvbsub
-	//dvbsub_close();
-
-	// stop txt
-	//tuxtxt_stop();
-	//tuxtxt_close();
-
-	//tuxtx_stop_subtitle();
-
 	// stop nhttpd	
 	dprintf(DEBUG_NORMAL, "stop_daemons: httpd shutdown\n");
 	pthread_cancel(nhttpd_thread);
