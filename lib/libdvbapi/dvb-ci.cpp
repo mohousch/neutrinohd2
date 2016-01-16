@@ -381,9 +381,6 @@ eData sendData(tSlot* slot, unsigned char* data, int len)
 //send a transport connection create request
 bool sendCreateTC(tSlot* slot)
 {
-	if (!zapit_ready)
-		return true;
-
 	unsigned char data[5];
 	data[0] = slot->slot;
 	data[1] = slot->slot + 1; 	/* conid */
@@ -855,6 +852,9 @@ bool cDvbCi::Send_CAPMT(tSlot* slot)
  only buffers capmt data in slot buffer */
 bool cDvbCi::SendCaPMT(CCaPmt *caPmt, int source, int rec_mode, t_channel_id chan_id, uint8_t scrambled)
 {
+	if (!zapit_ready)
+		return true;
+
 	uint16_t SID = (uint16_t)(chan_id & 0xFFFF);
 	uint8_t buffer[1024];
 	int len = 0;
