@@ -992,7 +992,8 @@ void sendCaPmtRecordStop(void)
 		{
 			cam0->setCaPmt(live_channel, live_channel->getCaPmt(), demux_index, ca_mask, true); // cam0 update
 #if defined (ENABLE_CI)
-			ci->SendCaPMT(NULL, live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+			if(live_fe != NULL)
+				ci->SendCaPMT(NULL, live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
 #endif
 		}
 	} 
@@ -1002,14 +1003,20 @@ void sendCaPmtRecordStop(void)
 			cam0->setCaPmt(live_channel, live_channel->getCaPmt(), demux_index, ca_mask); //cam0 start
 #if defined (ENABLE_CI)
 		if(rec_channel != NULL)
-			ci->SendCaPMT(NULL, record_fe->fenumber, 0, rec_channel->channel_id, rec_channel->scrambled);
+		{
+			if(record_fe != NULL)
+				ci->SendCaPMT(NULL, record_fe->fenumber, 0, rec_channel->channel_id, rec_channel->scrambled);
+		}
 #endif
 	}
 	
 	// ci cam
 #if defined (ENABLE_CI)
-	if(live_fe != NULL)
-		ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+	if(live_channel != NULL)
+	{
+		if(live_fe != NULL)
+			ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+	}
 #endif
 }
 
@@ -1354,8 +1361,11 @@ tune_again:
 	
 		// ci cam
 #if defined (ENABLE_CI)	
-		if(live_fe != NULL)
-			ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+		if(live_channel != NULL)
+		{
+			if(live_fe != NULL)
+				ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+		}
 #endif		
 	
 		// send caid
@@ -1420,8 +1430,11 @@ int zapTo_RecordID(const t_channel_id channel_id)
 	
 	// ci cam
 #if defined (ENABLE_CI)	
-	//if(live_fe != NULL)
-		ci->SendCaPMT(rec_channel->getCaPmt(), record_fe->fenumber, 1, rec_channel->channel_id, rec_channel->scrambled);
+	if(rec_channel != NULL)
+	{
+		if(record_fe != NULL)
+			ci->SendCaPMT(rec_channel->getCaPmt(), record_fe->fenumber, 1, rec_channel->channel_id, rec_channel->scrambled);
+	}
 #endif		
 	
 	dprintf(DEBUG_NORMAL, "%s: zapped to %s (%llx) fe(%d,%d)\n", __FUNCTION__, rec_channel->getName().c_str(), rec_channel_id, record_fe->fe_adapter, record_fe->fenumber);
@@ -2676,8 +2689,11 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			
 			// ci cam
 #if defined (ENABLE_CI)	
-			if(live_fe != NULL)
-				ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+			if(live_channel != NULL)
+			{
+				if(live_fe != NULL)
+					ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+			}
 #endif					
 
 #if defined (ENABLE_GSTREAMER)
@@ -4327,8 +4343,11 @@ int zapit_main_thread(void *data)
 						
 						// ci cam
 #if defined (ENABLE_CI)
-						if(live_fe != NULL)
-							ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+						if(live_channel != NULL)
+						{
+							if(live_fe != NULL)
+								ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+						}
 #endif	
 
 						pmt_set_update_filter(live_channel, &pmt_update_fd, live_fe);
