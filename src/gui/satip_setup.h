@@ -44,5 +44,12 @@ class CSatIPSetup : public CMenuTarget
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
+// satip notifier
+class CSatIPNotifier : public CChangeObserver
+{
+        public:
+                bool changeNotify(const neutrino_locale_t, void * );
+};
+
 #endif //__satip_setup__
 

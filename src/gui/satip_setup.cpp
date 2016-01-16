@@ -106,7 +106,9 @@ void CSatIPSetup::showMenu()
 	satIP.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
 	// allow satip on/off
-	satIP.addItem(new CMenuOptionChooser("use Sat <> IP", &g_settings.satip_allow_satip, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcut++) ));
+	CSatIPNotifier * satIPNotifier = new CSatIPNotifier;
+
+	satIP.addItem(new CMenuOptionChooser("use Sat <> IP", &g_settings.satip_allow_satip, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, satIPNotifier, CRCInput::convertDigitToKey(shortcut++) ));
 	// server box ip
 	CIPInput * satip_IP = new CIPInput(LOCALE_STREAMINGMENU_SERVER_IP, g_settings.satip_serverbox_ip);
 	satIP.addItem(new CMenuForwarder("Server Box IP", true, g_settings.satip_serverbox_ip, satip_IP, NULL, CRCInput::convertDigitToKey(shortcut++)));
@@ -119,5 +121,25 @@ void CSatIPSetup::showMenu()
 
 	delete satip_IP;
 	satip_IP = NULL;
+	delete satIPNotifier;
 }
+
+// sectionsd config notifier
+bool CSatIPNotifier::changeNotify(const neutrino_locale_t, void *)
+{
+	dprintf(DEBUG_NORMAL, "CSatIPNotifier::changeNotify\n");
+
+	// stop/lock live playback	
+	g_Zapit->lockPlayBack();
+		
+	//pause epg scanning
+	g_Sectionsd->setPauseScanning(true);
+
+	// reinit channellist
+        g_Zapit->reinitChannels();
+	
+        return true;
+}
+
+
 

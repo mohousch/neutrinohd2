@@ -1243,7 +1243,10 @@ void CInfoViewer::showIcon_16_9()
 
 void CInfoViewer::showIcon_VTXT() const
 {
-	frameBuffer->paintIcon((g_RemoteControl->current_PIDs.PIDs.vtxtpid != 0) ? NEUTRINO_ICON_VTXT : NEUTRINO_ICON_VTXT_GREY, BoxEndX - (ICON_OFFSET + icon_w_subt + 2 + icon_w_vtxt), buttonBarStartY + (buttonBarHeight - icon_h_vtxt)/2 );
+	if (is_visible)
+	{
+		frameBuffer->paintIcon((g_RemoteControl->current_PIDs.PIDs.vtxtpid != 0 && !g_settings.satip_allow_satip) ? NEUTRINO_ICON_VTXT : NEUTRINO_ICON_VTXT_GREY, BoxEndX - (ICON_OFFSET + icon_w_subt + 2 + icon_w_vtxt), buttonBarStartY + (buttonBarHeight - icon_h_vtxt)/2 );
+	}
 }
 
 void CInfoViewer::showIcon_Resolution() const
