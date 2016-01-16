@@ -58,7 +58,7 @@ static int active_cams = 0;
 #define TAG_ENTER_MENU                       0x9f8022
 
 extern CRCInput *g_RCInput;
-extern int FrontendCount;
+extern int zapit_ready;
 
 bool cDvbCi::checkQueueSize(tSlot* slot)
 {
@@ -381,6 +381,9 @@ eData sendData(tSlot* slot, unsigned char* data, int len)
 //send a transport connection create request
 bool sendCreateTC(tSlot* slot)
 {
+	if (!zapit_ready)
+		return true;
+
 	unsigned char data[5];
 	data[0] = slot->slot;
 	data[1] = slot->slot + 1; 	/* conid */
