@@ -4183,6 +4183,12 @@ void CNeutrinoApp::ExitRun(int retcode)
 		dprintf(DEBUG_NORMAL, "CNeutrinoApp::ExitRun: entering off state (retcode:%d)\n", retcode);
 			
 		stop_daemons();
+
+#if defined (PLATFORM_COOLSTREAM)
+		CVFD::getInstance()->Clear();
+		cs_deregister_messenger();
+		cs_api_exit();
+#endif
 			
 		//
 		if(playback)
@@ -5115,12 +5121,6 @@ void stop_daemons()
 	g_Zapit->shutdown();
 	pthread_join(zapit_thread, NULL);
 	dprintf(DEBUG_NORMAL, "stop_daemons: zapit shutdown done\n");	
-	
-#if defined (PLATFORM_COOLSTREAM)
-	CVFD::getInstance()->Clear();
-	cs_deregister_messenger();
-	cs_api_exit();
-#endif
 }
 
 // stop subtitle
