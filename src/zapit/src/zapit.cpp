@@ -3354,10 +3354,6 @@ int startPlayBack(CZapitChannel * thisChannel)
 			thisChannel->setPcrPid(thisChannel->getVideoPid());
 			have_pcr = true;
 		}
-
-#if defined (USE_OPENGL)
-		startOpenGLplayback();
-#endif
 		
 		// pcr pid
 		if (have_pcr) 
@@ -3424,6 +3420,10 @@ int startPlayBack(CZapitChannel * thisChannel)
 			if ( videoDemux->Start() < 0 )
 				return -1;
 		}
+
+#if defined (USE_OPENGL)
+		startOpenGLplayback();
+#else
 	
 		// select audio output and start audio
 		if (have_audio) 
@@ -3582,6 +3582,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 #endif	
 			}
 		}
+#endif
 	}
 
 	playing = true;
@@ -3603,10 +3604,6 @@ int stopPlayBack(bool sendPmt)
 
 		if (playbackStopForced)
 			return -1;
-
-#if defined (USE_OPENGL)
-		stopOpenGLplayback();
-#endif
 
 		// stop video
 		if (videoDemux)
@@ -3632,12 +3629,17 @@ int stopPlayBack(bool sendPmt)
 			delete pcrDemux; //destructor closes dmx
 			pcrDemux = NULL;
 		}
+
+#if defined (USE_OPENGL)
+		stopOpenGLplayback();
+#else
 		
 		// audio decoder stop
 		audioDecoder->Stop();
 	
 		// video decoder stop (blanking)
-		videoDecoder->Stop();	
+		videoDecoder->Stop();
+#endif	
 
 		playing = false;
 	
@@ -3662,6 +3664,7 @@ int stopPlayBack(bool sendPmt)
 
 void closeAVDecoder(void)
 {
+#if !defined (USE_OPENGL)
 	if(!g_settings.satip_allow_satip)
 	{
 		// close videodecoder
@@ -3672,10 +3675,12 @@ void closeAVDecoder(void)
 		if(audioDecoder)
 			audioDecoder->Close();
 	}
+#endif
 }
 
 void openAVDecoder(void)
 {
+#if !defined (USE_OPENGL)
 	if(!g_settings.satip_allow_satip)
 	{
 		if(videoDecoder)
@@ -3706,6 +3711,7 @@ void openAVDecoder(void)
 #endif	
 		}
 	}
+#endif
 }
 
 void enterStandby(void)

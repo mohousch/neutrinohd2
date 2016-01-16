@@ -968,7 +968,7 @@ int CHDDMountMSGExec::exec(CMenuTarget *parent, const std::string& actionKey)
 				sleep(2);
 				delete hintbox;
 				
-				return menu_return::RETURN_EXIT;
+				return menu_return::RETURN_EXIT_ALL;
 			}
 			else
 			{
@@ -984,7 +984,7 @@ int CHDDMountMSGExec::exec(CMenuTarget *parent, const std::string& actionKey)
 					sleep(2);
 					delete hintbox;
 					
-					return menu_return::RETURN_EXIT;
+					return menu_return::RETURN_EXIT_ALL;
 				}
 				else //fallback to /tmp/hdd
 				{
@@ -1002,7 +1002,7 @@ int CHDDMountMSGExec::exec(CMenuTarget *parent, const std::string& actionKey)
 						sleep(2);
 						delete hintbox;
 						
-						return menu_return::RETURN_EXIT;
+						return menu_return::RETURN_EXIT_ALL;
 					}
 					else
 					{
@@ -1025,7 +1025,7 @@ int CHDDMountMSGExec::exec(CMenuTarget *parent, const std::string& actionKey)
 		}
 	}
 	
-	return menu_return::RETURN_EXIT;
+	return menu_return::RETURN_EXIT_ALL;
 }
 
 int CHDDuMountMSGExec::exec(CMenuTarget* parent, const std::string& actionKey)

@@ -1841,59 +1841,56 @@ bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData
 #if defined (USE_OPENGL)
 int startOpenGLplayback()
 {
-	if(!g_settings.satip_allow_satip)
+	CTimerd::RecordingInfo eventinfo;
+
+	if( !CVCRControl::getInstance()->isDeviceRegistered() )
+		return 0;
+
+	eventinfo.channel_id = live_channel_id;
+	CEPGData epgData;
+	
+	if (sectionsd_getActualEPGServiceKey(live_channel_id&0xFFFFFFFFFFFFULL, &epgData ))
 	{
-		CTimerd::RecordingInfo eventinfo;
+		eventinfo.epgID = epgData.eventID;
+		eventinfo.epg_starttime = epgData.epg_times.startzeit;
+		strncpy(eventinfo.epgTitle, epgData.title.c_str(), EPG_TITLE_MAXLEN-1);
+		eventinfo.epgTitle[EPG_TITLE_MAXLEN - 1] = 0;
+	}
+	else 
+	{
+		eventinfo.epgID = 0;
+		eventinfo.epg_starttime = 0;
+		strcpy(eventinfo.epgTitle, "");
+	}
 
-		if( !CVCRControl::getInstance()->isDeviceRegistered() )
-			return 0;
+	eventinfo.apids = TIMERD_APIDS_CONF;
 
-		eventinfo.channel_id = live_channel_id;
-		CEPGData epgData;
+	(static_cast<CVCRControl::CFileDevice*>(recordingdevice))->Directory = timeshiftDir;
+
+	if( CVCRControl::getInstance()->Record(&eventinfo))
+		CNeutrinoApp::getInstance()->playbackstatus = 1;
+	else
+		CNeutrinoApp::getInstance()->playbackstatus = 0;
 	
-		if (sectionsd_getActualEPGServiceKey(live_channel_id&0xFFFFFFFFFFFFULL, &epgData ))
-		{
-			eventinfo.epgID = epgData.eventID;
-			eventinfo.epg_starttime = epgData.epg_times.startzeit;
-			strncpy(eventinfo.epgTitle, epgData.title.c_str(), EPG_TITLE_MAXLEN-1);
-			eventinfo.epgTitle[EPG_TITLE_MAXLEN - 1] = 0;
-		}
-		else 
-		{
-			eventinfo.epgID = 0;
-			eventinfo.epg_starttime = 0;
-			strcpy(eventinfo.epgTitle, "");
-		}
+	// start playback	
+	char fname[255];
+	int cnt = 10 * 1000000;
 
-		eventinfo.apids = TIMERD_APIDS_CONF;
-
-		(static_cast<CVCRControl::CFileDevice*>(recordingdevice))->Directory = timeshiftDir;
-
-		if( CVCRControl::getInstance()->Record(&eventinfo))
-			CNeutrinoApp::getInstance()->playbackstatus = 1;
-		else
-			CNeutrinoApp::getInstance()->playbackstatus = 0;
-	
-		// start playback	
-		char fname[255];
-		int cnt = 10 * 1000000;
-
-		while (!strlen(rec_filename)) 
-		{
+	while (!strlen(rec_filename)) 
+	{
 			usleep(1000);
 			cnt -= 1000;
 			if (!cnt)
 				break;
-		}
+	}
 
-		if(strlen(rec_filename))
-		{
-			sprintf(fname, "%s.ts", rec_filename);
+	if(strlen(rec_filename))
+	{
+		sprintf(fname, "%s.ts", rec_filename);
 		
-			usleep(10000000);
-			playback->Open();
-			playback->Start(fname);
-		}
+		usleep(10000000);
+		playback->Open();
+		playback->Start(fname);
 	} 
 	
 	return 0;
@@ -1901,32 +1898,24 @@ int startOpenGLplayback()
 
 void stopOpenGLplayback()
 {
-	if(!g_settings.satip_allow_satip)
-	{
-		// stop playback
-		playback->Close();
+	// stop playback
+	playback->Close();
 	
-		// stop recording
-		if(CNeutrinoApp::getInstance()->playbackstatus) 
-		{
-			CNeutrinoApp::getInstance()->playbackstatus = 0;
+	// stop recording
+	if(CNeutrinoApp::getInstance()->playbackstatus) 
+	{
+		CNeutrinoApp::getInstance()->playbackstatus = 0;
 		
-			CVCRControl::getInstance()->Stop();
-		
-			if(CNeutrinoApp::getInstance()->recording_id) 
-			{
-				CNeutrinoApp::getInstance()->recording_id = 0;
-			}
+		CVCRControl::getInstance()->Stop();
 
-			char buf[1024];
-			char buf1[1024];
+		char buf[1024];
+		char buf1[1024];
 
-			sprintf(buf, "rm -f %s.ts &", rec_filename);
-			sprintf(buf1, "%s.xml", rec_filename);
+		sprintf(buf, "rm -f %s.ts &", rec_filename);
+		sprintf(buf1, "%s.xml", rec_filename);
 
-			system(buf);
-			unlink(buf1);
-		}
+		system(buf);
+		unlink(buf1);
 	}
 }
 #endif
@@ -2268,11 +2257,7 @@ void CNeutrinoApp::InitZapper()
 		// process apids
 		g_Zapit->getPIDS(g_RemoteControl->current_PIDs);
 		g_RemoteControl->processAPIDnames();
-		
-		// opengl liveplayback
-//#if defined (USE_OPENGL)
-//		startOpenGLplayback();
-//#endif		
+				
 		// permenant timeshift
 		if(g_settings.auto_timeshift)
 			startAutoRecord(true);
@@ -3655,12 +3640,12 @@ _repeat:
 			}
 		}
 		
-#if defined (USE_OPENGL)
-		if(!playbackstatus)
-			playbackstatus = data;
-#else
+//#if defined (USE_OPENGL)
+//		if(!playbackstatus)
+//			playbackstatus = data;
+//#else
 		recordingstatus = data;
-#endif
+//#endif
 		
 		if( ( !g_InfoViewer->is_visible ) && data && !autoshift)
 			g_RCInput->postMsg( NeutrinoMessages::SHOW_INFOBAR, 0 );
@@ -4900,12 +4885,7 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 				{
 					saveEpg();
 				}
-			}
-			
-// opengl liveplayback
-//#if defined (USE_OPENGL)
-//			stopOpenGLplayback();
-//#endif			
+			}			
 		}
 
 		//run script
@@ -4987,12 +4967,7 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 		}
 
 		// set vol (saved)
-		AudioMute(current_muted, false );
-		
-// opengl liveplayback
-//#if defined (USE_OPENGL)
-//		startOpenGLplayback();
-//#endif					
+		AudioMute(current_muted, false );					
 
 		// start record if
 		if((mode == mode_tv) && wasshift) 

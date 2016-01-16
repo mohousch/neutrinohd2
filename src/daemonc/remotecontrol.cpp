@@ -56,12 +56,6 @@ extern tallchans allchans;	// defined in bouquets.h
 extern bool autoshift;
 extern uint32_t scrambled_timer;
 
-// opengl liveplayback
-#if defined (USE_OPENGL)
-int startOpenGLplayback();
-void stopOpenGLplayback();
-#endif
-
 bool sectionsd_getComponentTagsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::ComponentTagList& tags);
 bool sectionsd_getLinkageDescriptorsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::LinkageDescriptorList& descriptors);
 bool sectionsd_getNVODTimesServiceKey(const t_channel_id uniqueServiceKey, CSectionsdClient::NVODTimesList& nvod_list);
@@ -348,11 +342,6 @@ int CRemoteControl::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data
 			{
 				g_Radiotext->setPid(current_PIDs.APIDs[current_PIDs.PIDs.selected_apid].pid);
 			}
-#endif
-
-// opengl liveplayback
-#if defined (USE_OPENGL)
-			startOpenGLplayback();
 #endif
 		}
 
@@ -762,12 +751,7 @@ void CRemoteControl::zapTo_ChannelID(const t_channel_id channel_id, const std::s
 	unsigned long long now = getcurrenttime();
 	if ( zap_completion_timeout < now )
 	{
-		g_InfoViewer->chanready = 0;
-		
-// opengl liveplayback
-#if defined (USE_OPENGL)
-		stopOpenGLplayback();
-#endif		
+		g_InfoViewer->chanready = 0;		
 		
 		if(autoshift) 
 		{

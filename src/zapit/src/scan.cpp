@@ -85,11 +85,11 @@ int scan_mode = 0;
 int scan_sat_mode = 0;
 CBouquetManager *scanBouquetManager;
 
-std::map <transponder_id_t, transponder> scantransponders;		/* TP list to scan */
-std::map <transponder_id_t, transponder> scanedtransponders;		/* global TP list for current scan */
+std::map <transponder_id_t, transponder> scantransponders;		// TP list to scan
+std::map <transponder_id_t, transponder> scanedtransponders;		// global TP list for current scan
 std::map <transponder_id_t, transponder> nittransponders;
 
-extern void parseScanInputXml(/*int feindex*/fe_type_t fe_type);
+extern void parseScanInputXml(fe_type_t fe_type);
 
 
 #define TIMER_START()			\

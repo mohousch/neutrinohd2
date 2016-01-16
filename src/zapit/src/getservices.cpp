@@ -63,7 +63,7 @@ extern map<t_channel_id, audio_map_set_t> audio_map;		// defined in zapit.cpp
 extern int FrontendCount;
 extern CFrontend * getFE(int index);
 
-extern void parseScanInputXml(/*int feindex*/fe_type_t fe_type);
+extern void parseScanInputXml(fe_type_t fe_type);
 
 
 void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, uint8_t Source )
@@ -530,6 +530,84 @@ int loadTransponders()
 
 	fe_type_t fe_type = FE_QAM;
 
+	// parse sat tp
+	for(int i = 0; i < FrontendCount; i++)
+	{
+		CFrontend * fe = getFE(i);
+		fe_type = fe->getInfo()->type;
+
+		//parseScanInputXml(i);
+		parseScanInputXml(fe_type);
+			
+		if ( scanInputParser != NULL ) 
+		{
+			xmlNodePtr search = xmlDocGetRootElement(scanInputParser)->xmlChildrenNode;
+
+			while (search) 
+			{
+				if (!(strcmp(xmlGetName(search), "sat"))) 
+				{
+					// position
+					position = xmlGetSignedNumericAttribute(search, "position", 10);
+					
+					char * name = xmlGetAttribute(search, "name");
+
+					if(satellitePositions.find(position) == satellitePositions.end()) 
+					{
+						init_sat(position);
+					}
+
+					// name
+					satellitePositions[position].name = name;
+					
+					// type
+					satellitePositions[position].type = DVB_S;
+				}
+				else if(!(strcmp(xmlGetName(search), "cable"))) 
+				{
+					//flags ???
+					//satfeed ???
+					
+					char * name = xmlGetAttribute(search, "name");
+
+					if(satellitePositions.find(position) == satellitePositions.end()) 
+					{
+						init_sat(position);
+					}
+
+					// name
+					satellitePositions[position].name = name;
+					
+					// type //needed to resort list for scan menue
+					satellitePositions[position].type = DVB_C;
+				}
+				else if(!(strcmp(xmlGetName(search), "terrestrial"))) 
+				{
+					char * name = xmlGetAttribute(search, "name");
+
+					if(satellitePositions.find(position) == satellitePositions.end()) 
+					{
+						init_sat(position);
+					}
+
+					// name
+					satellitePositions[position].name = name;
+					
+					// type //needed to resort list for scan menue
+					satellitePositions[position].type = DVB_T;
+				}
+
+				// parse sat TP
+				ParseSatTransponders(fe_type, search, position);
+				
+				position++;
+				
+				search = search->xmlNextNode;
+			}
+		}
+	}
+
+	// satip
 	if(g_settings.satip_allow_satip)
 	{
 		if(g_settings.satip_serverbox_type == DVB_C)
@@ -607,83 +685,6 @@ int loadTransponders()
 				search = search->xmlNextNode;
 			}
 		}	
-	}
-
-	// parse sat tp
-	for(int i = 0; i < FrontendCount; i++)
-	{
-		CFrontend * fe = getFE(i);
-		fe_type = fe->getInfo()->type;
-
-		//parseScanInputXml(i);
-		parseScanInputXml(fe_type);
-			
-		if ( scanInputParser != NULL ) 
-		{
-			xmlNodePtr search = xmlDocGetRootElement(scanInputParser)->xmlChildrenNode;
-
-			while (search) 
-			{
-				if (!(strcmp(xmlGetName(search), "sat"))) 
-				{
-					// position
-					position = xmlGetSignedNumericAttribute(search, "position", 10);
-					
-					char * name = xmlGetAttribute(search, "name");
-
-					if(satellitePositions.find(position) == satellitePositions.end()) 
-					{
-						init_sat(position);
-					}
-
-					// name
-					satellitePositions[position].name = name;
-					
-					// type
-					satellitePositions[position].type = DVB_S;
-				}
-				else if(!(strcmp(xmlGetName(search), "cable"))) 
-				{
-					//flags ???
-					//satfeed ???
-					
-					char * name = xmlGetAttribute(search, "name");
-
-					if(satellitePositions.find(position) == satellitePositions.end()) 
-					{
-						init_sat(position);
-					}
-
-					// name
-					satellitePositions[position].name = name;
-					
-					// type //needed to resort list for scan menue
-					satellitePositions[position].type = DVB_C;
-				}
-				else if(!(strcmp(xmlGetName(search), "terrestrial"))) 
-				{
-					char * name = xmlGetAttribute(search, "name");
-
-					if(satellitePositions.find(position) == satellitePositions.end()) 
-					{
-						init_sat(position);
-					}
-
-					// name
-					satellitePositions[position].name = name;
-					
-					// type //needed to resort list for scan menue
-					satellitePositions[position].type = DVB_T;
-				}
-
-				// parse sat TP
-				ParseSatTransponders(fe_type, search, position);
-				
-				position++;
-				
-				search = search->xmlNextNode;
-			}
-		}
 	}
 	
 	return 0;
