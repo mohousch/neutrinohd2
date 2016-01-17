@@ -1,33 +1,37 @@
 /* DVB CI DateTime Manager */
 #include <stdio.h>
-#include <arpa/inet.h>
-#include <time.h>
 
-#include <system/debug.h>
 #include "dvbci_datetimemgr.h"
-
-static const char * FILENAME = "[dvbci_datetimemgr]";
 
 eDVBCIDateTimeSession::eDVBCIDateTimeSession(tSlot *tslot)
 {
-	dprintf(DEBUG_DEBUG,"%s >\n", __func__);
+#if 1
+	printf("%s >\n", __func__);
+#endif
 	slot = tslot;
 	slot->hasDateTime = true;
 	slot->pollConnection = true;
-	dprintf(DEBUG_DEBUG,"%s <\n", __func__);
+#if 1
+	printf("%s <\n", __func__);
+#endif
 }
 
 eDVBCIDateTimeSession::~eDVBCIDateTimeSession()
 {
-	dprintf(DEBUG_DEBUG,"%s >\n", __func__);
+#if 1
+	printf("%s >\n", __func__);
+#endif
 	slot->hasDateTime = false;
-	dprintf(DEBUG_DEBUG,"%s <\n", __func__);
+#if 1
+	printf("%s <\n", __func__);
+#endif
 }
 
 int eDVBCIDateTimeSession::receivedAPDU(const unsigned char *tag,const void *data, int len)
 {
-	dprintf(DEBUG_DEBUG,"eDVBCIDateTimeSession::%s >\n", __func__);
-
+#if 1
+	printf("eDVBCIDateTimeSession::%s >\n", __func__);
+#endif
 	printf("SESSION(%d)/DATETIME %02x %02x %02x: ", session_nb, tag[0],tag[1], tag[2]);
 	for (int i=0; i<len; i++)
 		printf("%02x ", ((const unsigned char*)data)[i]);
@@ -37,63 +41,55 @@ int eDVBCIDateTimeSession::receivedAPDU(const unsigned char *tag,const void *dat
 	{
 		switch (tag[2])
 		{
-			case 0x40:
-				state=stateSendDateTime;
-				dprintf(DEBUG_DEBUG,"%s <", __func__);
-				return 1;
-				break;
-			default:
-				printf("unknown APDU tag 9F 84 %02x\n", tag[2]);
-				break;
+		case 0x40:
+			state=stateSendDateTime;
+#if 1
+			printf("%s <", __func__);
+#endif
+			return 1;
+			break;
+		default:
+			printf("unknown APDU tag 9F 84 %02x\n", tag[2]);
+			break;
 		}
 	}
-	dprintf(DEBUG_DEBUG,"%s <\n", __func__);
+#if 1
+	printf("%s <\n", __func__);
+#endif
 	return 0;
 }
 
 int eDVBCIDateTimeSession::doAction()
 {
-	dprintf(DEBUG_DEBUG,"%s >\n", __func__);
+#if 1
+	printf("%s >\n", __func__);
+#endif
 	switch (state)
 	{
-		case stateStarted:
-			dprintf(DEBUG_DEBUG,"%s <\n", __func__);
-			return 0;
-		case stateSendDateTime:
-		{
-			struct tm tm_gmt;
-			struct tm tm_loc;
-			unsigned char tag[3]={0x9f, 0x84, 0x41}; // date_time_response
-			unsigned char msg[7]={0, 0, 0, 0, 0, 0, 0};
-			dprintf(DEBUG_NORMAL, "%s -> %s\n", FILENAME, __func__);
-			time_t t = time(NULL);
-			if ( gmtime_r(&t, &tm_gmt) && localtime_r(&t, &tm_loc) )
-			{
-				int Y = tm_gmt.tm_year;
-				int M = tm_gmt.tm_mon + 1;
-				int D = tm_gmt.tm_mday;
-				int L = (M == 1 || M == 2) ? 1 : 0;
-				int MJD = 14956 + D + (int)((Y - L) * 365.25) + (int)((M + 1 + L * 12) * 30.6001);
-
-#define DEC2BCD(d) (((d / 10) << 4) + (d % 10))
-
-				msg[0] = htons(MJD) >> 8;
-				msg[1] = htons(MJD) & 0xff;
-				msg[2] = DEC2BCD(tm_gmt.tm_hour);
-				msg[3] = DEC2BCD(tm_gmt.tm_min);
-				msg[4] = DEC2BCD(tm_gmt.tm_sec);
-				msg[5] = htons(tm_loc.tm_gmtoff / 60) >> 8;
-				msg[6] = htons(tm_loc.tm_gmtoff / 60) & 0xff;
-			}
-			sendAPDU(tag, msg, 7);
-			dprintf(DEBUG_DEBUG,"%s <\n", __func__);
-			return 0;
-		}
-		case stateFinal:
-			printf("stateFinal und action! kann doch garnicht sein ;)\n");
-		default:
-			dprintf(DEBUG_DEBUG,"%s <\n", __func__);
-			return 0;
+	case stateStarted:
+#if 1
+		printf("%s <\n", __func__);
+#endif
+		return 0;
+	case stateSendDateTime:
+	{
+		unsigned char tag[3]={0x9f, 0x84, 0x41}; // date_time_response
+		unsigned char msg[7]={0, 0, 0, 0, 0, 0, 0};
+		sendAPDU(tag, msg, 7);
+#if 1
+		printf("%s <\n", __func__);
+#endif
+		return 0;
 	}
-	dprintf(DEBUG_DEBUG,"%s <\n", __func__);
+	case stateFinal:
+		printf("stateFinal und action! kann doch garnicht sein ;)\n");
+	default:
+#if 1
+		printf("%s <\n", __func__);
+#endif
+		return 0;
+	}
+#if 1
+	printf("%s <\n", __func__);
+#endif
 }

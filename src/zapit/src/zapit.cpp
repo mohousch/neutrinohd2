@@ -88,7 +88,6 @@ int abort_zapit;
 // ci
 #if defined (ENABLE_CI)
 cDvbCi * ci;
-void CISendMessage(uint32_t msg, uint32_t data);
 #endif
 
 // audio conf
@@ -993,7 +992,7 @@ void sendCaPmtRecordStop(void)
 			cam0->setCaPmt(live_channel, live_channel->getCaPmt(), demux_index, ca_mask, true); // cam0 update
 #if defined (ENABLE_CI)
 			if(live_fe != NULL)
-				ci->SendCaPMT(NULL, live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+				ci->SendCaPMT(NULL, live_fe->fenumber);
 #endif
 		}
 	} 
@@ -1005,7 +1004,7 @@ void sendCaPmtRecordStop(void)
 		if(rec_channel != NULL)
 		{
 			if(record_fe != NULL)
-				ci->SendCaPMT(NULL, record_fe->fenumber, 0, rec_channel->channel_id, rec_channel->scrambled);
+				ci->SendCaPMT(NULL, record_fe->fenumber);
 		}
 #endif
 	}
@@ -1015,7 +1014,7 @@ void sendCaPmtRecordStop(void)
 	if(live_channel != NULL)
 	{
 		if(live_fe != NULL)
-			ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+			ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
 	}
 #endif
 }
@@ -1303,24 +1302,12 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0)
 			return 0;
 		}
 		
-#if defined (ENABLE_CI)	
-		int retry = 5;
-#else
 		int retry = false;
-#endif	
+	
 tune_again:
 		// parse pat pmt
 		failed = !parse_channel_pat_pmt(live_channel, live_fe);
-		
-#if defined (ENABLE_CI)	
-		if(failed && retry > 0)
-		{
-			usleep(25000);  /* give some 25000us for demuxer: borrowed from e2*/
-			retry--;
-	 		dprintf(DEBUG_NORMAL, "[zapit] trying again\n");
-	 		goto tune_again;
-	 	}
-#else
+
 		if(failed && !retry)
 		{
 			usleep(2500);  /* give some 2500us for demuxer: borrowed from e2*/
@@ -1328,7 +1315,7 @@ tune_again:
 			dprintf(DEBUG_NORMAL, "[zapit] trying again\n");
 			goto tune_again;
 		}	
-#endif
+
 		if ((!failed) && (live_channel->getAudioPid() == 0) && (live_channel->getVideoPid() == 0)) 
 		{
 			dprintf(DEBUG_NORMAL, "[zapit] neither audio nor video pid found\n");
@@ -1364,7 +1351,7 @@ tune_again:
 		if(live_channel != NULL)
 		{
 			if(live_fe != NULL)
-				ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+				ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
 		}
 #endif		
 	
@@ -1433,7 +1420,7 @@ int zapTo_RecordID(const t_channel_id channel_id)
 	if(rec_channel != NULL)
 	{
 		if(record_fe != NULL)
-			ci->SendCaPMT(rec_channel->getCaPmt(), record_fe->fenumber, 1, rec_channel->channel_id, rec_channel->scrambled);
+			ci->SendCaPMT(rec_channel->getCaPmt(), record_fe->fenumber);
 	}
 #endif		
 	
@@ -2692,7 +2679,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			if(live_channel != NULL)
 			{
 				if(live_fe != NULL)
-					ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+					ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
 			}
 #endif					
 
@@ -4223,7 +4210,6 @@ int zapit_main_thread(void *data)
 	//CI init
 #if defined (ENABLE_CI)	
 	ci = cDvbCi::getInstance();
-	ci->SetHook(CISendMessage);	
 #endif	
 	
 	//globals
@@ -4352,7 +4338,7 @@ int zapit_main_thread(void *data)
 						if(live_channel != NULL)
 						{
 							if(live_fe != NULL)
-								ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber, 0, live_channel->channel_id, live_channel->scrambled);
+								ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
 						}
 #endif	
 

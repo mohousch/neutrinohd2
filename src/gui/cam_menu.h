@@ -36,14 +36,18 @@ class CCAMMenuHandler : public CMenuTarget
 		CHintBox * hintBox;
 		cDvbCi * ci;
 		unsigned long long timeoutEnd;
-		//int slot;
-		int doMenu(int slot);
-		int doMainMenu();
+
 		int handleCamMsg (const neutrino_msg_t msg, neutrino_msg_data_t data, bool from_menu = false);
+		
 	public:
 		void init(void);
 		int exec(CMenuTarget * parent,  const std::string &actionKey);
+
+		int doMenu(int slot);
+		void doMainMenu();
+
 		int handleMsg (const neutrino_msg_t msg, neutrino_msg_data_t data);
 };
+
 #endif
 

@@ -2695,6 +2695,11 @@ int CNeutrinoApp::run(int argc, char **argv)
 	// audio mute
 	AudioMute(current_muted, true);	
 
+// Cam-Ci
+#if defined (ENABLE_CI)	
+	cDvbCi::getInstance()->SetHook(CISendMessage);	
+#endif	
+
 	// init webtv
 	webtv = new CWebTV();
 	

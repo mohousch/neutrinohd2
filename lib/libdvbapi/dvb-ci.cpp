@@ -51,53 +51,17 @@
 #include <system/debug.h>
 
 
-static const char * FILENAME = "[dvb-ci.cpp]";
-static int active_cams = 0;
+static const char * FILENAME = "dvb-ci.cpp";
 
 #define TAG_MENU_ANSWER                      0x9f880b
 #define TAG_ENTER_MENU                       0x9f8022
 
 extern CRCInput *g_RCInput;
-extern int zapit_ready;
+extern int FrontendCount;
 
 bool cDvbCi::checkQueueSize(tSlot* slot)
 {
 	return (slot->sendqueue.size() > 0);
-}
-
-/* for temporary testing */
-void cDvbCi::Test(int slot, CaIdVector caids)
-{
-	char buf[255];
-	char mname[200];
-	char fname[20];
-	int count, cx, cy, i;
-	snprintf(fname, sizeof(fname), "/tmp/ci-slot%d" , slot);
-	GetName(slot, mname);
-	FILE* fd = fopen(fname, "w");
-	if (fd == NULL) return;
-	snprintf(buf, sizeof(buf), "%s\n" , mname);
-	fputs(buf, fd);
-	if (caids.size() > 40)
-		count = 40;
-	else
-		count = caids.size();
-	cx = snprintf(buf, sizeof(buf), "Anzahl Caids: %d Slot: %d > ", count, slot);
-	for (i = 0; i < count; i++)
-	{
-		cy = snprintf(buf + cx, sizeof(buf) - cx, "%04x ", caids[i]);
-		cx += cy;
-	}
-	snprintf(buf + cx, sizeof(buf) - cx, "\n");
-	fputs(buf, fd);
-	fclose(fd);
-}
-
-void cDvbCi::DelTest(int slot)
-{
-	char fname[20];
-	snprintf(fname, sizeof(fname), "/tmp/ci-slot%d" , slot);
-	if (access(fname, F_OK) == 0) remove(fname);
 }
 
 void cDvbCi::CI_MenuAnswer(unsigned char bSlotIndex,unsigned char choice)
@@ -162,7 +126,6 @@ void cDvbCi::CI_EnterMenu(unsigned char bSlotIndex)
 	
         for(it = slot_data.begin(); it != slot_data.end(); ++it)
         {
-#if 0
 		if ((strstr((*it)->name, "unknown module") != NULL) && ((*it)->slot == bSlotIndex))
 		{
 			//the module has no real name, this is the matter if something while initializing went wrong
@@ -172,7 +135,7 @@ void cDvbCi::CI_EnterMenu(unsigned char bSlotIndex)
 
 			return;
 		}
-#endif
+
 		if ((*it)->slot == bSlotIndex) 
 		{
 			if ((*it)->hasAppManager)
@@ -267,131 +230,90 @@ eData waitData(int fd, unsigned char* buffer, int* len)
 	return eDataError;
 }
 
-static bool transmitData(tSlot* slot, unsigned char* d, int len)
-{
-#ifdef direct_write
-	int res = write(slot->fd, d, len);
-
-	free(d);
-	if (res < 0 || res != len)
-	{
-		printf("error writing data to fd %d, slot %d: %m\n", slot->fd, slot->slot);
-		return eDataError;
-	}
-#else
-	dprintf(DEBUG_NORMAL, "SendData with data (len %d) >\n", len);
-	for (int i = 0; i < len; i++)
-		dprintf(DEBUG_INFO, "%02x ", d[i]);
-	dprintf(DEBUG_INFO, "\n");
-
-	slot->sendqueue.push(queueData(d, len));
-#endif
-	return true;
-}
-
-static bool sendDataLast(tSlot* slot)
-{
-	unsigned char data[5];
-	slot->pollConnection = false;
-	slot->DataLast = false;
-	data[0] = slot->slot;
-	data[1] = slot->connection_id;
-	data[2] = T_DATA_LAST;
-	data[3] = 1;
-	data[4] = slot->connection_id;
-
-	dprintf(DEBUG_DEBUG, "*** > Data Last: ");
-	for (int i = 0; i < 5; i++)
-		dprintf(DEBUG_DEBUG, "%02x ", data[i]);
-	dprintf(DEBUG_DEBUG, "\n");
-
-	write(slot->fd, data, 5);
-	return true;
-}
-
-static bool sendRCV(tSlot* slot)
-{
-	unsigned char send_data[5];
-	slot->pollConnection = false;
-	slot->DataRCV = false;
-	send_data[0] = slot->slot;
-	send_data[1] = slot->connection_id;
-	send_data[2] = T_RCV;
-	send_data[3] = 1;
-	send_data[4] = slot->connection_id;
-
-	dprintf(DEBUG_INFO, "*** > T_RCV: ");
-	for (int i = 0; i < 5; i++)
-		dprintf(DEBUG_INFO, "%02x ", send_data[i]);
-	dprintf(DEBUG_INFO, "\n");
-
-	write(slot->fd, send_data, 5);
-	return true;
-}
-
 //send some data on an fd, for a special slot and connection_id
 eData sendData(tSlot* slot, unsigned char* data, int len)
 {	
-        dprintf(DEBUG_DEBUG, "%s > %s (%d)\n", FILENAME, __func__, len);
+        dprintf(DEBUG_DEBUG, "%s: %p, %d\n", __func__, data, len);
        
+	unsigned char *d = (unsigned char*) malloc(len + 5);
+		
 	// only poll connection if we are not awaiting an answer
-	slot->pollConnection = false;
+	slot->pollConnection = false;	
+		
+	/* 
+	should we send a data last ?
+	*/
+	if (data != NULL)
+	{
+		if ((data[2] >= T_SB) && (data[2] <= T_NEW_T_C))
+		{
+			memcpy(d, data, len);
+		} 
+		else
+		{
+			//send data_last and data
+			memcpy(d + 5, data, len);
 
-	//send data_last and data
-	if (len < 127) {
-		unsigned char *d = (unsigned char*) malloc(len + 5);
-		memcpy(d + 5, data, len);
-		d[0] = slot->slot;
-		d[1] = slot->connection_id;
-		d[2] = T_DATA_LAST;
-		d[3] = len + 1;
-		d[4] = slot->connection_id;
-		len += 5;
-		transmitData(slot, d, len);
+			d[0] = slot->slot;
+			d[1] = slot->connection_id;
+			d[2] = T_DATA_LAST; 	
+			if (len > 127)
+				d[3] = 4; 		/* pointer to next length */
+			else
+				d[3] = len + 1; 	/* len */
+			d[4] = slot->connection_id; 	/* transport connection identifier*/
+
+			len += 5;	
+		}
 	}
-	else if (len > 126 && len < 255) {
-		unsigned char *d = (unsigned char*) malloc(len + 6);
-		memcpy(d + 6, data, len);
+	else
+	{
+		//send a data last only
 		d[0] = slot->slot;
 		d[1] = slot->connection_id;
-		d[2] = T_DATA_LAST;
-		d[3] = 0x81;
-		d[4] = len + 1;
-		d[5] = slot->connection_id;
-		len += 6;
-		transmitData(slot, d, len);
-	}
-	else if (len > 254) {
-		unsigned char *d = (unsigned char*) malloc(len + 7);
-		memcpy(d + 7, data, len);
-		d[0] = slot->slot;
-		d[1] = slot->connection_id;
-		d[2] = T_DATA_LAST;
-		d[3] = 0x82;
-		d[4] = len >> 8;
-		d[5] = len + 1;
-		d[6] = slot->connection_id;
-		len += 7;
-		transmitData(slot, d, len);
+		d[2] = T_DATA_LAST; 	
+		if (len > 127)
+			d[3] = 4; 		/* pointer to next length */
+		else
+			d[3] = len + 1; 	/* len */
+		d[4] = slot->connection_id; 	/* transport connection identifier*/
+
+		len = 5;	
 	}
 
+#ifdef direct_write
+	res = write(slot->fd, d, len); 
+
+	free(d);
+	if (res < 0 || res != len) 
+	{ 
+		printf("error writing data to fd %d, slot %d: %m\n", slot->fd, slot->slot);
+		return eDataError; 
+	}
+#else
+	slot->sendqueue.push( queueData(d, len) );
+#endif	 
+	
 	return eDataReady;
 }
 
 //send a transport connection create request
 bool sendCreateTC(tSlot* slot)
 {
-	unsigned char data[5];
+	//printf("%s:%s >\n", FILENAME, __FUNCTION__);
+	
+	unsigned char* data = (unsigned char*) malloc(sizeof(char) * 5);
+	
 	data[0] = slot->slot;
 	data[1] = slot->slot + 1; 	/* conid */
 	data[2] = T_CREATE_T_C;
 	data[3] = 1;
 	data[4] = slot->slot + 1 	/*conid*/;
-	dprintf(DEBUG_NORMAL, "Create TC: ");
-	for (int i = 0; i < 5; i++)
-		dprintf(DEBUG_NORMAL, "%02x ", data[i]);
-	dprintf(DEBUG_NORMAL, "\n");
-	write(slot->fd, data, 5);
+
+	sendData(slot, data, 5);
+
+	//printf("%s:%s <\n", FILENAME, __FUNCTION__);
+	
 	return true;
 }
 
@@ -400,67 +322,76 @@ void cDvbCi::process_tpdu(tSlot* slot, unsigned char tpdu_tag, __u8* data, int a
 	switch (tpdu_tag) 
 	{
 		case T_C_T_C_REPLY:
-			dprintf(DEBUG_INFO, "Got CTC Replay (slot %d, con %d)\n", slot->slot, slot->connection_id);
-			/*answer with data last (and if we have with data)
-			--> DataLast flag will be generated in next loop from received APDU*/
+			printf("Got CTC Replay (slot %d, con %d)\n", slot->slot, slot->connection_id);
+
+			//answer with data last (and if we have with data)
+			sendData(slot, NULL, 0);
+			
 			break;
+			
 		case T_DELETE_T_C:
 			//FIXME: close sessions etc; slot->reset ?
 			//we must answer here with t_c_replay
 			printf("Got \"Delete Transport Connection\" from module ->currently not handled!\n");
+			
 			break;
+			
 		case T_D_T_C_REPLY:
 			printf("Got \"Delete Transport Connection Replay\" from module!\n");
 			break;
+
 		case T_REQUEST_T_C:
 			printf("Got \"Request Transport Connection\" from Module ->currently not handled!\n");
 			break;
+			
 		case T_DATA_MORE:
 		{
 			int new_data_length = slot->receivedLen + asn_data_length;
+
 			printf("Got \"Data More\" from Module\n");
+
 			__u8 *new_data_buffer = (__u8*)realloc(slot->receivedData, new_data_length);
+		
 			slot->receivedData = new_data_buffer;
+
 			memcpy(slot->receivedData + slot->receivedLen, data, asn_data_length);
+			
 			slot->receivedLen = new_data_length;
+						
 			break;
 		}
+		
 		case T_DATA_LAST:	
+			dprintf(DEBUG_NORMAL, "Got \"Data Last\" from Module\n");
+			
 			/* single package */
 			if (slot->receivedData == NULL) 
 			{
-				dprintf(DEBUG_INFO, "->single package\n");
 
-				dprintf(DEBUG_INFO, "%s -> calling receiveData with data (len %d)\n", FILENAME, asn_data_length);
-				for (int i = 0; i < asn_data_length; i++)
-					dprintf(DEBUG_INFO, "%02x ", data[i]);
-				dprintf(DEBUG_INFO, "\n");
+				dprintf(DEBUG_NORMAL, "->single package\n");
 
-				/* to avoid illegal session number: only if > 0 */
-				if (asn_data_length)
-				{
-					eDVBCISession::receiveData(slot, data, asn_data_length);
-					eDVBCISession::pollAll();
-				}
+				eDVBCISession::receiveData(slot, data, asn_data_length);
+				eDVBCISession::pollAll();
 			} 
 			else 
 			{
-				/* chained package 
-				?? DBO: I never have seen one */
+				/* chained package */
 				int new_data_length = slot->receivedLen + asn_data_length;
-				printf("->chained data\n");
-				__u8 *new_data_buffer = (__u8*) realloc(slot->receivedData, new_data_length);
-				slot->receivedData = new_data_buffer;
-				memcpy(slot->receivedData + slot->receivedLen, data, asn_data_length);
-				slot->receivedLen = new_data_length;
 
-				dprintf(DEBUG_INFO, "%s -> calling receiveData with data (len %d)\n", FILENAME, asn_data_length);
-				for (int i = 0; i < slot->receivedLen; i++)
-					dprintf(DEBUG_INFO, "%02x ", slot->receivedData[i]);
-				dprintf(DEBUG_INFO, "\n");
+				printf("->chained data\n");
+
+				__u8 *new_data_buffer = (__u8*) realloc(slot->receivedData, new_data_length);
+		
+				slot->receivedData = new_data_buffer;
+
+				memcpy(slot->receivedData + slot->receivedLen, data, asn_data_length);
+			
+				slot->receivedLen = new_data_length;
 
 				eDVBCISession::receiveData(slot, slot->receivedData, slot->receivedLen);
 				eDVBCISession::pollAll();
+
+				//fixme: must also be moved in e2 behind the data processing ;) 
 
 				free(slot->receivedData);
 				slot->receivedData = NULL;
@@ -470,22 +401,32 @@ void cDvbCi::process_tpdu(tSlot* slot, unsigned char tpdu_tag, __u8* data, int a
 			
 		case T_SB:
 		{	
+			dprintf(DEBUG_NORMAL, "Got \"SB\" from Module\n");
+
 			if (data[0] & 0x80)
 			{
+				printf("->data ready (%d)\n", slot->slot);
+			
 				//we now wait for an answer so dont poll
 				slot->pollConnection = false;
-				/* set the RCV Flag and set DataLast Flag false */
-				slot->DataRCV = true;
-				slot->DataLast = false;
+
+				// send the RCV and ask for the data
+				unsigned char send_data[5];
+
+				send_data[0] = slot->slot;
+				send_data[1] = slot->connection_id;
+				send_data[2] = T_RCV;
+				send_data[3] = 1;
+				send_data[4] = slot->connection_id;
+
+				write(slot->fd, send_data, 5);
 			} 
 			else
 			{
-				/* set DataLast Flag if it is false*/
-				if (!slot->DataLast)
-				{
-					slot->DataLast = true;
-					dprintf(DEBUG_DEBUG, "**** > T_SB\n");
-				}
+				//if the queue is not empty we dont need to send
+				//a polling to the module.
+				//if (checkQueueSize(slot) == false)
+				//    slot->pollConnection = true;
 			}
 			break;
 		}
@@ -542,12 +483,6 @@ void cDvbCi::slot_pollthread(void *c)
 		    
 		switch (slot->status)
 		{
-			case eStatusReset:
-				while (slot->status == eStatusReset)
-				{
-					usleep(1000);
-				}
-				break;
 			case eStatusNone:
 			{
 				if (slot->camIsReady)
@@ -573,26 +508,32 @@ void cDvbCi::slot_pollthread(void *c)
 						if (ioctl(slot->fd, CA_GET_SLOT_INFO, &info) < 0)
 							printf("IOCTL CA_GET_SLOT_INFO failed for slot %d\n", slot->slot);
 
-						printf("flags %d %d %d ->slot %d\n", info.flags, CA_CI_MODULE_READY, info.flags & CA_CI_MODULE_READY, slot->slot);
+						//printf("flags %d %d %d ->slot %d\n", info.flags, CA_CI_MODULE_READY, info.flags & CA_CI_MODULE_READY, slot->slot);
 
 						if (info.flags & CA_CI_MODULE_READY)
 						{
-							dprintf(DEBUG_NORMAL, "1. cam (%d) status changed ->cam now present\n", slot->slot);
+							printf("1. cam (%d) status changed ->cam now present\n", slot->slot);
 
-							active_cams++;
 							slot->mmiSession = NULL;
 							slot->hasMMIManager = false;
 							slot->hasCAManager = false;
 							slot->hasDateTime = false;
 							slot->hasAppManager = false;
+
 							slot->mmiOpened = false;
+
 							slot->init = false;
+
 							sprintf(slot->name, "unknown module %d", slot->slot);
+
 							slot->status = eStatusNone;
 
 							if (g_RCInput)
 								g_RCInput->postMsg(NeutrinoMessages::EVT_CI_INSERTED, slot->slot);
+
 							slot->camIsReady = true;
+							
+							//setSource(slot);
 						} 
 						else
 						{
@@ -608,20 +549,19 @@ void cDvbCi::slot_pollthread(void *c)
 				status = waitData(slot->fd, data, &len);
 				if (status == eDataReady)
 				{
-					slot->pollConnection = false;
-					d = data;
+					//int s_id = data[0];
+					//int c_id = data[1];
 
-					if ((len == 6 && d[4] == 0x80) || len > 6) { 
-						dprintf(DEBUG_DEBUG, "slot: %d con-id: %d tpdu-tag: %02X len: %d\n", d[0], d[1], d[2], len);
-						dprintf(DEBUG_DEBUG, "received data: >");
-						for (int i = 0; i < len; i++)
-							dprintf(DEBUG_DEBUG, "%02x ", data[i]);
-						dprintf(DEBUG_DEBUG, "\n");
-					}
+					slot->pollConnection = false;
+					
+					//printf("%d: s_id = %d, c_id = %d\n", slot->slot, s_id, c_id);
+					
+					d = data;
 
 					/* taken from the dvb-apps */
 					int data_length = len - 2;
 					d += 2; /* remove leading slot and connection id */
+					
 					while (data_length > 0)
 					{
 						unsigned char tpdu_tag = d[0];
@@ -643,14 +583,14 @@ void cDvbCi::slot_pollthread(void *c)
 
 						slot->connection_id = d[1 + length_field_len];
 
-						dprintf(DEBUG_DEBUG, "Setting connection_id from received data to %d\n", slot->connection_id);
+						//printf("Setting connection_id from received data to %d\n", slot->connection_id);
 
 						d += 1 + length_field_len + 1;
 						data_length -= (1 + length_field_len + 1);
 						asn_data_length--;
 
-						dprintf(DEBUG_DEBUG, "****tpdu_tag: 0x%02X\n", tpdu_tag);
 						process_tpdu(slot, tpdu_tag, d, asn_data_length, slot->connection_id);
+
 						// skip over the consumed data
 						d += asn_data_length;
 						data_length -= asn_data_length;
@@ -674,24 +614,11 @@ void cDvbCi::slot_pollthread(void *c)
 							printf("r = %d, %m\n", res);
 						}			
 					}
-					/* check for activate the pollConnection */
-					if (!checkQueueSize(slot) && (slot->DataRCV || slot->mmiOpened || slot->counter > 5))
-					{
-						slot->pollConnection = true;
-					}
-					if (slot->counter < 6)
-						slot->counter++;
 					else
-						slot->counter = 0;
-					/* if Flag: send a DataLast */
-					if (!checkQueueSize(slot) && slot->pollConnection && slot->DataLast)
 					{
-						sendDataLast(slot);
-					}
-					/* if Flag: send a RCV */
-					if (!checkQueueSize(slot) && slot->pollConnection && slot->DataRCV)
-					{
-						sendRCV(slot);
+						//printf("sendqueue emtpy\n");
+						if ((checkQueueSize(slot) == false) && ((!slot->hasCAManager) || (slot->mmiOpened)))
+							slot->pollConnection = true;
 					}
 				}
 				else if (status == eDataStatusChanged)
@@ -705,15 +632,16 @@ void cDvbCi::slot_pollthread(void *c)
 
 					if ((slot->camIsReady == false) && (info.flags & CA_CI_MODULE_READY))
 					{
-						dprintf(DEBUG_NORMAL, "2. cam (%d) status changed ->cam now present\n", slot->slot);
+						printf("2. cam (%d) status changed ->cam now present\n", slot->slot);
 
-						active_cams++;
 						slot->mmiSession = NULL;
 						slot->hasMMIManager = false;
 						slot->hasCAManager = false;
 						slot->hasDateTime = false;
 						slot->hasAppManager = false;
+
 						slot->mmiOpened = false;
+
 						slot->init = false;
 
 						sprintf(slot->name, "unknown module %d", slot->slot);
@@ -727,38 +655,22 @@ void cDvbCi::slot_pollthread(void *c)
 					} 
 					else if ((slot->camIsReady == true) && (!(info.flags & CA_CI_MODULE_READY)))
 					{
-						dprintf(DEBUG_NORMAL, "cam (%d) status changed ->cam now _not_ present\n", slot->slot);
+						printf("cam (%d) status changed ->cam now _not_ present\n", slot->slot);
 
 						eDVBCISession::deleteSessions(slot);
 
-						active_cams--;
 						slot->mmiSession = NULL;
 						slot->hasMMIManager = false;
 						slot->hasCAManager = false;
 						slot->hasDateTime = false;
 						slot->hasAppManager = false;
+
 						slot->mmiOpened = false;
+
 						slot->init = false;
 
-						slot->DataLast = false;
-						slot->DataRCV = false;
-						slot->SidBlackListed = false;
-						slot->bsids.clear();
-						slot->newCapmt = false;
-						slot->inUse = false;
-						slot->chanId = 0;
-						slot->scrambled = 0;
-						slot->pmtlen = 0;
-						memset(slot->pmtdata, 0, sizeof(slot->pmtdata));
-
-						slot->source = TUNER_A;
-						slot->counter = 0;
-						slot->pollConnection = false;
 						sprintf(slot->name, "unknown module %d", slot->slot);
-						slot->cam_caids.clear();
 
-						/* temporary : delete testfile */
-						DelTest(slot->slot);
 						slot->status = eStatusNone;
 
 						if (g_RCInput)
@@ -774,40 +686,34 @@ void cDvbCi::slot_pollthread(void *c)
 						usleep(100000);		
 					}
 				}
+
+				if (!checkQueueSize(slot) && slot->pollConnection)
+				{
+					//printf("poll\n");
+					sendData(slot, NULL, 0);
+				}
 			}
 			break;
 			
 			default:
 				printf("unknown state %d\n", slot->status);		
 			break;
-		}	   
+		}
+	   
 		if (slot->hasCAManager && slot->hasAppManager && !slot->init) //declare this as init, but remeber we are still not complete!
 		{
 
 			slot->init = true;
 			
-			slot->cam_caids = slot->camgrSession->getCAIDs();
-
-			dprintf(DEBUG_NORMAL, "Ci-Cam Caids: %d Slot: %d > ", slot->cam_caids.size(), slot->slot);
-			for (unsigned int i = 0; i < slot->cam_caids.size(); i++)
-				dprintf(DEBUG_NORMAL, "%04x ", slot->cam_caids[i]);
-			dprintf(DEBUG_NORMAL, "\n");
-			/* temporary : write testfile */
-			Test(slot->slot, slot->cam_caids);
-
 			if (g_RCInput)
 				g_RCInput->postMsg(NeutrinoMessages::EVT_CI_INIT_OK, slot->slot);
 		    
-			/* resend a capmt if we have one. this is not very proper but I cant any mechanism in
-			neutrino currently. so if a cam is inserted a pmt is not resend */
-			/* not necessary: do a simple rezap instead */ 
-			system("pzapit -rz");
-		}
-		if (slot->hasCAManager && slot->hasAppManager && slot->newCapmt && !slot->SidBlackListed)
-		{
-			/* here sending buffered capmt */
-			Send_CAPMT(slot);
-			slot->newCapmt = false;
+			//resend a capmt if we have one. this is not very proper but I cant any mechanism in
+			//neutrino currently. so if a cam is inserted a pmt is not resend
+			if (slot->caPmt != NULL)
+			{
+				SendCaPMT(slot->caPmt, slot->source);
+			}
 		}
 	}
 }
@@ -822,204 +728,54 @@ void* execute_thread(void *c)
 
 	return NULL;
 }
-/* really send capmt data from slot buffer to ci-cam */
-bool cDvbCi::Send_CAPMT(tSlot* slot)
+
+bool cDvbCi::SendCaPMT(CCaPmt *caPmt, int source)
 {
-	printf("%s > %s\n", FILENAME, __func__);
-	if ((slot->fd > 0) && (slot->camIsReady))
-	{
-		if (slot->hasCAManager)
+	printf("%s:%s\n", FILENAME, __FUNCTION__);
+
+	std::list<tSlot*>::iterator it;
+
+        for(it = slot_data.begin(); it != slot_data.end(); it++)
+        {
+		//FIXME: ask cammanagr if module can handle this caids
+		if (((*it)->fd > 0) && ((*it)->camIsReady)) 
 		{
-			dprintf(DEBUG_NORMAL, "buffered capmt(%d): > \n", slot->pmtlen);
-			for (unsigned int i = 0; i < slot->pmtlen; i++)
-				dprintf(DEBUG_INFO, "%02X ", slot->pmtdata[i]);
-			dprintf(DEBUG_INFO, "\n");
+			unsigned int size = caPmt->getLength();
+			
+			unsigned char buffer[3 + get_length_field_size(size) + size];
+			
+			// get len and fill buffer
+			printf(" %d, %d\n", get_length_field_size(size), size);
+			int len = caPmt->writeToBuffer(buffer, 0, 0xff);
 
-			if (slot->pmtlen == 0)
-				return true;
-			slot->camgrSession->sendSPDU(0x90, 0, 0, slot->pmtdata, slot->pmtlen);
+			dprintf(DEBUG_NORMAL, "capmt(%d): > \n", len);
+
+			if ((*it)->hasCAManager)
+				(*it)->camgrSession->sendSPDU(0x90, 0, 0, buffer, len);
+			
+			//set source
+			setSource((*it)->slot, source);
 		}
-	}
-	if (slot->fd > 0)
-	{
-		setSource(slot->slot, slot->source);
-	}
-	return true;
-}
-/* calling from zapit: 
- make channel caids from capmt
- search a free ci-cam with matching caid
- only buffers capmt data in slot buffer */
-bool cDvbCi::SendCaPMT(CCaPmt *caPmt, int source, int rec_mode, t_channel_id chan_id, uint8_t scrambled)
-{
-	if (!zapit_ready)
-		return true;
-
-	uint16_t SID = (uint16_t)(chan_id & 0xFFFF);
-	uint8_t buffer[1024];
-	int len = 0;
-	unsigned int i;
-	ca_map_t camap;
-
-	dprintf(DEBUG_NORMAL, "calling from zapit: %s > %s\n", FILENAME, __FUNCTION__);
-	dprintf(DEBUG_NORMAL, "Record: %d\n", rec_mode); 
-	dprintf(DEBUG_NORMAL, "Service-ID: %04x\n", SID); 
-	dprintf(DEBUG_NORMAL, "Channelid: %llx\n", chan_id); 
-	dprintf(DEBUG_NORMAL, "Scrambled: %d\n", scrambled); 
-	dprintf(DEBUG_NORMAL, "active ci cams: %d\n", active_cams);
-
-	if (!active_cams)
-		return true;
-
-	if (!rec_mode && scrambled && !caPmt)
-	{
-		if (StopRecordCI(chan_id, source))
-			dprintf(DEBUG_NORMAL, "CI set free\n");
-	}
-
-	if(!caPmt)
-	{
-		dprintf(DEBUG_INFO, "caPmt is NULL\n");
-		return true;
-	}
-	else
-	{
-		camap = makeCaMap( caPmt, buffer, len);
-		if (!camap.empty())
+               
+		/* konfetti: if cam is not ready we must store caPmt too, because
+		* changing the slot should also descramble the channel
+		*/
+		if ((*it)->fd > 0) 
 		{
-			dprintf(DEBUG_NORMAL, "Service Caids: ");
-			for (ca_map_iterator_t it = camap.begin(); it != camap.end(); ++it)
-			{
-				dprintf(DEBUG_NORMAL, "%04x ", (*it));
-			}
-			dprintf(DEBUG_NORMAL, "\n");
+			//FIXME: hmmm is this a copy or did I only save the pointer.
+			//in copy case I must do some delete etc before if set and in destruct case
+			(*it)->caPmt = caPmt;
+			(*it)->source = source;
 		}
-		else
-		{
-			dprintf(DEBUG_NORMAL, "CaMap Empty\n");
-		}
-	}
-	/* searching a free CI slot */
-	SlotIt It = FindFreeSlot(camap, scrambled);
- 
-	if ((*It))
-	{
-		dprintf(DEBUG_NORMAL, "Slot: (%d) fd: (%d)\n", (*It)->slot, (*It)->fd);
-		if (scrambled || (!scrambled && (*It)->source == source))
-		{
-			if ((*It)->bsids.size())
-			{
-				for (i = 0; i < (*It)->bsids.size(); i++)
-					if ((*It)->bsids[i] == SID) {(*It)->SidBlackListed = true; break;}
-				if (i == (*It)->bsids.size()) {(*It)->SidBlackListed = false;}
-			}
-			if (rec_mode && scrambled && !(*It)->SidBlackListed)
-				(*It)->inUse = true;
-
-			if ((*It)->chanId != chan_id)
-			{
-				(*It)->source = source;
-				(*It)->chanId = chan_id;
-				(*It)->pmtlen = len;
-				/* copy capmt from volatile buffer to slot buffer */
-				for (i = 0; i < len; i++)
-					(*It)->pmtdata[i] = buffer[i];
-				(*It)->newCapmt = true;
-			}			
-		}
-	}
-	else
-	{
-		dprintf(DEBUG_NORMAL, "No free ci-slot\n");
 	}
 	
         return true;
 }
 
-ca_map_t cDvbCi::makeCaMap(CCaPmt *caPmt, uint8_t *buffer, int &len)
-{
-	dprintf(DEBUG_NORMAL, "%s -> %s\n", FILENAME, __func__);
-	ca_map_t map;
-	int field_len, rlen, pinfo_len;
-	int pos = 3; 
-	/* write the capmt data to volatile buffer */
-	len = caPmt->writeToBuffer(buffer, 0, 0xff);
-	field_len = eDVBCISession::parseLengthField((const unsigned char*)buffer + pos, rlen);
-	pos += field_len + 4;
-	pinfo_len = (buffer[pos] << 8 | buffer[pos + 1]) & 0xFFF;
-	pos += 3;
-	if(pinfo_len)
-	{
-		/* make channel camap from capmt data */
-		while (pos <= pinfo_len + 4)
-		{
-			if (buffer[pos] == 0x09)
-			{
-				map.insert(buffer[pos + 2] << 8 | buffer[pos + 3]);
-				pos += buffer[pos + 1] + 2;
-			}
-			else
-				break;
-		}
-	}
-
-	return map;
-}
-/* when recording ends set the ci-cam to not used */
-bool cDvbCi::StopRecordCI( uint64_t chanId, uint8_t source)
-{
-	dprintf(DEBUG_NORMAL, "%s -> %s\n", FILENAME, __func__);
-	std::list<tSlot*>::iterator it;
-	for (it = slot_data.begin(); it != slot_data.end(); ++it)
-	{
-		if ((*it)->inUse && (*it)->chanId == chanId && (*it)->source == source)
-		{
-			(*it)->inUse = false;
-			return true;
-		}
-	}
-	return false;
-}
-/* searching a not used slot matching to channel caids */
-SlotIt cDvbCi::FindFreeSlot(ca_map_t camap, uint8_t scrambled)
-{
-	dprintf(DEBUG_NORMAL, "%s -> %s\n", FILENAME, __func__);
-	std::list<tSlot*>::iterator it;
-	ca_map_iterator_t caIt;
-	unsigned int i;
-	for (it = slot_data.begin(); it != slot_data.end(); ++it)
-	{
-		if ((*it)->camIsReady && (*it)->hasCAManager && (*it)->hasAppManager && !(*it)->inUse)
-		{
-			(*it)->scrambled = scrambled;
-			if (scrambled)
-			{
-				for (i = 0; i < (*it)->cam_caids.size(); i++)
-				{
-					caIt = camap.find((*it)->cam_caids[i]);
-					if (caIt != camap.end())
-					{
-						dprintf(DEBUG_NORMAL, "Found: %04x\n", *caIt);
-						return it;
-					}
-					else
-					{
-						(*it)->scrambled = 0;
-					}
-				}
-			}
-			else
-			{
-				return it;
-			}
-		}
-	}
-	return it;
-}
-
+//
 cDvbCi::cDvbCi(int Slots) 
 {
-	printf("%s:%s(%d)\n", FILENAME, __FUNCTION__, Slots);
+	printf("%s:%s\n", FILENAME, __FUNCTION__);
 
 	int fd, i;
 	char filename[128];
@@ -1053,25 +809,16 @@ cDvbCi::cDvbCi(int Slots)
 			slot->pollConnection = false;
 			slot->camIsReady = false;
 
-			slot->DataLast = false;
-			slot->DataRCV = false;
-			slot->SidBlackListed = false;
-			slot->newCapmt = false;
-			slot->inUse = false;
-			slot->chanId = 0;
-			slot->pmtlen = 0;
-			slot->scrambled = 0;
-			memset(slot->pmtdata, 0, sizeof(slot->pmtdata));
-
 			slot->hasMMIManager = false;
 			slot->hasCAManager = false;
 			slot->hasDateTime = false;
 			slot->hasAppManager = false;
+
 			slot->mmiOpened = false;
 
-			slot->counter = 0;
 			slot->init = false;
 	    
+			slot->caPmt = NULL;
 			slot->source = TUNER_A;
 
 			sprintf(slot->name, "unknown module %d", i);
@@ -1081,7 +828,6 @@ cDvbCi::cDvbCi(int Slots)
 			/* now reset the slot so the poll pri can happen in the thread */
 			reset(i); 
 
-			active_cams++;
 			/* create a thread for each slot */	  
 			if (pthread_create(&slot->slot_thread, 0, execute_thread,  (void*)slot)) 
 			{
@@ -1163,46 +909,7 @@ void cDvbCi::reset(int slot)
 
 	if (haveFound)
 	{
-		active_cams--;
-		(*it)->status = eStatusReset;
-		usleep(200000);
-		eDVBCISession::deleteSessions((tSlot*)(*it));
-		(*it)->mmiSession = NULL;
-		(*it)->hasMMIManager = false;
-		(*it)->hasCAManager = false;
-		(*it)->hasDateTime = false;
-		(*it)->hasAppManager = false;
-		(*it)->mmiOpened = false;
-		(*it)->camIsReady = false;
-
-		(*it)->DataLast = false;
-		(*it)->DataRCV = false;
-		(*it)->SidBlackListed = false;
-		(*it)->bsids.clear();
-		(*it)->newCapmt = false;
-		(*it)->inUse = false;
-		(*it)->chanId = 0;
-		(*it)->scrambled = 0;
-		(*it)->pmtlen = 0;
-		memset((*it)->pmtdata, 0, sizeof((*it)->pmtdata));
-
-		(*it)->counter = 0;
-		(*it)->init = false;
-		(*it)->pollConnection = false;
-		sprintf((*it)->name, "unknown module %d", (*it)->slot);
-		(*it)->cam_caids.clear();
-
-		(*it)->source = TUNER_A;
-
-		while((*it)->sendqueue.size())
-		{
-			delete [] (*it)->sendqueue.top().data;
-			(*it)->sendqueue.pop();
-		}
-
 		if (ioctl((*it)->fd, CA_RESET, (*it)->slot) < 0)
 			printf("IOCTL CA_RESET failed for slot %d\n", slot);
-		usleep(200000);
-		(*it)->status = eStatusNone;
 	}    
 }

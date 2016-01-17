@@ -54,7 +54,9 @@
 
 
 #if !defined (PLATFORM_COOLSTREAM)
+#if defined (ENABLE_CI)
 extern CCAMMenuHandler * g_CamHandler;		// defined neutrino.cpp
+#endif
 #endif
 
 extern int FrontendCount;			// defined in zapit.cpp

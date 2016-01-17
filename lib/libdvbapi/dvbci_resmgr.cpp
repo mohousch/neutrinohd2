@@ -1,29 +1,29 @@
 /* DVB CI Resource Manager */
 #include <stdio.h>
-#include <system/debug.h>
 
 #include "dvbci_resmgr.h"
 
 int eDVBCIResourceManagerSession::receivedAPDU(const unsigned char *tag,const void *data, int len)
 {
-	dprintf(DEBUG_DEBUG, "eDVBCIResourceManagerSession::%s >\n", __func__);
-	printf("SESSION(%d) %02x %02x %02x (len = %d):\n", session_nb, tag[0], tag[1], tag[2], len);
-
-	if (len)
-	{
-		for (int i=0; i<len; i++)
-			printf("%02x ", ((const unsigned char*)data)[i]);
-		printf("\n");
-	}
-
+#if 1
+	printf("eDVBCIResourceManagerSession::%s >\n", __func__);
+	printf("SESSION(%d) %02x %02x %02x (len = %d): \n", session_nb, tag[0], tag[1], tag[2], len);
+#else
+	printf("SESSION(%d) %02x %02x %02x: \n", session_nb, tag[0], tag[1], tag[2]); 
+#endif
+	for (int i=0; i<len; i++)
+		printf("%02x ", ((const unsigned char*)data)[i]);
+	printf("\n");
 	if ((tag[0]==0x9f) && (tag[1]==0x80))
 	{
 		switch (tag[2])
 		{
 		case 0x10:  // profile enquiry
-			printf("cam fragt was ich kann\n");
+			printf("cam fragt was ich kann.");
 			state=stateProfileEnquiry;
-			dprintf(DEBUG_DEBUG, "%s <\n", __func__);
+#if 1
+			printf("%s <\n", __func__);
+#endif
 			return 1;
 			break;
 		case 0x11: // Tprofile
@@ -31,14 +31,14 @@ int eDVBCIResourceManagerSession::receivedAPDU(const unsigned char *tag,const vo
 			if (!len)
 				printf("nichts\n");
 			else
-			{
 				for (int i=0; i<len; i++)
 					printf("%02x ", ((const unsigned char*)data)[i]);
-				printf("\n");
-			}
+
 			if (state == stateFirstProfileEnquiry)
 			{
-				dprintf(DEBUG_DEBUG, "%s <\n", __func__);
+#if 1
+				printf("%s <\n", __func__);
+#endif
 				// profile change
 				return 1;
 			}
@@ -49,13 +49,17 @@ int eDVBCIResourceManagerSession::receivedAPDU(const unsigned char *tag,const vo
 		}
 	}
 	
-	dprintf(DEBUG_DEBUG, "%s <\n", __func__);
+#if 1
+	printf("%s <\n", __func__);
+#endif
 	return 0;
 }
 
 int eDVBCIResourceManagerSession::doAction()
 {
-	dprintf(DEBUG_DEBUG, "%s >\n", __func__);
+#if 1
+	printf("%s >\n", __func__);
+#endif
 	switch (state)
 	{
 	case stateStarted:
@@ -63,7 +67,9 @@ int eDVBCIResourceManagerSession::doAction()
 		const unsigned char tag[3]={0x9F, 0x80, 0x10}; // profile enquiry
 		sendAPDU(tag);
 		state = stateFirstProfileEnquiry;
-		dprintf(DEBUG_DEBUG, "%s <\n", __func__);
+#if 1
+		printf("%s <\n", __func__);
+#endif
 		return 0;
 	}
 	case stateFirstProfileEnquiry:
@@ -71,7 +77,9 @@ int eDVBCIResourceManagerSession::doAction()
 		const unsigned char tag[3]={0x9F, 0x80, 0x12}; // profile change
 		sendAPDU(tag);
 		state=stateProfileChange;
-		dprintf(DEBUG_DEBUG, "%s <\n", __func__);
+#if 1
+		printf("%s <\n", __func__);
+#endif
 		return 0;
 	}
 	case stateProfileChange:
@@ -101,6 +109,8 @@ int eDVBCIResourceManagerSession::doAction()
 	default:
 		break;
 	}
-	dprintf(DEBUG_DEBUG, "%s <\n", __func__);
+#if 1
+	printf("%s <\n", __func__);
+#endif
 	return 0;
 }
