@@ -3286,6 +3286,8 @@ int startPlayBack(CZapitChannel * thisChannel)
 	{
 		dprintf(DEBUG_NORMAL, "zapit:startPlayBack: pmtpid 0x%X videopid 0x%X audiopid 0x%X\n", thisChannel->getPmtPid(), thisChannel->getVideoPid(), thisChannel->getPreAudioPid() );
 
+		closeAVDecoder();
+
 		// build channel url
 		std::string ChannelURL;
 
@@ -3644,6 +3646,8 @@ int stopPlayBack(bool sendPmt)
 	else
 	{
 		playback->Close();
+
+		openAVDecoder();
 	}
 
 	return 0;
@@ -3652,29 +3656,26 @@ int stopPlayBack(bool sendPmt)
 void closeAVDecoder(void)
 {
 #if !defined (USE_OPENGL)
-	if(!g_settings.satip_allow_satip)
-	{
-		// close videodecoder
-		if(videoDecoder)
-			videoDecoder->Close();
+	// close videodecoder
+	if(videoDecoder)
+		videoDecoder->Close();
 	
-		// close audiodecoder
-		if(audioDecoder)
-			audioDecoder->Close();
-	}
+	// close audiodecoder
+	if(audioDecoder)
+		audioDecoder->Close();
 #endif
 }
 
 void openAVDecoder(void)
 {
 #if !defined (USE_OPENGL)
-	if(!g_settings.satip_allow_satip)
+	if(videoDecoder)
 	{
-		if(videoDecoder)
-		{
-			// open video decoder
-			videoDecoder->Open(live_fe);
+		// open video decoder
+		videoDecoder->Open(live_fe);
 	
+		if(!g_settings.satip_allow_satip)
+		{
 			// set source
 			videoDecoder->setSource(VIDEO_SOURCE_DEMUX);	
 		
@@ -3682,21 +3683,24 @@ void openAVDecoder(void)
 			// StreamType
 			videoDecoder->SetStreamType(STREAM_TYPE_TRANSPORT);
 #endif
-		}	
+		}
+	}	
 	
-		if(audioDecoder)
-		{
-			// open audiodecoder
-			audioDecoder->Open(live_fe);
+	if(audioDecoder)
+	{
+		// open audiodecoder
+		audioDecoder->Open(live_fe);
 		
+		if(!g_settings.satip_allow_satip)
+		{
 			// set source
 			audioDecoder->setSource(AUDIO_SOURCE_DEMUX);
 	
 #if defined (__sh__)		
 			// StreamType
 			audioDecoder->SetStreamType(STREAM_TYPE_TRANSPORT);
-#endif	
-		}
+#endif
+		}	
 	}
 #endif
 }
