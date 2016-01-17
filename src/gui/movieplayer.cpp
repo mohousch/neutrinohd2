@@ -1028,8 +1028,7 @@ void CMoviePlayerGui::PlayFile(void)
 			start_play = false;
 			
 			// stop playing if already playing (multiselect)
-			if(playback->playing)
-				playback->Close();
+			playback->Close();
 
 			// init player
 #if defined (PLATFORM_COOLSTREAM)

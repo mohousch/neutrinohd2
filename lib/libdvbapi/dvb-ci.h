@@ -30,6 +30,7 @@
 
 #include <zapit/include/zapit/ci.h>
 
+
 #define MAX_MMI_ITEMS 20
 #define MAX_MMI_TEXT_LEN 255
 #define MAX_MMI_CHOICE_TEXT_LEN 255
@@ -151,7 +152,8 @@ eData sendData(tSlot *slot, unsigned char* data, int len);
 
 typedef void (*SEND_MSG_HOOK) (unsigned int msg, unsigned int data);
 
-class cDvbCi {
+class cDvbCi 
+{
 	private:
 		int slots;
 

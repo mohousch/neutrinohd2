@@ -57,7 +57,6 @@ static const char * FILENAME = "dvb-ci.cpp";
 #define TAG_ENTER_MENU                       0x9f8022
 
 extern CRCInput *g_RCInput;
-extern int FrontendCount;
 
 bool cDvbCi::checkQueueSize(tSlot* slot)
 {
@@ -78,7 +77,6 @@ void cDvbCi::CI_MenuAnswer(unsigned char bSlotIndex,unsigned char choice)
 				(*it)->mmiSession->answerText((int) choice);
 		}
 	}
-
 }
 
 void cDvbCi::CI_Answer(unsigned char bSlotIndex,unsigned char *pBuffer,unsigned char nLength)
@@ -106,7 +104,6 @@ void cDvbCi::CI_CloseMMI(unsigned char bSlotIndex)
 
 	std::list<tSlot*>::iterator it;
 	
-
         for(it = slot_data.begin(); it != slot_data.end(); ++it)
         {
 		if ((*it)->slot == bSlotIndex) 
@@ -186,8 +183,6 @@ eData waitData(int fd, unsigned char* buffer, int* len)
 {
 	int        retval;
 	struct      pollfd fds;
-
-	//printf("%s: %d\n", __func__, *len);
 	
 	fds.fd = fd;
 	fds.events = POLLOUT | POLLPRI | POLLIN;
@@ -300,8 +295,6 @@ eData sendData(tSlot* slot, unsigned char* data, int len)
 //send a transport connection create request
 bool sendCreateTC(tSlot* slot)
 {
-	//printf("%s:%s >\n", FILENAME, __FUNCTION__);
-	
 	unsigned char* data = (unsigned char*) malloc(sizeof(char) * 5);
 	
 	data[0] = slot->slot;
@@ -311,8 +304,6 @@ bool sendCreateTC(tSlot* slot)
 	data[4] = slot->slot + 1 	/*conid*/;
 
 	sendData(slot, data, 5);
-
-	//printf("%s:%s <\n", FILENAME, __FUNCTION__);
 	
 	return true;
 }
@@ -508,8 +499,6 @@ void cDvbCi::slot_pollthread(void *c)
 						if (ioctl(slot->fd, CA_GET_SLOT_INFO, &info) < 0)
 							printf("IOCTL CA_GET_SLOT_INFO failed for slot %d\n", slot->slot);
 
-						//printf("flags %d %d %d ->slot %d\n", info.flags, CA_CI_MODULE_READY, info.flags & CA_CI_MODULE_READY, slot->slot);
-
 						if (info.flags & CA_CI_MODULE_READY)
 						{
 							printf("1. cam (%d) status changed ->cam now present\n", slot->slot);
@@ -554,8 +543,6 @@ void cDvbCi::slot_pollthread(void *c)
 
 					slot->pollConnection = false;
 					
-					//printf("%d: s_id = %d, c_id = %d\n", slot->slot, s_id, c_id);
-					
 					d = data;
 
 					/* taken from the dvb-apps */
@@ -582,8 +569,6 @@ void cDvbCi::slot_pollthread(void *c)
 						}
 
 						slot->connection_id = d[1 + length_field_len];
-
-						//printf("Setting connection_id from received data to %d\n", slot->connection_id);
 
 						d += 1 + length_field_len + 1;
 						data_length -= (1 + length_field_len + 1);
@@ -745,10 +730,7 @@ bool cDvbCi::SendCaPMT(CCaPmt *caPmt, int source)
 			unsigned char buffer[3 + get_length_field_size(size) + size];
 			
 			// get len and fill buffer
-			printf(" %d, %d\n", get_length_field_size(size), size);
 			int len = caPmt->writeToBuffer(buffer, 0, 0xff);
-
-			dprintf(DEBUG_NORMAL, "capmt(%d): > \n", len);
 
 			if ((*it)->hasCAManager)
 				(*it)->camgrSession->sendSPDU(0x90, 0, 0, buffer, len);
@@ -847,7 +829,7 @@ static cDvbCi* pDvbCiInstance = NULL;
 
 cDvbCi * cDvbCi::getInstance()
 {
-	printf("%s:%s\n", FILENAME, __FUNCTION__);
+	dprintf(DEBUG_NORMAL, "%s:%s\n", FILENAME, __FUNCTION__);
 	
 	if (pDvbCiInstance == NULL)
 		pDvbCiInstance = new cDvbCi(MAX_SLOTS);		
@@ -881,8 +863,6 @@ bool cDvbCi::GetName(int slot, char * name)
 	
         for(it = slot_data.begin(); it != slot_data.end(); ++it)
         {
-		//printf("%d. name = %s, %p\n", (*it)->slot, (*it)->name, (*it));
-		
 		if ((*it)->slot == slot) 
 		{
 			strcpy(name, (*it)->name);
@@ -913,3 +893,4 @@ void cDvbCi::reset(int slot)
 			printf("IOCTL CA_RESET failed for slot %d\n", slot);
 	}    
 }
+

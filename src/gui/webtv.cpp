@@ -536,10 +536,6 @@ void CWebTV::zapTo(int pos, bool rezap)
 	if ( pos != tuned || rezap) 
 	{
 		tuned = pos;
-		
-		// 
-		if(playback->playing)
-			playback->Stop();
 
 		playback->Close();
 	
