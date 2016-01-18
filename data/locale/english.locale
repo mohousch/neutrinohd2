@@ -623,7 +623,7 @@ infoviewer.noepg EPG not available
 infoviewer.notavailable Channel not available
 infoviewer.now now
 infoviewer.selecttime Timeselection
-infoviewer.plugins Plugins
+infoviewer.features Features
 infoviewer.subchan_disp_pos Subchannel display
 infoviewer.subservice Subservices
 infoviewer.waittime Waiting for time...

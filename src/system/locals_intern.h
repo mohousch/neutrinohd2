@@ -460,7 +460,7 @@ const char * locale_real_names[] = {
 	"infoviewer.notavailable",
 	"infoviewer.now",
 	"infoviewer.selecttime",
-	"infoviewer.plugins",
+	"infoviewer.features",
 	"infoviewer.subchan_disp_pos",
 	"infoviewer.subservice",
 	"infoviewer.waittime",
