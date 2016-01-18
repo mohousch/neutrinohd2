@@ -29,18 +29,21 @@ int eDVBCISession::buildLengthField(unsigned char *pkt, int len)
 	{
 		*pkt++=len;
 		return 1;
-	} else if (len < 256)
+	} 
+	else if (len < 256)
 	{
 		*pkt++=0x81;
 		*pkt++=len;
 		return 2;
-	} else if (len < 65535)
+	} 
+	else if (len < 65535)
 	{
 		*pkt++=0x82;
 		*pkt++=len>>8;
 		*pkt++=len;
 		return 3;
-	} else
+	} 
+	else
 	{
 		dprintf(DEBUG_DEBUG, "too big length\n");
 		exit(0);
@@ -49,14 +52,16 @@ int eDVBCISession::buildLengthField(unsigned char *pkt, int len)
 
 int eDVBCISession::parseLengthField(const unsigned char *pkt, int &len)
 {
-	len=0;
+	len = 0;
+
 	if (!(*pkt&0x80)) 
 	{
 		len = *pkt;
 
 		return 1;
 	}
-	for (int i=0; i<(pkt[0]&0x7F); ++i)
+
+	for (int i = 0; i < (pkt[0]&0x7F); ++i)
 	{
 		len <<= 8;
 		len |= pkt[i + 1];
@@ -74,6 +79,7 @@ void eDVBCISession::sendAPDU(const unsigned char *tag, const void *data, int len
 	l = buildLengthField(pkt + 3, len);
 	if (data)
 		memcpy(pkt + 3 + l, data, len);
+
 	sendSPDU(0x90, 0, 0, pkt, len + 3 + l);
 }
 
@@ -106,7 +112,7 @@ void eDVBCISession::sendSPDU(tSlot *slot, unsigned char tag, const void *data, i
 void eDVBCISession::sendOpenSessionResponse(tSlot *slot, unsigned char session_status, const unsigned char *resource_identifier, unsigned short session_nb)
 {
 	char pkt[6];
-	pkt[0]=session_status;
+	pkt[0] = session_status;
 	
 	printf("sendOpenSessionResponse\n");
 	
@@ -160,11 +166,11 @@ eDVBCISession* eDVBCISession::createSession(tSlot *slot, const unsigned char *re
 	switch (tag)
 	{
 		case 0x00010041:
-			sessions[session_nb - 1]=new eDVBCIResourceManagerSession;
+			sessions[session_nb - 1] = new eDVBCIResourceManagerSession;
 			dprintf(DEBUG_DEBUG, "RESOURCE MANAGER\n");
 			break;
 		case 0x00020041:
-			sessions[session_nb - 1]=new eDVBCIApplicationManagerSession(slot);
+			sessions[session_nb - 1] = new eDVBCIApplicationManagerSession(slot);
 			dprintf(DEBUG_DEBUG, "APPLICATION MANAGER\n");
 			break;
 		case 0x00030041:
@@ -172,7 +178,7 @@ eDVBCISession* eDVBCISession::createSession(tSlot *slot, const unsigned char *re
 			dprintf(DEBUG_DEBUG, "CA MANAGER\n");
 			break;
 		case 0x00240041:
-			sessions[session_nb - 1]=new eDVBCIDateTimeSession(slot);
+			sessions[session_nb - 1] = new eDVBCIDateTimeSession(slot);
 			dprintf(DEBUG_DEBUG, "DATE-TIME\n");
 			break;
 		case 0x00400041:
@@ -218,7 +224,7 @@ void eDVBCISession::handleClose()
 
 int eDVBCISession::pollAll()
 {
-	for (int session_nb=1; session_nb < SLMS; ++session_nb)
+	for (int session_nb = 1; session_nb < SLMS; ++session_nb)
         {
 		if (sessions[session_nb-1])
 		{
@@ -227,10 +233,10 @@ int eDVBCISession::pollAll()
 			if (sessions[session_nb-1]->state == stateInDeletion)
 			{
 				sessions[session_nb-1]->handleClose();
-				sessions[session_nb-1]=0;
+				sessions[session_nb-1] = 0;
 				r=1;
 			} else
-				r=sessions[session_nb-1]->poll();
+				r=sessions[session_nb - 1]->poll();
 
 			if (r)
 			{

@@ -12,6 +12,7 @@
 #include <driver/rcinput.h>
 #include <system/debug.h>
 
+
 extern CRCInput *g_RCInput;
 
 eDVBCIMMISession::eDVBCIMMISession(tSlot *tslot)
@@ -46,7 +47,7 @@ int eDVBCIMMISession::receivedAPDU(const unsigned char *tag, const void *data, i
 		    	break;
 
 		    	case 0x01: /* display control */
-		       		state=stateDisplayReply;
+		       		state = stateDisplayReply;
 		       		return 1;
 		    		break;
 
@@ -60,7 +61,7 @@ int eDVBCIMMISession::receivedAPDU(const unsigned char *tag, const void *data, i
 		
 				int textlen = len - 2;
 		
-				if ((d+2) > max)
+				if ((d + 2) > max)
 				    	break;
 				
 				int blind = *d++ & 1;
@@ -68,7 +69,7 @@ int eDVBCIMMISession::receivedAPDU(const unsigned char *tag, const void *data, i
 			
 				printf("%d bytes text\n", textlen);
 				
-				if ((d+textlen) > max)
+				if ((d + textlen) > max)
 				   	break;
 		
 				char str[textlen + 1];
@@ -114,11 +115,11 @@ int eDVBCIMMISession::receivedAPDU(const unsigned char *tag, const void *data, i
 			       	int n = *d++;
 
 			       	if (n == 0xFF)
-				   	n=0;
+				   	n = 0;
 			       	else
 				   	n++;
 
-			       	for (int i=0; i < (n+3); ++i)
+			       	for (int i = 0; i < (n + 3); ++i)
 			       	{
 				       int textlen;
 				       if ((d + 3) > max)
@@ -181,7 +182,7 @@ int eDVBCIMMISession::doAction()
 	switch (state)
 	{
 		case stateStarted:
-			state=stateIdle;
+			state = stateIdle;
 			break;
 		case stateDisplayReply:
 		{
