@@ -150,7 +150,7 @@ class CInfoBox
 		void    scrollPageDown(const int pages);
 		void    scrollPageUp(const int pages);
 		int	result(void);
-		bool	setText(const std::string* newText, std::string _thumbnail = "", int _lx = 0, int _ly = 0, int _tw = 0, int _th = 0);
+		bool	setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0);
 };
 
 extern int InfoBox(const neutrino_locale_t Caption, 

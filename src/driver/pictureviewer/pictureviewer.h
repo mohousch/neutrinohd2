@@ -89,7 +89,6 @@ class CPictureViewer
 		
 		// for picons
 		bool DisplayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale = false, bool center_x = true, bool center_y = true);
-		void getSize(const std::string &name, int* width, int *height, int * nbpp);
 		bool checkLogo(t_channel_id channel_id);
 		void getLogoSize(t_channel_id channel_id, int * width, int * height, int * bpp);
 };

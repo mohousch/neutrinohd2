@@ -704,14 +704,14 @@ int CInfoBox::exec( int timeout, int returnDefaultOnTimeout)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _lx, int _ly, int _tw, int _th)
+bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _tw, int _th)
 {
 	bool _result = false;
 	
 	// update text in textbox if there is one
 	if(m_pcTextBox != NULL && newText != NULL)
 	{
-		_result = m_pcTextBox->setText(newText, _thumbnail, _lx, _ly, _tw, _th );
+		_result = m_pcTextBox->setText(newText, _thumbnail, _tw, _th );
 		
 		if(m_nMode & AUTO_WIDTH || m_nMode & AUTO_HIGH)
 		{

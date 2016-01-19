@@ -1759,7 +1759,8 @@ void CChannelList::paintItem(int pos)
 
 		// channel number
 		int numpos = x + 5 + numwidth - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(tmp);
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(numpos, ypos + (iheight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), numwidth + 5, tmp, color, /*iheight*/0, true);
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(numpos, ypos + (iheight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), numwidth + 5, tmp, color, 0, true);
 
 		// name and description
 		int l = 0;
@@ -1776,6 +1777,7 @@ void CChannelList::paintItem(int pos)
 
 			if ( (width - numwidth - 60 - SCROLLBAR_WIDTH - prg_offset - ch_name_len - icon_ca_w - icon_hd_w - 4) < ch_desc_len ) //60:???
 				ch_desc_len = (width - numwidth - 60 - SCROLLBAR_WIDTH - icon_ca_w - icon_hd_w - 4 - ch_name_len - prg_offset); //30: hd icon width
+
 			if (ch_desc_len <= 0)
 				ch_desc_len = 0;
 			

@@ -466,45 +466,6 @@ void CPictureViewer::Cleanup()
 }
 
 // channels logos
-// get size
-extern int fh_png_id(const char *name);
-extern int png_load_ext(const char * name, unsigned char ** buffer, int * xp, int * yp, int * bpp);
-
-void CPictureViewer::getSize(const std::string &name, int * width, int * height, int * nbpp)
-{
-	unsigned char * rgbbuff;
-	int x, y;
-	int bpp = 0;
-	int load_ret;
-	
-	CFormathandler * fh;
-
-	fh = fh_getsize(name.c_str(), &x, &y, INT_MAX, INT_MAX);
-	
-	if (fh == NULL) 
-	{
-		*width = 0;
-		*height = 0;
-	}
-	
-	rgbbuff = (unsigned char *) malloc (x*y*4);
-	
-	if (rgbbuff != NULL) 
-	{
-		if ((name.find(".png") == (name.length() - 4)) && (fh_png_id(name.c_str())))
-			load_ret = png_load_ext(name.c_str(), &rgbbuff, &x, &y, &bpp);
-		else
-			load_ret = fh->get_pic(name.c_str(), &rgbbuff, &x, &y);
-		
-		if(load_ret == FH_ERROR_OK)
-		{
-			*nbpp = bpp;
-			*width = x;
-			*height = y;
-		} 
-	}
-}
-
 // check for logo
 bool CPictureViewer::checkLogo(t_channel_id channel_id)
 {	
@@ -559,7 +520,7 @@ void CPictureViewer::getLogoSize(t_channel_id channel_id, int * width, int * hei
 	if(logo_ok)
 	{
 		// get logo real size
-		getSize(logo_name.c_str(), width, height, bpp);
+		CFrameBuffer::getInstance()->getSize(logo_name.c_str(), width, height, bpp);
 		
 		dprintf(DEBUG_INFO, "%s logo: %s (%dx%d) %dbpp\n", __FUNCTION__, logo_name.c_str(), *width, *height, *bpp);
 	}
@@ -598,7 +559,7 @@ bool CPictureViewer::DisplayLogo(t_channel_id channel_id, int posx, int posy, in
 	if(logo_ok)
 	{
 		// get logo real size
-		getSize(logo_name, &logo_w, &logo_h, &logo_bpp);
+		CFrameBuffer::getInstance()->getSize(logo_name, &logo_w, &logo_h, &logo_bpp);
 	
 		// scale only PNG logos
 		if( logo_name.find(".png") == (logo_name.length() - 4) )

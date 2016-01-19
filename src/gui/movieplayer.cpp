@@ -1905,18 +1905,32 @@ void CMoviePlayerGui::showFileInfo()
 	// thumbnail
 	int pich = 246;	//FIXME
 	int picw = 162; 	//FIXME
-	int lx = g_settings.screen_StartX + 50 + g_settings.screen_EndX - g_settings.screen_StartX - 100 - (picw + 10 + SCROLLBAR_WIDTH);
-	int ly = g_settings.screen_StartY + 50 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 20;
 		
 	if(access(Thumbnail.c_str(), F_OK))
 		Thumbnail = "";
+
+	if(access(Thumbnail.c_str(), F_OK))
+	{
+		int p_w = picw;
+		int p_h = pich;
+		int nbpp = 0;
+
+		CFrameBuffer::getInstance()->getSize(Thumbnail, &p_w, &p_h, &nbpp);
+
+		// scale
+		if(p_w <= picw && p_h <= pich)
+		{
+			picw = p_w;
+			pich = p_h;
+		}
+	}
 	
 	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
 	CInfoBox * infoBox = new CInfoBox(buffer.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
 
-	infoBox->setText(&buffer, Thumbnail, lx, ly, picw, pich);
+	infoBox->setText(&buffer, Thumbnail, picw, pich);
 	infoBox->exec();
 	delete infoBox;
 }

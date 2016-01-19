@@ -182,7 +182,9 @@ void CTextBox::initVar(void)
 
 	m_cLineArray.clear();
 	
-	lx = ly = tw = th = 0;
+	lx = m_cFrame.iX;
+	ly = m_cFrame.iY;
+	tw = th = 0;
 	thumbnail = "";
 }
 
@@ -523,7 +525,7 @@ void CTextBox::refresh(void)
 	refreshText();	
 }
 
-bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _lx, int _ly, int _tw, int _th)
+bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _tw, int _th)
 {
 	dprintf(DEBUG_INFO, "CTextBox::setText:\r\n");
 
@@ -533,10 +535,19 @@ bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _
 	if(!_thumbnail.empty() && !access(_thumbnail.c_str(), F_OK))
 	{
 		thumbnail = _thumbnail;
-		lx = _lx;
-		ly = _ly;
+
 		tw = _tw;
 		th = _th;
+
+		// check tw and th
+		if(th >= m_cFrame.iHeight)
+			th = m_cFrame.iHeight - 20;
+		
+		if(tw >= m_cFrame.iWidth)
+			tw = m_cFrame.iWidth -20;
+
+		lx = m_cFrame.iX + m_cFrame.iWidth - (tw + SCROLLBAR_WIDTH + 10);
+		ly = m_cFrame.iY + 10;
 	}
 	
 	// text

@@ -1063,7 +1063,7 @@ bool CFrameBuffer::paintIcon(const std::string & filename, const int x, const in
 	int dsize;
 	int  yy = y;
 
-	/* we cache and check original name */
+	// we cache and check original name
 	it = icon_cache.find(filename);
 	if(it == icon_cache.end()) 
 	{
@@ -1713,6 +1713,42 @@ CFormathandler * fh_getsize(const char *name, int *x, int *y, int width_wanted, 
 	}
 
 	return (NULL);
+}
+
+void CFrameBuffer::getSize(const std::string &name, int * width, int * height, int * nbpp)
+{
+	dprintf(DEBUG_DEBUG, "CFrameBuffer::getSize: name:%s\n", name.c_str());
+
+	unsigned char * rgbbuff;
+	int x, y;
+	int bpp = 0;
+	int load_ret;
+	CFormathandler * fh;
+
+	fh = fh_getsize(name.c_str(), &x, &y, INT_MAX, INT_MAX);
+	
+	if (fh == NULL) 
+	{
+		*width = 0;
+		*height = 0;
+	}
+	
+	rgbbuff = (unsigned char *) malloc (x*y*4);
+	
+	if (rgbbuff != NULL) 
+	{
+		if ((name.find(".png") == (name.length() - 4)) && (fh_png_id(name.c_str())))
+			load_ret = png_load_ext(name.c_str(), &rgbbuff, &x, &y, &bpp);
+		else
+			load_ret = fh->get_pic(name.c_str(), &rgbbuff, &x, &y);
+		
+		if(load_ret == FH_ERROR_OK)
+		{
+			*nbpp = bpp;
+			*width = x;
+			*height = y;
+		} 
+	}
 }
 
 fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int height)

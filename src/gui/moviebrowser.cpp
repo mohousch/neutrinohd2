@@ -600,7 +600,7 @@ void CMovieBrowser::initFrames(void)
 	m_cBoxFrameBrowserList.iX = 		m_cBoxFrame.iX;
 	m_cBoxFrameBrowserList.iY = 		m_cBoxFrame.iY + m_cBoxFrameTitleRel.iHeight;
 	m_cBoxFrameBrowserList.iWidth = 	m_cBoxFrame.iWidth;
-	m_cBoxFrameBrowserList.iHeight = 	m_settings.browserFrameHeight; //m_cBoxFrame.iHeight - (m_cBoxFrame.iHeight>>1) - (INTER_FRAME_SPACE>>1);
+	m_cBoxFrameBrowserList.iHeight = 	m_settings.browserFrameHeight;
 
 	m_cBoxFrameFootRel.iX = 		0;
 	m_cBoxFrameFootRel.iY = 		m_cBoxFrame.iHeight - m_pcFontFoot->getHeight()*2;//FIXME
@@ -1213,9 +1213,13 @@ int CMovieBrowser::paint(void)
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD));	
 
 	m_pcBrowser = new CListFrame(&m_browserListLines, NULL, CListFrame::SCROLL | CListFrame::HEADER_LINE, &m_cBoxFrameBrowserList);
+
 	m_pcLastPlay = new CListFrame(&m_playListLines, NULL, CListFrame::SCROLL | CListFrame::HEADER_LINE | CListFrame::TITLE, &m_cBoxFrameLastPlayList, g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD_PLAYLIST), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
+
 	m_pcLastRecord = new CListFrame(&m_recordListLines, NULL, CListFrame::SCROLL | CListFrame::HEADER_LINE | CListFrame::TITLE, &m_cBoxFrameLastRecordList, g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD_RECORDLIST), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
+
 	m_pcFilter = new CListFrame(&m_FilterLines, NULL, CListFrame::SCROLL | CListFrame::TITLE, &m_cBoxFrameFilter, g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD_FILTER), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
+
 	m_pcInfo = new CTextBox(" ", NULL, CTextBox::SCROLL, &m_cBoxFrameInfo);	
 
 	if(m_pcBrowser == NULL || m_pcLastPlay == NULL || m_pcLastRecord == NULL || m_pcInfo == NULL || m_pcFilter == NULL)
@@ -1310,23 +1314,31 @@ void CMovieBrowser::refreshMovieInfo(void)
 	}
 	else
 	{
-		int picw = 0;
-		int pich = 0;
-		int lx = 0;
-		int ly = 0;
+		int picw = 320;
+		int pich = 256;
 		
 		std::string fname = m_movieSelectionHandler->tfile;
 		
 		if( (!fname.empty() && !access(fname.c_str(), F_OK)) && m_settings.gui != MB_GUI_FILTER )
 		{
-			pich = m_cBoxFrameInfo.iHeight - 20;
-			picw = pich * (4.0 / 3);		// 4/3 format pics
-			
-			lx = m_cBoxFrameInfo.iX + m_cBoxFrameInfo.iWidth - (picw + SCROLLBAR_WIDTH + 10);
-			ly = m_cBoxFrameInfo.iY + (m_cBoxFrameInfo.iHeight - pich)/2;
+			if(show_mode == MB_SHOW_FILES)
+			{
+				int p_w = picw;
+				int p_h = pich;
+				int nbpp = 0;
+
+				m_pcWindow->getSize(fname, &p_w, &p_h, &nbpp);
+
+				// scale
+				if(p_w <= picw && p_h <= pich)
+				{
+					picw = p_w;
+					pich = p_h;
+				}
+			}
 		}
 		
-		m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, fname, lx, ly, picw, pich);
+		m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, fname, picw, pich);
 	}
 	
 	m_pcWindow->blit();
