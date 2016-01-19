@@ -582,14 +582,19 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 
 	if(access(movie_info.tfile.c_str(), F_OK))
 	{
-		int p_w = picw;
-		int p_h = pich;
+		int p_w = 0;
+		int p_h = 0;
 		int nbpp = 0;
 
 		CFrameBuffer::getInstance()->getSize(movie_info.tfile, &p_w, &p_h, &nbpp);
 
 		// scale
-		if(p_w <= picw && p_h <= pich)
+		if(p_w > picw || p_h > pich)
+		{
+			picw = 246;
+			pich = 162;
+		}
+		else
 		{
 			picw = p_w;
 			pich = p_h;
