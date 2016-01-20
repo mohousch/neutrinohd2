@@ -59,7 +59,7 @@
 
 #include <system/debug.h>
 
-#define WINDOW_FRAME_BORDER_WIDTH	 	4
+
 #define ADD_FOOT_HEIGHT	 			20
 #define	TEXT_BORDER_WIDTH			8
 #define	TITLE_ICON_WIDTH			(40 - TEXT_BORDER_WIDTH)
@@ -111,24 +111,18 @@ CInfoBox::CInfoBox(  const char * text,
 	
 	m_nMode	= _mode;
 
-	if(m_nMode & BORDER)
-		m_nWindowFrameBorderWidth = WINDOW_FRAME_BORDER_WIDTH;
-	else
-		m_nWindowFrameBorderWidth = 0;
-
-
-	/* Initialise the window frames first */
+	// initialise the window frames first
 	initFramesRel();
 
 	m_pcTextBox = new CTextBox(text, fontText, _mode, &m_cBoxFrameText);
 
 	if(_mode & AUTO_WIDTH || _mode & AUTO_HIGH)
 	{
-		/* window might changed in size ...*/
+		// window might changed in size
 		m_cBoxFrameText = m_pcTextBox->getWindowsPos();
 
-		m_cBoxFrame.iWidth = m_cBoxFrameText.iWidth + m_nWindowFrameBorderWidth;
-		m_cBoxFrame.iHeight = m_cBoxFrameText.iHeight + m_cBoxFrameFootRel.iHeight +  m_cBoxFrameTitleRel.iHeight + m_nWindowFrameBorderWidth;
+		m_cBoxFrame.iWidth = m_cBoxFrameText.iWidth;
+		m_cBoxFrame.iHeight = m_cBoxFrameText.iHeight + m_cBoxFrameFootRel.iHeight +  m_cBoxFrameTitleRel.iHeight;
 
 		initFramesRel();
 	}
@@ -157,7 +151,7 @@ CInfoBox::CInfoBox(const char * text)
 
 	m_pcTextBox = new CTextBox(text);
 	
-	/* Initialise the window frames first */
+	// initialise the window frames first
 	initFramesRel();
 }
 
@@ -212,7 +206,7 @@ void CInfoBox::initVar(void)
 {
 	m_cTitle = "";
 	m_cIcon = "";
-	m_nMode = SCROLL | TITLE | BORDER ;
+	m_nMode = SCROLL | TITLE;
 
 	// set the title varianles
 	m_pcFontTitle  =  DEFAULT_TITLE_FONT;
@@ -222,12 +216,6 @@ void CInfoBox::initVar(void)
 	m_pcFontFoot  =  DEFAULT_FOOT_FONT;
 	m_nFontFootHeight = m_pcFontFoot->getHeight();
 	m_nFootButtons = 0;
-
-	// set the main frame border width
-	if(m_nMode & BORDER)
-		m_nWindowFrameBorderWidth = WINDOW_FRAME_BORDER_WIDTH;
-	else
-		m_nWindowFrameBorderWidth = 0;
 
 	// set the main frame to default
 	m_cBoxFrame.iX		= g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - MIN_WINDOW_WIDTH) >>1);
@@ -253,7 +241,7 @@ void CInfoBox::initFramesRel(void)
 	{
 		m_cBoxFrameTitleRel.iX		= 0;
 		m_cBoxFrameTitleRel.iY		= 0;
-		m_cBoxFrameTitleRel.iWidth	= m_cBoxFrame.iWidth - m_nWindowFrameBorderWidth;
+		m_cBoxFrameTitleRel.iWidth	= m_cBoxFrame.iWidth;
 		m_cBoxFrameTitleRel.iHeight	= m_nFontTitleHeight + 2;
 	}
 	else
@@ -268,8 +256,8 @@ void CInfoBox::initFramesRel(void)
 	if(m_nMode & FOOT)
 	{
 		m_cBoxFrameFootRel.iX		= 0;
-		m_cBoxFrameFootRel.iY		= m_cBoxFrame.iHeight - m_nFontFootHeight - m_nWindowFrameBorderWidth - ADD_FOOT_HEIGHT;
-		m_cBoxFrameFootRel.iWidth	= m_cBoxFrame.iWidth - m_nWindowFrameBorderWidth;
+		m_cBoxFrameFootRel.iY		= m_cBoxFrame.iHeight - m_nFontFootHeight - ADD_FOOT_HEIGHT;
+		m_cBoxFrameFootRel.iWidth	= m_cBoxFrame.iWidth;
 		m_cBoxFrameFootRel.iHeight	= m_nFontFootHeight + ADD_FOOT_HEIGHT;
 	}
 	else
@@ -283,8 +271,8 @@ void CInfoBox::initFramesRel(void)
 	// init the text frame
 	m_cBoxFrameText.iY		= m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight;
 	m_cBoxFrameText.iX		= m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX;
-	m_cBoxFrameText.iHeight	= m_cBoxFrame.iHeight - m_cBoxFrameTitleRel.iHeight - m_cBoxFrameFootRel.iHeight - m_nWindowFrameBorderWidth;
-	m_cBoxFrameText.iWidth	= m_cBoxFrame.iWidth  - m_nWindowFrameBorderWidth;		
+	m_cBoxFrameText.iHeight	= m_cBoxFrame.iHeight - m_cBoxFrameTitleRel.iHeight - m_cBoxFrameFootRel.iHeight;
+	m_cBoxFrameText.iWidth	= m_cBoxFrame.iWidth;		
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -451,21 +439,8 @@ void CInfoBox::refreshTitle(void)
 	
 		m_pcWindow->paintIcon(m_cIcon.c_str(), m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
 	}
-	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + TEXT_BORDER_WIDTH, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + iw + TEXT_BORDER_WIDTH), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
-}
 
-//////////////////////////////////////////////////////////////////////
-// Function Name:	RefreshBorder	
-// Description:		
-// Parameters:		
-// Data IN/OUT:		
-// Return:		
-// Notes:		
-//////////////////////////////////////////////////////////////////////
-void CInfoBox::refreshBorder(void)
-{
-	if(!(m_nMode & BORDER && m_nWindowFrameBorderWidth > 0))
-		return;
+	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + TEXT_BORDER_WIDTH, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + iw + TEXT_BORDER_WIDTH), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -585,7 +560,6 @@ void CInfoBox::refresh(void)
 	//re-draw message box window
 	refreshTitle();
 	refreshFoot();
-	refreshBorder();
 
 	// rep-draw textbox if there is one
 	if(m_pcTextBox != NULL)
@@ -704,22 +678,22 @@ int CInfoBox::exec( int timeout, int returnDefaultOnTimeout)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _tw, int _th)
+bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _tw, int _th, int tmode)
 {
 	bool _result = false;
 	
 	// update text in textbox if there is one
 	if(m_pcTextBox != NULL && newText != NULL)
 	{
-		_result = m_pcTextBox->setText(newText, _thumbnail, _tw, _th );
+		_result = m_pcTextBox->setText(newText, _thumbnail, _tw, _th, tmode);
 		
 		if(m_nMode & AUTO_WIDTH || m_nMode & AUTO_HIGH)
 		{
 			// window might changed in size
 			m_cBoxFrameText = m_pcTextBox->getWindowsPos();
 
-			m_cBoxFrame.iWidth = m_cBoxFrameText.iWidth + m_nWindowFrameBorderWidth;
-			m_cBoxFrame.iHeight = m_cBoxFrameText.iHeight + m_cBoxFrameFootRel.iHeight +  m_cBoxFrameTitleRel.iHeight + m_nWindowFrameBorderWidth;
+			m_cBoxFrame.iWidth = m_cBoxFrameText.iWidth;
+			m_cBoxFrame.iHeight = m_cBoxFrameText.iHeight + m_cBoxFrameFootRel.iHeight +  m_cBoxFrameTitleRel.iHeight;
 
 			initFramesRel();
 
@@ -774,7 +748,7 @@ int InfoBox(const neutrino_locale_t Caption, const char * const Text, const CInf
 //////////////////////////////////////////////////////////////////////
 int InfoBox(const char * const Title,const char * const Text, const CInfoBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int /*Width*/, const int timeout, bool returnDefaultOnTimeout)
 {
-	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
+	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT;
 	
 	CBox position(g_settings.screen_StartX + 30, g_settings.screen_StartY + 30, g_settings.screen_EndX - g_settings.screen_StartX - 60, g_settings.screen_EndY - g_settings.screen_StartY - 60); 
 	

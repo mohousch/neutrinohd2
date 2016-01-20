@@ -60,6 +60,8 @@
 #include <driver/framebuffer.h>
 
 
+#define BIG_FONT_FAKTOR 1.5
+
 class CInfoBox  
 {
 	public:
@@ -88,9 +90,8 @@ class CInfoBox
 			SCROLL		= 0x04,
 			TITLE		= 0x08,
 			FOOT		= 0x10,
-			BORDER		= 0x20,
-			CENTER		= 0x40,
-			NO_AUTO_LINEBREAK= 0x80
+			CENTER		= 0x20,
+			NO_AUTO_LINEBREAK= 0x40
 		}mode;
 
 	private:
@@ -100,7 +101,6 @@ class CInfoBox
 		void refreshFoot(void);
 		void refreshTitle(void);
 		void refreshText(void);
-		void refreshBorder(void);
 
 		// Variables
 		std::string m_cIcon;
@@ -112,8 +112,6 @@ class CInfoBox
 		CBox	m_cBoxFrameFootRel;
 
 		int m_nMode;
-
-		int m_nWindowFrameBorderWidth;
 
 		CFont *m_pcFontTitle;
 		int m_nFontTitleHeight;
@@ -127,6 +125,8 @@ class CInfoBox
 		CFrameBuffer * m_pcWindow;
 
 		result_	m_nResult;
+
+		bool bigFonts;
 
 	public:
 		virtual ~CInfoBox();
@@ -150,7 +150,7 @@ class CInfoBox
 		void    scrollPageDown(const int pages);
 		void    scrollPageUp(const int pages);
 		int	result(void);
-		bool	setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0);
+		bool	setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int tmode = CTextBox::TOP_RIGHT);
 };
 
 extern int InfoBox(const neutrino_locale_t Caption, 

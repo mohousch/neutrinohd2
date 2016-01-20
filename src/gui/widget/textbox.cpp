@@ -74,6 +74,8 @@
 #define MIN_WINDOW_WIDTH  	((g_settings.screen_EndX - g_settings.screen_StartX)>>1)
 #define MIN_WINDOW_HEIGHT 	40
 
+#define THUMBNAIL_OFFSET	3
+
 
 CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const CBox * position, fb_pixel_t textBackgroundColor)
 {
@@ -97,6 +99,7 @@ CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const 
 	}
 
 	m_nMode	= _mode;
+	m_tMode = TOP_RIGHT;
 
 	// in case of auto line break, we do no support auto width  yet
 	if( !(_mode & NO_AUTO_LINEBREAK))
@@ -159,6 +162,7 @@ void CTextBox::initVar(void)
 	
 	m_cText	= "";
 	m_nMode = SCROLL;
+	m_tMode = TOP_RIGHT;
 
 	m_pcFontText = NULL;
 	m_pcFontText = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1];
@@ -182,8 +186,8 @@ void CTextBox::initVar(void)
 
 	m_cLineArray.clear();
 	
-	lx = m_cFrame.iX;
-	ly = m_cFrame.iY;
+	lx = m_cFrame.iX + 10;
+	ly = m_cFrame.iY + 10;
 	tw = th = 0;
 	thumbnail = "";
 }
@@ -347,7 +351,7 @@ void CTextBox::refreshTextLineArray(void)
 						loop = false;
 				}
 				
-				//recalculate breaklinewidth for other pages or where pic dont exists
+				//recalculate breaklinewidth for other pages or when pic dont exists
 				if( (m_nNrOfLines > th / m_nFontTextHeight ) || (m_nNrOfLines > ((m_cFrameTextRel.iHeight - (2*TEXT_BORDER_WIDTH)) / m_nFontTextHeight)) )
 				{
 					if( m_nMode & AUTO_WIDTH)
@@ -420,7 +424,7 @@ void CTextBox::refreshText(void)
 	if( frameBuffer == NULL) 
 		return;
 
-	// Paint Text Background
+	// paint text background
 	frameBuffer->paintBoxRel(m_cFrameTextRel.iX + m_cFrame.iX, m_cFrameTextRel.iY + m_cFrame.iY, m_cFrameTextRel.iWidth, m_cFrameTextRel.iHeight, m_textBackgroundColor);
 
 	if( m_nNrOfLines <= 0) 
@@ -441,7 +445,7 @@ void CTextBox::refreshText(void)
 		}
 		
 		// picture
-		frameBuffer->DisplayImage(thumbnail.c_str(), lx + 3, ly + 3, tw - 3, th - 3);
+		frameBuffer->DisplayImage(thumbnail.c_str(), lx + THUMBNAIL_OFFSET, ly + THUMBNAIL_OFFSET, tw - THUMBNAIL_OFFSET, th - THUMBNAIL_OFFSET);
 	}
 	
 	int y = m_cFrameTextRel.iY + TEXT_BORDER_WIDTH;
@@ -457,10 +461,15 @@ void CTextBox::refreshText(void)
 			x_center = (m_cFrameTextRel.iWidth - m_pcFontText->getRenderWidth(m_cLineArray[i], true))>>1;
 		}
 		
-		//FIXME
-		if( !access(thumbnail.c_str(), F_OK) && (m_nCurrentPage == 0) && (lx < (m_cFrameTextRel.iX + m_cFrameTextRel.iWidth - tw - 10) && (m_nNrOfLines <= (th / m_nFontTextHeight) )) )
+		if( !access(thumbnail.c_str(), F_OK) && (m_nCurrentPage == 0))
 		{
-			x_center = tw + TEXT_BORDER_WIDTH;
+			if (m_tMode == TOP_LEFT)
+			{
+				if(i <= (th / m_nFontTextHeight))
+					x_center = tw + TEXT_BORDER_WIDTH;
+				else
+					x_center = 0;
+			}
 		}
 
 		m_pcFontText->RenderString(m_cFrameTextRel.iX + TEXT_BORDER_WIDTH + x_center + m_cFrame.iX, y + m_cFrame.iY, m_cFrameTextRel.iWidth, m_cLineArray[i].c_str(), COL_MENUCONTENT, 0, true); // UTF-8
@@ -520,14 +529,16 @@ void CTextBox::refresh(void)
 	
 	dprintf(DEBUG_DEBUG, "CTextBox::Refresh:\r\n");
 
-	//Paint text
+	// paint text
 	refreshScroll();
 	refreshText();	
 }
 
-bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _tw, int _th)
+bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _tw, int _th, int _tmode)
 {
 	dprintf(DEBUG_INFO, "CTextBox::setText:\r\n");
+
+	m_tMode = _tmode;
 
 	// thumbnail
 	thumbnail = "";
@@ -539,15 +550,41 @@ bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _
 		tw = _tw;
 		th = _th;
 
-		// check tw and th
-		if(th >= m_cFrame.iHeight)
-			th = m_cFrame.iHeight - 20;
+		// check th
+		if(m_cFrame.iHeight > MAX_WINDOW_HEIGHT/2)
+		{
+			if(th > m_cFrame.iHeight/2)
+				th = m_cFrame.iHeight/2 - 20;
+		}
+		else if(m_cFrame.iHeight <= MAX_WINDOW_HEIGHT/2)
+		{
+			if(th >= m_cFrame.iHeight)
+				th = m_cFrame.iHeight - 20;
+		}
 		
-		if(tw >= m_cFrame.iWidth)
-			tw = m_cFrame.iWidth -20;
+		// check tw
+		if(m_cFrame.iWidth > MAX_WINDOW_WIDTH/2)
+		{
+			if(tw > m_cFrame.iWidth/2)
+				tw = m_cFrame.iWidth/2 - 20;
+		}
+		else if(m_cFrame.iWidth <= MAX_WINDOW_WIDTH/2)
+		{
+			if(tw >= m_cFrame.iWidth)
+				tw = m_cFrame.iWidth - 20;
+		}
 
-		lx = m_cFrame.iX + m_cFrame.iWidth - (tw + SCROLLBAR_WIDTH + 10);
-		ly = m_cFrame.iY + 10;
+		// position
+		if(m_tMode == TOP_RIGHT)
+		{
+			lx = m_cFrame.iX + m_cFrame.iWidth - (tw + SCROLLBAR_WIDTH + 10);
+			ly = m_cFrame.iY + 10;
+		}
+		else if(m_tMode == TOP_LEFT)
+		{
+			lx = m_cFrame.iX + 10;
+			ly = m_cFrame.iY + 10;
+		}
 	}
 	
 	// text

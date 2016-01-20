@@ -572,15 +572,15 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		movie_info.tfile = "";
 	
 	// infoBox
-	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
+	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox(movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	CInfoBox * infoBox = new CInfoBox(movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], mode, &position, movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
 
 	int pich = 246;	//FIXME
 	int picw = 162; //FIXME
 
-	if(access(movie_info.tfile.c_str(), F_OK))
+	if(!access(movie_info.tfile.c_str(), F_OK))
 	{
 		int p_w = 0;
 		int p_h = 0;
@@ -589,19 +589,15 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		CFrameBuffer::getInstance()->getSize(movie_info.tfile, &p_w, &p_h, &nbpp);
 
 		// scale
-		if(p_w > picw || p_h > pich)
-		{
-			picw = 246;
-			pich = 162;
-		}
-		else
+		if(p_w <= picw && p_h <= pich)
 		{
 			picw = p_w;
 			pich = p_h;
 		}
 	}
 
-	infoBox->setText(&print_buffer, movie_info.tfile, picw, pich);
+	int tmode = CTextBox::TOP_LEFT;
+	infoBox->setText(&print_buffer, movie_info.tfile, picw, pich, tmode);
 	infoBox->exec();
 	delete infoBox;
 }

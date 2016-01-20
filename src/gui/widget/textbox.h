@@ -84,6 +84,24 @@ class CBox
 
 class CTextBox  
 {
+	public:
+		// Variables
+		typedef enum mode_
+		{
+			AUTO_WIDTH	= 0x01,
+			AUTO_HIGH	= 0x02,
+			SCROLL		= 0x04,
+			CENTER		= 0x40,
+			NO_AUTO_LINEBREAK = 0x80
+		}mode;
+
+		// tmode
+		typedef enum tmode_
+		{
+			TOP_RIGHT = 0,
+			TOP_LEFT = 1,
+		}tmode;
+
 	private:
 		// Functions
 		void refreshTextLineArray(void);
@@ -108,6 +126,7 @@ class CTextBox
 		int m_nMaxWidth;
 
 		int m_nMode;
+		int m_tMode;
 
 		int m_nNrOfPages;
 		int m_nNrOfLines;
@@ -117,8 +136,11 @@ class CTextBox
 		int m_nCurrentLine;
 		int m_nCurrentPage;
 
+		// text
 		CFont *m_pcFontText;
 		int m_nFontTextHeight;
+
+		// backgrond
 		fb_pixel_t m_textBackgroundColor;
 
 		CFrameBuffer * frameBuffer;
@@ -128,6 +150,7 @@ class CTextBox
 		int ly; 
 		int tw; 
 		int th;
+
 	public:
 		// Constructor
 		CTextBox();
@@ -144,7 +167,7 @@ class CTextBox
 		void    refresh(void);
 		void    scrollPageDown(const int pages);
 		void    scrollPageUp(const int pages);				
-		bool	setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0);
+		bool	setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int _tmode = TOP_RIGHT);
 		
 		inline	bool isPainted(void){if( frameBuffer == NULL) return (false); else return (true);};
 
@@ -156,17 +179,6 @@ class CTextBox
 
 		void paint (void);
 		void hide (void);
-
-
-		// Variables
-		typedef enum mode_
-		{
-			AUTO_WIDTH	= 0x01,
-			AUTO_HIGH	= 0x02,
-			SCROLL		= 0x04,
-			CENTER		= 0x40,
-			NO_AUTO_LINEBREAK = 0x80
-		}mode;
 };
 
 #endif // !defined(AFX_TEXTBOX_H__208DED01_ABEC_491C_A632_5B21057DC5D8__INCLUDED_)
