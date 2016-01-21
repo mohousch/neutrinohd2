@@ -44,7 +44,7 @@ void paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CL
 			l_option = localemanager->getText(content[i].locale);
 		
 		frameBuffer->paintIcon(content[i].button, x + i * buttonwidth, y + (dy - ih)/2);
-		font->RenderString(x + iw + ICON_OFFSET + i * buttonwidth, y + f_h + (dy - f_h)/2, buttonwidth - iw - 5, /*localemanager->getText(content[i].locale)*/l_option, COL_INFOBAR, 0, true); // UTF-8
+		font->RenderString(x + iw + ICON_OFFSET + i * buttonwidth, y + f_h + (dy - f_h)/2, buttonwidth - iw - 5, l_option, COL_INFOBAR, 0, true); // UTF-8
 	}
 }
 
