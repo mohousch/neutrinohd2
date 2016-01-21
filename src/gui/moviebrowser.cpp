@@ -3385,7 +3385,7 @@ int CMovieBrowser::showStartPosSelectionMenu(void) // P2
 			dprintf(DEBUG_NORMAL, "[mb] adding boomark menu N %d, position %d\n", menu_nr, position[menu_nr]);
 			
 			startPosSelectionMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
-			startPosSelectionMenu.addItem(new CMenuForwarder(m_movieSelectionHandler->bookmarks.user[i].name.c_str(), 	true, book[i]));
+			startPosSelectionMenu.addItem(new CMenuForwarder(m_movieSelectionHandler->bookmarks.user[i].name.c_str(), true, book[i]));
 			menu_nr++;
 		}
 	}

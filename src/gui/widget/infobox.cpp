@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: msgbox.cpp 2013/10/12 mohousch Exp $
+	$Id: infobox.cpp 2016.01.21 16:52:30 mohousch Exp $
 
  	Homepage: http://dbox.cyberphoria.org/
 
@@ -31,7 +31,7 @@
 
 	***********************************************************
 
-	Module Name: msgbox.cpp: .
+	Module Name: infobox.cpp: .
 
 	Description: Implementation of the CMsgBox class
 				 This class provides a  message box using CTextBox.
@@ -91,9 +91,7 @@ CInfoBox::CInfoBox(  const char * text,
 				   const CBox* position, 
 				   const char * title,
 				   CFont *fontTitle,
-				   const char * icon,
-				   int return_button , 
-				   const result_ default_result)
+				   const char * icon)
 {
 	initVar();
 
@@ -107,7 +105,7 @@ CInfoBox::CInfoBox(  const char * text,
 		m_cIcon = icon;
 	
 	if(position != NULL)	
-		m_cBoxFrame	= *position;
+		m_cBoxFrame = *position;
 	
 	m_nMode	= _mode;
 
@@ -132,9 +130,6 @@ CInfoBox::CInfoBox(  const char * text,
 		m_cBoxFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - m_cBoxFrame.iWidth) >>1);
 		m_cBoxFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - m_cBoxFrame.iHeight) >>2);
 	}
-
-	m_nResult = default_result;
-	m_nFootButtons = return_button;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -213,15 +208,14 @@ void CInfoBox::initVar(void)
 	m_nFontTitleHeight = m_pcFontTitle->getHeight();
 
 	// set the foot variables
-	m_pcFontFoot  =  DEFAULT_FOOT_FONT;
+	m_pcFontFoot = DEFAULT_FOOT_FONT;
 	m_nFontFootHeight = m_pcFontFoot->getHeight();
-	m_nFootButtons = 0;
 
 	// set the main frame to default
-	m_cBoxFrame.iX		= g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - MIN_WINDOW_WIDTH) >>1);
-	m_cBoxFrame.iWidth	= MIN_WINDOW_WIDTH;
-	m_cBoxFrame.iY		= g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - MIN_WINDOW_HEIGHT) >>2);
-	m_cBoxFrame.iHeight	= MIN_WINDOW_HEIGHT;
+	m_cBoxFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - MIN_WINDOW_WIDTH) >>1);
+	m_cBoxFrame.iWidth = MIN_WINDOW_WIDTH;
+	m_cBoxFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - MIN_WINDOW_HEIGHT) >>2);
+	m_cBoxFrame.iHeight = MIN_WINDOW_HEIGHT;
 
 	m_pcWindow = NULL;
 }
@@ -264,15 +258,15 @@ void CInfoBox::initFramesRel(void)
 	{
 		m_cBoxFrameFootRel.iX		= 0;
 		m_cBoxFrameFootRel.iY		= 0;
-		m_cBoxFrameFootRel.iHeight   = 0;
-		m_cBoxFrameFootRel.iWidth    = 0;
+		m_cBoxFrameFootRel.iHeight      = 0;
+		m_cBoxFrameFootRel.iWidth       = 0;
 	}
 
 	// init the text frame
-	m_cBoxFrameText.iY		= m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight;
-	m_cBoxFrameText.iX		= m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX;
-	m_cBoxFrameText.iHeight	= m_cBoxFrame.iHeight - m_cBoxFrameTitleRel.iHeight - m_cBoxFrameFootRel.iHeight;
-	m_cBoxFrameText.iWidth	= m_cBoxFrame.iWidth;		
+	m_cBoxFrameText.iY			= m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight;
+	m_cBoxFrameText.iX			= m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX;
+	m_cBoxFrameText.iHeight			= m_cBoxFrame.iHeight - m_cBoxFrameTitleRel.iHeight - m_cBoxFrameFootRel.iHeight;
+	m_cBoxFrameText.iWidth			= m_cBoxFrame.iWidth;		
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -293,11 +287,11 @@ void CInfoBox::refreshFoot(void)
 
 	// foot
 	m_pcWindow->paintBoxRel(m_cBoxFrameFootRel.iX + m_cBoxFrame.iX, 
-								m_cBoxFrameFootRel.iY + m_cBoxFrame.iY, 
-								m_cBoxFrameFootRel.iWidth, 
-								m_cBoxFrameFootRel.iHeight,  
-								COL_MENUHEAD_PLUS_0,
-								RADIUS_MID, CORNER_BOTTOM, true);
+						m_cBoxFrameFootRel.iY + m_cBoxFrame.iY, 
+						m_cBoxFrameFootRel.iWidth, 
+						m_cBoxFrameFootRel.iHeight,  
+						COL_MENUHEAD_PLUS_0,
+						RADIUS_MID, CORNER_BOTTOM, true);
 
 	int iw, ih;
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
@@ -306,108 +300,30 @@ void CInfoBox::refreshFoot(void)
 	int ButtonSpacing = (m_cBoxFrameFootRel.iWidth - BORDER_LEFT - BORDER_RIGHT - (ButtonWidth*3) ) / 2;
 	int xpos = m_cBoxFrameFootRel.iX;
 
-	// draw Button mbYes
-	if (m_nFootButtons & mbYes)
-	{
-		if (m_nResult == mbrYes)
-		{
-			color   = COL_MENUCONTENTSELECTED;
-			bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-		}
-		else
-		{
-			color   = COL_INFOBAR_SHADOW;
-			bgcolor = COL_INFOBAR_SHADOW_PLUS_0;
-		}
-		
-		m_pcWindow->paintBoxRel(xpos + m_cBoxFrame.iX, 
-						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - (m_nFontFootHeight + 4))/2, 
-						ButtonWidth, 
-						m_nFontFootHeight + 4, 
-						bgcolor);
-		
-		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iw, &ih);
-		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, 
-						xpos + BORDER_LEFT + 4 + m_cBoxFrame.iX, 
-						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - ih)/2);
-						
-		m_pcFontFoot->RenderString(xpos + BORDER_LEFT + iw + m_cBoxFrame.iX, 
-						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_nFontFootHeight + (m_cBoxFrameFootRel.iHeight - m_nFontFootHeight)/2, 
-						ButtonWidth - ( BORDER_LEFT + BORDER_RIGHT + iw), 
-						g_Locale->getText(LOCALE_MESSAGEBOX_YES), 
-						color, 
-						0, true); // UTF-8
-	}
-
 	xpos += ButtonWidth + ButtonSpacing;
-
-	// draw Button mbNo
-	if (m_nFootButtons & mbNo)
-	{
-		if (m_nResult == mbrNo)
-		{
-			color   = COL_MENUCONTENTSELECTED;
-			bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-		}
-		else
-		{
-			color   = COL_INFOBAR_SHADOW;
-			bgcolor = COL_INFOBAR_SHADOW_PLUS_0;
-		}
-
-		m_pcWindow->paintBoxRel(xpos + m_cBoxFrame.iX, 
-						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - (m_nFontFootHeight + 4))/2, 
-						ButtonWidth, 
-						m_nFontFootHeight + 4, 
-						bgcolor);
-		
-		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &iw, &ih);
-		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, 
-						xpos + BORDER_LEFT + 4 + m_cBoxFrame.iX, 
-						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - ih)/2);
-						
-		m_pcFontFoot->RenderString(xpos + ( BORDER_LEFT + iw) + m_cBoxFrame.iX, 
-						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_nFontFootHeight + (m_cBoxFrameFootRel.iHeight - m_nFontFootHeight)/2, 
-						ButtonWidth - ( BORDER_LEFT + BORDER_RIGHT + iw), 
-						g_Locale->getText(LOCALE_MESSAGEBOX_NO), 
-						color, 
-						0, true); // UTF-8
-	}
-
 	xpos += ButtonWidth + ButtonSpacing;
 
 	// draw Button mbCancel
-	if (m_nFootButtons & (mbCancel | mbBack))
-	{
-		if (m_nResult >= mbrCancel)
-		{
-			color   = COL_MENUCONTENTSELECTED;
-			bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-		}
-		else
-		{
-			color   = COL_INFOBAR_SHADOW;
-			bgcolor = COL_INFOBAR_SHADOW_PLUS_0;
-		}
+	color   = COL_MENUCONTENTSELECTED;
+	bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 
-		m_pcWindow->paintBoxRel(xpos + m_cBoxFrame.iX, 
-						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - (m_nFontFootHeight + 4))/2, 
-						ButtonWidth, 
-						m_nFontFootHeight + 4, 
-						bgcolor);
+	m_pcWindow->paintBoxRel(xpos + m_cBoxFrame.iX, 
+					m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - (m_nFontFootHeight + 4))/2, 
+					ButtonWidth, 
+					m_nFontFootHeight + 4, 
+					bgcolor);
 		
-		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
-		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HOME, 
-						xpos + BORDER_LEFT + m_cBoxFrame.iX, 
-						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - ih)/2);
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HOME, 
+					xpos + BORDER_LEFT + m_cBoxFrame.iX, 
+					m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - ih)/2);
 						
-		m_pcFontFoot->RenderString(xpos + ( BORDER_LEFT + iw) + m_cBoxFrame.iX, 
-						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_nFontFootHeight + (m_cBoxFrameFootRel.iHeight - m_nFontFootHeight)/2, 
-						ButtonWidth - ( BORDER_LEFT + BORDER_RIGHT + iw), 
-						g_Locale->getText((m_nFootButtons & mbCancel) ? LOCALE_MESSAGEBOX_CANCEL : LOCALE_MESSAGEBOX_BACK), 
-						color, 
-						0, true); // UTF-8
-	}
+	m_pcFontFoot->RenderString(xpos + ( BORDER_LEFT + iw) + m_cBoxFrame.iX, 
+					m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_nFontFootHeight + (m_cBoxFrameFootRel.iHeight - m_nFontFootHeight)/2, 
+					ButtonWidth - ( BORDER_LEFT + BORDER_RIGHT + iw), 
+					g_Locale->getText(LOCALE_MESSAGEBOX_BACK), 
+					color, 
+					0, true); // UTF-8
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -493,7 +409,7 @@ void CInfoBox::scrollPageDown(const int pages)
 		m_pcTextBox->scrollPageDown(pages);
 	}
 
-};
+}
 
 //////////////////////////////////////////////////////////////////////
 // Function Name:	ScrollPageUp	
@@ -510,7 +426,7 @@ void CInfoBox::scrollPageUp(const int pages)
 	{
 		m_pcTextBox->scrollPageUp(pages);
 	}
-};
+}
 
 //////////////////////////////////////////////////////////////////////
 // Function Name:	Paint	
@@ -576,13 +492,12 @@ void CInfoBox::refresh(void)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-int CInfoBox::exec( int timeout, int returnDefaultOnTimeout)
+int CInfoBox::exec(int timeout)
 {
-	dprintf(DEBUG_NORMAL, "CInfoBox::exec: timeout:%d returnDefaultOnTimeout:%d\n", timeout, returnDefaultOnTimeout);
+	dprintf(DEBUG_NORMAL, "CInfoBox::exec: timeout:%d\n", timeout);
 
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
-	int return_button = m_nFootButtons;
 	int res = menu_return::RETURN_REPAINT;
 
 	// show infobox
@@ -590,7 +505,7 @@ int CInfoBox::exec( int timeout, int returnDefaultOnTimeout)
 	m_pcWindow->blit();
 	
 	if (m_pcWindow == NULL)
-		return res; /* out of memory */
+		return res; // out of memory
 
 	if ( timeout == -1 )
 		timeout = g_settings.timing[SNeutrinoSettings::TIMING_EPG];
@@ -602,36 +517,13 @@ int CInfoBox::exec( int timeout, int returnDefaultOnTimeout)
 	{
 		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
 
-		if (msg == CRCInput::RC_timeout && returnDefaultOnTimeout)
+		if (msg == CRCInput::RC_timeout)
 		{
-			// return default 
 			loop = false;
 		}
-		else if (((msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_home)) && (return_button & (mbCancel | mbBack)))
+		else if (((msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_home)))
 		{
-			m_nResult = (return_button & mbCancel) ? mbrCancel : mbrBack;
 			loop = false;
-		}
-		else if ((msg == CRCInput::RC_green) && (return_button & mbNo))
-		{
-			m_nResult = mbrNo;
-			loop = false;
-		}
-		else if ((msg == CRCInput::RC_red) && (return_button & mbYes))
-		{
-			m_nResult = mbrYes;
-			loop = false;
-		}
-		else if(msg == CRCInput::RC_right)
-		{
-			bool ok = false;
-			while (!ok)
-			{
-				m_nResult = (CInfoBox::result_)((m_nResult + 1) & 3);
-				ok = m_nFootButtons & (1 << m_nResult);
-			}
-
-			refreshFoot();
 		}
 		else if (msg == CRCInput::RC_up || msg == CRCInput::RC_page_up)
 		{
@@ -640,17 +532,6 @@ int CInfoBox::exec( int timeout, int returnDefaultOnTimeout)
 		else if (msg == CRCInput::RC_down || msg == CRCInput::RC_page_down)
 		{
 			scrollPageDown(1);
-		}
-		else if(msg == CRCInput::RC_left)
-		{
-			bool ok = false;
-			while (!ok)
-			{
-				m_nResult = (CInfoBox::result_)((m_nResult - 1) & 3);
-				ok = return_button & (1 << m_nResult);
-			}
-
-			refreshFoot();
 		}
 		else if(msg == CRCInput::RC_ok)
 		{
@@ -710,16 +591,16 @@ bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _
 }
 
 //////////////////////////////////////////////////////////////////////
-// Function Name:	SetText	
+// Function Name:	ShowInfoBox	
 // Description:		
 // Parameters:		
 // Data IN/OUT:		
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-int CInfoBox::result(void)
+void InfoBox(const neutrino_locale_t Caption, const char * const Text, const char * const Icon, const int Width, const int timeout)
 {
-	return m_nResult;
+	InfoBox(g_Locale->getText(Caption),Text, Icon, Width, timeout);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -730,35 +611,16 @@ int CInfoBox::result(void)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-int InfoBox(const neutrino_locale_t Caption, const char * const Text, const CInfoBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
-{
-	int result = InfoBox(g_Locale->getText(Caption),Text, Default, ShowButtons, Icon, Width, timeout, returnDefaultOnTimeout);
-
-	return (result);
-
-}
-
-//////////////////////////////////////////////////////////////////////
-// Function Name:	ShowInfoBox	
-// Description:		
-// Parameters:		
-// Data IN/OUT:		
-// Return:		
-// Notes:		
-//////////////////////////////////////////////////////////////////////
-int InfoBox(const char * const Title,const char * const Text, const CInfoBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int /*Width*/, const int timeout, bool returnDefaultOnTimeout)
+void InfoBox(const char * const Title,const char * const Text, const char * const Icon, const int Width, const int timeout)
 {
 	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT;
 	
 	CBox position(g_settings.screen_StartX + 30, g_settings.screen_StartY + 30, g_settings.screen_EndX - g_settings.screen_StartX - 60, g_settings.screen_EndY - g_settings.screen_StartY - 60); 
 	
-   	CInfoBox * infoBox = new CInfoBox(Text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, Title, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], Icon, ShowButtons, Default);
+   	CInfoBox * infoBox = new CInfoBox(Text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, Title, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], Icon);
 
-	infoBox->exec( timeout, returnDefaultOnTimeout);
-
-	int res = infoBox->result();
+	infoBox->exec(timeout);
 
 	delete infoBox;
-	
-	return res;
 }
+

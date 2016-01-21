@@ -1933,7 +1933,7 @@ void CMoviePlayerGui::showFileInfo()
 	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox(buffer.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], mode, &position, Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	CInfoBox * infoBox = new CInfoBox(buffer.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], mode, &position, Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_MOVIE);
 
 	infoBox->setText(&buffer, Thumbnail, picw, pich);
 	infoBox->exec();

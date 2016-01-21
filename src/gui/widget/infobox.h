@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: msgbox.h 2013/10/12 mohousch Exp $
+	$Id: infobox.h 2016.01.21 16:53:30 mohousch Exp $
 
  	Homepage: http://dbox.cyberphoria.org/
 
@@ -60,29 +60,9 @@
 #include <driver/framebuffer.h>
 
 
-#define BIG_FONT_FAKTOR 1.5
-
 class CInfoBox  
 {
 	public:
-		// enum definition
-		enum result_
-		{
-			mbrYes    = 0,
-			mbrNo     = 1,
-			mbrCancel = 2,
-			mbrBack   = 3
-		};
-		
-		enum buttons_
-		{
-			mbYes =		0x01,
-			mbNo =		0x02,
-			mbCancel =	0x04,
-			mbAll =		0x07,
-			mbBack =	0x08
-		};
-		
 		 enum mode_
 		{
 			AUTO_WIDTH	= 0x01,
@@ -95,14 +75,14 @@ class CInfoBox
 		}mode;
 
 	private:
-		// Functions
+		// functions
 		void initVar(void);
 		void initFramesRel(void);
 		void refreshFoot(void);
 		void refreshTitle(void);
 		void refreshText(void);
 
-		// Variables
+		// variables
 		std::string m_cIcon;
 		std::string m_cTitle;
 
@@ -118,15 +98,10 @@ class CInfoBox
 
 		CFont *m_pcFontFoot;
 		int m_nFontFootHeight;
-		int m_nFootButtons;
 
 		CTextBox *m_pcTextBox;
 
 		CFrameBuffer * m_pcWindow;
-
-		result_	m_nResult;
-
-		bool bigFonts;
 
 	public:
 		virtual ~CInfoBox();
@@ -138,37 +113,28 @@ class CInfoBox
 				   const CBox* position, 
 				   const char * title,
 				   CFont *fontTitle,
-				   const char * icon,
-				   int return_button = mbCancel, 
-				   const result_ default_result = mbrCancel);
+				   const char * icon);
 
-		// Functions
+		// functions
 		bool    paint(void);
 		bool    hide(void);
-		int     exec(int timeout = -1, int returnDefaultOnTimeout = false);
+		int     exec(int timeout = -1);
 		void    refresh(void);
 		void    scrollPageDown(const int pages);
 		void    scrollPageUp(const int pages);
-		int	result(void);
 		bool	setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int tmode = CTextBox::TOP_RIGHT);
 };
 
-extern int InfoBox(const neutrino_locale_t Caption, 
+extern void InfoBox(const neutrino_locale_t Caption, 
 						const char * const Text, 
-						const CInfoBox::result_ Default, 
-						const uint32_t ShowButtons, 
 						const char * const Icon = NULL, 
 						const int Width = HINTBOX_WIDTH, 
-						const int timeout = -1, 
-						bool returnDefaultOnTimeout = false); // UTF-8
+						const int timeout = -1); // UTF-8
 
-extern int InfoBox(const char * const Title, 
-						const char * const Text, 
-						const CInfoBox::result_ Default, 
-						const uint32_t ShowButtons, 
+extern void InfoBox(const char * const Title, 
+						const char * const Text,  
 						const char * const Icon = NULL, 
 						const int Width = HINTBOX_WIDTH, 
-						const int timeout = -1, 
-						bool returnDefaultOnTimeout = false); // UTF-8
+						const int timeout = -1); // UTF-8
 
 #endif

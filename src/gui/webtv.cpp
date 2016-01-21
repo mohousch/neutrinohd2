@@ -1028,7 +1028,7 @@ void CWebTV::showFileInfoWebTV(int pos)
 {
 	if(pos > -1)
 	{
-		InfoBox(channels[pos]->title.c_str(), channels[pos]->description.c_str(), CInfoBox::mbrBack, CInfoBox::mbBack);
+		InfoBox(channels[pos]->title.c_str(), channels[pos]->description.c_str());
 	}
 }
 
