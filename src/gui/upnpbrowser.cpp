@@ -75,11 +75,10 @@
 
 extern CWebTV * webtv;
 
-const struct button_label RescanButton = {NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_UPNPBROWSER_RESCAN};
-const struct button_label StopButton   = {NEUTRINO_ICON_BUTTON_RED, LOCALE_AUDIOPLAYER_STOP};
-const struct button_label PUpButton    = {NEUTRINO_ICON_BUTTON_GREEN, LOCALE_FILEBROWSER_NEXTPAGE};
-const struct button_label PDownButton  = {NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE};
-
+const struct button_label RescanButton = {NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_UPNPBROWSER_RESCAN, NULL };
+const struct button_label StopButton   = {NEUTRINO_ICON_BUTTON_RED, LOCALE_AUDIOPLAYER_STOP, NULL };
+const struct button_label PUpButton    = {NEUTRINO_ICON_BUTTON_GREEN, LOCALE_FILEBROWSER_NEXTPAGE, NULL };
+const struct button_label PDownButton  = {NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE, NULL };
 
 CUpnpBrowserGui::CUpnpBrowserGui()
 {

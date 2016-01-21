@@ -31,14 +31,20 @@
 void paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CLocaleManager * const localemanager, const int x, const int y, const unsigned int buttonwidth, const unsigned int count, const struct button_label * const content, const int dy)
 {
 	int iw, ih;
+	const char *l_option;
 	
 	for (unsigned int i = 0; i < count; i++)
 	{
 		frameBuffer->getIconSize(content[i].button, &iw, &ih);
 		int f_h = font->getHeight();
+
+		if(content[i].localename != 0)
+			l_option = content[i].localename;
+		else
+			l_option = localemanager->getText(content[i].locale);
 		
 		frameBuffer->paintIcon(content[i].button, x + i * buttonwidth, y + (dy - ih)/2);
-		font->RenderString(x + iw + ICON_OFFSET + i * buttonwidth, y + f_h + (dy - f_h)/2, buttonwidth - iw - 5, localemanager->getText(content[i].locale), COL_INFOBAR, 0, true); // UTF-8
+		font->RenderString(x + iw + ICON_OFFSET + i * buttonwidth, y + f_h + (dy - f_h)/2, buttonwidth - iw - 5, /*localemanager->getText(content[i].locale)*/l_option, COL_INFOBAR, 0, true); // UTF-8
 	}
 }
 

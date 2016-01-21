@@ -1892,7 +1892,7 @@ void CMoviePlayerGui::showHelpTS()
 
 void CMoviePlayerGui::showFileInfo()
 {
-	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showFileInfo:%s %s %s\n", Title.c_str(), Info1.c_str(), Info2.c_str());
+	dprintf(DEBUG_INFO, "CMoviePlayerGui::showFileInfo:%s %s %s\n", Title.c_str(), Info1.c_str(), Info2.c_str());
 	
 	std::string buffer;
 	
