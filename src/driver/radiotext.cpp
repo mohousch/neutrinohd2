@@ -936,8 +936,11 @@ void CRadioText::RassDecode(unsigned char *mtext, int len)
 								printf("Rass-File: ready for displaying :-)\n");
 							
 							//
-							videoDecoder->finishShowSinglePic();
-							videoDecoder->showSinglePic(filepath);
+							if(videoDecoder)
+							{
+								videoDecoder->finishShowSinglePic();
+								videoDecoder->showSinglePic(filepath);
+							}
 							//
 						}
 						else
@@ -1008,8 +1011,11 @@ void CRadioText::RassDecode(unsigned char *mtext, int len)
 						}
 						
 						//
-						videoDecoder->finishShowSinglePic();
-						videoDecoder->showSinglePic(filepath);
+						if(videoDecoder)
+						{
+							videoDecoder->finishShowSinglePic();
+							videoDecoder->showSinglePic(filepath);
+						}
 						//
 					}
 					else
@@ -1101,8 +1107,11 @@ int CRadioText::RassImage(int QArchiv, int QKey, bool DirUp)
 		asprintf(&image, "%s/Rass_show.mpg", DataDir);
 
 	//
-	videoDecoder->finishShowSinglePic();
-	videoDecoder->showSinglePic(image);
+	if(videoDecoder)
+	{
+		videoDecoder->finishShowSinglePic();
+		videoDecoder->showSinglePic(image);
+	}
 	//
 	
 	free(image);
@@ -1270,6 +1279,7 @@ CRadioText::~CRadioText(void)
 {
 	radiotext_stop();
 	pid = 0;
+
 	//printf("Deleting RT object\n");
 
 	//close(dmxfd);
@@ -1300,7 +1310,8 @@ void CRadioText::setPid(uint inPid)
 #if defined (PLATFORM_COOLSTREAM)
 				audioDemux->Open( DMX_PES_CHANNEL );
 #else
-				audioDemux->Open(DMX_PES_CHANNEL, 128*1024, live_fe );
+				if(live_fe)
+					audioDemux->Open(DMX_PES_CHANNEL, 128*1024, live_fe);
 #endif
 			}
 			rt.rt_object = this;

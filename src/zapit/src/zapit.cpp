@@ -3656,26 +3656,29 @@ int stopPlayBack(bool sendPmt)
 void closeAVDecoder(void)
 {
 #if !defined (USE_OPENGL)
-	// close videodecoder
-	if(videoDecoder)
-		videoDecoder->Close();
+	if(!g_settings.satip_allow_satip)
+	{
+		// close videodecoder
+		if(videoDecoder)
+			videoDecoder->Close();
 	
-	// close audiodecoder
-	if(audioDecoder)
-		audioDecoder->Close();
+		// close audiodecoder
+		if(audioDecoder)
+			audioDecoder->Close();
+	}
 #endif
 }
 
 void openAVDecoder(void)
 {
 #if !defined (USE_OPENGL)
-	if(videoDecoder)
+	if(!g_settings.satip_allow_satip)
 	{
-		// open video decoder
-		videoDecoder->Open(live_fe);
-	
-		if(!g_settings.satip_allow_satip)
+		if(videoDecoder)
 		{
+			// open video decoder
+			videoDecoder->Open(live_fe);
+	
 			// set source
 			videoDecoder->setSource(VIDEO_SOURCE_DEMUX);	
 		
@@ -3683,16 +3686,14 @@ void openAVDecoder(void)
 			// StreamType
 			videoDecoder->SetStreamType(STREAM_TYPE_TRANSPORT);
 #endif
-		}
-	}	
+			}
+		}	
 	
-	if(audioDecoder)
-	{
-		// open audiodecoder
-		audioDecoder->Open(live_fe);
-		
-		if(!g_settings.satip_allow_satip)
+		if(audioDecoder)
 		{
+			// open audiodecoder
+			audioDecoder->Open(live_fe);
+		
 			// set source
 			audioDecoder->setSource(AUDIO_SOURCE_DEMUX);
 	
@@ -3700,8 +3701,8 @@ void openAVDecoder(void)
 			// StreamType
 			audioDecoder->SetStreamType(STREAM_TYPE_TRANSPORT);
 #endif
-		}	
-	}
+		}
+	}	
 #endif
 }
 

@@ -61,6 +61,7 @@
 
 extern cVideo *videoDecoder;
 extern cAudio *audioDecoder;
+extern CFrontend * live_fe;
 
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
 const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
@@ -215,25 +216,25 @@ void CMiscSettings::showMenu()
 	int shortcutMiscSettings = 1;
 	
 	CMenuWidget miscSettings(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
-	
+
 	//miscSettings general
-	miscSettings.addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_GENERAL, true, new CGeneralSettings(), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSGENERAL ));
+	miscSettings.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_GENERAL, true, NULL, new CGeneralSettings(), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	
 	//channellist settings
-	miscSettings.addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_CHANNELLIST, true, new CChannelListSettings(), NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSCHANNELLIST ));
+	miscSettings.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_CHANNELLIST, true, NULL, new CChannelListSettings(), NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 
 	// epg settings
-	miscSettings.addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_EPG_HEAD, true, new CEPGSettings(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSEPG ));
+	miscSettings.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_HEAD, true, NULL, new CEPGSettings(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
 	// filebrowser settings
-	miscSettings.addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_FILEBROWSER, true, new CFileBrowserSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSFILEBROWSER ));
+	miscSettings.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_FILEBROWSER, true, NULL, new CFileBrowserSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
 	
 	// zapit setup (start channel)
-	miscSettings.addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_ZAPIT, true, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSZAPITSETUP ));
+	miscSettings.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_ZAPIT, true, NULL, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL));
 	
 	// psi setup	
 	CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
-	miscSettings.addItem( new CMenuForwarderExtended(LOCALE_VIDEOMENU_PSISETUP, true, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSPSISETUP ));
+	miscSettings.addItem( new CMenuForwarder(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL));
 	
 	miscSettings.exec(NULL, "");
 	miscSettings.hide();
@@ -298,39 +299,44 @@ bool CGeneralSettings::changeNotify(const neutrino_locale_t OptionName, void */*
 		
 		if (g_settings.radiotext_enable) 
 		{
-			// hide radiomode background pic
-			if (usedBackground) 
-			{
-				CFrameBuffer::getInstance()->saveBackgroundImage();
-				CFrameBuffer::getInstance()->ClearFrameBuffer();
-
-				CFrameBuffer::getInstance()->blit();
-			}
-			
 			//
 			if (g_Radiotext == NULL)
 				g_Radiotext = new CRadioText;
+
 			if (g_Radiotext && ((CNeutrinoApp::getInstance()->getMode()) == NeutrinoMessages::mode_radio))
-				g_Radiotext->setPid(g_RemoteControl->current_PIDs.APIDs[g_RemoteControl->current_PIDs.PIDs.selected_apid].pid);
+			{
+				// hide radiomode background pic
+				if (usedBackground) 
+				{
+					CFrameBuffer::getInstance()->saveBackgroundImage();
+					CFrameBuffer::getInstance()->ClearFrameBuffer();
+
+					CFrameBuffer::getInstance()->blit();
+				}
+
+				if(live_fe)
+					g_Radiotext->setPid(g_RemoteControl->current_PIDs.APIDs[g_RemoteControl->current_PIDs.PIDs.selected_apid].pid);
+			}
 		} 
 		else 
 		{
-			// Restore previous background
-			if (usedBackground) 
+			if (g_Radiotext && ((CNeutrinoApp::getInstance()->getMode()) == NeutrinoMessages::mode_radio))
 			{
-				CFrameBuffer::getInstance()->restoreBackgroundImage();
-				CFrameBuffer::getInstance()->useBackground(true);
-				CFrameBuffer::getInstance()->paintBackground();
+				// restore previous background
+				if (usedBackground) 
+				{
+					CFrameBuffer::getInstance()->restoreBackgroundImage();
+					CFrameBuffer::getInstance()->useBackground(true);
+					CFrameBuffer::getInstance()->paintBackground();
+					CFrameBuffer::getInstance()->blit();
+				}
+			
+				CFrameBuffer::getInstance()->loadBackgroundPic("radiomode.jpg");
 				CFrameBuffer::getInstance()->blit();
 			}
-			
-			if (g_Radiotext)
-				g_Radiotext->radiotext_stop();
+
 			delete g_Radiotext;
 			g_Radiotext = NULL;
-			
-			CFrameBuffer::getInstance()->loadBackgroundPic("radiomode.jpg");
-			CFrameBuffer::getInstance()->blit();
 		}
 		
 		return true;

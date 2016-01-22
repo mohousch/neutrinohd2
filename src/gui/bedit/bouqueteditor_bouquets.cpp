@@ -58,7 +58,6 @@
 
 extern CBouquetManager * g_bouquetManager;
 
-
 CBEBouquetWidget::CBEBouquetWidget()
 {
 	frameBuffer = CFrameBuffer::getInstance();
@@ -93,9 +92,6 @@ void CBEBouquetWidget::paintItem(int pos)
 	{
 		color   = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-		
-		// itemBox
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, COL_MENUCONTENT_PLUS_0);
 	} 
 	else 
 	{
@@ -158,9 +154,9 @@ void CBEBouquetWidget::paintHead()
 
 const struct button_label CBEBouquetWidgetButtons[3] =
 {
-	{ NEUTRINO_ICON_BUTTON_RED   , LOCALE_BOUQUETEDITOR_DELETE },
-	{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_BOUQUETEDITOR_ADD    },
-	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_BOUQUETEDITOR_MOVE   }
+	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_BOUQUETEDITOR_DELETE, NULL },
+	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_BOUQUETEDITOR_ADD, NULL },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_BOUQUETEDITOR_MOVE, NULL }
 };
 
 void CBEBouquetWidget::paintFoot()
@@ -177,14 +173,17 @@ void CBEBouquetWidget::paintFoot()
 	{
 		case beRename:
 			Button[3].locale = LOCALE_BOUQUETEDITOR_RENAME;
+			Button[3].localename = NULL;
 			break;
 			
 		case beHide:
 			Button[3].locale = LOCALE_BOUQUETEDITOR_HIDE;
+			Button[3].localename = NULL;
 			break;
 			
 		case beLock:
 			Button[3].locale = LOCALE_BOUQUETEDITOR_LOCK;
+			Button[3].localename = NULL;
 			break;
 	}
 	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height, (width - icon_foot_w - BORDER_LEFT) / 4, 4, Button, ButtonHeight);
@@ -234,7 +233,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
 
-	bool loop=true;
+	bool loop = true;
 	while (loop)
 	{
 		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
@@ -253,12 +252,12 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 					switch( result )
 					{
 						case CMessageBox::mbrYes :
-							loop=false;
+							loop = false;
 							saveChanges();
 						break;
 						
 						case CMessageBox::mbrNo :
-							loop=false;
+							loop = false;
 							discardChanges();
 						break;
 						
@@ -318,7 +317,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				}
 			}
 		}
-		else if (msg==CRCInput::RC_down || msg==(neutrino_msg_t)g_settings.key_channelList_pagedown)
+		else if (msg == CRCInput::RC_down || msg == (neutrino_msg_t)g_settings.key_channelList_pagedown)
 		{
 			unsigned int step = 0;
 			int prev_selected = selected;
@@ -353,17 +352,17 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				internalMoveBouquet(prev_selected, selected);
 			}
 		}
-		else if(msg==CRCInput::RC_red)
+		else if(msg == CRCInput::RC_red)
 		{
 			if (state == beDefault)
 				deleteBouquet();
 		}
-		else if(msg==CRCInput::RC_green)
+		else if(msg == CRCInput::RC_green)
 		{
 			if (state == beDefault)
 				addBouquet();
 		}
-		else if(msg==CRCInput::RC_yellow)
+		else if(msg == CRCInput::RC_yellow)
 		{
 			if (selected < Bouquets->size()) /* Bouquets->size() might be 0 */
 			{
@@ -392,7 +391,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 					}
 			}
 		}
-		else if(msg==CRCInput::RC_setup)
+		else if(msg == CRCInput::RC_setup)
 		{
 			if (state == beDefault)
 			switch (blueFunction)
@@ -409,7 +408,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 			}
 			paintFoot();
 		}
-		else if(msg==CRCInput::RC_ok)
+		else if(msg == CRCInput::RC_ok)
 		{
 			if (state == beDefault)
 			{

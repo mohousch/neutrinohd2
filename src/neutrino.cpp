@@ -4682,7 +4682,8 @@ void CNeutrinoApp::radioMode( bool rezap)
 
 	if (g_settings.radiotext_enable) 
 	{
-		g_Radiotext = new CRadioText;
+		if(g_Radiotext == NULL)
+			g_Radiotext = new CRadioText;
 	}	
 }
 

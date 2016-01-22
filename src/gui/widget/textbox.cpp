@@ -438,10 +438,7 @@ void CTextBox::refreshText(void)
 		// frameBox
 		if(frameBuffer != NULL) 
 		{
-			frameBuffer->paintVLineRel(lx, ly, th, COL_WHITE);
-			frameBuffer->paintVLineRel(lx + tw, ly, th, COL_WHITE);
-			frameBuffer->paintHLineRel(lx, tw, ly, COL_WHITE);
-			frameBuffer->paintHLineRel(lx, tw, ly + th, COL_WHITE);
+			frameBuffer->paintFrameBox(lx, ly, tw, th, COL_WHITE);
 		}
 		
 		// picture

@@ -246,6 +246,9 @@ class CFrameBuffer
 		void paintHLine(int xa, int xb, int y, const fb_pixel_t col);
 		void paintHLineRel(int x, int dx, int y, const fb_pixel_t col);
 
+		void paintFrameBox(const int x, const int y, const int dx, const int dy, const fb_pixel_t col);
+		void paintFrameBox(const int x, const int y, const int dx, const int dy, const int px, const fb_pixel_t col, int radius = 0, int type = CORNER_ALL);
+
 		void setIconBasePath(const std::string & iconPath);
 		void getIconSize(const char * const filename, int* width, int *height);
 		bool paintIcon(const std::string & filename, const int x, const int y, const int h = 0, bool paint = true, int width = 0, int height = 0);
