@@ -3286,8 +3286,6 @@ int startPlayBack(CZapitChannel * thisChannel)
 	{
 		dprintf(DEBUG_NORMAL, "zapit:startPlayBack: pmtpid 0x%X videopid 0x%X audiopid 0x%X\n", thisChannel->getPmtPid(), thisChannel->getVideoPid(), thisChannel->getPreAudioPid() );
 
-		closeAVDecoder();
-
 		// build channel url
 		std::string ChannelURL;
 
@@ -3646,8 +3644,6 @@ int stopPlayBack(bool sendPmt)
 	else
 	{
 		playback->Close();
-
-		openAVDecoder();
 	}
 
 	return 0;
@@ -3686,7 +3682,6 @@ void openAVDecoder(void)
 			// StreamType
 			videoDecoder->SetStreamType(STREAM_TYPE_TRANSPORT);
 #endif
-			}
 		}	
 	
 		if(audioDecoder)
