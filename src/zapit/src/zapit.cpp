@@ -1075,6 +1075,21 @@ static CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in
 	return &cit->second;
 }
 
+CZapitChannel * pids2Channel(unsigned short pmtPid, unsigned short videoPid, unsigned short audioPid)
+{
+	CZapitChannel * Channel = NULL;
+
+	for (tallchans_iterator cit = allchans.begin(); cit != allchans.end(); cit++)
+	{
+		if ( (cit->second.getPmtPid() == pmtPid) && (cit->second.getVideoPid() == videoPid) && (cit->second.getPreAudioPid() == audioPid))
+		{
+			Channel = &cit->second;
+		}			
+	}
+	
+	return Channel;
+}
+
 static bool tune_to_channel(CFrontend * frontend, CZapitChannel * thischannel, bool &transponder_change)
 {
 	int waitForMotor = 0;

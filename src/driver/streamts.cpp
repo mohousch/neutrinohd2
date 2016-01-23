@@ -35,6 +35,10 @@
 #include <channel.h>
 #include <frontend_c.h>
 
+#include <client/zapittypes.h>
+
+#include <global.h>
+
 
 #define TS_SIZE 	188
 #define IN_SIZE         (TS_SIZE * 362)
@@ -46,6 +50,7 @@
 #define PACKET_SIZE	7*TS_SIZE
 
 extern CFrontend * live_fe;
+CZapitChannel * pids2Channel(unsigned short pmtPid, unsigned short videoPid, unsigned short audioPid);
 
 static unsigned char exit_flag = 0;
 static unsigned int writebuf_size = 0;
@@ -389,6 +394,22 @@ void * streamts_live_thread(void * data)
 		perror("malloc");
 		return 0;
 	}
+
+	// get channelID
+	t_channel_id stream_channel_id = 0;
+	CZapitChannel * streamChannel = NULL;
+	streamChannel = pids2Channel(pids[1], pids[2], pids[3]);
+	stream_channel_id = streamChannel->getChannelID();
+
+	// tune to stream channel id
+	/*
+	if( (stream_channel_id != live_channel_id) && !SAME_TRANSPONDER(live_channel_id, stream_channel_id) )
+	{
+			// zap to record channel
+			zapTo_ChannelID(stream_channel_id, false);
+	}
+	*/
+	g_Zapit->zapTo_record(stream_channel_id);
 	
 	cDemux * dmx = new cDemux();
 	
