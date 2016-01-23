@@ -937,9 +937,13 @@ void CMoviePlayerGui::PlayFile(void)
 					else 
 					{
 						CFile *file = filebrowser->getSelectedFile();
-						_filelist.clear();
+
+						if(!_filelist.empty())
+							_filelist.clear();
 						_filelist.push_back(*file);
 					}
+
+					filelist.clear();
 
 					// fill our filelist (more infos)
 					CFile file;
@@ -969,13 +973,13 @@ void CMoviePlayerGui::PlayFile(void)
 
 					if(!filelist.empty())
 					{
-						filename = filelist[selected].Name.c_str();
-						sel_filename = filelist[selected].getFileName();
+						filename = filelist[0].Name.c_str();
+						sel_filename = filelist[0].getFileName();
 						
-						Title = filelist[selected].getFileName();
-						Info1 = filelist[selected].getFileName();
-						Info2 = filelist[selected].getFileName();
-						Thumbnail = filelist[selected].Thumbnail;
+						Title = filelist[0].getFileName();
+						Info1 = filelist[0].getFileName();
+						Info2 = filelist[0].getFileName();
+						Thumbnail = filelist[0].Thumbnail;
 
 						update_lcd = true;
 						start_play = true;
@@ -1909,7 +1913,7 @@ void CMoviePlayerGui::showFileInfo()
 	if(access(Thumbnail.c_str(), F_OK))
 		Thumbnail = "";
 
-	if(access(Thumbnail.c_str(), F_OK))
+	if(!access(Thumbnail.c_str(), F_OK))
 	{
 		int p_w = 0;
 		int p_h = 0;
