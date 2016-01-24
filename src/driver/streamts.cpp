@@ -409,6 +409,7 @@ void * streamts_live_thread(void * data)
 			zapTo_ChannelID(stream_channel_id, false);
 	}
 	*/
+
 	g_Zapit->zapTo_record(stream_channel_id);
 	
 	cDemux * dmx = new cDemux();

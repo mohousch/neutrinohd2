@@ -625,7 +625,7 @@ int CWebTV::Show()
 	CVFD::getInstance()->setMode(CVFD::MODE_IPTV);
 	
 	// windows size
-	width  = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
+	width = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
 	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 	
 	// head height
@@ -634,7 +634,7 @@ int CWebTV::Show()
 	
 	// buttonheight
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_bf_w, &icon_bf_h);
-	buttonHeight = std::max(icon_bf_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 6;
+	buttonHeight = std::max(icon_bf_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 10;
 
 	// listbox/items
 	iheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 2;

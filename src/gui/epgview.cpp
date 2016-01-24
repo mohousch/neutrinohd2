@@ -475,6 +475,7 @@ extern char recDir[255];// defined in neutrino.cpp
 void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventList &eList, char search = 0, std::string search_text = "");
 bool sectionsd_getComponentTagsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::ComponentTagList& tags);
 
+// head
 void CEpgData::showHead(const t_channel_id channel_id)
 {
 	int pos;
@@ -1157,7 +1158,7 @@ int CEpgData::FollowScreenings (const t_channel_id /*channel_id*/, const std::st
 // -- Just display or hide TimerEventbar
 // -- 2002-05-13 rasc
 //
-
+// foot
 void CEpgData::showTimerEventBar(bool _show)
 {
 	int  x, y, w, h;

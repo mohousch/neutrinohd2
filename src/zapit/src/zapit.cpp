@@ -2684,10 +2684,13 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			openAVDecoder();
 #endif			
 
-			startPlayBack(live_channel);
+			if(live_channel != NULL)
+			{
+				startPlayBack(live_channel);
 			
-			// cam
-			sendCaPmtPlayBackStart(live_channel, live_fe);
+				// cam
+				sendCaPmtPlayBackStart(live_channel, live_fe);
+			}
 			
 			// ci cam
 #if defined (ENABLE_CI)	
