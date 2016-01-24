@@ -3661,7 +3661,27 @@ int stopPlayBack(bool sendPmt)
 	}
 	else
 	{
-		playback->Close();
+		if (!playing)
+			return 0;
+
+		if (playbackStopForced)
+			return -1;
+
+		if(playback)
+			playback->Close();
+
+		playing = false;
+	
+		// stop tuxtxt subtitle
+		tuxtx_stop_subtitle();
+
+		// stop?pause dvbsubtitle
+		if(standby)
+			dvbsub_pause();
+		else
+		{
+			dvbsub_stop();
+		}
 	}
 
 	return 0;
