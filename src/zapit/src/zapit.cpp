@@ -1037,7 +1037,7 @@ static void save_channel_pids(CZapitChannel * thischannel)
 	setPidVolume(thischannel->getChannelID(), thischannel->getAudioPid(), volume_percent);
 }
 
-static CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in_nvod)
+CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in_nvod)
 {
 	tallchans_iterator cit;
 	
