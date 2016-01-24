@@ -396,21 +396,24 @@ void * streamts_live_thread(void * data)
 	}
 
 	// get channelID
-	t_channel_id stream_channel_id = 0;
-	CZapitChannel * streamChannel = NULL;
-	streamChannel = pids2Channel(pids[1], pids[2], pids[3]);
-	stream_channel_id = streamChannel->getChannelID();
-
-	// tune to stream channel id
-	/*
-	if( (stream_channel_id != live_channel_id) && !SAME_TRANSPONDER(live_channel_id, stream_channel_id) )
+	if(g_settings.satip_allow_satip)
 	{
-			// zap to record channel
-			zapTo_ChannelID(stream_channel_id, false);
-	}
-	*/
+		t_channel_id stream_channel_id = 0;
+		CZapitChannel * streamChannel = NULL;
+		streamChannel = pids2Channel(pids[1], pids[2], pids[3]);
+		stream_channel_id = streamChannel->getChannelID();
 
-	g_Zapit->zapTo_record(stream_channel_id);
+		// tune to stream channel id
+		/*
+		if( (stream_channel_id != live_channel_id) && !SAME_TRANSPONDER(live_channel_id, stream_channel_id) )
+		{
+				// zap to record channel
+				zapTo_ChannelID(stream_channel_id, false);
+		}
+		*/
+
+		g_Zapit->zapTo_record(stream_channel_id);
+	}
 	
 	cDemux * dmx = new cDemux();
 	

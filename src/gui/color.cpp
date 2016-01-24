@@ -197,10 +197,14 @@ void Rgb2Hsv(RgbColor *rgb, HsvColor *hsv)
 	float f_H = 0;
 	float f_S = 0;
 
-	if (fabsf(delta) < FLT_EPSILON) { //gray
+	if (fabsf(delta) < FLT_EPSILON) 
+	{ 
+		//gray
 		f_S = 0;
 		f_H = 0;
-	} else {
+	} 
+	else 
+	{
 		f_S = (delta / max);
 		if (f_R >= max)
 			f_H = (f_G - f_B) / delta;
@@ -266,8 +270,8 @@ fb_pixel_t* gradientOneColor(fb_pixel_t col, fb_pixel_t *gradientBuf, int bSize,
 	memset((void*)gradientBuf, '\0', bSize * sizeof(fb_pixel_t));
 
 	HsvColor hsv;
-	uint8_t min_v=0, max_v=0, col_s=0;
-	uint8_t start_v=0 , end_v=0;
+	uint8_t min_v = 0, max_v = 0, col_s = 0;
+	uint8_t start_v = 0 , end_v = 0;
 
 	uint8_t tr = SysColor2Hsv(col, &hsv);
 	bool noSaturation = (hsv.s <= (float)0.05);
@@ -332,7 +336,7 @@ fb_pixel_t* gradientOneColor(fb_pixel_t col, fb_pixel_t *gradientBuf, int bSize,
 			v = v_ + (int)(factor_v * (float)i);
 			hsv.v = (float)limitChar(v) / (float)255;
 			hsv.s = (float)col_s / (float)255;
-			gradientBuf[bSize-i-1] = Hsv2SysColor(&hsv, tr);
+			gradientBuf[bSize - i - 1] = Hsv2SysColor(&hsv, tr);
 		}
 	}
 
@@ -341,9 +345,11 @@ fb_pixel_t* gradientOneColor(fb_pixel_t col, fb_pixel_t *gradientBuf, int bSize,
 
 fb_pixel_t* gradientColorToColor(fb_pixel_t start_col,fb_pixel_t end_col, fb_pixel_t *gradientBuf, int bSize, int mode, int /*intensity*/)
 {
-	if (gradientBuf == NULL) {
+	if (gradientBuf == NULL) 
+	{
 		gradientBuf = (fb_pixel_t*) malloc(bSize * sizeof(fb_pixel_t));
-		if (gradientBuf == NULL) {
+		if (gradientBuf == NULL) 
+		{
 			dprintf(DEBUG_NORMAL, "[%s:%d] malloc error\n", __func__, __LINE__);
 			return NULL;
 		}
@@ -357,7 +363,8 @@ fb_pixel_t* gradientColorToColor(fb_pixel_t start_col,fb_pixel_t end_col, fb_pix
 	end_col =  start_col;
 	start_col = temp_col;
 
-	if (mode == gradientDark2Light){
+	if (mode == gradientDark2Light)
+	{
 		temp_col = start_col;
 		start_col = end_col;
 		end_col = temp_col;
@@ -380,7 +387,8 @@ fb_pixel_t* gradientColorToColor(fb_pixel_t start_col,fb_pixel_t end_col, fb_pix
 	float gStep = (float)(end_g - start_g) / steps;
 	float bStep = (float)(end_b - start_b) / steps;
 
-	for (int i = start_box; i < end_box; i++) {
+	for (int i = start_box; i < end_box; i++) 
+	{
 
 		uint8_t tr = limitChar((int)((float)start_tr + trStep*(float)i));
 		uint8_t r  = limitChar((int)((float)start_r + rStep*(float)i));

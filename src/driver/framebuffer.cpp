@@ -689,8 +689,6 @@ fb_pixel_t* CFrameBuffer::paintBoxRel2Buf(const int dx, const int dy, const fb_p
 		return buf;
 	}
 
-	fb_pixel_t * ret = NULL;
-
 	fb_pixel_t* pixBuf = buf;
 	if (pixBuf == NULL) 
 	{
