@@ -59,6 +59,12 @@ class CHDDMountMSGExec : public CMenuTarget
 		int exec(CMenuTarget * parent, const std::string&);
 };
 
+class CHDDMountExec : public CMenuTarget
+{
+	public:
+		int exec(CMenuTarget * parent, const std::string&);
+};
+
 // umount
 class CHDDuMountMSGExec : public CMenuTarget
 {

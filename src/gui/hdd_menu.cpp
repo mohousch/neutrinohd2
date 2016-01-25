@@ -68,15 +68,11 @@
 #include <pictureviewer.h>
 #include <movieplayer.h>
 
-#include <gui/webtv.h>
 #include <gui/audioplayer.h>
 #include <gui/hdd_menu.h>
 
 #include <blkid/blkid.h>
 #include <mntent.h>
-
-
-extern CWebTV * webtv;
 
 
 #define HDD_NOISE_OPTION_COUNT 4
@@ -780,7 +776,6 @@ int CHDDChkExec::exec(CMenuTarget *parent, const std::string& actionKey)
 	char src[128];
 	const char * dst = NULL;
 	const char * fstype = NULL;
-	//bool mountPoint = false;
 	
 	CProgressWindow *progress;
 	int oldpass = 0, pass, step, total;
@@ -811,29 +806,19 @@ int CHDDChkExec::exec(CMenuTarget *parent, const std::string& actionKey)
 		printf("mount point is %s type %s\n", dst, fstype);
 		endmntent(fstab);
 		
-		// can not parse mtab, fallback to /media/sda%
-		//if(!mountPoint)
-		//	sprintf((char *)dst, "/media/%s", actionKey.c_str());
-		
 		// unmout /media/sda%
 		res = umount(dst);
 		
 		// not mounted to /media/sda% fallback to /hhd
 		if(res == -1)
 		{
-			//strcpy((char *)dst, "/hdd");
-			//res = umount(dst);
-			
-			//if(res == -1)
-			//{
-				dprintf(DEBUG_NORMAL, "CHDDChkExec::exec: can not umount %s\n", dst);
+			dprintf(DEBUG_NORMAL, "CHDDChkExec::exec: can not umount %s\n", dst);
 				
-				hintbox = new CHintBox(LOCALE_HDD_CHECK, g_Locale->getText(LOCALE_HDD_CHECK_FAILED));
-				hintbox->paint();
-				sleep(2);
-				delete hintbox;
-				return menu_return::RETURN_EXIT;
-			//}
+			hintbox = new CHintBox(LOCALE_HDD_CHECK, g_Locale->getText(LOCALE_HDD_CHECK_FAILED));
+			hintbox->paint();
+			sleep(2);
+			delete hintbox;
+			return menu_return::RETURN_EXIT;
 		}
 	}
 
@@ -1026,6 +1011,84 @@ int CHDDMountMSGExec::exec(CMenuTarget *parent, const std::string& actionKey)
 	}
 	
 	return menu_return::RETURN_EXIT_ALL;
+}
+
+int CHDDMountExec::exec(CMenuTarget *parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CHDDMountExec: %s\n", actionKey.c_str());
+
+	if(parent)
+		hide();
+	
+	int res;
+	char src[128];
+	char dst[128];
+	const char * fstype = NULL;
+
+	sprintf(src, "/dev/%s", actionKey.c_str());
+	sprintf(dst, "/media/%s", actionKey.c_str());
+
+	res = check_if_mounted((char *)actionKey.c_str());
+
+	// if mounted
+	if(res == 1) 
+	{
+		return 0;
+	}
+	else
+	{
+		// get fs type
+		fstype = blkid_get_tag_value(NULL, "TYPE", src);
+
+		if(fstype != NULL)
+		{
+			//mount to /hdd
+			res = mount(src, "/hdd", fstype, 0, NULL);
+	
+			dprintf(DEBUG_NORMAL, "CHDDMountExec: mount1 to /hdd res %d\n", res);
+
+			if(res == 0) 
+			{
+				return 0;
+			}
+			else
+			{
+				// mount to /media/sda%
+				res = mount(src, dst, fstype, 0, NULL);
+	
+				dprintf(DEBUG_NORMAL, "CHDDMountExec: mount2 to %s res %d\n", dst, res);
+				
+				if(res == 0)
+				{
+					return 0;
+				}
+				else //fallback to /tmp/hdd
+				{
+					// create /tmp/hdd
+					safe_mkdir((char *)"/tmp/hdd");
+					// mount to /tmp/hdd
+					res = mount(src, "/tmp/hdd", fstype, 0, NULL);
+					
+					dprintf(DEBUG_NORMAL, "CHDDMountExec: mount3 to /tmp/hdd res %d\n", res);
+					
+					if(res == 0)
+					{
+						return 0;
+					}
+					else
+					{
+						return -1;
+					}
+				}
+			}
+		}
+		else // can not get fstype
+		{
+			return -1;
+		}
+	}
+	
+	return -1;
 }
 
 int CHDDuMountMSGExec::exec(CMenuTarget* parent, const std::string& actionKey)

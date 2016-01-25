@@ -3298,7 +3298,7 @@ static void *insertEventsfromFile(void *)
 
 						while (event) 
 						{
-							SIevent e(onid,tsid,sid,xmlGetNumericAttribute(event, "id", 16));
+							SIevent e(onid, tsid, sid, xmlGetNumericAttribute(event, "id", 16));
 
 							node = event->xmlChildrenNode;
 

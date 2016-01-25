@@ -36,22 +36,7 @@
 #endif
 
 #include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <dirent.h>
-#include <dlfcn.h>
-#include <signal.h>
-#include <sys/wait.h>
-#include <sys/statvfs.h>
-#include <sys/vfs.h>
 
-#include <sys/socket.h>
-
-#include <iostream>
-#include <fstream>
 #include <string>
 
 #include <global.h>
@@ -59,96 +44,27 @@
 
 #include <daemonc/remotecontrol.h>
 
-#include <driver/encoding.h>
-#include <driver/framebuffer.h>
-#include <driver/fontrenderer.h>
-#include <driver/rcinput.h>
-#include <driver/stream2file.h>
-#include <driver/vcrcontrol.h>
-#include <driver/shutdown_count.h>
-#include <driver/screen_max.h>
-
-#include <gui/epgplus.h>
-#include <gui/streaminfo2.h>
-
-#include <gui/widget/colorchooser.h>
 #include <gui/widget/menue.h>
-#include <gui/widget/messagebox.h>
-#include <gui/widget/hintbox.h>
+#include <gui/widget/textbox.h>
 #include <gui/widget/icons.h>
-#include <gui/widget/vfdcontroler.h>
-#include <gui/widget/keychooser.h>
-#include <gui/widget/stringinput.h>
-#include <gui/widget/stringinput_ext.h>
-#include <gui/widget/mountchooser.h>
 
-#include <gui/color.h>
-
-#include <gui/bedit/bouqueteditor_bouquets.h>
-#include <gui/bouquetlist.h>
-#include <gui/eventlist.h>
-#include <gui/channellist.h>
-#include <gui/screensetup.h>
-#include <gui/pluginlist.h>
-#include <gui/plugins.h>
-#include <gui/infoviewer.h>
-#include <gui/epgview.h>
-#include <gui/epg_menu.h>
-#include <gui/update.h>
-#include <gui/scan.h>
-#include <gui/sleeptimer.h>
-#include <gui/rc_lock.h>
-#include <gui/timerlist.h>
-#include <gui/alphasetup.h>
-#include <gui/audioplayer.h>
-#include <gui/imageinfo.h>
-#include <gui/movieplayer.h>
-#include <gui/nfs.h>
-#include <gui/pictureviewer.h>
-#include <gui/motorcontrol.h>
-#include <gui/filebrowser.h>
-#include <gui/psisetup.h>
-
-#include <system/setting_helpers.h>
-#include <system/settings.h>
-#include <system/debug.h>
-#include <system/flashtool.h>
-#include <system/fsmounter.h>
-
-#include <timerdclient/timerdmsg.h>
-
-#include <video_cs.h>
-#include <audio_cs.h>
-
-#include <xmlinterface.h>
-
-#include <string.h>
-
-#include <gui/dboxinfo.h>
-#include <gui/hdd_menu.h>
-#include <gui/audio_select.h>
-
-#if !defined (PLATFORM_COOLSTREAM)
-#include <gui/cam_menu.h>
-#endif
-
-#include <gui/scan_setup.h>
-#include <gui/zapit_setup.h>
-
-// zapit includes
-#include <getservices.h>
-#include <satconfig.h>
-#include <client/zapitclient.h>
-#include <frontend_c.h>
-
-#include <gui/proxyserver_setup.h>
-#include <gui/opkg_manager.h>
-#include <gui/themes.h>
-#include <gui/webtv.h>
-#include <gui/upnpbrowser.h>
 #include <gui/mediaplayer.h>
 #include <gui/service_setup.h>
 #include <gui/main_setup.h>
+#include <gui/timerlist.h>
+#include <gui/sleeptimer.h>
+#include <gui/dboxinfo.h>
+
+#include <gui/audio_select.h>
+#include <gui/epgplus.h>
+#include <gui/streaminfo2.h>
+#include <gui/opkg_manager.h>
+#include <gui/movieplayer.h>
+#include <gui/pluginlist.h>
+
+#include <system/debug.h>
+
+#include <driver/encoding.h>
 
 
 // Init Main Menu
@@ -181,7 +97,7 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu)
 	
 	
 	// timerlist
-	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_TIMERLIST_NAME, true, Timerlist, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST ));
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_TIMERLIST_NAME, true, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST ));
 	
 	// features
 	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_FEATURES, true, this, "features", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_PLUGINS, LOCALE_HELPTEXT_FEATURES ));
@@ -823,7 +739,7 @@ bool CNeutrinoApp::showUserMenu(int button)
                                 menu_items++;
                                 menu_prev = SNeutrinoSettings::ITEM_TIMERLIST;
                                 keyhelper.get(&key, &icon, CRCInput::RC_yellow);
-				menu_item = new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, Timerlist, "-1", key, icon);
+				menu_item = new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, "-1", key, icon);
                                 menu->addItem(menu_item, false);
                                 break;
 
@@ -921,7 +837,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 					menu_items++;
 					menu_prev = SNeutrinoSettings::ITEM_VTXT;
 					keyhelper.get(&key, &icon);
-					menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_VTXT, true, NULL, TuxtxtChanger, "-1", key, icon);
+					menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_VTXT, true, NULL, /*TuxtxtChanger*/new CTuxtxtChangeExec, "-1", key, icon);
 					menu->addItem(menu_item, false);
 				}
                                 break;	

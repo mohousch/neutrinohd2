@@ -103,9 +103,7 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		bool skipShutdownTimer;
 
 		CNVODChangeExec *NVODChanger;
-		CTuxtxtChangeExec *TuxtxtChanger;		// for user menu
 		CRCLock *rcLock;
-                CTimerList *Timerlist;			// for user menu
 
 		void firstChannel();
 		

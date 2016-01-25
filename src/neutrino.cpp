@@ -2530,15 +2530,27 @@ int CNeutrinoApp::run(int argc, char **argv)
 	g_CamHandler->init();	
 #endif	
 
-	// plugins
-	g_PluginList = new CPlugins;
-	g_PluginList->setPluginDir(PLUGINDIR);
-	
 	// picviewer
 	g_PicViewer = new CPictureViewer();
 	
 	// mount shares before scanning for plugins
 	CFSMounter::automount();
+
+	// HDD mount devices
+	CHDDMountExec * mnt = new CHDDMountExec();
+	mnt->exec(NULL, "sda1");
+	delete mnt;
+	mnt = NULL;
+
+	// assuming that mdev/fstab has mounted devices
+	CHDDDestExec * hdd = new CHDDDestExec();
+	hdd->exec(NULL, "");
+	delete hdd;
+	hdd = NULL;
+
+	// plugins
+	g_PluginList = new CPlugins;
+	g_PluginList->setPluginDir(PLUGINDIR);
 
 	// load Pluginlist before main menu (only show script menu if at least one script is available
 	g_PluginList->loadPlugins();
@@ -2546,20 +2558,8 @@ int CNeutrinoApp::run(int argc, char **argv)
 	// init nvod changer
 	NVODChanger = new CNVODChangeExec;
 	
-	// init tuxtxt changer
-	TuxtxtChanger = new CTuxtxtChangeExec; // used by user menu to start vtxt
-	
 	// init rclock
 	rcLock = new CRCLock();
-	
-	// init timerlist
-	Timerlist = new CTimerList;	// defined in neutrino.h
-
-	// HDD mount devices
-	// assuming that mdev/fstab has mounted devices
-	CHDDDestExec * hdd = new CHDDDestExec();
-	hdd->exec(NULL, "");
-	delete hdd;
 
 	// setup recording device
 	setupRecordingDevice();
@@ -2837,7 +2837,10 @@ void CNeutrinoApp::RealRun(CMenuWidget& _mainMenu)
 			{
 				StopSubtitles();
 				
+				CTimerList * Timerlist = new CTimerList;
 				Timerlist->exec(NULL, "");
+				delete Timerlist;
+				Timerlist = NULL;
 				
 				StartSubtitles();
 			}		
@@ -4015,6 +4018,7 @@ skip_message:
 	else if (msg == NeutrinoMessages::LOCK_RC) 
 	{
 		this->rcLock->exec(NULL, CRCLock::NO_USER_INPUT);
+
 		return messages_return::handled;
 	}
 	else if( msg == NeutrinoMessages::CHANGEMODE ) 
