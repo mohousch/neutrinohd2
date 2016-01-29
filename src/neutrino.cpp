@@ -1289,9 +1289,9 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	// END PICVIEWER
 
 	// MISC OPTS
-	configfile.setBool("shutdown_real", g_settings.shutdown_real        );
+	configfile.setBool("shutdown_real", g_settings.shutdown_real);
 	configfile.setBool("shutdown_real_rcdelay", g_settings.shutdown_real_rcdelay);
-	configfile.setString("shutdown_count"           , g_settings.shutdown_count);
+	configfile.setString("shutdown_count", g_settings.shutdown_count);
 
 	configfile.setBool("infobar_sat_display", g_settings.infobar_sat_display  );
 	configfile.setInt32("infobar_subchan_disp_pos", g_settings.infobar_subchan_disp_pos  );
@@ -2383,14 +2383,12 @@ int CNeutrinoApp::run(int argc, char **argv)
 	initialize_iso639_map();
 
 	// check locale language
-	bool show_startwizard = false;
 	CLocaleManager::loadLocale_ret_t loadLocale_ret = g_Locale->loadLocale(g_settings.language);
 
 	if (loadLocale_ret == CLocaleManager::NO_SUCH_LOCALE)
 	{
 		strcpy(g_settings.language, "english");
 		loadLocale_ret = g_Locale->loadLocale(g_settings.language);
-		show_startwizard = true;
 	}
 
 	// setup fonts
@@ -2418,6 +2416,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 
 	// rc 
 	g_RCInput = new CRCInput;
+	g_RCInput->setRepeat(atoi(g_settings.repeat_blocker), atoi(g_settings.repeat_genericblocker));
 
 	// playback
 	playback = new cPlayback();
@@ -5026,6 +5025,10 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	else if(actionKey == "restart") 
 	{		
 		ExitRun(RESTART);
+	}
+	else if(actionKey == "standby")
+	{
+		standbyMode(true);
 	}	
 	else if(actionKey == "tv") 
 	{

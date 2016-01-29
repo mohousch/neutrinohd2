@@ -53,6 +53,7 @@
 #include <gui/main_setup.h>
 #include <gui/timerlist.h>
 #include <gui/sleeptimer.h>
+#include <gui/power_menu.h>
 #include <gui/dboxinfo.h>
 
 #include <gui/audio_select.h>
@@ -89,10 +90,10 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu)
 #endif
 	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_MEDIAPLAYER, true, new CMediaPlayerMenu(), NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER ));
 	
-	//Main Setting Menu
+	// main setting menu
 	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SETTINGS, true, new CMainSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MAINSETTINGS ));
 
-	//Service
+	// service
 	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SERVICE, true, new CServiceSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SERVICE ));
 	
 	
@@ -102,14 +103,8 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu)
 	// features
 	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_FEATURES, true, this, "features", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_PLUGINS, LOCALE_HELPTEXT_FEATURES ));
 
-	//sleep timer
-	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SLEEPTIMER, true, new CSleepTimerWidget, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SLEEPTIMER, LOCALE_HELPTEXT_SLEEPTIMER ));
-
-	//Reboot
-	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_REBOOT, true, this, "reboot", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_REBOOT, LOCALE_HELPTEXT_REBOOT ));
-
-	//Shutdown
-	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SHUTDOWN, true, this, "shutdown", CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_SHUTDOWN, LOCALE_HELPTEXT_SHUTDOWN ));//FIXME
+	// power menu
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_POWERMENU, true, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_SHUTDOWN, LOCALE_HELPTEXT_SHUTDOWN ));
 
 	//box info
 	mainMenu.addItem( new CMenuForwarderExtended(LOCALE_DBOXINFO, true, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
@@ -188,7 +183,7 @@ REPAINT:
 	}
 	else if(i == 5 && j == 1)
 	{
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_SHUTDOWN), COL_MENUHEAD);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + ICON_OFFSET, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET), g_Locale->getText(LOCALE_MAINMENU_POWERMENU), COL_MENUHEAD);
 	}
 	
 	// paint help buttons (foot)
@@ -261,7 +256,7 @@ REPAINT:
 	std::string setup_logo = DATADIR "/neutrino/icons/mainsettings.png";
 	CFrameBuffer::getInstance()->DisplayImage(setup_logo, frameBox.iX + 4*frameBox.iWidth + 5, frameBox.iY + 1*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
 	
-	// paint shutdown
+	// paint power menu
 	std::string shutdown_logo = DATADIR "/neutrino/icons/" NEUTRINO_ICON_MENUITEM_SHUTDOWN ".png";
 	CFrameBuffer::getInstance()->DisplayImage(shutdown_logo, frameBox.iX + 5*frameBox.iWidth + 5, frameBox.iY + 1*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
 	
@@ -373,7 +368,9 @@ REPAINT:
 				CFrameBuffer::getInstance()->paintBackground();
 				CFrameBuffer::getInstance()->blit();
 					
-				CNeutrinoApp::getInstance()->exec(NULL, "shutdown");
+				//CNeutrinoApp::getInstance()->exec(NULL, "shutdown");
+				CPowerMenu tmpPowerMenu;
+				tmpPowerMenu.exec(NULL, "");
 			}
 			
 			goto REPAINT;

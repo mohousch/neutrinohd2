@@ -150,7 +150,7 @@ int CAudioSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 
 void CAudioSettings::showMenu()
 {
-	dprintf(DEBUG_NORMAL, "CMainSetup::showMenu:\n");
+	dprintf(DEBUG_NORMAL, "CAudioSettings::showMenu:\n");
 	
 	CMenuWidget audioSettings(LOCALE_AUDIOMENU_HEAD, NEUTRINO_ICON_AUDIO);
 	

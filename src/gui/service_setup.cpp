@@ -93,12 +93,6 @@ int CServiceSetup::exec(CMenuTarget* parent, const std::string& actionKey)
 		
 		return ret;
 	}
-	else if(actionKey == "restart")
-	{
-		CNeutrinoApp::getInstance()->exec(NULL, "restart");
-		
-		return ret;
-	}
 	
 	showMenu();
 	
@@ -141,9 +135,6 @@ void CServiceSetup::showMenu()
 	
 	// image info
 	service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_IMAGEINFO,  true, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_IMAGEINFO), false);
-
-	// restart neutrino
-	service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_RESTART, true, this, "restart", CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_SHUTDOWN, LOCALE_HELPTEXT_SOFTRESTART ));
 	
 	// software update
 	service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_UPDATE, true, new CUpdateSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SOFTWAREUPDATE ));

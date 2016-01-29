@@ -706,6 +706,7 @@ mainmenu.head Main Menu
 mainmenu.movieplayer Movieplayer
 mainmenu.pausesectionsd Read EPG
 mainmenu.pictureviewer Picture Viewer
+mainmenu.power_menu Power menu
 mainmenu.radiomode Radio-Mode
 mainmenu.reboot Reboot
 mainmenu.recording Recording
@@ -717,6 +718,7 @@ mainmenu.service Service
 mainmenu.settings Settings
 mainmenu.shutdown Shutdown
 mainmenu.sleeptimer SleepTimer
+mainmenu.standby Standby
 mainmenu.tvmode TV-Mode
 mainmenu.webtvmode WebTV-Mode
 mainsettings.audio Audio settings

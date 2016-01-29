@@ -85,7 +85,8 @@ libneutrino_gui_a_SOURCES = \
 	rc_setup.cpp \
 	recording_setup.cpp \
 	misc_setup.cpp \
-	main_setup.cpp
+	main_setup.cpp \
+	power_menu.cpp
 
 libneutrino_gui2_a_SOURCES = \
 	color.cpp \
