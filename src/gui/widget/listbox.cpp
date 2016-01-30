@@ -27,12 +27,13 @@
 #include <config.h>
 #endif
 
-#include <gui/widget/listbox.h>
-
 #include <global.h>
 #include <neutrino.h>
 
+#include <gui/widget/listbox.h>
+#include <gui/widget/items2detailsline.h>
 #include <gui/widget/icons.h>
+#include <gui/widget/buttons.h>
 
 #include <system/debug.h>
 #include <system/helpers.h>
@@ -155,12 +156,24 @@ void CListBox::paintHead()
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width - (BORDER_LEFT + BORDER_RIGHT + timestr_len), caption.c_str() , COL_MENUHEAD);
 }
 
+const struct button_label Buttons[4] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, "red action" },
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, "green action" },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, "yellow action" },
+	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, "blue action" },
+	
+};
+
 void CListBox::paintFoot()
 {
 	int ButtonWidth = width / 4;
 	
 	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);//round
 
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, ButtonWidth, 4, Buttons, ButtonHeight);
+
+	/*
 	// button red
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, x + width- 4*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 4*ButtonWidth + icon_bf_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, "red action", COL_INFOBAR);
@@ -176,6 +189,7 @@ void CListBox::paintFoot()
 	// button blue
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, x + width - ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - ButtonWidth + icon_bf_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, "blue action", COL_INFOBAR);
+	*/
 }
 
 void CListBox::paintItem(int pos)
@@ -216,7 +230,7 @@ void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 		
 		// itemlines	
-		paintItem2DetailsLine(paintNr, itemNr);		
+		paintItem2DetailsLine(paintNr);		
 		
 		// details
 		paintDetails(itemNr);
@@ -377,59 +391,20 @@ void CListBox::paintDetails(int index)
 	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, InfoHeight - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
 }
 
-void CListBox::paintItem2DetailsLine(int pos, int /*ch_index*/)
+void CListBox::paintItem2DetailsLine(int pos)
 {
 	if(ItemDetails == false)
 		return;
 	
-	int xpos  = x - ConnectLineBox_Width;
-	int ypos1 = y + theight + pos*fheight;
-	int ypos2 = y + height;
-	int ypos1a = ypos1 + (fheight/2) - 2;
-	int ypos2a = ypos2 + (InfoHeight/2) - 2;
-	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
-	fb_pixel_t col2 = COL_MENUCONTENT_PLUS_1;
-
-	// Clear
-	frameBuffer->paintBackgroundBoxRel(xpos, y, ConnectLineBox_Width, height + InfoHeight);
-
-	// blit
-	frameBuffer->blit();
-
-	// paint Line if detail info (and not valid list pos)
-	if (pos >= 0) 
-	{ 
-		int fh = fheight > 10 ? fheight - 10 : 5;
-				
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 4, fh, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 1, fh, col2);			
-
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2 + 7, 4, InfoHeight - 14, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2 + 7, 1, InfoHeight - 14, col2);			
-
-		// vertical line
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 4, ypos2a - ypos1a, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 1, ypos2a - ypos1a + 4, col2);		
-
-		// Hline Oben
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 12,4, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 12,1, col2);
-			
-		// Hline Unten
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos2a, 12, 4, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8, 1, col2);
-
-		// untere info box
-		frameBuffer->paintBoxRel(x, ypos2, width, InfoHeight, col1);
-	}
+	::paintItem2DetailsLine(x, y, width, height, InfoHeight, theight, fheight, pos);
 }
 
 void CListBox::clearItem2DetailsLine()
 {
 	if(ItemDetails == false)
 		return;
-	  
-	  paintItem2DetailsLine(-1, 0);  
+	   
+	::clearItem2DetailsLine(x, y, height, InfoHeight);  
 }
 
 void CListBox::paintInfo(int index)

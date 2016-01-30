@@ -51,6 +51,7 @@
 #include <gui/widget/icons.h>
 #include <gui/widget/menue.h>
 #include <gui/widget/messagebox.h>
+#include <gui/widget/items2detailsline.h>
 
 #include <system/settings.h>
 #include <system/lastchannel.h>
@@ -1622,50 +1623,12 @@ void CChannelList::paintDetails(int index)
 
 void CChannelList::clearItem2DetailsLine ()
 {  
-	  paintItem2DetailsLine(-1, 0);  
+	::clearItem2DetailsLine(x, y, height, info_height);  
 }
 
 void CChannelList::paintItem2DetailsLine(int pos, int ch_index)
 {
-	int xpos  = x - ConnectLineBox_Width;
-	int ypos1 = y + theight + pos*iheight;
-	int ypos2 = y + height;
-	int ypos1a = ypos1 + (iheight/2) - 2;
-	int ypos2a = ypos2 + (info_height/2) - 2;
-	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
-	fb_pixel_t col2 = COL_MENUCONTENT_PLUS_1;
-
-	// Clear
-	frameBuffer->paintBackgroundBoxRel(xpos - 10, y - 10, ConnectLineBox_Width + 10, height + info_height + 10);
-
-	frameBuffer->blit();
-
-	// paint Line if detail info (and not valid list pos)
-	if (pos >= 0) 
-	{ 
-		int fh = iheight > 10 ? iheight - 10: 5;
-			
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 4, fh, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 1, fh, col2);			
-
-		frameBuffer->paintBoxRel(xpos+ConnectLineBox_Width - 4, ypos2 + 7, 4, info_height - 14, col1);
-		frameBuffer->paintBoxRel(xpos+ConnectLineBox_Width - 4, ypos2 + 7, 1, info_height - 14, col2);			
-
-		// vertical line
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 4, ypos2a - ypos1a, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 1, ypos2a - ypos1a + 4, col2);		
-
-		// Hline Oben
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 12,4, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 12,1, col2);
-		
-		// Hline Unten
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos2a, 12, 4, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8, 1, col2);
-
-		// untere info box lines
-		frameBuffer->paintBoxRel(x, ypos2, width, info_height, col1);
-	}
+	::paintItem2DetailsLine(x, y, width, height, info_height, theight, iheight, pos);
 }
 
 bool CChannelList::canZap(CZapitChannel * channel)

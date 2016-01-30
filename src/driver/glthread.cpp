@@ -85,6 +85,8 @@ void GLThreadObj::initKeys()
 	mSpecialMap[GLUT_KEY_PAGE_UP]   = CRCInput::RC_page_up;
 	mSpecialMap[GLUT_KEY_PAGE_DOWN] = CRCInput::RC_page_down;
 
+	mSpecialMap[GLUT_KEY_F11] = CRCInput::RC_record;
+
 	mKeyMap[0x0d] = CRCInput::RC_ok;
 	mKeyMap[0x1b] = CRCInput::RC_home;
 	mKeyMap['i']  = CRCInput::RC_info;

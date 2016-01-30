@@ -1,5 +1,5 @@
 /*
- * $Id: buttons.h 2016/01/12 mohousch Exp $
+ * $Id: items2detailsline.h 2016/01/30 mohousch Exp $
  *
  * (C) 2003 by thegoodguy <thegoodguy@berlios.de>
  *
@@ -19,20 +19,14 @@
  *
  */
 
-#ifndef __gui_widget_buttons_h__
-#define __gui_widget_buttons_h__
+#ifndef __items2detailsline__
+#define __items2detailsline__
 
 #include <driver/fontrenderer.h>
 #include <driver/framebuffer.h>
-#include <system/localize.h>
 
-typedef struct button_label
-{
-	const char * button;
-	neutrino_locale_t locale;
-	const char * localename;
-} button_label_struct;
 
-void paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CLocaleManager * const localemanager, const int x, const int y, const unsigned int buttonwidth, const unsigned int count, const struct button_label * const content, const int dy);
+void paintItem2DetailsLine(int x, int y, int width, int height, int info_height, int theight, int iheight, int pos);
+void clearItem2DetailsLine(int x, int y, int height, int info_height);
 
-#endif /* __gui_widget_buttons_h__ */
+#endif 

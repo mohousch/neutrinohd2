@@ -39,14 +39,18 @@
 
 #include <global.h>
 #include <neutrino.h>
+
 #include <driver/screen_max.h>
-#include "movieplayer.h"
-#include "webtv.h"
+
+#include <movieplayer.h>
+#include <webtv.h>
+
 #include <gui/widget/buttons.h>
 #include <gui/widget/messagebox.h>
 #include <gui/widget/helpbox.h>
 #include <gui/widget/infobox.h>
 #include <gui/widget/hintbox.h>
+#include <gui/widget/items2detailsline.h>
 
 #include <gui/filebrowser.h>
 #include <gui/audio_video_select.h>
@@ -823,7 +827,7 @@ void CWebTV::paintItem(int pos)
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 		
 		// itemlines	
-		paintItem2DetailsLine(pos, curr);		
+		paintItem2DetailsLine(pos);		
 		
 		// details
 		paintDetails(curr);
@@ -936,53 +940,15 @@ void CWebTV::paintDetails(int index)
 	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - 30, channels[index]->description, COL_MENUCONTENTDARK, 0, true); // UTF-8
 }
 
+#include <gui/widget/items2detailsline.h>
 void CWebTV::clearItem2DetailsLine()
 {  
-	  paintItem2DetailsLine(-1, 0);  
+	 ::clearItem2DetailsLine(x, y, height, info_height); 
 }
 
-void CWebTV::paintItem2DetailsLine(int pos, int /*ch_index*/)
+void CWebTV::paintItem2DetailsLine(int pos)
 {
-	int xpos  = x - ConnectLineBox_Width;
-	int ypos1 = y + theight + pos*iheight;
-	int ypos2 = y + height;
-	int ypos1a = ypos1 + (iheight/2) - 2;
-	int ypos2a = ypos2 + (info_height/2) - 2;
-	
-	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
-	fb_pixel_t col2 = COL_MENUCONTENT_PLUS_1;
-
-	// Clear
-	frameBuffer->paintBackgroundBoxRel(xpos, y, ConnectLineBox_Width, height + info_height);
-
-	// blit
-	frameBuffer->blit();
-
-	// paint Line if detail info (and not valid list pos)
-	if (pos >= 0) 
-	{ 
-		int fh = iheight > 10 ? iheight - 10 : 5;
-			
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 4, fh, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 1, fh, col2);			
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2 + 7, 4, info_height - 14, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2 + 7, 1, info_height - 14, col2);			
-
-		// vertical line
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 4, ypos2a - ypos1a, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 1, ypos2a - ypos1a + 4, col2);		
-
-		// Hline Oben
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 12, 4, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 12, 1, col2);
-		
-		// Hline Unten
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos2a, 12, 4, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8, 1, col2);
-
-		// untere info box background
-		frameBuffer->paintBoxRel(x, ypos2, width, info_height, col1);
-	}
+	::paintItem2DetailsLine(x, y, width, height, info_height, theight, iheight, pos);
 }
 
 // paint
