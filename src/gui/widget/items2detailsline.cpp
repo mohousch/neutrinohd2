@@ -72,7 +72,9 @@ void paintItem2DetailsLine(int x, int y, int width, int height, int info_height,
 	}
 }
 
-void clearItem2DetailsLine(int x, int y, int height, int info_height)
+void clearItem2DetailsLine(int x, int y, int width, int height, int info_height)
 { 
 	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x - ConnectLineBox_Width, y, ConnectLineBox_Width, height + info_height);
+
+	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x, y + height, width, info_height);
 }

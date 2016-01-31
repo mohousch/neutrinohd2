@@ -269,5 +269,5 @@ void CBEChannelSelectWidget::paintItem2DetailsLine(int pos)
 
 void CBEChannelSelectWidget::clearItem2DetailsLine()
 {  
-	::clearItem2DetailsLine(x, y, height, info_height);  
+	::clearItem2DetailsLine(x, y, width, height, info_height);  
 }

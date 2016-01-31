@@ -229,7 +229,7 @@ void CBEChannelWidget::paintDetails(int index)
 
 void CBEChannelWidget::clearItem2DetailsLine()
 {  
-	::clearItem2DetailsLine(x, y, height + ButtonHeight, info_height);   
+	::clearItem2DetailsLine(x, y, width, height + ButtonHeight, info_height);   
 }
 
 void CBEChannelWidget::paintItem2DetailsLine(int pos)

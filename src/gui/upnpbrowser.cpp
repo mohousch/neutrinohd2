@@ -956,7 +956,7 @@ void CUpnpBrowserGui::paintItemPos(std::vector<UPnPEntry> *entry, unsigned int p
 		bgcolor = COL_MENUCONTENT_PLUS_2;
 
 		if ((*entry)[pos].isdir)
-			paintItem2DetailsLine(-1); // clear it
+			clearItem2DetailsLine(); // clear it
 		else
 			paintItem2DetailsLine(pos);
 
@@ -1092,10 +1092,7 @@ void CUpnpBrowserGui::paintDevice()
 	int ButtonWidth = (m_width - BORDER_LEFT - BORDER_RIGHT) / 4;
 	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 
-	//m_frameBuffer->paintHLine(m_x, m_x + m_width, top, COL_INFOBAR_SHADOW_PLUS_0);
 	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + 3*ButtonWidth, top, ButtonWidth, 1, &RescanButton, m_buttonHeight);
-
-	//clearItem2DetailsLine(); // clear it
 }
 
 void CUpnpBrowserGui::paintItem(std::vector<UPnPEntry> *entry, unsigned int selected, unsigned int max, unsigned int offset)
@@ -1241,9 +1238,12 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 				return;
 			
 			// refreshbox
-			m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, true, 0, 0, gradientLight2Dark);
+			m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
+
 			m_playing_entry_is_shown = false;
+
 			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, (*entry)[index].title + " - " + (*entry)[index].artist, COL_INFOBAR, 0, true); // UTF-8
+
 			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + m_info_height/2 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, (*entry)[index].album, COL_INFOBAR, 0, true); // UTF-8
 		}
 	}
@@ -1251,7 +1251,7 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 
 void CUpnpBrowserGui::clearItem2DetailsLine()
 {
-	::clearItem2DetailsLine(m_x, m_y, m_height - m_info_height, m_info_height); 
+	::clearItem2DetailsLine(m_x, m_y, m_width, m_height - m_info_height, m_info_height); 
 }
 
 void CUpnpBrowserGui::paintItem2DetailsLine(int pos)
@@ -1282,7 +1282,9 @@ void CUpnpBrowserGui::updateTimes(const bool force)
 		{
 			paintDetails(NULL, 0, true);
 			top = m_y + m_height - m_info_height;
-			m_frameBuffer->paintBoxRel(m_x + m_width - w - 15, top + 2, w + 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, true, 0, 0, gradientLight2Dark);
+
+			// refresh box
+			m_frameBuffer->paintBoxRel(m_x + m_width - w - SCROLLBAR_WIDTH, top + 2, w + 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + m_width - w - 11, top + (m_info_height - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w, play_time, COL_MENUHEAD);			
 		}

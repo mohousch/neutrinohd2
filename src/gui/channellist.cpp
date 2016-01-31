@@ -1623,7 +1623,7 @@ void CChannelList::paintDetails(int index)
 
 void CChannelList::clearItem2DetailsLine ()
 {  
-	::clearItem2DetailsLine(x, y, height, info_height);  
+	::clearItem2DetailsLine(x, y, width, height, info_height);  
 }
 
 void CChannelList::paintItem2DetailsLine(int pos, int ch_index)

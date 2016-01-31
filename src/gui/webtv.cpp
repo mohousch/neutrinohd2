@@ -943,7 +943,7 @@ void CWebTV::paintDetails(int index)
 #include <gui/widget/items2detailsline.h>
 void CWebTV::clearItem2DetailsLine()
 {  
-	 ::clearItem2DetailsLine(x, y, height, info_height); 
+	 ::clearItem2DetailsLine(x, y, width, height, info_height); 
 }
 
 void CWebTV::paintItem2DetailsLine(int pos)

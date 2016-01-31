@@ -27,6 +27,6 @@
 
 
 void paintItem2DetailsLine(int x, int y, int width, int height, int info_height, int theight, int iheight, int pos);
-void clearItem2DetailsLine(int x, int y, int height, int info_height);
+void clearItem2DetailsLine(int x, int y, int width, int height, int info_height);
 
 #endif 

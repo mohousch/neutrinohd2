@@ -276,7 +276,7 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 				unsigned int oldliststart = liststart;
 				liststart = (selected/listmaxshow)*listmaxshow;
 
-				if(oldliststart!=liststart)
+				if(oldliststart != liststart)
 					paint();
 				else
 					paintItem(selected - liststart);
@@ -303,7 +303,7 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 				paintItem(prev_selected - liststart);
 				unsigned int oldliststart = liststart;
 				liststart = (selected/listmaxshow)*listmaxshow;
-				if(oldliststart!=liststart)
+				if(oldliststart != liststart)
 					paint();
 				else
 					paintItem(selected - liststart);
@@ -386,7 +386,7 @@ void CListBox::clearItem2DetailsLine()
 	if(ItemDetails == false)
 		return;
 	   
-	::clearItem2DetailsLine(x, y, height, InfoHeight);  
+	::clearItem2DetailsLine(x, y, width, height, InfoHeight);  
 }
 
 void CListBox::paintInfo(int index)
