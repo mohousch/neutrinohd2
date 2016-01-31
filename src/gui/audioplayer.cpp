@@ -588,18 +588,16 @@ int CAudioPlayerGui::show()
 				play(m_selected);
 			}
 		}
-		else if (msg == CRCInput::RC_red && !isURL)
+		else if (msg == CRCInput::RC_red)
 		{
-			if(m_key_level == 0)
+			if(m_key_level == 0 && !isURL)
 			{
 				if (!m_playlist.empty())
 				{
-					//xx CPlayList::iterator p = m_playlist.begin()+selected;
 					removeFromPlaylist(m_selected);
 					if((int)m_selected == m_current)
 					{
 						m_current--;
-						//stop(); // Stop if song is deleted, next song will be startet automat.
 					}
 					
 					if(m_selected >= m_playlist.size())
@@ -611,11 +609,6 @@ int CAudioPlayerGui::show()
 			{
 				stop();
 			} 
-			else
-			{
-				// key_level==2
-			}
-
 		}
 		else if (msg == CRCInput::RC_stop)
 		{
@@ -624,9 +617,9 @@ int CAudioPlayerGui::show()
 			else
 				stop();
 		}
-		else if(msg == CRCInput::RC_green && !isURL)
+		else if(msg == CRCInput::RC_green)
 		{
-			if (m_key_level == 0)
+			if (m_key_level == 0 && !isURL)
 			{
 				openFilebrowser();
 				update = true;
@@ -636,7 +629,7 @@ int CAudioPlayerGui::show()
 				if(m_curr_audiofile.FileExtension != CFile::EXTENSION_URL)
 					rev();
 			} 
-			else 
+			else if(!isURL)
 			{ 
 				// key_level == 2
 				if(m_state == CAudioPlayerGui::STOP)
@@ -676,9 +669,9 @@ int CAudioPlayerGui::show()
 		{
 			pause();
 		}
-		else if(msg == CRCInput::RC_yellow && !isURL)
+		else if(msg == CRCInput::RC_yellow)
 		{
-			if(m_key_level == 0)
+			if(m_key_level == 0 && !isURL)
 			{
 				if (!m_playlist.empty())
 				{
@@ -692,7 +685,7 @@ int CAudioPlayerGui::show()
 			{
 				pause();
 			} 
-			else 
+			else if(!isURL)
 			{ 
 				// key_level==2
 				m_select_title_by_name =! m_select_title_by_name;
@@ -701,9 +694,9 @@ int CAudioPlayerGui::show()
 				paint();
 			}
 		}
-		else if(msg == CRCInput::RC_blue && !isURL)
+		else if(msg == CRCInput::RC_blue)
 		{
-			if (m_key_level == 0)
+			if (m_key_level == 0 && !isURL)
 			{
 				if (m_inetmode) 
 				{
@@ -764,13 +757,13 @@ int CAudioPlayerGui::show()
 				if(m_curr_audiofile.FileExtension != CFile::EXTENSION_URL)
 					ff();
 			} 
-			else // key_level == 2
+			else if(!isURL) // key_level == 2
 			{
 				if (m_state != CAudioPlayerGui::STOP)
 				{
 					// keylevel 2 can only be reached if the currently played file
 					// is no stream, so we do not have to test for this case
-					int seconds=0;
+					int seconds = 0;
 					CIntInput secondsInput(LOCALE_AUDIOPLAYER_JUMP_DIALOG_TITLE,
 							seconds,
 							5,
@@ -878,9 +871,6 @@ int CAudioPlayerGui::show()
 			CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));			
 			paintLCD();			
 			update = true;
-			//pushback key if...
-			//g_RCInput->postMsg( msg, data );
-			//loop = false;
 		}
 		else if(msg == NeutrinoMessages::CHANGEMODE)
 		{
