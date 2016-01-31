@@ -172,24 +172,6 @@ void CListBox::paintFoot()
 	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);//round
 
 		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, ButtonWidth, 4, Buttons, ButtonHeight);
-
-	/*
-	// button red
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, x + width- 4*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 4*ButtonWidth + icon_bf_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, "red action", COL_INFOBAR);
-
-	// button green
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, x + width - 3*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width- 3*ButtonWidth + icon_bf_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, "green action", COL_INFOBAR);
-
-	// button yellow
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + width - 2*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width- 2*ButtonWidth + icon_bf_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, "yellow action", COL_INFOBAR);
-
-	// button blue
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, x + width - ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - ButtonWidth + icon_bf_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, "blue action", COL_INFOBAR);
-	*/
 }
 
 void CListBox::paintItem(int pos)

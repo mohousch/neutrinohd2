@@ -111,8 +111,8 @@ class CUpnpBrowserGui : public CMenuTarget
 		void paintItemPos  (std::vector<UPnPEntry> *entry, unsigned int pos, unsigned int selected);
 		void paintDevicePos(unsigned int pos);
 		void paintDetails(std::vector<UPnPEntry> *entry, unsigned int index, bool use_playing = false);
-		void clearItem2DetailsLine (void);
-		void paintItem2DetailsLine (int pos,unsigned  int ch_index);
+		void clearItem2DetailsLine(void);
+		void paintItem2DetailsLine(int pos);
 
 		void updateTimes(const bool force = false);
 };

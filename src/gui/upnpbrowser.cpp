@@ -64,6 +64,7 @@
 #include <gui/widget/hintbox.h>
 #include <gui/widget/stringinput.h>
 #include <gui/widget/stringinput_ext.h>
+#include <gui/widget/items2detailsline.h>
 
 #include <system/settings.h>
 #include <system/debug.h>
@@ -114,7 +115,7 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string & /*actionKey*/
 
 	m_sheight = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 	m_frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_foot_w, &icon_foot_h);
-	m_buttonHeight = std::max(icon_foot_h, m_sheight) + 6;				//foot
+	m_buttonHeight = std::max(icon_foot_h, m_sheight) + 10;				//foot
 	m_theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(); 	//title
 	m_mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();		
 	m_fheight = g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight();
@@ -953,11 +954,13 @@ void CUpnpBrowserGui::paintItemPos(std::vector<UPnPEntry> *entry, unsigned int p
 	{
 		color   = COL_MENUCONTENT + 2;
 		bgcolor = COL_MENUCONTENT_PLUS_2;
-		paintDetails(entry, pos);
+
 		if ((*entry)[pos].isdir)
-			paintItem2DetailsLine(-1, pos); // clear it
+			paintItem2DetailsLine(-1); // clear it
 		else
-			paintItem2DetailsLine(pos, pos);
+			paintItem2DetailsLine(pos);
+
+		paintDetails(entry, pos);
 	}
 	else
 	{
@@ -965,7 +968,7 @@ void CUpnpBrowserGui::paintItemPos(std::vector<UPnPEntry> *entry, unsigned int p
 		bgcolor = COL_MENUCONTENT_PLUS_0;
 	}
 	
-	m_frameBuffer->paintBoxRel(m_x, ypos, m_width - 15, m_fheight, bgcolor);
+	m_frameBuffer->paintBoxRel(m_x, ypos, m_width - SCROLLBAR_WIDTH, m_fheight, bgcolor);
 
 	if (pos >= entry->size())
 		return;
@@ -1017,6 +1020,7 @@ void CUpnpBrowserGui::paintItemPos(std::vector<UPnPEntry> *entry, unsigned int p
 
 	m_frameBuffer->paintIcon(fileicon, m_x + 5 , ypos + (m_fheight - 16) / 2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + m_width - 15 - w, ypos + m_fheight, w, info, color, m_fheight);
+
 	g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 30, ypos + m_fheight, m_width - 50 - w, name, color, m_fheight, true); // UTF-8
 }
 
@@ -1196,7 +1200,7 @@ void CUpnpBrowserGui::paintItem(std::vector<UPnPEntry> *entry, unsigned int sele
 	// Foot buttons
 	top = m_y + m_height - (m_info_height + m_buttonHeight);
 	int ButtonWidth = (m_width - 20) / 4;
-	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
 	
 	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top, ButtonWidth, 1, &StopButton, m_buttonHeight);
 	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top, ButtonWidth, 1, &PUpButton, m_buttonHeight);
@@ -1247,57 +1251,12 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 
 void CUpnpBrowserGui::clearItem2DetailsLine()
 {
-	paintItem2DetailsLine (-1, 0);
+	::clearItem2DetailsLine(m_x, m_y, m_height - m_info_height, m_info_height); 
 }
 
-void CUpnpBrowserGui::paintItem2DetailsLine(int pos, unsigned int /*ch_index*/)
+void CUpnpBrowserGui::paintItem2DetailsLine(int pos)
 {
-	int xpos  = m_x - ConnectLineBox_Width;
-	int ypos1 = m_y + m_title_height + m_theight + pos*m_fheight;
-	int ypos2 = m_y + m_height - m_info_height;
-
-	int ypos1a = ypos1 + (m_fheight/2) - 2;
-	int ypos2a = ypos2 + (m_info_height/2) - 2;
-	
-	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
-	fb_pixel_t col2 = COL_MENUCONTENT_PLUS_1;
-
-	// Clear
-	m_frameBuffer->paintBackgroundBoxRel(xpos, m_y + m_title_height, ConnectLineBox_Width, m_height + m_info_height - (m_y + m_title_height));
-	
-	if (pos < 0) 
-	{
-		m_frameBuffer->paintBackgroundBoxRel(m_x, ypos2, m_width, m_info_height);
-	}
-	
-	// paint Line if detail info (and not valid list pos)
-	if (pos >= 0)
-	{
-		// 1. col thick line
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4,  ypos1, 4,  m_fheight,     col1);//
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4,  ypos2, 4,  m_info_height, col1);//
-
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 4, ypos2a - ypos1a, col1);//
-
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 12, 4, col1);//
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos2a, 12, 4, col1);//
-
-		// 2. col small line
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1, 1, m_fheight, col2);//
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2, 1, m_info_height, col2);//
-
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 1, ypos2a - ypos1a + 4, col2);//
-
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 12, 1, col2);//
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8,  1, col2);//
-
-		// -- small Frame around infobox
-		m_frameBuffer->paintBoxRel(m_x, ypos2, 2, m_info_height, col1);
-		m_frameBuffer->paintBoxRel(m_x + m_width - 2, ypos2, 2, m_info_height, col1);
-		m_frameBuffer->paintBoxRel(m_x, ypos2, m_width - 2, 2, col1);
-
-		m_frameBuffer->paintBoxRel(m_x , ypos2 + m_info_height - 2, m_width - 2, 2, col1);
-	}
+	::paintItem2DetailsLine(m_x, m_y, m_width, m_height - m_info_height, m_info_height, m_title_height + m_theight, m_fheight, pos);
 }
 
 void CUpnpBrowserGui::updateTimes(const bool force)

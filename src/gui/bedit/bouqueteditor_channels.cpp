@@ -38,6 +38,7 @@
 #include <gui/widget/buttons.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/messagebox.h>
+#include <gui/widget/items2detailsline.h>
 
 #include <gui/bedit/bouqueteditor_channels.h>
 
@@ -50,7 +51,7 @@
 #include <gui/widget/buttons.h>
 #include <gui/widget/icons.h>
 
-/*zapit includes*/
+// zapit includes
 #include <client/zapitclient.h>
 #include <client/zapittools.h>
 #include <bouquets.h>
@@ -100,10 +101,8 @@ void CBEChannelWidget::paintItem(int pos)
 		color = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 		
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, COL_MENUCONTENT_PLUS_0);
-		
 		// itemlines	
-		paintItem2DetailsLine(pos, current);		
+		paintItem2DetailsLine(pos);		
 		
 		// details
 		paintDetails(current);
@@ -215,7 +214,7 @@ void CBEChannelWidget::paintDetails(int index)
 	int len = snprintf(buf, sizeof(buf), "%d ", (*Channels)[index]->getFreqId());
 	
 	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + ButtonHeight + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x + 2, y + height + ButtonHeight + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
 
 	sat_iterator_t sit = satellitePositions.find((*Channels)[index]->getSatellitePosition());
 		
@@ -230,55 +229,13 @@ void CBEChannelWidget::paintDetails(int index)
 
 void CBEChannelWidget::clearItem2DetailsLine()
 {  
-	  paintItem2DetailsLine(-1, 0);  
+	::clearItem2DetailsLine(x, y, height + ButtonHeight, info_height);   
 }
 
-void CBEChannelWidget::paintItem2DetailsLine(int pos, int /*ch_index*/)
+void CBEChannelWidget::paintItem2DetailsLine(int pos)
 {
-	int xpos  = x - ConnectLineBox_Width;
-	int ypos1 = y + theight + pos*fheight;
-	int ypos2 = y + height + ButtonHeight;
-	int ypos1a = ypos1 + (fheight/2) - 2;
-	int ypos2a = ypos2 + (info_height/2) - 2;
-	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
-	fb_pixel_t col2 = COL_MENUCONTENT_PLUS_1;
-
-	// Clear
-	frameBuffer->paintBackgroundBoxRel(xpos, y, ConnectLineBox_Width, height + ButtonHeight + info_height);
-
-	frameBuffer->blit();
-
-	// paint Line if detail info (and not valid list pos)
-	if (pos >= 0) 
-	{ 
-		int fh = fheight > 10 ? fheight - 10 : 5;
-			
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 4, fh, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 1, fh, col2);			
-
-		frameBuffer->paintBoxRel(xpos+ConnectLineBox_Width - 4, ypos2 + 7, 4, info_height - 14, col1);
-		frameBuffer->paintBoxRel(xpos+ConnectLineBox_Width - 4, ypos2 + 7, 1, info_height - 14, col2);			
-
-		// vertical line
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 4, ypos2a - ypos1a, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 1, ypos2a - ypos1a + 4, col2);		
-
-		// Hline Oben
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 12,4, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 12,1, col2);
-		
-		// Hline Unten
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos2a, 12, 4, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8, 1, col2);
-
-		// untere info box lines
-		frameBuffer->paintBoxRel(x, ypos2, width, info_height, col1);
-		
-		// FIXME: bad hack just to overload the color
-		frameBuffer->paintBoxRel(x + 2, ypos2 + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
-	}
+	::paintItem2DetailsLine(x, y, width, height + ButtonHeight, info_height, theight, fheight, pos);
 }
-//
 
 void CBEChannelWidget::hide()
 {

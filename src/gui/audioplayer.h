@@ -167,8 +167,8 @@ class CAudioPlayerGui : public CMenuTarget
 		void get_id3(CAudiofileExt * audiofile);
 		void get_mp3info(CAudiofileExt * audiofile);
 		CFileFilter audiofilefilter;
-		void paintItemID3DetailsLine (int pos);
-		void clearItemID3DetailsLine ();
+		void paintItemID3DetailsLine(int pos);
+		void clearItemID3DetailsLine();
 		void play(unsigned int pos);
 		void stop();
 		void pause();

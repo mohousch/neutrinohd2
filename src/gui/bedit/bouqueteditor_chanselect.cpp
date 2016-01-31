@@ -45,7 +45,7 @@
 #include <gui/widget/icons.h>
 #include <gui/widget/items2detailsline.h>
 
-/*zapit includes*/
+// zapit includes
 #include <client/zapitclient.h>
 #include <channel.h>
 #include <bouquets.h>

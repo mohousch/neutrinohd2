@@ -61,7 +61,7 @@ bool CBaseDec::GetMetaDataBase(CAudiofile* const in, const bool nice)
 		FILE * fp = fopen( in->Filename.c_str(), "r" );
 		if ( fp == NULL )
 		{
-			fprintf( stderr, "Error opening file %s for meta data reading.\n", in->Filename.c_str() );
+			dprintf(DEBUG_DEBUG, "CBaseDec::GetMetaDataBase: Error opening file %s for meta data reading.\n", in->Filename.c_str() );
 			Status = false;
 		}
 		else

@@ -38,14 +38,13 @@
 #include <driver/framebuffer.h>
 #include <gui/widget/menue.h>
 
-/*zapit*/
+// zapit
 #include <client/zapitclient.h>
+#include <channel.h>
+#include <bouquets.h>
 
 #include <string>
 
-/*zapit includes*/
-#include <channel.h>
-#include <bouquets.h>
 
 class CBEChannelWidget : public CMenuWidget
 {
@@ -98,7 +97,7 @@ class CBEChannelWidget : public CMenuWidget
 		void paintFoot();
 		void paintDetails(int index);
 		void clearItem2DetailsLine();
-		void paintItem2DetailsLine(int pos, int ch_index);
+		void paintItem2DetailsLine(int pos);
 		void hide();
 
 		void deleteChannel();

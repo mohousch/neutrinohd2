@@ -1927,7 +1927,7 @@ void CAudioPlayerGui::clearItemID3DetailsLine()
 void CAudioPlayerGui::paintItemID3DetailsLine(int pos)
 {
 	int xpos  = m_x - ConnectLineBox_Width;
-	int ypos1 = m_y + m_title_height + m_theight+ 0 + pos*m_fheight;
+	int ypos1 = m_y + m_title_height + m_theight + pos*m_fheight;
 	int ypos2 = m_y + (m_height - m_info_height);
 	int ypos1a = ypos1 + (m_fheight / 2) - 2;
 	int ypos2a = ypos2 + (m_info_height / 2) - 2;
