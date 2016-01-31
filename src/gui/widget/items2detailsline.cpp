@@ -42,9 +42,6 @@ void paintItem2DetailsLine(int x, int y, int width, int height, int info_height,
 	// clear
 	CFrameBuffer::getInstance()->paintBackgroundBoxRel(xpos, y, ConnectLineBox_Width, height + info_height);
 
-	// blit
-	CFrameBuffer::getInstance()->blit();
-
 	// paint Line if detail info (and not valid list pos)
 	if (pos >= 0) 
 	{ 
@@ -69,9 +66,6 @@ void paintItem2DetailsLine(int x, int y, int width, int height, int info_height,
 
 		// untere info box background
 		CFrameBuffer::getInstance()->paintBoxRel(x, ypos2, width, info_height, col1);
-
-		// blit
-		CFrameBuffer::getInstance()->blit();
 	}
 }
 
@@ -82,7 +76,4 @@ void clearItem2DetailsLine(int x, int y, int width, int height, int info_height)
 
 	// lines around info box
 	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x, y + height, width, info_height);
-
-	// blit
-	CFrameBuffer::getInstance()->blit();
 }

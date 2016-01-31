@@ -31,9 +31,9 @@
 #include <neutrino.h>
 
 #include <gui/widget/listbox.h>
-#include <gui/widget/items2detailsline.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/buttons.h>
+#include <gui/widget/items2detailsline.h>
 
 #include <system/debug.h>
 #include <system/helpers.h>

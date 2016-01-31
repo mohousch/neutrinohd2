@@ -1558,46 +1558,22 @@ void CAudioPlayerGui::paintItem(int pos)
 
 	if ((pos + m_liststart) == m_selected)
 	{
-		if ((pos + m_liststart) == (unsigned)m_current)
-		{
-			color   = COL_MENUCONTENTSELECTED + 2;
-			bgcolor = COL_MENUCONTENTSELECTED_PLUS_2;
-		}
-		else
-		{
-			color   = COL_MENUCONTENTSELECTED;
-			bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-		}
+		color   = COL_MENUCONTENTSELECTED;
+		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 
 		paintItemID3DetailsLine(pos);
 	}
 	else
 	{
-		if (((pos + m_liststart) < m_playlist.size()) && (pos & 1))
+		if ((pos + m_liststart) == (unsigned)m_current)
 		{
-			if ((pos + m_liststart) == (unsigned)m_current)
-			{
-				color   = COL_MENUCONTENTDARK + 1;    // NOTE: was 2
-				bgcolor = COL_MENUCONTENTDARK_PLUS_1; //NOTE: was 2
-			}
-			else
-			{
-				color   = COL_MENUCONTENTDARK;
-				bgcolor = COL_MENUCONTENTDARK_PLUS_0;
-			}
+			color   = COL_MENUCONTENT + 1;
+			bgcolor = COL_MENUCONTENT_PLUS_1;
 		}
 		else
 		{
-			if ((pos + m_liststart) == (unsigned)m_current)
-			{
-				color   = COL_MENUCONTENT + 1;
-				bgcolor = COL_MENUCONTENT_PLUS_1;
-			}
-			else
-			{
-				color   = COL_MENUCONTENT;
-				bgcolor = COL_MENUCONTENT_PLUS_0;
-			}
+			color   = COL_MENUCONTENT;
+			bgcolor = COL_MENUCONTENT_PLUS_0;
 		}
 	}
 

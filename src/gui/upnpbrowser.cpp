@@ -920,15 +920,17 @@ void CUpnpBrowserGui::paintDevicePos(unsigned int pos)
 
 	if (pos == m_selecteddevice)
 	{
-		color   = COL_MENUCONTENT + 2;
-		bgcolor = COL_MENUCONTENT_PLUS_2;
+		color = COL_MENUCONTENTSELECTED;
+		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 	}
 	else
 	{
 		color   = COL_MENUCONTENT;
 		bgcolor = COL_MENUCONTENT_PLUS_0;
 	}
-	m_frameBuffer->paintBoxRel(m_x, ypos, m_width - 15, m_fheight, bgcolor);
+
+	// item box
+	m_frameBuffer->paintBoxRel(m_x, ypos, m_width - SCROLLBAR_WIDTH, m_fheight, bgcolor);
 
 	if (pos + m_indexdevice >= m_devices.size())
 		return;
@@ -952,8 +954,8 @@ void CUpnpBrowserGui::paintItemPos(std::vector<UPnPEntry> *entry, unsigned int p
 
 	if (pos == selected)
 	{
-		color   = COL_MENUCONTENT + 2;
-		bgcolor = COL_MENUCONTENT_PLUS_2;
+		color = COL_MENUCONTENTSELECTED;
+		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 
 		if ((*entry)[pos].isdir)
 			clearItem2DetailsLine(); // clear it
@@ -968,6 +970,7 @@ void CUpnpBrowserGui::paintItemPos(std::vector<UPnPEntry> *entry, unsigned int p
 		bgcolor = COL_MENUCONTENT_PLUS_0;
 	}
 	
+	// item box
 	m_frameBuffer->paintBoxRel(m_x, ypos, m_width - SCROLLBAR_WIDTH, m_fheight, bgcolor);
 
 	if (pos >= entry->size())
