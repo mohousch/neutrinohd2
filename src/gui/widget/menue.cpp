@@ -503,6 +503,7 @@ void CMenuWidget::paint()
 	page_start.push_back(0);
 	total_pages = 1;
 	sp_height = 5;
+	heightFirstPage = 0;
 	
 	for (unsigned int i = 0; i < items.size(); i++) 
 	{
@@ -510,10 +511,10 @@ void CMenuWidget::paint()
 		itemHeightTotal += item_height;
 		heightCurrPage += item_height;
 
-		//FIXME: wrong calculation
-		if(heightCurrPage > height - (hheight + 2*sp_height + fheight))
+		if( (heightCurrPage + hheight + 2*sp_height + fheight) > height)
 		{
 			page_start.push_back(i);
+			heightFirstPage = heightCurrPage - item_height;
 			total_pages++;
 			heightCurrPage = item_height;
 		}
@@ -537,7 +538,9 @@ void CMenuWidget::paint()
 	//FIXME: wrong calculation
 	if(hheight + sp_height + itemHeightTotal + sp_height + fheight < height)
 		height = hheight + sp_height + heightCurrPage + sp_height + fheight;
-
+	else 	
+		height = hheight + sp_height + heightFirstPage + sp_height + fheight;
+		
 	// coordinations
 	x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width ) >> 1 );
 	y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
@@ -596,7 +599,7 @@ void CMenuWidget::paintItems()
 	
 	items_width = full_width - (BORDER_LEFT + BORDER_RIGHT + sb_width);
 	
-	//Item not currently on screen
+	// item not currently on screen
 	if (selected >= 0)
 	{
 		while(selected < (int)page_start[current_page])

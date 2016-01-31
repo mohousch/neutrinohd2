@@ -467,6 +467,7 @@ class CMenuWidget : public CMenuTarget
 		int heightCurrPage;
 		int items_height;
 		int items_width;
+		int heightFirstPage;
 		
 	public:
 		CMenuWidget();

@@ -98,8 +98,8 @@ class CChannelList
 		SMSKeyInput c_SMSKeyInput;
 
 		void paintDetails(int index);
-		void clearItem2DetailsLine ();
-		void paintItem2DetailsLine (int pos, int ch_index);
+		void clearItem2DetailsLine();
+		void paintItem2DetailsLine(int pos);
 		void paintItem(int pos);
 		void paint();
 		void paintHead();

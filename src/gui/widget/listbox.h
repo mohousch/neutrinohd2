@@ -39,19 +39,20 @@ class CListBox : public CMenuWidget
 		CFrameBuffer*	frameBuffer;
 		bool            modified;
 		std::string	caption;
+
 		int		width;
 		int		height;
 		int		x;
 		int		y;
 
-		int		fheight;
-		int		theight;
+		int		iheight;	// item height
+		int		theight;	// title height
 
 		unsigned int	selected;
 		unsigned int	liststart;
 		unsigned int	listmaxshow;
 	
-		int 		ButtonHeight;
+		int 		ButtonHeight;	// foot height
 		int 		InfoHeight;
 		int 		TitleHeight;
 		std::string 	HeadIcon;

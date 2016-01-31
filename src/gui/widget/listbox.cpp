@@ -43,8 +43,10 @@ CListBox::CListBox(const char * const Caption, int _width, int _height, bool ite
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	caption = Caption;
+
 	liststart = 0;
 	selected =  0;
+
 	width =  _width;
 	height = _height;
 	
@@ -67,9 +69,9 @@ CListBox::CListBox(const char * const Caption, int _width, int _height, bool ite
 	modified = false;
 	
 	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
-	listmaxshow = (height - theight - ButtonHeight)/fheight;
-	height = theight + ButtonHeight + listmaxshow*fheight; // recalc height
+	iheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
+	listmaxshow = (height - theight - ButtonHeight)/iheight;
+	height = theight + ButtonHeight + listmaxshow*iheight; // recalc height
 
 	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - (width + (ItemDetails? ConnectLineBox_Width : 0))) / 2) + (ItemDetails? ConnectLineBox_Width : 0);
 	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - (height + InfoHeight)) / 2) + TitleHeight/2;
@@ -79,8 +81,10 @@ CListBox::CListBox(const neutrino_locale_t Caption, int _width, int _height, boo
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	caption = g_Locale->getText(Caption);
+
 	liststart = 0;
 	selected =  0;
+
 	width =  _width;
 	height = _height;
 	
@@ -103,9 +107,9 @@ CListBox::CListBox(const neutrino_locale_t Caption, int _width, int _height, boo
 	modified = false;
 	
 	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
-	listmaxshow = (height - theight - ButtonHeight)/fheight;
-	height = theight + ButtonHeight + listmaxshow*fheight; // recalc height
+	iheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
+	listmaxshow = (height - theight - ButtonHeight)/iheight;
+	height = theight + ButtonHeight + listmaxshow*iheight; // recalc height
 
 	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - (width + (ItemDetails? ConnectLineBox_Width : 0))) / 2) + (ItemDetails? ConnectLineBox_Width : 0);
 	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - (height + InfoHeight)) / 2) + TitleHeight/2;
@@ -116,19 +120,22 @@ void CListBox::setModified(void)
 	modified = true;
 }
 
+// body
 void CListBox::paint()
 {
 	dprintf(DEBUG_DEBUG, "CListBox::paint\n");
 
 	liststart = (selected/listmaxshow)*listmaxshow;
 
+	// items
 	for(unsigned int count = 0; count < listmaxshow; count++)
 	{
 		paintItem(count);
 	}
 
+	// scroll bar
 	int ypos = y + theight;
-	int sb = fheight*listmaxshow;
+	int sb = iheight*listmaxshow;
 	frameBuffer->paintBoxRel(x + width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
 
 	int sbc = ((getItemCount() - 1)/ listmaxshow) + 1;
@@ -138,6 +145,7 @@ void CListBox::paint()
 	frameBuffer->paintBoxRel(x + width - (SCROLLBAR_WIDTH - 2), ypos + 2 + int(sbs* sbh), 11, int(sbh),  COL_MENUCONTENT_PLUS_3);
 }
 
+// head
 void CListBox::paintHead()
 {
 	// headBox
@@ -156,6 +164,7 @@ void CListBox::paintHead()
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width - (BORDER_LEFT + BORDER_RIGHT + timestr_len), caption.c_str() , COL_MENUHEAD);
 }
 
+// foot
 const struct button_label Buttons[4] =
 {
 	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, "red action" },
@@ -167,11 +176,11 @@ const struct button_label Buttons[4] =
 
 void CListBox::paintFoot()
 {
-	int ButtonWidth = width / 4;
+	int ButtonWidth = width / 4 - BORDER_LEFT - BORDER_RIGHT;
 	
 	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);//round
 
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, ButtonWidth, 4, Buttons, ButtonHeight);
+	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, ButtonWidth, 4, Buttons, ButtonHeight);
 }
 
 void CListBox::paintItem(int pos)
@@ -196,7 +205,7 @@ unsigned int CListBox::getItemCount()
 
 int CListBox::getItemHeight()
 {
-	return fheight;
+	return iheight;
 }
 
 void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
@@ -227,7 +236,7 @@ void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
 	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, getItemHeight(), bgcolor);
 	
 	// item 
-	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, ypos + fheight, width - (BORDER_LEFT + BORDER_RIGHT), "demo", color);
+	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, ypos + iheight, width - (BORDER_LEFT + BORDER_RIGHT), "demo", color);
 }
 
 int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
@@ -309,44 +318,44 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 					paintItem(selected - liststart);
 			}
 		}
-		else if( msg ==CRCInput::RC_ok)
+		else if( msg == CRCInput::RC_ok)
 		{
 			onOkKeyPressed();
 			paintInfo();
 		}
-		else if ( msg ==CRCInput::RC_red)
+		else if ( msg == CRCInput::RC_red)
 		{
 			onRedKeyPressed();
 		}
-		else if ( msg ==CRCInput::RC_green)
+		else if ( msg == CRCInput::RC_green)
 		{
 			onGreenKeyPressed();
 		}
-		else if ( msg ==CRCInput::RC_yellow)
+		else if ( msg == CRCInput::RC_yellow)
 		{
 			onYellowKeyPressed();
 		}
-		else if ( msg ==CRCInput::RC_blue)
+		else if ( msg == CRCInput::RC_blue)
 		{
 			onBlueKeyPressed();
 		}
-		else if ( msg ==CRCInput::RC_setup)
+		else if ( msg == CRCInput::RC_setup)
 		{
 			onMenuKeyPressed();
 		}
-		else if ( msg ==CRCInput::RC_info)
+		else if ( msg == CRCInput::RC_info)
 		{
 			onInfoKeyPressed();
 		}
-		else if ( msg ==CRCInput::RC_right)
+		else if ( msg == CRCInput::RC_right)
 		{
 			onRightKeyPressed();
 		}
-		else if ( msg ==CRCInput::RC_left)
+		else if ( msg == CRCInput::RC_left)
 		{
 			onLeftKeyPressed();
 		}
-		else if ( msg ==CRCInput::RC_spkr)
+		else if ( msg == CRCInput::RC_spkr)
 		{
 			onMuteKeyPressed();
 		}
@@ -378,7 +387,7 @@ void CListBox::paintItem2DetailsLine(int pos)
 	if(ItemDetails == false)
 		return;
 	
-	::paintItem2DetailsLine(x, y, width, height, InfoHeight, theight, fheight, pos);
+	::paintItem2DetailsLine(x, y, width, height, InfoHeight, theight, iheight, pos);
 }
 
 void CListBox::clearItem2DetailsLine()

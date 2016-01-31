@@ -909,7 +909,7 @@ int CChannelList::show()
 
 void CChannelList::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width + 5, height + info_height + 5);
+	frameBuffer->paintBackgroundBoxRel(x, y, width, height + info_height);
 		
 	frameBuffer->blit();
 
@@ -1621,12 +1621,12 @@ void CChannelList::paintDetails(int index)
 	}
 }
 
-void CChannelList::clearItem2DetailsLine ()
+void CChannelList::clearItem2DetailsLine()
 {  
 	::clearItem2DetailsLine(x, y, width, height, info_height);  
 }
 
-void CChannelList::paintItem2DetailsLine(int pos, int ch_index)
+void CChannelList::paintItem2DetailsLine(int pos)
 {
 	::paintItem2DetailsLine(x, y, width, height, info_height, theight, iheight, pos);
 }
@@ -1664,7 +1664,7 @@ void CChannelList::paintItem(int pos)
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 		
 		// itemlines	
-		paintItem2DetailsLine(pos, curr);		
+		paintItem2DetailsLine(pos);		
 		
 		// details
 		paintDetails(curr);

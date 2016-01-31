@@ -39,7 +39,7 @@ void paintItem2DetailsLine(int x, int y, int width, int height, int info_height,
 	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
 	fb_pixel_t col2 = COL_MENUCONTENT_PLUS_1;
 
-	// Clear
+	// clear
 	CFrameBuffer::getInstance()->paintBackgroundBoxRel(xpos, y, ConnectLineBox_Width, height + info_height);
 
 	// blit
@@ -69,12 +69,20 @@ void paintItem2DetailsLine(int x, int y, int width, int height, int info_height,
 
 		// untere info box background
 		CFrameBuffer::getInstance()->paintBoxRel(x, ypos2, width, info_height, col1);
+
+		// blit
+		CFrameBuffer::getInstance()->blit();
 	}
 }
 
 void clearItem2DetailsLine(int x, int y, int width, int height, int info_height)
 { 
+	// lines
 	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x - ConnectLineBox_Width, y, ConnectLineBox_Width, height + info_height);
 
+	// lines around info box
 	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x, y + height, width, info_height);
+
+	// blit
+	CFrameBuffer::getInstance()->blit();
 }
