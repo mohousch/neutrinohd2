@@ -60,7 +60,7 @@ class CBEChannelSelectWidget : public CListBox
 		void paintFoot();
 		void onOkKeyPressed();
 		
-		int fheight;
+		int iheight;		// item height
 		int info_height;
 		int ButtonHeight;
 		

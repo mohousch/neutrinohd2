@@ -77,7 +77,7 @@ CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string & Caption, unsi
 	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_HD, &icon_w_hd, &icon_h_hd);
 	frameBuffer->getIconSize(NEUTRINO_ICON_SCRAMBLED2, &icon_w_s, &icon_h_s);
 	
-	fheight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), icon_h_hd);
+	iheight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), icon_h_hd);
 
 	liststart = 0;
 }
@@ -105,7 +105,7 @@ bool CBEChannelSelectWidget::hasChanged()
 
 void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selected)
 {
-	int ypos = y + hheight + paintNr*fheight;
+	int ypos = y + hheight + paintNr*iheight;
 
 	uint8_t    color;
 	fb_pixel_t bgcolor;
@@ -115,7 +115,7 @@ void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selec
 		color   = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 		
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, COL_MENUCONTENT_PLUS_0);
+		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, COL_MENUCONTENT_PLUS_0);
 		
 		// itemlines	
 		paintItem2DetailsLine(paintNr);		
@@ -130,7 +130,7 @@ void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selec
 	}
 	
 	// itemBox
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, bgcolor);
 
 	//
 	int icon_w, icon_h;
@@ -139,15 +139,15 @@ void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selec
 	
 	if(itemNr < getItemCount())
 	{
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 8 + icon_w + 8, ypos + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - (8 + icon_w + 8 + 8), Channels[itemNr]->getName(), color, 0, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 8 + icon_w + 8, ypos + (iheight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - (8 + icon_w + 8 + 8), Channels[itemNr]->getName(), color, 0, true);
 
 		if( isChannelInBouquet(itemNr))
 		{
-			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_MARK, x + 8, ypos + (fheight - icon_h)/2);
+			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_MARK, x + 8, ypos + (iheight - icon_h)/2);
 		}
 		else
 		{
-			frameBuffer->paintBoxRel(x + 8, ypos + 4, icon_w, fheight - 4, bgcolor);
+			frameBuffer->paintBoxRel(x + 8, ypos + 4, icon_w, iheight - 4, bgcolor);
 		}
 		
 		//FIXME???
@@ -156,11 +156,11 @@ void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selec
 		{
 			// scrambled icon
 			if( Channels[itemNr]->scrambled) 
-				frameBuffer->paintIcon(NEUTRINO_ICON_SCRAMBLED2, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s), ypos + (fheight - icon_h_s)/2 );
+				frameBuffer->paintIcon(NEUTRINO_ICON_SCRAMBLED2, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s), ypos + (iheight - icon_h_s)/2 );
 			
 			// hd icon
 			if( Channels[itemNr]->isHD() ) 
-				frameBuffer->paintIcon(NEUTRINO_ICON_RESOLUTION_HD, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s + 2 + icon_w_hd), ypos + (fheight - icon_h_hd)/2 );
+				frameBuffer->paintIcon(NEUTRINO_ICON_RESOLUTION_HD, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s + 2 + icon_w_hd), ypos + (iheight - icon_h_hd)/2 );
 		}
 	}
 }
@@ -193,8 +193,8 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 	width = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
 	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 	
-	listmaxshow = (height - hheight - ButtonHeight)/fheight;
-	height = hheight + ButtonHeight + listmaxshow*fheight; // recalc height
+	listmaxshow = (height - hheight - ButtonHeight)/iheight;
+	height = hheight + ButtonHeight + listmaxshow*iheight; // recalc height
 	
 	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - (width + ConnectLineBox_Width)) / 2 + ConnectLineBox_Width;
 	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - (height + info_height)) / 2;
@@ -259,12 +259,12 @@ void CBEChannelSelectWidget::paintDetails(int index)
 		snprintf(&buf[len], sizeof(buf) - len, "(%s)\n", sit->second.name.c_str());
 	}
 	
-	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 10, y + height + 5 + fheight, width - 30, buf, COL_MENUCONTENTDARK, 0, true);
+	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 10, y + height + 5 + iheight, width - 30, buf, COL_MENUCONTENTDARK, 0, true);
 }
 
 void CBEChannelSelectWidget::paintItem2DetailsLine(int pos)
 {
-	::paintItem2DetailsLine(x, y, width, height, info_height, hheight, fheight, pos);
+	::paintItem2DetailsLine(x, y, width, height, info_height, hheight, iheight, pos);
 }
 
 void CBEChannelSelectWidget::clearItem2DetailsLine()
