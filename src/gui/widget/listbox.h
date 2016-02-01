@@ -46,7 +46,7 @@ class CListBox : public CMenuWidget
 		int		y;
 
 		int		iheight;	// item height
-		int		theight;	// title height
+		int		hheight;	// head height
 
 		unsigned int	selected;
 		unsigned int	liststart;

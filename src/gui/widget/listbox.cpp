@@ -64,14 +64,14 @@ CListBox::CListBox(const char * const Caption, int _width, int _height, bool ite
 		TitleHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
 	
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_bf_w, &icon_bf_h);
-	ButtonHeight = std::max(icon_bf_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 6;
+	ButtonHeight = std::max(icon_bf_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 10;
 	
 	modified = false;
 	
-	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	iheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
-	listmaxshow = (height - theight - ButtonHeight)/iheight;
-	height = theight + ButtonHeight + listmaxshow*iheight; // recalc height
+	listmaxshow = (height - hheight - ButtonHeight)/iheight;
+	height = hheight + ButtonHeight + listmaxshow*iheight; // recalc height
 
 	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - (width + (ItemDetails? ConnectLineBox_Width : 0))) / 2) + (ItemDetails? ConnectLineBox_Width : 0);
 	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - (height + InfoHeight)) / 2) + TitleHeight/2;
@@ -102,14 +102,14 @@ CListBox::CListBox(const neutrino_locale_t Caption, int _width, int _height, boo
 		TitleHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
 	
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_bf_w, &icon_bf_h);
-	ButtonHeight = std::max(icon_bf_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 6;
+	ButtonHeight = std::max(icon_bf_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 10;
 	
 	modified = false;
 	
-	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	iheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
-	listmaxshow = (height - theight - ButtonHeight)/iheight;
-	height = theight + ButtonHeight + listmaxshow*iheight; // recalc height
+	listmaxshow = (height - hheight - ButtonHeight)/iheight;
+	height = hheight + ButtonHeight + listmaxshow*iheight; // recalc height
 
 	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - (width + (ItemDetails? ConnectLineBox_Width : 0))) / 2) + (ItemDetails? ConnectLineBox_Width : 0);
 	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - (height + InfoHeight)) / 2) + TitleHeight/2;
@@ -134,7 +134,7 @@ void CListBox::paint()
 	}
 
 	// scroll bar
-	int ypos = y + theight;
+	int ypos = y + hheight;
 	int sb = iheight*listmaxshow;
 	frameBuffer->paintBoxRel(x + width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
 
@@ -149,7 +149,7 @@ void CListBox::paint()
 void CListBox::paintHead()
 {
 	// headBox
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);//round
+	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);//round
 	
 	// paint time/date
 	int timestr_len = 0;
@@ -159,9 +159,10 @@ void CListBox::paintHead()
 		
 		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
 			
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - (BORDER_RIGHT + timestr_len), y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); // UTF-8 // 100 is pic_w refresh box
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - (BORDER_RIGHT + timestr_len), y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); // UTF-8 // 100 is pic_w refresh box
 	}
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width - (BORDER_LEFT + BORDER_RIGHT + timestr_len), caption.c_str() , COL_MENUHEAD);
+
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width - (BORDER_LEFT + BORDER_RIGHT + timestr_len), caption.c_str() , COL_MENUHEAD);
 }
 
 // foot
@@ -210,7 +211,7 @@ int CListBox::getItemHeight()
 
 void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
 {
-	int ypos = y + theight + paintNr*getItemHeight();
+	int ypos = y + hheight + paintNr*getItemHeight();
 
 	uint8_t    color;
 	fb_pixel_t bgcolor;
@@ -387,7 +388,7 @@ void CListBox::paintItem2DetailsLine(int pos)
 	if(ItemDetails == false)
 		return;
 	
-	::paintItem2DetailsLine(x, y, width, height, InfoHeight, theight, iheight, pos);
+	::paintItem2DetailsLine(x, y, width, height, InfoHeight, hheight, iheight, pos);
 }
 
 void CListBox::clearItem2DetailsLine()

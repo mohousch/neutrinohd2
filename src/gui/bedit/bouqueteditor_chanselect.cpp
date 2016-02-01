@@ -71,7 +71,7 @@ CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string & Caption, unsi
 	ButtonHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), icon_foot_h) + 10;
 
 	// head
-	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	
 	// item
 	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_HD, &icon_w_hd, &icon_h_hd);
@@ -105,7 +105,7 @@ bool CBEChannelSelectWidget::hasChanged()
 
 void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selected)
 {
-	int ypos = y + theight + paintNr*fheight;
+	int ypos = y + hheight + paintNr*fheight;
 
 	uint8_t    color;
 	fb_pixel_t bgcolor;
@@ -193,8 +193,8 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 	width = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
 	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 	
-	listmaxshow = (height - theight - ButtonHeight)/fheight;
-	height = theight + ButtonHeight + listmaxshow*fheight; // recalc height
+	listmaxshow = (height - hheight - ButtonHeight)/fheight;
+	height = hheight + ButtonHeight + listmaxshow*fheight; // recalc height
 	
 	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - (width + ConnectLineBox_Width)) / 2 + ConnectLineBox_Width;
 	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - (height + info_height)) / 2;
@@ -264,7 +264,7 @@ void CBEChannelSelectWidget::paintDetails(int index)
 
 void CBEChannelSelectWidget::paintItem2DetailsLine(int pos)
 {
-	::paintItem2DetailsLine(x, y, width, height, info_height, theight, fheight, pos);
+	::paintItem2DetailsLine(x, y, width, height, info_height, hheight, fheight, pos);
 }
 
 void CBEChannelSelectWidget::clearItem2DetailsLine()
