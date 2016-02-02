@@ -64,6 +64,7 @@ void Helpbox::show(const neutrino_locale_t Caption, const int Width, int timeout
 	dprintf(DEBUG_NORMAL, "Helpbox::show\n");
 
  	CMessageBox msgBox(Caption, m_lines, Width, NEUTRINO_ICON_INFO, CMessageBox::mbrBack, CMessageBox::mbBack);
+
 	msgBox.exec(timeout);
 }
 

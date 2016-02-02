@@ -577,15 +577,15 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 	
 	CInfoBox * infoBox = new CInfoBox(movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], mode, &position, movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_MOVIE);
 
-	int pich = 246;	//FIXME
-	int picw = 162; //FIXME
+	int picw = 320; //FIXME
+	int pich = 256;	//FIXME
+
+	int p_w = 0;
+	int p_h = 0;
+	int nbpp = 0;
 
 	if(!access(movie_info.tfile.c_str(), F_OK))
 	{
-		int p_w = 0;
-		int p_h = 0;
-		int nbpp = 0;
-
 		CFrameBuffer::getInstance()->getSize(movie_info.tfile, &p_w, &p_h, &nbpp);
 
 		// scale
@@ -594,10 +594,25 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 			picw = p_w;
 			pich = p_h;
 		}
+		else
+		{
+			float aspect = (float)(p_w) / (float)(p_h);
+					
+			if (((float)(p_w) / (float)picw) > ((float)(p_h) / (float)pich)) 
+			{
+				p_w = picw;
+				p_h = (int)(picw / aspect);
+			}
+			else
+			{
+				p_h = pich;
+				p_w = (int)(pich * aspect);
+			}
+		}
 	}
 
 	int tmode = CTextBox::TOP_LEFT;
-	infoBox->setText(&print_buffer, movie_info.tfile, picw, pich, tmode);
+	infoBox->setText(&print_buffer, movie_info.tfile, p_w, p_h, tmode);
 	infoBox->exec();
 	delete infoBox;
 }

@@ -1873,6 +1873,7 @@ void CMoviePlayerGui::PlayFile(void)
 void CMoviePlayerGui::showHelpTS()
 {
 	Helpbox helpbox;
+
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_RED, g_Locale->getText(LOCALE_MOVIEPLAYER_TSHELP1));
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_GREEN, g_Locale->getText(LOCALE_MOVIEPLAYER_TSHELP2));
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_YELLOW, g_Locale->getText(LOCALE_MOVIEPLAYER_TSHELP3));
@@ -1890,7 +1891,9 @@ void CMoviePlayerGui::showHelpTS()
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_9, g_Locale->getText(LOCALE_MOVIEPLAYER_TSHELP11));
 	helpbox.addLine("Version: $Revision: 1.97 $");
 	helpbox.addLine("Movieplayer (c) 2003, 2004 by gagga");
+
 	hide();
+
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
 }
 
@@ -1907,30 +1910,39 @@ void CMoviePlayerGui::showFileInfo()
 	buffer += "\n";
 
 	// thumbnail
-	int pich = 246;	//FIXME
-	int picw = 162; 	//FIXME
+	int picw = 320;
+	int pich = 256;
+
+	int p_w = 0;
+	int p_h = 0;
+	int nbpp = 0;	
 		
 	if(access(Thumbnail.c_str(), F_OK))
 		Thumbnail = "";
 
 	if(!access(Thumbnail.c_str(), F_OK))
 	{
-		int p_w = 0;
-		int p_h = 0;
-		int nbpp = 0;
-
 		CFrameBuffer::getInstance()->getSize(Thumbnail, &p_w, &p_h, &nbpp);
 
-		// scale
-		if(p_w > picw || p_h > pich)
-		{
-			picw = 246;
-			pich = 162;
-		}
-		else
+		if(p_w <= picw && p_h <= pich)
 		{
 			picw = p_w;
 			pich = p_h;
+		}
+		else
+		{
+			float aspect = (float)(p_w) / (float)(p_h);
+					
+			if (((float)(p_w) / (float)picw) > ((float)(p_h) / (float)pich)) 
+			{
+				p_w = picw;
+				p_h = (int)(picw / aspect);
+			}
+			else
+			{
+				p_h = pich;
+				p_w = (int)(pich * aspect);
+			}
 		}
 	}
 	
@@ -1939,7 +1951,7 @@ void CMoviePlayerGui::showFileInfo()
 	
 	CInfoBox * infoBox = new CInfoBox(buffer.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], mode, &position, Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_MOVIE);
 
-	infoBox->setText(&buffer, Thumbnail, picw, pich);
+	infoBox->setText(&buffer, Thumbnail, p_w, p_h);
 	infoBox->exec();
 	delete infoBox;
 }

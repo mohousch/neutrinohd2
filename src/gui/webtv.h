@@ -71,7 +71,7 @@ class CWebTV
 		int            	x;
 		int            	y;
 		
-		int            	theight; 	// title font height
+		int            	hheight; 	// title font height
 		int            	iheight; 	// item font height (buttons???)
 		
 		int icon_bf_w;

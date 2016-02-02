@@ -1316,29 +1316,41 @@ void CMovieBrowser::refreshMovieInfo(void)
 	{
 		int picw = 320;
 		int pich = 256;
+
+		int p_w = 0;
+		int p_h = 0;
+		int nbpp = 0;
 		
 		std::string fname = m_movieSelectionHandler->tfile;
 		
 		if( (!fname.empty() && !access(fname.c_str(), F_OK)) && m_settings.gui != MB_GUI_FILTER )
 		{
-			if(show_mode == MB_SHOW_FILES)
+			m_pcWindow->getSize(fname, &p_w, &p_h, &nbpp);
+
+			// scale
+			if(p_w <= picw && p_h <= pich)
 			{
-				int p_w = picw;
-				int p_h = pich;
-				int nbpp = 0;
-
-				m_pcWindow->getSize(fname, &p_w, &p_h, &nbpp);
-
-				// scale
-				if(p_w <= picw && p_h <= pich)
+				picw = p_w;
+				pich = p_h;
+			}
+			else
+			{
+				float aspect = (float)(p_w) / (float)(p_h);
+					
+				if (((float)(p_w) / (float)picw) > ((float)(p_h) / (float)pich)) 
 				{
-					picw = p_w;
-					pich = p_h;
+					p_w = picw;
+					p_h = (int)(picw / aspect);
+				}
+				else
+				{
+					p_h = pich;
+					p_w = (int)(pich * aspect);
 				}
 			}
 		}
 		
-		m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, fname, picw, pich);
+		m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, fname, p_w, p_h);
 	}
 	
 	m_pcWindow->blit();
