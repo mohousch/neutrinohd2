@@ -3,7 +3,8 @@
 */
 #include <stdio.h>
 
-#include "framebuffer.h"
+#include <framebuffer.h>
+
 #include <cstdlib>
 
 #include <sys/types.h>

@@ -54,7 +54,9 @@ libneutrino_driver_a_SOURCES = \
 	radiotools.cpp \
 	png.cpp \
 	jpeg.cpp \
-	bmp.cpp
+	bmp.cpp \
+	gif.cpp \
+	crw.cpp
 
 if ENABLE_LCD
 libneutrino_driver_a_SOURCES += lcdd.cpp	
