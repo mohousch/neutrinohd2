@@ -38,5 +38,4 @@ class CBasicMessage
 		};
 };
 
-
 #endif /* __basicmessage_h__ */

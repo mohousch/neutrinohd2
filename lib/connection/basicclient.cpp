@@ -33,6 +33,7 @@
 #include <sys/un.h>
 #include <unistd.h>
 
+
 #define TIMEOUT_SEC  60
 #define TIMEOUT_USEC 0
 #define MAX_TIMEOUT_SEC  300
@@ -70,6 +71,7 @@ bool CBasicClient::open_connection()
 		close_connection();
 		return false;
 	}
+
 	return true;
 }
 
@@ -98,6 +100,7 @@ bool CBasicClient::send_data(const char* data, const size_t size)
 		close_connection();
 		return false;
 	}
+
 	return true;
 }
 
@@ -105,6 +108,7 @@ bool CBasicClient::send_string(const char* data)
 {
 	uint8_t send_length;
 	size_t length = strlen(data);
+
 	if (length > 255)
 	{
 		printf("[CBasicClient] string too long - sending only first 255 characters: %s\n", data);
@@ -114,6 +118,7 @@ bool CBasicClient::send_string(const char* data)
 	{
 		send_length = static_cast<uint8_t>(length);
 	}
+
 	return (send_data((char *)&send_length, sizeof(send_length)) &&
 		send_data(data, send_length));
 }
@@ -142,6 +147,7 @@ bool CBasicClient::receive_data(char* data, const size_t size, bool use_max_time
 		close_connection();
 		return false;
 	}
+
 	return true;
 }
 

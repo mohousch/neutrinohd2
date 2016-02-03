@@ -102,6 +102,7 @@ bool CBasicServer::prepare(const char* socketname)
 		perror(socketname);
 		return false;
 	}
+
 	if (bind(sock_fd, (struct sockaddr*) &servaddr, clilen) < 0)
 	{
 		printf("[CBasicServer] bind failed.\n");
@@ -147,7 +148,8 @@ bool CBasicServer::parse(bool (parse_command)(CBasicMessage::Header &rmsg, int c
 
 bool CBasicServer::run(bool (parse_command)(CBasicMessage::Header &rmsg, int connfd), const CBasicMessage::t_version version, bool non_blocking)
 {
-	if (non_blocking) {
+	if (non_blocking) 
+	{
 		struct pollfd pfd;
 
 		pfd.fd = sock_fd;
@@ -158,7 +160,8 @@ bool CBasicServer::run(bool (parse_command)(CBasicMessage::Header &rmsg, int con
 		else
 			return true;
 	}
-	else {
+	else 
+	{
 		while(parse(parse_command, version));
 
 		stop();

@@ -72,7 +72,6 @@ int main (int argc, char** argv)
 {
 	int i;
 	uint32_t  j;
-	//uint32_t  k;
 	uint64_t ii;
 
 	int bouquet = -1;

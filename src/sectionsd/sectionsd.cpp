@@ -2769,7 +2769,6 @@ out:
 }
 
 // Sendet ein short EPG, unlocked die events, unpaused dmxEIT
-
 static void sendShort(int connfd, const SIevent& e, const SItime& t)
 {
 
@@ -2835,8 +2834,8 @@ static void commandGetNextShort(int connfd, char *data, const unsigned dataLengt
 	{
 		dprintf(DEBUG_DEBUG, "next short found.\n");
 		sendShort(connfd, nextEvt, zeit);
-// this call is made in sendShort()
-//		unlockEvents();
+		// this call is made in sendShort()
+		//unlockEvents();
 		return;
 	}
 	unlockEvents();
@@ -2991,7 +2990,7 @@ static void commandTimesNVODservice(int connfd, char *data, const unsigned dataL
 			}
 
 			char *p = msgData;
-			//      time_t azeit=time(NULL);
+			//time_t azeit = time(NULL);
 
 			for (SInvodReferences::iterator ni = si->second->nvods.begin(); ni != si->second->nvods.end(); ++ni)
 			{
@@ -3270,8 +3269,6 @@ static void *insertEventsfromFile(void *)
 		{
 			time_t now = time_monotonic_ms();
 			
-			//printdate_ms(stdout);
-			
 			dprintf(DEBUG_NORMAL, "[sectionsd] Reading Information from file %s:\n", indexname.c_str());
 
 			eventfile = xmlDocGetRootElement(index_parser)->xmlChildrenNode;
@@ -3402,9 +3399,8 @@ static void *insertEventsfromFile(void *)
 			}
 
 			xmlFreeDoc(index_parser);
-			//printdate_ms(stdout);
-			printf("[sectionsd] Reading Information finished after %ld miliseconds (%d events)\n",
-			       time_monotonic_ms()-now, ev_count);
+
+			dprintf(DEBUG_NORMAL, "[sectionsd] Reading Information finished after %ld miliseconds (%d events)\n", time_monotonic_ms()-now, ev_count);
 		}
 	}
 	reader_ready = true;

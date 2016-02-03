@@ -382,7 +382,7 @@ CRCInput::CRCInput() : configfile('\t')
 	// open event-library
 	fd_event = 0;
 
-	// network-setup (neutrino.sock )
+	// prepare neutrino server socket
 	struct sockaddr_un servaddr;
 	int    clilen;
 	memset(&servaddr, 0, sizeof(struct sockaddr_un));
@@ -616,8 +616,6 @@ int CRCInput::addTimer(unsigned long long Interval, bool oneshot, bool correct_t
 
 	_newtimer.correct_time = correct_time;
 
-	//dprintf(DEBUG_DEBUG, "adding timer %d (0x%llx, 0x%llx)\n", _newtimer.id, _newtimer.times_out, Interval);
-
 	std::vector<timer>::iterator e;
 	for ( e= timers.begin(); e!= timers.end(); ++e )
 		if ( e->times_out > _newtimer.times_out )
@@ -666,7 +664,7 @@ int CRCInput::checkTimers()
 	std::vector<timer>::iterator e;
 	for ( e= timers.begin(); e!= timers.end(); ++e )
 	{
-		if ( e->times_out< timeNow+ 2000 )
+		if ( e->times_out< timeNow + 2000 )
 		{
 			_id = e->id;
 			if ( e->interval != 0 )
@@ -821,7 +819,7 @@ void CRCInput::getMsg_us(neutrino_msg_t * msg, neutrino_msg_data_t * data, unsig
 		FD_SET(fd_pipe_high_priority[0], &rfds);
 		FD_SET(fd_pipe_low_priority[0], &rfds);
 
-		int status =  select(fd_max+1, &rfds, NULL, NULL, &tvselect);
+		int status =  select(fd_max + 1, &rfds, NULL, NULL, &tvselect);
 
 		if ( status == -1 )
 		{

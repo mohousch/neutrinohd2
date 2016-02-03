@@ -23,6 +23,7 @@
 
 #include "messagetools.h"
 
+
 size_t write_length_field (unsigned char * buffer, unsigned int length)
 {
         if (length < 128)
