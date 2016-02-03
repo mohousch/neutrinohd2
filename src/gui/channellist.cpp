@@ -910,10 +910,8 @@ int CChannelList::show()
 void CChannelList::hide()
 {
 	frameBuffer->paintBackgroundBoxRel(x, y, width, height + info_height);
-		
-	frameBuffer->blit();
-
         clearItem2DetailsLine();
+	frameBuffer->blit();
 }
 
 bool CChannelList::showInfo(int pos, int epgpos)
