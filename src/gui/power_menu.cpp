@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 
-	$id: power_setup.cpp 2016.01.29 17:22:30 mohousch $
+	$id: power_menu.cpp 2016.01.29 17:22:30 mohousch $
 	
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	and some other guys
@@ -91,7 +91,7 @@ void CPowerMenu::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CPowerMenu::showMenu:\n");
 	
-	CMenuWidget powerMenu(LOCALE_MAINMENU_POWERMENU, NEUTRINO_ICON_BUTTON_SETUP);
+	CMenuWidget powerMenu(LOCALE_MAINMENU_POWERMENU, NEUTRINO_ICON_BUTTON_POWER);
 
 	int shortcut = 1;
 	

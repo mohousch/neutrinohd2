@@ -176,7 +176,7 @@ void CImageInfo::paint()
 	const char * imagename = config.getString("imagename", "NeutrinoHD2").c_str();
 	const char * homepage  = config.getString("homepage",  "http://www.dgstation-forum.org").c_str();
 	const char * creator   = config.getString("creator",   "mohousch").c_str();
-	const char * version   = config.getString("version",   "1200201205091849").c_str();
+	const char * version   = config.getString("version",   "1201201602031021").c_str();
 	const char * docs      = config.getString("docs",   "http://wiki.neutrino-hd.de").c_str();
 	const char * forum     = config.getString("forum",   "http://www.dgstation-forum.org").c_str();
 #ifdef SVNVERSION

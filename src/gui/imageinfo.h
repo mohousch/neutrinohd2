@@ -30,6 +30,7 @@
 
 #include <driver/framebuffer.h>
 
+
 class CImageInfo : public CMenuTarget
 {
 	private:

@@ -700,6 +700,7 @@ void CFlashExpert::showFileSelector(const std::string & actionkey)
 	// intros
 	fileselector->addItem(new CMenuForwarder(LOCALE_MESSAGEBOX_CANCEL));
 	fileselector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+
 	struct dirent **namelist;
 	int n = scandir("/tmp", &namelist, 0, alphasort);
 	if (n < 0)
@@ -713,7 +714,7 @@ void CFlashExpert::showFileSelector(const std::string & actionkey)
 		{
 			std::string filen = namelist[count]->d_name;
 			int pos = filen.find(".img");
-			if(pos!=-1)
+			if(pos != -1)
 			{
 				fileselector->addItem(new CMenuForwarder(filen.c_str(), true, NULL, this, (actionkey + filen).c_str()));
 //#warning TODO: make sure file is UTF-8 encoded
@@ -722,6 +723,7 @@ void CFlashExpert::showFileSelector(const std::string & actionkey)
 		}
 		free(namelist);
 	}
+
 	fileselector->exec(NULL,"");
 	delete fileselector;
 }
@@ -884,7 +886,7 @@ void CUpdateSettings::showMenu()
 	// get current version SBBB YYYY MM TT HH MM -- formatsting
 	CConfigFile lconfigfile('\t');
 
-	const char * versionString = (lconfigfile.loadConfig("/etc/.version")) ? (lconfigfile.getString( "version", "1200201205091849").c_str()) : "1200201205091849";
+	const char * versionString = (lconfigfile.loadConfig("/etc/.version")) ? (lconfigfile.getString( "version", "1201201205091849").c_str()) : "1201201602031021";
 
 	dprintf(DEBUG_INFO, "CNeutrinoApp::InitServiceSettings: current flash-version: %s\n", versionString);
 
