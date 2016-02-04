@@ -649,14 +649,14 @@ int CAudioPlayerGui::show()
 				{
 					// keylevel 2 can only be reached if the currently played file
 					// is no stream, so we do not have to test for this case
-					int seconds=0;
+					int seconds = 0;
 					CIntInput secondsInput(LOCALE_AUDIOPLAYER_JUMP_DIALOG_TITLE,
 							seconds,
 							5,
 							LOCALE_AUDIOPLAYER_JUMP_DIALOG_HINT1,
 							LOCALE_AUDIOPLAYER_JUMP_DIALOG_HINT2);
 							
-					int res = secondsInput.exec(NULL,"");
+					int res = secondsInput.exec(NULL, "");
 					
 					if (seconds != 0 && res!= menu_return::RETURN_EXIT_ALL)
 						rev(seconds);
@@ -689,6 +689,7 @@ int CAudioPlayerGui::show()
 			{ 
 				// key_level==2
 				m_select_title_by_name =! m_select_title_by_name;
+
 				if (m_select_title_by_name && m_playlistHasChanged)
 					buildSearchTree();
 				paint();
@@ -715,8 +716,6 @@ int CAudioPlayerGui::show()
 					// icecast
 					sprintf(cnt, "%d", ++count);
 					InputSelector.addItem(new CMenuForwarder(LOCALE_AUDIOPLAYER_ADD_IC, true, NULL, InetRadioInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
-
-					//InputSelector.addItem(GenericMenuSeparator);
 					
 					hide();
 					InputSelector.exec(NULL, "");
@@ -770,7 +769,7 @@ int CAudioPlayerGui::show()
 							LOCALE_AUDIOPLAYER_JUMP_DIALOG_HINT1,
 							LOCALE_AUDIOPLAYER_JUMP_DIALOG_HINT2);
 							
-					int res = secondsInput.exec(NULL,"");
+					int res = secondsInput.exec(NULL, "");
 					
 					if (seconds != 0 && res!= menu_return::RETURN_EXIT_ALL)
 						ff(seconds);
@@ -819,17 +818,13 @@ int CAudioPlayerGui::show()
 			//numeric zap or SMS zap
 			if (m_select_title_by_name)
 			{
-				//printf("select by name\n");
 				unsigned char smsKey = 0;				
 				do 
 				{
 					smsKey = m_SMSKeyInput.handleMsg(msg);
-					//printf("  new key: %c", smsKey);
+
 					g_RCInput->getMsg_ms(&msg, &data, AUDIOPLAYERGUI_SMSKEY_TIMEOUT - 200);
 
-
-/* show a hint box with current char (too slow at the moment?)*/
-#if 1
  					char selectedKey[1];
  					sprintf(selectedKey, "%c", smsKey);
  					int x1 = (g_settings.screen_EndX - g_settings.screen_StartX)/2 + g_settings.screen_StartX - 50;
@@ -840,13 +835,10 @@ int CAudioPlayerGui::show()
  					m_frameBuffer->paintBoxRel(x1 - 7, y1 - h - 5, w + 14, h + 10, COL_MENUCONTENT_PLUS_6);
  					m_frameBuffer->paintBoxRel(x1 - 4, y1 - h - 3, w +  8, h +  6, COL_MENUCONTENTSELECTED_PLUS_0);
  					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNEL_NUM_ZAP]->RenderString(x1, y1, w + 1, selectedKey, COL_MENUCONTENTSELECTED, 0, true);
-#endif
-
 				} while (CRCInput::isNumeric(msg) && !(m_playlist.empty()));
 
 				if (msg == CRCInput::RC_timeout || msg == CRCInput::RC_nokey)
 				{
-					//printf("selected key: %c\n",smsKey);
 					selectTitle(smsKey);
 					update = true;
 				}
@@ -854,7 +846,6 @@ int CAudioPlayerGui::show()
 			} 
 			else 
 			{
-				//printf("numeric zap\n");
 				int val = 0;
 				if (getNumericInput(msg,val)) 
 					m_selected = std::min((int)m_playlist.size(), val) - 1;
@@ -948,6 +939,7 @@ bool CAudioPlayerGui::playPrev(bool allow_rotate)
 			play(m_playlist.size()-1);
 		else
 			play(0);
+
 		result = true;
 	}
 
@@ -968,6 +960,7 @@ bool CAudioPlayerGui::clearPlaylist(void)
 		m_title2Pos.clear();
 		result = true;
 	}
+
 	return(result);
 }
 
@@ -1184,8 +1177,6 @@ void CAudioPlayerGui::readDir_ic(void)
 	/* cleanup curl stuff */
 	curl_easy_cleanup(curl_handle);
 
-	//std::cout << "Answer:" << std::endl << "----------------" << std::endl << answer << std::endl;
-
 	if (!answer.empty() && httpres == 0)
 	{
 		xmlDocPtr answer_parser = parseXml(answer.c_str());
@@ -1303,7 +1294,6 @@ void CAudioPlayerGui::scanXmlData(xmlDocPtr answer_parser, const char *nametag, 
 				{
 					progress.showStatusMessageUTF(url);
 					
-					//printf("Processing %s, %s\n", url, name);
 					if (strstr(url, ".m3u") || strstr(url, ".pls"))
 						processPlaylistUrl(url, name);
 					else 
@@ -1317,8 +1307,6 @@ void CAudioPlayerGui::scanXmlData(xmlDocPtr answer_parser, const char *nametag, 
 		}
 		xmlFreeDoc(answer_parser);
 	}
-	else
-		dprintf(DEBUG_NORMAL, "[scanXmlData] answer_parser == NULL");
 }
 
 bool CAudioPlayerGui::openFilebrowser(void)
@@ -1500,7 +1488,6 @@ bool CAudioPlayerGui::openFilebrowser(void)
 			}
 		}
 		
-		//FIXME: do we need this???
 		progress.hide();
 		
 		if (m_select_title_by_name)
@@ -1557,8 +1544,8 @@ void CAudioPlayerGui::paintItem(int pos)
 	{
 		if ((pos + m_liststart) == (unsigned)m_current)
 		{
-			color   = COL_MENUCONTENT + 1;
-			bgcolor = COL_MENUCONTENT_PLUS_1;
+			color   = COL_MENUCONTENT + 2;
+			bgcolor = COL_MENUCONTENT_PLUS_2;
 		}
 		else
 		{
@@ -1863,7 +1850,8 @@ void CAudioPlayerGui::paint()
 		
 	// head
 	paintHead();
-		
+	
+	// items	
 	for (unsigned int count = 0; count < m_listmaxshow; count++)
 	{
 		paintItem(count);
@@ -1872,14 +1860,18 @@ void CAudioPlayerGui::paint()
 	// scrollbar
 	int ypos = m_y + m_title_height + m_theight;
 	int sb = m_fheight * m_listmaxshow;
+
 	m_frameBuffer->paintBoxRel(m_x + m_width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb, COL_MENUCONTENT_PLUS_1);
 
 	int sbc = ((m_playlist.size() - 1) / m_listmaxshow) + 1;
 	int sbs = (m_selected / m_listmaxshow);
 
-	m_frameBuffer->paintBoxRel(m_x + m_width - 13, ypos + 2 + sbs*(sb-4)/sbc , 11, (sb-4)/sbc, COL_MENUCONTENT_PLUS_3 );
+	m_frameBuffer->paintBoxRel(m_x + m_width - 13, ypos + 2 + sbs*(sb-4)/sbc , 11, (sb-4)/sbc, COL_MENUCONTENT_PLUS_3);
 
+	// foot
 	paintFoot();
+
+	// upper infos
 	paintInfo();
 		
 	m_visible = true;
@@ -2254,7 +2246,7 @@ void CAudioPlayerGui::updateTimes(const bool force)
 				gettimeofday(&tv, NULL);
 				if ((m_state != CAudioPlayerGui::PAUSE) || (tv.tv_sec & 1))
 				{
-					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - w2 - 11, m_y + 4 + m_fheight, w2+4, play_time, COL_MENUCONTENTSELECTED);
+					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - w2 - 11, m_y + 4 + m_fheight, w2 + 4, play_time, COL_MENUCONTENTSELECTED);
 				}
 			}			
 		}
@@ -2292,13 +2284,6 @@ void CAudioPlayerGui::paintLCD()
 			if(m_curr_audiofile.FileExtension != CFile::EXTENSION_URL && m_time_total != 0)
 				CVFD::getInstance()->showAudioProgress(100 * m_time_played / m_time_total, current_muted);
 #endif
-
-#ifdef INCLUDE_UNUSED_STUFF
-#if ENABLE_LCD
-			else
-				CVFD::getInstance()->showAudioProgress(100 * CAudioPlayer::getInstance()->getScBuffered() / 65536, current_muted);
-#endif			
-#endif /* INCLUDE_UNUSED_STUFF */
 
 			break;
 		case CAudioPlayerGui::PAUSE:
@@ -2484,12 +2469,9 @@ void CAudioPlayerGui::removeFromPlaylist(long pos)
 
 	if (m_select_title_by_name)
 	{
-		//printf("searching for key: %c val: %ld\n",firstChar,pos);
-
 		CTitle2Pos::iterator item = m_title2Pos.find(firstChar);
 		if (item != m_title2Pos.end())
 		{
-			//const CPosList::size_type del =
 			item->second.erase(pos);
 
 			// delete empty entries
@@ -2526,8 +2508,8 @@ void CAudioPlayerGui::selectTitle(unsigned char selectionChar)
 {
 	unsigned long i;
 
-	//printf("fastLookup: key %c\n",selectionChar);
 	CTitle2Pos::iterator it = m_title2Pos.find(selectionChar);
+
 	if (it!=m_title2Pos.end())
 	{
 		// search for the next greater id
@@ -2536,25 +2518,21 @@ void CAudioPlayerGui::selectTitle(unsigned char selectionChar)
 		if (posIt != it->second.end())
 		{
 			i = *posIt; 
-			//printf("upper bound i: %ld\n",i);
 		} 
 		else
 		{
 			if (it->second.size() > 0)
 			{
 				i = *(it->second.begin());
-				//printf("using begin i: %ld\n",i);
 			} 
 			else
 			{
-				//printf("no title with that key\n");
 				return;
 			}
 		}	
 	} 
 	else
 	{
-		//printf("no title with that key\n");
 		return;
 	}		
 
@@ -2564,7 +2542,7 @@ void CAudioPlayerGui::selectTitle(unsigned char selectionChar)
 	paintItem(prevselected - m_liststart);
 	unsigned int oldliststart = m_liststart;
 	m_liststart = (m_selected / m_listmaxshow)*m_listmaxshow;
-	//printf("before paint\n");
+
 	if(oldliststart != m_liststart)
 	{
 		paint();
@@ -2581,15 +2559,11 @@ void CAudioPlayerGui::printSearchTree()
 	{
 		dprintf(DEBUG_NORMAL, "key: %c\n",it->first);
 		
-		long pos=-1;
+		long pos = -1;
 		for (CPosList::iterator it2 = it->second.begin(); it2!=it->second.end(); it2++)
 		{
 			pos++;
-			dprintf(DEBUG_NORMAL, " val: %ld ",*it2);
-			if (pos % 5 == 4)
-				printf("\n");
 		}
-		printf("\n");
 	}
 }
 
@@ -2608,7 +2582,7 @@ void CAudioPlayerGui::buildSearchTree()
 	{
 		listPos++;
 		progress.showGlobalStatus(100*listPos / maxProgress);
-		//std::string info;
+
 		progress.showStatusMessageUTF(it->Filename);
 		unsigned char firstChar = getFirstChar(*it);
 		const std::pair<CTitle2Pos::iterator,bool> item = m_title2Pos.insert(CTitle2PosItem(firstChar, CPosList()));
@@ -2626,7 +2600,7 @@ unsigned char CAudioPlayerGui::getFirstChar(CAudiofileExt &file)
 		std::string info;
 		getFileInfoToDisplay(info, file);
 	}
-	//printf("getFirstChar: %c\n",file.firstChar);
+
 	return file.firstChar;
 }
 
@@ -2652,6 +2626,7 @@ void CAudioPlayerGui::savePlaylist()
 
 	// let user select target directory
 	this->hide();
+
 	if (browser.exec(path)) 
 	{
 		// refresh view
@@ -2692,6 +2667,7 @@ void CAudioPlayerGui::savePlaylist()
 							LOCALE_AUDIOPLAYER_PLAYLIST_NAME_HINT1,
 							LOCALE_AUDIOPLAYER_PLAYLIST_NAME_HINT2,
 							"abcdefghijklmnopqrstuvwxyz0123456789-.,:!?/ ");
+
 			filenameInput.exec(NULL, "");
 			// refresh view
 			this->paint();
