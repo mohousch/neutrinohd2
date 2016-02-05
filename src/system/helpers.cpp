@@ -73,7 +73,8 @@ off_t file_size(const char *filename)
 	if(::stat(filename, &stat_buf) == 0)
 	{
 		return stat_buf.st_size;
-	} else
+	} 
+	else
 	{
 		return 0;
 	}
@@ -85,7 +86,8 @@ bool file_exists(const char *filename)
 	if(::stat(filename, &stat_buf) == 0)
 	{
 		return true;
-	} else
+	} 
+	else
 	{
 		return false;
 	}
@@ -93,7 +95,8 @@ bool file_exists(const char *filename)
 
 void  wakeup_hdd(const char *hdd_dir)
 {
-	if(!check_dir(hdd_dir)){
+	if(!check_dir(hdd_dir))
+	{
 		std::string wakeup_file = hdd_dir;
 		wakeup_file += "/.wakeup";
 		remove(wakeup_file.c_str());
@@ -101,6 +104,7 @@ void  wakeup_hdd(const char *hdd_dir)
 		sync();
 	}
 }
+
 //use for script with full path
 int my_system(const char * cmd)
 {
@@ -132,8 +136,7 @@ int my_system(int argc, const char *arg, ...)
 		}
 		argv[i] = va_arg(args, const char *);
 	}
-	argv[i] = NULL; /* sentinel */
-	//fprintf(stderr,"%s:", __func__);for(i=0;argv[i];i++)fprintf(stderr," '%s'",argv[i]);fprintf(stderr,"\n");
+	argv[i] = NULL;
 
 	pid_t parent_pid = getpgrp();
 	pid_t pid;
@@ -202,10 +205,7 @@ FILE* my_popen( pid_t& pid, const char *cmdstring, const char *type)
 		int maxfd = getdtablesize();
 		for(int i = 3; i < maxfd; i++)
 			close(i);
-#if 0
-		if (setsid() == -1)
-			perror("my_popen setsid");
-#endif
+
 		execl("/bin/sh", "sh", "-c", cmdstring, (char *)0);
 		exit(0);
 	 }
@@ -290,7 +290,8 @@ bool get_fs_usage(const char * dir, uint64_t &btotal, uint64_t &bused, long *bsi
 	btotal = bused = 0;
 	struct statfs s;
 
-	if (::statfs(dir, &s) == 0 && s.f_blocks) {
+	if (::statfs(dir, &s) == 0 && s.f_blocks) 
+	{
 		btotal = s.f_blocks;
 		bused = s.f_blocks - s.f_bfree;
 		if (bsize != NULL)
@@ -298,6 +299,7 @@ bool get_fs_usage(const char * dir, uint64_t &btotal, uint64_t &bused, long *bsi
 		//printf("fs (%s): total %llu used %llu\n", dir, btotal, bused);
 		return true;
 	}
+
 	return false;
 }
 
@@ -311,17 +313,21 @@ bool get_mem_usage(unsigned long &kbtotal, unsigned long &kbfree)
 		return false;
 
 	char buffer[256];
-	while (fgets(buffer, 255, f)) {
-		if (!strncmp(buffer, "Mem", 3)) {
+	while (fgets(buffer, 255, f)) 
+	{
+		if (!strncmp(buffer, "Mem", 3)) 
+		{
 			if (!strncmp(buffer+3, "Total", 5))
 				kbtotal = strtoul(buffer+9, NULL, 10);
 			else if (!strncmp(buffer+3, "Free", 4))
 				kbfree = strtoul(buffer+8, NULL, 10);
 		}
-		else if (!strncmp(buffer, "Buffers", 7)) {
+		else if (!strncmp(buffer, "Buffers", 7)) 
+		{
 			buffers = strtoul(buffer+8, NULL, 10);
 		}
-		else if (!strncmp(buffer, "Cached", 6)) {
+		else if (!strncmp(buffer, "Cached", 6)) 
+		{
 			cached = strtoul(buffer+7, NULL, 10);
 			break;
 		}
@@ -337,6 +343,7 @@ std::string _getPathName(std::string &path, std::string sep)
 	size_t pos = path.find_last_of(sep);
 	if (pos == std::string::npos)
 		return path;
+
 	return path.substr(0, pos);
 }
 
@@ -347,6 +354,7 @@ std::string _getBaseName(std::string &path, std::string sep)
 		return path;
 	if (path.length() == pos +1)
 		return "";
+
 	return path.substr(pos+1);
 }
 
@@ -434,41 +442,57 @@ std::string& htmlEntityDecode(std::string& text, bool removeTags)
 	char t[text.length() + 1];
 	char *u = t;
 	const char *p = text.c_str();
-	while (*p) {
-		if (removeTags && *p == '<') {
+	while (*p) 
+	{
+		if (removeTags && *p == '<') 
+		{
 			while (*p && *p != '>')
 				p++;
 			if (*p)
 				p++;
 			continue;
 		}
-		if (p[0] == '&') {
-			if (p[1] == '#') {
+
+		if (p[0] == '&') 
+		{
+			if (p[1] == '#') 
+			{
 				p += 2;
 				const char *format;
-				if (p[0] == 'x' || p[0] == 'X') {
+				if (p[0] == 'x' || p[0] == 'X') 
+				{
 					format = "%x";
 					p++;
-				} else
+				} 
+				else
 					format = "%d";
+
 				unsigned int r = 0;
-				if (1 == sscanf(p, format, &r)) {
-					if (r < 0x80) {
+				if (1 == sscanf(p, format, &r)) 
+				{
+					if (r < 0x80) 
+					{
 						u[0] = r & 0x7f;
 						u += 1;
-					} else if (r < 0x800) {
+					} 
+					else if (r < 0x800) 
+					{
 						u[1] = 0x80 & (r & 0x3f);
 						r >>= 6;
 						u[0] = 0xC0 & r;
 						u += 2;
-					} else if (r < 0x10000) {
+					} 
+					else if (r < 0x10000) 
+					{
 						u[2] = 0x80 | (0x3f & r);
 						r >>= 6;
 						u[1] = 0x80 | (0x3f & r);
 						r >>= 6;
 						u[0] = 0xE0 | r;
 						u += 3;
-					} else if (r < 0x110000) {
+					} 
+					else if (r < 0x110000) 
+					{
 						u[3] = 0x80 | (0x3f & r);
 						r >>= 6;
 						u[2] = 0x80 | (0x3f & r);
@@ -489,7 +513,8 @@ std::string& htmlEntityDecode(std::string& text, bool removeTags)
 			decode_table_s *d = dt;
 			while (d->utf8Code && strncmp(p, d->htmlCode, d->htmlCodeLen))
 				d++;
-			if (d->utf8Code) {
+			if (d->utf8Code) 
+			{
 				p += d->htmlCodeLen;
 				const char *v = d->utf8Code;
 				while (*v)
@@ -616,17 +641,17 @@ bool getUrl(std::string &url, std::string &answer, std::string& userAgent)
 	char cerror[CURL_ERROR_SIZE];
 	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, cerror);
 
-	dprintf(DEBUG_NORMAL, "cYTFeedParser::getUrl: try to get %s\n", url.c_str());
+	dprintf(DEBUG_NORMAL, "getUrl: try to get %s\n", url.c_str());
 	
 	CURLcode httpres = curl_easy_perform(curl_handle);
 
 	curl_easy_cleanup(curl_handle);
 
-	dprintf(DEBUG_NORMAL, "cYTFeedParser::getUrl: http: res %d size %d\n", httpres, (int)answer.size());
+	dprintf(DEBUG_NORMAL, "getUrl: http: res %d size %d\n", httpres, (int)answer.size());
 
 	if (httpres != 0 || answer.empty()) 
 	{
-		dprintf(DEBUG_NORMAL, "cYTFeedParser::getUrl: error: %s\n", cerror);
+		dprintf(DEBUG_NORMAL, "getUrl: error: %s\n", cerror);
 		return false;
 	}
 	
@@ -668,7 +693,7 @@ bool DownloadUrl(std::string &url, std::string &file, std::string& userAgent)
 	char cerror[CURL_ERROR_SIZE];
 	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, cerror);
 
-	dprintf(DEBUG_NORMAL, "cYTFeedParser::DownloadUrl: try to get %s\n", url.c_str());
+	dprintf(DEBUG_NORMAL, "DownloadUrl: try to get %s\n", url.c_str());
 	
 	CURLcode httpres = curl_easy_perform(curl_handle);
 
@@ -677,11 +702,11 @@ bool DownloadUrl(std::string &url, std::string &file, std::string& userAgent)
 	curl_easy_cleanup(curl_handle);
 	fclose(fp);
 
-	dprintf(DEBUG_NORMAL, "cYTFeedParser::DownloadUrl: http: res %d size %f.\n", httpres, dsize);
+	dprintf(DEBUG_NORMAL, "DownloadUrl: http: res %d size %f.\n", httpres, dsize);
 
 	if (httpres != 0) 
 	{
-		dprintf(DEBUG_NORMAL, "cYTFeedParser::DownloadUrl: curl error: %s\n", cerror);
+		dprintf(DEBUG_NORMAL, "DownloadUrl: curl error: %s\n", cerror);
 		unlink(file.c_str());
 		return false;
 	}
@@ -778,7 +803,7 @@ bool CFileHelpers::copyFile(const char *Src, const char *Dst, mode_t mode)
 	{ // > 2GB
 		off64_t fsize64 = fsizeSrc64;
 		block = FileBufSize;
-		//printf("#####[%s] fsizeSrc64: %lld 0x%010llX - large file\n", __FUNCTION__, fsizeSrc64, fsizeSrc64);
+		
 		while(fsize64 > 0) 
 		{
 			if(fsize64 < (off64_t)FileBufSize)
@@ -808,7 +833,7 @@ bool CFileHelpers::copyFile(const char *Src, const char *Dst, mode_t mode)
 		lseek(fd1, 0, SEEK_SET);
 		off_t fsize = fsizeSrc;
 		block = FileBufSize;
-		//printf("#####[%s] fsizeSrc: %ld 0x%08lX - normal file\n", __FUNCTION__, fsizeSrc, fsizeSrc);
+
 		while(fsize > 0) 
 		{
 			if(fsize < (off_t)FileBufSize)
@@ -865,7 +890,7 @@ bool CFileHelpers::copyDir(const char *Src, const char *Dst, bool backupMode)
 		return false;
 	}
 	// create directory
-		// is symlink
+	// is symlink
 	if (S_ISLNK(FileInfo.st_mode)) 
 	{
 		int len = readlink(Src, buf, sizeof(buf)-1);
@@ -880,7 +905,8 @@ bool CFileHelpers::copyDir(const char *Src, const char *Dst, bool backupMode)
 		// directory
 		if (createDir(Dst, FileInfo.st_mode & 0x0FFF) == false) 
 		{
-			if (errno != EEXIST) {
+			if (errno != EEXIST) 
+			{
 				closedir(Directory);
 				return false;
 			}
@@ -891,27 +917,33 @@ bool CFileHelpers::copyDir(const char *Src, const char *Dst, bool backupMode)
 	while ((CurrentFile = readdir(Directory)) != NULL) 
 	{
 		// ignore '.' and '..'
-		if (strcmp(CurrentFile->d_name, ".") && strcmp(CurrentFile->d_name, "..")) {
+		if (strcmp(CurrentFile->d_name, ".") && strcmp(CurrentFile->d_name, "..")) 
+		{
 			srcPath = std::string(Src) + "/" + std::string(CurrentFile->d_name);
-			if (lstat(srcPath.c_str(), &FileInfo) == -1) {
+			if (lstat(srcPath.c_str(), &FileInfo) == -1) 
+			{
 				closedir(Directory);
 				return false;
 			}
 			dstPath = std::string(Dst) + "/" + std::string(CurrentFile->d_name);
 			// is symlink
-			if (S_ISLNK(FileInfo.st_mode)) {
+			if (S_ISLNK(FileInfo.st_mode)) 
+			{
 				int len = readlink(srcPath.c_str(), buf, sizeof(buf)-1);
-				if (len != -1 && len < (int) sizeof(buf)) {
+				if (len != -1 && len < (int) sizeof(buf)) 
+				{
 					buf[len] = '\0';
 					symlink(buf, dstPath.c_str());
 				}
 			}
 			// is directory
-			else if (S_ISDIR(FileInfo.st_mode)) {
+			else if (S_ISDIR(FileInfo.st_mode)) 
+			{
 				copyDir(srcPath.c_str(), dstPath.c_str());
 			}
 			// is file
-			else if (S_ISREG(FileInfo.st_mode)) {
+			else if (S_ISREG(FileInfo.st_mode)) 
+			{
 				std::string save = "";
 				(void)backupMode; /* squelch unused parameter warning */
 #if ENABLE_EXTUPDATE
@@ -930,7 +962,8 @@ bool CFileHelpers::createDir(const char *Dir, mode_t mode)
 {
 	char dirPath[strlen(Dir) + 1];
 	DIR *dir;
-	if ((dir = opendir(Dir)) != NULL) {
+	if ((dir = opendir(Dir)) != NULL) 
+	{
 		closedir(dir);
 		errno = EEXIST;
 		return false;

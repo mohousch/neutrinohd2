@@ -56,7 +56,6 @@
 #include <system/debug.h>
 
 
-extern CPictureViewer * g_PicViewer;
 #define PIC_W 		78
 
 static CProgressBar * timescale;
@@ -534,15 +533,15 @@ void CEpgData::showHead(const t_channel_id channel_id)
 	bool logo_ok = false;
 	
 	// check for logo
-	logo_ok = g_PicViewer->checkLogo(channel_id);
+	logo_ok = frameBuffer->checkLogo(channel_id);
 		
 	if(logo_ok)
 	{
 		// get logo size	
-		g_PicViewer->getLogoSize(channel_id, &logo_w, &logo_h, &logo_bpp);
+		frameBuffer->getLogoSize(channel_id, &logo_w, &logo_h, &logo_bpp);
 		
 		// display logo
-		g_PicViewer->DisplayLogo(channel_id, sx + BORDER_LEFT, sy - toph, (logo_bpp == 4 && logo_w > PIC_W)?  PIC_W: PIC_W_1, topboxheight, (logo_h > topboxheight)? true : false, false, true);
+		frameBuffer->DisplayLogo(channel_id, sx + BORDER_LEFT, sy - toph, (logo_bpp == 4 && logo_w > PIC_W)?  PIC_W: PIC_W_1, topboxheight, (logo_h > topboxheight)? true : false, false, true);
 		
 		// title
 		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(sx + BORDER_LEFT + ( (logo_bpp == 4)? logo_w : PIC_W_1) + 5, sy - toph + topheight + 3, ox - BORDER_LEFT - timestr_len - 5 - ( (logo_bpp == 4)? logo_w : PIC_W_1), text1, COL_MENUHEAD, 0, true);

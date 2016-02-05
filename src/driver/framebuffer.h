@@ -37,6 +37,9 @@
 #include <string>
 #include <map>
 
+// zapit types
+#include <client/zapittypes.h>
+
 // stmfb
 #ifdef __sh__
 #include <linux/stmfb.h>
@@ -303,6 +306,11 @@ class CFrameBuffer
 		void initQCircle();
 		inline int calcCornersOffset(const int& dy, const int& line, const int& radius, const int& type) { int ofs = 0; calcCorners(&ofs, NULL, NULL, dy, line, radius, type); return ofs; }
 		bool calcCorners(int *ofs, int *ofl, int *ofr, const int& dy, const int& line, const int& radius, const int& type);
+
+		// for picons
+		bool DisplayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale = false, bool center_x = true, bool center_y = true);
+		bool checkLogo(t_channel_id channel_id);
+		void getLogoSize(t_channel_id channel_id, int * width, int * height, int * bpp);
 };
 
 #define FH_ERROR_OK 0

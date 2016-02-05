@@ -32,7 +32,7 @@
 #include <sys/time.h> /* gettimeofday */
 #include "driver/framebuffer.h"
 
-/* zapit types */
+// zapit types
 #include <client/zapittypes.h>
 
 
@@ -86,11 +86,6 @@ class CPictureViewer
 		void Cleanup();
 		void SetVisible(int startx, int endx, int starty, int endy);
 		static double m_aspect_ratio_correction;
-		
-		// for picons
-		bool DisplayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale = false, bool center_x = true, bool center_y = true);
-		bool checkLogo(t_channel_id channel_id);
-		void getLogoSize(t_channel_id channel_id, int * width, int * height, int * bpp);
 };
 
 #endif

@@ -76,6 +76,7 @@ class CPictureViewerGui : public CMenuTarget
 		
 	private:
 		CFrameBuffer		* frameBuffer;
+		CPictureViewer		* g_PicViewer;
 
 		unsigned int		selected;
 		unsigned int		liststart;

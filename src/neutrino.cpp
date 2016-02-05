@@ -275,7 +275,7 @@ CBouquetList   		* RADIOallList;
 
 CPlugins       		* g_PluginList;
 CRemoteControl 		* g_RemoteControl;
-CPictureViewer 		* g_PicViewer;
+
 #if defined (ENABLE_CI)
 CCAMMenuHandler 	* g_CamHandler;
 #endif
@@ -2528,9 +2528,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 	g_CamHandler = new CCAMMenuHandler();
 	g_CamHandler->init();	
 #endif	
-
-	// picviewer
-	g_PicViewer = new CPictureViewer();
 	
 	// mount shares before scanning for plugins
 	CFSMounter::automount();

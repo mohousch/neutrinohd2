@@ -100,11 +100,15 @@ CPictureViewerGui::CPictureViewerGui()
 	picture_filter.addFilter("bmp");
 	picture_filter.addFilter("jpg");
 	picture_filter.addFilter("jpeg");
+
+	g_PicViewer = new CPictureViewer();
 }
 
 CPictureViewerGui::~CPictureViewerGui()
 {
 	playlist.clear();
+	delete g_PicViewer;
+	g_PicViewer = NULL;
 }
 
 int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)

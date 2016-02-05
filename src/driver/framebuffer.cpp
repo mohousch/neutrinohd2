@@ -45,6 +45,7 @@
 #include <gui/color.h>
 #include <global.h>
 #include <system/debug.h>
+#include <system/helpers.h>
 
 // opengl
 #ifdef USE_OPENGL
@@ -1871,6 +1872,133 @@ bool CFrameBuffer::DisplayImage(const std::string & name, int posx, int posy, in
 	}
 	
 	return false;
+}
+
+// check for logo
+bool CFrameBuffer::checkLogo(t_channel_id channel_id)
+{	
+        std::string logo_name;
+	bool logo_ok = false;
+	
+	// first png, then jpg, then gif
+	std::string strLogoExt[2] = { ".png", ".jpg" };
+	
+	// check for logo
+	for (int i = 0; i < 2; i++)
+	{
+		logo_name = g_settings.logos_dir;
+		logo_name += "/";
+		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
+		logo_name += strLogoExt[i].c_str();
+
+		if(!access(logo_name.c_str(), F_OK)) 
+		{
+			logo_ok = true;
+			dprintf(DEBUG_INFO, "%s found logo: %s\n", __FUNCTION__, logo_name.c_str());
+			break;
+		}
+	}
+	
+	return logo_ok;
+}
+
+void CFrameBuffer::getLogoSize(t_channel_id channel_id, int * width, int * height, int * bpp)
+{
+	std::string logo_name;
+	bool logo_ok = false;
+	
+	// check for logo/convert channelid to logo
+	std::string strLogoExt[2] = { ".png", ".jpg" };
+	
+	// check for logo
+	for (int i = 0; i < 2; i++)
+	{
+		logo_name = g_settings.logos_dir;
+		logo_name += "/";
+		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
+		logo_name += strLogoExt[i].c_str();
+
+		if(!access(logo_name.c_str(), F_OK)) 
+		{
+			logo_ok = true;
+			break;
+		}
+	}
+	
+	if(logo_ok)
+	{
+		// get logo real size
+		getSize(logo_name.c_str(), width, height, bpp);
+		
+		dprintf(DEBUG_INFO, "%s logo: %s (%dx%d) %dbpp\n", __FUNCTION__, logo_name.c_str(), *width, *height, *bpp);
+	}
+}
+
+// display logo
+bool CFrameBuffer::DisplayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale, bool center_x, bool center_y)
+{	
+        std::string logo_name;
+	bool ret = false;
+	bool logo_ok = false;
+	
+	int logo_w = width;
+	int logo_h = height;
+	int logo_bpp = 0;
+	
+	
+	// check for logo
+	std::string strLogoExt[2] = { ".png", ".jpg" };
+	
+	// check for logo
+	for (int i = 0; i < 2; i++)
+	{
+		logo_name = g_settings.logos_dir;
+		logo_name += "/";
+		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
+		logo_name += strLogoExt[i].c_str();
+
+		if(!access(logo_name.c_str(), F_OK)) 
+		{
+			logo_ok = true;
+			break;
+		}
+	}
+	
+	if(logo_ok)
+	{
+		// get logo real size
+		getSize(logo_name, &logo_w, &logo_h, &logo_bpp);
+	
+		// scale only PNG logos
+		if( logo_name.find(".png") == (logo_name.length() - 4) )
+		{
+			// upscale
+			if(upscale)
+			{	
+				//rescale logo image
+				float aspect = (float)(logo_w) / (float)(logo_h);
+					
+				if (((float)(logo_w) / (float)width) > ((float)(logo_h) / (float)height)) 
+				{
+					logo_w = width;
+					logo_h = (int)(width / aspect);
+				}
+				else
+				{
+					logo_h = height;
+					logo_w = (int)(height * aspect);
+				}
+			}
+			
+			ret = DisplayImage(logo_name, center_x?posx + (width - logo_w)/2 : posx, center_y?posy + (height - logo_h)/2 : posy, logo_w, logo_h);
+		}
+		else
+		{
+			ret = DisplayImage(logo_name, posx, posy, width, height);
+		}
+        }
+
+	return ret;
 }
 
 //

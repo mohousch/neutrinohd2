@@ -48,7 +48,6 @@ int CHTTPTool::show_progress( void * clientp, double dltotal, double dlnow, doub
 	if(hTool->statusViewer)
 	{
 		int progress = int( dlnow*100.0/dltotal);
-		//hTool->statusViewer->showLocalStatus(progress);
 		
 		if(hTool->iGlobalProgressEnd != -1)
 		{

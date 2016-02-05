@@ -84,7 +84,6 @@ void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventL
 void sectionsd_getCurrentNextServiceKey(t_channel_id uniqueServiceKey, CSectionsdClient::responseGetCurrentNextInfoChannelID& current_next );
 
 extern CRemoteControl * g_RemoteControl;		// neutrino.cpp
-extern CPictureViewer * g_PicViewer;			// neutrino.cpp
 
 extern cVideo * videoDecoder;				// libdvbapi
 extern CFrontend * live_fe;				// zapit.cpp
@@ -509,15 +508,15 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 		logo_bpp = 0;
 		
 		// check logo
-		logo_ok = g_PicViewer->checkLogo(channel_id);
+		logo_ok = frameBuffer->checkLogo(channel_id);
 		
 		if(logo_ok)
 		{
 			// get logo size	
-			g_PicViewer->getLogoSize(channel_id, &logo_w, &logo_h, &logo_bpp);
+			frameBuffer->getLogoSize(channel_id, &logo_w, &logo_h, &logo_bpp);
 		
 			// display logo
-			g_PicViewer->DisplayLogo(channel_id, PIC_X, PIC_Y, (logo_bpp == 4 && !g_settings.show_channelname)? logo_w : PIC_W, PIC_H, (logo_h > PIC_H)? true : false, false, true);
+			frameBuffer->DisplayLogo(channel_id, PIC_X, PIC_Y, (logo_bpp == 4 && !g_settings.show_channelname)? logo_w : PIC_W, PIC_H, (logo_h > PIC_H)? true : false, false, true);
 
 			// recalculate ChanNameWidth //FIXME: timewidth
 			ChanNameWidth = BoxWidth - (30 + CHANNUMBER_WIDTH + logo_w + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]->getRenderWidth(ChannelName, true));
