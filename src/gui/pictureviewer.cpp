@@ -67,7 +67,6 @@
 #include <gui/webtv.h>
 
 
-extern CPictureViewer * g_PicViewer;
 extern CWebTV * webtv;
 
 bool comparePictureByDate (const CPicture& a, const CPicture& b)
