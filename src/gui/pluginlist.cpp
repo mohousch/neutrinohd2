@@ -194,9 +194,11 @@ reload:
 					selected--;
 				
 				paintItem(prevselected - liststart);
+
 				unsigned int oldliststart = liststart;
 				liststart = (selected/listmaxshow)*listmaxshow;
-				if(oldliststart!=liststart)
+
+				if(oldliststart != liststart)
 				{
 					paintItems();
 				}
@@ -214,8 +216,10 @@ reload:
 			{
 				selected = (selected + 1)%pluginlist.size();
 				paintItem(prevselected - liststart);
+
 				unsigned int oldliststart = liststart;
 				liststart = (selected/listmaxshow)*listmaxshow;
+
 				if(oldliststart != liststart)
 				{
 					paintItems();
