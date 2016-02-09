@@ -381,7 +381,7 @@ AC_DEFUN([TUXBOX_BOXTYPE],[
 AC_ARG_WITH(boxtype,
 	[  --with-boxtype          valid values: generic,dgs,gigablue,dreambox,xtrend,fulan,kathrein,ipbox,topfield,fortis_hdbox,octagon,atevio,adb_box,whitebox,vip,homecast,vuplus,azbox,technomate,coolstream,hypercube,venton,xp1000,odin,ixuss,iqonios,e3hd,ebox5000],
 	[case "${withval}" in
-		generic|dgs|gigablue|dreambox|xtrend|fulan|kathrein|ipbox|topfield|fortis_hdbox|octagon|atevio|adb_box|whitebox|vip|homecast|vuplus|azbox|technomate|coolstream|hypercube|venton|xp1000|odin|ixuss|iqonios|e3hd|ebox5000)
+		generic|dgs|gigablue|dreambox|xtrend|fulan|kathrein|ipbox|hl101|topfield|fortis_hdbox|octagon|atevio|adb_box|whitebox|vip|homecast|vuplus|azbox|technomate|coolstream|hypercube|venton|xp1000|odin|ixuss|iqonios|e3hd|ebox5000)
 			BOXTYPE="$withval"
 			;;
 		cu*)
@@ -412,6 +412,10 @@ AC_ARG_WITH(boxtype,
 			BOXTYPE="ipbox"
 			BOXMODEL="$withval"
 			;;
+		hl101*)
+			BOXTYPE="duckbox"
+			BOXMODEL="$withval"
+			;;	
 		at*)
 			BOXTYPE="atevio"
 			BOXMODEL="$withval"
@@ -466,6 +470,7 @@ AC_ARG_WITH(boxmodel,
 				valid for fulan: spark, spark7162
 				valid for kathrein: ufs910, ufs922, ufs912, ufs913, ufc960
 				valid for ipbox: ipbox55, ipbox99, ipbox9900
+				valid for ipbox: hl101
 				valid for atevio: atevio700,atevio7000,atevio7500,atevio7600
 				valid for octagon: octagon1008
 				valid for vuplus: vusolo,vuduo,vuuno,vuultimo
@@ -520,6 +525,13 @@ AC_ARG_WITH(boxmodel,
 			;;
 		ipbox55|ipbox99|ipbox9900)
 			if test "$BOXTYPE" = "ipbox"; then
+				BOXMODEL="$withval"
+			else
+				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
+			fi
+			;;
+		hl101)
+			if test "$BOXTYPE" = "duckbox"; then
 				BOXMODEL="$withval"
 			else
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
@@ -649,6 +661,7 @@ AM_CONDITIONAL(BOXTYPE_XTREND, test "$BOXTYPE" = "xtrend")
 AM_CONDITIONAL(BOXTYPE_FULAN, test "$BOXTYPE" = "fulan")
 AM_CONDITIONAL(BOXTYPE_KATHREIN, test "$BOXTYPE" = "kathrein")
 AM_CONDITIONAL(BOXTYPE_IPBOX, test "$BOXTYPE" = "ipbox")
+AM_CONDITIONAL(BOXTYPE_HL101, test "$BOXTYPE" = "hl101")
 AM_CONDITIONAL(BOXTYPE_TOPFIELD, test "$BOXTYPE" = "toptfield")
 AM_CONDITIONAL(BOXTYPE_FORTIS_HDBOX, test "$BOXTYPE" = "fortis_hdbox")
 AM_CONDITIONAL(BOXTYPE_OCTAGON, test "$BOXTYPE" = "octagon")
@@ -717,6 +730,8 @@ AM_CONDITIONAL(BOXMODEL_IPBOX55, test "$BOXMODEL" = "ipbox55")
 AM_CONDITIONAL(BOXMODEL_IPBOX99, test "$BOXMODEL" = "ipbox99")
 AM_CONDITIONAL(BOXMODEL_IPBOX9900, test "$BOXMODEL" = "ipbox9900")
 
+AM_CONDITIONAL(BOXMODEL_HL101, test "$BOXMODEL" = "hl101")
+
 AM_CONDITIONAL(BOXMODEL_ATEVIO700, test "$BOXMODEL" = "atevio700")
 AM_CONDITIONAL(BOXMODEL_ATEVIO7000, test "$BOXMODEL" = "atevio7000")
 AM_CONDITIONAL(BOXMODEL_ATEVIO7500, test "$BOXMODEL" = "atevio7500")
@@ -776,6 +791,8 @@ elif test "$BOXTYPE" = "kathrein"; then
 	AC_DEFINE(PLATFORM_KATHREIN, 1, [building for kathrein])
 elif test "$BOXTYPE" = "ipbox"; then
 	AC_DEFINE(PLATFORM_IPBOX, 1, [building for ipbox])
+elif test "$BOXTYPE" = "duckbox"; then
+	AC_DEFINE(HAVE_DUCKBOX_HARDWARE, 1, [building for a duckbox])	
 elif test "$BOXTYPE" = "topfield"; then
 	AC_DEFINE(PLATFORM_TF7700, 1, [building for topfield])
 elif test "$BOXTYPE" = "fortis_hdbox"; then
@@ -898,6 +915,9 @@ elif test "$BOXMODEL" = "ipbox99"; then
 	AC_DEFINE(PLATFORM_IPBOX99, 1, [building for ipbox99])
 elif test "$BOXMODEL" = "ipbox9900"; then
 	AC_DEFINE(PLATFORM_IPBOX9900, 1, [building for ipbox9900])
+	
+elif test "$BOXMODEL" = "hl101"; then
+	AC_DEFINE(BOXMODEL_HL101, 1, [hl101])
 
 elif test "$BOXMODEL" = "atevio700"; then
 	AC_DEFINE(BOXMODEL_ATEVIO700, 1, [building for atevio700])
