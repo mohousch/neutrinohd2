@@ -80,11 +80,11 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--with-plugindir=$(DEST)/var/tuxbox/plugins \
 			--with-configdir=$(DEST)/var/tuxbox/config \
 			--enable-opengl \
-			--enable-gstreamer \
 			--enable-fribidi \
 			--enable-lcd \
 			--enable-scart \
-			--enable-ci
+			--enable-ci \
+			--enable-gstreamer
 				
 $(DEST):
 	mkdir $@
