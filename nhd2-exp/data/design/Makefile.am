@@ -1,0 +1,2 @@
+SUBDIRS = classic standard smart
+

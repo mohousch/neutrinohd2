@@ -1,0 +1,91 @@
+/*
+	Neutrino-GUI  -   DBoxII-Project
+	
+	$Id: hintboxext 2013/10/12 mohousch Exp $
+
+	Copyright (C) 2001 Steffen Hehn 'McClean'
+	Homepage: http://dbox.cyberphoria.org/
+
+	Kommentar:
+
+	Diese GUI wurde von Grund auf neu programmiert und sollte nun vom
+	Aufbau und auch den Ausbaumoeglichkeiten gut aussehen. Neutrino basiert
+	auf der Client-Server Idee, diese GUI ist also von der direkten DBox-
+	Steuerung getrennt. Diese wird dann von Daemons uebernommen.
+
+
+	License: GPL
+
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+
+#ifndef __hintboxext__
+#define __hintboxext__
+
+#include <driver/fb_window.h>
+#include <system/localize.h>
+#include <system/settings.h>
+
+#include <gui/widget/drawable.h>
+
+#include "icons.h"
+#include "menue.h"
+
+#include <string>
+#include <vector>
+
+
+class CHintBoxExt
+{
+	protected:
+		CFBWindow * m_window;
+
+		unsigned int m_currentPage;
+		std::vector<int>m_startEntryOfPage;
+		int m_maxEntriesPerPage;
+		int m_pages;
+
+		int m_width;
+		int m_height;
+
+		int m_fheight;
+		int m_theight;
+		std::string m_caption;
+		char * m_message;
+		ContentLines m_lines;
+		std::string  m_iconfile;
+		
+		void refresh(bool paintBg = false);
+
+	public:
+		CHintBoxExt(const neutrino_locale_t Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
+		CHintBoxExt(const neutrino_locale_t Caption, ContentLines& lines, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
+		CHintBoxExt(const char * const Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
+		CHintBoxExt(const char * const Caption, ContentLines& lines, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
+
+		~CHintBoxExt(void);
+		
+		void init(const char* const Caption, const int Width, const char * const Icon);
+
+		bool has_scrollbar(void);
+		void scroll_up(void);
+		void scroll_down(void);
+
+		void paint(void);
+		void hide(void);
+};
+
+#endif

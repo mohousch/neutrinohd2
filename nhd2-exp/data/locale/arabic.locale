@@ -1,0 +1,696 @@
+EPGMenu.epgplus عرض قائمة الأحداث
+EPGMenu.eventinfo تفاصيل البرنامج الحالي
+EPGMenu.eventlist قائمة أحداث البرنامج الحالي
+EPGMenu.head EPG - معلومات عن البرنامج
+EPGMenu.streaminfo معلومات تقنية عن القناة
+EPGPlus.actions حركة 
+EPGPlus.bybouquet_mode حسب الباقات
+EPGPlus.bypage_mode حسب الصفحة
+EPGPlus.head Eventlist Présentation (EPG Plus)
+EPGPlus.next_bouquet الباقة التالية
+EPGPlus.options خيارات
+EPGPlus.page_down صفحة إلى الأسفل
+EPGPlus.page_up صفحة إلى الأعلى
+EPGPlus.prev_bouquet الباقة السابقة
+EPGPlus.record حفظ
+EPGPlus.refresh_epg تحديث
+EPGPlus.remind تذكير
+EPGPlus.scroll_mode طريقة العرض
+EPGPlus.select_font_name اسم الخط
+EPGPlus.stretch_mode Mode déployé
+EPGPlus.swap_mode  Mode échange
+EPGPlus.view_mode Mode visualisation
+GENRE.ARTS.0 فنون/ثقافة
+GENRE.ARTS.1 فنون معاصرة
+GENRE.ARTS.10 فن/ثقافة مجلات
+GENRE.ARTS.11 موضة
+GENRE.ARTS.2 فنون
+GENRE.ARTS.3 دين
+GENRE.ARTS.4 ثقافة شعبية/فنون تقليدية
+GENRE.ARTS.5 أدب
+GENRE.ARTS.6 فيلم/سينما
+GENRE.ARTS.7 فيلم تجريبي/فيديو
+GENRE.ARTS.8 بث/صحافة
+GENRE.ARTS.9 الوسائط الجديدة
+GENRE.CHILDRENs_PROGRAMMES.0 أطفال / برنامج شبابي
+GENRE.CHILDRENs_PROGRAMMES.1 برنامج التعليم الأولي
+GENRE.CHILDRENs_PROGRAMMES.2 برنامج ترفيهي من 6 إلى 14 سنى
+GENRE.CHILDRENs_PROGRAMMES.3 برنامج ترفيهي من 10 إلى 16 سنى
+GENRE.CHILDRENs_PROGRAMMES.4 برنامج أخبار/تربية/مدرسة
+GENRE.CHILDRENs_PROGRAMMES.5 رسوم متحركة/كراكيز
+GENRE.DOCUS_MAGAZINES.0 وثائقي/برنامج
+GENRE.DOCUS_MAGAZINES.1 طبيعة/حيوانات/بيئة
+GENRE.DOCUS_MAGAZINES.2 علوم تكنولوجيا/طبيعة
+GENRE.DOCUS_MAGAZINES.2 طب/فيزيولوجيا/علم النفس
+GENRE.DOCUS_MAGAZINES.3 بلدان أجنبية/بعثات
+GENRE.DOCUS_MAGAZINES.5 علوم اجتماعية/روحية
+GENRE.DOCUS_MAGAZINES.6 تربيات أخرى
+GENRE.DOCUS_MAGAZINES.7 لغات
+GENRE.MOVIE.0 أفلام/دراما
+GENRE.MOVIE.1 تحقيق/بوليسي
+GENRE.MOVIE.2 مغامرات/ويسترن/حركة
+GENRE.MOVIE.3 خيال علمي/فانتازيا/رعب
+GENRE.MOVIE.4 كوميديا
+GENRE.MOVIE.5 أوبرا/ميلودرام/فولكلور
+GENRE.MOVIE.6 رومانسي
+GENRE.MOVIE.7 جاد/كلاسيكي/ديني/فيلم تاريخي/دراما
+GENRE.MOVIE.8 فيلم للكبار/دراما
+GENRE.MUSIC_DANCE.0 موسيقى / باليه / رقص
+GENRE.MUSIC_DANCE.1 روك / بوب
+GENRE.MUSIC_DANCE.2 موسيقى جادة / كلاسيكية
+GENRE.MUSIC_DANCE.3 فولك/موسيقى تقليدية
+GENRE.MUSIC_DANCE.4 جاز
+GENRE.MUSIC_DANCE.5 موسيقى/أوبرا
+GENRE.MUSIC_DANCE.6 باليه
+GENRE.NEWS.0 معلومات
+GENRE.NEWS.1 معلومات/طقس
+GENRE.NEWS.2 مجلات إخبارية
+GENRE.NEWS.3 وثائقي
+GENRE.NEWS.4 حوار/نقاش/استجواب
+GENRE.SHOW.0 عرض / عروض ألعاب
+GENRE.SHOW.1 عرض لعب / كويز / مسابقة
+GENRE.SHOW.2 عرض منوع
+GENRE.SHOW.3 عرض خطاب
+GENRE.SOCIAL_POLITICAL.0 أحداث اجتماعية & سياسية / أعمال
+GENRE.SOCIAL_POLITICAL.1 مجلات/تحقيقات/وثائقيات
+GENRE.SOCIAL_POLITICAL.2 اقتصادي / اجتماعي
+GENRE.SOCIAL_POLITICAL.3 شخصيات متميزة
+GENRE.SPORTS.0 رياضات
+GENRE.SPORTS.1 أحداث خاصة (ألعاب أولمبية، كأس العالم...)
+GENRE.SPORTS.10 سباحة
+GENRE.SPORTS.11 فنون القتال
+GENRE.SPORTS.2 مجلات الرياضة
+GENRE.SPORTS.3 كرة القدم
+GENRE.SPORTS.4 تنس
+GENRE.SPORTS.5 رياضات جماعية (عدا كرة القدم)
+GENRE.SPORTS.6 سباقات
+GENRE.SPORTS.7 رياضات المحركات
+GENRE.SPORTS.8 رياضات مائية
+GENRE.SPORTS.9 رياضات شتوية
+GENRE.TRAVEL_HOBBIES.0 سفر استرخاء
+GENRE.TRAVEL_HOBBIES.1 سفر/سياحة
+GENRE.TRAVEL_HOBBIES.2 صناعة تقليدية
+GENRE.TRAVEL_HOBBIES.3 سيارات
+GENRE.TRAVEL_HOBBIES.4 لياقة & صحة
+GENRE.TRAVEL_HOBBIES.5 طبخ
+GENRE.TRAVEL_HOBBIES.6 إشهار / شوبينغ
+GENRE.TRAVEL_HOBBIES.7 حدائق
+GENRE.UNKNOWN مجهول
+apids.hint_1 Entrer APIDs à streamer
+apids.hint_2 en notation hex séparé par ' '
+apidselector.head اختيار اللغة
+audiomenu.PCMOffset خفض الصوت PCM
+audiomenu.analogout مخرج تناظري
+audiomenu.avs avs
+audiomenu.dolbydigital دولبي ديجيتال
+audiomenu.monoleft مونو يسار
+audiomenu.monoright مونو يمين
+audiomenu.stereo ستيريو
+audioplayer.add إضافة
+audioplayer.artist_title الفنان، العنوان
+audioplayer.button_select_title_by_id البحث حسب التعريف
+audioplayer.button_select_title_by_name البحث حسب الإسم
+audioplayer.defdir dir. de بداية
+audioplayer.delete حذف
+audioplayer.deleteall حذف الكل
+audioplayer.display_order إظهار الترتيب
+audioplayer.fastforward تقدم سريع
+audioplayer.follow اختيار تلقائي للحالي
+audioplayer.head قائمة الصوتيات
+audioplayer.highprio Prorité de décodage élevé
+audioplayer.id3scan étiquette ID3 de Scanning
+audioplayer.jump_backwards عودة إلى الخلف
+audioplayer.jump_dialog_hint1 المرجو إدخال الهدف من أجل القفز
+audioplayer.jump_dialog_hint2 (نسبي، بالثانية)
+audioplayer.jump_dialog_title المرجو إدخال الهدف من أجل القفز
+audioplayer.jump_forwards الذهاب إلى الأمام
+audioplayer.keylevel مستوى المفتاح
+audioplayer.name مشغل الصوتيات
+audioplayer.pause توقف
+audioplayer.play استماع
+audioplayer.playing الملف الحالي
+audioplayer.playlist_fileerror_msg لم يتم إحداث الملف:
+audioplayer.playlist_fileerror_title خطأ
+audioplayer.playlist_fileoverwrite_msg هل تود تعويض الملف القديم:
+audioplayer.playlist_fileoverwrite_title تعويض؟
+audioplayer.playlist_name اسم القائمة
+audioplayer.playlist_name_hint1 Entrer le nom de fichier de la liste SVP
+audioplayer.playlist_name_hint2 l'extension .m3u sera ajouté automatiquement
+audioplayer.repeat_on Mode الإعادة مفعلة
+audioplayer.rewind إلى الخلف
+audioplayer.save_playlist حفظ القائمة
+audioplayer.screensaver_timeout Ecran de sauvegarde timeout (min, 0=off)
+audioplayer.select_title_by_name البحث عن العنوان حسب الإسم (SMS)
+audioplayer.show_playlist إظهار القائمة
+audioplayer.shuffle خطوة
+audioplayer.stop وقف
+audioplayer.title_artist عنوان، فنان
+audioplayerpicsettings.general قارئ الصوتيات/قارئ الصور
+bookmarkmanager.delete حذف
+bookmarkmanager.name تضليل
+bookmarkmanager.rename إعادة التسمية
+bookmarkmanager.select اختيار
+bouqueteditor.add إضافة
+bouqueteditor.bouquetname إسم الباقة
+bouqueteditor.delete حذف
+bouqueteditor.discardingchanges إلغاء التعديلات. المرجو الإنتظار
+bouqueteditor.hide إخفاء
+bouqueteditor.lock تعطيل
+bouqueteditor.move نقل
+bouqueteditor.name محرر الباقات
+bouqueteditor.newbouquetname إسم باقة جديد
+bouqueteditor.rename إعادة التسمية
+bouqueteditor.return مستعد
+bouqueteditor.savechanges? هل تريد حفظ التغييرات؟
+bouqueteditor.savingchanges حفظ التعديلات. المرجو الإنتظار...
+bouqueteditor.switch إضافة/حذف
+bouqueteditor.switchmode تلفاز/راديو
+bouquetlist.head باقات
+cablesetup.provider مزودي الخدمات
+channellist.head كل القنوات
+channellist.nonefound لم يتم إيجاد أي قناة!\nإجراء بحث\n(DBOX-key -> service)
+channellist.since انطلاقا من
+colorchooser.alpha ألفا
+colorchooser.blue أزرق
+colorchooser.green أخضر
+colorchooser.red أحمر
+colormenu.background الخلفية
+colormenu.background_head الخلفية
+colormenu.fade Fade القوائم
+colormenu.font Font حجم
+colormenu.menucolors لون القائمة
+colormenu.statusbar شريط المعلومات
+colormenu.textcolor لون الخط
+colormenu.textcolor_head لون الخط
+colormenu.themeselect اختيار الثيم
+colormenu.timing Temporisation OSD
+colormenusetup.menucontent محتوى النافذة
+colormenusetup.menucontent_inactive محتوى النافذة غير نشط
+colormenusetup.menucontent_selected تم اختيار محتوى النافذة
+colormenusetup.menuhead رأس القائمة
+colorstatusbar.head شريط المعلومات
+colorstatusbar.text شريط المعلومات
+colorthememenu.classic_theme ثيم كلاسيكي
+colorthememenu.dblue_theme ثيم أورق غامق
+colorthememenu.dvb2k_theme ثيم DVB2000
+colorthememenu.head نافذة اختيار الثيم
+colorthememenu.neutrino_theme ثيم نوترينو
+date.Apr  أبريل
+date.Aug  غشت
+date.Dec  دجنبر
+date.Feb  فبراير
+date.Fri  الجمعة
+date.Jan  يناير
+date.Jul  يوليوز
+date.Jun  يونيو
+date.Mar  مارس
+date.May  ماي
+date.Mon  الإثنين
+date.Nov  نونبر
+date.Oct  أكتوبر
+date.Sat  السبت
+date.Sep  شتنبر
+date.Sun  الأحد
+date.Thu  الخميس
+date.Tue  الثلاثاء
+date.Wed  الأربعاء
+epglist.head قائمة الأحداث - %s
+epglist.noevents ليس هناك EPG
+epgviewer.More_Screenings Plus de diffusion sur cette chaine
+epgviewer.nodetailed ليس هناك معلومات مفصلة
+epgviewer.notfound ليس هناك EPG
+eventlistbar.channelswitch المذكرة
+eventlistbar.eventsort ترتيب
+eventlistbar.recordevent تسجيل
+favorites.addchannel ستتم إضافة القناة الحالية \nإلى الباقة "مفضلاتي". \n سيستغرق الأمر ثوان...
+favorites.bouquetname مفضلاتي
+favorites.bqcreated تم إحداث القائمة "مفضلاتي"...\n
+favorites.chadded تمت إضافة القناة الحالية إلى مفضلاتي...\n
+favorites.chalreadyinbq القناة الحالية موجودة أصلا في مفضلاتي...\n
+favorites.finalhint \nاستخدم محرر الباقات لتعديل قائمة المفضلات\n
+favorites.menueadd إضافة قناة إلى قائمة المفضلات
+favorites.nobouquets Les Favories sont disponibles les bouquets activés uniquement.
+filebrowser.delete حذف
+filebrowser.denydirectoryleave Répertoire de démarrage réel
+filebrowser.dodelete1 حذف
+filebrowser.dodelete2 ?
+filebrowser.filter.active الفلتر مفعل
+filebrowser.filter.inactive الفلتر معطل
+filebrowser.head متصفح الملفات
+filebrowser.mark تضليل
+filebrowser.nextpage الصفحة التالية
+filebrowser.prevpage الصفحة السابقة
+filebrowser.scan بحث في المجلدات
+filebrowser.select اختيار
+filebrowser.showrights إظهار مميزات الملف
+filebrowser.sort.date (تاريخ)
+filebrowser.sort.name (اسم الملف)
+filebrowser.sort.namedirsfirst (اسم الملف2)
+filebrowser.sort.size (الحجم)
+filebrowser.sort.type (النوع)
+flashupdate.actionreadflash قراءة
+flashupdate.cantopenfile تعذر فتح الملف
+flashupdate.cantopenmtd تعذر فتح الجهاز mtd
+flashupdate.checkupdate البحث عن إصدار جديد
+flashupdate.currentversion_sep الإصدار الحالي
+flashupdate.currentversiondate تاريخ
+flashupdate.currentversiontime ساعة
+flashupdate.erasefailed فشل مسح الفلاش
+flashupdate.erasing مسح الفلاش
+flashupdate.experimentalimage لم يتم تجريب الصورة التي تم اختيارها، هذا يعني أن \nجهازك لن يستطيع الإقلاع بعد إعادة التشغيل.\n\nهل تود الإستمرار في التحديث إلى هذا الإصدار؟
+flashupdate.expertfunctions إعدادات للخبراء
+flashupdate.fileis0bytes حجم الملف 0 بايت
+flashupdate.fileselector برنامج اختيار الملفات
+flashupdate.flashreadyreboot تم تقبيت الصورة بنجاح..\nستتم إعادة تشغيل الجهاز.
+flashupdate.getinfofile استخراج معلومات عن الإصدار
+flashupdate.getinfofileerror تعذر استخراج معلومات عن الإصدار
+flashupdate.getupdatefile تحميل التحديث جار
+flashupdate.getupdatefileerror تعذر تحميل التحديث
+flashupdate.globalprogress التقدم الإجمالي:
+flashupdate.head تحديث البرنامج
+flashupdate.md5check فحص الصورة
+flashupdate.md5sumerror هناك أخطاء بالصورة
+flashupdate.msgbox تم إيجاد الصورة الجديدة التالية:\nDate: %s, %s\nBaseImage: %s\nImageType: %s\n\nهل تريد تحميل و تثبيت هذه الصورة؟
+flashupdate.msgbox_manual تم إيجاد الصورة الجديدة التالية:\nDate: %s, %s\nBaseImage: %s\nImageType: %s\n\nهل تريد تحميل و تثبيت هذه الصورة؟
+flashupdate.mtdselector Sélecteur de partition
+flashupdate.programmingflash برنامج الفلاش
+flashupdate.proxypassword كلمة السر
+flashupdate.proxypassword_hint1 أدخل كلمة سر السيرف البروكسي
+flashupdate.proxypassword_hint2 Entrée vide veut dire pas de proxy-auth
+flashupdate.proxyserver عنوان السيرفر
+flashupdate.proxyserver_hint1 entrer le nom du serveur proxy ou bien ip, utiliser hôte:port
+flashupdate.proxyserver_hint2 حقل فارغ يعني ليس هناك بروكسي
+flashupdate.proxyserver_sep سيرفر بروكسي
+flashupdate.proxyusername اسم المستعمل
+flashupdate.proxyusername_hint1 أدخل اسم المستعمل الخاص بالبروكسي
+flashupdate.proxyusername_hint2 Entrée vide veut dire pas de proxy-auth
+flashupdate.readflash قراءة الصورة كليا
+flashupdate.readflashmtd Lire une partition
+flashupdate.ready مستعد
+flashupdate.reallyflashmtd هل تريد فعلا تمرير الفلاش\n\nإذا حدث خطأ، أو أن الصورة غير صحيحة فالجهاز لن يقلع بعد إعادة التشغيل\n\nImagename: %s\nTarget: %s
+flashupdate.savesuccess تم حفظ الصورة بنجاح \nتحت إسم %s.
+flashupdate.selectimage الصور المتوفرة
+flashupdate.squashfs.noversion La vérification de la version SquashFS version ne sont supportée que lors de la m.à.j via le WEB actuellement.\nVoulez-vous vraiment installer cette Image?
+flashupdate.titlereadflash قراءة الفلاش
+flashupdate.titlewriteflash كتابة الفلاش
+flashupdate.updatemode طريقة التحديث
+flashupdate.updatemode_internet إنترنت
+flashupdate.updatemode_manual يدوي (ftp)
+flashupdate.url_file ملف الضبط
+flashupdate.versioncheck فحص الإصدار
+flashupdate.writeflash كتابة الصورة كليا
+flashupdate.writeflashmtd Ecrire une partition
+flashupdate.wrongbase Votre cycle de sortie est différent, Incapable de mettre à jour\nsans avoir installé la version convenable!
+fontmenu.channellist قائمة القنوات
+fontmenu.epg EPG
+fontmenu.eventlist قائمة الأحداث
+fontmenu.gamelist قائمة الألغاب
+fontmenu.head إعدادات حجم الخط
+fontmenu.infobar شريط المعلومات
+fontsize.channel_num_zap اختيار مباشر
+fontsize.channellist قائمة القنوات
+fontsize.channellist_descr الوصف
+fontsize.channellist_number الرقم
+fontsize.epg_date EPG Date
+fontsize.epg_info1 EPG Info 1
+fontsize.epg_info2 EPG Info 2
+fontsize.epg_title EPG Titre
+fontsize.eventlist_datetime التاريخ / الساعة
+fontsize.eventlist_itemlarge عريض
+fontsize.eventlist_itemsmall صغير
+fontsize.eventlist_title العنوان
+fontsize.filebrowser_item مواد متصفح الملفات
+fontsize.gamelist_itemlarge عريض
+fontsize.gamelist_itemsmall صغير
+fontsize.hint Initialisation caractère,\nattendre SVP...
+fontsize.infobar_channame اسم القناة
+fontsize.infobar_info المعلومات
+fontsize.infobar_number الرقم
+fontsize.infobar_small صغير
+fontsize.menu Menu texte
+fontsize.menu_info Menu Info
+fontsize.menu_title Menu Titre
+gtxalpha.alpha1 Alpha 1
+gtxalpha.alpha2 Alpha 2
+infoviewer.epgnotload EPG non chargé....
+infoviewer.epgwait attente EPG...
+infoviewer.eventlist قائمة الأحداث
+infoviewer.languages الصوت
+infoviewer.motor_moving positionnement de l'antenne
+infoviewer.nocurrent Pas d'info pour le programme en cours
+infoviewer.noepg ليس هناك EPG
+infoviewer.notavailable القناة غير متوفرة
+infoviewer.selecttime اختيار الساعة
+infoviewer.streaminfo Options de caractéristiques
+infoviewer.subservice Sous services
+infoviewer.waittime انتظار الساعة...
+ipsetup.hint_1 Utilise 0..9, ou bien haut/bas,
+ipsetup.hint_2 OK sauvegader, LAME! annuler
+keybindingmenu.RC Touche repeat-blocker
+keybindingmenu.addrecord إضافة ساعة التسجيل
+keybindingmenu.addrecord_head إضافة ساعة التسجيل
+keybindingmenu.addremind إضافة ساغة تغيير القناة إلى...
+keybindingmenu.addremind_head إضافة ساغة تغيير القناة إلى...
+keybindingmenu.allchannels_on_ok كل القنوات
+keybindingmenu.bouquetchannels_on_ok الباقة الحالية
+keybindingmenu.bouquetdown bouquet arrière
+keybindingmenu.bouquetdown_head Choix touche bouquet arrière
+keybindingmenu.bouquethandling Contrôle de Bouquet
+keybindingmenu.bouquetlist_on_ok Liste de bouquets
+keybindingmenu.bouquetup next bouquet
+keybindingmenu.bouquetup_head Choix touche bouquet avant
+keybindingmenu.cancel Fermer liste de chaines
+keybindingmenu.cancel_head Fermer liste de chaines
+keybindingmenu.channeldown chaine bas
+keybindingmenu.channeldown_head Choix touche chaine arrière
+keybindingmenu.channellist Liste de chaines
+keybindingmenu.channelup chaine avant
+keybindingmenu.channelup_head Choix touche chaine avant
+keybindingmenu.head Réglage des touches
+keybindingmenu.lastchannel Zap rapide
+keybindingmenu.lastchannel_head Zap rapide
+keybindingmenu.modechange Mode changement
+keybindingmenu.pagedown page bas
+keybindingmenu.pagedown_head Choix touche page bas
+keybindingmenu.pageup page haut
+keybindingmenu.pageup_head Choix touche page haut
+keybindingmenu.quickzap zap rapide
+keybindingmenu.repeatblock délai de répétition
+keybindingmenu.repeatblockgeneric délai générique
+keybindingmenu.sort changer l'ordre de classement
+keybindingmenu.sort_head changer l'ordre de classement
+keybindingmenu.subchanneldown sous-chaine bas
+keybindingmenu.subchanneldown_head touche sous-chaine bas
+keybindingmenu.subchannelup sous-chaine haut
+keybindingmenu.subchannelup_head touche sous-chaine haut
+keybindingmenu.tvradiomode Mode TV/Radio
+keybindingmenu.tvradiomode_head Mode TV/Radio
+keybindingmenu.zaphistory Zapping Bouquet Historique
+keybindingmenu.zaphistory_head Zapping Bouquet historique
+keychooser.head Setup المفتاح الجديد
+keychooser.text1 المرجو الضغط على المفتاح الجديد
+keychooser.text2 المرجو الإنتظار قليلا من أحل الخروج
+keychoosermenu.currentkey المفتاح الحالي
+keychoosermenu.setnew ضبط مفتاح جديد
+keychoosermenu.setnone ليس هناك مفتاح
+languagesetup.head إعدادات اللغة
+languagesetup.select اللغة
+lcdcontroler.brightness Brillance normale
+lcdcontroler.brightnessstandby Brillance de veille
+lcdcontroler.contrast Contraste
+lcdcontroler.head إعدادات LCD
+lcdmenu.head إعدادات LCD
+lcdmenu.lcdcontroler Contraste / Brillance
+lcdmenu.statusline Ligne d'état
+lcdmenu.statusline.both Volume / temps écoulé
+lcdmenu.statusline.playtime Temps écoulé
+lcdmenu.statusline.volume مستوى الصةت
+mainmenu.audioplayer مشغل الصوتيات
+mainmenu.games ألعاب
+mainmenu.head القائمة الرئيسية
+mainmenu.movieplayer مشغل الفيديو
+mainmenu.pausesectionsd قراءة Epg
+mainmenu.pictureviewer قارئ الصور
+mainmenu.radiomode Mode راديو
+mainmenu.recording تسجيل
+mainmenu.recording_start بداية
+mainmenu.recording_stop توقف
+mainmenu.service قنوات
+mainmenu.settings إعدادات
+mainmenu.shutdown إطفاء
+mainmenu.sleeptimer Veille
+mainmenu.tvmode Mode TV
+mainsettings.audio صوت
+mainsettings.colors Coleurs / thèmes / Caractères
+mainsettings.head إعدادات
+mainsettings.keybinding إعدادات الأزرار
+mainsettings.language اللغة
+mainsettings.lcd شاشة LCD
+mainsettings.misc إعدادات مختلفة
+mainsettings.network شبكات
+mainsettings.recording تسجيل
+mainsettings.savesettingsnow حفظ الإعدادات الآن
+mainsettings.savesettingsnow_hint يتم حفظ الإعدادات، \n المرجو الإنتظار...
+mainsettings.video فيديو
+menu.back عودة
+messagebox.back عودة
+messagebox.cancel إلغاء
+messagebox.discard إلغاء التغييرات؟
+messagebox.error خطأ
+messagebox.info معلومات
+messagebox.no لا
+messagebox.yes نعم
+miscsettings.general عام
+miscsettings.head إعدادات مختلفة
+miscsettings.infobar_sat_display إظهار اسم القمر في شريط المعلومات
+miscsettings.shutdown_real Permettre Veille
+miscsettings.shutdown_real_rcdelay Arrêt retardé
+miscsettings.startbhdriver Charger les drivers du Mode BH
+motorcontrol.head إعدادات المحرك
+movieplayer.bookmark المفضل
+movieplayer.bookmarkname اسم المفضل
+movieplayer.bookmarkname_hint1 أدخل اسم المفضل الجديد
+movieplayer.bookmarkname_hint2 
+movieplayer.fileplayback ملف عبر VLC
+movieplayer.head مشغل الفيديو
+movieplayer.toomanybookmarks Il y'a plusieurs signets.\nVous avez à éffacer l'un d'eux avant.
+movieplayer.tshelp Rouge/LAME(Exit)! Stop\nVERT Sélection piste audio\nJAUNE Pause/Continu\nBLEU Créer signet\nRécepteur montre progression\n1 approx. 1 minute arrière\n3 saut approx. 1 minute\n4 approx. 5 minutes arrière\n6 saut approx. 5 minutes\n7 approx. 10 minutes arrière\n9 skip approx. 10 minutes\nHelp: http://www.giggo.de/dbox2/movieplayer.html\n
+movieplayer.tsplayback Lecture TS
+movieplayer.vlchelp Rouge/LAME(Exit)! Stop\nVERT Resync\nJAUNE Pause/Continu\nBLEU Créer signet\nRécepteur montre Progression\n1 approx. 1 minute arrière\n3 saut approx. 1 minute\n4 approx. 5 minutes arrière\n6 saut approx. 5 minutes\n7 approx. 10 minutes arrière\n9 saut approx. 10 minutes\nHelp: http://www.giggo.de/dbox2/movieplayer.html\n
+networkmenu.broadcast تمرير
+networkmenu.dhcp DHCP
+networkmenu.gateway Entrée par défaut
+networkmenu.ipaddress العنوان IP
+networkmenu.mount NFS/CIFS
+networkmenu.nameserver إسم الخادم
+networkmenu.netmask Masque du net
+networkmenu.setupnow ضبط الشبكة حالا
+networkmenu.setuponstartup ضبط الشبكة عند التشغيل
+networkmenu.show إظهار إعدادات الشبكة المشغلة
+networkmenu.test اختبار الشبكة الآن
+nfs.alreadymounted تم تركيب المجلد من قبل
+nfs.automount تركيب عند التشغيل
+nfs.dir مجلد/مشاركة
+nfs.ip IP du sereveur NFS/CIFS
+nfs.localdir مجلد محلي NFS/CIFS
+nfs.mount Monter Volume NFS/CIFS
+nfs.mount_options Options de montage NFS/CIFS
+nfs.mounterror erreur montage NFS/CIFS
+nfs.mounterror_notsup Type de système de fichier non supporté pour NFS/CIFS
+nfs.mountnow monter maintenant NFS/CIFS
+nfs.mounttimeout erreur montage NFS/CIFS: Dépassement du temps alloué
+nfs.password Mot de passe CIFS
+nfs.remount répertoire de remontage NFS/CIFS
+nfs.type type
+nfs.type_cifs CIFS
+nfs.type_nfs NFS
+nfs.umount éffacer volume montage NFS/CIFS(Unmount)
+nfs.umounterror erreur éffacement montage volume NFS/CIFS
+nfs.username Nom d'utilisateur CIFS
+nfsmenu.head Réglages NFS/CIFS
+nvod.percentage (%d%% fini)
+nvod.starting (démarrage dans %d min)
+nvodselector.head اختر ساعة الإقلاع
+nvodselector.subservice Sélectionner Sous-service
+options.default ضبط المصنع
+options.fb framebuffer
+options.null null
+options.off غير مشغل
+options.on مشغل
+options.serial série
+parentallock.changepin تغيير قن PIN
+parentallock.changepin_hint1 أدخل قن PIN هنا!
+parentallock.changetolocked pour les bouquets bloquer
+parentallock.head Entrer code parental (PIN)
+parentallock.lockage Bloquer le programme
+parentallock.lockage12 من 12 سنة ظفظاكثر
+parentallock.lockage16 من 16 سنة فأكثر
+parentallock.lockage18 من 18 سنة فأكثر
+parentallock.lockedchannel Expéditeur bloqué...
+parentallock.lockedprogram Programme bloqué (pour %d ans et plus)
+parentallock.never أبدا
+parentallock.onsignal pour fournisseur bloquer
+parentallock.parentallock Protection parentale
+parentallock.prompt ponctuellemnt pour PIN
+pictureviewer.defdir مجلد الإقلاع.
+pictureviewer.head قارئ الصور
+pictureviewer.resize.color_average avancé
+pictureviewer.resize.none aucun
+pictureviewer.resize.simple simple
+pictureviewer.scaling réajustement
+pictureviewer.show إظهار
+pictureviewer.slide_time مدة العرض
+pictureviewer.slideshow العرض
+pictureviewer.sortorder تغيير الترتيب
+pictureviewer.sortorder.date (التاريخ)
+pictureviewer.sortorder.filename (اسم الملف)
+ping.ok est joignable (ping)
+ping.protocol est injoignable (erreur hôte ou protocole)
+ping.socket est injoignable (erreur socket)
+ping.unreachable est injoignable 
+pinprotection.head أدخل قن PIN
+pinprotection.wrongcode القن PIN خاطئ! حاول مجدد
+rclock.lockmsg votre télécommande Récepteur sera bloquée.\n pour débloquer, Appuyer <ROUGE> \n et <DBOX> sur la Télécommande.
+rclock.menueadd Bloquer Télécommande (RC) 
+rclock.title Bloquer Télécommande (RC)
+rclock.unlockmsg Télécommande réactivée.
+recordingmenu.defdir مجلد التسجيل
+recordingmenu.file Directe (fichier)
+recordingmenu.filesettingsseparator تسجيل مباشر
+recordingmenu.help Dispositifs d'enregistrement:\n--------------------------\nserveur:\nutilisation du programme de streaming sur PC\n\n(analogique) vcr:\nutilisation de la sortie vcr\n\ndirecte (fichier):\ndirectement dans le répertoire NFS mounté\nsur le dique dur interne(HDD)\nTS: utiliser mode spts (dbox2)\nPES: ne pas utiliser le mode spts(dbox2)\n\n\nTaille fichier Max.:\n---------------------\nNFS V2: 2 GB (2048 MB)\nNFS V3: Presque illimité (0 MB)\nFAT: 2 GB (2048 MB)\nFAT32: 4 GB (4096 MB)
+recordingmenu.off معطل
+recordingmenu.server سيرفر
+recordingmenu.server_mac Adresse MAC
+recordingmenu.setupnow تفعيل التعديلات
+recordingmenu.stream_all_audio_pids enregistrer tout les PIDS audio
+recordingmenu.vcr vcr
+recordtimer.announce L'enregistrement démarre dans quelques minutes
+repeatblocker.hint_1 Durée test court (in ms) pour reconnaitre 2 keystrokes
+repeatblocker.hint_2 Entrer 0 pour éteindre le blocker (rouge est espace)
+satsetup.diseqc دايزك
+satsetup.diseqc10 دايزك 1.0
+satsetup.diseqc11 دايزك 1.1
+satsetup.diseqc12 دايزك 1.2
+satsetup.diseqcrepeat تقسيم دايزك
+satsetup.extended إعدادات دايزك
+satsetup.extended_motor إعدادات الموتور
+satsetup.minidiseqc ميني-دايزك
+satsetup.nodiseqc ليس هناك دايزك
+satsetup.satellite القمر
+satsetup.smatvremote mise au point SMATV 
+scants.actcable Cable:
+scants.actsatellite القمر:
+scants.bouquet الباقة
+scants.bouquet_create إحداث جديد
+scants.bouquet_erase مسح الكل
+scants.bouquet_leave ترك الحالي
+scants.bouquet_satellite القمر-الباقة
+scants.bouquet_update تحديث
+scants.channel القناة:
+scants.failed فشل البحث على التردد!
+scants.finished تم البحث على التردد بنجاح!
+scants.freqdata التردد:
+scants.head Balayer le transpondeur
+scants.numberofdataservices Data
+scants.numberofradioservices Radio
+scants.numberoftotalservices Total
+scants.numberoftvservices TV
+scants.provider Provider(Fournisseur):
+scants.startnow commencer le Balayage
+scants.transponders Transpondeurs:
+screensetup.lowerright Vert = réglage du bas à droite
+screensetup.upperleft Rouge = réglage du haut à gauche
+servicemenu.head Service
+servicemenu.reload Recharger listes de chaines
+servicemenu.reload_hint Rechargement listes de chaines,\nPatientez SVP.
+servicemenu.scants Balayage du service
+servicemenu.update Mise à jour du Software
+settings.help Aide
+settings.missingoptionsconffile Les réglages NEUTRINO sont mis à jour.\nDes nouvelles Options seront mis par défaut.
+settings.noconffile Pas de réglages NEUTRINO trouvés.\nUtilisation de celles par défaut.
+shutdowntimer.announce Le récepteur sera arrêté dans 1 min.\nAnnuler arrêt?
+sleeptimerbox.announce Veille dans in 1 min
+sleeptimerbox.hint1 Arrêt dans in min. (000=off)
+sleeptimerbox.hint2 Le récepteur sera arrêté après ce temps.
+sleeptimerbox.title Veille
+streaminfo.aratio Aspect de proportion
+streaminfo.aratio_unknown Aspect de proportion: inconnu
+streaminfo.audiotype نوع الصوت
+streaminfo.bitrate Bitrate
+streaminfo.framerate Framerate
+streaminfo.framerate_unknown Framerate: inconnu
+streaminfo.head معلومات تقنية عن القناة
+streaminfo.not_available غير متوفر
+streaminfo.resolution Résolution
+streaminfo.signal Receipt signal
+streaming.busy Un ou plusieurs processus d'enregistrement sont actifs.\nSi vous rencontrez ce message et aucun enregistrement n'est actif, Redémarrer NEUTRINO SVP.
+streaming.dir_not_writable Le répertoire d'enregistrement n'est pas autorisé en écriture.\nL'enregistrement ne fonctionnera pas.
+streaming.write_error L'enregistrement est abondonné,\nTant qu'une erreur est survenue lors du processus d'écriture.
+stringinput.caps caps / Pas de caps
+stringinput.clear مسح الكل
+timer.eventrecord.msg   .. للتنفيذ، أو لا
+timer.eventrecord.title ضبط تسجيل
+timer.eventtimed.msg L'évènement est programmé.\nLe récepteur démarrera et \basculera vers cette chaine à l'heure programmée.
+timer.eventtimed.title Programme Evènement
+timerbar.channelswitch ضبط
+timerbar.recordevent تسجيل
+timerlist.alarmtime الإستيقاظ
+timerlist.apids PIDs Audio 
+timerlist.bouquetselect اختيار الباقة
+timerlist.channel قناة
+timerlist.channelselect اختيار القناة
+timerlist.delete مسح
+timerlist.menumodify تعديل التوقيت
+timerlist.menunew التوقيت الجديد
+timerlist.message رسالة
+timerlist.moderadio إذاعة الراديو
+timerlist.modeselect Mode sélection
+timerlist.modetv القناة التلفزية
+timerlist.modify تعديل
+timerlist.name قائمة التوقيتات
+timerlist.new توقيت جديد
+timerlist.program.unknown برنامج مجهول
+timerlist.reload Recharger
+timerlist.repeat إعادة
+timerlist.repeat.biweekly نصف-أسبوعي
+timerlist.repeat.byeventdescription Voir Horaire
+timerlist.repeat.daily يومي
+timerlist.repeat.fourweekly 4 مرات / الأسبوع
+timerlist.repeat.friday الجمعة
+timerlist.repeat.monday الإثنين
+timerlist.repeat.monthly شهريا
+timerlist.repeat.once مرة واحدة
+timerlist.repeat.saturday السبت
+timerlist.repeat.sunday الأحد
+timerlist.repeat.thursday الخميس
+timerlist.repeat.tuesday الثلاثاء
+timerlist.repeat.unknown مجهول
+timerlist.repeat.wednesday الأربعاء
+timerlist.repeat.weekdays أيام الأسبوع
+timerlist.repeat.weekly أسبوعي
+timerlist.save حفظ التوقيت
+timerlist.standby Mode SB
+timerlist.standby.off Quitter Veille
+timerlist.standby.on Entrer en Veille
+timerlist.stoptime ساعة التوقف
+timerlist.type نوع التوقيت
+timerlist.type.nextprogram البرنامج التالي
+timerlist.type.record تسجيل
+timerlist.type.remind Rappeler
+timerlist.type.shutdown إيقاف
+timerlist.type.sleeptimer Veille programmée
+timerlist.type.standby Veille
+timerlist.type.unknown مجهول
+timerlist.type.zapto تغيير إلى
+timerlist.weekdays أيام الأسبوع
+timerlist.weekdays.hint_1 الإثنين الثلاثاء الأربعاء الخميس الجمعة السبت الأحد
+timerlist.weekdays.hint_2 'X'=Horaire '-' Pas d'horaire
+timersettings.record_safety_time_after Correction du temps d'arrêt d'enregistrement
+timersettings.record_safety_time_after.hint_1 Temps de Correction en min. (00=off). Ce temps
+timersettings.record_safety_time_after.hint_2 sera ajouté à chaque horaire d'enregistrement.
+timersettings.record_safety_time_before Correction du temps de démarrage d'enregistrement
+timersettings.record_safety_time_before.hint_1 Temps de Correction en min. (00=off). Ce temps
+timersettings.record_safety_time_before.hint_2 sera déduit de chaque horaire d'enregistrement.
+timersettings.separator إعدادات التوقيت
+timing.chanlist قائمة القنوات
+timing.epg Epg
+timing.filebrowser متصفح الملفات
+timing.head  مدة ظهور القوائم
+timing.hint_1 المدة بالثواني. بعد هذه المدة
+timing.hint_2 سيختفي شريط المعلومات
+timing.infobar شريط المعلومات
+timing.menu القائمة
+timing.numericzap Zap Numerique
+videomenu.csync Correction sync
+videomenu.screensetup إعدادات الشاشة
+videomenu.videoformat Format
+videomenu.videoformat_169 16:9
+videomenu.videoformat_43 4:3 (LB)
+videomenu.videoformat_431 4:3 (PS)
+videomenu.videosignal Sortie Vidéo
+videomenu.videosignal_composite CVBS
+videomenu.videosignal_rgb RGB + CVBS
+videomenu.videosignal_svideo S-Vidéo
+videomenu.videosignal_yuv_c YUV + CVBS
+videomenu.videosignal_yuv_v YUV + VBS
+zaptotimer.announce Zapper vers programmeur dans une minute
