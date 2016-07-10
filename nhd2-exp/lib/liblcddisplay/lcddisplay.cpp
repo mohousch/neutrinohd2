@@ -38,6 +38,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <byteswap.h>
+#include <string.h>
 
 #ifndef BYTE_ORDER
 #error "no BYTE_ORDER defined!"
