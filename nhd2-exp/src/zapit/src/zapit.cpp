@@ -3349,9 +3349,8 @@ int startPlayBack(CZapitChannel * thisChannel)
 			}
 			else if (g_settings.satip_serverbox_type == DVB_S)
 			{
-				//FIXME: try to build namenspace for sat
+				// namenspace for sat
 				ChannelURL += to_hexstring(thisChannel->getSatellitePosition());
-				//ChannelURL += "0000";
 			}
 
 			ChannelURL += "0000";
