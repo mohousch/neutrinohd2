@@ -341,7 +341,7 @@ int LinuxDvbStop(Context_t  *context, char * type)
 	if (audio && audiofd != -1) 
 	{
 #if defined (__sh__)
-		if (ioctl( audiofd, AUDIO_FLUSH, NULL) == -1)
+		if (ioctl( audiofd, AUDIO_FLUSH) == -1)
 #else
 		if (ioctl(audiofd, AUDIO_CLEAR_BUFFER, NULL) == -1)
 #endif
@@ -361,7 +361,7 @@ int LinuxDvbStop(Context_t  *context, char * type)
 	if (video && videofd != -1) 
 	{
 #if defined (__sh__)
-		if (ioctl(videofd, VIDEO_FLUSH, NULL) == -1)
+		if (ioctl(videofd, VIDEO_FLUSH) == -1)
 #else
 		if (ioctl(videofd, VIDEO_CLEAR_BUFFER, NULL) == -1)
 #endif
@@ -542,7 +542,7 @@ int LinuxDvbFlush(Context_t  *context, char * type)
 		if (video && videofd != -1) 
 		{
 #if defined (__sh__)
-			if (ioctl(videofd, VIDEO_FLUSH, NULL) == -1)
+			if (ioctl(videofd, VIDEO_FLUSH) == -1)
 #else
 			if (ioctl(videofd, VIDEO_CLEAR_BUFFER,NULL) == -1)
 #endif
@@ -561,7 +561,7 @@ int LinuxDvbFlush(Context_t  *context, char * type)
 		if (audio && audiofd != -1) 
 		{
 #if defined (__sh__)
-			if (ioctl( audiofd, AUDIO_FLUSH, NULL) == -1)
+			if (ioctl( audiofd, AUDIO_FLUSH) == -1)
 #else
 			if (ioctl(audiofd, AUDIO_CLEAR_BUFFER ,NULL) == -1)
 #endif
@@ -753,7 +753,7 @@ int LinuxDvbClear(Context_t  *context, char * type)
 		if (video && videofd != -1) 
 		{
 #if defined (__sh__)
-			if (ioctl(videofd, VIDEO_FLUSH, NULL) == -1)
+			if (ioctl(videofd, VIDEO_FLUSH) == -1)
 #else
 			if (ioctl(videofd, VIDEO_CLEAR_BUFFER, NULL) == -1)
 #endif
@@ -767,7 +767,7 @@ int LinuxDvbClear(Context_t  *context, char * type)
 		if (audio && audiofd != -1) 
 		{
 #if defined (__sh__)
-			if (ioctl( audiofd, AUDIO_FLUSH, NULL) == -1)
+			if (ioctl( audiofd, AUDIO_FLUSH) == -1)
 #else
 			if (ioctl(audiofd, AUDIO_CLEAR_BUFFER, NULL) == -1)
 #endif
@@ -906,7 +906,7 @@ int LinuxDvbSwitch(Context_t  *context, char * type)
 				}
 				
 #if defined (__sh__)
-				if (ioctl( audiofd, AUDIO_FLUSH, NULL) == -1)
+				if (ioctl( audiofd, AUDIO_FLUSH) == -1)
 #else
 				if (ioctl(audiofd, AUDIO_CLEAR_BUFFER ,NULL) == -1)
 #endif
@@ -961,7 +961,7 @@ int LinuxDvbSwitch(Context_t  *context, char * type)
 				}
 
 #if defined (__sh__)
-				if (ioctl(videofd, VIDEO_FLUSH, NULL) == -1)
+				if (ioctl(videofd, VIDEO_FLUSH) == -1)
 #else
 				if (ioctl(videofd, VIDEO_CLEAR_BUFFER ,NULL) == -1)
 #endif
