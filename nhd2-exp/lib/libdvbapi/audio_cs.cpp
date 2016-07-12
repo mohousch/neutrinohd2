@@ -323,7 +323,7 @@ int cAudio::Flush(void)
 	int ret = -1;
 
 #if defined (__sh__)
-	ret = (ioctl(audio_fd, AUDIO_FLUSH) < 0)
+	ret = (ioctl(audio_fd, AUDIO_FLUSH) < 0);
 #else
 	ret = ioctl(audio_fd, AUDIO_CLEAR_BUFFER);
 #endif
