@@ -262,7 +262,7 @@ bool cAudio::Resume()
 	
 	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);	
 
-#if defined (__sh__
+#if defined (__sh__)
 	if(ioctl(audio_fd, AUDIO_FLUSH) < 0)
 #else
 	if(ioctl(audio_fd, AUDIO_CONTINUE) < 0)
