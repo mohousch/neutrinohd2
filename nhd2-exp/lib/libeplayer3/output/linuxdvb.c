@@ -44,6 +44,12 @@
 #include "pes.h"
 
 
+#if defined (__sh__)
+#define VIDEO_FLUSH                     _IO('o',  82)
+#define AUDIO_FLUSH                     _IO('o',  71)
+#endif
+
+
 /* ***************************** */
 /* Makros/Constants              */
 /* ***************************** */
@@ -135,7 +141,11 @@ int LinuxDvbOpen(Context_t  *context, char * type)
 			return cERR_LINUXDVB_ERROR;
 		}
 
+#if defined (__sh__)
+		if (ioctl( audiofd, AUDIO_FLUSH, NULL) == -1)
+#else
 		if (ioctl( audiofd, AUDIO_CLEAR_BUFFER, NULL) == -1)
+#endif
 		{
 			linuxdvb_err("ioctl failed with errno %d\n", errno);
 			linuxdvb_err("AUDIO_CLEAR_BUFFER: %s\n", strerror(errno));
@@ -167,7 +177,11 @@ int LinuxDvbOpen(Context_t  *context, char * type)
 			}
 		}
 
+#if defined (__sh__)
+		if (ioctl( videofd, VIDEO_FLUSH, NULL) == -1)
+#else
 		if (ioctl( videofd, VIDEO_CLEAR_BUFFER, NULL) == -1)
+#endif
 		{
 			linuxdvb_err("ioctl failed with errno %d\n", errno);
 			linuxdvb_err("VIDEO_CLEAR_BUFFER: %s\n", strerror(errno));
@@ -326,7 +340,11 @@ int LinuxDvbStop(Context_t  *context, char * type)
 	
 	if (audio && audiofd != -1) 
 	{
+#if defined (__sh__)
+		if (ioctl( audiofd, AUDIO_FLUSH, NULL) == -1)
+#else
 		if (ioctl(audiofd, AUDIO_CLEAR_BUFFER, NULL) == -1)
+#endif
 		{
 			linuxdvb_err("ioctl failed with errno %d\n", errno);
 			linuxdvb_err("AUDIO_CLEAR_BUFFER: %s\n", strerror(errno));
@@ -342,7 +360,11 @@ int LinuxDvbStop(Context_t  *context, char * type)
 
 	if (video && videofd != -1) 
 	{
+#if defined (__sh__)
+		if (ioctl(videofd, VIDEO_FLUSH, NULL) == -1)
+#else
 		if (ioctl(videofd, VIDEO_CLEAR_BUFFER, NULL) == -1)
+#endif
 		{
 			linuxdvb_err("ioctl failed with errno %d\n", errno);
 			linuxdvb_err("VIDEO_CLEAR_BUFFER: %s\n", strerror(errno));
@@ -519,8 +541,11 @@ int LinuxDvbFlush(Context_t  *context, char * type)
 
 		if (video && videofd != -1) 
 		{
+#if defined (__sh__)
+			if (ioctl(videofd, VIDEO_FLUSH, NULL) == -1)
+#else
 			if (ioctl(videofd, VIDEO_CLEAR_BUFFER,NULL) == -1)
-
+#endif
 			{
 				linuxdvb_err("ioctl failed with errno %d\n", errno);
 				linuxdvb_err("VIDEO_FLUSH: %s\n", strerror(errno));
@@ -535,7 +560,11 @@ int LinuxDvbFlush(Context_t  *context, char * type)
 
 		if (audio && audiofd != -1) 
 		{
+#if defined (__sh__)
+			if (ioctl( audiofd, AUDIO_FLUSH, NULL) == -1)
+#else
 			if (ioctl(audiofd, AUDIO_CLEAR_BUFFER ,NULL) == -1)
+#endif
 			{
 				linuxdvb_err("ioctl failed with errno %d\n", errno);
 				linuxdvb_err("AUDIO_FLUSH: %s\n", strerror(errno));
@@ -723,7 +752,11 @@ int LinuxDvbClear(Context_t  *context, char * type)
 
 		if (video && videofd != -1) 
 		{
+#if defined (__sh__)
+			if (ioctl(videofd, VIDEO_FLUSH, NULL) == -1)
+#else
 			if (ioctl(videofd, VIDEO_CLEAR_BUFFER, NULL) == -1)
+#endif
 			{
 				linuxdvb_err("ioctl failed with errno %d\n", errno);
 				linuxdvb_err("VIDEO_CLEAR_BUFFER: %s\n", strerror(errno));
@@ -733,7 +766,11 @@ int LinuxDvbClear(Context_t  *context, char * type)
 		
 		if (audio && audiofd != -1) 
 		{
+#if defined (__sh__)
+			if (ioctl( audiofd, AUDIO_FLUSH, NULL) == -1)
+#else
 			if (ioctl(audiofd, AUDIO_CLEAR_BUFFER, NULL) == -1)
+#endif
 			{
 				linuxdvb_err("ioctl failed with errno %d\n", errno);
 				linuxdvb_err("AUDIO_CLEAR_BUFFER: %s\n", strerror(errno));
@@ -868,7 +905,11 @@ int LinuxDvbSwitch(Context_t  *context, char * type)
 					linuxdvb_err("AUDIO_STOP: %s\n", strerror(errno));
 				}
 				
+#if defined (__sh__)
+				if (ioctl( audiofd, AUDIO_FLUSH, NULL) == -1)
+#else
 				if (ioctl(audiofd, AUDIO_CLEAR_BUFFER ,NULL) == -1)
+#endif
 				{
 					linuxdvb_err("ioctl failed with errno %d\n", errno);
 					linuxdvb_err("AUDIO_CLEAR_BUFFER: %s\n", strerror(errno));
@@ -919,7 +960,11 @@ int LinuxDvbSwitch(Context_t  *context, char * type)
 					linuxdvb_err("VIDEO_STOP: %s\n", strerror(errno));
 				}
 
+#if defined (__sh__)
+				if (ioctl(videofd, VIDEO_FLUSH, NULL) == -1)
+#else
 				if (ioctl(videofd, VIDEO_CLEAR_BUFFER ,NULL) == -1)
+#endif
 				{
 					linuxdvb_err("ioctl failed with errno %d\n", errno);
 					linuxdvb_err("VIDEO_CLEAR_BUFFER: %s\n", strerror(errno));

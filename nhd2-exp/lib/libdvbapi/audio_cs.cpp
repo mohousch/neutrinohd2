@@ -35,6 +35,12 @@
 #include <system/debug.h>
 
 
+#if defined (__sh__)
+#define VIDEO_FLUSH                     _IO('o',  82)
+#define AUDIO_FLUSH                     _IO('o',  71)
+#endif
+
+
 static const char * FILENAME = "[audio_cs.cpp]";
 
 //ugly most functions are done in proc
@@ -256,7 +262,11 @@ bool cAudio::Resume()
 	
 	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);	
 
-	if (ioctl(audio_fd, AUDIO_CONTINUE) < 0)
+#if defined (__sh__
+	if(ioctl(audio_fd, AUDIO_FLUSH) < 0)
+#else
+	if(ioctl(audio_fd, AUDIO_CONTINUE) < 0)
+#endif
 	{
 		perror("AUDIO_CONTINUE");
 		return false;

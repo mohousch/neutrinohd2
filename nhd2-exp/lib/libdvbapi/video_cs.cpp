@@ -42,6 +42,12 @@
 #include <system/debug.h>
 
 
+#if defined (__sh__)
+#define VIDEO_FLUSH                     _IO('o',  82)
+#define AUDIO_FLUSH                     _IO('o',  71)
+#endif
+
+
 static const char * FILENAME = "[video_cs.cpp]";
 
 
@@ -368,7 +374,11 @@ int cVideo::Flush(void)
 	
 	int ret = -1;
 
+#if defined (__sh__)
+	ret = ioctl(video_fd, VIDEO_FLUSH);
+#else
 	ret = ioctl(video_fd, VIDEO_CLEAR_BUFFER);
+#endif
 
 	if(ret < 0)
 		perror("VIDEO_FLUSH");		
