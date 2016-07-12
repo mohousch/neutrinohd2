@@ -262,11 +262,7 @@ bool cAudio::Resume()
 	
 	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);	
 
-#if defined (__sh__)
-	if(ioctl(audio_fd, AUDIO_FLUSH) < 0)
-#else
 	if(ioctl(audio_fd, AUDIO_CONTINUE) < 0)
-#endif
 	{
 		perror("AUDIO_CONTINUE");
 		return false;
@@ -326,7 +322,11 @@ int cAudio::Flush(void)
 	
 	int ret = -1;
 
+#if defined (__sh__)
+	ret = (ioctl(audio_fd, AUDIO_FLUSH) < 0)
+#else
 	ret = ioctl(audio_fd, AUDIO_CLEAR_BUFFER);
+#endif
 
 	if(ret < 0)
 		perror("AUDIO_FLUSH");	

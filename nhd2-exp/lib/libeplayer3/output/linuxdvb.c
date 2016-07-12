@@ -142,7 +142,7 @@ int LinuxDvbOpen(Context_t  *context, char * type)
 		}
 
 #if defined (__sh__)
-		if (ioctl( audiofd, AUDIO_FLUSH, NULL) == -1)
+		if (ioctl( audiofd, AUDIO_FLUSH) == -1)
 #else
 		if (ioctl( audiofd, AUDIO_CLEAR_BUFFER, NULL) == -1)
 #endif
@@ -178,7 +178,7 @@ int LinuxDvbOpen(Context_t  *context, char * type)
 		}
 
 #if defined (__sh__)
-		if (ioctl( videofd, VIDEO_FLUSH, NULL) == -1)
+		if (ioctl( videofd, VIDEO_FLUSH) == -1)
 #else
 		if (ioctl( videofd, VIDEO_CLEAR_BUFFER, NULL) == -1)
 #endif
