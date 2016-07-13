@@ -90,7 +90,7 @@ $(DEST):
 	mkdir $@
 
 $(N_SRC):
-	git clone -b nhd2-exp https://github.com/mohousch/neutrinohd2.git nhd2-exp
+	git pull
 
 neutrino-checkout: $(N_SRC)
 
@@ -107,7 +107,7 @@ neutrino-distclean:
 # plugins
 PLUGINS_SRC = $(PWD)/plugins
 $(PLUGINS_SRC):
-	git clone -b plugins https://github.com/mohousch/neutrinohd2.git plugins
+	git pull
 
 plugins-checkout: $(PLUGINS_SRC)
 
