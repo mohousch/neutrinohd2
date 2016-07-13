@@ -279,6 +279,7 @@ int LinuxDvbPlay(Context_t  *context, char * type)
 			linuxdvb_err("AUDIO_PLAY: %s\n", strerror(errno));
 			ret = cERR_LINUXDVB_ERROR;
 		}
+
 		free(Encoding);
 	}
 
@@ -321,6 +322,7 @@ int LinuxDvbPlay(Context_t  *context, char * type)
 			linuxdvb_err("VIDEO_PLAY: %s\n", strerror(errno));
 			ret = cERR_LINUXDVB_ERROR;
 		}
+
 		free(Encoding);
 	}
 
@@ -941,6 +943,7 @@ int LinuxDvbSwitch(Context_t  *context, char * type)
 					linuxdvb_err("ioctl failed with errno %d\n", errno);
 					linuxdvb_err("AUDIO_PLAY: %s\n", strerror(errno));
 				}
+
 				free(Encoding);
 			}
 			else
@@ -1003,6 +1006,7 @@ int LinuxDvbSwitch(Context_t  *context, char * type)
 					linuxdvb_err("ioctl failed with errno %d\n", errno);
 					linuxdvb_err("VIDEO_PLAY: %s\n", strerror(errno));
 				}
+
 				free(Encoding);
 			}
 			else
@@ -1141,9 +1145,12 @@ static int Write(void  *_context, void* _out)
 static int reset(Context_t  *context)
 {
 	int ret = cERR_LINUXDVB_NO_ERROR;
+
+#if 0
 	Writer_t*   writer = NULL;
 	char * Encoding = NULL;
 
+	// video writer
 	context->manager->video->Command(context, MANAGER_GETENCODING, &Encoding);
 
 	writer = getWriter(Encoding);
@@ -1160,6 +1167,7 @@ static int reset(Context_t  *context)
 
 	free(Encoding);
 
+	// audio writer
 	context->manager->audio->Command(context, MANAGER_GETENCODING, &Encoding);
 
 	writer = getWriter(Encoding);
@@ -1175,6 +1183,7 @@ static int reset(Context_t  *context)
 	}
 
 	free(Encoding);
+#endif
 
 	return ret;
 }
