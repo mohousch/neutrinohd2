@@ -1,3 +1,5 @@
+SUBDIRS = jsoncpp
+
 AM_CPPFLAGS =  \
 	-I$(srcdir) \
 	-I$(top_srcdir)/../nhd2-exp \
@@ -20,7 +22,7 @@ noinst_LTLIBRARIES = youtube.la
 youtube_la_SOURCES = ytparser.cpp youtube.cpp
 	 
 youtube_la_LDFLAGS = -rpath $(PLUGINDIR) -module
-youtube_la_LIBADD = $(top_srcdir)/../nhd2-exp/lib/jsoncpp/libjsoncpp.a
+youtube_la_LIBADD = $(srcdir)/jsoncpp/libjsoncpp.a
 
 youtube_la_CXXFLAGS = -fno-rtti -fno-exceptions
 

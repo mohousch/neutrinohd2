@@ -1,3 +1,5 @@
+SUBDIRS = jsoncpp
+
 AM_CPPFLAGS =  \
 	-I$(srcdir) \
 	-I$(top_srcdir)/../nhd2-exp \
@@ -21,7 +23,7 @@ netzkino_la_SOURCES = nkparser.cpp netzkino.cpp
 	 
 netzkino_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 
-netzkino_la_LIBADD = $(top_srcdir)/../nhd2-exp/lib/jsoncpp/libjsoncpp.a
+netzkino_la_LIBADD = $(srcdir)/jsoncpp/libjsoncpp.a
 
 netzkino_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
