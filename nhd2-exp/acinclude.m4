@@ -659,6 +659,7 @@ AC_ARG_WITH(boxmodel,
 			else
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
 			fi
+			;;
 		osmini|osminiplus)
 			if test "$BOXTYPE" = "edision"; then
 				BOXMODEL="$withval"
