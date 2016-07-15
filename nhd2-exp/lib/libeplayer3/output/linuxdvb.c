@@ -1146,7 +1146,6 @@ static int reset(Context_t  *context)
 {
 	int ret = cERR_LINUXDVB_NO_ERROR;
 
-#if 0
 	Writer_t*   writer = NULL;
 	char * Encoding = NULL;
 
@@ -1183,7 +1182,6 @@ static int reset(Context_t  *context)
 	}
 
 	free(Encoding);
-#endif
 
 	return ret;
 }
