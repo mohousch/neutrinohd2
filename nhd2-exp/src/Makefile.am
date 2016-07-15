@@ -65,7 +65,6 @@ neutrino_LDADD = \
 	$(top_builddir)/lib/libdvbsub/libdvbsub.a \
 	$(top_builddir)/lib/libtuxtxt/libtuxtxt.a \
 	$(top_builddir)/lib/libupnpclient/libtuxbox-upnpclient.a \
-	$(top_builddir)/lib/jsoncpp/libjsoncpp.a \
 	@CURL_LIBS@ \
 	@FREETYPE_LIBS@ \
 	@PNG_LIBS@ \

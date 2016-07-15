@@ -15,8 +15,7 @@ AC_DISABLE_STATIC
 AM_PROG_LIBTOOL
 AM_PROG_CC_C_O
 
-TUXBOX_APPS_LIB_CONFIG(CURL,curl-config)
-
+PKG_CHECK_MODULES(CURL, libcurl)
 PKG_CHECK_MODULES(FREETYPE,freetype2)
 PKG_CHECK_MODULES(ID3TAG, id3tag)
 PKG_CHECK_MODULES(MAD, mad)
@@ -48,7 +47,7 @@ AM_CONDITIONAL(ENABLE_GSTREAMER,test "$enable_gstreamer" = "yes")
 
 if test "$enable_gstreamer" = "yes"; then
 AC_DEFINE(ENABLE_GSTREAMER,1,[include gstreamer as player engine support])
-TUXBOX_APPS_LIB_PKGCONFIG(GST,gstreamer-0.10)
+PKG_CHECK_MODULES(GST,gstreamer-0.10)
 fi
 
 # lcd
@@ -61,7 +60,7 @@ if test "$enable_lcd" = "yes"; then
 AC_DEFINE(ENABLE_LCD,1,[include lcd support])
 fi
 
-# lcd updape
+# lcd update
 AM_CONDITIONAL(LCD_UPDATE,test "$enable_lcd_update" = "yes")
 
 if test "$enable_lcd" = "yes"; then
@@ -142,7 +141,6 @@ lib/libupnpclient/Makefile
 lib/liblcddisplay/Makefile
 lib/libdvbapi/Makefile
 lib/libeplayer3/Makefile
-lib/jsoncpp/Makefile
 src/nhttpd/Makefile
 src/nhttpd/web/Makefile
 src/nhttpd/web/images/Makefile
