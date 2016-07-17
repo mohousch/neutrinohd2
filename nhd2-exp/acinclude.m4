@@ -379,9 +379,9 @@ AC_DEFUN([AC_PROG_EGREP],
 AC_DEFUN([TUXBOX_BOXTYPE],[
 
 AC_ARG_WITH(boxtype,
-	[  --with-boxtype          valid values: generic,dgs,gigablue,dreambox,xtrend,fulan,kathrein,ipbox,topfield,fortis_hdbox,octagon,atevio,adb_box,whitebox,vip,homecast,vuplus,azbox,technomate,coolstream,hypercube,venton,xp1000,odin,ixuss,iqonios,e3hd,ebox5000,wetek,edision,hd,gi,xpeedc,formuler,miraclebox],
+	[  --with-boxtype          valid values: generic,dgs,gigablue,dreambox,xtrend,fulan,kathrein,ipbox,topfield,fortis_hdbox,octagon,atevio,adb_box,whitebox,vip,homecast,vuplus,azbox,technomate,coolstream,hypercube,venton,xp1000,odin,ixuss,iqonios,e3hd,ebox5000,wetek,edision,hd,gi,xpeedc,formuler,miraclebox,spycat,xsarius,zgemma],
 	[case "${withval}" in
-		generic|dgs|gigablue|dreambox|xtrend|fulan|kathrein|ipbox|hl101|topfield|fortis_hdbox|octagon|atevio|adb_box|whitebox|vip|homecast|vuplus|azbox|technomate|coolstream|hypercube|venton|xp1000|odin|ixuss|iqonios|e3hd|ebox5000|wetek|edision|hd|gi|xpeedc|formuler|miraclebox)
+		generic|dgs|gigablue|dreambox|xtrend|fulan|kathrein|ipbox|hl101|topfield|fortis_hdbox|octagon|atevio|adb_box|whitebox|vip|homecast|vuplus|azbox|technomate|coolstream|hypercube|venton|xp1000|odin|ixuss|iqonios|e3hd|ebox5000|wetek|edision|hd|gi|xpeedc|formuler|miraclebox|spycat|xsarius|zgemma)
 			BOXTYPE="$withval"
 			;;
 		cu*)
@@ -492,6 +492,21 @@ AC_ARG_WITH(boxtype,
 			BOXMODEL="$withval"
 			;;
 
+		spy*)
+			BOXTYPE="spycat"
+			BOXMODEL="$withval"
+			;;
+
+		xsa*)
+			BOXTYPE="xsarius"
+			BOXMODEL="$withval"
+			;;
+
+		zge*)
+			BOXTYPE="zgemma"
+			BOXMODEL="$withval"
+			;;
+
 		*)
 			AC_MSG_ERROR([unsupported value $withval for --with-boxtype])
 			;;
@@ -521,7 +536,10 @@ AC_ARG_WITH(boxmodel,
 				valid for gi: et7000mini
 				valid for xpeedc: xpeedc
 				valid for formuler: formuler1, formuler3, formuler4
-				valid for miraclebox: mbmicro, mbtwinplus],
+				valid for miraclebox: mbmicro, mbtwinplus
+				valid for spycat: spycat, spycatmini
+				valid for xsarius: fusionhd, fusionhdse, purehd
+				valid for zgemma: h3, h4, h5, i55, lc, sh1],
 	[case "${withval}" in
 		cuberevo|cuberevo_mini|cuberevo_mini2|cuberevo_mini_fta|cuberevo_250hd|cuberevo_2000hd|cuberevo_9500hd)
 			if test "$BOXTYPE" = "dgs"; then
@@ -726,6 +744,27 @@ AC_ARG_WITH(boxmodel,
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
 			fi
 			;;
+		spycat|spycatmini)
+			if test "$BOXTYPE" = "spycat"; then
+				BOXMODEL="$withval"
+			else
+				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
+			fi
+			;;
+		fusionhd|fusionhdse|purehd)
+			if test "$BOXTYPE" = "xsarius"; then
+				BOXMODEL="$withval"
+			else
+				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
+			fi
+			;;
+		h3|h4|h5|i55|lc|sh1)
+			if test "$BOXTYPE" = "zgemma"; then
+				BOXMODEL="$withval"
+			else
+				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
+			fi
+			;;
 		qemu*)
 			if test "$BOXTYPE" = "generic"; then
 				BOXMODEL="$withval"
@@ -737,7 +776,7 @@ AC_ARG_WITH(boxmodel,
 			AC_MSG_ERROR([unsupported value $withval for --with-boxmodel])
 			;;
 	esac],
-	[if test "$BOXTYPE" = "dgs" -o "$BOXTYPE" = "gigablue" -o "$BOXTYPE" = "dreambox" -o "$BOXTYPE" = "xtrend" -o "$BOXTYPE" = "fulan" -o "$BOXTYPE" = "kathrein" -o "$BOXTYPE" = "ipbox" -o "$BOXTYPE" = "atevio" -o "$BOXTYPE" = "octagon" -o "$BOXTYPE" = "vuplus" -o "$BOXTYPE" = "technomate" -o "$BOXTYPE" = "venton" -o "$BOXTYPE" = "ixuss" -o "$BOXTYPE" = "iqonios" -o "$BOXTYPE" = "odin" -o "$BOXTYPE" = "edision" -o "$BOXTYPE" = "hd" -o "$BOXTYPE" = "gi" -o "$BOXTYPE" = "formuler" -o "$BOXTYPE" = "miraclebox" && test -z "$BOXMODEL"; then
+	[if test "$BOXTYPE" = "dgs" -o "$BOXTYPE" = "gigablue" -o "$BOXTYPE" = "dreambox" -o "$BOXTYPE" = "xtrend" -o "$BOXTYPE" = "fulan" -o "$BOXTYPE" = "kathrein" -o "$BOXTYPE" = "ipbox" -o "$BOXTYPE" = "atevio" -o "$BOXTYPE" = "octagon" -o "$BOXTYPE" = "vuplus" -o "$BOXTYPE" = "technomate" -o "$BOXTYPE" = "venton" -o "$BOXTYPE" = "ixuss" -o "$BOXTYPE" = "iqonios" -o "$BOXTYPE" = "odin" -o "$BOXTYPE" = "edision" -o "$BOXTYPE" = "hd" -o "$BOXTYPE" = "gi" -o "$BOXTYPE" = "formuler" -o "$BOXTYPE" = "miraclebox" -o "$BOXTYPE" = "spycat" -o "$BOXTYPE" = "xsarius" -o "$BOXTYPE" = "zgemma" && test -z "$BOXMODEL"; then
 		AC_MSG_ERROR([this boxtype $BOXTYPE needs --with-boxmodel])
 	fi])
 
@@ -782,6 +821,9 @@ AM_CONDITIONAL(BOXTYPE_GI, test "$BOXTYPE" = "gi")
 AM_CONDITIONAL(BOXTYPE_XPEEDC, test "$BOXTYPE" = "xpeedc")
 AM_CONDITIONAL(BOXTYPE_FORMULER, test "$BOXTYPE" = "formuler")
 AM_CONDITIONAL(BOXTYPE_MIRACLEBOX, test "$BOXTYPE" = "miraclebox")
+AM_CONDITIONAL(BOXTYPE_SPYCAT, test "$BOXTYPE" = "spycat")
+AM_CONDITIONAL(BOXTYPE_XSARIUS, test "$BOXTYPE" = "xsarius")
+AM_CONDITIONAL(BOXTYPE_ZGEMMA, test "$BOXTYPE" = "zgemma")
 
 AM_CONDITIONAL(BOXMODEL_CUBEREVO, test "$BOXMODEL" = "cuberevo")
 AM_CONDITIONAL(BOXMODEL_CUBEREVO_MINI, test "$BOXMODEL" = "cuberevo_mini")
@@ -905,6 +947,20 @@ AM_CONDITIONAL(BOXMODEL_FORMULER4, test "$BOXMODEL" = "formuler4")
 AM_CONDITIONAL(BOXMODEL_MBMICRO, test "$BOXMODEL" = "mbmicro")
 AM_CONDITIONAL(BOXMODEL_MBTWINPLUS, test "$BOXMODEL" = "mbtwinplus")
 
+AM_CONDITIONAL(BOXMODEL_SPYCAT, test "$BOXMODEL" = "spycat")
+AM_CONDITIONAL(BOXMODEL_SPYCATMINI, test "$BOXMODEL" = "spycatmini")
+
+AM_CONDITIONAL(BOXMODEL_FUSIONHD, test "$BOXMODEL" = "fusionhd")
+AM_CONDITIONAL(BOXMODEL_FUSIONHDSE, test "$BOXMODEL" = "fusionhdse")
+AM_CONDITIONAL(BOXMODEL_PUREHD, test "$BOXMODEL" = "purehd")
+
+AM_CONDITIONAL(BOXMODEL_H3, test "$BOXMODEL" = "h3")
+AM_CONDITIONAL(BOXMODEL_H4, test "$BOXMODEL" = "h4")
+AM_CONDITIONAL(BOXMODEL_H5, test "$BOXMODEL" = "h5")
+AM_CONDITIONAL(BOXMODEL_I55, test "$BOXMODEL" = "i55")
+AM_CONDITIONAL(BOXMODEL_LC, test "$BOXMODEL" = "lc")
+AM_CONDITIONAL(BOXMODEL_SH1, test "$BOXMODEL" = "sh1")
+
 if test "$BOXTYPE" = "generic"; then
 	AC_DEFINE(PLATFORM_GENERIC, 1, [building for generic])
 elif test "$BOXTYPE" = "dgs"; then
@@ -977,6 +1033,12 @@ elif test "$BOXTYPE" = "formuler"; then
 	AC_DEFINE(PLATFORM_FORMULER, 1, [building for formuler])
 elif test "$BOXTYPE" = "miraclebox"; then
 	AC_DEFINE(PLATFORM_MIRACLEBOX, 1, [building for miraclebox])
+elif test "$BOXTYPE" = "spycat"; then
+	AC_DEFINE(PLATFORM_SPYCAT, 1, [building for spycat])
+elif test "$BOXTYPE" = "xsarius"; then
+	AC_DEFINE(PLATFORM_XSARIUS, 1, [building for xsarius])
+elif test "$BOXTYPE" = "zgemma"; then
+	AC_DEFINE(PLATFORM_ZGEMMA, 1, [building for zgemma])
 fi
 
 if test "$BOXMODEL" = "cuberevo"; then
@@ -1195,6 +1257,31 @@ elif test "$BOXMODEL" = "mbmini"; then
 	AC_DEFINE(BOXMODEL_MBMINI, 1, [building for mbmini])
 elif test "$BOXMODEL" = "mbtwinplus"; then
 	AC_DEFINE(BOXMODEL_MBTWINPLUS, 1, [building for mbtwinplus])
+
+elif test "$BOXMODEL" = "spycat"; then
+	AC_DEFINE(BOXMODEL_SPYCAT, 1, [building for spycat])
+elif test "$BOXMODEL" = "spycatmini"; then
+	AC_DEFINE(BOXMODEL_SPYCATMINI, 1, [building for spycatmini])
+
+elif test "$BOXMODEL" = "fusionhd"; then
+	AC_DEFINE(BOXMODEL_FUSIONHD, 1, [building for fusionhd])
+elif test "$BOXMODEL" = "fusionhdse"; then
+	AC_DEFINE(BOXMODEL_FUSIONHDSE, 1, [building for fusionhdse])
+elif test "$BOXMODEL" = "purehd"; then
+	AC_DEFINE(BOXMODEL_PUREHD, 1, [building for purehd])
+
+elif test "$BOXMODEL" = "h3"; then
+	AC_DEFINE(BOXMODEL_H3, 1, [building for h3])
+elif test "$BOXMODEL" = "h4"; then
+	AC_DEFINE(BOXMODEL_H4, 1, [building for h4])
+elif test "$BOXMODEL" = "h5"; then
+	AC_DEFINE(BOXMODEL_H5, 1, [building for h5])
+elif test "$BOXMODEL" = "i55"; then
+	AC_DEFINE(BOXMODEL_I55, 1, [building for i55])
+elif test "$BOXMODEL" = "lc"; then
+	AC_DEFINE(BOXMODEL_LC, 1, [building for lc])
+elif test "$BOXMODEL" = "sh1"; then
+	AC_DEFINE(BOXMODEL_SH1, 1, [building for sh1])
 fi
 ])
 
