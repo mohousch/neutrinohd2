@@ -111,7 +111,7 @@ $(PLUGINS_SRC):
 
 plugins-checkout: $(PLUGINS_SRC)
 
-plugins: $(PLUGINS_SRC)/config.status 
+plugins: $(PLUGINS_SRC)/config.status $(N_SRC)/config.status
 	$(MAKE) -C $(PLUGINS_SRC) install
 
 $(PLUGINS_SRC)/config.status: $(PLUGINS_SRC) $(DEST)
