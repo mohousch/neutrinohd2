@@ -218,6 +218,8 @@ void CInfoBox::initVar(void)
 	m_cBoxFrame.iHeight = MIN_WINDOW_HEIGHT;
 
 	m_pcWindow = NULL;
+
+	bigFonts = false;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -429,6 +431,25 @@ void CInfoBox::scrollPageUp(const int pages)
 }
 
 //////////////////////////////////////////////////////////////////////
+// Function Name:	setBigFonts	
+// Description:		
+// Parameters:		
+// Data IN/OUT:		
+// Return:		
+// Notes:		
+//////////////////////////////////////////////////////////////////////
+void CInfoBox::setBigFonts()
+{
+	dprintf(DEBUG_NORMAL, "CInfoBox::setBigFonts\n");
+
+	// send setBigFonts event to textbox if there is one
+	if(m_pcTextBox != NULL)
+	{
+		m_pcTextBox->setBigFonts(bigFonts);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////
 // Function Name:	Paint	
 // Description:		
 // Parameters:		
@@ -536,6 +557,12 @@ int CInfoBox::exec(int timeout)
 		else if(msg == CRCInput::RC_ok)
 		{
 			loop = false;
+		}
+		else if(msg == CRCInput::RC_info)
+		{
+			bigFonts = bigFonts? false : true;
+
+			setBigFonts();
 		}
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 		{

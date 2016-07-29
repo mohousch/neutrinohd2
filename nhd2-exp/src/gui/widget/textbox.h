@@ -135,6 +135,8 @@ class CTextBox
 		int tw; 
 		int th;
 
+		bool bigFonts;
+
 	public:
 		// Constructor
 		CTextBox();
@@ -163,6 +165,8 @@ class CTextBox
 
 		void paint (void);
 		void hide (void);
+
+		void setBigFonts(bool bigfont = false);
 };
 
 #endif // !defined(AFX_TEXTBOX_H__208DED01_ABEC_491C_A632_5B21057DC5D8__INCLUDED_)

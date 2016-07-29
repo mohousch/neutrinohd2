@@ -76,6 +76,8 @@
 
 #define THUMBNAIL_OFFSET	3
 
+#define BIG_FONT_FAKTOR 1.5
+
 
 CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const CBox * position, fb_pixel_t textBackgroundColor)
 {
@@ -128,6 +130,7 @@ CTextBox::CTextBox(const char * text)
 	initVar();
 
 	frameBuffer = NULL;
+
 	if(text != NULL)		
 		m_cText = *text;
 
@@ -190,6 +193,27 @@ void CTextBox::initVar(void)
 	ly = m_cFrame.iY + 10;
 	tw = th = 0;
 	thumbnail = "";
+
+	bigFonts = false;
+}
+
+void CTextBox::setBigFonts(bool bigfont)
+{
+	dprintf(DEBUG_NORMAL, "CTextBox::setBigFonts\n");
+
+	bigFonts = bigfont;
+
+	if(bigFonts)
+	{
+		m_pcFontText->setSize((int)(m_pcFontText->getSize() * BIG_FONT_FAKTOR));
+	}
+	else
+	{
+		m_pcFontText->setSize((int)(m_pcFontText->getSize() / BIG_FONT_FAKTOR));
+	}
+
+	refreshTextLineArray();
+	refresh();
 }
 
 void CTextBox::reSizeMainFrameWidth(int textWidth)
@@ -620,10 +644,16 @@ void CTextBox::paint(void)
 	refresh();
 }
 
-void CTextBox::hide (void)
+void CTextBox::hide(void)
 {
 	if(frameBuffer == NULL) 
 		return;
+
+	if (bigFonts) 
+	{
+		//bigFonts = false;
+		m_pcFontText->setSize((int)(m_pcFontText->getSize() / BIG_FONT_FAKTOR));
+	}
 	
 	frameBuffer->paintBackgroundBoxRel(m_cFrame.iX, m_cFrame.iY, m_cFrame.iWidth, m_cFrame.iHeight);
 

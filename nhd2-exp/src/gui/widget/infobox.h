@@ -103,6 +103,8 @@ class CInfoBox
 
 		CFrameBuffer * m_pcWindow;
 
+		bool bigFonts;
+
 	public:
 		virtual ~CInfoBox();
 		CInfoBox();
@@ -123,6 +125,8 @@ class CInfoBox
 		void    scrollPageDown(const int pages);
 		void    scrollPageUp(const int pages);
 		bool	setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int tmode = CTextBox::TOP_RIGHT);
+
+		void setBigFonts();
 };
 
 extern void InfoBox(const neutrino_locale_t Caption, 
