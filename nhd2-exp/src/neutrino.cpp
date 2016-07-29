@@ -2592,9 +2592,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 	CMenuWidget mainMenu(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
 
 	InitMainMenu(mainMenu);
-
-	// init network
-	//CNetworkSettings::getInstance()->readNetworkSettings(g_settings.ifname);
 	
 	sleep(1);
 
