@@ -70,11 +70,13 @@
 #include <sys/mount.h>
 #include <utime.h>
 #include <gui/widget/progressbar.h>
-//#include <gui/pictureviewer.h>
 
 #include <system/debug.h>
 #include <system/helpers.h>
 #include <driver/vcrcontrol.h>
+
+#include <gui/widget/infobox.h>
+#include <system/tmdbparser.h>
 
 
 #define my_scandir scandir64
@@ -82,6 +84,8 @@
 typedef struct stat64 stat_struct;
 typedef struct dirent64 dirent_struct;
 #define my_stat stat64
+
+MB_SETTINGS m_settings;
 
 // tstool
 extern off64_t get_full_len(char * startname);
@@ -735,6 +739,8 @@ bool CMovieBrowser::loadSettings(MB_SETTINGS *settings)
 			sprintf(cfg_key, "mb_browserRowWidth_%d", i);
 			settings->browserRowWidth[i] = configfile.getInt32(cfg_key, 50);
 		}
+
+		settings->tmdbkey = configfile.getString("tmdbkey", "");
 	}
 	else
 	{
@@ -1981,6 +1987,54 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				refresh();
 			}
           	}
+	}
+	else if(msg == CRCInput::RC_0)
+	{
+		if(m_movieSelectionHandler != NULL)
+		{
+			std::string search_string;
+
+			if(show_mode == MB_SHOW_RECORDS)
+				search_string = m_movieSelectionHandler->epgTitle.c_str();
+			else 
+			{
+				search_string = changeFileNameExt(m_movieSelectionHandler->file.Name, "");
+			}
+				
+			cTmdb * tmdb = new cTmdb(search_string.c_str());
+	
+			if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
+			{
+				m_pcWindow->paintBackground();
+				m_pcWindow->blit();
+
+				std::string buffer;
+	
+				// prepare print buffer  
+				buffer = tmdb->CreateEPGText();
+
+				// thumbnail
+				int pich = 246;	//FIXME
+				int picw = 162; 	//FIXME
+	
+				std::string thumbnail = "/tmp/tmdb.jpg";
+				if(access(thumbnail.c_str(), F_OK))
+					thumbnail = "";
+	
+				int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT;
+				CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+				CInfoBox * infoBox = new CInfoBox(" ", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, tmdb->getTitle().c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_BUTTON_SETUP);
+				infoBox->setText(&buffer, thumbnail, picw, pich);
+				infoBox->exec();
+				delete infoBox;
+			}
+			delete tmdb;
+			tmdb = NULL;	
+
+		}
+
+		refresh();	
 	}	
 	else
 	{

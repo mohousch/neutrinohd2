@@ -214,7 +214,6 @@ void CTestMenu::testCInfoBox()
 	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
 	
 	infoBox->exec();
-	//infoBox->hide();
 	delete infoBox;
 }
 

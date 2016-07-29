@@ -235,9 +235,11 @@ EPGPlus.timeline_fonttime font time
 EPGPlus.vergap1_width width1
 EPGPlus.vergap2_width width2
 EPGPlus.view_mode view mode
+epgviewer.genre Genre
 epgviewer.More_Screenings More Screenings on this Channel
 epgviewer.nodetailed No detailed informations available
 epgviewer.notfound no epg found
+epgviewer.length Length
 eventfinder.head Search in EPG
 eventfinder.keyword Keyword
 eventfinder.search Search

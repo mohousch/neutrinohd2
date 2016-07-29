@@ -651,7 +651,7 @@ void CTextBox::hide(void)
 
 	if (bigFonts) 
 	{
-		//bigFonts = false;
+		bigFonts = false;
 		m_pcFontText->setSize((int)(m_pcFontText->getSize() / BIG_FONT_FAKTOR));
 	}
 	

@@ -105,6 +105,8 @@ class CInfoBox
 
 		bool bigFonts;
 
+		bool    hide(void);
+
 	public:
 		virtual ~CInfoBox();
 		CInfoBox();
@@ -119,7 +121,6 @@ class CInfoBox
 
 		// functions
 		bool    paint(void);
-		bool    hide(void);
 		int     exec(int timeout = -1);
 		void    refresh(void);
 		void    scrollPageDown(const int pages);

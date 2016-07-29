@@ -235,9 +235,11 @@ EPGPlus.timeline_fonttime Zeitskala Zeit
 EPGPlus.vergap1_width Breite ver. Lücke 1
 EPGPlus.vergap2_width Breite ver. Lücke 2
 EPGPlus.view_mode Modus
+epgviewer.genre Genre
 epgviewer.More_Screenings Weitere Termine auf diesem Kanal
 epgviewer.nodetailed Keine ausführlichen Informationen verfügbar
 epgviewer.notfound keine Programminformationen (EPG) gefunden
+epgviewer.length Länge
 eventfinder.head Suche in EPG
 eventfinder.keyword Stichwort
 eventfinder.search Suche

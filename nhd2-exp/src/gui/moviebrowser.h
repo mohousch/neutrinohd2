@@ -230,6 +230,8 @@ typedef struct
 	int lastRecordRowNr;
 	MB_INFO_ITEM lastRecordRow[MB_MAX_ROWS];
 	int lastRecordRowWidth[MB_MAX_ROWS];
+
+	std::string tmdbkey;
 }MB_SETTINGS;
 
 // Priorities for Developmemt: P1: critical feature, P2: important feature, P3: for next release, P4: looks nice, lets see
@@ -302,7 +304,7 @@ class CMovieBrowser : public CMenuTarget
 	
 		CConfigFile configfile;
 		CMovieInfo m_movieInfo;
-		MB_SETTINGS m_settings;
+		//MB_SETTINGS m_settings;
 		std::vector<MB_DIR> m_dir;
 			
 		int movieInfoUpdateAll[MB_INFO_MAX_NUMBER];
