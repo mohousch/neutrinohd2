@@ -13,7 +13,6 @@ SUBDIRS = \
 	mediaplayer \
 	tuxcal \
 	fileexplorer \
-	mediaportal \
-	tmdb
+	mediaportal
 
 

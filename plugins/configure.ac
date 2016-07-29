@@ -34,6 +34,5 @@ tuxcal/daemon/Makefile
 nglcd/Makefile
 fileexplorer/Makefile
 mediaportal/Makefile
-tmdb/Makefile
 ])
 
