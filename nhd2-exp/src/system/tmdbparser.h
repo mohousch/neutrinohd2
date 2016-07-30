@@ -20,11 +20,11 @@
 #ifndef __TMDB__
 #define __TMDB__
 
-#include <curl/curl.h>
-#include <curl/easy.h>
-
 #include <string>
 
+#include <system/helpers.h>
+
+#define TMDB_COVER "/tmp/tmdb.jpg"
 
 typedef struct {
 	std::string epgtitle;
@@ -48,15 +48,9 @@ typedef struct {
 class cTmdb
 {
 	private:
-		CURL *curl_handle;
 		tmdbinfo minfo;
-
-		static size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data);
-		std::string encodeUrl(std::string txt);
-		std::string decodeUrl(std::string url);
 		std::string key; // tmdb api key
-		bool getUrl(std::string &url, std::string &answer, CURL *_curl_handle = NULL);
-		bool DownloadUrl(std::string url, std::string file, CURL *_curl_handle = NULL);
+
 		bool GetMovieDetails(std::string lang);
 
 	public:

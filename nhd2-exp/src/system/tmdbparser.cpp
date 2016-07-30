@@ -42,19 +42,12 @@
 
 #include <system/settings.h>
 #include <global.h>
-#include <gui/moviebrowser.h>
+#include <system/helpers.h>
 
-#if LIBCURL_VERSION_NUM < 0x071507
-#include <curl/types.h>
-#endif
-
-#define URL_TIMEOUT 60
-#define TMDB_COVER "/tmp/tmdb.jpg"
 
 cTmdb::cTmdb(std::string epgtitle)
 {
 	minfo.epgtitle = epgtitle;
-	curl_handle = curl_easy_init();
 
 	key = g_settings.tmdbkey;
 
@@ -69,132 +62,7 @@ cTmdb::cTmdb(std::string epgtitle)
 
 cTmdb::~cTmdb()
 {
-	curl_easy_cleanup(curl_handle);
-
 	unlink(TMDB_COVER);
-}
-
-size_t cTmdb::CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data)
-{
-	if (size * nmemb > 0) {
-		std::string* pStr = (std::string*) data;
-		pStr->append((char*) ptr, nmemb);
-	}
-	return size*nmemb;
-}
-
-std::string cTmdb::decodeUrl(std::string url)
-{
-	char * str = curl_easy_unescape(curl_handle, url.c_str(), 0, NULL);
-	if (str)
-		url = str;
-	curl_free(str);
-	return url;
-}
-
-std::string cTmdb::encodeUrl(std::string txt)
-{
-	char * str = curl_easy_escape(curl_handle, txt.c_str(), txt.length());
-	if (str)
-		txt = str;
-	curl_free(str);
-	return txt;
-}
-
-bool cTmdb::getUrl(std::string &url, std::string &answer, CURL *_curl_handle)
-{
-	printf("[TMDB]: %s\n",__func__);
-	if (!_curl_handle)
-		_curl_handle = curl_handle;
-
-	curl_easy_setopt(_curl_handle, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(_curl_handle, CURLOPT_WRITEFUNCTION, &cTmdb::CurlWriteToString);
-	curl_easy_setopt(_curl_handle, CURLOPT_FILE, (void *)&answer);
-	curl_easy_setopt(_curl_handle, CURLOPT_FAILONERROR, 1);
-	curl_easy_setopt(_curl_handle, CURLOPT_TIMEOUT, URL_TIMEOUT);
-	curl_easy_setopt(_curl_handle, CURLOPT_NOSIGNAL, (long)1);
-	curl_easy_setopt(_curl_handle, CURLOPT_SSL_VERIFYPEER, false);
-
-	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
-	{
-		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
-		
-		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
-		{
-			char tmp[200];
-			strcpy(tmp, g_settings.softupdate_proxyusername);
-			strcat(tmp, ":");
-			strcat(tmp, g_settings.softupdate_proxypassword);
-			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
-		}
-	}
-
-	char cerror[CURL_ERROR_SIZE];
-	curl_easy_setopt(_curl_handle, CURLOPT_ERRORBUFFER, cerror);
-
-	printf("try to get [%s] ...\n", url.c_str());
-	CURLcode httpres = curl_easy_perform(_curl_handle);
-
-	printf("http: res %d size %d\n", httpres, (int)answer.size());
-
-	if (httpres != 0 || answer.empty()) 
-	{
-		printf("error: %s\n", cerror);
-		return false;
-	}
-	return true;
-}
-
-bool cTmdb::DownloadUrl(std::string url, std::string file, CURL *_curl_handle)
-{
-	if (!_curl_handle)
-		_curl_handle = curl_handle;
-
-	FILE * fp = fopen(file.c_str(), "wb");
-	if (fp == NULL) {
-		perror(file.c_str());
-		return false;
-	}
-	curl_easy_setopt(_curl_handle, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(_curl_handle, CURLOPT_WRITEFUNCTION, NULL);
-	curl_easy_setopt(_curl_handle, CURLOPT_FILE, fp);
-	curl_easy_setopt(_curl_handle, CURLOPT_FAILONERROR, 1);
-	curl_easy_setopt(_curl_handle, CURLOPT_TIMEOUT, URL_TIMEOUT);
-	curl_easy_setopt(_curl_handle, CURLOPT_NOSIGNAL, (long)1);
-	curl_easy_setopt(_curl_handle, CURLOPT_SSL_VERIFYPEER, false);
-
-	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
-	{
-		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
-		
-		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
-		{
-			char tmp[200];
-			strcpy(tmp, g_settings.softupdate_proxyusername);
-			strcat(tmp, ":");
-			strcat(tmp, g_settings.softupdate_proxypassword);
-			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
-		}
-	}
-
-	char cerror[CURL_ERROR_SIZE];
-	curl_easy_setopt(_curl_handle, CURLOPT_ERRORBUFFER, cerror);
-
-	printf("try to get [%s] ...\n", url.c_str());
-	CURLcode httpres = curl_easy_perform(_curl_handle);
-
-	double dsize;
-	curl_easy_getinfo(_curl_handle, CURLINFO_SIZE_DOWNLOAD, &dsize);
-	fclose(fp);
-
-	printf("http: res %d size %g.\n", httpres, dsize);
-
-	if (httpres != 0) {
-		printf("curl error: %s\n", cerror);
-		unlink(file.c_str());
-		return false;
-	}
-	return true;
 }
 
 bool cTmdb::GetMovieDetails(std::string lang)
@@ -204,7 +72,7 @@ bool cTmdb::GetMovieDetails(std::string lang)
 	std::string url	= "http://api.themoviedb.org/3/search/multi?api_key=" + key + "&language=" + lang + "&query=" + encodeUrl(minfo.epgtitle);
 
 	std::string answer;
-	if (!getUrl(url, answer))
+	if (!::getUrl(url, answer))
 		return false;
 
 	Json::Value root;
@@ -233,7 +101,7 @@ bool cTmdb::GetMovieDetails(std::string lang)
 			url = "http://api.themoviedb.org/3/" + minfo.media_type + "/" + to_string(minfo.id) + "?api_key=" + key + "&language=" + lang + "&append_to_response=credits";
 
 			answer.clear();
-			if (!getUrl(url, answer))
+			if (!::getUrl(url, answer))
 				return false;
 
 			parsedSuccess = reader.parse(answer, root);
