@@ -35,6 +35,8 @@
 #include <config.h>
 #endif
 
+#include <unistd.h>
+
 #include <global.h>
 #include <gui/eventlist.h>
 #include <gui/timerlist.h>
@@ -61,6 +63,8 @@
 #include <algorithm>
 
 #include <system/debug.h>
+#include <system/tmdbparser.h>
+#include <gui/widget/infobox.h>
 
 
 extern CBouquetList * bouquetList;
@@ -506,6 +510,58 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 				}
 			}
 		}
+		else if(msg == CRCInput::RC_0)
+		{
+			if ( evtlist[selected].eventID != 0 )
+			{
+				hide();
+
+				//
+				if(!evtlist[selected].description.empty())
+				{
+					cTmdb * tmdb = new cTmdb(evtlist[selected].description);
+	
+					if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
+					{
+						frameBuffer->paintBackground();
+						frameBuffer->blit();
+
+						std::string buffer;
+
+						buffer = tmdb->getTitle().c_str();
+						buffer += "\n";
+	
+						// prepare print buffer  
+						buffer += tmdb->CreateEPGText();
+
+						// thumbnail
+						int pich = 246;	//FIXME
+						int picw = 162; 	//FIXME
+	
+						std::string thumbnail = "/tmp/tmdb.jpg";
+						if(access(thumbnail.c_str(), F_OK))
+							thumbnail = "";
+	
+						int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT;
+						CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+						CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], mode, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_TMDB);
+
+						infoBox->setText(&buffer, thumbnail, picw, pich);
+						infoBox->exec();
+						delete infoBox;
+					}
+					delete tmdb;
+					tmdb = NULL;	
+
+				}
+				//
+
+				paintHead(channel_id);
+				paint(channel_id);
+				showFunctionBar(true);
+			}	
+		}
 		else if ( msg == CRCInput::RC_green )
 		{
 			in_search = findEvents();
@@ -628,6 +684,7 @@ void EventList::paintItem(unsigned int pos, t_channel_id channel_id)
 
 		// 1st line
 		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_DATETIME]->RenderString(x + 5, ypos + fheight1 + 3, fwidth1 + 5, datetime1_str, color, 0, true); // UTF-8
+
 		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_DATETIME]->RenderString(x + 5 + fwidth1, ypos+ fheight1 + 3, width - fwidth1 - 10 - 20, datetime2_str, color, 0, true); // UTF-8
 
 		int seit = ( evtlist[liststart+pos].startTime - time(NULL) ) / 60;
@@ -652,7 +709,7 @@ void EventList::paintItem(unsigned int pos, t_channel_id channel_id)
 		}
 		
 		// 2nd line
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + 2 + icon_w + 2, ypos+ fheight, width - 25 - 20, evtlist[liststart+pos].description, color, 0, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + 2 + icon_w + 2, ypos+ fheight, width - 25 - 20, evtlist[liststart + pos].description, color, 0, true);
 	}	
 }
 
