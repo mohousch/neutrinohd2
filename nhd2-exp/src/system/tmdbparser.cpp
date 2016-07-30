@@ -50,7 +50,7 @@
 #define URL_TIMEOUT 60
 #define TMDB_COVER "/tmp/tmdb.jpg"
 
-MB_SETTINGS m_settings;
+extern MB_SETTINGS m_settings;
 
 cTmdb::cTmdb(std::string epgtitle)
 {
