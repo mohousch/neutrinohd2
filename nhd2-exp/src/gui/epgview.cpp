@@ -56,8 +56,6 @@
 #include <gui/pictureviewer.h>
 
 #include <system/debug.h>
-#include <system/tmdbparser.h>
-#include <gui/widget/infobox.h>
 
 
 #define PIC_W 		78
@@ -954,49 +952,6 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 				case CRCInput::RC_ok:
 				case CRCInput::RC_timeout:
 					loop = false;
-					break;
-
-				case CRCInput::RC_0:
-					if(!epgData.title.empty())
-					{
-						cTmdb * tmdb = new cTmdb(epgData.title);
-	
-						if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
-						{
-							frameBuffer->paintBackground();
-							frameBuffer->blit();
-
-							std::string buffer;
-
-							buffer = tmdb->getTitle().c_str();
-							buffer += "\n";
-	
-							// prepare print buffer  
-							buffer += tmdb->CreateEPGText();
-
-							// thumbnail
-							int pich = 246;	//FIXME
-							int picw = 162; 	//FIXME
-	
-							std::string thumbnail = "/tmp/tmdb.jpg";
-							if(access(thumbnail.c_str(), F_OK))
-								thumbnail = "";
-	
-							int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT;
-							CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-	
-							CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], mode, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_TMDB);
-
-							infoBox->setText(&buffer, thumbnail, picw, pich);
-							infoBox->exec();
-							delete infoBox;
-						}
-						delete tmdb;
-						tmdb = NULL;	
-
-					}
-					show(channel_id, id, &startzeit, false);
-					showPos = 0;
 					break;
 					
 				case CRCInput::RC_favorites:
