@@ -51,14 +51,12 @@
 #define URL_TIMEOUT 60
 #define TMDB_COVER "/tmp/tmdb.jpg"
 
-extern MB_SETTINGS m_settings;
-
 cTmdb::cTmdb(std::string epgtitle)
 {
 	minfo.epgtitle = epgtitle;
 	curl_handle = curl_easy_init();
 
-	key = m_settings.tmdbkey;
+	key = g_settings.tmdbkey;
 
 	std::string language = g_settings.language;
 	std::string lang = Lang2ISO639_1(language);

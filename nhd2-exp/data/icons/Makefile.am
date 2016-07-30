@@ -65,5 +65,5 @@ install_DATA += \
 
 # misc
 install_DATA += \
-	nopreview.jpg
+	nopreview.jpg tmdb.png
 

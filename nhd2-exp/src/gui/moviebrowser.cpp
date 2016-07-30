@@ -85,8 +85,6 @@ typedef struct stat64 stat_struct;
 typedef struct dirent64 dirent_struct;
 #define my_stat stat64
 
-MB_SETTINGS m_settings;
-
 // tstool
 extern off64_t get_full_len(char * startname);
 extern off64_t truncate_movie(MI_MOVIE_INFO * minfo);
@@ -739,8 +737,6 @@ bool CMovieBrowser::loadSettings(MB_SETTINGS *settings)
 			sprintf(cfg_key, "mb_browserRowWidth_%d", i);
 			settings->browserRowWidth[i] = configfile.getInt32(cfg_key, 50);
 		}
-
-		settings->tmdbkey = configfile.getString("tmdbkey", "");
 	}
 	else
 	{
@@ -2009,9 +2005,12 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				m_pcWindow->blit();
 
 				std::string buffer;
+
+				buffer = tmdb->getTitle().c_str();
+				buffer += "\n";
 	
 				// prepare print buffer  
-				buffer = tmdb->CreateEPGText();
+				buffer += tmdb->CreateEPGText();
 
 				// thumbnail
 				int pich = 246;	//FIXME
@@ -2024,7 +2023,8 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT;
 				CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-				CInfoBox * infoBox = new CInfoBox(" ", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, tmdb->getTitle().c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_BUTTON_SETUP);
+				CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], mode, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_TMDB);
+
 				infoBox->setText(&buffer, thumbnail, picw, pich);
 				infoBox->exec();
 				delete infoBox;

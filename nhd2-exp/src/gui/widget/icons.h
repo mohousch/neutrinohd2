@@ -151,6 +151,9 @@
 #define NEUTRINO_ICON_PICTURE			"picture"
 #define NEUTRINO_ICON_PLUGIN			"plugin"
 
+// tmdb
+#define NEUTRINO_ICON_TMDB			"tmdb"
+
 #define NEUTRINO_ICON_RADIOTEXTOFF		"radiotextoff"
 #define NEUTRINO_ICON_RADIOTEXTGET		"radiotextget"
 #define NEUTRINO_ICON_RADIOTEXTWAIT		"radiotextwait"

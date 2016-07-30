@@ -963,6 +963,8 @@ int CNeutrinoApp::loadSetup(const char * fname)
 
 	// mode
 	g_settings.mode = configfile.getInt32("mode", mode_tv);
+
+	g_settings.tmdbkey = configfile.getString("tmdbkey", "");
 	
 	//set OSD resolution
 #if defined (USE_OPENGL)
