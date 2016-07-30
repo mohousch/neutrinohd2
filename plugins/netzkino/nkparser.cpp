@@ -40,149 +40,17 @@
 #include <global.h>
 
 
-#define URL_TIMEOUT 		60
-#define DOWNLOAD_TIMEOUT	1800
-
 cNKFeedParser::cNKFeedParser()
 {
 	thumbnail_dir = "/tmp/netzkino";
 	parsed = false;
 	max_results = 500;
 	
-	curl_handle = curl_easy_init();
-	
 	movie_dir = g_settings.network_nfs_moviedir;
 }
 
 cNKFeedParser::~cNKFeedParser()
 {
-	curl_easy_cleanup(curl_handle);
-}
-
-size_t cNKFeedParser::CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data)
-{
-	if (size * nmemb > 0) 
-	{
-		std::string* pStr = (std::string*) data;
-		pStr->append((char*) ptr, nmemb);
-	}
-	
-        return size*nmemb;
-}
-
-bool cNKFeedParser::getUrl(std::string &url, std::string &answer, CURL *_curl_handle)
-{
-	if (!_curl_handle)
-		_curl_handle = curl_handle;
-
-	curl_easy_setopt(_curl_handle, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(_curl_handle, CURLOPT_WRITEFUNCTION, &cNKFeedParser::CurlWriteToString);
-	curl_easy_setopt(_curl_handle, CURLOPT_FILE, (void *)&answer);
-	curl_easy_setopt(_curl_handle, CURLOPT_FAILONERROR, 1);
-	curl_easy_setopt(_curl_handle, CURLOPT_TIMEOUT, URL_TIMEOUT);
-	curl_easy_setopt(_curl_handle, CURLOPT_NOSIGNAL, (long)1);
-	
-	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
-	{
-		curl_easy_setopt(_curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
-		
-		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
-		{
-			char tmp[200];
-			strcpy(tmp, g_settings.softupdate_proxyusername);
-			strcat(tmp, ":");
-			strcat(tmp, g_settings.softupdate_proxypassword);
-			curl_easy_setopt(_curl_handle, CURLOPT_PROXYUSERPWD, tmp);
-		}
-	}
-
-	char cerror[CURL_ERROR_SIZE];
-	curl_easy_setopt(_curl_handle, CURLOPT_ERRORBUFFER, cerror);
-
-	dprintf(DEBUG_INFO, "cNKFeedParser::getUrl: try to get %s\n", url.c_str());
-	
-	CURLcode httpres = curl_easy_perform(_curl_handle);
-
-	dprintf(DEBUG_INFO, "cNKFeedParser::getUrl: http: res %d size %d\n", httpres, (int)answer.size());
-
-	if (httpres != 0 || answer.empty()) 
-	{
-		dprintf(DEBUG_INFO, "cNKFeedParser::getUrl: error: %s\n", cerror);
-		return false;
-	}
-	
-	return true;
-}
-
-bool cNKFeedParser::DownloadUrl(std::string &url, std::string &file, CURL *_curl_handle, bool download)
-{
-	if (!_curl_handle)
-		_curl_handle = curl_handle;
-
-	FILE * fp = fopen(file.c_str(), "wb");
-	if (fp == NULL) 
-	{
-		perror(file.c_str());
-		return false;
-	}
-	
-	curl_easy_setopt(_curl_handle, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(_curl_handle, CURLOPT_WRITEFUNCTION, NULL);
-	curl_easy_setopt(_curl_handle, CURLOPT_FILE, fp);
-	curl_easy_setopt(_curl_handle, CURLOPT_FAILONERROR, 1);
-	curl_easy_setopt(_curl_handle, CURLOPT_TIMEOUT, download? DOWNLOAD_TIMEOUT : URL_TIMEOUT);
-	curl_easy_setopt(_curl_handle, CURLOPT_NOSIGNAL, (long)1);
-	
-	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
-	{
-		curl_easy_setopt(_curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
-		
-		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
-		{
-			char tmp[200];
-			strcpy(tmp, g_settings.softupdate_proxyusername);
-			strcat(tmp, ":");
-			strcat(tmp, g_settings.softupdate_proxypassword);
-			curl_easy_setopt(_curl_handle, CURLOPT_PROXYUSERPWD, tmp);
-		}
-	}
-
-	char cerror[CURL_ERROR_SIZE];
-	curl_easy_setopt(_curl_handle, CURLOPT_ERRORBUFFER, cerror);
-
-	dprintf(DEBUG_INFO, "cNKFeedParser::DownloadUrl: try to get %s\n", url.c_str());
-	CURLcode httpres = curl_easy_perform(_curl_handle);
-
-	double dsize;
-	curl_easy_getinfo(_curl_handle, CURLINFO_SIZE_DOWNLOAD, &dsize);
-	fclose(fp);
-
-	dprintf(DEBUG_INFO, "cNKFeedParser::DownloadUrl: http: res %d size %g.\n", httpres, dsize);
-
-	if (httpres != 0) 
-	{
-		dprintf(DEBUG_INFO, "cNKFeedParser::DownloadUrl: curl error: %s\n", cerror);
-		unlink(file.c_str());
-		return false;
-	}
-	
-	return true;
-}
-
-void cNKFeedParser::decodeUrl(std::string &url)
-{
-	char * str = curl_easy_unescape(curl_handle, url.c_str(), 0, NULL);
-	if(str)
-		url = str;
-	curl_free(str);
-}
-
-void cNKFeedParser::encodeUrl(std::string &txt)
-{
-	char * str = curl_easy_escape(curl_handle, txt.c_str(), txt.length());
-	if(str)
-		txt = str;
-	curl_free(str);
 }
 
 bool cNKFeedParser::parseCategoriesJSON(std::string &answer)
@@ -212,9 +80,6 @@ bool cNKFeedParser::parseCategoriesJSON(std::string &answer)
 	for(unsigned int i = 0; i < cats.size(); ++i) 
 	{
 		const Json::Value cat = cats[i];
-		//sNKCategory c;
-		//c.id = 0;
-		//c.post_count = 0;
 		
 		v = cat.get("id", "");
 		if (v.type() == Json::intValue || v.type() == Json::uintValue)
@@ -252,6 +117,7 @@ bool cNKFeedParser::parseFeedJSON(std::string &answer)
 		return false;
 
 	Json::Value posts = root.get("posts", "");
+
 	if (posts.type() != Json::arrayValue)
 		return false;
 
@@ -327,7 +193,7 @@ bool cNKFeedParser::ParseFeed(std::string &url)
 
 	std::string answer;
 	
-	if (!getUrl(url, answer))
+	if (!::getUrl(url, answer))
 		return false;
 	
 	return parseFeedJSON(answer);
@@ -347,8 +213,7 @@ bool cNKFeedParser::ParseFeed(nk_feed_mode_t mode, std::string search, int categ
 		if (search.empty())
 			return false;
 		
-		encodeUrl(search);
-		url += "get_search_results?search=" + search;
+		url += "get_search_results?search=" + encodeUrl(search);
 	} 
 	else if (mode == CATEGORY && category > 0) 
 	{
@@ -371,7 +236,7 @@ bool cNKFeedParser::ParseCategories(void)
 		std::string url = "http://www.netzkino.de/capi/get_category_index";
 		std::string answer;
 		
-		if (!getUrl(url, answer))
+		if (!::getUrl(url, answer))
 			return false;
 		
 		return parseCategoriesJSON(answer);
@@ -401,7 +266,7 @@ bool cNKFeedParser::DownloadThumbnails(unsigned start, unsigned end)
 			{
 				found = !access(videos[i].tfile, F_OK);
 				if (!found)
-					found = DownloadUrl(videos[i].thumbnail, videos[i].tfile, curl_handle);
+					found = ::DownloadUrl(videos[i].thumbnail, videos[i].tfile);
 				
 				ret |= found;
 			}
@@ -451,7 +316,7 @@ void cNKFeedParser::downloadMovie(std::string &fname, std::string &url)
 			
 	if (!url.empty()) 
 	{
-		DownloadUrl(url, filename, curl_handle, true);
+		::DownloadUrl(url, filename);
 	}
 }
 

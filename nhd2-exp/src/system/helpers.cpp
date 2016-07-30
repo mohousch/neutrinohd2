@@ -692,6 +692,7 @@ bool getUrl(std::string &url, std::string &answer, std::string userAgent)
 	return true;
 }
 
+/*
 bool DownloadUrl(std::string &url, std::string &file, std::string userAgent)
 {
 	FILE * fp = fopen(file.c_str(), "wb");
@@ -748,6 +749,7 @@ bool DownloadUrl(std::string &url, std::string &file, std::string userAgent)
 	
 	return true;
 }
+*/
 
 bool DownloadUrl(std::string url, std::string file, std::string userAgent)
 {
@@ -831,6 +833,30 @@ std::string encodeUrl(std::string txt)
 	return txt;
 }
 
+void DecodeUrl(std::string &url)
+{
+	CURL * curl_handle = curl_easy_init();
+	char * str = curl_easy_unescape(curl_handle, url.c_str(), 0, NULL);
+	curl_easy_cleanup(curl_handle);
+	
+	if(str)
+		url = str;
+	
+	curl_free(str);
+}
+
+void EncodeUrl(std::string &txt)
+{
+	CURL * curl_handle = curl_easy_init();
+	char * str = curl_easy_escape(curl_handle, txt.c_str(), txt.length());
+	curl_easy_cleanup(curl_handle);
+	
+	if(str)
+		txt = str;
+	
+	curl_free(str);
+}
+
 void splitString(std::string &str, std::string delim, std::vector<std::string> &strlist, int start)
 {
 	strlist.clear();
@@ -841,6 +867,7 @@ void splitString(std::string &str, std::string delim, std::vector<std::string> &
 		strlist.push_back(str.substr(start, end - start));
 		start = end + delim.size();
 	}
+
 	strlist.push_back(str.substr(start));
 }
 

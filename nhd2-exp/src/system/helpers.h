@@ -86,10 +86,14 @@ std::string changeFileNameExt(std::string &filename, const char *ext);
 size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data);
 std::string encodeUrl(std::string txt);
 std::string decodeUrl(std::string url);
+
+void EncodeUrl(std::string &txt);
+void DecodeUrl(std::string &url);
+
 void splitString(std::string &str, std::string delim, std::vector<std::string> &strlist, int start = 0);
 void splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start = 0);
 bool getUrl(std::string &url, std::string &answer, const std::string userAgent = " ");
-bool DownloadUrl(std::string &url, std::string &file, const std::string userAgent = " ");
+//bool DownloadUrl(std::string &url, std::string &file, const std::string userAgent = " ");
 bool DownloadUrl(std::string url, std::string file, const std::string userAgent = " ");
 
 class CFileHelpers
