@@ -42,6 +42,7 @@
 
 #include <system/settings.h>
 #include <global.h>
+#include <gui/moviebrowser.h>
 
 #if LIBCURL_VERSION_NUM < 0x071507
 #include <curl/types.h>
