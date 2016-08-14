@@ -67,7 +67,7 @@ cTmdb::~cTmdb()
 
 bool cTmdb::GetMovieDetails(std::string lang)
 {
-	printf("[TMDB]: %s\n",__func__);
+	dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails:\n");
 
 	std::string url	= "http://api.themoviedb.org/3/search/multi?api_key=" + key + "&language=" + lang + "&query=" + encodeUrl(minfo.epgtitle);
 
@@ -81,18 +81,19 @@ bool cTmdb::GetMovieDetails(std::string lang)
 
 	if (!parsedSuccess) 
 	{
-		printf("Failed to parse JSON\n");
-		printf("%s\n", reader.getFormattedErrorMessages().c_str());
+		dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails: Failed to parse JSON\n");
+		dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails: %s\n", reader.getFormattedErrorMessages().c_str());
 		return false;
 	}
 
 	minfo.result = root.get("total_results",0).asInt();
 
-	printf("[TMDB]: results: %d\n",minfo.result);
+	dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails: results: %d\n", minfo.result);
 
 	if (minfo.result > 0) 
 	{
 		Json::Value elements = root["results"];
+
 		minfo.id = elements[0].get("id",-1).asInt();
 		minfo.media_type = elements[0].get("media_type","").asString();
 
@@ -107,8 +108,9 @@ bool cTmdb::GetMovieDetails(std::string lang)
 			parsedSuccess = reader.parse(answer, root);
 			if (!parsedSuccess) 
 			{
-				printf("Failed to parse JSON\n");
-				printf("%s\n", reader.getFormattedErrorMessages().c_str());
+				dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails: Failed to parse JSON\n");
+				dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails: %s\n", reader.getFormattedErrorMessages().c_str());
+
 				return false;
 			}
 
@@ -142,17 +144,15 @@ bool cTmdb::GetMovieDetails(std::string lang)
 			}
 
 			elements = root["credits"]["cast"];
-			for (unsigned int i= 0; i < elements.size() && i < 10; i++) 
+			for (unsigned int i = 0; i < elements.size() && i < 10; i++) 
 			{
 				minfo.cast +=  "  " + elements[i].get("character","").asString() + " (" + elements[i].get("name","").asString() + ")\n";
-				//printf("test: %s (%s)\n",elements[i].get("character","").asString().c_str(),elements[i].get("name","").asString().c_str());
 			}
 
 			unlink(TMDB_COVER);
 
 			if (hasCover())
 				getBigCover(TMDB_COVER);
-			//printf("[TMDB]: %s (%s) %s\n %s\n %d\n",minfo.epgtitle.c_str(),minfo.original_title.c_str(),minfo.release_date.c_str(),minfo.overview.c_str(),minfo.found);
 
 			return true;
 		}
