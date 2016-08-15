@@ -3521,13 +3521,13 @@ int startPlayBack(CZapitChannel * thisChannel)
 		
 			dprintf(DEBUG_NORMAL, "[zapit] starting %s audio Pid: 0x%X\n", audioStr, thisChannel->getAudioPid());		
 		
-			// start Audio Deocder
+			// start audio decoder
 			if(audioDecoder)
 			{			
-#if !defined (__sh__)			
-				//audioDecoder->Resume();
-				//audioDecoder->Stop();
-				audioDecoder->Pause();
+#if !defined (__sh__) && !defined (PLATFORM_COOLSTREAM)			
+				audioDecoder->Resume();
+				audioDecoder->Stop();
+				//audioDecoder->Pause();
 #endif				  
 				audioDecoder->Start();
 			}
@@ -3594,14 +3594,13 @@ int startPlayBack(CZapitChannel * thisChannel)
 			if ( videoDemux->Start() < 0 )
 				return -1;
 
-			// start pid
 			// start Video Decoder
 			if(videoDecoder)
 			{
-#if !defined (__sh__)
-				//videoDecoder->Resume();
-				//videoDecoder->Stop();
-				videoDecoder->Pause();
+#if !defined (__sh__) && !defined (PLATFORM_COOLSTREAM)
+				videoDecoder->Resume();
+				videoDecoder->Stop();
+				//videoDecoder->Pause();
 #endif
 								  
 #if defined (PLATFORM_COOLSTREAM)

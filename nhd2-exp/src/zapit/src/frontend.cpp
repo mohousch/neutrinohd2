@@ -1176,7 +1176,10 @@ void CFrontend::setInput(t_satellite_position satellitePosition, uint32_t freque
 {
 	sat_iterator_t sit = satellitePositions.find(satellitePosition);
 
-	dprintf(DEBUG_INFO, "CFrontend::setInput: fe(%d,%d) SatellitePosition %d -> %d\n", fe_adapter, fenumber, currentSatellitePosition, satellitePosition);
+	if(info.type == FE_QPSK)
+		dprintf(DEBUG_INFO, "CFrontend::setInput: fe(%d,%d) SatellitePosition %d -> %d\n", fe_adapter, fenumber, currentSatellitePosition, satellitePosition);
+	else
+		dprintf(DEBUG_INFO, "CFrontend::setInput: fe(%d,%d)\n", fe_adapter, fenumber);
 
 	// set lnb offset
 	if(info.type == FE_QPSK)
