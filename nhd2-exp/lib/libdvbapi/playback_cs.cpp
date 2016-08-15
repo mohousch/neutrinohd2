@@ -973,7 +973,13 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 			
 			GstPad * pad = 0;
 			g_signal_emit_by_name (m_gst_playbin, "get-audio-pad", i, &pad);
-			GstCaps * caps = gst_pad_get_negotiated_caps(pad);
+
+#if GST_VERSION_MAJOR < 1
+			GstCaps* caps = gst_pad_get_negotiated_caps(pad);
+#else
+			GstCaps* caps = gst_pad_get_current_caps(pad);
+#endif
+
 			if (!caps)
 				continue;
 			
