@@ -17,10 +17,14 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	system("rm -f /etc/.nhd2");
-	system("touch /etc/.e2");
+	//system("rm -f /etc/.nhd2");
+	//system("touch /etc/.e2");
+	//g_RCInput->postMsg( NeutrinoMessages::RESTART, 0 );
 	
-	g_RCInput->postMsg( NeutrinoMessages::RESTART, 0 );
+	system("killall -9 neutrino");
+	sleep 1;
+	system("init 3");
+
 	HintBox(LOCALE_MESSAGEBOX_INFO, "enigma2 wird gestartet !");
 }
 
