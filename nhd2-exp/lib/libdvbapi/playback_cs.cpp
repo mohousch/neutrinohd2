@@ -159,7 +159,8 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 			break;
 		}
 
-	#if GST_VERSION_MAJOR >= 1
+#if 0
+#if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_WARNING:
 		{
 			gchar *debug_warn = NULL;
@@ -187,6 +188,7 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 			g_error_free(warn);
 			break;
 		}
+#endif
 #endif
 		
 		case GST_MESSAGE_STATE_CHANGED:
