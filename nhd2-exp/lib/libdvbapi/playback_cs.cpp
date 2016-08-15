@@ -158,6 +158,36 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 			g_error_free(inf);
 			break;
 		}
+
+	#if GST_VERSION_MAJOR >= 1
+		case GST_MESSAGE_WARNING:
+		{
+			gchar *debug_warn = NULL;
+			GError *warn = NULL;
+			gst_message_parse_warning (msg, &warn, &debug_warn);
+			/* CVR this Warning occurs from time to time with external srt files
+			When a new seek is done the problem off to long wait times before subtitles appears,
+			after movie was restarted with a resume position is solved. */
+			if(!strncmp(warn->message , "Internal data flow problem", 26) && !strncmp(sourceName, "subtitle_sink", 13))
+			{
+				printf("[eServiceMP3] Gstreamer warning : %s (%i) from %s" , warn->message, warn->code, sourceName);
+				subsink = gst_bin_get_by_name(GST_BIN(m_gst_playbin), "subtitle_sink");
+				if(subsink)
+				{
+					if (!gst_element_seek (subsink, m_currentTrickRatio, GST_FORMAT_TIME, (GstSeekFlags)(GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT),
+						GST_SEEK_TYPE_SET, m_last_seek_pos,
+						GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE))
+					{
+						printf("[eServiceMP3] seekToImpl subsink failed\n");
+					}
+					gst_object_unref(subsink);
+				}
+			}
+			g_free(debug_warn);
+			g_error_free(warn);
+			break;
+		}
+#endif
 		
 		case GST_MESSAGE_STATE_CHANGED:
 		{
@@ -183,6 +213,9 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 				
 				case GST_STATE_CHANGE_READY_TO_PAUSED:
 				{
+#if GST_VERSION_MAJOR >= 1
+					GValue result = { 0, };
+#endif
 					GstIterator * children;
 					
 					if (audioSink)
@@ -201,13 +234,29 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 					
 					// set audio video sink
 					children = gst_bin_iterate_recurse(GST_BIN(m_gst_playbin));
-										
-					audioSink = GST_ELEMENT_CAST(gst_iterator_find_custom(children, (GCompareFunc)match_sinktype, (gpointer)"GstDVBAudioSink"));	
+					
+#if GST_VERSION_MAJOR < 1					
+					audioSink = GST_ELEMENT_CAST(gst_iterator_find_custom(children, (GCompareFunc)match_sinktype, (gpointer)"GstDVBAudioSink"));
+#else
+					if (gst_iterator_find_custom(children, (GCompareFunc)match_sinktype, &result, (gpointer)"GstDVBAudioSink"))
+					{
+						audioSink = GST_ELEMENT_CAST(g_value_dup_object(&result));
+						g_value_unset(&result);
+					}
+#endif	
 					
 					if(audioSink)
 						dprintf(DEBUG_NORMAL, "%s %s - audio sink created\n", FILENAME, __FUNCTION__);
 					
+#if GST_VERSION_MAJOR < 1
 					videoSink = GST_ELEMENT_CAST(gst_iterator_find_custom(children, (GCompareFunc)match_sinktype, (gpointer)"GstDVBVideoSink"));
+#else
+					if (gst_iterator_find_custom(children, (GCompareFunc)match_sinktype, &result, (gpointer)"GstDVBVideoSink"))
+					{
+						videoSink = GST_ELEMENT_CAST(g_value_dup_object(&result));
+						g_value_unset(&result);
+					}
+#endif
 
 					if(videoSink)
 						dprintf(DEBUG_NORMAL, "%s %s - video sink created\n", FILENAME, __FUNCTION__);
@@ -303,7 +352,11 @@ bool cPlayback::Open()
 	
 #if defined (ENABLE_GSTREAMER)
 	// create gst pipeline
+#if GST_VERSION_MAJOR < 1
 	m_gst_playbin = gst_element_factory_make("playbin2", "playbin");
+#else
+	m_gst_playbin = gst_element_factory_make("playbin", "playbin");
+#endif
 #else
 	player = (Context_t*)malloc(sizeof(Context_t));
 
@@ -356,7 +409,11 @@ void cPlayback::Close(void)
 	{
 		// disconnect sync handler callback
 		bus = gst_pipeline_get_bus(GST_PIPELINE (m_gst_playbin));
+#if GST_VERSION_MAJOR < 1
 		gst_bus_set_sync_handler(bus, NULL, NULL);
+#else
+		gst_bus_set_sync_handler(bus, NULL, NULL, NULL);
+#endif
 		gst_object_unref(bus);
 		
 		dprintf(DEBUG_NORMAL, "GST bus handler closed\n");
@@ -480,7 +537,12 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 		
 		//gstbus handler
 		bus = gst_pipeline_get_bus(GST_PIPELINE (m_gst_playbin));
+
+#if GST_VERSION_MAJOR < 1
 		gst_bus_set_sync_handler(bus, Gst_bus_call, NULL);
+#else
+		gst_bus_set_sync_handler(bus, Gst_bus_call, NULL, NULL);	
+#endif
 		gst_object_unref(bus);
 		
 		// start playing
@@ -783,7 +845,11 @@ bool cPlayback::GetPosition(int64_t &position, int64_t &duration)
 		position = 0;
 		
 #if defined (USE_OPENGL)
+#if GST_VERSION_MAJOR < 1
 		gst_element_query_position(m_gst_playbin, &fmt, &pts);
+#else
+		gst_element_query_position(m_gst_playbin, fmt, &pts);
+#endif
 #else
 		
 		if(audioSink || videoSink)
@@ -792,7 +858,11 @@ bool cPlayback::GetPosition(int64_t &position, int64_t &duration)
 			GST_CLOCK_TIME_IS_VALID(pts);
 		}
 		
+#if GST_VERSION_MAJOR < 1
 		gst_element_query_position(m_gst_playbin, &fmt, &pts);
+#else
+		gst_element_query_position(m_gst_playbin, fmt, &pts);
+#endif
 #endif		
 			
 		position = pts / 1000000;	// in ms
@@ -802,7 +872,11 @@ bool cPlayback::GetPosition(int64_t &position, int64_t &duration)
 		//duration
 		gint64 len;
 
+#if GST_VERSION_MAJOR < 1
 		gst_element_query_duration(m_gst_playbin, &fmt, &len);
+#else
+		gst_element_query_duration(m_gst_playbin, fmt, &len);
+#endif
 		
 		duration = len / 1000000;	// in ms
 

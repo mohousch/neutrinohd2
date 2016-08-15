@@ -10,7 +10,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/lib/libeventserver
 
 if ENABLE_GSTREAMER
-AM_CPPFLAGS += @GST_CFLAGS@
+AM_CPPFLAGS += @GSTREAMER_CFLAGS@
 else
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif

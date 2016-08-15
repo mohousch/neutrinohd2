@@ -550,8 +550,8 @@ void CYTBrowser::refreshBrowserList(void) //P1
 			m_browserListLines.lineArray[row].push_back(string_item);
 		}
 	}
-	m_pcBrowser->setLines(&m_browserListLines);
 
+	m_pcBrowser->setLines(&m_browserListLines);
 	m_currentBrowserSelection = m_pcBrowser->getSelectedLine();
 	
 	// update selected movie if browser is in the focus

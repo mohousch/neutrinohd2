@@ -88,7 +88,7 @@ neutrino_LDADD += \
 endif
 
 if ENABLE_GSTREAMER
-neutrino_LDADD += -lgstreamer-0.10 -lgobject-2.0 -lglib-2.0
+neutrino_LDADD += @GSTREAMER_LIBS@
 else
 neutrino_LDADD += $(top_builddir)/lib/libeplayer3/libeplayer3.a
 endif
@@ -100,7 +100,7 @@ endif
 
 if USE_OPENGL
 neutrino_LDADD += \
-	-lglut -lGL -lGLU -lGLEW -lOpenThreads -lgstinterfaces-0.10 
+	-lglut -lGL -lGLU -lGLEW -lOpenThreads 
 endif
 
 if ENABLE_FRIBIDI

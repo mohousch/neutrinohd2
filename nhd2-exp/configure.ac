@@ -47,7 +47,12 @@ AM_CONDITIONAL(ENABLE_GSTREAMER,test "$enable_gstreamer" = "yes")
 
 if test "$enable_gstreamer" = "yes"; then
 AC_DEFINE(ENABLE_GSTREAMER,1,[include gstreamer as player engine support])
-PKG_CHECK_MODULES(GST,gstreamer-0.10)
+
+AC_ARG_WITH(gstversion,
+	AS_HELP_STRING([--with-gstversion],[use gstreamer version (major.minor)]),
+	[GST_MAJORMINOR=$withval],[GST_MAJORMINOR=0.10])
+
+PKG_CHECK_MODULES(GSTREAMER, gstreamer-$GST_MAJORMINOR gstreamer-pbutils-$GST_MAJORMINOR)
 fi
 
 # lcd
