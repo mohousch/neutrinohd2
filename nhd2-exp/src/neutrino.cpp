@@ -2215,21 +2215,7 @@ void CNeutrinoApp::SendSectionsdConfig(void)
 // init zapper
 void CNeutrinoApp::InitZapper()
 {
-	//dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitZapper\n");
-
-	const char *NMODE[] = {
-		"",
-		"MODE_TV",
-		"MODE_RADIO",
-		"",
-		"",
-		"",
-		"",
-		"",
-		"MODE_IPTV",
-	};
-	
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitZapper: Mode: %s\n", NMODE[g_settings.mode]);
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitZapper\n");
 
 	// start infobar
 	g_InfoViewer->start();
