@@ -1424,13 +1424,15 @@ void CNeutrinoApp::saveSetup(const char * fname)
 // firstChannel, get the initial channel
 void CNeutrinoApp::firstChannel()
 {
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::firstChannel\n");
+
 	g_Zapit->getLastChannel(firstchannel.channelNumber, firstchannel.mode);
 }
 
 // CNeutrinoApp -  channelsInit, get the Channellist from zapit
 void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 {
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit: Creating channels lists...\n");
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit\n");
 
 	const char * fav_bouquetname = g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME);
 
@@ -1632,8 +1634,6 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit: got %d RADIO bouquets\n", bnum);
 
 	SetChannelMode( g_settings.channel_mode, mode);
-
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit: All bouquets-channels received\n");
 }
 
 void CNeutrinoApp::SetChannelMode(int newmode, int nMode)
