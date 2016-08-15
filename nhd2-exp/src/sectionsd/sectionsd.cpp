@@ -540,6 +540,7 @@ static void addEvent(const SIevent &evt, const time_t zeit, bool cn = false)
 		if epg filter is whitelist and filter did not match -> stop also.
 	   }
 	 */
+
 	if (!(epg_filter_except_current_next && (evt.table_id == 0x4e || evt.table_id == 0x4f)) &&
 			(evt.table_id != 0xFF)) 
 	{
@@ -566,6 +567,8 @@ static void addEvent(const SIevent &evt, const time_t zeit, bool cn = false)
 		{ 
 			// ...and if we don't have them already.
 			unlockMessaging();
+
+			/*
 			SIevent *eptr = new SIevent(evt);
 			if (!eptr)
 			{
@@ -575,19 +578,22 @@ static void addEvent(const SIevent &evt, const time_t zeit, bool cn = false)
 			}
 
 			SIeventPtr e(eptr);
+			*/
 
 			writeLockEvents();
-			if (e->runningStatus() > 2) 
+
+			//if (e->runningStatus() > 2) 
+			if (evt.runningStatus() > 2)
 			{ 
 				// paused or currently running
-				if (!myCurrentEvent || (myCurrentEvent && (*myCurrentEvent).uniqueKey() != e->uniqueKey())) 
+				if (!myCurrentEvent || (myCurrentEvent && (*myCurrentEvent).uniqueKey() != evt.uniqueKey())) 
 				{
 					if (myCurrentEvent)
 						delete myCurrentEvent;
 					myCurrentEvent = new SIevent(evt);
 					writeLockMessaging();
 					messaging_got_CN |= 0x01;
-					if (myNextEvent && (*myNextEvent).uniqueKey() == e->uniqueKey()) 
+					if (myNextEvent && (*myNextEvent).uniqueKey() == evt.uniqueKey()) 
 					{
 						dprintf(DEBUG_DEBUG, "addevent-cn: removing next-event\n");
 						/* next got "promoted" to current => trigger re-read */
@@ -596,36 +602,35 @@ static void addEvent(const SIevent &evt, const time_t zeit, bool cn = false)
 						messaging_got_CN &= 0x01;
 					}
 					unlockMessaging();
-					dprintf(DEBUG_DEBUG, "addevent-cn: added running (%d) event 0x%04x '%s'\n",
-						e->runningStatus(), e->eventID, e->getName().c_str());
+					dprintf(DEBUG_DEBUG, "addevent-cn: added running (%d) event 0x%04x '%s'\n", evt.runningStatus(), evt.eventID, evt.getName().c_str());
 				} 
 				else 
 				{
 					writeLockMessaging();
 					messaging_got_CN |= 0x01;
 					unlockMessaging();
-					dprintf(DEBUG_DEBUG, "addevent-cn: not add runn. (%d) event 0x%04x '%s'\n",
-						e->runningStatus(), e->eventID, e->getName().c_str());
+					dprintf(DEBUG_DEBUG, "addevent-cn: not add runn. (%d) event 0x%04x '%s'\n", evt.runningStatus(), evt.eventID, evt.getName().c_str());
 				}
 			} 
 			else 
 			{
-				if ((!myNextEvent    || (myNextEvent    && (*myNextEvent).uniqueKey()    != e->uniqueKey() && (*myNextEvent).times.begin()->startzeit < e->times.begin()->startzeit)) &&
-						(!myCurrentEvent || (myCurrentEvent && (*myCurrentEvent).uniqueKey() != e->uniqueKey()))) 
+				if ((!myNextEvent    || (myNextEvent    && (*myNextEvent).uniqueKey()    != evt.uniqueKey() && (*myNextEvent).times.begin()->startzeit < evt.times.begin()->startzeit)) &&
+						(!myCurrentEvent || (myCurrentEvent && (*myCurrentEvent).uniqueKey() != evt.uniqueKey()))) 
 				{
 					if (myNextEvent)
 						delete myNextEvent;
+
 					myNextEvent = new SIevent(evt);
 					writeLockMessaging();
 					messaging_got_CN |= 0x02;
 					unlockMessaging();
-					dprintf(DEBUG_DEBUG, "addevent-cn: added next    (%d) event 0x%04x '%s'\n",
-						e->runningStatus(), e->eventID, e->getName().c_str());
+
+					dprintf(DEBUG_DEBUG, "addevent-cn: added next    (%d) event 0x%04x '%s'\n", evt.runningStatus(), evt.eventID, evt.getName().c_str());
 				} 
 				else 
 				{
-					dprintf(DEBUG_DEBUG, "addevent-cn: not added next(%d) event 0x%04x '%s'\n",
-						e->runningStatus(), e->eventID, e->getName().c_str());
+					dprintf(DEBUG_DEBUG, "addevent-cn: not added next(%d) event 0x%04x '%s'\n", evt.runningStatus(), evt.eventID, evt.getName().c_str());
+
 					writeLockMessaging();
 					messaging_got_CN |= 0x02;
 					unlockMessaging();
@@ -847,6 +852,7 @@ static void addEvent(const SIevent &evt, const time_t zeit, bool cn = false)
 		}
 		deleteEvent(e->uniqueKey());
 		readLockEvents();
+
 		if (mySIeventsOrderUniqueKey.size() >= max_events) 
 		{
 			MySIeventsOrderFirstEndTimeServiceIDEventUniqueKey::iterator lastEvent =
