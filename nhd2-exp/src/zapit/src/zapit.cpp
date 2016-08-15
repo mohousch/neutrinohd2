@@ -3668,7 +3668,7 @@ int stopPlayBack(bool sendPmt)
 		}
 	
 		// stop video decoder (blanking)
-		videoDecoder->Stop();
+		videoDecoder->Stop(true);
 	
 		if (pcrDemux)
 		{

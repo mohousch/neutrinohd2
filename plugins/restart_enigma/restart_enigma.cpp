@@ -22,7 +22,7 @@ void plugin_exec(void)
 	//g_RCInput->postMsg( NeutrinoMessages::RESTART, 0 );
 	
 	system("killall -9 neutrino");
-	sleep 1;
+	sleep(1);
 	system("init 3");
 
 	HintBox(LOCALE_MESSAGEBOX_INFO, "enigma2 wird gestartet !");
