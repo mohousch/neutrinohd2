@@ -121,11 +121,11 @@ bool CSatIPClient::startSatIPClient()
 	cmd += " -s ";
 	cmd += SatIPServerIP;
 	cmd += " -t ";
-	cmd += SatIPFrontendTyp;
+	cmd += to_string(SatIPFrontendTyp);
 	cmd += " -d ";
 	cmd += SatIPVtunerDevice;
-	//cmd += " -l ";
-	//cmd += SatIPDebug;
+	cmd += " -l ";
+	cmd += to_string(SatIPDebug);
 
 	system(cmd.c_str());
 
@@ -205,7 +205,7 @@ void CSatIPClient::doMenu()
 	satIPClientMenu->addItem(new CMenuForwarder("VTuner Device", true, SatIPVtunerDevice, VTUNER_DEVICE, NULL));
 
 	// debug
-	//satIPClientMenu->addItem(new CMenuOptionChooser("SatIP Client Debug", &SatIPDebug, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL));
+	satIPClientMenu->addItem(new CMenuOptionChooser("SatIP Client Debug", &SatIPDebug, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL));
 
 	satIPClientMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
