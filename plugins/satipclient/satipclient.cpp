@@ -126,6 +126,7 @@ bool CSatIPClient::startSatIPClient()
 	cmd += SatIPVtunerDevice;
 	cmd += " -l ";
 	cmd += to_string(SatIPDebug);
+	cmd += " &";
 
 	system(cmd.c_str());
 
