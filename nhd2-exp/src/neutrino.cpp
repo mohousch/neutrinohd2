@@ -2436,6 +2436,13 @@ int CNeutrinoApp::run(int argc, char **argv)
 
 	// playback
 	playback = new cPlayback();
+
+	// plugins
+	g_PluginList = new CPlugins;
+	g_PluginList->setPluginDir(PLUGINDIR);
+
+	// load Pluginlist before main menu (only show script menu if at least one script is available
+	g_PluginList->loadPlugins();
 	
 	// zapit	
 	Z_start_arg ZapStart_arg;
@@ -2561,11 +2568,11 @@ int CNeutrinoApp::run(int argc, char **argv)
 	hdd = NULL;
 
 	// plugins
-	g_PluginList = new CPlugins;
-	g_PluginList->setPluginDir(PLUGINDIR);
+	//g_PluginList = new CPlugins;
+	//g_PluginList->setPluginDir(PLUGINDIR);
 
 	// load Pluginlist before main menu (only show script menu if at least one script is available
-	g_PluginList->loadPlugins();
+	//g_PluginList->loadPlugins();
 	
 	// init nvod changer
 	NVODChanger = new CNVODChangeExec;
