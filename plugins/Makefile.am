@@ -13,6 +13,7 @@ SUBDIRS = \
 	mediaplayer \
 	tuxcal \
 	fileexplorer \
-	mediaportal
+	mediaportal \
+	satipclient
 
 
