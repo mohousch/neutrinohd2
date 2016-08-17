@@ -274,7 +274,6 @@ const char * locale_real_names[] = {
 	"colorthememenu.save",
 	"colorthememenu.select1",
 	"colorthememenu.select2",
-	"colorthememenu.gray",
 	"date.Apr",
 	"date.Aug",
 	"date.Dec",
