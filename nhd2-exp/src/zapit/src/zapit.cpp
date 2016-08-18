@@ -4187,6 +4187,10 @@ void * sdt_thread(void */*arg*/)
 #define VTUNER_SET_HAS_OUTPUTS 5
 #define VTUNER_SET_FE_INFO  6
 #define VTUNER_SET_DELSYS   7
+#define VTUNER_SET_MODES 8
+
+#define VTUNER_SET_DELSYS 32
+#define VTUNER_SET_ADAPTER 33
 
 #define MSG_SET_FRONTEND         1
 #define MSG_GET_FRONTEND         2
