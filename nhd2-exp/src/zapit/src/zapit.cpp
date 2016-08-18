@@ -3712,13 +3712,6 @@ void closeAVDecoder(void)
 
 void openAVDecoder(void)
 {
-#ifndef VIDEO_SOURCE_HDMI
-#define VIDEO_SOURCE_HDMI 2
-#endif
-#ifndef AUDIO_SOURCE_HDMI
-#define AUDIO_SOURCE_HDMI 2
-#endif
-
 #if !defined (USE_OPENGL)
 	if(!g_settings.satip_allow_satip)
 	{
@@ -4186,6 +4179,319 @@ void * sdt_thread(void */*arg*/)
 	return 0;
 }
 
+// vtuner test
+#define VTUNER_GET_MESSAGE  1
+#define VTUNER_SET_RESPONSE 2
+#define VTUNER_SET_NAME     3
+#define VTUNER_SET_TYPE     4
+#define VTUNER_SET_HAS_OUTPUTS 5
+#define VTUNER_SET_FE_INFO  6
+#define VTUNER_SET_DELSYS   7
+
+#define MSG_SET_FRONTEND         1
+#define MSG_GET_FRONTEND         2
+#define MSG_READ_STATUS          3
+#define MSG_READ_BER             4
+#define MSG_READ_SIGNAL_STRENGTH 5
+#define MSG_READ_SNR             6
+#define MSG_READ_UCBLOCKS        7
+#define MSG_SET_TONE             8
+#define MSG_SET_VOLTAGE          9
+#define MSG_ENABLE_HIGH_VOLTAGE  10
+#define MSG_SEND_DISEQC_MSG      11
+#define MSG_SEND_DISEQC_BURST    13
+#define MSG_PIDLIST              14
+#define MSG_TYPE_CHANGED         15
+#define MSG_SET_PROPERTY         16
+#define MSG_GET_PROPERTY         17
+
+struct vtuner_message
+{
+	__s32 type;
+	union
+	{
+		struct dvb_frontend_parameters dvb_frontend_parameters;
+#if DVB_API_VERSION >= 5
+		struct dtv_property prop;
+#endif
+		fe_status_t status;
+		__u32 ber;
+		__u16 ss, snr;
+		__u32 ucb;
+		fe_sec_tone_mode_t tone;
+		fe_sec_voltage_t voltage;
+		struct dvb_diseqc_master_cmd diseqc_master_cmd;
+		fe_sec_mini_cmd_t burst;
+		__u16 pidlist[30];
+		unsigned char pad[72];
+		__u32 type_changed;
+	} body;
+};
+
+int _select(int maxfd, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
+{
+	int retval;
+	fd_set rset, wset, xset;
+	struct timeval interval;
+	timerclear(&interval);
+
+	/* make a backup of all fd_set's and timeval struct */
+	if (readfds) rset = *readfds;
+	if (writefds) wset = *writefds;
+	if (exceptfds) xset = *exceptfds;
+	if (timeout) interval = *timeout;
+
+	while (1)
+	{
+		retval = select(maxfd, readfds, writefds, exceptfds, timeout);
+
+		if (retval < 0)
+		{
+			/* restore the backup before we continue */
+			if (readfds) *readfds = rset;
+			if (writefds) *writefds = wset;
+			if (exceptfds) *exceptfds = xset;
+			if (timeout) *timeout = interval;
+			if (errno == EINTR) continue;
+			perror("select");
+			break;
+		}
+		break;
+	}
+	return retval;
+}
+
+ssize_t _writeall(int fd, const void *buf, size_t count)
+{
+	ssize_t retval;
+	char *ptr = (char*)buf;
+	ssize_t handledcount = 0;
+	if (fd < 0) return -1;
+	while (handledcount < count)
+	{
+		retval = write(fd, &ptr[handledcount], count - handledcount);
+
+		if (retval == 0) return -1;
+		if (retval < 0)
+		{
+			if (errno == EINTR) continue;
+			perror("write");
+			return retval;
+		}
+		handledcount += retval;
+	}
+	return handledcount;
+}
+
+ssize_t _read(int fd, void *buf, size_t count)
+{
+	ssize_t retval;
+	char *ptr = (char*)buf;
+	ssize_t handledcount = 0;
+	if (fd < 0) return -1;
+	while (handledcount < count)
+	{
+		retval = read(fd, &ptr[handledcount], count - handledcount);
+		if (retval < 0)
+		{
+			if (errno == EINTR) continue;
+			perror("read");
+			return retval;
+		}
+		handledcount += retval;
+		break; /* one read only */
+	}
+	return handledcount;
+}
+
+pthread_t eventthread = 0;
+pthread_t pumpthread = 0;
+int running = 1;
+int demuxFD = -1;
+int vtunerFD = -1;
+int frontendFD = -1;
+bool havevtuner = false; // set to true to test
+unsigned char buffer[(188 / 4) * 4096];
+__u16 pidlist[30];
+#define BUFFER_SIZE ((188 / 4) * 4096) /* multiple of ts packet and page size */
+#define DEMUX_BUFFER_SIZE (8 * ((188 / 4) * 4096)) /* 1.5MB */
+
+void *pump_proc(void *ptr)
+{
+	while (running)
+	{
+		struct timeval tv;
+		fd_set rset;
+		FD_ZERO(&rset);
+		FD_SET(demuxFD, &rset);
+		tv.tv_sec = 1;
+		tv.tv_usec = 0;
+
+		if (_select(demuxFD + 1, &rset, NULL, NULL, &tv) > 0)
+		{
+			int size = _read(demuxFD, buffer, BUFFER_SIZE);
+			if (_writeall(vtunerFD, buffer, size) <= 0)
+			{
+				break;
+			}
+		}
+	}
+
+	return NULL;
+}
+
+void *event_proc(void *ptr)
+{
+	int i, j;
+
+	while (running)
+	{
+		struct timeval tv;
+		fd_set xset;
+		FD_ZERO(&xset);
+		FD_SET(vtunerFD, &xset);
+		tv.tv_sec = 1;
+		tv.tv_usec = 0;
+
+		if (_select(vtunerFD + 1, NULL, NULL, &xset, &tv) > 0)
+		{
+			struct vtuner_message message;
+			::ioctl(vtunerFD, VTUNER_GET_MESSAGE, &message);
+
+			switch (message.type)
+			{
+			case MSG_SET_FRONTEND:
+				//adapter->firstdata = 1;
+				::ioctl(frontendFD, FE_SET_FRONTEND, &message.body.dvb_frontend_parameters);
+				break;
+			case MSG_GET_FRONTEND:
+				::ioctl(frontendFD, FE_GET_FRONTEND, &message.body.dvb_frontend_parameters);
+				break;
+			case MSG_READ_STATUS:
+				::ioctl(frontendFD, FE_READ_STATUS, &message.body.status);
+				break;
+			case MSG_READ_BER:
+				::ioctl(frontendFD, FE_READ_BER, &message.body.ber);
+				break;
+			case MSG_READ_SIGNAL_STRENGTH:
+				::ioctl(frontendFD, FE_READ_SIGNAL_STRENGTH, &message.body.ss);
+				break;
+			case MSG_READ_SNR:
+				::ioctl(frontendFD, FE_READ_SNR, &message.body.snr);
+				break;
+			case MSG_READ_UCBLOCKS:
+				::ioctl(frontendFD, FE_READ_UNCORRECTED_BLOCKS, &message.body.ucb);
+				break;
+			case MSG_SET_TONE:
+				::ioctl(frontendFD, FE_SET_TONE, message.body.tone);
+				break;
+			case MSG_SEND_DISEQC_MSG:
+				::ioctl(frontendFD, FE_DISEQC_SEND_MASTER_CMD, &message.body.diseqc_master_cmd);
+				break;
+			case MSG_SEND_DISEQC_BURST:
+				::ioctl(frontendFD, FE_DISEQC_SEND_BURST, message.body.burst);
+				break;
+			case MSG_PIDLIST:
+				/* remove old pids */
+				for (i = 0; i < 30; i++)
+				{
+					int found = 0;
+					if (pidlist[i] == 0xffff) continue;
+					for (j = 0; j < 30; j++)
+					{
+						if (pidlist[i] == message.body.pidlist[j])
+						{
+							found = 1;
+							break;
+						}
+					}
+
+					if (found) continue;
+
+					printf("DMX_REMOVE_PID %x\n", pidlist[i]);
+#if DVB_API_VERSION > 3
+					::ioctl(demuxFD, DMX_REMOVE_PID, &pidlist[i]);
+#else
+					::ioctl(demuxFD, DMX_REMOVE_PID, pidlist[i]);
+#endif
+				}
+
+				/* add new pids */
+				for (i = 0; i < 30; i++)
+				{
+					int found = 0;
+					if (message.body.pidlist[i] == 0xffff) continue;
+					for (j = 0; j < 30; j++)
+					{
+						if (message.body.pidlist[i] == pidlist[j])
+						{
+							found = 1;
+							break;
+						}
+					}
+
+					if (found) continue;
+
+					printf("DMX_ADD_PID %x\n", message.body.pidlist[i]);
+#if DVB_API_VERSION > 3
+					::ioctl(demuxFD, DMX_ADD_PID, &message.body.pidlist[i]);
+#else
+					::ioctl(demuxFD, DMX_ADD_PID, message.body.pidlist[i]);
+#endif
+				}
+
+				/* copy pids */
+				for (i = 0; i < 30; i++)
+				{
+					pidlist[i] = message.body.pidlist[i];
+				}
+				break;
+			case MSG_SET_VOLTAGE:
+				::ioctl(frontendFD, FE_SET_VOLTAGE, message.body.voltage);
+				break;
+			case MSG_ENABLE_HIGH_VOLTAGE:
+				::ioctl(frontendFD, FE_ENABLE_HIGH_LNB_VOLTAGE, message.body.voltage);
+				break;
+			case MSG_TYPE_CHANGED:
+				break;
+			case MSG_SET_PROPERTY:
+#if DVB_API_VERSION >= 5
+				{
+					struct dtv_properties props;
+					props.num = 1;
+					props.props = &message.body.prop;
+					::ioctl(frontendFD, FE_SET_PROPERTY, &props);
+				}
+#endif
+				break;
+			case MSG_GET_PROPERTY:
+#if DVB_API_VERSION >= 5
+				{
+					struct dtv_properties props;
+					props.num = 1;
+					props.props = &message.body.prop;
+					::ioctl(frontendFD, FE_GET_PROPERTY, &props);
+				}
+#endif
+				break;
+			default:
+				printf("Unknown vtuner message type: %d\n", message.type);
+				break;
+			}
+
+			if (message.type != MSG_PIDLIST)
+			{
+				message.type = 0;
+				::ioctl(vtunerFD, VTUNER_SET_RESPONSE, &message);
+			}
+		}
+	}
+
+error:
+	return NULL;
+}
+//
+
 //#define CHECK_FOR_LOCK
 //#endif
 int zapit_main_thread(void *data)
@@ -4247,7 +4553,106 @@ int zapit_main_thread(void *data)
 			close(dmx);
 		}
 	}
-#endif	
+#endif
+
+	// init vtuner
+	// need check for usb/vtuner: FIXME
+	if(havevtuner)
+	{
+		char type[8];
+		struct dmx_pes_filter_params filter;
+		struct dvb_frontend_info fe_info;
+		char frontend_filename[256], demux_filename[256], vtuner_filename[256];
+
+		printf("linking adapter1/frontend0 to vtunerc0\n");
+
+		sprintf(frontend_filename, "/dev/dvb/adapter1/frontend0");
+		sprintf(demux_filename, "/dev/dvb/adapter1/demux0");
+		sprintf(vtuner_filename, "/dev/vtunerc0");
+
+		frontendFD = open(frontend_filename, O_RDWR);
+		if (frontendFD < 0)
+		{
+			perror(frontend_filename);
+		}
+
+		demuxFD = open(demux_filename, O_RDONLY | O_NONBLOCK);
+		if (demuxFD < 0)
+		{
+			perror(demux_filename);
+		}
+
+		vtunerFD = open(vtuner_filename, O_RDWR);
+		if (vtunerFD < 0)
+		{
+			perror(vtuner_filename);
+		}
+
+		if (ioctl(frontendFD, FE_GET_INFO, &fe_info) < 0)
+		{
+			perror("FE_GET_INFO");
+		}
+
+		filter.input = DMX_IN_FRONTEND;
+		filter.flags = 0;
+	#if DVB_API_VERSION > 3
+		filter.pid = 0;
+		filter.output = DMX_OUT_TSDEMUX_TAP;
+		filter.pes_type = DMX_PES_OTHER;
+	#else
+		filter.pid = -1;
+		filter.output = DMX_OUT_TAP;
+		filter.pes_type = DMX_TAP_TS;
+	#endif
+
+		ioctl(demuxFD, DMX_SET_BUFFER_SIZE, DEMUX_BUFFER_SIZE);
+		ioctl(demuxFD, DMX_SET_PES_FILTER, &filter);
+		ioctl(demuxFD, DMX_START);
+
+		switch (fe_info.type)
+		{
+		case FE_QPSK:
+			strcpy(type,"DVB-S2");
+			break;
+		case FE_QAM:
+			strcpy(type,"DVB-C");
+			break;
+		case FE_OFDM:
+			strcpy(type,"DVB-T");
+			break;
+		case FE_ATSC:
+			strcpy(type,"ATSC");
+			break;
+		default:
+			printf("Frontend type 0x%x not supported", fe_info.type);
+		}
+
+		::ioctl(vtunerFD, VTUNER_SET_NAME, "vtunerc0");
+		::ioctl(vtunerFD, VTUNER_SET_TYPE, type);
+		::ioctl(vtunerFD, VTUNER_SET_FE_INFO, &fe_info);
+		::ioctl(vtunerFD, VTUNER_SET_HAS_OUTPUTS, "no");
+	#if DVB_API_VERSION > 5 || DVB_API_VERSION == 5 && DVB_API_VERSION_MINOR >= 5
+		{
+			struct dtv_properties props;
+			struct dtv_property p[1];
+			props.num = 1;
+			props.props = p;
+			p[0].cmd = DTV_ENUM_DELSYS;
+			if (::ioctl(frontendFD, FE_GET_PROPERTY, &props) >= 0)
+			{
+				::ioctl(vtunerFD, VTUNER_SET_DELSYS, p[0].u.buffer.data);
+			}
+		}
+	#endif
+
+		memset(pidlist, 0xff, sizeof(pidlist));
+
+		printf("init succeeded\n");
+
+		pthread_create(&eventthread, NULL, event_proc, (void*)NULL);
+		pthread_create(&pumpthread, NULL, pump_proc, (void*)NULL);
+	}
+	//	
 
 	//CI init
 #if defined (ENABLE_CI)	
@@ -4407,6 +4812,12 @@ int zapit_main_thread(void *data)
 	
 	// stop playback (stop capmt)
 	stopPlayBack();
+
+	// stop vtuner pump thread
+	pthread_cancel(eventthread);
+	pthread_join(eventthread, NULL);
+	pthread_cancel(pumpthread);
+	pthread_join(pumpthread, NULL);
 	
 	// stop std thread
 	pthread_cancel(tsdt);
