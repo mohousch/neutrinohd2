@@ -109,7 +109,7 @@ class cAudio
 		void SetHdmiDD(int ac3);
 		
 		// audio stream source		
-		int setSource(audio_stream_source_t source);
+		int setSource(/*audio_stream_source_t*/ int source = AUDIO_SOURCE_DEMUX);
 		
 		int setHwPCMDelay(int delay);
 		int setHwAC3Delay(int delay);

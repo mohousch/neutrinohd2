@@ -858,7 +858,7 @@ int cVideo::getPlayState(void)
 }
 
 /* set source */
-int cVideo::setSource(video_stream_source_t source)
+int cVideo::setSource(/*video_stream_source_t*/ int source)
 {
 	if(video_fd < 0)
 		return -1;

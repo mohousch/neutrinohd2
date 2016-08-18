@@ -239,7 +239,7 @@ class cVideo
 		int getPlayState(void);
 
 		/* video stream source */
-		int setSource(video_stream_source_t source);
+		int setSource(/*video_stream_source_t*/int source = VIDEO_SOURCE_DEMUX);
 
 		//
 		int Start();

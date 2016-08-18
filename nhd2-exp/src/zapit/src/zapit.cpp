@@ -3413,6 +3413,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 			if( pcrDemux->pesFilter(thisChannel->getPcrPid() ) < 0 )
 				return -1;
 		
+			// start dmx
 			if ( pcrDemux->Start() < 0 )
 				return -1;
 		}
@@ -3711,13 +3712,20 @@ void closeAVDecoder(void)
 
 void openAVDecoder(void)
 {
+#ifndef VIDEO_SOURCE_HDMI
+#define VIDEO_SOURCE_HDMI 2
+#endif
+#ifndef AUDIO_SOURCE_HDMI
+#define AUDIO_SOURCE_HDMI 2
+#endif
+
 #if !defined (USE_OPENGL)
 	if(!g_settings.satip_allow_satip)
 	{
 		if(videoDecoder)
 		{
 			// open video decoder
-			videoDecoder->Open(live_fe);
+			videoDecoder->Open(/*live_fe*/);
 	
 			// set source
 			videoDecoder->setSource(VIDEO_SOURCE_DEMUX);	
@@ -3726,7 +3734,7 @@ void openAVDecoder(void)
 		if(audioDecoder)
 		{
 			// open audiodecoder
-			audioDecoder->Open(live_fe);
+			audioDecoder->Open(/*live_fe*/);
 		
 			// set source
 			audioDecoder->setSource(AUDIO_SOURCE_DEMUX);

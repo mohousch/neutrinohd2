@@ -394,7 +394,7 @@ void cAudio::SetHdmiDD(int ac3)
 }
 
 /* set source */
-int cAudio::setSource(audio_stream_source_t source)
+int cAudio::setSource(/*audio_stream_source_t*/int source)
 { 
 	if (audio_fd < 0)
 		return -1;
