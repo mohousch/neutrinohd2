@@ -4632,8 +4632,10 @@ int zapit_main_thread(void *data)
 
 		ioctl(vtunerFD, VTUNER_SET_NAME, "virtuel tuner");
 		ioctl(vtunerFD, VTUNER_SET_TYPE, type);
-		ioctl(vtunerFD, VTUNER_SET_FE_INFO, &fe_info);
+		//ioctl(vtunerFD, VTUNER_SET_FE_INFO, &fe_info);
 		ioctl(vtunerFD, VTUNER_SET_HAS_OUTPUTS, "no");
+		ioctl(vtunerFD, VTUNER_SET_ADAPTER, 1);
+
 #if DVB_API_VERSION > 5 || DVB_API_VERSION == 5 && DVB_API_VERSION_MINOR >= 5
 		{
 			struct dtv_properties props;
