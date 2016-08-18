@@ -130,9 +130,10 @@ class CFrontend
 		
 		/* standby flag */
 		bool standby;
+		int fd;
 	  
 	private:
-		int fd;
+		//int fd;
 		
 		/* slave */
 		bool slave;

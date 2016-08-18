@@ -4310,7 +4310,7 @@ int running = 1;
 int demuxFD = -1;
 int vtunerFD = -1;
 int frontendFD = -1;
-bool havevtuner = false; // set to true to test
+bool havevtuner = true; // set to true to test
 unsigned char buffer[(188 / 4) * 4096];
 __u16 pidlist[30];
 #define BUFFER_SIZE ((188 / 4) * 4096) /* multiple of ts packet and page size */
@@ -4343,6 +4343,7 @@ void *pump_proc(void *ptr)
 void *event_proc(void *ptr)
 {
 	int i, j;
+	frontendFD = live_fe->fd;
 
 	while (running)
 	{
@@ -4356,40 +4357,39 @@ void *event_proc(void *ptr)
 		if (_select(vtunerFD + 1, NULL, NULL, &xset, &tv) > 0)
 		{
 			struct vtuner_message message;
-			::ioctl(vtunerFD, VTUNER_GET_MESSAGE, &message);
+			ioctl(vtunerFD, VTUNER_GET_MESSAGE, &message);
 
 			switch (message.type)
 			{
 			case MSG_SET_FRONTEND:
-				//adapter->firstdata = 1;
-				::ioctl(frontendFD, FE_SET_FRONTEND, &message.body.dvb_frontend_parameters);
+				ioctl(frontendFD, FE_SET_FRONTEND, &message.body.dvb_frontend_parameters);
 				break;
 			case MSG_GET_FRONTEND:
-				::ioctl(frontendFD, FE_GET_FRONTEND, &message.body.dvb_frontend_parameters);
+				ioctl(frontendFD, FE_GET_FRONTEND, &message.body.dvb_frontend_parameters);
 				break;
 			case MSG_READ_STATUS:
-				::ioctl(frontendFD, FE_READ_STATUS, &message.body.status);
+				ioctl(frontendFD, FE_READ_STATUS, &message.body.status);
 				break;
 			case MSG_READ_BER:
-				::ioctl(frontendFD, FE_READ_BER, &message.body.ber);
+				ioctl(frontendFD, FE_READ_BER, &message.body.ber);
 				break;
 			case MSG_READ_SIGNAL_STRENGTH:
-				::ioctl(frontendFD, FE_READ_SIGNAL_STRENGTH, &message.body.ss);
+				ioctl(frontendFD, FE_READ_SIGNAL_STRENGTH, &message.body.ss);
 				break;
 			case MSG_READ_SNR:
-				::ioctl(frontendFD, FE_READ_SNR, &message.body.snr);
+				ioctl(frontendFD, FE_READ_SNR, &message.body.snr);
 				break;
 			case MSG_READ_UCBLOCKS:
-				::ioctl(frontendFD, FE_READ_UNCORRECTED_BLOCKS, &message.body.ucb);
+				ioctl(frontendFD, FE_READ_UNCORRECTED_BLOCKS, &message.body.ucb);
 				break;
 			case MSG_SET_TONE:
-				::ioctl(frontendFD, FE_SET_TONE, message.body.tone);
+				ioctl(frontendFD, FE_SET_TONE, message.body.tone);
 				break;
 			case MSG_SEND_DISEQC_MSG:
-				::ioctl(frontendFD, FE_DISEQC_SEND_MASTER_CMD, &message.body.diseqc_master_cmd);
+				ioctl(frontendFD, FE_DISEQC_SEND_MASTER_CMD, &message.body.diseqc_master_cmd);
 				break;
 			case MSG_SEND_DISEQC_BURST:
-				::ioctl(frontendFD, FE_DISEQC_SEND_BURST, message.body.burst);
+				ioctl(frontendFD, FE_DISEQC_SEND_BURST, message.body.burst);
 				break;
 			case MSG_PIDLIST:
 				/* remove old pids */
@@ -4410,9 +4410,9 @@ void *event_proc(void *ptr)
 
 					printf("DMX_REMOVE_PID %x\n", pidlist[i]);
 #if DVB_API_VERSION > 3
-					::ioctl(demuxFD, DMX_REMOVE_PID, &pidlist[i]);
+					ioctl(demuxFD, DMX_REMOVE_PID, &pidlist[i]);
 #else
-					::ioctl(demuxFD, DMX_REMOVE_PID, pidlist[i]);
+					ioctl(demuxFD, DMX_REMOVE_PID, pidlist[i]);
 #endif
 				}
 
@@ -4434,9 +4434,9 @@ void *event_proc(void *ptr)
 
 					printf("DMX_ADD_PID %x\n", message.body.pidlist[i]);
 #if DVB_API_VERSION > 3
-					::ioctl(demuxFD, DMX_ADD_PID, &message.body.pidlist[i]);
+					ioctl(demuxFD, DMX_ADD_PID, &message.body.pidlist[i]);
 #else
-					::ioctl(demuxFD, DMX_ADD_PID, message.body.pidlist[i]);
+					ioctl(demuxFD, DMX_ADD_PID, message.body.pidlist[i]);
 #endif
 				}
 
@@ -4447,10 +4447,10 @@ void *event_proc(void *ptr)
 				}
 				break;
 			case MSG_SET_VOLTAGE:
-				::ioctl(frontendFD, FE_SET_VOLTAGE, message.body.voltage);
+				ioctl(frontendFD, FE_SET_VOLTAGE, message.body.voltage);
 				break;
 			case MSG_ENABLE_HIGH_VOLTAGE:
-				::ioctl(frontendFD, FE_ENABLE_HIGH_LNB_VOLTAGE, message.body.voltage);
+				ioctl(frontendFD, FE_ENABLE_HIGH_LNB_VOLTAGE, message.body.voltage);
 				break;
 			case MSG_TYPE_CHANGED:
 				break;
@@ -4460,7 +4460,7 @@ void *event_proc(void *ptr)
 					struct dtv_properties props;
 					props.num = 1;
 					props.props = &message.body.prop;
-					::ioctl(frontendFD, FE_SET_PROPERTY, &props);
+					ioctl(frontendFD, FE_SET_PROPERTY, &props);
 				}
 #endif
 				break;
@@ -4470,7 +4470,7 @@ void *event_proc(void *ptr)
 					struct dtv_properties props;
 					props.num = 1;
 					props.props = &message.body.prop;
-					::ioctl(frontendFD, FE_GET_PROPERTY, &props);
+					ioctl(frontendFD, FE_GET_PROPERTY, &props);
 				}
 #endif
 				break;
@@ -4482,7 +4482,7 @@ void *event_proc(void *ptr)
 			if (message.type != MSG_PIDLIST)
 			{
 				message.type = 0;
-				::ioctl(vtunerFD, VTUNER_SET_RESPONSE, &message);
+				ioctl(vtunerFD, VTUNER_SET_RESPONSE, &message);
 			}
 		}
 	}
@@ -4593,17 +4593,20 @@ int zapit_main_thread(void *data)
 			perror("FE_GET_INFO");
 		}
 
+		close(frontendFD);
+		frontendFD = -1;
+
 		filter.input = DMX_IN_FRONTEND;
 		filter.flags = 0;
-	#if DVB_API_VERSION > 3
+#if DVB_API_VERSION > 3
 		filter.pid = 0;
 		filter.output = DMX_OUT_TSDEMUX_TAP;
 		filter.pes_type = DMX_PES_OTHER;
-	#else
+#else
 		filter.pid = -1;
 		filter.output = DMX_OUT_TAP;
 		filter.pes_type = DMX_TAP_TS;
-	#endif
+#endif
 
 		ioctl(demuxFD, DMX_SET_BUFFER_SIZE, DEMUX_BUFFER_SIZE);
 		ioctl(demuxFD, DMX_SET_PES_FILTER, &filter);
@@ -4627,23 +4630,23 @@ int zapit_main_thread(void *data)
 			printf("Frontend type 0x%x not supported", fe_info.type);
 		}
 
-		::ioctl(vtunerFD, VTUNER_SET_NAME, "vtunerc0");
-		::ioctl(vtunerFD, VTUNER_SET_TYPE, type);
-		::ioctl(vtunerFD, VTUNER_SET_FE_INFO, &fe_info);
-		::ioctl(vtunerFD, VTUNER_SET_HAS_OUTPUTS, "no");
-	#if DVB_API_VERSION > 5 || DVB_API_VERSION == 5 && DVB_API_VERSION_MINOR >= 5
+		ioctl(vtunerFD, VTUNER_SET_NAME, "virtuel tuner");
+		ioctl(vtunerFD, VTUNER_SET_TYPE, type);
+		ioctl(vtunerFD, VTUNER_SET_FE_INFO, &fe_info);
+		ioctl(vtunerFD, VTUNER_SET_HAS_OUTPUTS, "no");
+#if DVB_API_VERSION > 5 || DVB_API_VERSION == 5 && DVB_API_VERSION_MINOR >= 5
 		{
 			struct dtv_properties props;
 			struct dtv_property p[1];
 			props.num = 1;
 			props.props = p;
 			p[0].cmd = DTV_ENUM_DELSYS;
-			if (::ioctl(frontendFD, FE_GET_PROPERTY, &props) >= 0)
+			if (ioctl(frontendFD, FE_GET_PROPERTY, &props) >= 0)
 			{
-				::ioctl(vtunerFD, VTUNER_SET_DELSYS, p[0].u.buffer.data);
+				ioctl(vtunerFD, VTUNER_SET_DELSYS, p[0].u.buffer.data);
 			}
 		}
-	#endif
+#endif
 
 		memset(pidlist, 0xff, sizeof(pidlist));
 
