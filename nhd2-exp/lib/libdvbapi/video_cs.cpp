@@ -858,7 +858,7 @@ int cVideo::getPlayState(void)
 }
 
 /* set source */
-int cVideo::setSource(video_stream_source_t source)
+int cVideo::setSource(int source)
 {
 	if(video_fd < 0)
 		return -1;
@@ -866,6 +866,7 @@ int cVideo::setSource(video_stream_source_t source)
 	const char *aVIDEOSTREAMSOURCE[] = {
 		"VIDEO_SOURCE_DEMUX",
 		"VIDEO_SOURCE_MEMORY",
+		"VIDEO_SOURCE_HDMI"
 	};
 		
 	dprintf(DEBUG_INFO, "%s:%s - source=%s\n", FILENAME, __FUNCTION__, aVIDEOSTREAMSOURCE[source]);	

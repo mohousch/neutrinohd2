@@ -28,6 +28,10 @@
 #include <frontend_c.h>
 
 
+#ifndef VIDEO_SOURCE_HDMI
+#define VIDEO_SOURCE_HDMI 2
+#endif
+
 // video stream type 
 typedef enum {
 	VIDEO_STREAMTYPE_MPEG2,
@@ -239,7 +243,7 @@ class cVideo
 		int getPlayState(void);
 
 		/* video stream source */
-		int setSource(video_stream_source_t source = VIDEO_SOURCE_DEMUX);
+		int setSource(int source = VIDEO_SOURCE_DEMUX);
 
 		//
 		int Start();

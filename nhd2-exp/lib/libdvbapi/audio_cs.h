@@ -28,6 +28,10 @@
 #include <frontend_c.h>
 
 
+#ifndef AUDIO_SOURCE_HDMI
+#define AUDIO_SOURCE_HDMI 2
+#endif
+
 // audio stream type
 typedef enum {
 	AUDIO_STREAMTYPE_AC3 = 0,
@@ -109,7 +113,7 @@ class cAudio
 		void SetHdmiDD(int ac3);
 		
 		// audio stream source		
-		int setSource(audio_stream_source_t source = AUDIO_SOURCE_DEMUX);
+		int setSource(int source = AUDIO_SOURCE_DEMUX);
 		
 		int setHwPCMDelay(int delay);
 		int setHwAC3Delay(int delay);
