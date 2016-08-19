@@ -881,7 +881,7 @@ int64_t cVideo::GetPTS(void)
 	
 	int64_t pts = 0;
 	if (ioctl(video_fd, VIDEO_GET_PTS, &pts) < 0)
-		perror("%s: GET_PTS failed");
+		perror("GET_PTS failed");
 	
 	return pts;
 }

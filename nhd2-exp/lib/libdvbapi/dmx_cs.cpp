@@ -355,7 +355,7 @@ bool cDemux::sectionFilter(unsigned short Pid, const unsigned char * const Tid, 
 	if (Timeout == 0 && nMask == NULL)
 		sct.timeout = to;
 	
-	dprintf(DEBUG_INFO, "%s:%s dmx(%d) type=%s Pid=0x%x Len=%d Timeout=%d\n", FILENAME, __FUNCTION__, demux_num, aDMXCHANNELTYPE[type], Pid, len, sct.timeout);
+	dprintf(DEBUG_INFO, "%s:%s dmx(%d,%d) type=%s Pid=0x%x Len=%d Timeout=%d\n", FILENAME, __FUNCTION__, demux_adapter, demux_num, aDMXCHANNELTYPE[type], Pid, len, sct.timeout);
 
 	/* Set Demux Section Filter() */
 	if (ioctl(demux_fd, DMX_SET_FILTER, &sct) < 0)
@@ -372,7 +372,7 @@ bool cDemux::pesFilter(const unsigned short Pid, const dmx_input_t Input)
 	if (demux_fd < 0)
 		return false;
 	
-	dprintf(DEBUG_INFO, "%s:%s dmx(%d) type=%s Pid=0x%x\n", FILENAME, __FUNCTION__, demux_num, aDMXCHANNELTYPE[type], Pid);
+	dprintf(DEBUG_INFO, "%s:%s dmx(%d,%d) type=%s Pid=0x%x\n", FILENAME, __FUNCTION__, demux_adapter, demux_num, aDMXCHANNELTYPE[type], Pid);
 	
 	if ((Pid >= 0x0002 && Pid <= 0x000f) || Pid >= 0x1fff)
 		return false;
@@ -470,11 +470,11 @@ void cDemux::removePid(unsigned short Pid)
 
 void cDemux::getSTC(int64_t * STC)
 { 
-#if defined (USE_OPENGL)
+#if 1 //defined (USE_OPENGL)
 	if (demux_fd < 0)
 		return;
 	
-	dprintf(DEBUG_DEBUG, "%s:%s dmx(%d) type=%s STC=\n", FILENAME, __FUNCTION__, demux_num, aDMXCHANNELTYPE[type]);	
+	dprintf(DEBUG_DEBUG, "%s:%s dmx(%d,%d) type=%s STC=\n", FILENAME, __FUNCTION__, demux_adapter, demux_num, aDMXCHANNELTYPE[type]);	
 	
 	struct dmx_stc stc;
 	memset(&stc, 0, sizeof(dmx_stc));
@@ -489,7 +489,7 @@ void cDemux::getSTC(int64_t * STC)
 	// seifes
 	/* apparently I can only get the PTS of the video decoder,
 	 * but that's good enough for dvbsub */
-	dprintf(DEBUG_DEBUG, "%s:%s dmx(%d) type=%s STC=\n", FILENAME, __FUNCTION__, demux_num, aDMXCHANNELTYPE[type]);	
+	dprintf(DEBUG_DEBUG, "%s:%s dmx(%d,%d) type=%s STC=\n", FILENAME, __FUNCTION__, demux_adapter, demux_num, aDMXCHANNELTYPE[type]);	
 	
 	int64_t pts = 0;
 	if (videoDecoder)
