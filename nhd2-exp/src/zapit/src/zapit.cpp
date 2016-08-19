@@ -243,6 +243,10 @@ CConfigFile fe_configfile(',', false);
 CFrontend * live_fe = NULL;
 CFrontend * record_fe = NULL;
 
+bool havevtuner = true; // set to true to test
+bool haveusbtuner = true; // set to true to test
+bool havesimulattuner = true; // set to true to test
+
 bool retune = false;
 
 // variables for EN 50494 (a.k.a Unicable)
@@ -4314,7 +4318,6 @@ int running = 1;
 int demuxFD = -1;
 int vtunerFD = -1;
 int frontendFD = -1;
-bool havevtuner = true; // set to true to test
 unsigned char buffer[(188 / 4) * 4096];
 __u16 pidlist[30];
 #define BUFFER_SIZE ((188 / 4) * 4096) /* multiple of ts packet and page size */
@@ -4347,7 +4350,10 @@ void *pump_proc(void *ptr)
 void *event_proc(void *ptr)
 {
 	int i, j;
-	frontendFD = live_fe->fd;
+
+	// FIXME: this is not really correct (multituner
+	if(live_fe)
+		frontendFD = live_fe->fd;
 
 	while (running)
 	{
