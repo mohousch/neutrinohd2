@@ -150,7 +150,7 @@ bool cDemux::Start(void)
 	if (demux_fd < 0)
 		return false;
 	
-	dprintf(DEBUG_INFO, "%s:%s dmx(%d, %d) type=%s Pid 0x%x\n", FILENAME, __FUNCTION__, demux_adapter, demux_num, aDMXCHANNELTYPE[type], pid);
+	dprintf(DEBUG_INFO, "%s:%s dmx(%d,%d) type=%s Pid 0x%x\n", FILENAME, __FUNCTION__, demux_adapter, demux_num, aDMXCHANNELTYPE[type], pid);
 
 #if !defined (__sh__)
         if (ioctl(demux_fd , DMX_START) < 0)
