@@ -43,6 +43,16 @@ const CMenuOptionChooser::keyval SATIP_FRONTEND_TYPE_OPTIONS[SATIP_FRONTEND_TYPE
 	{ 2, NONEXISTANT_LOCALE, "Terrestrial" }
 };
 
+// debug level
+#define SATIP_DEBUG_LEVEL_OPTION_COUNT 4
+const CMenuOptionChooser::keyval SATIP_DEBUG_LEVEL_OPTIONS[SATIP_DEBUG_LEVEL_OPTION_COUNT] =
+{
+	{ 1, NONEXISTANT_LOCALE, "MSG_ERROR" },
+	{ 2, NONEXISTANT_LOCALE, "MSG_WARN" },
+	{ 3, NONEXISTANT_LOCALE, "MSG_INFO" },
+	{ 4, NONEXISTANT_LOCALE, "MSG_DEBUG" }
+};
+
 CSatIPClient::CSatIPClient()
 {
 }
@@ -74,7 +84,7 @@ void CSatIPClient::ReadSettings()
 	// vtuner device
 	SatIPVtunerDevice = satipclient_config->getString("VTUNER", "/dev/vtunerc0");
 	// debug
-	SatIPDebug = satipclient_config->getInt32("LOGLEVEL", 0);
+	SatIPDebug = satipclient_config->getInt32("LOGLEVEL", 1);
 }
 
 bool CSatIPClient::SaveSettings() 
@@ -206,7 +216,7 @@ void CSatIPClient::doMenu()
 	satIPClientMenu->addItem(new CMenuForwarder("VTuner Device", true, SatIPVtunerDevice, VTUNER_DEVICE, NULL));
 
 	// debug
-	satIPClientMenu->addItem(new CMenuOptionChooser("SatIP Client Debug", &SatIPDebug, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL));
+	satIPClientMenu->addItem(new CMenuOptionChooser("SatIP Client Debug", &SatIPDebug, SATIP_DEBUG_LEVEL_OPTIONS, SATIP_DEBUG_LEVEL_OPTION_COUNT, true, NULL));
 
 	satIPClientMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 

@@ -243,9 +243,9 @@ CConfigFile fe_configfile(',', false);
 CFrontend * live_fe = NULL;
 CFrontend * record_fe = NULL;
 
-bool havevtuner = true; // set to true to test
-bool haveusbtuner = true; // set to true to test
-bool havesimulattuner = true; // set to true to test
+bool havevtuner = false; // set to true to test
+bool haveusbtuner = false; // set to true to test
+bool havesimulattuner = false; // set to true to test
 
 bool retune = false;
 
@@ -4218,7 +4218,6 @@ void * sdt_thread(void */*arg*/)
 #define VTUNER_SET_DELSYS 32
 #define VTUNER_SET_ADAPTER 33
 
-/*
 #define MSG_SET_FRONTEND         1
 #define MSG_GET_FRONTEND         2
 #define MSG_READ_STATUS          3
@@ -4231,13 +4230,10 @@ void * sdt_thread(void */*arg*/)
 #define MSG_ENABLE_HIGH_VOLTAGE  10
 #define MSG_SEND_DISEQC_MSG      11
 #define MSG_SEND_DISEQC_BURST    13
-*/
 #define MSG_PIDLIST              14
-/*
 #define MSG_TYPE_CHANGED         15
 #define MSG_SET_PROPERTY         16
 #define MSG_GET_PROPERTY         17
-*/
 
 struct vtuner_message
 {
@@ -4261,15 +4257,6 @@ struct vtuner_message
 		__u32 type_changed;
 	} body;
 };
-
-#if 0
-struct vtuner_message
-{
-	int type;
-	unsigned short int pidlist[30];
-	unsigned char pad[64]; /* nobody knows the much data the driver will try to copy into our struct, add some padding to be sure */
-};
-#endif
 
 int _select(int maxfd, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
 {
@@ -4410,7 +4397,6 @@ void *event_proc(void *ptr)
 
 			switch (message.type)
 			{
-			/*
 			case MSG_SET_FRONTEND:
 				ioctl(frontendFD, FE_SET_FRONTEND, &message.body.dvb_frontend_parameters);
 				break;
@@ -4441,9 +4427,8 @@ void *event_proc(void *ptr)
 			case MSG_SEND_DISEQC_BURST:
 				ioctl(frontendFD, FE_DISEQC_SEND_BURST, message.body.burst);
 				break;
-			*/
 			case MSG_PIDLIST:
-				/* remove old pids */
+				// remove old pids
 				for (i = 0; i < 30; i++)
 				{
 					int found = 0;
@@ -4467,7 +4452,7 @@ void *event_proc(void *ptr)
 #endif
 				}
 
-				/* add new pids */
+				// add new pids
 				for (i = 0; i < 30; i++)
 				{
 					int found = 0;
@@ -4491,14 +4476,13 @@ void *event_proc(void *ptr)
 #endif
 				}
 
-				/* copy pids */
+				// copy pids
 				for (i = 0; i < 30; i++)
 				{
 					pidlist[i] = message.body.pidlist[i];
 				}
 				break;
 
-			/*
 			case MSG_SET_VOLTAGE:
 				ioctl(frontendFD, FE_SET_VOLTAGE, message.body.voltage);
 				break;
@@ -4530,16 +4514,13 @@ void *event_proc(void *ptr)
 			default:
 				printf("Unknown vtuner message type: %d\n", message.type);
 				break;
-			*/
 			}
 
-			/*
 			if (message.type != MSG_PIDLIST)
 			{
 				message.type = 0;
 				ioctl(vtunerFD, VTUNER_SET_RESPONSE, &message);
 			}
-			*/
 		}
 	}
 
