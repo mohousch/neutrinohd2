@@ -98,7 +98,7 @@ class CFrontend
 		int fenumber;
 		int fe_adapter;
 		
-		fe_mode_t	mode;
+		fe_mode_t mode;
 		
 		/* usals config */
 		int useGotoXX;
@@ -130,11 +130,15 @@ class CFrontend
 		
 		/* standby flag */
 		bool standby;
+
+		/* file descriptor */
 		int fd;
+
+		/* usb/vtuner flag */
+		bool isusbtuner;
+		bool isvtuner;
 	  
 	private:
-		//int fd;
-		
 		/* slave */
 		bool slave;
 		
@@ -149,7 +153,7 @@ class CFrontend
 		/* current satellite position */
 		int32_t currentSatellitePosition;
 		
-		/**/
+		/* diseqc */
 		int diseqc;
 		uint8_t uncommitedInput;
 

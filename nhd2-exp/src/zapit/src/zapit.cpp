@@ -255,6 +255,9 @@ bool retune = false;
 
 bool initFrontend()
 {
+	// clear femap
+	femap.clear();
+
 	// scan for frontend
 	int i, j;
 	
@@ -274,6 +277,15 @@ bool initFrontend()
 				femap.insert(std::pair <unsigned short, CFrontend*> (index, fe));
 				
 				live_fe = fe;
+
+				// check if isusbtuner
+				char devicename[256];
+				snprintf(devicename, sizeof(devicename), "/sys/class/dvb/dvb%d.frontend0/device/ep_00", fe->fe_adapter);
+				if(access(devicename, X_OK) >= 0)
+					fe->isusbtuner = true;
+
+				dprintf(DEBUG_NORMAL, "fe(%d,%d) is assigned as usb tuner\n", fe->fe_adapter, fe->fenumber);
+				// check if isvtuner: ???
 				
 				// set it to standby
 				fe->Close();
@@ -4184,18 +4196,29 @@ void * sdt_thread(void */*arg*/)
 }
 
 // vtuner test
+#ifdef TUNER_VUSOLO4K
+#define VTUNER_GET_MESSAGE  11
+#define VTUNER_SET_RESPONSE 12
+#define VTUNER_SET_NAME     13
+#define VTUNER_SET_TYPE     14
+#define VTUNER_SET_HAS_OUTPUTS 15
+#define VTUNER_SET_FE_INFO  16
+#define VTUNER_SET_NUM_MODES 17
+#define VTUNER_SET_MODES 18
+#else
 #define VTUNER_GET_MESSAGE  1
 #define VTUNER_SET_RESPONSE 2
 #define VTUNER_SET_NAME     3
 #define VTUNER_SET_TYPE     4
 #define VTUNER_SET_HAS_OUTPUTS 5
 #define VTUNER_SET_FE_INFO  6
-#define VTUNER_SET_DELSYS   7
+#define VTUNER_SET_NUM_MODES 7
 #define VTUNER_SET_MODES 8
-
+#endif
 #define VTUNER_SET_DELSYS 32
 #define VTUNER_SET_ADAPTER 33
 
+/*
 #define MSG_SET_FRONTEND         1
 #define MSG_GET_FRONTEND         2
 #define MSG_READ_STATUS          3
@@ -4208,10 +4231,13 @@ void * sdt_thread(void */*arg*/)
 #define MSG_ENABLE_HIGH_VOLTAGE  10
 #define MSG_SEND_DISEQC_MSG      11
 #define MSG_SEND_DISEQC_BURST    13
+*/
 #define MSG_PIDLIST              14
+/*
 #define MSG_TYPE_CHANGED         15
 #define MSG_SET_PROPERTY         16
 #define MSG_GET_PROPERTY         17
+*/
 
 struct vtuner_message
 {
@@ -4235,6 +4261,15 @@ struct vtuner_message
 		__u32 type_changed;
 	} body;
 };
+
+#if 0
+struct vtuner_message
+{
+	int type;
+	unsigned short int pidlist[30];
+	unsigned char pad[64]; /* nobody knows the much data the driver will try to copy into our struct, add some padding to be sure */
+};
+#endif
 
 int _select(int maxfd, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
 {
@@ -4325,6 +4360,8 @@ __u16 pidlist[30];
 
 void *pump_proc(void *ptr)
 {
+	dprintf(DEBUG_INFO, "[zapit] pump_proc: starting... tid %ld\n", syscall(__NR_gettid));
+
 	while (running)
 	{
 		struct timeval tv;
@@ -4349,9 +4386,11 @@ void *pump_proc(void *ptr)
 
 void *event_proc(void *ptr)
 {
+	dprintf(DEBUG_INFO, "[zapit] event_proc: starting... tid %ld\n", syscall(__NR_gettid));
+
 	int i, j;
 
-	// FIXME: this is not really correct (multituner
+	// FIXME: this is not really correct (multituner???)
 	if(live_fe)
 		frontendFD = live_fe->fd;
 
@@ -4371,6 +4410,7 @@ void *event_proc(void *ptr)
 
 			switch (message.type)
 			{
+			/*
 			case MSG_SET_FRONTEND:
 				ioctl(frontendFD, FE_SET_FRONTEND, &message.body.dvb_frontend_parameters);
 				break;
@@ -4401,6 +4441,7 @@ void *event_proc(void *ptr)
 			case MSG_SEND_DISEQC_BURST:
 				ioctl(frontendFD, FE_DISEQC_SEND_BURST, message.body.burst);
 				break;
+			*/
 			case MSG_PIDLIST:
 				/* remove old pids */
 				for (i = 0; i < 30; i++)
@@ -4456,6 +4497,8 @@ void *event_proc(void *ptr)
 					pidlist[i] = message.body.pidlist[i];
 				}
 				break;
+
+			/*
 			case MSG_SET_VOLTAGE:
 				ioctl(frontendFD, FE_SET_VOLTAGE, message.body.voltage);
 				break;
@@ -4487,13 +4530,16 @@ void *event_proc(void *ptr)
 			default:
 				printf("Unknown vtuner message type: %d\n", message.type);
 				break;
+			*/
 			}
 
+			/*
 			if (message.type != MSG_PIDLIST)
 			{
 				message.type = 0;
 				ioctl(vtunerFD, VTUNER_SET_RESPONSE, &message);
 			}
+			*/
 		}
 	}
 
@@ -4567,6 +4613,7 @@ int zapit_main_thread(void *data)
 
 	// init vtuner
 	// need check for usb/vtuner: FIXME
+	// NOTE: remove this later to initFrontend()
 	if(havevtuner)
 	{
 		char type[8];
@@ -4578,7 +4625,7 @@ int zapit_main_thread(void *data)
 
 		sprintf(frontend_filename, "/dev/dvb/adapter1/frontend0");
 		sprintf(demux_filename, "/dev/dvb/adapter1/demux0");
-		sprintf(vtuner_filename, "/dev/vtunerc0");
+		sprintf(vtuner_filename, "/dev/vtunerc0"); //FIXME: think about this (/dev/misc/vtuner%)
 
 		frontendFD = open(frontend_filename, O_RDWR);
 		if (frontendFD < 0)
@@ -4642,7 +4689,7 @@ int zapit_main_thread(void *data)
 
 		ioctl(vtunerFD, VTUNER_SET_NAME, "virtuel tuner");
 		ioctl(vtunerFD, VTUNER_SET_TYPE, type);
-		//ioctl(vtunerFD, VTUNER_SET_FE_INFO, &fe_info);
+		ioctl(vtunerFD, VTUNER_SET_FE_INFO, &fe_info);
 		ioctl(vtunerFD, VTUNER_SET_HAS_OUTPUTS, "no");
 		ioctl(vtunerFD, VTUNER_SET_ADAPTER, 1);
 
@@ -4662,7 +4709,7 @@ int zapit_main_thread(void *data)
 
 		memset(pidlist, 0xff, sizeof(pidlist));
 
-		printf("init succeeded\n");
+		dprintf(DEBUG_NORMAL, "init succeeded\n");
 
 		pthread_create(&eventthread, NULL, event_proc, (void*)NULL);
 		pthread_create(&pumpthread, NULL, pump_proc, (void*)NULL);
@@ -4829,10 +4876,13 @@ int zapit_main_thread(void *data)
 	stopPlayBack();
 
 	// stop vtuner pump thread
-	pthread_cancel(eventthread);
-	pthread_join(eventthread, NULL);
-	pthread_cancel(pumpthread);
-	pthread_join(pumpthread, NULL);
+	if(havevtuner)
+	{
+		pthread_cancel(eventthread);
+		pthread_join(eventthread, NULL);
+		pthread_cancel(pumpthread);
+		pthread_join(pumpthread, NULL);
+	}
 	
 	// stop std thread
 	pthread_cancel(tsdt);
