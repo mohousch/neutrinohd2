@@ -128,10 +128,10 @@ CChannelList::CChannelList(const char * const Name, bool _historyMode, bool _vli
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_MUTE_ZAP_INACTIVE, &icon_head_w, &icon_head_h);
 	
 	// scrambled
-	frameBuffer->getIconSize(NEUTRINO_ICON_SCRAMBLED, &icon_ca_w, &icon_ca_h);
+	frameBuffer->getIconSize(NEUTRINO_ICON_SCRAMBLED2, &icon_ca_w, &icon_ca_h);
 	
 	// hd
-	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_HD, &icon_hd_w, &icon_hd_h);
+	frameBuffer->getIconSize(NEUTRINO_ICON_HD, &icon_hd_w, &icon_hd_h);
 	
 	// icon help
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_help_w, &icon_help_h);
@@ -1712,11 +1712,15 @@ void CChannelList::paintItem(int pos)
 		{
 			// scrambled icon
 			if(chan->scrambled) 
-				frameBuffer->paintIcon(NEUTRINO_ICON_SCRAMBLED, x + width - SCROLLBAR_WIDTH - 2 - icon_ca_w, ypos + (iheight - icon_ca_h)/2);
+				frameBuffer->paintIcon(NEUTRINO_ICON_SCRAMBLED2, x + width - SCROLLBAR_WIDTH - 2 - icon_ca_w, ypos + (iheight - icon_ca_h)/2);
 			
 			// hd icon
 			if(chan->isHD() ) 
-				frameBuffer->paintIcon(NEUTRINO_ICON_RESOLUTION_HD, x + width - SCROLLBAR_WIDTH - 2 - icon_ca_w - 2 - icon_hd_w, ypos + (iheight - icon_hd_h)/2);
+				frameBuffer->paintIcon(NEUTRINO_ICON_HD, x + width - SCROLLBAR_WIDTH - 2 - icon_ca_w - 2 - icon_hd_w, ypos + (iheight - icon_hd_h)/2);
+
+			// uhd icon
+			if(chan->isUHD()) 
+				frameBuffer->paintIcon(NEUTRINO_ICON_UHD, x + width - SCROLLBAR_WIDTH - 2 - icon_ca_w - 2 - icon_hd_w, ypos + (iheight - icon_hd_h)/2);
 		}
 
 		// channel number

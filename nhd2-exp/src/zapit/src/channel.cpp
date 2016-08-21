@@ -144,7 +144,7 @@ unsigned char CZapitChannel::getServiceType(bool real)
 	if(real)
 		return serviceType; 
 	else
-		return serviceType == 2 ? 2 : 1;	
+		return serviceType == ST_DIGITAL_RADIO_SOUND_SERVICE ? ST_DIGITAL_RADIO_SOUND_SERVICE : ST_DIGITAL_TELEVISION_SERVICE;	
 }
 
 bool CZapitChannel::isHD()
@@ -169,6 +169,32 @@ bool CZapitChannel::isHD()
 		
 		case ST_DIGITAL_RADIO_SOUND_SERVICE:
 			return false;
+			
+		default:
+			return false;
+	}
+}
+
+bool CZapitChannel::isUHD()
+{
+	//FIXME: save channel typ in services
+	//if(type == CHANNEL_HEVC)
+	//	return true;
+
+	switch(serviceType) 
+	{	
+		case ST_DIGITAL_TELEVISION_SERVICE: 
+		case ST_AVC_SD_DIGITAL_TV_SERVICE:
+		{
+				char * temp = (char *) name.c_str();
+				int len = name.size();
+
+				if((len > 1) && temp[len - 3] == 'U' && temp[len - 2] == 'H' && temp[len -1] == 'D') 
+				{
+					return true;
+				}
+				return false;
+		}
 			
 		default:
 			return false;

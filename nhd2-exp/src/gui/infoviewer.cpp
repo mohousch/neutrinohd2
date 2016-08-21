@@ -1281,6 +1281,7 @@ void CInfoViewer::showIcon_Resolution() const
 			case 352:
 			case 288:
 				icon_name_res = NEUTRINO_ICON_RESOLUTION_SD2;
+				//test
 				CVFD::getInstance()->ShowIcon(VFD_ICON_HD, false);
 				break;
 				
@@ -1299,6 +1300,10 @@ void CInfoViewer::showIcon_Resolution() const
 		// resolution
 		switch (yres) 
 		{
+			//case 1980:
+			//	icon_name = NEUTRINO_ICON_RESOLUTION_1980;
+			//	break;
+
 			case 1920:
 				icon_name = NEUTRINO_ICON_RESOLUTION_1920;
 				break;

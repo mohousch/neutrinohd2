@@ -77,7 +77,7 @@ CBEChannelWidget::CBEChannelWidget(const std::string & Caption, unsigned int Bou
 	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	
 	// item height
-	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_HD, &icon_w_hd, &icon_h_hd);
+	frameBuffer->getIconSize(NEUTRINO_ICON_HD, &icon_w_hd, &icon_h_hd);
 	frameBuffer->getIconSize(NEUTRINO_ICON_SCRAMBLED2, &icon_w_s, &icon_h_s);
 	
 	fheight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), icon_h_s) + 2;
@@ -139,8 +139,12 @@ void CBEChannelWidget::paintItem(int pos)
 				frameBuffer->paintIcon(NEUTRINO_ICON_SCRAMBLED2, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s), ypos + (fheight - icon_h_s)/2 );
 			
 			// hd icon
-			if((*Channels)[current]->isHD() ) 
-				frameBuffer->paintIcon(NEUTRINO_ICON_RESOLUTION_HD, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s + 2 + icon_w_hd), ypos + (fheight - icon_h_hd)/2 );
+			if((*Channels)[current]->isHD()) 
+				frameBuffer->paintIcon(NEUTRINO_ICON_HD, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s + 2 + icon_w_hd), ypos + (fheight - icon_h_hd)/2 );
+
+			// uhd icon
+			if((*Channels)[current]->isUHD())
+				frameBuffer->paintIcon(NEUTRINO_ICON_UHD, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s + 2 + icon_w_hd), ypos + (fheight - icon_h_hd)/2 );
 		}
 	}
 }

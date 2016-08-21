@@ -144,7 +144,10 @@
 #define NEUTRINO_ICON_RESOLUTION_000		"res_000"
 #define NEUTRINO_ICON_RESOLUTION_HD2		"res_hd2"
 #define NEUTRINO_ICON_RESOLUTION_SD2		"res_sd2"
-#define NEUTRINO_ICON_RESOLUTION_HD		"res_hd"
+#define NEUTRINO_ICON_RESOLUTION_UHD2		"res_uhd2"
+#define NEUTRINO_ICON_HD			"res_hd"
+#define NEUTRINO_ICON_UHD			"res_uhd"
+
 
 // for browser
 #define NEUTRINO_ICON_MOVIE			"movie"
