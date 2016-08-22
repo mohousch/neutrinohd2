@@ -1261,6 +1261,13 @@ void CInfoViewer::showIcon_Resolution() const
 		// show sd/hd icon on infobar	
 		switch (yres) 
 		{
+			case 2160:
+			case 1980:
+				icon_name_res = NEUTRINO_ICON_RESOLUTION_UHD2;
+				//test
+				CVFD::getInstance()->ShowIcon(VFD_ICON_HD, true); //FIXME: remove this to remotecontrol
+				break;
+
 			case 1920:
 			case 1440:
 			case 1280:
@@ -1300,9 +1307,13 @@ void CInfoViewer::showIcon_Resolution() const
 		// resolution
 		switch (yres) 
 		{
-			//case 1980:
-			//	icon_name = NEUTRINO_ICON_RESOLUTION_1980;
-			//	break;
+			case 2160:
+				icon_name = NEUTRINO_ICON_RESOLUTION_2160;
+				break;
+
+			case 1980:
+				icon_name = NEUTRINO_ICON_RESOLUTION_1980;
+				break;
 
 			case 1920:
 				icon_name = NEUTRINO_ICON_RESOLUTION_1920;
@@ -1362,7 +1373,10 @@ void CInfoViewer::showIcon_Resolution() const
 				break;
 		}
 	
+		// refresh box
 		frameBuffer->paintBoxRel(BoxEndX - (ICON_OFFSET + icon_w_subt + 2 + icon_w_vtxt + 2 + icon_w_dd + 2 + icon_w_aspect + 2 + icon_w_sd + 2 + icon_w_reso), buttonBarStartY + (buttonBarHeight - icon_h_reso)/2, icon_w_reso, icon_h_reso, COL_INFOBAR_BUTTONS_BACKGROUND);
+
+		// icon
 		frameBuffer->paintIcon(icon_name, BoxEndX - (ICON_OFFSET + icon_w_subt + 2 + icon_w_vtxt + 2 + icon_w_dd + 2 + icon_w_aspect + 2 + icon_w_sd + 2 + icon_w_reso), buttonBarStartY + (buttonBarHeight - icon_h_reso)/2 );
 	}
 }
@@ -2244,6 +2258,7 @@ void CInfoViewer::showIcon_CA_Status(int notfirst)
 		}
 		
 		frameBuffer->paintIcon( fta ? NEUTRINO_ICON_SCRAMBLED2_GREY : NEUTRINO_ICON_SCRAMBLED2, BoxEndX - (ICON_OFFSET + icon_w_subt + 2 + icon_w_vtxt + 2 + icon_w_dd + 2 + icon_w_aspect + 2 + icon_w_sd + 2 + icon_w_reso + 2 + icon_w_ca), buttonBarStartY + (buttonBarHeight - icon_h_ca)/2 );
+
 #if !defined (PLATFORM_COOLSTREAM)
 		CVFD::getInstance()->ShowIcon(VFD_ICON_LOCK, !fta);
 #endif			

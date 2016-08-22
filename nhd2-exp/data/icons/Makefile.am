@@ -7,7 +7,8 @@ install_DATA = \
 	ellinika.png english.png francais.png french.png hungarian.png italiano.png norsk.png \
 	polski.png portugues.png romania.png russkij.png nederlands.png slovak.png suomi.png svenska.png arabic.png \
 	blue.png yellow.png green.png red.png \
-	res_hd.png ca.png ca2.png ca2_gray.png colors.png setup.png setup_small.png \
+	res_hd.png res_uhd.png ca.png ca2.png ca2_gray.png \
+	colors.png setup.png setup_small.png \
 	dd.png dd_avail.png dd_gray.png \
 	down.png up.png right.png left.png \
 	error.png file.png folder.png games.png \
@@ -49,7 +50,7 @@ install_DATA += \
 install_DATA += \
 	res_1280.png res_1440.png res_1080.png res_720.png res_704.png res_576.png \
 	res_528.png res_544.png res_480.png res_382.png res_352.png res_288.png res_000.png \
-	res_hd2.png res_sd2.png
+	res_hd2.png res_sd2.png res_uhd2.png res_1980.png res_2160.png
 
 # usb hdd
 install_DATA += \

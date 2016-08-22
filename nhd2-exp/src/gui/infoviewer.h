@@ -162,7 +162,7 @@ class CInfoViewer
 		void showIcon_RadioText(bool rt_available) const;		
 	
 		void showIcon_CA_Status(int);
-		void paint_ca_icons(int, char*);
+		//void paint_ca_icons(int, char*);
 
 		void showIcon_VTXT()      const;
 		void showRecordIcon(const bool show);
