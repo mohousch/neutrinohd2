@@ -121,11 +121,10 @@ void CZapitChannel::resetPids(void)
 	currentAudioChannel = 0;
 
 	pcrPid = 0;
-	//pmtPid = 0;
 	teletextPid = 0;
 	videoPid = 0;
 	audioPid = 0;
-	//aitPid = 0;
+	aitPid = 0;
 
 	privatePid = 0;
 	pidsFlag = false;

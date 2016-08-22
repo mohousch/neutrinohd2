@@ -305,13 +305,11 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 								if ( descriptor_length == 4 && !buffer[pos + 2] && !buffer[pos + 3] && buffer[pos + 4] == 0xFF && buffer[pos + 5] == 0xFF )
 									tmp |= 2;
 							}
-							//break;??
-						/*	
-						case 0x6F:
+							//break;??	
+						case APPLICATION_SIGNALLING_DESCRIPTOR:
 							channel->setaitPid(esInfo->elementary_PID);
-							dprintf(DEBUG_NORMAL, "[pmt]parse_ES_info: channel->setaitPid(0x%x)\n", esInfo->elementary_PID);
+							dprintf(DEBUG_NORMAL, "[pmt]0x05:parse_ES_info: channel->setaitPid(0x%x)\n", esInfo->elementary_PID);
 							break;
-						*/
 							
 						default:
 							break;

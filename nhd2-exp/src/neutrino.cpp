@@ -853,15 +853,16 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.channel_mode = configfile.getInt32("channel_mode", LIST_MODE_ALL);
 
 	//misc
-	g_settings.power_standby = configfile.getInt32( "power_standby", 0);
-	g_settings.rotor_swap = configfile.getInt32( "rotor_swap", 0);
+	g_settings.power_standby = configfile.getInt32( "power_standby", 1);
 
 	g_settings.shutdown_real = configfile.getBool("shutdown_real", true );
 	g_settings.shutdown_real_rcdelay = configfile.getBool("shutdown_real_rcdelay", false );
         strcpy(g_settings.shutdown_count, configfile.getString("shutdown_count","0").c_str());
+
 	g_settings.infobar_sat_display   = configfile.getBool("infobar_sat_display"  , true );
 	g_settings.infobar_subchan_disp_pos = configfile.getInt32("infobar_subchan_disp_pos"  , 0 );
 
+	g_settings.rotor_swap = configfile.getInt32( "rotor_swap", 0);
 	g_settings.zap_cycle = configfile.getInt32( "zap_cycle", 1 );
 	g_settings.sms_channel = configfile.getInt32( "sms_channel", 0 );
 
@@ -1298,6 +1299,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	// END PICVIEWER
 
 	// MISC OPTS
+	configfile.setInt32( "power_standby", g_settings.power_standby);
 	configfile.setBool("shutdown_real", g_settings.shutdown_real);
 	configfile.setBool("shutdown_real_rcdelay", g_settings.shutdown_real_rcdelay);
 	configfile.setString("shutdown_count", g_settings.shutdown_count);
@@ -1327,7 +1329,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 		sprintf(cfg_key, "pref_epgs_%d", i);
 		configfile.setString(cfg_key, g_settings.pref_epgs[i]);
 	}
-	//
 
 	//filebrowser
 	configfile.setBool  ("filesystem_is_utf8", g_settings.filesystem_is_utf8);
@@ -1338,14 +1339,10 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	//
 	configfile.setInt32( "channel_mode", g_settings.channel_mode );
 
-	//misc
-	configfile.setInt32( "power_standby", g_settings.power_standby);
-
+	// scan/channellist
 	configfile.setInt32( "rotor_swap", g_settings.rotor_swap);
-
 	configfile.setInt32( "zap_cycle", g_settings.zap_cycle );
 	configfile.setInt32( "sms_channel", g_settings.sms_channel );
-
 	configfile.setBool("virtual_zap_mode", g_settings.virtual_zap_mode);
 	
 	//zapit setup

@@ -245,7 +245,7 @@ CFrontend * record_fe = NULL;
 
 bool havevtuner = false; // set to true to test
 bool haveusbtuner = false; // set to true to test
-bool havesimulattuner = false; // set to true to test
+bool havefake_tuner = false; // set to true to test
 
 bool retune = false;
 
@@ -281,11 +281,10 @@ bool initFrontend()
 				// check if isusbtuner
 				char devicename[256];
 				snprintf(devicename, sizeof(devicename), "/sys/class/dvb/dvb%d.frontend0/device/ep_00", fe->fe_adapter);
-				if(access(devicename, X_OK) >= 0)
+				if(access(devicename, X_OK) < 0)
 					fe->isusbtuner = true;
 
 				dprintf(DEBUG_NORMAL, "fe(%d,%d) is assigned as usb tuner\n", fe->fe_adapter, fe->fenumber);
-				// check if isvtuner: ???
 				
 				// set it to standby
 				fe->Close();
@@ -4397,6 +4396,7 @@ void *event_proc(void *ptr)
 
 			switch (message.type)
 			{
+			/*
 			case MSG_SET_FRONTEND:
 				ioctl(frontendFD, FE_SET_FRONTEND, &message.body.dvb_frontend_parameters);
 				break;
@@ -4427,6 +4427,37 @@ void *event_proc(void *ptr)
 			case MSG_SEND_DISEQC_BURST:
 				ioctl(frontendFD, FE_DISEQC_SEND_BURST, message.body.burst);
 				break;
+
+			case MSG_SET_VOLTAGE:
+				ioctl(frontendFD, FE_SET_VOLTAGE, message.body.voltage);
+				break;
+			case MSG_ENABLE_HIGH_VOLTAGE:
+				ioctl(frontendFD, FE_ENABLE_HIGH_LNB_VOLTAGE, message.body.voltage);
+				break;
+			case MSG_TYPE_CHANGED:
+				break;
+			case MSG_SET_PROPERTY:
+#if DVB_API_VERSION >= 5
+				{
+					struct dtv_properties props;
+					props.num = 1;
+					props.props = &message.body.prop;
+					ioctl(frontendFD, FE_SET_PROPERTY, &props);
+				}
+#endif
+				break;
+			case MSG_GET_PROPERTY:
+#if DVB_API_VERSION >= 5
+				{
+					struct dtv_properties props;
+					props.num = 1;
+					props.props = &message.body.prop;
+					ioctl(frontendFD, FE_GET_PROPERTY, &props);
+				}
+#endif
+				break;
+			*/
+
 			case MSG_PIDLIST:
 				// remove old pids
 				for (i = 0; i < 30; i++)
@@ -4483,34 +4514,6 @@ void *event_proc(void *ptr)
 				}
 				break;
 
-			case MSG_SET_VOLTAGE:
-				ioctl(frontendFD, FE_SET_VOLTAGE, message.body.voltage);
-				break;
-			case MSG_ENABLE_HIGH_VOLTAGE:
-				ioctl(frontendFD, FE_ENABLE_HIGH_LNB_VOLTAGE, message.body.voltage);
-				break;
-			case MSG_TYPE_CHANGED:
-				break;
-			case MSG_SET_PROPERTY:
-#if DVB_API_VERSION >= 5
-				{
-					struct dtv_properties props;
-					props.num = 1;
-					props.props = &message.body.prop;
-					ioctl(frontendFD, FE_SET_PROPERTY, &props);
-				}
-#endif
-				break;
-			case MSG_GET_PROPERTY:
-#if DVB_API_VERSION >= 5
-				{
-					struct dtv_properties props;
-					props.num = 1;
-					props.props = &message.body.prop;
-					ioctl(frontendFD, FE_GET_PROPERTY, &props);
-				}
-#endif
-				break;
 			default:
 				printf("Unknown vtuner message type: %d\n", message.type);
 				break;
