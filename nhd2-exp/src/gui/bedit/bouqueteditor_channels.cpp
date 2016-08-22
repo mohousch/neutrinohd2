@@ -78,7 +78,7 @@ CBEChannelWidget::CBEChannelWidget(const std::string & Caption, unsigned int Bou
 	
 	// item height
 	frameBuffer->getIconSize(NEUTRINO_ICON_HD, &icon_w_hd, &icon_h_hd);
-	frameBuffer->getIconSize(NEUTRINO_ICON_SCRAMBLED2, &icon_w_s, &icon_h_s);
+	frameBuffer->getIconSize(NEUTRINO_ICON_SCRAMBLED, &icon_w_s, &icon_h_s);
 	
 	fheight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), icon_h_s) + 2;
 
@@ -136,7 +136,7 @@ void CBEChannelWidget::paintItem(int pos)
 		{
 			// scrambled icon
 			if((*Channels)[current]->scrambled) 
-				frameBuffer->paintIcon(NEUTRINO_ICON_SCRAMBLED2, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s), ypos + (fheight - icon_h_s)/2 );
+				frameBuffer->paintIcon(NEUTRINO_ICON_SCRAMBLED, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s), ypos + (fheight - icon_h_s)/2 );
 			
 			// hd icon
 			if((*Channels)[current]->isHD()) 

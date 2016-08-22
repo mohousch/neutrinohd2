@@ -115,7 +115,6 @@
 #define NEUTRINO_ICON_SUBT_GREY			"subt_gray"
 #define NEUTRINO_ICON_AUTO_SHIFT		"ats"
 #define NEUTRINO_ICON_NUMERIC_PAD		"numericpad"
-#define NEUTRINO_ICON_SCRAMBLED			"ca"
 #define NEUTRINO_ICON_SCRAMBLED2		"ca2"
 #define NEUTRINO_ICON_SCRAMBLED2_GREY		"ca2_gray"
 #define NEUTRINO_ICON_BORDER_UL			"border_ul"
@@ -145,6 +144,8 @@
 #define NEUTRINO_ICON_RESOLUTION_HD2		"res_hd2"
 #define NEUTRINO_ICON_RESOLUTION_SD2		"res_sd2"
 #define NEUTRINO_ICON_RESOLUTION_UHD2		"res_uhd2"
+
+#define NEUTRINO_ICON_SCRAMBLED			"ca"
 #define NEUTRINO_ICON_HD			"res_hd"
 #define NEUTRINO_ICON_UHD			"res_uhd"
 

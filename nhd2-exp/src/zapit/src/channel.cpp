@@ -160,10 +160,11 @@ bool CZapitChannel::isHD()
 		{
 				char * temp = (char *) name.c_str();
 				int len = name.size();
-				if((len > 1) && temp[len-2] == 'H' && temp[len-1] == 'D') 
+				if((len > 1) && temp[len - 2] == 'H' && temp[len - 1] == 'D') 
 				{
 					return true;
 				}
+
 				return false;
 		}
 		
@@ -177,10 +178,6 @@ bool CZapitChannel::isHD()
 
 bool CZapitChannel::isUHD()
 {
-	//FIXME: save channel typ in services
-	//if(type == CHANNEL_HEVC)
-	//	return true;
-
 	switch(serviceType) 
 	{	
 		case ST_DIGITAL_TELEVISION_SERVICE: 
@@ -193,6 +190,7 @@ bool CZapitChannel::isUHD()
 				{
 					return true;
 				}
+
 				return false;
 		}
 			

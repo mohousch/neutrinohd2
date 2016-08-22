@@ -68,6 +68,7 @@ class CBEChannelSelectWidget : public CListBox
 		int icon_h_hd;
 		int icon_w_s;
 		int icon_h_s;
+
 		int icon_head_w;
 		int icon_head_h;
 		int icon_foot_w;
