@@ -253,7 +253,7 @@ bool retune = false;
 //int uni_scr = -1;	/* the unicable SCR address,     -1 == no unicable */
 //int uni_qrg = 0;	/* the unicable frequency in MHz, 0 == from spec */
 
-bool initFrontend()
+void initFrontend()
 {
 	// clear femap
 	femap.clear();
@@ -278,13 +278,19 @@ bool initFrontend()
 				
 				live_fe = fe;
 
-				// check if isusbtuner
+				// check if isusbtuner/vtuner
+#if !defined (USE_OPENGL)
 				char devicename[256];
-				snprintf(devicename, sizeof(devicename), "/sys/class/dvb/dvb%d.frontend0/device/ep_00", fe->fe_adapter);
-				if(access(devicename, X_OK) < 0)
-					fe->isusbtuner = true;
+				//snprintf(devicename, sizeof(devicename), "/sys/class/dvb/dvb%d.frontend0/device/ep_00", fe->fe_adapter);
 
-				dprintf(DEBUG_NORMAL, "fe(%d,%d) is assigned as usb tuner\n", fe->fe_adapter, fe->fenumber);
+				// fallback to video device node
+				snprintf(devicename, sizeof(devicename), "/dev/dvb/adapter%d/video0", fe->fe_adapter);
+				if(access(devicename, X_OK) >= 0)
+					fe->isvtuner = true;
+
+				if(fe->isvtuner)
+					dprintf(DEBUG_NORMAL, "fe(%d,%d) is assigned as vtuner\n", fe->fe_adapter, fe->fenumber);
+#endif
 				
 				// set it to standby
 				fe->Close();
@@ -297,11 +303,6 @@ bool initFrontend()
 	FrontendCount = femap.size();
 	
 	dprintf(DEBUG_INFO, "%s found %d frontends\n", __FUNCTION__, femap.size());
-	
-	if(femap.size() == 0)
-		return false;
-		
-	return true;
 }
 
 void OpenFE()

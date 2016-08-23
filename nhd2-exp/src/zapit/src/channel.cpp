@@ -157,14 +157,14 @@ bool CZapitChannel::isHD()
 		case ST_DIGITAL_TELEVISION_SERVICE: 
 		case ST_AVC_SD_DIGITAL_TV_SERVICE:
 		{
-				char * temp = (char *) name.c_str();
-				int len = name.size();
-				if((len > 1) && temp[len - 2] == 'H' && temp[len - 1] == 'D') 
-				{
-					return true;
-				}
+			char * temp = (char *) name.c_str();
+			int len = name.size();
+			if((len > 1) && temp[len - 2] == 'H' && temp[len - 1] == 'D') 
+			{
+				return true;
+			}
 
-				return false;
+			return false;
 		}
 		
 		case ST_DIGITAL_RADIO_SOUND_SERVICE:
@@ -182,15 +182,15 @@ bool CZapitChannel::isUHD()
 		case ST_DIGITAL_TELEVISION_SERVICE: 
 		case ST_AVC_SD_DIGITAL_TV_SERVICE:
 		{
-				char * temp = (char *) name.c_str();
-				int len = name.size();
+			char * temp = (char *) name.c_str();
+			int len = name.size();
 
-				if((len > 1) && temp[len - 3] == 'U' && temp[len - 2] == 'H' && temp[len -1] == 'D') 
-				{
-					return true;
-				}
+			if((len > 1) && temp[len - 3] == 'U' && temp[len - 2] == 'H' && temp[len -1] == 'D') 
+			{
+				return true;
+			}
 
-				return false;
+			return false;
 		}
 			
 		default:

@@ -134,9 +134,9 @@ class CFrontend
 		/* file descriptor */
 		int fd;
 
-		/* usb/vtuner flag */
-		bool isusbtuner;
+		/* vtuner/faketuner flag */
 		bool isvtuner;
+		bool isfaketuner;
 	  
 	private:
 		/* slave */

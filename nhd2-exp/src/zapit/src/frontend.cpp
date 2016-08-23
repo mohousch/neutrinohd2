@@ -118,6 +118,9 @@ CFrontend::CFrontend(int num, int adap)
 	// to allow Open() switch it off
 	currentVoltage = SEC_VOLTAGE_OFF; //SEC_VOLTAGE_13;
 	currentToneMode = SEC_TONE_ON;
+
+	isvtuner = false;
+	isfaketuner = false;
 }
 
 CFrontend::~CFrontend(void)
