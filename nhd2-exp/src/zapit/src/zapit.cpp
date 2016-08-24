@@ -337,6 +337,21 @@ CFrontend * getFE(int index)
 	return NULL;
 }
 
+CFrontend * getVTuner()
+{
+	CFrontend * vtuner = NULL;
+
+	for(fe_map_iterator_t it = femap.begin(); it != femap.end(); it++) 
+	{
+		CFrontend * fe = it->second;
+		
+		if (fe->isvtuner)
+			vtuner = fe;
+	}
+
+	return vtuner;
+}
+
 void setMode(fe_mode_t newmode, int feindex)
 {
 	// set mode
@@ -4337,9 +4352,9 @@ ssize_t _read(int fd, void *buf, size_t count)
 pthread_t eventthread = 0;
 pthread_t pumpthread = 0;
 int running = 1;
-int demuxFD = -1;
-int vtunerFD = -1;
-int frontendFD = -1;
+static int demuxFD = -1;
+static int vtunerFD = -1;
+static int frontendFD = -1;
 unsigned char buffer[(188 / 4) * 4096];
 __u16 pidlist[30];
 #define BUFFER_SIZE ((188 / 4) * 4096) /* multiple of ts packet and page size */
@@ -4377,10 +4392,6 @@ void *event_proc(void *ptr)
 
 	int i, j;
 
-	// FIXME: this is not really correct (multituner???)
-	if(live_fe)
-		frontendFD = live_fe->fd;
-
 	while (running)
 	{
 		struct timeval tv;
@@ -4397,68 +4408,6 @@ void *event_proc(void *ptr)
 
 			switch (message.type)
 			{
-			/*
-			case MSG_SET_FRONTEND:
-				ioctl(frontendFD, FE_SET_FRONTEND, &message.body.dvb_frontend_parameters);
-				break;
-			case MSG_GET_FRONTEND:
-				ioctl(frontendFD, FE_GET_FRONTEND, &message.body.dvb_frontend_parameters);
-				break;
-			case MSG_READ_STATUS:
-				ioctl(frontendFD, FE_READ_STATUS, &message.body.status);
-				break;
-			case MSG_READ_BER:
-				ioctl(frontendFD, FE_READ_BER, &message.body.ber);
-				break;
-			case MSG_READ_SIGNAL_STRENGTH:
-				ioctl(frontendFD, FE_READ_SIGNAL_STRENGTH, &message.body.ss);
-				break;
-			case MSG_READ_SNR:
-				ioctl(frontendFD, FE_READ_SNR, &message.body.snr);
-				break;
-			case MSG_READ_UCBLOCKS:
-				ioctl(frontendFD, FE_READ_UNCORRECTED_BLOCKS, &message.body.ucb);
-				break;
-			case MSG_SET_TONE:
-				ioctl(frontendFD, FE_SET_TONE, message.body.tone);
-				break;
-			case MSG_SEND_DISEQC_MSG:
-				ioctl(frontendFD, FE_DISEQC_SEND_MASTER_CMD, &message.body.diseqc_master_cmd);
-				break;
-			case MSG_SEND_DISEQC_BURST:
-				ioctl(frontendFD, FE_DISEQC_SEND_BURST, message.body.burst);
-				break;
-
-			case MSG_SET_VOLTAGE:
-				ioctl(frontendFD, FE_SET_VOLTAGE, message.body.voltage);
-				break;
-			case MSG_ENABLE_HIGH_VOLTAGE:
-				ioctl(frontendFD, FE_ENABLE_HIGH_LNB_VOLTAGE, message.body.voltage);
-				break;
-			case MSG_TYPE_CHANGED:
-				break;
-			case MSG_SET_PROPERTY:
-#if DVB_API_VERSION >= 5
-				{
-					struct dtv_properties props;
-					props.num = 1;
-					props.props = &message.body.prop;
-					ioctl(frontendFD, FE_SET_PROPERTY, &props);
-				}
-#endif
-				break;
-			case MSG_GET_PROPERTY:
-#if DVB_API_VERSION >= 5
-				{
-					struct dtv_properties props;
-					props.num = 1;
-					props.props = &message.body.prop;
-					ioctl(frontendFD, FE_GET_PROPERTY, &props);
-				}
-#endif
-				break;
-			*/
-
 			case MSG_PIDLIST:
 				// remove old pids
 				for (i = 0; i < 30; i++)
@@ -4597,20 +4546,21 @@ int zapit_main_thread(void *data)
 #endif
 
 	// init vtuner
-	// need check for usb/vtuner: FIXME
-	// NOTE: remove this later to initFrontend()
-	if(havevtuner)
+	//if(havevtuner)
+	if (getVTuner() != NULL)
 	{
 		char type[8];
 		struct dmx_pes_filter_params filter;
 		struct dvb_frontend_info fe_info;
 		char frontend_filename[256], demux_filename[256], vtuner_filename[256];
 
-		printf("linking adapter1/frontend0 to vtunerc0\n");
+		//printf("linking adapter1/frontend0 to vtunerc0\n");
 
-		sprintf(frontend_filename, "/dev/dvb/adapter1/frontend0");
-		sprintf(demux_filename, "/dev/dvb/adapter1/demux0");
+		sprintf(frontend_filename, "/dev/dvb/adapter%d/frontend0", getVTuner()->fe_adapter);
+		sprintf(demux_filename, "/dev/dvb/adapter%/demux0", getVTuner()->fe_adapter);
 		sprintf(vtuner_filename, "/dev/vtunerc0"); //FIXME: think about this (/dev/misc/vtuner%)
+
+		dprintf(DEBUG_NORMAL, "linking %s to %s\n", frontend_filename, vtuner_filename);
 
 		frontendFD = open(frontend_filename, O_RDWR);
 		if (frontendFD < 0)
@@ -4656,20 +4606,20 @@ int zapit_main_thread(void *data)
 
 		switch (fe_info.type)
 		{
-		case FE_QPSK:
-			strcpy(type,"DVB-S2");
-			break;
-		case FE_QAM:
-			strcpy(type,"DVB-C");
-			break;
-		case FE_OFDM:
-			strcpy(type,"DVB-T");
-			break;
-		case FE_ATSC:
-			strcpy(type,"ATSC");
-			break;
-		default:
-			printf("Frontend type 0x%x not supported", fe_info.type);
+			case FE_QPSK:
+				strcpy(type,"DVB-S2");
+				break;
+			case FE_QAM:
+				strcpy(type,"DVB-C");
+				break;
+			case FE_OFDM:
+				strcpy(type,"DVB-T");
+				break;
+			case FE_ATSC:
+				strcpy(type,"ATSC");
+				break;
+			default:
+				printf("Frontend type 0x%x not supported", fe_info.type);
 		}
 
 		ioctl(vtunerFD, VTUNER_SET_NAME, "virtuel tuner");
@@ -4685,6 +4635,7 @@ int zapit_main_thread(void *data)
 			props.num = 1;
 			props.props = p;
 			p[0].cmd = DTV_ENUM_DELSYS;
+
 			if (ioctl(frontendFD, FE_GET_PROPERTY, &props) >= 0)
 			{
 				ioctl(vtunerFD, VTUNER_SET_DELSYS, p[0].u.buffer.data);
