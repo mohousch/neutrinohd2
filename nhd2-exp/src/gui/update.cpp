@@ -75,7 +75,7 @@
 #define gUserAgent 				"neutrino/softupdater 1.0"
 
 #define LIST_OF_UPDATES_LOCAL_FILENAME 		"update.list"
-#define RELEASE_CYCLE                  		"2.0"
+#define RELEASE_CYCLE                  		"2.1"
 #define FILEBROWSER_UPDATE_FILTER      		"img"
 
 #define MTD_OF_WHOLE_IMAGE             		0
@@ -884,36 +884,36 @@ void CUpdateSettings::showMenu()
 	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_FLASHUPDATE_CURRENTVERSION_SEP));
 
 	// get current version SBBB YYYY MM TT HH MM -- formatsting
-	CConfigFile lconfigfile('\t');
+	//CConfigFile lconfigfile('\t');
 
-	const char * versionString = (lconfigfile.loadConfig("/etc/.version")) ? (lconfigfile.getString( "version", "1201201205091849").c_str()) : "1201201602031021";
+	//const char * versionString = (lconfigfile.loadConfig("/etc/.version")) ? (lconfigfile.getString( "version", "1201201205091849").c_str()) : "1201201602031021";
 
-	dprintf(DEBUG_INFO, "CNeutrinoApp::InitServiceSettings: current flash-version: %s\n", versionString);
+	//dprintf(DEBUG_INFO, "CNeutrinoApp::InitServiceSettings: current flash-version: %s\n", versionString);
 
-	static CFlashVersionInfo versionInfo(versionString);
+	//static CFlashVersionInfo versionInfo(versionString);
 
 	// release cycle
-	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTRELEASECYCLE, false, versionInfo.getReleaseCycle() ));
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTRELEASECYCLE, false, /*versionInfo.getReleaseCycle()*/ "2.1" ));
 		
 	// date
-	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONDATE, false, versionInfo.getDate() ));
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONDATE, false, /*versionInfo.getDate()*/ __DATE__ ));
 		
 	// time
-	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONTIME, false, versionInfo.getTime()));
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONTIME, false, /*versionInfo.getTime()*/ __TIME__));
 		
 	// type
 	// versionInfo.getType() returns const char * which is never deallocated
-	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONSNAPSHOT, false, versionInfo.getType()));
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONSNAPSHOT, false, /*versionInfo.getType()*/ "Snapshot" ));
 
 	// check update
 	//FIXME: allow update only when the rootfs is jffs2/squashfs
 	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// offline
-	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_MANUAL, true, NULL, new CFlashUpdate(CFlashUpdate::UPDATEMODE_MANUAL), "", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_MANUAL, false, NULL, new CFlashUpdate(CFlashUpdate::UPDATEMODE_MANUAL), "", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
 	// online
-	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_INTERNET, true, NULL, new CFlashUpdate(CFlashUpdate::UPDATEMODE_INTERNET), "", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_INTERNET, false, NULL, new CFlashUpdate(CFlashUpdate::UPDATEMODE_INTERNET), "", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
 	
 	updateSettings.exec(NULL, "");
 	updateSettings.hide();

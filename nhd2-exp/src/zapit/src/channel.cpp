@@ -37,11 +37,11 @@ CZapitChannel::CZapitChannel(const std::string & p_name, t_service_id p_sid, t_t
 	channel_id = CREATE_CHANNEL_ID;
 	caPmt = NULL;
 	rawPmt = NULL;
-	type = CHANNEL_MPEG2;
+	videoType = CHANNEL_VIDEO_MPEG2;
 	number = 0;
 	scrambled = 0;
 	pname = NULL;
-	//currentEvent = NULL;
+	
 	pmtPid = 0;
 	resetPids();
 	
@@ -253,8 +253,6 @@ void CZapitChannel::addTTXSubtitle(const unsigned int pid, const std::string lan
 	tmpSub->teletext_magazine_number = mag_nr;
 	tmpSub->teletext_page_number = page_number;
 	tmpSub->hearingImpaired = impaired;
-
-	//setPidsUpdated();
 }
 
 void CZapitChannel::addDVBSubtitle(const unsigned int pid, const std::string langCode, const unsigned char subtitling_type, const unsigned short composition_page_id, const unsigned short ancillary_page_id)
@@ -299,8 +297,6 @@ void CZapitChannel::addDVBSubtitle(const unsigned int pid, const std::string lan
 	tmpSub->subtitling_type = subtitling_type;
 	tmpSub->composition_page_id = composition_page_id;
 	tmpSub->ancillary_page_id = ancillary_page_id;
-
-	//setPidsUpdated();
 }
 
 CZapitAbsSub* CZapitChannel::getChannelSub(int index)

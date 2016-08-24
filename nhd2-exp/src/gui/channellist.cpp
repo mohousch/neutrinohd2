@@ -1715,11 +1715,11 @@ void CChannelList::paintItem(int pos)
 				frameBuffer->paintIcon(NEUTRINO_ICON_SCRAMBLED, x + width - SCROLLBAR_WIDTH - 2 - icon_ca_w, ypos + (iheight - icon_ca_h)/2);
 			
 			// hd icon
-			if(chan->isHD() ) 
+			if(chan->isHD()) 
 				frameBuffer->paintIcon(NEUTRINO_ICON_HD, x + width - SCROLLBAR_WIDTH - 2 - icon_ca_w - 2 - icon_hd_w, ypos + (iheight - icon_hd_h)/2);
 
 			// uhd icon
-			if(chan->isUHD()) 
+			else if(chan->isUHD()) 
 				frameBuffer->paintIcon(NEUTRINO_ICON_UHD, x + width - SCROLLBAR_WIDTH - 2 - icon_ca_w - 2 - icon_hd_w, ypos + (iheight - icon_hd_h)/2);
 		}
 

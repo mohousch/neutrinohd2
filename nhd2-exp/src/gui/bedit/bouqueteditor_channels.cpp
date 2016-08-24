@@ -143,7 +143,7 @@ void CBEChannelWidget::paintItem(int pos)
 				frameBuffer->paintIcon(NEUTRINO_ICON_HD, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s + 2 + icon_w_hd), ypos + (fheight - icon_h_hd)/2 );
 
 			// uhd icon
-			if((*Channels)[current]->isUHD())
+			else if((*Channels)[current]->isUHD())
 				frameBuffer->paintIcon(NEUTRINO_ICON_UHD, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s + 2 + icon_w_hd), ypos + (fheight - icon_h_hd)/2 );
 		}
 	}

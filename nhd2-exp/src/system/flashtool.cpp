@@ -340,6 +340,7 @@ void CFlashTool::reboot()
 	::exit(0);
 }
 
+//
 CFlashVersionInfo::CFlashVersionInfo(const std::string & versionString)
 {
 

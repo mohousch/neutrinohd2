@@ -161,7 +161,7 @@ class CZapitChannel
 
 		/* the conditional access program map table of this channel */
 		CCaPmt * 			caPmt;
-		unsigned char			* rawPmt;
+		unsigned char * 		rawPmt;
 		int				pmtLen;
 		
 		/* from neutrino CChannel class */
@@ -177,7 +177,7 @@ class CZapitChannel
 
 		int             number;
 		CChannelEvent   currentEvent, nextEvent;
-		int type;
+		int 		videoType;
 		t_channel_id	channel_id;
 		unsigned char 	scrambled;
 		char * pname;
@@ -185,7 +185,7 @@ class CZapitChannel
 		uint8_t	polarization;
 
 		/* constructor, desctructor */
-		CZapitChannel(const std::string & p_name, t_service_id p_sid, t_transport_stream_id p_tsid, t_original_network_id p_onid, unsigned char p_service_type, t_satellite_position p_satellite_position, freq_id_t freq );
+		CZapitChannel(const std::string & p_name, t_service_id p_sid, t_transport_stream_id p_tsid, t_original_network_id p_onid, unsigned char p_service_type, t_satellite_position p_satellite_position, freq_id_t p_freq );
 
 		~CZapitChannel(void);
 
@@ -194,7 +194,7 @@ class CZapitChannel
 		t_transport_stream_id	getTransportStreamId(void) 	const { return transport_stream_id; }
 		t_original_network_id	getOriginalNetworkId(void) 	const { return original_network_id; }
 		unsigned char        	getServiceType(bool real = false);
-		int 			getType() { return type;};
+		int 			getVideoType() { return videoType;};
 
 		bool			isHD();
 		bool			is3DTV();

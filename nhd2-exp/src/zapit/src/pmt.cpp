@@ -255,15 +255,15 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 		case 0x42: 	// CAVS
 			channel->setVideoPid(esInfo->elementary_PID);
 			descramble = true;
-			//channel->type = (esInfo->stream_type == 0x1b); //FIXME
-			if(esInfo->stream_type == 0x1b || esInfo->stream_type == 0x10)
-				channel->type = CHANNEL_MPEG4;
-			else if(esInfo->stream_type == 0x24 || esInfo->stream_type == 0x27)
-				channel->type = CHANNEL_HEVC;
-			else if(esInfo->stream_type == 0x42)
-				channel->type = CHANNEL_CAVS;
 
-			dprintf(DEBUG_NORMAL, "[pmt]parse_ES_info: vpid 0x%x stream 0x%02x type 0x%02x\n", esInfo->elementary_PID, esInfo->stream_type, channel->type);
+			if(esInfo->stream_type == 0x1b || esInfo->stream_type == 0x10)
+				channel->videoType = CHANNEL_VIDEO_MPEG4;
+			else if(esInfo->stream_type == 0x24 || esInfo->stream_type == 0x27)
+				channel->videoType = CHANNEL_VIDEO_HEVC;
+			else if(esInfo->stream_type == 0x42)
+				channel->videoType = CHANNEL_VIDEO_CAVS;
+
+			dprintf(DEBUG_NORMAL, "[pmt]parse_ES_info: vpid 0x%x stream 0x%02x type 0x%02x\n", esInfo->elementary_PID, esInfo->stream_type, channel->videoType);
 			break;
 
 		case 0x03:

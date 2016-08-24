@@ -163,7 +163,7 @@ void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selec
 				frameBuffer->paintIcon(NEUTRINO_ICON_HD, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s + 2 + icon_w_hd), ypos + (iheight - icon_h_hd)/2 );
 
 			// uhd icon
-			if(Channels[itemNr]->isUHD()) 
+			else if(Channels[itemNr]->isUHD()) 
 				frameBuffer->paintIcon(NEUTRINO_ICON_UHD, x + width - (SCROLLBAR_WIDTH + 2 + icon_w_s + 2 + icon_w_hd), ypos + (iheight - icon_h_hd)/2 );
 		}
 	}

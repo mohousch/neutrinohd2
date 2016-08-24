@@ -1956,7 +1956,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 						msgCurrentServiceInfo.polarisation = 2;
 				}
 				
-				msgCurrentServiceInfo.vtype = live_channel->type;
+				msgCurrentServiceInfo.vtype = live_channel->videoType;
 			}
 			
 			if(!msgCurrentServiceInfo.fec)
@@ -2005,7 +2005,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 						msgRecordServiceInfo.polarisation = 2;
 				}
 				
-				msgRecordServiceInfo.vtype = rec_channel->type;
+				msgRecordServiceInfo.vtype = rec_channel->videoType;
 			}
 			
 			if(!msgRecordServiceInfo.fec)
@@ -3568,7 +3568,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 		
 			if(videoDecoder)
 			{
-				if(thisChannel->type == CHANNEL_MPEG2)
+				if(thisChannel->videoType == CHANNEL_VIDEO_MPEG2)
 				{
 					videoStr = "MPEG2";
 #if defined (PLATFORM_COOLSTREAM)
@@ -3577,7 +3577,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 					videoDecoder->SetStreamType(VIDEO_STREAMTYPE_MPEG2);
 #endif
 				}
-				else if(thisChannel->type == CHANNEL_MPEG4)
+				else if(thisChannel->videoType == CHANNEL_VIDEO_MPEG4)
 				{
 					videoStr = "H.264/MPEG-4 AVC";
 #if defined (PLATFORM_COOLSTREAM)
@@ -3586,14 +3586,14 @@ int startPlayBack(CZapitChannel * thisChannel)
 					videoDecoder->SetStreamType(VIDEO_STREAMTYPE_MPEG4_H264);
 #endif				
 				}
-				else if(thisChannel->type == CHANNEL_HEVC)
+				else if(thisChannel->videoType == CHANNEL_VIDEO_HEVC)
 				{
 					videoStr = "H.265 HEVC";
 #if !defined (PLATFORM_COOLSTREAM)
 					videoDecoder->SetStreamType(VIDEO_STREAMTYPE_H265_HEVC);
 #endif				
 				}
-				else if(thisChannel->type == CHANNEL_CAVS)
+				else if(thisChannel->videoType == CHANNEL_VIDEO_CAVS)
 				{
 					videoStr = "AVS";
 #if !defined (PLATFORM_COOLSTREAM)
