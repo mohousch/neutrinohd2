@@ -286,10 +286,11 @@ void initFrontend()
 				// fallback to video device node
 				snprintf(devicename, sizeof(devicename), "/dev/dvb/adapter%d/video0", fe->fe_adapter);
 				if(access(devicename, X_OK) >= 0)
+				{
 					fe->isvtuner = true;
 
-				if(fe->isvtuner)
 					dprintf(DEBUG_NORMAL, "fe(%d,%d) is assigned as vtuner\n", fe->fe_adapter, fe->fenumber);
+				}
 #endif
 				
 				// set it to standby
