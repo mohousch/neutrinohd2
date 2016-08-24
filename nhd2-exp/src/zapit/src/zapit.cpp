@@ -4558,7 +4558,7 @@ int zapit_main_thread(void *data)
 		//printf("linking adapter1/frontend0 to vtunerc0\n");
 
 		sprintf(frontend_filename, "/dev/dvb/adapter%d/frontend0", getVTuner()->fe_adapter);
-		sprintf(demux_filename, "/dev/dvb/adapter%/demux0", getVTuner()->fe_adapter);
+		sprintf(demux_filename, "/dev/dvb/adapter%d/demux0", getVTuner()->fe_adapter);
 		sprintf(vtuner_filename, "/dev/vtunerc0"); //FIXME: think about this (/dev/misc/vtuner%)
 
 		dprintf(DEBUG_NORMAL, "linking %s to %s\n", frontend_filename, vtuner_filename);
