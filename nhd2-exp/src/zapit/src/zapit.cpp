@@ -285,7 +285,7 @@ void initFrontend()
 
 				// fallback to video device node
 				snprintf(devicename, sizeof(devicename), "/dev/dvb/adapter%d/video0", fe->fe_adapter);
-				if(access(devicename, X_OK) >= 0)
+				if(access(devicename, X_OK) < 0)
 				{
 					fe->isvtuner = true;
 
