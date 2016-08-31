@@ -338,6 +338,7 @@ bool CFlashUpdate::checkVersion4Update()
 		
 		if(allow_flash) 
 			UpdatesFilter.addFilter(FILEBROWSER_UPDATE_FILTER);
+
 		UpdatesFilter.addFilter("bin");
 		UpdatesFilter.addFilter("tar");
 		UpdatesFilter.addFilter("gz");

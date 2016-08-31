@@ -192,168 +192,6 @@ else
 fi
 ])
 
-AC_DEFUN([_TUXBOX_APPS_LIB_CONFIG],[
-AC_PATH_PROG($1_CONFIG,$2,no)
-if test "$$1_CONFIG" != "no"; then
-	if test "$TARGET" = "cdk" && check_path "$$1_CONFIG"; then
-		AC_MSG_$3([could not find a suitable version of $2]);
-	else
-		$1_CFLAGS=$($$1_CONFIG --cflags)
-		$1_LIBS=$($$1_CONFIG --libs)
-	fi
-fi
-
-AC_SUBST($1_CFLAGS)
-AC_SUBST($1_LIBS)
-])
-
-AC_DEFUN([TUXBOX_APPS_LIB_CONFIG],[
-_TUXBOX_APPS_LIB_CONFIG($1,$2,ERROR)
-if test "$$1_CONFIG" = "no"; then
-	AC_MSG_ERROR([could not find $2]);
-fi
-])
-
-AC_DEFUN([TUXBOX_APPS_LIB_CONFIG_CHECK],[
-_TUXBOX_APPS_LIB_CONFIG($1,$2,WARN)
-])
-
-AC_DEFUN([TUXBOX_APPS_PKGCONFIG],[
-AC_PATH_PROG(PKG_CONFIG, pkg-config,no)
-if test "$PKG_CONFIG" = "no" ; then
-	AC_MSG_ERROR([could not find pkg-config]);
-fi
-])
-
-AC_DEFUN([_TUXBOX_APPS_LIB_PKGCONFIG],[
-AC_REQUIRE([TUXBOX_APPS_PKGCONFIG])
-AC_MSG_CHECKING(for package $2)
-if PKG_CONFIG_PATH="$PKG_CONFIG_PATH" $PKG_CONFIG --exists "$2" ; then
-	AC_MSG_RESULT(yes)
-	$1_CFLAGS=$(PKG_CONFIG_PATH="$PKG_CONFIG_PATH" $PKG_CONFIG --cflags "$2")
-	$1_LIBS=$(PKG_CONFIG_PATH="$PKG_CONFIG_PATH" $PKG_CONFIG --libs "$2")
-else
-	AC_MSG_RESULT(no)
-fi
-
-AC_SUBST($1_CFLAGS)
-AC_SUBST($1_LIBS)
-])
-
-AC_DEFUN([TUXBOX_APPS_LIB_PKGCONFIG],[
-_TUXBOX_APPS_LIB_PKGCONFIG($1,$2)
-if test -z "$$1_CFLAGS" ; then
-	AC_MSG_ERROR([could not find package $2]);
-fi
-])
-
-AC_DEFUN([TUXBOX_APPS_LIB_PKGCONFIG_CHECK],[
-_TUXBOX_APPS_LIB_PKGCONFIG($1,$2)
-])
-
-AC_DEFUN([_TUXBOX_APPS_LIB_SYMBOL],[
-AC_CHECK_LIB($2,$3,HAVE_$1="yes",HAVE_$1="no")
-if test "$HAVE_$1" = "yes"; then
-	$1_LIBS=-l$2
-fi
-
-AC_SUBST($1_LIBS)
-])
-
-AC_DEFUN([TUXBOX_APPS_LIB_SYMBOL],[
-_TUXBOX_APPS_LIB_SYMBOL($1,$2,$3,ERROR)
-if test "$HAVE_$1" = "no"; then
-	AC_MSG_ERROR([could not find $2]);
-fi
-])
-
-AC_DEFUN([TUXBOX_APPS_LIB_CONFIG_SYMBOL],[
-_TUXBOX_APPS_LIB_SYMBOL($1,$2,$3,WARN)
-])
-
-AC_DEFUN([TUXBOX_APPS_GETTEXT],[
-AC_PATH_PROG(MSGFMT, msgfmt, no)
-AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
-AC_PATH_PROG(XGETTEXT, xgettext, no)
-AC_PATH_PROG(MSGMERGE, msgmerge, no)
-
-AC_MSG_CHECKING([whether NLS is requested])
-AC_ARG_ENABLE(nls,
-	[  --disable-nls           do not use Native Language Support],
-	USE_NLS=$enableval, USE_NLS=yes)
-AC_MSG_RESULT($USE_NLS)
-AC_SUBST(USE_NLS)
-
-if test "$USE_NLS" = "yes"; then
-	AC_CACHE_CHECK([for GNU gettext in libc], gt_cv_func_gnugettext_libc,[
-		AC_TRY_LINK([
-			#include <libintl.h>
-			#ifndef __GNU_GETTEXT_SUPPORTED_REVISION
-			#define __GNU_GETTEXT_SUPPORTED_REVISION(major) ((major) == 0 ? 0 : -1)
-			#endif
-			extern int _nl_msg_cat_cntr;
-			extern int *_nl_domain_bindings;
-			],[
-			bindtextdomain ("", "");
-			return (int) gettext ("") + _nl_msg_cat_cntr + *_nl_domain_bindings;
-			], gt_cv_func_gnugettext_libc=yes, gt_cv_func_gnugettext_libc=no
-		)]
-	)
-
-	if test "$gt_cv_func_gnugettext_libc" = "yes"; then
-		AC_DEFINE(ENABLE_NLS, 1, [Define to 1 if translation of program messages to the user's native language is requested.])
-		gt_use_preinstalled_gnugettext=yes
-	else
-		USE_NLS=no
-	fi
-fi
-
-if test -f "$srcdir/po/LINGUAS"; then
-	ALL_LINGUAS=$(sed -e "/^#/d" "$srcdir/po/LINGUAS")
-fi
-
-POFILES=
-GMOFILES=
-UPDATEPOFILES=
-DUMMYPOFILES=
-for lang in $ALL_LINGUAS; do
-	POFILES="$POFILES $srcdirpre$lang.po"
-	GMOFILES="$GMOFILES $srcdirpre$lang.gmo"
-	UPDATEPOFILES="$UPDATEPOFILES $lang.po-update"
-	DUMMYPOFILES="$DUMMYPOFILES $lang.nop"
-done
-INST_LINGUAS=
-if test -n "$ALL_LINGUAS"; then
-	for presentlang in $ALL_LINGUAS; do
-		useit=no
-		if test -n "$LINGUAS"; then
-			desiredlanguages="$LINGUAS"
-		else
-			desiredlanguages="$ALL_LINGUAS"
-		fi
-		for desiredlang in $desiredlanguages; do
-			case "$desiredlang" in
-				"$presentlang"*) useit=yes;;
-			esac
-		done
-		if test $useit = yes; then
-			INST_LINGUAS="$INST_LINGUAS $presentlang"
-		fi
-	done
-fi
-CATALOGS=
-if test -n "$INST_LINGUAS"; then
-	for lang in $INST_LINGUAS; do
-		CATALOGS="$CATALOGS $lang.gmo"
-	done
-fi
-AC_SUBST(POFILES)
-AC_SUBST(GMOFILES)
-AC_SUBST(UPDATEPOFILES)
-AC_SUBST(DUMMYPOFILES)
-AC_SUBST(CATALOGS)
-])
-
 dnl backward compatiblity
 AC_DEFUN([AC_GNU_SOURCE],
 [AH_VERBATIM([_GNU_SOURCE],
@@ -532,7 +370,7 @@ AC_ARG_WITH(boxmodel,
 				valid for odin: odinm6,odinm7,odinm9
 				valid for wetek: wetekplay
 				valid for edision: osmini, osminiplus
-				valid for hd: hd11, hd51, hd500c, hd1100, hd1200, hd1265, hdhd1500, hd2400
+				valid for hd: hd11, hd51, hd500c, hd1100, hd1200, hd1265, hdhd1500, hd2400, ax51
 				valid for gi: et7000mini
 				valid for xpeedc: xpeedc
 				valid for formuler: formuler1, formuler3, formuler4
@@ -709,7 +547,7 @@ AC_ARG_WITH(boxmodel,
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
 			fi
 			;;
-		hd11|hd51|hd500c|hd1100|hd1200|hd1265|hd1500|hd2400)
+		hd11|hd51|ax51|hd500c|hd1100|hd1200|hd1265|hd1500|hd2400)
 			if test "$BOXTYPE" = "hd"; then
 				BOXMODEL="$withval"
 			else
@@ -929,6 +767,7 @@ AM_CONDITIONAL(BOXMODEL_OSMINIPLUS, test "$BOXMODEL" = "osminiplus")
 
 AM_CONDITIONAL(BOXMODEL_HD11, test "$BOXMODEL" = "hd11")
 AM_CONDITIONAL(BOXMODEL_HD51, test "$BOXMODEL" = "hd51")
+AM_CONDITIONAL(BOXMODEL_AX51, test "$BOXMODEL" = "ax51")
 AM_CONDITIONAL(BOXMODEL_HD500C, test "$BOXMODEL" = "hd500c")
 AM_CONDITIONAL(BOXMODEL_HD1100, test "$BOXMODEL" = "hd1100")
 AM_CONDITIONAL(BOXMODEL_HD1200, test "$BOXMODEL" = "hd1200")
@@ -1227,6 +1066,8 @@ elif test "$BOXMODEL" = "hd11"; then
 	AC_DEFINE(BOXMODEL_HD11, 1, [building for hd11])
 elif test "$BOXMODEL" = "hd51"; then
 	AC_DEFINE(BOXMODEL_HD51, 1, [building for hd51])
+elif test "$BOXMODEL" = "ax51"; then
+	AC_DEFINE(BOXMODEL_AX51, 1, [building for ax51])
 elif test "$BOXMODEL" = "hd500c"; then
 	AC_DEFINE(BOXMODEL_HD500C, 1, [building for hd500c])
 elif test "$BOXMODEL" = "hd1100"; then
