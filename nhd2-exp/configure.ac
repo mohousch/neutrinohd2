@@ -3,10 +3,8 @@ AM_INIT_AUTOMAKE([1.0.1 nostdinc])
 
 TUXBOX_APPS
 TUXBOX_APPS_DIRECTORY
-TUXBOX_APPS_PKGCONFIG
 TUXBOX_APPS_DVB
 TUXBOX_APPS_DRIVER
-
 TUXBOX_BOXTYPE
 
 AC_PROG_CC
@@ -26,7 +24,7 @@ PKG_CHECK_MODULES(AVFORMAT,libavformat)
 
 # keybaord
 AC_ARG_ENABLE(keyboard-no-rc,
-         [  --enable-keyboard-no-rc             enable keyboard control, disable rc control],
+         [  --enable-keyboard-no-rc enable keyboard control, disable rc control],
          [AC_DEFINE(KEYBOARD_INSTEAD_OF_REMOTE_CONTROL,1,[enable keyboard control, disable rc control])])
 
 # opengl framebuffer (x86)
