@@ -51,6 +51,8 @@ class CInfoViewer
 {
 	private:
 		void Init(void);
+		void initDimension(void);
+
 		CFrameBuffer *frameBuffer;
 		
 		bool gotTime;
@@ -174,7 +176,8 @@ class CInfoViewer
 		void showFailure();
 		void showMotorMoving(int duration);
 		void showLcdPercentOver();
-		void showSNR();		
+		void showSNR();
+		void showAktivTuner();		
 
 		CProgressBar *snrscale, *sigscale, *timescale;
 		std::string eventname;

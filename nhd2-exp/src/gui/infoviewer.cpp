@@ -91,7 +91,6 @@ extern fe_map_t femap;					// zapit.cpp
 extern CFrontend * getFE(int index);			// zapit.cpp
 extern int FrontendCount;				// defined in zapit.cpp
 extern CWebTV * webtv;					// defined in neutrino.cpp
-//extern CMoviePlayerGui * moviePlayerGui;		// defined in neutrino.cpp
 
 extern bool autoshift;
 extern uint32_t shift_timer;
@@ -175,7 +174,12 @@ void CInfoViewer::Init()
 	virtual_zap_mode = false;
 	chanready = 1;
 	
-	// get dimensions
+	// init dimension
+	initDimension();
+}
+
+void CInfoViewer::initDimension(void)
+{
 	// icons dimension
 	frameBuffer->getIconSize(NEUTRINO_ICON_16_9, &icon_w_aspect, &icon_h_aspect);
 	frameBuffer->getIconSize(NEUTRINO_ICON_VTXT, &icon_w_vtxt, &icon_h_vtxt);
@@ -341,70 +345,8 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 	
 	newfreq = true;
 	
-	// icons dimension
-	frameBuffer->getIconSize(NEUTRINO_ICON_16_9, &icon_w_aspect, &icon_h_aspect);
-	frameBuffer->getIconSize(NEUTRINO_ICON_VTXT, &icon_w_vtxt, &icon_h_vtxt);
-	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_000, &icon_w_reso, &icon_h_reso);
-	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_SD2, &icon_w_sd, &icon_h_sd);
-	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_HD2, &icon_hd_w, &icon_hd_h);
-	frameBuffer->getIconSize(NEUTRINO_ICON_SUBT, &icon_w_subt, &icon_h_subt);
-	frameBuffer->getIconSize(NEUTRINO_ICON_DD, &icon_w_dd, &icon_h_dd);
-	frameBuffer->getIconSize(NEUTRINO_ICON_SCRAMBLED2_GREY, &icon_w_ca, &icon_h_ca);
-	frameBuffer->getIconSize(NEUTRINO_ICON_RADIOTEXTOFF, &icon_w_rt, &icon_h_rt);
-	frameBuffer->getIconSize(NEUTRINO_ICON_REC, &icon_w_rec, &icon_h_rec);
-	
-	// colored user icons
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_red_w, &icon_red_h);
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_green_w, &icon_green_h);
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_yellow_w, &icon_yellow_h);
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_blue_w, &icon_blue_h);
-	
-	// recalculate dimensions, anywhere if we change our screensetup
-	BoxHeight = BOXHEIGHT_CHANNELINFO;
-	
-	// buttonbarheight
-	buttonBarHeight = (icon_h_vtxt? icon_h_vtxt : BUTTON_BAR_HEIGHT) + 6;
-	
-	BoxEndX = g_settings.screen_EndX - 10;
-	BoxEndY = g_settings.screen_EndY - (10 + SHADOW_OFFSET + buttonBarHeight);
-	BoxStartX = g_settings.screen_StartX + 10;
-	BoxStartY = BoxEndY - BoxHeight;
-	BoxWidth = BoxEndX - BoxStartX;
-	
-	// infobar
-	buttonBarStartX = BoxStartX;
-	buttonBarStartY = BoxStartY + BoxHeight;
-	
-	// channel logo
-	PIC_X = BoxStartX + CHANNUMBER_WIDTH + 10;
-	PIC_Y = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5;
-	
-	// channel number
-	ChanNumberX = BoxStartX + 10;
-	ChanNumberY = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5;
-	
-	// channel name
-	ChanNameX = BoxStartX + CHANNUMBER_WIDTH + 10;
-	ChanNameY = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5;
-	
-	// channel info
-	ChanInfoX = BoxStartX + CHANNUMBER_WIDTH + 10;
-	ChanInfoY = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5 + CHANNEL_LOGO_HEIGHT + 3;
-	//ChanInfoHeight = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight();
-	ChanInfoHeight = std::max(CHANINFO_HEIGHT, (g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight() > CHANINFO_HEIGHT)? CHANINFO_HEIGHT : g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight());
-	
-	// button cell width
-	asize = (BoxWidth - ( BORDER_RIGHT + BORDER_LEFT + 2 + icon_w_subt + 2 + icon_w_vtxt + 2 + icon_w_dd + 2 + icon_w_aspect + 2 + icon_w_sd + 2 + icon_w_reso + 2 + icon_w_ca + 2 + icon_w_rt + 2 + 2*TunerNumWidth + 2))/4;
-	
-	//
-	ChanNameHeight = (CHANNEL_LOGO_HEIGHT - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]->getHeight(); //FIXME
-	
-	// satname
-	SatNameHeight = g_SignalFont->getHeight();
-	
-	//
-	TunerNumWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth("T9", true);
-	TunerNumHeight = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
+	// init Dimension
+	initDimension();
 	
 	// init progressbar
 	sigscale = new CProgressBar(BAR_WIDTH, SIGSCALE_BAR_HEIGHT, RED_BAR, GREEN_BAR, YELLOW_BAR);
@@ -545,6 +487,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 
 	//signal
 	showSNR();
+	showAktivTuner();
 
 	// blue button
 	// features/info
@@ -710,6 +653,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 			else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 			{
 				showSNR();
+				showAktivTuner();
 				
 				paintTime(show_dot, false, BoxEndX, ChanNameY, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]);
 				showRecordIcon (show_dot);
@@ -1545,6 +1489,7 @@ int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 		if (data == sec_timer_id) 
 		{
 			showSNR();
+			showAktivTuner();
 
 	  		return messages_return::handled;
 		}
@@ -1593,6 +1538,7 @@ int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 	{
 		chanready = 1;
 		showSNR();
+		showAktivTuner();
 		
 		if ( is_visible && showButtonBar ) 
 			showIcon_Resolution();
@@ -1604,6 +1550,7 @@ int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 	{
 		chanready = 1;
 		showSNR();
+		showAktivTuner();
 		
 		if ( is_visible && showButtonBar ) 
 			showIcon_Resolution();
@@ -1625,6 +1572,7 @@ int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 		chanready = 1;
 
 		showSNR();
+		showAktivTuner();
 		
 		if ( is_visible && showButtonBar ) 
 			showIcon_Resolution();
@@ -1649,6 +1597,7 @@ int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 		chanready = 1;
 
 		showSNR();
+		showAktivTuner();
 		
 		if ( is_visible && showButtonBar ) 
 			showIcon_Resolution();
@@ -1709,6 +1658,7 @@ int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 		Set_CA_Status(data);
 
 		showSNR();
+		showAktivTuner();
 
 		return messages_return::handled;
   	}
@@ -1818,7 +1768,6 @@ void CInfoViewer::showSNR()
 				else
 					sprintf (freq, "FREQ:%d.%d MHz", si.tsfrequency / 1000, si.tsfrequency % 1000);
 
-				//SatNameHeight  = g_SignalFont->getHeight();
 				freqWidth = g_SignalFont->getRenderWidth(freq);
 				freqStartX = BoxStartX + CHANNUMBER_WIDTH + 80;
 
@@ -1828,32 +1777,6 @@ void CInfoViewer::showSNR()
 				{
 					ssig = live_fe->getSignalStrength();
 					ssnr = live_fe->getSignalNoiseRatio();
-				}
-						
-				//show aktiv tuner
-				if( FrontendCount > 1 )
-				{	
-					char AktivTuner[255] = "T0";
-					
-					int Index = 0;
-					
-					for(int i = 0; i < FrontendCount; i++)
-					{
-						CFrontend * fe = getFE(i);
-						
-						if(live_fe != NULL)
-						{
-							if(fe->fenumber == live_fe->fenumber && fe->fe_adapter == live_fe->fe_adapter)
-								Index = i;
-						}
-						else
-							Index = 0;
-					}
-					
-					if(live_fe != NULL)
-						sprintf(AktivTuner, "T%d", (Index + 1));
-					
-					g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(BoxEndX - (BORDER_RIGHT + BORDER_LEFT + icon_w_subt + 2 + icon_w_vtxt + 2 + icon_w_dd + 2 + icon_w_aspect + 2 + icon_w_sd + 2 + icon_w_reso + 2 + icon_w_ca + 2 + icon_w_rt + 2 + TunerNumWidth), buttonBarStartY + (buttonBarHeight - TunerNumHeight)/2 + TunerNumHeight, TunerNumWidth, AktivTuner, COL_INFOBAR_BUTTONS, 0, true); // UTF-8
 				}
 
 				//sig = (ssig & 0xFFFF) * 100 / 65535;
@@ -1893,6 +1816,47 @@ void CInfoViewer::showSNR()
 			}
 		}
   	} 	
+}
+
+// aktiv tuner
+void CInfoViewer::showAktivTuner()
+{ 
+	/*
+  	if (!g_settings.satip_allow_satip) 
+	{
+		if(is_visible)
+		{
+			if (chanready) 
+			{
+				//show aktiv tuner
+				if( FrontendCount > 1 )
+				{	
+					char AktivTuner[255] = "T0";
+					
+					int Index = 0;
+					
+					for(int i = 0; i < FrontendCount; i++)
+					{
+						CFrontend * fe = getFE(i);
+						
+						if(live_fe != NULL)
+						{
+							if(fe->fenumber == live_fe->fenumber && fe->fe_adapter == live_fe->fe_adapter)
+								Index = i;
+						}
+						else
+							Index = 0;
+					}
+					
+					if(live_fe != NULL)
+						sprintf(AktivTuner, "T%d", (Index + 1));
+					
+					g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(BoxEndX - (BORDER_RIGHT + BORDER_LEFT + icon_w_subt + 2 + icon_w_vtxt + 2 + icon_w_dd + 2 + icon_w_aspect + 2 + icon_w_sd + 2 + icon_w_reso + 2 + icon_w_ca + 2 + icon_w_rt + 2 + TunerNumWidth), buttonBarStartY + (buttonBarHeight - TunerNumHeight)/2 + TunerNumHeight, TunerNumWidth, AktivTuner, COL_INFOBAR_BUTTONS, 0, true); // UTF-8
+				}
+			}
+		}
+  	}
+	*/ 	
 }
 
 void CInfoViewer::show_Data(bool calledFromEvent)
