@@ -532,7 +532,7 @@ AC_ARG_WITH(boxmodel,
 				valid for odin: odinm6,odinm7,odinm9
 				valid for wetek: wetekplay
 				valid for edision: osmini, osminiplus
-				valid for hd: hd11, hd51, hd500c, hd1100, hd1200, hd1265, hdhd1500, hd2400
+				valid for hd: hd11, hd51, hd500c, hd1100, hd1200, hd1265, hdhd1500, hd2400, ax51
 				valid for gi: et7000mini
 				valid for xpeedc: xpeedc
 				valid for formuler: formuler1, formuler3, formuler4
@@ -709,7 +709,7 @@ AC_ARG_WITH(boxmodel,
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
 			fi
 			;;
-		hd11|hd51|hd500c|hd1100|hd1200|hd1265|hd1500|hd2400)
+		hd11|hd51|ax51|hd500c|hd1100|hd1200|hd1265|hd1500|hd2400)
 			if test "$BOXTYPE" = "hd"; then
 				BOXMODEL="$withval"
 			else
@@ -929,6 +929,7 @@ AM_CONDITIONAL(BOXMODEL_OSMINIPLUS, test "$BOXMODEL" = "osminiplus")
 
 AM_CONDITIONAL(BOXMODEL_HD11, test "$BOXMODEL" = "hd11")
 AM_CONDITIONAL(BOXMODEL_HD51, test "$BOXMODEL" = "hd51")
+AM_CONDITIONAL(BOXMODEL_AX51, test "$BOXMODEL" = "ax51")
 AM_CONDITIONAL(BOXMODEL_HD500C, test "$BOXMODEL" = "hd500c")
 AM_CONDITIONAL(BOXMODEL_HD1100, test "$BOXMODEL" = "hd1100")
 AM_CONDITIONAL(BOXMODEL_HD1200, test "$BOXMODEL" = "hd1200")
@@ -1227,6 +1228,8 @@ elif test "$BOXMODEL" = "hd11"; then
 	AC_DEFINE(BOXMODEL_HD11, 1, [building for hd11])
 elif test "$BOXMODEL" = "hd51"; then
 	AC_DEFINE(BOXMODEL_HD51, 1, [building for hd51])
+elif test "$BOXMODEL" = "ax51"; then
+	AC_DEFINE(BOXMODEL_AX51, 1, [building for ax51])
 elif test "$BOXMODEL" = "hd500c"; then
 	AC_DEFINE(BOXMODEL_HD500C, 1, [building for hd500c])
 elif test "$BOXMODEL" = "hd1100"; then
