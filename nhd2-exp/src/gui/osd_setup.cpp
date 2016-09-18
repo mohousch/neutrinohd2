@@ -338,8 +338,8 @@ void COSDMenuColorSettings::showMenu()
 	
 	// foot
 	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_COLORMENU_HELPBAR));
-	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_BACKGROUND, true, NULL, chFootcolor ));
-	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chFootTextcolor ));
+	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_BACKGROUND, false, NULL, chFootcolor ));
+	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, false, NULL, chFootTextcolor ));
 	
 	OSDmenuColorsSettings.exec(NULL, "");
 	OSDmenuColorsSettings.hide();

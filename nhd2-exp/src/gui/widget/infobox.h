@@ -105,7 +105,7 @@ class CInfoBox
 
 		bool bigFonts;
 
-		bool    hide(void);
+		bool hide(void);
 
 	public:
 		virtual ~CInfoBox();

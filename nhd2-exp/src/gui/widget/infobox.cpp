@@ -309,23 +309,12 @@ void CInfoBox::refreshFoot(void)
 	color   = COL_MENUCONTENTSELECTED;
 	bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 
-	m_pcWindow->paintBoxRel(xpos + m_cBoxFrame.iX, 
-					m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - (m_nFontFootHeight + 4))/2, 
-					ButtonWidth, 
-					m_nFontFootHeight + 4, 
-					bgcolor);
+	//m_pcWindow->paintBoxRel(xpos + m_cBoxFrame.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - (m_nFontFootHeight + 4))/2, ButtonWidth, m_nFontFootHeight + 4, bgcolor);
 		
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HOME, 
-					xpos + BORDER_LEFT + m_cBoxFrame.iX, 
-					m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - ih)/2);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HOME, xpos + BORDER_LEFT + m_cBoxFrame.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - ih)/2);
 						
-	m_pcFontFoot->RenderString(xpos + ( BORDER_LEFT + iw) + m_cBoxFrame.iX, 
-					m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_nFontFootHeight + (m_cBoxFrameFootRel.iHeight - m_nFontFootHeight)/2, 
-					ButtonWidth - ( BORDER_LEFT + BORDER_RIGHT + iw), 
-					g_Locale->getText(LOCALE_MESSAGEBOX_BACK), 
-					color, 
-					0, true); // UTF-8
+	m_pcFontFoot->RenderString(xpos + ( BORDER_LEFT + iw) + m_cBoxFrame.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_nFontFootHeight + (m_cBoxFrameFootRel.iHeight - m_nFontFootHeight)/2, ButtonWidth - ( BORDER_LEFT + BORDER_RIGHT + iw), g_Locale->getText(LOCALE_MESSAGEBOX_BACK), color, 0, true); // UTF-8
 }
 
 //////////////////////////////////////////////////////////////////////
