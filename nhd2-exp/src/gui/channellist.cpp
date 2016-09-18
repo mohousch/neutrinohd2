@@ -73,6 +73,7 @@
 #include <system/debug.h>
 
 #include <video_cs.h>
+#include <misc_setup.h>
 
 
 extern CBouquetList * bouquetList;      		// neutrino.cpp
@@ -361,7 +362,6 @@ int CChannelList::doChannelMenu(void)
 	int i = 0;
 	int select = -1;
 	static int old_selected = 0;
-	//int ret = menu_return::RETURN_NONE;
 	signed int bouquet_id, old_bouquet_id, new_bouquet_id;
 	int result;
 	char cnt[5];
@@ -388,7 +388,10 @@ int CChannelList::doChannelMenu(void)
 	sprintf(cnt, "%d", i);
 	menu->addItem(new CMenuForwarder(LOCALE_FAVORITES_MENUEADD, true, NULL, selector, cnt, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i++);
 
-	/*ret =*/ menu->exec(NULL, "");
+	menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	menu->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_CHANNELLIST, true, NULL, new CChannelListSettings(true), NULL, CRCInput::RC_nokey));
+
+	menu->exec(NULL, "");
 	delete menu;
 	delete selector;
 

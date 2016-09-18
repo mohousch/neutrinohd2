@@ -117,7 +117,7 @@ void CThemes::readThemes(CMenuWidget &themes)
 			perror("loading themes: scandir");
 		else
 		{
-			for(int count=0;count<n;count++)
+			for(int count = 0; count < n; count++)
 			{
 				char *file = themelist[count]->d_name;
 				char *pos = strstr(file, ".theme");
