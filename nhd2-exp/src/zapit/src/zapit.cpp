@@ -126,12 +126,13 @@ bool g_list_changed = false; 		/* flag to indicate, allchans was changed */
 
 int change_audio_pid(uint8_t index);
 
+//
+void SaveServices(bool tocopy);
+
 // SDT
 int scanSDT;
 void * sdt_thread(void * arg);
-void SaveServices(bool tocopy);
 pthread_t tsdt;
-pthread_mutex_t chan_mutex = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
 bool sdt_wakeup;
 
 // the conditional access module
@@ -779,6 +780,8 @@ void loadAudioMap()
 
           	fclose(audio_config_file);
         }
+	else
+		perror(AUDIO_CONFIG_FILE);
 }
 
 void saveAudioMap()
@@ -802,6 +805,8 @@ void saveAudioMap()
 		fdatasync(fileno(audio_config_file));
                 fclose(audio_config_file);
         }
+	else
+		perror(AUDIO_CONFIG_FILE);
 }
 
 void loadVolumeMap()
@@ -3924,12 +3929,12 @@ void * sdt_thread(void */*arg*/)
 	
 	time_t tstart, tcur, wtime = 0;
 	int ret;
-	t_transport_stream_id           transport_stream_id = 0;
-	t_original_network_id           original_network_id = 0;
-	t_satellite_position            satellitePosition = 0;
-	freq_id_t                       freq = 0;
+	t_transport_stream_id transport_stream_id = 0;
+	t_original_network_id original_network_id = 0;
+	t_satellite_position satellitePosition = 0;
+	freq_id_t freq = 0;
 
-	transponder_id_t 		tpid = 0;
+	transponder_id_t tpid = 0;
 	FILE * fd = 0;
 	FILE * fd1 = 0;
 	bool updated = 0;
@@ -4547,8 +4552,8 @@ int zapit_main_thread(void *data)
 #endif
 
 	// init vtuner
-	//if(havevtuner)
-	if (getVTuner() != NULL)
+	if(havevtuner)
+	//if (getVTuner() != NULL)
 	{
 		char type[8];
 		struct dmx_pes_filter_params filter;
@@ -4650,8 +4655,7 @@ int zapit_main_thread(void *data)
 
 		pthread_create(&eventthread, NULL, event_proc, (void*)NULL);
 		pthread_create(&pumpthread, NULL, pump_proc, (void*)NULL);
-	}
-	//	
+	}	
 
 	//CI init
 #if defined (ENABLE_CI)	
