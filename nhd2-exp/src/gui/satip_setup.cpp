@@ -85,6 +85,15 @@ int CSatIPSetup::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(actionKey == "savesettings")
 	{
 		CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
+
+		// stop/lock live playback	
+		g_Zapit->lockPlayBack();
+		
+		//pause epg scanning
+		g_Sectionsd->setPauseScanning(true);
+
+		// reinit channellist
+        	g_Zapit->reinitChannels();
 		
 		return ret;
 	}
