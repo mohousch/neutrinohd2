@@ -483,7 +483,7 @@ void CInfoBox::refresh(void)
 		return;
 	}
 	
-	//re-draw message box window
+	//re-draw infobox window
 	refreshTitle();
 	refreshFoot();
 

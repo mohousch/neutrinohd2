@@ -244,10 +244,10 @@ CConfigFile fe_configfile(',', false);
 CFrontend * live_fe = NULL;
 CFrontend * record_fe = NULL;
 
+//
 bool havevtuner = false; // set to true to test
-bool haveusbtuner = false; // set to true to test
-bool havefake_tuner = false; // set to true to test
 
+//
 bool retune = false;
 
 // variables for EN 50494 (a.k.a Unicable)
@@ -280,6 +280,7 @@ void initFrontend()
 				live_fe = fe;
 
 				// check if isusbtuner/vtuner
+				#if 0
 #if !defined (USE_OPENGL)
 				char devicename[256];
 				//snprintf(devicename, sizeof(devicename), "/sys/class/dvb/dvb%d.frontend0/device/ep_00", fe->fe_adapter);
@@ -293,6 +294,7 @@ void initFrontend()
 					dprintf(DEBUG_NORMAL, "fe(%d,%d) is assigned as vtuner\n", fe->fe_adapter, fe->fenumber);
 				}
 #endif
+				#endif
 				
 				// set it to standby
 				fe->Close();

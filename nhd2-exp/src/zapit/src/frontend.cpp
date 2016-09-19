@@ -120,7 +120,6 @@ CFrontend::CFrontend(int num, int adap)
 	currentToneMode = SEC_TONE_ON;
 
 	isvtuner = false;
-	isfaketuner = false;
 }
 
 CFrontend::~CFrontend(void)

@@ -136,7 +136,6 @@ class CFrontend
 
 		/* vtuner/faketuner flag */
 		bool isvtuner;
-		bool isfaketuner;
 	  
 	private:
 		/* slave */

@@ -507,7 +507,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.wss_mode = configfile.getInt32("wss_mode", WSS_AUTO);
 #endif	
 	
-	// psu
+	// psi
 	g_settings.contrast = configfile.getInt32( "contrast", 130);
 	g_settings.saturation = configfile.getInt32( "saturation", 130);
 	g_settings.brightness = configfile.getInt32( "brightness", 130);
@@ -853,11 +853,11 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.channel_mode = configfile.getInt32("channel_mode", LIST_MODE_ALL);
 
 	//misc
-	g_settings.power_standby = configfile.getInt32( "power_standby", 1);
+	g_settings.power_standby = configfile.getInt32( "power_standby", 0);
 
-	g_settings.shutdown_real = configfile.getBool("shutdown_real", true );
-	g_settings.shutdown_real_rcdelay = configfile.getBool("shutdown_real_rcdelay", false );
-        strcpy(g_settings.shutdown_count, configfile.getString("shutdown_count","0").c_str());
+	g_settings.shutdown_real = configfile.getBool("shutdown_real", false);
+	g_settings.shutdown_real_rcdelay = configfile.getBool("shutdown_real_rcdelay", false);
+        strcpy(g_settings.shutdown_count, configfile.getString("shutdown_count", "0").c_str());
 
 	g_settings.infobar_sat_display   = configfile.getBool("infobar_sat_display"  , true );
 	g_settings.infobar_subchan_disp_pos = configfile.getInt32("infobar_subchan_disp_pos"  , 0 );
@@ -871,8 +871,8 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	
 	//zapit setup
 	g_settings.lastChannelMode = configfile.getInt32("lastChannelMode", 1);		//TV mode
-	g_settings.StartChannelTV = configfile.getString("startchanneltv","");
-	g_settings.StartChannelRadio = configfile.getString("startchannelradio","");
+	g_settings.StartChannelTV = configfile.getString("startchanneltv", "");
+	g_settings.StartChannelRadio = configfile.getString("startchannelradio", "");
 	g_settings.startchanneltv_id =  configfile.getInt64("startchanneltv_id", 0) & 0xFFFFFFFFFFFFULL; 
 	g_settings.startchannelradio_id = configfile.getInt64("startchannelradio_id", 0);
 	g_settings.startchanneltv_nr =  configfile.getInt32("startchanneltv_nr", 0);
@@ -907,7 +907,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.recording_screenshot = configfile.getInt32("recording_screenshot", 1);
 	//
 
-	//Filebrowser
+	// Filebrowser
 	g_settings.filesystem_is_utf8 = configfile.getBool("filesystem_is_utf8", true );
 	g_settings.filebrowser_showrights = configfile.getInt32("filebrowser_showrights", 1);
 	g_settings.filebrowser_sortmethod = configfile.getInt32("filebrowser_sortmethod", 0);
