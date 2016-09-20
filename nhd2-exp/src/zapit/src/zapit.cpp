@@ -3405,6 +3405,9 @@ int startPlayBack(CZapitChannel * thisChannel)
 	}
 	else
 	{
+#if defined (USE_OPENGL)
+		startOpenGLplayback();
+#else
 		bool have_pcr = false;
 		bool have_audio = false;
 		bool have_video = false;
@@ -3650,9 +3653,6 @@ int startPlayBack(CZapitChannel * thisChannel)
 #endif	
 			}
 		}
-
-#if defined (USE_OPENGL)
-		startOpenGLplayback();
 #endif
 	}
 
@@ -3683,7 +3683,7 @@ int stopPlayBack(bool sendPmt)
 
 #if defined (USE_OPENGL)
 		stopOpenGLplayback();
-#endif
+#else
 		
 		// stop audio decoder
 		audioDecoder->Stop();
@@ -3716,7 +3716,7 @@ int stopPlayBack(bool sendPmt)
 			delete pcrDemux; //destructor closes dmx
 			pcrDemux = NULL;
 		}
-	
+#endif
 	}
 
 	playing = false;
