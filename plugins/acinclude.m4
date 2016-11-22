@@ -353,7 +353,7 @@ AC_ARG_WITH(boxtype,
 AC_ARG_WITH(boxmodel,
 	[  --with-boxmodel	valid for dgs: cuberevo,cuberevo_mini,cuberevo_mini2,cuberevo_mini_fta,cuberevo_250hd,cuberevo_2000hd,cuberevo_9500hd
 				valid for gigablue: gbsolo,gb800se,gb800ue,gb800seplus,gb800ueplus,gbquad
-				valid for dreambox: dm500, dm500plus, dm600pvr, dm56x0, dm7000, dm7020, dm7025, dm500hd, dm7020hd, dm8000, dm800, dm800se, dm520hd
+				valid for dreambox: dm500, dm500plus, dm600pvr, dm56x0, dm7000, dm7020, dm7025, dm500hd, dm7020hd, dm8000, dm800, dm800se, dm520
 				valid for xtrend: et4x00,et5x00,et6x00,et7x00, et8000,et8500,et9x00, et10000
 				valid for fulan: spark, spark7162
 				valid for kathrein: ufs910, ufs922, ufs912, ufs913, ufc960
@@ -393,7 +393,7 @@ AC_ARG_WITH(boxmodel,
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
 			fi
 			;;
-		dm500|dm500plus|dm600pvr|dm56x0|dm7000|dm7020|dm7025|dm500hd|dm7020hd|dm8000|dm800|dm800se|dm520hd)
+		dm500|dm500plus|dm600pvr|dm56x0|dm7000|dm7020|dm7025|dm500hd|dm7020hd|dm8000|dm800|dm800se|dm520)
 			if test "$BOXTYPE" = "dreambox"; then
 				BOXMODEL="$withval"
 			else
@@ -689,7 +689,7 @@ AM_CONDITIONAL(BOXMODEL_DM800HD,test "$BOXMODEL" = "dm800")
 AM_CONDITIONAL(BOXMODEL_DM800SE,test "$BOXMODEL" = "dm800se")
 AM_CONDITIONAL(BOXMODEL_DM7000HD,test "$BOXMODEL" = "dm7020hd")
 AM_CONDITIONAL(BOXMODEL_DM8000HD,test "$BOXMODEL" = "dm8000")
-AM_CONDITIONAL(BOXMODEL_DM520HD,test "$BOXMODEL" = "dm520hd")
+AM_CONDITIONAL(BOXMODEL_DM520,test "$BOXMODEL" = "dm520")
 
 AM_CONDITIONAL(BOXMODEL_ET4X00,test "$BOXMODEL" = "et4x00")
 AM_CONDITIONAL(BOXMODEL_ET5X00,test "$BOXMODEL" = "et5x00")
@@ -929,8 +929,8 @@ elif test "$BOXMODEL" = "dm800"; then
 	AC_DEFINE(BOXMODEL_DM800HD, 1, [building for dreambox 800])
 elif test "$BOXMODEL" = "dm800se"; then
 	AC_DEFINE(BOXMODEL_DM800SE, 1, [building for dreambox 800se])
-elif test "$BOXMODEL" = "dm520hd"; then
-	AC_DEFINE(BOXMODEL_DM520HD, 1, [building for dreambox 520hd])
+elif test "$BOXMODEL" = "dm520"; then
+	AC_DEFINE(BOXMODEL_DM520, 1, [building for dreambox 520])
 
 elif test "$BOXMODEL" = "et4x00"; then
 	AC_DEFINE(BOXMODEL_ET4X00, 1, [building for xtrend et4x00])
