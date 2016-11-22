@@ -84,7 +84,8 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--enable-lcd \
 			--enable-scart \
 			--enable-ci \
-			--enable-gstreamer
+			--enable-gstreamer \
+			--with-gstversion=0.10
 				
 $(DEST):
 	mkdir $@
