@@ -523,8 +523,8 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 	
 					if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 					{
-						frameBuffer->paintBackground();
-						frameBuffer->blit();
+						//frameBuffer->paintBackground();
+						//frameBuffer->blit();
 
 						std::string buffer;
 
@@ -550,6 +550,9 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 						infoBox->exec();
 						delete infoBox;
 					}
+					else
+						MessageBox(LOCALE_MESSAGEBOX_INFO, "no tmdb info found!", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+
 					delete tmdb;
 					tmdb = NULL;	
 
@@ -778,7 +781,7 @@ void EventList::paint(t_channel_id channel_id)
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_w, &icon_h);
 		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + width - BORDER_RIGHT - icon_w, y + (theight - icon_h)/2 );
 
-		// icon 0 for imdb
+		// icon 0 for tmdb
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_0, &icon_w, &icon_h);
 		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_0, x + width - BORDER_RIGHT - 2*icon_w - 5, y + (theight - icon_h)/2 );
 	}

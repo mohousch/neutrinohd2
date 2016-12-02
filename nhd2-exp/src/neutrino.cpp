@@ -2547,7 +2547,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	g_CamHandler->init();	
 #endif
 	
-	// init network
+	// init network at startup
 	CNetworkSettings::getInstance()->readNetworkSettings(g_settings.ifname);
 
 	if(CNetworkSettings::getInstance()->network_automatic_start == 1)
