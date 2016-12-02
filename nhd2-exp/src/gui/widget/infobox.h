@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: infobox.h 2016.01.21 16:53:30 mohousch Exp $
+	$Id: infobox.h 2016.12.02 12:26:30 mohousch Exp $
 
  	Homepage: http://dbox.cyberphoria.org/
 
@@ -54,6 +54,7 @@
 #endif
 
 #include <string>
+
 #include "textbox.h"
 
 #include <gui/widget/icons.h>
@@ -62,18 +63,6 @@
 
 class CInfoBox  
 {
-	public:
-		 enum mode_
-		{
-			AUTO_WIDTH	= 0x01,
-			AUTO_HIGH	= 0x02,
-			SCROLL		= 0x04,
-			TITLE		= 0x08,
-			FOOT		= 0x10,
-			CENTER		= 0x20,
-			NO_AUTO_LINEBREAK= 0x40
-		}mode;
-
 	private:
 		// functions
 		void initVar(void);

@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: infobox.cpp 2016.01.21 16:52:30 mohousch Exp $
+	$Id: infobox.cpp 2016.12.02 12:25:30 mohousch Exp $
 
  	Homepage: http://dbox.cyberphoria.org/
 
@@ -114,7 +114,7 @@ CInfoBox::CInfoBox(  const char * text,
 
 	m_pcTextBox = new CTextBox(text, fontText, _mode, &m_cBoxFrameText);
 
-	if(_mode & AUTO_WIDTH || _mode & AUTO_HIGH)
+	if(_mode & CTextBox::AUTO_WIDTH || _mode & CTextBox::AUTO_HIGH)
 	{
 		// window might changed in size
 		m_cBoxFrameText = m_pcTextBox->getWindowsPos();
@@ -125,7 +125,7 @@ CInfoBox::CInfoBox(  const char * text,
 		initFramesRel();
 	}
 
-	if(_mode & CENTER)
+	if(_mode & CTextBox::CENTER)
 	{
 		m_cBoxFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - m_cBoxFrame.iWidth) >>1);
 		m_cBoxFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - m_cBoxFrame.iHeight) >>2);
@@ -201,7 +201,7 @@ void CInfoBox::initVar(void)
 {
 	m_cTitle = "";
 	m_cIcon = "";
-	m_nMode = SCROLL | TITLE;
+	m_nMode = CTextBox::SCROLL;
 
 	// set the title varianles
 	m_pcFontTitle  =  DEFAULT_TITLE_FONT;
@@ -233,42 +233,22 @@ void CInfoBox::initVar(void)
 void CInfoBox::initFramesRel(void)
 {
 	// init the title frame
-	if(m_nMode & TITLE)
-	{
-		m_cBoxFrameTitleRel.iX		= 0;
-		m_cBoxFrameTitleRel.iY		= 0;
-		m_cBoxFrameTitleRel.iWidth	= m_cBoxFrame.iWidth;
-		m_cBoxFrameTitleRel.iHeight	= m_nFontTitleHeight + 2;
-	}
-	else
-	{
-		m_cBoxFrameTitleRel.iX		= 0;
-		m_cBoxFrameTitleRel.iY		= 0;
-		m_cBoxFrameTitleRel.iHeight	= 0;
-		m_cBoxFrameTitleRel.iWidth	= 0;
-	}
+	m_cBoxFrameTitleRel.iX		= m_cBoxFrame.iX;
+	m_cBoxFrameTitleRel.iY		= m_cBoxFrame.iY;
+	m_cBoxFrameTitleRel.iWidth	= m_cBoxFrame.iWidth;
+	m_cBoxFrameTitleRel.iHeight	= m_nFontTitleHeight + 2;
 
 	// init the foot frame
-	if(m_nMode & FOOT)
-	{
-		m_cBoxFrameFootRel.iX		= 0;
-		m_cBoxFrameFootRel.iY		= m_cBoxFrame.iHeight - m_nFontFootHeight - ADD_FOOT_HEIGHT;
-		m_cBoxFrameFootRel.iWidth	= m_cBoxFrame.iWidth;
-		m_cBoxFrameFootRel.iHeight	= m_nFontFootHeight + ADD_FOOT_HEIGHT;
-	}
-	else
-	{
-		m_cBoxFrameFootRel.iX		= 0;
-		m_cBoxFrameFootRel.iY		= 0;
-		m_cBoxFrameFootRel.iHeight      = 0;
-		m_cBoxFrameFootRel.iWidth       = 0;
-	}
+	m_cBoxFrameFootRel.iX		= m_cBoxFrame.iX;
+	m_cBoxFrameFootRel.iY		= m_cBoxFrame.iY + m_cBoxFrame.iHeight - m_nFontFootHeight - ADD_FOOT_HEIGHT;
+	m_cBoxFrameFootRel.iWidth	= m_cBoxFrame.iWidth;
+	m_cBoxFrameFootRel.iHeight	= m_nFontFootHeight + ADD_FOOT_HEIGHT;
 
 	// init the text frame
-	m_cBoxFrameText.iY			= m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight;
-	m_cBoxFrameText.iX			= m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX;
-	m_cBoxFrameText.iHeight			= m_cBoxFrame.iHeight - m_cBoxFrameTitleRel.iHeight - m_cBoxFrameFootRel.iHeight;
-	m_cBoxFrameText.iWidth			= m_cBoxFrame.iWidth;		
+	m_cBoxFrameText.iY		= m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight;
+	m_cBoxFrameText.iX		= m_cBoxFrameTitleRel.iX;
+	m_cBoxFrameText.iHeight		= m_cBoxFrame.iHeight - m_cBoxFrameTitleRel.iHeight - m_cBoxFrameFootRel.iHeight;
+	m_cBoxFrameText.iWidth		= m_cBoxFrame.iWidth;		
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -281,40 +261,19 @@ void CInfoBox::initFramesRel(void)
 //////////////////////////////////////////////////////////////////////
 void CInfoBox::refreshFoot(void)
 {
-	uint8_t color;
-	fb_pixel_t bgcolor;
-	
-	if(!(m_nMode & FOOT)) 
-		return;
-
-	// foot
-	m_pcWindow->paintBoxRel(m_cBoxFrameFootRel.iX + m_cBoxFrame.iX, 
-						m_cBoxFrameFootRel.iY + m_cBoxFrame.iY, 
+	// footbox
+	m_pcWindow->paintBoxRel(m_cBoxFrameFootRel.iX, 
+						m_cBoxFrameFootRel.iY, 
 						m_cBoxFrameFootRel.iWidth, 
 						m_cBoxFrameFootRel.iHeight,  
 						COL_MENUHEAD_PLUS_0,
 						RADIUS_MID, CORNER_BOTTOM, true);
 
+	// icon
 	int iw, ih;
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
-	int MaxButtonTextWidth = m_pcFontFoot->getRenderWidth(g_Locale->getText(LOCALE_MESSAGEBOX_CANCEL), true); // UTF-8
-	int ButtonWidth = BORDER_LEFT + BORDER_RIGHT + iw + MaxButtonTextWidth;
-	int ButtonSpacing = (m_cBoxFrameFootRel.iWidth - BORDER_LEFT - BORDER_RIGHT - (ButtonWidth*3) ) / 2;
-	int xpos = m_cBoxFrameFootRel.iX;
-
-	xpos += ButtonWidth + ButtonSpacing;
-	xpos += ButtonWidth + ButtonSpacing;
-
-	// draw Button mbCancel
-	color   = COL_MENUCONTENTSELECTED;
-	bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-
-	//m_pcWindow->paintBoxRel(xpos + m_cBoxFrame.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - (m_nFontFootHeight + 4))/2, ButtonWidth, m_nFontFootHeight + 4, bgcolor);
-		
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HOME, xpos + BORDER_LEFT + m_cBoxFrame.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - ih)/2);
-						
-	m_pcFontFoot->RenderString(xpos + ( BORDER_LEFT + iw) + m_cBoxFrame.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_nFontFootHeight + (m_cBoxFrameFootRel.iHeight - m_nFontFootHeight)/2, ButtonWidth - ( BORDER_LEFT + BORDER_RIGHT + iw), g_Locale->getText(LOCALE_MESSAGEBOX_BACK), color, 0, true); // UTF-8
+	
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HOME, m_cBoxFrameFootRel.iX + m_cBoxFrameFootRel.iWidth - BORDER_RIGHT - iw , m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - ih)/2);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -327,27 +286,25 @@ void CInfoBox::refreshFoot(void)
 //////////////////////////////////////////////////////////////////////
 void CInfoBox::refreshTitle(void)
 {
-	// first check if title is configured
-	if(!(m_nMode & TITLE)) 
-		return;
-
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, 
-					m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, 
+	// titlebox
+	m_pcWindow->paintBoxRel(m_cBoxFrameTitleRel.iX, 
+					m_cBoxFrameTitleRel.iY, 
 					m_cBoxFrameTitleRel.iWidth, 
 					m_cBoxFrameTitleRel.iHeight, 
 					COL_MENUHEAD_PLUS_0, 
 					RADIUS_MID, CORNER_TOP, true);
 
+	// icon
 	int iw = 0;
 	int ih = 0;
 	if (!m_cIcon.empty())
 	{
 		m_pcWindow->getIconSize(m_cIcon.c_str(), &iw, &ih);
 	
-		m_pcWindow->paintIcon(m_cIcon.c_str(), m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
+		m_pcWindow->paintIcon(m_cIcon.c_str(), m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
 	}
 
-	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + TEXT_BORDER_WIDTH, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + iw + TEXT_BORDER_WIDTH), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	m_pcFontTitle->RenderString(m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + TEXT_BORDER_WIDTH, m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + iw + TEXT_BORDER_WIDTH), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -584,7 +541,7 @@ bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _
 	{
 		_result = m_pcTextBox->setText(newText, _thumbnail, _tw, _th, tmode);
 		
-		if(m_nMode & AUTO_WIDTH || m_nMode & AUTO_HIGH)
+		if(m_nMode & CTextBox::AUTO_WIDTH || m_nMode & CTextBox::AUTO_HIGH)
 		{
 			// window might changed in size
 			m_cBoxFrameText = m_pcTextBox->getWindowsPos();
@@ -595,7 +552,7 @@ bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _
 			initFramesRel();
 
 			// since the frames size has changed, we have to recenter the window again */
-			if(m_nMode & CENTER)
+			if(m_nMode & CTextBox::CENTER)
 			{
 				m_cBoxFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - m_cBoxFrame.iWidth) >>1);
 				m_cBoxFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - m_cBoxFrame.iHeight) >>1);
@@ -629,11 +586,9 @@ void InfoBox(const neutrino_locale_t Caption, const char * const Text, const cha
 //////////////////////////////////////////////////////////////////////
 void InfoBox(const char * const Title,const char * const Text, const char * const Icon, const int Width, const int timeout)
 {
-	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT;
-	
 	CBox position(g_settings.screen_StartX + 30, g_settings.screen_StartY + 30, g_settings.screen_EndX - g_settings.screen_StartX - 60, g_settings.screen_EndY - g_settings.screen_StartY - 60); 
 	
-   	CInfoBox * infoBox = new CInfoBox(Text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, Title, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], Icon);
+   	CInfoBox * infoBox = new CInfoBox(Text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU], CTextBox::SCROLL, &position, Title, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], Icon);
 
 	infoBox->exec(timeout);
 
