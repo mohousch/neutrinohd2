@@ -149,7 +149,7 @@ void CListBox::paint()
 void CListBox::paintHead()
 {
 	// headBox
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);//round
+	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);//round
 	
 	// paint time/date
 	int timestr_len = 0;
@@ -179,7 +179,7 @@ void CListBox::paintFoot()
 {
 	int ButtonWidth = width / 4 - BORDER_LEFT - BORDER_RIGHT;
 	
-	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);//round
+	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);//round
 
 	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, ButtonWidth, 4, Buttons, ButtonHeight);
 }
@@ -383,7 +383,7 @@ void CListBox::paintDetails(int index)
 		return;
 	
 	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, InfoHeight - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, InfoHeight - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 }
 
 void CListBox::paintItem2DetailsLine(int pos)
@@ -409,7 +409,7 @@ void CListBox::paintInfo(int index)
 	
 	// infobox refresh
 	frameBuffer->paintBoxRel(x, y - TitleHeight, width, TitleHeight, COL_MENUCONTENT_PLUS_6);
-	frameBuffer->paintBoxRel(x + 2, y - TitleHeight + 2, width - 4, TitleHeight - 4, COL_MENUCONTENT_PLUS_1, 0, 0, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x + 2, y - TitleHeight + 2, width - 4, TitleHeight - 4, COL_MENUCONTENT_PLUS_1, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 }
 
 

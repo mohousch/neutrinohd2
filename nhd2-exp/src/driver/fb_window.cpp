@@ -58,9 +58,9 @@ CFBWindow::~CFBWindow(void)
 	delete[] Background;
 }
 
-void CFBWindow::paintBoxRel(const int _x, const int _y, const int _dx, const int _dy, const color_t _col, int radius, int type, bool fadeColor)
+void CFBWindow::paintBoxRel(const int _x, const int _y, const int _dx, const int _dy, const color_t _col, int radius, int type, int mode)
 {
-	frameBuffer->paintBoxRel(x + _x, y + _y, _dx, _dy, _col, radius, type, fadeColor);
+	frameBuffer->paintBoxRel(x + _x, y + _y, _dx, _dy, _col, radius, type, mode);
 }
 
 bool CFBWindow::paintIcon(const char * const _filename, const int _x, const int _y, const color_t _offset)

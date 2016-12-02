@@ -187,7 +187,7 @@ void CBEChannelWidget::paint()
 
 void CBEChannelWidget::paintHead()
 {
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width - BORDER_LEFT - BORDER_RIGHT, caption.c_str() , COL_MENUHEAD, 0, true);
 }
 
@@ -201,7 +201,7 @@ const struct button_label CBEChannelWidgetButtons[4] =
 
 void CBEChannelWidget::paintFoot()
 {
-	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 
 	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + ICON_OFFSET, y + height, (width - 2*ICON_OFFSET) / 4, 4, CBEChannelWidgetButtons, ButtonHeight);
 }
@@ -218,7 +218,7 @@ void CBEChannelWidget::paintDetails(int index)
 	int len = snprintf(buf, sizeof(buf), "%d ", (*Channels)[index]->getFreqId());
 	
 	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + ButtonHeight + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x + 2, y + height + ButtonHeight + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 
 	sat_iterator_t sit = satellitePositions.find((*Channels)[index]->getSatellitePosition());
 		

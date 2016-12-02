@@ -917,7 +917,7 @@ void CWebTV::paintHead()
 	dprintf(DEBUG_DEBUG, "CWebTV::paintHead\n");
 
 	// head
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark); //round
+	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient); //round
 	
 	// head icon
 	int icon_webtv_w, icon_webtv_h;
@@ -960,7 +960,7 @@ void CWebTV::paintFoot()
 	int f_x = x;
 	int f_y = y + (height - buttonHeight);
 	
-	frameBuffer->paintBoxRel(f_x, f_y, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light); //round
+	frameBuffer->paintBoxRel(f_x, f_y, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient); //round
 	
 	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, f_x + BORDER_LEFT, f_y, ButtonWidth, NUM_LIST_BUTTONS, CWebTVButtons, buttonHeight);
 }
@@ -971,7 +971,7 @@ void CWebTV::paintDetails(int index)
 	dprintf(DEBUG_DEBUG, "CWebTV::paintDetails\n");
 
 	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 	
 	if(channels.empty() )
 		return;

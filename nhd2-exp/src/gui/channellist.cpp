@@ -1543,7 +1543,7 @@ void CChannelList::quickZap(int key, bool cycle)
 void CChannelList::paintDetails(int index)
 {
 	// itembox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 	
 	if (chanlist.empty()) 
 		return;
@@ -1847,7 +1847,7 @@ const struct button_label CChannelVListButtons[NUM_VLIST_BUTTONS] =
 void CChannelList::paintHead()
 {
 	// head
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);	//round
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);	//round
 	
 	int ButtonWidth = (width - BORDER_LEFT - BORDER_RIGHT) / 4;
 
@@ -1864,7 +1864,7 @@ void CChannelList::paintHead()
 	// foot
 	int f_x = x;
 	int f_y = y + (height - buttonHeight);
-	frameBuffer->paintBoxRel(f_x, f_y, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light); //round
+	frameBuffer->paintBoxRel(f_x, f_y, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient); //round
 	
 	// foot buttons
 	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, f_x + BORDER_RIGHT, f_y, ButtonWidth, vlist ? NUM_VLIST_BUTTONS : NUM_LIST_BUTTONS, vlist ? CChannelVListButtons : CChannelListButtons, buttonHeight);

@@ -246,7 +246,7 @@ void CHintBox::refresh(void)
 					width, 
 					theight, 
 					(CFBWindow::color_t)COL_MENUHEAD_PLUS_0, 
-					RADIUS_MID, CORNER_TOP, true);//round
+					RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);//round
 	
 	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(caption); // UTF-8
 

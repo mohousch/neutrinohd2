@@ -155,9 +155,7 @@ bool CColorSetupNotifier::changeNotify(const neutrino_locale_t, void *)
 	frameBuffer->paletteGenFade(COL_COLORED_EVENTS_INFOBAR, convertSetupColor2RGB(g_settings.infobar_red, g_settings.infobar_green, g_settings.infobar_blue), convertSetupColor2RGB(g_settings.infobar_colored_events_red, g_settings.infobar_colored_events_green, g_settings.infobar_colored_events_blue), 8, convertSetupAlpha2Alpha(g_settings.infobar_alpha) );
 				      
 	// foot
-	//frameBuffer->paletteGenFade(COL_MENUFOOT, convertSetupColor2RGB(g_settings.menu_Foot_red, g_settings.menu_Foot_green, g_settings.menu_Foot_blue), convertSetupColor2RGB(g_settings.menu_Foot_Text_red, g_settings.menu_Foot_Text_green, g_settings.menu_Foot_Text_blue), 8, convertSetupAlpha2Alpha(g_settings.menu_Foot_alpha) );
-
-	frameBuffer->paletteGenFade(COL_MENUFOOT, convertSetupColor2RGB(g_settings.infobar_red, g_settings.infobar_green, g_settings.infobar_blue), convertSetupColor2RGB(g_settings.infobar_Text_red, g_settings.infobar_Text_green, g_settings.infobar_Text_blue), 8, convertSetupAlpha2Alpha(g_settings.infobar_alpha) );
+	frameBuffer->paletteGenFade(COL_MENUFOOT, convertSetupColor2RGB(g_settings.menu_Foot_red, g_settings.menu_Foot_green, g_settings.menu_Foot_blue), convertSetupColor2RGB(g_settings.menu_Foot_Text_red, g_settings.menu_Foot_Text_green, g_settings.menu_Foot_Text_blue), 8, convertSetupAlpha2Alpha(g_settings.menu_Foot_alpha) );
 				      
 	// channellist colored events
 	frameBuffer->paletteGenFade(COL_COLORED_EVENTS_CHANNELLIST, convertSetupColor2RGB(g_settings.menu_Content_red, g_settings.menu_Content_green, g_settings.menu_Content_blue), convertSetupColor2RGB(g_settings.infobar_colored_events_red, g_settings.infobar_colored_events_green, g_settings.infobar_colored_events_blue), 8, convertSetupAlpha2Alpha(g_settings.menu_Content_alpha) );

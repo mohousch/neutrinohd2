@@ -28,6 +28,7 @@ extern "C" void plugin_del(void);
 class CTestMenu : CMenuTarget
 {
 	private:
+		void testCFBWindow();
 		void testCStringInput();
 		void testCStringInputSMS();
 		void testCPINInput();
@@ -118,6 +119,37 @@ void CTestMenu::hide()
 {
 	CFrameBuffer::getInstance()->paintBackground();
 	CFrameBuffer::getInstance()->blit();
+}
+
+void CTestMenu::testCFBWindow()
+{
+	CBox Box;
+	
+	Box.iX = g_settings.screen_StartX + 10;
+	Box.iY = g_settings.screen_StartY + 10;
+	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/2;
+	Box.iHeight = 40; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+
+	CFrameBuffer::getInstance()->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_ALL, gradientDark2Light2Dark);
+
+	//sleep(5);
+
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	while(1)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg == CRCInput::RC_home) 
+		{
+			CFrameBuffer::getInstance()->paintBackground();
+			CFrameBuffer::getInstance()->blit();
+
+			break;
+		}
+	}
 }
 
 void CTestMenu::testCStringInput()
@@ -1344,7 +1376,11 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(parent)
 		hide();
 	
-	if(actionKey == "stringinput")
+	if(actionKey == "fbwindow")
+	{
+		testCFBWindow();
+	}
+	else if(actionKey == "stringinput")
 	{
 		testCStringInput();
 	}
@@ -1593,6 +1629,7 @@ void CTestMenu::showTestMenu()
 	/// menue.cpp
 	CMenuWidget * mainMenu = new CMenuWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
 	
+	mainMenu->addItem(new CMenuForwarder("CFBWindow", true, NULL, this, "fbwindow"));
 	mainMenu->addItem(new CMenuForwarder("CStringInput", true, NULL, this, "stringinput"));
 	mainMenu->addItem(new CMenuForwarder("CStringInputSMS", true, NULL, this, "stringinputsms"));
 	mainMenu->addItem(new CMenuForwarder("CPINInput", true, NULL, this, "pininput"));

@@ -141,6 +141,7 @@ struct SNeutrinoSettings
 	unsigned char menu_Head_red;
 	unsigned char menu_Head_green;
 	unsigned char menu_Head_blue;
+	int menu_Head_gradient;
 
 	unsigned char menu_Head_Text_alpha;
 	unsigned char menu_Head_Text_red;
@@ -196,6 +197,7 @@ struct SNeutrinoSettings
 	unsigned char menu_Foot_red;
 	unsigned char menu_Foot_green;
 	unsigned char menu_Foot_blue;
+	int menu_Foot_gradient;
 	
 	unsigned char menu_Foot_Text_alpha;
 	unsigned char menu_Foot_Text_red;
@@ -504,7 +506,7 @@ struct SNeutrinoSettings
 	int satip_serverbox_gui;
 
 	// MODE
-	int mode;
+	//int mode;
 
 	// tmdb
 	std::string tmdbkey;
@@ -537,9 +539,10 @@ extern const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT];
 #define DEFAULT_LCD_DUMP_PNG			0x00
 
 // corners (osd)
-#define RADIUS_LARGE    		(g_settings.rounded_corners ? 8 : 0)
-#define RADIUS_MID      		(g_settings.rounded_corners ? 4 : 0)
-#define RADIUS_SMALL    		(g_settings.rounded_corners ? 2 : 0)
+#define NO_RADIUS			0
+#define RADIUS_LARGE    		(g_settings.rounded_corners ? 8 : NO_RADIUS)
+#define RADIUS_MID      		(g_settings.rounded_corners ? 4 : NO_RADIUS)
+#define RADIUS_SMALL    		(g_settings.rounded_corners ? 2 : NO_RADIUS)
 
 #define BORDER_LEFT			10
 #define BORDER_RIGHT			10

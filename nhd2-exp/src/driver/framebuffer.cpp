@@ -740,7 +740,7 @@ fb_pixel_t* CFrameBuffer::paintBoxRel2Buf(const int dx, const int dy, const fb_p
 
 //
 
-void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius, int type, bool fadeColor, int mode)
+void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius, int type, int mode)
 {
 	if (!getActive())
 		return;
@@ -748,12 +748,12 @@ void CFrameBuffer::paintBoxRel(const int x, const int y, const int dx, const int
 #define MASK 0xFFFFFFFF
 
 	// boxBuf
-	fb_pixel_t* boxBuf = paintBoxRel2Buf(dx, dy, fadeColor? MASK : col, NULL, radius, type);
+	fb_pixel_t* boxBuf = paintBoxRel2Buf(dx, dy, (mode > nogradient)? MASK : col, NULL, radius, type);
         if (!boxBuf)
                return;
 
 	// gradientBuf
-	if(fadeColor)
+	if(mode > nogradient)
 	{
 		fb_pixel_t* gradientBuf = gradientOneColor(col, NULL, dy, mode);
 

@@ -1614,7 +1614,7 @@ void CAudioPlayerGui::paintHead()
 		strCaption = g_Locale->getText(LOCALE_AUDIOPLAYER_HEAD);
 	
 	// head box
-	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
+	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
 	
 	// head icon
 	m_frameBuffer->getIconSize(NEUTRINO_ICON_MP3, &icon_head_w, &icon_head_h);
@@ -1690,7 +1690,7 @@ void CAudioPlayerGui::paintFoot()
 	int ButtonWidth2 = (m_width - 50) / 2;
 	
 	// foot
-	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 
 	if (!m_playlist.empty())
 	{
@@ -1929,7 +1929,7 @@ void CAudioPlayerGui::paintItemID3DetailsLine(int pos)
 
 		// paint id3 infobox 
 		// refresh box
-		m_frameBuffer->paintBoxRel(m_x + 2, ypos2 + 2 , m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
+		m_frameBuffer->paintBoxRel(m_x + 2, ypos2 + 2 , m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + 10, ypos2 + 2 + 1*m_fheight, m_width- 80, m_playlist[m_selected].MetaData.title, COL_MENUCONTENTDARK, 0, true); // UTF-8
 

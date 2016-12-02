@@ -92,8 +92,7 @@ class Drawable
 
 		int m_width;
 
-	private:	
-	
+	private:		
 };
 
 /**
@@ -115,7 +114,6 @@ class DText : public Drawable
 	protected:
 
 		std::string m_text;
-
 };
 
 

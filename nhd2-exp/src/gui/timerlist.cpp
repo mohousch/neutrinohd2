@@ -816,7 +816,7 @@ const struct button_label TimerListButtons[3] =
 void CTimerList::paintFoot()
 {
 	int ButtonWidth = (width - 20) / 4;
-	frameBuffer->paintBoxRel(x, y + height, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+	frameBuffer->paintBoxRel(x, y + height, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 	
 	int icon_w, icon_h;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);

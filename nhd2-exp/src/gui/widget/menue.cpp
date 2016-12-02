@@ -579,7 +579,7 @@ void CMenuWidget::paint()
 		saveScreen();
 
 	// paint head
-	frameBuffer->paintBoxRel(x, y, full_width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	frameBuffer->paintBoxRel(x, y, full_width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
 	
 	//paint icon
 	frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
@@ -594,7 +594,7 @@ void CMenuWidget::paint()
 	frameBuffer->paintBoxRel(x, y + height - (fheight + sp_height), full_width, sp_height, COL_MENUCONTENTDARK_PLUS_0);
 	
 	//paint foot
-	frameBuffer->paintBoxRel(x, y + height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+	frameBuffer->paintBoxRel(x, y + height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 	
 	// all height position (needed to paint itemIcon and help text)
 	HEIGHT_Y = y + full_height;
@@ -951,7 +951,7 @@ int CMenuOptionChooser::paint(bool selected, bool AfterPulldown)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 		
 		// paint help icon
 		int icon_h_w = 0;
@@ -1121,7 +1121,7 @@ int CMenuOptionNumberChooser::paint(bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 		
 		// paint help icon
 		int icon_w = 0;
@@ -1356,7 +1356,7 @@ int CMenuOptionStringChooser::paint( bool selected, bool afterPulldown)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 		
 		// paint help icon
 		int icon_h_w = 0;
@@ -1478,7 +1478,7 @@ int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 		
 		// paint help icon
 		int icon_h_w = 0;
@@ -1639,7 +1639,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 			
 		// paint help icon
 		int icon_w = 0;
@@ -1949,7 +1949,7 @@ int CMenuSelector::paint(bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 			
 		// paint help icon
 		int icon_w = 0;
@@ -2108,7 +2108,7 @@ int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 		int fposy = HEIGHT_Y - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 			
 		// paint help icon
 		int icon_w = 0;

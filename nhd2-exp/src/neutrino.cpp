@@ -630,6 +630,8 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.menu_Head_red = configfile.getInt32( "menu_Head_red", 35);
 	g_settings.menu_Head_green = configfile.getInt32( "menu_Head_green", 35);
 	g_settings.menu_Head_blue = configfile.getInt32( "menu_Head_blue", 35);
+	g_settings.menu_Head_gradient = configfile.getInt32("menu_Head_gradient", gradientLight2Dark);
+
 	g_settings.menu_Head_Text_alpha = configfile.getInt32( "menu_Head_Text_alpha", 0);
 	g_settings.menu_Head_Text_red = configfile.getInt32( "menu_Head_Text_red", 100 );
 	g_settings.menu_Head_Text_green = configfile.getInt32( "menu_Head_Text_green", 100 );
@@ -680,6 +682,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.menu_Foot_red = configfile.getInt32( "menu_Foot_red", 28);
 	g_settings.menu_Foot_green = configfile.getInt32( "menu_Foot_green", 28);
 	g_settings.menu_Foot_blue = configfile.getInt32( "menu_Foot_blue", 28);
+	g_settings.menu_Foot_gradient = configfile.getInt32("menu_Foot_gradient", gradientDark2Light);
 		
 	g_settings.menu_Foot_Text_alpha = configfile.getInt32( "menu_Foot_Text_alpha", 0);
 	g_settings.menu_Foot_Text_red = configfile.getInt32( "menu_Foot_Text_red", 50);
@@ -963,7 +966,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.satip_serverbox_gui = configfile.getInt32("satip_serverbox_gui", SNeutrinoSettings::SATIP_SERVERBOX_GUI_NEUTRINO_HD);
 
 	// mode
-	g_settings.mode = configfile.getInt32("mode", mode_tv);
+	//g_settings.mode = configfile.getInt32("mode", mode_tv);
 
 	g_settings.tmdbkey = configfile.getString("tmdbkey", "");
 	
@@ -1112,6 +1115,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "menu_Head_red", g_settings.menu_Head_red );
 	configfile.setInt32( "menu_Head_green", g_settings.menu_Head_green );
 	configfile.setInt32( "menu_Head_blue", g_settings.menu_Head_blue );
+	configfile.setInt32("menu_Head_gradient", g_settings.menu_Head_gradient);
 
 	configfile.setInt32( "menu_Head_Text_alpha", g_settings.menu_Head_Text_alpha );
 	configfile.setInt32( "menu_Head_Text_red", g_settings.menu_Head_Text_red );
@@ -1167,6 +1171,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "menu_Foot_red", g_settings.menu_Foot_red );
 	configfile.setInt32( "menu_Foot_green", g_settings.menu_Foot_green );
 	configfile.setInt32( "menu_Foot_blue", g_settings.menu_Foot_blue );
+	configfile.setInt32("menu_Foot_gradient", g_settings.menu_Foot_gradient);
 	
 	configfile.setInt32( "menu_Foot_Text_alpha", g_settings.menu_Foot_Text_alpha );
 	configfile.setInt32( "menu_Foot_Text_red", g_settings.menu_Foot_Text_red );
@@ -1406,7 +1411,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32("satip_serverbox_gui", g_settings.satip_serverbox_gui);
 
 	// mode
-	configfile.setInt32("mode", /*g_settings.mode*/mode);	
+	//configfile.setInt32("mode", mode);	
 
 	if(strcmp(fname, NEUTRINO_SETTINGS_FILE))
 		configfile.saveConfig(fname);
@@ -2230,57 +2235,50 @@ void CNeutrinoApp::InitZapper()
 	// init channel
 	channelsInit();
 
-	if(g_settings.mode == mode_iptv)
+	// mode ? tv:radio
+	if(firstchannel.mode == 't') 
 	{
-		webtvMode(true);
-	}
-	else
+		tvMode(false);
+	} 
+	else 
 	{
-		// mode ? tv:radio
-		if(firstchannel.mode == 't') 
-		{
-			tvMode(false);
-		} 
-		else 
-		{
 #if defined (ENABLE_LCD)	  
 			g_RCInput->killTimer(g_InfoViewer->lcdUpdateTimer);
 			g_InfoViewer->lcdUpdateTimer = g_RCInput->addTimer( LCD_UPDATE_TIME_RADIO_MODE, false );
 #endif		
 		
 			radioMode(false);
-		}
+	}
 
-		// zap
-		if(channelList->getSize() && live_channel_id) 
-		{
-			channelList->adjustToChannelID(live_channel_id);
+	// zap
+	if(channelList->getSize() && live_channel_id) 
+	{
+		channelList->adjustToChannelID(live_channel_id);
 
-			// show service name in vfd (250hd has only 4 digit so we show service number)
-			if (CVFD::getInstance()->is4digits)
-				CVFD::getInstance()->LCDshowText(channelList->getActiveChannelNumber());
-			else
-				CVFD::getInstance()->showServicename(channelList->getActiveChannelName());	
+		// show service name in vfd (250hd has only 4 digit so we show service number)
+		if (CVFD::getInstance()->is4digits)
+			CVFD::getInstance()->LCDshowText(channelList->getActiveChannelNumber());
+		else
+			CVFD::getInstance()->showServicename(channelList->getActiveChannelName());	
 
-			// start epg scanning
-			g_Sectionsd->setPauseScanning(false);
-			g_Sectionsd->setServiceChanged(live_channel_id&0xFFFFFFFFFFFFULL, true );
+		// start epg scanning
+		g_Sectionsd->setPauseScanning(false);
+		g_Sectionsd->setServiceChanged(live_channel_id&0xFFFFFFFFFFFFULL, true );
 		
-			// process apids
-			g_Zapit->getPIDS(g_RemoteControl->current_PIDs);
-			g_RemoteControl->processAPIDnames();
+		// process apids
+		g_Zapit->getPIDS(g_RemoteControl->current_PIDs);
+		g_RemoteControl->processAPIDnames();
 				
-			// permenant timeshift
-			if(g_settings.auto_timeshift)
-				startAutoRecord(true);
+		// permenant timeshift
+		if(g_settings.auto_timeshift)
+			startAutoRecord(true);
 		
-			// show info bar
-			g_RCInput->postMsg(NeutrinoMessages::SHOW_INFOBAR, 0);
+		// show info bar
+		g_RCInput->postMsg(NeutrinoMessages::SHOW_INFOBAR, 0);
 		
-			SelectSubtitles();
+		SelectSubtitles();
 		
-			StartSubtitles();
-		}
+		StartSubtitles();
 	}
 }
 

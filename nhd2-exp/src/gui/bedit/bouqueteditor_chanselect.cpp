@@ -227,7 +227,7 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 void CBEChannelSelectWidget::paintFoot()
 {
 	int ButtonWidth = width / 3;
-	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 
 	// ok
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + width - 3*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_foot_h)/2);
@@ -244,7 +244,7 @@ void CBEChannelSelectWidget::paintFoot()
 void CBEChannelSelectWidget::paintDetails(int index)
 {
 	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 	
 	if(Channels.empty())
 		return;

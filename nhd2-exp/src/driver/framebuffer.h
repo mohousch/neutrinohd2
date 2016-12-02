@@ -75,6 +75,7 @@ typedef struct fb_var_screeninfo t_fb_var_screeninfo;
 
 ///gradient mode
 enum {
+	nogradient,
 	gradientDark2Light,
 	gradientLight2Dark,
 	gradientDark2Light2Dark,
@@ -236,7 +237,7 @@ class CFrameBuffer
 
 		void paintPixel(const int x, const int y, const fb_pixel_t col);
 		
-		void paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius = 0, int type = 0, bool fadeColor = false, int mode = gradientLight2Dark);
+		void paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius = 0, int type = CORNER_NONE, int mode = nogradient);
 
 		inline void paintBox(int xa, int ya, int xb, int yb, const fb_pixel_t col) { paintBoxRel(xa, ya, xb - xa, yb - ya, col); }
 		inline void paintBox(int xa, int ya, int xb, int yb, const fb_pixel_t col, int radius, int type) { paintBoxRel(xa, ya, xb - xa, yb - ya, col, radius, type); }

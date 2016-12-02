@@ -960,6 +960,7 @@ void SaveServices(bool tocopy)
 	fclose(fd);
 	
 	// create zapit ordner if missed
+#if 0
 	struct stat statInfo;
 	int res = stat(CONFIGDIR "/zapit", &statInfo);
 	
@@ -977,6 +978,7 @@ void SaveServices(bool tocopy)
 			perror("[getservices] stat");
 		}
 	} 
+#endif
 
 	if(tocopy) 
 	{

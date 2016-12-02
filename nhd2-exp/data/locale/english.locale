@@ -1562,7 +1562,8 @@ psisetup.brightness Brightness
 psisetup.tint Tint
 
 colormenu.helptxt Help text
-colormenu.helpbar Help bar
+colormenu.helpbar Foot bar
+
 lcdmenu.menutitlevfd show Menu title on Display
 
 scansetup.tunermode Tuner mode

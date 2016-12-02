@@ -121,7 +121,7 @@
 
 #define COL_MENUCONTENTINACTIVE_PLUS_0  (CFrameBuffer::getInstance()->realcolor[(COL_MENUCONTENTINACTIVE + 0)])
 
-#define COL_MENUFOOT_PLUS_0		(CFrameBuffer::getInstance()->realcolor[(/*COL_MENUFOOT*/COL_MENUHEAD + 0)])
+#define COL_MENUFOOT_PLUS_0		(CFrameBuffer::getInstance()->realcolor[(COL_MENUFOOT + 0)])
 
 
 int convertSetupColor2RGB(unsigned char r, unsigned char g, unsigned char b);

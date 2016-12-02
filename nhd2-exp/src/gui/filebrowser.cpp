@@ -872,7 +872,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 void CFileBrowser::paintHead()
 {
 	char l_name[100];
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
 	
 	// icon
 	int icon_w, icon_h;
@@ -905,7 +905,7 @@ void CFileBrowser::paintFoot()
 	int ty2 = by2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
 	// foot
-	frameBuffer->paintBoxRel(x, y + height - foheight, width, foheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+	frameBuffer->paintBoxRel(x, y + height - foheight, width, foheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 
 	if (!(filelist.empty()))
 	{
