@@ -506,7 +506,7 @@ void CEpgData::showHead(const t_channel_id channel_id)
 	}
 
 	//show the epg title
-	frameBuffer->paintBoxRel(sx, sy - toph, ox, toph, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	frameBuffer->paintBoxRel(sx, sy - toph, ox, toph, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
 	
 	//
 	// paint time/date
@@ -823,7 +823,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 				case CRCInput::RC_left:
 					if (prev_id != 0)
 					{
-						frameBuffer->paintBoxRel(sx + 5, sy + oy - botboxheight + 4, botboxheight - 8, botboxheight- 8,  COL_MENUCONTENT_PLUS_1);
+						frameBuffer->paintBoxRel(sx + 5, sy + oy - botboxheight + 4, botboxheight - 8, botboxheight - 8,  COL_MENUCONTENT_PLUS_1);
 						
 						frameBuffer->blit();
 
@@ -837,7 +837,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 				case CRCInput::RC_right:
 					if (next_id != 0)
 					{
-						frameBuffer->paintBoxRel(sx + ox- botboxheight + 8 - 5, sy + oy- botboxheight + 4, botboxheight- 8, botboxheight- 8,  COL_MENUCONTENT_PLUS_1);
+						frameBuffer->paintBoxRel(sx + ox - botboxheight + 8 - 5, sy + oy- botboxheight + 4, botboxheight- 8, botboxheight - 8,  COL_MENUCONTENT_PLUS_1);
 						
 						frameBuffer->blit();
 
@@ -1188,7 +1188,7 @@ void CEpgData::showTimerEventBar(bool _show)
 		return;
 	}
 
-	frameBuffer->paintBoxRel(x, y, w, h, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+	frameBuffer->paintBoxRel(x, y, w, h, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 
 	// Button Red: Timer Record & Channelswitch
 	if (recDir != NULL)

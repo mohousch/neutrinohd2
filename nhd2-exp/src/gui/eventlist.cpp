@@ -716,7 +716,7 @@ void EventList::paintHead(t_channel_id channel_id)
 {
 	bool logo_ok = false;
 
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
 	
 	// help icon
 	int icon_h_w, icon_h_h;
@@ -736,7 +736,7 @@ void EventList::paintHead(t_channel_id channel_id)
 		strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
 		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - icon_h_w - 5 - timestr_len, y + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 5, timestr_len+1, timestr, COL_MENUHEAD, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - 2*icon_h_w - 5 - timestr_len, y + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 5, timestr_len+1, timestr, COL_MENUHEAD, 0, true); // UTF-8
 	}
 
 	// logo
@@ -774,8 +774,13 @@ void EventList::paint(t_channel_id channel_id)
 		int icon_w = 0;
 		int icon_h = 0;
 		
+		// icon ?
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_w, &icon_h);
 		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + width - BORDER_RIGHT - icon_w, y + (theight - icon_h)/2 );
+
+		// icon 0 for imdb
+		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_0, &icon_w, &icon_h);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_0, x + width - BORDER_RIGHT - 2*icon_w - 5, y + (theight - icon_h)/2 );
 	}
 
 	frameBuffer->paintBoxRel(x, y + theight, width, height - theight - iheight, COL_MENUCONTENT_PLUS_0);
@@ -824,7 +829,7 @@ void  EventList::showFunctionBar(bool show)
 	int fh = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
 	//
-	frameBuffer->paintBoxRel(x, by, width, bh, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+	frameBuffer->paintBoxRel(x, by, width, bh, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 
 	// -- Button Red: Timer Record & Channelswitch
 	if ( (recDir != NULL) && ((unsigned int) g_settings.key_channelList_addrecord != CRCInput::RC_nokey))	  

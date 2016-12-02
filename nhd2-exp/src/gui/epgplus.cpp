@@ -122,7 +122,7 @@ void EpgPlus::Header::init ()
 
 void EpgPlus::Header::paint ()
 {
-	this->frameBuffer->paintBoxRel (this->x, this->y, this->width, this->font->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	this->frameBuffer->paintBoxRel (this->x, this->y, this->width, this->font->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
 	
 	// paint time/date
 	int timestr_len = 0;
@@ -542,7 +542,7 @@ void EpgPlus::Footer::paintButtons(button_label * _buttonLabels, int numberOfBut
 	this->frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	
 	// paint foot box
-	this->frameBuffer->paintBoxRel(this->x, yPos, this->width, this->fontButtons->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+	this->frameBuffer->paintBoxRel(this->x, yPos, this->width, this->fontButtons->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 	
 	::paintButtons(this->frameBuffer, this->fontButtons, g_Locale, this->x + 10, yPos, buttonWidth, numberOfButtons, _buttonLabels, this->fontButtons->getHeight());
 }
