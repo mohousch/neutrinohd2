@@ -67,7 +67,6 @@ class CInfoBox
 		CBox	m_cBoxFrame;
 		CBox	m_cBoxFrameText;
 		CBox	m_cBoxFrameTitleRel;
-		CBox	m_cBoxFrameFootRel;
 
 		// variables
 		std::string m_cIcon;
@@ -89,7 +88,6 @@ class CInfoBox
 		// functions
 		void initVar(void);
 		void initFramesRel(void);
-		void refreshFoot(void);
 		void refreshTitle(void);
 		void refreshText(void);
 

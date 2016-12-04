@@ -115,7 +115,7 @@ CInfoBox::CInfoBox(  const char * text,
 		m_cBoxFrameText = m_pcTextBox->getWindowsPos();
 
 		m_cBoxFrame.iWidth = m_cBoxFrameText.iWidth;
-		m_cBoxFrame.iHeight = m_cBoxFrameText.iHeight + m_cBoxFrameFootRel.iHeight +  m_cBoxFrameTitleRel.iHeight;
+		m_cBoxFrame.iHeight = m_cBoxFrameText.iHeight +  m_cBoxFrameTitleRel.iHeight;
 
 		initFramesRel();
 	}
@@ -229,42 +229,11 @@ void CInfoBox::initFramesRel(void)
 	m_cBoxFrameTitleRel.iWidth	= m_cBoxFrame.iWidth;
 	m_cBoxFrameTitleRel.iHeight	= m_nFontTitleHeight + 2;
 
-	// init the foot frame
-	m_cBoxFrameFootRel.iX		= m_cBoxFrame.iX;
-	m_cBoxFrameFootRel.iWidth	= m_cBoxFrame.iWidth;
-	m_cBoxFrameFootRel.iHeight	= m_cBoxFrameTitleRel.iHeight;
-	m_cBoxFrameFootRel.iY		= m_cBoxFrame.iY + m_cBoxFrame.iHeight - m_cBoxFrameFootRel.iHeight;
-
 	// init the text frame
 	m_cBoxFrameText.iY		= m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight;
 	m_cBoxFrameText.iX		= m_cBoxFrameTitleRel.iX;
-	m_cBoxFrameText.iHeight		= m_cBoxFrame.iHeight - m_cBoxFrameTitleRel.iHeight - m_cBoxFrameFootRel.iHeight;
+	m_cBoxFrameText.iHeight		= m_cBoxFrame.iHeight - m_cBoxFrameTitleRel.iHeight;
 	m_cBoxFrameText.iWidth		= m_cBoxFrame.iWidth;		
-}
-
-//////////////////////////////////////////////////////////////////////
-// Function Name:	RefreshFoot	
-// Description:		
-// Parameters:		
-// Data IN/OUT:		
-// Return:		
-// Notes:		
-//////////////////////////////////////////////////////////////////////
-void CInfoBox::refreshFoot(void)
-{
-	// footbox
-	m_pcWindow->paintBoxRel(m_cBoxFrameFootRel.iX, 
-						m_cBoxFrameFootRel.iY, 
-						m_cBoxFrameFootRel.iWidth, 
-						m_cBoxFrameFootRel.iHeight,  
-						COL_MENUHEAD_PLUS_0,
-						RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
-
-	// icon
-	int iw, ih;
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
-	
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HOME, m_cBoxFrameFootRel.iX + m_cBoxFrameFootRel.iWidth - BORDER_RIGHT - iw , m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - ih)/2);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -295,7 +264,12 @@ void CInfoBox::refreshTitle(void)
 		m_pcWindow->paintIcon(m_cIcon.c_str(), m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
 	}
 
-	m_pcFontTitle->RenderString(m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + 5, m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + iw + 5), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	// exit icon
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
+	
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HOME, m_cBoxFrameTitleRel.iX + m_cBoxFrameTitleRel.iWidth - BORDER_RIGHT - iw , m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
+
+	m_pcFontTitle->RenderString(m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + 5, m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + 2*iw + 5), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -408,6 +382,10 @@ bool CInfoBox::paint(void)
 	
 	if(m_pcTextBox != NULL)
 	{
+		// set corner
+		m_pcTextBox->setCorner(RADIUS_MID, CORNER_BOTTOM);
+
+		// paint
 		m_pcTextBox->paint();
 	}
 	
@@ -431,15 +409,16 @@ void CInfoBox::refresh(void)
 		return;
 	}
 	
-	//re-draw infobox window
+	//refresh title
 	refreshTitle();
-	refreshFoot();
 
 	// rep-draw textbox if there is one
+	/*
 	if(m_pcTextBox != NULL)
 	{
-		//m_pcTextBox->refresh();
+		m_pcTextBox->refresh();
 	}
+	*/
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -538,7 +517,7 @@ bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _
 			m_cBoxFrameText = m_pcTextBox->getWindowsPos();
 
 			m_cBoxFrame.iWidth = m_cBoxFrameText.iWidth;
-			m_cBoxFrame.iHeight = m_cBoxFrameText.iHeight + m_cBoxFrameFootRel.iHeight +  m_cBoxFrameTitleRel.iHeight;
+			m_cBoxFrame.iHeight = m_cBoxFrameText.iHeight +  m_cBoxFrameTitleRel.iHeight;
 
 			initFramesRel();
 

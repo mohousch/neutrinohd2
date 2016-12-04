@@ -204,6 +204,22 @@ void CTextBox::setCorner(int Radius, int Type)
 {
 	radius = Radius;
 	type = Type;
+
+	//
+	if(m_nMode & SCROLL)
+	{
+		m_cFrameScrollRel.iX		= m_cFrame.iWidth - SCROLL_FRAME_WIDTH;
+		m_cFrameScrollRel.iY		= m_cFrameTextRel.iY;
+		m_cFrameScrollRel.iWidth	= SCROLL_FRAME_WIDTH;
+		m_cFrameScrollRel.iHeight	= radius? m_cFrameTextRel.iHeight - 2*radius : m_cFrameTextRel.iHeight;
+	}
+	else
+	{
+		m_cFrameScrollRel.iX		= 0;
+		m_cFrameScrollRel.iY		= 0;
+		m_cFrameScrollRel.iHeight	= 0;
+		m_cFrameScrollRel.iWidth	= 0;
+	}
 }
 
 void CTextBox::setBigFonts(bool bigfont)
@@ -459,7 +475,7 @@ void CTextBox::refreshText(void)
 		return;
 
 	// paint text background
-	frameBuffer->paintBoxRel(m_cFrameTextRel.iX + m_cFrame.iX, m_cFrameTextRel.iY + m_cFrame.iY, m_cFrameTextRel.iWidth, m_cFrameTextRel.iHeight, m_textBackgroundColor, radius, type);
+	frameBuffer->paintBoxRel(m_cFrameTextRel.iX + m_cFrame.iX, m_cFrameTextRel.iY + m_cFrame.iY, m_cFrame/*TextRel*/.iWidth, m_cFrameTextRel.iHeight, m_textBackgroundColor, radius, type);
 
 	if( m_nNrOfLines <= 0) 
 		return;
@@ -562,8 +578,10 @@ void CTextBox::refresh(void)
 	dprintf(DEBUG_DEBUG, "CTextBox::Refresh:\r\n");
 
 	// paint text
-	refreshScroll();
-	refreshText();	
+	refreshText();
+
+	// paint scrollbar
+	refreshScroll();	
 }
 
 bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _tw, int _th, int _tmode)
