@@ -64,29 +64,19 @@
 class CInfoBox  
 {
 	private:
-		// functions
-		void initVar(void);
-		void initFramesRel(void);
-		void refreshFoot(void);
-		void refreshTitle(void);
-		void refreshText(void);
-
-		// variables
-		std::string m_cIcon;
-		std::string m_cTitle;
-
 		CBox	m_cBoxFrame;
 		CBox	m_cBoxFrameText;
 		CBox	m_cBoxFrameTitleRel;
 		CBox	m_cBoxFrameFootRel;
 
+		// variables
+		std::string m_cIcon;
+		std::string m_cTitle;
+
 		int m_nMode;
 
 		CFont *m_pcFontTitle;
 		int m_nFontTitleHeight;
-
-		CFont *m_pcFontFoot;
-		int m_nFontFootHeight;
 
 		CTextBox *m_pcTextBox;
 
@@ -95,6 +85,13 @@ class CInfoBox
 		bool bigFonts;
 
 		bool hide(void);
+
+		// functions
+		void initVar(void);
+		void initFramesRel(void);
+		void refreshFoot(void);
+		void refreshTitle(void);
+		void refreshText(void);
 
 	public:
 		virtual ~CInfoBox();

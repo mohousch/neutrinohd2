@@ -60,10 +60,6 @@
 #include <system/debug.h>
 
 
-#define ADD_FOOT_HEIGHT	 			20
-#define	TEXT_BORDER_WIDTH			8
-#define	TITLE_ICON_WIDTH			(40 - TEXT_BORDER_WIDTH)
-
 #define MAX_WINDOW_WIDTH  			(g_settings.screen_EndX - g_settings.screen_StartX )
 #define MAX_WINDOW_HEIGHT 			(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
 
@@ -71,7 +67,6 @@
 #define MIN_WINDOW_HEIGHT 			40	
 
 #define DEFAULT_TITLE_FONT			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]
-#define DEFAULT_FOOT_FONT			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -203,13 +198,9 @@ void CInfoBox::initVar(void)
 	m_cIcon = "";
 	m_nMode = CTextBox::SCROLL;
 
-	// set the title varianles
+	// set the title variables
 	m_pcFontTitle  =  DEFAULT_TITLE_FONT;
 	m_nFontTitleHeight = m_pcFontTitle->getHeight();
-
-	// set the foot variables
-	m_pcFontFoot = DEFAULT_FOOT_FONT;
-	m_nFontFootHeight = m_pcFontFoot->getHeight();
 
 	// set the main frame to default
 	m_cBoxFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - MIN_WINDOW_WIDTH) >>1);
@@ -240,9 +231,9 @@ void CInfoBox::initFramesRel(void)
 
 	// init the foot frame
 	m_cBoxFrameFootRel.iX		= m_cBoxFrame.iX;
-	m_cBoxFrameFootRel.iY		= m_cBoxFrame.iY + m_cBoxFrame.iHeight - m_nFontFootHeight - ADD_FOOT_HEIGHT;
 	m_cBoxFrameFootRel.iWidth	= m_cBoxFrame.iWidth;
-	m_cBoxFrameFootRel.iHeight	= m_nFontFootHeight + ADD_FOOT_HEIGHT;
+	m_cBoxFrameFootRel.iHeight	= m_cBoxFrameTitleRel.iHeight;
+	m_cBoxFrameFootRel.iY		= m_cBoxFrame.iY + m_cBoxFrame.iHeight - m_cBoxFrameFootRel.iHeight;
 
 	// init the text frame
 	m_cBoxFrameText.iY		= m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight;
@@ -304,7 +295,7 @@ void CInfoBox::refreshTitle(void)
 		m_pcWindow->paintIcon(m_cIcon.c_str(), m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
 	}
 
-	m_pcFontTitle->RenderString(m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + TEXT_BORDER_WIDTH, m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + iw + TEXT_BORDER_WIDTH), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	m_pcFontTitle->RenderString(m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + 5, m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + iw + 5), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
 
 //////////////////////////////////////////////////////////////////////

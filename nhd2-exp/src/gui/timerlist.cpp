@@ -789,7 +789,7 @@ void CTimerList::paintItem(int pos)
 void CTimerList::paintHead()
 {
 	// headbox
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
 	
 	// icon
 	int icon_w, icon_h;

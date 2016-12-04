@@ -81,7 +81,7 @@ void CProgressBar::paint(unsigned int x, unsigned int y, unsigned char pcr)
 	unsigned int ypos;
 
 	double div;
-	uint32_t  rgb;
+	uint32_t rgb;
 	
 	fb_pixel_t color;
 	int b = 0;

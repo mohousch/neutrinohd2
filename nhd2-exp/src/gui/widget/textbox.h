@@ -87,27 +87,18 @@ class CTextBox
 		}tmode;
 
 	private:
-		// Functions
-		void refreshTextLineArray(void);
-		void initVar(void);
-		void initFramesRel(void);
-		void refreshScroll(void);
-		void refreshText(void);
-		void reSizeMainFrameWidth(int maxTextWidth);
-		void reSizeMainFrameHeight(int maxTextHeight);
-
-		// Variables
-		std::string m_cText;
-		std::vector<std::string> m_cLineArray;
-
-		bool m_showTextFrame;
-
 		CBox m_cFrame;
 		CBox m_cFrameTextRel;
 		CBox m_cFrameScrollRel;
 
 		int m_nMaxHeight;
 		int m_nMaxWidth;
+
+		// Variables
+		std::string m_cText;
+		std::vector<std::string> m_cLineArray;
+
+		bool m_showTextFrame;
 
 		int m_nMode;
 		int m_tMode;
@@ -137,6 +128,18 @@ class CTextBox
 
 		bool bigFonts;
 
+		int radius;
+		int type;
+
+		// Functions
+		void refreshTextLineArray(void);
+		void initVar(void);
+		void initFramesRel(void);
+		void refreshScroll(void);
+		void refreshText(void);
+		void reSizeMainFrameWidth(int maxTextWidth);
+		void reSizeMainFrameHeight(int maxTextHeight);
+
 	public:
 		// Constructor
 		CTextBox();
@@ -162,6 +165,8 @@ class CTextBox
 		inline  int     getLines(void)				{return(m_nNrOfLines);};
 		inline  int     getPages(void)				{return(m_nNrOfPages);};
 		inline	void	movePosition(int x, int y){m_cFrame.iX = x; m_cFrame.iY = y;};
+
+		void setCorner(int Radius = NO_RADIUS, int Type = CORNER_NONE);
 
 		void paint (void);
 		void hide (void);

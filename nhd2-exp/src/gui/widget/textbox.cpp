@@ -195,6 +195,15 @@ void CTextBox::initVar(void)
 	thumbnail = "";
 
 	bigFonts = false;
+
+	radius = NO_RADIUS;
+	type = CORNER_NONE;
+}
+
+void CTextBox::setCorner(int Radius, int Type)
+{
+	radius = Radius;
+	type = Type;
 }
 
 void CTextBox::setBigFonts(bool bigfont)
@@ -435,6 +444,7 @@ void CTextBox::refreshScroll(void)
 		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + m_cFrame.iX, m_cFrameScrollRel.iY + m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, COL_MENUCONTENT_PLUS_1);
 		
 		unsigned int marker_size = m_cFrameScrollRel.iHeight / m_nNrOfPages;
+
 		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + SCROLL_MARKER_BORDER + m_cFrame.iX, m_cFrameScrollRel.iY + m_nCurrentPage * marker_size + m_cFrame.iY, m_cFrameScrollRel.iWidth - 2*SCROLL_MARKER_BORDER, marker_size, COL_MENUCONTENT_PLUS_3);
 	}
 	else
@@ -449,7 +459,7 @@ void CTextBox::refreshText(void)
 		return;
 
 	// paint text background
-	frameBuffer->paintBoxRel(m_cFrameTextRel.iX + m_cFrame.iX, m_cFrameTextRel.iY + m_cFrame.iY, m_cFrameTextRel.iWidth, m_cFrameTextRel.iHeight, m_textBackgroundColor);
+	frameBuffer->paintBoxRel(m_cFrameTextRel.iX + m_cFrame.iX, m_cFrameTextRel.iY + m_cFrame.iY, m_cFrameTextRel.iWidth, m_cFrameTextRel.iHeight, m_textBackgroundColor, radius, type);
 
 	if( m_nNrOfLines <= 0) 
 		return;
@@ -469,6 +479,7 @@ void CTextBox::refreshText(void)
 		frameBuffer->DisplayImage(thumbnail.c_str(), lx + THUMBNAIL_OFFSET, ly + THUMBNAIL_OFFSET, tw - THUMBNAIL_OFFSET, th - THUMBNAIL_OFFSET);
 	}
 	
+	// paint text
 	int y = m_cFrameTextRel.iY + TEXT_BORDER_WIDTH;
 	int i;
 	int x_center = 0;

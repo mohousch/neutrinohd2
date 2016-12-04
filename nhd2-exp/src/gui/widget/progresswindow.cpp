@@ -106,6 +106,7 @@ void CProgressWindow::showGlobalStatus(const unsigned int prog)
 		
 		//
 		CFrameBuffer::getInstance()->paintBoxRel(x + width - (w + 20), globalstatusY - 5, w + 20, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 8, COL_MENUCONTENT_PLUS_0);
+
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + width - (w + 10), globalstatusY + 18, w, strProg, COL_MENUCONTENT, 0, true); // UTF-8
 	}
 	
