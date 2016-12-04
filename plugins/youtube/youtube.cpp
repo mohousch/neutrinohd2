@@ -403,13 +403,16 @@ int CYTBrowser::paint(void)
 	if(m_pcBrowser == NULL || m_pcInfo == NULL )
 	{
 		if (m_pcBrowser != NULL)
+		{
 			delete m_pcBrowser;
+			m_pcBrowser = NULL;
+		}
 
-		if (m_pcInfo != NULL) 
+		if (m_pcInfo != NULL)
+		{ 
 			delete m_pcInfo;
-
-		m_pcInfo = NULL;
-		m_pcBrowser = NULL;
+			m_pcInfo = NULL;
+		}
 
 		return (false);
 	} 
@@ -1197,9 +1200,7 @@ void plugin_exec(void)
 {
 	CMoviePlayerGui tmpMoviePlayerGui;
 			
-	CYTBrowser * moviebrowser;
-	
-	moviebrowser = new CYTBrowser();
+	CYTBrowser * moviebrowser = new CYTBrowser();
 	MI_MOVIE_INFO * p_movie_info;
 	
 BROWSER:	
