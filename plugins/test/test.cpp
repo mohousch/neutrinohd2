@@ -72,11 +72,11 @@ class CTestMenu : CMenuTarget
 		void testShowPictureFolder();
 		//
 		void testStartPlugin();
+
 		//
 		void testShowActuellEPG();
 		void testChannelSelectWidget();
 		void testBEChannelSelectWidget();
-		//
 		void testAVSelectWidget();
 		void testAudioSelectWidget();
 		void testDVBSubSelectWidget();
@@ -93,9 +93,8 @@ class CTestMenu : CMenuTarget
 		
 		//
 		void testFrameBox();
-
-		//
 		void testPluginsList();
+
 		void testURIMovieBrowser();
 		void testURIRecordBrowser();
 		void testPlayMovieDir();
@@ -132,7 +131,7 @@ void CTestMenu::testCFBWindow()
 
 	CFrameBuffer::getInstance()->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_ALL, gradientDark2Light2Dark);
 
-	//sleep(5);
+	CFrameBuffer::getInstance()->blit();
 
 	// loop
 	neutrino_msg_t msg;
@@ -352,6 +351,7 @@ void CTestMenu::testCTextBox()
 	textBox->setText(&text, fname, picw, pich);
 	
 	textBox->paint();
+	CFrameBuffer::getInstance()->blit();
 	
 	sleep(3);
 	
@@ -393,6 +393,7 @@ void CTestMenu::testCListFrameBox()
 	// paint
 	listFrame->paint();
 	listFrame->showSelection(true);
+	CFrameBuffer::getInstance()->blit();
 	
 	sleep(3);
 	
@@ -457,6 +458,8 @@ void CTestMenu::testCProgressBar()
 	timescale->paint(Box.iX, Box.iY, 90);
 	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 100);
+
+	CFrameBuffer::getInstance()->blit();
 	
 	delete timescale;
 	timescale = NULL;
@@ -516,6 +519,9 @@ void CTestMenu::testCButtons()
 	int icon_w, icon_h;
 	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	::paintButtons(CFrameBuffer::getInstance(), g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, (g_settings.screen_EndX - g_settings.screen_StartX - 100)/4, 4, Buttons, icon_h);
+
+	CFrameBuffer::getInstance()->blit();
+
 	usleep(1000000);
 	hide();
 }
@@ -1657,26 +1663,6 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	mainMenu->addItem(new CMenuForwarder("AudioPlayer", true, NULL, this, "audioplayer"));
-	mainMenu->addItem(new CMenuForwarder("InternetRadio", true, NULL, this, "internetradio"));
-	mainMenu->addItem(new CMenuForwarder("TSMovieBrowser", true, NULL, this, "tsmoviebrowser"));
-	mainMenu->addItem(new CMenuForwarder("MovieBrowser", true, NULL, this, "moviebrowser"));
-	mainMenu->addItem(new CMenuForwarder("FilePlayBack", true, NULL, this, "fileplayback"));
-	mainMenu->addItem(new CMenuForwarder("PictureViewer", true, NULL, this, "pictureviewer"));
-	mainMenu->addItem(new CMenuForwarder("UPNPBrowser", true, NULL, this, "upnpbrowser"));
-
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	mainMenu->addItem(new CMenuForwarder("PlayMovieURL", true, NULL, this, "playmovieurl"));
-	mainMenu->addItem(new CMenuForwarder("PlayAudioURL", true, NULL, this, "playaudiourl"));
-	mainMenu->addItem(new CMenuForwarder("ShowPictureURL", true, NULL, this, "showpictureurl"));
-	mainMenu->addItem(new CMenuForwarder("PlayMovieFolder", true, NULL, this, "playmoviefolder"));
-	mainMenu->addItem(new CMenuForwarder("PlayAudioFolder", true, NULL, this, "playaudiofolder"));
-	mainMenu->addItem(new CMenuForwarder("ShowPictureFolder", true, NULL, this, "showpicturefolder"));
-
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
-
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));
 	mainMenu->addItem(new CMenuForwarder("ChannelSelectWidget", true, NULL, this, "channelselect"));
 	mainMenu->addItem(new CMenuForwarder("BEChannelSelectWidget", true, NULL, this, "bechannelselect"));
@@ -1697,6 +1683,28 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("FrameBox", true, NULL, this, "framebox"));
 	mainMenu->addItem(new CMenuForwarder("PluginsList", true, NULL, this, "pluginslist"));
+
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem(new CMenuForwarder("AudioPlayer", true, NULL, this, "audioplayer"));
+	mainMenu->addItem(new CMenuForwarder("InternetRadio", true, NULL, this, "internetradio"));
+	mainMenu->addItem(new CMenuForwarder("TSMovieBrowser", true, NULL, this, "tsmoviebrowser"));
+	mainMenu->addItem(new CMenuForwarder("MovieBrowser", true, NULL, this, "moviebrowser"));
+	mainMenu->addItem(new CMenuForwarder("FilePlayBack", true, NULL, this, "fileplayback"));
+	mainMenu->addItem(new CMenuForwarder("PictureViewer", true, NULL, this, "pictureviewer"));
+	mainMenu->addItem(new CMenuForwarder("UPNPBrowser", true, NULL, this, "upnpbrowser"));
+
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem(new CMenuForwarder("PlayMovieURL", true, NULL, this, "playmovieurl"));
+	mainMenu->addItem(new CMenuForwarder("PlayAudioURL", true, NULL, this, "playaudiourl"));
+	mainMenu->addItem(new CMenuForwarder("ShowPictureURL", true, NULL, this, "showpictureurl"));
+	mainMenu->addItem(new CMenuForwarder("PlayMovieFolder", true, NULL, this, "playmoviefolder"));
+	mainMenu->addItem(new CMenuForwarder("PlayAudioFolder", true, NULL, this, "playaudiofolder"));
+	mainMenu->addItem(new CMenuForwarder("ShowPictureFolder", true, NULL, this, "showpicturefolder"));
+
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
+
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("URIMovieBrowser", true, NULL, this, "urimoviebrowser"));
 	mainMenu->addItem(new CMenuForwarder("URIRecordBrowser", true, NULL, this, "urirecordbrowser"));
 	mainMenu->addItem(new CMenuForwarder("PlayMovieDir(without Browser)", true, NULL, this, "playmoviedir"));

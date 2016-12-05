@@ -322,7 +322,7 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 		frameBuffer->blit();	
 	}
 	
-	/* to join scan thread */
+	// to join scan thread
 	g_Zapit->stopScan();
 
 	if(!manual) 
@@ -365,7 +365,7 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 
 	hide();
 	
-	/* start sectionsd */
+	// start sectionsd
 	g_Sectionsd->setPauseScanning(false);
 	
 #if defined (USE_OPENGL)
