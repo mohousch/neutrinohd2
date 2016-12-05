@@ -440,25 +440,33 @@ void CTestMenu::testCProgressBar()
 	timescale->reset();
 	
 	timescale->paint(Box.iX, Box.iY, 10);
+	CFrameBuffer::getInstance()->blit();
 	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 20);
+	CFrameBuffer::getInstance()->blit();
 	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 30);
+	CFrameBuffer::getInstance()->blit();
 	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 40);
+	CFrameBuffer::getInstance()->blit();
 	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 50);
+	CFrameBuffer::getInstance()->blit();
 	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 60);
+	CFrameBuffer::getInstance()->blit();
 	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 70);
+	CFrameBuffer::getInstance()->blit();
 	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 80);
+	CFrameBuffer::getInstance()->blit();
 	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 90);
+	CFrameBuffer::getInstance()->blit();
 	usleep(1000000);
 	timescale->paint(Box.iX, Box.iY, 100);
-
 	CFrameBuffer::getInstance()->blit();
 	
 	delete timescale;
