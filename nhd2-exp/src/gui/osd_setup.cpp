@@ -258,16 +258,6 @@ void COSDSettings::showMenuClassic(void)
 }
 
 // osd menucolor settings
-#define COLOR_GRADIENT_TYPE_OPTION_COUNT 5
-const CMenuOptionChooser::keyval COLOR_GRADIENT_TYPE_OPTIONS[COLOR_GRADIENT_TYPE_OPTION_COUNT] =
-{
-	{ nogradient, NONEXISTANT_LOCALE, "no gradient" },
-	{ gradientDark2Light, NONEXISTANT_LOCALE, "Dark to Light" },
-	{ gradientLight2Dark, NONEXISTANT_LOCALE, "Light to Dark" },
-	{ gradientDark2Light2Dark, NONEXISTANT_LOCALE, "Dark to Light to Dark" },
-	{ gradientLight2Dark2Light, NONEXISTANT_LOCALE, "Light to Dark to Light" }
-};
-
 COSDMenuColorSettings::COSDMenuColorSettings()
 {
 }
@@ -306,12 +296,13 @@ void COSDMenuColorSettings::showMenu()
 	// intros
 	OSDmenuColorsSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 
+	// save settings
+	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	OSDmenuColorsSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+
 	// head
 	CColorChooser* chHeadcolor = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.menu_Head_red, &g_settings.menu_Head_green, &g_settings.menu_Head_blue, &g_settings.menu_Head_alpha, CNeutrinoApp::getInstance()->colorSetupNotifier);
 	CColorChooser* chHeadTextcolor = new CColorChooser(LOCALE_COLORMENU_TEXTCOLOR, &g_settings.menu_Head_Text_red, &g_settings.menu_Head_Text_green, &g_settings.menu_Head_Text_blue,NULL, CNeutrinoApp::getInstance()->colorSetupNotifier);
-
-	// gradient
-	CMenuOptionChooser * m1 = new CMenuOptionChooser("Head Color Gradient", &g_settings.menu_Head_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true );
 
 	// content
 	CColorChooser* chContentcolor = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.menu_Content_red, &g_settings.menu_Content_green, &g_settings.menu_Content_blue,&g_settings.menu_Content_alpha, CNeutrinoApp::getInstance()->colorSetupNotifier);
@@ -329,16 +320,10 @@ void COSDMenuColorSettings::showMenu()
 	CColorChooser* chFootcolor = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.menu_Foot_red, &g_settings.menu_Foot_green, &g_settings.menu_Foot_blue, &g_settings.menu_Foot_alpha, CNeutrinoApp::getInstance()->colorSetupNotifier);
 	CColorChooser * chFootTextcolor = new CColorChooser(LOCALE_COLORMENU_TEXTCOLOR, &g_settings.menu_Foot_Text_red, &g_settings.menu_Foot_Text_green, &g_settings.menu_Foot_Text_blue, NULL, CNeutrinoApp::getInstance()->colorSetupNotifier);
 
-	// foot gradient
-	CMenuOptionChooser * m2 = new CMenuOptionChooser("Foot Color Gradient", &g_settings.menu_Foot_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true );
-
 	// head
 	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_COLORMENUSETUP_MENUHEAD));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_BACKGROUND, true, NULL, chHeadcolor ));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chHeadTextcolor ));
-
-	// head gradient
-	OSDmenuColorsSettings.addItem(m1);
 
 	// menu content
 	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_COLORMENUSETUP_MENUCONTENT));
@@ -359,9 +344,6 @@ void COSDMenuColorSettings::showMenu()
 	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_COLORMENU_HELPBAR));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_BACKGROUND, true, NULL, chFootcolor ));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chFootTextcolor ));
-
-	// foot gradient
-	OSDmenuColorsSettings.addItem(m2);
 	
 	OSDmenuColorsSettings.exec(NULL, "");
 	OSDmenuColorsSettings.hide();

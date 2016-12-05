@@ -325,6 +325,16 @@ void CMiscSettings::showMenuClassic(void)
 }
 
 // general settings
+#define COLOR_GRADIENT_TYPE_OPTION_COUNT 5
+const CMenuOptionChooser::keyval COLOR_GRADIENT_TYPE_OPTIONS[COLOR_GRADIENT_TYPE_OPTION_COUNT] =
+{
+	{ nogradient, NONEXISTANT_LOCALE, "no gradient" },
+	{ gradientDark2Light, NONEXISTANT_LOCALE, "Dark to Light" },
+	{ gradientLight2Dark, NONEXISTANT_LOCALE, "Light to Dark" },
+	{ gradientDark2Light2Dark, NONEXISTANT_LOCALE, "Dark to Light to Dark" },
+	{ gradientLight2Dark2Light, NONEXISTANT_LOCALE, "Light to Dark to Light" }
+};
+
 extern CRemoteControl * g_RemoteControl;	// defined neutrino.cpp
 
 CGeneralSettings::CGeneralSettings()
@@ -487,6 +497,12 @@ void CGeneralSettings::showMenu()
 	
 	// corners
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_ROUNDED_CORNERS, &g_settings.rounded_corners, MENU_CORNERSETTINGS_TYPE_OPTIONS, MENU_CORNERSETTINGS_TYPE_OPTION_COUNT, true));
+
+	// head gradient
+	miscSettingsGeneral.addItem(new CMenuOptionChooser("Head Color Gradient", &g_settings.menu_Head_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+
+	// foot gradient
+	miscSettingsGeneral.addItem(new CMenuOptionChooser("Foot Color Gradient", &g_settings.menu_Foot_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
 	
 	// menu design
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_MENU_DESIGN, &g_settings.menu_design, MENU_DESIGN_OPTIONS, MENU_DESIGN_OPTION_COUNT, true));
