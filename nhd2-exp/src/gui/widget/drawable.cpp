@@ -41,6 +41,7 @@
 #include <global.h>
 #include <neutrino.h>
 
+
 Drawable::Drawable()
 {	
 }
@@ -106,8 +107,7 @@ DIcon::DIcon(const char *icon)
 
 void DIcon::init()
 {
-	m_height = 16;
-	m_width = 16;
+	CFrameBuffer::getInstance()->getIconSize(m_icon.c_str(), &m_width, &m_height);
 }
 
 void DIcon::draw(CFBWindow *window, int x, int y, int /*width*/)
@@ -128,7 +128,6 @@ DPagebreak::DPagebreak()
 
 void DPagebreak::draw(CFBWindow * /*window*/, int /*x*/, int /*y*/, int /*width*/)
 {
-	//window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_MENU], x, y + m_height, width, "<pagebreak>", (CFBWindow::color_t)COL_MENUCONTENT, 0, true); // UTF-8	
 }
 
 void DPagebreak::print(void)

@@ -73,6 +73,11 @@ typedef struct fb_var_screeninfo t_fb_var_screeninfo;
 // bitmap
 #define DEFAULT_BPP		32	// 32 bit
 
+#define FH_ERROR_OK 0
+#define FH_ERROR_FILE 1		/* read/access error */
+#define FH_ERROR_FORMAT 2	/* file format error */
+#define FH_ERROR_MALLOC 3	/* error during malloc */
+
 ///gradient mode
 enum {
 	nogradient,
@@ -316,24 +321,84 @@ class CFrameBuffer
 
 class CBox
 {
-	private:
-
 	public:
-		// Constructor
-		inline CBox(){;};
-		inline CBox( const int _iX, const int _iY, const int _iWidth, const int _iHeight){iX =_iX; iY=_iY; iWidth =_iWidth; iHeight =_iHeight;};
-		inline ~CBox(){;};
-		// Functions
 		// Variables
 		int iX;
 		int iY;
 		int iWidth;
 		int iHeight;
+
+		// Constructor
+		inline CBox(){;};
+		inline CBox( const int _iX, const int _iY, const int _iWidth, const int _iHeight){iX =_iX; iY=_iY; iWidth =_iWidth; iHeight =_iHeight;};
+		inline ~CBox(){;};
 };
 
-#define FH_ERROR_OK 0
-#define FH_ERROR_FILE 1		/* read/access error */
-#define FH_ERROR_FORMAT 2	/* file format error */
-#define FH_ERROR_MALLOC 3	/* error during malloc */
+class CIcon
+{
+	public:
+		int iWidth;
+		int iHeight;
+		std::string iconName;
+
+		inline CIcon(){;};
+		void setIcon(const std::string& icon)
+		{
+			iconName = icon; 
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
+		};
+
+		void setIcon(const char* icon)
+		{
+			iconName = std::string(icon); 
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
+		};
+
+		inline CIcon(const std::string& icon)
+		{
+			iconName = icon; 
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
+		};
+
+		inline CIcon(const char* icon)
+		{
+			iconName = std::string(icon); 
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
+		};
+};
+
+class CImage
+{
+	public:
+		int iWidth;
+		int iHeight;
+		int iNbp;
+		std::string imageName;
+
+		inline CImage(){;};
+		void setImage(const std::string& image)
+		{
+			imageName = image; 
+			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
+		};
+
+		void setImage(const char* image)
+		{
+			imageName = std::string(image); 
+			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
+		};
+
+		inline CImage(const std::string& image)
+		{
+			imageName = image; 
+			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
+		};
+
+		inline CImage(const char* image)
+		{
+			imageName = std::string(image); 
+			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
+		};
+};
 
 #endif

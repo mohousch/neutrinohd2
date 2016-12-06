@@ -28,7 +28,9 @@ extern "C" void plugin_del(void);
 class CTestMenu : CMenuTarget
 {
 	private:
-		void testCFBWindow();
+		void testCBox();
+		void testCIcon();
+		void testCImage();
 		void testCStringInput();
 		void testCStringInputSMS();
 		void testCPINInput();
@@ -120,7 +122,7 @@ void CTestMenu::hide()
 	CFrameBuffer::getInstance()->blit();
 }
 
-void CTestMenu::testCFBWindow()
+void CTestMenu::testCBox()
 {
 	CBox Box;
 	
@@ -130,6 +132,84 @@ void CTestMenu::testCFBWindow()
 	Box.iHeight = 40; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
 
 	CFrameBuffer::getInstance()->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_ALL, gradientDark2Light2Dark);
+
+	CFrameBuffer::getInstance()->blit();
+
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	while(1)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg == CRCInput::RC_home) 
+		{
+			CFrameBuffer::getInstance()->paintBackground();
+			CFrameBuffer::getInstance()->blit();
+
+			break;
+		}
+	}
+}
+
+void CTestMenu::testCIcon()
+{
+	//CIcon testIcon(NEUTRINO_ICON_BUTTON_RED);
+	CIcon testIcon;
+	
+	CBox testBox;
+	testBox.iX = g_settings.screen_StartX + 10;
+	testBox.iY = g_settings.screen_StartY + 10;
+	testBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/2;
+	testBox.iHeight = 40; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+
+	// paint testBox
+	//CFrameBuffer::getInstance()->paintBoxRel(testBox.iX, testBox.iY, testBox.iWidth, testBox.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_ALL, gradientDark2Light2Dark);
+
+	// paint testIcon
+	testIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
+
+	CFrameBuffer::getInstance()->paintIcon(testIcon.iconName.c_str(), testBox.iX + BORDER_LEFT, testBox.iY + (testBox.iHeight - testIcon.iHeight)/2);
+
+	CFrameBuffer::getInstance()->blit();
+
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	while(1)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg == CRCInput::RC_home) 
+		{
+			CFrameBuffer::getInstance()->paintBackground();
+			CFrameBuffer::getInstance()->blit();
+
+			break;
+		}
+	}
+}
+
+void CTestMenu::testCImage()
+{
+	//CImage testImage(PLUGINDIR "/netzkino/netzkino.png");
+	CImage testImage;
+	
+	CBox testBox;
+	testBox.iX = g_settings.screen_StartX + 10;
+	testBox.iY = g_settings.screen_StartY + 10;
+	testBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/2;
+	testBox.iHeight = 40; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+
+	// paint testBox
+	//CFrameBuffer::getInstance()->paintBoxRel(testBox.iX, testBox.iY, testBox.iWidth, testBox.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_ALL, gradientDark2Light2Dark);
+
+	// paint testImage
+	testImage.setImage(PLUGINDIR "/netzkino/netzkino.png");
+
+	CFrameBuffer::getInstance()->DisplayImage(testImage.imageName.c_str(), testBox.iX + BORDER_LEFT, testBox.iY, testImage.iWidth, testImage.iHeight);
 
 	CFrameBuffer::getInstance()->blit();
 
@@ -1390,9 +1470,17 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(parent)
 		hide();
 	
-	if(actionKey == "fbwindow")
+	if(actionKey == "box")
 	{
-		testCFBWindow();
+		testCBox();
+	}
+	else if(actionKey == "icon")
+	{
+		testCIcon();
+	}
+	else if(actionKey == "image")
+	{
+		testCImage();
 	}
 	else if(actionKey == "stringinput")
 	{
@@ -1643,7 +1731,9 @@ void CTestMenu::showTestMenu()
 	/// menue.cpp
 	CMenuWidget * mainMenu = new CMenuWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
 	
-	mainMenu->addItem(new CMenuForwarder("CFBWindow", true, NULL, this, "fbwindow"));
+	mainMenu->addItem(new CMenuForwarder("CBox", true, NULL, this, "box"));
+	mainMenu->addItem(new CMenuForwarder("CIcon", true, NULL, this, "icon"));
+	mainMenu->addItem(new CMenuForwarder("CImage", true, NULL, this, "image"));
 	mainMenu->addItem(new CMenuForwarder("CStringInput", true, NULL, this, "stringinput"));
 	mainMenu->addItem(new CMenuForwarder("CStringInputSMS", true, NULL, this, "stringinputsms"));
 	mainMenu->addItem(new CMenuForwarder("CPINInput", true, NULL, this, "pininput"));

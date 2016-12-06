@@ -65,29 +65,27 @@ class CWebTV
 		
 		// gui
 		CFrameBuffer * frameBuffer;
-		
-		int            	width;
-		int            	height;
-		int            	x;
-		int            	y;
-		
-		int            	hheight; 	// title font height
-		int            	iheight; 	// item font height (buttons???)
-		
-		int icon_bf_w;
-		int icon_bf_h;
-		int icon_hd_w;
-		int icon_hd_h;
+
+		CBox cFrameBox;
+		CBox cFrameBoxTitle;
+		CBox cFrameBoxBody;
+		CBox cFrameBoxFoot;
+		CBox cFrameBoxInfo;
+		CBox cFrameBoxItem;
+		CBox cFrameBoxScrollBar;
+
+		CIcon titleIcon;
+		CIcon titleButton;
+		CIcon footIcon;
 		
 		unsigned int   	selected;
 		//unsigned int oldselected;
 		int tuned;
 		
 		unsigned int   	liststart;
-		int		buttonHeight;
 		unsigned int	listmaxshow;
+
 		unsigned int	numwidth;
-		int 		info_height;
 		
 		unsigned int position;
 		unsigned int duration;
