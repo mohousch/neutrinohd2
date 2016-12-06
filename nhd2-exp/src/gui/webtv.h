@@ -84,7 +84,6 @@ class CWebTV
 		
 		unsigned int   	liststart;
 		unsigned int	listmaxshow;
-
 		unsigned int	numwidth;
 		
 		unsigned int position;

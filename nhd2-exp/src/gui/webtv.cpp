@@ -668,7 +668,7 @@ int CWebTV::Show()
 	
 	// windows size
 	cFrameBox.iWidth = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
-	cFrameBox.iHeight = h_max ( (frameBuffer->getScreenHeight() / 20 * 19), (frameBuffer->getScreenHeight() / 20));
+	cFrameBox.iHeight = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 	
 	// head height
 	titleIcon.setIcon(NEUTRINO_ICON_WEBTV_SMALL);
@@ -684,11 +684,11 @@ int CWebTV::Show()
 	// item height
 	cFrameBoxItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 2;
 
-	// body height
+	// items pro page
 	listmaxshow = (cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight - 2 - cFrameBoxInfo.iHeight)/cFrameBoxItem.iHeight;
 
 	// recalculate hight
-	cFrameBox.iHeight = cFrameBoxTitle.iHeight + cFrameBoxFoot.iHeight + listmaxshow*cFrameBoxItem.iHeight + 2 + cFrameBoxInfo.iHeight;
+	cFrameBox.iHeight = cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*listmaxshow + cFrameBoxFoot.iHeight + 2 + cFrameBoxInfo.iHeight;
 	
 	// coordination
 	cFrameBox.iX = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - (cFrameBox.iWidth + ConnectLineBox_Width)) / 2 + ConnectLineBox_Width;
@@ -855,9 +855,13 @@ void CWebTV::hide()
 
 void CWebTV::paintItem(int pos)
 {
-	int ypos = cFrameBox.iY + cFrameBoxTitle.iHeight + pos*cFrameBoxItem.iHeight;
-	uint8_t    color;
-	fb_pixel_t bgcolor;
+	// Item
+	cFrameBoxItem.iX = cFrameBox.iX;
+	cFrameBoxItem.iY = cFrameBox.iY + cFrameBoxTitle.iHeight + pos*cFrameBoxItem.iHeight;
+	cFrameBoxItem.iWidth = cFrameBox.iWidth - SCROLLBAR_WIDTH;
+
+	uint8_t    color = COL_MENUCONTENT;
+	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 	unsigned int curr = liststart + pos;
 	
 	if (curr == selected) 
@@ -871,14 +875,9 @@ void CWebTV::paintItem(int pos)
 		// details
 		paintDetails(curr);
 	} 
-	else 
-	{
-		color = COL_MENUCONTENT;
-		bgcolor = COL_MENUCONTENT_PLUS_0;
-	}
 	
 	// itembox
-	frameBuffer->paintBoxRel(cFrameBox.iX, ypos, cFrameBox.iWidth - SCROLLBAR_WIDTH, cFrameBoxItem.iHeight, bgcolor);
+	frameBuffer->paintBoxRel(cFrameBoxItem.iX, cFrameBoxItem.iY, cFrameBoxItem.iWidth, cFrameBoxItem.iHeight, bgcolor);
 
 	//name and description
 	if(curr < channels.size()) 
@@ -891,9 +890,9 @@ void CWebTV::paintItem(int pos)
 		l = snprintf(nameAndDescription, sizeof(nameAndDescription), "%s", channels[curr]->title.c_str());
 		
 		// number
-		int numpos = cFrameBox.iX + BORDER_LEFT + numwidth - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(tmp);
+		int numpos = cFrameBoxItem.iX + BORDER_LEFT + numwidth - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(tmp);
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(numpos, ypos + (/*iheight*/cFrameBoxItem.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), numwidth + 5, tmp, color, 0, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(numpos, cFrameBoxItem.iY + (cFrameBoxItem.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), numwidth + 5, tmp, color, 0, true);
 		
 		unsigned int ch_name_len = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(nameAndDescription, true);
 		
@@ -907,12 +906,12 @@ void CWebTV::paintItem(int pos)
 			unsigned int ch_desc_len = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(channels[curr]->description, true);
 			
 			//channel name
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(cFrameBox.iX + BORDER_LEFT + numwidth + 10, ypos + cFrameBoxItem.iHeight, cFrameBox.iWidth - BORDER_LEFT - SCROLLBAR_WIDTH - numwidth - 10 - ch_name_len, nameAndDescription, color, 0, true);
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(cFrameBoxItem.iX + BORDER_LEFT + numwidth + 10, cFrameBoxItem.iY + cFrameBoxItem.iHeight, cFrameBox.iWidth - BORDER_LEFT - SCROLLBAR_WIDTH - numwidth - 10 - ch_name_len, nameAndDescription, color, 0, true);
 			
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(cFrameBox.iX + BORDER_LEFT + numwidth + 10 + ch_name_len + 5, ypos + cFrameBoxItem.iHeight, cFrameBox.iWidth - BORDER_LEFT - SCROLLBAR_WIDTH - numwidth - ch_name_len - ch_desc_len - 15, channels[curr]->description, (curr == selected)?COL_MENUCONTENTSELECTED : COL_COLORED_EVENTS_CHANNELLIST, 0, true);
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(cFrameBoxItem.iX + BORDER_LEFT + numwidth + 10 + ch_name_len + 5, cFrameBoxItem.iY + cFrameBoxItem.iHeight, cFrameBoxItem.iWidth - BORDER_LEFT - SCROLLBAR_WIDTH - numwidth - ch_name_len - ch_desc_len - 15, channels[curr]->description, (curr == selected)?COL_MENUCONTENTSELECTED : COL_COLORED_EVENTS_CHANNELLIST, 0, true);
 		}
 		else
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(cFrameBox.iX + BORDER_LEFT + numwidth + 10, ypos + cFrameBoxItem.iHeight, cFrameBox.iWidth - BORDER_LEFT - SCROLLBAR_WIDTH - numwidth - ch_name_len - 10, nameAndDescription, color, 0, true);
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(cFrameBoxItem.iX + BORDER_LEFT + numwidth + 10, cFrameBoxItem.iY + cFrameBoxItem.iHeight, cFrameBoxItem.iWidth - BORDER_LEFT - SCROLLBAR_WIDTH - numwidth - ch_name_len - 10, nameAndDescription, color, 0, true);
 	}
 }
 
@@ -978,6 +977,7 @@ void CWebTV::paintDetails(int index)
 {
 	dprintf(DEBUG_DEBUG, "CWebTV::paintDetails\n");
 
+	// Info
 	cFrameBoxInfo.iX = cFrameBox.iX;
 	cFrameBoxInfo.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameBoxInfo.iHeight;
 	cFrameBoxInfo.iWidth = cFrameBox.iWidth;
@@ -1011,7 +1011,7 @@ void CWebTV::paint()
 
 	liststart = (selected/listmaxshow)*listmaxshow;
 	
-	int lastnum =  liststart + listmaxshow;
+	int lastnum = liststart + listmaxshow;
 	
 	if(lastnum<10)
 		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("0");
@@ -1024,7 +1024,7 @@ void CWebTV::paint()
 	else // if(lastnum<100000)
 		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("00000");
 	
-	// channelslist body
+	// Body
 	cFrameBoxBody.iX = cFrameBox.iX;
 	cFrameBoxBody.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
 	cFrameBoxBody.iWidth = cFrameBox.iWidth;
@@ -1038,17 +1038,19 @@ void CWebTV::paint()
 		paintItem(count);
 	}
 
-	// scrollbar
+	// ScrollBar
 	cFrameBoxScrollBar.iX = cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH;
 	cFrameBoxScrollBar.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
-	int sb = cFrameBoxItem.iHeight*listmaxshow;
+	cFrameBoxScrollBar.iWidth = SCROLLBAR_WIDTH;
+	cFrameBoxScrollBar.iHeight = cFrameBoxItem.iHeight*listmaxshow;
 	
-	frameBuffer->paintBoxRel(cFrameBoxScrollBar.iX, cFrameBoxScrollBar.iY, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
+	frameBuffer->paintBoxRel(cFrameBoxScrollBar.iX, cFrameBoxScrollBar.iY, cFrameBoxScrollBar.iWidth, cFrameBoxScrollBar.iHeight, COL_MENUCONTENT_PLUS_1);
 
+	// scrollBar Slider
 	int sbc = ((channels.size() - 1)/ listmaxshow) + 1;
 	int sbs = (selected/listmaxshow);
 
-	frameBuffer->paintBoxRel(cFrameBoxScrollBar.iX + 2, cFrameBoxScrollBar.iY + 2 + sbs*(sb - 4)/sbc, SCROLLBAR_WIDTH - 4, (sb - 4)/sbc, COL_MENUCONTENT_PLUS_3);
+	frameBuffer->paintBoxRel(cFrameBoxScrollBar.iX + 2, cFrameBoxScrollBar.iY + 2 + sbs*(cFrameBoxScrollBar.iHeight - 4)/sbc, cFrameBoxScrollBar.iWidth - 4, (cFrameBoxScrollBar.iHeight - 4)/sbc, COL_MENUCONTENT_PLUS_3);
 }
 
 void CWebTV::showFileInfoWebTV(int pos)
