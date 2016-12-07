@@ -71,44 +71,50 @@ CPluginList::CPluginList(const neutrino_locale_t Name, const uint32_t listtype)
 	pluginlisttype = listtype;
 	
 	selected = 0;
-	width = MENU_WIDTH;
-	if(width > (g_settings.screen_EndX - g_settings.screen_StartX))
-		width = (g_settings.screen_EndX - g_settings.screen_StartX);
+	cFrameBox.iWidth = MENU_WIDTH;
+	if(cFrameBox.iWidth > (g_settings.screen_EndX - g_settings.screen_StartX))
+		cFrameBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX);
 	
-	height = MENU_HEIGHT - 50;
-	if((height + 50) > (g_settings.screen_EndY - g_settings.screen_StartY))
-		height = (g_settings.screen_EndY - g_settings.screen_StartY) - 50; // 2*25 pixel frei
-		
-	theight  = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	fheight1 = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->getHeight(); // name
-	fheight2 = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->getHeight(); // desc
-	fheight = fheight1 + fheight2 + 2; // name + desc + border
+	cFrameBox.iHeight = MENU_HEIGHT - 50;
+	if((cFrameBox.iHeight + 50) > (g_settings.screen_EndY - g_settings.screen_StartY))
+		cFrameBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY) - 50; // 2*25 pixel frei
 	
-	int icon_w, icon_h;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-	footheight = std::max(icon_h, theight);
+	// title height	
+	titleIcon.setIcon((pluginlisttype == CPlugins::P_TYPE_GAME)? NEUTRINO_ICON_GAMES : NEUTRINO_ICON_SHELL);
+	cFrameBoxTitle.iHeight  = std::max(titleIcon.iHeight, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+
+	// item height
+	//fheight1 = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->getHeight(); // name
+	//fheight2 = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->getHeight(); // desc
+	//fheight = fheight1 + fheight2 + 2; // name + desc + border
+	cFrameBoxItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->getHeight() + g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->getHeight() + 2;
 	
-	listmaxshow = (height - theight - footheight)/fheight;
+	// foot height
+	//int icon_w, icon_h;
+	//frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+	footIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
+	cFrameBoxFoot.iHeight = std::max(footIcon.iHeight, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 10;
+	
+	listmaxshow = (cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight)/cFrameBoxItem.iHeight;
+
 	// recalculate height
-	height = theight + listmaxshow*fheight + footheight;
+	cFrameBox.iHeight = cFrameBoxTitle.iHeight + listmaxshow*cFrameBoxItem.iHeight + cFrameBoxFoot.iHeight;
 	
-	//x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) / 2);
-	//y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height) / 2;
 	// coordinations / menu position
 	if(g_settings.menu_position == SNeutrinoSettings::MENU_POSITION_CENTER)
 	{
-		x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width ) >> 1 );
-		y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
+		cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth ) >> 1 );
+		cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
 	}
 	else if(g_settings.menu_position == SNeutrinoSettings::MENU_POSITION_LEFT)
 	{
-		x = frameBuffer->getScreenX() + BORDER_LEFT;
-		y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
+		cFrameBox.iX = frameBuffer->getScreenX() + BORDER_LEFT;
+		cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
 	}
 	else if(g_settings.menu_position == SNeutrinoSettings::MENU_POSITION_RIGHT)
 	{
-		x = frameBuffer->getScreenX() + frameBuffer->getScreenWidth() - width - BORDER_RIGHT;
-		y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
+		cFrameBox.iX = frameBuffer->getScreenX() + frameBuffer->getScreenWidth() - cFrameBox.iWidth - BORDER_RIGHT;
+		cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
 	}
 	
 	liststart = 0;
@@ -175,11 +181,11 @@ reload:
 		if ( msg <= CRCInput::RC_MaxRC )
 			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
 
-		if ( ( msg == CRCInput::RC_timeout ) || ( msg == (neutrino_msg_t)g_settings.key_channelList_cancel ) )
+		if ((msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_home) || (msg == CRCInput::RC_setup))
 		{
 			loop = false;
 		}
-		else if ( msg == (neutrino_msg_t)g_settings.key_channelList_pageup )
+		else if (msg == CRCInput::RC_page_up)
 		{
 			if ((int(selected) - int(listmaxshow)) < 0)
 				selected = 0;
@@ -188,7 +194,7 @@ reload:
 			liststart = (selected/listmaxshow)*listmaxshow;
 			paintItems();
 		}
-		else if ( msg == (neutrino_msg_t)g_settings.key_channelList_pagedown )
+		else if (msg == CRCInput::RC_page_down)
 		{
 			selected += listmaxshow;
 			if (selected > pluginlist.size() - 1)
@@ -196,7 +202,7 @@ reload:
 			liststart = (selected/listmaxshow)*listmaxshow;
 			paintItems();
 		}
-		else if ( msg == CRCInput::RC_up )
+		else if (msg == CRCInput::RC_up)
 		{
 			int prevselected = selected;
 			
@@ -224,7 +230,7 @@ reload:
 				}
 			}
 		}
-		else if ( msg == CRCInput::RC_down )
+		else if (msg == CRCInput::RC_down)
 		{
 			int prevselected = selected;
 			
@@ -246,7 +252,7 @@ reload:
 				}
 			}
 		}
-		else if ( msg == CRCInput::RC_ok || msg == CRCInput::RC_green)
+		else if (msg == CRCInput::RC_ok || msg == CRCInput::RC_green)
 		{
 			if(pluginlist.size())
 			{
@@ -257,7 +263,7 @@ reload:
 				}
 			}
 		}
-		else if ( msg == CRCInput::RC_red)
+		else if (msg == CRCInput::RC_red)
 		{
 			// delete selected plugin
 			if(pluginlist.size())
@@ -266,7 +272,7 @@ reload:
 			hide();
 			goto reload;
 		}
-		else if ( CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all )
+		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 		{
 			loop = false;
 			res = menu_return::RETURN_EXIT_ALL;
@@ -282,15 +288,18 @@ reload:
 
 void CPluginList::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width + SCROLLBAR_WIDTH, height);	//15:sb
+	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 	frameBuffer->blit();	
 }
 
 void CPluginList::paintItem(int pos)
 {
-	int ypos = y + theight + pos*fheight;
-	int itemheight = fheight;
-	int itemwidth;
+	// Item
+	cFrameBoxItem.iX = cFrameBox.iX;
+	cFrameBoxItem.iY = cFrameBox.iY + cFrameBoxTitle.iHeight + pos*cFrameBoxItem.iHeight;
+	//int itemheight = fheight;
+	//int itemwidth;
+	cFrameBoxItem.iWidth = cFrameBox.iWidth;
 
 	uint8_t color = COL_MENUCONTENT;
 	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
@@ -312,10 +321,10 @@ void CPluginList::paintItem(int pos)
 	if(nrOfPages > 1)
 		sb_width = SCROLLBAR_WIDTH;
 	
-	itemwidth = width - sb_width;
+	cFrameBoxItem.iWidth = cFrameBox.iWidth - sb_width;
 	
 	// itemBox
-	frameBuffer->paintBoxRel(x, ypos, itemwidth, itemheight, bgcolor);
+	frameBuffer->paintBoxRel(cFrameBoxItem.iX, cFrameBoxItem.iY, cFrameBoxItem.iWidth, cFrameBoxItem.iHeight, bgcolor);
 	
 	// name + desc + version + icon???
 	if(liststart + pos < pluginlist.size())
@@ -330,12 +339,12 @@ void CPluginList::paintItem(int pos)
 		IconName += "/";
 		IconName += actplugin->icon;
 			
-		frameBuffer->getIconSize(NEUTRINO_ICON_PLUGIN, &icon_w, &icon_h);
+		itemIcon.setIcon(NEUTRINO_ICON_PLUGIN);
 			
 		if (!actplugin->icon.empty() && (!access(IconName.c_str(), F_OK)))
-			frameBuffer->paintIcon(IconName.c_str(), x + 8, ypos + (itemheight - icon_h)/2 );
+			frameBuffer->paintIcon(IconName.c_str(), cFrameBoxItem.iX + BORDER_LEFT, cFrameBoxItem.iY + (cFrameBoxItem.iHeight - itemIcon.iHeight)/2 );
 		else
-			frameBuffer->paintIcon( NEUTRINO_ICON_PLUGIN, x + 8, ypos + (itemheight - icon_h)/2 );
+			frameBuffer->paintIcon(itemIcon.iconName.c_str(), cFrameBoxItem.iX + BORDER_LEFT, cFrameBoxItem.iY + (cFrameBoxItem.iHeight - itemIcon.iHeight)/2 );
 		
 		std::string Description;
 		Description = actplugin->desc;
@@ -347,10 +356,10 @@ void CPluginList::paintItem(int pos)
 		}
 		
 		// name
-		g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->RenderString(x + 2*BORDER_LEFT + icon_w, ypos + fheight1 + 3, width - (BORDER_LEFT + BORDER_RIGHT), actplugin->name, color, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->RenderString(cFrameBoxItem.iX + BORDER_LEFT + itemIcon.iWidth + ICON_OFFSET, cFrameBoxItem.iY + g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->getHeight() + 3, cFrameBoxItem.iWidth - BORDER_LEFT - BORDER_RIGHT - itemIcon.iWidth - ICON_OFFSET, actplugin->name, color, 0, true); // UTF-8
 		
 		// desc
-		g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->RenderString(x + 2*BORDER_LEFT + icon_w, ypos + fheight, width - (BORDER_LEFT + BORDER_RIGHT), Description, color, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->RenderString(cFrameBoxItem.iX + BORDER_LEFT + itemIcon.iWidth + ICON_OFFSET, cFrameBoxItem.iY + cFrameBoxItem.iHeight, cFrameBoxItem.iWidth - BORDER_LEFT - BORDER_RIGHT - itemIcon.iWidth - ICON_OFFSET, Description, color, 0, true); // UTF-8
 	}
 }
 
@@ -363,42 +372,38 @@ struct button_label CPluginListButtons[NUM_LIST_BUTTONS] =
 
 void CPluginList::paintHead()
 {
-	int iw, ih;
+	// Title
+	cFrameBoxTitle.iX = cFrameBox.iX;
+	cFrameBoxTitle.iY = cFrameBox.iY;
+	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 	
 	// head
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	frameBuffer->paintBoxRel(cFrameBoxTitle.iX, cFrameBoxTitle.iY, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+
+	// title Icon
+	frameBuffer->paintIcon(titleIcon.iconName.c_str(), cFrameBoxTitle.iX + BORDER_LEFT, cFrameBoxTitle.iY + (cFrameBoxTitle.iHeight - titleIcon.iHeight)/2);
+
+	// title Text
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameBoxTitle.iX + BORDER_LEFT + titleIcon.iWidth + ICON_OFFSET, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - BORDER_RIGHT - titleIcon.iWidth - ICON_OFFSET, g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
 	
-	// body
-	frameBuffer->paintBoxRel(x, y + theight, width, height - theight - footheight, COL_MENUCONTENT_PLUS_0);
+	// Body
+	cFrameBoxBody.iX = cFrameBox.iX;
+	cFrameBoxBody.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
+	cFrameBoxBody.iWidth = cFrameBox.iWidth;
+	cFrameBoxBody.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight;
+
+	frameBuffer->paintBoxRel(cFrameBoxBody.iX, cFrameBoxBody.iY, cFrameBoxBody.iWidth, cFrameBoxBody.iHeight, COL_MENUCONTENT_PLUS_0);
 	
-	// foot
-	frameBuffer->paintBoxRel(x, y + theight + height - theight - footheight, width, footheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	// Foot
+	cFrameBoxFoot.iX = cFrameBox.iX;
+	cFrameBoxFoot.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameBoxFoot.iHeight;
+	cFrameBoxFoot.iWidth = cFrameBox.iWidth;
+
+	frameBuffer->paintBoxRel(cFrameBoxFoot.iX, cFrameBoxFoot.iY, cFrameBoxFoot.iWidth, cFrameBoxFoot.iHeight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 	
 	// foot bottons
-	int ButtonWidth = (width - (BORDER_LEFT + BORDER_RIGHT)) / 4;
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + theight + height - theight - footheight, ButtonWidth, NUM_LIST_BUTTONS, CPluginListButtons, footheight);
-
-	// title + icon
-	if(pluginlisttype == CPlugins::P_TYPE_GAME)
-	{
-		frameBuffer->getIconSize(NEUTRINO_ICON_GAMES, &iw, &ih);
-		frameBuffer->paintIcon(NEUTRINO_ICON_GAMES, x + BORDER_LEFT, y + (theight - ih)/2);
-
-		int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(name), true); // UTF-8
-		int stringstartposX = x + (width >> 1) - (neededWidth >> 1);
-
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + theight, width - (stringstartposX - x) , g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
-	} 
-	else
-	{
-		frameBuffer->getIconSize(NEUTRINO_ICON_SHELL, &iw, &ih);
-		frameBuffer->paintIcon(NEUTRINO_ICON_SHELL, x + BORDER_LEFT, y + (theight - ih)/2);
-
-		int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(name), true); // UTF-8
-		int stringstartposX = x +(width >> 1) - (neededWidth >> 1);
-
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + theight, width - (stringstartposX - x) , g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
-	}
+	int ButtonWidth = (cFrameBoxFoot.iWidth - BORDER_LEFT - BORDER_RIGHT) / 4;
+	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, cFrameBoxFoot.iX + BORDER_LEFT, cFrameBoxFoot.iY, ButtonWidth, NUM_LIST_BUTTONS, CPluginListButtons, cFrameBoxFoot.iHeight);
 }
 
 void CPluginList::paint()
@@ -429,11 +434,18 @@ void CPluginList::paintItems()
 	if(nrOfPages > 1)
 		sb_width = SCROLLBAR_WIDTH;
 	
-	//scrollbar
+	// ScrollBar
+	cFrameBoxScrollBar.iX = cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH;
+	cFrameBoxScrollBar.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
+	cFrameBoxScrollBar.iWidth = SCROLLBAR_WIDTH;
+	cFrameBoxScrollBar.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight;	
+
 	if(nrOfPages > 1)
 	{
-		frameBuffer->paintBoxRel(x + width - sb_width, y + theight, SCROLLBAR_WIDTH, height - (theight + footheight),  COL_MENUCONTENT_PLUS_1);
-		frameBuffer->paintBoxRel(x + width - sb_width + 2, y + theight + 2 + (currPage - 1)*(height - theight - footheight - 4)/nrOfPages, SCROLLBAR_WIDTH - 4, (height - 2*theight - 4)/nrOfPages, COL_MENUCONTENT_PLUS_3 );
+		frameBuffer->paintBoxRel(cFrameBoxScrollBar.iX, cFrameBoxScrollBar.iY, cFrameBoxScrollBar.iWidth, cFrameBoxScrollBar.iHeight, COL_MENUCONTENT_PLUS_1);
+
+		// ScrollBar Slider
+		frameBuffer->paintBoxRel(cFrameBoxScrollBar.iX + 2, cFrameBoxScrollBar.iY + 2 + (currPage - 1)*(cFrameBoxScrollBar.iHeight - 4)/nrOfPages, cFrameBoxScrollBar.iWidth - 4, (cFrameBoxScrollBar.iHeight - 4)/nrOfPages, COL_MENUCONTENT_PLUS_3 );
 	}
 	
 	// items

@@ -69,21 +69,20 @@ class CPluginList : public CMenuTarget
 		uint 		    pluginlisttype;
 
 		CFrameBuffer * frameBuffer;
+
+		CBox cFrameBox;
+		CBox cFrameBoxTitle;
+		CBox cFrameBoxBody;
+		CBox cFrameBoxItem;
+		CBox cFrameBoxFoot;
+		CBox cFrameBoxScrollBar;
+
+		CIcon titleIcon;
+		CIcon footIcon;
+		CIcon itemIcon;
 		
 		unsigned int liststart;
 		unsigned int listmaxshow;
-		
-		int fheight; // Fonthoehe Channellist-Inhalt
-		int theight; // Fonthoehe Channellist-Titel
-		int footheight;
-		int icon_h, icon_w;
-
-		int fheight1,fheight2;
-
-		int width;
-		int height;
-		int x;
-		int y;
 		
 		int sb_width;
 		int nrOfPages; 
