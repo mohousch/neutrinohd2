@@ -132,12 +132,18 @@ void CZapitSetup::showMenu()
 	zapit->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "save", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	zapit->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
+	// last mode
 	CMenuOptionChooser * m2 = new CMenuOptionChooser(LOCALE_ZAPITSETUP_LAST_MODE, &g_settings.lastChannelMode, OPTIONS_LASTMODE_OPTIONS, OPTIONS_LASTMODE_OPTION_COUNT, !g_settings.uselastchannel, NULL, CRCInput::convertDigitToKey(shortcut++));
+
+	// last channel TV
 	CMenuForwarder * m3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, !g_settings.uselastchannel, g_settings.StartChannelTV, this, "tv", CRCInput::convertDigitToKey(shortcut++));
+
+	// last channel radio
 	CMenuForwarder * m4 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, !g_settings.uselastchannel, g_settings.StartChannelRadio, this, "radio", CRCInput::convertDigitToKey(shortcut++));
 	
 	CZapitSetupNotifier zapitSetupNotifier(m2, m3, m4);
-	
+
+	// use last channel
 	CMenuOptionChooser * m1 = new CMenuOptionChooser(LOCALE_MISCSETTINGS_ZAPIT, &g_settings.uselastchannel, OPTIONS_OFF1_ON0_OPTIONS, OPTIONS_OFF1_ON0_OPTION_COUNT, true, &zapitSetupNotifier, CRCInput::convertDigitToKey(shortcut++));
 	
 	zapit->addItem(m1);

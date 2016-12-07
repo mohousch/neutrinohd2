@@ -158,7 +158,7 @@ int CThemes::Show()
 
 	std::string file_name = "";
 
-	CMenuWidget themes (LOCALE_COLORMENU_MENUCOLORS, NEUTRINO_ICON_SETTINGS, width);
+	CMenuWidget themes(LOCALE_COLORMENU_MENUCOLORS, NEUTRINO_ICON_SETTINGS, width);
 	
 	//set default theme
 	themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_DEFAULT_THEME, true, NULL, this, "theme_default" ));

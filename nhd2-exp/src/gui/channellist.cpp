@@ -512,7 +512,7 @@ int CChannelList::exec()
 }
 
 #define CHANNEL_SMSKEY_TIMEOUT 800
-/* return: >= 0 to zap, -1 on cancel, -3 on list mode change, -4 list edited, -2 zap but no restore old list/chan ?? */ //TODO:add return value for pip
+//return: >= 0 to zap, -1 on cancel, -3 on list mode change, -4 list edited, -2 zap but no restore old list/chan
 int CChannelList::show()
 {
 	dprintf(DEBUG_NORMAL, "CChannelList::show\n");
@@ -1559,7 +1559,7 @@ void CChannelList::paintDetails(int index)
 		p_event = &chanlist[index]->currentEvent;
 	}
 
-	if (!p_event->description.empty()) 
+	if ( p_event != NULL && !p_event->description.empty()) 
 	{
 		char cNoch[50]; // UTF-8
 		char cSeit[50]; // UTF-8

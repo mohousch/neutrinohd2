@@ -246,9 +246,10 @@ void CMiscSettings::showMenu(void)
 	// zapit setup (start channel)
 	miscSettings->addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_ZAPIT, true, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_STARTCHANNELSETTINGS));
 	
-	// psi setup	
-	CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
-	miscSettings->addItem( new CMenuForwarderExtended(LOCALE_VIDEOMENU_PSISETUP, true, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_PSISETTINGS));
+	// psi setup
+	//FIXME:	
+	//CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
+	//miscSettings->addItem( new CMenuForwarderExtended(LOCALE_VIDEOMENU_PSISETUP, true, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_PSISETTINGS));
 	
 	miscSettings->exec(NULL, "");
 	miscSettings->hide();
@@ -280,9 +281,10 @@ void CMiscSettings::showMenuSmart(void)
 	// zapit setup (start channel)
 	miscSettings->addItem(new CMenuFrameBox(LOCALE_MISCSETTINGS_ZAPIT, new CZapitSetup(), NULL, NEUTRINO_ICON_SMART_STARTCHANNELSETTINGS));
 	
-	// psi setup	
-	CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
-	miscSettings->addItem( new CMenuFrameBox(LOCALE_VIDEOMENU_PSISETUP, chPSISetup, NULL, NEUTRINO_ICON_SMART_PSISETTINGS));
+	// psi setup
+	//FIXME:	
+	//CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
+	//miscSettings->addItem( new CMenuFrameBox(LOCALE_VIDEOMENU_PSISETUP, chPSISetup, NULL, NEUTRINO_ICON_SMART_PSISETTINGS));
 	
 	miscSettings->exec(NULL, "");
 	miscSettings->hide();
@@ -314,9 +316,10 @@ void CMiscSettings::showMenuClassic(void)
 	// zapit setup (start channel)
 	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_ZAPIT, true, NULL, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NEUTRINO_ICON_CLASSIC_STARTCHANNELSETTINGS));
 	
-	// psi setup	
-	CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
-	miscSettings->addItem( new CMenuForwarder(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NEUTRINO_ICON_CLASSIC_PSISETTINGS));
+	// psi setup
+	//FIXME:	
+	//CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
+	//miscSettings->addItem( new CMenuForwarder(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NEUTRINO_ICON_CLASSIC_PSISETTINGS));
 	
 	miscSettings->exec(NULL, "");
 	miscSettings->hide();

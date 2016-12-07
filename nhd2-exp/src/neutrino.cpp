@@ -3462,7 +3462,7 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 _repeat:
 			dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: ZAP RES: nNewChannel %d\n", nNewChannel);
 
-			if(nNewChannel == -1) 
+			if(nNewChannel == -1) // on cancel
 			{
 				// restore orig. bouquet and selected channel on cancel
 				SetChannelMode(old_mode, mode);
@@ -3473,15 +3473,14 @@ _repeat:
 				
 				StartSubtitles(mode == mode_tv);
 			}
-			else if(nNewChannel == -3) 
+			else if(nNewChannel == -3) // list mode changed
 			{ 
-				// list mode changed
 				dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: bouquetList %x size %d\n", (size_t) bouquetList, bouquetList->Bouquets.size());
 				
 				nNewChannel = bouquetList->exec(true);
 				goto _repeat;
 			}
-			else if(nNewChannel == -4) 
+			else if(nNewChannel == -4) // list edited
 			{
 				if(old_b_id < 0) 
 					old_b_id = old_b;
