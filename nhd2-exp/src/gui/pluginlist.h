@@ -45,7 +45,6 @@
 
 class CPluginList : public CMenuTarget
 {
-
 	public:
 		enum result_
 		{
@@ -64,9 +63,8 @@ class CPluginList : public CMenuTarget
 			std::string icon;	// icon
 		};
 		
-		int		    key;
-		neutrino_locale_t   name;
-		uint 		    pluginlisttype;
+		neutrino_locale_t name;
+		uint pluginlisttype;
 
 		CFrameBuffer * frameBuffer;
 
