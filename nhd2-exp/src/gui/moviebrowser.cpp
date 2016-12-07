@@ -1988,6 +1988,9 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	{
 		if(m_movieSelectionHandler != NULL)
 		{
+			m_pcWindow->paintBackground();
+			m_pcWindow->blit();
+
 			std::string search_string;
 
 			if(show_mode == MB_SHOW_RECORDS)
@@ -2001,9 +2004,6 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	
 			if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 			{
-				m_pcWindow->paintBackground();
-				m_pcWindow->blit();
-
 				std::string buffer;
 
 				buffer = tmdb->getTitle().c_str();
@@ -2028,12 +2028,14 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				infoBox->exec();
 				delete infoBox;
 			}
-			delete tmdb;
-			tmdb = NULL;	
+			else
+				MessageBox(LOCALE_MESSAGEBOX_INFO, "no tmdb info found!", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 
+			delete tmdb;
+			tmdb = NULL;
 		}
 
-		refresh();	
+		refresh();
 	}	
 	else
 	{

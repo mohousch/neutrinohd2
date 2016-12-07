@@ -523,9 +523,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 	
 					if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 					{
-						//frameBuffer->paintBackground();
-						//frameBuffer->blit();
-
 						std::string buffer;
 
 						buffer = tmdb->getTitle().c_str();
@@ -557,7 +554,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 					tmdb = NULL;	
 
 				}
-				//
 
 				paintHead(channel_id);
 				paint(channel_id);
