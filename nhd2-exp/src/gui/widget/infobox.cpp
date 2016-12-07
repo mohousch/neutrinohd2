@@ -454,11 +454,7 @@ int CInfoBox::exec(int timeout)
 	{
 		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
 
-		if (msg == CRCInput::RC_timeout)
-		{
-			loop = false;
-		}
-		else if (((msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_home)))
+		if (((msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_home)))
 		{
 			loop = false;
 		}
