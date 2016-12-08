@@ -202,9 +202,14 @@ int CThemes::Show()
 	if (hasThemeChanged) 
 	{
 		if (MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_COLORTHEMEMENU_QUESTION, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_SETTINGS) != CMessageBox::mbrYes)
+		{
 			rememberOldTheme( false );
+		}
 		else
+		{	
+			CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
 			hasThemeChanged = false;
+		}
 	}
 	
 	return res;
