@@ -75,6 +75,8 @@ int CThemes::exec(CMenuTarget * parent, const std::string & actionKey)
 			notifier = new CColorSetupNotifier();
 			notifier->changeNotify(NONEXISTANT_LOCALE, NULL);
 			delete notifier;
+
+			CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
 		}
 		else
 		{
