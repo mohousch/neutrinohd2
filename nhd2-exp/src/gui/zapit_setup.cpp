@@ -36,6 +36,7 @@
 
 #include <system/debug.h>
 
+
 //option off0_on1
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
 const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
@@ -88,8 +89,8 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		CSelectChannelWidgetHandler = new CSelectChannelWidget();
 		CSelectChannelWidgetHandler->exec(NULL, "tv");
 		
-		g_settings.startchanneltv_id = CSelectChannelWidget_TVChanID;
-		g_settings.StartChannelTV = CSelectChannelWidget_TVChanName.c_str();
+		g_settings.startchanneltv_id = CSelectChannelWidgetHandler->getChanID();
+		g_settings.StartChannelTV = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChanID());
 		
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;
@@ -101,8 +102,8 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		CSelectChannelWidgetHandler = new CSelectChannelWidget();
 		CSelectChannelWidgetHandler->exec(NULL, "radio");
 		
-		g_settings.startchannelradio_id = CSelectChannelWidget_RadioChanID;
-		g_settings.StartChannelRadio = CSelectChannelWidget_RadioChanName.c_str();
+		g_settings.startchannelradio_id = CSelectChannelWidgetHandler->getChanID();
+		g_settings.StartChannelRadio = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChanID());
 		
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;

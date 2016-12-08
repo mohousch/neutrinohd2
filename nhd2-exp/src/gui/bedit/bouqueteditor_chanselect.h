@@ -50,7 +50,6 @@
 class CBEChannelSelectWidget : public CListBox
 {
 	private:
-
 		unsigned int bouquet;
 		CZapitClient::channelsMode mode;
 		bool isChannelInBouquet(int index);

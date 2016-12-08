@@ -29,21 +29,18 @@
 /*zapit includes*/
 #include <client/zapitclient.h>
 
-
-extern t_channel_id CSelectChannelWidget_TVChanID;
-extern std::string CSelectChannelWidget_TVChanName;
-extern t_channel_id CSelectChannelWidget_RadioChanID;
-extern std::string CSelectChannelWidget_RadioChanName;
 		
 class CSelectChannelWidget : public CMenuWidget
 {	
 	private:
+		t_channel_id ChannelID;
 		void InitZapitChannelHelper(CZapitClient::channelsMode mode);
 
 	public:
 		CSelectChannelWidget();
 		~CSelectChannelWidget();
 		int exec(CMenuTarget *parent, const std::string & actionKey);
+		t_channel_id getChanID(){return ChannelID;};
 };
 
 #endif

@@ -415,7 +415,8 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				if (selected < Bouquets->size()) /* Bouquets->size() might be 0 */
 				{
 					CBEChannelWidget* channelWidget = new CBEChannelWidget((*Bouquets)[selected]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[selected]->Name, selected);
-					channelWidget->exec( this, "");
+
+					channelWidget->exec(this, "");
 					if (channelWidget->hasChanged())
 						bouquetsChanged = true;
 					delete channelWidget;

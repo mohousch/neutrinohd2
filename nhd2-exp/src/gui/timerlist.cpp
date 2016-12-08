@@ -283,8 +283,8 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 		CSelectChannelWidgetHandler = new CSelectChannelWidget();
 		CSelectChannelWidgetHandler->exec(NULL, "tv");
 		
-		timerNew_chan_id = CSelectChannelWidget_TVChanID;
-		timerNew_channel_name = CSelectChannelWidget_TVChanName.c_str();
+		timerNew_chan_id = CSelectChannelWidgetHandler->getChanID();
+		timerNew_channel_name = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChanID());
 		
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;
@@ -296,8 +296,8 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 		CSelectChannelWidgetHandler = new CSelectChannelWidget();
 		CSelectChannelWidgetHandler->exec(NULL, "radio");
 		
-		timerNew_chan_id = CSelectChannelWidget_RadioChanID;
-		timerNew_channel_name = CSelectChannelWidget_RadioChanName.c_str();
+		timerNew_chan_id = CSelectChannelWidgetHandler->getChanID();
+		timerNew_channel_name = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChanID());
 		
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;

@@ -1548,7 +1548,7 @@ void CChannelList::paintDetails(int index)
 	if (chanlist.empty()) 
 		return;
 	
-	CChannelEvent * p_event;
+	CChannelEvent * p_event = NULL;
 
 	if (displayNext) 
 	{
