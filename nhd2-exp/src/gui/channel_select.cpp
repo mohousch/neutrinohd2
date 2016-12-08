@@ -82,7 +82,6 @@ void CSelectChannelWidget::InitZapitChannelHelper(CZapitClient::channelsMode mod
 	int activChannel = 0;
 	int nMode = CNeutrinoApp::getInstance()->getMode();
 	
-_repeat:
 	// set channel mode (allways list mode all)
 	if(mode == CZapitClient::MODE_TV)
 		CNeutrinoApp::getInstance()->SetChannelMode(g_settings.channel_mode, NeutrinoMessages::mode_tv);
@@ -101,10 +100,11 @@ _repeat:
 	else
 		nNewChannel = bouquetList->show();
 
+_repeat:
 	// handle list mode changed
 	if(nNewChannel == -3) // channel mode changed
 	{ 
-		nNewChannel = bouquetList->show();
+		nNewChannel = bouquetList->exec(true);
 
 		goto _repeat;
 	}
