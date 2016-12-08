@@ -40,12 +40,12 @@ extern CBouquetList * bouquetList;
 //select menu
 CSelectChannelWidget::CSelectChannelWidget()
 {
-	ChannelID = 0;
+	ChannelID = g_settings.startchanneltv_id;
 }
 
 CSelectChannelWidget::~CSelectChannelWidget()
 {
-	ChannelID = 0;
+	ChannelID = -1;
 }
 
 int CSelectChannelWidget::exec(CMenuTarget *parent, const std::string &actionKey)
@@ -78,19 +78,21 @@ void CSelectChannelWidget::InitZapitChannelHelper(CZapitClient::channelsMode mod
 	// save channel mode
 	int channelMode = g_settings.channel_mode;
 	int nNewChannel = -1;
-	int activBouquet = bouquetList->getActiveBouquetNumber();;
+	int activBouquet = 0;
 	int activChannel = 0;
 	int nMode = CNeutrinoApp::getInstance()->getMode();
 	
+_repeat:
 	// set channel mode (allways list mode all)
 	if(mode == CZapitClient::MODE_TV)
-		CNeutrinoApp::getInstance()->SetChannelMode(g_settings.channel_mode, NeutrinoMessages::mode_tv);
+		CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, NeutrinoMessages::mode_tv);
 	else if(mode == CZapitClient::MODE_RADIO)
-		CNeutrinoApp::getInstance()->SetChannelMode(g_settings.channel_mode, NeutrinoMessages::mode_radio);
+		CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, NeutrinoMessages::mode_radio);
 	
 	// get activ channel number
 	if(bouquetList->Bouquets.size())
 	{ 
+		activBouquet = bouquetList->getActiveBouquetNumber();
 		activChannel = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannelNumber();
 	}
 
@@ -100,17 +102,18 @@ void CSelectChannelWidget::InitZapitChannelHelper(CZapitClient::channelsMode mod
 	else
 		nNewChannel = bouquetList->show();
 
-_repeat:
 	// handle list mode changed
 	if(nNewChannel == -3) // channel mode changed
 	{ 
-		nNewChannel = bouquetList->exec(true);
-
 		goto _repeat;
 	}
 
 	// get our channel
-	if (nNewChannel >= -3)
+	if (nNewChannel == -1)
+	{
+		ChannelID = g_settings.startchanneltv_id;
+	}
+	else
 	{
 		ChannelID = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannel_ChannelID();
 	}
