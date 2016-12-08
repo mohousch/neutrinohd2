@@ -40,12 +40,14 @@ extern CBouquetList * bouquetList;
 //select menu
 CSelectChannelWidget::CSelectChannelWidget()
 {
-	ChannelID = g_settings.startchanneltv_id;
+	ChannelTVID = g_settings.startchanneltv_id;
+	ChannelRadioID = g_settings.startchannelradio_id;
 }
 
 CSelectChannelWidget::~CSelectChannelWidget()
 {
-	ChannelID = -1;
+	ChannelTVID = -1;
+	ChannelRadioID = -1;
 }
 
 int CSelectChannelWidget::exec(CMenuTarget *parent, const std::string &actionKey)
@@ -111,11 +113,17 @@ _repeat:
 	// get our channel
 	if (nNewChannel == -1)
 	{
-		ChannelID = g_settings.startchanneltv_id;
+		if(mode == CZapitClient::MODE_TV)
+			ChannelTVID = g_settings.startchanneltv_id;
+		else if(mode == CZapitClient::MODE_RADIO)
+			ChannelRadioID = g_settings.startchannelradio_id;
 	}
 	else
 	{
-		ChannelID = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannel_ChannelID();
+		if(mode == CZapitClient::MODE_TV)
+			ChannelTVID = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannel_ChannelID();
+		else if(mode == CZapitClient::MODE_RADIO)
+			ChannelRadioID = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannel_ChannelID();
 	}
 	
 	// set last channel mode

@@ -33,14 +33,17 @@
 class CSelectChannelWidget : public CMenuWidget
 {	
 	private:
-		t_channel_id ChannelID;
+		t_channel_id ChannelTVID;
+		t_channel_id ChannelRadioID;
+
 		void InitZapitChannelHelper(CZapitClient::channelsMode mode);
 
 	public:
 		CSelectChannelWidget();
 		~CSelectChannelWidget();
 		int exec(CMenuTarget *parent, const std::string & actionKey);
-		t_channel_id getChanID(){return ChannelID;};
+		t_channel_id getChanTVID(){return ChannelTVID;};
+		t_channel_id getChanRadioID(){return ChannelRadioID;};
 };
 
 #endif
