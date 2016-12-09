@@ -1808,12 +1808,12 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("ShowPictureFolder", true, NULL, this, "showpicturefolder"));
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
-
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("URIMovieBrowser", true, NULL, this, "urimoviebrowser"));
 	mainMenu->addItem(new CMenuForwarder("URIRecordBrowser", true, NULL, this, "urirecordbrowser"));
 	mainMenu->addItem(new CMenuForwarder("PlayMovieDir(without Browser)", true, NULL, this, "playmoviedir"));
+
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
