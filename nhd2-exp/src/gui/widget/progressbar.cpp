@@ -50,7 +50,7 @@
 #include <system/debug.h>
 
 
-#define ITEMW 4
+#define ITEMW 1
 
 
 CProgressBar::CProgressBar(int w, int h, int r, int g, int b, bool inv)

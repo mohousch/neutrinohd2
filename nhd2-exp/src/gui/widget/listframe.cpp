@@ -364,17 +364,17 @@ void CListFrame::refreshTitle(void)
 	if( frameBuffer == NULL) 
 		return;
 
-	frameBuffer->paintBoxRel(m_cFrameTitleRel.iX + m_cFrame.iX, m_cFrameTitleRel.iY + m_cFrame.iY, m_cFrameTitleRel.iWidth, m_cFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR);
+	frameBuffer->paintBoxRel(m_cFrameTitleRel.iX + m_cFrame.iX, m_cFrameTitleRel.iY + m_cFrame.iY, m_cFrameTitleRel.iWidth, m_cFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
 	
 	int iw = 0;
 	int ih = 0;
 	if(!m_iconTitle.empty())
 	{
 		frameBuffer->getIconSize(m_iconTitle.c_str(), &iw, &ih);
-		frameBuffer->paintIcon(m_iconTitle, m_cFrameTitleRel.iX + TEXT_BORDER_WIDTH + m_cFrame.iX, m_cFrameTitleRel.iY + m_cFrame.iY + (m_cFrameTitleRel.iHeight - ih)/2);
+		frameBuffer->paintIcon(m_iconTitle, m_cFrameTitleRel.iX + m_cFrame.iX + BORDER_LEFT, m_cFrameTitleRel.iY + m_cFrame.iY + (m_cFrameTitleRel.iHeight - ih)/2);
 	}
 	
-	m_pcFontTitle->RenderString(m_cFrameTitleRel.iX + m_cFrame.iX + TEXT_BORDER_WIDTH + iw + 5, m_cFrameTitleRel.iY + m_cFrameTitleRel.iHeight + m_cFrame.iY, m_cFrameTitleRel.iWidth - iw - (TEXT_BORDER_WIDTH << 1), m_textTitle.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
+	m_pcFontTitle->RenderString(m_cFrameTitleRel.iX + m_cFrame.iX + BORDER_LEFT + iw + ICON_OFFSET, m_cFrameTitleRel.iY + m_cFrameTitleRel.iHeight + m_cFrame.iY, m_cFrameTitleRel.iWidth - iw - (TEXT_BORDER_WIDTH << 1), m_textTitle.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
 }
 
 void CListFrame::refreshScroll(void)
