@@ -165,7 +165,6 @@ void CMessageBox::paintButtons()
 	uint8_t    color;
 	fb_pixel_t bgcolor;
 
-	//FIXME: this not correct
 	m_window->paintBoxRel(0, m_height - (m_fheight << 1), m_width, (m_fheight << 1), (CFBWindow::color_t)COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
 	//irgendwann alle vergleichen - aber cancel ist sicher der l�ngste
@@ -346,12 +345,8 @@ int CMessageBox::exec(int timeout)
 		CFrameBuffer::getInstance()->blit();
 	}
 
-	//HintBoxExt hide
+	// hide
 	hide();
-
-	// hide buttons
-	//FIXME: 
-	CFrameBuffer::getInstance()->paintBackgroundBoxRel(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1), CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_height - (m_fheight << 1), m_width, (m_fheight << 1));
 
 	CFrameBuffer::getInstance()->blit();
 	
