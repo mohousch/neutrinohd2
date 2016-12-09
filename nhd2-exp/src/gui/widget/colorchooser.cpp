@@ -52,6 +52,7 @@
 #define VALUE_G     1
 #define VALUE_B     2
 #define VALUE_ALPHA 3
+#define ITEMS_COUNT 4
 
 static const char * const iconnames[4] = {
 	"volumeslider2red",
@@ -76,21 +77,26 @@ CColorChooser::CColorChooser(const neutrino_locale_t Name, unsigned char *R, uns
 	name = g_Locale->getText(Name);
 	
 	frameBuffer = CFrameBuffer::getInstance();
-	hheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	mheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	
-	width = w_max(MENU_WIDTH, 0);
-	height = h_max(hheight + mheight*4, 0);
 
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) >> 1);
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >>1);
+	// Head
+	titleIcon.setIcon(NEUTRINO_ICON_COLORS);
+	cFrameBoxTitle.iHeight= std::max(titleIcon.iHeight, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+
+	// Item
+	cFrameBoxItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	
+	cFrameBox.iWidth = MENU_WIDTH;
+	cFrameBox.iHeight = cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*ITEMS_COUNT;
+
+	cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth) >> 1);
+	cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >>1);
 
 	value[VALUE_R]     = R;
 	value[VALUE_G]     = G;
 	value[VALUE_B]     = B;
 	value[VALUE_ALPHA] = Alpha;
 	
-	startx = width - mheight*4 - 30; //FIXME: 30?
+	startx = cFrameBox.iWidth - cFrameBoxItem.iHeight*ITEMS_COUNT - BORDER_LEFT - BORDER_RIGHT; //FIXME: 30?
 }
 
 CColorChooser::CColorChooser(const char * const Name, unsigned char *R, unsigned char *G, unsigned char *B, unsigned char* Alpha, CChangeObserver* Observer) // UTF-8
@@ -101,21 +107,26 @@ CColorChooser::CColorChooser(const char * const Name, unsigned char *R, unsigned
 	nameStringOption = NONEXISTANT_LOCALE;
 	
 	frameBuffer = CFrameBuffer::getInstance();
-	hheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	mheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	
-	width = w_max(MENU_WIDTH, 0);
-	height = h_max(hheight + mheight*4, 0);
 
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) >> 1);
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >>1);
+	// Head
+	titleIcon.setIcon(NEUTRINO_ICON_COLORS);
+	cFrameBoxTitle.iHeight= std::max(titleIcon.iHeight, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+
+	// Item
+	cFrameBoxItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	
+	cFrameBox.iWidth = MENU_WIDTH;
+	cFrameBox.iHeight = cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*ITEMS_COUNT;
+
+	cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth) >> 1);
+	cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >>1);
 
 	value[VALUE_R]     = R;
 	value[VALUE_G]     = G;
 	value[VALUE_B]     = B;
 	value[VALUE_ALPHA] = Alpha;
 	
-	startx = width - mheight*4 - 30; //FIXME: 30?
+	startx = cFrameBox.iWidth - cFrameBoxItem.iHeight*ITEMS_COUNT - BORDER_LEFT - BORDER_RIGHT; //FIXME: 30?
 }
 
 void CColorChooser::setColor()
@@ -128,7 +139,7 @@ void CColorChooser::setColor()
 
 	fb_pixel_t col = ((tAlpha << 24) & 0xFF000000) | color;
 	
-	frameBuffer->paintBoxRel(x + startx + 2, y + hheight + 2 + 5,  mheight*4 - 4 ,mheight*4 - 4 - 10, col);
+	frameBuffer->paintBoxRel(cFrameBox.iX + startx + 2, cFrameBox.iY + cFrameBoxTitle.iHeight + 2 + 5,  cFrameBoxItem.iHeight*ITEMS_COUNT - 4, cFrameBoxItem.iHeight*ITEMS_COUNT - 4 - BORDER_LEFT, col);
 }
 
 int CColorChooser::exec(CMenuTarget *parent, const std::string &)
@@ -169,31 +180,32 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 				{
 					if (selected < ((value[VALUE_ALPHA]) ? 3 : 2))
 					{
-						paintSlider(x + 10, y + hheight + mheight * selected, value[selected], colorchooser_names[selected], iconnames[selected], false);
+						paintSlider(cFrameBox.iX + BORDER_LEFT, cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*selected, value[selected], colorchooser_names[selected], iconnames[selected], false);
 						selected++;
-						paintSlider(x + 10, y + hheight + mheight * selected, value[selected], colorchooser_names[selected], iconnames[selected], true);
+						paintSlider(cFrameBox.iX + BORDER_LEFT, cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*selected, value[selected], colorchooser_names[selected], iconnames[selected], true);
 					} 
 					else 
 					{
-						paintSlider(x + 10, y + hheight + mheight * selected, value[selected], colorchooser_names[selected], iconnames[selected], false);
+						paintSlider(cFrameBox.iX + BORDER_LEFT, cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*selected, value[selected], colorchooser_names[selected], iconnames[selected], false);
 						selected = 0;
-						paintSlider(x + 10, y + hheight + mheight * selected, value[selected], colorchooser_names[selected], iconnames[selected], true);
+						paintSlider(cFrameBox.iX + BORDER_LEFT, cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*selected, value[selected], colorchooser_names[selected], iconnames[selected], true);
 					}
 					break;
-
 				}
 				
 			case CRCInput::RC_up:
 				{
 					if (selected > 0)
 					{
-						paintSlider(x + 10, y + hheight + mheight * selected, value[selected], colorchooser_names[selected], iconnames[selected], false);
+						paintSlider(cFrameBox.iX + BORDER_LEFT, cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*selected, value[selected], colorchooser_names[selected], iconnames[selected], false);
 						selected--;
-						paintSlider(x + 10, y + hheight + mheight * selected, value[selected], colorchooser_names[selected], iconnames[selected], true);
-					} else {
-						paintSlider(x + 10, y + hheight + mheight * selected, value[selected], colorchooser_names[selected], iconnames[selected], false);
+						paintSlider(cFrameBox.iX + BORDER_LEFT, cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*selected, value[selected], colorchooser_names[selected], iconnames[selected], true);
+					} 
+					else 
+					{
+						paintSlider(cFrameBox.iX + BORDER_LEFT, cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*selected, value[selected], colorchooser_names[selected], iconnames[selected], false);
 						selected = ((value[VALUE_ALPHA]) ? 3 : 2);
-						paintSlider(x + 10, y + hheight + mheight * selected, value[selected], colorchooser_names[selected], iconnames[selected], true);
+						paintSlider(cFrameBox.iX + BORDER_LEFT, cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*selected, value[selected], colorchooser_names[selected], iconnames[selected], true);
 					}
 					break;
 				}
@@ -207,7 +219,7 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 						else
 							(*value[selected]) = 100;
 
-						paintSlider(x + 10, y + hheight + mheight * selected, value[selected], colorchooser_names[selected], iconnames[selected], true);
+						paintSlider(cFrameBox.iX + BORDER_LEFT, cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*selected, value[selected], colorchooser_names[selected], iconnames[selected], true);
 						setColor();
 					}
 					break;
@@ -222,7 +234,7 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 						else
 							(*value[selected]) = 0;
 
-						paintSlider(x + 10, y + hheight + mheight * selected, value[selected], colorchooser_names[selected], iconnames[selected], true);
+						paintSlider(cFrameBox.iX + BORDER_LEFT, cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*selected, value[selected], colorchooser_names[selected], iconnames[selected], true);
 						setColor();
 					}
 					break;
@@ -233,10 +245,16 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 						(MessageBox(name.c_str(), LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
 					break;
 
-				// sonst abbruch...
-				*value[VALUE_R] = r_alt;
-				*value[VALUE_G] = g_alt;
-				*value[VALUE_B] = b_alt;
+				// cancel
+				if (value[VALUE_R])
+					*value[VALUE_R] = r_alt;
+
+				if (value[VALUE_G])
+					*value[VALUE_G] = g_alt;
+
+				if (value[VALUE_B])
+					*value[VALUE_B] = b_alt;
+
 				if (value[VALUE_ALPHA])
 					*value[VALUE_ALPHA] = a_alt;
 	
@@ -266,46 +284,70 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 
 void CColorChooser::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width + SHADOW_OFFSET, height + SHADOW_OFFSET);
+	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth + SHADOW_OFFSET, cFrameBox.iHeight + SHADOW_OFFSET);
 	
 	frameBuffer->blit();
 }
 
 void CColorChooser::paint()
 {
-	// head
-	//shadow
-	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP); //round
+	// ShadowBox
+	frameBuffer->paintBoxRel(cFrameBox.iX + SHADOW_OFFSET, cFrameBox.iY + SHADOW_OFFSET, cFrameBox.iWidth, cFrameBox.iHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_ALL); //round
 
-	// head
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient); //round
+	// Head
+	cFrameBoxTitle.iX = cFrameBox.iX;
+	cFrameBoxTitle.iY = cFrameBox.iY;
+	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
+
+	// Head Box
+	frameBuffer->paintBoxRel(cFrameBoxTitle.iX, cFrameBoxTitle.iY, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+
+	// Head Icon
+	frameBuffer->paintIcon(titleIcon.iconName.c_str(), cFrameBoxTitle.iX + BORDER_LEFT, cFrameBoxTitle.iY + (cFrameBoxTitle.iHeight - titleIcon.iHeight)/2);
 	
 	// head title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameBoxTitle.iX + BORDER_LEFT + titleIcon.iWidth + ICON_OFFSET, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - BORDER_RIGHT - titleIcon.iWidth, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 
-	// menu box shadow
-	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
+	// Body
+	cFrameBoxBody.iX = cFrameBox.iX;
+	cFrameBoxBody.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
+	cFrameBoxBody.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight;
+	cFrameBoxBody.iWidth = cFrameBox.iWidth;
 
-	// menu box
-	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
+	// Body Box
+	frameBuffer->paintBoxRel(cFrameBoxBody.iX, cFrameBoxBody.iY, cFrameBoxBody.iWidth, cFrameBoxBody.iHeight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 
 	// slider
-	for (int i = 0; i < 4; i++)
-		paintSlider(x + BORDER_LEFT, y + hheight + mheight*i, value[i], colorchooser_names[i], iconnames[i], (i == 0));
+	for (int i = 0; i < ITEMS_COUNT; i++)
+		paintSlider(cFrameBox.iX + BORDER_LEFT, cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight*i, value[i], colorchooser_names[i], iconnames[i], (i == 0));
 
 	//color preview
-	frameBuffer->paintBoxRel(x + startx, y + hheight + 5, mheight*4, mheight*4 - 10, COL_MENUHEAD_PLUS_0);
-	frameBuffer->paintBoxRel(x + startx + 2, y + hheight + 2 + 5, mheight*4 - 4, mheight*4 - 4 - 10, 254);
+	frameBuffer->paintBoxRel(cFrameBox.iX + startx, cFrameBoxBody.iY + 5, cFrameBoxItem.iHeight*ITEMS_COUNT, cFrameBoxItem.iHeight*ITEMS_COUNT - BORDER_LEFT, COL_MENUHEAD_PLUS_0);
+
+	frameBuffer->paintBoxRel(cFrameBox.iX + startx + 2, cFrameBox.iY + cFrameBoxTitle.iHeight + 2 + 5, cFrameBoxItem.iHeight*ITEMS_COUNT - 4, cFrameBoxItem.iHeight*ITEMS_COUNT - 4 - BORDER_LEFT, 254);
 }
 
 void CColorChooser::paintSlider(int _x, int _y, unsigned char *spos, const neutrino_locale_t text, const char * const iconname, const bool selected)
 {
 	if (!spos)
 		return;
-	
-	frameBuffer->paintBoxRel(_x + 70, _y, 120, mheight, COL_MENUCONTENT_PLUS_0); //FIXME: 70? 120?
-	frameBuffer->paintIcon(NEUTRINO_ICON_VOLUMEBODY, _x + 70, _y + 2 + mheight/4);
-	frameBuffer->paintIcon(selected ? iconname : NEUTRINO_ICON_VOLUMESLIDER2, _x + 73 + (*spos), _y + mheight/4);
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(_x, _y + mheight, width, g_Locale->getText(text), COL_MENUCONTENT, 0, true); // UTF-8
+	//
+	volumeBodyIcon.setIcon(NEUTRINO_ICON_VOLUMEBODY);
+	//int r_w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(g_Locale->getText(colorchooser_names[0]));
+	//int g_w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(g_Locale->getText(colorchooser_names[1]));
+	//int b_w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(g_Locale->getText(colorchooser_names[2]));
+	int a_w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(g_Locale->getText(colorchooser_names[3]));
+	
+	// volumebox box
+	frameBuffer->paintBoxRel(_x + a_w + 2*ICON_OFFSET, _y, volumeBodyIcon.iWidth, cFrameBoxItem.iHeight, COL_MENUCONTENT_PLUS_0);
+
+	// volumebody icon
+	frameBuffer->paintIcon(NEUTRINO_ICON_VOLUMEBODY, _x + a_w + 2*ICON_OFFSET, _y + 2 + cFrameBoxItem.iHeight/ITEMS_COUNT);
+
+	// slider icon
+	frameBuffer->paintIcon(selected ? iconname : NEUTRINO_ICON_VOLUMESLIDER2, _x + a_w + 2*ICON_OFFSET + 3 + (*spos), _y + cFrameBoxItem.iHeight/ITEMS_COUNT);
+
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(_x, _y + cFrameBoxItem.iHeight, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - ICON_OFFSET - volumeBodyIcon.iWidth, g_Locale->getText(text), COL_MENUCONTENT, 0, true); // UTF-8
 }
+

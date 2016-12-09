@@ -1236,8 +1236,8 @@ void CTestMenu::testColorChooser()
 	CColorChooser * colorChooserHandler = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.menu_Head_red, &g_settings.menu_Head_green, &g_settings.menu_Head_blue, &g_settings.menu_Head_alpha, CNeutrinoApp::getInstance()->colorSetupNotifier);
 
 	colorChooserHandler->exec(NULL, "");
-	delete colorChooserHandler;
-	colorChooserHandler = NULL;
+	//delete colorChooserHandler;
+	//colorChooserHandler = NULL;
 }
 
 void CTestMenu::testKeyChooser()

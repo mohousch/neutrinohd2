@@ -26,6 +26,7 @@
 #include <driver/framebuffer.h>
 #include <system/localize.h>
 
+
 typedef struct button_label
 {
 	const char * button;

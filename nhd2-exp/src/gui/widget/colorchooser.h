@@ -45,12 +45,23 @@ class CColorChooser : public CMenuTarget
 {
 	private:
 		CFrameBuffer	*frameBuffer;
+
+		/*
 		int x;
 		int y;
 		int width;
 		int height;
 		int hheight;
 		int mheight; // head/menu font height
+		*/
+		CBox cFrameBox;
+		CBox cFrameBoxTitle;
+		CBox cFrameBoxBody;
+		CBox cFrameBoxItem;
+
+		CIcon titleIcon;
+		CIcon volumeBodyIcon;
+
 		int startx;  //startposx for color preview window
 
 		unsigned char * value[4]; // r, g, b, alpha

@@ -48,3 +48,4 @@ void paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CL
 	}
 }
 
+
