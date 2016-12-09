@@ -63,6 +63,7 @@ class CHintBoxExt
 
 		int m_fheight;
 		int m_theight;
+
 		std::string m_caption;
 		char * m_message;
 		ContentLines m_lines;
@@ -70,14 +71,6 @@ class CHintBoxExt
 		
 		void refresh(bool paintBg = false);
 
-	public:
-		CHintBoxExt(const neutrino_locale_t Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
-		CHintBoxExt(const neutrino_locale_t Caption, ContentLines& lines, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
-		CHintBoxExt(const char * const Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
-		CHintBoxExt(const char * const Caption, ContentLines& lines, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
-
-		~CHintBoxExt(void);
-		
 		void init(const char* const Caption, const int Width, const char * const Icon);
 
 		bool has_scrollbar(void);
@@ -86,6 +79,14 @@ class CHintBoxExt
 
 		void paint(void);
 		void hide(void);
+
+	public:
+		CHintBoxExt(const neutrino_locale_t Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
+		CHintBoxExt(const neutrino_locale_t Caption, ContentLines& lines, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
+		CHintBoxExt(const char * const Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
+		CHintBoxExt(const char * const Caption, ContentLines& lines, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
+
+		~CHintBoxExt(void);
 };
 
 #endif

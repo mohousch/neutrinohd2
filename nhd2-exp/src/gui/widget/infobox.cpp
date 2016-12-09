@@ -529,6 +529,7 @@ bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _
 	return(_result);
 }
 
+/*
 //////////////////////////////////////////////////////////////////////
 // Function Name:	ShowInfoBox	
 // Description:		
@@ -560,4 +561,5 @@ void InfoBox(const char * const Title,const char * const Text, const char * cons
 
 	delete infoBox;
 }
+*/
 

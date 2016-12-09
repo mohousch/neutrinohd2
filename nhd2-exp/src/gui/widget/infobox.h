@@ -91,11 +91,19 @@ class CInfoBox
 		void refreshTitle(void);
 		void refreshText(void);
 
+		bool    paint(void);
+		void    refresh(void);
+
+		void    scrollPageDown(const int pages);
+		void    scrollPageUp(const int pages);
+
+		void setBigFonts();
+
 	public:
 		virtual ~CInfoBox();
 		CInfoBox();
 		CInfoBox(const char * text);
-		CInfoBox(  const char * text, 
+		CInfoBox(const char * text, 
 				   CFont *fontText,
 				   const int mode, 
 				   const CBox* position, 
@@ -104,26 +112,8 @@ class CInfoBox
 				   const char * icon);
 
 		// functions
-		bool    paint(void);
 		int     exec(int timeout = -1);
-		void    refresh(void);
-		void    scrollPageDown(const int pages);
-		void    scrollPageUp(const int pages);
 		bool	setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int tmode = CTextBox::TOP_RIGHT);
-
-		void setBigFonts();
 };
-
-extern void InfoBox(const neutrino_locale_t Caption, 
-						const char * const Text, 
-						const char * const Icon = NULL, 
-						const int Width = HINTBOX_WIDTH, 
-						const int timeout = -1); // UTF-8
-
-extern void InfoBox(const char * const Title, 
-						const char * const Text,  
-						const char * const Icon = NULL, 
-						const int Width = HINTBOX_WIDTH, 
-						const int timeout = -1); // UTF-8
 
 #endif

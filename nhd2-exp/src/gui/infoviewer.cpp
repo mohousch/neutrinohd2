@@ -1338,7 +1338,7 @@ void CInfoViewer::showIcon_SubT() const
 
 void CInfoViewer::showFailure()
 {
-  	HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText (LOCALE_INFOVIEWER_NOTAVAILABLE), 430);	// UTF-8
+  	HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText (LOCALE_INFOVIEWER_NOTAVAILABLE), 430);
 }
 
 void CInfoViewer::showMotorMoving (int duration)

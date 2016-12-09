@@ -40,7 +40,6 @@ class CTestMenu : CMenuTarget
 		void testCTimeInput();
 		void testCIntInput();
 		void testCInfoBox();
-		void testCInfoBoxShowMsg();
 		void testCInfoBoxInfoBox();
 		void testCMessageBox();
 		void testCMessageBoxInfoMsg();
@@ -321,15 +320,11 @@ void CTestMenu::testCInfoBox()
 {
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
 	
 	infoBox->exec();
 	delete infoBox;
-}
-
-void CTestMenu::testCInfoBoxShowMsg()
-{
-	InfoBox("CInfoBox", "testing CInfobox");	// UTF-8
+	infoBox = NULL;
 }
 
 void CTestMenu::testCInfoBoxInfoBox()
@@ -352,19 +347,24 @@ void CTestMenu::testCInfoBoxInfoBox()
 	
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_BUTTON_SETUP);
+	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_BUTTON_SETUP);
+
 	infoBox->setText(&buffer, thumbnail, picw, pich);
 	infoBox->exec();
 	delete infoBox;
+	infoBox = NULL;
 }
 
 void CTestMenu::testCMessageBox()
 {
 	CMessageBox * messageBox = new CMessageBox(LOCALE_MESSAGEBOX_INFO, "testing CMessageBox");
 	
-	messageBox->exec();
-	messageBox->hide();
+	int res = messageBox->exec();
+
+	printf("res:%d messageBox->result:%d\n", res, messageBox->result);
+
 	delete messageBox;
+	messageBox = NULL;
 }
 
 void CTestMenu::testCMessageBoxInfoMsg()
@@ -381,10 +381,9 @@ void CTestMenu::testCHintBox()
 {
 	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, "testing CHintBox");
 	
-	hintBox->paint();
-	sleep(3);
-	hintBox->hide();
+	hintBox->exec();
 	delete hintBox;
+	hintBox = NULL;
 }
 
 void CTestMenu::testCHintBoxInfo()
@@ -400,9 +399,11 @@ void CTestMenu::testCHelpBox()
 	helpBox->addLine("HELPBOX");
 	helpBox->addLine("");
 	helpBox->addPagebreak();
+
 	helpBox->show(LOCALE_MESSAGEBOX_INFO);
 	
 	delete helpBox;
+	helpBox = NULL;
 }
 
 void CTestMenu::testCTextBox()
@@ -1101,17 +1102,20 @@ void CTestMenu::testShowActuellEPG()
 
 			buffer += epgdata.info1;
 			buffer += "\n";
-			buffer += epgdata.info2;
-			
-			InfoBox(title.c_str(), buffer.c_str());	// UTF-8
-			
+			buffer += epgdata.info2;	
 		}
 	}
 
 	title += getNowTimeStr("%d.%m.%Y %H:%M");
 	//
 	
-	InfoBox(title.c_str(), buffer.c_str());	//
+	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+	CInfoBox * infoBox = new CInfoBox(buffer.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	
+	infoBox->exec();
+	delete infoBox;
+	infoBox = NULL;	
 }
 
 void CTestMenu::testChannelSelectWidget()
@@ -1522,10 +1526,6 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCInfoBox();
 	}
-	else if(actionKey == "infoboxshowmsg")
-	{
-		testCInfoBoxShowMsg();
-	}
 	else if(actionKey == "infoboxinfobox")
 	{
 		testCInfoBoxInfoBox();
@@ -1751,7 +1751,6 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CTimeInput", true, NULL, this, "timeinput"));
 	mainMenu->addItem(new CMenuForwarder("CIntInput", true, NULL, this, "intinput"));
 	mainMenu->addItem(new CMenuForwarder("CInfoBox", true, NULL, this, "infobox"));
-	mainMenu->addItem(new CMenuForwarder("CInfoBoxShowMsg", true, NULL, this, "infoboxshowmsg"));
 	mainMenu->addItem(new CMenuForwarder("CInfoBoxInfoBox", true, NULL, this, "infoboxinfobox"));
 	mainMenu->addItem(new CMenuForwarder("CMessageBox", true, NULL, this, "messagebox"));
 	mainMenu->addItem(new CMenuForwarder("CMessageBoxInfoMsg", true, NULL, this, "messageboxinfomsg"));

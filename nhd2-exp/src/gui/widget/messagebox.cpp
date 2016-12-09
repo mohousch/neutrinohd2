@@ -264,23 +264,16 @@ int CMessageBox::exec(int timeout)
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	int res = menu_return::RETURN_REPAINT;
-
 	CHintBoxExt::paint();
 
-	if (m_window == NULL)
-	{
-		return res; /* out of memory */
-	}
-
 	paintButtons();
+
+	CFrameBuffer::getInstance()->blit();
 
 	if ( timeout == -1 )
 		timeout = g_settings.timing[SNeutrinoSettings::TIMING_EPG];
 
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd( timeout );
-
-	CFrameBuffer::getInstance()->blit();
 
 	bool loop = true;
 	while (loop)
@@ -345,7 +338,6 @@ int CMessageBox::exec(int timeout)
 		}
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 		{
-			res  = menu_return::RETURN_EXIT_ALL;
 			loop = false;
 		}
 
@@ -354,10 +346,9 @@ int CMessageBox::exec(int timeout)
 
 	hide();
 
-	return res;
+	return result;
 }
 
-//
 int MessageBox(const neutrino_locale_t Caption, const char * const Text, const CMessageBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
 {
    	CMessageBox * messageBox = new CMessageBox(Caption, Text, Width, Icon, Default, ShowButtons);
@@ -399,3 +390,5 @@ int MessageBox(const char * const Caption, const std::string & Text, const CMess
 {
 	return MessageBox(Caption, Text.c_str(), Default, ShowButtons, Icon, Width, timeout,returnDefaultOnTimeout);
 }
+
+

@@ -112,13 +112,13 @@ class CTextBox
 		int m_nCurrentPage;
 
 		// text
-		CFont *m_pcFontText;
+		CFont* m_pcFontText;
 		int m_nFontTextHeight;
 
 		// backgrond
 		fb_pixel_t m_textBackgroundColor;
 
-		CFrameBuffer * frameBuffer;
+		CFrameBuffer* frameBuffer;
 		
 		std::string thumbnail;
 		int lx; 

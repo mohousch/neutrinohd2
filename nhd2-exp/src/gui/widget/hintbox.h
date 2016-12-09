@@ -54,11 +54,10 @@ class CHintBox
 		unsigned int entries_per_page;
 		unsigned int current_page;
 
-		int width;
-		int height;
+		CBox cFrameBox;
+		CBox cFrameBoxTitle;
+		CBox cFrameBoxItem;
 
-		int fheight;
-		int theight;
 		std::string caption;
 		char * message;
 		std::vector<char *>line;
@@ -78,9 +77,10 @@ class CHintBox
 
 		void paint(void);
 		void hide(void);
+
+		int exec(int timeout = -1);
 };
 
-// Text is UTF-8 encoded
 int HintBox(const neutrino_locale_t Caption, const char * const Text, const int Width = HINTBOX_WIDTH, int timeout = -1, const char * const Icon = NEUTRINO_ICON_INFO);
 int HintBox(const neutrino_locale_t Caption, const neutrino_locale_t Text, const int Width = HINTBOX_WIDTH, int timeout = -1, const char * const Icon = NEUTRINO_ICON_INFO);
 int HintBox(const char * Caption, const char * const Text, const int Width = HINTBOX_WIDTH, int timeout = -1, const char * const Icon = NEUTRINO_ICON_INFO);
