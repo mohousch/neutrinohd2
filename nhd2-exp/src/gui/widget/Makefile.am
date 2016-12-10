@@ -29,7 +29,6 @@ libneutrino_gui_widget_a_SOURCES = \
 	infobox.cpp \
 	messagebox.cpp \
 	hintbox.cpp \
-	hintboxext.cpp \
 	helpbox.cpp \
 	listbox.cpp \
 	textbox.cpp \

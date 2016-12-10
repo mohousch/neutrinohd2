@@ -35,15 +35,52 @@
 #ifndef __messagebox__
 #define __messagebox__
 
-#include <system/settings.h>
-#include <gui/widget/hintboxext.h>
-
 #include <stdint.h>
 #include <string>
 
+#include <gui/widget/drawable.h>
+#include <driver/fb_window.h>
+#include <system/localize.h>
+#include <system/settings.h>
 
-class CMessageBox : public CHintBoxExt
+#include <gui/widget/drawable.h>
+
+#include "icons.h"
+#include "menue.h"
+
+
+class CMessageBox
 {
+	protected:
+		CFBWindow * m_window;
+
+		unsigned int m_currentPage;
+		std::vector<int>m_startEntryOfPage;
+		int m_maxEntriesPerPage;
+		int m_pages;
+
+		int m_width;
+		int m_height;
+
+		int m_fheight;
+		int m_theight;
+
+		std::string m_caption;
+		char * m_message;
+		ContentLines m_lines;
+		std::string  m_iconfile;
+		
+		void refresh(bool paintBg = false);
+
+		void init(const char* const Caption, const int Width, const char * const Icon);
+
+		bool has_scrollbar(void);
+		void scroll_up(void);
+		void scroll_down(void);
+
+		void paint(void);
+		void hide(void);
+
 	private:
 		int  showbuttons;
 		bool returnDefaultOnTimeout;
@@ -75,6 +112,8 @@ class CMessageBox : public CHintBoxExt
 		CMessageBox(const neutrino_locale_t Caption, ContentLines& Lines, const int Width = HINTBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
 		CMessageBox(const char * const Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
 		CMessageBox(const char * const Caption, ContentLines& Lines, const int Width = HINTBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
+
+		~CMessageBox(void);
 
 		int exec(int timeout = -1);
 		void returnDefaultValueOnTimeout(bool returnDefault);
