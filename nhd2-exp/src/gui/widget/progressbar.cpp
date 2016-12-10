@@ -63,6 +63,7 @@ CProgressBar::CProgressBar(int w, int h, int r, int g, int b, bool inv)
 	inverse = inv;
 	
 	div = (double) 100 / (double) width;
+
 	red = (double) r / (double) div / (double) ITEMW;
 	green = (double) g / (double) div / (double) ITEMW;
 	yellow = (double) b / (double) div / (double) ITEMW;
@@ -83,7 +84,7 @@ void CProgressBar::paint(unsigned int x, unsigned int y, unsigned char pcr)
 	double div;
 	uint32_t rgb;
 	
-	fb_pixel_t color;
+	fb_pixel_t color = COL_MENUCONTENT_PLUS_7;
 	int b = 0;
 	
 	i = 0;
@@ -99,61 +100,71 @@ void CProgressBar::paint(unsigned int x, unsigned int y, unsigned char pcr)
 		siglen = (double) pcr / (double) div;
 		posx = xpos;
 		posy = ypos;
-		int maxi = siglen / ITEMW;
-		int total = width / ITEMW;
+		int maxi = siglen/ITEMW;
+		int total = width/ITEMW;
 		int step = 255/total;
 
 		if (pcr > percent) 
 		{
-			//red
-			for (i = 0; (i < red) && (i < maxi); i++) 
+			if(g_settings.progressbar_color == 0)
 			{
-				step = 255/red;
+				//red
+				for (i = 0; (i < red) && (i < maxi); i++) 
+				{
+					step = 255/red;
 
-				if(inverse) 
-					rgb = COL_GREEN + ((unsigned char)(step*i) << 16); // adding red
-				else
-					rgb = COL_RED + ((unsigned char)(step*i) <<  8); // adding green
+					if(inverse) 
+						rgb = COL_GREEN + ((unsigned char)(step*i) << 16); // adding red
+					else
+						rgb = COL_RED + ((unsigned char)(step*i) <<  8); // adding green
 				
-				color = rgb;
+					color = rgb;
 				
-				frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
-			}
+					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
+				}
 	
-			//yellow
-			for (; (i < yellow) && (i < maxi); i++) 
-			{
-				step = 255/yellow/2;
+				//yellow
+				for (; (i < yellow) && (i < maxi); i++) 
+				{
+					step = 255/yellow/2;
 
-				if(inverse) 
-					rgb = COL_YELLOW - (((unsigned char)step*(b++)) <<  8); // removing green
-				else
-					rgb = COL_YELLOW - ((unsigned char)(step*(b++)) << 16); // removing red
+					if(inverse) 
+						rgb = COL_YELLOW - (((unsigned char)step*(b++)) <<  8); // removing green
+					else
+						rgb = COL_YELLOW - ((unsigned char)(step*(b++)) << 16); // removing red
 	
-				color = rgb;		    
+					color = rgb;		    
 				
-				frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
+					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
+				}
+
+				//green
+				for (; (i < green) && (i < maxi); i++) 
+				{
+					step = 255/green;
+
+					if(inverse) 
+						rgb = COL_YELLOW - ((unsigned char) (step*(b++)) <<  8); // removing green
+					else
+						rgb = COL_YELLOW - ((unsigned char) (step*(b++)) << 16); // removing red
+				
+					color = rgb;
+				
+					frameBuffer->paintBoxRel (posx + i*ITEMW, posy, ITEMW, height, color);
+				}
 			}
-
-			//green
-			for (; (i < green) && (i < maxi); i++) 
+			else
 			{
-				step = 255/green;
-
-				if(inverse) 
-					rgb = COL_YELLOW - ((unsigned char) (step*(b++)) <<  8); // removing green
-				else
-					rgb = COL_YELLOW - ((unsigned char) (step*(b++)) << 16); // removing red
-				
-				color = rgb;
-				
-				frameBuffer->paintBoxRel (posx + i*ITEMW, posy, ITEMW, height, color);
+				for(;(i < maxi); i++) 
+				{
+					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
+				}
 			}
 		}
 		
 		for(i = maxi; i < total; i++) 
 		{
-			frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, COL_INFOBAR_PLUS_1);	//fill passive
+			frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, COL_MENUCONTENT_PLUS_2);	//fill passive
 		}
 		
 		percent = pcr;

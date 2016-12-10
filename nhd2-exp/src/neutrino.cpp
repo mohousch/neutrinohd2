@@ -934,6 +934,8 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.volume_pos = configfile.getInt32( "volume_pos", 1);		//top_left
 	g_settings.current_volume = configfile.getInt32("current_volume", 25);
 	strcpy( g_settings.audio_step, configfile.getString( "audio_step" , "5" ).c_str() );
+
+	g_settings.progressbar_color = configfile.getInt32("progressbar_color", 0);
 	// END MISC OPTS
 
 	// HDD
@@ -1379,6 +1381,8 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "volume_pos", g_settings.volume_pos);
 	configfile.setInt32( "current_volume", g_settings.current_volume );
 	configfile.setString( "audio_step"	, g_settings.audio_step);
+
+	configfile.setInt32("progressbar_color", g_settings.progressbar_color);
 	// END MISC OPTS
 
 	// HDD

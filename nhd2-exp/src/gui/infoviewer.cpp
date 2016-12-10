@@ -349,9 +349,9 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 	initDimension();
 	
 	// init progressbar
-	sigscale = new CProgressBar(BAR_WIDTH, SIGSCALE_BAR_HEIGHT, RED_BAR, GREEN_BAR, YELLOW_BAR);
-	snrscale = new CProgressBar(BAR_WIDTH, SNRSCALE_BAR_HEIGHT, RED_BAR, GREEN_BAR, YELLOW_BAR);
-	timescale = new CProgressBar(BoxWidth - 10, TIMESCALE_BAR_HEIGHT, 30, GREEN_BAR, 70, true);	//5? see in code
+	sigscale = new CProgressBar(BAR_WIDTH, SIGSCALE_BAR_HEIGHT, RED_BAR, GREEN_BAR, YELLOW_BAR, false);
+	snrscale = new CProgressBar(BAR_WIDTH, SNRSCALE_BAR_HEIGHT, RED_BAR, GREEN_BAR, YELLOW_BAR, false);
+	timescale = new CProgressBar(BoxWidth - 10, TIMESCALE_BAR_HEIGHT);	//5? see in code
 	
 	sigscale->reset(); 
 	snrscale->reset(); 
@@ -404,7 +404,8 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 	// event progressbar bg
 	int timescale_posx = BoxStartX + 5;
 	int timescale_posy = BoxStartY + SAT_INFOBOX_HEIGHT;
-	frameBuffer->paintBoxRel(timescale_posx, timescale_posy, BoxWidth - 10, TIMESCALE_BAR_HEIGHT, COL_INFOBAR_BUTTONS_BACKGROUND);
+
+	//frameBuffer->paintBoxRel(timescale_posx, timescale_posy, BoxWidth - 10, TIMESCALE_BAR_HEIGHT, COL_INFOBAR_BUTTONS_BACKGROUND);
 
 	//time
 	paintTime(show_dot, true, BoxEndX, ChanNameY, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]);
@@ -767,7 +768,7 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 		gotTime = timeset;
 	
 	// init progressbar
-	moviescale = new CProgressBar( BoxWidth - 10, TIMESCALE_BAR_HEIGHT, 40, 100, 70, true );
+	moviescale = new CProgressBar( BoxWidth - 10, TIMESCALE_BAR_HEIGHT);
 	
 	moviescale->reset();
 	
@@ -778,7 +779,7 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	frameBuffer->paintBoxRel(BoxStartX, BoxStartY, BoxWidth, BoxHeight, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP, (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts)? g_settings.menu_Head_gradient: nogradient); 
 		
 	// timescale bg
-	frameBuffer->paintBoxRel(BoxStartX + 10, BoxStartY + SAT_INFOBOX_HEIGHT, BoxWidth - 20, TIMESCALE_BAR_HEIGHT, COL_INFOBAR_SHADOW_PLUS_1 ); 
+	//frameBuffer->paintBoxRel(BoxStartX + 10, BoxStartY + SAT_INFOBOX_HEIGHT, BoxWidth - 20, TIMESCALE_BAR_HEIGHT, COL_INFOBAR_SHADOW_PLUS_1 ); 
 		
 	// bottum bar
 	frameBuffer->paintBoxRel(buttonBarStartX, buttonBarStartY, BoxWidth, buttonBarHeight, COL_INFOBAR_SHADOW_PLUS_1,  RADIUS_MID, CORNER_BOTTOM); 
@@ -1937,17 +1938,17 @@ void CInfoViewer::show_Data(bool calledFromEvent)
 				{
 					oldrunningPercent = runningPercent;
 				}
-
-				// timescale position
-				int posx = BoxStartX + 5;
-				int posy = BoxStartY + SAT_INFOBOX_HEIGHT;
-				
-				timescale->paint(posx, posy, runningPercent);
 	  		} 
 			else 
 			{
 				oldrunningPercent = 255;
 	  		}
+
+			// timescale
+			int posx = BoxStartX + 5;
+			int posy = BoxStartY + SAT_INFOBOX_HEIGHT;
+				
+			timescale->paint(posx, posy, runningPercent);
 	  		
 	  		if (info_CurrentNext.flags & CSectionsdClient::epgflags::has_anything) 
 			{

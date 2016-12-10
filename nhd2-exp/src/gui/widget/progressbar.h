@@ -45,7 +45,7 @@ class CProgressBar
 		bool inverse;
 
 	public:
-		CProgressBar(int w, int h, int r, int g, int b, bool inv = false);
+		CProgressBar(int w, int h, int r = 40, int g = 100, int b = 70, bool inv = true);
 		void paint(unsigned int x, unsigned int y, unsigned char pcr);
 		void reset();
 		int getPercent() { return percent; };

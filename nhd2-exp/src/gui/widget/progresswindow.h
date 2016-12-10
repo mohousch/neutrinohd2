@@ -34,6 +34,7 @@
 #include <system/localize.h>
 
 #include "menue.h"
+#include "progressbar.h"
 
 
 class CProgressWindow : public CMenuTarget
@@ -56,7 +57,7 @@ class CProgressWindow : public CMenuTarget
 		int statusTextY;
 		std::string statusText;
 		
-		bool LocalStatus;
+		CProgressBar* progressBar;
 
 		virtual void paint();
 

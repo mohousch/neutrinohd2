@@ -338,6 +338,14 @@ const CMenuOptionChooser::keyval COLOR_GRADIENT_TYPE_OPTIONS[COLOR_GRADIENT_TYPE
 	{ gradientLight2Dark2Light, NONEXISTANT_LOCALE, "Light to Dark to Light" }
 };
 
+// progressbar color
+#define PROGRESSBAR_COLOR_OPTION_COUNT 2
+const CMenuOptionChooser::keyval PROGRESSBAR_COLOR_OPTIONS[PROGRESSBAR_COLOR_OPTION_COUNT] =
+{
+	{ 0, NONEXISTANT_LOCALE, "colored" },
+	{ 1, NONEXISTANT_LOCALE, "Mono Chrom" }
+};
+
 extern CRemoteControl * g_RemoteControl;	// defined neutrino.cpp
 
 CGeneralSettings::CGeneralSettings()
@@ -512,6 +520,9 @@ void CGeneralSettings::showMenu()
 
 	// menu position
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_MENU_POSITION, &g_settings.menu_position, MENU_POSITION_OPTIONS, MENU_POSITION_OPTION_COUNT, true));
+
+	// progressbar color
+	miscSettingsGeneral.addItem(new CMenuOptionChooser("ProgressBar Color", &g_settings.progressbar_color, PROGRESSBAR_COLOR_OPTIONS, PROGRESSBAR_COLOR_OPTION_COUNT, true));
 	
 	// volume bar steps
 	CStringInput * audio_step = new CStringInput(LOCALE_AUDIOMENU_VOLUMEBAR_AUDIOSTEPS,g_settings.audio_step, 2, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE, "0123456789 " );
