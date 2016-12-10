@@ -35,13 +35,12 @@
 #ifndef __update__
 #define __update__
 
+#include <string>
+
 #include <gui/widget/menue.h>
-#include <gui/widget/progressstatus.h>
 #include <gui/widget/progresswindow.h>
 
 #include <driver/framebuffer.h>
-
-#include <string>
 
 
 // CFlashUpdate

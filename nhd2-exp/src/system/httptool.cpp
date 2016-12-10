@@ -35,7 +35,7 @@ CHTTPTool::CHTTPTool()
 	userAgent = "neutrino/httpdownloader";
 }
 
-void CHTTPTool::setStatusViewer( CProgress_StatusViewer* statusview )
+void CHTTPTool::setStatusViewer( CProgressWindow* statusview )
 {
 	statusViewer = statusview;
 }
@@ -55,6 +55,7 @@ int CHTTPTool::show_progress( void * clientp, double dltotal, double dlnow, doub
 			hTool->statusViewer->showGlobalStatus(globalProg);
 		}
 	}
+
 	return 0;
 }
 

@@ -184,15 +184,17 @@ void CProgressWindow::paint()
 	// foot
 	CFrameBuffer::getInstance()->paintBoxRel(x, ypos + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
-	// msg
+	// msg status
 	ypos += hheight + (mheight >>1);
 	statusTextY = ypos + mheight;
+
 	showStatusMessageUTF(statusText);
 
 	// global status
 	ypos += mheight;
 	globalstatusY = ypos + mheight - 20;
 	ypos += mheight >>1;
+
 	showGlobalStatus(global_progress);
 }
 
