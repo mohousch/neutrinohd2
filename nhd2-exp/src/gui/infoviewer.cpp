@@ -405,8 +405,6 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 	int timescale_posx = BoxStartX + 5;
 	int timescale_posy = BoxStartY + SAT_INFOBOX_HEIGHT;
 
-	//frameBuffer->paintBoxRel(timescale_posx, timescale_posy, BoxWidth - 10, TIMESCALE_BAR_HEIGHT, COL_INFOBAR_BUTTONS_BACKGROUND);
-
 	//time
 	paintTime(show_dot, true, BoxEndX, ChanNameY, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]);
 
@@ -778,9 +776,6 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	// paint info box
 	frameBuffer->paintBoxRel(BoxStartX, BoxStartY, BoxWidth, BoxHeight, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP, (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts)? g_settings.menu_Head_gradient: nogradient); 
 		
-	// timescale bg
-	//frameBuffer->paintBoxRel(BoxStartX + 10, BoxStartY + SAT_INFOBOX_HEIGHT, BoxWidth - 20, TIMESCALE_BAR_HEIGHT, COL_INFOBAR_SHADOW_PLUS_1 ); 
-		
 	// bottum bar
 	frameBuffer->paintBoxRel(buttonBarStartX, buttonBarStartY, BoxWidth, buttonBarHeight, COL_INFOBAR_SHADOW_PLUS_1,  RADIUS_MID, CORNER_BOTTOM); 
 	
@@ -791,7 +786,6 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 		show_dot = !show_dot;
 	}
 	
-	//
 	// show date/time
 	std::string datestr = getNowTimeStr("%d.%m.%Y %H:%M");
 			
@@ -824,22 +818,19 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	}
 	
 	// paint buttons
-	// red
-	// movie info
+	// red (movie info)
 	int icon_w, icon_h;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, BoxStartX + ICON_OFFSET, buttonBarStartY + (buttonBarHeight - icon_h)/2);
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + ICON_OFFSET + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, (char *)"Info", (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
 		
-	// green
-	// audio
+	// green (AV select)
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, BoxStartX + BoxWidth/5, BoxStartY + BoxHeight + (buttonBarHeight - icon_h)/2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + (BoxWidth/5) + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, g_Locale->getText(LOCALE_INFOVIEWER_LANGUAGES), (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
 		
-	// yellow	
-	// help
+	// yellow (help)
 	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts)
 	{
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
@@ -847,8 +838,7 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + (BoxWidth/5)*2 + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, (char *)"help", (COL_INFOBAR_SHADOW * 1), 0, true); // UTF-8
 	}
 	
-	// blue
-	// bookmark/features
+	// blue (bookmark/features)
 	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv || (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts && show_bookmark))
 	{
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
@@ -875,7 +865,7 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	frameBuffer->getIconSize(aspect_icon, &icon_w_asp, &icon_h_asp);
 	frameBuffer->paintIcon(aspect_icon, BoxStartX + BoxWidth - ICON_OFFSET - icon_w_ac3 - 2 - icon_w_asp, buttonBarStartY + (buttonBarHeight - icon_h_asp)/2);
 	
-	/* mp keys */
+	// mp keys
 	if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 	{
 		frameBuffer->getIconSize(NEUTRINO_ICON_FF_SMALL, &icon_w, &icon_h);
@@ -900,8 +890,7 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 		case CMoviePlayerGui::SLOW: break;
 		case CMoviePlayerGui::STOPPED: break;
 	}
-
-	// get icon size	
+	
 	frameBuffer->getIconSize(icon, &icon_w, &icon_h);
 
 	//
@@ -982,6 +971,12 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 				paintTime(show_dot, false, BoxEndX, BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]);
 				show_dot = !show_dot;
 			}
+
+			//FIXME:
+			/*
+			runningPercent = CMoviePlayerGui::getInstance()->getPercent();
+			moviescale->paint(BoxStartX + 5, BoxStartY + SAT_INFOBOX_HEIGHT, runningPercent);
+			*/
 		} 
 		else if(msg == CRCInput::RC_info)
 		{

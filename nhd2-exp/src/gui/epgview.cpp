@@ -138,7 +138,7 @@ CEpgData::CEpgData()
 {
 	bigFonts = false;
 	frameBuffer = CFrameBuffer::getInstance();
-	timescale = new CProgressBar(100, 12, 30);
+	timescale = new CProgressBar(100, 12);
 }
 
 void CEpgData::start()

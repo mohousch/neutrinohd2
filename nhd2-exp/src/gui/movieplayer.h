@@ -53,7 +53,6 @@
 #error not using 64 bit file offsets
 #endif /* __USE_FILE__OFFSET64 */
 
-
 class CMoviePlayerGui : public CMenuTarget
 {
 	public:
@@ -164,6 +163,9 @@ class CMoviePlayerGui : public CMenuTarget
 		void showFileInfo();
 		void addToPlaylist(CFile& file);
 		
+		int getPercent(){return file_prozent;};
+
+		static CMoviePlayerGui* getInstance();
 };
 
 #endif
