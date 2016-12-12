@@ -66,8 +66,6 @@
 #define MIN_WINDOW_WIDTH  			(MAX_WINDOW_WIDTH>>1)
 #define MIN_WINDOW_HEIGHT 			40	
 
-#define DEFAULT_TITLE_FONT			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -199,7 +197,7 @@ void CInfoBox::initVar(void)
 	m_nMode = CTextBox::SCROLL;
 
 	// set the title variables
-	m_pcFontTitle  =  DEFAULT_TITLE_FONT;
+	m_pcFontTitle  =  g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE];
 	m_nFontTitleHeight = m_pcFontTitle->getHeight();
 
 	// set the main frame to default
@@ -265,9 +263,9 @@ void CInfoBox::refreshTitle(void)
 	}
 
 	// exit icon
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
+	//m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
 	
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HOME, m_cBoxFrameTitleRel.iX + m_cBoxFrameTitleRel.iWidth - BORDER_RIGHT - iw , m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
+	//m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HOME, m_cBoxFrameTitleRel.iX + m_cBoxFrameTitleRel.iWidth - BORDER_RIGHT - iw , m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
 
 	m_pcFontTitle->RenderString(m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + 5, m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + 2*iw + 5), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
@@ -529,37 +527,4 @@ bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _
 	return(_result);
 }
 
-/*
-//////////////////////////////////////////////////////////////////////
-// Function Name:	ShowInfoBox	
-// Description:		
-// Parameters:		
-// Data IN/OUT:		
-// Return:		
-// Notes:		
-//////////////////////////////////////////////////////////////////////
-void InfoBox(const neutrino_locale_t Caption, const char * const Text, const char * const Icon, const int Width, const int timeout)
-{
-	InfoBox(g_Locale->getText(Caption),Text, Icon, Width, timeout);
-}
-
-//////////////////////////////////////////////////////////////////////
-// Function Name:	ShowInfoBox	
-// Description:		
-// Parameters:		
-// Data IN/OUT:		
-// Return:		
-// Notes:		
-//////////////////////////////////////////////////////////////////////
-void InfoBox(const char * const Title,const char * const Text, const char * const Icon, const int Width, const int timeout)
-{
-	CBox position(g_settings.screen_StartX + 30, g_settings.screen_StartY + 30, g_settings.screen_EndX - g_settings.screen_StartX - 60, g_settings.screen_EndY - g_settings.screen_StartY - 60); 
-	
-   	CInfoBox * infoBox = new CInfoBox(Text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU], CTextBox::SCROLL, &position, Title, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], Icon);
-
-	infoBox->exec(timeout);
-
-	delete infoBox;
-}
-*/
 

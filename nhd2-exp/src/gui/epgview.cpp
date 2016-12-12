@@ -273,8 +273,10 @@ void CEpgData::showText( int startPos, int ypos )
 			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO2]->RenderString(sx + 10, y + medlineheight, ox - 15 - 15, epgText[i], COL_MENUCONTENT, 0, true); // UTF-8
 	}
 
-	frameBuffer->paintBoxRel(sx + ox - 15, ypos, 15, sb,  COL_MENUCONTENT_PLUS_1);
+	// ScrollBar
+	frameBuffer->paintBoxRel(sx + ox - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
 
+	// ScrollBar Slider
 	int sbc = ((_textCount - 1)/ medlinecount) + 1;
 	float sbh = (sb - 4)/ sbc;
 	int sbs = (startPos + 1)/ medlinecount;
@@ -704,7 +706,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 	frameBuffer->paintBoxRel(sx, sy + oy - botboxheight, ox, botboxheight, COL_MENUHEAD_PLUS_0);
 	
 	std::string fromto;
-	int widthl,widthr;
+	int widthl, widthr;
 	fromto = epg_start;
 	fromto += " - ";
 	fromto += epg_end;
@@ -1012,7 +1014,7 @@ void CEpgData::GetEPGData(const t_channel_id channel_id, unsigned long long id, 
 	epgData.title.clear();
 
 	bool res;
-	if ( id!= 0 )
+	if ( id != 0 )
 		res = sectionsd_getEPGid(id, *startzeit, &epgData);
 	else
 		res = sectionsd_getActualEPGServiceKey(channel_id&0xFFFFFFFFFFFFULL, &epgData );
@@ -1023,10 +1025,15 @@ void CEpgData::GetEPGData(const t_channel_id channel_id, unsigned long long id, 
 		if (false == epgData.itemDescriptions.empty()) 
 		{
 			reformatExtendedEvents("Year of production", g_Locale->getText(LOCALE_EPGEXTENDED_YEAR_OF_PRODUCTION), false, epgData);
+
 			reformatExtendedEvents("Original title", g_Locale->getText(LOCALE_EPGEXTENDED_ORIGINAL_TITLE), false, epgData);
+
 			reformatExtendedEvents("Director", g_Locale->getText(LOCALE_EPGEXTENDED_DIRECTOR), false, epgData);
+
 			reformatExtendedEvents("Actor", g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS), true, epgData);
+
 			reformatExtendedEvents("Guests", g_Locale->getText(LOCALE_EPGEXTENDED_GUESTS), false, epgData);
+
 			reformatExtendedEvents("Presenter", g_Locale->getText(LOCALE_EPGEXTENDED_PRESENTER), false, epgData);
 		}
 		
@@ -1045,13 +1052,11 @@ void CEpgData::GetEPGData(const t_channel_id channel_id, unsigned long long id, 
 		epg_done= -1;
 		if (( time(NULL)- (epgData.epg_times).startzeit )>= 0 )
 		{
-			unsigned nProcentagePassed=(unsigned)((float)(time(NULL)-(epgData.epg_times).startzeit)/(float)(epgData.epg_times).dauer*100.);
-			if (nProcentagePassed<= 100)
-				epg_done= nProcentagePassed;
+			unsigned nProcentagePassed=(unsigned)((float)(time(NULL) -(epgData.epg_times).startzeit)/(float)(epgData.epg_times).dauer*100.);
+			if (nProcentagePassed <= 100)
+				epg_done = nProcentagePassed;
 		}
 	}
-	
-	//printf("GetEPGData:: items %d descriptions %d\n", epgData.items.size(), epgData.itemDescriptions.size());
 }
 
 void CEpgData::GetPrevNextEPGData( unsigned long long id, time_t* startzeit )

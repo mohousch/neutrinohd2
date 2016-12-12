@@ -321,7 +321,7 @@ void CTestMenu::testCInfoBox()
 {
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NULL);
 	
 	infoBox->exec();
 	delete infoBox;
@@ -348,7 +348,7 @@ void CTestMenu::testCInfoBoxInfoBox()
 	
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_BUTTON_SETUP);
+	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_BUTTON_SETUP);
 
 	infoBox->setText(&buffer, thumbnail, picw, pich);
 	infoBox->exec();
@@ -1082,7 +1082,7 @@ void CTestMenu::testStartPlugin()
 void CTestMenu::testShowActuellEPG()
 {
 	std::string title = "testShowActuellEPG:";
-	std::string buffer = "EPG Information: ";
+	std::string buffer;
 
 	// get EPG
 	CEPGData epgData;
@@ -1101,7 +1101,7 @@ void CTestMenu::testShowActuellEPG()
 			title += ":";
 			title += epgdata.title;
 
-			buffer += epgdata.info1;
+			buffer = epgdata.info1;
 			buffer += "\n";
 			buffer += epgdata.info2;	
 		}
@@ -1112,7 +1112,7 @@ void CTestMenu::testShowActuellEPG()
 	
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox(buffer.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	CInfoBox * infoBox = new CInfoBox(buffer.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NULL);
 	
 	infoBox->exec();
 	delete infoBox;
