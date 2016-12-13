@@ -42,7 +42,7 @@ CSysInfoWidget::CSysInfoWidget(int m)
        
 	//foot height
 	footIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
-	cFrameBoxFoot.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), footIcon.iHeight) + 10;
+	cFrameBoxFoot.iHeight = /*std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), footIcon.iHeight) + 6*/cFrameBoxTitle.iHeight;
 	
 	// coordinate
 	cFrameBox.iX = (((g_settings.screen_EndX - g_settings.screen_StartX) - cFrameBox.iWidth) / 2) + g_settings.screen_StartX;
@@ -83,7 +83,12 @@ void CSysInfoWidget::paintHead()
 	cFrameBoxTitle.iY = cFrameBox.iY;
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
-	frameBuffer->paintBoxRel(cFrameBoxTitle.iX, cFrameBoxTitle.iY, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	// Box
+	HeadWindow.setDimension(&cFrameBoxTitle);
+	HeadWindow.setColor(COL_MENUHEAD_PLUS_0);
+	HeadWindow.setRadiusCorner(RADIUS_MID, CORNER_TOP);
+	HeadWindow.setGradient(g_settings.menu_Head_gradient);
+	HeadWindow.paint();
 	
 	// icon
 	frameBuffer->paintIcon(titleIcon.iconName.c_str(), cFrameBoxTitle.iX + BORDER_LEFT, cFrameBoxTitle.iY + (cFrameBoxTitle.iHeight - titleIcon.iHeight)/2);
@@ -119,11 +124,18 @@ void CSysInfoWidget::paintFoot()
 	// Foot
 	cFrameBoxFoot.iX = cFrameBox.iX;
 	cFrameBoxFoot.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameBoxFoot.iHeight;
-	cFrameBoxFoot.iWidth = cFrameBox.iWidth;	
+	cFrameBoxFoot.iWidth = cFrameBox.iWidth;
 
+	// Foot
+	FootWindow.setDimension(&cFrameBoxFoot);
+	FootWindow.setColor(COL_MENUHEAD_PLUS_0);
+	FootWindow.setRadiusCorner(RADIUS_MID, CORNER_BOTTOM);
+	FootWindow.setGradient(g_settings.menu_Foot_gradient);
+	FootWindow.paint();
+
+	
+	// Buttons
 	int ButtonWidth = (cFrameBoxFoot.iWidth - BORDER_LEFT - BORDER_RIGHT) / 4;
-
-	frameBuffer->paintBoxRel(cFrameBoxFoot.iX, cFrameBoxFoot.iY, cFrameBoxFoot.iWidth, cFrameBoxFoot.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 
 	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, cFrameBoxFoot.iX + BORDER_LEFT, cFrameBoxFoot.iY, ButtonWidth, 4, Buttons, cFrameBoxFoot.iHeight);
 }

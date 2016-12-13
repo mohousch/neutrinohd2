@@ -1,4 +1,4 @@
-/***************************************************************************
+/*
 	Neutrino-GUI  -   DBoxII-Project
 	
 	$Id: textbox.cpp 2013/10/12 mohousch Exp $
@@ -28,30 +28,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-	***********************************************************
-
-	Module Name: textbox.cpp: .
-
-	Description: implementation of the CTextBox class
-				 This class provides a plain textbox with selectable features:
-				 	- Foot, Title
-				 	- Scroll bar
-				 	- Frame shadow
-				 	- Auto line break
-				 	- fixed position or auto width and auto height (later not tested yet)
-				 	- Center Text
-
-	Date:	Nov 2005
-
-	Author: Günther@tuxbox.berlios.org
-		based on code of Steffen Hehn 'McClean'
-
-	Revision History:
-	Date			Author		Change Description
-	   Nov 2005		Günther	initial implementation
-
-****************************************************************************/
+*/
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -65,8 +42,6 @@
 #include <system/debug.h>
 
 #define	TEXT_BORDER_WIDTH	8
-#define	SCROLL_FRAME_WIDTH	SCROLLBAR_WIDTH
-#define	SCROLL_MARKER_BORDER	2
 
 #define MAX_WINDOW_WIDTH  	(g_settings.screen_EndX - g_settings.screen_StartX - 40)
 #define MAX_WINDOW_HEIGHT 	(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
@@ -207,9 +182,9 @@ void CTextBox::setCorner(int Radius, int Type)
 	//
 	if(m_nMode & SCROLL)
 	{
-		m_cFrameScrollRel.iX		= m_cFrame.iWidth - SCROLL_FRAME_WIDTH;
+		m_cFrameScrollRel.iX		= m_cFrame.iWidth - SCROLLBAR_WIDTH;
 		m_cFrameScrollRel.iY		= m_cFrameTextRel.iY;
-		m_cFrameScrollRel.iWidth	= SCROLL_FRAME_WIDTH;
+		m_cFrameScrollRel.iWidth	= SCROLLBAR_WIDTH;
 		m_cFrameScrollRel.iHeight	= radius? m_cFrameTextRel.iHeight - 2*radius : m_cFrameTextRel.iHeight;
 	}
 	else
@@ -284,9 +259,9 @@ void CTextBox::initFramesRel(void)
 	
 	if(m_nMode & SCROLL)
 	{
-		m_cFrameScrollRel.iX		= m_cFrame.iWidth - SCROLL_FRAME_WIDTH;
+		m_cFrameScrollRel.iX		= m_cFrame.iWidth - SCROLLBAR_WIDTH;
 		m_cFrameScrollRel.iY		= m_cFrameTextRel.iY;
-		m_cFrameScrollRel.iWidth	= SCROLL_FRAME_WIDTH;
+		m_cFrameScrollRel.iWidth	= SCROLLBAR_WIDTH;
 		m_cFrameScrollRel.iHeight	= m_cFrameTextRel.iHeight;
 	}
 	else
@@ -456,11 +431,13 @@ void CTextBox::refreshScroll(void)
 
 	if (m_nNrOfPages > 1) 
 	{
-		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + m_cFrame.iX, m_cFrameScrollRel.iY + m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, COL_MENUCONTENT_PLUS_1);
+		// scrollBar
+		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + m_cFrame.iX, m_cFrameScrollRel.iY + m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, COL_SCROLLBAR);
 		
+		// scrollBar slider
 		unsigned int marker_size = m_cFrameScrollRel.iHeight / m_nNrOfPages;
 
-		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + SCROLL_MARKER_BORDER + m_cFrame.iX, m_cFrameScrollRel.iY + m_nCurrentPage * marker_size + m_cFrame.iY, m_cFrameScrollRel.iWidth - 2*SCROLL_MARKER_BORDER, marker_size, COL_MENUCONTENT_PLUS_3);
+		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + 2 + m_cFrame.iX, m_cFrameScrollRel.iY + m_nCurrentPage * marker_size + m_cFrame.iY, m_cFrameScrollRel.iWidth - 2*2, marker_size, COL_SCROLLBAR_SLIDER);
 	}
 	else
 	{

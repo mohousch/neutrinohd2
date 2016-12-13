@@ -109,6 +109,13 @@ void CWindow::setDimension(const int x, const int y, const int dx, const int dy)
 	init();
 }
 
+void CWindow::setDimension(CBox* position)
+{
+	cFrameBox = *position;
+
+	init();
+}
+
 void CWindow::paint()
 {
 	if(savescreen) 

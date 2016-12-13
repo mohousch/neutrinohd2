@@ -58,6 +58,9 @@ class CSysInfoWidget : public CMenuTarget
 		CBox cFrameBoxText;
 		CBox cFrameBoxFoot;
 
+		CWindow HeadWindow;
+		CWindow FootWindow;
+
 		CIcon titleIcon;
 		CIcon footIcon;
 

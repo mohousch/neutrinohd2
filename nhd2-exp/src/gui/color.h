@@ -123,6 +123,9 @@
 
 #define COL_MENUFOOT_PLUS_0		(CFrameBuffer::getInstance()->realcolor[(COL_MENUFOOT + 0)])
 
+#define COL_SCROLLBAR			COL_MENUCONTENT_PLUS_1
+#define COL_SCROLLBAR_SLIDER		COL_MENUCONTENT_PLUS_3
+
 
 int convertSetupColor2RGB(unsigned char r, unsigned char g, unsigned char b);
 int convertSetupAlpha2Alpha(unsigned char alpha);
