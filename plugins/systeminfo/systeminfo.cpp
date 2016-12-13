@@ -86,7 +86,7 @@ void CSysInfoWidget::paintHead()
 	// Box
 	HeadWindow.setDimension(&cFrameBoxTitle);
 	HeadWindow.setColor(COL_MENUHEAD_PLUS_0);
-	HeadWindow.setRadiusCorner(RADIUS_MID, CORNER_TOP);
+	HeadWindow.setCorner(RADIUS_MID, CORNER_TOP);
 	HeadWindow.setGradient(g_settings.menu_Head_gradient);
 	HeadWindow.paint();
 	
@@ -129,7 +129,7 @@ void CSysInfoWidget::paintFoot()
 	// Foot
 	FootWindow.setDimension(&cFrameBoxFoot);
 	FootWindow.setColor(COL_MENUHEAD_PLUS_0);
-	FootWindow.setRadiusCorner(RADIUS_MID, CORNER_BOTTOM);
+	FootWindow.setCorner(RADIUS_MID, CORNER_BOTTOM);
 	FootWindow.setGradient(g_settings.menu_Foot_gradient);
 	FootWindow.paint();
 

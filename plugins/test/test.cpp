@@ -248,7 +248,7 @@ void CTestMenu::testCWindow()
 	window->setDimension(Box.iX, Box.iY, Box.iWidth, Box.iHeight);
 
 	window->setColor(COL_DARK_ORANGE);
-	window->setRadiusCorner(RADIUS_MID, CORNER_ALL);
+	window->setCorner(RADIUS_MID, CORNER_ALL);
 	window->setGradient(gradientDark2Light2Dark);
 	window->paint();
 
@@ -290,7 +290,7 @@ void CTestMenu::testCWindowShadow()
 	CWindow* window = new CWindow(&Box);
 
 	window->setColor(COL_DARK_ORANGE);
-	window->setRadiusCorner(RADIUS_MID, CORNER_ALL);
+	window->setCorner(RADIUS_MID, CORNER_ALL);
 	window->enableShadow();
 	window->enableSaveScreen();
 	window->paint();

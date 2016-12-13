@@ -74,7 +74,7 @@ class CWindow
 		void setDimension(const int x, const int y, const int dx, const int dy);
 		void setDimension(CBox* position);
 		void setColor(int col){color = col;};
-		void setRadiusCorner(int ra, int co){radius = ra; corner = co;};
+		void setCorner(int ra, int co){radius = ra; corner = co;};
 		void setGradient(int grad){gradient = grad;};
 		void enableShadow(void){enableshadow = true;};
 		void enableSaveScreen(void){savescreen = true;};
