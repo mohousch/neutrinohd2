@@ -1,5 +1,4 @@
-
-/***************************************************************************
+/*
 	Neutrino-GUI  -   DBoxII-Project
 	
 	$Id: textbox.h 2013/10/12 mohousch Exp $
@@ -29,23 +28,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-	***********************************************************
-
-	Module Name: textbox.h .
-
-	Description: interface of the CTextBox class
-
-	Date:	Nov 2005
-
-	Author: Günther@tuxbox.berlios.org
-		based on code of Steffen Hehn 'McClean'
-
-	Revision History:
-	Date			Author		Change Description
-	   Nov 2005		Günther	initial implementation
-
-****************************************************************************/
+*/
 
 #if !defined(TEXTBOX_H)
 #define TEXTBOX_H
@@ -64,6 +47,7 @@
 #include <global.h>
 #include <driver/framebuffer.h>
 #include <gui/color.h>
+#include "window.h"
 
 
 class CTextBox  
@@ -90,6 +74,12 @@ class CTextBox
 		CBox m_cFrame;
 		CBox m_cFrameTextRel;
 		CBox m_cFrameScrollRel;
+		CBox m_cFrameSlider;
+
+		CWindow m_cBoxWindow;
+		CWindow m_cTextWindow;
+		CWindow m_cScrollBarWindow;
+		CWindow m_cSliderWindow;
 
 		int m_nMaxHeight;
 		int m_nMaxWidth;

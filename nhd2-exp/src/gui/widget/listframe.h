@@ -157,7 +157,7 @@ class CListFrame
 		inline int 	getLinesPerPage(void)		{return(LinesPerPage);};
 
 
-		/* Variables */
+		// variables
 		typedef enum mode_
 		{
 			AUTO_WIDTH	= 0x01,

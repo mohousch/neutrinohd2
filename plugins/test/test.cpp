@@ -524,7 +524,22 @@ void CTestMenu::testCTextBox()
 	textBox->paint();
 	CFrameBuffer::getInstance()->blit();
 	
-	sleep(3);
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	while(1)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg == CRCInput::RC_home) 
+		{
+			textBox->hide();
+			CFrameBuffer::getInstance()->blit();
+
+			break;
+		}
+	}
 	
 	delete textBox;
 	textBox = NULL;
@@ -566,7 +581,22 @@ void CTestMenu::testCListFrameBox()
 	listFrame->showSelection(true);
 	CFrameBuffer::getInstance()->blit();
 	
-	sleep(3);
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	while(1)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg == CRCInput::RC_home) 
+		{
+			listFrame->hide();
+			CFrameBuffer::getInstance()->blit();
+
+			break;
+		}
+	}
 	
 	delete listFrame;
 	listFrame = NULL;
