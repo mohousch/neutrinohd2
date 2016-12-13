@@ -53,6 +53,7 @@ neutrino_LDADD = \
 	nhttpd/yhttpd_core/libyhttpd.a \
 	gui/video_setup.o \
 	gui/widget/items2detailsline.o \
+	gui/widget/window.o \
 	system/helpers.o \
 	$(top_builddir)/lib/sectionsdclient/libsectionsdclient.a \
 	$(top_builddir)/lib/timerdclient/libtimerdclient.a \

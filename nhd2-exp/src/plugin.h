@@ -98,6 +98,7 @@
 #include <gui/widget/listbox.h>
 #include <gui/widget/textbox.h>
 #include <gui/widget/vfdcontroler.h>
+#include <gui/widget/window.h>
 #include <gui/color.h>
 #include <gui/bedit/bouqueteditor_bouquets.h>
 #include <gui/bouquetlist.h>

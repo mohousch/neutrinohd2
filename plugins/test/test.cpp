@@ -31,6 +31,8 @@ class CTestMenu : CMenuTarget
 		void testCBox();
 		void testCIcon();
 		void testCImage();
+		void testCWindow();
+		void testCWindowShadow();
 		void testCStringInput();
 		void testCStringInputSMS();
 		void testCPINInput();
@@ -229,6 +231,98 @@ void CTestMenu::testCImage()
 			break;
 		}
 	}
+}
+
+void CTestMenu::testCWindow()
+{
+	CBox Box;
+	
+	Box.iX = g_settings.screen_StartX + 10;
+	Box.iY = g_settings.screen_StartY + 10;
+	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/2;
+	Box.iHeight = 40; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+
+	//
+	CWindow* window = new CWindow();
+
+	window->setDimension(Box.iX, Box.iY, Box.iWidth, Box.iHeight);
+
+	window->setColor(COL_DARK_ORANGE);
+	window->setRadius(RADIUS_MID);
+	window->setCorner(CORNER_ALL);
+	window->setGradient(gradientDark2Light2Dark);
+	window->paint();
+
+	CFrameBuffer::getInstance()->blit();
+	//
+
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	while(1)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg == CRCInput::RC_home) 
+		{
+			//CFrameBuffer::getInstance()->paintBackground();
+			window->hide();
+			CFrameBuffer::getInstance()->blit();
+
+			break;
+		}
+	}
+
+	delete window;
+	window = NULL;
+}
+
+void CTestMenu::testCWindowShadow()
+{
+	CBox Box;
+	
+	Box.iX = g_settings.screen_StartX + 10;
+	Box.iY = g_settings.screen_StartY + 10;
+	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/2;
+	Box.iHeight = 200; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+
+	//
+	CWindow* window = new CWindow(&Box);
+
+	//window->setDimension(Box.iX, Box.iY, Box.iWidth, Box.iHeight);
+
+	window->setColor(COL_DARK_ORANGE);
+	//window->setRadius(RADIUS_MID);
+	window->setCorner(CORNER_ALL);
+	//window->setGradient(gradientDark2Light2Dark);
+	window->enableShadow();
+	window->enableSaveScreen();
+	window->paint();
+
+	CFrameBuffer::getInstance()->blit();
+	//
+
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	while(1)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg == CRCInput::RC_home) 
+		{
+			//CFrameBuffer::getInstance()->paintBackground();
+			window->hide();
+			CFrameBuffer::getInstance()->blit();
+
+			break;
+		}
+	}
+
+	delete window;
+	window = NULL;
 }
 
 void CTestMenu::testCStringInput()
@@ -1477,6 +1571,14 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCImage();
 	}
+	else if(actionKey == "window")
+	{
+		testCWindow();
+	}
+	else if(actionKey == "windowshadow")
+	{
+		testCWindowShadow();
+	}
 	else if(actionKey == "stringinput")
 	{
 		testCStringInput();
@@ -1729,6 +1831,8 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CBox", true, NULL, this, "box"));
 	mainMenu->addItem(new CMenuForwarder("CIcon", true, NULL, this, "icon"));
 	mainMenu->addItem(new CMenuForwarder("CImage", true, NULL, this, "image"));
+	mainMenu->addItem(new CMenuForwarder("CWindow", true, NULL, this, "window"));
+	mainMenu->addItem(new CMenuForwarder("CWindow(with shadow)", true, NULL, this, "windowshadow"));
 	mainMenu->addItem(new CMenuForwarder("CStringInput", true, NULL, this, "stringinput"));
 	mainMenu->addItem(new CMenuForwarder("CStringInputSMS", true, NULL, this, "stringinputsms"));
 	mainMenu->addItem(new CMenuForwarder("CPINInput", true, NULL, this, "pininput"));

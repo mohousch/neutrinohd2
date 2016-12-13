@@ -32,7 +32,8 @@ libneutrino_gui_widget_a_SOURCES = \
 	helpbox.cpp \
 	listbox.cpp \
 	textbox.cpp \
-	listframe.cpp
+	listframe.cpp \
+	window.cpp
 
 libneutrino_gui_widget2_a_SOURCES = \
 	colorchooser.cpp \

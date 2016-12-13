@@ -452,7 +452,7 @@ int CMenuWidget::exec(CMenuTarget * parent, const std::string &)
 void CMenuWidget::hide()
 {
 	if( savescreen && background)
-		restoreScreen();//FIXME
+		restoreScreen();
 	else
 		frameBuffer->paintBackgroundBoxRel(x, y, full_width, full_height); 
 	
