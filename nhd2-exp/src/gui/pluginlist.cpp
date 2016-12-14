@@ -122,7 +122,7 @@ CPluginList::CPluginList(const neutrino_locale_t Name, const uint32_t listtype)
 
 CPluginList::~CPluginList()
 {
-	for(unsigned int count = 0;count < pluginlist.size();count++)
+	for(unsigned int count = 0;count < pluginlist.size(); count++)
 	{
 		delete pluginlist[count];
 	}
@@ -297,8 +297,6 @@ void CPluginList::paintItem(int pos)
 	// Item
 	cFrameBoxItem.iX = cFrameBox.iX;
 	cFrameBoxItem.iY = cFrameBox.iY + cFrameBoxTitle.iHeight + pos*cFrameBoxItem.iHeight;
-	//int itemheight = fheight;
-	//int itemwidth;
 	cFrameBoxItem.iWidth = cFrameBox.iWidth;
 
 	uint8_t color = COL_MENUCONTENT;
@@ -363,13 +361,6 @@ void CPluginList::paintItem(int pos)
 	}
 }
 
-#define NUM_LIST_BUTTONS 2
-struct button_label CPluginListButtons[NUM_LIST_BUTTONS] =
-{
-	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_PLUGINLIST_REMOVE_PLUGIN },
-	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_PLUGINLIST_START_PLUGIN }
-};
-
 void CPluginList::paintHead()
 {
 	// Title
@@ -385,15 +376,17 @@ void CPluginList::paintHead()
 
 	// title Text
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameBoxTitle.iX + BORDER_LEFT + titleIcon.iWidth + ICON_OFFSET, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - BORDER_RIGHT - titleIcon.iWidth - ICON_OFFSET, g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
-	
-	// Body
-	cFrameBoxBody.iX = cFrameBox.iX;
-	cFrameBoxBody.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
-	cFrameBoxBody.iWidth = cFrameBox.iWidth;
-	cFrameBoxBody.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight;
+}
 
-	frameBuffer->paintBoxRel(cFrameBoxBody.iX, cFrameBoxBody.iY, cFrameBoxBody.iWidth, cFrameBoxBody.iHeight, COL_MENUCONTENT_PLUS_0);
-	
+#define NUM_LIST_BUTTONS 2
+struct button_label CPluginListButtons[NUM_LIST_BUTTONS] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_PLUGINLIST_REMOVE_PLUGIN },
+	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_PLUGINLIST_START_PLUGIN }
+};
+
+void CPluginList::paintFoot()
+{
 	// Foot
 	cFrameBoxFoot.iX = cFrameBox.iX;
 	cFrameBoxFoot.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameBoxFoot.iHeight;
@@ -403,6 +396,7 @@ void CPluginList::paintHead()
 	
 	// foot bottons
 	int ButtonWidth = (cFrameBoxFoot.iWidth - BORDER_LEFT - BORDER_RIGHT) / 4;
+
 	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, cFrameBoxFoot.iX + BORDER_LEFT, cFrameBoxFoot.iY, ButtonWidth, NUM_LIST_BUTTONS, CPluginListButtons, cFrameBoxFoot.iHeight);
 }
 
@@ -414,21 +408,28 @@ void CPluginList::paint()
 	
 	liststart = (selected/listmaxshow)*listmaxshow;
 
-	// head
 	paintHead();
-	
-	// items
+	paintFoot();
 	paintItems();
 }
 
 void CPluginList::paintItems()
 {
+	// Body
+	cFrameBoxBody.iX = cFrameBox.iX;
+	cFrameBoxBody.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
+	cFrameBoxBody.iWidth = cFrameBox.iWidth;
+	cFrameBoxBody.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight;
+
+	frameBuffer->paintBoxRel(cFrameBoxBody.iX, cFrameBoxBody.iY, cFrameBoxBody.iWidth, cFrameBoxBody.iHeight, COL_MENUCONTENT_PLUS_0);
+
+	// scrollbar
 	sb_width = 0;
 	
-	if(listmaxshow <= pluginlist.size() + 1)
+	if(listmaxshow <= pluginlist.size())
 	{
-		nrOfPages = ((pluginlist.size() - 1) / listmaxshow) + 1; 
-		currPage  = (liststart/listmaxshow) + 1;
+		nrOfPages = ((pluginlist.size() - 1) / listmaxshow + 1); 
+		currPage  = liststart/listmaxshow;
 	}
 	
 	if(nrOfPages > 1)
@@ -442,12 +443,9 @@ void CPluginList::paintItems()
 
 	if(nrOfPages > 1)
 	{
-		frameBuffer->paintBoxRel(cFrameBoxScrollBar.iX, cFrameBoxScrollBar.iY, cFrameBoxScrollBar.iWidth, cFrameBoxScrollBar.iHeight, COL_MENUCONTENT_PLUS_1);
-
-		// ScrollBar Slider
-		frameBuffer->paintBoxRel(cFrameBoxScrollBar.iX + 2, cFrameBoxScrollBar.iY + 2 + (currPage - 1)*(cFrameBoxScrollBar.iHeight - 4)/nrOfPages, cFrameBoxScrollBar.iWidth - 4, (cFrameBoxScrollBar.iHeight - 4)/nrOfPages, COL_MENUCONTENT_PLUS_3 );
+		::paintScrollBar(&cFrameBoxScrollBar, nrOfPages, currPage);
 	}
-	
+
 	// items
 	for(unsigned int count = 0; count < listmaxshow; count++)
 	{

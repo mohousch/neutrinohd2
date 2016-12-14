@@ -38,6 +38,7 @@
 
 #include <textbox.h>
 #include <gui/widget/icons.h>
+#include <gui/widget/scrollbar.h>
 
 #include <system/debug.h>
 
@@ -430,20 +431,7 @@ void CTextBox::refreshScroll(void)
 
 	if (m_nNrOfPages > 1) 
 	{
-		// scrollBar
-		m_cScrollBarWindow.setDimension(&m_cFrameScrollRel);
-		m_cScrollBarWindow.setColor(COL_SCROLLBAR);
-		m_cScrollBarWindow.paint();
-		
-		// scrollBar slider
-		m_cFrameSlider.iX = m_cFrameScrollRel.iX + 2;
-		m_cFrameSlider.iY = m_cFrameScrollRel.iY + m_nCurrentPage*(m_cFrameScrollRel.iHeight/m_nNrOfPages);
-		m_cFrameSlider.iWidth = m_cFrameScrollRel.iWidth - 4;
-		m_cFrameSlider.iHeight = m_cFrameScrollRel.iHeight/m_nNrOfPages;
-
-		m_cSliderWindow.setDimension(&m_cFrameSlider);
-		m_cSliderWindow.setColor(COL_SCROLLBAR_SLIDER);
-		m_cSliderWindow.paint();
+		::paintScrollBar(&m_cFrameScrollRel, m_nNrOfPages, m_nCurrentPage);
 	}
 }
 

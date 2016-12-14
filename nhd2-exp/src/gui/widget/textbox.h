@@ -74,12 +74,10 @@ class CTextBox
 		CBox m_cFrame;
 		CBox m_cFrameTextRel;
 		CBox m_cFrameScrollRel;
-		CBox m_cFrameSlider;
 
 		CWindow m_cBoxWindow;
 		CWindow m_cTextWindow;
 		CWindow m_cScrollBarWindow;
-		CWindow m_cSliderWindow;
 
 		int m_nMaxHeight;
 		int m_nMaxWidth;

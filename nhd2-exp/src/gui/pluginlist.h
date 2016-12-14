@@ -32,13 +32,15 @@
 #ifndef __pluginlist__
 #define __pluginlist__
 
+#include <string>
+#include <vector>
+
 #include <gui/widget/menue.h>
+#include <gui/widget/window.h>
+#include <gui/widget/scrollbar.h>
 
 #include <driver/framebuffer.h>
 #include <system/localize.h>
-
-#include <string>
-#include <vector>
 
 #include <gui/plugins.h>
 
@@ -86,10 +88,11 @@ class CPluginList : public CMenuTarget
 		int nrOfPages; 
 		int currPage;
 
+		void paintHead();
+		void paintFoot();
 		void paintItem(int pos);
 		void paintItems();
 		void paint();
-		void paintHead();
 
 	protected:
 
