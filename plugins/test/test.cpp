@@ -42,7 +42,6 @@ class CTestMenu : CMenuTarget
 		void testCTimeInput();
 		void testCIntInput();
 		void testCInfoBox();
-		void testCInfoBoxInfoBox();
 		void testCMessageBox();
 		void testCMessageBoxInfoMsg();
 		void testCMessageBoxErrorMsg();
@@ -50,7 +49,7 @@ class CTestMenu : CMenuTarget
 		void testCHintBoxInfo();
 		void testCHelpBox();
 		void testCTextBox();
-		void testCListFrameBox();
+		void testCListFrame();
 		void testCListBox();
 		void testCListBoxDetails();
 		void testCListBoxDetailsTitleInfo();
@@ -408,17 +407,6 @@ void CTestMenu::testCIntInput()
 
 void CTestMenu::testCInfoBox()
 {
-	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-	
-	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NULL);
-	
-	infoBox->exec();
-	delete infoBox;
-	infoBox = NULL;
-}
-
-void CTestMenu::testCInfoBoxInfoBox()
-{
 	std::string buffer;
 	
 	// prepare print buffer  
@@ -545,7 +533,7 @@ void CTestMenu::testCTextBox()
 	textBox = NULL;
 }
 
-void CTestMenu::testCListFrameBox()
+void CTestMenu::testCListFrame()
 {
 	CBox listFrameBox;
 	LF_LINES listFrameLines;
@@ -559,7 +547,7 @@ void CTestMenu::testCListFrameBox()
 	listFrameBox.iX = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - (listFrameBox.iWidth)) / 2);
 	listFrameBox.iY = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - listFrameBox.iHeight) / 2);
 	
-	CListFrame * listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::TITLE | CListFrame::HEADER_LINE | CListFrame::SCROLL, &listFrameBox);
+	CListFrame * listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::TITLE | CListFrame::SCROLL, &listFrameBox);
 	
 	std::string testIcon = PLUGINDIR "/youtube/youtube_small.png";
 
@@ -569,8 +557,8 @@ void CTestMenu::testCListFrameBox()
 	//
 	std::string string_item = "Pro Sieben";
 
-	listFrameLines.lineArray[1].clear();
-	listFrameLines.lineArray[1].push_back(string_item);
+	listFrameLines.lineArray[0].clear();
+	listFrameLines.lineArray[0].push_back(string_item);
 	
 	listFrame->setLines(&listFrameLines);
 	listFrame->getSelectedLine();
@@ -1640,10 +1628,6 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCInfoBox();
 	}
-	else if(actionKey == "infoboxinfobox")
-	{
-		testCInfoBoxInfoBox();
-	}
 	else if(actionKey == "messagebox")
 	{
 		testCMessageBox();
@@ -1672,9 +1656,9 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCTextBox();
 	}
-	else if(actionKey == "listframebox")
+	else if(actionKey == "listframe")
 	{
-		testCListFrameBox();
+		testCListFrame();
 	}
 	else if(actionKey == "listbox")
 	{
@@ -1867,7 +1851,6 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CTimeInput", true, NULL, this, "timeinput"));
 	mainMenu->addItem(new CMenuForwarder("CIntInput", true, NULL, this, "intinput"));
 	mainMenu->addItem(new CMenuForwarder("CInfoBox", true, NULL, this, "infobox"));
-	mainMenu->addItem(new CMenuForwarder("CInfoBoxInfoBox", true, NULL, this, "infoboxinfobox"));
 	mainMenu->addItem(new CMenuForwarder("CMessageBox", true, NULL, this, "messagebox"));
 	mainMenu->addItem(new CMenuForwarder("CMessageBoxInfoMsg", true, NULL, this, "messageboxinfomsg"));
 	mainMenu->addItem(new CMenuForwarder("CMessageBoxErrorMsg", true, NULL, this, "messageboxerrormsg"));
@@ -1875,7 +1858,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CHintBoxInfo", true, NULL, this, "hintboxinfo"));
 	mainMenu->addItem(new CMenuForwarder("CHelpBox", true, NULL, this, "helpbox"));
 	mainMenu->addItem(new CMenuForwarder("CTextBox", true, NULL, this, "textbox"));
-	mainMenu->addItem(new CMenuForwarder("CListFrameBox", true, NULL, this, "listframebox"));
+	mainMenu->addItem(new CMenuForwarder("CListFrame", true, NULL, this, "listframe"));
 	mainMenu->addItem(new CMenuForwarder("CListBox", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarder("CListBoxInfoDetails", true, NULL, this, "listboxdetails"));
 	mainMenu->addItem(new CMenuForwarder("CListBoxDetailsTitleInfo", true, NULL, this, "listboxdetailstitleinfo"));

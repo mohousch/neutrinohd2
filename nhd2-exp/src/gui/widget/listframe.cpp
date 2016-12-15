@@ -50,6 +50,7 @@
 #endif
 
 #include "stdlib.h"
+
 #include "listframe.h"
 #include <gui/widget/icons.h>
 
@@ -136,6 +137,7 @@ CListFrame::CListFrame(	LF_LINES * lines, CFont * font_text, const int _mode, co
 CListFrame::CListFrame(	LF_LINES* lines)
 {
 	dprintf(DEBUG_DEBUG, "CListFrame::CListFrame\r\n");
+
 	initVar();
 
  	if(lines != NULL)
@@ -394,12 +396,6 @@ void CListFrame::refreshScroll(void)
 		
 		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + SCROLL_MARKER_BORDER + m_cFrame.iX, m_cFrameScrollRel.iY + m_nCurrentPage * marker_size +m_cFrame.iY, m_cFrameScrollRel.iWidth - (2*SCROLL_MARKER_BORDER), marker_size, COL_MENUCONTENT_PLUS_3);
 	}
-	/*
-	else
-	{
-		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + m_cFrame.iX, m_cFrameScrollRel.iY + m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, COL_MENUCONTENT_PLUS_0);
-	}
-	*/
 }
 
 void CListFrame::refreshList(void)
@@ -556,9 +552,6 @@ void CListFrame::scrollLineDown(const int lines)
 	} 
 	else 
 	{
-		//m_nCurrentPage = 0;
-		//m_nCurrentLine = m_nSelectedLine = 0;
-		//refreshList();
 		setSelectedLine(0);
 	}
 	
@@ -592,9 +585,6 @@ void CListFrame::scrollLineUp(const int lines)
 	} 
 	else if(m_nSelectedLine == 0) 
 	{
-		//m_nCurrentPage = m_nNrOfPages - 1;
-		//m_nCurrentLine = m_nSelectedLine = m_nNrOfLines - 1;
-		//refresh();
 		setSelectedLine(m_nNrOfLines - 1);
 	}
 }
