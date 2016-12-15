@@ -84,14 +84,9 @@ CPluginList::CPluginList(const neutrino_locale_t Name, const uint32_t listtype)
 	cFrameBoxTitle.iHeight  = std::max(titleIcon.iHeight, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
 
 	// item height
-	//fheight1 = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->getHeight(); // name
-	//fheight2 = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->getHeight(); // desc
-	//fheight = fheight1 + fheight2 + 2; // name + desc + border
 	cFrameBoxItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->getHeight() + g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->getHeight() + 2;
 	
 	// foot height
-	//int icon_w, icon_h;
-	//frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	footIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
 	cFrameBoxFoot.iHeight = std::max(footIcon.iHeight, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 10;
 	
@@ -122,10 +117,11 @@ CPluginList::CPluginList(const neutrino_locale_t Name, const uint32_t listtype)
 
 CPluginList::~CPluginList()
 {
-	for(unsigned int count = 0;count < pluginlist.size(); count++)
+	for(unsigned int count = 0; count < pluginlist.size(); count++)
 	{
 		delete pluginlist[count];
 	}
+
 	pluginlist.clear();
 }
 
@@ -149,7 +145,7 @@ reload:
 	}
 	pluginlist.clear();
 
-	// menu back
+	// menu 
 	pluginitem * tmp = new pluginitem();
 
 	// refill pluginlist items
@@ -163,6 +159,7 @@ reload:
 			tmp->desc = g_PluginList->getDescription(count);
 			tmp->version = g_PluginList->getVersion(count);
 			tmp->icon = g_PluginList->getIcon(count);
+
 			pluginlist.push_back(tmp);
 		}
 	}
@@ -297,7 +294,7 @@ void CPluginList::paintItem(int pos)
 	// Item
 	cFrameBoxItem.iX = cFrameBox.iX;
 	cFrameBoxItem.iY = cFrameBox.iY + cFrameBoxTitle.iHeight + pos*cFrameBoxItem.iHeight;
-	cFrameBoxItem.iWidth = cFrameBox.iWidth;
+	cFrameBoxItem.iWidth = (nrOfPages > 1)? cFrameBox.iWidth - SCROLLBAR_WIDTH : cFrameBox.iWidth;
 
 	uint8_t color = COL_MENUCONTENT;
 	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
@@ -307,19 +304,6 @@ void CPluginList::paintItem(int pos)
 		color   = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 	}
-	
-	sb_width = 0;
-	
-	if(listmaxshow <= pluginlist.size() + 1)
-	{
-		nrOfPages = ((pluginlist.size() - 1) / listmaxshow) + 1; 
-		currPage  = (liststart/listmaxshow) + 1;
-	}
-	
-	if(nrOfPages > 1)
-		sb_width = SCROLLBAR_WIDTH;
-	
-	cFrameBoxItem.iWidth = cFrameBox.iWidth - sb_width;
 	
 	// itemBox
 	frameBuffer->paintBoxRel(cFrameBoxItem.iX, cFrameBoxItem.iY, cFrameBoxItem.iWidth, cFrameBoxItem.iHeight, bgcolor);
@@ -358,6 +342,40 @@ void CPluginList::paintItem(int pos)
 		
 		// desc
 		g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->RenderString(cFrameBoxItem.iX + BORDER_LEFT + itemIcon.iWidth + ICON_OFFSET, cFrameBoxItem.iY + cFrameBoxItem.iHeight, cFrameBoxItem.iWidth - BORDER_LEFT - BORDER_RIGHT - itemIcon.iWidth - ICON_OFFSET, Description, color, 0, true); // UTF-8
+	}
+}
+
+void CPluginList::paintItems()
+{
+	// Body
+	cFrameBoxBody.iX = cFrameBox.iX;
+	cFrameBoxBody.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
+	cFrameBoxBody.iWidth = cFrameBox.iWidth;
+	cFrameBoxBody.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight;
+
+	frameBuffer->paintBoxRel(cFrameBoxBody.iX, cFrameBoxBody.iY, cFrameBoxBody.iWidth, cFrameBoxBody.iHeight, COL_MENUCONTENT_PLUS_0);
+
+	// ScrollBar
+	if(listmaxshow <= pluginlist.size())
+	{
+		nrOfPages = ((pluginlist.size() - 1) / listmaxshow + 1); 
+		currPage  = liststart/listmaxshow;
+	}
+	
+	cFrameBoxScrollBar.iX = cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH;
+	cFrameBoxScrollBar.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
+	cFrameBoxScrollBar.iWidth = (nrOfPages > 1)? SCROLLBAR_WIDTH : 0;
+	cFrameBoxScrollBar.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight;	
+
+	if(nrOfPages > 1)
+	{
+		::paintScrollBar(&cFrameBoxScrollBar, nrOfPages, currPage);
+	}
+
+	// items
+	for(unsigned int count = 0; count < listmaxshow; count++)
+	{
+		paintItem(count);
 	}
 }
 
@@ -411,46 +429,6 @@ void CPluginList::paint()
 	paintHead();
 	paintFoot();
 	paintItems();
-}
-
-void CPluginList::paintItems()
-{
-	// Body
-	cFrameBoxBody.iX = cFrameBox.iX;
-	cFrameBoxBody.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
-	cFrameBoxBody.iWidth = cFrameBox.iWidth;
-	cFrameBoxBody.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight;
-
-	frameBuffer->paintBoxRel(cFrameBoxBody.iX, cFrameBoxBody.iY, cFrameBoxBody.iWidth, cFrameBoxBody.iHeight, COL_MENUCONTENT_PLUS_0);
-
-	// scrollbar
-	sb_width = 0;
-	
-	if(listmaxshow <= pluginlist.size())
-	{
-		nrOfPages = ((pluginlist.size() - 1) / listmaxshow + 1); 
-		currPage  = liststart/listmaxshow;
-	}
-	
-	if(nrOfPages > 1)
-		sb_width = SCROLLBAR_WIDTH;
-	
-	// ScrollBar
-	cFrameBoxScrollBar.iX = cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH;
-	cFrameBoxScrollBar.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
-	cFrameBoxScrollBar.iWidth = SCROLLBAR_WIDTH;
-	cFrameBoxScrollBar.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight;	
-
-	if(nrOfPages > 1)
-	{
-		::paintScrollBar(&cFrameBoxScrollBar, nrOfPages, currPage);
-	}
-
-	// items
-	for(unsigned int count = 0; count < listmaxshow; count++)
-	{
-		paintItem(count);
-	}
 }
 
 CPluginList::result_ CPluginList::pluginSelected()

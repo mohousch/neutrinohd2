@@ -84,7 +84,7 @@ class CPluginList : public CMenuTarget
 		unsigned int liststart;
 		unsigned int listmaxshow;
 		
-		int sb_width;
+		//int sb_width;
 		int nrOfPages; 
 		int currPage;
 
