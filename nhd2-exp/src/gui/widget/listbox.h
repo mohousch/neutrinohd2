@@ -77,10 +77,10 @@ class CListBox : public CMenuWidget
 		virtual	void paintHead();
 		virtual void paintFoot();
 		virtual void hide();
-		virtual void paintDetails(int index);
+		virtual void paintFootInfo(int index);
 		virtual void paintItem2DetailsLine(int pos);
 		virtual void clearItem2DetailsLine();
-		virtual void paintInfo(int index = 0);
+		virtual void paintTitleInfo(int index = 0);
 		
 		//
 		virtual void onRedKeyPressed(){};

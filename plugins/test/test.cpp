@@ -594,6 +594,7 @@ void CTestMenu::testCListBox()
 {
 	CListBox * listBox = new CListBox("listBox", MENU_WIDTH, MENU_HEIGHT);
 
+	listBox->enablePaintDate();
 	listBox->exec(NULL, "");
 	delete listBox;
 	listBox = NULL;
@@ -603,6 +604,7 @@ void CTestMenu::testCListBoxDetails()
 {
 	CListBox * listBox = new CListBox("listBoxInfoDetails", w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
+	listBox->enablePaintDate();
 	listBox->enableFootInfo();
 	
 	listBox->exec(NULL, "");
@@ -614,6 +616,7 @@ void CTestMenu::testCListBoxDetailsTitleInfo()
 {
 	CListBox * listBox = new CListBox("listBoxDetailsTitleInfo", w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
+	listBox->enablePaintDate();
 	listBox->enableFootInfo();
 	listBox->enableTitleInfo();
 	

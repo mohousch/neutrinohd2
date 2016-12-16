@@ -54,6 +54,7 @@ neutrino_LDADD = \
 	gui/video_setup.o \
 	gui/widget/items2detailsline.o \
 	gui/widget/window.o \
+	gui/widget/listbox.o \
 	system/helpers.o \
 	$(top_builddir)/lib/sectionsdclient/libsectionsdclient.a \
 	$(top_builddir)/lib/timerdclient/libtimerdclient.a \

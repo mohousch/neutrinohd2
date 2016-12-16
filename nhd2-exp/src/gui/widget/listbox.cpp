@@ -254,7 +254,7 @@ void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
 		paintItem2DetailsLine(paintNr);		
 		
 		// details
-		paintDetails(itemNr);
+		paintFootInfo(itemNr);
 	}
 	else
 	{
@@ -357,7 +357,7 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 		else if( msg == CRCInput::RC_ok)
 		{
 			onOkKeyPressed();
-			paintInfo();
+			paintTitleInfo();
 		}
 		else if ( msg == CRCInput::RC_red)
 		{
@@ -430,13 +430,18 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 	return res;
 }
 
-void CListBox::paintDetails(int index)
+void CListBox::paintFootInfo(int index)
 {
 	if(FootInfo == false)
 		return;
+
+	//
+	cFrameFootInfo.iX = cFrameBox.iX;
+	cFrameFootInfo.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight;
+	cFrameFoot.iWidth = cFrameBox.iWidth;
 	
 	// infobox refresh
-	//frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, InfoHeight - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
+	frameBuffer->paintBoxRel(cFrameFootInfo.iX + 2, cFrameFootInfo.iY + 2, cFrameFootInfo.iWidth - 4, cFrameFootInfo.iHeight - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 }
 
 void CListBox::paintItem2DetailsLine(int pos)
@@ -444,7 +449,7 @@ void CListBox::paintItem2DetailsLine(int pos)
 	if(FootInfo == false)
 		return;
 	
-	//::paintItem2DetailsLine(x, y, width, height, InfoHeight, hheight, iheight, pos);
+	::paintItem2DetailsLine(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, cFrameFootInfo.iHeight, cFrameTitle.iHeight, cFrameItem.iHeight, pos);
 }
 
 void CListBox::clearItem2DetailsLine()
@@ -452,17 +457,27 @@ void CListBox::clearItem2DetailsLine()
 	if(FootInfo == false)
 		return;
 	   
-	//::clearItem2DetailsLine(x, y, width, height, InfoHeight);  
+	::clearItem2DetailsLine(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, cFrameFootInfo.iHeight);  
 }
 
-void CListBox::paintInfo(int index)
+void CListBox::paintTitleInfo(int index)
 {
 	if(TitleInfo == false)
 		return;
 	
 	// infobox refresh
+	cFrameTitleInfo.iX = cFrameBox.iX;
+	cFrameTitleInfo.iY = cFrameBox.iY;
+	cFrameTitleInfo.iWidth = cFrameBox.iWidth;
+
+	cWindowTitleInfo.setDimension(&cFrameTitleInfo);
+	cWindowTitleInfo.setColor(COL_MENUCONTENT_PLUS_1);
+	cWindowTitleInfo.setGradient(g_settings.menu_Head_gradient);
+
+	cWindowTitleInfo.paint();
+
 	//frameBuffer->paintBoxRel(x, y - TitleHeight, width, TitleHeight, COL_MENUCONTENT_PLUS_6);
-	//frameBuffer->paintBoxRel(x + 2, y - TitleHeight + 2, width - 4, TitleHeight - 4, COL_MENUCONTENT_PLUS_1, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
+	frameBuffer->paintBoxRel(cFrameTitleInfo.iX + 2, cFrameTitleInfo.iY + 2, cFrameTitleInfo.iWidth - 4, cFrameTitleInfo.iHeight - 4, COL_MENUCONTENT_PLUS_1, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 }
 
 
