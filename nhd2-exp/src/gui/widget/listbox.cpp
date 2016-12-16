@@ -56,34 +56,7 @@ CListBox::CListBox(const char * const Caption, int _width, int _height)
 	TitleInfo = false;
 	PaintDate = false;
 	
-	cFrameFootInfo.iHeight = 0;
-	cFrameTitleInfo.iHeight = 0;
-	
-	if(FootInfo)
-		cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
-	
-	if(TitleInfo)
-		cFrameTitleInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
-	
-	// Foot
-	footIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
-	cFrameFoot.iHeight = std::max(footIcon.iHeight, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 10;
-	
-	// head
-	cFrameTitle.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 10;
-
-	// Item
-	cFrameItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
-
-	//
-	listmaxshow = (cFrameBox.iHeight - ((TitleInfo)? cFrameTitleInfo.iHeight - 2 : 0) - cFrameTitle.iHeight - cFrameFoot.iHeight - ((FootInfo)?2 - cFrameFootInfo.iHeight : 0))/cFrameItem.iHeight;
-
-	// recalculate height
-	cFrameBox.iHeight = ((TitleInfo)?cFrameTitleInfo.iHeight + 2 : 0) + cFrameTitle.iHeight + listmaxshow*cFrameItem.iHeight + cFrameFoot.iHeight + ((FootInfo)? 2 + cFrameFootInfo.iHeight : 0);
-
-	//
-	cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - (cFrameBox.iWidth + (FootInfo? ConnectLineBox_Width : 0))) / 2) + (FootInfo? ConnectLineBox_Width : 0);
-	cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) / 2);
+	initFrames();
 }
 
 CListBox::CListBox(const neutrino_locale_t Caption, int _width, int _height)
@@ -103,14 +76,16 @@ CListBox::CListBox(const neutrino_locale_t Caption, int _width, int _height)
 	TitleInfo = false;
 	PaintDate = false;
 	
-	cFrameFootInfo.iHeight = 0;
-	cFrameTitleInfo.iHeight = 0;
+	initFrames();
+}
+
+void CListBox::initFrames()
+{
+	// Foot Info
+	cFrameFootInfo.iHeight = (FootInfo)? g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10 : 0;
 	
-	if(FootInfo)
-		cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
-	
-	if(TitleInfo)
-		cFrameTitleInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
+	// Title Info
+	cFrameTitleInfo.iHeight = (TitleInfo)?g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10 : 0;
 	
 	// Foot
 	footIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
@@ -118,17 +93,31 @@ CListBox::CListBox(const neutrino_locale_t Caption, int _width, int _height)
 	
 	// head
 	cFrameTitle.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 10;
+
+	// Item
 	cFrameItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
 
 	//
-	listmaxshow = (cFrameBox.iHeight - ((TitleInfo)? cFrameTitleInfo.iHeight - 2 : 0) - cFrameTitle.iHeight - cFrameFoot.iHeight - ((FootInfo)?2 - cFrameFootInfo.iHeight : 0))/cFrameItem.iHeight;
+	listmaxshow = (cFrameBox.iHeight - cFrameTitleInfo.iHeight - cFrameTitle.iHeight - cFrameFoot.iHeight - (cFrameFootInfo.iHeight))/cFrameItem.iHeight;
 
 	// recalculate height
-	cFrameBox.iHeight = ((TitleInfo)?cFrameTitleInfo.iHeight + 2 : 0) + cFrameTitle.iHeight + listmaxshow*cFrameItem.iHeight + cFrameFoot.iHeight + ((FootInfo)? 2 + cFrameFootInfo.iHeight : 0);
+	cFrameBox.iHeight = cFrameTitleInfo.iHeight + cFrameTitle.iHeight + listmaxshow*cFrameItem.iHeight + cFrameFoot.iHeight + cFrameFootInfo.iHeight;
 
 	//
 	cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - (cFrameBox.iWidth + (FootInfo? ConnectLineBox_Width : 0))) / 2) + (FootInfo? ConnectLineBox_Width : 0);
 	cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) / 2);
+}
+
+void CListBox::enableFootInfo(void)
+{
+	FootInfo = true; 
+	initFrames();
+}
+
+void CListBox::enableTitleInfo(void)
+{
+	TitleInfo = true; 
+	initFrames();
 }
 
 void CListBox::setModified(void)
@@ -151,7 +140,7 @@ void CListBox::paint()
 
 	// scrollbar
 	cFrameScrollBar.iX = cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH;
-	cFrameScrollBar.iY = cFrameBox.iY + (TitleInfo? cFrameTitleInfo.iHeight + 2 : 0) + cFrameTitle.iHeight;
+	cFrameScrollBar.iY = cFrameBox.iY + cFrameTitleInfo.iHeight + cFrameTitle.iHeight;
 	cFrameScrollBar.iWidth = SCROLLBAR_WIDTH;
 	cFrameScrollBar.iHeight = cFrameItem.iHeight*listmaxshow;
 
@@ -163,7 +152,7 @@ void CListBox::paintHead()
 {
 	// headBox
 	cFrameTitle.iX = cFrameBox.iX;
-	cFrameTitle.iY = cFrameBox.iY - (TitleInfo?cFrameTitleInfo.iHeight - 2 : 0);
+	cFrameTitle.iY = cFrameBox.iY + cFrameTitleInfo.iHeight;
 	cFrameTitle.iWidth = cFrameBox.iWidth;
 	
 	cWindowTitle.setDimension(&cFrameTitle);
@@ -200,7 +189,7 @@ const struct button_label Buttons[4] =
 void CListBox::paintFoot()
 {
 	cFrameFoot.iX = cFrameBox.iX;
-	cFrameFoot.iY = cFrameBox.iY + cFrameBox.iHeight - ((FootInfo)?cFrameFootInfo.iHeight - 2: 0) - cFrameFoot.iHeight;
+	cFrameFoot.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - cFrameFoot.iHeight;
 	cFrameFoot.iWidth = cFrameBox.iWidth;
 
 	cWindowFoot.setDimension(&cFrameFoot);
@@ -240,7 +229,7 @@ int CListBox::getItemHeight()
 
 void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
 {
-	int ypos = cFrameBox.iY + (TitleInfo? cFrameTitleInfo.iHeight + 2 : 0) + cFrameTitle.iHeight + paintNr*getItemHeight();
+	int ypos = cFrameBox.iY + cFrameTitleInfo.iHeight + cFrameTitle.iHeight + paintNr*getItemHeight();
 
 	uint8_t    color;
 	fb_pixel_t bgcolor;
@@ -281,6 +270,8 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 
 	if (parent)
 		parent->hide();
+
+	initFrames();
 
 	paintHead();
 	paint();
@@ -438,7 +429,7 @@ void CListBox::paintFootInfo(int index)
 	//
 	cFrameFootInfo.iX = cFrameBox.iX;
 	cFrameFootInfo.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight;
-	cFrameFoot.iWidth = cFrameBox.iWidth;
+	cFrameFootInfo.iWidth = cFrameBox.iWidth;
 	
 	// infobox refresh
 	frameBuffer->paintBoxRel(cFrameFootInfo.iX + 2, cFrameFootInfo.iY + 2, cFrameFootInfo.iWidth - 4, cFrameFootInfo.iHeight - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
@@ -449,7 +440,7 @@ void CListBox::paintItem2DetailsLine(int pos)
 	if(FootInfo == false)
 		return;
 	
-	::paintItem2DetailsLine(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, cFrameFootInfo.iHeight, cFrameTitle.iHeight, cFrameItem.iHeight, pos);
+	::paintItem2DetailsLine(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight, cFrameTitle.iHeight + cFrameTitleInfo.iHeight, cFrameItem.iHeight, pos);
 }
 
 void CListBox::clearItem2DetailsLine()
@@ -457,7 +448,7 @@ void CListBox::clearItem2DetailsLine()
 	if(FootInfo == false)
 		return;
 	   
-	::clearItem2DetailsLine(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, cFrameFootInfo.iHeight);  
+	::clearItem2DetailsLine(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight);  
 }
 
 void CListBox::paintTitleInfo(int index)
@@ -471,7 +462,7 @@ void CListBox::paintTitleInfo(int index)
 	cFrameTitleInfo.iWidth = cFrameBox.iWidth;
 
 	cWindowTitleInfo.setDimension(&cFrameTitleInfo);
-	cWindowTitleInfo.setColor(COL_MENUCONTENT_PLUS_1);
+	cWindowTitleInfo.setColor(COL_MENUCONTENT_PLUS_6);
 	cWindowTitleInfo.setGradient(g_settings.menu_Head_gradient);
 
 	cWindowTitleInfo.paint();

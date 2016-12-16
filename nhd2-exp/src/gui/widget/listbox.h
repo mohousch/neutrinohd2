@@ -107,14 +107,15 @@ class CListBox : public CMenuWidget
 
 		//
 		uint32_t sec_timer_id;
+		void initFrames();
 
 	public:
 		CListBox(const char * const Caption, int _width = MENU_WIDTH, int _height = MENU_HEIGHT);
 		CListBox(const neutrino_locale_t Caption, int _width = MENU_WIDTH, int _height = MENU_HEIGHT); 
 		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 
-		void enableFootInfo(void){FootInfo = true;};
-		void enableTitleInfo(void){TitleInfo = true;};
+		void enableFootInfo(void);
+		void enableTitleInfo(void);
 		void enablePaintDate(void){PaintDate = true;};
 };
 
