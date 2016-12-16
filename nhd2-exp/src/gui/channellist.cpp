@@ -568,6 +568,9 @@ int CChannelList::show()
 	int zapOnExit = false;
 	bool bShowBouquetList = false;
 
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
 	// loop control
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 
@@ -877,6 +880,17 @@ int CChannelList::show()
 			g_EpgData->show(chanlist[selected]->channel_id); 
 			paintHead();
 			paint();
+		}
+		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			// head
+			paintHead();
+	
+			// update events
+			//updateEvents();
+	
+			// paint all
+			//paint();
 		} 
 		else 
 		{
@@ -891,6 +905,10 @@ int CChannelList::show()
 	}
 	
 	hide();
+
+	//
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
 	
 	// bouquets mode
 	if (bShowBouquetList) 

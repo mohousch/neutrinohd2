@@ -39,7 +39,7 @@
 #include <system/helpers.h>
 
 
-CListBox::CListBox(const char * const Caption, int _width, int _height, bool itemDetails, bool titleInfo, bool paintDate)
+CListBox::CListBox(const char * const Caption, int _width, int _height)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	caption = Caption;
@@ -47,37 +47,46 @@ CListBox::CListBox(const char * const Caption, int _width, int _height, bool ite
 	liststart = 0;
 	selected =  0;
 
-	width =  _width;
-	height = _height;
+	modified = false;
+
+	cFrameBox.iWidth = _width;
+	cFrameBox.iHeight = _height;
 	
-	ItemDetails = itemDetails;
-	TitleInfo = titleInfo;
-	PaintDate = paintDate;
+	FootInfo = false;
+	TitleInfo = false;
+	PaintDate = false;
 	
-	InfoHeight = 0;
-	TitleHeight = 0;
+	cFrameFootInfo.iHeight = 0;
+	cFrameTitleInfo.iHeight = 0;
 	
-	if(ItemDetails)
-		InfoHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
+	if(FootInfo)
+		cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
 	
 	if(TitleInfo)
-		TitleHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
+		cFrameTitleInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
 	
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_bf_w, &icon_bf_h);
-	ButtonHeight = std::max(icon_bf_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 10;
+	// Foot
+	footIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
+	cFrameFoot.iHeight = std::max(footIcon.iHeight, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 10;
 	
-	modified = false;
-	
-	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	iheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
-	listmaxshow = (height - hheight - ButtonHeight)/iheight;
-	height = hheight + ButtonHeight + listmaxshow*iheight; // recalc height
+	// head
+	cFrameTitle.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 10;
 
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - (width + (ItemDetails? ConnectLineBox_Width : 0))) / 2) + (ItemDetails? ConnectLineBox_Width : 0);
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - (height + InfoHeight)) / 2) + TitleHeight/2;
+	// Item
+	cFrameItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
+
+	//
+	listmaxshow = (cFrameBox.iHeight - ((TitleInfo)? cFrameTitleInfo.iHeight - 2 : 0) - cFrameTitle.iHeight - cFrameFoot.iHeight - ((FootInfo)?2 - cFrameFootInfo.iHeight : 0))/cFrameItem.iHeight;
+
+	// recalculate height
+	cFrameBox.iHeight = ((TitleInfo)?cFrameTitleInfo.iHeight + 2 : 0) + cFrameTitle.iHeight + listmaxshow*cFrameItem.iHeight + cFrameFoot.iHeight + ((FootInfo)? 2 + cFrameFootInfo.iHeight : 0);
+
+	//
+	cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - (cFrameBox.iWidth + (FootInfo? ConnectLineBox_Width : 0))) / 2) + (FootInfo? ConnectLineBox_Width : 0);
+	cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) / 2);
 }
 
-CListBox::CListBox(const neutrino_locale_t Caption, int _width, int _height, bool itemDetails, bool titleInfo, bool paintDate)
+CListBox::CListBox(const neutrino_locale_t Caption, int _width, int _height)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	caption = g_Locale->getText(Caption);
@@ -85,34 +94,41 @@ CListBox::CListBox(const neutrino_locale_t Caption, int _width, int _height, boo
 	liststart = 0;
 	selected =  0;
 
-	width =  _width;
-	height = _height;
+	modified = false;
+
+	cFrameBox.iWidth = _width;
+	cFrameBox.iHeight = _height;
 	
-	ItemDetails = itemDetails;
-	TitleInfo = titleInfo;
-	PaintDate = paintDate;
+	FootInfo = false;
+	TitleInfo = false;
+	PaintDate = false;
 	
-	InfoHeight = 0;
-	TitleHeight = 0;
+	cFrameFootInfo.iHeight = 0;
+	cFrameTitleInfo.iHeight = 0;
 	
-	if(ItemDetails)
-		InfoHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
+	if(FootInfo)
+		cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
 	
 	if(TitleInfo)
-		TitleHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
+		cFrameTitleInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
 	
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_bf_w, &icon_bf_h);
-	ButtonHeight = std::max(icon_bf_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 10;
+	// Foot
+	footIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
+	cFrameFoot.iHeight = std::max(footIcon.iHeight, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 10;
 	
-	modified = false;
-	
-	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	iheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
-	listmaxshow = (height - hheight - ButtonHeight)/iheight;
-	height = hheight + ButtonHeight + listmaxshow*iheight; // recalc height
+	// head
+	cFrameTitle.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 10;
+	cFrameItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
 
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - (width + (ItemDetails? ConnectLineBox_Width : 0))) / 2) + (ItemDetails? ConnectLineBox_Width : 0);
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - (height + InfoHeight)) / 2) + TitleHeight/2;
+	//
+	listmaxshow = (cFrameBox.iHeight - ((TitleInfo)? cFrameTitleInfo.iHeight - 2 : 0) - cFrameTitle.iHeight - cFrameFoot.iHeight - ((FootInfo)?2 - cFrameFootInfo.iHeight : 0))/cFrameItem.iHeight;
+
+	// recalculate height
+	cFrameBox.iHeight = ((TitleInfo)?cFrameTitleInfo.iHeight + 2 : 0) + cFrameTitle.iHeight + listmaxshow*cFrameItem.iHeight + cFrameFoot.iHeight + ((FootInfo)? 2 + cFrameFootInfo.iHeight : 0);
+
+	//
+	cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - (cFrameBox.iWidth + (FootInfo? ConnectLineBox_Width : 0))) / 2) + (FootInfo? ConnectLineBox_Width : 0);
+	cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) / 2);
 }
 
 void CListBox::setModified(void)
@@ -133,36 +149,42 @@ void CListBox::paint()
 		paintItem(count);
 	}
 
-	// scroll bar
-	int ypos = y + hheight;
-	int sb = iheight*listmaxshow;
-	frameBuffer->paintBoxRel(x + width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
+	// scrollbar
+	cFrameScrollBar.iX = cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH;
+	cFrameScrollBar.iY = cFrameBox.iY + (TitleInfo? cFrameTitleInfo.iHeight + 2 : 0) + cFrameTitle.iHeight;
+	cFrameScrollBar.iWidth = SCROLLBAR_WIDTH;
+	cFrameScrollBar.iHeight = cFrameItem.iHeight*listmaxshow;
 
-	int sbc = ((getItemCount() - 1)/ listmaxshow) + 1;
-	float sbh = (sb - 4)/ sbc;
-	int sbs = (selected/listmaxshow);
-
-	frameBuffer->paintBoxRel(x + width - (SCROLLBAR_WIDTH - 2), ypos + 2 + int(sbs* sbh), 11, int(sbh),  COL_MENUCONTENT_PLUS_3);
+	::paintScrollBar(&cFrameScrollBar, ((getItemCount() - 1)/ listmaxshow) + 1, (selected/listmaxshow));
 }
 
 // head
 void CListBox::paintHead()
 {
 	// headBox
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);//round
+	cFrameTitle.iX = cFrameBox.iX;
+	cFrameTitle.iY = cFrameBox.iY - (TitleInfo?cFrameTitleInfo.iHeight - 2 : 0);
+	cFrameTitle.iWidth = cFrameBox.iWidth;
 	
-	// paint time/date
+	cWindowTitle.setDimension(&cFrameTitle);
+	cWindowTitle.setColor(COL_MENUHEAD_PLUS_0);
+	cWindowTitle.setCorner(RADIUS_MID, CORNER_TOP);
+	cWindowTitle.setGradient(g_settings.menu_Head_gradient);
+	cWindowTitle.paint();
+	
+	// title
 	int timestr_len = 0;
-	if(PaintDate)
-	{
-		std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
+	std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
 		
-		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
-			
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - (BORDER_RIGHT + timestr_len), y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); // UTF-8 // 100 is pic_w refresh box
-	}
+	timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
+	
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameTitle.iX + BORDER_LEFT, cFrameTitle.iY + cFrameTitle.iHeight, cFrameTitle.iWidth - BORDER_LEFT - BORDER_RIGHT - timestr_len, caption.c_str() , COL_MENUHEAD);
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width - (BORDER_LEFT + BORDER_RIGHT + timestr_len), caption.c_str() , COL_MENUHEAD);
+	// paint time/date
+	if(PaintDate)
+	{	
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(cFrameTitle.iX + cFrameTitle.iWidth - BORDER_RIGHT - timestr_len, cFrameTitle.iY + (cFrameTitle.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
+	}
 }
 
 // foot
@@ -177,11 +199,19 @@ const struct button_label Buttons[4] =
 
 void CListBox::paintFoot()
 {
-	int ButtonWidth = width / 4 - BORDER_LEFT - BORDER_RIGHT;
-	
-	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);//round
+	cFrameFoot.iX = cFrameBox.iX;
+	cFrameFoot.iY = cFrameBox.iY + cFrameBox.iHeight - ((FootInfo)?cFrameFootInfo.iHeight - 2: 0) - cFrameFoot.iHeight;
+	cFrameFoot.iWidth = cFrameBox.iWidth;
 
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, ButtonWidth, 4, Buttons, ButtonHeight);
+	cWindowFoot.setDimension(&cFrameFoot);
+	cWindowFoot.setColor(COL_MENUHEAD_PLUS_0);
+	cWindowFoot.setCorner(RADIUS_MID, CORNER_BOTTOM);
+	cWindowFoot.setGradient(g_settings.menu_Foot_gradient);
+	cWindowFoot.paint();
+
+	int ButtonWidth = cFrameFoot.iWidth /4;
+
+	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, cFrameFoot.iX + BORDER_LEFT, cFrameFoot.iY, ButtonWidth, 4, Buttons, cFrameFoot.iHeight);
 }
 
 void CListBox::paintItem(int pos)
@@ -191,8 +221,7 @@ void CListBox::paintItem(int pos)
 
 void CListBox::hide()
 {
-	int ypos = y - TitleHeight;
-	frameBuffer->paintBackgroundBoxRel(x, ypos, width, height + ButtonHeight + InfoHeight + TitleHeight);
+	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 	
 	clearItem2DetailsLine();
 	
@@ -206,12 +235,12 @@ unsigned int CListBox::getItemCount()
 
 int CListBox::getItemHeight()
 {
-	return iheight;
+	return cFrameItem.iHeight;
 }
 
 void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
 {
-	int ypos = y + hheight + paintNr*getItemHeight();
+	int ypos = cFrameBox.iY + (TitleInfo? cFrameTitleInfo.iHeight + 2 : 0) + cFrameTitle.iHeight + paintNr*getItemHeight();
 
 	uint8_t    color;
 	fb_pixel_t bgcolor;
@@ -234,10 +263,10 @@ void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
 	}
 
 	// itemBox
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, getItemHeight(), bgcolor);
+	frameBuffer->paintBoxRel(cFrameBox.iX, ypos, cFrameBox.iWidth - SCROLLBAR_WIDTH, getItemHeight(), bgcolor);
 	
 	// item 
-	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, ypos + iheight, width - (BORDER_LEFT + BORDER_RIGHT), "demo", color);
+	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(cFrameBox.iX + BORDER_LEFT, ypos + cFrameItem.iHeight, cFrameBox.iWidth - (BORDER_LEFT + BORDER_RIGHT), "demo", color);
 }
 
 int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
@@ -261,23 +290,26 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 
 	bool loop = true;
 	modified = false;
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 	
 	while (loop)
 	{
 		g_RCInput->getMsg(&msg, &data, g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
 
-		if (( msg == (neutrino_msg_t)g_settings.key_channelList_cancel) || ( msg == CRCInput::RC_home))
+		if (msg == CRCInput::RC_home)
 		{
 			loop = false;
 		}
-		else if (msg == CRCInput::RC_up || (int) msg == g_settings.key_channelList_pageup)
+		else if (msg == CRCInput::RC_up || msg == CRCInput::RC_page_up)
 		{
 			if(getItemCount() != 0) 
 			{
 				int step = 0;
 				int prev_selected = selected;
 
-				step = ((int) msg == g_settings.key_channelList_pageup) ? listmaxshow : 1;  // browse or step 1
+				step = (msg == CRCInput::RC_page_up) ? listmaxshow : 1;  // browse or step 1
 				selected -= step;
 				if((prev_selected - step) < 0)            // because of uint
 					selected = getItemCount() - 1;
@@ -293,14 +325,14 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 					paintItem(selected - liststart);
 			}
 		}
-		else if (msg == CRCInput::RC_down || (int) msg == g_settings.key_channelList_pagedown)
+		else if (msg == CRCInput::RC_down || msg == CRCInput::RC_page_down)
 		{
 			if(getItemCount() != 0) 
 			{
 				unsigned int step = 0;
 				int prev_selected = selected;
 
-				step = ((int) msg == g_settings.key_channelList_pagedown) ? listmaxshow : 1;  // browse or step 1
+				step = (msg == CRCInput::RC_page_down) ? listmaxshow : 1;  // browse or step 1
 				selected += step;
 
 				if(selected >= getItemCount()) 
@@ -363,6 +395,20 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 		{
 			onMuteKeyPressed();
 		}
+		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			if(PaintDate)
+			{
+				// head
+				paintHead();
+	
+				// Foot
+				//paintFoot();
+	
+				// paint all
+				//paint();
+			}
+		} 
 		else
 		{
 			CNeutrinoApp::getInstance()->handleMsg( msg, data );
@@ -373,33 +419,40 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 	}
 
 	hide();
+
+	if(PaintDate)
+	{
+		//
+		g_RCInput->killTimer(sec_timer_id);
+		sec_timer_id = 0;
+	}
 	
 	return res;
 }
 
 void CListBox::paintDetails(int index)
 {
-	if(ItemDetails == false)
+	if(FootInfo == false)
 		return;
 	
 	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, InfoHeight - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
+	//frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, InfoHeight - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 }
 
 void CListBox::paintItem2DetailsLine(int pos)
 {
-	if(ItemDetails == false)
+	if(FootInfo == false)
 		return;
 	
-	::paintItem2DetailsLine(x, y, width, height, InfoHeight, hheight, iheight, pos);
+	//::paintItem2DetailsLine(x, y, width, height, InfoHeight, hheight, iheight, pos);
 }
 
 void CListBox::clearItem2DetailsLine()
 {
-	if(ItemDetails == false)
+	if(FootInfo == false)
 		return;
 	   
-	::clearItem2DetailsLine(x, y, width, height, InfoHeight);  
+	//::clearItem2DetailsLine(x, y, width, height, InfoHeight);  
 }
 
 void CListBox::paintInfo(int index)
@@ -408,8 +461,8 @@ void CListBox::paintInfo(int index)
 		return;
 	
 	// infobox refresh
-	frameBuffer->paintBoxRel(x, y - TitleHeight, width, TitleHeight, COL_MENUCONTENT_PLUS_6);
-	frameBuffer->paintBoxRel(x + 2, y - TitleHeight + 2, width - 4, TitleHeight - 4, COL_MENUCONTENT_PLUS_1, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
+	//frameBuffer->paintBoxRel(x, y - TitleHeight, width, TitleHeight, COL_MENUCONTENT_PLUS_6);
+	//frameBuffer->paintBoxRel(x + 2, y - TitleHeight + 2, width - 4, TitleHeight - 4, COL_MENUCONTENT_PLUS_1, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 }
 
 

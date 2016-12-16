@@ -27,43 +27,51 @@
 #ifndef __listbox__
 #define __listbox__
 
-#include "menue.h"
+#include <string>
 
 #include <driver/framebuffer.h>
+#include <gui/widget/menue.h>
+#include <gui/widget/window.h>
+#include <gui/widget/scrollbar.h>
 
-#include <string>
 
 class CListBox : public CMenuWidget
 {
 	protected:
 		CFrameBuffer*	frameBuffer;
+
+		CBox cFrameBox;
+		CBox cFrameTitle;
+		CBox cFrameFoot;
+		CBox cFrameItem;
+		CBox cFrameScrollBar;
+		CBox cFrameTitleInfo;
+		CBox cFrameFootInfo;
+
+		CIcon titleIcon;
+		CIcon footIcon;
+
+		CWindow cWindowBox;
+		CWindow cWindowTitle;
+		CWindow cWindowFoot;
+		CWindow cWindowItem;
+		CWindow cWindowTitleInfo;
+		CWindow cWindowFootInfo;
+
+		//
 		bool            modified;
 		std::string	caption;
-
-		int		width;
-		int		height;
-		int		x;
-		int		y;
-
-		int		iheight;	// item height
-		int		hheight;	// head height
 
 		unsigned int	selected;
 		unsigned int	liststart;
 		unsigned int	listmaxshow;
-	
-		int 		ButtonHeight;	// foot height
-		int 		InfoHeight;
-		int 		TitleHeight;
-		std::string 	HeadIcon;
 		
-		int icon_bf_w;
-		int icon_bf_h;
-		
-		bool ItemDetails;
+		//
+		bool FootInfo;
 		bool TitleInfo;
 		bool PaintDate;
 
+		//
 		virtual void paintItem(int pos);
 		virtual void paint();
 		virtual	void paintHead();
@@ -74,10 +82,7 @@ class CListBox : public CMenuWidget
 		virtual void clearItem2DetailsLine();
 		virtual void paintInfo(int index = 0);
 		
-
-		
-		//------hier Methoden �berschreiben-------
-		//------Fernbedienungsevents--------------
+		//
 		virtual void onRedKeyPressed(){};
 		virtual void onGreenKeyPressed(){};
 		virtual void onYellowKeyPressed(){};
@@ -90,21 +95,27 @@ class CListBox : public CMenuWidget
 		virtual void onMuteKeyPressed(){};
 		virtual void onOtherKeyPressed( int /*key*/ ){};
 
-		//------gibt die Anzahl der Listenitems---
+		//
 		virtual unsigned int getItemCount();
 
-		//------malen der Items-------------------
+		//
 		virtual int getItemHeight();
 		virtual void paintItem(uint32_t itemNr, int paintNr, bool selected);
 
-		//------Benutzung von setModified---------
+		//
 		void setModified(void);
 
-	public:
-		CListBox(const char * const Caption, int _width = MENU_WIDTH, int _height = MENU_HEIGHT, bool itemDetails = false, bool titleInfo = false, bool paintDate = false);
-		CListBox(const neutrino_locale_t Caption, int _width = MENU_WIDTH, int _height = MENU_HEIGHT, bool itemDetails = false, bool titleInfo = false, bool paintDate = false); 
-		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
-};
+		//
+		uint32_t sec_timer_id;
 
+	public:
+		CListBox(const char * const Caption, int _width = MENU_WIDTH, int _height = MENU_HEIGHT);
+		CListBox(const neutrino_locale_t Caption, int _width = MENU_WIDTH, int _height = MENU_HEIGHT); 
+		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
+
+		void enableFootInfo(void){FootInfo = true;};
+		void enableTitleInfo(void){TitleInfo = true;};
+		void enablePaintDate(void){PaintDate = true;};
+};
 
 #endif

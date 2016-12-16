@@ -105,6 +105,9 @@ class CChannelList
 		void paintHead();
 		void hide();
 
+		//
+		uint32_t sec_timer_id;
+
 	public:
 		CChannelList(const char * const Name, bool _historyMode = false, bool _vlist = false );
 		~CChannelList();

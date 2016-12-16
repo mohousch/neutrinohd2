@@ -709,6 +709,9 @@ showList:
 
 	int zapOnExit = false;
 
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
 	// loop control
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	bool loop = true;
@@ -821,6 +824,17 @@ showList:
 			res = -1;
 			loop = false;
 		}
+		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			// head
+			paintHead();
+	
+			// Foot
+			//paintFoot();
+	
+			// paint all
+			//paint();
+		} 
 		else
 		{
 			if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all ) 
@@ -834,6 +848,10 @@ showList:
 	}
 	
 	hide();
+
+	//
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
 	
 	//CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 	
