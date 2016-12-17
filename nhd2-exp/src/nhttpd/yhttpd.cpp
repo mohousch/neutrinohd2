@@ -85,7 +85,10 @@ void * nhttpd_main_thread(void *)
 		aprintf("Error initializing WebServer\n");
 		return (void *) EXIT_FAILURE;
 	}
+
+#ifndef Y_CONFIG_FEATURE_THREADING
 	yhttpd->flag_threading_off = true;
+#endif
 
 	yhttpd->hooks_attach();
 	yhttpd->ReadConfig();
