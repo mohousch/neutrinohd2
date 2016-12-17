@@ -388,9 +388,6 @@ int CChannelList::doChannelMenu(void)
 	sprintf(cnt, "%d", i);
 	menu->addItem(new CMenuForwarder(LOCALE_FAVORITES_MENUEADD, true, NULL, selector, cnt, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i++);
 
-	menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
-	menu->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_CHANNELLIST, true, NULL, new CChannelListSettings(true), NULL, CRCInput::RC_nokey));
-
 	menu->exec(NULL, "");
 	delete menu;
 	delete selector;
