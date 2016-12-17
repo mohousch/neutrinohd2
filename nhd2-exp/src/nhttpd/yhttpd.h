@@ -28,7 +28,7 @@ class Cyhttpd {
 		static CStringList ConfigList; 	// Vars & Values from ReadConfig
 
 		// signal handler
-		static volatile sig_atomic_t sig_do_shutdown;
+		//static volatile sig_atomic_t sig_do_shutdown;
 
 		// constructor & destructor
 		Cyhttpd();

@@ -20,8 +20,7 @@
 // System Choice <configure!> ONE choice
 //
 #ifndef CONFIG_SYSTEM_BY_COMPILER 				// use Compiler directive to set CONFIG_SYSTEM
-//#define CONFIG_SYSTEM_TUXBOX	y				// Tuxbox project
-#define CONFIG_SYSTEM_TUXBOX_COOLSTREAM	y			// Tuxbox project for coolstream
+#define CONFIG_SYSTEM_TUXBOX	y				// Tuxbox project
 #endif
 //
 // General central Definitions <configure!>
@@ -42,14 +41,14 @@
 //
 //#define Y_CONFIG_USE_TESTHOOK y				// Add mod: "Test-Hook" (hook example)
 #define Y_CONFIG_USE_YPARSER y					// Add mod: "y-Parsing"
-#define Y_CONFIG_USE_AUTHHOOK y				// Add mod: "Authentication"
+#define Y_CONFIG_USE_AUTHHOOK y					// Add mod: "Authentication"
 #define Y_CONFIG_USE_WEBLOG y					// Add mod: "WebLogging"
 #define Y_CONFIG_USE_CACHE y					// Add mod: Can cache production pages
 #define Y_CONFIG_USE_SENDFILE y					// Add mod: can send static files (mandantory)
 //
 // Features & Build
 //
-#define Y_CONFIG_FEATURE_CHECK_PORT_AUTORITY y	// System: Port < 1024 need Admin-Privileges-Check
+#define Y_CONFIG_FEATURE_CHECK_PORT_AUTORITY y		// System: Port < 1024 need Admin-Privileges-Check
 #define Y_CONFIG_HAVE_SENDFILE y				// System: Have *IX SendFile
 #define Y_CONFIG_FEATURE_UPLOAD y				// Add Feature: File Upload POST Command
 #define Y_CONFIG_USE_HOSTEDWEB y				// Add Feature: Use HOSTED Web
@@ -59,7 +58,7 @@
 #define Y_CONFIG_FEATUE_SENDFILE_CAN_ACCESS_ALL y	// Add Feature: every file can be accessed (use carefully: security!!)
 //#define Y_CONFIG_FEATURE_CHROOT y				// Add Feature: Use Change Root for Security
 //#define Y_CONFIG_FEATURE_HTTPD_USER y			// Add Feature: Set User for yhttpd-Process
-#define Y_CONFIG_BUILD_AS_DAEMON y				// Build as a Daemon with possibility for multi threading
+//#define Y_CONFIG_BUILD_AS_DAEMON y				// Build as a Daemon with possibility for multi threading
 //
 // Define/Undefine Features forced by CONFIG_SYSTEM_xxx
 // Dependencies
@@ -68,7 +67,7 @@
 #undef Y_CONFIG_HAVE_SENDFILE					// Sendfile does not work for SSL
 #endif
 
-#if defined(CONFIG_SYSTEM_TUXBOX) || defined(CONFIG_SYSTEM_TUXBOX_COOLSTREAM)
+#if defined(CONFIG_SYSTEM_TUXBOX)
 #define Y_CONFIG_FEATURE_UPLOAD y
 #define Y_CONFIG_USE_YPARSER y
 #define Y_CONFIG_USE_AUTHHOOK y
@@ -84,7 +83,7 @@
 // Configurations for systems/OSs <configure!>
 //
 //
-// Configurations for LINUX (Tuxbox dbox2, coolstream, cuberevo)
+// Configurations for LINUX
 //js:text/plain
 #undef HTTPD_NAME
 #define HTTPD_NAME 					"nhttpd"
@@ -121,14 +120,8 @@
 
 // switch for Box differences
 #ifdef CONFIG_SYSTEM_TUXBOX
-#define AUTHPASSWORD					"dbox2"
-#define PRIVATEDOCUMENTROOT				DATADIR "/neutrino/httpd-y"
-#endif
-
-#ifdef CONFIG_SYSTEM_TUXBOX_COOLSTREAM
 #define AUTHPASSWORD					"root"
 #define PRIVATEDOCUMENTROOT				DATADIR "/neutrino/httpd"
-#undef Y_CONFIG_BUILD_AS_DAEMON		// No Daemon
 #endif
 
 //

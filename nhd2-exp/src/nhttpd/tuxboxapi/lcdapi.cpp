@@ -36,10 +36,6 @@
 
 #include <liblcddisplay/lcddisplay.h>
 
-#ifdef ENABLE_GRAPHLCD
-#include <driver/nglcd.h>
-#endif
-
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -65,28 +61,10 @@ bool CLCDAPI::ShowPng(char *filename)
 	return vfd->ShowPng(filename);
 }
 
-#ifdef ENABLE_GRAPHLCD
-bool CLCDAPI::ShowNgPng(char *filename)
-{
-	nGLCD *nglcd = nGLCD::getInstance();
-	if (nglcd)
-		return nglcd->ShowPng(filename);
-}
-#endif
-
 bool CLCDAPI::ShotPng(char *filename)
 {
 	return vfd->DumpPng(filename);
 }
-
-#ifdef ENABLE_GRAPHLCD
-bool CLCDAPI::ShotNgPng(char *filename)
-{
-	nGLCD *nglcd = nGLCD::getInstance();
-	if (nglcd)
-		return nglcd->DumpPng(filename);
-}
-#endif
 
 //-------------------------------------------------------------------------
 // Konstruktor und destruktor

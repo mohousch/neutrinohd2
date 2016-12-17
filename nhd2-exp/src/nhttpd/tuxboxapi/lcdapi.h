@@ -38,9 +38,6 @@ class LcdFontRenderClass;
 class CLCDAPI
 {
 	CLCD				*vfd;
-	//LcdFontRenderClass		*fontRenderer;
-	//LcdFont				*font;
-	//const char 			*style_name[3];
 public:
 	CLCDAPI();
 	~CLCDAPI(void);

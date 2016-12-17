@@ -798,6 +798,12 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 
 			scrollCount = medlinecount;
 
+			if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+			{
+				// head
+				showHead(channel_id);
+			} 
+
 			switch ( msg )
 			{
 				case NeutrinoMessages::EVT_TIMER:
@@ -969,11 +975,6 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 					// konfigurierbare Keys handlen...
 					if (msg == (neutrino_msg_t)g_settings.key_channelList_cancel)
 						loop = false;
-					else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
-					{
-						// head
-						showHead(channel_id);
-					} 
 					else
 					{
 						if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
