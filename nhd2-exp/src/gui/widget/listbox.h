@@ -58,6 +58,8 @@ class CListBox : public CMenuWidget
 		CWindow cWindowTitleInfo;
 		CWindow cWindowFootInfo;
 
+		int timestr_len;
+
 		//
 		bool            modified;
 		std::string	caption;
@@ -117,6 +119,8 @@ class CListBox : public CMenuWidget
 		void enableFootInfo(void);
 		void enableTitleInfo(void);
 		void enablePaintDate(void){PaintDate = true;};
+		//void setTitleIcon(const char* icon){titleIcon.setIcon(icon); initFrames();};
+		//void setTitleIcon(const std::string& icon){titleIcon.setIcon(icon); initFrames();};
 };
 
 #endif

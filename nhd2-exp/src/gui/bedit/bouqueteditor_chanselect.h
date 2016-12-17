@@ -93,9 +93,6 @@ class CBEChannelSelectWidget
 		void paint();
 		void paintFoot();
 		void hide();
-
-		//
-		void onOkKeyPressed();
 		
 		//		
 		void paintDetails(int index);

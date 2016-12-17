@@ -595,6 +595,7 @@ void CTestMenu::testCListBox()
 	CListBox * listBox = new CListBox("listBox", MENU_WIDTH, MENU_HEIGHT);
 
 	listBox->enablePaintDate();
+	//listBox->setTitleIcon(NEUTRINO_ICON_BUTTON_SETUP);
 	listBox->exec(NULL, "");
 	delete listBox;
 	listBox = NULL;

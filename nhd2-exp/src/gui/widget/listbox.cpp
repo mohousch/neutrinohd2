@@ -51,6 +51,8 @@ CListBox::CListBox(const char * const Caption, int _width, int _height)
 
 	cFrameBox.iWidth = _width;
 	cFrameBox.iHeight = _height;
+
+	timestr_len = 0;
 	
 	FootInfo = false;
 	TitleInfo = false;
@@ -71,6 +73,8 @@ CListBox::CListBox(const neutrino_locale_t Caption, int _width, int _height)
 
 	cFrameBox.iWidth = _width;
 	cFrameBox.iHeight = _height;
+
+	timestr_len = 0;
 	
 	FootInfo = false;
 	TitleInfo = false;
@@ -160,20 +164,22 @@ void CListBox::paintHead()
 	cWindowTitle.setCorner(RADIUS_MID, CORNER_TOP);
 	cWindowTitle.setGradient(g_settings.menu_Head_gradient);
 	cWindowTitle.paint();
-	
-	// title
-	int timestr_len = 0;
-	std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
-		
-	timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
-	
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameTitle.iX + BORDER_LEFT, cFrameTitle.iY + cFrameTitle.iHeight, cFrameTitle.iWidth - BORDER_LEFT - BORDER_RIGHT - timestr_len, caption.c_str() , COL_MENUHEAD);
+
+	// paint Icon (left)
+	//frameBuffer->paintIcon(titleIcon.iconName.c_str(), cFrameTitle.iX + BORDER_LEFT, cFrameTitle.iY + (cFrameTitle.iHeight - titleIcon.iHeight)/2);
 
 	// paint time/date
 	if(PaintDate)
-	{	
+	{
+		std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
+		
+		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
+	
 		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(cFrameTitle.iX + cFrameTitle.iWidth - BORDER_RIGHT - timestr_len, cFrameTitle.iY + (cFrameTitle.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
 	}
+
+	// Title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameTitle.iX + BORDER_LEFT, cFrameTitle.iY + cFrameTitle.iHeight, cFrameTitle.iWidth - BORDER_LEFT - BORDER_RIGHT /*- titleIcon.iWidth*/ - timestr_len, caption.c_str(), COL_MENUHEAD);
 }
 
 // foot
@@ -467,7 +473,8 @@ void CListBox::paintTitleInfo(int index)
 
 	cWindowTitleInfo.paint();
 
-	//frameBuffer->paintBoxRel(x, y - TitleHeight, width, TitleHeight, COL_MENUCONTENT_PLUS_6);
+	frameBuffer->paintBoxRel(cFrameTitleInfo.iX, cFrameTitleInfo.iY, cFrameTitleInfo.iWidth, cFrameTitleInfo.iHeight, COL_MENUCONTENT_PLUS_6);
+
 	frameBuffer->paintBoxRel(cFrameTitleInfo.iX + 2, cFrameTitleInfo.iY + 2, cFrameTitleInfo.iWidth - 4, cFrameTitleInfo.iHeight - 4, COL_MENUCONTENT_PLUS_1, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 }
 

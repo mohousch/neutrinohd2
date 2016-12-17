@@ -311,24 +311,6 @@ void CBEChannelSelectWidget::hide()
 	frameBuffer->blit();
 }
 
-void CBEChannelSelectWidget::onOkKeyPressed()
-{
-	if(Channels.empty())
-		return;
-	
-	setModified();
-	
-	if (isChannelInBouquet(selected))
-		g_bouquetManager->Bouquets[bouquet]->removeService(Channels[selected]->channel_id);
-	else
-		addChannelToBouquet( bouquet, Channels[selected]->channel_id);
-
-	bouquetChannels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
-	
-	paintItem(selected);
-	g_RCInput->postMsg( CRCInput::RC_down, 0 );
-}
-
 int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CBEChannelSelectWidget::exec: actionKey:%s\n", actionKey.c_str());
@@ -372,16 +354,38 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 
 	// add sec timer
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
+	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
 	
 	while (loop)
 	{
-		g_RCInput->getMsg(&msg, &data, g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
+		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
+		neutrino_msg_t msg_repeatok = msg & ~CRCInput::RC_Repeat;
+
+		if ( msg <= CRCInput::RC_MaxRC )
+			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
+
+		if( msg == CRCInput::RC_ok)
+		{
+			setModified();
+	
+			if (isChannelInBouquet(selected))
+				g_bouquetManager->Bouquets[bouquet]->removeService(Channels[selected]->channel_id);
+			else
+				addChannelToBouquet( bouquet, Channels[selected]->channel_id);
+
+			bouquetChannels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
+	
+			paintItem(selected);
+
+			msg_repeatok = CRCInput::RC_down; // jump to next item
+		}
 
 		if (msg == CRCInput::RC_home)
 		{
 			loop = false;
 		}
-		else if (msg == CRCInput::RC_up || msg == CRCInput::RC_page_up)
+		else if (msg_repeatok == CRCInput::RC_up || msg == CRCInput::RC_page_up)
 		{
 			if(getItemCount() != 0) 
 			{
@@ -404,7 +408,7 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 					paintItem(selected - liststart);
 			}
 		}
-		else if (msg == CRCInput::RC_down || msg == CRCInput::RC_page_down)
+		else if (msg_repeatok == CRCInput::RC_down || msg == CRCInput::RC_page_down)
 		{
 			if(getItemCount() != 0) 
 			{
@@ -432,10 +436,6 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 				else
 					paintItem(selected - liststart);
 			}
-		}
-		else if( msg == CRCInput::RC_ok)
-		{
-			onOkKeyPressed();
 		}
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{

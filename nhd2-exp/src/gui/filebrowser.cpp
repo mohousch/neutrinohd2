@@ -447,10 +447,11 @@ bool CFileBrowser::exec(const char * const dirname)
 		}
 		else if ((msg == CRCInput::RC_green) || (msg == CRCInput::RC_page_up) )
 		{
-			if ((int(selected)-int(listmaxshow))<0)
+			if ((int(selected) - int(listmaxshow)) < 0)
 				selected = filelist.size()-1;
 			else
 				selected -= listmaxshow;
+
 			liststart = (selected/listmaxshow)*listmaxshow;
 			paint();
 		}
@@ -881,7 +882,7 @@ void CFileBrowser::paintHead()
 
 	snprintf(l_name, sizeof(l_name), "%s %s", g_Locale->getText(LOCALE_FILEBROWSER_HEAD), FILESYSTEM_ENCODING_TO_UTF8_STRING(name).c_str()); // UTF-8
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->RenderString(x + BORDER_LEFT + icon_w + ICON_OFFSET, y + theight + 1, width - BORDER_LEFT - icon_w - ICON_OFFSET, l_name, COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->RenderString(x + BORDER_LEFT + icon_w + ICON_OFFSET, y + theight + 1, width - BORDER_LEFT - icon_w - ICON_OFFSET - BORDER_RIGHT, l_name, COL_MENUHEAD, 0, true); // UTF-8
 }
 
 const struct button_label FileBrowserButtons[3] =
@@ -899,7 +900,7 @@ const struct button_label FileBrowserFilterButton[2] =
 
 void CFileBrowser::paintFoot()
 {
-	int dx = (width - (2*ICON_OFFSET)) / 4;
+	int dx = width / 4;
 	//Second Line (bottom, top)
 	int by2 = y + height - (foheight/2 - 4);
 	int ty2 = by2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
