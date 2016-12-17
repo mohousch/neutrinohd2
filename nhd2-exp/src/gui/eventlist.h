@@ -87,11 +87,9 @@ class EventList
 		t_channel_id    m_search_channel_id;
 		t_bouquet_id    m_search_bouquet_id;
 		bool m_showChannel;
-
-        private:
                 int findEvents(void);
 
-	private:
+		//
 		CFrameBuffer	* frameBuffer;
         	CChannelEventList evtlist;
 		CTimerd::TimerList timerlist;
@@ -122,6 +120,9 @@ class EventList
 		void hide();
 		void showFunctionBar(bool show);
 		CTimerd::CTimerEventTypes isScheduled(t_channel_id channel_id, CChannelEvent * event, int * tID = NULL);
+
+		//
+		uint32_t sec_timer_id;
 
 	public:
 		EventList();

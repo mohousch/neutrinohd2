@@ -785,6 +785,9 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 
 		int scrollCount;
 
+		// add sec timer
+		sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
 		bool loop = true;
 
 		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
@@ -966,6 +969,11 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 					// konfigurierbare Keys handlen...
 					if (msg == (neutrino_msg_t)g_settings.key_channelList_cancel)
 						loop = false;
+					else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+					{
+						// head
+						showHead(channel_id);
+					} 
 					else
 					{
 						if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
@@ -980,6 +988,10 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 		}
 		
 		hide();
+
+		//
+		g_RCInput->killTimer(sec_timer_id);
+		sec_timer_id = 0;
 	}
 	
 	return res;

@@ -513,6 +513,9 @@ class EpgPlus
 
 		bool            refreshAll;
 		bool            refreshFooterButtons;
+
+		//
+		uint32_t sec_timer_id;
 };
 
 class CEPGplusHandler : public CMenuTarget

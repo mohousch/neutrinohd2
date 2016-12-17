@@ -271,6 +271,9 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 	// blit
 	frameBuffer->blit();
 
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
 	int oldselected = selected;
 
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
@@ -571,6 +574,11 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 			res = menu_return::RETURN_EXIT_ALL;
 			loop = false;
 		}
+		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			// head
+			paintHead(channel_id);
+		} 
 		else
 		{
 			if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
@@ -585,6 +593,10 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 	}
 
 	hide();
+
+	//
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
 
 	return res;
 }

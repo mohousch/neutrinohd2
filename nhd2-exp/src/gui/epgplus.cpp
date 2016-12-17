@@ -117,10 +117,7 @@ void EpgPlus::Header::init ()
   	font = fonts[EPGPlus_header_font];
 }
 
-//TEST
-//char old_timestr[10];
-
-void EpgPlus::Header::paint ()
+void EpgPlus::Header::paint()
 {
 	this->frameBuffer->paintBoxRel (this->x, this->y, this->width, this->font->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
 	
@@ -864,6 +861,9 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 
 		this->frameBuffer->blit();
 
+		// add sec timer
+		sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
 		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd (g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 		bool loop = true;
 
@@ -1202,6 +1202,10 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 				res = menu_return::RETURN_EXIT_ALL;
 				loop = false;
 	 		}
+			else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+			{
+				this->header->paint();
+			} 
 	 		else 
 			{
 				if (CNeutrinoApp::getInstance ()->handleMsg (msg, data) & messages_return::cancel_all) 
@@ -1220,6 +1224,10 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 		}
 
 		this->hide ();
+
+		//
+		g_RCInput->killTimer(sec_timer_id);
+		sec_timer_id = 0;
 
 		for (TChannelEntries::iterator It = this->displayedChannelEntries.begin (); It != this->displayedChannelEntries.end (); It++) 
 		{

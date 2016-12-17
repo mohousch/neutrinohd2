@@ -504,24 +504,6 @@ bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _
 	if(m_pcTextBox != NULL && newText != NULL)
 	{
 		_result = m_pcTextBox->setText(newText, _thumbnail, _tw, _th, tmode);
-		
-		if(m_nMode & CTextBox::AUTO_WIDTH || m_nMode & CTextBox::AUTO_HIGH)
-		{
-			// window might changed in size
-			m_cBoxFrameText = m_pcTextBox->getWindowsPos();
-
-			m_cBoxFrame.iWidth = m_cBoxFrameText.iWidth;
-			m_cBoxFrame.iHeight = m_cBoxFrameText.iHeight +  m_cBoxFrameTitleRel.iHeight;
-
-			initFramesRel();
-
-			// since the frames size has changed, we have to recenter the window again */
-			if(m_nMode & CTextBox::CENTER)
-			{
-				m_cBoxFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - m_cBoxFrame.iWidth) >>1);
-				m_cBoxFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - m_cBoxFrame.iHeight) >>1);
-			}
-		}
 	}
 	
 	return(_result);

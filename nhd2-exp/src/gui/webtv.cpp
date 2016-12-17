@@ -828,12 +828,6 @@ showList:
 		{
 			// head
 			paintHead();
-	
-			// Foot
-			//paintFoot();
-	
-			// paint all
-			//paint();
 		} 
 		else
 		{
