@@ -63,7 +63,7 @@
 #define COL_ORANGE0			0xBD
 #define COL_DARK_ORANGE0		0xBC
 
-#define COL_BACKGROUND 			0xFF	//black
+#define COL_BACKGROUND0 		0xFF	//black
 
 #define COL_TRANSP			(CFrameBuffer::getInstance()->realcolor[COL_TRANSP0])
 #define COL_DARK_RED			(CFrameBuffer::getInstance()->realcolor[COL_DARK_RED0])
@@ -82,6 +82,8 @@
 
 #define COL_ORANGE			(CFrameBuffer::getInstance()->realcolor[COL_ORANGE0])
 #define COL_DARK_ORANGE			(CFrameBuffer::getInstance()->realcolor[COL_DARK_ORANGE0])
+
+#define COL_BACKGROUND_PLUS_0           (CFrameBuffer::getInstance()->realcolor[(COL_BACKGROUND0 + 0)])
 
 //
 #define COL_MENUCONTENTINACTIVE		254-8*1

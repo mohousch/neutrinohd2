@@ -233,7 +233,7 @@ void CFrameBuffer::init(const char * const fbDevice)
         paletteSetColor(COL_LIGHT_BLUE0, 0x00FFFF, tr);
         paletteSetColor(COL_WHITE0, 0xFFFFFF, tr);
         paletteSetColor(COL_BLACK0, 0x000000, tr);
-        paletteSetColor(COL_BACKGROUND, 0x000000, 0xffff);
+        paletteSetColor(COL_BACKGROUND0, 0x000000, 0xffff);
 
         paletteSet(&cmap);
 

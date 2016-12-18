@@ -2339,7 +2339,7 @@ void CSmartMenu::paintBody(void)
 	dprintf(DEBUG_NORMAL, "CSmartMenu::paintBody\n");
 
 	// paint background
-	frameBuffer->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, COL_BACKGROUND);
+	frameBuffer->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, COL_BACKGROUND_PLUS_0);
 	
 	// paint horizontal line top
 	frameBuffer->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + 35, COL_MENUCONTENT_PLUS_5);
@@ -2348,50 +2348,59 @@ void CSmartMenu::paintBody(void)
 	frameBuffer->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + Box.iHeight - 35, COL_MENUCONTENT_PLUS_5);
 }
 
-void CSmartMenu::paintItems(int itemsCount)
+void CSmartMenu::paintItems(int pos)
 {
-	dprintf(DEBUG_NORMAL, "CSmartMenu::paintitems\n");
+	dprintf(DEBUG_NORMAL, "CSmartMenu::paintitems: pos:%d\n", pos);
 
-	if(itemsCount > MAX_ITEMS_PER_PAGE)
-		itemsCount = MAX_ITEMS_PER_PAGE;
+	if(!items.size())
+		return;
 
-	int k = 0;
+	if(pos < 0)
+		pos = 0;
+
+	int k = pos;
 	for (unsigned int _y = 0; _y < 3; _y++)
 	{
 		for (unsigned int _x = 0; _x < 6; _x++)
 		{
 			frameBuffer->DisplayImage(items[k]->iconName, frameBox.iX + _x*frameBox.iWidth + 5, frameBox.iY + _y*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
 
-			k++;
+			k += 1;
 
-			if( k == itemsCount)
+			if( (k == pos + MAX_ITEMS_PER_PAGE) || (k == items.size()))
 				break;	
 		}
 
-		if( k == itemsCount)
+		if( (k == pos + MAX_ITEMS_PER_PAGE) || (k == items.size()))
 			break;	
 	}
 }
 
 void CSmartMenu::paintItemBox(int oldposx, int oldposy, int posx, int posy)
 {
-	dprintf(DEBUG_DEBUG, "CSmartMenu::paintItemBox\n");
+	dprintf(DEBUG_INFO, "CSmartMenu::paintItemBox:selected(%d) oldselected(%d) oldx:%d oldy:%d posx:%d posy:%d\n", selected, oldselected, oldposx, oldposy, posx, posy);
 
 	//refresh prev item
-	frameBuffer->paintBoxRel(frameBox.iX + frameBox.iWidth*oldposx, frameBox.iY + frameBox.iHeight*oldposy, frameBox.iWidth, frameBox.iHeight, COL_BACKGROUND);
+	frameBuffer->paintBoxRel(frameBox.iX + frameBox.iWidth*oldposx, frameBox.iY + frameBox.iHeight*oldposy, frameBox.iWidth, frameBox.iHeight, COL_BACKGROUND_PLUS_0);
 
 	//
-	frameBuffer->DisplayImage(items[oldselected]->iconName, frameBox.iX + oldposx*frameBox.iWidth + 5, frameBox.iY + oldposy*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	if(items.size())
+	{
+		frameBuffer->DisplayImage(items[oldselected]->iconName, frameBox.iX + oldposx*frameBox.iWidth + 5, frameBox.iY + oldposy*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	}
 
 	// itembox
-	frameBuffer->paintBoxRel(frameBox.iX + frameBox.iWidth*posx, frameBox.iY + frameBox.iHeight*posy, frameBox.iWidth, frameBox.iHeight, COL_MENUCONTENT_PLUS_6, RADIUS_SMALL, CORNER_BOTH);
+	frameBuffer->paintBoxRel(frameBox.iX + frameBox.iWidth*posx, frameBox.iY + frameBox.iHeight*posy, frameBox.iWidth, frameBox.iHeight, /*COL_MENUCONTENT_PLUS_6*/COL_YELLOW, RADIUS_SMALL, CORNER_BOTH);
 
-	frameBuffer->DisplayImage(items[selected]->iconName, frameBox.iX + posx*frameBox.iWidth + 5, frameBox.iY + posy*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	if(items.size())
+	{
+		frameBuffer->DisplayImage(items[selected]->iconName, frameBox.iX + posx*frameBox.iWidth + 5, frameBox.iY + posy*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	}
 }
 
-void CSmartMenu::paint(int itemsCount)
+void CSmartMenu::paint(int pos)
 {
-	dprintf(DEBUG_NORMAL, "CSmartMenu::paint:%d\n", itemsCount);
+	dprintf(DEBUG_NORMAL, "CSmartMenu::paint:%d items.size():%d x:%d y:%d\n", pos, items.size(), x, y);
 
 	// body
 	paintBody();
@@ -2406,7 +2415,7 @@ void CSmartMenu::paint(int itemsCount)
 	paintItemBox(x, y, x, y);
 	
 	// items
-	paintItems(itemsCount);
+	paintItems(pos);
 
 	// info
 	items[selected]->paint(true);
@@ -2422,14 +2431,27 @@ void CSmartMenu::hide(void)
 
 int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 {
-	dprintf(DEBUG_NORMAL, "CSmartMenu::exec\n");
+	dprintf(DEBUG_NORMAL, "CSmartMenu::exec:items.size():%d\n", items.size());
 
 	int res = menu_return::RETURN_REPAINT;
 
 	if (parent)
 		parent->hide();
+
+	//
+	currentPos = 0;
+	itemsPerPage = 0;
+	currentPage = 0;
+
+	if(items.size() > 18)
+		itemsPerPage = 18;
+	else
+		itemsPerPage = items.size();
 	
-	paint(items.size());
+	// Items
+	paint(currentPos);
+
+	// Foot Info
 	items[selected]->paint(true);
 	
 	// blit all
@@ -2470,7 +2492,7 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 						break;
 									
 					case menu_return::RETURN_REPAINT:
-						paint(items.size());
+						paint(currentPos);
 						break;
 				}
 			} 
@@ -2479,28 +2501,43 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 		}
 		else if (msg == CRCInput::RC_right)
 		{
+			printf("msg: RC_right\n");
+
 			oldselected = selected;
 			int oldx = x;
 			int oldy = y;
-			int step = 1;
 
-			selected += step;
+			selected += 1;
 
-			if(selected >= items.size())
-				selected = 0;
+			printf("msg: RC_right: selected:%d\n", selected);
 
-			x += step;
-
-			if(items.size() <= MAX_ITEMS_PER_X)
+			// check selected 
+			if(currentPage == 0)
 			{
-				if(x >= items.size())
+				if (selected >= itemsPerPage)
+					selected = 0;
+			}
+			else
+			{
+				if(selected >= (18*currentPage) + itemsPerPage)
+					selected = 18*currentPage;
+			}
+
+			printf("msg: RC_right: selected(afterCheck):%d\n", selected);
+
+			// calculate xy
+			x += 1;
+
+			if(itemsPerPage <= MAX_ITEMS_PER_X)
+			{
+				if(x >= itemsPerPage)
 				{
 					x = 0; 
 				}
 			}
-			else if(items.size() > MAX_ITEMS_PER_X && items.size() <= 2*MAX_ITEMS_PER_X)
+			else if(itemsPerPage > MAX_ITEMS_PER_X && itemsPerPage <= 2*MAX_ITEMS_PER_X)
 			{
-				if(y == 1 && x >= (items.size() - MAX_ITEMS_PER_X))
+				if(y == 1 && x >= (itemsPerPage - MAX_ITEMS_PER_X))
 				{
 					x = 0;
 					y = 0; 
@@ -2508,15 +2545,15 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 				else if(x >= MAX_ITEMS_PER_X)
 				{
 					x = 0;
-					y += step; // increase j
+					y += 1; // increase y
 				
 					if(y >= MAX_ITEMS_PER_Y - 1)
 						y = 0;
 				}
 			}
-			else if(items.size()> 2*MAX_ITEMS_PER_X && items.size() <= MAX_ITEMS_PER_PAGE)
+			else if(itemsPerPage > 2*MAX_ITEMS_PER_X && itemsPerPage <= MAX_ITEMS_PER_PAGE)
 			{
-				if(y == 2 && x >= (items.size() - 2*MAX_ITEMS_PER_X))
+				if(y == 2 && x >= (itemsPerPage - 2*MAX_ITEMS_PER_X))
 				{
 					x = 0;
 					y = 0; 
@@ -2524,7 +2561,7 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 				else if(x >= MAX_ITEMS_PER_X)
 				{
 					x = 0;
-					y += step;
+					y += 1;
 				
 					if(y >= MAX_ITEMS_PER_Y)
 						y = 0;
@@ -2537,16 +2574,28 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 		}
 		else if (msg == CRCInput::RC_left)
 		{
+			printf("msg: RC_left\n");
+
 			oldselected = selected;
 			int oldx = x;
 			int oldy = y;
-			int step = 1;
 
-			selected -= step;
-			if (selected < 0)
-				selected = 0;
+			selected -= 1;
 
-			x -= step;
+			// check selected
+			if(currentPage == 0)
+			{
+				if (selected < 0)
+					selected = 0;
+			}
+			else
+			{
+				if(selected < (18*currentPage))
+					selected = 18*currentPage;
+			}
+
+			// calculate xy
+			x -= 1;
 
 			if(x < 0 && y > 0)
 			{
@@ -2565,6 +2614,141 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 			
 			items[selected]->paint(true);
 		}
+		else if (msg == CRCInput::RC_page_up) 
+		{
+			currentPos += 18;
+
+			printf("msg page_up\n");
+
+			if(currentPos < items.size())
+			{
+				currentPage += 1;
+
+				// calculate itemsPerPage
+				if ( (items.size() - currentPage*18) <= 18)
+					itemsPerPage = items.size() - currentPage*18;
+				else
+					itemsPerPage = 18;
+
+				printf("msg page_down:currentPos:%d (currentPage:%d)\n", currentPos, currentPage);
+
+				// check currentPos
+				//if(currentPos > items.size())
+				//	currentPos -= MAX_ITEMS_PER_PAGE;
+
+				printf("msg page_down:currentPos(afterCheck):%d (currentPage:%d)\n", currentPos, currentPage);
+
+				// reset
+				selected = currentPos;
+				x = 0;
+				y = 0;
+
+				hide();
+				paint(currentPos);
+				items[selected]->paint(true);
+			}
+
+			currentPos -= 18;
+		}
+		else if (msg == CRCInput::RC_page_down) 
+		{
+			printf("msg page_down\n");
+			currentPage -= 1;
+
+			if (currentPage <= -1)
+				currentPage = 0;
+
+			currentPos -= MAX_ITEMS_PER_PAGE;
+
+			// calculate itemsPerPage
+			itemsPerPage = 18;
+
+			if(items.size() < 18)
+				itemsPerPage = items.size();
+
+			printf("msg page_down:currentPos:%d (currentPage:%d)\n", currentPos, currentPage);
+
+			// check currentPos
+			if (currentPos <= -1)
+				currentPos = 0;
+
+			printf("msg page_down: currentPos(after check):%d (currentPage:%d)\n", currentPos, currentPage);
+
+			// reset
+			selected = currentPos;
+			x = 0;
+			y = 0;
+
+			hide();
+			paint(currentPos);
+			items[selected]->paint(true);
+		}
+		else if(msg == CRCInput::RC_down)
+		{
+			printf("msg: RC_down\n");
+
+			oldselected = selected;
+			int oldx = x;
+			int oldy = y;
+
+			// calculate xy
+			y += 1;
+			selected += 6;
+
+			printf("msg: RC_down: selected:%d\n", selected);
+
+			if(selected > (18*currentPage + itemsPerPage))
+			{
+				selected = currentPage*18 + x;
+				y = 0;
+				printf("msg: RC_down:check selected: (selected:%d)\n", selected);
+			}
+
+			// check y
+			if(y >= 3)
+			{
+				y = 0;
+				selected = 18*currentPage + x;
+				printf("msg: RC_down:check y (selected: %d)\n", selected);
+			}
+			
+			paintItemBox(oldx, oldy, x, y);
+
+			items[selected]->paint(true);
+		}
+		else if(msg == CRCInput::RC_up)
+		{
+			printf("msg: RC_up\n");
+
+			oldselected = selected;
+			int oldx = x;
+			int oldy = y;
+
+			y -= 1;
+			selected -= 6;
+
+			printf("msg: RC_up: selected:%d\n", selected);
+
+			if(selected < (18*currentPage))
+			{
+				selected += 6;
+				y += 1;
+				printf("msg: RC_up:check selected: (selected:%d)\n", selected);
+			}
+
+			// check y and calculate selected
+			if(y < 0)
+			{
+				y = 2;
+				selected = 18*currentPage + x + y*6;
+				printf("msg: RC_up:check y: (selected:%d)\n", selected);
+			}
+
+			paintItemBox(oldx, oldy, x, y);
+
+			items[selected]->paint(true);
+		}
+		//
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 		{
 			dprintf(DEBUG_NORMAL, "CSmartMenu::exec: getInstance\n");
@@ -2672,7 +2856,7 @@ int CMenuFrameBox::paint(bool selected, bool /*AfterPulldown*/)
 	// info (foot)
 	if(selected)
 	{
-		frameBuffer->paintBoxRel(itemBox.iX, itemBox.iY + itemBox.iHeight - 30, itemBox.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET + 80), 30, COL_BACKGROUND);
+		frameBuffer->paintBoxRel(itemBox.iX, itemBox.iY + itemBox.iHeight - 30, itemBox.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET + 80), 30, COL_BACKGROUND_PLUS_0);
 
 		const char * l_text = getName();
 

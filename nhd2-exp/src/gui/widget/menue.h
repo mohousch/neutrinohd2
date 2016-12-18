@@ -430,9 +430,9 @@ class CLockedMenuForwarderExtended : public CMenuForwarderExtended, public CPINP
 class CMenuWidget : public CMenuTarget
 {
 	protected:
+		CFrameBuffer *frameBuffer;
 		std::string nameString;
 		neutrino_locale_t name;
-		CFrameBuffer *frameBuffer;
 		std::vector<CMenuItem*>	items;
 		std::vector<unsigned int> page_start;
 		std::string iconfile;
@@ -549,6 +549,10 @@ class CSmartMenu : public CMenuTarget
 		int x;
 		int y;
 
+		unsigned int currentPos;
+		unsigned int itemsPerPage;
+		unsigned int currentPage;
+
 		std::string nameString;
 		neutrino_locale_t name;
 		std::vector<CMenuItem*>	items;
@@ -560,11 +564,9 @@ class CSmartMenu : public CMenuTarget
 		void paintHead(void);
 		void paintFoot(void);
 		void paintBody(void);
-		virtual void paintItems(int itemsCount = MAX_ITEMS_PER_PAGE);
+		virtual void paintItems(int pos = 0); // we start with index 0
 		
 		void paintItemBox(int oldposx = 0, int oldposy = 0, int posx = 0, int posy = 0);
-
-		int getSelected(){ return selected;};
 
 	public:
 		CSmartMenu();
@@ -575,12 +577,14 @@ class CSmartMenu : public CMenuTarget
 		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
 		bool hasItem();
 
-		void paint(int itemsCount = MAX_ITEMS_PER_PAGE);		
+		void paint(int pos = 0);		
         	void hide(void); 
 		
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
+
+		int getSelected(){ return selected;};
 
 };
 
