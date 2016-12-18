@@ -79,7 +79,7 @@ class cNKFeedParser
 
 		bool ParseFeed(nk_feed_mode_t mode, std::string search, int category);
 		bool ParseCategories(void);
-		bool DownloadThumbnails(unsigned int start, unsigned int end);
+		bool DownloadThumbnails(/*unsigned int start, unsigned int end*/);
 		void Cleanup();
 		void CleanupThumbnails();
 

@@ -45,11 +45,14 @@ void CNetzKinoBrowser::init(void)
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::init\n");
 	
 	initGlobalSettings();
+
+	/*
 	initFrameBox();
 
 	m_pcWindow = CFrameBuffer::getInstance();
 
 	initFrames();
+	*/
 
 	reload_movies = true;
 }
@@ -63,12 +66,15 @@ void CNetzKinoBrowser::initGlobalSettings(void)
 	m_settings.nkcategory = 8;	//8=Highlights, 81=neu bei Netzkino
 	m_settings.nkcategoryname = "Highlights";
 
+	/*
 	NKStart = 0;
 	NKEnd = MAX_ITEMS_PER_PAGE;
 
 	itemsCountPerPage = MAX_ITEMS_PER_PAGE;
+	*/
 }
 
+/*
 void CNetzKinoBrowser::initFrameBox(void)
 {
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::initFrameBox\n");
@@ -173,7 +179,7 @@ void CNetzKinoBrowser::paintBody(void)
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::paintBody\n");
 
 	// paint background
-	m_pcWindow->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, COL_BACKGROUND);
+	m_pcWindow->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, COL_BACKGROUND_PLUS_0);
 	
 	// paint horizontal line top
 	m_pcWindow->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + 35, COL_MENUCONTENT_PLUS_5);
@@ -215,7 +221,7 @@ void CNetzKinoBrowser::paintInfo(void)
 	dprintf(DEBUG_DEBUG, "CNetzKinoBrowser::paintInfo\n");
 
 	// refresh
-	m_pcWindow->paintBoxRel(Box.iX, Box.iY + Box.iHeight - 30, Box.iWidth/2, 30, COL_BACKGROUND);
+	m_pcWindow->paintBoxRel(Box.iX, Box.iY + Box.iHeight - 30, Box.iWidth/2, 30, COL_BACKGROUND_PLUS_0);
 
 	// info (foot)
 	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(Box.iX, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), Box.iWidth/2, m_vMovieInfo[selected].epgTitle, COL_MENUHEAD);
@@ -226,7 +232,7 @@ void CNetzKinoBrowser::paintItemBox(int oldposx, int oldposy, int posx, int posy
 	dprintf(DEBUG_DEBUG, "CNetzKinoBrowser::paintItemBox\n");
 
 	//refresh prev item
-	m_pcWindow->paintBoxRel(frameBox.iX + frameBox.iWidth*oldposx, frameBox.iY + frameBox.iHeight*oldposy, frameBox.iWidth, frameBox.iHeight, COL_BACKGROUND);
+	m_pcWindow->paintBoxRel(frameBox.iX + frameBox.iWidth*oldposx, frameBox.iY + frameBox.iHeight*oldposy, frameBox.iWidth, frameBox.iHeight, COL_BACKGROUND_PLUS_0);
 	std::string fname;
 
 	fname = PLUGINDIR "/netzkino/nopreview.jpg";
@@ -238,7 +244,9 @@ void CNetzKinoBrowser::paintItemBox(int oldposx, int oldposy, int posx, int posy
 
 	m_pcWindow->DisplayImage(file_exists(m_vMovieInfo[selected].tfile.c_str())? m_vMovieInfo[selected].tfile : fname, frameBox.iX + posx*frameBox.iWidth + 5, frameBox.iY + posy*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
 }
+*/
 
+/*
 void CNetzKinoBrowser::paint(int itemsCount)
 {
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::paint\n");
@@ -260,7 +268,22 @@ void CNetzKinoBrowser::paint(int itemsCount)
 
 	// info
 	paintInfo();
+
+	netzKino = new CSmartMenu("Netz Kino", NEUTRINO_ICON_NETZKINO_SMALL);
+
+	std::string fname = PLUGINDIR "/netzkino/nopreview.jpg";
+
+	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+	{
+		netzKino->addItem(new CMenuFrameBox(m_vMovieInfo[i].epgTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : fname.c_str()));
+	}
+
+	netzKino->exec(NULL, "");
+	netzKino->hide();
+	delete netzKino;
+	netzKino = NULL;
 }
+*/
 
 int CNetzKinoBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 {
@@ -268,6 +291,7 @@ int CNetzKinoBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 
 	int returnval = menu_return::RETURN_REPAINT;
 
+	/*
 	if(actionKey == "run")
 	{
 		if(parent) 
@@ -275,10 +299,37 @@ int CNetzKinoBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 		
 		exec();
 	}
+	*/
+
+	if(parent) 
+		parent->hide();
+
+	if(actionKey == "play")
+	{
+		CFile *file;
+		CMoviePlayerGui tmpMoviePlayerGui;
+		MI_MOVIE_INFO * p_movie_info;
+
+		if ((file = /*getSelectedFile()*/&m_vMovieInfo[netzKino->getSelected()].file) != NULL) 
+		{
+			p_movie_info = /*getCurrentMovieInfo()*/&m_vMovieInfo[netzKino->getSelected()];
+			
+			file->Title = p_movie_info->epgTitle;
+			file->Info1 = p_movie_info->epgInfo1;
+			file->Info2 = p_movie_info->epgInfo2;
+			file->Thumbnail = p_movie_info->tfile;
+	
+			tmpMoviePlayerGui.addToPlaylist(*file);
+			tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		}
+	}
+
+	showNKMenu();
 	
 	return returnval;
 }
 
+/*
 void CNetzKinoBrowser::hide(void)
 {
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::hide\n");
@@ -286,35 +337,67 @@ void CNetzKinoBrowser::hide(void)
 	m_pcWindow->paintBackground();
 	m_pcWindow->blit();
 }
+*/
 
 void CNetzKinoBrowser::loadMovies(void)
 {
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::loadMovies:\n");
 	
 	//first clear screen
-	m_pcWindow->paintBackground();
-	m_pcWindow->blit();	
+	//m_pcWindow->paintBackground();
+	//m_pcWindow->blit();	
 
 	CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	
 	loadBox.paint();
 
-	loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory, NKStart, NKEnd);
+	loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory);
 	
 	loadBox.hide();
 
 	reload_movies = false;
+
+	//
+	std::string title;
+	
+	title = g_Locale->getText(LOCALE_NETZKINO);
+	if (m_settings.nkmode == cNKFeedParser::SEARCH) 
+	{
+		title += ": ";
+		title += g_Locale->getText(LOCALE_YT_SEARCH);
+		title += " \"" + m_settings.nksearch + "\"";
+	} 
+	else if (m_settings.nkmode == cNKFeedParser::CATEGORY) 
+	{
+		title += ": ";
+		title += m_settings.nkcategoryname;
+	}
+
+	netzKino = new CSmartMenu(title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL);
+
+	std::string fname = PLUGINDIR "/netzkino/nopreview.jpg";
+
+	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+	{
+		netzKino->addItem(new CMenuFrameBox(m_vMovieInfo[i].epgTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : fname.c_str()));
+	}
+
+	netzKino->exec(NULL, "");
+	netzKino->hide();
+	delete netzKino;
+	netzKino = NULL;
+	//
 }
 
 //netzkino
-void CNetzKinoBrowser::loadNKTitles(int mode, std::string search, int id, unsigned int start, unsigned int end)
+void CNetzKinoBrowser::loadNKTitles(int mode, std::string search, int id/*, unsigned int start, unsigned int end*/)
 {
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::loadNKTitles:\n");
 
 	//
 	if (nkparser.ParseFeed((cNKFeedParser::nk_feed_mode_t)mode, search, id)) 
 	{
-		nkparser.DownloadThumbnails(start, end);
+		nkparser.DownloadThumbnails(/*start, end*/);
 	} 
 	else 
 	{
@@ -331,7 +414,8 @@ void CNetzKinoBrowser::loadNKTitles(int mode, std::string search, int id, unsign
 	//
 	videoListsize = ylist.size();
 	
-	for (unsigned int count = start; count < end && end <= ylist.size(); count++) 
+	//for (unsigned int count = start; count < end && end <= ylist.size(); count++) 
+	for (unsigned int count = 0; count < ylist.size(); count++) 
 	{
 		MI_MOVIE_INFO movieInfo;
 		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
@@ -349,6 +433,7 @@ void CNetzKinoBrowser::loadNKTitles(int mode, std::string search, int id, unsign
 	}
 }
 
+#if 0
 class CNKCategoriesMenu : public CMenuTarget
 {
 	private:
@@ -404,16 +489,29 @@ int CNKCategoriesMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 	return menu_return::RETURN_REPAINT;
 }
+#endif
   
 bool CNetzKinoBrowser::showNKMenu()
 {
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::showNKMenu:\n");
 
-	m_pcWindow->paintBackground();
+	//m_pcWindow->paintBackground();
 
 	CMenuWidget mainMenu(LOCALE_NETZKINO, NEUTRINO_ICON_NETZKINO_SMALL);
 	mainMenu.disableMenuPosition();
 
+	//
+	nk_category_list_t cats = nkparser.GetCategoryList();
+
+	for (unsigned i = 0; i < cats.size(); i++)
+	{
+		mainMenu.addItem(new CMenuForwarder(cats[i].title.c_str(), true, /*("(" + to_string(cats[i].post_count) + ")").c_str()*/NULL, this, to_string(i).c_str(), CRCInput::RC_nokey, PLUGINDIR "/netzkino/netzkino.png"), cats[i].id == m_settings.nkcategory);
+	}
+
+	mainMenu.exec(NULL, "");
+	//
+
+	/*
 	int select = -1;
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 
@@ -430,12 +528,14 @@ bool CNetzKinoBrowser::showNKMenu()
 
 	int oldcat = m_settings.nkcategory;
 	int oldmode = m_settings.nkmode;
+	*/
 
 	mainMenu.exec(NULL, "");
 
-	delete selector;
+	//delete selector;
 
-	bool reload = false;
+	/*
+	bool reload = true;
 	
 	dprintf(DEBUG_NORMAL, "select:%d\n", select);
 	
@@ -445,7 +545,7 @@ bool CNetzKinoBrowser::showNKMenu()
 		
 		if (!search.empty()) 
 		{
-			reload = true;
+			//reload = true;
 			m_settings.nksearch = search;
 			m_settings.nkmode = cNKFeedParser::SEARCH;
 		}
@@ -454,20 +554,25 @@ bool CNetzKinoBrowser::showNKMenu()
 	{
 		reload = true;
 	}
+	*/
 	
-	if (reload) 
+	//if (reload) 
 	{
+		/*
 		CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 		loadBox.paint();
 		nkparser.Cleanup();
-		loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory, NKStart, NKEnd);
+		loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory);
 		loadBox.hide();
+		*/
+
+		loadMovies();
 	}
 	
 	return true;
 }
 
-//
+/*
 int CNetzKinoBrowser::exec()
 {
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::exec:\n");
@@ -475,12 +580,13 @@ int CNetzKinoBrowser::exec()
 	bool res = false;
 
 	loadMovies();
+
 	if(videoListsize > MAX_ITEMS_PER_PAGE)
 		itemsCountPerPage = MAX_ITEMS_PER_PAGE;
 	else
 		itemsCountPerPage = videoListsize;
 
-	//initFrameBox();
+	initFrameBox();
 	
 	paint(getItemsCountPerPage());
 	
@@ -723,6 +829,7 @@ CFile * CNetzKinoBrowser::getSelectedFile(void)
 	else
 		return NULL;
 }
+*/
 
 // plugin API
 void plugin_init(void)
@@ -735,6 +842,7 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
+	/*
 	CMoviePlayerGui tmpMoviePlayerGui;
 	CNetzKinoBrowser * moviebrowser;
 	MI_MOVIE_INFO * p_movie_info;
@@ -770,7 +878,16 @@ BROWSER:
 		}
 	}
 						
-	delete moviebrowser;				
+	delete moviebrowser;
+	*/
+
+	CNetzKinoBrowser * NKHandler = new CNetzKinoBrowser();
+	
+	//NKHandler->showNKMenu();
+	NKHandler->loadMovies();
+	
+	delete NKHandler;
+	NKHandler = NULL;			
 }
 
 

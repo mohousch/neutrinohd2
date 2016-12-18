@@ -41,6 +41,7 @@ typedef struct
 class CNetzKinoBrowser : public CMenuTarget
 {
 	private:
+		/*
 		CFrameBuffer * m_pcWindow;
 		CBox Box;
 		CBox frameBox;
@@ -52,6 +53,7 @@ class CNetzKinoBrowser : public CMenuTarget
 		int y;
 
 		int itemsCountPerPage;
+		*/
 		
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
 		
@@ -61,8 +63,12 @@ class CNetzKinoBrowser : public CMenuTarget
 
 		bool reload_movies;
 
+		//
 		void init(void); 
 		void initGlobalSettings(void); 
+
+		/*
+		//
 		void initFrames(void);
 		void initFrameBox(void);
 		void paintHead(void);
@@ -72,20 +78,20 @@ class CNetzKinoBrowser : public CMenuTarget
 		void paintInfo(void);
 		void paintItemBox(int oldposx = 0, int oldposy = 0, int posx = 0, int posy = 0);
 		void paint(int itemsCount = MAX_ITEMS_PER_PAGE);
-		
         	void hide(void); 
+		*/
 		
-		void loadMovies();
+		//void loadMovies();
 		
 		// netzkino		
 		cNKFeedParser nkparser;
 		std::string nkcategory_name;
 		
-		void loadNKTitles(int mode, std::string search, int id, unsigned int start, unsigned int end);
-		bool showNKMenu();
+		void loadNKTitles(int mode, std::string search, int id/*, unsigned int start, unsigned int end*/);
+		//bool showNKMenu();
 		int videoListsize;
 		
-		int NKStart, NKEnd;
+		//int NKStart, NKEnd;
 		
 	public:
 		CNetzKinoBrowser();
@@ -93,12 +99,16 @@ class CNetzKinoBrowser : public CMenuTarget
 		
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 
-		CFile * getSelectedFile(void); 
-		int exec();
-		int getSelected(){ return selected;};
-		int getItemsCountPerPage(){ return itemsCountPerPage;};
+		//CFile * getSelectedFile(void); 
+		//int exec();
+		//int getSelected(){ return selected;};
+		//int getItemsCountPerPage(){ return itemsCountPerPage;};
 
-		MI_MOVIE_INFO* getCurrentMovieInfo(void){return(&m_vMovieInfo[selected]);};
+		//MI_MOVIE_INFO* getCurrentMovieInfo(void){return(&m_vMovieInfo[selected]);};
+
+		CSmartMenu * netzKino;
+		bool showNKMenu();
+		void loadMovies();
 };
 
 #endif //__NK__

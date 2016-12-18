@@ -245,7 +245,7 @@ bool cNKFeedParser::ParseCategories(void)
 	return !categories.empty();
 }
 
-bool cNKFeedParser::DownloadThumbnails(unsigned start, unsigned end)
+bool cNKFeedParser::DownloadThumbnails(/*unsigned start, unsigned end*/)
 {
 	dprintf(DEBUG_NORMAL, "DownloadThumbnails:\n");
 	
@@ -258,7 +258,8 @@ bool cNKFeedParser::DownloadThumbnails(unsigned start, unsigned end)
 	
 	if(videos.size() > 0)
 	{
-		for (unsigned int i = start; i < end; i++)
+		//for (unsigned int i = start; i < end; i++)
+		for (unsigned int i = 0; i < videos.size(); i++)
 		{
 			bool found = false;
 			
