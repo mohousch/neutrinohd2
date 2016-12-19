@@ -40,6 +40,11 @@
 #include <global.h>
 
 
+#define MAIN_URL  	"http://www.netzkino.de/capi/"
+#define HLS_URL		"http://mf.netzkinomobil.c.nmdn.net/netzkino_mobil/_definst_/mp4:" //%s/playlist.m3u8
+#define RTMP_URL 	"rtmp://mf.netzkino.c.nmdn.net/netzkino/_definst_/mp4:"
+#define	MP4_URL 	"http://dl.netzkinotv.c.nmdn.net/netzkino_tv/"
+
 cNKFeedParser::cNKFeedParser()
 {
 	thumbnail_dir = "/tmp/netzkino";
@@ -161,8 +166,20 @@ bool cNKFeedParser::parseFeedJSON(std::string &answer)
 			{
 				if (v[_i].type() == Json::stringValue)
 				{
-					//vinfo.url = "http://pmd.netzkino-and.netzkino.de/" + v[_i].asString() + ".mp4";
-					vinfo.url = "http://dl.netzkinotv.c.nmdn.net/netzkino-tv/" + v[_i].asString() + ".mp4";
+					//vinfo.url = "http://pmd.netzkino-and.netzkino.de/";
+					//vinfo.url += v[_i].asString();
+					//vinfo.url + ".mp4";
+
+					vinfo.url = MP4_URL;
+					vinfo.url += v[_i].asString();
+					vinfo.url += ".mp4";
+
+					//vinfo.url = RTMP_URL;
+					//vinfo.url += v[_i].asString();
+
+					//vinfo.url += HLS_URL;
+					//vinfo.url += v[_i].asString();
+					//vinfo.url += "/playlist.m3u8";
 				}
 			}
 		}
@@ -207,7 +224,7 @@ bool cNKFeedParser::ParseFeed(nk_feed_mode_t mode, std::string search, int categ
 	if(parsed)
 		return true;
 	
-	std::string url = "http://www.netzkino.de/capi/";
+	std::string url = MAIN_URL;
 	
 	/*
 	if (mode == SEARCH) 
@@ -243,7 +260,8 @@ bool cNKFeedParser::ParseCategories(void)
 	
 	if (categories.empty()) 
 	{
-		std::string url = "http://www.netzkino.de/capi/get_category_index";
+		std::string url = MAIN_URL;
+		url += "get_category_index";
 		std::string answer;
 		
 		if (!::getUrl(url, answer))
