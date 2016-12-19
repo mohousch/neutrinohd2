@@ -161,7 +161,8 @@ bool cNKFeedParser::parseFeedJSON(std::string &answer)
 			{
 				if (v[_i].type() == Json::stringValue)
 				{
-					vinfo.url = "http://pmd.netzkino-and.netzkino.de/" + v[_i].asString() + ".mp4";
+					//vinfo.url = "http://pmd.netzkino-and.netzkino.de/" + v[_i].asString() + ".mp4";
+					vinfo.url = "http://dl.netzkinotv.c.nmdn.net/netzkino-tv/" + v[_i].asString() + ".mp4";
 				}
 			}
 		}
@@ -208,6 +209,7 @@ bool cNKFeedParser::ParseFeed(nk_feed_mode_t mode, std::string search, int categ
 	
 	std::string url = "http://www.netzkino.de/capi/";
 	
+	/*
 	if (mode == SEARCH) 
 	{
 		if (search.empty())
@@ -223,6 +225,14 @@ bool cNKFeedParser::ParseFeed(nk_feed_mode_t mode, std::string search, int categ
 		return false;
 	
 	url += "&custom_fields=Streaming&count=" + to_string(max_results) + "d&";
+	*/
+
+	//
+	url += "get_category_posts";
+	url += "?count=" + to_string(max_results);
+	url += "&id=" + to_string(category);
+	url += "&custom_fields=Streaming";
+	//
 
 	return ParseFeed(url);
 }
