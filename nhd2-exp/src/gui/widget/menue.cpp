@@ -2616,12 +2616,11 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 		}
 		else if (msg == CRCInput::RC_page_up) 
 		{
-			currentPos += 18;
-
 			printf("msg page_up\n");
 
 			if(currentPos < items.size())
 			{
+				currentPos += 18;
 				currentPage += 1;
 
 				// calculate itemsPerPage
@@ -2630,13 +2629,14 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 				else
 					itemsPerPage = 18;
 
-				printf("msg page_down:currentPos:%d (currentPage:%d)\n", currentPos, currentPage);
+				// recalculate currentPos and itemsPerPage
+				if(currentPos > items.size())
+				{
+					currentPos -= 17;
+					itemsPerPage = items.size() - (currentPage -1)*18;
+				}
 
-				// check currentPos
-				//if(currentPos > items.size())
-				//	currentPos -= MAX_ITEMS_PER_PAGE;
-
-				printf("msg page_down:currentPos(afterCheck):%d (currentPage:%d)\n", currentPos, currentPage);
+				printf("msg page_up:currentPos(afterCheck):%d (currentPage:%d) (itemsPerPage:%d)\n", currentPos, currentPage, itemsPerPage);
 
 				// reset
 				selected = currentPos;
@@ -2648,40 +2648,44 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 				items[selected]->paint(true);
 			}
 
-			currentPos -= 18;
+			//currentPos -= 18;
 		}
 		else if (msg == CRCInput::RC_page_down) 
 		{
 			printf("msg page_down\n");
-			currentPage -= 1;
 
-			if (currentPage <= -1)
-				currentPage = 0;
+			if(currentPage > 0)
+			{
+				currentPage -= 1;
 
-			currentPos -= MAX_ITEMS_PER_PAGE;
+				if (currentPage < 0)
+					currentPage = 0;
 
-			// calculate itemsPerPage
-			itemsPerPage = 18;
+				currentPos -= 18;
 
-			if(items.size() < 18)
-				itemsPerPage = items.size();
+				// calculate itemsPerPage
+				itemsPerPage = 18;
 
-			printf("msg page_down:currentPos:%d (currentPage:%d)\n", currentPos, currentPage);
+				if(items.size() < 18)
+					itemsPerPage = items.size();
 
-			// check currentPos
-			if (currentPos <= -1)
-				currentPos = 0;
+				printf("msg page_down:currentPos:%d (currentPage:%d) (itemsPerPage:%d)\n", currentPos, currentPage, itemsPerPage);
 
-			printf("msg page_down: currentPos(after check):%d (currentPage:%d)\n", currentPos, currentPage);
+				// check currentPos
+				if (currentPos < 0)
+					currentPos = 0;
 
-			// reset
-			selected = currentPos;
-			x = 0;
-			y = 0;
+				printf("msg page_down: currentPos(after check):%d (currentPage:%d) (itemsPerPage:%d)\n", currentPos, currentPage, itemsPerPage);
 
-			hide();
-			paint(currentPos);
-			items[selected]->paint(true);
+				// reset
+				selected = currentPos;
+				x = 0;
+				y = 0;
+
+				hide();
+				paint(currentPos);
+				items[selected]->paint(true);
+			}
 		}
 		else if(msg == CRCInput::RC_down)
 		{
