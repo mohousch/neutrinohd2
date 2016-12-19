@@ -88,6 +88,8 @@ class CMenuItem
 		neutrino_msg_t msg;
 		bool can_arrow;
 		std::string iconName;
+		std::string title;
+		std::string helpText;
 
 		CMenuItem()
 		{
@@ -552,6 +554,7 @@ class CSmartMenu : public CMenuTarget
 		unsigned int currentPos;
 		unsigned int itemsPerPage;
 		unsigned int currentPage;
+		unsigned int totalPages;
 
 		std::string nameString;
 		neutrino_locale_t name;
@@ -601,13 +604,14 @@ class CMenuFrameBox : public CMenuItem
 		std::string textString;
 		neutrino_locale_t text;
 		std::string itemIcon;
+		std::string itemHelpText;
 
 		virtual const char * getName(void);
 		
 	public:
 
-		CMenuFrameBox(const neutrino_locale_t Text, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const char * const ItemIcon = NULL);
-		CMenuFrameBox(const char * const Text, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const char * const ItemIcon = NULL);
+		CMenuFrameBox(const neutrino_locale_t Text, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const char * const ItemIcon = NULL, const char* const HelpText = NULL);
+		CMenuFrameBox(const char * const Text, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const char * const ItemIcon = NULL, const char* const HelpText = NULL);
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;

@@ -35,6 +35,9 @@
 #include <config.h>
 #endif
 
+#include <unistd.h> //acces
+#include <cctype>
+
 #include <gui/widget/menue.h>
 
 #include <driver/fontrenderer.h>
@@ -47,8 +50,7 @@
 #include <global.h>
 #include <neutrino.h>
 #include <gui/widget/icons.h>
-
-#include <cctype>
+#include <gui/widget/infobox.h>
 
 #include <system/debug.h>
 
@@ -2327,11 +2329,11 @@ void CSmartMenu::paintFoot(void)
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_LEFT, &iw, &ih);
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, Box.iX + Box.iWidth - BORDER_RIGHT - 2*iw - 2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
 	
-	//frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_TOP, &iw, &ih);
-	//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_TOP, Box.iX + Box.iWidth - BORDER_RIGHT - 3*iw - 2*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_TOP, &iw, &ih);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_TOP, Box.iX + Box.iWidth - BORDER_RIGHT - 3*iw - 2*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
 	
-	//frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_DOWN, &iw, &ih);
-	//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_DOWN, Box.iX + Box.iWidth - BORDER_RIGHT - 4*iw - 3*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_DOWN, &iw, &ih);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_DOWN, Box.iX + Box.iWidth - BORDER_RIGHT - 4*iw - 3*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
 }
 
 void CSmartMenu::paintBody(void)
@@ -2418,7 +2420,7 @@ void CSmartMenu::paint(int pos)
 	paintItems(pos);
 
 	// info
-	items[selected]->paint(true);
+	items[pos]->paint(true);
 }
 
 void CSmartMenu::hide(void)
@@ -2438,21 +2440,23 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 	if (parent)
 		parent->hide();
 
-	//
+	// init variables
 	currentPos = 0;
 	itemsPerPage = 0;
 	currentPage = 0;
+	totalPages = 1;
 
 	if(items.size() > 18)
 		itemsPerPage = 18;
 	else
 		itemsPerPage = items.size();
-	
-	// Items
-	paint(currentPos);
 
-	// Foot Info
-	items[selected]->paint(true);
+	// calculate totalPages
+	if(items.size() > 18)
+		totalPages = items.size() / 18;
+	
+	// paint first page
+	paint(currentPos);
 	
 	// blit all
 	frameBuffer->blit();
@@ -2620,7 +2624,7 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 		{
 			printf("msg page_up\n");
 
-			if(currentPos < items.size())
+			if(currentPos < items.size() && currentPage < totalPages)
 			{
 				currentPos += 18;
 				currentPage += 1;
@@ -2634,7 +2638,7 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 				// recalculate currentPos and itemsPerPage
 				if(currentPos > items.size())
 				{
-					currentPos -= 17;
+					currentPos -= 18;
 					itemsPerPage = items.size() - (currentPage -1)*18;
 				}
 
@@ -2649,8 +2653,6 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 				paint(currentPos);
 				items[selected]->paint(true);
 			}
-
-			//currentPos -= 18;
 		}
 		else if (msg == CRCInput::RC_page_down) 
 		{
@@ -2751,6 +2753,59 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 
 			items[selected]->paint(true);
 		}
+		else if(msg == CRCInput::RC_info)
+		{
+			if (!items[selected]->helpText.empty())
+			{
+				hide();
+
+				CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+				CInfoBox * infoBox = new CInfoBox(items[selected]->helpText.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, items[selected]->title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_MOVIE);
+
+				// icon
+				int picw = 320; //FIXME
+				int pich = 256;	//FIXME
+
+				int p_w = 0;
+				int p_h = 0;
+				int nbpp = 0;
+
+				if(!access(items[selected]->iconName.c_str(), F_OK))
+				{
+					CFrameBuffer::getInstance()->getSize(items[selected]->iconName, &p_w, &p_h, &nbpp);
+
+					// scale
+					if(p_w <= picw && p_h <= pich)
+					{
+						picw = p_w;
+						pich = p_h;
+					}
+					else
+					{
+						float aspect = (float)(p_w) / (float)(p_h);
+					
+						if (((float)(p_w) / (float)picw) > ((float)(p_h) / (float)pich)) 
+						{
+							p_w = picw;
+							p_h = (int)(picw / aspect);
+						}
+						else
+						{
+							p_h = pich;
+							p_w = (int)(pich * aspect);
+						}
+					}
+				}
+
+				infoBox->setText(&items[selected]->helpText, items[selected]->iconName, p_w, p_h);
+				infoBox->exec();
+				delete infoBox;
+
+				// Items
+				paint(currentPos);
+			}
+		}
 		//
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 		{
@@ -2780,7 +2835,7 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 }
 
 // CMenuFrameBox
-CMenuFrameBox::CMenuFrameBox(const neutrino_locale_t Text, CMenuTarget* Target, const char * const ActionKey, const char * const ItemIcon)
+CMenuFrameBox::CMenuFrameBox(const neutrino_locale_t Text, CMenuTarget* Target, const char * const ActionKey, const char * const ItemIcon, const char* const HelpText)
 {
 	textString = g_Locale->getText(Text);
 	text = Text;
@@ -2792,9 +2847,13 @@ CMenuFrameBox::CMenuFrameBox(const neutrino_locale_t Text, CMenuTarget* Target, 
 	
 	itemIcon = ItemIcon ? ItemIcon : "";
 	iconName = itemIcon;
+
+	itemHelpText = HelpText? HelpText : "";
+	helpText = itemHelpText;
+	title = g_Locale->getText(Text);
 }
 
-CMenuFrameBox::CMenuFrameBox(const char * const Text, CMenuTarget* Target, const char * const ActionKey, const char * const ItemIcon)
+CMenuFrameBox::CMenuFrameBox(const char * const Text, CMenuTarget* Target, const char * const ActionKey, const char * const ItemIcon, const char* const HelpText)
 {
 	textString = Text;
 	text = NONEXISTANT_LOCALE;
@@ -2806,6 +2865,10 @@ CMenuFrameBox::CMenuFrameBox(const char * const Text, CMenuTarget* Target, const
 	
 	itemIcon = ItemIcon ? ItemIcon : "";
 	iconName = itemIcon;
+
+	itemHelpText = HelpText? HelpText : "";
+	helpText = itemHelpText;
+	title = Text;
 }
 
 int CMenuFrameBox::getHeight(void) const

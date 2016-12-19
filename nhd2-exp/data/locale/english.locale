@@ -1620,6 +1620,7 @@ youtube.yt_orderby.viewcount view count
 netzkino.netzkino Netzkino
 netzkino.nk_error Failed to load Netzkino categories
 netzkino.nk_categories Select category
+netzkino.nk_scan_for_categories Scan for Categories
 
 glcd.color.black Black
 glcd.color.blue Blue

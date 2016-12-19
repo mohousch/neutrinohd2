@@ -24,10 +24,12 @@
 #include <plugin.h>
 #include <nkparser.h>
 
-
+/*
 #define MAX_ITEMS_PER_PAGE	18
 #define MAX_ITEMS_PER_X		6
 #define MAX_ITEMS_PER_Y		3
+
+#define NKBROWSER_SETTINGS_FILE          PLUGINDIR "/netzkino/nk.conf"
 
 typedef struct
 {
@@ -37,78 +39,49 @@ typedef struct
 	std::string nkcategoryname;
 	std::string nksearch;
 }NKB_SETTINGS;
+*/
 
 class CNetzKinoBrowser : public CMenuTarget
 {
 	private:
-		/*
-		CFrameBuffer * m_pcWindow;
-		CBox Box;
-		CBox frameBox;
-
-		int selected;
-		int oldselected;
-
-		int x;
-		int y;
-
-		int itemsCountPerPage;
-		*/
-		
-		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
-		
-		NKB_SETTINGS m_settings;
-		
-		CMovieInfo m_movieInfo;
-
-		bool reload_movies;
-
-		//
-		void init(void); 
-		void initGlobalSettings(void); 
-
-		/*
-		//
-		void initFrames(void);
-		void initFrameBox(void);
-		void paintHead(void);
-		void paintFoot(void);
-		void paintBody(void);
-		void paintItems(int itemsCount = MAX_ITEMS_PER_PAGE);
-		void paintInfo(void);
-		void paintItemBox(int oldposx = 0, int oldposy = 0, int posx = 0, int posy = 0);
-		void paint(int itemsCount = MAX_ITEMS_PER_PAGE);
-        	void hide(void); 
-		*/
-		
-		//void loadMovies();
-		
-		// netzkino		
+		// 		
 		cNKFeedParser nkparser;
-		std::string nkcategory_name;
-		
-		void loadNKTitles(int mode, std::string search, int id/*, unsigned int start, unsigned int end*/);
-		//bool showNKMenu();
-		int videoListsize;
-		
-		//int NKStart, NKEnd;
-		
+		nk_category_list_t cats;
+
+		//
+		void showNKCategoriesMenu();
+
 	public:
 		CNetzKinoBrowser();
 		~CNetzKinoBrowser();
 		
 		int exec(CMenuTarget* parent, const std::string& actionKey);
+};
 
-		//CFile * getSelectedFile(void); 
-		//int exec();
-		//int getSelected(){ return selected;};
-		//int getItemsCountPerPage(){ return itemsCountPerPage;};
+class CNKMovies : public CMenuTarget
+{
+	private:
+		//
+		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
+		CMovieInfo m_movieInfo;
 
-		//MI_MOVIE_INFO* getCurrentMovieInfo(void){return(&m_vMovieInfo[selected]);};
+		//
+		cNKFeedParser nkparser;
+		std::string nkcategory_name;
 
-		CSmartMenu * netzKino;
-		bool showNKMenu();
-		void loadMovies();
+		//
+		int catID;
+		std::string caption;
+
+		CSmartMenu* moviesMenu;
+
+		void loadNKTitles(int mode, std::string search, int id);
+
+		void showNKMoviesMenu();
+	public:
+		CNKMovies(int id, std::string& title);
+		~CNKMovies();
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 #endif //__NK__
