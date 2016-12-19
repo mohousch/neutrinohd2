@@ -2456,6 +2456,8 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 	
 	// blit all
 	frameBuffer->blit();
+
+	printf("(items.size():%d) (itemsPerPage:%d) (currentPage:%d) (currentPos:%d) (selected:%d)\n", items.size(), itemsPerPage, currentPage, currentPos, selected);
 	
 	// loop
 	neutrino_msg_t      msg;
@@ -2697,24 +2699,18 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 
 			// calculate xy
 			y += 1;
-			selected += 6;
-
-			printf("msg: RC_down: selected:%d\n", selected);
-
-			if(selected > (18*currentPage + itemsPerPage))
-			{
-				selected = currentPage*18 + x;
-				y = 0;
-				printf("msg: RC_down:check selected: (selected:%d)\n", selected);
-			}
 
 			// check y
 			if(y >= 3)
 			{
 				y = 0;
 				selected = 18*currentPage + x;
-				printf("msg: RC_down:check y (selected: %d)\n", selected);
+				printf("msg: RC_down:check y (selected: %d)(y:%d)\n", selected, y);
 			}
+			else
+				selected += 6;
+
+			printf("msg: RC_down: (selected:%d) (y:%d)\n", selected, y);
 			
 			paintItemBox(oldx, oldy, x, y);
 
@@ -2729,24 +2725,27 @@ int CSmartMenu::exec(CMenuTarget * parent, const std::string & actionKey)
 			int oldy = y;
 
 			y -= 1;
-			selected -= 6;
-
-			printf("msg: RC_up: selected:%d\n", selected);
-
-			if(selected < (18*currentPage))
-			{
-				selected += 6;
-				y += 1;
-				printf("msg: RC_up:check selected: (selected:%d)\n", selected);
-			}
 
 			// check y and calculate selected
 			if(y < 0)
 			{
-				y = 2;
+				if(itemsPerPage == 6)
+					y = 0;
+				else if(itemsPerPage == 12)
+					y = 1;
+				else if(itemsPerPage == 18)
+					y = 2;
+				else
+					y = 0;
+
+				// recalculate selected
 				selected = 18*currentPage + x + y*6;
-				printf("msg: RC_up:check y: (selected:%d)\n", selected);
+				printf("msg: RC_up:check y: (selected:%d) (y:%d)\n", selected, y);
 			}
+			else
+				selected -= 6;
+
+			printf("msg: RC_up: (itemsPerPage:%d) (selected:%d) (y:%d)\n", itemsPerPage, selected, y);
 
 			paintItemBox(oldx, oldy, x, y);
 
