@@ -3772,35 +3772,11 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	
 	int stringstartposX = x + (offx == 0 ? 0 : offx);
 
-	const char * option_text = getOption();
+	const char* option_text = getOption();
 	
+	// VFD
 	if (selected)
 	{
-		/*
-		//help bar
-		int icon_foot_w = 0;
-		int icon_foot_h = 0;
-		frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_foot_w, &icon_foot_h);
-		int fheight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
-		int fposy = HEIGHT_Y - fheight;
-		
-		// refresh
-		frameBuffer->paintBoxRel(x - BORDER_LEFT, fposy, FULL_WIDTH, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
-			
-		// paint help icon
-		int icon_w = 0;
-		int icon_h = 0;
-		
-		frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_w, &icon_h);
-			
-		frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x, fposy + (fheight - icon_h)/2);
-			
-		// help text locale
-		const char * help_text = getName();
-			
-		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + icon_w + ICON_OFFSET, fposy + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), dx - (x + (offx == 0? 0 : offx) + BORDER_LEFT + icon_w + ICON_OFFSET - x), help_text, COL_MENUFOOT, 0, true); // UTF-8
-		*/
-		
 		// vfd
 		char str[256];
 
@@ -3844,6 +3820,8 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		
 		frameBuffer->paintIcon(iconName, x + ICON_OFFSET, y + (height - icon_h)/2 );
 	}
+	// no need for direkt key
+	/*
 	else if (CRCInput::isNumeric(directKey))
 	{
 		//define icon name depends of numeric value
@@ -3862,6 +3840,7 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		else
 			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + ICON_OFFSET, y + height, height, CRCInput::getKeyName(directKey), color, height);
 	}
+	*/
 	
 	// locale text
 	stringstartposX = x + ICON_OFFSET + (icon_w? icon_w + LOCAL_OFFSET : 0);
@@ -3871,9 +3850,9 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	if (option_text != NULL)
 	{
 		int stringwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(option_text, true);
-		int stringstartposOption = std::max(stringstartposX + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true), x + dx - (stringwidth + ICON_OFFSET)); //+ offx
+		int stringstartposOption = stringstartposX + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true) + 2*LOCAL_OFFSET/*std::max(stringstartposX + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true), x + dx - (stringwidth + ICON_OFFSET))*/; //+ offx
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(stringstartposOption, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), dx - (stringstartposOption- x),  option_text, color, 0, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(stringstartposOption, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), dx - (stringstartposOption- x),  option_text, /*color*/COL_COLORED_EVENTS_CHANNELLIST, 0, true);
 	}
 	
 	return y + height;

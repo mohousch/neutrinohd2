@@ -1594,9 +1594,15 @@ void CTestMenu::testCMenuWidgetListBox()
 
 	Channels = &g_bouquetManager->Bouquets[0]->tvChannels;
 
+	std::string title;
+
 	for(unsigned int i = 0; i< Channels->size(); i++)
 	{
-		listMenu->addItem(new CMenulistBoxItem((*Channels)[i]->getName().c_str(), true, NULL, this, "zapit"));
+		title = to_string(i + 1);
+		title += " ";
+		title += (*Channels)[i]->getName().c_str();
+
+		listMenu->addItem(new CMenulistBoxItem(/*(*Channels)[i]->getName().c_str()*/title.c_str(), true, " - testCMenulistBox", this, "zapit"));
 	}
 
 	listMenu->setFooter(Buttons, BUTTONS_COUNT);
