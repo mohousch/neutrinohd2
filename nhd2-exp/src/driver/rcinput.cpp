@@ -1664,195 +1664,195 @@ const char * CRCInput::getSpecialKeyName(const unsigned int key)
 	switch(key)
 	{
 		case RC_standby:
-			return "standby";
+			return "RC_standby";
 				
 		case RC_home:
-			return "home";
+			return "RC_home";
 
 		case RC_setup:
-			return "setup";
+			return "RC_setup";
 
 		case RC_red:
-			return "red button";
+			return "RC_red";
 				
 		case RC_green:
-			return "green button";
+			return "RC_green";
 				
 		case RC_yellow:
-			return "yellow button";
+			return "RC_yellow";
 				
 		case RC_blue:
-			return "blue button";
+			return "RC_blue";
 				
 		case RC_page_up:
-			return "page up";
+			return "RC_page_up";
 				
 		case RC_page_down:
-			return "page down";
+			return "RC_page_down";
 				
 		case RC_up:
-			return "cursor up";
+			return "RC_up";
 				
 		case RC_down:
-			return "cursor down";
+			return "RC_down";
 				
 		case RC_left:
-			return "cursor left";
+			return "RC_left";
 				
 		case RC_right:
-			return "cursor right";
+			return "RC_right";
 				
 		case RC_ok:
-			return "ok";
+			return "RC_ok";
 				
 		case RC_plus:
-			return "vol+";
+			return "RC_plus";
 				
 		case RC_minus:
-			return "vol-";
+			return "RC_minus";
 				
 		case RC_spkr:
-			return "mute";
+			return "RC_spkr";
 				
 		case RC_info:
-			return "info";
+			return "RC_info";
 
 		case RC_audio:
-			return "audio";
+			return "RC_audio";
 				
 		case RC_video:
-			return "video";
+			return "RC_video";
 		
 		case RC_picture:
-			return "picture";
+			return "RC_picture";
 				
 		case RC_music:
-			return "music";			
+			return "RC_music";			
 
 		case RC_text:
-			return "text";
+			return "RC_text";
 
 		case RC_epg:
-			return "epg";
+			return "RC_epg";
 				
 		case RC_recall:
-			return "recall";
+			return "RC_recall";
 				
 		case RC_favorites:
-			return "favorites";
+			return "RC_favorites";
 				
 		case RC_sat:
-			return "sat";
+			return "RC_sat";
 				
 		case RC_play:
-			return "play";
+			return "RC_play";
 				
 		case RC_stop:
-			return "stop";
+			return "RC_stop";
 				
 		case RC_forward:
-			return "forward";
+			return "RC_forward";
 				
 		case RC_rewind:
-			return "rewind";
+			return "RC_rewind";
 				
 		case RC_timeshift:
-			return "timeshift";
+			return "RC_timeshift";
 
 		case RC_mode:
-			return "mode";
+			return "RC_mode";
 				
 		case RC_record:
-			return "record";
+			return "RC_record";
 				
 		case RC_pause:
-			return "pause";
+			return "RC_pause";
 				
 		case RC_repeat:
-			return "repeat";
+			return "RC_repeat";
 				
 		case RC_slow:
-			return "slow";			
+			return "RC_slow";			
 
 		case RC_next:
-			return "next";
+			return "RC_next";
 				
 		case RC_prev:
-			return "prev";
+			return "RC_prev";
 
 		case RC_dvbsub:
-			return "dvbsub";
+			return "RC_dvbsub";
 				
 		case RC_pip:
-			return "pip";
+			return "RC_pip";
 				
 		case RC_pippos:
-			return "pippos";
+			return "RC_pippos";
 				
 		case RC_pipswap:
-			return "pipswap";
+			return "RC_pipswap";
 				
 		case RC_pipsubch:
-			return "pipsubch";
+			return "RC_pipsubch";
 				
 		case RC_bookmark:
-			return "bookmark";
+			return "RC_bookmark";
 				
 		case RC_net:
-			return "inet";
+			return "RC_net";
 
 		case RC_multifeed:
-			return "multifeed";
+			return "RC_multifeed";
 			
 		case RC_f1:
-			return "f1";
+			return "RC_f1";
 					
 		case RC_f2:
-			return "f2";
+			return "RC_f2";
 			
 		case RC_f3:
-			return "f3";
+			return "RC_f3";
 			
 		case RC_f4:
-			return "f4";
+			return "RC_f4";
 			
 		//case RC_aspect:
-		//	return "aspect";			
+		//	return "RC_aspect";			
 				
 		/* VFD Tasten the generic values are from cuberevo so fix it */
 		case RC_vfdup:
-			return "vfdup";
+			return "RC_vfdup";
 				
 		case RC_vfddown:
-			return "vfddown";
+			return "RC_vfddown";
 				
 		case RC_vfdright:
-			return "vfdright";
+			return "RC_vfdright";
 				
 		case RC_vfdleft:
-			return "vfdleft";
+			return "RC_vfdleft";
 				
 		case RC_vfdpower:
-			return "vfdpower";
+			return "RC_vfdpower";
 				
 		case RC_vfdmenu:
-			return "vfdmenu";
+			return "RC_vfdmenu";
 				
 		case RC_vfdexit:
-			return "vfdexit";
+			return "RC_vfdexit";
 				
 		case RC_vfdok:
-			return "vfdok";
+			return "RC_vfdok";
 
 		case RC_timeout:
-			return "timeout";
+			return "RC_timeout";
 
 		case RC_nokey:
-			return "none";
+			return "RC_none";
 			
 		default:
-			printf("unknown key: 0x%x\n", key);
-			return "unknown";
+			//printf("CRCInput::getSpecialKeyName: unknown key: 0x%x\n", key);
+			return "RC_unknown";
 	}
 }
 

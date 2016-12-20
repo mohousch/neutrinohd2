@@ -166,7 +166,7 @@ void CNeutrinoApp::classicMenu(void)
 {
 	int shortcut = 1;
 
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::classicMenu\n");
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::classicMenu:\n");
 
 	CMenuWidget * classicMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
 	  

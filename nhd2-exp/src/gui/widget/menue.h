@@ -35,12 +35,16 @@
 #ifndef __MENU__
 #define __MENU__
 
-#include <driver/framebuffer.h>
-#include <driver/rcinput.h>
-#include <system/localize.h>
-
 #include <string>
 #include <vector>
+
+#include <driver/framebuffer.h>
+#include <driver/rcinput.h>
+
+#include <system/localize.h>
+#include <system/helpers.h>
+
+#include <gui/widget/buttons.h>
 
 
 #define MENU_WIDTH			DEFAULT_XRES/2 - 50
@@ -619,6 +623,139 @@ class CMenuFrameBox : public CMenuItem
 		int getWidth(void) const;
 
 		int exec(CMenuTarget * parent, const std::string& actionKey);
+		bool isSelectable(void) const
+		{
+			return active;
+		}
+};
+
+/// CMenulistBox
+class CMenulistBox : public CMenuTarget
+{
+	protected:
+		//
+		CFrameBuffer *frameBuffer;
+
+		//
+		std::string nameString;
+		neutrino_locale_t name;
+		std::vector<CMenuItem*>	items;
+		std::vector<unsigned int> page_start;
+		std::string iconfile;
+
+		int width;
+		int height;
+		int wanted_height;
+		int x;
+		int y;
+		int offx, offy;
+		int iconOffset;
+		unsigned int item_start_y;
+		unsigned int current_page;
+		unsigned int total_pages;
+		
+		int selected;
+		bool exit_pressed;
+		
+		fb_pixel_t * background;
+		int full_width;
+		int full_height;
+		bool savescreen;
+		
+		void Init(const std::string & Icon, const int mwidth, const int mheight);
+		virtual void paintItems();
+		
+		void saveScreen();
+		void restoreScreen();
+		
+		int hheight;
+		int fheight;
+		int item_height;
+		int item_width;
+		int sb_width;
+		int itemHeightTotal;
+		int heightCurrPage;
+		int items_height;
+		int items_width;
+		int heightFirstPage;
+
+		//bool disableMenuPos;
+
+		//
+		int fbutton_count;
+		const struct button_label* fbutton_labels;
+
+		//
+		bool PaintDate;
+		int timestr_len;
+		uint32_t sec_timer_id;
+
+		//
+		int icon_head_w = 0;
+		int icon_head_h = 0;
+		const char * l_name;
+		void initFrames();
+		void paintHead();
+		void paintFoot();
+		
+	public:
+		CMenulistBox();
+		CMenulistBox(const char * const Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
+		CMenulistBox(const neutrino_locale_t Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
+		
+		~CMenulistBox();
+
+		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
+		bool hasItem();
+		virtual void paint();
+		virtual void hide();
+		virtual int exec(CMenuTarget* parent, const std::string & actionKey);
+		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
+		int getSelected() { return selected; };
+		void move(int xoff, int yoff);
+		int getSelectedLine(void){return exit_pressed ? -1 : selected;};
+		
+		int getHeight(void) const
+		{
+			return height;
+		}
+		
+		void enableSaveScreen(bool enable);
+		//void disableMenuPosition(void) {disableMenuPos = true;};
+
+		//
+		void setFooter(const struct button_label *_fbutton_label, const int _fbutton_count);
+
+		// head
+		void enablePaintDate(void){PaintDate = true;};
+};
+
+// CMenulistBoxItem
+class CMenulistBoxItem : public CMenuItem
+{
+	const char * option;
+	const std::string * option_string;
+	CMenuTarget * jumpTarget;
+	std::string actionKey;
+
+	protected:
+		neutrino_locale_t text;
+		std::string textString;
+
+		virtual const char * getOption(void);
+		virtual const char * getName(void);
+		
+	public:
+
+		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		CMenulistBoxItem(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		CMenulistBoxItem(const char * const Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		
+		int paint(bool selected = false, bool AfterPulldown = false);
+		int getHeight(void) const;
+		int getWidth(void) const;
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 		bool isSelectable(void) const
 		{
 			return active;

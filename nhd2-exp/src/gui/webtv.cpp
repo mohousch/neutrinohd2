@@ -1021,6 +1021,30 @@ void CWebTV::paint()
 {
 	dprintf(DEBUG_INFO, "CWebTV::paint: selected:%d\n", selected);
 
+	/*
+	CMenuWidget* testMenu = new CMenuWidget(title.c_str(), NEUTRINO_ICON_WEBTV_SMALL, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+
+	testMenu->disableMenuPosition();
+
+	std::string ChanName;
+
+	for(unsigned int i = 0; i < channels.size(); i++)
+	{
+		ChanName = to_string(i + 1);
+		ChanName += " ";
+		ChanName += channels[i]->title.c_str();
+		//ChanName += "   ";
+		//ChanName += channels[i]->description.c_str();
+		
+		testMenu->addItem(new CMenuForwarder(ChanName.c_str(), true, NULL, NULL, NULL));
+	}
+
+	testMenu->exec(NULL, "");
+	testMenu->hide();
+	delete testMenu;
+	testMenu = NULL;
+	*/
+
 	liststart = (selected/listmaxshow)*listmaxshow;
 	
 	int lastnum = liststart + listmaxshow;

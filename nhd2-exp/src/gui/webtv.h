@@ -58,7 +58,7 @@ class CWebTV
 		
 		// channels
 		std::vector<webtv_channels *> channels;
-		CZapProtection * 	zapProtection;
+		CZapProtection* zapProtection;
 		
 		// bouquets
 		std::string title;
