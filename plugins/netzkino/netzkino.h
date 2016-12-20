@@ -24,22 +24,6 @@
 #include <plugin.h>
 #include <nkparser.h>
 
-/*
-#define MAX_ITEMS_PER_PAGE	18
-#define MAX_ITEMS_PER_X		6
-#define MAX_ITEMS_PER_Y		3
-
-#define NKBROWSER_SETTINGS_FILE          PLUGINDIR "/netzkino/nk.conf"
-
-typedef struct
-{
-	// netzkino	
-	int nkmode;
-	int nkcategory;
-	std::string nkcategoryname;
-	std::string nksearch;
-}NKB_SETTINGS;
-*/
 
 class CNetzKinoBrowser : public CMenuTarget
 {
@@ -67,7 +51,7 @@ class CNKMovies : public CMenuTarget
 
 		//
 		cNKFeedParser nkparser;
-		std::string nkcategory_name;
+		//std::string nkcategory_name;
 
 		//
 		int catID;

@@ -74,7 +74,7 @@ class CMenuTarget
 		CMenuTarget(){}
 		virtual ~CMenuTarget(){}
 		virtual void hide(){}
-		virtual int exec(CMenuTarget* parent, const std::string & actionKey) = 0;
+		virtual int exec(CMenuTarget* parent, const std::string& actionKey) = 0;
 };
 
 class CMenuItem
@@ -90,6 +90,7 @@ class CMenuItem
 		std::string iconName;
 		std::string title;
 		std::string helpText;
+		std::string itemActionKey;
 
 		CMenuItem()
 		{
@@ -112,7 +113,7 @@ class CMenuItem
 			return false;
 		}
 
-		virtual int exec(CMenuTarget */*parent*/)
+		virtual int exec(CMenuTarget */*parent*/, const std::string& actionKey)
 		{
 			return 0;
 		}
@@ -167,7 +168,7 @@ class CMenuOptionChooser : public CAbstractMenuOptionChooser
 		void setOptionValue(const int newvalue);
 		int getOptionValue(void) const;
 		int paint(bool selected, bool AfterPulldown = false);
-		int exec(CMenuTarget * parent);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 // OptionNumberChooser
@@ -195,7 +196,7 @@ class CMenuOptionNumberChooser : public CAbstractMenuOptionChooser
 		
 		int paint(bool selected, bool AfterPulldown = false);
 
-		int exec(CMenuTarget* parent);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 class CMenuOptionStringChooser : public CMenuItem
@@ -225,7 +226,7 @@ class CMenuOptionStringChooser : public CMenuItem
 			return active;
 		}
 
-		int exec(CMenuTarget *parent);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 class CMenuOptionLanguageChooser : public CMenuItem
@@ -250,7 +251,7 @@ class CMenuOptionLanguageChooser : public CMenuItem
 			return true;
 		}
 
-		int exec(CMenuTarget *parent);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 // menuforwarder
@@ -278,7 +279,7 @@ class CMenuForwarder : public CMenuItem
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
 		int getWidth(void) const;
-		int exec(CMenuTarget * parent);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 		bool isSelectable(void) const
 		{
 			return active;
@@ -350,7 +351,7 @@ class CLockedMenuForwarder : public CMenuForwarder, public CPINProtection
 		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName) ,
 		  CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
 
-		virtual int exec(CMenuTarget * parent);
+		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 // This Class creates a menue item, which writes its caption to an given string (or an given int value to an given variable). 
@@ -370,7 +371,7 @@ class CMenuSelector : public CMenuItem
 		CMenuSelector(const char * OptionName, const bool Active = true, char * OptionValue = NULL, int* ReturnInt = NULL, int ReturnIntValue = 0);
 		CMenuSelector(const char * OptionName, const bool Active , std::string & OptionValue, int* ReturnInt = NULL, int ReturnIntValue = 0);
 
-		int exec(CMenuTarget* parent);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 
 		int paint(bool selected, bool AfterPulldown = false);
 		int getHeight(void) const{return height;};
@@ -402,7 +403,7 @@ class CMenuForwarderExtended : public CMenuItem
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
 		int getWidth(void) const;
-		int exec(CMenuTarget * parent);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 		bool isSelectable(void) const
 		{
 			return active;
@@ -425,7 +426,7 @@ class CLockedMenuForwarderExtended : public CMenuForwarderExtended, public CPINP
 		 : CMenuForwarderExtended(Text, Active, Target, ActionKey, DirectKey, IconName, ItemIcon, HelpText) ,
 		   CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
 
-		virtual int exec(CMenuTarget* parent);
+		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 // CMenuWidget
@@ -516,7 +517,7 @@ class CMenuSelectorTarget : public CMenuTarget
 {
         public:
                 CMenuSelectorTarget(int *select) {m_select = select;};
-                int exec(CMenuTarget* parent, const std::string & actionKey);
+                int exec(CMenuTarget* parent, const std::string& actionKey);
 
         private:
                 int *m_select;
@@ -593,7 +594,7 @@ class CSmartMenu : public CMenuTarget
 
 class CMenuFrameBox : public CMenuItem
 {
-	CMenuTarget * jumpTarget;
+	CMenuTarget* jumpTarget;
 	std::string actionKey;
 
 	private:
@@ -617,7 +618,7 @@ class CMenuFrameBox : public CMenuItem
 		int getHeight(void) const;
 		int getWidth(void) const;
 
-		int exec(CMenuTarget * parent);
+		int exec(CMenuTarget * parent, const std::string& actionKey);
 		bool isSelectable(void) const
 		{
 			return active;

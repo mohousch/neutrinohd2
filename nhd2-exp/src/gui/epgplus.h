@@ -321,7 +321,7 @@ class EpgPlus
 				MenuTargetAddReminder ( EpgPlus* epgPlus);
 
 			public:
-				int exec ( CMenuTarget* parent , const std::string& actionKey);
+				int exec(CMenuTarget* parent , const std::string& actionKey);
 
 			private:
 				EpgPlus * epgPlus;
@@ -334,7 +334,7 @@ class EpgPlus
 				MenuTargetAddRecordTimer ( EpgPlus* epgPlus);
 
 			public:
-				int exec ( CMenuTarget* parent , const std::string& actionKey);
+				int exec(CMenuTarget* parent , const std::string& actionKey);
 
 			private:
 				EpgPlus * epgPlus;
@@ -347,7 +347,7 @@ class EpgPlus
 				MenuTargetRefreshEpg ( EpgPlus* epgPlus);
 
 			public:
-				int exec ( CMenuTarget* parent , const std::string& actionKey);
+				int exec(CMenuTarget* parent , const std::string& actionKey);
 
 			private:
 				EpgPlus * epgPlus;
@@ -362,7 +362,7 @@ class EpgPlus
 				virtual ~MenuOptionChooserSwitchSwapMode();
 
 			public:
-				int exec(CMenuTarget* parent);
+				int exec(CMenuTarget* parent, const std::string& actionKey);
 
 			private:
 				int oldTimingMenuSettings;
@@ -378,7 +378,7 @@ class EpgPlus
 				virtual ~MenuOptionChooserSwitchViewMode();
 
 			public:
-				int exec ( CMenuTarget* parent); 
+				int exec(CMenuTarget* parent, const std::string& actionKey); 
 
 			private:
 				int oldTimingMenuSettings;
@@ -390,7 +390,7 @@ class EpgPlus
 				MenuTargetSettings ( EpgPlus * epgPlus);
 
 			public:
-				int exec ( CMenuTarget * parent , const std::string& actionKey);
+				int exec(CMenuTarget * parent , const std::string& actionKey);
 
 			private:
 				EpgPlus * epgPlus;
@@ -413,7 +413,7 @@ class EpgPlus
 		void init();
 		void free();
 
-		int exec ( CChannelList* channelList , int selectedChannelIndex , CBouquetList* bouquetList); 
+		int exec(CChannelList* channelList , int selectedChannelIndex , CBouquetList* bouquetList); 
 
 	private:
 		static std::string getTimeString ( const time_t& time , const std::string& format);
@@ -521,7 +521,7 @@ class EpgPlus
 class CEPGplusHandler : public CMenuTarget
 {
 	public:
-		int exec( CMenuTarget * parent,  const std::string &actionKey);
+		int exec(CMenuTarget * parent,  const std::string &actionKey);
 };
 
 #endif

@@ -188,6 +188,53 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return returnval;
 	}
+	else if(actionKey == "RC_info")
+	{
+		CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+		CInfoBox * infoBox = new CInfoBox(m_vMovieInfo[moviesMenu->getSelected()].epgInfo2.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, m_vMovieInfo[moviesMenu->getSelected()].epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_MOVIE);
+
+		// icon
+		int picw = 320; //FIXME
+		int pich = 256;	//FIXME
+
+		int p_w = 0;
+		int p_h = 0;
+		int nbpp = 0;
+
+		if(!access(m_vMovieInfo[moviesMenu->getSelected()].tfile.c_str(), F_OK))
+		{
+			CFrameBuffer::getInstance()->getSize(m_vMovieInfo[moviesMenu->getSelected()].tfile, &p_w, &p_h, &nbpp);
+
+			// scale
+			if(p_w <= picw && p_h <= pich)
+			{
+				picw = p_w;
+				pich = p_h;
+			}
+			else
+			{
+				float aspect = (float)(p_w) / (float)(p_h);
+					
+				if (((float)(p_w) / (float)picw) > ((float)(p_h) / (float)pich)) 
+				{
+					p_w = picw;
+					p_h = (int)(picw / aspect);
+				}
+				else
+				{
+					p_h = pich;
+					p_w = (int)(pich * aspect);
+				}
+			}
+		}
+
+		infoBox->setText(&m_vMovieInfo[moviesMenu->getSelected()].epgInfo2, m_vMovieInfo[moviesMenu->getSelected()].tfile, p_w, p_h);
+		infoBox->exec();
+		delete infoBox;
+
+		return returnval;
+	}
 
 	showNKMoviesMenu();
 	

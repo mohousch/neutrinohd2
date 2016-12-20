@@ -2636,7 +2636,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 		// setup timezone
 		if(ret != menu_return::RETURN_EXIT_ALL)
 			if(tzSelect)
-				tzSelect->exec(NULL);
+				tzSelect->exec(NULL, "");
 
 		// setup network
 		if(ret != menu_return::RETURN_EXIT_ALL)

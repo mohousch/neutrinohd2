@@ -28,6 +28,10 @@ extern "C" void plugin_del(void);
 class CTestMenu : CMenuTarget
 {
 	private:
+		// variables
+		CFrameBuffer* frameBuffer;
+
+		// functions
 		void testCBox();
 		void testCIcon();
 		void testCImage();
@@ -101,6 +105,9 @@ class CTestMenu : CMenuTarget
 		void testPlayMovieDir();
 		void testPlayAudioDir();
 		void testShowPictureDir();
+
+		//
+		void testCMenuWidgetListBox();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -111,6 +118,7 @@ class CTestMenu : CMenuTarget
 
 CTestMenu::CTestMenu()
 {
+	frameBuffer = CFrameBuffer::getInstance();
 }
 
 CTestMenu::~CTestMenu()
@@ -1575,6 +1583,99 @@ void CTestMenu::testShowPictureDir()
 	}
 }
 
+void CTestMenu::testCMenuWidgetListBox()
+{
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::classicMenu\n");
+
+	CMenuWidget * classicMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+
+	classicMenu->disableMenuPosition();
+	  
+	// tv modus
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv"), true);
+
+	// radio modus
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio"));	
+	
+	// webtv
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv"));
+	
+	// scart
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart"));
+
+	// mediaplayer
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL));
+	
+	// main setting menu
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL));
+
+	// service
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL));
+	
+	
+	// timerlist
+	classicMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL));
+	
+	// features
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features"));
+
+	// power menu
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL));
+
+	//box info
+	classicMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL));
+
+	//
+	// video settings
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_VIDEO, true, NULL, new CVideoSettings(), NULL));
+
+	// audio settings
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_AUDIO, true, NULL, new CAudioSettings(), NULL));
+
+	// parentallock
+	if(g_settings.parentallock_prompt)
+		classicMenu->addItem(new CLockedMenuForwarder(LOCALE_PARENTALLOCK_PARENTALLOCK, g_settings.parentallock_pincode, true, true, NULL, new CParentalLockSettings(), NULL));
+	else
+		classicMenu->addItem(new CMenuForwarder(LOCALE_PARENTALLOCK_PARENTALLOCK, true, NULL, new CParentalLockSettings(), NULL));
+
+	// network settings
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_NETWORK, true, NULL,  CNetworkSettings::getInstance(), NULL));
+
+	// recording settings
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_RECORDING, true, NULL, new CRecordingSettings(), NULL));
+
+	// movieplayer settings
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_STREAMING, true, NULL, new CMoviePlayerSettings(), NULL));
+
+	//OSD settings
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_OSD, true, NULL, new COSDSettings(), NULL));
+
+	// vfd/lcd settings
+	//if(CVFD::getInstance()->has_lcd)
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_LCD, true, NULL, new CLCDSettings(), NULL));	
+
+	// remote control settings
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_KEYBINDING, true, NULL, new CRemoteControlSettings(), NULL));
+
+	// audioplayer settings
+	classicMenu->addItem(new CMenuForwarder(LOCALE_AUDIOPLAYERSETTINGS_GENERAL, true, NULL, new CAudioPlayerSettings(), NULL));
+	
+	// pictureviewer settings
+	classicMenu->addItem(new CMenuForwarder(LOCALE_PICTUREVIEWERSETTINGS_GENERAL, true, NULL, new CPictureViewerSettings(), NULL));
+
+	// misc settings
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_MISC, true, NULL, new CMiscSettings(), NULL));
+
+	//HDD settings
+	classicMenu->addItem(new CMenuForwarder(LOCALE_HDD_SETTINGS, true, NULL, new CHDDMenuHandler(), NULL));
+	//
+
+	classicMenu->exec(NULL, "");
+	classicMenu->hide();
+	delete classicMenu;
+	classicMenu = NULL;
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
@@ -1838,6 +1939,10 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testShowPictureDir();
 	}
+	else if(actionKey == "menuwidgetlistbox")
+	{
+		testCMenuWidgetListBox();
+	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -1924,6 +2029,9 @@ void CTestMenu::showTestMenu()
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
+
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem(new CMenuForwarder("CMenuWidget(listBox)", true, NULL, this, "menuwidgetlistbox"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();

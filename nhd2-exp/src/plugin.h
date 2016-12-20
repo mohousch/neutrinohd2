@@ -134,15 +134,31 @@
 #include <gui/upnpbrowser.h>
 #include <gui/channel_select.h>
 #include <gui/audio_video_select.h>
+
 #include <gui/bedit/bouqueteditor_chanselect.h>
 #include <gui/bedit/bouqueteditor_channels.h>
 #include <gui/bedit/bouqueteditor_bouquets.h>
+
 #include <gui/psisetup.h>
 #include <gui/rc_lock.h>
 #include <gui/mediaplayer.h>
 #include <gui/service_setup.h>
 #include <gui/main_setup.h>
 #include <gui/power_menu.h>
+
+#include <gui/audio_setup.h>
+#include <gui/video_setup.h>
+#include <gui/parentallock_setup.h>
+#include <gui/network_setup.h>
+#include <gui/movieplayer_setup.h>
+#include <gui/osd_setup.h>
+#include <gui/audioplayer_setup.h>
+#include <gui/pictureviewer_setup.h>
+#include <gui/lcd_setup.h>
+#include <gui/rc_setup.h>
+#include <gui/recording_setup.h>
+#include <gui/misc_setup.h>
+#include <gui/hdd_menu.h>
 
 #include <system/localize.h>
 #include <system/settings.h>

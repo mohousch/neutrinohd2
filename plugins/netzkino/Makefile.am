@@ -33,13 +33,11 @@ install-exec-local:
 	install -m 0644  netzkino.cfg $(DESTDIR)$(PLUGINDIR)/netzkino
 	install -m 0644  netzkino.png $(DESTDIR)$(PLUGINDIR)/netzkino
 	install -m 0644  netzkino_small.png $(DESTDIR)$(PLUGINDIR)/netzkino
-	install -m 0644  nopreview.jpg $(DESTDIR)$(PLUGINDIR)/netzkino
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/netzkino.so
 	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/netzkino.cfg
 	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/netzkino.png
-	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/nopreview.jpg
 	-rmdir $(DESTDIR)$(PLUGINDIR)/netzkino
 
 

@@ -68,7 +68,7 @@
 #include <driver/encoding.h>
 
 
-// Init Main Menu (neutrinohd2 design)
+// Init Main Menu (standard)
 void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu)
 {
 	int shortcut = 1;
@@ -161,7 +161,7 @@ void CNeutrinoApp::smartMenu(void)
 	smartMenu = NULL;
 }
 
-// classic (neutrino) design
+// classic (classic) design
 void CNeutrinoApp::classicMenu(void)
 {
 	int shortcut = 1;
@@ -672,7 +672,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 		selected[button] = menu->getSelected();
 	}
         else if (menu_item != NULL)
-                menu_item->exec( NULL );
+                menu_item->exec(NULL, "");
 
         // clear the heap
         if(tmpAudioSelectMenuHandler)   
