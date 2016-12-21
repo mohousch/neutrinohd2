@@ -717,6 +717,14 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 		show();
 		return menu_return::RETURN_EXIT_ALL;
 	}
+	else if(actionKey == "RC_green")
+	{
+		g_RCInput->postMsg(CRCInput::RC_page_down, 0);
+	}
+	else if(actionKey == "RC_yellow")
+	{
+		g_RCInput->postMsg(CRCInput::RC_page_up, 0);
+	}
 	else if(actionKey == "RC_info")
 	{
 		showFileInfoWebTV(webTVlistMenu->getSelected());

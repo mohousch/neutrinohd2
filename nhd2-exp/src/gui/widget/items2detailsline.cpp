@@ -28,7 +28,7 @@
 #include <system/settings.h>
 #include <global.h>
 
-#if 0
+
 void paintItem2DetailsLine(int x, int y, int width, int height, int info_height, int theight, int iheight, int pos)
 {
 	int xpos  = x - ConnectLineBox_Width;
@@ -73,12 +73,11 @@ void paintItem2DetailsLine(int x, int y, int width, int height, int info_height,
 		CFrameBuffer::getInstance()->paintBoxRel(x + 2, ypos2 + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);	
 	}
 }
-#endif
 
-void paintItem2DetailsLine(int x, int y, int width, int height, int info_height, int theight, int iheight, int iy)
+void paintItem2DetailsLineD(int x, int y, int width, int height, int info_height, int theight, int iheight, int iy)
 {
 	int xpos  = x - ConnectLineBox_Width;
-	int ypos1 = /*y + theight + pos*iheight*/iy;
+	int ypos1 = iy;
 	int ypos2 = y + height;
 	int ypos1a = ypos1 + (iheight/2) - 2;
 	int ypos2a = ypos2 + (info_height/2) - 2;

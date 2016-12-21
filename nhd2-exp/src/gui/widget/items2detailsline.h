@@ -26,8 +26,8 @@
 #include <driver/framebuffer.h>
 
 
-//void paintItem2DetailsLine(int x, int y, int width, int height, int info_height, int theight, int iheight, int pos);
-void paintItem2DetailsLine(int x, int y, int width, int height, int info_height, int theight, int iheight, int iy);
+void paintItem2DetailsLine(int x, int y, int width, int height, int info_height, int theight, int iheight, int pos);
+void paintItem2DetailsLineD(int x, int y, int width, int height, int info_height, int theight, int iheight, int iy);
 void clearItem2DetailsLine(int x, int y, int width, int height, int info_height);
 
 #endif 

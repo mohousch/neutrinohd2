@@ -415,7 +415,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 
 				case (CRCInput::RC_sat):
 				case (CRCInput::RC_favorites):
-					g_RCInput->postMsg (msg, 0);
+					g_RCInput->postMsg(msg, 0);
 					
 				//close any menue on setup-key
 				case (CRCInput::RC_setup):
@@ -3863,7 +3863,7 @@ void CMenulistBox::paintFootInfo(int pos)
 
 	item->getYPosition();
 	
-	::paintItem2DetailsLine(x, y, full_width, full_height - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight, hheight, item->getHeight(), item->getYPosition());
+	::paintItem2DetailsLineD(x, y, full_width, full_height - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight, hheight, item->getHeight(), item->getYPosition());
 }
 
 void CMenulistBox::hideFootInfo()
@@ -4062,7 +4062,7 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 				case (CRCInput::RC_page_down) :
 					if(msg == CRCInput::RC_page_up) 
 					{
-						printf("msg:RC_page_up\n");
+						printf("CMenulistBox::exec: msg:RC_page_up\n");
 						if(current_page) 
 						{
 							pos = (int) page_start[current_page] - 1;
@@ -4118,7 +4118,7 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 					}
 					else if(msg == CRCInput::RC_page_down) 
 					{
-						printf("msg:RC_page_down\n");
+						printf("CMenulistBox::exec: RC_page_down\n");
 
 						pos = (int) page_start[current_page + 1];// - 1;
 
