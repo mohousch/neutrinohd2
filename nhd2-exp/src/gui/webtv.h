@@ -37,6 +37,8 @@
 
 #include <sys/stat.h>
 
+#include <gui/widget/menue.h>
+
 #include <driver/file.h>
 
 #include <xmlinterface.h>
@@ -44,7 +46,7 @@
 
 #define DEFAULT_WEBTV_FILE 		CONFIGDIR "/webtv/webtv.xml"
 
-class CWebTV
+class CWebTV : public CMenuTarget
 {
 	private:
 		struct webtv_channels {
@@ -62,49 +64,23 @@ class CWebTV
 		
 		// bouquets
 		std::string title;
+
+		CMenulistBox* webTVlistMenu;
 		
 		// gui
 		CFrameBuffer * frameBuffer;
 
-		CBox cFrameBox;
-		CBox cFrameBoxTitle;
-		CBox cFrameBoxBody;
-		CBox cFrameBoxFoot;
-		CBox cFrameBoxInfo;
-		CBox cFrameBoxItem;
-		CBox cFrameBoxScrollBar;
-
-		CIcon titleIcon;
-		CIcon titleButton;
-		CIcon footIcon;
-		
-		unsigned int   	selected;
-		//unsigned int oldselected;
 		int tuned;
-		
-		unsigned int   	liststart;
-		unsigned int	listmaxshow;
-		unsigned int	numwidth;
 		
 		unsigned int position;
 		unsigned int duration;
 		unsigned int file_prozent;
 		unsigned int speed;
 		
-		void paintDetails(int index);
-		void clearItem2DetailsLine ();
-		void paintItem2DetailsLine (int pos);
-		void paintItem(int pos);
-		void paint();
-		void paintHead();
-		void paintFoot();
 		void hide();
 
 		void processPlaylistUrl(const char *url, const char *name, const char * description) ;
 		void addUrl2Playlist(const char * url, const char *name, const char * description, bool locked = false);
-
-		//
-		uint32_t sec_timer_id;
 		
 	public:
 		enum state
@@ -118,9 +94,9 @@ class CWebTV
 		
 		CWebTV();
 		~CWebTV();
-		int exec(bool rezap = false);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 		
-		int Show();
+		void show(bool reload = true);
 		void showUserBouquet();
 		
 		//
@@ -140,15 +116,12 @@ class CWebTV
 		void showAudioDialog();
 		
 		unsigned int getTunedChannel() {return tuned;};
-		unsigned int getlastSelectedChannel() { return selected;};
 		
 		void loadChannels(void);
 		void ClearChannels(void);
 		
 		bool readChannellist(std::string filename);
 		void addUserBouquet(void);
-		
-		unsigned int hasChannels() { return channels.size();};
 };
 
 #endif

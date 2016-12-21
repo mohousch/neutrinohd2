@@ -32,6 +32,7 @@ class CTestMenu : CMenuTarget
 		CFrameBuffer* frameBuffer;
 		CMenulistBox * listMenu;
 		ZapitChannelList Channels;
+		int selected;
 
 		// functions
 		void testCBox();
@@ -121,6 +122,8 @@ class CTestMenu : CMenuTarget
 CTestMenu::CTestMenu()
 {
 	frameBuffer = CFrameBuffer::getInstance();
+
+	selected = 0;
 }
 
 CTestMenu::~CTestMenu()
@@ -1634,6 +1637,8 @@ void CTestMenu::testCMenuWidgetListBox()
 		listMenu->addItem(new CMenulistBoxItem(title.c_str(), true, " - testCMenulistBox", this, "zapit"));
 	}
 
+	listMenu->setSelected(selected);
+
 	listMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 	
@@ -1952,6 +1957,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "zapit")
 	{
+		selected = listMenu->getSelected();
 		g_Zapit->zapTo_serviceID(Channels[listMenu->getSelected()]->channel_id);
 		return menu_return::RETURN_EXIT_ALL;
 	}

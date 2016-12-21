@@ -1260,7 +1260,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	
 	// webtv
 	configfile.setString( "webtv_userBouquet", g_settings.webtv_userBouquet);
-	configfile.setInt32("webtv_lastselectedchannel", webtv->getlastSelectedChannel());
+	//configfile.setInt32("webtv_lastselectedchannel", webtv->getlastSelectedChannel());
 	
         // USERMENU
         char txt1[81];
@@ -3498,7 +3498,7 @@ _repeat:
 		{
 			if(webtv)
 			{
-				webtv->exec(false);
+				webtv->show();
 			}
 			
 			return messages_return::handled;
@@ -4793,7 +4793,7 @@ void CNeutrinoApp::webtvMode( bool rezap)
 	// show streams channel list
 	if(webtv)
 	{
-		webtv->exec(rezap);
+		webtv->show();
 	}
 }
 

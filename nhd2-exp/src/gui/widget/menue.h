@@ -812,7 +812,7 @@ class CMenulistBox : public CMenuTarget
 		virtual void paint();
 		virtual void paintFootInfo(int pos);
 		virtual void hideFootInfo();
-		virtual void hide();
+		void hide();
 
 		//
 		virtual int exec(CMenuTarget* parent, const std::string & actionKey);
