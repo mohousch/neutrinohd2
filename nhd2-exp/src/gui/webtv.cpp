@@ -646,7 +646,7 @@ void CWebTV::show(bool reload)
 
 	//
 	// itemBox
-	webTVlistMenu = new CMenulistBox(title.c_str(), "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	webTVlistMenu = new CMenulistBox(title.c_str(), NEUTRINO_ICON_WEBTV_SMALL, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	if(channels.size())
 	{
