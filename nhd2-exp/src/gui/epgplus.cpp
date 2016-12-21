@@ -1451,14 +1451,14 @@ EpgPlus::MenuOptionChooserSwitchSwapMode::~MenuOptionChooserSwitchSwapMode ()
 	}
 }
 
-int EpgPlus::MenuOptionChooserSwitchSwapMode::exec(CMenuTarget* parent, const std::string& actionKey)
+int EpgPlus::MenuOptionChooserSwitchSwapMode::exec(CMenuTarget* parent)
 {
 	dprintf(DEBUG_NORMAL, "EpgPlus::MenuOptionChooserSwitchSwapMode::exec:\n");
 
 	// change time out settings temporary
 	g_settings.timing[SNeutrinoSettings::TIMING_MENU] = 1;
 	
-	CMenuOptionChooser::exec(parent, "");
+	CMenuOptionChooser::exec(parent);
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -1480,14 +1480,14 @@ EpgPlus::MenuOptionChooserSwitchViewMode::~MenuOptionChooserSwitchViewMode ()
   	g_settings.timing[SNeutrinoSettings::TIMING_MENU] = this->oldTimingMenuSettings;
 }
 
-int EpgPlus::MenuOptionChooserSwitchViewMode::exec(CMenuTarget* parent, const std::string& actionKey)
+int EpgPlus::MenuOptionChooserSwitchViewMode::exec(CMenuTarget* parent)
 {
 	dprintf(DEBUG_NORMAL, "EpgPlus::MenuOptionChooserSwitchViewMode::exec:\n");
 
 	// change time out settings temporary
 	g_settings.timing[SNeutrinoSettings::TIMING_MENU] = 1;
 	
-	CMenuOptionChooser::exec(parent, "");
+	CMenuOptionChooser::exec(parent);
 	
 	return menu_return::RETURN_REPAINT;
 }

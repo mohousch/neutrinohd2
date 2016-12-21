@@ -115,7 +115,7 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		
 		void setvol(int vol);
 		
-		void RealRun(CMenuWidget& _mainMenu);
+		void RealRun(CMenuWidgetExtended& _mainMenu);
 		void InitZapper();
 
 		void SetupFrameBuffer();
@@ -133,7 +133,7 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		void SetupFonts();
 		
 		// init main menu
-		void InitMainMenu(CMenuWidget &mainMenu);
+		void InitMainMenu(CMenuWidgetExtended& mainMenu);
 		void smartMenu(void);
 		void classicMenu(void);
 		

@@ -82,13 +82,14 @@ int CMainSetup::exec(CMenuTarget* parent, const std::string& actionKey)
 	return ret;
 }
 
+// standard
 void CMainSetup::showMenu(void)
 {
 	dprintf(DEBUG_NORMAL, "CMainSetup::showMenu:\n");
 	
 	int shortcutMainSettings = 1;
 
-	CMenuWidget * mainSettings = new CMenuWidget(LOCALE_MAINSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
+	CMenuWidgetExtended* mainSettings = new CMenuWidgetExtended(LOCALE_MAINSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
 
 	// video settings
 	mainSettings->addItem(new CMenuForwarderExtended(LOCALE_MAINSETTINGS_VIDEO, true, new CVideoSettings(), NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_VIDEOSETTINGS, LOCALE_HELPTEXT_VIDEOSETTINGS ));
@@ -146,47 +147,47 @@ void CMainSetup::showMenuSmart(void)
 	
 	int shortcutMainSettings = 1;
 
-	CSmartMenu * mainSettings = new CSmartMenu(LOCALE_MAINSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
+	CMenuFrameBox * mainSettings = new CMenuFrameBox(LOCALE_MAINSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
 
 	// video settings
-	mainSettings->addItem(new CMenuFrameBox(LOCALE_MAINSETTINGS_VIDEO, new CVideoSettings(), NULL, NEUTRINO_ICON_SMART_VIDEOSETTINGS));
+	mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_MAINSETTINGS_VIDEO, new CVideoSettings(), NULL, NEUTRINO_ICON_SMART_VIDEOSETTINGS));
 
 	// audio settings
-	mainSettings->addItem(new CMenuFrameBox(LOCALE_MAINSETTINGS_AUDIO, new CAudioSettings(), NULL, NEUTRINO_ICON_SMART_AUDIOSETTINGS));
+	mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_MAINSETTINGS_AUDIO, new CAudioSettings(), NULL, NEUTRINO_ICON_SMART_AUDIOSETTINGS));
 
 	// parentallock
-	mainSettings->addItem(new CMenuFrameBox(LOCALE_PARENTALLOCK_PARENTALLOCK, new CParentalLockSettings(), NULL, NEUTRINO_ICON_SMART_PARENTALLOCKSETTINGS));
+	mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_PARENTALLOCK_PARENTALLOCK, new CParentalLockSettings(), NULL, NEUTRINO_ICON_SMART_PARENTALLOCKSETTINGS));
 
 	// network settings
-	mainSettings->addItem(new CMenuFrameBox(LOCALE_MAINSETTINGS_NETWORK, CNetworkSettings::getInstance(), NULL, NEUTRINO_ICON_SMART_NETWORKSETTINGS));
+	mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_MAINSETTINGS_NETWORK, CNetworkSettings::getInstance(), NULL, NEUTRINO_ICON_SMART_NETWORKSETTINGS));
 
 	// recording settings
-	mainSettings->addItem(new CMenuFrameBox(LOCALE_MAINSETTINGS_RECORDING, new CRecordingSettings(), NULL, NEUTRINO_ICON_SMART_RECORDINGSETTINGS));
+	mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_MAINSETTINGS_RECORDING, new CRecordingSettings(), NULL, NEUTRINO_ICON_SMART_RECORDINGSETTINGS));
 
 	// movieplayer settings
-	mainSettings->addItem(new CMenuFrameBox(LOCALE_MAINSETTINGS_STREAMING, new CMoviePlayerSettings(), NULL, NEUTRINO_ICON_SMART_MOVIEPLAYERSETTINGS));
+	mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_MAINSETTINGS_STREAMING, new CMoviePlayerSettings(), NULL, NEUTRINO_ICON_SMART_MOVIEPLAYERSETTINGS));
 
 	//OSD settings
-	mainSettings->addItem(new CMenuFrameBox(LOCALE_MAINSETTINGS_OSD, new COSDSettings(), NULL, NEUTRINO_ICON_SMART_OSDSETTINGS));
+	mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_MAINSETTINGS_OSD, new COSDSettings(), NULL, NEUTRINO_ICON_SMART_OSDSETTINGS));
 
 	// vfd/lcd settings
 	//if(CVFD::getInstance()->has_lcd)
-		mainSettings->addItem(new CMenuFrameBox(LOCALE_MAINSETTINGS_LCD, new CLCDSettings(), NULL, NEUTRINO_ICON_SMART_LCDSETTINGS));	
+		mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_MAINSETTINGS_LCD, new CLCDSettings(), NULL, NEUTRINO_ICON_SMART_LCDSETTINGS));	
 
 	// remote control settings
-	mainSettings->addItem(new CMenuFrameBox(LOCALE_MAINSETTINGS_KEYBINDING, new CRemoteControlSettings(), NULL, NEUTRINO_ICON_SMART_REMOTECONTROLSETTINGS));
+	mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_MAINSETTINGS_KEYBINDING, new CRemoteControlSettings(), NULL, NEUTRINO_ICON_SMART_REMOTECONTROLSETTINGS));
 
 	// audioplayer settings
-	mainSettings->addItem(new CMenuFrameBox(LOCALE_AUDIOPLAYERSETTINGS_GENERAL, new CAudioPlayerSettings(), NULL, NEUTRINO_ICON_SMART_AUDIOPLAYERSETTINGS));
+	mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_AUDIOPLAYERSETTINGS_GENERAL, new CAudioPlayerSettings(), NULL, NEUTRINO_ICON_SMART_AUDIOPLAYERSETTINGS));
 	
 	// pictureviewer settings
-	mainSettings->addItem(new CMenuFrameBox(LOCALE_PICTUREVIEWERSETTINGS_GENERAL, new CPictureViewerSettings(), NULL, NEUTRINO_ICON_SMART_PICTUREVIEWERSETTINGS));
+	mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_PICTUREVIEWERSETTINGS_GENERAL, new CPictureViewerSettings(), NULL, NEUTRINO_ICON_SMART_PICTUREVIEWERSETTINGS));
 
 	// misc settings
-	mainSettings->addItem(new CMenuFrameBox(LOCALE_MAINSETTINGS_MISC, new CMiscSettings(), NULL, NEUTRINO_ICON_SMART_MISCSETTINGS));
+	mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_MAINSETTINGS_MISC, new CMiscSettings(), NULL, NEUTRINO_ICON_SMART_MISCSETTINGS));
 
 	//HDD settings
-	mainSettings->addItem(new CMenuFrameBox(LOCALE_HDD_SETTINGS, new CHDDMenuHandler(), NULL, NEUTRINO_ICON_SMART_HDDSETTINGS));
+	mainSettings->addItem(new CMenuFrameBoxItem(LOCALE_HDD_SETTINGS, new CHDDMenuHandler(), NULL, NEUTRINO_ICON_SMART_HDDSETTINGS));
 	
 	mainSettings->exec(NULL, "");
 	mainSettings->hide();

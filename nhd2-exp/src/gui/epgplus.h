@@ -318,7 +318,7 @@ class EpgPlus
 		class MenuTargetAddReminder : public CMenuTarget
 		{
 			public:
-				MenuTargetAddReminder ( EpgPlus* epgPlus);
+				MenuTargetAddReminder( EpgPlus* epgPlus);
 
 			public:
 				int exec(CMenuTarget* parent , const std::string& actionKey);
@@ -347,7 +347,7 @@ class EpgPlus
 				MenuTargetRefreshEpg ( EpgPlus* epgPlus);
 
 			public:
-				int exec(CMenuTarget* parent , const std::string& actionKey);
+				int exec(CMenuTarget* parent, const std::string& actionKey);
 
 			private:
 				EpgPlus * epgPlus;
@@ -357,12 +357,12 @@ class EpgPlus
 		class MenuOptionChooserSwitchSwapMode : public CMenuOptionChooser
 		{
 			public:
-				MenuOptionChooserSwitchSwapMode ( EpgPlus* epgPlus);
+				MenuOptionChooserSwitchSwapMode(EpgPlus* epgPlus);
 
 				virtual ~MenuOptionChooserSwitchSwapMode();
 
 			public:
-				int exec(CMenuTarget* parent, const std::string& actionKey);
+				int exec(CMenuTarget* parent);
 
 			private:
 				int oldTimingMenuSettings;
@@ -373,12 +373,12 @@ class EpgPlus
 		class MenuOptionChooserSwitchViewMode : public CMenuOptionChooser
 		{
 			public:
-				MenuOptionChooserSwitchViewMode ( EpgPlus* epgPlus);
+				MenuOptionChooserSwitchViewMode( EpgPlus* epgPlus);
 
 				virtual ~MenuOptionChooserSwitchViewMode();
 
 			public:
-				int exec(CMenuTarget* parent, const std::string& actionKey); 
+				int exec(CMenuTarget* parent); 
 
 			private:
 				int oldTimingMenuSettings;

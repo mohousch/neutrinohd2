@@ -2583,7 +2583,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	setupRecordingDevice();
 
 	// init main menu
-	CMenuWidget mainMenu(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
+	CMenuWidgetExtended mainMenu(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
 
 	InitMainMenu(mainMenu);
 	
@@ -2636,7 +2636,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 		// setup timezone
 		if(ret != menu_return::RETURN_EXIT_ALL)
 			if(tzSelect)
-				tzSelect->exec(NULL, "");
+				tzSelect->exec(NULL);
 
 		// setup network
 		if(ret != menu_return::RETURN_EXIT_ALL)
@@ -2780,7 +2780,7 @@ static void check_timer()
 #endif
 
 // real run
-void CNeutrinoApp::RealRun(CMenuWidget& _mainMenu)
+void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 {
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;

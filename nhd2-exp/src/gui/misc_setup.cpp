@@ -223,13 +223,14 @@ int CMiscSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 	return ret;
 }
 
+// standard
 void CMiscSettings::showMenu(void)
 {
 	dprintf(DEBUG_NORMAL, "CMiscSettings::showMenu:\n");
 	
 	int shortcutMiscSettings = 1;
 	
-	CMenuWidget * miscSettings = new CMenuWidget(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
+	CMenuWidgetExtended* miscSettings = new CMenuWidgetExtended(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
 
 	//miscSettings general
 	miscSettings->addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_GENERAL, true, new CGeneralSettings(), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_GENERALSETTINGS));
@@ -264,27 +265,27 @@ void CMiscSettings::showMenuSmart(void)
 	
 	int shortcutMiscSettings = 1;
 	
-	CSmartMenu * miscSettings = new CSmartMenu(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
+	CMenuFrameBox* miscSettings = new CMenuFrameBox(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
 
 	//miscSettings general
-	miscSettings->addItem(new CMenuFrameBox(LOCALE_MISCSETTINGS_GENERAL, new CGeneralSettings(), NULL, NEUTRINO_ICON_SMART_GENERALSETTINGS));
+	miscSettings->addItem(new CMenuFrameBoxItem(LOCALE_MISCSETTINGS_GENERAL, new CGeneralSettings(), NULL, NEUTRINO_ICON_SMART_GENERALSETTINGS));
 	
 	//channellist settings
-	miscSettings->addItem(new CMenuFrameBox(LOCALE_MISCSETTINGS_CHANNELLIST, new CChannelListSettings(), NULL, NEUTRINO_ICON_SMART_CHANNELLISTSETTINGS));
+	miscSettings->addItem(new CMenuFrameBoxItem(LOCALE_MISCSETTINGS_CHANNELLIST, new CChannelListSettings(), NULL, NEUTRINO_ICON_SMART_CHANNELLISTSETTINGS));
 
 	// epg settings
-	miscSettings->addItem(new CMenuFrameBox(LOCALE_MISCSETTINGS_EPG_HEAD, new CEPGSettings(), NULL, NEUTRINO_ICON_SMART_EPGSETTINGS));
+	miscSettings->addItem(new CMenuFrameBoxItem(LOCALE_MISCSETTINGS_EPG_HEAD, new CEPGSettings(), NULL, NEUTRINO_ICON_SMART_EPGSETTINGS));
 
 	// filebrowser settings
-	miscSettings->addItem(new CMenuFrameBox(LOCALE_MISCSETTINGS_FILEBROWSER, new CFileBrowserSettings(), NULL, NEUTRINO_ICON_SMART_FILEBROWSERSETTINGS));
+	miscSettings->addItem(new CMenuFrameBoxItem(LOCALE_MISCSETTINGS_FILEBROWSER, new CFileBrowserSettings(), NULL, NEUTRINO_ICON_SMART_FILEBROWSERSETTINGS));
 	
 	// zapit setup (start channel)
-	miscSettings->addItem(new CMenuFrameBox(LOCALE_MISCSETTINGS_ZAPIT, new CZapitSetup(), NULL, NEUTRINO_ICON_SMART_STARTCHANNELSETTINGS));
+	miscSettings->addItem(new CMenuFrameBoxItem(LOCALE_MISCSETTINGS_ZAPIT, new CZapitSetup(), NULL, NEUTRINO_ICON_SMART_STARTCHANNELSETTINGS));
 	
 	// psi setup
 	//FIXME:	
 	//CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
-	//miscSettings->addItem( new CMenuFrameBox(LOCALE_VIDEOMENU_PSISETUP, chPSISetup, NULL, NEUTRINO_ICON_SMART_PSISETTINGS));
+	//miscSettings->addItem( new CMenuFrameBoxItem(LOCALE_VIDEOMENU_PSISETUP, chPSISetup, NULL, NEUTRINO_ICON_SMART_PSISETTINGS));
 	
 	miscSettings->exec(NULL, "");
 	miscSettings->hide();

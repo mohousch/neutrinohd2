@@ -79,19 +79,8 @@ void CNetzKinoBrowser::showNKCategoriesMenu()
 
 	for (unsigned i = 0; i < cats.size(); i++)
 	{
-		mainMenu->addItem(new CMenuForwarder(cats[i].title.c_str(), true, /*("(" + to_string(cats[i].post_count) + ")").c_str()*/NULL, new CNKMovies(cats[i].id, cats[i].title), to_string(i).c_str(), CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
+		mainMenu->addItem(new CMenuForwarder(cats[i].title.c_str(), true, NULL, new CNKMovies(cats[i].id, cats[i].title), "", CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
 	}
-	
-
-	/*
-	// as smart menu
-	CSmartMenu* mainMenu = new CSmartMenu(LOCALE_NETZKINO, NEUTRINO_ICON_NETZKINO_SMALL);
-
-	for (unsigned i = 0; i < cats.size(); i++)
-	{
-		mainMenu->addItem(new CMenuFrameBox(cats[i].title.c_str(), new CNKMovies(cats[i].id, cats[i].title), NULL, NEUTRINO_ICON_NETZKINO));
-	}
-	*/
 
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
@@ -143,14 +132,16 @@ void CNKMovies::showNKMoviesMenu()
 	title += ": ";
 	title += caption;
 
-	moviesMenu = new CSmartMenu(title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL);
+	moviesMenu = new CMenuFrameBox(title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL);
 
 	std::string fname = PLUGINDIR "/netzkino/nopreview.jpg";
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		moviesMenu->addItem(new CMenuFrameBox(m_vMovieInfo[i].epgTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : fname.c_str(), m_vMovieInfo[i].epgInfo2.c_str()));
+		moviesMenu->addItem(new CMenuFrameBoxItem(m_vMovieInfo[i].epgTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : fname.c_str()));
 	}
+
+	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 
 	moviesMenu->exec(NULL, "");
 	moviesMenu->hide();

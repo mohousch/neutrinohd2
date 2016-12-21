@@ -1384,42 +1384,40 @@ void CTestMenu::testKeyChooser()
 
 void CTestMenu::testFrameBox()
 {
-	CSmartMenu * smartMenu = new CSmartMenu(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
+	CMenuFrameBox * smartMenu = new CMenuFrameBox(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
 
 	// tv
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_TVMODE, CNeutrinoApp::getInstance(), "tv", NEUTRINO_ICON_MENUITEM_TV), true);
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_TVMODE, CNeutrinoApp::getInstance(), "tv", NEUTRINO_ICON_MENUITEM_TV), true);
 
 	// radio
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_RADIOMODE, CNeutrinoApp::getInstance(), "radio", NEUTRINO_ICON_MENUITEM_RADIO));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_RADIOMODE, CNeutrinoApp::getInstance(), "radio", NEUTRINO_ICON_MENUITEM_RADIO));
 
 	// webtv
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_WEBTVMODE, CNeutrinoApp::getInstance(), "webtv", NEUTRINO_ICON_MENUITEM_WEBTV));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_WEBTVMODE, CNeutrinoApp::getInstance(), "webtv", NEUTRINO_ICON_MENUITEM_WEBTV));
 
-#if defined (ENABLE_SCART)
 	// scart
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_SCARTMODE, CNeutrinoApp::getInstance(), "scart", NEUTRINO_ICON_MENUITEM_SCART));
-#endif
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SCARTMODE, CNeutrinoApp::getInstance(), "scart", NEUTRINO_ICON_MENUITEM_SCART));
 
 	// mediaplayer
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_MEDIAPLAYER, new CMediaPlayerMenu(), NULL, NEUTRINO_ICON_MENUITEM_MEDIAPLAYER));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_MEDIAPLAYER, new CMediaPlayerMenu(), NULL, NEUTRINO_ICON_MENUITEM_MEDIAPLAYER));
 	
 	// main setting menu
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_SETTINGS, new CMainSetup(), NULL, NEUTRINO_ICON_MENUITEM_SETTINGS));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SETTINGS, new CMainSetup(), NULL, NEUTRINO_ICON_MENUITEM_SETTINGS));
 
 	// service
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_SERVICE, new CServiceSetup(), NULL, NEUTRINO_ICON_MENUITEM_SERVICE));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SERVICE, new CServiceSetup(), NULL, NEUTRINO_ICON_MENUITEM_SERVICE));
 	
 	// timerlist
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_TIMERLIST_NAME, new CTimerList, NULL, NEUTRINO_ICON_MENUITEM_TIMERLIST));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_TIMERLIST_NAME, new CTimerList, NULL, NEUTRINO_ICON_MENUITEM_TIMERLIST));
 	
 	// features
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_FEATURES, CNeutrinoApp::getInstance(), "features", NEUTRINO_ICON_MENUITEM_FEATURES));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_FEATURES, CNeutrinoApp::getInstance(), "features", NEUTRINO_ICON_MENUITEM_FEATURES));
 
 	// power menu
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_POWERMENU, new CPowerMenu(), NULL, NEUTRINO_ICON_MENUITEM_POWERMENU));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_POWERMENU, new CPowerMenu(), NULL, NEUTRINO_ICON_MENUITEM_POWERMENU));
 
 	//box info
-	smartMenu->addItem( new CMenuFrameBox(LOCALE_DBOXINFO, new CDBoxInfoWidget, NULL, NEUTRINO_ICON_MENUITEM_BOXINFO));
+	smartMenu->addItem( new CMenuFrameBoxItem(LOCALE_DBOXINFO, new CDBoxInfoWidget, NULL, NEUTRINO_ICON_MENUITEM_BOXINFO));
 
 	smartMenu->exec(NULL, "");
 	smartMenu->hide();
@@ -1607,6 +1605,8 @@ void CTestMenu::testCMenuWidgetListBox()
 
 	listMenu->setFooter(Buttons, BUTTONS_COUNT);
 	listMenu->enablePaintDate();
+	listMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
+	listMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
 
 	listMenu->exec(NULL, "");
 	listMenu->hide();

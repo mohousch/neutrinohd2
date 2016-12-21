@@ -69,7 +69,7 @@
 
 
 // Init Main Menu (standard)
-void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu)
+void CNeutrinoApp::InitMainMenu(CMenuWidgetExtended& mainMenu)
 {
 	int shortcut = 1;
 
@@ -118,42 +118,42 @@ void CNeutrinoApp::smartMenu(void)
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::smartMenu\n");
 
 	
-	CSmartMenu * smartMenu = new CSmartMenu(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
+	CMenuFrameBox* smartMenu = new CMenuFrameBox(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
 
 	// tv
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_TVMODE, CNeutrinoApp::getInstance(), "tv", NEUTRINO_ICON_SMART_TV), true);
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_TVMODE, CNeutrinoApp::getInstance(), "tv", NEUTRINO_ICON_SMART_TV), true);
 
 	// radio
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_RADIOMODE, CNeutrinoApp::getInstance(), "radio", NEUTRINO_ICON_SMART_RADIO));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_RADIOMODE, CNeutrinoApp::getInstance(), "radio", NEUTRINO_ICON_SMART_RADIO));
 
 	// webtv
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_WEBTVMODE, CNeutrinoApp::getInstance(), "webtv", NEUTRINO_ICON_SMART_WEBTV));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_WEBTVMODE, CNeutrinoApp::getInstance(), "webtv", NEUTRINO_ICON_SMART_WEBTV));
 
 #if defined (ENABLE_SCART)
 	// scart
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_SCARTMODE, CNeutrinoApp::getInstance(), "scart", NEUTRINO_ICON_SMART_SCART));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SCARTMODE, CNeutrinoApp::getInstance(), "scart", NEUTRINO_ICON_SMART_SCART));
 #endif
 
 	// mediaplayer
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_MEDIAPLAYER, new CMediaPlayerMenu(), NULL, NEUTRINO_ICON_SMART_MEDIAPLAYER));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_MEDIAPLAYER, new CMediaPlayerMenu(), NULL, NEUTRINO_ICON_SMART_MEDIAPLAYER));
 	
 	// main setting menu
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_SETTINGS, new CMainSetup(), NULL, NEUTRINO_ICON_SMART_SETTINGS));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SETTINGS, new CMainSetup(), NULL, NEUTRINO_ICON_SMART_SETTINGS));
 
 	// service
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_SERVICE, new CServiceSetup(), NULL, NEUTRINO_ICON_SMART_SERVICE));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SERVICE, new CServiceSetup(), NULL, NEUTRINO_ICON_SMART_SERVICE));
 	
 	// timerlist
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_TIMERLIST_NAME, new CTimerList, NULL, NEUTRINO_ICON_SMART_TIMERLIST));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_TIMERLIST_NAME, new CTimerList, NULL, NEUTRINO_ICON_SMART_TIMERLIST));
 	
 	// features
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_FEATURES, CNeutrinoApp::getInstance(), "features", NEUTRINO_ICON_SMART_FEATURES));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_FEATURES, CNeutrinoApp::getInstance(), "features", NEUTRINO_ICON_SMART_FEATURES));
 
 	// power menu
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_POWERMENU, new CPowerMenu(), NULL, NEUTRINO_ICON_SMART_POWERMENU));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_POWERMENU, new CPowerMenu(), NULL, NEUTRINO_ICON_SMART_POWERMENU));
 
 	//box info
-	smartMenu->addItem( new CMenuFrameBox(LOCALE_DBOXINFO, new CDBoxInfoWidget, NULL, NEUTRINO_ICON_SMART_BOXINFO));
+	smartMenu->addItem( new CMenuFrameBoxItem(LOCALE_DBOXINFO, new CDBoxInfoWidget, NULL, NEUTRINO_ICON_SMART_BOXINFO));
 
 	smartMenu->exec(NULL, "");
 	smartMenu->hide();
@@ -672,7 +672,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 		selected[button] = menu->getSelected();
 	}
         else if (menu_item != NULL)
-                menu_item->exec(NULL, "");
+                menu_item->exec(NULL);
 
         // clear the heap
         if(tmpAudioSelectMenuHandler)   

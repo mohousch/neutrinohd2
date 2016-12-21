@@ -91,13 +91,14 @@ int CPowerMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	return ret;
 }
 
+// standard
 void CPowerMenu::showMenu(void)
 {
 	dprintf(DEBUG_NORMAL, "CPowerMenu::showMenu:\n");
 
 	int shortcut = 1;
 
-	CMenuWidget * powerMenu = new CMenuWidget(LOCALE_MAINMENU_POWERMENU, NEUTRINO_ICON_BUTTON_POWER);
+	CMenuWidgetExtended* powerMenu = new CMenuWidgetExtended(LOCALE_MAINMENU_POWERMENU, NEUTRINO_ICON_BUTTON_POWER);
 	
 	// sleep timer
 	powerMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SLEEPTIMER, true, new CSleepTimerWidget, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SLEEPTIMER));
@@ -127,22 +128,22 @@ void CPowerMenu::showMenuSmart(void)
 
 	int shortcut = 1;
 
-	CSmartMenu * powerMenu = new CSmartMenu(LOCALE_MAINMENU_POWERMENU, NEUTRINO_ICON_BUTTON_POWER);
+	CMenuFrameBox * powerMenu = new CMenuFrameBox(LOCALE_MAINMENU_POWERMENU, NEUTRINO_ICON_BUTTON_POWER);
 	
 	// sleep timer
-	powerMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_SLEEPTIMER, new CSleepTimerWidget, NULL, NEUTRINO_ICON_SMART_SLEEPTIMER));
+	powerMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SLEEPTIMER, new CSleepTimerWidget, NULL, NEUTRINO_ICON_SMART_SLEEPTIMER));
 
 	// restart neutrino
-	powerMenu->addItem(new CMenuFrameBox(LOCALE_SERVICEMENU_RESTART, this, "restart", NEUTRINO_ICON_SMART_RESTART));
+	powerMenu->addItem(new CMenuFrameBoxItem(LOCALE_SERVICEMENU_RESTART, this, "restart", NEUTRINO_ICON_SMART_RESTART));
 
 	// standby
-	powerMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_STANDBY, this, "standby", NEUTRINO_ICON_SMART_STANDBY));
+	powerMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_STANDBY, this, "standby", NEUTRINO_ICON_SMART_STANDBY));
 
 	// reboot
-	powerMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_REBOOT, this, "reboot", NEUTRINO_ICON_SMART_REBOOT));
+	powerMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_REBOOT, this, "reboot", NEUTRINO_ICON_SMART_REBOOT));
 
 	// shutdown
-	powerMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_SHUTDOWN, this, "shutdown", NEUTRINO_ICON_SMART_SHUTDOWN));
+	powerMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SHUTDOWN, this, "shutdown", NEUTRINO_ICON_SMART_SHUTDOWN));
 	
 	powerMenu->exec(NULL, "");
 	powerMenu->hide();
