@@ -3419,7 +3419,7 @@ int CMovieBrowser::showStartPosSelectionMenu(void) // P2
 	
 	char book[MI_MOVIE_BOOK_USER_MAX][20];
 
-	CMenuWidgetSelection startPosSelectionMenu(LOCALE_MOVIEBROWSER_START_HEAD , NEUTRINO_ICON_STREAMING);
+	CMenuWidget/*Selection*/ startPosSelectionMenu(LOCALE_MOVIEBROWSER_START_HEAD , NEUTRINO_ICON_STREAMING);
 	startPosSelectionMenu.enableSaveScreen(true);
 	startPosSelectionMenu.disableMenuPosition();
 	

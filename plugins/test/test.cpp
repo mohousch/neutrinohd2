@@ -31,7 +31,7 @@ class CTestMenu : CMenuTarget
 		// variables
 		CFrameBuffer* frameBuffer;
 		CMenulistBox * listMenu;
-		ZapitChannelList * Channels;
+		ZapitChannelList Channels;
 
 		// functions
 		void testCBox();
@@ -56,9 +56,9 @@ class CTestMenu : CMenuTarget
 		void testCHelpBox();
 		void testCTextBox();
 		void testCListFrame();
-		void testCListBox();
-		void testCListBoxDetails();
-		void testCListBoxDetailsTitleInfo();
+		//void testCListBox();
+		//void testCListBoxDetails();
+		//void testCListBoxDetailsTitleInfo();
 		void testCProgressBar();
 		void testCProgressWindow();
 		void testCButtons();
@@ -600,6 +600,7 @@ void CTestMenu::testCListFrame()
 	listFrame = NULL;
 }
 
+/*
 void CTestMenu::testCListBox()
 {
 	CListBox * listBox = new CListBox("listBox", MENU_WIDTH, MENU_HEIGHT);
@@ -635,6 +636,7 @@ void CTestMenu::testCListBoxDetailsTitleInfo()
 	delete listBox;
 	listBox = NULL;
 }
+*/
 
 void CTestMenu::testCProgressBar()
 {
@@ -1584,26 +1586,46 @@ void CTestMenu::testShowPictureDir()
 	}
 }
 
+#define HEAD_BUTTONS_COUNT	3
+const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_MUTE_ZAP_ACTIVE, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL }	
+};
 void CTestMenu::testCMenuWidgetListBox()
 {
 	dprintf(DEBUG_NORMAL, "CTestMenu::testCMenuWidgetListBox\n");
 
-	listMenu = new CMenulistBox("Favorites", "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	// load all tv channels
+	Channels.clear();
 
-	Channels = &g_bouquetManager->Bouquets[0]->tvChannels;
+	for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+	{
+			if (it->second.getServiceType() != ST_DIGITAL_RADIO_SOUND_SERVICE)
+				Channels.push_back(&(it->second));
+	}
+
+	// sort them
+	sort(Channels.begin(), Channels.end(), CmpChannelByChName());
+
+
+	// itemBox
+	listMenu = new CMenulistBox("All Services", "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	std::string title;
 
-	for(unsigned int i = 0; i< Channels->size(); i++)
+	for(unsigned int i = 0; i< Channels.size(); i++)
 	{
 		title = to_string(i + 1);
 		title += " ";
-		title += (*Channels)[i]->getName().c_str();
+		title += Channels[i]->getName().c_str();
 
-		listMenu->addItem(new CMenulistBoxItem(/*(*Channels)[i]->getName().c_str()*/title.c_str(), true, " - testCMenulistBox", this, "zapit"));
+		listMenu->addItem(new CMenulistBoxItem(title.c_str(), true, " - testCMenulistBox", this, "zapit"));
 	}
 
-	listMenu->setFooter(Buttons, BUTTONS_COUNT);
+	listMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	listMenu->setFooterButtons(Buttons, BUTTONS_COUNT);
 	listMenu->enablePaintDate();
 	listMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	listMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
@@ -1709,6 +1731,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCListFrame();
 	}
+	/*
 	else if(actionKey == "listbox")
 	{
 		testCListBox();
@@ -1721,6 +1744,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCListBoxDetailsTitleInfo();
 	}
+	*/
 	else if(actionKey == "progressbar")
 	{
 		testCProgressBar();
@@ -1890,11 +1914,11 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_info")
 	{
-		g_EpgData->show((*Channels)[listMenu->getSelected()]->channel_id);
+		g_EpgData->show(Channels[listMenu->getSelected()]->channel_id);
 	}
 	else if(actionKey == "zapit")
 	{
-		g_Zapit->zapTo_serviceID((*Channels)[listMenu->getSelected()]->channel_id);
+		g_Zapit->zapTo_serviceID(Channels[listMenu->getSelected()]->channel_id);
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	
@@ -1928,9 +1952,9 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CHelpBox", true, NULL, this, "helpbox"));
 	mainMenu->addItem(new CMenuForwarder("CTextBox", true, NULL, this, "textbox"));
 	mainMenu->addItem(new CMenuForwarder("CListFrame", true, NULL, this, "listframe"));
-	mainMenu->addItem(new CMenuForwarder("CListBox", true, NULL, this, "listbox"));
-	mainMenu->addItem(new CMenuForwarder("CListBoxInfoDetails", true, NULL, this, "listboxdetails"));
-	mainMenu->addItem(new CMenuForwarder("CListBoxDetailsTitleInfo", true, NULL, this, "listboxdetailstitleinfo"));
+	//mainMenu->addItem(new CMenuForwarder("CListBox", true, NULL, this, "listbox"));
+	//mainMenu->addItem(new CMenuForwarder("CListBoxInfoDetails", true, NULL, this, "listboxdetails"));
+	//mainMenu->addItem(new CMenuForwarder("CListBoxDetailsTitleInfo", true, NULL, this, "listboxdetailstitleinfo"));
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
 	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));

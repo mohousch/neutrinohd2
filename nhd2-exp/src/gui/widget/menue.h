@@ -62,6 +62,7 @@ struct menu_return
 	};
 };
 
+// CChangeObserver
 class CChangeObserver
 {
 	public:
@@ -72,6 +73,7 @@ class CChangeObserver
 		}
 };
 
+// CMenuTarget
 class CMenuTarget
 {
 	public:
@@ -81,6 +83,27 @@ class CMenuTarget
 		virtual int exec(CMenuTarget* parent, const std::string& actionKey) = 0;
 };
 
+// CMenuseletorTarget
+class CMenuSelectorTarget : public CMenuTarget
+{
+        public:
+                CMenuSelectorTarget(int *select) {m_select = select;};
+                int exec(CMenuTarget* parent, const std::string& actionKey);
+
+        private:
+                int *m_select;
+};
+
+// CSelectedMenu
+class CSelectedMenu : public CMenuTarget
+{
+	public:
+		bool selected;
+		CSelectedMenu(void){selected = false;};
+		inline	int exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/){selected = true; return menu_return::RETURN_EXIT;};
+};
+
+// CMenuItem
 class CMenuItem
 {
 	protected:
@@ -127,7 +150,7 @@ class CMenuItem
 		virtual void setActive(const bool Active);
 };
 
-// Chooser
+// CAbstractMenuOptionChooser
 class CAbstractMenuOptionChooser : public CMenuItem
 {
 	protected:
@@ -146,7 +169,7 @@ class CAbstractMenuOptionChooser : public CMenuItem
 		}
 };
 
-// OptionChooser
+// CMenuOptionChooser
 class CMenuOptionChooser : public CAbstractMenuOptionChooser
 {
 	public:
@@ -177,7 +200,7 @@ class CMenuOptionChooser : public CAbstractMenuOptionChooser
 		int exec(CMenuTarget* parent);
 };
 
-// OptionNumberChooser
+// CMenuOptionNumberChooser
 class CMenuOptionNumberChooser : public CAbstractMenuOptionChooser
 {
 	const char * optionString;
@@ -205,6 +228,7 @@ class CMenuOptionNumberChooser : public CAbstractMenuOptionChooser
 		int exec(CMenuTarget* parent);
 };
 
+// CMenuOptionStringChooser
 class CMenuOptionStringChooser : public CMenuItem
 {
 		std::string nameString;
@@ -235,6 +259,7 @@ class CMenuOptionStringChooser : public CMenuItem
 		int exec(CMenuTarget* parent);
 };
 
+// CMenuOptionLanguageChooser
 class CMenuOptionLanguageChooser : public CMenuItem
 {
 		int height;
@@ -260,6 +285,7 @@ class CMenuOptionLanguageChooser : public CMenuItem
 		int exec(CMenuTarget* parent);
 };
 
+// CMenuSeparator
 class CMenuSeparator : public CMenuItem
 {
 	int type;
@@ -286,7 +312,105 @@ class CMenuSeparator : public CMenuItem
 
 		virtual const char * getString(void);
 };
-///
+
+// CMenuForwarder
+class CMenuForwarder : public CMenuItem
+{
+	const char * option;
+	const std::string * option_string;
+	CMenuTarget * jumpTarget;
+	std::string actionKey;
+
+	protected:
+		neutrino_locale_t text;
+		std::string textString;
+
+		virtual const char * getOption(void);
+		virtual const char * getName(void);
+		
+	public:
+
+		CMenuForwarder(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		CMenuForwarder(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		CMenuForwarder(const char * const Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		
+		int paint(bool selected = false, bool AfterPulldown = false);
+		int getHeight(void) const;
+		int getWidth(void) const;
+		int exec(CMenuTarget* parent);
+		bool isSelectable(void) const
+		{
+			return active;
+		}
+};
+
+// CPINProtection
+class CPINProtection
+{
+	protected:
+		char * validPIN;
+		bool check();
+		virtual CMenuTarget * getParent() = 0;
+	public:
+		CPINProtection( char *validpin){ validPIN = validpin;};
+		virtual ~CPINProtection(){}
+};
+
+// CZapProtection
+class CZapProtection : public CPINProtection
+{
+	protected:
+		virtual CMenuTarget * getParent() { return( NULL);};
+	public:
+		int fsk;
+
+		CZapProtection( char * validpin, int FSK ) : CPINProtection(validpin){ fsk = FSK; };
+		bool check();
+};
+
+// CLockedMenuForwarder
+class CLockedMenuForwarder : public CMenuForwarder, public CPINProtection
+{
+	CMenuTarget * Parent;
+	bool AlwaysAsk;
+
+	protected:
+		virtual CMenuTarget* getParent(){ return Parent;};
+	public:
+		CLockedMenuForwarder(const neutrino_locale_t Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL)
+		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName) ,
+		  CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
+		  
+		CLockedMenuForwarder(const char * const Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL)
+		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName) ,
+		  CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
+
+		virtual int exec(CMenuTarget* parent);
+};
+
+// CMenuSelector
+class CMenuSelector : public CMenuItem
+{
+	private:
+		const char * optionName;
+		char * optionValue;
+		std::string* optionValueString;
+		int  returnIntValue;
+		int* returnInt;
+		int height;
+		char buffer[20];
+	public:
+		CMenuSelector(const char * OptionName, const bool Active = true, char * OptionValue = NULL, int* ReturnInt = NULL, int ReturnIntValue = 0);
+		CMenuSelector(const char * OptionName, const bool Active , std::string & OptionValue, int* ReturnInt = NULL, int ReturnIntValue = 0);
+
+		int exec(CMenuTarget* parent);
+
+		int paint(bool selected, bool AfterPulldown = false);
+		int getHeight(void) const{return height;};
+
+		bool isSelectable(void) const {	return active;}
+};
 
 /// CMenuWidget
 class CMenuWidget : public CMenuTarget
@@ -326,7 +450,6 @@ class CMenuWidget : public CMenuTarget
 		
 		int hheight;
 		int fheight;
-		int sp_height;
 		int item_height;
 		int item_width;
 		int sb_width;
@@ -362,104 +485,6 @@ class CMenuWidget : public CMenuTarget
 		
 		void enableSaveScreen(bool enable);
 		void disableMenuPosition(void) {disableMenuPos = true;};
-};
-
-// CMenuForwarder
-class CMenuForwarder : public CMenuItem
-{
-	const char * option;
-	const std::string * option_string;
-	CMenuTarget * jumpTarget;
-	std::string actionKey;
-
-	protected:
-		neutrino_locale_t text;
-		std::string textString;
-
-		virtual const char * getOption(void);
-		virtual const char * getName(void);
-		
-	public:
-
-		CMenuForwarder(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		CMenuForwarder(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		CMenuForwarder(const char * const Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		
-		int paint(bool selected = false, bool AfterPulldown = false);
-		int getHeight(void) const;
-		int getWidth(void) const;
-		int exec(CMenuTarget* parent);
-		bool isSelectable(void) const
-		{
-			return active;
-		}
-};
-
-class CPINProtection
-{
-	protected:
-		char * validPIN;
-		bool check();
-		virtual CMenuTarget * getParent() = 0;
-	public:
-		CPINProtection( char *validpin){ validPIN = validpin;};
-		virtual ~CPINProtection(){}
-};
-
-class CZapProtection : public CPINProtection
-{
-	protected:
-		virtual CMenuTarget * getParent() { return( NULL);};
-	public:
-		int fsk;
-
-		CZapProtection( char * validpin, int FSK ) : CPINProtection(validpin){ fsk = FSK; };
-		bool check();
-};
-
-class CLockedMenuForwarder : public CMenuForwarder, public CPINProtection
-{
-	CMenuTarget * Parent;
-	bool AlwaysAsk;
-
-	protected:
-		virtual CMenuTarget* getParent(){ return Parent;};
-	public:
-		CLockedMenuForwarder(const neutrino_locale_t Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL)
-		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName) ,
-		  CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
-		  
-		CLockedMenuForwarder(const char * const Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL)
-		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName) ,
-		  CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
-
-		virtual int exec(CMenuTarget* parent);
-};
-
-// This Class creates a menue item, which writes its caption to an given string (or an given int value to an given variable). 
-// The programm could use this class to verify, what menu was selected. 
-// A good listbox class might do the same. There might be better ways to do so.
-class CMenuSelector : public CMenuItem
-{
-	private:
-		const char * optionName;
-		char * optionValue;
-		std::string* optionValueString;
-		int  returnIntValue;
-		int* returnInt;
-		int height;
-		char buffer[20];
-	public:
-		CMenuSelector(const char * OptionName, const bool Active = true, char * OptionValue = NULL, int* ReturnInt = NULL, int ReturnIntValue = 0);
-		CMenuSelector(const char * OptionName, const bool Active , std::string & OptionValue, int* ReturnInt = NULL, int ReturnIntValue = 0);
-
-		int exec(CMenuTarget* parent);
-
-		int paint(bool selected, bool AfterPulldown = false);
-		int getHeight(void) const{return height;};
-
-		bool isSelectable(void) const {	return active;}
 };
 
 /// CMenuWidgetExtended
@@ -538,6 +563,7 @@ class CMenuWidgetExtended : public CMenuTarget
 		void disableMenuPosition(void) {disableMenuPos = true;};
 };
 
+// CMenuForwarderExtended
 class CMenuForwarderExtended : public CMenuItem
 {
 	CMenuTarget * jumpTarget;
@@ -568,6 +594,7 @@ class CMenuForwarderExtended : public CMenuItem
 		}
 };
 
+// CLockedMenuForwarderExtended
 class CLockedMenuForwarderExtended : public CMenuForwarderExtended, public CPINProtection
 {
 	CMenuTarget * Parent;
@@ -586,39 +613,8 @@ class CLockedMenuForwarderExtended : public CMenuForwarderExtended, public CPINP
 
 		virtual int exec(CMenuTarget* parent);
 };
-///
 
-///
-// CLass to get the menu line selected by the user. There might be better ways to do so.
-class CMenuWidgetSelection : public CMenuWidget
-{
-	public:
-		CMenuWidgetSelection(const neutrino_locale_t Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT) : CMenuWidget( Name, Icon, mwidth, mheight){;};
-		int getSelectedLine(void){return exit_pressed ? -1 : selected;};
-};
-
-class CMenuSelectorTarget : public CMenuTarget
-{
-        public:
-                CMenuSelectorTarget(int *select) {m_select = select;};
-                int exec(CMenuTarget* parent, const std::string& actionKey);
-
-        private:
-                int *m_select;
-};
-
-// I tried a lot to use the menu.cpp as ListBox selection, and I got three solution which are all garbage. 
-//Might be replaced by somebody who is familiar with this stuff .
-class CSelectedMenu : public CMenuTarget
-{
-	public:
-		bool selected;
-		CSelectedMenu(void){selected = false;};
-		inline	int exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/){selected = true; return menu_return::RETURN_EXIT;};
-};
-///
-
-///
+/// CMenuFrameBox
 #define MAX_ITEMS_PER_PAGE	18
 #define MAX_ITEMS_PER_X		6
 #define MAX_ITEMS_PER_Y		3
@@ -683,6 +679,7 @@ class CMenuFrameBox : public CMenuTarget
 		void addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string &action);
 };
 
+// CMenuFrameBoxItem
 class CMenuFrameBoxItem : public CMenuItem
 {
 	CMenuTarget* jumpTarget;
@@ -772,6 +769,10 @@ class CMenulistBox : public CMenuTarget
 		int fbutton_count;
 		const struct button_label* fbutton_labels;
 
+		//
+		int hbutton_count;
+		const struct button_label* hbutton_labels;
+
 		//TEST (neutrinoHD)
 		struct keyAction { std::string action; CMenuTarget *menue; };
 		std::map<neutrino_msg_t, keyAction> keyActionMap;
@@ -785,9 +786,6 @@ class CMenulistBox : public CMenuTarget
 		int icon_head_w = 0;
 		int icon_head_h = 0;
 		const char * l_name;
-		void initFrames();
-		void paintHead();
-		void paintFoot();
 		
 	public:
 		CMenulistBox();
@@ -798,7 +796,10 @@ class CMenulistBox : public CMenuTarget
 
 		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
 		bool hasItem();
-		virtual void paint();
+		void initFrames();
+		void paintHead();
+		void paintFoot();
+		void paint();
 		virtual void hide();
 		virtual int exec(CMenuTarget* parent, const std::string & actionKey);
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
@@ -815,13 +816,16 @@ class CMenulistBox : public CMenuTarget
 		//void disableMenuPosition(void) {disableMenuPos = true;};
 
 		//
-		void setFooter(const struct button_label *_fbutton_label, const int _fbutton_count);
+		void setFooterButtons(const struct button_label *_fbutton_label, const int _fbutton_count);
 
 		//
 		void addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string &action);
 
 		// head
 		void enablePaintDate(void){PaintDate = true;};
+
+		// 
+		void setHeaderButtons(const struct button_label *_hbutton_label, const int _hbutton_count);
 };
 
 // CMenulistBoxItem
