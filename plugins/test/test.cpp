@@ -1593,6 +1593,16 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL }	
 };
+
+#define FOOT_BUTTONS_COUNT 4
+struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_INFOVIEWER_EVENTLIST, NULL},
+	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_INFOVIEWER_NEXT, NULL},
+	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_BOUQUETLIST_HEAD, NULL},
+	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_EPGMENU_EPGPLUS, NULL},
+};
+
 void CTestMenu::testCMenuWidgetListBox()
 {
 	dprintf(DEBUG_NORMAL, "CTestMenu::testCMenuWidgetListBox\n");
@@ -1625,10 +1635,20 @@ void CTestMenu::testCMenuWidgetListBox()
 	}
 
 	listMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
-	listMenu->setFooterButtons(Buttons, BUTTONS_COUNT);
+	listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
+	
 	listMenu->enablePaintDate();
+	listMenu->enableFootInfo();
+
+	// head
 	listMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	listMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
+
+	// footer
+	listMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
+	listMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
+	listMenu->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
+	listMenu->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
 
 	listMenu->exec(NULL, "");
 	listMenu->hide();
@@ -1915,6 +1935,20 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_info")
 	{
 		g_EpgData->show(Channels[listMenu->getSelected()]->channel_id);
+	}
+	else if(actionKey == "RC_red")
+	{
+		//g_EpgData->show(Channels[listMenu->getSelected()]->channel_id);
+		g_EventList->exec(Channels[listMenu->getSelected()]->channel_id, Channels[listMenu->getSelected()]->getName());
+	}
+	else if(actionKey == "RC_yellow")
+	{
+		bouquetList->exec(true);
+	}
+	else if(actionKey == "RC_blue")
+	{
+		CEPGplusHandler eplus;
+		eplus.exec(NULL, "");
 	}
 	else if(actionKey == "zapit")
 	{

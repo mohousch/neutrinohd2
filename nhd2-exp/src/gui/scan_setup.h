@@ -27,14 +27,13 @@
 #ifndef __scan_setup__
 #define __scan_setup__
 
+#include <string>
+
 #include <gui/widget/menue.h>
 
 #include <driver/framebuffer.h>
 
 #include <settings.h>  //zapit/settings.h
-
-#include <string>
-
 
 
 class CTPSelectHandler : public CMenuTarget

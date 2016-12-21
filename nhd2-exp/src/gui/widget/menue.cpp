@@ -51,6 +51,7 @@
 #include <neutrino.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/infobox.h>
+#include <gui/widget/items2detailsline.h>
 
 #include <system/debug.h>
 
@@ -3011,7 +3012,7 @@ void CMenuFrameBox::paintItemBox(int oldposx, int oldposy, int posx, int posy)
 	}
 
 	// itembox
-	frameBuffer->paintBoxRel(frameBox.iX + frameBox.iWidth*posx, frameBox.iY + frameBox.iHeight*posy, frameBox.iWidth, frameBox.iHeight, /*COL_MENUCONTENT_PLUS_6*/COL_YELLOW, RADIUS_SMALL, CORNER_BOTH);
+	frameBuffer->paintBoxRel(frameBox.iX + frameBox.iWidth*posx, frameBox.iY + frameBox.iHeight*posy, frameBox.iWidth, frameBox.iHeight, COL_YELLOW, RADIUS_SMALL, CORNER_BOTH);
 
 	if(items.size())
 	{
@@ -3396,36 +3397,6 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& actionKey)
 
 			items[selected]->paint(true);
 		}
-		/*
-		else if( (msg == CRCInput::RC_info) || (msg == CRCInput::RC_setup) || (msg == CRCInput::RC_red) || (msg == CRCInput::RC_green) || (msg == CRCInput::RC_yellow) || (msg == CRCInput::RC_blue))
-		{
-			printf("CMenuFrameBox::exec: msg: RC_info\n");
-
-			if(hasItem()) 
-			{
-				CMenuItem * item = items[selected];
-				item->msg = msg;
-
-				hide();
-							
-				int rv = item->exec(this, CRCInput::getSpecialKeyName(msg));
-							
-				switch ( rv ) 
-				{
-					case menu_return::RETURN_EXIT_ALL:
-						res = menu_return::RETURN_EXIT_ALL;
-									
-					case menu_return::RETURN_EXIT:
-						loop = false;
-						break;
-									
-					case menu_return::RETURN_REPAINT:
-						paint(currentPos);
-						break;
-				}
-			} 
-		}
-		*/
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 		{
 			dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: getInstance\n");
@@ -3558,6 +3529,9 @@ CMenulistBox::CMenulistBox()
 	background	= NULL;
 
 	//disableMenuPos = false;
+
+	//
+	FootInfo = false;
 }
 
 CMenulistBox::CMenulistBox(const neutrino_locale_t Name, const std::string & Icon, const int mwidth, const int mheight)
@@ -3609,6 +3583,9 @@ void CMenulistBox::Init(const std::string & Icon, const int mwidth, const int mh
 	//
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
+
+	//
+	FootInfo = false;
 }
 
 void CMenulistBox::move(int xoff, int yoff)
@@ -3643,6 +3620,327 @@ bool CMenulistBox::hasItem()
 	return !items.empty();
 }
 
+void CMenulistBox::initFrames()
+{
+	if(name == NONEXISTANT_LOCALE)
+		l_name = nameString.c_str();
+	else
+        	l_name = g_Locale->getText(name);
+
+	// footInfo height
+	cFrameFootInfo.iHeight = (FootInfo)? 70 : 0;
+
+	height = wanted_height;
+
+	// recalculate height
+	if(height > ((int)frameBuffer->getScreenHeight() - 10))
+		height = frameBuffer->getScreenHeight() - 10;
+
+	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(l_name, true); // UTF-8
+
+	// recalculate width
+	if (neededWidth > width - 48) 
+	{
+		width = neededWidth + 49;
+		
+		if(width > (int)frameBuffer->getScreenWidth())
+			width = frameBuffer->getScreenWidth();
+	}
+
+	// head height
+	icon_head_w = 0;
+	icon_head_h = 0;
+	frameBuffer->getIconSize(iconfile.c_str(), &icon_head_w, &icon_head_h);
+	hheight = std::max(icon_head_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+	
+	// foot height
+	int icon_foot_w = 0;
+	int icon_foot_h = 0;
+	frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_foot_w, &icon_foot_h);
+	fheight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+
+	// calculate some values
+	itemHeightTotal = 0;
+	item_height = 0;
+	heightCurrPage = 0;
+	page_start.clear();
+	page_start.push_back(0);
+	total_pages = 1;
+	heightFirstPage = 0;
+	
+	for (unsigned int i = 0; i < items.size(); i++) 
+	{
+		item_height = items[i]->getHeight();
+		itemHeightTotal += item_height;
+		heightCurrPage += item_height;
+
+		if( (heightCurrPage + hheight + fheight) > height)
+		{
+			page_start.push_back(i);
+			heightFirstPage = heightCurrPage - item_height;
+			total_pages++;
+			heightCurrPage = item_height;
+		}
+	}
+
+	page_start.push_back(items.size());
+
+	// icon offset
+	iconOffset = 0;
+
+	for (unsigned int i = 0; i < items.size(); i++) 
+	{
+		if ((!(items[i]->iconName.empty())) || CRCInput::isNumeric(items[i]->directKey))
+		{
+			iconOffset = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+			break;
+		}
+	}
+
+	// shrink menu if less items
+	if(hheight + itemHeightTotal + fheight < height)
+		height = hheight + heightCurrPage + fheight;
+	else 	
+		height = hheight + heightFirstPage + fheight;
+
+	full_width = width;
+	full_height = height + cFrameFootInfo.iHeight;
+	
+	FULL_HEIGHT = full_height;
+	FULL_WIDTH = full_width;
+
+	// all height position
+	HEIGHT_Y = y + full_height;
+		
+	// coordinations
+	x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - full_width ) >> 1 );
+	y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
+}
+
+void CMenulistBox::paintHead()
+{
+	// paint head
+	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	
+	//paint icon (left)
+	frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
+
+	// Foot Buttons
+	int iw, ih;
+
+	if (hbutton_count)
+	{
+		for (unsigned int i = 0; i < hbutton_count; i++)
+		{
+			frameBuffer->getIconSize(hbutton_labels[i].button, &iw, &ih);
+		}
+
+		::paintButtons(frameBuffer, x + width - BORDER_RIGHT - hbutton_count*iw - hbutton_count*ICON_OFFSET/2, y, iw + ICON_OFFSET/2, hbutton_count, hbutton_labels, hheight);
+	}
+
+	// paint time/date
+	if(PaintDate)
+	{
+		std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
+		
+		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
+	
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - hbutton_count*iw - hbutton_count*ICON_OFFSET/2 - timestr_len, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
+	}
+	
+	// head title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 2*ICON_OFFSET, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_RIGHT - BORDER_RIGHT - icon_head_w - 2*ICON_OFFSET - timestr_len - hbutton_count*iw - hbutton_count*ICON_OFFSET/2, l_name, COL_MENUHEAD, 0, true); // UTF-8
+}
+
+void CMenulistBox::paintFoot()
+{
+	//paint foot
+	frameBuffer->paintBoxRel(x, y + full_height - cFrameFootInfo.iHeight - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+
+	// Foot Buttons
+	if (fbutton_count)
+	{
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + full_height - cFrameFootInfo.iHeight - fheight, width/fbutton_count, fbutton_count, fbutton_labels, fheight);
+	}
+}
+
+void CMenulistBox::paint()
+{
+	dprintf(DEBUG_DEBUG, "CMenulistBox::paint:\n");
+
+	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8 );
+	
+	// paint Items
+	item_start_y = y + hheight;
+	
+	paintItems();
+}
+
+// paint items
+void CMenulistBox::paintItems()
+{
+	// items height
+	items_height = height - (hheight + fheight);
+	
+	// items width
+	sb_width = 0;
+	
+	if(total_pages > 1)
+		sb_width = SCROLLBAR_WIDTH; 
+	else
+		sb_width = 0;
+	
+	items_width = full_width - sb_width;
+	
+	// item not currently on screen
+	if (selected >= 0)
+	{
+		while(selected < (int)page_start[current_page])
+			current_page--;
+		
+		while(selected >= (int)page_start[current_page + 1])
+			current_page++;
+	}
+	
+	// paint items background
+	frameBuffer->paintBoxRel(x, item_start_y, full_width, items_height, COL_MENUCONTENT_PLUS_0);
+	
+	// paint right scrollBar if we have more then one page
+	if(total_pages > 1)
+	{
+		int sbh = ((items_height - 4) / total_pages);
+
+		//scrollbar
+		frameBuffer->paintBoxRel(x + full_width - SCROLLBAR_WIDTH, item_start_y, SCROLLBAR_WIDTH, items_height, COL_MENUCONTENT_PLUS_1);
+
+		// scrollBar Slider
+		frameBuffer->paintBoxRel(x + full_width - SCROLLBAR_WIDTH + 2, item_start_y + 2 + current_page * sbh, SCROLLBAR_WIDTH - 4, sbh, COL_MENUCONTENT_PLUS_3);
+	}
+
+	// paint items
+	int ypos = item_start_y;
+	int xpos = x;
+	
+	for (unsigned int count = 0; count < items.size(); count++) 
+	{
+		CMenuItem * item = items[count];
+
+		if ((count >= page_start[current_page]) && (count < page_start[current_page + 1])) 
+		{
+			item->init(xpos, ypos, items_width, iconOffset);
+			
+			if( (item->isSelectable()) && (selected == -1) ) 
+			{
+				selected = count;
+			} 
+
+			if (selected == count) 
+			{
+				paintFootInfo(count);
+			}
+
+			ypos = item->paint(selected == ((signed int) count));
+		} 
+		else 
+		{
+			// x = -1 is a marker which prevents the item from being painted on setActive changes
+			item->init(-1, 0, 0, 0);
+		}	
+	} 
+}
+
+void CMenulistBox::paintFootInfo(int pos)
+{
+	if(FootInfo == false)
+		return;
+
+	//
+	cFrameFootInfo.iX = x;
+	cFrameFootInfo.iY = y + full_height - cFrameFootInfo.iHeight;
+	cFrameFootInfo.iWidth = full_width;
+
+	CMenuItem* item = items[pos];
+
+	item->getYPosition();
+	
+	::paintItem2DetailsLine(x, y, full_width, full_height - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight, hheight, item->getHeight(), item->getYPosition());
+}
+
+void CMenulistBox::hideFootInfo()
+{
+	//
+	cFrameFootInfo.iX = x;
+	cFrameFootInfo.iY = y + full_height - cFrameFootInfo.iHeight;
+	cFrameFootInfo.iWidth = full_width;
+
+	::clearItem2DetailsLine(x, y, full_width + ConnectLineBox_Width, full_height - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight);  
+}
+
+void CMenulistBox::saveScreen()
+{
+	if(!savescreen)
+		return;
+
+	delete[] background;
+
+	background = new fb_pixel_t[full_width*full_height];
+	
+	if(background)
+		frameBuffer->SaveScreen(x, y, full_width, full_height, background);
+}
+
+void CMenulistBox::restoreScreen()
+{
+	if(background) 
+	{
+		if(savescreen)
+			frameBuffer->RestoreScreen(x, y, full_width, full_height, background);
+	}
+}
+
+void CMenulistBox::enableSaveScreen(bool enable)
+{
+	savescreen = enable;
+	
+	if(!enable && background) 
+	{
+		delete[] background;
+		background = NULL;
+	}
+}
+
+void CMenulistBox::setFooterButtons(const struct button_label *_fbutton_labels, const int _fbutton_count)
+{
+	fbutton_count = _fbutton_count;
+	fbutton_labels = _fbutton_labels;
+}
+
+void CMenulistBox::addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string & action)
+{
+	keyActionMap[key].menue = menue;
+	keyActionMap[key].action = action;
+}
+
+void CMenulistBox::setHeaderButtons(const struct button_label *_hbutton_labels, const int _hbutton_count)
+{
+	hbutton_count = _hbutton_count;
+	hbutton_labels = _hbutton_labels;
+}
+
+void CMenulistBox::hide()
+{
+	dprintf(DEBUG_DEBUG, "CMenulistBox::hide:\n");
+
+	if( savescreen && background)
+		restoreScreen();
+	else
+		frameBuffer->paintBackgroundBoxRel(x, y, full_width, full_height);
+
+	CMenulistBox::hideFootInfo(); 
+	
+	frameBuffer->blit();
+}
+
 int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 {
 	dprintf(DEBUG_DEBUG, "CMenulistBox::exec:\n");
@@ -3666,6 +3964,7 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 	paintHead();
 	paint();
 	paintFoot();
+	//paintFootInfo(selected);
 
 	frameBuffer->blit();
 
@@ -3709,7 +4008,6 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 			continue;
 		}
 
-		// colored/numeric direct key
 		for (unsigned int i = 0; i < items.size(); i++) 
 		{
 			CMenuItem * titem = items[i];
@@ -3718,8 +4016,19 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 			{
 				if (titem->isSelectable()) 
 				{
-					items[selected]->paint( false );
+					items[selected]->paint(false);
 					selected = i;
+
+					//
+					if (selected > page_start[current_page + 1] || selected < page_start[current_page]) 
+					{
+						// different page
+						paintItems();
+					}
+
+					paintFootInfo(selected);
+					pos = selected;
+
 					msg = CRCInput::RC_ok;
 				} 
 				else 
@@ -3753,18 +4062,21 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 				case (CRCInput::RC_page_down) :
 					if(msg == CRCInput::RC_page_up) 
 					{
+						printf("msg:RC_page_up\n");
 						if(current_page) 
 						{
 							pos = (int) page_start[current_page] - 1;
-							for (unsigned int count = pos ; count > 0; count--) 
+							for (unsigned int count = pos; count > 0; count--) 
 							{
 								CMenuItem * item = items[pos];
 								if ( item->isSelectable() ) 
 								{
 									if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page])) 
 									{
-										items[selected]->paint( false );
-										item->paint( true );
+										items[selected]->paint(false);
+										paintFootInfo(pos);
+										item->paint(true);
+										//paintFootInfo(pos);
 										selected = pos;
 									} 
 									else 
@@ -3783,12 +4095,14 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 							for (unsigned int count = 0; count < items.size(); count++) 
 							{
 								CMenuItem * item = items[pos];
-								if ( item->isSelectable() ) 
+								if (item->isSelectable()) 
 								{
 									if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page])) 
 									{
-										items[selected]->paint( false );
-										item->paint( true );
+										items[selected]->paint(false);
+										paintFootInfo(pos);
+										item->paint(true);
+										//paintFootInfo(pos);
 										selected = pos;
 									} 
 									else 
@@ -3804,18 +4118,26 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 					}
 					else if(msg == CRCInput::RC_page_down) 
 					{
+						printf("msg:RC_page_down\n");
+
 						pos = (int) page_start[current_page + 1];// - 1;
+
+						// check pos
 						if(pos >= (int) items.size()) 
-							pos = items.size()-1;
+							pos = items.size() - 1;
+
 						for (unsigned int count = pos ; count < items.size(); count++) 
 						{
 							CMenuItem * item = items[pos];
-							if ( item->isSelectable() ) 
+							if (item->isSelectable()) 
 							{
 								if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page])) 
 								{
-									items[selected]->paint( false );
-									item->paint( true );
+									items[selected]->paint(false);
+
+									// paint new item
+									paintFootInfo(pos);
+									item->paint(true);
 									selected = pos;
 								} 
 								else 
@@ -3855,9 +4177,11 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 								{ 
 									// Item is currently on screen
 									//clear prev. selected
-									items[selected]->paint( false );
+									items[selected]->paint(false);
 									//select new
-									item->paint( true );
+									paintFootInfo(pos);
+									item->paint(true);
+									//paintFootInfo(pos);
 									selected = pos;
 								} 
 								else 
@@ -3965,310 +4289,6 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 	}
 	
 	return retval;
-}
-
-void CMenulistBox::hide()
-{
-	dprintf(DEBUG_DEBUG, "CMenulistBox::hide:\n");
-
-	if( savescreen && background)
-		restoreScreen();
-	else
-		frameBuffer->paintBackgroundBoxRel(x, y, full_width, full_height); 
-	
-	frameBuffer->blit();
-}
-
-void CMenulistBox::initFrames()
-{
-	if(name == NONEXISTANT_LOCALE)
-		l_name = nameString.c_str();
-	else
-        	l_name = g_Locale->getText(name);
-
-	height = wanted_height;
-
-	// recalculate height
-	if(height > ((int)frameBuffer->getScreenHeight() - 10))
-		height = frameBuffer->getScreenHeight() - 10;
-
-	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(l_name, true); // UTF-8
-
-	// recalculate width
-	if (neededWidth > width - 48) 
-	{
-		width = neededWidth + 49;
-		
-		if(width > (int)frameBuffer->getScreenWidth())
-			width = frameBuffer->getScreenWidth();
-	}
-
-	// head height
-	icon_head_w = 0;
-	icon_head_h = 0;
-	frameBuffer->getIconSize(iconfile.c_str(), &icon_head_w, &icon_head_h);
-	hheight = std::max(icon_head_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
-	
-	// foot height
-	int icon_foot_w = 0;
-	int icon_foot_h = 0;
-	frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_foot_w, &icon_foot_h);
-	fheight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
-
-	// calculate some values
-	itemHeightTotal = 0;
-	item_height = 0;
-	heightCurrPage = 0;
-	page_start.clear();
-	page_start.push_back(0);
-	total_pages = 1;
-	heightFirstPage = 0;
-	
-	for (unsigned int i = 0; i < items.size(); i++) 
-	{
-		item_height = items[i]->getHeight();
-		itemHeightTotal += item_height;
-		heightCurrPage += item_height;
-
-		if( (heightCurrPage + hheight + fheight) > height)
-		{
-			page_start.push_back(i);
-			heightFirstPage = heightCurrPage - item_height;
-			total_pages++;
-			heightCurrPage = item_height;
-		}
-	}
-
-	page_start.push_back(items.size());
-
-	// icon offset
-	iconOffset = 0;
-
-	for (unsigned int i = 0; i < items.size(); i++) 
-	{
-		if ((!(items[i]->iconName.empty())) || CRCInput::isNumeric(items[i]->directKey))
-		{
-			iconOffset = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-			break;
-		}
-	}
-
-	// shrink menu if less items
-	//FIXME: wrong calculation
-	if(hheight + itemHeightTotal + fheight < height)
-		height = hheight + heightCurrPage + fheight;
-	else 	
-		height = hheight + heightFirstPage + fheight;
-		
-	// coordinations
-	x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width ) >> 1 );
-	y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
-
-	// menu position
-	//if(g_settings.menu_position == SNeutrinoSettings::MENU_POSITION_CENTER /*&& !disableMenuPos*/)
-	//{
-		x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width ) >> 1 );
-		y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
-	//}
-	/*
-	else if(g_settings.menu_position == SNeutrinoSettings::MENU_POSITION_LEFT && !disableMenuPos)
-	{
-		x = offx + frameBuffer->getScreenX() + BORDER_LEFT;
-		y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
-	}
-	else if(g_settings.menu_position == SNeutrinoSettings::MENU_POSITION_RIGHT && !disableMenuPos)
-	{
-		x = offx + frameBuffer->getScreenX() + frameBuffer->getScreenWidth() - width - BORDER_RIGHT;
-		y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
-	}
-	*/
-	
-	full_width = width;
-	full_height = height;
-	
-	FULL_HEIGHT = full_height;
-	FULL_WIDTH = full_width;
-}
-
-void CMenulistBox::paintHead()
-{
-	// paint head
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
-	
-	//paint icon (left)
-	frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
-
-	// Foot Buttons
-	int iw, ih;
-
-	if (hbutton_count)
-	{
-		for (unsigned int i = 0; i < hbutton_count; i++)
-		{
-			frameBuffer->getIconSize(hbutton_labels[i].button, &iw, &ih);
-		}
-
-		::paintButtons(frameBuffer, x + width - BORDER_RIGHT - hbutton_count*iw - hbutton_count*ICON_OFFSET/2, y, iw + ICON_OFFSET/2, hbutton_count, hbutton_labels, hheight);
-	}
-
-	// paint time/date
-	if(PaintDate)
-	{
-		std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
-		
-		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
-	
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - hbutton_count*iw - hbutton_count*ICON_OFFSET/2 - timestr_len, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
-	}
-	
-	// head title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 2*ICON_OFFSET, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_RIGHT - BORDER_RIGHT - icon_head_w - 2*ICON_OFFSET - timestr_len - hbutton_count*iw - hbutton_count*ICON_OFFSET/2, l_name, COL_MENUHEAD, 0, true); // UTF-8
-}
-
-void CMenulistBox::paintFoot()
-{
-	//paint foot
-	frameBuffer->paintBoxRel(x, y + height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
-
-	// Foot Buttons
-	if (fbutton_count)
-	{
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - fheight, width/fbutton_count, fbutton_count, fbutton_labels, fheight);
-	}
-}
-
-void CMenulistBox::paint()
-{
-	dprintf(DEBUG_DEBUG, "CMenulistBox::paint:\n");
-
-	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8 );
-	
-	// paint Items
-	item_start_y = y + hheight;
-	
-	paintItems();
-}
-
-// paint items
-void CMenulistBox::paintItems()
-{
-	// items height
-	items_height = height - (hheight + fheight);
-	
-	// items width
-	sb_width = 0;
-	
-	if(total_pages > 1)
-		sb_width = SCROLLBAR_WIDTH; 
-	else
-		sb_width = 0;
-	
-	items_width = full_width - sb_width;
-	
-	// item not currently on screen
-	if (selected >= 0)
-	{
-		while(selected < (int)page_start[current_page])
-			current_page--;
-		
-		while(selected >= (int)page_start[current_page + 1])
-			current_page++;
-	}
-	
-	// paint items background
-	frameBuffer->paintBoxRel(x, item_start_y, full_width, items_height, COL_MENUCONTENT_PLUS_0);
-	
-	// paint right scrollBar if we have more then one page
-	if(total_pages > 1)
-	{
-		int sbh = ((items_height - 4) / total_pages);
-
-		//scrollbar
-		frameBuffer->paintBoxRel(x + full_width - SCROLLBAR_WIDTH, item_start_y, SCROLLBAR_WIDTH, items_height, COL_MENUCONTENT_PLUS_1);
-
-		// scrollBar Slider
-		frameBuffer->paintBoxRel(x + full_width - SCROLLBAR_WIDTH + 2, item_start_y + 2 + current_page * sbh, SCROLLBAR_WIDTH - 4, sbh, COL_MENUCONTENT_PLUS_3);
-	}
-
-	// paint items
-	int ypos = item_start_y;
-	int xpos = x;
-	
-	for (unsigned int count = 0; count < items.size(); count++) 
-	{
-		CMenuItem * item = items[count];
-
-		if ((count >= page_start[current_page]) && (count < page_start[current_page + 1])) 
-		{
-			item->init(xpos, ypos, items_width, iconOffset);
-			
-			if( (item->isSelectable()) && (selected == -1) ) 
-			{
-				ypos = item->paint(true);
-				selected = count;
-			} 
-			else 
-			{
-				ypos = item->paint( selected == ((signed int) count) );
-			}
-		} 
-		else 
-		{
-			// x = -1 is a marker which prevents the item from being painted on setActive changes
-			item->init(-1, 0, 0, 0);
-		}	
-	} 
-}
-
-void CMenulistBox::saveScreen()
-{
-	if(!savescreen)
-		return;
-
-	delete[] background;
-
-	background = new fb_pixel_t[full_width*full_height];
-	
-	if(background)
-		frameBuffer->SaveScreen(x, y, full_width, full_height, background);
-}
-
-void CMenulistBox::restoreScreen()
-{
-	if(background) 
-	{
-		if(savescreen)
-			frameBuffer->RestoreScreen(x, y, full_width, full_height, background);
-	}
-}
-
-void CMenulistBox::enableSaveScreen(bool enable)
-{
-	savescreen = enable;
-	
-	if(!enable && background) 
-	{
-		delete[] background;
-		background = NULL;
-	}
-}
-
-void CMenulistBox::setFooterButtons(const struct button_label *_fbutton_labels, const int _fbutton_count)
-{
-	fbutton_count = _fbutton_count;
-	fbutton_labels = _fbutton_labels;
-}
-
-void CMenulistBox::addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string & action)
-{
-	keyActionMap[key].menue = menue;
-	keyActionMap[key].action = action;
-}
-
-void CMenulistBox::setHeaderButtons(const struct button_label *_hbutton_labels, const int _hbutton_count)
-{
-	hbutton_count = _hbutton_count;
-	hbutton_labels = _hbutton_labels;
 }	
 
 //CMenulistBoxItem
@@ -4403,6 +4423,11 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	// VFD
 	if (selected)
 	{
+		// name/description
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, HEIGHT_Y - 70 + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), FULL_WIDTH - BORDER_LEFT - BORDER_RIGHT, l_text, COL_MENUCONTENTDARK, 0, true);
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, HEIGHT_Y - 70 + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), FULL_WIDTH - BORDER_LEFT - BORDER_RIGHT, option_text, COL_MENUCONTENTDARK, 0, true); // UTF-8
+
 		// vfd
 		char str[256];
 
@@ -4446,27 +4471,6 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		
 		frameBuffer->paintIcon(iconName, x + ICON_OFFSET, y + (height - icon_h)/2 );
 	}
-	// no need for direkt key
-	/*
-	else if (CRCInput::isNumeric(directKey))
-	{
-		//define icon name depends of numeric value
-		char i_name[6]; // X +'\0'
-		snprintf(i_name, 6, "%d", CRCInput::getNumericValue(directKey));
-		i_name[5] = '\0'; // even if snprintf truncated the string, ensure termination
-		iconName = i_name;
-		
-		if (!iconName.empty())
-		{
-			//get icon size
-			frameBuffer->getIconSize(iconName.c_str(), &icon_w, &icon_h);
-			
-			frameBuffer->paintIcon(iconName, x + ICON_OFFSET, y + (height - icon_h)/2);
-		}
-		else
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + ICON_OFFSET, y + height, height, CRCInput::getKeyName(directKey), color, height);
-	}
-	*/
 	
 	// locale text
 	stringstartposX = x + ICON_OFFSET + (icon_w? icon_w + LOCAL_OFFSET : 0);

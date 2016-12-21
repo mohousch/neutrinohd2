@@ -867,6 +867,8 @@ void CWebTV::hide()
 
 void CWebTV::paintItem(int pos)
 {
+	printf("CWebTV::paintItem: (pos:%d) (current:%d) (liststart:%d)\n", pos, liststart + pos, liststart);
+
 	// Item
 	cFrameBoxItem.iX = cFrameBox.iX;
 	cFrameBoxItem.iY = cFrameBox.iY + cFrameBoxTitle.iHeight + pos*cFrameBoxItem.iHeight;

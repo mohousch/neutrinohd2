@@ -45,6 +45,7 @@
 #include <system/helpers.h>
 
 #include <gui/widget/buttons.h>
+//#include <gui/widget/window.h>
 
 
 #define MENU_WIDTH			DEFAULT_XRES/2 - 50
@@ -148,6 +149,7 @@ class CMenuItem
 		}
 		
 		virtual void setActive(const bool Active);
+		virtual int getYPosition(void) const { return y; }
 };
 
 // CAbstractMenuOptionChooser
@@ -737,6 +739,7 @@ class CMenulistBox : public CMenuTarget
 		unsigned int item_start_y;
 		unsigned int current_page;
 		unsigned int total_pages;
+		//unsigned int itemsPerPage;
 		
 		int selected;
 		bool exit_pressed;
@@ -782,10 +785,15 @@ class CMenulistBox : public CMenuTarget
 		int timestr_len;
 		uint32_t sec_timer_id;
 
-		//
+		// head
 		int icon_head_w = 0;
 		int icon_head_h = 0;
 		const char * l_name;
+
+		// footInfo
+		bool FootInfo;
+		CBox cFrameFootInfo;
+		//CWindow cWindowFootInfo;
 		
 	public:
 		CMenulistBox();
@@ -797,10 +805,16 @@ class CMenulistBox : public CMenuTarget
 		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
 		bool hasItem();
 		void initFrames();
-		void paintHead();
-		void paintFoot();
-		void paint();
+
+		//
+		virtual void paintHead();
+		virtual void paintFoot();
+		virtual void paint();
+		virtual void paintFootInfo(int pos);
+		virtual void hideFootInfo();
 		virtual void hide();
+
+		//
 		virtual int exec(CMenuTarget* parent, const std::string & actionKey);
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
 		int getSelected() { return selected; };
@@ -826,6 +840,8 @@ class CMenulistBox : public CMenuTarget
 
 		// 
 		void setHeaderButtons(const struct button_label *_hbutton_label, const int _hbutton_count);
+		//
+		void enableFootInfo(void){FootInfo = true; initFrames();};
 };
 
 // CMenulistBoxItem
