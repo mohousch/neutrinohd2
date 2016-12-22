@@ -800,7 +800,6 @@ class CMenulistBox : public CMenuTarget
 		// footInfo
 		bool FootInfo;
 		CBox cFrameFootInfo;
-		//CWindow cWindowFootInfo;
 		
 	public:
 		CMenulistBox();
