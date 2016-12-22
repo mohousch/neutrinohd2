@@ -793,8 +793,8 @@ class CMenulistBox : public CMenuTarget
 		uint32_t sec_timer_id;
 
 		// head
-		int icon_head_w = 0;
-		int icon_head_h = 0;
+		int icon_head_w;
+		int icon_head_h;
 		const char * l_name;
 
 		// footInfo
