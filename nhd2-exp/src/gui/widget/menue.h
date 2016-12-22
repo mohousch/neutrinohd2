@@ -45,7 +45,6 @@
 #include <system/helpers.h>
 
 #include <gui/widget/buttons.h>
-//#include <gui/widget/window.h>
 
 
 #define MENU_WIDTH			DEFAULT_XRES/2 - 50
@@ -116,11 +115,6 @@ class CMenuItem
 		neutrino_msg_t msg;
 		bool can_arrow;
 		std::string iconName;
-
-		//
-		//std::string title;
-		//std::string helpText;
-		//std::string itemActionKey;
 
 		//bool marked;
 
@@ -480,7 +474,7 @@ class CMenuWidget : public CMenuTarget
 		bool hasItem();
 		virtual void paint();
 		virtual void hide();
-		virtual int exec(CMenuTarget* parent, const std::string & actionKey);
+		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
 		int getSelected() { return selected; };
 		void move(int xoff, int yoff);
@@ -556,7 +550,7 @@ class CMenuWidgetExtended : public CMenuTarget
 		bool hasItem();
 		virtual void paint();
 		virtual void hide();
-		virtual int exec(CMenuTarget* parent, const std::string & actionKey);
+		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
 		int getSelected() { return selected; };
 		void move(int xoff, int yoff);
@@ -675,9 +669,9 @@ class CMenuFrameBox : public CMenuTarget
 		bool hasItem();
 
 		void paint(int pos = 0);		
-        	void hide(void); 
+        	virtual void hide(void); 
 		
-		int exec(CMenuTarget* parent, const std::string& actionKey);
+		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
 
@@ -800,6 +794,9 @@ class CMenulistBox : public CMenuTarget
 		// footInfo
 		bool FootInfo;
 		CBox cFrameFootInfo;
+
+		//
+		unsigned long long int timeout;
 		
 	public:
 		CMenulistBox();
@@ -821,7 +818,8 @@ class CMenulistBox : public CMenuTarget
 		virtual void hide();
 
 		//
-		virtual int exec(CMenuTarget* parent, const std::string & actionKey);
+		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
+
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
 		int getSelected() { return selected; };
 		void move(int xoff, int yoff);
@@ -848,6 +846,8 @@ class CMenulistBox : public CMenuTarget
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 		//
 		void enableFootInfo(void){FootInfo = true; initFrames();};
+
+		void setTimeOut(int to = 0){timeout = to;};
 };
 
 // CMenulistBoxItem
@@ -859,18 +859,30 @@ class CMenulistBoxItem : public CMenuItem
 	std::string actionKey;
 
 	protected:
+		//
 		neutrino_locale_t text;
 		std::string textString;
-
+		
+		//
 		virtual const char * getOption(void);
 		virtual const char * getName(void);
+
+		//
+		int number;
+		int runningPercent;
+		std::string description;
+		std::string icon1, icon2;
+		std::string info1, info2;
 		
 	public:
 
-		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		CMenulistBoxItem(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		CMenulistBoxItem(const char * const Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL);
+
+		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL);
+
+		CMenulistBoxItem(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL);
+
+		CMenulistBoxItem(const char * const Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL);
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;

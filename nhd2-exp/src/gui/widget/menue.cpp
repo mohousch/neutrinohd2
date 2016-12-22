@@ -38,21 +38,20 @@
 #include <unistd.h> //acces
 #include <cctype>
 
-#include <gui/widget/menue.h>
-
-#include <driver/fontrenderer.h>
-#include <driver/rcinput.h>
-
-#include <gui/color.h>
-
-#include <gui/widget/stringinput.h>
-
 #include <global.h>
 #include <neutrino.h>
+
+#include <gui/widget/menue.h>
+#include <gui/widget/stringinput.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/infobox.h>
 #include <gui/widget/items2detailsline.h>
 #include <gui/widget/scrollbar.h>
+
+#include <gui/color.h>
+
+#include <driver/fontrenderer.h>
+#include <driver/rcinput.h>
 
 #include <system/debug.h>
 
@@ -2813,7 +2812,7 @@ int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	
 	//local-text
-	stringstartposX = x + ICON_OFFSET + (icon_w? icon_w + LOCAL_OFFSET : 0);
+	stringstartposX = x + ICON_OFFSET + (icon_w? icon_w + ICON_OFFSET : 0);
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), (dx/3)*2 - (stringstartposX - x), l_text, color, 0, true); // UTF-8
 
 	return y + height;
@@ -3991,7 +3990,7 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 	int retval = menu_return::RETURN_REPAINT;
-	unsigned long long int timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
+	unsigned long long int timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
 
 	//control loop
 	do {
@@ -3999,7 +3998,7 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 
 		if ( msg <= CRCInput::RC_MaxRC ) 
 		{
-			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
+			timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
 		}
 		
 		int handled = false;
@@ -4273,7 +4272,7 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 			if ( msg <= CRCInput::RC_MaxRC )
 			{
 				// recalculate timeout f�r RC-Tasten
-				timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
+				timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
 			}
 		}
 		
@@ -4311,7 +4310,7 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 }	
 
 //CMenulistBoxItem
-CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName)
+CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const Info1, const char* Info2)
 {
 	option = Option;
 	option_string = NULL;
@@ -4322,9 +4321,17 @@ CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Acti
 	actionKey = ActionKey ? ActionKey : "";
 	directKey = DirectKey;
 	iconName = IconName ? IconName : "";
+
+	number = Num;
+	runningPercent = Percent;
+	description = Descr;
+	icon1 = Icon1;
+	icon2 = Icon2;
+	info1 = Info1;
+	info2 = Info2;
 }
 
-CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName)
+CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const Info1, const char* Info2)
 {
 	option = NULL;
 	option_string = &Option;
@@ -4335,9 +4342,17 @@ CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Acti
 	actionKey = ActionKey ? ActionKey : "";
 	directKey = DirectKey;
 	iconName = IconName ? IconName : "";
+
+	number = Num;
+	runningPercent = Percent;
+	description = Descr;
+	icon1 = Icon1;
+	icon2 = Icon2;
+	info1 = Info1;
+	info2 = Info2;
 }
 
-CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName)
+CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const Info1, const char* Info2)
 {
 	option = Option;
 	option_string = NULL;
@@ -4348,9 +4363,17 @@ CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, c
 	actionKey = ActionKey ? ActionKey : "";
 	directKey = DirectKey;
 	iconName = IconName ? IconName : "";
+
+	number = Num;
+	runningPercent = Percent;
+	description = Descr;
+	icon1 = Icon1;
+	icon2 = Icon2;
+	info1 = Info1;
+	info2 = Info2;
 }
 
-CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName)
+CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const Info1, const char* Info2)
 {
 	option = NULL;
 	option_string = &Option;
@@ -4361,6 +4384,14 @@ CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, c
 	actionKey = ActionKey ? ActionKey : "";
 	directKey = DirectKey;
 	iconName = IconName ? IconName : "";
+
+	number = Num;
+	runningPercent = Percent;
+	description = Descr;
+	icon1 = Icon1;
+	icon2 = Icon2;
+	info1 = Info1;
+	info2 = Info2;
 }
 
 int CMenulistBoxItem::getHeight(void) const
@@ -4434,32 +4465,20 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 
 	int height = getHeight();
 	const char * l_text = getName();
-	
-	int stringstartposX = x + (offx == 0 ? 0 : offx);
 
 	const char* option_text = getOption();
 	
-	// VFD
 	if (selected)
 	{
-		// name/description
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, HEIGHT_Y - 70 + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), FULL_WIDTH - BORDER_LEFT - BORDER_RIGHT, l_text, COL_MENUCONTENTDARK, 0, true);
+		// Foot Info
+		// name/description//FIXME:info1
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, HEIGHT_Y - 70 + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), FULL_WIDTH - BORDER_LEFT - BORDER_RIGHT, info1.c_str(), COL_MENUCONTENTDARK, 0, true);
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, HEIGHT_Y - 70 + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), FULL_WIDTH - BORDER_LEFT - BORDER_RIGHT, option_text, COL_MENUCONTENTDARK, 0, true); // UTF-8
+		// description//FIXME:info2
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, HEIGHT_Y - 70 + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), FULL_WIDTH - BORDER_LEFT - BORDER_RIGHT, info2.c_str(), COL_MENUCONTENTDARK, 0, true); // UTF-8
 
 		// vfd
-		char str[256];
-
-		if (option_text != NULL) 
-		{
-			snprintf(str, 255, "%s %s", l_text, option_text);
-
-			CVFD::getInstance()->showMenuText(0, str, -1, true);
-		} 
-		else
-		{
-			CVFD::getInstance()->showMenuText(0, l_text, -1, true);
-		}
+		CVFD::getInstance()->showMenuText(0, l_text, -1, true);
 	}
 
 	uint8_t color = COL_MENUCONTENT;
@@ -4483,10 +4502,10 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	*/
 	
-	// paint item
+	// itemBox
 	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor); //FIXME
 	
-	// paint icon/direkt-key
+	// left icon
 	int icon_w = 0;
 	int icon_h = 0;
 	
@@ -4497,19 +4516,98 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		
 		frameBuffer->paintIcon(iconName, x + ICON_OFFSET, y + (height - icon_h)/2 );
 	}
+
+	// right icon1
+	int icon1_w = 0;
+	int icon1_h = 0;
+	
+	if (!icon1.empty())
+	{
+		//get icon size
+		frameBuffer->getIconSize(icon1.c_str(), &icon1_w, &icon1_h);
+		
+		frameBuffer->paintIcon(icon1, x + dx - BORDER_LEFT - icon1_w, y + (height - icon1_h)/2 );
+	}
+
+	// right icon2
+	int icon2_w = 0;
+	int icon2_h = 0;
+	
+	if (!icon2.empty())
+	{
+		//get icon size
+		frameBuffer->getIconSize(icon2.c_str(), &icon2_w, &icon2_h);
+		
+		frameBuffer->paintIcon(icon2, x + dx - BORDER_LEFT - (icon1_w? icon1_w + ICON_OFFSET : 0) - icon2_w, y + (height - icon2_h)/2 );
+	}
+
+	// number
+	int numwidth = 0;
+	if(number != 0)
+	{
+		char tmp[10];
+
+		sprintf((char*) tmp, "%d", number);
+
+		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("0000");
+
+		int numpos = x + BORDER_LEFT + numwidth - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(tmp);
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(numpos, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), numwidth + 5, tmp, color, 0, true); // UTF-8
+	}
+
+	// ProgressBar
+	int pBarWidth = 0;
+	if(runningPercent > -1)
+	{
+		pBarWidth = 35;
+		int pBarHeight = height/3;
+
+		CProgressBar timescale(pBarWidth, pBarHeight);
+		
+		timescale.reset();
+		timescale.paint(x + BORDER_LEFT + numwidth + ICON_OFFSET, y + (height - pBarHeight)/2, runningPercent);
+	}
 	
 	// locale text
-	stringstartposX = x + ICON_OFFSET + (icon_w? icon_w + LOCAL_OFFSET : 0);
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - ICON_OFFSET - (stringstartposX - x), l_text, color, 0, true); // UTF-8
+	int l_text_width = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true);
+	if(l_text_width >= dx - BORDER_LEFT - BORDER_RIGHT)
+		l_text_width = dx - BORDER_LEFT - BORDER_RIGHT;
+
+	if(l_text != NULL)
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT + numwidth + ICON_OFFSET + pBarWidth + ICON_OFFSET, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_RIGHT - BORDER_LEFT - numwidth - pBarWidth - 2*ICON_OFFSET - icon_w - icon1_w - icon2_w, l_text, color, 0, true); // UTF-8
+	}
+
+	// description text
+	int descr_width = 0;
+	bool paintDescription = true;
+	std::string descr_text;
+	if(!description.empty())
+	{
+		descr_width = dx - BORDER_LEFT - numwidth - ICON_OFFSET - icon_w - icon1_w - icon2_w - l_text_width;
+		if (descr_width < 0) 
+			paintDescription = false;
+
+		if(paintDescription)
+		{
+			descr_text = " - ";
+			descr_text += description;
+
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + BORDER_LEFT + numwidth + pBarWidth + ICON_OFFSET + l_text_width + ICON_OFFSET, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), dx - BORDER_LEFT - BORDER_RIGHT - numwidth - ICON_OFFSET - pBarWidth - ICON_OFFSET - l_text_width - icon_w - icon1_w - ICON_OFFSET - icon2_w - ICON_OFFSET, descr_text.c_str(), COL_COLORED_EVENTS_CHANNELLIST, 0, true);
+		}
+	}
 
 	//option-text
+	#if 0
 	if (option_text != NULL)
 	{
 		int stringwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(option_text, true);
-		int stringstartposOption = stringstartposX + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true) + 2*LOCAL_OFFSET/*std::max(stringstartposX + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true), x + dx - (stringwidth + ICON_OFFSET))*/; //+ offx
+		int stringstartposOption = stringstartposX + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true) + 2*ICON_OFFSET/*std::max(stringstartposX + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true), x + dx - (stringwidth + ICON_OFFSET))*/; //+ offx
 		
 		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(stringstartposOption, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), dx - (stringstartposOption- x),  option_text, /*color*/COL_COLORED_EVENTS_CHANNELLIST, 0, true);
 	}
+	#endif
 	
 	return y + height;
 }

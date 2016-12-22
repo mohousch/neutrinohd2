@@ -93,7 +93,7 @@ class CEpgData
 	public:
 
 		CEpgData();
-		void start( );
+		void start();
 		int show(const t_channel_id channel_id, unsigned long long id = 0, time_t * startzeit = NULL, bool doLoop = true );
 		void hide();
 };
@@ -101,7 +101,7 @@ class CEpgData
 class CEPGDataHandler : public CMenuTarget
 {
 	public:
-		int  exec( CMenuTarget* parent,  const std::string &actionKey);
+		int exec(CMenuTarget* parent,  const std::string& actionKey);
 };
 
 #endif

@@ -1584,7 +1584,7 @@ void CTestMenu::testCMenuWidgetListBox()
 	sort(Channels.begin(), Channels.end(), CmpChannelByChName());
 
 	// channels events
-	CChannelEvent * p_event = NULL;
+	//CChannelEvent * p_event = NULL;
 
 	//
 	CNeutrinoApp::getInstance()->TVchannelList->updateEvents();
@@ -1603,15 +1603,13 @@ void CTestMenu::testCMenuWidgetListBox()
 	CMenulistBox* listMenu = new CMenulistBox("All Services", "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	std::string title;
+	time_t jetzt = time(NULL);
+	int runningPercent = 0;
 
 	for(unsigned int i = 0; i < Channels.size(); i++)
 	{
-		// item title
-		title = to_string(i + 1);
-		title += " ";
-		title += Channels[i]->getName().c_str();
-
 		// item description
+		/*
 		if (displayNext) 
 		{
 			p_event = &Channels[i]->nextEvent;
@@ -1620,8 +1618,25 @@ void CTestMenu::testCMenuWidgetListBox()
 		{
 			p_event = &Channels[i]->currentEvent;
 		}
+		*/
 
-		listMenu->addItem(new CMenulistBoxItem(title.c_str(), true, p_event->description, this, "zapit"));
+		// runningPercent
+		/*			
+		if (((jetzt - p_event->startTime + 30) / 60) < 0 )
+		{
+			runningPercent = 0;
+		}
+		else
+		{
+			runningPercent = (jetzt - p_event->startTime) * 30 / p_event->duration;
+
+			if (runningPercent > 30)	// this would lead to negative value in paintBoxRel
+				runningPercent = 30;	// later on which can be fatal...
+		}
+		*/
+
+		// add items
+		listMenu->addItem(new CMenulistBoxItem(Channels[i]->getName().c_str(), true, "", this, "zapit", CRCInput::RC_nokey, NULL, (i +1), runningPercent, /*p_event->description.c_str()*/"", Channels[i]->isHD() ? NEUTRINO_ICON_HD : "", Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "", /*p_event->description.c_str()*/"", /*p_event->text.c_str()*/""));
 	}
 
 	listMenu->setSelected(selected);
@@ -1643,7 +1658,7 @@ void CTestMenu::testCMenuWidgetListBox()
 	listMenu->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
 
 	listMenu->exec(NULL, "");
-	listMenu->hide();
+	//listMenu->hide();
 	delete listMenu;
 	listMenu = NULL;
 }
@@ -1920,7 +1935,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_green")
 	{
-		//selected = listMenu->getSelected();
+		selected = listMenu->getSelected();
 		displayNext = !displayNext;
 		testCMenuWidgetListBox();
 		return menu_return::RETURN_EXIT_ALL;		

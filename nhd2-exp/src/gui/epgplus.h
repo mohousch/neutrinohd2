@@ -321,7 +321,7 @@ class EpgPlus
 				MenuTargetAddReminder( EpgPlus* epgPlus);
 
 			public:
-				int exec(CMenuTarget* parent , const std::string& actionKey);
+				int exec(CMenuTarget* parent, const std::string& actionKey);
 
 			private:
 				EpgPlus * epgPlus;
@@ -390,7 +390,7 @@ class EpgPlus
 				MenuTargetSettings ( EpgPlus * epgPlus);
 
 			public:
-				int exec(CMenuTarget * parent , const std::string& actionKey);
+				int exec(CMenuTarget* parent , const std::string& actionKey);
 
 			private:
 				EpgPlus * epgPlus;

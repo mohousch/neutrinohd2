@@ -82,7 +82,7 @@ class CKeyChooserItem : public CMenuTarget
 		CKeyChooserItem(const char * const Name, int *Key);
 
 		void hide();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 
 };
 

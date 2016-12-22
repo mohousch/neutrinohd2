@@ -1243,9 +1243,9 @@ int CEPGDataHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
 	dprintf(DEBUG_NORMAL, "CEPGDataHandler::exec:\n");
 
-	int           res = menu_return::RETURN_REPAINT;
-	CChannelList  *channelList;
-	CEpgData      *e;
+	int res = menu_return::RETURN_REPAINT;
+	CChannelList* channelList;
+	CEpgData* e;
 
 	if (parent) 
 		parent->hide();
@@ -1259,3 +1259,4 @@ int CEPGDataHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 
 	return res;
 }
+

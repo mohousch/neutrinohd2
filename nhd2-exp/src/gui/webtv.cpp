@@ -604,10 +604,11 @@ void CWebTV::show(bool reload)
 	{
 		for(unsigned int i = 0; i< channels.size(); i++)
 		{
-			webTVlistMenu->addItem(new CMenulistBoxItem(channels[i]->title.c_str(), true, channels[i]->description.c_str(), this, "zapit"));
+			webTVlistMenu->addItem(new CMenulistBoxItem(channels[i]->title.c_str(), true, "", this, "zapit", CRCInput::RC_nokey, NULL, (i +1), file_prozent, channels[i]->description.c_str(), "", "", channels[i]->title.c_str(), channels[i]->description.c_str()));
 		}
 	}
 
+	webTVlistMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	webTVlistMenu->setSelected(tuned);
 
 	webTVlistMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);

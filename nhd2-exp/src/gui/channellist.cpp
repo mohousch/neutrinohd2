@@ -1715,7 +1715,10 @@ void CChannelList::paintItem(int pos)
 		sprintf((char*) tmp, "%d", this->historyMode ? pos : chan->number);
 
 		CChannelEvent * p_event = NULL;
-		CProgressBar timescale(34, iheight/2);
+
+		int pBarWidth = 35;
+		int pBarHeight = iheight/3;
+		CProgressBar timescale(pBarWidth, pBarHeight);
 
 		if (displayNext) 
 		{
@@ -1743,7 +1746,7 @@ void CChannelList::paintItem(int pos)
 		}
 
 		// channel number
-		int numpos = x + 5 + numwidth - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(tmp);
+		int numpos = x + ICON_OFFSET + numwidth - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(tmp);
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(numpos, ypos + (iheight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), numwidth + 5, tmp, color, 0, true);
 
@@ -1795,7 +1798,7 @@ void CChannelList::paintItem(int pos)
 					
 					//
 					timescale.reset();
-					timescale.paint(x + ICON_OFFSET + numwidth + title_offset, ypos + iheight/4, runningPercent);
+					timescale.paint(x + ICON_OFFSET + numwidth + title_offset, ypos + (iheight - pBarHeight)/2, runningPercent);
 				}
 			}
 
@@ -1813,7 +1816,7 @@ void CChannelList::paintItem(int pos)
 				short runningPercent = 0;
 
 				timescale.reset();
-				timescale.paint(x + ICON_OFFSET + numwidth + title_offset, ypos + iheight/4, runningPercent);
+				timescale.paint(x + ICON_OFFSET + numwidth + title_offset, ypos + (iheight - pBarHeight)/2, runningPercent);
 			}
 			
 			//name
