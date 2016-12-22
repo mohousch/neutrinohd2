@@ -1,4 +1,4 @@
-SUBDIRS = zapit gui daemonc driver system timerd nhttpd sectionsd
+SUBDIRS = driver system zapit timerd nhttpd sectionsd daemonc gui
 
 AM_CPPFLAGS = \
 	-I$(top_builddir) \
@@ -55,7 +55,6 @@ neutrino_LDADD = \
 	gui/video_setup.o \
 	gui/widget/items2detailsline.o \
 	gui/widget/window.o \
-	gui/widget/listbox.o \
 	$(top_builddir)/lib/sectionsdclient/libsectionsdclient.a \
 	$(top_builddir)/lib/timerdclient/libtimerdclient.a \
 	$(top_builddir)/src/zapit/lib/libzapitclient.a \

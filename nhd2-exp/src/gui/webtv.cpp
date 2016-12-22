@@ -77,8 +77,6 @@ CWebTV::CWebTV()
 	duration = 0;
 	file_prozent = 0;
 	
-	//zapProtection = NULL;
-	
 	playstate = STOPPED;
 	speed = 0;
 }
@@ -118,36 +116,6 @@ void CWebTV::loadChannels(void)
 	strReplace(title, ".m3u", "");
 	strReplace(title, "userbouquet.", "");
 }
-
-/*
-struct MemoryStruct {
-	char *memory;
-	size_t size;
-};
-
-static void *myrealloc(void *ptr, size_t size)
-{
-	if(ptr)
-		return realloc(ptr, size);
-	else
-		return malloc(size);
-}
-
-static size_t WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
-{
-	size_t realsize = size * nmemb;
-	struct MemoryStruct *mem = (struct MemoryStruct *)data;
-
-	mem->memory = (char *)myrealloc(mem->memory, mem->size + realsize + 1);
-	if (mem->memory) 
-	{
-		memcpy(&(mem->memory[mem->size]), ptr, realsize);
-		mem->size += realsize;
-		mem->memory[mem->size] = 0;
-	}
-	return realsize;
-}
-*/
 
 void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * description) 
 {
@@ -531,16 +499,6 @@ void CWebTV::showInfo()
 		g_InfoViewer->showMovieInfo(channels[tuned]->title, channels[tuned]->description, file_prozent, duration, ac3state, speed, playstate, false, false);
 }
 
-/*
-void CWebTV::getInfos()
-{
-	playback->GetPosition((int64_t &)position, (int64_t &)duration);
-	
-	if(duration > 100)
-		file_prozent = (unsigned char) (position / (duration / 100));
-}
-*/
-
 void CWebTV::showFileInfoWebTV(int pos)
 {
 	if(pos > -1)
@@ -559,7 +517,6 @@ void CWebTV::addUserBouquet(void)
 {
 	dprintf(DEBUG_NORMAL, "CWebTV::addUserBouquet\n");
 
-	//CFileBrowser filebrowser;
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");
