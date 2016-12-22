@@ -1715,6 +1715,7 @@ void CChannelList::paintItem(int pos)
 		sprintf((char*) tmp, "%d", this->historyMode ? pos : chan->number);
 
 		CChannelEvent * p_event = NULL;
+		CProgressBar timescale(34, iheight/2);
 
 		if (displayNext) 
 		{
@@ -1792,10 +1793,9 @@ void CChannelList::paintItem(int pos)
 							runningPercent = 30;	// later on which can be fatal...
 					}
 					
-					frameBuffer->paintBoxRel(x + 5 + numwidth + title_offset, ypos + iheight/4, 34, iheight/2, COL_MENUCONTENT_PLUS_3, 0);//fill passive
-					frameBuffer->paintBoxRel(x + 5 + numwidth + title_offset + 2, ypos + 2 + iheight/4, 30, iheight/2 - 4, COL_MENUCONTENT_PLUS_1, 0);//frame(passive)
-					
-					frameBuffer->paintBoxRel(x + 5 + numwidth + title_offset + 2, ypos + 2 + iheight/4, runningPercent, iheight/2 - 4, COL_MENUCONTENT_PLUS_3, 0);//fill(active)
+					//
+					timescale.reset();
+					timescale.paint(x + ICON_OFFSET + numwidth + title_offset, ypos + iheight/4, runningPercent);
 				}
 			}
 
@@ -1809,14 +1809,11 @@ void CChannelList::paintItem(int pos)
 		{
 			if(g_settings.channellist_extended)
 			{
-				// extended info
+				//
 				short runningPercent = 0;
-				frameBuffer->paintBoxRel(x + 5 + numwidth + title_offset, ypos + iheight/4, 34, iheight/2, COL_MENUCONTENT_PLUS_3, 0);//fill passive
-				frameBuffer->paintBoxRel(x + 5 + numwidth + title_offset + 2, ypos + 2 + iheight/4, 30, iheight/2 - 4, COL_MENUCONTENT_PLUS_1, 0);//frame(passive)
 
-				frameBuffer->paintBoxRel(x + 5 + numwidth + title_offset + 2, ypos + 2 + iheight/4, runningPercent, iheight/2 - 4, COL_MENUCONTENT_PLUS_3, 0);//fill(active)
-					
-				frameBuffer->paintLine(x + 5 + numwidth + title_offset, ypos + iheight/4 + 1, x + 5 + numwidth + title_offset + 32, ypos + iheight/4 + iheight/2 - 3, COL_MENUCONTENT_PLUS_3);
+				timescale.reset();
+				timescale.paint(x + ICON_OFFSET + numwidth + title_offset, ypos + iheight/4, runningPercent);
 			}
 			
 			//name

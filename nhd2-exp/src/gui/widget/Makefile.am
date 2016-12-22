@@ -30,7 +30,6 @@ libneutrino_gui_widget_a_SOURCES = \
 	messagebox.cpp \
 	hintbox.cpp \
 	helpbox.cpp \
-	listbox.cpp \
 	textbox.cpp \
 	listframe.cpp \
 	window.cpp \

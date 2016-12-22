@@ -30,9 +30,10 @@ class CTestMenu : CMenuTarget
 	private:
 		// variables
 		CFrameBuffer* frameBuffer;
-		CMenulistBox * listMenu;
+		CMenulistBox* listMenu;
 		ZapitChannelList Channels;
 		int selected;
+		bool displayNext;
 
 		// functions
 		void testCBox();
@@ -57,9 +58,6 @@ class CTestMenu : CMenuTarget
 		void testCHelpBox();
 		void testCTextBox();
 		void testCListFrame();
-		//void testCListBox();
-		//void testCListBoxDetails();
-		//void testCListBoxDetailsTitleInfo();
 		void testCProgressBar();
 		void testCProgressWindow();
 		void testCButtons();
@@ -124,6 +122,7 @@ CTestMenu::CTestMenu()
 	frameBuffer = CFrameBuffer::getInstance();
 
 	selected = 0;
+	displayNext = false;
 }
 
 CTestMenu::~CTestMenu()
@@ -602,44 +601,6 @@ void CTestMenu::testCListFrame()
 	delete listFrame;
 	listFrame = NULL;
 }
-
-/*
-void CTestMenu::testCListBox()
-{
-	CListBox * listBox = new CListBox("listBox", MENU_WIDTH, MENU_HEIGHT);
-
-	listBox->enablePaintDate();
-	//listBox->setTitleIcon(NEUTRINO_ICON_BUTTON_SETUP);
-	listBox->exec(NULL, "");
-	delete listBox;
-	listBox = NULL;
-}
-
-void CTestMenu::testCListBoxDetails()
-{
-	CListBox * listBox = new CListBox("listBoxInfoDetails", w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
-
-	listBox->enablePaintDate();
-	listBox->enableFootInfo();
-	
-	listBox->exec(NULL, "");
-	delete listBox;
-	listBox = NULL;
-}
-
-void CTestMenu::testCListBoxDetailsTitleInfo()
-{
-	CListBox * listBox = new CListBox("listBoxDetailsTitleInfo", w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
-
-	listBox->enablePaintDate();
-	listBox->enableFootInfo();
-	listBox->enableTitleInfo();
-	
-	listBox->exec(NULL, "");
-	delete listBox;
-	listBox = NULL;
-}
-*/
 
 void CTestMenu::testCProgressBar()
 {
@@ -1598,7 +1559,7 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 };
 
 #define FOOT_BUTTONS_COUNT 4
-struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
+struct button_label FButtons[FOOT_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_INFOVIEWER_EVENTLIST, NULL},
 	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_INFOVIEWER_NEXT, NULL},
@@ -1622,25 +1583,51 @@ void CTestMenu::testCMenuWidgetListBox()
 	// sort them
 	sort(Channels.begin(), Channels.end(), CmpChannelByChName());
 
+	// channels events
+	CChannelEvent * p_event = NULL;
+
+	//
+	CNeutrinoApp::getInstance()->TVchannelList->updateEvents();
+
+	//bool displayNext = false;
+	if (displayNext) 
+	{
+		FButtons[1].locale = LOCALE_INFOVIEWER_NOW;
+	} 
+	else 
+	{
+		FButtons[1].locale = LOCALE_INFOVIEWER_NEXT;
+	}
 
 	// itemBox
-	listMenu = new CMenulistBox("All Services", "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	CMenulistBox* listMenu = new CMenulistBox("All Services", "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	std::string title;
 
-	for(unsigned int i = 0; i< Channels.size(); i++)
+	for(unsigned int i = 0; i < Channels.size(); i++)
 	{
+		// item title
 		title = to_string(i + 1);
 		title += " ";
 		title += Channels[i]->getName().c_str();
 
-		listMenu->addItem(new CMenulistBoxItem(title.c_str(), true, " - testCMenulistBox", this, "zapit"));
+		// item description
+		if (displayNext) 
+		{
+			p_event = &Channels[i]->nextEvent;
+		} 
+		else 
+		{
+			p_event = &Channels[i]->currentEvent;
+		}
+
+		listMenu->addItem(new CMenulistBoxItem(title.c_str(), true, p_event->description, this, "zapit"));
 	}
 
 	listMenu->setSelected(selected);
 
 	listMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
-	listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
+	listMenu->setFooterButtons(FButtons, FOOT_BUTTONS_COUNT);
 	
 	listMenu->enablePaintDate();
 	listMenu->enableFootInfo();
@@ -1756,20 +1743,6 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCListFrame();
 	}
-	/*
-	else if(actionKey == "listbox")
-	{
-		testCListBox();
-	}
-	else if(actionKey == "listboxdetails")
-	{
-		testCListBoxDetails();
-	}
-	else if(actionKey == "listboxdetailstitleinfo")
-	{
-		testCListBoxDetailsTitleInfo();
-	}
-	*/
 	else if(actionKey == "progressbar")
 	{
 		testCProgressBar();
@@ -1943,8 +1916,14 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_red")
 	{
-		//g_EpgData->show(Channels[listMenu->getSelected()]->channel_id);
 		g_EventList->exec(Channels[listMenu->getSelected()]->channel_id, Channels[listMenu->getSelected()]->getName());
+	}
+	else if(actionKey == "RC_green")
+	{
+		//selected = listMenu->getSelected();
+		displayNext = !displayNext;
+		testCMenuWidgetListBox();
+		return menu_return::RETURN_EXIT_ALL;		
 	}
 	else if(actionKey == "RC_yellow")
 	{
@@ -1992,9 +1971,6 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CHelpBox", true, NULL, this, "helpbox"));
 	mainMenu->addItem(new CMenuForwarder("CTextBox", true, NULL, this, "textbox"));
 	mainMenu->addItem(new CMenuForwarder("CListFrame", true, NULL, this, "listframe"));
-	//mainMenu->addItem(new CMenuForwarder("CListBox", true, NULL, this, "listbox"));
-	//mainMenu->addItem(new CMenuForwarder("CListBoxInfoDetails", true, NULL, this, "listboxdetails"));
-	//mainMenu->addItem(new CMenuForwarder("CListBoxDetailsTitleInfo", true, NULL, this, "listboxdetailstitleinfo"));
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
 	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));

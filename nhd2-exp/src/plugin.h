@@ -39,19 +39,19 @@
 
 #include <stdio.h>
 #include <dirent.h>
-
 #include <sys/ioctl.h>
 #include <net/if.h>
 #include <arpa/inet.h>
-
 #include <semaphore.h>
-
 #include <system/set_threadname.h>
 
 // 
 #include <client/zapitclient.h>
+
 #include <sectionsdclient/sectionsdclient.h>
+
 #include <timerdclient/timerdclient.h>
+#include <timerdclient/timerdmsg.h>
 
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
@@ -78,11 +78,6 @@
 
 #include <daemonc/remotecontrol.h>
 
-#include <gui/epgview.h>
-#include <gui/infoviewer.h>
-#include <gui/eventlist.h>
-#include <gui/epgplus.h>
-#include <gui/streaminfo2.h>
 #include <gui/widget/colorchooser.h>
 #include <gui/widget/menue.h>
 #include <gui/widget/messagebox.h>
@@ -95,12 +90,22 @@
 #include <gui/widget/buttons.h>
 #include <gui/widget/helpbox.h>
 #include <gui/widget/infobox.h>
-#include <gui/widget/listbox.h>
 #include <gui/widget/textbox.h>
 #include <gui/widget/vfdcontroler.h>
 #include <gui/widget/window.h>
-#include <gui/color.h>
+#include <gui/widget/progressbar.h>
+
 #include <gui/bedit/bouqueteditor_bouquets.h>
+#include <gui/bedit/bouqueteditor_chanselect.h>
+#include <gui/bedit/bouqueteditor_channels.h>
+#include <gui/bedit/bouqueteditor_bouquets.h>
+
+#include <gui/epgview.h>
+#include <gui/infoviewer.h>
+#include <gui/eventlist.h>
+#include <gui/epgplus.h>
+#include <gui/streaminfo2.h>
+#include <gui/color.h>
 #include <gui/bouquetlist.h>
 #include <gui/eventlist.h>
 #include <gui/channellist.h>
@@ -122,7 +127,6 @@
 #include <gui/pictureviewer.h>
 #include <gui/motorcontrol.h>
 #include <gui/filebrowser.h>
-#include <gui/widget/progressbar.h>
 #include <gui/cam_menu.h>
 #include <gui/hdd_menu.h>
 #include <gui/dboxinfo.h>
@@ -134,18 +138,12 @@
 #include <gui/upnpbrowser.h>
 #include <gui/channel_select.h>
 #include <gui/audio_video_select.h>
-
-#include <gui/bedit/bouqueteditor_chanselect.h>
-#include <gui/bedit/bouqueteditor_channels.h>
-#include <gui/bedit/bouqueteditor_bouquets.h>
-
 #include <gui/psisetup.h>
 #include <gui/rc_lock.h>
 #include <gui/mediaplayer.h>
 #include <gui/service_setup.h>
 #include <gui/main_setup.h>
 #include <gui/power_menu.h>
-
 #include <gui/audio_setup.h>
 #include <gui/video_setup.h>
 #include <gui/parentallock_setup.h>
@@ -169,9 +167,7 @@
 #include <system/fsmounter.h>
 #include <system/helpers.h>
 
-#include <timerdclient/timerdmsg.h>
-
-/*zapit includes*/
+// zapit
 #include <frontend_c.h>
 #include <getservices.h>
 #include <satconfig.h>

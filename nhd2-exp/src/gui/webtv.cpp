@@ -42,35 +42,27 @@
 
 #include <driver/screen_max.h>
 
-#include <movieplayer.h>
-#include <webtv.h>
-
 #include <gui/widget/buttons.h>
-#include <gui/widget/messagebox.h>
-#include <gui/widget/helpbox.h>
 #include <gui/widget/infobox.h>
 #include <gui/widget/hintbox.h>
-#include <gui/widget/items2detailsline.h>
 
-#include <gui/filebrowser.h>
-#include <gui/audio_video_select.h>
+#include <gui/audio_video_select.h> 	//ac3state
 
 #include <xmlinterface.h>
 
 #include <sectionsd/edvbstring.h>
-#include <client/zapittools.h>
 
 #include <system/debug.h>
 #include <system/helpers.h>
 
 // libdvbapi
 #include <playback_cs.h>
-#include <video_cs.h>
-#include <audio_cs.h>
 
 // curl
 #include <curl/curl.h>
 #include <curl/easy.h>
+
+#include <webtv.h>
 
 
 extern cPlayback *playback;
@@ -85,7 +77,7 @@ CWebTV::CWebTV()
 	duration = 0;
 	file_prozent = 0;
 	
-	zapProtection = NULL;
+	//zapProtection = NULL;
 	
 	playstate = STOPPED;
 	speed = 0;
@@ -127,6 +119,7 @@ void CWebTV::loadChannels(void)
 	strReplace(title, "userbouquet.", "");
 }
 
+/*
 struct MemoryStruct {
 	char *memory;
 	size_t size;
@@ -154,6 +147,7 @@ static size_t WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *da
 	}
 	return realsize;
 }
+*/
 
 void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * description) 
 {
@@ -537,6 +531,7 @@ void CWebTV::showInfo()
 		g_InfoViewer->showMovieInfo(channels[tuned]->title, channels[tuned]->description, file_prozent, duration, ac3state, speed, playstate, false, false);
 }
 
+/*
 void CWebTV::getInfos()
 {
 	playback->GetPosition((int64_t &)position, (int64_t &)duration);
@@ -544,6 +539,7 @@ void CWebTV::getInfos()
 	if(duration > 100)
 		file_prozent = (unsigned char) (position / (duration / 100));
 }
+*/
 
 void CWebTV::showFileInfoWebTV(int pos)
 {
@@ -563,7 +559,7 @@ void CWebTV::addUserBouquet(void)
 {
 	dprintf(DEBUG_NORMAL, "CWebTV::addUserBouquet\n");
 
-	CFileBrowser filebrowser;
+	//CFileBrowser filebrowser;
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");
@@ -645,8 +641,7 @@ void CWebTV::show(bool reload)
 		loadChannels();
 
 	//
-	// itemBox
-	webTVlistMenu = new CMenulistBox(title.c_str(), NEUTRINO_ICON_WEBTV_SMALL, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	webTVlistMenu = new CMenulistBox(title.c_str(), NEUTRINO_ICON_WEBTV_SMALL, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
 	if(channels.size())
 	{

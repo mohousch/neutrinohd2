@@ -129,7 +129,7 @@ void CAudiofileExt::operator=(const CAudiofileExt& src)
 	firstChar = src.firstChar;
 }
 
-//
+#if 0
 struct MemoryStruct {
 	char *memory;
 	size_t size;
@@ -161,6 +161,7 @@ static size_t WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *da
 	}
 	return realsize;
 }
+#endif
 
 CAudioPlayerGui::CAudioPlayerGui(bool inetmode)
 {
@@ -1129,7 +1130,6 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 	/* we're done with libcurl, so clean it up */
 	curl_global_cleanup();
 }
-
 
 void CAudioPlayerGui::readDir_ic(void)
 {

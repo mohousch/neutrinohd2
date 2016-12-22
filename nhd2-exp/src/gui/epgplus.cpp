@@ -1325,13 +1325,14 @@ void EpgPlus::paint()
 //  -- to be used for calls from Menue
 //  -- (2004-03-05 rasc)
 
-int CEPGplusHandler::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
+int CEPGplusHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
 	dprintf(DEBUG_NORMAL, "CEPGplusHandler::exec:\n");
 
-	int res = menu_return::RETURN_REPAINT /*EXIT_ALL*/;
-	EpgPlus *e;
-	CChannelList *channelList;
+	int res = menu_return::RETURN_REPAINT;
+
+	EpgPlus* e;
+	CChannelList* channelList;
 	
 	if (parent)
 		parent->hide ();
@@ -1341,6 +1342,7 @@ int CEPGplusHandler::exec(CMenuTarget * parent, const std::string &/*actionKey*/
 	channelList = CNeutrinoApp::getInstance ()->channelList;
 	e->exec(channelList, channelList->getSelectedChannelIndex(), bouquetList);
 	delete e;
+	e = NULL;
 	
 	return res;
 }

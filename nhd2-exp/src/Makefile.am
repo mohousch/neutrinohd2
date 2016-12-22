@@ -39,6 +39,7 @@ neutrino_LDADD = \
 	gui/widget/libneutrino_gui_widget2.a \
 	driver/pictureviewer/libneutrino_pictureviewer.a \
 	system/libneutrino_system.a \
+	system/helpers.o \
 	driver/libneutrino_driver.a \
 	gui/movieinfo.o \
 	driver/audiodec/libneutrino_driver_audiodec.a \
@@ -55,7 +56,6 @@ neutrino_LDADD = \
 	gui/widget/items2detailsline.o \
 	gui/widget/window.o \
 	gui/widget/listbox.o \
-	system/helpers.o \
 	$(top_builddir)/lib/sectionsdclient/libsectionsdclient.a \
 	$(top_builddir)/lib/timerdclient/libtimerdclient.a \
 	$(top_builddir)/src/zapit/lib/libzapitclient.a \

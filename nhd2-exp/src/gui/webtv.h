@@ -30,16 +30,10 @@
 #ifndef __webtv_h__
 #define __webtv_h__
 
-#include <sys/types.h>
-
 #include <string>
 #include <vector>
 
-#include <sys/stat.h>
-
 #include <gui/widget/menue.h>
-
-#include <driver/file.h>
 
 #include <xmlinterface.h>
 
@@ -60,15 +54,11 @@ class CWebTV : public CMenuTarget
 		
 		// channels
 		std::vector<webtv_channels *> channels;
-		CZapProtection* zapProtection;
 		
 		// bouquets
 		std::string title;
 
 		CMenulistBox* webTVlistMenu;
-		
-		// gui
-		CFrameBuffer * frameBuffer;
 
 		int tuned;
 		
@@ -96,11 +86,10 @@ class CWebTV : public CMenuTarget
 		~CWebTV();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		
-		void show(bool reload = true);
+		void show(bool reload = false);
 		void showUserBouquet();
 		
 		//
-		int zapTo(int pos = 0, bool rezap = false);
 		void quickZap(int key);
 		
 		// playback
@@ -109,14 +98,14 @@ class CWebTV : public CMenuTarget
 		void pausePlayBack(void);
 		void continuePlayBack(void);
 		
+		//
 		void showFileInfoWebTV(int pos);
 		void showInfo();
-		void getInfos();
-		
-		void showAudioDialog();
-		
+
+		//
 		unsigned int getTunedChannel() {return tuned;};
 		
+		//
 		void loadChannels(void);
 		void ClearChannels(void);
 		

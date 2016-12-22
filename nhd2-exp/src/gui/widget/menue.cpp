@@ -52,6 +52,7 @@
 #include <gui/widget/icons.h>
 #include <gui/widget/infobox.h>
 #include <gui/widget/items2detailsline.h>
+#include <gui/widget/scrollbar.h>
 
 #include <system/debug.h>
 
@@ -83,6 +84,9 @@ void CMenuItem::init(const int X, const int Y, const int DX, const int OFFX)
 	y    = Y;
 	dx   = DX;
 	offx = OFFX;
+
+	//active = true;
+	//marked = false;
 }
 
 void CMenuItem::setActive(const bool Active)
@@ -92,6 +96,16 @@ void CMenuItem::setActive(const bool Active)
 	if (x != -1)
 		paint();
 }
+
+/*
+void CMenuItem::setMarked(const bool Marked)
+{
+	marked = Marked;
+
+	if (x != -1)
+		paint();
+}
+*/
 
 // CMenuWidget
 CMenuWidget::CMenuWidget()
@@ -3531,6 +3545,19 @@ CMenulistBox::CMenulistBox()
 	//disableMenuPos = false;
 
 	//
+	//
+	fbutton_count	= 0;
+	fbutton_labels	= NULL;
+
+	//
+	PaintDate = false;
+	timestr_len = 0;
+
+	//
+	hbutton_count	= 0;
+	hbutton_labels	= NULL;
+
+	//
 	FootInfo = false;
 }
 
@@ -3697,11 +3724,10 @@ void CMenulistBox::initFrames()
 		}
 	}
 
-	// shrink menu if less items
-	if(hheight + itemHeightTotal + fheight < height)
-		height = hheight + heightCurrPage + fheight;
-	else 	
-		height = hheight + heightFirstPage + fheight;
+	// recalculate height
+	listmaxshow = (height - hheight - fheight)/item_height;
+
+	height = hheight + listmaxshow*item_height + fheight;
 
 	full_width = width;
 	full_height = height + cFrameFootInfo.iHeight;
@@ -3808,13 +3834,7 @@ void CMenulistBox::paintItems()
 	// paint right scrollBar if we have more then one page
 	if(total_pages > 1)
 	{
-		int sbh = ((items_height - 4) / total_pages);
-
-		//scrollbar
-		frameBuffer->paintBoxRel(x + full_width - SCROLLBAR_WIDTH, item_start_y, SCROLLBAR_WIDTH, items_height, COL_MENUCONTENT_PLUS_1);
-
-		// scrollBar Slider
-		frameBuffer->paintBoxRel(x + full_width - SCROLLBAR_WIDTH + 2, item_start_y + 2 + current_page * sbh, SCROLLBAR_WIDTH - 4, sbh, COL_MENUCONTENT_PLUS_3);
+		::paintScrollBar(x + full_width - SCROLLBAR_WIDTH, item_start_y, items_height, total_pages, current_page);
 	}
 
 	// paint items
@@ -3909,7 +3929,7 @@ void CMenulistBox::enableSaveScreen(bool enable)
 	}
 }
 
-void CMenulistBox::setFooterButtons(const struct button_label *_fbutton_labels, const int _fbutton_count)
+void CMenulistBox::setFooterButtons(const struct button_label* _fbutton_labels, const int _fbutton_count)
 {
 	fbutton_count = _fbutton_count;
 	fbutton_labels = _fbutton_labels;
@@ -3921,7 +3941,7 @@ void CMenulistBox::addKey(neutrino_msg_t key, CMenuTarget *menue, const std::str
 	keyActionMap[key].action = action;
 }
 
-void CMenulistBox::setHeaderButtons(const struct button_label *_hbutton_labels, const int _hbutton_count)
+void CMenulistBox::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
 {
 	hbutton_count = _hbutton_count;
 	hbutton_labels = _hbutton_labels;
@@ -3964,7 +3984,6 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 	paintHead();
 	paint();
 	paintFoot();
-	//paintFootInfo(selected);
 
 	frameBuffer->blit();
 
@@ -4456,6 +4475,13 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		color = COL_MENUCONTENTINACTIVE;
 		bgcolor = COL_MENUCONTENTINACTIVE_PLUS_0;
 	}
+	/*
+	else if (marked)
+	{
+		color   = COL_MENUCONTENTINACTIVE;
+		bgcolor = COL_MENUCONTENTSELECTED_PLUS_2;
+	}
+	*/
 	
 	// paint item
 	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor); //FIXME

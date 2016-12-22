@@ -122,6 +122,8 @@ class CMenuItem
 		//std::string helpText;
 		//std::string itemActionKey;
 
+		//bool marked;
+
 		CMenuItem()
 		{
 			x = -1;
@@ -148,7 +150,11 @@ class CMenuItem
 			return 0;
 		}
 		
+		//
 		virtual void setActive(const bool Active);
+		//virtual void setMarked(const bool Marked);
+
+		//
 		virtual int getYPosition(void) const { return y; }
 };
 
@@ -765,6 +771,7 @@ class CMenulistBox : public CMenuTarget
 		int items_height;
 		int items_width;
 		int heightFirstPage;
+		int listmaxshow;
 
 		//bool disableMenuPos;
 
@@ -812,7 +819,7 @@ class CMenulistBox : public CMenuTarget
 		virtual void paint();
 		virtual void paintFootInfo(int pos);
 		virtual void hideFootInfo();
-		void hide();
+		virtual void hide();
 
 		//
 		virtual int exec(CMenuTarget* parent, const std::string & actionKey);
@@ -830,7 +837,7 @@ class CMenulistBox : public CMenuTarget
 		//void disableMenuPosition(void) {disableMenuPos = true;};
 
 		//
-		void setFooterButtons(const struct button_label *_fbutton_label, const int _fbutton_count);
+		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count);
 
 		//
 		void addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string &action);
@@ -839,7 +846,7 @@ class CMenulistBox : public CMenuTarget
 		void enablePaintDate(void){PaintDate = true;};
 
 		// 
-		void setHeaderButtons(const struct button_label *_hbutton_label, const int _hbutton_count);
+		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 		//
 		void enableFootInfo(void){FootInfo = true; initFrames();};
 };

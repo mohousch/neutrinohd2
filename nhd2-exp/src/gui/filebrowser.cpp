@@ -755,7 +755,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 		actual_file = &filelist[liststart + pos];
 		if (actual_file->Marked)
 		{
-			color = COL_MENUCONTENTINACTIVE; //+= 2; FIXME
+			color = COL_MENUCONTENTINACTIVE;
 			bgcolor = (liststart + pos == selected) ? COL_MENUCONTENTSELECTED_PLUS_2 : COL_MENUCONTENT_PLUS_2;
 		}
 
@@ -771,7 +771,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 		}
 		colwidth1 = width - 35 - colwidth2 - colwidth3 - 10;
 
-		frameBuffer->paintBoxRel(x,ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
+		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 
 		if ( actual_file->Name.length() > 0 )
 		{

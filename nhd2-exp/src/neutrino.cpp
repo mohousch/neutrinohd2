@@ -4793,7 +4793,7 @@ void CNeutrinoApp::webtvMode( bool rezap)
 	// show streams channel list
 	if(webtv)
 	{
-		webtv->show();
+		webtv->show(true);
 	}
 }
 
