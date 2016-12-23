@@ -62,6 +62,7 @@
 unsigned int HEIGHT_Y;
 unsigned int FULL_HEIGHT;
 unsigned int FULL_WIDTH;
+bool listMenuFootInfo = false;
 
 // CMenuSelectorTarget
 int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string& actionKey)
@@ -2430,7 +2431,7 @@ void CMenuWidgetExtended::paint()
 		itemHeightTotal += item_height;
 		heightCurrPage += item_height;
 
-		if( (heightCurrPage + hheight + 2*sp_height + fheight) > height)
+		if( (heightCurrPage + hheight /*+ 2*sp_height*/ + fheight) > height)
 		{
 			page_start.push_back(i);
 			heightFirstPage = heightCurrPage - item_height;
@@ -2454,12 +2455,17 @@ void CMenuWidgetExtended::paint()
 	}
 
 	// shrink menu if less items
-	//FIXME: wrong calculation
-	if(hheight + sp_height + itemHeightTotal + sp_height + fheight < height)
-		height = hheight + sp_height + heightCurrPage + sp_height + fheight;
+	if(hheight /*+ sp_height*/ + itemHeightTotal /*+ sp_height*/ + fheight < height)
+		height = hheight /*+ sp_height*/ + heightCurrPage /*+ sp_height*/ + fheight;
 	else 	
-		height = hheight + sp_height + heightFirstPage + sp_height + fheight;
-		
+		height = hheight /*+ sp_height*/ + heightFirstPage /*+ sp_height*/ + fheight;
+	
+	full_width = width;
+	full_height = height + 2*sp_height;
+	
+	FULL_HEIGHT = full_height;
+	FULL_WIDTH = full_width;
+
 	// coordinations
 	x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width ) >> 1 );
 	y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
@@ -2481,12 +2487,6 @@ void CMenuWidgetExtended::paint()
 		y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
 	}
 	
-	full_width = width;
-	full_height = height;
-	
-	FULL_HEIGHT = full_height;
-	FULL_WIDTH = full_width;
-	
 	//
 	if(savescreen) 
 		saveScreen();
@@ -2504,10 +2504,10 @@ void CMenuWidgetExtended::paint()
 	frameBuffer->paintBoxRel(x, y + hheight, full_width, sp_height, COL_MENUCONTENTDARK_PLUS_0);
 	
 	// paint foot seperator
-	frameBuffer->paintBoxRel(x, y + height - (fheight + sp_height), full_width, sp_height, COL_MENUCONTENTDARK_PLUS_0);
+	frameBuffer->paintBoxRel(x, y + full_height - (fheight + sp_height), full_width, sp_height, COL_MENUCONTENTDARK_PLUS_0);
 	
 	//paint foot
-	frameBuffer->paintBoxRel(x, y + height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	frameBuffer->paintBoxRel(x, y + full_height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 	
 	// all height position (needed to paint itemIcon and help text)
 	HEIGHT_Y = y + full_height;
@@ -2523,7 +2523,7 @@ void CMenuWidgetExtended::paint()
 void CMenuWidgetExtended::paintItems()
 {
 	// items height
-	items_height = height - (hheight + sp_height + sp_height + fheight);
+	items_height = full_height - (hheight + sp_height + sp_height + fheight);
 	
 	// items width
 	sb_width = 0;
@@ -3728,6 +3728,7 @@ void CMenulistBox::initFrames()
 
 	height = hheight + listmaxshow*item_height + fheight;
 
+	//
 	full_width = width;
 	full_height = height + cFrameFootInfo.iHeight;
 	
@@ -3944,6 +3945,14 @@ void CMenulistBox::setHeaderButtons(const struct button_label* _hbutton_labels, 
 {
 	hbutton_count = _hbutton_count;
 	hbutton_labels = _hbutton_labels;
+}
+
+void CMenulistBox::enableFootInfo(void)
+{
+	FootInfo = true; 
+	initFrames();
+
+	listMenuFootInfo = FootInfo;
 }
 
 void CMenulistBox::hide()
@@ -4271,7 +4280,7 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 
 			if ( msg <= CRCInput::RC_MaxRC )
 			{
-				// recalculate timeout f�r RC-Tasten
+				// recalculate timeout for RC-Tasten
 				timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
 			}
 		}
@@ -4310,16 +4319,15 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 }	
 
 //CMenulistBoxItem
-CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const Info1, const char* Info2)
+CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const Info1, const char* Info2, const char* const OptionText1, const char* const OptionText2)
 {
 	text = Text;
 	textString = g_Locale->getText(Text);
 	active = Active;
 	jumpTarget = Target;
 	actionKey = ActionKey ? ActionKey : "";
-	directKey = DirectKey;
-	iconName = IconName ? IconName : "";
 
+	iconName = IconName ? IconName : "";
 	number = Num;
 	runningPercent = Percent;
 	description = Descr;
@@ -4327,18 +4335,19 @@ CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Acti
 	icon2 = Icon2;
 	info1 = Info1;
 	info2 = Info2;
+	optionText1 = OptionText1;
+	optionText2 = OptionText2;
 }
 
-CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const Info1, const char* Info2)
+CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const Info1, const char* Info2, const char* const OptionText1, const char* const OptionText2)
 {
 	text = NONEXISTANT_LOCALE;
 	textString = Text;
 	active = Active;
 	jumpTarget = Target;
 	actionKey = ActionKey ? ActionKey : "";
-	directKey = DirectKey;
-	iconName = IconName ? IconName : "";
 
+	iconName = IconName ? IconName : "";
 	number = Num;
 	runningPercent = Percent;
 	description = Descr;
@@ -4346,6 +4355,8 @@ CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, C
 	icon2 = Icon2;
 	info1 = Info1;
 	info2 = Info2;
+	optionText1 = OptionText1;
+	optionText2 = OptionText2;
 }
 
 int CMenulistBoxItem::getHeight(void) const
@@ -4403,11 +4414,14 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	if (selected)
 	{
 		// Foot Info
-		// name/description//FIXME:info1
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, HEIGHT_Y - 70 + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), FULL_WIDTH - BORDER_LEFT - BORDER_RIGHT, info1.c_str(), COL_MENUCONTENTDARK, 0, true);
+		if(listMenuFootInfo)
+		{
+			// name/description//FIXME:info1
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, HEIGHT_Y - 70 + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), FULL_WIDTH - BORDER_LEFT - BORDER_RIGHT, info1.c_str(), COL_MENUCONTENTDARK, 0, true);
 
-		// description//FIXME:info2
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, HEIGHT_Y - 70 + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), FULL_WIDTH - BORDER_LEFT - BORDER_RIGHT, info2.c_str(), COL_MENUCONTENTDARK, 0, true); // UTF-8
+			// description//FIXME:info2
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, HEIGHT_Y - 70 + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), FULL_WIDTH - BORDER_LEFT - BORDER_RIGHT, info2.c_str(), COL_MENUCONTENTDARK, 0, true); // UTF-8
+		}
 
 		// vfd
 		CVFD::getInstance()->showMenuText(0, l_text, -1, true);
@@ -4446,7 +4460,25 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		//get icon size
 		frameBuffer->getIconSize(iconName.c_str(), &icon_w, &icon_h);
 		
-		frameBuffer->paintIcon(iconName, x + ICON_OFFSET, y + (height - icon_h)/2 );
+		frameBuffer->paintIcon(iconName, x + BORDER_LEFT, y + (height - icon_h)/2 );
+	}
+
+	// optionText1
+	int optionText1_width = 0;
+	if(!optionText1.empty())
+	{
+		optionText1_width = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(optionText1.c_str());
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + dx - BORDER_RIGHT - optionText1_width, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), optionText1_width, optionText1.c_str(), color, 0, true); // UTF-8
+	}
+
+	// optionText2
+	int optionText2_width = 0;
+	if(!optionText2.empty())
+	{
+		optionText2_width = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(optionText2.c_str());
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + dx - BORDER_RIGHT - optionText1_width - ICON_OFFSET - optionText2_width, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), optionText2_width, optionText2.c_str(), color, 0, true); // UTF-8
 	}
 
 	// right icon1
@@ -4508,7 +4540,7 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 
 	if(l_text != NULL)
 	{
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT + numwidth + ICON_OFFSET + pBarWidth + ICON_OFFSET, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_RIGHT - BORDER_LEFT - numwidth - pBarWidth - 2*ICON_OFFSET - icon_w - icon1_w - icon2_w, l_text, color, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT + icon_w + numwidth + ICON_OFFSET + pBarWidth + ICON_OFFSET, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_RIGHT - BORDER_LEFT - numwidth - pBarWidth - 2*ICON_OFFSET - icon_w - icon1_w - icon2_w - optionText1_width - ICON_OFFSET - optionText2_width, l_text, color, 0, true); // UTF-8
 	}
 
 	// description text

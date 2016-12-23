@@ -1634,17 +1634,21 @@ void CTestMenu::testCMenuWidgetListBox()
 		}
 		*/
 
-		// add items
-		listMenu->addItem(new CMenulistBoxItem(Channels[i]->getName().c_str(), true, this, "zapto", CRCInput::RC_nokey, NULL, (i +1), runningPercent, p_event->description.c_str(), Channels[i]->isHD() ? NEUTRINO_ICON_HD : "", Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "", p_event->description.c_str(), p_event->text.c_str()));
+		// a la Channelist
+		listMenu->addItem(new CMenulistBoxItem(Channels[i]->getName().c_str(), true, this, "zapto", NULL, (i +1), runningPercent, p_event->description.c_str(), Channels[i]->isHD() ? NEUTRINO_ICON_HD : "", Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "", p_event->description.c_str(), p_event->text.c_str(), "", ""));
+
+		// a la filebrowser
+		//listMenu->addItem(new CMenulistBoxItem(Channels[i]->getName().c_str(), true, NULL, "zapto", NEUTRINO_ICON_FOLDER, 0, -1, /*p_event->description.c_str()*/"", /*Channels[i]->isHD() ? NEUTRINO_ICON_HD : ""*/"", /*Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : ""*/"", /*p_event->description.c_str()*/"", /*p_event->text.c_str()*/"", "24.12.2016", "13:22"));
 	}
 
+	listMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	listMenu->setSelected(selected);
 
 	listMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	listMenu->setFooterButtons(FButtons, FOOT_BUTTONS_COUNT);
 	
 	listMenu->enablePaintDate();
-	listMenu->enableFootInfo();
+	listMenu->enableFootInfo(); //FIXME: menue.cpp 
 
 	// head
 	listMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));

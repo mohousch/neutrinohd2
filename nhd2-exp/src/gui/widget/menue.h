@@ -536,6 +536,7 @@ class CMenuWidgetExtended : public CMenuTarget
 		int items_height;
 		int items_width;
 		int heightFirstPage;
+		int listmaxshow;
 
 		bool disableMenuPos;
 		
@@ -827,22 +828,13 @@ class CMenulistBox : public CMenuTarget
 			return height;
 		}
 		
+		//
 		void enableSaveScreen(bool enable);
-
-		//
 		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count);
-
-		//
 		void addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string &action);
-
-		// head
 		void enablePaintDate(void){PaintDate = true;};
-
-		// 
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
-		//
-		void enableFootInfo(void){FootInfo = true; initFrames();};
-
+		void enableFootInfo(void);
 		void setTimeOut(int to = 0){timeout = to;};
 };
 
@@ -866,12 +858,13 @@ class CMenulistBoxItem : public CMenuItem
 		std::string description;
 		std::string icon1, icon2;
 		std::string info1, info2;
+		std::string optionText1, optionText2;
 		
 	public:
 
-		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active = true, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL);
+		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active = true, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL, const char* const OptionText1 = NULL, const char* const OptionText2 = NULL);
 
-		CMenulistBoxItem(const char * const Text, const bool Active = true, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL);
+		CMenulistBoxItem(const char * const Text, const bool Active = true, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL, const char* const OptionText1 = NULL, const char* const OptionText2 = NULL);
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
