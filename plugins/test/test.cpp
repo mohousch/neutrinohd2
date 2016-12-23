@@ -25,7 +25,7 @@ extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
 
-class CTestMenu : CMenuTarget
+class CTestMenu : public CMenuTarget
 {
 	private:
 		// variables
@@ -1584,7 +1584,7 @@ void CTestMenu::testCMenuWidgetListBox()
 	sort(Channels.begin(), Channels.end(), CmpChannelByChName());
 
 	// channels events
-	//CChannelEvent * p_event = NULL;
+	CChannelEvent * p_event = NULL;
 
 	//
 	CNeutrinoApp::getInstance()->TVchannelList->updateEvents();
@@ -1609,7 +1609,6 @@ void CTestMenu::testCMenuWidgetListBox()
 	for(unsigned int i = 0; i < Channels.size(); i++)
 	{
 		// item description
-		/*
 		if (displayNext) 
 		{
 			p_event = &Channels[i]->nextEvent;
@@ -1618,7 +1617,6 @@ void CTestMenu::testCMenuWidgetListBox()
 		{
 			p_event = &Channels[i]->currentEvent;
 		}
-		*/
 
 		// runningPercent
 		/*			
@@ -1636,7 +1634,7 @@ void CTestMenu::testCMenuWidgetListBox()
 		*/
 
 		// add items
-		listMenu->addItem(new CMenulistBoxItem(Channels[i]->getName().c_str(), true, "", this, "zapit", CRCInput::RC_nokey, NULL, (i +1), runningPercent, /*p_event->description.c_str()*/"", Channels[i]->isHD() ? NEUTRINO_ICON_HD : "", Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "", /*p_event->description.c_str()*/"", /*p_event->text.c_str()*/""));
+		listMenu->addItem(new CMenulistBoxItem(Channels[i]->getName().c_str(), true, this, "zapto", CRCInput::RC_nokey, NULL, (i +1), runningPercent, p_event->description.c_str(), Channels[i]->isHD() ? NEUTRINO_ICON_HD : "", Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "", p_event->description.c_str(), p_event->text.c_str()));
 	}
 
 	listMenu->setSelected(selected);
@@ -1949,7 +1947,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		CEPGplusHandler eplus;
 		eplus.exec(NULL, "");
 	}
-	else if(actionKey == "zapit")
+	else if(actionKey == "zapto")
 	{
 		selected = listMenu->getSelected();
 		g_Zapit->zapTo_serviceID(Channels[listMenu->getSelected()]->channel_id);

@@ -739,7 +739,6 @@ class CMenulistBox : public CMenuTarget
 		unsigned int item_start_y;
 		unsigned int current_page;
 		unsigned int total_pages;
-		//unsigned int itemsPerPage;
 		
 		int selected;
 		bool exit_pressed;
@@ -767,8 +766,6 @@ class CMenulistBox : public CMenuTarget
 		int heightFirstPage;
 		int listmaxshow;
 
-		//bool disableMenuPos;
-
 		//
 		int fbutton_count;
 		const struct button_label* fbutton_labels;
@@ -777,7 +774,7 @@ class CMenulistBox : public CMenuTarget
 		int hbutton_count;
 		const struct button_label* hbutton_labels;
 
-		//TEST (neutrinoHD)
+		//
 		struct keyAction { std::string action; CMenuTarget *menue; };
 		std::map<neutrino_msg_t, keyAction> keyActionMap;
 
@@ -831,7 +828,6 @@ class CMenulistBox : public CMenuTarget
 		}
 		
 		void enableSaveScreen(bool enable);
-		//void disableMenuPosition(void) {disableMenuPos = true;};
 
 		//
 		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count);
@@ -853,8 +849,6 @@ class CMenulistBox : public CMenuTarget
 // CMenulistBoxItem
 class CMenulistBoxItem : public CMenuItem
 {
-	const char * option;
-	const std::string * option_string;
 	CMenuTarget * jumpTarget;
 	std::string actionKey;
 
@@ -864,7 +858,6 @@ class CMenulistBoxItem : public CMenuItem
 		std::string textString;
 		
 		//
-		virtual const char * getOption(void);
 		virtual const char * getName(void);
 
 		//
@@ -876,13 +869,9 @@ class CMenulistBoxItem : public CMenuItem
 		
 	public:
 
-		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL);
+		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active = true, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL);
 
-		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL);
-
-		CMenulistBoxItem(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL);
-
-		CMenulistBoxItem(const char * const Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL);
+		CMenulistBoxItem(const char * const Text, const bool Active = true, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL);
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
