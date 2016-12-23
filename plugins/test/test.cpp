@@ -121,6 +121,7 @@ CTestMenu::CTestMenu()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
+	listMenu = NULL;
 	selected = 0;
 	displayNext = false;
 }
@@ -1600,7 +1601,7 @@ void CTestMenu::testCMenuWidgetListBox()
 	}
 
 	// itemBox
-	CMenulistBox* listMenu = new CMenulistBox("All Services", "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	listMenu = new CMenulistBox("All Services", "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	std::string title;
 	time_t jetzt = time(NULL);
