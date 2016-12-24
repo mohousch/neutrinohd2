@@ -2039,7 +2039,8 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
 	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
-
+	mainMenu->addItem(new CMenuForwarder("CMenuWidget(listBox)", true, NULL, this, "menuwidgetlistbox"));
+	
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));
 	mainMenu->addItem(new CMenuForwarder("ChannelSelectWidget", true, NULL, this, "channelselect"));
@@ -2089,8 +2090,8 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
 
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	mainMenu->addItem(new CMenuForwarder("CMenuWidget(listBox)", true, NULL, this, "menuwidgetlistbox"));
+	//mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	//mainMenu->addItem(new CMenuForwarder("CMenuWidget(listBox)", true, NULL, this, "menuwidgetlistbox"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
