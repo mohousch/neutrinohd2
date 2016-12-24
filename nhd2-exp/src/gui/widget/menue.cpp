@@ -3883,7 +3883,44 @@ void CMenulistBox::paintFootInfo(int pos)
 
 	item->getYPosition();
 	
+	// detailslines
 	::paintItem2DetailsLineD(x, y, full_width, full_height - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight, hheight, item->getHeight(), item->getYPosition());
+
+	// option_info1
+	int l_ow1 = 0;
+	if(!item->option_info1.empty())
+	{
+		l_ow1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->option_info1.c_str());
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + full_width - BORDER_RIGHT - l_ow1, y + full_height - cFrameFootInfo.iHeight + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), full_width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->option_info1.c_str(), COL_MENUCONTENTDARK, 0, true);
+	}
+
+	// info1
+	int l_w1 = 0;
+	if(!item->info1.empty())
+	{
+		l_w1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(item->info1.c_str());
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + full_height - cFrameFootInfo.iHeight + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), full_width - BORDER_LEFT - BORDER_RIGHT - l_w1 - l_ow1, item->info1.c_str(), COL_MENUCONTENTDARK, 0, true);
+	}
+
+	// option_info2
+	int l_ow2 = 0;
+	if(!item->option_info2.empty())
+	{
+		l_ow2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(item->option_info2.c_str());
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + full_width - BORDER_RIGHT - l_ow2, y + full_height - cFrameFootInfo.iHeight + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), full_width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->option_info2.c_str(), COL_MENUCONTENTDARK, 0, true);
+	}
+
+	// info2
+	int l_w2 = 0;
+	if(!item->info2.empty())
+	{
+		l_w2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->info2.c_str());
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + full_height - cFrameFootInfo.iHeight + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), full_width - BORDER_LEFT - BORDER_RIGHT - l_w2 - l_ow2, item->info2.c_str(), COL_MENUCONTENTDARK, 0, true); // UTF-8
+	}
 }
 
 void CMenulistBox::hideFootInfo()
@@ -4319,7 +4356,7 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 }	
 
 //CMenulistBoxItem
-CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const Info1, const char* Info2, const char* const OptionText1, const char* const OptionText2)
+CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const OptionText1, const char* const OptionText2, const char* const Info1, const char* const OptionInfo1, const char* const Info2, const char* const OptionInfo2)
 {
 	text = Text;
 	textString = g_Locale->getText(Text);
@@ -4333,13 +4370,17 @@ CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Acti
 	description = Descr;
 	icon1 = Icon1;
 	icon2 = Icon2;
-	info1 = Info1;
-	info2 = Info2;
 	optionText1 = OptionText1;
 	optionText2 = OptionText2;
+
+	//
+	info1 = Info1? Info1 : "";
+	option_info1 = OptionInfo1? OptionInfo1 : "";
+	info2 = Info2? Info2 : "";
+	option_info2 = OptionInfo2? OptionInfo2 : "";
 }
 
-CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const Info1, const char* Info2, const char* const OptionText1, const char* const OptionText2)
+CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const OptionText1, const char* const OptionText2, const char* const Info1, const char* const OptionInfo1, const char* const Info2, const char* const OptionInfo2)
 {
 	text = NONEXISTANT_LOCALE;
 	textString = Text;
@@ -4353,10 +4394,14 @@ CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, C
 	description = Descr;
 	icon1 = Icon1;
 	icon2 = Icon2;
-	info1 = Info1;
-	info2 = Info2;
 	optionText1 = OptionText1;
 	optionText2 = OptionText2;
+
+	//
+	info1 = Info1? Info1 : "";
+	option_info1 = OptionInfo1? OptionInfo1 : "";
+	info2 = Info2? Info2 : "";
+	option_info2 = OptionInfo2? OptionInfo2 : "";
 }
 
 int CMenulistBoxItem::getHeight(void) const
@@ -4410,22 +4455,6 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 
 	int height = getHeight();
 	const char * l_text = getName();
-	
-	if (selected)
-	{
-		// Foot Info
-		if(listMenuFootInfo)
-		{
-			// name/description//FIXME:info1
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, HEIGHT_Y - 70 + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), FULL_WIDTH - BORDER_LEFT - BORDER_RIGHT, info1.c_str(), COL_MENUCONTENTDARK, 0, true);
-
-			// description//FIXME:info2
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, HEIGHT_Y - 70 + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), FULL_WIDTH - BORDER_LEFT - BORDER_RIGHT, info2.c_str(), COL_MENUCONTENTDARK, 0, true); // UTF-8
-		}
-
-		// vfd
-		CVFD::getInstance()->showMenuText(0, l_text, -1, true);
-	}
 
 	uint8_t color = COL_MENUCONTENT;
 	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
@@ -4560,6 +4589,12 @@ int CMenulistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + BORDER_LEFT + numwidth + pBarWidth + ICON_OFFSET + l_text_width + ICON_OFFSET, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), dx - BORDER_LEFT - BORDER_RIGHT - numwidth - ICON_OFFSET - pBarWidth - ICON_OFFSET - l_text_width - icon_w - icon1_w - ICON_OFFSET - icon2_w - ICON_OFFSET, descr_text.c_str(), COL_COLORED_EVENTS_CHANNELLIST, 0, true);
 		}
+	}
+
+	// vfd
+	if (selected)
+	{
+		CVFD::getInstance()->showMenuText(0, l_text, -1, true);
 	}
 	
 	return y + height;

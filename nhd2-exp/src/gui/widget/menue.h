@@ -117,6 +117,8 @@ class CMenuItem
 		std::string iconName;
 
 		//bool marked;
+		std::string info1, option_info1;
+		std::string info2, option_info2;
 
 		CMenuItem()
 		{
@@ -150,6 +152,7 @@ class CMenuItem
 
 		//
 		virtual int getYPosition(void) const { return y; }
+		void setFootInfo(const char* const Info1 = NULL, const char* const Info2 = NULL, const char*  const OptionInfo1 = NULL, const char* const OptionInfo2 = NULL){};
 };
 
 // CAbstractMenuOptionChooser
@@ -857,14 +860,12 @@ class CMenulistBoxItem : public CMenuItem
 		int runningPercent;
 		std::string description;
 		std::string icon1, icon2;
-		std::string info1, info2;
 		std::string optionText1, optionText2;
-		
 	public:
 
-		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active = true, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL, const char* const OptionText1 = NULL, const char* const OptionText2 = NULL);
+		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active = true, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const OptionText1 = NULL, const char* const OptionText2 = NULL, const char* const Info1 = NULL, const char* const OptionInfo1 = NULL, const char* const Info2 = NULL, const char* const OptionInfo2 = NULL);
 
-		CMenulistBoxItem(const char * const Text, const bool Active = true, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const Info1 = NULL, const char* Info2 = NULL, const char* const OptionText1 = NULL, const char* const OptionText2 = NULL);
+		CMenulistBoxItem(const char * const Text, const bool Active = true, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const OptionText1 = NULL, const char* const OptionText2 = NULL, const char* const Info1 = NULL, const char* const OptionInfo1 = NULL, const char* const Info2 = NULL, const char* const OptionInfo2 = NULL);
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;

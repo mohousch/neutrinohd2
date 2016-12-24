@@ -34,6 +34,9 @@ class CTestMenu : public CMenuTarget
 		ZapitChannelList Channels;
 		int selected;
 		bool displayNext;
+		//
+		CMenulistBox* browserMenu;
+		//CFileList* filelist;
 
 		// functions
 		void testCBox();
@@ -109,6 +112,7 @@ class CTestMenu : public CMenuTarget
 
 		//
 		void testCMenuWidgetListBox();
+		void testCMenuWidgetListBoxBrowser();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -121,13 +125,32 @@ CTestMenu::CTestMenu()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
+	//
 	listMenu = NULL;
 	selected = 0;
 	displayNext = false;
+
+	//
+	browserMenu = NULL;
+	//filelist = NULL;
 }
 
 CTestMenu::~CTestMenu()
 {
+	Channels.clear();
+	//filelist->clear();
+
+	if(listMenu)
+	{
+		delete listMenu;
+		listMenu = NULL;
+	}
+
+	if(browserMenu)
+	{
+		delete browserMenu;
+		browserMenu = NULL;
+	}
 }
 
 void CTestMenu::hide()
@@ -1620,25 +1643,49 @@ void CTestMenu::testCMenuWidgetListBox()
 		}
 
 		// runningPercent
-		/*			
+		runningPercent = 0;
+			
 		if (((jetzt - p_event->startTime + 30) / 60) < 0 )
 		{
 			runningPercent = 0;
 		}
 		else
 		{
-			runningPercent = (jetzt - p_event->startTime) * 30 / p_event->duration;
+			//printf("(jetzt:%d) (p_event->startTime:%d) (p_event->duration:%d)\n", jetzt, p_event->startTime, p_event->duration);
 
-			if (runningPercent > 30)	// this would lead to negative value in paintBoxRel
-				runningPercent = 30;	// later on which can be fatal...
+			if(p_event->duration > 0)
+				runningPercent = (jetzt - p_event->startTime) * 30 / p_event->duration;
 		}
-		*/
+
+		//
+		char cSeit[50] = " ";
+		char cNoch[50] = " ";
+
+		if ( p_event != NULL && !p_event->description.empty()) 
+		{
+			struct tm * pStartZeit = localtime(&p_event->startTime);
+			unsigned seit = ( time(NULL) - p_event->startTime ) / 60;
+
+			if (displayNext) 
+			{
+				sprintf(cNoch, "(%d min)", p_event->duration / 60);
+				sprintf(cSeit, g_Locale->getText(LOCALE_CHANNELLIST_START), pStartZeit->tm_hour, pStartZeit->tm_min);
+			} 
+			else 
+			{
+				sprintf(cSeit, g_Locale->getText(LOCALE_CHANNELLIST_SINCE), pStartZeit->tm_hour, pStartZeit->tm_min);
+				int noch = (p_event->startTime + p_event->duration - time(NULL)) / 60;
+				if ((noch < 0) || (noch >= 10000))
+					noch = 0;
+				sprintf(cNoch, "(%d / %d min)", seit, noch);
+			}
+		}
 
 		// a la Channelist
-		listMenu->addItem(new CMenulistBoxItem(Channels[i]->getName().c_str(), true, this, "zapto", NULL, (i +1), runningPercent, p_event->description.c_str(), Channels[i]->isHD() ? NEUTRINO_ICON_HD : "", Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "", p_event->description.c_str(), p_event->text.c_str(), "", ""));
+		listMenu->addItem(new CMenulistBoxItem(Channels[i]->getName().c_str(), true, this, "zapto", NULL, (i +1), runningPercent, p_event->description.c_str(), Channels[i]->isHD() ? NEUTRINO_ICON_HD : "", Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "", "", "", p_event->description.c_str(), cSeit, p_event->text.c_str(), cNoch));
 
 		// a la filebrowser
-		//listMenu->addItem(new CMenulistBoxItem(Channels[i]->getName().c_str(), true, NULL, "zapto", NEUTRINO_ICON_FOLDER, 0, -1, /*p_event->description.c_str()*/"", /*Channels[i]->isHD() ? NEUTRINO_ICON_HD : ""*/"", /*Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : ""*/"", /*p_event->description.c_str()*/"", /*p_event->text.c_str()*/"", "24.12.2016", "13:22"));
+		//listMenu->addItem(new CMenulistBoxItem(Channels[i]->getName().c_str(), true, this, "zapto", NEUTRINO_ICON_FOLDER, 0, -1, "", "", "", "24.12.2016", "13:22", "", "", "", ""));
 	}
 
 	listMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
@@ -1648,7 +1695,7 @@ void CTestMenu::testCMenuWidgetListBox()
 	listMenu->setFooterButtons(FButtons, FOOT_BUTTONS_COUNT);
 	
 	listMenu->enablePaintDate();
-	listMenu->enableFootInfo(); //FIXME: menue.cpp 
+	listMenu->enableFootInfo(); 
 
 	// head
 	listMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
