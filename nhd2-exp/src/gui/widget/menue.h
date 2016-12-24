@@ -94,7 +94,7 @@ class CMenuSelectorTarget : public CMenuTarget
                 int *m_select;
 };
 
-// CSelectedMenu
+// CSelectedMenu: used in movieplayer for bookmarks
 class CSelectedMenu : public CMenuTarget
 {
 	public:
@@ -119,6 +119,10 @@ class CMenuItem
 		//bool marked;
 		std::string info1, option_info1;
 		std::string info2, option_info2;
+
+		//
+		std::string itemHelpText;
+		std::string itemIcon;
 
 		CMenuItem()
 		{
@@ -422,12 +426,15 @@ class CMenuWidget : public CMenuTarget
 {
 	protected:
 		CFrameBuffer *frameBuffer;
+
+		//
 		std::string nameString;
 		neutrino_locale_t name;
 		std::vector<CMenuItem*>	items;
 		std::vector<unsigned int> page_start;
 		std::string iconfile;
 
+		//
 		int width;
 		int height;
 		int wanted_height;
@@ -456,7 +463,7 @@ class CMenuWidget : public CMenuTarget
 		int hheight;
 		int fheight;
 		int item_height;
-		int item_width;
+		//int item_width;
 		int sb_width;
 		int itemHeightTotal;
 		int heightCurrPage;
@@ -490,6 +497,8 @@ class CMenuWidget : public CMenuTarget
 		
 		void enableSaveScreen(bool enable);
 		void disableMenuPosition(void) {disableMenuPos = true;};
+
+		void paintFootInfo(int pos);
 };
 
 /// CMenuWidgetExtended
@@ -497,6 +506,8 @@ class CMenuWidgetExtended : public CMenuTarget
 {
 	protected:
 		CFrameBuffer *frameBuffer;
+
+		//
 		std::string nameString;
 		neutrino_locale_t name;
 		std::vector<CMenuItem*>	items;
@@ -532,7 +543,7 @@ class CMenuWidgetExtended : public CMenuTarget
 		int fheight;
 		int sp_height;
 		int item_height;
-		int item_width;
+		//int item_width;
 		int sb_width;
 		int itemHeightTotal;
 		int heightCurrPage;
@@ -567,6 +578,8 @@ class CMenuWidgetExtended : public CMenuTarget
 		
 		void enableSaveScreen(bool enable);
 		void disableMenuPosition(void) {disableMenuPos = true;};
+
+		void paintFootInfo(int pos);
 };
 
 // CMenuForwarderExtended
@@ -578,13 +591,8 @@ class CMenuForwarderExtended : public CMenuItem
 	protected:
 		std::string textString;
 		neutrino_locale_t text;
-		
-		std::string helptext;
-		std::string itemIcon;
 
 		virtual const char * getName(void);
-		virtual const char * getHelpText(void);
-		
 	public:
 
 		CMenuForwarderExtended(const neutrino_locale_t Text, const bool Active = true, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const char * const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );

@@ -1329,7 +1329,7 @@ void CMoviePlayerGui::PlayFile(void)
 					dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: commercial length: %d\r\n", new_bookmark.length);
 					if (cMovieInfo.addNewBookmark(p_movie_info, new_bookmark) == true) 
 					{
-						cMovieInfo.saveMovieInfo(*p_movie_info);	/* save immediately in xml file */
+						cMovieInfo.saveMovieInfo(*p_movie_info);	// save immediately in xml file
 					}
 					new_bookmark.pos = 0;	// clear again, since this is used as flag for bookmark activity
 					newComHintBox.hide();
@@ -1342,7 +1342,7 @@ void CMoviePlayerGui::PlayFile(void)
 					dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: loop length: %d\r\n", new_bookmark.length);
 					if (cMovieInfo.addNewBookmark(p_movie_info, new_bookmark) == true) 
 					{
-						cMovieInfo.saveMovieInfo(*p_movie_info);	/* save immediately in xml file */
+						cMovieInfo.saveMovieInfo(*p_movie_info);	// save immediately in xml file
 						jump_not_until = pos_sec + 5;	// avoid jumping for this time
 					}
 					new_bookmark.pos = 0;	// clear again, since this is used as flag for bookmark activity
@@ -1360,17 +1360,17 @@ void CMoviePlayerGui::PlayFile(void)
 					
 					if (cSelectedMenuBookStart[0].selected == true) 
 					{
-						/* Moviebrowser plain bookmark */
+						// Moviebrowser plain bookmark
 						new_bookmark.pos = pos_sec;
 						new_bookmark.length = 0;
 						if (cMovieInfo.addNewBookmark(p_movie_info, new_bookmark) == true)
-							cMovieInfo.saveMovieInfo(*p_movie_info);	/* save immediately in xml file */
+							cMovieInfo.saveMovieInfo(*p_movie_info);	// save immediately in xml file
 						new_bookmark.pos = 0;	// clear again, since this is used as flag for bookmark activity
 						cSelectedMenuBookStart[0].selected = false;	// clear for next bookmark menu
 					} 
 					else if (cSelectedMenuBookStart[1].selected == true)
 					{
-						/* Moviebrowser jump forward bookmark */
+						// Moviebrowser jump forward bookmark
 						new_bookmark.pos = pos_sec;
 						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: new bookmark 1. pos: %d\r\n", new_bookmark.pos);
 						newComHintBox.paint();
@@ -1379,7 +1379,7 @@ void CMoviePlayerGui::PlayFile(void)
 					} 
 					else if (cSelectedMenuBookStart[2].selected == true) 
 					{
-						/* Moviebrowser jump backward bookmark */
+						// Moviebrowser jump backward bookmark
 						new_bookmark.pos = pos_sec;
 						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: new bookmark 1. pos: %d\r\n", new_bookmark.pos);
 						newLoopHintBox.paint();
@@ -1387,7 +1387,7 @@ void CMoviePlayerGui::PlayFile(void)
 					} 
 					else if (cSelectedMenuBookStart[3].selected == true) 
 					{
-						/* Moviebrowser movie start bookmark */
+						// Moviebrowser movie start bookmark
 						p_movie_info->bookmarks.start = pos_sec;
 						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: New movie start pos: %d\r\n", p_movie_info->bookmarks.start);
 						cMovieInfo.saveMovieInfo(*p_movie_info);	/* save immediately in xml file */
@@ -1395,7 +1395,7 @@ void CMoviePlayerGui::PlayFile(void)
 					} 
 					else if (cSelectedMenuBookStart[4].selected == true) 
 					{
-						/* Moviebrowser movie end bookmark */
+						// Moviebrowser movie end bookmark
 						p_movie_info->bookmarks.end = pos_sec;
 						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: New movie end pos: %d\r\n", p_movie_info->bookmarks.start);
 						cMovieInfo.saveMovieInfo(*p_movie_info);	/* save immediately in xml file */
