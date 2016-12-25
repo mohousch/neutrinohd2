@@ -1457,7 +1457,6 @@ void CTestMenu::testPlayMovieDir()
 	CMoviePlayerGui tmpMoviePlayerGui;
 	
 	std::string Path_local = g_settings.network_nfs_moviedir;
-	Path_local += "/";
 
 	CFileList filelist;
 
@@ -1509,7 +1508,6 @@ void CTestMenu::testPlayAudioDir()
 	CAudioPlayerGui tmpAudioPlayerGui;
 	
 	std::string Path_local = g_settings.network_nfs_audioplayerdir;
-	Path_local += "/";
 
 	CFileList filelist;
 
@@ -1547,7 +1545,6 @@ void CTestMenu::testShowPictureDir()
 	CPictureViewerGui tmpPictureViewerGui;
 	
 	std::string Path_local = g_settings.network_nfs_picturedir;
-	Path_local += "/";
 
 	CFileList filelist;
 
@@ -1750,7 +1747,6 @@ void CTestMenu::testCMenuWidgetListBox1()
 	//CPictureViewerGui tmpPictureViewerGui;
 	
 	std::string Path_local = g_settings.network_nfs_audioplayerdir;
-	Path_local += "/divers/";
 
 	// itemBox
 	picMenu = new CMenulistBox("CMenuListBox (audioplayer)", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
@@ -2148,7 +2144,6 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "play")
 	{
 		selected = picMenu->getSelected();
-		//g_Zapit->zapTo_serviceID(Channels[listMenu->getSelected()]->channel_id);
 		CAudiofileExt audiofile(audioFileList[picMenu->getSelected()].Name, audioFileList[picMenu->getSelected()].getExtension());
 		CAudioPlayerGui tmpAudioPlayerGui;
 		tmpAudioPlayerGui.addToPlaylist(audiofile);

@@ -1179,21 +1179,22 @@ bool CFileHelpers::readDir(const std::string& dirname, CFileList* flist, CFileFi
 	stat_struct statbuf;
 	dirent_struct **namelist;
 	int n;
+	std::string dir = dirname + "/";
 
-	n = my_scandir(dirname.c_str(), &namelist, 0, my_alphasort);
+	n = my_scandir(dir.c_str(), &namelist, 0, my_alphasort);
 	if (n < 0)
 	{
-		perror(("CFileHelpers scandir: " + dirname).c_str());
+		perror(("CFileHelpers scandir: " + dir).c_str());
 		return false;
 	}
 	
-	for(int i = 0; i < n;i++)
+	for(int i = 0; i < n; i++)
 	{
 		CFile file;
 		if(strcmp(namelist[i]->d_name, ".") != 0)
 		{
 			// name
-			file.Name = dirname + namelist[i]->d_name;
+			file.Name = dir + namelist[i]->d_name;
 
 			// stat
 			if(my_stat((file.Name).c_str(),&statbuf) != 0)
@@ -1218,7 +1219,6 @@ bool CFileHelpers::readDir(const std::string& dirname, CFileList* flist, CFileFi
 						continue;
 					}
 				}
-				//
 				
 				flist->push_back(file);
 
