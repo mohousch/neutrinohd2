@@ -35,7 +35,7 @@ class CTestMenu : public CMenuTarget
 		int selected;
 		bool displayNext;
 		//
-		CMenulistBox* picMenu;
+		CMenulistBox* audioMenu;
 		CFileList audioFileList;
 
 		// functions
@@ -131,7 +131,7 @@ CTestMenu::CTestMenu()
 	displayNext = false;
 
 	//
-	picMenu = NULL;
+	audioMenu = NULL;
 }
 
 CTestMenu::~CTestMenu()
@@ -145,10 +145,10 @@ CTestMenu::~CTestMenu()
 		listMenu = NULL;
 	}
 
-	if(picMenu)
+	if(audioMenu)
 	{
-		delete picMenu;
-		picMenu = NULL;
+		delete audioMenu;
+		audioMenu = NULL;
 	}
 }
 
@@ -1743,18 +1743,14 @@ void CTestMenu::testCMenuWidgetListBox1()
 	fileFilter.addFilter("aac");
 	fileFilter.addFilter("dts");
 	fileFilter.addFilter("m4a");
-
-	//CPictureViewerGui tmpPictureViewerGui;
 	
 	std::string Path_local = g_settings.network_nfs_audioplayerdir;
 
 	// itemBox
-	picMenu = new CMenulistBox("CMenuListBox (audioplayer)", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	audioMenu = new CMenulistBox("CMenuListBox (audioplayer)", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	if(CFileHelpers::getInstance()->readDir(Path_local, &audioFileList, &fileFilter))
 	{
-		//CPicture pic;
-		struct stat statbuf;
 		int count = 0;
 				
 		CFileList::iterator files = audioFileList.begin();
@@ -1774,9 +1770,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 
 				CAudioPlayer::getInstance()->init();
 
-				//const CAudioMetaData meta = CAudioPlayer::getInstance()->getMetaData();
 				int ret = CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
-				//
 
 				if (!ret || (audiofile.MetaData.artist.empty() && audiofile.MetaData.title.empty() ))
 				{
@@ -1813,36 +1807,34 @@ void CTestMenu::testCMenuWidgetListBox1()
 					snprintf(duration, 8, "(%ld:%02ld)", audiofile.MetaData.total_time / 60, audiofile.MetaData.total_time % 60);
 				}
 
-				picMenu->addItem(new CMenulistBoxItem(title.c_str(), true, this, "play", "", count, -1, "", "", "", duration, "", title.c_str(), genre.c_str(), artist.c_str(), date.c_str()));
+				audioMenu->addItem(new CMenulistBoxItem(title.c_str(), true, this, "play", "", count, -1, "", "", "", duration, "", title.c_str(), genre.c_str(), artist.c_str(), date.c_str()));
 			}
 		}
-		
-		//tmpPictureViewerGui.exec(NULL, "urlplayback");
 	}
 
-	//listMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
-	picMenu->setSelected(selected);
+	//audioMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
+	audioMenu->setSelected(selected);
 
-	picMenu->setHeaderButtons(Head1Buttons, HEAD1_BUTTONS_COUNT);
-	//picMenu->setFooterButtons(FButtons, FOOT_BUTTONS_COUNT);
+	audioMenu->setHeaderButtons(Head1Buttons, HEAD1_BUTTONS_COUNT);
+	//audioMenu->setFooterButtons(FButtons, FOOT_BUTTONS_COUNT);
 	
-	picMenu->enablePaintDate();
-	picMenu->enableFootInfo(); 
+	audioMenu->enablePaintDate();
+	audioMenu->enableFootInfo(); 
 
 	// head
-	picMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	picMenu->addKey(CRCInput::RC_setup, this, "RC_setup1");
+	audioMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
+	audioMenu->addKey(CRCInput::RC_setup, this, "RC_setup1");
 
 	// footer
-	picMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
-	picMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
-	picMenu->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
-	picMenu->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
+	audioMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
+	audioMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
+	audioMenu->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
+	audioMenu->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
 
-	picMenu->exec(NULL, "");
-	//picMenu->hide();
-	delete picMenu;
-	picMenu = NULL;
+	audioMenu->exec(NULL, "");
+	//audioMenu->hide();
+	delete audioMenu;
+	audioMenu = NULL;
 }
 
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -2143,13 +2135,11 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "play")
 	{
-		selected = picMenu->getSelected();
-		CAudiofileExt audiofile(audioFileList[picMenu->getSelected()].Name, audioFileList[picMenu->getSelected()].getExtension());
+		selected = audioMenu->getSelected();
+		CAudiofileExt audiofile(audioFileList[audioMenu->getSelected()].Name, audioFileList[audioMenu->getSelected()].getExtension());
 		CAudioPlayerGui tmpAudioPlayerGui;
 		tmpAudioPlayerGui.addToPlaylist(audiofile);
 		tmpAudioPlayerGui.exec(NULL, "urlplayback");
-
-		return menu_return::RETURN_EXIT;
 	}
 	else if(actionKey == "RC_setup1")
 	{

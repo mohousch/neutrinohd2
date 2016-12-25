@@ -376,6 +376,11 @@ int CAudioPlayerGui::show()
 		
 		if ((m_state != CAudioPlayerGui::STOP) && (CAudioPlayer::getInstance()->getState() == CBaseDec::STOP) && (!m_playlist.empty()))
 		{
+			if(isURL && m_current == m_playlist.size())
+			{
+				loop = false;	
+			}
+
 			if(m_curr_audiofile.FileExtension != CFile::EXTENSION_URL)
 				playNext();
 		}
@@ -447,7 +452,7 @@ int CAudioPlayerGui::show()
 				{
 					if (m_selected < m_listmaxshow)
 					{
-						m_selected = m_playlist.size()-1;
+						m_selected = m_playlist.size() - 1;
 					}					
 					else
 						m_selected -= m_listmaxshow;
