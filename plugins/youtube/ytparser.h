@@ -20,8 +20,8 @@
 #ifndef __YT_PARSER__
 #define __YT_PARSER__
 
-#include <curl/curl.h>
-#include <curl/easy.h>
+//#include <curl/curl.h>
+//#include <curl/easy.h>
 
 #include <vector>
 #include <string>
@@ -78,14 +78,6 @@ class cYTFeedParser
 		int max_results;
 		bool parsed;
 		yt_video_list_t videos;
-
-		static size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data);
-		static void encodeUrl(std::string &txt);
-		static void decodeUrl(std::string &url);
-		static void splitString(std::string &str, std::string delim, std::vector<std::string> &strlist, int start = 0);
-		static void splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start = 0);
-		bool getUrl(std::string &url, std::string &answer);
-		bool DownloadUrl(std::string &url, std::string &file);
 		
 		bool parseFeedJSON(std::string &answer);
 		bool parseFeedDetailsJSON(cYTVideoInfo &vinfo);

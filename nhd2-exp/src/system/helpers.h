@@ -83,6 +83,13 @@ inline void cstrncpy(char *dest, const std::string &src, size_t n) { n--; strncp
 
 std::string changeFileNameExt(std::string &filename, const char *ext);
 
+void splitString(std::string &str, std::string delim, std::vector<std::string> &strlist, int start = 0);
+void splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start = 0);
+
+//
+std::string urlDecode(const std::string &s);
+std::string encode(const std::string s);
+
 // curl
 struct MemoryStruct {
 	char *memory;
@@ -99,14 +106,9 @@ void EncodeUrl(std::string &txt);
 void DecodeUrl(std::string &url);
 
 bool getUrl(std::string &url, std::string &answer, const std::string userAgent = " ");
-//bool DownloadUrl(std::string &url, std::string &file, const std::string userAgent = " ");
 bool DownloadUrl(std::string url, std::string file, const std::string userAgent = " ");
 
-//void processPlaylistUrl(const char *url, const char *name, const char * description);
-
-void splitString(std::string &str, std::string delim, std::vector<std::string> &strlist, int start = 0);
-void splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start = 0);
-
+//
 class CFileHelpers
 {
 	public:

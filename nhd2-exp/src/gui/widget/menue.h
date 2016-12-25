@@ -339,19 +339,21 @@ class CMenuSeparator : public CMenuItem
 
 	public:
 		neutrino_locale_t text;
+		std::string textString;
 
 		enum
 		{
 			EMPTY =	0,
-			LINE =	1,
-			STRING =	2,
+			LINE = 1,
+			STRING = 2,
 			ALIGN_CENTER = 4,
-			ALIGN_LEFT =   8,
+			ALIGN_LEFT = 8,
 			ALIGN_RIGHT = 16
 		};
 
 
 		CMenuSeparator(const int Type = EMPTY, const neutrino_locale_t Text = NONEXISTANT_LOCALE);
+		//CMenuSeparator(const int Type = EMPTY, const std::string& Text = "");
 
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;

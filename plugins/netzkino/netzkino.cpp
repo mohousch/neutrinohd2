@@ -142,9 +142,10 @@ void CNKMovies::showNKMoviesMenu()
 	}
 
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
+	moviesMenu->addKey(CRCInput::RC_record, this, CRCInput::getSpecialKeyName(CRCInput::RC_record));
 
 	moviesMenu->exec(NULL, "");
-	moviesMenu->hide();
+	//moviesMenu->hide();
 	delete moviesMenu;
 	moviesMenu = NULL;
 }
@@ -225,6 +226,10 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 		delete infoBox;
 
 		return returnval;
+	}
+	else if(actionKey == "RC_record")
+	{
+		nkparser.downloadMovie(m_vMovieInfo[moviesMenu->getSelected()].file.Name, m_vMovieInfo[moviesMenu->getSelected()].file.Url);
 	}
 
 	showNKMoviesMenu();

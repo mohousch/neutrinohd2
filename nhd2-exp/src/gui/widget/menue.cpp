@@ -1709,9 +1709,23 @@ CMenuSeparator::CMenuSeparator(const int Type, const neutrino_locale_t Text)
 	iconName = "";
 	type = Type;
 	text = Text;
+	textString = g_Locale->getText(Text);
 
 	itemType = ITEM_TYPE_SEPARATOR;
 }
+
+/*
+CMenuSeparator::CMenuSeparator(const int Type, const std::string& Text)
+{
+	directKey = CRCInput::RC_nokey;
+	iconName = "";
+	type = Type;
+	text = Text;
+	textString = Text;
+
+	itemType = ITEM_TYPE_SEPARATOR;
+}
+*/
 
 int CMenuSeparator::getHeight(void) const
 {
@@ -1727,7 +1741,7 @@ int CMenuSeparator::getWidth(void) const
 
 const char * CMenuSeparator::getString(void)
 {
-	return g_Locale->getText(text);
+	return textString.c_str();
 }
 
 int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
@@ -1752,7 +1766,7 @@ int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
 	if ((type & STRING))
 	{
 
-		if (text != NONEXISTANT_LOCALE)
+		if (!textString.empty())
 		{
 			int stringstartposX;
 

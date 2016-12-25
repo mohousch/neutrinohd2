@@ -166,13 +166,13 @@ bool cNKFeedParser::parseFeedJSON(std::string &answer)
 			{
 				if (v[_i].type() == Json::stringValue)
 				{
-					//vinfo.url = "http://pmd.netzkino-and.netzkino.de/";
-					//vinfo.url += v[_i].asString();
-					//vinfo.url + ".mp4";
-
-					vinfo.url = MP4_URL;
+					vinfo.url = "http://pmd.netzkino-and.netzkino.de/";
 					vinfo.url += v[_i].asString();
 					vinfo.url += ".mp4";
+
+					//vinfo.url = MP4_URL;
+					//vinfo.url += v[_i].asString();
+					//vinfo.url += ".mp4";
 
 					//vinfo.url = RTMP_URL;
 					//vinfo.url += v[_i].asString();

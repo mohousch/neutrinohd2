@@ -51,7 +51,6 @@ class CNKMovies : public CMenuTarget
 
 		//
 		cNKFeedParser nkparser;
-		//std::string nkcategory_name;
 
 		//
 		int catID;
