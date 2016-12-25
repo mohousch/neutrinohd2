@@ -336,7 +336,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 		remove("/tmp/cover.jpg");
 
 	//always repaint
-	return menu_return::RETURN_REPAINT;
+	return menu_return::RETURN_EXIT_ALL;
 }
 
 int CAudioPlayerGui::show()
@@ -1535,6 +1535,7 @@ void CAudioPlayerGui::paintItem(int pos)
 			if(m_state != CAudioPlayerGui::STOP && !g_settings.audioplayer_highprio)
 				usleep(100*1000);
 		}
+
 		char sNr[20];
 		sprintf(sNr, "%2d : ", pos + m_liststart + 1);
 		std::string tmp = sNr;
@@ -1546,11 +1547,14 @@ void CAudioPlayerGui::paintItem(int pos)
 		else
 			snprintf(dura, 8, "%ld:%02ld", m_playlist[pos + m_liststart].MetaData.total_time / 60, m_playlist[pos + m_liststart].MetaData.total_time % 60);
 		
+		// number/title
 		int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(dura) + 5;
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + 10, ypos + m_fheight, m_width - 30 - w, tmp, color, m_fheight, true); // UTF-8
 
+		// duration
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - 15 - w, ypos + m_fheight, w, dura, color, m_fheight);
-			
+		
+		// lcd	
 		if ((pos + m_liststart) == m_selected)
 		{
 			if (m_state == CAudioPlayerGui::STOP)
@@ -2294,7 +2298,7 @@ void CAudioPlayerGui::GetMetaData(CAudiofileExt &File)
 	{
 		//Set from Filename
 		std::string tmp = File.Filename.substr(File.Filename.rfind('/') + 1);
-		tmp = tmp.substr(0,tmp.length()-4);	//remove extension (.mp3)
+		tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
 		std::string::size_type i = tmp.rfind(" - ");
 		
 		if(i != std::string::npos)

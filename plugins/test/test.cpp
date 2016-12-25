@@ -1748,32 +1748,52 @@ void CTestMenu::testCMenuWidgetListBox1()
 	Path_local += "/divers/";
 
 	// itemBox
-	picMenu = new CMenulistBox("list Pic Viewer", "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	picMenu = new CMenulistBox("CMenuListBox (audioplayer)", "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	if(CFileHelpers::getInstance()->readDir(Path_local, &audioFileList, &fileFilter))
 	{
 		//CPicture pic;
 		struct stat statbuf;
+		int count = 0;
 				
 		CFileList::iterator files = audioFileList.begin();
 		for(; files != audioFileList.end() ; files++)
 		{
-			//if (files->getType() == CFile::FILE_PICTURE)
+			count++;
+			if (files->getType() == CFile::FILE_AUDIO)
 			{
-				/*
-				pic.Filename = files->Name;
-				std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
-				pic.Name = tmp.substr(0, tmp.rfind('.'));
-				pic.Type = tmp.substr(tmp.rfind('.') + 1);
-			
-				if(stat(pic.Filename.c_str(), &statbuf) != 0)
-					printf("stat error");
-				pic.Date = statbuf.st_mtime;
-				*/
+				// //remove extension (.mp3)
+				std::string tmp = files->getFileName().substr(files->getFileName().rfind('/') + 1);
+				tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
 				
-				//tmpPictureViewerGui.addToPlaylist(pic);
+				// date
+				//if(stat(tmp.c_str(), &statbuf) != 0)
+				//	printf("stat error");
+				//files.Date = statbuf.st_mtime;
 
-				picMenu->addItem(new CMenulistBoxItem(files->getFileName().c_str(), true, this, "play", NEUTRINO_ICON_MP3, 0, -1, "", "", "", "24.12.2016", "13:22", "", "", "", ""));
+				//
+				std::string title;
+				std::string artist;
+				std::string::size_type i = tmp.rfind(" - ");
+		
+				if(i != std::string::npos)
+				{ 
+					artist = tmp.substr(0, i);
+					title = tmp.substr(i + 3);
+				}
+				else
+				{
+					i = tmp.rfind('-');
+					if(i != std::string::npos)
+					{
+						artist = tmp.substr(0, i);
+						title = tmp.substr(i + 1);
+					}
+					else
+						title = tmp;
+				}
+
+				picMenu->addItem(new CMenulistBoxItem(tmp.c_str(), true, this, "play", "", count, -1, "", "", "", "24.12.2016", "13:22", artist.c_str(), "", title.c_str(), ""));
 			}
 		}
 		
@@ -1787,7 +1807,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 	//picMenu->setFooterButtons(FButtons, FOOT_BUTTONS_COUNT);
 	
 	picMenu->enablePaintDate();
-	//picMenu->enableFootInfo(); 
+	picMenu->enableFootInfo(); 
 
 	// head
 	picMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
@@ -2110,7 +2130,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		tmpAudioPlayerGui.addToPlaylist(audiofile);
 		tmpAudioPlayerGui.exec(NULL, "urlplayback");
 
-		return menu_return::RETURN_EXIT_ALL;
+		return menu_return::RETURN_EXIT;
 	}
 	
 	return menu_return::RETURN_REPAINT;
@@ -2147,7 +2167,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	mainMenu->addItem(new CMenuForwarder("CMenuWidget(listBox)", true, NULL, this, "menuwidgetlistbox"));
-	mainMenu->addItem(new CMenuForwarder("CMenuWidget(Pic Viewer)", true, NULL, this, "menuwidgetlistbox1"));
+	mainMenu->addItem(new CMenuForwarder("CMenuWidget(Audioplayer)", true, NULL, this, "menuwidgetlistbox1"));
 	
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));

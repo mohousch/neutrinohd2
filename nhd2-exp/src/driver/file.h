@@ -76,6 +76,7 @@ class CFileFilter
 class CFile
 {
 	public:
+		//
 		enum FileExtension
 		{
 			EXTENSION_UNKNOWN = 0,
@@ -126,6 +127,7 @@ class CFile
 			EXTENSION_SH
 		};
 
+		//
 		enum FileType
 		{
 			FILE_UNKNOWN = 0,
@@ -139,13 +141,7 @@ class CFile
 			FILE_XML
 		};
 
-		FileExtension	getExtension(void) const;
-		FileType	getType(void) const;
-		std::string	getFileName(void) const;
-		std::string	getPath(void) const;
-
-		CFile();
-		
+		//
 		off_t Size;
 		std::string Name;
 		std::string Url;
@@ -157,6 +153,15 @@ class CFile
 		mode_t Mode;
 		bool Marked;
 		time_t Time;
+
+		//
+		FileExtension	getExtension(void) const;
+		FileType	getType(void) const;
+		std::string	getFileName(void) const;
+		std::string	getPath(void) const;
+
+		//
+		CFile();
 };
 
 typedef std::vector<CFile> CFileList;
