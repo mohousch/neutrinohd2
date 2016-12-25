@@ -1624,7 +1624,7 @@ void CTestMenu::testCMenuWidgetListBox()
 	}
 
 	// itemBox
-	listMenu = new CMenulistBox("All Services", "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	listMenu = new CMenulistBox(LOCALE_CHANNELLIST_HEAD, "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	std::string title;
 	time_t jetzt = time(NULL);

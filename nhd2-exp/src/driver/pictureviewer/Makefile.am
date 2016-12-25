@@ -13,6 +13,8 @@ AM_CPPFLAGS += -I$(top_srcdir)/src/zapit/include \
 else
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbapi
 endif
+
+AM_CXXFLAGS = -fno-rtti -fno-exceptions
  
 noinst_LIBRARIES = libneutrino_pictureviewer.a
 

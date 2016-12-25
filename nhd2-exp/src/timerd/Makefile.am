@@ -10,6 +10,8 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/lib/libeventserver \
 	-I$(top_srcdir)/lib/libxmltree
 
+AM_CPPFLAGS += -fno-rtti -fno-exceptions
+
 noinst_LIBRARIES = libtimerd.a
 
 libtimerd_a_SOURCES = timerd.cpp timermanager.cpp

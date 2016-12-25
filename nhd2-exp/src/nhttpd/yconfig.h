@@ -19,9 +19,9 @@
 //
 // System Choice <configure!> ONE choice
 //
-#ifndef CONFIG_SYSTEM_BY_COMPILER 				// use Compiler directive to set CONFIG_SYSTEM
+//#ifndef CONFIG_SYSTEM_BY_COMPILER 				// use Compiler directive to set CONFIG_SYSTEM
 #define CONFIG_SYSTEM_TUXBOX	y				// Tuxbox project
-#endif
+//#endif
 //
 // General central Definitions <configure!>
 //
@@ -40,7 +40,7 @@
 // modules
 //
 //#define Y_CONFIG_USE_TESTHOOK y				// Add mod: "Test-Hook" (hook example)
-#define Y_CONFIG_USE_YPARSER y					// Add mod: "y-Parsing"
+//#define Y_CONFIG_USE_YPARSER y					// Add mod: "y-Parsing"
 #define Y_CONFIG_USE_AUTHHOOK y					// Add mod: "Authentication"
 #define Y_CONFIG_USE_WEBLOG y					// Add mod: "WebLogging"
 #define Y_CONFIG_USE_CACHE y					// Add mod: Can cache production pages
@@ -69,7 +69,6 @@
 
 #if defined(CONFIG_SYSTEM_TUXBOX)
 #define Y_CONFIG_FEATURE_UPLOAD y
-#define Y_CONFIG_USE_YPARSER y
 #define Y_CONFIG_USE_AUTHHOOK y
 #endif
 

@@ -32,6 +32,8 @@ else
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
+AM_CXXFLAGS = -fno-rtti -fno-exceptions
+
 noinst_LIBRARIES = libneutrino_driver.a 
 
 libneutrino_driver_a_SOURCES = \

@@ -77,8 +77,8 @@ void * nhttpd_main_thread(void *)
 	
 	yhttpd = new Cyhttpd();
 	
-	CLogging::getInstance()->setDebug(true);
-	CLogging::getInstance()->LogLevel = 0;
+	//CLogging::getInstance()->setDebug(true);
+	//CLogging::getInstance()->LogLevel = 9;
 	
 	if (!yhttpd) 
 	{
@@ -255,11 +255,12 @@ void Cyhttpd::hooks_attach()
 #if defined(CONFIG_SYSTEM_TUXBOX)
 	NeutrinoAPI = new CNeutrinoAPI();
 	CyhookHandler::attach(NeutrinoAPI->NeutrinoYParser);
+
 	CyhookHandler::attach(NeutrinoAPI->ControlAPI);
-#else
+#endif
+
 #ifdef Y_CONFIG_USE_YPARSER
 	CyhookHandler::attach(&yParser);
-#endif
 #endif
 
 #ifdef Y_CONFIG_USE_CACHE
@@ -293,10 +294,10 @@ void Cyhttpd::hooks_detach()
 
 #if defined(CONFIG_SYSTEM_TUXBOX)
 	CyhookHandler::detach(NeutrinoAPI->NeutrinoYParser);
-#else
+#endif
+
 #ifdef Y_CONFIG_USE_YPARSER
 	CyhookHandler::detach(&yParser);
-#endif
 #endif
 
 #ifdef Y_CONFIG_USE_CACHE

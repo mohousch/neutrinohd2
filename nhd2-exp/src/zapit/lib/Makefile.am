@@ -6,5 +6,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/lib/libeventserver \
 	-I$(top_srcdir)/lib/libconfigfile
 
+AM_CPPFLAGS += -fno-rtti -fno-exceptions
+
 noinst_LIBRARIES = libzapitclient.a
 libzapitclient_a_SOURCES = zapitclient.cpp zapittools.cpp

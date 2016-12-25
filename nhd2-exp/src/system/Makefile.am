@@ -25,6 +25,8 @@ if !ENABLE_GSTREAMER
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
+AM_CXXFLAGS = -fno-rtti -fno-exceptions
+
 noinst_LIBRARIES = libneutrino_system.a
 
 libneutrino_system_a_SOURCES = \

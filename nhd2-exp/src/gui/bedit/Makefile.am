@@ -16,6 +16,8 @@ else
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbapi
 endif
 
+AM_CPPFLAGS += -fno-rtti -fno-exceptions
+
 noinst_LIBRARIES = libneutrino_gui_bedit.a
 
 libneutrino_gui_bedit_a_SOURCES = \

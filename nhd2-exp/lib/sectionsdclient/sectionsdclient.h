@@ -65,8 +65,8 @@ typedef std::vector<CChannelEvent> CChannelEventList;
 class CSectionsdClient : private CBasicClient
 {
 	private:
-		virtual unsigned char   getVersion() const;
-		virtual const    char * getSocketName() const;
+		virtual unsigned char getVersion() const;
+		virtual const char* getSocketName() const;
 
 		int readResponse(char* data = NULL, unsigned int size = 0);
 		bool send(const unsigned char command, const char* data = NULL, const unsigned int size = 0);

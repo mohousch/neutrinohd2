@@ -4,6 +4,8 @@ AM_CPPFLAGS = \
 	-I$(srcdir) \
 	-I$(srcdir)/xmltok
 
+AM_CXXFLAGS = -fno-rtti -fno-exceptions
+
 noinst_LIBRARIES = libtuxbox-xmltree.a
 
 libtuxbox_xmltree_a_SOURCES = \

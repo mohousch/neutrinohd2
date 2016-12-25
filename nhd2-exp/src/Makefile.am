@@ -26,6 +26,8 @@ if !ENABLE_GSTREAMER
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
+AM_CPPFLAGS += -fno-rtti -fno-exceptions
+
 bin_PROGRAMS = neutrino
 
 neutrino_SOURCES = neutrino_menue.cpp neutrino.cpp

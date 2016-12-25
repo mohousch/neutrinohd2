@@ -8,6 +8,8 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/lib/connection \
 	-I$(top_srcdir)/lib/libconfigfile \
 	-I$(top_srcdir)/lib/libeventserver
+
+AM_CPPFLAGS += -fno-rtti -fno-exceptions
 	
 noinst_LIBRARIES = liblcddisplay.a
 
