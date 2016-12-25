@@ -1717,6 +1717,11 @@ void CTestMenu::testCMenuWidgetListBox()
 	listMenu = NULL;
 }
 
+#define HEAD1_BUTTONS_COUNT	1
+const struct button_label Head1Buttons[HEAD1_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL }
+};
 void CTestMenu::testCMenuWidgetListBox1()
 {
 	//
@@ -1748,7 +1753,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 	Path_local += "/divers/";
 
 	// itemBox
-	picMenu = new CMenulistBox("CMenuListBox (audioplayer)", "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	picMenu = new CMenulistBox("CMenuListBox (audioplayer)", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	if(CFileHelpers::getInstance()->readDir(Path_local, &audioFileList, &fileFilter))
 	{
@@ -1762,38 +1767,57 @@ void CTestMenu::testCMenuWidgetListBox1()
 			count++;
 			if (files->getType() == CFile::FILE_AUDIO)
 			{
-				// //remove extension (.mp3)
-				std::string tmp = files->getFileName().substr(files->getFileName().rfind('/') + 1);
-				tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
-				
-				// date
-				//if(stat(tmp.c_str(), &statbuf) != 0)
-				//	printf("stat error");
-				//files.Date = statbuf.st_mtime;
-
-				//
 				std::string title;
 				std::string artist;
-				std::string::size_type i = tmp.rfind(" - ");
+				std::string genre;
+				std::string date;
+				char duration[9] = "";
+
+				// metaData
+				CAudiofile audiofile(files->Name, files->getExtension());
+
+				CAudioPlayer::getInstance()->init();
+
+				//const CAudioMetaData meta = CAudioPlayer::getInstance()->getMetaData();
+				int ret = CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
+				//
+
+				if (!ret || (audiofile.MetaData.artist.empty() && audiofile.MetaData.title.empty() ))
+				{
+					// //remove extension (.mp3)
+					std::string tmp = files->getFileName().substr(files->getFileName().rfind('/') + 1);
+					tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
+
+					std::string::size_type i = tmp.rfind(" - ");
 		
-				if(i != std::string::npos)
-				{ 
-					artist = tmp.substr(0, i);
-					title = tmp.substr(i + 3);
+					if(i != std::string::npos)
+					{ 
+						title = tmp.substr(0, i);
+						artist = tmp.substr(i + 3);
+					}
+					else
+					{
+						i = tmp.rfind('-');
+						if(i != std::string::npos)
+						{
+							title = tmp.substr(0, i);
+							artist = tmp.substr(i + 1);
+						}
+						else
+							title = tmp;
+					}
 				}
 				else
 				{
-					i = tmp.rfind('-');
-					if(i != std::string::npos)
-					{
-						artist = tmp.substr(0, i);
-						title = tmp.substr(i + 1);
-					}
-					else
-						title = tmp;
+					title = audiofile.MetaData.title;
+					artist = audiofile.MetaData.artist;
+					genre = audiofile.MetaData.genre;	
+					date = audiofile.MetaData.date;
+
+					snprintf(duration, 8, "(%ld:%02ld)", audiofile.MetaData.total_time / 60, audiofile.MetaData.total_time % 60);
 				}
 
-				picMenu->addItem(new CMenulistBoxItem(tmp.c_str(), true, this, "play", "", count, -1, "", "", "", "24.12.2016", "13:22", artist.c_str(), "", title.c_str(), ""));
+				picMenu->addItem(new CMenulistBoxItem(title.c_str(), true, this, "play", "", count, -1, "", "", "", duration, "", title.c_str(), genre.c_str(), artist.c_str(), date.c_str()));
 			}
 		}
 		
@@ -1803,7 +1827,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 	//listMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	picMenu->setSelected(selected);
 
-	//picMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	picMenu->setHeaderButtons(Head1Buttons, HEAD1_BUTTONS_COUNT);
 	//picMenu->setFooterButtons(FButtons, FOOT_BUTTONS_COUNT);
 	
 	picMenu->enablePaintDate();
@@ -1811,7 +1835,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 
 	// head
 	picMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	picMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
+	picMenu->addKey(CRCInput::RC_setup, this, "RC_setup1");
 
 	// footer
 	picMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
@@ -2131,6 +2155,13 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		tmpAudioPlayerGui.exec(NULL, "urlplayback");
 
 		return menu_return::RETURN_EXIT;
+	}
+	else if(actionKey == "RC_setup1")
+	{
+		CNFSSmallMenu * mountSmallMenu = new CNFSSmallMenu(true);
+		mountSmallMenu->exec(NULL, "");
+		delete mountSmallMenu;
+		mountSmallMenu = NULL;
 	}
 	
 	return menu_return::RETURN_REPAINT;

@@ -1532,6 +1532,7 @@ void CAudioPlayerGui::paintItem(int pos)
 		{
 			// id3tag noch nicht geholt
 			GetMetaData(m_playlist[pos + m_liststart]);
+
 			if(m_state != CAudioPlayerGui::STOP && !g_settings.audioplayer_highprio)
 				usleep(100*1000);
 		}

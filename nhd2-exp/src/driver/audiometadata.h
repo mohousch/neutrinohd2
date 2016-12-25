@@ -59,18 +59,20 @@ public:
 		WAV,
 		FLAC
 	};
+
+	//
 	AudioType type;
 	std::string type_info;
 
-	long filesize; /* filesize in bits (for mp3: without leading id3 tag) */
+	long filesize; // filesize in bits (for mp3: without leading id3 tag)
 
-	unsigned int bitrate; /* overall bitrate, vbr file: current bitrate */
-	unsigned int avg_bitrate; /* average bitrate in case of vbr file */
+	unsigned int bitrate; // overall bitrate, vbr file: current bitrate
+	unsigned int avg_bitrate; // average bitrate in case of vbr file 
 	unsigned int samplerate;
 	enum mad_layer layer;
 	enum mad_mode mode;
 	time_t total_time;
-	long audio_start_pos; /* position of first audio frame */
+	long audio_start_pos; // position of first audio frame
 	bool vbr;
 	/* 
 	   if the variable hasInfoOrXingTag is true, this means the values of
