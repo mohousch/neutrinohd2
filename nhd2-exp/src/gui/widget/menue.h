@@ -51,6 +51,21 @@
 #define MENU_HEIGHT			700
 #define HINTBOX_WIDTH			MENU_WIDTH + 50
 
+
+enum 
+{
+	ITEM_TYPE_OPTION_CHOOSER,
+	ITEM_TYPE_OPTION_NUMBER_CHOOSER,
+	ITEM_TYPE_OPTION_STRING_CHOOSER,
+	ITEM_TYPE_OPTION_LANGUAGE_CHOOSER,
+	ITEM_TYPE_SEPARATOR,
+	ITEM_TYPE_FORWARDER,
+	ITEM_TYPE_SELECTOR,
+	ITEM_TYPE_FORWARDER_EXTENDED,
+	ITEM_TYPE_FRAME_BOX,
+	ITEM_TYPE_LIST_BOX
+};
+
 struct menu_return
 {
 	enum
@@ -114,6 +129,8 @@ class CMenuItem
 		neutrino_msg_t directKey;
 		neutrino_msg_t msg;
 		bool can_arrow;
+
+		//
 		std::string iconName;
 
 		//bool marked;
@@ -122,7 +139,11 @@ class CMenuItem
 
 		//
 		std::string itemHelpText;
+
+		//
 		std::string itemIcon;
+
+		int itemType;
 
 		CMenuItem()
 		{
@@ -156,7 +177,24 @@ class CMenuItem
 
 		//
 		virtual int getYPosition(void) const { return y; }
-		void setFootInfo(const char* const Info1 = NULL, const char* const Info2 = NULL, const char*  const OptionInfo1 = NULL, const char* const OptionInfo2 = NULL){};
+		virtual int getItemType(){ return itemType;};
+
+		//
+		virtual void setFootInfo(const char* const Info1, const char*  const OptionInfo1, const char* const Info2, const char* const OptionInfo2)
+		{
+			info1 = Info1;
+			option_info1 = OptionInfo1;
+			info2 = Info2;
+			option_info2 = OptionInfo2;
+		};
+
+		//
+		virtual void setHelpText(const neutrino_locale_t ItemHelpText);
+		virtual void setHelpText(const char* const ItemHelpText);
+		virtual void setHelpText(const std::string& ItemHelpText);
+
+		//
+		virtual void setItemIcon(const char* const ItemIcon){itemIcon = ItemIcon;};
 };
 
 // CAbstractMenuOptionChooser

@@ -35,8 +35,8 @@ class CTestMenu : public CMenuTarget
 		int selected;
 		bool displayNext;
 		//
-		CMenulistBox* browserMenu;
-		//CFileList* filelist;
+		CMenulistBox* picMenu;
+		CFileList audioFileList;
 
 		// functions
 		void testCBox();
@@ -112,7 +112,7 @@ class CTestMenu : public CMenuTarget
 
 		//
 		void testCMenuWidgetListBox();
-		void testCMenuWidgetListBoxBrowser();
+		void testCMenuWidgetListBox1();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -131,14 +131,13 @@ CTestMenu::CTestMenu()
 	displayNext = false;
 
 	//
-	browserMenu = NULL;
-	//filelist = NULL;
+	picMenu = NULL;
 }
 
 CTestMenu::~CTestMenu()
 {
 	Channels.clear();
-	//filelist->clear();
+	audioFileList.clear();
 
 	if(listMenu)
 	{
@@ -146,10 +145,10 @@ CTestMenu::~CTestMenu()
 		listMenu = NULL;
 	}
 
-	if(browserMenu)
+	if(picMenu)
 	{
-		delete browserMenu;
-		browserMenu = NULL;
+		delete picMenu;
+		picMenu = NULL;
 	}
 }
 
@@ -1540,6 +1539,11 @@ void CTestMenu::testShowPictureDir()
 	//
 	CFileFilter fileFilter;
 
+	fileFilter.addFilter("png");
+	fileFilter.addFilter("bmp");
+	fileFilter.addFilter("jpg");
+	fileFilter.addFilter("jpeg");
+
 	CPictureViewerGui tmpPictureViewerGui;
 	
 	std::string Path_local = g_settings.network_nfs_picturedir;
@@ -1711,6 +1715,94 @@ void CTestMenu::testCMenuWidgetListBox()
 	//listMenu->hide();
 	delete listMenu;
 	listMenu = NULL;
+}
+
+void CTestMenu::testCMenuWidgetListBox1()
+{
+	//
+	CFileFilter fileFilter;
+
+	/*
+	fileFilter.addFilter("png");
+	fileFilter.addFilter("bmp");
+	fileFilter.addFilter("jpg");
+	fileFilter.addFilter("jpeg");
+	*/
+
+	// music
+	fileFilter.addFilter("cdr");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("m2a");
+	fileFilter.addFilter("mpa");
+	fileFilter.addFilter("mp2");
+	fileFilter.addFilter("ogg");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("aac");
+	fileFilter.addFilter("dts");
+	fileFilter.addFilter("m4a");
+
+	//CPictureViewerGui tmpPictureViewerGui;
+	
+	std::string Path_local = g_settings.network_nfs_audioplayerdir;
+	Path_local += "/divers/";
+
+	// itemBox
+	picMenu = new CMenulistBox("list Pic Viewer", "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+
+	if(CFileHelpers::getInstance()->readDir(Path_local, &audioFileList, &fileFilter))
+	{
+		//CPicture pic;
+		struct stat statbuf;
+				
+		CFileList::iterator files = audioFileList.begin();
+		for(; files != audioFileList.end() ; files++)
+		{
+			//if (files->getType() == CFile::FILE_PICTURE)
+			{
+				/*
+				pic.Filename = files->Name;
+				std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
+				pic.Name = tmp.substr(0, tmp.rfind('.'));
+				pic.Type = tmp.substr(tmp.rfind('.') + 1);
+			
+				if(stat(pic.Filename.c_str(), &statbuf) != 0)
+					printf("stat error");
+				pic.Date = statbuf.st_mtime;
+				*/
+				
+				//tmpPictureViewerGui.addToPlaylist(pic);
+
+				picMenu->addItem(new CMenulistBoxItem(files->getFileName().c_str(), true, this, "play", NEUTRINO_ICON_MP3, 0, -1, "", "", "", "24.12.2016", "13:22", "", "", "", ""));
+			}
+		}
+		
+		//tmpPictureViewerGui.exec(NULL, "urlplayback");
+	}
+
+	//listMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
+	picMenu->setSelected(selected);
+
+	//picMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	//picMenu->setFooterButtons(FButtons, FOOT_BUTTONS_COUNT);
+	
+	picMenu->enablePaintDate();
+	//picMenu->enableFootInfo(); 
+
+	// head
+	picMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
+	picMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
+
+	// footer
+	picMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
+	picMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
+	picMenu->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
+	picMenu->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
+
+	picMenu->exec(NULL, "");
+	//picMenu->hide();
+	delete picMenu;
+	picMenu = NULL;
 }
 
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -2005,6 +2097,21 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		g_Zapit->zapTo_serviceID(Channels[listMenu->getSelected()]->channel_id);
 		return menu_return::RETURN_EXIT_ALL;
 	}
+	else if(actionKey == "menuwidgetlistbox1")
+	{
+		testCMenuWidgetListBox1();
+	}
+	else if(actionKey == "play")
+	{
+		selected = picMenu->getSelected();
+		//g_Zapit->zapTo_serviceID(Channels[listMenu->getSelected()]->channel_id);
+		CAudiofileExt audiofile(audioFileList[picMenu->getSelected()].Name, audioFileList[picMenu->getSelected()].getExtension());
+		CAudioPlayerGui tmpAudioPlayerGui;
+		tmpAudioPlayerGui.addToPlaylist(audiofile);
+		tmpAudioPlayerGui.exec(NULL, "urlplayback");
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -2040,6 +2147,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	mainMenu->addItem(new CMenuForwarder("CMenuWidget(listBox)", true, NULL, this, "menuwidgetlistbox"));
+	mainMenu->addItem(new CMenuForwarder("CMenuWidget(Pic Viewer)", true, NULL, this, "menuwidgetlistbox1"));
 	
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));
@@ -2089,9 +2197,6 @@ void CTestMenu::showTestMenu()
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
-
-	//mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	//mainMenu->addItem(new CMenuForwarder("CMenuWidget(listBox)", true, NULL, this, "menuwidgetlistbox"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();

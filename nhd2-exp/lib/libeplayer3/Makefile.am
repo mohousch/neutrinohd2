@@ -22,7 +22,7 @@ libeplayer3_a_SOURCES =  \
 	manager/subtitle.c \
 	output/output_subtitle.c output/writer/framebuffer.c
 
-AM_CFLAGS += -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
+AM_CFLAGS = -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 
 # get rid of many warnings. This is not my project, so fixing them is not
 # top priority

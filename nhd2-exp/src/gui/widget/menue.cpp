@@ -79,9 +79,6 @@ void CMenuItem::init(const int X, const int Y, const int DX, const int OFFX)
 	y    = Y;
 	dx   = DX;
 	offx = OFFX;
-
-	//active = true;
-	//marked = false;
 }
 
 void CMenuItem::setActive(const bool Active)
@@ -90,6 +87,21 @@ void CMenuItem::setActive(const bool Active)
 	
 	if (x != -1)
 		paint();
+}
+
+void CMenuItem::setHelpText(const neutrino_locale_t ItemHelpText = NONEXISTANT_LOCALE)
+{
+	itemHelpText =  g_Locale->getText(ItemHelpText);
+}
+
+void CMenuItem::setHelpText(const char* const ItemHelpText = NULL)
+{
+	itemHelpText =  ItemHelpText;
+}
+
+void CMenuItem::setHelpText(const std::string& ItemHelpText = NULL)
+{
+	itemHelpText =  ItemHelpText;
 }
 
 /*
@@ -182,7 +194,8 @@ void CMenuWidget::addItem(CMenuItem *menuItem, const bool defaultselected)
 	if (defaultselected)
 		selected = items.size();
 	
-	items.push_back(menuItem);
+	if( (menuItem->getItemType() != ITEM_TYPE_FORWARDER_EXTENDED) && (menuItem->getItemType() != ITEM_TYPE_FRAME_BOX) && (menuItem->getItemType() != ITEM_TYPE_LIST_BOX) )
+		items.push_back(menuItem);
 }
 
 bool CMenuWidget::hasItem()
@@ -783,6 +796,8 @@ CMenuOptionChooser::CMenuOptionChooser(const neutrino_locale_t OptionName, int *
 	disableMenuPos = DisableMenuPos;
 
 	itemHelpText = optionNameString;
+
+	itemType = ITEM_TYPE_OPTION_CHOOSER;
 }
 
 CMenuOptionChooser::CMenuOptionChooser(const char *OptionName, int *const OptionValue, const struct keyval *const Options, const unsigned Number_Of_Options, const bool Active, CChangeObserver * const Observ, const neutrino_msg_t DirectKey, const std::string & IconName, bool Pulldown, bool DisableMenuPos)
@@ -807,6 +822,8 @@ CMenuOptionChooser::CMenuOptionChooser(const char *OptionName, int *const Option
 	disableMenuPos = DisableMenuPos;
 
 	itemHelpText = optionNameString;
+
+	itemType = ITEM_TYPE_OPTION_CHOOSER;
 }
 
 void CMenuOptionChooser::setOptionValue(const int newvalue)
@@ -1033,6 +1050,7 @@ CMenuOptionNumberChooser::CMenuOptionNumberChooser(const neutrino_locale_t Name,
 	observ = Observ;
 
 	itemHelpText = nameString;
+	itemType = ITEM_TYPE_OPTION_NUMBER_CHOOSER;
 }
 
 CMenuOptionNumberChooser::CMenuOptionNumberChooser(const char * const Name, int * const OptionValue, const bool Active, const int min_value, const int max_value, CChangeObserver * const Observ, const int print_offset, const int special_value, const neutrino_locale_t special_value_name, const char * non_localized_name)
@@ -1061,6 +1079,7 @@ CMenuOptionNumberChooser::CMenuOptionNumberChooser(const char * const Name, int 
 	observ = Observ;
 
 	itemHelpText = nameString;
+	itemType = ITEM_TYPE_OPTION_NUMBER_CHOOSER;
 }
 
 int CMenuOptionNumberChooser::exec(CMenuTarget*)
@@ -1179,6 +1198,7 @@ CMenuOptionStringChooser::CMenuOptionStringChooser(const neutrino_locale_t Name,
 	disableMenuPos = DisableMenuPos;
 
 	itemHelpText = nameString;
+	itemType = ITEM_TYPE_OPTION_STRING_CHOOSER;
 }
 
 CMenuOptionStringChooser::CMenuOptionStringChooser(const char * const Name, char * OptionValue, bool Active, CChangeObserver* Observ, const neutrino_msg_t DirectKey, const std::string & IconName, bool Pulldown, bool DisableMenuPos)
@@ -1202,6 +1222,7 @@ CMenuOptionStringChooser::CMenuOptionStringChooser(const char * const Name, char
 	disableMenuPos = DisableMenuPos;
 
 	itemHelpText = nameString;
+	itemType = ITEM_TYPE_OPTION_STRING_CHOOSER;
 }
 
 CMenuOptionStringChooser::~CMenuOptionStringChooser()
@@ -1387,6 +1408,7 @@ CMenuOptionLanguageChooser::CMenuOptionLanguageChooser(char *Name, CChangeObserv
 	iconName = IconName ? IconName : "";
 
 	itemHelpText = Name;
+	itemType = ITEM_TYPE_OPTION_LANGUAGE_CHOOSER;
 }
 
 CMenuOptionLanguageChooser::~CMenuOptionLanguageChooser()
@@ -1484,6 +1506,7 @@ CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, 
 	iconName = IconName ? IconName : "";
 
 	itemHelpText = textString;
+	itemType = ITEM_TYPE_FORWARDER;
 }
 
 CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName)
@@ -1499,6 +1522,7 @@ CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, 
 	iconName = IconName ? IconName : "";
 
 	itemHelpText = textString;
+	itemType = ITEM_TYPE_FORWARDER;
 }
 
 CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName)
@@ -1514,6 +1538,7 @@ CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const
 	iconName = IconName ? IconName : "";
 
 	itemHelpText = textString;
+	itemType = ITEM_TYPE_FORWARDER;
 }
 
 CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName)
@@ -1529,6 +1554,7 @@ CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const
 	iconName = IconName ? IconName : "";
 
 	itemHelpText = textString;
+	itemType = ITEM_TYPE_FORWARDER;
 }
 
 int CMenuForwarder::getHeight(void) const
@@ -1683,6 +1709,8 @@ CMenuSeparator::CMenuSeparator(const int Type, const neutrino_locale_t Text)
 	iconName = "";
 	type = Type;
 	text = Text;
+
+	itemType = ITEM_TYPE_SEPARATOR;
 }
 
 int CMenuSeparator::getHeight(void) const
@@ -1820,6 +1848,8 @@ CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , char *
 	active = Active;
 	returnIntValue = ReturnIntValue;
 	returnInt = ReturnInt;
+
+	itemType = ITEM_TYPE_SELECTOR;
 };
 
 CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , std::string& OptionValue, int* ReturnInt ,int ReturnIntValue ) : CMenuItem()
@@ -1833,6 +1863,8 @@ CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , std::s
 	active = Active;
 	returnIntValue = ReturnIntValue;
 	returnInt = ReturnInt;
+
+	itemType = ITEM_TYPE_SELECTOR;
 };
 
 int CMenuSelector::exec(CMenuTarget*)
@@ -1970,7 +2002,8 @@ void CMenuWidgetExtended::addItem(CMenuItem *menuItem, const bool defaultselecte
 	if (defaultselected)
 		selected = items.size();
 	
-	items.push_back(menuItem);
+	if(menuItem->getItemType() == ITEM_TYPE_FORWARDER_EXTENDED)
+		items.push_back(menuItem);
 }
 
 bool CMenuWidgetExtended::hasItem()
@@ -2582,6 +2615,7 @@ CMenuForwarderExtended::CMenuForwarderExtended(const neutrino_locale_t Text, con
 	
 	itemIcon = ItemIcon ? ItemIcon : "";
 	itemHelpText = g_Locale->getText(HelpText);
+	itemType = ITEM_TYPE_FORWARDER_EXTENDED;
 }
 
 CMenuForwarderExtended::CMenuForwarderExtended(const char * const Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
@@ -2598,6 +2632,7 @@ CMenuForwarderExtended::CMenuForwarderExtended(const char * const Text, const bo
 	
 	itemIcon = ItemIcon ? ItemIcon : "";
 	itemHelpText = g_Locale->getText(HelpText);
+	itemType = ITEM_TYPE_FORWARDER_EXTENDED;
 }
 
 int CMenuForwarderExtended::getHeight(void) const
@@ -2816,7 +2851,8 @@ void CMenuFrameBox::addItem(CMenuItem *menuItem, const bool defaultselected)
 	if (defaultselected)
 		selected = items.size();
 	
-	items.push_back(menuItem);
+	if(menuItem->getItemType() == ITEM_TYPE_FRAME_BOX)
+		items.push_back(menuItem);
 }
 
 bool CMenuFrameBox::hasItem()
@@ -3344,6 +3380,7 @@ CMenuFrameBoxItem::CMenuFrameBoxItem(const neutrino_locale_t Text, CMenuTarget* 
 	
 	itemIcon = ItemIcon ? ItemIcon : "";
 	iconName = itemIcon;
+	itemType = ITEM_TYPE_FRAME_BOX;
 }
 
 CMenuFrameBoxItem::CMenuFrameBoxItem(const char * const Text, CMenuTarget* Target, const char * const ActionKey, const char * const ItemIcon)
@@ -3358,6 +3395,7 @@ CMenuFrameBoxItem::CMenuFrameBoxItem(const char * const Text, CMenuTarget* Targe
 	
 	itemIcon = ItemIcon ? ItemIcon : "";
 	iconName = itemIcon;
+	itemType = ITEM_TYPE_FRAME_BOX;
 }
 
 int CMenuFrameBoxItem::getHeight(void) const
@@ -3532,7 +3570,8 @@ void CMenulistBox::addItem(CMenuItem *menuItem, const bool defaultselected)
 	if (defaultselected)
 		selected = items.size();
 	
-	items.push_back(menuItem);
+	if(menuItem->getItemType() == ITEM_TYPE_LIST_BOX)
+		items.push_back(menuItem);
 }
 
 bool CMenulistBox::hasItem()
@@ -3581,7 +3620,7 @@ void CMenulistBox::initFrames()
 
 	// calculate some values
 	itemHeightTotal = 0;
-	item_height = 0;
+	item_height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 3;
 	heightCurrPage = 0;
 	page_start.clear();
 	page_start.push_back(0);
@@ -4259,6 +4298,8 @@ CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Acti
 	option_info1 = OptionInfo1? OptionInfo1 : "";
 	info2 = Info2? Info2 : "";
 	option_info2 = OptionInfo2? OptionInfo2 : "";
+
+	itemType = ITEM_TYPE_LIST_BOX;
 }
 
 CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, const char * const IconName, const int Num, const int Percent, const char* const Descr, const char* const Icon1, const char* const Icon2, const char* const OptionText1, const char* const OptionText2, const char* const Info1, const char* const OptionInfo1, const char* const Info2, const char* const OptionInfo2)
@@ -4283,6 +4324,8 @@ CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, C
 	option_info1 = OptionInfo1? OptionInfo1 : "";
 	info2 = Info2? Info2 : "";
 	option_info2 = OptionInfo2? OptionInfo2 : "";
+
+	itemType = ITEM_TYPE_LIST_BOX;
 }
 
 int CMenulistBoxItem::getHeight(void) const
