@@ -1031,6 +1031,11 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.update((duration - position) / 1000);
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 			}
+
+			time_t jetzt = time(NULL);
+
+			if((jetzt - timeStartShowingInfo) >= 60) // 60 sec
+				FileTime.hide();
 		}
 
 		// start playing
@@ -1428,6 +1433,8 @@ void CMoviePlayerGui::PlayFile(void)
 				{
 					FileTime.SetMode(CTimeOSD::MODE_ASC);
 					FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+
+					timeStartShowingInfo = time(NULL);
 				}
 
 			}

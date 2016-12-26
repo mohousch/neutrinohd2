@@ -188,6 +188,8 @@ class CMoviePlayerGui : public CMenuTarget
 		// timeosd
 		CTimeOSD FileTime;
 
+		time_t timeStartShowingInfo;
+
 	private:
 		CFrameBuffer * frameBuffer;
 		int            m_LastMode;	
