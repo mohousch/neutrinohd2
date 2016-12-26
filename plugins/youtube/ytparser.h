@@ -20,9 +20,6 @@
 #ifndef __YT_PARSER__
 #define __YT_PARSER__
 
-//#include <curl/curl.h>
-//#include <curl/easy.h>
-
 #include <vector>
 #include <string>
 #include <map>

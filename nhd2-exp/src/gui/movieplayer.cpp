@@ -35,40 +35,6 @@
 #include <sys/vfs.h>
 #include <sys/mount.h>
 
-#include <gui/movieplayer.h>
-
-#include <global.h>
-#include <neutrino.h>
-
-#include <driver/fontrenderer.h>
-#include <driver/rcinput.h>
-#include <driver/vcrcontrol.h>
-
-#include <daemonc/remotecontrol.h>
-#include <system/settings.h>
-#include <system/helpers.h>
-
-#include <gui/eventlist.h>
-#include <gui/color.h>
-#include <gui/infoviewer.h>
-#include <gui/nfs.h>
-#include <gui/timeosd.h>
-#include <gui/webtv.h>
-#include <gui/audio_video_select.h>
-
-#include <gui/widget/buttons.h>
-#include <gui/widget/icons.h>
-#include <gui/widget/messagebox.h>
-#include <gui/widget/hintbox.h>
-#include <gui/widget/stringinput.h>
-#include <gui/widget/stringinput_ext.h>
-#include <gui/widget/helpbox.h>
-#include <gui/widget/infobox.h>
-
-#include <system/debug.h>
-
-#include <libxmltree/xmlinterface.h>
-
 #include <algorithm>
 #include <fstream>
 #include <sstream>
@@ -86,12 +52,45 @@
 #include <poll.h>
 #include <sys/timeb.h>
 
-/* libdvbapi */
+#include <gui/movieplayer.h>
+
+#include <global.h>
+#include <neutrino.h>
+
+#include <driver/fontrenderer.h>
+#include <driver/rcinput.h>
+#include <driver/vcrcontrol.h>
+
+#include <daemonc/remotecontrol.h>
+
+#include <system/settings.h>
+#include <system/helpers.h>
+
+#include <gui/eventlist.h>
+#include <gui/color.h>
+#include <gui/infoviewer.h>
+#include <gui/nfs.h>
+#include <gui/webtv.h>
+#include <gui/audio_video_select.h>
+
+#include <gui/widget/buttons.h>
+#include <gui/widget/icons.h>
+#include <gui/widget/messagebox.h>
+#include <gui/widget/hintbox.h>
+#include <gui/widget/stringinput.h>
+#include <gui/widget/stringinput_ext.h>
+#include <gui/widget/helpbox.h>
+#include <gui/widget/infobox.h>
+
+#include <system/debug.h>
+
+#include <libxmltree/xmlinterface.h>
+
+//
 #include <playback_cs.h>
 #include <video_cs.h>
-#include <audio_cs.h>
 
-/*zapit includes*/
+//
 #include <channel.h>
 
 
@@ -102,13 +101,12 @@
 extern cPlayback *playback;
 
 //
-extern CInfoViewer * g_InfoViewer;
 extern t_channel_id live_channel_id; 			//defined in zapit.cpp
 
-#define MOVIE_HINT_BOX_TIMER 	5				// time to show bookmark hints in seconds
+#define MOVIE_HINT_BOX_TIMER 	5			// time to show bookmark hints in seconds
 
 #define MINUTEOFFSET 		117*262072
-#define MP_TS_SIZE 		262072				// ~0.5 sec
+#define MP_TS_SIZE 		262072			// ~0.5 sec
 
 #define TIMESHIFT_SECONDS 	3
 
@@ -846,7 +844,6 @@ void CMoviePlayerGui::PlayFile(void)
 			timeshift = false;
 			
 			FileTime.hide();
-			g_InfoViewer->killTitle();
 
 			// clear audipopids
 			for (int i = 0; i < g_numpida; i++) 
@@ -1027,12 +1024,12 @@ void CMoviePlayerGui::PlayFile(void)
 			if (FileTime.GetMode() == CTimeOSD::MODE_ASC) 
 			{
 				FileTime.update(position / 1000);
-				FileTime.show(position / 1000);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 			} 
 			else 
 			{
 				FileTime.update((duration - position) / 1000);
-				FileTime.show(position / 1000);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 			}
 		}
 
@@ -1129,9 +1126,6 @@ void CMoviePlayerGui::PlayFile(void)
 #else
 				playback->GetPosition((int64_t &)position, (int64_t &)duration);
 #endif	
-				
-				// show movieinfoviewer at start
-				g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, (duration == 0)? false : true, isMovieBrowser);
 			}
 		}
 
@@ -1234,9 +1228,6 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
-			
-			if(g_InfoViewer->m_visible)
-				g_InfoViewer->killTitle();
 
 			// movie title
 			if(!timeshift)
@@ -1256,11 +1247,8 @@ void CMoviePlayerGui::PlayFile(void)
 				else 
 				{
 					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+					FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 				}
-				
-				if(!g_InfoViewer->m_visible)
-					g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
 			}
 		} 
 		else if ( msg == (neutrino_msg_t) g_settings.mpkey_pause) 
@@ -1306,11 +1294,8 @@ void CMoviePlayerGui::PlayFile(void)
 				else 
 				{
 					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+					FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 				}
-				
-				if(!g_InfoViewer->m_visible)
-					g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
 			}
 		} 
 		else if (msg == (neutrino_msg_t) g_settings.mpkey_bookmark) 
@@ -1423,15 +1408,7 @@ void CMoviePlayerGui::PlayFile(void)
 			//show help
 			showHelpTS();
 		}
-		else if (msg == CRCInput::RC_info) 
-		{
-			if (FileTime.IsVisible()) 
-				FileTime.hide();
-				
-			if( !g_InfoViewer->m_visible )
-				g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
-		}
-		else if ( msg == (neutrino_msg_t) g_settings.mpkey_time )
+		else if ( msg == (neutrino_msg_t) g_settings.mpkey_time || msg == CRCInput::RC_info)
 		{
 			if(!timeshift)
 			{
@@ -1450,8 +1427,9 @@ void CMoviePlayerGui::PlayFile(void)
 				else 
 				{
 					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+					FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 				}
+
 			}
 			else
 			{
@@ -1460,7 +1438,7 @@ void CMoviePlayerGui::PlayFile(void)
 				else
 				{
 					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+					FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 				}
 			}
 		} 
@@ -1486,17 +1464,11 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
-			
-			if(!g_InfoViewer->m_visible)
-				g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
 		}
 		else if (msg == (neutrino_msg_t) g_settings.mpkey_forward) 
 		{	// fast-forward
@@ -1521,17 +1493,11 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
-			
-			if(!g_InfoViewer->m_visible)
-				g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
 		} 
 		else if (msg == CRCInput::RC_1) 
 		{	// Jump Backwards 1 minute
@@ -1541,13 +1507,10 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
 		} 
 		else if (msg == CRCInput::RC_3) 
@@ -1558,13 +1521,10 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
 		} 
 		else if (msg == CRCInput::RC_4) 
@@ -1574,13 +1534,10 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
 		} 
 		else if (msg == CRCInput::RC_6) 
@@ -1590,13 +1547,10 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
 		} 
 		else if (msg == CRCInput::RC_7) 
@@ -1606,13 +1560,10 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
 		} 
 		else if (msg == CRCInput::RC_9) 
@@ -1622,13 +1573,10 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
 		} 
 		else if ( msg == CRCInput::RC_2 )
@@ -1638,13 +1586,10 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
 		} 
 		else if ( msg == CRCInput::RC_repeat )
@@ -1664,13 +1609,10 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
 		} 
 		else if (msg == CRCInput::RC_8) 
@@ -1681,13 +1623,10 @@ void CMoviePlayerGui::PlayFile(void)
 			//time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
 		} 
 		else if (msg == CRCInput::RC_page_up) 
@@ -1697,13 +1636,10 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
 
 		} 
@@ -1714,13 +1650,10 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				if( !g_InfoViewer->is_visible)
-				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(position / 1000);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
-					time_forced = true;
-				}
+				time_forced = true;
 			}
 		} 
 		else if (msg == CRCInput::RC_0) 
@@ -1765,9 +1698,6 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
-			
-			if(g_InfoViewer->m_visible)
-				  g_InfoViewer->killTitle();
 		}
 		else if(msg == CRCInput::RC_left || msg == CRCInput::RC_prev)
 		{
@@ -1859,9 +1789,6 @@ void CMoviePlayerGui::PlayFile(void)
 
 	if(FileTime.IsVisible())
 		FileTime.hide();
-	
-	if(g_InfoViewer->m_visible)
-		g_InfoViewer->killTitle();
 	
 	playback->Close();
 
@@ -1965,6 +1892,339 @@ void CMoviePlayerGui::showFileInfo()
 	infoBox->setText(&buffer, Thumbnail, p_w, p_h);
 	infoBox->exec();
 	delete infoBox;
+}
+
+#define TIMEOSD_FONT 		SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME
+#define TIMEBARH 		38
+//#define SHADOW_OFFSET		5
+#define BOXHEIGHT_MOVIEINFO	125
+#define BUTTON_BAR_HEIGHT	25
+#define TIMESCALE_BAR_HEIGHT	7
+
+CTimeOSD::CTimeOSD()
+{
+	frameBuffer = CFrameBuffer::getInstance();
+
+	visible = false;
+	m_mode = MODE_ASC;
+	GetDimensions();
+}
+
+CTimeOSD::~CTimeOSD()
+{
+	hide();
+}
+
+void CTimeOSD::show(const std::string& _Title, const std::string& _Info, short _Percent, const int _duration, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_duration, bool _show_bookmark)
+{
+	dprintf(DEBUG_NORMAL, "CTimeOSD::show\n");
+	 
+	// show / update
+	GetDimensions();
+	
+	visible = true;
+
+	showMovieInfo(_Title, _Info, _Percent, _duration, _ac3state, _speed, _playstate, _show_duration, _show_bookmark);
+}
+
+void CTimeOSD::GetDimensions()
+{
+	// time
+	m_xstart = g_settings.screen_StartX + 10;
+	m_xend = g_settings.screen_EndX - 10;
+	m_height = g_Font[TIMEOSD_FONT]->getHeight();
+	m_y = g_settings.screen_StartY + 10;
+	m_width = g_Font[TIMEOSD_FONT]->getRenderWidth("00:00:00");
+	twidth = m_xend - m_xstart;
+	
+	// infobar
+	BoxStartX = m_xstart;
+	BoxWidth = m_xend - m_xstart;
+	BoxHeight = TIMEBARH * 3;
+	BoxStartY = g_settings.screen_EndY - BoxHeight - 10;
+	BoxEndY = BoxStartY + BoxHeight;
+	BoxEndX = m_xend;
+
+	// movieinfo
+	cFrameBoxInfo.iHeight = BOXHEIGHT_MOVIEINFO;
+	cFrameBoxInfo.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - BORDER_LEFT - BORDER_RIGHT;
+	cFrameBoxInfo.iX = g_settings.screen_StartX + 10;
+	cFrameBoxInfo.iY = g_settings.screen_EndY - 10 - cFrameBoxInfo.iHeight - SHADOW_OFFSET;
+
+	//movieinfo buttonbar
+	cFrameBoxButton.iWidth = cFrameBoxInfo.iWidth;
+	cFrameBoxButton.iHeight = BUTTON_BAR_HEIGHT;
+	cFrameBoxButton.iX = g_settings.screen_StartX + 10;
+	cFrameBoxButton.iY = cFrameBoxInfo.iY + cFrameBoxInfo.iHeight - cFrameBoxButton.iHeight;
+}
+
+void CTimeOSD::update(time_t time_show)
+{
+	time_t tDisplayTime;
+	static time_t oldDisplayTime = 0;
+	char cDisplayTime[8 + 1];
+	fb_pixel_t color1, color2;
+	
+	GetDimensions();
+
+	//printf("CTimeOSD::update time %ld\n", time_show);
+	
+	if(!visible)
+		return;
+
+	if(m_mode == MODE_ASC) 
+	{
+		color1 = COL_MENUCONTENT_PLUS_0;
+		color2 = COL_MENUCONTENT;
+	} 
+	else 
+	{
+		color1 = COL_MENUCONTENTSELECTED_PLUS_0;
+		color2 = COL_MENUCONTENTSELECTED;
+		
+		if(!time_show) 
+			time_show = 1;
+	}
+
+	if(time_show) 
+	{
+		m_time_show = time_show;
+		tDisplayTime = m_time_show;
+	} 
+	else 
+	{
+		if(m_mode == MODE_ASC) 
+		{
+			tDisplayTime = m_time_show + (time(NULL) - m_time_dis);
+		} 
+		else 
+		{
+			tDisplayTime = m_time_show + (m_time_dis - time(NULL));
+		}
+	}
+
+	if(tDisplayTime < 0)
+		tDisplayTime = 0;
+
+	if(tDisplayTime != oldDisplayTime) 
+	{
+		oldDisplayTime = tDisplayTime;
+		strftime(cDisplayTime, 9, "%T", gmtime(&tDisplayTime));
+		
+		// time shadow
+		frameBuffer->paintBoxRel(m_xend - m_width - 10 + SHADOW_OFFSET, m_y + SHADOW_OFFSET, m_width + 10, m_height, COL_INFOBAR_SHADOW_PLUS_0);
+
+		// time window
+		frameBuffer->paintBoxRel(m_xend - m_width - 10, m_y, m_width + 10, m_height, color1 );
+
+		// time
+		g_Font[TIMEOSD_FONT]->RenderString(m_xend - m_width - 5, m_y + m_height, m_width + 5, cDisplayTime, color2);
+	}
+	
+	frameBuffer->blit();
+}
+
+void CTimeOSD::hide()
+{
+	GetDimensions();
+	
+	//printf("CTimeOSD::hide: x %d y %d xend %d yend %d\n", m_xstart, m_y , m_xend, m_height + 15);
+
+	if(!visible)
+		return;
+
+	// hide time
+	frameBuffer->paintBackgroundBoxRel(m_xend - m_width - 10, m_y, m_width + 10 + SHADOW_OFFSET, m_height + SHADOW_OFFSET );
+
+	visible = false;
+
+	// hide infoviewer
+	frameBuffer->paintBackgroundBoxRel(cFrameBoxInfo.iX, cFrameBoxInfo.iY, cFrameBoxInfo.iWidth + SHADOW_OFFSET, cFrameBoxInfo.iHeight + SHADOW_OFFSET);
+
+	frameBuffer->blit();
+}
+
+//showMovieInfo
+void CTimeOSD::showMovieInfo(const std::string &Title, const std::string &Info, short Percent, const int duration, const unsigned int ac3state, const int speed, const int playstate, bool lshow, bool show_bookmark)
+{
+	dprintf(DEBUG_NORMAL, "CTimeOSD::showMovieInfo:\n");
+
+	int runningPercent = 0;
+	
+	// icons dimension
+	frameBuffer->getIconSize(NEUTRINO_ICON_16_9, &icon_w_aspect, &icon_h_aspect);
+	frameBuffer->getIconSize(NEUTRINO_ICON_DD, &icon_w_dd, &icon_h_dd);
+	
+	// colored user icons
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_red_w, &icon_red_h);
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_green_w, &icon_green_h);
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_yellow_w, &icon_yellow_h);
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_blue_w, &icon_blue_h);
+	
+	// init progressbar
+	CProgressBar moviescale(cFrameBoxInfo.iWidth - BORDER_LEFT - BORDER_RIGHT, TIMESCALE_BAR_HEIGHT);
+	
+	moviescale.reset();
+	
+	// paint shadow
+	frameBuffer->paintBoxRel(cFrameBoxInfo.iX + SHADOW_OFFSET, cFrameBoxInfo.iY + SHADOW_OFFSET, cFrameBoxInfo.iWidth, cFrameBoxInfo.iHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH );
+		
+	// paint info box
+	frameBuffer->paintBoxRel(cFrameBoxInfo.iX, cFrameBoxInfo.iY, cFrameBoxInfo.iWidth, cFrameBoxInfo.iHeight, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient); 
+		
+	// bottum bar
+	frameBuffer->paintBoxRel(cFrameBoxButton.iX, cFrameBoxButton.iY, cFrameBoxButton.iWidth, cFrameBoxButton.iHeight, COL_INFOBAR_SHADOW_PLUS_1,  RADIUS_MID, CORNER_BOTTOM); 
+	
+	// show date/time
+	std::string datestr = getNowTimeStr("%d.%m.%Y %H:%M");
+			
+	int widthtime = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth(datestr.c_str(), true); //UTF-8
+	int height = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight();
+			
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(cFrameBoxInfo.iX + cFrameBoxInfo.iWidth - BORDER_RIGHT - widthtime, cFrameBoxInfo.iY + 5 + height, widthtime, datestr.c_str(), COL_INFOBAR, 0, true); // UTF-8
+	
+	std::string title = "neutrinoHD2";
+	int widthtitle = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth(title.c_str(), true); //UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(cFrameBoxInfo.iX + BORDER_LEFT, cFrameBoxInfo.iY + 5 + height, widthtitle, (char *)title.c_str(), COL_INFOBAR, 0, true); // UTF-8
+	
+	// mp icon
+	int m_icon_w = 0;
+	int m_icon_h = 0;
+	
+	std::string IconName = DATADIR "/neutrino/icons/" NEUTRINO_ICON_MP ".png";
+	
+	if(!access(IconName.c_str(), F_OK))
+	{
+		frameBuffer->getIconSize(NEUTRINO_ICON_MP, &m_icon_w, &m_icon_h);
+
+		int m_icon_x = cFrameBoxInfo.iX + BORDER_LEFT;
+		int m_icon_y = cFrameBoxInfo.iY + 30 + TIMESCALE_BAR_HEIGHT + (cFrameBoxInfo.iHeight - 30 - TIMESCALE_BAR_HEIGHT - cFrameBoxButton.iHeight - m_icon_h) / 2;
+		
+		frameBuffer->paintIcon(NEUTRINO_ICON_MP, m_icon_x, m_icon_y);
+	}
+	
+	// red (movie info)
+	int icon_w, icon_h;
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, cFrameBoxButton.iX + BORDER_LEFT, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(cFrameBoxButton.iX + BORDER_LEFT + icon_w + ICON_OFFSET, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), cFrameBoxButton.iWidth/5, (char *)"Info", (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
+		
+	// green (AV select)
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, cFrameBoxButton.iX + cFrameBoxButton.iWidth/5, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(cFrameBoxButton.iX + (cFrameBoxButton.iWidth/5) + icon_w + ICON_OFFSET, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), cFrameBoxButton.iWidth/5, g_Locale->getText(LOCALE_INFOVIEWER_LANGUAGES), (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
+		
+	// yellow (help)
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, cFrameBoxButton.iX + (cFrameBoxButton.iWidth/5)*2, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(cFrameBoxButton.iX + (cFrameBoxButton.iWidth/5)*2 + icon_w + ICON_OFFSET, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), cFrameBoxButton.iWidth/5, (char *)"help", (COL_INFOBAR_SHADOW * 1), 0, true); // UTF-8
+	
+	// blue (bookmark/features)
+	if (show_bookmark)
+	{
+		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, cFrameBoxButton.iX + (cFrameBoxButton.iWidth/5)*3, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(cFrameBoxButton.iX + (cFrameBoxButton.iWidth/5)*3 + icon_w + ICON_OFFSET, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), cFrameBoxButton.iWidth/5, g_Locale->getText(LOCALE_MOVIEPLAYER_BOOKMARK), (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
+	}
+		
+	// ac3
+	int icon_w_ac3, icon_h_ac3;
+	frameBuffer->getIconSize(NEUTRINO_ICON_DD, &icon_w_ac3, &icon_h_ac3);
+	frameBuffer->paintIcon( (ac3state == CInfoViewer::AC3_ACTIVE)?NEUTRINO_ICON_DD : NEUTRINO_ICON_DD_GREY, cFrameBoxButton.iX + cFrameBoxButton.iWidth - ICON_OFFSET - icon_w_ac3, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h_ac3)/2);
+		
+	// 4:3/16:9
+	const char * aspect_icon = NEUTRINO_ICON_16_9_GREY;
+				
+	if(g_settings.video_Ratio == ASPECTRATIO_169)
+		aspect_icon = NEUTRINO_ICON_16_9;
+	
+	int icon_w_asp, icon_h_asp;
+	frameBuffer->getIconSize(aspect_icon, &icon_w_asp, &icon_h_asp);
+	frameBuffer->paintIcon(aspect_icon, cFrameBoxButton.iX + cFrameBoxButton.iWidth - ICON_OFFSET - icon_w_ac3 - ICON_OFFSET - icon_w_asp, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h_asp)/2);
+	
+	// mp keys
+	frameBuffer->getIconSize(NEUTRINO_ICON_FF_SMALL, &icon_w, &icon_h);
+		
+	frameBuffer->paintIcon(NEUTRINO_ICON_REW_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - ICON_OFFSET - icon_w_ac3 - ICON_OFFSET - icon_w_asp - ICON_OFFSET - 5*icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_PLAY_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - ICON_OFFSET - icon_w_ac3 - ICON_OFFSET - icon_w_asp - ICON_OFFSET - 4*icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_PAUSE_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - ICON_OFFSET - icon_w_ac3 - ICON_OFFSET - icon_w_asp - ICON_OFFSET - 3*icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_STOP_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - ICON_OFFSET - icon_w_ac3 - ICON_OFFSET - icon_w_asp - ICON_OFFSET - 2*icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_FF_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - ICON_OFFSET - icon_w_ac3 - ICON_OFFSET - icon_w_asp - ICON_OFFSET - icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+		
+	//playstate
+	const char *icon = NEUTRINO_ICON_PLAY;
+		
+	switch(playstate)
+	{
+		case CMoviePlayerGui::PAUSE: icon = NEUTRINO_ICON_PAUSE; break;
+		case CMoviePlayerGui::PLAY: icon = NEUTRINO_ICON_PLAY; break;
+		case CMoviePlayerGui::REW: icon = NEUTRINO_ICON_REW; break;
+		case CMoviePlayerGui::FF: icon = NEUTRINO_ICON_FF; break;
+		case CMoviePlayerGui::SOFTRESET: break;
+		case CMoviePlayerGui::SLOW: break;
+		case CMoviePlayerGui::STOPPED: break;
+	}
+	
+	frameBuffer->getIconSize(icon, &icon_w, &icon_h);
+
+	//
+	int icon_x = cFrameBoxButton.iX + ICON_OFFSET + m_icon_w + BORDER_RIGHT;
+	int icon_y = cFrameBoxInfo.iY + 30 + TIMESCALE_BAR_HEIGHT + (cFrameBoxInfo.iHeight - 30 - TIMESCALE_BAR_HEIGHT - cFrameBoxButton.iHeight - icon_h) / 2;
+
+	frameBuffer->paintIcon(icon, icon_x, icon_y);
+		
+	// paint speed
+	char strSpeed[4];
+	if( playstate == CMoviePlayerGui::FF || playstate == CMoviePlayerGui::REW )
+	{
+		sprintf(strSpeed, "%d", speed);
+		
+		//FIXME:??? position
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->RenderString(icon_x + icon_w + BORDER_LEFT, icon_y + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->getHeight(), BoxWidth/5, strSpeed, COL_INFOBAR ); // UTF-8
+	}
+	
+	time_t tDisplayTime = duration/1000;
+	char cDisplayTime[8 + 1];
+	strftime(cDisplayTime, 9, "%T", gmtime(&tDisplayTime));
+	
+	int durationWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth("00:00:00");;
+	int durationTextPos = cFrameBoxInfo.iX + cFrameBoxInfo.iWidth - durationWidth - BORDER_RIGHT;
+		
+	int speedWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth("-8");
+		
+	int InfoStartX = cFrameBoxInfo.iX + ICON_OFFSET + m_icon_w + BORDER_LEFT + icon_w + ICON_OFFSET + speedWidth + 2*ICON_OFFSET;
+	int InfoWidth = cFrameBoxInfo.iWidth - durationWidth - BORDER_LEFT - BORDER_RIGHT -2*ICON_OFFSET - m_icon_w - icon_w - speedWidth - 2*ICON_OFFSET - 2*BORDER_LEFT;
+	
+	// title
+	int TitleHeight = cFrameBoxInfo.iY + 30 + TIMESCALE_BAR_HEIGHT + (cFrameBoxInfo.iHeight - (30 + TIMESCALE_BAR_HEIGHT + cFrameBoxButton.iHeight) -2*g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight();	//40???
+		
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(InfoStartX, TitleHeight, InfoWidth, (char *)Title.c_str(), COL_INFOBAR, 0, true);
+
+	// Info
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(InfoStartX, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight() + TitleHeight, InfoWidth, (char *)Info.c_str(), COL_INFOBAR, 0, true);
+
+	// duration
+	if(lshow )
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(durationTextPos, TitleHeight, durationWidth, cDisplayTime, COL_INFOBAR);
+	
+	// progressbar
+	runningPercent = Percent;
+	
+	if(Percent < 0)
+		runningPercent = 0;
+	
+	if(runningPercent > 100)
+		runningPercent = 100;
+
+	moviescale.reset();
+	
+	moviescale.paint(cFrameBoxInfo.iX + BORDER_LEFT, cFrameBoxInfo.iY + 30, runningPercent);
+	
+	frameBuffer->blit();
 }
 
 

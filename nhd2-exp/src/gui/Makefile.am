@@ -61,7 +61,6 @@ libneutrino_gui_a_SOURCES = \
 	pictureviewer.cpp \
 	movieplayer.cpp \
 	rc_lock.cpp \
-	timeosd.cpp \
 	epgplus.cpp \
 	streaminfo2.cpp \
 	dboxinfo.cpp \

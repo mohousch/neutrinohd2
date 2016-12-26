@@ -24,9 +24,6 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <xmlinterface.h>
-
-#include <system/helpers.h>
 
 
 struct sNKVideoInfo

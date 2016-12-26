@@ -134,7 +134,6 @@
 #include <gui/scan_setup.h>
 #include <gui/dvbsub_select.h>
 #include <gui/webtv.h>
-#include <gui/timeosd.h>
 #include <gui/upnpbrowser.h>
 #include <gui/channel_select.h>
 #include <gui/audio_video_select.h>
