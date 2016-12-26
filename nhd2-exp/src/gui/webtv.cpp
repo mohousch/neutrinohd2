@@ -111,13 +111,6 @@ void CWebTV::loadChannels(void)
 	title = std::string(rindex(g_settings.webtv_userBouquet.c_str(), '/') + 1);
 
 	removeExtension(title);
-
-	/*
-	strReplace(title, ".xml", "");
-	strReplace(title, ".tv", "");
-	strReplace(title, ".m3u", "");
-	strReplace(title, "userbouquet.", "");
-	*/
 }
 
 void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * description) 
@@ -240,24 +233,18 @@ bool CWebTV::readChannellist(std::string filename)
 	ClearChannels();
 	
 	// check for extension
-	int ext_pos = 0;
-	ext_pos = filename.rfind('.');
 	bool iptv = false;
 	bool webtv = false;
 	bool playlist = false;
 					
-	if( ext_pos > 0)
-	{
-		std::string extension;
-		extension = filename.substr(ext_pos + 1, filename.length() - ext_pos);
+	std::string extension = getFileExt(filename);
 						
-		if( strcasecmp("tv", extension.c_str()) == 0)
-			iptv = true;
-		else if( strcasecmp("m3u", extension.c_str()) == 0)
+	if( strcasecmp("tv", extension.c_str()) == 0)
+		iptv = true;
+	else if( strcasecmp("m3u", extension.c_str()) == 0)
 			playlist = true;
-		if( strcasecmp("xml", extension.c_str()) == 0)
-			webtv = true;
-	}
+	if( strcasecmp("xml", extension.c_str()) == 0)
+		webtv = true;
 	
 	if(iptv)
 	{
@@ -440,6 +427,14 @@ bool CWebTV::startPlayBack(int pos)
 	
 	playstate = PLAY;
 	speed = 1;
+
+	g_Sectionsd->setServiceChanged(channels[pos]->id&0xFFFFFFFFFFFFULL, false);
+
+	if (CVFD::getInstance()->is4digits)					
+		CVFD::getInstance()->LCDshowText(pos + 1);
+	else
+		CVFD::getInstance()->showServicename(channels[pos]->title); 
+
 	return true;
 }
 
@@ -500,20 +495,6 @@ void CWebTV::showInfo()
 	if(tuned > -1)
 	{
 		g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1, channels[tuned]->id);
-	}
-}
-
-void CWebTV::showFileInfoWebTV(int pos)
-{
-	if(pos > -1)
-	{
-		CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-	
-		CInfoBox * infoBox = new CInfoBox(channels[pos]->description.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, channels[pos]->title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_WEBTV_SMALL);
-	
-		infoBox->exec();
-		delete infoBox;
-		infoBox = NULL;
 	}
 }
 
@@ -578,12 +559,6 @@ void CWebTV::addUserBouquet(void)
 	}
 }
 
-#define HEAD_BUTTONS_COUNT	1
-const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
-{
-	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL }	
-};
-
 #define FOOT_BUTTONS_COUNT 4
 struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
 {
@@ -615,15 +590,10 @@ void CWebTV::show(bool reload)
 	webTVlistMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	webTVlistMenu->setSelected(tuned);
 
-	webTVlistMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	webTVlistMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 	
 	webTVlistMenu->enablePaintDate();
 	webTVlistMenu->enableFootInfo();
-
-	// head
-	webTVlistMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	webTVlistMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
 
 	// footer
 	webTVlistMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
@@ -680,10 +650,6 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_yellow")
 	{
 		g_RCInput->postMsg(CRCInput::RC_page_up, 0);
-	}
-	else if(actionKey == "RC_info")
-	{
-		showFileInfoWebTV(webTVlistMenu->getSelected());
 	}
 	else if(actionKey == "RC_pause")
 	{

@@ -2809,9 +2809,12 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 		// mode TV/Radio/IPTV
 		if( (mode == mode_tv) || (mode == mode_radio) || (mode == mode_iptv) ) 
 		{
-			if(msg == NeutrinoMessages::SHOW_EPG && (mode != mode_iptv)) 
+			if(msg == NeutrinoMessages::SHOW_EPG) 
 			{
 				StopSubtitles();
+
+				if(mode == mode_iptv)
+					live_channel_id = webtv->getLiveChannelID();
 				
 				g_EpgData->show(live_channel_id);
 

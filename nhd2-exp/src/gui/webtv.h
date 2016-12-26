@@ -101,11 +101,12 @@ class CWebTV : public CMenuTarget
 		void continuePlayBack(void);
 		
 		//
-		void showFileInfoWebTV(int pos);
+		//void showFileInfoWebTV(int pos);
 		void showInfo();
 
 		//
 		unsigned int getTunedChannel() {return tuned;};
+		t_channel_id getLiveChannelID() { return channels[tuned]->id;};
 		
 		//
 		void loadChannels(void);

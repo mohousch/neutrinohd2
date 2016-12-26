@@ -556,15 +556,12 @@ bool CNeutrinoApp::showUserMenu(int button)
                                 break;
 
                         case SNeutrinoSettings::ITEM_EPG_INFO:
-				if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-				{
-					menu_items++;
-					menu_prev = SNeutrinoSettings::ITEM_EPG_INFO;
-					tmpEPGDataHandler = new CEPGDataHandler();
-					keyhelper.get(&key, &icon, CRCInput::RC_yellow);
-					menu_item = new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, tmpEPGDataHandler ,  "-1", key, icon);
-					menu->addItem(menu_item, false);
-				}
+				menu_items++;
+				menu_prev = SNeutrinoSettings::ITEM_EPG_INFO;
+				tmpEPGDataHandler = new CEPGDataHandler();
+				keyhelper.get(&key, &icon, CRCInput::RC_yellow);
+				menu_item = new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, tmpEPGDataHandler ,  "-1", key, icon);
+				menu->addItem(menu_item, false);
                                 break;
 
                         case SNeutrinoSettings::ITEM_AUDIO_SELECT:

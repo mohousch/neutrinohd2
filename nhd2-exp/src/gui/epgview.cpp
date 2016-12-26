@@ -54,10 +54,12 @@
 #include <gui/filebrowser.h>
 #include <gui/widget/progressbar.h>
 #include <gui/pictureviewer.h>
+#include <gui/webtv.h>
 
 #include <system/debug.h>
 
 
+extern CWebTV * webtv;
 #define PIC_W 		78
 
 static CProgressBar * timescale;
@@ -564,7 +566,7 @@ void CEpgData::showHead(const t_channel_id channel_id)
 
 int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_t * a_startzeit, bool doLoop )
 {
-	dprintf(DEBUG_NORMAL, "CEpgData::show:\n");
+	dprintf(DEBUG_NORMAL, "CEpgData::show: %llx\n", channel_id);
 
 	int res = menu_return::RETURN_REPAINT;
 	static unsigned long long id;
@@ -1020,6 +1022,8 @@ bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGD
 
 void CEpgData::GetEPGData(const t_channel_id channel_id, unsigned long long id, time_t* startzeit, bool clear)
 {
+	dprintf(DEBUG_NORMAL, "channel_id:%llx\n", channel_id);
+
 	if(clear)
 		epgText.clear();
 	
@@ -1253,7 +1257,12 @@ int CEPGDataHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 	e = new CEpgData;
 
 	channelList = CNeutrinoApp::getInstance()->channelList;
-	e->show( channelList->getActiveChannel_ChannelID() );
+
+	//
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		e->show(webtv->getLiveChannelID());
+	else
+		e->show(channelList->getActiveChannel_ChannelID());
 	
 	delete e;
 
