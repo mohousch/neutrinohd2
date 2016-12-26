@@ -487,7 +487,7 @@ void CWebTV::quickZap(int key)
 	startPlayBack(tuned);
 
 	//infoviewer
-		g_InfoViewer->showMovieInfo(channels[tuned]->title, channels[tuned]->description, file_prozent, duration, ac3state, speed, playstate, false, false);
+	g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1);
 }
 
 void CWebTV::showInfo()
@@ -496,7 +496,9 @@ void CWebTV::showInfo()
 
 	//infoviewer
 	if(tuned > -1)
-		g_InfoViewer->showMovieInfo(channels[tuned]->title, channels[tuned]->description, file_prozent, duration, ac3state, speed, playstate, false, false);
+	{
+		g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1);
+	}
 }
 
 void CWebTV::showFileInfoWebTV(int pos)
@@ -629,7 +631,6 @@ void CWebTV::show(bool reload)
 
 	//
 	webTVlistMenu->addKey(CRCInput::RC_pause, this, CRCInput::getSpecialKeyName(CRCInput::RC_pause));
-	webTVlistMenu->addKey(CRCInput::RC_stop, this, CRCInput::getSpecialKeyName(CRCInput::RC_stop));
 	webTVlistMenu->addKey(CRCInput::RC_play, this, CRCInput::getSpecialKeyName(CRCInput::RC_play));
 
 	webTVlistMenu->exec(NULL, "");
@@ -660,7 +661,7 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 		tuned = webTVlistMenu->getSelected();
 
 		//infoviewer
-		g_InfoViewer->showMovieInfo(channels[tuned]->title, channels[tuned]->description, file_prozent, duration, ac3state, speed, playstate, false, false);
+		g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1);
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
@@ -687,21 +688,14 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 		pausePlayBack();
 
 		//infoviewer
-		g_InfoViewer->showMovieInfo(channels[tuned]->title, channels[tuned]->description, file_prozent, duration, ac3state, speed, playstate, false, false);
+		g_InfoViewer->showTitle(tuned +1, channels[tuned]->title, -1);
 	}
 	else if(actionKey == "RC_play")
 	{
 		continuePlayBack();
 
 		//infoviewer
-		g_InfoViewer->showMovieInfo(channels[tuned]->title, channels[tuned]->description, file_prozent, duration, ac3state, speed, playstate, false, false);
-	}
-	else if(actionKey == "RC_stop")
-	{
-		stopPlayBack();
-
-		//infoviewer
-		g_InfoViewer->showMovieInfo(channels[tuned]->title, channels[tuned]->description, file_prozent, duration, ac3state, speed, playstate, false, false);
+		g_InfoViewer->showTitle(tuned +1, channels[tuned]->title, -1);
 	}
 
 	return menu_return::RETURN_REPAINT;

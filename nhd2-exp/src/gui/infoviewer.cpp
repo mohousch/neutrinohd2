@@ -165,7 +165,6 @@ void CInfoViewer::Init()
 	//
 	recordModeActive = false;
 	is_visible = false;
-	m_visible = false;
 
 	showButtonBar = false;
 
@@ -264,7 +263,7 @@ void CInfoViewer::paintTime(bool show_dot, bool firstPaint, int posx, int posy, 
 	int time_width = 2*time_left_width + time_dot_width;
 	int time_height = timeFont->getHeight();
 	
-	if (gotTime && (is_visible || m_visible)) 
+	if (gotTime && is_visible) 
 	{
 		char timestr[10];
 		struct timeb tm;
@@ -522,6 +521,13 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 		showIcon_Resolution();
 	}
 
+	//
+	// timescale
+	int posx = BoxStartX + 5;
+	int posy = BoxStartY + SAT_INFOBOX_HEIGHT;
+				
+	timescale->paint(posx, posy, 0);
+
 	// show current_next epg data
 	sectionsd_getCurrentNextServiceKey(channel_id & 0xFFFFFFFFFFFFULL, info_CurrentNext);
 	
@@ -725,294 +731,6 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 			CNeutrinoApp::getInstance()->channelList->virtual_zap_mode(msg == CRCInput::RC_right);
 
 	}
-}
-
-//showMovieInfo
-void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Info, short Percent, const int duration, const unsigned int ac3state, const int speed, const int playstate, bool lshow, bool show_bookmark)
-{
-	dprintf(DEBUG_NORMAL, "CInfoViewer::showMovieInfo:\n");
-
-	m_visible = true;
-	bool show_dot = true;
-	char runningPercent = 0;
-	
-	// icons dimension
-	frameBuffer->getIconSize(NEUTRINO_ICON_16_9, &icon_w_aspect, &icon_h_aspect);
-	frameBuffer->getIconSize(NEUTRINO_ICON_DD, &icon_w_dd, &icon_h_dd);
-	
-	// colored user icons
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_red_w, &icon_red_h);
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_green_w, &icon_green_h);
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_yellow_w, &icon_yellow_h);
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_blue_w, &icon_blue_h);
-	
-	// recalculate dimension
-	BoxHeight = BOXHEIGHT_MOVIEINFO;
-	
-	// buttonbarheight
-	buttonBarHeight = (icon_h_vtxt? icon_h_vtxt : BUTTON_BAR_HEIGHT) + 6;
-	
-	BoxEndX = g_settings.screen_EndX - 10;
-	BoxEndY = g_settings.screen_EndY - (10 + SHADOW_OFFSET + buttonBarHeight);
-	BoxStartX = g_settings.screen_StartX + 10;
-	BoxStartY = BoxEndY - (BoxHeight);
-	BoxWidth = BoxEndX - BoxStartX;
-	
-	// infobar
-	buttonBarStartX = BoxStartX;
-	buttonBarStartY = BoxStartY + BoxHeight;
-	
-	if (!gotTime)
-		gotTime = timeset;
-	
-	// init progressbar
-	moviescale = new CProgressBar( BoxWidth - 10, TIMESCALE_BAR_HEIGHT);
-	
-	moviescale->reset();
-	
-	// paint shadow
-	frameBuffer->paintBoxRel(BoxStartX + SHADOW_OFFSET, BoxStartY + SHADOW_OFFSET, BoxWidth, BoxHeight + buttonBarHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH );
-		
-	// paint info box
-	frameBuffer->paintBoxRel(BoxStartX, BoxStartY, BoxWidth, BoxHeight, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP, (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts)? g_settings.menu_Head_gradient: nogradient); 
-		
-	// bottum bar
-	frameBuffer->paintBoxRel(buttonBarStartX, buttonBarStartY, BoxWidth, buttonBarHeight, COL_INFOBAR_SHADOW_PLUS_1,  RADIUS_MID, CORNER_BOTTOM); 
-	
-	//time
-	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-	{
-		paintTime(show_dot, true, BoxEndX, BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]);
-		show_dot = !show_dot;
-	}
-	
-	// show date/time
-	std::string datestr = getNowTimeStr("%d.%m.%Y %H:%M");
-			
-	int widthtime = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth(datestr.c_str(), true); //UTF-8
-	int height = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight();
-			
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(BoxEndX - 5 - widthtime, BoxStartY + (SAT_INFOBOX_HEIGHT -height)/2 + height, widthtime, datestr.c_str(), COL_INFOBAR, 0, true); // UTF-8
-	
-	std::string title = "neutrinoHD2";
-	int widthtitle = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth(title.c_str(), true); //UTF-8
-	g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(BoxStartX + 5, BoxStartY + (SAT_INFOBOX_HEIGHT - height)/2 + height, widthtitle, (char *)title.c_str(), COL_INFOBAR, 0, true); // UTF-8
-	
-	// add sec timer
-	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
-	
-	// mp icon
-	int m_icon_w = 0;
-	int m_icon_h = 0;
-	
-	std::string IconName = DATADIR "/neutrino/icons/" NEUTRINO_ICON_MP ".png";
-	
-	if(!access(IconName.c_str(), F_OK))
-	{
-		frameBuffer->getIconSize((CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)? NEUTRINO_ICON_IPTV : NEUTRINO_ICON_MP, &m_icon_w, &m_icon_h);
-
-		int m_icon_x = BoxStartX + 5;
-		int m_icon_y = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + (BoxHeight - SAT_INFOBOX_HEIGHT - TIMESCALE_BAR_HEIGHT - m_icon_h) / 2;
-		
-		frameBuffer->paintIcon((CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)? NEUTRINO_ICON_IPTV : NEUTRINO_ICON_MP, m_icon_x, m_icon_y);
-	}
-	
-	// paint buttons
-	// red (movie info)
-	int icon_w, icon_h;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, BoxStartX + ICON_OFFSET, buttonBarStartY + (buttonBarHeight - icon_h)/2);
-
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + ICON_OFFSET + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, (char *)"Info", (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
-		
-	// green (AV select)
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, BoxStartX + BoxWidth/5, BoxStartY + BoxHeight + (buttonBarHeight - icon_h)/2);
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + (BoxWidth/5) + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, g_Locale->getText(LOCALE_INFOVIEWER_LANGUAGES), (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
-		
-	// yellow (help)
-	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts)
-	{
-		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, BoxStartX + (BoxWidth/5)*2, buttonBarStartY+ (buttonBarHeight - icon_h)/2);
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + (BoxWidth/5)*2 + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, (char *)"help", (COL_INFOBAR_SHADOW * 1), 0, true); // UTF-8
-	}
-	
-	// blue (bookmark/features)
-	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv || (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts && show_bookmark))
-	{
-		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, BoxStartX + (BoxWidth/5)*3, buttonBarStartY+ (buttonBarHeight - icon_h)/2);
-	}
-	
-	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + (BoxWidth/5)*3 + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, g_Locale->getText(LOCALE_INFOVIEWER_FEATURES), (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
-	else if( CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_ts && show_bookmark)
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString( BoxStartX + (BoxWidth/5)*3 + icon_w + 2, buttonBarStartY + (buttonBarHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), BoxWidth/5, g_Locale->getText(LOCALE_MOVIEPLAYER_BOOKMARK), (COL_INFOBAR_SHADOW + 1), 0, true); // UTF-8
-		
-	// ac3
-	int icon_w_ac3, icon_h_ac3;
-	frameBuffer->getIconSize(NEUTRINO_ICON_DD, &icon_w_ac3, &icon_h_ac3);
-	frameBuffer->paintIcon( (ac3state == CInfoViewer::AC3_ACTIVE)?NEUTRINO_ICON_DD : NEUTRINO_ICON_DD_GREY, BoxStartX + BoxWidth - ICON_OFFSET - icon_w_ac3, buttonBarStartY + (buttonBarHeight - icon_h_ac3)/2);
-		
-	// 4:3/16:9
-	const char * aspect_icon = NEUTRINO_ICON_16_9_GREY;
-				
-	if(g_settings.video_Ratio == ASPECTRATIO_169)
-		aspect_icon = NEUTRINO_ICON_16_9;
-	
-	int icon_w_asp, icon_h_asp;
-	frameBuffer->getIconSize(aspect_icon, &icon_w_asp, &icon_h_asp);
-	frameBuffer->paintIcon(aspect_icon, BoxStartX + BoxWidth - ICON_OFFSET - icon_w_ac3 - 2 - icon_w_asp, buttonBarStartY + (buttonBarHeight - icon_h_asp)/2);
-	
-	// mp keys
-	if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-	{
-		frameBuffer->getIconSize(NEUTRINO_ICON_FF_SMALL, &icon_w, &icon_h);
-		
-		frameBuffer->paintIcon(NEUTRINO_ICON_REW_SMALL, BoxStartX + BoxWidth - ICON_OFFSET - icon_w_ac3 - 2 - icon_w_asp - 2 - 5*icon_w, buttonBarStartY + (buttonBarHeight - icon_h)/2);
-		frameBuffer->paintIcon(NEUTRINO_ICON_PLAY_SMALL, BoxStartX + BoxWidth - ICON_OFFSET - icon_w_ac3 - 2 - icon_w_asp - 2 - 4*icon_w, buttonBarStartY + (buttonBarHeight - icon_h)/2);
-		frameBuffer->paintIcon(NEUTRINO_ICON_PAUSE_SMALL, BoxStartX + BoxWidth - ICON_OFFSET - icon_w_ac3 - 2 - icon_w_asp - 2 - 3*icon_w, buttonBarStartY + (buttonBarHeight - icon_h)/2);
-		frameBuffer->paintIcon(NEUTRINO_ICON_STOP_SMALL, BoxStartX + BoxWidth - ICON_OFFSET - icon_w_ac3 - 2 - icon_w_asp - 2 - 2*icon_w, buttonBarStartY + (buttonBarHeight - icon_h)/2);
-		frameBuffer->paintIcon(NEUTRINO_ICON_FF_SMALL, BoxStartX + BoxWidth - ICON_OFFSET - icon_w_ac3 - 2 - icon_w_asp - 2 - icon_w, buttonBarStartY + (buttonBarHeight - icon_h)/2);
-	}
-		
-	//playstate
-	const char *icon = NEUTRINO_ICON_PLAY;
-		
-	switch(playstate)
-	{
-		case CMoviePlayerGui::PAUSE: icon = NEUTRINO_ICON_PAUSE; break;
-		case CMoviePlayerGui::PLAY: icon = NEUTRINO_ICON_PLAY; break;
-		case CMoviePlayerGui::REW: icon = NEUTRINO_ICON_REW; break;
-		case CMoviePlayerGui::FF: icon = NEUTRINO_ICON_FF; break;
-		case CMoviePlayerGui::SOFTRESET: break;
-		case CMoviePlayerGui::SLOW: break;
-		case CMoviePlayerGui::STOPPED: break;
-	}
-	
-	frameBuffer->getIconSize(icon, &icon_w, &icon_h);
-
-	//
-	int icon_x = BoxStartX + ICON_OFFSET + m_icon_w + BORDER_RIGHT;
-	int icon_y = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + (BoxHeight - SAT_INFOBOX_HEIGHT - TIMESCALE_BAR_HEIGHT - icon_h) / 2;
-
-	frameBuffer->paintIcon(icon, icon_x, icon_y);
-		
-	// paint speed
-	char strSpeed[4];
-	if( playstate == CMoviePlayerGui::FF || playstate == CMoviePlayerGui::REW )
-	{
-		sprintf(strSpeed, "%d", speed);
-		
-		//FIXME:??? position
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->RenderString(icon_x + icon_w + 5, icon_y + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->getHeight(), BoxWidth/5, strSpeed, COL_INFOBAR ); // UTF-8
-	}
-	
-	time_t tDisplayTime = duration/1000;
-	char cDisplayTime[8 + 1];
-	strftime(cDisplayTime, 9, "%T", gmtime(&tDisplayTime));
-	
-	int durationWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth("00:00:00");;
-	int durationTextPos = BoxEndX - durationWidth - 15;
-		
-	int speedWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth("-8");
-		
-	int InfoStartX = BoxStartX + 5 + m_icon_w + 10 + icon_w + 5 + speedWidth + 20;
-	int InfoWidth = durationTextPos - InfoStartX;
-	
-	// title
-	int TitleHeight = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + (BoxHeight - (SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT) -2*height)/2 + height;	//40???
-		
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(InfoStartX, TitleHeight, InfoWidth, (char *)Title.c_str(), COL_INFOBAR, 0, true);
-
-	// Info
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(InfoStartX, height + TitleHeight, InfoWidth, (char *)Info.c_str(), COL_INFOBAR, 0, true);
-
-	// duration
-	if(lshow )
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(durationTextPos, TitleHeight, durationWidth, cDisplayTime, COL_INFOBAR);
-	
-	// progressbar
-	runningPercent = Percent;
-	
-	if(Percent < 0)
-		runningPercent = 0;
-	
-	if(runningPercent > 100)
-		runningPercent = 100;
-	
-	moviescale->paint(BoxStartX + 5, BoxStartY + SAT_INFOBOX_HEIGHT, runningPercent);
-	
-	frameBuffer->blit();	
-	
-	// loop msg
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
-	bool hideIt = true;
-	CNeutrinoApp * neutrino = CNeutrinoApp::getInstance();
-
-	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd (g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]);
-
-	int res = messages_return::none;
-
-	while (!(res & (messages_return::cancel_info | messages_return::cancel_all))) 
-	{
-		g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
-		
-		if ((msg == CRCInput::RC_ok) || (msg == CRCInput::RC_home) || (msg == CRCInput::RC_timeout)) 
-		{
-			res = messages_return::cancel_info;
-		} 
-		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
-		{
-			if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-			{
-				paintTime(show_dot, false, BoxEndX, BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]);
-				show_dot = !show_dot;
-			}
-
-			//FIXME:
-			/*
-			runningPercent = CMoviePlayerGui::getInstance()->getPercent();
-			moviescale->paint(BoxStartX + 5, BoxStartY + SAT_INFOBOX_HEIGHT, runningPercent);
-			*/
-		} 
-		else if(msg == CRCInput::RC_info)
-		{
-			if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-			{
-				killTitle();
-				
-				if(webtv)
-					webtv->showFileInfoWebTV(webtv->getTunedChannel());
-			}
-		}
-		else 
-		{
-			if (msg == CRCInput::RC_standby) 
-			{
-				g_RCInput->killTimer (sec_timer_id);
-			}
-					
-			res = neutrino->handleMsg(msg, data);
-					
-			if (res & messages_return::unhandled) 
-			{
-				// raus hier und im Hauptfenster behandeln...
-				g_RCInput->postMsg (msg, data);
-				res = messages_return::cancel_info;
-			}
-		}
-	
-		frameBuffer->blit();	
-	}
-	
-	if (hideIt)
-		killTitle();
-	
-	g_RCInput->killTimer(sec_timer_id);
-	sec_timer_id = 0;
 }
 
 void CInfoViewer::showSubchan()
@@ -2148,21 +1866,6 @@ void CInfoViewer::killTitle()
 		{
 			delete timescale;
 			timescale = NULL;
-		}
-  	}
-  	
-  	if (m_visible) 
-	{
-		m_visible = false;
-
-		frameBuffer->paintBackgroundBox(BoxStartX, BoxStartY, BoxEndX + SHADOW_OFFSET, BoxEndY + SHADOW_OFFSET + buttonBarHeight);
-				
-		frameBuffer->blit();
-		
-		if(moviescale)
-		{
-			delete moviescale;
-			moviescale = NULL;
 		}
   	}
 }

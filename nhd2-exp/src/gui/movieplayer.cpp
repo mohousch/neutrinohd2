@@ -1285,9 +1285,6 @@ void CMoviePlayerGui::PlayFile(void)
 				speed = 0;
 				playback->SetSpeed(speed);
 			}
-			
-			if (FileTime.IsVisible()) 
-				FileTime.hide();
 
 			//show MovieInfoBar
 			if(!timeshift)

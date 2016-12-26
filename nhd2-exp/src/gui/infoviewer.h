@@ -35,16 +35,19 @@
 #ifndef __infoview__
 #define __infoview__
 
+#include <string>
+
 #include <sectionsdclient/sectionsdclient.h>
 
 #include <driver/rcinput.h>
 #include <driver/framebuffer.h>
 #include <driver/fontrenderer.h>
-#include <system/settings.h>
-#include "widget/menue.h"
-#include <gui/widget/progressbar.h>
 
-#include <string>
+#include <system/settings.h>
+
+#include <gui/widget/menue.h>
+
+#include <gui/widget/progressbar.h>
 
 
 class CInfoViewer
@@ -164,7 +167,6 @@ class CInfoViewer
 		void showIcon_RadioText(bool rt_available) const;		
 	
 		void showIcon_CA_Status(int);
-		//void paint_ca_icons(int, char*);
 
 		void showIcon_VTXT()      const;
 		void showRecordIcon(const bool show);
@@ -219,17 +221,12 @@ class CInfoViewer
 				
 		void showRadiotext();
 		void killRadiotext();
-
-		// movie infoviewer
-		CProgressBar *moviescale;
-		bool m_visible;
-		void showMovieInfo(const std::string &Title, const std::string &Info, short Percent, const int duration, const unsigned int ac3state, const int speed, const int playstate, bool show_duration = true, bool show_bookmark = false);
 };
 
 class CInfoViewerHandler : public CMenuTarget
 {
 	public:
-		int  exec( CMenuTarget* parent,  const std::string &actionkey);
+		int  exec(CMenuTarget* parent,  const std::string& actionkey);
 		int  doMenu();
 
 };
