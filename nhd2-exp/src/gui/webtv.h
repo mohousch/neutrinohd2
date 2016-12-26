@@ -105,9 +105,9 @@ class CWebTV : public CMenuTarget
 		void showInfo();
 
 		//
-		unsigned int getTunedChannel() {return tuned;};
-		t_channel_id getLiveChannelID() { return channels[tuned]->id;};
-		const std::string& getLiveChannelName(void) {return channels[tuned]->title;};
+		unsigned int getTunedChannel() {if(tuned < 0) tuned = 0; return tuned;};
+		t_channel_id getLiveChannelID() { if(tuned < 0) tuned = 0; return channels[tuned]->id;};
+		const std::string& getLiveChannelName(void) {if(tuned < 0) tuned = 0; return channels[tuned]->title;};
 		
 		//
 		void loadChannels(void);

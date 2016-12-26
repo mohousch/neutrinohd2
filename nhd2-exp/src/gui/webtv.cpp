@@ -568,6 +568,12 @@ struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_WEBTV_BOUQUETS, NULL}
 };
 
+#define HEAD_BUTTONS_COUNT 1
+struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL}
+};
+
 void CWebTV::show(bool reload)
 {
 	dprintf(DEBUG_NORMAL, "CWebTV::hide:\n");
@@ -591,9 +597,13 @@ void CWebTV::show(bool reload)
 	webTVlistMenu->setSelected(tuned);
 
 	webTVlistMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
+	webTVlistMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	
 	webTVlistMenu->enablePaintDate();
 	webTVlistMenu->enableFootInfo();
+
+	//
+	webTVlistMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 
 	// footer
 	webTVlistMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
@@ -664,6 +674,10 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		//infoviewer
 		g_InfoViewer->showTitle(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
+	}
+	else if(actionKey == "RC_info")
+	{
+		g_EpgData->show(channels[webTVlistMenu->getSelected()]->id);
 	}
 
 	return menu_return::RETURN_REPAINT;
