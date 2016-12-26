@@ -216,17 +216,16 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 	curl_global_cleanup();
 }
 
-void CWebTV::addUrl2Playlist(const char * url, const char *name, const char * description, bool locked)
+void CWebTV::addUrl2Playlist(const char * url, const char *name, const char * description, t_channel_id id)
 {
 	dprintf(DEBUG_DEBUG, "CWebTV::addUrl2Playlist\n");
 	
 	webtv_channels * tmp = new webtv_channels();
 	
-	tmp->id = 0;					
+	tmp->id = id&0xFFFFFFFFFFFFULL;				
 	tmp->title = name;
 	tmp->url = url;
 	tmp->description = description;
-	tmp->locked = locked;
 						
 	// fill channelslist
 	channels.push_back(tmp);
@@ -340,18 +339,17 @@ bool CWebTV::readChannellist(std::string filename)
 					char * title;
 					char * url;
 					char * description;
+					t_channel_id id = 0;
 					
 					// title
 					if(xmlGetNextOccurence(l1, "webtv"))
 					{
 						title = xmlGetAttribute(l1, (char *)"title");
-
-						// url
 						url = xmlGetAttribute(l1, (char *)"url");
-						
 						description = xmlGetAttribute(l1, (char *)"description");
+						id = (t_channel_id)xmlGetAttribute(l1, (char *)"id");
 						
-						addUrl2Playlist(url, title, description);
+						addUrl2Playlist(url, title, description, id);
 					}	
 					else if (xmlGetNextOccurence(l1, "station"))
 					{

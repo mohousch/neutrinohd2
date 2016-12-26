@@ -50,7 +50,6 @@ class CWebTV : public CMenuTarget
 			std::string title;
 			std::string url;
 			std::string description;
-			bool locked;		// for parentallock
 		};
 
 		xmlDocPtr parser;
@@ -73,7 +72,7 @@ class CWebTV : public CMenuTarget
 		void hide();
 
 		void processPlaylistUrl(const char *url, const char *name, const char * description) ;
-		void addUrl2Playlist(const char * url, const char *name, const char * description, bool locked = false);
+		void addUrl2Playlist(const char * url, const char *name, const char * description, t_channel_id id = 0);
 		
 	public:
 		enum state

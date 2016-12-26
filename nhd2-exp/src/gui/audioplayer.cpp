@@ -1028,7 +1028,7 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 	/* set timeout to 10 seconds */
 	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, GET_PLAYLIST_TIMEOUT);
 	
-	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
+	if(strcmp(g_settings.softupdate_proxyserver, "") != 0)
 	{
 		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
 		
