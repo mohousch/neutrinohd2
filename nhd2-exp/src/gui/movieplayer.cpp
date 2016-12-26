@@ -1957,7 +1957,7 @@ CTimeOSD::~CTimeOSD()
 	hide();
 }
 
-void CTimeOSD::show(const std::string& _Title, const std::string& _Info, short _Percent, const int _duration, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_duration, bool _show_bookmark)
+void CTimeOSD::show(const std::string _Title, const std::string _Info, short _Percent, const int _duration, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_duration, bool _show_bookmark)
 {
 	dprintf(DEBUG_NORMAL, "CTimeOSD::show\n");
 	 
@@ -2087,7 +2087,7 @@ void CTimeOSD::hide()
 }
 
 //showMovieInfo
-void CTimeOSD::showMovieInfo(const std::string &Title, const std::string &Info, short Percent, const int duration, const unsigned int ac3state, const int speed, const int playstate, bool lshow, bool show_bookmark)
+void CTimeOSD::showMovieInfo(std::string Title, std::string Info, short Percent, const int duration, const unsigned int ac3state, const int speed, const int playstate, bool lshow, bool show_bookmark)
 {
 	dprintf(DEBUG_NORMAL, "CTimeOSD::showMovieInfo:\n");
 
@@ -2243,10 +2243,52 @@ void CTimeOSD::showMovieInfo(const std::string &Title, const std::string &Info, 
 	
 	// title
 	int TitleHeight = cFrameBoxInfo.iY + 30 + TIMESCALE_BAR_HEIGHT + (cFrameBoxInfo.iHeight - (30 + TIMESCALE_BAR_HEIGHT + cFrameBoxButton.iHeight) -2*g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight();	//40???
+
+	// remove extension
+	if(!show_bookmark)
+	{
+		// Title
+		removeExtension(Title);
+
+		//
+		std::string::size_type i = Title.rfind(" - ");
+		
+		if(i != std::string::npos)
+		{
+			Title = Title.substr(i + 3);
+		}
+		else
+		{
+			i = Title.rfind("-");
+		
+			if(i != std::string::npos)
+			{
+				Title = Title.substr(i + 1);
+			}
+		}
+
+		// Info
+		removeExtension(Info);
+
+		Info.rfind(" - ");
+		
+		if(i != std::string::npos)
+		{
+			Info = Info.substr(0, i);
+		}
+		else
+		{
+			i = Info.rfind("-");
+		
+			if(i != std::string::npos)
+			{
+				Info = Info.substr(0, i);
+			}
+		}
+	}
 		
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(InfoStartX, TitleHeight, InfoWidth, (char *)Title.c_str(), COL_INFOBAR, 0, true);
 
-	// Info
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(InfoStartX, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight() + TitleHeight, InfoWidth, (char *)Info.c_str(), COL_INFOBAR, 0, true);
 
 	// duration

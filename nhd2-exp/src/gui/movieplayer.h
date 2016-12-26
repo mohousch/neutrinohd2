@@ -100,7 +100,7 @@ class CTimeOSD
 	public:
 		CTimeOSD();
 		~CTimeOSD();
-		void show(const std::string& _Title, const std::string& _Info, short _Percent, const int _duration, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_duration = true, bool _show_bookmark = false);
+		void show(const std::string _Title, const std::string _Info, short _Percent, const int _duration, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_duration = true, bool _show_bookmark = false);
 		void update(time_t time_show = 0);
 		void hide();
 		bool IsVisible() {return visible;}
@@ -109,7 +109,7 @@ class CTimeOSD
 		mode GetMode() { return m_mode;}
 
 		//
-		void showMovieInfo(const std::string& Title, const std::string& Info, short Percent, const int duration, const unsigned int ac3state, const int speed, const int playstate, bool show_duration = true, bool show_bookmark = false);
+		void showMovieInfo(std::string Title, std::string Info, short Percent, const int duration, const unsigned int ac3state, const int speed, const int playstate, bool show_duration = true, bool show_bookmark = false);
 };
 
 class CMoviePlayerGui : public CMenuTarget
