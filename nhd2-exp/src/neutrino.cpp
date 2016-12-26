@@ -3043,31 +3043,12 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 					doGuiRecord( g_settings.network_nfs_recordingdir, true );
 				}
 			}
-			else if(msg == CRCInput::RC_stop && mode == mode_iptv) 
-			{
-				if(mode == mode_iptv)
-				{
-					if(webtv)
-					{
-						if(webtv->playstate == CWebTV::PLAY || webtv->playstate == CWebTV::PAUSE)
-							webtv->stopPlayBack();
-					}
-				}
-			}
 			else if( msg == CRCInput::RC_red ) 
 			{
-				if(mode == mode_iptv)
-				{
-					if(webtv)
-						webtv->showFileInfoWebTV(webtv->getTunedChannel());
-				}
-				else
-				{
-					StopSubtitles();
-					// event list
-					showUserMenu(SNeutrinoSettings::BUTTON_RED);
-					StartSubtitles();
-				}
+				StopSubtitles();
+				// event list
+				showUserMenu(SNeutrinoSettings::BUTTON_RED);
+				StartSubtitles();
 			}
 			else if( ( msg == CRCInput::RC_green) || ( msg == CRCInput::RC_audio) )
 			{

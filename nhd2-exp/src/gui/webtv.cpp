@@ -50,8 +50,6 @@
 
 #include <xmlinterface.h>
 
-#include <sectionsd/edvbstring.h>
-
 #include <system/debug.h>
 #include <system/helpers.h>
 
@@ -111,10 +109,15 @@ void CWebTV::loadChannels(void)
 	readChannellist(g_settings.webtv_userBouquet);
 	
 	title = std::string(rindex(g_settings.webtv_userBouquet.c_str(), '/') + 1);
+
+	removeExtension(title);
+
+	/*
 	strReplace(title, ".xml", "");
 	strReplace(title, ".tv", "");
 	strReplace(title, ".m3u", "");
 	strReplace(title, "userbouquet.", "");
+	*/
 }
 
 void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * description) 
@@ -218,7 +221,8 @@ void CWebTV::addUrl2Playlist(const char * url, const char *name, const char * de
 	dprintf(DEBUG_DEBUG, "CWebTV::addUrl2Playlist\n");
 	
 	webtv_channels * tmp = new webtv_channels();
-						
+	
+	tmp->id = 0;					
 	tmp->title = name;
 	tmp->url = url;
 	tmp->description = description;
@@ -487,7 +491,7 @@ void CWebTV::quickZap(int key)
 	startPlayBack(tuned);
 
 	//infoviewer
-	g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1);
+	g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1, channels[tuned]->id);
 }
 
 void CWebTV::showInfo()
@@ -497,7 +501,7 @@ void CWebTV::showInfo()
 	//infoviewer
 	if(tuned > -1)
 	{
-		g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1);
+		g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1, channels[tuned]->id);
 	}
 }
 
@@ -661,7 +665,7 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 		tuned = webTVlistMenu->getSelected();
 
 		//infoviewer
-		g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1);
+		g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1, channels[tuned]->id);
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
@@ -688,14 +692,14 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 		pausePlayBack();
 
 		//infoviewer
-		g_InfoViewer->showTitle(tuned +1, channels[tuned]->title, -1);
+		g_InfoViewer->showTitle(tuned +1, channels[tuned]->title, -1, channels[tuned]->id);
 	}
 	else if(actionKey == "RC_play")
 	{
 		continuePlayBack();
 
 		//infoviewer
-		g_InfoViewer->showTitle(tuned +1, channels[tuned]->title, -1);
+		g_InfoViewer->showTitle(tuned +1, channels[tuned]->title, -1, channels[tuned]->id);
 	}
 
 	return menu_return::RETURN_REPAINT;

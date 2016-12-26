@@ -37,6 +37,8 @@
 
 #include <xmlinterface.h>
 
+#include <channel.h>
+
 
 #define DEFAULT_WEBTV_FILE 		CONFIGDIR "/webtv/webtv.xml"
 
@@ -44,6 +46,7 @@ class CWebTV : public CMenuTarget
 {
 	private:
 		struct webtv_channels {
+			t_channel_id id;
 			std::string title;
 			std::string url;
 			std::string description;

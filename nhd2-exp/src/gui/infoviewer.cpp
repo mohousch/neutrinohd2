@@ -50,9 +50,9 @@
 
 #include <fcntl.h>
 
-#include <gui/widget/progressbar.h>
 #include <gui/infoviewer.h>
 
+#include <gui/widget/progressbar.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/hintbox.h>
 
@@ -60,11 +60,8 @@
 
 #include <global.h>
 #include <neutrino.h>
+
 #include <gui/pictureviewer.h>
-
-#include <gui/movieplayer.h>
-#include <gui/webtv.h>
-
 
 #include <sys/timeb.h>
 #include <time.h>
@@ -90,7 +87,6 @@ extern CFrontend * live_fe;				// zapit.cpp
 extern fe_map_t femap;					// zapit.cpp
 extern CFrontend * getFE(int index);			// zapit.cpp
 extern int FrontendCount;				// defined in zapit.cpp
-extern CWebTV * webtv;					// defined in neutrino.cpp
 
 extern bool autoshift;
 extern uint32_t shift_timer;
@@ -641,13 +637,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 			}
 			else if ( msg == CRCInput::RC_info )
 			{
-				if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-				{
-					if(webtv)
-						webtv->showFileInfoWebTV(webtv->getTunedChannel());
-				}
-				else
-					g_RCInput->postMsg (NeutrinoMessages::SHOW_EPG, 0);
+				g_RCInput->postMsg (NeutrinoMessages::SHOW_EPG, 0);
 				
 				res = messages_return::cancel_info;
 			} 
@@ -1808,7 +1798,7 @@ void CInfoViewer::showButton_Audio()
 
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, BoxStartX + 5 + icon_w + 5 + asize, buttonBarStartY + (buttonBarHeight - icon_h)/2 );
 
-  	if (count > 0) 
+  	if (count > 0 || CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv) 
 	{
 		int sx = BoxStartX + 5 + icon_w + 5 + asize + icon_w + 5;
 
