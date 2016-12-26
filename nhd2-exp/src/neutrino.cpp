@@ -2814,9 +2814,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 				StopSubtitles();
 
 				if(mode == mode_iptv)
-					live_channel_id = webtv->getLiveChannelID();
-				
-				g_EpgData->show(live_channel_id);
+					g_EpgData->show(webtv->getLiveChannelID());
+				else
+					g_EpgData->show(live_channel_id);
 
 				StartSubtitles();
 			}
