@@ -1024,13 +1024,13 @@ void CMoviePlayerGui::PlayFile(void)
 			if (FileTime.GetMode() == CTimeOSD::MODE_ASC) 
 			{
 				FileTime.update(position / 1000);
-				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 			} 
 			else 
 			{
 				FileTime.update((duration - position) / 1000);
-				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 			}
+
+			FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 
 			time_t jetzt = time(NULL);
 
@@ -1130,7 +1130,13 @@ void CMoviePlayerGui::PlayFile(void)
 				playback->GetPosition(position, duration);
 #else
 				playback->GetPosition((int64_t &)position, (int64_t &)duration);
-#endif	
+#endif
+
+				//
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+
+				timeStartShowingInfo = time(NULL);	
 			}
 		}
 
@@ -1253,6 +1259,8 @@ void CMoviePlayerGui::PlayFile(void)
 				{
 					FileTime.SetMode(CTimeOSD::MODE_ASC);
 					FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+
+					timeStartShowingInfo = time(NULL);
 				}
 			}
 		} 
@@ -1300,6 +1308,8 @@ void CMoviePlayerGui::PlayFile(void)
 				{
 					FileTime.SetMode(CTimeOSD::MODE_ASC);
 					FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+
+					//timeStartShowingInfo = time(NULL);
 				}
 			}
 		} 
@@ -1446,6 +1456,8 @@ void CMoviePlayerGui::PlayFile(void)
 				{
 					FileTime.SetMode(CTimeOSD::MODE_ASC);
 					FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+
+					timeStartShowingInfo = time(NULL);
 				}
 			}
 		} 
@@ -1475,6 +1487,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 		}
 		else if (msg == (neutrino_msg_t) g_settings.mpkey_forward) 
@@ -1504,6 +1518,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 		} 
 		else if (msg == CRCInput::RC_1) 
@@ -1518,6 +1534,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 		} 
 		else if (msg == CRCInput::RC_3) 
@@ -1532,6 +1550,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 		} 
 		else if (msg == CRCInput::RC_4) 
@@ -1545,6 +1565,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 		} 
 		else if (msg == CRCInput::RC_6) 
@@ -1558,6 +1580,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 		} 
 		else if (msg == CRCInput::RC_7) 
@@ -1571,6 +1595,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 		} 
 		else if (msg == CRCInput::RC_9) 
@@ -1584,6 +1610,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 		} 
 		else if ( msg == CRCInput::RC_2 )
@@ -1597,6 +1625,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 		} 
 		else if ( msg == CRCInput::RC_repeat )
@@ -1620,6 +1650,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 		} 
 		else if (msg == CRCInput::RC_8) 
@@ -1634,6 +1666,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 		} 
 		else if (msg == CRCInput::RC_page_up) 
@@ -1647,6 +1681,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 
 		} 
@@ -1661,6 +1697,8 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.show(Title, Info1, (position / (duration / 100)), duration, ac3state, speed, playstate, true, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 					
 				time_forced = true;
+
+				timeStartShowingInfo = time(NULL);
 			}
 		} 
 		else if (msg == CRCInput::RC_0) 
