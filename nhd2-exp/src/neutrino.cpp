@@ -2820,11 +2820,14 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 
 				StartSubtitles();
 			}
-			else if( msg == CRCInput::RC_epg && (mode != mode_iptv)) 
+			else if(msg == CRCInput::RC_epg) 
 			{
 				StopSubtitles();
 				
-				g_EventList->exec(live_channel_id, channelList->getActiveChannelName());
+				if(mode == mode_iptv)
+					g_EventList->exec(webtv->getLiveChannelID(), webtv->getLiveChannelName()); 
+				else
+					g_EventList->exec(live_channel_id, channelList->getActiveChannelName());
 
 				StartSubtitles();
 			}

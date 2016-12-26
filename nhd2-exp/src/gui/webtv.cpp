@@ -484,7 +484,7 @@ void CWebTV::quickZap(int key)
 	startPlayBack(tuned);
 
 	//infoviewer
-	g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1, channels[tuned]->id);
+	g_InfoViewer->showTitle(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
 }
 
 void CWebTV::showInfo()
@@ -494,7 +494,7 @@ void CWebTV::showInfo()
 	//infoviewer
 	if(tuned > -1)
 	{
-		g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1, channels[tuned]->id);
+		g_InfoViewer->showTitle(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
 	}
 }
 
@@ -633,7 +633,7 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 		tuned = webTVlistMenu->getSelected();
 
 		//infoviewer
-		g_InfoViewer->showTitle(tuned + 1, channels[tuned]->title, -1, channels[tuned]->id);
+		g_InfoViewer->showTitle(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
@@ -656,14 +656,14 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 		pausePlayBack();
 
 		//infoviewer
-		g_InfoViewer->showTitle(tuned +1, channels[tuned]->title, -1, channels[tuned]->id);
+		g_InfoViewer->showTitle(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
 	}
 	else if(actionKey == "RC_play")
 	{
 		continuePlayBack();
 
 		//infoviewer
-		g_InfoViewer->showTitle(tuned +1, channels[tuned]->title, -1, channels[tuned]->id);
+		g_InfoViewer->showTitle(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
 	}
 
 	return menu_return::RETURN_REPAINT;

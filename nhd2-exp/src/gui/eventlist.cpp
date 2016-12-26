@@ -64,9 +64,13 @@
 
 #include <system/debug.h>
 #include <system/tmdbparser.h>
+
 #include <gui/widget/infobox.h>
 
+#include <gui/webtv.h>
 
+
+extern CWebTV * webtv;
 extern CBouquetList * bouquetList;
 extern t_channel_id live_channel_id;
 extern char recDir[255];			// defined in neutrino.cpp
@@ -909,9 +913,9 @@ int CEventListHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*
 {
 	dprintf(DEBUG_NORMAL, "CEventListHandler::exec:\n");
 
-	int           res = menu_return::RETURN_REPAINT;
-	EventList     *e;
-	CChannelList  *channelList;
+	int res = menu_return::RETURN_REPAINT;
+	EventList* e;
+	CChannelList* channelList;
 
 
 	if (parent)
@@ -921,7 +925,10 @@ int CEventListHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*
 
 	channelList = CNeutrinoApp::getInstance()->channelList;
 
-	e->exec(live_channel_id, channelList->getActiveChannelName()); // UTF-8
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		e->exec(webtv->getLiveChannelID(), webtv->getLiveChannelName());
+	else
+		e->exec(live_channel_id, channelList->getActiveChannelName());
 	delete e;
 
 	return res;
