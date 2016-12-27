@@ -198,7 +198,9 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 						if (tmp != NULL)
 							*tmp = '\0';
 
-						// grad channel id from channellist
+						// grab channel id from channellist
+						id = 0;
+
 						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
 						{
 								if(strcasecmp(it->second.getName().c_str(), name) == 0)
@@ -296,6 +298,8 @@ bool CWebTV::readChannellist(std::string filename)
 				
 					description = "stream";
 
+					id = 0;
+
 					// grad channel id from channellist
 					for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
 					{
@@ -352,16 +356,12 @@ bool CWebTV::readChannellist(std::string filename)
 						title = xmlGetAttribute(l1, (char *)"title");
 						url = xmlGetAttribute(l1, (char *)"url");
 						description = xmlGetAttribute(l1, (char *)"description");
-						id = (t_channel_id)xmlGetAttribute(l1, (char *)"id");
 
 						// grab channel id from channellist
-						if(id == 0)
+						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
 						{
-							for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
-							{
-									if(strcasecmp(it->second.getName().c_str(), title) == 0)
-										id = it->second.getChannelID();
-							}
+							if(strcasecmp(it->second.getName().c_str(), title) == 0)
+								id = it->second.getChannelID();
 						}
 						
 						addUrl2Playlist(url, title, description, id);
@@ -421,7 +421,9 @@ bool CWebTV::readChannellist(std::string filename)
 					{
 						description = "stream";
 
-						// grad channel id from channellist
+						// grab channel id from channellist
+						id = 0;
+
 						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
 						{
 								if(strcasecmp(it->second.getName().c_str(), name) == 0)
@@ -565,10 +567,8 @@ void CWebTV::addUserBouquet(void)
 		for (unsigned int i = 0; i < filelist.size(); i++)
 		{
 			bTitle = filelist[i].getFileName();
-			strReplace(bTitle, ".xml", "");
-			strReplace(bTitle, ".tv", "");
-			strReplace(bTitle, ".m3u", "");
-			strReplace(bTitle, "userbouquet.", "");
+
+			removeExtension(bTitle);
 
 			m.addItem(new CMenuForwarder(bTitle.c_str(), true, NULL, selector, to_string(count).c_str()), old_select == count);
 

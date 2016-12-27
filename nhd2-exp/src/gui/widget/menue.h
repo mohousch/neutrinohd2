@@ -46,6 +46,8 @@
 
 #include <gui/widget/buttons.h>
 
+#include <gui/color.h>
+
 
 #define MENU_WIDTH			DEFAULT_XRES/2 - 50
 #define MENU_HEIGHT			700
@@ -696,6 +698,7 @@ class CMenuFrameBox : public CMenuTarget
 		neutrino_locale_t name;
 		std::vector<CMenuItem*>	items;
 		std::string iconfile;
+		fb_pixel_t itemBoxColor;
 
 		//
 		struct keyAction { std::string action; CMenuTarget *menue; };
@@ -731,6 +734,7 @@ class CMenuFrameBox : public CMenuTarget
 
 		//
 		void addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string &action);
+		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
 };
 
 // CMenuFrameBoxItem

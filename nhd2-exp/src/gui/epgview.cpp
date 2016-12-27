@@ -879,7 +879,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 
 				// 31.05.2002 dirch		record timer
 				case CRCInput::RC_red:
-					if (recDir != NULL)
+					if (recDir != NULL && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 					{
 						if(g_Timerd->isTimerdAvailable())
 						{
@@ -922,18 +922,21 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 				// 31.05.2002 dirch		zapto timer
 				case CRCInput::RC_yellow:
 				{
-					//CTimerdClient timerdclient;
-					if(g_Timerd->isTimerdAvailable())
+					if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 					{
-						g_Timerd->addZaptoTimerEvent(channel_id,
-										epgData.epg_times.startzeit,
-										epgData.epg_times.startzeit - ANNOUNCETIME, 0,
-										epgData.eventID, epgData.epg_times.startzeit, 0);
+						//CTimerdClient timerdclient;
+						if(g_Timerd->isTimerdAvailable())
+						{
+							g_Timerd->addZaptoTimerEvent(channel_id,
+											epgData.epg_times.startzeit,
+											epgData.epg_times.startzeit - ANNOUNCETIME, 0,
+											epgData.eventID, epgData.epg_times.startzeit, 0);
 										
-						MessageBox(LOCALE_TIMER_EVENTTIMED_TITLE, LOCALE_TIMER_EVENTTIMED_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+							MessageBox(LOCALE_TIMER_EVENTTIMED_TITLE, LOCALE_TIMER_EVENTTIMED_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+						}
+						else
+							printf("timerd not available\n");
 					}
-					else
-						printf("timerd not available\n");
 					break;
 				}
 				
@@ -1212,8 +1215,10 @@ void CEpgData::showTimerEventBar(bool _show)
 
 	frameBuffer->paintBoxRel(x, y, w, h, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
 
+	int mode = CNeutrinoApp::getInstance()->getMode();
+
 	// Button Red: Timer Record & Channelswitch
-	if (recDir != NULL)
+	if (recDir != NULL && mode != NeutrinoMessages::mode_iptv)
 	{
 		pos = 0;
 	
@@ -1227,11 +1232,14 @@ void CEpgData::showTimerEventBar(bool _show)
 	//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, x + ICON_OFFSET + cellwidth*pos, y + h_offset );
 	
 	// Button Yellow: Timer Channelswitch
-	pos = 2;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + ICON_OFFSET + cellwidth*pos, y + /*h_offset*/(h - icon_h)/2 );
+	if(mode != NeutrinoMessages::mode_iptv)
+	{
+		pos = 2;
+		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + ICON_OFFSET + cellwidth*pos, y + /*h_offset*/(h - icon_h)/2 );
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ICON_OFFSET + cellwidth*pos + icon_w + ICON_OFFSET, y + h_offset + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w - ICON_OFFSET - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_TIMERBAR_CHANNELSWITCH), COL_INFOBAR, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ICON_OFFSET + cellwidth*pos + icon_w + ICON_OFFSET, y + h_offset + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w - ICON_OFFSET - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_TIMERBAR_CHANNELSWITCH), COL_INFOBAR, 0, true); // UTF-8
+	}
 	
 	
 	// --Button Blue: empty

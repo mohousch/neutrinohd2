@@ -2841,7 +2841,9 @@ void CMenuFrameBox::initFrameBox(void)
 	oldselected = 0;
 
 	x = 0;
-	y = 0;	
+	y = 0;
+
+	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;	
 }
 
 void CMenuFrameBox::initFrames(void)
@@ -2969,7 +2971,7 @@ void CMenuFrameBox::paintItemBox(int oldposx, int oldposy, int posx, int posy)
 	}
 
 	// itembox
-	frameBuffer->paintBoxRel(frameBox.iX + frameBox.iWidth*posx, frameBox.iY + frameBox.iHeight*posy, frameBox.iWidth, frameBox.iHeight, COL_YELLOW, RADIUS_SMALL, CORNER_BOTH);
+	frameBuffer->paintBoxRel(frameBox.iX + frameBox.iWidth*posx, frameBox.iY + frameBox.iHeight*posy, frameBox.iWidth, frameBox.iHeight, itemBoxColor, RADIUS_SMALL, CORNER_BOTH);
 
 	if(items.size())
 	{
