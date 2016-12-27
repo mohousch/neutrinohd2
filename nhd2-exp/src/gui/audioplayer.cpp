@@ -1766,8 +1766,9 @@ void CAudioPlayerGui::paintInfo()
 		// first line
 		int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
 		int xstart = (m_width - w) / 2;
-		if(xstart < 10)
-			xstart = 10;
+		if(xstart < BORDER_LEFT)
+			xstart = BORDER_LEFT;
+
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + 1*m_fheight, m_width - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
 
 		// second line (Artist/Title...)
@@ -1795,10 +1796,16 @@ void CAudioPlayerGui::paintInfo()
 
 		w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
 		xstart = (m_width - w)/2;
-		if(xstart < 10)
-			xstart = 10;
+		if(xstart < BORDER_LEFT)
+			xstart = BORDER_LEFT;
+
+		if (!m_curr_audiofile.MetaData.cover.empty())
+		{
+			if(xstart < (BORDER_LEFT + m_title_height - 14))
+				xstart = BORDER_LEFT + m_title_height - 14;
+		}
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x+xstart, m_y + 4 + 2*m_fheight, m_width - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8		
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + 2*m_fheight, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8		
 		
 		// cover
 		if (!m_curr_audiofile.MetaData.cover.empty())

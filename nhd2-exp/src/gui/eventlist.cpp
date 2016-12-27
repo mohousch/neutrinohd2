@@ -267,8 +267,11 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 	name = channelname;
 	sort_mode = SORT_DESCRIPTION;
 	
-	paintHead(channel_id);
+	//
 	readEvents(channel_id);
+
+	//
+	paintHead(channel_id);
 	paint(channel_id);
 	showFunctionBar(true);
 	
@@ -585,6 +588,8 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 		{
 			// head
 			paintHead(channel_id);
+			paint(channel_id);
+			showFunctionBar(true);
 		} 
 		else
 		{
@@ -738,7 +743,7 @@ void EventList::paintHead(t_channel_id channel_id)
 	
 	// help icon
 	int icon_h_w, icon_h_h;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_h_w, &icon_h_h);
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP_SMALL, &icon_h_w, &icon_h_h);
 	
 	// paint time/date
 	int timestr_len = 0;
@@ -793,12 +798,12 @@ void EventList::paint(t_channel_id channel_id)
 		int icon_h = 0;
 		
 		// icon ?
-		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_w, &icon_h);
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + width - BORDER_RIGHT - icon_w, y + (theight - icon_h)/2 );
+		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP_SMALL, &icon_w, &icon_h);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP_SMALL, x + width - BORDER_RIGHT - icon_w, y + (theight - icon_h)/2 );
 
 		// icon 0 for tmdb
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_0, &icon_w, &icon_h);
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_0, x + width - BORDER_RIGHT - 2*icon_w - 5, y + (theight - icon_h)/2 );
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_0, x + width - BORDER_RIGHT - icon_w - ICON_TO_ICON_OFFSET - icon_w, y + (theight - icon_h)/2 );
 	}
 
 	frameBuffer->paintBoxRel(x, y + theight, width, height - theight - iheight, COL_MENUCONTENT_PLUS_0);
