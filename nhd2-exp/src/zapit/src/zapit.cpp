@@ -140,7 +140,7 @@ CCam * cam0 = NULL;
 CCam * cam1 = NULL;
 
 // the configuration file
-CConfigFile config(',', false);
+CConfigFile config(',', true);
 
 // the event server
 CEventServer *eventServer = NULL;
@@ -249,10 +249,6 @@ bool havevtuner = false; // set to true to test
 
 //
 bool retune = false;
-
-// variables for EN 50494 (a.k.a Unicable)
-//int uni_scr = -1;	/* the unicable SCR address,     -1 == no unicable */
-//int uni_qrg = 0;	/* the unicable frequency in MHz, 0 == from spec */
 
 void initFrontend()
 {
@@ -689,6 +685,10 @@ void saveFrontendConfig(int feindex)
 			setConfigValue(feindex, "lastSatellitePosition", getFE(feindex)->getCurrentSatellitePosition());
 			setConfigValue(feindex, "diseqcRepeats", getFE(feindex)->getDiseqcRepeats());
 			setConfigValue(feindex, "diseqcType", getFE(feindex)->getDiseqcType() );
+
+			// unicable
+			setConfigValue(feindex, "uni_scr", getFE(feindex)->getUniScr() );
+			setConfigValue(feindex, "uni_qrg", getFE(feindex)->getUniQrg() );
 					
 			char tempd[12];
 			char cfg_key[81];
@@ -744,6 +744,11 @@ void loadFrontendConfig()
 			fe->repeatUsals = getConfigValue(fe_it->first, "repeatUsals", 0);
 			fe->diseqcType = (diseqc_t)getConfigValue(fe_it->first, "diseqcType", (diseqc_t)NO_DISEQC);
 			fe->diseqcRepeats = getConfigValue(fe_it->first, "diseqcRepeats", 0);
+
+			// unicable
+			fe->uni_scr = getConfigValue(fe_it->first, "uni_scr", -1);
+			fe->uni_qrg = getConfigValue(fe_it->first, "uni_qrg", 0);
+
 			fe->motorRotationSpeed = getConfigValue(fe_it->first, "motorRotationSpeed", 18); // default: 1.8 degrees per second
 			
 			fe->lastSatellitePosition = getConfigValue(fe_it->first, "lastSatellitePosition", 0);

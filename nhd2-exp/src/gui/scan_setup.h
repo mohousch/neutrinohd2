@@ -91,6 +91,7 @@ class CScanSetup : public CMenuTarget
 
 		void hide();
 		void showScanService();
+		int showUnicableSetup();
 		
 	public:
 		CScanSetup(int num = 0);
@@ -105,6 +106,8 @@ class CSatelliteSetupNotifier : public CChangeObserver
 		std::vector<CMenuItem*> items1;
 		std::vector<CMenuItem*> items2;
 		std::vector<CMenuItem*> items3;
+		std::vector<CMenuItem*> items4;
+		std::vector<CMenuItem*> items5;
 		
 		int feindex;
 	public:
@@ -120,6 +123,8 @@ class CScanSetupNotifier : public CChangeObserver
 		std::vector<CMenuItem*> items1;
 		std::vector<CMenuItem*> items2;
 		std::vector<CMenuItem*> items3;
+		std::vector<CMenuItem*> items4;
+		std::vector<CMenuItem*> items5;
 		
 		int feindex;
 	public:

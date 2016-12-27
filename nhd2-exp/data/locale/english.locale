@@ -1211,6 +1211,11 @@ satsetup.satellite Satellite
 satsetup.savesettingsnow Save settings now
 satsetup.smatvremote SMATV Remote Tuning
 satsetup.uncomm_input Uncommited input
+satsetup.unicable Unicable
+satsetup.unicable2 Unicable2 (JESS)
+satsetup.unicable_setup Unicable setup
+satsetup.uniqrg Unicable frequency
+satsetup.uniscr Unicable SCR address
 satsetup.usals_repeat USALS command repeat
 satsetup.use_nit Use NIT
 satsetup.use_usals Use usals

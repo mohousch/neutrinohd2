@@ -112,10 +112,17 @@ class CFrontend
 		int32_t lastSatellitePosition;
 		
 		/* how often to repeat DiSEqC 1.1 commands */
-		uint8_t diseqcRepeats;
+		int diseqcRepeats;
 		
 		/* DiSEqC type of attached hardware */
 		diseqc_t diseqcType;
+
+		/* the unicable switch or lnb channel */
+		int uni_scr;
+		/* the unicable frequency in MHz */
+		int uni_qrg;
+		/* the input (0/1/2/3) of a multi-position switch */
+		int uni_lnb;
 		
 		/* tuning finished flag */
 		bool tuned;
@@ -163,70 +170,70 @@ class CFrontend
 		uint32_t getDiseqcReply(const int timeout_ms) const;
 		struct dvb_frontend_parameters	getFrontend(void) const;
 
-		void	secResetOverload(void);
-		void	secSetTone(const fe_sec_tone_mode_t mode, const uint32_t ms);
-		void	secSetVoltage(const fe_sec_voltage_t voltage, const uint32_t ms);
-		void	sendDiseqcCommand(const struct dvb_diseqc_master_cmd *cmd, const uint32_t ms);
-		void	sendDiseqcPowerOn(void);
-		void	sendDiseqcReset(void);
-		void	sendDiseqcSmatvRemoteTuningCommand(const uint32_t frequency);
+		void secResetOverload(void);
+		void secSetTone(const fe_sec_tone_mode_t mode, const uint32_t ms);
+		void secSetVoltage(const fe_sec_voltage_t voltage, const uint32_t ms);
+		void sendDiseqcCommand(const struct dvb_diseqc_master_cmd *cmd, const uint32_t ms);
+		void sendDiseqcPowerOn(void);
+		void sendDiseqcReset(void);
+		void sendDiseqcSmatvRemoteTuningCommand(const uint32_t frequency);
 
 		uint32_t sendEN50494TuningCommand(const uint32_t frequency, const int high_band, const int horizontal, const int bank);
-		void	sendDiseqcStandby(void);
-		void	sendDiseqcZeroByteCommand(const uint8_t frm, const uint8_t addr, const uint8_t cmd);
-		void	sendToneBurst(const fe_sec_mini_cmd_t burst, const uint32_t ms);
-		void	setFrontend(const struct dvb_frontend_parameters *feparams, bool nowait = false);
-		void	setSec(const uint8_t sat_no, const uint8_t pol, const bool high_band);
-		void	set12V(bool enable);
-		void	reset(void);
+		uint32_t sendEN50607TuningCommand(const uint32_t frequency, const int high_band, const int horizontal, const int bank);
+		void sendDiseqcStandby(void);
+		void sendDiseqcZeroByteCommand(const uint8_t frm, const uint8_t addr, const uint8_t cmd);
+		void sendToneBurst(const fe_sec_mini_cmd_t burst, const uint32_t ms);
+		void setFrontend(const struct dvb_frontend_parameters *feparams, bool nowait = false);
+		void setSec(const uint8_t sat_no, const uint8_t pol, const bool high_band);
+		void set12V(bool enable);
+		void reset(void);
 		
 	public:
 		CFrontend(int num = 0, int adap = 0);
 		~CFrontend(void);
 
-		static fe_code_rate_t		getCodeRate(const uint8_t fec_inner, int system = 0);
-		uint8_t				getDiseqcPosition(void) const		{ return currentTransponder.diseqc; }
-		uint8_t				getDiseqcRepeats(void) const		{ return diseqcRepeats; }
-		diseqc_t			getDiseqcType(void) const		{ return diseqcType; }
-		uint32_t			getFrequency(void) const;
-		static fe_modulation_t		getModulation(const uint8_t modulation);
-		uint8_t				getPolarization(void) const;
-		const struct dvb_frontend_info *getInfo(void) const			{ return &info; };
+		static fe_code_rate_t getCodeRate(const uint8_t fec_inner, int system = 0);
+		uint8_t	getDiseqcPosition(void) const { return currentTransponder.diseqc; }
+		int getDiseqcRepeats(void) const { return diseqcRepeats; }
+		// unicable
+		int getUniScr(void) const { return uni_scr; }
+		int getUniQrg(void) const { return uni_qrg; }
+		diseqc_t getDiseqcType(void) const { return diseqcType; }
+		uint32_t getFrequency(void) const;
+		static fe_modulation_t getModulation(const uint8_t modulation);
+		uint8_t getPolarization(void) const;
+		const struct dvb_frontend_info *getInfo(void) const { return &info; };
 		const struct dvb_frontend_parameters * getfeparams(void) const {return &curfe;}
 
-		uint32_t			getBitErrorRate(void) const;
-		uint16_t			getSignalNoiseRatio(void) const;
-		uint16_t			getSignalStrength(void) const;
-		fe_status_t			getStatus(void) const;
-		uint32_t			getUncorrectedBlocks(void) const;
-		void				getDelSys(int f, int m, char * &fec, char * &sys, char * &mod);
+		uint32_t getBitErrorRate(void) const;
+		uint16_t getSignalNoiseRatio(void) const;
+		uint16_t getSignalStrength(void) const;
+		fe_status_t getStatus(void) const;
+		uint32_t getUncorrectedBlocks(void) const;
+		void getDelSys(int f, int m, char * &fec, char * &sys, char * &mod);
 
-		int32_t 			getCurrentSatellitePosition() { return currentSatellitePosition; }
+		int32_t getCurrentSatellitePosition() { return currentSatellitePosition; }
 
-		void				setDiseqcRepeats(const uint8_t repeats)	{ diseqcRepeats = repeats; }
-		void				setDiseqcType(const diseqc_t type);
-		int				setParameters(TP_params *TP, bool nowait = 0);
-		int				tuneFrequency (struct dvb_frontend_parameters * feparams, uint8_t polarization, bool nowait = 0);
-		const TP_params*		getParameters(void) const { return &currentTransponder; };
-		void 				setCurrentSatellitePosition(int32_t satellitePosition) {currentSatellitePosition = satellitePosition; }
+		void setDiseqcRepeats(const uint8_t repeats)	{ diseqcRepeats = repeats; }
+		void setDiseqcType(const diseqc_t type);
+		int setParameters(TP_params *TP, bool nowait = 0);
+		int tuneFrequency (struct dvb_frontend_parameters * feparams, uint8_t polarization, bool nowait = 0);
+		const TP_params* getParameters(void) const { return &currentTransponder; };
+		void setCurrentSatellitePosition(int32_t satellitePosition) {currentSatellitePosition = satellitePosition; }
 
-		void 				positionMotor(uint8_t motorPosition);
-		void				sendMotorCommand(uint8_t cmdtype, uint8_t address, uint8_t command, uint8_t num_parameters, uint8_t parameter1, uint8_t parameter2, int repeat = 0);
-		void 				gotoXX(t_satellite_position pos);
+		void positionMotor(uint8_t motorPosition);
+		void sendMotorCommand(uint8_t cmdtype, uint8_t address, uint8_t command, uint8_t num_parameters, uint8_t parameter1, uint8_t parameter2, int repeat = 0);
+		void gotoXX(t_satellite_position pos);
 		
-		bool 			tuneChannel (CZapitChannel *channel, bool nvod);
-		bool 			retuneChannel (void);
-		bool 			retuneTP (bool nowait = true);
+		bool tuneChannel (CZapitChannel *channel, bool nvod);
+		bool retuneChannel (void);
+		bool retuneTP (bool nowait = true);
 
-		fe_code_rate_t 			getCFEC ();
-		transponder_id_t 		getTsidOnid()    { return currentTransponder.TP_id; }
-		bool				sameTsidOnid(transponder_id_t tpid)
-						{
-							return (currentTransponder.TP_id == 0)
-								|| (tpid == currentTransponder.TP_id);
-						}
+		fe_code_rate_t getCFEC ();
+		transponder_id_t getTsidOnid()    { return currentTransponder.TP_id; }
+		bool sameTsidOnid(transponder_id_t tpid){ return (currentTransponder.TP_id == 0) || (tpid == currentTransponder.TP_id);}
 						
-		uint32_t 			getRate();
+		uint32_t getRate();
 		
                 void Close();
 		bool Open();
@@ -244,7 +251,7 @@ class CFrontend
 		struct dvb_frontend_event getEvent(void);
 		
 		int getDeliverySystem();
-		bool				getHighBand()				{ return (int) getFrequency() >= lnbSwitch; }
+		bool getHighBand(){ return (int) getFrequency() >= lnbSwitch; }
 		
 		void setMasterSlave();
 };

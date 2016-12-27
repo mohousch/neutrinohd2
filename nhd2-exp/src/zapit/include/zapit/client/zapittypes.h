@@ -196,7 +196,9 @@ typedef enum {
 	DISEQC_1_0,
 	DISEQC_1_1,
 	DISEQC_1_2,
-	DISEQC_ADVANCED
+	DISEQC_ADVANCED,
+	DISEQC_UNICABLE,
+	DISEQC_UNICABLE2
 } diseqc_t;
 
 /* dvb transmission types */

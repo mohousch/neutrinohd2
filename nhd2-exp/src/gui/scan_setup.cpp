@@ -63,6 +63,7 @@
 
 // global
 CScanSettings * scanSettings;
+static int dmode = NO_DISEQC;
 
 char zapit_lat[20];				//defined neutrino.cpp
 char zapit_long[20];				//defined neutrino.cpp
@@ -73,7 +74,6 @@ extern CFrontend * getFE(int index);
 extern void saveFrontendConfig(int feindex);
 extern void loadFrontendConfig();
 extern void setMode(fe_mode_t newmode, int feindex);
-
 
 // option off0_on1
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
@@ -108,7 +108,7 @@ const CMenuOptionChooser::keyval SCANTS_ZAPIT_SCANTYPE[SCANTS_ZAPIT_SCANTYPE_COU
 	{  CZapitClient::ST_ALL		, LOCALE_ZAPIT_SCANTYPE_ALL, NULL }
 };
 
-#define SATSETUP_DISEQC_OPTION_COUNT 6
+#define SATSETUP_DISEQC_OPTION_COUNT 8
 const CMenuOptionChooser::keyval SATSETUP_DISEQC_OPTIONS[SATSETUP_DISEQC_OPTION_COUNT] =
 {
 	{ NO_DISEQC          , LOCALE_SATSETUP_NODISEQC,	NULL },
@@ -116,6 +116,8 @@ const CMenuOptionChooser::keyval SATSETUP_DISEQC_OPTIONS[SATSETUP_DISEQC_OPTION_
 	{ DISEQC_1_0         , LOCALE_SATSETUP_DISEQC10,	NULL },
 	{ DISEQC_1_1         , LOCALE_SATSETUP_DISEQC11,	NULL },
 	{ DISEQC_ADVANCED    , LOCALE_SATSETUP_DISEQ_ADVANCED,	NULL },
+	{ DISEQC_UNICABLE    , LOCALE_SATSETUP_UNICABLE,	NULL },
+	{ DISEQC_UNICABLE2   , LOCALE_SATSETUP_UNICABLE2,	NULL },
 	{ SMATV_REMOTE_TUNING, LOCALE_SATSETUP_SMATVREMOTE,	NULL }
 };
 
@@ -317,6 +319,10 @@ int CScanSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "unisetup") 
+	{
+		return showUnicableSetup();
+	}
 	
 	showScanService();
 	
@@ -338,7 +344,7 @@ void CScanSetup::showScanService()
 	CMenuWidget * scansetup = new CMenuWidget(LOCALE_SERVICEMENU_SCANTS, NEUTRINO_ICON_SETTINGS);
 	
 	// 
-	int dmode = getFE(feindex)->diseqcType;
+	dmode = getFE(feindex)->diseqcType;
 	int shortcut = 1;
 	
 	sat_iterator_t sit; //sat list iterator
@@ -565,11 +571,12 @@ void CScanSetup::showScanService()
 		
 	scansetup->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 		
-	// diseqc/diseqcrepeat/lnb/motor
+	// diseqc/diseqcrepeat/unisetup/lnb/motor
 	CMenuOptionChooser * ojDiseqc = NULL;
 	CMenuOptionNumberChooser * ojDiseqcRepeats = NULL;
 	CMenuForwarder * fsatSetup = NULL;
 	CMenuForwarder * fmotorMenu = NULL;
+	CMenuForwarder * uniSetup = NULL;
 
 	if( getFE(feindex)->getInfo()->type == FE_QPSK )
 	{
@@ -578,9 +585,15 @@ void CScanSetup::showScanService()
 		feModeNotifier->addItem(1, ojDiseqc);
 		
 		// diseqc repeat
-		ojDiseqcRepeats = new CMenuOptionNumberChooser(LOCALE_SATSETUP_DISEQCREPEAT, (int *)&getFE(feindex)->diseqcRepeats, (dmode != NO_DISEQC) && (dmode != DISEQC_ADVANCED) && (getFE(feindex)->mode != (fe_mode_t)FE_NOTCONNECTED) && (getFE(feindex)->mode != FE_LOOP), 0, 2, NULL);
-		satNotify->addItem(1, ojDiseqcRepeats);
-		feModeNotifier->addItem(1, ojDiseqcRepeats);
+		ojDiseqcRepeats = new CMenuOptionNumberChooser(LOCALE_SATSETUP_DISEQCREPEAT, &getFE(feindex)->diseqcRepeats, (dmode != NO_DISEQC) && \
+			(dmode < DISEQC_ADVANCED) && (getFE(feindex)->mode != (fe_mode_t)FE_NOTCONNECTED) && (getFE(feindex)->mode != FE_LOOP), 0, 2, NULL);
+		satNotify->addItem(4, ojDiseqcRepeats);
+		feModeNotifier->addItem(4, ojDiseqcRepeats);
+
+		// unicable setup
+		uniSetup = new CMenuForwarder(LOCALE_SATSETUP_UNICABLE_SETUP, (dmode > DISEQC_ADVANCED ? true : false), NULL, this, "unisetup", CRCInput::convertDigitToKey(shortcut++));
+		satNotify->addItem(3, uniSetup);
+		feModeNotifier->addItem(3, uniSetup);
 
 		// lnb setup
 		fsatSetup = new CMenuForwarder(LOCALE_SATSETUP_SAT_SETUP, (getFE(feindex)->mode != FE_NOTCONNECTED) && (getFE(feindex)->mode != (fe_mode_t)FE_LOOP), NULL, satSetup, "", CRCInput::convertDigitToKey(shortcut++));
@@ -592,6 +605,7 @@ void CScanSetup::showScanService()
 		
 		scansetup->addItem(ojDiseqc);
 		scansetup->addItem(ojDiseqcRepeats);
+		scansetup->addItem(uniSetup);
 		scansetup->addItem(fsatSetup);
 		scansetup->addItem(fmotorMenu);
 	}
@@ -776,6 +790,29 @@ void CScanSetup::showScanService()
 	scansetup->exec(NULL, "");
 	scansetup->hide();
 	delete scansetup;
+}
+
+int CScanSetup::showUnicableSetup()
+{
+	CMenuWidget * uni_setup = new CMenuWidget(LOCALE_SATSETUP_UNICABLE_SETUP, NEUTRINO_ICON_SETTINGS);
+	uni_setup->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	uni_setup->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+
+	// uni_scr
+	CMenuOptionNumberChooser * uniscr = new CMenuOptionNumberChooser(LOCALE_SATSETUP_UNISCR, &getFE(feindex)->uni_scr, true, \
+		-1, dmode == DISEQC_UNICABLE ? 7 : 31, NULL, 0, -1, LOCALE_OPTIONS_OFF);
+	uni_setup->addItem(uniscr);
+
+	// uni_qrg
+	CIntInput *uni_qrg = new CIntInput(LOCALE_SATSETUP_UNIQRG, (int&) getFE(feindex)->uni_qrg, 4, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE);
+	CMenuForwarder * uniqrg = new CMenuForwarder(LOCALE_SATSETUP_UNIQRG, true, uni_qrg->getValue(), uni_qrg);
+	uni_setup->addItem(uniqrg);
+
+	uni_setup->exec(NULL, "");
+	uni_setup->hide();
+	delete uni_setup;
+
+	return menu_return::RETURN_REPAINT;
 }
 
 // TPSelectHandler
@@ -1087,17 +1124,29 @@ bool CSatelliteSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 
 	if (type == NO_DISEQC) 
 	{
-		for(it = items1.begin(); it != items1.end(); it++) 
+		for(it = items1.begin(); it != items1.end(); it++) // comm uncomm
 		{
 			(*it)->setActive(false);
 		}
-		for(it = items2.begin(); it != items2.end(); it++) 
+
+		for(it = items2.begin(); it != items2.end(); it++) // lnb disecq input
 		{
 			(*it)->setActive(false);
 		}
+
 		for(it = items3.begin(); it != items3.end(); it++) 
 		{
 			(*it)->setActive(false);
+		}
+
+		for(it = items4.begin(); it != items4.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+
+		for(it = items5.begin(); it != items5.end(); it++) 
+		{
+			(*it)->setActive(true);
 		}
 	}
 	else if(type < DISEQC_ADVANCED) 
@@ -1106,11 +1155,23 @@ bool CSatelliteSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 		{
 			(*it)->setActive(false);
 		}
+
 		for(it = items2.begin(); it != items2.end(); it++) 
 		{
 			(*it)->setActive(true);
 		}
+
 		for(it = items3.begin(); it != items3.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+
+		for(it = items4.begin(); it != items4.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+
+		for(it = items5.begin(); it != items5.end(); it++) 
 		{
 			(*it)->setActive(true);
 		}
@@ -1131,6 +1192,7 @@ bool CSatelliteSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 		}
 	}
 
+	dmode = type;
 	getFE(feindex)->setDiseqcType( getFE(feindex)->diseqcType );
 	getFE(feindex)->setDiseqcRepeats( getFE(feindex)->diseqcRepeats );
 
@@ -1149,6 +1211,12 @@ void CSatelliteSetupNotifier::addItem(int list, CMenuItem* item)
 			break;
 		case 2:
 			items3.push_back(item);
+			break;
+		case 3:
+			items4.push_back(item);
+			break;
+		case 4:
+			items5.push_back(item);
 			break;
 		default:
 			break;
@@ -1175,13 +1243,28 @@ bool CScanSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 		{
 			(*it)->setActive(false);
 		}
+
 		for(it = items2.begin(); it != items2.end(); it++) 
 		{
 			(*it)->setActive(false);
 		}
+
 		for(it = items3.begin(); it != items3.end(); it++) 
 		{
-			(*it)->setActive(false);
+			if (dmode != NO_DISEQC)
+				(*it)->setActive(true);
+		}
+
+		for(it = items4.begin(); it != items4.end(); it++) 
+		{
+			if (dmode > DISEQC_ADVANCED)
+				(*it)->setActive(true);
+		}
+
+		for(it = items5.begin(); it != items5.end(); it++) 
+		{
+			if (dmode != NO_DISEQC && dmode < DISEQC_ADVANCED)
+				(*it)->setActive(true);
 		}
 	}
 	else
@@ -1215,6 +1298,12 @@ void CScanSetupNotifier::addItem(int list, CMenuItem *item)
 			break;
 		case 2:
 			items3.push_back(item);
+			break;
+		case 3:
+			items4.push_back(item);
+			break;
+		case 4:
+			items5.push_back(item);
 			break;
 		default:
 			break;
