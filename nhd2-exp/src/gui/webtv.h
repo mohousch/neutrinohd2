@@ -88,7 +88,7 @@ class CWebTV : public CMenuTarget
 		~CWebTV();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		
-		void show(bool reload = false);
+		void show(bool reload = false, bool reinit = false);
 		void showUserBouquet();
 		
 		//

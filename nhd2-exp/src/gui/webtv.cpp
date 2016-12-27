@@ -610,7 +610,7 @@ struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL}
 };
 
-void CWebTV::show(bool reload)
+void CWebTV::show(bool reload, bool reinit)
 {
 	dprintf(DEBUG_NORMAL, "CWebTV::hide:\n");
 
@@ -630,7 +630,7 @@ void CWebTV::show(bool reload)
 	}
 
 	webTVlistMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
-	webTVlistMenu->setSelected(tuned);
+	webTVlistMenu->setSelected(reinit? 0 : tuned);
 
 	webTVlistMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 	webTVlistMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
@@ -698,7 +698,7 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_blue")
 	{
 		showUserBouquet();
-		show();
+		show(false, true);
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_pause")
