@@ -598,7 +598,7 @@ void CWebTV::addUserBouquet(void)
 #define FOOT_BUTTONS_COUNT 4
 struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
 {
-	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_WEBTV_BOUQUETS, NULL},
+	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_INFOVIEWER_EVENTLIST, NULL},
 	{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_FILEBROWSER_NEXTPAGE, NULL},
 	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE, NULL},
 	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_WEBTV_BOUQUETS, NULL}
@@ -683,11 +683,9 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if( (actionKey == "RC_blue") || (actionKey == "RC_red"))
+	else if(actionKey == "RC_red")
 	{
-		showUserBouquet();
-		show();
-		return menu_return::RETURN_EXIT_ALL;
+		g_EventList->exec(channels[webTVlistMenu->getSelected()]->id, channels[webTVlistMenu->getSelected()]->title); 
 	}
 	else if(actionKey == "RC_green")
 	{
@@ -696,6 +694,12 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_yellow")
 	{
 		g_RCInput->postMsg(CRCInput::RC_page_up, 0);
+	}
+	else if(actionKey == "RC_blue")
+	{
+		showUserBouquet();
+		show();
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_pause")
 	{
