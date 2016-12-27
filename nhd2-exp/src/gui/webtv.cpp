@@ -61,8 +61,10 @@
 #include <curl/easy.h>
 
 #include <webtv.h>
+#include <bouquets.h>
 
 
+extern tallchans allchans;
 extern cPlayback *playback;
 
 CWebTV::CWebTV()
@@ -176,6 +178,7 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 			iss.str (std::string(chunk.memory, chunk.size));
 			char line[512];
 			char *ptr;
+			t_channel_id id = 0;
 			
 			while (iss.rdstate() == std::ifstream::goodbit) 
 			{
@@ -194,8 +197,15 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 						tmp = strchr(line, '\n');
 						if (tmp != NULL)
 							*tmp = '\0';
+
+						// grad channel id from channellist
+						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+						{
+								if(strcasecmp(it->second.getName().c_str(), name) == 0)
+									id = it->second.getChannelID();
+						}
 						
-						addUrl2Playlist(ptr, name, description);
+						addUrl2Playlist(ptr, name, description, id);
 					}
 				}
 			}
@@ -253,6 +263,7 @@ bool CWebTV::readChannellist(std::string filename)
 		std::string URL;
 		std::string url;
 		std::string description;
+		t_channel_id id = 0;
 		
 		if(f != NULL)
 		{
@@ -284,8 +295,15 @@ bool CWebTV::readChannellist(std::string filename)
 					title = line + offs;
 				
 					description = "stream";
+
+					// grad channel id from channellist
+					for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+					{
+							if(strcasecmp(it->second.getName().c_str(), title.c_str()) == 0)
+								id = it->second.getChannelID();
+					}
 					
-					addUrl2Playlist(urlDecode(url).c_str(), title.c_str(), description.c_str()); //urlDecode defined in edvbstring.h
+					addUrl2Playlist(urlDecode(url).c_str(), title.c_str(), description.c_str(), id); //urlDecode defined in edvbstring.h
 				}
 			}
 			
@@ -335,6 +353,16 @@ bool CWebTV::readChannellist(std::string filename)
 						url = xmlGetAttribute(l1, (char *)"url");
 						description = xmlGetAttribute(l1, (char *)"description");
 						id = (t_channel_id)xmlGetAttribute(l1, (char *)"id");
+
+						// grab channel id from channellist
+						if(id == 0)
+						{
+							for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+							{
+									if(strcasecmp(it->second.getName().c_str(), title) == 0)
+										id = it->second.getChannelID();
+							}
+						}
 						
 						addUrl2Playlist(url, title, description, id);
 					}	
@@ -370,6 +398,7 @@ bool CWebTV::readChannellist(std::string filename)
 		char name[1024] = { 0 };
 		int duration;
 		std::string description;
+		t_channel_id id = 0;
 				
 		infile.open(filename.c_str(), std::ifstream::in);
 
@@ -391,8 +420,15 @@ bool CWebTV::readChannellist(std::string filename)
 					if (url != NULL) 
 					{
 						description = "stream";
+
+						// grad channel id from channellist
+						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+						{
+								if(strcasecmp(it->second.getName().c_str(), name) == 0)
+									id = it->second.getChannelID();
+						}
 					
-						addUrl2Playlist(url, name, description.c_str());
+						addUrl2Playlist(url, name, description.c_str(), id);
 					}
 				}
 			}
