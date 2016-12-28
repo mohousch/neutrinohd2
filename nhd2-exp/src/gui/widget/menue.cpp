@@ -2883,7 +2883,7 @@ bool CMenuFrameBox::hasItem()
 
 void CMenuFrameBox::paintHead(void)
 {
-	dprintf(DEBUG_NORMAL, "CMenuFrameBox::paintHead\n");
+	//dprintf(DEBUG_NORMAL, "CMenuFrameBox::paintHead\n");
 
 	int icon_w = 0;
 	int icon_h = 0;
@@ -2908,7 +2908,7 @@ void CMenuFrameBox::paintHead(void)
 
 void CMenuFrameBox::paintFoot(void)
 {
-	dprintf(DEBUG_NORMAL, "CMenuFrameBox::paintFoot\n");
+	//dprintf(DEBUG_NORMAL, "CMenuFrameBox::paintFoot\n");
 
 	// paint buttons
 	int iw = 0;
@@ -2928,7 +2928,7 @@ void CMenuFrameBox::paintFoot(void)
 
 void CMenuFrameBox::paintBody(void)
 {
-	dprintf(DEBUG_NORMAL, "CMenuFrameBox::paintBody\n");
+	//dprintf(DEBUG_NORMAL, "CMenuFrameBox::paintBody\n");
 
 	// paint background
 	frameBuffer->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, backgroundColor);
@@ -2942,7 +2942,7 @@ void CMenuFrameBox::paintBody(void)
 
 void CMenuFrameBox::paintItems(int pos)
 {
-	dprintf(DEBUG_NORMAL, "CMenuFrameBox::paintitems: pos:%d\n", pos);
+	//dprintf(DEBUG_NORMAL, "CMenuFrameBox::paintitems: pos:%d\n", pos);
 
 	if(!items.size())
 		return;
@@ -2970,7 +2970,7 @@ void CMenuFrameBox::paintItems(int pos)
 
 void CMenuFrameBox::paintItemBox(int oldposx, int oldposy, int posx, int posy)
 {
-	dprintf(DEBUG_INFO, "CMenuFrameBox::paintItemBox:selected(%d) oldselected(%d) oldx:%d oldy:%d posx:%d posy:%d\n", selected, oldselected, oldposx, oldposy, posx, posy);
+	//dprintf(DEBUG_INFO, "CMenuFrameBox::paintItemBox:selected(%d) oldselected(%d) oldx:%d oldy:%d posx:%d posy:%d\n", selected, oldselected, oldposx, oldposy, posx, posy);
 
 	//refresh prev item
 	frameBuffer->paintBoxRel(frameBox.iX + frameBox.iWidth*oldposx, frameBox.iY + frameBox.iHeight*oldposy, frameBox.iWidth, frameBox.iHeight, backgroundColor);
@@ -3007,7 +3007,7 @@ void CMenuFrameBox::paintFootInfo(int pos)
 
 void CMenuFrameBox::paint(int pos)
 {
-	dprintf(DEBUG_NORMAL, "CMenuFrameBox::paint:%d items.size():%d x:%d y:%d\n", pos, items.size(), x, y);
+	//dprintf(DEBUG_NORMAL, "CMenuFrameBox::paint:%d items.size():%d x:%d y:%d\n", pos, items.size(), x, y);
 
 	// body
 	paintBody();
@@ -3050,17 +3050,14 @@ void CMenuFrameBox::setHeaderButtons(const struct button_label* _hbutton_labels,
 
 int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 {
-	dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec:\n");
-
 	int res = menu_return::RETURN_REPAINT;
 
 	if (parent)
 		parent->hide();
 
 	// init variables
-	currentPos = 0;
 	itemsPerPage = 0;
-	currentPage = 0;
+	currentPage = 1;
 	totalPages = 1;
 
 	if(items.size() > 18)
@@ -3071,14 +3068,17 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 	// calculate totalPages
 	if(items.size() > 18)
 		totalPages = items.size() / 18;
+
+	if( (items.size() - totalPages*18) > 0)
+		totalPages += 1;
+
+	dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d)\n", items.size(), totalPages);
 	
 	// paint first page
-	paint(currentPos);
+	paint(selected);
 	
 	// blit all
 	frameBuffer->blit();
-
-	printf("(items.size():%d) (itemsPerPage:%d) (currentPage:%d) (currentPos:%d) (selected:%d)\n", items.size(), itemsPerPage, currentPage, currentPos, selected);
 	
 	// loop
 	neutrino_msg_t      msg;
@@ -3107,7 +3107,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 					break;
 									
 				case menu_return::RETURN_REPAINT:
-					paint(currentPos);
+					paint(selected);
 					break;
 			}
 		}
@@ -3139,7 +3139,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 						break;
 									
 					case menu_return::RETURN_REPAINT:
-						paint(currentPos);
+						paint(selected);
 						break;
 				}
 			} 
@@ -3156,13 +3156,9 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 			selected += 1;
 
-			printf("msg: RC_right: selected:%d\n", selected);
-
 			// check selected
-			if(selected >= (18*currentPage) + itemsPerPage)
-				selected = 18*currentPage;
-
-			printf("msg: RC_right: selected(afterCheck):%d\n", selected);
+			if(selected >= (18*(currentPage - 1)) + itemsPerPage)
+				selected = 18*(currentPage - 1);
 
 			// calculate xy
 			x += 1;
@@ -3223,14 +3219,12 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			selected -= 1;
 
 			// check selected
-			if(selected < (18*currentPage))
-				selected = 18*currentPage;
+			if(selected < (18*(currentPage - 1)))
+				selected = 18*(currentPage - 1);
 
 			// sanity check
 			if (selected == -1)
 				selected = 0;
-
-			printf("msg: RC_left: selected(afterCheck):%d\n", selected);
 
 			// calculate xy
 			x -= 1;
@@ -3255,49 +3249,38 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 		}
 		else if (msg == CRCInput::RC_page_up) 
 		{
+			oldselected = selected;
+
 			printf("msg page_up\n");
 
-			if(currentPos < items.size() && currentPage < totalPages)
+			if(currentPage < totalPages)
 			{
-				currentPos += 18;
 				currentPage += 1;
 
 				// calculate itemsPerPage
-				if ( (items.size() - currentPage*18) <= 18)
-					itemsPerPage = items.size() - currentPage*18;
+				if ( (items.size() - (currentPage - 1)*18) <= 18)
+					itemsPerPage = items.size() - (currentPage - 1)*18;
 				else
 					itemsPerPage = 18;
 
-				// recalculate currentPos and itemsPerPage
-				if(currentPos > items.size())
-				{
-					currentPos -= 18;
-					itemsPerPage = items.size() - (currentPage -1)*18;
-				}
-
-				printf("msg page_up:currentPos(afterCheck):%d (currentPage:%d) (itemsPerPage:%d)\n", currentPos, currentPage, itemsPerPage);
+				printf("msg page_up: (currentPage:%d) (itemsPerPage:%d)\n", currentPage, itemsPerPage);
 
 				// reset
-				selected = currentPos;
+				selected = 18*(currentPage -1);
 				x = 0;
 				y = 0;
 
 				hide();
-				paint(currentPos);
+				paint(selected);
 			}
 		}
 		else if (msg == CRCInput::RC_page_down) 
 		{
 			printf("msg page_down\n");
 
-			if(currentPage > 0)
+			if(currentPage > 1)
 			{
 				currentPage -= 1;
-
-				if (currentPage < 0)
-					currentPage = 0;
-
-				currentPos -= 18;
 
 				// calculate itemsPerPage
 				itemsPerPage = 18;
@@ -3305,21 +3288,15 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 				if(items.size() < 18)
 					itemsPerPage = items.size();
 
-				printf("msg page_down:currentPos:%d (currentPage:%d) (itemsPerPage:%d)\n", currentPos, currentPage, itemsPerPage);
-
-				// check currentPos
-				if (currentPos < 0)
-					currentPos = 0;
-
-				printf("msg page_down: currentPos(after check):%d (currentPage:%d) (itemsPerPage:%d)\n", currentPos, currentPage, itemsPerPage);
+				printf("msg page_down: (currentPage:%d) (itemsPerPage:%d)\n", currentPage, itemsPerPage);
 
 				// reset
-				selected = currentPos;
+				selected = (currentPage - 1)*18;
 				x = 0;
 				y = 0;
 
 				hide();
-				paint(currentPos);
+				paint(selected);
 			}
 		}
 		else if(msg == CRCInput::RC_down)
@@ -3333,18 +3310,34 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			// calculate xy
 			y += 1;
 
-			// check y
+			if(itemsPerPage <= 6)
+			{
+				y = 0;
+			}
+			else if(itemsPerPage <= 12)
+			{
+				if(y == 1 && x > (itemsPerPage - 6))
+				{
+					y = 0;
+				}
+			}
+			else if(itemsPerPage <= 18)
+			{
+				if(y == 2 && x > (itemsPerPage - 12))
+				{
+					y = 1;
+				}
+			}
+
 			if(y >= 3)
 			{
 				y = 0;
-				selected = 18*currentPage + x;
-				printf("msg: RC_down:check y (selected: %d)(y:%d)\n", selected, y);
 			}
-			else
-				selected += 6;
 
-			printf("msg: RC_down: (selected:%d) (y:%d)\n", selected, y);
-			
+			selected = selected = 18*(currentPage - 1) + y*6 + x;
+
+			printf("msg: RC_down:check y (currentPage:%d)(itemsPerPage:%d) (selected: %d)(y:%d)\n", currentPage, itemsPerPage, selected, y);
+
 			paintItemBox(oldx, oldy, x, y);
 			paintFootInfo(selected);
 		}
@@ -3358,26 +3351,32 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 			y -= 1;
 
-			// check y and calculate selected
+			// dont jump to last line
 			if(y < 0)
 			{
-				if(itemsPerPage == 6)
-					y = 0;
-				else if(itemsPerPage == 12)
-					y = 1;
-				else if(itemsPerPage == 18)
+				
+				if(itemsPerPage <= 18)
+				{
 					y = 2;
-				else
-					y = 0;
 
-				// recalculate selected
-				selected = 18*currentPage + x + y*6;
-				printf("msg: RC_up:check y: (selected:%d) (y:%d)\n", selected, y);
+					if(x > (itemsPerPage - 12))
+					{
+						y = 0;
+					}
+				}
+				else if(itemsPerPage <= 12)
+				{
+					y = 1;
+					if(x > (itemsPerPage - 6))
+					{
+						y = 0;
+					}
+				}
 			}
-			else
-				selected -= 6;
 
-			printf("msg: RC_up: (itemsPerPage:%d) (selected:%d) (y:%d)\n", itemsPerPage, selected, y);
+			selected = 18*(currentPage - 1) + x + y*6;
+
+			printf("msg: RC_up:check y (currentPage:%d) (itemsPerPage:%d) (selected: %d)(y:%d)\n", currentPage, itemsPerPage, selected, y);
 
 			paintItemBox(oldx, oldy, x, y);
 			paintFootInfo(selected);

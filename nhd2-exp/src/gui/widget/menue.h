@@ -660,7 +660,6 @@ class CMenuFrameBox : public CMenuTarget
 		int x;
 		int y;
 
-		int currentPos;
 		int itemsPerPage;
 		int currentPage;
 		int totalPages;
