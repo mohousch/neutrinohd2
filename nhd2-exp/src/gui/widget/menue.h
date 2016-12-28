@@ -663,6 +663,7 @@ class CMenuFrameBox : public CMenuTarget
 		int itemsPerPage;
 		int currentPage;
 		int totalPages;
+		int firstItemPos;
 
 		std::string nameString;
 		neutrino_locale_t name;
