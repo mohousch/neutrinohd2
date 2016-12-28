@@ -2844,7 +2844,7 @@ void CMenuFrameBox::initFrameBox(void)
 	y = 0;
 
 	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
-	backgroundColor = COL_BACKGROUND_PLUS_0;
+	backgroundColor = COL_BACKGROUND;
 
 	//
 	hbutton_count	= 0;
@@ -2973,7 +2973,7 @@ void CMenuFrameBox::paintItemBox(int oldposx, int oldposy, int posx, int posy)
 	dprintf(DEBUG_INFO, "CMenuFrameBox::paintItemBox:selected(%d) oldselected(%d) oldx:%d oldy:%d posx:%d posy:%d\n", selected, oldselected, oldposx, oldposy, posx, posy);
 
 	//refresh prev item
-	frameBuffer->paintBoxRel(frameBox.iX + frameBox.iWidth*oldposx, frameBox.iY + frameBox.iHeight*oldposy, frameBox.iWidth, frameBox.iHeight, COL_BACKGROUND_PLUS_0);
+	frameBuffer->paintBoxRel(frameBox.iX + frameBox.iWidth*oldposx, frameBox.iY + frameBox.iHeight*oldposy, frameBox.iWidth, frameBox.iHeight, backgroundColor);
 
 	//
 	if(items.size())
@@ -2987,6 +2987,21 @@ void CMenuFrameBox::paintItemBox(int oldposx, int oldposy, int posx, int posy)
 	if(items.size())
 	{
 		frameBuffer->DisplayImage(items[selected]->iconName, frameBox.iX + posx*frameBox.iWidth + 5, frameBox.iY + posy*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
+	}
+
+}
+
+void CMenuFrameBox::paintFootInfo(int pos)
+{
+	CMenuItem* item = items[pos];
+
+	// refresh
+	frameBuffer->paintBoxRel(Box.iX, Box.iY + Box.iHeight - 35, Box.iWidth, 35, backgroundColor);
+	
+	// foot text
+	if(!item->itemName.empty())
+	{
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(Box.iX + BORDER_LEFT, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE] ->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), Box.iWidth - BORDER_LEFT - BORDER_RIGHT - 40, item->itemName.c_str(), COL_MENUHEAD);
 	}
 }
 
@@ -3010,7 +3025,8 @@ void CMenuFrameBox::paint(int pos)
 	paintItems(pos);
 
 	// info
-	items[pos]->paint(true);
+	//items[pos]->paint(true);
+	paintFootInfo(pos);
 }
 
 void CMenuFrameBox::hide(void)
@@ -3196,7 +3212,8 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			
 			paintItemBox(oldx, oldy, x, y);
 
-			items[selected]->paint(true);
+			//items[selected]->paint(true);
+			paintFootInfo(selected);
 		}
 		else if (msg == CRCInput::RC_left)
 		{
@@ -3238,7 +3255,8 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			
 			paintItemBox(oldx, oldy, x, y);
 			
-			items[selected]->paint(true);
+			//items[selected]->paint(true);
+			paintFootInfo(selected);
 		}
 		else if (msg == CRCInput::RC_page_up) 
 		{
@@ -3271,7 +3289,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 				hide();
 				paint(currentPos);
-				items[selected]->paint(true);
+				//items[selected]->paint(true);
 			}
 		}
 		else if (msg == CRCInput::RC_page_down) 
@@ -3308,7 +3326,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 				hide();
 				paint(currentPos);
-				items[selected]->paint(true);
+				//items[selected]->paint(true);
 			}
 		}
 		else if(msg == CRCInput::RC_down)
@@ -3336,7 +3354,8 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			
 			paintItemBox(oldx, oldy, x, y);
 
-			items[selected]->paint(true);
+			//items[selected]->paint(true);
+			paintFootInfo(selected);
 		}
 		else if(msg == CRCInput::RC_up)
 		{
@@ -3371,7 +3390,8 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 			paintItemBox(oldx, oldy, x, y);
 
-			items[selected]->paint(true);
+			//items[selected]->paint(true);
+			paintFootInfo(selected);
 		}
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 		{
@@ -3401,44 +3421,26 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 }
 
 // CMenuFrameBoxItem
-CMenuFrameBoxItem::CMenuFrameBoxItem(const neutrino_locale_t Text, CMenuTarget* Target, const char * const ActionKey, const char * const ItemIcon)
+CMenuFrameBoxItem::CMenuFrameBoxItem(const neutrino_locale_t Text, CMenuTarget* Target, const char * const ActionKey, const char * const Icon)
 {
-	textString = g_Locale->getText(Text);
-	text = Text;
-	
 	active = true;
 	jumpTarget = Target;
 	actionKey = ActionKey ? ActionKey : "";
-	directKey = CRCInput::RC_nokey;
-	
-	itemIcon = ItemIcon ? ItemIcon : "";
-	iconName = itemIcon;
+
+	iconName = Icon ? Icon : "";
 	itemType = ITEM_TYPE_FRAME_BOX;
+	itemName = g_Locale->getText(Text);
 }
 
-CMenuFrameBoxItem::CMenuFrameBoxItem(const char * const Text, CMenuTarget* Target, const char * const ActionKey, const char * const ItemIcon)
+CMenuFrameBoxItem::CMenuFrameBoxItem(const char * const Text, CMenuTarget* Target, const char * const ActionKey, const char * const Icon)
 {
-	textString = Text;
-	text = NONEXISTANT_LOCALE;
-	
 	active = true;
 	jumpTarget = Target;
 	actionKey = ActionKey ? ActionKey : "";
-	directKey = CRCInput::RC_nokey;
 	
-	itemIcon = ItemIcon ? ItemIcon : "";
-	iconName = itemIcon;
+	iconName = Icon ? Icon : "";
 	itemType = ITEM_TYPE_FRAME_BOX;
-}
-
-int CMenuFrameBoxItem::getHeight(void) const
-{
-	return 0;
-}
-
-int CMenuFrameBoxItem::getWidth(void) const
-{
-	return 0;
+	itemName = Text;
 }
 
 int CMenuFrameBoxItem::exec(CMenuTarget* parent)
@@ -3449,47 +3451,6 @@ int CMenuFrameBoxItem::exec(CMenuTarget* parent)
 		return jumpTarget->exec(parent, actionKey);
 	else
 		return menu_return::RETURN_EXIT;
-}
-
-const char * CMenuFrameBoxItem::getName(void)
-{
-	const char * l_name;
-	
-	if(text == NONEXISTANT_LOCALE)
-		l_name = textString.c_str();
-	else
-        	l_name = g_Locale->getText(text);
-	
-	return l_name;
-}
-
-int CMenuFrameBoxItem::paint(bool selected, bool /*AfterPulldown*/)
-{
-	dprintf(DEBUG_DEBUG, "CMenuFrameBoxItem::paint\n");
-
-	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
-
-	itemBox.iX = g_settings.screen_StartX + 20;
-	itemBox.iY = g_settings.screen_StartY + 20;
-	itemBox.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 40;
-	itemBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 40);
-
-	itemFrameBox.iX = itemBox.iX + BORDER_LEFT;
-	itemFrameBox.iY = itemBox.iY + 35 + 5;
-	itemFrameBox.iWidth = (itemBox.iWidth - (BORDER_LEFT + BORDER_RIGHT))/6;
-	itemFrameBox.iHeight = (itemBox.iHeight - 80)/3;
-
-	// info (foot)
-	if(selected)
-	{
-		frameBuffer->paintBoxRel(itemBox.iX, itemBox.iY + itemBox.iHeight - 30, itemBox.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET + 80), 30, COL_BACKGROUND_PLUS_0);
-
-		const char * l_text = getName();
-
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(itemBox.iX + BORDER_LEFT + ICON_OFFSET, itemBox.iY + itemBox.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE] ->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), itemBox.iWidth - (BORDER_LEFT + BORDER_RIGHT + ICON_OFFSET + 40), l_text, COL_MENUHEAD);
-	}
-
-	return 0;
 }
 
 /// CMenulistBox
@@ -4317,6 +4278,7 @@ CMenulistBoxItem::CMenulistBoxItem(const neutrino_locale_t Text, const bool Acti
 {
 	text = Text;
 	textString = g_Locale->getText(Text);
+
 	active = Active;
 	jumpTarget = Target;
 	actionKey = ActionKey ? ActionKey : "";
@@ -4343,6 +4305,7 @@ CMenulistBoxItem::CMenulistBoxItem(const char * const Text, const bool Active, C
 {
 	text = NONEXISTANT_LOCALE;
 	textString = Text;
+
 	active = Active;
 	jumpTarget = Target;
 	actionKey = ActionKey ? ActionKey : "";

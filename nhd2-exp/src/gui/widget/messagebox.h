@@ -48,7 +48,7 @@
 #include <gui/widget/icons.h>
 
 
-#define MESSAGEBOX_WIDTH			360
+#define MESSAGEBOX_WIDTH			400
 
 class CMessageBox
 {

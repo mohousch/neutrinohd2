@@ -42,7 +42,7 @@
 #include <gui/widget/drawable.h>
 
 
-#define HELPBOX_WIDTH			360
+#define HELPBOX_WIDTH			400
 
 class Helpbox
 {
