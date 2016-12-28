@@ -2996,7 +2996,7 @@ void CMenuFrameBox::paintFootInfo(int pos)
 	CMenuItem* item = items[pos];
 
 	// refresh
-	frameBuffer->paintBoxRel(Box.iX, Box.iY + Box.iHeight - 35, Box.iWidth, 35, backgroundColor);
+	frameBuffer->paintBoxRel(Box.iX, Box.iY + Box.iHeight - 30, Box.iWidth, 30, backgroundColor);
 	
 	// foot text
 	if(!item->itemName.empty())
@@ -3025,7 +3025,6 @@ void CMenuFrameBox::paint(int pos)
 	paintItems(pos);
 
 	// info
-	//items[pos]->paint(true);
 	paintFootInfo(pos);
 }
 
@@ -3211,8 +3210,6 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			printf("msg: RC_right: (items:%d) (itemsPerPage:%d) (currentPage:%d) (selected:%d) (x:%dy:%d)\n", items.size(), itemsPerPage, currentPage, selected, x, y);
 			
 			paintItemBox(oldx, oldy, x, y);
-
-			//items[selected]->paint(true);
 			paintFootInfo(selected);
 		}
 		else if (msg == CRCInput::RC_left)
@@ -3254,8 +3251,6 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			printf("msg: RC_left: (items:%d) (itemsPerPage:%d) (currentPage:%d) (selected:%d) (x:%dy:%d)\n", items.size(), itemsPerPage, currentPage, selected, x, y);
 			
 			paintItemBox(oldx, oldy, x, y);
-			
-			//items[selected]->paint(true);
 			paintFootInfo(selected);
 		}
 		else if (msg == CRCInput::RC_page_up) 
@@ -3289,7 +3284,6 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 				hide();
 				paint(currentPos);
-				//items[selected]->paint(true);
 			}
 		}
 		else if (msg == CRCInput::RC_page_down) 
@@ -3326,7 +3320,6 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 				hide();
 				paint(currentPos);
-				//items[selected]->paint(true);
 			}
 		}
 		else if(msg == CRCInput::RC_down)
@@ -3353,8 +3346,6 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			printf("msg: RC_down: (selected:%d) (y:%d)\n", selected, y);
 			
 			paintItemBox(oldx, oldy, x, y);
-
-			//items[selected]->paint(true);
 			paintFootInfo(selected);
 		}
 		else if(msg == CRCInput::RC_up)
@@ -3389,8 +3380,6 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			printf("msg: RC_up: (itemsPerPage:%d) (selected:%d) (y:%d)\n", itemsPerPage, selected, y);
 
 			paintItemBox(oldx, oldy, x, y);
-
-			//items[selected]->paint(true);
 			paintFootInfo(selected);
 		}
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
