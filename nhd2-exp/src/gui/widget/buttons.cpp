@@ -49,15 +49,19 @@ void paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CL
 	}
 }
 
-void paintButtons(CFrameBuffer * const frameBuffer, const int x, const int y, const unsigned int buttonwidth, const unsigned int count, const struct button_label * const content, const int dy)
+// head buttons (right)
+void paintHeadButtons(CFrameBuffer * const frameBuffer, const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content)
 {
-	int iw, ih;
+	int iw[count], ih[count];
+	int startx = x + dx - BORDER_RIGHT;
 	
 	for (unsigned int i = 0; i < count; i++)
 	{
-		frameBuffer->getIconSize(content[i].button, &iw, &ih);
+		frameBuffer->getIconSize(content[i].button, &iw[i], &ih[i]);
 		
-		frameBuffer->paintIcon(content[i].button, x + i*buttonwidth, y + (dy - ih)/2);
+		startx -= (iw[i] + ICON_TO_ICON_OFFSET);
+
+		frameBuffer->paintIcon(content[i].button, startx, y + (dy - ih[i])/2);
 	}
 }
 

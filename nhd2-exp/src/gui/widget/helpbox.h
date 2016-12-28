@@ -33,14 +33,16 @@
 #ifndef __helpbox__
 #define __helpbox__
 
+#include <string>
+#include <vector>
+
 #include <system/localize.h>
 #include <system/settings.h>
 
 #include <gui/widget/drawable.h>
 
-#include <string>
-#include <vector>
 
+#define HELPBOX_WIDTH			360
 
 class Helpbox
 {
@@ -54,7 +56,7 @@ class Helpbox
 		void addLine(const char *icon, const char *text);
 		void addPagebreak();
 		
-		void show(const neutrino_locale_t Caption, const int Width = HINTBOX_WIDTH, int timeout = -1);
+		void show(const neutrino_locale_t Caption, const int Width = HELPBOX_WIDTH, int timeout = -1);
 		
 	protected:
 		

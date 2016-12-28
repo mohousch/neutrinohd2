@@ -49,10 +49,8 @@
 #include <gui/color.h>
 
 
-#define MENU_WIDTH			DEFAULT_XRES/2 - 50
+#define MENU_WIDTH			590
 #define MENU_HEIGHT			700
-#define HINTBOX_WIDTH			MENU_WIDTH + 50
-
 
 enum 
 {
@@ -699,6 +697,11 @@ class CMenuFrameBox : public CMenuTarget
 		std::vector<CMenuItem*>	items;
 		std::string iconfile;
 		fb_pixel_t itemBoxColor;
+		fb_pixel_t backgroundColor;
+
+		//
+		int hbutton_count;
+		const struct button_label* hbutton_labels;
 
 		//
 		struct keyAction { std::string action; CMenuTarget *menue; };
@@ -735,6 +738,8 @@ class CMenuFrameBox : public CMenuTarget
 		//
 		void addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string &action);
 		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
+		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND_PLUS_0) {backgroundColor = col;};
+		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 };
 
 // CMenuFrameBoxItem

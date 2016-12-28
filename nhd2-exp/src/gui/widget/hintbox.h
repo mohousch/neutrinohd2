@@ -35,15 +35,18 @@
 #ifndef __hintbox__
 #define __hintbox__
 
-#include <driver/fb_window.h>
-#include <system/localize.h>
-#include <gui/widget/icons.h>
-#include <gui/widget/menue.h>
-#include <system/settings.h>
-
 #include <string>
 #include <vector>
 
+#include <driver/fb_window.h>
+
+#include <system/localize.h>
+#include <system/settings.h>
+
+#include <gui/widget/icons.h>
+
+
+#define HINTBOX_WIDTH			360
 
 class CHintBox
 {

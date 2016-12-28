@@ -38,16 +38,17 @@
 #include <stdint.h>
 #include <string>
 
-#include <gui/widget/drawable.h>
 #include <driver/fb_window.h>
+
 #include <system/localize.h>
 #include <system/settings.h>
 
 #include <gui/widget/drawable.h>
+#include <gui/widget/drawable.h>
+#include <gui/widget/icons.h>
 
-#include "icons.h"
-#include "menue.h"
 
+#define MESSAGEBOX_WIDTH			360
 
 class CMessageBox
 {
@@ -108,10 +109,10 @@ class CMessageBox
 		} buttons;
 	
 		// Text & Caption are always UTF-8 encoded
-		CMessageBox(const neutrino_locale_t Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
-		CMessageBox(const neutrino_locale_t Caption, ContentLines& Lines, const int Width = HINTBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
-		CMessageBox(const char * const Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
-		CMessageBox(const char * const Caption, ContentLines& Lines, const int Width = HINTBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
+		CMessageBox(const neutrino_locale_t Caption, const char * const Text, const int Width = MESSAGEBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
+		CMessageBox(const neutrino_locale_t Caption, ContentLines& Lines, const int Width = MESSAGEBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
+		CMessageBox(const char * const Caption, const char * const Text, const int Width = MESSAGEBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
+		CMessageBox(const char * const Caption, ContentLines& Lines, const int Width = MESSAGEBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
 
 		~CMessageBox(void);
 

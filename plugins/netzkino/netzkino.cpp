@@ -105,6 +105,12 @@ CNKMovies::~CNKMovies()
 	nkparser.Cleanup();
 }
 
+#define NK_HEAD_BUTTONS_COUNT	1
+const struct button_label NKHeadButtons[NK_HEAD_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL }
+};
+
 void CNKMovies::showNKMoviesMenu()
 {
 	dprintf(DEBUG_NORMAL, "CNKMovies::showNKMoviesMenu:\n");
@@ -140,6 +146,7 @@ void CNKMovies::showNKMoviesMenu()
 	}
 
 	moviesMenu->setItemBoxColor(COL_YELLOW);
+	moviesMenu->setHeaderButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
 
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	moviesMenu->addKey(CRCInput::RC_record, this, CRCInput::getSpecialKeyName(CRCInput::RC_record));

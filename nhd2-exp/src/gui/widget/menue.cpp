@@ -2843,7 +2843,12 @@ void CMenuFrameBox::initFrameBox(void)
 	x = 0;
 	y = 0;
 
-	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;	
+	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
+	backgroundColor = COL_BACKGROUND_PLUS_0;
+
+	//
+	hbutton_count	= 0;
+	hbutton_labels	= NULL;	
 }
 
 void CMenuFrameBox::initFrames(void)
@@ -2893,6 +2898,12 @@ void CMenuFrameBox::paintHead(void)
         	l_name = g_Locale->getText(name);
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + icon_w + ICON_OFFSET, Box.iY + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + icon_w +  ICON_OFFSET), l_name, COL_MENUHEAD);
+
+	// Buttons
+	if (hbutton_count)
+	{
+		::paintHeadButtons(frameBuffer, Box.iX, Box.iY, Box.iWidth, 35, hbutton_count, hbutton_labels);
+	}
 }
 
 void CMenuFrameBox::paintFoot(void)
@@ -2920,7 +2931,7 @@ void CMenuFrameBox::paintBody(void)
 	dprintf(DEBUG_NORMAL, "CMenuFrameBox::paintBody\n");
 
 	// paint background
-	frameBuffer->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, COL_BACKGROUND_PLUS_0);
+	frameBuffer->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, backgroundColor);
 	
 	// paint horizontal line top
 	frameBuffer->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + 35, COL_MENUCONTENT_PLUS_5);
@@ -3014,6 +3025,12 @@ void CMenuFrameBox::addKey(neutrino_msg_t key, CMenuTarget *menue, const std::st
 {
 	keyActionMap[key].menue = menue;
 	keyActionMap[key].action = action;
+}
+
+void CMenuFrameBox::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
+{
+	hbutton_count = _hbutton_count;
+	hbutton_labels = _hbutton_labels;
 }
 
 int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
@@ -3694,17 +3711,21 @@ void CMenulistBox::paintHead()
 	//paint icon (left)
 	frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
 
-	// Foot Buttons
-	int iw, ih;
+	// Buttons
+	int iw[hbutton_count], ih[hbutton_count];
+	int xstartPos = x + full_width - BORDER_RIGHT;
+	int buttonWidth = 0; //FIXME
 
 	if (hbutton_count)
 	{
 		for (unsigned int i = 0; i < hbutton_count; i++)
 		{
-			frameBuffer->getIconSize(hbutton_labels[i].button, &iw, &ih);
+			frameBuffer->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
+			xstartPos -= (iw[i] + ICON_TO_ICON_OFFSET);
+			buttonWidth += iw[i];
 		}
 
-		::paintButtons(frameBuffer, x + width - BORDER_RIGHT - hbutton_count*iw - hbutton_count*ICON_OFFSET/2, y, iw + ICON_OFFSET/2, hbutton_count, hbutton_labels, hheight);
+		::paintHeadButtons(frameBuffer, x, y, full_width, hheight, hbutton_count, hbutton_labels);
 	}
 
 	// paint time/date
@@ -3714,11 +3735,11 @@ void CMenulistBox::paintHead()
 		
 		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
 	
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - hbutton_count*iw - hbutton_count*ICON_OFFSET/2 - timestr_len, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(xstartPos - timestr_len, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
 	}
 	
 	// head title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 2*ICON_OFFSET, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_RIGHT - BORDER_RIGHT - icon_head_w - 2*ICON_OFFSET - timestr_len - hbutton_count*iw - hbutton_count*ICON_OFFSET/2, l_name, COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 2*ICON_OFFSET, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_RIGHT - BORDER_RIGHT - icon_head_w - 2*ICON_OFFSET - timestr_len - buttonWidth - (hbutton_count - 1)*ICON_TO_ICON_OFFSET, l_name, COL_MENUHEAD, 0, true); // UTF-8
 }
 
 void CMenulistBox::paintFoot()
