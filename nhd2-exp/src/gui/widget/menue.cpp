@@ -3068,12 +3068,14 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 	// calculate totalPages
 	if(items.size() > 18)
+	{
 		totalPages = items.size() / 18;
 
-	if( (items.size() - totalPages*18) > 0)
-		totalPages += 1;
+		if( (items.size() - totalPages*18) > 0)
+			totalPages = totalPages + 1;
+	}
 
-	dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, selected, firstItemPos);
+	dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (currentPage:%d) (itemsPerPage:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, currentPage, itemsPerPage, selected, firstItemPos);
 	
 	// paint first page
 	paint(firstItemPos);
@@ -3204,7 +3206,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 				}
 			}
 
-			dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, selected, firstItemPos);
+			dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (currentPage:%d) (itemsPerPage:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, currentPage, itemsPerPage, selected, firstItemPos);
 			
 			paintItemBox(oldx, oldy, x, y);
 			paintFootInfo(selected);
@@ -3243,7 +3245,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			if (x < 0)
 				x = 0;
 
-			dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, selected, firstItemPos);
+			dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (currentPage:%d) (itemsPerPage:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, currentPage, itemsPerPage, selected, firstItemPos);
 			
 			paintItemBox(oldx, oldy, x, y);
 			paintFootInfo(selected);
@@ -3272,7 +3274,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 					itemsPerPage = items.size() - (currentPage -1)*18;
 				}
 
-				dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, selected, firstItemPos);
+				dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (currentPage:%d) (itemsPerPage:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, currentPage, itemsPerPage, selected, firstItemPos);
 
 				// reset
 				selected = firstItemPos;
@@ -3302,7 +3304,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 				if (firstItemPos < 0)
 					firstItemPos = 0;
 
-				dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, selected, firstItemPos);
+				dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (currentPage:%d) (itemsPerPage:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, currentPage, itemsPerPage, selected, firstItemPos);
 
 				// reset
 				//selected = (currentPage - 1)*18;
@@ -3325,25 +3327,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			// calculate xy
 			y += 1;
 
-			if(itemsPerPage <= 6)
-			{
-				y = 0;
-			}
-			else if(itemsPerPage <= 12)
-			{
-				if(y == 1 && x > (itemsPerPage - 6))
-				{
-					y = 0;
-				}
-			}
-			else if(itemsPerPage <= 18)
-			{
-				if(y == 2 && x > (itemsPerPage - 12))
-				{
-					y = 1;
-				}
-			}
-
+			// jump to first line
 			if(y >= 3)
 			{
 				y = 0;
@@ -3351,7 +3335,13 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 			selected = selected = 18*(currentPage - 1) + y*6 + x;
 
-			dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, selected, firstItemPos);
+			if(selected > (items.size() - 1))
+			{
+				y = 0;
+				selected = selected = 18*(currentPage - 1) + y*6 + x;	
+			}
+
+			dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (currentPage:%d) (itemsPerPage:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, currentPage, itemsPerPage, selected, firstItemPos);
 
 			paintItemBox(oldx, oldy, x, y);
 			paintFootInfo(selected);
@@ -3369,29 +3359,27 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			// dont jump to last line
 			if(y < 0)
 			{
-				
-				if(itemsPerPage <= 18)
-				{
-					y = 2;
-
-					if(x > (itemsPerPage - 12))
-					{
-						y = 0;
-					}
-				}
-				else if(itemsPerPage <= 12)
+				y = 2;
+				selected = 18*(currentPage - 1) + x + y*6;
+				if(selected > (items.size() - 1))
 				{
 					y = 1;
-					if(x > (itemsPerPage - 6))
+					selected = selected = 18*(currentPage - 1) + y*6 + x;	
+
+					if(selected > (items.size() - 1))
 					{
 						y = 0;
+						selected = selected = 18*(currentPage - 1) + y*6 + x;	
 					}
 				}
+				
+			}
+			else
+			{
+				selected = 18*(currentPage - 1) + x + y*6;
 			}
 
-			selected = 18*(currentPage - 1) + x + y*6;
-
-			dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, selected, firstItemPos);
+			dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (currentPage:%d) (itemsPerPage:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, currentPage, itemsPerPage, selected, firstItemPos);
 
 			paintItemBox(oldx, oldy, x, y);
 			paintFootInfo(selected);
