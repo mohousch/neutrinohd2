@@ -1060,7 +1060,7 @@ void CUpnpBrowserGui::paintDevice()
 	xstart = (m_width - w) / 2;
 	if(xstart < BORDER_LEFT)
 		xstart = BORDER_LEFT;
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + m_mheight + 2, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + m_mheight + 2 + m_mheight, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
 
 	// third line
 	tmp = m_devices[m_selecteddevice].modelurl;
@@ -1068,7 +1068,7 @@ void CUpnpBrowserGui::paintDevice()
 	xstart = (m_width - w) / 2;
 	if(xstart < BORDER_LEFT)
 		xstart = BORDER_LEFT;
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + m_mheight + 2 + m_mheight + 2, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + m_mheight + 2 + m_mheight + 2 + m_mheight, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
 
 	// Head
 	tmp = g_Locale->getText(LOCALE_UPNPBROWSER_HEAD);
