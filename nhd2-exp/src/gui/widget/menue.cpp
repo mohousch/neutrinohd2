@@ -2830,6 +2830,8 @@ void CMenuFrameBox::init(const std::string & Icon)
 
 	frameBuffer = CFrameBuffer::getInstance();
 
+	timeout = 0;
+
 	initFrames();
 }
 
@@ -3025,7 +3027,7 @@ void CMenuFrameBox::paint(int pos)
 	paintItems(pos); //pages
 
 	// info
-	paintFootInfo(pos);
+	paintFootInfo(selected);
 }
 
 void CMenuFrameBox::hide(void)
@@ -3535,6 +3537,8 @@ void CMenulistBox::Init(const std::string & Icon, const int mwidth, const int mh
 
 	//
 	FootInfo = false;
+
+	timeout = 0;
 }
 
 void CMenulistBox::move(int xoff, int yoff)
@@ -4076,6 +4080,8 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 									if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page])) 
 									{
 										items[selected]->paint(false);
+
+										// new item
 										paintFootInfo(pos);
 										item->paint(true);
 										selected = pos;
@@ -4101,6 +4107,8 @@ int CMenulistBox::exec(CMenuTarget* parent, const std::string&)
 									if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page])) 
 									{
 										items[selected]->paint(false);
+
+										// new item
 										paintFootInfo(pos);
 										item->paint(true);
 										selected = pos;
