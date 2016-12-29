@@ -242,7 +242,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	m_fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 
 	// head_info
-	m_title_height = m_fheight*2 + 20 + m_sheight + 4;
+	m_title_height = m_fheight*2 + m_sheight + 4*2;
 
 	// foot_info
 	m_info_height = m_fheight*2;
@@ -372,7 +372,9 @@ int CAudioPlayerGui::show()
 	m_key_level = 0;
 	
 	if(isURL)
-		play(m_selected);
+		play(0);
+
+	printf("(m_selected:%d) (m_current:%d) (m_playlist.size():%d)\n", m_selected, m_current, m_playlist.size());
 
 	// control loop
 	while(loop)
@@ -390,7 +392,7 @@ int CAudioPlayerGui::show()
 		
 		if ((m_state != CAudioPlayerGui::STOP) && (CAudioPlayer::getInstance()->getState() == CBaseDec::STOP) && (!m_playlist.empty()))
 		{
-			if(isURL && m_current == m_playlist.size())
+			if(isURL && m_current == (m_playlist.size() - 1))
 			{
 				loop = false;	
 			}
@@ -1758,9 +1760,9 @@ void CAudioPlayerGui::paintInfo()
 	else
 	{
 		// title inf box
-		m_frameBuffer->paintBoxRel(m_x, m_y, m_width, m_title_height - 10, COL_MENUCONTENT_PLUS_6 );//FIXME: gradient
+		m_frameBuffer->paintBoxRel(m_x, m_y, m_width, m_title_height, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
 		
-		m_frameBuffer->paintBoxRel(m_x + 2, m_y + 2 , m_width - 4, m_title_height - 14, COL_MENUCONTENTSELECTED_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient); //FIXME:gradient
+		m_frameBuffer->paintBoxRel(m_x + 2, m_y + 2 , m_width - 4, m_title_height - 4, COL_MENUCONTENT_PLUS_1, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient); //FIXME:gradient
 
 		// first line (Track number)
 		std::string tmp;
@@ -1782,7 +1784,7 @@ void CAudioPlayerGui::paintInfo()
 		if(xstart < BORDER_LEFT)
 			xstart = BORDER_LEFT;
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + 1*m_fheight, m_width - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + m_fheight, m_width - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
 
 		// second line (Artist/Title...)
 		if (m_curr_audiofile.FileExtension != CFile::EXTENSION_URL) //FIXME: need to relaod id3tag
@@ -1814,17 +1816,17 @@ void CAudioPlayerGui::paintInfo()
 
 		if (!m_curr_audiofile.MetaData.cover.empty())
 		{
-			if(xstart < (BORDER_LEFT + m_title_height - 14))
-				xstart = BORDER_LEFT + m_title_height - 14;
+			if(xstart < (BORDER_LEFT + m_title_height - 4))
+				xstart = BORDER_LEFT + m_title_height - 4;
 		}
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + 2*m_fheight, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8		
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 2 + m_fheight + 2 + m_fheight, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8		
 		
 		// cover
 		if (!m_curr_audiofile.MetaData.cover.empty())
 		{
 			if(!access("/tmp/cover.jpg", F_OK))
-				m_frameBuffer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 14, m_title_height - 14);		
+				m_frameBuffer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 4, m_title_height - 4);		
 		}
 		
 		// ???
@@ -1835,7 +1837,7 @@ void CAudioPlayerGui::paintInfo()
 		{
 			int xstart = ((m_width - 20 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(m_metainfo))/2)+10;
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + xstart, m_y + 4 + 2*m_fheight + m_sheight, m_width- 2*xstart, m_metainfo, COL_MENUCONTENTSELECTED);
+			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + xstart, m_y + m_fheight + m_fheight + 2 + m_sheight, m_width- 2*xstart, m_metainfo, COL_MENUCONTENTSELECTED);
 		}
 
 		m_time_total = 0;
