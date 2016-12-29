@@ -156,6 +156,10 @@ class CAudioPlayerGui : public CMenuTarget
 		bool hide_playlist;
 		bool isURL;
 
+		bool updateMeta;
+		bool updateLcd;
+		bool updateScreen;
+
 		void paintItem(int pos);
 		void paint();
 		void paintHead();

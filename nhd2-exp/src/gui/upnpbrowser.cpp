@@ -1067,7 +1067,7 @@ void CUpnpBrowserGui::paintDevice()
 
 	// Head
 	tmp = g_Locale->getText(LOCALE_UPNPBROWSER_HEAD);
-	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 
 	m_frameBuffer->paintIcon(NEUTRINO_ICON_UPNP, m_x + BORDER_LEFT, m_y + m_title_height + (m_theight -icon_head_h)/2);
 
@@ -1093,7 +1093,7 @@ void CUpnpBrowserGui::paintDevice()
 	top = m_y + m_height - (m_info_height + m_buttonHeight);
 
 	int ButtonWidth = (m_width - BORDER_LEFT - BORDER_RIGHT) / 4;
-	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + 3*ButtonWidth, top, ButtonWidth, 1, &RescanButton, m_buttonHeight);
 }
@@ -1200,7 +1200,7 @@ void CUpnpBrowserGui::paintItem(std::vector<UPnPEntry> *entry, unsigned int sele
 	// Foot buttons
 	top = m_y + m_height - (m_info_height + m_buttonHeight);
 	int ButtonWidth = (m_width - 20) / 4;
-	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 	
 	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top, ButtonWidth, 1, &StopButton, m_buttonHeight);
 	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top, ButtonWidth, 1, &PUpButton, m_buttonHeight);
@@ -1226,7 +1226,7 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 			if (!m_playing_entry_is_shown) 
 			{
 				// refreshbox
-				m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
+				m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient);
 
 				m_playing_entry_is_shown = true;
 
@@ -1241,7 +1241,7 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 				return;
 			
 			// refreshbox
-			m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
+			m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient);
 
 			m_playing_entry_is_shown = false;
 
@@ -1287,7 +1287,7 @@ void CUpnpBrowserGui::updateTimes(const bool force)
 			top = m_y + m_height - m_info_height;
 
 			// refresh box
-			m_frameBuffer->paintBoxRel(m_x + m_width - w - SCROLLBAR_WIDTH, top + 2, w + 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
+			m_frameBuffer->paintBoxRel(m_x + m_width - w - SCROLLBAR_WIDTH, top + 2, w + 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient);
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + m_width - w - 11, top + (m_info_height - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w, play_time, COL_MENUHEAD);			
 		}

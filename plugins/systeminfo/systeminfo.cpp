@@ -87,7 +87,7 @@ void CSysInfoWidget::paintHead()
 	HeadWindow.setDimension(&cFrameBoxTitle);
 	HeadWindow.setColor(COL_MENUHEAD_PLUS_0);
 	HeadWindow.setCorner(RADIUS_MID, CORNER_TOP);
-	HeadWindow.setGradient(g_settings.menu_Head_gradient);
+	HeadWindow.setGradient(g_settings.Head_gradient);
 	HeadWindow.paint();
 	
 	// icon
@@ -130,7 +130,7 @@ void CSysInfoWidget::paintFoot()
 	FootWindow.setDimension(&cFrameBoxFoot);
 	FootWindow.setColor(COL_MENUHEAD_PLUS_0);
 	FootWindow.setCorner(RADIUS_MID, CORNER_BOTTOM);
-	FootWindow.setGradient(g_settings.menu_Foot_gradient);
+	FootWindow.setGradient(g_settings.Foot_gradient);
 	FootWindow.paint();
 
 	

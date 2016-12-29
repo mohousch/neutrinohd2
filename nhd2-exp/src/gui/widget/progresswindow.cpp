@@ -160,7 +160,7 @@ void CProgressWindow::paint()
 	CFrameBuffer::getInstance()->paintBoxRel(x + SHADOW_OFFSET, ypos + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);
 	
 	// title
-	CFrameBuffer::getInstance()->paintBoxRel(x, ypos, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	CFrameBuffer::getInstance()->paintBoxRel(x, ypos, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	// icon
 	int icon_w = 0;

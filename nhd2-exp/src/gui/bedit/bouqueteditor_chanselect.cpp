@@ -80,21 +80,21 @@ CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string & Caption, unsi
 	mode = Mode;
 
 	// Title
-	cFrameTitle.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 10;
+	cFrameTitle.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
 	
 	// Foot
 	footIcon.setIcon(NEUTRINO_ICON_BUTTON_OKAY);
-	cFrameFoot.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), footIcon.iHeight) + 10;
+	cFrameFoot.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), footIcon.iHeight) + 6;
 	
 	// Item
 	itemIcon1.setIcon(NEUTRINO_ICON_HD);
 	itemIcon2.setIcon(NEUTRINO_ICON_SCRAMBLED);
 	
-	cFrameItem.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), itemIcon1.iHeight);
-	cFrameItem.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), itemIcon2.iHeight);
+	cFrameItem.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), itemIcon1.iHeight) + 2;
+	cFrameItem.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), itemIcon2.iHeight) + 2;
 
 	// FootInfo
-	cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
+	cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 20;
 	
 	cFrameBox.iWidth = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
 	cFrameBox.iHeight = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
@@ -139,7 +139,7 @@ void CBEChannelSelectWidget::paintHead()
 	cWindowTitle.setDimension(&cFrameTitle);
 	cWindowTitle.setColor(COL_MENUHEAD_PLUS_0);
 	cWindowTitle.setCorner(RADIUS_MID, CORNER_TOP);
-	cWindowTitle.setGradient(g_settings.menu_Head_gradient);
+	cWindowTitle.setGradient(g_settings.Head_gradient);
 	cWindowTitle.paint();
 	
 	// title
@@ -232,7 +232,7 @@ void CBEChannelSelectWidget::paintFoot()
 	cWindowFoot.setDimension(&cFrameFoot);
 	cWindowFoot.setColor(COL_MENUHEAD_PLUS_0);
 	cWindowFoot.setCorner(RADIUS_MID, CORNER_BOTTOM);
-	cWindowFoot.setGradient(g_settings.menu_Foot_gradient);
+	cWindowFoot.setGradient(g_settings.Foot_gradient);
 	cWindowFoot.paint();
 
 	// Buttons
@@ -269,8 +269,6 @@ void CBEChannelSelectWidget::paintDetails(int index)
 	cFrameFootInfo.iX = cFrameBox.iX;
 	cFrameFootInfo.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight;
 	cFrameFootInfo.iWidth = cFrameBox.iWidth;
-
-	frameBuffer->paintBoxRel(cFrameFootInfo.iX + 2, cFrameFootInfo.iY + 2, cFrameFootInfo.iWidth - 4, cFrameFootInfo.iHeight - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 	
 	if(Channels.empty())
 		return;
@@ -285,7 +283,6 @@ void CBEChannelSelectWidget::paintDetails(int index)
 		
 	if(sit != satellitePositions.end()) 
 	{
-		//int satNameWidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth (sit->second.name);
 		snprintf(&buf[len], sizeof(buf) - len, "(%s)\n", sit->second.name.c_str());
 	}
 	

@@ -141,7 +141,6 @@ struct SNeutrinoSettings
 	unsigned char menu_Head_red;
 	unsigned char menu_Head_green;
 	unsigned char menu_Head_blue;
-	int menu_Head_gradient;
 
 	unsigned char menu_Head_Text_alpha;
 	unsigned char menu_Head_Text_red;
@@ -197,7 +196,6 @@ struct SNeutrinoSettings
 	unsigned char menu_Foot_red;
 	unsigned char menu_Foot_green;
 	unsigned char menu_Foot_blue;
-	int menu_Foot_gradient;
 	
 	unsigned char menu_Foot_Text_alpha;
 	unsigned char menu_Foot_Text_red;
@@ -511,7 +509,15 @@ struct SNeutrinoSettings
 	// tmdb
 	std::string tmdbkey;
 
+	// progressbar color
 	int progressbar_color;
+
+	// gradient
+	int Head_gradient;
+	int Foot_gradient;
+	int Head_Info_gradient;
+	int Foot_Info_gradient;
+	int infobar_gradient;
 
 #define FILESYSTEM_ENCODING_TO_UTF8(a) (g_settings.filesystem_is_utf8 ? (a) : ZapitTools::Latin1_to_UTF8(a).c_str())
 #define UTF8_TO_FILESYSTEM_ENCODING(a) (g_settings.filesystem_is_utf8 ? (a) : ZapitTools::UTF8_to_Latin1(a).c_str())

@@ -1959,7 +1959,7 @@ CTimeOSD::~CTimeOSD()
 
 void CTimeOSD::show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark)
 {
-	dprintf(DEBUG_NORMAL, "CTimeOSD::show\n");
+	//dprintf(DEBUG_NORMAL, "CTimeOSD::show\n");
 	 
 	// show / update
 	GetDimensions();
@@ -2009,7 +2009,7 @@ void CTimeOSD::update(time_t time_show)
 	
 	GetDimensions();
 
-	//printf("CTimeOSD::update time %ld\n", time_show);
+	//dprintf(DEBUG_NORMAL, "CTimeOSD::update time %ld\n", time_show);
 	
 	if(!visible)
 		return;
@@ -2089,7 +2089,7 @@ void CTimeOSD::hide()
 //showMovieInfo
 void CTimeOSD::showMovieInfo(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark)
 {
-	dprintf(DEBUG_NORMAL, "CTimeOSD::showMovieInfo:\n");
+	//dprintf(DEBUG_NORMAL, "CTimeOSD::showMovieInfo:\n");
 
 	int runningPercent = 0;
 	
@@ -2112,7 +2112,7 @@ void CTimeOSD::showMovieInfo(std::string Title, std::string Info, short Percent,
 	frameBuffer->paintBoxRel(cFrameBoxInfo.iX + SHADOW_OFFSET, cFrameBoxInfo.iY + SHADOW_OFFSET, cFrameBoxInfo.iWidth, cFrameBoxInfo.iHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH );
 		
 	// paint info box
-	frameBuffer->paintBoxRel(cFrameBoxInfo.iX, cFrameBoxInfo.iY, cFrameBoxInfo.iWidth, cFrameBoxInfo.iHeight, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient); 
+	frameBuffer->paintBoxRel(cFrameBoxInfo.iX, cFrameBoxInfo.iY, cFrameBoxInfo.iWidth, cFrameBoxInfo.iHeight, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.infobar_gradient); 
 		
 	// bottum bar
 	frameBuffer->paintBoxRel(cFrameBoxButton.iX, cFrameBoxButton.iY, cFrameBoxButton.iWidth, cFrameBoxButton.iHeight, COL_INFOBAR_SHADOW_PLUS_1,  RADIUS_MID, CORNER_BOTTOM); 

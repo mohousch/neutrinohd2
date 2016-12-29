@@ -630,7 +630,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.menu_Head_red = configfile.getInt32( "menu_Head_red", 35);
 	g_settings.menu_Head_green = configfile.getInt32( "menu_Head_green", 35);
 	g_settings.menu_Head_blue = configfile.getInt32( "menu_Head_blue", 35);
-	g_settings.menu_Head_gradient = configfile.getInt32("menu_Head_gradient", gradientLight2Dark);
 
 	g_settings.menu_Head_Text_alpha = configfile.getInt32( "menu_Head_Text_alpha", 0);
 	g_settings.menu_Head_Text_red = configfile.getInt32( "menu_Head_Text_red", 100 );
@@ -682,7 +681,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.menu_Foot_red = configfile.getInt32( "menu_Foot_red", 28);
 	g_settings.menu_Foot_green = configfile.getInt32( "menu_Foot_green", 28);
 	g_settings.menu_Foot_blue = configfile.getInt32( "menu_Foot_blue", 28);
-	g_settings.menu_Foot_gradient = configfile.getInt32("menu_Foot_gradient", gradientDark2Light);
 		
 	g_settings.menu_Foot_Text_alpha = configfile.getInt32( "menu_Foot_Text_alpha", 0);
 	g_settings.menu_Foot_Text_red = configfile.getInt32( "menu_Foot_Text_red", 50);
@@ -936,6 +934,12 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	strcpy( g_settings.audio_step, configfile.getString( "audio_step" , "5" ).c_str() );
 
 	g_settings.progressbar_color = configfile.getInt32("progressbar_color", 0);
+
+	g_settings.Head_gradient = configfile.getInt32("Head_gradient", gradientLight2Dark);
+	g_settings.Foot_gradient = configfile.getInt32("Foot_gradient", gradientDark2Light);
+	g_settings.Head_Info_gradient = configfile.getInt32("Head_Info_gradient", gradientDark2Light2Dark);
+	g_settings.Foot_Info_gradient = configfile.getInt32("Foot_Info_gradient", gradientDark2Light2Dark);
+	g_settings.infobar_gradient = configfile.getInt32("infobar_gradient", gradientDark2Light2Dark);
 	// END MISC OPTS
 
 	// HDD
@@ -1117,7 +1121,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "menu_Head_red", g_settings.menu_Head_red );
 	configfile.setInt32( "menu_Head_green", g_settings.menu_Head_green );
 	configfile.setInt32( "menu_Head_blue", g_settings.menu_Head_blue );
-	configfile.setInt32("menu_Head_gradient", g_settings.menu_Head_gradient);
 
 	configfile.setInt32( "menu_Head_Text_alpha", g_settings.menu_Head_Text_alpha );
 	configfile.setInt32( "menu_Head_Text_red", g_settings.menu_Head_Text_red );
@@ -1173,7 +1176,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "menu_Foot_red", g_settings.menu_Foot_red );
 	configfile.setInt32( "menu_Foot_green", g_settings.menu_Foot_green );
 	configfile.setInt32( "menu_Foot_blue", g_settings.menu_Foot_blue );
-	configfile.setInt32("menu_Foot_gradient", g_settings.menu_Foot_gradient);
 	
 	configfile.setInt32( "menu_Foot_Text_alpha", g_settings.menu_Foot_Text_alpha );
 	configfile.setInt32( "menu_Foot_Text_red", g_settings.menu_Foot_Text_red );
@@ -1383,6 +1385,12 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setString( "audio_step"	, g_settings.audio_step);
 
 	configfile.setInt32("progressbar_color", g_settings.progressbar_color);
+
+	configfile.setInt32("Head_gradient", g_settings.Head_gradient);
+	configfile.setInt32("Foot_gradient", g_settings.Foot_gradient);
+	configfile.setInt32("Head_Info_gradient", g_settings.Head_Info_gradient);
+	configfile.setInt32("Foot_Info_gradient", g_settings.Foot_Info_gradient);
+	configfile.setInt32("infobar_gradient", g_settings.infobar_gradient);
 	// END MISC OPTS
 
 	// HDD

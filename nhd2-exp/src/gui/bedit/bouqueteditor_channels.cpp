@@ -71,10 +71,10 @@ CBEChannelWidget::CBEChannelWidget(const std::string & Caption, unsigned int Bou
 	
 	// foot
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_foot_w, &icon_foot_h);
-	ButtonHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), icon_foot_h) + 10;
+	ButtonHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), icon_foot_h) + 6;
 
 	// head
-	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
 	
 	// item height
 	frameBuffer->getIconSize(NEUTRINO_ICON_HD, &icon_w_hd, &icon_h_hd);
@@ -187,8 +187,18 @@ void CBEChannelWidget::paint()
 
 void CBEChannelWidget::paintHead()
 {
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width - BORDER_LEFT - BORDER_RIGHT, caption.c_str() , COL_MENUHEAD, 0, true);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
+
+	// paint time/date
+	int timestr_len = 0;
+	std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
+		
+	timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
+
+	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - timestr_len, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
+
+	// title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width - BORDER_LEFT - BORDER_RIGHT - timestr_len, caption.c_str() , COL_MENUHEAD, 0, true);
 }
 
 const struct button_label CBEChannelWidgetButtons[4] =
@@ -201,9 +211,9 @@ const struct button_label CBEChannelWidgetButtons[4] =
 
 void CBEChannelWidget::paintFoot()
 {
-	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	frameBuffer->paintBoxRel(x, y + height - info_height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + ICON_OFFSET, y + height, (width - 2*ICON_OFFSET) / 4, 4, CBEChannelWidgetButtons, ButtonHeight);
+	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + ICON_OFFSET, y + height - info_height - ButtonHeight, (width - 2*ICON_OFFSET) / 4, 4, CBEChannelWidgetButtons, ButtonHeight);
 }
 
 //
@@ -216,19 +226,15 @@ void CBEChannelWidget::paintDetails(int index)
 	transponder_id_t ct = (*Channels)[index]->getTransponderId();
 	transponder_list_t::iterator tpI = transponders.find(ct);
 	int len = snprintf(buf, sizeof(buf), "%d ", (*Channels)[index]->getFreqId());
-	
-	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + ButtonHeight + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
 
 	sat_iterator_t sit = satellitePositions.find((*Channels)[index]->getSatellitePosition());
 		
 	if(sit != satellitePositions.end()) 
 	{
-		//int satNameWidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth (sit->second.name);
 		snprintf(&buf[len], sizeof(buf) - len, "(%s)\n", sit->second.name.c_str());
 	}
 	
-	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 10, y + height + ButtonHeight + 5 + fheight, width - 30, buf, COL_MENUCONTENTDARK, 0, true);
+	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height - info_height + (info_height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT, buf, COL_MENUCONTENTDARK, 0, true);
 }
 
 void CBEChannelWidget::clearItem2DetailsLine()
@@ -238,12 +244,12 @@ void CBEChannelWidget::clearItem2DetailsLine()
 
 void CBEChannelWidget::paintItem2DetailsLine(int pos)
 {
-	::paintItem2DetailsLine(x, y, width, height + ButtonHeight, info_height, theight, fheight, pos);
+	::paintItem2DetailsLine(x, y, width, height - info_height, info_height, theight, fheight, pos);
 }
 
 void CBEChannelWidget::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height + ButtonHeight + 2 + info_height);
+	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
 	
 	clearItem2DetailsLine();
 	
@@ -264,16 +270,16 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 
 	width = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
 	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
-	
-	listmaxshow = (height - theight)/fheight;
-	height = theight + listmaxshow*fheight; // recalc height
-	
+
 	// info height
-	info_height = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
+	info_height = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 20;
+	
+	listmaxshow = (height - theight - ButtonHeight - info_height)/fheight;
+	height = theight + listmaxshow*fheight + ButtonHeight + info_height; // recalc height
 	
 	// coordinate
 	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - (width + ConnectLineBox_Width)) / 2 + ConnectLineBox_Width;
-	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height -ButtonHeight - 2 - info_height) / 2;
+	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height) / 2;
 
 	Channels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
 	
@@ -284,6 +290,9 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	frameBuffer->blit();	
 
 	channelsChanged = false;
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
 
@@ -436,6 +445,12 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				cancelMoveChannel();
 			}
 		}
+		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			paintHead();
+			//paint();
+			//paintFoot();
+		}
 		else
 		{
 			CNeutrinoApp::getInstance()->handleMsg( msg, data );
@@ -445,6 +460,9 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	}
 	
 	hide();
+
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
 	
 	return res;
 }

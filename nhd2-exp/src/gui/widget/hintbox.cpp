@@ -252,7 +252,7 @@ void CHintBox::refresh(void)
 	// title
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
-	window->paintBoxRel(0, 0, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight, (CFBWindow::color_t)COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	window->paintBoxRel(0, 0, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight, (CFBWindow::color_t)COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(caption); 
 

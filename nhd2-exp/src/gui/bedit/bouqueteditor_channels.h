@@ -91,6 +91,8 @@ class CBEChannelWidget : public CMenuWidget
 		int icon_foot_w;
 		int icon_foot_h;
 
+		uint32_t sec_timer_id;
+
 		void paintItem(int pos);
 		void paint();
 		void paintHead();

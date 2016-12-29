@@ -1816,7 +1816,8 @@ void CTestMenu::testCMenuWidgetListBox1()
 	//audioMenu->setFooterButtons(FButtons, FOOT_BUTTONS_COUNT);
 	
 	audioMenu->enablePaintDate();
-	audioMenu->enableFootInfo(); 
+	audioMenu->enableFootInfo();
+	audioMenu->setFootInfoHeight(35); 
 
 	// head
 	audioMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));

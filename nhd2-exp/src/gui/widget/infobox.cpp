@@ -250,7 +250,7 @@ void CInfoBox::refreshTitle(void)
 					m_cBoxFrameTitleRel.iWidth, 
 					m_cBoxFrameTitleRel.iHeight, 
 					COL_MENUHEAD_PLUS_0, 
-					RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+					RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 
 	// icon
 	int iw = 0;

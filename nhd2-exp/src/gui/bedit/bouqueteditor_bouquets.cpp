@@ -64,7 +64,7 @@ CBEBouquetWidget::CBEBouquetWidget()
 
 	// foot
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_foot_w, &icon_foot_h);
-	ButtonHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), icon_foot_h) + 10;
+	ButtonHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), icon_foot_h) + 6;
 
 	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
 	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
@@ -147,9 +147,18 @@ void CBEBouquetWidget::paint()
 
 void CBEBouquetWidget::paintHead()
 {
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() , width, g_Locale->getText(LOCALE_BOUQUETLIST_HEAD), COL_MENUHEAD, 0, true); // UTF-8
+	// paint time/date
+	int timestr_len = 0;
+	std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
+		
+	timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
+
+	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - timestr_len, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
+
+	// title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() , width - BORDER_LEFT - BORDER_RIGHT - timestr_len, g_Locale->getText(LOCALE_BOUQUETLIST_HEAD), COL_MENUHEAD, 0, true); // UTF-8
 }
 
 const struct button_label CBEBouquetWidgetButtons[3] =
@@ -167,7 +176,7 @@ void CBEBouquetWidget::paintFoot()
 	Button[2] = CBEBouquetWidgetButtons[2];
 	Button[3].button = NEUTRINO_ICON_BUTTON_BLUE;
 
-	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	switch( blueFunction)
 	{
@@ -186,17 +195,18 @@ void CBEBouquetWidget::paintFoot()
 			Button[3].localename = NULL;
 			break;
 	}
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height, (width - icon_foot_w - BORDER_LEFT) / 4, 4, Button, ButtonHeight);
+
+	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, (width - icon_foot_w - BORDER_LEFT) / 4, 4, Button, ButtonHeight);
 	
 	// setup icon
 	int icon_w, icon_h;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_SETUP, x + width - icon_w - BORDER_RIGHT, y + height + (ButtonHeight - icon_h)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_SETUP, x + width - icon_w - BORDER_RIGHT, y + height - ButtonHeight + (ButtonHeight - icon_h)/2);
 }
 
 void CBEBouquetWidget::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height + ButtonHeight);
+	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
 	frameBuffer->blit();
 }
 
@@ -215,11 +225,11 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	width = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
 	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 	
-	listmaxshow = (height - theight)/fheight;
-	height = theight + listmaxshow*fheight; // recalc height
+	listmaxshow = (height - theight - ButtonHeight)/fheight;
+	height = theight + ButtonHeight + listmaxshow*fheight; // recalc height
 	
         x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - width) / 2;
-        y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height - ButtonHeight) / 2;
+        y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height) / 2;
 	
 	Bouquets = &g_bouquetManager->Bouquets;
 	
@@ -230,6 +240,9 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	frameBuffer->blit();
 
 	bouquetsChanged = false;
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
 
@@ -444,6 +457,12 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				cancelMoveBouquet();
 			}
 		}
+		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			paintHead();
+			//paint();
+			//paintFoot();
+		}
 		else
 		{
 			CNeutrinoApp::getInstance()->handleMsg( msg, data );
@@ -454,6 +473,9 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	}
 	
 	hide();
+
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
 	
 	return res;
 }

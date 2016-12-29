@@ -873,7 +873,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 void CFileBrowser::paintHead()
 {
 	char l_name[100];
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	// icon
 	int icon_w, icon_h;
@@ -906,7 +906,7 @@ void CFileBrowser::paintFoot()
 	int ty2 = by2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
 	// foot
-	frameBuffer->paintBoxRel(x, y + height - foheight, width, foheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	frameBuffer->paintBoxRel(x, y + height - foheight, width, foheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	if (!(filelist.empty()))
 	{
@@ -1007,22 +1007,29 @@ void CFileBrowser::recursiveDelete(const char *file)
 	
 	dprintf(DEBUG_INFO, "CFileBrowser::Delete %s\n", file);
 	
-	if(my_lstat(file,&statbuf) == 0)
+	if(my_lstat(file, &statbuf) == 0)
 	{
 		if(S_ISDIR(statbuf.st_mode))
 		{
 			n = my_scandir(file, &namelist, 0, my_alphasort);
-			while(n--)
+			printf("CFileBrowser::Delete: n:%d\n", n);
+
+			if(n > 0)
 			{
-				if(strcmp(namelist[n]->d_name, ".")!=0 && strcmp(namelist[n]->d_name, "..")!=0)
+				while(n--)
 				{
-					std::string fullname = (std::string)file + "/" + namelist[n]->d_name;
-					recursiveDelete(fullname.c_str());
+					if(strcmp(namelist[n]->d_name, ".") != 0 && strcmp(namelist[n]->d_name, "..") != 0)
+					{
+						std::string fullname = (std::string)file + "/" + namelist[n]->d_name;
+						recursiveDelete(fullname.c_str());
+					}
+					free(namelist[n]);
 				}
-				free(namelist[n]);
+
+				free(namelist);
+
+				rmdir(file);
 			}
-			free(namelist);
-			rmdir(file);
 		}
 		else
 		{

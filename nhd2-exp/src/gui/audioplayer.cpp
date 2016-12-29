@@ -67,6 +67,7 @@
 #include <gui/widget/stringinput.h>
 #include <gui/widget/stringinput_ext.h>
 #include <gui/widget/progresswindow.h>
+#include <gui/widget/items2detailsline.h>
 
 #include <system/settings.h>
 #include <system/helpers.h>
@@ -229,15 +230,28 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 		m_height = (g_settings.screen_EndY - g_settings.screen_StartY - 5);
 	
 	m_sheight = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
-	// 
+
+	// foot height
 	m_frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_foot_w, &icon_foot_h);
 	m_buttonHeight = 2*(std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), icon_foot_h)) + 10;
+
+	// title height
 	m_theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+
+	// item height
 	m_fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+
+	// head_info
 	m_title_height = m_fheight*2 + 20 + m_sheight + 4;
+
+	// foot_info
 	m_info_height = m_fheight*2;
-	m_listmaxshow = (m_height - m_title_height - m_theight - m_buttonHeight - m_info_height) / (m_fheight);
-	m_height = m_title_height + m_theight + m_listmaxshow*m_fheight + m_buttonHeight + m_info_height; // recalc height
+
+	//
+	m_listmaxshow = (m_height - m_title_height - m_theight - m_buttonHeight - m_info_height)/m_fheight;
+
+	// recalculate height
+	m_height = m_title_height + m_theight + m_listmaxshow*m_fheight + m_buttonHeight + m_info_height;
 
 	m_x = (((g_settings.screen_EndX - g_settings.screen_StartX) - (m_width + ConnectLineBox_Width)) / 2) + g_settings.screen_StartX + ConnectLineBox_Width;
 	m_y = (((g_settings.screen_EndY - g_settings.screen_StartY) - m_height)/ 2) + g_settings.screen_StartY;
@@ -365,8 +379,8 @@ int CAudioPlayerGui::show()
 	{
 		if(!hide_playlist)
 			updateMetaData();
-		
-		updateTimes();
+
+		updateTimes();	
 
 		if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_audio)
 		{
@@ -1590,7 +1604,7 @@ void CAudioPlayerGui::paintHead()
 		strCaption = g_Locale->getText(LOCALE_AUDIOPLAYER_HEAD);
 	
 	// head box
-	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	// head icon
 	m_frameBuffer->getIconSize(NEUTRINO_ICON_MP3, &icon_head_w, &icon_head_h);
@@ -1666,7 +1680,7 @@ void CAudioPlayerGui::paintFoot()
 	int ButtonWidth2 = (m_width - 50) / 2;
 	
 	// foot
-	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	if (!m_playlist.empty())
 	{
@@ -1743,11 +1757,10 @@ void CAudioPlayerGui::paintInfo()
 	}
 	else
 	{
-		// infobox
-		m_frameBuffer->paintBoxRel(m_x, m_y, m_width, m_title_height - 10, COL_MENUCONTENT_PLUS_6 );
+		// title inf box
+		m_frameBuffer->paintBoxRel(m_x, m_y, m_width, m_title_height - 10, COL_MENUCONTENT_PLUS_6 );//FIXME: gradient
 		
-		// infobox refresh
-		m_frameBuffer->paintBoxRel(m_x + 2, m_y + 2 , m_width - 4, m_title_height - 14, COL_MENUCONTENTSELECTED_PLUS_0);
+		m_frameBuffer->paintBoxRel(m_x + 2, m_y + 2 , m_width - 4, m_title_height - 14, COL_MENUCONTENTSELECTED_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient); //FIXME:gradient
 
 		// first line (Track number)
 		std::string tmp;
@@ -1813,17 +1826,23 @@ void CAudioPlayerGui::paintInfo()
 			if(!access("/tmp/cover.jpg", F_OK))
 				m_frameBuffer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 14, m_title_height - 14);		
 		}
-
-		// reset so fields get painted always
+		
+		// ???
 		m_metainfo.clear();
+		updateMetaData();
+
+		if(updateMeta || updateScreen)
+		{
+			int xstart = ((m_width - 20 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(m_metainfo))/2)+10;
+
+			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + xstart, m_y + 4 + 2*m_fheight + m_sheight, m_width- 2*xstart, m_metainfo, COL_MENUCONTENTSELECTED);
+		}
+
 		m_time_total = 0;
 		m_time_played = 0;
-		
-		updateMetaData();
-		
-		info_visible = true;
-
 		updateTimes(true);
+
+		info_visible = true;
 	}
 }
 
@@ -1865,57 +1884,16 @@ void CAudioPlayerGui::paint()
 
 void CAudioPlayerGui::clearItemID3DetailsLine()
 {
-	paintItemID3DetailsLine(-1);
+	::clearItem2DetailsLine(m_x, m_y, m_width, m_height - m_title_height, m_info_height);  
 }
 
 void CAudioPlayerGui::paintItemID3DetailsLine(int pos)
 {
-	int xpos  = m_x - ConnectLineBox_Width;
-	int ypos1 = m_y + m_title_height + m_theight + pos*m_fheight;
-	int ypos2 = m_y + (m_height - m_info_height);
-	int ypos1a = ypos1 + (m_fheight / 2) - 2;
-	int ypos2a = ypos2 + (m_info_height / 2) - 2;
-	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
-	fb_pixel_t col2 = COL_MENUCONTENT_PLUS_1;
-
-
-	// Clear
-	m_frameBuffer->paintBackgroundBoxRel(xpos - 1, m_y + m_title_height, ConnectLineBox_Width + 1, m_height - m_title_height);	
-
-	// paint Line if detail info (and not valid list pos)
 	if (!m_playlist.empty() && (pos >= 0))
 	{
-		// 1. col thick line
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1, 4, m_fheight, col2);//FIXME
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 3, ypos1, 8, m_fheight, col1); // item marker
+		::paintItem2DetailsLine(m_x, m_y, m_width, m_height - m_info_height, m_info_height, m_title_height + m_theight, m_fheight, pos);
 
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2, 4, m_info_height, col1);
-
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 4, ypos2a - ypos1a, col1);
-
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 12, 4, col1);
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos2a, 12, 4, col1);
-
-		// 2. col small line
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2, 1, m_info_height, col2);
-
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 1, ypos2a - ypos1a + 4, col2);
-
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 12, 1, col2);
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a,  8, 1, col2);
-
-		// -- small Frame around infobox
-		m_frameBuffer->paintBoxRel(m_x,			ypos2			, 2	 	, m_info_height	, col1);
-		m_frameBuffer->paintBoxRel(m_x + m_width - 2,	ypos2			, 2		, m_info_height	, col1);
-		m_frameBuffer->paintBoxRel(m_x,			ypos2			, m_width -2	, 2		, col1);
-		m_frameBuffer->paintBoxRel(m_x,			ypos2 + m_info_height -2, m_width -2	, 2		, col1);
-
-		// paint id3 infobox 
-		// refresh box
-		m_frameBuffer->paintBoxRel(m_x + 2, ypos2 + 2 , m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.menu_Head_gradient);
-
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + 10, ypos2 + 2 + 1*m_fheight, m_width- 80, m_playlist[m_selected].MetaData.title, COL_MENUCONTENTDARK, 0, true); // UTF-8
-
+		// genre / date
 		std::string tmp;
 		if (m_playlist[m_selected].MetaData.genre.empty())
 			tmp = m_playlist[m_selected].MetaData.date;
@@ -1927,20 +1905,27 @@ void CAudioPlayerGui::paintItemID3DetailsLine(int pos)
 			tmp += " / ";
 			tmp += m_playlist[m_selected].MetaData.date;
 		}
+
 		int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true) + 10; // UTF-8
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w - 5, ypos2 + 2 + 1*m_fheight, w, tmp, COL_MENUCONTENTDARK, 0, true); // UTF-8
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w - BORDER_RIGHT, m_y + (m_height - m_info_height) + m_fheight, w, tmp, COL_MENUCONTENTDARK, 0, true); // UTF-8
+
+		// title
+		tmp = m_playlist[m_selected].MetaData.title;
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + BORDER_LEFT, m_y + (m_height - m_info_height) + m_fheight, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUCONTENTDARK, 0, true); // UTF-8
+
+		// artist
 		tmp = m_playlist[m_selected].MetaData.artist;
+
 		if (!(m_playlist[m_selected].MetaData.album.empty()))
 		{
 			tmp += " (";
 			tmp += m_playlist[m_selected].MetaData.album;
 			tmp += ')';
 		}
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + 10, ypos2 + 2*m_fheight - 2, m_width - 20, tmp, COL_MENUCONTENTDARK, 0, true); // UTF-8		
-	}
-	else
-	{
-		m_frameBuffer->paintBackgroundBoxRel(m_x, ypos2, m_width, m_info_height);
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + BORDER_LEFT, m_y + (m_height - m_info_height) + 2*m_fheight - 2, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUCONTENTDARK, 0, true); // UTF-8
 	}
 }
 
@@ -2108,9 +2093,9 @@ int CAudioPlayerGui::getNext()
 
 void CAudioPlayerGui::updateMetaData()
 {
-	bool updateMeta = false;
-	bool updateLcd = false;
-	bool updateScreen = false;
+	updateMeta = false;
+	updateLcd = false;
+	updateScreen = false;
 
 	if(m_state == CAudioPlayerGui::STOP)
 		return;
@@ -2161,19 +2146,6 @@ void CAudioPlayerGui::updateMetaData()
 		
 	if(updateLcd)
 		paintLCD();
-
-	if(updateScreen)
-		paintInfo();
-		
-	if(updateMeta || updateScreen)
-	{
-		// refresh box
-		m_frameBuffer->paintBoxRel(m_x + 10 + m_title_height, m_y + 4 + 2*m_fheight, m_width - 20 - m_title_height, m_sheight, COL_MENUCONTENTSELECTED_PLUS_0);
-		
-		int xstart = ((m_width - 20 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(m_metainfo))/2)+10;
-
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + xstart, m_y + 4 + 2*m_fheight + m_sheight, m_width- 2*xstart, m_metainfo, COL_MENUCONTENTSELECTED);
-	}
 }
 
 void CAudioPlayerGui::updateTimes(const bool force)
@@ -2216,18 +2188,12 @@ void CAudioPlayerGui::updateTimes(const bool force)
 
 			if (updateTotal)
 			{
-				// refresh box (time total)
-				m_frameBuffer->paintBoxRel(m_x + m_width - w1 - 10, m_y + 4, w1 + 4, m_fheight, COL_MENUCONTENTSELECTED_PLUS_0);
-
 				if(m_time_total > 0)
 					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - 10, m_y + 4 + m_fheight, w1, tot_time, COL_MENUCONTENTSELECTED);
 			}
 			
 			if (updatePlayed || (m_state == CAudioPlayerGui::PAUSE))
 			{
-				// refresh box (played time)
-				m_frameBuffer->paintBoxRel(m_x + m_width - w1 - w2 - 16, m_y + 4, w2 + 5, m_fheight, COL_MENUCONTENTSELECTED_PLUS_0);
-
 				struct timeval tv;
 				gettimeofday(&tv, NULL);
 				if ((m_state != CAudioPlayerGui::PAUSE) || (tv.tv_sec & 1))

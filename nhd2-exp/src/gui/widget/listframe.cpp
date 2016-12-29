@@ -349,7 +349,7 @@ void CListFrame::refreshTitle(void)
 	if( frameBuffer == NULL) 
 		return;
 
-	frameBuffer->paintBoxRel(m_cFrameTitleRel.iX + m_cFrame.iX, m_cFrameTitleRel.iY + m_cFrame.iY, m_cFrameTitleRel.iWidth, m_cFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	frameBuffer->paintBoxRel(m_cFrameTitleRel.iX + m_cFrame.iX, m_cFrameTitleRel.iY + m_cFrame.iY, m_cFrameTitleRel.iWidth, m_cFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	int iw = 0;
 	int ih = 0;

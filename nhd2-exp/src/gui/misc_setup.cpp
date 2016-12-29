@@ -511,10 +511,19 @@ void CGeneralSettings::showMenu()
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_ROUNDED_CORNERS, &g_settings.rounded_corners, MENU_CORNERSETTINGS_TYPE_OPTIONS, MENU_CORNERSETTINGS_TYPE_OPTION_COUNT, true));
 
 	// head gradient
-	miscSettingsGeneral.addItem(new CMenuOptionChooser("Head Color Gradient", &g_settings.menu_Head_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+	miscSettingsGeneral.addItem(new CMenuOptionChooser("Head Color Gradient", &g_settings.Head_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
 
 	// foot gradient
-	miscSettingsGeneral.addItem(new CMenuOptionChooser("Foot Color Gradient", &g_settings.menu_Foot_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+	miscSettingsGeneral.addItem(new CMenuOptionChooser("Foot Color Gradient", &g_settings.Foot_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+
+	// head info gradient
+	miscSettingsGeneral.addItem(new CMenuOptionChooser("Head Info Color Gradient", &g_settings.Head_Info_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+
+	// foot info gradient
+	miscSettingsGeneral.addItem(new CMenuOptionChooser("Foot Info Color Gradient", &g_settings.Foot_Info_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+
+	// infobar gradient
+	miscSettingsGeneral.addItem(new CMenuOptionChooser("Infobar Color Gradient", &g_settings.infobar_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
 	
 	// menu design
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_MENU_DESIGN, &g_settings.menu_design, MENU_DESIGN_OPTIONS, MENU_DESIGN_OPTION_COUNT, true));

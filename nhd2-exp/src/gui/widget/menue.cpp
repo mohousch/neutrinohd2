@@ -626,7 +626,7 @@ void CMenuWidget::paint()
 		saveScreen();
 
 	// paint head
-	frameBuffer->paintBoxRel(x, y, full_width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	frameBuffer->paintBoxRel(x, y, full_width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	//paint icon
 	frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
@@ -635,7 +635,7 @@ void CMenuWidget::paint()
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 2*ICON_OFFSET, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_RIGHT - BORDER_RIGHT - icon_head_w - 2*ICON_OFFSET, l_name, COL_MENUHEAD, 0, true); // UTF-8
 	
 	//paint foot
-	frameBuffer->paintBoxRel(x, y + height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	frameBuffer->paintBoxRel(x, y + height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 	
 	//item_start_y
 	item_start_y = y + hheight;
@@ -756,7 +756,7 @@ void CMenuWidget::paintFootInfo(int pos)
 	item->getYPosition();
 
 	//paint foot
-	frameBuffer->paintBoxRel(x, y + full_height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	frameBuffer->paintBoxRel(x, y + full_height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	// info icon
 	int iw, ih;
@@ -2450,7 +2450,7 @@ void CMenuWidgetExtended::paint()
 		saveScreen();
 
 	// paint head
-	frameBuffer->paintBoxRel(x, y, full_width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	frameBuffer->paintBoxRel(x, y, full_width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	//paint icon
 	frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
@@ -2465,7 +2465,7 @@ void CMenuWidgetExtended::paint()
 	frameBuffer->paintBoxRel(x, y + full_height - (fheight + sp_height), full_width, sp_height, COL_MENUCONTENTDARK_PLUS_0);
 	
 	//paint foot
-	frameBuffer->paintBoxRel(x, y + full_height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	frameBuffer->paintBoxRel(x, y + full_height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 	
 	//item_start_y
 	item_start_y = y + hheight + sp_height;
@@ -2586,7 +2586,7 @@ void CMenuWidgetExtended::paintFootInfo(int pos)
 	item->getYPosition();
 
 	//paint foot
-	frameBuffer->paintBoxRel(x, y + full_height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	frameBuffer->paintBoxRel(x, y + full_height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	// info icon
 	int iw, ih;
@@ -3087,7 +3087,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 	
-	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
+	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
 
 	bool loop = true;
 	while (loop) 
@@ -3210,6 +3210,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			
 			paintItemBox(oldx, oldy, x, y);
 			paintFootInfo(selected);
+			items[selected]->paint(true);
 		}
 		else if (msg == CRCInput::RC_left)
 		{
@@ -3249,6 +3250,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			
 			paintItemBox(oldx, oldy, x, y);
 			paintFootInfo(selected);
+			items[selected]->paint(true);
 		}
 		else if (msg == CRCInput::RC_page_up) 
 		{
@@ -3283,6 +3285,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 				hide();
 				paint(firstItemPos);
+				items[selected]->paint(true);
 			}
 		}
 		else if (msg == CRCInput::RC_page_down) 
@@ -3314,6 +3317,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 				hide();
 				paint(firstItemPos);
+				items[selected]->paint(true);
 			}
 		}
 		else if(msg == CRCInput::RC_down)
@@ -3345,6 +3349,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 			paintItemBox(oldx, oldy, x, y);
 			paintFootInfo(selected);
+			items[selected]->paint(true);
 		}
 		else if(msg == CRCInput::RC_up)
 		{
@@ -3383,6 +3388,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 			paintItemBox(oldx, oldy, x, y);
 			paintFootInfo(selected);
+			items[selected]->paint(true);
 		}
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 		{
@@ -3572,7 +3578,7 @@ void CMenulistBox::initFrames()
         	l_name = g_Locale->getText(name);
 
 	// footInfo height
-	cFrameFootInfo.iHeight = (FootInfo)? 70 : 0;
+	cFrameFootInfo.iHeight = (FootInfo)? footInfoHeight : 0;
 
 	height = wanted_height;
 
@@ -3658,7 +3664,7 @@ void CMenulistBox::initFrames()
 void CMenulistBox::paintHead()
 {
 	// paint head
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.menu_Head_gradient);
+	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	//paint icon (left)
 	frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
@@ -3697,7 +3703,7 @@ void CMenulistBox::paintHead()
 void CMenulistBox::paintFoot()
 {
 	//paint foot
-	frameBuffer->paintBoxRel(x, y + full_height - cFrameFootInfo.iHeight - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.menu_Foot_gradient);
+	frameBuffer->paintBoxRel(x, y + full_height - cFrameFootInfo.iHeight - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	// Foot Buttons
 	if (fbutton_count)
@@ -3903,6 +3909,12 @@ void CMenulistBox::setHeaderButtons(const struct button_label* _hbutton_labels, 
 void CMenulistBox::enableFootInfo(void)
 {
 	FootInfo = true; 
+	initFrames();
+}
+
+void CMenulistBox::setFootInfoHeight(int height)
+{
+	footInfoHeight = height;
 	initFrames();
 }
 

@@ -680,6 +680,8 @@ class CMenuFrameBox : public CMenuTarget
 		struct keyAction { std::string action; CMenuTarget *menue; };
 		std::map<neutrino_msg_t, keyAction> keyActionMap;
 
+		unsigned long long int timeout;
+
 		void init(const std::string & Icon); 
 		void initFrames(void);
 		void initFrameBox(void);
@@ -714,6 +716,7 @@ class CMenuFrameBox : public CMenuTarget
 		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
 		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
+		void setTimeOut(int to = 0){timeout = to;};
 };
 
 // CMenuFrameBoxItem
@@ -815,6 +818,7 @@ class CMenulistBox : public CMenuTarget
 		// footInfo
 		bool FootInfo;
 		CBox cFrameFootInfo;
+		int footInfoHeight;
 
 		//
 		unsigned long long int timeout;
@@ -856,6 +860,7 @@ class CMenulistBox : public CMenuTarget
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 		void enableFootInfo(void);
 		void setTimeOut(int to = 0){timeout = to;};
+		void setFootInfoHeight(int height = 70);
 };
 
 // CMenulistBoxItem
