@@ -90,7 +90,7 @@ class CUpnpBrowserGui : public CMenuTarget
 		int            m_buttonHeight;
 		int            m_title_height;
 		int            m_info_height;
-		bool           m_folderplay;
+
 		std::string    m_playfolder;
 		int            m_playid;
 		time_t         m_time_played;

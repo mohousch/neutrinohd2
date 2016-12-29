@@ -77,7 +77,7 @@
 extern CWebTV * webtv;
 
 const struct button_label RescanButton = {NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_UPNPBROWSER_RESCAN, NULL };
-const struct button_label StopButton   = {NEUTRINO_ICON_BUTTON_RED, LOCALE_AUDIOPLAYER_STOP, NULL };
+const struct button_label PlayButton   = {NEUTRINO_ICON_BUTTON_RED, LOCALE_AUDIOPLAYER_PLAY, NULL };
 const struct button_label PUpButton    = {NEUTRINO_ICON_BUTTON_GREEN, LOCALE_FILEBROWSER_NEXTPAGE, NULL };
 const struct button_label PDownButton  = {NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE, NULL };
 
@@ -432,12 +432,14 @@ void CUpnpBrowserGui::selectDevice()
 		}
 		else if( msg == CRCInput::RC_right || msg == CRCInput::RC_ok)
 		{
-			m_folderplay = false;
 			selectItem("0");
 			changed = true;
 		}
 		else if( msg == CRCInput::RC_blue)
 		{
+			m_frameBuffer->ClearFrameBuffer();
+			m_frameBuffer->blit();	
+
 			scanBox->paint();
 
 			m_devices = m_socket->Discover("urn:schemas-upnp-org:service:ContentDirectory:1");
@@ -766,12 +768,10 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 			}
 			changed = true;
 		}
-		else if(msg == CRCInput::RC_ok)
+		else if(msg == CRCInput::RC_red || msg == CRCInput::RC_ok)
 		{
 			if (!(*entries)[selected - index].isdir)
 			{
-				m_folderplay = false;
-				
 				int preferred = (*entries)[selected - index].preferred;
 				if (preferred != -1)
 				{
@@ -829,17 +829,12 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 			} 
 			else 
 			{
-				m_folderplay = true;
 				m_playfolder = (*entries)[selected - index].id;
 				m_playid = 0;
 				handleFolder();
 			}
 			
 			changed = true;
-		}
-		else if( msg == CRCInput::RC_red)
-		{
-			m_folderplay = false;
 		}
 		else if(msg == NeutrinoMessages::RECORD_START ||
 			msg == NeutrinoMessages::ZAPTO ||
@@ -1167,10 +1162,16 @@ void CUpnpBrowserGui::paintItem(std::vector<UPnPEntry> *entry, unsigned int sele
 	int ButtonWidth = (m_width - 20) / 4;
 	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 	
-	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top, ButtonWidth, 1, &StopButton, m_buttonHeight);
+	// play
+	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top, ButtonWidth, 1, &PlayButton, m_buttonHeight);
+
+	// up
 	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top, ButtonWidth, 1, &PUpButton, m_buttonHeight);
+
+	// down
 	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + 2*ButtonWidth, top, ButtonWidth, 1, &PDownButton, m_buttonHeight);
 
+	// play (ok)
 	m_frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, m_x + BORDER_LEFT + 3*ButtonWidth, top + (m_buttonHeight - icon_foot_h)/2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + BORDER_LEFT + 3*ButtonWidth + icon_foot_w + 5, top + (m_buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth - 40, g_Locale->getText(LOCALE_AUDIOPLAYER_PLAY), COL_INFOBAR, 0, true); // UTF-8
 }
