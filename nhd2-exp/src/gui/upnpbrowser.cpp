@@ -97,8 +97,6 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string & /*actionKey*/
 {
 	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::exec:\n");
 
-	CAudioPlayer::getInstance()->init();
-
 	if(parent)
 		parent->hide();
 
@@ -141,44 +139,10 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string & /*actionKey*/
 	m_x = (((g_settings.screen_EndX - g_settings.screen_StartX) - (m_width + ConnectLineBox_Width)) / 2) + g_settings.screen_StartX + ConnectLineBox_Width;
 	m_y = (((g_settings.screen_EndY- g_settings.screen_StartY) - m_height)/ 2) + g_settings.screen_StartY;
 
-	//
-	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
-	{
-		if(webtv)
-			webtv->stopPlayBack();
-	}
-	else
-	{
-		// stop playback
-		g_Zapit->lockPlayBack();
-		
-		// Stop sectionsd
-		g_Sectionsd->setPauseScanning(true);
-	}
-
 	m_indexdevice = 0;
 	m_selecteddevice = 0;
 
 	selectDevice();
-
-	//
-	if(CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
-		CAudioPlayer::getInstance()->stop();
-	
-	//
-	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
-	{
-		if(webtv)
-			webtv->startPlayBack(webtv->getTunedChannel());
-	}
-	else
-	{
-		// start playback
-		g_Zapit->unlockPlayBack();
-
-		// Start Sectionsd
-		g_Sectionsd->setPauseScanning(false);
-	}
 
 	CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , m_LastMode );
 	g_RCInput->postMsg( NeutrinoMessages::SHOW_INFOBAR, 0 );
@@ -651,8 +615,6 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 
 	while (loop)
 	{
-		updateTimes();		
-		
 		if (rchanged)
 		{
 			if (entries)
@@ -877,8 +839,6 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 		}
 		else if( msg == CRCInput::RC_red)
 		{
-			if(CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
-				CAudioPlayer::getInstance()->stop();
 			m_folderplay = false;
 		}
 		else if(msg == NeutrinoMessages::RECORD_START ||
@@ -1259,37 +1219,5 @@ void CUpnpBrowserGui::clearItem2DetailsLine()
 void CUpnpBrowserGui::paintItem2DetailsLine(int pos)
 {
 	::paintItem2DetailsLine(m_x, m_y, m_width, m_height - m_info_height, m_info_height, m_title_height + m_theight, m_fheight, pos);
-}
-
-void CUpnpBrowserGui::updateTimes(const bool force)
-{
-	int top;
-	
-	if(CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
-	{
-		bool updatePlayed = force;
-
-		if ((m_time_played != CAudioPlayer::getInstance()->getTimePlayed()))
-		{
-			m_time_played = CAudioPlayer::getInstance()->getTimePlayed();
-			updatePlayed = true;
-		}
-		
-		char play_time[8];
-		snprintf(play_time, 7, "%ld:%02ld", m_time_played / 60, m_time_played % 60);
-		char tmp_time[] = "000:00";
-		int w = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(tmp_time);
-
-		if (updatePlayed)
-		{
-			paintDetails(NULL, 0, true);
-			top = m_y + m_height - m_info_height;
-
-			// refresh box
-			//m_frameBuffer->paintBoxRel(m_x + m_width - w - SCROLLBAR_WIDTH, top + 2, w + 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient);
-
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + m_width - w - 11, top + (m_info_height - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w, play_time, COL_MENUHEAD);			
-		}
-	}
 }
 

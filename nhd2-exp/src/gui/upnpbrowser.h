@@ -113,8 +113,6 @@ class CUpnpBrowserGui : public CMenuTarget
 		void paintDetails(std::vector<UPnPEntry> *entry, unsigned int index, bool use_playing = false);
 		void clearItem2DetailsLine(void);
 		void paintItem2DetailsLine(int pos);
-
-		void updateTimes(const bool force = false);
 };
 
 #endif

@@ -1134,17 +1134,17 @@ bool CSatelliteSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 			(*it)->setActive(false);
 		}
 
-		for(it = items3.begin(); it != items3.end(); it++) 
+		for(it = items3.begin(); it != items3.end(); it++) // auto scan all
 		{
 			(*it)->setActive(false);
 		}
 
-		for(it = items4.begin(); it != items4.end(); it++) 
+		for(it = items4.begin(); it != items4.end(); it++) // unicable 
 		{
 			(*it)->setActive(false);
 		}
 
-		for(it = items5.begin(); it != items5.end(); it++) 
+		for(it = items5.begin(); it != items5.end(); it++) // diseqc repeats
 		{
 			(*it)->setActive(true);
 		}
@@ -1182,13 +1182,52 @@ bool CSatelliteSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 		{
 			(*it)->setActive(true);
 		}
+
 		for(it = items2.begin(); it != items2.end(); it++) 
 		{
 			(*it)->setActive(false);
 		}
+
 		for(it = items3.begin(); it != items3.end(); it++) 
 		{
 			(*it)->setActive(true);
+		}
+
+		for(it = items4.begin(); it != items4.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+
+		for(it = items5.begin(); it != items5.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+	}
+	else if(type > DISEQC_ADVANCED) 
+	{
+		for(it = items1.begin(); it != items1.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+
+		for(it = items2.begin(); it != items2.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+
+		for(it = items3.begin(); it != items3.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+
+		for(it = items4.begin(); it != items4.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+
+		for(it = items5.begin(); it != items5.end(); it++) 
+		{
+			(*it)->setActive(false);
 		}
 	}
 
@@ -1251,6 +1290,33 @@ bool CScanSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 
 		for(it = items3.begin(); it != items3.end(); it++) 
 		{
+			(*it)->setActive(false);
+		}
+
+		for(it = items4.begin(); it != items4.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+
+		for(it = items5.begin(); it != items5.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+	}
+	else
+	{
+		for(it = items1.begin(); it != items1.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+
+		for(it = items2.begin(); it != items2.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+
+		for(it = items3.begin(); it != items3.end(); it++) 
+		{
 			if (dmode != NO_DISEQC)
 				(*it)->setActive(true);
 		}
@@ -1265,21 +1331,6 @@ bool CScanSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 		{
 			if (dmode != NO_DISEQC && dmode < DISEQC_ADVANCED)
 				(*it)->setActive(true);
-		}
-	}
-	else
-	{
-		for(it = items1.begin(); it != items1.end(); it++) 
-		{
-			(*it)->setActive(true);
-		}
-		for(it = items2.begin(); it != items2.end(); it++) 
-		{
-			(*it)->setActive(true);
-		}
-		for(it = items3.begin(); it != items3.end(); it++) 
-		{
-			(*it)->setActive(true);
 		}
 	}
 

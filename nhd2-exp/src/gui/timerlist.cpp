@@ -77,12 +77,11 @@
 #include <gui/channel_select.h>
 
 
-//extern CBouquetManager *g_bouquetManager;
 extern char recDir[255];			// defined in neutrino.cpp
 
 #include <string.h>
 
-#define info_height 60
+//#define info_height 60
 
 
 class CTimerListNewNotifier : public CChangeObserver
@@ -423,7 +422,7 @@ void CTimerList::updateEvents(void)
 	
 	//Remove last deleted event from List
 	CTimerd::TimerList::iterator timer = timerlist.begin();
-	for(; timer != timerlist.end();timer++)
+	for(; timer != timerlist.end(); timer++)
 	{
 		if(timer->eventID == skipEventID)
 		{
@@ -433,29 +432,41 @@ void CTimerList::updateEvents(void)
 	}
 	sort(timerlist.begin(), timerlist.end());
 
+	//
 	width  = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
+	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 	
+	// title height
 	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+
+	//
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_foot_w, &icon_foot_h);
+	buttonHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+
+	// item height
 	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 
-	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
-
-	listmaxshow = (height-theight-0)/(fheight*2);
-	height = theight+0+listmaxshow*fheight*2;	// recalc height
+	// recalculate hight
+	listmaxshow = (height - theight - buttonHeight)/(fheight*2);
+	height = theight + listmaxshow*fheight*2 + buttonHeight;
 	
+	// dont shrink menu
+	/*
 	if(timerlist.size() < listmaxshow)
 	{
-		listmaxshow=timerlist.size();
-		height = theight+0+listmaxshow*fheight*2;	// recalc height
+		listmaxshow = timerlist.size();
+		height = theight + listmaxshow*fheight*2 + buttonHeight;	// recalc height
 	}
-	if(selected==timerlist.size() && !(timerlist.empty()))
+	*/
+
+	if(selected == timerlist.size() && !(timerlist.empty()))
 	{
-		selected=timerlist.size()-1;
+		selected = timerlist.size() - 1;
 		liststart = (selected/listmaxshow)*listmaxshow;
 	}
 	
         x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - width) / 2;
-        y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - (height+ info_height)) / 2;
+        y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - (height /*+ info_height*/)) / 2;
 }
 
 int CTimerList::show()
@@ -615,7 +626,7 @@ void CTimerList::hide()
 {
 	if(visible)
 	{
-		frameBuffer->paintBackgroundBoxRel(x, y, width, height + info_height);
+		frameBuffer->paintBackgroundBoxRel(x, y, width, height /*+ info_height*/);
 		frameBuffer->blit();
 		
 		visible = false;
@@ -625,7 +636,7 @@ void CTimerList::hide()
 bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData * epgdata);
 void CTimerList::paintItem(int pos)
 {
-	int ypos = y+ theight+0 + pos*fheight*2;
+	int ypos = y + theight + pos*fheight*2;
 
 	uint8_t    color;
 	fb_pixel_t bgcolor;
@@ -650,10 +661,11 @@ void CTimerList::paintItem(int pos)
 	int real_width = width;
 	if(timerlist.size()>listmaxshow)
 	{
-		real_width -= 15; //scrollbar
+		real_width -= SCROLLBAR_WIDTH; //scrollbar
 	}
 
 	frameBuffer->paintBoxRel(x, ypos, real_width, 2*fheight, bgcolor);
+
 	if(liststart + pos < timerlist.size())
 	{
 		CTimerd::responseGetTimer &timer = timerlist[liststart+pos];
@@ -716,7 +728,7 @@ void CTimerList::paintItem(int pos)
 					if(timer.epgID!=0)
 					{
 						CEPGData epgdata;
-						//if (g_Sectionsd->getEPGid(timer.epgID, timer.epg_starttime, &epgdata))
+						
 						if (sectionsd_getEPGid(timer.epgID, timer.epg_starttime, &epgdata))
 						{
 							zAddData += " : ";
@@ -752,9 +764,10 @@ void CTimerList::paintItem(int pos)
 			break;
 			default:{}
 		}
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x+160,ypos+2*fheight, real_width-165, zAddData, color, fheight, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + 160, ypos + 2*fheight, real_width - 165, zAddData, color, fheight, true); // UTF-8
+
 		// LCD Display
-		if(liststart+pos==selected)
+		if(liststart + pos == selected)
 		{
 			std::string line1 = convertTimerType2String(timer.eventType); // UTF-8
 			std::string line2 = zAlarmTime;
@@ -816,19 +829,20 @@ const struct button_label TimerListButtons[3] =
 void CTimerList::paintFoot()
 {
 	int ButtonWidth = (width - 20) / 4;
-	frameBuffer->paintBoxRel(x, y + height, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+	frameBuffer->paintBoxRel(x, y + height - buttonHeight, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 	
 	int icon_w, icon_h;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 
 	if (timerlist.empty())
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + ButtonWidth + BORDER_LEFT, y + height, ButtonWidth, 2, &(TimerListButtons[1]), buttonHeight);
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + ButtonWidth + BORDER_LEFT, y + height - buttonHeight, ButtonWidth, 2, &(TimerListButtons[1]), buttonHeight);
 	else
 	{
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height, ButtonWidth, 3, TimerListButtons, buttonHeight);
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - buttonHeight, ButtonWidth, 3, TimerListButtons, buttonHeight);
 
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + width - 1*ButtonWidth + BORDER_LEFT, y + height + (buttonHeight - icon_foot_h)/2);
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 1*ButtonWidth + BORDER_RIGHT + icon_foot_w, y + height + (buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth - icon_foot_w, g_Locale->getText(LOCALE_TIMERLIST_MODIFY), COL_INFOBAR, 0, true); // UTF-8
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + width - ButtonWidth + BORDER_LEFT, y + height -buttonHeight + (buttonHeight - icon_foot_h)/2);
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - ButtonWidth + BORDER_RIGHT + icon_foot_w, y + height - buttonHeight + (buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth - icon_foot_w, g_Locale->getText(LOCALE_TIMERLIST_MODIFY), COL_INFOBAR, 0, true); // UTF-8
 	}
 }
 
@@ -841,17 +855,18 @@ void CTimerList::paint()
 
 	paintHead();
 	
-	for(unsigned int count=0;count<listmaxshow;count++)
+	for(unsigned int count=0; count < listmaxshow; count++)
 	{
 		paintItem(count);
 	}
 
+	// scrollBar
 	if(timerlist.size() > listmaxshow)
 	{
 		int ypos = y + theight;
 		int sb = 2*fheight*listmaxshow;
 		
-		frameBuffer->paintBoxRel(x + width- 15, ypos, 15, sb, COL_MENUCONTENT_PLUS_1);
+		frameBuffer->paintBoxRel(x + width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb, COL_MENUCONTENT_PLUS_1);
 
 		int sbc = ((timerlist.size()- 1)/listmaxshow)+ 1;
 		float sbh = (sb- 4)/ sbc;

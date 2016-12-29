@@ -17,10 +17,10 @@ int fh_png_id(const char * name)
 {
 	int fd;
 	char id[4];
-	fd=open(name,O_RDONLY); if(fd==-1) return(0);
+	fd = open(name, O_RDONLY); if(fd == -1) return(0);
 	read(fd,id,4);
 	close(fd);
-	if(id[1]=='P' && id[2]=='N' && id[3]=='G') return(1);
+	if(id[1] == 'P' && id[2] == 'N' && id[3] == 'G') return(1);
 	return(0);
 }
 
@@ -37,7 +37,7 @@ int int_png_load(const char *name, unsigned char **buffer, int* xp, int* yp, int
 	png_byte * fbptr;
 	FILE     * fh;
 
-	if(!(fh=fopen(name,"rb")))
+	if(!(fh = fopen(name,"rb")))
 		return(FH_ERROR_FILE);
 	
 	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
