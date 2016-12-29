@@ -106,7 +106,7 @@ class CUpnpBrowserGui : public CMenuTarget
 		void paintItem(std::vector<UPnPEntry> *entry, unsigned int selected, unsigned int max, unsigned int offset);
 		void paintDevice();
 		std::vector<UPnPEntry> *decodeResult(std::string);
-		void playnext();
+		void handleFolder();
 		void splitProtocol(std::string &protocol, std::string &prot, std::string &network, std::string &mime, std::string &additional);
 		void paintItemPos(std::vector<UPnPEntry> *entry, unsigned int pos, unsigned int selected);
 		void paintDevicePos(unsigned int pos);

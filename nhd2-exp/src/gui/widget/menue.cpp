@@ -3578,7 +3578,7 @@ void CMenulistBox::initFrames()
         	l_name = g_Locale->getText(name);
 
 	// footInfo height
-	cFrameFootInfo.iHeight = (FootInfo)? footInfoHeight : 0;
+	cFrameFootInfo.iHeight = (FootInfo)? 70 : 0;
 
 	height = wanted_height;
 
@@ -3651,6 +3651,20 @@ void CMenulistBox::initFrames()
 	listmaxshow = (height - hheight - fheight)/item_height;
 
 	height = hheight + listmaxshow*item_height + fheight;
+
+	//
+	full_width = width;
+	full_height = height + cFrameFootInfo.iHeight;
+		
+	// coordinations
+	x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - full_width ) >> 1 );
+	y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
+}
+
+void CMenulistBox::resizeFrames()
+{
+	// footInfo height
+	cFrameFootInfo.iHeight = footInfoHeight;
 
 	//
 	full_width = width;
@@ -3915,7 +3929,7 @@ void CMenulistBox::enableFootInfo(void)
 void CMenulistBox::setFootInfoHeight(int height)
 {
 	footInfoHeight = height;
-	initFrames();
+	resizeFrames();
 }
 
 void CMenulistBox::hide()

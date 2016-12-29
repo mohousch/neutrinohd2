@@ -1817,7 +1817,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 	
 	audioMenu->enablePaintDate();
 	audioMenu->enableFootInfo();
-	audioMenu->setFootInfoHeight(35); 
+	audioMenu->setFootInfoHeight(30); 
 
 	// head
 	audioMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));

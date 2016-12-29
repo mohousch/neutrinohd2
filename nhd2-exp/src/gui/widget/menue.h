@@ -861,6 +861,7 @@ class CMenulistBox : public CMenuTarget
 		void enableFootInfo(void);
 		void setTimeOut(int to = 0){timeout = to;};
 		void setFootInfoHeight(int height = 70);
+		void resizeFrames();
 };
 
 // CMenulistBoxItem
