@@ -69,9 +69,20 @@ void yhttpd_reload_config()
 //
 // Main Entry
 //
+void thread_cleanup (void *p)
+{
+	Cyhttpd *y = (Cyhttpd *)p;
+	if (y) {
+		y->stop_webserver();
+		delete y;
+	}
+	y = NULL;
+}
+
 void * nhttpd_main_thread(void *) 
 {
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, 0);
+	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	
 	aprintf("Webserver %s tid %ld\n", WEBSERVERNAME, syscall(__NR_gettid));
 	
@@ -86,12 +97,15 @@ void * nhttpd_main_thread(void *)
 		return (void *) EXIT_FAILURE;
 	}
 
+	pthread_cleanup_push(thread_cleanup, yhttpd);
+
 #ifndef Y_CONFIG_FEATURE_THREADING
 	yhttpd->flag_threading_off = true;
 #endif
 
 	yhttpd->hooks_attach();
 	yhttpd->ReadConfig();
+
 	if (yhttpd->Configure()) 
 	{
 		// Start Webserver: fork ist if not in debug mode
@@ -100,7 +114,10 @@ void * nhttpd_main_thread(void *)
 
 		yhttpd->run();
 	}
+
+	pthread_cleanup_pop(0);
 	delete yhttpd;
+	yhttpd = NULL;
 
 	aprintf("Main end\n");
 	return (void *) EXIT_SUCCESS;
@@ -120,6 +137,8 @@ Cyhttpd::~Cyhttpd()
 {
 	if (webserver)
 		delete webserver;
+
+	CLanguage::deleteInstance();
 	webserver = NULL;
 }
 
