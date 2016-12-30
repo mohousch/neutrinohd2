@@ -899,8 +899,8 @@ void CUpnpBrowserGui::paintDevicePos(unsigned int pos)
 	std::string name = m_devices[pos + m_indexdevice].friendlyname;
 
 	int w = g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getRenderWidth(name) + 5;
-	g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 10, ypos + m_fheight, m_width - 30 - w, num, color, m_fheight, true); // UTF-8
-	g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + m_width - 15 - w, ypos + m_fheight, w, name, color, m_fheight, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + BORDER_LEFT, ypos + m_fheight, m_width - 30 - w, num, color, m_fheight, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + m_width - SCROLLBAR_WIDTH - w, ypos + m_fheight, w, name, color, m_fheight, true); // UTF-8
 }
 
 void CUpnpBrowserGui::paintItemPos(std::vector<UPnPEntry> *entry, unsigned int pos, unsigned int selected)
@@ -1193,9 +1193,11 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 			{
 				m_playing_entry_is_shown = true;
 
-				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + BORDER_LEFT, top + 4 + + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - BORDER_LEFT - BORDER_RIGHT, m_playing_entry.title + " - " + m_playing_entry.artist, COL_INFOBAR, 0, true); // UTF-8
+				// first line
+				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + BORDER_LEFT, top + 4 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_width - BORDER_LEFT - BORDER_RIGHT, m_playing_entry.title + " - " + m_playing_entry.artist, COL_INFOBAR, 0, true); // UTF-8
 
-				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + BORDER_LEFT, top + 4 + m_info_height/2 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - BORDER_LEFT - BORDER_RIGHT, m_playing_entry.album, COL_INFOBAR, 0, true); // UTF-8
+				// second line
+				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + BORDER_LEFT, top + 4 + m_info_height/2 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_width - BORDER_LEFT - BORDER_RIGHT, m_playing_entry.album, COL_INFOBAR, 0, true); // UTF-8
 			}
 		} 
 		else 
@@ -1205,9 +1207,11 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 			
 			m_playing_entry_is_shown = false;
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + BORDER_LEFT, top + 4 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - BORDER_LEFT - BORDER_RIGHT, (*entry)[index].title + " - " + (*entry)[index].artist, COL_INFOBAR, 0, true); // UTF-8
+			// first line
+			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + BORDER_LEFT, top + 4 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_width - BORDER_LEFT - BORDER_RIGHT, (*entry)[index].title + " - " + (*entry)[index].artist, COL_INFOBAR, 0, true); // UTF-8
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + BORDER_LEFT, top + 4 + m_info_height/2 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - BORDER_LEFT - BORDER_RIGHT, (*entry)[index].album, COL_INFOBAR, 0, true); // UTF-8
+			// second line
+			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + BORDER_LEFT, top + 4 + m_info_height/2 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_width - BORDER_LEFT - BORDER_RIGHT, (*entry)[index].album, COL_INFOBAR, 0, true); // UTF-8
 		}
 	}
 }
