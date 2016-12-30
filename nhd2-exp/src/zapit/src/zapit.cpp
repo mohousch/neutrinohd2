@@ -879,7 +879,7 @@ void saveZapitSettings(bool write, bool write_a)
 		
 		if (config.getBool("saveLastChannel", true)) 
 		{
-			config.setInt32("lastChannelMode", (currentMode & RADIO_MODE) ? 1 : 0);
+			config.setInt32("lastChannelMode", (currentMode & RADIO_MODE) ? 0 : 1);
 			config.setInt32("lastChannelRadio", lastChannelRadio);
 			config.setInt32("lastChannelTV", lastChannelTV);
 			config.setInt64("lastChannel", live_channel_id);
@@ -889,7 +889,7 @@ void saveZapitSettings(bool write, bool write_a)
 
 		config.setInt32("scanSDT", scanSDT);
 
-		if (config.getModifiedFlag())
+		//if (config.getModifiedFlag())
 			config.saveConfig(ZAPIT_CONFIGFILE);
 
 	}
@@ -917,6 +917,8 @@ void loadZapitSettings()
 	live_channel_id = config.getInt64("lastChannel", 0) & 0xFFFFFFFFFFFFULL;
 	lastChannelRadio = config.getInt32("lastChannelRadio", 0);
 	lastChannelTV = config.getInt32("lastChannelTV", 0);
+
+	dprintf(DEBUG_NORMAL, "lastChannelMode:%d\n", lastChannelMode);
 	
 	makeRemainingChannelsBouquet = config.getBool("makeRemainingChannelsBouquet", false);
 	
@@ -1699,7 +1701,7 @@ void setRadioMode(void)
 
 void setTVMode(void)
 {
-	dprintf(DEBUG_NORMAL, "zapit::setRadioMode:\n");
+	dprintf(DEBUG_NORMAL, "zapit::setTVMode:\n");
 
 	currentMode |= TV_MODE;
 	currentMode &= ~RADIO_MODE;
@@ -4700,8 +4702,7 @@ int zapit_main_thread(void *data)
 	}
 	else
 	{
-		//if (config.getInt32("lastChannelMode", 0))
-		if(lastChannelMode == 0)
+		if (lastChannelMode == 0)
 			setRadioMode();
 		else
 			setTVMode();
