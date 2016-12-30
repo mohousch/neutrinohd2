@@ -99,9 +99,7 @@ void * nhttpd_main_thread(void *)
 
 	pthread_cleanup_push(thread_cleanup, yhttpd);
 
-#ifndef Y_CONFIG_FEATURE_THREADING
 	yhttpd->flag_threading_off = true;
-#endif
 
 	yhttpd->hooks_attach();
 	yhttpd->ReadConfig();
@@ -276,10 +274,10 @@ void Cyhttpd::hooks_attach()
 	CyhookHandler::attach(NeutrinoAPI->NeutrinoYParser);
 
 	CyhookHandler::attach(NeutrinoAPI->ControlAPI);
-#endif
-
+#else
 #ifdef Y_CONFIG_USE_YPARSER
 	CyhookHandler::attach(&yParser);
+#endif
 #endif
 
 #ifdef Y_CONFIG_USE_CACHE
@@ -313,10 +311,10 @@ void Cyhttpd::hooks_detach()
 
 #if defined(CONFIG_SYSTEM_TUXBOX)
 	CyhookHandler::detach(NeutrinoAPI->NeutrinoYParser);
-#endif
-
+#else
 #ifdef Y_CONFIG_USE_YPARSER
 	CyhookHandler::detach(&yParser);
+#endif
 #endif
 
 #ifdef Y_CONFIG_USE_CACHE

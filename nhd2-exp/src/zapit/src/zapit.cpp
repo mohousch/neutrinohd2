@@ -1691,12 +1691,16 @@ int change_audio_pid(uint8_t index)
 
 void setRadioMode(void)
 {
+	dprintf(DEBUG_NORMAL, "zapit::setRadioMode:\n");
+
 	currentMode |= RADIO_MODE;
 	currentMode &= ~TV_MODE;
 }
 
 void setTVMode(void)
 {
+	dprintf(DEBUG_NORMAL, "zapit::setRadioMode:\n");
+
 	currentMode |= TV_MODE;
 	currentMode &= ~RADIO_MODE;
 }
@@ -4696,7 +4700,8 @@ int zapit_main_thread(void *data)
 	}
 	else
 	{
-		if (config.getInt32("lastChannelMode", 0))
+		//if (config.getInt32("lastChannelMode", 0))
+		if(lastChannelMode == 0)
 			setRadioMode();
 		else
 			setTVMode();

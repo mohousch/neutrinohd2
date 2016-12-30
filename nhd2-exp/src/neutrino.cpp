@@ -2573,13 +2573,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 	hdd->exec(NULL, "");
 	delete hdd;
 	hdd = NULL;
-
-	// plugins
-	//g_PluginList = new CPlugins;
-	//g_PluginList->setPluginDir(PLUGINDIR);
-
-	// load Pluginlist before main menu (only show script menu if at least one script is available
-	//g_PluginList->loadPlugins();
 	
 	// init nvod changer
 	NVODChanger = new CNVODChangeExec;
