@@ -77,8 +77,8 @@ void * nhttpd_main_thread(void *)
 	
 	yhttpd = new Cyhttpd();
 	
-	//CLogging::getInstance()->setDebug(true);
-	//CLogging::getInstance()->LogLevel = 9;
+	CLogging::getInstance()->setDebug(true);
+	CLogging::getInstance()->LogLevel = 0;
 	
 	if (!yhttpd) 
 	{
