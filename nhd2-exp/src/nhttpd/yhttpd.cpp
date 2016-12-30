@@ -88,8 +88,8 @@ void * nhttpd_main_thread(void *)
 	
 	yhttpd = new Cyhttpd();
 	
-	CLogging::getInstance()->setDebug(true);
-	CLogging::getInstance()->LogLevel = 0;
+	//CLogging::getInstance()->setDebug(true);
+	//CLogging::getInstance()->LogLevel = 9;
 	
 	if (!yhttpd) 
 	{
@@ -395,10 +395,10 @@ void Cyhttpd::ReadConfig(void)
 	}
 	
 	// configure debugging & logging
-	if (CLogging::getInstance()->LogLevel == 0)
-		CLogging::getInstance()->LogLevel = Config->getInt32("server.log.loglevel", 0);
-	if (CLogging::getInstance()->LogLevel > 0)
-		CLogging::getInstance()->setDebug(true);
+	//if (CLogging::getInstance()->LogLevel == 0)
+	//	CLogging::getInstance()->LogLevel = Config->getInt32("server.log.loglevel", 0);
+	//if (CLogging::getInstance()->LogLevel > 0)
+	//	CLogging::getInstance()->setDebug(true);
 
 	// get variables
 	webserver->init(Config->getInt32("WebsiteMain.port", HTTPD_STANDARD_PORT), Config->getBool("webserver.threading", true));
