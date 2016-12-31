@@ -186,7 +186,9 @@ class CInfoViewer
 		void showMotorMoving(int duration);
 		void showLcdPercentOver();
 		void showSNR();
-		void showAktivTuner();		
+		void showAktivTuner();
+
+		void getCurrentNextEPG(t_channel_id ChannelID, bool newChan = false, int EPGPos = 0);
 
 		CProgressBar *snrscale, *sigscale, *timescale;
 		std::string eventname;

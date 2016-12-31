@@ -1443,6 +1443,7 @@ void CChannelList::virtual_zap_mode(bool up)
                         showInfo(chn - 1, epgpos);
                         lastchan = chn;
                 }
+
 		epgpos = 0;
                 g_RCInput->getMsg( &msg, &data, 15*10 ); // 15 seconds, not user changable
 		
@@ -1509,13 +1510,15 @@ void CChannelList::virtual_zap_mode(bool up)
 	g_InfoViewer->clearVirtualZapMode();
 
         chn--;
-        if (chn<0)
-                chn=0;
+        if (chn < 0)
+                chn = 0;
+
         if ( doZap )
         {
 		if(g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR] == 0)
 			g_InfoViewer->killTitle();
-                zapTo( chn );
+
+                zapTo(chn);
         }
         else
         {

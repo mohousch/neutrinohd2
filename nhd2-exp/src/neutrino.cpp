@@ -2865,6 +2865,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}		
 			else if( msg == CRCInput::RC_setup ) 
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				StopSubtitles();
 
 				if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_STANDARD)
@@ -3052,6 +3055,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}
 			else if( msg == CRCInput::RC_red ) 
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				StopSubtitles();
 				// event list
 				showUserMenu(SNeutrinoSettings::BUTTON_RED);
@@ -3059,6 +3065,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}
 			else if( ( msg == CRCInput::RC_green) || ( msg == CRCInput::RC_audio) )
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				if(mode == mode_iptv)
 				{
 					CAVPIDSelectWidget * AVSelectHandler = new CAVPIDSelectWidget();
@@ -3077,6 +3086,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}
 			else if( (msg == CRCInput::RC_yellow || msg == CRCInput::RC_multifeed) && (mode != mode_iptv))
 			{ 
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				StopSubtitles();
 				// NVODs
 				showUserMenu(SNeutrinoSettings::BUTTON_YELLOW);
@@ -3084,6 +3096,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}
 			else if( msg == CRCInput::RC_blue ) 
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				StopSubtitles();
 
 				// features
@@ -3119,6 +3134,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 #endif			
 			else if( (msg == CRCInput::RC_dvbsub) && (mode != mode_iptv) )
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				StopSubtitles();
 				
 				// show list only if we have subs
@@ -3135,11 +3153,17 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}
 			else if( msg == (neutrino_msg_t)g_settings.key_audioplayer ) 
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				CAudioPlayerGui tmpAudioPlayerGui;
 				tmpAudioPlayerGui.exec(NULL, "");
 			}
 			else if( msg == (neutrino_msg_t)g_settings.key_inetradio ) 	// internet radio
-			{	  
+			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+	  
 				StopSubtitles();
 
 				CAudioPlayerGui tmpAudioPlayerGui(true);
@@ -3149,6 +3173,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}			
 			else if( msg == (neutrino_msg_t)g_settings.key_recordsbrowser )	// recordsbrowser
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				CMoviePlayerGui tmpMoviePlayerGui;
 				tmpMoviePlayerGui.exec(NULL, "tsmoviebrowser");
 
@@ -3163,6 +3190,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}
 			else if( msg == (neutrino_msg_t)g_settings.key_moviebrowser )	// moviebrowser
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				CMoviePlayerGui tmpMoviePlayerGui;
 				tmpMoviePlayerGui.exec(NULL, "moviebrowser");
 
@@ -3177,6 +3207,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}
 			else if( msg == (neutrino_msg_t)g_settings.key_filebrowser )	// filebrowser player
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				CMoviePlayerGui tmpMoviePlayerGui;
 				tmpMoviePlayerGui.exec(NULL, "fileplayback");
 
@@ -3191,6 +3224,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}
 			else if( msg == (neutrino_msg_t)g_settings.key_webtv)	// webtv
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				StopSubtitles();
 
 				webtvMode();
@@ -3199,11 +3235,17 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}	
 			else if( msg == (neutrino_msg_t)g_settings.key_pictureviewer ) 	// picture viewer
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				CPictureViewerGui tmpPictureViewerGui;
 				tmpPictureViewerGui.exec(NULL, "");
 			}			
 			else if ( CRCInput::isNumeric(msg) && g_RemoteControl->director_mode && (mode != mode_iptv)) 
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				StopSubtitles();
 				
 				g_RemoteControl->setSubChannel(CRCInput::getNumericValue(msg));
@@ -3214,6 +3256,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}
 			else if (CRCInput::isNumeric(msg) && (mode != mode_iptv)) 
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				StopSubtitles();
 				
 				channelList->numericZap( msg );
@@ -3222,6 +3267,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}			
 			else if (CRCInput::isNumeric(msg) && (mode == mode_radio && g_settings.radiotext_enable && g_Radiotext != NULL && g_Radiotext->Rass_Show) ) 
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				// convert msg to int
 				int QKey = 0;
 				if(msg == CRCInput::RC_0)
@@ -3273,6 +3321,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}
 			else if( msg == (neutrino_msg_t) g_settings.key_pip && (mode != mode_iptv))
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				StopSubtitles();
 				
 				// first steo show channels from the same TP
@@ -3417,6 +3468,9 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 	// handle Keys
 	if( msg == CRCInput::RC_ok || msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
 	{
+		if(g_InfoViewer->is_visible)
+			g_InfoViewer->killTitle();
+
 		if( (mode == mode_tv) || (mode == mode_radio))
 		{
 			StopSubtitles();
