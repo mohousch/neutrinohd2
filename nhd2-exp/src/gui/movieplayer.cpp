@@ -2304,7 +2304,7 @@ void CTimeOSD::showMovieInfo(std::string Title, std::string Info, short Percent,
 	if(runningPercent > 100)
 		runningPercent = 100;
 
-	moviescale.reset();
+	//moviescale.reset();
 	
 	moviescale.paint(cFrameBoxInfo.iX + BORDER_LEFT, cFrameBoxInfo.iY + 30, runningPercent);
 	

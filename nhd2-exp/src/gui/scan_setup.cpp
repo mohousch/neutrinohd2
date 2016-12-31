@@ -1116,7 +1116,11 @@ CSatelliteSetupNotifier::CSatelliteSetupNotifier(int num)
 	feindex = num;
 }
 
-/* items1 enabled for advanced diseqc settings, items2 for diseqc != NO_DISEQC, items3 disabled for NO_DISEQC */
+// item1: comm uncomm
+// item2: lnb diseqc input
+// item3: auto scan all
+// item4: unicable
+// item5: diseqc repeats
 bool CSatelliteSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 {
 	std::vector<CMenuItem*>::iterator it;
@@ -1124,29 +1128,29 @@ bool CSatelliteSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 
 	if (type == NO_DISEQC) 
 	{
-		for(it = items1.begin(); it != items1.end(); it++) // comm uncomm
+		for(it = items1.begin(); it != items1.end(); it++)
 		{
 			(*it)->setActive(false);
 		}
 
-		for(it = items2.begin(); it != items2.end(); it++) // lnb disecq input
+		for(it = items2.begin(); it != items2.end(); it++)
 		{
 			(*it)->setActive(false);
 		}
 
-		for(it = items3.begin(); it != items3.end(); it++) // auto scan all
+		for(it = items3.begin(); it != items3.end(); it++)
 		{
 			(*it)->setActive(false);
 		}
 
-		for(it = items4.begin(); it != items4.end(); it++) // unicable 
+		for(it = items4.begin(); it != items4.end(); it++)
 		{
 			(*it)->setActive(false);
 		}
 
-		for(it = items5.begin(); it != items5.end(); it++) // diseqc repeats
+		for(it = items5.begin(); it != items5.end(); it++)
 		{
-			(*it)->setActive(true);
+			(*it)->setActive(false);
 		}
 	}
 	else if(type < DISEQC_ADVANCED) 

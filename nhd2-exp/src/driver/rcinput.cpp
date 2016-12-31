@@ -635,7 +635,7 @@ int CRCInput::addTimer(struct timeval Timeout)
 
 int CRCInput::addTimer(const time_t *Timeout)
 {
-	return addTimer( (unsigned long long)*Timeout* (unsigned long long) 1000000, true, false );
+	return addTimer( (unsigned long long)*Timeout*(unsigned long long)1000000, true, false );
 }
 
 void CRCInput::killTimer(uint32_t id)

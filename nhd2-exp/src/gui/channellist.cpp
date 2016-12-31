@@ -941,7 +941,7 @@ bool CChannelList::showInfo(int pos, int epgpos)
 	CZapitChannel * chan = chanlist[pos];
 	
 	// channel infobar
-	g_InfoViewer->showTitle(pos+1, chan->name, chan->getSatellitePosition(), chan->channel_id, true, epgpos); // UTF-8
+	g_InfoViewer->show(pos + 1, chan->name, chan->getSatellitePosition(), chan->channel_id, true, epgpos); // UTF-8
 	
 	return true;
 }
@@ -1550,7 +1550,7 @@ void CChannelList::quickZap(int key, bool cycle)
 	if(cycle)
 		bouquetList->orgChannelList->zapTo(bouquetList->Bouquets[bouquetList->getActiveBouquetNumber()]->channelList->getKey(selected)-1);
 	else
-        	zapTo( selected );
+        	zapTo(selected);
 
 	g_RCInput->clearRCMsg(); //FIXME test for n.103
 }

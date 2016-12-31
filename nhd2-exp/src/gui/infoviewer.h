@@ -146,19 +146,26 @@ class CInfoViewer
 		int             rt_w;	
 
 		int		asize;
-
+		bool show_dot;
+		bool new_chan;
 		CSectionsdClient::CurrentNextInfo info_CurrentNext;
 		t_channel_id   channel_id;
 
-		char           aspectRatio;
-		uint32_t       sec_timer_id;
-		bool           virtual_zap_mode;
-		
-		CChannelEventList               evtlist;
-		CChannelEventList::iterator     eli;
+		int timescale_posx;
+		int timescale_posy;
+		char runningPercent;
 
-		void show_Data( bool calledFromEvent = false );
-		void paintTime( bool show_dot, bool firstPaint, int posx, int posy, CFont * timeFont );
+		bool newfreq;
+
+		char aspectRatio;
+		uint32_t sec_timer_id;
+		bool virtual_zap_mode;
+		
+		CChannelEventList evtlist;
+		CChannelEventList::iterator eli;
+
+		void show_Data(bool calledFromEvent = false);
+		void paintTime(int posx, int posy, CFont * timeFont);
 		
 		void showButton_Audio();
 		void showButton_SubServices();
@@ -185,18 +192,20 @@ class CInfoViewer
 		std::string eventname;
 
  public:
-		bool 		chanready;
-		bool		is_visible;
+		bool chanready;
+		bool is_visible;
 
 #if defined (ENABLE_LCD)
-		uint32_t    	lcdUpdateTimer;
+		uint32_t lcdUpdateTimer;
 #endif		
 
 		CInfoViewer();
 
-		void	start();
+		void start();
 
-		void	showTitle(const int ChanNum, const std::string & Channel, const t_satellite_position satellitePosition, const t_channel_id new_channel_id = 0, const bool calledFromNumZap = false, int epgpos = 0); // Channel must be UTF-8 encoded
+		void showTitle(const int ChanNum, const std::string & Channel, const t_satellite_position satellitePosition); // Channel must be UTF-8 encoded
+
+		void show(const int _ChanNum, const std::string & _Channel, const t_satellite_position _satellitePosition, const t_channel_id _new_channel_id = 0, const bool _calledFromNumZap = false, int _epgpos = 0); // Channel must be UTF-8 encoded
 
 		enum
 		{

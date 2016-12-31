@@ -1682,7 +1682,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	
 	// locale text
 	stringstartposX = x + BORDER_LEFT + (icon_w? icon_w + ICON_OFFSET : 0);
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_RIGHT - (stringstartposX - x), l_text, color, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_LEFT - BORDER_RIGHT - (icon_w? icon_w + ICON_OFFSET : 0), l_text, color, 0, true); // UTF-8
 
 	//option-text
 	if (option_text != NULL)
@@ -1690,7 +1690,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		int stringwidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(option_text, true);
 		int stringstartposOption = std::max(stringstartposX + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true), x + dx - (stringwidth + BORDER_RIGHT)); //+ offx
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - (stringstartposOption- x),  option_text, color, 0, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_LEFT - (stringstartposOption- x),  option_text, color, 0, true);
 	}
 
 	// vfd
