@@ -2810,6 +2810,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 		// mode TV/Radio/IPTV
 		if( (mode == mode_tv) || (mode == mode_radio) || (mode == mode_iptv) ) 
 		{
+			if(g_InfoViewer->is_visible)
+				g_InfoViewer->killTitle();
+
 			if(msg == NeutrinoMessages::SHOW_EPG) 
 			{
 				StopSubtitles();
@@ -3299,6 +3302,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}			
 			else if((msg == CRCInput::RC_info) || ( msg == NeutrinoMessages::SHOW_INFOBAR ))
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				if(mode == mode_iptv)
 				{
 					if(webtv)
@@ -3335,6 +3341,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			{
 				if ( msg == CRCInput::RC_home )
 				{ 
+					if(g_InfoViewer->is_visible)
+						g_InfoViewer->killTitle();
+
   					CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 				}
 
@@ -3345,6 +3354,9 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 		{
 			if( msg == CRCInput::RC_home ) 
 			{
+				if(g_InfoViewer->is_visible)
+					g_InfoViewer->killTitle();
+
 				if( mode == mode_scart ) 
 				{
 					//wenn VCR Aufnahme dann stoppen

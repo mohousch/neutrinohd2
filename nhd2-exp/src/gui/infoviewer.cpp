@@ -573,7 +573,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 				if ( is_visible && showButtonBar ) 
 					showIcon_Resolution();
 			} 
-			else if ( g_settings.virtual_zap_mode && ((msg == CRCInput::RC_right) || msg == CRCInput::RC_left )) 
+			else if ( g_settings.virtual_zap_mode && ((msg == CRCInput::RC_right) || msg == CRCInput::RC_left) && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)) 
 			{
 				virtual_zap_mode = true;
 				res = messages_return::cancel_all;

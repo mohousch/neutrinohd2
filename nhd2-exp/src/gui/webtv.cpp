@@ -612,7 +612,7 @@ struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 
 void CWebTV::show(bool reload, bool reinit)
 {
-	dprintf(DEBUG_NORMAL, "CWebTV::hide:\n");
+	dprintf(DEBUG_NORMAL, "CWebTV::show:\n");
 
 	// load channesl
 	if(reload)
@@ -681,7 +681,10 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 		//infoviewer
 		g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
 
-		return menu_return::RETURN_EXIT_ALL;
+		// kill infobar
+		g_InfoViewer->killTitle();
+
+		return menu_return::RETURN_EXIT;
 	}
 	else if(actionKey == "RC_red")
 	{
@@ -714,6 +717,9 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		//infoviewer
 		g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
+
+		// kill infobar
+		g_InfoViewer->killTitle();
 	}
 	else if(actionKey == "RC_info")
 	{
