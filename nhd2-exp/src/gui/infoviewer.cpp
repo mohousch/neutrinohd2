@@ -539,6 +539,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 			timescale->reset();
 
 			showTitle(_ChanNum, ChannelName, _satellitePosition);
+			getEPG(channel_id, info_CurrentNext);
 			show_Data();
 
 			if ( msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
@@ -1060,14 +1061,17 @@ void CInfoViewer::showRadiotext()
 
 int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 {
+	printf("CInfoViewer::handleMsg: msg:%d\n", msg);
 
  	if ((msg == NeutrinoMessages::EVT_CURRENTNEXT_EPG) || (msg == NeutrinoMessages::EVT_NEXTPROGRAM)) 
 	{
+		printf("msg:%d\n", msg);
+
 		if ((*(t_channel_id *) data) == (channel_id & 0xFFFFFFFFFFFFULL)) 
 		{
 	  		getEPG(*(t_channel_id *)data, info_CurrentNext);
 	  		if ( is_visible )
-				show_Data(true);
+				show_Data();
 			
 #if ENABLE_LCD			
 	  		showLcdPercentOver();
@@ -1156,10 +1160,10 @@ int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 		if ( is_visible && showButtonBar ) 
 			showIcon_Resolution();
 
-		if ((*(t_channel_id *)data) == channel_id)
+		//if ((*(t_channel_id *)data) == channel_id)
 		{
 	  		if ( is_visible && showButtonBar && (!g_RemoteControl->are_subchannels))
-				show_Data(true);
+				show_Data();
 		}
 
 #if ENABLE_LCD
@@ -1284,6 +1288,8 @@ void CInfoViewer::showButton_SubServices()
 
 void CInfoViewer::getEPG(const t_channel_id for_channel_id, CSectionsdClient::CurrentNextInfo &info)
 {
+	dprintf(DEBUG_NORMAL, "channel_id:%llx\n", for_channel_id);
+
 	static CSectionsdClient::CurrentNextInfo oldinfo;
 
 	// to clear the oldinfo for channels without epg, call getEPG() with for_channel_id = 0
@@ -1294,8 +1300,6 @@ void CInfoViewer::getEPG(const t_channel_id for_channel_id, CSectionsdClient::Cu
 	}
 
 	sectionsd_getCurrentNextServiceKey(for_channel_id & 0xFFFFFFFFFFFFULL, info);
-	
-	dprintf(DEBUG_NORMAL, "CInfoViewer::getEPG: old uniqueKey %llx new %llx\n", oldinfo.current_uniqueKey, info.current_uniqueKey);
 
 	// of there is no EPG, send an event so that parental lock can work
 	if (info.current_uniqueKey == 0 && info.next_uniqueKey == 0) 
@@ -1581,26 +1585,30 @@ void CInfoViewer::show_Data(bool calledFromEvent)
 				// current infos
 				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString (ChanInfoX, ChanInfoY + ChanInfoHeight, BoxEndX - ChanInfoX, g_Locale->getText(LOCALE_INFOVIEWER_NOCURRENT), COL_COLORED_EVENTS_INFOBAR, 0, true);	// UTF-8
 
-				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(BoxStartX + 10, ChanInfoY + 2*ChanInfoHeight, EPGTimeWidth, nextStart, COL_INFOBAR );
+				// next
+				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(BoxStartX + BORDER_LEFT, ChanInfoY + 2*ChanInfoHeight, EPGTimeWidth, nextStart, COL_MENUCONTENTINACTIVE);
 
-				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(ChanInfoX, ChanInfoY + 2*ChanInfoHeight, duration2TextPos - ChanInfoX - 5, info_CurrentNext.next_name, COL_INFOBAR, 0, true);
-				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(duration2TextPos, ChanInfoY + 2*ChanInfoHeight, duration2Width, nextDuration, COL_INFOBAR );
+				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(ChanInfoX, ChanInfoY + 2*ChanInfoHeight, duration2TextPos - ChanInfoX - 5, info_CurrentNext.next_name, COL_MENUCONTENTINACTIVE, 0, true);
+				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(duration2TextPos, ChanInfoY + 2*ChanInfoHeight, duration2Width, nextDuration, COL_MENUCONTENTINACTIVE);
 	  		} 
 			else 
 			{
+				// current
 			  	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString (BoxStartX + 10, ChanInfoY + ChanInfoHeight, EPGTimeWidth, runningStart, COL_COLORED_EVENTS_INFOBAR);
 
 			  	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString (ChanInfoX, ChanInfoY + ChanInfoHeight, duration1TextPos - ChanInfoX - 5, info_CurrentNext.current_name, COL_COLORED_EVENTS_INFOBAR, 0, true);
 
-		  		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString (duration1TextPos, ChanInfoY + ChanInfoHeight, duration1Width, runningRest, COL_INFOBAR);
+		  		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString (duration1TextPos, ChanInfoY + ChanInfoHeight, duration1Width, runningRest, COL_COLORED_EVENTS_INFOBAR);
 
 				// next 
 				if ((!is_nvod) && (info_CurrentNext.flags & CSectionsdClient::epgflags::has_next)) 
 				{
-					g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString (BoxStartX + 10, ChanInfoY + 2*ChanInfoHeight, EPGTimeWidth, nextStart, COL_INFOBAR);
-					g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString (ChanInfoX, ChanInfoY + 2*ChanInfoHeight, duration2TextPos - ChanInfoX - 5, info_CurrentNext.next_name, COL_INFOBAR, 0, true);
+					g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString (BoxStartX + BORDER_LEFT, ChanInfoY + 2*ChanInfoHeight, EPGTimeWidth, nextStart, COL_MENUCONTENTINACTIVE);
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString (duration2TextPos, ChanInfoY + 2*ChanInfoHeight, duration2Width, nextDuration, COL_INFOBAR );
+					
+					g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString (ChanInfoX, ChanInfoY + 2*ChanInfoHeight, duration2TextPos - ChanInfoX - 5, info_CurrentNext.next_name, COL_MENUCONTENTINACTIVE, 0, true);
+
+					g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString (duration2TextPos, ChanInfoY + 2*ChanInfoHeight, duration2Width, nextDuration, COL_MENUCONTENTINACTIVE);
 				} 
 	  		}
 		}

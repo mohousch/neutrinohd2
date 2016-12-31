@@ -1133,7 +1133,7 @@ void CMoviePlayerGui::PlayFile(void)
 #endif
 
 				//
-				FileTime.SetMode(CTimeOSD::MODE_DESC);
+				FileTime.SetMode(CTimeOSD::MODE_ASC);
 				FileTime.show(Title, Info1.empty()? Info2 : Info1, (position / (duration / 100)), ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 
 				timeStartShowingInfo = time(NULL);	
@@ -2186,16 +2186,20 @@ void CTimeOSD::showMovieInfo(std::string Title, std::string Info, short Percent,
 	
 	int icon_w_asp, icon_h_asp;
 	frameBuffer->getIconSize(aspect_icon, &icon_w_asp, &icon_h_asp);
-	frameBuffer->paintIcon(aspect_icon, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_OFFSET - icon_w_asp, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h_asp)/2);
+	frameBuffer->paintIcon(aspect_icon, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_TO_ICON_OFFSET - icon_w_asp, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h_asp)/2);
 	
 	// mp keys
 	frameBuffer->getIconSize(NEUTRINO_ICON_FF_SMALL, &icon_w, &icon_h);
 		
-	frameBuffer->paintIcon(NEUTRINO_ICON_REW_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_OFFSET - icon_w_asp - ICON_OFFSET - 5*icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
-	frameBuffer->paintIcon(NEUTRINO_ICON_PLAY_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_OFFSET - icon_w_asp - ICON_OFFSET - 4*icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
-	frameBuffer->paintIcon(NEUTRINO_ICON_PAUSE_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_OFFSET - icon_w_asp - ICON_OFFSET - 3*icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
-	frameBuffer->paintIcon(NEUTRINO_ICON_STOP_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_OFFSET - icon_w_asp - ICON_OFFSET - 2*icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
-	frameBuffer->paintIcon(NEUTRINO_ICON_FF_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_OFFSET - icon_w_asp - ICON_OFFSET - icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_REW_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_TO_ICON_OFFSET - icon_w_asp - ICON_TO_ICON_OFFSET - 5*icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+
+	frameBuffer->paintIcon(NEUTRINO_ICON_PLAY_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_TO_ICON_OFFSET - icon_w_asp - ICON_TO_ICON_OFFSET - 4*icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+
+	frameBuffer->paintIcon(NEUTRINO_ICON_PAUSE_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_TO_ICON_OFFSET - icon_w_asp - ICON_TO_ICON_OFFSET - 3*icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+
+	frameBuffer->paintIcon(NEUTRINO_ICON_STOP_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_TO_ICON_OFFSET - icon_w_asp - ICON_TO_ICON_OFFSET - 2*icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
+
+	frameBuffer->paintIcon(NEUTRINO_ICON_FF_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_TO_ICON_OFFSET - icon_w_asp - ICON_TO_ICON_OFFSET - icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
 		
 	//playstate
 	const char *icon = NEUTRINO_ICON_PLAY;
@@ -2228,15 +2232,6 @@ void CTimeOSD::showMovieInfo(std::string Title, std::string Info, short Percent,
 		//FIXME:??? position
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->RenderString(icon_x + icon_w + ICON_OFFSET, icon_y + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->getHeight(), BoxWidth/5, strSpeed, COL_INFOBAR ); // UTF-8
 	}
-	
-	/*
-	time_t tDisplayTime = duration/1000;
-	char cDisplayTime[8 + 1];
-	strftime(cDisplayTime, 9, "%T", gmtime(&tDisplayTime));
-	
-	int durationWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth("00:00:00");;
-	int durationTextPos = cFrameBoxInfo.iX + cFrameBoxInfo.iWidth - durationWidth - BORDER_RIGHT;
-	*/
 		
 	int speedWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth("-8");
 		
