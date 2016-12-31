@@ -1413,6 +1413,8 @@ int CChannelList::numericZap(int key)
 
 void CChannelList::virtual_zap_mode(bool up)
 {
+	dprintf(DEBUG_NORMAL, "CChannelList::virtual_zap_mode\n");
+
         neutrino_msg_t      msg;
         neutrino_msg_data_t data;
 
@@ -1545,7 +1547,7 @@ void CChannelList::quickZap(int key, bool cycle)
         }
 	else if ((key == g_settings.key_quickzap_up) || (key == CRCInput::RC_right) )
 	{
-                selected = (selected+1)%chanlist.size();
+                selected = (selected + 1)%chanlist.size();
         }
 
 	dprintf(DEBUG_NORMAL, "CChannelList::quickZap: quick zap selected = %d getActiveBouquetNumber %d\n", selected, bouquetList->getActiveBouquetNumber());

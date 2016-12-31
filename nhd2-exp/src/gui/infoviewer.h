@@ -216,7 +216,7 @@ class CInfoViewer
 			AC3_ACTIVE
 		};
 
-		void lookAheadEPG(const int ChanNum, const std::string & Channel, const t_channel_id new_channel_id = 0, const bool calledFromNumZap = false); //alpha: fix for nvod subchannel update
+		//void lookAheadEPG(const int ChanNum, const std::string & Channel, const t_channel_id new_channel_id = 0, const bool calledFromNumZap = false); //alpha: fix for nvod subchannel update
 		void killTitle();
 		
 		void getEPG(const t_channel_id for_channel_id, CSectionsdClient::CurrentNextInfo &info);

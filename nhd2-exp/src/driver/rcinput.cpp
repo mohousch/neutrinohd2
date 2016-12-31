@@ -617,7 +617,7 @@ int CRCInput::addTimer(unsigned long long Interval, bool oneshot, bool correct_t
 	_newtimer.correct_time = correct_time;
 
 	std::vector<timer>::iterator e;
-	for ( e= timers.begin(); e!= timers.end(); ++e )
+	for ( e = timers.begin(); e!= timers.end(); ++e )
 		if ( e->times_out > _newtimer.times_out )
 			break;
 
@@ -662,7 +662,7 @@ int CRCInput::checkTimers()
 	unsigned long long timeNow = (unsigned long long) tv.tv_usec + (unsigned long long)((unsigned long long) tv.tv_sec * (unsigned long long) 1000000);
 
 	std::vector<timer>::iterator e;
-	for ( e= timers.begin(); e!= timers.end(); ++e )
+	for ( e = timers.begin(); e != timers.end(); ++e )
 	{
 		if ( e->times_out< timeNow + 2000 )
 		{
