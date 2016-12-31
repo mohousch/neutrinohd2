@@ -61,7 +61,7 @@ class CWindow
 		bool enableshadow;
 		bool savescreen;
 
-		void init(void);
+		//void init(void);
 		void saveScreen();
 		void restoreScreen();
 
@@ -71,6 +71,7 @@ class CWindow
 		CWindow(CBox* position);
 		~CWindow();
 
+		void init(void);
 		void setDimension(const int x, const int y, const int dx, const int dy);
 		void setDimension(CBox* position);
 		void setColor(int col){color = col;};

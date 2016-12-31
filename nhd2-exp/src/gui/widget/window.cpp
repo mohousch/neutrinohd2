@@ -76,6 +76,7 @@ void CWindow::init(void)
 
 	savescreen = false;
 	background	= NULL;
+
 	full_width = enableshadow? cFrameBox.iWidth + SHADOW_OFFSET : cFrameBox.iWidth;
 	full_height = enableshadow? cFrameBox.iHeight + SHADOW_OFFSET : cFrameBox.iHeight;
 }
