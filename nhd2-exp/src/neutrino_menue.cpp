@@ -111,7 +111,7 @@ void CNeutrinoApp::InitMainMenu(CMenuWidgetExtended& mainMenu)
 	//box info
 	mainMenu.addItem( new CMenuForwarderExtended(LOCALE_DBOXINFO, true, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
 
-	mainMenu.integratePlugins(CPlugins::I_TYPE_MAIN);
+	mainMenu.integratePlugins(CPlugins::I_TYPE_MAIN, shortcut++);
 }
 
 // smart menu design

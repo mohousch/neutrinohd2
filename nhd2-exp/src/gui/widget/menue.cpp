@@ -2656,6 +2656,7 @@ void CMenuWidgetExtended::integratePlugins(CPlugins::i_type_t integration, const
 	unsigned int number_of_plugins = (unsigned int) g_PluginList->getNumberOfPlugins();
 
 	std::string IconName;
+	unsigned int sc = shortcut;
 
 	for (unsigned int count = 0; count < number_of_plugins; count++)
 	{
@@ -2677,7 +2678,10 @@ void CMenuWidgetExtended::integratePlugins(CPlugins::i_type_t integration, const
 			}
 
 			//
-			CMenuForwarderExtended *fw_plugin = new CMenuForwarderExtended(g_PluginList->getName(count), enabled, CPluginsExec::getInstance(), to_string(count).c_str(), CRCInput::RC_nokey, "", IconName.c_str());
+			neutrino_msg_t dk = (shortcut != CRCInput::RC_nokey) ? CRCInput::convertDigitToKey(sc++) : CRCInput::RC_nokey;
+
+			//
+			CMenuForwarderExtended *fw_plugin = new CMenuForwarderExtended(g_PluginList->getName(count), enabled, CPluginsExec::getInstance(), to_string(count).c_str(), dk, "", IconName.c_str());
 
 			fw_plugin->setHelpText(g_PluginList->getDescription(count));
 			addItem(fw_plugin);
@@ -3132,7 +3136,7 @@ void CMenuFrameBox::integratePlugins(CPlugins::i_type_t integration, const unsig
 		if ((g_PluginList->getIntegration(count) == integration) && !g_PluginList->isHidden(count))
 		{
 			//
-			IconName = NEUTRINO_ICON_PLUGIN;
+			IconName = DATADIR "/neutrino/icons/" NEUTRINO_ICON_PLUGIN ".png";
 
 			std::string icon("");
 			icon = g_PluginList->getIcon(count);
