@@ -406,6 +406,21 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 
 	// activ tuner
 	showAktivTuner();
+
+	// radiotext	
+	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio)
+	{
+		if ((g_settings.radiotext_enable) && (!recordModeActive))
+			showRadiotext();
+		else
+			showIcon_RadioText(false);
+	}
+
+	// record icon
+	showRecordIcon(show_dot);
+
+	// snr/sig
+	showSNR();	
 		
 	// botton bar
 	frameBuffer->paintBoxRel(buttonBarStartX, buttonBarStartY, BoxWidth, buttonBarHeight, COL_INFOBAR_BUTTONS_BACKGROUND, RADIUS_MID, CORNER_BOTTOM);
@@ -430,15 +445,6 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 		showIcon_SubT();
 		showIcon_Resolution();
 	}
-
-	// radiotext	
-	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio)
-	{
-		if ((g_settings.radiotext_enable) && (!recordModeActive))
-			showRadiotext();
-		else
-			showIcon_RadioText(false);
-	}	
 }
 
 //
@@ -498,11 +504,6 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 
 	// show current_next epg data
 	getCurrentNextEPG(channel_id, new_chan, _epgpos);
-
-	// record icon
-	showRecordIcon(show_dot);
-
-	showSNR();
 
 	frameBuffer->blit();
 

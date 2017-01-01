@@ -933,13 +933,15 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.current_volume = configfile.getInt32("current_volume", 25);
 	strcpy( g_settings.audio_step, configfile.getString( "audio_step" , "5" ).c_str() );
 
+	// progressbar color
 	g_settings.progressbar_color = configfile.getInt32("progressbar_color", 0);
 
+	// gradient
 	g_settings.Head_gradient = configfile.getInt32("Head_gradient", gradientLight2Dark);
 	g_settings.Foot_gradient = configfile.getInt32("Foot_gradient", gradientDark2Light);
-	g_settings.Head_Info_gradient = configfile.getInt32("Head_Info_gradient", gradientDark2Light2Dark);
-	g_settings.Foot_Info_gradient = configfile.getInt32("Foot_Info_gradient", gradientDark2Light2Dark);
-	g_settings.infobar_gradient = configfile.getInt32("infobar_gradient", gradientDark2Light2Dark);
+	g_settings.Head_Info_gradient = configfile.getInt32("Head_Info_gradient", gradientLight2Dark);
+	g_settings.Foot_Info_gradient = configfile.getInt32("Foot_Info_gradient", gradientDark2Light);
+	g_settings.infobar_gradient = configfile.getInt32("infobar_gradient", gradientLight2Dark);
 	// END MISC OPTS
 
 	// HDD

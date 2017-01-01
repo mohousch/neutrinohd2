@@ -1095,6 +1095,7 @@ bool CYTBrowser::showYTMenu()
 
 	CMenuWidget mainMenu(LOCALE_YOUTUBE, NEUTRINO_ICON_YT_SMALL, MENU_WIDTH + 50);
 	mainMenu.disableMenuPosition();
+	mainMenu.enableSaveScreen(true);
 
 	int select = -1;
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
