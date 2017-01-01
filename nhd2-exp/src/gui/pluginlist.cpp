@@ -452,3 +452,48 @@ CPluginList::result_ CPluginChooser::pluginSelected()
 	strcpy(selected_plugin, g_PluginList->getFileName(pluginlist[selected]->number));
 	return CPluginList::close;
 }
+
+//
+CPluginsExec* CPluginsExec::getInstance()
+{
+	static CPluginsExec* pluginsExec = NULL;
+
+	if (!pluginsExec)
+		pluginsExec = new CPluginsExec();
+
+	return pluginsExec;
+}
+
+int CPluginsExec::exec(CMenuTarget* parent, const std::string & actionKey)
+{
+	if (actionKey.empty())
+		return menu_return::RETURN_NONE;
+
+	dprintf(DEBUG_NORMAL, "CPluginsExec exec: %s\n", actionKey.c_str());
+
+	int sel = atoi(actionKey.c_str());
+
+	if (parent != NULL)
+		parent->hide();
+
+	if (actionKey == "teletext") 
+	{
+		g_RCInput->postMsg(CRCInput::RC_timeout, 0);
+		g_RCInput->postMsg(CRCInput::RC_text, 0);
+		return menu_return::RETURN_EXIT;
+	}
+	else if (sel >= 0)
+		g_PluginList->startPlugin(sel);
+
+	/*
+	if (!g_PluginList->getScriptOutput().empty())
+		ShowMsg(LOCALE_PLUGINS_RESULT, g_PluginList->getScriptOutput(), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_SHELL);
+	*/
+
+	if (g_PluginList->getIntegration(sel) == CPlugins::I_TYPE_DISABLED)
+		return menu_return::RETURN_EXIT;
+
+	return menu_return::RETURN_REPAINT;
+}
+
+

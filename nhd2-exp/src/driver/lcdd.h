@@ -32,9 +32,18 @@
 #include <config.h>
 #endif
 
-#ifndef LCD_UPDATE
-#define LCD_UPDATE 1
+#ifdef LCD_UPDATE
+// TODO Why is USE_FILE_OFFSET64 not defined, if file.h is included here????
+#ifndef __USE_FILE_OFFSET64
+#define __USE_FILE_OFFSET64 1
 #endif
+#include <driver/file.h>
+#endif // LCD_UPDATE
+
+#include <configfile.h>
+#include <pthread.h>
+
+#include <liblcddisplay/fontrenderer.h>
 
 #define LCDDIR_VAR CONFIGDIR "/icons/lcdd"
 
@@ -73,20 +82,6 @@ typedef enum
 	VFD_ICON_CAM2       = 0x0C000001,
 	VFD_ICON_LOCK,
 } vfd_icon;
-
-#ifdef LCD_UPDATE
-// TODO Why is USE_FILE_OFFSET64 not defined, if file.h is included here????
-#ifndef __USE_FILE_OFFSET64
-#define __USE_FILE_OFFSET64 1
-#endif
-#include "driver/file.h"
-#endif // LCD_UPDATE
-
-#include <configfile.h>
-#include <pthread.h>
-
-#include <liblcddisplay/fontrenderer.h>
-
 
 class CLCDPainter;
 class LcdFontRenderClass;

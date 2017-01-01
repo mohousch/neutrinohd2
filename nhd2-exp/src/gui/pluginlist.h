@@ -122,4 +122,12 @@ class CPluginChooser : public CPluginList
 		CPluginChooser(const neutrino_locale_t Name, const uint listtype, char* pluginname);
 };
 
+//
+class CPluginsExec : public CMenuTarget
+{
+	public:
+		static CPluginsExec* getInstance();
+		int exec(CMenuTarget* parent, const std::string & actionKey);
+};
+
 #endif

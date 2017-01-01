@@ -47,6 +47,7 @@
 #include <gui/widget/buttons.h>
 
 #include <gui/color.h>
+#include <gui/plugins.h>
 
 
 #define MENU_WIDTH			590
@@ -517,6 +518,7 @@ class CMenuWidget : public CMenuTarget
 		void disableMenuPosition(void) {disableMenuPos = true;};
 
 		void paintFootInfo(int pos);
+		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = CRCInput::RC_nokey, bool enabled = true);
 };
 
 /// CMenuWidgetExtended

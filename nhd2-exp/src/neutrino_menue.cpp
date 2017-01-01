@@ -206,6 +206,8 @@ void CNeutrinoApp::classicMenu(void)
 	//box info
 	classicMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_CLASSIC_BOXINFO));
 
+	classicMenu->integratePlugins(CPlugins::I_TYPE_MAIN);
+
 	classicMenu->exec(NULL, "");
 	classicMenu->hide();
 	delete classicMenu;

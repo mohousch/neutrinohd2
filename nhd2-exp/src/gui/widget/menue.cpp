@@ -49,6 +49,7 @@
 #include <gui/widget/scrollbar.h>
 
 #include <gui/color.h>
+#include <gui/pluginlist.h>
 
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
@@ -58,6 +59,8 @@
 
 #define ITEM_ICON_W	128	// min=100, max=128
 #define ITEM_ICON_H	128	// min=100, max=128
+
+extern CPlugins * g_PluginList;    /* neutrino.cpp */
 
 // CMenuSelectorTarget
 int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string& actionKey)
@@ -770,6 +773,41 @@ void CMenuWidget::paintFootInfo(int pos)
 	}
 
 }
+
+void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigned int shortcut, bool enabled)
+{
+	unsigned int number_of_plugins = (unsigned int) g_PluginList->getNumberOfPlugins();
+
+	std::string IconName;
+
+	for (unsigned int count = 0; count < number_of_plugins; count++)
+	{
+		if ((g_PluginList->getIntegration(count) == integration) && !g_PluginList->isHidden(count))
+		{
+			//
+			IconName = NEUTRINO_ICON_PLUGIN;
+
+			std::string icon("");
+			icon = g_PluginList->getIcon(count);
+
+			if(!icon.empty())
+			{
+				IconName = PLUGINDIR;
+				IconName += "/";
+				IconName += g_PluginList->getFileName(count);
+				IconName += "/";
+				IconName += g_PluginList->getIcon(count);
+			}
+
+			//
+			CMenuForwarder *fw_plugin = new CMenuForwarder(g_PluginList->getName(count), enabled, NULL, CPluginsExec::getInstance(), to_string(count).c_str(), CRCInput::RC_nokey, IconName.c_str());
+
+			fw_plugin->setHelpText(g_PluginList->getDescription(count));
+			addItem(fw_plugin);
+		}
+	}
+}
+
 
 // CMenuOptionChooser
 CMenuOptionChooser::CMenuOptionChooser(const neutrino_locale_t OptionName, int *const OptionValue, const struct keyval *const Options, const unsigned Number_Of_Options, const bool Active, CChangeObserver * const Observ, const neutrino_msg_t DirectKey, const std::string & IconName, bool Pulldown, bool DisableMenuPos)

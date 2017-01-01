@@ -35,11 +35,13 @@
 #ifndef __dboxinfo__
 #define __dboxinfo__
 
-#include <gui/widget/menue.h>
+#include <string>
 
 #include <driver/framebuffer.h>
 
-#include <string>
+#include <gui/widget/menue.h>
+
+#include <gui/plugins.h>
 
 
 class CDBoxInfoWidget : public CMenuTarget

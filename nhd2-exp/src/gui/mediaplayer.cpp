@@ -167,6 +167,8 @@ void CMediaPlayerMenu::showMenuClassic()
 	
 	// UPNP Browser
 	 MediaPlayer->addItem(new CMenuForwarder(LOCALE_UPNPBROWSER_HEAD, true, NULL, new CUpnpBrowserGui(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_CLASSIC_UPNPBROWSER));
+
+	MediaPlayer->integratePlugins(CPlugins::I_TYPE_MULTIMEDIA);
 	
 	MediaPlayer->exec(NULL, "");
 	MediaPlayer->hide();

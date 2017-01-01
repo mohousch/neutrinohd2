@@ -34,10 +34,12 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <gui/dboxinfo.h>
+#include <sys/sysinfo.h>
+#include <sys/vfs.h>
 
 #include <global.h>
 
@@ -45,8 +47,7 @@
 #include <driver/screen_max.h>
 #include <driver/rcinput.h>
 
-#include <sys/sysinfo.h>
-#include <sys/vfs.h>
+#include <gui/dboxinfo.h>
 
 /*zapit includes*/
 #include <frontend_c.h>
