@@ -808,7 +808,6 @@ void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigne
 	}
 }
 
-
 // CMenuOptionChooser
 CMenuOptionChooser::CMenuOptionChooser(const neutrino_locale_t OptionName, int *const OptionValue, const struct keyval *const Options, const unsigned Number_Of_Options, const bool Active, CChangeObserver * const Observ, const neutrino_msg_t DirectKey, const std::string & IconName, bool Pulldown, bool DisableMenuPos)
 {
@@ -2652,6 +2651,40 @@ void CMenuWidgetExtended::paintFootInfo(int pos)
 	}
 }
 
+void CMenuWidgetExtended::integratePlugins(CPlugins::i_type_t integration, const unsigned int shortcut, bool enabled)
+{
+	unsigned int number_of_plugins = (unsigned int) g_PluginList->getNumberOfPlugins();
+
+	std::string IconName;
+
+	for (unsigned int count = 0; count < number_of_plugins; count++)
+	{
+		if ((g_PluginList->getIntegration(count) == integration) && !g_PluginList->isHidden(count))
+		{
+			//
+			IconName = NEUTRINO_ICON_PLUGIN;
+
+			std::string icon("");
+			icon = g_PluginList->getIcon(count);
+
+			if(!icon.empty())
+			{
+				IconName = PLUGINDIR;
+				IconName += "/";
+				IconName += g_PluginList->getFileName(count);
+				IconName += "/";
+				IconName += g_PluginList->getIcon(count);
+			}
+
+			//
+			CMenuForwarderExtended *fw_plugin = new CMenuForwarderExtended(g_PluginList->getName(count), enabled, CPluginsExec::getInstance(), to_string(count).c_str(), CRCInput::RC_nokey, "", IconName.c_str());
+
+			fw_plugin->setHelpText(g_PluginList->getDescription(count));
+			addItem(fw_plugin);
+		}
+	}
+}
+
 // CMenuForwarderExtended
 CMenuForwarderExtended::CMenuForwarderExtended(const neutrino_locale_t Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
 {
@@ -3086,6 +3119,40 @@ void CMenuFrameBox::setHeaderButtons(const struct button_label* _hbutton_labels,
 {
 	hbutton_count = _hbutton_count;
 	hbutton_labels = _hbutton_labels;
+}
+
+void CMenuFrameBox::integratePlugins(CPlugins::i_type_t integration, const unsigned int shortcut, bool enabled)
+{
+	unsigned int number_of_plugins = (unsigned int) g_PluginList->getNumberOfPlugins();
+
+	std::string IconName;
+
+	for (unsigned int count = 0; count < number_of_plugins; count++)
+	{
+		if ((g_PluginList->getIntegration(count) == integration) && !g_PluginList->isHidden(count))
+		{
+			//
+			IconName = NEUTRINO_ICON_PLUGIN;
+
+			std::string icon("");
+			icon = g_PluginList->getIcon(count);
+
+			if(!icon.empty())
+			{
+				IconName = PLUGINDIR;
+				IconName += "/";
+				IconName += g_PluginList->getFileName(count);
+				IconName += "/";
+				IconName += g_PluginList->getIcon(count);
+			}
+
+			//
+			CMenuFrameBoxItem *fw_plugin = new CMenuFrameBoxItem(g_PluginList->getName(count), CPluginsExec::getInstance(), to_string(count).c_str(), IconName.c_str());
+
+			fw_plugin->setHelpText(g_PluginList->getDescription(count));
+			addItem(fw_plugin);
+		}
+	}
 }
 
 int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)

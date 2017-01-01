@@ -597,6 +597,7 @@ class CMenuWidgetExtended : public CMenuTarget
 		void disableMenuPosition(void) {disableMenuPos = true;};
 
 		void paintFootInfo(int pos);
+		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = CRCInput::RC_nokey, bool enabled = true);
 };
 
 // CMenuForwarderExtended
@@ -719,6 +720,7 @@ class CMenuFrameBox : public CMenuTarget
 		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 		void setTimeOut(int to = 0){timeout = to;};
+		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = CRCInput::RC_nokey, bool enabled = true);
 };
 
 // CMenuFrameBoxItem
