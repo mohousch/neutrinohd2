@@ -155,23 +155,29 @@ void CBEChannelSelectWidget::paintHead()
 	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(cFrameTitle.iX + cFrameTitle.iWidth - BORDER_RIGHT - timestr_len, cFrameTitle.iY + (cFrameTitle.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
 }
 
-void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selected)
+void CBEChannelSelectWidget::paintItem(int pos)
 {
-	int ypos = cFrameBox.iY + cFrameTitle.iHeight + paintNr*cFrameItem.iHeight;
+	int ypos = cFrameBox.iY + cFrameTitle.iHeight + pos*cFrameItem.iHeight;
 
-	uint8_t    color = COL_MENUCONTENT;
+	uint8_t color = COL_MENUCONTENT;
 	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
+	unsigned int current = liststart + pos;
 	
-	if (_selected)
+	if (current == selected)
 	{
 		color   = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 		
 		// itemlines	
-		paintItem2DetailsLine(paintNr);		
+		paintItem2DetailsLine(pos);		
 		
 		// details
-		paintDetails(itemNr);
+		paintDetails(current);
+	}
+	else
+	{
+		color = COL_MENUCONTENT;
+		bgcolor = COL_MENUCONTENT_PLUS_0;
 	}
 	
 	// itemBox
@@ -180,11 +186,11 @@ void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selec
 	//
 	itemIcon3.setIcon(NEUTRINO_ICON_BUTTON_MARK);
 	
-	if(itemNr < getItemCount())
+	if(current < getItemCount())
 	{
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(cFrameBox.iX + BORDER_LEFT + itemIcon3.iWidth + ICON_OFFSET, ypos + (cFrameItem.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), cFrameBox.iWidth - (BORDER_LEFT + itemIcon3.iWidth + ICON_OFFSET + BORDER_RIGHT), Channels[itemNr]->getName(), color, 0, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(cFrameBox.iX + BORDER_LEFT + itemIcon3.iWidth + ICON_OFFSET, ypos + (cFrameItem.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), cFrameBox.iWidth - (BORDER_LEFT + itemIcon3.iWidth + ICON_OFFSET + BORDER_RIGHT), Channels[current]->getName(), color, 0, true);
 
-		if( isChannelInBouquet(itemNr))
+		if( isChannelInBouquet(current))
 		{
 			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_MARK, cFrameBox.iX + BORDER_LEFT, ypos + (cFrameItem.iHeight - itemIcon3.iHeight)/2);
 		}
@@ -198,23 +204,18 @@ void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selec
 		if (g_settings.channellist_ca)
 		{
 			// scrambled icon
-			if( Channels[itemNr]->scrambled) 
+			if( Channels[current]->scrambled) 
 				frameBuffer->paintIcon(NEUTRINO_ICON_SCRAMBLED, cFrameBox.iX + cFrameBox.iWidth - (SCROLLBAR_WIDTH + ICON_OFFSET + itemIcon2.iWidth), ypos + (cFrameItem.iHeight - itemIcon2.iHeight)/2 );
 			
 			// hd icon
-			if( Channels[itemNr]->isHD() ) 
+			if( Channels[current]->isHD() ) 
 				frameBuffer->paintIcon(NEUTRINO_ICON_HD, cFrameBox.iX + cFrameBox.iWidth - (SCROLLBAR_WIDTH + ICON_OFFSET + itemIcon2.iWidth + ICON_OFFSET + itemIcon1.iWidth), ypos + (cFrameItem.iHeight - itemIcon1.iHeight)/2 );
 
 			// uhd icon
-			else if(Channels[itemNr]->isUHD()) 
+			else if(Channels[current]->isUHD()) 
 				frameBuffer->paintIcon(NEUTRINO_ICON_UHD, cFrameBox.iX + cFrameBox.iWidth - (SCROLLBAR_WIDTH + ICON_OFFSET + itemIcon2.iWidth + ICON_OFFSET + itemIcon1.iWidth), ypos + (cFrameItem.iHeight - itemIcon1.iHeight)/2 );
 		}
 	}
-}
-
-void CBEChannelSelectWidget::paintItem(int pos)
-{
-	paintItem(liststart + pos, pos, (liststart + pos == selected) );
 }
 
 #define BUTTONS_COUNT 2
@@ -374,6 +375,7 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 
 			bouquetChannels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
 	
+			// paint item with marked icon
 			paintItem(selected - liststart);
 
 			// jump to next item

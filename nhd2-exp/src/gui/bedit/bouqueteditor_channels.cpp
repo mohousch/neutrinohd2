@@ -91,8 +91,8 @@ CBEChannelWidget::CBEChannelWidget(const std::string & Caption, unsigned int Bou
 
 void CBEChannelWidget::paintItem(int pos)
 {
-	uint8_t    color;
-	fb_pixel_t bgcolor;
+	uint8_t color = COL_MENUCONTENT;
+	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 	int ypos = y + theight + pos*fheight;
 	unsigned int current = liststart + pos;
 
@@ -107,11 +107,6 @@ void CBEChannelWidget::paintItem(int pos)
 		// details
 		paintDetails(current);
 	} 
-	else 
-	{
-		color   = COL_MENUCONTENT;
-		bgcolor = COL_MENUCONTENT_PLUS_0;
-	}
 	
 	// itemBox
 	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
@@ -315,14 +310,14 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				cancelMoveChannel();
 			}
 		}
-		else if (msg==CRCInput::RC_up || msg==(neutrino_msg_t)g_settings.key_channelList_pageup)
+		else if (msg == CRCInput::RC_up || msg == CRCInput::RC_page_up)
 		{
 			if (!(Channels->empty()))
 			{
 				int step = 0;
 				int prev_selected = selected;
 
-				step = (msg == (neutrino_msg_t)g_settings.key_channelList_pageup) ? listmaxshow : 1;  // browse or step 1
+				step = (msg == CRCInput::RC_page_up) ? listmaxshow : 1;  // browse or step 1
 				selected -= step;
 				if((prev_selected-step) < 0)		// because of uint
 				{
@@ -335,7 +330,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 					unsigned int oldliststart = liststart;
 					liststart = (selected/listmaxshow)*listmaxshow;
 					
-					if(oldliststart!=liststart)
+					if(oldliststart != liststart)
 					{
 						paint();
 					}
@@ -350,12 +345,12 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				}
 			}
 		}
-		else if (msg == CRCInput::RC_down || msg == (neutrino_msg_t)g_settings.key_channelList_pagedown)
+		else if (msg == CRCInput::RC_down || msg == CRCInput::RC_page_down)
 		{
 			unsigned int step = 0;
 			int prev_selected = selected;
 
-			step = (msg == (neutrino_msg_t)g_settings.key_channelList_pagedown) ? listmaxshow : 1;  // browse or step 1
+			step = (msg == CRCInput::RC_page_down) ? listmaxshow : 1;  // browse or step 1
 			selected += step;
 
 			if(selected >= Channels->size())
@@ -372,7 +367,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				unsigned int oldliststart = liststart;
 				liststart = (selected/listmaxshow)*listmaxshow;
 				
-				if(oldliststart!=liststart)
+				if(oldliststart != liststart)
 				{
 					paint();
 				}

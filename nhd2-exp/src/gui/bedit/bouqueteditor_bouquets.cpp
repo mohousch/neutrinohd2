@@ -132,9 +132,9 @@ void CBEBouquetWidget::paint()
 		paintItem(count);
 	}
 
+	// scrollbar
 	int ypos = y + theight;
 	
-	// scrollbar
 	int sb = fheight*listmaxshow;
 	frameBuffer->paintBoxRel(x + width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
 
@@ -296,14 +296,14 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 		// -- The keys should be configurable. Problem is: red/green key, which is the
 		// -- default in neutrino is used as a function key here... so use left/right
 		//
-		else if (msg==CRCInput::RC_up || msg==(neutrino_msg_t)g_settings.key_channelList_pageup)
+		else if (msg == CRCInput::RC_up || msg == CRCInput::RC_page_up)
 		{
 			if (!(Bouquets->empty()))
 			{
 				int step = 0;
 				int prev_selected = selected;
 
-				step = (msg == (neutrino_msg_t)g_settings.key_channelList_pageup) ? listmaxshow : 1;  // browse or step 1
+				step = (msg == CRCInput::RC_page_up) ? listmaxshow : 1;  // browse or step 1
 				selected -= step;
 				if((prev_selected - step) < 0)		// because of uint
 				{
@@ -315,7 +315,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 					paintItem(prev_selected - liststart);
 					unsigned int oldliststart = liststart;
 					liststart = (selected/listmaxshow)*listmaxshow;
-					if(oldliststart!=liststart)
+					if(oldliststart != liststart)
 					{
 						paint();
 					}
@@ -330,12 +330,12 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				}
 			}
 		}
-		else if (msg == CRCInput::RC_down || msg == (neutrino_msg_t)g_settings.key_channelList_pagedown)
+		else if (msg == CRCInput::RC_down || msg == CRCInput::RC_page_down)
 		{
 			unsigned int step = 0;
 			int prev_selected = selected;
 
-			step = (msg == (neutrino_msg_t)g_settings.key_channelList_pagedown) ? listmaxshow : 1;  // browse or step 1
+			step = (msg == CRCInput::RC_page_down) ? listmaxshow : 1;  // browse or step 1
 			selected += step;
 
 			if(selected >= Bouquets->size())

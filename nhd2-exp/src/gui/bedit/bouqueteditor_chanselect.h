@@ -86,7 +86,6 @@ class CBEChannelSelectWidget
 
 		uint getItemCount();
 		void paintItem(int pos);
-		void paintItem(uint32_t itemNr, int paintNr, bool _selected);
 
 		//
 		void paintHead();

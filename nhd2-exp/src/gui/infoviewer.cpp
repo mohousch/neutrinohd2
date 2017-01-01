@@ -438,9 +438,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 			showRadiotext();
 		else
 			showIcon_RadioText(false);
-	}
-		
-	frameBuffer->blit();		
+	}	
 }
 
 //
@@ -505,6 +503,8 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 	showRecordIcon(show_dot);
 
 	showSNR();
+
+	frameBuffer->blit();
 
 #if ENABLE_LCD
 	showLcdPercentOver();
@@ -1038,8 +1038,6 @@ void CInfoViewer::showMotorMoving (int duration)
 void CInfoViewer::killRadiotext()
 {
 	frameBuffer->paintBackgroundBox(rt_x, rt_y, rt_w, rt_h);
-	
-	frameBuffer->blit();
 }
 
 void CInfoViewer::showRadiotext()
@@ -1061,7 +1059,7 @@ void CInfoViewer::showRadiotext()
 		rt_x = BoxStartX;
 		rt_y = g_settings.screen_StartY + 10;
 		rt_h = rt_y + 7 + rt_dy*(g_Radiotext->S_RtOsdRows+1)+SHADOW_OFFSET;
-		rt_w = rt_x+rt_dx+SHADOW_OFFSET;
+		rt_w = rt_x+rt_dx + SHADOW_OFFSET;
 		
 		int lines = 0;
 		for (int i = 0; i < g_Radiotext->S_RtOsdRows; i++) 
@@ -1072,8 +1070,6 @@ void CInfoViewer::showRadiotext()
 		if (lines == 0)
 		{
 			frameBuffer->paintBackgroundBox(rt_x, rt_y, rt_w, rt_h);
-		
-			frameBuffer->blit();
 		}
 
 		if (g_Radiotext->RT_MsgShow) 
@@ -1089,8 +1085,6 @@ void CInfoViewer::showRadiotext()
 					frameBuffer->paintBoxRel(rt_x + SHADOW_OFFSET, rt_y + SHADOW_OFFSET, rt_dx, rt_dy, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);
 					frameBuffer->paintBoxRel(rt_x, rt_y, rt_dx, rt_dy, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP);
 					g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(rt_x + 10, rt_y + 30, rt_dx - 20, stext[0], COL_INFOBAR, 0, RTisIsUTF); // UTF-8
-					
-					frameBuffer->blit();
 				}
 				yoff = 17;
 				ii = 1;
@@ -1100,6 +1094,7 @@ void CInfoViewer::showRadiotext()
 			if (lines) 
 			{
 				frameBuffer->paintBoxRel(rt_x + SHADOW_OFFSET, rt_y+rt_dy+SHADOW_OFFSET, rt_dx, 7+rt_dy* g_Radiotext->S_RtOsdRows, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+
 				frameBuffer->paintBoxRel(rt_x, rt_y+rt_dy, rt_dx, 7+rt_dy* g_Radiotext->S_RtOsdRows, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
 				// RT-Text roundloop
@@ -1124,8 +1119,6 @@ void CInfoViewer::showRadiotext()
 					for (int i = g_Radiotext->S_RtOsdRows-1; i > ind; i--)
 						g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(rts_x, rts_y + (ii++)*rt_dy, rts_dx, g_Radiotext->RT_Text[i], COL_INFOBAR, 0, RTisIsUTF); // UTF-8
 				}
-				
-					frameBuffer->blit();	
 			}
 		}
 	}
@@ -1770,8 +1763,6 @@ void CInfoViewer::killTitle()
 		is_visible = false;
 
 		frameBuffer->paintBackgroundBox(BoxStartX, BoxStartY - 30, BoxEndX + SHADOW_OFFSET, buttonBarStartY + SHADOW_OFFSET + buttonBarHeight);
-				
-		frameBuffer->blit();
 
 		// hide radiotext	
 		if (g_settings.radiotext_enable && g_Radiotext) 
@@ -1779,6 +1770,8 @@ void CInfoViewer::killTitle()
 			g_Radiotext->S_RtOsd = g_Radiotext->haveRadiotext() ? 1 : 0;
 			killRadiotext();
 		}
+
+		frameBuffer->blit();
 
 		if(sigscale)
 		{
