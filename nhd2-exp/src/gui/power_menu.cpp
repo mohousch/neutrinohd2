@@ -114,6 +114,8 @@ void CPowerMenu::showMenu(void)
 
 	// shutdown
 	powerMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SHUTDOWN, true, this, "shutdown", CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_SHUTDOWN));
+
+	powerMenu->integratePlugins(CPlugins::I_TYPE_POWER, shortcut++);
 	
 	powerMenu->exec(NULL, "");
 	powerMenu->hide();
@@ -144,6 +146,8 @@ void CPowerMenu::showMenuSmart(void)
 
 	// shutdown
 	powerMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SHUTDOWN, this, "shutdown", NEUTRINO_ICON_SMART_SHUTDOWN));
+
+	powerMenu->integratePlugins(CPlugins::I_TYPE_POWER);
 	
 	powerMenu->exec(NULL, "");
 	powerMenu->hide();
@@ -174,6 +178,8 @@ void CPowerMenu::showMenuClassic(void)
 
 	// shutdown
 	powerMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SHUTDOWN, true, NULL, this, "shutdown", CRCInput::RC_standby, NEUTRINO_ICON_CLASSIC_SHUTDOWN));
+
+	powerMenu->integratePlugins(CPlugins::I_TYPE_POWER);
 	
 	powerMenu->exec(NULL, "");
 	powerMenu->hide();

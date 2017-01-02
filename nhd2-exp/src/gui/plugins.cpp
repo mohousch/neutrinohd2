@@ -526,8 +526,8 @@ CPlugins::i_type_t CPlugins::getPluginIntegration(int integration)
 		case INTEGRATION_TYPE_SERVICE:
 			return I_TYPE_SERVICE;
 			break;
-		case INTEGRATION_TYPE_INFORMATION:
-			return I_TYPE_INFORMATION;
+		case INTEGRATION_TYPE_POWER:
+			return I_TYPE_POWER;
 			break;
 		default:
 			return I_TYPE_DISABLED;

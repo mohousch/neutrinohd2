@@ -894,7 +894,7 @@ void CFrameBuffer::getIconSize(const char * const filename, int * width, int * h
 		CFormathandler * fh;
 		int x, y;
 		
-		fh = fh_getsize(iconfile.c_str(), &x, &y, INT_MAX, INT_MAX);
+		fh = fh_getsize(iconfile.c_str(), &x, &y, INT_MAX, INT_MAX); //uscaled
 		
 		if (fh == NULL) 
 		{
@@ -1524,7 +1524,7 @@ void CFrameBuffer::blit2FB(void * fbbuff, uint32_t width, uint32_t height, uint3
 }
 
 // display RGB (used by pictureviewer)
-void CFrameBuffer::displayRGB(unsigned char * rgbbuff, int x_size, int y_size, int x_pan, int y_pan, int x_offs, int y_offs, bool clearfb, int transp)
+void CFrameBuffer::displayRGB(unsigned char * rgbbuff, int x_size, int y_size, int x_pan, int y_pan, int x_offs, int y_offs, bool clearfb)
 {
         void * fbbuff = NULL;
 
@@ -1544,7 +1544,7 @@ void CFrameBuffer::displayRGB(unsigned char * rgbbuff, int x_size, int y_size, i
 		y_offs = 0;
 
         // convert
-        fbbuff = convertRGB2FB(rgbbuff, x_size, y_size, transp);
+        fbbuff = convertRGB2FB(rgbbuff, x_size, y_size);
         if(fbbuff == NULL)
                 return;
 
@@ -1748,7 +1748,7 @@ void CFrameBuffer::getSize(const std::string &name, int * width, int * height, i
 	int load_ret;
 	CFormathandler * fh;
 
-	fh = fh_getsize(name.c_str(), &x, &y, INT_MAX, INT_MAX);
+	fh = fh_getsize(name.c_str(), &x, &y, INT_MAX, INT_MAX); // unscaled
 	
 	if (fh == NULL) 
 	{
@@ -1779,7 +1779,7 @@ void CFrameBuffer::getSize(const std::string &name, int * width, int * height, i
 	}
 }
 
-fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int height)
+fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int height, ScalingMode scaling)
 {
 	int x, y;
 	CFormathandler * fh;
@@ -1788,7 +1788,10 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 	int load_ret;
 	int _bpp = 0;
 
-  	fh = fh_getsize(name.c_str(), &x, &y, INT_MAX, INT_MAX);
+	if (scaling == NONE)
+  		fh = fh_getsize(name.c_str(), &x, &y, INT_MAX, INT_MAX); // unscaled
+	else
+		fh = fh_getsize(name.c_str(), &x, &y, width, height);
 	
   	if (fh) 
 	{
@@ -1807,18 +1810,23 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 
 		if (load_ret == FH_ERROR_OK) 
 		{
-			// resize
-			if(x != width || y != height)
+			if(scaling != NONE)
 			{
-				// alpha
-				if(_bpp == 4)
-					buffer = Resize(buffer, x, y, width, height, COLOR, NULL, true);
-				else
-					buffer = Resize(buffer, x, y, width, height, COLOR);
+				// resize
+				if(x != width || y != height)
+				{
+					// aspect ratio
+
+					// alpha
+					if(_bpp == 4)
+						buffer = Resize(buffer, x, y, width, height, scaling, NULL, true);
+					else
+						buffer = Resize(buffer, x, y, width, height, scaling);
 				
-				x = width ;
-				y = height;
-			} 
+					x = width ;
+					y = height;
+				} 
+			}
 			
 			// convert RGB2FB
 			if( name.find(".png") == (name.length() - 4) )
@@ -1830,7 +1838,7 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 					ret = (fb_pixel_t *)convertRGB2FB(buffer, x, y, convertSetupAlpha2Alpha(g_settings.infobar_alpha));
 			}
 			else
-				ret = (fb_pixel_t *)convertRGB2FB(buffer, x, y, convertSetupAlpha2Alpha(g_settings.infobar_alpha), TM_NONE);
+				ret = (fb_pixel_t *)convertRGB2FB(buffer, x, y);
 			
 			free(buffer);
 		} 
@@ -1850,23 +1858,36 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 }
 
 // display image
-bool CFrameBuffer::DisplayImage(const std::string & name, int posx, int posy, int width, int height)
+bool CFrameBuffer::DisplayImage(const std::string& name, int posx, int posy, int width, int height, ScalingMode scaling, int x_pan, int y_pan, bool clearfb)
 {
 	dprintf(DEBUG_DEBUG, "CFrameBuffer::DisplayImage %s\n", name.c_str());
 	
 	if(!getActive())
 		return false;
+
+	//
+	int dx = width;
+	int dy = height;
+	int bpp = 0;
+	
+	if(scaling == NONE)
+	{
+		getSize(name.c_str(), &dx, &dy, &bpp);
+	}
 	
 	bool isPNG = false;
 	
 	if( name.find(".png") == (name.length() - 4) )
 		isPNG = true;
 	
-	fb_pixel_t * data = getImage(name, width, height);
+	fb_pixel_t * data = getImage(name, dx, dy, scaling);
+
+	if(clearfb)
+                ClearFrameBuffer();
 
 	if(data) 
 	{
-		blit2FB(data, width, height, posx, posy, 0, 0, isPNG? true : false);
+		blit2FB(data, dx, dy, posx, posy, x_pan, y_pan, isPNG? true : false);
 		free(data);
 		return true;
 	}

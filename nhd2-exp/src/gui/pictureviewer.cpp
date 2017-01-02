@@ -497,7 +497,7 @@ int CPictureViewerGui::show()
 		{ 
 			if (m_state != MENU)
 			{
-				g_PicViewer->Move(0, -50);
+				g_PicViewer->Move(0, -10);
 			}
 		}
 		else if( msg == CRCInput::RC_3 )
@@ -512,7 +512,7 @@ int CPictureViewerGui::show()
 		{ 
 			if (m_state != MENU)
 			{
-				g_PicViewer->Move(-50, 0);
+				g_PicViewer->Move(-10, 0);
 			}
 		}
 		else if ( msg == CRCInput::RC_5 )
@@ -539,20 +539,20 @@ int CPictureViewerGui::show()
 		{ 
 			if (m_state != MENU && playlist.empty())
 			{
-				g_PicViewer->Move(50, 0);
+				g_PicViewer->Move(10, 0);
 			}
 		}
 		else if( msg == CRCInput::RC_8 )
 		{ 
 			if (m_state != MENU && playlist.empty())
 			{
-				g_PicViewer->Move(0, 50);
+				g_PicViewer->Move(0, 10);
 			}
 		}
 		else if(msg == CRCInput::RC_0)
 		{
 			if (!playlist.empty())
-				view(selected, true);
+				view(selected);
 		}
 		else if(msg == CRCInput::RC_setup)
 		{
@@ -758,7 +758,7 @@ void CPictureViewerGui::paint()
 	visible = true;
 }
 
-void CPictureViewerGui::view(unsigned int index, bool unscaled)
+void CPictureViewerGui::view(unsigned int index)
 {
 	selected = index;
 	
@@ -770,23 +770,10 @@ void CPictureViewerGui::view(unsigned int index, bool unscaled)
 	char timestring[19];
 	strftime(timestring, 18, "%d-%m-%Y %H:%M", gmtime(&playlist[index].Date));
 	
-	if(unscaled)
-		g_PicViewer->DecodeImage(playlist[index].Filename, true, unscaled);
-	
-	g_PicViewer->ShowImage(playlist[index].Filename, unscaled);
+	g_PicViewer->ShowImage(playlist[index].Filename);
 
-	//Decode next
-	unsigned int next = selected + 1;
-	if( next > playlist.size() - 1 )
-		next = 0;
-	
 	if(m_state == MENU)
 		m_state = VIEW;
-	
-	if(m_state == VIEW )
-		g_PicViewer->DecodeImage(playlist[next].Filename, true);
-	else
-		g_PicViewer->DecodeImage(playlist[next].Filename, false);
 }
 
 void CPictureViewerGui::endView()

@@ -144,6 +144,8 @@ void CServiceSetup::showMenu()
 	
 	// software update
 	service->addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_UPDATE, true, new CUpdateSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SOFTUPDATE, LOCALE_HELPTEXT_SOFTWAREUPDATE ));
+
+	service->integratePlugins(CPlugins::I_TYPE_SERVICE, shortcutService++);
 	
 	service->exec(NULL, "");
 	service->hide();
@@ -191,6 +193,8 @@ void CServiceSetup::showMenuSmart(void)
 	
 	// software update
 	service->addItem(new CMenuFrameBoxItem(LOCALE_SERVICEMENU_UPDATE, new CUpdateSettings(), NULL, NEUTRINO_ICON_SMART_SOFTUPDATE));
+
+	service->integratePlugins(CPlugins::I_TYPE_SERVICE);
 	
 	service->exec(NULL, "");
 	service->hide();
@@ -238,6 +242,8 @@ void CServiceSetup::showMenuClassic(void)
 	
 	// software update
 	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_UPDATE, true, NULL, new CUpdateSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_CLASSIC_SOFTUPDATE));
+
+	service->integratePlugins(CPlugins::I_TYPE_SERVICE);
 	
 	service->exec(NULL, "");
 	service->hide();
