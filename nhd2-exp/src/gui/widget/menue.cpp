@@ -774,7 +774,7 @@ void CMenuWidget::paintFootInfo(int pos)
 
 }
 
-void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigned int shortcut, bool enabled)
+void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigned int shortcut, bool enabled, bool paintIcon)
 {
 	unsigned int number_of_plugins = (unsigned int) g_PluginList->getNumberOfPlugins();
 
@@ -785,7 +785,8 @@ void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigne
 		if ((g_PluginList->getIntegration(count) == integration) && !g_PluginList->isHidden(count))
 		{
 			//
-			IconName = NEUTRINO_ICON_PLUGIN;
+			if(IconName.empty())
+				IconName = NEUTRINO_ICON_PLUGIN;
 
 			std::string icon("");
 			icon = g_PluginList->getIcon(count);
@@ -800,7 +801,7 @@ void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigne
 			}
 
 			//
-			CMenuForwarder *fw_plugin = new CMenuForwarder(g_PluginList->getName(count), enabled, NULL, CPluginsExec::getInstance(), to_string(count).c_str(), CRCInput::RC_nokey, IconName.c_str());
+			CMenuForwarder *fw_plugin = new CMenuForwarder(g_PluginList->getName(count), enabled, NULL, CPluginsExec::getInstance(), to_string(count).c_str(), CRCInput::RC_nokey, paintIcon? IconName.c_str() : "");
 
 			fw_plugin->setHelpText(g_PluginList->getDescription(count));
 			addItem(fw_plugin);

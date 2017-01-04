@@ -83,6 +83,7 @@ CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, con
 		else
 			break;
 	}
+
 	entries_per_page = ((cFrameBox.iHeight - cFrameBoxTitle.iHeight) / cFrameBoxItem.iHeight) - 1;
 	current_page = 0;
 
@@ -229,23 +230,6 @@ void CHintBox::refresh(void)
 		return;
 	}
 
-	/*
-	// shadow top right
-	window->paintBoxRel(width - (BORDER_LEFT + BORDER_RIGHT), 
-					borderwidth, 
-					borderwidth + (BORDER_LEFT + BORDER_RIGHT), 
-					height - borderwidth, 
-					COL_INFOBAR_SHADOW_PLUS_0, 
-					RADIUS_MID, CORNER_TOP); // right
-	
-	// shadow bottom
-	window->paintBoxRel(borderwidth, 
-					height - (BORDER_LEFT + BORDER_RIGHT), 
-					width, 
-					borderwidth + (BORDER_LEFT + BORDER_RIGHT), 
-					COL_INFOBAR_SHADOW_PLUS_0, 
-					RADIUS_MID, CORNER_BOTTOM); // bottom
-	*/
 	// Shadow
 	window->paintBoxRel(SHADOW_OFFSET, SHADOW_OFFSET, cFrameBox.iWidth, cFrameBox.iHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_ALL);
 
@@ -258,9 +242,7 @@ void CHintBox::refresh(void)
 
 	if (!iconfile.empty())
 	{
-		int iw, ih;
-		CFrameBuffer::getInstance()->getIconSize(iconfile.c_str(), &iw, &ih);
-		window->paintIcon(iconfile.c_str(), BORDER_LEFT, cFrameBoxTitle.iHeight/2);
+		window->paintIcon(iconfile.c_str(), BORDER_LEFT, 0, cFrameBoxTitle.iHeight);
 	}
 	
 	int stringstartposX = (cFrameBox.iWidth >> 1) - (neededWidth >> 1);

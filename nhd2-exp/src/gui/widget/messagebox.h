@@ -44,11 +44,10 @@
 #include <system/settings.h>
 
 #include <gui/widget/drawable.h>
-#include <gui/widget/drawable.h>
 #include <gui/widget/icons.h>
 
 
-#define MESSAGEBOX_WIDTH			400
+#define MESSAGEBOX_WIDTH			550
 
 class CMessageBox
 {
@@ -71,7 +70,7 @@ class CMessageBox
 		ContentLines m_lines;
 		std::string  m_iconfile;
 		
-		void refresh(bool paintBg = false);
+		void refresh();
 
 		void init(const char* const Caption, const int Width, const char * const Icon);
 
@@ -83,7 +82,7 @@ class CMessageBox
 		void hide(void);
 
 	private:
-		int  showbuttons;
+		uint32_t  showbuttons;
 		bool returnDefaultOnTimeout;
 
 		void paintButtons();
@@ -105,7 +104,8 @@ class CMessageBox
 			mbCancel = 0x04,
 			mbAll = 0x07,
 			mbBack = 0x08,
-			mbOk = 0x10
+			mbOk = 0x10,
+			mbNone = 0x20
 		} buttons;
 	
 		// Text & Caption are always UTF-8 encoded

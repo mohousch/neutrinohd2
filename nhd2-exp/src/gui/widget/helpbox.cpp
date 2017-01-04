@@ -59,27 +59,27 @@ Helpbox::~Helpbox()
   	}
 }
 
-void Helpbox::show(const neutrino_locale_t Caption, const int Width, int timeout)
+void Helpbox::show(const neutrino_locale_t Caption, const int Width, int timeout, const CMessageBox::result_ Default, /*CMessageBox::buttons_ Button*/const uint32_t ShowButtons)
 {
 	dprintf(DEBUG_NORMAL, "Helpbox::show\n");
 
- 	CMessageBox msgBox(Caption, m_lines, Width, NEUTRINO_ICON_INFO, CMessageBox::mbrBack, CMessageBox::mbBack);
+ 	CMessageBox msgBox(Caption, m_lines, Width, NEUTRINO_ICON_INFO, Default, ShowButtons);
 
 	msgBox.exec(timeout);
 }
 
-void Helpbox::addLine(const char *text)
+void Helpbox::addLine(std::string& text, CFont* font, uint8_t col, const bool bg)
 {
 	std::vector<Drawable*> v;
-	Drawable *d = new DText(text);
+	Drawable *d = new DText(text, font, col, bg);
 	v.push_back(d);
 	m_lines.push_back(v);
 }
 
-void Helpbox::addLine(std::string& text)
+void Helpbox::addLine(const char *text, CFont* font, uint8_t col, const bool bg)
 {
 	std::vector<Drawable*> v;
-	Drawable *d = new DText(text);
+	Drawable *d = new DText(text, font, col, bg);
 	v.push_back(d);
 	m_lines.push_back(v);
 }

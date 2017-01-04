@@ -1052,13 +1052,8 @@ bool CFrameBuffer::paintIconRaw(const std::string & filename, const int x, const
 
 	return true;
 }
-//
 
-/* 
-* paint icon at position x/y,
-* if height h is given, center vertically between y and y+h
-* offset is a color offset (probably only useful with palette) 
-*/
+//
 bool CFrameBuffer::paintIcon(const std::string & filename, const int x, const int y, const int h, bool paint, int width, int height)
 {
 	if (!getActive())

@@ -292,7 +292,7 @@ int CUserMenuMenu::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
         if(parent)
                 parent->hide();
 
-        CMenuWidget menu(local , NEUTRINO_ICON_KEYBINDING);
+        CMenuWidget menu(local, NEUTRINO_ICON_KEYBINDING);
 	
         menu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
         menu.addItem(new CMenuSeparator(CMenuSeparator::LINE));

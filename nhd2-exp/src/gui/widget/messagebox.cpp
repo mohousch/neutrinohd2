@@ -47,7 +47,7 @@
 
 #define borderwidth 4
 
-#define HINTBOXEXT_MAX_HEIGHT 420
+#define MESSAGEBOX_MAX_HEIGHT 420
 
 CMessageBox::CMessageBox(const neutrino_locale_t Caption, const char * const Text, const int Width, const char * const Icon, const CMessageBox::result_ Default, const uint32_t ShowButtons)
 {
@@ -80,6 +80,9 @@ CMessageBox::CMessageBox(const neutrino_locale_t Caption, const char * const Tex
 	int MaxButtonTextWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(g_Locale->getText(LOCALE_MESSAGEBOX_CANCEL), true); // UTF-8
 	int ButtonWidth = 20 + 33 + MaxButtonTextWidth + 5;
 	int num = 0;
+
+	if (showbuttons & mbNone)
+		num = 0;
 	
 	if (showbuttons & mbYes)
 		num++;
@@ -111,6 +114,9 @@ CMessageBox::CMessageBox(const neutrino_locale_t Caption, ContentLines& Lines, c
 	int MaxButtonTextWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(g_Locale->getText(LOCALE_MESSAGEBOX_CANCEL), true); // UTF-8
 	int ButtonWidth = 20 + 33 + MaxButtonTextWidth + 5;
 	int num = 0;
+
+	if (showbuttons & mbNone)
+		num = 0;
 	
 	if (showbuttons & mbYes)
 		num++;
@@ -157,6 +163,9 @@ CMessageBox::CMessageBox(const char* const Caption, const char * const Text, con
 	int MaxButtonTextWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(g_Locale->getText(LOCALE_MESSAGEBOX_CANCEL), true); // UTF-8
 	int ButtonWidth = 20 + 33 + MaxButtonTextWidth + 5;
 	int num = 0;
+
+	if (showbuttons & mbNone)
+		num = 0;
 	
 	if (showbuttons & mbYes)
 		num++;
@@ -188,6 +197,9 @@ CMessageBox::CMessageBox(const char* const Caption, ContentLines& Lines, const i
 	int MaxButtonTextWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(g_Locale->getText(LOCALE_MESSAGEBOX_CANCEL), true); // UTF-8
 	int ButtonWidth = 20 + 33 + MaxButtonTextWidth + 5;
 	int num = 0;
+
+	if (showbuttons & mbNone)
+		num = 0;
 	
 	if (showbuttons & mbYes)
 		num++;
@@ -244,7 +256,7 @@ void CMessageBox::init(const char * const Caption, const int Width, const char *
 	int maxOverallHeight = 0;
 	m_startEntryOfPage.push_back(0);
 	
-	for (ContentLines::iterator it = m_lines.begin(); it!=m_lines.end(); it++)
+	for (ContentLines::iterator it = m_lines.begin(); it!= m_lines.end(); it++)
 	{
 		bool pagebreak = false;
 		int maxHeight = 0;
@@ -253,6 +265,11 @@ void CMessageBox::init(const char * const Caption, const int Width, const char *
 		
 		for (std::vector<Drawable*>::iterator item = it->begin(); item != it->end(); item++) 
 		{
+			//
+			if ((*item)->getType() == Drawable::DTYPE_TEXT)
+				m_fheight = (*item)->getHeight();
+			//
+
 			if ((*item)->getHeight() > maxHeight)
 				maxHeight = (*item)->getHeight();
 			lineWidth += (*item)->getWidth();
@@ -269,7 +286,7 @@ void CMessageBox::init(const char * const Caption, const int Width, const char *
 			maxWidth = lineWidth;
 		m_height += maxHeight;
 		
-		if (m_height > HINTBOXEXT_MAX_HEIGHT || pagebreak) 
+		if (m_height > MESSAGEBOX_MAX_HEIGHT || pagebreak) 
 		{
 			if (m_height-maxHeight > maxOverallHeight)
 				maxOverallHeight = m_height - maxHeight;
@@ -313,14 +330,17 @@ void CMessageBox::init(const char * const Caption, const int Width, const char *
 	unsigned int additional_width;
 
 	if (m_startEntryOfPage.size() > 1)
-		additional_width = 20 + 15;
+		additional_width = BORDER_LEFT + BORDER_RIGHT + SCROLLBAR_WIDTH;
 	else
-		additional_width = 20 +  0;
+		additional_width = BORDER_LEFT + BORDER_RIGHT;
 
 	if (Icon != NULL)
 	{
 		m_iconfile = Icon;
-		additional_width += 30;
+
+		int iw, ih;
+		CFrameBuffer::getInstance()->getIconSize(m_iconfile.c_str(), &iw, &ih);
+		additional_width += BORDER_LEFT + iw + ICON_OFFSET; 
 	}
 	else
 		m_iconfile = "";
@@ -335,7 +355,7 @@ void CMessageBox::init(const char * const Caption, const int Width, const char *
 
 void CMessageBox::paint(void)
 {
-	dprintf(DEBUG_NORMAL, "CHintBoxExt::paint\n");
+	dprintf(DEBUG_NORMAL, "CMessageBox::paint\n");
 
 	if (m_window != NULL)
 	{
@@ -354,10 +374,10 @@ void CMessageBox::paint(void)
                                m_width + borderwidth,
                                m_height + borderwidth);
 
-	refresh(true);
+	refresh();
 }
 
-void CMessageBox::refresh(bool paintBg)
+void CMessageBox::refresh()
 {
 	if (m_window == NULL)
 	{
@@ -365,8 +385,7 @@ void CMessageBox::refresh(bool paintBg)
 	}
 	
 	// paint shadow
-	if(paintBg)
-		m_window->paintBoxRel(borderwidth, borderwidth, m_width, m_height, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH);
+	m_window->paintBoxRel(borderwidth, borderwidth, m_width, m_height, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH);
 	
 	// title
 	m_window->paintBoxRel(0, 0, m_width, m_theight, (CFBWindow::color_t)COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);//round
@@ -375,7 +394,7 @@ void CMessageBox::refresh(bool paintBg)
 
 	if (!m_iconfile.empty())
 	{
-		m_window->paintIcon(m_iconfile.c_str(), 8, 15);
+		m_window->paintIcon(m_iconfile.c_str(), BORDER_LEFT, 0, m_theight);
 	}
 	
 	int stringstartposX = (m_width >> 1) - (neededWidth >> 1);
@@ -388,13 +407,14 @@ void CMessageBox::refresh(bool paintBg)
 
 	for (ContentLines::iterator it = m_lines.begin() + m_startEntryOfPage[m_currentPage]; it != m_lines.begin() + m_startEntryOfPage[m_currentPage + 1] && it != m_lines.end(); it++)
 	{
-		int xPos = 10;
+		int xPos = BORDER_LEFT;
 		int maxHeight = 0;
 		
 		for (std::vector<Drawable*>::iterator d = it->begin(); d!=it->end(); d++)
 		{
-  			(*d)->draw(m_window, xPos, yPos, m_width - 20);
-			xPos += (*d)->getWidth() + 20;
+  			(*d)->draw(m_window, xPos, yPos, m_width - BORDER_LEFT - BORDER_RIGHT);
+
+			xPos += (*d)->getWidth() + BORDER_LEFT + BORDER_RIGHT;
 			
 			if ((*d)->getHeight() > maxHeight)
 				maxHeight = (*d)->getHeight();
@@ -452,22 +472,27 @@ void CMessageBox::returnDefaultValueOnTimeout(bool returnDefault)
 
 void CMessageBox::paintButtons()
 {
+	//
 	uint8_t    color;
 	fb_pixel_t bgcolor;
 
 	m_window->paintBoxRel(0, m_height - (m_fheight << 1), m_width, (m_fheight << 1), (CFBWindow::color_t)COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
+	if (showbuttons & mbNone)
+		return;
+
 	//irgendwann alle vergleichen - aber cancel ist sicher der l�ngste
 	int MaxButtonTextWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(g_Locale->getText(LOCALE_MESSAGEBOX_CANCEL), true); // UTF-8
 
-	int ButtonWidth = 20 + 33 + MaxButtonTextWidth;
+	int iw, ih;
+	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
+	int ButtonWidth = BORDER_LEFT + BORDER_RIGHT + iw + ICON_OFFSET + MaxButtonTextWidth;
 
-	int ButtonSpacing = (m_width - 20 - (ButtonWidth * 3)) / 2;
-	if(ButtonSpacing <= 5) 
-		ButtonSpacing = 5;
+	int ButtonSpacing = (m_width - BORDER_LEFT - BORDER_RIGHT - (ButtonWidth * 3)) / 2;
+	if(ButtonSpacing <= ICON_OFFSET) 
+		ButtonSpacing = ICON_OFFSET;
 
 	int xpos = BORDER_LEFT;
-	int iw, ih;
 	int fh = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 	const int noname = 20;
 	
@@ -489,9 +514,9 @@ void CMessageBox::paintButtons()
 		m_window->paintBoxRel(xpos, m_height - m_fheight - noname, ButtonWidth, m_fheight, (CFBWindow::color_t)bgcolor);
 
 		CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iw, &ih);
-		m_window->paintIcon(NEUTRINO_ICON_BUTTON_RED, xpos + 15, m_height - m_fheight - noname, m_fheight);
+		m_window->paintIcon(NEUTRINO_ICON_BUTTON_RED, xpos + BORDER_LEFT + ICON_OFFSET, m_height - m_fheight - noname, m_fheight);
 
-		m_window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], xpos + 43, (m_height - noname)-(m_fheight-fh)/2, ButtonWidth- 53, g_Locale->getText(LOCALE_MESSAGEBOX_YES), (CFBWindow::color_t)color, 0, true); // UTF-8
+		m_window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], xpos + BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET, (m_height - noname) - (m_fheight - fh)/2, ButtonWidth - (BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET + BORDER_LEFT), g_Locale->getText(LOCALE_MESSAGEBOX_YES), (CFBWindow::color_t)color, 0, true); // UTF-8
 		
 		xpos += ButtonWidth + ButtonSpacing;
 	}
@@ -512,9 +537,9 @@ void CMessageBox::paintButtons()
 
 		m_window->paintBoxRel(xpos, m_height - m_fheight-noname, ButtonWidth, m_fheight, (CFBWindow::color_t)bgcolor);
 
-		m_window->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, xpos + 14, m_height - m_fheight - noname, m_fheight);
+		m_window->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, xpos + BORDER_LEFT + ICON_OFFSET, m_height - m_fheight - noname, m_fheight);
 
-		m_window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], xpos + 43, (m_height - noname)-(m_fheight-fh)/2, ButtonWidth- 53, g_Locale->getText(LOCALE_MESSAGEBOX_NO), (CFBWindow::color_t)color, 0, true); // UTF-8		
+		m_window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], xpos + BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET, (m_height - noname)-(m_fheight-fh)/2, ButtonWidth - (BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET + BORDER_LEFT), g_Locale->getText(LOCALE_MESSAGEBOX_NO), (CFBWindow::color_t)color, 0, true); // UTF-8		
 	
 		xpos += ButtonWidth + ButtonSpacing;
 	}
@@ -536,12 +561,12 @@ void CMessageBox::paintButtons()
 
 		m_window->paintBoxRel(xpos, m_height-m_fheight-noname, ButtonWidth, m_fheight, (CFBWindow::color_t)bgcolor);
 
-		m_window->paintIcon(NEUTRINO_ICON_BUTTON_HOME, xpos + 14, m_height-m_fheight - noname, m_fheight);
+		m_window->paintIcon(NEUTRINO_ICON_BUTTON_HOME, xpos + BORDER_LEFT + ICON_OFFSET, m_height-m_fheight - noname, m_fheight);
 
 		m_window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], 
-					xpos + 43, 
+					xpos + BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET, 
 					(m_height - noname) - (m_fheight - fh)/2, 
-					ButtonWidth - 53, 
+					ButtonWidth - (BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET + BORDER_LEFT), 
 					g_Locale->getText((showbuttons & mbCancel) ? LOCALE_MESSAGEBOX_CANCEL : (showbuttons & mbOk) ? LOCALE_MESSAGEBOX_OK : LOCALE_MESSAGEBOX_BACK), 
 					(CFBWindow::color_t)color, 0, true); // UTF-8	
 	}	
@@ -554,7 +579,7 @@ int CMessageBox::exec(int timeout)
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	// hintBoxExt paint
+	// paint
 	paint();
 
 	paintButtons();

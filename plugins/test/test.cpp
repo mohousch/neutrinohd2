@@ -470,7 +470,7 @@ void CTestMenu::testCInfoBox()
 
 void CTestMenu::testCMessageBox()
 {
-	CMessageBox * messageBox = new CMessageBox(LOCALE_MESSAGEBOX_INFO, "testing CMessageBox");
+	CMessageBox * messageBox = new CMessageBox(LOCALE_MESSAGEBOX_INFO, "testing CMessageBox"/*, 600, NEUTRINO_ICON_INFO, CMessageBox::mbrYes, CMessageBox::mbNone*/);
 	
 	int res = messageBox->exec();
 
@@ -508,12 +508,23 @@ void CTestMenu::testCHelpBox()
 {
 	Helpbox * helpBox = new Helpbox();
 	
-	helpBox->addLine(NEUTRINO_ICON_BUTTON_RED, "testing CHelpBox");
-	helpBox->addLine("HELPBOX");
-	helpBox->addLine("");
-	helpBox->addPagebreak();
+	// text
+	helpBox->addLine("helpBox");
 
-	helpBox->show(LOCALE_MESSAGEBOX_INFO);
+	// icon
+	helpBox->addLine(NEUTRINO_ICON_BUTTON_RED, "Huhu :-P");
+
+	//
+	helpBox->addLine("Huhu :-)", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], COL_RED0, true);
+
+	//
+	helpBox->addLine("neutrinoHD2 the best GUI :-P", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], COL_YELLOW0, true);
+	
+
+	//
+	//helpBox->addPagebreak();
+
+	helpBox->show(LOCALE_MESSAGEBOX_INFO, CMessageBox::mbrBack, CMessageBox::mbNone);
 	
 	delete helpBox;
 	helpBox = NULL;

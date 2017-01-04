@@ -529,6 +529,9 @@ CPlugins::i_type_t CPlugins::getPluginIntegration(int integration)
 		case INTEGRATION_TYPE_POWER:
 			return I_TYPE_POWER;
 			break;
+		case INTEGRATION_TYPE_USER:
+			return I_TYPE_USER;
+			break;
 		default:
 			return I_TYPE_DISABLED;
 	}
