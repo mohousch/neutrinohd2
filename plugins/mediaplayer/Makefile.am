@@ -26,10 +26,12 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)/mediaplayer
 	install .libs/mediaplayer.so $(DESTDIR)$(PLUGINDIR)/mediaplayer
 	install -m 0644 mediaplayer.cfg $(DESTDIR)$(PLUGINDIR)/mediaplayer
+	install -m 0644 mediaplayer.png $(DESTDIR)$(PLUGINDIR)/mediaplayer
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaplayer/mediaplayer.so
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaplayer/mediaplayer.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/mediaplayer/mediaplayer.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/mediaplayer
 
 
