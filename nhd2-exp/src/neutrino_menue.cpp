@@ -477,7 +477,7 @@ bool CNeutrinoApp::showUserMenu(int button)
                         txt = g_Locale->getText(LOCALE_MAINMENU_FEATURES);
         }
 
-        CMenuWidget * menu = new CMenuWidget(txt.c_str() , NEUTRINO_ICON_FEATURES);
+        CMenuWidget * menu = new CMenuWidget(txt.c_str(), NEUTRINO_ICON_FEATURES);
         if (menu == NULL)
                 return 0;
 
@@ -686,7 +686,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 						menu_items++;
 						menu_prev = SNeutrinoSettings::ITEM_VTXT;
 						keyhelper.get(&key, &icon);
-						menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_VTXT, true, NULL, /*TuxtxtChanger*/new CTuxtxtChangeExec, "-1", key, icon);
+						menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_VTXT, true, NULL, new CTuxtxtChangeExec, "-1", key, icon);
 						menu->addItem(menu_item, false);
 					}
 		                        break;	

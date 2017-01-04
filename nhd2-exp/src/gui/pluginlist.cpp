@@ -476,19 +476,8 @@ int CPluginsExec::exec(CMenuTarget* parent, const std::string & actionKey)
 	if (parent != NULL)
 		parent->hide();
 
-	if (actionKey == "teletext") 
-	{
-		g_RCInput->postMsg(CRCInput::RC_timeout, 0);
-		g_RCInput->postMsg(CRCInput::RC_text, 0);
-		return menu_return::RETURN_EXIT;
-	}
-	else if (sel >= 0)
+	if (sel >= 0)
 		g_PluginList->startPlugin(sel);
-
-	/*
-	if (!g_PluginList->getScriptOutput().empty())
-		ShowMsg(LOCALE_PLUGINS_RESULT, g_PluginList->getScriptOutput(), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_SHELL);
-	*/
 
 	if (g_PluginList->getIntegration(sel) == CPlugins::I_TYPE_DISABLED)
 		return menu_return::RETURN_EXIT;
