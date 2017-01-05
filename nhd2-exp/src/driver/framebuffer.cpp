@@ -1426,58 +1426,6 @@ void CFrameBuffer::ClearFrameBuffer()
 	paintBackground();
 }
 
-void * CFrameBuffer::convertRGB2FB(unsigned char * rgbbuff, unsigned long x, unsigned long y, int transp, int m_transparent, bool alpha)
-{
-	unsigned long i;
-	unsigned int * fbbuff;
-	unsigned long count = x*y;
-
-	fbbuff = (unsigned int *) malloc(count * sizeof(unsigned int));
-	
-	if(fbbuff == NULL)
-	{
-		dprintf(DEBUG_INFO, "CFrameBuffer::convertRGB2FB: Error: malloc\n");
-		return NULL;
-	}
-	
-	if(alpha)
-	{
-		for(i = 0; i < count ; i++)
-			fbbuff[i] = ((rgbbuff[i*4+3] << 24) & 0xFF000000) | 
-			            ((rgbbuff[i*4]   << 16) & 0x00FF0000) | 
-		        	    ((rgbbuff[i*4+1] <<  8) & 0x0000FF00) | 
-			            ((rgbbuff[i*4+2])       & 0x000000FF);
-	}
-	else
-	{
-		switch (m_transparent) 
-		{
-			case CFrameBuffer::TM_BLACK:
-				for(i = 0; i < count ; i++) 
-				{
-					transp = 0;
-					if(rgbbuff[i*3] || rgbbuff[i*3+1] || rgbbuff[i*3+2])
-						transp = 0xFF;
-					fbbuff[i] = (transp << 24) | ((rgbbuff[i*3] << 16) & 0xFF0000) | ((rgbbuff[i*3+1] << 8) & 0xFF00) | (rgbbuff[i*3+2] & 0xFF);
-				}
-				break;
-							
-			case CFrameBuffer::TM_INI:
-				for(i = 0; i < count ; i++)
-					fbbuff[i] = (transp << 24) | ((rgbbuff[i*3] << 16) & 0xFF0000) | ((rgbbuff[i*3+1] << 8) & 0xFF00) | (rgbbuff[i*3+2] & 0xFF);
-				break;
-							
-			case CFrameBuffer::TM_NONE:
-			default:
-				for(i = 0; i < count ; i++)
-					fbbuff[i] = 0xFF000000 | ((rgbbuff[i*3] << 16) & 0xFF0000) | ((rgbbuff[i*3+1] << 8) & 0xFF00) | (rgbbuff[i*3+2] & 0xFF);
-				break;
-		}
-	}
-
-	return (void *) fbbuff;
-}
-
 // blit2FB
 void CFrameBuffer::blit2FB(void * fbbuff, uint32_t width, uint32_t height, uint32_t xoff, uint32_t yoff, uint32_t xp, uint32_t yp, bool transp )
 { 
@@ -1516,505 +1464,6 @@ void CFrameBuffer::blit2FB(void * fbbuff, uint32_t width, uint32_t height, uint3
 		}
 		d += stride;
 	}
-}
-
-// display RGB (used by pictureviewer)
-void CFrameBuffer::displayRGB(unsigned char * rgbbuff, int x_size, int y_size, int x_pan, int y_pan, int x_offs, int y_offs, bool clearfb)
-{
-        void * fbbuff = NULL;
-
-        if(rgbbuff == NULL)
-                return;
-
-        // correct panning
-        if(x_pan > x_size - (int)xRes) 
-		x_pan = 0;
-        if(y_pan > y_size - (int)yRes) 
-		y_pan = 0;
-
-        // correct offset
-        if(x_offs + x_size > (int)xRes) 
-		x_offs = 0;
-        if(y_offs + y_size > (int)yRes) 
-		y_offs = 0;
-
-        // convert
-        fbbuff = convertRGB2FB(rgbbuff, x_size, y_size);
-        if(fbbuff == NULL)
-                return;
-
-        // ClearFB if image is smaller
-        if(clearfb)
-                ClearFrameBuffer();
-
-	// blit2fb
-        blit2FB(fbbuff, x_size, y_size, x_offs, y_offs, x_pan, y_pan);
-	
-        free(fbbuff);
-}
-
-// resize.cpp
-unsigned char * CFrameBuffer::Resize(unsigned char * origin, int ox, int oy, int dx, int dy, ScalingMode type, unsigned char * dst, bool alpha)
-{
-	unsigned char * cr;
-	
-	if(dst == NULL) 
-	{
-		cr = (unsigned char*) malloc(dx*dy*(alpha? 4 : 3));
-
-		if(cr == NULL)
-		{
-			dprintf(DEBUG_INFO, "Error: malloc\n");
-			return(origin);
-		}
-	} 
-	else
-		cr = dst;
-
-	if(type == SIMPLE) 
-	{
-		unsigned char *p, *l;
-		int i, j, k, ip;
-		l = cr;
-
-		for(j = 0; j < dy; j++, l += dx*3)
-		{
-			p = origin + (j*oy/dy*ox*3);
-			for(i = 0, k = 0; i < dx; i++, k += 3)
-			{
-				ip = i*ox/dx*3;
-				memmove(l+k, p+ip, 3);
-			}
-		}
-	} 
-	else 
-	{
-		unsigned char *p, *q;
-		int i, j, k, l, ya, yb;
-		int sq, r, g, b, a;
-
-		p = cr;
-
-		int xa_v[dx];
-		for(i = 0; i < dx; i++)
-			xa_v[i] = i*ox/dx;
-		int xb_v[dx+1];
-		
-		for(i = 0; i < dx; i++)
-		{
-			xb_v[i] = (i+1)*ox/dx;
-			if(xb_v[i] >= ox)
-				xb_v[i] = ox - 1;
-		}
-		
-		if (alpha)
-		{
-			for(j = 0;j < dy;j++)
-			{
-				ya = j*oy/dy;
-				yb = (j + 1)*oy/dy; 
-				if(yb >= oy) 
-					yb = oy - 1;
-				
-				for(i = 0; i < dx; i++, p += 4)
-				{
-					for(l = ya, r = 0, g = 0, b = 0, a = 0, sq = 0; l <= yb; l++)
-					{
-						q = origin + ((l*ox + xa_v[i])*4);
-						for(k = xa_v[i]; k <= xb_v[i]; k++, q += 4, sq++)
-						{
-							r += q[0]; g += q[1]; b += q[2]; a += q[3];
-						}
-					}
-					p[0] = r/sq; 
-					p[1] = g/sq; 
-					p[2] = b/sq; 
-					p[3] = a/sq;
-				}
-			}
-		}
-		else
-		{
-			for(j = 0; j < dy; j++)
-			{
-				ya = j*oy/dy;
-				yb = (j + 1)*oy/dy; 
-				if(yb >= oy) 
-					yb = oy - 1;
-					
-				for(i = 0; i < dx; i++, p += 3)
-				{
-					for(l = ya, r = 0, g = 0, b = 0, sq = 0; l <= yb; l++)
-					{
-						q = origin + ((l*ox+xa_v[i])*3);
-							
-						for(k = xa_v[i]; k <= xb_v[i]; k++, q += 3, sq++)
-						{
-							r += q[0]; g += q[1]; b += q[2];
-						}
-					}
-					p[0] = r/sq; p[1] = g/sq; p[2] = b/sq;
-				}
-			}
-		}
-	}
-	
-	free(origin);
-	
-	return(cr);
-}
-
-// PNG
-extern int fh_png_getsize(const char *name, int *x, int *y, int wanted_width, int wanted_height);
-extern int fh_png_load(const char *name, unsigned char **buffer, int* xp, int* yp);
-extern int fh_png_id(const char *name);
-extern int png_load_ext(const char * name, unsigned char ** buffer, int * xp, int * yp, int * bpp);
-
-// JPG
-extern int fh_jpeg_getsize (const char *, int *, int *, int, int);
-extern int fh_jpeg_load (const char *, unsigned char **, int *, int *);
-extern int fh_jpeg_id (const char *);
-
-// BMP
-extern int fh_bmp_getsize (const char *, int *, int *, int, int);
-extern int fh_bmp_load (const char *, unsigned char **, int *, int *);
-extern int fh_bmp_id (const char *);
-
-// GIF
-extern int fh_gif_getsize (const char *, int *, int *, int, int);
-extern int fh_gif_load (const char *, unsigned char **, int *, int *);
-extern int fh_gif_id (const char *);
-
-// CRW
-extern int fh_crw_getsize (const char *, int *, int *, int, int);
-extern int fh_crw_load (const char *, unsigned char **, int *, int *);
-extern int fh_crw_id (const char *);
-
-void add_format (int (*picsize) (const char *, int *, int *, int, int), int (*picread) (const char *, unsigned char **, int *, int *), int (*id) (const char *))
-{
-	CFormathandler * fhn;
-	fhn = (CFormathandler *) malloc(sizeof (CFormathandler));
-	fhn->get_size = picsize;
-	fhn->get_pic = picread;
-	fhn->id_pic = id;
-	fhn->next = fh_root;
-	fh_root = fhn;
-}
-
-void init_handlers (void)
-{
-	// add png format
-  	add_format(fh_png_getsize, fh_png_load, fh_png_id);
-	
-	// add jpg format
-	add_format(fh_jpeg_getsize, fh_jpeg_load, fh_jpeg_id);
-	
-	// add bmp
-	add_format(fh_bmp_getsize, fh_bmp_load, fh_bmp_id);
-
-	// add gif
-	add_format(fh_gif_getsize, fh_gif_load, fh_gif_id);
-
-	// add crw
-	add_format(fh_crw_getsize, fh_crw_load, fh_crw_id);
-}
-
-CFormathandler * fh_getsize(const char *name, int *x, int *y, int width_wanted, int height_wanted)
-{
-	CFormathandler * fh;
-	
-	for (fh = fh_root; fh != NULL; fh = fh->next) 
-	{
-		if (fh->id_pic (name))
-			if (fh->get_size (name, x, y, width_wanted, height_wanted) == FH_ERROR_OK)
-				return (fh);
-	}
-
-	return (NULL);
-}
-
-void CFrameBuffer::getSize(const std::string &name, int * width, int * height, int * nbpp)
-{
-	dprintf(DEBUG_DEBUG, "CFrameBuffer::getSize: name:%s\n", name.c_str());
-
-	unsigned char * rgbbuff;
-	int x, y;
-	int bpp = 0;
-	int load_ret;
-	CFormathandler * fh;
-
-	fh = fh_getsize(name.c_str(), &x, &y, INT_MAX, INT_MAX); // unscaled
-	
-	if (fh == NULL) 
-	{
-		*width = 0;
-		*height = 0;
-	}
-	
-	rgbbuff = (unsigned char *) malloc (x*y*4);
-	
-	if (rgbbuff != NULL) 
-	{
-		if ((name.find(".png") == (name.length() - 4)) && (fh_png_id(name.c_str())))
-			load_ret = png_load_ext(name.c_str(), &rgbbuff, &x, &y, &bpp);
-		else
-			load_ret = fh->get_pic(name.c_str(), &rgbbuff, &x, &y);
-		
-		if(load_ret == FH_ERROR_OK)
-		{
-			*nbpp = bpp;
-			*width = x;
-			*height = y;
-		}
-		else 
-		{
-			*width = 0;
-			*height = 0;
-		}
-	}
-}
-
-fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int height, ScalingMode scaling)
-{
-	int x, y;
-	CFormathandler * fh;
-	unsigned char * buffer;
-	fb_pixel_t * ret = NULL;
-	int load_ret;
-	int _bpp = 0;
-
-	if (scaling == NONE)
-  		fh = fh_getsize(name.c_str(), &x, &y, INT_MAX, INT_MAX); // unscaled
-	else
-		fh = fh_getsize(name.c_str(), &x, &y, width, height);
-	
-  	if (fh) 
-	{
-		buffer = (unsigned char *) malloc(x*y*4);
-		
-		if (buffer == NULL) 
-		{
-		  	dprintf(DEBUG_DEBUG, "CFrameBuffer::getImage: Error: malloc\n");
-		  	return NULL;
-		}
-		
-		if ((name.find(".png") == (name.length() - 4)) && (fh_png_id(name.c_str())))
-			load_ret = png_load_ext(name.c_str(), &buffer, &x, &y, &_bpp);
-		else
-			load_ret = fh->get_pic(name.c_str(), &buffer, &x, &y);
-
-		if (load_ret == FH_ERROR_OK) 
-		{
-			if(scaling != NONE)
-			{
-				// resize
-				if(x != width || y != height)
-				{
-					// aspect ratio
-
-					// alpha
-					if(_bpp == 4)
-						buffer = Resize(buffer, x, y, width, height, scaling, NULL, true);
-					else
-						buffer = Resize(buffer, x, y, width, height, scaling);
-				
-					x = width ;
-					y = height;
-				} 
-			}
-			
-			// convert RGB2FB
-			if( name.find(".png") == (name.length() - 4) )
-			{
-				// alpha
-				if (_bpp == 4)
-					ret = (fb_pixel_t *) convertRGB2FB(buffer, x, y, 0, TM_INI, true);
-				else
-					ret = (fb_pixel_t *)convertRGB2FB(buffer, x, y, convertSetupAlpha2Alpha(g_settings.infobar_alpha));
-			}
-			else
-				ret = (fb_pixel_t *)convertRGB2FB(buffer, x, y);
-			
-			free(buffer);
-		} 
-		else 
-		{
-	  		dprintf(DEBUG_DEBUG, "CFrameBuffer::getImage: Error decoding file %s\n", name.c_str ());
-	  		free (buffer);
-	  		buffer = NULL;
-		}
-  	} 
-	else
-	{
-		dprintf(DEBUG_DEBUG, "CFrameBuffer::getImage: Error open file %s\n", name.c_str ());
-	}
-
-	return ret;
-}
-
-// display image
-bool CFrameBuffer::DisplayImage(const std::string& name, int posx, int posy, int width, int height, ScalingMode scaling, int x_pan, int y_pan, bool clearfb)
-{
-	dprintf(DEBUG_DEBUG, "CFrameBuffer::DisplayImage %s\n", name.c_str());
-	
-	if(!getActive())
-		return false;
-
-	//
-	int dx = width;
-	int dy = height;
-	int bpp = 0;
-	
-	if(scaling == NONE)
-	{
-		getSize(name.c_str(), &dx, &dy, &bpp);
-	}
-	
-	bool isPNG = false;
-	
-	if( name.find(".png") == (name.length() - 4) )
-		isPNG = true;
-	
-	fb_pixel_t * data = getImage(name, dx, dy, scaling);
-
-	if(clearfb)
-                ClearFrameBuffer();
-
-	if(data) 
-	{
-		blit2FB(data, dx, dy, posx, posy, x_pan, y_pan, isPNG? true : false);
-		free(data);
-		return true;
-	}
-	
-	return false;
-}
-
-// check for logo
-bool CFrameBuffer::checkLogo(t_channel_id channel_id)
-{	
-        std::string logo_name;
-	bool logo_ok = false;
-	
-	// first png, then jpg, then gif
-	std::string strLogoExt[2] = { ".png", ".jpg" };
-	
-	// check for logo
-	for (int i = 0; i < 2; i++)
-	{
-		logo_name = g_settings.logos_dir;
-		logo_name += "/";
-		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
-		logo_name += strLogoExt[i].c_str();
-
-		if(!access(logo_name.c_str(), F_OK)) 
-		{
-			logo_ok = true;
-			dprintf(DEBUG_INFO, "%s found logo: %s\n", __FUNCTION__, logo_name.c_str());
-			break;
-		}
-	}
-	
-	return logo_ok;
-}
-
-void CFrameBuffer::getLogoSize(t_channel_id channel_id, int * width, int * height, int * bpp)
-{
-	std::string logo_name;
-	bool logo_ok = false;
-	
-	// check for logo/convert channelid to logo
-	std::string strLogoExt[2] = { ".png", ".jpg" };
-	
-	// check for logo
-	for (int i = 0; i < 2; i++)
-	{
-		logo_name = g_settings.logos_dir;
-		logo_name += "/";
-		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
-		logo_name += strLogoExt[i].c_str();
-
-		if(!access(logo_name.c_str(), F_OK)) 
-		{
-			logo_ok = true;
-			break;
-		}
-	}
-	
-	if(logo_ok)
-	{
-		// get logo real size
-		getSize(logo_name.c_str(), width, height, bpp);
-		
-		dprintf(DEBUG_INFO, "%s logo: %s (%dx%d) %dbpp\n", __FUNCTION__, logo_name.c_str(), *width, *height, *bpp);
-	}
-}
-
-// display logo
-bool CFrameBuffer::DisplayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale, bool center_x, bool center_y)
-{	
-        std::string logo_name;
-	bool ret = false;
-	bool logo_ok = false;
-	
-	int logo_w = width;
-	int logo_h = height;
-	int logo_bpp = 0;
-	
-	
-	// check for logo
-	std::string strLogoExt[2] = { ".png", ".jpg" };
-	
-	// check for logo
-	for (int i = 0; i < 2; i++)
-	{
-		logo_name = g_settings.logos_dir;
-		logo_name += "/";
-		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
-		logo_name += strLogoExt[i].c_str();
-
-		if(!access(logo_name.c_str(), F_OK)) 
-		{
-			logo_ok = true;
-			break;
-		}
-	}
-	
-	if(logo_ok)
-	{
-		// get logo real size
-		getSize(logo_name, &logo_w, &logo_h, &logo_bpp);
-	
-		// scale only PNG logos
-		if( logo_name.find(".png") == (logo_name.length() - 4) )
-		{
-			// upscale
-			if(upscale)
-			{	
-				//rescale logo image
-				float aspect = (float)(logo_w) / (float)(logo_h);
-					
-				if (((float)(logo_w) / (float)width) > ((float)(logo_h) / (float)height)) 
-				{
-					logo_w = width;
-					logo_h = (int)(width / aspect);
-				}
-				else
-				{
-					logo_h = height;
-					logo_w = (int)(height * aspect);
-				}
-			}
-			
-			ret = DisplayImage(logo_name, center_x?posx + (width - logo_w)/2 : posx, center_y?posy + (height - logo_h)/2 : posy, logo_w, logo_h);
-		}
-		else
-		{
-			ret = DisplayImage(logo_name, posx, posy, width, height);
-		}
-        }
-
-	return ret;
 }
 
 //
@@ -2150,6 +1599,558 @@ void CFrameBuffer::blit(int mode3d)
 			perror("FBIO_BLIT");		
 	}
 #endif	
-//#endif
 }
+
+// PNG
+extern int fh_png_getsize(const char *name, int *x, int *y, int wanted_width, int wanted_height);
+extern int fh_png_load(const char *name, unsigned char **buffer, int* xp, int* yp);
+extern int fh_png_id(const char *name);
+extern int png_load_ext(const char * name, unsigned char ** buffer, int * xp, int * yp, int * bpp);
+
+// JPG
+extern int fh_jpeg_getsize (const char *, int *, int *, int, int);
+extern int fh_jpeg_load (const char *, unsigned char **, int *, int *);
+extern int fh_jpeg_id (const char *);
+
+// BMP
+extern int fh_bmp_getsize (const char *, int *, int *, int, int);
+extern int fh_bmp_load (const char *, unsigned char **, int *, int *);
+extern int fh_bmp_id (const char *);
+
+// GIF
+extern int fh_gif_getsize (const char *, int *, int *, int, int);
+extern int fh_gif_load (const char *, unsigned char **, int *, int *);
+extern int fh_gif_id (const char *);
+
+// CRW
+extern int fh_crw_getsize (const char *, int *, int *, int, int);
+extern int fh_crw_load (const char *, unsigned char **, int *, int *);
+extern int fh_crw_id (const char *);
+
+void add_format (int (*picsize) (const char *, int *, int *, int, int), int (*picread) (const char *, unsigned char **, int *, int *), int (*id) (const char *))
+{
+	CFormathandler * fhn;
+	fhn = (CFormathandler *) malloc(sizeof (CFormathandler));
+	fhn->get_size = picsize;
+	fhn->get_pic = picread;
+	fhn->id_pic = id;
+	fhn->next = fh_root;
+	fh_root = fhn;
+}
+
+void init_handlers (void)
+{
+	// add png format
+  	add_format(fh_png_getsize, fh_png_load, fh_png_id);
+	
+	// add jpg format
+	add_format(fh_jpeg_getsize, fh_jpeg_load, fh_jpeg_id);
+	
+	// add bmp
+	add_format(fh_bmp_getsize, fh_bmp_load, fh_bmp_id);
+
+	// add gif
+	add_format(fh_gif_getsize, fh_gif_load, fh_gif_id);
+
+	// add crw
+	add_format(fh_crw_getsize, fh_crw_load, fh_crw_id);
+}
+
+CFormathandler * fh_getsize(const char *name, int *x, int *y, int width_wanted, int height_wanted)
+{
+	CFormathandler * fh;
+	
+	for (fh = fh_root; fh != NULL; fh = fh->next) 
+	{
+		if (fh->id_pic (name))
+			if (fh->get_size (name, x, y, width_wanted, height_wanted) == FH_ERROR_OK)
+				return (fh);
+	}
+
+	return (NULL);
+}
+
+void CFrameBuffer::getSize(const std::string &name, int * width, int * height, int * nbpp)
+{
+	dprintf(DEBUG_DEBUG, "CFrameBuffer::getSize: name:%s\n", name.c_str());
+
+	unsigned char * rgbbuff;
+	int x, y;
+	int bpp = 0;
+	int load_ret;
+	CFormathandler * fh;
+
+	fh = fh_getsize(name.c_str(), &x, &y, INT_MAX, INT_MAX); // unscaled
+	
+	if (fh == NULL) 
+	{
+		*width = 0;
+		*height = 0;
+	}
+	
+	rgbbuff = (unsigned char *) malloc (x*y*4);
+	
+	if (rgbbuff != NULL) 
+	{
+		if ((name.find(".png") == (name.length() - 4)) && (fh_png_id(name.c_str())))
+			load_ret = png_load_ext(name.c_str(), &rgbbuff, &x, &y, &bpp);
+		else
+			load_ret = fh->get_pic(name.c_str(), &rgbbuff, &x, &y);
+		
+		if(load_ret == FH_ERROR_OK)
+		{
+			*nbpp = bpp;
+			*width = x;
+			*height = y;
+		}
+		else 
+		{
+			*width = 0;
+			*height = 0;
+		}
+	}
+}
+
+// resize
+unsigned char * CFrameBuffer::Resize(unsigned char * origin, int ox, int oy, int dx, int dy, ScalingMode type, unsigned char * dst, bool alpha)
+{
+	unsigned char * cr;
+	
+	if(dst == NULL) 
+	{
+		cr = (unsigned char*) malloc(dx*dy*(alpha? 4 : 3));
+
+		if(cr == NULL)
+		{
+			dprintf(DEBUG_INFO, "Error: malloc\n");
+			return(origin);
+		}
+	} 
+	else
+		cr = dst;
+
+	if(type == SIMPLE) 
+	{
+		unsigned char *p, *l;
+		int i, j, k, ip;
+		l = cr;
+
+		for(j = 0; j < dy; j++, l += dx*3)
+		{
+			p = origin + (j*oy/dy*ox*3);
+			for(i = 0, k = 0; i < dx; i++, k += 3)
+			{
+				ip = i*ox/dx*3;
+				memmove(l+k, p+ip, 3);
+			}
+		}
+	} 
+	else 
+	{
+		unsigned char *p, *q;
+		int i, j, k, l, ya, yb;
+		int sq, r, g, b, a;
+
+		p = cr;
+
+		int xa_v[dx];
+		for(i = 0; i < dx; i++)
+			xa_v[i] = i*ox/dx;
+		int xb_v[dx+1];
+		
+		for(i = 0; i < dx; i++)
+		{
+			xb_v[i] = (i+1)*ox/dx;
+			if(xb_v[i] >= ox)
+				xb_v[i] = ox - 1;
+		}
+		
+		if (alpha)
+		{
+			for(j = 0;j < dy;j++)
+			{
+				ya = j*oy/dy;
+				yb = (j + 1)*oy/dy; 
+				if(yb >= oy) 
+					yb = oy - 1;
+				
+				for(i = 0; i < dx; i++, p += 4)
+				{
+					for(l = ya, r = 0, g = 0, b = 0, a = 0, sq = 0; l <= yb; l++)
+					{
+						q = origin + ((l*ox + xa_v[i])*4);
+						for(k = xa_v[i]; k <= xb_v[i]; k++, q += 4, sq++)
+						{
+							r += q[0]; g += q[1]; b += q[2]; a += q[3];
+						}
+					}
+					p[0] = r/sq; 
+					p[1] = g/sq; 
+					p[2] = b/sq; 
+					p[3] = a/sq;
+				}
+			}
+		}
+		else
+		{
+			for(j = 0; j < dy; j++)
+			{
+				ya = j*oy/dy;
+				yb = (j + 1)*oy/dy; 
+				if(yb >= oy) 
+					yb = oy - 1;
+					
+				for(i = 0; i < dx; i++, p += 3)
+				{
+					for(l = ya, r = 0, g = 0, b = 0, sq = 0; l <= yb; l++)
+					{
+						q = origin + ((l*ox+xa_v[i])*3);
+							
+						for(k = xa_v[i]; k <= xb_v[i]; k++, q += 3, sq++)
+						{
+							r += q[0]; g += q[1]; b += q[2];
+						}
+					}
+					p[0] = r/sq; p[1] = g/sq; p[2] = b/sq;
+				}
+			}
+		}
+	}
+	
+	free(origin);
+	
+	return(cr);
+}
+
+// convertRGB2FB
+void * CFrameBuffer::convertRGB2FB(unsigned char * rgbbuff, unsigned long x, unsigned long y, int transp, int m_transparent, bool alpha)
+{
+	unsigned long i;
+	unsigned int * fbbuff;
+	unsigned long count = x*y;
+
+	fbbuff = (unsigned int *) malloc(count * sizeof(unsigned int));
+	
+	if(fbbuff == NULL)
+	{
+		dprintf(DEBUG_INFO, "CFrameBuffer::convertRGB2FB: Error: malloc\n");
+		return NULL;
+	}
+	
+	if(alpha)
+	{
+		for(i = 0; i < count ; i++)
+			fbbuff[i] = ((rgbbuff[i*4 + 3] << 24) & 0xFF000000) | 
+			            ((rgbbuff[i*4]     << 16) & 0x00FF0000) | 
+		        	    ((rgbbuff[i*4 + 1] <<  8) & 0x0000FF00) | 
+			            ((rgbbuff[i*4 + 2])       & 0x000000FF);
+	}
+	else
+	{
+		switch (m_transparent) 
+		{
+			case CFrameBuffer::TM_BLACK:
+				for(i = 0; i < count ; i++) 
+				{
+					transp = 0;
+					if(rgbbuff[i*3] || rgbbuff[i*3 + 1] || rgbbuff[i*3 + 2])
+						transp = 0xFF;
+					fbbuff[i] = (transp << 24) | ((rgbbuff[i*3] << 16) & 0xFF0000) | ((rgbbuff[i*3+1] << 8) & 0xFF00) | (rgbbuff[i*3 + 2] & 0xFF);
+				}
+				break;
+							
+			case CFrameBuffer::TM_INI:
+				for(i = 0; i < count ; i++)
+					fbbuff[i] = (transp << 24) | ((rgbbuff[i*3] << 16) & 0xFF0000) | ((rgbbuff[i*3 + 1] << 8) & 0xFF00) | (rgbbuff[i*3 + 2] & 0xFF);
+				break;
+							
+			case CFrameBuffer::TM_NONE:
+			default:
+				for(i = 0; i < count ; i++)
+					fbbuff[i] = 0xFF000000 | ((rgbbuff[i*3] << 16) & 0xFF0000) | ((rgbbuff[i*3 + 1] << 8) & 0xFF00) | (rgbbuff[i*3 + 2] & 0xFF);
+				break;
+		}
+	}
+
+	return (void *) fbbuff;
+}
+
+fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int height, ScalingMode scaling)
+{
+	int x, y;
+	CFormathandler * fh;
+	unsigned char * buffer;
+	fb_pixel_t * ret = NULL;
+	int load_ret;
+	int _bpp = 0;
+
+	if (scaling == NONE)
+  		fh = fh_getsize(name.c_str(), &x, &y, INT_MAX, INT_MAX); // unscaled
+	else
+		fh = fh_getsize(name.c_str(), &x, &y, width, height);
+	
+  	if (fh) 
+	{
+		buffer = (unsigned char *) malloc(x*y*4);
+		
+		if (buffer == NULL) 
+		{
+		  	dprintf(DEBUG_DEBUG, "CFrameBuffer::getImage: Error: malloc\n");
+		  	return NULL;
+		}
+		
+		if ((name.find(".png") == (name.length() - 4)) && (fh_png_id(name.c_str())))
+			load_ret = png_load_ext(name.c_str(), &buffer, &x, &y, &_bpp);
+		else
+			load_ret = fh->get_pic(name.c_str(), &buffer, &x, &y);
+
+		if (load_ret == FH_ERROR_OK) 
+		{
+			// resize
+			if(scaling != NONE)
+			{
+				if(x != width || y != height)
+				{
+					// aspect ratio
+
+					// alpha
+					if(_bpp == 4)
+						buffer = Resize(buffer, x, y, width, height, scaling, NULL, true);
+					else
+						buffer = Resize(buffer, x, y, width, height, scaling);
+				
+					x = width ;
+					y = height;
+				} 
+			}
+			
+			// convert RGB2FB
+			if( name.find(".png") == (name.length() - 4) )
+			{
+				// alpha
+				if (_bpp == 4)
+					ret = (fb_pixel_t *) convertRGB2FB(buffer, x, y, 0, TM_INI, true);
+				else
+					ret = (fb_pixel_t *)convertRGB2FB(buffer, x, y, convertSetupAlpha2Alpha(g_settings.infobar_alpha));
+			}
+			else
+				ret = (fb_pixel_t *)convertRGB2FB(buffer, x, y, 0xFF, TM_NONE);
+			
+			free(buffer);
+		} 
+		else 
+		{
+	  		dprintf(DEBUG_DEBUG, "CFrameBuffer::getImage: Error decoding file %s\n", name.c_str ());
+	  		free (buffer);
+	  		buffer = NULL;
+		}
+  	} 
+	else
+	{
+		dprintf(DEBUG_DEBUG, "CFrameBuffer::getImage: Error open file %s\n", name.c_str ());
+	}
+
+	return ret;
+}
+
+// display image
+bool CFrameBuffer::DisplayImage(const std::string& name, int posx, int posy, int width, int height, ScalingMode scaling, int x_pan, int y_pan, bool clearfb)
+{
+	dprintf(DEBUG_DEBUG, "CFrameBuffer::DisplayImage %s\n", name.c_str());
+	
+	if(!getActive())
+		return false;
+
+	//
+	int dx = width;
+	int dy = height;
+	int bpp = 0;
+	
+	if(scaling == NONE)
+	{
+		getSize(name.c_str(), &dx, &dy, &bpp);
+	}
+	
+	bool isPNG = false;
+	
+	if( name.find(".png") == (name.length() - 4) )
+		isPNG = true;
+	
+	fb_pixel_t * data = getImage(name, dx, dy, scaling);
+
+	if(clearfb)
+                ClearFrameBuffer();
+
+	if(data) 
+	{
+		blit2FB(data, dx, dy, posx, posy, x_pan, y_pan, isPNG? true : false);
+		free(data);
+		return true;
+	}
+	
+	return false;
+}
+
+// display RGB
+void CFrameBuffer::displayRGB(unsigned char * rgbbuff, int x_size, int y_size, int x_pan, int y_pan, int x_offs, int y_offs, bool clearfb)
+{
+        void * fbbuff = NULL;
+
+        if(rgbbuff == NULL)
+                return;
+
+        // correct panning
+        if(x_pan > x_size - (int)xRes) 
+		x_pan = 0;
+        if(y_pan > y_size - (int)yRes) 
+		y_pan = 0;
+
+        // correct offset
+        if(x_offs + x_size > (int)xRes) 
+		x_offs = 0;
+        if(y_offs + y_size > (int)yRes) 
+		y_offs = 0;
+
+        // convert
+        fbbuff = convertRGB2FB(rgbbuff, x_size, y_size);
+        if(fbbuff == NULL)
+                return;
+
+        // ClearFB if image is smaller
+        if(clearfb)
+                ClearFrameBuffer();
+
+	// blit2fb
+        blit2FB(fbbuff, x_size, y_size, x_offs, y_offs, x_pan, y_pan);
+	
+        free(fbbuff);
+}
+
+// check for logo
+bool CFrameBuffer::checkLogo(t_channel_id channel_id)
+{	
+        std::string logo_name;
+	bool logo_ok = false;
+	
+	// first png, then jpg, then gif
+	std::string strLogoExt[2] = { ".png", ".jpg" };
+	
+	// check for logo
+	for (int i = 0; i < 2; i++)
+	{
+		logo_name = g_settings.logos_dir;
+		logo_name += "/";
+		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
+		logo_name += strLogoExt[i].c_str();
+
+		if(!access(logo_name.c_str(), F_OK)) 
+		{
+			logo_ok = true;
+			dprintf(DEBUG_INFO, "%s found logo: %s\n", __FUNCTION__, logo_name.c_str());
+			break;
+		}
+	}
+	
+	return logo_ok;
+}
+
+void CFrameBuffer::getLogoSize(t_channel_id channel_id, int * width, int * height, int * bpp)
+{
+	std::string logo_name;
+	bool logo_ok = false;
+	
+	// check for logo/convert channelid to logo
+	std::string strLogoExt[2] = { ".png", ".jpg" };
+	
+	// check for logo
+	for (int i = 0; i < 2; i++)
+	{
+		logo_name = g_settings.logos_dir;
+		logo_name += "/";
+		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
+		logo_name += strLogoExt[i].c_str();
+
+		if(!access(logo_name.c_str(), F_OK)) 
+		{
+			logo_ok = true;
+			break;
+		}
+	}
+	
+	if(logo_ok)
+	{
+		// get logo real size
+		getSize(logo_name.c_str(), width, height, bpp);
+		
+		dprintf(DEBUG_INFO, "%s logo: %s (%dx%d) %dbpp\n", __FUNCTION__, logo_name.c_str(), *width, *height, *bpp);
+	}
+}
+
+// display logo
+bool CFrameBuffer::DisplayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale, bool center_x, bool center_y)
+{	
+        std::string logo_name;
+	bool ret = false;
+	bool logo_ok = false;
+	
+	int logo_w = width;
+	int logo_h = height;
+	int logo_bpp = 0;
+	
+	
+	// check for logo
+	std::string strLogoExt[2] = { ".png", ".jpg" };
+	
+	// check for logo
+	for (int i = 0; i < 2; i++)
+	{
+		logo_name = g_settings.logos_dir;
+		logo_name += "/";
+		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
+		logo_name += strLogoExt[i].c_str();
+
+		if(!access(logo_name.c_str(), F_OK)) 
+		{
+			logo_ok = true;
+			break;
+		}
+	}
+	
+	if(logo_ok)
+	{
+		// get logo real size
+		getSize(logo_name, &logo_w, &logo_h, &logo_bpp);
+	
+		// scale only PNG logos
+		if( logo_name.find(".png") == (logo_name.length() - 4) )
+		{
+			// upscale
+			if(upscale)
+			{	
+				//rescale logo image
+				float aspect = (float)(logo_w) / (float)(logo_h);
+					
+				if (((float)(logo_w) / (float)width) > ((float)(logo_h) / (float)height)) 
+				{
+					logo_w = width;
+					logo_h = (int)(width / aspect);
+				}
+				else
+				{
+					logo_h = height;
+					logo_w = (int)(height * aspect);
+				}
+			}
+			
+			ret = DisplayImage(logo_name, center_x?posx + (width - logo_w)/2 : posx, center_y?posy + (height - logo_h)/2 : posy, logo_w, logo_h);
+		}
+		else
+		{
+			ret = DisplayImage(logo_name, posx, posy, width, height);
+		}
+        }
+
+	return ret;
+}
+
 

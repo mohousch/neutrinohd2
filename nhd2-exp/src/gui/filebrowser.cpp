@@ -205,9 +205,13 @@ void CFileBrowser::commonInit()
 	width = (g_settings.screen_EndX - g_settings.screen_StartX - 40);
 	height = (g_settings.screen_EndY - g_settings.screen_StartY - 40);
 
+	// head
 	theight = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->getHeight();
+
+	// item
 	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight();
-	//foheight = 30;
+
+	//foot;
 	int ih, iw;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &iw, &ih);
 	foheight = 2*(std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ih)) + 10;
@@ -902,15 +906,15 @@ void CFileBrowser::paintFoot()
 {
 	int dx = width / 4;
 	//Second Line (bottom, top)
-	int by2 = y + height - (foheight/2 - 4);
-	int ty2 = by2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
+	int by2 = y + height - foheight + foheight/2;
+	int ty2 = by2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight() + (foheight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2;
 
 	// foot
 	frameBuffer->paintBoxRel(x, y + height - foheight, width, foheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	if (!(filelist.empty()))
 	{
-		int by = y + height - foheight;
+		int by = y + height - foheight + 3;
 
 		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, by, dx, Multi_Select ? 3 : 2, FileBrowserButtons, foheight/2);
 
@@ -922,7 +926,7 @@ void CFileBrowser::paintFoot()
 		if( (filelist[selected].getType() != CFile::FILE_UNKNOWN) || (S_ISDIR(filelist[selected].Mode)) )
 		{
 			frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &iw, &ih);
-			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + ICON_OFFSET, by2 - ICON_OFFSET);
+			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + ICON_OFFSET, by2 + (foheight/2 - ih)/2);
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 2*ICON_OFFSET + iw, ty2, dx - 2*ICON_OFFSET - iw, g_Locale->getText(LOCALE_FILEBROWSER_SELECT), COL_INFOBAR, 0, true); // UTF-8
 
@@ -930,12 +934,12 @@ void CFileBrowser::paintFoot()
 
 		// help-button
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &iw, &ih);
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + dx + ICON_OFFSET, by2 - ICON_OFFSET);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + dx + ICON_OFFSET, by2 + (foheight/2 - ih)/2);
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 2*ICON_OFFSET + iw + dx, ty2, dx - 2*ICON_OFFSET - iw, g_Locale->getText(sortByNames[g_settings.filebrowser_sortmethod]), COL_INFOBAR, 0, true); // UTF-8
 
 		// mute button
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &iw, &ih);
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_MUTE_SMALL, x + 2 *dx, by2 - ICON_OFFSET);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_MUTE_SMALL, x + 2 *dx, by2 + (foheight/2 - ih)/2);
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 2*ICON_OFFSET + iw + 2*dx, ty2, dx - 2*ICON_OFFSET - iw, g_Locale->getText(LOCALE_FILEBROWSER_DELETE), COL_INFOBAR, 0, true); // UTF-8
 
