@@ -1133,7 +1133,7 @@ void CMoviePlayerGui::PlayFile(void)
 #endif
 
 				//
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
+				//FileTime.SetMode(CTimeOSD::MODE_ASC);
 				FileTime.show(Title, Info1.empty()? Info2 : Info1, (position / (duration / 100)), ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
 
 				timeStartShowingInfo = time(NULL);	
