@@ -122,13 +122,14 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 	return ret;
 }
 
+// standard
 void COSDSettings::showMenu(void)
 {
 	dprintf(DEBUG_NORMAL, "COSDSettings::showMenu:\n");
 	
 	int shortcutOSD = 1;
 	
-	CMenuWidget * osdSettings = new CMenuWidget(LOCALE_MAINSETTINGS_OSD, NEUTRINO_ICON_COLORS );
+	CMenuWidgetExtended* osdSettings = new CMenuWidgetExtended(LOCALE_MAINSETTINGS_OSD, NEUTRINO_ICON_COLORS );
 
 	// Themes
 	CThemes * osdSettings_Themes = new CThemes();
@@ -157,8 +158,9 @@ void COSDSettings::showMenu(void)
 	osdSettings->addItem(new CMenuForwarderExtended(LOCALE_VIDEOMENU_SCREENSETUP, true, new CScreenSetup(), NULL, CRCInput::convertDigitToKey(shortcutOSD++), NULL, NEUTRINO_ICON_MENUITEM_SCREENSETUP));
 	
 	// alpha setup
-	CAlphaSetup * chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
-	osdSettings->addItem( new CMenuForwarderExtended(LOCALE_COLORMENU_GTX_ALPHA, true, chAlphaSetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++), NULL, NEUTRINO_ICON_MENUITEM_ALPHASETUP));
+	//FIXME:
+	//CAlphaSetup * chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
+	//osdSettings->addItem( new CMenuForwarderExtended(LOCALE_COLORMENU_GTX_ALPHA, true, chAlphaSetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++), NULL, NEUTRINO_ICON_MENUITEM_ALPHASETUP));
 	
 	osdSettings->exec(NULL, "");
 	osdSettings->hide();
@@ -173,38 +175,38 @@ void COSDSettings::showMenuSmart(void)
 	
 	int shortcutOSD = 1;
 	
-	CSmartMenu * osdSettings = new CSmartMenu(LOCALE_MAINSETTINGS_OSD, NEUTRINO_ICON_COLORS );
+	CMenuFrameBox * osdSettings = new CMenuFrameBox(LOCALE_MAINSETTINGS_OSD, NEUTRINO_ICON_COLORS );
 
 	// Themes
 	CThemes * osdSettings_Themes = new CThemes();
 	
-	osdSettings->addItem( new CMenuFrameBox(LOCALE_COLORMENU_THEMESELECT, osdSettings_Themes, NULL, NEUTRINO_ICON_SMART_THEMES));
+	osdSettings->addItem( new CMenuFrameBoxItem(LOCALE_COLORMENU_THEMESELECT, osdSettings_Themes, NULL, NEUTRINO_ICON_SMART_THEMES));
 
 	// menu colors
-	osdSettings->addItem( new CMenuFrameBox(LOCALE_COLORMENU_MENUCOLORS, new COSDMenuColorSettings(), NULL, NEUTRINO_ICON_SMART_MENUCOLORS));
+	osdSettings->addItem( new CMenuFrameBoxItem(LOCALE_COLORMENU_MENUCOLORS, new COSDMenuColorSettings(), NULL, NEUTRINO_ICON_SMART_MENUCOLORS));
 
 	// infobar
-	osdSettings->addItem( new CMenuFrameBox(LOCALE_COLORSTATUSBAR_HEAD, new COSDInfoBarColorSettings(), NULL, NEUTRINO_ICON_SMART_INFOBARCOLORS));
+	osdSettings->addItem( new CMenuFrameBoxItem(LOCALE_COLORSTATUSBAR_HEAD, new COSDInfoBarColorSettings(), NULL, NEUTRINO_ICON_SMART_INFOBARCOLORS));
 
 	// language
-	osdSettings->addItem(new CMenuFrameBox(LOCALE_MAINSETTINGS_LANGUAGE, new CLanguageSettings(), NULL, NEUTRINO_ICON_SMART_LANGUAGE));
+	osdSettings->addItem(new CMenuFrameBoxItem(LOCALE_MAINSETTINGS_LANGUAGE, new CLanguageSettings(), NULL, NEUTRINO_ICON_SMART_LANGUAGE));
 	
 	// select font
-	osdSettings->addItem( new CMenuFrameBox(LOCALE_EPGPLUS_SELECT_FONT_NAME, this, "select_font", NEUTRINO_ICON_SMART_FONT));
+	osdSettings->addItem( new CMenuFrameBoxItem(LOCALE_EPGPLUS_SELECT_FONT_NAME, this, "select_font", NEUTRINO_ICON_SMART_FONT));
 	
 	//font scaling
-	osdSettings->addItem(new CMenuFrameBox(LOCALE_FONTMENU_SCALING, this, "font_scaling", NEUTRINO_ICON_SMART_FONTSCALING));
+	osdSettings->addItem(new CMenuFrameBoxItem(LOCALE_FONTMENU_SCALING, this, "font_scaling", NEUTRINO_ICON_SMART_FONTSCALING));
 
 	// osd timing
-	osdSettings->addItem(new CMenuFrameBox(LOCALE_TIMING_HEAD, new COSDTimingSettings(), NULL, NEUTRINO_ICON_SMART_OSDTIMING));
+	osdSettings->addItem(new CMenuFrameBoxItem(LOCALE_TIMING_HEAD, new COSDTimingSettings(), NULL, NEUTRINO_ICON_SMART_OSDTIMING));
 
 	// sceensetup
-	osdSettings->addItem(new CMenuFrameBox(LOCALE_VIDEOMENU_SCREENSETUP, new CScreenSetup(), NULL, NEUTRINO_ICON_SMART_SCREENSETUP));
+	osdSettings->addItem(new CMenuFrameBoxItem(LOCALE_VIDEOMENU_SCREENSETUP, new CScreenSetup(), NULL, NEUTRINO_ICON_SMART_SCREENSETUP));
 	
 	// alpha setup
-	CAlphaSetup * chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
-
-	osdSettings->addItem( new CMenuFrameBox(LOCALE_COLORMENU_GTX_ALPHA, chAlphaSetup, NULL, NEUTRINO_ICON_SMART_ALPHASETUP));
+	//FIXME:
+	//CAlphaSetup * chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
+	//osdSettings->addItem( new CMenuFrameBoxItem(LOCALE_COLORMENU_GTX_ALPHA, chAlphaSetup, NULL, NEUTRINO_ICON_SMART_ALPHASETUP));
 	
 	osdSettings->exec(NULL, "");
 	osdSettings->hide();
@@ -248,8 +250,9 @@ void COSDSettings::showMenuClassic(void)
 	osdSettings->addItem(new CMenuForwarder(LOCALE_VIDEOMENU_SCREENSETUP, true, NULL, new CScreenSetup(), NULL, CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_CLASSIC_SCREENSETUP));
 	
 	// alpha setup
-	CAlphaSetup * chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
-	osdSettings->addItem( new CMenuForwarder(LOCALE_COLORMENU_GTX_ALPHA, true, NULL, chAlphaSetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_CLASSIC_ALPHASETUP));
+	//FIXME:
+	//CAlphaSetup * chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
+	//osdSettings->addItem( new CMenuForwarder(LOCALE_COLORMENU_GTX_ALPHA, true, NULL, chAlphaSetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_CLASSIC_ALPHASETUP));
 	
 	osdSettings->exec(NULL, "");
 	osdSettings->hide();
@@ -295,6 +298,10 @@ void COSDMenuColorSettings::showMenu()
 	
 	// intros
 	OSDmenuColorsSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+
+	// save settings
+	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	OSDmenuColorsSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 
 	// head
 	CColorChooser* chHeadcolor = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.menu_Head_red, &g_settings.menu_Head_green, &g_settings.menu_Head_blue, &g_settings.menu_Head_alpha, CNeutrinoApp::getInstance()->colorSetupNotifier);
@@ -384,6 +391,9 @@ void COSDInfoBarColorSettings::showMenu()
 	// intros
 	OSDinfobarColorSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 
+	OSDinfobarColorSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	OSDinfobarColorSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+
 	// bg
 	CColorChooser * chInfobarcolor = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.infobar_red, &g_settings.infobar_green, &g_settings.infobar_blue,&g_settings.infobar_alpha, CNeutrinoApp::getInstance()->colorSetupNotifier);
 	
@@ -424,6 +434,13 @@ int CLanguageSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 	
 	if(parent)
 		parent->hide();
+
+	if(actionKey == "savesettings")
+	{
+		CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
+		
+		return ret;
+	}
 	
 	showMenu();
 	
@@ -473,6 +490,9 @@ void CLanguageSettings::showMenu()
 	
 	// intros
 	languageSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	languageSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+
+	languageSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	languageSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	struct dirent **namelist;
@@ -562,6 +582,9 @@ void COSDTimingSettings::showMenu()
 	
 	// intros
 	osdTimingSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	osdTimingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+
+	osdTimingSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	osdTimingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	for (int i = 0; i < TIMING_SETTING_COUNT; i++)

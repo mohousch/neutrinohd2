@@ -35,15 +35,18 @@
 #ifndef __hintbox__
 #define __hintbox__
 
-#include <driver/fb_window.h>
-#include <system/localize.h>
-#include <gui/widget/icons.h>
-#include <gui/widget/menue.h>
-#include <system/settings.h>
-
 #include <string>
 #include <vector>
 
+#include <driver/fb_window.h>
+
+#include <system/localize.h>
+#include <system/settings.h>
+
+#include <gui/widget/icons.h>
+
+
+#define HINTBOX_WIDTH			550
 
 class CHintBox
 {
@@ -54,11 +57,10 @@ class CHintBox
 		unsigned int entries_per_page;
 		unsigned int current_page;
 
-		int width;
-		int height;
+		CBox cFrameBox;
+		CBox cFrameBoxTitle;
+		CBox cFrameBoxItem;
 
-		int fheight;
-		int theight;
 		std::string caption;
 		char * message;
 		std::vector<char *>line;
@@ -78,9 +80,10 @@ class CHintBox
 
 		void paint(void);
 		void hide(void);
+
+		int exec(int timeout = -1);
 };
 
-// Text is UTF-8 encoded
 int HintBox(const neutrino_locale_t Caption, const char * const Text, const int Width = HINTBOX_WIDTH, int timeout = -1, const char * const Icon = NEUTRINO_ICON_INFO);
 int HintBox(const neutrino_locale_t Caption, const neutrino_locale_t Text, const int Width = HINTBOX_WIDTH, int timeout = -1, const char * const Icon = NEUTRINO_ICON_INFO);
 int HintBox(const char * Caption, const char * const Text, const int Width = HINTBOX_WIDTH, int timeout = -1, const char * const Icon = NEUTRINO_ICON_INFO);

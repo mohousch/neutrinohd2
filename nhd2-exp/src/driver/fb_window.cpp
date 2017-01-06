@@ -58,19 +58,19 @@ CFBWindow::~CFBWindow(void)
 	delete[] Background;
 }
 
-void CFBWindow::paintBoxRel(const int _x, const int _y, const int _dx, const int _dy, const color_t _col, int radius, int type, bool fadeColor)
+void CFBWindow::paintBoxRel(const int _x, const int _y, const int _dx, const int _dy, const color_t _col, int radius, int type, int mode)
 {
-	frameBuffer->paintBoxRel(x + _x, y + _y, _dx, _dy, _col, radius, type, fadeColor);
+	frameBuffer->paintBoxRel(x + _x, y + _y, _dx, _dy, _col, radius, type, mode);
 }
 
-bool CFBWindow::paintIcon(const char * const _filename, const int _x, const int _y, const color_t _offset)
+void CFBWindow::paintIcon(const char * const _filename, const int _x, const int _y, const int _dy, bool paint, const int iw, const int ih)
 {
-	frameBuffer->paintIcon(_filename, x + _x, y + _y, _offset);
-	
-	return 0;
+	frameBuffer->paintIcon(_filename, x + _x, y + _y, _dy, paint, iw, ih);
 }
 
-void CFBWindow::RenderString(const font_t _font, const int _x, const int _y, const int _width, const char * const _text, const color_t _color, const int _boxheight, const bool _utf8_encoded)
+void CFBWindow::RenderString(const font_t _font, const int _x, const int _y, const int _width, const char * const _text, const color_t _color, const int _boxheight, const bool _utf8_encoded, const bool bg)
 {
-	((CFont *)_font)->RenderString(x + _x, y + _y, _width, _text, _color, _boxheight, _utf8_encoded);
+	((CFont *)_font)->RenderString(x + _x, y + _y, _width, _text, _color, _boxheight, _utf8_encoded, bg);
 }
+
+

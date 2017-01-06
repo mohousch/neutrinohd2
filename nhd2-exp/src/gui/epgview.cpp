@@ -35,6 +35,8 @@
 #include <config.h>
 #endif
 
+#include <unistd.h>
+
 #include <algorithm>
 #include <gui/epgview.h>
 
@@ -52,10 +54,12 @@
 #include <gui/filebrowser.h>
 #include <gui/widget/progressbar.h>
 #include <gui/pictureviewer.h>
+#include <gui/webtv.h>
 
 #include <system/debug.h>
 
 
+extern CWebTV * webtv;
 #define PIC_W 		78
 
 static CProgressBar * timescale;
@@ -136,7 +140,7 @@ CEpgData::CEpgData()
 {
 	bigFonts = false;
 	frameBuffer = CFrameBuffer::getInstance();
-	timescale = new CProgressBar(100, 12, 30, 100, 70, true);
+	timescale = new CProgressBar(100, 12);
 }
 
 void CEpgData::start()
@@ -271,8 +275,10 @@ void CEpgData::showText( int startPos, int ypos )
 			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO2]->RenderString(sx + 10, y + medlineheight, ox - 15 - 15, epgText[i], COL_MENUCONTENT, 0, true); // UTF-8
 	}
 
-	frameBuffer->paintBoxRel(sx + ox - 15, ypos, 15, sb,  COL_MENUCONTENT_PLUS_1);
+	// ScrollBar
+	frameBuffer->paintBoxRel(sx + ox - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
 
+	// ScrollBar Slider
 	int sbc = ((_textCount - 1)/ medlinecount) + 1;
 	float sbh = (sb - 4)/ sbc;
 	int sbs = (startPos + 1)/ medlinecount;
@@ -504,7 +510,7 @@ void CEpgData::showHead(const t_channel_id channel_id)
 	}
 
 	//show the epg title
-	frameBuffer->paintBoxRel(sx, sy - toph, ox, toph, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	frameBuffer->paintBoxRel(sx, sy - toph, ox, toph, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	//
 	// paint time/date
@@ -560,7 +566,7 @@ void CEpgData::showHead(const t_channel_id channel_id)
 
 int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_t * a_startzeit, bool doLoop )
 {
-	dprintf(DEBUG_NORMAL, "CEpgData::show:\n");
+	dprintf(DEBUG_NORMAL, "CEpgData::show: %llx\n", channel_id);
 
 	int res = menu_return::RETURN_REPAINT;
 	static unsigned long long id;
@@ -702,7 +708,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 	frameBuffer->paintBoxRel(sx, sy + oy - botboxheight, ox, botboxheight, COL_MENUHEAD_PLUS_0);
 	
 	std::string fromto;
-	int widthl,widthr;
+	int widthl, widthr;
 	fromto = epg_start;
 	fromto += " - ";
 	fromto += epg_end;
@@ -781,6 +787,9 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 
 		int scrollCount;
 
+		// add sec timer
+		sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
 		bool loop = true;
 
 		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
@@ -790,6 +799,12 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 			g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
 
 			scrollCount = medlinecount;
+
+			if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+			{
+				// head
+				showHead(channel_id);
+			} 
 
 			switch ( msg )
 			{
@@ -821,7 +836,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 				case CRCInput::RC_left:
 					if (prev_id != 0)
 					{
-						frameBuffer->paintBoxRel(sx + 5, sy + oy - botboxheight + 4, botboxheight - 8, botboxheight- 8,  COL_MENUCONTENT_PLUS_1);
+						frameBuffer->paintBoxRel(sx + 5, sy + oy - botboxheight + 4, botboxheight - 8, botboxheight - 8,  COL_MENUCONTENT_PLUS_1);
 						
 						frameBuffer->blit();
 
@@ -835,7 +850,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 				case CRCInput::RC_right:
 					if (next_id != 0)
 					{
-						frameBuffer->paintBoxRel(sx + ox- botboxheight + 8 - 5, sy + oy- botboxheight + 4, botboxheight- 8, botboxheight- 8,  COL_MENUCONTENT_PLUS_1);
+						frameBuffer->paintBoxRel(sx + ox - botboxheight + 8 - 5, sy + oy- botboxheight + 4, botboxheight- 8, botboxheight - 8,  COL_MENUCONTENT_PLUS_1);
 						
 						frameBuffer->blit();
 
@@ -864,7 +879,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 
 				// 31.05.2002 dirch		record timer
 				case CRCInput::RC_red:
-					if (recDir != NULL)
+					if (recDir != NULL && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 					{
 						if(g_Timerd->isTimerdAvailable())
 						{
@@ -907,18 +922,21 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 				// 31.05.2002 dirch		zapto timer
 				case CRCInput::RC_yellow:
 				{
-					//CTimerdClient timerdclient;
-					if(g_Timerd->isTimerdAvailable())
+					if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 					{
-						g_Timerd->addZaptoTimerEvent(channel_id,
-										epgData.epg_times.startzeit,
-										epgData.epg_times.startzeit - ANNOUNCETIME, 0,
-										epgData.eventID, epgData.epg_times.startzeit, 0);
+						//CTimerdClient timerdclient;
+						if(g_Timerd->isTimerdAvailable())
+						{
+							g_Timerd->addZaptoTimerEvent(channel_id,
+											epgData.epg_times.startzeit,
+											epgData.epg_times.startzeit - ANNOUNCETIME, 0,
+											epgData.eventID, epgData.epg_times.startzeit, 0);
 										
-						MessageBox(LOCALE_TIMER_EVENTTIMED_TITLE, LOCALE_TIMER_EVENTTIMED_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+							MessageBox(LOCALE_TIMER_EVENTTIMED_TITLE, LOCALE_TIMER_EVENTTIMED_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+						}
+						else
+							printf("timerd not available\n");
 					}
-					else
-						printf("timerd not available\n");
 					break;
 				}
 				
@@ -976,6 +994,10 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 		}
 		
 		hide();
+
+		//
+		g_RCInput->killTimer(sec_timer_id);
+		sec_timer_id = 0;
 	}
 	
 	return res;
@@ -1003,6 +1025,8 @@ bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGD
 
 void CEpgData::GetEPGData(const t_channel_id channel_id, unsigned long long id, time_t* startzeit, bool clear)
 {
+	dprintf(DEBUG_NORMAL, "channel_id:%llx\n", channel_id);
+
 	if(clear)
 		epgText.clear();
 	
@@ -1010,7 +1034,7 @@ void CEpgData::GetEPGData(const t_channel_id channel_id, unsigned long long id, 
 	epgData.title.clear();
 
 	bool res;
-	if ( id!= 0 )
+	if ( id != 0 )
 		res = sectionsd_getEPGid(id, *startzeit, &epgData);
 	else
 		res = sectionsd_getActualEPGServiceKey(channel_id&0xFFFFFFFFFFFFULL, &epgData );
@@ -1021,10 +1045,15 @@ void CEpgData::GetEPGData(const t_channel_id channel_id, unsigned long long id, 
 		if (false == epgData.itemDescriptions.empty()) 
 		{
 			reformatExtendedEvents("Year of production", g_Locale->getText(LOCALE_EPGEXTENDED_YEAR_OF_PRODUCTION), false, epgData);
+
 			reformatExtendedEvents("Original title", g_Locale->getText(LOCALE_EPGEXTENDED_ORIGINAL_TITLE), false, epgData);
+
 			reformatExtendedEvents("Director", g_Locale->getText(LOCALE_EPGEXTENDED_DIRECTOR), false, epgData);
+
 			reformatExtendedEvents("Actor", g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS), true, epgData);
+
 			reformatExtendedEvents("Guests", g_Locale->getText(LOCALE_EPGEXTENDED_GUESTS), false, epgData);
+
 			reformatExtendedEvents("Presenter", g_Locale->getText(LOCALE_EPGEXTENDED_PRESENTER), false, epgData);
 		}
 		
@@ -1043,13 +1072,11 @@ void CEpgData::GetEPGData(const t_channel_id channel_id, unsigned long long id, 
 		epg_done= -1;
 		if (( time(NULL)- (epgData.epg_times).startzeit )>= 0 )
 		{
-			unsigned nProcentagePassed=(unsigned)((float)(time(NULL)-(epgData.epg_times).startzeit)/(float)(epgData.epg_times).dauer*100.);
-			if (nProcentagePassed<= 100)
-				epg_done= nProcentagePassed;
+			unsigned nProcentagePassed=(unsigned)((float)(time(NULL) -(epgData.epg_times).startzeit)/(float)(epgData.epg_times).dauer*100.);
+			if (nProcentagePassed <= 100)
+				epg_done = nProcentagePassed;
 		}
 	}
-	
-	//printf("GetEPGData:: items %d descriptions %d\n", epgData.items.size(), epgData.itemDescriptions.size());
 }
 
 void CEpgData::GetPrevNextEPGData( unsigned long long id, time_t* startzeit )
@@ -1186,10 +1213,12 @@ void CEpgData::showTimerEventBar(bool _show)
 		return;
 	}
 
-	frameBuffer->paintBoxRel(x, y, w, h, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+	frameBuffer->paintBoxRel(x, y, w, h, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+
+	int mode = CNeutrinoApp::getInstance()->getMode();
 
 	// Button Red: Timer Record & Channelswitch
-	if (recDir != NULL)
+	if (recDir != NULL && mode != NeutrinoMessages::mode_iptv)
 	{
 		pos = 0;
 	
@@ -1203,11 +1232,14 @@ void CEpgData::showTimerEventBar(bool _show)
 	//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, x + ICON_OFFSET + cellwidth*pos, y + h_offset );
 	
 	// Button Yellow: Timer Channelswitch
-	pos = 2;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + ICON_OFFSET + cellwidth*pos, y + /*h_offset*/(h - icon_h)/2 );
+	if(mode != NeutrinoMessages::mode_iptv)
+	{
+		pos = 2;
+		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + ICON_OFFSET + cellwidth*pos, y + /*h_offset*/(h - icon_h)/2 );
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ICON_OFFSET + cellwidth*pos + icon_w + ICON_OFFSET, y + h_offset + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w - ICON_OFFSET - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_TIMERBAR_CHANNELSWITCH), COL_INFOBAR, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ICON_OFFSET + cellwidth*pos + icon_w + ICON_OFFSET, y + h_offset + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w - ICON_OFFSET - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_TIMERBAR_CHANNELSWITCH), COL_INFOBAR, 0, true); // UTF-8
+	}
 	
 	
 	// --Button Blue: empty
@@ -1223,9 +1255,9 @@ int CEPGDataHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
 	dprintf(DEBUG_NORMAL, "CEPGDataHandler::exec:\n");
 
-	int           res = menu_return::RETURN_REPAINT;
-	CChannelList  *channelList;
-	CEpgData      *e;
+	int res = menu_return::RETURN_REPAINT;
+	CChannelList* channelList;
+	CEpgData* e;
 
 	if (parent) 
 		parent->hide();
@@ -1233,9 +1265,15 @@ int CEPGDataHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 	e = new CEpgData;
 
 	channelList = CNeutrinoApp::getInstance()->channelList;
-	e->show( channelList->getActiveChannel_ChannelID() );
+
+	//
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		e->show(webtv->getLiveChannelID());
+	else
+		e->show(channelList->getActiveChannel_ChannelID());
 	
 	delete e;
 
 	return res;
 }
+

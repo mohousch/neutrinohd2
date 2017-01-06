@@ -33,11 +33,11 @@
 #ifndef __mountchooser__
 #define __mountchooser__
 
+#include <string>
+
 #include <driver/framebuffer.h>
 #include <system/localize.h>
 #include <gui/widget/menue.h>
-
-#include <string>
 
 
 class CMountChooser : public CMenuWidget
@@ -48,8 +48,8 @@ class CMountChooser : public CMenuWidget
 		std::string m_name;
 
 	public:
-		CMountChooser(const neutrino_locale_t Name,  const std::string & Icon = "", int * chosenIndex = NULL, char * chosenLocalDir = NULL, const char * const selectedLocalDir = "", const int mwidth = HINTBOX_WIDTH, const int mheight = MENU_HEIGHT);
-		CMountChooser(const char * const Name,  const std::string & Icon = "", int * chosenIndex = NULL, char * chosenLocalDir = NULL, const char * const selectedLocalDir = "", const int mwidth = HINTBOX_WIDTH, const int mheight = MENU_HEIGHT);
+		CMountChooser(const neutrino_locale_t Name,  const std::string & Icon = "", int * chosenIndex = NULL, char * chosenLocalDir = NULL, const char * const selectedLocalDir = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
+		CMountChooser(const char * const Name,  const std::string & Icon = "", int * chosenIndex = NULL, char * chosenLocalDir = NULL, const char * const selectedLocalDir = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 		void setSelectedItem(int selection);
 };

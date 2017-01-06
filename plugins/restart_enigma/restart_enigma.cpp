@@ -17,11 +17,13 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	system("rm -f /etc/.nhd2");
-	system("touch /etc/.e2");
-	
-	g_RCInput->postMsg( NeutrinoMessages::RESTART, 0 );
-	HintBox(LOCALE_MESSAGEBOX_INFO, "enigma2 wird gestartet !");
+	if(MessageBox(LOCALE_MESSAGEBOX_INFO, "do you want really to restart enigma2?", CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 30, true) == CMessageBox::mbrYes)
+					
+	{
+		system("rm -f /etc/.nhd2");
+		system("init 4");
+		system("init 3");
+	}
 }
 
 

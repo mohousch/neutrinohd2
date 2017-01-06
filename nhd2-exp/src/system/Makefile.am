@@ -25,6 +25,8 @@ if !ENABLE_GSTREAMER
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
+AM_CXXFLAGS = -fno-rtti -fno-exceptions
+
 noinst_LIBRARIES = libneutrino_system.a
 
 libneutrino_system_a_SOURCES = \
@@ -33,5 +35,6 @@ libneutrino_system_a_SOURCES = \
 	ping.c flashtool.cpp httptool.cpp \
 	settings.cpp lastchannel.cpp \
 	configure_network.cpp fsmounter.cpp \
-	helpers.cpp
+	helpers.cpp \
+	tmdbparser.cpp
 

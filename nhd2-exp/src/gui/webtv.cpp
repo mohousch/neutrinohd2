@@ -1,5 +1,5 @@
 /*
-	$Id: webtv.cpp 2013/09/03 10:45:30 mohousch Exp $
+	$Id: webtv.cpp 2016/12/18 10:45:30 mohousch Exp $
 	based on martii webtv
 
 	Kommentar:
@@ -42,45 +42,33 @@
 
 #include <driver/screen_max.h>
 
-#include <movieplayer.h>
-#include <webtv.h>
-
 #include <gui/widget/buttons.h>
-#include <gui/widget/messagebox.h>
-#include <gui/widget/helpbox.h>
 #include <gui/widget/infobox.h>
 #include <gui/widget/hintbox.h>
-#include <gui/widget/items2detailsline.h>
 
-#include <gui/filebrowser.h>
-#include <gui/audio_video_select.h>
+#include <gui/audio_video_select.h> 	//ac3state
 
 #include <xmlinterface.h>
-
-#include <sectionsd/edvbstring.h>
-#include <client/zapittools.h>
 
 #include <system/debug.h>
 #include <system/helpers.h>
 
 // libdvbapi
 #include <playback_cs.h>
-#include <video_cs.h>
-#include <audio_cs.h>
 
 // curl
 #include <curl/curl.h>
 #include <curl/easy.h>
 
+#include <webtv.h>
+#include <bouquets.h>
 
+
+extern tallchans allchans;
 extern cPlayback *playback;
 
 CWebTV::CWebTV()
 {
-	frameBuffer = CFrameBuffer::getInstance();
-	
-	selected = g_settings.webtv_lastselectedchannel;
-	liststart = 0;
 	tuned = -1;
 	
 	parser = NULL;
@@ -88,8 +76,6 @@ CWebTV::CWebTV()
 	position = 0;
 	duration = 0;
 	file_prozent = 0;
-	
-	zapProtection = NULL;
 	
 	playstate = STOPPED;
 	speed = 0;
@@ -118,30 +104,6 @@ void CWebTV::ClearChannels(void)
 	channels.clear();
 }
 
-int CWebTV::exec(bool rezap)
-{
-	dprintf(DEBUG_NORMAL, "CWebTV::exec:\n");
-
-	// load streams channels list
-	if(channels.empty())
-		loadChannels();
-	
-	int nNewChannel = -1;
-	if(rezap)
-	{
-		nNewChannel = g_settings.webtv_lastselectedchannel;
-		selected = nNewChannel;
-	}
-	else
-		nNewChannel = Show();
-	
-	// zapto
-	if ( nNewChannel > -1 && nNewChannel < (int) channels.size()) 
-		zapTo(nNewChannel, rezap);
-
-	return nNewChannel;
-}
-
 void CWebTV::loadChannels(void)
 {
 	dprintf(DEBUG_INFO, "CWebTV::loadChannels\n");
@@ -149,42 +111,8 @@ void CWebTV::loadChannels(void)
 	readChannellist(g_settings.webtv_userBouquet);
 	
 	title = std::string(rindex(g_settings.webtv_userBouquet.c_str(), '/') + 1);
-	strReplace(title, ".xml", "");
-	strReplace(title, ".tv", "");
-	strReplace(title, ".m3u", "");
-	strReplace(title, "userbouquet.", "");
-}
 
-struct MemoryStruct {
-	char *memory;
-	size_t size;
-};
-
-static void *myrealloc(void *ptr, size_t size)
-{
-	/* 
-	There might be a realloc() out there that doesn't like reallocing
-	NULL pointers, so we take care of it here 
-	*/
-	if(ptr)
-		return realloc(ptr, size);
-	else
-		return malloc(size);
-}
-
-static size_t WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
-{
-	size_t realsize = size * nmemb;
-	struct MemoryStruct *mem = (struct MemoryStruct *)data;
-
-	mem->memory = (char *)myrealloc(mem->memory, mem->size + realsize + 1);
-	if (mem->memory) 
-	{
-		memcpy(&(mem->memory[mem->size]), ptr, realsize);
-		mem->size += realsize;
-		mem->memory[mem->size] = 0;
-	}
-	return realsize;
+	removeExtension(title);
 }
 
 void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * description) 
@@ -240,17 +168,6 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 	/* cleanup curl stuff */
 	curl_easy_cleanup(curl_handle);
 
-	/*
-	* Now, our chunk.memory points to a memory block that is chunk.size
-	* bytes big and contains the remote file.
-	*
-	* Do something nice with it!
-	*
-	* You should be aware of the fact that at this point we might have an
-	* allocated data block, and nothing has yet deallocated that data. So when
-	* you're done with it, you should free() it as a nice application.
-	*/
-
 	long res_code;
 	if (curl_easy_getinfo(curl_handle, CURLINFO_HTTP_CODE, &res_code ) ==  CURLE_OK) 
 	{
@@ -261,6 +178,7 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 			iss.str (std::string(chunk.memory, chunk.size));
 			char line[512];
 			char *ptr;
+			t_channel_id id = 0;
 			
 			while (iss.rdstate() == std::ifstream::goodbit) 
 			{
@@ -279,8 +197,17 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 						tmp = strchr(line, '\n');
 						if (tmp != NULL)
 							*tmp = '\0';
+
+						// grab channel id from channellist
+						id = 0;
+
+						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+						{
+								if(strcasecmp(it->second.getName().c_str(), name) == 0)
+									id = it->second.getChannelID();
+						}
 						
-						addUrl2Playlist(ptr, name, description);
+						addUrl2Playlist(ptr, name, description, id);
 					}
 				}
 			}
@@ -294,16 +221,16 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 	curl_global_cleanup();
 }
 
-void CWebTV::addUrl2Playlist(const char * url, const char *name, const char * description, bool locked)
+void CWebTV::addUrl2Playlist(const char * url, const char *name, const char * description, t_channel_id id)
 {
 	dprintf(DEBUG_DEBUG, "CWebTV::addUrl2Playlist\n");
 	
 	webtv_channels * tmp = new webtv_channels();
-						
+	
+	tmp->id = id&0xFFFFFFFFFFFFULL;				
 	tmp->title = name;
 	tmp->url = url;
 	tmp->description = description;
-	tmp->locked = locked;
 						
 	// fill channelslist
 	channels.push_back(tmp);
@@ -318,24 +245,18 @@ bool CWebTV::readChannellist(std::string filename)
 	ClearChannels();
 	
 	// check for extension
-	int ext_pos = 0;
-	ext_pos = filename.rfind('.');
 	bool iptv = false;
 	bool webtv = false;
 	bool playlist = false;
 					
-	if( ext_pos > 0)
-	{
-		std::string extension;
-		extension = filename.substr(ext_pos + 1, filename.length() - ext_pos);
+	std::string extension = getFileExt(filename);
 						
-		if( strcasecmp("tv", extension.c_str()) == 0)
-			iptv = true;
-		else if( strcasecmp("m3u", extension.c_str()) == 0)
+	if( strcasecmp("tv", extension.c_str()) == 0)
+		iptv = true;
+	else if( strcasecmp("m3u", extension.c_str()) == 0)
 			playlist = true;
-		if( strcasecmp("xml", extension.c_str()) == 0)
-			webtv = true;
-	}
+	if( strcasecmp("xml", extension.c_str()) == 0)
+		webtv = true;
 	
 	if(iptv)
 	{
@@ -344,6 +265,7 @@ bool CWebTV::readChannellist(std::string filename)
 		std::string URL;
 		std::string url;
 		std::string description;
+		t_channel_id id = 0;
 		
 		if(f != NULL)
 		{
@@ -375,8 +297,17 @@ bool CWebTV::readChannellist(std::string filename)
 					title = line + offs;
 				
 					description = "stream";
+
+					id = 0;
+
+					// grad channel id from channellist
+					for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+					{
+							if(strcasecmp(it->second.getName().c_str(), title.c_str()) == 0)
+								id = it->second.getChannelID();
+					}
 					
-					addUrl2Playlist(urlDecode(url).c_str(), title.c_str(), description.c_str()); //urlDecode defined in edvbstring.h
+					addUrl2Playlist(urlDecode(url).c_str(), title.c_str(), description.c_str(), id); //urlDecode defined in edvbstring.h
 				}
 			}
 			
@@ -417,18 +348,23 @@ bool CWebTV::readChannellist(std::string filename)
 					char * title;
 					char * url;
 					char * description;
+					t_channel_id id = 0;
 					
 					// title
 					if(xmlGetNextOccurence(l1, "webtv"))
 					{
 						title = xmlGetAttribute(l1, (char *)"title");
-
-						// url
 						url = xmlGetAttribute(l1, (char *)"url");
-						
 						description = xmlGetAttribute(l1, (char *)"description");
+
+						// grab channel id from channellist
+						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+						{
+							if(strcasecmp(it->second.getName().c_str(), title) == 0)
+								id = it->second.getChannelID();
+						}
 						
-						addUrl2Playlist(url, title, description);
+						addUrl2Playlist(url, title, description, id);
 					}	
 					else if (xmlGetNextOccurence(l1, "station"))
 					{
@@ -462,6 +398,7 @@ bool CWebTV::readChannellist(std::string filename)
 		char name[1024] = { 0 };
 		int duration;
 		std::string description;
+		t_channel_id id = 0;
 				
 		infile.open(filename.c_str(), std::ifstream::in);
 
@@ -483,8 +420,17 @@ bool CWebTV::readChannellist(std::string filename)
 					if (url != NULL) 
 					{
 						description = "stream";
+
+						// grab channel id from channellist
+						id = 0;
+
+						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+						{
+								if(strcasecmp(it->second.getName().c_str(), name) == 0)
+									id = it->second.getChannelID();
+						}
 					
-						addUrl2Playlist(url, name, description.c_str());
+						addUrl2Playlist(url, name, description.c_str(), id);
 					}
 				}
 			}
@@ -504,7 +450,7 @@ void CWebTV::showUserBouquet(void)
 
 bool CWebTV::startPlayBack(int pos)
 {
-	dprintf(DEBUG_DEBUG, "CWebTV::startPlayBack\n");
+	dprintf(DEBUG_NORMAL, "CWebTV::startPlayBack\n");
 
 	playback->Open();
 	
@@ -519,12 +465,20 @@ bool CWebTV::startPlayBack(int pos)
 	
 	playstate = PLAY;
 	speed = 1;
+
+	g_Sectionsd->setServiceChanged(channels[pos]->id&0xFFFFFFFFFFFFULL, false);
+
+	if (CVFD::getInstance()->is4digits)					
+		CVFD::getInstance()->LCDshowText(pos + 1);
+	else
+		CVFD::getInstance()->showServicename(channels[pos]->title); 
+
 	return true;
 }
 
 void CWebTV::stopPlayBack(void)
 {
-	dprintf(DEBUG_DEBUG, "CWebTV::stopPlayBack\n");
+	dprintf(DEBUG_NORMAL, "CWebTV::stopPlayBack\n");
 
 	playback->Close();
 	playstate = STOPPED;
@@ -532,7 +486,7 @@ void CWebTV::stopPlayBack(void)
 
 void CWebTV::pausePlayBack(void)
 {
-	dprintf(DEBUG_DEBUG, "CWebTV::pausePlayBack\n");
+	dprintf(DEBUG_NORMAL, "CWebTV::pausePlayBack\n");
 
 	playback->SetSpeed(0);
 	playstate = PAUSE;
@@ -548,90 +502,27 @@ void CWebTV::continuePlayBack(void)
 	speed = 1;
 }
 
-//
-int CWebTV::zapTo(int pos, bool rezap)
-{
-	// show emty channellist error msg
-	if (channels.empty()) 
-	{
-		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_WEBTV_CHANNELLIST_NONEFOUND), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
-		return -1;
-	}
-
-	dprintf(DEBUG_NORMAL, "CWebTV::zapTo: Channel: %s\n", channels[pos]->title.c_str());
-
-	// if not mached
-	if ( (pos >= (signed int) channels.size()) || (pos < 0) ) 
-	{
-		pos = 0;
-	}
-	
-	// check if the same channel
-	if ( pos != tuned || rezap) 
-	{
-		tuned = pos;
-
-		playback->Close();
-	
-		// parentallock
-		if ( (channels[pos]->locked) && ( (g_settings.parentallock_prompt == PARENTALLOCK_PROMPT_ONSIGNAL) || (g_settings.parentallock_prompt == PARENTALLOCK_PROMPT_CHANGETOLOCKED)) )
-		{
-			if ( zapProtection != NULL )
-				zapProtection->fsk = g_settings.parentallock_lockage;
-			else
-			{
-				zapProtection = new CZapProtection( g_settings.parentallock_pincode, g_settings.parentallock_lockage);
-							
-				if ( !zapProtection->check() )
-				{
-					delete zapProtection;
-					zapProtection = NULL;
-					
-					// do not thing
-				}
-				else
-				{
-					delete zapProtection;
-					zapProtection = NULL;
-					
-					// start playback
-					startPlayBack(pos);
-				}
-			}
-		}
-		else
-			startPlayBack(pos);
-	}
-	
-	// vfd
-	if (CVFD::getInstance()->is4digits)
-		CVFD::getInstance()->LCDshowText(pos + 1);
-	else
-		CVFD::getInstance()->showServicename(channels[pos]->title); // UTF-8		
-	
-	//infoviewer
-	g_InfoViewer->showMovieInfo(channels[pos]->title, channels[pos]->description, file_prozent, duration, ac3state, speed, playstate, false, false);
-
-	return 0;
-}
-
 void CWebTV::quickZap(int key)
 {
 	dprintf(DEBUG_NORMAL, "CWebTV::quickZap\n");
 
 	if (key == g_settings.key_quickzap_down)
 	{
-                if(selected == 0)
-                        selected = channels.size() - 1;
+                if(tuned <= 0)
+                        tuned = channels.size() - 1;
                 else
-                        selected--;
+                        tuned--;
         }
 	else if (key == g_settings.key_quickzap_up)
 	{
-                selected = (selected+1)%channels.size();
+                tuned = (tuned + 1)%channels.size();
         }
 	
-	zapTo(selected);
+	stopPlayBack();
+	startPlayBack(tuned);
+
+	//infoviewer
+	g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
 }
 
 void CWebTV::showInfo()
@@ -640,404 +531,8 @@ void CWebTV::showInfo()
 
 	//infoviewer
 	if(tuned > -1)
-		g_InfoViewer->showMovieInfo(channels[tuned]->title, channels[tuned]->description, file_prozent, duration, ac3state, speed, playstate, false, false);
-}
-
-void CWebTV::getInfos()
-{
-	playback->GetPosition((int64_t &)position, (int64_t &)duration);
-	
-	if(duration > 100)
-		file_prozent = (unsigned char) (position / (duration / 100));
-}
-
-int CWebTV::Show()
-{
-	dprintf(DEBUG_NORMAL, "CWebTV::show: selected channel: %s selected:%d g_settings.webtv_lastselectedchannel:%d\n", channels[selected]->title.c_str(), selected, g_settings.webtv_lastselectedchannel);
-
-	int res = -1;
-	
-	neutrino_msg_t      msg;
-	neutrino_msg_data_t data;
-	
-	if(channels.empty())
-		loadChannels();
-	
-	// display channame in vfd	
-	CVFD::getInstance()->setMode(CVFD::MODE_IPTV);
-	
-	// windows size
-	width = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
-	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
-	
-	// head height
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_hd_w, &icon_hd_h);
-	hheight = std::max(icon_hd_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
-	
-	// buttonheight
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_bf_w, &icon_bf_h);
-	buttonHeight = std::max(icon_bf_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 10;
-
-	// listbox/items
-	iheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 2;
-	listmaxshow = (height - hheight - buttonHeight)/iheight;
-	height = hheight + buttonHeight + listmaxshow * iheight;
-	
-	// info height
-	info_height = 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 5;
-	
-	// x/y
-	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - (width + ConnectLineBox_Width)) / 2 + ConnectLineBox_Width;
-	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - (height + info_height)) / 2;
-	
-showList:	
-	
-	// head
-	paintHead();
-	
-	// foot
-	paintFoot();
-		
-	// paint body
-	paint();
-		
-	frameBuffer->blit();
-
-	int zapOnExit = false;
-
-	// loop control
-	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
-	bool loop = true;
-	
-	while (loop) 
 	{
-		g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd );
-		
-		if ( msg <= CRCInput::RC_MaxRC )
-			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
-
-		if ( ( msg == CRCInput::RC_timeout ) || ( msg == (neutrino_msg_t)g_settings.key_channelList_cancel) ) 
-		{
-			loop = false;
-			res = -1;
-		}
-		else if ( msg == CRCInput::RC_up || (int) msg == g_settings.key_channelList_pageup || msg == CRCInput::RC_yellow)
-                {
-                        int step = 0;
-                        int prev_selected = selected;
-
-			step =  ((int) msg == g_settings.key_channelList_pageup || (int) msg == CRCInput::RC_yellow) ? listmaxshow : 1;  // browse or step 1
-                        selected -= step;
-                        if((prev_selected-step) < 0)            // because of uint
-                                selected = channels.size() - 1;
-
-                        paintItem(prev_selected - liststart);
-			
-                        unsigned int oldliststart = liststart;
-                        liststart = (selected/listmaxshow)*listmaxshow;
-                        if(oldliststart!=liststart)
-                                paint();
-                        else
-                                paintItem(selected - liststart);
-                }
-                else if ( msg == CRCInput::RC_down || (int) msg == g_settings.key_channelList_pagedown || msg == CRCInput::RC_green)
-                {
-                        unsigned int step = 0;
-                        int prev_selected = selected;
-
-			step =  ((int) msg == g_settings.key_channelList_pagedown || (int)msg == CRCInput::RC_green) ? listmaxshow : 1;  // browse or step 1
-                        selected += step;
-
-                        if(selected >= channels.size()) 
-			{
-                                if (((channels.size() / listmaxshow) + 1) * listmaxshow == channels.size() + listmaxshow) 	// last page has full entries
-                                        selected = 0;
-                                else
-                                        selected = ((step == listmaxshow) && (selected < (((channels.size() / listmaxshow)+1) * listmaxshow))) ? (channels.size() - 1) : 0;
-			}
-
-                        paintItem(prev_selected - liststart);
-			
-                        unsigned int oldliststart = liststart;
-                        liststart = (selected/listmaxshow)*listmaxshow;
-                        if(oldliststart != liststart)
-                                paint();
-                        else
-                                paintItem(selected - liststart);
-                }
-                else if ( msg == CRCInput::RC_ok || msg == (neutrino_msg_t) g_settings.mpkey_play) 
-		{
-			zapOnExit = true;
-			loop = false;
-		}
-		else if (msg == CRCInput::RC_info) 
-		{
-			showFileInfoWebTV(selected);
-			res = -1;
-			
-			goto showList;
-		}
-		else if (msg == CRCInput::RC_red) 
-		{
-			addUserBouquet();
-			res = -1;
-			
-			goto showList;
-		}
-		else if(msg == CRCInput::RC_blue || msg == CRCInput::RC_favorites)
-		{
-			showUserBouquet();
-			res = -1;
-			
-			goto showList;
-		}
-		else if( msg == (neutrino_msg_t) g_settings.key_timeshift) // pause playing
-		{
-			if(playstate == PAUSE)
-				continuePlayBack();
-			else if(playstate == PLAY)
-				pausePlayBack();
-			
-			res = -1;
-			loop = false;
-		}
-		else if( msg == CRCInput::RC_stop) // pause playing
-		{
-			if(playstate == PLAY || playstate == PAUSE)
-				stopPlayBack();
-			
-			res = -1;
-			loop = false;
-		}
-		else if(msg == (neutrino_msg_t)g_settings.mpkey_play)
-		{
-			if(playstate == PAUSE)
-				continuePlayBack();
-			
-			res = -1;
-			loop = false;
-		}
-		else
-		{
-			if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all ) 
-			{
-				loop = false;
-				res = - 1;
-			}
-		}
-			
-		frameBuffer->blit();	
-	}
-	
-	hide();
-	
-	//CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
-	
-	if(zapOnExit)
-		res = selected;
-
-	dprintf(DEBUG_NORMAL, "CWebTV::show res %d\n", res);
-			
-	return (res);
-}
-
-void CWebTV::hide()
-{
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height + info_height);
-			
-        clearItem2DetailsLine();
-	frameBuffer->blit();
-}
-
-void CWebTV::paintItem(int pos)
-{
-	int ypos = y + hheight + pos*iheight;
-	uint8_t    color;
-	fb_pixel_t bgcolor;
-	unsigned int curr = liststart + pos;
-	
-	if (curr == selected) 
-	{
-		color   = COL_MENUCONTENTSELECTED;
-		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-		
-		// itemlines	
-		paintItem2DetailsLine(pos);		
-		
-		// details
-		paintDetails(curr);
-	} 
-	else 
-	{
-		color = COL_MENUCONTENT;
-		bgcolor = COL_MENUCONTENT_PLUS_0;
-	}
-	
-	// itembox
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, bgcolor);
-
-	//name and description
-	if(curr < channels.size()) 
-	{
-		char tmp[10];
-		char nameAndDescription[255];
-		int l = 0;
-		
-		sprintf((char*) tmp, "%d", curr + 1);
-		l = snprintf(nameAndDescription, sizeof(nameAndDescription), "%s", channels[curr]->title.c_str());
-		
-		// number
-		int numpos = x + BORDER_LEFT + numwidth - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(tmp);
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(numpos, ypos + (iheight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), numwidth + 5, tmp, color, 0, true);
-		
-		unsigned int ch_name_len = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(nameAndDescription, true);
-		
-		// description
-		std::string Descr = channels[curr]->description.c_str();
-		if(!(Descr.empty()))
-		{
-			snprintf(nameAndDescription + l, sizeof(nameAndDescription) -l, "  -  ");
-			
-			ch_name_len = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(nameAndDescription, true);
-			unsigned int ch_desc_len = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(channels[curr]->description, true);
-			
-			//channel name
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT + numwidth + 10, ypos + iheight, width - BORDER_LEFT - SCROLLBAR_WIDTH - numwidth - 10 - ch_name_len, nameAndDescription, color, 0, true);
-			
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + BORDER_LEFT + numwidth + 10 + ch_name_len + 5, ypos + iheight, width - BORDER_LEFT - SCROLLBAR_WIDTH - numwidth - ch_name_len - ch_desc_len - 15, channels[curr]->description, (curr == selected)?COL_MENUCONTENTSELECTED : COL_COLORED_EVENTS_CHANNELLIST, 0, true);
-		}
-		else
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT + numwidth + 10, ypos + iheight, width - BORDER_LEFT - SCROLLBAR_WIDTH - numwidth - ch_name_len - 10, nameAndDescription, color, 0, true);
-	}
-}
-
-// paint head
-void CWebTV::paintHead()
-{
-	dprintf(DEBUG_DEBUG, "CWebTV::paintHead\n");
-
-	// head
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark); //round
-	
-	// head icon
-	int icon_webtv_w, icon_webtv_h;
-	frameBuffer->getIconSize(NEUTRINO_ICON_WEBTV_SMALL, &icon_webtv_w, &icon_webtv_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_WEBTV_SMALL, x + BORDER_LEFT, y + ( hheight - icon_webtv_h)/2 );
-	
-	// help icon
-	int icon_help_w, icon_help_h;
-	
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_help_w, &icon_help_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + width - (BORDER_RIGHT + icon_help_w) , y + (hheight - icon_help_h)/2 );
-	
-	// paint time/date
-	int timestr_len = 0;
-	std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");
-	timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
-		
-	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_LEFT - BORDER_RIGHT - icon_help_w - timestr_len, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len, timestr, COL_MENUHEAD, 0, true); //utf-8
-	
-	//head title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_webtv_w + 5, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - 20 - icon_webtv_w - timestr_len, title.c_str(), COL_MENUHEAD, 0, true); // UTF-8
-}
-
-// 
-#define NUM_LIST_BUTTONS 4
-struct button_label CWebTVButtons[NUM_LIST_BUTTONS] =
-{
-	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_WEBTV_BOUQUETS, NULL},
-	{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_FILEBROWSER_NEXTPAGE, NULL},
-	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE, NULL},
-	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_WEBTV_BOUQUETS, NULL}
-};
-
-void CWebTV::paintFoot()
-{
-	dprintf(DEBUG_DEBUG, "CWebTV::paintFoot\n");
-
-	// foot
-	int ButtonWidth = (width - 20) / 4;
-	int f_x = x;
-	int f_y = y + (height - buttonHeight);
-	
-	frameBuffer->paintBoxRel(f_x, f_y, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light); //round
-	
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, f_x + BORDER_LEFT, f_y, ButtonWidth, NUM_LIST_BUTTONS, CWebTVButtons, buttonHeight);
-}
-
-// infos
-void CWebTV::paintDetails(int index)
-{
-	dprintf(DEBUG_DEBUG, "CWebTV::paintDetails\n");
-
-	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
-	
-	if(channels.empty() )
-		return;
-	
-	// name/description
-	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - 30, channels[index]->title.c_str(), COL_MENUCONTENTDARK, 0, true);
-
-	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - 30, channels[index]->description.c_str(), COL_MENUCONTENTDARK, 0, true); // UTF-8
-}
-
-void CWebTV::clearItem2DetailsLine()
-{  
-	 ::clearItem2DetailsLine(x, y, width, height, info_height); 
-}
-
-void CWebTV::paintItem2DetailsLine(int pos)
-{
-	::paintItem2DetailsLine(x, y, width, height, info_height, hheight, iheight, pos);
-}
-
-// body
-void CWebTV::paint()
-{
-	dprintf(DEBUG_INFO, "CWebTV::paint: selected:%d\n", selected);
-
-	liststart = (selected/listmaxshow)*listmaxshow;
-	
-	int lastnum =  liststart + listmaxshow;
-	
-	if(lastnum<10)
-		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("0");
-	else if(lastnum<100)
-		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("00");
-	else if(lastnum<1000)
-		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("000");
-	else if(lastnum<10000)
-		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("0000");
-	else // if(lastnum<100000)
-		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("00000");
-	
-	// channelslist body
-	frameBuffer->paintBoxRel(x, y + hheight, width, height - buttonHeight - hheight, COL_MENUCONTENT_PLUS_0);
-	
-	// paint item
-	for(unsigned int count = 0; count < listmaxshow; count++) 
-	{
-		paintItem(count);
-	}
-
-	// sb
-	int ypos = y + hheight;
-	int sb = iheight*listmaxshow;
-	
-	frameBuffer->paintBoxRel(x + width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
-
-	int sbc = ((channels.size() - 1)/ listmaxshow) + 1;
-	int sbs = (selected/listmaxshow);
-
-	frameBuffer->paintBoxRel(x + width - 13, ypos + 2 + sbs*(sb - 4)/sbc, 11, (sb - 4)/sbc, COL_MENUCONTENT_PLUS_3);
-}
-
-void CWebTV::showFileInfoWebTV(int pos)
-{
-	if(pos > -1)
-	{
-		InfoBox(channels[pos]->title.c_str(), channels[pos]->description.c_str());
+		g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
 	}
 }
 
@@ -1045,7 +540,6 @@ void CWebTV::addUserBouquet(void)
 {
 	dprintf(DEBUG_NORMAL, "CWebTV::addUserBouquet\n");
 
-	CFileBrowser filebrowser;
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");
@@ -1053,12 +547,10 @@ void CWebTV::addUserBouquet(void)
 	fileFilter.addFilter("m3u");
 
 	//
-	hide();
-
-	//
 	CFileList filelist;
 	CMenuWidget m(LOCALE_WEBTV_BOUQUETS, NEUTRINO_ICON_WEBTV_SMALL, MENU_WIDTH + 100);
 	m.disableMenuPosition();
+	m.enableSaveScreen(true);
 
 	int select = -1;
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
@@ -1075,10 +567,8 @@ void CWebTV::addUserBouquet(void)
 		for (unsigned int i = 0; i < filelist.size(); i++)
 		{
 			bTitle = filelist[i].getFileName();
-			strReplace(bTitle, ".xml", "");
-			strReplace(bTitle, ".tv", "");
-			strReplace(bTitle, ".m3u", "");
-			strReplace(bTitle, "userbouquet.", "");
+
+			removeExtension(bTitle);
 
 			m.addItem(new CMenuForwarder(bTitle.c_str(), true, NULL, selector, to_string(count).c_str()), old_select == count);
 
@@ -1102,9 +592,140 @@ void CWebTV::addUserBouquet(void)
 		
 		// load channels
 		loadChannels();
-		selected = 0;
 	}
 }
 
+#define FOOT_BUTTONS_COUNT 4
+struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_INFOVIEWER_EVENTLIST, NULL},
+	{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_FILEBROWSER_NEXTPAGE, NULL},
+	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE, NULL},
+	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_WEBTV_BOUQUETS, NULL}
+};
 
+#define HEAD_BUTTONS_COUNT 1
+struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL}
+};
+
+void CWebTV::show(bool reload, bool reinit)
+{
+	dprintf(DEBUG_NORMAL, "CWebTV::show:\n");
+
+	// load channesl
+	if(reload)
+		loadChannels();
+
+	//
+	webTVlistMenu = new CMenulistBox(title.c_str(), NEUTRINO_ICON_WEBTV_SMALL, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+
+	if(channels.size())
+	{
+		for(unsigned int i = 0; i< channels.size(); i++)
+		{
+			webTVlistMenu->addItem(new CMenulistBoxItem(channels[i]->title.c_str(), true, this, "zapit", NULL, (i +1), file_prozent, channels[i]->description.c_str(), "", "", "", "", channels[i]->title.c_str(), "", channels[i]->description.c_str(), ""));
+		}
+	}
+
+	webTVlistMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
+	webTVlistMenu->setSelected(reinit? 0 : tuned);
+
+	webTVlistMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
+	webTVlistMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	
+	webTVlistMenu->enablePaintDate();
+	webTVlistMenu->enableFootInfo();
+
+	//
+	webTVlistMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
+
+	// footer
+	webTVlistMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
+	webTVlistMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
+	webTVlistMenu->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
+	webTVlistMenu->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
+
+	//
+	webTVlistMenu->addKey(CRCInput::RC_pause, this, CRCInput::getSpecialKeyName(CRCInput::RC_pause));
+	webTVlistMenu->addKey(CRCInput::RC_play, this, CRCInput::getSpecialKeyName(CRCInput::RC_play));
+
+	webTVlistMenu->exec(NULL, "");
+	//webTVlistMenu->hide();
+	delete webTVlistMenu;
+	webTVlistMenu = NULL;
+}
+
+void CWebTV::hide()
+{
+	dprintf(DEBUG_NORMAL, "CWebTV::hide:\n");
+
+	CFrameBuffer::getInstance()->paintBackground();
+	CFrameBuffer::getInstance()->blit();
+}
+
+int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CWebTV::exec: actionKey: %s\n", actionKey.c_str());
+
+	if(parent)
+		hide();
+
+	if(actionKey == "zapit")
+	{
+		stopPlayBack();
+		startPlayBack(webTVlistMenu->getSelected());
+		tuned = webTVlistMenu->getSelected();
+
+		//infoviewer
+		g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
+
+		// kill infobar
+		g_InfoViewer->killTitle();
+
+		return menu_return::RETURN_EXIT;
+	}
+	else if(actionKey == "RC_red")
+	{
+		g_EventList->exec(channels[webTVlistMenu->getSelected()]->id, channels[webTVlistMenu->getSelected()]->title); 
+	}
+	else if(actionKey == "RC_green")
+	{
+		g_RCInput->postMsg(CRCInput::RC_page_down, 0);
+	}
+	else if(actionKey == "RC_yellow")
+	{
+		g_RCInput->postMsg(CRCInput::RC_page_up, 0);
+	}
+	else if(actionKey == "RC_blue")
+	{
+		showUserBouquet();
+		show(false, true);
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_pause")
+	{
+		pausePlayBack();
+
+		//infoviewer
+		g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
+	}
+	else if(actionKey == "RC_play")
+	{
+		continuePlayBack();
+
+		//infoviewer
+		g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
+
+		// kill infobar
+		g_InfoViewer->killTitle();
+	}
+	else if(actionKey == "RC_info")
+	{
+		g_EpgData->show(channels[webTVlistMenu->getSelected()]->id);
+	}
+
+	return menu_return::RETURN_REPAINT;
+}
 

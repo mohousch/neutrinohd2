@@ -35,6 +35,9 @@
 #ifndef __epgview__
 #define __epgview__
 
+#include <vector>
+#include <string>
+
 #include <driver/framebuffer.h>
 #include <driver/rcinput.h>
 #include <driver/fontrenderer.h>
@@ -44,9 +47,6 @@
 #include "widget/menue.h"
 
 #include <sectionsdclient/sectionsdclient.h>
-
-#include <vector>
-#include <string>
 
 
 #define BIG_FONT_FAKTOR 1.5
@@ -88,10 +88,12 @@ class CEpgData
 		void showTimerEventBar(bool show);
 		void showHead(const t_channel_id channel_id);
 
+		//
+		uint32_t sec_timer_id;
 	public:
 
 		CEpgData();
-		void start( );
+		void start();
 		int show(const t_channel_id channel_id, unsigned long long id = 0, time_t * startzeit = NULL, bool doLoop = true );
 		void hide();
 };
@@ -99,7 +101,7 @@ class CEpgData
 class CEPGDataHandler : public CMenuTarget
 {
 	public:
-		int  exec( CMenuTarget* parent,  const std::string &actionKey);
+		int exec(CMenuTarget* parent,  const std::string& actionKey);
 };
 
 #endif

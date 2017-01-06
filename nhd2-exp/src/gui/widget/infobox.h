@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: infobox.h 2016.01.21 16:53:30 mohousch Exp $
+	$Id: infobox.h 2016.12.02 12:26:30 mohousch Exp $
 
  	Homepage: http://dbox.cyberphoria.org/
 
@@ -54,6 +54,7 @@
 #endif
 
 #include <string>
+
 #include "textbox.h"
 
 #include <gui/widget/icons.h>
@@ -62,52 +63,47 @@
 
 class CInfoBox  
 {
-	public:
-		 enum mode_
-		{
-			AUTO_WIDTH	= 0x01,
-			AUTO_HIGH	= 0x02,
-			SCROLL		= 0x04,
-			TITLE		= 0x08,
-			FOOT		= 0x10,
-			CENTER		= 0x20,
-			NO_AUTO_LINEBREAK= 0x40
-		}mode;
-
 	private:
-		// functions
-		void initVar(void);
-		void initFramesRel(void);
-		void refreshFoot(void);
-		void refreshTitle(void);
-		void refreshText(void);
+		CBox	m_cBoxFrame;
+		CBox	m_cBoxFrameText;
+		CBox	m_cBoxFrameTitleRel;
 
 		// variables
 		std::string m_cIcon;
 		std::string m_cTitle;
-
-		CBox	m_cBoxFrame;
-		CBox	m_cBoxFrameText;
-		CBox	m_cBoxFrameTitleRel;
-		CBox	m_cBoxFrameFootRel;
 
 		int m_nMode;
 
 		CFont *m_pcFontTitle;
 		int m_nFontTitleHeight;
 
-		CFont *m_pcFontFoot;
-		int m_nFontFootHeight;
-
 		CTextBox *m_pcTextBox;
 
 		CFrameBuffer * m_pcWindow;
+
+		bool bigFonts;
+
+		bool hide(void);
+
+		// functions
+		void initVar(void);
+		void initFramesRel(void);
+		void refreshTitle(void);
+		void refreshText(void);
+
+		bool    paint(void);
+		void    refresh(void);
+
+		void    scrollPageDown(const int pages);
+		void    scrollPageUp(const int pages);
+
+		void setBigFonts();
 
 	public:
 		virtual ~CInfoBox();
 		CInfoBox();
 		CInfoBox(const char * text);
-		CInfoBox(  const char * text, 
+		CInfoBox(const char * text, 
 				   CFont *fontText,
 				   const int mode, 
 				   const CBox* position, 
@@ -116,25 +112,8 @@ class CInfoBox
 				   const char * icon);
 
 		// functions
-		bool    paint(void);
-		bool    hide(void);
 		int     exec(int timeout = -1);
-		void    refresh(void);
-		void    scrollPageDown(const int pages);
-		void    scrollPageUp(const int pages);
 		bool	setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int tmode = CTextBox::TOP_RIGHT);
 };
-
-extern void InfoBox(const neutrino_locale_t Caption, 
-						const char * const Text, 
-						const char * const Icon = NULL, 
-						const int Width = HINTBOX_WIDTH, 
-						const int timeout = -1); // UTF-8
-
-extern void InfoBox(const char * const Title, 
-						const char * const Text,  
-						const char * const Icon = NULL, 
-						const int Width = HINTBOX_WIDTH, 
-						const int timeout = -1); // UTF-8
 
 #endif

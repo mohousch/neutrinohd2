@@ -73,8 +73,14 @@ typedef struct fb_var_screeninfo t_fb_var_screeninfo;
 // bitmap
 #define DEFAULT_BPP		32	// 32 bit
 
+#define FH_ERROR_OK 0
+#define FH_ERROR_FILE 1		/* read/access error */
+#define FH_ERROR_FORMAT 2	/* file format error */
+#define FH_ERROR_MALLOC 3	/* error during malloc */
+
 ///gradient mode
 enum {
+	nogradient,
 	gradientDark2Light,
 	gradientLight2Dark,
 	gradientDark2Light2Dark,
@@ -234,9 +240,20 @@ class CFrameBuffer
 			*dest = realcolor[color];
 		};
 
+		//
+		fb_pixel_t* paintBoxRel2Buf(const int dx, const int dy, const fb_pixel_t col, fb_pixel_t* buf = NULL, int radius = 0, int type = CORNER_ALL);
+
+		inline void paintHLineRelInternal2Buf(const int& x, const int& dx, const int& y, const int& box_dx, const fb_pixel_t& col, fb_pixel_t* buf);
+
+		int  limitRadius(const int& dx, const int& dy, int& radius);
+		void setCornerFlags(const int& type);
+		void initQCircle();
+		inline int calcCornersOffset(const int& dy, const int& line, const int& radius, const int& type) { int ofs = 0; calcCorners(&ofs, NULL, NULL, dy, line, radius, type); return ofs; }
+		bool calcCorners(int *ofs, int *ofl, int *ofr, const int& dy, const int& line, const int& radius, const int& type);
+
 		void paintPixel(const int x, const int y, const fb_pixel_t col);
 		
-		void paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius = 0, int type = 0, bool fadeColor = false, int mode = gradientLight2Dark);
+		void paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius = 0, int type = CORNER_NONE, int mode = nogradient);
 
 		inline void paintBox(int xa, int ya, int xb, int yb, const fb_pixel_t col) { paintBoxRel(xa, ya, xb - xa, yb - ya, col); }
 		inline void paintBox(int xa, int ya, int xb, int yb, const fb_pixel_t col, int radius, int type) { paintBoxRel(xa, ya, xb - xa, yb - ya, col, radius, type); }
@@ -281,33 +298,24 @@ class CFrameBuffer
 		void RestoreScreen(int x, int y, int dx, int dy, fb_pixel_t * const memp);
 
 		void ClearFrameBuffer();
-		
-		void * convertRGB2FB(unsigned char * rgbbuff, unsigned long x, unsigned long y, int transp = 0xFF, int m_transparent = TM_BLACK, bool alpha = false);
+
 		void blit2FB(void * fbbuff, uint32_t width, uint32_t height, uint32_t xoff, uint32_t yoff, uint32_t xp = 0, uint32_t yp = 0, bool transp = false);
-		void displayRGB(unsigned char * rgbbuff, int x_size, int y_size, int x_pan, int y_pan, int x_offs, int y_offs, bool clearfb = true, int transp = 0xFF);
-		
-		void getSize(const std::string &name, int * width, int * height, int * nbpp);
-		unsigned char * Resize(unsigned char * origin, int ox, int oy, int dx, int dy, ScalingMode type, unsigned char * dst = NULL, bool alpha = false);
-		fb_pixel_t * getImage (const std::string & name, int width, int height);
-		bool DisplayImage(const std::string & name, int posx = 0, int posy = 0, int width = CFrameBuffer::getInstance()->getScreenWidth(true), int height = CFrameBuffer::getInstance()->getScreenHeight(true));
-		
+
 		// blit
 		void enableManualBlit();
 		void disableManualBlit();
 		void blit(int mode3d = THREE_NONE);
+		
+		//
+		void getSize(const std::string &name, int * width, int * height, int * nbpp);
+		unsigned char * Resize(unsigned char * origin, int ox, int oy, int dx, int dy, ScalingMode type, unsigned char * dst = NULL, bool alpha = false);
+
+		fb_pixel_t * getImage (const std::string & name, int width, int height, ScalingMode scaling = COLOR);
+		void * convertRGB2FB(unsigned char * rgbbuff, unsigned long x, unsigned long y, int transp = 0xFF, int m_transparent = TM_BLACK, bool alpha = false);
+		void displayRGB(unsigned char * rgbbuff, int x_size, int y_size, int x_pan, int y_pan, int x_offs, int y_offs, bool clearfb = true);
+		bool DisplayImage(const std::string & name, int posx = 0, int posy = 0, int width = CFrameBuffer::getInstance()->getScreenWidth(true), int height = CFrameBuffer::getInstance()->getScreenHeight(true), ScalingMode scaling = COLOR, int x_pan = 0, int y_pan = 0, bool clearfb = false);
 
 		//
-		fb_pixel_t* paintBoxRel2Buf(const int dx, const int dy, const fb_pixel_t col, fb_pixel_t* buf = NULL, int radius = 0, int type = CORNER_ALL);
-
-		inline void paintHLineRelInternal2Buf(const int& x, const int& dx, const int& y, const int& box_dx, const fb_pixel_t& col, fb_pixel_t* buf);
-
-		int  limitRadius(const int& dx, const int& dy, int& radius);
-		void setCornerFlags(const int& type);
-		void initQCircle();
-		inline int calcCornersOffset(const int& dy, const int& line, const int& radius, const int& type) { int ofs = 0; calcCorners(&ofs, NULL, NULL, dy, line, radius, type); return ofs; }
-		bool calcCorners(int *ofs, int *ofl, int *ofr, const int& dy, const int& line, const int& radius, const int& type);
-
-		// for picons
 		bool DisplayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale = false, bool center_x = true, bool center_y = true);
 		bool checkLogo(t_channel_id channel_id);
 		void getLogoSize(t_channel_id channel_id, int * width, int * height, int * bpp);
@@ -315,24 +323,84 @@ class CFrameBuffer
 
 class CBox
 {
-	private:
-
 	public:
-		// Constructor
-		inline CBox(){;};
-		inline CBox( const int _iX, const int _iY, const int _iWidth, const int _iHeight){iX =_iX; iY=_iY; iWidth =_iWidth; iHeight =_iHeight;};
-		inline ~CBox(){;};
-		// Functions
 		// Variables
 		int iX;
 		int iY;
 		int iWidth;
 		int iHeight;
+
+		// Constructor
+		inline CBox(){;};
+		inline CBox( const int _iX, const int _iY, const int _iWidth, const int _iHeight){iX =_iX; iY=_iY; iWidth =_iWidth; iHeight =_iHeight;};
+		inline ~CBox(){;};
 };
 
-#define FH_ERROR_OK 0
-#define FH_ERROR_FILE 1		/* read/access error */
-#define FH_ERROR_FORMAT 2	/* file format error */
-#define FH_ERROR_MALLOC 3	/* error during malloc */
+class CIcon
+{
+	public:
+		int iWidth;
+		int iHeight;
+		std::string iconName;
+
+		inline CIcon(){;};
+		void setIcon(const std::string& icon)
+		{
+			iconName = icon; 
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
+		};
+
+		void setIcon(const char* icon)
+		{
+			iconName = std::string(icon); 
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
+		};
+
+		inline CIcon(const std::string& icon)
+		{
+			iconName = icon; 
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
+		};
+
+		inline CIcon(const char* icon)
+		{
+			iconName = std::string(icon); 
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
+		};
+};
+
+class CImage
+{
+	public:
+		int iWidth;
+		int iHeight;
+		int iNbp;
+		std::string imageName;
+
+		inline CImage(){;};
+		void setImage(const std::string& image)
+		{
+			imageName = image; 
+			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
+		};
+
+		void setImage(const char* image)
+		{
+			imageName = std::string(image); 
+			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
+		};
+
+		inline CImage(const std::string& image)
+		{
+			imageName = image; 
+			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
+		};
+
+		inline CImage(const char* image)
+		{
+			imageName = std::string(image); 
+			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
+		};
+};
 
 #endif

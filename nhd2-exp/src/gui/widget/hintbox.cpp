@@ -56,11 +56,11 @@ CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, con
 
 	message = strdup(Text);
 
-	width   = Width;
+	cFrameBox.iWidth = Width;
 
-	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	height = theight + fheight;
+	cFrameBoxTitle.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	cFrameBoxItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	cFrameBox.iHeight = cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight;
 
 	caption = g_Locale->getText(Caption);
 
@@ -68,11 +68,12 @@ CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, con
 
 	while (true)
 	{
-		height += fheight;
-		if (height > HINTBOX_MAX_HEIGHT)
-			height -= fheight;
+		cFrameBox.iHeight += cFrameBoxItem.iHeight;
+		if (cFrameBox.iHeight > HINTBOX_MAX_HEIGHT)
+			cFrameBox.iHeight -= cFrameBoxItem.iHeight;
 
 		line.push_back(begin);
+
 		pos = strchr(begin, '\n');
 		if (pos != NULL)
 		{
@@ -82,35 +83,37 @@ CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, con
 		else
 			break;
 	}
-	entries_per_page = ((height - theight) / fheight) - 1;
+
+	entries_per_page = ((cFrameBox.iHeight - cFrameBoxTitle.iHeight) / cFrameBoxItem.iHeight) - 1;
 	current_page = 0;
 
 	unsigned int additional_width;
 
 	if (entries_per_page < line.size())
-		additional_width = 20 + 15;
+		additional_width = BORDER_LEFT + BORDER_RIGHT + SCROLLBAR_WIDTH;
 	else
-		additional_width = 20 +  0;
+		additional_width = BORDER_LEFT + BORDER_RIGHT;
 
 	if (Icon != NULL)
 	{
 		iconfile = Icon;
-		additional_width += 30;
+		additional_width += BORDER_LEFT + BORDER_RIGHT + 2*ICON_OFFSET;
 	}
 	else
 		iconfile = "";
 
 	nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(caption); // UTF-8
 
-	if (nw > width)
-		width = nw;
+	if (nw > cFrameBox.iWidth)
+		cFrameBox.iWidth = nw;
 
 	for (std::vector<char *>::const_iterator it = line.begin(); it != line.end(); it++)
 	{
 		nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(*it, true); // UTF-8
-		if (nw > width)
-			width = nw;
+		if (nw > cFrameBox.iWidth)
+			cFrameBox.iWidth = nw;
 	}
+
 	window = NULL;
 }
 
@@ -122,11 +125,11 @@ CHintBox::CHintBox(const char * Caption, const char * const Text, const int Widt
 
 	message = strdup(Text);
 
-	width   = Width;
+	cFrameBox.iWidth   = Width;
 
-	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	height = theight + fheight;
+	cFrameBoxTitle.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	cFrameBoxItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	cFrameBox.iHeight = cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight;
 
 	caption = Caption;
 
@@ -134,9 +137,9 @@ CHintBox::CHintBox(const char * Caption, const char * const Text, const int Widt
 
 	while (true)
 	{
-		height += fheight;
-		if (height > HINTBOX_MAX_HEIGHT)
-			height -= fheight;
+		cFrameBox.iHeight += cFrameBoxItem.iHeight;
+		if (cFrameBox.iHeight > HINTBOX_MAX_HEIGHT)
+			cFrameBox.iHeight -= cFrameBoxItem.iHeight;
 
 		line.push_back(begin);
 		pos = strchr(begin, '\n');
@@ -148,35 +151,36 @@ CHintBox::CHintBox(const char * Caption, const char * const Text, const int Widt
 		else
 			break;
 	}
-	entries_per_page = ((height - theight) / fheight) - 1;
+	entries_per_page = ((cFrameBox.iHeight - cFrameBoxTitle.iHeight) / cFrameBoxItem.iHeight) - 1;
 	current_page = 0;
 
 	unsigned int additional_width;
 
 	if (entries_per_page < line.size())
-		additional_width = 20 + 15;
+		additional_width = BORDER_LEFT + BORDER_RIGHT + SCROLLBAR_WIDTH;
 	else
-		additional_width = 20 +  0;
+		additional_width = BORDER_LEFT + BORDER_RIGHT;
 
 	if (Icon != NULL)
 	{
 		iconfile = Icon;
-		additional_width += 30;
+		additional_width += BORDER_LEFT + BORDER_RIGHT + 2*ICON_OFFSET;
 	}
 	else
 		iconfile = "";
 
 	nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(caption); // UTF-8
 
-	if (nw > width)
-		width = nw;
+	if (nw > cFrameBox.iWidth)
+		cFrameBox.iWidth = nw;
 
 	for (std::vector<char *>::const_iterator it = line.begin(); it != line.end(); it++)
 	{
 		nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(*it, true); // UTF-8
-		if (nw > width)
-			width = nw;
+		if (nw > cFrameBox.iWidth)
+			cFrameBox.iWidth = nw;
 	}
+
 	window = NULL;
 }
 
@@ -207,11 +211,13 @@ void CHintBox::paint(void)
 	}
 
 	CFrameBuffer *frameBuffer = CFrameBuffer::getInstance();
+
+	// Box
+	cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth ) >> 1);
+	cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 2);
 	
-	window = new CFBWindow(frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width ) >> 1),
-			       frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 2),
-			       width + borderwidth,
-			       height + borderwidth);
+	window = new CFBWindow(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth + SHADOW_OFFSET, cFrameBox.iHeight + SHADOW_OFFSET);
+
 	refresh();
 	
 	CFrameBuffer::getInstance()->blit();
@@ -224,62 +230,44 @@ void CHintBox::refresh(void)
 		return;
 	}
 
-	// shadow top right
-	window->paintBoxRel(width - (BORDER_LEFT + BORDER_RIGHT), 
-					borderwidth, 
-					borderwidth + (BORDER_LEFT + BORDER_RIGHT), 
-					height - borderwidth, 
-					COL_INFOBAR_SHADOW_PLUS_0, 
-					RADIUS_MID, CORNER_TOP); // right
-	
-	// shadow bottom
-	window->paintBoxRel(borderwidth, 
-					height - (BORDER_LEFT + BORDER_RIGHT), 
-					width, 
-					borderwidth + (BORDER_LEFT + BORDER_RIGHT), 
-					COL_INFOBAR_SHADOW_PLUS_0, 
-					RADIUS_MID, CORNER_BOTTOM); // bottom
+	// Shadow
+	window->paintBoxRel(SHADOW_OFFSET, SHADOW_OFFSET, cFrameBox.iWidth, cFrameBox.iHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_ALL);
 
 	// title
-	window->paintBoxRel(0, 
-					0, 
-					width, 
-					theight, 
-					(CFBWindow::color_t)COL_MENUHEAD_PLUS_0, 
-					RADIUS_MID, CORNER_TOP, true);//round
+	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
+
+	window->paintBoxRel(0, 0, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight, (CFBWindow::color_t)COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
-	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(caption); // UTF-8
+	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(caption); 
 
 	if (!iconfile.empty())
 	{
-		int iw, ih;
-		CFrameBuffer::getInstance()->getIconSize(iconfile.c_str(), &iw, &ih);
-		window->paintIcon(iconfile.c_str(), BORDER_LEFT, theight/2);
+		window->paintIcon(iconfile.c_str(), BORDER_LEFT, 0, cFrameBoxTitle.iHeight);
 	}
 	
-	int stringstartposX = (width >> 1) - (neededWidth >> 1);
-	window->RenderString( g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], stringstartposX, theight, width - (stringstartposX) , caption.c_str(), (CFBWindow::color_t)COL_MENUHEAD, 0, true); // UTF-8
+	int stringstartposX = (cFrameBox.iWidth >> 1) - (neededWidth >> 1);
+	window->RenderString( g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], stringstartposX, cFrameBoxTitle.iHeight, cFrameBox.iWidth - (stringstartposX) , caption.c_str(), (CFBWindow::color_t)COL_MENUHEAD, 0, true); 
 
-	// body + foot
-	window->paintBoxRel(0, 
-					theight, 
-					width, 
-					(entries_per_page + 1) * fheight, 
-					(CFBWindow::color_t)COL_MENUCONTENT_PLUS_0, 
-					RADIUS_MID, CORNER_BOTTOM);//round
+	// body
+	window->paintBoxRel(0, cFrameBoxTitle.iHeight, cFrameBox.iWidth, (entries_per_page + 1)*cFrameBoxItem.iHeight, (CFBWindow::color_t)COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
 	int count = entries_per_page;
-	int ypos  = theight + (fheight >> 1);
+	int ypos  = cFrameBoxTitle.iHeight + (cFrameBoxItem.iHeight >> 1);
 
 	for (std::vector<char *>::const_iterator it = line.begin() + (entries_per_page * current_page); ((it != line.end()) && (count > 0)); it++, count--)
-		window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_MENU], 10, (ypos += fheight), width, *it, (CFBWindow::color_t)COL_MENUCONTENT, 0, true); // UTF-8
+	{
+		window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_MENU], 10, (ypos += cFrameBoxItem.iHeight), cFrameBox.iWidth, *it, (CFBWindow::color_t)COL_MENUCONTENT, 0, true); 
+	}
 
+	// scrollBar
 	if (entries_per_page < line.size())
 	{
-		ypos = theight + (fheight >> 1);
-		window->paintBoxRel(width - 15, ypos, 15, entries_per_page * fheight, COL_MENUCONTENT_PLUS_1);
-		unsigned int marker_size = (entries_per_page * fheight) / ((line.size() + entries_per_page - 1) / entries_per_page);
-		window->paintBoxRel(width - 13, ypos + current_page * marker_size, 11, marker_size, COL_MENUCONTENT_PLUS_3);
+		ypos = cFrameBoxTitle.iHeight + (cFrameBoxItem.iHeight >> 1);
+		window->paintBoxRel(cFrameBox.iWidth - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, entries_per_page*cFrameBoxItem.iHeight, COL_MENUCONTENT_PLUS_1);
+
+		unsigned int marker_size = (entries_per_page*cFrameBoxItem.iHeight) / ((line.size() + entries_per_page - 1) / entries_per_page);
+
+		window->paintBoxRel(cFrameBox.iWidth - (SCROLLBAR_WIDTH - 2), ypos + current_page*marker_size, SCROLLBAR_WIDTH - 4, marker_size, COL_MENUCONTENT_PLUS_3);
 	}	
 }
 
@@ -315,14 +303,14 @@ void CHintBox::hide(void)
 	}	
 }
 
-//
-int HintBox(const neutrino_locale_t Caption, const char * const Text, const int Width, int timeout, const char * const Icon)
+int CHintBox::exec(int timeout)
 {
+	int res = messages_return::none;
+
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 
- 	CHintBox * hintBox = new CHintBox(Caption, Text, Width, Icon);
-	hintBox->paint();
+	paint();
 	
 	CFrameBuffer::getInstance()->blit();
 
@@ -330,8 +318,6 @@ int HintBox(const neutrino_locale_t Caption, const char * const Text, const int 
 		timeout = g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR];
 
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd( timeout );
-
-	int res = messages_return::none;
 
 	while ( ! ( res & ( messages_return::cancel_info | messages_return::cancel_all ) ) )
 	{
@@ -341,12 +327,12 @@ int HintBox(const neutrino_locale_t Caption, const char * const Text, const int 
 		{
 				res = messages_return::cancel_info;
 		}
-		else if ((hintBox->has_scrollbar()) && ((msg == CRCInput::RC_up) || (msg == CRCInput::RC_down)))
+		else if ((has_scrollbar()) && ((msg == CRCInput::RC_up) || (msg == CRCInput::RC_down)))
 		{
 			if (msg == CRCInput::RC_up)
-				hintBox->scroll_up();
+				scroll_up();
 			else
-				hintBox->scroll_down();
+				scroll_down();
 		}
 		else if((msg == CRCInput::RC_mode) || (msg == CRCInput::RC_next) || (msg == CRCInput::RC_prev)) 
 		{
@@ -367,10 +353,27 @@ int HintBox(const neutrino_locale_t Caption, const char * const Text, const int 
 		CFrameBuffer::getInstance()->blit();	
 	}
 
-	hintBox->hide();
+	hide();
+
+	return res;
+}
+
+//
+int HintBox(const neutrino_locale_t Caption, const char * const Text, const int Width, int timeout, const char * const Icon)
+{
+	int res = messages_return::none;
+
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+ 	CHintBox * hintBox = new CHintBox(Caption, Text, Width, Icon);
+
+	res = hintBox->exec(timeout);
 		
 	delete hintBox;
-	return 1;
+	hintBox = NULL;
+
+	return res;
 }
 
 int HintBox(const neutrino_locale_t Caption, const neutrino_locale_t Text, const int Width, int timeout, const char * const Icon)
@@ -380,59 +383,19 @@ int HintBox(const neutrino_locale_t Caption, const neutrino_locale_t Text, const
 
 int HintBox(const char * Caption, const char * const Text, const int Width, int timeout, const char * const Icon)
 {
+	int res = messages_return::none;
+
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 
  	CHintBox * hintBox = new CHintBox(Caption, Text, Width, Icon);
-	hintBox->paint();
-	
-	CFrameBuffer::getInstance()->blit();
 
-	if ( timeout == -1 )
-		timeout = g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR];
-
-	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd( timeout );
-
-	int res = messages_return::none;
-
-	while ( ! ( res & ( messages_return::cancel_info | messages_return::cancel_all ) ) )
-	{
-		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
-
-		if ((msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_home) || (msg == CRCInput::RC_ok))
-		{
-				res = messages_return::cancel_info;
-		}
-		else if ((hintBox->has_scrollbar()) && ((msg == CRCInput::RC_up) || (msg == CRCInput::RC_down)))
-		{
-			if (msg == CRCInput::RC_up)
-				hintBox->scroll_up();
-			else
-				hintBox->scroll_down();
-		}
-		else if((msg == CRCInput::RC_mode) || (msg == CRCInput::RC_next) || (msg == CRCInput::RC_prev)) 
-		{
-				res = messages_return::cancel_info;
-				g_RCInput->postMsg(msg, data);
-		}
-		else
-		{
-			res = CNeutrinoApp::getInstance()->handleMsg(msg, data);
-			if (res & messages_return::unhandled)
-			{
-				// raus hier und dar�ber behandeln...
-				g_RCInput->postMsg(msg, data);
-				res = messages_return::cancel_info;
-			}
-		}
-
-		CFrameBuffer::getInstance()->blit();	
-	}
-
-	hintBox->hide();
+	res = hintBox->exec(timeout);
 		
 	delete hintBox;
-	return 1;
+	hintBox = NULL;
+
+	return res;
 }
 
 int HintBox(const char * Caption, const neutrino_locale_t Text, const int Width, int timeout, const char * const Icon)

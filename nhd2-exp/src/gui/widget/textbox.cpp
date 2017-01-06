@@ -1,4 +1,4 @@
-/***************************************************************************
+/*
 	Neutrino-GUI  -   DBoxII-Project
 	
 	$Id: textbox.cpp 2013/10/12 mohousch Exp $
@@ -28,30 +28,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-	***********************************************************
-
-	Module Name: textbox.cpp: .
-
-	Description: implementation of the CTextBox class
-				 This class provides a plain textbox with selectable features:
-				 	- Foot, Title
-				 	- Scroll bar
-				 	- Frame shadow
-				 	- Auto line break
-				 	- fixed position or auto width and auto height (later not tested yet)
-				 	- Center Text
-
-	Date:	Nov 2005
-
-	Author: Günther@tuxbox.berlios.org
-		based on code of Steffen Hehn 'McClean'
-
-	Revision History:
-	Date			Author		Change Description
-	   Nov 2005		Günther	initial implementation
-
-****************************************************************************/
+*/
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -61,12 +38,10 @@
 
 #include <textbox.h>
 #include <gui/widget/icons.h>
+#include <gui/widget/scrollbar.h>
 
 #include <system/debug.h>
 
-#define	TEXT_BORDER_WIDTH	8
-#define	SCROLL_FRAME_WIDTH	SCROLLBAR_WIDTH
-#define	SCROLL_MARKER_BORDER	2
 
 #define MAX_WINDOW_WIDTH  	(g_settings.screen_EndX - g_settings.screen_StartX - 40)
 #define MAX_WINDOW_HEIGHT 	(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
@@ -75,6 +50,8 @@
 #define MIN_WINDOW_HEIGHT 	40
 
 #define THUMBNAIL_OFFSET	3
+
+#define BIG_FONT_FAKTOR 1.5
 
 
 CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const CBox * position, fb_pixel_t textBackgroundColor)
@@ -110,11 +87,11 @@ CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const 
 	dprintf(DEBUG_DEBUG, " CTextBox::CTextBox: m_cText: %d, m_nMode %d\t\r\n", m_cText.size(), m_nMode);
 
 	m_textBackgroundColor = textBackgroundColor;
-	m_nFontTextHeight  = m_pcFontText->getHeight();
+	m_nFontTextHeight = m_pcFontText->getHeight();
 	
 	dprintf(DEBUG_DEBUG, " CTextBox::CTextBox: m_nFontTextHeight: %d\t\r\n", m_nFontTextHeight);
 
-	// Initialise the window frames first
+	// initialise the window frames first
 	initFramesRel();
 
 	// than refresh text line array 
@@ -128,10 +105,11 @@ CTextBox::CTextBox(const char * text)
 	initVar();
 
 	frameBuffer = NULL;
+
 	if(text != NULL)		
 		m_cText = *text;
 
-	// Initialise the window frames first
+	// initialise the window frames first
 	initFramesRel();
 
 	// than refresh text line array 
@@ -164,7 +142,6 @@ void CTextBox::initVar(void)
 	m_nMode = SCROLL;
 	m_tMode = TOP_RIGHT;
 
-	m_pcFontText = NULL;
 	m_pcFontText = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1];
 	m_nFontTextHeight = m_pcFontText->getHeight();
 
@@ -190,13 +167,59 @@ void CTextBox::initVar(void)
 	ly = m_cFrame.iY + 10;
 	tw = th = 0;
 	thumbnail = "";
+
+	bigFonts = false;
+
+	radius = NO_RADIUS;
+	type = CORNER_NONE;
+}
+
+void CTextBox::setCorner(int Radius, int Type)
+{
+	radius = Radius;
+	type = Type;
+
+	//
+	if(m_nMode & SCROLL)
+	{
+		m_cFrameScrollRel.iX = m_cFrame.iX + m_cFrame.iWidth - SCROLLBAR_WIDTH;
+		m_cFrameScrollRel.iY = m_cFrameTextRel.iY;
+		m_cFrameScrollRel.iWidth = SCROLLBAR_WIDTH;
+		m_cFrameScrollRel.iHeight = radius? m_cFrameTextRel.iHeight - 2*radius : m_cFrameTextRel.iHeight;
+	}
+	else
+	{
+		m_cFrameScrollRel.iX = 0;
+		m_cFrameScrollRel.iY = 0;
+		m_cFrameScrollRel.iHeight = 0;
+		m_cFrameScrollRel.iWidth = 0;
+	}
+}
+
+void CTextBox::setBigFonts(bool bigfont)
+{
+	dprintf(DEBUG_NORMAL, "CTextBox::setBigFonts\n");
+
+	bigFonts = bigfont;
+
+	if(bigFonts)
+	{
+		m_pcFontText->setSize((int)(m_pcFontText->getSize() * BIG_FONT_FAKTOR));
+	}
+	else
+	{
+		m_pcFontText->setSize((int)(m_pcFontText->getSize() / BIG_FONT_FAKTOR));
+	}
+
+	refreshTextLineArray();
+	refresh();
 }
 
 void CTextBox::reSizeMainFrameWidth(int textWidth)
 {
 	dprintf(DEBUG_DEBUG, "CTextBox::ReSizeMainFrameWidth: %d, current: %d\r\n", textWidth, m_cFrameTextRel.iWidth);
 
-	int iNewWindowWidth = textWidth + m_cFrameScrollRel.iWidth + 2*TEXT_BORDER_WIDTH;
+	int iNewWindowWidth = textWidth + m_cFrameScrollRel.iWidth + BORDER_LEFT + BORDER_RIGHT;
 
 	if( iNewWindowWidth > m_nMaxWidth) 
 		iNewWindowWidth = m_nMaxWidth;
@@ -213,16 +236,16 @@ void CTextBox::reSizeMainFrameHeight(int textHeight)
 {
 	dprintf(DEBUG_DEBUG, "CTextBox::ReSizeMainFrameHeight: %d, current: %d\r\n", textHeight, m_cFrameTextRel.iHeight);
 
-	int iNewWindowHeight = textHeight + 2*TEXT_BORDER_WIDTH;
+	int iNewWindowHeight = textHeight + BORDER_LEFT + BORDER_RIGHT;
 
 	if( iNewWindowHeight > m_nMaxHeight) 
 		iNewWindowHeight = m_nMaxHeight;
 	if( iNewWindowHeight < MIN_WINDOW_HEIGHT) 
 		iNewWindowHeight = MIN_WINDOW_HEIGHT;
 
-	m_cFrame.iHeight	= iNewWindowHeight;
+	m_cFrame.iHeight = iNewWindowHeight;
 
-	// Re-Init the children frames due to new main window
+	// reinit the children frames due to new main window
 	initFramesRel();
 }
 
@@ -230,28 +253,28 @@ void CTextBox::initFramesRel(void)
 {
 	dprintf(DEBUG_DEBUG, "CTextBox::InitFramesRel:\r\n");
 
-	m_cFrameTextRel.iX = 0;
-	m_cFrameTextRel.iY = 0;
+	m_cFrameTextRel.iX = m_cFrame.iX;
+	m_cFrameTextRel.iY = m_cFrame.iY;
 	m_cFrameTextRel.iHeight	= m_cFrame.iHeight ;
 	
 	if(m_nMode & SCROLL)
 	{
-		m_cFrameScrollRel.iX		= m_cFrame.iWidth - SCROLL_FRAME_WIDTH;
-		m_cFrameScrollRel.iY		= m_cFrameTextRel.iY;
-		m_cFrameScrollRel.iWidth	= SCROLL_FRAME_WIDTH;
-		m_cFrameScrollRel.iHeight	= m_cFrameTextRel.iHeight;
+		m_cFrameScrollRel.iX = m_cFrame.iX + m_cFrame.iWidth - SCROLLBAR_WIDTH;
+		m_cFrameScrollRel.iY = m_cFrameTextRel.iY;
+		m_cFrameScrollRel.iWidth = SCROLLBAR_WIDTH;
+		m_cFrameScrollRel.iHeight = m_cFrameTextRel.iHeight;
 	}
 	else
 	{
-		m_cFrameScrollRel.iX		= 0;
-		m_cFrameScrollRel.iY		= 0;
-		m_cFrameScrollRel.iHeight	= 0;
-		m_cFrameScrollRel.iWidth	= 0;
+		m_cFrameScrollRel.iX = 0;
+		m_cFrameScrollRel.iY = 0;
+		m_cFrameScrollRel.iHeight = 0;
+		m_cFrameScrollRel.iWidth = 0;
 	}
 
-	m_cFrameTextRel.iWidth	= m_cFrame.iWidth - m_cFrameScrollRel.iWidth;
+	m_cFrameTextRel.iWidth = m_cFrame.iWidth - m_cFrameScrollRel.iWidth;
 
-	m_nLinesPerPage = (m_cFrameTextRel.iHeight - (2*TEXT_BORDER_WIDTH)) / m_nFontTextHeight;
+	m_nLinesPerPage = (m_cFrameTextRel.iHeight - (BORDER_LEFT + BORDER_RIGHT))/m_nFontTextHeight;
 }
 
 void CTextBox::refreshTextLineArray(void)
@@ -278,16 +301,16 @@ void CTextBox::refreshTextLineArray(void)
 	if( m_nMode & AUTO_WIDTH)
 	{
 		// In case of autowidth, we calculate the max allowed width of the textbox
-		lineBreakWidth = MAX_WINDOW_WIDTH - m_cFrameScrollRel.iWidth - 2*TEXT_BORDER_WIDTH;
+		lineBreakWidth = MAX_WINDOW_WIDTH - m_cFrameScrollRel.iWidth - BORDER_LEFT - BORDER_RIGHT;
 	}
 	else
 	{
 		// If not autowidth, we just take the actuall textframe width
-		lineBreakWidth = m_cFrameTextRel.iWidth - 2*TEXT_BORDER_WIDTH;
+		lineBreakWidth = m_cFrameTextRel.iWidth - BORDER_LEFT - BORDER_RIGHT;
 	}
 	
 	if( !access(thumbnail.c_str(), F_OK) && m_nCurrentPage == 0)
-		lineBreakWidth = m_cFrameTextRel.iWidth - (2*TEXT_BORDER_WIDTH + tw + 20);
+		lineBreakWidth = m_cFrameTextRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + tw + BORDER_LEFT + BORDER_RIGHT);
 	
 	int TextChars = m_cText.size();
 	
@@ -352,17 +375,17 @@ void CTextBox::refreshTextLineArray(void)
 				}
 				
 				//recalculate breaklinewidth for other pages or when pic dont exists
-				if( (m_nNrOfLines > th / m_nFontTextHeight ) || (m_nNrOfLines > ((m_cFrameTextRel.iHeight - (2*TEXT_BORDER_WIDTH)) / m_nFontTextHeight)) )
+				if( (m_nNrOfLines > th / m_nFontTextHeight ) || (m_nNrOfLines > ((m_cFrameTextRel.iHeight - (BORDER_LEFT + BORDER_RIGHT)) / m_nFontTextHeight)) )
 				{
 					if( m_nMode & AUTO_WIDTH)
 					{
 						// In case of autowidth, we calculate the max allowed width of the textbox
-						lineBreakWidth = MAX_WINDOW_WIDTH - m_cFrameScrollRel.iWidth - 2*TEXT_BORDER_WIDTH;
+						lineBreakWidth = MAX_WINDOW_WIDTH - m_cFrameScrollRel.iWidth - BORDER_LEFT - BORDER_RIGHT;
 					}
 					else
 					{
 						// If not autowidth, we just take the actuall textframe width
-						lineBreakWidth = m_cFrameTextRel.iWidth - 2*TEXT_BORDER_WIDTH;
+						lineBreakWidth = m_cFrameTextRel.iWidth - BORDER_LEFT - BORDER_RIGHT;
 					}
 				}
 			}
@@ -379,7 +402,7 @@ void CTextBox::refreshTextLineArray(void)
 			reSizeMainFrameHeight(m_nNrOfLines * m_nFontTextHeight);
 		}
 
-		m_nLinesPerPage = (m_cFrameTextRel.iHeight - (2*TEXT_BORDER_WIDTH)) / m_nFontTextHeight;
+		m_nLinesPerPage = (m_cFrameTextRel.iHeight - BORDER_LEFT - BORDER_RIGHT) / m_nFontTextHeight;
 		m_nNrOfPages =	((m_nNrOfLines-1) / m_nLinesPerPage) + 1;
 
 		if(m_nCurrentPage >= m_nNrOfPages)
@@ -408,14 +431,7 @@ void CTextBox::refreshScroll(void)
 
 	if (m_nNrOfPages > 1) 
 	{
-		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + m_cFrame.iX, m_cFrameScrollRel.iY + m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, COL_MENUCONTENT_PLUS_1);
-		
-		unsigned int marker_size = m_cFrameScrollRel.iHeight / m_nNrOfPages;
-		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + SCROLL_MARKER_BORDER + m_cFrame.iX, m_cFrameScrollRel.iY + m_nCurrentPage * marker_size + m_cFrame.iY, m_cFrameScrollRel.iWidth - 2*SCROLL_MARKER_BORDER, marker_size, COL_MENUCONTENT_PLUS_3);
-	}
-	else
-	{
-		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + m_cFrame.iX, m_cFrameScrollRel.iY + m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, m_textBackgroundColor);
+		::paintScrollBar(&m_cFrameScrollRel, m_nNrOfPages, m_nCurrentPage);
 	}
 }
 
@@ -425,7 +441,10 @@ void CTextBox::refreshText(void)
 		return;
 
 	// paint text background
-	frameBuffer->paintBoxRel(m_cFrameTextRel.iX + m_cFrame.iX, m_cFrameTextRel.iY + m_cFrame.iY, m_cFrameTextRel.iWidth, m_cFrameTextRel.iHeight, m_textBackgroundColor);
+	m_cTextWindow.setDimension(&m_cFrame);
+	m_cTextWindow.setColor(m_textBackgroundColor);
+	m_cTextWindow.setCorner(radius, type);
+	m_cTextWindow.paint();
 
 	if( m_nNrOfLines <= 0) 
 		return;
@@ -445,7 +464,8 @@ void CTextBox::refreshText(void)
 		frameBuffer->DisplayImage(thumbnail.c_str(), lx + THUMBNAIL_OFFSET, ly + THUMBNAIL_OFFSET, tw - THUMBNAIL_OFFSET, th - THUMBNAIL_OFFSET);
 	}
 	
-	int y = m_cFrameTextRel.iY + TEXT_BORDER_WIDTH;
+	// paint text
+	int y = m_cFrameTextRel.iY + BORDER_LEFT;
 	int i;
 	int x_center = 0;
 
@@ -463,13 +483,13 @@ void CTextBox::refreshText(void)
 			if (m_tMode == TOP_LEFT)
 			{
 				if(i <= (th / m_nFontTextHeight))
-					x_center = tw + TEXT_BORDER_WIDTH;
+					x_center = tw + BORDER_LEFT;
 				else
 					x_center = 0;
 			}
 		}
 
-		m_pcFontText->RenderString(m_cFrameTextRel.iX + TEXT_BORDER_WIDTH + x_center + m_cFrame.iX, y + m_cFrame.iY, m_cFrameTextRel.iWidth, m_cLineArray[i].c_str(), COL_MENUCONTENT, 0, true); // UTF-8
+		m_pcFontText->RenderString(m_cFrameTextRel.iX + BORDER_LEFT + x_center, y, m_cFrameTextRel.iWidth, m_cLineArray[i].c_str(), COL_MENUCONTENT, 0, true); // UTF-8
 	}
 }
 
@@ -527,8 +547,10 @@ void CTextBox::refresh(void)
 	dprintf(DEBUG_DEBUG, "CTextBox::Refresh:\r\n");
 
 	// paint text
-	refreshScroll();
-	refreshText();	
+	refreshText();
+
+	// paint scrollbar
+	refreshScroll();	
 }
 
 bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _tw, int _th, int _tmode)
@@ -620,12 +642,19 @@ void CTextBox::paint(void)
 	refresh();
 }
 
-void CTextBox::hide (void)
+void CTextBox::hide(void)
 {
 	if(frameBuffer == NULL) 
 		return;
+
+	if (bigFonts) 
+	{
+		bigFonts = false;
+		m_pcFontText->setSize((int)(m_pcFontText->getSize() / BIG_FONT_FAKTOR));
+	}
 	
-	frameBuffer->paintBackgroundBoxRel(m_cFrame.iX, m_cFrame.iY, m_cFrame.iWidth, m_cFrame.iHeight);
+	m_cBoxWindow.setDimension(&m_cFrame);
+	m_cBoxWindow.hide();
 
 	frameBuffer = NULL;
 }

@@ -66,13 +66,14 @@ int CMediaPlayerMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	return res;
 }
 
+// standard
 void CMediaPlayerMenu::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CMediaPlayerMenu::showMenu:\n");
 
 	int shortcutMediaPlayer = 1;
 	
-	CMenuWidget * MediaPlayer = new CMenuWidget(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_MOVIE);
+	CMenuWidgetExtended* MediaPlayer = new CMenuWidgetExtended(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_MOVIE);
 		
 	// internet Radio
 	MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_INETRADIO, true, new CAudioPlayerGui(true), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_INTERNETRADIO, LOCALE_HELPTEXT_INTERNETRADIO ));
@@ -87,13 +88,15 @@ void CMediaPlayerMenu::showMenu()
 	MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_MOVIEPLAYER_MOVIES, true, new CMoviePlayerGui(), "moviebrowser", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_TSMOVIEBROWSER ));
 	
 	// fileplayback
-	MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_MOVIEPLAYER_FILEPLAYBACK, true, new CMoviePlayerGui(), "fileplayback", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_FILEPLAYER, LOCALE_HELPTEXT_FILEPLAYBACK ));		
+	//MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_MOVIEPLAYER_FILEPLAYBACK, true, new CMoviePlayerGui(), "fileplayback", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_FILEPLAYER, LOCALE_HELPTEXT_FILEPLAYBACK ));		
 
 	// pictureViewer
 	MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_PICTUREVIEWER, true, new CPictureViewerGui(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_PICTUREVIEWER, LOCALE_HELPTEXT_PICTUREVIEWER ));
 	
 	// UPNP Browser
 	 MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_UPNPBROWSER_HEAD, true, new CUpnpBrowserGui(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_UPNPBROWSER, LOCALE_HELPTEXT_UPNPBROWSER ));
+
+	MediaPlayer->integratePlugins(CPlugins::I_TYPE_MULTIMEDIA, shortcutMediaPlayer++);
 	
 	MediaPlayer->exec(NULL, "");
 	MediaPlayer->hide();
@@ -108,28 +111,30 @@ void CMediaPlayerMenu::showMenuSmart(void)
 
 	int shortcutMediaPlayer = 1;
 	
-	CSmartMenu * MediaPlayer = new CSmartMenu(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_MOVIE);
+	CMenuFrameBox * MediaPlayer = new CMenuFrameBox(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_MOVIE);
 		
 	// internet Radio
-	MediaPlayer->addItem(new CMenuFrameBox(LOCALE_MAINMENU_INETRADIO, new CAudioPlayerGui(true), NULL, NEUTRINO_ICON_SMART_INTERNETRADIO));
+	MediaPlayer->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_INETRADIO, new CAudioPlayerGui(true), NULL, NEUTRINO_ICON_SMART_INTERNETRADIO));
 
 	// audioPlayer
-	MediaPlayer->addItem(new CMenuFrameBox(LOCALE_MAINMENU_AUDIOPLAYER, new CAudioPlayerGui(), NULL, NEUTRINO_ICON_SMART_AUDIOPLAYER));
+	MediaPlayer->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_AUDIOPLAYER, new CAudioPlayerGui(), NULL, NEUTRINO_ICON_SMART_AUDIOPLAYER));
 
 	// ts player
-	MediaPlayer->addItem(new CMenuFrameBox(LOCALE_MOVIEPLAYER_RECORDS, new CMoviePlayerGui(), "tsmoviebrowser", NEUTRINO_ICON_SMART_TSPLAYER));
+	MediaPlayer->addItem(new CMenuFrameBoxItem(LOCALE_MOVIEPLAYER_RECORDS, new CMoviePlayerGui(), "tsmoviebrowser", NEUTRINO_ICON_SMART_TSPLAYER));
 	
 	// movie player
-	MediaPlayer->addItem(new CMenuFrameBox(LOCALE_MOVIEPLAYER_MOVIES, new CMoviePlayerGui(), "moviebrowser", NEUTRINO_ICON_SMART_MOVIEPLAYER));
+	MediaPlayer->addItem(new CMenuFrameBoxItem(LOCALE_MOVIEPLAYER_MOVIES, new CMoviePlayerGui(), "moviebrowser", NEUTRINO_ICON_SMART_MOVIEPLAYER));
 	
 	// fileplayback
-	MediaPlayer->addItem(new CMenuFrameBox(LOCALE_MOVIEPLAYER_FILEPLAYBACK, new CMoviePlayerGui(), "fileplayback", NEUTRINO_ICON_SMART_FILEPLAYER));		
+	//MediaPlayer->addItem(new CMenuFrameBoxItem(LOCALE_MOVIEPLAYER_FILEPLAYBACK, new CMoviePlayerGui(), "fileplayback", NEUTRINO_ICON_SMART_FILEPLAYER));		
 
 	// pictureViewer
-	MediaPlayer->addItem(new CMenuFrameBox(LOCALE_MAINMENU_PICTUREVIEWER, new CPictureViewerGui(), NULL, NEUTRINO_ICON_SMART_PICTUREVIEWER));
+	MediaPlayer->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_PICTUREVIEWER, new CPictureViewerGui(), NULL, NEUTRINO_ICON_SMART_PICTUREVIEWER));
 	
 	// UPNP Browser
-	 MediaPlayer->addItem(new CMenuFrameBox(LOCALE_UPNPBROWSER_HEAD, new CUpnpBrowserGui(), NULL, NEUTRINO_ICON_SMART_UPNPBROWSER));
+	 MediaPlayer->addItem(new CMenuFrameBoxItem(LOCALE_UPNPBROWSER_HEAD, new CUpnpBrowserGui(), NULL, NEUTRINO_ICON_SMART_UPNPBROWSER));
+
+	MediaPlayer->integratePlugins(CPlugins::I_TYPE_MULTIMEDIA);
 	
 	MediaPlayer->exec(NULL, "");
 	MediaPlayer->hide();
@@ -159,13 +164,15 @@ void CMediaPlayerMenu::showMenuClassic()
 	MediaPlayer->addItem(new CMenuForwarder(LOCALE_MOVIEPLAYER_MOVIES, true, NULL, new CMoviePlayerGui(), "moviebrowser", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NEUTRINO_ICON_CLASSIC_MOVIEPLAYER));
 	
 	// fileplayback
-	MediaPlayer->addItem(new CMenuForwarder(LOCALE_MOVIEPLAYER_FILEPLAYBACK, true, NULL, new CMoviePlayerGui(), "fileplayback", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NEUTRINO_ICON_CLASSIC_FILEPLAYER));		
+	//MediaPlayer->addItem(new CMenuForwarder(LOCALE_MOVIEPLAYER_FILEPLAYBACK, true, NULL, new CMoviePlayerGui(), "fileplayback", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NEUTRINO_ICON_CLASSIC_FILEPLAYER));		
 
 	// pictureViewer
 	MediaPlayer->addItem(new CMenuForwarder(LOCALE_MAINMENU_PICTUREVIEWER, true, NULL, new CPictureViewerGui(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_CLASSIC_PICTUREVIEWER));
 	
 	// UPNP Browser
 	 MediaPlayer->addItem(new CMenuForwarder(LOCALE_UPNPBROWSER_HEAD, true, NULL, new CUpnpBrowserGui(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_CLASSIC_UPNPBROWSER));
+
+	MediaPlayer->integratePlugins(CPlugins::I_TYPE_MULTIMEDIA);
 	
 	MediaPlayer->exec(NULL, "");
 	MediaPlayer->hide();

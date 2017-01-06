@@ -394,7 +394,7 @@ void cAudio::SetHdmiDD(int ac3)
 }
 
 /* set source */
-int cAudio::setSource(audio_stream_source_t source)
+int cAudio::setSource(int source)
 { 
 	if (audio_fd < 0)
 		return -1;
@@ -402,6 +402,7 @@ int cAudio::setSource(audio_stream_source_t source)
 	const char *aAUDIOSTREAMSOURCE[] = {
 		"AUDIO_SOURCE_DEMUX",
 		"AUDIO_SOURCE_MEMORY",
+		"AUDIO_SOURCE_HDMI"
 	};
 		
 	dprintf(DEBUG_INFO, "%s:%s - source=%s\n", FILENAME, __FUNCTION__, aAUDIOSTREAMSOURCE[source]);

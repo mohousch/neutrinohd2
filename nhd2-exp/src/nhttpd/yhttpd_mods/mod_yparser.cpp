@@ -117,12 +117,12 @@ void CyParser::Execute(CyhookHandler *hh)
 	filename = string_tolower(filename);
 
 	// debugging informations
-	if (CLogging::getInstance()->getDebug()) {
+	if (CLogging::getInstance()->getDebug()) 
+	{
 		dprintf("Execute CGI : %s\n", filename.c_str());
-		for (CStringList::iterator it = hh->ParamList.begin(); it
-				!= hh->ParamList.end(); it++)
-			dprintf("  Parameter %s : %s\n", it->first.c_str(),
-					it->second.c_str());
+
+		for (CStringList::iterator it = hh->ParamList.begin(); it!= hh->ParamList.end(); it++)
+			dprintf("  Parameter %s : %s\n", it->first.c_str(), it->second.c_str());
 	}
 
 	// get function index

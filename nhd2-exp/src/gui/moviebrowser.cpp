@@ -70,11 +70,13 @@
 #include <sys/mount.h>
 #include <utime.h>
 #include <gui/widget/progressbar.h>
-//#include <gui/pictureviewer.h>
 
 #include <system/debug.h>
 #include <system/helpers.h>
 #include <driver/vcrcontrol.h>
+
+#include <gui/widget/infobox.h>
+#include <system/tmdbparser.h>
 
 
 #define my_scandir scandir64
@@ -1653,7 +1655,7 @@ void CMovieBrowser::refreshTitle(void)
 	}
 
 	// head box
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
+	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	// movie icon
 	int icon_w, icon_h;
@@ -1704,8 +1706,8 @@ void CMovieBrowser::refreshFoot(void)
 	// ok (play)
 	std::string next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
 	
-	// draw the background first
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+	// footbox
+	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	int width = m_cBoxFrameFootRel.iWidth>>2;
 	int xpos1 = m_cBoxFrameFootRel.iX + 2*ICON_OFFSET;
@@ -1981,6 +1983,59 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				refresh();
 			}
           	}
+	}
+	else if(msg == CRCInput::RC_0)
+	{
+		if(m_movieSelectionHandler != NULL)
+		{
+			m_pcWindow->paintBackground();
+			m_pcWindow->blit();
+
+			std::string search_string;
+
+			if(show_mode == MB_SHOW_RECORDS)
+				search_string = m_movieSelectionHandler->epgTitle.c_str();
+			else 
+			{
+				search_string = changeFileNameExt(m_movieSelectionHandler->file.Name, "");
+			}
+				
+			cTmdb * tmdb = new cTmdb(search_string.c_str());
+	
+			if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
+			{
+				std::string buffer;
+
+				buffer = tmdb->getTitle().c_str();
+				buffer += "\n";
+	
+				// prepare print buffer  
+				buffer += tmdb->CreateEPGText();
+
+				// thumbnail
+				int pich = 246;	//FIXME
+				int picw = 162; 	//FIXME
+	
+				std::string thumbnail = "/tmp/tmdb.jpg";
+				if(access(thumbnail.c_str(), F_OK))
+					thumbnail = "";
+	
+				CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+				CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
+
+				infoBox->setText(&buffer, thumbnail, picw, pich);
+				infoBox->exec();
+				delete infoBox;
+			}
+			else
+				MessageBox(LOCALE_MESSAGEBOX_INFO, "no tmdb info found!", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+
+			delete tmdb;
+			tmdb = NULL;
+		}
+
+		refresh();
 	}	
 	else
 	{
@@ -3364,7 +3419,7 @@ int CMovieBrowser::showStartPosSelectionMenu(void) // P2
 	
 	char book[MI_MOVIE_BOOK_USER_MAX][20];
 
-	CMenuWidgetSelection startPosSelectionMenu(LOCALE_MOVIEBROWSER_START_HEAD , NEUTRINO_ICON_STREAMING);
+	CMenuWidget/*Selection*/ startPosSelectionMenu(LOCALE_MOVIEBROWSER_START_HEAD , NEUTRINO_ICON_STREAMING);
 	startPosSelectionMenu.enableSaveScreen(true);
 	startPosSelectionMenu.disableMenuPosition();
 	

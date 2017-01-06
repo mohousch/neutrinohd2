@@ -57,11 +57,6 @@ extern transponder_list_t transponders;
 #define min(x,y)	((x < y) ? x : y)
 #define max(x,y)	((x > y) ? x : y)
 
-// unicable
-//extern int uni_scr;
-//extern int uni_qrg;
-
-
 #define diff(x,y)	(max(x,y) - min(x,y))
 
 #define TIMER_INIT()					\
@@ -108,6 +103,11 @@ CFrontend::CFrontend(int num, int adap)
 	tuned = false;
 	
 	diseqcType = NO_DISEQC;
+	diseqcRepeats = 0;
+	// unicable
+	uni_lnb = 0;
+	uni_scr = -1;
+	uni_qrg = 0;
 	uncommitedInput = 255;
 	diseqc = 255;
 	currentTransponder.polarization = 1;
@@ -118,6 +118,8 @@ CFrontend::CFrontend(int num, int adap)
 	// to allow Open() switch it off
 	currentVoltage = SEC_VOLTAGE_OFF; //SEC_VOLTAGE_13;
 	currentToneMode = SEC_TONE_ON;
+
+	isvtuner = false;
 }
 
 CFrontend::~CFrontend(void)
@@ -876,6 +878,12 @@ void CFrontend::setFrontend(const struct dvb_frontend_parameters *feparams, bool
 		dprintf(DEBUG_INFO, "CFrontend::setFrontend: Unknow Frontend Type\n");
 	}
 
+	if (diseqcType == DISEQC_UNICABLE)
+		SETCMD(DTV_FREQUENCY, sendEN50494TuningCommand(feparams->frequency, currentToneMode == SEC_TONE_ON, currentVoltage == SEC_VOLTAGE_18, !!uni_lnb));
+
+	if (diseqcType == DISEQC_UNICABLE2)
+		SETCMD(DTV_FREQUENCY, sendEN50607TuningCommand(feparams->frequency, currentToneMode == SEC_TONE_ON, currentVoltage == SEC_VOLTAGE_18, uni_lnb));
+
 	//tune
 	SETCMD(DTV_TUNE, 0);
 
@@ -954,18 +962,16 @@ void CFrontend::secSetTone(const fe_sec_tone_mode_t toneMode, const uint32_t ms)
 		return;
 	
 	// unicable
-	#if 0
-	if (uni_scr >= 0) 
+	if (diseqcType > DISEQC_ADVANCED)
 	{
 		/* this is too ugly for words. the "currentToneMode" is the only place
 		   where the global "highband" state is saved. So we need to fake it for
 		   unicable and still set the tone on... */
 		currentToneMode = toneMode; /* need to know polarization for unicable */
-		fop(ioctl, FE_SET_TONE, SEC_TONE_OFF); /* tone must be off except for the time
+		ioctl(fd, FE_SET_TONE, SEC_TONE_OFF); /* tone must be off except for the time
 							  of sending commands */
 		return;
 	}
-	#endif
 
 	dprintf(DEBUG_INFO, "CFrontend::secSetTone: fe(%d,%d) tone %s\n", fe_adapter, fenumber, toneMode == SEC_TONE_ON ? "on" : "off");
 
@@ -985,15 +991,13 @@ void CFrontend::secSetVoltage(const fe_sec_voltage_t voltage, const uint32_t ms)
 		return;
 	
 	// unicable
-	#if 0
-	if (uni_scr >= 0) 
+	if (diseqcType > DISEQC_ADVANCED)
 	{
 		/* see my comment in secSetTone... */
 		currentVoltage = voltage; /* need to know polarization for unicable */
-		fop(ioctl, FE_SET_VOLTAGE, SEC_VOLTAGE_13); /* voltage must not be 18V */
+		ioctl(fd, FE_SET_VOLTAGE, SEC_VOLTAGE_13); /* voltage must not be 18V */
 		return;
 	}
-	#endif
 
 	dprintf(DEBUG_INFO, "CFrontend::secSetVoltage: fe(%d,%d) voltage %s\n", fe_adapter, fenumber, voltage == SEC_VOLTAGE_OFF ? "OFF" : voltage == SEC_VOLTAGE_13 ? "13" : "18");
 
@@ -1012,6 +1016,11 @@ void CFrontend::sendDiseqcCommand(const struct dvb_diseqc_master_cmd *cmd, const
 {
 	if ( slave || info.type != FE_QPSK) 
 		return;
+
+	printf("[fe%d] Diseqc cmd: ", fenumber);
+	for (int i = 0; i < cmd->msg_len; i++)
+		printf("0x%X ", cmd->msg[i]);
+	printf("\n");
 
 	if (ioctl(fd, FE_DISEQC_SEND_MASTER_CMD, cmd) == 0)
 		usleep(1000 * ms);
@@ -1065,6 +1074,14 @@ void CFrontend::setDiseqcType(const diseqc_t newDiseqcType)
 		case DISEQC_ADVANCED:
 			dprintf(DEBUG_INFO, "CFrontend::setDiseqcType: DISEQC_ADVANCED\n");
 			break;
+
+		case DISEQC_UNICABLE:
+			dprintf(DEBUG_INFO, "CFrontend::setDiseqcType: DISEQC_UNICABLE\n");
+			break;
+
+		case DISEQC_UNICABLE2:
+			dprintf(DEBUG_INFO, "CFrontend::setDiseqcType: DISEQC_UNICABLE2\n");
+			break;
 			
 		default:
 			dprintf(DEBUG_INFO, "CFrontend::setDiseqcType: Invalid DiSEqC type\n");
@@ -1073,11 +1090,10 @@ void CFrontend::setDiseqcType(const diseqc_t newDiseqcType)
 	
 	if (diseqcType != newDiseqcType) 
 	{
+		diseqcType = newDiseqcType;
 		sendDiseqcPowerOn();
 		sendDiseqcReset();
 	}
-
-	diseqcType = newDiseqcType;
 }
 
 void CFrontend::setLnbOffsets(int32_t _lnbOffsetLow, int32_t _lnbOffsetHigh, int32_t _lnbSwitch)
@@ -1176,11 +1192,22 @@ void CFrontend::setInput(t_satellite_position satellitePosition, uint32_t freque
 {
 	sat_iterator_t sit = satellitePositions.find(satellitePosition);
 
-	dprintf(DEBUG_INFO, "CFrontend::setInput: fe(%d,%d) SatellitePosition %d -> %d\n", fe_adapter, fenumber, currentSatellitePosition, satellitePosition);
+	if (info.type == FE_QPSK)
+	{
+		dprintf(DEBUG_NORMAL, "CFrontend::setInput: fe(%d,%d) SatellitePosition %d -> %d\n", fe_adapter, fenumber, currentSatellitePosition, satellitePosition);
+	}
+	else
+		dprintf(DEBUG_NORMAL, "CFrontend::setInput: fe(%d,%d)\n", fe_adapter, fenumber);
+
+	/* unicable uses diseqc parameter for input selection */
+	uni_lnb = sit->second.diseqc;
 
 	// set lnb offset
 	if(info.type == FE_QPSK)
-			setLnbOffsets(sit->second.lnbOffsetLow, sit->second.lnbOffsetHigh, sit->second.lnbSwitch);
+		setLnbOffsets(sit->second.lnbOffsetLow, sit->second.lnbOffsetHigh, sit->second.lnbSwitch);
+
+	if (diseqcType == DISEQC_UNICABLE || diseqcType == DISEQC_UNICABLE2)
+		return;
 
 	// set diseqc
 	if (diseqcType != DISEQC_ADVANCED) 
@@ -1206,19 +1233,12 @@ void CFrontend::setInput(t_satellite_position satellitePosition, uint32_t freque
 	}
 }
 
-//TEST
 /* frequency is the IF-frequency (950-2100), what a stupid spec...
    high_band, horizontal, bank are actually bool (0/1)
    bank specifies the "switch bank" (as in Mini-DiSEqC A/B) */
-#if 0
 uint32_t CFrontend::sendEN50494TuningCommand(const uint32_t frequency, const int high_band, const int horizontal, const int bank)
 {
-	uint32_t uni_qrgs[] = { 1284, 1400, 1516, 1632, 1748, 1864, 1980, 2096 };
-	uint32_t bpf;
-	if (uni_qrg == 0)
-		bpf = uni_qrgs[uni_scr];
-	else
-		bpf = uni_qrg;
+	uint32_t bpf = uni_qrg;
 
 	struct dvb_diseqc_master_cmd cmd = {
 		{0xe0, 0x10, 0x5a, 0x00, 0x00, 0x00}, 5
@@ -1226,29 +1246,63 @@ uint32_t CFrontend::sendEN50494TuningCommand(const uint32_t frequency, const int
 	unsigned int t = (frequency / 1000 + bpf + 2) / 4 - 350;
 	if (t < 1024 && uni_scr >= 0 && uni_scr < 8)
 	{
-		fprintf(stderr, "VOLT18=%d TONE_ON=%d, freq=%d bpf=%d ret=%d\n", currentVoltage == SEC_VOLTAGE_18, currentToneMode == SEC_TONE_ON, frequency, bpf, (t + 350) * 4000 - frequency);
+		uint32_t ret = (t + 350) * 4000 - frequency;
+		dprintf(DEBUG_NORMAL, "[unicable] 18V=%d TONE=%d, freq=%d qrg=%d scr=%d bank=%d ret=%d\n", currentVoltage == SEC_VOLTAGE_18, currentToneMode == SEC_TONE_ON, frequency, bpf, uni_scr, bank, ret);
 		
 		if ( !slave && info.type == FE_QPSK) 
 		{
-			cmd.msg[3] = (t >> 8)		|	/* highest 3 bits of t */
-				    (uni_scr << 5)	|	/* adress */
-				    (bank << 4)	|	/* not implemented yet */
-				    (horizontal << 3)	|	/* horizontal == 0x08 */
-				    (high_band) << 2;		/* high_band  == 0x04 */
+			cmd.msg[3] = (t >> 8)			|	/* highest 3 bits of t */
+					(uni_scr << 5)		|	/* adress */
+					(bank << 4)		|	/* input 0/1 */
+					(horizontal << 3)	|	/* horizontal == 0x08 */
+					(high_band) << 2;		/* high_band  == 0x04 */
+
 			cmd.msg[4] = t & 0xFF;
-			fop(ioctl, FE_SET_VOLTAGE, SEC_VOLTAGE_18);
+			ioctl(fd, FE_SET_VOLTAGE, SEC_VOLTAGE_18);
 			usleep(15 * 1000);		/* en50494 says: >4ms and < 22 ms */
 			sendDiseqcCommand(&cmd, 50);	/* en50494 says: >2ms and < 60 ms */
-			fop(ioctl, FE_SET_VOLTAGE, SEC_VOLTAGE_13);
+			ioctl(fd, FE_SET_VOLTAGE, SEC_VOLTAGE_13);
 		}
 		
 		return (t + 350) * 4000 - frequency;
 	}
-	WARN("ooops. t > 1024? (%d) or uni_scr out of range? (%d)", t, uni_scr);
+	dprintf(DEBUG_NORMAL, "ooops. t > 1024? (%d) or uni_scr out of range? (%d)", t, uni_scr);
 	
 	return 0;
 }
-#endif
+
+uint32_t CFrontend::sendEN50607TuningCommand(const uint32_t frequency, const int high_band, const int horizontal, const int bank)
+{
+	uint32_t bpf = uni_qrg;
+	struct dvb_diseqc_master_cmd cmd = { {0x70, 0x00, 0x00, 0x00, 0x00, 0x00}, 4 };
+
+	unsigned int t = frequency / 1000 - 100;
+	if (t < 0x800 && uni_scr >= 0 && uni_scr < 32)
+	{
+		uint32_t ret = bpf * 1000;
+		dprintf(DEBUG_NORMAL, "[unicable-JESS] 18V=%d TONE=%d, freq=%d qrg=%d scr=%d bank=%d ret=%d\n", currentVoltage == SEC_VOLTAGE_18, currentToneMode == SEC_TONE_ON, frequency, bpf, uni_scr, bank, ret);
+		if (!slave && info.type == FE_QPSK)
+		{
+			cmd.msg[1] = ((uni_scr & 0x1F) << 3)		|	/* user band adress ( 0 to 31) */
+			/* max. possible tuning word = 0x7FF */
+				((t >> 8) & 0x07);				/* highest 3 bits of t (MSB) */
+			cmd.msg[2] = t & 0xFF;					/* tuning word (LSB) */
+			cmd.msg[3] = (0 << 4)				|	/* no uncommited switch */
+			/* I really don't know if the combines of option and position bits are right here,
+			because I can'test it, assuming here 4 sat positions */
+				((bank & 0x03) << 2)			|	/* input 0/1/2/3 */
+				(horizontal << 1)			|	/* horizontal == 0x02 */
+				high_band;					/* high_band  == 0x01 */
+			ioctl(fd, FE_SET_VOLTAGE, SEC_VOLTAGE_18);
+			usleep(15 * 1000);					/* en50494 says: >4ms and < 22 ms */
+			sendDiseqcCommand(&cmd, 50);				/* en50494 says: >2ms and < 60 ms */
+			ioctl(fd, FE_SET_VOLTAGE, SEC_VOLTAGE_13);
+		}
+		return ret;
+	}
+	dprintf(DEBUG_NORMAL, "ooops. t > 2047? (%d) or uni_scr out of range? (%d)", t, uni_scr);
+	return 0;
+}
 
 bool CFrontend::tuneChannel(CZapitChannel * /*channel*/, bool /*nvod*/)
 {
@@ -1539,10 +1593,17 @@ void CFrontend::sendDiseqcReset(void)
 	
 	dprintf(DEBUG_INFO, "CFrontend::sendDiseqcReset: fe(%d,%d) diseqc reset\n", fe_adapter, fenumber);
 	
-	/* Reset && Clear Reset */
-	sendDiseqcZeroByteCommand(0xe0, 0x10, 0x00);
-	sendDiseqcZeroByteCommand(0xe0, 0x10, 0x01);
-	//sendDiseqcZeroByteCommand(0xe0, 0x00, 0x00); // enigma
+	if (diseqcType < DISEQC_UNICABLE)
+	{
+		/* Reset && Clear Reset */
+		sendDiseqcZeroByteCommand(0xe0, 0x10, 0x00);
+		sendDiseqcZeroByteCommand(0xe0, 0x10, 0x01);
+	}
+	else
+	{
+		// Send reset to 'all' equipment
+		sendDiseqcZeroByteCommand(0xe0, 0x00, 0x00);
+	}
 }
 
 void CFrontend::sendDiseqcStandby(void)
@@ -1551,6 +1612,33 @@ void CFrontend::sendDiseqcStandby(void)
 		return;
 	
 	dprintf(DEBUG_INFO, "CFrontend::sendDiseqcStandby: fe(%d,%d) diseqc standby\n", fe_adapter, fenumber);
+
+	if (diseqcType > DISEQC_ADVANCED)
+	{
+		/* use ODU_Power_OFF command for unicable or jess here
+		to set the used UB frequency of the frontend to standby */
+		struct dvb_diseqc_master_cmd cmd = {{0}, 6};
+		printf("[fe%d] standby scr: %d\n", fenumber, uni_scr);
+		if (diseqcType == DISEQC_UNICABLE)
+		{
+			cmd.msg[0] = 0xe0;
+			cmd.msg[1] = 0x10;
+			cmd.msg[2] = 0x5a;
+			cmd.msg[3] = ((uni_scr & 0x07) << 5);
+			cmd.msg_len = 5;
+		}
+		if (diseqcType == DISEQC_UNICABLE2)
+		{
+			cmd.msg[0] = 0x70;
+			cmd.msg[1] = ((uni_scr & 0x1F) << 3);
+			cmd.msg_len = 4;
+		}
+		ioctl(fd, FE_SET_VOLTAGE, SEC_VOLTAGE_18);
+		usleep(15 * 1000);
+		sendDiseqcCommand(&cmd, 100);
+		ioctl(fd, FE_SET_VOLTAGE, SEC_VOLTAGE_13);
+		return;
+	}
 	
 	sendDiseqcZeroByteCommand(0xe0, 0x10, 0x02);
 }
@@ -1564,7 +1652,7 @@ void CFrontend::sendDiseqcZeroByteCommand(uint8_t framing_byte, uint8_t address,
 		{framing_byte, address, command, 0x00, 0x00, 0x00}, 3
 	};
 
-	sendDiseqcCommand(&diseqc_cmd, 15);
+	sendDiseqcCommand(&diseqc_cmd, 40);
 }
 
 void CFrontend::sendDiseqcSmatvRemoteTuningCommand(const uint32_t frequency)

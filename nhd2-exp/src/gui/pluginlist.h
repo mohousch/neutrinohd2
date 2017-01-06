@@ -32,20 +32,21 @@
 #ifndef __pluginlist__
 #define __pluginlist__
 
+#include <string>
+#include <vector>
+
 #include <gui/widget/menue.h>
+#include <gui/widget/window.h>
+#include <gui/widget/scrollbar.h>
 
 #include <driver/framebuffer.h>
 #include <system/localize.h>
-
-#include <string>
-#include <vector>
 
 #include <gui/plugins.h>
 
 
 class CPluginList : public CMenuTarget
 {
-
 	public:
 		enum result_
 		{
@@ -64,35 +65,34 @@ class CPluginList : public CMenuTarget
 			std::string icon;	// icon
 		};
 		
-		int		    key;
-		neutrino_locale_t   name;
-		uint 		    pluginlisttype;
+		neutrino_locale_t name;
+		uint pluginlisttype;
 
 		CFrameBuffer * frameBuffer;
+
+		CBox cFrameBox;
+		CBox cFrameBoxTitle;
+		CBox cFrameBoxBody;
+		CBox cFrameBoxItem;
+		CBox cFrameBoxFoot;
+		CBox cFrameBoxScrollBar;
+
+		CIcon titleIcon;
+		CIcon footIcon;
+		CIcon itemIcon;
 		
 		unsigned int liststart;
 		unsigned int listmaxshow;
 		
-		int fheight; // Fonthoehe Channellist-Inhalt
-		int theight; // Fonthoehe Channellist-Titel
-		int footheight;
-		int icon_h, icon_w;
-
-		int fheight1,fheight2;
-
-		int width;
-		int height;
-		int x;
-		int y;
-		
-		int sb_width;
+		//int sb_width;
 		int nrOfPages; 
 		int currPage;
 
+		void paintHead();
+		void paintFoot();
 		void paintItem(int pos);
 		void paintItems();
 		void paint();
-		void paintHead();
 
 	protected:
 
@@ -120,6 +120,14 @@ class CPluginChooser : public CPluginList
 
 	public:
 		CPluginChooser(const neutrino_locale_t Name, const uint listtype, char* pluginname);
+};
+
+//
+class CPluginsExec : public CMenuTarget
+{
+	public:
+		static CPluginsExec* getInstance();
+		int exec(CMenuTarget* parent, const std::string & actionKey);
 };
 
 #endif

@@ -1,4 +1,4 @@
-SUBDIRS = zapit gui daemonc driver system timerd nhttpd sectionsd
+SUBDIRS = driver system zapit timerd nhttpd sectionsd daemonc gui
 
 AM_CPPFLAGS = \
 	-I$(top_builddir) \
@@ -26,6 +26,8 @@ if !ENABLE_GSTREAMER
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
+AM_CPPFLAGS += -fno-rtti -fno-exceptions
+
 bin_PROGRAMS = neutrino
 
 neutrino_SOURCES = neutrino_menue.cpp neutrino.cpp
@@ -39,6 +41,7 @@ neutrino_LDADD = \
 	gui/widget/libneutrino_gui_widget2.a \
 	driver/pictureviewer/libneutrino_pictureviewer.a \
 	system/libneutrino_system.a \
+	system/helpers.o \
 	driver/libneutrino_driver.a \
 	gui/movieinfo.o \
 	driver/audiodec/libneutrino_driver_audiodec.a \
@@ -53,6 +56,7 @@ neutrino_LDADD = \
 	nhttpd/yhttpd_core/libyhttpd.a \
 	gui/video_setup.o \
 	gui/widget/items2detailsline.o \
+	gui/widget/window.o \
 	$(top_builddir)/lib/sectionsdclient/libsectionsdclient.a \
 	$(top_builddir)/lib/timerdclient/libtimerdclient.a \
 	$(top_builddir)/src/zapit/lib/libzapitclient.a \
@@ -65,6 +69,7 @@ neutrino_LDADD = \
 	$(top_builddir)/lib/libdvbsub/libdvbsub.a \
 	$(top_builddir)/lib/libtuxtxt/libtuxtxt.a \
 	$(top_builddir)/lib/libupnpclient/libtuxbox-upnpclient.a \
+	$(top_builddir)/lib/jsoncpp/libjsoncpp.a \
 	@CURL_LIBS@ \
 	@FREETYPE_LIBS@ \
 	@PNG_LIBS@ \
@@ -86,7 +91,7 @@ neutrino_LDADD += \
 endif
 
 if ENABLE_GSTREAMER
-neutrino_LDADD += -lgstreamer-0.10 -lgobject-2.0 -lglib-2.0
+neutrino_LDADD += @GSTREAMER_LIBS@
 else
 neutrino_LDADD += $(top_builddir)/lib/libeplayer3/libeplayer3.a
 endif
@@ -98,7 +103,7 @@ endif
 
 if USE_OPENGL
 neutrino_LDADD += \
-	-lglut -lGL -lGLU -lGLEW -lOpenThreads -lgstinterfaces-0.10 
+	-lglut -lGL -lGLU -lGLEW -lOpenThreads 
 endif
 
 if ENABLE_FRIBIDI

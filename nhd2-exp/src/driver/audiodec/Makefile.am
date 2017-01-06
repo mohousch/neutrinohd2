@@ -19,6 +19,8 @@ if !ENABLE_GSTREAMER
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
+AM_CXXFLAGS = -fno-rtti -fno-exceptions
+
 noinst_LIBRARIES = libneutrino_driver_audiodec.a
 
 libneutrino_driver_audiodec_a_SOURCES = \

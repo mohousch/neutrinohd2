@@ -115,7 +115,6 @@
 #define NEUTRINO_ICON_SUBT_GREY			"subt_gray"
 #define NEUTRINO_ICON_AUTO_SHIFT		"ats"
 #define NEUTRINO_ICON_NUMERIC_PAD		"numericpad"
-#define NEUTRINO_ICON_SCRAMBLED			"ca"
 #define NEUTRINO_ICON_SCRAMBLED2		"ca2"
 #define NEUTRINO_ICON_SCRAMBLED2_GREY		"ca2_gray"
 #define NEUTRINO_ICON_BORDER_UL			"border_ul"
@@ -128,6 +127,8 @@
 #define NEUTRINO_ICON_BUTTON_MUTE_ZAP_ACTIVE 	"mute_zap_green"
 #define NEUTRINO_ICON_BUTTON_MUTE_ZAP_INACTIVE 	"mute_zap_gray"
 
+#define NEUTRINO_ICON_RESOLUTION_2160		"res_2160"
+#define NEUTRINO_ICON_RESOLUTION_1980		"res_1980"
 #define NEUTRINO_ICON_RESOLUTION_1920		"res_1920"
 #define NEUTRINO_ICON_RESOLUTION_1080		"res_1080"
 #define NEUTRINO_ICON_RESOLUTION_1440		"res_1440"
@@ -144,12 +145,20 @@
 #define NEUTRINO_ICON_RESOLUTION_000		"res_000"
 #define NEUTRINO_ICON_RESOLUTION_HD2		"res_hd2"
 #define NEUTRINO_ICON_RESOLUTION_SD2		"res_sd2"
-#define NEUTRINO_ICON_RESOLUTION_HD		"res_hd"
+#define NEUTRINO_ICON_RESOLUTION_UHD2		"res_uhd2"
+
+#define NEUTRINO_ICON_SCRAMBLED			"ca"
+#define NEUTRINO_ICON_HD			"res_hd"
+#define NEUTRINO_ICON_UHD			"res_uhd"
+
 
 // for browser
 #define NEUTRINO_ICON_MOVIE			"movie"
 #define NEUTRINO_ICON_PICTURE			"picture"
 #define NEUTRINO_ICON_PLUGIN			"plugin"
+
+// tmdb
+#define NEUTRINO_ICON_TMDB			"tmdb"
 
 #define NEUTRINO_ICON_RADIOTEXTOFF		"radiotextoff"
 #define NEUTRINO_ICON_RADIOTEXTGET		"radiotextget"

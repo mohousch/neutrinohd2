@@ -1,9 +1,17 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
-
-	TimeOSD by Zwen
 	
-	Homepage: http://dbox.cyberphoria.org/
+	$Id: scrollbar.h 2016.12.14 11:43:30 mohousch Exp $
+
+ 	Homepage: http://dbox.cyberphoria.org/
+
+	Kommentar:
+
+	Diese GUI wurde von Grund auf neu programmiert und sollte nun vom
+	Aufbau und auch den Ausbaumoeglichkeiten gut aussehen. Neutrino basiert
+	auf der Client-Server Idee, diese GUI ist also von der direkten DBox-
+	Steuerung getrennt. Diese wird dann von Daemons uebernommen.
+
 
 	License: GPL
 
@@ -22,43 +30,20 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __timeosd__
-#define __timeosd__
+#if !defined(SCROLLBAR_H)
+#define SCROLLBAR_H
 
-#include <time.h>
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <driver/framebuffer.h>
+#include <system/settings.h>
+#include <gui/color.h>
+#include <gui/widget/window.h>
 
 
-class CTimeOSD
-{
-	public:
-		enum mode
-		{
-			MODE_ASC,
-			MODE_DESC
-		};
-	
-	private:
-		CFrameBuffer * frameBuffer;
-		time_t m_time_dis;
-		time_t m_time_show;
-		bool visible;
-		int m_xstart, m_xend, m_y, m_height, m_width, twidth;
-		mode m_mode;
-		void GetDimensions();
-		
-		int BoxStartX, BoxStartY, BoxEndY, BoxEndX;
-		int BoxWidth, BoxHeight;
-
-	public:
-		CTimeOSD();
-		~CTimeOSD();
-		void show(int Position);
-		void update(time_t time_show = 0);
-		void hide();
-		bool IsVisible() {return visible;}
-		void SetMode(mode m) { m_mode = m;}
-		mode GetMode() { return m_mode;}
-};
+void paintScrollBar(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage);
+void paintScrollBar(CBox* position, const int NrOfPages, const int CurrentPage);
 
 #endif

@@ -403,13 +403,16 @@ int CYTBrowser::paint(void)
 	if(m_pcBrowser == NULL || m_pcInfo == NULL )
 	{
 		if (m_pcBrowser != NULL)
+		{
 			delete m_pcBrowser;
+			m_pcBrowser = NULL;
+		}
 
-		if (m_pcInfo != NULL) 
+		if (m_pcInfo != NULL)
+		{ 
 			delete m_pcInfo;
-
-		m_pcInfo = NULL;
-		m_pcBrowser = NULL;
+			m_pcInfo = NULL;
+		}
 
 		return (false);
 	} 
@@ -550,8 +553,8 @@ void CYTBrowser::refreshBrowserList(void) //P1
 			m_browserListLines.lineArray[row].push_back(string_item);
 		}
 	}
-	m_pcBrowser->setLines(&m_browserListLines);
 
+	m_pcBrowser->setLines(&m_browserListLines);
 	m_currentBrowserSelection = m_pcBrowser->getSelectedLine();
 	
 	// update selected movie if browser is in the focus
@@ -582,7 +585,7 @@ void CYTBrowser::refreshTitle(void)
 	//
 
 	// head box
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
+	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	// movie icon
 	int icon_w, icon_h;
@@ -624,8 +627,8 @@ void CYTBrowser::refreshFoot(void)
 {
 	dprintf(DEBUG_INFO, "CYTBrowser::refreshFoot\n");
 	
-	// footer
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+	// foot
+	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	::paintButtons(m_pcWindow, m_pcFontFoot, g_Locale, m_cBoxFrame.iX + m_cBoxFrameFootRel.iX + ICON_OFFSET, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, (m_cBoxFrameFootRel.iWidth - 2*ICON_OFFSET)/4, 4, CYTBrowserButtons, m_cBoxFrameFootRel.iHeight + 6);
 }
@@ -1092,6 +1095,7 @@ bool CYTBrowser::showYTMenu()
 
 	CMenuWidget mainMenu(LOCALE_YOUTUBE, NEUTRINO_ICON_YT_SMALL, MENU_WIDTH + 50);
 	mainMenu.disableMenuPosition();
+	mainMenu.enableSaveScreen(true);
 
 	int select = -1;
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
@@ -1197,9 +1201,7 @@ void plugin_exec(void)
 {
 	CMoviePlayerGui tmpMoviePlayerGui;
 			
-	CYTBrowser * moviebrowser;
-	
-	moviebrowser = new CYTBrowser();
+	CYTBrowser * moviebrowser = new CYTBrowser();
 	MI_MOVIE_INFO * p_movie_info;
 	
 BROWSER:	

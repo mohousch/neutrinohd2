@@ -73,7 +73,7 @@ void CFlashTool::setMTDDevice( const std::string & mtddevice )
 	dprintf(DEBUG_NORMAL, "flashtool.cpp: set mtd device to %s\n", mtddevice.c_str());
 }
 
-void CFlashTool::setStatusViewer( CProgress_StatusViewer* statusview )
+void CFlashTool::setStatusViewer( CProgressWindow* statusview )
 {
 	statusViewer = statusview;
 }
@@ -83,11 +83,6 @@ bool CFlashTool::readFromMTD( const std::string & filename, int globalProgressEn
 	int fd1, fd2;
 	long filesize;
 	int globalProgressBegin = 0;
-
-	if(statusViewer)
-	{
-		//statusViewer->showLocalStatus(0);
-	}
 
 	if (mtdDevice.empty())
 	{
@@ -116,7 +111,8 @@ bool CFlashTool::readFromMTD( const std::string & filename, int globalProgressEn
 
 	char buf[1024];
 	long fsize = filesize;
-	while(fsize>0)
+
+	while(fsize > 0)
 	{
 		long block = fsize;
 		if(block>(long)sizeof(buf))
@@ -132,7 +128,6 @@ bool CFlashTool::readFromMTD( const std::string & filename, int globalProgressEn
 		
 		if(statusViewer)
 		{
-			//statusViewer->showLocalStatus(prog);
 			if(globalProgressEnd!=-1)
 			{
 				int globalProg = globalProgressBegin + int((globalProgressEnd-globalProgressBegin) * prog/100. );
@@ -141,13 +136,9 @@ bool CFlashTool::readFromMTD( const std::string & filename, int globalProgressEn
 		}
 	}
 
-	if(statusViewer)
-	{
-		//statusViewer->showLocalStatus(100);
-	}
-
 	close(fd1);
 	close(fd2);
+
 	return true;
 }
 
@@ -156,11 +147,6 @@ bool CFlashTool::program( const std::string & filename, int globalProgressEndEra
 	int fd1, fd2;
 	long filesize;
 	int globalProgressBegin = 0;
-
-	if(statusViewer)
-	{
-		//statusViewer->showLocalStatus(0);
-	}
 
 	if (mtdDevice.empty())
 	{
@@ -185,11 +171,8 @@ bool CFlashTool::program( const std::string & filename, int globalProgressEndEra
 
 	if(statusViewer)
 	{
-		//statusViewer->showLocalStatus(0);
 		statusViewer->showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_ERASING)); // UTF-8
 	}
-	
-	//g_Zapit->shutdown(); sleep(2);
 	
 	if(!erase(globalProgressEndErase))
 	{
@@ -198,11 +181,11 @@ bool CFlashTool::program( const std::string & filename, int globalProgressEndEra
 
 	if(statusViewer)
 	{
-		if(globalProgressEndErase!=-1)
+		if(globalProgressEndErase != -1)
 		{
 			statusViewer->showGlobalStatus(globalProgressEndErase);
 		}
-		//statusViewer->showLocalStatus(0);
+
 		statusViewer->showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_PROGRAMMINGFLASH)); // UTF-8
 	}
 
@@ -220,7 +203,8 @@ bool CFlashTool::program( const std::string & filename, int globalProgressEndEra
 
 	char buf[1024];
 	long fsize = filesize;
-	while(fsize>0)
+
+	while(fsize > 0)
 	{
 		long block = fsize;
 		if(block>(long)sizeof(buf))
@@ -236,8 +220,7 @@ bool CFlashTool::program( const std::string & filename, int globalProgressEndEra
 
 		if(statusViewer)
 		{
-			//statusViewer->showLocalStatus(prog);
-			if(globalProgressEndFlash!=-1)
+			if(globalProgressEndFlash != -1)
 			{
 				int globalProg = globalProgressBegin + int((globalProgressEndFlash-globalProgressBegin) * prog/100. );
 				statusViewer->showGlobalStatus(globalProg);
@@ -245,13 +228,9 @@ bool CFlashTool::program( const std::string & filename, int globalProgressEndEra
 		}
 	}
 
-	if(statusViewer)
-	{
-		//statusViewer->showLocalStatus(100);
-	}
-
 	close(fd1);
 	close(fd2);
+
 	return true;
 }
 
@@ -289,7 +268,7 @@ bool CFlashTool::erase(int globalProgressEnd)
 		if(statusViewer)
 		{
 			int prog = int(lerase.start*100./meminfo.size);
-			//statusViewer->showLocalStatus(prog);
+			
 			if(globalProgressEnd!=-1)
 			{
 				int globalProg = globalProgressBegin + int((globalProgressEnd-globalProgressBegin) * prog/100. );
@@ -306,6 +285,7 @@ bool CFlashTool::erase(int globalProgressEnd)
 	}
 
 	close(fd);
+
 	return true;
 }
 
@@ -340,6 +320,7 @@ void CFlashTool::reboot()
 	::exit(0);
 }
 
+//
 CFlashVersionInfo::CFlashVersionInfo(const std::string & versionString)
 {
 

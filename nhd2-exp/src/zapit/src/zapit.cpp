@@ -126,12 +126,13 @@ bool g_list_changed = false; 		/* flag to indicate, allchans was changed */
 
 int change_audio_pid(uint8_t index);
 
+//
+void SaveServices(bool tocopy);
+
 // SDT
 int scanSDT;
 void * sdt_thread(void * arg);
-void SaveServices(bool tocopy);
 pthread_t tsdt;
-pthread_mutex_t chan_mutex = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP;
 bool sdt_wakeup;
 
 // the conditional access module
@@ -139,7 +140,7 @@ CCam * cam0 = NULL;
 CCam * cam1 = NULL;
 
 // the configuration file
-CConfigFile config(',', false);
+CConfigFile config(',', true);
 
 // the event server
 CEventServer *eventServer = NULL;
@@ -243,14 +244,17 @@ CConfigFile fe_configfile(',', false);
 CFrontend * live_fe = NULL;
 CFrontend * record_fe = NULL;
 
+//
+bool havevtuner = false; // set to true to test
+
+//
 bool retune = false;
 
-// variables for EN 50494 (a.k.a Unicable)
-//int uni_scr = -1;	/* the unicable SCR address,     -1 == no unicable */
-//int uni_qrg = 0;	/* the unicable frequency in MHz, 0 == from spec */
-
-bool initFrontend()
+void initFrontend()
 {
+	// clear femap
+	femap.clear();
+
 	// scan for frontend
 	int i, j;
 	
@@ -270,6 +274,23 @@ bool initFrontend()
 				femap.insert(std::pair <unsigned short, CFrontend*> (index, fe));
 				
 				live_fe = fe;
+
+				// check if isusbtuner/vtuner
+				#if 0
+#if !defined (USE_OPENGL)
+				char devicename[256];
+				//snprintf(devicename, sizeof(devicename), "/sys/class/dvb/dvb%d.frontend0/device/ep_00", fe->fe_adapter);
+
+				// fallback to video device node
+				snprintf(devicename, sizeof(devicename), "/dev/dvb/adapter%d/video0", fe->fe_adapter);
+				if(access(devicename, X_OK) < 0)
+				{
+					fe->isvtuner = true;
+
+					dprintf(DEBUG_NORMAL, "fe(%d,%d) is assigned as vtuner\n", fe->fe_adapter, fe->fenumber);
+				}
+#endif
+				#endif
 				
 				// set it to standby
 				fe->Close();
@@ -282,11 +303,6 @@ bool initFrontend()
 	FrontendCount = femap.size();
 	
 	dprintf(DEBUG_INFO, "%s found %d frontends\n", __FUNCTION__, femap.size());
-	
-	if(femap.size() == 0)
-		return false;
-		
-	return true;
 }
 
 void OpenFE()
@@ -319,6 +335,21 @@ CFrontend * getFE(int index)
 	dprintf(DEBUG_INFO, "getFE: Frontend #%d not found\n", index);
 	
 	return NULL;
+}
+
+CFrontend * getVTuner()
+{
+	CFrontend * vtuner = NULL;
+
+	for(fe_map_iterator_t it = femap.begin(); it != femap.end(); it++) 
+	{
+		CFrontend * fe = it->second;
+		
+		if (fe->isvtuner)
+			vtuner = fe;
+	}
+
+	return vtuner;
 }
 
 void setMode(fe_mode_t newmode, int feindex)
@@ -654,6 +685,10 @@ void saveFrontendConfig(int feindex)
 			setConfigValue(feindex, "lastSatellitePosition", getFE(feindex)->getCurrentSatellitePosition());
 			setConfigValue(feindex, "diseqcRepeats", getFE(feindex)->getDiseqcRepeats());
 			setConfigValue(feindex, "diseqcType", getFE(feindex)->getDiseqcType() );
+
+			// unicable
+			setConfigValue(feindex, "uni_scr", getFE(feindex)->getUniScr() );
+			setConfigValue(feindex, "uni_qrg", getFE(feindex)->getUniQrg() );
 					
 			char tempd[12];
 			char cfg_key[81];
@@ -709,6 +744,11 @@ void loadFrontendConfig()
 			fe->repeatUsals = getConfigValue(fe_it->first, "repeatUsals", 0);
 			fe->diseqcType = (diseqc_t)getConfigValue(fe_it->first, "diseqcType", (diseqc_t)NO_DISEQC);
 			fe->diseqcRepeats = getConfigValue(fe_it->first, "diseqcRepeats", 0);
+
+			// unicable
+			fe->uni_scr = getConfigValue(fe_it->first, "uni_scr", -1);
+			fe->uni_qrg = getConfigValue(fe_it->first, "uni_qrg", 0);
+
 			fe->motorRotationSpeed = getConfigValue(fe_it->first, "motorRotationSpeed", 18); // default: 1.8 degrees per second
 			
 			fe->lastSatellitePosition = getConfigValue(fe_it->first, "lastSatellitePosition", 0);
@@ -747,6 +787,8 @@ void loadAudioMap()
 
           	fclose(audio_config_file);
         }
+	else
+		perror(AUDIO_CONFIG_FILE);
 }
 
 void saveAudioMap()
@@ -770,6 +812,8 @@ void saveAudioMap()
 		fdatasync(fileno(audio_config_file));
                 fclose(audio_config_file);
         }
+	else
+		perror(AUDIO_CONFIG_FILE);
 }
 
 void loadVolumeMap()
@@ -835,7 +879,7 @@ void saveZapitSettings(bool write, bool write_a)
 		
 		if (config.getBool("saveLastChannel", true)) 
 		{
-			config.setInt32("lastChannelMode", (currentMode & RADIO_MODE) ? 1 : 0);
+			config.setInt32("lastChannelMode", (currentMode & RADIO_MODE) ? 0 : 1);
 			config.setInt32("lastChannelRadio", lastChannelRadio);
 			config.setInt32("lastChannelTV", lastChannelTV);
 			config.setInt64("lastChannel", live_channel_id);
@@ -845,7 +889,7 @@ void saveZapitSettings(bool write, bool write_a)
 
 		config.setInt32("scanSDT", scanSDT);
 
-		if (config.getModifiedFlag())
+		//if (config.getModifiedFlag())
 			config.saveConfig(ZAPIT_CONFIGFILE);
 
 	}
@@ -873,6 +917,8 @@ void loadZapitSettings()
 	live_channel_id = config.getInt64("lastChannel", 0) & 0xFFFFFFFFFFFFULL;
 	lastChannelRadio = config.getInt32("lastChannelRadio", 0);
 	lastChannelTV = config.getInt32("lastChannelTV", 0);
+
+	dprintf(DEBUG_NORMAL, "lastChannelMode:%d\n", lastChannelMode);
 	
 	makeRemainingChannelsBouquet = config.getBool("makeRemainingChannelsBouquet", false);
 	
@@ -1647,12 +1693,16 @@ int change_audio_pid(uint8_t index)
 
 void setRadioMode(void)
 {
+	dprintf(DEBUG_NORMAL, "zapit::setRadioMode:\n");
+
 	currentMode |= RADIO_MODE;
 	currentMode &= ~TV_MODE;
 }
 
 void setTVMode(void)
 {
+	dprintf(DEBUG_NORMAL, "zapit::setTVMode:\n");
+
 	currentMode |= TV_MODE;
 	currentMode &= ~RADIO_MODE;
 }
@@ -1940,7 +1990,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 						msgCurrentServiceInfo.polarisation = 2;
 				}
 				
-				msgCurrentServiceInfo.vtype = live_channel->type;
+				msgCurrentServiceInfo.vtype = live_channel->videoType;
 			}
 			
 			if(!msgCurrentServiceInfo.fec)
@@ -1989,7 +2039,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 						msgRecordServiceInfo.polarisation = 2;
 				}
 				
-				msgRecordServiceInfo.vtype = rec_channel->type;
+				msgRecordServiceInfo.vtype = rec_channel->videoType;
 			}
 			
 			if(!msgRecordServiceInfo.fec)
@@ -3366,6 +3416,9 @@ int startPlayBack(CZapitChannel * thisChannel)
 	}
 	else
 	{
+#if defined (USE_OPENGL)
+		startOpenGLplayback();
+#else
 		bool have_pcr = false;
 		bool have_audio = false;
 		bool have_video = false;
@@ -3413,6 +3466,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 			if( pcrDemux->pesFilter(thisChannel->getPcrPid() ) < 0 )
 				return -1;
 		
+			// start dmx
 			if ( pcrDemux->Start() < 0 )
 				return -1;
 		}
@@ -3521,13 +3575,13 @@ int startPlayBack(CZapitChannel * thisChannel)
 		
 			dprintf(DEBUG_NORMAL, "[zapit] starting %s audio Pid: 0x%X\n", audioStr, thisChannel->getAudioPid());		
 		
-			// start Audio Deocder
+			// start audio decoder
 			if(audioDecoder)
 			{			
-#if !defined (__sh__)			
-				//audioDecoder->Resume();
-				//audioDecoder->Stop();
-				audioDecoder->Pause();
+#if !defined (__sh__) && !defined (PLATFORM_COOLSTREAM)			
+				audioDecoder->Resume();
+				audioDecoder->Stop();
+				//audioDecoder->Pause();
 #endif				  
 				audioDecoder->Start();
 			}
@@ -3551,7 +3605,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 		
 			if(videoDecoder)
 			{
-				if(thisChannel->type == CHANNEL_MPEG2)
+				if(thisChannel->videoType == CHANNEL_VIDEO_MPEG2)
 				{
 					videoStr = "MPEG2";
 #if defined (PLATFORM_COOLSTREAM)
@@ -3560,7 +3614,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 					videoDecoder->SetStreamType(VIDEO_STREAMTYPE_MPEG2);
 #endif
 				}
-				else if(thisChannel->type == CHANNEL_MPEG4)
+				else if(thisChannel->videoType == CHANNEL_VIDEO_MPEG4)
 				{
 					videoStr = "H.264/MPEG-4 AVC";
 #if defined (PLATFORM_COOLSTREAM)
@@ -3569,14 +3623,14 @@ int startPlayBack(CZapitChannel * thisChannel)
 					videoDecoder->SetStreamType(VIDEO_STREAMTYPE_MPEG4_H264);
 #endif				
 				}
-				else if(thisChannel->type == CHANNEL_HEVC)
+				else if(thisChannel->videoType == CHANNEL_VIDEO_HEVC)
 				{
 					videoStr = "H.265 HEVC";
 #if !defined (PLATFORM_COOLSTREAM)
 					videoDecoder->SetStreamType(VIDEO_STREAMTYPE_H265_HEVC);
 #endif				
 				}
-				else if(thisChannel->type == CHANNEL_CAVS)
+				else if(thisChannel->videoType == CHANNEL_VIDEO_CAVS)
 				{
 					videoStr = "AVS";
 #if !defined (PLATFORM_COOLSTREAM)
@@ -3594,14 +3648,13 @@ int startPlayBack(CZapitChannel * thisChannel)
 			if ( videoDemux->Start() < 0 )
 				return -1;
 
-			// start pid
 			// start Video Decoder
 			if(videoDecoder)
 			{
-#if !defined (__sh__)
-				//videoDecoder->Resume();
-				//videoDecoder->Stop();
-				videoDecoder->Pause();
+#if !defined (__sh__) && !defined (PLATFORM_COOLSTREAM)
+				videoDecoder->Resume();
+				videoDecoder->Stop();
+				//videoDecoder->Pause();
 #endif
 								  
 #if defined (PLATFORM_COOLSTREAM)
@@ -3611,9 +3664,6 @@ int startPlayBack(CZapitChannel * thisChannel)
 #endif	
 			}
 		}
-
-#if defined (USE_OPENGL)
-		startOpenGLplayback();
 #endif
 	}
 
@@ -3644,7 +3694,7 @@ int stopPlayBack(bool sendPmt)
 
 #if defined (USE_OPENGL)
 		stopOpenGLplayback();
-#endif
+#else
 		
 		// stop audio decoder
 		audioDecoder->Stop();
@@ -3668,7 +3718,7 @@ int stopPlayBack(bool sendPmt)
 		}
 	
 		// stop video decoder (blanking)
-		videoDecoder->Stop();
+		videoDecoder->Stop(true);
 	
 		if (pcrDemux)
 		{
@@ -3677,7 +3727,7 @@ int stopPlayBack(bool sendPmt)
 			delete pcrDemux; //destructor closes dmx
 			pcrDemux = NULL;
 		}
-	
+#endif
 	}
 
 	playing = false;
@@ -3718,7 +3768,7 @@ void openAVDecoder(void)
 		if(videoDecoder)
 		{
 			// open video decoder
-			videoDecoder->Open(live_fe);
+			videoDecoder->Open(/*live_fe*/);
 	
 			// set source
 			videoDecoder->setSource(VIDEO_SOURCE_DEMUX);	
@@ -3727,7 +3777,7 @@ void openAVDecoder(void)
 		if(audioDecoder)
 		{
 			// open audiodecoder
-			audioDecoder->Open(live_fe);
+			audioDecoder->Open(/*live_fe*/);
 		
 			// set source
 			audioDecoder->setSource(AUDIO_SOURCE_DEMUX);
@@ -3892,12 +3942,12 @@ void * sdt_thread(void */*arg*/)
 	
 	time_t tstart, tcur, wtime = 0;
 	int ret;
-	t_transport_stream_id           transport_stream_id = 0;
-	t_original_network_id           original_network_id = 0;
-	t_satellite_position            satellitePosition = 0;
-	freq_id_t                       freq = 0;
+	t_transport_stream_id transport_stream_id = 0;
+	t_original_network_id original_network_id = 0;
+	t_satellite_position satellitePosition = 0;
+	freq_id_t freq = 0;
 
-	transponder_id_t 		tpid = 0;
+	transponder_id_t tpid = 0;
 	FILE * fd = 0;
 	FILE * fd1 = 0;
 	bool updated = 0;
@@ -4179,6 +4229,278 @@ void * sdt_thread(void */*arg*/)
 	return 0;
 }
 
+// vtuner test
+#ifdef TUNER_VUSOLO4K
+#define VTUNER_GET_MESSAGE  11
+#define VTUNER_SET_RESPONSE 12
+#define VTUNER_SET_NAME     13
+#define VTUNER_SET_TYPE     14
+#define VTUNER_SET_HAS_OUTPUTS 15
+#define VTUNER_SET_FE_INFO  16
+#define VTUNER_SET_NUM_MODES 17
+#define VTUNER_SET_MODES 18
+#else
+#define VTUNER_GET_MESSAGE  1
+#define VTUNER_SET_RESPONSE 2
+#define VTUNER_SET_NAME     3
+#define VTUNER_SET_TYPE     4
+#define VTUNER_SET_HAS_OUTPUTS 5
+#define VTUNER_SET_FE_INFO  6
+#define VTUNER_SET_NUM_MODES 7
+#define VTUNER_SET_MODES 8
+#endif
+#define VTUNER_SET_DELSYS 32
+#define VTUNER_SET_ADAPTER 33
+
+#define MSG_SET_FRONTEND         1
+#define MSG_GET_FRONTEND         2
+#define MSG_READ_STATUS          3
+#define MSG_READ_BER             4
+#define MSG_READ_SIGNAL_STRENGTH 5
+#define MSG_READ_SNR             6
+#define MSG_READ_UCBLOCKS        7
+#define MSG_SET_TONE             8
+#define MSG_SET_VOLTAGE          9
+#define MSG_ENABLE_HIGH_VOLTAGE  10
+#define MSG_SEND_DISEQC_MSG      11
+#define MSG_SEND_DISEQC_BURST    13
+#define MSG_PIDLIST              14
+#define MSG_TYPE_CHANGED         15
+#define MSG_SET_PROPERTY         16
+#define MSG_GET_PROPERTY         17
+
+struct vtuner_message
+{
+	__s32 type;
+	union
+	{
+		struct dvb_frontend_parameters dvb_frontend_parameters;
+#if DVB_API_VERSION >= 5
+		struct dtv_property prop;
+#endif
+		fe_status_t status;
+		__u32 ber;
+		__u16 ss, snr;
+		__u32 ucb;
+		fe_sec_tone_mode_t tone;
+		fe_sec_voltage_t voltage;
+		struct dvb_diseqc_master_cmd diseqc_master_cmd;
+		fe_sec_mini_cmd_t burst;
+		__u16 pidlist[30];
+		unsigned char pad[72];
+		__u32 type_changed;
+	} body;
+};
+
+int _select(int maxfd, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
+{
+	int retval;
+	fd_set rset, wset, xset;
+	struct timeval interval;
+	timerclear(&interval);
+
+	/* make a backup of all fd_set's and timeval struct */
+	if (readfds) rset = *readfds;
+	if (writefds) wset = *writefds;
+	if (exceptfds) xset = *exceptfds;
+	if (timeout) interval = *timeout;
+
+	while (1)
+	{
+		retval = select(maxfd, readfds, writefds, exceptfds, timeout);
+
+		if (retval < 0)
+		{
+			/* restore the backup before we continue */
+			if (readfds) *readfds = rset;
+			if (writefds) *writefds = wset;
+			if (exceptfds) *exceptfds = xset;
+			if (timeout) *timeout = interval;
+			if (errno == EINTR) continue;
+			perror("select");
+			break;
+		}
+		break;
+	}
+	return retval;
+}
+
+ssize_t _writeall(int fd, const void *buf, size_t count)
+{
+	ssize_t retval;
+	char *ptr = (char*)buf;
+	ssize_t handledcount = 0;
+	if (fd < 0) return -1;
+	while (handledcount < count)
+	{
+		retval = write(fd, &ptr[handledcount], count - handledcount);
+
+		if (retval == 0) return -1;
+		if (retval < 0)
+		{
+			if (errno == EINTR) continue;
+			perror("write");
+			return retval;
+		}
+		handledcount += retval;
+	}
+	return handledcount;
+}
+
+ssize_t _read(int fd, void *buf, size_t count)
+{
+	ssize_t retval;
+	char *ptr = (char*)buf;
+	ssize_t handledcount = 0;
+	if (fd < 0) return -1;
+	while (handledcount < count)
+	{
+		retval = read(fd, &ptr[handledcount], count - handledcount);
+		if (retval < 0)
+		{
+			if (errno == EINTR) continue;
+			perror("read");
+			return retval;
+		}
+		handledcount += retval;
+		break; /* one read only */
+	}
+	return handledcount;
+}
+
+pthread_t eventthread = 0;
+pthread_t pumpthread = 0;
+int running = 1;
+static int demuxFD = -1;
+static int vtunerFD = -1;
+static int frontendFD = -1;
+unsigned char buffer[(188 / 4) * 4096];
+__u16 pidlist[30];
+#define BUFFER_SIZE ((188 / 4) * 4096) /* multiple of ts packet and page size */
+#define DEMUX_BUFFER_SIZE (8 * ((188 / 4) * 4096)) /* 1.5MB */
+
+void *pump_proc(void *ptr)
+{
+	dprintf(DEBUG_INFO, "[zapit] pump_proc: starting... tid %ld\n", syscall(__NR_gettid));
+
+	while (running)
+	{
+		struct timeval tv;
+		fd_set rset;
+		FD_ZERO(&rset);
+		FD_SET(demuxFD, &rset);
+		tv.tv_sec = 1;
+		tv.tv_usec = 0;
+
+		if (_select(demuxFD + 1, &rset, NULL, NULL, &tv) > 0)
+		{
+			int size = _read(demuxFD, buffer, BUFFER_SIZE);
+			if (_writeall(vtunerFD, buffer, size) <= 0)
+			{
+				break;
+			}
+		}
+	}
+
+	return NULL;
+}
+
+void *event_proc(void *ptr)
+{
+	dprintf(DEBUG_INFO, "[zapit] event_proc: starting... tid %ld\n", syscall(__NR_gettid));
+
+	int i, j;
+
+	while (running)
+	{
+		struct timeval tv;
+		fd_set xset;
+		FD_ZERO(&xset);
+		FD_SET(vtunerFD, &xset);
+		tv.tv_sec = 1;
+		tv.tv_usec = 0;
+
+		if (_select(vtunerFD + 1, NULL, NULL, &xset, &tv) > 0)
+		{
+			struct vtuner_message message;
+			ioctl(vtunerFD, VTUNER_GET_MESSAGE, &message);
+
+			switch (message.type)
+			{
+			case MSG_PIDLIST:
+				// remove old pids
+				for (i = 0; i < 30; i++)
+				{
+					int found = 0;
+					if (pidlist[i] == 0xffff) continue;
+					for (j = 0; j < 30; j++)
+					{
+						if (pidlist[i] == message.body.pidlist[j])
+						{
+							found = 1;
+							break;
+						}
+					}
+
+					if (found) continue;
+
+					printf("DMX_REMOVE_PID %x\n", pidlist[i]);
+#if DVB_API_VERSION > 3
+					ioctl(demuxFD, DMX_REMOVE_PID, &pidlist[i]);
+#else
+					ioctl(demuxFD, DMX_REMOVE_PID, pidlist[i]);
+#endif
+				}
+
+				// add new pids
+				for (i = 0; i < 30; i++)
+				{
+					int found = 0;
+					if (message.body.pidlist[i] == 0xffff) continue;
+					for (j = 0; j < 30; j++)
+					{
+						if (message.body.pidlist[i] == pidlist[j])
+						{
+							found = 1;
+							break;
+						}
+					}
+
+					if (found) continue;
+
+					printf("DMX_ADD_PID %x\n", message.body.pidlist[i]);
+#if DVB_API_VERSION > 3
+					ioctl(demuxFD, DMX_ADD_PID, &message.body.pidlist[i]);
+#else
+					ioctl(demuxFD, DMX_ADD_PID, message.body.pidlist[i]);
+#endif
+				}
+
+				// copy pids
+				for (i = 0; i < 30; i++)
+				{
+					pidlist[i] = message.body.pidlist[i];
+				}
+				break;
+
+			default:
+				printf("Unknown vtuner message type: %d\n", message.type);
+				break;
+			}
+
+			if (message.type != MSG_PIDLIST)
+			{
+				message.type = 0;
+				ioctl(vtunerFD, VTUNER_SET_RESPONSE, &message);
+			}
+		}
+	}
+
+error:
+	return NULL;
+}
+//
+
 //#define CHECK_FOR_LOCK
 //#endif
 int zapit_main_thread(void *data)
@@ -4240,7 +4562,113 @@ int zapit_main_thread(void *data)
 			close(dmx);
 		}
 	}
-#endif	
+#endif
+
+	// init vtuner
+	if(havevtuner)
+	//if (getVTuner() != NULL)
+	{
+		char type[8];
+		struct dmx_pes_filter_params filter;
+		struct dvb_frontend_info fe_info;
+		char frontend_filename[256], demux_filename[256], vtuner_filename[256];
+
+		//printf("linking adapter1/frontend0 to vtunerc0\n");
+
+		sprintf(frontend_filename, "/dev/dvb/adapter%d/frontend0", getVTuner()->fe_adapter);
+		sprintf(demux_filename, "/dev/dvb/adapter%d/demux0", getVTuner()->fe_adapter);
+		sprintf(vtuner_filename, "/dev/vtunerc0"); //FIXME: think about this (/dev/misc/vtuner%)
+
+		dprintf(DEBUG_NORMAL, "linking %s to %s\n", frontend_filename, vtuner_filename);
+
+		frontendFD = open(frontend_filename, O_RDWR);
+		if (frontendFD < 0)
+		{
+			perror(frontend_filename);
+		}
+
+		demuxFD = open(demux_filename, O_RDONLY | O_NONBLOCK);
+		if (demuxFD < 0)
+		{
+			perror(demux_filename);
+		}
+
+		vtunerFD = open(vtuner_filename, O_RDWR);
+		if (vtunerFD < 0)
+		{
+			perror(vtuner_filename);
+		}
+
+		if (ioctl(frontendFD, FE_GET_INFO, &fe_info) < 0)
+		{
+			perror("FE_GET_INFO");
+		}
+
+		close(frontendFD);
+		frontendFD = -1;
+
+		filter.input = DMX_IN_FRONTEND;
+		filter.flags = 0;
+#if DVB_API_VERSION > 3
+		filter.pid = 0;
+		filter.output = DMX_OUT_TSDEMUX_TAP;
+		filter.pes_type = DMX_PES_OTHER;
+#else
+		filter.pid = -1;
+		filter.output = DMX_OUT_TAP;
+		filter.pes_type = DMX_TAP_TS;
+#endif
+
+		ioctl(demuxFD, DMX_SET_BUFFER_SIZE, DEMUX_BUFFER_SIZE);
+		ioctl(demuxFD, DMX_SET_PES_FILTER, &filter);
+		ioctl(demuxFD, DMX_START);
+
+		switch (fe_info.type)
+		{
+			case FE_QPSK:
+				strcpy(type,"DVB-S2");
+				break;
+			case FE_QAM:
+				strcpy(type,"DVB-C");
+				break;
+			case FE_OFDM:
+				strcpy(type,"DVB-T");
+				break;
+			case FE_ATSC:
+				strcpy(type,"ATSC");
+				break;
+			default:
+				printf("Frontend type 0x%x not supported", fe_info.type);
+		}
+
+		ioctl(vtunerFD, VTUNER_SET_NAME, "virtuel tuner");
+		ioctl(vtunerFD, VTUNER_SET_TYPE, type);
+		ioctl(vtunerFD, VTUNER_SET_FE_INFO, &fe_info);
+		ioctl(vtunerFD, VTUNER_SET_HAS_OUTPUTS, "no");
+		ioctl(vtunerFD, VTUNER_SET_ADAPTER, 1);
+
+#if DVB_API_VERSION > 5 || DVB_API_VERSION == 5 && DVB_API_VERSION_MINOR >= 5
+		{
+			struct dtv_properties props;
+			struct dtv_property p[1];
+			props.num = 1;
+			props.props = p;
+			p[0].cmd = DTV_ENUM_DELSYS;
+
+			if (ioctl(frontendFD, FE_GET_PROPERTY, &props) >= 0)
+			{
+				ioctl(vtunerFD, VTUNER_SET_DELSYS, p[0].u.buffer.data);
+			}
+		}
+#endif
+
+		memset(pidlist, 0xff, sizeof(pidlist));
+
+		dprintf(DEBUG_NORMAL, "init succeeded\n");
+
+		pthread_create(&eventthread, NULL, event_proc, (void*)NULL);
+		pthread_create(&pumpthread, NULL, pump_proc, (void*)NULL);
+	}	
 
 	//CI init
 #if defined (ENABLE_CI)	
@@ -4274,7 +4702,7 @@ int zapit_main_thread(void *data)
 	}
 	else
 	{
-		if (config.getInt32("lastChannelMode", 0))
+		if (lastChannelMode == 0)
 			setRadioMode();
 		else
 			setTVMode();
@@ -4400,6 +4828,15 @@ int zapit_main_thread(void *data)
 	
 	// stop playback (stop capmt)
 	stopPlayBack();
+
+	// stop vtuner pump thread
+	if(havevtuner)
+	{
+		pthread_cancel(eventthread);
+		pthread_join(eventthread, NULL);
+		pthread_cancel(pumpthread);
+		pthread_join(pumpthread, NULL);
+	}
 	
 	// stop std thread
 	pthread_cancel(tsdt);

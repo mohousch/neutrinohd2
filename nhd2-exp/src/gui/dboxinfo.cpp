@@ -34,10 +34,12 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <gui/dboxinfo.h>
+#include <sys/sysinfo.h>
+#include <sys/vfs.h>
 
 #include <global.h>
 
@@ -45,8 +47,7 @@
 #include <driver/screen_max.h>
 #include <driver/rcinput.h>
 
-#include <sys/sysinfo.h>
-#include <sys/vfs.h>
+#include <gui/dboxinfo.h>
 
 /*zapit includes*/
 #include <frontend_c.h>
@@ -91,14 +92,18 @@ CDBoxInfoWidget::CDBoxInfoWidget()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	
-	hheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	mheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	// Title
+	titleIcon.setIcon(NEUTRINO_ICON_INFO);
+	cFrameBoxTitle.iHeight = std::max(titleIcon.iHeight, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+
+	// Body
+	cFrameBoxItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 	
-	width  = w_max (MENU_WIDTH + 100, 0);
-	height = h_max (hheight + (10 + FrontendCount)*mheight + 20, 0);
+	cFrameBox.iWidth = w_max(MENU_WIDTH + 100, 0);
+	cFrameBox.iHeight = h_max(cFrameBoxTitle.iHeight + (10 + FrontendCount)*cFrameBoxItem.iHeight + 20, 0);
 	
-    	x = (((g_settings.screen_EndX - g_settings.screen_StartX) - width) / 2) + g_settings.screen_StartX;
-	y = (((g_settings.screen_EndY - g_settings.screen_StartY) - height) / 2) + g_settings.screen_StartY;
+    	cFrameBox.iX = (((g_settings.screen_EndX - g_settings.screen_StartX) - cFrameBox.iWidth) / 2) + g_settings.screen_StartX;
+	cFrameBox.iY = (((g_settings.screen_EndY - g_settings.screen_StartY) - cFrameBox.iHeight) / 2) + g_settings.screen_StartY;
 }
 
 int CDBoxInfoWidget::exec(CMenuTarget * parent, const std::string &)
@@ -121,7 +126,7 @@ int CDBoxInfoWidget::exec(CMenuTarget * parent, const std::string &)
 
 void CDBoxInfoWidget::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width + SHADOW_OFFSET, height + SHADOW_OFFSET);
+	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth + SHADOW_OFFSET, cFrameBox.iHeight + SHADOW_OFFSET);
 	
 	frameBuffer->blit();
 }
@@ -130,29 +135,40 @@ void CDBoxInfoWidget::paint()
 {
 	dprintf(DEBUG_NORMAL, "CDBoxInfoWidget::paint:\n");
 
-	int ypos = y;
+	int ypos = cFrameBox.iY;
 	int i = 0;
 	
-	// paint shadow
-	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, ypos + SHADOW_OFFSET, width, height, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH);
+	// Shadow
+	cFrameBoxShadow.iX = cFrameBox.iX + SHADOW_OFFSET;
+	cFrameBoxShadow.iY = cFrameBox.iY + SHADOW_OFFSET;
+	cFrameBoxShadow.iWidth = cFrameBox.iWidth;
+	cFrameBoxShadow.iHeight = cFrameBox.iHeight;
+
+	frameBuffer->paintBoxRel(cFrameBoxShadow.iX, cFrameBoxShadow.iY, cFrameBoxShadow.iWidth, cFrameBoxShadow.iHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH);
 
 	// head
-	frameBuffer->paintBoxRel(x, ypos, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
-	
-	// icon
-	int icon_w, icon_h;
-	frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT, ypos + (hheight - icon_h)/2);
-	
-	// title
-	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth("Box info", true); // UTF-8
-	int stringstartposX = x + (width >> 1) - (neededWidth >> 1);
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, ypos + hheight + 1, width - (stringstartposX - x) , "Box info", COL_MENUHEAD, 0, true); // UTF-8
+	cFrameBoxTitle.iX = cFrameBox.iX;
+	cFrameBoxTitle.iY = cFrameBox.iY;
+	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
-	// foot
-	frameBuffer->paintBoxRel(x, ypos + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	// Head Box
+	frameBuffer->paintBoxRel(cFrameBoxTitle.iX, cFrameBoxTitle.iY, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 
-	ypos += hheight + (mheight >>1);
+	frameBuffer->paintIcon(titleIcon.iconName.c_str(), cFrameBoxTitle.iX + BORDER_LEFT, cFrameBoxTitle.iY + (cFrameBoxTitle.iHeight - titleIcon.iHeight)/2);
+	
+	// Head title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameBoxTitle.iX + BORDER_LEFT + titleIcon.iWidth + ICON_OFFSET, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - titleIcon.iWidth - ICON_OFFSET - BORDER_RIGHT, "Box info", COL_MENUHEAD, 0, true); // UTF-8
+
+	// Foot/Body
+	cFrameBoxBody.iX = cFrameBox.iX;
+	cFrameBoxBody.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
+	cFrameBoxBody.iWidth = cFrameBox.iWidth;
+	cFrameBoxBody.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight;
+
+	frameBuffer->paintBoxRel(cFrameBoxBody.iX, cFrameBoxBody.iY, cFrameBoxBody.iWidth, cFrameBoxBody.iHeight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+
+	// Items
+	ypos += cFrameBoxTitle.iHeight + (cFrameBoxItem.iHeight >>1);
 
 	//cpu
 	FILE* fd = fopen("/proc/cpuinfo", "rt");
@@ -179,15 +195,16 @@ void CDBoxInfoWidget::paint()
 				if (p)
 					hw = ++p;
 				hw += " Info";
-				g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight + 1, width - 10, hw.c_str(), COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+
+				g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameBoxBody.iX + BORDER_LEFT, cFrameBoxBody.iY, cFrameBoxBody.iWidth - BORDER_LEFT - BORDER_RIGHT, hw.c_str(), COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
 				break;
 			}
 			i++;
 			if (i > 4)
 				continue;
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT, ypos + mheight, width - BORDER_LEFT, buffer, COL_MENUCONTENTINACTIVE, true);
-			ypos += mheight;
+			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBoxBody.iX + BORDER_LEFT, ypos + cFrameBoxItem.iHeight, cFrameBoxBody.iWidth - BORDER_LEFT - BORDER_RIGHT, buffer, COL_MENUCONTENTINACTIVE, true);
+			ypos += cFrameBoxItem.iHeight;
 		}
 		fclose(fd);
 
@@ -196,11 +213,11 @@ void CDBoxInfoWidget::paint()
 	}
 	
 	// separator
-	frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, ypos + (mheight >> 1), COL_MENUCONTENTDARK_PLUS_0 );
-	frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, ypos + (mheight >> 1) + 1, COL_MENUCONTENTDARK_PLUS_0 );
+	frameBuffer->paintHLineRel(cFrameBoxBody.iX + BORDER_LEFT, cFrameBoxBody.iWidth - BORDER_LEFT - BORDER_RIGHT, ypos + (cFrameBoxItem.iHeight >> 1), COL_MENUCONTENTDARK_PLUS_0 );
+	frameBuffer->paintHLineRel(cFrameBoxBody.iX + BORDER_LEFT, cFrameBoxBody.iWidth - BORDER_LEFT - BORDER_RIGHT, ypos + (cFrameBoxItem.iHeight >> 1) + 1, COL_MENUCONTENTDARK_PLUS_0 );
 
 	// up time
-	ypos += mheight/2;
+	ypos += cFrameBoxItem.iHeight/2;
 	
 	int updays, uphours, upminutes;
 	struct sysinfo info;
@@ -241,18 +258,18 @@ void CDBoxInfoWidget::paint()
 
 	strcat(sbuf, ubuf);
 	
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT, ypos + mheight, width, sbuf, COL_MENUCONTENT, true);
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBoxBody.iX + BORDER_LEFT, ypos + cFrameBoxItem.iHeight, cFrameBoxBody.iWidth - BORDER_LEFT - BORDER_RIGHT, sbuf, COL_MENUCONTENT, true);
 	
 	// mem
-	ypos += mheight;
+	ypos += cFrameBoxItem.iHeight;
 
 	sprintf(ubuf, "memory total %dKb, free %dKb", (int) info.totalram/1024, (int) info.freeram/1024);
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x+ 10, ypos+ mheight, width, ubuf, COL_MENUCONTENT, true);
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBoxBody.iX + BORDER_LEFT, ypos + cFrameBoxItem.iHeight, cFrameBoxBody.iWidth - BORDER_LEFT - BORDER_RIGHT, ubuf, COL_MENUCONTENT, true);
 	
 	// separator
-	ypos += mheight/2;
-	frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, ypos + (mheight >> 1), COL_MENUCONTENTDARK_PLUS_0 );
-	frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, ypos + (mheight >> 1) + 1, COL_MENUCONTENTDARK_PLUS_0 );
+	ypos += cFrameBoxItem.iHeight/2;
+	frameBuffer->paintHLineRel(cFrameBoxBody.iX + BORDER_LEFT, cFrameBoxBody.iWidth - BORDER_LEFT - BORDER_RIGHT, ypos + (cFrameBoxItem.iHeight >> 1), COL_MENUCONTENTDARK_PLUS_0 );
+	frameBuffer->paintHLineRel(cFrameBoxBody.iX + BORDER_LEFT, cFrameBoxBody.iWidth - BORDER_LEFT - BORDER_RIGHT, ypos + (cFrameBoxItem.iHeight >> 1) + 1, COL_MENUCONTENTDARK_PLUS_0 );
     	
     	//hdd devices
 	FILE * f;
@@ -263,7 +280,7 @@ void CDBoxInfoWidget::paint()
 	
 	for(int i1 = 0; i1 < n; i1++) 
 	{
-		ypos += mheight;
+		ypos += cFrameBoxItem.iHeight;
 		
 		char str[256];
 		char vendor[128];
@@ -335,26 +352,26 @@ void CDBoxInfoWidget::paint()
 		
 		int offset = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth((char *)"HDD: ", true); // UTF-8
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT, ypos + mheight, width, (char *)"HDD:", COL_MENUCONTENTINACTIVE, true);
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT + offset, ypos + mheight, width, str, COL_MENUCONTENT, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBoxBody.iX + BORDER_LEFT, ypos + cFrameBoxItem.iHeight, cFrameBoxBody.iWidth - BORDER_LEFT - BORDER_RIGHT, (char *)"HDD:", COL_MENUCONTENTINACTIVE, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBoxBody.iX + BORDER_LEFT + offset, ypos + cFrameBoxItem.iHeight, cFrameBoxBody.iWidth - BORDER_LEFT - BORDER_RIGHT, str, COL_MENUCONTENT, true);
 	}
 	
 	//frontend
-	ypos += mheight/2;
+	ypos += cFrameBoxItem.iHeight/2;
 	
 	for(int i2 = 0; i2 < FrontendCount; i2++)
 	{
 		CFrontend * fe = getFE(i2);
-		ypos += mheight;
+		ypos += cFrameBoxItem.iHeight;
 		char tbuf[255];
 		char tbuf1[255];
 		
 		sprintf(tbuf, "Tuner-%d: ", i2 + 1);
 		int offset1 = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tbuf, true); // UTF-8
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT, ypos + mheight, width, tbuf, COL_MENUCONTENTINACTIVE, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBoxBody.iX + BORDER_LEFT, ypos + cFrameBoxItem.iHeight, cFrameBoxBody.iWidth - BORDER_LEFT - BORDER_RIGHT, tbuf, COL_MENUCONTENTINACTIVE, true);
 		
 		sprintf(tbuf1, "%s", fe->getInfo()->name);
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT + offset1, ypos + mheight, width, tbuf1, COL_MENUCONTENT, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBoxBody.iX + BORDER_LEFT + offset1, ypos + cFrameBoxItem.iHeight, cFrameBoxBody.iWidth - BORDER_LEFT - BORDER_RIGHT, tbuf1, COL_MENUCONTENT, true);
 	}	
 }

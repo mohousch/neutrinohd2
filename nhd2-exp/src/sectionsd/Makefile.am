@@ -17,6 +17,8 @@ else
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbapi
 endif
 
+AM_CPPFLAGS += -fno-rtti
+
 noinst_LIBRARIES = libsectionsd.a
 
 libsectionsd_a_SOURCES = \

@@ -318,10 +318,10 @@ class EpgPlus
 		class MenuTargetAddReminder : public CMenuTarget
 		{
 			public:
-				MenuTargetAddReminder ( EpgPlus* epgPlus);
+				MenuTargetAddReminder( EpgPlus* epgPlus);
 
 			public:
-				int exec ( CMenuTarget* parent , const std::string& actionKey);
+				int exec(CMenuTarget* parent, const std::string& actionKey);
 
 			private:
 				EpgPlus * epgPlus;
@@ -334,7 +334,7 @@ class EpgPlus
 				MenuTargetAddRecordTimer ( EpgPlus* epgPlus);
 
 			public:
-				int exec ( CMenuTarget* parent , const std::string& actionKey);
+				int exec(CMenuTarget* parent , const std::string& actionKey);
 
 			private:
 				EpgPlus * epgPlus;
@@ -347,7 +347,7 @@ class EpgPlus
 				MenuTargetRefreshEpg ( EpgPlus* epgPlus);
 
 			public:
-				int exec ( CMenuTarget* parent , const std::string& actionKey);
+				int exec(CMenuTarget* parent, const std::string& actionKey);
 
 			private:
 				EpgPlus * epgPlus;
@@ -357,7 +357,7 @@ class EpgPlus
 		class MenuOptionChooserSwitchSwapMode : public CMenuOptionChooser
 		{
 			public:
-				MenuOptionChooserSwitchSwapMode ( EpgPlus* epgPlus);
+				MenuOptionChooserSwitchSwapMode(EpgPlus* epgPlus);
 
 				virtual ~MenuOptionChooserSwitchSwapMode();
 
@@ -373,12 +373,12 @@ class EpgPlus
 		class MenuOptionChooserSwitchViewMode : public CMenuOptionChooser
 		{
 			public:
-				MenuOptionChooserSwitchViewMode ( EpgPlus* epgPlus);
+				MenuOptionChooserSwitchViewMode( EpgPlus* epgPlus);
 
 				virtual ~MenuOptionChooserSwitchViewMode();
 
 			public:
-				int exec ( CMenuTarget* parent); 
+				int exec(CMenuTarget* parent); 
 
 			private:
 				int oldTimingMenuSettings;
@@ -390,7 +390,7 @@ class EpgPlus
 				MenuTargetSettings ( EpgPlus * epgPlus);
 
 			public:
-				int exec ( CMenuTarget * parent , const std::string& actionKey);
+				int exec(CMenuTarget* parent , const std::string& actionKey);
 
 			private:
 				EpgPlus * epgPlus;
@@ -413,7 +413,7 @@ class EpgPlus
 		void init();
 		void free();
 
-		int exec ( CChannelList* channelList , int selectedChannelIndex , CBouquetList* bouquetList); 
+		int exec(CChannelList* channelList , int selectedChannelIndex , CBouquetList* bouquetList); 
 
 	private:
 		static std::string getTimeString ( const time_t& time , const std::string& format);
@@ -513,12 +513,15 @@ class EpgPlus
 
 		bool            refreshAll;
 		bool            refreshFooterButtons;
+
+		//
+		uint32_t sec_timer_id;
 };
 
 class CEPGplusHandler : public CMenuTarget
 {
 	public:
-		int exec( CMenuTarget * parent,  const std::string &actionKey);
+		int exec(CMenuTarget* parent,  const std::string &actionKey);
 };
 
 #endif

@@ -170,25 +170,25 @@ void CImageInfo::paint()
 	ypos += (iheight >>1);
 
 
-	CConfigFile config('\t');
-	config.loadConfig("/etc/.version");
+	//CConfigFile config('\t');
+	//config.loadConfig("/etc/.version");
 
-	const char * imagename = config.getString("imagename", "NeutrinoHD2").c_str();
-	const char * homepage  = config.getString("homepage",  "http://www.dgstation-forum.org").c_str();
-	const char * creator   = config.getString("creator",   "mohousch").c_str();
-	const char * version   = config.getString("version",   "1201201602031021").c_str();
-	const char * docs      = config.getString("docs",   "http://wiki.neutrino-hd.de").c_str();
-	const char * forum     = config.getString("forum",   "http://www.dgstation-forum.org").c_str();
+	const char * imagename = "neutrinoHD2"; /*config.getString("imagename", "NeutrinoHD2").c_str();*/
+	//const char * homepage = config.getString("homepage",  "http://www.dgstation-forum.org").c_str();
+	//const char * creator = config.getString("creator",   "mohousch").c_str();
+	const char * version = "2.1"; /*config.getString("version",   "1201201602031021").c_str();*/
+	const char * docs = "http://wiki.neutrino-hd.de"; /*config.getString("docs",   "http://wiki.neutrino-hd.de").c_str();*/
+	//const char * forum = config.getString("forum",   "http://www.dgstation-forum.org").c_str();
 #ifdef SVNVERSION
-	const char * builddate     = config.getString("builddate",     SVNVERSION).c_str();
+	const char * builddate = SVNVERSION; /*config.getString("builddate",     SVNVERSION).c_str();*/
 #else
-	const char * builddate     = config.getString("builddate",     BUILT_DATE).c_str();
+	const char * builddate = BUILT_DATE; /*config.getString("builddate",     BUILT_DATE).c_str();*/
 #endif	
 
-	static CFlashVersionInfo versionInfo(version);
-	const char * releaseCycle = versionInfo.getReleaseCycle();
-	const char * imageType = versionInfo.getType();
-	sprintf((char*) imagedate, "%s  %s", versionInfo.getDate(), versionInfo.getTime());
+	//static CFlashVersionInfo versionInfo(version);
+	const char * releaseCycle = "2.1"; /*versionInfo.getReleaseCycle();*/
+	const char * imageType = "Snapshot"; /*versionInfo.getType();*/
+	sprintf((char*) imagedate, "%s  %s", __DATE__ /*versionInfo.getDate()*/, __TIME__ /*versionInfo.getTime()*/);
 
 	// image name
 	ypos += iheight;
@@ -220,14 +220,14 @@ void CImageInfo::paint()
 	paintLine(xpos + x_offset, font_info, imageType);
 
 	// image creator
-	ypos += iheight;
-	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_CREATOR));
-	paintLine(xpos + x_offset, font_info, creator);
+	//ypos += iheight;
+	//paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_CREATOR));
+	//paintLine(xpos + x_offset, font_info, creator);
 
 	// homepage
-	ypos += iheight;
-	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_HOMEPAGE));
-	paintLine(xpos + x_offset, font_info, homepage);
+	//ypos += iheight;
+	//paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_HOMEPAGE));
+	//paintLine(xpos + x_offset, font_info, homepage);
 
 	/* doko */
 	ypos += iheight;
@@ -235,12 +235,12 @@ void CImageInfo::paint()
 	paintLine(xpos + x_offset, font_info, docs);
 
 	// forum
-	ypos += iheight;
-	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_FORUM));
-	paintLine(xpos + x_offset, font_info, forum);
+	//ypos += iheight;
+	//paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_FORUM));
+	//paintLine(xpos + x_offset, font_info, forum);
 
 	// license
-	ypos += iheight;
+	ypos += 5*iheight;
 	paintLine(xpos, font_info,g_Locale->getText(LOCALE_IMAGEINFO_LICENSE));
 	paintLine(xpos + x_offset, font_small, "This program is free software; you can redistribute it and/or modify");
 

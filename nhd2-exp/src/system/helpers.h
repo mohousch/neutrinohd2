@@ -71,6 +71,8 @@ std::string to_string(long long);
 std::string to_string(unsigned long long);
 std::string to_hexstring(unsigned long long);
 
+std::string Lang2ISO639_1(std::string& lang);
+
 inline int atoi(std::string &s) { return atoi(s.c_str()); }
 inline int atoi(const std::string &s) { return atoi(s.c_str()); }
 inline int access(std::string &s, int mode) { return access(s.c_str(), mode); }
@@ -81,14 +83,33 @@ inline void cstrncpy(char *dest, const std::string &src, size_t n) { n--; strncp
 
 std::string changeFileNameExt(std::string &filename, const char *ext);
 
-size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data);
-void encodeUrl(std::string &txt);
-void decodeUrl(std::string &url);
 void splitString(std::string &str, std::string delim, std::vector<std::string> &strlist, int start = 0);
 void splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start = 0);
-bool getUrl(std::string &url, std::string &answer, const std::string& userAgent);
-bool DownloadUrl(std::string &url, std::string &file, const std::string& userAgent);
 
+//
+std::string urlDecode(const std::string &s);
+std::string encode(const std::string s);
+std::string removeExtension(std::string& s);
+
+// curl
+struct MemoryStruct {
+	char *memory;
+	size_t size;
+};
+
+size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data);
+size_t WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data);
+
+std::string encodeUrl(std::string txt);
+std::string decodeUrl(std::string url);
+
+void EncodeUrl(std::string &txt);
+void DecodeUrl(std::string &url);
+
+bool getUrl(std::string &url, std::string &answer, const std::string userAgent = " ");
+bool DownloadUrl(std::string url, std::string file, const std::string userAgent = " ");
+
+//
 class CFileHelpers
 {
 	public:
@@ -98,6 +119,7 @@ class CFileHelpers
 		bool doCopyFlag;
 
 		bool copyFile(const char *Src, const char *Dst, mode_t mode);
+
 		bool copyDir(const char *Src, const char *Dst, bool backupMode = false);
 		bool createDir(const char *Dir, mode_t mode);
 		bool removeDir(const char *Dir);

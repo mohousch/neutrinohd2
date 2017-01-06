@@ -48,6 +48,7 @@ class CNetworkConfig
 		bool modified_from_orig(void);
 		
 		void init_vars(void);
+
 		void readWpaConfig();
 		void saveWpaConfig();
 

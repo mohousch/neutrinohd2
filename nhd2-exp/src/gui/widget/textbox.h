@@ -1,5 +1,4 @@
-
-/***************************************************************************
+/*
 	Neutrino-GUI  -   DBoxII-Project
 	
 	$Id: textbox.h 2013/10/12 mohousch Exp $
@@ -29,23 +28,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-	***********************************************************
-
-	Module Name: textbox.h .
-
-	Description: interface of the CTextBox class
-
-	Date:	Nov 2005
-
-	Author: Günther@tuxbox.berlios.org
-		based on code of Steffen Hehn 'McClean'
-
-	Revision History:
-	Date			Author		Change Description
-	   Nov 2005		Günther	initial implementation
-
-****************************************************************************/
+*/
 
 #if !defined(TEXTBOX_H)
 #define TEXTBOX_H
@@ -64,6 +47,7 @@
 #include <global.h>
 #include <driver/framebuffer.h>
 #include <gui/color.h>
+#include "window.h"
 
 
 class CTextBox  
@@ -87,27 +71,22 @@ class CTextBox
 		}tmode;
 
 	private:
-		// Functions
-		void refreshTextLineArray(void);
-		void initVar(void);
-		void initFramesRel(void);
-		void refreshScroll(void);
-		void refreshText(void);
-		void reSizeMainFrameWidth(int maxTextWidth);
-		void reSizeMainFrameHeight(int maxTextHeight);
+		CBox m_cFrame;
+		CBox m_cFrameTextRel;
+		CBox m_cFrameScrollRel;
+
+		CWindow m_cBoxWindow;
+		CWindow m_cTextWindow;
+		CWindow m_cScrollBarWindow;
+
+		int m_nMaxHeight;
+		int m_nMaxWidth;
 
 		// Variables
 		std::string m_cText;
 		std::vector<std::string> m_cLineArray;
 
 		bool m_showTextFrame;
-
-		CBox m_cFrame;
-		CBox m_cFrameTextRel;
-		CBox m_cFrameScrollRel;
-
-		int m_nMaxHeight;
-		int m_nMaxWidth;
 
 		int m_nMode;
 		int m_tMode;
@@ -121,19 +100,33 @@ class CTextBox
 		int m_nCurrentPage;
 
 		// text
-		CFont *m_pcFontText;
+		CFont* m_pcFontText;
 		int m_nFontTextHeight;
 
 		// backgrond
 		fb_pixel_t m_textBackgroundColor;
 
-		CFrameBuffer * frameBuffer;
+		CFrameBuffer* frameBuffer;
 		
 		std::string thumbnail;
 		int lx; 
 		int ly; 
 		int tw; 
 		int th;
+
+		bool bigFonts;
+
+		int radius;
+		int type;
+
+		// Functions
+		void refreshTextLineArray(void);
+		void initVar(void);
+		void initFramesRel(void);
+		void refreshScroll(void);
+		void refreshText(void);
+		void reSizeMainFrameWidth(int maxTextWidth);
+		void reSizeMainFrameHeight(int maxTextHeight);
 
 	public:
 		// Constructor
@@ -161,8 +154,12 @@ class CTextBox
 		inline  int     getPages(void)				{return(m_nNrOfPages);};
 		inline	void	movePosition(int x, int y){m_cFrame.iX = x; m_cFrame.iY = y;};
 
+		void setCorner(int Radius = NO_RADIUS, int Type = CORNER_NONE);
+
 		void paint (void);
 		void hide (void);
+
+		void setBigFonts(bool bigfont = false);
 };
 
 #endif // !defined(AFX_TEXTBOX_H__208DED01_ABEC_491C_A632_5B21057DC5D8__INCLUDED_)

@@ -255,15 +255,15 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 		case 0x42: 	// CAVS
 			channel->setVideoPid(esInfo->elementary_PID);
 			descramble = true;
-			//channel->type = (esInfo->stream_type == 0x1b); //FIXME
-			if(esInfo->stream_type == 0x1b || esInfo->stream_type == 0x10)
-				channel->type = CHANNEL_MPEG4;
-			else if(esInfo->stream_type == 0x24 || esInfo->stream_type == 0x27)
-				channel->type = CHANNEL_HEVC;
-			else if(esInfo->stream_type == 0x42)
-				channel->type = CHANNEL_CAVS;
 
-			dprintf(DEBUG_NORMAL, "[pmt]parse_ES_info: vpid 0x%x stream 0x%02x type 0x%02x\n", esInfo->elementary_PID, esInfo->stream_type, channel->type);
+			if(esInfo->stream_type == 0x1b || esInfo->stream_type == 0x10)
+				channel->videoType = CHANNEL_VIDEO_MPEG4;
+			else if(esInfo->stream_type == 0x24 || esInfo->stream_type == 0x27)
+				channel->videoType = CHANNEL_VIDEO_HEVC;
+			else if(esInfo->stream_type == 0x42)
+				channel->videoType = CHANNEL_VIDEO_CAVS;
+
+			dprintf(DEBUG_NORMAL, "[pmt]parse_ES_info: vpid 0x%x stream 0x%02x type 0x%02x\n", esInfo->elementary_PID, esInfo->stream_type, channel->videoType);
 			break;
 
 		case 0x03:
@@ -305,13 +305,11 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 								if ( descriptor_length == 4 && !buffer[pos + 2] && !buffer[pos + 3] && buffer[pos + 4] == 0xFF && buffer[pos + 5] == 0xFF )
 									tmp |= 2;
 							}
-							//break;??
-						/*	
-						case 0x6F:
+							//break;??	
+						case APPLICATION_SIGNALLING_DESCRIPTOR:
 							channel->setaitPid(esInfo->elementary_PID);
-							dprintf(DEBUG_NORMAL, "[pmt]parse_ES_info: channel->setaitPid(0x%x)\n", esInfo->elementary_PID);
+							dprintf(DEBUG_NORMAL, "[pmt]0x05:parse_ES_info: channel->setaitPid(0x%x)\n", esInfo->elementary_PID);
 							break;
-						*/
 							
 						default:
 							break;
@@ -508,7 +506,7 @@ int parse_pmt(CZapitChannel * const channel, CFrontend * fe)
 	memset(filter, 0x00, DMX_FILTER_SIZE);
 	memset(mask, 0x00, DMX_FILTER_SIZE);
 
-	filter[0] = 0x02;	/* table_id */
+	filter[0] = 0x02;	/* pmt tid */
 	filter[1] = channel->getServiceId() >> 8;
 	filter[2] = channel->getServiceId();
 	filter[3] = 0x01;	/* current_next_indicator */
@@ -534,7 +532,7 @@ int parse_pmt(CZapitChannel * const channel, CFrontend * fe)
 
 	int pmtlen;
 	
-	pmtlen= ((buffer[1]&0xf)<<8) + buffer[2] + 3;
+	pmtlen = ((buffer[1]&0xf)<<8) + buffer[2] + 3;
 	
 	// pmt.tmp
 	FILE *fout;
@@ -561,18 +559,18 @@ int parse_pmt(CZapitChannel * const channel, CFrontend * fe)
 	for(i = 0; i < 11; i++)
 		pmt_caids[i] = 0;
 	
-	dpmtlen=0;
-	pos=10;
+	dpmtlen = 0;
+	pos = 10;
 	if(!scan_runs) 
 	{
-		while(pos+2<pmtlen) 
+		while(pos + 2<pmtlen) 
 		{
-			dpmtlen=((buffer[pos] & 0x0f) << 8) | buffer[pos+1];
-			for ( ia=pos+2;ia<(dpmtlen+pos+2);ia +=descriptor_length+2 ) 
+			dpmtlen = ((buffer[pos] & 0x0f) << 8) | buffer[pos + 1];
+			for ( ia=pos+2;ia<(dpmtlen+pos+2);ia += descriptor_length + 2 ) 
 			{
-				descriptor_length = buffer[ia+1];
+				descriptor_length = buffer[ia + 1];
 				if ( ia < pmtlen - 4 )
-					if(buffer[ia]==0x09 && buffer[ia+1]>0) 
+					if(buffer[ia] == 0x09 && buffer[ia + 1] > 0) 
 					{
 						switch(buffer[ia+2]) 
 						{
@@ -700,7 +698,7 @@ int pmt_set_update_filter( CZapitChannel * const channel, int * fd, CFrontend * 
 	memset(mask, 0x00, DMX_FILTER_SIZE);
 	memset(mode, 0x00, DMX_FILTER_SIZE);
 
-	filter[0] = 0x02;	/* table_id */
+	filter[0] = 0x02;	/* pmt tid */
 	filter[1] = channel->getServiceId() >> 8;
 	filter[2] = channel->getServiceId();
 	filter[4] = 0x00;	/* section_number */

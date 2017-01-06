@@ -39,9 +39,11 @@ pthread_mutex_t CWebserver::mutex = PTHREAD_MUTEX_INITIALIZER;
 //=============================================================================
 // Constructor & Destructor & Initialization
 //=============================================================================
-CWebserver::CWebserver() {
+CWebserver::CWebserver() 
+{
 	terminate = false;
-	for (int i = 0; i < HTTPD_MAX_CONNECTIONS; i++) {
+	for (int i = 0; i < HTTPD_MAX_CONNECTIONS; i++) 
+	{
 		Connection_Thread_List[i] = (pthread_t) NULL;
 		SocketList[i] = NULL;
 	}
@@ -49,15 +51,12 @@ CWebserver::CWebserver() {
 	FD_ZERO(&read_fds);
 	fdmax = 0;
 	open_connections = 0;
-#ifdef Y_CONFIG_BUILD_AS_DAEMON
-	pthread_attr_init(&attr);
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-#endif
 	port = 80;
 
 }
 //-----------------------------------------------------------------------------
-CWebserver::~CWebserver() {
+CWebserver::~CWebserver() 
+{
 	listenSocket.close();
 }
 //=============================================================================
@@ -117,8 +116,10 @@ CWebserver::~CWebserver() {
 //=============================================================================
 #define MAX_TIMEOUTS_TO_CLOSE 10
 #define MAX_TIMEOUTS_TO_TEST 100
-bool CWebserver::run(void) {
-	if (!listenSocket.listen(port, HTTPD_MAX_CONNECTIONS)) {
+bool CWebserver::run(void) 
+{
+	if (!listenSocket.listen(port, HTTPD_MAX_CONNECTIONS)) 
+	{
 		dperror("Socket cannot bind and listen. Abort.\n");
 		return false;
 	}
@@ -215,7 +216,8 @@ bool CWebserver::run(void) {
 
 	}//while
 #else
-	while (!terminate) {
+	while (!terminate) 
+	{
 		CySocket *newConnectionSock;
 		if (!(newConnectionSock = listenSocket.accept())) //Now: Blocking wait
 		{
@@ -239,7 +241,8 @@ bool CWebserver::run(void) {
 //-----------------------------------------------------------------------------
 // Accept new Connection
 //-----------------------------------------------------------------------------
-int CWebserver::AcceptNewConnectionSocket() {
+int CWebserver::AcceptNewConnectionSocket() 
+{
 	int slot = -1;
 	CySocket *connectionSock = NULL;
 	int newfd;
@@ -276,7 +279,8 @@ int CWebserver::AcceptNewConnectionSocket() {
 //-----------------------------------------------------------------------------
 // Get Index for Socket from SocketList
 //-----------------------------------------------------------------------------
-int CWebserver::SL_GetExistingSocket(SOCKET sock) {
+int CWebserver::SL_GetExistingSocket(SOCKET sock) 
+{
 	int slot = -1;
 	for (int j = 0; j < HTTPD_MAX_CONNECTIONS; j++)
 		if (SocketList[j] != NULL // here is a socket
@@ -406,40 +410,10 @@ bool CWebserver::handle_connection(CySocket *newSock) {
 	newConn->ySock = newSock;
 	newConn->ySock->handling = true;
 	newConn->WebserverBackref = this;
-#ifdef Y_CONFIG_BUILD_AS_DAEMON
-	newConn->is_treaded = is_threading;
-#else
 	newConn->is_treaded = false;
-#endif
+
 	int index = -1;
-#ifdef Y_CONFIG_BUILD_AS_DAEMON
-	if(is_threading)
-	{
-		pthread_mutex_lock( &mutex );
-		// look for free Thread slot
-		for(int i=0;i<HTTPD_MAX_CONNECTIONS;i++)
-		if(Connection_Thread_List[i] == (pthread_t)NULL)
-		{
-			index = i;
-			break;
-		}
-		if(index == -1)
-		{
-			dperror("Maximum Connection-Threads reached\n");
-			pthread_mutex_unlock( &mutex );
-			return false;
-		}
-		newConn->thread_number = index; //remember Index of Thread slot (for clean up)
 
-		// Create an orphan Thread. It is not joinable anymore
-		pthread_mutex_unlock( &mutex );
-
-		// start connection Thread
-		if(pthread_create(&Connection_Thread_List[index], &attr, WebThread, (void *)newConn) != 0)
-		dperror("Could not create Connection-Thread\n");
-	}
-	else // non threaded
-#endif
 	WebThread((void *) newConn);
 	return ((index != -1) || !is_threading);
 }

@@ -1,4 +1,4 @@
-/***************************************************************************
+/*
 	Neutrino-GUI  -   DBoxII-Project
 
  	Homepage: http://dbox.cyberphoria.org/
@@ -26,30 +26,14 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-	***********************************************************
-
-	Module Name: listframe.cpp .
-
-	Description: Implementation of the CListFrame class
-				 This class provides a plain Listbox with numerous rows and lines. 
-
-	Date:	 Nov 2005
-
-	Author: Günther@tuxbox.berlios.org
-		based on code of Steffen Hehn 'McClean'
-
-	Revision History:
-	Date			Author		Change Description
-	   Nov 2005		Günther	initial implementation
-
-****************************************************************************/
+*/
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
 #include "stdlib.h"
+
 #include "listframe.h"
 #include <gui/widget/icons.h>
 
@@ -136,6 +120,7 @@ CListFrame::CListFrame(	LF_LINES * lines, CFont * font_text, const int _mode, co
 CListFrame::CListFrame(	LF_LINES* lines)
 {
 	dprintf(DEBUG_DEBUG, "CListFrame::CListFrame\r\n");
+
 	initVar();
 
  	if(lines != NULL)
@@ -364,17 +349,17 @@ void CListFrame::refreshTitle(void)
 	if( frameBuffer == NULL) 
 		return;
 
-	frameBuffer->paintBoxRel(m_cFrameTitleRel.iX + m_cFrame.iX, m_cFrameTitleRel.iY + m_cFrame.iY, m_cFrameTitleRel.iWidth, m_cFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR);
+	frameBuffer->paintBoxRel(m_cFrameTitleRel.iX + m_cFrame.iX, m_cFrameTitleRel.iY + m_cFrame.iY, m_cFrameTitleRel.iWidth, m_cFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	int iw = 0;
 	int ih = 0;
 	if(!m_iconTitle.empty())
 	{
 		frameBuffer->getIconSize(m_iconTitle.c_str(), &iw, &ih);
-		frameBuffer->paintIcon(m_iconTitle, m_cFrameTitleRel.iX + TEXT_BORDER_WIDTH + m_cFrame.iX, m_cFrameTitleRel.iY + m_cFrame.iY + (m_cFrameTitleRel.iHeight - ih)/2);
+		frameBuffer->paintIcon(m_iconTitle, m_cFrameTitleRel.iX + m_cFrame.iX + BORDER_LEFT, m_cFrameTitleRel.iY + m_cFrame.iY + (m_cFrameTitleRel.iHeight - ih)/2);
 	}
 	
-	m_pcFontTitle->RenderString(m_cFrameTitleRel.iX + m_cFrame.iX + TEXT_BORDER_WIDTH + iw + 5, m_cFrameTitleRel.iY + m_cFrameTitleRel.iHeight + m_cFrame.iY, m_cFrameTitleRel.iWidth - iw - (TEXT_BORDER_WIDTH << 1), m_textTitle.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
+	m_pcFontTitle->RenderString(m_cFrameTitleRel.iX + m_cFrame.iX + BORDER_LEFT + iw + ICON_OFFSET, m_cFrameTitleRel.iY + m_cFrameTitleRel.iHeight + m_cFrame.iY, m_cFrameTitleRel.iWidth - iw - (TEXT_BORDER_WIDTH << 1), m_textTitle.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
 }
 
 void CListFrame::refreshScroll(void)
@@ -394,12 +379,6 @@ void CListFrame::refreshScroll(void)
 		
 		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + SCROLL_MARKER_BORDER + m_cFrame.iX, m_cFrameScrollRel.iY + m_nCurrentPage * marker_size +m_cFrame.iY, m_cFrameScrollRel.iWidth - (2*SCROLL_MARKER_BORDER), marker_size, COL_MENUCONTENT_PLUS_3);
 	}
-	/*
-	else
-	{
-		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + m_cFrame.iX, m_cFrameScrollRel.iY + m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, COL_MENUCONTENT_PLUS_0);
-	}
-	*/
 }
 
 void CListFrame::refreshList(void)
@@ -556,9 +535,6 @@ void CListFrame::scrollLineDown(const int lines)
 	} 
 	else 
 	{
-		//m_nCurrentPage = 0;
-		//m_nCurrentLine = m_nSelectedLine = 0;
-		//refreshList();
 		setSelectedLine(0);
 	}
 	
@@ -592,9 +568,6 @@ void CListFrame::scrollLineUp(const int lines)
 	} 
 	else if(m_nSelectedLine == 0) 
 	{
-		//m_nCurrentPage = m_nNrOfPages - 1;
-		//m_nCurrentLine = m_nSelectedLine = m_nNrOfLines - 1;
-		//refresh();
 		setSelectedLine(m_nNrOfLines - 1);
 	}
 }

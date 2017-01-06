@@ -38,22 +38,8 @@ class CSysInfoWidget : public CMenuTarget
 
 		std::string buffer;
 
-		int theight; // Fonthoehe Titel
-		
-		int icon_head_w;
-		int icon_head_h;
-		
-		int icon_foot_w;
-		int icon_foot_h;
-
-		int  ButtonHeight;
-
 		bool syslistChanged;
 
-		int width;
-		int height;
-		int x;
-		int y;
 		int mode;
 
 		void paint();
@@ -67,10 +53,18 @@ class CSysInfoWidget : public CMenuTarget
 
 		void readList();
 
-		CBox sys_BoxFrame;
-		CBox sys_BoxFrameText;
+		CBox cFrameBox;
+		CBox cFrameBoxTitle;
+		CBox cFrameBoxText;
+		CBox cFrameBoxFoot;
 
-		CTextBox * sys_textBox;
+		CWindow HeadWindow;
+		CWindow FootWindow;
+
+		CIcon titleIcon;
+		CIcon footIcon;
+
+		CTextBox* textBox;
 	public:
 		CSysInfoWidget(int m = SYSINFO);
 		~CSysInfoWidget();

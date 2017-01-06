@@ -126,8 +126,9 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 
 	sheight      = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 	
+	// foot
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_foot_w, &icon_foot_h);
-	buttonHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), icon_foot_h) + 6;
+	buttonHeight = 2*(std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), icon_foot_h)) + 6;
 	
 	// head
 	frameBuffer->getIconSize(NEUTRINO_ICON_PICTURE, &icon_head_w, &icon_head_h);
@@ -135,13 +136,13 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	
 	// item
 	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	listmaxshow  = (height - theight - 2*buttonHeight)/(fheight);
+	listmaxshow  = (height - theight - buttonHeight)/(fheight);
 	
 	// recalculate height
-	height = theight + 2*buttonHeight + listmaxshow*fheight;	// recalc height
+	height = theight + buttonHeight + listmaxshow*fheight;	// recalc height
 
-	x = (((g_settings.screen_EndX- g_settings.screen_StartX)-width) / 2) + g_settings.screen_StartX;
-	y = (((g_settings.screen_EndY- g_settings.screen_StartY)-height)/ 2) + g_settings.screen_StartY;
+	x = (((g_settings.screen_EndX- g_settings.screen_StartX) - width)/ 2) + g_settings.screen_StartX;
+	y = (((g_settings.screen_EndY- g_settings.screen_StartY) - height)/ 2) + g_settings.screen_StartY;
 
 	g_PicViewer->SetScaling( (CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
 	g_PicViewer->SetVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
@@ -497,7 +498,7 @@ int CPictureViewerGui::show()
 		{ 
 			if (m_state != MENU)
 			{
-				g_PicViewer->Move(0, -50);
+				g_PicViewer->Move(0, -10);
 			}
 		}
 		else if( msg == CRCInput::RC_3 )
@@ -512,7 +513,7 @@ int CPictureViewerGui::show()
 		{ 
 			if (m_state != MENU)
 			{
-				g_PicViewer->Move(-50, 0);
+				g_PicViewer->Move(-10, 0);
 			}
 		}
 		else if ( msg == CRCInput::RC_5 )
@@ -539,20 +540,20 @@ int CPictureViewerGui::show()
 		{ 
 			if (m_state != MENU && playlist.empty())
 			{
-				g_PicViewer->Move(50, 0);
+				g_PicViewer->Move(10, 0);
 			}
 		}
 		else if( msg == CRCInput::RC_8 )
 		{ 
 			if (m_state != MENU && playlist.empty())
 			{
-				g_PicViewer->Move(0, 50);
+				g_PicViewer->Move(0, 10);
 			}
 		}
 		else if(msg == CRCInput::RC_0)
 		{
 			if (!playlist.empty())
-				view(selected, true);
+				view(selected);
 		}
 		else if(msg == CRCInput::RC_setup)
 		{
@@ -664,7 +665,7 @@ void CPictureViewerGui::paintHead()
 	std::string strCaption = g_Locale->getText(LOCALE_PICTUREVIEWER_HEAD);
 	
 	//head box
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	// head icon
 	//frameBuffer->getIconSize(NEUTRINO_ICON_PICTURE, &icon_head_w, &icon_head_h);
@@ -693,22 +694,22 @@ const struct button_label PictureViewerButtons[4] =
 
 void CPictureViewerGui::paintFoot()
 {
-	int ButtonWidth = (width - 20) / 4;
+	int ButtonWidth = (width - BORDER_LEFT - BORDER_RIGHT)/4;
 	int ButtonWidth2 = (width - 50) / 2;
 	
 	int icon_w, icon_h;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	
-	frameBuffer->paintBoxRel(x, y + height - 2*buttonHeight, width, 2*buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+	frameBuffer->paintBoxRel(x, y + height - buttonHeight, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	if (!playlist.empty())
 	{
 		//OK
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + ButtonWidth2 + 25, y + (height - 2*buttonHeight) + buttonHeight + (buttonHeight - icon_foot_h)/2);
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ButtonWidth2 + 53 , y + (height - 2*buttonHeight) + buttonHeight + (buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth2 - 28, g_Locale->getText(LOCALE_PICTUREVIEWER_SHOW), COL_INFOBAR, 0, true); // UTF-8
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + ButtonWidth2 + 25, y + (height - buttonHeight) + buttonHeight/2 + (buttonHeight/2 - icon_foot_h)/2);
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ButtonWidth2 + 53 , y + (height - buttonHeight) + buttonHeight/2 + (buttonHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth2 - 28, g_Locale->getText(LOCALE_PICTUREVIEWER_SHOW), COL_INFOBAR, 0, true); // UTF-8
 
 		// 5
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_5, x + BORDER_LEFT, y + (height - 2*buttonHeight) + buttonHeight + (buttonHeight - icon_foot_h)/2);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_5, x + BORDER_LEFT, y + (height - buttonHeight) + buttonHeight/2 + (buttonHeight/2 - icon_foot_h)/2);
 		std::string tmp = g_Locale->getText(LOCALE_PICTUREVIEWER_SORTORDER);
 		tmp += ' ';
 		if(m_sort == FILENAME)
@@ -716,13 +717,13 @@ void CPictureViewerGui::paintFoot()
 		else if(m_sort == DATE)
 			tmp += g_Locale->getText(LOCALE_PICTUREVIEWER_SORTORDER_FILENAME);
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + BORDER_LEFT + icon_w + 5 , y + (height - 2*buttonHeight) + buttonHeight + (buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth2 - 28, tmp, COL_INFOBAR, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + BORDER_LEFT + icon_w + 5 , y + (height - buttonHeight) + buttonHeight/2 + (buttonHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth2 - 28, tmp, COL_INFOBAR, 0, true); // UTF-8
 
 		// foot buttons
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - 2*buttonHeight, ButtonWidth, 4, PictureViewerButtons, buttonHeight);
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - buttonHeight + 3, ButtonWidth, 4, PictureViewerButtons, buttonHeight/2);
 	}
 	else
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + ButtonWidth, y + height - 2*buttonHeight, ButtonWidth, 1, &(PictureViewerButtons[1]), buttonHeight);
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + ButtonWidth, y + height - buttonHeight + 3, ButtonWidth, 1, &(PictureViewerButtons[1]), buttonHeight/2);
 }
 
 void CPictureViewerGui::paintInfo()
@@ -758,7 +759,7 @@ void CPictureViewerGui::paint()
 	visible = true;
 }
 
-void CPictureViewerGui::view(unsigned int index, bool unscaled)
+void CPictureViewerGui::view(unsigned int index)
 {
 	selected = index;
 	
@@ -770,23 +771,10 @@ void CPictureViewerGui::view(unsigned int index, bool unscaled)
 	char timestring[19];
 	strftime(timestring, 18, "%d-%m-%Y %H:%M", gmtime(&playlist[index].Date));
 	
-	if(unscaled)
-		g_PicViewer->DecodeImage(playlist[index].Filename, true, unscaled);
-	
-	g_PicViewer->ShowImage(playlist[index].Filename, unscaled);
+	g_PicViewer->ShowImage(playlist[index].Filename);
 
-	//Decode next
-	unsigned int next = selected + 1;
-	if( next > playlist.size() - 1 )
-		next = 0;
-	
 	if(m_state == MENU)
 		m_state = VIEW;
-	
-	if(m_state == VIEW )
-		g_PicViewer->DecodeImage(playlist[next].Filename, true);
-	else
-		g_PicViewer->DecodeImage(playlist[next].Filename, false);
 }
 
 void CPictureViewerGui::endView()

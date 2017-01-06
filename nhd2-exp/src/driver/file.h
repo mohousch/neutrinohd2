@@ -56,17 +56,20 @@ class CFileFilter
 	
 	public:
 		void addFilter(const std::string & filter){Filter.push_back(filter);};
+
 		bool matchFilter(const std::string & name)
 		{
 			int ext_pos = 0;
 			ext_pos = name.rfind('.');
 			if( ext_pos > 0)
 			{
-				std::string extension;
-				extension = name.substr(ext_pos + 1, name.length() - ext_pos);
-				for(unsigned int i = 0; i < Filter.size(); i++)
-					if(strcasecmp(Filter[i].c_str(), extension.c_str()) == 0)
-						return true;
+					std::string extension;
+					extension = name.substr(ext_pos + 1, name.length() - ext_pos);
+					for(unsigned int i = 0; i < Filter.size(); i++)
+					{
+							if(strcasecmp(Filter[i].c_str(), extension.c_str()) == 0)
+								return true;
+					}
 			}
 			return false;
 		};
@@ -76,6 +79,7 @@ class CFileFilter
 class CFile
 {
 	public:
+		//
 		enum FileExtension
 		{
 			EXTENSION_UNKNOWN = 0,
@@ -126,6 +130,7 @@ class CFile
 			EXTENSION_SH
 		};
 
+		//
 		enum FileType
 		{
 			FILE_UNKNOWN = 0,
@@ -139,13 +144,7 @@ class CFile
 			FILE_XML
 		};
 
-		FileExtension	getExtension(void) const;
-		FileType	getType(void) const;
-		std::string	getFileName(void) const;
-		std::string	getPath(void) const;
-
-		CFile();
-		
+		//
 		off_t Size;
 		std::string Name;
 		std::string Url;
@@ -157,6 +156,15 @@ class CFile
 		mode_t Mode;
 		bool Marked;
 		time_t Time;
+
+		//
+		FileExtension	getExtension(void) const;
+		FileType	getType(void) const;
+		std::string	getFileName(void) const;
+		std::string	getPath(void) const;
+
+		//
+		CFile();
 };
 
 typedef std::vector<CFile> CFileList;

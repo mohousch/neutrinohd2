@@ -88,11 +88,11 @@ typedef uint16_t freq_id_t;
 #define GET_SAT_FROM_TPID(transponder_id)   ((t_satellite_position )(transponder_id >> 32) & 0xFFFF)
 #define GET_FREQ_FROM_TPID(transponder_id) ((freq_id_t)(transponder_id >> 48))
 
-enum ChannelType {
-	CHANNEL_MPEG2 	= 0,
-	CHANNEL_MPEG4 	= 1,
-	CHANNEL_HEVC 	= 2,
-	CHANNEL_CAVS	= 3
+enum ChannelVideoType {
+	CHANNEL_VIDEO_MPEG2 	= 0,
+	CHANNEL_VIDEO_MPEG4 	= 1,	
+	CHANNEL_VIDEO_HEVC 	= 2,
+	CHANNEL_VIDEO_CAVS	= 3
 };
 
 //dvbsi++
@@ -196,7 +196,9 @@ typedef enum {
 	DISEQC_1_0,
 	DISEQC_1_1,
 	DISEQC_1_2,
-	DISEQC_ADVANCED
+	DISEQC_ADVANCED,
+	DISEQC_UNICABLE,
+	DISEQC_UNICABLE2
 } diseqc_t;
 
 /* dvb transmission types */

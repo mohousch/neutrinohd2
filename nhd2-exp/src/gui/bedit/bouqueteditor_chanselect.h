@@ -34,45 +34,66 @@
 #ifndef __bouqueteditor_chanselect__
 #define __bouqueteditor_chanselect__
 
+#include <string>
+
 #include <driver/framebuffer.h>
-#include <gui/widget/listbox.h>
+#include <gui/widget/window.h>
+#include <gui/widget/scrollbar.h>
 
 /*zapit includes*/
 #include <client/zapitclient.h>
-
-#include <string>
-
-/*zapit includes*/
 #include <channel.h>
 #include <bouquets.h>
 
 
-class CBEChannelSelectWidget : public CListBox
+class CBEChannelSelectWidget
 {
 	private:
+		//
+		CFrameBuffer* frameBuffer;
 
+		//
+		CBox cFrameBox;
+		CBox cFrameTitle;
+		CBox cFrameFoot;
+		CBox cFrameScrollBar;
+		CBox cFrameItem;
+		CBox cFrameFootInfo;
+
+		CWindow cWindowTitle;
+		CWindow cWindowFoot;
+		CWindow cWindowFootInfo;
+
+		CIcon footIcon;
+		CIcon itemIcon1, itemIcon2, itemIcon3;
+
+		uint32_t sec_timer_id;
+
+		//
 		unsigned int bouquet;
 		CZapitClient::channelsMode mode;
 		bool isChannelInBouquet(int index);
 
+		bool modified;
+		std::string caption;
+
+		//
+		unsigned int	selected;
+		unsigned int	liststart;
+		unsigned int	listmaxshow;
+
+		void setModified(){modified = true;};
+
 		uint getItemCount();
-		void paintItem(uint32_t itemNr, int paintNr, bool selected);
+		void paintItem(int pos);
+
+		//
+		void paintHead();
+		void paint();
 		void paintFoot();
-		void onOkKeyPressed();
+		void hide();
 		
-		int iheight;		// item height
-		int info_height;
-		int ButtonHeight;
-		
-		int icon_w_hd;
-		int icon_h_hd;
-		int icon_w_s;
-		int icon_h_s;
-		int icon_head_w;
-		int icon_head_h;
-		int icon_foot_w;
-		int icon_foot_h;
-				
+		//		
 		void paintDetails(int index);
 		void paintItem2DetailsLine(int pos);
 		void clearItem2DetailsLine();

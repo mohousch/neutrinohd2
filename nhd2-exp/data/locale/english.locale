@@ -235,9 +235,11 @@ EPGPlus.timeline_fonttime font time
 EPGPlus.vergap1_width width1
 EPGPlus.vergap2_width width2
 EPGPlus.view_mode view mode
+epgviewer.genre Genre
 epgviewer.More_Screenings More Screenings on this Channel
 epgviewer.nodetailed No detailed informations available
 epgviewer.notfound no epg found
+epgviewer.length Length
 eventfinder.head Search in EPG
 eventfinder.keyword Keyword
 eventfinder.search Search
@@ -1209,6 +1211,11 @@ satsetup.satellite Satellite
 satsetup.savesettingsnow Save settings now
 satsetup.smatvremote SMATV Remote Tuning
 satsetup.uncomm_input Uncommited input
+satsetup.unicable Unicable
+satsetup.unicable2 Unicable2 (JESS)
+satsetup.unicable_setup Unicable setup
+satsetup.uniqrg Unicable frequency
+satsetup.uniscr Unicable SCR address
 satsetup.usals_repeat USALS command repeat
 satsetup.use_nit Use NIT
 satsetup.use_usals Use usals
@@ -1560,7 +1567,8 @@ psisetup.brightness Brightness
 psisetup.tint Tint
 
 colormenu.helptxt Help text
-colormenu.helpbar Help bar
+colormenu.helpbar Foot bar
+
 lcdmenu.menutitlevfd show Menu title on Display
 
 scansetup.tunermode Tuner mode
@@ -1617,6 +1625,7 @@ youtube.yt_orderby.viewcount view count
 netzkino.netzkino Netzkino
 netzkino.nk_error Failed to load Netzkino categories
 netzkino.nk_categories Select category
+netzkino.nk_scan_for_categories Scan for Categories
 
 glcd.color.black Black
 glcd.color.blue Blue

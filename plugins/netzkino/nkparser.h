@@ -21,13 +21,9 @@
 #ifndef __NK_PARSER__
 #define __NK_PARSER__
 
-#include <curl/curl.h>
-#include <curl/easy.h>
-
 #include <vector>
 #include <string>
 #include <map>
-#include <xmlinterface.h>
 
 
 struct sNKVideoInfo
@@ -64,13 +60,6 @@ class cNKFeedParser
 		int max_results;
 		bool parsed;
 
-		CURL *curl_handle;
-		static size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data);
-		
-		void encodeUrl(std::string &txt);
-		void decodeUrl(std::string &url);
-		bool getUrl(std::string &url, std::string &answer, CURL *_curl_handle = NULL);
-		bool DownloadUrl(std::string &url, std::string &file, CURL *_curl_handle = NULL, bool download = false);
 		bool parseFeedJSON(std::string &answer);
 		bool parseCategoriesJSON(std::string &answer);
 		bool ParseFeed(std::string &url);
@@ -87,7 +76,7 @@ class cNKFeedParser
 
 		bool ParseFeed(nk_feed_mode_t mode, std::string search, int category);
 		bool ParseCategories(void);
-		bool DownloadThumbnails(unsigned int start, unsigned int end);
+		bool DownloadThumbnails(/*unsigned int start, unsigned int end*/);
 		void Cleanup();
 		void CleanupThumbnails();
 

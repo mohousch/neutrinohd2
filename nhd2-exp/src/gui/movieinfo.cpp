@@ -572,10 +572,9 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		movie_info.tfile = "";
 	
 	// infoBox
-	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox(movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], mode, &position, movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_MOVIE);
+	CInfoBox * infoBox = new CInfoBox(movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_MOVIE);
 
 	int picw = 320; //FIXME
 	int pich = 256;	//FIXME
@@ -611,8 +610,7 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		}
 	}
 
-	int tmode = CTextBox::TOP_LEFT;
-	infoBox->setText(&print_buffer, movie_info.tfile, p_w, p_h, tmode);
+	infoBox->setText(&print_buffer, movie_info.tfile, p_w, p_h, CTextBox::TOP_LEFT);
 	infoBox->exec();
 	delete infoBox;
 }

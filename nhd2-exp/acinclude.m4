@@ -192,168 +192,6 @@ else
 fi
 ])
 
-AC_DEFUN([_TUXBOX_APPS_LIB_CONFIG],[
-AC_PATH_PROG($1_CONFIG,$2,no)
-if test "$$1_CONFIG" != "no"; then
-	if test "$TARGET" = "cdk" && check_path "$$1_CONFIG"; then
-		AC_MSG_$3([could not find a suitable version of $2]);
-	else
-		$1_CFLAGS=$($$1_CONFIG --cflags)
-		$1_LIBS=$($$1_CONFIG --libs)
-	fi
-fi
-
-AC_SUBST($1_CFLAGS)
-AC_SUBST($1_LIBS)
-])
-
-AC_DEFUN([TUXBOX_APPS_LIB_CONFIG],[
-_TUXBOX_APPS_LIB_CONFIG($1,$2,ERROR)
-if test "$$1_CONFIG" = "no"; then
-	AC_MSG_ERROR([could not find $2]);
-fi
-])
-
-AC_DEFUN([TUXBOX_APPS_LIB_CONFIG_CHECK],[
-_TUXBOX_APPS_LIB_CONFIG($1,$2,WARN)
-])
-
-AC_DEFUN([TUXBOX_APPS_PKGCONFIG],[
-AC_PATH_PROG(PKG_CONFIG, pkg-config,no)
-if test "$PKG_CONFIG" = "no" ; then
-	AC_MSG_ERROR([could not find pkg-config]);
-fi
-])
-
-AC_DEFUN([_TUXBOX_APPS_LIB_PKGCONFIG],[
-AC_REQUIRE([TUXBOX_APPS_PKGCONFIG])
-AC_MSG_CHECKING(for package $2)
-if PKG_CONFIG_PATH="$PKG_CONFIG_PATH" $PKG_CONFIG --exists "$2" ; then
-	AC_MSG_RESULT(yes)
-	$1_CFLAGS=$(PKG_CONFIG_PATH="$PKG_CONFIG_PATH" $PKG_CONFIG --cflags "$2")
-	$1_LIBS=$(PKG_CONFIG_PATH="$PKG_CONFIG_PATH" $PKG_CONFIG --libs "$2")
-else
-	AC_MSG_RESULT(no)
-fi
-
-AC_SUBST($1_CFLAGS)
-AC_SUBST($1_LIBS)
-])
-
-AC_DEFUN([TUXBOX_APPS_LIB_PKGCONFIG],[
-_TUXBOX_APPS_LIB_PKGCONFIG($1,$2)
-if test -z "$$1_CFLAGS" ; then
-	AC_MSG_ERROR([could not find package $2]);
-fi
-])
-
-AC_DEFUN([TUXBOX_APPS_LIB_PKGCONFIG_CHECK],[
-_TUXBOX_APPS_LIB_PKGCONFIG($1,$2)
-])
-
-AC_DEFUN([_TUXBOX_APPS_LIB_SYMBOL],[
-AC_CHECK_LIB($2,$3,HAVE_$1="yes",HAVE_$1="no")
-if test "$HAVE_$1" = "yes"; then
-	$1_LIBS=-l$2
-fi
-
-AC_SUBST($1_LIBS)
-])
-
-AC_DEFUN([TUXBOX_APPS_LIB_SYMBOL],[
-_TUXBOX_APPS_LIB_SYMBOL($1,$2,$3,ERROR)
-if test "$HAVE_$1" = "no"; then
-	AC_MSG_ERROR([could not find $2]);
-fi
-])
-
-AC_DEFUN([TUXBOX_APPS_LIB_CONFIG_SYMBOL],[
-_TUXBOX_APPS_LIB_SYMBOL($1,$2,$3,WARN)
-])
-
-AC_DEFUN([TUXBOX_APPS_GETTEXT],[
-AC_PATH_PROG(MSGFMT, msgfmt, no)
-AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
-AC_PATH_PROG(XGETTEXT, xgettext, no)
-AC_PATH_PROG(MSGMERGE, msgmerge, no)
-
-AC_MSG_CHECKING([whether NLS is requested])
-AC_ARG_ENABLE(nls,
-	[  --disable-nls           do not use Native Language Support],
-	USE_NLS=$enableval, USE_NLS=yes)
-AC_MSG_RESULT($USE_NLS)
-AC_SUBST(USE_NLS)
-
-if test "$USE_NLS" = "yes"; then
-	AC_CACHE_CHECK([for GNU gettext in libc], gt_cv_func_gnugettext_libc,[
-		AC_TRY_LINK([
-			#include <libintl.h>
-			#ifndef __GNU_GETTEXT_SUPPORTED_REVISION
-			#define __GNU_GETTEXT_SUPPORTED_REVISION(major) ((major) == 0 ? 0 : -1)
-			#endif
-			extern int _nl_msg_cat_cntr;
-			extern int *_nl_domain_bindings;
-			],[
-			bindtextdomain ("", "");
-			return (int) gettext ("") + _nl_msg_cat_cntr + *_nl_domain_bindings;
-			], gt_cv_func_gnugettext_libc=yes, gt_cv_func_gnugettext_libc=no
-		)]
-	)
-
-	if test "$gt_cv_func_gnugettext_libc" = "yes"; then
-		AC_DEFINE(ENABLE_NLS, 1, [Define to 1 if translation of program messages to the user's native language is requested.])
-		gt_use_preinstalled_gnugettext=yes
-	else
-		USE_NLS=no
-	fi
-fi
-
-if test -f "$srcdir/po/LINGUAS"; then
-	ALL_LINGUAS=$(sed -e "/^#/d" "$srcdir/po/LINGUAS")
-fi
-
-POFILES=
-GMOFILES=
-UPDATEPOFILES=
-DUMMYPOFILES=
-for lang in $ALL_LINGUAS; do
-	POFILES="$POFILES $srcdirpre$lang.po"
-	GMOFILES="$GMOFILES $srcdirpre$lang.gmo"
-	UPDATEPOFILES="$UPDATEPOFILES $lang.po-update"
-	DUMMYPOFILES="$DUMMYPOFILES $lang.nop"
-done
-INST_LINGUAS=
-if test -n "$ALL_LINGUAS"; then
-	for presentlang in $ALL_LINGUAS; do
-		useit=no
-		if test -n "$LINGUAS"; then
-			desiredlanguages="$LINGUAS"
-		else
-			desiredlanguages="$ALL_LINGUAS"
-		fi
-		for desiredlang in $desiredlanguages; do
-			case "$desiredlang" in
-				"$presentlang"*) useit=yes;;
-			esac
-		done
-		if test $useit = yes; then
-			INST_LINGUAS="$INST_LINGUAS $presentlang"
-		fi
-	done
-fi
-CATALOGS=
-if test -n "$INST_LINGUAS"; then
-	for lang in $INST_LINGUAS; do
-		CATALOGS="$CATALOGS $lang.gmo"
-	done
-fi
-AC_SUBST(POFILES)
-AC_SUBST(GMOFILES)
-AC_SUBST(UPDATEPOFILES)
-AC_SUBST(DUMMYPOFILES)
-AC_SUBST(CATALOGS)
-])
-
 dnl backward compatiblity
 AC_DEFUN([AC_GNU_SOURCE],
 [AH_VERBATIM([_GNU_SOURCE],
@@ -379,9 +217,9 @@ AC_DEFUN([AC_PROG_EGREP],
 AC_DEFUN([TUXBOX_BOXTYPE],[
 
 AC_ARG_WITH(boxtype,
-	[  --with-boxtype          valid values: generic,dgs,gigablue,dreambox,xtrend,fulan,kathrein,ipbox,topfield,fortis_hdbox,octagon,atevio,adb_box,whitebox,vip,homecast,vuplus,azbox,technomate,coolstream,hypercube,venton,xp1000,odin,ixuss,iqonios,e3hd,ebox5000,wetek,edision,hd,gi,xpeedc,formuler,miraclebox],
+	[  --with-boxtype          valid values: generic,dgs,gigablue,dreambox,xtrend,fulan,kathrein,ipbox,topfield,fortis_hdbox,octagon,atevio,adb_box,whitebox,vip,homecast,vuplus,azbox,technomate,coolstream,hypercube,venton,xp1000,odin,ixuss,iqonios,e3hd,ebox5000,wetek,edision,hd,gi,xpeedc,formuler,miraclebox,spycat,xsarius,zgemma],
 	[case "${withval}" in
-		generic|dgs|gigablue|dreambox|xtrend|fulan|kathrein|ipbox|hl101|topfield|fortis_hdbox|octagon|atevio|adb_box|whitebox|vip|homecast|vuplus|azbox|technomate|coolstream|hypercube|venton|xp1000|odin|ixuss|iqonios|e3hd|ebox5000|wetek|edision|hd|gi|xpeedc|formuler|miraclebox)
+		generic|dgs|gigablue|dreambox|xtrend|fulan|kathrein|ipbox|hl101|topfield|fortis_hdbox|octagon|atevio|adb_box|whitebox|vip|homecast|vuplus|azbox|technomate|coolstream|hypercube|venton|xp1000|odin|ixuss|iqonios|e3hd|ebox5000|wetek|edision|hd|gi|xpeedc|formuler|miraclebox|spycat|xsarius|zgemma)
 			BOXTYPE="$withval"
 			;;
 		cu*)
@@ -492,6 +330,21 @@ AC_ARG_WITH(boxtype,
 			BOXMODEL="$withval"
 			;;
 
+		spy*)
+			BOXTYPE="spycat"
+			BOXMODEL="$withval"
+			;;
+
+		xsa*)
+			BOXTYPE="xsarius"
+			BOXMODEL="$withval"
+			;;
+
+		zge*)
+			BOXTYPE="zgemma"
+			BOXMODEL="$withval"
+			;;
+
 		*)
 			AC_MSG_ERROR([unsupported value $withval for --with-boxtype])
 			;;
@@ -500,7 +353,7 @@ AC_ARG_WITH(boxtype,
 AC_ARG_WITH(boxmodel,
 	[  --with-boxmodel	valid for dgs: cuberevo,cuberevo_mini,cuberevo_mini2,cuberevo_mini_fta,cuberevo_250hd,cuberevo_2000hd,cuberevo_9500hd
 				valid for gigablue: gbsolo,gb800se,gb800ue,gb800seplus,gb800ueplus,gbquad
-				valid for dreambox: dm500, dm500plus, dm600pvr, dm56x0, dm7000, dm7020, dm7025, dm500hd, dm7020hd, dm8000, dm800, dm800se
+				valid for dreambox: dm500, dm500plus, dm600pvr, dm56x0, dm7000, dm7020, dm7025, dm500hd, dm7020hd, dm8000, dm800, dm800se, dm520
 				valid for xtrend: et4x00,et5x00,et6x00,et7x00, et8000,et8500,et9x00, et10000
 				valid for fulan: spark, spark7162
 				valid for kathrein: ufs910, ufs922, ufs912, ufs913, ufc960
@@ -517,11 +370,14 @@ AC_ARG_WITH(boxmodel,
 				valid for odin: odinm6,odinm7,odinm9
 				valid for wetek: wetekplay
 				valid for edision: osmini, osminiplus
-				valid for hd: hd11, hd51, hd500c, hd1100, hd1200, hd1265, hdhd1500, hd2400
+				valid for hd: hd11, hd51, hd500c, hd1100, hd1200, hd1265, hdhd1500, hd2400, ax51
 				valid for gi: et7000mini
 				valid for xpeedc: xpeedc
 				valid for formuler: formuler1, formuler3, formuler4
-				valid for miraclebox: mbmicro, mbtwinplus],
+				valid for miraclebox: mbmicro, mbtwinplus
+				valid for spycat: spycat, spycatmini
+				valid for xsarius: fusionhd, fusionhdse, purehd
+				valid for zgemma: h3, h4, h5, i55, lc, sh1],
 	[case "${withval}" in
 		cuberevo|cuberevo_mini|cuberevo_mini2|cuberevo_mini_fta|cuberevo_250hd|cuberevo_2000hd|cuberevo_9500hd)
 			if test "$BOXTYPE" = "dgs"; then
@@ -537,7 +393,7 @@ AC_ARG_WITH(boxmodel,
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
 			fi
 			;;
-		dm500|dm500plus|dm600pvr|dm56x0|dm7000|dm7020|dm7025|dm500hd|dm7020hd|dm8000|dm800|dm800se)
+		dm500|dm500plus|dm600pvr|dm56x0|dm7000|dm7020|dm7025|dm500hd|dm7020hd|dm8000|dm800|dm800se|dm520)
 			if test "$BOXTYPE" = "dreambox"; then
 				BOXMODEL="$withval"
 			else
@@ -691,7 +547,7 @@ AC_ARG_WITH(boxmodel,
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
 			fi
 			;;
-		hd11|hd51|hd500c|hd1100|hd1200|hd1265|hd1500|hd2400)
+		hd11|hd51|ax51|hd500c|hd1100|hd1200|hd1265|hd1500|hd2400)
 			if test "$BOXTYPE" = "hd"; then
 				BOXMODEL="$withval"
 			else
@@ -726,6 +582,27 @@ AC_ARG_WITH(boxmodel,
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
 			fi
 			;;
+		spycat|spycatmini)
+			if test "$BOXTYPE" = "spycat"; then
+				BOXMODEL="$withval"
+			else
+				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
+			fi
+			;;
+		fusionhd|fusionhdse|purehd)
+			if test "$BOXTYPE" = "xsarius"; then
+				BOXMODEL="$withval"
+			else
+				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
+			fi
+			;;
+		h3|h4|h5|i55|lc|sh1)
+			if test "$BOXTYPE" = "zgemma"; then
+				BOXMODEL="$withval"
+			else
+				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
+			fi
+			;;
 		qemu*)
 			if test "$BOXTYPE" = "generic"; then
 				BOXMODEL="$withval"
@@ -737,7 +614,7 @@ AC_ARG_WITH(boxmodel,
 			AC_MSG_ERROR([unsupported value $withval for --with-boxmodel])
 			;;
 	esac],
-	[if test "$BOXTYPE" = "dgs" -o "$BOXTYPE" = "gigablue" -o "$BOXTYPE" = "dreambox" -o "$BOXTYPE" = "xtrend" -o "$BOXTYPE" = "fulan" -o "$BOXTYPE" = "kathrein" -o "$BOXTYPE" = "ipbox" -o "$BOXTYPE" = "atevio" -o "$BOXTYPE" = "octagon" -o "$BOXTYPE" = "vuplus" -o "$BOXTYPE" = "technomate" -o "$BOXTYPE" = "venton" -o "$BOXTYPE" = "ixuss" -o "$BOXTYPE" = "iqonios" -o "$BOXTYPE" = "odin" -o "$BOXTYPE" = "edision" -o "$BOXTYPE" = "hd" -o "$BOXTYPE" = "gi" -o "$BOXTYPE" = "formuler" -o "$BOXTYPE" = "miraclebox" && test -z "$BOXMODEL"; then
+	[if test "$BOXTYPE" = "dgs" -o "$BOXTYPE" = "gigablue" -o "$BOXTYPE" = "dreambox" -o "$BOXTYPE" = "xtrend" -o "$BOXTYPE" = "fulan" -o "$BOXTYPE" = "kathrein" -o "$BOXTYPE" = "ipbox" -o "$BOXTYPE" = "atevio" -o "$BOXTYPE" = "octagon" -o "$BOXTYPE" = "vuplus" -o "$BOXTYPE" = "technomate" -o "$BOXTYPE" = "venton" -o "$BOXTYPE" = "ixuss" -o "$BOXTYPE" = "iqonios" -o "$BOXTYPE" = "odin" -o "$BOXTYPE" = "edision" -o "$BOXTYPE" = "hd" -o "$BOXTYPE" = "gi" -o "$BOXTYPE" = "formuler" -o "$BOXTYPE" = "miraclebox" -o "$BOXTYPE" = "spycat" -o "$BOXTYPE" = "xsarius" -o "$BOXTYPE" = "zgemma" && test -z "$BOXMODEL"; then
 		AC_MSG_ERROR([this boxtype $BOXTYPE needs --with-boxmodel])
 	fi])
 
@@ -782,6 +659,9 @@ AM_CONDITIONAL(BOXTYPE_GI, test "$BOXTYPE" = "gi")
 AM_CONDITIONAL(BOXTYPE_XPEEDC, test "$BOXTYPE" = "xpeedc")
 AM_CONDITIONAL(BOXTYPE_FORMULER, test "$BOXTYPE" = "formuler")
 AM_CONDITIONAL(BOXTYPE_MIRACLEBOX, test "$BOXTYPE" = "miraclebox")
+AM_CONDITIONAL(BOXTYPE_SPYCAT, test "$BOXTYPE" = "spycat")
+AM_CONDITIONAL(BOXTYPE_XSARIUS, test "$BOXTYPE" = "xsarius")
+AM_CONDITIONAL(BOXTYPE_ZGEMMA, test "$BOXTYPE" = "zgemma")
 
 AM_CONDITIONAL(BOXMODEL_CUBEREVO, test "$BOXMODEL" = "cuberevo")
 AM_CONDITIONAL(BOXMODEL_CUBEREVO_MINI, test "$BOXMODEL" = "cuberevo_mini")
@@ -809,6 +689,7 @@ AM_CONDITIONAL(BOXMODEL_DM800HD,test "$BOXMODEL" = "dm800")
 AM_CONDITIONAL(BOXMODEL_DM800SE,test "$BOXMODEL" = "dm800se")
 AM_CONDITIONAL(BOXMODEL_DM7000HD,test "$BOXMODEL" = "dm7020hd")
 AM_CONDITIONAL(BOXMODEL_DM8000HD,test "$BOXMODEL" = "dm8000")
+AM_CONDITIONAL(BOXMODEL_DM520,test "$BOXMODEL" = "dm520")
 
 AM_CONDITIONAL(BOXMODEL_ET4X00,test "$BOXMODEL" = "et4x00")
 AM_CONDITIONAL(BOXMODEL_ET5X00,test "$BOXMODEL" = "et5x00")
@@ -887,6 +768,7 @@ AM_CONDITIONAL(BOXMODEL_OSMINIPLUS, test "$BOXMODEL" = "osminiplus")
 
 AM_CONDITIONAL(BOXMODEL_HD11, test "$BOXMODEL" = "hd11")
 AM_CONDITIONAL(BOXMODEL_HD51, test "$BOXMODEL" = "hd51")
+AM_CONDITIONAL(BOXMODEL_AX51, test "$BOXMODEL" = "ax51")
 AM_CONDITIONAL(BOXMODEL_HD500C, test "$BOXMODEL" = "hd500c")
 AM_CONDITIONAL(BOXMODEL_HD1100, test "$BOXMODEL" = "hd1100")
 AM_CONDITIONAL(BOXMODEL_HD1200, test "$BOXMODEL" = "hd1200")
@@ -904,6 +786,20 @@ AM_CONDITIONAL(BOXMODEL_FORMULER4, test "$BOXMODEL" = "formuler4")
 
 AM_CONDITIONAL(BOXMODEL_MBMICRO, test "$BOXMODEL" = "mbmicro")
 AM_CONDITIONAL(BOXMODEL_MBTWINPLUS, test "$BOXMODEL" = "mbtwinplus")
+
+AM_CONDITIONAL(BOXMODEL_SPYCAT, test "$BOXMODEL" = "spycat")
+AM_CONDITIONAL(BOXMODEL_SPYCATMINI, test "$BOXMODEL" = "spycatmini")
+
+AM_CONDITIONAL(BOXMODEL_FUSIONHD, test "$BOXMODEL" = "fusionhd")
+AM_CONDITIONAL(BOXMODEL_FUSIONHDSE, test "$BOXMODEL" = "fusionhdse")
+AM_CONDITIONAL(BOXMODEL_PUREHD, test "$BOXMODEL" = "purehd")
+
+AM_CONDITIONAL(BOXMODEL_H3, test "$BOXMODEL" = "h3")
+AM_CONDITIONAL(BOXMODEL_H4, test "$BOXMODEL" = "h4")
+AM_CONDITIONAL(BOXMODEL_H5, test "$BOXMODEL" = "h5")
+AM_CONDITIONAL(BOXMODEL_I55, test "$BOXMODEL" = "i55")
+AM_CONDITIONAL(BOXMODEL_LC, test "$BOXMODEL" = "lc")
+AM_CONDITIONAL(BOXMODEL_SH1, test "$BOXMODEL" = "sh1")
 
 if test "$BOXTYPE" = "generic"; then
 	AC_DEFINE(PLATFORM_GENERIC, 1, [building for generic])
@@ -977,6 +873,12 @@ elif test "$BOXTYPE" = "formuler"; then
 	AC_DEFINE(PLATFORM_FORMULER, 1, [building for formuler])
 elif test "$BOXTYPE" = "miraclebox"; then
 	AC_DEFINE(PLATFORM_MIRACLEBOX, 1, [building for miraclebox])
+elif test "$BOXTYPE" = "spycat"; then
+	AC_DEFINE(PLATFORM_SPYCAT, 1, [building for spycat])
+elif test "$BOXTYPE" = "xsarius"; then
+	AC_DEFINE(PLATFORM_XSARIUS, 1, [building for xsarius])
+elif test "$BOXTYPE" = "zgemma"; then
+	AC_DEFINE(PLATFORM_ZGEMMA, 1, [building for zgemma])
 fi
 
 if test "$BOXMODEL" = "cuberevo"; then
@@ -1027,6 +929,8 @@ elif test "$BOXMODEL" = "dm800"; then
 	AC_DEFINE(BOXMODEL_DM800HD, 1, [building for dreambox 800])
 elif test "$BOXMODEL" = "dm800se"; then
 	AC_DEFINE(BOXMODEL_DM800SE, 1, [building for dreambox 800se])
+elif test "$BOXMODEL" = "dm520"; then
+	AC_DEFINE(BOXMODEL_DM520, 1, [building for dreambox 520])
 
 elif test "$BOXMODEL" = "et4x00"; then
 	AC_DEFINE(BOXMODEL_ET4X00, 1, [building for xtrend et4x00])
@@ -1165,6 +1069,8 @@ elif test "$BOXMODEL" = "hd11"; then
 	AC_DEFINE(BOXMODEL_HD11, 1, [building for hd11])
 elif test "$BOXMODEL" = "hd51"; then
 	AC_DEFINE(BOXMODEL_HD51, 1, [building for hd51])
+elif test "$BOXMODEL" = "ax51"; then
+	AC_DEFINE(BOXMODEL_AX51, 1, [building for ax51])
 elif test "$BOXMODEL" = "hd500c"; then
 	AC_DEFINE(BOXMODEL_HD500C, 1, [building for hd500c])
 elif test "$BOXMODEL" = "hd1100"; then
@@ -1195,6 +1101,31 @@ elif test "$BOXMODEL" = "mbmini"; then
 	AC_DEFINE(BOXMODEL_MBMINI, 1, [building for mbmini])
 elif test "$BOXMODEL" = "mbtwinplus"; then
 	AC_DEFINE(BOXMODEL_MBTWINPLUS, 1, [building for mbtwinplus])
+
+elif test "$BOXMODEL" = "spycat"; then
+	AC_DEFINE(BOXMODEL_SPYCAT, 1, [building for spycat])
+elif test "$BOXMODEL" = "spycatmini"; then
+	AC_DEFINE(BOXMODEL_SPYCATMINI, 1, [building for spycatmini])
+
+elif test "$BOXMODEL" = "fusionhd"; then
+	AC_DEFINE(BOXMODEL_FUSIONHD, 1, [building for fusionhd])
+elif test "$BOXMODEL" = "fusionhdse"; then
+	AC_DEFINE(BOXMODEL_FUSIONHDSE, 1, [building for fusionhdse])
+elif test "$BOXMODEL" = "purehd"; then
+	AC_DEFINE(BOXMODEL_PUREHD, 1, [building for purehd])
+
+elif test "$BOXMODEL" = "h3"; then
+	AC_DEFINE(BOXMODEL_H3, 1, [building for h3])
+elif test "$BOXMODEL" = "h4"; then
+	AC_DEFINE(BOXMODEL_H4, 1, [building for h4])
+elif test "$BOXMODEL" = "h5"; then
+	AC_DEFINE(BOXMODEL_H5, 1, [building for h5])
+elif test "$BOXMODEL" = "i55"; then
+	AC_DEFINE(BOXMODEL_I55, 1, [building for i55])
+elif test "$BOXMODEL" = "lc"; then
+	AC_DEFINE(BOXMODEL_LC, 1, [building for lc])
+elif test "$BOXMODEL" = "sh1"; then
+	AC_DEFINE(BOXMODEL_SH1, 1, [building for sh1])
 fi
 ])
 

@@ -79,19 +79,19 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 
 void CMediaPortal::showMenu(void)
 {
-	CSmartMenu * mediaPortal = new CSmartMenu("Media Portal", PLUGINDIR "/mediaportal/mp.png");
+	CMenuFrameBox* mediaPortal = new CMenuFrameBox("Media Portal", PLUGINDIR "/mediaportal/mp.png");
 
 	// musicdeluxe
-	mediaPortal->addItem(new CMenuFrameBox("Music Deluxe", this, "musicdeluxe", PLUGINDIR "/mediaportal/musicdeluxe.png"));
+	mediaPortal->addItem(new CMenuFrameBoxItem("Music Deluxe", this, "musicdeluxe", PLUGINDIR "/mediaportal/musicdeluxe.png"));
 
 	// youtube
-	mediaPortal->addItem(new CMenuFrameBox("You Tube", this, "youtube", PLUGINDIR "/youtube/youtube.png"));
+	mediaPortal->addItem(new CMenuFrameBoxItem("You Tube", this, "youtube", PLUGINDIR "/youtube/youtube.png"));
 
 	// netzkino
-	mediaPortal->addItem(new CMenuFrameBox("NetzKino", this, "netzkino", PLUGINDIR "/netzkino/netzkino.png"));
+	mediaPortal->addItem(new CMenuFrameBoxItem("NetzKino", this, "netzkino", PLUGINDIR "/netzkino/netzkino.png"));
 
 	// internetradio
-	mediaPortal->addItem(new CMenuFrameBox("Internet Radio", this, "internetradio", NEUTRINO_ICON_MENUITEM_INTERNETRADIO));
+	mediaPortal->addItem(new CMenuFrameBoxItem("Internet Radio", this, "internetradio", NEUTRINO_ICON_MENUITEM_INTERNETRADIO));
 
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();

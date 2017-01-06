@@ -3,10 +3,8 @@ AM_INIT_AUTOMAKE([1.0.1 nostdinc])
 
 TUXBOX_APPS
 TUXBOX_APPS_DIRECTORY
-TUXBOX_APPS_PKGCONFIG
 TUXBOX_APPS_DVB
 TUXBOX_APPS_DRIVER
-
 TUXBOX_BOXTYPE
 
 AC_PROG_CC
@@ -26,7 +24,7 @@ PKG_CHECK_MODULES(AVFORMAT,libavformat)
 
 # keybaord
 AC_ARG_ENABLE(keyboard-no-rc,
-         [  --enable-keyboard-no-rc             enable keyboard control, disable rc control],
+         [  --enable-keyboard-no-rc enable keyboard control, disable rc control],
          [AC_DEFINE(KEYBOARD_INSTEAD_OF_REMOTE_CONTROL,1,[enable keyboard control, disable rc control])])
 
 # opengl framebuffer (x86)
@@ -47,7 +45,12 @@ AM_CONDITIONAL(ENABLE_GSTREAMER,test "$enable_gstreamer" = "yes")
 
 if test "$enable_gstreamer" = "yes"; then
 AC_DEFINE(ENABLE_GSTREAMER,1,[include gstreamer as player engine support])
-PKG_CHECK_MODULES(GST,gstreamer-0.10)
+
+AC_ARG_WITH(gstversion,
+	AS_HELP_STRING([--with-gstversion],[use gstreamer version (major.minor)]),
+	[GST_MAJORMINOR=$withval],[GST_MAJORMINOR=0.10])
+
+PKG_CHECK_MODULES(GSTREAMER, gstreamer-$GST_MAJORMINOR gstreamer-pbutils-$GST_MAJORMINOR)
 fi
 
 # lcd
@@ -141,6 +144,7 @@ lib/libupnpclient/Makefile
 lib/liblcddisplay/Makefile
 lib/libdvbapi/Makefile
 lib/libeplayer3/Makefile
+lib/jsoncpp/Makefile
 src/nhttpd/Makefile
 src/nhttpd/web/Makefile
 src/nhttpd/web/images/Makefile

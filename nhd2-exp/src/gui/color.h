@@ -42,13 +42,9 @@
 
 // common
 #define COL_TRANSP0			0x00
-//#define COL_BLACK0			0x01
 #define COL_DARK_RED0	 		0x02
 #define COL_DARK_GREEN0	 		0x03
-//#define COL_TRANSP0			0x04
 #define COL_DARK_BLUE0	 		0x05
-//#define COL_TRANSP0			0x06
-//#define COL_TRANSP0			0x07
 #define COL_LIGHT_GRAY0	 		0x08
 #define COL_DARK_GRAY0	 		0x09
 #define COL_RED0	 		0x0A
@@ -59,11 +55,9 @@
 #define COL_LIGHT_BLUE0	 		0x0F
 #define COL_WHITE0	 		0x10
 #define COL_BLACK0	 		0x11
-
 #define COL_ORANGE0			0xBD
 #define COL_DARK_ORANGE0		0xBC
-
-#define COL_BACKGROUND 			0xFF	//black
+#define COL_BACKGROUND0 		0xFF
 
 #define COL_TRANSP			(CFrameBuffer::getInstance()->realcolor[COL_TRANSP0])
 #define COL_DARK_RED			(CFrameBuffer::getInstance()->realcolor[COL_DARK_RED0])
@@ -79,11 +73,11 @@
 #define COL_LIGHT_BLUE 			(CFrameBuffer::getInstance()->realcolor[COL_LIGHT_BLUE0])
 #define COL_WHITE                       (CFrameBuffer::getInstance()->realcolor[COL_WHITE0])
 #define COL_BLACK                       (CFrameBuffer::getInstance()->realcolor[COL_BLACK0])
-
 #define COL_ORANGE			(CFrameBuffer::getInstance()->realcolor[COL_ORANGE0])
 #define COL_DARK_ORANGE			(CFrameBuffer::getInstance()->realcolor[COL_DARK_ORANGE0])
+#define COL_BACKGROUND           	(CFrameBuffer::getInstance()->realcolor[(COL_BACKGROUND0 + 0)])
 
-//
+// neutrino color
 #define COL_MENUCONTENTINACTIVE		254-8*1
 #define COL_MENUCONTENTSELECTED		254-8*2
 #define COL_MENUCONTENTDARK		254-8*3
@@ -122,6 +116,9 @@
 #define COL_MENUCONTENTINACTIVE_PLUS_0  (CFrameBuffer::getInstance()->realcolor[(COL_MENUCONTENTINACTIVE + 0)])
 
 #define COL_MENUFOOT_PLUS_0		(CFrameBuffer::getInstance()->realcolor[(COL_MENUFOOT + 0)])
+
+#define COL_SCROLLBAR			COL_MENUCONTENT_PLUS_1
+#define COL_SCROLLBAR_SLIDER		COL_MENUCONTENT_PLUS_3
 
 
 int convertSetupColor2RGB(unsigned char r, unsigned char g, unsigned char b);

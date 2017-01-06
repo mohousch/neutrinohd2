@@ -292,7 +292,7 @@ int parse_current_sdt( const t_transport_stream_id p_transport_stream_id, const 
 	curchans.clear();
 	
 	//
-	filter[0] = 0x42;
+	filter[0] = 0x42;	/* sdt tid */
 	filter[1] = (p_transport_stream_id >> 8) & 0xff;
 	filter[2] = p_transport_stream_id & 0xff;
 	filter[3] = 0x00;

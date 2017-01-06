@@ -30,81 +30,49 @@
 #ifndef __webtv_h__
 #define __webtv_h__
 
-#include <sys/types.h>
-
 #include <string>
 #include <vector>
 
-#include <sys/stat.h>
-
-#include <driver/file.h>
+#include <gui/widget/menue.h>
 
 #include <xmlinterface.h>
+
+#include <channel.h>
 
 
 #define DEFAULT_WEBTV_FILE 		CONFIGDIR "/webtv/webtv.xml"
 
-class CWebTV
+class CWebTV : public CMenuTarget
 {
 	private:
 		struct webtv_channels {
+			t_channel_id id;
 			std::string title;
 			std::string url;
 			std::string description;
-			bool locked;		// for parentallock
 		};
 
 		xmlDocPtr parser;
 		
 		// channels
 		std::vector<webtv_channels *> channels;
-		CZapProtection * 	zapProtection;
 		
 		// bouquets
 		std::string title;
-		
-		// gui
-		CFrameBuffer * frameBuffer;
-		
-		int            	width;
-		int            	height;
-		int            	x;
-		int            	y;
-		
-		int            	hheight; 	// title font height
-		int            	iheight; 	// item font height (buttons???)
-		
-		int icon_bf_w;
-		int icon_bf_h;
-		int icon_hd_w;
-		int icon_hd_h;
-		
-		unsigned int   	selected;
-		//unsigned int oldselected;
+
+		CMenulistBox* webTVlistMenu;
+
 		int tuned;
-		
-		unsigned int   	liststart;
-		int		buttonHeight;
-		unsigned int	listmaxshow;
-		unsigned int	numwidth;
-		int 		info_height;
 		
 		unsigned int position;
 		unsigned int duration;
 		unsigned int file_prozent;
 		unsigned int speed;
 		
-		void paintDetails(int index);
-		void clearItem2DetailsLine ();
-		void paintItem2DetailsLine (int pos);
-		void paintItem(int pos);
-		void paint();
-		void paintHead();
-		void paintFoot();
 		void hide();
 
 		void processPlaylistUrl(const char *url, const char *name, const char * description) ;
-		void addUrl2Playlist(const char * url, const char *name, const char * description, bool locked = false);
+		void addUrl2Playlist(const char * url, const char *name, const char * description, t_channel_id id = 0);
 		
 	public:
 		enum state
@@ -118,13 +86,12 @@ class CWebTV
 		
 		CWebTV();
 		~CWebTV();
-		int exec(bool rezap = false);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 		
-		int Show();
+		void show(bool reload = false, bool reinit = false);
 		void showUserBouquet();
 		
 		//
-		int zapTo(int pos = 0, bool rezap = false);
 		void quickZap(int key);
 		
 		// playback
@@ -133,22 +100,21 @@ class CWebTV
 		void pausePlayBack(void);
 		void continuePlayBack(void);
 		
-		void showFileInfoWebTV(int pos);
+		//
+		//void showFileInfoWebTV(int pos);
 		void showInfo();
-		void getInfos();
+
+		//
+		unsigned int getTunedChannel() {if(tuned < 0) tuned = 0; return tuned;};
+		t_channel_id getLiveChannelID() { if(tuned < 0) tuned = 0; return channels[tuned]->id;};
+		const std::string& getLiveChannelName(void) {if(tuned < 0) tuned = 0; return channels[tuned]->title;};
 		
-		void showAudioDialog();
-		
-		unsigned int getTunedChannel() {return tuned;};
-		unsigned int getlastSelectedChannel() { return selected;};
-		
+		//
 		void loadChannels(void);
 		void ClearChannels(void);
 		
 		bool readChannellist(std::string filename);
 		void addUserBouquet(void);
-		
-		unsigned int hasChannels() { return channels.size();};
 };
 
 #endif

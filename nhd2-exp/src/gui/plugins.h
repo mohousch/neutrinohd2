@@ -32,13 +32,15 @@
 #ifndef __plugins__
 #define __plugins__
 
-#include <gui/widget/menue.h>
-
-#include <driver/framebuffer.h>
-#include <system/localize.h>
-
 #include <string>
 #include <vector>
+
+#include <gui/widget/icons.h>
+
+#include <driver/framebuffer.h>
+
+#include <system/localize.h>
+#include <system/helpers.h>
 
 
 typedef void (*PluginExec)(void);
@@ -55,6 +57,17 @@ typedef enum plugin_type
 }
 plugin_type_t;
 
+typedef enum integration_type
+{
+	INTEGRATION_TYPE_DISABLED	= 0,
+	INTEGRATION_TYPE_MAIN		= 1,
+	INTEGRATION_TYPE_MULTIMEDIA	= 2,
+	INTEGRATION_TYPE_SETTING	= 3,
+	INTEGRATION_TYPE_SERVICE	= 4,
+	INTEGRATION_TYPE_POWER		= 5,
+	INTEGRATION_TYPE_USER		= 6
+}
+integration_type_t;
 
 class CPlugins
 {
@@ -69,6 +82,19 @@ class CPlugins
 		}
 		p_type_t;
 
+		//
+		typedef enum i_type
+		{
+			I_TYPE_DISABLED		= 0x1,
+			I_TYPE_MAIN		= 0x2,
+			I_TYPE_MULTIMEDIA	= 0x4,
+			I_TYPE_SETTING		= 0x8,
+			I_TYPE_SERVICE		= 0x10,
+			I_TYPE_POWER		= 0x20,
+			I_TYPE_USER		= 0x40
+		}
+		i_type_t;
+
 	private:
 
 		CFrameBuffer	*frameBuffer;
@@ -82,6 +108,7 @@ class CPlugins
 			std::string description;        // UTF-8 encoded
 			std::string version;
 			CPlugins::p_type_t type;
+			CPlugins::i_type_t integration;
 			std::string icon;		// Icon
 			bool hide;
 			
@@ -99,7 +126,6 @@ class CPlugins
 		bool parseCfg(plugin *plugin_data);
 		void addPlugin(const char *dir);
 		int find_plugin(const std::string & filename);
-		CPlugins::p_type_t getPluginType(int type);
 	public:
 
 		~CPlugins();
@@ -111,16 +137,23 @@ class CPlugins
 
 		void setPluginDir(const std::string & dir) { plugin_dir = dir; }
 
+		//
 		inline int getNumberOfPlugins(void) const { return plugin_list.size(); }
-		inline const char * getName(const int number) const { return plugin_list[number].name.c_str(); }
-		inline const char * getPluginFile(const int number) const { return plugin_list[number].pluginfile.c_str(); }
-		inline const char * getFileName(const int number) const { return plugin_list[number].filename.c_str(); }
-		inline const std::string & getDescription(const int number) const { return plugin_list[number].description; }
-		inline const std::string & getVersion(const int number) const { return plugin_list[number].version; }
+		inline const char* getName(const int number) const { return plugin_list[number].name.c_str(); }
+		inline const char* getPluginFile(const int number) const { return plugin_list[number].pluginfile.c_str(); }
+		inline const char* getFileName(const int number) const { return plugin_list[number].filename.c_str(); }
+		inline const std::string& getDescription(const int number) const { return plugin_list[number].description; }
+		inline const std::string& getVersion(const int number) const { return plugin_list[number].version; }
 		inline int getType(const int number) const { return plugin_list[number].type; }
-		inline const char * getIcon(const int number) const { return plugin_list[number].icon.c_str(); }
+		inline int getIntegration(const int number) const { return plugin_list[number].integration; }
+		inline const char* getIcon(const int number) const { return plugin_list[number].icon.c_str();}
 		inline bool isHidden(const int number) const { return plugin_list[number].hide; }
 
+		//
+		CPlugins::p_type_t getPluginType(int type);
+		CPlugins::i_type_t getPluginIntegration(int integration);
+
+		//
 		void startPlugin(int number);
 		void start_plugin_by_name(const std::string & filename);	// start plugins by "name=" in .cfg
 		void startScriptPlugin(int number);

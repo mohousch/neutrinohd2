@@ -37,11 +37,11 @@ CZapitChannel::CZapitChannel(const std::string & p_name, t_service_id p_sid, t_t
 	channel_id = CREATE_CHANNEL_ID;
 	caPmt = NULL;
 	rawPmt = NULL;
-	type = CHANNEL_MPEG2;
+	videoType = CHANNEL_VIDEO_MPEG2;
 	number = 0;
 	scrambled = 0;
 	pname = NULL;
-	//currentEvent = NULL;
+	
 	pmtPid = 0;
 	resetPids();
 	
@@ -121,11 +121,10 @@ void CZapitChannel::resetPids(void)
 	currentAudioChannel = 0;
 
 	pcrPid = 0;
-	//pmtPid = 0;
 	teletextPid = 0;
 	videoPid = 0;
 	audioPid = 0;
-	//aitPid = 0;
+	aitPid = 0;
 
 	privatePid = 0;
 	pidsFlag = false;
@@ -144,7 +143,7 @@ unsigned char CZapitChannel::getServiceType(bool real)
 	if(real)
 		return serviceType; 
 	else
-		return serviceType == 2 ? 2 : 1;	
+		return serviceType == ST_DIGITAL_RADIO_SOUND_SERVICE ? ST_DIGITAL_RADIO_SOUND_SERVICE : ST_DIGITAL_TELEVISION_SERVICE;	
 }
 
 bool CZapitChannel::isHD()
@@ -158,17 +157,41 @@ bool CZapitChannel::isHD()
 		case ST_DIGITAL_TELEVISION_SERVICE: 
 		case ST_AVC_SD_DIGITAL_TV_SERVICE:
 		{
-				char * temp = (char *) name.c_str();
-				int len = name.size();
-				if((len > 1) && temp[len-2] == 'H' && temp[len-1] == 'D') 
-				{
-					return true;
-				}
-				return false;
+			char * temp = (char *) name.c_str();
+			int len = name.size();
+			if((len > 1) && temp[len - 2] == 'H' && temp[len - 1] == 'D') 
+			{
+				return true;
+			}
+
+			return false;
 		}
 		
 		case ST_DIGITAL_RADIO_SOUND_SERVICE:
 			return false;
+			
+		default:
+			return false;
+	}
+}
+
+bool CZapitChannel::isUHD()
+{
+	switch(serviceType) 
+	{	
+		case ST_DIGITAL_TELEVISION_SERVICE: 
+		case ST_AVC_SD_DIGITAL_TV_SERVICE:
+		{
+			char * temp = (char *) name.c_str();
+			int len = name.size();
+
+			if((len > 1) && temp[len - 3] == 'U' && temp[len - 2] == 'H' && temp[len -1] == 'D') 
+			{
+				return true;
+			}
+
+			return false;
+		}
 			
 		default:
 			return false;
@@ -230,8 +253,6 @@ void CZapitChannel::addTTXSubtitle(const unsigned int pid, const std::string lan
 	tmpSub->teletext_magazine_number = mag_nr;
 	tmpSub->teletext_page_number = page_number;
 	tmpSub->hearingImpaired = impaired;
-
-	//setPidsUpdated();
 }
 
 void CZapitChannel::addDVBSubtitle(const unsigned int pid, const std::string langCode, const unsigned char subtitling_type, const unsigned short composition_page_id, const unsigned short ancillary_page_id)
@@ -276,8 +297,6 @@ void CZapitChannel::addDVBSubtitle(const unsigned int pid, const std::string lan
 	tmpSub->subtitling_type = subtitling_type;
 	tmpSub->composition_page_id = composition_page_id;
 	tmpSub->ancillary_page_id = ancillary_page_id;
-
-	//setPidsUpdated();
 }
 
 CZapitAbsSub* CZapitChannel::getChannelSub(int index)

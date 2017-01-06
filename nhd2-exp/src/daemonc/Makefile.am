@@ -17,6 +17,8 @@ else
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbapi
 endif
 
+AM_CPPFLAGS += -fno-rtti -fno-exceptions
+
 noinst_LIBRARIES = libneutrino_daemonc.a
 
 libneutrino_daemonc_a_SOURCES = remotecontrol.cpp

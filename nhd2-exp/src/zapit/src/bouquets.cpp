@@ -368,8 +368,16 @@ void CBouquetManager::sortBouquets(void)
 	sort(Bouquets.begin(), Bouquets.end(), CmpBouquetByChName());
 }
 
-void CBouquetManager::parseBouquetsXml(const xmlNodePtr root, bool bUser)
+void CBouquetManager::parseBouquetsXml(const char* fname, bool bUser)
 {
+	xmlDocPtr parser;
+
+	parser = parseXmlFile(fname);
+	if (parser == NULL)
+		return;
+
+	xmlNodePtr root = xmlDocGetRootElement(parser);
+
 	xmlNodePtr search = root->xmlChildrenNode;
 	xmlNodePtr channel_node;
 
@@ -379,7 +387,7 @@ void CBouquetManager::parseBouquetsXml(const xmlNodePtr root, bool bUser)
 		t_service_id service_id;
 		t_transport_stream_id transport_stream_id;
 
-		dprintf(DEBUG_INFO, "CBouquetManager::parseBouquetsXml: reading bouquets\n");
+		dprintf(DEBUG_INFO, "CBouquetManager::parseBouquetsXml: %s\n", fname);
 
 		while ((search = xmlGetNextOccurence(search, "Bouquet")) != NULL) 
 		{
@@ -418,8 +426,11 @@ void CBouquetManager::parseBouquetsXml(const xmlNodePtr root, bool bUser)
 			search = search->xmlNextNode;
 		}
 
-		dprintf(DEBUG_INFO, "CBouquetManager::parseBouquetsXml: found %d bouquets\n", Bouquets.size());
+		dprintf(DEBUG_DEBUG, "CBouquetManager::parseBouquetsXml: found %d bouquets\n", (int)Bouquets.size());
 	}
+
+	xmlFreeDoc(parser);
+	parser = NULL;
 }
 
 void CBouquetManager::makeBouquetfromCurrentservices(const xmlNodePtr root)
@@ -442,7 +453,6 @@ void CBouquetManager::makeBouquetfromCurrentservices(const xmlNodePtr root)
 		
 		while (xmlGetNextOccurence(transponder, "transponder") != NULL) 
 		{
-			
 			xmlNodePtr channel_node = transponder->xmlChildrenNode;
 			
 			while (xmlGetNextOccurence(channel_node, "channel") != NULL) 
@@ -471,37 +481,31 @@ void CBouquetManager::makeBouquetfromCurrentservices(const xmlNodePtr root)
 
 void CBouquetManager::loadBouquets(bool ignoreBouquetFile)
 {
-	xmlDocPtr parser;
+	dprintf(DEBUG_NORMAL, "CBouquetManager::loadBouquets:\n");
+
+	clearAll();
 	
 	if (ignoreBouquetFile == false) 
 	{
-		parser = parseXmlFile(BOUQUETS_XML);
-		if (parser != NULL) 
-		{
-			printf("reading %s\n", BOUQUETS_XML);
-			parseBouquetsXml(xmlDocGetRootElement(parser), false);
-			xmlFreeDoc(parser);
-			parser = NULL;
-		}
+
+		parseBouquetsXml(BOUQUETS_XML, false);
 		sortBouquets();
 	}
+
+	parseBouquetsXml(UBOUQUETS_XML, true);
 	
-	parser = parseXmlFile(UBOUQUETS_XML);
-	if (parser != NULL) 
-	{
-		printf("reading %s\n", UBOUQUETS_XML);
-		parseBouquetsXml(xmlDocGetRootElement(parser), true);
-		xmlFreeDoc(parser);
-		parser = NULL;
-	}
-	
+	/* FIXME: fix first sdt thread
+	xmlDocPtr parser = NULL;
 	parser = parseXmlFile(CURRENTSERVICES_XML);
 	if (parser != NULL)
 	{
-		printf("reading %s\n", CURRENTSERVICES_XML);
+		dprintf(DEBUG_NORMAL, "reading %s\n", CURRENTSERVICES_XML);
+
 		makeBouquetfromCurrentservices(xmlDocGetRootElement(parser));
 		xmlFreeDoc(parser);
+		parser = NULL;
 	}
+	*/
 
 	renumServices();
 }
@@ -583,6 +587,7 @@ void CBouquetManager::renumServices()
 {
 	if(remainChannels)
 		deleteBouquet(remainChannels);
+
 	remainChannels = NULL;
 	
 	makeRemainingChannelsBouquet();
@@ -694,7 +699,7 @@ void CBouquetManager::moveBouquet(const unsigned int oldId, const unsigned int n
 
 void CBouquetManager::clearAll()
 {
-	for (unsigned int i=0; i<Bouquets.size(); i++)
+	for (unsigned int i = 0; i < Bouquets.size(); i++)
 		delete Bouquets[i];
 
 	Bouquets.clear();
@@ -723,7 +728,6 @@ CZapitChannel *CBouquetManager::findChannelByName(std::string name, const t_serv
 	
 	return NULL;
 }
-//
 
 CBouquetManager::ChannelIterator::ChannelIterator(CBouquetManager* owner, const bool TV)
 {

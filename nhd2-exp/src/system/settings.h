@@ -504,7 +504,20 @@ struct SNeutrinoSettings
 	int satip_serverbox_gui;
 
 	// MODE
-	int mode;
+	//int mode;
+
+	// tmdb
+	std::string tmdbkey;
+
+	// progressbar color
+	int progressbar_color;
+
+	// gradient
+	int Head_gradient;
+	int Foot_gradient;
+	int Head_Info_gradient;
+	int Foot_Info_gradient;
+	int infobar_gradient;
 
 #define FILESYSTEM_ENCODING_TO_UTF8(a) (g_settings.filesystem_is_utf8 ? (a) : ZapitTools::Latin1_to_UTF8(a).c_str())
 #define UTF8_TO_FILESYSTEM_ENCODING(a) (g_settings.filesystem_is_utf8 ? (a) : ZapitTools::UTF8_to_Latin1(a).c_str())
@@ -534,9 +547,10 @@ extern const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT];
 #define DEFAULT_LCD_DUMP_PNG			0x00
 
 // corners (osd)
-#define RADIUS_LARGE    		(g_settings.rounded_corners ? 8 : 0)
-#define RADIUS_MID      		(g_settings.rounded_corners ? 4 : 0)
-#define RADIUS_SMALL    		(g_settings.rounded_corners ? 2 : 0)
+#define NO_RADIUS			0
+#define RADIUS_LARGE    		(g_settings.rounded_corners ? 8 : NO_RADIUS)
+#define RADIUS_MID      		(g_settings.rounded_corners ? 4 : NO_RADIUS)
+#define RADIUS_SMALL    		(g_settings.rounded_corners ? 2 : NO_RADIUS)
 
 #define BORDER_LEFT			10
 #define BORDER_RIGHT			10
@@ -544,7 +558,7 @@ extern const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT];
 #define ConnectLineBox_Width    	16
 #define SHADOW_OFFSET 			5
 #define ICON_OFFSET			5	// offset from left border
-#define LOCAL_OFFSET			5	// offset from painted icon at left border
+#define ICON_TO_ICON_OFFSET		2
 
 // parentallock
 const int PARENTALLOCK_PROMPT_NEVER          = 0;

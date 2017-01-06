@@ -17,6 +17,8 @@ else
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbapi
 endif
 
+AM_CPPFLAGS += -fno-rtti -fno-exceptions
+
 noinst_LIBRARIES = libneutrino_gui_widget.a libneutrino_gui_widget2.a 
 
 libneutrino_gui_widget_a_SOURCES = \
@@ -29,11 +31,11 @@ libneutrino_gui_widget_a_SOURCES = \
 	infobox.cpp \
 	messagebox.cpp \
 	hintbox.cpp \
-	hintboxext.cpp \
 	helpbox.cpp \
-	listbox.cpp \
 	textbox.cpp \
-	listframe.cpp
+	listframe.cpp \
+	window.cpp \
+	scrollbar.cpp
 
 libneutrino_gui_widget2_a_SOURCES = \
 	colorchooser.cpp \

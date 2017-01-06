@@ -442,22 +442,22 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 	uint8_t real_type = service_type;
 
 	if(service_type == 0x11 || service_type == 0x19)
-		service_type = 1;
+		service_type = ST_DIGITAL_TELEVISION_SERVICE;
 
 	switch ( scanType ) 
 	{
 		case CZapitClient::ST_TVRADIO:
-			if ( (service_type == 1 ) || (service_type == 2) )
+			if ( (service_type == ST_DIGITAL_TELEVISION_SERVICE ) || (service_type == ST_DIGITAL_RADIO_SOUND_SERVICE) )
 				service_wr = true;
 			break;
 			
 		case CZapitClient::ST_TV:
-			if ( service_type == 1 )
+			if ( service_type == ST_DIGITAL_TELEVISION_SERVICE )
 				service_wr = true;
 			break;
 			
 		case CZapitClient::ST_RADIO:
-			if ( service_type == 2 )
+			if ( service_type == ST_DIGITAL_RADIO_SOUND_SERVICE )
 				service_wr = true;
 			break;
 			
@@ -492,15 +492,15 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 		providerName = "Premiere"; // well the name PREMIERE itself is not a problem
 		in_blacklist = true;
 	} 
-	else if( (strncasecmp("POLSAT",providerName.c_str(),6)==0) || 
-			(strncmp("D1",providerName.c_str(),2)==0)  || (strncmp("OTV",providerName.c_str(),3) == 0)  ||
-			(providerName=="REALITY TV")  || (providerName=="PL Media")  || 
-			(providerName=="ANIMAL PL")  || (providerName=="DISCOVERY") )
+	else if( (strncasecmp("POLSAT",providerName.c_str(),6) == 0) || 
+			(strncmp("D1",providerName.c_str(),2) == 0)  || (strncmp("OTV", providerName.c_str(), 3) == 0)  ||
+			(providerName == "REALITY TV")  || (providerName == "PL Media")  || 
+			(providerName == "ANIMAL PL")  || (providerName == "DISCOVERY") )
 	{
 		providerName = "Polsat"; 
 		in_blacklist = true;
 	} 
-	else if(strncasecmp("TVN ",providerName.c_str(),4)==0) 
+	else if(strncasecmp("TVN ", providerName.c_str(), 4)==0) 
 	{
 		providerName = "TVN"; 
 		in_blacklist = true;
@@ -510,12 +510,12 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 		providerName = "BT Broadcast Services"; 
 		in_blacklist = true;
 	} 
-	else if (strncasecmp("FT GLOBECAST",providerName.c_str(),12)==0) 
+	else if (strncasecmp("FT GLOBECAST", providerName.c_str(), 12) == 0) 
 	{
 		providerName = "GlobeCast"; 
 		in_blacklist = true;
 	} 
-	else if(strncasecmp("RR Sat",providerName.c_str(),6)==0) 
+	else if(strncasecmp("RR Sat", providerName.c_str(), 6) == 0) 
 	{
 		providerName = "RRSat"; 
 		in_blacklist = true;
@@ -574,7 +574,7 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 #define UNKNOWN_PROVIDER_NAME "Unknown Provider"
 
 #if 0
-	static unsigned int last_transport_stream_id=0;
+	static unsigned int last_transport_stream_id = 0;
 	if(last_transport_stream_id != transport_stream_id ) 
 	{
 		last_transport_stream_id=transport_stream_id;
@@ -591,8 +591,8 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 	if (providerName == "") 
 	{
 		unsigned char buff[1024];
-		unsigned short network_descriptors_length=0;
-		unsigned short pos=0;
+		unsigned short network_descriptors_length = 0;
+		unsigned short pos = 0;
 
 		unsigned char filter[DMX_FILTER_SIZE];
 		unsigned char mask[DMX_FILTER_SIZE];
@@ -600,7 +600,7 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 		memset(filter, 0x00, DMX_FILTER_SIZE);
 		memset(mask, 0x00, DMX_FILTER_SIZE);
 
-		filter[0] = 0x40; /*Tid */
+		filter[0] = 0x40; /* nit tid */
 		filter[4] = 0x00;
 		mask[0] = 0xFF;
 		mask[4] = 0xFF;
@@ -634,12 +634,14 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 					}
 				}
 			}
+
 			delete dmx;
 		} 
 		else 
 		{
 			providerName = lastProviderName;
 		}
+
 		if (providerName == "")
 			providerName = CDVBString(UNKNOWN_PROVIDER_NAME, strlen(UNKNOWN_PROVIDER_NAME)).getContent();
 	}
@@ -745,9 +747,9 @@ void current_service_descriptor(const unsigned char * const buffer, const t_serv
 	uint8_t real_type = service_type;
 
 	if(service_type == 0x11 || service_type == 0x19)
-		service_type = 1;
+		service_type = ST_DIGITAL_TELEVISION_SERVICE;
 
-	if ( (service_type == 1 ) || (service_type == 2) )
+	if ( (service_type == ST_DIGITAL_TELEVISION_SERVICE ) || (service_type == ST_DIGITAL_RADIO_SOUND_SERVICE) )
 		service_wr = true;
 
         if ( !service_wr )
@@ -778,14 +780,14 @@ void current_service_descriptor(const unsigned char * const buffer, const t_serv
 	{
 		in_blacklist = true;
 	}
-        else if( (strncasecmp("POLSAT",providerName.c_str(),6)==0) || 
-        (strncmp("D1",providerName.c_str(),2)==0)  || (strncmp("OTV",providerName.c_str(),3)==0)  ||
-        (providerName=="REALITY TV")  || (providerName=="PL Media")  || 
-        (providerName=="ANIMAL PL")  || (providerName=="DISCOVERY") )
+        else if( (strncasecmp("POLSAT", providerName.c_str(), 6) == 0) || 
+        (strncmp("D1", providerName.c_str(), 2) == 0)  || (strncmp("OTV", providerName.c_str(), 3) == 0)  ||
+        (providerName == "REALITY TV")  || (providerName == "PL Media")  || 
+        (providerName == "ANIMAL PL")  || (providerName == "DISCOVERY") )
         {
                 in_blacklist = true;
         } 
-	else if(strncasecmp("TVN ",providerName.c_str(),4)==0) 
+	else if(strncasecmp("TVN ", providerName.c_str(), 4) == 0) 
 	{
                 in_blacklist = true;
         } 
@@ -793,11 +795,11 @@ void current_service_descriptor(const unsigned char * const buffer, const t_serv
 	{
                 in_blacklist = true;
         } 
-	else if (strncasecmp("FT GLOBECAST",providerName.c_str(),12)==0) 
+	else if (strncasecmp("FT GLOBECAST", providerName.c_str(), 12) == 0) 
 	{
                 in_blacklist = true;
         } 
-	else if(strncasecmp("RR Sat",providerName.c_str(),6)==0) 
+	else if(strncasecmp("RR Sat", providerName.c_str(), 6) == 0) 
 	{
                 in_blacklist = true;
         }

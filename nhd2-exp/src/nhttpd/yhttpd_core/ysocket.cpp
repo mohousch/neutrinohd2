@@ -54,6 +54,7 @@ CySocket::CySocket() :
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	init();
 }
+
 //-----------------------------------------------------------------------------
 CySocket::~CySocket() {
 #ifdef Y_CONFIG_USE_OPEN_SSL
@@ -61,6 +62,7 @@ CySocket::~CySocket() {
 	SSL_free(ssl);
 #endif
 }
+
 //-----------------------------------------------------------------------------
 // initialize
 //-----------------------------------------------------------------------------
@@ -78,7 +80,6 @@ void CySocket::init(void) {
 // Initialize this socket as a SSL-socket
 //-----------------------------------------------------------------------------
 #ifdef Y_CONFIG_USE_OPEN_SSL
-
 bool CySocket::initAsSSL(void)
 {
 	isSSLSocket = true;
@@ -144,6 +145,7 @@ bool CySocket::initSSL(void)
 	return true;
 }
 #endif
+
 //=============================================================================
 // Socket handling
 //=============================================================================

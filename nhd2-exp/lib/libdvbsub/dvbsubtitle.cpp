@@ -185,7 +185,11 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
 
 	avcodec_register_all();
 
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(57, 1, 99)
 	avcodec = avcodec_find_decoder(CODEC_ID_DVB_SUBTITLE);
+#else
+	avcodec = avcodec_find_decoder(AV_CODEC_ID_DVB_SUBTITLE);
+#endif
 
 	if (!avcodec) 
 	{

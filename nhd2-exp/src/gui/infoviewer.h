@@ -35,22 +35,27 @@
 #ifndef __infoview__
 #define __infoview__
 
+#include <string>
+
 #include <sectionsdclient/sectionsdclient.h>
 
 #include <driver/rcinput.h>
 #include <driver/framebuffer.h>
 #include <driver/fontrenderer.h>
-#include <system/settings.h>
-#include "widget/menue.h"
-#include <gui/widget/progressbar.h>
 
-#include <string>
+#include <system/settings.h>
+
+#include <gui/widget/menue.h>
+
+#include <gui/widget/progressbar.h>
 
 
 class CInfoViewer
 {
 	private:
 		void Init(void);
+		void initDimension(void);
+
 		CFrameBuffer *frameBuffer;
 		
 		bool gotTime;
@@ -141,19 +146,26 @@ class CInfoViewer
 		int             rt_w;	
 
 		int		asize;
-
+		bool show_dot;
+		bool new_chan;
 		CSectionsdClient::CurrentNextInfo info_CurrentNext;
 		t_channel_id   channel_id;
 
-		char           aspectRatio;
-		uint32_t       sec_timer_id;
-		bool           virtual_zap_mode;
-		
-		CChannelEventList               evtlist;
-		CChannelEventList::iterator     eli;
+		int timescale_posx;
+		int timescale_posy;
+		char runningPercent;
 
-		void show_Data( bool calledFromEvent = false );
-		void paintTime( bool show_dot, bool firstPaint, int posx, int posy, CFont * timeFont );
+		bool newfreq;
+
+		char aspectRatio;
+		uint32_t sec_timer_id;
+		bool virtual_zap_mode;
+		
+		CChannelEventList evtlist;
+		CChannelEventList::iterator eli;
+
+		void show_Data(bool calledFromEvent = false);
+		void paintTime(int posx, int posy, CFont * timeFont);
 		
 		void showButton_Audio();
 		void showButton_SubServices();
@@ -162,7 +174,6 @@ class CInfoViewer
 		void showIcon_RadioText(bool rt_available) const;		
 	
 		void showIcon_CA_Status(int);
-		void paint_ca_icons(int, char*);
 
 		void showIcon_VTXT()      const;
 		void showRecordIcon(const bool show);
@@ -174,24 +185,29 @@ class CInfoViewer
 		void showFailure();
 		void showMotorMoving(int duration);
 		void showLcdPercentOver();
-		void showSNR();		
+		void showSNR();
+		void showAktivTuner();
+
+		void getCurrentNextEPG(t_channel_id ChannelID, bool newChan = false, int EPGPos = 0);
 
 		CProgressBar *snrscale, *sigscale, *timescale;
 		std::string eventname;
 
  public:
-		bool 		chanready;
-		bool		is_visible;
+		bool chanready;
+		bool is_visible;
 
 #if defined (ENABLE_LCD)
-		uint32_t    	lcdUpdateTimer;
+		uint32_t lcdUpdateTimer;
 #endif		
 
 		CInfoViewer();
 
-		void	start();
+		void start();
 
-		void	showTitle(const int ChanNum, const std::string & Channel, const t_satellite_position satellitePosition, const t_channel_id new_channel_id = 0, const bool calledFromNumZap = false, int epgpos = 0); // Channel must be UTF-8 encoded
+		void showTitle(const int ChanNum, const std::string & Channel, const t_satellite_position satellitePosition); // Channel must be UTF-8 encoded
+
+		void show(const int _ChanNum, const std::string & _Channel, const t_satellite_position _satellitePosition, const t_channel_id _new_channel_id = 0, const bool _calledFromNumZap = false, int _epgpos = 0); // Channel must be UTF-8 encoded
 
 		enum
 		{
@@ -200,7 +216,7 @@ class CInfoViewer
 			AC3_ACTIVE
 		};
 
-		void lookAheadEPG(const int ChanNum, const std::string & Channel, const t_channel_id new_channel_id = 0, const bool calledFromNumZap = false); //alpha: fix for nvod subchannel update
+		//void lookAheadEPG(const int ChanNum, const std::string & Channel, const t_channel_id new_channel_id = 0, const bool calledFromNumZap = false); //alpha: fix for nvod subchannel update
 		void killTitle();
 		
 		void getEPG(const t_channel_id for_channel_id, CSectionsdClient::CurrentNextInfo &info);
@@ -216,17 +232,12 @@ class CInfoViewer
 				
 		void showRadiotext();
 		void killRadiotext();
-
-		// movie infoviewer
-		CProgressBar *moviescale;
-		bool m_visible;
-		void showMovieInfo(const std::string &Title, const std::string &Info, short Percent, const int duration, const unsigned int ac3state, const int speed, const int playstate, bool show_duration = true, bool show_bookmark = false);
 };
 
 class CInfoViewerHandler : public CMenuTarget
 {
 	public:
-		int  exec( CMenuTarget* parent,  const std::string &actionkey);
+		int  exec(CMenuTarget* parent,  const std::string& actionkey);
 		int  doMenu();
 
 };

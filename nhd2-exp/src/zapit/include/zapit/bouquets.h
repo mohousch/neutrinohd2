@@ -62,10 +62,10 @@ class CBouquetManager
 		CZapitBouquet * remainChannels;
 
 		void makeRemainingChannelsBouquet(void);
-		void parseBouquetsXml            (const xmlNodePtr root, bool ub = false);
-		void writeBouquetHeader          (FILE * bouq_fd, uint32_t i, const char * bouquetName);
-		void writeBouquetFooter          (FILE * bouq_fd);
-		void writeBouquetChannels        (FILE * bouq_fd, uint32_t i, bool bUser = false);
+		void parseBouquetsXml(const char* fname, bool ub = false);
+		void writeBouquetHeader(FILE * bouq_fd, uint32_t i, const char * bouquetName);
+		void writeBouquetFooter(FILE * bouq_fd);
+		void writeBouquetChannels(FILE * bouq_fd, uint32_t i, bool bUser = false);
 		//FIXME
 		void makeBouquetfromCurrentservices (const xmlNodePtr root);
 

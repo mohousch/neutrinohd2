@@ -68,8 +68,8 @@
 #include <driver/encoding.h>
 
 
-// Init Main Menu (neutrinohd2 design)
-void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu)
+// Init Main Menu (standard)
+void CNeutrinoApp::InitMainMenu(CMenuWidgetExtended& mainMenu)
 {
 	int shortcut = 1;
 
@@ -110,6 +110,8 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu)
 
 	//box info
 	mainMenu.addItem( new CMenuForwarderExtended(LOCALE_DBOXINFO, true, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
+
+	mainMenu.integratePlugins(CPlugins::I_TYPE_MAIN, shortcut++);
 }
 
 // smart menu design
@@ -118,42 +120,44 @@ void CNeutrinoApp::smartMenu(void)
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::smartMenu\n");
 
 	
-	CSmartMenu * smartMenu = new CSmartMenu(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
+	CMenuFrameBox* smartMenu = new CMenuFrameBox(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
 
 	// tv
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_TVMODE, CNeutrinoApp::getInstance(), "tv", NEUTRINO_ICON_SMART_TV), true);
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_TVMODE, CNeutrinoApp::getInstance(), "tv", NEUTRINO_ICON_SMART_TV), true);
 
 	// radio
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_RADIOMODE, CNeutrinoApp::getInstance(), "radio", NEUTRINO_ICON_SMART_RADIO));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_RADIOMODE, CNeutrinoApp::getInstance(), "radio", NEUTRINO_ICON_SMART_RADIO));
 
 	// webtv
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_WEBTVMODE, CNeutrinoApp::getInstance(), "webtv", NEUTRINO_ICON_SMART_WEBTV));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_WEBTVMODE, CNeutrinoApp::getInstance(), "webtv", NEUTRINO_ICON_SMART_WEBTV));
 
 #if defined (ENABLE_SCART)
 	// scart
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_SCARTMODE, CNeutrinoApp::getInstance(), "scart", NEUTRINO_ICON_SMART_SCART));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SCARTMODE, CNeutrinoApp::getInstance(), "scart", NEUTRINO_ICON_SMART_SCART));
 #endif
 
 	// mediaplayer
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_MEDIAPLAYER, new CMediaPlayerMenu(), NULL, NEUTRINO_ICON_SMART_MEDIAPLAYER));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_MEDIAPLAYER, new CMediaPlayerMenu(), NULL, NEUTRINO_ICON_SMART_MEDIAPLAYER));
 	
 	// main setting menu
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_SETTINGS, new CMainSetup(), NULL, NEUTRINO_ICON_SMART_SETTINGS));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SETTINGS, new CMainSetup(), NULL, NEUTRINO_ICON_SMART_SETTINGS));
 
 	// service
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_SERVICE, new CServiceSetup(), NULL, NEUTRINO_ICON_SMART_SERVICE));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SERVICE, new CServiceSetup(), NULL, NEUTRINO_ICON_SMART_SERVICE));
 	
 	// timerlist
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_TIMERLIST_NAME, new CTimerList, NULL, NEUTRINO_ICON_SMART_TIMERLIST));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_TIMERLIST_NAME, new CTimerList, NULL, NEUTRINO_ICON_SMART_TIMERLIST));
 	
 	// features
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_FEATURES, CNeutrinoApp::getInstance(), "features", NEUTRINO_ICON_SMART_FEATURES));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_FEATURES, CNeutrinoApp::getInstance(), "features", NEUTRINO_ICON_SMART_FEATURES));
 
 	// power menu
-	smartMenu->addItem(new CMenuFrameBox(LOCALE_MAINMENU_POWERMENU, new CPowerMenu(), NULL, NEUTRINO_ICON_SMART_POWERMENU));
+	smartMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_POWERMENU, new CPowerMenu(), NULL, NEUTRINO_ICON_SMART_POWERMENU));
 
 	//box info
-	smartMenu->addItem( new CMenuFrameBox(LOCALE_DBOXINFO, new CDBoxInfoWidget, NULL, NEUTRINO_ICON_SMART_BOXINFO));
+	smartMenu->addItem( new CMenuFrameBoxItem(LOCALE_DBOXINFO, new CDBoxInfoWidget, NULL, NEUTRINO_ICON_SMART_BOXINFO));
+
+	smartMenu->integratePlugins(CPlugins::I_TYPE_MAIN);
 
 	smartMenu->exec(NULL, "");
 	smartMenu->hide();
@@ -161,12 +165,12 @@ void CNeutrinoApp::smartMenu(void)
 	smartMenu = NULL;
 }
 
-// classic (neutrino) design
+// classic (classic) design
 void CNeutrinoApp::classicMenu(void)
 {
 	int shortcut = 1;
 
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::classicMenu\n");
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::classicMenu:\n");
 
 	CMenuWidget * classicMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
 	  
@@ -205,6 +209,8 @@ void CNeutrinoApp::classicMenu(void)
 
 	//box info
 	classicMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_CLASSIC_BOXINFO));
+
+	classicMenu->integratePlugins(CPlugins::I_TYPE_MAIN);
 
 	classicMenu->exec(NULL, "");
 	classicMenu->hide();
@@ -471,7 +477,7 @@ bool CNeutrinoApp::showUserMenu(int button)
                         txt = g_Locale->getText(LOCALE_MAINMENU_FEATURES);
         }
 
-        CMenuWidget * menu = new CMenuWidget(txt.c_str() , NEUTRINO_ICON_FEATURES);
+        CMenuWidget * menu = new CMenuWidget(txt.c_str(), NEUTRINO_ICON_FEATURES);
         if (menu == NULL)
                 return 0;
 
@@ -481,190 +487,258 @@ bool CNeutrinoApp::showUserMenu(int button)
 	menu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	menu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
-        // go through any postition number
-        for(int pos = 0; pos < SNeutrinoSettings::ITEM_MAX ; pos++) 
+	if (button == SNeutrinoSettings::BUTTON_RED) 
 	{
-                // now compare pos with the position of any item. Add this item if position is the same
-                switch(g_settings.usermenu[button][pos]) 
+		// eventlist
+		tmpEventListHandler = new CEventListHandler();
+		keyhelper.get(&key, &icon, CRCInput::RC_red);
+		menu_item = new CMenuForwarder(LOCALE_EPGMENU_EVENTLIST, true, NULL, tmpEventListHandler,  "-1", key, icon);
+		menu->addItem(menu_item, false);
+
+		// epgplus
+		if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 		{
-			case SNeutrinoSettings::ITEM_NONE:
-				// do nothing
-				break;
+			tmpEPGplusHandler = new CEPGplusHandler();
+			keyhelper.get(&key, &icon, CRCInput::RC_green);
+			menu_item = new CMenuForwarder(LOCALE_EPGMENU_EPGPLUS, true, NULL, tmpEPGplusHandler  ,  "-1", key, icon);
+			menu->addItem(menu_item, false);
+		}
 
-			case SNeutrinoSettings::ITEM_BAR:
-				if(menu_prev == -1 || menu_prev == SNeutrinoSettings::ITEM_BAR )
-					break;
+		// epg view
+		tmpEPGDataHandler = new CEPGDataHandler();
+		keyhelper.get(&key, &icon, CRCInput::RC_yellow);
+		menu_item = new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, tmpEPGDataHandler ,  "-1", key, icon);
+		menu->addItem(menu_item, false);
+		
+               	// tech info
+		if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+		{
+			tmpEPGDataHandler = new CEPGDataHandler();
+			keyhelper.get(&key, &icon, CRCInput::RC_yellow);
+			menu_item = new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, tmpEPGDataHandler ,  "-1", key, icon);
+			menu->addItem(menu_item, false);
+		}
+        }
+        else if( button == SNeutrinoSettings::BUTTON_GREEN) 
+	{
+               	// audio
+		if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+		{ 
+			tmpAudioSelectMenuHandler = new CAudioSelectMenuHandler;
+			keyhelper.get(&key, &icon);
+			menu_item = new CMenuForwarder(LOCALE_AUDIOSELECTMENUE_HEAD, true, NULL, tmpAudioSelectMenuHandler, "-1", key,icon);
+			menu->addItem(menu_item, false);
+		}
+        }
+        else if( button == SNeutrinoSettings::BUTTON_YELLOW) 
+	{
+                // subs
+		if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+		{
+			if (!(g_RemoteControl->subChannels.empty())) 
+			{
+				// NVOD/SubService- Kanal!
+				tmpNVODSelector = new CMenuWidget(g_RemoteControl->are_subchannels ? LOCALE_NVODSELECTOR_SUBSERVICE : LOCALE_NVODSELECTOR_HEAD, NEUTRINO_ICON_VIDEO);
 
-				menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
-				menu_prev = SNeutrinoSettings::ITEM_BAR;
-				break;
-
-                        case SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB:
-                                menu_items++;
-                                menu_prev = SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB;
-                                keyhelper.get(&key, &icon, CRCInput::RC_green);
-				menu_item = new CMenuForwarder(LOCALE_MOVIEPLAYER_RECORDS, true, NULL, new CMoviePlayerGui(), "tsmoviebrowser", key, icon);
-                                menu->addItem(menu_item, false);
-                                break;
-				
-			case SNeutrinoSettings::ITEM_MOVIEPLAYER_MB:
-                                menu_items++;
-                                menu_prev = SNeutrinoSettings::ITEM_MOVIEPLAYER_MB;
-                                keyhelper.get(&key, &icon, CRCInput::RC_green);
-				menu_item = new CMenuForwarder(LOCALE_MOVIEPLAYER_MOVIES, true, NULL, new CMoviePlayerGui(), "moviebrowser", key, icon);
-                                menu->addItem(menu_item, false);
-                                break;
-
-                        case SNeutrinoSettings::ITEM_TIMERLIST:
-                                menu_items++;
-                                menu_prev = SNeutrinoSettings::ITEM_TIMERLIST;
-                                keyhelper.get(&key, &icon, CRCInput::RC_yellow);
-				menu_item = new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, "-1", key, icon);
-                                menu->addItem(menu_item, false);
-                                break;
-
-                        case SNeutrinoSettings::ITEM_REMOTE:
-                                menu_items++;
-                                menu_prev = SNeutrinoSettings::ITEM_REMOTE;
-                                keyhelper.get(&key, &icon);
-				menu_item = new CMenuForwarder(LOCALE_RCLOCK_MENUEADD, true, NULL, this->rcLock, "-1", key, icon);
-                                menu->addItem(menu_item, false);
-                                break;
-
-                        case SNeutrinoSettings::ITEM_EPG_SUPER:
-				if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+				tmpNVODSelector->disableMenuPosition();
+						
+				if(getNVODMenu(tmpNVODSelector)) 
 				{
-					menu_items++;
-					menu_prev = SNeutrinoSettings::ITEM_EPG_SUPER;
-					tmpEPGplusHandler = new CEPGplusHandler();
-					keyhelper.get(&key, &icon, CRCInput::RC_green);
-					menu_item = new CMenuForwarder(LOCALE_EPGMENU_EPGPLUS, true, NULL, tmpEPGplusHandler  ,  "-1", key, icon);
+					keyhelper.get(&key, &icon);
+					menu_item = new CMenuForwarder(g_RemoteControl->are_subchannels ? LOCALE_NVODSELECTOR_SUBSERVICE : LOCALE_NVODSELECTOR_HEAD, true, NULL, tmpNVODSelector, "-1", key,icon);
 					menu->addItem(menu_item, false);
 				}
-                                break;
+			}
+		}
+        }
 
-                        case SNeutrinoSettings::ITEM_EPG_LIST:
-				if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-				{
+	if( button == SNeutrinoSettings::BUTTON_BLUE) 
+	{
+		// go through any postition number
+		for(int pos = 0; pos < SNeutrinoSettings::ITEM_MAX ; pos++) 
+		{
+		        // now compare pos with the position of any item. Add this item if position is the same
+		        switch(g_settings.usermenu[button][pos]) 
+			{
+				case SNeutrinoSettings::ITEM_NONE:
+					// do nothing
+					break;
+
+				case SNeutrinoSettings::ITEM_BAR:
+					if(menu_prev == -1 || menu_prev == SNeutrinoSettings::ITEM_BAR )
+						break;
+
+					menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+					menu_prev = SNeutrinoSettings::ITEM_BAR;
+					break;
+
+		                case SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB:
+		                        menu_items++;
+		                        menu_prev = SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB;
+		                        keyhelper.get(&key, &icon, CRCInput::RC_green);
+					menu_item = new CMenuForwarder(LOCALE_MOVIEPLAYER_RECORDS, true, NULL, new CMoviePlayerGui(), "tsmoviebrowser", key, icon);
+		                        menu->addItem(menu_item, false);
+		                        break;
+				
+				case SNeutrinoSettings::ITEM_MOVIEPLAYER_MB:
+		                        menu_items++;
+		                        menu_prev = SNeutrinoSettings::ITEM_MOVIEPLAYER_MB;
+		                        keyhelper.get(&key, &icon, CRCInput::RC_green);
+					menu_item = new CMenuForwarder(LOCALE_MOVIEPLAYER_MOVIES, true, NULL, new CMoviePlayerGui(), "moviebrowser", key, icon);
+		                        menu->addItem(menu_item, false);
+		                        break;
+
+		                case SNeutrinoSettings::ITEM_TIMERLIST:
+		                        menu_items++;
+		                        menu_prev = SNeutrinoSettings::ITEM_TIMERLIST;
+		                        keyhelper.get(&key, &icon, CRCInput::RC_yellow);
+					menu_item = new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, "-1", key, icon);
+		                        menu->addItem(menu_item, false);
+		                        break;
+
+		                case SNeutrinoSettings::ITEM_REMOTE:
+		                        menu_items++;
+		                        menu_prev = SNeutrinoSettings::ITEM_REMOTE;
+		                        keyhelper.get(&key, &icon);
+					menu_item = new CMenuForwarder(LOCALE_RCLOCK_MENUEADD, true, NULL, this->rcLock, "-1", key, icon);
+		                        menu->addItem(menu_item, false);
+		                        break;
+
+		                case SNeutrinoSettings::ITEM_EPG_SUPER:
+					if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+					{
+						menu_items++;
+						menu_prev = SNeutrinoSettings::ITEM_EPG_SUPER;
+						tmpEPGplusHandler = new CEPGplusHandler();
+						keyhelper.get(&key, &icon, CRCInput::RC_green);
+						menu_item = new CMenuForwarder(LOCALE_EPGMENU_EPGPLUS, true, NULL, tmpEPGplusHandler  ,  "-1", key, icon);
+						menu->addItem(menu_item, false);
+					}
+		                        break;
+
+		                case SNeutrinoSettings::ITEM_EPG_LIST:
 					menu_items++;
 					menu_prev = SNeutrinoSettings::ITEM_EPG_LIST;
 					tmpEventListHandler = new CEventListHandler();
 					keyhelper.get(&key, &icon, CRCInput::RC_red);
 					menu_item = new CMenuForwarder(LOCALE_EPGMENU_EVENTLIST, true, NULL, tmpEventListHandler,  "-1", key, icon);
 					menu->addItem(menu_item, false);
-				}
-                                break;
+		                        break;
 
-                        case SNeutrinoSettings::ITEM_EPG_INFO:
-				if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-				{
+		                case SNeutrinoSettings::ITEM_EPG_INFO:
 					menu_items++;
 					menu_prev = SNeutrinoSettings::ITEM_EPG_INFO;
 					tmpEPGDataHandler = new CEPGDataHandler();
 					keyhelper.get(&key, &icon, CRCInput::RC_yellow);
 					menu_item = new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, tmpEPGDataHandler ,  "-1", key, icon);
 					menu->addItem(menu_item, false);
-				}
-                                break;
+		                        break;
 
-                        case SNeutrinoSettings::ITEM_AUDIO_SELECT:
-				if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-				{
-					menu_items++;
-					menu_prev = SNeutrinoSettings::ITEM_AUDIO_SELECT;
-					tmpAudioSelectMenuHandler = new CAudioSelectMenuHandler;
-					keyhelper.get(&key, &icon);
-					menu_item = new CMenuForwarder(LOCALE_AUDIOSELECTMENUE_HEAD, true, NULL, tmpAudioSelectMenuHandler, "-1", key,icon);
-					menu->addItem(menu_item, false);
-				}
-                                break;
-
-                        case SNeutrinoSettings::ITEM_SUBCHANNEL:
-				if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-				{
-					if (!(g_RemoteControl->subChannels.empty())) 
+		                case SNeutrinoSettings::ITEM_AUDIO_SELECT:
+					if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 					{
-						// NVOD/SubService- Kanal!
-						tmpNVODSelector = new CMenuWidget(g_RemoteControl->are_subchannels ? LOCALE_NVODSELECTOR_SUBSERVICE : LOCALE_NVODSELECTOR_HEAD, NEUTRINO_ICON_VIDEO);
+						menu_items++;
+						menu_prev = SNeutrinoSettings::ITEM_AUDIO_SELECT;
+						tmpAudioSelectMenuHandler = new CAudioSelectMenuHandler;
+						keyhelper.get(&key, &icon);
+						menu_item = new CMenuForwarder(LOCALE_AUDIOSELECTMENUE_HEAD, true, NULL, tmpAudioSelectMenuHandler, "-1", key,icon);
+						menu->addItem(menu_item, false);
+					}
+		                        break;
 
-						tmpNVODSelector->disableMenuPosition();
-						
-						if(getNVODMenu(tmpNVODSelector)) 
+		                case SNeutrinoSettings::ITEM_SUBCHANNEL:
+					if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+					{
+						if (!(g_RemoteControl->subChannels.empty())) 
 						{
-							menu_items++;
-							menu_prev = SNeutrinoSettings::ITEM_SUBCHANNEL;
-							keyhelper.get(&key, &icon);
-							menu_item = new CMenuForwarder(g_RemoteControl->are_subchannels ? LOCALE_NVODSELECTOR_SUBSERVICE : LOCALE_NVODSELECTOR_HEAD, true, NULL, tmpNVODSelector, "-1", key,icon);
-							menu->addItem(menu_item, false);
+							// NVOD/SubService- Kanal!
+							tmpNVODSelector = new CMenuWidget(g_RemoteControl->are_subchannels ? LOCALE_NVODSELECTOR_SUBSERVICE : LOCALE_NVODSELECTOR_HEAD, NEUTRINO_ICON_VIDEO);
+
+							tmpNVODSelector->disableMenuPosition();
+						
+							if(getNVODMenu(tmpNVODSelector)) 
+							{
+								menu_items++;
+								menu_prev = SNeutrinoSettings::ITEM_SUBCHANNEL;
+								keyhelper.get(&key, &icon);
+								menu_item = new CMenuForwarder(g_RemoteControl->are_subchannels ? LOCALE_NVODSELECTOR_SUBSERVICE : LOCALE_NVODSELECTOR_HEAD, true, NULL, tmpNVODSelector, "-1", key,icon);
+								menu->addItem(menu_item, false);
+							}
 						}
 					}
-				}
-                                break;
+		                        break;
 
-                        case SNeutrinoSettings::ITEM_TECHINFO:
-				if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-				{
-					menu_items++;
-					menu_prev = SNeutrinoSettings::ITEM_TECHINFO;
-					tmpStreamInfo2Handler = new CStreamInfo2Handler();
-					keyhelper.get(&key, &icon, CRCInput::RC_blue);
-					menu_item = new CMenuForwarder(LOCALE_EPGMENU_STREAMINFO, true, NULL, tmpStreamInfo2Handler, "-1", key, icon);
-					menu->addItem(menu_item, false);
-				}
-                                break;
+		                case SNeutrinoSettings::ITEM_TECHINFO:
+					if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+					{
+						menu_items++;
+						menu_prev = SNeutrinoSettings::ITEM_TECHINFO;
+						tmpStreamInfo2Handler = new CStreamInfo2Handler();
+						keyhelper.get(&key, &icon, CRCInput::RC_blue);
+						menu_item = new CMenuForwarder(LOCALE_EPGMENU_STREAMINFO, true, NULL, tmpStreamInfo2Handler, "-1", key, icon);
+						menu->addItem(menu_item, false);
+					}
+		                        break;
 				
-			case SNeutrinoSettings::ITEM_VTXT:
-				if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-				{
-					menu_items++;
-					menu_prev = SNeutrinoSettings::ITEM_VTXT;
-					keyhelper.get(&key, &icon);
-					menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_VTXT, true, NULL, /*TuxtxtChanger*/new CTuxtxtChangeExec, "-1", key, icon);
-					menu->addItem(menu_item, false);
-				}
-                                break;	
+				case SNeutrinoSettings::ITEM_VTXT:
+					if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+					{
+						menu_items++;
+						menu_prev = SNeutrinoSettings::ITEM_VTXT;
+						keyhelper.get(&key, &icon);
+						menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_VTXT, true, NULL, new CTuxtxtChangeExec, "-1", key, icon);
+						menu->addItem(menu_item, false);
+					}
+		                        break;	
 
-			case SNeutrinoSettings::ITEM_OPKG:
-                                menu_items++;
-                                menu_prev = SNeutrinoSettings::ITEM_OPKG;
-                               
-				tmpOPKGManager = new COPKGManager();
+				case SNeutrinoSettings::ITEM_OPKG:
+		                        menu_items++;
+		                        menu_prev = SNeutrinoSettings::ITEM_OPKG;
+		                       
+					tmpOPKGManager = new COPKGManager();
 				
-                                keyhelper.get(&key, &icon);
-                                menu_item = new CMenuForwarder(LOCALE_OPKG_MANAGER, true, NULL, tmpOPKGManager, "-1", key, icon);
-                                menu->addItem(menu_item, false);
-                                break;
+		                        keyhelper.get(&key, &icon);
+		                        menu_item = new CMenuForwarder(LOCALE_OPKG_MANAGER, true, NULL, tmpOPKGManager, "-1", key, icon);
+		                        menu->addItem(menu_item, false);
+		                        break;
 			
-			// plugins
-                        case SNeutrinoSettings::ITEM_PLUGIN:
-				{
-					menu_item++;
-					menu_prev = SNeutrinoSettings::ITEM_PLUGIN;
-					keyhelper.get(&key, &icon, CRCInput::RC_blue);
-					menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, NULL, new CPluginList( LOCALE_USERMENU_ITEM_PLUGINS, CPlugins::P_TYPE_NEUTRINO | CPlugins::P_TYPE_TOOL | CPlugins::P_TYPE_SCRIPT ), "-1", key, icon);
-					menu->addItem(menu_item, false);
-                                }
-                                break;
+				// plugins
+		                case SNeutrinoSettings::ITEM_PLUGIN:
+					{
+						menu_item++;
+						menu_prev = SNeutrinoSettings::ITEM_PLUGIN;
+						keyhelper.get(&key, &icon, CRCInput::RC_blue);
+						menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, NULL, new CPluginList( LOCALE_USERMENU_ITEM_PLUGINS, CPlugins::P_TYPE_NEUTRINO | CPlugins::P_TYPE_TOOL | CPlugins::P_TYPE_SCRIPT ), "-1", key, icon);
+						menu->addItem(menu_item, false);
+		                        }
+		                        break;
 				
-			// games
-			case SNeutrinoSettings::ITEM_GAME:
-				{
-					menu_item++;
-					menu_prev = SNeutrinoSettings::ITEM_GAME;
-					keyhelper.get(&key, &icon);
-					menu_item = new CMenuForwarder(LOCALE_MAINMENU_GAMES, true, NULL, new CPluginList(LOCALE_MAINMENU_GAMES, CPlugins::P_TYPE_GAME), "-1", key, icon);
-					menu->addItem(menu_item, false);
-                                }
-                                break;
+				// games
+				case SNeutrinoSettings::ITEM_GAME:
+					{
+						menu_item++;
+						menu_prev = SNeutrinoSettings::ITEM_GAME;
+						keyhelper.get(&key, &icon);
+						menu_item = new CMenuForwarder(LOCALE_MAINMENU_GAMES, true, NULL, new CPluginList(LOCALE_MAINMENU_GAMES, CPlugins::P_TYPE_GAME), "-1", key, icon);
+						menu->addItem(menu_item, false);
+		                        }
+		                        break;
 
-                        default:
-                                printf("[neutrino] WARNING! menu wrong item!!\n");
-                                break;
-                }
-        }
+				default:
+		                        printf("[neutrino] WARNING! menu wrong item!!\n");
+		                        break;
+		        }
+		}
+	}
 
         // show menu if there are more than 2 items only
 	// otherwise, we start the item directly (must be the last one)
+	//
+	if( button == SNeutrinoSettings::BUTTON_BLUE) 
+	{
+		menu->integratePlugins(CPlugins::I_TYPE_USER, CRCInput::RC_nokey, true, false);
+	}
+
         if(menu_items > 1 ) 
 	{
 		menu->setSelected(selected[button]);
@@ -672,7 +746,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 		selected[button] = menu->getSelected();
 	}
         else if (menu_item != NULL)
-                menu_item->exec( NULL );
+                menu_item->exec(NULL);
 
         // clear the heap
         if(tmpAudioSelectMenuHandler)   

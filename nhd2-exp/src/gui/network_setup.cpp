@@ -126,7 +126,6 @@ void CNetworkSettings::readNetworkSettings(std::string iname)
 
 void CNetworkSettings::setNetwork()
 {
-	networkConfig->stopNetwork();
 	networkConfig->commitConfig();
 	networkConfig->startNetwork();
 }
@@ -155,11 +154,10 @@ int CNetworkSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 		hintBox->paint();
 		
 		networkConfig->automatic_start = (network_automatic_start == 1);
-		//networkConfig->stopNetwork();
-		//networkConfig->commitConfig();
-		//networkConfig->startNetwork();
 
-		setNetwork();
+		networkConfig->stopNetwork();
+		networkConfig->commitConfig();
+		networkConfig->startNetwork();
 		
 		hintBox->hide();
 		delete hintBox;

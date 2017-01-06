@@ -33,11 +33,14 @@
 #ifndef __drawable__
 #define __drawable__
 
+#include <string>
+#include <vector>
+
+#include <global.h>
+
 #include <driver/fb_window.h>
 #include <system/localize.h>
 
-#include <string>
-#include <vector>
 
 class Drawable;
 
@@ -53,6 +56,9 @@ class Drawable
 
 		enum DType {
 			DTYPE_DRAWABLE,
+			DTYPE_TEXT,
+			DTYPE_ICON,
+			DTYPE_PICTURE,
 			DTYPE_PAGEBREAK
 		};
 
@@ -66,16 +72,8 @@ class Drawable
 		* @param y y component of the top left corner
 		*/
 		virtual void draw(CFBWindow *window, int x, int y, int width) = 0;
-
 		virtual int getWidth(void);
-		
 		virtual int getHeight(void);
-
-		/**
-		* Overwrite this method in subclasses to print some info
-		* about the content. Mainly used for debuging ;) 
-		*/
-		virtual void print(void) = 0;
 
 		/**
 		* Returns the type of this drawable. Used to distinguish between
@@ -89,11 +87,9 @@ class Drawable
 		Drawable();
 
 		int m_height;
-
 		int m_width;
 
-	private:	
-	
+	private:		
 };
 
 /**
@@ -102,20 +98,17 @@ class Drawable
 class DText : public Drawable
 {
 	public:
-		DText(std::string& text);
-
-		DText(const char *text);
-
+		DText(std::string& text, CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU], uint8_t col = COL_MENUCONTENT, const bool bg = false);
+		DText(const char *text, CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU], uint8_t col = COL_MENUCONTENT, const bool bg = false);
 		void init();
-
 		void draw(CFBWindow *window, int x, int y, int width);
-		
-		void print();
+		DType getType();
 
 	protected:
-
 		std::string m_text;
-
+		CFont* m_font;
+		uint8_t m_color;
+		bool m_background;
 };
 
 
@@ -126,17 +119,12 @@ class DIcon : public Drawable
 {
 	public:
 		DIcon(std::string& icon);
-
 		DIcon(const char  *icon);
-
 		void init();
-
 		void draw(CFBWindow *window, int x, int y, int width);
-		
-		void print();
+		DType getType();
 
 	protected:
-
 		std::string m_icon;
 };
 
@@ -150,15 +138,7 @@ class DPagebreak : public Drawable
 		DPagebreak();
 
 		void draw(CFBWindow *window, int x, int y, int width);
-		
-		void print();
-
-		DType getType();
-
-	protected:
-
-	private:
-	
+		DType getType();	
 };
 
 #endif

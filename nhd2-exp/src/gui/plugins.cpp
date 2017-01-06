@@ -33,8 +33,6 @@
 #include <config.h>
 #endif
 
-#include <gui/plugins.h>
-
 #include <sstream>
 #include <fstream>
 #include <iostream>
@@ -47,13 +45,16 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
+#include <gui/plugins.h>
+
 #include <global.h>
 #include <neutrino.h>
 
-/*zapit includes*/
+// zapit includes
 #include <client/zapittools.h>
 
 #include <daemonc/remotecontrol.h>
+
 #include <system/safe_system.h>
 #include <system/debug.h>
 #include <system/helpers.h>
@@ -232,6 +233,7 @@ bool CPlugins::parseCfg(plugin *plugin_data)
 	{};
 
 	plugin_data->type = CPlugins::P_TYPE_DISABLED;
+	plugin_data->integration = CPlugins::I_TYPE_DISABLED;
 	plugin_data->hide = false;
 
 	for (int i = 0; i < linecount; i++)
@@ -266,6 +268,10 @@ bool CPlugins::parseCfg(plugin *plugin_data)
 		else if (cmd == "hide")
 		{
 			plugin_data->hide = ((parm == "1")?true:false);
+		}
+		else if (cmd == "integration")
+		{
+			plugin_data->integration = getPluginIntegration(atoi(parm));
 		}
 	}
 
@@ -500,5 +506,36 @@ CPlugins::p_type_t CPlugins::getPluginType(int type)
 			return P_TYPE_DISABLED;
 	}
 }
+
+CPlugins::i_type_t CPlugins::getPluginIntegration(int integration)
+{
+	switch (integration)
+	{
+		case INTEGRATION_TYPE_DISABLED:
+			return I_TYPE_DISABLED;
+			break;
+		case INTEGRATION_TYPE_MAIN:
+			return I_TYPE_MAIN;
+			break;
+		case INTEGRATION_TYPE_MULTIMEDIA:
+			return I_TYPE_MULTIMEDIA;
+			break;
+		case INTEGRATION_TYPE_SETTING:
+			return I_TYPE_SETTING;
+			break;
+		case INTEGRATION_TYPE_SERVICE:
+			return I_TYPE_SERVICE;
+			break;
+		case INTEGRATION_TYPE_POWER:
+			return I_TYPE_POWER;
+			break;
+		case INTEGRATION_TYPE_USER:
+			return I_TYPE_USER;
+			break;
+		default:
+			return I_TYPE_DISABLED;
+	}
+}
+
 
 

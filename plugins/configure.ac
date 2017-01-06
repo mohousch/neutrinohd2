@@ -19,10 +19,8 @@ AC_OUTPUT([
 Makefile
 test/Makefile
 netzkino/Makefile
-netzkino/jsoncpp/Makefile
 fbcallmonitor/Makefile
 youtube/Makefile
-youtube/jsoncpp/Makefile
 systeminfo/Makefile
 tuxdns/Makefile
 restart_enigma/Makefile
@@ -34,5 +32,6 @@ tuxcal/daemon/Makefile
 nglcd/Makefile
 fileexplorer/Makefile
 mediaportal/Makefile
+satipclient/Makefile
 ])
 

@@ -253,4 +253,3 @@ class ValueConstIterator;
 
 
 #endif //ifndef JSON_FORWARD_AMALGATED_H_INCLUDED
- 

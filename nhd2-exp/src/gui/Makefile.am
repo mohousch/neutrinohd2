@@ -40,6 +40,8 @@ if !ENABLE_GSTREAMER
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
+AM_CPPFLAGS += -fno-rtti -fno-exceptions
+
 noinst_LIBRARIES = libtimerlist.a libneutrino_gui.a libneutrino_gui2.a
 
 libneutrino_gui_a_SOURCES = \
@@ -59,7 +61,6 @@ libneutrino_gui_a_SOURCES = \
 	pictureviewer.cpp \
 	movieplayer.cpp \
 	rc_lock.cpp \
-	timeosd.cpp \
 	epgplus.cpp \
 	streaminfo2.cpp \
 	dboxinfo.cpp \

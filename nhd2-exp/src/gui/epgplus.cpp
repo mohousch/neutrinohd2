@@ -117,12 +117,9 @@ void EpgPlus::Header::init ()
   	font = fonts[EPGPlus_header_font];
 }
 
-//TEST
-//char old_timestr[10];
-
-void EpgPlus::Header::paint ()
+void EpgPlus::Header::paint()
 {
-	this->frameBuffer->paintBoxRel (this->x, this->y, this->width, this->font->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	this->frameBuffer->paintBoxRel (this->x, this->y, this->width, this->font->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	// paint time/date
 	int timestr_len = 0;
@@ -542,7 +539,7 @@ void EpgPlus::Footer::paintButtons(button_label * _buttonLabels, int numberOfBut
 	this->frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	
 	// paint foot box
-	this->frameBuffer->paintBoxRel(this->x, yPos, this->width, this->fontButtons->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+	this->frameBuffer->paintBoxRel(this->x, yPos, this->width, this->fontButtons->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 	
 	::paintButtons(this->frameBuffer, this->fontButtons, g_Locale, this->x + 10, yPos, buttonWidth, numberOfButtons, _buttonLabels, this->fontButtons->getHeight());
 }
@@ -863,6 +860,9 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 		this->paint ();
 
 		this->frameBuffer->blit();
+
+		// add sec timer
+		sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd (g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 		bool loop = true;
@@ -1202,6 +1202,10 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 				res = menu_return::RETURN_EXIT_ALL;
 				loop = false;
 	 		}
+			else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+			{
+				this->header->paint();
+			} 
 	 		else 
 			{
 				if (CNeutrinoApp::getInstance ()->handleMsg (msg, data) & messages_return::cancel_all) 
@@ -1220,6 +1224,10 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 		}
 
 		this->hide ();
+
+		//
+		g_RCInput->killTimer(sec_timer_id);
+		sec_timer_id = 0;
 
 		for (TChannelEntries::iterator It = this->displayedChannelEntries.begin (); It != this->displayedChannelEntries.end (); It++) 
 		{
@@ -1317,13 +1325,14 @@ void EpgPlus::paint()
 //  -- to be used for calls from Menue
 //  -- (2004-03-05 rasc)
 
-int CEPGplusHandler::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
+int CEPGplusHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
 	dprintf(DEBUG_NORMAL, "CEPGplusHandler::exec:\n");
 
-	int res = menu_return::RETURN_REPAINT /*EXIT_ALL*/;
-	EpgPlus *e;
-	CChannelList *channelList;
+	int res = menu_return::RETURN_REPAINT;
+
+	EpgPlus* e;
+	CChannelList* channelList;
 	
 	if (parent)
 		parent->hide ();
@@ -1333,6 +1342,7 @@ int CEPGplusHandler::exec(CMenuTarget * parent, const std::string &/*actionKey*/
 	channelList = CNeutrinoApp::getInstance ()->channelList;
 	e->exec(channelList, channelList->getSelectedChannelIndex(), bouquetList);
 	delete e;
+	e = NULL;
 	
 	return res;
 }
@@ -1443,14 +1453,14 @@ EpgPlus::MenuOptionChooserSwitchSwapMode::~MenuOptionChooserSwitchSwapMode ()
 	}
 }
 
-int EpgPlus::MenuOptionChooserSwitchSwapMode::exec(CMenuTarget * parent)
+int EpgPlus::MenuOptionChooserSwitchSwapMode::exec(CMenuTarget* parent)
 {
 	dprintf(DEBUG_NORMAL, "EpgPlus::MenuOptionChooserSwitchSwapMode::exec:\n");
 
 	// change time out settings temporary
 	g_settings.timing[SNeutrinoSettings::TIMING_MENU] = 1;
 	
-	CMenuOptionChooser::exec (parent);
+	CMenuOptionChooser::exec(parent);
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -1472,14 +1482,14 @@ EpgPlus::MenuOptionChooserSwitchViewMode::~MenuOptionChooserSwitchViewMode ()
   	g_settings.timing[SNeutrinoSettings::TIMING_MENU] = this->oldTimingMenuSettings;
 }
 
-int EpgPlus::MenuOptionChooserSwitchViewMode::exec(CMenuTarget * parent)
+int EpgPlus::MenuOptionChooserSwitchViewMode::exec(CMenuTarget* parent)
 {
 	dprintf(DEBUG_NORMAL, "EpgPlus::MenuOptionChooserSwitchViewMode::exec:\n");
 
 	// change time out settings temporary
 	g_settings.timing[SNeutrinoSettings::TIMING_MENU] = 1;
 	
-	CMenuOptionChooser::exec (parent);
+	CMenuOptionChooser::exec(parent);
 	
 	return menu_return::RETURN_REPAINT;
 }

@@ -33,31 +33,30 @@ CSysInfoWidget::CSysInfoWidget(int m)
 	frameBuffer = CFrameBuffer::getInstance();
 	
 	// windows size
-	width  = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
-	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
+	cFrameBox.iWidth  = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
+	cFrameBox.iHeight = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 	
 	//head height
-	frameBuffer->getIconSize(NEUTRINO_ICON_SETTINGS, &icon_head_w, &icon_head_h);
-	theight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), icon_head_h) + 6;
+	titleIcon.setIcon(NEUTRINO_ICON_SETTINGS);
+	cFrameBoxTitle.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), titleIcon.iHeight) + 6;
        
 	//foot height
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_foot_w, &icon_foot_h);
-	ButtonHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), icon_foot_h) + 10;
+	footIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
+	cFrameBoxFoot.iHeight = /*std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), footIcon.iHeight) + 6*/cFrameBoxTitle.iHeight;
 	
 	// coordinate
-	x = (((g_settings.screen_EndX- g_settings.screen_StartX)-width) / 2) + g_settings.screen_StartX;
-	y = (((g_settings.screen_EndY- g_settings.screen_StartY)-height) / 2) + g_settings.screen_StartY;
+	cFrameBox.iX = (((g_settings.screen_EndX - g_settings.screen_StartX) - cFrameBox.iWidth) / 2) + g_settings.screen_StartX;
+	cFrameBox.iY = (((g_settings.screen_EndY - g_settings.screen_StartY) - cFrameBox.iHeight) / 2) + g_settings.screen_StartY;
 	
 	mode = m;
 
-	//
-	int mode = CTextBox::SCROLL;
-	sys_BoxFrameText.iX = x;
-	sys_BoxFrameText.iY = y + theight;
-	sys_BoxFrameText.iWidth = width;
-	sys_BoxFrameText.iHeight = height - theight - ButtonHeight;
+	// textBox
+	cFrameBoxText.iX = cFrameBox.iX;
+	cFrameBoxText.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
+	cFrameBoxText.iWidth = cFrameBox.iWidth;
+	cFrameBoxText.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight;
 
-	sys_textBox = new CTextBox("", g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST], mode, &sys_BoxFrameText);
+	textBox = new CTextBox("", g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST], CTextBox::SCROLL, &cFrameBoxText);
 }
 
 CSysInfoWidget::~CSysInfoWidget()
@@ -68,21 +67,31 @@ CSysInfoWidget::~CSysInfoWidget()
 void CSysInfoWidget::paint()
 {
 	// paint
-	sys_textBox->paint();
+	textBox->paint();
 
 	// settext
-	sys_textBox->setText(&buffer);
+	textBox->setText(&buffer);
 }
 
 // paint head
 void CSysInfoWidget::paintHead()
 {
 	char buf[100];
+	
+	// Title
+	cFrameBoxTitle.iX = cFrameBox.iX;
+	cFrameBoxTitle.iY = cFrameBox.iY;
+	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
+	// Box
+	HeadWindow.setDimension(&cFrameBoxTitle);
+	HeadWindow.setColor(COL_MENUHEAD_PLUS_0);
+	HeadWindow.setCorner(RADIUS_MID, CORNER_TOP);
+	HeadWindow.setGradient(g_settings.Head_gradient);
+	HeadWindow.paint();
 	
 	// icon
-	frameBuffer->paintIcon(NEUTRINO_ICON_SETTINGS, x + BORDER_LEFT, y + (theight - icon_head_h)/2);
+	frameBuffer->paintIcon(titleIcon.iconName.c_str(), cFrameBoxTitle.iX + BORDER_LEFT, cFrameBoxTitle.iY + (cFrameBoxTitle.iHeight - titleIcon.iHeight)/2);
 	
 	if(mode == SYSINFO)
 		sprintf((char *) buf, "%s", "System-Info:");
@@ -97,7 +106,7 @@ void CSysInfoWidget::paintHead()
 		sprintf((char *) buf, "%s", "Prozess-Liste:");
 	
 	// title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + ICON_OFFSET, y + theight, width, buf, COL_MENUHEAD);
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameBoxTitle.iX + BORDER_LEFT + titleIcon.iWidth + ICON_OFFSET, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - BORDER_RIGHT - titleIcon.iWidth - ICON_OFFSET, buf, COL_MENUHEAD);
 }
 
 // paint foot
@@ -112,24 +121,36 @@ const struct button_label Buttons[4] =
 
 void CSysInfoWidget::paintFoot()
 {
-	int ButtonWidth = (width - 28) / 4;
+	// Foot
+	cFrameBoxFoot.iX = cFrameBox.iX;
+	cFrameBoxFoot.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameBoxFoot.iHeight;
+	cFrameBoxFoot.iWidth = cFrameBox.iWidth;
 
-	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+	// Foot
+	FootWindow.setDimension(&cFrameBoxFoot);
+	FootWindow.setColor(COL_MENUHEAD_PLUS_0);
+	FootWindow.setCorner(RADIUS_MID, CORNER_BOTTOM);
+	FootWindow.setGradient(g_settings.Foot_gradient);
+	FootWindow.paint();
 
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, ButtonWidth, 4, Buttons, ButtonHeight);
+	
+	// Buttons
+	int ButtonWidth = (cFrameBoxFoot.iWidth - BORDER_LEFT - BORDER_RIGHT) / 4;
+
+	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, cFrameBoxFoot.iX + BORDER_LEFT, cFrameBoxFoot.iY, ButtonWidth, 4, Buttons, cFrameBoxFoot.iHeight);
 }
 
 // hide
 void CSysInfoWidget::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height + ButtonHeight);
+	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 	
 	frameBuffer->blit();
 
-	if(sys_textBox != NULL)
+	if(textBox != NULL)
 	{
-		delete sys_textBox;
-		sys_textBox = NULL;
+		delete textBox;
+		textBox = NULL;
 	}
 }
 
@@ -171,13 +192,14 @@ int CSysInfoWidget::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
 	int timercount = 0;
 	unsigned long long timeoutEnd = g_RCInput->calcTimeoutEnd(5);
 
-	while (msg != (neutrino_msg_t) g_settings.key_channelList_cancel)
+	while (msg != CRCInput::RC_home)
 	{
 		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
 
 		if (msg <= CRCInput::RC_MaxRC  ) 
 			timeoutEnd = g_RCInput->calcTimeoutEnd(5);
 		
+		// dont cancel by timeout
 		if (msg == CRCInput::RC_timeout)
 		{
 			if (mode == SYSINFO)
@@ -212,15 +234,16 @@ int CSysInfoWidget::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
 
 			timeoutEnd = g_RCInput->calcTimeoutEnd(5);
 			g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
+			
 		}
-		
-		if ( ((int) msg == g_settings.key_channelList_pageup) && (mode != SYSINFO))
+
+		if ((msg == CRCInput::RC_up || msg == CRCInput::RC_page_up) && (mode != SYSINFO))
 		{
-			sys_textBox->scrollPageUp(1);
+			textBox->scrollPageUp(1);
 		}
-		else if (((int) msg == g_settings.key_channelList_pagedown) && (mode != SYSINFO))
+		else if ((msg == CRCInput::RC_down || msg == CRCInput::RC_page_down) && (mode != SYSINFO))
 		{
-			sys_textBox->scrollPageDown(1);
+			textBox->scrollPageDown(1);
 		}
 		else if ((msg == CRCInput::RC_red) && (mode != SYSINFO))
 		{
@@ -263,7 +286,6 @@ int CSysInfoWidget::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
 		else
 		{
 			CNeutrinoApp::getInstance()->handleMsg( msg, data );
-			// kein canceling...
 		}
 
 		frameBuffer->blit();	

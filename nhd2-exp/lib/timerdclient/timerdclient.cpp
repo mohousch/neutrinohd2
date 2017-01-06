@@ -29,12 +29,12 @@
 #include <timerdclient/timerdclient.h>
 
 
-unsigned char   CTimerdClient::getVersion() const
+unsigned char CTimerdClient::getVersion() const
 {
 	return CTimerdMsg::ACTVERSION;
 }
 
-const          char * CTimerdClient::getSocketName() const
+const char* CTimerdClient::getSocketName() const
 {
 	return TIMERD_UDS_NAME;
 }

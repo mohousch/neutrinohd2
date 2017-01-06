@@ -27,17 +27,17 @@
 #ifndef __progresswindow__
 #define __progresswindow__
 
+#include <string>
+
 #include <driver/framebuffer.h>
 #include <driver/fb_window.h>
 #include <system/localize.h>
 
-#include "progressstatus.h"
 #include "menue.h"
+#include "progressbar.h"
 
-#include <string>
 
-
-class CProgressWindow : public CMenuTarget, public CProgress_StatusViewer
+class CProgressWindow : public CMenuTarget
 {
 	protected:
 
@@ -57,7 +57,7 @@ class CProgressWindow : public CMenuTarget, public CProgress_StatusViewer
 		int statusTextY;
 		std::string statusText;
 		
-		bool LocalStatus;
+		CProgressBar* progressBar;
 
 		virtual void paint();
 
@@ -66,13 +66,13 @@ class CProgressWindow : public CMenuTarget, public CProgress_StatusViewer
 		CProgressWindow();
 		void setTitle(const neutrino_locale_t title);
 		void setTitle(const char * const title);
-		virtual void hide();
+		void hide();
 
-		virtual int exec( CMenuTarget* parent, const std::string & actionKey );
+		int exec( CMenuTarget* parent, const std::string & actionKey );
 
-		virtual void showGlobalStatus(const unsigned int prog);
-		virtual unsigned int getGlobalStatus(void);
-		virtual void showStatusMessageUTF(const std::string & text); // UTF-8
+		void showGlobalStatus(const unsigned int prog);
+		unsigned int getGlobalStatus(void);
+		void showStatusMessageUTF(const std::string & text); // UTF-8
 };
 
 #endif

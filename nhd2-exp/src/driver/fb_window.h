@@ -43,9 +43,9 @@ class CFBWindow
 		CFBWindow(const int _x, const int _y, const int _dx, const int _dy);
 		~CFBWindow();
 
-		void paintBoxRel(const int _x, const int _y, const int _dx, const int _dy, const color_t _col, int radius = 0, int type = 0, bool fadeColor = false);
-		bool paintIcon(const char * const _filename, const int _x, const int _y, const color_t _offset = 1);
-		void RenderString(const font_t _font, const int _x, const int _y, const int _width, const char * const _text, const color_t _color, const int _boxheight = 0, const bool _utf8_encoded = false);
+		void paintBoxRel(const int _x, const int _y, const int _dx, const int _dy, const color_t _col, int radius = 0, int type = CORNER_NONE, int mode = nogradient);
+		void paintIcon(const char * const _filename, const int _x, const int _y, const int _dy = 0, bool paint = true, const int iw = 0, const int ih = 0);
+		void RenderString(const font_t _font, const int _x, const int _y, const int _width, const char * const _text, const color_t _color, const int _boxheight = 0, const bool _utf8_encoded = false, const bool bg = false);
 };
 
 #endif /* __fb_window_h__ */

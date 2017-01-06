@@ -205,9 +205,13 @@ void CFileBrowser::commonInit()
 	width = (g_settings.screen_EndX - g_settings.screen_StartX - 40);
 	height = (g_settings.screen_EndY - g_settings.screen_StartY - 40);
 
+	// head
 	theight = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->getHeight();
+
+	// item
 	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight();
-	//foheight = 30;
+
+	//foot;
 	int ih, iw;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &iw, &ih);
 	foheight = 2*(std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ih)) + 10;
@@ -447,10 +451,11 @@ bool CFileBrowser::exec(const char * const dirname)
 		}
 		else if ((msg == CRCInput::RC_green) || (msg == CRCInput::RC_page_up) )
 		{
-			if ((int(selected)-int(listmaxshow))<0)
+			if ((int(selected) - int(listmaxshow)) < 0)
 				selected = filelist.size()-1;
 			else
 				selected -= listmaxshow;
+
 			liststart = (selected/listmaxshow)*listmaxshow;
 			paint();
 		}
@@ -754,7 +759,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 		actual_file = &filelist[liststart + pos];
 		if (actual_file->Marked)
 		{
-			color = COL_MENUCONTENTINACTIVE; //+= 2; FIXME
+			color = COL_MENUCONTENTINACTIVE;
 			bgcolor = (liststart + pos == selected) ? COL_MENUCONTENTSELECTED_PLUS_2 : COL_MENUCONTENT_PLUS_2;
 		}
 
@@ -770,7 +775,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 		}
 		colwidth1 = width - 35 - colwidth2 - colwidth3 - 10;
 
-		frameBuffer->paintBoxRel(x,ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
+		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 
 		if ( actual_file->Name.length() > 0 )
 		{
@@ -872,7 +877,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 void CFileBrowser::paintHead()
 {
 	char l_name[100];
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	// icon
 	int icon_w, icon_h;
@@ -881,7 +886,7 @@ void CFileBrowser::paintHead()
 
 	snprintf(l_name, sizeof(l_name), "%s %s", g_Locale->getText(LOCALE_FILEBROWSER_HEAD), FILESYSTEM_ENCODING_TO_UTF8_STRING(name).c_str()); // UTF-8
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->RenderString(x + BORDER_LEFT + icon_w + ICON_OFFSET, y + theight + 1, width - BORDER_LEFT - icon_w - ICON_OFFSET, l_name, COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->RenderString(x + BORDER_LEFT + icon_w + ICON_OFFSET, y + theight + 1, width - BORDER_LEFT - icon_w - ICON_OFFSET - BORDER_RIGHT, l_name, COL_MENUHEAD, 0, true); // UTF-8
 }
 
 const struct button_label FileBrowserButtons[3] =
@@ -899,17 +904,17 @@ const struct button_label FileBrowserFilterButton[2] =
 
 void CFileBrowser::paintFoot()
 {
-	int dx = (width - (2*ICON_OFFSET)) / 4;
+	int dx = width / 4;
 	//Second Line (bottom, top)
-	int by2 = y + height - (foheight/2 - 4);
-	int ty2 = by2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
+	int by2 = y + height - foheight + foheight/2;
+	int ty2 = by2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight() + (foheight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2;
 
 	// foot
-	frameBuffer->paintBoxRel(x, y + height - foheight, width, foheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light);
+	frameBuffer->paintBoxRel(x, y + height - foheight, width, foheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	if (!(filelist.empty()))
 	{
-		int by = y + height - foheight;
+		int by = y + height - foheight + 3;
 
 		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, by, dx, Multi_Select ? 3 : 2, FileBrowserButtons, foheight/2);
 
@@ -921,7 +926,7 @@ void CFileBrowser::paintFoot()
 		if( (filelist[selected].getType() != CFile::FILE_UNKNOWN) || (S_ISDIR(filelist[selected].Mode)) )
 		{
 			frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &iw, &ih);
-			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + ICON_OFFSET, by2 - ICON_OFFSET);
+			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + ICON_OFFSET, by2 + (foheight/2 - ih)/2);
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 2*ICON_OFFSET + iw, ty2, dx - 2*ICON_OFFSET - iw, g_Locale->getText(LOCALE_FILEBROWSER_SELECT), COL_INFOBAR, 0, true); // UTF-8
 
@@ -929,12 +934,12 @@ void CFileBrowser::paintFoot()
 
 		// help-button
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &iw, &ih);
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + dx + ICON_OFFSET, by2 - ICON_OFFSET);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + dx + ICON_OFFSET, by2 + (foheight/2 - ih)/2);
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 2*ICON_OFFSET + iw + dx, ty2, dx - 2*ICON_OFFSET - iw, g_Locale->getText(sortByNames[g_settings.filebrowser_sortmethod]), COL_INFOBAR, 0, true); // UTF-8
 
 		// mute button
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &iw, &ih);
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_MUTE_SMALL, x + 2 *dx, by2 - ICON_OFFSET);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_MUTE_SMALL, x + 2 *dx, by2 + (foheight/2 - ih)/2);
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 2*ICON_OFFSET + iw + 2*dx, ty2, dx - 2*ICON_OFFSET - iw, g_Locale->getText(LOCALE_FILEBROWSER_DELETE), COL_INFOBAR, 0, true); // UTF-8
 
@@ -1006,22 +1011,29 @@ void CFileBrowser::recursiveDelete(const char *file)
 	
 	dprintf(DEBUG_INFO, "CFileBrowser::Delete %s\n", file);
 	
-	if(my_lstat(file,&statbuf) == 0)
+	if(my_lstat(file, &statbuf) == 0)
 	{
 		if(S_ISDIR(statbuf.st_mode))
 		{
 			n = my_scandir(file, &namelist, 0, my_alphasort);
-			while(n--)
+			printf("CFileBrowser::Delete: n:%d\n", n);
+
+			if(n > 0)
 			{
-				if(strcmp(namelist[n]->d_name, ".")!=0 && strcmp(namelist[n]->d_name, "..")!=0)
+				while(n--)
 				{
-					std::string fullname = (std::string)file + "/" + namelist[n]->d_name;
-					recursiveDelete(fullname.c_str());
+					if(strcmp(namelist[n]->d_name, ".") != 0 && strcmp(namelist[n]->d_name, "..") != 0)
+					{
+						std::string fullname = (std::string)file + "/" + namelist[n]->d_name;
+						recursiveDelete(fullname.c_str());
+					}
+					free(namelist[n]);
 				}
-				free(namelist[n]);
+
+				free(namelist);
+
+				rmdir(file);
 			}
-			free(namelist);
-			rmdir(file);
 		}
 		else
 		{

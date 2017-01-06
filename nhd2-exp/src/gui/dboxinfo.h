@@ -35,11 +35,13 @@
 #ifndef __dboxinfo__
 #define __dboxinfo__
 
-#include <gui/widget/menue.h>
+#include <string>
 
 #include <driver/framebuffer.h>
 
-#include <string>
+#include <gui/widget/menue.h>
+
+#include <gui/plugins.h>
 
 
 class CDBoxInfoWidget : public CMenuTarget
@@ -47,11 +49,14 @@ class CDBoxInfoWidget : public CMenuTarget
 	private:
 
 		CFrameBuffer	*frameBuffer;
-		int x;
-		int y;
-		int width;
-		int height;
-		int hheight,mheight; // head/menu font height
+
+		CBox cFrameBox;
+		CBox cFrameBoxTitle;
+		CBox cFrameBoxBody;
+		CBox cFrameBoxItem;
+		CBox cFrameBoxShadow;
+
+		CIcon titleIcon;
 
 		void paint();
 

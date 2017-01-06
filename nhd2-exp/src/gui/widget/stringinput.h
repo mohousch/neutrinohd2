@@ -35,13 +35,14 @@
 #ifndef __stringinput__
 #define __stringinput__
 
+#include <string>
+
+#include <gui/widget/icons.h>
 #include <gui/widget/menue.h>
 
 #include <driver/framebuffer.h>
-#include <system/localize.h>
-#include <gui/widget/icons.h>
 
-#include <string>
+#include <system/localize.h>
 
 
 #define MAX_INPUT_CHARS		40

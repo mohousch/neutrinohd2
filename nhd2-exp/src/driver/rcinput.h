@@ -157,30 +157,30 @@ class CRCInput
 	private:
 		struct event
 		{
-			neutrino_msg_t      msg;
+			neutrino_msg_t msg;
 			neutrino_msg_data_t data;
 		};
 
 		struct timer
 		{
-			uint			id;
-			unsigned long long	interval;
-			unsigned long long	times_out;
-			bool			correct_time;
+			uint id;
+			unsigned long long interval;
+			unsigned long long times_out;
+			bool correct_time;
 		};
 
-		uint32_t               timerid;
+		uint32_t timerid;
 		std::vector<timer> timers;
 
-		int 		fd_pipe_high_priority[2];
-		int 		fd_pipe_low_priority[2];
+		int fd_pipe_high_priority[2];
+		int fd_pipe_low_priority[2];
 
 #define NUMBER_OF_EVENT_DEVICES 4
 
-		int         	fd_rc[NUMBER_OF_EVENT_DEVICES];
-		int		fd_keyb;
-		int		fd_event;
-		int		fd_max;
+		int fd_rc[NUMBER_OF_EVENT_DEVICES];
+		int fd_keyb;
+		int fd_event;
+		int fd_max;
 		
 		__u16 rc_last_key;
 

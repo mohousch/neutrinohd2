@@ -37,6 +37,7 @@
 #include <ytparser.h>
 
 #include <system/debug.h>
+#include <system/helpers.h>
 
 #include <plugin.h>
 
@@ -78,160 +79,6 @@ cYTFeedParser::cYTFeedParser()
 
 cYTFeedParser::~cYTFeedParser()
 {
-}
-
-size_t cYTFeedParser::CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data)
-{
-        std::string* pStr = (std::string*) data;
-        pStr->append((char*) ptr, nmemb);
-	
-        return size*nmemb;
-}
-
-bool cYTFeedParser::getUrl(std::string &url, std::string &answer)
-{
-	CURL * curl_handle = curl_easy_init();
-	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, &cYTFeedParser::CurlWriteToString);
-	curl_easy_setopt(curl_handle, CURLOPT_FILE, (void *)&answer);
-	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
-	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, URL_TIMEOUT);
-	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
-	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, false);
-	
-	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
-	{
-		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
-		
-		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
-		{
-			char tmp[200];
-			strcpy(tmp, g_settings.softupdate_proxyusername);
-			strcat(tmp, ":");
-			strcat(tmp, g_settings.softupdate_proxypassword);
-			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
-		}
-	}
-
-	char cerror[CURL_ERROR_SIZE];
-	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, cerror);
-
-	dprintf(DEBUG_NORMAL, "cYTFeedParser::getUrl: try to get %s\n", url.c_str());
-	
-	CURLcode httpres = curl_easy_perform(curl_handle);
-
-	curl_easy_cleanup(curl_handle);
-
-	dprintf(DEBUG_NORMAL, "cYTFeedParser::getUrl: http: res %d size %d\n", httpres, (int)answer.size());
-
-	if (httpres != 0 || answer.empty()) 
-	{
-		dprintf(DEBUG_NORMAL, "cYTFeedParser::getUrl: error: %s\n", cerror);
-		return false;
-	}
-	
-	return true;
-}
-
-bool cYTFeedParser::DownloadUrl(std::string &url, std::string &file)
-{
-	FILE * fp = fopen(file.c_str(), "wb");
-	if (fp == NULL) 
-	{
-		perror(file.c_str());
-		return false;
-	}
-	
-	CURL * curl_handle = curl_easy_init();
-	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
-	curl_easy_setopt(curl_handle, CURLOPT_FILE, fp);
-	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
-	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, URL_TIMEOUT);
-	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
-	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, false);
-	
-	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
-	{
-		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
-		
-		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
-		{
-			char tmp[200];
-			strcpy(tmp, g_settings.softupdate_proxyusername);
-			strcat(tmp, ":");
-			strcat(tmp, g_settings.softupdate_proxypassword);
-			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
-		}
-	}
-
-	char cerror[CURL_ERROR_SIZE];
-	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, cerror);
-
-	dprintf(DEBUG_NORMAL, "cYTFeedParser::DownloadUrl: try to get %s\n", url.c_str());
-	
-	CURLcode httpres = curl_easy_perform(curl_handle);
-
-	double dsize;
-	curl_easy_getinfo(curl_handle, CURLINFO_SIZE_DOWNLOAD, &dsize);
-	curl_easy_cleanup(curl_handle);
-	fclose(fp);
-
-	dprintf(DEBUG_NORMAL, "cYTFeedParser::DownloadUrl: http: res %d size %f.\n", httpres, dsize);
-
-	if (httpres != 0) 
-	{
-		dprintf(DEBUG_NORMAL, "cYTFeedParser::DownloadUrl: curl error: %s\n", cerror);
-		unlink(file.c_str());
-		return false;
-	}
-	
-	return true;
-}
-
-void cYTFeedParser::decodeUrl(std::string &url)
-{
-	CURL * curl_handle = curl_easy_init();
-	char * str = curl_easy_unescape(curl_handle, url.c_str(), 0, NULL);
-	curl_easy_cleanup(curl_handle);
-	
-	if(str)
-		url = str;
-	
-	curl_free(str);
-}
-
-void cYTFeedParser::encodeUrl(std::string &txt)
-{
-	CURL * curl_handle = curl_easy_init();
-	char * str = curl_easy_escape(curl_handle, txt.c_str(), txt.length());
-	curl_easy_cleanup(curl_handle);
-	
-	if(str)
-		txt = str;
-	
-	curl_free(str);
-}
-
-void cYTFeedParser::splitString(std::string &str, std::string delim, std::vector<std::string> &strlist, int start)
-{
-	strlist.clear();
-	int end = 0;
-	
-	while ((end = str.find(delim, start)) != std::string::npos) 
-	{
-		strlist.push_back(str.substr(start, end - start));
-		start = end + delim.size();
-	}
-	strlist.push_back(str.substr(start));
-}
-
-void cYTFeedParser::splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start)
-{
-	int end = 0;
-	if ((end = str.find(delim, start)) != std::string::npos) 
-	{
-		strmap[str.substr(start, end - start)] = str.substr(end - start + delim.size());
-	}
 }
 
 bool cYTFeedParser::parseFeedJSON(std::string &answer)
@@ -319,7 +166,7 @@ bool cYTFeedParser::parseFeedDetailsJSON(cYTVideoInfo &vinfo)
 	std::string url = "https://www.googleapis.com/youtube/v3/videos?id=" + vinfo.id + "&part=contentDetails&key=" + key;
 	std::string answer;
 	
-	if (!getUrl(url, answer))
+	if (!::getUrl(url, answer))
 		return false;
   
 	Json::Value root;
@@ -371,7 +218,7 @@ bool cYTFeedParser::decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo)
 	
 	bool ret = false;
 	
-	decodeUrl(answer);
+	::DecodeUrl(answer);
 
 	if(answer.find("token=") == std::string::npos)
 		return ret;
@@ -385,24 +232,24 @@ bool cYTFeedParser::decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo)
 	if (fmt != std::string::npos) 
 	{
 		fmt = answer.find("=", fmt);
-		splitString(answer, ",", ulist, fmt + 1);
+		::splitString(answer, ",", ulist, fmt + 1);
 		
 		for (unsigned i = 0; i < ulist.size(); i++) 
 		{
 			std::map<std::string,std::string> smap;
 			std::vector<std::string> uparams;
-			splitString(ulist[i], "&", uparams);
+			::splitString(ulist[i], "&", uparams);
 			
 			if (uparams.size() < 3)
 				continue;
 			
 			for (unsigned j = 0; j < uparams.size(); j++) 
 			{
-				decodeUrl(uparams[j]);
+				::DecodeUrl(uparams[j]);
 
 				dprintf(DEBUG_DEBUG, "	param: %s\n", uparams[j].c_str());
 
-				splitString(uparams[j], "=", smap);
+				::splitString(uparams[j], "=", smap);
 			}
 
 			// url
@@ -454,7 +301,7 @@ bool cYTFeedParser::ParseVideoInfo(cYTVideoInfo &vinfo)
 		vurl += "&ps=default&eurl=&gl=US&hl=en";
 		
 		std::string answer;
-		if (!getUrl(vurl, answer))
+		if (!::getUrl(vurl, answer))
 			continue;
 		
 		ret = decodeVideoInfo(answer, vinfo);
@@ -478,7 +325,7 @@ bool cYTFeedParser::ParseFeed(std::string &url)
 	curfeedfile += curfeed;
 	curfeedfile += ".xml";
 
-	if (!getUrl(url, answer))
+	if (!::getUrl(url, answer))
 		return false;
 
 	return parseFeedJSON(answer);
@@ -552,7 +399,7 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 		if (search.empty())
 			return false;
 		
-		encodeUrl(search);
+		::EncodeUrl(search);
 	
 		url = "https://www.googleapis.com/youtube/v3/search?q=";
 		url += search;
@@ -595,7 +442,7 @@ bool cYTFeedParser::DownloadThumbnails()
 			fname += ".jpg";
 			bool found = !access(fname.c_str(), F_OK);
 			if (!found)
-				found = DownloadUrl(videos[i].thumbnail, fname);
+				found = ::DownloadUrl(videos[i].thumbnail, fname);
 			if (found)
 				videos[i].tfile = fname;
 			ret |= found;

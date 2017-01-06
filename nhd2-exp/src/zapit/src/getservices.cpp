@@ -224,7 +224,7 @@ void ParseChannels(xmlNodePtr node, const t_transport_stream_id transport_stream
 			service_type = cit1->second.getServiceType();
 			cit1->second.polarization = polarisation;
 
-			if(pmtpid != 0 && (((service_type == 2) && (apid > 0)) || ( (service_type == 1)  && (vpid > 0) && (apid > 0))) ) 
+			if(pmtpid != 0 && (((service_type == ST_DIGITAL_RADIO_SOUND_SERVICE) && (apid > 0)) || ( (service_type == ST_DIGITAL_TELEVISION_SERVICE)  && (vpid > 0) && (apid > 0))) ) 
 			{			
 				cit1->second.setVideoPid(vpid);
 				cit1->second.setAudioPid(apid);
@@ -232,7 +232,7 @@ void ParseChannels(xmlNodePtr node, const t_transport_stream_id transport_stream
 				cit1->second.setPmtPid(pmtpid);
 				cit1->second.setTeletextPid(txpid);
 				cit1->second.setPidsFlag();
-				cit1->second.type = vtype;
+				cit1->second.videoType = vtype;
 			}
 		}
 
@@ -919,7 +919,7 @@ void SaveServices(bool tocopy)
 								ccI->second.getPmtPid(), 
 								ccI->second.getTeletextPid(),
 								ccI->second.getServiceType(true), 
-								ccI->second.type, 
+								ccI->second.videoType, 
 								ccI->second.scrambled);
 					} 
 					else 

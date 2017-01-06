@@ -41,6 +41,7 @@
 #include <global.h>
 #include <neutrino.h>
 
+
 Drawable::Drawable()
 {	
 }
@@ -64,34 +65,44 @@ Drawable::DType Drawable::getType(void)
 	return Drawable::DTYPE_DRAWABLE;
 }
 
-DText::DText(std::string& text) 
+// DText
+DText::DText(std::string& text, CFont* font, uint8_t col, const bool bg) 
 {
 	m_text = text;
+	m_font = font;
+	m_color = col;
+	m_background = bg;
+
 	init();
 }
 
-DText::DText(const char *text)
+DText::DText(const char *text, CFont* font, uint8_t col, const bool bg)
 {
 	m_text = std::string(text);
+	m_font = font;
+	m_color = col;
+	m_background = bg;
+
 	init();
 }
 
 void DText::init()
 {
-	m_width = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(m_text, true); // UTF-8
-	m_height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();	
+	m_width = m_font->getRenderWidth(m_text, true); // UTF-8
+	m_height = m_font->getHeight();	
 }
 
 void DText::draw(CFBWindow * window, int x, int y, int width)
 {
-	window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_MENU], x, y + m_height/2, width, m_text.c_str(), (CFBWindow::color_t)COL_MENUCONTENT, 0, true); // UTF-8	
+	window->RenderString(m_font, x, y + m_height, width, m_text.c_str(), (CFBWindow::color_t)m_color, 0, true, m_background); // UTF-8	
 }
 
-void DText::print(void)
+Drawable::DType DText::getType(void)
 {
-	std::cout << " text: " << m_text;
+	return Drawable::DTYPE_TEXT;
 }
 
+// DIcon
 DIcon::DIcon(std::string& icon)
 {
 	m_icon = icon;
@@ -106,20 +117,20 @@ DIcon::DIcon(const char *icon)
 
 void DIcon::init()
 {
-	m_height = 16;
-	m_width = 16;
+	CFrameBuffer::getInstance()->getIconSize(m_icon.c_str(), &m_width, &m_height);
 }
 
-void DIcon::draw(CFBWindow *window, int x, int y, int /*width*/)
+void DIcon::draw(CFBWindow* window, int x, int y, int /*width*/)
 {
 	window->paintIcon(m_icon.c_str(), x, y);	
 }
 
-void DIcon::print(void)
+Drawable::DType DIcon::getType(void)
 {
-	std::cout << " icon: " << m_icon;
+	return Drawable::DTYPE_ICON;
 }
 
+// DPageBreak
 DPagebreak::DPagebreak()
 {
 	m_height = 0;
@@ -128,15 +139,11 @@ DPagebreak::DPagebreak()
 
 void DPagebreak::draw(CFBWindow * /*window*/, int /*x*/, int /*y*/, int /*width*/)
 {
-	//window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_MENU], x, y + m_height, width, "<pagebreak>", (CFBWindow::color_t)COL_MENUCONTENT, 0, true); // UTF-8	
-}
-
-void DPagebreak::print(void)
-{
-	std::cout << "<pagebreak>";
 }
 
 Drawable::DType DPagebreak::getType(void)
 {
 	return Drawable::DTYPE_PAGEBREAK;
 }
+
+

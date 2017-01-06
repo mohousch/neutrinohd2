@@ -73,6 +73,7 @@
 #include <system/debug.h>
 
 #include <video_cs.h>
+#include <misc_setup.h>
 
 
 extern CBouquetList * bouquetList;      		// neutrino.cpp
@@ -131,7 +132,7 @@ CChannelList::CChannelList(const char * const Name, bool _historyMode, bool _vli
 	frameBuffer->getIconSize(NEUTRINO_ICON_SCRAMBLED, &icon_ca_w, &icon_ca_h);
 	
 	// hd
-	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_HD, &icon_hd_w, &icon_hd_h);
+	frameBuffer->getIconSize(NEUTRINO_ICON_HD, &icon_hd_w, &icon_hd_h);
 	
 	// icon help
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_help_w, &icon_help_h);
@@ -361,7 +362,6 @@ int CChannelList::doChannelMenu(void)
 	int i = 0;
 	int select = -1;
 	static int old_selected = 0;
-	//int ret = menu_return::RETURN_NONE;
 	signed int bouquet_id, old_bouquet_id, new_bouquet_id;
 	int result;
 	char cnt[5];
@@ -388,7 +388,7 @@ int CChannelList::doChannelMenu(void)
 	sprintf(cnt, "%d", i);
 	menu->addItem(new CMenuForwarder(LOCALE_FAVORITES_MENUEADD, true, NULL, selector, cnt, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i++);
 
-	/*ret =*/ menu->exec(NULL, "");
+	menu->exec(NULL, "");
 	delete menu;
 	delete selector;
 
@@ -509,7 +509,7 @@ int CChannelList::exec()
 }
 
 #define CHANNEL_SMSKEY_TIMEOUT 800
-/* return: >= 0 to zap, -1 on cancel, -3 on list mode change, -4 list edited, -2 zap but no restore old list/chan ?? */ //TODO:add return value for pip
+//return: >= 0 to zap, -1 on cancel, -3 on list mode change, -4 list edited, -2 zap but no restore old list/chan
 int CChannelList::show()
 {
 	dprintf(DEBUG_NORMAL, "CChannelList::show\n");
@@ -564,6 +564,9 @@ int CChannelList::show()
 	int oldselected = selected;
 	int zapOnExit = false;
 	bool bShowBouquetList = false;
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 	// loop control
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
@@ -874,6 +877,17 @@ int CChannelList::show()
 			g_EpgData->show(chanlist[selected]->channel_id); 
 			paintHead();
 			paint();
+		}
+		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			// head
+			paintHead();
+	
+			// update events
+			//updateEvents();
+	
+			// paint all
+			//paint();
 		} 
 		else 
 		{
@@ -888,6 +902,10 @@ int CChannelList::show()
 	}
 	
 	hide();
+
+	//
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
 	
 	// bouquets mode
 	if (bShowBouquetList) 
@@ -923,7 +941,7 @@ bool CChannelList::showInfo(int pos, int epgpos)
 	CZapitChannel * chan = chanlist[pos];
 	
 	// channel infobar
-	g_InfoViewer->showTitle(pos+1, chan->name, chan->getSatellitePosition(), chan->channel_id, true, epgpos); // UTF-8
+	g_InfoViewer->show(pos + 1, chan->name, chan->getSatellitePosition(), chan->channel_id, true, epgpos); // UTF-8
 	
 	return true;
 }
@@ -1395,6 +1413,8 @@ int CChannelList::numericZap(int key)
 
 void CChannelList::virtual_zap_mode(bool up)
 {
+	dprintf(DEBUG_NORMAL, "CChannelList::virtual_zap_mode\n");
+
         neutrino_msg_t      msg;
         neutrino_msg_data_t data;
 
@@ -1425,6 +1445,7 @@ void CChannelList::virtual_zap_mode(bool up)
                         showInfo(chn - 1, epgpos);
                         lastchan = chn;
                 }
+
 		epgpos = 0;
                 g_RCInput->getMsg( &msg, &data, 15*10 ); // 15 seconds, not user changable
 		
@@ -1491,13 +1512,15 @@ void CChannelList::virtual_zap_mode(bool up)
 	g_InfoViewer->clearVirtualZapMode();
 
         chn--;
-        if (chn<0)
-                chn=0;
+        if (chn < 0)
+                chn = 0;
+
         if ( doZap )
         {
 		if(g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR] == 0)
 			g_InfoViewer->killTitle();
-                zapTo( chn );
+
+                zapTo(chn);
         }
         else
         {
@@ -1524,7 +1547,7 @@ void CChannelList::quickZap(int key, bool cycle)
         }
 	else if ((key == g_settings.key_quickzap_up) || (key == CRCInput::RC_right) )
 	{
-                selected = (selected+1)%chanlist.size();
+                selected = (selected + 1)%chanlist.size();
         }
 
 	dprintf(DEBUG_NORMAL, "CChannelList::quickZap: quick zap selected = %d getActiveBouquetNumber %d\n", selected, bouquetList->getActiveBouquetNumber());
@@ -1532,20 +1555,17 @@ void CChannelList::quickZap(int key, bool cycle)
 	if(cycle)
 		bouquetList->orgChannelList->zapTo(bouquetList->Bouquets[bouquetList->getActiveBouquetNumber()]->channelList->getKey(selected)-1);
 	else
-        	zapTo( selected );
+        	zapTo(selected);
 
 	g_RCInput->clearRCMsg(); //FIXME test for n.103
 }
 
 void CChannelList::paintDetails(int index)
 {
-	// itembox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0, 0, 0, true, gradientLight2Dark);
-	
 	if (chanlist.empty()) 
 		return;
 	
-	CChannelEvent * p_event;
+	CChannelEvent * p_event = NULL;
 
 	if (displayNext) 
 	{
@@ -1556,7 +1576,7 @@ void CChannelList::paintDetails(int index)
 		p_event = &chanlist[index]->currentEvent;
 	}
 
-	if (!p_event->description.empty()) 
+	if ( p_event != NULL && !p_event->description.empty()) 
 	{
 		char cNoch[50]; // UTF-8
 		char cSeit[50]; // UTF-8
@@ -1698,6 +1718,10 @@ void CChannelList::paintItem(int pos)
 
 		CChannelEvent * p_event = NULL;
 
+		int pBarWidth = 35;
+		int pBarHeight = iheight/3;
+		CProgressBar timescale(pBarWidth, pBarHeight);
+
 		if (displayNext) 
 		{
 			p_event = &chan->nextEvent;
@@ -1715,12 +1739,16 @@ void CChannelList::paintItem(int pos)
 				frameBuffer->paintIcon(NEUTRINO_ICON_SCRAMBLED, x + width - SCROLLBAR_WIDTH - 2 - icon_ca_w, ypos + (iheight - icon_ca_h)/2);
 			
 			// hd icon
-			if(chan->isHD() ) 
-				frameBuffer->paintIcon(NEUTRINO_ICON_RESOLUTION_HD, x + width - SCROLLBAR_WIDTH - 2 - icon_ca_w - 2 - icon_hd_w, ypos + (iheight - icon_hd_h)/2);
+			if(chan->isHD()) 
+				frameBuffer->paintIcon(NEUTRINO_ICON_HD, x + width - SCROLLBAR_WIDTH - 2 - icon_ca_w - 2 - icon_hd_w, ypos + (iheight - icon_hd_h)/2);
+
+			// uhd icon
+			else if(chan->isUHD()) 
+				frameBuffer->paintIcon(NEUTRINO_ICON_UHD, x + width - SCROLLBAR_WIDTH - 2 - icon_ca_w - 2 - icon_hd_w, ypos + (iheight - icon_hd_h)/2);
 		}
 
 		// channel number
-		int numpos = x + 5 + numwidth - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(tmp);
+		int numpos = x + ICON_OFFSET + numwidth - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(tmp);
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(numpos, ypos + (iheight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), numwidth + 5, tmp, color, 0, true);
 
@@ -1770,10 +1798,9 @@ void CChannelList::paintItem(int pos)
 							runningPercent = 30;	// later on which can be fatal...
 					}
 					
-					frameBuffer->paintBoxRel(x + 5 + numwidth + title_offset, ypos + iheight/4, 34, iheight/2, COL_MENUCONTENT_PLUS_3, 0);//fill passive
-					frameBuffer->paintBoxRel(x + 5 + numwidth + title_offset + 2, ypos + 2 + iheight/4, 30, iheight/2 - 4, COL_MENUCONTENT_PLUS_1, 0);//frame(passive)
-					
-					frameBuffer->paintBoxRel(x + 5 + numwidth + title_offset + 2, ypos + 2 + iheight/4, runningPercent, iheight/2 - 4, COL_MENUCONTENT_PLUS_3, 0);//fill(active)
+					//
+					timescale.reset();
+					timescale.paint(x + ICON_OFFSET + numwidth + title_offset, ypos + (iheight - pBarHeight)/2, runningPercent);
 				}
 			}
 
@@ -1787,14 +1814,11 @@ void CChannelList::paintItem(int pos)
 		{
 			if(g_settings.channellist_extended)
 			{
-				// extended info
+				//
 				short runningPercent = 0;
-				frameBuffer->paintBoxRel(x + 5 + numwidth + title_offset, ypos + iheight/4, 34, iheight/2, COL_MENUCONTENT_PLUS_3, 0);//fill passive
-				frameBuffer->paintBoxRel(x + 5 + numwidth + title_offset + 2, ypos + 2 + iheight/4, 30, iheight/2 - 4, COL_MENUCONTENT_PLUS_1, 0);//frame(passive)
 
-				frameBuffer->paintBoxRel(x + 5 + numwidth + title_offset + 2, ypos + 2 + iheight/4, runningPercent, iheight/2 - 4, COL_MENUCONTENT_PLUS_3, 0);//fill(active)
-					
-				frameBuffer->paintLine(x + 5 + numwidth + title_offset, ypos + iheight/4 + 1, x + 5 + numwidth + title_offset + 32, ypos + iheight/4 + iheight/2 - 3, COL_MENUCONTENT_PLUS_3);
+				timescale.reset();
+				timescale.paint(x + ICON_OFFSET + numwidth + title_offset, ypos + (iheight - pBarHeight)/2, runningPercent);
 			}
 			
 			//name
@@ -1840,7 +1864,7 @@ const struct button_label CChannelVListButtons[NUM_VLIST_BUTTONS] =
 void CChannelList::paintHead()
 {
 	// head
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true, gradientLight2Dark);	//round
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);	//round
 	
 	int ButtonWidth = (width - BORDER_LEFT - BORDER_RIGHT) / 4;
 
@@ -1857,7 +1881,7 @@ void CChannelList::paintHead()
 	// foot
 	int f_x = x;
 	int f_y = y + (height - buttonHeight);
-	frameBuffer->paintBoxRel(f_x, f_y, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true, gradientDark2Light); //round
+	frameBuffer->paintBoxRel(f_x, f_y, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient); //round
 	
 	// foot buttons
 	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, f_x + BORDER_RIGHT, f_y, ButtonWidth, vlist ? NUM_VLIST_BUTTONS : NUM_LIST_BUTTONS, vlist ? CChannelVListButtons : CChannelListButtons, buttonHeight);

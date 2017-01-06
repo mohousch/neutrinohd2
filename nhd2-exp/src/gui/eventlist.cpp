@@ -35,6 +35,8 @@
 #include <config.h>
 #endif
 
+#include <unistd.h>
+
 #include <global.h>
 #include <gui/eventlist.h>
 #include <gui/timerlist.h>
@@ -61,8 +63,14 @@
 #include <algorithm>
 
 #include <system/debug.h>
+#include <system/tmdbparser.h>
+
+#include <gui/widget/infobox.h>
+
+#include <gui/webtv.h>
 
 
+extern CWebTV * webtv;
 extern CBouquetList * bouquetList;
 extern t_channel_id live_channel_id;
 extern char recDir[255];			// defined in neutrino.cpp
@@ -259,13 +267,19 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 	name = channelname;
 	sort_mode = SORT_DESCRIPTION;
 	
-	paintHead(channel_id);
+	//
 	readEvents(channel_id);
+
+	//
+	paintHead(channel_id);
 	paint(channel_id);
 	showFunctionBar(true);
 	
 	// blit
 	frameBuffer->blit();
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 	int oldselected = selected;
 
@@ -368,7 +382,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 		// add record
 		else if ( msg == (neutrino_msg_t)g_settings.key_channelList_addrecord )
 		{
-			if (recDir != NULL)
+			if (recDir != NULL && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 			{
 				int tID = -1;
 				CTimerd::CTimerEventTypes etype = isScheduled(channel_id, &evtlist[selected], &tID);
@@ -416,28 +430,31 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 		// add remind
 		else if ( msg == (neutrino_msg_t) g_settings.key_channelList_addremind )		  
 		{
-			int tID = -1;
-			CTimerd::CTimerEventTypes etype = isScheduled(channel_id, &evtlist[selected], &tID);
-			
-			if(etype == CTimerd::TIMER_ZAPTO) 
+			if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 			{
-				g_Timerd->removeTimerEvent(tID);
+				int tID = -1;
+				CTimerd::CTimerEventTypes etype = isScheduled(channel_id, &evtlist[selected], &tID);
+			
+				if(etype == CTimerd::TIMER_ZAPTO) 
+				{
+					g_Timerd->removeTimerEvent(tID);
+					timerlist.clear();
+					g_Timerd->getTimerList (timerlist);
+					paint(channel_id);
+					continue;
+				}
+
+				g_Timerd->addZaptoTimerEvent(channel_id, 
+						evtlist[selected].startTime,
+						evtlist[selected].startTime - ANNOUNCETIME, 0,
+						evtlist[selected].eventID, evtlist[selected].startTime, 0);
+					
+				MessageBox(LOCALE_TIMER_EVENTTIMED_TITLE, LOCALE_TIMER_EVENTTIMED_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 				timerlist.clear();
 				g_Timerd->getTimerList (timerlist);
-				paint(channel_id);
-				continue;
-			}
-
-			g_Timerd->addZaptoTimerEvent(channel_id, 
-					evtlist[selected].startTime,
-					evtlist[selected].startTime - ANNOUNCETIME, 0,
-					evtlist[selected].eventID, evtlist[selected].startTime, 0);
-					
-			MessageBox(LOCALE_TIMER_EVENTTIMED_TITLE, LOCALE_TIMER_EVENTTIMED_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
-			timerlist.clear();
-			g_Timerd->getTimerList (timerlist);
 			
-			paint(channel_id);
+				paint(channel_id);
+			}
 		}
 		else if (msg == CRCInput::RC_timeout)
 		{
@@ -506,6 +523,56 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 				}
 			}
 		}
+		else if(msg == CRCInput::RC_0)
+		{
+			if ( evtlist[selected].eventID != 0 )
+			{
+				hide();
+
+				//
+				if(!evtlist[selected].description.empty())
+				{
+					cTmdb * tmdb = new cTmdb(evtlist[selected].description);
+	
+					if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
+					{
+						std::string buffer;
+
+						buffer = tmdb->getTitle().c_str();
+						buffer += "\n";
+	
+						// prepare print buffer  
+						buffer += tmdb->CreateEPGText();
+
+						// thumbnail
+						int pich = 246;	//FIXME
+						int picw = 162; 	//FIXME
+	
+						std::string thumbnail = "/tmp/tmdb.jpg";
+						if(access(thumbnail.c_str(), F_OK))
+							thumbnail = "";
+	
+						CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+						CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_TMDB);
+
+						infoBox->setText(&buffer, thumbnail, picw, pich);
+						infoBox->exec();
+						delete infoBox;
+					}
+					else
+						MessageBox(LOCALE_MESSAGEBOX_INFO, "no tmdb info found!", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+
+					delete tmdb;
+					tmdb = NULL;	
+
+				}
+
+				paintHead(channel_id);
+				paint(channel_id);
+				showFunctionBar(true);
+			}	
+		}
 		else if ( msg == CRCInput::RC_green )
 		{
 			in_search = findEvents();
@@ -517,6 +584,13 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 			res = menu_return::RETURN_EXIT_ALL;
 			loop = false;
 		}
+		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			// head
+			paintHead(channel_id);
+			paint(channel_id);
+			showFunctionBar(true);
+		} 
 		else
 		{
 			if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
@@ -531,6 +605,10 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 	}
 
 	hide();
+
+	//
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
 
 	return res;
 }
@@ -628,6 +706,7 @@ void EventList::paintItem(unsigned int pos, t_channel_id channel_id)
 
 		// 1st line
 		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_DATETIME]->RenderString(x + 5, ypos + fheight1 + 3, fwidth1 + 5, datetime1_str, color, 0, true); // UTF-8
+
 		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_DATETIME]->RenderString(x + 5 + fwidth1, ypos+ fheight1 + 3, width - fwidth1 - 10 - 20, datetime2_str, color, 0, true); // UTF-8
 
 		int seit = ( evtlist[liststart+pos].startTime - time(NULL) ) / 60;
@@ -652,7 +731,7 @@ void EventList::paintItem(unsigned int pos, t_channel_id channel_id)
 		}
 		
 		// 2nd line
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + 2 + icon_w + 2, ypos+ fheight, width - 25 - 20, evtlist[liststart+pos].description, color, 0, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + 2 + icon_w + 2, ypos+ fheight, width - 25 - 20, evtlist[liststart + pos].description, color, 0, true);
 	}	
 }
 
@@ -660,11 +739,11 @@ void EventList::paintHead(t_channel_id channel_id)
 {
 	bool logo_ok = false;
 
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	// help icon
 	int icon_h_w, icon_h_h;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_h_w, &icon_h_h);
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP_SMALL, &icon_h_w, &icon_h_h);
 	
 	// paint time/date
 	int timestr_len = 0;
@@ -680,7 +759,7 @@ void EventList::paintHead(t_channel_id channel_id)
 		strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
 		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - icon_h_w - 5 - timestr_len, y + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 5, timestr_len+1, timestr, COL_MENUHEAD, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - 2*icon_h_w - 5 - timestr_len, y + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 5, timestr_len+1, timestr, COL_MENUHEAD, 0, true); // UTF-8
 	}
 
 	// logo
@@ -718,8 +797,13 @@ void EventList::paint(t_channel_id channel_id)
 		int icon_w = 0;
 		int icon_h = 0;
 		
-		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_w, &icon_h);
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + width - BORDER_RIGHT - icon_w, y + (theight - icon_h)/2 );
+		// icon ?
+		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP_SMALL, &icon_w, &icon_h);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP_SMALL, x + width - BORDER_RIGHT - icon_w, y + (theight - icon_h)/2 );
+
+		// icon 0 for tmdb
+		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_0, &icon_w, &icon_h);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_0, x + width - BORDER_RIGHT - icon_w - ICON_TO_ICON_OFFSET - icon_w, y + (theight - icon_h)/2 );
 	}
 
 	frameBuffer->paintBoxRel(x, y + theight, width, height - theight - iheight, COL_MENUCONTENT_PLUS_0);
@@ -768,10 +852,10 @@ void  EventList::showFunctionBar(bool show)
 	int fh = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
 	//
-	frameBuffer->paintBoxRel(x, by, width, bh, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, true);
+	frameBuffer->paintBoxRel(x, by, width, bh, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	// -- Button Red: Timer Record & Channelswitch
-	if ( (recDir != NULL) && ((unsigned int) g_settings.key_channelList_addrecord != CRCInput::RC_nokey))	  
+	if ( (recDir != NULL) && ((unsigned int) g_settings.key_channelList_addrecord != CRCInput::RC_nokey) && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)	  
 	{
 		pos = 0;
 	
@@ -792,7 +876,7 @@ void  EventList::showFunctionBar(bool show)
 	}
 
 	// Button: Timer Channelswitch	
-	if ((unsigned int) g_settings.key_channelList_addremind != CRCInput::RC_nokey)  
+	if ((unsigned int) g_settings.key_channelList_addremind != CRCInput::RC_nokey && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)  
 	{
 		pos = 2;
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
@@ -837,9 +921,9 @@ int CEventListHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*
 {
 	dprintf(DEBUG_NORMAL, "CEventListHandler::exec:\n");
 
-	int           res = menu_return::RETURN_REPAINT;
-	EventList     *e;
-	CChannelList  *channelList;
+	int res = menu_return::RETURN_REPAINT;
+	EventList* e;
+	CChannelList* channelList;
 
 
 	if (parent)
@@ -849,7 +933,10 @@ int CEventListHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*
 
 	channelList = CNeutrinoApp::getInstance()->channelList;
 
-	e->exec(live_channel_id, channelList->getActiveChannelName()); // UTF-8
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		e->exec(webtv->getLiveChannelID(), webtv->getLiveChannelName());
+	else
+		e->exec(live_channel_id, channelList->getActiveChannelName());
 	delete e;
 
 	return res;

@@ -37,8 +37,8 @@
 class CTimerdClient:private CBasicClient
 {
 	private:
-		virtual unsigned char   getVersion() const;
-		virtual const          char * getSocketName() const;
+		virtual unsigned char getVersion() const;
+		virtual const char* getSocketName() const;
 
 	public:
 		enum events
