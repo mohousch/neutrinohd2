@@ -1934,7 +1934,7 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 					ret = (fb_pixel_t *)convertRGB2FB(buffer, x, y, convertSetupAlpha2Alpha(g_settings.infobar_alpha));
 			}
 			else
-				ret = (fb_pixel_t *)convertRGB2FB(buffer, x, y, 0xFF, TM_NONE);
+				ret = (fb_pixel_t *)convertRGB2FB(buffer, x, y, convertSetupAlpha2Alpha(g_settings.infobar_alpha), TM_NONE);
 			
 			free(buffer);
 		} 

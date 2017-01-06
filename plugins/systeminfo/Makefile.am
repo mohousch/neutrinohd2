@@ -26,10 +26,12 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)/systeminfo
 	install .libs/systeminfo.so $(DESTDIR)$(PLUGINDIR)/systeminfo
 	install -m 0644  systeminfo.cfg $(DESTDIR)$(PLUGINDIR)/systeminfo
+	install -m 0644  systeminfo.png $(DESTDIR)$(PLUGINDIR)/systeminfo
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/systeminfo/systeminfo.so
 	-rm $(DESTDIR)$(PLUGINDIR)/systeminfo/systeminfo.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/systeminfo/systeminfo.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/systeminfo
 	
 
