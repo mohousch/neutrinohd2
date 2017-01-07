@@ -137,7 +137,7 @@ void CServiceSetup::showMenu()
 #endif
 
 	// satip
-	service->addItem(new CMenuForwarderExtended("Sat <> IP", true, new CSatIPSetup(), NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, NEUTRINO_ICON_MENUITEM_SATIP));
+	//service->addItem(new CMenuForwarderExtended("Sat <> IP", true, new CSatIPSetup(), NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, NEUTRINO_ICON_MENUITEM_SATIP));
 	
 	// image info
 	service->addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_IMAGEINFO,  true, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_IMAGEINFO, LOCALE_HELPTEXT_IMAGEINFO), false);
@@ -215,33 +215,33 @@ void CServiceSetup::showMenuClassic(void)
 	if(FrontendCount > 1)
 	{
 		// scan settings
-		service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_SCANTS, true, NULL, new CTunerSetup(), NULL, CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_SCANSETTINGS));
+		service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_SCANTS, true, NULL, new CTunerSetup(), NULL, CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_SCANSETTINGS, LOCALE_HELPTEXT_SCANSETUP));
 	}
 	else
 	{
 		// scan settings
-		service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_SCANTS, true, NULL, new CScanSetup(), NULL, CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_SCANSETTINGS));
+		service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_SCANTS, true, NULL, new CScanSetup(), NULL, CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_SCANSETTINGS, LOCALE_HELPTEXT_SCANSETUP));
 	}
 
 	// reload Channels
-	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_RELOAD, true, NULL, this, "reloadchannels", CRCInput::RC_green, NEUTRINO_ICON_CLASSIC_RELOADCHANNELS));
+	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_RELOAD, true, NULL, this, "reloadchannels", CRCInput::RC_green, NEUTRINO_ICON_CLASSIC_RELOADCHANNELS, LOCALE_HELPTEXT_RELOADCHANNELS));
 
 	// Bouquets Editor
-	service->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_NAME, true, NULL, new CBEBouquetWidget(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_CLASSIC_BOUQUETSEDITOR));
+	service->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_NAME, true, NULL, new CBEBouquetWidget(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_CLASSIC_BOUQUETSEDITOR, LOCALE_HELPTEXT_BOUQUETSEDITOR));
 	
 	// CI Cam 	
 #if defined (ENABLE_CI)
-	service->addItem(new CMenuForwarder(LOCALE_CAM_SETTINGS, true, NULL, g_CamHandler, NULL, CRCInput::convertDigitToKey(shortcutService++), NEUTRINO_ICON_CLASSIC_CICAM));
+	service->addItem(new CMenuForwarder(LOCALE_CAM_SETTINGS, true, NULL, g_CamHandler, NULL, CRCInput::convertDigitToKey(shortcutService++), NEUTRINO_ICON_CLASSIC_CICAM, LOCALE_HELPTEXT_CAM));
 #endif
 
 	// satip
-	service->addItem(new CMenuForwarder("Sat <> IP Cast", true, NULL, new CSatIPSetup(), NULL, CRCInput::convertDigitToKey(shortcutService++), NEUTRINO_ICON_CLASSIC_SATIP));
+	//service->addItem(new CMenuForwarder("Sat <> IP Cast", true, NULL, new CSatIPSetup(), NULL, CRCInput::convertDigitToKey(shortcutService++), NEUTRINO_ICON_CLASSIC_SATIP, LOCALE_HELPTEXT_SATIP));
 	
 	// image info
-	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_IMAGEINFO,  true, NULL, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_CLASSIC_IMAGEINFO), false);
+	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_IMAGEINFO,  true, NULL, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_CLASSIC_IMAGEINFO, LOCALE_HELPTEXT_IMAGEINFO), false);
 	
 	// software update
-	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_UPDATE, true, NULL, new CUpdateSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_CLASSIC_SOFTUPDATE));
+	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_UPDATE, true, NULL, new CUpdateSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_CLASSIC_SOFTUPDATE, LOCALE_HELPTEXT_SOFTWAREUPDATE));
 
 	service->integratePlugins(CPlugins::I_TYPE_SERVICE);
 	

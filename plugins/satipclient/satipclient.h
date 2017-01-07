@@ -29,15 +29,16 @@
 class CSatIPClient : public CMenuTarget
 {
 	public:
-		int SatIPDisabled;
+		int SatIPEnabled;
 	private:
-		//int SatIPDisabled;
 		std::string SatIPServerIP;
 		std::string SatIPServerPort;
 		int SatIPFrontendTyp;
 		std::string SatIPVtunerDevice;
 		int SatIPDebug;
         public:
+		CMenuWidget * satIPClientMenu;
+		int selected;
 		CSatIPClient();
 		~CSatIPClient();
 		

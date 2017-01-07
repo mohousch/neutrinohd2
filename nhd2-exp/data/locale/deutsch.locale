@@ -1509,11 +1509,13 @@ servicemenu.restart_e2 Boot E2 als Standard
 
 helptext.tvmode Hier können Sie in den TV Modus schalten.
 helptext.radiomode Hier können Sie in den Radio Modus schalten.
+helptext.webtvmode Hier können Sie in den WebTV Modus schalten.
 helptext.scart Hier können Sie in den Scart Modus schalten.
 helptext.mediaplayer Hier können Sie in den Mediaplayer schalten.
 helptext.internetradio Hier können Sie in den Internetradio schalten.
 helptext.audioplayer Hier können Sie in den Audioplayer schalten.
-helptext.tsmoviebrowser Hier können Sie Ihre Aufnahmen abspielen.
+helptext.tsbrowser Hier können Sie Ihre Aufnahmen abspielen.
+helptext.moviebrowser Hier können Sie Ihre Filme abspielen.
 helptext.fileplayback Hier können Sie Ihre Media Dateien abspielen.
 helptext.netstream Hier können Sie Streams aus dem Net abspielen.
 helptext.pictureviewer Hier können Sie Ihre Bilder Diashow schauen.
@@ -1522,7 +1524,7 @@ helptext.mainsettings Hier können Sie in den Einstellungen schalten.
 helptext.service Hier können Sie in den Service schalten.
 helptext.sleeptimer Hier können Sie den Sleep Timer einstellen.
 helptext.reboot Hier können Sie Ihren STB rebooten.
-helptext.shutdown Hier können Sie Ihren STB ausschalten.
+helptext.powermenu Hier können Sie Ihren STB ausschalten.
 helptext.boxinfo Hier erhalten Sie Infos über die HW Ihren STB.
 helptext.videosettings Hier können Sie die Video Einstellungen führen.
 helptext.audiosettings Hier können Sie die Audio Einstellungen führen.

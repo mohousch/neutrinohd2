@@ -82,7 +82,7 @@ void CNeutrinoApp::InitMainMenu(CMenuWidgetExtended& mainMenu)
 	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_RADIOMODE, true, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE ));	
 	
 	// webtv
-	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_WEBTVMODE, true, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_SCART) );
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_WEBTVMODE, true, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE) );
 	
 #if defined (ENABLE_SCART)
 	// scart
@@ -106,7 +106,7 @@ void CNeutrinoApp::InitMainMenu(CMenuWidgetExtended& mainMenu)
 	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_FEATURES, true, this, "features", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES ));
 
 	// power menu
-	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_POWERMENU, true, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_SHUTDOWN ));
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_POWERMENU, true, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU ));
 
 	//box info
 	mainMenu.addItem( new CMenuForwarderExtended(LOCALE_DBOXINFO, true, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
@@ -175,40 +175,40 @@ void CNeutrinoApp::classicMenu(void)
 	CMenuWidget * classicMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
 	  
 	// tv modus
-	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_TV), true);
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_TV, LOCALE_HELPTEXT_TVMODE), true);
 
 	// radio modus
-	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_CLASSIC_RADIO));	
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_CLASSIC_RADIO, LOCALE_HELPTEXT_RADIOMODE));	
 	
 	// webtv
-	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_CLASSIC_WEBTV));
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_CLASSIC_WEBTV, LOCALE_HELPTEXT_WEBTVMODE));
 	
 #if defined (ENABLE_SCART)
 	// scart
-	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_CLASSIC_SCART));
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_CLASSIC_SCART, LOCALE_HELPTEXT_SCART));
 #endif
 
 	// mediaplayer
-	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_MEDIAPLAYER));
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_MEDIAPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER));
 	
 	// main setting menu
-	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_SETTINGS));
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_SETTINGS, LOCALE_HELPTEXT_MAINSETTINGS));
 
 	// service
-	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_SERVICE));
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_SERVICE, LOCALE_HELPTEXT_SERVICE));
 	
 	
 	// timerlist
-	classicMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_TIMERLIST));
+	classicMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST));
 	
 	// features
-	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_FEATURES));
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_FEATURES, LOCALE_HELPTEXT_FEATURES));
 
 	// power menu
-	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_CLASSIC_POWERMENU));
+	classicMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_CLASSIC_POWERMENU, LOCALE_HELPTEXT_POWERMENU));
 
 	//box info
-	classicMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_CLASSIC_BOXINFO));
+	classicMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_CLASSIC_BOXINFO, LOCALE_HELPTEXT_BOXINFO));
 
 	classicMenu->integratePlugins(CPlugins::I_TYPE_MAIN);
 

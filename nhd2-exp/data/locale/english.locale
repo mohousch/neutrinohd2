@@ -1507,11 +1507,13 @@ screenshot.remove remove screenshot?
 servicemenu.restart_e2 Boot E2 as Standard
 helptext.tvmode Here you can switch to TV Modus.
 helptext.radiomode Here you can switch to Radio Modus.
+helptext.webtvmode Here you can switch to WebTV Modus.
 helptext.scart Here you can switch to Scart Modus.
 helptext.mediaplayer Here you can switch to Mediaplayer.
 helptext.internetradio Here you can switch to Internetradio.
 helptext.audioplayer Here you can switch to Audioplayer.
-helptext.tsmoviebrowser Here you can play yout recorded files.
+helptext.tsbrowser Here you can play your recorded files.
+helptext.moviebrowser Here you can play your movies files.
 helptext.fileplayback Here you can play media files.
 helptext.netstream Here you can play streams from net.
 helptext.pictureviewer Here you can see your pics diashows.
@@ -1520,7 +1522,7 @@ helptext.mainsettings Here you can switch to main settings.
 helptext.service Here you can switch to service.
 helptext.sleeptimer Here you can setup the Sleep Timer.
 helptext.reboot Here you can reboot your STB.
-helptext.shutdown Here you can shutdown your STB.
+helptext.powermenu Here you can shutdown your STB.
 helptext.boxinfo Here you can get HW infos about your STB.
 helptext.videosettings Here you can set up video setup.
 helptext.audiosettings Here you can set up audio setup.

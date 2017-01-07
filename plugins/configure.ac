@@ -33,5 +33,6 @@ nglcd/Makefile
 fileexplorer/Makefile
 mediaportal/Makefile
 satipclient/Makefile
+satipcast/Makefile
 ])
 

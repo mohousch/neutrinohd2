@@ -92,17 +92,17 @@ void CMenuItem::setActive(const bool Active)
 		paint();
 }
 
-void CMenuItem::setHelpText(const neutrino_locale_t ItemHelpText = NONEXISTANT_LOCALE)
+void CMenuItem::setHelpText(const neutrino_locale_t ItemHelpText)
 {
 	itemHelpText =  g_Locale->getText(ItemHelpText);
 }
 
-void CMenuItem::setHelpText(const char* const ItemHelpText = NULL)
+void CMenuItem::setHelpText(const char* const ItemHelpText)
 {
 	itemHelpText =  ItemHelpText;
 }
 
-void CMenuItem::setHelpText(const std::string& ItemHelpText = NULL)
+void CMenuItem::setHelpText(const std::string& ItemHelpText)
 {
 	itemHelpText =  ItemHelpText;
 }
@@ -1531,7 +1531,7 @@ int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 }
 
 //CMenuForwarder
-CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName)
+CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const neutrino_locale_t HelpText)
 {
 	option = Option;
 	option_string = NULL;
@@ -1543,11 +1543,11 @@ CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, 
 	directKey = DirectKey;
 	iconName = IconName ? IconName : "";
 
-	itemHelpText = textString;
+	itemHelpText = g_Locale->getText(HelpText);
 	itemType = ITEM_TYPE_FORWARDER;
 }
 
-CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName)
+CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const neutrino_locale_t HelpText)
 {
 	option = NULL;
 	option_string = &Option;
@@ -1559,11 +1559,11 @@ CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, 
 	directKey = DirectKey;
 	iconName = IconName ? IconName : "";
 
-	itemHelpText = textString;
+	itemHelpText = g_Locale->getText(HelpText);
 	itemType = ITEM_TYPE_FORWARDER;
 }
 
-CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName)
+CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const neutrino_locale_t HelpText)
 {
 	option = Option;
 	option_string = NULL;
@@ -1575,11 +1575,11 @@ CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const
 	directKey = DirectKey;
 	iconName = IconName ? IconName : "";
 
-	itemHelpText = textString;
+	itemHelpText = g_Locale->getText(HelpText);
 	itemType = ITEM_TYPE_FORWARDER;
 }
 
-CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName)
+CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const neutrino_locale_t HelpText)
 {
 	option = NULL;
 	option_string = &Option;
@@ -1591,7 +1591,7 @@ CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const
 	directKey = DirectKey;
 	iconName = IconName ? IconName : "";
 
-	itemHelpText = textString;
+	itemHelpText = g_Locale->getText(HelpText);
 	itemType = ITEM_TYPE_FORWARDER;
 }
 
@@ -1751,19 +1751,6 @@ CMenuSeparator::CMenuSeparator(const int Type, const neutrino_locale_t Text)
 
 	itemType = ITEM_TYPE_SEPARATOR;
 }
-
-/*
-CMenuSeparator::CMenuSeparator(const int Type, const std::string& Text)
-{
-	directKey = CRCInput::RC_nokey;
-	iconName = "";
-	type = Type;
-	text = Text;
-	textString = Text;
-
-	itemType = ITEM_TYPE_SEPARATOR;
-}
-*/
 
 int CMenuSeparator::getHeight(void) const
 {
