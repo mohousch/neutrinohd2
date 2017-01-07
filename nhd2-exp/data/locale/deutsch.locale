@@ -1525,6 +1525,9 @@ helptext.service Hier können Sie in den Service schalten.
 helptext.sleeptimer Hier können Sie den Sleep Timer einstellen.
 helptext.reboot Hier können Sie Ihren STB rebooten.
 helptext.powermenu Hier können Sie Ihren STB ausschalten.
+helptext.restart Hier können Sie ihre Software neu starten
+helptext.standby Hier können Sie ihren Receiver ausschalten
+helptext.shutdown Hier können Sie ihren receiver ausschalten.
 helptext.boxinfo Hier erhalten Sie Infos über die HW Ihren STB.
 helptext.videosettings Hier können Sie die Video Einstellungen führen.
 helptext.audiosettings Hier können Sie die Audio Einstellungen führen.
@@ -1534,7 +1537,7 @@ helptext.recordingsettings Hier können Sie die Aufnahmen Einstellungen führen.
 helptext.movieplayersettings Hier können Sie die Movieplayer Einstellungen führen.
 helptext.osdsettings Hier können Sie die OSD Einstellungen führen.
 helptext.vfdsettings Hier können Sie die VFD Einstellungen führen.
-helptext.keyssettings Hier können Sie die Fernbedienung Einstellungen führen.
+helptext.remotecontrolsettings Hier können Sie die Fernbedienung Einstellungen führen.
 helptext.audioplayersettings Hier können Sie die Audio Einstellungen führen.
 helptext.pictureviewersettings Hier können Sie die Pictureviewer Einstellungen führen.
 helptext.miscsettings Hier können Sie die diverse Einstellungen führen.
@@ -1558,6 +1561,21 @@ helptext.timerlist Hier können Sie Ihre Timerliste verwalten.
 helptext.features Hier können Sie die Erweiterungen starten.
 helptext.dvd hier können sie Ihre DVD Image abspielen
 helptext.blueray hier können sie Ihre Blueray Image abspielen.
+helptext.themes Hier können Sie die GUI Themes einstellen.
+helptext.menucolors Hier können Sie die GUI Themes Farben einstellen.
+helptext.infobarcolors Hier können Sie die Farben der Infobar einstellen.
+helptext.language Hier können Sie die Sprache einstellen.
+helptext.font Hier können Sie die Schrift einstellen.
+helptext.fontscaling Hier können Sie Scgrift Art einstellen.
+helptext.osdtiming Hier können Sie die GUI einblend zeiten einstellen.
+helptext.screensetup Hier können Sie die GUI Bereich enstellen.
+helptext.alphasetup Hier können Sie die Kontraste einstellen.
+helptext.generalsettings Diverse Einstellungen.
+helptext.miscsettingschannelsettings Eweiterte Kanalliste Einstellungen.
+helptext.epgsettings EPG Einstellungen.
+helptext.filebrowsersettings File Browser Einstellungen.
+helptext.startchannelsettings Start Kanal Einstellungen.
+helptext.psisettings PSI Einstellungen.
 
 miscsettings.logosdir Sender logos Dir
 miscsettings.recording_screenshot Screenshot (Aufnahme)

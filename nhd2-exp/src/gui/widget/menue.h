@@ -408,12 +408,12 @@ class CLockedMenuForwarder : public CMenuForwarder, public CPINProtection
 	protected:
 		virtual CMenuTarget* getParent(){ return Parent;};
 	public:
-		CLockedMenuForwarder(const neutrino_locale_t Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL)
-		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName) ,
+		CLockedMenuForwarder(const neutrino_locale_t Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE)
+		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName, HelpText) ,
 		  CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
 		  
-		CLockedMenuForwarder(const char * const Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL)
-		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName) ,
+		CLockedMenuForwarder(const char * const Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE)
+		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName, HelpText) ,
 		  CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
 
 		virtual int exec(CMenuTarget* parent);

@@ -1523,6 +1523,9 @@ helptext.service Here you can switch to service.
 helptext.sleeptimer Here you can setup the Sleep Timer.
 helptext.reboot Here you can reboot your STB.
 helptext.powermenu Here you can shutdown your STB.
+helptext.restart Here you can restart your software.
+helptext.standby Here you can shutdown your STB.
+helptext.shutdown Here you can shutdown your STB.
 helptext.boxinfo Here you can get HW infos about your STB.
 helptext.videosettings Here you can set up video setup.
 helptext.audiosettings Here you can set up audio setup.
@@ -1532,7 +1535,7 @@ helptext.recordingsettings Here you can set up record setup.
 helptext.movieplayersettings Here you can set up movieplayer setup.
 helptext.osdsettings Here you can set up OSD setup.
 helptext.vfdsettings Here you can set up VFD setup.
-helptext.keyssettings Here you can set up remote control setup.
+helptext.remotecontrolsettings Here you can set up remote control setup.
 helptext.audioplayersettings Here you can set up audioplayer setup.
 helptext.pictureviewersettings Here you can set up pictureviewer setup.
 helptext.miscsettings Here you can set up misc setup.
@@ -1556,6 +1559,21 @@ helptext.timerlist Here you can manage your timerlist.
 helptext.features Here you can start features.
 helptext.dvd Here you can play your DVD image.
 helptext.blueray Here you can play Blueray image.
+helptext.themes Here you can setup the GUI themes.
+helptext.menucolors Here you can setup the GUI colors.
+helptext.infobarcolors Here you can setup the infobar colors.
+helptext.language Here you can setup the GUI language.
+helptext.font Here you can setup the GUI font.
+helptext.fontscaling Here you can setup the font scaling.
+helptext.osdtiming Here you can setup the GUI fade timing.
+helptext.screensetup Here you can setup your GUI screen.
+helptext.alphasetup Here you can setup the contrast.
+helptext.generalsettings Divers setup.
+helptext.miscsettingschannelsettings Extended Channellist setup.
+helptext.epgsettings EPG setup.
+helptext.filebrowsersettings File browser setup.
+helptext.startchannelsettings Start channel setup.
+helptext.psisettings PSI setup.
 
 miscsettings.logosdir Sender logos Dir
 miscsettings.recording_screenshot Screenshot (record)

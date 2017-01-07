@@ -492,31 +492,27 @@ bool CNeutrinoApp::showUserMenu(int button)
 		// eventlist
 		tmpEventListHandler = new CEventListHandler();
 		keyhelper.get(&key, &icon, CRCInput::RC_red);
-		menu_item = new CMenuForwarder(LOCALE_EPGMENU_EVENTLIST, true, NULL, tmpEventListHandler,  "-1", key, icon);
-		menu->addItem(menu_item, false);
+		menu->addItem(new CMenuForwarder(LOCALE_EPGMENU_EVENTLIST, true, NULL, tmpEventListHandler,  "-1", key, icon), false);
 
 		// epgplus
 		if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 		{
 			tmpEPGplusHandler = new CEPGplusHandler();
 			keyhelper.get(&key, &icon, CRCInput::RC_green);
-			menu_item = new CMenuForwarder(LOCALE_EPGMENU_EPGPLUS, true, NULL, tmpEPGplusHandler  ,  "-1", key, icon);
-			menu->addItem(menu_item, false);
+			menu->addItem(new CMenuForwarder(LOCALE_EPGMENU_EPGPLUS, true, NULL, tmpEPGplusHandler  ,  "-1", key, icon), false);
 		}
 
 		// epg view
 		tmpEPGDataHandler = new CEPGDataHandler();
 		keyhelper.get(&key, &icon, CRCInput::RC_yellow);
-		menu_item = new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, tmpEPGDataHandler ,  "-1", key, icon);
-		menu->addItem(menu_item, false);
+		menu->addItem(new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, tmpEPGDataHandler ,  "-1", key, icon), false);
 		
                	// tech info
 		if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 		{
 			tmpEPGDataHandler = new CEPGDataHandler();
 			keyhelper.get(&key, &icon, CRCInput::RC_yellow);
-			menu_item = new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, tmpEPGDataHandler ,  "-1", key, icon);
-			menu->addItem(menu_item, false);
+			menu->addItem(menu_item = new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, tmpEPGDataHandler ,  "-1", key, icon), false);
 		}
         }
         else if( button == SNeutrinoSettings::BUTTON_GREEN) 

@@ -101,19 +101,19 @@ void CPowerMenu::showMenu(void)
 	CMenuWidgetExtended* powerMenu = new CMenuWidgetExtended(LOCALE_MAINMENU_POWERMENU, NEUTRINO_ICON_BUTTON_POWER);
 	
 	// sleep timer
-	powerMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SLEEPTIMER, true, new CSleepTimerWidget, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SLEEPTIMER));
+	powerMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SLEEPTIMER, true, new CSleepTimerWidget, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SLEEPTIMER, LOCALE_HELPTEXT_SLEEPTIMER));
 
 	// restart neutrino
-	powerMenu->addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_RESTART, true, this, "restart", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_RESTART));
+	powerMenu->addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_RESTART, true, this, "restart", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_RESTART, LOCALE_HELPTEXT_RESTART));
 
 	// standby
-	powerMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_STANDBY, true, this, "standby", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_STANDBY));
+	powerMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_STANDBY, true, this, "standby", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_STANDBY, LOCALE_HELPTEXT_STANDBY));
 
 	// reboot
-	powerMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_REBOOT, true, this, "reboot", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_REBOOT));
+	powerMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_REBOOT, true, this, "reboot", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_REBOOT, LOCALE_HELPTEXT_REBOOT));
 
 	// shutdown
-	powerMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SHUTDOWN, true, this, "shutdown", CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_SHUTDOWN));
+	powerMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SHUTDOWN, true, this, "shutdown", CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_SHUTDOWN, LOCALE_HELPTEXT_SHUTDOWN));
 
 	powerMenu->integratePlugins(CPlugins::I_TYPE_POWER, shortcut++);
 	
@@ -165,19 +165,19 @@ void CPowerMenu::showMenuClassic(void)
 	CMenuWidget * powerMenu = new CMenuWidget(LOCALE_MAINMENU_POWERMENU, NEUTRINO_ICON_BUTTON_POWER);
 	
 	// sleep timer
-	powerMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SLEEPTIMER, true, NULL, new CSleepTimerWidget, NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_SLEEPTIMER));
+	powerMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SLEEPTIMER, true, NULL, new CSleepTimerWidget, NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_SLEEPTIMER, LOCALE_HELPTEXT_SLEEPTIMER));
 
 	// restart neutrino
-	powerMenu->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_RESTART, true, NULL, this, "restart", CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_RESTART));
+	powerMenu->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_RESTART, true, NULL, this, "restart", CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_RESTART, LOCALE_HELPTEXT_RESTART));
 
 	// standby
-	powerMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_STANDBY, true, NULL, this, "standby", CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_STANDBY));
+	powerMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_STANDBY, true, NULL, this, "standby", CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_STANDBY, LOCALE_HELPTEXT_STANDBY));
 
 	// reboot
-	powerMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_REBOOT, true, NULL, this, "reboot", CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_REBOOT));
+	powerMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_REBOOT, true, NULL, this, "reboot", CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_CLASSIC_REBOOT, LOCALE_HELPTEXT_REBOOT));
 
 	// shutdown
-	powerMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SHUTDOWN, true, NULL, this, "shutdown", CRCInput::RC_standby, NEUTRINO_ICON_CLASSIC_SHUTDOWN));
+	powerMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SHUTDOWN, true, NULL, this, "shutdown", CRCInput::RC_standby, NEUTRINO_ICON_CLASSIC_SHUTDOWN, LOCALE_HELPTEXT_SHUTDOWN));
 
 	powerMenu->integratePlugins(CPlugins::I_TYPE_POWER);
 	
