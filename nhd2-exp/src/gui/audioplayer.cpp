@@ -143,6 +143,8 @@ CAudioPlayerGui::CAudioPlayerGui(bool inetmode)
 
 void CAudioPlayerGui::Init(void)
 {
+	m_title = g_Locale->getText(LOCALE_AUDIOPLAYER_HEAD);
+
 	stimer = 0;
 	m_selected = 0;
 	m_metainfo.clear();
@@ -182,6 +184,11 @@ void CAudioPlayerGui::Init(void)
 		audiofilefilter.addFilter("aac");
 		audiofilefilter.addFilter("dts");
 		audiofilefilter.addFilter("m4a");
+		//
+		audiofilefilter.addFilter("url");
+		audiofilefilter.addFilter("xml");
+		audiofilefilter.addFilter("m3u");
+		audiofilefilter.addFilter("pls");
 	}
 	
 	m_SMSKeyInput.setTimeout(AUDIOPLAYERGUI_SMSKEY_TIMEOUT);
@@ -350,7 +357,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 		remove("/tmp/cover.jpg");
 
 	//always repaint
-	return menu_return::RETURN_EXIT_ALL;
+	return menu_return::RETURN_REPAINT;
 }
 
 int CAudioPlayerGui::show()
@@ -379,9 +386,7 @@ int CAudioPlayerGui::show()
 	// control loop
 	while(loop)
 	{
-		if(!hide_playlist)
-			updateMetaData();
-
+		updateMetaData();
 		updateTimes();	
 
 		if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_audio)
@@ -618,9 +623,8 @@ int CAudioPlayerGui::show()
 				if(m_curr_audiofile.FileExtension != CFile::EXTENSION_URL)
 					rev();
 			} 
-			else if(!isURL)
+			else if(!isURL) // key_level == 2
 			{ 
-				// key_level == 2
 				if(m_state == CAudioPlayerGui::STOP)
 				{
 					if (!m_playlist.empty()) 
@@ -889,7 +893,7 @@ int CAudioPlayerGui::show()
 	
 	hide();
 
-	if(m_state != CAudioPlayerGui::STOP)
+	//if(m_state != CAudioPlayerGui::STOP)
 		stop();	
 
 	return ret;
@@ -1327,6 +1331,7 @@ bool CAudioPlayerGui::openFilebrowser(void)
 		m_Path = filebrowser.getCurrentDir();
 		CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
 		
+		//
 		for(; files != filebrowser.getSelectedFiles().end(); files++)
 		{
 			if (maxProgress > SHOW_FILE_LOAD_LIMIT)
@@ -1344,18 +1349,25 @@ bool CAudioPlayerGui::openFilebrowser(void)
 #endif // LCD_UPDATE
 			}
 			
+			//
 			if ( (files->getExtension() == CFile::EXTENSION_CDR)
 					||  (files->getExtension() == CFile::EXTENSION_MP3)
 					||  (files->getExtension() == CFile::EXTENSION_WAV)
 					||  (files->getExtension() == CFile::EXTENSION_FLAC)
 			)
 			{
+				m_title = g_Locale->getText(LOCALE_AUDIOPLAYER_HEAD);
+
 				CAudiofileExt audiofile(files->Name, files->getExtension());
 				addToPlaylist(audiofile);
 			}
 			
+			//
 			if(files->getType() == CFile::FILE_URL)
 			{
+				m_title = files->getFileName();
+				removeExtension(m_title);
+
 				std::string filename = files->Name;
 				FILE *fd = fopen(filename.c_str(), "r");
 				
@@ -1380,6 +1392,9 @@ bool CAudioPlayerGui::openFilebrowser(void)
 			}
 			else if(files->getType() == CFile::FILE_PLAYLIST)
 			{
+				m_title = files->getFileName();
+				removeExtension(m_title);
+
 				std::string sPath = files->Name.substr(0, files->Name.rfind('/'));
 				std::ifstream infile;
 				char cLine[1024];
@@ -1473,6 +1488,9 @@ bool CAudioPlayerGui::openFilebrowser(void)
 			{
 				if (!files->Name.empty())
 				{
+					m_title = files->getFileName();
+					removeExtension(m_title);
+
 					scanXmlFile(files->Name);
 				}
 			}
@@ -1598,12 +1616,14 @@ void CAudioPlayerGui::paintHead()
 	if(isURL)
 		return;
 	
-	std::string strCaption;
+	//std::string strCaption;
 	
+	/*
 	if (m_inetmode)
-		strCaption = g_Locale->getText(LOCALE_INETRADIO_NAME);
+		m_title = g_Locale->getText(LOCALE_INETRADIO_NAME);
 	else 
-		strCaption = g_Locale->getText(LOCALE_AUDIOPLAYER_HEAD);
+		m_title = g_Locale->getText(LOCALE_AUDIOPLAYER_HEAD);
+	*/
 	
 	// head box
 	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
@@ -1613,7 +1633,7 @@ void CAudioPlayerGui::paintHead()
 	m_frameBuffer->paintIcon(NEUTRINO_ICON_MP3, m_x + BORDER_LEFT, m_y + m_title_height + (m_theight - icon_head_h)/2);
 	
 	//head title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(m_x + BORDER_LEFT + icon_head_w + 5, m_y + m_title_height + (m_theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), m_width - (BORDER_LEFT + BORDER_RIGHT + icon_head_w + 10), strCaption, COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(m_x + BORDER_LEFT + icon_head_w + 5, m_y + m_title_height + (m_theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), m_width - (BORDER_LEFT + BORDER_RIGHT + icon_head_w + 10), m_title.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 	
 	// icon setup
 	if (!m_inetmode)
@@ -2049,7 +2069,7 @@ void CAudioPlayerGui::play(unsigned int pos)
 	}
 
 	// metadata
-	if ( (m_playlist[pos].FileExtension != CFile::EXTENSION_M3U || m_playlist[pos].FileExtension != CFile::EXTENSION_URL || m_playlist[pos].FileExtension != CFile::EXTENSION_PLS)&& !m_playlist[pos].MetaData.bitrate)
+	if ( (m_playlist[pos].FileExtension != CFile::EXTENSION_M3U || m_playlist[pos].FileExtension != CFile::EXTENSION_URL || m_playlist[pos].FileExtension != CFile::EXTENSION_PLS) && !m_playlist[pos].MetaData.bitrate)
 	{
 		GetMetaData(m_playlist[pos]);
 	}
@@ -2347,7 +2367,14 @@ void CAudioPlayerGui::getFileInfoToDisplay(std::string &info, CAudiofileExt &fil
 
 	if (!m_inetmode) 
 	{
+		// artist
 		artist = "Artist?";
+
+		//
+		if ( file.FileExtension == CFile::EXTENSION_M3U || file.FileExtension == CFile::EXTENSION_URL || file.FileExtension == CFile::EXTENSION_PLS)
+			artist = "";
+		
+		// title
 		title = "Title?";
 	}
 

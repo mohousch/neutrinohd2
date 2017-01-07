@@ -127,9 +127,6 @@ struct SNeutrinoSettings
 
 	// MOVIEPLAYER
 	char network_nfs_moviedir[100];
-	
-	// multi select
-	int movieplayer_allow_multiselect;
 	// END MOVIEPLAYER
 
 	// OSD

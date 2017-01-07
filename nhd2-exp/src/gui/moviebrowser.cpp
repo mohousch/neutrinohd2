@@ -1994,10 +1994,11 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			std::string search_string;
 
 			if(show_mode == MB_SHOW_RECORDS)
-				search_string = m_movieSelectionHandler->epgTitle.c_str();
+				search_string = m_movieSelectionHandler->epgTitle;
 			else 
 			{
-				search_string = changeFileNameExt(m_movieSelectionHandler->file.Name, "");
+				search_string = m_movieSelectionHandler->file.getFileName();
+				removeExtension(search_string);
 			}
 				
 			cTmdb * tmdb = new cTmdb(search_string.c_str());

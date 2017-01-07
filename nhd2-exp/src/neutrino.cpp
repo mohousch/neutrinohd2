@@ -613,9 +613,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 
 	// movieplayer
 	strcpy( g_settings.network_nfs_moviedir, configfile.getString( "network_nfs_moviedir", "/media/hdd/movie" ).c_str() );
-	
-	// multi select
-	g_settings.movieplayer_allow_multiselect = configfile.getBool("movieplayer_allow_multiselect", false);
 	// end movieplayer
 
 	// OSD
@@ -1102,9 +1099,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 
 	// MOVIEPLAYER
 	configfile.setString( "network_nfs_moviedir", g_settings.network_nfs_moviedir);
-	
-	// multi select
-	configfile.setBool ("movieplayer_allow_multiselect", g_settings.movieplayer_allow_multiselect);
 	// END MOVIEPLAYER
 
 	// OSD

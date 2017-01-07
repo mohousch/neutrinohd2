@@ -106,8 +106,9 @@ class CAudioPlayerGui : public CMenuTarget
 		};
 
 	private:
-		void Init(void);
 		CFrameBuffer * m_frameBuffer;
+
+		//
 		unsigned int   m_selected;
 		int            m_current;
 		unsigned int   m_liststart;
@@ -160,6 +161,12 @@ class CAudioPlayerGui : public CMenuTarget
 		bool updateLcd;
 		bool updateScreen;
 
+		std::string m_title;
+
+		//
+		void Init(void);
+
+		//
 		void paintItem(int pos);
 		void paint();
 		void paintHead();
@@ -168,6 +175,7 @@ class CAudioPlayerGui : public CMenuTarget
 		void paintLCD();
 		void hide();
 
+		//
 		void get_id3(CAudiofileExt * audiofile);
 		void get_mp3info(CAudiofileExt * audiofile);
 		CFileFilter audiofilefilter;

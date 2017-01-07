@@ -41,13 +41,6 @@
 #include <system/helpers.h>
 
 
-#define MESSAGEBOX_NO_YES_OPTION_COUNT 2
-const CMenuOptionChooser::keyval MESSAGEBOX_NO_YES_OPTIONS[MESSAGEBOX_NO_YES_OPTION_COUNT] =
-{
-	{ 0, LOCALE_MESSAGEBOX_NO, NULL },
-	{ 1, LOCALE_MESSAGEBOX_YES, NULL }
-};
-
 CMoviePlayerSettings::CMoviePlayerSettings()
 {
 }
@@ -103,9 +96,6 @@ void CMoviePlayerSettings::showMenu()
 	// save settings
 	moviePlayerSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	moviePlayerSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	
-	// multi select
-	moviePlayerSettings.addItem(new CMenuOptionChooser(LOCALE_STREAMINGMENU_FILEBROWSER_ALLOW_MULTISELECT, &g_settings.movieplayer_allow_multiselect, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true));
 
 	// multiformat Dir
 	moviePlayerSettings.addItem(new CMenuForwarder(LOCALE_MOVIEPLAYER_DEFDIR, true, g_settings.network_nfs_moviedir, this, "moviedir") ); 

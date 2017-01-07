@@ -195,7 +195,7 @@ class CMoviePlayerGui : public CMenuTarget
 
 		std::string Path_local;
 
-		CFileBrowser * filebrowser;
+		//CFileBrowser * filebrowser;
 		CMovieBrowser * moviebrowser;
 		
 		CMovieInfo cMovieInfo;	
@@ -206,7 +206,7 @@ class CMoviePlayerGui : public CMenuTarget
 		void restoreNeutrino();
 		bool get_movie_info_apid_name(int apid, MI_MOVIE_INFO * movie_info, std::string * apidtitle);
 
-		CFileFilter tsfilefilter;
+		//CFileFilter tsfilefilter;
 
 		void showHelpTS(void);
 		
