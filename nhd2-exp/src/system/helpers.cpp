@@ -712,23 +712,6 @@ std::string encode(const std::string s)
 
 	return res;
 }
-/*
-std::string removeExtension(std::string s)
-{
-	int ext_pos = 0;
-	ext_pos = s.rfind('.');
-	
-	if( ext_pos > 0)
-	{
-		std::string extension;
-		extension = s.substr(ext_pos + 1, s.length() - ext_pos);
-
-		s = s.substr(0, s.length() - (extension.length() + 1));
-	}
-
-	return s;
-}
-*/
 
 std::string removeExtension(std::string& s)
 {

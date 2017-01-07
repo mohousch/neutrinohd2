@@ -533,6 +533,7 @@ void CMoviePlayerGui::PlayFile(void)
 	CSelectedMenu cSelectedMenuBookStart[BOOKMARK_START_MENU_MAX_ITEMS];
 
 	CMenuWidget bookStartMenu(LOCALE_MOVIEBROWSER_BOOK_NEW, NEUTRINO_ICON_STREAMING);
+	bookStartMenu.disableMenuPosition();
 
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_NEW, true, NULL, &cSelectedMenuBookStart[0]));
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_TYPE_FORWARD, true, NULL, &cSelectedMenuBookStart[1]));
@@ -1175,7 +1176,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
 						
-			if(isMovieBrowser == true)
+			if(isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_FILES)
 			{
 				int pos_sec = position / 1000;
 

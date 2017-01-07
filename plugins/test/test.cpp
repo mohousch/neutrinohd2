@@ -113,6 +113,10 @@ class CTestMenu : public CMenuTarget
 		//
 		void testCMenuWidgetListBox();
 		void testCMenuWidgetListBox1();
+
+		// 
+		void testMovieBrowserDirect();
+		void  testTSMovieBrowserDirect();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -1846,6 +1850,62 @@ void CTestMenu::testCMenuWidgetListBox1()
 	audioMenu = NULL;
 }
 
+void CTestMenu::testMovieBrowserDirect()
+{
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+	
+	CMoviePlayerGui tmpMoviePlayerGui;	
+	CMovieBrowser * movieBrowser;
+	MI_MOVIE_INFO * p_movie_info;
+	
+	movieBrowser = new CMovieBrowser();
+	
+	movieBrowser->setMode(MB_SHOW_RECORDS);
+	
+	std::string Path_local = g_settings.network_nfs_moviedir;
+
+BROWSER:
+	if (movieBrowser->exec(Path_local.c_str()))
+	{
+		Path_local = movieBrowser->getCurrentDir();
+		
+		CFile * file;
+		
+		if ((file = movieBrowser->getSelectedFile()) != NULL) 
+		{
+			p_movie_info = movieBrowser->getCurrentMovieInfo();
+			
+			file->Title = p_movie_info->epgTitle;
+			file->Info1 = p_movie_info->epgInfo1; //category ist always empty
+			file->Info2 = p_movie_info->epgInfo2;
+			file->Thumbnail = p_movie_info->tfile;
+
+			if(p_movie_info->tfile.empty())
+			{
+				std::string fname = "";
+				fname = file->Name;
+				changeFileNameExt(fname, ".jpg");
+						
+				if(!access(fname.c_str(), F_OK) )
+					file->Thumbnail = fname.c_str();
+			}
+					
+			tmpMoviePlayerGui.addToPlaylist(*file);
+			tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		}
+
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg != CRCInput::RC_home) 
+		{
+			goto BROWSER;
+		}
+	}
+	
+	delete movieBrowser;
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
@@ -2157,6 +2217,10 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		delete mountSmallMenu;
 		mountSmallMenu = NULL;
 	}
+	else if(actionKey == "testmoviebrowser")
+	{
+		testMovieBrowserDirect();
+	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -2242,6 +2306,8 @@ void CTestMenu::showTestMenu()
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
+
+	mainMenu->addItem(new CMenuForwarder("Test Movie Browser", true, NULL, this, "testmoviebrowser"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();

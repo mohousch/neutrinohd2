@@ -89,7 +89,6 @@ void splitString(std::string &str, std::string delim, std::map<std::string,std::
 //
 std::string urlDecode(const std::string &s);
 std::string encode(const std::string s);
-//std::string removeExtension(std::string s);
 std::string removeExtension(std::string& s);
 
 // curl
