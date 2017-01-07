@@ -291,10 +291,7 @@ static char **global_argv;
 extern const char * locale_real_names[]; 		//#include <system/locals_intern.h>
 
 //user menu
-const char *usermenu_button_def[SNeutrinoSettings::BUTTON_MAX]={
-	"red", 
-	"green", 
-	"yellow", 
+const char *usermenu_button_def[SNeutrinoSettings::BUTTON_MAX] = {
 	"blue",
 #if defined (ENABLE_FUNCTIONKEYS)
 	"f1",
@@ -782,11 +779,8 @@ int CNeutrinoApp::loadSetup(const char * fname)
         // USERMENU -> in system/settings.h
         //-------------------------------------------
         // this is as the current neutrino usermen
-        const char * usermenu_default[SNeutrinoSettings::BUTTON_MAX]={
-                "2, 3, 4, 10",                  // RED
-                "5",                            // GREEN
-                "6",                            // YELLOW
-                "8, 9, 12, 11, 13, 14",   	// BLUE
+        const char * usermenu_default[SNeutrinoSettings::BUTTON_MAX] = {
+                "0, 1, 2, 3, 4, 5, 6, 7",   	// BLUE
 #if defined (ENABLE_FUNCTIONKEYS)
 		"0",				// F1
 		"0",				// F2
@@ -3060,12 +3054,39 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}
 			else if( msg == CRCInput::RC_red ) 
 			{
+				//
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
 
+				//
 				StopSubtitles();
+
 				// event list
-				showUserMenu(SNeutrinoSettings::BUTTON_RED);
+				CMenuWidget redMenu(LOCALE_INFOVIEWER_EVENTLIST, NEUTRINO_ICON_FEATURES);
+				redMenu.disableMenuPosition();
+
+				// intros
+				redMenu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+				redMenu.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+
+				// eventlist
+				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EVENTLIST, true, NULL, new CEventListHandler(), "", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+
+				// epg view
+				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, new CEPGDataHandler(), "", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
+		
+			       	// epgplus/tech info
+				if (mode != mode_iptv)
+				{
+					redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EPGPLUS, true, NULL, new CEPGplusHandler(), "", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
+
+					redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_STREAMINFO, true, NULL, new CStreamInfo2Handler(), "", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+				}
+				
+				redMenu.exec(NULL, "");
+				redMenu.hide();
+
+				//
 				StartSubtitles();
 			}
 			else if( ( msg == CRCInput::RC_green) || ( msg == CRCInput::RC_audio) )
@@ -3084,8 +3105,15 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 				else
 				{
 					StopSubtitles();
-					// audio
-					showUserMenu(SNeutrinoSettings::BUTTON_GREEN);
+
+					// audio handler
+					CAudioSelectMenuHandler* audioSelectMenuHandler = new CAudioSelectMenuHandler();
+
+					audioSelectMenuHandler->exec(NULL, "");
+							
+					delete audioSelectMenuHandler;
+					audioSelectMenuHandler = NULL;
+
 					StartSubtitles();
 				}
 			}
@@ -3095,8 +3123,13 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 					g_InfoViewer->killTitle();
 
 				StopSubtitles();
-				// NVODs
-				showUserMenu(SNeutrinoSettings::BUTTON_YELLOW);
+
+				// select NVODs
+				if (mode != mode_iptv)
+				{
+					SelectNVOD();
+				}
+
 				StartSubtitles();
 			}
 			else if( msg == CRCInput::RC_blue ) 

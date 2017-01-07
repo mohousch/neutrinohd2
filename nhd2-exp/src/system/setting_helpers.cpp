@@ -269,22 +269,14 @@ int CTuxtxtChangeExec::exec(CMenuTarget *parent, const std::string &actionKey)
 #define USERMENU_ITEM_OPTION_COUNT SNeutrinoSettings::ITEM_MAX
 const CMenuOptionChooser::keyval USERMENU_ITEM_OPTIONS[USERMENU_ITEM_OPTION_COUNT] =
 {
-        {SNeutrinoSettings::ITEM_NONE, LOCALE_USERMENU_ITEM_NONE, NULL},
-        {SNeutrinoSettings::ITEM_BAR, LOCALE_USERMENU_ITEM_BAR, NULL},
-        {SNeutrinoSettings::ITEM_EPG_LIST, LOCALE_EPGMENU_EVENTLIST, NULL},
-        {SNeutrinoSettings::ITEM_EPG_SUPER, LOCALE_EPGMENU_EPGPLUS, NULL},
-        {SNeutrinoSettings::ITEM_EPG_INFO, LOCALE_EPGMENU_EVENTINFO, NULL},
-        {SNeutrinoSettings::ITEM_AUDIO_SELECT, LOCALE_AUDIOSELECTMENUE_HEAD, NULL},
-        {SNeutrinoSettings::ITEM_SUBCHANNEL, LOCALE_INFOVIEWER_SUBSERVICE, NULL},
+	{SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB, LOCALE_MOVIEPLAYER_RECORDS, NULL},    
         {SNeutrinoSettings::ITEM_MOVIEPLAYER_MB, LOCALE_MOVIEPLAYER_MOVIES, NULL},
         {SNeutrinoSettings::ITEM_TIMERLIST, LOCALE_TIMERLIST_NAME, NULL},
         {SNeutrinoSettings::ITEM_REMOTE, LOCALE_RCLOCK_MENUEADD, NULL},
-        {SNeutrinoSettings::ITEM_TECHINFO, LOCALE_EPGMENU_STREAMINFO, NULL},
         {SNeutrinoSettings::ITEM_PLUGIN, LOCALE_USERMENU_ITEM_PLUGINS, NULL},
         {SNeutrinoSettings::ITEM_VTXT, LOCALE_USERMENU_ITEM_VTXT, NULL},
         {SNeutrinoSettings::ITEM_GAME, LOCALE_MAINMENU_GAMES, NULL},
-        {SNeutrinoSettings::ITEM_OPKG, LOCALE_OPKG_MANAGER, NULL},
-        {SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB, LOCALE_MOVIEPLAYER_RECORDS, NULL}      
+        {SNeutrinoSettings::ITEM_OPKG, LOCALE_OPKG_MANAGER, NULL}    
 };
 
 int CUserMenuMenu::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
