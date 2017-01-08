@@ -76,7 +76,7 @@ void CMediaPlayerMenu::showMenu()
 	CMenuWidgetExtended* MediaPlayer = new CMenuWidgetExtended(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_MOVIE);
 		
 	// internet Radio
-	MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_INETRADIO, true, new CAudioPlayerGui(true), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_INTERNETRADIO, LOCALE_HELPTEXT_INTERNETRADIO ));
+	//MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_INETRADIO, true, new CAudioPlayerGui(true), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_INTERNETRADIO, LOCALE_HELPTEXT_INTERNETRADIO ));
 
 	// audioPlayer
 	MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_AUDIOPLAYER, true, new CAudioPlayerGui(), NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_AUDIOPLAYER, LOCALE_HELPTEXT_AUDIOPLAYER ));
@@ -114,7 +114,7 @@ void CMediaPlayerMenu::showMenuSmart(void)
 	CMenuFrameBox * MediaPlayer = new CMenuFrameBox(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_MOVIE);
 		
 	// internet Radio
-	MediaPlayer->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_INETRADIO, new CAudioPlayerGui(true), NULL, NEUTRINO_ICON_SMART_INTERNETRADIO));
+	//MediaPlayer->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_INETRADIO, new CAudioPlayerGui(true), NULL, NEUTRINO_ICON_SMART_INTERNETRADIO));
 
 	// audioPlayer
 	MediaPlayer->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_AUDIOPLAYER, new CAudioPlayerGui(), NULL, NEUTRINO_ICON_SMART_AUDIOPLAYER));
@@ -152,7 +152,7 @@ void CMediaPlayerMenu::showMenuClassic()
 	CMenuWidget * MediaPlayer = new CMenuWidget(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_MOVIE);
 		
 	// internet Radio
-	MediaPlayer->addItem(new CMenuForwarder(LOCALE_MAINMENU_INETRADIO, true, NULL, new CAudioPlayerGui(true), NULL, CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_INTERNETRADIO, LOCALE_HELPTEXT_INTERNETRADIO));
+	//MediaPlayer->addItem(new CMenuForwarder(LOCALE_MAINMENU_INETRADIO, true, NULL, new CAudioPlayerGui(true), NULL, CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_INTERNETRADIO, LOCALE_HELPTEXT_INTERNETRADIO));
 
 	// audioPlayer
 	MediaPlayer->addItem(new CMenuForwarder(LOCALE_MAINMENU_AUDIOPLAYER, true, NULL, new CAudioPlayerGui(), NULL, CRCInput::RC_green, NEUTRINO_ICON_CLASSIC_AUDIOPLAYER, LOCALE_HELPTEXT_AUDIOPLAYER));

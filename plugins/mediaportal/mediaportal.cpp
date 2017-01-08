@@ -70,8 +70,7 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	else if(actionKey == "internetradio")
 	{
-		CAudioPlayerGui internetRadio(true);
-		internetRadio.exec(NULL, "");
+		g_PluginList->startPlugin("icecast");
 	}
 	
 	return returnval;
@@ -91,7 +90,7 @@ void CMediaPortal::showMenu(void)
 	mediaPortal->addItem(new CMenuFrameBoxItem("NetzKino", this, "netzkino", PLUGINDIR "/netzkino/netzkino.png"));
 
 	// internetradio
-	mediaPortal->addItem(new CMenuFrameBoxItem("Internet Radio", this, "internetradio", NEUTRINO_ICON_MENUITEM_INTERNETRADIO));
+	mediaPortal->addItem(new CMenuFrameBoxItem("Ice Cast", this, "icecast", NEUTRINO_ICON_MENUITEM_INTERNETRADIO));
 
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();

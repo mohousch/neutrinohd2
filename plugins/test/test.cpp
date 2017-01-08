@@ -758,7 +758,7 @@ void CTestMenu::testAudioPlayer()
 
 void CTestMenu::testInternetRadio()
 {
-	CAudioPlayerGui tmpAudioPlayerGui(true);
+	CAudioPlayerGui tmpAudioPlayerGui;
 	tmpAudioPlayerGui.exec(NULL, "");
 }
 
@@ -1543,6 +1543,7 @@ void CTestMenu::testPlayAudioDir()
 			}
 		}
 		
+		tmpAudioPlayerGui.hidePlayList(true);
 		tmpAudioPlayerGui.exec(NULL, "urlplayback");
 	}
 }

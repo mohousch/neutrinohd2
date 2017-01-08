@@ -370,7 +370,6 @@ struct SNeutrinoSettings
 	int   audioplayer_highprio;
 	int   audioplayer_select_title_by_name;
 	int   audioplayer_repeat_on;
-	int audioplayer_hide_playlist;
 	// END AUDIOPLAYER
 
 	// PICVIEWER

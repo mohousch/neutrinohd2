@@ -831,7 +831,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.audioplayer_highprio  = configfile.getInt32("audioplayer_highprio",0);
 	g_settings.audioplayer_select_title_by_name = configfile.getInt32("audioplayer_select_title_by_name", 0);
 	g_settings.audioplayer_repeat_on = configfile.getInt32("audioplayer_repeat_on",0);
-	g_settings.audioplayer_hide_playlist = configfile.getInt32("audioplayer_hide_playlist", 0);
 	// end audioplayer
 
 	// pictureviewer
@@ -1287,7 +1286,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "audioplayer_highprio", g_settings.audioplayer_highprio );
 	configfile.setInt32( "audioplayer_select_title_by_name", g_settings.audioplayer_select_title_by_name );
 	configfile.setInt32( "audioplayer_repeat_on", g_settings.audioplayer_repeat_on );
-	configfile.setInt32("audioplayer_hide_playlist", g_settings.audioplayer_hide_playlist);
 	// END AUDIOPLAYER
 
 	// PICVIEWER
@@ -3191,6 +3189,7 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 				CAudioPlayerGui tmpAudioPlayerGui;
 				tmpAudioPlayerGui.exec(NULL, "");
 			}
+			/*
 			else if( msg == (neutrino_msg_t)g_settings.key_inetradio ) 	// internet radio
 			{
 				if(g_InfoViewer->is_visible)
@@ -3198,11 +3197,12 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 	  
 				StopSubtitles();
 
-				CAudioPlayerGui tmpAudioPlayerGui(true);
+				CAudioPlayerGui tmpAudioPlayerGui();
 				tmpAudioPlayerGui.exec(NULL, "");
 
 				StartSubtitles();	
-			}			
+			}
+			*/			
 			else if( msg == (neutrino_msg_t)g_settings.key_recordsbrowser )	// recordsbrowser
 			{
 				if(g_InfoViewer->is_visible)

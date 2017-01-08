@@ -130,11 +130,10 @@ void CAudiofileExt::operator=(const CAudiofileExt& src)
 	firstChar = src.firstChar;
 }
 
-CAudioPlayerGui::CAudioPlayerGui(bool inetmode)
+CAudioPlayerGui::CAudioPlayerGui()
 {
 	m_frameBuffer = CFrameBuffer::getInstance();
 	m_visible = false;
-	m_inetmode = inetmode;
 	
 	info_visible = false;
 
@@ -144,6 +143,8 @@ CAudioPlayerGui::CAudioPlayerGui(bool inetmode)
 void CAudioPlayerGui::Init(void)
 {
 	m_title = g_Locale->getText(LOCALE_AUDIOPLAYER_HEAD);
+
+	m_inetmode = false;
 
 	stimer = 0;
 	m_selected = 0;
@@ -164,36 +165,26 @@ void CAudioPlayerGui::Init(void)
 
 	audiofilefilter.Clear();
 	
-	if (m_inetmode) 
-	{
-		audiofilefilter.addFilter("url");
-		audiofilefilter.addFilter("xml");
-		audiofilefilter.addFilter("m3u");
-		audiofilefilter.addFilter("pls");
-	} 
-	else 
-	{
-		audiofilefilter.addFilter("cdr");
-		audiofilefilter.addFilter("mp3");
-		audiofilefilter.addFilter("m2a");
-		audiofilefilter.addFilter("mpa");
-		audiofilefilter.addFilter("mp2");
-		audiofilefilter.addFilter("ogg");
-		audiofilefilter.addFilter("wav");
-		audiofilefilter.addFilter("flac");
-		audiofilefilter.addFilter("aac");
-		audiofilefilter.addFilter("dts");
-		audiofilefilter.addFilter("m4a");
-		//
-		audiofilefilter.addFilter("url");
-		audiofilefilter.addFilter("xml");
-		audiofilefilter.addFilter("m3u");
-		audiofilefilter.addFilter("pls");
-	}
+	audiofilefilter.addFilter("cdr");
+	audiofilefilter.addFilter("mp3");
+	audiofilefilter.addFilter("m2a");
+	audiofilefilter.addFilter("mpa");
+	audiofilefilter.addFilter("mp2");
+	audiofilefilter.addFilter("ogg");
+	audiofilefilter.addFilter("wav");
+	audiofilefilter.addFilter("flac");
+	audiofilefilter.addFilter("aac");
+	audiofilefilter.addFilter("dts");
+	audiofilefilter.addFilter("m4a");
+	//
+	audiofilefilter.addFilter("url");
+	audiofilefilter.addFilter("xml");
+	audiofilefilter.addFilter("m3u");
+	audiofilefilter.addFilter("pls");
 	
 	m_SMSKeyInput.setTimeout(AUDIOPLAYERGUI_SMSKEY_TIMEOUT);
 
-	hide_playlist = g_settings.audioplayer_hide_playlist;
+	hide_playlist = false;
 }
 
 CAudioPlayerGui::~CAudioPlayerGui()
@@ -269,11 +260,8 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	
 	if(actionKey == "urlplayback")
 	{
-		//hide_playlist = true;
 		isURL = true;
 	}
-	//else
-	//hide_playlist = g_settings.audioplayer_hide_playlist;
 
 	if(parent)
 		parent->hide(); 
@@ -383,7 +371,7 @@ int CAudioPlayerGui::show()
 	if(isURL && hide_playlist)
 		play(0);
 
-	printf("(m_selected:%d) (m_current:%d) (m_playlist.size():%d)\n", m_selected, m_current, m_playlist.size());
+	//printf("(m_selected:%d) (m_current:%d) (m_playlist.size():%d)\n", m_selected, m_current, m_playlist.size());
 
 	// control loop
 	while(loop)
@@ -432,6 +420,7 @@ int CAudioPlayerGui::show()
 		else
 			paint();
 
+		/*
 		if( msg == CRCInput::RC_mode )
 		{
 			if(m_inetmode) 
@@ -451,11 +440,13 @@ int CAudioPlayerGui::show()
 			clear_before_update = true;
 			update = true;
 		}
-		else if (msg == CRCInput::RC_home)
+		else
+		*/
+		if (msg == CRCInput::RC_home)
 		{ 
 			if (m_state != CAudioPlayerGui::STOP)
 			{
-				if(isURL)
+				if(hide_playlist)
 					loop = false;
 				else
 					stop();
@@ -509,7 +500,7 @@ int CAudioPlayerGui::show()
 				}
 			}
 		}
-		else if( ((msg &~ CRCInput::RC_Repeat) == CRCInput::RC_up || (msg &~ CRCInput::RC_Repeat) == CRCInput::RC_page_up) /*&& !isURL*/)
+		else if( ((msg &~ CRCInput::RC_Repeat) == CRCInput::RC_up || (msg &~ CRCInput::RC_Repeat) == CRCInput::RC_page_up))
 		{
 			if(hide_playlist)
 			{
@@ -541,7 +532,7 @@ int CAudioPlayerGui::show()
 				}
 			}
 		}
-		else if(((msg &~ CRCInput::RC_Repeat) == CRCInput::RC_down || (msg &~ CRCInput::RC_Repeat) == CRCInput::RC_page_down) /*&& !isURL*/)
+		else if(((msg &~ CRCInput::RC_Repeat) == CRCInput::RC_down || (msg &~ CRCInput::RC_Repeat) == CRCInput::RC_page_down))
 		{
 			if(hide_playlist)
 			{
@@ -586,7 +577,7 @@ int CAudioPlayerGui::show()
 		}
 		else if (msg == CRCInput::RC_red)
 		{
-			if(m_key_level == 0 /*&& !isURL*/)
+			if(m_key_level == 0)
 			{
 				if (!m_playlist.empty())
 				{
@@ -608,14 +599,14 @@ int CAudioPlayerGui::show()
 		}
 		else if (msg == CRCInput::RC_stop)
 		{
-			if(isURL)
+			if(hide_playlist)
 				loop = false;
 			else
 				stop();
 		}
 		else if(msg == CRCInput::RC_green)
 		{
-			if (m_key_level == 0 && !isURL)
+			if (m_key_level == 0 && !hide_playlist)
 			{
 				openFilebrowser();
 				update = true;
@@ -625,7 +616,7 @@ int CAudioPlayerGui::show()
 				if(m_curr_audiofile.FileExtension != CFile::EXTENSION_URL)
 					rev();
 			} 
-			else /*if(!isURL)*/ // key_level == 2
+			else if(!hide_playlist) // key_level == 2
 			{ 
 				if(m_state == CAudioPlayerGui::STOP)
 				{
@@ -666,7 +657,7 @@ int CAudioPlayerGui::show()
 		}
 		else if(msg == CRCInput::RC_yellow)
 		{
-			if(m_key_level == 0 /*&& !isURL*/)
+			if(m_key_level == 0 && !hide_playlist)
 			{
 				if (!m_playlist.empty())
 				{
@@ -680,9 +671,8 @@ int CAudioPlayerGui::show()
 			{
 				pause();
 			} 
-			else /*if(!isURL)*/
+			else if(!hide_playlist) // key_level==2
 			{ 
-				// key_level==2
 				m_select_title_by_name =! m_select_title_by_name;
 
 				if (m_select_title_by_name && m_playlistHasChanged)
@@ -692,8 +682,9 @@ int CAudioPlayerGui::show()
 		}
 		else if(msg == CRCInput::RC_blue)
 		{
-			if (m_key_level == 0 /*&& !isURL*/)
+			if (m_key_level == 0 && !hide_playlist)
 			{
+				/*
 				if (m_inetmode) 
 				{
 					static int old_select = 0;
@@ -743,7 +734,9 @@ int CAudioPlayerGui::show()
 					
 					update = true;
 				}
-				else if ( shufflePlaylist() )
+				else
+				*/
+				if ( shufflePlaylist() )
 				{
 					update = true;
 				}
@@ -753,7 +746,7 @@ int CAudioPlayerGui::show()
 				if(m_curr_audiofile.FileExtension != CFile::EXTENSION_URL)
 					ff();
 			} 
-			else /*if(!isURL)*/ // key_level == 2
+			else if(!hide_playlist) // key_level == 2
 			{
 				if (m_state != CAudioPlayerGui::STOP)
 				{
@@ -775,7 +768,7 @@ int CAudioPlayerGui::show()
 				}
 			}
 		}
-		else if( msg == CRCInput::RC_info /*&& !isURL*/)
+		else if( msg == CRCInput::RC_info && !hide_playlist)
 		{
 			if (m_key_level == 2)
 				m_key_level = 0;
@@ -802,7 +795,7 @@ int CAudioPlayerGui::show()
 			
 			paintFoot();
 		}
-		else if(msg == CRCInput::RC_0 /*&& !isURL*/)
+		else if(msg == CRCInput::RC_0 && !hide_playlist)
 		{
 			if(m_current >= 0)
 			{
@@ -810,7 +803,7 @@ int CAudioPlayerGui::show()
 				update = true;
 			}
 		}
-		else if ( (CRCInput::isNumeric(msg) && !(m_playlist.empty())) /*&& !isURL*/)
+		else if ( (CRCInput::isNumeric(msg) && !(m_playlist.empty())) && !hide_playlist)
 		{ 
 			//numeric zap or SMS zap
 			if (m_select_title_by_name)
@@ -851,7 +844,7 @@ int CAudioPlayerGui::show()
 			}
 
 		}
-		else if( ((msg == CRCInput::RC_setup && !m_inetmode) || (msg == CRCInput::RC_vfdmenu && !m_inetmode)) /*&& !isURL*/ )
+		else if( ((msg == CRCInput::RC_setup && !m_inetmode) || (msg == CRCInput::RC_vfdmenu && !m_inetmode)) && !hide_playlist)
 		{
 			CNFSSmallMenu nfsMenu;
 			nfsMenu.exec(this, "");
@@ -896,7 +889,7 @@ int CAudioPlayerGui::show()
 	hide();
 
 	//if(m_state != CAudioPlayerGui::STOP)
-		stop();	
+	stop();	
 
 	return ret;
 }
@@ -1124,6 +1117,7 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 	curl_global_cleanup();
 }
 
+#if 0
 void CAudioPlayerGui::readDir_ic(void)
 {
 	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::readDir_ic\n");
@@ -1184,6 +1178,7 @@ void CAudioPlayerGui::readDir_ic(void)
 
 	delete scanBox;
 }
+#endif
 
 void CAudioPlayerGui::scanXmlFile(std::string filename)
 {
@@ -1222,7 +1217,7 @@ void CAudioPlayerGui::scanXmlData(xmlDocPtr answer_parser, const char *nametag, 
 			element = element_tmp;
 			long listPos = -1;
 			
-			progress.setTitle(LOCALE_AUDIOPLAYER_LOAD_RADIO_STATIONS);
+			progress.setTitle(/*LOCALE_AUDIOPLAYER_LOAD_RADIO_STATIONS*/LOCALE_AUDIOPLAYER_READING_FILES);
 			progress.exec(this, "");
 			
 			neutrino_msg_t      msg;
@@ -1351,7 +1346,7 @@ bool CAudioPlayerGui::openFilebrowser(void)
 #endif // LCD_UPDATE
 			}
 			
-			//
+			//cdr/mp3/wav/flac
 			if ( (files->getExtension() == CFile::EXTENSION_CDR)
 					||  (files->getExtension() == CFile::EXTENSION_MP3)
 					||  (files->getExtension() == CFile::EXTENSION_WAV)
@@ -1364,11 +1359,12 @@ bool CAudioPlayerGui::openFilebrowser(void)
 				addToPlaylist(audiofile);
 			}
 			
-			//
+			//url
 			if(files->getType() == CFile::FILE_URL)
 			{
 				m_title = files->getFileName();
 				removeExtension(m_title);
+				m_inetmode = true;
 
 				std::string filename = files->Name;
 				FILE *fd = fopen(filename.c_str(), "r");
@@ -1396,6 +1392,7 @@ bool CAudioPlayerGui::openFilebrowser(void)
 			{
 				m_title = files->getFileName();
 				removeExtension(m_title);
+				m_inetmode = true;
 
 				std::string sPath = files->Name.substr(0, files->Name.rfind('/'));
 				std::ifstream infile;
@@ -1492,6 +1489,7 @@ bool CAudioPlayerGui::openFilebrowser(void)
 				{
 					m_title = files->getFileName();
 					removeExtension(m_title);
+					m_inetmode = true;
 
 					scanXmlFile(files->Name);
 				}
@@ -1535,7 +1533,6 @@ void CAudioPlayerGui::hide()
 
 void CAudioPlayerGui::paintItem(int pos)
 {
-	//if(isURL)
 	if(hide_playlist)
 		return;
 	
@@ -1616,18 +1613,8 @@ void CAudioPlayerGui::paintItem(int pos)
 // paint head
 void CAudioPlayerGui::paintHead()
 {
-	//if(isURL)
 	if(hide_playlist)
 		return;
-	
-	//std::string strCaption;
-	
-	/*
-	if (m_inetmode)
-		m_title = g_Locale->getText(LOCALE_INETRADIO_NAME);
-	else 
-		m_title = g_Locale->getText(LOCALE_AUDIOPLAYER_HEAD);
-	*/
 	
 	// head box
 	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
@@ -1697,7 +1684,6 @@ const struct button_label AudioPlayerButtons[][4] =
 
 void CAudioPlayerGui::paintFoot()
 {
-	//if(isURL)
 	if(hide_playlist)
 		return;
 	
@@ -1724,17 +1710,21 @@ void CAudioPlayerGui::paintFoot()
 	{
 		if (m_playlist.empty()) 
 		{
+			/*
 			if (m_inetmode)
 				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top + m_buttonHeight/2, ButtonWidth*2, 2, AudioPlayerButtons[7], m_buttonHeight/2);
 			else
-				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top + m_buttonHeight/2, ButtonWidth, 1, &(AudioPlayerButtons[7][0]), m_buttonHeight/2);
+			*/
+			::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top + m_buttonHeight/2, ButtonWidth, 1, &(AudioPlayerButtons[7][0]), m_buttonHeight/2);
 		} 
 		else
 		{
+			/*
 			if (m_inetmode)
 				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth, 4, AudioPlayerButtons[8], m_buttonHeight/2);
 			else
-				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth, 4, AudioPlayerButtons[1], m_buttonHeight/2);
+			*/
+			::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth, 4, AudioPlayerButtons[1], m_buttonHeight/2);
 		}
 	}
 	else if (m_key_level == 1)
@@ -1875,7 +1865,6 @@ void CAudioPlayerGui::paintInfo()
 
 void CAudioPlayerGui::paint()
 {
-	//if(isURL)
 	if(hide_playlist)
 		return;
 	

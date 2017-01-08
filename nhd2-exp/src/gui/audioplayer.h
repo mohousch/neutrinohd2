@@ -119,22 +119,6 @@ class CAudioPlayerGui : public CMenuTarget
 		int            m_buttonHeight;
 		int            m_title_height;
 		int            m_info_height;
-		int            m_key_level;
-		bool           m_visible;
-		State          m_state;
-		time_t         m_time_total;
-		time_t         m_time_played;
-		std::string    m_metainfo;
-		bool           m_select_title_by_name;
-		bool           m_playlistHasChanged;
-
-		CAudioPlayList      m_playlist;
-		CAudioPlayList      m_radiolist;
-		CAudioPlayList      m_filelist;
-		CTitle2Pos     m_title2Pos;
-		CAudiofileExt  m_curr_audiofile;
-		std::string    m_Path;
-
 		int            m_width;
 		int            m_height;
 		int            m_x;
@@ -145,6 +129,24 @@ class CAudioPlayerGui : public CMenuTarget
 		int icon_foot_h;
 		int icon_head_w;
 		int icon_head_h;
+
+		//
+		int            m_key_level;
+		bool           m_visible;
+		State          m_state;
+		time_t         m_time_total;
+		time_t         m_time_played;
+		std::string    m_metainfo;
+		bool           m_select_title_by_name;
+		bool           m_playlistHasChanged;
+
+		//
+		CAudioPlayList      m_playlist;
+		CAudioPlayList      m_radiolist;
+		CAudioPlayList      m_filelist;
+		CTitle2Pos     m_title2Pos;
+		CAudiofileExt  m_curr_audiofile;
+		std::string    m_Path;
 
 		int            m_LastMode;
 		int            m_idletime;
@@ -215,11 +217,6 @@ class CAudioPlayerGui : public CMenuTarget
 		*/
 		void scanXmlData(xmlDocPtr answer_parser, const char *nametag, const char *urltag, const char *bitratetag = NULL, bool usechild = false);
 
-		/**
-		* Reads the icecast directory (XML file) and calls scanXmlData
-		*/
-		void readDir_ic(void);
-
 		void selectTitle(unsigned char selectionChar);
 		/**
 		* Appends the file information to the given string.
@@ -258,19 +255,22 @@ class CAudioPlayerGui : public CMenuTarget
 		* @return true if file should be overwritten, false otherwise
 		*/
 		bool askToOverwriteFile(const std::string& filename);
-		bool openFilebrowser(void);
-		//bool openSCbrowser(void);
 		bool clearPlaylist(void);
 		bool shufflePlaylist(void);
 		bool playNext(bool allow_rotate = false);
 		bool playPrev(bool allow_rotate = false);
+
+		//
+		bool openFilebrowser(void);
 	
 	public:
-		CAudioPlayerGui(bool inetmode = false);
+		CAudioPlayerGui();
 		~CAudioPlayerGui();
-		void addToPlaylist(CAudiofileExt &file);
 		int show();
 		int exec(CMenuTarget *parent, const std::string &actionKey);
+
+		//
+		void addToPlaylist(CAudiofileExt &file);
 		void hidePlayList(bool hide = false){hide_playlist = hide;};
 		void setTitle(const std::string& title){ m_title = title;};
 };
