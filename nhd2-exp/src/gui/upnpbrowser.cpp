@@ -587,7 +587,10 @@ void CUpnpBrowserGui::handleFolder(void)
 	}
 
 	if(audioFolder)
+	{
+		tmpAudioPlayerGui.hidePlayList(true);
 		tmpAudioPlayerGui.exec(NULL, "urlplayback");
+	}
 	else if(videoFolder)
 	{
 		m_frameBuffer->ClearFrameBuffer();
@@ -785,6 +788,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 			
 						CAudiofileExt audiofile((*entries)[selected - index].resources[preferred].url, CFile::EXTENSION_MP3);
 						tmpAudioPlayerGui.addToPlaylist(audiofile);
+						tmpAudioPlayerGui.hidePlayList(true);
 						tmpAudioPlayerGui.exec(NULL, "urlplayback");
 					}
 					else if ((mime == "image/gif") || (mime == "image/jpeg"))
