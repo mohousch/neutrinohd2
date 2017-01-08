@@ -135,9 +135,6 @@ void CServiceSetup::showMenu()
 #if defined (ENABLE_CI)
 	service->addItem(new CMenuForwarderExtended(LOCALE_CAM_SETTINGS, true, g_CamHandler, NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, NEUTRINO_ICON_MENUITEM_CICAM, LOCALE_HELPTEXT_CAM ));
 #endif
-
-	// satip
-	//service->addItem(new CMenuForwarderExtended("Sat <> IP", true, new CSatIPSetup(), NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, NEUTRINO_ICON_MENUITEM_SATIP));
 	
 	// image info
 	service->addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_IMAGEINFO,  true, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_IMAGEINFO, LOCALE_HELPTEXT_IMAGEINFO), false);
@@ -184,9 +181,6 @@ void CServiceSetup::showMenuSmart(void)
 #if defined (ENABLE_CI)
 	service->addItem(new CMenuFrameBoxItem(LOCALE_CAM_SETTINGS, g_CamHandler, NULL, NEUTRINO_ICON_SMART_CICAM));
 #endif
-
-	// satip
-	service->addItem(new CMenuFrameBoxItem("Sat <> IP", new CSatIPSetup(), NULL, NEUTRINO_ICON_SMART_SATIP));
 	
 	// image info
 	service->addItem(new CMenuFrameBoxItem(LOCALE_SERVICEMENU_IMAGEINFO, new CImageInfo(), NULL, NEUTRINO_ICON_SMART_IMAGEINFO), false);
@@ -233,9 +227,6 @@ void CServiceSetup::showMenuClassic(void)
 #if defined (ENABLE_CI)
 	service->addItem(new CMenuForwarder(LOCALE_CAM_SETTINGS, true, NULL, g_CamHandler, NULL, CRCInput::convertDigitToKey(shortcutService++), NEUTRINO_ICON_CLASSIC_CICAM, LOCALE_HELPTEXT_CAM));
 #endif
-
-	// satip
-	//service->addItem(new CMenuForwarder("Sat <> IP Cast", true, NULL, new CSatIPSetup(), NULL, CRCInput::convertDigitToKey(shortcutService++), NEUTRINO_ICON_CLASSIC_SATIP, LOCALE_HELPTEXT_SATIP));
 	
 	// image info
 	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_IMAGEINFO,  true, NULL, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_CLASSIC_IMAGEINFO, LOCALE_HELPTEXT_IMAGEINFO), false);

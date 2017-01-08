@@ -66,10 +66,8 @@ class CTestMenu : public CMenuTarget
 		void testCButtons();
 		//
 		void testAudioPlayer();
-		void testInternetRadio();
-		void testRecordBrowser();
-		void testMovieBrowser();
-		void testFilePlayBack();
+		void testTSPlayer();
+		void testMoviePlayer();
 		void testPictureViewer();
 		void testUPNPBrowser();
 		//
@@ -756,34 +754,18 @@ void CTestMenu::testAudioPlayer()
 	tmpAudioPlayerGui.exec(NULL, "");
 }
 
-void CTestMenu::testInternetRadio()
+void CTestMenu::testTSPlayer()
 {
-	CAudioPlayerGui tmpAudioPlayerGui;
-	tmpAudioPlayerGui.exec(NULL, "");
-}
-
-void CTestMenu::testRecordBrowser()
-{
-	//moviePlayerGui->exec(NULL, "tsmoviebrowser");
 	CMoviePlayerGui tmpMoviePlayerGui;
 					
-	tmpMoviePlayerGui.exec(NULL, "tsmoviebrowser");
+	tmpMoviePlayerGui.exec(NULL, "tsplayer");
 }
 
-void CTestMenu::testMovieBrowser()
+void CTestMenu::testMoviePlayer()
 {
-	//moviePlayerGui->exec(NULL, "moviebrowser");
 	CMoviePlayerGui tmpMoviePlayerGui;
 					
-	tmpMoviePlayerGui.exec(NULL, "moviebrowser");
-}
-
-void CTestMenu::testFilePlayBack()
-{
-	//moviePlayerGui->exec(NULL, "fileplayback");
-	CMoviePlayerGui tmpMoviePlayerGui;
-					
-	tmpMoviePlayerGui.exec(NULL, "fileplayback");
+	tmpMoviePlayerGui.exec(NULL, "movieplayer");
 }
 
 void CTestMenu::testPictureViewer()
@@ -2075,21 +2057,13 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testAudioPlayer();
 	}
-	else if(actionKey == "internetradio")
+	else if(actionKey == "tsplayer")
 	{
-		testInternetRadio();
+		testTSPlayer();
 	}
-	else if(actionKey == "tsmoviebrowser")
+	else if(actionKey == "movieplayer")
 	{
-		testRecordBrowser();
-	}
-	else if(actionKey == "moviebrowser")
-	{
-		testMovieBrowser();
-	}
-	else if(actionKey == "fileplayback")
-	{
-		testFilePlayBack();
+		testMoviePlayer();
 	}
 	else if(actionKey == "pictureviewer")
 	{
@@ -2344,10 +2318,8 @@ void CTestMenu::showTestMenu()
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("AudioPlayer", true, NULL, this, "audioplayer"));
-	mainMenu->addItem(new CMenuForwarder("InternetRadio", true, NULL, this, "internetradio"));
-	mainMenu->addItem(new CMenuForwarder("TSMovieBrowser", true, NULL, this, "tsmoviebrowser"));
-	mainMenu->addItem(new CMenuForwarder("MovieBrowser", true, NULL, this, "moviebrowser"));
-	mainMenu->addItem(new CMenuForwarder("FilePlayBack", true, NULL, this, "fileplayback"));
+	mainMenu->addItem(new CMenuForwarder("TS Player", true, NULL, this, "tsplayer"));
+	mainMenu->addItem(new CMenuForwarder("Movie Player", true, NULL, this, "movieplayer"));
 	mainMenu->addItem(new CMenuForwarder("PictureViewer", true, NULL, this, "pictureviewer"));
 	mainMenu->addItem(new CMenuForwarder("UPNPBrowser", true, NULL, this, "upnpbrowser"));
 

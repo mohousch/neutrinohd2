@@ -137,19 +137,6 @@ CMoviePlayerGui::~CMoviePlayerGui()
 {
 }
 
-CMoviePlayerGui *CMoviePlayerGui::getInstance()
-{
-	static CMoviePlayerGui* moviePlayerGui = NULL;
-
-	if(!moviePlayerGui)
-	{
-		moviePlayerGui = new CMoviePlayerGui();
-		dprintf(DEBUG_NORMAL, "CMoviePlayerGui::getInstance: Instance created\n");
-	}
-
-	return moviePlayerGui;
-}
-
 void CMoviePlayerGui::cutNeutrino()
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::cutNeutrino\n");
