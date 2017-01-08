@@ -192,6 +192,8 @@ void CAudioPlayerGui::Init(void)
 	}
 	
 	m_SMSKeyInput.setTimeout(AUDIOPLAYERGUI_SMSKEY_TIMEOUT);
+
+	hide_playlist = g_settings.audioplayer_hide_playlist;
 }
 
 CAudioPlayerGui::~CAudioPlayerGui()
@@ -267,11 +269,11 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	
 	if(actionKey == "urlplayback")
 	{
-		hide_playlist = true;
+		//hide_playlist = true;
 		isURL = true;
 	}
-	else
-		hide_playlist = g_settings.audioplayer_hide_playlist;
+	//else
+	//hide_playlist = g_settings.audioplayer_hide_playlist;
 
 	if(parent)
 		parent->hide(); 
@@ -378,7 +380,7 @@ int CAudioPlayerGui::show()
 	bool clear_before_update = false;
 	m_key_level = 0;
 	
-	if(isURL)
+	if(isURL && hide_playlist)
 		play(0);
 
 	printf("(m_selected:%d) (m_current:%d) (m_playlist.size():%d)\n", m_selected, m_current, m_playlist.size());
@@ -397,7 +399,7 @@ int CAudioPlayerGui::show()
 		
 		if ((m_state != CAudioPlayerGui::STOP) && (CAudioPlayer::getInstance()->getState() == CBaseDec::STOP) && (!m_playlist.empty()))
 		{
-			if(isURL && m_current == (m_playlist.size() - 1))
+			if(isURL && hide_playlist && m_current == (m_playlist.size() - 1))
 			{
 				loop = false;	
 			}
@@ -507,7 +509,7 @@ int CAudioPlayerGui::show()
 				}
 			}
 		}
-		else if( ((msg &~ CRCInput::RC_Repeat) == CRCInput::RC_up || (msg &~ CRCInput::RC_Repeat) == CRCInput::RC_page_up) && !isURL)
+		else if( ((msg &~ CRCInput::RC_Repeat) == CRCInput::RC_up || (msg &~ CRCInput::RC_Repeat) == CRCInput::RC_page_up) /*&& !isURL*/)
 		{
 			if(hide_playlist)
 			{
@@ -539,7 +541,7 @@ int CAudioPlayerGui::show()
 				}
 			}
 		}
-		else if(((msg &~ CRCInput::RC_Repeat) == CRCInput::RC_down || (msg &~ CRCInput::RC_Repeat) == CRCInput::RC_page_down) && !isURL)
+		else if(((msg &~ CRCInput::RC_Repeat) == CRCInput::RC_down || (msg &~ CRCInput::RC_Repeat) == CRCInput::RC_page_down) /*&& !isURL*/)
 		{
 			if(hide_playlist)
 			{
@@ -584,7 +586,7 @@ int CAudioPlayerGui::show()
 		}
 		else if (msg == CRCInput::RC_red)
 		{
-			if(m_key_level == 0 && !isURL)
+			if(m_key_level == 0 /*&& !isURL*/)
 			{
 				if (!m_playlist.empty())
 				{
@@ -623,7 +625,7 @@ int CAudioPlayerGui::show()
 				if(m_curr_audiofile.FileExtension != CFile::EXTENSION_URL)
 					rev();
 			} 
-			else if(!isURL) // key_level == 2
+			else /*if(!isURL)*/ // key_level == 2
 			{ 
 				if(m_state == CAudioPlayerGui::STOP)
 				{
@@ -664,7 +666,7 @@ int CAudioPlayerGui::show()
 		}
 		else if(msg == CRCInput::RC_yellow)
 		{
-			if(m_key_level == 0 && !isURL)
+			if(m_key_level == 0 /*&& !isURL*/)
 			{
 				if (!m_playlist.empty())
 				{
@@ -678,7 +680,7 @@ int CAudioPlayerGui::show()
 			{
 				pause();
 			} 
-			else if(!isURL)
+			else /*if(!isURL)*/
 			{ 
 				// key_level==2
 				m_select_title_by_name =! m_select_title_by_name;
@@ -690,7 +692,7 @@ int CAudioPlayerGui::show()
 		}
 		else if(msg == CRCInput::RC_blue)
 		{
-			if (m_key_level == 0 && !isURL)
+			if (m_key_level == 0 /*&& !isURL*/)
 			{
 				if (m_inetmode) 
 				{
@@ -751,7 +753,7 @@ int CAudioPlayerGui::show()
 				if(m_curr_audiofile.FileExtension != CFile::EXTENSION_URL)
 					ff();
 			} 
-			else if(!isURL) // key_level == 2
+			else /*if(!isURL)*/ // key_level == 2
 			{
 				if (m_state != CAudioPlayerGui::STOP)
 				{
@@ -773,7 +775,7 @@ int CAudioPlayerGui::show()
 				}
 			}
 		}
-		else if( msg == CRCInput::RC_info && !isURL)
+		else if( msg == CRCInput::RC_info /*&& !isURL*/)
 		{
 			if (m_key_level == 2)
 				m_key_level = 0;
@@ -800,7 +802,7 @@ int CAudioPlayerGui::show()
 			
 			paintFoot();
 		}
-		else if(msg == CRCInput::RC_0 && !isURL)
+		else if(msg == CRCInput::RC_0 /*&& !isURL*/)
 		{
 			if(m_current >= 0)
 			{
@@ -808,7 +810,7 @@ int CAudioPlayerGui::show()
 				update = true;
 			}
 		}
-		else if ( (CRCInput::isNumeric(msg) && !(m_playlist.empty())) && !isURL)
+		else if ( (CRCInput::isNumeric(msg) && !(m_playlist.empty())) /*&& !isURL*/)
 		{ 
 			//numeric zap or SMS zap
 			if (m_select_title_by_name)
@@ -849,7 +851,7 @@ int CAudioPlayerGui::show()
 			}
 
 		}
-		else if( ((msg == CRCInput::RC_setup && !m_inetmode) || (msg == CRCInput::RC_vfdmenu && !m_inetmode)) && !isURL )
+		else if( ((msg == CRCInput::RC_setup && !m_inetmode) || (msg == CRCInput::RC_vfdmenu && !m_inetmode)) /*&& !isURL*/ )
 		{
 			CNFSSmallMenu nfsMenu;
 			nfsMenu.exec(this, "");
@@ -1533,7 +1535,8 @@ void CAudioPlayerGui::hide()
 
 void CAudioPlayerGui::paintItem(int pos)
 {
-	if(isURL)
+	//if(isURL)
+	if(hide_playlist)
 		return;
 	
 	int ypos = m_y + m_title_height + m_theight + pos*m_fheight;
@@ -1613,7 +1616,8 @@ void CAudioPlayerGui::paintItem(int pos)
 // paint head
 void CAudioPlayerGui::paintHead()
 {
-	if(isURL)
+	//if(isURL)
+	if(hide_playlist)
 		return;
 	
 	//std::string strCaption;
@@ -1693,7 +1697,8 @@ const struct button_label AudioPlayerButtons[][4] =
 
 void CAudioPlayerGui::paintFoot()
 {
-	if(isURL)
+	//if(isURL)
+	if(hide_playlist)
 		return;
 	
 	int top = m_y + m_height - (m_buttonHeight + m_info_height); //doppel button foot
@@ -1870,7 +1875,8 @@ void CAudioPlayerGui::paintInfo()
 
 void CAudioPlayerGui::paint()
 {
-	if(isURL)
+	//if(isURL)
+	if(hide_playlist)
 		return;
 	
 	m_liststart = (m_selected / m_listmaxshow) * m_listmaxshow;

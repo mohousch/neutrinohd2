@@ -14,25 +14,25 @@ AM_CPPFLAGS =  \
 	-I$(top_srcdir)/../nhd2-exp/lib/libupnpclient \
 	@FREETYPE_CFLAGS@ 
 
-noinst_LTLIBRARIES = satipcast.la
+noinst_LTLIBRARIES = icecast.la
 
-satipcast_la_SOURCES = satipcast.cpp
+icecast_la_SOURCES = icecast.cpp
 	 
-satipcast_la_LDFLAGS = -rpath $(PLUGINDIR) -module
+icecast_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 
-satipcast_la_CXXFLAGS = -fno-rtti -fno-exceptions
+icecast_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
-	install -d $(DESTDIR)$(PLUGINDIR)/satipcast
-	install .libs/satipcast.so $(DESTDIR)$(PLUGINDIR)/satipcast
-	install -m 0644 satipcast.cfg $(DESTDIR)$(PLUGINDIR)/satipcast
-	install -m 0644 satipcast.png $(DESTDIR)$(PLUGINDIR)/satipcast
+	install -d $(DESTDIR)$(PLUGINDIR)/icecast
+	install .libs/icecast.so $(DESTDIR)$(PLUGINDIR)/icecast
+	install -m 0644 icecast.cfg $(DESTDIR)$(PLUGINDIR)/icecast
+	install -m 0644 icecast.png $(DESTDIR)$(PLUGINDIR)/icecast
 
 uninstall-local:
-	-rm $(DESTDIR)$(PLUGINDIR)/satipcast/satipcast.so
-	-rm $(DESTDIR)$(PLUGINDIR)/satipcast/satipcast.cfg
-	-rm $(DESTDIR)$(PLUGINDIR)/satipcast/satipcast.png
-	-rmdir $(DESTDIR)$(PLUGINDIR)/satipcast
+	-rm $(DESTDIR)$(PLUGINDIR)/icecast/icecast.so
+	-rm $(DESTDIR)$(PLUGINDIR)/icecast/icecast.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/icecast/icecast.png
+	-rmdir $(DESTDIR)$(PLUGINDIR)/icecast
 
 	
 

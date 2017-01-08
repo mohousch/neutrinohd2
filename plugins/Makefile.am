@@ -15,6 +15,7 @@ SUBDIRS = \
 	fileexplorer \
 	mediaportal \
 	satipclient \
-	satipcast
+	satipcast \
+	icecast
 
 

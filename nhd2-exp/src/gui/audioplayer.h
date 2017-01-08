@@ -271,6 +271,8 @@ class CAudioPlayerGui : public CMenuTarget
 		void addToPlaylist(CAudiofileExt &file);
 		int show();
 		int exec(CMenuTarget *parent, const std::string &actionKey);
+		void hidePlayList(bool hide = false){hide_playlist = hide;};
+		void setTitle(const std::string& title){ m_title = title;};
 };
 
 #endif

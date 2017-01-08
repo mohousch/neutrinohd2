@@ -34,5 +34,6 @@ fileexplorer/Makefile
 mediaportal/Makefile
 satipclient/Makefile
 satipcast/Makefile
+icecast/Makefile
 ])
 
