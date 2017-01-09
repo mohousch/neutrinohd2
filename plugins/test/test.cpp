@@ -758,14 +758,14 @@ void CTestMenu::testTSPlayer()
 {
 	CMoviePlayerGui tmpMoviePlayerGui;
 					
-	tmpMoviePlayerGui.exec(NULL, "tsplayer");
+	tmpMoviePlayerGui.exec(NULL, "tsmoviebrowser");
 }
 
 void CTestMenu::testMoviePlayer()
 {
 	CMoviePlayerGui tmpMoviePlayerGui;
 					
-	tmpMoviePlayerGui.exec(NULL, "movieplayer");
+	tmpMoviePlayerGui.exec(NULL, "moviebrowser");
 }
 
 void CTestMenu::testPictureViewer()
