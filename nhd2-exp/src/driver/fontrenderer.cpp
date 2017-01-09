@@ -369,7 +369,7 @@ int UTF8ToUnicode(const char * &text, bool utf8_encoded) // returns -1 on error
 
 //
 #if defined (ENABLE_FRIBIDI)
-std::string fribidiShapeChar(const char * text)
+std::string fribidiShapeChar(const char * &text)
 {
 	if(text && *text)
 	{

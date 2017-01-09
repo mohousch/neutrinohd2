@@ -156,6 +156,8 @@ colorthememenu.question Use selected theme?
 colorthememenu.save Save current theme
 colorthememenu.select1 User Theme
 colorthememenu.select2 Standard Theme
+colormenu.head_title Head info
+colormenu.foot_title Foot info
 cpu.freq Cpu frequency
 cpu.freq_default default frequency
 cpu.freq_normal Normal frequency
@@ -1626,6 +1628,12 @@ webtv.channellist_nonefound No WebTV channels were found!
 webtv.user User bouquet
 webtv.bouquets Favorites
 webtv.add_bouquets add User bouquet
+
+head.gradient Head gradient
+foot.gradient Foot gradient
+headinfo.gradient Head info gradient
+footinfo.gradient Foot info gradient
+infobar.gradient Infobar gradient
 
 youtube.youtube Youtube Player
 youtube.yt_error Failed to load youtube feed

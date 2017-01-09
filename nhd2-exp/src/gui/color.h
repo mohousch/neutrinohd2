@@ -88,6 +88,8 @@
 #define COL_INFOBAR_SHADOW		254-8*8
 #define COL_COLORED_EVENTS_INFOBAR	254-8*9
 #define COL_COLORED_EVENTS_CHANNELLIST	254-8*10
+#define COL_MENUHEAD_INFO		254-8*11
+#define COL_MENUFOOT_INFO		254-8*12
 
 #define COL_INFOBAR_PLUS_0              (CFrameBuffer::getInstance()->realcolor[(COL_INFOBAR + 0)])
 #define COL_INFOBAR_PLUS_1              (CFrameBuffer::getInstance()->realcolor[(COL_INFOBAR + 1)]) // used in progressbar
@@ -116,6 +118,9 @@
 #define COL_MENUCONTENTINACTIVE_PLUS_0  (CFrameBuffer::getInstance()->realcolor[(COL_MENUCONTENTINACTIVE + 0)])
 
 #define COL_MENUFOOT_PLUS_0		(CFrameBuffer::getInstance()->realcolor[(COL_MENUFOOT + 0)])
+
+#define COL_MENUHEAD_INFO_PLUS_0        (CFrameBuffer::getInstance()->realcolor[(COL_MENUHEAD_INFO + 0)])
+#define COL_MENUFOOT_INFO_PLUS_0        (CFrameBuffer::getInstance()->realcolor[(COL_MENUFOOT_INFO + 0)])
 
 #define COL_SCROLLBAR			COL_MENUCONTENT_PLUS_1
 #define COL_SCROLLBAR_SLIDER		COL_MENUCONTENT_PLUS_3

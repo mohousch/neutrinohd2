@@ -672,14 +672,34 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.infobar_colored_events_blue = configfile.getInt32( "infobar_colored_events_blue", 0);
 	
 	g_settings.menu_Foot_alpha = configfile.getInt32( "menu_Foot_alpha", 0);
-	g_settings.menu_Foot_red = configfile.getInt32( "menu_Foot_red", 28);
-	g_settings.menu_Foot_green = configfile.getInt32( "menu_Foot_green", 28);
-	g_settings.menu_Foot_blue = configfile.getInt32( "menu_Foot_blue", 28);
+	g_settings.menu_Foot_red = configfile.getInt32( "menu_Foot_red", 35);
+	g_settings.menu_Foot_green = configfile.getInt32( "menu_Foot_green", 35);
+	g_settings.menu_Foot_blue = configfile.getInt32( "menu_Foot_blue", 35);
 		
 	g_settings.menu_Foot_Text_alpha = configfile.getInt32( "menu_Foot_Text_alpha", 0);
-	g_settings.menu_Foot_Text_red = configfile.getInt32( "menu_Foot_Text_red", 50);
-	g_settings.menu_Foot_Text_green = configfile.getInt32( "menu_Foot_Text_green", 50);
-	g_settings.menu_Foot_Text_blue = configfile.getInt32( "menu_Foot_Text_blue", 50);
+	g_settings.menu_Foot_Text_red = configfile.getInt32( "menu_Foot_Text_red", 100);
+	g_settings.menu_Foot_Text_green = configfile.getInt32( "menu_Foot_Text_green", 100);
+	g_settings.menu_Foot_Text_blue = configfile.getInt32( "menu_Foot_Text_blue", 100);
+
+	g_settings.menu_HeadInfo_alpha = configfile.getInt32( "menu_HeadInfo_alpha", 0);
+	g_settings.menu_HeadInfo_red = configfile.getInt32( "menu_HeadInfo_red", 35);
+	g_settings.menu_HeadInfo_green = configfile.getInt32( "menu_HeadInfo_green", 35);
+	g_settings.menu_HeadInfo_blue = configfile.getInt32( "menu_HeadInfo_blue", 35);
+
+	g_settings.menu_HeadInfo_Text_alpha = configfile.getInt32( "menu_HeadInfo_Text_alpha", 0);
+	g_settings.menu_HeadInfo_Text_red = configfile.getInt32( "menu_HeadInfo_Text_red", 100 );
+	g_settings.menu_HeadInfo_Text_green = configfile.getInt32( "menu_HeadInfo_Text_green", 100 );
+	g_settings.menu_HeadInfo_Text_blue = configfile.getInt32( "menu_HeadInfo_Text_blue", 100 );
+
+	g_settings.menu_FootInfo_alpha = configfile.getInt32( "menu_FootInfo_alpha", 0);
+	g_settings.menu_FootInfo_red = configfile.getInt32( "menu_FootInfo_red", 35);
+	g_settings.menu_FootInfo_green = configfile.getInt32( "menu_FootInfo_green", 35);
+	g_settings.menu_FootInfo_blue = configfile.getInt32( "menu_FootInfo_blue", 35);
+		
+	g_settings.menu_FootInfo_Text_alpha = configfile.getInt32( "menu_FootInfo_Text_alpha", 0);
+	g_settings.menu_FootInfo_Text_red = configfile.getInt32( "menu_FootInfo_Text_red", 100);
+	g_settings.menu_FootInfo_Text_green = configfile.getInt32( "menu_FootInfo_Text_green", 100);
+	g_settings.menu_FootInfo_Text_blue = configfile.getInt32( "menu_FootInfo_Text_blue", 100);
 
 	strcpy( g_settings.font_file, configfile.getString( "font_file", FONTDIR "/micron.ttf" ).c_str() );
 
@@ -1170,6 +1190,26 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "menu_Foot_Text_red", g_settings.menu_Foot_Text_red );
 	configfile.setInt32( "menu_Foot_Text_green", g_settings.menu_Foot_Text_green );
 	configfile.setInt32( "menu_Foot_Text_blue", g_settings.menu_Foot_Text_blue );
+
+	configfile.setInt32( "menu_HeadInfo_alpha", g_settings.menu_HeadInfo_alpha );
+	configfile.setInt32( "menu_HeadInfo_red", g_settings.menu_HeadInfo_red );
+	configfile.setInt32( "menu_HeadInfo_green", g_settings.menu_HeadInfo_green );
+	configfile.setInt32( "menu_HeadInfo_blue", g_settings.menu_HeadInfo_blue );
+
+	configfile.setInt32( "menu_HeadInfo_Text_alpha", g_settings.menu_HeadInfo_Text_alpha );
+	configfile.setInt32( "menu_HeadInfo_Text_red", g_settings.menu_HeadInfo_Text_red );
+	configfile.setInt32( "menu_HeadInfo_Text_green", g_settings.menu_HeadInfo_Text_green );
+	configfile.setInt32( "menu_HeadInfo_Text_blue", g_settings.menu_HeadInfo_Text_blue );
+
+	configfile.setInt32( "menu_FootInfo_alpha", g_settings.menu_FootInfo_alpha );
+	configfile.setInt32( "menu_FootInfo_red", g_settings.menu_FootInfo_red );
+	configfile.setInt32( "menu_FootInfo_green", g_settings.menu_FootInfo_green );
+	configfile.setInt32( "menu_FootInfo_blue", g_settings.menu_FootInfo_blue );
+	
+	configfile.setInt32( "menu_FootInfo_Text_alpha", g_settings.menu_FootInfo_Text_alpha );
+	configfile.setInt32( "menu_FootInfo_Text_red", g_settings.menu_FootInfo_Text_red );
+	configfile.setInt32( "menu_FootInfo_Text_green", g_settings.menu_FootInfo_Text_green );
+	configfile.setInt32( "menu_FootInfo_Text_blue", g_settings.menu_FootInfo_Text_blue );
 
 	configfile.setInt32( "screen_StartX", g_settings.screen_StartX );
 	configfile.setInt32( "screen_StartY", g_settings.screen_StartY );

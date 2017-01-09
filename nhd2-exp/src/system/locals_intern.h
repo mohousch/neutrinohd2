@@ -274,6 +274,8 @@ const char * locale_real_names[] = {
 	"colorthememenu.save",
 	"colorthememenu.select1",
 	"colorthememenu.select2",
+	"colormenu.head_title",
+	"colormenu.foot_title",
 	"date.Apr",
 	"date.Aug",
 	"date.Dec",
@@ -1637,6 +1639,12 @@ const char * locale_real_names[] = {
 	"webtv.user",
 	"webtv.bouquets",
 	"webtv.add_bouquets",
+
+	"head.gradient",
+	"foot.gradient",
+	"headinfo.gradient",
+	"footinfo.gradient",
+	"infobar.gradient",
 	
 	// youtube
 	"youtube.youtube",

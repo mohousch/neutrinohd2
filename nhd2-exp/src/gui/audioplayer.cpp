@@ -1774,10 +1774,10 @@ void CAudioPlayerGui::paintInfo()
 	}
 	else
 	{
-		// title inf box
+		// title info box
 		m_frameBuffer->paintBoxRel(m_x, m_y, m_width, m_title_height, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
 		
-		m_frameBuffer->paintBoxRel(m_x + 2, m_y + 2 , m_width - 4, m_title_height - 4, COL_MENUCONTENT_PLUS_1, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient); //FIXME:gradient
+		m_frameBuffer->paintBoxRel(m_x + 2, m_y + 2 , m_width - 4, m_title_height - 4, COL_MENUHEAD_INFO_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient); //FIXME:gradient
 
 		// first line (Track number)
 		std::string tmp;
@@ -1799,7 +1799,7 @@ void CAudioPlayerGui::paintInfo()
 		if(xstart < BORDER_LEFT)
 			xstart = BORDER_LEFT;
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + m_fheight, m_width - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + m_fheight, m_width - 20, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8
 
 		// second line (Artist/Title...)
 		if (m_curr_audiofile.FileExtension != CFile::EXTENSION_URL) //FIXME: need to relaod id3tag
@@ -1835,7 +1835,7 @@ void CAudioPlayerGui::paintInfo()
 				xstart = BORDER_LEFT + m_title_height - 4;
 		}
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 2 + m_fheight + 2 + m_fheight, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8		
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 2 + m_fheight + 2 + m_fheight, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8		
 		
 		// cover
 		if (!m_curr_audiofile.MetaData.cover.empty())
@@ -1852,7 +1852,7 @@ void CAudioPlayerGui::paintInfo()
 		{
 			int xstart = ((m_width - 20 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(m_metainfo))/2)+10;
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + xstart, m_y + m_fheight + m_fheight + 2 + m_sheight, m_width- 2*xstart, m_metainfo, COL_MENUCONTENTSELECTED);
+			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + xstart, m_y + m_fheight + m_fheight + 2 + m_sheight, m_width- 2*xstart, m_metainfo, COL_MENUHEAD_INFO);
 		}
 
 		m_time_total = 0;
@@ -1925,12 +1925,12 @@ void CAudioPlayerGui::paintItemID3DetailsLine(int pos)
 
 		int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true) + 10; // UTF-8
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w - BORDER_RIGHT, m_y + (m_height - m_info_height) + m_fheight, w, tmp, COL_MENUCONTENTDARK, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w - BORDER_RIGHT, m_y + (m_height - m_info_height) + m_fheight, w, tmp, COL_MENUFOOT_INFO, 0, true); // UTF-8
 
 		// title
 		tmp = m_playlist[m_selected].MetaData.title;
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + BORDER_LEFT, m_y + (m_height - m_info_height) + m_fheight, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUCONTENTDARK, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + BORDER_LEFT, m_y + (m_height - m_info_height) + m_fheight, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUFOOT_INFO, 0, true); // UTF-8
 
 		// artist
 		tmp = m_playlist[m_selected].MetaData.artist;
@@ -1942,7 +1942,7 @@ void CAudioPlayerGui::paintItemID3DetailsLine(int pos)
 			tmp += ')';
 		}
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + BORDER_LEFT, m_y + (m_height - m_info_height) + 2*m_fheight - 2, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUCONTENTDARK, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + BORDER_LEFT, m_y + (m_height - m_info_height) + 2*m_fheight - 2, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUFOOT_INFO, 0, true); // UTF-8
 	}
 }
 
@@ -2206,7 +2206,7 @@ void CAudioPlayerGui::updateTimes(const bool force)
 			if (updateTotal)
 			{
 				if(m_time_total > 0)
-					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - 10, m_y + 4 + m_fheight, w1, tot_time, COL_MENUCONTENTSELECTED);
+					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - 10, m_y + 4 + m_fheight, w1, tot_time, COL_MENUHEAD_INFO);
 			}
 			
 			if (updatePlayed || (m_state == CAudioPlayerGui::PAUSE))
@@ -2215,7 +2215,7 @@ void CAudioPlayerGui::updateTimes(const bool force)
 				gettimeofday(&tv, NULL);
 				if ((m_state != CAudioPlayerGui::PAUSE) || (tv.tv_sec & 1))
 				{
-					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - w2 - 11, m_y + 4 + m_fheight, w2 + 4, play_time, COL_MENUCONTENTSELECTED);
+					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - w2 - 11, m_y + 4 + m_fheight, w2 + 4, play_time, COL_MENUHEAD_INFO);
 				}
 			}			
 		}

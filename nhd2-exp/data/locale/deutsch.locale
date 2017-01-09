@@ -156,6 +156,8 @@ colorthememenu.question Aktuelles Theme beibehalten?
 colorthememenu.save aktuelles Theme speichern
 colorthememenu.select1 Benutzer Theme
 colorthememenu.select2 Standard Theme
+colormenu.head_title Titel Leiste Info
+colormenu.foot_title Fuß Leiste Info
 cpu.freq CPU Frequenz
 cpu.freq_default Standard Frequenz
 cpu.freq_normal Normale Frequenz
@@ -1627,6 +1629,12 @@ webtv.channellist_nonefound Es wurden keine WebTV Kanäle gefunden!
 webtv.user User Bouquet
 webtv.bouquets Favoriten
 webtv.add_bouquets User Bouquet einfügen
+
+head.gradient Titel Leiste Farbverlauf
+foot.gradient Fuß leiste Farbverlauf
+headinfo.gradient Titel Info Farbverlauf
+footinfo.gradient Fuß Titel Farbverlauf
+infobar.gradient Infobar Farbverlauf
 
 youtube.youtube Youtube Player
 youtube.yt_error Fehler beim laden des Youtube Feed
