@@ -1412,7 +1412,7 @@ void CInfoViewer::showSNR()
 	int posy = 0;
   	int barwidth = BAR_WIDTH;
 	
-  	if (g_settings.infobar_sat_display && !g_settings.satip_allow_satip) 
+  	if (g_settings.infobar_sat_display && !g_settings.satip_allow_satip && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv) 
 	{
 		if(is_visible)
 		{
