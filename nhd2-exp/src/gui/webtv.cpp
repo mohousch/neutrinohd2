@@ -47,6 +47,7 @@
 #include <gui/widget/hintbox.h>
 
 #include <gui/audio_video_select.h> 	//ac3state
+#include <gui/filebrowser.h>
 
 #include <xmlinterface.h>
 
@@ -441,12 +442,14 @@ bool CWebTV::readChannellist(std::string filename)
 	return false;
 }
 
+/*
 void CWebTV::showUserBouquet(void)
 {
 	dprintf(DEBUG_INFO, "CWebTV::showUserBouquet\n");
 
 	addUserBouquet();
 }
+*/
 
 bool CWebTV::startPlayBack(int pos)
 {
@@ -536,9 +539,9 @@ void CWebTV::showInfo()
 	}
 }
 
-void CWebTV::addUserBouquet(void)
+void CWebTV::Bouquets(void)
 {
-	dprintf(DEBUG_NORMAL, "CWebTV::addUserBouquet\n");
+	dprintf(DEBUG_NORMAL, "CWebTV::Bouquets\n");
 
 	CFileFilter fileFilter;
 	
@@ -595,10 +598,36 @@ void CWebTV::addUserBouquet(void)
 	}
 }
 
+void CWebTV::userBouquet(void)
+{
+	dprintf(DEBUG_NORMAL, "CWebTV::addUserBouquet\n");
+
+	CFileBrowser filebrowser;
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("xml");
+	fileFilter.addFilter("tv");
+	fileFilter.addFilter("m3u");
+
+	filebrowser.Filter = &fileFilter;
+
+	if (filebrowser.exec(CONFIGDIR "/webtv"))
+	{
+		g_settings.webtv_userBouquet.clear();
+		
+		g_settings.webtv_userBouquet = filebrowser.getSelectedFile()->Name.c_str();
+		
+		printf("[webtv] webtv settings file %s\n", g_settings.webtv_userBouquet.c_str());
+		
+		// load channels
+		loadChannels();
+	}
+}
+
 #define FOOT_BUTTONS_COUNT 4
 struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
 {
-	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_INFOVIEWER_EVENTLIST, NULL},
+	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_WEBTV_USER, NULL},
 	{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_FILEBROWSER_NEXTPAGE, NULL},
 	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE, NULL},
 	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_WEBTV_BOUQUETS, NULL}
@@ -688,7 +717,10 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_red")
 	{
-		g_EventList->exec(channels[webTVlistMenu->getSelected()]->id, channels[webTVlistMenu->getSelected()]->title); 
+		//g_EventList->exec(channels[webTVlistMenu->getSelected()]->id, channels[webTVlistMenu->getSelected()]->title);
+		userBouquet(); 
+		show(false, true);
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
@@ -700,7 +732,7 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_blue")
 	{
-		showUserBouquet();
+		Bouquets();
 		show(false, true);
 		return menu_return::RETURN_EXIT_ALL;
 	}
