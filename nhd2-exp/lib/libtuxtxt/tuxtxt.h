@@ -73,8 +73,8 @@ extern int tuxtxt_get_zipsize(int p, int sp);
 #define TUXTXTCONF CONFIGDIR "/tuxtxt/tuxtxt2.conf"
 
 /* fonts */
-#define TUXTXTTTF FONTDIR "/tuxtxt.ttf"
-#define TUXTXTOTB FONTDIR "/tuxtxt.otb"
+#define TUXTXTTTF DATADIR "/neutrino/fonts/tuxtxt.ttf"
+#define TUXTXTOTB DATADIR "/neutrino/fonts/tuxtxt.otb"
 /* alternative fontdir */
 #define TUXTXTTTFVAR CONFIGDIR "/tuxtxt/tuxtxt.ttf"
 #define TUXTXTOTBVAR CONFIGDIR "/tuxtxt/tuxtxt.otb"

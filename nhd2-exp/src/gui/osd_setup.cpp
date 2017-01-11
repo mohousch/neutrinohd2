@@ -83,7 +83,7 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 		fileFilter.addFilter("ttf");
 		fileBrowser.Filter = &fileFilter;
 		
-		if (fileBrowser.exec(FONTDIR) == true)
+		if (fileBrowser.exec(DATADIR "/neutrino/fonts") == true)
 		{
 			strcpy(g_settings.font_file, fileBrowser.getSelectedFile()->Name.c_str());
 			dprintf(DEBUG_NORMAL, "COSDSettings::exec: new font file %s\n", fileBrowser.getSelectedFile()->Name.c_str());
@@ -324,12 +324,12 @@ void COSDMenuColorSettings::showMenu()
 	CColorChooser * chFootTextcolor = new CColorChooser(LOCALE_COLORMENU_TEXTCOLOR, &g_settings.menu_Foot_Text_red, &g_settings.menu_Foot_Text_green, &g_settings.menu_Foot_Text_blue, NULL, CNeutrinoApp::getInstance()->colorSetupNotifier);
 
 	// head info
-	CColorChooser* chHeadInfoColor = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.menu_Foot_red, &g_settings.menu_Foot_green, &g_settings.menu_Foot_blue, &g_settings.menu_Foot_alpha, CNeutrinoApp::getInstance()->colorSetupNotifier);
-	CColorChooser * chHeadInfoTextColor = new CColorChooser(LOCALE_COLORMENU_TEXTCOLOR, &g_settings.menu_Foot_Text_red, &g_settings.menu_Foot_Text_green, &g_settings.menu_Foot_Text_blue, NULL, CNeutrinoApp::getInstance()->colorSetupNotifier);
+	CColorChooser* chHeadInfoColor = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.menu_HeadInfo_red, &g_settings.menu_HeadInfo_green, &g_settings.menu_HeadInfo_blue, &g_settings.menu_HeadInfo_alpha, CNeutrinoApp::getInstance()->colorSetupNotifier);
+	CColorChooser * chHeadInfoTextColor = new CColorChooser(LOCALE_COLORMENU_TEXTCOLOR, &g_settings.menu_HeadInfo_Text_red, &g_settings.menu_HeadInfo_Text_green, &g_settings.menu_HeadInfo_Text_blue, NULL, CNeutrinoApp::getInstance()->colorSetupNotifier);
 
 	// foot info
-	CColorChooser* chFootInfoColor = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.menu_Foot_red, &g_settings.menu_Foot_green, &g_settings.menu_Foot_blue, &g_settings.menu_Foot_alpha, CNeutrinoApp::getInstance()->colorSetupNotifier);
-	CColorChooser * chFootInfoTextColor = new CColorChooser(LOCALE_COLORMENU_TEXTCOLOR, &g_settings.menu_Foot_Text_red, &g_settings.menu_Foot_Text_green, &g_settings.menu_Foot_Text_blue, NULL, CNeutrinoApp::getInstance()->colorSetupNotifier);
+	CColorChooser* chFootInfoColor = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.menu_FootInfo_red, &g_settings.menu_FootInfo_green, &g_settings.menu_FootInfo_blue, &g_settings.menu_FootInfo_alpha, CNeutrinoApp::getInstance()->colorSetupNotifier);
+	CColorChooser * chFootInfoTextColor = new CColorChooser(LOCALE_COLORMENU_TEXTCOLOR, &g_settings.menu_FootInfo_Text_red, &g_settings.menu_FootInfo_Text_green, &g_settings.menu_FootInfo_Text_blue, NULL, CNeutrinoApp::getInstance()->colorSetupNotifier);
 
 	// head
 	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_COLORMENUSETUP_MENUHEAD));
@@ -479,9 +479,9 @@ bool CLanguageSettings::changeNotify(const neutrino_locale_t OptionName, void */
 				//if(MessageBox(LOCALE_MESSAGEBOX_INFO, "do you want to change your font to nmsbd.ttf\nthis font support your language\n", CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes)
 				{
 					// check for nsmbd font
-					if(!access(FONTDIR "/nmsbd.ttf", F_OK))
+					if(!access(DATADIR "/neutrino/fonts/nmsbd.ttf", F_OK))
 					{
-						strcpy(g_settings.font_file, FONTDIR "/nmsbd.ttf");
+						strcpy(g_settings.font_file, DATADIR "/neutrino/fonts/nmsbd.ttf");
 						printf("CLanguageSettings::changeNotify:new font file %s\n", g_settings.font_file);
 						CNeutrinoApp::getInstance()->SetupFonts();
 					}

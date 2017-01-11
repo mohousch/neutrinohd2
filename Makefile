@@ -73,9 +73,8 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--enable-maintainer-mode \
 			--with-boxtype=$(BOXTYPE) \
 			--with-datadir=$(DEST)/share/tuxbox \
-			--with-fontdir=$(DEST)/share/fonts \
-			--with-isocodesdir=$(DEST)/share/iso-codes \
-			--with-themesdir=$(DEST)/share/tuxbox/neutrino/themes \
+			--with-fontdir=$(DEST)/share/tuxbox/neutrino/fonts \
+			--with-isocodesdir=$(DEST)/share/tuxbox/neutrino/iso-codes \
 			--with-gamesdir=$(DEST)/var/tuxbox/games \
 			--with-plugindir=$(DEST)/var/tuxbox/plugins \
 			--with-configdir=$(DEST)/var/tuxbox/config \

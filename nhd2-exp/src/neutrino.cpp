@@ -701,7 +701,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.menu_FootInfo_Text_green = configfile.getInt32( "menu_FootInfo_Text_green", 100);
 	g_settings.menu_FootInfo_Text_blue = configfile.getInt32( "menu_FootInfo_Text_blue", 100);
 
-	strcpy( g_settings.font_file, configfile.getString( "font_file", FONTDIR "/micron.ttf" ).c_str() );
+	strcpy( g_settings.font_file, configfile.getString( "font_file", DATADIR "/neutrino/fonts/micron.ttf" ).c_str() );
 
 	// menue timing
 	for (int i = 0; i < TIMING_SETTING_COUNT; i++)
@@ -1800,14 +1800,14 @@ void CNeutrinoApp::SetupFonts()
 
 	if(access(g_settings.font_file, F_OK)) 
 	{
-		if(!access(FONTDIR "/micron.ttf", F_OK))
+		if(!access(DATADIR "/neutrino/fonts/micron.ttf", F_OK))
 		{
-			font.filename = strdup(FONTDIR "/micron.ttf");
+			font.filename = strdup(DATADIR "/neutrino/fonts/micron.ttf");
 			strcpy(g_settings.font_file, font.filename);
 		}
 		else
 		{
-			  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", FONTDIR "/micron.ttf");
+			  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", DATADIR "/neutrino/fonts/micron.ttf");
 			  _exit(0);
 		}
 	}
@@ -1820,14 +1820,14 @@ void CNeutrinoApp::SetupFonts()
 		{
 			dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetupFonts: font file %s not ok falling back to micron.ttf\n", g_settings.font_file);
 			
-			if(!access(FONTDIR "/micron.ttf", F_OK))
+			if(!access(DATADIR "/neutrino/fonts/micron.ttf", F_OK))
 			{
-				font.filename = strdup(FONTDIR "/micron.ttf");
+				font.filename = strdup(DATADIR "/neutrino/fonts/micron.ttf");
 				strcpy(g_settings.font_file, font.filename);
 			}
 			else
 			{
-				  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", FONTDIR "/micron.ttf");
+				  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", DATADIR "/neutrino/fonts/micron.ttf");
 				  _exit(0);
 			}
 		}

@@ -1,4 +1,4 @@
-installdir = $(FONTDIR)
+installdir = $(DATADIR) /tuxbox/neutrino/fonts
 
 install_DATA = \
 	tuxtxt.ttf \
