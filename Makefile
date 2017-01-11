@@ -3,11 +3,7 @@
 # build options:
 #  --with-configdir=PATH   where to find the config files [PREFIX/var/tuxbox/config]
 #  --with-datadir=PATH     where to find data [PREFIX/share/tuxbox]
-#  --with-fontdir=PATH     where to find the fonts [PREFIX/share/fonts]
-#  --with-gamesdir=PATH    where games data is stored [PREFIX/var/tuxbox/games]
 #  --with-plugindir=PATH   where to find the plugins [PREFIX/var/tuxbox/plugins]
-#  --with-themesdir=PATH   where to find the themes (don't change) [PREFIX/share/tuxbox/neutrino/themes]
-#  --with-isocodesdir=PATH where to find the iso-codes  [PREFIX/share/iso-codes]
 #  --with-dvbincludes=PATH path for dvb includes [NONE]
 #  --with-driver=PATH      path for driver sources [NONE]
 #  --with-boxtype          valid values: generic,dgs,gigablue,dreambox,xtrend,fulan,kathrein,ipbox,topfield,fortis_hdbox,octagon,atevio,adb_box,whitebox,vip,homecast,vuplus,azbox,technomate,coolstream,hypercube,venton,xp1000,odin,ixuss,iqonios,e3hd,ebox5000
@@ -73,9 +69,6 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--enable-maintainer-mode \
 			--with-boxtype=$(BOXTYPE) \
 			--with-datadir=$(DEST)/share/tuxbox \
-			--with-fontdir=$(DEST)/share/tuxbox/neutrino/fonts \
-			--with-isocodesdir=$(DEST)/share/tuxbox/neutrino/iso-codes \
-			--with-gamesdir=$(DEST)/var/tuxbox/games \
 			--with-plugindir=$(DEST)/var/tuxbox/plugins \
 			--with-configdir=$(DEST)/var/tuxbox/config \
 			--enable-opengl \
@@ -124,8 +117,6 @@ $(PLUGINS_SRC)/config.status: $(PLUGINS_SRC) $(DEST)
 			--without-debug \
 			--with-boxtype=$(BOXTYPE) \
 			--with-datadir=$(DEST)/share/tuxbox \
-			--with-fontdir=$(DEST)/share/fonts \
-			--with-gamesdir=$(DEST)/var/tuxbox/games \
 			--with-plugindir=$(DEST)/var/tuxbox/plugins \
 			--with-configdir=$(DEST)/var/tuxbox/config
 
