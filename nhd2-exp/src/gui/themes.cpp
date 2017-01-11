@@ -49,9 +49,9 @@
 #include "themes.h"
 
 
-#define THEMEDIR DATADIR "/neutrino/themes/"
-#define USERDIR CONFIGDIR "/themes/"
-#define FILE_PREFIX ".theme"
+#define THEMEDIR 		DATADIR "/neutrino/themes/"
+#define USERDIR 		CONFIGDIR "/themes/"
+#define FILE_PREFIX 		".theme"
 
 CThemes::CThemes()
 : themefile('\t')

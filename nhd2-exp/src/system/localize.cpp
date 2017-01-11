@@ -48,7 +48,7 @@
 #include <map>
 
 
-static const char * iso639filename = DATADIR "/neutrino/isocodes/iso-639.tab";
+static const char * iso639filename = DATADIR "/neutrino/iso-codes/iso-639.tab";
 
 std::map<std::string, std::string> iso639;
 std::map<std::string, std::string> iso639rev;
