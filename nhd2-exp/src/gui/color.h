@@ -92,7 +92,6 @@
 #define COL_MENUFOOT_INFO		254-8*12
 
 #define COL_INFOBAR_PLUS_0              (CFrameBuffer::getInstance()->realcolor[(COL_INFOBAR + 0)])
-#define COL_INFOBAR_PLUS_1              (CFrameBuffer::getInstance()->realcolor[(COL_INFOBAR + 1)]) // used in progressbar
 
 #define COL_INFOBAR_SHADOW_PLUS_0       (CFrameBuffer::getInstance()->realcolor[(COL_INFOBAR_SHADOW + 0)])
 #define COL_INFOBAR_SHADOW_PLUS_1       (CFrameBuffer::getInstance()->realcolor[(COL_INFOBAR_SHADOW + 1)])
@@ -108,9 +107,10 @@
 #define COL_MENUCONTENT_PLUS_6          (CFrameBuffer::getInstance()->realcolor[(COL_MENUCONTENT + 6)])
 #define COL_MENUCONTENT_PLUS_7          (CFrameBuffer::getInstance()->realcolor[(COL_MENUCONTENT + 7)]) // progress window
 
+// CMenuwidgetExtended
 #define COL_MENUCONTENTDARK_PLUS_0      (CFrameBuffer::getInstance()->realcolor[(COL_MENUCONTENTDARK + 0)])
-#define COL_MENUCONTENTDARK_PLUS_1      (CFrameBuffer::getInstance()->realcolor[(COL_MENUCONTENTDARK + 1)])//audioplayer
 
+// menu selected
 #define COL_MENUCONTENTSELECTED_PLUS_0  (CFrameBuffer::getInstance()->realcolor[(COL_MENUCONTENTSELECTED + 0)])
 #define COL_MENUCONTENTSELECTED_PLUS_1  (CFrameBuffer::getInstance()->realcolor[(COL_MENUCONTENTSELECTED + 1)])
 #define COL_MENUCONTENTSELECTED_PLUS_2  (CFrameBuffer::getInstance()->realcolor[(COL_MENUCONTENTSELECTED + 2)])
