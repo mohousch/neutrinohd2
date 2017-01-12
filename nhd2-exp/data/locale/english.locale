@@ -1629,6 +1629,8 @@ webtv.user User bouquet
 webtv.bouquets Favorites
 webtv.add_bouquets add User bouquet
 
+satipcast.rec_hint A record is active.\n Switching to sat-ip <> cast not possible.\nPlease cancel the record first.
+
 head.gradient Head gradient
 foot.gradient Foot gradient
 headinfo.gradient Head info gradient

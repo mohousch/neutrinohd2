@@ -4716,12 +4716,12 @@ void CNeutrinoApp::tvMode( bool rezap )
 			webtv->stopPlayBack();
 			webtv->ClearChannels();
 		}
+			
+		// start playback
+		g_Zapit->unlockPlayBack();
 
 		// start epg scanning
 		g_Sectionsd->setPauseScanning(false);
-			
-		// start playback
-		g_Zapit->startPlayBack();
 	}
 
 	bool stopauto = (mode != mode_ts);	
@@ -4798,11 +4798,11 @@ void CNeutrinoApp::radioMode( bool rezap)
 			webtv->ClearChannels();
 		}
 
+		// start playback
+		g_Zapit->unlockPlayBack();
+
 		// start epg scanning
 		g_Sectionsd->setPauseScanning(false);
-			
-		// start playback
-		g_Zapit->startPlayBack();
 	}
 
 	mode = mode_radio;
@@ -4909,7 +4909,7 @@ void CNeutrinoApp::webtvMode( bool rezap)
 	g_Sectionsd->setPauseScanning(true);
 			
 	// stop playback
-	g_Zapit->stopPlayBack();
+	g_Zapit->lockPlayBack();
 	
 	mode = mode_iptv;
 

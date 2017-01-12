@@ -1640,6 +1640,8 @@ const char * locale_real_names[] = {
 	"webtv.bouquets",
 	"webtv.add_bouquets",
 
+	"satipcast.rec_hint",
+
 	"head.gradient",
 	"foot.gradient",
 	"headinfo.gradient",

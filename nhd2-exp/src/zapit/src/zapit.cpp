@@ -3344,7 +3344,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 	if(standby) 
 		return 0;
 
-	if ((playbackStopForced == true) || (!thisChannel) || playing)
+	if (!thisChannel || playing)
 		return -1;
 
 	if(g_settings.satip_allow_satip)
@@ -3416,6 +3416,9 @@ int startPlayBack(CZapitChannel * thisChannel)
 	}
 	else
 	{
+		if (playbackStopForced)
+			return -1;
+
 #if defined (USE_OPENGL)
 		startOpenGLplayback();
 #else
@@ -3678,9 +3681,6 @@ int stopPlayBack(bool sendPmt)
 
 	if (!playing)
 		return 0;
-
-	if (playbackStopForced)
-		return -1;
 	
 	if(g_settings.satip_allow_satip)
 	{
@@ -3689,6 +3689,9 @@ int stopPlayBack(bool sendPmt)
 	}
 	else 
 	{
+		if (playbackStopForced)
+			return -1;
+
 		// capmt
 		sendcapmtPlayBackStop(sendPmt);
 

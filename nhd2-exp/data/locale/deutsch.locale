@@ -1630,6 +1630,8 @@ webtv.user User Bouquet
 webtv.bouquets Favoriten
 webtv.add_bouquets User Bouquet einfügen
 
+satipcast.rec_hint Eine Aufnahme ist aktiv.\nUmschaltung zu Sat-IP <> Cast nicht möglich.\nBitte die Aufnahme erst beenden.
+
 head.gradient Titel Leiste Farbverlauf
 foot.gradient Fuß leiste Farbverlauf
 headinfo.gradient Titel Info Farbverlauf
