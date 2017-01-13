@@ -79,19 +79,29 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 	if(actionKey == "musicdeluxe")
 	{
 		musicDeluxe();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "youtube")
 	{
 		youTube();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "netzkino")
 	{
 		netzKino();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "icecast")
 	{
 		iceCast();
+
+		return menu_return::RETURN_REPAINT;
 	}
+
+	showMenu();
 	
 	return returnval;
 }
@@ -131,9 +141,11 @@ void plugin_exec(void)
 {
 	CMediaPortal * mpHandler = new CMediaPortal();
 	
-	mpHandler->showMenu();
+	//mpHandler->showMenu();
+	mpHandler->exec(NULL, "");
 	
 	delete mpHandler;
+	mpHandler = NULL;
 }
 
 

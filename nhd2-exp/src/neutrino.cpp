@@ -173,7 +173,7 @@
 cPlayback * playback = NULL;
 
 // ugly and dirty://FIXME
-#if defined (USE_OPENGL)
+#if defined (USE_PLAYBACK)
 extern char rec_filename[1024];				// defined in stream2file.cpp
 #endif
 
@@ -350,7 +350,7 @@ CNeutrinoApp::CNeutrinoApp()
 	//
 	recordingstatus = 0;
 	timeshiftstatus = 0;
-#if defined (USE_OPENGL)
+#if defined (USE_PLAYBACK)
 	playbackstatus = 0;
 #endif
 }
@@ -1894,7 +1894,7 @@ void CNeutrinoApp::setupRecordingDevice(void)
 bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGData * epgdata);
 bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData * epgdata);
 
-#if defined (USE_OPENGL)
+#if defined (USE_PLAYBACK)
 int startOpenGLplayback()
 {
 	CTimerd::RecordingInfo eventinfo;
@@ -3781,12 +3781,7 @@ _repeat:
 			}
 		}
 		
-//#if defined (USE_OPENGL)
-//		if(!playbackstatus)
-//			playbackstatus = data;
-//#else
 		recordingstatus = data;
-//#endif
 		
 		if( ( !g_InfoViewer->is_visible ) && data && !autoshift)
 			g_RCInput->postMsg( NeutrinoMessages::SHOW_INFOBAR, 0 );
@@ -5394,6 +5389,48 @@ void CNeutrinoApp::SelectSubtitles()
 			}
 		}
 	}
+}
+
+void CNeutrinoApp::lockPlayBack(void)
+{
+	// stop subtitles
+	StopSubtitles();
+
+	// stop playback
+	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
+	{
+		if(webtv)
+			webtv->stopPlayBack();
+	}
+	else
+	{
+		// stop/lock live playback	
+		g_Zapit->lockPlayBack();
+		
+		//pause epg scanning
+		g_Sectionsd->setPauseScanning(true);
+	}	
+}
+
+void CNeutrinoApp::unlockPlayBack(void)
+{
+	// start playback
+	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
+	{
+		if(webtv)
+			webtv->startPlayBack(webtv->getTunedChannel());
+	}
+	else
+	{
+		// unlock playback	
+		g_Zapit->unlockPlayBack();	
+		
+		//start epg scanning
+		g_Sectionsd->setPauseScanning(false);
+	}
+
+	// start subtitles
+	StartSubtitles();
 }
 
 // signal handler

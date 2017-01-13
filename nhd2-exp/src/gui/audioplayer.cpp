@@ -280,22 +280,8 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	// remember last mode
 	m_LastMode = (CNeutrinoApp::getInstance()->getLastMode());
 	
-	CNeutrinoApp::getInstance()->StopSubtitles();
-	
 	// stop playback
-	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
-	{
-		if(webtv)
-			webtv->stopPlayBack();
-	}
-	else
-	{
-		// stop/lock live playback	
-		g_Zapit->lockPlayBack();
-		
-		//pause epg scanning
-		g_Sectionsd->setPauseScanning(true);
-	}	
+	CNeutrinoApp::getInstance()->lockPlayBack();
 
 	//start AP start-script
 	puts("[audioplayer.cpp] executing " AUDIOPLAYER_START_SCRIPT "."); 
@@ -320,21 +306,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 		perror("Datei " AUDIOPLAYER_END_SCRIPT " fehlt. Bitte erstellen, wenn gebraucht.\nFile " AUDIOPLAYER_END_SCRIPT " not found. Please create if needed.\n");
 	
 	// start playback
-	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
-	{
-		if(webtv)
-			webtv->startPlayBack(webtv->getTunedChannel());
-	}
-	else
-	{
-		// unlock playback	
-		g_Zapit->unlockPlayBack();	
-		
-		//start epg scanning
-		g_Sectionsd->setPauseScanning(false);
-	}
-	
-	CNeutrinoApp::getInstance()->StartSubtitles();
+	CNeutrinoApp::getInstance()->unlockPlayBack();
 
 	//set last saved mode
 	CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE, m_LastMode );

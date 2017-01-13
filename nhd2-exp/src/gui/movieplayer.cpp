@@ -150,21 +150,8 @@ void CMoviePlayerGui::cutNeutrino()
 	// save (remeber) last mode
 	m_LastMode = (CNeutrinoApp::getInstance()->getLastMode() | NeutrinoMessages::norezap);
 	
-	CNeutrinoApp::getInstance()->StopSubtitles();
-	
-	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
-	{
-		if(webtv)
-			webtv->stopPlayBack();
-	}
-	else
-	{
-		// pause epg scanning
-		g_Sectionsd->setPauseScanning(true);
-			
-		// lock playback
-		g_Zapit->lockPlayBack();
-	}
+	//
+	CNeutrinoApp::getInstance()->lockPlayBack();
 	
 	// start mp start-script
 	puts("[movieplayer.cpp] executing " MOVIEPLAYER_START_SCRIPT ".");
@@ -180,22 +167,9 @@ void CMoviePlayerGui::restoreNeutrino()
 	
 	if (!stopped)
 		return;
-
-	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
-	{
-		if(webtv)
-			webtv->startPlayBack(webtv->getTunedChannel());
-	}
-	else
-	{
-		// unlock playback
-		g_Zapit->unlockPlayBack();
-			
-		// start epg scanning
-		g_Sectionsd->setPauseScanning(false);
-	}
 	
-	CNeutrinoApp::getInstance()->StartSubtitles();
+	//	
+	CNeutrinoApp::getInstance()->unlockPlayBack();
 
 	// tell neutrino that we are in the last mode
 	CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, m_LastMode);

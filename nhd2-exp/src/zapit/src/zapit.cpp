@@ -76,10 +76,15 @@
 
 
 // opengl liveplayback
-#if defined (USE_OPENGL)
+#if defined (USE_PLAYBACK)
 int startOpenGLplayback();
 void stopOpenGLplayback();
 #endif
+
+// satip cast
+#include <playback_cs.h>
+#include <system/helpers.h>
+extern cPlayback *playback;
 
 // globals 
 int zapit_ready;
@@ -277,7 +282,7 @@ void initFrontend()
 
 				// check if isusbtuner/vtuner
 				#if 0
-#if !defined (USE_OPENGL)
+#if !defined (USE_PLAYBACK)
 				char devicename[256];
 				//snprintf(devicename, sizeof(devicename), "/sys/class/dvb/dvb%d.frontend0/device/ep_00", fe->fe_adapter);
 
@@ -3332,9 +3337,6 @@ void sendChannels(int connfd, const CZapitClient::channelsMode mode, const CZapi
 	internalSendChannels(connfd, &channels, 0, false);
 }
 
-#include <playback_cs.h>
-#include <system/helpers.h>
-extern cPlayback *playback;
 // startplayback
 int startPlayBack(CZapitChannel * thisChannel)
 {
@@ -3419,9 +3421,6 @@ int startPlayBack(CZapitChannel * thisChannel)
 		if (playbackStopForced)
 			return -1;
 
-#if defined (USE_OPENGL)
-		startOpenGLplayback();
-#else
 		bool have_pcr = false;
 		bool have_audio = false;
 		bool have_video = false;
@@ -3667,6 +3666,9 @@ int startPlayBack(CZapitChannel * thisChannel)
 #endif	
 			}
 		}
+
+#if defined (USE_PLAYBACK)
+		startOpenGLplayback();
 #endif
 	}
 
@@ -3694,10 +3696,6 @@ int stopPlayBack(bool sendPmt)
 
 		// capmt
 		sendcapmtPlayBackStop(sendPmt);
-
-#if defined (USE_OPENGL)
-		stopOpenGLplayback();
-#else
 		
 		// stop audio decoder
 		audioDecoder->Stop();
@@ -3730,6 +3728,9 @@ int stopPlayBack(bool sendPmt)
 			delete pcrDemux; //destructor closes dmx
 			pcrDemux = NULL;
 		}
+
+#if defined (USE_PLAYBACK)
+		stopOpenGLplayback();
 #endif
 	}
 
@@ -3749,7 +3750,7 @@ int stopPlayBack(bool sendPmt)
 
 void closeAVDecoder(void)
 {
-#if !defined (USE_OPENGL)
+#if !defined (USE_PLAYBACK)
 	if(!g_settings.satip_allow_satip)
 	{
 		// close videodecoder
@@ -3765,7 +3766,7 @@ void closeAVDecoder(void)
 
 void openAVDecoder(void)
 {
-#if !defined (USE_OPENGL)
+#if !defined (USE_PLAYBACK)
 	if(!g_settings.satip_allow_satip)
 	{
 		if(videoDecoder)

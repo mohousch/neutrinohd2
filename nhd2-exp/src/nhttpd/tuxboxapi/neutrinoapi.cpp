@@ -64,7 +64,7 @@ extern CZapitClient::SatelliteList satList;
 #endif
 
 // opengl liveplayback
-#if defined (USE_OPENGL)
+#if defined (USE_PLAYBACK)
 void stopOpenGLplayback();
 #endif
 
@@ -211,7 +211,7 @@ void CNeutrinoAPI::ZapToChannelId(t_channel_id channel_id)
 		Zapit->setStandby(false);
 		
 // opengl liveplayback
-#if defined (USE_OPENGL)
+#if defined (USE_PLAYBACK)
 		stopOpenGLplayback();
 #endif		
 	
@@ -230,7 +230,7 @@ void CNeutrinoAPI::ZapToChannelId(t_channel_id channel_id)
 			return;
 		
 // opengl liveplayback
-#if defined (USE_OPENGL)
+#if defined (USE_PLAYBACK)
 		stopOpenGLplayback();
 #endif		
 
@@ -248,7 +248,7 @@ void CNeutrinoAPI::ZapToSubService(const char * const target)
 		&channel_id);
 		
 // opengl liveplayback
-#if defined (USE_OPENGL)
+#if defined (USE_PLAYBACK)
 	stopOpenGLplayback();
 #endif		
 

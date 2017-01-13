@@ -201,6 +201,10 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		void StopSubtitles();
 		void StartSubtitles(bool show = true);
 		void SelectSubtitles();
+
+		//
+		void lockPlayBack(void);
+		void unlockPlayBack(void);
 		
 		// 0 - restart 
 		// 1 - halt
