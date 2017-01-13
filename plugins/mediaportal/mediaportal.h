@@ -25,7 +25,13 @@
 
 
 class CMediaPortal : public CMenuTarget
-{	
+{
+	private:
+		void musicDeluxe(void);
+		void youTube(void);
+		void netzKino(void);
+		void iceCast(void);
+	
 	public:
 		CMediaPortal();
 		~CMediaPortal();

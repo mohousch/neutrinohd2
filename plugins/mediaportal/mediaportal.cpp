@@ -35,6 +35,38 @@ CMediaPortal::~CMediaPortal()
 	dprintf(DEBUG_NORMAL, "CMediaPortal: del\n");
 }
 
+void CMediaPortal::musicDeluxe(void)
+{
+	CFile file;
+		
+	file.Title = "Music deluxe";
+	file.Info1 = "stream";
+	file.Info2 = "Musik Sender";
+	file.Thumbnail = PLUGINDIR "/mediaportal/musicdeluxe.png";
+	file.Name = "musicdeluxe";
+	file.Url = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
+
+	CMoviePlayerGui tmpMoviePlayerGui;
+					
+	tmpMoviePlayerGui.addToPlaylist(file);
+	tmpMoviePlayerGui.exec(NULL, "urlplayback");
+}
+
+void CMediaPortal::youTube(void)
+{
+	g_PluginList->startPlugin("youtube");
+}
+
+void CMediaPortal::netzKino(void)
+{
+	g_PluginList->startPlugin("netzkino");
+}
+
+void CMediaPortal::iceCast(void)
+{
+	g_PluginList->startPlugin("icecast");
+}
+
 int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMediaPortal::exec: actionKey:%s\n", actionKey.c_str());
@@ -46,31 +78,19 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 
 	if(actionKey == "musicdeluxe")
 	{
-		CFile file;
-		
-		file.Title = "Music deluxe";
-		file.Info1 = "stream";
-		file.Info2 = "Musik Sender";
-		file.Thumbnail = PLUGINDIR "/mediaportal/musicdeluxe.png";
-		file.Name = "musicdeluxe";
-		file.Url = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
-
-		CMoviePlayerGui tmpMoviePlayerGui;
-					
-		tmpMoviePlayerGui.addToPlaylist(file);
-		tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		musicDeluxe();
 	}
 	else if(actionKey == "youtube")
 	{
-		g_PluginList->startPlugin("youtube");
+		youTube();
 	}
 	else if(actionKey == "netzkino")
 	{
-		g_PluginList->startPlugin("netzkino");
+		netzKino();
 	}
-	else if(actionKey == "internetradio")
+	else if(actionKey == "icecast")
 	{
-		g_PluginList->startPlugin("icecast");
+		iceCast();
 	}
 	
 	return returnval;
@@ -89,8 +109,8 @@ void CMediaPortal::showMenu(void)
 	// netzkino
 	mediaPortal->addItem(new CMenuFrameBoxItem("NetzKino", this, "netzkino", PLUGINDIR "/netzkino/netzkino.png"));
 
-	// internetradio
-	mediaPortal->addItem(new CMenuFrameBoxItem("Ice Cast", this, "icecast", NEUTRINO_ICON_MENUITEM_INTERNETRADIO));
+	// icecast
+	mediaPortal->addItem(new CMenuFrameBoxItem("Ice Cast", this, "icecast", PLUGINDIR "/icecast/icecast.png"));
 
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();

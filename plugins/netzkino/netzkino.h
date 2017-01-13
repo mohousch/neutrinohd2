@@ -61,6 +61,8 @@ class CNKMovies : public CMenuTarget
 		void loadNKTitles(int mode, std::string search, int id);
 
 		void showNKMoviesMenu();
+		void playMovie(void);
+		void showMovieInfo(void);
 	public:
 		CNKMovies(int id, std::string& title);
 		~CNKMovies();
