@@ -70,11 +70,11 @@ void CARDverpasstSub::showMenu(void)
 
 	catMenu->addItem(new CMenuForwarder("Heute", true, __DATE__, new CARDtime("Heute"), ""));
 	catMenu->addItem(new CMenuForwarder("Gestern", true, NULL, new CARDtime("Gestern"), ""));
-	catMenu->addItem(new CMenuForwarder("Mittwoch", true, NULL, new CARDtime("Mittwoch"), ""));
-	catMenu->addItem(new CMenuForwarder("Dienstag", true, NULL, new CARDtime("Dienstag"), ""));
-	catMenu->addItem(new CMenuForwarder("Montag", true, NULL, new CARDtime("Montag"), ""));
-	catMenu->addItem(new CMenuForwarder("Sonntag", true, NULL, new CARDtime("Sonntag"), ""));
-	catMenu->addItem(new CMenuForwarder("Samstag", true, NULL, new CARDtime("Samstag"), ""));	
+	//catMenu->addItem(new CMenuForwarder("Mittwoch", true, NULL, new CARDtime("Mittwoch"), ""));
+	//catMenu->addItem(new CMenuForwarder("Dienstag", true, NULL, new CARDtime("Dienstag"), ""));
+	//catMenu->addItem(new CMenuForwarder("Montag", true, NULL, new CARDtime("Montag"), ""));
+	//catMenu->addItem(new CMenuForwarder("Sonntag", true, NULL, new CARDtime("Sonntag"), ""));
+	//catMenu->addItem(new CMenuForwarder("Samstag", true, NULL, new CARDtime("Samstag"), ""));	
 	
 	catMenu->exec(NULL, "");
 	catMenu->hide();
