@@ -115,7 +115,7 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		
 		void setvol(int vol);
 		
-		void RealRun(CMenuWidgetExtended& _mainMenu);
+		void RealRun(void);
 		void InitZapper();
 
 		void SetupFrameBuffer();
@@ -132,8 +132,8 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		void SetupTiming();
 		void SetupFonts();
 		
-		// init main menu
-		void InitMainMenu(CMenuWidgetExtended& mainMenu);
+		//
+		void extendedMenu(void);
 		void smartMenu(void);
 		void classicMenu(void);
 		
@@ -187,7 +187,7 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		// recording_id 
 		int recording_id;
 		
-#if defined (USE_OPENGL)
+#if defined (USE_PLAYBACK)
 		int playbackstatus;
 #endif		
 		
