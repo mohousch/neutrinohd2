@@ -29,6 +29,18 @@ class CARDverpasstSub : public CMenuTarget
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
+class CARDtime : public CMenuTarget
+{
+	private:
+		std::string Title;
+		void showMenu(void);
+	public:
+		CARDtime(const std::string& title);
+		~CARDtime();
+
+		int exec(CMenuTarget* parent, const std::string& actionKey);
+};
+
 class CARDaz : public CMenuTarget
 {
 	private:

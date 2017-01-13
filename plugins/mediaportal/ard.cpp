@@ -16,7 +16,7 @@ CARDverpasst::~CARDverpasst()
 
 void CARDverpasst::showMenu(void)
 {
-	CMenuWidget * catMenu = new CMenuWidget("Sendung verpasst", "");
+	CMenuWidget * catMenu = new CMenuWidget("Sendung verpasst", PLUGINDIR "/mediaportal/ard_small.png");
 
 	catMenu->disableMenuPosition();
 
@@ -64,17 +64,17 @@ CARDverpasstSub::~CARDverpasstSub()
 
 void CARDverpasstSub::showMenu(void)
 {
-	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), "");
+	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/mediaportal/ard_small.png");
 
 	catMenu->disableMenuPosition();
 
-	catMenu->addItem(new CMenuForwarder("Heute", true, __DATE__, new CARDstreams("Heute"), ""));
-	catMenu->addItem(new CMenuForwarder("Gestern", true, NULL, new CARDstreams("Gestern"), ""));
-	catMenu->addItem(new CMenuForwarder("Mittwoch", true, NULL, new CARDstreams("Mittwoch"), ""));
-	catMenu->addItem(new CMenuForwarder("Dienstag", true, NULL, new CARDstreams("Dienstag"), ""));
-	catMenu->addItem(new CMenuForwarder("Montag", true, NULL, new CARDstreams("Montag"), ""));
-	catMenu->addItem(new CMenuForwarder("Sonntag", true, NULL, new CARDstreams("Sonntag"), ""));
-	catMenu->addItem(new CMenuForwarder("Samstag", true, NULL, new CARDstreams("Samstag"), ""));	
+	catMenu->addItem(new CMenuForwarder("Heute", true, __DATE__, new CARDtime("Heute"), ""));
+	catMenu->addItem(new CMenuForwarder("Gestern", true, NULL, new CARDtime("Gestern"), ""));
+	catMenu->addItem(new CMenuForwarder("Mittwoch", true, NULL, new CARDtime("Mittwoch"), ""));
+	catMenu->addItem(new CMenuForwarder("Dienstag", true, NULL, new CARDtime("Dienstag"), ""));
+	catMenu->addItem(new CMenuForwarder("Montag", true, NULL, new CARDtime("Montag"), ""));
+	catMenu->addItem(new CMenuForwarder("Sonntag", true, NULL, new CARDtime("Sonntag"), ""));
+	catMenu->addItem(new CMenuForwarder("Samstag", true, NULL, new CARDtime("Samstag"), ""));	
 	
 	catMenu->exec(NULL, "");
 	catMenu->hide();
@@ -83,6 +83,45 @@ void CARDverpasstSub::showMenu(void)
 }
 
 int CARDverpasstSub::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CARDverpasst::exec: actionKey:%s\n", actionKey.c_str());
+
+	if(parent)
+		parent->hide();
+
+	showMenu();
+
+	return menu_return::RETURN_REPAINT;
+}
+
+// time
+CARDtime::CARDtime(const std::string& title)
+{
+	Title = title;
+}
+
+CARDtime::~CARDtime()
+{
+}
+
+void CARDtime::showMenu(void)
+{
+	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/mediaportal/ard_small.png");
+
+	catMenu->disableMenuPosition();
+
+	catMenu->addItem(new CMenuForwarder("00:00-12:00", true, NULL, new CARDstreams("00:00-12:00"), ""));
+	catMenu->addItem(new CMenuForwarder("12:00-18:00", true, NULL, new CARDstreams("12:00-18:00"), ""));
+	catMenu->addItem(new CMenuForwarder("18:00-20:15", true, NULL, new CARDstreams("18:00-20:15"), ""));
+	catMenu->addItem(new CMenuForwarder("20:15-00:00", true, NULL, new CARDstreams("20:15-00:00"), ""));	
+	
+	catMenu->exec(NULL, "");
+	catMenu->hide();
+	delete catMenu;
+	catMenu = NULL;
+}
+
+int CARDtime::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CARDverpasst::exec: actionKey:%s\n", actionKey.c_str());
 
@@ -105,7 +144,7 @@ CARDaz::~CARDaz()
 
 void CARDaz::showMenu(void)
 {
-	CMenuFrameBox * catMenu = new CMenuFrameBox("Sendungen A-Z", "");
+	CMenuFrameBox * catMenu = new CMenuFrameBox("Sendungen A-Z", PLUGINDIR "/mediaportal/ard_small.png");
 
 	// items
 	
@@ -138,7 +177,7 @@ CARDTVlive::~CARDTVlive()
 
 void CARDTVlive::showMenu(void)
 {
-	CMenuFrameBox * catMenu = new CMenuFrameBox("TV-Livestreams", "");
+	CMenuFrameBox * catMenu = new CMenuFrameBox("TV-Livestreams", PLUGINDIR "/mediaportal/ard_small.png");
 
 	// items
 	
@@ -171,7 +210,7 @@ CARDRadiolive::~CARDRadiolive()
 
 void CARDRadiolive::showMenu(void)
 {
-	CMenuFrameBox * catMenu = new CMenuFrameBox("Radio-Livestreams", "");
+	CMenuFrameBox * catMenu = new CMenuFrameBox("Radio-Livestreams", PLUGINDIR "/mediaportal/ard_small.png");
 
 	// items
 	
@@ -205,7 +244,7 @@ CARDstreams::~CARDstreams()
 
 void CARDstreams::showMenu(void)
 {
-	CMenuFrameBox * catMenu = new CMenuFrameBox(Title.c_str(), "");	
+	CMenuFrameBox * catMenu = new CMenuFrameBox(Title.c_str(), PLUGINDIR "/mediaportal/ard_small.png");	
 	
 	//items
 
@@ -238,7 +277,7 @@ CARD::~CARD()
 
 void CARD::showMenu(void)
 {
-	CMenuWidget * catMenu = new CMenuWidget("ARD Mediathek", "");
+	CMenuWidget * catMenu = new CMenuWidget("ARD Mediathek", PLUGINDIR "/mediaportal/ard_small.png");
 
 	catMenu->disableMenuPosition();
 

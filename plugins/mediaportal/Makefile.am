@@ -29,6 +29,7 @@ install-exec-local:
 	install -m 0644 mp.png $(DESTDIR)$(PLUGINDIR)/mediaportal
 	install -m 0644 musicdeluxe.png $(DESTDIR)$(PLUGINDIR)/mediaportal
 	install -m 0644 ard.png $(DESTDIR)$(PLUGINDIR)/mediaportal
+	install -m 0644 ard_small.png $(DESTDIR)$(PLUGINDIR)/mediaportal
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/mediaportal.so
@@ -36,6 +37,7 @@ uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/mp.png
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/musicdeluxe.png
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/ard.png
+	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/ard_small.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/mediaportal
 
 
