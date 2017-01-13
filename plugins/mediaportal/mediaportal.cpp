@@ -20,6 +20,7 @@
 
 #include <mediaportal.h>
 
+
 extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
@@ -67,6 +68,14 @@ void CMediaPortal::iceCast(void)
 	g_PluginList->startPlugin("icecast");
 }
 
+void CMediaPortal::ard(void)
+{
+	CARD* ard = new CARD();
+	ard->exec(NULL, "");
+	delete ard;
+	ard = NULL;
+}
+
 int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMediaPortal::exec: actionKey:%s\n", actionKey.c_str());
@@ -100,6 +109,13 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "ard")
+	{
+		ard();
+
+		return menu_return::RETURN_REPAINT;
+	}
+
 
 	showMenu();
 	
@@ -121,6 +137,9 @@ void CMediaPortal::showMenu(void)
 
 	// icecast
 	mediaPortal->addItem(new CMenuFrameBoxItem("Ice Cast", this, "icecast", PLUGINDIR "/icecast/icecast.png"));
+
+	// ard
+	mediaPortal->addItem(new CMenuFrameBoxItem("ARD Mediathek", new CARD(), "ard", PLUGINDIR "/mediaportal/ard.png"));
 
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();

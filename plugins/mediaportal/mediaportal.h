@@ -22,6 +22,7 @@
 #define __mediaportal__
 
 #include <plugin.h>
+#include <ard.h>
 
 
 class CMediaPortal : public CMenuTarget
@@ -31,6 +32,7 @@ class CMediaPortal : public CMenuTarget
 		void youTube(void);
 		void netzKino(void);
 		void iceCast(void);
+		void ard(void);
 	
 	public:
 		CMediaPortal();

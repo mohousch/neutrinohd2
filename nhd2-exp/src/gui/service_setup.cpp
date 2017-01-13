@@ -48,7 +48,6 @@
 #include <gui/scan_setup.h>
 #include <gui/cam_menu.h>
 #include <gui/imageinfo.h>
-#include <gui/satip_setup.h>
 
 #include <gui/bedit/bouqueteditor_bouquets.h>
 
