@@ -114,7 +114,6 @@ class CWebTV : public CMenuTarget
 		void ClearChannels(void);
 		
 		bool readChannellist(std::string filename);
-		//void addUserBouquet(void);
 };
 
 #endif

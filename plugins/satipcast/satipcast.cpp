@@ -37,12 +37,11 @@
 #include <gui/widget/stringinput_ext.h>
 #include <gui/widget/hintbox.h>
 
-#include <gui/satip_setup.h>
-
 #include <system/debug.h>
 #include <system/settings.h>
 
 #include <plugin.h>
+#include <satipcast.h>
 
 
 #define MESSAGEBOX_NO_YES_OPTION_COUNT 2
