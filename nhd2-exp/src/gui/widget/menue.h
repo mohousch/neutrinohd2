@@ -643,10 +643,6 @@ class CLockedMenuForwarderExtended : public CMenuForwarderExtended, public CPINP
 };
 
 /// CMenuFrameBox
-#define MAX_ITEMS_PER_PAGE	18
-#define MAX_ITEMS_PER_X		6
-#define MAX_ITEMS_PER_Y		3
-
 class CMenuFrameBox : public CMenuTarget
 {
 	private:
@@ -665,6 +661,10 @@ class CMenuFrameBox : public CMenuTarget
 		int currentPage;
 		int totalPages;
 		int firstItemPos;
+
+		int itemsPerX;
+		int itemsPerY;
+		int maxItemsPerPage;
 
 		std::string nameString;
 		neutrino_locale_t name;
@@ -719,6 +719,9 @@ class CMenuFrameBox : public CMenuTarget
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 		void setTimeOut(int to = 0){timeout = to;};
 		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = CRCInput::RC_nokey, bool enabled = true);
+
+		// 
+		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY; initFrames();};
 };
 
 // CMenuFrameBoxItem

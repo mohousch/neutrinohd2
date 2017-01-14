@@ -2913,6 +2913,12 @@ void CMenuFrameBox::initFrameBox(void)
 	//
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;	
+
+	//
+	itemsPerX = 6;
+	itemsPerY = 3;
+
+	maxItemsPerPage = itemsPerX*itemsPerY;
 }
 
 void CMenuFrameBox::initFrames(void)
@@ -2922,13 +2928,13 @@ void CMenuFrameBox::initFrames(void)
 	Box.iX = g_settings.screen_StartX + 20;
 	Box.iY = g_settings.screen_StartY + 20;
 	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 40;
-	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 40);
+	Box.iHeight = g_settings.screen_EndY - g_settings.screen_StartY - 40;
 
 	//
-	frameBox.iX = Box.iX + BORDER_LEFT;
-	frameBox.iY = Box.iY + 35 + 5;
-	frameBox.iWidth = (Box.iWidth - (BORDER_LEFT + BORDER_RIGHT))/6;
-	frameBox.iHeight = (Box.iHeight - 80)/3;
+	frameBox.iX = Box.iX + 10;
+	frameBox.iY = Box.iY + 30 + 10;
+	frameBox.iWidth = (Box.iWidth - (BORDER_LEFT + BORDER_RIGHT))/itemsPerX;
+	frameBox.iHeight = (Box.iHeight - 30 - 30 - 10 - 10)/itemsPerY;
 }
 
 void CMenuFrameBox::addItem(CMenuItem *menuItem, const bool defaultselected)
@@ -2952,7 +2958,7 @@ void CMenuFrameBox::paintHead(void)
 	int icon_w = 0;
 	int icon_h = 0;
 	frameBuffer->getIconSize(iconfile.c_str(), &icon_w, &icon_h);
-	frameBuffer->paintIcon(iconfile, Box.iX + BORDER_LEFT, Box.iY + (35 - icon_h)/2);
+	frameBuffer->paintIcon(iconfile, Box.iX + BORDER_LEFT, Box.iY + (30 - icon_h)/2);
 
 	const char * l_name;
 	
@@ -2961,12 +2967,12 @@ void CMenuFrameBox::paintHead(void)
 	else
         	l_name = g_Locale->getText(name);
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + icon_w + ICON_OFFSET, Box.iY + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + icon_w +  ICON_OFFSET), l_name, COL_MENUHEAD);
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(Box.iX + BORDER_LEFT + icon_w + ICON_OFFSET, Box.iY + (30 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), Box.iWidth - (BORDER_LEFT + BORDER_RIGHT + icon_w +  ICON_OFFSET), l_name, COL_MENUHEAD);
 
 	// Buttons
 	if (hbutton_count)
 	{
-		::paintHeadButtons(frameBuffer, Box.iX, Box.iY, Box.iWidth, 35, hbutton_count, hbutton_labels);
+		::paintHeadButtons(frameBuffer, Box.iX, Box.iY, Box.iWidth, 30, hbutton_count, hbutton_labels);
 	}
 }
 
@@ -2978,16 +2984,16 @@ void CMenuFrameBox::paintFoot(void)
 	int iw = 0;
 	int ih = 0;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RIGHT, &iw, &ih);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, Box.iX + Box.iWidth - BORDER_RIGHT - iw, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, Box.iX + Box.iWidth - BORDER_RIGHT - iw, Box.iY + Box.iHeight - 30 + (30 - ih)/2);
 	
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_LEFT, &iw, &ih);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, Box.iX + Box.iWidth - BORDER_RIGHT - 2*iw - 2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, Box.iX + Box.iWidth - BORDER_RIGHT - 2*iw - 2, Box.iY + Box.iHeight - 30 + (30 - ih)/2);
 	
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_TOP, &iw, &ih);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_TOP, Box.iX + Box.iWidth - BORDER_RIGHT - 3*iw - 2*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_TOP, Box.iX + Box.iWidth - BORDER_RIGHT - 3*iw - 2*2, Box.iY + Box.iHeight - 30 + (30 - ih)/2);
 	
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_DOWN, &iw, &ih);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_DOWN, Box.iX + Box.iWidth - BORDER_RIGHT - 4*iw - 3*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_DOWN, Box.iX + Box.iWidth - BORDER_RIGHT - 4*iw - 3*2, Box.iY + Box.iHeight - 30 + (30 - ih)/2);
 }
 
 void CMenuFrameBox::paintBody(void)
@@ -2998,10 +3004,10 @@ void CMenuFrameBox::paintBody(void)
 	frameBuffer->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, backgroundColor);
 	
 	// paint horizontal line top
-	frameBuffer->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + 35, COL_MENUCONTENT_PLUS_5);
+	frameBuffer->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + 30 + 5, COL_MENUCONTENT_PLUS_5);
 	
 	// paint horizontal line bottom
-	frameBuffer->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + Box.iHeight - 35, COL_MENUCONTENT_PLUS_5);
+	frameBuffer->paintHLineRel(Box.iX + BORDER_LEFT, Box.iWidth - (BORDER_LEFT + BORDER_RIGHT), Box.iY + Box.iHeight - 30 - 5, COL_MENUCONTENT_PLUS_5);
 }
 
 void CMenuFrameBox::paintItems(int pos)
@@ -3015,19 +3021,19 @@ void CMenuFrameBox::paintItems(int pos)
 		pos = 0;
 
 	int k = pos;
-	for (unsigned int _y = 0; _y < 3; _y++)
+	for (unsigned int _y = 0; _y < itemsPerY; _y++)
 	{
-		for (unsigned int _x = 0; _x < 6; _x++)
+		for (unsigned int _x = 0; _x < itemsPerX; _x++)
 		{
 			frameBuffer->DisplayImage(items[k]->iconName, frameBox.iX + _x*frameBox.iWidth + 5, frameBox.iY + _y*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
 
 			k += 1;
 
-			if( (k == pos + MAX_ITEMS_PER_PAGE) || (k == items.size()))
+			if( (k == pos + maxItemsPerPage) || (k == items.size()))
 				break;	
 		}
 
-		if( (k == pos + MAX_ITEMS_PER_PAGE) || (k == items.size()))
+		if( (k == pos + maxItemsPerPage) || (k == items.size()))
 			break;	
 	}
 }
@@ -3042,11 +3048,13 @@ void CMenuFrameBox::paintItemBox(int oldposx, int oldposy, int posx, int posy)
 	//
 	if(items.size())
 	{
+		// prev item box
 		frameBuffer->DisplayImage(items[oldselected]->iconName, frameBox.iX + oldposx*frameBox.iWidth + 5, frameBox.iY + oldposy*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
 
-		// itembox
+		// new itembox
 		frameBuffer->paintBoxRel(frameBox.iX + frameBox.iWidth*posx, frameBox.iY + frameBox.iHeight*posy, frameBox.iWidth, frameBox.iHeight, itemBoxColor, RADIUS_SMALL, CORNER_BOTH);
 
+		// new item
 		frameBuffer->DisplayImage(items[selected]->iconName, frameBox.iX + posx*frameBox.iWidth + 5, frameBox.iY + posy*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
 	}
 
@@ -3061,16 +3069,16 @@ void CMenuFrameBox::paintFootInfo(int pos)
 	int iw = 0;
 	int ih = 0;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RIGHT, &iw, &ih);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, Box.iX + Box.iWidth - BORDER_RIGHT - iw, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, Box.iX + Box.iWidth - BORDER_RIGHT - iw, Box.iY + Box.iHeight - 30 + (30 - ih)/2);
 	
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_LEFT, &iw, &ih);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, Box.iX + Box.iWidth - BORDER_RIGHT - 2*iw - 2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, Box.iX + Box.iWidth - BORDER_RIGHT - 2*iw - 2, Box.iY + Box.iHeight - 30 + (30 - ih)/2);
 	
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_TOP, &iw, &ih);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_TOP, Box.iX + Box.iWidth - BORDER_RIGHT - 3*iw - 2*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_TOP, Box.iX + Box.iWidth - BORDER_RIGHT - 3*iw - 2*2, Box.iY + Box.iHeight - 30 + (30 - ih)/2);
 	
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_DOWN, &iw, &ih);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_DOWN, Box.iX + Box.iWidth - BORDER_RIGHT - 4*iw - 3*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_DOWN, Box.iX + Box.iWidth - BORDER_RIGHT - 4*iw - 3*2, Box.iY + Box.iHeight - 30 + (30 - ih)/2);
 
 	// text
 	if(items.size() > 0)
@@ -3080,7 +3088,7 @@ void CMenuFrameBox::paintFootInfo(int pos)
 		// foot text
 		if(!item->itemName.empty())
 		{
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(Box.iX + BORDER_LEFT, Box.iY + Box.iHeight - 35 + (35 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE] ->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), Box.iWidth - BORDER_LEFT - BORDER_RIGHT - 40, item->itemName.c_str(), COL_MENUFOOT_INFO);
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(Box.iX + BORDER_LEFT, Box.iY + Box.iHeight - 30 + (30 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE] ->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), Box.iWidth - BORDER_LEFT - BORDER_RIGHT - 40, item->itemName.c_str(), COL_MENUFOOT_INFO);
 		}
 	}
 }
@@ -3173,19 +3181,19 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 	itemsPerPage = 0;
 	currentPage = 1;
 	totalPages = 1;
-	firstItemPos = 0; // ietms Page counter
+	firstItemPos = 0; // items Page counter
 
-	if(items.size() > 18)
-		itemsPerPage = 18;
+	if(items.size() > maxItemsPerPage)
+		itemsPerPage = maxItemsPerPage;
 	else
 		itemsPerPage = items.size();
 
 	// calculate totalPages
-	if(items.size() > 18)
+	if(items.size() > maxItemsPerPage)
 	{
-		totalPages = items.size() / 18;
+		totalPages = items.size() / maxItemsPerPage;
 
-		if( (items.size() - totalPages*18) > 0)
+		if( (items.size() - totalPages*maxItemsPerPage) > 0)
 			totalPages = totalPages + 1;
 	}
 
@@ -3265,7 +3273,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 		}
 		else if (msg == CRCInput::RC_right)
 		{
-			printf("msg: RC_right\n");
+			printf("msg: RC_right\n"); //FIXME: ( x > 6 and y > 3)
 
 			oldselected = selected;
 			int oldx = x;
@@ -3274,48 +3282,48 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			selected += 1;
 
 			// check selected
-			if(selected >= (18*(currentPage - 1)) + itemsPerPage)
-				selected = 18*(currentPage - 1);
+			if(selected >= (maxItemsPerPage*(currentPage - 1)) + itemsPerPage)
+				selected = maxItemsPerPage*(currentPage - 1);
 
 			// calculate xy
 			x += 1;
 
-			if(itemsPerPage <= MAX_ITEMS_PER_X)
+			if(itemsPerPage <= itemsPerX)
 			{
 				if(x >= itemsPerPage)
 				{
 					x = 0; 
 				}
 			}
-			else if(itemsPerPage > MAX_ITEMS_PER_X && itemsPerPage <= 2*MAX_ITEMS_PER_X)
+			else if(itemsPerPage > itemsPerX && itemsPerPage <= (itemsPerY - 1)*itemsPerX)
 			{
-				if(y == 1 && x >= (itemsPerPage - MAX_ITEMS_PER_X))
+				if(y == 1 && x >= (itemsPerPage - itemsPerX)) //FIXME: y?
 				{
 					x = 0;
 					y = 0; 
 				}
-				else if(x >= MAX_ITEMS_PER_X)
+				else if(x >= itemsPerX)
 				{
 					x = 0;
 					y += 1; // increase y
 				
-					if(y >= MAX_ITEMS_PER_Y - 1)
+					if(y >= itemsPerY - 1)
 						y = 0;
 				}
 			}
-			else if(itemsPerPage > 2*MAX_ITEMS_PER_X && itemsPerPage <= MAX_ITEMS_PER_PAGE)
+			else if(itemsPerPage > (itemsPerY - 1)*itemsPerX && itemsPerPage <= maxItemsPerPage)
 			{
-				if(y == 2 && x >= (itemsPerPage - 2*MAX_ITEMS_PER_X))
+				if(y == (itemsPerY - 1) && x >= (itemsPerPage - (itemsPerY - 1)*itemsPerX))
 				{
 					x = 0;
 					y = 0; 
 				}
-				else if(x >= MAX_ITEMS_PER_X)
+				else if(x >= itemsPerX)
 				{
 					x = 0;
 					y += 1;
 				
-					if(y >= MAX_ITEMS_PER_Y)
+					if(y >= itemsPerY)
 						y = 0;
 				}
 			}
@@ -3339,8 +3347,8 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			selected -= 1;
 
 			// check selected
-			if(selected < (18*(currentPage - 1)))
-				selected = 18*(currentPage - 1);
+			if(selected < (maxItemsPerPage*(currentPage - 1)))
+				selected = maxItemsPerPage*(currentPage - 1);
 
 			// sanity check
 			if (selected == -1)
@@ -3351,7 +3359,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 			if(x < 0 && y > 0)
 			{
-				x = MAX_ITEMS_PER_X - 1;
+				x = itemsPerX - 1;
 				y--;
 				
 				if(y < 0)
@@ -3379,19 +3387,19 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			if(currentPage < totalPages)
 			{
 				currentPage += 1;
-				firstItemPos += 18;
+				firstItemPos += maxItemsPerPage;
 
 				// calculate itemsPerPage
-				if ( (items.size() - (currentPage - 1)*18) <= 18)
-					itemsPerPage = items.size() - (currentPage - 1)*18;
+				if ( (items.size() - (currentPage - 1)*maxItemsPerPage) <= maxItemsPerPage)
+					itemsPerPage = items.size() - (currentPage - 1)*maxItemsPerPage;
 				else
-					itemsPerPage = 18;
+					itemsPerPage = maxItemsPerPage;
 
 				// recalculate firstItemPos and itemsPerPage
 				if(firstItemPos > items.size())
 				{
-					firstItemPos -= 18;
-					itemsPerPage = items.size() - (currentPage -1)*18;
+					firstItemPos -= maxItemsPerPage;
+					itemsPerPage = items.size() - (currentPage -1)*maxItemsPerPage;
 				}
 
 				dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (currentPage:%d) (itemsPerPage:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, currentPage, itemsPerPage, selected, firstItemPos);
@@ -3415,12 +3423,12 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			if(currentPage > 1)
 			{
 				currentPage -= 1;
-				firstItemPos -= 18;
+				firstItemPos -= maxItemsPerPage;
 
 				// calculate itemsPerPage
-				itemsPerPage = 18;
+				itemsPerPage = maxItemsPerPage;
 
-				if(items.size() < 18)
+				if(items.size() < maxItemsPerPage)
 					itemsPerPage = items.size();
 
 				// check firstItemPos
@@ -3430,7 +3438,6 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 				dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (currentPage:%d) (itemsPerPage:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, currentPage, itemsPerPage, selected, firstItemPos);
 
 				// reset
-				//selected = (currentPage - 1)*18;
 				selected = firstItemPos;
 				x = 0;
 				y = 0;
@@ -3454,17 +3461,17 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			y += 1;
 
 			// jump to first line
-			if(y >= 3)
+			if(y >= itemsPerY)
 			{
 				y = 0;
 			}
 
-			selected = selected = 18*(currentPage - 1) + y*6 + x;
+			selected = selected = maxItemsPerPage*(currentPage - 1) + y*itemsPerX + x;
 
 			if(selected > (items.size() - 1))
 			{
 				y = 0;
-				selected = selected = 18*(currentPage - 1) + y*6 + x;	
+				selected = selected = maxItemsPerPage*(currentPage - 1) + y*itemsPerX + x;	
 			}
 
 			dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (currentPage:%d) (itemsPerPage:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, currentPage, itemsPerPage, selected, firstItemPos);
@@ -3488,24 +3495,24 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			// dont jump to last line
 			if(y < 0)
 			{
-				y = 2;
-				selected = 18*(currentPage - 1) + x + y*6;
+				y = (itemsPerY - 1);
+				selected = maxItemsPerPage*(currentPage - 1) + x + y*itemsPerX;
 				if(selected > (items.size() - 1))
 				{
-					y = 1;
-					selected = selected = 18*(currentPage - 1) + y*6 + x;	
+					y = 1; //FIXME: y???
+					selected = selected = maxItemsPerPage*(currentPage - 1) + y*itemsPerX + x;	
 
 					if(selected > (items.size() - 1))
 					{
 						y = 0;
-						selected = selected = 18*(currentPage - 1) + y*6 + x;	
+						selected = selected = maxItemsPerPage*(currentPage - 1) + y*itemsPerX + x;	
 					}
 				}
 				
 			}
 			else
 			{
-				selected = 18*(currentPage - 1) + x + y*6;
+				selected = maxItemsPerPage*(currentPage - 1) + x + y*itemsPerX;
 			}
 
 			dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (currentPage:%d) (itemsPerPage:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, currentPage, itemsPerPage, selected, firstItemPos);
