@@ -3057,6 +3057,22 @@ void CMenuFrameBox::paintFootInfo(int pos)
 	// refresh
 	frameBuffer->paintBoxRel(Box.iX, Box.iY + Box.iHeight - 30, Box.iWidth, 30, backgroundColor);
 
+	// paint buttons
+	int iw = 0;
+	int ih = 0;
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RIGHT, &iw, &ih);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, Box.iX + Box.iWidth - BORDER_RIGHT - iw, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_LEFT, &iw, &ih);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, Box.iX + Box.iWidth - BORDER_RIGHT - 2*iw - 2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_TOP, &iw, &ih);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_TOP, Box.iX + Box.iWidth - BORDER_RIGHT - 3*iw - 2*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+	
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_DOWN, &iw, &ih);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_DOWN, Box.iX + Box.iWidth - BORDER_RIGHT - 4*iw - 3*2, Box.iY + Box.iHeight - 35 + (35 - ih)/2);
+
+	// text
 	if(items.size() > 0)
 	{
 		CMenuItem* item = items[pos];
