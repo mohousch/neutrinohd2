@@ -3283,48 +3283,53 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 
 			// check selected
 			if(selected >= (maxItemsPerPage*(currentPage - 1)) + itemsPerPage)
+			{
 				selected = maxItemsPerPage*(currentPage - 1);
-
-			// calculate xy
-			x += 1;
-
-			if(itemsPerPage <= itemsPerX)
-			{
-				if(x >= itemsPerPage)
-				{
-					x = 0; 
-				}
+				x = y = 0;
 			}
-			else if(itemsPerPage > itemsPerX && itemsPerPage <= (itemsPerY - 1)*itemsPerX)
+			else
 			{
-				if(y == 1 && x >= (itemsPerPage - itemsPerX)) //FIXME: y?
+				// calculate xy
+				x += 1;
+
+				if(itemsPerPage <= itemsPerX)
 				{
-					x = 0;
-					y = 0; 
+					if(x >= itemsPerPage)
+					{
+						x = 0; 
+					}
 				}
-				else if(x >= itemsPerX)
+				else if(itemsPerPage > itemsPerX && itemsPerPage <= (itemsPerY - 1)*itemsPerX)
 				{
-					x = 0;
-					y += 1; // increase y
+					if(y == 1 && x >= (itemsPerPage - itemsPerX)) //FIXME: y?
+					{
+						x = 0;
+						y = 0; 
+					}
+					else if(x >= itemsPerX)
+					{
+						x = 0;
+						y += 1; // increase y
 				
-					if(y >= itemsPerY - 1)
-						y = 0;
+						if(y >= itemsPerY - 1)
+							y = 0;
+					}
 				}
-			}
-			else if(itemsPerPage > (itemsPerY - 1)*itemsPerX && itemsPerPage <= maxItemsPerPage)
-			{
-				if(y == (itemsPerY - 1) && x >= (itemsPerPage - (itemsPerY - 1)*itemsPerX))
+				else if(itemsPerPage > (itemsPerY - 1)*itemsPerX && itemsPerPage <= maxItemsPerPage)
 				{
-					x = 0;
-					y = 0; 
-				}
-				else if(x >= itemsPerX)
-				{
-					x = 0;
-					y += 1;
+					if(y == (itemsPerY - 1) && x >= (itemsPerPage - (itemsPerY - 1)*itemsPerX))
+					{
+						x = 0;
+						y = 0; 
+					}
+					else if(x >= itemsPerX)
+					{
+						x = 0;
+						y += 1;
 				
-					if(y >= itemsPerY)
-						y = 0;
+						if(y >= itemsPerY)
+							y = 0;
+					}
 				}
 			}
 
@@ -3495,6 +3500,12 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 			// dont jump to last line
 			if(y < 0)
 			{
+				y = 0;
+
+				selected = maxItemsPerPage*(currentPage - 1) + x + y*itemsPerX;
+				//
+
+				/*
 				y = (itemsPerY - 1);
 				selected = maxItemsPerPage*(currentPage - 1) + x + y*itemsPerX;
 				if(selected > (items.size() - 1))
@@ -3508,7 +3519,7 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 						selected = selected = maxItemsPerPage*(currentPage - 1) + y*itemsPerX + x;	
 					}
 				}
-				
+				*/
 			}
 			else
 			{
