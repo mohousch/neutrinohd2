@@ -146,7 +146,9 @@ void CARDaz::showMenu(void)
 {
 	CMenuFrameBox * catMenu = new CMenuFrameBox("Sendungen A-Z", PLUGINDIR "/mediaportal/ard_small.png");
 
-	// items
+	//items
+	for (int i = 0; i < 18; i++)
+		catMenu->addItem(new CMenuFrameBoxItem("coming soon!", this, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
 	catMenu->exec(NULL, "");
 	catMenu->hide();
@@ -179,7 +181,9 @@ void CARDTVlive::showMenu(void)
 {
 	CMenuFrameBox * catMenu = new CMenuFrameBox("TV-Livestreams", PLUGINDIR "/mediaportal/ard_small.png");
 
-	// items
+	//items
+	for (int i = 0; i < 18; i++)
+		catMenu->addItem(new CMenuFrameBoxItem("coming soon!", this, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
 	catMenu->exec(NULL, "");
 	catMenu->hide();
@@ -212,7 +216,9 @@ void CARDRadiolive::showMenu(void)
 {
 	CMenuFrameBox * catMenu = new CMenuFrameBox("Radio-Livestreams", PLUGINDIR "/mediaportal/ard_small.png");
 
-	// items
+	//items
+	for (int i = 0; i < 18; i++)
+		catMenu->addItem(new CMenuFrameBoxItem("coming soon!", this, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
 	catMenu->exec(NULL, "");
 	catMenu->hide();
@@ -247,6 +253,8 @@ void CARDstreams::showMenu(void)
 	CMenuFrameBox * catMenu = new CMenuFrameBox(Title.c_str(), PLUGINDIR "/mediaportal/ard_small.png");	
 	
 	//items
+	for (int i = 0; i < 18; i++)
+		catMenu->addItem(new CMenuFrameBoxItem("coming soon!", this, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 
 	catMenu->exec(NULL, "");
 	catMenu->hide();
@@ -284,7 +292,7 @@ void CARD::showMenu(void)
 	catMenu->addItem(new CMenuForwarder("Sendung verpasst", true, NULL, new CARDverpasst(), ""));
 	catMenu->addItem(new CMenuForwarder("Sendungen A-Z", true, NULL, new CARDaz(), ""));
 	catMenu->addItem(new CMenuForwarder("TV-Livestreams", true, NULL, new CARDTVlive(), ""));
-	catMenu->addItem(new CMenuForwarder("Radio-Livestreams", false, NULL, new CARDRadiolive(), ""));
+	catMenu->addItem(new CMenuForwarder("Radio-Livestreams", true, NULL, new CARDRadiolive(), ""));
 	
 	catMenu->exec(NULL, "");
 	catMenu->hide();
