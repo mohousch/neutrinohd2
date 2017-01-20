@@ -66,10 +66,8 @@ class CTestMenu : public CMenuTarget
 		void testCButtons();
 		//
 		void testAudioPlayer();
-		void testInternetRadio();
-		void testRecordBrowser();
-		void testMovieBrowser();
-		void testFilePlayBack();
+		void testTSPlayer();
+		void testMoviePlayer();
 		void testPictureViewer();
 		void testUPNPBrowser();
 		//
@@ -113,6 +111,10 @@ class CTestMenu : public CMenuTarget
 		//
 		void testCMenuWidgetListBox();
 		void testCMenuWidgetListBox1();
+
+		// 
+		void  testTSBrowserDirect();
+		void testMovieBrowserDirect();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -752,34 +754,18 @@ void CTestMenu::testAudioPlayer()
 	tmpAudioPlayerGui.exec(NULL, "");
 }
 
-void CTestMenu::testInternetRadio()
+void CTestMenu::testTSPlayer()
 {
-	CAudioPlayerGui tmpAudioPlayerGui(true);
-	tmpAudioPlayerGui.exec(NULL, "");
-}
-
-void CTestMenu::testRecordBrowser()
-{
-	//moviePlayerGui->exec(NULL, "tsmoviebrowser");
 	CMoviePlayerGui tmpMoviePlayerGui;
 					
 	tmpMoviePlayerGui.exec(NULL, "tsmoviebrowser");
 }
 
-void CTestMenu::testMovieBrowser()
+void CTestMenu::testMoviePlayer()
 {
-	//moviePlayerGui->exec(NULL, "moviebrowser");
 	CMoviePlayerGui tmpMoviePlayerGui;
 					
 	tmpMoviePlayerGui.exec(NULL, "moviebrowser");
-}
-
-void CTestMenu::testFilePlayBack()
-{
-	//moviePlayerGui->exec(NULL, "fileplayback");
-	CMoviePlayerGui tmpMoviePlayerGui;
-					
-	tmpMoviePlayerGui.exec(NULL, "fileplayback");
 }
 
 void CTestMenu::testPictureViewer()
@@ -1539,6 +1525,7 @@ void CTestMenu::testPlayAudioDir()
 			}
 		}
 		
+		tmpAudioPlayerGui.hidePlayList(true);
 		tmpAudioPlayerGui.exec(NULL, "urlplayback");
 	}
 }
@@ -1846,6 +1833,119 @@ void CTestMenu::testCMenuWidgetListBox1()
 	audioMenu = NULL;
 }
 
+void CTestMenu::testTSBrowserDirect()
+{
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+	
+	CMoviePlayerGui tmpMoviePlayerGui;	
+	CMovieBrowser * movieBrowser;
+	MI_MOVIE_INFO * p_movie_info;
+	
+	movieBrowser = new CMovieBrowser();
+	
+	movieBrowser->setMode(MB_SHOW_RECORDS);
+	
+	std::string Path_local = g_settings.network_nfs_moviedir;
+
+BROWSER:
+	if (movieBrowser->exec(Path_local.c_str()))
+	{
+		Path_local = movieBrowser->getCurrentDir();
+		
+		CFile * file;
+		
+		if ((file = movieBrowser->getSelectedFile()) != NULL) 
+		{
+			p_movie_info = movieBrowser->getCurrentMovieInfo();
+			
+			file->Title = p_movie_info->epgTitle;
+			file->Info1 = p_movie_info->epgInfo1; //category ist always empty
+			file->Info2 = p_movie_info->epgInfo2;
+			file->Thumbnail = p_movie_info->tfile;
+
+			if(p_movie_info->tfile.empty())
+			{
+				std::string fname = "";
+				fname = file->Name;
+				changeFileNameExt(fname, ".jpg");
+						
+				if(!access(fname.c_str(), F_OK) )
+					file->Thumbnail = fname.c_str();
+			}
+					
+			tmpMoviePlayerGui.addToPlaylist(*file);
+			tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		}
+
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg != CRCInput::RC_home) 
+		{
+			goto BROWSER;
+		}
+	}
+	
+	delete movieBrowser;
+}
+
+
+void CTestMenu::testMovieBrowserDirect()
+{
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+	
+	CMoviePlayerGui tmpMoviePlayerGui;	
+	CMovieBrowser * movieBrowser;
+	MI_MOVIE_INFO * p_movie_info;
+	
+	movieBrowser = new CMovieBrowser();
+	
+	movieBrowser->setMode(MB_SHOW_FILES);
+	
+	std::string Path_local = g_settings.network_nfs_moviedir;
+
+BROWSER:
+	if (movieBrowser->exec(Path_local.c_str()))
+	{
+		Path_local = movieBrowser->getCurrentDir();
+		
+		CFile * file;
+		
+		if ((file = movieBrowser->getSelectedFile()) != NULL) 
+		{
+			p_movie_info = movieBrowser->getCurrentMovieInfo();
+			
+			file->Title = p_movie_info->epgTitle;
+			file->Info1 = p_movie_info->epgInfo1; //category ist always empty
+			file->Info2 = p_movie_info->epgInfo2;
+			file->Thumbnail = p_movie_info->tfile;
+
+			if(p_movie_info->tfile.empty())
+			{
+				std::string fname = "";
+				fname = file->Name;
+				changeFileNameExt(fname, ".jpg");
+						
+				if(!access(fname.c_str(), F_OK) )
+					file->Thumbnail = fname.c_str();
+			}
+					
+			tmpMoviePlayerGui.addToPlaylist(*file);
+			tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		}
+
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg != CRCInput::RC_home) 
+		{
+			goto BROWSER;
+		}
+	}
+	
+	delete movieBrowser;
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
@@ -1957,21 +2057,13 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testAudioPlayer();
 	}
-	else if(actionKey == "internetradio")
+	else if(actionKey == "tsplayer")
 	{
-		testInternetRadio();
+		testTSPlayer();
 	}
-	else if(actionKey == "tsmoviebrowser")
+	else if(actionKey == "movieplayer")
 	{
-		testRecordBrowser();
-	}
-	else if(actionKey == "moviebrowser")
-	{
-		testMovieBrowser();
-	}
-	else if(actionKey == "fileplayback")
-	{
-		testFilePlayBack();
+		testMoviePlayer();
 	}
 	else if(actionKey == "pictureviewer")
 	{
@@ -2157,6 +2249,14 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		delete mountSmallMenu;
 		mountSmallMenu = NULL;
 	}
+	else if(actionKey == "testtsbrowser")
+	{
+		testTSBrowserDirect();
+	}
+	else if(actionKey == "testmoviebrowser")
+	{
+		testMovieBrowserDirect();
+	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -2218,10 +2318,8 @@ void CTestMenu::showTestMenu()
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("AudioPlayer", true, NULL, this, "audioplayer"));
-	mainMenu->addItem(new CMenuForwarder("InternetRadio", true, NULL, this, "internetradio"));
-	mainMenu->addItem(new CMenuForwarder("TSMovieBrowser", true, NULL, this, "tsmoviebrowser"));
-	mainMenu->addItem(new CMenuForwarder("MovieBrowser", true, NULL, this, "moviebrowser"));
-	mainMenu->addItem(new CMenuForwarder("FilePlayBack", true, NULL, this, "fileplayback"));
+	mainMenu->addItem(new CMenuForwarder("TS Player", true, NULL, this, "tsplayer"));
+	mainMenu->addItem(new CMenuForwarder("Movie Player", true, NULL, this, "movieplayer"));
 	mainMenu->addItem(new CMenuForwarder("PictureViewer", true, NULL, this, "pictureviewer"));
 	mainMenu->addItem(new CMenuForwarder("UPNPBrowser", true, NULL, this, "upnpbrowser"));
 
@@ -2242,6 +2340,9 @@ void CTestMenu::showTestMenu()
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
+
+	mainMenu->addItem(new CMenuForwarder("Test TS Browser", true, NULL, this, "testtsbrowser"));
+	mainMenu->addItem(new CMenuForwarder("Test Movie Browser", true, NULL, this, "testmoviebrowser"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();

@@ -637,6 +637,29 @@ std::string Lang2ISO639_1(std::string& lang)
 	return ret;
 }
 
+void splitString(std::string &str, std::string delim, std::vector<std::string> &strlist, int start)
+{
+	strlist.clear();
+	int end = 0;
+	
+	while ((end = str.find(delim, start)) != std::string::npos) 
+	{
+		strlist.push_back(str.substr(start, end - start));
+		start = end + delim.size();
+	}
+
+	strlist.push_back(str.substr(start));
+}
+
+void splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start)
+{
+	int end = 0;
+	if ((end = str.find(delim, start)) != std::string::npos) 
+	{
+		strmap[str.substr(start, end - start)] = str.substr(end - start + delim.size());
+	}
+}
+
 //
 std::string urlDecode(const std::string &s)
 {
@@ -889,29 +912,6 @@ void EncodeUrl(std::string &txt)
 		txt = str;
 	
 	curl_free(str);
-}
-
-void splitString(std::string &str, std::string delim, std::vector<std::string> &strlist, int start)
-{
-	strlist.clear();
-	int end = 0;
-	
-	while ((end = str.find(delim, start)) != std::string::npos) 
-	{
-		strlist.push_back(str.substr(start, end - start));
-		start = end + delim.size();
-	}
-
-	strlist.push_back(str.substr(start));
-}
-
-void splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start)
-{
-	int end = 0;
-	if ((end = str.find(delim, start)) != std::string::npos) 
-	{
-		strmap[str.substr(start, end - start)] = str.substr(end - start + delim.size());
-	}
 }
 
 // FielHelpers

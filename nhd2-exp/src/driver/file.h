@@ -152,14 +152,14 @@ class CFile
 		std::string Info1;
 		std::string Info2;
 		std::string Thumbnail;
-		unsigned int Index;
+		//unsigned int Index;
 		mode_t Mode;
 		bool Marked;
 		time_t Time;
 
 		//
-		FileExtension	getExtension(void) const;
-		FileType	getType(void) const;
+		FileExtension getExtension(void) const;
+		FileType getType(void) const;
 		std::string	getFileName(void) const;
 		std::string	getPath(void) const;
 

@@ -173,7 +173,7 @@
 cPlayback * playback = NULL;
 
 // ugly and dirty://FIXME
-#if defined (USE_OPENGL)
+#if defined (USE_PLAYBACK)
 extern char rec_filename[1024];				// defined in stream2file.cpp
 #endif
 
@@ -291,10 +291,7 @@ static char **global_argv;
 extern const char * locale_real_names[]; 		//#include <system/locals_intern.h>
 
 //user menu
-const char *usermenu_button_def[SNeutrinoSettings::BUTTON_MAX]={
-	"red", 
-	"green", 
-	"yellow", 
+const char *usermenu_button_def[SNeutrinoSettings::BUTTON_MAX] = {
 	"blue",
 #if defined (ENABLE_FUNCTIONKEYS)
 	"f1",
@@ -353,7 +350,7 @@ CNeutrinoApp::CNeutrinoApp()
 	//
 	recordingstatus = 0;
 	timeshiftstatus = 0;
-#if defined (USE_OPENGL)
+#if defined (USE_PLAYBACK)
 	playbackstatus = 0;
 #endif
 }
@@ -616,9 +613,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 
 	// movieplayer
 	strcpy( g_settings.network_nfs_moviedir, configfile.getString( "network_nfs_moviedir", "/media/hdd/movie" ).c_str() );
-	
-	// multi select
-	g_settings.movieplayer_allow_multiselect = configfile.getBool("movieplayer_allow_multiselect", false);
 	// end movieplayer
 
 	// OSD
@@ -678,16 +672,36 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.infobar_colored_events_blue = configfile.getInt32( "infobar_colored_events_blue", 0);
 	
 	g_settings.menu_Foot_alpha = configfile.getInt32( "menu_Foot_alpha", 0);
-	g_settings.menu_Foot_red = configfile.getInt32( "menu_Foot_red", 28);
-	g_settings.menu_Foot_green = configfile.getInt32( "menu_Foot_green", 28);
-	g_settings.menu_Foot_blue = configfile.getInt32( "menu_Foot_blue", 28);
+	g_settings.menu_Foot_red = configfile.getInt32( "menu_Foot_red", 35);
+	g_settings.menu_Foot_green = configfile.getInt32( "menu_Foot_green", 35);
+	g_settings.menu_Foot_blue = configfile.getInt32( "menu_Foot_blue", 35);
 		
 	g_settings.menu_Foot_Text_alpha = configfile.getInt32( "menu_Foot_Text_alpha", 0);
-	g_settings.menu_Foot_Text_red = configfile.getInt32( "menu_Foot_Text_red", 50);
-	g_settings.menu_Foot_Text_green = configfile.getInt32( "menu_Foot_Text_green", 50);
-	g_settings.menu_Foot_Text_blue = configfile.getInt32( "menu_Foot_Text_blue", 50);
+	g_settings.menu_Foot_Text_red = configfile.getInt32( "menu_Foot_Text_red", 100);
+	g_settings.menu_Foot_Text_green = configfile.getInt32( "menu_Foot_Text_green", 100);
+	g_settings.menu_Foot_Text_blue = configfile.getInt32( "menu_Foot_Text_blue", 100);
 
-	strcpy( g_settings.font_file, configfile.getString( "font_file", FONTDIR "/micron.ttf" ).c_str() );
+	g_settings.menu_HeadInfo_alpha = configfile.getInt32( "menu_HeadInfo_alpha", 0);
+	g_settings.menu_HeadInfo_red = configfile.getInt32( "menu_HeadInfo_red", 35);
+	g_settings.menu_HeadInfo_green = configfile.getInt32( "menu_HeadInfo_green", 35);
+	g_settings.menu_HeadInfo_blue = configfile.getInt32( "menu_HeadInfo_blue", 35);
+
+	g_settings.menu_HeadInfo_Text_alpha = configfile.getInt32( "menu_HeadInfo_Text_alpha", 0);
+	g_settings.menu_HeadInfo_Text_red = configfile.getInt32( "menu_HeadInfo_Text_red", 100 );
+	g_settings.menu_HeadInfo_Text_green = configfile.getInt32( "menu_HeadInfo_Text_green", 100 );
+	g_settings.menu_HeadInfo_Text_blue = configfile.getInt32( "menu_HeadInfo_Text_blue", 100 );
+
+	g_settings.menu_FootInfo_alpha = configfile.getInt32( "menu_FootInfo_alpha", 0);
+	g_settings.menu_FootInfo_red = configfile.getInt32( "menu_FootInfo_red", 35);
+	g_settings.menu_FootInfo_green = configfile.getInt32( "menu_FootInfo_green", 35);
+	g_settings.menu_FootInfo_blue = configfile.getInt32( "menu_FootInfo_blue", 35);
+		
+	g_settings.menu_FootInfo_Text_alpha = configfile.getInt32( "menu_FootInfo_Text_alpha", 0);
+	g_settings.menu_FootInfo_Text_red = configfile.getInt32( "menu_FootInfo_Text_red", 100);
+	g_settings.menu_FootInfo_Text_green = configfile.getInt32( "menu_FootInfo_Text_green", 100);
+	g_settings.menu_FootInfo_Text_blue = configfile.getInt32( "menu_FootInfo_Text_blue", 100);
+
+	strcpy( g_settings.font_file, configfile.getString( "font_file", DATADIR "/neutrino/fonts/micron.ttf" ).c_str() );
 
 	// menue timing
 	for (int i = 0; i < TIMING_SETTING_COUNT; i++)
@@ -782,11 +796,8 @@ int CNeutrinoApp::loadSetup(const char * fname)
         // USERMENU -> in system/settings.h
         //-------------------------------------------
         // this is as the current neutrino usermen
-        const char * usermenu_default[SNeutrinoSettings::BUTTON_MAX]={
-                "2, 3, 4, 10",                  // RED
-                "5",                            // GREEN
-                "6",                            // YELLOW
-                "8, 9, 12, 11, 13, 14",   	// BLUE
+        const char * usermenu_default[SNeutrinoSettings::BUTTON_MAX] = {
+                "0, 1, 2, 3, 4, 5, 6, 7",   	// BLUE
 #if defined (ENABLE_FUNCTIONKEYS)
 		"0",				// F1
 		"0",				// F2
@@ -840,7 +851,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.audioplayer_highprio  = configfile.getInt32("audioplayer_highprio",0);
 	g_settings.audioplayer_select_title_by_name = configfile.getInt32("audioplayer_select_title_by_name", 0);
 	g_settings.audioplayer_repeat_on = configfile.getInt32("audioplayer_repeat_on",0);
-	g_settings.audioplayer_hide_playlist = configfile.getInt32("audioplayer_hide_playlist", 0);
 	// end audioplayer
 
 	// pictureviewer
@@ -1108,9 +1118,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 
 	// MOVIEPLAYER
 	configfile.setString( "network_nfs_moviedir", g_settings.network_nfs_moviedir);
-	
-	// multi select
-	configfile.setBool ("movieplayer_allow_multiselect", g_settings.movieplayer_allow_multiselect);
 	// END MOVIEPLAYER
 
 	// OSD
@@ -1183,6 +1190,26 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "menu_Foot_Text_red", g_settings.menu_Foot_Text_red );
 	configfile.setInt32( "menu_Foot_Text_green", g_settings.menu_Foot_Text_green );
 	configfile.setInt32( "menu_Foot_Text_blue", g_settings.menu_Foot_Text_blue );
+
+	configfile.setInt32( "menu_HeadInfo_alpha", g_settings.menu_HeadInfo_alpha );
+	configfile.setInt32( "menu_HeadInfo_red", g_settings.menu_HeadInfo_red );
+	configfile.setInt32( "menu_HeadInfo_green", g_settings.menu_HeadInfo_green );
+	configfile.setInt32( "menu_HeadInfo_blue", g_settings.menu_HeadInfo_blue );
+
+	configfile.setInt32( "menu_HeadInfo_Text_alpha", g_settings.menu_HeadInfo_Text_alpha );
+	configfile.setInt32( "menu_HeadInfo_Text_red", g_settings.menu_HeadInfo_Text_red );
+	configfile.setInt32( "menu_HeadInfo_Text_green", g_settings.menu_HeadInfo_Text_green );
+	configfile.setInt32( "menu_HeadInfo_Text_blue", g_settings.menu_HeadInfo_Text_blue );
+
+	configfile.setInt32( "menu_FootInfo_alpha", g_settings.menu_FootInfo_alpha );
+	configfile.setInt32( "menu_FootInfo_red", g_settings.menu_FootInfo_red );
+	configfile.setInt32( "menu_FootInfo_green", g_settings.menu_FootInfo_green );
+	configfile.setInt32( "menu_FootInfo_blue", g_settings.menu_FootInfo_blue );
+	
+	configfile.setInt32( "menu_FootInfo_Text_alpha", g_settings.menu_FootInfo_Text_alpha );
+	configfile.setInt32( "menu_FootInfo_Text_red", g_settings.menu_FootInfo_Text_red );
+	configfile.setInt32( "menu_FootInfo_Text_green", g_settings.menu_FootInfo_Text_green );
+	configfile.setInt32( "menu_FootInfo_Text_blue", g_settings.menu_FootInfo_Text_blue );
 
 	configfile.setInt32( "screen_StartX", g_settings.screen_StartX );
 	configfile.setInt32( "screen_StartY", g_settings.screen_StartY );
@@ -1299,7 +1326,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "audioplayer_highprio", g_settings.audioplayer_highprio );
 	configfile.setInt32( "audioplayer_select_title_by_name", g_settings.audioplayer_select_title_by_name );
 	configfile.setInt32( "audioplayer_repeat_on", g_settings.audioplayer_repeat_on );
-	configfile.setInt32("audioplayer_hide_playlist", g_settings.audioplayer_hide_playlist);
 	// END AUDIOPLAYER
 
 	// PICVIEWER
@@ -1774,14 +1800,14 @@ void CNeutrinoApp::SetupFonts()
 
 	if(access(g_settings.font_file, F_OK)) 
 	{
-		if(!access(FONTDIR "/micron.ttf", F_OK))
+		if(!access(DATADIR "/neutrino/fonts/micron.ttf", F_OK))
 		{
-			font.filename = strdup(FONTDIR "/micron.ttf");
+			font.filename = strdup(DATADIR "/neutrino/fonts/micron.ttf");
 			strcpy(g_settings.font_file, font.filename);
 		}
 		else
 		{
-			  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", FONTDIR "/micron.ttf");
+			  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", DATADIR "/neutrino/fonts/micron.ttf");
 			  _exit(0);
 		}
 	}
@@ -1794,14 +1820,14 @@ void CNeutrinoApp::SetupFonts()
 		{
 			dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetupFonts: font file %s not ok falling back to micron.ttf\n", g_settings.font_file);
 			
-			if(!access(FONTDIR "/micron.ttf", F_OK))
+			if(!access(DATADIR "/neutrino/fonts/micron.ttf", F_OK))
 			{
-				font.filename = strdup(FONTDIR "/micron.ttf");
+				font.filename = strdup(DATADIR "/neutrino/fonts/micron.ttf");
 				strcpy(g_settings.font_file, font.filename);
 			}
 			else
 			{
-				  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", FONTDIR "/micron.ttf");
+				  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", DATADIR "/neutrino/fonts/micron.ttf");
 				  _exit(0);
 			}
 		}
@@ -1868,7 +1894,7 @@ void CNeutrinoApp::setupRecordingDevice(void)
 bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGData * epgdata);
 bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData * epgdata);
 
-#if defined (USE_OPENGL)
+#if defined (USE_PLAYBACK)
 int startOpenGLplayback()
 {
 	CTimerd::RecordingInfo eventinfo;
@@ -2585,13 +2611,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 	// setup recording device
 	setupRecordingDevice();
 
-	// init main menu
-	CMenuWidgetExtended mainMenu(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
-
-	InitMainMenu(mainMenu);
-	
-	sleep(1);
-
 	// init sectionsd client
 	initSectionsdClient();
 
@@ -2722,7 +2741,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	SHTDCNT::getInstance()->init();
 
 	// real run ;-)
-	RealRun(mainMenu);
+	RealRun();
 
 	// exitRun
 	ExitRun(SHUTDOWN);
@@ -2783,7 +2802,7 @@ static void check_timer()
 #endif
 
 // real run
-void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
+void CNeutrinoApp::RealRun(void)
 {
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
@@ -2876,7 +2895,7 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 				StopSubtitles();
 
 				if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_STANDARD)
-					_mainMenu.exec(NULL, "");
+					extendedMenu();
 				else if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_CLASSIC)
 					classicMenu();
 				else if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_SMART)
@@ -3060,12 +3079,39 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 			}
 			else if( msg == CRCInput::RC_red ) 
 			{
+				//
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
 
+				//
 				StopSubtitles();
+
 				// event list
-				showUserMenu(SNeutrinoSettings::BUTTON_RED);
+				CMenuWidget redMenu(LOCALE_INFOVIEWER_EVENTLIST, NEUTRINO_ICON_FEATURES);
+				redMenu.disableMenuPosition();
+
+				// intros
+				redMenu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+				redMenu.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+
+				// eventlist
+				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EVENTLIST, true, NULL, new CEventListHandler(), "", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+
+				// epg view
+				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, new CEPGDataHandler(), "", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
+		
+			       	// epgplus/tech info
+				if (mode != mode_iptv)
+				{
+					redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EPGPLUS, true, NULL, new CEPGplusHandler(), "", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
+
+					redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_STREAMINFO, true, NULL, new CStreamInfo2Handler(), "", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+				}
+				
+				redMenu.exec(NULL, "");
+				redMenu.hide();
+
+				//
 				StartSubtitles();
 			}
 			else if( ( msg == CRCInput::RC_green) || ( msg == CRCInput::RC_audio) )
@@ -3084,8 +3130,15 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 				else
 				{
 					StopSubtitles();
-					// audio
-					showUserMenu(SNeutrinoSettings::BUTTON_GREEN);
+
+					// audio handler
+					CAudioSelectMenuHandler* audioSelectMenuHandler = new CAudioSelectMenuHandler();
+
+					audioSelectMenuHandler->exec(NULL, "");
+							
+					delete audioSelectMenuHandler;
+					audioSelectMenuHandler = NULL;
+
 					StartSubtitles();
 				}
 			}
@@ -3095,8 +3148,13 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 					g_InfoViewer->killTitle();
 
 				StopSubtitles();
-				// NVODs
-				showUserMenu(SNeutrinoSettings::BUTTON_YELLOW);
+
+				// select NVODs
+				if (mode != mode_iptv)
+				{
+					SelectNVOD();
+				}
+
 				StartSubtitles();
 			}
 			else if( msg == CRCInput::RC_blue ) 
@@ -3164,6 +3222,7 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 				CAudioPlayerGui tmpAudioPlayerGui;
 				tmpAudioPlayerGui.exec(NULL, "");
 			}
+			/*
 			else if( msg == (neutrino_msg_t)g_settings.key_inetradio ) 	// internet radio
 			{
 				if(g_InfoViewer->is_visible)
@@ -3171,11 +3230,12 @@ void CNeutrinoApp::RealRun(CMenuWidgetExtended& _mainMenu)
 	  
 				StopSubtitles();
 
-				CAudioPlayerGui tmpAudioPlayerGui(true);
+				CAudioPlayerGui tmpAudioPlayerGui();
 				tmpAudioPlayerGui.exec(NULL, "");
 
 				StartSubtitles();	
-			}			
+			}
+			*/			
 			else if( msg == (neutrino_msg_t)g_settings.key_recordsbrowser )	// recordsbrowser
 			{
 				if(g_InfoViewer->is_visible)
@@ -3714,12 +3774,7 @@ _repeat:
 			}
 		}
 		
-//#if defined (USE_OPENGL)
-//		if(!playbackstatus)
-//			playbackstatus = data;
-//#else
 		recordingstatus = data;
-//#endif
 		
 		if( ( !g_InfoViewer->is_visible ) && data && !autoshift)
 			g_RCInput->postMsg( NeutrinoMessages::SHOW_INFOBAR, 0 );
@@ -4649,12 +4704,12 @@ void CNeutrinoApp::tvMode( bool rezap )
 			webtv->stopPlayBack();
 			webtv->ClearChannels();
 		}
+			
+		// start playback
+		g_Zapit->unlockPlayBack();
 
 		// start epg scanning
 		g_Sectionsd->setPauseScanning(false);
-			
-		// start playback
-		g_Zapit->startPlayBack();
 	}
 
 	bool stopauto = (mode != mode_ts);	
@@ -4731,11 +4786,11 @@ void CNeutrinoApp::radioMode( bool rezap)
 			webtv->ClearChannels();
 		}
 
+		// start playback
+		g_Zapit->unlockPlayBack();
+
 		// start epg scanning
 		g_Sectionsd->setPauseScanning(false);
-			
-		// start playback
-		g_Zapit->startPlayBack();
 	}
 
 	mode = mode_radio;
@@ -4842,7 +4897,7 @@ void CNeutrinoApp::webtvMode( bool rezap)
 	g_Sectionsd->setPauseScanning(true);
 			
 	// stop playback
-	g_Zapit->stopPlayBack();
+	g_Zapit->lockPlayBack();
 	
 	mode = mode_iptv;
 
@@ -5327,6 +5382,139 @@ void CNeutrinoApp::SelectSubtitles()
 			}
 		}
 	}
+}
+
+// select NVOD
+void CNeutrinoApp::SelectNVOD()
+{
+        if (!(g_RemoteControl->subChannels.empty()))
+        {
+                // NVOD/SubService- Kanal!
+                CMenuWidget NVODSelector(g_RemoteControl->are_subchannels ? LOCALE_NVODSELECTOR_SUBSERVICE : LOCALE_NVODSELECTOR_HEAD, NEUTRINO_ICON_VIDEO);
+
+		NVODSelector.disableMenuPosition();
+		
+                if(getNVODMenu(&NVODSelector))
+                        NVODSelector.exec(NULL, "");
+        }
+}
+
+// option off0_on1
+#define OPTIONS_OFF0_ON1_OPTION_COUNT 2
+const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
+{
+        { 0, LOCALE_OPTIONS_OFF, NULL },
+        { 1, LOCALE_OPTIONS_ON, NULL }
+};
+
+bool CNeutrinoApp::getNVODMenu(CMenuWidget * menu)
+{
+        if(menu == NULL)
+                return false;
+
+	menu->disableMenuPosition();
+	
+        if (g_RemoteControl->subChannels.empty())
+                return false;
+
+        int count = 0;
+        char nvod_id[5];
+
+        for( CSubServiceListSorted::iterator e = g_RemoteControl->subChannels.begin(); e != g_RemoteControl->subChannels.end(); ++e)
+        {
+                sprintf(nvod_id, "%d", count);
+
+                if( !g_RemoteControl->are_subchannels ) 
+		{
+                        char nvod_time_a[50], nvod_time_e[50], nvod_time_x[50];
+                        char nvod_s[100];
+                        struct  tm *tmZeit;
+
+                        tmZeit= localtime(&e->startzeit);
+                        sprintf(nvod_time_a, "%02d:%02d", tmZeit->tm_hour, tmZeit->tm_min);
+
+                        time_t endtime = e->startzeit+ e->dauer;
+                        tmZeit= localtime(&endtime);
+                        sprintf(nvod_time_e, "%02d:%02d", tmZeit->tm_hour, tmZeit->tm_min);
+
+                        time_t jetzt=time(NULL);
+                        if(e->startzeit > jetzt) 
+			{
+                                int mins=(e->startzeit- jetzt)/ 60;
+                                sprintf(nvod_time_x, g_Locale->getText(LOCALE_NVOD_STARTING), mins);
+                        }
+                        else if( (e->startzeit<= jetzt) && (jetzt < endtime) ) 
+			{
+                                int proz=(jetzt- e->startzeit)*100/ e->dauer;
+                                sprintf(nvod_time_x, g_Locale->getText(LOCALE_NVOD_PERCENTAGE), proz);
+                        }
+                        else
+                                nvod_time_x[0]= 0;
+
+                        sprintf(nvod_s, "%s - %s %s", nvod_time_a, nvod_time_e, nvod_time_x);
+                        menu->addItem(new CMenuForwarder(nvod_s, true, NULL, NVODChanger, nvod_id), (count == g_RemoteControl->selected_subchannel));
+                } 
+		else 
+		{
+			if (count == 0)
+				menu->addItem(new CMenuForwarder( (Latin1_to_UTF8(e->subservice_name)).c_str(), true, NULL, NVODChanger, nvod_id, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+			else
+				menu->addItem(new CMenuForwarder( (Latin1_to_UTF8(e->subservice_name)).c_str(), true, NULL, NVODChanger, nvod_id, CRCInput::convertDigitToKey(count)), (count == g_RemoteControl->selected_subchannel));
+                }
+
+                count++;
+        }
+
+        if( g_RemoteControl->are_subchannels ) 
+	{
+                menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+                CMenuOptionChooser* oj = new CMenuOptionChooser(LOCALE_NVODSELECTOR_DIRECTORMODE, &g_RemoteControl->director_mode, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW);
+                menu->addItem(oj);
+        }
+
+        return true;
+}
+
+void CNeutrinoApp::lockPlayBack(void)
+{
+	// stop subtitles
+	StopSubtitles();
+
+	// stop playback
+	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
+	{
+		if(webtv)
+			webtv->stopPlayBack();
+	}
+	else
+	{
+		// stop/lock live playback	
+		g_Zapit->lockPlayBack();
+		
+		//pause epg scanning
+		g_Sectionsd->setPauseScanning(true);
+	}	
+}
+
+void CNeutrinoApp::unlockPlayBack(void)
+{
+	// start playback
+	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
+	{
+		if(webtv)
+			webtv->startPlayBack(webtv->getTunedChannel());
+	}
+	else
+	{
+		// unlock playback	
+		g_Zapit->unlockPlayBack();	
+		
+		//start epg scanning
+		g_Sectionsd->setPauseScanning(false);
+	}
+
+	// start subtitles
+	StartSubtitles();
 }
 
 // signal handler

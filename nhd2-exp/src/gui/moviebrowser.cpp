@@ -154,7 +154,7 @@ const CMenuOptionChooser::keyval MESSAGEBOX_PARENTAL_LOCKAGE_OPTIONS[MESSAGEBOX_
 #define FOOT_FONT 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]
 
 #define INTER_FRAME_SPACE 		4  // space between e.g. upper and lower window
-#define TEXT_BORDER_WIDTH 		8
+//#define TEXT_BORDER_WIDTH 		8
 
 CFont* CMovieBrowser::m_pcFontFoot = NULL;
 CFont* CMovieBrowser::m_pcFontTitle = NULL;
@@ -1660,31 +1660,36 @@ void CMovieBrowser::refreshTitle(void)
 	// movie icon
 	int icon_w, icon_h;
 	m_pcWindow->getIconSize(mb_icon.c_str(), &icon_w, &icon_h);
-	m_pcWindow->paintIcon(mb_icon, m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + 10, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_h)/2);
+	m_pcWindow->paintIcon(mb_icon, m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_h)/2);
+
+	int xpos1 = m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + m_cBoxFrameTitleRel.iWidth - BORDER_RIGHT;
 
 	// setup icon
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_w, &icon_h);
-	int xpos1 = m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + m_cBoxFrameTitleRel.iWidth - 10;
-	int ypos = m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_w)/2;
-
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_SETUP, xpos1 - icon_w, ypos);
+	int icon_s_w, icon_s_h;
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_s_w, &icon_s_h);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_SETUP, xpos1 - icon_s_w, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_s_h)/2);
 
 	// help icon
 	int icon_h_w, icon_h_h;
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_h_w, &icon_h_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HELP, xpos1 - icon_w - 2 - icon_h_w, ypos);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HELP, xpos1 - icon_s_w - ICON_TO_ICON_OFFSET - icon_h_w, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_h_h)/2);
+
+	// 0 icon (tmdb)
+	int icon_t_w, icon_t_h;
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_0, &icon_t_w, &icon_t_h);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_0, xpos1 - icon_s_w - ICON_TO_ICON_OFFSET - icon_h_w - ICON_TO_ICON_OFFSET - icon_t_w, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_t_h)/2);
 	
 	// mute icon
+	int icon_m_w = 0;
+	int icon_m_h = 0;
 	if(show_mode == MB_SHOW_RECORDS)
 	{
-		int icon_hd_w, icon_hd_h;
-		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_MUTE_SMALL, &icon_hd_w, &icon_hd_h);
-		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_MUTE_SMALL, xpos1 - icon_w - 2 - icon_h_w -2 - icon_hd_w, ypos);
+		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_MUTE_SMALL, &icon_m_w, &icon_m_h);
+		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_MUTE_SMALL, xpos1 - icon_s_w - ICON_TO_ICON_OFFSET - icon_h_w - ICON_TO_ICON_OFFSET - icon_t_w - ICON_TO_ICON_OFFSET - icon_m_w, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_m_h)/2);
 	}
-	//
 	
 	// head title
-	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + TEXT_BORDER_WIDTH + icon_w + 10, m_cBoxFrame.iY+m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight, m_cBoxFrameTitleRel.iWidth - (TEXT_BORDER_WIDTH << 1) - 2*icon_w - 10 - icon_h_w, title.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT + icon_w + ICON_OFFSET, m_cBoxFrame.iY+m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight, m_cBoxFrameTitleRel.iWidth - BORDER_LEFT - BORDER_RIGHT - icon_w - icon_s_w - ICON_TO_ICON_OFFSET - icon_h_w - ICON_TO_ICON_OFFSET - icon_t_w - ICON_TO_ICON_OFFSET - icon_m_w, title.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
 
 void CMovieBrowser::refreshFoot(void) 
@@ -1994,10 +1999,11 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			std::string search_string;
 
 			if(show_mode == MB_SHOW_RECORDS)
-				search_string = m_movieSelectionHandler->epgTitle.c_str();
+				search_string = m_movieSelectionHandler->epgTitle;
 			else 
 			{
-				search_string = changeFileNameExt(m_movieSelectionHandler->file.Name, "");
+				search_string = m_movieSelectionHandler->file.getFileName();
+				removeExtension(search_string);
 			}
 				
 			cTmdb * tmdb = new cTmdb(search_string.c_str());

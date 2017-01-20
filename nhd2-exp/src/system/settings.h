@@ -127,9 +127,6 @@ struct SNeutrinoSettings
 
 	// MOVIEPLAYER
 	char network_nfs_moviedir[100];
-	
-	// multi select
-	int movieplayer_allow_multiselect;
 	// END MOVIEPLAYER
 
 	// OSD
@@ -201,6 +198,26 @@ struct SNeutrinoSettings
 	unsigned char menu_Foot_Text_red;
 	unsigned char menu_Foot_Text_green;
 	unsigned char menu_Foot_Text_blue;
+
+	unsigned char menu_HeadInfo_alpha;
+	unsigned char menu_HeadInfo_red;
+	unsigned char menu_HeadInfo_green;
+	unsigned char menu_HeadInfo_blue;
+
+	unsigned char menu_HeadInfo_Text_alpha;
+	unsigned char menu_HeadInfo_Text_red;
+	unsigned char menu_HeadInfo_Text_green;
+	unsigned char menu_HeadInfo_Text_blue;
+
+	unsigned char menu_FootInfo_alpha;
+	unsigned char menu_FootInfo_red;
+	unsigned char menu_FootInfo_green;
+	unsigned char menu_FootInfo_blue;
+	
+	unsigned char menu_FootInfo_Text_alpha;
+	unsigned char menu_FootInfo_Text_red;
+	unsigned char menu_FootInfo_Text_green;
+	unsigned char menu_FootInfo_Text_blue;
 
 	char	font_file[100];
 
@@ -339,37 +356,26 @@ struct SNeutrinoSettings
 	// USERMENU
         typedef enum
         {
-                BUTTON_RED = 0,  // Do not change ordering of members, add new item just before BUTTON_MAX!!!
-                BUTTON_GREEN = 1,
-                BUTTON_YELLOW = 2,
-                BUTTON_BLUE = 3,
+                BUTTON_BLUE = 0,
 #if defined (ENABLE_FUNCTIONKEYS)  
-		BUTTON_F1 = 4,
-		BUTTON_F2 = 5,
-		BUTTON_F3 = 6,
-		BUTTON_F4 = 7,
+		BUTTON_F1 = 1,
+		BUTTON_F2 = 2,
+		BUTTON_F3 = 3,
+		BUTTON_F4 = 4,
 #endif
                 BUTTON_MAX   // MUST be always the last in the list
         }USER_BUTTON;
 
         typedef enum
         {
-                ITEM_NONE = 0, // Do not change ordering of members, add new item just before ITEM_MAX!!!
-                ITEM_BAR = 1,
-                ITEM_EPG_LIST = 2,
-                ITEM_EPG_SUPER = 3,
-                ITEM_EPG_INFO = 4,
-                ITEM_AUDIO_SELECT = 5,
-                ITEM_SUBCHANNEL = 6,
-                ITEM_MOVIEPLAYER_MB = 7,
-                ITEM_TIMERLIST = 8,
-                ITEM_REMOTE = 9,
-                ITEM_TECHINFO = 10,
-                ITEM_PLUGIN = 11,
-                ITEM_VTXT = 12,
-                ITEM_GAME = 13,
-                ITEM_OPKG = 14,               
-		ITEM_MOVIEPLAYER_TSMB = 15,	
+		ITEM_MOVIEPLAYER_TSMB = 0,
+                ITEM_MOVIEPLAYER_MB = 1,
+                ITEM_TIMERLIST = 2,
+                ITEM_REMOTE = 3,
+                ITEM_PLUGIN = 4,
+                ITEM_VTXT = 5,
+                ITEM_GAME = 6,
+                ITEM_OPKG = 7,               
                 ITEM_MAX   // MUST be always the last in the list
         }USER_ITEM;
 	
@@ -384,7 +390,6 @@ struct SNeutrinoSettings
 	int   audioplayer_highprio;
 	int   audioplayer_select_title_by_name;
 	int   audioplayer_repeat_on;
-	int audioplayer_hide_playlist;
 	// END AUDIOPLAYER
 
 	// PICVIEWER

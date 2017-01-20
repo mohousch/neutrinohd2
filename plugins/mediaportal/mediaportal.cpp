@@ -20,6 +20,7 @@
 
 #include <mediaportal.h>
 
+
 extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
@@ -35,6 +36,46 @@ CMediaPortal::~CMediaPortal()
 	dprintf(DEBUG_NORMAL, "CMediaPortal: del\n");
 }
 
+void CMediaPortal::musicDeluxe(void)
+{
+	CFile file;
+		
+	file.Title = "Music deluxe";
+	file.Info1 = "stream";
+	file.Info2 = "Musik Sender";
+	file.Thumbnail = PLUGINDIR "/mediaportal/musicdeluxe.png";
+	file.Name = "musicdeluxe";
+	file.Url = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
+
+	CMoviePlayerGui tmpMoviePlayerGui;
+					
+	tmpMoviePlayerGui.addToPlaylist(file);
+	tmpMoviePlayerGui.exec(NULL, "urlplayback");
+}
+
+void CMediaPortal::youTube(void)
+{
+	g_PluginList->startPlugin("youtube");
+}
+
+void CMediaPortal::netzKino(void)
+{
+	g_PluginList->startPlugin("netzkino");
+}
+
+void CMediaPortal::iceCast(void)
+{
+	g_PluginList->startPlugin("icecast");
+}
+
+void CMediaPortal::ard(void)
+{
+	CARD* ard = new CARD();
+	ard->exec(NULL, "");
+	delete ard;
+	ard = NULL;
+}
+
 int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMediaPortal::exec: actionKey:%s\n", actionKey.c_str());
@@ -46,33 +87,37 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 
 	if(actionKey == "musicdeluxe")
 	{
-		CFile file;
-		
-		file.Title = "Music deluxe";
-		file.Info1 = "stream";
-		file.Info2 = "Musik Sender";
-		file.Thumbnail = PLUGINDIR "/mediaportal/musicdeluxe.png";
-		file.Name = "musicdeluxe";
-		file.Url = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
+		musicDeluxe();
 
-		CMoviePlayerGui tmpMoviePlayerGui;
-					
-		tmpMoviePlayerGui.addToPlaylist(file);
-		tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "youtube")
 	{
-		g_PluginList->startPlugin("youtube");
+		youTube();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "netzkino")
 	{
-		g_PluginList->startPlugin("netzkino");
+		netzKino();
+
+		return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "internetradio")
+	else if(actionKey == "icecast")
 	{
-		CAudioPlayerGui internetRadio(true);
-		internetRadio.exec(NULL, "");
+		iceCast();
+
+		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "ard")
+	{
+		ard();
+
+		return menu_return::RETURN_REPAINT;
+	}
+
+
+	showMenu();
 	
 	return returnval;
 }
@@ -90,8 +135,11 @@ void CMediaPortal::showMenu(void)
 	// netzkino
 	mediaPortal->addItem(new CMenuFrameBoxItem("NetzKino", this, "netzkino", PLUGINDIR "/netzkino/netzkino.png"));
 
-	// internetradio
-	mediaPortal->addItem(new CMenuFrameBoxItem("Internet Radio", this, "internetradio", NEUTRINO_ICON_MENUITEM_INTERNETRADIO));
+	// icecast
+	mediaPortal->addItem(new CMenuFrameBoxItem("Ice Cast", this, "icecast", PLUGINDIR "/icecast/icecast.png"));
+
+	// ard
+	mediaPortal->addItem(new CMenuFrameBoxItem("ARD Mediathek", new CARD(), "ard", PLUGINDIR "/mediaportal/ard.png"));
 
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();
@@ -112,9 +160,11 @@ void plugin_exec(void)
 {
 	CMediaPortal * mpHandler = new CMediaPortal();
 	
-	mpHandler->showMenu();
+	//mpHandler->showMenu();
+	mpHandler->exec(NULL, "");
 	
 	delete mpHandler;
+	mpHandler = NULL;
 }
 
 

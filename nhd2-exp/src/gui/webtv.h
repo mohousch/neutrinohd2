@@ -89,7 +89,8 @@ class CWebTV : public CMenuTarget
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		
 		void show(bool reload = false, bool reinit = false);
-		void showUserBouquet();
+		void userBouquet();
+		void Bouquets();
 		
 		//
 		void quickZap(int key);
@@ -101,7 +102,6 @@ class CWebTV : public CMenuTarget
 		void continuePlayBack(void);
 		
 		//
-		//void showFileInfoWebTV(int pos);
 		void showInfo();
 
 		//
@@ -114,7 +114,6 @@ class CWebTV : public CMenuTarget
 		void ClearChannels(void);
 		
 		bool readChannellist(std::string filename);
-		void addUserBouquet(void);
 };
 
 #endif

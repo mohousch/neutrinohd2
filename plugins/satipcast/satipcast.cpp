@@ -35,11 +35,13 @@
 
 #include <gui/widget/icons.h>
 #include <gui/widget/stringinput_ext.h>
-
-#include <gui/satip_setup.h>
+#include <gui/widget/hintbox.h>
 
 #include <system/debug.h>
 #include <system/settings.h>
+
+#include <plugin.h>
+#include <satipcast.h>
 
 
 #define MESSAGEBOX_NO_YES_OPTION_COUNT 2
@@ -85,15 +87,6 @@ int CSatIPSetup::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(actionKey == "savesettings")
 	{
 		CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
-
-		// stop/lock live playback	
-		g_Zapit->lockPlayBack();
-		
-		//pause epg scanning
-		g_Sectionsd->setPauseScanning(true);
-
-		// reinit channellist
-        	g_Zapit->reinitChannels();
 		
 		return ret;
 	}
@@ -106,6 +99,9 @@ int CSatIPSetup::exec(CMenuTarget* parent, const std::string& actionKey)
 void CSatIPSetup::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CSatIPSetup::showMenu\n");
+
+	int rec = CNeutrinoApp::getInstance()->recordingstatus;
+	int allow_ip = g_settings.satip_allow_satip;
 	
 	CMenuWidget satIP("Sat <> IP Cast", NEUTRINO_ICON_SETTINGS);
 
@@ -125,7 +121,8 @@ void CSatIPSetup::showMenu()
 	// allow satip on/off
 	CSatIPNotifier * satIPNotifier = new CSatIPNotifier;
 
-	satIP.addItem(new CMenuOptionChooser("use Sat <> IP", &g_settings.satip_allow_satip, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, satIPNotifier, CRCInput::convertDigitToKey(shortcut++) ));
+	satIP.addItem(new CMenuOptionChooser("use Sat <> IP", &allow_ip, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, rec ? false : true, satIPNotifier, CRCInput::convertDigitToKey(shortcut++)));
+
 	// server box ip
 	CIPInput * satip_IP = new CIPInput(LOCALE_STREAMINGMENU_SERVER_IP, g_settings.satip_serverbox_ip);
 	satIP.addItem(new CMenuForwarder("Server Box IP", true, g_settings.satip_serverbox_ip, satip_IP, NULL, CRCInput::convertDigitToKey(shortcut++)));
@@ -135,6 +132,9 @@ void CSatIPSetup::showMenu()
 
 	// client box type (sat/cable/terrestrial)
 	satIP.addItem(new CMenuOptionChooser("Client Box type", &g_settings.satip_serverbox_type, SATIP_SERVERBOX_TYPE_OPTIONS, SATIP_SERVERBOX_TYPE_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcut++), "", true ));
+
+	if (rec)
+		HintBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SATIPCAST_REC_HINT, HINTBOX_WIDTH, 6);
 	
 	satIP.exec(NULL, "");
 	satIP.hide();
@@ -144,22 +144,76 @@ void CSatIPSetup::showMenu()
 	delete satIPNotifier;
 }
 
-// sectionsd config notifier
-bool CSatIPNotifier::changeNotify(const neutrino_locale_t, void *)
+// satipcast notifier
+bool CSatIPNotifier::changeNotify(const neutrino_locale_t, void * Data)
 {
 	dprintf(DEBUG_NORMAL, "CSatIPNotifier::changeNotify\n");
 
-	// stop/lock live playback	
-	g_Zapit->lockPlayBack();
-		
-	//pause epg scanning
-	g_Sectionsd->setPauseScanning(true);
+	int allowip = *((int*) Data);
+	int rec = CNeutrinoApp::getInstance()->recordingstatus;
+	int mode = CNeutrinoApp::getInstance()->getMode() & 0xFF;
 
-	// reinit channellist
-        g_Zapit->reinitChannels();
+	if ((mode == 1 || mode == 2) && !rec)		// tv or radio and not recording
+	{
+		if (allowip)
+		{
+			if (mode == 1)
+				CNeutrinoApp::getInstance()->StopSubtitles();
+
+			//pause epg scanning
+			g_Sectionsd->setPauseScanning(true);
+			// stop playback and close video-, audiodecoder
+			g_Zapit->lockPlayBack();
+			// a little wait is needed here !! 
+			sleep(1);
+			g_settings.satip_allow_satip = allowip;
+			g_Zapit->Rezap();
+		}
+		else
+		{
+			// stop ip-playback
+			g_Zapit->stopPlayBack();
+			g_settings.satip_allow_satip = allowip;
+			// open video-, audiodecoder and start playback
+			g_Zapit->unlockPlayBack();
+			// start epg scanning
+			g_Sectionsd->setPauseScanning(false);
+			g_Zapit->Rezap();
+		}
+	}
+
+	else if (mode == 8)				// web-tv
+		g_settings.satip_allow_satip = allowip;
 	
         return true;
 }
+
+extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
+
+void plugin_init(void)
+{
+	//do notthing
+}
+
+void plugin_del(void)
+{
+	//do not thing
+}
+
+void plugin_exec(void)
+{
+	// class handler
+	CSatIPSetup * SatIPSetupHandler = new CSatIPSetup();
+	SatIPSetupHandler->exec(NULL, "");
+	
+	delete SatIPSetupHandler;
+	SatIPSetupHandler = NULL;
+}
+
+
+
 
 
 

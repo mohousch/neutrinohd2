@@ -156,6 +156,8 @@ colorthememenu.question Use selected theme?
 colorthememenu.save Save current theme
 colorthememenu.select1 User Theme
 colorthememenu.select2 Standard Theme
+colormenu.head_title Head info
+colormenu.foot_title Foot info
 cpu.freq Cpu frequency
 cpu.freq_default default frequency
 cpu.freq_normal Normal frequency
@@ -1507,11 +1509,13 @@ screenshot.remove remove screenshot?
 servicemenu.restart_e2 Boot E2 as Standard
 helptext.tvmode Here you can switch to TV Modus.
 helptext.radiomode Here you can switch to Radio Modus.
+helptext.webtvmode Here you can switch to WebTV Modus.
 helptext.scart Here you can switch to Scart Modus.
 helptext.mediaplayer Here you can switch to Mediaplayer.
 helptext.internetradio Here you can switch to Internetradio.
 helptext.audioplayer Here you can switch to Audioplayer.
-helptext.tsmoviebrowser Here you can play yout recorded files.
+helptext.tsbrowser Here you can play your recorded files.
+helptext.moviebrowser Here you can play your movies files.
 helptext.fileplayback Here you can play media files.
 helptext.netstream Here you can play streams from net.
 helptext.pictureviewer Here you can see your pics diashows.
@@ -1520,6 +1524,9 @@ helptext.mainsettings Here you can switch to main settings.
 helptext.service Here you can switch to service.
 helptext.sleeptimer Here you can setup the Sleep Timer.
 helptext.reboot Here you can reboot your STB.
+helptext.powermenu Here you can shutdown your STB.
+helptext.restart Here you can restart your software.
+helptext.standby Here you can shutdown your STB.
 helptext.shutdown Here you can shutdown your STB.
 helptext.boxinfo Here you can get HW infos about your STB.
 helptext.videosettings Here you can set up video setup.
@@ -1530,7 +1537,7 @@ helptext.recordingsettings Here you can set up record setup.
 helptext.movieplayersettings Here you can set up movieplayer setup.
 helptext.osdsettings Here you can set up OSD setup.
 helptext.vfdsettings Here you can set up VFD setup.
-helptext.keyssettings Here you can set up remote control setup.
+helptext.remotecontrolsettings Here you can set up remote control setup.
 helptext.audioplayersettings Here you can set up audioplayer setup.
 helptext.pictureviewersettings Here you can set up pictureviewer setup.
 helptext.miscsettings Here you can set up misc setup.
@@ -1554,6 +1561,21 @@ helptext.timerlist Here you can manage your timerlist.
 helptext.features Here you can start features.
 helptext.dvd Here you can play your DVD image.
 helptext.blueray Here you can play Blueray image.
+helptext.themes Here you can setup the GUI themes.
+helptext.menucolors Here you can setup the GUI colors.
+helptext.infobarcolors Here you can setup the infobar colors.
+helptext.language Here you can setup the GUI language.
+helptext.font Here you can setup the GUI font.
+helptext.fontscaling Here you can setup the font scaling.
+helptext.osdtiming Here you can setup the GUI fade timing.
+helptext.screensetup Here you can setup your GUI screen.
+helptext.alphasetup Here you can setup the contrast.
+helptext.generalsettings Divers setup.
+helptext.miscsettingschannelsettings Extended Channellist setup.
+helptext.epgsettings EPG setup.
+helptext.filebrowsersettings File browser setup.
+helptext.startchannelsettings Start channel setup.
+helptext.psisettings PSI setup.
 
 miscsettings.logosdir Sender logos Dir
 miscsettings.recording_screenshot Screenshot (record)
@@ -1606,6 +1628,14 @@ webtv.channellist_nonefound No WebTV channels were found!
 webtv.user User bouquet
 webtv.bouquets Favorites
 webtv.add_bouquets add User bouquet
+
+satipcast.rec_hint A record is active.\n Switching to sat-ip <> cast not possible.\nPlease cancel the record first.
+
+head.gradient Head gradient
+foot.gradient Foot gradient
+headinfo.gradient Head info gradient
+footinfo.gradient Foot info gradient
+infobar.gradient Infobar gradient
 
 youtube.youtube Youtube Player
 youtube.yt_error Failed to load youtube feed

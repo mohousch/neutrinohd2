@@ -145,6 +145,9 @@ bool CColorSetupNotifier::changeNotify(const neutrino_locale_t, void *)
 	// menu content inactiv
 	frameBuffer->paletteGenFade(COL_MENUCONTENTINACTIVE, convertSetupColor2RGB(g_settings.menu_Content_inactive_red, g_settings.menu_Content_inactive_green, g_settings.menu_Content_inactive_blue), convertSetupColor2RGB(g_settings.menu_Content_inactive_Text_red, g_settings.menu_Content_inactive_Text_green, g_settings.menu_Content_inactive_Text_blue), 8, convertSetupAlpha2Alpha(g_settings.menu_Content_inactive_alpha) );
 
+	// foot
+	frameBuffer->paletteGenFade(COL_MENUFOOT, convertSetupColor2RGB(g_settings.menu_Foot_red, g_settings.menu_Foot_green, g_settings.menu_Foot_blue), convertSetupColor2RGB(g_settings.menu_Foot_Text_red, g_settings.menu_Foot_Text_green, g_settings.menu_Foot_Text_blue), 8, convertSetupAlpha2Alpha(g_settings.menu_Foot_alpha) );
+
 	// infobar
 	frameBuffer->paletteGenFade(COL_INFOBAR, convertSetupColor2RGB(g_settings.infobar_red, g_settings.infobar_green, g_settings.infobar_blue), convertSetupColor2RGB(g_settings.infobar_Text_red, g_settings.infobar_Text_green, g_settings.infobar_Text_blue), 8, convertSetupAlpha2Alpha(g_settings.infobar_alpha) );
 
@@ -154,11 +157,14 @@ bool CColorSetupNotifier::changeNotify(const neutrino_locale_t, void *)
 	// infobar colored events
 	frameBuffer->paletteGenFade(COL_COLORED_EVENTS_INFOBAR, convertSetupColor2RGB(g_settings.infobar_red, g_settings.infobar_green, g_settings.infobar_blue), convertSetupColor2RGB(g_settings.infobar_colored_events_red, g_settings.infobar_colored_events_green, g_settings.infobar_colored_events_blue), 8, convertSetupAlpha2Alpha(g_settings.infobar_alpha) );
 				      
-	// foot
-	frameBuffer->paletteGenFade(COL_MENUFOOT, convertSetupColor2RGB(g_settings.menu_Foot_red, g_settings.menu_Foot_green, g_settings.menu_Foot_blue), convertSetupColor2RGB(g_settings.menu_Foot_Text_red, g_settings.menu_Foot_Text_green, g_settings.menu_Foot_Text_blue), 8, convertSetupAlpha2Alpha(g_settings.menu_Foot_alpha) );
-				      
 	// channellist colored events
 	frameBuffer->paletteGenFade(COL_COLORED_EVENTS_CHANNELLIST, convertSetupColor2RGB(g_settings.menu_Content_red, g_settings.menu_Content_green, g_settings.menu_Content_blue), convertSetupColor2RGB(g_settings.infobar_colored_events_red, g_settings.infobar_colored_events_green, g_settings.infobar_colored_events_blue), 8, convertSetupAlpha2Alpha(g_settings.menu_Content_alpha) );
+
+	// head info
+	frameBuffer->paletteGenFade(COL_MENUHEAD_INFO, convertSetupColor2RGB(g_settings.menu_HeadInfo_red, g_settings.menu_HeadInfo_green, g_settings.menu_HeadInfo_blue), convertSetupColor2RGB(g_settings.menu_HeadInfo_Text_red, g_settings.menu_HeadInfo_Text_green, g_settings.menu_HeadInfo_Text_blue), 8, convertSetupAlpha2Alpha( g_settings.menu_HeadInfo_alpha ) );
+
+	// foot info
+	frameBuffer->paletteGenFade(COL_MENUFOOT_INFO, convertSetupColor2RGB(g_settings.menu_FootInfo_red, g_settings.menu_FootInfo_green, g_settings.menu_FootInfo_blue), convertSetupColor2RGB(g_settings.menu_FootInfo_Text_red, g_settings.menu_FootInfo_Text_green, g_settings.menu_FootInfo_Text_blue), 8, convertSetupAlpha2Alpha( g_settings.menu_FootInfo_alpha ) );
 
 	frameBuffer->paletteSet();
 
@@ -269,22 +275,14 @@ int CTuxtxtChangeExec::exec(CMenuTarget *parent, const std::string &actionKey)
 #define USERMENU_ITEM_OPTION_COUNT SNeutrinoSettings::ITEM_MAX
 const CMenuOptionChooser::keyval USERMENU_ITEM_OPTIONS[USERMENU_ITEM_OPTION_COUNT] =
 {
-        {SNeutrinoSettings::ITEM_NONE, LOCALE_USERMENU_ITEM_NONE, NULL},
-        {SNeutrinoSettings::ITEM_BAR, LOCALE_USERMENU_ITEM_BAR, NULL},
-        {SNeutrinoSettings::ITEM_EPG_LIST, LOCALE_EPGMENU_EVENTLIST, NULL},
-        {SNeutrinoSettings::ITEM_EPG_SUPER, LOCALE_EPGMENU_EPGPLUS, NULL},
-        {SNeutrinoSettings::ITEM_EPG_INFO, LOCALE_EPGMENU_EVENTINFO, NULL},
-        {SNeutrinoSettings::ITEM_AUDIO_SELECT, LOCALE_AUDIOSELECTMENUE_HEAD, NULL},
-        {SNeutrinoSettings::ITEM_SUBCHANNEL, LOCALE_INFOVIEWER_SUBSERVICE, NULL},
+	{SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB, LOCALE_MOVIEPLAYER_RECORDS, NULL},    
         {SNeutrinoSettings::ITEM_MOVIEPLAYER_MB, LOCALE_MOVIEPLAYER_MOVIES, NULL},
         {SNeutrinoSettings::ITEM_TIMERLIST, LOCALE_TIMERLIST_NAME, NULL},
         {SNeutrinoSettings::ITEM_REMOTE, LOCALE_RCLOCK_MENUEADD, NULL},
-        {SNeutrinoSettings::ITEM_TECHINFO, LOCALE_EPGMENU_STREAMINFO, NULL},
         {SNeutrinoSettings::ITEM_PLUGIN, LOCALE_USERMENU_ITEM_PLUGINS, NULL},
         {SNeutrinoSettings::ITEM_VTXT, LOCALE_USERMENU_ITEM_VTXT, NULL},
         {SNeutrinoSettings::ITEM_GAME, LOCALE_MAINMENU_GAMES, NULL},
-        {SNeutrinoSettings::ITEM_OPKG, LOCALE_OPKG_MANAGER, NULL},
-        {SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB, LOCALE_MOVIEPLAYER_RECORDS, NULL}      
+        {SNeutrinoSettings::ITEM_OPKG, LOCALE_OPKG_MANAGER, NULL}    
 };
 
 int CUserMenuMenu::exec(CMenuTarget *parent, const std::string &/*actionKey*/)

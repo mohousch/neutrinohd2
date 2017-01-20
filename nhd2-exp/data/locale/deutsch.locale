@@ -156,6 +156,8 @@ colorthememenu.question Aktuelles Theme beibehalten?
 colorthememenu.save aktuelles Theme speichern
 colorthememenu.select1 Benutzer Theme
 colorthememenu.select2 Standard Theme
+colormenu.head_title Titel Leiste Info
+colormenu.foot_title Fuß Leiste Info
 cpu.freq CPU Frequenz
 cpu.freq_default Standard Frequenz
 cpu.freq_normal Normale Frequenz
@@ -1509,11 +1511,13 @@ servicemenu.restart_e2 Boot E2 als Standard
 
 helptext.tvmode Hier können Sie in den TV Modus schalten.
 helptext.radiomode Hier können Sie in den Radio Modus schalten.
+helptext.webtvmode Hier können Sie in den WebTV Modus schalten.
 helptext.scart Hier können Sie in den Scart Modus schalten.
 helptext.mediaplayer Hier können Sie in den Mediaplayer schalten.
 helptext.internetradio Hier können Sie in den Internetradio schalten.
 helptext.audioplayer Hier können Sie in den Audioplayer schalten.
-helptext.tsmoviebrowser Hier können Sie Ihre Aufnahmen abspielen.
+helptext.tsbrowser Hier können Sie Ihre Aufnahmen abspielen.
+helptext.moviebrowser Hier können Sie Ihre Filme abspielen.
 helptext.fileplayback Hier können Sie Ihre Media Dateien abspielen.
 helptext.netstream Hier können Sie Streams aus dem Net abspielen.
 helptext.pictureviewer Hier können Sie Ihre Bilder Diashow schauen.
@@ -1522,7 +1526,10 @@ helptext.mainsettings Hier können Sie in den Einstellungen schalten.
 helptext.service Hier können Sie in den Service schalten.
 helptext.sleeptimer Hier können Sie den Sleep Timer einstellen.
 helptext.reboot Hier können Sie Ihren STB rebooten.
-helptext.shutdown Hier können Sie Ihren STB ausschalten.
+helptext.powermenu Hier können Sie Ihren STB ausschalten.
+helptext.restart Hier können Sie ihre Software neu starten
+helptext.standby Hier können Sie ihren Receiver ausschalten
+helptext.shutdown Hier können Sie ihren receiver ausschalten.
 helptext.boxinfo Hier erhalten Sie Infos über die HW Ihren STB.
 helptext.videosettings Hier können Sie die Video Einstellungen führen.
 helptext.audiosettings Hier können Sie die Audio Einstellungen führen.
@@ -1532,7 +1539,7 @@ helptext.recordingsettings Hier können Sie die Aufnahmen Einstellungen führen.
 helptext.movieplayersettings Hier können Sie die Movieplayer Einstellungen führen.
 helptext.osdsettings Hier können Sie die OSD Einstellungen führen.
 helptext.vfdsettings Hier können Sie die VFD Einstellungen führen.
-helptext.keyssettings Hier können Sie die Fernbedienung Einstellungen führen.
+helptext.remotecontrolsettings Hier können Sie die Fernbedienung Einstellungen führen.
 helptext.audioplayersettings Hier können Sie die Audio Einstellungen führen.
 helptext.pictureviewersettings Hier können Sie die Pictureviewer Einstellungen führen.
 helptext.miscsettings Hier können Sie die diverse Einstellungen führen.
@@ -1556,6 +1563,21 @@ helptext.timerlist Hier können Sie Ihre Timerliste verwalten.
 helptext.features Hier können Sie die Erweiterungen starten.
 helptext.dvd hier können sie Ihre DVD Image abspielen
 helptext.blueray hier können sie Ihre Blueray Image abspielen.
+helptext.themes Hier können Sie die GUI Themes einstellen.
+helptext.menucolors Hier können Sie die GUI Themes Farben einstellen.
+helptext.infobarcolors Hier können Sie die Farben der Infobar einstellen.
+helptext.language Hier können Sie die Sprache einstellen.
+helptext.font Hier können Sie die Schrift einstellen.
+helptext.fontscaling Hier können Sie Scgrift Art einstellen.
+helptext.osdtiming Hier können Sie die GUI einblend zeiten einstellen.
+helptext.screensetup Hier können Sie die GUI Bereich enstellen.
+helptext.alphasetup Hier können Sie die Kontraste einstellen.
+helptext.generalsettings Diverse Einstellungen.
+helptext.miscsettingschannelsettings Eweiterte Kanalliste Einstellungen.
+helptext.epgsettings EPG Einstellungen.
+helptext.filebrowsersettings File Browser Einstellungen.
+helptext.startchannelsettings Start Kanal Einstellungen.
+helptext.psisettings PSI Einstellungen.
 
 miscsettings.logosdir Sender logos Dir
 miscsettings.recording_screenshot Screenshot (Aufnahme)
@@ -1607,6 +1629,14 @@ webtv.channellist_nonefound Es wurden keine WebTV Kanäle gefunden!
 webtv.user User Bouquet
 webtv.bouquets Favoriten
 webtv.add_bouquets User Bouquet einfügen
+
+satipcast.rec_hint Eine Aufnahme ist aktiv.\nUmschaltung zu Sat-IP <> Cast nicht möglich.\nBitte die Aufnahme erst beenden.
+
+head.gradient Titel Leiste Farbverlauf
+foot.gradient Fuß leiste Farbverlauf
+headinfo.gradient Titel Info Farbverlauf
+footinfo.gradient Fuß Titel Farbverlauf
+infobar.gradient Infobar Farbverlauf
 
 youtube.youtube Youtube Player
 youtube.yt_error Fehler beim laden des Youtube Feed

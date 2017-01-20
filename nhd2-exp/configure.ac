@@ -37,6 +37,16 @@ if test "$enable_opengl" = "yes"; then
 AC_DEFINE(USE_OPENGL,1,[include opengl engine])
 fi
 
+# use playback (dirty) for opengl and satip
+AC_ARG_ENABLE(playback,
+	AS_HELP_STRING(--enable-playback,enable playback for opengl and satip),
+	,[enable_playback=no])
+AM_CONDITIONAL(USE_PLAYBACK,test "$enable_playback" = "yes")
+
+if test "$enable_playback" = "yes"; then
+AC_DEFINE(USE_PLAYBACK,1,[include playback for opengl or satip])
+fi
+
 # gstreamer
 AC_ARG_ENABLE(gstreamer,
 	AS_HELP_STRING(--enable-gstreamer,include gstreamer as player engine support),

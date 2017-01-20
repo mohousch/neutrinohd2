@@ -175,22 +175,8 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 		frameBuffer->blit();
 	}
 	
-	CNeutrinoApp::getInstance()->StopSubtitles();
-	
 	//
-	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
-	{
-		if(webtv)
-			webtv->stopPlayBack();
-	}
-	else
-	{
-		// stop playback
-		g_Zapit->lockPlayBack();
-			
-		// Stop Sectionsd
-		g_Sectionsd->setPauseScanning(true);
-	}
+	CNeutrinoApp::getInstance()->lockPlayBack();
 
 	show();
 
@@ -207,21 +193,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	}
 	
 	//
-	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
-	{
-		if(webtv)
-			webtv->startPlayBack(webtv->getTunedChannel());
-	}
-	else
-	{
-		// start playback
-		g_Zapit->unlockPlayBack();
-
-		// Start Sectionsd
-		g_Sectionsd->setPauseScanning(false);
-	}
-	
-	CNeutrinoApp::getInstance()->StartSubtitles();
+	CNeutrinoApp::getInstance()->unlockPlayBack();
 
 	// Restore last mode
 	CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , m_LastMode );

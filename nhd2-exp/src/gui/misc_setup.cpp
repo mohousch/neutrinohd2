@@ -233,24 +233,24 @@ void CMiscSettings::showMenu(void)
 	CMenuWidgetExtended* miscSettings = new CMenuWidgetExtended(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
 
 	//miscSettings general
-	miscSettings->addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_GENERAL, true, new CGeneralSettings(), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_GENERALSETTINGS));
+	miscSettings->addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_GENERAL, true, new CGeneralSettings(), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_GENERALSETTINGS, LOCALE_HELPTEXT_GENERALSETTINGS));
 	
 	//channellist settings
-	miscSettings->addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_CHANNELLIST, true, new CChannelListSettings(), NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_CHANNELLISTSETTINGS));
+	miscSettings->addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_CHANNELLIST, true, new CChannelListSettings(), NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_CHANNELLISTSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSCHANNELLIST));
 
 	// epg settings
-	miscSettings->addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_EPG_HEAD, true, new CEPGSettings(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_EPGSETTINGS));
+	miscSettings->addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_EPG_HEAD, true, new CEPGSettings(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_EPGSETTINGS, LOCALE_HELPTEXT_EPGSETTINGS));
 
 	// filebrowser settings
-	miscSettings->addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_FILEBROWSER, true, new CFileBrowserSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_FILEBROWSERSETTINGS));
+	miscSettings->addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_FILEBROWSER, true, new CFileBrowserSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_FILEBROWSERSETTINGS, LOCALE_HELPTEXT_FILEBROWSERSETTINGS));
 	
 	// zapit setup (start channel)
-	miscSettings->addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_ZAPIT, true, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_STARTCHANNELSETTINGS));
+	miscSettings->addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_ZAPIT, true, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_STARTCHANNELSETTINGS, LOCALE_HELPTEXT_STARTCHANNELSETTINGS));
 	
 	// psi setup
 	//FIXME:	
 	//CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
-	//miscSettings->addItem( new CMenuForwarderExtended(LOCALE_VIDEOMENU_PSISETUP, true, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_PSISETTINGS));
+	//miscSettings->addItem( new CMenuForwarderExtended(LOCALE_VIDEOMENU_PSISETUP, true, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_PSISETTINGS, LOCALE_HELPTEXT_PSISETTINGS));
 	
 	miscSettings->exec(NULL, "");
 	miscSettings->hide();
@@ -303,24 +303,24 @@ void CMiscSettings::showMenuClassic(void)
 	CMenuWidget * miscSettings = new CMenuWidget(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
 
 	//miscSettings general
-	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_GENERAL, true, NULL, new CGeneralSettings(), NULL, CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_GENERALSETTINGS));
+	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_GENERAL, true, NULL, new CGeneralSettings(), NULL, CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_GENERALSETTINGS, LOCALE_HELPTEXT_GENERALSETTINGS));
 	
 	//channellist settings
-	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_CHANNELLIST, true, NULL, new CChannelListSettings(), NULL, CRCInput::RC_green, NEUTRINO_ICON_CLASSIC_CHANNELLISTSETTINGS));
+	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_CHANNELLIST, true, NULL, new CChannelListSettings(), NULL, CRCInput::RC_green, NEUTRINO_ICON_CLASSIC_CHANNELLISTSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSCHANNELSETTINGS));
 
 	// epg settings
-	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_HEAD, true, NULL, new CEPGSettings(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_CLASSIC_EPGSETTINGS));
+	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_HEAD, true, NULL, new CEPGSettings(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_CLASSIC_EPGSETTINGS, LOCALE_HELPTEXT_EPGSETTINGS));
 
 	// filebrowser settings
-	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_FILEBROWSER, true, NULL, new CFileBrowserSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_CLASSIC_FILEBROWSERSETTINGS));
+	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_FILEBROWSER, true, NULL, new CFileBrowserSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_CLASSIC_FILEBROWSERSETTINGS, LOCALE_HELPTEXT_FILEBROWSERSETTINGS));
 	
 	// zapit setup (start channel)
-	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_ZAPIT, true, NULL, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NEUTRINO_ICON_CLASSIC_STARTCHANNELSETTINGS));
+	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_ZAPIT, true, NULL, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NEUTRINO_ICON_CLASSIC_STARTCHANNELSETTINGS, LOCALE_HELPTEXT_STARTCHANNELSETTINGS));
 	
 	// psi setup
 	//FIXME:	
 	//CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
-	//miscSettings->addItem( new CMenuForwarder(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NEUTRINO_ICON_CLASSIC_PSISETTINGS));
+	//miscSettings->addItem( new CMenuForwarder(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NEUTRINO_ICON_CLASSIC_PSISETTINGS, LOCALE_HELPTEXT_LOCALE_HELPTEXT_PSISETTINGS));
 	
 	miscSettings->exec(NULL, "");
 	miscSettings->hide();
@@ -511,19 +511,19 @@ void CGeneralSettings::showMenu()
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_ROUNDED_CORNERS, &g_settings.rounded_corners, MENU_CORNERSETTINGS_TYPE_OPTIONS, MENU_CORNERSETTINGS_TYPE_OPTION_COUNT, true));
 
 	// head gradient
-	miscSettingsGeneral.addItem(new CMenuOptionChooser("Head Color Gradient", &g_settings.Head_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_HEAD_GRADIENT, &g_settings.Head_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
 
 	// foot gradient
-	miscSettingsGeneral.addItem(new CMenuOptionChooser("Foot Color Gradient", &g_settings.Foot_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_FOOT_GRADIENT, &g_settings.Foot_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
 
 	// head info gradient
-	miscSettingsGeneral.addItem(new CMenuOptionChooser("Head Info Color Gradient", &g_settings.Head_Info_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_HEADINFO_GRADIENT, &g_settings.Head_Info_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
 
 	// foot info gradient
-	miscSettingsGeneral.addItem(new CMenuOptionChooser("Foot Info Color Gradient", &g_settings.Foot_Info_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_FOOTINFO_GRADIENT, &g_settings.Foot_Info_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
 
 	// infobar gradient
-	miscSettingsGeneral.addItem(new CMenuOptionChooser("Infobar Color Gradient", &g_settings.infobar_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_INFOBAR_GRADIENT, &g_settings.infobar_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
 	
 	// menu design
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_MENU_DESIGN, &g_settings.menu_design, MENU_DESIGN_OPTIONS, MENU_DESIGN_OPTION_COUNT, true));
@@ -532,7 +532,7 @@ void CGeneralSettings::showMenu()
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_MENU_POSITION, &g_settings.menu_position, MENU_POSITION_OPTIONS, MENU_POSITION_OPTION_COUNT, true));
 
 	// progressbar color
-	miscSettingsGeneral.addItem(new CMenuOptionChooser("ProgressBar Color", &g_settings.progressbar_color, PROGRESSBAR_COLOR_OPTIONS, PROGRESSBAR_COLOR_OPTION_COUNT, true));
+	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_PROGRESSBAR_COLOR, &g_settings.progressbar_color, PROGRESSBAR_COLOR_OPTIONS, PROGRESSBAR_COLOR_OPTION_COUNT, true));
 	
 	// volume bar steps
 	CStringInput * audio_step = new CStringInput(LOCALE_AUDIOMENU_VOLUMEBAR_AUDIOSTEPS,g_settings.audio_step, 2, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE, "0123456789 " );

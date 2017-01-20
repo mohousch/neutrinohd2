@@ -195,7 +195,6 @@ class CMoviePlayerGui : public CMenuTarget
 
 		std::string Path_local;
 
-		CFileBrowser * filebrowser;
 		CMovieBrowser * moviebrowser;
 		
 		CMovieInfo cMovieInfo;	
@@ -205,8 +204,6 @@ class CMoviePlayerGui : public CMenuTarget
 		void cutNeutrino();
 		void restoreNeutrino();
 		bool get_movie_info_apid_name(int apid, MI_MOVIE_INFO * movie_info, std::string * apidtitle);
-
-		CFileFilter tsfilefilter;
 
 		void showHelpTS(void);
 		
@@ -221,10 +218,6 @@ class CMoviePlayerGui : public CMenuTarget
 		// show infos
 		void showFileInfo();
 		void addToPlaylist(CFile& file);
-		
-		int getPercent(){return file_prozent;};
-
-		static CMoviePlayerGui* getInstance();
 };
 
 #endif

@@ -337,7 +337,6 @@ class CMenuSeparator : public CMenuItem
 
 
 		CMenuSeparator(const int Type = EMPTY, const neutrino_locale_t Text = NONEXISTANT_LOCALE);
-		//CMenuSeparator(const int Type = EMPTY, const std::string& Text = "");
 
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
@@ -363,10 +362,10 @@ class CMenuForwarder : public CMenuItem
 		
 	public:
 
-		CMenuForwarder(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		CMenuForwarder(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		CMenuForwarder(const char * const Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		CMenuForwarder(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE);
+		CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE);
+		CMenuForwarder(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE);
+		CMenuForwarder(const char * const Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE);
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
@@ -409,12 +408,12 @@ class CLockedMenuForwarder : public CMenuForwarder, public CPINProtection
 	protected:
 		virtual CMenuTarget* getParent(){ return Parent;};
 	public:
-		CLockedMenuForwarder(const neutrino_locale_t Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL)
-		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName) ,
+		CLockedMenuForwarder(const neutrino_locale_t Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE)
+		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName, HelpText) ,
 		  CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
 		  
-		CLockedMenuForwarder(const char * const Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL)
-		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName) ,
+		CLockedMenuForwarder(const char * const Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE)
+		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName, HelpText) ,
 		  CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
 
 		virtual int exec(CMenuTarget* parent);
@@ -485,7 +484,6 @@ class CMenuWidget : public CMenuTarget
 		int hheight;
 		int fheight;
 		int item_height;
-		//int item_width;
 		int sb_width;
 		int itemHeightTotal;
 		int heightCurrPage;
@@ -645,10 +643,6 @@ class CLockedMenuForwarderExtended : public CMenuForwarderExtended, public CPINP
 };
 
 /// CMenuFrameBox
-#define MAX_ITEMS_PER_PAGE	18
-#define MAX_ITEMS_PER_X		6
-#define MAX_ITEMS_PER_Y		3
-
 class CMenuFrameBox : public CMenuTarget
 {
 	private:
@@ -667,6 +661,10 @@ class CMenuFrameBox : public CMenuTarget
 		int currentPage;
 		int totalPages;
 		int firstItemPos;
+
+		int itemsPerX;
+		int itemsPerY;
+		int maxItemsPerPage;
 
 		std::string nameString;
 		neutrino_locale_t name;
@@ -721,6 +719,9 @@ class CMenuFrameBox : public CMenuTarget
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 		void setTimeOut(int to = 0){timeout = to;};
 		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = CRCInput::RC_nokey, bool enabled = true);
+
+		// 
+		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY; initFrames();};
 };
 
 // CMenuFrameBoxItem

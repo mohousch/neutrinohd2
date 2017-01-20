@@ -347,9 +347,10 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 		{
 			satNameWidth = g_SignalFont->getRenderWidth(sit->second.name);
 			
-			// NOTE:freqStartX = BoxStartX + ChanNumberWidth + 80;
-			if (satNameWidth > (CHANNUMBER_WIDTH + 70))
-				satNameWidth = CHANNUMBER_WIDTH + 70;
+			// Reserving here for satNameWidth max. 1/3 of infobar width
+			// because some sat-names are longer than : (CHANNUMBER_WIDTH + 70)
+			if (satNameWidth > ((BoxEndX - BoxStartX) / 3) ) 
+				satNameWidth = (BoxEndX - BoxStartX) / 3;
 				
 			g_SignalFont->RenderString( BoxStartX + BORDER_LEFT, BoxStartY + (SAT_INFOBOX_HEIGHT - SatNameHeight)/2 + SatNameHeight, satNameWidth, sit->second.name, COL_INFOBAR );
 		}
@@ -555,6 +556,9 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 		else if ((msg == CRCInput::RC_ok) || (msg == CRCInput::RC_home) || (msg == CRCInput::RC_timeout)) 
 		{
 			res = messages_return::cancel_info;
+			// add this here, now OK and EXIT/HOME has effect
+			// and infobar timeout settings work
+			hideIt = true;
 		} 			
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
@@ -1408,7 +1412,7 @@ void CInfoViewer::showSNR()
 	int posy = 0;
   	int barwidth = BAR_WIDTH;
 	
-  	if (g_settings.infobar_sat_display && !g_settings.satip_allow_satip) 
+  	if (g_settings.infobar_sat_display && !g_settings.satip_allow_satip && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv) 
 	{
 		if(is_visible)
 		{
@@ -1416,8 +1420,6 @@ void CInfoViewer::showSNR()
 			if (newfreq && chanready) 
 			{
 				char freq[20];
-
-				newfreq = false;
 				
 				// get current service info
 				CZapitClient::CCurrentServiceInfo si = g_Zapit->getCurrentServiceInfo();
@@ -1438,7 +1440,8 @@ void CInfoViewer::showSNR()
 					sprintf (freq, "FREQ:%d.%d MHz", si.tsfrequency / 1000, si.tsfrequency % 1000);
 
 				freqWidth = g_SignalFont->getRenderWidth(freq);
-				freqStartX = BoxStartX + CHANNUMBER_WIDTH + 80;
+				// see above comment about lenght of sat name
+				freqStartX = BoxStartX + satNameWidth + 20;
 
 				g_SignalFont->RenderString(freqStartX, BoxStartY + (SAT_INFOBOX_HEIGHT - SatNameHeight)/2 + SatNameHeight, freqWidth, freq, COL_INFOBAR );
 			
@@ -1456,7 +1459,12 @@ void CInfoViewer::showSNR()
 				posy = BoxStartY + (SAT_INFOBOX_HEIGHT - SatNameHeight)/2 + SatNameHeight;
 
 				// sig
-				if (sigscale->getPercent() != sig) 
+				// I commented this out because in case : (sigscale->getPercent() == sig)
+				// ( and that really happens here )
+				// then posx has value 0 and snrscale would be painted left outside infobar
+				// result : osd fragments
+				// therefore > sig- and snrscale always painting
+				//if (sigscale->getPercent() != sig) 
 				{
 					posx = freqStartX + freqWidth + 10;
 
@@ -1470,7 +1478,8 @@ void CInfoViewer::showSNR()
 				}
 
 				// snr
-				if (snrscale->getPercent() != snr) 
+				// see comment at sig
+				//if (snrscale->getPercent() != snr) 
 				{
 					int snr_posx = posx + sw + 10;
 

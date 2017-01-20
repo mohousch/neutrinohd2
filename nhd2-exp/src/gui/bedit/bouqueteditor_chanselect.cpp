@@ -289,7 +289,7 @@ void CBEChannelSelectWidget::paintDetails(int index)
 		snprintf(&buf[len], sizeof(buf) - len, "(%s)\n", sit->second.name.c_str());
 	}
 	
-	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(cFrameFootInfo.iX + BORDER_LEFT, cFrameFootInfo.iY + (cFrameFootInfo.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), cFrameFootInfo.iWidth - BORDER_LEFT - BORDER_RIGHT, buf, COL_MENUCONTENTDARK);
+	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(cFrameFootInfo.iX + BORDER_LEFT, cFrameFootInfo.iY + (cFrameFootInfo.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), cFrameFootInfo.iWidth - BORDER_LEFT - BORDER_RIGHT, buf, COL_MENUFOOT_INFO);
 }
 
 void CBEChannelSelectWidget::paintItem2DetailsLine(int pos)
