@@ -77,8 +77,7 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--enable-scart \
 			--enable-ci \
 			--enable-gstreamer \
-			--with-gstversion=0.10 \
-			--enable-fribidi
+			--with-gstversion=0.10
 				
 $(DEST):
 	mkdir $@

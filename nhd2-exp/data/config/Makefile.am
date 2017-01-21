@@ -8,5 +8,7 @@ install_DATA = \
 
 install-exec-local:
 	install -d $(DESTDIR)$(CONFIGDIR)/zapit
+	install -d $(DESTDIR)$(CONFIGDIR)/locale
+	install -d $(DESTDIR)$(CONFIGDIR)/themes
 
 
