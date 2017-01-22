@@ -54,6 +54,7 @@ class CNKMovies : public CMenuTarget
 
 		//
 		int catID;
+		int catMode;
 		std::string caption;
 
 		CMenuFrameBox* moviesMenu;
@@ -64,7 +65,7 @@ class CNKMovies : public CMenuTarget
 		void playMovie(void);
 		void showMovieInfo(void);
 	public:
-		CNKMovies(int id, std::string& title);
+		CNKMovies(int mode, int id, std::string title);
 		~CNKMovies();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };

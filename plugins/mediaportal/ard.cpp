@@ -68,7 +68,7 @@ void CARDverpasstSub::showMenu(void)
 
 	catMenu->disableMenuPosition();
 
-	catMenu->addItem(new CMenuForwarder("Heute", true, __DATE__, new CARDtime("Heute"), ""));
+	catMenu->addItem(new CMenuForwarder("Heute", true, getNowTimeStr("%d.%m.%Y").c_str(), new CARDtime("Heute"), ""));
 	catMenu->addItem(new CMenuForwarder("Gestern", true, NULL, new CARDtime("Gestern"), ""));
 	//catMenu->addItem(new CMenuForwarder("Mittwoch", true, NULL, new CARDtime("Mittwoch"), ""));
 	//catMenu->addItem(new CMenuForwarder("Dienstag", true, NULL, new CARDtime("Dienstag"), ""));

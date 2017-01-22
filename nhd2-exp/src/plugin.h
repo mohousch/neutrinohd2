@@ -91,7 +91,6 @@
 #include <gui/widget/helpbox.h>
 #include <gui/widget/infobox.h>
 #include <gui/widget/textbox.h>
-#include <gui/widget/vfdcontroler.h>
 #include <gui/widget/window.h>
 #include <gui/widget/progressbar.h>
 
@@ -156,6 +155,7 @@
 #include <gui/recording_setup.h>
 #include <gui/misc_setup.h>
 #include <gui/hdd_menu.h>
+#include <gui/vfdcontroler.h>
 
 #include <system/localize.h>
 #include <system/settings.h>

@@ -38,7 +38,7 @@
 #include <driver/framebuffer.h>
 #include <system/localize.h>
 
-#include "menue.h"
+#include <gui/widget/menue.h>
 
 #include <string>
 

@@ -101,7 +101,8 @@ libneutrino_gui2_a_SOURCES = \
 	webtv.cpp \
 	channel_select.cpp \
 	audio_video_select.cpp \
-	mediaplayer.cpp
+	mediaplayer.cpp \
+	vfdcontroler.cpp 
 
 if ENABLE_CI
 libneutrino_gui2_a_SOURCES += cam_menu.cpp

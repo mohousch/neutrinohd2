@@ -96,6 +96,7 @@ md5_finish_ctx (ctx, resbuf)
 {
   /* Take yet unprocessed bytes into account.  */
   md5_uint32 bytes = ctx->buflen;
+  md5_uint32 swap_bytes;
   size_t pad;
 
   /* Now count remaining bytes.  */
@@ -104,12 +105,15 @@ md5_finish_ctx (ctx, resbuf)
     ++ctx->total[1];
 
   pad = bytes >= 56 ? 64 + 56 - bytes : 56 - bytes;
-  memcpy (&ctx->buffer[bytes], fillbuf, pad);
+  memmove (&ctx->buffer[bytes], fillbuf, pad);
 
-  /* Put the 64-bit file length in *bits* at the end of the buffer.  */
-  *(md5_uint32 *) &ctx->buffer[bytes + pad] = SWAP (ctx->total[0] << 3);
-  *(md5_uint32 *) &ctx->buffer[bytes + pad + 4] = SWAP ((ctx->total[1] << 3) |
-							(ctx->total[0] >> 29));
+  /* Put the 64-bit file length in *bits* at the end of the buffer.
+     Use memcpy to avoid aliasing problems.  On most systems, this
+     will be optimized away to the same code.  */
+  swap_bytes = SWAP (ctx->total[0] << 3);
+  memcpy (&ctx->buffer[bytes + pad], &swap_bytes, sizeof (swap_bytes));
+  swap_bytes = SWAP ((ctx->total[1] << 3) | (ctx->total[0] >> 29));
+  memcpy (&ctx->buffer[bytes + pad + 4], &swap_bytes, sizeof (swap_bytes));
 
   /* Process last bytes.  */
   md5_process_block (ctx->buffer, bytes + pad + 8, ctx);
@@ -209,14 +213,14 @@ md5_process_bytes (buffer, len, ctx)
       size_t left_over = ctx->buflen;
       size_t add = 128 - left_over > len ? len : 128 - left_over;
 
-      memcpy (&ctx->buffer[left_over], buffer, add);
+      memmove (&ctx->buffer[left_over], buffer, add);
       ctx->buflen += add;
 
       if (left_over + add > 64)
 	{
 	  md5_process_block (ctx->buffer, (left_over + add) & ~63, ctx);
 	  /* The regions in the following copy operation cannot overlap.  */
-	  memcpy (ctx->buffer, &ctx->buffer[(left_over + add) & ~63],
+	  memmove (ctx->buffer, &ctx->buffer[(left_over + add) & ~63],
 		  (left_over + add) & 63);
 	  ctx->buflen = (left_over + add) & 63;
 	}
@@ -236,7 +240,7 @@ md5_process_bytes (buffer, len, ctx)
   /* Move remaining bytes in internal buffer.  */
   if (len > 0)
     {
-      memcpy (ctx->buffer, buffer, len);
+      memmove (ctx->buffer, buffer, len);
       ctx->buflen = len;
     }
 }

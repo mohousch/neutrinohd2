@@ -739,7 +739,7 @@ class CMenuFrameBoxItem : public CMenuItem
 		CMenuFrameBoxItem(const neutrino_locale_t Text, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const char * const Icon = NULL);
 		CMenuFrameBoxItem(const char * const Text, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const char * const Icon = NULL);
 		
-		int paint(bool selected = false, bool AfterPulldown = false) {return 0;};
+		int paint(bool /*selected = false*/, bool /*AfterPulldown = false*/) {return 0;};
 		int getHeight(void) const {return 0;};
 		int getWidth(void) const { return 0;};
 
