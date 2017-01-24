@@ -38,7 +38,7 @@ class CTestMenu : public CMenuTarget
 		CMenulistBox* audioMenu;
 		CFileList audioFileList;
 
-		// functions
+		// widgets
 		void testCBox();
 		void testCIcon();
 		void testCImage();
@@ -64,12 +64,17 @@ class CTestMenu : public CMenuTarget
 		void testCProgressBar();
 		void testCProgressWindow();
 		void testCButtons();
-		//
+		void testFrameBox();
+		void testCMenuWidgetListBox();
+		void testCMenuWidgetListBox1();
+
+		// mediapalyers
 		void testAudioPlayer();
 		void testTSPlayer();
 		void testMoviePlayer();
 		void testPictureViewer();
 		void testUPNPBrowser();
+
 		//
 		void testPlayMovieURL();
 		void testPlayAudioURL();
@@ -100,7 +105,6 @@ class CTestMenu : public CMenuTarget
 		void testKeyChooser();
 		
 		//
-		void testFrameBox();
 		void testPluginsList();
 
 		//
@@ -108,11 +112,7 @@ class CTestMenu : public CMenuTarget
 		void testPlayAudioDir();
 		void testShowPictureDir();
 
-		//
-		void testCMenuWidgetListBox();
-		void testCMenuWidgetListBox1();
-
-		// 
+		// without movieplayergui call
 		void  testTSBrowserDirect();
 		void testMovieBrowserDirect();
 	public:
@@ -2290,9 +2290,12 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CListFrame", true, NULL, this, "listframe"));
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
 	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
+	mainMenu->addItem(new CMenuForwarder("ColorChooser", true, NULL, this, "colorchooser"));
+	mainMenu->addItem(new CMenuForwarder("KeyChooser", true, NULL, this, "keychooser"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	mainMenu->addItem(new CMenuForwarder("CMenulistBox(channellist)", true, NULL, this, "menuwidgetlistbox"));
 	mainMenu->addItem(new CMenuForwarder("CMenulistBox(Audioplayer)", true, NULL, this, "menuwidgetlistbox1"));
+	mainMenu->addItem(new CMenuForwarder("CMenuFrameBox", true, NULL, this, "framebox"));
 	
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));
@@ -2309,11 +2312,8 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("UmountGUI", true, NULL, this, "umountgui"));
 	mainMenu->addItem(new CMenuForwarder("MountSmallMenu", true, NULL, this, "mountsmallmenu"));
 	mainMenu->addItem(new CMenuForwarder("VFDController", true, NULL, this, "vfdcontroller"));
-	mainMenu->addItem(new CMenuForwarder("ColorChooser", true, NULL, this, "colorchooser"));
-	mainMenu->addItem(new CMenuForwarder("KeyChooser", true, NULL, this, "keychooser"));
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	mainMenu->addItem(new CMenuForwarder("CMenuFrameBox", true, NULL, this, "framebox"));
 	mainMenu->addItem(new CMenuForwarder("PluginsList", true, NULL, this, "pluginslist"));
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
@@ -2338,11 +2338,11 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("PlayAudioDir(without Browser)", true, NULL, this, "playaudiodir"));
 	mainMenu->addItem(new CMenuForwarder("ShowPictureDir(without Browser)", true, NULL, this, "showpicturedir"));
 
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
-
 	mainMenu->addItem(new CMenuForwarder("Test TS Browser", true, NULL, this, "testtsbrowser"));
 	mainMenu->addItem(new CMenuForwarder("Test Movie Browser", true, NULL, this, "testmoviebrowser"));
+
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
