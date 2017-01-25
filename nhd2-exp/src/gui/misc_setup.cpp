@@ -329,16 +329,6 @@ void CMiscSettings::showMenuClassic(void)
 }
 
 // general settings
-#define COLOR_GRADIENT_TYPE_OPTION_COUNT 5
-const CMenuOptionChooser::keyval COLOR_GRADIENT_TYPE_OPTIONS[COLOR_GRADIENT_TYPE_OPTION_COUNT] =
-{
-	{ nogradient, NONEXISTANT_LOCALE, "no gradient" },
-	{ gradientDark2Light, NONEXISTANT_LOCALE, "Dark to Light" },
-	{ gradientLight2Dark, NONEXISTANT_LOCALE, "Light to Dark" },
-	{ gradientDark2Light2Dark, NONEXISTANT_LOCALE, "Dark to Light to Dark" },
-	{ gradientLight2Dark2Light, NONEXISTANT_LOCALE, "Light to Dark to Light" }
-};
-
 // progressbar color
 #define PROGRESSBAR_COLOR_OPTION_COUNT 2
 const CMenuOptionChooser::keyval PROGRESSBAR_COLOR_OPTIONS[PROGRESSBAR_COLOR_OPTION_COUNT] =
@@ -506,38 +496,17 @@ void CGeneralSettings::showMenu()
 	
 	// volumebar position
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_VOLUME_POS, &g_settings.volume_pos, VOLUMEBAR_DISP_POS_OPTIONS, VOLUMEBAR_DISP_POS_OPTIONS_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
-	
-	// corners
-	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_ROUNDED_CORNERS, &g_settings.rounded_corners, MENU_CORNERSETTINGS_TYPE_OPTIONS, MENU_CORNERSETTINGS_TYPE_OPTION_COUNT, true));
 
-	// head gradient
-	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_HEAD_GRADIENT, &g_settings.Head_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
-
-	// foot gradient
-	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_FOOT_GRADIENT, &g_settings.Foot_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
-
-	// head info gradient
-	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_HEADINFO_GRADIENT, &g_settings.Head_Info_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
-
-	// foot info gradient
-	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_FOOTINFO_GRADIENT, &g_settings.Foot_Info_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
-
-	// infobar gradient
-	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_INFOBAR_GRADIENT, &g_settings.infobar_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
-	
-	// menu design
-	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_MENU_DESIGN, &g_settings.menu_design, MENU_DESIGN_OPTIONS, MENU_DESIGN_OPTION_COUNT, true));
-
-	// menu position
-	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_MENU_POSITION, &g_settings.menu_position, MENU_POSITION_OPTIONS, MENU_POSITION_OPTION_COUNT, true));
-
-	// progressbar color
-	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_PROGRESSBAR_COLOR, &g_settings.progressbar_color, PROGRESSBAR_COLOR_OPTIONS, PROGRESSBAR_COLOR_OPTION_COUNT, true));
-	
 	// volume bar steps
 	CStringInput * audio_step = new CStringInput(LOCALE_AUDIOMENU_VOLUMEBAR_AUDIOSTEPS,g_settings.audio_step, 2, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE, "0123456789 " );
 	CMenuForwarder *as = new CMenuForwarder(LOCALE_AUDIOMENU_VOLUMEBAR_AUDIOSTEPS, true, g_settings.audio_step, audio_step );
 	miscSettingsGeneral.addItem(as);
+
+	//
+	miscSettingsGeneral.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_VIDEOMENU_OSD));
+	
+	// corners
+	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_ROUNDED_CORNERS, &g_settings.rounded_corners, MENU_CORNERSETTINGS_TYPE_OPTIONS, MENU_CORNERSETTINGS_TYPE_OPTION_COUNT, true));
 
 	// timezone
 	xmlDocPtr parser;
@@ -575,6 +544,15 @@ void CGeneralSettings::showMenu()
 		xmlFreeDoc(parser);
 	}
 	
+	// menu design
+	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_MENU_DESIGN, &g_settings.menu_design, MENU_DESIGN_OPTIONS, MENU_DESIGN_OPTION_COUNT, true));
+
+	// menu position
+	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_MENU_POSITION, &g_settings.menu_position, MENU_POSITION_OPTIONS, MENU_POSITION_OPTION_COUNT, true));
+
+	// progressbar color
+	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_PROGRESSBAR_COLOR, &g_settings.progressbar_color, PROGRESSBAR_COLOR_OPTIONS, PROGRESSBAR_COLOR_OPTION_COUNT, true));
+
 	// reset factory setup
 	miscSettingsGeneral.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
