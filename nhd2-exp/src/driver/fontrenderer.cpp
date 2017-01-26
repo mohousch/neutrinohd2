@@ -372,8 +372,7 @@ int UTF8ToUnicode(const char * &text, bool utf8_encoded) // returns -1 on error
 #if defined (ENABLE_FRIBIDI)
 std::string fribidiShapeChar(const char* text, bool utf8_encoded)
 {
-	//if(utf8_encoded) // fribidi requires utf-8
-	//if(isUTF8(text))
+	if(utf8_encoded) // fribidi requires utf-8
 	{
 		int len = strlen(text);
 		
@@ -395,7 +394,7 @@ std::string fribidiShapeChar(const char* text, bool utf8_encoded)
 		char * Rtl = NULL;
 		
 		// logical to visual
-		if (fribidi_log2vis(Logical, len, &Base, Visual, NULL, NULL, NULL)) 
+		if (fribidi_log2vis(Logical, RtlLen, &Base, Visual, NULL, NULL, NULL))
 		{
 			fribidi_remove_bidi_marks(Visual, RtlLen, NULL, NULL, NULL);
 
