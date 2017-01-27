@@ -602,7 +602,7 @@ void CTestMenu::testCListFrame()
 	// title
 	listFrame->setTitle("listFrameBox", testIcon);
 
-	//
+	/*
 	std::string string_item = "Pro Sieben";
 
 	listFrameLines.lineArray[0].clear();
@@ -610,11 +610,12 @@ void CTestMenu::testCListFrame()
 	
 	listFrame->setLines(&listFrameLines);
 	listFrame->getSelectedLine();
-	//
+	*/
 	
 	// paint
 	listFrame->paint();
 	listFrame->showSelection(true);
+
 	CFrameBuffer::getInstance()->blit();
 	
 	// loop
