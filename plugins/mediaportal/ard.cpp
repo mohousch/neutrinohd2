@@ -68,7 +68,7 @@ void CARDverpasstSub::showMenu(void)
 
 	catMenu->disableMenuPosition();
 
-	catMenu->addItem(new CMenuForwarder("Heute", true, __DATE__, new CARDtime("Heute"), ""));
+	catMenu->addItem(new CMenuForwarder("Heute", true, getNowTimeStr("%d.%m.%Y").c_str(), new CARDtime("Heute"), ""));
 	catMenu->addItem(new CMenuForwarder("Gestern", true, NULL, new CARDtime("Gestern"), ""));
 	//catMenu->addItem(new CMenuForwarder("Mittwoch", true, NULL, new CARDtime("Mittwoch"), ""));
 	//catMenu->addItem(new CMenuForwarder("Dienstag", true, NULL, new CARDtime("Dienstag"), ""));
@@ -147,9 +147,12 @@ void CARDaz::showMenu(void)
 	CMenuFrameBox * catMenu = new CMenuFrameBox("Sendungen A-Z", PLUGINDIR "/mediaportal/ard_small.png");
 
 	//items
-	for (int i = 0; i < 18; i++)
+	for (int i = 0; i < 6; i++)
 		catMenu->addItem(new CMenuFrameBoxItem("coming soon!", this, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
+	catMenu->setItemsPerPage(3, 2);
+	catMenu->setItemBoxColor(COL_YELLOW);
+
 	catMenu->exec(NULL, "");
 	catMenu->hide();
 	delete catMenu;
@@ -182,9 +185,12 @@ void CARDTVlive::showMenu(void)
 	CMenuFrameBox * catMenu = new CMenuFrameBox("TV-Livestreams", PLUGINDIR "/mediaportal/ard_small.png");
 
 	//items
-	for (int i = 0; i < 18; i++)
+	for (int i = 0; i < 6; i++)
 		catMenu->addItem(new CMenuFrameBoxItem("coming soon!", this, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
+	catMenu->setItemsPerPage(3, 2);
+	catMenu->setItemBoxColor(COL_YELLOW);
+
 	catMenu->exec(NULL, "");
 	catMenu->hide();
 	delete catMenu;
@@ -217,9 +223,12 @@ void CARDRadiolive::showMenu(void)
 	CMenuFrameBox * catMenu = new CMenuFrameBox("Radio-Livestreams", PLUGINDIR "/mediaportal/ard_small.png");
 
 	//items
-	for (int i = 0; i < 18; i++)
+	for (int i = 0; i < 6; i++)
 		catMenu->addItem(new CMenuFrameBoxItem("coming soon!", this, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
+	catMenu->setItemsPerPage(3, 2);
+	catMenu->setItemBoxColor(COL_YELLOW);
+
 	catMenu->exec(NULL, "");
 	catMenu->hide();
 	delete catMenu;
@@ -253,8 +262,11 @@ void CARDstreams::showMenu(void)
 	CMenuFrameBox * catMenu = new CMenuFrameBox(Title.c_str(), PLUGINDIR "/mediaportal/ard_small.png");	
 	
 	//items
-	for (int i = 0; i < 18; i++)
+	for (int i = 0; i < 6; i++)
 		catMenu->addItem(new CMenuFrameBoxItem("coming soon!", this, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
+
+	catMenu->setItemsPerPage(3, 2);
+	catMenu->setItemBoxColor(COL_YELLOW);
 
 	catMenu->exec(NULL, "");
 	catMenu->hide();

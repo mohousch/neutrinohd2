@@ -83,7 +83,6 @@
 #include <gui/widget/messagebox.h>
 #include <gui/widget/hintbox.h>
 #include <gui/widget/icons.h>
-#include <gui/widget/vfdcontroler.h>
 #include <gui/widget/keychooser.h>
 #include <gui/widget/stringinput.h>
 #include <gui/widget/stringinput_ext.h>
@@ -138,6 +137,7 @@
 #include <gui/rc_setup.h>
 #include <gui/recording_setup.h>
 #include <gui/misc_setup.h>
+#include <gui/vfdcontroler.h>
 
 #include <system/setting_helpers.h>
 #include <system/settings.h>

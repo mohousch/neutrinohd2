@@ -77,10 +77,20 @@ void CNetzKinoBrowser::showNKCategoriesMenu()
 
 	mainMenu->disableMenuPosition();
 
+	// categories
 	for (unsigned i = 0; i < cats.size(); i++)
 	{
-		mainMenu->addItem(new CMenuForwarder(cats[i].title.c_str(), true, NULL, new CNKMovies(cats[i].id, cats[i].title), "", CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
+		mainMenu->addItem(new CMenuForwarder(cats[i].title.c_str(), true, NULL, new CNKMovies(cNKFeedParser::CATEGORY, cats[i].id, cats[i].title), "", CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
 	}
+
+	// search
+	/*
+	std::string search;
+	CStringInputSMS stringInput(LOCALE_YT_SEARCH, &search);
+	mainMenu->addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, search, &stringInput, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
+
+	mainMenu->addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, new CNKMovies(cNKFeedParser::SEARCH, 0, search), "", CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
+	*/
 
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
@@ -89,10 +99,11 @@ void CNetzKinoBrowser::showNKCategoriesMenu()
 }
 
 //
-CNKMovies::CNKMovies(int id, std::string& title)
+CNKMovies::CNKMovies(int mode, int id, std::string title)
 {
-	dprintf(DEBUG_NORMAL, "CNKMovies:\n");
+	dprintf(DEBUG_NORMAL, "CNKMovies: mode:%d id:%d title:%s\n", mode, id, title.c_str());
 
+	catMode = mode;
 	catID = id;
 	caption = title;
 }
@@ -113,14 +124,14 @@ const struct button_label NKHeadButtons[NK_HEAD_BUTTONS_COUNT] =
 
 void CNKMovies::showNKMoviesMenu()
 {
-	dprintf(DEBUG_NORMAL, "CNKMovies::showNKMoviesMenu:\n");
+	dprintf(DEBUG_NORMAL, "CNKMovies::showNKMoviesMenu: mode:%d id:%d title:%s\n", catMode, catID, caption.c_str());
 
 	//
 	CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	
 	loadBox.paint();
 
-	loadNKTitles(cNKFeedParser::CATEGORY, "", catID);
+	loadNKTitles(catMode, caption, catID);
 
 	loadBox.hide();
 	
@@ -145,7 +156,7 @@ void CNKMovies::showNKMoviesMenu()
 		moviesMenu->addItem(new CMenuFrameBoxItem(m_vMovieInfo[i].epgTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
 	}
 
-	moviesMenu->setItemsPerPage(10, 3);
+	//moviesMenu->setItemsPerPage(10, 3);
 	moviesMenu->setItemBoxColor(COL_YELLOW);
 	moviesMenu->setHeaderButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
 
@@ -258,6 +269,8 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 {
 	dprintf(DEBUG_NORMAL, "CNKMovies::loadNKTitles:\n");
+
+	nkparser.Cleanup();
 
 	//
 	if (nkparser.ParseFeed((cNKFeedParser::nk_feed_mode_t)mode, search, id)) 

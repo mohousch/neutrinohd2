@@ -30,11 +30,11 @@ class CFBWindow
 {
 	public:
 		typedef unsigned int color_t;
-		typedef void *         font_t;
+		typedef void* font_t;
 		
 	private:
-		CFrameBuffer	* frameBuffer;
-		fb_pixel_t	* Background;
+		CFrameBuffer* frameBuffer;
+		fb_pixel_t* Background;
 
 	public:
 		int x, y;   /* upper left corner */

@@ -88,7 +88,7 @@ CPluginList::CPluginList(const neutrino_locale_t Name, const uint32_t listtype)
 	
 	// foot height
 	footIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
-	cFrameBoxFoot.iHeight = std::max(footIcon.iHeight, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 10;
+	cFrameBoxFoot.iHeight = std::max(footIcon.iHeight, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
 	
 	listmaxshow = (cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight)/cFrameBoxItem.iHeight;
 

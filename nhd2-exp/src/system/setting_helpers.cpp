@@ -278,11 +278,11 @@ const CMenuOptionChooser::keyval USERMENU_ITEM_OPTIONS[USERMENU_ITEM_OPTION_COUN
 	{SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB, LOCALE_MOVIEPLAYER_RECORDS, NULL},    
         {SNeutrinoSettings::ITEM_MOVIEPLAYER_MB, LOCALE_MOVIEPLAYER_MOVIES, NULL},
         {SNeutrinoSettings::ITEM_TIMERLIST, LOCALE_TIMERLIST_NAME, NULL},
-        {SNeutrinoSettings::ITEM_REMOTE, LOCALE_RCLOCK_MENUEADD, NULL},
         {SNeutrinoSettings::ITEM_PLUGIN, LOCALE_USERMENU_ITEM_PLUGINS, NULL},
         {SNeutrinoSettings::ITEM_VTXT, LOCALE_USERMENU_ITEM_VTXT, NULL},
         {SNeutrinoSettings::ITEM_GAME, LOCALE_MAINMENU_GAMES, NULL},
-        {SNeutrinoSettings::ITEM_OPKG, LOCALE_OPKG_MANAGER, NULL}    
+        {SNeutrinoSettings::ITEM_OPKG, LOCALE_OPKG_MANAGER, NULL},
+	{SNeutrinoSettings::ITEM_REMOTE, LOCALE_RCLOCK_MENUEADD, NULL}   
 };
 
 int CUserMenuMenu::exec(CMenuTarget *parent, const std::string &/*actionKey*/)

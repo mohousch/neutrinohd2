@@ -371,11 +371,11 @@ struct SNeutrinoSettings
 		ITEM_MOVIEPLAYER_TSMB = 0,
                 ITEM_MOVIEPLAYER_MB = 1,
                 ITEM_TIMERLIST = 2,
-                ITEM_REMOTE = 3,
-                ITEM_PLUGIN = 4,
-                ITEM_VTXT = 5,
-                ITEM_GAME = 6,
-                ITEM_OPKG = 7,               
+                ITEM_PLUGIN = 3,
+                ITEM_VTXT = 4,
+                ITEM_GAME = 5,
+                ITEM_OPKG = 6, 
+		ITEM_REMOTE = 7,              
                 ITEM_MAX   // MUST be always the last in the list
         }USER_ITEM;
 	

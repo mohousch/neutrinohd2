@@ -39,18 +39,18 @@ DEST = $(PWD)/$(BOXTYPE)
 
 N_SRC  = $(PWD)/nhd2-exp
 
-CFLAGS =  -funsigned-char -g -W -Wall -Wshadow -O2
-CFLAGS += -rdynamic
-CFLAGS += -DPEDANTIC_VALGRIND_SETUP
+CFLAGS = -Wall -Wshadow -O2 -fno-strict-aliasing
+#CFLAGS += -rdynamic
+#CFLAGS += -DPEDANTIC_VALGRIND_SETUP
 ### enable --as-needed for catching more build problems...
-CFLAGS += -Wl,--as-needed
+#CFLAGS += -Wl,--as-needed
 
 CXXFLAGS = $(CFLAGS)
 
 export CFLAGS CXXFLAGS
 
 # first target is default...
-default: neutrino
+default: neutrino plugins
 	make run
 
 run:
@@ -130,6 +130,9 @@ plugins-clean:
 plugins-distclean:
 	-$(MAKE) -C $(PLUGINS_SRC) distclean
 	rm -f $(PLUGINS)/config.status
+
+clean: neutrino-clean plugins-clean
+distclean: neutrino-distclean plugins-distclean
 
 PHONY = neutrino-checkout plugins-checkout
 .PHONY: $(PHONY)

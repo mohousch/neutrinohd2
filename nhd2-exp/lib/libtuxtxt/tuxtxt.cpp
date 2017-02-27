@@ -2758,8 +2758,10 @@ void ConfigMenu(int Init, int source)
 					saveconfig = 1;
 					color_mode--;
 					if (color_mode < 1) color_mode = 1;
-					menu[MenuLine[M_COL]*Menu_Width +  1] = (color_mode == 1  ? ' ' : '�');
-					menu[MenuLine[M_COL]*Menu_Width + 28] = (color_mode == 24 ? ' ' : '�');
+					//menu[MenuLine[M_COL]*Menu_Width +  1] = (color_mode == 1  ? ' ' : '�');
+					//menu[MenuLine[M_COL]*Menu_Width + 28] = (color_mode == 24 ? ' ' : '�');
+					menu[MenuLine[M_COL]*Menu_Width +  1] = (color_mode == 1  ? ' ' : 'í');
+					menu[MenuLine[M_COL]*Menu_Width + 28] = (color_mode == 24 ? ' ' : 'î');
 					memset(&menu[Menu_Width*MenuLine[M_COL] + 3             ], 0x7f,color_mode);
 					memset(&menu[Menu_Width*MenuLine[M_COL] + 3+color_mode  ], 0x20,24-color_mode);
 					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
@@ -2770,8 +2772,10 @@ void ConfigMenu(int Init, int source)
 					saveconfig = 1;
 					trans_mode--;
 					if (trans_mode < 1) trans_mode = 1;
-					menu[MenuLine[M_TRA]*Menu_Width +  1] = (trans_mode == 1  ? ' ' : '�');
-					menu[MenuLine[M_TRA]*Menu_Width + 28] = (trans_mode == 24 ? ' ' : '�');
+					//menu[MenuLine[M_TRA]*Menu_Width +  1] = (trans_mode == 1  ? ' ' : '�');
+					//menu[MenuLine[M_TRA]*Menu_Width + 28] = (trans_mode == 24 ? ' ' : '�');
+					menu[MenuLine[M_TRA]*Menu_Width +  1] = (trans_mode == 1  ? ' ' : 'í');
+					menu[MenuLine[M_TRA]*Menu_Width + 28] = (trans_mode == 24 ? ' ' : 'î');
 					memset(&menu[Menu_Width*MenuLine[M_TRA] + 3             ], 0x7f,trans_mode);
 					memset(&menu[Menu_Width*MenuLine[M_TRA] + 3+trans_mode  ], 0x20,24-trans_mode);
 					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
@@ -2811,15 +2815,15 @@ void ConfigMenu(int Init, int source)
 
 						if (pids_found > 1)
 						{
-							if (current_pid == 0)
+						        if (current_pid == 0)
 							{
 								menu[MenuLine[M_PID]*Menu_Width +  1] = ' ';
-								menu[MenuLine[M_PID]*Menu_Width + 28] = '�';
+						 		menu[MenuLine[M_PID]*Menu_Width + 28] = 'î';
 							}
 							else
 							{
-								menu[MenuLine[M_PID]*Menu_Width +  1] = '�';
-								menu[MenuLine[M_PID]*Menu_Width + 28] = '�';
+								menu[MenuLine[M_PID]*Menu_Width +  1] = 'í';
+								menu[MenuLine[M_PID]*Menu_Width + 28] = 'î';
 							}
 						}
 
@@ -2841,16 +2845,16 @@ void ConfigMenu(int Init, int source)
 					if (national_subset > 0)
 					{
 						national_subset--;
-
-						if (national_subset == 0)
+	
+					        if (national_subset == 0)
 						{
 							menu[MenuLine[M_NAT]*Menu_Width +  1] = ' ';
-							menu[MenuLine[M_NAT]*Menu_Width + 28] = '�';
+							menu[MenuLine[M_NAT]*Menu_Width + 28] = 'î';
 						}
 						else
 						{
-							menu[MenuLine[M_NAT]*Menu_Width +  1] = '�';
-							menu[MenuLine[M_NAT]*Menu_Width + 28] = '�';
+							menu[MenuLine[M_NAT]*Menu_Width +  1] = 'í';
+							menu[MenuLine[M_NAT]*Menu_Width + 28] = 'î';
 						}
 
 						Menu_Init(menu, current_pid, menuitem, hotindex);
@@ -2881,8 +2885,9 @@ void ConfigMenu(int Init, int source)
 					saveconfig = 1;
 					color_mode++;
 					if (color_mode > 24) color_mode = 24;
-					menu[MenuLine[M_COL]*Menu_Width +  1] = (color_mode == 1  ? ' ' : '�');
-					menu[MenuLine[M_COL]*Menu_Width + 28] = (color_mode == 24 ? ' ' : '�');
+				
+					menu[MenuLine[M_COL]*Menu_Width +  1] = (color_mode == 1  ? ' ' : 'í');
+					menu[MenuLine[M_COL]*Menu_Width + 28] = (color_mode == 24 ? ' ' : 'î');
 					memset(&menu[Menu_Width*MenuLine[M_COL] + 3             ], 0x7f,color_mode);
 					memset(&menu[Menu_Width*MenuLine[M_COL] + 3+color_mode  ], 0x20,24-color_mode);
 					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
@@ -2893,8 +2898,9 @@ void ConfigMenu(int Init, int source)
 					saveconfig = 1;
 					trans_mode++;
 					if (trans_mode > 24) trans_mode = 24;
-					menu[MenuLine[M_TRA]*Menu_Width +  1] = (trans_mode == 1  ? ' ' : '�');
-					menu[MenuLine[M_TRA]*Menu_Width + 28] = (trans_mode == 24 ? ' ' : '�');
+				
+					menu[MenuLine[M_TRA]*Menu_Width +  1] = (trans_mode == 1  ? ' ' : 'í');
+					menu[MenuLine[M_TRA]*Menu_Width + 28] = (trans_mode == 24 ? ' ' : 'î');
 					memset(&menu[Menu_Width*MenuLine[M_TRA] + 3             ], 0x7f,trans_mode);
 					memset(&menu[Menu_Width*MenuLine[M_TRA] + 3+trans_mode  ], 0x20,24-trans_mode);
 					Menu_HighlightLine(menu, MenuLine[menuitem], 1);
@@ -2932,15 +2938,15 @@ void ConfigMenu(int Init, int source)
 
 						if (pids_found > 1)
 						{
-							if (current_pid == pids_found - 1)
+						  	if (current_pid == pids_found - 1)
 							{
-								menu[MenuLine[M_PID]*Menu_Width +  1] = '�';
+								menu[MenuLine[M_PID]*Menu_Width +  1] = 'í';
 								menu[MenuLine[M_PID]*Menu_Width + 28] = ' ';
 							}
 							else
 							{
-								menu[MenuLine[M_PID]*Menu_Width +  1] = '�';
-								menu[MenuLine[M_PID]*Menu_Width + 28] = '�';
+								menu[MenuLine[M_PID]*Menu_Width +  1] = 'í';
+								menu[MenuLine[M_PID]*Menu_Width + 28] = 'î';
 							}
 						}
 
@@ -2964,13 +2970,13 @@ void ConfigMenu(int Init, int source)
 
 						if (national_subset == (int) MAX_NATIONAL_SUBSET)
 						{
-							menu[MenuLine[M_NAT]*Menu_Width +  1] = '�';
+							menu[MenuLine[M_NAT]*Menu_Width +  1] = 'í';
 							menu[MenuLine[M_NAT]*Menu_Width + 28] = ' ';
 						}
 						else
 						{
-							menu[MenuLine[M_NAT]*Menu_Width +  1] = '�';
-							menu[MenuLine[M_NAT]*Menu_Width + 28] = '�';
+							menu[MenuLine[M_NAT]*Menu_Width +  1] = 'í';
+							menu[MenuLine[M_NAT]*Menu_Width + 28] = 'î';
 						}
 
 						Menu_Init(menu, current_pid, menuitem, hotindex);

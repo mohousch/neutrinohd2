@@ -90,6 +90,8 @@ void CProgressBar::paint(unsigned int x, unsigned int y, unsigned char pcr)
 	i = 0;
 	xpos = x;
 	ypos = y;
+
+	frameBuffer->paintBoxRel(x, y, width, height, COL_MENUCONTENT_PLUS_2);	//fill passive
 	
 	if (pcr != percent) 
 	{
@@ -155,16 +157,11 @@ void CProgressBar::paint(unsigned int x, unsigned int y, unsigned char pcr)
 			}
 			else
 			{
-				for(;(i < maxi); i++) 
+				for(; (i < maxi); i++) 
 				{
 					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
 				}
 			}
-		}
-		
-		for(i = maxi; i < total; i++) 
-		{
-			frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, COL_MENUCONTENT_PLUS_2);	//fill passive
 		}
 		
 		percent = pcr;

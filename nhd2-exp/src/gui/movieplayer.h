@@ -190,8 +190,8 @@ class CMoviePlayerGui : public CMenuTarget
 
 	private:
 		CFrameBuffer * frameBuffer;
-		int            m_LastMode;	
-		bool		stopped;
+		int m_LastMode;	
+		bool stopped;
 
 		std::string Path_local;
 

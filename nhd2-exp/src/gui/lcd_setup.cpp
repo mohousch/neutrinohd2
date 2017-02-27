@@ -33,8 +33,7 @@
 
 #include <stdio.h> 
 
-#include <gui/widget/vfdcontroler.h>
-
+#include <gui/vfdcontroler.h>
 #include <gui/lcd_setup.h>
 
 #include <system/debug.h>

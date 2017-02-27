@@ -232,7 +232,7 @@ class CLCD
 		void Clear();
 		void ShowIcon(vfd_icon icon, bool show);
 		void ShowText(const char *s) { showServicename(std::string(s)); };
-		void LCDshowText(int pos) { return ; };
+		void LCDshowText(int /*pos*/) { return ; };
 		
 		bool ShowPng(char *filename);
 		bool DumpPng(char *filename);

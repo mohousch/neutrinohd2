@@ -466,7 +466,7 @@ void CMoviePlayerGui::PlayFile(void)
 
 	// bookmarks menu
 	timeb current_time;
-	p_movie_info = NULL;	// movie info handle which comes from the MovieBrowser, if not NULL MoviePla yer is able to save new bookmarks
+	p_movie_info = NULL;	// movie info handle which comes from the MovieBrowser, if not NULL MoviePlayer is able to save new bookmarks
 
 	int width = 280;
 	int height = 65;
@@ -524,7 +524,7 @@ void CMoviePlayerGui::PlayFile(void)
 				update_lcd = true;
 				start_play = true;
 			} 
-			else if(m_loop)
+			else if(m_loop) // loop
 			{
 				filename = filename;
 				sel_filename = sel_filename;

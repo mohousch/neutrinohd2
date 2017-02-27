@@ -914,6 +914,83 @@ void EncodeUrl(std::string &txt)
 	curl_free(str);
 }
 
+//
+int _select(int maxfd, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
+{
+	int retval;
+	fd_set rset, wset, xset;
+	struct timeval interval;
+	timerclear(&interval);
+
+	/* make a backup of all fd_set's and timeval struct */
+	if (readfds) rset = *readfds;
+	if (writefds) wset = *writefds;
+	if (exceptfds) xset = *exceptfds;
+	if (timeout) interval = *timeout;
+
+	while (1)
+	{
+		retval = select(maxfd, readfds, writefds, exceptfds, timeout);
+
+		if (retval < 0)
+		{
+			/* restore the backup before we continue */
+			if (readfds) *readfds = rset;
+			if (writefds) *writefds = wset;
+			if (exceptfds) *exceptfds = xset;
+			if (timeout) *timeout = interval;
+			if (errno == EINTR) continue;
+			perror("select");
+			break;
+		}
+		break;
+	}
+	return retval;
+}
+
+ssize_t _writeall(int fd, const void *buf, size_t count)
+{
+	ssize_t retval;
+	char *ptr = (char*)buf;
+	ssize_t handledcount = 0;
+	if (fd < 0) return -1;
+	while (handledcount < count)
+	{
+		retval = write(fd, &ptr[handledcount], count - handledcount);
+
+		if (retval == 0) return -1;
+		if (retval < 0)
+		{
+			if (errno == EINTR) continue;
+			perror("write");
+			return retval;
+		}
+		handledcount += retval;
+	}
+	return handledcount;
+}
+
+ssize_t _read(int fd, void *buf, size_t count)
+{
+	ssize_t retval;
+	char *ptr = (char*)buf;
+	ssize_t handledcount = 0;
+	if (fd < 0) return -1;
+	while (handledcount < count)
+	{
+		retval = read(fd, &ptr[handledcount], count - handledcount);
+		if (retval < 0)
+		{
+			if (errno == EINTR) continue;
+			perror("read");
+			return retval;
+		}
+		handledcount += retval;
+		break; /* one read only */
+	}
+	return handledcount;
+}
+
 // FielHelpers
 CFileHelpers::CFileHelpers()
 {

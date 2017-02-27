@@ -261,6 +261,16 @@ void COSDSettings::showMenuClassic(void)
 }
 
 // osd menucolor settings
+#define COLOR_GRADIENT_TYPE_OPTION_COUNT 5
+const CMenuOptionChooser::keyval COLOR_GRADIENT_TYPE_OPTIONS[COLOR_GRADIENT_TYPE_OPTION_COUNT] =
+{
+	{ nogradient, NONEXISTANT_LOCALE, "no gradient" },
+	{ gradientDark2Light, NONEXISTANT_LOCALE, "Dark to Light" },
+	{ gradientLight2Dark, NONEXISTANT_LOCALE, "Light to Dark" },
+	{ gradientDark2Light2Dark, NONEXISTANT_LOCALE, "Dark to Light to Dark" },
+	{ gradientLight2Dark2Light, NONEXISTANT_LOCALE, "Light to Dark to Light" }
+};
+
 COSDMenuColorSettings::COSDMenuColorSettings()
 {
 }
@@ -365,6 +375,21 @@ void COSDMenuColorSettings::showMenu()
 	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_COLORMENU_FOOT_TITLE));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_BACKGROUND, true, NULL, chFootInfoColor ));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chFootInfoTextColor ));
+
+	//
+	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	// head gradient
+	OSDmenuColorsSettings.addItem(new CMenuOptionChooser(LOCALE_HEAD_GRADIENT, &g_settings.Head_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+
+	// foot gradient
+	OSDmenuColorsSettings.addItem(new CMenuOptionChooser(LOCALE_FOOT_GRADIENT, &g_settings.Foot_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+
+	// head info gradient
+	OSDmenuColorsSettings.addItem(new CMenuOptionChooser(LOCALE_HEADINFO_GRADIENT, &g_settings.Head_Info_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+
+	// foot info gradient
+	OSDmenuColorsSettings.addItem(new CMenuOptionChooser(LOCALE_FOOTINFO_GRADIENT, &g_settings.Foot_Info_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
+
 	
 	OSDmenuColorsSettings.exec(NULL, "");
 	OSDmenuColorsSettings.hide();
@@ -430,6 +455,11 @@ void COSDInfoBarColorSettings::showMenu()
 	// colored events
 	OSDinfobarColorSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_MISCSETTINGS_INFOBAR_COLORED_EVENTS));
 	OSDinfobarColorSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chColored_Events ));
+
+	//
+	OSDinfobarColorSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	// infobar gradient
+	OSDinfobarColorSettings.addItem(new CMenuOptionChooser(LOCALE_INFOBAR_GRADIENT, &g_settings.infobar_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, CRCInput::RC_nokey, "", true ));
 	
 	OSDinfobarColorSettings.exec(NULL, "");
 	OSDinfobarColorSettings.hide();

@@ -31,6 +31,7 @@
 
 #include "eventserver.h"
 
+
 void CEventServer::registerEvent2(const unsigned int eventID, const unsigned int ClientID, const std::string udsName)
 {
 	strcpy(eventData[eventID][ClientID].udsName, udsName.c_str());
@@ -40,8 +41,8 @@ void CEventServer::registerEvent(const int fd)
 {
 	commandRegisterEvent msg;
 
-	int readresult= read(fd, &msg, sizeof(msg));
-	if ( readresult<= 0 )
+	int readresult = read(fd, &msg, sizeof(msg));
+	if ( readresult <= 0 )
 		perror("[eventserver]: read");
 	
 	registerEvent2(msg.eventID, msg.clientID, msg.udsName);
@@ -105,11 +106,11 @@ bool CEventServer::sendEvent2Client(const unsigned int eventID, const initiators
 	head.eventID = eventID;
 	head.initiatorID = initiatorID;
 	head.dataSize = eventbodysize;
-	int written = write(sock_fd, &head, sizeof(head));
+	write(sock_fd, &head, sizeof(head));
 
-	if(eventbodysize!=0)
+	if(eventbodysize != 0)
 	{
-		written = write(sock_fd, eventbody, eventbodysize);
+		write(sock_fd, eventbody, eventbodysize);
 	}
 	
 	close(sock_fd);

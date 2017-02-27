@@ -220,14 +220,13 @@ bool cNKFeedParser::ParseFeed(std::string &url)
 
 bool cNKFeedParser::ParseFeed(nk_feed_mode_t mode, std::string search, int category)
 {
-	dprintf(DEBUG_NORMAL, "cNKFeedParser::parseFeed(1)\n");
+	dprintf(DEBUG_NORMAL, "cNKFeedParser::parseFeed(1) mode:%d categorie:%d (search:%s)\n", mode, category, search.c_str());
 
 	if(parsed)
 		return true;
 	
 	std::string url = MAIN_URL;
 	
-	/*
 	if (mode == SEARCH) 
 	{
 		if (search.empty())
@@ -237,20 +236,14 @@ bool cNKFeedParser::ParseFeed(nk_feed_mode_t mode, std::string search, int categ
 	} 
 	else if (mode == CATEGORY && category > 0) 
 	{
-		url += "get_category_posts?id=" + to_string(category);
+		url += "get_category_posts";
+		url += "?count=" + to_string(max_results);
+		url += "&id=" + to_string(category);
 	} 
 	else
 		return false;
-	
-	url += "&custom_fields=Streaming&count=" + to_string(max_results) + "d&";
-	*/
 
-	//
-	url += "get_category_posts";
-	url += "?count=" + to_string(max_results);
-	url += "&id=" + to_string(category);
 	url += "&custom_fields=Streaming";
-	//
 
 	return ParseFeed(url);
 }

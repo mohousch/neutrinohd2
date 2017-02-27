@@ -11,20 +11,18 @@ const long int GET_ICECAST_TIMEOUT = 90; 		// list is about 500kB!
 const long int GET_PLAYLIST_TIMEOUT = 10;
 CAudioPlayerGui tmpAudioPlayerGui;
 
-class CIceCast /*: public CMenuTarget*/
+class CIceCast
 {
 	private:
 		void addUrl2Playlist(const char *url, const char *name = NULL, const time_t bitrate = 0);
 		void processPlaylistUrl(const char *url, const char *name = NULL, const time_t bitrate = 0);
 		void scanXmlData(xmlDocPtr answer_parser, const char *nametag, const char *urltag, const char *bitratetag = NULL, bool usechild = false);
 
-		//void paint();
 	public:
 		CIceCast();
 		~CIceCast();
 
 		void readDir_ic(void);
-		//int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 //
@@ -61,8 +59,6 @@ void CIceCast::addUrl2Playlist(const char *url, const char *name, const time_t b
 	{
 		tmpAudioPlayerGui.addToPlaylist(mp3);
 	}
-
-	//tmpAudioPlayerGui.exec(NULL, "urlplayback");
 }
 
 void CIceCast::processPlaylistUrl(const char *url, const char *name, const time_t tim) 
@@ -190,21 +186,14 @@ void CIceCast::scanXmlData(xmlDocPtr answer_parser, const char *nametag, const c
 		} 
 		else 
 		{
-			//CProgressWindow progress;
-			//long maxProgress = 1;
-			
 			// count # of entries
 			while (element) 
 			{
-				//maxProgress++;
 				element = element->xmlNextNode;
 			}
 			
 			element = element_tmp;
 			long listPos = -1;
-			
-			//progress.setTitle(LOCALE_AUDIOPLAYER_LOAD_RADIO_STATIONS);
-			//progress.exec(this, "");
 			
 			neutrino_msg_t      msg;
 			neutrino_msg_data_t data;
@@ -220,10 +209,6 @@ void CIceCast::scanXmlData(xmlDocPtr answer_parser, const char *nametag, const c
 				time_t bitrate = 0;
 				bool skip = true;
 				listPos++;
-				
-				// show status
-				//int global = 100*listPos / maxProgress;
-				//progress.showGlobalStatus(global);
 
 				if (usechild) 
 				{
@@ -264,8 +249,6 @@ void CIceCast::scanXmlData(xmlDocPtr answer_parser, const char *nametag, const c
 
 				if ((url != NULL) && !skip) 
 				{
-					//progress.showStatusMessageUTF(url);
-					
 					if (strstr(url, ".m3u") || strstr(url, ".pls"))
 						processPlaylistUrl(url, name);
 					else 
@@ -275,7 +258,6 @@ void CIceCast::scanXmlData(xmlDocPtr answer_parser, const char *nametag, const c
 				g_RCInput->getMsg(&msg, &data, 0);
 
 			}
-			//progress.hide();
 		}
 		xmlFreeDoc(answer_parser);
 	}

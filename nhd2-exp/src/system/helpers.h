@@ -110,6 +110,11 @@ bool getUrl(std::string &url, std::string &answer, const std::string userAgent =
 bool DownloadUrl(std::string url, std::string file, const std::string userAgent = " ");
 
 //
+int _select(int maxfd, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+ssize_t _writeall(int fd, const void *buf, size_t count);
+ssize_t _read(int fd, void *buf, size_t count);
+
+//
 class CFileHelpers
 {
 	public:

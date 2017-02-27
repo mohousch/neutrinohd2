@@ -44,6 +44,7 @@
 // fribidi
 #if defined (ENABLE_FRIBIDI)
 #include <fribidi/fribidi.h>
+#include <sectionsd/edvbstring.h>
 #endif
 
 
@@ -157,7 +158,7 @@ FTC_FaceID FBFontRenderClass::getFaceID(const char * const family, const char * 
 		}
 	}
 
-	for (fontListEntry *f=font; f; f=f->next)
+	for (fontListEntry *f = font; f; f = f->next)
 	{
 		if (!strcmp(f->family, family))
 		{
@@ -369,13 +370,13 @@ int UTF8ToUnicode(const char * &text, bool utf8_encoded) // returns -1 on error
 
 //
 #if defined (ENABLE_FRIBIDI)
-std::string fribidiShapeChar(const char * &text)
+std::string fribidiShapeChar(const char* text, bool utf8_encoded)
 {
-	if(text && *text)
+	if(utf8_encoded) // fribidi requires utf-8
 	{
 		int len = strlen(text);
 		
-		fribidi_set_mirroring(false);
+		fribidi_set_mirroring(true);
 		fribidi_set_reorder_nsm(false);
 			
 		// init to utf-8
@@ -385,22 +386,27 @@ std::string fribidiShapeChar(const char * &text)
 		FriBidiCharType Base = FRIBIDI_TYPE_L;
 		
 		// our buffer
-		FriBidiChar *Logical = (FriBidiChar *)alloca(sizeof(FriBidiChar)*(len + 1));
-		FriBidiChar *Visual = (FriBidiChar *)alloca(sizeof(FriBidiChar)*(len + 1));
+		FriBidiChar *Logical = (FriBidiChar *)malloc(sizeof(FriBidiChar)*(len + 1));
+		FriBidiChar *Visual = (FriBidiChar *)malloc(sizeof(FriBidiChar)*(len + 1));
 		
 		int RtlLen = fribidi_charset_to_unicode(fribidiCharset, const_cast<char *>(text), len, Logical);
 		
 		char * Rtl = NULL;
 		
 		// logical to visual
-		if (fribidi_log2vis(Logical, len, &Base, Visual, NULL, NULL, NULL)) 
+		if (fribidi_log2vis(Logical, RtlLen, &Base, Visual, NULL, NULL, NULL))
 		{
-			Rtl = (char *)alloca(sizeof(char)*(RtlLen * 4 + 1));
+			fribidi_remove_bidi_marks(Visual, RtlLen, NULL, NULL, NULL);
+
+			Rtl = (char *)malloc(sizeof(char)*(RtlLen * 4 + 1));
 			
 			fribidi_unicode_to_charset(fribidiCharset, Visual, RtlLen, Rtl);
-			
-			return std::string(Rtl);
 		}
+
+		free(Logical);
+     		free(Visual);
+			
+		return std::string(Rtl);
 	}
 	
 	return std::string(text);
@@ -434,7 +440,7 @@ void CFont::RenderString(int x, int y, const int width, const char *text, const 
 	
 	// fribidi
 #if defined (ENABLE_FRIBIDI)
-	std::string Text = fribidiShapeChar(text);
+	std::string Text = fribidiShapeChar(text, utf8_encoded);
 	text = Text.c_str();
 #endif	
 	
@@ -514,7 +520,7 @@ void CFont::RenderString(int x, int y, const int width, const char *text, const 
 	static int faktor[256]           = {0};
 	static bool fontRecsInit         = false;
 	fb_pixel_t bg_color              = 1;
-	fb_pixel_t fg_color              = useBackground? frameBuffer->realcolor[color] : frameBuffer->realcolor[((((color) + 2) | 7) - 2)];;
+	fb_pixel_t fg_color              = useBackground? frameBuffer->realcolor[color] : frameBuffer->realcolor[((((color) + 2) | 7) - 2)];
 
 	if (!useBackground) 
 	{
@@ -696,7 +702,7 @@ int CFont::getRenderWidth(const char *text, bool utf8_encoded)
 	
 	// fribidi	
 #if defined (ENABLE_FRIBIDI)
-	std::string Text = fribidiShapeChar(text);
+	std::string Text = fribidiShapeChar(text, utf8_encoded);
 	text = Text.c_str();
 #endif	
 
