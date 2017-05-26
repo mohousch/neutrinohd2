@@ -2241,6 +2241,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		CAudiofileExt audiofile(audioFileList[audioMenu->getSelected()].Name, audioFileList[audioMenu->getSelected()].getExtension());
 		CAudioPlayerGui tmpAudioPlayerGui;
 		tmpAudioPlayerGui.addToPlaylist(audiofile);
+		tmpAudioPlayerGui.hidePlayList(true);
 		tmpAudioPlayerGui.exec(NULL, "urlplayback");
 	}
 	else if(actionKey == "RC_setup1")
