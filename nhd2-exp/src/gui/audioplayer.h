@@ -98,12 +98,6 @@ class CAudioPlayerGui : public CMenuTarget
 			ARTIST_TITLE = 0, 
 			TITLE_ARTIST = 1
 		};
-		
-		enum
-		{
-			LOCALRADIO,
-			ICECAST
-		};
 
 	private:
 		CFrameBuffer * m_frameBuffer;

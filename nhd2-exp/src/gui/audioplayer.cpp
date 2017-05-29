@@ -343,8 +343,6 @@ int CAudioPlayerGui::show()
 	if(isURL && hide_playlist)
 		play(0);
 
-	//printf("(m_selected:%d) (m_current:%d) (m_playlist.size():%d)\n", m_selected, m_current, m_playlist.size());
-
 	// control loop
 	while(loop)
 	{
@@ -392,28 +390,6 @@ int CAudioPlayerGui::show()
 		else
 			paint();
 
-		/*
-		if( msg == CRCInput::RC_mode )
-		{
-			if(m_inetmode) 
-			{
-				m_inetmode = false;
-				m_radiolist = m_playlist;
-				m_playlist = m_filelist;
-			} 
-			else 
-			{
-				m_inetmode = true;
-				m_filelist = m_playlist;
-				m_playlist = m_radiolist;
-			}
-
-			Init();
-			clear_before_update = true;
-			update = true;
-		}
-		else
-		*/
 		if (msg == CRCInput::RC_home)
 		{ 
 			if (m_state != CAudioPlayerGui::STOP)
@@ -656,58 +632,6 @@ int CAudioPlayerGui::show()
 		{
 			if (m_key_level == 0 && !hide_playlist)
 			{
-				/*
-				if (m_inetmode) 
-				{
-					static int old_select = 0;
-					char cnt[5];
-					CMenuWidget InputSelector(LOCALE_AUDIOPLAYER_LOAD_RADIO_STATIONS, NEUTRINO_ICON_AUDIO);
-
-					InputSelector.disableMenuPosition();
-					int count = 0;
-					int select = -1;
-					
-					CMenuSelectorTarget * InetRadioInputChanger = new CMenuSelectorTarget(&select);
-					
-					// localeradios
-					sprintf(cnt, "%d", count);
-					InputSelector.addItem(new CMenuForwarder(LOCALE_AUDIOPLAYER_ADD_LOC, true, NULL, InetRadioInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
-
-					// icecast
-					sprintf(cnt, "%d", ++count);
-					InputSelector.addItem(new CMenuForwarder(LOCALE_AUDIOPLAYER_ADD_IC, true, NULL, InetRadioInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
-					
-					hide();
-					InputSelector.exec(NULL, "");
-					delete InetRadioInputChanger;
-					
-					if(select >= LOCALRADIO)
-						old_select = select;
-					
-					switch (select) 
-					{
-						case LOCALRADIO:	
-							scanXmlFile(RADIO_STATION_XML_FILE); 	
-
-							CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));							
-							paintLCD();
-							
-							break;
-							
-						case ICECAST:	
-							readDir_ic();
-							CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));							
-							paintLCD();
-							
-							break;
-							
-						default: break;
-					}
-					
-					update = true;
-				}
-				else
-				*/
 				if ( shufflePlaylist() )
 				{
 					update = true;
@@ -1088,69 +1012,6 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 	/* we're done with libcurl, so clean it up */
 	curl_global_cleanup();
 }
-
-#if 0
-void CAudioPlayerGui::readDir_ic(void)
-{
-	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::readDir_ic\n");
-	
-	std::string answer = "";
-	std::cout << "CAudioPlayerGui::readDir_ic: IC URL: " << icecasturl << std::endl;
-	CURL *curl_handle;
-	CURLcode httpres;
-	
-	/* init the curl session */
-	curl_handle = curl_easy_init();
-	/* specify URL to get */
-	curl_easy_setopt(curl_handle, CURLOPT_URL, icecasturl.c_str());
-	/* send all data to this function  */
-	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, CurlWriteToString);
-	/* we pass our 'chunk' struct to the callback function */
-	curl_easy_setopt(curl_handle, CURLOPT_FILE, (void *)&answer);
-	/* Generate error if http error >= 400 occurs */
-	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
-	/* set timeout to 30 seconds */
-	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, GET_ICECAST_TIMEOUT);
-	
-	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
-	{
-		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
-		
-		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
-		{
-			char tmp[200];
-			strcpy(tmp, g_settings.softupdate_proxyusername);
-			strcat(tmp, ":");
-			strcat(tmp, g_settings.softupdate_proxypassword);
-			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
-		}
-	}
-
-	/* error handling */
-	char error[CURL_ERROR_SIZE];
-	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, error);
-	
-	/* get it! */
-	CHintBox *scanBox = new CHintBox(LOCALE_AUDIOPLAYER_ADD_IC, g_Locale->getText(LOCALE_AUDIOPLAYER_RECEIVING_LIST)); // UTF-8
-	scanBox->paint();
-
-	httpres = curl_easy_perform(curl_handle);
-
-	/* cleanup curl stuff */
-	curl_easy_cleanup(curl_handle);
-
-	if (!answer.empty() && httpres == 0)
-	{
-		xmlDocPtr answer_parser = parseXml(answer.c_str());
-		scanBox->hide();
-		scanXmlData(answer_parser, "server_name", "listen_url", "bitrate", true);
-	}
-	else 
-		scanBox->hide();
-
-	delete scanBox;
-}
-#endif
 
 void CAudioPlayerGui::scanXmlFile(std::string filename)
 {
@@ -1682,20 +1543,10 @@ void CAudioPlayerGui::paintFoot()
 	{
 		if (m_playlist.empty()) 
 		{
-			/*
-			if (m_inetmode)
-				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top + m_buttonHeight/2, ButtonWidth*2, 2, AudioPlayerButtons[7], m_buttonHeight/2);
-			else
-			*/
 			::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top + m_buttonHeight/2, ButtonWidth, 1, &(AudioPlayerButtons[7][0]), m_buttonHeight/2);
 		} 
 		else
 		{
-			/*
-			if (m_inetmode)
-				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth, 4, AudioPlayerButtons[8], m_buttonHeight/2);
-			else
-			*/
 			::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth, 4, AudioPlayerButtons[1], m_buttonHeight/2);
 		}
 	}
@@ -2739,4 +2590,5 @@ std::string CAudioPlayerGui::absPath2Rel(const std::string& fromDir, const std::
 	res = res + relFilepath;
 	return res;
 }
+
 
