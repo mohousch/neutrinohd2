@@ -638,19 +638,8 @@ void CTimerList::paintItem(int pos)
 {
 	int ypos = y + theight + pos*fheight*2;
 
-	uint8_t    color;
-	fb_pixel_t bgcolor;
-
-	if (pos & 1)
-	{
-		color   = COL_MENUCONTENTDARK;
-		bgcolor = COL_MENUCONTENTDARK_PLUS_0;
-	}
-	else
-	{
-		color   = COL_MENUCONTENT;
-		bgcolor = COL_MENUCONTENT_PLUS_0;
-	}
+	uint8_t color = COL_MENUCONTENT;
+	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 
 	if (liststart + pos == selected)
 	{

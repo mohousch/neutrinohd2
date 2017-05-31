@@ -190,8 +190,6 @@ void CAudioPlayerGui::Init(void)
 CAudioPlayerGui::~CAudioPlayerGui()
 {
 	m_playlist.clear();
-	m_radiolist.clear();
-	m_filelist.clear();
 	m_title2Pos.clear();
 }
 
@@ -2377,7 +2375,7 @@ void CAudioPlayerGui::buildSearchTree()
 	m_title2Pos.clear();
 	long listPos = -1;
 
-	for (CAudioPlayList::iterator it = m_playlist.begin(); it!=m_playlist.end(); it++)
+	for (CAudioPlayList::iterator it = m_playlist.begin(); it != m_playlist.end(); it++)
 	{
 		listPos++;
 		progress.showGlobalStatus(100*listPos / maxProgress);

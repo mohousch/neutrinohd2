@@ -136,8 +136,6 @@ class CAudioPlayerGui : public CMenuTarget
 
 		//
 		CAudioPlayList      m_playlist;
-		CAudioPlayList      m_radiolist;
-		CAudioPlayList      m_filelist;
 		CTitle2Pos     m_title2Pos;
 		CAudiofileExt  m_curr_audiofile;
 		std::string    m_Path;

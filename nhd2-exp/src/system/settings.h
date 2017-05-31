@@ -553,6 +553,8 @@ extern const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT];
 
 // corners (osd)
 #define NO_RADIUS			0
+#define ROUNDED				1
+
 #define RADIUS_LARGE    		(g_settings.rounded_corners ? 8 : NO_RADIUS)
 #define RADIUS_MID      		(g_settings.rounded_corners ? 4 : NO_RADIUS)
 #define RADIUS_SMALL    		(g_settings.rounded_corners ? 2 : NO_RADIUS)
