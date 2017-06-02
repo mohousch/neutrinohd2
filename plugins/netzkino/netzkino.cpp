@@ -86,7 +86,6 @@ void CNKMovies::showNKMoviesMenu()
 		moviesMenu->addItem(new CMenuFrameBoxItem(m_vMovieInfo[i].epgTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
 	}
 
-	//moviesMenu->setItemsPerPage(10, 3);
 	moviesMenu->setItemBoxColor(COL_YELLOW);
 	moviesMenu->setHeaderButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
 
@@ -168,7 +167,7 @@ void CNKMovies::showMovieInfo(void)
 
 void CNKMovies::showNKCategoriesMenu()
 {
-	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::showNKMenu:\n");
+	dprintf(DEBUG_NORMAL, "CNKMovies::showNKCategoriesMenu:\n");
 
 	// load Categories
 	CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_NK_SCAN_FOR_CATEGORIES));
@@ -188,29 +187,38 @@ void CNKMovies::showNKCategoriesMenu()
 	}
 
 	// menu
-	CMenuWidget* mainMenu = new CMenuWidget(LOCALE_NETZKINO, NEUTRINO_ICON_NETZKINO_SMALL);
+	CMenuWidget mainMenu(LOCALE_NETZKINO, NEUTRINO_ICON_NETZKINO_SMALL);
 
-	mainMenu->disableMenuPosition();
+	mainMenu.disableMenuPosition();
 
 	// categories
 	for (unsigned i = 0; i < cats.size(); i++)
 	{
-		mainMenu->addItem(new CMenuForwarder(cats[i].title.c_str(), true, NULL, new CNKMovies(cNKFeedParser::CATEGORY, cats[i].id, cats[i].title), "", CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
+		mainMenu.addItem(new CMenuForwarder(cats[i].title.c_str(), true, NULL, new CNKMovies(cNKFeedParser::CATEGORY, cats[i].id, cats[i].title), "", CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
 	}
 
 	// search
-	/*
+	//mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	int select = -1;
+	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
+
 	std::string search;
 	CStringInputSMS stringInput(LOCALE_YT_SEARCH, &search);
-	mainMenu->addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, search, &stringInput, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
+	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, search, &stringInput, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
 
-	mainMenu->addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, new CNKMovies(cNKFeedParser::SEARCH, 0, search), "", CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
-	*/
+	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, selector, to_string(cNKFeedParser::SEARCH).c_str(), CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
 
-	mainMenu->exec(NULL, "");
-	mainMenu->hide();
-	delete mainMenu;
-	mainMenu = NULL;
+	mainMenu.exec(NULL, "");
+	delete selector;
+
+	if(select == cNKFeedParser::SEARCH)
+	{
+		CNKMovies * test = new CNKMovies(cNKFeedParser::SEARCH, catID, search);
+		test->exec(NULL, "");
+		//test->hide();
+		delete test;
+		test = NULL;
+	}
 }
 
 int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -304,7 +312,6 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	//CNetzKinoBrowser * NKHandler = new CNetzKinoBrowser();
 	CNKMovies * NKHandler = new CNKMovies(cNKFeedParser::CATEGORY, 8, "Highlights");
 	
 	NKHandler->exec(NULL, "");
