@@ -25,23 +25,6 @@
 #include <nkparser.h>
 
 
-class CNetzKinoBrowser : public CMenuTarget
-{
-	private:
-		// 		
-		cNKFeedParser nkparser;
-		nk_category_list_t cats;
-
-		//
-		void showNKCategoriesMenu();
-
-	public:
-		CNetzKinoBrowser();
-		~CNetzKinoBrowser();
-		
-		int exec(CMenuTarget* parent, const std::string& actionKey);
-};
-
 class CNKMovies : public CMenuTarget
 {
 	private:
@@ -51,6 +34,7 @@ class CNKMovies : public CMenuTarget
 
 		//
 		cNKFeedParser nkparser;
+		nk_category_list_t cats;
 
 		//
 		int catID;
@@ -64,6 +48,7 @@ class CNKMovies : public CMenuTarget
 		void showNKMoviesMenu();
 		void playMovie(void);
 		void showMovieInfo(void);
+		void showNKCategoriesMenu();
 	public:
 		CNKMovies(int mode, int id, std::string title);
 		~CNKMovies();
