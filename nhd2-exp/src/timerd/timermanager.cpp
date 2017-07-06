@@ -736,7 +736,7 @@ bool CTimerManager::shutdown()
 
 	if(nextAnnounceTime != 0)
 	{
-		int minutes = ((nextAnnounceTime -time(NULL))/60);
+		int minutes = ((nextAnnounceTime - time(NULL))/60);
 
 		//Set WakeUp Time
 		char WakeupTime[11];
