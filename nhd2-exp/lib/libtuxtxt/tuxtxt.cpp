@@ -3272,9 +3272,7 @@ void ConfigMenu(int Init, int source)
 		}
 		UpdateLCD(); /* update number of cached pages */
 			
-#if !defined USE_OPENGL
-		CFrameBuffer::getInstance()->blit();
-#endif		
+		CFrameBuffer::getInstance()->blit();		
 	} while ((RCCode != RC_HOME) && (RCCode != RC_DBOX) && (RCCode != RC_MUTE));
 
 	tuxtxt_cache.pageupdate = 1;
@@ -3571,9 +3569,7 @@ void PageCatching()
 
 		UpdateLCD();
 		
-#if !defined USE_OPENGL
 		CFrameBuffer::getInstance()->blit();
-#endif
 
 	} while (RCCode != RC_OK);
 
@@ -4866,9 +4862,7 @@ void RenderMessage(int Message)
 	for (byte = 0; byte < 38; byte++)
 		RenderCharFB(message_6[byte], &atrtable[_menuatr + 2]);
 	
-#if !defined USE_OPENGL
-	CFrameBuffer::getInstance()->blit();
-#endif	
+	CFrameBuffer::getInstance()->blit();	
 }
 
 /*
@@ -4977,9 +4971,8 @@ void DoFlashing(int startrow)
 		}
 		PosY += fontheight*factor;
 	}
-#if !defined USE_OPENGL
+
 	CFrameBuffer::getInstance()->blit();
-#endif
 }
 
 void RenderPage()
@@ -5185,9 +5178,7 @@ void RenderPage()
 		RenderCharFB(ns[1],&atrtable[ATR_WB]);
 		RenderCharFB(ns[2],&atrtable[ATR_WB]);
 		
-#if !defined USE_OPENGL
-		CFrameBuffer::getInstance()->blit();
-#endif		
+		CFrameBuffer::getInstance()->blit();	
 
 		tuxtxt_cache.pageupdate = 0;
 	}

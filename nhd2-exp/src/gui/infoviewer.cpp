@@ -738,19 +738,24 @@ void CInfoViewer::showSubchan()
 		char text[100];
 		sprintf (text, "%d - %s", subchannel, subChannelName.c_str ());
 
-		int dx = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth (text) + 20;
+		int dx = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth(text) + 20;
 		int dy = 25;
+
+		int icon_w;
+		int icon_h;
 
 		if (g_RemoteControl->director_mode) 
 		{
-	  		int w = 20 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth (g_Locale->getText (LOCALE_NVODSELECTOR_DIRECTORMODE), true) + 20;	// UTF-8
+	  		int w = 20 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth (g_Locale->getText(LOCALE_NVODSELECTOR_DIRECTORMODE), true) + 20;	// UTF-8
 	  		if (w > dx)
 				dx = w;
+
+			frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
 			
-	  		dy = dy * 2;
+	  		dy = 25 + icon_h + 10;
 		} 
 		else
-	  		dy = dy + 5;
+	  		dy = 25 + 5;
 
 		int x = 0, y = 0;
 		
@@ -793,11 +798,6 @@ void CInfoViewer::showSubchan()
 
 		if (g_RemoteControl->director_mode) 
 		{
-			int icon_w;
-			int icon_h;
-		
-			frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
-	
 	  		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + 8, y + dy - 20);
 	  		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString (x + 30 - icon_w + icon_w, y + dy - 2, dx - 40, g_Locale->getText (LOCALE_NVODSELECTOR_DIRECTORMODE), COL_MENUCONTENT, 0, true);	// UTF-8
 		}
