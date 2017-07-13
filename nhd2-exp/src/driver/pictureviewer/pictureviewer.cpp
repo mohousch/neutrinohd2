@@ -212,7 +212,7 @@ bool CPictureViewer::DecodeImage(const std::string & name, bool showBusySign)
 	return (m_Pic_Buffer != NULL);
 }
 
-bool CPictureViewer::DisplayImage ()
+bool CPictureViewer::DisplayImage()
 {
 	dprintf(DEBUG_NORMAL, "CPictureViewer::DisplayImage\n");
 

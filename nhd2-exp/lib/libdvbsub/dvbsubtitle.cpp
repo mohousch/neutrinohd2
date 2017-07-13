@@ -146,6 +146,8 @@ void cDvbSubtitleBitmaps::Draw(int &min_x, int &min_y, int &max_x, int &max_y)
 		// blit2fb
 		CFrameBuffer::getInstance()->blit2FB(newdata, nw, nh, xoff, yoff, 0, 0, true);
 
+		CFrameBuffer::getInstance()->blit();
+
 		free(newdata);
 
 		// recalculate min_x min_y max_x max_y
