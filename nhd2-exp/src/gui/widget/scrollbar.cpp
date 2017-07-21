@@ -39,6 +39,7 @@ void paintScrollBar(const int x, const int y, const int dy, const int NrOfPages,
 
 	cScrollBarWindow.setDimension(&cFrameScrollBar);
 	cScrollBarWindow.setColor(COL_SCROLLBAR);
+	cScrollBarWindow.setCorner(NO_RADIUS, CORNER_ALL);
 	cScrollBarWindow.paint();
 		
 	// scrollBar slider
@@ -52,6 +53,7 @@ void paintScrollBar(const int x, const int y, const int dy, const int NrOfPages,
 
 	cSliderWindow.setDimension(&cFrameSlider);
 	cSliderWindow.setColor(COL_SCROLLBAR_SLIDER);
+	cSliderWindow.setCorner(NO_RADIUS, CORNER_ALL);
 	cSliderWindow.paint();
 }
 
@@ -65,6 +67,7 @@ void paintScrollBar(CBox* position, const int NrOfPages, const int CurrentPage)
 
 	cScrollBarWindow.setDimension(&cFrameScrollBar);
 	cScrollBarWindow.setColor(COL_SCROLLBAR);
+	cScrollBarWindow.setCorner(NO_RADIUS, CORNER_ALL);
 	cScrollBarWindow.paint();
 		
 	// scrollBar slider
@@ -78,6 +81,7 @@ void paintScrollBar(CBox* position, const int NrOfPages, const int CurrentPage)
 
 	cSliderWindow.setDimension(&cFrameSlider);
 	cSliderWindow.setColor(COL_SCROLLBAR_SLIDER);
+	cSliderWindow.setCorner(NO_RADIUS, CORNER_ALL);
 	cSliderWindow.paint();
 }
 
