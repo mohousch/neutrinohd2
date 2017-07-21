@@ -27,7 +27,7 @@
 #include <config.h>
 #endif
 
-#include "progresswindow.h"
+#include <gui/widget/progresswindow.h>
 
 #include <global.h>
 #include <neutrino.h>
@@ -43,6 +43,8 @@
 
 CProgressWindow::CProgressWindow()
 {
+	frameBuffer = CFrameBuffer::getInstance();
+
 	caption = NONEXISTANT_LOCALE;
 	captionString = "";
 	
@@ -54,11 +56,16 @@ CProgressWindow::CProgressWindow()
 	global_progress = 101;
 	statusText = "";
 
-	x = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - width ) >> 1 );
-	y = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - height) >> 1 );
+	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width ) >> 1 );
+	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
 	
-	frameBuffer = new CFBWindow(x , y, width + SHADOW_OFFSET, hheight + height + SHADOW_OFFSET);
+	// box
+	m_cBoxWindow.setDimension(x, y, width, height);
 
+	// title
+	m_cTitleWindow.setDimension(x, y, width, hheight);
+
+	// progressbar
 	progressBar = new CProgressBar(width - BORDER_LEFT - BORDER_RIGHT - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth("100%") - 10, 10);
 
 	progressBar->reset();
@@ -104,14 +111,14 @@ void CProgressWindow::showGlobalStatus(const unsigned int prog)
 	pos += int( float(width - w - 20)/100.0 * global_progress);
 		
 	// refresh Box (%)
-	CFrameBuffer::getInstance()->paintBoxRel(x + width - (w + 20), globalstatusY - 5, w + 20, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 8, COL_MENUCONTENT_PLUS_0);
+	frameBuffer->paintBoxRel(x + width - (w + 20), globalstatusY - 5, w + 20, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 8, COL_MENUCONTENT_PLUS_0);
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + width - (w + 10), globalstatusY + 18, w, strProg, COL_MENUCONTENT, 0, true); // UTF-8
 
 	// progressBar
 	progressBar->paint(x + BORDER_LEFT, globalstatusY, global_progress);
 	
-	CFrameBuffer::getInstance()->blit();
+	frameBuffer->blit();
 
 #ifdef LCD_UPDATE
 	CVFD::getInstance()->showProgressBar2(-1, NULL, global_progress);
@@ -121,10 +128,10 @@ void CProgressWindow::showGlobalStatus(const unsigned int prog)
 void CProgressWindow::showStatusMessageUTF(const std::string & text)
 {
 	statusText = text;
-	CFrameBuffer::getInstance()->paintBox(x, statusTextY - mheight, x + width, statusTextY, COL_MENUCONTENT_PLUS_0);
+	frameBuffer->paintBox(x, statusTextY - mheight, x + width, statusTextY, COL_MENUCONTENT_PLUS_0);
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + 10, statusTextY, width - 20, text, COL_MENUCONTENT, 0, true); // UTF-8
 	
-	CFrameBuffer::getInstance()->blit();
+	frameBuffer->blit();
 
 #ifdef LCD_UPDATE
 	CVFD::getInstance()->showProgressBar2(-1, text.c_str()); // set local text in VFD
@@ -139,11 +146,7 @@ unsigned int CProgressWindow::getGlobalStatus(void)
 
 void CProgressWindow::hide()
 {
-	if (frameBuffer != NULL)
-	{
-		delete frameBuffer;
-		frameBuffer = NULL;
-	}
+	m_cBoxWindow.hide();
 
 	delete progressBar;
 	progressBar = NULL;	
@@ -155,19 +158,26 @@ void CProgressWindow::paint()
 
 	// title
 	int ypos = y;
-	
-	// shadow
-	CFrameBuffer::getInstance()->paintBoxRel(x + SHADOW_OFFSET, ypos + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);
+
+	// box
+	m_cBoxWindow.enableShadow();
+	m_cBoxWindow.enableSaveScreen();
+	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.paint();
 	
 	// title
-	CFrameBuffer::getInstance()->paintBoxRel(x, ypos, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
+	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
+	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
+	m_cTitleWindow.setGradient(g_settings.Head_gradient);
+	m_cTitleWindow.paint();
 	
 	// icon
 	int icon_w = 0;
 	int icon_h = 0;
 	
-	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_INFO, &icon_w, &icon_h);
-	CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT, ypos + (hheight - icon_h)/2);
+	frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_w, &icon_h);
+	frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT, ypos + (hheight - icon_h)/2);
 	
 	// caption
 	const char * l_caption;
@@ -177,16 +187,9 @@ void CProgressWindow::paint()
 		l_caption = captionString.c_str();
 	  
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_w + ICON_OFFSET, ypos + hheight, width - BORDER_LEFT - BORDER_RIGHT - ICON_OFFSET, l_caption, COL_MENUHEAD, 0, true); // UTF-8
-		
-	// footer
-	// shadow
-	CFrameBuffer::getInstance()->paintBoxRel(x + SHADOW_OFFSET, ypos + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
-
-	// foot
-	CFrameBuffer::getInstance()->paintBoxRel(x, ypos + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
 	// msg status
-	ypos += hheight + (mheight >>1);
+	ypos += hheight + (mheight>>1);
 	statusTextY = ypos + mheight;
 
 	showStatusMessageUTF(statusText);
@@ -208,7 +211,7 @@ int CProgressWindow::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 	
 	paint();
 	
-	CFrameBuffer::getInstance()->blit();
+	frameBuffer->blit();
 
 	return menu_return::RETURN_REPAINT;
 }

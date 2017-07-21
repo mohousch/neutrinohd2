@@ -30,18 +30,22 @@
 #include <string>
 
 #include <driver/framebuffer.h>
-#include <driver/fb_window.h>
 #include <system/localize.h>
 
-#include "menue.h"
-#include "progressbar.h"
+#include <gui/widget/menue.h>
+#include <gui/widget/progressbar.h>
+#include <gui/widget/window.h>
 
 
 class CProgressWindow : public CMenuTarget
 {
 	protected:
 
-		CFBWindow* frameBuffer;
+		CFrameBuffer* frameBuffer;
+
+		CWindow m_cBoxWindow;
+		CWindow m_cTitleWindow;
+
 		neutrino_locale_t caption;
 		std::string captionString;
 

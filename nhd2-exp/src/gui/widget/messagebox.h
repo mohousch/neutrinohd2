@@ -38,7 +38,8 @@
 #include <stdint.h>
 #include <string>
 
-#include <driver/fb_window.h>
+#include <driver/framebuffer.h>
+#include <gui/widget/window.h>
 
 #include <system/localize.h>
 #include <system/settings.h>
@@ -52,7 +53,9 @@
 class CMessageBox
 {
 	protected:
-		CFBWindow * m_window;
+		CWindow m_cBoxWindow;
+		CWindow m_cTitleWindow;
+		CWindow m_cBodyWindow;
 
 		unsigned int m_currentPage;
 		std::vector<int>m_startEntryOfPage;

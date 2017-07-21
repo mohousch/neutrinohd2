@@ -92,9 +92,9 @@ void DText::init()
 	m_height = m_font->getHeight();	
 }
 
-void DText::draw(CFBWindow * window, int x, int y, int width)
+void DText::draw(int x, int y, int width)
 {
-	window->RenderString(m_font, x, y + m_height, width, m_text.c_str(), (CFBWindow::color_t)m_color, 0, true, m_background); // UTF-8	
+	m_font->RenderString(x, y + m_height, width, m_text.c_str(), m_color, 0, true, m_background); // UTF-8	
 }
 
 Drawable::DType DText::getType(void)
@@ -120,9 +120,9 @@ void DIcon::init()
 	CFrameBuffer::getInstance()->getIconSize(m_icon.c_str(), &m_width, &m_height);
 }
 
-void DIcon::draw(CFBWindow* window, int x, int y, int /*width*/)
+void DIcon::draw(int x, int y, int)
 {
-	window->paintIcon(m_icon.c_str(), x, y);	
+	CFrameBuffer::getInstance()->paintIcon(m_icon.c_str(), x, y);	
 }
 
 Drawable::DType DIcon::getType(void)
@@ -137,7 +137,7 @@ DPagebreak::DPagebreak()
 	m_width = 0;
 }
 
-void DPagebreak::draw(CFBWindow * /*window*/, int /*x*/, int /*y*/, int /*width*/)
+void DPagebreak::draw(int, int, int)
 {
 }
 

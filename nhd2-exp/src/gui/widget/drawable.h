@@ -38,7 +38,6 @@
 
 #include <global.h>
 
-#include <driver/fb_window.h>
 #include <system/localize.h>
 
 
@@ -71,7 +70,7 @@ class Drawable
 		* @param x x component of the top left corner
 		* @param y y component of the top left corner
 		*/
-		virtual void draw(CFBWindow *window, int x, int y, int width) = 0;
+		virtual void draw(int x, int y, int width) = 0;
 		virtual int getWidth(void);
 		virtual int getHeight(void);
 
@@ -101,7 +100,7 @@ class DText : public Drawable
 		DText(std::string& text, CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU], uint8_t col = COL_MENUCONTENT, const bool bg = false);
 		DText(const char *text, CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU], uint8_t col = COL_MENUCONTENT, const bool bg = false);
 		void init();
-		void draw(CFBWindow *window, int x, int y, int width);
+		void draw(int x, int y, int width);
 		DType getType();
 
 	protected:
@@ -121,7 +120,7 @@ class DIcon : public Drawable
 		DIcon(std::string& icon);
 		DIcon(const char  *icon);
 		void init();
-		void draw(CFBWindow *window, int x, int y, int width);
+		void draw(int x, int y, int width);
 		DType getType();
 
 	protected:
@@ -137,7 +136,7 @@ class DPagebreak : public Drawable
 	public:
 		DPagebreak();
 
-		void draw(CFBWindow *window, int x, int y, int width);
+		void draw(int x, int y, int width);
 		DType getType();	
 };
 

@@ -113,8 +113,6 @@ CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, con
 		if (nw > cFrameBox.iWidth)
 			cFrameBox.iWidth = nw;
 	}
-
-	window = NULL;
 }
 
 CHintBox::CHintBox(const char * Caption, const char * const Text, const int Width, const char * const Icon)
@@ -180,18 +178,10 @@ CHintBox::CHintBox(const char * Caption, const char * const Text, const int Widt
 		if (nw > cFrameBox.iWidth)
 			cFrameBox.iWidth = nw;
 	}
-
-	window = NULL;
 }
 
 CHintBox::~CHintBox(void)
 {
-	if (window != NULL)
-	{
-		delete window;
-		window = NULL;
-	}
-
 	free(message);
 }
 
@@ -199,24 +189,18 @@ void CHintBox::paint(void)
 {
 	dprintf(DEBUG_NORMAL, "CHintBox::paint\n");
 
-	if (window != NULL)
-	{
-		/*
-		 * do not paint stuff twice:
-		 * => thread safety needed by movieplayer.cpp:
-		 *    one thread calls our paint method, the other one our hide method
-		 * => no memory leaks
-		 */
-		return;
-	}
-
-	CFrameBuffer *frameBuffer = CFrameBuffer::getInstance();
-
 	// Box
-	cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth ) >> 1);
-	cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 2);
+	cFrameBox.iX = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - cFrameBox.iWidth ) >> 1);
+	cFrameBox.iY = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - cFrameBox.iHeight) >> 2);
 	
-	window = new CFBWindow(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth + SHADOW_OFFSET, cFrameBox.iHeight + SHADOW_OFFSET);
+	// Box
+	m_cBoxWindow.setDimension(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
+
+	m_cBoxWindow.enableShadow();
+	m_cBoxWindow.enableSaveScreen();
+	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.paint();
 
 	refresh();
 	
@@ -225,49 +209,50 @@ void CHintBox::paint(void)
 
 void CHintBox::refresh(void)
 {
-	if (window == NULL)
-	{
-		return;
-	}
-
-	// Shadow
-	window->paintBoxRel(SHADOW_OFFSET, SHADOW_OFFSET, cFrameBox.iWidth, cFrameBox.iHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_ALL);
-
 	// title
+	cFrameBoxTitle.iX = cFrameBox.iX;
+	cFrameBoxTitle.iY = cFrameBox.iY;
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
-	window->paintBoxRel(0, 0, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight, (CFBWindow::color_t)COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
+	m_cTitleWindow.setDimension(cFrameBoxTitle.iX, cFrameBoxTitle.iY, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight);
+
+	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
+	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
+	m_cTitleWindow.setGradient(g_settings.Head_gradient);
+	m_cTitleWindow.paint();
 	
-	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(caption); 
+	int icon_w = 0;
+	int icon_h = 0;
 
 	if (!iconfile.empty())
 	{
-		window->paintIcon(iconfile.c_str(), BORDER_LEFT, 0, cFrameBoxTitle.iHeight);
+		CFrameBuffer::getInstance()->getIconSize(iconfile.c_str(), &icon_w, &icon_h);
+		CFrameBuffer::getInstance()->paintIcon(iconfile.c_str(), cFrameBoxTitle.iX + BORDER_LEFT, cFrameBoxTitle.iY, cFrameBoxTitle.iHeight);
 	}
 	
-	int stringstartposX = (cFrameBox.iWidth >> 1) - (neededWidth >> 1);
-	window->RenderString( g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], stringstartposX, cFrameBoxTitle.iHeight, cFrameBox.iWidth - (stringstartposX) , caption.c_str(), (CFBWindow::color_t)COL_MENUHEAD, 0, true); 
+	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(caption); 
+	int stringstartposX = cFrameBoxTitle.iX + (cFrameBoxTitle.iWidth >> 1) - (neededWidth >> 1);
+	
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - icon_w - BORDER_LEFT, caption.c_str(), COL_MENUHEAD, 0, true); 
 
-	// body
-	window->paintBoxRel(0, cFrameBoxTitle.iHeight, cFrameBox.iWidth, (entries_per_page + 1)*cFrameBoxItem.iHeight, (CFBWindow::color_t)COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
-
+	// body text
 	int count = entries_per_page;
-	int ypos  = cFrameBoxTitle.iHeight + (cFrameBoxItem.iHeight >> 1);
+	int ypos  = cFrameBoxTitle.iY + cFrameBoxTitle.iHeight + (cFrameBoxItem.iHeight >> 1);
 
 	for (std::vector<char *>::const_iterator it = line.begin() + (entries_per_page * current_page); ((it != line.end()) && (count > 0)); it++, count--)
 	{
-		window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_MENU], 10, (ypos += cFrameBoxItem.iHeight), cFrameBox.iWidth, *it, (CFBWindow::color_t)COL_MENUCONTENT, 0, true); 
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + BORDER_LEFT, (ypos += cFrameBoxItem.iHeight), cFrameBox.iWidth, *it, COL_MENUCONTENT, 0, true); 
 	}
 
-	// scrollBar
+	// scrollBar #TODO
 	if (entries_per_page < line.size())
 	{
 		ypos = cFrameBoxTitle.iHeight + (cFrameBoxItem.iHeight >> 1);
-		window->paintBoxRel(cFrameBox.iWidth - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, entries_per_page*cFrameBoxItem.iHeight, COL_MENUCONTENT_PLUS_1);
+		CFrameBuffer::getInstance()->paintBoxRel(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, entries_per_page*cFrameBoxItem.iHeight, COL_MENUCONTENT_PLUS_1);
 
 		unsigned int marker_size = (entries_per_page*cFrameBoxItem.iHeight) / ((line.size() + entries_per_page - 1) / entries_per_page);
 
-		window->paintBoxRel(cFrameBox.iWidth - (SCROLLBAR_WIDTH - 2), ypos + current_page*marker_size, SCROLLBAR_WIDTH - 4, marker_size, COL_MENUCONTENT_PLUS_3);
+		CFrameBuffer::getInstance()->paintBoxRel(cFrameBox.iX + cFrameBox.iWidth - (SCROLLBAR_WIDTH - 2), ypos + current_page*marker_size, SCROLLBAR_WIDTH - 4, marker_size, COL_MENUCONTENT_PLUS_3);
 	}	
 }
 
@@ -296,11 +281,7 @@ void CHintBox::scroll_down(void)
 
 void CHintBox::hide(void)
 {
-	if (window != NULL)
-	{
-		delete window;
-		window = NULL;
-	}	
+	m_cBoxWindow.hide();	
 }
 
 int CHintBox::exec(int timeout)

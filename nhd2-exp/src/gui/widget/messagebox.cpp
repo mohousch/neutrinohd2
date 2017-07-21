@@ -217,12 +217,6 @@ CMessageBox::CMessageBox(const char* const Caption, ContentLines& Lines, const i
 
 CMessageBox::~CMessageBox(void)
 {
-	if (m_window != NULL)
-	{
-		delete m_window;
-		m_window = NULL;
-	}
-	
 	if (m_message != NULL) 
 	{
 		free(m_message);
@@ -269,7 +263,6 @@ void CMessageBox::init(const char * const Caption, const int Width, const char *
 			if ((*item)->getType() == Drawable::DTYPE_TEXT)
 				m_fheight = (*item)->getHeight();
 			//
-
 			if ((*item)->getHeight() > maxHeight)
 				maxHeight = (*item)->getHeight();
 			lineWidth += (*item)->getWidth();
@@ -349,70 +342,64 @@ void CMessageBox::init(const char * const Caption, const int Width, const char *
 
 	if (nw > m_width)
 		m_width = nw;
-
-	m_window = NULL;
 }
 
 void CMessageBox::paint(void)
 {
 	dprintf(DEBUG_NORMAL, "CMessageBox::paint\n");
 
-	if (m_window != NULL)
-	{
-		/*
-		 * do not paint stuff twice:
-		 * => thread safety needed by movieplayer.cpp:
-		 *    one thread calls our paint method, the other one our hide method
-		 * => no memory leaks
-		 */
-		return;
-	}
-
-        CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
-        m_window = new CFBWindow(frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - m_width ) >> 1),
-                               frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - m_height) >> 2),
+	m_cBoxWindow.setDimension(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1),
+                               CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2),
                                m_width + borderwidth,
                                m_height + borderwidth);
+
+	m_cBoxWindow.enableShadow();
+	m_cBoxWindow.enableSaveScreen();
+	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.paint();
 
 	refresh();
 }
 
 void CMessageBox::refresh()
 {
-	if (m_window == NULL)
-	{
-		return;
-	}
-	
-	// paint shadow
-	m_window->paintBoxRel(borderwidth, borderwidth, m_width, m_height, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH);
-	
 	// title
-	m_window->paintBoxRel(0, 0, m_width, m_theight, (CFBWindow::color_t)COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);//round
-	
-	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(m_caption); // UTF-8
+	m_cTitleWindow.setDimension(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1), CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), m_width, m_theight);
+
+	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
+	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
+	m_cTitleWindow.setGradient(g_settings.Head_gradient);
+	m_cTitleWindow.paint();
+
+	int icon_w = 0;
+	int icon_h = 0;
 
 	if (!m_iconfile.empty())
 	{
-		m_window->paintIcon(m_iconfile.c_str(), BORDER_LEFT, 0, m_theight);
+		CFrameBuffer::getInstance()->getIconSize(m_iconfile.c_str(), &icon_w, &icon_h);
+		CFrameBuffer::getInstance()->paintIcon(m_iconfile.c_str(), 
+			CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + BORDER_LEFT, 
+			CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), 
+			m_theight);
 	}
 	
-	int stringstartposX = (m_width >> 1) - (neededWidth >> 1);
-	m_window->RenderString( g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], stringstartposX, m_theight, m_width - (stringstartposX) , m_caption.c_str(), (CFBWindow::color_t)COL_MENUHEAD, 0, true); // UTF-8
+	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(m_caption); // UTF-8
+	int stringstartposX = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + (m_width >> 1) - (neededWidth >> 1);
 
-	// menu text panel
-	m_window->paintBoxRel(0, m_theight, m_width, ((m_maxEntriesPerPage + 1)*m_fheight), (CFBWindow::color_t)COL_MENUCONTENT_PLUS_0);
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_theight, m_width - BORDER_LEFT - icon_w - BORDER_LEFT, m_caption.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 
-	int yPos  = m_theight + (m_fheight >> 1);
+	//Body
+	int yPos  = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_theight + (m_fheight >> 1);
 
 	for (ContentLines::iterator it = m_lines.begin() + m_startEntryOfPage[m_currentPage]; it != m_lines.begin() + m_startEntryOfPage[m_currentPage + 1] && it != m_lines.end(); it++)
 	{
-		int xPos = BORDER_LEFT;
+		int xPos = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + BORDER_LEFT;
 		int maxHeight = 0;
 		
 		for (std::vector<Drawable*>::iterator d = it->begin(); d!=it->end(); d++)
 		{
-  			(*d)->draw(m_window, xPos, yPos, m_width - BORDER_LEFT - BORDER_RIGHT);
+  			(*d)->draw(xPos, yPos, m_width - BORDER_LEFT - BORDER_RIGHT);
 
 			xPos += (*d)->getWidth() + BORDER_LEFT + BORDER_RIGHT;
 			
@@ -422,14 +409,14 @@ void CMessageBox::refresh()
 		yPos += maxHeight;
 	}
 
-	// paint scrollbar
+	// paint scrollbar #TODO
 	if (has_scrollbar()) 
 	{
-		yPos = m_theight;
-		m_window->paintBoxRel(m_width - SCROLLBAR_WIDTH, yPos, SCROLLBAR_WIDTH, m_maxEntriesPerPage*m_fheight, COL_MENUCONTENT_PLUS_1);
+		yPos = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_theight;
+		CFrameBuffer::getInstance()->paintBoxRel(m_width - SCROLLBAR_WIDTH, yPos, SCROLLBAR_WIDTH, m_maxEntriesPerPage*m_fheight, COL_MENUCONTENT_PLUS_1);
 		
 		unsigned int marker_size = (m_maxEntriesPerPage*m_fheight) / m_pages;
-		m_window->paintBoxRel(m_width - 13, yPos + m_currentPage * marker_size, 11, marker_size, COL_MENUCONTENT_PLUS_3);
+		CFrameBuffer::getInstance()->paintBoxRel(m_width - 13, yPos + m_currentPage * marker_size, 11, marker_size, COL_MENUCONTENT_PLUS_3);
 	}
 }
 
@@ -458,11 +445,7 @@ void CMessageBox::scroll_down(void)
 
 void CMessageBox::hide(void)
 {
-	if (m_window != NULL)
-	{
-		delete m_window;
-		m_window = NULL;
-	}
+	m_cBoxWindow.hide();
 }
 
 void CMessageBox::returnDefaultValueOnTimeout(bool returnDefault)
@@ -476,7 +459,7 @@ void CMessageBox::paintButtons()
 	uint8_t    color;
 	fb_pixel_t bgcolor;
 
-	m_window->paintBoxRel(0, m_height - (m_fheight << 1), m_width, (m_fheight << 1), (CFBWindow::color_t)COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	//m_window->paintBoxRel(0, m_height - (m_fheight << 1), m_width, (m_fheight << 1), (CFBWindow::color_t)COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
 	if (showbuttons & mbNone)
 		return;
@@ -492,7 +475,7 @@ void CMessageBox::paintButtons()
 	if(ButtonSpacing <= ICON_OFFSET) 
 		ButtonSpacing = ICON_OFFSET;
 
-	int xpos = BORDER_LEFT;
+	int xpos = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + BORDER_LEFT;
 	int fh = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 	const int noname = 20;
 	
@@ -511,12 +494,12 @@ void CMessageBox::paintButtons()
 		}
 		
 
-		m_window->paintBoxRel(xpos, m_height - m_fheight - noname, ButtonWidth, m_fheight, (CFBWindow::color_t)bgcolor);
+		CFrameBuffer::getInstance()->paintBoxRel(xpos, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_height - m_fheight - noname, ButtonWidth, m_fheight, bgcolor);
 
 		CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iw, &ih);
-		m_window->paintIcon(NEUTRINO_ICON_BUTTON_RED, xpos + BORDER_LEFT + ICON_OFFSET, m_height - m_fheight - noname, m_fheight);
+		CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_RED, xpos + BORDER_LEFT + ICON_OFFSET, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_height - m_fheight - noname, m_fheight);
 
-		m_window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], xpos + BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET, (m_height - noname) - (m_fheight - fh)/2, ButtonWidth - (BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET + BORDER_LEFT), g_Locale->getText(LOCALE_MESSAGEBOX_YES), (CFBWindow::color_t)color, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(xpos + BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + (m_height - noname) - (m_fheight - fh)/2, ButtonWidth - (BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET + BORDER_LEFT), g_Locale->getText(LOCALE_MESSAGEBOX_YES), color, 0, true); // UTF-8
 		
 		xpos += ButtonWidth + ButtonSpacing;
 	}
@@ -535,15 +518,14 @@ void CMessageBox::paintButtons()
 			bgcolor = COL_INFOBAR_SHADOW_PLUS_0;
 		}
 
-		m_window->paintBoxRel(xpos, m_height - m_fheight-noname, ButtonWidth, m_fheight, (CFBWindow::color_t)bgcolor);
+		CFrameBuffer::getInstance()->paintBoxRel(xpos, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_height - m_fheight-noname, ButtonWidth, m_fheight, bgcolor);
 
-		m_window->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, xpos + BORDER_LEFT + ICON_OFFSET, m_height - m_fheight - noname, m_fheight);
+		CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, xpos + BORDER_LEFT + ICON_OFFSET, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_height - m_fheight - noname, m_fheight);
 
-		m_window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], xpos + BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET, (m_height - noname)-(m_fheight-fh)/2, ButtonWidth - (BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET + BORDER_LEFT), g_Locale->getText(LOCALE_MESSAGEBOX_NO), (CFBWindow::color_t)color, 0, true); // UTF-8		
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(xpos + BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + (m_height - noname)-(m_fheight-fh)/2, ButtonWidth - (BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET + BORDER_LEFT), g_Locale->getText(LOCALE_MESSAGEBOX_NO), color, 0, true); // UTF-8		
 	
 		xpos += ButtonWidth + ButtonSpacing;
 	}
-
 
 	// cancel|back|ok
 	if (showbuttons & (mbCancel | mbBack | mbOk))
@@ -559,16 +541,11 @@ void CMessageBox::paintButtons()
 			bgcolor = COL_INFOBAR_SHADOW_PLUS_0;
 		}
 
-		m_window->paintBoxRel(xpos, m_height-m_fheight-noname, ButtonWidth, m_fheight, (CFBWindow::color_t)bgcolor);
+		CFrameBuffer::getInstance()->paintBoxRel(xpos, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_height-m_fheight-noname, ButtonWidth, m_fheight, bgcolor);
 
-		m_window->paintIcon(NEUTRINO_ICON_BUTTON_HOME, xpos + BORDER_LEFT + ICON_OFFSET, m_height-m_fheight - noname, m_fheight);
+		CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_HOME, xpos + BORDER_LEFT + ICON_OFFSET, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_height-m_fheight - noname, m_fheight);
 
-		m_window->RenderString(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], 
-					xpos + BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET, 
-					(m_height - noname) - (m_fheight - fh)/2, 
-					ButtonWidth - (BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET + BORDER_LEFT), 
-					g_Locale->getText((showbuttons & mbCancel) ? LOCALE_MESSAGEBOX_CANCEL : (showbuttons & mbOk) ? LOCALE_MESSAGEBOX_OK : LOCALE_MESSAGEBOX_BACK), 
-					(CFBWindow::color_t)color, 0, true); // UTF-8	
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(xpos + BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + (m_height - noname) - (m_fheight - fh)/2, ButtonWidth - (BORDER_LEFT + ICON_OFFSET + iw + ICON_OFFSET + BORDER_LEFT), g_Locale->getText((showbuttons & mbCancel) ? LOCALE_MESSAGEBOX_CANCEL : (showbuttons & mbOk) ? LOCALE_MESSAGEBOX_OK : LOCALE_MESSAGEBOX_BACK), color, 0, true); // UTF-8	
 	}	
 }
 

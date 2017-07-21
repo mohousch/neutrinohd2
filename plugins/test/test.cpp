@@ -289,6 +289,7 @@ void CTestMenu::testCWindow()
 	window->setColor(COL_DARK_ORANGE);
 	window->setCorner(RADIUS_MID, CORNER_ALL);
 	window->setGradient(gradientDark2Light2Dark);
+
 	window->paint();
 
 	CFrameBuffer::getInstance()->blit();
@@ -332,6 +333,7 @@ void CTestMenu::testCWindowShadow()
 	window->setCorner(RADIUS_MID, CORNER_ALL);
 	window->enableShadow();
 	window->enableSaveScreen();
+
 	window->paint();
 
 	CFrameBuffer::getInstance()->blit();
@@ -487,12 +489,12 @@ void CTestMenu::testCMessageBox()
 
 void CTestMenu::testCMessageBoxInfoMsg()
 {
-	MessageBox(LOCALE_MESSAGEBOX_INFO, "testing CMessageBox", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+	MessageBox(LOCALE_MESSAGEBOX_INFO, "testing CMessageBoxInfoMsg", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 }
 
 void CTestMenu::testCMessageBoxErrorMsg()
 {
-	MessageBox(LOCALE_MESSAGEBOX_ERROR, "testing CMessageBox", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+	MessageBox(LOCALE_MESSAGEBOX_ERROR, "testing CMessageBoxErrorMsg", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 }
 
 void CTestMenu::testCHintBox()
@@ -506,7 +508,7 @@ void CTestMenu::testCHintBox()
 
 void CTestMenu::testCHintBoxInfo()
 {
-	HintBox(LOCALE_MESSAGEBOX_INFO, "testing CHintBox");
+	HintBox(LOCALE_MESSAGEBOX_INFO, "testing CHintBoxInfo");
 }
 
 void CTestMenu::testCHelpBox()

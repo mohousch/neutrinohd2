@@ -37,6 +37,8 @@
 #include <config.h>
 #endif
 
+#include <global.h>
+
 #include <driver/framebuffer.h>
 #include <system/settings.h>
 #include <gui/color.h>
@@ -55,13 +57,12 @@ class CWindow
 
 		int radius;
 		int corner;
-		fb_pixel_t color;
+		fb_pixel_t bgcolor;
 		int gradient;
 
 		bool enableshadow;
 		bool savescreen;
 
-		//void init(void);
 		void saveScreen();
 		void restoreScreen();
 
@@ -74,7 +75,7 @@ class CWindow
 		void init(void);
 		void setDimension(const int x, const int y, const int dx, const int dy);
 		void setDimension(CBox* position);
-		void setColor(int col){color = col;};
+		void setColor(fb_pixel_t col){bgcolor = col;};
 		void setCorner(int ra, int co){radius = ra; corner = co;};
 		void setGradient(int grad){gradient = grad;};
 		void enableShadow(void){enableshadow = true;};

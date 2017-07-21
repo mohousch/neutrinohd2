@@ -40,7 +40,6 @@ libneutrino_driver_a_SOURCES = \
 	encoding.cpp \
 	fontrenderer.cpp \
 	framebuffer.cpp \
-	fb_window.cpp \
 	rcinput.cpp \
 	vcrcontrol.cpp \
 	audioplay.cpp \

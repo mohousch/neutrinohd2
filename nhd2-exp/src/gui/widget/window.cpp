@@ -34,7 +34,7 @@
 #include <config.h>
 #endif
 
-#include "window.h"
+#include <gui/widget/window.h>
 
 
 CWindow::CWindow()
@@ -67,22 +67,25 @@ void CWindow::init(void)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
-	radius = NO_RADIUS;
-	corner = CORNER_NONE;
-	color = COL_MENUHEAD_PLUS_0;
+	radius = RADIUS_MID;
+	corner = CORNER_ALL;
+	bgcolor = COL_MENUHEAD_PLUS_0;
 	gradient = nogradient;
 
 	enableshadow = false;
 
 	savescreen = false;
-	background	= NULL;
+	background = NULL;
 
-	full_width = enableshadow? cFrameBox.iWidth + SHADOW_OFFSET : cFrameBox.iWidth;
-	full_height = enableshadow? cFrameBox.iHeight + SHADOW_OFFSET : cFrameBox.iHeight;
+	full_width = cFrameBox.iWidth;
+	full_height = cFrameBox.iHeight;
 }
 
 void CWindow::saveScreen()
 {
+	full_width = enableshadow? cFrameBox.iWidth + SHADOW_OFFSET : cFrameBox.iWidth;
+	full_height = enableshadow? cFrameBox.iHeight + SHADOW_OFFSET : cFrameBox.iHeight;
+
 	background = new fb_pixel_t[full_width*full_height];
 	
 	if(background)
@@ -91,6 +94,9 @@ void CWindow::saveScreen()
 
 void CWindow::restoreScreen()
 {
+	full_width = enableshadow? cFrameBox.iWidth + SHADOW_OFFSET : cFrameBox.iWidth;
+	full_height = enableshadow? cFrameBox.iHeight + SHADOW_OFFSET : cFrameBox.iHeight;
+
 	if(background) 
 	{
 		frameBuffer->RestoreScreen(cFrameBox.iX, cFrameBox.iY, full_width, full_height, background);
@@ -127,7 +133,9 @@ void CWindow::paint()
 		frameBuffer->paintBoxRel(cFrameBox.iX + SHADOW_OFFSET, cFrameBox.iY + SHADOW_OFFSET, cFrameBox.iWidth, cFrameBox.iHeight, COL_INFOBAR_SHADOW_PLUS_0, radius, corner);
 
 	// window Box
-	frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, color, radius, corner, gradient);
+	frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, bgcolor, radius, corner, gradient);
+
+	frameBuffer->blit();
 }
 
 void CWindow::hide()
@@ -136,6 +144,8 @@ void CWindow::hide()
 		restoreScreen();
 	else
 		frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, full_width, full_height);
+
+	frameBuffer->blit();
 }
 
 

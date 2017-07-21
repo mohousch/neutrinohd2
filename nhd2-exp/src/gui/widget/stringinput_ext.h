@@ -35,14 +35,13 @@
 #ifndef __stringinput_ext__
 #define __stringinput_ext__
 
-#include "menue.h"
-
-#include <driver/framebuffer.h>
-#include <driver/fb_window.h>
-#include <system/localize.h>
-
 #include <string>
 #include <vector>
+
+#include <gui/widget/menue.h>
+
+#include <driver/framebuffer.h>
+#include <system/localize.h>
 
 
 class CExtendedInput_Item;

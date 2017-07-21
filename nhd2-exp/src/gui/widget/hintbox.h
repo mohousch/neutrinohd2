@@ -38,7 +38,7 @@
 #include <string>
 #include <vector>
 
-#include <driver/fb_window.h>
+#include <gui/widget/window.h>
 
 #include <system/localize.h>
 #include <system/settings.h>
@@ -51,15 +51,16 @@
 class CHintBox
 {
 	protected:
-
-		CFBWindow * window;
-
-		unsigned int entries_per_page;
-		unsigned int current_page;
-
 		CBox cFrameBox;
 		CBox cFrameBoxTitle;
 		CBox cFrameBoxItem;
+		
+		CWindow m_cBoxWindow;
+		CWindow m_cTitleWindow;
+		CWindow m_cBodyWindow;
+
+		unsigned int entries_per_page;
+		unsigned int current_page;
 
 		std::string caption;
 		char * message;
