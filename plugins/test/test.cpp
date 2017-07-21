@@ -286,7 +286,7 @@ void CTestMenu::testCWindow()
 
 	window->setDimension(Box.iX, Box.iY, Box.iWidth, Box.iHeight);
 
-	window->setColor(COL_DARK_ORANGE);
+	window->setColor(COL_MENUHEAD_PLUS_0);
 	window->setCorner(RADIUS_MID, CORNER_ALL);
 	window->setGradient(gradientDark2Light2Dark);
 
@@ -329,7 +329,7 @@ void CTestMenu::testCWindowShadow()
 	//
 	CWindow* window = new CWindow(&Box);
 
-	window->setColor(COL_DARK_ORANGE);
+	window->setColor(COL_MENUCONTENT_PLUS_0);
 	window->setCorner(RADIUS_MID, CORNER_ALL);
 	window->enableShadow();
 	window->enableSaveScreen();
@@ -529,7 +529,16 @@ void CTestMenu::testCHelpBox()
 	
 
 	//
-	//helpBox->addPagebreak();
+	helpBox->addPagebreak();
+
+	// icon
+	helpBox->addLine(NEUTRINO_ICON_BUTTON_RED, "Huhu :-P");
+
+	//
+	helpBox->addLine("Huhu :-)", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], COL_RED0, true);
+
+	//
+	helpBox->addLine("neutrinoHD2 the best GUI :-P", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], COL_YELLOW0, true);
 
 	helpBox->show(LOCALE_MESSAGEBOX_INFO, CMessageBox::mbrBack, CMessageBox::mbNone);
 	

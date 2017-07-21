@@ -43,7 +43,6 @@
 
 #include <system/debug.h>
 
-#define borderwidth 4
 
 #define HINTBOX_MAX_HEIGHT 420
 
@@ -209,6 +208,12 @@ void CHintBox::paint(void)
 
 void CHintBox::refresh(void)
 {
+	//body
+	m_cBodyWindow.setDimension(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
+	m_cBodyWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	m_cBodyWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBodyWindow.paint();
+	
 	// title
 	cFrameBoxTitle.iX = cFrameBox.iX;
 	cFrameBoxTitle.iY = cFrameBox.iY;

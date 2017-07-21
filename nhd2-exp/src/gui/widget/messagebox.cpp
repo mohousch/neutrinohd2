@@ -45,8 +45,6 @@
 #include <system/debug.h>
 
 
-#define borderwidth 4
-
 #define MESSAGEBOX_MAX_HEIGHT 420
 
 CMessageBox::CMessageBox(const neutrino_locale_t Caption, const char * const Text, const int Width, const char * const Icon, const CMessageBox::result_ Default, const uint32_t ShowButtons)
@@ -301,8 +299,7 @@ void CMessageBox::init(const char * const Caption, const int Width, const char *
 		line++;
 	}
 
-	//FIXME:???
-	m_width = w_max(maxWidth, borderwidth); 
+	m_width = maxWidth; 
 	// if there is only one page m_height is already correct 
 	//but m_maxEntries has not been set
 	if (m_startEntryOfPage.size() > 1)
@@ -317,7 +314,6 @@ void CMessageBox::init(const char * const Caption, const int Width, const char *
 
 	m_startEntryOfPage.push_back(line + 1); // needed to calculate amount of items on last page
 
-	//m_width = w_max(maxWidth, borderwidth); 
 	m_currentPage = 0;
 	m_pages = page + 1;
 	unsigned int additional_width;
@@ -350,8 +346,8 @@ void CMessageBox::paint(void)
 
 	m_cBoxWindow.setDimension(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1),
                                CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2),
-                               m_width + borderwidth,
-                               m_height + borderwidth);
+                               m_width,
+                               m_height);
 
 	m_cBoxWindow.enableShadow();
 	m_cBoxWindow.enableSaveScreen();
@@ -364,6 +360,16 @@ void CMessageBox::paint(void)
 
 void CMessageBox::refresh()
 {
+	// box
+	m_cBodyWindow.setDimension(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1),
+                               CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2),
+                               m_width,
+                               m_height);
+
+	m_cBodyWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	m_cBodyWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBodyWindow.paint();
+
 	// title
 	m_cTitleWindow.setDimension(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1), CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), m_width, m_theight);
 
@@ -413,10 +419,10 @@ void CMessageBox::refresh()
 	if (has_scrollbar()) 
 	{
 		yPos = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_theight;
-		CFrameBuffer::getInstance()->paintBoxRel(m_width - SCROLLBAR_WIDTH, yPos, SCROLLBAR_WIDTH, m_maxEntriesPerPage*m_fheight, COL_MENUCONTENT_PLUS_1);
+		CFrameBuffer::getInstance()->paintBoxRel(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + m_width - SCROLLBAR_WIDTH, yPos, SCROLLBAR_WIDTH, m_maxEntriesPerPage*m_fheight, COL_MENUCONTENT_PLUS_1);
 		
 		unsigned int marker_size = (m_maxEntriesPerPage*m_fheight) / m_pages;
-		CFrameBuffer::getInstance()->paintBoxRel(m_width - 13, yPos + m_currentPage * marker_size, 11, marker_size, COL_MENUCONTENT_PLUS_3);
+		CFrameBuffer::getInstance()->paintBoxRel(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + m_width - 13, yPos + m_currentPage * marker_size, 11, marker_size, COL_MENUCONTENT_PLUS_3);
 	}
 }
 
