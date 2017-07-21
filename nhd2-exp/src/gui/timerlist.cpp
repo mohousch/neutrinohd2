@@ -273,6 +273,9 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CTimerList::exec: actionKey:%s\n", actionKey.c_str());
 
+	if(parent)
+		parent->hide();
+
 	const char * key = actionKey.c_str();
 	
 	CSelectChannelWidget*  CSelectChannelWidgetHandler;
@@ -406,9 +409,6 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 		
 		return menu_return::RETURN_EXIT;
 	}
-
-	if(parent)
-		parent->hide();
 
 	int ret = show();
 

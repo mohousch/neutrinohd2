@@ -40,8 +40,7 @@
 #include <driver/framebuffer.h>
 
 #include <gui/widget/menue.h>
-
-#include <gui/plugins.h>
+#include <gui/widget/window.h>
 
 
 class CDBoxInfoWidget : public CMenuTarget
@@ -54,9 +53,11 @@ class CDBoxInfoWidget : public CMenuTarget
 		CBox cFrameBoxTitle;
 		CBox cFrameBoxBody;
 		CBox cFrameBoxItem;
-		CBox cFrameBoxShadow;
 
 		CIcon titleIcon;
+
+		CWindow m_cBoxWindow;
+		CWindow m_cTitleWindow;
 
 		void paint();
 

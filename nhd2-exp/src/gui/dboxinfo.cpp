@@ -78,8 +78,6 @@ CFrontend * getFE(int index);
 #include <sys/mount.h>
 
 
-#define SHADOW_OFFSET	5
-
 static int my_filter(const struct dirent * dent)
 {
 	if(dent->d_name[0] == 's' && dent->d_name[1] == 'd')
@@ -104,6 +102,8 @@ CDBoxInfoWidget::CDBoxInfoWidget()
 	
     	cFrameBox.iX = (((g_settings.screen_EndX - g_settings.screen_StartX) - cFrameBox.iWidth) / 2) + g_settings.screen_StartX;
 	cFrameBox.iY = (((g_settings.screen_EndY - g_settings.screen_StartY) - cFrameBox.iHeight) / 2) + g_settings.screen_StartY;
+
+	m_cBoxWindow.setDimension(&cFrameBox);
 }
 
 int CDBoxInfoWidget::exec(CMenuTarget * parent, const std::string &)
@@ -126,7 +126,7 @@ int CDBoxInfoWidget::exec(CMenuTarget * parent, const std::string &)
 
 void CDBoxInfoWidget::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth + SHADOW_OFFSET, cFrameBox.iHeight + SHADOW_OFFSET);
+	m_cBoxWindow.hide();
 	
 	frameBuffer->blit();
 }
@@ -138,25 +138,26 @@ void CDBoxInfoWidget::paint()
 	int ypos = cFrameBox.iY;
 	int i = 0;
 	
-	// Shadow
-	cFrameBoxShadow.iX = cFrameBox.iX + SHADOW_OFFSET;
-	cFrameBoxShadow.iY = cFrameBox.iY + SHADOW_OFFSET;
-	cFrameBoxShadow.iWidth = cFrameBox.iWidth;
-	cFrameBoxShadow.iHeight = cFrameBox.iHeight;
+	// Box
+	m_cBoxWindow.enableShadow();
+	m_cBoxWindow.enableSaveScreen();
+	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.paint();
 
-	frameBuffer->paintBoxRel(cFrameBoxShadow.iX, cFrameBoxShadow.iY, cFrameBoxShadow.iWidth, cFrameBoxShadow.iHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH);
-
-	// head
+	// title
 	cFrameBoxTitle.iX = cFrameBox.iX;
 	cFrameBoxTitle.iY = cFrameBox.iY;
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
-	// Head Box
-	frameBuffer->paintBoxRel(cFrameBoxTitle.iX, cFrameBoxTitle.iY, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
+	m_cTitleWindow.setDimension(&cFrameBoxTitle);
+	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
+	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
+	m_cTitleWindow.setGradient(g_settings.Head_gradient);
+	m_cTitleWindow.paint();
 
 	frameBuffer->paintIcon(titleIcon.iconName.c_str(), cFrameBoxTitle.iX + BORDER_LEFT, cFrameBoxTitle.iY + (cFrameBoxTitle.iHeight - titleIcon.iHeight)/2);
 	
-	// Head title
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameBoxTitle.iX + BORDER_LEFT + titleIcon.iWidth + ICON_OFFSET, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - titleIcon.iWidth - ICON_OFFSET - BORDER_RIGHT, "Box info", COL_MENUHEAD, 0, true); // UTF-8
 
 	// Foot/Body
@@ -164,8 +165,6 @@ void CDBoxInfoWidget::paint()
 	cFrameBoxBody.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
 	cFrameBoxBody.iWidth = cFrameBox.iWidth;
 	cFrameBoxBody.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight;
-
-	frameBuffer->paintBoxRel(cFrameBoxBody.iX, cFrameBoxBody.iY, cFrameBoxBody.iWidth, cFrameBoxBody.iHeight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
 	// Items
 	ypos += cFrameBoxTitle.iHeight + (cFrameBoxItem.iHeight >>1);
