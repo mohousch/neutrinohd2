@@ -150,18 +150,13 @@ int CNetworkSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "network") 
 	{
-		CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_NETWORKMENU_SETUPNOW)); // UTF-8
-		hintBox->paint();
-		
 		networkConfig->automatic_start = (network_automatic_start == 1);
 
 		networkConfig->stopNetwork();
 		networkConfig->commitConfig();
 		networkConfig->startNetwork();
-		
-		hintBox->hide();
-		delete hintBox;
-		hintBox = NULL;
+
+		HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_NETWORKMENU_SETUPNOW));
 		
 		return ret;
 	}
@@ -495,7 +490,7 @@ void testNetworkSettings(const char* ip, const char* netmask, const char* broadc
 	text += "\nwww.google.de: ";
 	text += mypinghost("173.194.35.152");
 
-	MessageBox(LOCALE_NETWORKMENU_TEST, text, CMessageBox::mbrBack, CMessageBox::mbBack); // UTF-8
+	MessageBox(LOCALE_NETWORKMENU_TEST, text, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
 }
 
 void showCurrentNetworkSettings()
@@ -544,7 +539,7 @@ void showCurrentNetworkSettings()
 		text += router;
 	}
 	
-	MessageBox(LOCALE_NETWORKMENU_SHOW, text, CMessageBox::mbrBack, CMessageBox::mbBack); // UTF-8
+	MessageBox(LOCALE_NETWORKMENU_SHOW, text, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
 }
 
 

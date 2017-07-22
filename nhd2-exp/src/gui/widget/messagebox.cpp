@@ -389,11 +389,8 @@ void CMessageBox::refresh()
 			CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), 
 			m_theight);
 	}
-	
-	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(m_caption); // UTF-8
-	int stringstartposX = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + (m_width >> 1) - (neededWidth >> 1);
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_theight, m_width - BORDER_LEFT - icon_w - BORDER_LEFT, m_caption.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + BORDER_LEFT + icon_w + BORDER_LEFT, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_theight, m_width - BORDER_LEFT - icon_w - BORDER_LEFT, m_caption.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 
 	//Body
 	int yPos  = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_theight + (m_fheight >> 1);
@@ -570,9 +567,9 @@ int CMessageBox::exec(int timeout)
 	CFrameBuffer::getInstance()->blit();
 
 	if ( timeout == -1 )
-		timeout = g_settings.timing[SNeutrinoSettings::TIMING_EPG];
+		timeout = g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR];
 
-	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd( timeout );
+	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(timeout);
 
 	bool loop = true;
 	while (loop)

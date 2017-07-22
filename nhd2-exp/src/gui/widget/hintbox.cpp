@@ -235,10 +235,7 @@ void CHintBox::refresh(void)
 		CFrameBuffer::getInstance()->paintIcon(iconfile.c_str(), cFrameBoxTitle.iX + BORDER_LEFT, cFrameBoxTitle.iY, cFrameBoxTitle.iHeight);
 	}
 	
-	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(caption); 
-	int stringstartposX = cFrameBoxTitle.iX + (cFrameBoxTitle.iWidth >> 1) - (neededWidth >> 1);
-	
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - icon_w - BORDER_LEFT, caption.c_str(), COL_MENUHEAD, 0, true); 
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameBoxTitle.iX + BORDER_LEFT + icon_w + BORDER_LEFT, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - icon_w - BORDER_LEFT, caption.c_str(), COL_MENUHEAD, 0, true); 
 
 	// body text
 	int count = entries_per_page;

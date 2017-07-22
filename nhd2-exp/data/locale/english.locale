@@ -1020,7 +1020,7 @@ networkmenu.ntpserver NTP-Server
 networkmenu.ntpserver_hint1 NTP-Server example: ntp1.ptb.de
 networkmenu.ntpserver_hint2 need reboot or epg-reset
 networkmenu.ntptitle Time-Syncronisation
-networkmenu.setupnow Setup network now
+networkmenu.setupnow Setup network now, please wait...
 networkmenu.setuponstartup Setup network on startup
 networkmenu.show Show active network settings
 networkmenu.test Test network now

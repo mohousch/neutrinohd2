@@ -5188,9 +5188,6 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	else if(actionKey == "savesettings") 
 	{
-		CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MAINSETTINGS_SAVESETTINGSNOW_HINT)); // UTF-8
-		hintBox->paint();
-		
 		saveSetup(NEUTRINO_SETTINGS_FILE);
 
 		tuxtxt_close();
@@ -5198,9 +5195,7 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 		zapitCfg.saveLastChannel = g_settings.uselastchannel;
 		setZapitConfig(&zapitCfg);
 
-		hintBox->hide();
-		delete hintBox;
-		hintBox = NULL;
+		HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MAINSETTINGS_SAVESETTINGSNOW_HINT));
 	}
 	else if(actionKey == "features")
 	{
