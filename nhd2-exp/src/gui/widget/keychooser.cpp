@@ -193,10 +193,16 @@ void CKeyChooserItem::paint()
 	// footbox
 	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + hheight, width, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	// icon
+	int iw, ih;
+	frameBuffer->getIconSize(NEUTRINO_ICON_KEYBINDING, &iw, &ih);
+	frameBuffer->paintIcon(NEUTRINO_ICON_KEYBINDING, x + BORDER_LEFT, y + (hheight - ih)/2);
+
+	// title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + iw + BORDER_LEFT, y + hheight, width, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 
 	//paint msg...
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + 10, y + hheight + mheight, width, g_Locale->getText(LOCALE_KEYCHOOSER_TEXT1), COL_MENUCONTENT, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT, y + hheight + mheight, width, g_Locale->getText(LOCALE_KEYCHOOSER_TEXT1), COL_MENUCONTENT, 0, true); // UTF-8
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + 10, y + hheight + mheight* 2, width, g_Locale->getText(LOCALE_KEYCHOOSER_TEXT2), COL_MENUCONTENT, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT, y + hheight + mheight* 2, width, g_Locale->getText(LOCALE_KEYCHOOSER_TEXT2), COL_MENUCONTENT, 0, true); // UTF-8
 }
