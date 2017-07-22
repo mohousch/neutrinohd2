@@ -80,15 +80,9 @@ int CServiceSetup::exec(CMenuTarget* parent, const std::string& actionKey)
 	
 	if(actionKey == "reloadchannels")
 	{
-		CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SERVICEMENU_RELOAD_HINT));
+		HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SERVICEMENU_RELOAD_HINT));
 
-		hintBox->paint();
-		
 		g_Zapit->reinitChannels();
-		
-		hintBox->hide();
-		delete hintBox;
-		hintBox = NULL;
 		
 		return ret;
 	}

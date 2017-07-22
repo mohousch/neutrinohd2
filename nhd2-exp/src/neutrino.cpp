@@ -3747,16 +3747,8 @@ _repeat:
 	}
 	else if( msg == NeutrinoMessages::EVT_BOUQUETSCHANGED ) 
 	{
-		//CHintBox * reloadhintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SERVICEMENU_RELOAD_HINT));
-
-		//reloadhintBox->paint();
-
 		channelsInit();
 		channelList->adjustToChannelID(live_channel_id);//FIXME what if deleted ?
-		
-		//reloadhintBox->hide();
-		//delete reloadhintBox;
-		//reloadhintBox = NULL;
 
 		return messages_return::handled;
 	}

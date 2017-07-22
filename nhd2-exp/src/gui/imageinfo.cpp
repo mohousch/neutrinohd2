@@ -176,7 +176,7 @@ void CImageInfo::paint()
 	const char * imagename = "neutrinoHD2"; /*config.getString("imagename", "NeutrinoHD2").c_str();*/
 	//const char * homepage = config.getString("homepage",  "http://www.dgstation-forum.org").c_str();
 	//const char * creator = config.getString("creator",   "mohousch").c_str();
-	const char * version = "2.1"; /*config.getString("version",   "1201201602031021").c_str();*/
+	const char * version = "2.2"; /*config.getString("version",   "1201201602031021").c_str();*/
 	const char * docs = "http://wiki.neutrino-hd.de"; /*config.getString("docs",   "http://wiki.neutrino-hd.de").c_str();*/
 	//const char * forum = config.getString("forum",   "http://www.dgstation-forum.org").c_str();
 #ifdef SVNVERSION
@@ -186,7 +186,7 @@ void CImageInfo::paint()
 #endif	
 
 	//static CFlashVersionInfo versionInfo(version);
-	const char * releaseCycle = "2.1"; /*versionInfo.getReleaseCycle();*/
+	const char * releaseCycle = "2.2"; /*versionInfo.getReleaseCycle();*/
 	const char * imageType = "Snapshot"; /*versionInfo.getType();*/
 	sprintf((char*) imagedate, "%s  %s", __DATE__ /*versionInfo.getDate()*/, __TIME__ /*versionInfo.getTime()*/);
 
