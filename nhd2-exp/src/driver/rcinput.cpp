@@ -405,7 +405,7 @@ CRCInput::CRCInput() : configfile('\t')
 	if (listen(fd_event, 15) !=0)
 	{
 		perror("CRCInput::CRCInput listen failed...\n");
-		exit( -1 );
+		exit(-1);
 	}
 
 	// open rc

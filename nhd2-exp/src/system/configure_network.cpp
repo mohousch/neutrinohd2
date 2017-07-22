@@ -46,6 +46,11 @@ CNetworkConfig::CNetworkConfig(void)
 	nameserver = our_nameserver;
 	
 	ifname = "eth0";
+	orig_automatic_start = false;
+	orig_inet_static = false;
+	automatic_start = false;
+	inet_static = false;
+	wireless = false;
 }
 
 CNetworkConfig *CNetworkConfig::getInstance()
@@ -103,7 +108,7 @@ void CNetworkConfig::init_vars(void)
 	netGetMacAddr((char *) ifname.c_str(), addr);
 
 	std::stringstream mac_tmp;
-	for(int i=0;i<6;++i)
+	for(int i = 0; i < 6; ++i)
 		mac_tmp<<std::hex<<std::setfill('0')<<std::setw(2)<<(int)addr[i]<<':';
 
 	mac_addr = mac_tmp.str().substr(0,17);
@@ -113,6 +118,7 @@ void CNetworkConfig::init_vars(void)
 	encryption = "WPA2";
 
 	wireless = 0;
+
 	std::string tmp = "/sys/class/net/" + ifname + "/wireless";
 
 	if(access(tmp.c_str(), R_OK) == 0)
@@ -140,16 +146,12 @@ void CNetworkConfig::copy_to_orig(void)
 
 bool CNetworkConfig::modified_from_orig(void)
 {
-	/* wireless */
 	if(wireless) 
 	{
 		if( (ssid != orig_ssid) || (key != orig_key) || (encryption != orig_encryption) )
 			return 1;
 	}
 	
-	/* wired */
-	/* check for following changes with dhcp enabled trigger apply question on menu quit, 
-	 * even if apply already done */
 	if (inet_static) 
 	{
 		if ((orig_address         != address        ) ||
