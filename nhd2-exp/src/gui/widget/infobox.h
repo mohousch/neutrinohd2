@@ -55,7 +55,7 @@
 
 #include <string>
 
-#include "textbox.h"
+#include <gui/widget/textbox.h>
 
 #include <gui/widget/icons.h>
 #include <driver/framebuffer.h>
@@ -79,7 +79,7 @@ class CInfoBox
 
 		CTextBox *m_pcTextBox;
 
-		CFrameBuffer * m_pcWindow;
+		CFrameBuffer * frameBuffer;
 
 		bool bigFonts;
 
@@ -108,8 +108,8 @@ class CInfoBox
 				   const int mode, 
 				   const CBox* position, 
 				   const char * title,
-				   CFont *fontTitle,
-				   const char * icon);
+				   CFont *fontTitle = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE],
+				   const char * icon = NEUTRINO_ICON_INFO);
 
 		// functions
 		int     exec(int timeout = -1);

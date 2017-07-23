@@ -169,12 +169,6 @@ CInfoBox::CInfoBox()
 //////////////////////////////////////////////////////////////////////
 CInfoBox::~CInfoBox()
 {
-	if (m_pcWindow != NULL)
-	{
-		delete m_pcWindow;
-		m_pcWindow = NULL;
-	}
-
 	if (m_pcTextBox != NULL)
 	{
 		delete m_pcTextBox;
@@ -206,7 +200,7 @@ void CInfoBox::initVar(void)
 	m_cBoxFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - MIN_WINDOW_HEIGHT) >>2);
 	m_cBoxFrame.iHeight = MIN_WINDOW_HEIGHT;
 
-	m_pcWindow = NULL;
+	frameBuffer = CFrameBuffer::getInstance();
 
 	bigFonts = false;
 }
@@ -245,7 +239,7 @@ void CInfoBox::initFramesRel(void)
 void CInfoBox::refreshTitle(void)
 {
 	// titlebox
-	m_pcWindow->paintBoxRel(m_cBoxFrameTitleRel.iX, 
+	frameBuffer->paintBoxRel(m_cBoxFrameTitleRel.iX, 
 					m_cBoxFrameTitleRel.iY, 
 					m_cBoxFrameTitleRel.iWidth, 
 					m_cBoxFrameTitleRel.iHeight, 
@@ -257,15 +251,15 @@ void CInfoBox::refreshTitle(void)
 	int ih = 0;
 	if (!m_cIcon.empty())
 	{
-		m_pcWindow->getIconSize(m_cIcon.c_str(), &iw, &ih);
+		frameBuffer->getIconSize(m_cIcon.c_str(), &iw, &ih);
 	
-		m_pcWindow->paintIcon(m_cIcon.c_str(), m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
+		frameBuffer->paintIcon(m_cIcon.c_str(), m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
 	}
 
 	// exit icon
-	//m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
+	//frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
 	
-	//m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HOME, m_cBoxFrameTitleRel.iX + m_cBoxFrameTitleRel.iWidth - BORDER_RIGHT - iw , m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
+	//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HOME, m_cBoxFrameTitleRel.iX + m_cBoxFrameTitleRel.iWidth - BORDER_RIGHT - iw , m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
 
 	m_pcFontTitle->RenderString(m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + 5, m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + 2*iw + 5), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
@@ -285,21 +279,14 @@ void CInfoBox::refreshTitle(void)
 //////////////////////////////////////////////////////////////////////
 bool CInfoBox::hide(void)
 {
-	if (m_pcWindow == NULL)
-	{
-		return (false);
-	}
-	
 	if(m_pcTextBox != NULL)
 	{
 		m_pcTextBox->hide();
 	}
 
-	m_pcWindow->paintBackgroundBoxRel(m_cBoxFrame.iX, m_cBoxFrame.iY, m_cBoxFrame.iWidth, m_cBoxFrame.iHeight);
+	frameBuffer->paintBackgroundBoxRel(m_cBoxFrame.iX, m_cBoxFrame.iY, m_cBoxFrame.iWidth, m_cBoxFrame.iHeight);
 	
-	m_pcWindow->blit();
-
-	m_pcWindow = NULL;
+	frameBuffer->blit();
 	
 	return (true);
 }
@@ -370,14 +357,6 @@ bool CInfoBox::paint(void)
 {
 	dprintf(DEBUG_DEBUG, "CInfoBox::paint\n");
 
-	if (m_pcWindow != NULL)
-	{
-		return (false);
-	}
-
-	// create new window
-	m_pcWindow = CFrameBuffer::getInstance();
-	
 	if(m_pcTextBox != NULL)
 	{
 		// set corner
@@ -402,11 +381,6 @@ bool CInfoBox::paint(void)
 //////////////////////////////////////////////////////////////////////
 void CInfoBox::refresh(void)
 {
-	if (m_pcWindow == NULL)
-	{
-		return;
-	}
-	
 	//refresh title
 	refreshTitle();
 
@@ -437,10 +411,7 @@ int CInfoBox::exec(int timeout)
 
 	// show infobox
 	paint();
-	m_pcWindow->blit();
-	
-	if (m_pcWindow == NULL)
-		return res; // out of memory
+	frameBuffer->blit();
 
 	if ( timeout == -1 )
 		timeout = g_settings.timing[SNeutrinoSettings::TIMING_EPG];
@@ -480,7 +451,7 @@ int CInfoBox::exec(int timeout)
 			loop = false;
 		}
 
-		m_pcWindow->blit();
+		frameBuffer->blit();
 	}
 
 	hide();

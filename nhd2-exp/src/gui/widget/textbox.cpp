@@ -60,8 +60,6 @@ CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const 
 	
 	initVar();
 
-	frameBuffer = NULL;
-
  	if(text != NULL)
 		m_cText = text;
 	
@@ -104,8 +102,6 @@ CTextBox::CTextBox(const char * text)
 	
 	initVar();
 
-	frameBuffer = NULL;
-
 	if(text != NULL)		
 		m_cText = *text;
 
@@ -122,8 +118,6 @@ CTextBox::CTextBox()
 	
 	initVar();
 	initFramesRel();
-
-	frameBuffer = NULL;
 }
 
 CTextBox::~CTextBox()
@@ -172,6 +166,8 @@ void CTextBox::initVar(void)
 
 	radius = NO_RADIUS;
 	type = CORNER_NONE;
+
+	painted = false;
 }
 
 void CTextBox::setCorner(int Radius, int Type)
@@ -425,9 +421,6 @@ void CTextBox::refreshScroll(void)
 {
 	if(!(m_nMode & SCROLL)) 
 		return;
-	
-	if(frameBuffer == NULL) 
-		return;
 
 	if (m_nNrOfPages > 1) 
 	{
@@ -437,9 +430,6 @@ void CTextBox::refreshScroll(void)
 
 void CTextBox::refreshText(void)
 {
-	if( frameBuffer == NULL) 
-		return;
-
 	// paint text background
 	m_cTextWindow.setDimension(&m_cFrame);
 	m_cTextWindow.setColor(m_textBackgroundColor);
@@ -454,14 +444,10 @@ void CTextBox::refreshText(void)
 	// setthumbnail (paint picture only on first page)
 	if(m_nCurrentPage == 0 && !access(thumbnail.c_str(), F_OK) )
 	{
-		// frameBox
-		if(frameBuffer != NULL) 
-		{
-			frameBuffer->paintFrameBox(lx, ly, tw, th, COL_WHITE);
-		}
+		CFrameBuffer::getInstance()->paintFrameBox(lx, ly, tw, th, COL_WHITE);
 		
 		// picture
-		frameBuffer->DisplayImage(thumbnail.c_str(), lx + THUMBNAIL_OFFSET, ly + THUMBNAIL_OFFSET, tw - THUMBNAIL_OFFSET, th - THUMBNAIL_OFFSET);
+		CFrameBuffer::getInstance()->DisplayImage(thumbnail.c_str(), lx + THUMBNAIL_OFFSET, ly + THUMBNAIL_OFFSET, tw - THUMBNAIL_OFFSET, th - THUMBNAIL_OFFSET);
 	}
 	
 	// paint text
@@ -541,9 +527,6 @@ void CTextBox::scrollPageUp(const int pages)
 
 void CTextBox::refresh(void)
 {
-	if( frameBuffer == NULL) 
-		return;
-	
 	dprintf(DEBUG_DEBUG, "CTextBox::Refresh:\r\n");
 
 	// paint text
@@ -635,18 +618,12 @@ void CTextBox::paint(void)
 {
 	dprintf(DEBUG_NORMAL, "CTextBox::paint:\n");
 
-	if(frameBuffer != NULL) 
-		return;
-	
-	frameBuffer = CFrameBuffer::getInstance();
+	painted = true;
 	refresh();
 }
 
 void CTextBox::hide(void)
 {
-	if(frameBuffer == NULL) 
-		return;
-
 	if (bigFonts) 
 	{
 		bigFonts = false;
@@ -656,6 +633,6 @@ void CTextBox::hide(void)
 	m_cBoxWindow.setDimension(&m_cFrame);
 	m_cBoxWindow.hide();
 
-	frameBuffer = NULL;
+	painted = false;
 }
 

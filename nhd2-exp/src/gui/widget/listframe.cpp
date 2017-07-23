@@ -32,9 +32,9 @@
 #include <config.h>
 #endif
 
-#include "stdlib.h"
+#include <stdlib.h>
 
-#include "listframe.h"
+#include <gui/widget/listframe.h>
 #include <gui/widget/icons.h>
 
 #include <system/debug.h>
@@ -110,10 +110,10 @@ CListFrame::CListFrame(	LF_LINES * lines, CFont * font_text, const int _mode, co
 	m_nFontHeaderListHeight = m_pcFontHeaderList->getHeight();
 	m_nFontTitleHeight = m_pcFontTitle->getHeight();
 
-	/* Initialise the window frames first */
+	//initialise the window frames first
 	initFramesRel();
 
-	/* than refresh text line array  */
+	//than refresh text line array
 	onNewLineArray();
 }
 
@@ -132,10 +132,10 @@ CListFrame::CListFrame(	LF_LINES* lines)
 			m_nNrOfRows = LF_MAX_ROWS;
 	}
 
-	/* Initialise the window frames first */
+	// initialise the window frames first
 	initFramesRel();
 
-	/* than refresh text line array  */
+	// than refresh text line array
 	onNewLineArray();
 }
 
@@ -206,7 +206,7 @@ void CListFrame::reSizeMainFrameWidth(int textWidth)
 
 	m_cFrame.iWidth	= iNewWindowWidth;
 
-	/* Re-Init the children frames due to new main window */
+	// renit the children frames due to new main window
 	initFramesRel();
 }
 
@@ -224,7 +224,7 @@ void CListFrame::reSizeMainFrameHeight(int textHeight)
 
 	m_cFrame.iHeight = iNewWindowHeight;
 
-	/* Re-Init the children frames due to new main window */
+	// reinit the children frames due to new main window
 	initFramesRel();
 }
 
@@ -303,7 +303,7 @@ void CListFrame::onNewLineArray(void)
 	
 	if(m_nNrOfLines > 0 )
 	{
-		/* check if we have to recalculate the window frame size, due to auto width and auto height */
+		//check if we have to recalculate the window frame size, due to auto width and auto height
 		if( m_nMode & AUTO_WIDTH)
 		{
 			reSizeMainFrameWidth(maxTextWidth);
@@ -597,7 +597,7 @@ void CListFrame::scrollPageDown(const int pages)
 		m_nSelectedLine = m_nCurrentLine;
 	}
 	
-	dprintf(DEBUG_DEBUG, "[CListFrame]  m_nCurrentLine: %d, m_nCurrentPage: %d \r\n",m_nCurrentLine,m_nCurrentPage);
+	dprintf(DEBUG_DEBUG, "[CListFrame]  m_nCurrentLine: %d, m_nCurrentPage: %d \r\n", m_nCurrentLine,m_nCurrentPage);
 	
 	refresh();
 };

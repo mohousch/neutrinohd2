@@ -93,6 +93,7 @@
 #include <gui/widget/textbox.h>
 #include <gui/widget/window.h>
 #include <gui/widget/progressbar.h>
+#include <gui/widget/icons.h>
 
 #include <gui/bedit/bouqueteditor_bouquets.h>
 #include <gui/bedit/bouqueteditor_chanselect.h>

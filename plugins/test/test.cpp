@@ -467,7 +467,7 @@ void CTestMenu::testCInfoBox()
 	
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_BUTTON_SETUP);
+	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_INFO);
 
 	infoBox->setText(&buffer, thumbnail, picw, pich);
 	infoBox->exec();
@@ -577,6 +577,7 @@ void CTestMenu::testCTextBox()
 	// loop
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
+	bool bigFonts = false;
 
 	while(1)
 	{
@@ -589,6 +590,11 @@ void CTestMenu::testCTextBox()
 
 			break;
 		}
+		else if(msg == CRCInput::RC_info)
+		{
+			bigFonts = bigFonts? false : true;
+			textBox->setBigFonts(bigFonts);
+		}
 	}
 	
 	delete textBox;
@@ -599,6 +605,7 @@ void CTestMenu::testCListFrame()
 {
 	CBox listFrameBox;
 	LF_LINES listFrameLines;
+	int selected = 1;
 	
 	listFrameBox.iX = g_settings.screen_StartX + 10;
 	listFrameBox.iY = g_settings.screen_StartY + 10;
@@ -608,23 +615,131 @@ void CTestMenu::testCListFrame()
 	// recalculate x and y
 	listFrameBox.iX = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - (listFrameBox.iWidth)) / 2);
 	listFrameBox.iY = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - listFrameBox.iHeight) / 2);
+
+	//
+	#define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
+	#define MAX_WINDOW_HEIGHT 		(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
+	#define MAX_ROWS 		5
+
 	
-	CListFrame * listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::TITLE | CListFrame::SCROLL, &listFrameBox);
+
+	// init
+	listFrameLines.rows = MAX_ROWS;
+
+	for(int row = 0; row < MAX_ROWS; row++)
+	{
+		listFrameLines.lineArray[row].clear();
+	}
+
+	// rowwidth
+	listFrameLines.rowWidth[0] = MAX_WINDOW_WIDTH / 6;
+	listFrameLines.rowWidth[1] = MAX_WINDOW_WIDTH / 6;
+	listFrameLines.rowWidth[2] = MAX_WINDOW_WIDTH / 6;
+	listFrameLines.rowWidth[3] = MAX_WINDOW_WIDTH / 6;
+	listFrameLines.rowWidth[4] = MAX_WINDOW_WIDTH / 6;
+
+	// headertitle
+	listFrameLines.lineHeader[0] = "title1";
+	listFrameLines.lineHeader[1] = "duration";
+	listFrameLines.lineHeader[2] = "genre";
+	listFrameLines.lineHeader[3] = "artist";
+	listFrameLines.lineHeader[4] = "date";
 	
+
+	CListFrame * listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::TITLE | CListFrame::HEADER_LINE | CListFrame::SCROLL, &listFrameBox);
+
+	// title icon
 	std::string testIcon = PLUGINDIR "/youtube/youtube_small.png";
 
 	// title
 	listFrame->setTitle("listFrameBox", testIcon);
-
-	/*
-	std::string string_item = "Pro Sieben";
-
-	listFrameLines.lineArray[0].clear();
-	listFrameLines.lineArray[0].push_back(string_item);
 	
+	// fill lineArrays list
+	CFileFilter fileFilter;
+
+	// music
+	fileFilter.addFilter("cdr");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("m2a");
+	fileFilter.addFilter("mpa");
+	fileFilter.addFilter("mp2");
+	fileFilter.addFilter("ogg");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("aac");
+	fileFilter.addFilter("dts");
+	fileFilter.addFilter("m4a");
+	
+	std::string Path_local = g_settings.network_nfs_audioplayerdir;
+
+	if(CFileHelpers::getInstance()->readDir(Path_local, &audioFileList, &fileFilter))
+	{
+		int count = 0;
+				
+		CFileList::iterator files = audioFileList.begin();
+		for(; files != audioFileList.end() ; files++)
+		{
+			count++;
+			if (files->getType() == CFile::FILE_AUDIO)
+			{
+				std::string title;
+				std::string artist;
+				std::string genre;
+				std::string date;
+				char duration[9] = "";
+
+				// metaData
+				CAudiofile audiofile(files->Name, files->getExtension());
+
+				CAudioPlayer::getInstance()->init();
+
+				int ret = CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
+
+				if (!ret || (audiofile.MetaData.artist.empty() && audiofile.MetaData.title.empty() ))
+				{
+					// //remove extension (.mp3)
+					std::string tmp = files->getFileName().substr(files->getFileName().rfind('/') + 1);
+					tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
+
+					std::string::size_type i = tmp.rfind(" - ");
+		
+					if(i != std::string::npos)
+					{ 
+						title = tmp.substr(0, i);
+						artist = tmp.substr(i + 3);
+					}
+					else
+					{
+						i = tmp.rfind('-');
+						if(i != std::string::npos)
+						{
+							title = tmp.substr(0, i);
+							artist = tmp.substr(i + 1);
+						}
+						else
+							title = tmp;
+					}
+				}
+				else
+				{
+					title = audiofile.MetaData.title;
+					artist = audiofile.MetaData.artist;
+					genre = audiofile.MetaData.genre;	
+					date = audiofile.MetaData.date;
+
+					snprintf(duration, 8, "(%ld:%02ld)", audiofile.MetaData.total_time / 60, audiofile.MetaData.total_time % 60);
+				}
+
+				listFrameLines.lineArray[0].push_back(title);
+				listFrameLines.lineArray[1].push_back(duration);
+				listFrameLines.lineArray[2].push_back(genre);
+				listFrameLines.lineArray[3].push_back(artist);
+				listFrameLines.lineArray[4].push_back(date);
+			}
+		}
+	}
+	//
 	listFrame->setLines(&listFrameLines);
-	listFrame->getSelectedLine();
-	*/
 	
 	// paint
 	listFrame->paint();
@@ -636,17 +751,47 @@ void CTestMenu::testCListFrame()
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 
+REPEAT:
+	listFrame->refresh();
 	while(1)
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
 		if (msg == CRCInput::RC_home) 
 		{
+			for(int i = 0; i < MAX_ROWS; i++)
+			{
+				listFrameLines.lineArray[i].clear();
+			}
+
 			listFrame->hide();
-			CFrameBuffer::getInstance()->blit();
 
 			break;
 		}
+		else if(msg == CRCInput::RC_down)
+		{
+			listFrame->scrollLineDown(1);
+			listFrame->refresh();
+		}
+		else if(msg == CRCInput::RC_up)
+		{
+			listFrame->scrollLineUp(1);
+			listFrame->refresh();
+		}
+		else if(msg == CRCInput::RC_ok)
+		{
+			selected = listFrame->getSelectedLine();
+			CAudiofileExt audiofile(audioFileList[selected].Name, audioFileList[selected].getExtension());
+			CAudioPlayerGui tmpAudioPlayerGui;
+			tmpAudioPlayerGui.addToPlaylist(audiofile);
+			tmpAudioPlayerGui.hidePlayList(true);
+			tmpAudioPlayerGui.exec(NULL, "urlplayback");
+
+			goto REPEAT;
+		}
+
+		//listFrame->refresh();
+		CFrameBuffer::getInstance()->blit();
 	}
 	
 	delete listFrame;
@@ -1784,13 +1929,6 @@ void CTestMenu::testCMenuWidgetListBox1()
 {
 	//
 	CFileFilter fileFilter;
-
-	/*
-	fileFilter.addFilter("png");
-	fileFilter.addFilter("bmp");
-	fileFilter.addFilter("jpg");
-	fileFilter.addFilter("jpeg");
-	*/
 
 	// music
 	fileFilter.addFilter("cdr");

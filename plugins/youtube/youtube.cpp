@@ -93,7 +93,7 @@ void CYTBrowser::init(void)
 	initGlobalSettings();
 	
 	// load settings
-	loadSettings(&m_settings);
+	//loadSettings(&m_settings);
 		
 	m_reload_movies = true;
 
@@ -121,12 +121,16 @@ void CYTBrowser::init(void)
 	{
 		dprintf(DEBUG_NORMAL, " row error\r\n");
 		
-		// init browser row elements if not configured correctly by neutrino.config
+		// init browser row elements if not configured
+		// rows nr
 		m_settings.browserRowNr = 3;
+
+		// rows item
 		m_settings.browserRowItem[0] = YTB_INFO_TITLE;
 		m_settings.browserRowItem[1] = YTB_INFO_LENGTH;
 		m_settings.browserRowItem[2] = YTB_INFO_RECORDDATE;
 
+		// rows width
 		m_settings.browserRowWidth[0] = m_defaultRowWidth[m_settings.browserRowItem[0]];
 		m_settings.browserRowWidth[1] = m_defaultRowWidth[m_settings.browserRowItem[1]];
 		m_settings.browserRowWidth[2] = m_defaultRowWidth[m_settings.browserRowItem[2]];
@@ -146,11 +150,15 @@ void CYTBrowser::initGlobalSettings(void)
 	// Browser List
 	m_settings.browserFrameHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20 - ((g_settings.screen_EndY - g_settings.screen_StartY - 20)>>1) - (INTER_FRAME_SPACE>>1);
 	
+	// rows nr
 	m_settings.browserRowNr = 3;
+
+	// rows items
 	m_settings.browserRowItem[0] = YTB_INFO_TITLE;
 	m_settings.browserRowItem[1] = YTB_INFO_LENGTH;
 	m_settings.browserRowItem[2] = YTB_INFO_RECORDDATE;
 
+	// rows width
 	m_settings.browserRowWidth[0] = m_defaultRowWidth[m_settings.browserRowItem[0]];
 	m_settings.browserRowWidth[1] = m_defaultRowWidth[m_settings.browserRowItem[1]];
 	m_settings.browserRowWidth[2] = m_defaultRowWidth[m_settings.browserRowItem[2]];
@@ -260,8 +268,6 @@ int CYTBrowser::exec()
 	int returnDefaultOnTimeout = true;
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
-	
-	//initGlobalSettings();
 
 	// load settings
 	loadSettings(&m_settings);
@@ -274,6 +280,7 @@ int CYTBrowser::exec()
 	
 	m_movieSelectionHandler = NULL;
 
+	// clear 
 	for(int i = 0; i < LF_MAX_ROWS; i++)
 	{
 		m_browserListLines.lineArray[i].clear();
@@ -513,7 +520,7 @@ void CYTBrowser::refreshBrowserList(void) //P1
 
 	// initialise and clear list array
 	m_browserListLines.rows = m_settings.browserRowNr;
-	for(int row = 0; row < m_settings.browserRowNr; row++)
+	for(int row = 0; row < m_browserListLines.rows; row++)
 	{
 		m_browserListLines.lineArray[row].clear();
 		m_browserListLines.rowWidth[row] = m_settings.browserRowWidth[row];
@@ -542,7 +549,7 @@ void CYTBrowser::refreshBrowserList(void) //P1
 
 	for(unsigned int handle = 0; handle < m_vHandleBrowserList.size(); handle++)
 	{
-		for(int row = 0; row < m_settings.browserRowNr; row++)
+		for(int row = 0; row < m_browserListLines.rows; row++)
 		{
 			if ( getMovieInfoItem(*m_vHandleBrowserList[handle], m_settings.browserRowItem[row], &string_item) == false)
 			{
