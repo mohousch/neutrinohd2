@@ -27,8 +27,6 @@
 #include <config.h>
 #endif
 
-#include <gui/widget/progresswindow.h>
-
 #include <global.h>
 #include <neutrino.h>
 
@@ -39,6 +37,8 @@
 #include <gui/color.h>
 
 #include <system/debug.h>
+
+#include <gui/widget/progresswindow.h>
 
 
 CProgressWindow::CProgressWindow()

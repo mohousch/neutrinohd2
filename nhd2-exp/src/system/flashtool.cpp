@@ -24,8 +24,6 @@
 #endif
 
 #include <libmd5sum.h>
-#include <system/flashtool.h>
-
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -44,11 +42,12 @@
 #include <linux/mtd/mtd.h>
 #endif
 
-
-#include <driver/encoding.h>
 #include <global.h>
 
-#include "debug.h"
+#include <driver/encoding.h>
+
+#include <system/debug.h>
+#include <system/flashtool.h>
 
 
 CFlashTool::CFlashTool()

@@ -36,12 +36,12 @@
 #include <config.h>
 #endif
 
-#include <gui/widget/hintbox.h>
-
 #include <global.h>
 #include <neutrino.h>
 
 #include <system/debug.h>
+
+#include <gui/widget/hintbox.h>
 
 
 #define HINTBOX_MAX_HEIGHT 420

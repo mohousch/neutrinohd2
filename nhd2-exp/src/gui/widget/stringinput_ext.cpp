@@ -35,7 +35,8 @@
 #include <config.h>
 #endif
 
-#include <gui/widget/stringinput_ext.h>
+#include <global.h>
+#include <neutrino.h>
 
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
@@ -44,10 +45,9 @@
 
 #include <gui/widget/messagebox.h>
 
-#include <global.h>
-#include <neutrino.h>
-
 #include <system/debug.h>
+
+#include <gui/widget/stringinput_ext.h>
 
 
 CExtendedInput::CExtendedInput(const neutrino_locale_t Name, char* Value, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, CChangeObserver* Observ, bool* Cancel)

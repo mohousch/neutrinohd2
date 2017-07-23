@@ -35,7 +35,8 @@
 #include <config.h>
 #endif
 
-#include <gui/widget/stringinput.h>
+#include <global.h>
+#include <neutrino.h>
 
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
@@ -47,10 +48,9 @@
 #include <gui/widget/icons.h>
 #include <gui/widget/messagebox.h>
 
-#include <global.h>
-#include <neutrino.h>
-
 #include <system/debug.h>
+
+#include <gui/widget/stringinput.h>
 
 
 #define borderwidth 4
@@ -239,12 +239,14 @@ void CStringInput::keyUpPressed()
 void CStringInput::keyDownPressed()
 {
 	int npos = 0;
-	for(int count=0;count<(int)strlen(validchars);count++)
+	for(int count = 0; count < (int)strlen(validchars); count++)
 		if(value[selected]==validchars[count])
 			npos = count;
+
 	npos--;
 	if(npos<0)
 		npos = strlen(validchars)-1;
+
 	value[selected]=validchars[npos];
 	paintChar(selected);
 }
@@ -252,9 +254,12 @@ void CStringInput::keyDownPressed()
 void CStringInput::keyLeftPressed()
 {
 	int old = selected;
-	if(selected>0) {
+	if(selected > 0) 
+	{
 		selected--;
-	} else {
+	} 
+	else 
+	{
 		selected = size - 1;
 	}
 	paintChar(old);
@@ -267,8 +272,10 @@ void CStringInput::keyRightPressed()
 	if (selected < (size - 1)) 
 	{
 		selected++;
-	} else
+	} 
+	else
 		selected = 0;
+
 	paintChar(old);
 	paintChar(selected);
 }
@@ -314,7 +321,7 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 	if (parent)
 		parent->hide();
 
-	for(int count = strlen(value)-1;count<size-1;count++)
+	for(int count = strlen(value) - 1; count < size-1; count++)
 		strcat(value, " ");
 	
 	strncpy(oldval, value, size);
@@ -460,7 +467,8 @@ int CStringInput::handleOthers(const neutrino_msg_t /*msg*/, const neutrino_msg_
 
 void CStringInput::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width + SHADOW_OFFSET, height + SHADOW_OFFSET);
+	//frameBuffer->paintBackgroundBoxRel(x, y, width + SHADOW_OFFSET, height + SHADOW_OFFSET);
+	m_cBoxWindow.hide();
 	frameBuffer->blit();
 }
 
@@ -476,23 +484,27 @@ void CStringInput::paint()
 	int iconoffset;
 	int icol_w = 28, icol_h = 16;
 
-	// head shadow
-	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP); //round
-	
-	// headbox
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient); //round
-	
-	// foot shadow
-	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
+	m_cBoxWindow.setDimension(x, y, width, height);
+	m_cTitleWindow.setDimension(x, y, width, hheight);
 
-	// foot
-	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
+	//box
+	m_cBoxWindow.enableShadow();
+	m_cBoxWindow.enableSaveScreen();
+	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.paint();
+
+	// head
+	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
+	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
+	m_cTitleWindow.setGradient(g_settings.Head_gradient);
+	m_cTitleWindow.paint();
 
 	if (!(iconfile.empty()))
 	{
 		frameBuffer->getIconSize(iconfile.c_str(), &icol_w, &icol_h);
 		
-		frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icol_h)/2); //not correct fixme
+		frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icol_h)/2); 
 
 		iconoffset = icol_w + BORDER_LEFT;
 	}
@@ -536,7 +548,7 @@ void CStringInput::paintChar(int pos, const char c)
 	}
 
 	frameBuffer->paintBoxRel(xpos, ypos, xs, ys, COL_MENUCONTENT_PLUS_4);
-	frameBuffer->paintBoxRel(xpos+ 1, ypos+ 1, xs- 2, ys- 2, bgcolor);
+	frameBuffer->paintBoxRel(xpos + 1, ypos + 1, xs - 2, ys - 2, bgcolor);
 
 	int xfpos = xpos + ((xs- g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(ch))>>1);
 

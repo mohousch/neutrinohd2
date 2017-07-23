@@ -33,6 +33,10 @@
 #include <config.h>
 #endif
 
+#include <stdlib.h>
+
+#include <global.h>
+
 #include <gui/sleeptimer.h>
 
 #include <gui/widget/hintbox.h>
@@ -41,9 +45,7 @@
 
 #include <timerdclient/timerdclient.h>
 
-#include <global.h>
 #include <daemonc/remotecontrol.h>
-#include <stdlib.h>
 
 #include <system/debug.h>
 

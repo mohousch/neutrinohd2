@@ -34,14 +34,15 @@
 #include <config.h>
 #endif
 
-#include <gui/widget/messagebox.h>
-#include <gui/widget/helpbox.h>
-#include <gui/widget/icons.h>
-
 #include <global.h>
 #include <neutrino.h>
 
+#include <gui/widget/messagebox.h>
+#include <gui/widget/icons.h>
+
 #include <system/debug.h>
+
+#include <gui/widget/helpbox.h>
 
 
 Helpbox::Helpbox()

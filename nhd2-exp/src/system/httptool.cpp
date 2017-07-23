@@ -18,15 +18,14 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA
 */
 
-
-#include <system/httptool.h>
-
 #include <curl/curl.h>
 //#include <curl/types.h>
 #include <curl/easy.h>
 
 #include <global.h>
-#include "debug.h"
+#include <system/debug.h>
+
+#include <system/httptool.h>
 
 
 CHTTPTool::CHTTPTool()

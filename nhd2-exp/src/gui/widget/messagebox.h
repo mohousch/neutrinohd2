@@ -39,13 +39,13 @@
 #include <string>
 
 #include <driver/framebuffer.h>
-#include <gui/widget/window.h>
 
 #include <system/localize.h>
 #include <system/settings.h>
 
 #include <gui/widget/drawable.h>
 #include <gui/widget/icons.h>
+#include <gui/widget/window.h>
 
 
 #define MESSAGEBOX_WIDTH			550

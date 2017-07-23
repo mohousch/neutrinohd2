@@ -45,6 +45,9 @@
 #include <semaphore.h>
 #include <system/set_threadname.h>
 
+// neutrino
+#include <neutrino.h>
+
 // 
 #include <client/zapitclient.h>
 
@@ -72,7 +75,7 @@
 #if defined (PLATFORM_COOLSTREAM)
 #include <cs_vfd.h>
 #endif
-#include "driver/vfd.h"
+#include <driver/vfd.h>
 #endif
 #include <driver/file.h>
 
@@ -178,9 +181,6 @@
 #include <playback_cs.h>
 #include <video_cs.h>
 #include <audio_cs.h>
-
-// neutrino
-#include <neutrino.h>
 
 
 // globals

@@ -33,10 +33,10 @@
 #include <config.h>
 #endif
 
-#include <gui/update.h>
-
 #include <global.h>
 #include <neutrino.h>
+
+#include <gui/update.h>
 
 #include <driver/encoding.h>
 #include <driver/fontrenderer.h>

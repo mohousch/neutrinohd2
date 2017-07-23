@@ -34,6 +34,8 @@
 #include <config.h>
 #endif
 
+#include <global.h>
+
 #include <gui/widget/window.h>
 
 

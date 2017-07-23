@@ -37,8 +37,6 @@
 #include <config.h>
 #endif
 
-#include <global.h>
-
 #include <driver/framebuffer.h>
 #include <system/settings.h>
 #include <gui/color.h>

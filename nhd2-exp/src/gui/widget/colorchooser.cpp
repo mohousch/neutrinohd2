@@ -35,8 +35,6 @@
 #include <config.h>
 #endif
 
-#include <gui/widget/colorchooser.h>
-
 #include <global.h>
 #include <neutrino.h>
 
@@ -46,6 +44,7 @@
 
 #include <gui/color.h>
 #include <gui/widget/messagebox.h>
+#include <gui/widget/colorchooser.h>
 
 
 #define VALUE_R     0
@@ -104,6 +103,11 @@ CColorChooser::CColorChooser(const neutrino_locale_t Name, unsigned char *R, uns
 	cFrameBoxColorPreview.iWidth = cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - 2*ICON_OFFSET - volumeBodyIcon.iWidth - 2*ICON_OFFSET - a_w;
 	cFrameBoxColorPreview.iX = cFrameBox.iX + cFrameBox.iWidth - BORDER_RIGHT - cFrameBoxColorPreview.iWidth;
 	cFrameBoxColorPreview.iY = cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight/2;
+
+	//
+	m_cBoxWindow.setDimension(&cFrameBox);
+	m_cBoxWindow.enableShadow();
+	m_cBoxWindow.enableSaveScreen();
 }
 
 CColorChooser::CColorChooser(const char * const Name, unsigned char *R, unsigned char *G, unsigned char *B, unsigned char* Alpha, CChangeObserver* Observer) // UTF-8
@@ -141,6 +145,11 @@ CColorChooser::CColorChooser(const char * const Name, unsigned char *R, unsigned
 	cFrameBoxColorPreview.iWidth = cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - 2*ICON_OFFSET - volumeBodyIcon.iWidth - 2*ICON_OFFSET - a_w;
 	cFrameBoxColorPreview.iX = cFrameBox.iX + cFrameBox.iWidth - BORDER_RIGHT - cFrameBoxColorPreview.iWidth;
 	cFrameBoxColorPreview.iY = cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight/2;
+
+	//
+	m_cBoxWindow.setDimension(&cFrameBox);
+	m_cBoxWindow.enableShadow();
+	m_cBoxWindow.enableSaveScreen();
 }
 
 void CColorChooser::setColor()
@@ -298,38 +307,35 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 
 void CColorChooser::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth + SHADOW_OFFSET, cFrameBox.iHeight + SHADOW_OFFSET);
-	
+	m_cBoxWindow.hide();
 	frameBuffer->blit();
 }
 
 void CColorChooser::paint()
 {
-	// ShadowBox
-	frameBuffer->paintBoxRel(cFrameBox.iX + SHADOW_OFFSET, cFrameBox.iY + SHADOW_OFFSET, cFrameBox.iWidth, cFrameBox.iHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_ALL); //round
+	// box
+	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.paint();
 
 	// Head
 	cFrameBoxTitle.iX = cFrameBox.iX;
 	cFrameBoxTitle.iY = cFrameBox.iY;
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
-	// Head Box
-	frameBuffer->paintBoxRel(cFrameBoxTitle.iX, cFrameBoxTitle.iY, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
+	m_cTitleWindow.setDimension(&cFrameBoxTitle);
+
+	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
+	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
+	m_cTitleWindow.setGradient(g_settings.Head_gradient);
+	m_cTitleWindow.paint();
+	
 
 	// Head Icon
 	frameBuffer->paintIcon(titleIcon.iconName.c_str(), cFrameBoxTitle.iX + BORDER_LEFT, cFrameBoxTitle.iY + (cFrameBoxTitle.iHeight - titleIcon.iHeight)/2);
 	
 	// head title
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameBoxTitle.iX + BORDER_LEFT + titleIcon.iWidth + ICON_OFFSET, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - BORDER_RIGHT - titleIcon.iWidth, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
-
-	// Body
-	cFrameBoxBody.iX = cFrameBox.iX;
-	cFrameBoxBody.iY = cFrameBox.iY + cFrameBoxTitle.iHeight;
-	cFrameBoxBody.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight;
-	cFrameBoxBody.iWidth = cFrameBox.iWidth;
-
-	// Body Box
-	frameBuffer->paintBoxRel(cFrameBoxBody.iX, cFrameBoxBody.iY, cFrameBoxBody.iWidth, cFrameBoxBody.iHeight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 
 	// slider
 	for (int i = 0; i < ITEMS_COUNT; i++)

@@ -35,8 +35,6 @@
 #include <config.h>
 #endif
 
-#include <gui/widget/keychooser.h>
-
 #include <global.h>
 #include <neutrino.h>
 
@@ -44,6 +42,8 @@
 #include <driver/screen_max.h>
 
 #include <system/debug.h>
+
+#include <gui/widget/keychooser.h>
 
 
 class CKeyValue : public CMenuSeparator
@@ -112,14 +112,12 @@ CKeyChooserItem::CKeyChooserItem(const neutrino_locale_t Name, int * Key)
 {
 	name = g_Locale->getText(Name);
 	key = Key;
-	x = y = width = height = 0;
 }
 
 CKeyChooserItem::CKeyChooserItem(const char * const Name, int * Key)
 {
 	name = Name;
 	key = Key;
-	x = y = width = height = 0;
 }
 
 int CKeyChooserItem::exec(CMenuTarget* parent, const std::string &)
@@ -163,7 +161,7 @@ int CKeyChooserItem::exec(CMenuTarget* parent, const std::string &)
 
 void CKeyChooserItem::hide()
 {
-	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x, y, width + SHADOW_OFFSET, height + SHADOW_OFFSET);
+	m_cBoxWindow.hide();
 	CFrameBuffer::getInstance()->blit();
 }
 
@@ -176,33 +174,42 @@ void CKeyChooserItem::paint()
 
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
-	width = w_max(MENU_WIDTH, 0);
-	height = h_max(hheight + 2 * mheight, 0);
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth()-width) >> 1);
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight()-height) >> 1);
+	m_cBox.iWidth = w_max(MENU_WIDTH, 0);
+	m_cBox.iHeight = h_max(hheight +  2*mheight, 0);
+	m_cBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - m_cBox.iWidth) >> 1);
+	m_cBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - m_cBox.iHeight) >> 1);
 
-	// head shadow
-	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);//round
-
-	// headbox
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0   , RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);//round
+	//box
+	m_cBoxWindow.setDimension(&m_cBox);
+	m_cBoxWindow.enableShadow();
+	m_cBoxWindow.enableSaveScreen();
+	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.paint();
 	
-	//foot shadow
-	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 
-	// footbox
-	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
+	//head 
+	m_cTitle.iWidth = m_cBox.iWidth;
+	m_cTitle.iHeight = hheight;
+	m_cTitle.iX = m_cBox.iX;
+	m_cTitle.iY = m_cBox.iY;
+
+	m_cTitleWindow.setDimension(&m_cTitle);
+	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
+	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
+	m_cTitleWindow.setGradient(g_settings.Head_gradient);
+	m_cTitleWindow.paint();
 
 	// icon
 	int iw, ih;
 	frameBuffer->getIconSize(NEUTRINO_ICON_KEYBINDING, &iw, &ih);
-	frameBuffer->paintIcon(NEUTRINO_ICON_KEYBINDING, x + BORDER_LEFT, y + (hheight - ih)/2);
+	frameBuffer->paintIcon(NEUTRINO_ICON_KEYBINDING, m_cTitle.iX + BORDER_LEFT, m_cTitle.iY + (hheight - ih)/2);
 
 	// title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + iw + BORDER_LEFT, y + hheight, width, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(m_cTitle.iX + BORDER_LEFT + iw + BORDER_LEFT, m_cTitle.iY + hheight, m_cTitle.iWidth, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 
 	//paint msg...
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT, y + hheight + mheight, width, g_Locale->getText(LOCALE_KEYCHOOSER_TEXT1), COL_MENUCONTENT, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_cBox.iX + BORDER_LEFT, m_cBox.iY + hheight + mheight, m_cBox.iWidth, g_Locale->getText(LOCALE_KEYCHOOSER_TEXT1), COL_MENUCONTENT, 0, true); // UTF-8
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT, y + hheight + mheight* 2, width, g_Locale->getText(LOCALE_KEYCHOOSER_TEXT2), COL_MENUCONTENT, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_cBox.iX + BORDER_LEFT, m_cBox.iY + hheight + mheight* 2, m_cBox.iWidth, g_Locale->getText(LOCALE_KEYCHOOSER_TEXT2), COL_MENUCONTENT, 0, true); // UTF-8
 }

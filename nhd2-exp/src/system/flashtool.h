@@ -33,10 +33,10 @@
 #ifndef __flashtool__
 #define __flashtool__
 
-#include <gui/widget/progresswindow.h>
-
 #include <string>
 #include <vector>
+
+#include <gui/widget/progresswindow.h>
 
 
 class CFlashTool

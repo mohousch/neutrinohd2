@@ -35,25 +35,30 @@
 #ifndef __neutrino__
 #define __neutrino__
 
+#include <string>
+
+#include <global.h>
+
 #include <configfile.h>
 
 #include <neutrinoMessages.h>
+
 #include <driver/framebuffer.h>
+
 #include <system/setting_helpers.h>
 #include <system/configure_network.h>
-#include <gui/timerlist.h>
+
 #include <timerdclient/timerdtypes.h>
+
+#include <gui/timerlist.h>
 #include <gui/channellist.h>          		/* CChannelList */
 #include <gui/rc_lock.h>
+#include <gui/scan_setup.h>
+
 #include <daemonc/remotecontrol.h>    		/* st_rmsg      */
 
 /*zapit*/
 #include <client/zapitclient.h>
-
-/*gui*/
-#include <gui/scan_setup.h>
-
-#include <string>
 
 
 // CNeutrinoApp -  main run-class

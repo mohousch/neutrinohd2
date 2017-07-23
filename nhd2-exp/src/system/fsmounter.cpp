@@ -34,8 +34,6 @@
 #include <config.h>
 #endif
 
-#include <system/fsmounter.h>
-
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
@@ -49,7 +47,8 @@
 #include <sys/mount.h>
 #include <unistd.h>
 
-#include "debug.h"
+#include <system/debug.h>
+#include <system/fsmounter.h>
 
 
 pthread_mutex_t g_mut;

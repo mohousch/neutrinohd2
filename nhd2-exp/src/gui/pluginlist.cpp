@@ -33,6 +33,9 @@
 #include <config.h>
 #endif
 
+#include <global.h>
+#include <neutrino.h>
+
 #include <plugin.h>
 
 #include <gui/pluginlist.h>
@@ -50,8 +53,6 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
-#include <global.h>
-#include <neutrino.h>
 #include <plugins.h>
 #include <driver/encoding.h>
 

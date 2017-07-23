@@ -32,22 +32,6 @@
 */
 #include <config.h>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include <driver/vcrcontrol.h>
-
-#include <gui/movieinfo.h>
-
-#include <driver/encoding.h>
-#include <driver/stream2file.h>
-
-#include <gui/widget/messagebox.h>
-#include <global.h>
-#include <neutrino.h>
-#include <gui/widget/hintbox.h>
-
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -66,6 +50,17 @@
 #include <errno.h>
 #include <math.h>
 
+#include <global.h>
+#include <neutrino.h>
+
+#include <gui/movieinfo.h>
+
+#include <driver/encoding.h>
+#include <driver/stream2file.h>
+
+#include <gui/widget/messagebox.h>
+#include <gui/widget/hintbox.h>
+
 #include <daemonc/remotecontrol.h>
 
 /*zapit includes*/
@@ -76,6 +71,8 @@
 
 #include <system/helpers.h>
 #include <system/debug.h>
+
+#include <driver/vcrcontrol.h>
 
 
 extern bool autoshift;

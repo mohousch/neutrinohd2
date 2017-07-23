@@ -639,7 +639,7 @@ void CTestMenu::testCListFrame()
 	listFrameLines.rowWidth[4] = MAX_WINDOW_WIDTH / 6;
 
 	// headertitle
-	listFrameLines.lineHeader[0] = "title1";
+	listFrameLines.lineHeader[0] = "title";
 	listFrameLines.lineHeader[1] = "duration";
 	listFrameLines.lineHeader[2] = "genre";
 	listFrameLines.lineHeader[3] = "artist";
@@ -652,7 +652,7 @@ void CTestMenu::testCListFrame()
 	std::string testIcon = PLUGINDIR "/youtube/youtube_small.png";
 
 	// title
-	listFrame->setTitle("listFrameBox", testIcon);
+	listFrame->setTitle("listFrame", testIcon);
 	
 	// fill lineArrays list
 	CFileFilter fileFilter;

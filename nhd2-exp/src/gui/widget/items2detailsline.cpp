@@ -23,10 +23,12 @@
 #include <config.h>
 #endif
 
-#include <gui/widget/items2detailsline.h>
+#include <global.h>
+
 #include <gui/color.h>
 #include <system/settings.h>
-#include <global.h>
+
+#include <gui/widget/items2detailsline.h>
 
 
 void paintItem2DetailsLine(int x, int y, int width, int height, int info_height, int theight, int iheight, int pos)

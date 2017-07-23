@@ -37,12 +37,13 @@
 
 #include <string>
 
-#include <gui/widget/icons.h>
-#include <gui/widget/menue.h>
-
 #include <driver/framebuffer.h>
 
 #include <system/localize.h>
+
+#include <gui/widget/icons.h>
+#include <gui/widget/menue.h>
+#include <gui/widget/window.h>
 
 
 #define MAX_INPUT_CHARS		40
@@ -51,6 +52,7 @@ class CStringInput : public CMenuTarget
 {
 	protected:
 		CFrameBuffer* frameBuffer;
+
 		int x;
 		int y;
 		int width;
@@ -58,6 +60,12 @@ class CStringInput : public CMenuTarget
 		int hheight; // head font height
 		int mheight; // menu font height
 		int iheight;
+
+		//CBox m_cBox;
+		//CBox m_cTitle;
+
+		CWindow m_cBoxWindow;
+		CWindow m_cTitleWindow;
 		
 		uint32_t smstimer;
 

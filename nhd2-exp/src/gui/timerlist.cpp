@@ -36,6 +36,9 @@
 #include <config.h>
 #endif
 
+#include <global.h>
+#include <neutrino.h>
+
 #include <gui/timerlist.h>
 #include <gui/pluginlist.h>
 #include <gui/plugins.h>
@@ -64,9 +67,6 @@
 #include <system/settings.h>
 #include <system/fsmounter.h>
 #include <system/debug.h>
-
-#include <global.h>
-#include <neutrino.h>
 
 /* zapit includes */
 #include <client/zapitclient.h>

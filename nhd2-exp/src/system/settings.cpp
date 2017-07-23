@@ -22,13 +22,14 @@
 */
 
 #include <cstring>
-#include <system/settings.h>
 
 #include <config.h>
 #include <global.h>
 #include <neutrino.h>
 
 #include <gui/widget/icons.h>
+
+#include <system/settings.h>
 
 
 const int default_timing[TIMING_SETTING_COUNT] =

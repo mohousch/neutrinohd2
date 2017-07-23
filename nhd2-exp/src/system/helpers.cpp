@@ -42,12 +42,11 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 
-#include <system/helpers.h>
-#include <system/debug.h>
-#include <system/settings.h>
-
 #include <global.h>
 
+#include <system/debug.h>
+#include <system/settings.h>
+#include <system/helpers.h>
 
 #if defined (__USE_FILE_OFFSET64) || defined (_DARWIN_USE_64_BIT_INODE)
 typedef struct dirent64 dirent_struct;

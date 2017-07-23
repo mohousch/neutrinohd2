@@ -42,7 +42,8 @@
 #include <driver/rcinput.h>
 #include <system/localize.h>
 
-#include "menue.h"
+#include <gui/widget/menue.h>
+#include <gui/widget/window.h>
 
 
 class CKeyChooserItem;
@@ -67,10 +68,11 @@ class CKeyChooser : public CMenuWidget
 class CKeyChooserItem : public CMenuTarget
 {
 	private:
-		int x;
-		int y;
-		int width;
-		int height;
+		CBox m_cBox;
+		CBox m_cTitle;
+
+		CWindow m_cBoxWindow;
+		CWindow m_cTitleWindow;
 
 		std::string name;
 		int* key;
@@ -88,7 +90,7 @@ class CKeyChooserItem : public CMenuTarget
 
 class CKeyChooserItemNoKey : public CMenuTarget
 {
-		int		*key;
+		int *key;
 
 	public:
 		CKeyChooserItemNoKey(int *Key)

@@ -38,11 +38,11 @@
 
 #include <jsoncpp/include/json/json.h>
 
-#include "tmdbparser.h"
+#include <global.h>
 
 #include <system/settings.h>
-#include <global.h>
 #include <system/helpers.h>
+#include <system/tmdbparser.h>
 
 
 cTmdb::cTmdb(std::string epgtitle)

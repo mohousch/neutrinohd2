@@ -32,13 +32,13 @@
 #ifndef __settings__
 #define __settings__
 
-#include <system/localize.h>
-#include <configfile.h>
+#include <string>
 
-/* zapit */
 #include <client/zapitclient.h>
 
-#include <string>
+#include <configfile.h>
+
+#include <system/localize.h>
 
 #include <gui/widget/icons.h>
 #include <gui/widget/stringinput.h>

@@ -35,11 +35,13 @@
 #ifndef __colorchooser__
 #define __colorchooser__
 
+#include <string>
+
 #include <driver/framebuffer.h>
 #include <system/localize.h>
 #include <gui/widget/menue.h>
+#include <gui/widget/window.h>
 
-#include <string>
 
 class CColorChooser : public CMenuTarget
 {
@@ -54,6 +56,9 @@ class CColorChooser : public CMenuTarget
 
 		CIcon titleIcon;
 		CIcon volumeBodyIcon;
+
+		CWindow m_cBoxWindow;
+		CWindow m_cTitleWindow;
 
 		unsigned char * value[4]; // r, g, b, alpha
 

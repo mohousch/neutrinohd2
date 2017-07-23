@@ -35,8 +35,6 @@
 #include <config.h>
 #endif
 
-#include <gui/bedit/bouqueteditor_chanselect.h>
-
 #include <global.h>
 #include <neutrino.h>
 
@@ -57,6 +55,8 @@
 
 #include <system/debug.h>
 #include <system/helpers.h>
+
+#include <gui/bedit/bouqueteditor_chanselect.h>
 
 
 extern tallchans allchans;

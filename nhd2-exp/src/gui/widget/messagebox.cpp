@@ -35,14 +35,15 @@
 #include <config.h>
 #endif
 
-#include <gui/widget/messagebox.h>
-
-#include <gui/widget/icons.h>
-#include <driver/screen_max.h>
 #include <global.h>
 #include <neutrino.h>
 
+#include <gui/widget/icons.h>
+#include <driver/screen_max.h>
+
 #include <system/debug.h>
+
+#include <gui/widget/messagebox.h>
 
 
 #define MESSAGEBOX_MAX_HEIGHT 420

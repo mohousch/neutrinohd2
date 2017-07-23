@@ -35,13 +35,12 @@
 #ifndef __timerlist__
 #define __timerlist__
 
+#include <string>
 #include <timerdclient/timerdclient.h>
 
 #include <gui/widget/menue.h>
 
 #include <driver/framebuffer.h>
-
-#include <string>
 
 
 class CTimerList : public CMenuTarget

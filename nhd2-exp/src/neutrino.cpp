@@ -138,6 +138,7 @@
 #include <gui/recording_setup.h>
 #include <gui/misc_setup.h>
 #include <gui/vfdcontroler.h>
+#include <gui/dvbsub_select.h>
 
 #include <system/setting_helpers.h>
 #include <system/settings.h>
@@ -156,9 +157,6 @@
 // libdvbapi
 #include <video_cs.h>
 #include <audio_cs.h>
-
-// dvbsubs selct menu
-#include <gui/dvbsub_select.h>
 
 // zapit includes
 #include <channel.h>
