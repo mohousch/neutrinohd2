@@ -703,15 +703,18 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	if(actionKey == "zapit")
 	{
-		stopPlayBack();
-		startPlayBack(webTVlistMenu->getSelected());
-		tuned = webTVlistMenu->getSelected();
+		if(webTVlistMenu->getSelected() != tuned)
+		{
+			stopPlayBack();
+			startPlayBack(webTVlistMenu->getSelected());
+			tuned = webTVlistMenu->getSelected();
 
-		//infoviewer
-		g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
+			//infoviewer
+			g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
 
-		// kill infobar
-		g_InfoViewer->killTitle();
+			// kill infobar
+			g_InfoViewer->killTitle();
+		}
 
 		return menu_return::RETURN_EXIT;
 	}
