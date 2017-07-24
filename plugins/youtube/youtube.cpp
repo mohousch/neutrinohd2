@@ -64,7 +64,8 @@ bool CYTBrowser::loadSettings(YTB_SETTINGS *settings)
 	
 	if(configfile.loadConfig(YTBROWSER_SETTINGS_FILE))
 	{
-		settings->ytmode = configfile.getInt32("ytmode", cYTFeedParser::MOST_POPULAR);
+		//settings->ytmode = configfile.getInt32("ytmode", cYTFeedParser::MOST_POPULAR);
+		m_settings.ytmode = cYTFeedParser::MOST_POPULAR;
 		settings->ytorderby = configfile.getInt32("ytorderby", cYTFeedParser::ORDERBY_PUBLISHED);
 		settings->ytregion = configfile.getString("ytregion", "default");
 		settings->ytsearch = configfile.getString("ytsearch", "");
@@ -85,7 +86,7 @@ bool CYTBrowser::saveSettings(YTB_SETTINGS *settings)
 	bool result = true;
 	dprintf(DEBUG_NORMAL, "CYTBrowser::saveSettings\r\n");
 
-	configfile.setInt32("ytmode", settings->ytmode);
+	//configfile.setInt32("ytmode", settings->ytmode);
 	configfile.setInt32("ytorderby", settings->ytorderby);
 	configfile.setString("ytregion", settings->ytregion);
 	configfile.setString("ytsearch", settings->ytsearch);
