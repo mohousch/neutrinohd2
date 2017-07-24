@@ -1419,6 +1419,8 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32("Head_Info_gradient", g_settings.Head_Info_gradient);
 	configfile.setInt32("Foot_Info_gradient", g_settings.Foot_Info_gradient);
 	configfile.setInt32("infobar_gradient", g_settings.infobar_gradient);
+
+	configfile.setString("tmdbkey", g_settings.tmdbkey);
 	// END MISC OPTS
 
 	// HDD

@@ -553,6 +553,14 @@ void CGeneralSettings::showMenu()
 	// progressbar color
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_PROGRESSBAR_COLOR, &g_settings.progressbar_color, PROGRESSBAR_COLOR_OPTIONS, PROGRESSBAR_COLOR_OPTION_COUNT, true));
 
+	// key
+	miscSettingsGeneral.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+
+	std::string key = g_settings.tmdbkey;
+	
+	CStringInputSMS* keyInput = new CStringInputSMS("tmdb Key:", (char *)key.c_str());
+	miscSettingsGeneral.addItem(new CMenuForwarder("tmdb:", true, key, keyInput));
+
 	// reset factory setup
 	miscSettingsGeneral.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
@@ -563,6 +571,8 @@ void CGeneralSettings::showMenu()
 	
 	miscSettingsGeneral.exec(NULL, "");
 	miscSettingsGeneral.hide();
+	delete keyInput;
+	keyInput = NULL;
 }
 
 // TZ notifier

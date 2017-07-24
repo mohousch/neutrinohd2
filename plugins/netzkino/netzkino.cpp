@@ -61,6 +61,7 @@ void CNKMovies::showNKMoviesMenu()
 	
 	loadBox.paint();
 
+	// loadNKTitles
 	loadNKTitles(catMode, caption, catID);
 
 	loadBox.hide();
@@ -86,6 +87,7 @@ void CNKMovies::showNKMoviesMenu()
 		moviesMenu->addItem(new CMenuFrameBoxItem(m_vMovieInfo[i].epgTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
 	}
 
+	//moviesMenu->setItemsPerPage(3, 2);
 	moviesMenu->setItemBoxColor(COL_YELLOW);
 	moviesMenu->setHeaderButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
 
