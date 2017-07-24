@@ -136,10 +136,14 @@ void CYTBrowser::showYTMoviesMenu(void)
 		title += " \"" + m_settings.ytsearch + "\"";
 
 	moviesMenu = new CMenuFrameBox(title.c_str(), NEUTRINO_ICON_YT_SMALL);
+	
+	std::string itemTitle;
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		moviesMenu->addItem(new CMenuFrameBoxItem(m_vMovieInfo[i].epgTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
+		itemTitle = m_vMovieInfo[i].epgTitle + " (" + to_string(m_vMovieInfo[i].length) + " Min)";
+ 
+		moviesMenu->addItem(new CMenuFrameBoxItem(/*m_vMovieInfo[i].epgTitle*/itemTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
 	}
 
 	moviesMenu->setItemsPerPage(3, 2);

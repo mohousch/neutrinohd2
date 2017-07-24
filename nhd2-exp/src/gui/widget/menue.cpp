@@ -3088,7 +3088,7 @@ void CMenuFrameBox::paintFootInfo(int pos)
 		// foot text
 		if(!item->itemName.empty())
 		{
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(Box.iX + BORDER_LEFT, Box.iY + Box.iHeight - 30 + (30 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE] ->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), Box.iWidth - BORDER_LEFT - BORDER_RIGHT - 40, item->itemName.c_str(), COL_MENUFOOT_INFO);
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(Box.iX + BORDER_LEFT, Box.iY + Box.iHeight - 30 + (30 - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE] ->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), Box.iWidth - BORDER_LEFT - BORDER_RIGHT - 4*iw - 4*2, item->itemName.c_str(), COL_MENUFOOT_INFO);
 		}
 	}
 }
