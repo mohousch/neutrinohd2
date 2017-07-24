@@ -605,7 +605,7 @@ void CTestMenu::testCListFrame()
 {
 	CBox listFrameBox;
 	LF_LINES listFrameLines;
-	int selected = 1;
+	int selected = 0;
 	
 	listFrameBox.iX = g_settings.screen_StartX + 10;
 	listFrameBox.iY = g_settings.screen_StartY + 10;
@@ -619,7 +619,7 @@ void CTestMenu::testCListFrame()
 	//
 	#define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
 	#define MAX_WINDOW_HEIGHT 		(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
-	#define MAX_ROWS 		5
+	#define MAX_ROWS 		LF_MAX_ROWS //6
 
 	
 
@@ -632,27 +632,26 @@ void CTestMenu::testCListFrame()
 	}
 
 	// rowwidth
-	listFrameLines.rowWidth[0] = MAX_WINDOW_WIDTH / 6;
+	listFrameLines.rowWidth[0] = MAX_WINDOW_WIDTH / 20;
 	listFrameLines.rowWidth[1] = MAX_WINDOW_WIDTH / 6;
 	listFrameLines.rowWidth[2] = MAX_WINDOW_WIDTH / 6;
 	listFrameLines.rowWidth[3] = MAX_WINDOW_WIDTH / 6;
 	listFrameLines.rowWidth[4] = MAX_WINDOW_WIDTH / 6;
+	listFrameLines.rowWidth[5] = MAX_WINDOW_WIDTH / 6;
 
 	// headertitle
-	listFrameLines.lineHeader[0] = "title";
-	listFrameLines.lineHeader[1] = "duration";
-	listFrameLines.lineHeader[2] = "genre";
-	listFrameLines.lineHeader[3] = "artist";
-	listFrameLines.lineHeader[4] = "date";
+	listFrameLines.lineHeader[0] = "Nr";
+	listFrameLines.lineHeader[1] = "title";
+	listFrameLines.lineHeader[2] = "duration";
+	listFrameLines.lineHeader[3] = "genre";
+	listFrameLines.lineHeader[4] = "artist";
+	listFrameLines.lineHeader[5] = "date";
 	
 
 	CListFrame * listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::TITLE | CListFrame::HEADER_LINE | CListFrame::SCROLL, &listFrameBox);
 
-	// title icon
-	std::string testIcon = PLUGINDIR "/youtube/youtube_small.png";
-
 	// title
-	listFrame->setTitle("listFrame", testIcon);
+	listFrame->setTitle("listFrame", NEUTRINO_ICON_MOVIE);
 	
 	// fill lineArrays list
 	CFileFilter fileFilter;
@@ -730,11 +729,12 @@ void CTestMenu::testCListFrame()
 					snprintf(duration, 8, "(%ld:%02ld)", audiofile.MetaData.total_time / 60, audiofile.MetaData.total_time % 60);
 				}
 
-				listFrameLines.lineArray[0].push_back(title);
-				listFrameLines.lineArray[1].push_back(duration);
-				listFrameLines.lineArray[2].push_back(genre);
-				listFrameLines.lineArray[3].push_back(artist);
-				listFrameLines.lineArray[4].push_back(date);
+				listFrameLines.lineArray[0].push_back(to_string(count));
+				listFrameLines.lineArray[1].push_back(title);
+				listFrameLines.lineArray[2].push_back(duration);
+				listFrameLines.lineArray[3].push_back(genre);
+				listFrameLines.lineArray[4].push_back(artist);
+				listFrameLines.lineArray[5].push_back(date);
 			}
 		}
 	}

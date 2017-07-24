@@ -67,6 +67,7 @@ audioplayer.playlist_name Filename of the play list
 audioplayer.playlist_name_hint1 Please enter the filename of the playlist
 audioplayer.playlist_name_hint2 The extension .m3u will be added automatically
 audioplayer.reading_files Reading files
+audioplayer.read_playlist_at_start read playlist at start
 audioplayer.receiving_list Receiving list, please wait
 audioplayer.repeat_on Enable repeat mode
 audioplayer.rewind rewind

@@ -1251,14 +1251,14 @@ bool CFileHelpers::removeDir(const char *Dir)
 	return true;
 }
 
-bool CFileHelpers::readDir(const std::string& dirname, CFileList* flist, CFileFilter * fileFilter)
+bool CFileHelpers::readDir(const std::string& dirname, CFileList* flist, CFileFilter * fileFilter, bool skipDirs)
 {
-	dprintf(DEBUG_NORMAL, "CFileHelpers::readDir %s\n", dirname.c_str());
-	
 	stat_struct statbuf;
 	dirent_struct **namelist;
 	int n;
 	std::string dir = dirname + "/";
+
+	dprintf(DEBUG_NORMAL, "CFileHelpers::readDir %s\n", dir.c_str());
 
 	n = my_scandir(dir.c_str(), &namelist, 0, my_alphasort);
 	if (n < 0)
@@ -1284,24 +1284,28 @@ bool CFileHelpers::readDir(const std::string& dirname, CFileList* flist, CFileFi
 				file.Size = statbuf.st_size;
 				file.Time = statbuf.st_mtime;
 
-				// skip dirs
-				if(S_ISDIR(file.Mode))
+				// skip not wanted
+				if(skipDirs)
 				{
-					continue;
-				}
-
-				// skip not matched filter
-				if(fileFilter != NULL )
-				{
-					if(!fileFilter->matchFilter(file.Name))
+					// skip dirs
+					if(S_ISDIR(file.Mode))
 					{
 						continue;
+					}
+
+					// skip not matched filter
+					if(fileFilter != NULL )
+					{
+						if(!fileFilter->matchFilter(file.Name))
+						{
+							continue;
+						}
 					}
 				}
 				
 				flist->push_back(file);
 
-				dprintf(DEBUG_NORMAL, "CFileHelpers::add file %s\n", file.Name.c_str());
+				//dprintf(DEBUG_NORMAL, "CFileHelpers::add file %s\n", file.Name.c_str());
 			}
 		}
 		free(namelist[i]);
@@ -1310,6 +1314,63 @@ bool CFileHelpers::readDir(const std::string& dirname, CFileList* flist, CFileFi
 	free(namelist);
 
 	return true;
+}
+
+void CFileHelpers::addRecursiveDir(CFileList * re_filelist, std::string rpath, CFileFilter * fileFilter)
+{
+	neutrino_msg_t      msg;
+	neutrino_msg_data_t data;
+	int n;
+
+	dprintf(DEBUG_INFO, "CFileHelpers::addRecursiveDir %s\n", rpath.c_str());
+
+	bool bCancel = false;
+
+	g_RCInput->getMsg_us(&msg, &data, 1);
+	if (msg == CRCInput::RC_home)
+	{
+		// home key cancel scan
+		bCancel = true;
+	}
+	else if (msg != CRCInput::RC_timeout)
+	{
+		// other event, save to low priority queue
+		g_RCInput->postMsg( msg, data, false );
+	}
+	
+	if(bCancel)
+		return;
+
+	CFileList tmplist;
+	if(!readDir(rpath, &tmplist, NULL, false)) //dont skip dirs 
+	{
+		perror(("CFileHelpers::Recursive scandir: " + rpath).c_str());
+	}
+	else
+	{
+		n = tmplist.size();
+		
+		for(int i = 0; i < n; i++)
+		{
+			std::string basename = tmplist[i].Name.substr(tmplist[i].Name.rfind('/') + 1);
+			
+			if( basename != ".." )
+			{
+				if(fileFilter != NULL && (!S_ISDIR(tmplist[i].Mode)))
+				{
+					if(!fileFilter->matchFilter(tmplist[i].Name))
+					{
+						continue;
+					}
+				}
+
+				if(!S_ISDIR(tmplist[i].Mode))
+					re_filelist->push_back(tmplist[i]);
+				else
+					addRecursiveDir(re_filelist, tmplist[i].Name, fileFilter);
+			}
+		}
+	}
 }
 
 

@@ -337,6 +337,35 @@ int CAudioPlayerGui::show()
 	bool update = true;
 	bool clear_before_update = false;
 	m_key_level = 0;
+
+	// fill play list if empty and music path match to some music files
+	if((!isURL && !hide_playlist) && g_settings.audioplayer_read_playlist_at_start)
+	{
+		if(m_playlist.empty())
+		{
+			CFileList filelist;
+
+			//if(CFileHelpers::getInstance()->readDir(m_Path, &filelist, &audiofilefilter))
+			CFileHelpers::getInstance()->addRecursiveDir(&filelist, m_Path, &audiofilefilter);
+			{
+				// filter them
+				CFileList::iterator files = filelist.begin();
+				for(; files != filelist.end() ; files++)
+				{
+					if ( (files->getExtension() == CFile::EXTENSION_CDR)
+							||  (files->getExtension() == CFile::EXTENSION_MP3)
+							||  (files->getExtension() == CFile::EXTENSION_WAV)
+							||  (files->getExtension() == CFile::EXTENSION_FLAC)
+					)
+					{
+						CAudiofileExt audiofile(files->Name, files->getExtension());
+						addToPlaylist(audiofile);
+					}
+				}
+			}
+		}
+	}
+	//
 	
 	if(isURL && hide_playlist)
 		play(0);

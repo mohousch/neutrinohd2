@@ -124,7 +124,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	if((g_settings.screen_EndY- g_settings.screen_StartY) < height)
 		height = (g_settings.screen_EndY- g_settings.screen_StartY);
 
-	sheight      = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
+	sheight = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 	
 	// foot
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_foot_w, &icon_foot_h);

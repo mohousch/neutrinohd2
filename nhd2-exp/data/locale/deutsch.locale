@@ -67,6 +67,7 @@ audioplayer.playlist_name Dateiname der Playlist
 audioplayer.playlist_name_hint1 Geben Sie den Dateinamen der Playlist ein
 audioplayer.playlist_name_hint2 Die Erweiterung .m3u wird automatisch angehängt
 audioplayer.reading_files Lese die Dateien ein
+audioplayer.read_playlist_at_start lese Playlist am Start
 audioplayer.receiving_list Empfange Liste, bitte warten...
 audioplayer.repeat_on Repeatmodus aktivieren
 audioplayer.rewind schneller Rückl.

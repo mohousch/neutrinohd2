@@ -275,7 +275,7 @@ void CFileBrowser::ChangeDir(const std::string& filename, int selection)
 		newpath = filename;
 	}
 	
-	if((newpath.rfind('/') != newpath.length()-1 || newpath.length() == 0))
+	if((newpath.rfind('/') != newpath.length()- 1 || newpath.length() == 0))
 	{
 		newpath += '/';
 	}
@@ -338,7 +338,7 @@ void CFileBrowser::ChangeDir(const std::string& filename, int selection)
 
 bool CFileBrowser::readDir(const std::string& dirname, CFileList* flist)
 {
-	dprintf(DEBUG_INFO, "CFileBrowser::readDir %s\n", dirname.c_str());
+	dprintf(DEBUG_NORMAL, "CFileBrowser::readDir %s\n", dirname.c_str());
 	
 	stat_struct statbuf;
 	dirent_struct **namelist;
@@ -351,7 +351,7 @@ bool CFileBrowser::readDir(const std::string& dirname, CFileList* flist)
 		return false;
 	}
 	
-	for(int i = 0; i < n;i++)
+	for(int i = 0; i < n; i++)
 	{
 		CFile file;
 		if(strcmp(namelist[i]->d_name, ".") != 0)
@@ -702,7 +702,7 @@ void CFileBrowser::addRecursiveDir(CFileList * re_filelist, std::string rpath, b
 	{
 		n = tmplist.size();
 		
-		for(int i = 0; i < n;i++)
+		for(int i = 0; i < n; i++)
 		{
 			std::string basename = tmplist[i].Name.substr(tmplist[i].Name.rfind('/')+1);
 			

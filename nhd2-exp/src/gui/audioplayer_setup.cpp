@@ -117,7 +117,7 @@ void CAudioPlayerSettings::showMenu()
 	// Audio Player
 	audioPlayerSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOPLAYER_DISPLAY_ORDER, &g_settings.audioplayer_display, AUDIOPLAYER_DISPLAY_ORDER_OPTIONS, AUDIOPLAYER_DISPLAY_ORDER_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutAudioPlayer++), "", true ));
 
-	// select ton pid
+	// auto select
 	audioPlayerSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOPLAYER_FOLLOW, &g_settings.audioplayer_follow, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutAudioPlayer++) ));
 
 	// select by title
@@ -128,6 +128,9 @@ void CAudioPlayerSettings::showMenu()
 
 	// high prio
 	audioPlayerSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOPLAYER_HIGHPRIO, &g_settings.audioplayer_highprio, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutAudioPlayer++) ));
+
+	// read playlist at start
+	audioPlayerSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOPLAYER_READ_PLAYLIST_AT_START, &g_settings.audioplayer_read_playlist_at_start, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutAudioPlayer++) ));
 
 	// start dir
 	audioPlayerSettings.addItem(new CMenuForwarder(LOCALE_AUDIOPLAYER_DEFDIR, true, g_settings.network_nfs_audioplayerdir, this, "audioplayerdir", CRCInput::convertDigitToKey(shortcutAudioPlayer++)));

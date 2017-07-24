@@ -135,7 +135,7 @@ class CAudioPlayerGui : public CMenuTarget
 		bool           m_playlistHasChanged;
 
 		//
-		CAudioPlayList      m_playlist;
+		CAudioPlayList m_playlist;
 		CTitle2Pos     m_title2Pos;
 		CAudiofileExt  m_curr_audiofile;
 		std::string    m_Path;
@@ -156,6 +156,7 @@ class CAudioPlayerGui : public CMenuTarget
 		bool updateScreen;
 
 		std::string m_title;
+		CFileFilter audiofilefilter;
 
 		//
 		void Init(void);
@@ -172,7 +173,6 @@ class CAudioPlayerGui : public CMenuTarget
 		//
 		void get_id3(CAudiofileExt * audiofile);
 		void get_mp3info(CAudiofileExt * audiofile);
-		CFileFilter audiofilefilter;
 		void paintItemID3DetailsLine(int pos);
 		void clearItemID3DetailsLine();
 		void play(unsigned int pos);
