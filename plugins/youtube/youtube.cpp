@@ -99,11 +99,12 @@ bool CYTBrowser::saveSettings(YTB_SETTINGS *settings)
 }
 
 //
-#define YT_HEAD_BUTTONS_COUNT	2
+#define YT_HEAD_BUTTONS_COUNT	3
 const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL}
+	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL},
+	{ NEUTRINO_ICON_BUTTON_0, NONEXISTANT_LOCALE, NULL}
 };
 
 void CYTBrowser::showYTMoviesMenu(void)
@@ -152,6 +153,7 @@ void CYTBrowser::showYTMoviesMenu(void)
 
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
+	moviesMenu->addKey(CRCInput::RC_0, this, CRCInput::getSpecialKeyName(CRCInput::RC_0));
 
 	moviesMenu->exec(NULL, "");
 	//moviesMenu->hide();
@@ -252,6 +254,11 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		showYTMenu();
 
 		//return returnval;
+	}
+	else if(actionKey == "RC_blue")
+	{
+		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
+		m_settings.ytmode = cYTFeedParser::RELATED;
 	}
 
 	showYTMoviesMenu();
