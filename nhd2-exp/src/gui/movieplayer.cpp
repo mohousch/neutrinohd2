@@ -70,7 +70,6 @@
 #include <gui/color.h>
 #include <gui/infoviewer.h>
 #include <gui/nfs.h>
-#include <gui/webtv.h>
 #include <gui/audio_video_select.h>
 
 #include <gui/widget/buttons.h>
@@ -116,8 +115,6 @@ extern char rec_filename[1024];				// defined in stream2file.cpp
 // for timeshift epg infos
 bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGData * epgdata);
 bool sectionsd_getEPGidShort(event_id_t epgID, CShortEPGData * epgdata);
-
-extern CWebTV * webtv;
 
 // movieplayer
 CMoviePlayerGui::CMoviePlayerGui()

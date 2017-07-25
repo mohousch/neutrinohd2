@@ -119,14 +119,6 @@ void CYTBrowser::showYTMoviesMenu(void)
 	loadBox.hide();
 
 	//
-	if(m_vMovieInfo.empty())
-	{
-		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_YT_ERROR), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
-		
-		return;
-	}
-
-	//
 	std::string title;
 	title = g_Locale->getText(LOCALE_YOUTUBE);
 	title += " : ";
@@ -232,8 +224,6 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CYTBrowser::exec: actionKey:%s\n", actionKey.c_str());
 
-	int returnval = menu_return::RETURN_REPAINT;
-
 	if(parent) 
 		parent->hide();
 
@@ -241,21 +231,19 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		playMovie();
 
-		return returnval;
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_info")
 	{
 		showMovieInfo();
 
-		return returnval;
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_setup")
 	{
 		showYTMenu();
-
-		//return returnval;
 	}
-	else if(actionKey == "RC_blue")
+	else if(actionKey == "RC_0")
 	{
 		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		m_settings.ytmode = cYTFeedParser::RELATED;
@@ -278,8 +266,10 @@ void CYTBrowser::loadYTTitles(int mode, std::string search, std::string id)
 	else
 		ytparser.SetRegion(m_settings.ytregion);
 
+REPEAT:
 	if (!ytparser.Parsed() || (ytparser.GetFeedMode() != mode)) 
 	{
+	
 		if (ytparser.ParseFeed((cYTFeedParser::yt_feed_mode_t)mode, search, id, (cYTFeedParser::yt_feed_orderby_t)m_settings.ytorderby))
 		{
 			ytparser.DownloadThumbnails();
@@ -289,7 +279,12 @@ void CYTBrowser::loadYTTitles(int mode, std::string search, std::string id)
 			//FIXME show error
 			MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_YT_ERROR), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 			
-			return;
+			//return;
+			if(mode == cYTFeedParser::PREV)
+			{
+				mode = ytparser.GetFeedMode();
+				goto REPEAT;
+			}
 		}
 	}
 	
@@ -320,6 +315,8 @@ const CMenuOptionChooser::keyval YT_FEED_OPTIONS[] =
 {
         { cYTFeedParser::MOST_POPULAR, LOCALE_YT_MOST_POPULAR, NULL },
         { cYTFeedParser::MOST_POPULAR_ALL_TIME, LOCALE_YT_MOST_POPULAR_ALL_TIME, NULL },
+	{ cYTFeedParser::NEXT, LOCALE_YT_NEXT_RESULTS, NULL },
+	{ cYTFeedParser::PREV, LOCALE_YT_PREV_RESULTS, NULL }
 };
 
 #define YT_FEED_OPTION_COUNT (sizeof(YT_FEED_OPTIONS)/sizeof(CMenuOptionChooser::keyval))
@@ -416,6 +413,7 @@ bool CYTBrowser::showYTMenu()
 		newmode = select;
 		if (newmode == cYTFeedParser::NEXT || newmode == cYTFeedParser::PREV) 
 		{
+			m_settings.ytmode = newmode;
 		}
 		else if (select == cYTFeedParser::SEARCH) 
 		{
@@ -442,7 +440,6 @@ bool CYTBrowser::showYTMenu()
 	
 	return true;
 }
-
 
 //
 void plugin_init(void)

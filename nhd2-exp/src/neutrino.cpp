@@ -844,12 +844,12 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// audioplayer
 	strcpy( g_settings.network_nfs_audioplayerdir, configfile.getString( "network_nfs_audioplayerdir", "/media/hdd/music" ).c_str() );
 
-	g_settings.audioplayer_display = configfile.getInt32("audioplayer_display",(int)CAudioPlayerGui::ARTIST_TITLE);
+	g_settings.audioplayer_display = configfile.getInt32("audioplayer_display",(int)CAudioPlayerGui::TITLE_ARTIST);
 	g_settings.audioplayer_follow  = configfile.getInt32("audioplayer_follow", 0);
 	g_settings.audioplayer_highprio  = configfile.getInt32("audioplayer_highprio", 0);
 	g_settings.audioplayer_select_title_by_name = configfile.getInt32("audioplayer_select_title_by_name", 0);
 	g_settings.audioplayer_repeat_on = configfile.getInt32("audioplayer_repeat_on", 0);
-	g_settings.audioplayer_repeat_on = configfile.getInt32("audioplayer_read_playlist_at_start", 1);
+	g_settings.audioplayer_read_playlist_at_start = configfile.getInt32("audioplayer_read_playlist_at_start", 1);
 	// end audioplayer
 
 	// pictureviewer
@@ -857,6 +857,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 
 	strcpy( g_settings.picviewer_slide_time, configfile.getString( "picviewer_slide_time", "10" ).c_str() );
 	g_settings.picviewer_scaling = configfile.getInt32("picviewer_scaling", (int)CFrameBuffer::SIMPLE);
+	g_settings.picviewer_read_playlist_at_start = configfile.getInt32("picviewer_read_playlist_at_start", 1);
 	// end pictureviewer
 
 	// misc opts
@@ -1333,6 +1334,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 
 	configfile.setString( "picviewer_slide_time", g_settings.picviewer_slide_time );
 	configfile.setInt32( "picviewer_scaling", g_settings.picviewer_scaling );
+	configfile.setInt32("picviewer_read_playlist_at_start", g_settings.picviewer_read_playlist_at_start);
 	// END PICVIEWER
 
 	// MISC OPTS

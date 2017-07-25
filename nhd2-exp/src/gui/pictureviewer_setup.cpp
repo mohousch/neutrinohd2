@@ -47,6 +47,13 @@
 #include <audio_cs.h>
 
 
+#define MESSAGEBOX_NO_YES_OPTION_COUNT 2
+const CMenuOptionChooser::keyval MESSAGEBOX_NO_YES_OPTIONS[MESSAGEBOX_NO_YES_OPTION_COUNT] =
+{
+	{ 0, LOCALE_MESSAGEBOX_NO, NULL },
+	{ 1, LOCALE_MESSAGEBOX_YES, NULL }
+};
+
 #define PICTUREVIEWER_SCALING_OPTION_COUNT 3
 const CMenuOptionChooser::keyval PICTUREVIEWER_SCALING_OPTIONS[PICTUREVIEWER_SCALING_OPTION_COUNT] =
 {
@@ -119,6 +126,9 @@ void CPictureViewerSettings::showMenu()
 	// slide Timeout
 	CStringInput * pic_timeout= new CStringInput(LOCALE_PICTUREVIEWER_SLIDE_TIME, g_settings.picviewer_slide_time, 2, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE, "0123456789 ");
 	PicViewerSettings.addItem(new CMenuForwarder(LOCALE_PICTUREVIEWER_SLIDE_TIME, true, g_settings.picviewer_slide_time, pic_timeout, NULL, CRCInput::convertDigitToKey(shortcutPicViewer++)));
+
+	// read playlist at start
+	PicViewerSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOPLAYER_READ_PLAYLIST_AT_START, &g_settings.picviewer_read_playlist_at_start, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutPicViewer++) ));
 
 	// Pic Viewer Default Dir
 	PicViewerSettings.addItem(new CMenuForwarder(LOCALE_PICTUREVIEWER_DEFDIR, true, g_settings.network_nfs_picturedir, this, "picturedir", CRCInput::convertDigitToKey(shortcutPicViewer++)));

@@ -81,14 +81,11 @@
 
 #include <system/debug.h>
 
-#include <gui/webtv.h>
-
 #include <curl/curl.h>
 #include <curl/easy.h>
 
 
 extern int current_muted;
-extern CWebTV * webtv;
 
 #define AUDIOPLAYERGUI_SMSKEY_TIMEOUT 1000
 #define SHOW_FILE_LOAD_LIMIT 50

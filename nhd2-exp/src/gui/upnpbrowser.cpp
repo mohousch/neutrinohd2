@@ -70,11 +70,8 @@
 #include <system/debug.h>
 #include <gui/pictureviewer.h>
 #include <gui/movieplayer.h>
-#include <gui/webtv.h>
 #include <gui/audioplayer.h>
 
-
-extern CWebTV * webtv;
 
 const struct button_label RescanButton = {NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_UPNPBROWSER_RESCAN, NULL };
 const struct button_label PlayButton   = {NEUTRINO_ICON_BUTTON_RED, LOCALE_AUDIOPLAYER_PLAY, NULL };

@@ -60,14 +60,12 @@
 #include <system/settings.h>
 #include <system/debug.h>
 
+#include <driver/screen_max.h>
+
 #include <algorithm>
 #include <sys/stat.h>
 #include <sys/time.h>
 
-#include <gui/webtv.h>
-
-
-extern CWebTV * webtv;
 
 bool comparePictureByDate (const CPicture& a, const CPicture& b)
 {
@@ -86,7 +84,6 @@ CPictureViewerGui::CPictureViewerGui()
 	frameBuffer = CFrameBuffer::getInstance();
 
 	visible = false;
-	selected = 0;
 	m_sort = FILENAME;
 	isURL = false;
 
@@ -101,6 +98,8 @@ CPictureViewerGui::CPictureViewerGui()
 	picture_filter.addFilter("jpeg");
 
 	g_PicViewer = new CPictureViewer();
+
+	selected = 0;
 }
 
 CPictureViewerGui::~CPictureViewerGui()
@@ -116,6 +115,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 
 	selected = 0;
 	
+	//
 	width = frameBuffer->getScreenWidth(true) - 10; 
 	height = frameBuffer->getScreenHeight(true) - 10;
 
@@ -144,6 +144,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	x = (((g_settings.screen_EndX- g_settings.screen_StartX) - width)/ 2) + g_settings.screen_StartX;
 	y = (((g_settings.screen_EndY- g_settings.screen_StartY) - height)/ 2) + g_settings.screen_StartY;
 
+	//
 	g_PicViewer->SetScaling( (CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
 	g_PicViewer->SetVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
 
@@ -164,7 +165,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , NeutrinoMessages::mode_pic );
 	
 	// remember last mode
-	m_LastMode=(CNeutrinoApp::getInstance()->getLastMode() | NeutrinoMessages::norezap);
+	m_LastMode = (CNeutrinoApp::getInstance()->getLastMode() | NeutrinoMessages::norezap);
 	
 	// Save and Clear background
 	bool usedBackground = frameBuffer->getuseBackground();
@@ -219,6 +220,40 @@ int CPictureViewerGui::show()
 
 	bool loop = true;
 	bool update = true;
+
+	//
+	// fill play list if empty and music path match to some music files
+	if(!isURL && g_settings.picviewer_read_playlist_at_start)
+	{
+		if(playlist.empty())
+		{
+			CFileList filelist;
+
+			CFileHelpers::getInstance()->addRecursiveDir(&filelist, Path, &picture_filter);
+			{
+				CPicture pic;
+				struct stat statbuf;
+				
+				CFileList::iterator files = filelist.begin();
+				for(; files != filelist.end() ; files++)
+				{
+					if (files->getType() == CFile::FILE_PICTURE)
+					{
+						pic.Filename = files->Name;
+						std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
+						pic.Name = tmp.substr(0, tmp.rfind('.'));
+						pic.Type = tmp.substr(tmp.rfind('.') + 1);
+			
+						if(stat(pic.Filename.c_str(), &statbuf) != 0)
+							printf("stat error");
+						pic.Date = statbuf.st_mtime;
+				
+						addToPlaylist(pic);
+					}
+				}
+			}
+		}
+	}
 	
 	if(isURL)
 	{
@@ -229,7 +264,7 @@ int CPictureViewerGui::show()
 			m_state = VIEW;
 		
 		if (!playlist.empty())
-			view(selected);
+			view(0);
 	}
 	
 	while(loop)
@@ -245,7 +280,7 @@ int CPictureViewerGui::show()
 			timeout = 10; 
 		else
 		{
-			timeout = (m_time+atoi(g_settings.picviewer_slide_time) - (long)time(NULL))*10;
+			timeout = (m_time + atoi(g_settings.picviewer_slide_time) - (long)time(NULL))*10;
 			if(timeout < 0 )
 				timeout = 1;
 		}
@@ -288,7 +323,7 @@ int CPictureViewerGui::show()
 				if (m_state == MENU)
 				{
 					if (selected < listmaxshow)
-						selected=playlist.size()-1;
+						selected = playlist.size()-1;
 					else
 						selected -= listmaxshow;
 					liststart = (selected/listmaxshow)*listmaxshow;
@@ -543,7 +578,7 @@ int CPictureViewerGui::show()
 			if((data & NeutrinoMessages::mode_mask) !=NeutrinoMessages::mode_pic)
 			{
 				loop = false;
-				m_LastMode=data;
+				m_LastMode = data;
 			}
 		}
 		else if(msg == NeutrinoMessages::RECORD_START ||
@@ -629,7 +664,6 @@ void CPictureViewerGui::paintHead()
 	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	// head icon
-	//frameBuffer->getIconSize(NEUTRINO_ICON_PICTURE, &icon_head_w, &icon_head_h);
 	frameBuffer->paintIcon(NEUTRINO_ICON_PICTURE, x + BORDER_LEFT, y + (theight - icon_head_h)/2);
 	
 	//head title
@@ -687,10 +721,6 @@ void CPictureViewerGui::paintFoot()
 		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + ButtonWidth, y + height - buttonHeight + 3, ButtonWidth, 1, &(PictureViewerButtons[1]), buttonHeight/2);
 }
 
-void CPictureViewerGui::paintInfo()
-{
-}
-
 void CPictureViewerGui::paint()
 {
 	liststart = (selected/listmaxshow)*listmaxshow;
@@ -713,7 +743,6 @@ void CPictureViewerGui::paint()
 	frameBuffer->paintBoxRel(x + width - 13, ypos + 2 + int(sbs* sbh) , 11, int(sbh),  COL_MENUCONTENT_PLUS_3);
 
 	paintFoot();
-	paintInfo();
 	
 	frameBuffer->blit();
 	
@@ -791,3 +820,4 @@ void CPictureViewerGui::showHelp()
 	hide();
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
 }
+

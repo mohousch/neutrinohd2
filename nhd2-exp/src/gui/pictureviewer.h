@@ -32,13 +32,13 @@
 #ifndef __pictureviewergui__
 #define __pictureviewergui__
 
-
-#include "driver/framebuffer.h"
-#include "driver/pictureviewer/pictureviewer.h"
-#include "gui/widget/menue.h"
-#include "gui/filebrowser.h"
-
 #include <string>
+
+#include <driver/framebuffer.h>
+#include <driver/pictureviewer/pictureviewer.h>
+#include <gui/widget/menue.h>
+#include <gui/filebrowser.h>
+
 
 class CPicture
 {
@@ -51,7 +51,7 @@ class CPicture
 
 typedef std::vector<CPicture> CViewList;
 
-
+//
 class CPictureViewerGui : public CMenuTarget
 {
 	public:
@@ -69,60 +69,60 @@ class CPictureViewerGui : public CMenuTarget
 			NAME
 		};
 		
-		enum BackGround {
-			LIVESTREAM = 0,
-			NON
-		};
-		
 	private:
-		CFrameBuffer		* frameBuffer;
-		CPictureViewer		* g_PicViewer;
 
-		unsigned int		selected;
+		CFrameBuffer		* frameBuffer;
+
+		//
+		int 			width;
+		int 			height;
+		int 			x;
+		int 			y;
+		int         		m_title_w;
+
+		int icon_foot_w;
+		int icon_foot_h;
+		int icon_head_w;
+		int icon_head_h;
+
 		unsigned int		liststart;
 		unsigned int		listmaxshow;
 		int			fheight; // Fonthoehe Playlist-Inhalt
 		int			theight; // Fonthoehe Playlist-Titel
 		int			sheight; // Fonthoehe MP Info
 		int			buttonHeight;
-		bool			visible;			
-		State          		m_state;
-		SortOrder      		m_sort;
-
-		CViewList		playlist;
-		std::string		Path;
-
-		int 			width;
-		int 			height;
-		int 			x;
-		int 			y;
-		int         		m_title_w;
-		long        		m_time;
-
-		int         		m_LastMode;
-		
-		int icon_foot_w;
-		int icon_foot_h;
-		int icon_head_w;
-		int icon_head_h;
 
 		void paintItem(int pos);
 		void paint();
 		void paintHead();
 		void paintFoot();
-		void paintInfo();
-		void paintLCD();
 		void hide();
 
+		//
+		CPictureViewer * g_PicViewer;
+
 		CFileFilter picture_filter;
+
+		unsigned int selected;
+		bool isURL;
+		bool visible;			
+		State m_state;
+		SortOrder m_sort;
+
+		CViewList playlist;
+		std::string Path;
+
+		long m_time;
+		int m_LastMode;
+
+		void paintLCD();
+
 		void view(unsigned int nr);
 		void endView();
 		int  show();
 
 		void showHelp();
 		
-		bool isURL;
-
 	public:
 		CPictureViewerGui();
 		~CPictureViewerGui();
