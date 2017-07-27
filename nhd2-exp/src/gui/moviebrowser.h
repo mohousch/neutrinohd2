@@ -213,6 +213,7 @@ typedef struct
 	
 	int browser_serie_mode;
 	int serie_auto_create;
+	int prefer_tmdb_info;
 	
 	// these variables are used for the listframes
 	int browserFrameHeight;

@@ -576,6 +576,7 @@ void CMovieBrowser::initGlobalSettings(void)
 	m_settings.remount = false;
 	m_settings.browser_serie_mode = 0;
 	m_settings.serie_auto_create = 0;
+	m_settings.prefer_tmdb_info = 1;
 }
 
 void CMovieBrowser::initFrames(void)
@@ -699,6 +700,7 @@ bool CMovieBrowser::loadSettings(MB_SETTINGS *settings)
 		settings->lastRecordMaxItems = configfile.getInt32("mb_lastRecordMaxItems", NUMBER_OF_MOVIES_LAST);
 		settings->browser_serie_mode = configfile.getInt32("mb_browser_serie_mode", 0);
 		settings->serie_auto_create = configfile.getInt32("mb_serie_auto_create", 0);
+		settings->prefer_tmdb_info = configfile.getInt32("mb_prefer_tmdb_info" , 1);
 
 		settings->gui = (MB_GUI)configfile.getInt32("mb_gui", MB_GUI_MOVIE_INFO);
 			
@@ -762,6 +764,7 @@ bool CMovieBrowser::saveSettings(MB_SETTINGS *settings)
 	configfile.setInt32("mb_lastRecordMaxItems", settings->lastRecordMaxItems);
 	configfile.setInt32("mb_browser_serie_mode", settings->browser_serie_mode);
 	configfile.setInt32("mb_serie_auto_create", settings->serie_auto_create);
+	configfile.setInt32("mb_prefer_tmdb_info", settings->prefer_tmdb_info);
 
 	configfile.setInt32("mb_gui", settings->gui);
 	
@@ -2014,19 +2017,12 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				int picw = 162; 	//FIXME
 	
 				std::string thumbnail = "";
-				
-				// rewrite tfile
-				//std::string fname = m_movieSelectionHandler->file.Name;
-				//changeFileNameExt(fname, ".jpg");
 	
-				// save tfile to /tmp
+				// saved to /tmp
 				std::string fname = "/tmp/" + m_movieSelectionHandler->epgTitle + ".jpg";
 				
-				if (tmdb->getBigCover(fname)) 
-				{
-					if(!access(fname.c_str(), F_OK) )
-						thumbnail = fname.c_str();
-				}
+				if(!access(fname.c_str(), F_OK) )
+					thumbnail = fname.c_str();
 	
 				CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
@@ -2037,16 +2033,19 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				delete infoBox;
 
 				// bool prefer tmdbInfo = true;
-				// rewrite tfile
-				std::string tname = m_movieSelectionHandler->file.Name;
-				changeFileNameExt(tname, ".jpg");
-				if(tmdb->getBigCover(tname)) 
-					m_movieSelectionHandler->tfile = tname;
+				if(m_settings.prefer_tmdb_info)
+				{
+					// rewrite tfile
+					std::string tname = m_movieSelectionHandler->file.Name;
+					changeFileNameExt(tname, ".jpg");
+					if(tmdb->getBigCover(tname)) 
+						m_movieSelectionHandler->tfile = tname;
 
-				if(m_movieSelectionHandler->epgInfo2.empty())
-					m_movieSelectionHandler->epgInfo2 = tmdb->getDescription();
+					if(m_movieSelectionHandler->epgInfo2.empty())
+						m_movieSelectionHandler->epgInfo2 = tmdb->getDescription();
 
-				m_movieInfo.saveMovieInfo( *m_movieSelectionHandler);  
+					//m_movieInfo.saveMovieInfo( *m_movieSelectionHandler);
+				}  
 			}
 			else
 			{
@@ -3361,7 +3360,8 @@ bool CMovieBrowser::showMenu(MI_MOVIE_INFO */*movie_info*/)
 	optionsMenu.addItem( new CMenuSeparator(CMenuSeparator::LINE));
 	optionsMenu.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_HIDE_SERIES, (int*)(&m_settings.browser_serie_mode), MESSAGEBOX_YES_NO_OPTIONS, MESSAGEBOX_YES_NO_OPTIONS_COUNT, true ));
 	optionsMenu.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_SERIE_AUTO_CREATE, (int*)(&m_settings.serie_auto_create), MESSAGEBOX_YES_NO_OPTIONS, MESSAGEBOX_YES_NO_OPTIONS_COUNT, true ));
-	//optionsMenu.addItem( new CMenuSeparator(CMenuSeparator::LINE));
+	optionsMenu.addItem( new CMenuSeparator(CMenuSeparator::LINE));
+	optionsMenu.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO, (int*)(&m_settings.prefer_tmdb_info), MESSAGEBOX_YES_NO_OPTIONS, MESSAGEBOX_YES_NO_OPTIONS_COUNT, true ));
  
 	// main menu
 	CMovieHelp * movieHelp = new CMovieHelp();

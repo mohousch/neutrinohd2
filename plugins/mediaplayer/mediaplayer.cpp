@@ -84,18 +84,43 @@ BROWSER:
 		CFileList::const_iterator files = fileBrowser->getSelectedFiles().begin();
 		for(; files != fileBrowser->getSelectedFiles().end(); files++)
 		{
-			//cMovieInfo.loadMovieInfo(&mfile, files);
+			cMovieInfo.clearMovieInfo(&mfile);
 
 			mfile.file.Name = files->Name;
-			mfile.epgTitle = files->getFileName();
-			mfile.epgInfo1 = files->getFileName();
 
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-						
-			if(!access(fname.c_str(), F_OK) )
-				mfile.tfile = fname.c_str();
+			// info if there is xml file
+			cMovieInfo.loadMovieInfo(&mfile, &mfile.file);
+
+			// epgTitle
+			if(mfile.epgTitle.empty())
+			{
+				std::string Title = files->getFileName();
+				removeExtension(Title);
+				mfile.epgTitle = Title;
+			}
+
+			// tfile 
+			cTmdb * tmdb = new cTmdb(mfile.epgTitle);
+	
+			std::string fname = "/tmp/" + mfile.epgTitle + ".jpg";				
+			if (tmdb->getBigCover(fname)) 
+			{
+				if(!access(fname.c_str(), F_OK) )
+					mfile.tfile= fname.c_str();
+			}
+			else
+			{
+				fname = files->Name;
+				changeFileNameExt(fname,".jpg");	
+				if(!access(fname.c_str(), F_OK) )
+					mfile.tfile= fname.c_str();
+			}
+
+			// epgInfo2
+			if(mfile.epgInfo2.empty() && !tmdb->getDescription().empty())
+			{
+				mfile.epgInfo2 = tmdb->getDescription();
+			}
 					
 			tmpMoviePlayerGui.addToPlaylist(mfile);
 		}

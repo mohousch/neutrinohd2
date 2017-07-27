@@ -1232,10 +1232,14 @@ REPEAT:
 					mfile.file.Name = file->Name;
 
 					// other infos if there is xml file
-					CMovieInfo cMovieInfo;
-					cMovieInfo.loadMovieInfo(&mfile, file);
+					if(file->getExtension() == CFile::EXTENSION_TS)
+					{
+						CMovieInfo cMovieInfo;
+						cMovieInfo.loadMovieInfo(&mfile, file);
+					}
 
-					if(mfile.epgTitle.empty() /*&& file->getExtension() != CFile::EXTENSION_TS*/)
+					//
+					if(mfile.epgTitle.empty())
 					{
 						std::string Title = file->getFileName();
 						removeExtension(Title);
@@ -1243,36 +1247,34 @@ REPEAT:
 					}
 
 					// tfile first prefer tmdb cover
-					cTmdb * tmdb = new cTmdb(mfile.epgTitle.c_str());
+					cTmdb * tmdb = new cTmdb(mfile.epgTitle);
 	
-					std::string fname = "/tmp/" + mfile.epgTitle + ".jpg";;
+					std::string fname = "/tmp/" + mfile.epgTitle + ".jpg";
 				
 					if (tmdb->getBigCover(fname)) 
 					{
 						if(!access(fname.c_str(), F_OK) )
-							mfile.tfile= fname.c_str();
+							mfile.tfile = fname.c_str();
 					}
 					else
 					{
 						fname = file->Name;
 						changeFileNameExt(fname, ".jpg");
-						
 						if(!access(fname.c_str(), F_OK) )
-							mfile.tfile= fname.c_str();
+							mfile.tfile = fname.c_str();
 					}
 
 					// epgInfo1
 					if((mfile.epgInfo1.empty() && mfile.epgInfo2.empty()) && !tmdb->getDescription().empty())
 					{
-						mfile.epgInfo1 = tmdb->getDescription();
+						mfile.epgInfo2 = tmdb->getDescription();
 					}
-
-					delete tmdb;
-					tmdb = NULL;
-					//
 					
 					tmpMoviePlayerGui.addToPlaylist(mfile);
 					tmpMoviePlayerGui.exec(NULL, "urlplayback");
+
+					delete tmdb;
+					tmdb = NULL;
 				}
 				else if(file->getType() == CFile::FILE_AUDIO)
 				{

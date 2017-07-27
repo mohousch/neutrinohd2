@@ -913,6 +913,7 @@ moviebrowser.option_browser Anzeigeoptionen
 moviebrowser.reload_at_start Filminfos neu laden bei Start
 moviebrowser.remount_at_start Filmdepot verbinden bei Start
 moviebrowser.next_focus nächste Focus
+moviebrowser.prefer_tmdb_info ersetze mit TMDB Infos
 moviebrowser.scan_for_movies Suche Filme ...
 moviebrowser.serie_auto_create Serien automatisch zuordnen
 moviebrowser.serie_head Serie

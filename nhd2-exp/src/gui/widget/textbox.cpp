@@ -436,8 +436,9 @@ void CTextBox::refreshText(void)
 	m_cTextWindow.setCorner(radius, type);
 	m_cTextWindow.paint();
 
-	if( m_nNrOfLines <= 0) 
-		return;
+	// paint at less thumbnail
+	//if( m_nNrOfLines <= 0) 
+	//	return;
 
 	dprintf(DEBUG_DEBUG, "CTextBox::refreshText:\r\n");
 	
@@ -601,8 +602,7 @@ bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _
 		
 	bool result = false;
 	
-	//fixme: if newText is empty thumbnail will not be painted
-	if (newText != NULL)
+	if (newText != NULL || !thumbnail.empty())
 	{
 		m_cText = *newText;
 		refreshTextLineArray();
