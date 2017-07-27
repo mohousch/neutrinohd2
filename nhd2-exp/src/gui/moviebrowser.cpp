@@ -2040,7 +2040,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 					if(m_movieSelectionHandler->epgInfo2.empty())
 						m_movieSelectionHandler->epgInfo2 = tmdb->getDescription();
 
-					//m_movieInfo.saveMovieInfo( *m_movieSelectionHandler);
+					m_movieInfo.saveMovieInfo( *m_movieSelectionHandler);
 				}  
 			}
 			else
