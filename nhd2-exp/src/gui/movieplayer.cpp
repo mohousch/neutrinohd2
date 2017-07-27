@@ -1824,7 +1824,7 @@ void CMoviePlayerGui::showFileInfo()
 
 int CMoviePlayerGui::showStartPosSelectionMenu(void)
 {
-	dprintf(DEBUG_INFO, "CMovieBrowser::showStartPosSelectionMenu\r\n");
+	dprintf(DEBUG_INFO, "CMoviePlayerGui::showStartPosSelectionMenu\r\n");
 	
 	int pos = -1;
 	int result = 0;
@@ -1883,7 +1883,7 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 				position[menu_nr] = filelist[selected].bookmarks.user[i].pos + filelist[selected].bookmarks.user[i].length;
 				
 			snprintf(book[i], 19,"%5d min", position[menu_nr]/60);
-			dprintf(DEBUG_NORMAL, "[mb] adding boomark menu N %d, position %d\n", menu_nr, position[menu_nr]);
+			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showStartPosSelectionMenu adding boomark menu N %d, position %d\n", menu_nr, position[menu_nr]);
 			
 			startPosSelectionMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 			startPosSelectionMenu.addItem(new CMenuForwarder(filelist[selected].bookmarks.user[i].name.c_str(), true, book[i]));
@@ -1896,7 +1896,7 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	// check what menu item was ok'd  and set the appropriate play offset*/
 	result = startPosSelectionMenu.getSelectedLine();
 	
-	dprintf(DEBUG_NORMAL, "startPosSelectionMenu result %d\n", result);
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showStartPosSelectionMenu: result %d\n", result);
 	
 	if(result < 0)
 		return -1;
@@ -1910,7 +1910,7 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 		pos = position[result];
 	}
 	
-	dprintf(DEBUG_NORMAL, "[mb] selected bookmark %d position %d\n", result, pos);
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showStartPosSelectionMenu: selected bookmark %d position %d\n", result, pos);
 	
 	return(pos) ;
 }
