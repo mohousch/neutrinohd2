@@ -41,32 +41,25 @@ typedef struct
 class CYTBrowser : public CMenuTarget
 {
 	private:
-		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
-
-		std::string m_textTitle;
-		
 		CConfigFile configfile;
-		
-		CMovieInfo m_movieInfo;
-		
-		//
-		cYTFeedParser ytparser;
-
-		//
-		CMenuFrameBox* moviesMenu;
 		
 		void init(void);
 		bool loadSettings(YTB_SETTINGS* settings);
 		bool saveSettings(YTB_SETTINGS* settings);
-		
+
+		//
+		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
+		CMovieInfo m_movieInfo;
+		cYTFeedParser ytparser;
+		neutrino_locale_t getFeedLocale(void);
 		void loadYTTitles(int mode, std::string search = "", std::string id = "");
 		bool showYTMenu(void);
 		void playMovie(void);
 		void showMovieInfo(void);
 		
+		//
+		CMenuFrameBox* moviesMenu;
 		void showYTMoviesMenu(void);
-
-		neutrino_locale_t getFeedLocale(void);
 		
 	public:
 		CYTBrowser();
