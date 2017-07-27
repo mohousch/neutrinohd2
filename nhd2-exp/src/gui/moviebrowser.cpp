@@ -2029,8 +2029,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				infoBox->exec();
 				delete infoBox;
 
-				// bool prefer tmdbInfo = true;
-				if(g_settings.prefer_tmdb_info)
+				if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
 				{
 					// rewrite tfile
 					std::string tname = m_movieSelectionHandler->file.Name;
@@ -2302,7 +2301,7 @@ void CMovieBrowser::onDeleteFile(MI_MOVIE_INFO& movieSelectionHandler)
 			
 		msg += "\r\n ";
 		msg += g_Locale->getText(LOCALE_FILEBROWSER_DODELETE2);
-		if (MessageBox(LOCALE_FILEBROWSER_DELETE, msg, CMessageBox::mbrNo, CMessageBox::mbYes|CMessageBox::mbNo)==CMessageBox::mbrYes)
+		if (MessageBox(LOCALE_FILEBROWSER_DELETE, msg, CMessageBox::mbrNo, CMessageBox::mbYes|CMessageBox::mbNo) == CMessageBox::mbrYes)
 		{
 			delFile(movieSelectionHandler.file);
 			
