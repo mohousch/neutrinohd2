@@ -1117,7 +1117,7 @@ int CMovieBrowser::exec(const char * path)
 				if(m_movieSelectionHandler != NULL)
 				{
 					// If there is any available bookmark, show the bookmark menu
-					if( (show_mode != MB_SHOW_FILES) && (m_movieSelectionHandler->bookmarks.lastPlayStop != 0 || m_movieSelectionHandler->bookmarks.start != 0) )
+					if( /*(show_mode != MB_SHOW_FILES) &&*/ (m_movieSelectionHandler->bookmarks.lastPlayStop != 0 || m_movieSelectionHandler->bookmarks.start != 0) )
 					{
 						dprintf(DEBUG_NORMAL, "CMovieBrowser::exec: stop: %d start:%d \r\n", m_movieSelectionHandler->bookmarks.lastPlayStop,m_movieSelectionHandler->bookmarks.start);
 						m_currentStartPos = showStartPosSelectionMenu(); // display start menu m_currentStartPos = 
@@ -3439,7 +3439,7 @@ int CMovieBrowser::showStartPosSelectionMenu(void) // P2
 	
 	char book[MI_MOVIE_BOOK_USER_MAX][20];
 
-	CMenuWidget/*Selection*/ startPosSelectionMenu(LOCALE_MOVIEBROWSER_START_HEAD , NEUTRINO_ICON_STREAMING);
+	CMenuWidget startPosSelectionMenu(LOCALE_MOVIEBROWSER_START_HEAD , NEUTRINO_ICON_STREAMING);
 	startPosSelectionMenu.enableSaveScreen(true);
 	startPosSelectionMenu.disableMenuPosition();
 	

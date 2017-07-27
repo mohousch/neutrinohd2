@@ -142,8 +142,6 @@ class CMoviePlayerGui : public CMenuTarget
 		int duration;
 		int file_prozent;
 		int startposition;
-		off64_t minuteoffset;
-		off64_t secondoffset;
 		int g_jumpseconds;
 
 		unsigned short g_apids[10];
@@ -156,7 +154,6 @@ class CMoviePlayerGui : public CMenuTarget
 		unsigned int g_currentac3;
 		
 		// playlist
-		//CFileList filelist;
 		CMoviePlayList filelist;
 		unsigned int selected;
 		
@@ -211,6 +208,7 @@ class CMoviePlayerGui : public CMenuTarget
 		
 		// lcd
 		void updateLcd(const std::string & sel_filename);
+		int showStartPosSelectionMenu(void);
 		
 	public:
 		CMoviePlayerGui();

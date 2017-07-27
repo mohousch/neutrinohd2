@@ -103,10 +103,6 @@ extern cPlayback *playback;
 extern t_channel_id live_channel_id; 			//defined in zapit.cpp
 
 #define MOVIE_HINT_BOX_TIMER 	5			// time to show bookmark hints in seconds
-
-#define MINUTEOFFSET 		117*262072
-#define MP_TS_SIZE 		262072			// ~0.5 sec
-
 #define TIMESHIFT_SECONDS 	3
 
 int timeshift = CMoviePlayerGui::NO_TIMESHIFT;
@@ -266,8 +262,6 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	duration = 0;
 	file_prozent = 0;
 	startposition = 0;
-	minuteoffset = MINUTEOFFSET;
-	secondoffset = minuteoffset / 60;
 	
 	//
 	speed = 1;
@@ -303,6 +297,8 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	
 	filename = NULL;
 	sel_filename.clear();
+
+	p_movie_info = NULL;
 	
 	// cutneutrino
 	cutNeutrino();
@@ -429,13 +425,39 @@ void CMoviePlayerGui::PlayFile(void)
 			if(filelist[0].Url.empty())
 			{
 				filename = filelist[0].file.Name.c_str();
-				
 				Title = filelist[0].epgTitle;
 				Info1 = filelist[0].epgInfo1;
 				Info2 = filelist[0].epgInfo2;
 				Thumbnail = filelist[0].tfile;
-
 				sel_filename = filelist[0].file.getFileName();
+
+				// get the movie info handle
+				p_movie_info = &filelist[0];
+
+				if(!p_movie_info->audioPids.empty()) 
+				{
+					g_currentapid = p_movie_info->audioPids[0].epgAudioPid;	//FIXME
+					g_currentac3 = p_movie_info->audioPids[0].atype;
+				}
+
+				for (int i = 0; i < (int)p_movie_info->audioPids.size(); i++) 
+				{
+					g_ac3flags[i] = p_movie_info->audioPids[i].atype;
+					g_numpida++;
+
+					if (p_movie_info->audioPids[i].selected) 
+					{
+						g_currentapid = p_movie_info->audioPids[i].epgAudioPid;	//FIXME
+						g_currentac3 = p_movie_info->audioPids[i].atype;
+					}
+				}
+
+				//
+				g_vpid = p_movie_info->epgVideoPid;
+				g_vtype = p_movie_info->VideoType;
+
+				// get the start position for the movie			
+				startposition = 1000 * showStartPosSelectionMenu();
 			}
 			else
 			{
@@ -462,7 +484,6 @@ void CMoviePlayerGui::PlayFile(void)
 
 	// bookmarks menu
 	timeb current_time;
-	p_movie_info = NULL;	// movie info handle which comes from the MovieBrowser, if not NULL MoviePlayer is able to save new bookmarks
 
 	int width = 280;
 	int height = 65;
@@ -501,7 +522,7 @@ void CMoviePlayerGui::PlayFile(void)
 	// play loop
  go_repeat:
 	do {
-		// multi select
+		// multi select|loop
 		if (playstate == CMoviePlayerGui::STOPPED && was_file && selected > 0) 
 		{
 			if(selected + 1 < filelist.size()) 
@@ -509,13 +530,39 @@ void CMoviePlayerGui::PlayFile(void)
 				selected++;
 
 				filename = filelist[selected].file.Name.c_str();
-				
 				Title = filelist[selected].epgTitle;
 				Info1 = filelist[selected].epgInfo1;
 				Info2 = filelist[selected].epgInfo2;
 				Thumbnail = filelist[selected].tfile;
-
 				sel_filename = filelist[selected].file.getFileName();
+
+				// get the movie info handle
+				p_movie_info = &filelist[selected];
+
+				if(!p_movie_info->audioPids.empty()) 
+				{
+					g_currentapid = p_movie_info->audioPids[0].epgAudioPid;	//FIXME
+					g_currentac3 = p_movie_info->audioPids[0].atype;
+				}
+
+				for (int i = 0; i < (int)p_movie_info->audioPids.size(); i++) 
+				{
+					g_ac3flags[i] = p_movie_info->audioPids[i].atype;
+					g_numpida++;
+
+					if (p_movie_info->audioPids[i].selected) 
+					{
+						g_currentapid = p_movie_info->audioPids[i].epgAudioPid;	//FIXME
+						g_currentac3 = p_movie_info->audioPids[i].atype;
+					}
+				}
+
+				//
+				g_vpid = p_movie_info->epgVideoPid;
+				g_vtype = p_movie_info->VideoType;
+
+				// get the start position for the movie			
+				startposition = 1000 * showStartPosSelectionMenu();
  
 				update_lcd = true;
 				start_play = true;
@@ -524,7 +571,6 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				filename = filename;
 				sel_filename = sel_filename;
-				
 				Title = Title;
 				Info1 = Info1;
 				Info2 = Info2;
@@ -544,7 +590,7 @@ void CMoviePlayerGui::PlayFile(void)
 		{	  
 			exit = false;
 			
-			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (3)\n");
+			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (2)\n");
 			playstate = CMoviePlayerGui::STOPPED;
 			break;
 		}
@@ -608,10 +654,9 @@ void CMoviePlayerGui::PlayFile(void)
 			FileTime.update(position/1000);
 		}
 		
-		// movie infos (moviebrowser)
+		// do bookmarks
 		if (isMovieBrowser == true) 
 		{	  
-			// do all moviebrowser stuff here ( like commercial jump etc.)
 			if (playstate == CMoviePlayerGui::PLAY) 
 			{				
 #if defined (PLATFORM_COOLSTREAM)
@@ -763,21 +808,10 @@ void CMoviePlayerGui::PlayFile(void)
 					if ((file = moviebrowser->getSelectedFile()) != NULL) 
 					{
 						filename = file->Name.c_str();
-
 						sel_filename = file->getFileName();
 
-						// get the movie info handle (to be used for e.g. bookmark handling)
+						// get the movie info handle
 						p_movie_info = moviebrowser->getCurrentMovieInfo();
-						bool recfile = CNeutrinoApp::getInstance()->recordingstatus && !strncmp(rec_filename, filename, strlen(rec_filename));
-
-						if (!recfile && p_movie_info->length) 
-						{
-							minuteoffset = file->Size / p_movie_info->length;
-							minuteoffset = (minuteoffset / MP_TS_SIZE) * MP_TS_SIZE;
-							if (minuteoffset < 5000000 || minuteoffset > 190000000)
-								minuteoffset = MINUTEOFFSET;
-							secondoffset = minuteoffset / 60;
-						}
 
 						if(!p_movie_info->audioPids.empty()) 
 						{
@@ -797,7 +831,7 @@ void CMoviePlayerGui::PlayFile(void)
 							}
 						}
 
-						// get the start position for the movie					
+						// startposition					
 						startposition = 1000 * moviebrowser->getCurrentStartPos();						
 
 						g_vpid = p_movie_info->epgVideoPid;
@@ -990,23 +1024,6 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			//exit play
 			playstate = CMoviePlayerGui::STOPPED;
-
-			if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_FILES) 
-			{
-				// if we have a movie information, try to save the stop position
-				ftime(&current_time);
-				p_movie_info->dateOfLastPlay = current_time.time;
-				current_time.time = time(NULL);
-				p_movie_info->bookmarks.lastPlayStop = position / 1000;
-				
-				if(p_movie_info->epgChannel.empty())
-					p_movie_info->epgChannel = sel_filename;
-				if(p_movie_info->epgTitle.empty())
-					p_movie_info->epgTitle = sel_filename;
-
-				cMovieInfo.saveMovieInfo(*p_movie_info);
-				//p_movie_info->fileInfoStale(); //TODO: we might to tell the Moviebrowser that the movie info has changed, but this could cause long reload times  when reentering the Moviebrowser
-			}
 			
 			if(timeshift == TIMESHIFT) //timeshift
 			{
@@ -1132,7 +1149,8 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
-						
+			
+			//FIXME:			
 			if(isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_FILES)
 			{
 				int pos_sec = position / 1000;
@@ -1519,6 +1537,7 @@ void CMoviePlayerGui::PlayFile(void)
 		else if (msg == CRCInput::RC_0) 
 		{
 			// cancel bookmark jump
+			//FIXME:
 			if (isMovieBrowser == true) 
 			{
 				if (new_bookmark.pos != 0) 
@@ -1561,18 +1580,45 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 		else if(msg == CRCInput::RC_left || msg == CRCInput::RC_prev)
 		{
+			//FIXME:
 			if(!filelist.empty() && selected > 0 && playstate == CMoviePlayerGui::PLAY) 
 			{
 				selected--;
 
 				filename = filelist[selected].file.Name.c_str();
-				
 				Title = filelist[selected].epgTitle;
 				Info1 = filelist[selected].epgInfo1;
 				Info2 = filelist[selected].epgInfo2;
 				Thumbnail = filelist[selected].tfile;
-
 				sel_filename = filelist[selected].file.getFileName();
+
+				// get the movie info handle
+				p_movie_info = &filelist[selected];
+
+				if(!p_movie_info->audioPids.empty()) 
+				{
+					g_currentapid = p_movie_info->audioPids[0].epgAudioPid;	//FIXME
+					g_currentac3 = p_movie_info->audioPids[0].atype;
+				}
+
+				for (int i = 0; i < (int)p_movie_info->audioPids.size(); i++) 
+				{
+					g_ac3flags[i] = p_movie_info->audioPids[i].atype;
+					g_numpida++;
+
+					if (p_movie_info->audioPids[i].selected) 
+					{
+						g_currentapid = p_movie_info->audioPids[i].epgAudioPid;	//FIXME
+						g_currentac3 = p_movie_info->audioPids[i].atype;
+					}
+				}
+
+				//
+				g_vpid = p_movie_info->epgVideoPid;
+				g_vtype = p_movie_info->VideoType;
+
+				// get the start position for the movie			
+				startposition = 1000 * showStartPosSelectionMenu();
 				
 				update_lcd = true;
 				start_play = true;
@@ -1580,18 +1626,45 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 		else if(msg == CRCInput::RC_right || msg == CRCInput::RC_next)
 		{
+			//FIXME:
 			if(!filelist.empty() && selected + 1 < filelist.size() && playstate == CMoviePlayerGui::PLAY) 
 			{
 				selected++;
 
 				filename = filelist[selected].file.Name.c_str();
-				
 				Title = filelist[selected].epgTitle;
 				Info1 = filelist[selected].epgInfo1;
 				Info2 = filelist[selected].epgInfo2;
 				Thumbnail = filelist[selected].tfile;
-
 				sel_filename = filelist[selected].file.getFileName();
+
+				// get the movie info handle
+				p_movie_info = &filelist[selected];
+
+				if(!p_movie_info->audioPids.empty()) 
+				{
+					g_currentapid = p_movie_info->audioPids[0].epgAudioPid;	//FIXME
+					g_currentac3 = p_movie_info->audioPids[0].atype;
+				}
+
+				for (int i = 0; i < (int)p_movie_info->audioPids.size(); i++) 
+				{
+					g_ac3flags[i] = p_movie_info->audioPids[i].atype;
+					g_numpida++;
+
+					if (p_movie_info->audioPids[i].selected) 
+					{
+						g_currentapid = p_movie_info->audioPids[i].epgAudioPid;	//FIXME
+						g_currentac3 = p_movie_info->audioPids[i].atype;
+					}
+				}
+
+				//
+				g_vpid = p_movie_info->epgVideoPid;
+				g_vtype = p_movie_info->VideoType;
+
+				// get the start position for the movie			
+				startposition = 1000 * showStartPosSelectionMenu();
 				
 				update_lcd = true;
 				start_play = true;
@@ -1626,26 +1699,21 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (1)\n");	
 
-			if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_FILES) 
+			//FIXME:
+			if (isMovieBrowser == true /*&& moviebrowser->getMode() != MB_SHOW_FILES*/)
 			{
 				// if we have a movie information, try to save the stop position
 				ftime(&current_time);
 				p_movie_info->dateOfLastPlay = current_time.time;
 				current_time.time = time(NULL);
 				p_movie_info->bookmarks.lastPlayStop = position / 1000;
-				
-				if(p_movie_info->epgChannel.empty())
-					p_movie_info->epgChannel = sel_filename;
-				if(p_movie_info->epgTitle.empty())
-					p_movie_info->epgTitle = sel_filename;
 
 				cMovieInfo.saveMovieInfo(*p_movie_info);
-				//p_movie_info->fileInfoStale(); //TODO: we might to tell the Moviebrowser that the movie info has changed, but this could cause long reload times  when reentering the Moviebrowser
 			}
 		}
 	} while (playstate >= CMoviePlayerGui::PLAY);
 	
-	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (2)\n");	
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (3)\n");	
 
 	if(FileTime.IsVisible())
 		FileTime.hide();
@@ -1754,6 +1822,99 @@ void CMoviePlayerGui::showFileInfo()
 	delete infoBox;
 }
 
+int CMoviePlayerGui::showStartPosSelectionMenu(void)
+{
+	dprintf(DEBUG_INFO, "CMovieBrowser::showStartPosSelectionMenu\r\n");
+	
+	int pos = -1;
+	int result = 0;
+	int menu_nr = 0;
+	int position[MAX_NUMBER_OF_BOOKMARK_ITEMS];
+	
+	if(filelist[selected].bookmarks.lastPlayStop == 0 /*|| filelist[selected].bookmarks.start == 0*/)
+		return(result);
+
+	// reset all start pos
+	filelist[selected].bookmarks.start = 0;
+	
+	char start_pos[13]; 
+	snprintf(start_pos, 12,"%3d min", filelist[selected].bookmarks.start/60);
+	
+	char play_pos[13]; 	
+	snprintf(play_pos, 12,"%3d min", filelist[selected].bookmarks.lastPlayStop/60); 
+	
+	char book[MI_MOVIE_BOOK_USER_MAX][20];
+
+	CMenuWidget startPosSelectionMenu(LOCALE_MOVIEBROWSER_START_HEAD , NEUTRINO_ICON_STREAMING);
+	startPosSelectionMenu.enableSaveScreen(true);
+	startPosSelectionMenu.disableMenuPosition();
+	
+	// intros
+	//WARNING: dont delete this line , without getselected line return line - 1
+	startPosSelectionMenu.addItem(new CMenuSeparator(CMenuSeparator::EMPTY));
+	
+	// bookmark start
+	if(filelist[selected].bookmarks.start != 0)
+	{
+		startPosSelectionMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIESTART, true, start_pos));
+		position[menu_nr++] = filelist[selected].bookmarks.start;
+	}
+	
+	// bookmark laststop
+	if(filelist[selected].bookmarks.lastPlayStop != 0) 
+	{
+		startPosSelectionMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_LASTMOVIESTOP, true, play_pos));
+		position[menu_nr++] = filelist[selected].bookmarks.lastPlayStop;
+	}
+	
+	// movie start
+	startPosSelectionMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_START_RECORD_START, true, NULL));
+	position[menu_nr++] = 0;
+
+	int sep_pos = menu_nr;
+
+	for(int i = 0 ; i < MI_MOVIE_BOOK_USER_MAX && menu_nr < MAX_NUMBER_OF_BOOKMARK_ITEMS; i++ )
+	{
+		if( filelist[selected].bookmarks.user[i].pos != 0 )
+		{
+			if(filelist[selected].bookmarks.user[i].length >= 0)
+				position[menu_nr] = filelist[selected].bookmarks.user[i].pos;
+			else
+				position[menu_nr] = filelist[selected].bookmarks.user[i].pos + filelist[selected].bookmarks.user[i].length;
+				
+			snprintf(book[i], 19,"%5d min", position[menu_nr]/60);
+			dprintf(DEBUG_NORMAL, "[mb] adding boomark menu N %d, position %d\n", menu_nr, position[menu_nr]);
+			
+			startPosSelectionMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+			startPosSelectionMenu.addItem(new CMenuForwarder(filelist[selected].bookmarks.user[i].name.c_str(), true, book[i]));
+			menu_nr++;
+		}
+	}
+
+	startPosSelectionMenu.exec(NULL, "12345");
+	
+	// check what menu item was ok'd  and set the appropriate play offset*/
+	result = startPosSelectionMenu.getSelectedLine();
+	
+	dprintf(DEBUG_NORMAL, "startPosSelectionMenu result %d\n", result);
+	
+	if(result < 0)
+		return -1;
+	
+	if(result != 0 && result <= MAX_NUMBER_OF_BOOKMARK_ITEMS)
+	{
+		result--;
+		if(result > sep_pos) 
+			result--;
+		
+		pos = position[result];
+	}
+	
+	dprintf(DEBUG_NORMAL, "[mb] selected bookmark %d position %d\n", result, pos);
+	
+	return(pos) ;
+}
+
 // CTimeoSD
 #define TIMEOSD_FONT 		SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME
 #define TIMEBARH 		38
@@ -1777,13 +1938,12 @@ CTimeOSD::~CTimeOSD()
 
 void CTimeOSD::show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark)
 {
-	//dprintf(DEBUG_NORMAL, "CTimeOSD::show\n");
-	 
 	// show / update
 	GetDimensions();
 	
 	visible = true;
 
+	//FIXME
 	showMovieInfo(_Title, _Info, _Percent, _ac3state, _speed, _playstate, _show_bookmark);
 }
 
