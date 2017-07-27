@@ -38,18 +38,18 @@ CMediaPortal::~CMediaPortal()
 
 void CMediaPortal::musicDeluxe(void)
 {
-	CFile file;
+	MI_MOVIE_INFO mfile;
 		
-	file.Title = "Music deluxe";
-	file.Info1 = "stream";
-	file.Info2 = "Musik Sender";
-	file.Thumbnail = PLUGINDIR "/mediaportal/musicdeluxe.png";
-	file.Name = "musicdeluxe";
-	file.Url = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
+	mfile.epgTitle = "Music deluxe";
+	mfile.epgInfo1 = "stream";
+	mfile.epgInfo2 = "Musik Sender";
+	mfile.tfile = PLUGINDIR "/mediaportal/musicdeluxe.png";
+	mfile.file.Name = "musicdeluxe";
+	mfile.Url = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
 
 	CMoviePlayerGui tmpMoviePlayerGui;
 					
-	tmpMoviePlayerGui.addToPlaylist(file);
+	tmpMoviePlayerGui.addToPlaylist(mfile);
 	tmpMoviePlayerGui.exec(NULL, "urlplayback");
 }
 

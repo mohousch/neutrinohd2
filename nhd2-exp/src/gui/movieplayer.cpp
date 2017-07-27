@@ -238,9 +238,9 @@ void CMoviePlayerGui::updateLcd(const std::string & lcd_filename)
 	CVFD::getInstance()->showMenuText(0, lcd.c_str(), -1, true);	
 }
 
-void CMoviePlayerGui::addToPlaylist(CFile& file)
+void CMoviePlayerGui::addToPlaylist(MI_MOVIE_INFO& file)
 {	
-	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::addToPlaylist: %s\n", file.Name.c_str());
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::addToPlaylist: %s\n", file.file.Name.c_str());
 	
 	filelist.push_back(file);
 }
@@ -366,6 +366,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	if(!filelist.empty())
 		filelist.clear();
 	
+	//
 	if(filename != NULL)
 		filename = NULL;
 	
@@ -408,9 +409,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	return menu_return::RETURN_REPAINT;
 }
 
-// moviebrowser
-// timeshift
-// url
+//
 void CMoviePlayerGui::PlayFile(void)
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile\n");
@@ -429,25 +428,25 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			if(filelist[0].Url.empty())
 			{
-				filename = filelist[0].Name.c_str();
+				filename = filelist[0].file.Name.c_str();
 				
-				Title = filelist[0].Title;
-				Info1 = filelist[0].Info1;
-				Info2 = filelist[0].Info2;
-				Thumbnail = filelist[0].Thumbnail;
+				Title = filelist[0].epgTitle;
+				Info1 = filelist[0].epgInfo1;
+				Info2 = filelist[0].epgInfo2;
+				Thumbnail = filelist[0].tfile;
 
-				sel_filename = filelist[0].getFileName();
+				sel_filename = filelist[0].file.getFileName();
 			}
 			else
 			{
 				filename = filelist[0].Url.c_str();
 	
-				Title = filelist[0].Title;
-				Info1 = filelist[0].Info1;
-				Info2 = filelist[0].Info2;
-				Thumbnail = filelist[0].Thumbnail;
+				Title = filelist[0].epgTitle;
+				Info1 = filelist[0].epgInfo1;
+				Info2 = filelist[0].epgInfo2;
+				Thumbnail = filelist[0].tfile;
 
-				sel_filename = filelist[0].getFileName();
+				sel_filename = filelist[0].file.getFileName();
 			}
 
 			update_lcd = true;
@@ -509,14 +508,14 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				selected++;
 
-				filename = filelist[selected].Name.c_str();
+				filename = filelist[selected].file.Name.c_str();
 				
-				Title = filelist[selected].Title;
-				Info1 = filelist[selected].Info1;
-				Info2 = filelist[selected].Info2;
-				Thumbnail = filelist[selected].Thumbnail;
+				Title = filelist[selected].epgTitle;
+				Info1 = filelist[selected].epgInfo1;
+				Info2 = filelist[selected].epgInfo2;
+				Thumbnail = filelist[selected].tfile;
 
-				sel_filename = filelist[selected].getFileName();
+				sel_filename = filelist[selected].file.getFileName();
  
 				update_lcd = true;
 				start_play = true;
@@ -1566,14 +1565,14 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				selected--;
 
-				filename = filelist[selected].Name.c_str();
+				filename = filelist[selected].file.Name.c_str();
 				
-				Title = filelist[selected].Title;
-				Info1 = filelist[selected].Info1;
-				Info2 = filelist[selected].Info2;
-				Thumbnail = filelist[selected].Thumbnail;
+				Title = filelist[selected].epgTitle;
+				Info1 = filelist[selected].epgInfo1;
+				Info2 = filelist[selected].epgInfo2;
+				Thumbnail = filelist[selected].tfile;
 
-				sel_filename = filelist[selected].getFileName();
+				sel_filename = filelist[selected].file.getFileName();
 				
 				update_lcd = true;
 				start_play = true;
@@ -1585,14 +1584,14 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				selected++;
 
-				filename = filelist[selected].Name.c_str();
+				filename = filelist[selected].file.Name.c_str();
 				
-				Title = filelist[selected].Title;
-				Info1 = filelist[selected].Info1;
-				Info2 = filelist[selected].Info2;
-				Thumbnail = filelist[selected].Thumbnail;
+				Title = filelist[selected].epgTitle;
+				Info1 = filelist[selected].epgInfo1;
+				Info2 = filelist[selected].epgInfo2;
+				Thumbnail = filelist[selected].tfile;
 
-				sel_filename = filelist[selected].getFileName();
+				sel_filename = filelist[selected].file.getFileName();
 				
 				update_lcd = true;
 				start_play = true;

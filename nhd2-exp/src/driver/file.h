@@ -147,12 +147,6 @@ class CFile
 		//
 		off_t Size;
 		std::string Name;
-		std::string Url;
-		std::string Title;
-		std::string Info1;
-		std::string Info2;
-		std::string Thumbnail;
-		//unsigned int Index;
 		mode_t Mode;
 		bool Marked;
 		time_t Time;

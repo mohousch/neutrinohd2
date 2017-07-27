@@ -52,8 +52,6 @@ void CYTBrowser::init(void)
 	dprintf(DEBUG_NORMAL, "CYTBrowser::init\n");
 	
 	loadSettings(&m_settings);
-	
-	m_textTitle = g_Locale->getText(LOCALE_YOUTUBE);
 }
 
 bool CYTBrowser::loadSettings(YTB_SETTINGS *settings)
@@ -156,20 +154,11 @@ void CYTBrowser::showYTMoviesMenu(void)
 
 void CYTBrowser::playMovie(void)
 {
-	CFile *file;
 	CMoviePlayerGui tmpMoviePlayerGui;
-	MI_MOVIE_INFO * p_movie_info;
 
-	if ((file = &m_vMovieInfo[moviesMenu->getSelected()].file) != NULL) 
+	if (&m_vMovieInfo[moviesMenu->getSelected()].file != NULL) 
 	{
-		p_movie_info = &m_vMovieInfo[moviesMenu->getSelected()];
-			
-		file->Title = p_movie_info->epgTitle;
-		file->Info1 = p_movie_info->epgInfo1;
-		file->Info2 = p_movie_info->epgInfo2;
-		file->Thumbnail = p_movie_info->tfile;
-	
-		tmpMoviePlayerGui.addToPlaylist(*file);
+		tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[moviesMenu->getSelected()]);
 		tmpMoviePlayerGui.exec(NULL, "urlplayback");
 	}
 }
@@ -305,7 +294,7 @@ REPEAT:
 		movieInfo.ytdate = ylist[i].published;
 		movieInfo.ytid = ylist[i].id;
 		movieInfo.file.Name = ylist[i].title;
-		movieInfo.file.Url = ylist[i].GetUrl();
+		movieInfo.Url = ylist[i].GetUrl();
 		
 		m_vMovieInfo.push_back(movieInfo);
 	}

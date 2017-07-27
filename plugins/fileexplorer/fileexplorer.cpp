@@ -74,21 +74,53 @@ BROWSER:
 			}
 			else if(file->getType() == CFile::FILE_VIDEO)
 			{
+				MI_MOVIE_INFO mfile;
 				CMoviePlayerGui tmpMoviePlayerGui;
+ 
+				mfile.file.Name = file->Name;
 
-				// fill file info
-				file->Title = file->getFileName();
-				file->Info1 = file->getFileName();	// IMDB
-				//file.Info2 = files->getFileName(); 	// IMDB
+				// other infos if there is xml file
+				CMovieInfo cMovieInfo;
+				cMovieInfo.loadMovieInfo(&mfile, file);
 
-				std::string fname = "";
-				fname = file->Name;
-				changeFileNameExt(fname, ".jpg");
+				if(mfile.epgTitle.empty() /*&& file->getExtension() != CFile::EXTENSION_TS*/)
+				{
+					std::string Title = file->getFileName();
+					removeExtension(Title);
+					mfile.epgTitle = Title;
+				}
+
+				// tfile 
+				// first prefer tmdb cover
+				cTmdb * tmdb = new cTmdb(mfile.epgTitle.c_str());
+	
+				std::string fname = "/tmp/" + mfile.epgTitle + ".jpg";;
+				
+				if (tmdb->getBigCover(fname)) 
+				{
+					if(!access(fname.c_str(), F_OK) )
+						mfile.tfile= fname.c_str();
+				}
+				else
+				{
+					fname = file->Name;
+					changeFileNameExt(fname, ".jpg");
 						
-				if(!access(fname.c_str(), F_OK) )
-					file->Thumbnail = fname.c_str();
+					if(!access(fname.c_str(), F_OK) )
+						mfile.tfile= fname.c_str();
+				}
+
+				// epgInfo1
+				if((mfile.epgInfo1.empty() && mfile.epgInfo2.empty()) && !tmdb->getDescription().empty())
+				{
+					mfile.epgInfo1 = tmdb->getDescription();
+				}
+
+				delete tmdb;
+				tmdb = NULL;
+				//
 					
-				tmpMoviePlayerGui.addToPlaylist(*file);
+				tmpMoviePlayerGui.addToPlaylist(mfile);
 				tmpMoviePlayerGui.exec(NULL, "urlplayback");
 			}
 			else if(file->getType() == CFile::FILE_AUDIO)

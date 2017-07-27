@@ -553,9 +553,9 @@ void CUpnpBrowserGui::handleFolder(void)
 				}
 				else if (mime.substr(0, 6) == "video/")
 				{
-					CFile mfile;
+					MI_MOVIE_INFO mfile;
 					
-					mfile.Name = (*entries)[i].resources[preferred].url.c_str(); //FIXME
+					mfile.file.Name = (*entries)[i].resources[preferred].url.c_str(); //FIXME
 					
 					tmpMoviePlayerGui.addToPlaylist(mfile);
 					
@@ -814,8 +814,8 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 						m_frameBuffer->ClearFrameBuffer();
 						m_frameBuffer->blit();	
 						
-						CFile file;
-						file.Name = (*entries)[selected - index].resources[preferred].url.c_str(); //FIXME
+						MI_MOVIE_INFO file;
+						file.file.Name = (*entries)[selected - index].resources[preferred].url.c_str(); //FIXME
 						
 						CMoviePlayerGui tmpMoviePlayerGui;
 						tmpMoviePlayerGui.addToPlaylist(file);

@@ -63,11 +63,11 @@ DVD_BROWSER:
 		CFileList::const_iterator files = fileBrowser.getSelectedFiles().begin();
 		for(; files != fileBrowser.getSelectedFiles().end(); files++)
 		{
-			CFile file;
+			MI_MOVIE_INFO mfile;
 			
-			file.Name = files->Name;
+			mfile.file.Name = files->Name;
 			
-			tmpMoviePlayerGui.addToPlaylist(file);
+			tmpMoviePlayerGui.addToPlaylist(mfile);
 		}
 		
 		tmpMoviePlayerGui.exec(NULL, "urlplayback");

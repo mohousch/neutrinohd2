@@ -993,19 +993,20 @@ BROWSER:
 		
 		if ((file = fileBrowser->getSelectedFile()) != NULL) 
 		{
-			// fill file info
-			file->Title = file->getFileName();
-			file->Info1 = file->getFileName();   // IMDB
-			//file->Info2 = file->getFileName(); // IMDB
+			MI_MOVIE_INFO mfile;
+			
+			mfile.file.Name = file->Name;
+			mfile.epgTitle = file->getFileName();
+			mfile.epgInfo1 = file->getFileName(); 
 
 			std::string fname = "";
 			fname = file->Name;
 			changeFileNameExt(fname, ".jpg");
 						
 			if(!access(fname.c_str(), F_OK) )
-				file->Thumbnail = fname.c_str();
+				mfile.tfile = fname.c_str();
 					
-			tmpMoviePlayerGui.addToPlaylist(*file);
+			tmpMoviePlayerGui.addToPlaylist(mfile);
 			tmpMoviePlayerGui.exec(NULL, "urlplayback");
 		}
 
@@ -1182,25 +1183,22 @@ BROWSER:
 	if (fileBrowser->exec(Path_local.c_str()))
 	{
 		Path_local = fileBrowser->getCurrentDir();
-		CFile file;
+		MI_MOVIE_INFO mfile;
 		CFileList::const_iterator files = fileBrowser->getSelectedFiles().begin();
 		for(; files != fileBrowser->getSelectedFiles().end(); files++)
 		{
-			file.Name = files->Name;
-
-			// fill file info
-			file.Title = files->getFileName();
-			file.Info1 = files->getFileName();	// IMDB
-			//file.Info2 = files->getFileName(); 	// IMDB
+			mfile.file.Name = files->Name;
+			mfile.epgTitle = files->getFileName();
+			mfile.epgInfo1 = files->getFileName();
 
 			std::string fname = "";
 			fname = files->Name;
 			changeFileNameExt(fname, ".jpg");
 						
 			if(!access(fname.c_str(), F_OK) )
-				file.Thumbnail = fname.c_str();
+				mfile.tfile = fname.c_str();
 					
-			tmpMoviePlayerGui.addToPlaylist(file);
+			tmpMoviePlayerGui.addToPlaylist(mfile);
 		}
 		
 		tmpMoviePlayerGui.exec(NULL, "urlplayback");
@@ -1624,25 +1622,22 @@ void CTestMenu::testPlayMovieDir()
 	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
 	{
 		// filter them
-		CFile file;
+		MI_MOVIE_INFO mfile;
 		CFileList::iterator files = filelist.begin();
 		for(; files != filelist.end() ; files++)
 		{
-			file.Name = files->Name;
-
-			// fill file info
-			file.Title = files->getFileName();
-			file.Info1 = files->getFileName();	// IMDB
-			//file.Info2 = files->getFileName(); 	// IMDB
+			mfile.file.Name = files->Name;
+			mfile.epgTitle = files->getFileName();
+			mfile.epgInfo1 = files->getFileName();
 
 			std::string fname = "";
 			fname = files->Name;
 			changeFileNameExt(fname, ".jpg");
 						
 			if(!access(fname.c_str(), F_OK) )
-				file.Thumbnail = fname.c_str();
+				mfile.tfile = fname.c_str();
 	
-			tmpMoviePlayerGui.addToPlaylist(file);
+			tmpMoviePlayerGui.addToPlaylist(mfile);
 		}
 		
 		tmpMoviePlayerGui.exec(NULL, "urlplayback");
@@ -2161,7 +2156,7 @@ void CTestMenu::testTSBrowserDirect()
 	
 	CMoviePlayerGui tmpMoviePlayerGui;	
 	CMovieBrowser * movieBrowser;
-	MI_MOVIE_INFO * p_movie_info;
+	MI_MOVIE_INFO * mfile;
 	
 	movieBrowser = new CMovieBrowser();
 	
@@ -2174,28 +2169,11 @@ BROWSER:
 	{
 		Path_local = movieBrowser->getCurrentDir();
 		
-		CFile * file;
-		
-		if ((file = movieBrowser->getSelectedFile()) != NULL) 
+		if (movieBrowser->getSelectedFile()!= NULL) 
 		{
-			p_movie_info = movieBrowser->getCurrentMovieInfo();
-			
-			file->Title = p_movie_info->epgTitle;
-			file->Info1 = p_movie_info->epgInfo1; //category ist always empty
-			file->Info2 = p_movie_info->epgInfo2;
-			file->Thumbnail = p_movie_info->tfile;
-
-			if(p_movie_info->tfile.empty())
-			{
-				std::string fname = "";
-				fname = file->Name;
-				changeFileNameExt(fname, ".jpg");
-						
-				if(!access(fname.c_str(), F_OK) )
-					file->Thumbnail = fname.c_str();
-			}
+			mfile = movieBrowser->getCurrentMovieInfo();
 					
-			tmpMoviePlayerGui.addToPlaylist(*file);
+			tmpMoviePlayerGui.addToPlaylist(*mfile);
 			tmpMoviePlayerGui.exec(NULL, "urlplayback");
 		}
 
@@ -2218,7 +2196,7 @@ void CTestMenu::testMovieBrowserDirect()
 	
 	CMoviePlayerGui tmpMoviePlayerGui;	
 	CMovieBrowser * movieBrowser;
-	MI_MOVIE_INFO * p_movie_info;
+	MI_MOVIE_INFO * mfile;
 	
 	movieBrowser = new CMovieBrowser();
 	
@@ -2231,28 +2209,11 @@ BROWSER:
 	{
 		Path_local = movieBrowser->getCurrentDir();
 		
-		CFile * file;
-		
-		if ((file = movieBrowser->getSelectedFile()) != NULL) 
+		if (movieBrowser->getSelectedFile() != NULL) 
 		{
-			p_movie_info = movieBrowser->getCurrentMovieInfo();
-			
-			file->Title = p_movie_info->epgTitle;
-			file->Info1 = p_movie_info->epgInfo1; //category ist always empty
-			file->Info2 = p_movie_info->epgInfo2;
-			file->Thumbnail = p_movie_info->tfile;
-
-			if(p_movie_info->tfile.empty())
-			{
-				std::string fname = "";
-				fname = file->Name;
-				changeFileNameExt(fname, ".jpg");
-						
-				if(!access(fname.c_str(), F_OK) )
-					file->Thumbnail = fname.c_str();
-			}
+			mfile = movieBrowser->getCurrentMovieInfo();
 					
-			tmpMoviePlayerGui.addToPlaylist(*file);
+			tmpMoviePlayerGui.addToPlaylist(*mfile);
 			tmpMoviePlayerGui.exec(NULL, "urlplayback");
 		}
 

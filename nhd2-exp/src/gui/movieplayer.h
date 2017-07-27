@@ -156,7 +156,8 @@ class CMoviePlayerGui : public CMenuTarget
 		unsigned int g_currentac3;
 		
 		// playlist
-		CFileList filelist;
+		//CFileList filelist;
+		CMoviePlayList filelist;
 		unsigned int selected;
 		
 		const char *filename;
@@ -218,7 +219,7 @@ class CMoviePlayerGui : public CMenuTarget
 		
 		// show infos
 		void showFileInfo();
-		void addToPlaylist(CFile& file);
+		void addToPlaylist(MI_MOVIE_INFO& file);
 };
 
 #endif

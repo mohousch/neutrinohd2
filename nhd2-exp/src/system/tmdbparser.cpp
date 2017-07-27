@@ -48,8 +48,8 @@
 cTmdb::cTmdb(std::string epgtitle)
 {
 	minfo.epgtitle = epgtitle;
-
 	key = g_settings.tmdbkey;
+	cover = "/tmp/" + minfo.epgtitle + ".jpg";
 
 	std::string language = g_settings.language;
 	std::string lang = Lang2ISO639_1(language);
@@ -62,7 +62,7 @@ cTmdb::cTmdb(std::string epgtitle)
 
 cTmdb::~cTmdb()
 {
-	unlink(TMDB_COVER);
+	unlink(cover.c_str());
 }
 
 bool cTmdb::GetMovieDetails(std::string lang)
@@ -149,10 +149,10 @@ bool cTmdb::GetMovieDetails(std::string lang)
 				minfo.cast +=  "  " + elements[i].get("character","").asString() + " (" + elements[i].get("name","").asString() + ")\n";
 			}
 
-			unlink(TMDB_COVER);
-
+			//
 			if (hasCover())
-				getBigCover(TMDB_COVER);
+				getBigCover(cover);
+			//
 
 			return true;
 		}
@@ -167,9 +167,9 @@ std::string cTmdb::CreateEPGText()
 {
 	std::string epgtext;
 	epgtext += "\n";
-	epgtext += "Vote: "+minfo.vote_average.substr(0,3)+"/10 Votecount: "+to_string(minfo.vote_count)+"\n";
+	epgtext += "Vote: " + minfo.vote_average.substr(0,3) + "/10 Votecount: " + to_string(minfo.vote_count) + "\n";
 	epgtext += "\n";
-	epgtext += minfo.overview+"\n";
+	epgtext += minfo.overview + "\n";
 	epgtext += "\n";
 
 	if (minfo.media_type == "tv")

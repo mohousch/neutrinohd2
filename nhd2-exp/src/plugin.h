@@ -169,6 +169,7 @@
 #include <system/flashtool.h>
 #include <system/fsmounter.h>
 #include <system/helpers.h>
+#include <system/tmdbparser.h>
 
 // zapit
 #include <frontend_c.h>

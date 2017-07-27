@@ -103,20 +103,11 @@ void CNKMovies::showNKMoviesMenu()
 
 void CNKMovies::playMovie(void)
 {
-	CFile *file;
 	CMoviePlayerGui tmpMoviePlayerGui;
-	MI_MOVIE_INFO * p_movie_info;
 
-	if ((file = &m_vMovieInfo[moviesMenu->getSelected()].file) != NULL) 
+	if (&m_vMovieInfo[moviesMenu->getSelected()].file != NULL) 
 	{
-		p_movie_info = &m_vMovieInfo[moviesMenu->getSelected()];
-			
-		file->Title = p_movie_info->epgTitle;
-		file->Info1 = p_movie_info->epgInfo1;
-		file->Info2 = p_movie_info->epgInfo2;
-		file->Thumbnail = p_movie_info->tfile;
-	
-		tmpMoviePlayerGui.addToPlaylist(*file);
+		tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[moviesMenu->getSelected()]);
 		tmpMoviePlayerGui.exec(NULL, "urlplayback");
 	}
 }
@@ -253,7 +244,7 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_record")
 	{
-		nkparser.downloadMovie(m_vMovieInfo[moviesMenu->getSelected()].file.Name, m_vMovieInfo[moviesMenu->getSelected()].file.Url);
+		nkparser.downloadMovie(m_vMovieInfo[moviesMenu->getSelected()].file.Name, m_vMovieInfo[moviesMenu->getSelected()].Url);
 
 		return returnval;
 	}
@@ -297,7 +288,7 @@ void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 		movieInfo.ytdate = ylist[count].published;
 		movieInfo.ytid = ylist[count].id;
 		movieInfo.file.Name = ylist[count].title;
-		movieInfo.file.Url = ylist[count].url;
+		movieInfo.Url = ylist[count].url;
 		
 		m_vMovieInfo.push_back(movieInfo);
 	}

@@ -1996,17 +1996,8 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			m_pcWindow->paintBackground();
 			m_pcWindow->blit();
 
-			std::string search_string;
-
-			if(show_mode == MB_SHOW_RECORDS)
-				search_string = m_movieSelectionHandler->epgTitle;
-			else 
-			{
-				search_string = m_movieSelectionHandler->file.getFileName();
-				removeExtension(search_string);
-			}
-				
-			cTmdb * tmdb = new cTmdb(search_string.c_str());
+			//				
+			cTmdb * tmdb = new cTmdb(m_movieSelectionHandler->epgTitle);
 	
 			if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 			{
@@ -2022,9 +2013,20 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				int pich = 246;	//FIXME
 				int picw = 162; 	//FIXME
 	
-				std::string thumbnail = "/tmp/tmdb.jpg";
-				if(access(thumbnail.c_str(), F_OK))
-					thumbnail = "";
+				std::string thumbnail = "";
+				
+				// rewrite tfile
+				//std::string fname = m_movieSelectionHandler->file.Name;
+				//changeFileNameExt(fname, ".jpg");
+	
+				// save tfile to /tmp
+				std::string fname = "/tmp/" + m_movieSelectionHandler->epgTitle + ".jpg";
+				
+				if (tmdb->getBigCover(fname)) 
+				{
+					if(!access(fname.c_str(), F_OK) )
+						thumbnail = fname.c_str();
+				}
 	
 				CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
@@ -2033,9 +2035,23 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				infoBox->setText(&buffer, thumbnail, picw, pich);
 				infoBox->exec();
 				delete infoBox;
+
+				// bool prefer tmdbInfo = true;
+				// rewrite tfile
+				std::string tname = m_movieSelectionHandler->file.Name;
+				changeFileNameExt(tname, ".jpg");
+				if(tmdb->getBigCover(tname)) 
+					m_movieSelectionHandler->tfile = tname;
+
+				if(m_movieSelectionHandler->epgInfo2.empty())
+					m_movieSelectionHandler->epgInfo2 = tmdb->getDescription();
+
+				m_movieInfo.saveMovieInfo( *m_movieSelectionHandler);  
 			}
 			else
+			{
 				MessageBox(LOCALE_MESSAGEBOX_INFO, "no tmdb info found!", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+			}
 
 			delete tmdb;
 			tmdb = NULL;
@@ -2747,27 +2763,31 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 					
 					movieInfo.file.Name = flist[i].Name;
 					
-					// load movie infos
+					// load movie infos (from xml file)
 					m_movieInfo.loadMovieInfo(&movieInfo);
 					
 					// refill structure
 					if(show_mode == MB_SHOW_FILES)
 					{
+						std::string tmp_str = flist[i].getFileName();
+
+						removeExtension(tmp_str);
+
 						// refill if empty
 						if(movieInfo.epgTitle.empty())
-							movieInfo.epgTitle = flist[i].getFileName();
-						
+							movieInfo.epgTitle = tmp_str;
+						/*
 						if(movieInfo.epgInfo1.empty())
-							movieInfo.epgInfo1 = flist[i].getFileName();   	// IMDB 
+							movieInfo.epgInfo1 = tmp_str;
 
 						if(movieInfo.epgInfo2.empty())
-							movieInfo.epgInfo2 = flist[i].getFileName(); 	// IMDB???
-
+							movieInfo.epgInfo2 = tmp_str;
+						*/
 					}
 					
 					// serieName
-					if(movieInfo.serieName.empty())
-						movieInfo.serieName = flist[i].getFileName();
+					//if(movieInfo.serieName.empty())
+					//	movieInfo.serieName = flist[i].getFileName();
 					
 					//
 					movieInfo.file.Mode = flist[i].Mode;
@@ -3066,7 +3086,7 @@ void CMovieBrowser::loadAllMovieInfo(void)
 {
 	dprintf(DEBUG_INFO, "CMovieBrowser::loadAllMovieInfo:\r\n");
 
-	for(unsigned int i = 0; i < m_vMovieInfo.size();i++)
+	for(unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		m_movieInfo.loadMovieInfo( &(m_vMovieInfo[i]));
 	}

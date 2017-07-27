@@ -63,6 +63,7 @@
 
 #include <system/debug.h>
 #include <system/helpers.h>
+#include <system/tmdbparser.h>
 
 
 CMovieInfo::CMovieInfo()
@@ -311,12 +312,13 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 	{
 		// if there is no give file, we use the file name from movie info but we have to convert the ts name to xml name first
 		file_xml.Name = movie_info->file.Name;
-		result = convertTs2XmlName(&file_xml.Name);
 	} 
 	else 
 	{
 		file_xml.Name = file->Name;
 	}
+
+	result = convertTs2XmlName(&file_xml.Name);
 
 	if (result == true) 
 	{
@@ -567,7 +569,7 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		print_buffer += "\n";
 	}
 	
-	// thumbnail	
+	// thumbnail
 	if(access(movie_info.tfile.c_str(), F_OK))
 		movie_info.tfile = "";
 	

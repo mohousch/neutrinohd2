@@ -1686,6 +1686,8 @@ void CFrameBuffer::getSize(const std::string &name, int * width, int * height, i
 	{
 		*width = 0;
 		*height = 0;
+
+		return;
 	}
 	
 	rgbbuff = (unsigned char *) malloc (x*y*4);
@@ -1709,6 +1711,8 @@ void CFrameBuffer::getSize(const std::string &name, int * width, int * height, i
 			*height = 0;
 		}
 	}
+
+	return;
 }
 
 // resize

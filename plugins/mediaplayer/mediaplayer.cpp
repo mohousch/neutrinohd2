@@ -78,25 +78,26 @@ BROWSER:
 	if (fileBrowser->exec(Path_local.c_str()))
 	{
 		Path_local = fileBrowser->getCurrentDir();
-		CFile file;
+		MI_MOVIE_INFO mfile;
+		CMovieInfo cMovieInfo;
+
 		CFileList::const_iterator files = fileBrowser->getSelectedFiles().begin();
 		for(; files != fileBrowser->getSelectedFiles().end(); files++)
 		{
-			file.Name = files->Name;
+			//cMovieInfo.loadMovieInfo(&mfile, files);
 
-			// fill file info
-			file.Title = files->getFileName();
-			file.Info1 = files->getFileName();	// IMDB
-			//file.Info2 = files->getFileName(); 	// IMDB
+			mfile.file.Name = files->Name;
+			mfile.epgTitle = files->getFileName();
+			mfile.epgInfo1 = files->getFileName();
 
 			std::string fname = "";
 			fname = files->Name;
 			changeFileNameExt(fname, ".jpg");
 						
 			if(!access(fname.c_str(), F_OK) )
-				file.Thumbnail = fname.c_str();
+				mfile.tfile = fname.c_str();
 					
-			tmpMoviePlayerGui.addToPlaylist(file);
+			tmpMoviePlayerGui.addToPlaylist(mfile);
 		}
 		
 		tmpMoviePlayerGui.exec(NULL, "urlplayback");
