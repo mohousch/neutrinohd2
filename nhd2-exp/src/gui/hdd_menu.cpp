@@ -1226,19 +1226,17 @@ REPEAT:
 				}
 				else if(file->getType() == CFile::FILE_VIDEO)
 				{
+					CMovieInfo cMovieInfo;
 					MI_MOVIE_INFO mfile;
 					CMoviePlayerGui tmpMoviePlayerGui;
 	 
+					cMovieInfo.clearMovieInfo(&mfile);
 					mfile.file.Name = file->Name;
 
 					// other infos if there is xml file
-					if(file->getExtension() == CFile::EXTENSION_TS)
-					{
-						CMovieInfo cMovieInfo;
-						cMovieInfo.loadMovieInfo(&mfile, file);
-					}
+					cMovieInfo.loadMovieInfo(&mfile, file);
 
-					//
+					// epgTitle
 					if(mfile.epgTitle.empty())
 					{
 						std::string Title = file->getFileName();
@@ -1246,35 +1244,36 @@ REPEAT:
 						mfile.epgTitle = Title;
 					}
 
-					// tfile first prefer tmdb cover
-					cTmdb * tmdb = new cTmdb(mfile.epgTitle);
+					// tfile
+					std:string fname = file->Name;
+					changeFileNameExt(fname, ".jpg");
+					if(!access(fname.c_str(), F_OK) )
+						mfile.tfile = fname.c_str();
+
+					if(g_settings.prefer_tmdb_info)
+					{
+						cTmdb * tmdb = new cTmdb(mfile.epgTitle);
 	
-					std::string fname = "/tmp/" + mfile.epgTitle + ".jpg";
+						fname = "/tmp/" + mfile.epgTitle + ".jpg";
 				
-					if (tmdb->getBigCover(fname)) 
-					{
-						if(!access(fname.c_str(), F_OK) )
-							mfile.tfile = fname.c_str();
-					}
-					else
-					{
-						fname = file->Name;
-						changeFileNameExt(fname, ".jpg");
-						if(!access(fname.c_str(), F_OK) )
-							mfile.tfile = fname.c_str();
-					}
+						if (tmdb->getBigCover(fname)) 
+						{
+							if(!access(fname.c_str(), F_OK) )
+								mfile.tfile = fname.c_str();
+						}
 
-					// epgInfo1
-					if((mfile.epgInfo1.empty() && mfile.epgInfo2.empty()) && !tmdb->getDescription().empty())
-					{
-						mfile.epgInfo2 = tmdb->getDescription();
-					}
+						// epgInfo1
+						if((mfile.epgInfo1.empty() && mfile.epgInfo2.empty()) && !tmdb->getDescription().empty())
+						{
+							mfile.epgInfo2 = tmdb->getDescription();
+						}
 					
-					tmpMoviePlayerGui.addToPlaylist(mfile);
-					tmpMoviePlayerGui.exec(NULL, "urlplayback");
+						tmpMoviePlayerGui.addToPlaylist(mfile);
+						tmpMoviePlayerGui.exec(NULL, "urlplayback");
 
-					delete tmdb;
-					tmdb = NULL;
+						delete tmdb;
+						tmdb = NULL;
+					}
 				}
 				else if(file->getType() == CFile::FILE_AUDIO)
 				{

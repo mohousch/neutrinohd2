@@ -515,6 +515,7 @@ struct SNeutrinoSettings
 
 	// tmdb
 	std::string tmdbkey;
+	int prefer_tmdb_info;
 
 	// progressbar color
 	int progressbar_color;

@@ -99,27 +99,24 @@ BROWSER:
 				mfile.epgTitle = Title;
 			}
 
-			// tfile 
-			cTmdb * tmdb = new cTmdb(mfile.epgTitle);
-	
-			std::string fname = "/tmp/" + mfile.epgTitle + ".jpg";				
-			if (tmdb->getBigCover(fname)) 
-			{
-				if(!access(fname.c_str(), F_OK) )
-					mfile.tfile= fname.c_str();
-			}
-			else
-			{
-				fname = files->Name;
-				changeFileNameExt(fname,".jpg");	
-				if(!access(fname.c_str(), F_OK) )
-					mfile.tfile= fname.c_str();
-			}
+			// tfile
+			std::string fname = files->Name;
+			changeFileNameExt(fname,".jpg");	
+			if(!access(fname.c_str(), F_OK) )
+				mfile.tfile= fname.c_str();
 
 			// epgInfo2
-			if(mfile.epgInfo2.empty() && !tmdb->getDescription().empty())
+ 			if(g_settings.prefer_tmdb_info)
 			{
-				mfile.epgInfo2 = tmdb->getDescription();
+				cTmdb * tmdb = new cTmdb(mfile.epgTitle);
+	
+				// epgInfo2
+				if(mfile.epgInfo2.empty() && !tmdb->getDescription().empty())
+				{
+					mfile.epgInfo2 = tmdb->getDescription();
+				}
+				delete tmdb;
+				tmdb = NULL;
 			}
 					
 			tmpMoviePlayerGui.addToPlaylist(mfile);
