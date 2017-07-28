@@ -787,7 +787,8 @@ void CPictureViewerGui::addToPlaylist(CPicture& file)
 
 void CPictureViewerGui::showHelp()
 {
-	Helpbox helpbox;
+	CHelpBox helpbox;
+
 	helpbox.addLine(g_Locale->getText(LOCALE_PICTUREVIEWER_HELP1));
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_OKAY, g_Locale->getText(LOCALE_PICTUREVIEWER_HELP2));
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_0, g_Locale->getText(LOCALE_PICTUREVIEWER_HELP4));

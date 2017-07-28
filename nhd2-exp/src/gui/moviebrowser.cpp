@@ -3091,7 +3091,7 @@ void CMovieBrowser::showHelp(void)
 {
 	CMovieHelp help;
 
-	help.exec(NULL,NULL);
+	help.exec(NULL, "");
 }
 
 void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
@@ -3260,7 +3260,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 extern "C" int pinghost( const char *hostname );
 bool CMovieBrowser::showMenu(MI_MOVIE_INFO */*movie_info*/)
 {
-	//first clear screen */
+	//first clear screen
 	m_pcWindow->paintBackground();
 	m_pcWindow->blit();
 
@@ -3810,11 +3810,15 @@ void CMovieBrowser::autoFindSerie(void)
 	}
 }
 
-int CMovieHelp::exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/)
+int CMovieHelp::exec(CMenuTarget* /*parent*/, const std::string&/*actionKey*/)
 {
 	dprintf(DEBUG_NORMAL, "CMovieHelp::exec:\n");
 
-	Helpbox helpbox;
+	CFrameBuffer::getInstance()->paintBackground();
+	CFrameBuffer::getInstance()->blit();
+
+	CHelpBox helpbox;
+
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_RED, "Sortierung ändern");
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_GREEN, "Filterfenster einblenden");
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_YELLOW, "Aktives Fenster wechseln");
@@ -3833,7 +3837,8 @@ int CMovieHelp::exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/)
 	helpbox.addLine("MovieBrowser $Revision: 1.10 $");
 	helpbox.addLine("by Günther");
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
-	return(0);
+
+	return menu_return::RETURN_REPAINT;
 }
 
 /////////////////////////////////////////////////

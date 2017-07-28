@@ -1665,6 +1665,7 @@ const char * locale_real_names[] = {
 	"youtube.yt_orderby.rating",
 	"youtube.yt_orderby.relevance",
 	"youtube.yt_orderby.viewcount",
+	"youtube.yt_autoplay",
 	
 	// netzkino
 	"netzkino.netzkino",

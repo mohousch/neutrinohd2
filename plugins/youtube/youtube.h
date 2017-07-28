@@ -36,6 +36,8 @@ typedef struct
 	std::string ytvid;
 	std::string ytsearch;
 	std::string ytkey;
+
+	int ytautoplay;
 }YTB_SETTINGS;
 
 class CYTBrowser : public CMenuTarget
@@ -48,23 +50,24 @@ class CYTBrowser : public CMenuTarget
 		bool saveSettings(YTB_SETTINGS* settings);
 
 		//
-		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
+		CMoviePlayList m_vMovieInfo;
 		CMovieInfo m_movieInfo;
 		cYTFeedParser ytparser;
 		neutrino_locale_t getFeedLocale(void);
 		void loadYTTitles(int mode, std::string search = "", std::string id = "");
-		bool showYTMenu(void);
+		void showYTMenu(void);
 		void playMovie(void);
 		void showMovieInfo(void);
 		
 		//
 		CMenuFrameBox* moviesMenu;
-		void showYTMoviesMenu(void);
+		//void showYTMoviesMenu(void);
 		
 	public:
 		CYTBrowser();
 		~CYTBrowser();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
+		void showYTMoviesMenu(void);
 }; 
 
 #endif //__YT__

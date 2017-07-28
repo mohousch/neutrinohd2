@@ -228,25 +228,25 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		playMovie();
 
-		return returnval;
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_info")
 	{
 		showMovieInfo();
 
-		return returnval;
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_setup")
 	{
 		showNKCategoriesMenu();
 
-		return returnval;
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_record")
 	{
 		nkparser.downloadMovie(m_vMovieInfo[moviesMenu->getSelected()].file.Name, m_vMovieInfo[moviesMenu->getSelected()].Url);
 
-		return returnval;
+		return menu_return::RETURN_REPAINT;
 	}
 
 	showNKMoviesMenu();

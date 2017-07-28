@@ -294,11 +294,16 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	g_vtype = 0;
 	g_currentapid = 0;
 	g_currentac3 = 0;
+
+	// clear audipopids
+	for (int i = 0; i < g_numpida; i++) 
+	{
+		g_apids[i] = 0;
+		g_ac3flags[i] = 0;
+	}
 	
 	filename = NULL;
 	sel_filename.clear();
-
-	p_movie_info = NULL;
 	
 	// cutneutrino
 	cutNeutrino();
@@ -431,43 +436,39 @@ void CMoviePlayerGui::PlayFile(void)
 				Thumbnail = filelist[0].tfile;
 				sel_filename = filelist[0].file.getFileName();
 
-				// get the movie info handle
-				p_movie_info = &filelist[0];
-
-				if(!p_movie_info->audioPids.empty()) 
+				//
+				if(!filelist[0].audioPids.empty()) 
 				{
-					g_currentapid = p_movie_info->audioPids[0].epgAudioPid;	//FIXME
-					g_currentac3 = p_movie_info->audioPids[0].atype;
+					g_currentapid = filelist[0].audioPids[0].epgAudioPid;	//FIXME
+					g_currentac3 = filelist[0].audioPids[0].atype;
 				}
 
-				for (int i = 0; i < (int)p_movie_info->audioPids.size(); i++) 
+				for (int i = 0; i < (int)filelist[0].audioPids.size(); i++) 
 				{
-					g_ac3flags[i] = p_movie_info->audioPids[i].atype;
+					g_ac3flags[i] = filelist[0].audioPids[i].atype;
 					g_numpida++;
 
-					if (p_movie_info->audioPids[i].selected) 
+					if (filelist[0].audioPids[i].selected) 
 					{
-						g_currentapid = p_movie_info->audioPids[i].epgAudioPid;	//FIXME
-						g_currentac3 = p_movie_info->audioPids[i].atype;
+						g_currentapid = filelist[0].audioPids[i].epgAudioPid;	//FIXME
+						g_currentac3 = filelist[0].audioPids[i].atype;
 					}
 				}
 
 				//
-				g_vpid = p_movie_info->epgVideoPid;
-				g_vtype = p_movie_info->VideoType;
+				g_vpid = filelist[0].epgVideoPid;
+				g_vtype = filelist[0].VideoType;
 
-				// get the start position for the movie			
+				// startposition			
 				startposition = 1000 * showStartPosSelectionMenu();
 			}
 			else
 			{
 				filename = filelist[0].Url.c_str();
-	
 				Title = filelist[0].epgTitle;
 				Info1 = filelist[0].epgInfo1;
 				Info2 = filelist[0].epgInfo2;
 				Thumbnail = filelist[0].tfile;
-
 				sel_filename = filelist[0].file.getFileName();
 			}
 
@@ -529,40 +530,52 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				selected++;
 
-				filename = filelist[selected].file.Name.c_str();
-				Title = filelist[selected].epgTitle;
-				Info1 = filelist[selected].epgInfo1;
-				Info2 = filelist[selected].epgInfo2;
-				Thumbnail = filelist[selected].tfile;
-				sel_filename = filelist[selected].file.getFileName();
-
-				// get the movie info handle
-				p_movie_info = &filelist[selected];
-
-				if(!p_movie_info->audioPids.empty()) 
-				{
-					g_currentapid = p_movie_info->audioPids[0].epgAudioPid;	//FIXME
-					g_currentac3 = p_movie_info->audioPids[0].atype;
-				}
-
-				for (int i = 0; i < (int)p_movie_info->audioPids.size(); i++) 
-				{
-					g_ac3flags[i] = p_movie_info->audioPids[i].atype;
-					g_numpida++;
-
-					if (p_movie_info->audioPids[i].selected) 
-					{
-						g_currentapid = p_movie_info->audioPids[i].epgAudioPid;	//FIXME
-						g_currentac3 = p_movie_info->audioPids[i].atype;
-					}
-				}
-
 				//
-				g_vpid = p_movie_info->epgVideoPid;
-				g_vtype = p_movie_info->VideoType;
+				if(filelist[selected].Url.empty())
+				{
+					filename = filelist[selected].file.Name.c_str();
+					Title = filelist[selected].epgTitle;
+					Info1 = filelist[selected].epgInfo1;
+					Info2 = filelist[selected].epgInfo2;
+					Thumbnail = filelist[selected].tfile;
+					sel_filename = filelist[selected].file.getFileName();
 
-				// get the start position for the movie			
-				startposition = 1000 * showStartPosSelectionMenu();
+					// 
+					if(!filelist[selected].audioPids.empty()) 
+					{
+						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;	//FIXME
+						g_currentac3 = filelist[selected].audioPids[0].atype;
+					}
+
+					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
+					{
+						g_ac3flags[i] = filelist[selected].audioPids[i].atype;
+						g_numpida++;
+
+						if (filelist[selected].audioPids[i].selected) 
+						{
+							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;	//FIXME
+							g_currentac3 = filelist[selected].audioPids[i].atype;
+						}
+					}
+
+					//
+					g_vpid = filelist[selected].epgVideoPid;
+					g_vtype = filelist[selected].VideoType;
+
+					// startposition			
+					startposition = 1000 * showStartPosSelectionMenu();
+				}
+				else
+				{
+					filename = filelist[selected].Url.c_str();
+					Title = filelist[selected].epgTitle;
+					Info1 = filelist[selected].epgInfo1;
+					Info2 = filelist[selected].epgInfo2;
+					Thumbnail = filelist[selected].tfile;
+					sel_filename = filelist[selected].file.getFileName();
+				}
+				//
  
 				update_lcd = true;
 				start_play = true;
@@ -650,12 +663,12 @@ void CMoviePlayerGui::PlayFile(void)
 			CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 
 			// start timeosd
-			FileTime.SetMode(CTimeOSD::MODE_ASC);
+			FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
 			FileTime.update(position/1000);
 		}
 		
 		// do bookmarks
-		if (isMovieBrowser == true) 
+		//if (isMovieBrowser == true)
 		{	  
 			if (playstate == CMoviePlayerGui::PLAY) 
 			{				
@@ -672,12 +685,12 @@ void CMoviePlayerGui::PlayFile(void)
 
 				if (new_bookmark.pos == 0)	// do bookmark activities only, if there is no new bookmark started
 				{
-					if (p_movie_info != NULL)	// process bookmarks if we have any movie info
+					if (&filelist[selected] != NULL)	// process bookmarks if we have any movie info
 					{
-						if (p_movie_info->bookmarks.end != 0) 
+						if (filelist[selected].bookmarks.end != 0) 
 						{
 							// Check for stop position
-							if (play_sec >= p_movie_info->bookmarks.end - MOVIE_HINT_BOX_TIMER && play_sec < p_movie_info->bookmarks.end && play_sec > jump_not_until) 
+							if (play_sec >= filelist[selected].bookmarks.end - MOVIE_HINT_BOX_TIMER && play_sec < filelist[selected].bookmarks.end && play_sec > jump_not_until) 
 							{
 								if (showEndHintBox == false) 
 								{
@@ -695,7 +708,7 @@ void CMoviePlayerGui::PlayFile(void)
 								}
 							}
 
-							if (play_sec >= p_movie_info->bookmarks.end && play_sec <= p_movie_info->bookmarks.end + 2 && play_sec > jump_not_until)	// stop playing
+							if (play_sec >= filelist[selected].bookmarks.end && play_sec <= filelist[selected].bookmarks.end + 2 && play_sec > jump_not_until)	// stop playing
 							{
 								// we ARE close behind the stop position, stop playing 
 								dprintf(DEBUG_INFO, "CMoviePlayerGui::PlayFile: user stop\r\n");
@@ -710,41 +723,41 @@ void CMoviePlayerGui::PlayFile(void)
 
 						for (int book_nr = 0; book_nr < MI_MOVIE_BOOK_USER_MAX && loop == true; book_nr++) 
 						{
-							if (p_movie_info->bookmarks.user[book_nr].pos != 0 && p_movie_info->bookmarks.user[book_nr].length != 0) 
+							if (filelist[selected].bookmarks.user[book_nr].pos != 0 && filelist[selected].bookmarks.user[book_nr].length != 0) 
 							{
 								// valid bookmark found, now check if we are close before or after it
-								if (play_sec >= p_movie_info->bookmarks.user[book_nr].pos - MOVIE_HINT_BOX_TIMER && play_sec < p_movie_info->bookmarks.user[book_nr].pos && play_sec > jump_not_until) 
+								if (play_sec >= filelist[selected].bookmarks.user[book_nr].pos - MOVIE_HINT_BOX_TIMER && play_sec < filelist[selected].bookmarks.user[book_nr].pos && play_sec > jump_not_until) 
 								{
-									if (p_movie_info->bookmarks.user[book_nr].length < 0)
+									if (filelist[selected].bookmarks.user[book_nr].length < 0)
 										showLoopHintBox = true;	// we are 5 sec before , show warning
-									else if (p_movie_info->bookmarks.user[book_nr].length > 0)
+									else if (filelist[selected].bookmarks.user[book_nr].length > 0)
 										showComHintBox = true;	// we are 5 sec before, show warning
 									//else  // TODO should we show a plain bookmark infomation as well?
 								}
 
-								if (play_sec >= p_movie_info->bookmarks.user[book_nr].pos && play_sec <= p_movie_info->bookmarks.user[book_nr].pos + 2 && play_sec > jump_not_until)	//
+								if (play_sec >= filelist[selected].bookmarks.user[book_nr].pos && play_sec <= filelist[selected].bookmarks.user[book_nr].pos + 2 && play_sec > jump_not_until)	//
 								{
 									//for plain bookmark, the following calc shall result in 0 (no jump)
-									g_jumpseconds = p_movie_info->bookmarks.user[book_nr].length;
+									g_jumpseconds = filelist[selected].bookmarks.user[book_nr].length;
 
 									// we are close behind the bookmark, do bookmark activity (if any)
-									if (p_movie_info->bookmarks.user[book_nr].length < 0) 
+									if (filelist[selected].bookmarks.user[book_nr].length < 0) 
 									{
 										// if the jump back time is to less, it does sometimes cause problems (it does probably jump only 5 sec which will cause the next jump, and so on)
 										if (g_jumpseconds > -15)
 											g_jumpseconds = -15;
 
-										g_jumpseconds = g_jumpseconds + p_movie_info->bookmarks.user[book_nr].pos;
+										g_jumpseconds = g_jumpseconds + filelist[selected].bookmarks.user[book_nr].pos;
 
 										//playstate = CMoviePlayerGui::JPOS;	// bookmark  is of type loop, jump backward
 										playback->SetPosition((int64_t)g_jumpseconds * 1000);
 									} 
-									else if (p_movie_info->bookmarks.user[book_nr].length > 0) 
+									else if (filelist[selected].bookmarks.user[book_nr].length > 0) 
 									{
 										// jump at least 15 seconds
 										if (g_jumpseconds < 15)
 											g_jumpseconds = 15;
-										g_jumpseconds = g_jumpseconds + p_movie_info->bookmarks.user[book_nr].pos;
+										g_jumpseconds = g_jumpseconds + filelist[selected].bookmarks.user[book_nr].pos;
 
 										//playstate = CMoviePlayerGui::JPOS;	// bookmark  is of type loop, jump backward
 										playback->SetPosition((int64_t)g_jumpseconds * 1000);
@@ -793,7 +806,8 @@ void CMoviePlayerGui::PlayFile(void)
 				g_apids[i] = 0;
 				g_ac3flags[i] = 0;
 			}
-			g_numpida = 0; g_currentapid = 0;
+			g_numpida = 0; 
+			g_currentapid = 0;
 
 			// moviebrowser
 			if (isMovieBrowser == true) //moviebrowser
@@ -803,44 +817,46 @@ void CMoviePlayerGui::PlayFile(void)
 					// get the current path and file name
 					Path_local = moviebrowser->getCurrentDir();
 
-					CFile * file;
+					//CFile * file;
 
-					if ((file = moviebrowser->getSelectedFile()) != NULL) 
+					if (moviebrowser->getSelectedFile() != NULL) 
 					{
-						filename = file->Name.c_str();
-						sel_filename = file->getFileName();
+						//
+						addToPlaylist(*moviebrowser->getCurrentMovieInfo());
 
-						// get the movie info handle
-						p_movie_info = moviebrowser->getCurrentMovieInfo();
+						//
+						filename = filelist[0].file.Name.c_str();
+						sel_filename = filelist[0].file.getFileName();
+						Title = filelist[0].epgTitle;
+						Info1 = filelist[0].epgInfo1;
+						Info2 = filelist[0].epgInfo2;
+						Thumbnail = filelist[0].tfile;
 
-						if(!p_movie_info->audioPids.empty()) 
+						//
+						if(!filelist[0].audioPids.empty()) 
 						{
-							g_currentapid = p_movie_info->audioPids[0].epgAudioPid;	//FIXME
-							g_currentac3 = p_movie_info->audioPids[0].atype;
+							g_currentapid = filelist[0].audioPids[0].epgAudioPid;	//FIXME
+							g_currentac3 = filelist[0].audioPids[0].atype;
 						}
 
-						for (int i = 0; i < (int)p_movie_info->audioPids.size(); i++) 
+						for (int i = 0; i < (int)filelist[0].audioPids.size(); i++) 
 						{
-							g_ac3flags[i] = p_movie_info->audioPids[i].atype;
+							g_ac3flags[i] = filelist[0].audioPids[i].atype;
 							g_numpida++;
 
-							if (p_movie_info->audioPids[i].selected) 
+							if (filelist[0].audioPids[i].selected) 
 							{
-								g_currentapid = p_movie_info->audioPids[i].epgAudioPid;	//FIXME
-								g_currentac3 = p_movie_info->audioPids[i].atype;
+								g_currentapid = filelist[0].audioPids[i].epgAudioPid;	//FIXME
+								g_currentac3 = filelist[0].audioPids[i].atype;
 							}
 						}
 
 						// startposition					
 						startposition = 1000 * moviebrowser->getCurrentStartPos();						
 
-						g_vpid = p_movie_info->epgVideoPid;
-						g_vtype = p_movie_info->VideoType;
-						
-						Title = p_movie_info->epgTitle;
-						Info1 = p_movie_info->epgInfo1;
-						Info2 = p_movie_info->epgInfo2;
-						Thumbnail = p_movie_info->tfile;
+						//
+						g_vpid = filelist[0].epgVideoPid;
+						g_vtype = filelist[0].VideoType;
 						
 						dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: file:%s apid:0x%X atype:%d vpid:0x%X vtype:%d startposition:%d\n", filename, g_currentapid, g_currentac3, g_vpid, g_vtype, startposition/1000);
 						
@@ -864,16 +880,13 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			update_lcd = false;
 
-			if (isMovieBrowser && strlen(p_movie_info->epgTitle.c_str()) && strncmp(p_movie_info->epgTitle.c_str(), "not", 3))
-				updateLcd(p_movie_info->epgTitle);
-			else
-				updateLcd(sel_filename);
+			updateLcd(sel_filename);
 		}
 
 		// timeosd
 		if (FileTime.IsVisible()) 
 		{
-			if (FileTime.GetMode() == CTimeOSD::MODE_ASC) 
+			if (FileTime.GetMode() == CMovieInfoViewer::MODE_ASC) 
 			{
 				FileTime.update(position / 1000);
 			} 
@@ -882,7 +895,7 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.update((duration - position) / 1000);
 			}
 
-			FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+			FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 
 			time_t jetzt = time(NULL);
 
@@ -908,8 +921,8 @@ void CMoviePlayerGui::PlayFile(void)
 #endif			
 			
 			duration = 0;
-			if(p_movie_info != NULL)
-				duration = p_movie_info->length * 60 * 1000;
+			if(filelist[selected].length != 0)
+				duration = filelist[selected].length * 60 * 1000;
 			  
 			// PlayBack Start			  
 			if(!playback->Start((char *)filename, g_vpid, g_vtype, g_currentapid, g_currentac3, duration))
@@ -985,8 +998,8 @@ void CMoviePlayerGui::PlayFile(void)
 #endif
 
 				//
-				//FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				//FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 
 				timeStartShowingInfo = time(NULL);	
 			}
@@ -1080,9 +1093,9 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				if (FileTime.IsVisible()) 
 				{
-					if (FileTime.GetMode() == CTimeOSD::MODE_ASC) 
+					if (FileTime.GetMode() == CMovieInfoViewer::MODE_ASC) 
 					{
-						FileTime.SetMode(CTimeOSD::MODE_DESC);
+						FileTime.SetMode(CMovieInfoViewer::MODE_DESC);
 						FileTime.update((duration - position) / 1000);
 					} 
 					else 
@@ -1092,8 +1105,8 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 				else 
 				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 
 					timeStartShowingInfo = time(NULL);
 				}
@@ -1126,9 +1139,9 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				if (FileTime.IsVisible()) 
 				{
-					if (FileTime.GetMode() == CTimeOSD::MODE_ASC) 
+					if (FileTime.GetMode() == CMovieInfoViewer::MODE_ASC) 
 					{
-						FileTime.SetMode(CTimeOSD::MODE_DESC);
+						FileTime.SetMode(CMovieInfoViewer::MODE_DESC);
 						FileTime.update((duration - position) / 1000);
 					} 
 					else 
@@ -1138,8 +1151,8 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 				else 
 				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 
 					//timeStartShowingInfo = time(NULL); 
 				}
@@ -1150,8 +1163,9 @@ void CMoviePlayerGui::PlayFile(void)
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
 			
-			//FIXME:			
-			if(isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_FILES)
+			//			
+			//if(isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_FILES)
+			if(filelist[selected].Url.empty())
 			{
 				int pos_sec = position / 1000;
 
@@ -1160,9 +1174,9 @@ void CMoviePlayerGui::PlayFile(void)
 					// yes, let's get the end pos of the jump forward
 					new_bookmark.length = pos_sec - new_bookmark.pos;
 					dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: commercial length: %d\r\n", new_bookmark.length);
-					if (cMovieInfo.addNewBookmark(p_movie_info, new_bookmark) == true) 
+					if (cMovieInfo.addNewBookmark(&filelist[selected], new_bookmark) == true) 
 					{
-						cMovieInfo.saveMovieInfo(*p_movie_info);	// save immediately in xml file
+						cMovieInfo.saveMovieInfo(filelist[selected]);	// save immediately in xml file
 					}
 					new_bookmark.pos = 0;	// clear again, since this is used as flag for bookmark activity
 					newComHintBox.hide();
@@ -1173,9 +1187,9 @@ void CMoviePlayerGui::PlayFile(void)
 					new_bookmark.length = new_bookmark.pos - pos_sec;
 					new_bookmark.pos = pos_sec;
 					dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: loop length: %d\r\n", new_bookmark.length);
-					if (cMovieInfo.addNewBookmark(p_movie_info, new_bookmark) == true) 
+					if (cMovieInfo.addNewBookmark(&filelist[selected], new_bookmark) == true) 
 					{
-						cMovieInfo.saveMovieInfo(*p_movie_info);	// save immediately in xml file
+						cMovieInfo.saveMovieInfo(filelist[selected]);	// save immediately in xml file
 						jump_not_until = pos_sec + 5;	// avoid jumping for this time
 					}
 					new_bookmark.pos = 0;	// clear again, since this is used as flag for bookmark activity
@@ -1196,8 +1210,8 @@ void CMoviePlayerGui::PlayFile(void)
 						// Moviebrowser plain bookmark
 						new_bookmark.pos = pos_sec;
 						new_bookmark.length = 0;
-						if (cMovieInfo.addNewBookmark(p_movie_info, new_bookmark) == true)
-							cMovieInfo.saveMovieInfo(*p_movie_info);	// save immediately in xml file
+						if (cMovieInfo.addNewBookmark(&filelist[selected], new_bookmark) == true)
+							cMovieInfo.saveMovieInfo(filelist[selected]);	// save immediately in xml file
 						new_bookmark.pos = 0;	// clear again, since this is used as flag for bookmark activity
 						cSelectedMenuBookStart[0].selected = false;	// clear for next bookmark menu
 					} 
@@ -1221,17 +1235,17 @@ void CMoviePlayerGui::PlayFile(void)
 					else if (cSelectedMenuBookStart[3].selected == true) 
 					{
 						// Moviebrowser movie start bookmark
-						p_movie_info->bookmarks.start = pos_sec;
-						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: New movie start pos: %d\r\n", p_movie_info->bookmarks.start);
-						cMovieInfo.saveMovieInfo(*p_movie_info);	/* save immediately in xml file */
+						filelist[selected].bookmarks.start = pos_sec;
+						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: New movie start pos: %d\r\n", filelist[selected].bookmarks.start);
+						cMovieInfo.saveMovieInfo(filelist[selected]);	// save immediately in xml file
 						cSelectedMenuBookStart[3].selected = false;	// clear for next bookmark menu
 					} 
 					else if (cSelectedMenuBookStart[4].selected == true) 
 					{
 						// Moviebrowser movie end bookmark
-						p_movie_info->bookmarks.end = pos_sec;
-						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: New movie end pos: %d\r\n", p_movie_info->bookmarks.start);
-						cMovieInfo.saveMovieInfo(*p_movie_info);	/* save immediately in xml file */
+						filelist[selected].bookmarks.end = pos_sec;
+						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: New movie end pos: %d\r\n", filelist[selected].bookmarks.start);
+						cMovieInfo.saveMovieInfo(filelist[selected]);	//save immediately in xml file
 						cSelectedMenuBookStart[4].selected = false;	// clear for next bookmark menu
 					}
 				}
@@ -1262,9 +1276,9 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				if (FileTime.IsVisible()) 
 				{
-					if (FileTime.GetMode() == CTimeOSD::MODE_ASC) 
+					if (FileTime.GetMode() == CMovieInfoViewer::MODE_ASC) 
 					{
-						FileTime.SetMode(CTimeOSD::MODE_DESC);
+						FileTime.SetMode(CMovieInfoViewer::MODE_DESC);
 						FileTime.update((duration - position) / 1000);
 					} 
 					else 
@@ -1274,8 +1288,8 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 				else 
 				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 
 					timeStartShowingInfo = time(NULL);
 				}
@@ -1287,8 +1301,8 @@ void CMoviePlayerGui::PlayFile(void)
 					FileTime.hide();
 				else
 				{
-					FileTime.SetMode(CTimeOSD::MODE_ASC);
-					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 
 					timeStartShowingInfo = time(NULL);
 				}
@@ -1316,8 +1330,8 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1347,8 +1361,8 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1363,8 +1377,8 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1379,8 +1393,8 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1394,8 +1408,8 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1409,8 +1423,8 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1424,8 +1438,8 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1439,8 +1453,8 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1454,8 +1468,8 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1479,8 +1493,8 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1495,8 +1509,8 @@ void CMoviePlayerGui::PlayFile(void)
 			//time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1510,8 +1524,8 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1526,8 +1540,8 @@ void CMoviePlayerGui::PlayFile(void)
 			// time
 			if (!FileTime.IsVisible()) 
 			{
-				FileTime.SetMode(CTimeOSD::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, isMovieBrowser && moviebrowser->getMode() != MB_SHOW_FILES);
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
 					
 				time_forced = true;
 
@@ -1538,7 +1552,7 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			// cancel bookmark jump
 			//FIXME:
-			if (isMovieBrowser == true) 
+			//if (isMovieBrowser) 
 			{
 				if (new_bookmark.pos != 0) 
 				{
@@ -1548,8 +1562,8 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 				jump_not_until = (position / 1000) + 10;	// avoid bookmark jumping for the next 10 seconds, , TODO:  might be moved to another key
 			} 
-			else if (playstate != CMoviePlayerGui::PAUSE)
-				playstate = CMoviePlayerGui::SOFTRESET;
+			//else if (playstate != CMoviePlayerGui::PAUSE)
+			//	playstate = CMoviePlayerGui::SOFTRESET;
 		} 
 #if !defined (PLATFORM_COOLSTREAM)		
 		else if (msg == CRCInput::RC_slow) 
@@ -1585,40 +1599,50 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				selected--;
 
-				filename = filelist[selected].file.Name.c_str();
-				Title = filelist[selected].epgTitle;
-				Info1 = filelist[selected].epgInfo1;
-				Info2 = filelist[selected].epgInfo2;
-				Thumbnail = filelist[selected].tfile;
-				sel_filename = filelist[selected].file.getFileName();
-
-				// get the movie info handle
-				p_movie_info = &filelist[selected];
-
-				if(!p_movie_info->audioPids.empty()) 
+				if(filelist[selected].Url.empty())
 				{
-					g_currentapid = p_movie_info->audioPids[0].epgAudioPid;	//FIXME
-					g_currentac3 = p_movie_info->audioPids[0].atype;
-				}
+					filename = filelist[selected].file.Name.c_str();
+					Title = filelist[selected].epgTitle;
+					Info1 = filelist[selected].epgInfo1;
+					Info2 = filelist[selected].epgInfo2;
+					Thumbnail = filelist[selected].tfile;
+					sel_filename = filelist[selected].file.getFileName();
 
-				for (int i = 0; i < (int)p_movie_info->audioPids.size(); i++) 
-				{
-					g_ac3flags[i] = p_movie_info->audioPids[i].atype;
-					g_numpida++;
-
-					if (p_movie_info->audioPids[i].selected) 
+					//
+					if(!filelist[selected].audioPids.empty()) 
 					{
-						g_currentapid = p_movie_info->audioPids[i].epgAudioPid;	//FIXME
-						g_currentac3 = p_movie_info->audioPids[i].atype;
+						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;	//FIXME
+						g_currentac3 = filelist[selected].audioPids[0].atype;
 					}
+
+					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
+					{
+						g_ac3flags[i] = filelist[selected].audioPids[i].atype;
+						g_numpida++;
+
+						if (filelist[selected].audioPids[i].selected) 
+						{
+							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;	//FIXME
+							g_currentac3 = filelist[selected].audioPids[i].atype;
+						}
+					}
+
+					//
+					g_vpid = filelist[selected].epgVideoPid;
+					g_vtype = filelist[selected].VideoType;
+
+					// startposition			
+					startposition = 1000 * showStartPosSelectionMenu();
 				}
-
-				//
-				g_vpid = p_movie_info->epgVideoPid;
-				g_vtype = p_movie_info->VideoType;
-
-				// get the start position for the movie			
-				startposition = 1000 * showStartPosSelectionMenu();
+				else
+				{
+					filename = filelist[selected].Url.c_str();
+					Title = filelist[selected].epgTitle;
+					Info1 = filelist[selected].epgInfo1;
+					Info2 = filelist[selected].epgInfo2;
+					Thumbnail = filelist[selected].tfile;
+					sel_filename = filelist[selected].file.getFileName();
+				}
 				
 				update_lcd = true;
 				start_play = true;
@@ -1631,40 +1655,50 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				selected++;
 
-				filename = filelist[selected].file.Name.c_str();
-				Title = filelist[selected].epgTitle;
-				Info1 = filelist[selected].epgInfo1;
-				Info2 = filelist[selected].epgInfo2;
-				Thumbnail = filelist[selected].tfile;
-				sel_filename = filelist[selected].file.getFileName();
-
-				// get the movie info handle
-				p_movie_info = &filelist[selected];
-
-				if(!p_movie_info->audioPids.empty()) 
+				if(filelist[selected].Url.empty())
 				{
-					g_currentapid = p_movie_info->audioPids[0].epgAudioPid;	//FIXME
-					g_currentac3 = p_movie_info->audioPids[0].atype;
-				}
+					filename = filelist[selected].file.Name.c_str();
+					Title = filelist[selected].epgTitle;
+					Info1 = filelist[selected].epgInfo1;
+					Info2 = filelist[selected].epgInfo2;
+					Thumbnail = filelist[selected].tfile;
+					sel_filename = filelist[selected].file.getFileName();
 
-				for (int i = 0; i < (int)p_movie_info->audioPids.size(); i++) 
-				{
-					g_ac3flags[i] = p_movie_info->audioPids[i].atype;
-					g_numpida++;
-
-					if (p_movie_info->audioPids[i].selected) 
+					//
+					if(!filelist[selected].audioPids.empty()) 
 					{
-						g_currentapid = p_movie_info->audioPids[i].epgAudioPid;	//FIXME
-						g_currentac3 = p_movie_info->audioPids[i].atype;
+						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;	//FIXME
+						g_currentac3 = filelist[selected].audioPids[0].atype;
 					}
+
+					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
+					{
+						g_ac3flags[i] = filelist[selected].audioPids[i].atype;
+						g_numpida++;
+
+						if (filelist[selected].audioPids[i].selected) 
+						{
+							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;	//FIXME
+							g_currentac3 = filelist[selected].audioPids[i].atype;
+						}
+					}
+
+					//
+					g_vpid = filelist[selected].epgVideoPid;
+					g_vtype = filelist[selected].VideoType;
+
+					// startposition			
+					startposition = 1000 * showStartPosSelectionMenu();
 				}
-
-				//
-				g_vpid = p_movie_info->epgVideoPid;
-				g_vtype = p_movie_info->VideoType;
-
-				// get the start position for the movie			
-				startposition = 1000 * showStartPosSelectionMenu();
+				else
+				{
+					filename = filelist[selected].Url.c_str();
+					Title = filelist[selected].epgTitle;
+					Info1 = filelist[selected].epgInfo1;
+					Info2 = filelist[selected].epgInfo2;
+					Thumbnail = filelist[selected].tfile;
+					sel_filename = filelist[selected].file.getFileName();
+				}
 				
 				update_lcd = true;
 				start_play = true;
@@ -1700,15 +1734,16 @@ void CMoviePlayerGui::PlayFile(void)
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (1)\n");	
 
 			//FIXME:
-			if (isMovieBrowser == true /*&& moviebrowser->getMode() != MB_SHOW_FILES*/)
+			//if (isMovieBrowser == true /*&& moviebrowser->getMode() != MB_SHOW_FILES*/)
+			if(filelist[selected].Url.empty())
 			{
 				// if we have a movie information, try to save the stop position
 				ftime(&current_time);
-				p_movie_info->dateOfLastPlay = current_time.time;
+				filelist[selected].dateOfLastPlay = current_time.time;
 				current_time.time = time(NULL);
-				p_movie_info->bookmarks.lastPlayStop = position / 1000;
+				filelist[selected].bookmarks.lastPlayStop = position / 1000;
 
-				cMovieInfo.saveMovieInfo(*p_movie_info);
+				cMovieInfo.saveMovieInfo(filelist[selected]);
 			}
 		}
 	} while (playstate >= CMoviePlayerGui::PLAY);
@@ -1739,7 +1774,7 @@ void CMoviePlayerGui::PlayFile(void)
 
 void CMoviePlayerGui::showHelpTS()
 {
-	Helpbox helpbox;
+	CHelpBox helpbox;
 
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_RED, g_Locale->getText(LOCALE_MOVIEPLAYER_TSHELP1));
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_GREEN, g_Locale->getText(LOCALE_MOVIEPLAYER_TSHELP2));
@@ -1915,14 +1950,14 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	return(pos) ;
 }
 
-// CTimeoSD
+// CMovieInfoViewer
 #define TIMEOSD_FONT 		SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME
 #define TIMEBARH 		38
 #define BOXHEIGHT_MOVIEINFO	125
 #define BUTTON_BAR_HEIGHT	25
 #define TIMESCALE_BAR_HEIGHT	7
 
-CTimeOSD::CTimeOSD()
+CMovieInfoViewer::CMovieInfoViewer()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
@@ -1931,12 +1966,12 @@ CTimeOSD::CTimeOSD()
 	GetDimensions();
 }
 
-CTimeOSD::~CTimeOSD()
+CMovieInfoViewer::~CMovieInfoViewer()
 {
 	hide();
 }
 
-void CTimeOSD::show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark)
+void CMovieInfoViewer::show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark)
 {
 	// show / update
 	GetDimensions();
@@ -1947,7 +1982,7 @@ void CTimeOSD::show(const std::string _Title, const std::string _Info, short _Pe
 	showMovieInfo(_Title, _Info, _Percent, _ac3state, _speed, _playstate, _show_bookmark);
 }
 
-void CTimeOSD::GetDimensions()
+void CMovieInfoViewer::GetDimensions()
 {
 	// time
 	m_xstart = g_settings.screen_StartX + 10;
@@ -1978,7 +2013,7 @@ void CTimeOSD::GetDimensions()
 	cFrameBoxButton.iY = cFrameBoxInfo.iY + cFrameBoxInfo.iHeight - cFrameBoxButton.iHeight;
 }
 
-void CTimeOSD::update(time_t time_show)
+void CMovieInfoViewer::update(time_t time_show)
 {
 	time_t tDisplayTime;
 	static time_t oldDisplayTime = 0;
@@ -1987,7 +2022,7 @@ void CTimeOSD::update(time_t time_show)
 	
 	GetDimensions();
 
-	//dprintf(DEBUG_NORMAL, "CTimeOSD::update time %ld\n", time_show);
+	//dprintf(DEBUG_NORMAL, "CMovieInfoViewer::update time %ld\n", time_show);
 	
 	if(!visible)
 		return;
@@ -2044,11 +2079,11 @@ void CTimeOSD::update(time_t time_show)
 	frameBuffer->blit();
 }
 
-void CTimeOSD::hide()
+void CMovieInfoViewer::hide()
 {
 	GetDimensions();
 	
-	//printf("CTimeOSD::hide: x %d y %d xend %d yend %d\n", m_xstart, m_y , m_xend, m_height + 15);
+	//printf("CMovieInfoViewer::hide: x %d y %d xend %d yend %d\n", m_xstart, m_y , m_xend, m_height + 15);
 
 	if(!visible)
 		return;
@@ -2065,9 +2100,9 @@ void CTimeOSD::hide()
 }
 
 //showMovieInfo
-void CTimeOSD::showMovieInfo(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark)
+void CMovieInfoViewer::showMovieInfo(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark)
 {
-	//dprintf(DEBUG_NORMAL, "CTimeOSD::showMovieInfo:\n");
+	//dprintf(DEBUG_NORMAL, "CMovieInfoViewer::showMovieInfo:\n");
 
 	int runningPercent = 0;
 	

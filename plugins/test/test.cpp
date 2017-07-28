@@ -513,7 +513,7 @@ void CTestMenu::testCHintBoxInfo()
 
 void CTestMenu::testCHelpBox()
 {
-	Helpbox * helpBox = new Helpbox();
+	CHelpBox * helpBox = new CHelpBox();
 	
 	// text
 	helpBox->addLine("helpBox");

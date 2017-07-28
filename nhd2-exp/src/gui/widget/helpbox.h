@@ -45,11 +45,11 @@
 
 #define HELPBOX_WIDTH			550
 
-class Helpbox
+class CHelpBox
 {
 	public:
-		Helpbox();
-		~Helpbox();
+		CHelpBox();
+		~CHelpBox();
 
 		void addLine(std::string& text, CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU], uint8_t col = COL_MENUCONTENT, const bool bg = false);
 		void addLine(const char *text, CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU], uint8_t col = COL_MENUCONTENT, const bool bg = false);

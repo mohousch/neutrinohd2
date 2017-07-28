@@ -56,7 +56,7 @@
 #error not using 64 bit file offsets
 #endif /* __USE_FILE__OFFSET64 */
 
-class CTimeOSD
+class CMovieInfoViewer
 {
 	public:
 		enum mode
@@ -96,8 +96,8 @@ class CTimeOSD
 		int icon_blue_w, icon_blue_h;
 
 	public:
-		CTimeOSD();
-		~CTimeOSD();
+		CMovieInfoViewer();
+		~CMovieInfoViewer();
 		void show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark = false);
 		void update(time_t time_show = 0);
 		void hide();
@@ -183,7 +183,7 @@ class CMoviePlayerGui : public CMenuTarget
 		bool time_forced;
 		
 		// timeosd
-		CTimeOSD FileTime;
+		CMovieInfoViewer FileTime;
 
 		time_t timeStartShowingInfo;
 
@@ -197,7 +197,7 @@ class CMoviePlayerGui : public CMenuTarget
 		CMovieBrowser * moviebrowser;
 		
 		CMovieInfo cMovieInfo;	
-		MI_MOVIE_INFO * p_movie_info;
+		//MI_MOVIE_INFO * p_movie_info;
 
 		void PlayFile();
 		void cutNeutrino();

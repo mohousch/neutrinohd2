@@ -45,11 +45,11 @@
 #include <gui/widget/helpbox.h>
 
 
-Helpbox::Helpbox()
+CHelpBox::CHelpBox()
 {
 }
 
-Helpbox::~Helpbox()
+CHelpBox::~CHelpBox()
 {
   	for (ContentLines::iterator it = m_lines.begin(); it != m_lines.end(); it++)
  	{
@@ -60,7 +60,7 @@ Helpbox::~Helpbox()
   	}
 }
 
-void Helpbox::show(const neutrino_locale_t Caption, const int Width, int timeout, const CMessageBox::result_ Default, /*CMessageBox::buttons_ Button*/const uint32_t ShowButtons)
+void CHelpBox::show(const neutrino_locale_t Caption, const int Width, int timeout, const CMessageBox::result_ Default, /*CMessageBox::buttons_ Button*/const uint32_t ShowButtons)
 {
 	dprintf(DEBUG_NORMAL, "Helpbox::show\n");
 
@@ -69,7 +69,7 @@ void Helpbox::show(const neutrino_locale_t Caption, const int Width, int timeout
 	msgBox.exec(timeout);
 }
 
-void Helpbox::addLine(std::string& text, CFont* font, uint8_t col, const bool bg)
+void CHelpBox::addLine(std::string& text, CFont* font, uint8_t col, const bool bg)
 {
 	std::vector<Drawable*> v;
 	Drawable *d = new DText(text, font, col, bg);
@@ -77,7 +77,7 @@ void Helpbox::addLine(std::string& text, CFont* font, uint8_t col, const bool bg
 	m_lines.push_back(v);
 }
 
-void Helpbox::addLine(const char *text, CFont* font, uint8_t col, const bool bg)
+void CHelpBox::addLine(const char *text, CFont* font, uint8_t col, const bool bg)
 {
 	std::vector<Drawable*> v;
 	Drawable *d = new DText(text, font, col, bg);
@@ -85,7 +85,7 @@ void Helpbox::addLine(const char *text, CFont* font, uint8_t col, const bool bg)
 	m_lines.push_back(v);
 }
 
-void Helpbox::addLine(const char *icon, const char *text)
+void CHelpBox::addLine(const char *icon, const char *text)
 {
 	std::vector<Drawable*> v;
 	Drawable *di = new DIcon(icon);
@@ -95,7 +95,7 @@ void Helpbox::addLine(const char *icon, const char *text)
 	m_lines.push_back(v);
 }
 
-void Helpbox::addLine(std::string& icon, std::string& text)
+void CHelpBox::addLine(std::string& icon, std::string& text)
 {
 	std::vector<Drawable*> v;
 	Drawable *di = new DIcon(icon);
@@ -105,7 +105,7 @@ void Helpbox::addLine(std::string& icon, std::string& text)
 	m_lines.push_back(v);
 }
 
-void Helpbox::addPagebreak(void)
+void CHelpBox::addPagebreak(void)
 {
 	std::vector<Drawable*> v;
 	Drawable *p = new DPagebreak();

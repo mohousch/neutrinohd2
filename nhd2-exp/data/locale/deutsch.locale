@@ -1654,6 +1654,7 @@ youtube.yt_orderby.published Veröffentlichungszeitpunkt
 youtube.yt_orderby.rating Bewertung
 youtube.yt_orderby.relevance Relevanz
 youtube.yt_orderby.viewcount Zahl der Views
+youtube.yt_autoplay Auto Play
 
 netzkino.netzkino NetzKino
 netzkino.nk_error Fehler beim laden des Netzkino Kategorien

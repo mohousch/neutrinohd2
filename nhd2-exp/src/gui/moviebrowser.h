@@ -409,8 +409,6 @@ class CMovieBrowser : public CMenuTarget
 // Class to show Moviebrowser Information, to be used by menu
 class CMovieHelp : public CMenuTarget
 {
-	private:
-
 	public:
 		CMovieHelp(){};
 		~CMovieHelp(){};

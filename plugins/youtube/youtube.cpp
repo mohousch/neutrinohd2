@@ -28,6 +28,13 @@ extern "C" void plugin_del(void);
 #define NEUTRINO_ICON_YT_SMALL			PLUGINDIR "/youtube/youtube_small.png"
 
 YTB_SETTINGS m_settings;
+
+#define OPTIONS_OFF0_ON1_OPTION_COUNT 2
+const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
+{
+        { 0, LOCALE_OPTIONS_OFF, NULL },
+        { 1, LOCALE_OPTIONS_ON, NULL }
+};
  
 CYTBrowser::CYTBrowser(): configfile ('\t')
 {
@@ -68,6 +75,8 @@ bool CYTBrowser::loadSettings(YTB_SETTINGS *settings)
 		settings->ytregion = configfile.getString("ytregion", "default");
 		settings->ytsearch = configfile.getString("ytsearch", "");
 		settings->ytkey = configfile.getString("ytkey", "");
+
+		settings->ytautoplay = configfile.getInt32("ytautoplay", 0);
 	}
 	else
 	{
@@ -89,6 +98,8 @@ bool CYTBrowser::saveSettings(YTB_SETTINGS *settings)
 	configfile.setString("ytregion", settings->ytregion);
 	configfile.setString("ytsearch", settings->ytsearch);
 	configfile.setString("ytkey", settings->ytkey);
+
+	configfile.setInt32("ytautoplay", settings->ytautoplay);
  
  	if (configfile.getModifiedFlag())
 		configfile.saveConfig(YTBROWSER_SETTINGS_FILE);
@@ -156,10 +167,23 @@ void CYTBrowser::playMovie(void)
 {
 	CMoviePlayerGui tmpMoviePlayerGui;
 
-	if (&m_vMovieInfo[moviesMenu->getSelected()].file != NULL) 
+	if(m_settings.ytautoplay)
 	{
-		tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[moviesMenu->getSelected()]);
+		for(int i = 0; i < m_vMovieInfo.size(); i++)
+		{
+			if (&m_vMovieInfo[i].file != NULL) 
+				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[i]);
+		}
+
 		tmpMoviePlayerGui.exec(NULL, "urlplayback");
+	}
+	else
+	{
+		if (&m_vMovieInfo[moviesMenu->getSelected()].file != NULL) 
+		{
+			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[moviesMenu->getSelected()]);
+			tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		}
 	}
 }
 
@@ -231,6 +255,9 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_setup")
 	{
 		showYTMenu();
+
+		//???
+		menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_0")
 	{
@@ -339,7 +366,7 @@ neutrino_locale_t CYTBrowser::getFeedLocale(void)
 	return ret;
 }
 
-bool CYTBrowser::showYTMenu()
+void CYTBrowser::showYTMenu(void)
 {
 	CMenuWidget mainMenu(LOCALE_YOUTUBE, NEUTRINO_ICON_YT_SMALL, MENU_WIDTH + 100);
 	mainMenu.disableMenuPosition();
@@ -390,6 +417,9 @@ bool CYTBrowser::showYTMenu()
 	CStringInputSMS* keyInput = new CStringInputSMS("YT Key:", (char *)key.c_str());
 	mainMenu.addItem(new CMenuForwarder("YT:", true, key, keyInput));
 
+	// autoplay
+	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_AUTOPLAY, &m_settings.ytautoplay, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true));
+
 	mainMenu.exec(NULL, "");
 	delete selector;
 	delete keyInput;
@@ -426,8 +456,6 @@ bool CYTBrowser::showYTMenu()
 		
 		printf("change region to %s\n", m_settings.ytregion.c_str());
 	}
-	
-	return true;
 }
 
 //
@@ -443,6 +471,7 @@ void plugin_exec(void)
 {
 	CYTBrowser * YTHandler = new CYTBrowser();
 	
+	YTHandler->showYTMoviesMenu();
 	YTHandler->exec(NULL, "");
 	
 	delete YTHandler;

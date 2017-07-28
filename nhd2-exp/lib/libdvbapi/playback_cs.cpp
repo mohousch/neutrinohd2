@@ -489,6 +489,10 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 	{
 		isHTTP = true;
 	}
+	else if(!strncmp("https://", filename, 8))
+	{
+		isHTTP = true;
+	}
 	else if(!strncmp("file://", filename, 7))
 	{
 		isHTTP = false;
@@ -524,24 +528,26 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 	int flags = 0x47; //(GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_AUDIO | GST_PLAY_FLAG_NATIVE_VIDEO | GST_PLAY_FLAG_TEXT);
 	
 	if (isHTTP)
-		uri = g_strdup_printf ("%s", filename);
+		uri = g_strdup_printf("%s", filename);
 	else
 		uri = g_filename_to_uri(filename, NULL, NULL);
 
 	if(m_gst_playbin)
 	{
-		// set uri
-		g_object_set(G_OBJECT (m_gst_playbin), "uri", uri, NULL);
-		
-		/* increase the default 2 second / 2 MB buffer limitations to 5s / 5MB */
+		// increase the default 2 second / 2 MB buffer limitations to 5s / 5MB
 		if(isHTTP)
 		{
+			// set buffer size
+			g_object_set(G_OBJECT(m_gst_playbin), "buffer-size", m_buffer_size, NULL);
 			g_object_set(G_OBJECT(m_gst_playbin), "buffer-duration", 5LL * GST_SECOND, NULL);
 			flags |= 0x100; // USE_BUFFERING
 		}
 		
 		// set flags
-		g_object_set(G_OBJECT (m_gst_playbin), "flags", flags, NULL);	
+		g_object_set(G_OBJECT (m_gst_playbin), "flags", flags, NULL);
+
+		// set uri
+		g_object_set(G_OBJECT (m_gst_playbin), "uri", uri, NULL);	
 		
 		//gstbus handler
 		bus = gst_pipeline_get_bus(GST_PIPELINE (m_gst_playbin));
