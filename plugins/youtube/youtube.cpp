@@ -116,7 +116,7 @@ const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_0, NONEXISTANT_LOCALE, NULL}
 };
 
-void CYTBrowser::showYTMoviesMenu(void)
+void CYTBrowser::showYTMoviesMenu()
 {
 	dprintf(DEBUG_NORMAL, "CYTBrowser::loadMovies:\n");
 
@@ -169,6 +169,12 @@ void CYTBrowser::playMovie(void)
 
 	if(m_settings.ytautoplay)
 	{
+		// add selected video
+		tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[moviesMenu->getSelected()]);
+
+		// get related videos
+		loadYTTitles(cYTFeedParser::RELATED, "", m_vMovieInfo[moviesMenu->getSelected()].ytid);
+
 		for(int i = 0; i < m_vMovieInfo.size(); i++)
 		{
 			if (&m_vMovieInfo[i].file != NULL) 
@@ -244,7 +250,12 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		playMovie();
 
-		return menu_return::RETURN_REPAINT;
+		if(m_settings.ytautoplay)
+		{
+			showYTMoviesMenu();
+		}
+		else
+			return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_info")
 	{
@@ -254,18 +265,20 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_setup")
 	{
-		showYTMenu();
+		int res = showYTMenu();
 
-		//???
-		menu_return::RETURN_REPAINT;
+		if( res >= 0 && res <= 6)
+			showYTMoviesMenu();
+		else
+			return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "RC_0")
+	else if(actionKey == "RC_0" || actionKey == "RC_unknown")
 	{
 		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		m_settings.ytmode = cYTFeedParser::RELATED;
-	}
 
-	showYTMoviesMenu();
+		showYTMoviesMenu();
+	}
 	
 	return menu_return::RETURN_EXIT;
 }
@@ -366,7 +379,7 @@ neutrino_locale_t CYTBrowser::getFeedLocale(void)
 	return ret;
 }
 
-void CYTBrowser::showYTMenu(void)
+int CYTBrowser::showYTMenu(void)
 {
 	CMenuWidget mainMenu(LOCALE_YOUTUBE, NEUTRINO_ICON_YT_SMALL, MENU_WIDTH + 100);
 	mainMenu.disableMenuPosition();
@@ -385,11 +398,14 @@ void CYTBrowser::showYTMenu(void)
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	std::string search = m_settings.ytsearch;
 	
+	// search
 	CStringInputSMS stringInput(LOCALE_YT_SEARCH, &search);
 	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, search, &stringInput, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	
+	// ytorder
 	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_ORDERBY, &m_settings.ytorderby, YT_ORDERBY_OPTIONS, YT_ORDERBY_OPTION_COUNT, true, NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true));
 
+	// search
 	sprintf(cnt, "%d", cYTFeedParser::SEARCH);
 	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, selector, cnt, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
@@ -425,6 +441,8 @@ void CYTBrowser::showYTMenu(void)
 	delete keyInput;
 	keyInput = NULL;
 
+	printf("select: %d\n", select);
+
 	int newmode = -1;
 
 	if (select >= 0) 
@@ -453,9 +471,9 @@ void CYTBrowser::showYTMenu(void)
 		m_settings.ytregion = rstr;
 		if (newmode < 0)
 			newmode = m_settings.ytmode;
-		
-		printf("change region to %s\n", m_settings.ytregion.c_str());
 	}
+
+	return (select);
 }
 
 //

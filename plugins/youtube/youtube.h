@@ -55,7 +55,7 @@ class CYTBrowser : public CMenuTarget
 		cYTFeedParser ytparser;
 		neutrino_locale_t getFeedLocale(void);
 		void loadYTTitles(int mode, std::string search = "", std::string id = "");
-		void showYTMenu(void);
+		int showYTMenu(void);
 		void playMovie(void);
 		void showMovieInfo(void);
 		
@@ -67,7 +67,7 @@ class CYTBrowser : public CMenuTarget
 		CYTBrowser();
 		~CYTBrowser();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
-		void showYTMoviesMenu(void);
+		void showYTMoviesMenu();
 }; 
 
 #endif //__YT__
