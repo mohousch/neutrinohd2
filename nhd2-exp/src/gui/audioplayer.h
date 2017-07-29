@@ -187,7 +187,7 @@ class CAudioPlayerGui : public CMenuTarget
 		void showMetaData();
 		bool getNumericInput(neutrino_msg_t& msg,int& val);
 
-		void removeFromPlaylist(long pos);
+		//void removeFromPlaylist(long pos);
 
 		/**
 		* Adds an url (icecast, ...) to the to the audioplayer playlist
@@ -247,7 +247,7 @@ class CAudioPlayerGui : public CMenuTarget
 		* @return true if file should be overwritten, false otherwise
 		*/
 		bool askToOverwriteFile(const std::string& filename);
-		bool clearPlaylist(void);
+		//bool clearPlaylist(void);
 		bool shufflePlaylist(void);
 		bool playNext(bool allow_rotate = false);
 		bool playPrev(bool allow_rotate = false);
@@ -263,6 +263,8 @@ class CAudioPlayerGui : public CMenuTarget
 
 		//
 		void addToPlaylist(CAudiofileExt &file);
+		void removeFromPlaylist(long pos);
+		void clearPlaylist(void);
 		void hidePlayList(bool hide = false){hide_playlist = hide;};
 		void setTitle(const std::string& title){ m_title = title;};
 };

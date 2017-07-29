@@ -217,7 +217,11 @@ class CMoviePlayerGui : public CMenuTarget
 		
 		// show infos
 		void showFileInfo();
+
+		//
 		void addToPlaylist(MI_MOVIE_INFO& file);
+		void clearPlaylist(void);
+		void removeFromPlaylist(long pos);
 };
 
 #endif

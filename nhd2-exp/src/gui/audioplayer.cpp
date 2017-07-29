@@ -856,24 +856,6 @@ bool CAudioPlayerGui::playPrev(bool allow_rotate)
 	return(result);
 }
 
-bool CAudioPlayerGui::clearPlaylist(void)
-{
-	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::clearPlaylist\n");
-	
-	bool result = false;
-
-	if (!(m_playlist.empty()))
-	{
-		m_playlist.clear();
-		m_current = -1;
-		m_selected = 0;
-		m_title2Pos.clear();
-		result = true;
-	}
-
-	return(result);
-}
-
 bool CAudioPlayerGui::shufflePlaylist(void)
 {
 	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::shufflePlaylist\n");
@@ -2278,8 +2260,23 @@ void CAudioPlayerGui::addToPlaylist(CAudiofileExt &file)
 	m_playlistHasChanged = true;
 }
 
+void CAudioPlayerGui::clearPlaylist(void)
+{
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::clearPlaylist:\n");
+
+	if (!(m_playlist.empty()))
+	{
+		m_playlist.clear();
+		m_current = -1;
+		m_selected = 0;
+		m_title2Pos.clear();
+	}
+}
+
 void CAudioPlayerGui::removeFromPlaylist(long pos)
 {
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::removeFromPlayList:\n");
+
 	unsigned char firstChar = ' ';
 	if (m_select_title_by_name)
 	{

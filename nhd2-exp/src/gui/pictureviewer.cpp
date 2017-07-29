@@ -415,7 +415,7 @@ int CPictureViewerGui::show()
 			{
 				if (!playlist.empty())
 				{
-					CViewList::iterator p = playlist.begin()+selected;
+					CPicturePlayList::iterator p = playlist.begin()+selected;
 					playlist.erase(p);
 					if (selected >= playlist.size())
 						selected = playlist.size()-1;
@@ -783,6 +783,24 @@ void CPictureViewerGui::addToPlaylist(CPicture& file)
 		std::sort(playlist.begin(), playlist.end(), comparePictureByFilename);
 	else if (m_sort == DATE)
 		std::sort(playlist.begin(), playlist.end(), comparePictureByDate);
+}
+
+void CPictureViewerGui::clearPlaylist(void)
+{
+	dprintf(DEBUG_NORMAL, "CPictureViewerGui::clearPlaylist:\n");
+
+	if (!playlist.empty())
+	{
+		playlist.clear();
+		selected = 0;
+	}
+}
+
+void CPictureViewerGui::removeFromPlaylist(long pos)
+{
+	dprintf(DEBUG_NORMAL, "CPictureViewerGui::removeFromPlayList:\n");
+
+	playlist.erase(playlist.begin() + pos); 
 }
 
 void CPictureViewerGui::showHelp()

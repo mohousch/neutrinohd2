@@ -49,7 +49,7 @@ class CPicture
 		time_t Date;
 };
 
-typedef std::vector<CPicture> CViewList;
+typedef std::vector<CPicture> CPicturePlayList;
 
 //
 class CPictureViewerGui : public CMenuTarget
@@ -109,7 +109,7 @@ class CPictureViewerGui : public CMenuTarget
 		State m_state;
 		SortOrder m_sort;
 
-		CViewList playlist;
+		CPicturePlayList playlist;
 		std::string Path;
 
 		long m_time;
@@ -128,6 +128,8 @@ class CPictureViewerGui : public CMenuTarget
 		~CPictureViewerGui();
 		int  exec(CMenuTarget* parent, const std::string& actionKey);
 		void addToPlaylist(CPicture& file);
+		void clearPlaylist(void);
+		void removeFromPlaylist(long pos);
 };
 
 #endif

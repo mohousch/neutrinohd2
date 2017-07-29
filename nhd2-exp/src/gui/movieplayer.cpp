@@ -241,6 +241,24 @@ void CMoviePlayerGui::addToPlaylist(MI_MOVIE_INFO& file)
 	filelist.push_back(file);
 }
 
+void CMoviePlayerGui::clearPlaylist(void)
+{
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::clearPlaylist:\n");
+
+	if (!filelist.empty())
+	{
+		filelist.clear();
+		selected = 0;
+	}
+}
+
+void CMoviePlayerGui::removeFromPlaylist(long pos)
+{
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::removeFromPlayList:\n");
+
+	filelist.erase(filelist.begin() + pos); 
+}
+
 int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::exec: actionKey = %s\n", actionKey.c_str());
@@ -603,7 +621,7 @@ void CMoviePlayerGui::PlayFile(void)
 		{	  
 			exit = false;
 			
-			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (2)\n");
+			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (3)\n");
 			playstate = CMoviePlayerGui::STOPPED;
 			break;
 		}
@@ -1035,6 +1053,8 @@ void CMoviePlayerGui::PlayFile(void)
 		
 		if (msg == (neutrino_msg_t) g_settings.mpkey_stop) 
 		{
+			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (1)\n");
+
 			//exit play
 			playstate = CMoviePlayerGui::STOPPED;
 			
@@ -1731,24 +1751,22 @@ void CMoviePlayerGui::PlayFile(void)
 
 		if (exit) 
 		{
-			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (1)\n");	
+			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (2)\n");	
 
-			//FIXME:
-			//if (isMovieBrowser == true /*&& moviebrowser->getMode() != MB_SHOW_FILES*/)
-			if(filelist[selected].Url.empty())
+			if(filelist[selected].Url.empty() && filelist[selected].file.getType() != CFile::FILE_AUDIO)
 			{
 				// if we have a movie information, try to save the stop position
 				ftime(&current_time);
 				filelist[selected].dateOfLastPlay = current_time.time;
 				current_time.time = time(NULL);
 				filelist[selected].bookmarks.lastPlayStop = position / 1000;
-
+				
 				cMovieInfo.saveMovieInfo(filelist[selected]);
 			}
 		}
 	} while (playstate >= CMoviePlayerGui::PLAY);
 	
-	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (3)\n");	
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (4)\n");	
 
 	if(FileTime.IsVisible())
 		FileTime.hide();
@@ -2253,49 +2271,6 @@ void CMovieInfoViewer::showMovieInfo(std::string Title, std::string Info, short 
 	
 	// title
 	int TitleHeight = cFrameBoxInfo.iY + 30 + TIMESCALE_BAR_HEIGHT + (cFrameBoxInfo.iHeight - (30 + TIMESCALE_BAR_HEIGHT + cFrameBoxButton.iHeight) -2*g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight();	//40???
-
-	// remove extension
-	if(!show_bookmark)
-	{
-		// Title
-		removeExtension(Title);
-
-		//
-		std::string::size_type i = Title.rfind(" - ");
-		
-		if(i != std::string::npos)
-		{
-			Title = Title.substr(i + 3);
-		}
-		else
-		{
-			i = Title.rfind("-");
-		
-			if(i != std::string::npos)
-			{
-				Title = Title.substr(i + 1);
-			}
-		}
-
-		// Info
-		removeExtension(Info);
-
-		Info.rfind(" - ");
-		
-		if(i != std::string::npos)
-		{
-			Info = Info.substr(0, i);
-		}
-		else
-		{
-			i = Info.rfind("-");
-		
-			if(i != std::string::npos)
-			{
-				Info = Info.substr(0, i);
-			}
-		}
-	}
 	
 	// Title	
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(InfoStartX, TitleHeight, InfoWidth, (char *)Title.c_str(), COL_INFOBAR, 0, true);

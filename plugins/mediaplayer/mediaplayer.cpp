@@ -88,8 +88,9 @@ BROWSER:
 
 			mfile.file.Name = files->Name;
 
-			// info if there is xml file
-			cMovieInfo.loadMovieInfo(&mfile, &mfile.file);
+			// info if there is xml file|skip audio files
+			if(mfile.file.getType() != CFile::FILE_AUDIO)
+				cMovieInfo.loadMovieInfo(&mfile, &mfile.file);
 
 			// epgTitle
 			if(mfile.epgTitle.empty())
@@ -106,17 +107,20 @@ BROWSER:
 				mfile.tfile= fname.c_str();
 
 			// epgInfo2
- 			if(g_settings.prefer_tmdb_info)
+			if(mfile.file.getType() != CFile::FILE_AUDIO)
 			{
-				cTmdb * tmdb = new cTmdb(mfile.epgTitle);
-	
-				// epgInfo2
-				if(mfile.epgInfo2.empty() && !tmdb->getDescription().empty())
+	 			if(g_settings.prefer_tmdb_info)
 				{
-					mfile.epgInfo2 = tmdb->getDescription();
+					cTmdb * tmdb = new cTmdb(mfile.epgTitle);
+	
+					// epgInfo2
+					if(mfile.epgInfo2.empty() && !tmdb->getDescription().empty())
+					{
+						mfile.epgInfo2 = tmdb->getDescription();
+					}
+					delete tmdb;
+					tmdb = NULL;
 				}
-				delete tmdb;
-				tmdb = NULL;
 			}
 					
 			tmpMoviePlayerGui.addToPlaylist(mfile);

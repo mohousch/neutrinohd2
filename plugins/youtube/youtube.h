@@ -61,7 +61,6 @@ class CYTBrowser : public CMenuTarget
 		
 		//
 		CMenuFrameBox* moviesMenu;
-		//void showYTMoviesMenu(void);
 		
 	public:
 		CYTBrowser();
