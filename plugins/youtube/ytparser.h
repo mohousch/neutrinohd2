@@ -24,6 +24,8 @@
 #include <string>
 #include <map>
 
+#include <system/helpers.h>
+
 
 class cYTVideoUrl
 {
@@ -70,6 +72,8 @@ class cYTFeedParser
 		std::string prev; 		// prev results
 		std::string nextprevurl; 	// url for next/prev
 		std::string key; 		// youtube dev id
+
+		CFileHelpers fileHelper;
 
 		int feedmode;
 		int max_results;

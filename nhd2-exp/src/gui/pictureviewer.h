@@ -130,6 +130,7 @@ class CPictureViewerGui : public CMenuTarget
 		void addToPlaylist(CPicture& file);
 		void clearPlaylist(void);
 		void removeFromPlaylist(long pos);
+		void setState(State state = VIEW){m_state = state;};
 };
 
 #endif

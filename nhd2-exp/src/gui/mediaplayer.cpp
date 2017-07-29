@@ -88,7 +88,8 @@ void CMediaPlayerMenu::showMenu()
 	MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_PICTUREVIEWER, true, new CPictureViewerGui(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_PICTUREVIEWER, LOCALE_HELPTEXT_PICTUREVIEWER ));
 	
 	// UPNP Browser
-	 MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_UPNPBROWSER_HEAD, true, new CUpnpBrowserGui(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_UPNPBROWSER, LOCALE_HELPTEXT_UPNPBROWSER ));
+	CUpnpBrowserGui * upnp = new CUpnpBrowserGui();
+	 MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_UPNPBROWSER_HEAD, true, upnp, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_UPNPBROWSER, LOCALE_HELPTEXT_UPNPBROWSER ));
 
 	MediaPlayer->integratePlugins(CPlugins::I_TYPE_MULTIMEDIA, shortcutMediaPlayer++);
 	
@@ -96,6 +97,8 @@ void CMediaPlayerMenu::showMenu()
 	MediaPlayer->hide();
 	delete MediaPlayer;
 	MediaPlayer = NULL;
+	delete upnp;
+	upnp = NULL;
 }
 
 // smart

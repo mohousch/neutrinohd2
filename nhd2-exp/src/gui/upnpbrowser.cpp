@@ -80,14 +80,23 @@ const struct button_label PDownButton  = {NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FI
 
 CUpnpBrowserGui::CUpnpBrowserGui()
 {
+	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::CUpnpBrowserGui:\n");
+
 	m_socket = new CUPnPSocket();
 	m_frameBuffer = CFrameBuffer::getInstance();
 	m_playing_entry_is_shown = false;
+
+	thumbnail_dir = "/tmp/upnpbrowser";
 }
 
 CUpnpBrowserGui::~CUpnpBrowserGui()
 {
-	delete m_socket;
+	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::~CUpnpBrowserGui:\n");
+
+	if(m_socket)
+		delete m_socket;
+
+	fileHelper.removeDir(thumbnail_dir.c_str());
 }
 
 int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string & /*actionKey*/)
@@ -389,7 +398,9 @@ void CUpnpBrowserGui::selectDevice()
 		MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_UPNPBROWSER_NOSERVERS, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_UPDATE);
 		delete scanBox;
 		return;
-	}	
+	}
+
+	fileHelper.createDir(thumbnail_dir.c_str(), 0755);	
 
 	// control loop
 	while (loop)
@@ -474,7 +485,10 @@ void CUpnpBrowserGui::selectDevice()
 	}
 	
 	delete scanBox;
+
+	fileHelper.removeDir(thumbnail_dir.c_str());
 	
+	// hide
 	m_frameBuffer->ClearFrameBuffer();
 	m_frameBuffer->blit();
 }
@@ -565,18 +579,42 @@ void CUpnpBrowserGui::handleFolder(void)
 				}
 				else if (mime.substr(0, 6) == "image/")
 				{
+					std::string fname;
+
+					//DownloadImage
+					if(!((*entries)[i].resources[preferred].url).empty())
+					{
+						fname = thumbnail_dir;
+
+						fname += (*entries)[i].resources[preferred].url.substr((*entries)[i].resources[preferred].url.find_last_of("/"));
+
+						int ext_pos = 0;
+						ext_pos = fname.rfind('?');
+	
+						if( ext_pos > 0)
+						{
+							std::string extension;
+							extension = fname.substr(ext_pos + 1, fname.length() - ext_pos);
+
+							fname = fname.substr(0, fname.length() - (extension.length() + 1));
+						}
+
+						::DownloadUrl((*entries)[i].resources[preferred].url, fname);
+					}
+					
+					//
 					CPicture pic;
 					struct stat statbuf;
-						
-					pic.Filename = (*entries)[i].resources[preferred].url;
-					std::string tmp = (*entries)[i].resources[preferred].url.substr((*entries)[i].resources[preferred].url.rfind('/') + 1);
+				
+					pic.Filename = fname;
+					std::string tmp = fname.substr(fname.rfind('/') + 1);
 					pic.Name = tmp.substr(0, tmp.rfind('.'));
 					pic.Type = tmp.substr(tmp.rfind('.') + 1);
-						
+			
 					if(stat(pic.Filename.c_str(), &statbuf) != 0)
 						printf("stat error");
 					pic.Date = statbuf.st_mtime;
-										
+				
 					tmpPictureViewerGui.addToPlaylist(pic);
 			
 					picFolder = true;
@@ -598,7 +636,10 @@ void CUpnpBrowserGui::handleFolder(void)
 		tmpMoviePlayerGui.exec(NULL, "urlplayback");
 	}
 	else if(picFolder)
+	{
+		//tmpPictureViewerGui.setState(CPictureViewerGui::SLIDESHOW);
 		tmpPictureViewerGui.exec(NULL, "urlplayback");
+	}
 }
 
 bool CUpnpBrowserGui::selectItem(std::string id)
@@ -793,18 +834,43 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 					else if ((mime == "image/gif") || (mime == "image/jpeg"))
 					{
 						CPictureViewerGui tmpPictureViewerGui;
+
+						std::string fname;
+
+						//DownloadImage
+						if(!((*entries)[selected - index].resources[preferred].url).empty())
+						{
+							fname = thumbnail_dir;
+
+							fname += (*entries)[selected - index].resources[preferred].url.substr((*entries)[selected - index].resources[preferred].url.find_last_of("/"));
+
+							int ext_pos = 0;
+							ext_pos = fname.rfind('?');
+	
+							if( ext_pos > 0)
+							{
+								std::string extension;
+								extension = fname.substr(ext_pos + 1, fname.length() - ext_pos);
+
+								fname = fname.substr(0, fname.length() - (extension.length() + 1));
+							}
+
+							::DownloadUrl((*entries)[selected - index].resources[preferred].url, fname);
+						}
+					
+						//
 						CPicture pic;
 						struct stat statbuf;
-						
-						pic.Filename = (*entries)[selected - index].resources[preferred].url;
-						std::string tmp = (*entries)[selected - index].resources[preferred].url.substr((*entries)[selected - index].resources[preferred].url.rfind('/') + 1);
+				
+						pic.Filename = fname;
+						std::string tmp = fname.substr(fname.rfind('/') + 1);
 						pic.Name = tmp.substr(0, tmp.rfind('.'));
 						pic.Type = tmp.substr(tmp.rfind('.') + 1);
-						
+			
 						if(stat(pic.Filename.c_str(), &statbuf) != 0)
 							printf("stat error");
 						pic.Date = statbuf.st_mtime;
-										
+				
 						tmpPictureViewerGui.addToPlaylist(pic);
 						tmpPictureViewerGui.exec(NULL, "urlplayback");
 

@@ -75,10 +75,13 @@ cYTFeedParser::cYTFeedParser()
 	feedmode = -1;
 	tquality = "mqdefault";
 	max_results = 25;
+
+	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
 }
 
 cYTFeedParser::~cYTFeedParser()
 {
+	fileHelper.removeDir(thumbnail_dir.c_str());
 }
 
 bool cYTFeedParser::parseFeedJSON(std::string &answer)
@@ -426,11 +429,6 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 bool cYTFeedParser::DownloadThumbnails()
 {
 	bool ret = false;
-	if (mkdir(thumbnail_dir.c_str(), 0755)) 
-	{
-		perror(thumbnail_dir.c_str());
-		//return ret;
-	}
 	
 	for (unsigned i = 0; i < videos.size(); i++) 
 	{

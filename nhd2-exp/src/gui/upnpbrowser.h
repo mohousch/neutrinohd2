@@ -32,15 +32,17 @@
 #ifndef __upnpplayergui__
 #define __upnpplayergui__
 
-#include "driver/framebuffer.h"
-#include "driver/audiofile.h"
-#include "driver/pictureviewer/pictureviewer.h"
-#include "gui/filebrowser.h"
-#include "gui/widget/menue.h"
-
 #include <string>
 #include <sstream>
 #include <upnpclient.h>
+
+#include <driver/framebuffer.h>
+#include <driver/audiofile.h>
+#include <driver/pictureviewer/pictureviewer.h>
+#include <gui/filebrowser.h>
+#include <gui/widget/menue.h>
+
+#include <system/helpers.h>
 
 
 struct UPnPResource
@@ -100,6 +102,9 @@ class CUpnpBrowserGui : public CMenuTarget
 		int icon_head_h;
 		int icon_foot_w;
 		int icon_foot_h;
+
+		std::string thumbnail_dir;
+		CFileHelpers fileHelper;
 
 		void selectDevice();
 		bool selectItem(std::string);

@@ -809,10 +809,13 @@ bool getUrl(std::string &url, std::string &answer, std::string userAgent)
 
 bool DownloadUrl(std::string url, std::string file, std::string userAgent)
 {
+	dprintf(DEBUG_NORMAL ,"DownloadUrl: url:%s file:%s userAgent:%s\n", url.c_str(), file.c_str(), userAgent.c_str());
+
 	CURL * curl_handle = curl_easy_init();
 
 	FILE * fp = fopen(file.c_str(), "wb");
-	if (fp == NULL) {
+	if (fp == NULL) 
+	{
 		perror(file.c_str());
 		return false;
 	}

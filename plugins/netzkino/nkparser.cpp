@@ -53,10 +53,13 @@ cNKFeedParser::cNKFeedParser()
 	max_results = 500;
 	
 	movie_dir = g_settings.network_nfs_moviedir;
+
+	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
 }
 
 cNKFeedParser::~cNKFeedParser()
 {
+	fileHelper.removeDir(thumbnail_dir.c_str());
 }
 
 bool cNKFeedParser::parseCategoriesJSON(std::string &answer)
@@ -272,11 +275,6 @@ bool cNKFeedParser::DownloadThumbnails(/*unsigned start, unsigned end*/)
 	dprintf(DEBUG_NORMAL, "DownloadThumbnails:\n");
 	
 	bool ret = false;
-	if (safe_mkdir(thumbnail_dir.c_str()) && errno != EEXIST) 
-	{
-		perror(thumbnail_dir.c_str());
-		//return false;
-	}
 	
 	if(videos.size() > 0)
 	{
@@ -325,12 +323,6 @@ void cNKFeedParser::CleanupThumbnails()
 void cNKFeedParser::downloadMovie(std::string &fname, std::string &url)
 {
 	dprintf(DEBUG_INFO, "cNKFeedParser::downloadMovie:\n");
-	
-	if (safe_mkdir(movie_dir.c_str()) && errno != EEXIST) 
-	{
-		perror(movie_dir.c_str());
-		return;
-	}
 	
 	std::string filename;
 	filename += movie_dir;

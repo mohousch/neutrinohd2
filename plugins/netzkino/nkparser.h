@@ -25,6 +25,8 @@
 #include <string>
 #include <map>
 
+#include <system/helpers.h>
+
 
 struct sNKVideoInfo
 {
@@ -56,6 +58,7 @@ class cNKFeedParser
 
 		std::string thumbnail_dir;
 		std::string movie_dir;
+		CFileHelpers fileHelper;
 
 		int max_results;
 		bool parsed;
