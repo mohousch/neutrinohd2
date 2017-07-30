@@ -3307,15 +3307,15 @@ static void *insertEventsfromFile(void *)
 
 							while (xmlGetNextOccurence(node, "name") != NULL) 
 							{
-								e.setName(	std::string(UTF8_to_Latin1(xmlGetAttribute(node, "lang"))),
-										std::string(xmlGetAttribute(node, "string")));
+								e.setName(std::string(UTF8_to_Latin1(xmlGetAttribute(node, "lang"))), std::string(xmlGetAttribute(node, "string")));
+
 								node = node->xmlNextNode;
 							}
 
 							while (xmlGetNextOccurence(node, "text") != NULL) 
 							{
-								e.setText(	std::string(UTF8_to_Latin1(xmlGetAttribute(node, "lang"))),
-										std::string(xmlGetAttribute(node, "string")));
+								e.setText(std::string(UTF8_to_Latin1(xmlGetAttribute(node, "lang"))), std::string(xmlGetAttribute(node, "string")));
+
 								node = node->xmlNextNode;
 							}
 
@@ -3333,15 +3333,15 @@ static void *insertEventsfromFile(void *)
 
 							while (xmlGetNextOccurence(node, "extended_text") != NULL) 
 							{
-								e.appendExtendedText(	std::string(UTF8_to_Latin1(xmlGetAttribute(node, "lang"))),
-											std::string(xmlGetAttribute(node, "string")));
+								e.appendExtendedText(std::string(UTF8_to_Latin1(xmlGetAttribute(node, "lang"))), std::string(xmlGetAttribute(node, "string")));
+
 								node = node->xmlNextNode;
 							}
 
 							while (xmlGetNextOccurence(node, "time") != NULL) 
 							{
-								e.times.insert(SItime(xmlGetNumericAttribute(node, "start_time", 10),
-										      xmlGetNumericAttribute(node, "duration", 10)));
+								e.times.insert(SItime(xmlGetNumericAttribute(node, "start_time", 10), xmlGetNumericAttribute(node, "duration", 10)));
+
 								node = node->xmlNextNode;
 							}
 

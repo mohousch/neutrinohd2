@@ -235,7 +235,7 @@ bool cNKFeedParser::ParseFeed(nk_feed_mode_t mode, std::string search, int categ
 		if (search.empty())
 			return false;
 		
-		url += "get_search_results?search=" + encodeUrl(search);
+		url += "get_search_results?search=" + ::encodeUrl(search);
 	} 
 	else if (mode == CATEGORY && category > 0) 
 	{
@@ -287,7 +287,7 @@ bool cNKFeedParser::DownloadThumbnails(/*unsigned start, unsigned end*/)
 			{
 				found = !access(videos[i].tfile, F_OK);
 				if (!found)
-					found = ::DownloadUrl(videos[i].thumbnail, videos[i].tfile);
+					found = ::downloadUrl(videos[i].thumbnail, videos[i].tfile);
 				
 				ret |= found;
 			}
@@ -331,7 +331,7 @@ void cNKFeedParser::downloadMovie(std::string &fname, std::string &url)
 			
 	if (!url.empty()) 
 	{
-		::DownloadUrl(url, filename);
+		::downloadUrl(url, filename);
 	}
 }
 

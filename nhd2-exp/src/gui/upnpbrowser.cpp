@@ -599,7 +599,7 @@ void CUpnpBrowserGui::handleFolder(void)
 							fname = fname.substr(0, fname.length() - (extension.length() + 1));
 						}
 
-						::DownloadUrl((*entries)[i].resources[preferred].url, fname);
+						::downloadUrl((*entries)[i].resources[preferred].url, fname);
 					}
 					
 					//
@@ -855,7 +855,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 								fname = fname.substr(0, fname.length() - (extension.length() + 1));
 							}
 
-							::DownloadUrl((*entries)[selected - index].resources[preferred].url, fname);
+							::downloadUrl((*entries)[selected - index].resources[preferred].url, fname);
 						}
 					
 						//

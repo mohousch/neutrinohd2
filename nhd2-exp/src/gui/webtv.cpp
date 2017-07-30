@@ -308,7 +308,7 @@ bool CWebTV::readChannellist(std::string filename)
 								id = it->second.getChannelID();
 					}
 					
-					addUrl2Playlist(urlDecode(url).c_str(), title.c_str(), description.c_str(), id); //urlDecode defined in edvbstring.h
+					addUrl2Playlist(::decodeUrl(url).c_str(), title.c_str(), description.c_str(), id);
 				}
 			}
 			

@@ -70,7 +70,7 @@ GstElement * sink = NULL;
 gchar * uri = NULL;
 GstBus * bus = NULL;
 bool end_eof = false;
-
+#define HTTP_TIMEOUT 30
 #else
 #include <common.h>
 #include <subtitle.h>
@@ -89,6 +89,37 @@ gint match_sinktype(GstElement *element, gpointer type)
 {
 	return strcmp(g_type_name(G_OBJECT_TYPE(element)), (const char*)type);
 }
+
+//
+void playbinNotifySource(GObject *object, GParamSpec *unused, gpointer /*user_data*/)
+{
+	GstElement *source = NULL;
+	g_object_get(object, "source", &source, NULL);
+
+	if (source)
+	{
+		if (g_object_class_find_property(G_OBJECT_GET_CLASS(source), "timeout") != 0)
+		{
+			GstElementFactory *factory = gst_element_get_factory(source);
+			if (factory)
+			{
+				const gchar *sourcename = gst_plugin_feature_get_name(GST_PLUGIN_FEATURE(factory));
+				if (!strcmp(sourcename, "souphttpsrc"))
+				{
+					g_object_set(G_OBJECT(source), "timeout", HTTP_TIMEOUT, NULL);
+				}
+			}
+		}
+
+		if (g_object_class_find_property(G_OBJECT_GET_CLASS(source), "ssl-strict") != 0)
+		{
+			g_object_set(G_OBJECT(source), "ssl-strict", FALSE, NULL);
+		}
+		
+		gst_object_unref(source);
+	}
+}
+//
 
 GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user_data*/)
 {
@@ -537,6 +568,8 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 		// increase the default 2 second / 2 MB buffer limitations to 5s / 5MB
 		if(isHTTP)
 		{
+			g_signal_connect (G_OBJECT (m_gst_playbin), "notify::source", G_CALLBACK (playbinNotifySource), NULL);
+
 			// set buffer size
 			g_object_set(G_OBJECT(m_gst_playbin), "buffer-size", m_buffer_size, NULL);
 			g_object_set(G_OBJECT(m_gst_playbin), "buffer-duration", 5LL * GST_SECOND, NULL);

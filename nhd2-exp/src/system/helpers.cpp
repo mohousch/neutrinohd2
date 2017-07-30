@@ -659,59 +659,6 @@ void splitString(std::string &str, std::string delim, std::map<std::string,std::
 	}
 }
 
-//
-std::string urlDecode(const std::string &s)
-{
-	int len = s.size();
-	std::string res;
-	int i;
-
-	for (i = 0; i < len; ++i)
-	{
-		unsigned char c = s[i];
-		if (c != '%')
-		{
-			res += c;
-		}
-		else
-		{
-			i += 2;
-			if (i >= len) 
-				break;
-
-			char t[3] = {s[i - 1], s[i], 0};
-			unsigned char r = strtoul(t, 0, 0x10);
-			if (r) 
-				res += r;
-		}
-	}
-
-	return res;
-}
-
-std::string encode(const std::string s)
-{
-	int len = s.size();
-	std::string res;
-	int i;
-
-	for (i = 0; i < len; ++i)
-	{
-		unsigned char c = s[i];
-		if ((c == ':') || (c < 32) || (c == '%'))
-		{
-			res += "%";
-			char hex[8];
-			snprintf(hex, 8, "%02x", c);
-			res += hex;
-		} 
-		else
-			res += c;
-	}
-
-	return res;
-}
-
 std::string removeExtension(std::string& s)
 {
 	int ext_pos = 0;
@@ -760,15 +707,17 @@ size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data)
         return size*nmemb;
 }
 
-bool getUrl(std::string &url, std::string &answer, std::string userAgent)
+bool getUrl(std::string &url, std::string &answer, std::string userAgent, unsigned int timeout)
 {
+	dprintf(DEBUG_NORMAL, "getUrl: url:%s\n", url.c_str());
+
 	CURL * curl_handle = curl_easy_init();
 
 	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, &CurlWriteToString);
 	curl_easy_setopt(curl_handle, CURLOPT_FILE, (void *)&answer);
 	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
-	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 60);
+	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, timeout);
 	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
 	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, false);
 	curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, userAgent.c_str());
@@ -789,14 +738,10 @@ bool getUrl(std::string &url, std::string &answer, std::string userAgent)
 
 	char cerror[CURL_ERROR_SIZE];
 	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, cerror);
-
-	dprintf(DEBUG_NORMAL, "getUrl: try to get %s\n", url.c_str());
 	
 	CURLcode httpres = curl_easy_perform(curl_handle);
 
 	curl_easy_cleanup(curl_handle);
-
-	dprintf(DEBUG_NORMAL, "getUrl: http: res %d size %d\n", httpres, (int)answer.size());
 
 	if (httpres != 0 || answer.empty()) 
 	{
@@ -807,7 +752,7 @@ bool getUrl(std::string &url, std::string &answer, std::string userAgent)
 	return true;
 }
 
-bool DownloadUrl(std::string url, std::string file, std::string userAgent)
+bool downloadUrl(std::string url, std::string file, std::string userAgent, unsigned int timeout)
 {
 	dprintf(DEBUG_NORMAL ,"DownloadUrl: url:%s file:%s userAgent:%s\n", url.c_str(), file.c_str(), userAgent.c_str());
 
@@ -823,7 +768,7 @@ bool DownloadUrl(std::string url, std::string file, std::string userAgent)
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, NULL);
 	curl_easy_setopt(curl_handle, CURLOPT_FILE, fp);
 	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
-	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 60);
+	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, timeout);
 	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
 	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, false);
 	curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, userAgent.c_str());
@@ -845,7 +790,6 @@ bool DownloadUrl(std::string url, std::string file, std::string userAgent)
 	char cerror[CURL_ERROR_SIZE];
 	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, cerror);
 
-	printf("try to get [%s] ...\n", url.c_str());
 	CURLcode httpres = curl_easy_perform(curl_handle);
 
 	double dsize;
@@ -853,13 +797,13 @@ bool DownloadUrl(std::string url, std::string file, std::string userAgent)
 	curl_easy_cleanup(curl_handle);
 	fclose(fp);
 
-	printf("http: res %d size %g.\n", httpres, dsize);
-
-	if (httpres != 0) {
-		printf("curl error: %s\n", cerror);
+	if (httpres != 0) 
+	{
+		dprintf(DEBUG_NORMAL, "curl error: %s\n", cerror);
 		unlink(file.c_str());
 		return false;
 	}
+
 	return true;
 }
 
@@ -892,30 +836,6 @@ std::string encodeUrl(std::string txt)
 	return txt;
 }
 
-void DecodeUrl(std::string &url)
-{
-	CURL * curl_handle = curl_easy_init();
-	char * str = curl_easy_unescape(curl_handle, url.c_str(), 0, NULL);
-	curl_easy_cleanup(curl_handle);
-	
-	if(str)
-		url = str;
-	
-	curl_free(str);
-}
-
-void EncodeUrl(std::string &txt)
-{
-	CURL * curl_handle = curl_easy_init();
-	char * str = curl_easy_escape(curl_handle, txt.c_str(), txt.length());
-	curl_easy_cleanup(curl_handle);
-	
-	if(str)
-		txt = str;
-	
-	curl_free(str);
-}
-
 //
 int _select(int maxfd, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
 {
@@ -924,7 +844,7 @@ int _select(int maxfd, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, str
 	struct timeval interval;
 	timerclear(&interval);
 
-	/* make a backup of all fd_set's and timeval struct */
+	// make a backup of all fd_set's and timeval struct
 	if (readfds) rset = *readfds;
 	if (writefds) wset = *writefds;
 	if (exceptfds) xset = *exceptfds;
@@ -936,7 +856,7 @@ int _select(int maxfd, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, str
 
 		if (retval < 0)
 		{
-			/* restore the backup before we continue */
+			// restore the backup before we continue
 			if (readfds) *readfds = rset;
 			if (writefds) *writefds = wset;
 			if (exceptfds) *exceptfds = xset;

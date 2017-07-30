@@ -87,8 +87,6 @@ void splitString(std::string &str, std::string delim, std::vector<std::string> &
 void splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start = 0);
 
 //
-std::string urlDecode(const std::string &s);
-std::string encode(const std::string s);
 std::string removeExtension(std::string& s);
 
 // curl
@@ -103,11 +101,8 @@ size_t WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data);
 std::string encodeUrl(std::string txt);
 std::string decodeUrl(std::string url);
 
-void EncodeUrl(std::string &txt);
-void DecodeUrl(std::string &url);
-
-bool getUrl(std::string &url, std::string &answer, const std::string userAgent = " ");
-bool DownloadUrl(std::string url, std::string file, const std::string userAgent = " ");
+bool getUrl(std::string &url, std::string &answer, const std::string userAgent = " ", unsigned int timeout = 60);
+bool downloadUrl(std::string url, std::string file, const std::string userAgent = " ", unsigned int timeout = 60);
 
 //
 int _select(int maxfd, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);

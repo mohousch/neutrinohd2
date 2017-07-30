@@ -221,7 +221,7 @@ bool cYTFeedParser::decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo)
 	
 	bool ret = false;
 	
-	::DecodeUrl(answer);
+	answer = ::decodeUrl(answer);
 
 	if(answer.find("token=") == std::string::npos)
 		return ret;
@@ -248,7 +248,7 @@ bool cYTFeedParser::decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo)
 			
 			for (unsigned j = 0; j < uparams.size(); j++) 
 			{
-				::DecodeUrl(uparams[j]);
+				uparams[j] = ::decodeUrl(uparams[j]);
 
 				dprintf(DEBUG_DEBUG, "	param: %s\n", uparams[j].c_str());
 
@@ -402,7 +402,7 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 		if (search.empty())
 			return false;
 		
-		::EncodeUrl(search);
+		search = encodeUrl(search);
 	
 		url = "https://www.googleapis.com/youtube/v3/search?q=";
 		url += search;
@@ -440,7 +440,7 @@ bool cYTFeedParser::DownloadThumbnails()
 			fname += ".jpg";
 			bool found = !access(fname.c_str(), F_OK);
 			if (!found)
-				found = ::DownloadUrl(videos[i].thumbnail, fname);
+				found = ::downloadUrl(videos[i].thumbnail, fname);
 			if (found)
 				videos[i].tfile = fname;
 			ret |= found;
