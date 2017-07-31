@@ -3337,7 +3337,7 @@ void sendChannels(int connfd, const CZapitClient::channelsMode mode, const CZapi
 	internalSendChannels(connfd, &channels, 0, false);
 }
 
-//FIXME: remove this to seczionsd cnthread
+//FIXME: remove this to sectionsd cnthread
 #include <sectionsd/SIevents.hpp>
 #include <system/helpers.h>
 #include <sectionsd/edvbstring.h>
@@ -3362,9 +3362,9 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 	unsigned short id = 0;
 	time_t start_time;
 	unsigned duration;
-	char* title = "test";
-	char* description = "test";
-	char* descriptionextended = "test";
+	char* title;
+	char* description;
+	char* descriptionextended;
 	
 	int ev_count = 0;
 
@@ -3460,6 +3460,8 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 
 		xmlFreeDoc(index_parser);
 	}
+
+	unlink(answer.c_str());
 }
 //
 

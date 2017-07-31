@@ -879,7 +879,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 
 				// 31.05.2002 dirch		record timer
 				case CRCInput::RC_red:
-					if (recDir != NULL && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+					if (recDir != NULL && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv))
 					{
 						if(g_Timerd->isTimerdAvailable())
 						{
@@ -1215,10 +1215,8 @@ void CEpgData::showTimerEventBar(bool _show)
 
 	frameBuffer->paintBoxRel(x, y, w, h, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
-	int mode = CNeutrinoApp::getInstance()->getMode();
-
 	// Button Red: Timer Record & Channelswitch
-	if (recDir != NULL && mode != NeutrinoMessages::mode_iptv)
+	if (recDir != NULL && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv))
 	{
 		pos = 0;
 	
@@ -1232,7 +1230,7 @@ void CEpgData::showTimerEventBar(bool _show)
 	//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, x + ICON_OFFSET + cellwidth*pos, y + h_offset );
 	
 	// Button Yellow: Timer Channelswitch
-	if(mode != NeutrinoMessages::mode_iptv)
+	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 	{
 		pos = 2;
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);

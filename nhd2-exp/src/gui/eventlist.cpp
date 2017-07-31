@@ -382,7 +382,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 		// add record
 		else if ( msg == (neutrino_msg_t)g_settings.key_channelList_addrecord )
 		{
-			if (recDir != NULL && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+			if (recDir != NULL && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv))
 			{
 				int tID = -1;
 				CTimerd::CTimerEventTypes etype = isScheduled(channel_id, &evtlist[selected], &tID);
@@ -489,7 +489,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 			paint(channel_id);
 			showFunctionBar(true);
 		}
-		else if ( msg==CRCInput::RC_left )		  
+		else if ( msg == CRCInput::RC_left )		  
 		{
 			loop = false;
 		}
@@ -855,7 +855,7 @@ void  EventList::showFunctionBar(bool show)
 	frameBuffer->paintBoxRel(x, by, width, bh, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	// -- Button Red: Timer Record & Channelswitch
-	if ( (recDir != NULL) && ((unsigned int) g_settings.key_channelList_addrecord != CRCInput::RC_nokey) && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)	  
+	if ( (recDir != NULL) && ((unsigned int) g_settings.key_channelList_addrecord != CRCInput::RC_nokey) && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv))	  
 	{
 		pos = 0;
 	
