@@ -677,6 +677,33 @@ void CMoviePlayerGui::PlayFile(void)
 						Info2 = epgdata.info2;
 				}
 			}
+
+			//
+			MI_MOVIE_INFO mfile;
+			cMovieInfo.clearMovieInfo(&mfile);
+			mfile.file.Name = filename;
+
+			// epgTitle
+			if(mfile.epgTitle.empty())
+			{
+				std::string Title = mfile.file.getFileName();
+				removeExtension(Title);
+				mfile.epgTitle = Title;
+			}
+
+			// epgInfo1
+			if(mfile.epgInfo1.empty())
+			{
+				mfile.epgInfo1 = Info1;
+			}
+
+			// epgInfo2
+			if(mfile.epgInfo2.empty())
+			{
+				mfile.epgInfo2 = Info2;
+			}
+
+			addToPlaylist(mfile);
 			
 			CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 

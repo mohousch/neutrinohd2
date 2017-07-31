@@ -3023,9 +3023,17 @@ void CNeutrinoApp::RealRun(void)
 								doGuiRecord(timeshiftDir, true);
 							}
 							
-							// freeze audio/video
-							audioDecoder->Stop();
-							videoDecoder->Stop(false); // dont blank
+							if(g_settings.satip_allow_satip)
+							{
+								if(playback)
+									playback->SetSpeed(0);
+							}
+							else
+							{
+								// freeze audio/video
+								audioDecoder->Stop();
+								videoDecoder->Stop(false); // dont blank
+							}
 						}
 					}
 				}
