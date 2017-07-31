@@ -777,45 +777,4 @@ std::string convertDVBUTF8(const char *data, int len, int table, int tsidonid)
 	return std::string((char*)res, t);
 }
 
-std::string UTF8_to_Latin1(const char * s)
-{
-	std::string r;
-
-	while ((*s) != 0)
-	{
-		if (((*s) & 0xf0) == 0xf0)      /* skip (can't be encoded in Latin1) */
-		{
-			s++;
-			if ((*s) == 0)
-				return r;
-			s++;
-			if ((*s) == 0)
-				return r;
-			s++;
-			if ((*s) == 0)
-				return r;
-		}
-		else if (((*s) & 0xe0) == 0xe0) /* skip (can't be encoded in Latin1) */
-		{
-			s++;
-			if ((*s) == 0)
-				return r;
-			s++;
-			if ((*s) == 0)
-				return r;
-		}
-		else if (((*s) & 0xc0) == 0xc0)
-		{
-			char c = (((*s) & 3) << 6);
-			s++;
-			if ((*s) == 0)
-				return r;
-			r += (c | ((*s) & 0x3f));
-		}
-		else r += *s;
-		s++;
-	}
-	return r;
-}
-
 

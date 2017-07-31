@@ -28,8 +28,7 @@
 #include <global.h>
 #include <neutrinoMessages.h>
 
-/*zapit includes*/
-#include <client/zapittools.h>
+//
 #include <channel.h>
 #include <bouquets.h>
 

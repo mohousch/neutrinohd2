@@ -50,9 +50,6 @@
 #include <global.h>
 #include <neutrino.h>
 
-// zapit includes
-#include <client/zapittools.h>
-
 #include <daemonc/remotecontrol.h>
 
 #include <system/safe_system.h>

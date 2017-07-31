@@ -37,4 +37,5 @@ pzapit_SOURCES = \
 
 pzapit_LDADD = \
 	$(top_builddir)/src/zapit/lib/libzapitclient.a \
-	$(top_builddir)/lib/connection/libtuxbox-connection.a
+	$(top_builddir)/lib/connection/libtuxbox-connection.a \
+	$(top_builddir)/src/driver/encoding.o

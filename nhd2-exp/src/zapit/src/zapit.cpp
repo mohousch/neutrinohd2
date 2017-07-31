@@ -3340,7 +3340,7 @@ void sendChannels(int connfd, const CZapitClient::channelsMode mode, const CZapi
 //FIXME: remove this to sectionsd cnthread
 #include <sectionsd/SIevents.hpp>
 #include <system/helpers.h>
-#include <sectionsd/edvbstring.h>
+#include <driver/encoding.h>
 
 void addEvent(const SIevent &evt, const time_t zeit, bool cn = false);
 void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid)

@@ -23,13 +23,89 @@
 
 #include <driver/encoding.h>
 
-std::string Latin1_to_UTF8(const std::string & s)
+
+std::string UTF8_to_Latin1(const char * s)
+{
+	std::string r;
+
+	while ((*s) != 0)
+	{
+		if (((*s) & 0xf0) == 0xf0)      /* skip (can't be encoded in Latin1) */
+		{
+			s++;
+			if ((*s) == 0)
+				return r;
+			s++;
+			if ((*s) == 0)
+				return r;
+			s++;
+			if ((*s) == 0)
+				return r;
+		}
+		else if (((*s) & 0xe0) == 0xe0) /* skip (can't be encoded in Latin1) */
+		{
+			s++;
+			if ((*s) == 0)
+				return r;
+			s++;
+			if ((*s) == 0)
+				return r;
+		}
+		else if (((*s) & 0xc0) == 0xc0)
+		{
+			char c = (((*s) & 3) << 6);
+			s++;
+			if ((*s) == 0)
+				return r;
+			r += (c | ((*s) & 0x3f));
+		}
+		else r += *s;
+		s++;
+	}
+	return r;
+}
+
+std::string UTF8_to_UTF8XML(const char * s)
 {
 	std::string r;
 	
-	for (std::string::const_iterator it = s.begin(); it != s.end(); it++)
+	while ((*s) != 0)
 	{
-		unsigned char c = *it;
+		// cf. http://www.w3.org/TR/xhtml1/dtds.html
+		switch (*s)
+		{
+			case '<':           
+				r += "&lt;";
+				break;
+			case '>':
+				r += "&gt;";
+				break;
+			case '&':
+				r += "&amp;";
+				break;
+			case '\"':
+				r += "&quot;";
+				break;
+			case '\'':
+				r += "&apos;";
+				break;
+			default:
+				r += *s;
+		}
+		s++;
+	}
+
+	return r;
+}
+
+std::string Latin1_to_UTF8(const char * s)
+{
+	std::string r;
+	
+	while((*s) != 0)
+	{
+		unsigned char c = *s;
+
 		if (c < 0x80)
 			r += c;
 		else
@@ -39,7 +115,9 @@ std::string Latin1_to_UTF8(const std::string & s)
 			d = 0x80 | (c & 0x3f);
 			r += d;
 		}
-	}
-	
+
+		s++;
+	}		
 	return r;
 }
+

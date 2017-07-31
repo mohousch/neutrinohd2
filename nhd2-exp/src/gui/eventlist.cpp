@@ -55,10 +55,10 @@
 
 #include <gui/epgplus.h>
 
-#include <client/zapitclient.h> 		/* CZapitClient::Utf8_to_Latin1 */
-#include <driver/screen_max.h>
+//
+#include <client/zapitclient.h>
 
-#include <client/zapittools.h>			/*zapit*/
+#include <driver/screen_max.h>
 
 #include <algorithm>
 

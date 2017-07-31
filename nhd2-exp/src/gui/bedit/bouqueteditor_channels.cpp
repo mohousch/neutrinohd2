@@ -51,9 +51,8 @@
 #include <gui/widget/buttons.h>
 #include <gui/widget/icons.h>
 
-// zapit includes
+//
 #include <client/zapitclient.h>
-#include <client/zapittools.h>
 #include <bouquets.h>
 #include <satconfig.h>
 #include <getservices.h>

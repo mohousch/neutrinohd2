@@ -56,9 +56,6 @@
 #include <plugins.h>
 #include <driver/encoding.h>
 
-/*zapit includes*/
-#include <client/zapittools.h>
-
 #include <system/debug.h>
 
 

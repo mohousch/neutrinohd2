@@ -16,8 +16,7 @@
 #include "yhttpd.h"
 #include "ytypes_globals.h"
 #include "mod_yparser.h"
-// tuxbox
-#include <client/zapittools.h> //timer list
+
 // nhttpd
 #include "neutrinoyparser.h"
 #include "neutrinoapi.h"

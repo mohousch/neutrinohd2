@@ -5458,9 +5458,9 @@ bool CNeutrinoApp::getNVODMenu(CMenuWidget * menu)
 		else 
 		{
 			if (count == 0)
-				menu->addItem(new CMenuForwarder( (Latin1_to_UTF8(e->subservice_name)).c_str(), true, NULL, NVODChanger, nvod_id, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+				menu->addItem(new CMenuForwarder(Latin1_to_UTF8(e->subservice_name.c_str()).c_str(), true, NULL, NVODChanger, nvod_id, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
 			else
-				menu->addItem(new CMenuForwarder( (Latin1_to_UTF8(e->subservice_name)).c_str(), true, NULL, NVODChanger, nvod_id, CRCInput::convertDigitToKey(count)), (count == g_RemoteControl->selected_subchannel));
+				menu->addItem(new CMenuForwarder(Latin1_to_UTF8(e->subservice_name.c_str()).c_str(), true, NULL, NVODChanger, nvod_id, CRCInput::convertDigitToKey(count)), (count == g_RemoteControl->selected_subchannel));
                 }
 
                 count++;

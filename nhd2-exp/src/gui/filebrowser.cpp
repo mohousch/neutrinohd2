@@ -780,7 +780,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 		if ( actual_file->Name.length() > 0 )
 		{
 			if (liststart + pos == selected)
-				CVFD::getInstance()->showMenuText(0, FILESYSTEM_ENCODING_TO_UTF8_STRING(actual_file->getFileName()).c_str(), -1, true); // UTF-8
+				CVFD::getInstance()->showMenuText(0, FILESYSTEM_ENCODING_TO_UTF8(std::string(actual_file->getFileName()).c_str()), -1, true); // UTF-8
 
 			switch(actual_file->getType())
 			{
@@ -808,7 +808,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 			frameBuffer->getIconSize(fileicon.c_str(), &iw, &ih);
 			frameBuffer->paintIcon(fileicon, x + ICON_OFFSET, ypos + (fheight - ih) / 2 );
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(x + 30 + ICON_OFFSET, ypos + fheight, colwidth1 - BORDER_RIGHT, FILESYSTEM_ENCODING_TO_UTF8_STRING(actual_file->getFileName()), color, 0, true); // UTF-8
+			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(x + 30 + ICON_OFFSET, ypos + fheight, colwidth1 - BORDER_RIGHT, FILESYSTEM_ENCODING_TO_UTF8(std::string(actual_file->getFileName()).c_str()), color, 0, true); // UTF-8
 
 			if( S_ISREG(actual_file->Mode) )
 			{
@@ -884,7 +884,7 @@ void CFileBrowser::paintHead()
 	frameBuffer->getIconSize(NEUTRINO_ICON_FOLDER, &icon_w, &icon_h);
 	frameBuffer->paintIcon(NEUTRINO_ICON_FOLDER, x + BORDER_LEFT, y + (theight - icon_h)/2);
 
-	snprintf(l_name, sizeof(l_name), "%s %s", g_Locale->getText(LOCALE_FILEBROWSER_HEAD), FILESYSTEM_ENCODING_TO_UTF8_STRING(name).c_str()); // UTF-8
+	snprintf(l_name, sizeof(l_name), "%s %s", g_Locale->getText(LOCALE_FILEBROWSER_HEAD), FILESYSTEM_ENCODING_TO_UTF8(std::string(name).c_str())); // UTF-8
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->RenderString(x + BORDER_LEFT + icon_w + ICON_OFFSET, y + theight + 1, width - BORDER_LEFT - icon_w - ICON_OFFSET - BORDER_RIGHT, l_name, COL_MENUHEAD, 0, true); // UTF-8
 }

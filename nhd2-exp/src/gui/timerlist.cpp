@@ -68,9 +68,8 @@
 #include <system/fsmounter.h>
 #include <system/debug.h>
 
-/* zapit includes */
+//
 #include <client/zapitclient.h>
-#include <client/zapittools.h>
 #include <channel.h>
 #include <bouquets.h>
 

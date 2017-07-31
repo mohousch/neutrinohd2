@@ -49,9 +49,8 @@
 #include <gui/widget/messagebox.h>
 #include <gui/widget/stringinput.h>
 
-/*zapit includes*/
+//
 #include <client/zapitclient.h>
-#include <client/zapittools.h>
 
 #include <system/debug.h>
 

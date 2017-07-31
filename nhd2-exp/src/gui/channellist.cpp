@@ -62,8 +62,7 @@
 #include <driver/vcrcontrol.h>
 #include <gui/pictureviewer.h>
 
-/*zapit includes*/
-#include <client/zapittools.h>
+//
 #include <bouquets.h>
 #include <satconfig.h>
 #include <getservices.h>

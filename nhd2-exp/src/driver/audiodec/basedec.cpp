@@ -43,9 +43,6 @@
 #include <global.h>
 #include <neutrino.h>
 
-/*zapit includes*/
-#include <client/zapittools.h>
-
 #include <system/debug.h>
 
 

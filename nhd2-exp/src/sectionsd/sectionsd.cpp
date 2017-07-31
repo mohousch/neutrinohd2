@@ -86,7 +86,7 @@
 #include "SIsections.hpp"
 #include "SIlanguage.hpp"
 
-#include "edvbstring.h"
+#include <driver/encoding.h>"
 #include <system/debug.h>
 
 // 60 Minuten Zyklus...

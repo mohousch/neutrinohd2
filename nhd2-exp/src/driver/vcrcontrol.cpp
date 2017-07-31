@@ -63,8 +63,7 @@
 
 #include <daemonc/remotecontrol.h>
 
-/*zapit includes*/
-#include <client/zapittools.h>
+//
 #include <client/zapittypes.h>
 #include <frontend_c.h>
 #include <channel.h>
@@ -445,7 +444,7 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 	if (tmpstring.empty())
 		extMessage += "unknown";
 	else
-		extMessage += ZapitTools::UTF8_to_UTF8XML(tmpstring.c_str());
+		extMessage += UTF8_to_UTF8XML(tmpstring.c_str());
 	
 	extMessage += "</channelname>\n\t\t<epgtitle>";
 	
@@ -466,7 +465,7 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 	{
 		tmpstring = epgTitle;
 	}
-	extMessage += ZapitTools::UTF8_to_UTF8XML(tmpstring.c_str());
+	extMessage += UTF8_to_UTF8XML(tmpstring.c_str());
 	
 	extMessage += "</epgtitle>\n\t\t<id>";
 	
@@ -474,9 +473,9 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 	extMessage += tmp;
 	
 	extMessage += "</id>\n\t\t<info1>";
-	extMessage += ZapitTools::UTF8_to_UTF8XML(info1.c_str());
+	extMessage += UTF8_to_UTF8XML(info1.c_str());
 	extMessage += "</info1>\n\t\t<info2>";
-	extMessage += ZapitTools::UTF8_to_UTF8XML(info2.c_str());
+	extMessage += UTF8_to_UTF8XML(info2.c_str());
 	extMessage += "</info2>\n\t\t<epgid>";
 	sprintf(tmp, "%llu", epgid);
 	extMessage += tmp;
@@ -499,7 +498,7 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 		sprintf(tmp, "%u", pids.APIDs[i].pid);
 		extMessage += tmp;
 		extMessage += "\" name=\"";
-		extMessage += ZapitTools::UTF8_to_UTF8XML(pids.APIDs[i].desc);
+		extMessage += UTF8_to_UTF8XML(pids.APIDs[i].desc);
 		extMessage += "\"/>\n";
 	}
 	extMessage += 
@@ -838,7 +837,7 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 	if (tmpstring.empty())
 		g_movieInfo->epgChannel = "unknown";
 	else
-		g_movieInfo->epgChannel = ZapitTools::UTF8_to_UTF8XML(tmpstring.c_str());
+		g_movieInfo->epgChannel = UTF8_to_UTF8XML(tmpstring.c_str());
 
 	tmpstring = "not available";
 	if (epgid != 0) 
@@ -865,10 +864,10 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 	{
 		tmpstring = epgTitle;
 	}
-	g_movieInfo->epgTitle		= ZapitTools::UTF8_to_UTF8XML(tmpstring.c_str());
+	g_movieInfo->epgTitle		= UTF8_to_UTF8XML(tmpstring.c_str());
 	g_movieInfo->epgId		= channel_id;
-	g_movieInfo->epgInfo1		= ZapitTools::UTF8_to_UTF8XML(info1.c_str());
-	g_movieInfo->epgInfo2		= ZapitTools::UTF8_to_UTF8XML(info2.c_str());
+	g_movieInfo->epgInfo1		= UTF8_to_UTF8XML(info1.c_str());
+	g_movieInfo->epgInfo2		= UTF8_to_UTF8XML(info2.c_str());
 	g_movieInfo->epgEpgId		= epgid ;
 	g_movieInfo->epgMode		= g_Zapit->getMode();
 	g_movieInfo->epgVideoPid	= si.vpid;
@@ -894,7 +893,7 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 			if(pids.APIDs[i].pid == it->apid) 
 			{
 				audio_pids.epgAudioPid = pids.APIDs[i].pid;
-				audio_pids.epgAudioPidName = ZapitTools::UTF8_to_UTF8XML(pids.APIDs[i].desc);
+				audio_pids.epgAudioPidName = UTF8_to_UTF8XML(pids.APIDs[i].desc);
 				audio_pids.atype = pids.APIDs[i].is_ac3;
 				audio_pids.selected = (audio_pids.epgAudioPid == (int) g_currentapid) ? 1 : 0;
 
@@ -916,7 +915,7 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 	{
 		int i = 0;
 		audio_pids.epgAudioPid = pids.APIDs[i].pid;
-		audio_pids.epgAudioPidName = ZapitTools::UTF8_to_UTF8XML(pids.APIDs[i].desc);
+		audio_pids.epgAudioPidName = UTF8_to_UTF8XML(pids.APIDs[i].desc);
 		audio_pids.atype = pids.APIDs[i].is_ac3;
 		audio_pids.selected = 1;
 

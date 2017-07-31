@@ -45,11 +45,10 @@
 #include <gui/widget/items2detailsline.h>
 #include <gui/widget/buttons.h>
 
-// zapit includes
+//
 #include <client/zapitclient.h>
 #include <channel.h>
 #include <bouquets.h>
-#include <client/zapittools.h>
 #include <satconfig.h>
 #include <getservices.h>
 

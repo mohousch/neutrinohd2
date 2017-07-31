@@ -604,7 +604,7 @@ void CFlashExpert::writemtd(const std::string & filename, int mtdNumber)
 	char message[500];
 
 	sprintf(message,
-		g_Locale->getText(LOCALE_FLASHUPDATE_REALLYFLASHMTD), FILESYSTEM_ENCODING_TO_UTF8_STRING(filename).c_str(), CMTDInfo::getInstance()->getMTDName(mtdNumber).c_str());
+		g_Locale->getText(LOCALE_FLASHUPDATE_REALLYFLASHMTD), FILESYSTEM_ENCODING_TO_UTF8(std::string(filename).c_str()), CMTDInfo::getInstance()->getMTDName(mtdNumber).c_str());
 
 	if (MessageBox(LOCALE_MESSAGEBOX_INFO, message, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes) // UTF-8
 		return;

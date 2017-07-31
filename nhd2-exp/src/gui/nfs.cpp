@@ -53,8 +53,7 @@
 #include <sys/mount.h>
 #include <unistd.h>
 
-/* zapit includes */
-#include <client/zapittools.h>
+#include <driver/encoding.h>
 
 
 class CNFSMountGuiNotifier : public CChangeObserver
@@ -156,7 +155,7 @@ int CNFSMountGui::exec( CMenuTarget *parent, const std::string &actionKey )
 				FILESYSTEM_ENCODING_TO_UTF8(g_settings.network_nfs_dir[i]),
 				FILESYSTEM_ENCODING_TO_UTF8(g_settings.network_nfs_local_dir[i]),
 				g_Locale->getText(g_settings.network_nfs_automount[i] ? LOCALE_MESSAGEBOX_YES : LOCALE_MESSAGEBOX_NO));
-			sprintf(ISO_8859_1_entry[i],ZapitTools::UTF8_to_Latin1(m_entry[i]).c_str());
+			sprintf(ISO_8859_1_entry[i], UTF8_to_Latin1(m_entry[i]).c_str());
 		}
 	}
 	else if(actionKey.substr(0,7) == "domount")
@@ -200,7 +199,7 @@ int CNFSMountGui::menu()
 	for(int i = 0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++)
 	{
 		sprintf(s2, "mountentry%d", i);
-		sprintf(ISO_8859_1_entry[i],ZapitTools::UTF8_to_Latin1(m_entry[i]).c_str()); 
+		sprintf(ISO_8859_1_entry[i], UTF8_to_Latin1(m_entry[i]).c_str()); 
 		CMenuForwarder *forwarder = new CMenuForwarder("", true, ISO_8859_1_entry[i], this, s2);
 		
 		if (CFSMounter::isMounted(g_settings.network_nfs_local_dir[i]))
