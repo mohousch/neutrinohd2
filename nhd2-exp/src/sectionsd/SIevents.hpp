@@ -27,9 +27,14 @@
 #include <endian.h>
 #include <vector>
 #include <map>
+#include <set>
+#include <algorithm>
+#include <string>
 
 #include <sectionsdclient/sectionsdtypes.h>
-#include "edvbstring.h"
+#include <sectionsd/edvbstring.h>
+#include <sectionsd/SIutils.hpp>
+#include <sectionsd/SIservices.hpp>
 
 
 // forward references

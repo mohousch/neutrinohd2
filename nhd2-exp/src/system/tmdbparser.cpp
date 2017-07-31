@@ -152,7 +152,6 @@ bool cTmdb::GetMovieDetails(std::string lang)
 			//
 			if (hasCover())
 				getBigCover(cover);
-			//
 
 			return true;
 		}

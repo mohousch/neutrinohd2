@@ -548,7 +548,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 						int pich = 246;	//FIXME
 						int picw = 162; 	//FIXME
 	
-						std::string thumbnail = "/tmp/tmdb.jpg";
+						std::string thumbnail = "/tmp/" + evtlist[selected].description + ".jpg";
 						if(access(thumbnail.c_str(), F_OK))
 							thumbnail = "";
 	

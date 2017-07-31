@@ -3337,6 +3337,132 @@ void sendChannels(int connfd, const CZapitClient::channelsMode mode, const CZapi
 	internalSendChannels(connfd, &channels, 0, false);
 }
 
+//FIXME: remove this to seczionsd cnthread
+#include <sectionsd/SIevents.hpp>
+#include <system/helpers.h>
+#include <sectionsd/edvbstring.h>
+
+void addEvent(const SIevent &evt, const time_t zeit, bool cn = false);
+void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid)
+{
+	dprintf(DEBUG_NORMAL, "zapit:insertEventsfromHttp: url:%s\n", url.c_str());
+
+	std::string answer;
+
+	answer = "/tmp/index.xml";
+	if (!::downloadUrl(url, answer))
+		return;
+
+	//
+	xmlNodePtr service = NULL;
+	xmlNodePtr event = NULL;
+	xmlNodePtr node = NULL;
+
+	//
+	unsigned short id = 0;
+	time_t start_time;
+	unsigned duration;
+	char* title = "test";
+	char* description = "test";
+	char* descriptionextended = "test";
+	
+	int ev_count = 0;
+
+	//
+	xmlDocPtr index_parser = parseXmlFile(answer.c_str());
+
+	if (index_parser != NULL) 
+	{
+		event = xmlDocGetRootElement(index_parser)->xmlChildrenNode;
+
+		while (event) 
+		{
+			node = event->xmlChildrenNode;
+
+			// eventid
+			while(xmlGetNextOccurence(node, "e2eventid") != NULL)
+			{
+				id = atoi(xmlGetData(node));
+				node = node->xmlNextNode;
+			}
+
+			//eventstart
+			while(xmlGetNextOccurence(node, "e2eventstart") != NULL)
+			{
+				start_time = (time_t)atoi(xmlGetData(node));
+				node = node->xmlNextNode;
+			}
+	
+			//eventduration
+			while(xmlGetNextOccurence(node, "e2eventduration") != NULL)
+			{
+				duration = (unsigned)atoi(xmlGetData(node));
+				node = node->xmlNextNode;
+			}
+				
+			//eventcurrenttime
+			while(xmlGetNextOccurence(node, "e2eventcurrenttime") != NULL)
+			{
+				node = node->xmlNextNode;
+			}
+
+
+			//eventtitle
+			while(xmlGetNextOccurence(node, "e2eventtitle") != NULL)
+			{
+				title = xmlGetData(node);
+				node = node->xmlNextNode;
+			}
+
+			//eventdescription
+			while(xmlGetNextOccurence(node, "e2eventdescription") != NULL)
+			{
+				description = xmlGetData(node);
+				node = node->xmlNextNode;
+			}
+
+			//eventdescriptionextended
+			while(xmlGetNextOccurence(node, "e2eventdescriptionextended") != NULL)
+			{
+				descriptionextended = xmlGetData(node);
+				node = node->xmlNextNode;
+			}
+
+			//eventservicereference
+			while(xmlGetNextOccurence(node, "e2servicereference") != NULL)
+			{
+				node = node->xmlNextNode;
+			}
+
+			//eventservicename
+			while(xmlGetNextOccurence(node, "e2servicename") != NULL) 
+			{
+				node = node->xmlNextNode;
+			}
+
+			SIevent e(_onid, _tsid, _sid, id);
+
+			e.times.insert(SItime(start_time, duration));
+			if(title != NULL)
+				e.setName(std::string(UTF8_to_Latin1("ger")), std::string(title));
+
+			if(description != NULL)
+				e.setText(std::string(UTF8_to_Latin1("ger")), std::string(description));
+
+			if(descriptionextended != NULL)
+				e.appendExtendedText(std::string(UTF8_to_Latin1("ger")), std::string(descriptionextended));
+
+			addEvent(e, 0);
+			ev_count++;
+				
+			event = event->xmlNextNode;
+		}
+
+		xmlFreeDoc(index_parser);
+	}
+}
+//
+
 // startplayback
 int startPlayBack(CZapitChannel * thisChannel)
 {
@@ -3415,6 +3541,44 @@ int startPlayBack(CZapitChannel * thisChannel)
 			playback->Open();
 			playback->Start((char *)ChannelURL.c_str());
 		}
+
+		// get events
+		std::string evUrl = "http://";
+		evUrl += g_settings.satip_serverbox_ip;
+
+		if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
+		{
+			evUrl += "/web/epgservice?sRef=1:0:"; 
+
+			evUrl += to_hexstring(thisChannel->getServiceType(true));
+			evUrl += ":";
+			evUrl += to_hexstring(thisChannel->getServiceId());
+			evUrl += ":";
+			evUrl += to_hexstring(thisChannel->getTransportStreamId());
+			evUrl += ":";
+			evUrl += to_hexstring(thisChannel->getOriginalNetworkId());
+			evUrl += ":";
+
+			if(g_settings.satip_serverbox_type == DVB_C)
+			{
+					evUrl += "FFFF"; // namenspace for cable
+			}
+			else if (g_settings.satip_serverbox_type == DVB_T)
+			{
+					evUrl += "EEEE"; // namenspace for terrestrial
+			}
+			else if (g_settings.satip_serverbox_type == DVB_S)
+			{
+					// namenspace for sat
+					evUrl += to_hexstring(thisChannel->getSatellitePosition());
+			}
+
+			evUrl += "0000";
+			evUrl += ":";
+			evUrl += "0:0:0:";
+		}
+
+		insertEventsfromHttp(evUrl, thisChannel->getOriginalNetworkId(), thisChannel->getTransportStreamId(), thisChannel->getServiceId());
 	}
 	else
 	{

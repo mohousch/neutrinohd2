@@ -529,7 +529,7 @@ static bool deleteEvent(const event_id_t uniqueKey)
 
 // Fuegt ein Event in alle Mengen ein
 /* if cn == true (if called by cnThread), then myCurrentEvent and myNextEvent is updated, too */
-static void addEvent(const SIevent &evt, const time_t zeit, bool cn = false)
+/*static*/ void addEvent(const SIevent &evt, const time_t zeit, bool cn = false)
 {
 	bool EPG_filtered = checkEPGFilter(evt.original_network_id, evt.transport_stream_id, evt.service_id);
 
@@ -3201,47 +3201,6 @@ static void commandFreeMemory(int connfd, char * /*data*/, const unsigned /*data
 	return ;
 }
 
-std::string UTF8_to_Latin1(const char * s)
-{
-	std::string r;
-
-	while ((*s) != 0)
-	{
-		if (((*s) & 0xf0) == 0xf0)      /* skip (can't be encoded in Latin1) */
-		{
-			s++;
-			if ((*s) == 0)
-				return r;
-			s++;
-			if ((*s) == 0)
-				return r;
-			s++;
-			if ((*s) == 0)
-				return r;
-		}
-		else if (((*s) & 0xe0) == 0xe0) /* skip (can't be encoded in Latin1) */
-		{
-			s++;
-			if ((*s) == 0)
-				return r;
-			s++;
-			if ((*s) == 0)
-				return r;
-		}
-		else if (((*s) & 0xc0) == 0xc0)
-		{
-			char c = (((*s) & 3) << 6);
-			s++;
-			if ((*s) == 0)
-				return r;
-			r += (c | ((*s) & 0x3f));
-		}
-		else r += *s;
-		s++;
-	}
-	return r;
-}
-
 static void *insertEventsfromFile(void *)
 {
 	dprintf(DEBUG_NORMAL, "insertEventsfromFile\n");
@@ -3406,9 +3365,10 @@ static void *insertEventsfromFile(void *)
 
 			xmlFreeDoc(index_parser);
 
-			dprintf(DEBUG_NORMAL, "[sectionsd] Reading Information finished after %ld miliseconds (%d events)\n", time_monotonic_ms()-now, ev_count);
+			dprintf(DEBUG_NORMAL, "[sectionsd] Reading Information finished after %ld miliseconds (%d events)\n", time_monotonic_ms() - now, ev_count);
 		}
 	}
+
 	reader_ready = true;
 
 	pthread_exit(NULL);
