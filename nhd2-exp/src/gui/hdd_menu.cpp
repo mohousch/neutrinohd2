@@ -1267,13 +1267,13 @@ REPEAT:
 						{
 							mfile.epgInfo2 = tmdb->getDescription();
 						}
-					
-						tmpMoviePlayerGui.addToPlaylist(mfile);
-						tmpMoviePlayerGui.exec(NULL, "urlplayback");
 
 						delete tmdb;
 						tmdb = NULL;
 					}
+
+					tmpMoviePlayerGui.addToPlaylist(mfile);
+					tmpMoviePlayerGui.exec(NULL, "urlplayback");
 				}
 				else if(file->getType() == CFile::FILE_AUDIO)
 				{
