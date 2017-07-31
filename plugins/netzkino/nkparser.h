@@ -57,7 +57,6 @@ class cNKFeedParser
 		nk_video_list_t videos;
 
 		std::string thumbnail_dir;
-		std::string movie_dir;
 		CFileHelpers fileHelper;
 
 		int max_results;
@@ -86,8 +85,6 @@ class cNKFeedParser
 		nk_video_list_t &GetVideoList() { return videos; }
 		nk_category_list_t &GetCategoryList() { ParseCategories(); return categories; }
 		bool Parsed() { return parsed; }
-		
-		void downloadMovie(std::string &fname, std::string &url);
 };
 
 #endif

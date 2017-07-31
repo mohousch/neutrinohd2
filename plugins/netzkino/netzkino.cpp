@@ -92,7 +92,6 @@ void CNKMovies::showNKMoviesMenu()
 	moviesMenu->setHeaderButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
 
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	moviesMenu->addKey(CRCInput::RC_record, this, CRCInput::getSpecialKeyName(CRCInput::RC_record));
 	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
 
 	moviesMenu->exec(NULL, "");
@@ -239,12 +238,6 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_setup")
 	{
 		showNKCategoriesMenu();
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "RC_record")
-	{
-		nkparser.downloadMovie(m_vMovieInfo[moviesMenu->getSelected()].file.Name, m_vMovieInfo[moviesMenu->getSelected()].Url);
 
 		return menu_return::RETURN_REPAINT;
 	}

@@ -51,8 +51,6 @@ cNKFeedParser::cNKFeedParser()
 	thumbnail_dir = "/tmp/netzkino";
 	parsed = false;
 	max_results = 500;
-	
-	movie_dir = g_settings.network_nfs_moviedir;
 
 	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
 }
@@ -319,21 +317,4 @@ void cNKFeedParser::CleanupThumbnails()
 		unlink(videos[i].tfile.c_str());
 	}
 }
-
-void cNKFeedParser::downloadMovie(std::string &fname, std::string &url)
-{
-	dprintf(DEBUG_INFO, "cNKFeedParser::downloadMovie:\n");
-	
-	std::string filename;
-	filename += movie_dir;
-	filename += "/";
-	filename += fname;
-			
-	if (!url.empty()) 
-	{
-		::downloadUrl(url, filename);
-	}
-}
-
-
 
