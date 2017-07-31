@@ -7,7 +7,8 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/zapit/include/zapit \
 	-I$(top_srcdir)/lib/connection \
 	-I$(top_srcdir)/lib/libconfigfile \
-	-I$(top_srcdir)/lib/libeventserver
+	-I$(top_srcdir)/lib/libeventserver \
+	@FREETYPE_CFLAGS@
 
 if ENABLE_GSTREAMER
 AM_CPPFLAGS += @GSTREAMER_CFLAGS@

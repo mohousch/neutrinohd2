@@ -49,7 +49,7 @@
 #include <driver/framebuffer.h>
 #include <driver/fontrenderer.h>
 
-#include <dmx_cs.h>
+#include <libdvbapi/dmx_cs.h>
 
 #define ENABLE_RASS	1
 

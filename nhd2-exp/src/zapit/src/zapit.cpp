@@ -3466,6 +3466,8 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 //
 
 // startplayback
+// satip cast
+std::string ChannelURL;
 int startPlayBack(CZapitChannel * thisChannel)
 {
 	if(!thisChannel)
@@ -3482,7 +3484,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 		dprintf(DEBUG_NORMAL, "zapit:startPlayBack: pmtpid 0x%X videopid 0x%X audiopid 0x%X\n", thisChannel->getPmtPid(), thisChannel->getVideoPid(), thisChannel->getPreAudioPid() );
 
 		// build channel url
-		std::string ChannelURL;
+		ChannelURL;
 
 		ChannelURL = "http://";
 		ChannelURL += g_settings.satip_serverbox_ip;
