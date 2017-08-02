@@ -1011,6 +1011,7 @@ bool CMovieInfo::loadFile(CFile & file, char *buffer, int buffer_size)
 {
 	bool result = true;
 
+	// open file
 	int fd = open(file.Name.c_str(), O_RDONLY);
 	if (fd == -1)		// cannot open file, return!!!!! 
 	{

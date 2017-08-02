@@ -37,6 +37,9 @@
 #include <cstdio>
 #include <cstring>
 
+#include <fstream>
+#include <iostream>
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -3343,7 +3346,7 @@ void sendChannels(int connfd, const CZapitClient::channelsMode mode, const CZapi
 #include <driver/encoding.h>
 
 void addEvent(const SIevent &evt, const time_t zeit, bool cn = false);
-void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid)
+void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid, t_channel_id chid = 0)
 {
 	dprintf(DEBUG_NORMAL, "zapit:insertEventsfromHttp: url:%s\n", url.c_str());
 
@@ -3352,10 +3355,10 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 	//
 	unsigned short id = 0;
 	time_t start_time;
-	unsigned duration;
-	char* title;
-	char* description;
-	char* descriptionextended;
+	unsigned duration = 0;
+	char* title = NULL;
+	char* description = NULL;
+	char* descriptionextended = NULL;
 
 	if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NEUTRINO_HD)
 	{
@@ -3363,21 +3366,109 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 		eventid starttime duration
 		title
 		info1
-		genre, country
 		description
-		actor:
-		regie:
-		music:
-		production
-		fsk:
+		descriptionextended
 		*/
+		std::string eventID;
 
 		answer = "/tmp/index.dat";
 		
 		if (!::downloadUrl(url, answer))
 			return;
 
-		return;
+		//
+		printf("ch_id:%llx\n", chid);
+
+		// dummy event key
+		event_id_t evID = CREATE_EVENT_ID(chid, 0xFFFF);
+		std::string evID_str;
+
+		sprintf((char*)evID_str.c_str(), "%lld", evID);
+		//printf("evID_str:%s\n", evID_str.c_str());
+
+		//
+		std::ifstream inFile;
+		std::string line;
+		std::string line1;
+		std::string line11;
+		std::string line2;
+		std::string line3;
+		std::string line4; 
+
+		inFile.open(answer.c_str());
+
+		line.clear();
+		line1.clear();
+		line11.clear();
+		line2.clear();
+		line3.clear();
+		line4.clear();
+
+		while (!inFile.eof())
+		{
+			while (inFile >> line >> std::ws)
+			{
+				if(strncmp(line.c_str(), evID_str.c_str(), 10) == 0)
+				{
+					//id = 0;
+					//duration = 0;
+					title = NULL;
+					description = NULL;
+					descriptionextended = NULL;
+
+					//event id
+					eventID = line.c_str() + 10;
+			
+					id = atoi(eventID.c_str());
+					printf("\nEVENT ID:%x\n", id);
+
+					// starttime|duration
+					if (inFile >> line1 >> line11 >> std::ws)
+					{
+						printf("STARTTIME:%s (DURATION:%s)\n", line1.c_str(), line11.c_str());
+
+						start_time = (time_t)atoi(line1.c_str());
+						duration = atoi(line11.c_str());
+
+						printf("starttime: %s", ctime(&start_time));
+						printf("duration: %02u:%02u:%02u (%umin, %us)\n", duration/3600, (duration%3600)/60, duration%60, duration/60, duration);
+					}
+
+					// title
+					getline(inFile, line2);
+					title = (char*)line2.c_str();
+					printf("TITLE:%s\n", title);
+
+					// description
+					getline(inFile, line3);
+					description = (char*)line3.c_str();
+					printf("DESCRIPTION:%s\n", description);
+
+					// descriptionextended
+					getline(inFile, line4);
+					descriptionextended = (char*)line4.c_str();
+					printf("DESCRIPTIONEXTENDED:%s\n", descriptionextended);
+
+					//
+					SIevent e(_onid, _tsid, _sid, id);
+
+					e.times.insert(SItime(start_time, duration));
+					if(title != NULL)
+						e.setName(std::string(UTF8_to_Latin1("ger")), std::string(title));
+
+					if(description != NULL)
+						e.setText(std::string(UTF8_to_Latin1("ger")), std::string(description));
+
+					if(descriptionextended != NULL)
+						e.appendExtendedText(std::string(UTF8_to_Latin1("ger")), std::string(descriptionextended));
+
+					printf("addevent ID:%x\n", id);
+					addEvent(e, 0);					
+				}
+			}
+		}
+
+		inFile.close();
 	}
 	else if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
 	{
@@ -3584,6 +3675,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 		// get events
 		std::string evUrl = "http://";
 		evUrl += g_settings.satip_serverbox_ip;
+		uint64_t ID = 0;
 
 		if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
 		{
@@ -3620,12 +3712,12 @@ int startPlayBack(CZapitChannel * thisChannel)
 		{
 			evUrl += "/control/epg?id="; 
 
-			uint64_t ID = ((uint64_t)(thisChannel->getSatellitePosition() + thisChannel->getFreqId() * 4) << 48) | (uint64_t)thisChannel->getChannelID();
+			ID = ((uint64_t)(thisChannel->getSatellitePosition() + thisChannel->getFreqId() * 4) << 48) | (uint64_t)thisChannel->getChannelID();
 
          		evUrl += to_hexstring(ID);
 		}
 
-		insertEventsfromHttp(evUrl, thisChannel->getOriginalNetworkId(), thisChannel->getTransportStreamId(), thisChannel->getServiceId());
+		insertEventsfromHttp(evUrl, thisChannel->getOriginalNetworkId(), thisChannel->getTransportStreamId(), thisChannel->getServiceId(), ID & 0xFFFFFFFFFFFFULL);
 	}
 	else
 	{

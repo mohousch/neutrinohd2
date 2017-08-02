@@ -568,21 +568,8 @@ static bool deleteEvent(const event_id_t uniqueKey)
 			// ...and if we don't have them already.
 			unlockMessaging();
 
-			/*
-			SIevent *eptr = new SIevent(evt);
-			if (!eptr)
-			{
-				dprintf(DEBUG_INFO, "[sectionsd::addEvent] new SIevent1 failed.\n");
-				return;
-				//throw std::bad_alloc();
-			}
-
-			SIeventPtr e(eptr);
-			*/
-
 			writeLockEvents();
 
-			//if (e->runningStatus() > 2) 
 			if (evt.runningStatus() > 2)
 			{ 
 				// paused or currently running
@@ -642,6 +629,7 @@ static bool deleteEvent(const event_id_t uniqueKey)
 			unlockMessaging();
 	}
 
+	//
 	readLockEvents();
 	MySIeventsOrderUniqueKey::iterator si = mySIeventsOrderUniqueKey.find(evt.uniqueKey());
 	bool already_exists = (si != mySIeventsOrderUniqueKey.end());
@@ -782,7 +770,6 @@ static bool deleteEvent(const event_id_t uniqueKey)
 			dprintf(DEBUG_INFO, "[sectionsd::addEvent] new SIevent failed.\n");
 			unlockEvents();
 			return;
-			//throw std::bad_alloc();
 		}
 
 		SIeventPtr e(eptr);

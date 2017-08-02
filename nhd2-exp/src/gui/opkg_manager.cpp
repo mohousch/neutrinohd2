@@ -346,7 +346,7 @@ bool COPKGManager::getPkgData(const int pkg_content_id)
 				is_pkgline = ((in != ' ') && (in != '\t'));
 			
 			// avoid buffer overflow
-			if (pos+1 > OM_MAX_LINE_LENGTH)
+			if (pos + 1 > OM_MAX_LINE_LENGTH)
 				in = '\n';
 			else
 				pos++;
@@ -354,7 +354,8 @@ bool COPKGManager::getPkgData(const int pkg_content_id)
 			
 			if (in == '\b' || in == '\n')
 			{
-				pos = 0; /* start a new line */
+				// start a new line
+				pos = 0;
 				if ((in == '\n') && is_pkgline)
 				{
 					//clean up string

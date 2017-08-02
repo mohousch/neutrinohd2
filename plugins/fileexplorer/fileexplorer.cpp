@@ -138,7 +138,6 @@ BROWSER:
 				buffer.clear();
 				
 				char buf[6000];
-				bool result = true;
 
 				int fd = open(file->Name.c_str(), O_RDONLY);
 				int bytes = read(fd, buf, 6000 - 1);

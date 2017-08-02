@@ -179,7 +179,7 @@ bool CFlashUpdate::selectHttpImage(void)
 
 		dprintf(DEBUG_NORMAL, "[update] url %s\n", url.c_str());
 
-		/* extract domain name */
+		// extract domain name 
 		startpos = url.find("//");
 		if (startpos == std::string::npos)
 		{
@@ -189,13 +189,10 @@ bool CFlashUpdate::selectHttpImage(void)
 		}
 		else
 		{
-			//startpos += 2;
-			//endpos    = url.find('/', startpos);
-			startpos = url.find('/', startpos+2)+1;
+			startpos = url.find('/', startpos + 2) + 1;
 			endpos   = std::string::npos;
 			updates_lists.push_back(url.substr(startpos, endpos - startpos));
 		}
-		//updates_lists.push_back(url.substr(startpos, endpos - startpos));
 
 		SelectionWidget.addItem(new CNonLocalizedMenuSeparator(updates_lists.rbegin()->c_str(), LOCALE_FLASHUPDATE_SELECTIMAGE));
 		

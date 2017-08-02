@@ -1184,9 +1184,9 @@ void CControlAPI::EpgCGI(CyhookHandler *hh)
 				if (sectionsd_getEPGidShort(eventIterator->eventID,&epg))
 				{
 					hh->printf("%llu %ld %d\n", eventIterator->eventID, eventIterator->startTime, eventIterator->duration);
-					hh->printf("%s\n",epg.title.c_str());
-					hh->printf("%s\n",epg.info1.c_str());
-					hh->printf("%s\n\n",epg.info2.c_str());
+					hh->printf("%s\n", epg.title.c_str());
+					hh->printf("%s\n", epg.info1.c_str());
+					hh->printf("%s\n\n", epg.info2.c_str());
 				}
 			}
 		}

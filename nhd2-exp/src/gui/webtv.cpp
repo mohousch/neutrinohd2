@@ -270,7 +270,7 @@ bool CWebTV::readChannellist(std::string filename)
 		
 		if(f != NULL)
 		{
-			while(1)
+			while(true)
 			{
 				char line[1024];
 				if (!fgets(line, 1024, f))
@@ -281,7 +281,7 @@ bool CWebTV::readChannellist(std::string filename)
 					// Lines with less than one char aren't meaningful
 					continue;
 				
-				/* strip newline */
+				// strip newline
 				line[--len] = 0;
 				
 				// strip carriage return (when found)
@@ -290,7 +290,6 @@ bool CWebTV::readChannellist(std::string filename)
 				
 				if (strncmp(line, "#SERVICE 4097:0:1:0:0:0:0:0:0:0:", 32) == 0)
 					url = line + 32;
-				//else if ( (strncmp(line, "#DESCRIPTION: ", 14) == 0) || (strncmp(line, "#DESCRIPTION ", 13) == 0) )
 				else if (strncmp(line, "#DESCRIPTION", 12) == 0)
 				{
 					int offs = line[12] == ':' ? 14 : 13;
@@ -304,8 +303,8 @@ bool CWebTV::readChannellist(std::string filename)
 					// grad channel id from channellist
 					for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
 					{
-							if(strcasecmp(it->second.getName().c_str(), title.c_str()) == 0)
-								id = it->second.getChannelID();
+						if(strcasecmp(it->second.getName().c_str(), title.c_str()) == 0)
+							id = it->second.getChannelID();
 					}
 					
 					addUrl2Playlist(::decodeUrl(url).c_str(), title.c_str(), description.c_str(), id);
