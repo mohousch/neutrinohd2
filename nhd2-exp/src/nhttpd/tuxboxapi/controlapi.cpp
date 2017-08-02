@@ -1095,7 +1095,6 @@ void CControlAPI::channelEPGAsXML(CyhookHandler *hh, int bouquetnr, t_channel_id
 //
 void CControlAPI::EpgCGI(CyhookHandler *hh)
 {
-	//hh->SetHeader(HTTP_OK, "text/plain; charset=UTF-8");
 	NeutrinoAPI->eList.clear();
 	if (hh->ParamList.empty())
 	{

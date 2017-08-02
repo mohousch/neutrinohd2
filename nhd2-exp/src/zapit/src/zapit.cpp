@@ -3355,153 +3355,43 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 	//
 	unsigned short id = 0;
 	time_t start_time;
+	time_t stop_time;
 	unsigned duration = 0;
 	char* title = NULL;
 	char* description = NULL;
 	char* descriptionextended = NULL;
 
+	answer = "/tmp/epg.xml";
+
 	if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NEUTRINO_HD)
 	{
-		/*
-		eventid starttime duration
-		title
-		info1
-		description
-		descriptionextended
-		*/
-		std::string eventID;
-
-		answer = "/tmp/index.dat";
-		
 		if (!::downloadUrl(url, answer))
 			return;
 
-		//
-		printf("ch_id:%llx\n", chid);
-
-		// dummy event key
-		event_id_t evID = CREATE_EVENT_ID(chid, 0xFFFF);
-		std::string evID_str;
-
-		sprintf((char*)evID_str.c_str(), "%lld", evID);
-		//printf("evID_str:%s\n", evID_str.c_str());
-
-		//
-		std::ifstream inFile;
-		std::string line;
-		std::string line1;
-		std::string line11;
-		std::string line2;
-		std::string line3;
-		std::string line4; 
-
-		inFile.open(answer.c_str());
-
-		line.clear();
-		line1.clear();
-		line11.clear();
-		line2.clear();
-		line3.clear();
-		line4.clear();
-
-		while (!inFile.eof())
-		{
-			while (inFile >> line >> std::ws)
-			{
-				if(strncmp(line.c_str(), evID_str.c_str(), 10) == 0)
-				{
-					//id = 0;
-					//duration = 0;
-					title = NULL;
-					description = NULL;
-					descriptionextended = NULL;
-
-					//event id
-					eventID = line.c_str() + 10;
-			
-					id = atoi(eventID.c_str());
-					printf("\nEVENT ID:%x\n", id);
-
-					// starttime|duration
-					if (inFile >> line1 >> line11 >> std::ws)
-					{
-						printf("STARTTIME:%s (DURATION:%s)\n", line1.c_str(), line11.c_str());
-
-						start_time = (time_t)atoi(line1.c_str());
-						duration = atoi(line11.c_str());
-
-						printf("starttime: %s", ctime(&start_time));
-						printf("duration: %02u:%02u:%02u (%umin, %us)\n", duration/3600, (duration%3600)/60, duration%60, duration/60, duration);
-					}
-
-					// title
-					getline(inFile, line2);
-					title = (char*)line2.c_str();
-					printf("TITLE:%s\n", title);
-
-					// description
-					getline(inFile, line3);
-					description = (char*)line3.c_str();
-					printf("DESCRIPTION:%s\n", description);
-
-					// descriptionextended
-					getline(inFile, line4);
-					descriptionextended = (char*)line4.c_str();
-					printf("DESCRIPTIONEXTENDED:%s\n", descriptionextended);
-
-					//
-					SIevent e(_onid, _tsid, _sid, id);
-
-					e.times.insert(SItime(start_time, duration));
-					if(title != NULL)
-						e.setName(std::string(UTF8_to_Latin1("ger")), std::string(title));
-
-					if(description != NULL)
-						e.setText(std::string(UTF8_to_Latin1("ger")), std::string(description));
-
-					if(descriptionextended != NULL)
-						e.appendExtendedText(std::string(UTF8_to_Latin1("ger")), std::string(descriptionextended));
-
-					printf("addevent ID:%x\n", id);
-					addEvent(e, 0);					
-				}
-			}
-		}
-
-		inFile.close();
-	}
-	else if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
-	{
 		/*
-		<e2eventlist>
-			<e2event>
-				<e2eventid>
-				</e2eventid>
-				<e2eventstart>
-				</e2eventstart>
-				<e2eventduration>
-				</e2eventduration>
-				<e2eventcurrenttime>
-				</e2eventcurrenttime>
-				<e2eventtitle>
-				</e2eventtitle>
-				<e2eventdescription>
-				</e2eventdescription>
-				<e2eventdescriptionextended>
-				</e2eventdescriptionextended>
-				<e2eventservicereference>
-				</e2eventservicereference>
-				<e2eventservicename>
-				</e2eventservicename>
-			</e2event>
-		</e2eventlist>
+		-<epglist>
+		<channel_id>f1270f5e38</channel_id>
+		<channel_short_id>f1270f5e38</channel_short_id>
+		<channel_name><![CDATA[XITE]]></channel_name>
+		-<prog>
+			<bouquetnr>0</bouquetnr>
+			<channel_id>f1270f5e38</channel_id>
+			<eventid>67878416345993535</eventid>
+			<eventid_hex>f1270f5e38113f</eventid_hex>
+			<start_sec>1483102800</start_sec>
+			<start_t>14:00</start_t>
+			<date>30.12.2016</date>
+			<stop_sec>1483117200</stop_sec>
+			<stop_t>18:00</stop_t>
+			<duration_min>240</duration_min>
+			<description><![CDATA[Happy Holidays]]></description>
+			<info1><![CDATA[Xite wishes you happy holidays! To complete the holiday spirit, we have made a mix of all of your favourite music.]]></info1>
+			<info2><![CDATA[Xite wishes you happy holidays! To complete the holiday spirit, we have made a mix of all of your favourite music.]]></info2>
+		-</prog>
+		-</epglist>
 		*/
-		answer = "/tmp/index.xml";
-		if (!::downloadUrl(url, answer))
-			return;
 
 		//
-		xmlNodePtr service = NULL;
 		xmlNodePtr event = NULL;
 		xmlNodePtr node = NULL;
 
@@ -3516,63 +3406,208 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 			{
 				node = event->xmlChildrenNode;
 
+				// bouquetnr
+				while(xmlGetNextOccurence(node, "bouquetnr") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
+				// channel_id
+				while(xmlGetNextOccurence(node, "channel_id") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
 				// eventid
+				while(xmlGetNextOccurence(node, "eventid") != NULL)
+				{
+					id = atoi(xmlGetData(node) + 10);
+
+					node = node->xmlNextNode;
+				}
+
+				// eventid_hex
+				while(xmlGetNextOccurence(node, "eventid_hex") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
+				//start_sec
+				while(xmlGetNextOccurence(node, "start_sec") != NULL)
+				{
+					start_time = (time_t)atoi(xmlGetData(node));
+
+					node = node->xmlNextNode;
+				}
+
+				// start_t
+				while(xmlGetNextOccurence(node, "start_t") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
+				// date
+				while(xmlGetNextOccurence(node, "date") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+	
+				//stop_sec
+				while(xmlGetNextOccurence(node, "stop_sec") != NULL)
+				{
+					stop_time = (time_t)atoi(xmlGetData(node));
+					duration = stop_time - start_time;
+
+					node = node->xmlNextNode;
+				}
+
+				// stop_t
+				while(xmlGetNextOccurence(node, "stop_t") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
+				// duration_min
+				while(xmlGetNextOccurence(node, "duration_min") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
+				//description (title)
+				while(xmlGetNextOccurence(node, "description") != NULL)
+				{
+					title = xmlGetData(node);
+					
+					node = node->xmlNextNode;
+				}
+
+				// info1 (description)
+				while(xmlGetNextOccurence(node, "info1") != NULL)
+				{
+					description = xmlGetData(node);
+					
+					node = node->xmlNextNode;
+				}
+
+				//info2 (descriptionextended)
+				while(xmlGetNextOccurence(node, "info2") != NULL)
+				{
+					descriptionextended = xmlGetData(node);
+					
+					node = node->xmlNextNode;
+				}
+
+				SIevent e(_onid, _tsid, _sid, id);
+
+				e.times.insert(SItime(start_time, duration));
+				if(title != NULL)
+					e.setName(std::string(UTF8_to_Latin1("ger")), std::string(title));
+
+				if(description != NULL)
+					e.setText(std::string(UTF8_to_Latin1("ger")), std::string(description));
+
+				if(descriptionextended != NULL)
+					e.appendExtendedText(std::string(UTF8_to_Latin1("ger")), std::string(descriptionextended));
+
+				addEvent(e, 0);
+				
+				event = event->xmlNextNode;
+			}
+
+			xmlFreeDoc(index_parser);
+		}
+	}
+	else if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
+	{
+		/*
+		<e2eventlist>
+			<e2event>
+				<e2eventid></e2eventid>
+				<e2eventstart></e2eventstart>
+				<e2eventduration></e2eventduration>
+				<e2eventcurrenttime></e2eventcurrenttime>
+				<e2eventtitle></e2eventtitle>
+				<e2eventdescription></e2eventdescription>
+				<e2eventdescriptionextended></e2eventdescriptionextended>
+				<e2eventservicereference></e2eventservicereference>
+				<e2eventservicename></e2eventservicename>
+			</e2event>
+		</e2eventlist>
+		*/
+		if (!::downloadUrl(url, answer))
+			return;
+
+		//
+		xmlNodePtr event = NULL;
+		xmlNodePtr node = NULL;
+
+		//
+		xmlDocPtr index_parser = parseXmlFile(answer.c_str());
+
+		if (index_parser != NULL) 
+		{
+			event = xmlDocGetRootElement(index_parser)->xmlChildrenNode;
+
+			while (event) 
+			{
+				node = event->xmlChildrenNode;
+
+				//e2eventid
 				while(xmlGetNextOccurence(node, "e2eventid") != NULL)
 				{
 					id = atoi(xmlGetData(node));
 					node = node->xmlNextNode;
 				}
 
-				//eventstart
+				//e2eventstart
 				while(xmlGetNextOccurence(node, "e2eventstart") != NULL)
 				{
 					start_time = (time_t)atoi(xmlGetData(node));
 					node = node->xmlNextNode;
 				}
 	
-				//eventduration
+				//e2eventduration
 				while(xmlGetNextOccurence(node, "e2eventduration") != NULL)
 				{
 					duration = (unsigned)atoi(xmlGetData(node));
 					node = node->xmlNextNode;
 				}
-				
-				//eventcurrenttime
+
+				//e2eventcurrenttime
 				while(xmlGetNextOccurence(node, "e2eventcurrenttime") != NULL)
 				{
 					node = node->xmlNextNode;
 				}
 
-
-				//eventtitle
+				//e2eventtitle
 				while(xmlGetNextOccurence(node, "e2eventtitle") != NULL)
 				{
 					title = xmlGetData(node);
 					node = node->xmlNextNode;
 				}
 
-				//eventdescription
+				//e2eventdescription
 				while(xmlGetNextOccurence(node, "e2eventdescription") != NULL)
 				{
 					description = xmlGetData(node);
 					node = node->xmlNextNode;
 				}
 
-				//eventdescriptionextended
+				//e2eventdescriptionextended
 				while(xmlGetNextOccurence(node, "e2eventdescriptionextended") != NULL)
 				{
 					descriptionextended = xmlGetData(node);
 					node = node->xmlNextNode;
 				}
 
-				//eventservicereference
-				while(xmlGetNextOccurence(node, "e2servicereference") != NULL)
+				//e2eventservicereference
+				while(xmlGetNextOccurence(node, "e2eventservicereference") != NULL)
 				{
 					node = node->xmlNextNode;
 				}
 
-				//eventservicename
-				while(xmlGetNextOccurence(node, "e2servicename") != NULL) 
+				//e2eventservicename
+				while(xmlGetNextOccurence(node, "e2eventservicename") != NULL)
 				{
 					node = node->xmlNextNode;
 				}
@@ -3710,11 +3745,13 @@ int startPlayBack(CZapitChannel * thisChannel)
 		}
 		else if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NEUTRINO_HD)
 		{
-			evUrl += "/control/epg?id="; 
+			evUrl += "/control/epg?channelid=";
 
 			ID = ((uint64_t)(thisChannel->getSatellitePosition() + thisChannel->getFreqId() * 4) << 48) | (uint64_t)thisChannel->getChannelID();
 
          		evUrl += to_hexstring(ID);
+
+			evUrl += "&xml=true&details=true";
 		}
 
 		insertEventsfromHttp(evUrl, thisChannel->getOriginalNetworkId(), thisChannel->getTransportStreamId(), thisChannel->getServiceId(), ID & 0xFFFFFFFFFFFFULL);
