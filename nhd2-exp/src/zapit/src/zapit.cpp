@@ -3363,19 +3363,23 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 
 	answer = "/tmp/epg.xml";
 
-	if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NEUTRINO_HD)
+	if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
 	{
 		if (!::downloadUrl(url, answer))
 			return;
 
+		//NMP
 		/*
 		-<epglist>
+		<channel_name><![CDATA[XITE]]></channel_name>
 		<channel_id>f1270f5e38</channel_id>
 		<channel_short_id>f1270f5e38</channel_short_id>
-		<channel_name><![CDATA[XITE]]></channel_name>
+		<epg_id></epg_id>
+		<short_epg_id></short_epg_id>
 		-<prog>
 			<bouquetnr>0</bouquetnr>
 			<channel_id>f1270f5e38</channel_id>
+			<epg_id>b24403f300012b66</epg_id>
 			<eventid>67878416345993535</eventid>
 			<eventid_hex>f1270f5e38113f</eventid_hex>
 			<start_sec>1483102800</start_sec>
@@ -3384,9 +3388,9 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 			<stop_sec>1483117200</stop_sec>
 			<stop_t>18:00</stop_t>
 			<duration_min>240</duration_min>
-			<description><![CDATA[Happy Holidays]]></description>
 			<info1><![CDATA[Xite wishes you happy holidays! To complete the holiday spirit, we have made a mix of all of your favourite music.]]></info1>
 			<info2><![CDATA[Xite wishes you happy holidays! To complete the holiday spirit, we have made a mix of all of your favourite music.]]></info2>
+			<description><![CDATA[Happy Holidays]]></description>
 		-</prog>
 		-</epglist>
 		*/
@@ -3414,6 +3418,12 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 
 				// channel_id
 				while(xmlGetNextOccurence(node, "channel_id") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
+				// epg_id
+				while(xmlGetNextOccurence(node, "epg_id") != NULL)
 				{
 					node = node->xmlNextNode;
 				}
@@ -3473,14 +3483,6 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 					node = node->xmlNextNode;
 				}
 
-				//description (title)
-				while(xmlGetNextOccurence(node, "description") != NULL)
-				{
-					title = xmlGetData(node);
-					
-					node = node->xmlNextNode;
-				}
-
 				// info1 (description)
 				while(xmlGetNextOccurence(node, "info1") != NULL)
 				{
@@ -3493,6 +3495,14 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 				while(xmlGetNextOccurence(node, "info2") != NULL)
 				{
 					descriptionextended = xmlGetData(node);
+					
+					node = node->xmlNextNode;
+				}
+
+				//description (title)
+				while(xmlGetNextOccurence(node, "description") != NULL)
+				{
+					title = xmlGetData(node);
 					
 					node = node->xmlNextNode;
 				}
@@ -3661,7 +3671,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 		ChannelURL = "http://";
 		ChannelURL += g_settings.satip_serverbox_ip;
 
-		if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NEUTRINO_HD)
+		if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
 		{
 			uint64_t ID = ((uint64_t)(thisChannel->getSatellitePosition() + thisChannel->getFreqId() * 4) << 48) | (uint64_t)thisChannel->getChannelID();
 
@@ -3743,7 +3753,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 			evUrl += ":";
 			evUrl += "0:0:0:";
 		}
-		else if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NEUTRINO_HD)
+		else if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
 		{
 			evUrl += "/control/epg?channelid=";
 

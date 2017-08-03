@@ -441,15 +441,6 @@ bool CWebTV::readChannellist(std::string filename)
 	return false;
 }
 
-/*
-void CWebTV::showUserBouquet(void)
-{
-	dprintf(DEBUG_INFO, "CWebTV::showUserBouquet\n");
-
-	addUserBouquet();
-}
-*/
-
 bool CWebTV::startPlayBack(int pos)
 {
 	dprintf(DEBUG_NORMAL, "CWebTV::startPlayBack\n");

@@ -981,7 +981,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.satip_allow_satip = configfile.getBool("satip_allow_satip", false);
 	g_settings.satip_serverbox_ip = configfile.getString("satip_serverbox_ip", "192.168.0.12");
 	g_settings.satip_serverbox_type = configfile.getInt32("satip_serverbox_type", DVB_C);
-	g_settings.satip_serverbox_gui = configfile.getInt32("satip_serverbox_gui", SNeutrinoSettings::SATIP_SERVERBOX_GUI_NEUTRINO_HD);
+	g_settings.satip_serverbox_gui = configfile.getInt32("satip_serverbox_gui", SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2);
 
 	// mode
 	//g_settings.mode = configfile.getInt32("mode", mode_tv);
