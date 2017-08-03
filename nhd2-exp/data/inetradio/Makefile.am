@@ -1,4 +1,5 @@
 installdir = $(CONFIGDIR)
 
 install_DATA = \
-	radio-stations.xml
+	radio-stations.xml \
+	icecast.m3u

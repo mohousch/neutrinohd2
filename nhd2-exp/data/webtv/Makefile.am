@@ -5,4 +5,5 @@ installdir = $(CONFIGDIR)/webtv
 
 install_DATA = \
 	webtv.xml \
-	icecast.m3u
+	german.m3u \
+	music.tv

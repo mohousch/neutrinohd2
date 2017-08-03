@@ -524,10 +524,6 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 	{
 		isHTTP = true;
 	}
-	else if(!strncmp("file://", filename, 7))
-	{
-		isHTTP = false;
-	}
 	else if(!strncmp("upnp://", filename, 7))
 	{
 		isHTTP = true;
@@ -543,6 +539,10 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 	else if(!strncmp("mms://", filename, 6))
 	{
 		isHTTP = true;
+	}
+	else if(!strncmp("file://", filename, 7))
+	{
+		isHTTP = false;
 	}
 	else
 		file = "file://";

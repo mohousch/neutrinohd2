@@ -179,7 +179,7 @@ static int PlaybackOpen(Context_t  *context, char * uri)
 			context->playback->isHttp = 0;
 			context->playback->isUPNP = 0;
 
-			getExtension(uri+7, &extension);
+			getExtension(uri + 7, &extension);
 
 			if(!extension)
 				return cERR_PLAYBACK_ERROR;
@@ -206,23 +206,12 @@ static int PlaybackOpen(Context_t  *context, char * uri)
 
 			if (context->container && context->container->assContainer)
 				context->container->assContainer->Command(context, CONTAINER_INIT, NULL);    
-
 		} 
-		else if (!strncmp("http://", uri, 7)) 
+		else if( (!strncmp("http://", uri, 7)) || (!strncmp("https://", uri, 8)) )
 		{
-			/*char * extension = NULL;*/
 			context->playback->isFile = 0;
 			context->playback->isHttp = 1;
 			context->playback->isUPNP = 0;
-
-			/* 
-			//Hellmaster1024: http streams often do not have a propper ending like .mp3 so we let ffmpeg handle all kind of http streams 
-			if(!extension) 
-				getExtension(uri+7, &extension);
-
-			if(!extension)
-				return cERR_PLAYBACK_ERROR;
-			*/
 
 			if(context->container->Command(context, CONTAINER_ADD, "mp3") < 0)
 				return cERR_PLAYBACK_ERROR;
@@ -235,23 +224,12 @@ static int PlaybackOpen(Context_t  *context, char * uri)
 			{
 				return cERR_PLAYBACK_ERROR;
 			}
-
-			//free(extension);
-		} /* http */
+		}
 		else if (!strncmp("mms://", uri, 6) || !strncmp("rtsp://", uri, 7) || !strncmp("rtmp://", uri, 7)) 
 		{
-			/*char * extension = NULL; */
 			context->playback->isFile = 0;
 			context->playback->isHttp = 1;
 			context->playback->isUPNP = 0;
-			/* 
-			//Hellmaster1024: http streams often do not have a propper ending like .mp3 so we let ffmpeg handle all kind of http streams 
-			if (!extension) 
-				getExtension(uri+6, &extension);
-
-			if(!extension)
-				return cERR_PLAYBACK_ERROR;
-			*/
 
 			if (!strncmp("mms://", uri, 6)) 
 			{
@@ -275,9 +253,7 @@ static int PlaybackOpen(Context_t  *context, char * uri)
 			{
 				return cERR_PLAYBACK_ERROR;
 			}
-
-			//free(extension);
-		} /* upnp */
+		}
 		else if (!strncmp("upnp://", uri, 7)) 
 		{
 			char * extension = NULL;
@@ -285,7 +261,7 @@ static int PlaybackOpen(Context_t  *context, char * uri)
 			context->playback->isHttp = 0;
 			context->playback->isUPNP = 1;
 
-			context->playback->uri += 7; /* jump over upnp:// */
+			context->playback->uri += 7; // jump over upnp://
 
 			getUPNPExtension(uri+7, &extension);
 
@@ -312,7 +288,7 @@ static int PlaybackOpen(Context_t  *context, char * uri)
 
 			free(extension);
 
-		} /* upnp */
+		}
 		else 
 		{
 			playback_err("Unknown stream!\n");
