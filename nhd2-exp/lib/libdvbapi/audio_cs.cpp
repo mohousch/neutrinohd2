@@ -107,8 +107,10 @@ bool cAudio::Close()
 	dprintf(DEBUG_NORMAL, "%s:%s\n", FILENAME, __FUNCTION__);	
 
 	if (audio_fd >= 0)
+	{
 		close(audio_fd);
-	audio_fd = -1;	
+		audio_fd = -1;	
+	}
 	
 	return true;
 }
