@@ -87,6 +87,7 @@ void stopOpenGLplayback();
 // satip cast
 #include <playback_cs.h>
 #include <system/helpers.h>
+#include <gui/audio_video_select.h>
 extern cPlayback *playback;
 
 // globals 
@@ -3715,6 +3716,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 		{
 			playback->Open();
 			playback->Start((char *)ChannelURL.c_str());
+			currentapid = 0;
 		}
 
 		// get events

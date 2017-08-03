@@ -171,7 +171,7 @@ int CAVPIDSelectWidget::exec(CMenuTarget * parent, const std::string & actionKey
 
 void CAVPIDSelectWidget::showAudioDialog(void)
 {
-	dprintf(DEBUG_NORMAL, "CAVPIDSelectWidget::showAudioDialog\n");
+	dprintf(DEBUG_NORMAL, "CAVPIDSelectWidget::showAudioDialog (currentapid:%d)\n", currentapid);
 
 	CMenuWidget * AVPIDSelector = new CMenuWidget(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
 	AVPIDSelector->disableMenuPosition();

@@ -31,6 +31,10 @@ class cPlayback
 	private:
 		int mSpeed;
 		int mAudioStream;
+		//int mVideoStream;
+		//int mVideoType;
+		//int mAC3;
+		//int mDuration;
 		
 	public:
 		bool playing;

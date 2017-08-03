@@ -3143,17 +3143,28 @@ void CNeutrinoApp::RealRun(void)
 				}
 				else
 				{
-					StopSubtitles();
-
-					// audio handler
-					CAudioSelectMenuHandler* audioSelectMenuHandler = new CAudioSelectMenuHandler();
-
-					audioSelectMenuHandler->exec(NULL, "");
+					if(g_settings.satip_allow_satip)
+					{
+						CAVPIDSelectWidget * AVSelectHandler = new CAVPIDSelectWidget();
+						AVSelectHandler->exec(NULL, "");
 							
-					delete audioSelectMenuHandler;
-					audioSelectMenuHandler = NULL;
+						delete AVSelectHandler;
+						AVSelectHandler = NULL;
+					}
+					else
+					{
+						StopSubtitles();
 
-					StartSubtitles();
+						// audio handler
+						CAudioSelectMenuHandler* audioSelectMenuHandler = new CAudioSelectMenuHandler();
+
+						audioSelectMenuHandler->exec(NULL, "");
+							
+						delete audioSelectMenuHandler;
+						audioSelectMenuHandler = NULL;
+
+						StartSubtitles();
+					}
 				}
 			}
 			else if( (msg == CRCInput::RC_yellow || msg == CRCInput::RC_multifeed) && (mode != mode_iptv))

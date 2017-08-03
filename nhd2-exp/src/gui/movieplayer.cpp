@@ -457,6 +457,9 @@ void CMoviePlayerGui::PlayFile(void)
 				{
 					g_currentapid = filelist[0].audioPids[0].epgAudioPid;	//FIXME
 					g_currentac3 = filelist[0].audioPids[0].atype;
+
+					//
+					currentapid = g_currentapid;
 				}
 
 				for (int i = 0; i < (int)filelist[0].audioPids.size(); i++) 
@@ -466,8 +469,10 @@ void CMoviePlayerGui::PlayFile(void)
 
 					if (filelist[0].audioPids[i].selected) 
 					{
-						g_currentapid = filelist[0].audioPids[i].epgAudioPid;	//FIXME
+						g_currentapid = /*filelist[0].audioPids[i].epgAudioPid*/i;	//FIXME
 						g_currentac3 = filelist[0].audioPids[i].atype;
+						//
+						currentapid = g_currentapid;
 					}
 				}
 
@@ -559,6 +564,9 @@ void CMoviePlayerGui::PlayFile(void)
 					{
 						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;	//FIXME
 						g_currentac3 = filelist[selected].audioPids[0].atype;
+
+						//
+						currentapid = g_currentapid;
 					}
 
 					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
@@ -568,8 +576,11 @@ void CMoviePlayerGui::PlayFile(void)
 
 						if (filelist[selected].audioPids[i].selected) 
 						{
-							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;	//FIXME
+							g_currentapid = /*filelist[selected].audioPids[i].epgAudioPid*/i;	//FIXME
 							g_currentac3 = filelist[selected].audioPids[i].atype;
+
+							//
+							currentapid = g_currentapid;
 						}
 					}
 
@@ -835,6 +846,9 @@ void CMoviePlayerGui::PlayFile(void)
 						{
 							g_currentapid = filelist[0].audioPids[0].epgAudioPid;	//FIXME
 							g_currentac3 = filelist[0].audioPids[0].atype;
+
+							//
+							currentapid = g_currentapid;
 						}
 
 						for (int i = 0; i < (int)filelist[0].audioPids.size(); i++) 
@@ -844,8 +858,10 @@ void CMoviePlayerGui::PlayFile(void)
 
 							if (filelist[0].audioPids[i].selected) 
 							{
-								g_currentapid = filelist[0].audioPids[i].epgAudioPid;	//FIXME
+								g_currentapid = /*filelist[0].audioPids[i].epgAudioPid*/i;	//FIXME
 								g_currentac3 = filelist[0].audioPids[i].atype;
+								//
+								currentapid = g_currentapid;
 							}
 						}
 
@@ -1615,6 +1631,9 @@ void CMoviePlayerGui::PlayFile(void)
 					{
 						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;	//FIXME
 						g_currentac3 = filelist[selected].audioPids[0].atype;
+
+						//
+						currentapid = g_currentapid;
 					}
 
 					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
@@ -1624,8 +1643,11 @@ void CMoviePlayerGui::PlayFile(void)
 
 						if (filelist[selected].audioPids[i].selected) 
 						{
-							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;	//FIXME
+							g_currentapid = /*filelist[selected].audioPids[i].epgAudioPid*/i;	//FIXME
 							g_currentac3 = filelist[selected].audioPids[i].atype;
+
+							//
+							currentapid = g_currentapid;
 						}
 					}
 
@@ -1671,6 +1693,9 @@ void CMoviePlayerGui::PlayFile(void)
 					{
 						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;	//FIXME
 						g_currentac3 = filelist[selected].audioPids[0].atype;
+
+						//
+						currentapid = g_currentapid;
 					}
 
 					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
@@ -1680,8 +1705,11 @@ void CMoviePlayerGui::PlayFile(void)
 
 						if (filelist[selected].audioPids[i].selected) 
 						{
-							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;	//FIXME
+							g_currentapid = /*filelist[selected].audioPids[i].epgAudioPid*/i;	//FIXME
 							g_currentac3 = filelist[selected].audioPids[i].atype;
+
+							//
+							currentapid = g_currentapid;
 						}
 					}
 

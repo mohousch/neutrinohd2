@@ -504,12 +504,9 @@ void cPlayback::Close(void)
 }
 
 // start
-bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, unsigned short /*_ap*/, int /*_ac3*/, int /*_duration*/)
+bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, unsigned short _ap, int /*_ac3*/, int /*_duration*/)
 {
 	dprintf(DEBUG_NORMAL, "%s:%s - filename=%s\n", FILENAME, __FUNCTION__, filename);
-
-	// default first audio pid
-	mAudioStream = 0;
 	
 	//create playback path
 	std::string file("");
@@ -634,6 +631,9 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 		playing = false;
 	}
 #endif
+
+	if(playing)
+		SetAPid(_ap);
 
 	dprintf(DEBUG_NORMAL, "%s:%s (playing %d)\n", FILENAME, __FUNCTION__, playing);	
 
@@ -1006,7 +1006,7 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 		
 		// get audio
 		g_object_get (m_gst_playbin, "n-audio", &n_audio, NULL);
-		dprintf(DEBUG_NORMAL, "%s: %d audio\n", __FUNCTION__, n_audio);
+		dprintf(DEBUG_NORMAL, "%s:%s: %d audio\n", FILENAME, __FUNCTION__, n_audio);
 		
 		if(n_audio == 0)
 			return;
