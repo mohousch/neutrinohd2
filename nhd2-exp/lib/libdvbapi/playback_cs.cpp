@@ -1002,7 +1002,6 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 	if(m_gst_playbin)
 	{
 		gint i, n_audio = 0;
-		//GstStructure * structure = NULL;
 		
 		// get audio
 		g_object_get (m_gst_playbin, "n-audio", &n_audio, NULL);
@@ -1010,6 +1009,8 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 		
 		if(n_audio == 0)
 			return;
+
+		language->clear();
 		
 		for (i = 0; i < n_audio; i++)
 		{
@@ -1024,39 +1025,58 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 #else
 			GstCaps* caps = gst_pad_get_current_caps(pad);
 #endif
+			gst_object_unref(pad);
 
 			if (!caps)
 				continue;
-			
-			GstStructure * structure = gst_caps_get_structure(caps, 0);
-			//const gchar *g_type = gst_structure_get_name(structure);
-		
-			//if (!structure)
-				//ac3flags[0] = 0;
 
-			// ac3flags
-			if ( gst_structure_has_name (structure, "audio/mpeg"))
+			// codec|language
+			gchar * g_lang = NULL;
+			gchar* g_codec = NULL;
+			GstTagList *tags = NULL;
+
+
+			g_signal_emit_by_name (m_gst_playbin, "get-audio-tags", i, &tags);
+#if GST_VERSION_MAJOR < 1
+			if (tags && gst_is_tag_list(tags))
+#else
+			if (tags && GST_IS_TAG_LIST(tags))
+#endif
 			{
-				gint mpegversion;
-				//gint layer = -1;
-				
-				if (!gst_structure_get_int (structure, "mpegversion", &mpegversion))
-					ac3flags[i] = 0;
+				// language
+				language[i] = "Stream";
+				if (gst_tag_list_get_string(tags, GST_TAG_LANGUAGE_CODE, &g_lang))
+				{
+					printf("language:%s\n", std::string(g_lang).c_str());
+					language[i] = std::string(g_lang).c_str();
+					g_free(g_lang);
+				}
 
-				if(mpegversion == 1)
-					ac3flags[i] = 4;
-				else if(mpegversion == 2)
-					ac3flags[i] = 5;
-				else if(mpegversion == 4)
-					ac3flags[i] = 5;
-				
+				// codec
+				if (gst_tag_list_get_string(tags, GST_TAG_AUDIO_CODEC, &g_codec))
+				{
+					printf("codec:%s\n", std::string(g_codec).c_str());
+
+					/*
+					if(std::string(g_codec) == "MPEG 1 Audio, Layer 2")
+						ac3flags[i] = 3;
+					else if(std::string(g_codec) == "Dolby Digital (AC-3)")
+						ac3flags[i] = 1;
+					else if(std::string(g_codec) == "MPEG-4 AAC")
+						ac3flags[i] = 5;
+					else if(std::string(g_codec) == "MPEG 1 Audio, Layer 3 (MP3)")
+						ac3flags[i] = 4;
+					*/
+
+					language[i] += " (";
+					language[i] += std::string(g_codec).c_str();
+					language[i] += ")";
+					
+					g_free(g_codec);
+				}
+
+				gst_tag_list_free(tags);
 			}
-			else if ( gst_structure_has_name (structure, "audio/x-ac3") || gst_structure_has_name (structure, "audio/ac3") )
-				ac3flags[i] = 1;
-			else if ( gst_structure_has_name (structure, "audio/x-dts") || gst_structure_has_name (structure, "audio/dts") )
-				ac3flags[i] = 6;
-			else if ( gst_structure_has_name (structure, "audio/x-raw-int") )
-				ac3flags[i] = 0;
 			
 			gst_caps_unref(caps);
 		}
@@ -1074,28 +1094,26 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 		if (TrackList != NULL) 
 		{
 			printf("AudioTrack List\n");
-			int i = 0,j=0;
+			int i = 0,j = 0;
 
-			for (i = 0, j=0; TrackList[i] != NULL; i+=2,j++) 
+			for (i = 0, j = 0; TrackList[i] != NULL; i += 2, j++) 
 			{
-				printf("\t%s - %s\n", TrackList[i], TrackList[i+1]);
+				printf("\t%s - %s\n", TrackList[i], TrackList[i + 1]);
 				apids[j] = j;
 
-				// atUnknown, atMPEG, atMP3, atAC3, atDTS, atAAC, atPCM, atOGG, atFLAC
-
-				if( (!strncmp("A_MPEG/L3", TrackList[i+1], 9)) || (!strncmp("A_MP3", TrackList[i+1], 5)) )
+				if( (!strncmp("A_MPEG/L3", TrackList[i + 1], 9)) || (!strncmp("A_MP3", TrackList[i + 1], 5)) )
 					ac3flags[j] = 4;
-				else if(!strncmp("A_AC3", TrackList[i+1], 5))
+				else if(!strncmp("A_AC3", TrackList[i + 1], 5))
 					ac3flags[j] = 1;
-				else if(!strncmp("A_DTS", TrackList[i+1], 5))
+				else if(!strncmp("A_DTS", TrackList[i + 1], 5))
 					ac3flags[j] = 6;
-				else if(!strncmp("A_AAC", TrackList[i+1], 5))
+				else if(!strncmp("A_AAC", TrackList[i + 1], 5))
 					ac3flags[j] = 5;
-				else if(!strncmp("A_PCM", TrackList[i+1], 5))
+				else if(!strncmp("A_PCM", TrackList[i + 1], 5))
 					ac3flags[j] = 0; 	//todo
-				else if(!strncmp("A_VORBIS", TrackList[i+1], 8))
+				else if(!strncmp("A_VORBIS", TrackList[i + 1], 8))
 					ac3flags[j] = 0;	//todo
-				else if(!strncmp("A_FLAC", TrackList[i+1], 6))
+				else if(!strncmp("A_FLAC", TrackList[i + 1], 6))
 					ac3flags[j] = 0;	//todo
 				else
 					ac3flags[j] = 0;	//todo

@@ -210,7 +210,6 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 			switch(ac3flags[count])
 			{
 				case 1: /*AC3,EAC3*/
-					if (apidtitle.find("AC3") <= 0)
 					{
 						apidtitle.append(" (AC3)");
 								
