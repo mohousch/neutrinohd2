@@ -915,11 +915,8 @@ int container_ffmpeg_init(Context_t *context, char * filename)
 	
 	avContext->flags |= AVFMT_FLAG_GENPTS;
 
-	if (strstr(filename, ":31339") || strstr(filename, ":8001/"))
-		avContext->max_analyze_duration = 5;
-	
-	if ( strstr(filename, ".ts") )
-		avContext->max_analyze_duration = 5;
+	//
+	avContext->max_analyze_duration = 5;
 
 	ffmpeg_printf(20, "find_streaminfo\n");
 
