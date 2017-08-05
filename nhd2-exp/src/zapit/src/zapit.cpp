@@ -91,18 +91,19 @@ void stopOpenGLplayback();
 extern cPlayback *playback;
 
 // globals 
-int zapit_ready;
-int abort_zapit;
+int zapit_ready = 0;
+int abort_zapit = 0;
 
 // ci
 #if defined (ENABLE_CI)
-cDvbCi * ci;
+cDvbCi * ci = NULL;
 #endif
 
 // audio conf
 map<t_channel_id, audio_map_set_t> audio_map;
 map<t_channel_id, audio_map_set_t>::iterator audio_map_it;
-unsigned int volume_left = 100, volume_right = 100;
+unsigned int volume_left = 100;
+unsigned int volume_right = 100;
 int audio_mode = 0;
 int def_audio_mode = 0;
 
@@ -116,7 +117,7 @@ volume_map_t vol_map;
 typedef volume_map_t::iterator volume_map_iterator_t;
 typedef std::pair<volume_map_iterator_t, volume_map_iterator_t> volume_map_range_t;
 
-int volume_percent;
+int volume_percent = 0;
 extern int current_volume;
 extern int current_muted;
 
@@ -126,8 +127,8 @@ void setPidVolume(t_channel_id channel_id, int pid, int percent);
 void setVolumePercent(int percent);
 
 // live/record channel id
-t_channel_id live_channel_id;
-t_channel_id rec_channel_id;
+t_channel_id live_channel_id = 0;
+t_channel_id rec_channel_id = 0;
 
 bool firstzap = true;
 bool playing = false;
@@ -139,10 +140,10 @@ int change_audio_pid(uint8_t index);
 void SaveServices(bool tocopy);
 
 // SDT
-int scanSDT;
+int scanSDT = 0;
 void * sdt_thread(void * arg);
 pthread_t tsdt;
-bool sdt_wakeup;
+bool sdt_wakeup = false;
 
 // the conditional access module
 CCam * cam0 = NULL;
@@ -186,7 +187,7 @@ enum {
 	RECORD_MODE = 0x04,
 };
 
-int currentMode;
+int currentMode = 1;
 bool playbackStopForced = false;
 
 // list of near video on demand
@@ -214,11 +215,11 @@ bool standby = true;
 void * scan_transponder(void * arg);
 
 // zapit config
-bool saveLastChannel;
-int lastChannelMode;
-uint32_t  lastChannelRadio;
-uint32_t  lastChannelTV;
-bool makeRemainingChannelsBouquet;
+bool saveLastChannel = true;
+int lastChannelMode = 1;
+uint32_t  lastChannelRadio = 0;
+uint32_t  lastChannelTV = 0;
+bool makeRemainingChannelsBouquet = false;
 
 // set/get zapit.config
 void setZapitConfig(Zapit_config * Cfg);
@@ -4794,7 +4795,7 @@ int zapit_main_thread(void *data)
 	//scan for dvb adapter/frontend and feed them in map
 	initFrontend();
 	
-	/* load frontend config */
+	// load frontend config
 	loadFrontendConfig();
 		
 	// video/audio decoder
@@ -4805,7 +4806,7 @@ int zapit_main_thread(void *data)
 	videoDecoder = new cVideo(video_mode, videoDemux->getChannel(), videoDemux->getBuffer());
 	videoDecoder->Standby(false);
 	
-	audioDecoder = new cAudio(audioDemux->getBuffer(), videoDecoder->GetTVEnc(), NULL /*videoDecoder->GetTVEncSD()*/);
+	audioDecoder = new cAudio(audioDemux->getBuffer(), videoDecoder->GetTVEnc(), NULL);
 	videoDecoder->SetAudioHandle(audioDecoder->GetHandle());
 #else	
 	videoDecoder = new cVideo();

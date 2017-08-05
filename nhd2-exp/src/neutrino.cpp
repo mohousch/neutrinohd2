@@ -2296,7 +2296,7 @@ void CNeutrinoApp::InitZapper()
 			radioMode(false);
 	}
 
-	// zap
+	//
 	if(channelList->getSize() && live_channel_id) 
 	{
 		channelList->adjustToChannelID(live_channel_id);
