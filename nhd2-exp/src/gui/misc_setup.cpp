@@ -779,7 +779,7 @@ bool CChannelListSettings::changeNotify(const neutrino_locale_t OptionName, void
 	if(ARE_LOCALES_EQUAL(OptionName, LOCALE_CHANNELLIST_MAKE_HDLIST)) 
 	{
 		CNeutrinoApp::getInstance()->channelsInit();
-		CNeutrinoApp::getInstance()->channelList->adjustToChannelID(live_channel_id);//FIXME
+		CNeutrinoApp::getInstance()->channelList->adjustToChannelID(live_channel_id);
 		
 		return true;
 	}
@@ -787,8 +787,7 @@ bool CChannelListSettings::changeNotify(const neutrino_locale_t OptionName, void
 	{
 		setZapitConfig(&zapitCfg);
 		
-		CNeutrinoApp::getInstance()->channelsInit();
-		CNeutrinoApp::getInstance()->channelList->adjustToChannelID(live_channel_id);//FIXME
+		g_Zapit->reinitChannels();
 		
 		return true;
 	}
@@ -836,7 +835,10 @@ void CChannelListSettings::showMenu()
 	//
 	getZapitConfig(&zapitCfg);
 	
-	miscSettingsChannelList.addItem(new CMenuOptionChooser(LOCALE_EXTRA_ZAPIT_MAKE_BOUQUET, (int *)&zapitCfg.makeRemainingChannelsBouquet, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscChannel++) ));
+	// other
+	miscSettingsChannelList.addItem(new CMenuOptionChooser(LOCALE_EXTRA_ZAPIT_MAKE_BOUQUET, (int *)&zapitCfg.makeRemainingChannelsBouquet, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, this, CRCInput::convertDigitToKey(shortcutMiscChannel++) ));
+
+	// scanSDT
 	miscSettingsChannelList.addItem( new CMenuOptionChooser(LOCALE_ZAPIT_SCANSDT, (int *)&zapitCfg.scanSDT, SECTIONSD_SCAN_OPTIONS, SECTIONSD_SCAN_OPTIONS_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscChannel++)) );
 	
 	miscSettingsChannelList.exec(NULL, "");
