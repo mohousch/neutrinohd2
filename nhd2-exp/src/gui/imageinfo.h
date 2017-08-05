@@ -34,8 +34,7 @@
 class CImageInfo : public CMenuTarget
 {
 	private:
-		//void Init(void);
-		CConfigFile     * configfile;
+		//CConfigFile     * configfile;
 		CFrameBuffer	*frameBuffer;
 		int x;
 		int y;

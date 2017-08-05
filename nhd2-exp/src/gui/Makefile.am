@@ -1,15 +1,18 @@
 AM_CPPFLAGS = -fno-strict-aliasing
 
-BUILT_SOURCES  = svn_version.h
-
-svn_version.h:
-	@if test -d ../../.svn ; then \
-		sleep 180 && rm svn_version.h & echo "#define SVNVERSION \"$$(svnversion -n || echo svn_oops!)\" " > svn_version.h ; \
-	else \
-		rm svn_version.h; echo '#define BUILT_DATE "'`date`'"' > svn_version.h ; \
+BUILT_SOURCES = version.h
+version.h:
+	@rm -f $@; \
+	echo '#define BUILT_DATE "'`date`'"' > $@
+	@if test -d $(top_srcdir)/../.git ; then \
+		pushd $(top_srcdir)/.. ; \
+		GITREV=`git log | grep '^commit' | wc -l`; \
+		popd ; \
+		echo '#define GIT "'$$GITREV'"' >> $@ ; \
 	fi
 
-noinst_HEADERS = svn_version.h
+noinst_HEADERS = version.h
+.PHONY: version.h
 
 SUBDIRS = widget bedit
 

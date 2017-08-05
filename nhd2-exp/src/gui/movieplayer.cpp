@@ -450,7 +450,10 @@ void CMoviePlayerGui::PlayFile(void)
 				Info1 = filelist[0].epgInfo1;
 				Info2 = filelist[0].epgInfo2;
 				Thumbnail = filelist[0].tfile;
-				sel_filename = filelist[0].file.getFileName();
+				if(!filelist[0].epgTitle.empty())
+					sel_filename = filelist[0].epgTitle;
+				else
+					sel_filename = filelist[0].file.getFileName();
 
 				//
 				if(!filelist[0].audioPids.empty()) 
@@ -490,7 +493,10 @@ void CMoviePlayerGui::PlayFile(void)
 				Info1 = filelist[0].epgInfo1;
 				Info2 = filelist[0].epgInfo2;
 				Thumbnail = filelist[0].tfile;
-				sel_filename = filelist[0].file.getFileName();
+				if(!filelist[0].epgTitle.empty())
+					sel_filename = filelist[0].epgTitle;
+				else
+					sel_filename = filelist[0].file.getFileName();
 			}
 
 			update_lcd = true;
@@ -557,7 +563,10 @@ void CMoviePlayerGui::PlayFile(void)
 					Info1 = filelist[selected].epgInfo1;
 					Info2 = filelist[selected].epgInfo2;
 					Thumbnail = filelist[selected].tfile;
-					sel_filename = filelist[selected].file.getFileName();
+					if(!filelist[selected].epgTitle.empty())
+						sel_filename = filelist[selected].epgTitle;
+					else
+						sel_filename = filelist[selected].file.getFileName();
 
 					// 
 					if(!filelist[selected].audioPids.empty()) 
@@ -598,7 +607,10 @@ void CMoviePlayerGui::PlayFile(void)
 					Info1 = filelist[selected].epgInfo1;
 					Info2 = filelist[selected].epgInfo2;
 					Thumbnail = filelist[selected].tfile;
-					sel_filename = filelist[selected].file.getFileName();
+					if(!filelist[selected].epgTitle.empty())
+						sel_filename = filelist[selected].epgTitle;
+					else
+						sel_filename = filelist[selected].file.getFileName();
 				}
 				//
  
@@ -835,11 +847,14 @@ void CMoviePlayerGui::PlayFile(void)
 
 						//
 						filename = filelist[0].file.Name.c_str();
-						sel_filename = filelist[0].file.getFileName();
 						Title = filelist[0].epgTitle;
 						Info1 = filelist[0].epgInfo1;
 						Info2 = filelist[0].epgInfo2;
 						Thumbnail = filelist[0].tfile;
+						if(!filelist[0].epgTitle.empty())
+							sel_filename = filelist[0].epgTitle;
+						else
+							sel_filename = filelist[0].file.getFileName();
 
 						//
 						if(!filelist[0].audioPids.empty()) 
@@ -866,7 +881,8 @@ void CMoviePlayerGui::PlayFile(void)
 						}
 
 						// startposition					
-						startposition = 1000 * moviebrowser->getCurrentStartPos();						
+						//startposition = 1000 * moviebrowser->getCurrentStartPos();
+						startposition = 1000 * showStartPosSelectionMenu();						
 
 						//
 						g_vpid = filelist[0].epgVideoPid;
@@ -1624,7 +1640,10 @@ void CMoviePlayerGui::PlayFile(void)
 					Info1 = filelist[selected].epgInfo1;
 					Info2 = filelist[selected].epgInfo2;
 					Thumbnail = filelist[selected].tfile;
-					sel_filename = filelist[selected].file.getFileName();
+					if(!filelist[selected].epgTitle.empty())
+						sel_filename = filelist[selected].epgTitle;
+					else
+						sel_filename = filelist[selected].file.getFileName();
 
 					//
 					if(!filelist[selected].audioPids.empty()) 
@@ -1665,7 +1684,10 @@ void CMoviePlayerGui::PlayFile(void)
 					Info1 = filelist[selected].epgInfo1;
 					Info2 = filelist[selected].epgInfo2;
 					Thumbnail = filelist[selected].tfile;
-					sel_filename = filelist[selected].file.getFileName();
+					if(!filelist[selected].epgTitle.empty())
+						sel_filename = filelist[selected].epgTitle;
+					else
+						sel_filename = filelist[selected].file.getFileName();
 				}
 				
 				update_lcd = true;
@@ -1686,7 +1708,10 @@ void CMoviePlayerGui::PlayFile(void)
 					Info1 = filelist[selected].epgInfo1;
 					Info2 = filelist[selected].epgInfo2;
 					Thumbnail = filelist[selected].tfile;
-					sel_filename = filelist[selected].file.getFileName();
+					if(!filelist[selected].epgTitle.empty())
+						sel_filename = filelist[selected].epgTitle;
+					else
+						sel_filename = filelist[selected].file.getFileName();
 
 					//
 					if(!filelist[selected].audioPids.empty()) 
@@ -1727,7 +1752,10 @@ void CMoviePlayerGui::PlayFile(void)
 					Info1 = filelist[selected].epgInfo1;
 					Info2 = filelist[selected].epgInfo2;
 					Thumbnail = filelist[selected].tfile;
-					sel_filename = filelist[selected].file.getFileName();
+					if(!filelist[selected].epgTitle.empty())
+						sel_filename = filelist[selected].epgTitle;
+					else
+						sel_filename = filelist[selected].file.getFileName();
 				}
 				
 				update_lcd = true;

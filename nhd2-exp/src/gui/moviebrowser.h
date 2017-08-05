@@ -286,7 +286,6 @@ class CMovieBrowser : public CMenuTarget
 		bool m_showFilter;
 
 		MI_MOVIE_INFO * m_movieSelectionHandler;
-		int m_currentStartPos;
 		std::string m_selectedDir;
 		MB_FOCUS m_windowFocus;
 
@@ -320,7 +319,7 @@ class CMovieBrowser : public CMenuTarget
 		std::string getCurrentDir(void); //P1 for FileBrowser compatibility
 		CFile * getSelectedFile(void); //P1 for FileBrowser compatibility
 		MI_MOVIE_BOOKMARKS* getCurrentMovieBookmark(void){if(m_movieSelectionHandler == NULL) return NULL; return(&(m_movieSelectionHandler->bookmarks));};
-		int getCurrentStartPos(void){return(m_currentStartPos);}; //P1 return start position in [s]
+		
 		MI_MOVIE_INFO* getCurrentMovieInfo(void){return(m_movieSelectionHandler);}; //P1 return start position in [s]
 		void fileInfoStale(void); // call this function to force the Moviebrowser to reload all movie information from HD
 
@@ -383,7 +382,6 @@ class CMovieBrowser : public CMenuTarget
 		///// Menu //////////////////////////////////// 
 		bool showMenu(MI_MOVIE_INFO* movie_info); // P2
         	void showMovieInfoMenu(MI_MOVIE_INFO* movie_info); // P2
-		int  showStartPosSelectionMenu(void); // P2
 		
 		///// settings /////////////////////////////////// 
 		bool loadSettings(MB_SETTINGS* settings); // P2

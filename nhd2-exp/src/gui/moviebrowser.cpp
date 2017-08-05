@@ -453,8 +453,7 @@ void CMovieBrowser::init(void)
 	
 	m_textTitle = g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD);
 	
-	m_currentStartPos = 0;
-	
+	//
 	m_movieSelectionHandler = NULL;
 	m_currentBrowserSelection = 0;
 	m_currentRecordSelection = 0;
@@ -998,8 +997,6 @@ int CMovieBrowser::exec(const char * path)
 		m_settings.sorting.item =  MB_INFO_RECORDDATE;
 		
 		// reset all positions
-		m_currentStartPos = 0;
-	
 		m_movieSelectionHandler = NULL;
 		m_currentBrowserSelection = 0;
 		m_currentRecordSelection = 0;
@@ -1112,26 +1109,11 @@ int CMovieBrowser::exec(const char * path)
 			}
 			else if(msg == CRCInput::RC_ok)
 			{
-				m_currentStartPos = 0; 
-
 				if(m_movieSelectionHandler != NULL)
 				{
-					// If there is any available bookmark, show the bookmark menu
-					if( /*(show_mode != MB_SHOW_FILES) &&*/ (m_movieSelectionHandler->bookmarks.lastPlayStop != 0 || m_movieSelectionHandler->bookmarks.start != 0) )
-					{
-						dprintf(DEBUG_NORMAL, "CMovieBrowser::exec: stop: %d start:%d \r\n", m_movieSelectionHandler->bookmarks.lastPlayStop,m_movieSelectionHandler->bookmarks.start);
-						m_currentStartPos = showStartPosSelectionMenu(); // display start menu m_currentStartPos = 
-					}
-					
-					if(m_currentStartPos >= 0) 
-					{
-						playing_info = m_movieSelectionHandler;
-						dprintf(DEBUG_NORMAL, "CMovieBrowser::exec: start pos: %d s\r\n", m_currentStartPos);
-						res = true;
-						loop = false;
-					} 
-					else
-						refresh();
+					playing_info = m_movieSelectionHandler;
+					res = true;
+					loop = false;
 				}
 			}
 			else if (msg == CRCInput::RC_home)
@@ -3417,96 +3399,6 @@ bool CMovieBrowser::showMenu(MI_MOVIE_INFO */*movie_info*/)
 	delete nfs;
 
 	return(true);
-}
-
-int CMovieBrowser::showStartPosSelectionMenu(void) // P2
-{
-	dprintf(DEBUG_INFO, "CMovieBrowser::showStartPosSelectionMenu\r\n");
-	
-	int pos = -1;
-	int result = 0;
-	int menu_nr = 0;
-	int position[MAX_NUMBER_OF_BOOKMARK_ITEMS];
-	
-	if(m_movieSelectionHandler == NULL) 
-		return(result);
-	
-	char start_pos[13]; 
-	snprintf(start_pos, 12,"%3d min", m_movieSelectionHandler->bookmarks.start/60);
-	
-	char play_pos[13]; 	
-	snprintf(play_pos, 12,"%3d min", m_movieSelectionHandler->bookmarks.lastPlayStop/60); 
-	
-	char book[MI_MOVIE_BOOK_USER_MAX][20];
-
-	CMenuWidget startPosSelectionMenu(LOCALE_MOVIEBROWSER_START_HEAD , NEUTRINO_ICON_STREAMING);
-	startPosSelectionMenu.enableSaveScreen(true);
-	startPosSelectionMenu.disableMenuPosition();
-	
-	// intros
-	//WARNING: dont delete this line , without getselected line return line - 1
-	startPosSelectionMenu.addItem(new CMenuSeparator(CMenuSeparator::EMPTY));
-	
-	// bookmark start
-	if(m_movieSelectionHandler->bookmarks.start != 0)
-	{
-		startPosSelectionMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIESTART, true, start_pos));
-		position[menu_nr++] = m_movieSelectionHandler->bookmarks.start;
-	}
-	
-	// bookmark laststop
-	if(m_movieSelectionHandler->bookmarks.lastPlayStop != 0) 
-	{
-		startPosSelectionMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_LASTMOVIESTOP, true, play_pos));
-		position[menu_nr++] = m_movieSelectionHandler->bookmarks.lastPlayStop;
-	}
-	
-	// movie start
-	startPosSelectionMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_START_RECORD_START, true, NULL));
-	position[menu_nr++] = 0;
-
-	int sep_pos = menu_nr;
-
-	for(int i = 0 ; i < MI_MOVIE_BOOK_USER_MAX && menu_nr < MAX_NUMBER_OF_BOOKMARK_ITEMS; i++ )
-	{
-		if( m_movieSelectionHandler->bookmarks.user[i].pos != 0 )
-		{
-			if(m_movieSelectionHandler->bookmarks.user[i].length >= 0)
-				position[menu_nr] = m_movieSelectionHandler->bookmarks.user[i].pos;
-			else
-				position[menu_nr] = m_movieSelectionHandler->bookmarks.user[i].pos + m_movieSelectionHandler->bookmarks.user[i].length;
-				
-			snprintf(book[i], 19,"%5d min",position[menu_nr]/60);
-			dprintf(DEBUG_NORMAL, "[mb] adding boomark menu N %d, position %d\n", menu_nr, position[menu_nr]);
-			
-			startPosSelectionMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
-			startPosSelectionMenu.addItem(new CMenuForwarder(m_movieSelectionHandler->bookmarks.user[i].name.c_str(), true, book[i]));
-			menu_nr++;
-		}
-	}
-
-	startPosSelectionMenu.exec(NULL, "12345");
-	
-	// check what menu item was ok'd  and set the appropriate play offset*/
-	result = startPosSelectionMenu.getSelectedLine();
-	
-	dprintf(DEBUG_NORMAL, "startPosSelectionMenu result %d\n", result);
-	
-	if(result < 0)
-		return -1;
-	
-	if(result != 0 && result <= MAX_NUMBER_OF_BOOKMARK_ITEMS)
-	{
-		result--;
-		if(result > sep_pos) 
-			result--;
-		
-		pos = position[result];
-	}
-	
-	dprintf(DEBUG_NORMAL, "[mb] selected bookmark %d position %d\n", result, pos);
-	
-	return(pos) ;
 }
 
 bool CMovieBrowser::isParentalLock(MI_MOVIE_INFO& movie_info)

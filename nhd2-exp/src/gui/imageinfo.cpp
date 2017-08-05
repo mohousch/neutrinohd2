@@ -40,11 +40,11 @@
 
 #include <video_cs.h>
 
-#include <gui/svn_version.h>
+#include <gui/version.h>
 
 
-#define SVN_REV "SVN Rev.:"
-#define GIT_REV "GIT Build:"
+#define GIT_BUILD "GIT Build:"
+#define GIT_REV 	"GIT Rev:"
 
 extern cVideo * videoDecoder;
 
@@ -71,8 +71,9 @@ CImageInfo::CImageInfo()
 }
 
 CImageInfo::~CImageInfo()
-{   
-	videoDecoder->Pig(-1, -1, -1, -1);
+{ 
+	if(videoDecoder)  
+		videoDecoder->Pig(-1, -1, -1, -1);
 }
 
 int CImageInfo::exec(CMenuTarget *parent, const std::string &)
@@ -115,10 +116,11 @@ int CImageInfo::exec(CMenuTarget *parent, const std::string &)
 }
 
 void CImageInfo::hide()
-{  
-	videoDecoder->Pig(-1, -1, -1, -1);
+{
+	if(videoDecoder)  
+		videoDecoder->Pig(-1, -1, -1, -1);
 	
-	frameBuffer->paintBackgroundBoxRel(0 , 0, max_width, max_height);
+	frameBuffer->paintBackgroundBoxRel(0, 0, max_width, max_height);
 
 	frameBuffer->blit();
 }
@@ -130,12 +132,15 @@ void CImageInfo::paint_pig(int _x, int _y, int w, int h)
 	//dont pig if we have 1980 x 1080
 #if defined (__sh__)
 	int xres, yres, framerate;
-	videoDecoder->getPictureInfo(xres, yres, framerate);
+	if(videoDecoder)
+		videoDecoder->getPictureInfo(xres, yres, framerate);
 	
-	if(xres <= 1280)	
-		videoDecoder->Pig(_x, _y, w, h);
+	if(xres <= 1280)
+		if(videoDecoder)	
+			videoDecoder->Pig(_x, _y, w, h);
 #else
-	videoDecoder->Pig(_x, _y, w, h);
+	if(videoDecoder)
+		videoDecoder->Pig(_x, _y, w, h);
 #endif	
 }
 
@@ -150,7 +155,7 @@ void CImageInfo::paintLine(int xpos, int font, const char* text)
 void CImageInfo::paint()
 {
 	const char * head_string;
-	char imagedate[18] = "";
+	//char imagedate[18] = "";
  	int  xpos = x + BORDER_LEFT;
 	int x_offset = g_Font[font_info]->getRenderWidth(g_Locale->getText(LOCALE_IMAGEINFO_HOMEPAGE)) + 10;
 
@@ -170,25 +175,23 @@ void CImageInfo::paint()
 	ypos += (iheight >>1);
 
 
-	//CConfigFile config('\t');
-	//config.loadConfig("/etc/.version");
+	CConfigFile config('\t');
+	config.loadConfig("/etc/.version");
 
-	const char * imagename = "neutrinoHD2"; /*config.getString("imagename", "NeutrinoHD2").c_str();*/
-	//const char * homepage = config.getString("homepage",  "http://www.dgstation-forum.org").c_str();
-	//const char * creator = config.getString("creator",   "mohousch").c_str();
-	const char * version = "2.2"; /*config.getString("version",   "1201201602031021").c_str();*/
-	const char * docs = "http://wiki.neutrino-hd.de"; /*config.getString("docs",   "http://wiki.neutrino-hd.de").c_str();*/
-	//const char * forum = config.getString("forum",   "http://www.dgstation-forum.org").c_str();
-#ifdef SVNVERSION
-	const char * builddate = SVNVERSION; /*config.getString("builddate",     SVNVERSION).c_str();*/
-#else
-	const char * builddate = BUILT_DATE; /*config.getString("builddate",     BUILT_DATE).c_str();*/
-#endif	
+	const char * imagename = config.getString("imagename", "NeutrinoHD2").c_str();
+	const char * homepage = config.getString("homepage", "").c_str();
+	const char * creator = config.getString("creator", "").c_str();
+	const char * docs = config.getString("docs", "http://wiki.neutrino-hd.de").c_str();
+	const char * forum = config.getString("forum", "").c_str();
+	const char * version = config.getString("version", "1202201602031021").c_str();
+	const char * builddate = BUILT_DATE;
+	const char * gitrev = GIT;
+	
 
-	//static CFlashVersionInfo versionInfo(version);
-	const char * releaseCycle = "2.2"; /*versionInfo.getReleaseCycle();*/
-	const char * imageType = "Snapshot"; /*versionInfo.getType();*/
-	sprintf((char*) imagedate, "%s  %s", __DATE__ /*versionInfo.getDate()*/, __TIME__ /*versionInfo.getTime()*/);
+	static CFlashVersionInfo versionInfo(version);
+	const char * releaseCycle = versionInfo.getReleaseCycle();
+	const char * imageType = versionInfo.getType();
+	//sprintf((char*) imagedate, "%s  %s", versionInfo.getDate(), versionInfo.getTime());
 
 	// image name
 	ypos += iheight;
@@ -196,23 +199,24 @@ void CImageInfo::paint()
 	paintLine(xpos + x_offset, font_info, imagename);
 
 	// image date
-	ypos += iheight;
-	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_DATE));
-	paintLine(xpos + x_offset, font_info, imagedate);
+	//ypos += iheight;
+	//paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_DATE));
+	//paintLine(xpos + x_offset, font_info, imagedate);
 
 	// release cycle
 	ypos += iheight;
 	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_VERSION));
 	paintLine(xpos + x_offset, font_info, releaseCycle);
 	
-	// svn/git built date
+	// git built date
 	ypos += iheight;
-#ifdef SVNVERSION
-	paintLine(xpos, font_info, SVN_REV);
-#else
+	paintLine(xpos, font_info, GIT_BUILD);
+	paintLine(xpos + x_offset, font_info, builddate );
+
+	// git rev
+	ypos += iheight;
 	paintLine(xpos, font_info, GIT_REV);
-#endif
-	paintLine(xpos + x_offset, font_info, builddate );	
+	paintLine(xpos + x_offset, font_info, gitrev );	
 	
 	// image type
 	ypos += iheight;
@@ -220,24 +224,24 @@ void CImageInfo::paint()
 	paintLine(xpos + x_offset, font_info, imageType);
 
 	// image creator
-	//ypos += iheight;
-	//paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_CREATOR));
-	//paintLine(xpos + x_offset, font_info, creator);
+	ypos += iheight;
+	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_CREATOR));
+	paintLine(xpos + x_offset, font_info, creator);
 
 	// homepage
-	//ypos += iheight;
-	//paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_HOMEPAGE));
-	//paintLine(xpos + x_offset, font_info, homepage);
+	ypos += iheight;
+	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_HOMEPAGE));
+	paintLine(xpos + x_offset, font_info, homepage);
 
-	/* doko */
+	// doko
 	ypos += iheight;
 	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_DOKUMENTATION));
 	paintLine(xpos + x_offset, font_info, docs);
 
 	// forum
-	//ypos += iheight;
-	//paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_FORUM));
-	//paintLine(xpos + x_offset, font_info, forum);
+	ypos += iheight;
+	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_FORUM));
+	paintLine(xpos + x_offset, font_info, forum);
 
 	// license
 	ypos += 5*iheight;
