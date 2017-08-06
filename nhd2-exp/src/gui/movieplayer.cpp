@@ -349,14 +349,17 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	else if (actionKey == "timeshift") 
 	{
 		timeshift = TIMESHIFT;
+		open_filebrowser = false;
 	} 
 	else if (actionKey == "ptimeshift") 
 	{
 		timeshift = P_TIMESHIFT;
+		open_filebrowser = false;
 	} 
 	else if (actionKey == "rtimeshift") 
 	{
 		timeshift = R_TIMESHIFT;
+		open_filebrowser = false;
 	} 
 	else if(actionKey == "urlplayback")
 	{
@@ -502,7 +505,8 @@ void CMoviePlayerGui::PlayFile(void)
 			update_lcd = true;
 			start_play = true;
 			was_file = true;
-			is_file_player = true;
+
+			//
 			if(filelist.size() > 1)
 				m_multiselect = true;
 		}
@@ -648,6 +652,8 @@ void CMoviePlayerGui::PlayFile(void)
 		// timeshift
 		if (timesh) 
 		{
+			timesh = false;
+
 			char fname[255];
 			int cnt = 10 * 1000000;
 
@@ -667,11 +673,6 @@ void CMoviePlayerGui::PlayFile(void)
 			sel_filename = std::string(rindex(filename, '/') + 1);
 			
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: Timeshift: %s\n", sel_filename.c_str());
-
-			update_lcd = true;
-			start_play = true;
-			open_filebrowser = false;
-			timesh = false;
 			
 			// extract channel epg infos
 			CEPGData epgData;
@@ -723,12 +724,15 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 
 			addToPlaylist(mfile);
+
+			update_lcd = true;
+			start_play = true;
 			
 			CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 
 			// start timeosd
-			FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-			FileTime.update(position/1000);
+			//FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+			//FileTime.update(position/1000);
 		}
 		
 		// do bookmarks
@@ -881,7 +885,6 @@ void CMoviePlayerGui::PlayFile(void)
 						}
 
 						// startposition					
-						//startposition = 1000 * moviebrowser->getCurrentStartPos();
 						startposition = 1000 * showStartPosSelectionMenu();						
 
 						//
@@ -943,6 +946,15 @@ void CMoviePlayerGui::PlayFile(void)
 			// stop playing if already playing (multiselect)
 			if(playback->playing)
 				playback->Close();
+
+			//
+			if(filelist[selected].file.getExtension() != CFile::EXTENSION_TS)
+				is_file_player = true;
+
+#if !defined ENABLE_GSTREAMER
+			if(filelist[selected].file.getExtension() != CFile::EXTENSION_TS)
+				usleep(5000);
+#endif
 
 			// init player
 #if defined (PLATFORM_COOLSTREAM)
