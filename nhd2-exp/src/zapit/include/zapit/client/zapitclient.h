@@ -25,7 +25,7 @@
 #include <string>
 #include <vector>
 
-/* zapit */
+// zapit
 #include "zapittypes.h"
 #include <connection/basicclient.h>
 

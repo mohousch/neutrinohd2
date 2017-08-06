@@ -4255,8 +4255,9 @@ skip_message:
 	}
 	else if (msg == NeutrinoMessages::EVT_SERVICES_UPD) 
 	{
-		// dont show this msg
-		//MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_ZAPIT_SDTCHANGED), CMessageBox::mbrBack,CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+		//FIXME:remember this
+		channelsInit();
+		channelList->adjustToChannelID(live_channel_id);
 	}
 	
 	if ((msg >= CRCInput::RC_WithData) && (msg < CRCInput::RC_WithData + 0x10000000))

@@ -30,16 +30,16 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-/* tuxbox headers */
+// tuxbox headers
 #include <configfile.h>
 
 #include <bouquets.h>
-#include <getservices.h> /* LoadServices */
+#include <getservices.h> // LoadServices
 #include <sdt.h>
 #include <settings.h>
 #include <xmlinterface.h>
 
-/* system */
+// system
 #include <system/debug.h>
 
 
@@ -68,7 +68,6 @@ void cp(char * from, char * to);
         }                                                               \
         while (0)
 
-/**** class CBouquet ********************************************************/
 // -- servicetype 0 queries TV and Radio Channels
 CZapitChannel * CZapitBouquet::getChannelByChannelID(const t_channel_id channel_id, const unsigned char serviceType)
 {
@@ -333,7 +332,7 @@ void CBouquetManager::saveBouquets(const CZapitClient::bouquetMode bouquetMode, 
 			else
 				bouquet = g_bouquetManager->Bouquets[dest];
 
-			/* list from scanned exist in file */
+			// list from scanned exist in file
 			// tv bouquets
 			for(unsigned int i = 0; i < Bouquets[0]->tvChannels.size(); i++) 
 			{
@@ -494,7 +493,7 @@ void CBouquetManager::loadBouquets(bool ignoreBouquetFile)
 
 	parseBouquetsXml(UBOUQUETS_XML, true);
 	
-	/* FIXME: fix first sdt thread
+	// current
 	xmlDocPtr parser = NULL;
 	parser = parseXmlFile(CURRENTSERVICES_XML);
 	if (parser != NULL)
@@ -505,7 +504,6 @@ void CBouquetManager::loadBouquets(bool ignoreBouquetFile)
 		xmlFreeDoc(parser);
 		parser = NULL;
 	}
-	*/
 
 	renumServices();
 }

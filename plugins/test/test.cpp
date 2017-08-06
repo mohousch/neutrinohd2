@@ -783,7 +783,17 @@ REPEAT:
 			selected = listFrame->getSelectedLine();
 			CAudiofileExt audiofile(audioFileList[selected].Name, audioFileList[selected].getExtension());
 			CAudioPlayerGui tmpAudioPlayerGui;
+
+			// add selected file
 			tmpAudioPlayerGui.addToPlaylist(audiofile);
+
+			// add the whole list
+			for(int i = 0; i < audioFileList.size(); i++)
+			{
+				CAudiofileExt audiofile(audioFileList[i].Name, audioFileList[i].getExtension());
+				tmpAudioPlayerGui.addToPlaylist(audiofile);
+			}
+
 			tmpAudioPlayerGui.hidePlayList(true);
 			tmpAudioPlayerGui.exec(NULL, "urlplayback");
 
