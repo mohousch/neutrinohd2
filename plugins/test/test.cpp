@@ -2532,6 +2532,14 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		CAudiofileExt audiofile(audioFileList[audioMenu->getSelected()].Name, audioFileList[audioMenu->getSelected()].getExtension());
 		CAudioPlayerGui tmpAudioPlayerGui;
 		tmpAudioPlayerGui.addToPlaylist(audiofile);
+
+		// add the whole list
+		for(int i = 0; i < audioFileList.size(); i++)
+		{
+			CAudiofileExt audiofile(audioFileList[i].Name, audioFileList[i].getExtension());
+			tmpAudioPlayerGui.addToPlaylist(audiofile);
+		}
+
 		tmpAudioPlayerGui.hidePlayList(true);
 		tmpAudioPlayerGui.exec(NULL, "urlplayback");
 	}
