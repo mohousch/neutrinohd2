@@ -562,6 +562,9 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 
 	if(m_gst_playbin)
 	{
+		// set uri
+		g_object_set(G_OBJECT (m_gst_playbin), "uri", uri, NULL);	
+
 		// increase the default 2 second / 2 MB buffer limitations to 5s / 5MB
 		if(isHTTP)
 		{
@@ -574,10 +577,7 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 		}
 		
 		// set flags
-		g_object_set(G_OBJECT (m_gst_playbin), "flags", flags, NULL);
-
-		// set uri
-		g_object_set(G_OBJECT (m_gst_playbin), "uri", uri, NULL);	
+		g_object_set(G_OBJECT (m_gst_playbin), "flags", flags, NULL);	
 		
 		//gstbus handler
 		bus = gst_pipeline_get_bus(GST_PIPELINE (m_gst_playbin));
