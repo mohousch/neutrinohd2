@@ -309,6 +309,10 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	// 
 	filename = NULL;
 	sel_filename.clear();
+	Title.clear();
+	Info1.clear();
+	Info2.clear();
+	Thumbnail.clear();
 	g_numpida = 0;
 	g_vpid = 0;
 	g_vtype = 0;
@@ -465,7 +469,7 @@ void CMoviePlayerGui::PlayFile(void)
 					g_currentac3 = filelist[0].audioPids[0].atype;
 
 					//
-					currentapid = /*g_currentapid*/0;
+					currentapid = g_currentapid;
 				}
 
 				for (int i = 0; i < (int)filelist[0].audioPids.size(); i++) 
@@ -475,10 +479,14 @@ void CMoviePlayerGui::PlayFile(void)
 
 					if (filelist[0].audioPids[i].selected) 
 					{
-						g_currentapid = /*filelist[0].audioPids[i].epgAudioPid*/i;	//FIXME
+#if defined (PLATFORM_COOLSTREAM)
+							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
+#else
+							g_currentapid = i;	//FIXME
+#endif						
 						g_currentac3 = filelist[0].audioPids[i].atype;
 						//
-						currentapid = /*g_currentapid*/0;
+						currentapid = g_currentapid;
 					}
 				}
 
@@ -575,11 +583,11 @@ void CMoviePlayerGui::PlayFile(void)
 					// 
 					if(!filelist[selected].audioPids.empty()) 
 					{
-						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;	//FIXME
+						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;
 						g_currentac3 = filelist[selected].audioPids[0].atype;
 
 						//
-						currentapid = /*g_currentapid*/0;
+						currentapid = g_currentapid;
 					}
 
 					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
@@ -589,11 +597,15 @@ void CMoviePlayerGui::PlayFile(void)
 
 						if (filelist[selected].audioPids[i].selected) 
 						{
-							g_currentapid = /*filelist[selected].audioPids[i].epgAudioPid*/i;	//FIXME
+#if defined (PLATFORM_COOLSTREAM)
+							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
+#else
+							g_currentapid = i;	//FIXME
+#endif							
 							g_currentac3 = filelist[selected].audioPids[i].atype;
 
 							//
-							currentapid = /*g_currentapid*/0;
+							currentapid = g_currentapid;
 						}
 					}
 
@@ -867,7 +879,7 @@ void CMoviePlayerGui::PlayFile(void)
 							g_currentac3 = filelist[0].audioPids[0].atype;
 
 							//
-							currentapid = /*g_currentapid*/0;
+							currentapid = g_currentapid;
 						}
 
 						for (int i = 0; i < (int)filelist[0].audioPids.size(); i++) 
@@ -877,10 +889,14 @@ void CMoviePlayerGui::PlayFile(void)
 
 							if (filelist[0].audioPids[i].selected) 
 							{
-								g_currentapid = /*filelist[0].audioPids[i].epgAudioPid*/i;	//FIXME
+#if defined (PLATFORM_COOLSTREAM)
+								g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
+#else
+								g_currentapid = i;	//FIXME
+#endif								
 								g_currentac3 = filelist[0].audioPids[i].atype;
 								//
-								currentapid = 0/*g_currentapid*/;
+								currentapid = g_currentapid;
 							}
 						}
 
@@ -1664,7 +1680,7 @@ void CMoviePlayerGui::PlayFile(void)
 						g_currentac3 = filelist[selected].audioPids[0].atype;
 
 						//
-						currentapid = /*g_currentapid*/0;
+						currentapid = g_currentapid;
 					}
 
 					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
@@ -1674,11 +1690,15 @@ void CMoviePlayerGui::PlayFile(void)
 
 						if (filelist[selected].audioPids[i].selected) 
 						{
-							g_currentapid = /*filelist[selected].audioPids[i].epgAudioPid*/i;	//FIXME
+#if defined (PLATFORM_COOLSTREAM)
+							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
+#else
+							g_currentapid = i;	//FIXME
+#endif
 							g_currentac3 = filelist[selected].audioPids[i].atype;
 
 							//
-							currentapid = /*g_currentapid*/0;
+							currentapid = g_currentapid;
 						}
 					}
 
@@ -1732,7 +1752,7 @@ void CMoviePlayerGui::PlayFile(void)
 						g_currentac3 = filelist[selected].audioPids[0].atype;
 
 						//
-						currentapid = /*g_currentapid*/0;
+						currentapid = g_currentapid;
 					}
 
 					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
@@ -1742,11 +1762,15 @@ void CMoviePlayerGui::PlayFile(void)
 
 						if (filelist[selected].audioPids[i].selected) 
 						{
-							g_currentapid = /*filelist[selected].audioPids[i].epgAudioPid*/i;	//FIXME
+#if defined (PLATFORM_COOLSTREAM)
+							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
+#else
+							g_currentapid = i;	//FIXME
+#endif							
 							g_currentac3 = filelist[selected].audioPids[i].atype;
 
 							//
-							currentapid = /*g_currentapid*/0;
+							currentapid = g_currentapid;
 						}
 					}
 

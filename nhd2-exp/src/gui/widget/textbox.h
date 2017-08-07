@@ -76,8 +76,6 @@ class CTextBox
 		CBox m_cFrameScrollRel;
 
 		CWindow m_cBoxWindow;
-		CWindow m_cTextWindow;
-		CWindow m_cScrollBarWindow;
 
 		int m_nMaxHeight;
 		int m_nMaxWidth;
@@ -105,8 +103,6 @@ class CTextBox
 
 		// backgrond
 		fb_pixel_t m_textBackgroundColor;
-
-		//CFrameBuffer* frameBuffer;
 		
 		std::string thumbnail;
 		int lx; 

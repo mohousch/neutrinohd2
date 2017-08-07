@@ -504,7 +504,7 @@ void cPlayback::Close(void)
 }
 
 // start
-bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, unsigned short /*_ap*/, int /*_ac3*/, int /*_duration*/)
+bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, unsigned short _ap, int /*_ac3*/, int /*_duration*/)
 {
 	dprintf(DEBUG_NORMAL, "%s:%s - filename=%s\n", FILENAME, __FUNCTION__, filename);
 	
@@ -609,7 +609,7 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 	//open file
 	if(player && player->playback && player->playback->Command(player, PLAYBACK_OPEN, (char *)file.c_str()) >= 0) 
 	{
-		/* play it baby  */
+		// play it baby 
 		if(player && player->output && player->playback) 
 		{
         		player->output->Command(player, OUTPUT_OPEN, NULL);
@@ -629,8 +629,8 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 #endif
 	
 	//
-	//if(playing)
-	//	SetAPid(_ap);
+	if(playing)
+		SetAPid(_ap);
 
 	dprintf(DEBUG_NORMAL, "%s:%s (playing %d)\n", FILENAME, __FUNCTION__, playing);	
 

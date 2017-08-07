@@ -430,17 +430,13 @@ void CTextBox::refreshScroll(void)
 
 void CTextBox::refreshText(void)
 {
-	// paint text background
-	m_cTextWindow.setDimension(&m_cFrame);
-	m_cTextWindow.setColor(m_textBackgroundColor);
-	m_cTextWindow.setCorner(radius, type);
-	m_cTextWindow.paint();
-
-	// paint at less thumbnail
-	//if( m_nNrOfLines <= 0) 
-	//	return;
-
 	dprintf(DEBUG_DEBUG, "CTextBox::refreshText:\r\n");
+
+	// paint text background
+	m_cBoxWindow.setDimension(&m_cFrame);
+	m_cBoxWindow.setColor(m_textBackgroundColor);
+	m_cBoxWindow.setCorner(radius, type);
+	m_cBoxWindow.paint();
 	
 	// setthumbnail (paint picture only on first page)
 	if(m_nCurrentPage == 0 && !access(thumbnail.c_str(), F_OK) )
