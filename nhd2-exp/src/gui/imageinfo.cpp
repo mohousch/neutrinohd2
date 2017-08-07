@@ -155,7 +155,6 @@ void CImageInfo::paintLine(int xpos, int font, const char* text)
 void CImageInfo::paint()
 {
 	const char * head_string;
-	//char imagedate[18] = "";
  	int  xpos = x + BORDER_LEFT;
 	int x_offset = g_Font[font_info]->getRenderWidth(g_Locale->getText(LOCALE_IMAGEINFO_HOMEPAGE)) + 10;
 
@@ -178,30 +177,28 @@ void CImageInfo::paint()
 	CConfigFile config('\t');
 	config.loadConfig("/etc/.version");
 
-	const char * imagename = config.getString("imagename", "NeutrinoHD2").c_str();
-	const char * homepage = config.getString("homepage", "").c_str();
-	const char * creator = config.getString("creator", "").c_str();
+	const char * imagename = "neutrinoHD2";
+	imagename = config.getString("imagename", "neutrinoHD2").c_str();
+	const char * homepage = "http://gitorious.org/open-duckbox-project-sh4";
+	homepage = config.getString("homepage", "http://gitorious.org/open-duckbox-project-sh4").c_str();
 	const char * docs = config.getString("docs", "http://wiki.neutrino-hd.de").c_str();
-	const char * forum = config.getString("forum", "").c_str();
+	const char * forum = "http://gitorious.org/open-duckbox-project-sh4";
+	forum = config.getString("forum", "http://gitorious.org/open-duckbox-project-sh4").c_str();
 	const char * version = config.getString("version", "1202201602031021").c_str();
 	const char * builddate = BUILT_DATE;
 	const char * gitrev = GIT;
 	
 
-	static CFlashVersionInfo versionInfo(version);
-	const char * releaseCycle = versionInfo.getReleaseCycle();
-	const char * imageType = versionInfo.getType();
-	//sprintf((char*) imagedate, "%s  %s", versionInfo.getDate(), versionInfo.getTime());
+	//static CFlashVersionInfo versionInfo(version);
+	const char * releaseCycle = "2.2";
+	//releaseCycle = versionInfo.getReleaseCycle();
+	const char * imageType = "Snapshot";
+	//imageType = versionInfo.getType();
 
 	// image name
 	ypos += iheight;
 	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_IMAGE));
 	paintLine(xpos + x_offset, font_info, imagename);
-
-	// image date
-	//ypos += iheight;
-	//paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_DATE));
-	//paintLine(xpos + x_offset, font_info, imagedate);
 
 	// release cycle
 	ypos += iheight;
@@ -223,15 +220,8 @@ void CImageInfo::paint()
 	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_TYPE));
 	paintLine(xpos + x_offset, font_info, imageType);
 
-	// image creator
+	// 
 	ypos += iheight;
-	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_CREATOR));
-	paintLine(xpos + x_offset, font_info, creator);
-
-	// homepage
-	ypos += iheight;
-	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_HOMEPAGE));
-	paintLine(xpos + x_offset, font_info, homepage);
 
 	// doko
 	ypos += iheight;
@@ -242,6 +232,11 @@ void CImageInfo::paint()
 	ypos += iheight;
 	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_FORUM));
 	paintLine(xpos + x_offset, font_info, forum);
+
+	// homepage
+	ypos += iheight;
+	paintLine(xpos, font_info, g_Locale->getText(LOCALE_IMAGEINFO_HOMEPAGE));
+	paintLine(xpos + x_offset, font_info, homepage);
 
 	// license
 	ypos += 5*iheight;
