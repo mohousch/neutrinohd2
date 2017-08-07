@@ -144,12 +144,10 @@ class CMoviePlayerGui : public CMenuTarget
 		int startposition;
 		int g_jumpseconds;
 
-		unsigned short g_apids[10];
-		unsigned short g_ac3flags[10];
+		//
 		unsigned short g_numpida;
 		unsigned short g_vpid;
 		unsigned short g_vtype;
-
 		unsigned int g_currentapid;
 		unsigned int g_currentac3;
 		
@@ -157,7 +155,7 @@ class CMoviePlayerGui : public CMenuTarget
 		CMoviePlayList filelist;
 		unsigned int selected;
 		
-		const char *filename;
+		std::string filename;
 		std::string Title;
 		std::string Info1;
 		std::string Info2;
@@ -193,20 +191,16 @@ class CMoviePlayerGui : public CMenuTarget
 		bool stopped;
 
 		std::string Path_local;
-
 		CMovieBrowser * moviebrowser;
 		
 		CMovieInfo cMovieInfo;	
-		//MI_MOVIE_INFO * p_movie_info;
 
-		void PlayFile();
 		void cutNeutrino();
 		void restoreNeutrino();
-		bool get_movie_info_apid_name(int apid, MI_MOVIE_INFO * movie_info, std::string * apidtitle);
+		void PlayFile();
+	
 
 		void showHelpTS(void);
-		
-		// lcd
 		void updateLcd(const std::string & sel_filename);
 		int showStartPosSelectionMenu(void);
 		
@@ -215,11 +209,11 @@ class CMoviePlayerGui : public CMenuTarget
 		~CMoviePlayerGui();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 		
-		// show infos
+		// 
 		void showFileInfo();
 
 		//
-		void addToPlaylist(MI_MOVIE_INFO& file);
+		void addToPlaylist(MI_MOVIE_INFO& mfile);
 		void clearPlaylist(void);
 		void removeFromPlaylist(long pos);
 };

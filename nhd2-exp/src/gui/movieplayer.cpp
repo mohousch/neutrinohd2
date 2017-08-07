@@ -178,23 +178,6 @@ void CMoviePlayerGui::restoreNeutrino()
 	stopped = false;
 }
 
-bool CMoviePlayerGui::get_movie_info_apid_name(int apid, MI_MOVIE_INFO * movie_info, std::string * apidtitle)
-{
-	if (movie_info == NULL || apidtitle == NULL)
-		return false;
-
-	for (int i = 0; i < (int)movie_info->audioPids.size(); i++) 
-	{
-		if (movie_info->audioPids[i].epgAudioPid == apid && !movie_info->audioPids[i].epgAudioPidName.empty()) 
-		{
-			*apidtitle = movie_info->audioPids[i].epgAudioPidName;
-			return true;
-		}
-	}
-
-	return false;
-}
-
 void CMoviePlayerGui::updateLcd(const std::string & lcd_filename)
 {
 	char tmp[20];
@@ -234,11 +217,11 @@ void CMoviePlayerGui::updateLcd(const std::string & lcd_filename)
 	CVFD::getInstance()->showMenuText(0, lcd.c_str(), -1, true);	
 }
 
-void CMoviePlayerGui::addToPlaylist(MI_MOVIE_INFO& file)
+void CMoviePlayerGui::addToPlaylist(MI_MOVIE_INFO& mfile)
 {	
-	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::addToPlaylist: %s\n", file.file.Name.c_str());
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::addToPlaylist: %s\n", mfile.file.Name.c_str());
 	
-	filelist.push_back(file);
+	filelist.push_back(mfile);
 }
 
 void CMoviePlayerGui::clearPlaylist(void)
@@ -307,7 +290,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	selected = 0;
 	
 	// 
-	filename = NULL;
+	filename.clear();
 	sel_filename.clear();
 	Title.clear();
 	Info1.clear();
@@ -318,12 +301,6 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	g_vtype = 0;
 	g_currentapid = 0;
 	g_currentac3 = 0;
-
-	for (int i = 0; i < g_numpida; i++) 
-	{
-		g_apids[i] = 0;
-		g_ac3flags[i] = 0;
-	}
 	
 	// cutneutrino
 	cutNeutrino();
@@ -391,8 +368,8 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		filelist.clear();
 	
 	//
-	if(filename != NULL)
-		filename = NULL;
+	if(!filename.empty())
+		filename.clear();
 	
 	if(!sel_filename.empty())
 		sel_filename.clear();
@@ -452,7 +429,7 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			if(filelist[0].Url.empty())
 			{
-				filename = filelist[0].file.Name.c_str();
+				filename = filelist[0].file.Name;
 				Title = filelist[0].epgTitle;
 				Info1 = filelist[0].epgInfo1;
 				Info2 = filelist[0].epgInfo2;
@@ -474,9 +451,6 @@ void CMoviePlayerGui::PlayFile(void)
 
 				for (int i = 0; i < (int)filelist[0].audioPids.size(); i++) 
 				{
-					g_ac3flags[i] = filelist[0].audioPids[i].atype;
-					g_numpida++;
-
 					if (filelist[0].audioPids[i].selected) 
 					{
 #if defined (PLATFORM_COOLSTREAM)
@@ -499,7 +473,7 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 			else
 			{
-				filename = filelist[0].Url.c_str();
+				filename = filelist[0].Url;
 				Title = filelist[0].epgTitle;
 				Info1 = filelist[0].epgInfo1;
 				Info2 = filelist[0].epgInfo2;
@@ -570,7 +544,7 @@ void CMoviePlayerGui::PlayFile(void)
 				//
 				if(filelist[selected].Url.empty())
 				{
-					filename = filelist[selected].file.Name.c_str();
+					filename = filelist[selected].file.Name;
 					Title = filelist[selected].epgTitle;
 					Info1 = filelist[selected].epgInfo1;
 					Info2 = filelist[selected].epgInfo2;
@@ -592,9 +566,6 @@ void CMoviePlayerGui::PlayFile(void)
 
 					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
 					{
-						g_ac3flags[i] = filelist[selected].audioPids[i].atype;
-						g_numpida++;
-
 						if (filelist[selected].audioPids[i].selected) 
 						{
 #if defined (PLATFORM_COOLSTREAM)
@@ -618,7 +589,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 				else
 				{
-					filename = filelist[selected].Url.c_str();
+					filename = filelist[selected].Url;
 					Title = filelist[selected].epgTitle;
 					Info1 = filelist[selected].epgInfo1;
 					Info2 = filelist[selected].epgInfo2;
@@ -682,7 +653,7 @@ void CMoviePlayerGui::PlayFile(void)
 
 			sprintf(fname, "%s.ts", rec_filename);
 			filename = fname;
-			sel_filename = std::string(rindex(filename, '/') + 1);
+			sel_filename = std::string(rindex(filename.c_str(), '/') + 1);
 			
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: Timeshift: %s\n", sel_filename.c_str());
 			
@@ -813,7 +784,7 @@ void CMoviePlayerGui::PlayFile(void)
 											g_jumpseconds = 15;
 										g_jumpseconds = g_jumpseconds + filelist[selected].bookmarks.user[book_nr].pos;
 
-										//playstate = CMoviePlayerGui::JPOS;	// bookmark  is of type loop, jump backward
+										//
 										playback->SetPosition((int64_t)g_jumpseconds * 1000);
 									}
 									
@@ -836,15 +807,6 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			FileTime.hide();
 
-			// clear audipopids
-			for (int i = 0; i < g_numpida; i++) 
-			{
-				g_apids[i] = 0;
-				g_ac3flags[i] = 0;
-			}
-			g_numpida = 0; 
-			g_currentapid = 0;
-
 			// moviebrowser
 			if (isMovieBrowser == true) //moviebrowser
 			{	
@@ -862,7 +824,7 @@ void CMoviePlayerGui::PlayFile(void)
 						addToPlaylist(*moviebrowser->getCurrentMovieInfo());
 
 						//
-						filename = filelist[0].file.Name.c_str();
+						filename = filelist[0].file.Name;
 						Title = filelist[0].epgTitle;
 						Info1 = filelist[0].epgInfo1;
 						Info2 = filelist[0].epgInfo2;
@@ -884,9 +846,6 @@ void CMoviePlayerGui::PlayFile(void)
 
 						for (int i = 0; i < (int)filelist[0].audioPids.size(); i++) 
 						{
-							g_ac3flags[i] = filelist[0].audioPids[i].atype;
-							g_numpida++;
-
 							if (filelist[0].audioPids[i].selected) 
 							{
 #if defined (PLATFORM_COOLSTREAM)
@@ -907,7 +866,7 @@ void CMoviePlayerGui::PlayFile(void)
 						g_vpid = filelist[0].epgVideoPid;
 						g_vtype = filelist[0].VideoType;
 						
-						dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: file:%s apid:0x%X atype:%d vpid:0x%X vtype:%d startposition:%d\n", filename, g_currentapid, g_currentac3, g_vpid, g_vtype, startposition/1000);
+						dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: file:%s apid:0x%X atype:%d vpid:0x%X vtype:%d startposition:%d\n", filename.c_str(), g_currentapid, g_currentac3, g_vpid, g_vtype, startposition/1000);
 						
 						update_lcd = true;
 						start_play = true;
@@ -963,17 +922,11 @@ void CMoviePlayerGui::PlayFile(void)
 			if(playback->playing)
 				playback->Close();
 
-			//
+			// init player
+#if defined (PLATFORM_COOLSTREAM)
 			if(filelist[selected].file.getExtension() != CFile::EXTENSION_TS)
 				is_file_player = true;
 
-#if !defined ENABLE_GSTREAMER
-			if(filelist[selected].file.getExtension() != CFile::EXTENSION_TS)
-				usleep(5000);
-#endif
-
-			// init player
-#if defined (PLATFORM_COOLSTREAM)
 			playback->Open(is_file_player ? PLAYMODE_FILE : PLAYMODE_TS);
 #else			
 			playback->Open();
@@ -984,7 +937,7 @@ void CMoviePlayerGui::PlayFile(void)
 				duration = filelist[selected].length * 60 * 1000;
 			  
 			// PlayBack Start			  
-			if(!playback->Start((char *)filename, g_vpid, g_vtype, g_currentapid, g_currentac3, duration))
+			if(!playback->Start((char *)filename.c_str(), g_vpid, g_vtype, g_currentapid, g_currentac3, duration))
 			{
 				dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: Starting Playback failed!\n");
 				playback->Close();
@@ -1046,9 +999,11 @@ void CMoviePlayerGui::PlayFile(void)
 				// set position 
 				playback->SetPosition((int64_t)startposition);
 				
+				//
 				if(timeshift == R_TIMESHIFT) 
 					playback->SetSpeed(-1);
 				
+				//
 #if defined (PLATFORM_COOLSTREAM)
 				playback->GetPosition(position, duration);
 #else
@@ -1663,7 +1618,7 @@ void CMoviePlayerGui::PlayFile(void)
 
 				if(filelist[selected].Url.empty())
 				{
-					filename = filelist[selected].file.Name.c_str();
+					filename = filelist[selected].file.Name;
 					Title = filelist[selected].epgTitle;
 					Info1 = filelist[selected].epgInfo1;
 					Info2 = filelist[selected].epgInfo2;
@@ -1685,9 +1640,6 @@ void CMoviePlayerGui::PlayFile(void)
 
 					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
 					{
-						g_ac3flags[i] = filelist[selected].audioPids[i].atype;
-						g_numpida++;
-
 						if (filelist[selected].audioPids[i].selected) 
 						{
 #if defined (PLATFORM_COOLSTREAM)
@@ -1711,7 +1663,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 				else
 				{
-					filename = filelist[selected].Url.c_str();
+					filename = filelist[selected].Url;
 					Title = filelist[selected].epgTitle;
 					Info1 = filelist[selected].epgInfo1;
 					Info2 = filelist[selected].epgInfo2;
@@ -1735,7 +1687,7 @@ void CMoviePlayerGui::PlayFile(void)
 
 				if(filelist[selected].Url.empty())
 				{
-					filename = filelist[selected].file.Name.c_str();
+					filename = filelist[selected].file.Name;
 					Title = filelist[selected].epgTitle;
 					Info1 = filelist[selected].epgInfo1;
 					Info2 = filelist[selected].epgInfo2;
@@ -1757,8 +1709,8 @@ void CMoviePlayerGui::PlayFile(void)
 
 					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
 					{
-						g_ac3flags[i] = filelist[selected].audioPids[i].atype;
-						g_numpida++;
+						//g_ac3flags[i] = filelist[selected].audioPids[i].atype;
+						//g_numpida++;
 
 						if (filelist[selected].audioPids[i].selected) 
 						{
@@ -1783,7 +1735,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 				else
 				{
-					filename = filelist[selected].Url.c_str();
+					filename = filelist[selected].Url;
 					Title = filelist[selected].epgTitle;
 					Info1 = filelist[selected].epgInfo1;
 					Info2 = filelist[selected].epgInfo2;
@@ -1802,7 +1754,7 @@ void CMoviePlayerGui::PlayFile(void)
 		{
          		if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SCREENSHOT_ANNOUNCE), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
 			{
-				CVCRControl::getInstance()->Screenshot(0, (char *)filename);
+				CVCRControl::getInstance()->Screenshot(0, (char *)filename.c_str());
 			}
 		}
 		else if ((msg == NeutrinoMessages::ANNOUNCE_RECORD) || msg == NeutrinoMessages::RECORD_START || msg == NeutrinoMessages::ZAPTO || msg == NeutrinoMessages::STANDBY_ON || msg == NeutrinoMessages::SHUTDOWN || msg == NeutrinoMessages::SLEEPTIMER) 
