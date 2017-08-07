@@ -174,21 +174,21 @@ void CImageInfo::paint()
 	ypos += (iheight >>1);
 
 
-	CConfigFile config('\t');
-	config.loadConfig("/etc/.version");
+	//CConfigFile config('\t');
+	//config.loadConfig("/etc/.version");
 
 	const char * imagename = "neutrinoHD2";
-	imagename = config.getString("imagename", "neutrinoHD2").c_str();
+	//imagename = config.getString("imagename", "neutrinoHD2").c_str();
 	const char * homepage = "http://gitorious.org/open-duckbox-project-sh4";
-	homepage = config.getString("homepage", "http://gitorious.org/open-duckbox-project-sh4").c_str();
-	const char * docs = config.getString("docs", "http://wiki.neutrino-hd.de").c_str();
+	//homepage = config.getString("homepage", "http://gitorious.org/open-duckbox-project-sh4").c_str();
+	const char * docs = "http://wiki.neutrino-hd.de";
+	//docs = config.getString("docs", "http://wiki.neutrino-hd.de").c_str();
 	const char * forum = "http://gitorious.org/open-duckbox-project-sh4";
-	forum = config.getString("forum", "http://gitorious.org/open-duckbox-project-sh4").c_str();
-	const char * version = config.getString("version", "1202201602031021").c_str();
+	//forum = config.getString("forum", "http://gitorious.org/open-duckbox-project-sh4").c_str();
+	//const char * version = config.getString("version", "1202201602031021").c_str();
 	const char * builddate = BUILT_DATE;
 	const char * gitrev = GIT;
 	
-
 	//static CFlashVersionInfo versionInfo(version);
 	const char * releaseCycle = "2.2";
 	//releaseCycle = versionInfo.getReleaseCycle();

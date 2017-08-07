@@ -605,10 +605,6 @@ bool cPlayback::Start(char *filename, unsigned short /*_vp*/, int /*_vtype*/, un
 	}
 	
 	g_free(uri);
-	
-	// set buffer size
-	if(isHTTP)
-		g_object_set(G_OBJECT(m_gst_playbin), "buffer-size", m_buffer_size, NULL);
 #else	
 	//open file
 	if(player && player->playback && player->playback->Command(player, PLAYBACK_OPEN, (char *)file.c_str()) >= 0) 
