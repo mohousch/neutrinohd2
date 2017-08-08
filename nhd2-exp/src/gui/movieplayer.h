@@ -155,15 +155,6 @@ class CMoviePlayerGui : public CMenuTarget
 		CMoviePlayList filelist;
 		unsigned int selected;
 		
-		std::string filename;
-		std::string Title;
-		std::string Info1;
-		std::string Info2;
-		std::string Thumbnail;
-		
-		//lcd
-		std::string sel_filename;
-		
 		// global flags
 		bool update_lcd;
 		bool open_filebrowser;
@@ -201,7 +192,7 @@ class CMoviePlayerGui : public CMenuTarget
 	
 
 		void showHelpTS(void);
-		void updateLcd(const std::string & sel_filename);
+		void updateLcd(const std::string & lcd_filename);
 		int showStartPosSelectionMenu(void);
 		
 	public:
