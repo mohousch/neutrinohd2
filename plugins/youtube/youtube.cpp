@@ -116,16 +116,19 @@ const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_0, NONEXISTANT_LOCALE, NULL}
 };
 
-void CYTBrowser::showYTMoviesMenu()
+void CYTBrowser::showYTMoviesMenu(bool reload)
 {
 	dprintf(DEBUG_NORMAL, "CYTBrowser::loadMovies:\n");
 
-	CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
-	loadBox.paint();
+	if(reload)
+	{
+		CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+		loadBox.paint();
 
-	loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
 
-	loadBox.hide();
+		loadBox.hide();
+	}
 
 	//
 	std::string title;
@@ -252,7 +255,7 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		if(m_settings.ytautoplay)
 		{
-			showYTMoviesMenu();
+			showYTMoviesMenu(false);
 		}
 		else
 			return menu_return::RETURN_REPAINT;

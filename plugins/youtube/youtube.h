@@ -66,7 +66,7 @@ class CYTBrowser : public CMenuTarget
 		CYTBrowser();
 		~CYTBrowser();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
-		void showYTMoviesMenu();
+		void showYTMoviesMenu(bool reload = true);
 }; 
 
 #endif //__YT__
