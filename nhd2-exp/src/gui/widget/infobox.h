@@ -101,7 +101,6 @@ class CInfoBox
 
 	public:
 		virtual ~CInfoBox();
-		CInfoBox();
 		CInfoBox(const char * text);
 		CInfoBox(const char * text, 
 				   CFont *fontText,

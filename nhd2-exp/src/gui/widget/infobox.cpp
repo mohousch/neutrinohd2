@@ -144,22 +144,6 @@ CInfoBox::CInfoBox(const char * text)
 }
 
 //////////////////////////////////////////////////////////////////////
-// Function Name:	CInfoBox	
-// Description:		
-// Parameters:		
-// Data IN/OUT:		
-// Return:		
-// Notes:		
-//////////////////////////////////////////////////////////////////////
-CInfoBox::CInfoBox()
-{
-	m_pcTextBox = NULL;
-
-	initVar();
-	initFramesRel();
-}
-
-//////////////////////////////////////////////////////////////////////
 // Function Name:	~CInfoBox	
 // Description:		
 // Parameters:		
@@ -256,11 +240,7 @@ void CInfoBox::refreshTitle(void)
 		frameBuffer->paintIcon(m_cIcon.c_str(), m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
 	}
 
-	// exit icon
-	//frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
-	
-	//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HOME, m_cBoxFrameTitleRel.iX + m_cBoxFrameTitleRel.iWidth - BORDER_RIGHT - iw , m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
-
+	//
 	m_pcFontTitle->RenderString(m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + 5, m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + 2*iw + 5), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
 
@@ -284,6 +264,7 @@ bool CInfoBox::hide(void)
 		m_pcTextBox->hide();
 	}
 
+	// hide title
 	frameBuffer->paintBackgroundBoxRel(m_cBoxFrame.iX, m_cBoxFrame.iY, m_cBoxFrame.iWidth, m_cBoxFrame.iHeight);
 	
 	frameBuffer->blit();
@@ -357,6 +338,10 @@ bool CInfoBox::paint(void)
 {
 	dprintf(DEBUG_DEBUG, "CInfoBox::paint\n");
 
+	// title
+	refreshTitle();
+
+	// textBox
 	if(m_pcTextBox != NULL)
 	{
 		// set corner
@@ -365,8 +350,6 @@ bool CInfoBox::paint(void)
 		// paint
 		m_pcTextBox->paint();
 	}
-	
-	refresh();
 	
 	return (true);
 }
@@ -385,12 +368,10 @@ void CInfoBox::refresh(void)
 	refreshTitle();
 
 	// rep-draw textbox if there is one
-	/*
 	if(m_pcTextBox != NULL)
 	{
 		m_pcTextBox->refresh();
 	}
-	*/
 }
 
 //////////////////////////////////////////////////////////////////////

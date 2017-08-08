@@ -2027,7 +2027,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			}
 			else
 			{
-				MessageBox(LOCALE_MESSAGEBOX_INFO, "no tmdb info found!", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+				MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_STREAMINFO_NOT_AVAILABLE), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 			}
 
 			delete tmdb;

@@ -561,7 +561,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 						delete infoBox;
 					}
 					else
-						MessageBox(LOCALE_MESSAGEBOX_INFO, "no tmdb info found!", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+						MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_STREAMINFO_NOT_AVAILABLE), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 
 					delete tmdb;
 					tmdb = NULL;	
