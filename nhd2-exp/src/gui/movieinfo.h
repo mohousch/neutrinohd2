@@ -163,7 +163,6 @@ typedef struct
 	int epgVTXPID;				// currently not used, we just do not want to loose this info if movie info is saved backed 
 	
 	//
-	std::string Url;
 	std::string tfile; 			// thumbnail/cover file name
 	std::string ytdate; 			// yt published
 	std::string ytid; 			// yt published

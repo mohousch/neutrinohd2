@@ -427,22 +427,22 @@ void CMoviePlayerGui::PlayFile(void)
 		//
 		if(!filelist.empty())
 		{
-			if(filelist[0].Url.empty())
-			{
-				filename = filelist[0].file.Name;
-				Title = filelist[0].epgTitle;
-				Info1 = filelist[0].epgInfo1;
-				Info2 = filelist[0].epgInfo2;
-				Thumbnail = filelist[0].tfile;
-				if(!filelist[0].epgTitle.empty())
-					sel_filename = filelist[0].epgTitle;
-				else
-					sel_filename = filelist[0].file.getFileName();
+			filename = filelist[0].file.Name;
+			Title = filelist[0].epgTitle;
+			Info1 = filelist[0].epgInfo1;
+			Info2 = filelist[0].epgInfo2;
+			Thumbnail = filelist[0].tfile;
+			if(!filelist[0].epgTitle.empty())
+				sel_filename = filelist[0].epgTitle;
+			else
+				sel_filename = filelist[0].file.getFileName();
 
-				//
+			//
+			if(filelist[selected].ytid.empty())
+			{
 				if(!filelist[0].audioPids.empty()) 
 				{
-					g_currentapid = filelist[0].audioPids[0].epgAudioPid;	//FIXME
+					g_currentapid = filelist[0].audioPids[0].epgAudioPid;
 					g_currentac3 = filelist[0].audioPids[0].atype;
 
 					//
@@ -471,19 +471,8 @@ void CMoviePlayerGui::PlayFile(void)
 				// startposition			
 				startposition = 1000 * showStartPosSelectionMenu();
 			}
-			else
-			{
-				filename = filelist[0].Url;
-				Title = filelist[0].epgTitle;
-				Info1 = filelist[0].epgInfo1;
-				Info2 = filelist[0].epgInfo2;
-				Thumbnail = filelist[0].tfile;
-				if(!filelist[0].epgTitle.empty())
-					sel_filename = filelist[0].epgTitle;
-				else
-					sel_filename = filelist[0].file.getFileName();
-			}
 
+			//
 			update_lcd = true;
 			start_play = true;
 			was_file = true;
@@ -542,19 +531,19 @@ void CMoviePlayerGui::PlayFile(void)
 				selected++;
 
 				//
-				if(filelist[selected].Url.empty())
-				{
-					filename = filelist[selected].file.Name;
-					Title = filelist[selected].epgTitle;
-					Info1 = filelist[selected].epgInfo1;
-					Info2 = filelist[selected].epgInfo2;
-					Thumbnail = filelist[selected].tfile;
-					if(!filelist[selected].epgTitle.empty())
-						sel_filename = filelist[selected].epgTitle;
-					else
-						sel_filename = filelist[selected].file.getFileName();
+				filename = filelist[selected].file.Name;
+				Title = filelist[selected].epgTitle;
+				Info1 = filelist[selected].epgInfo1;
+				Info2 = filelist[selected].epgInfo2;
+				Thumbnail = filelist[selected].tfile;
+				if(!filelist[selected].epgTitle.empty())
+					sel_filename = filelist[selected].epgTitle;
+				else
+					sel_filename = filelist[selected].file.getFileName();
 
-					// 
+				//
+				if(filelist[selected].ytid.empty())
+				{ 
 					if(!filelist[selected].audioPids.empty()) 
 					{
 						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;
@@ -587,20 +576,8 @@ void CMoviePlayerGui::PlayFile(void)
 					// startposition			
 					startposition = 1000 * showStartPosSelectionMenu();
 				}
-				else
-				{
-					filename = filelist[selected].Url;
-					Title = filelist[selected].epgTitle;
-					Info1 = filelist[selected].epgInfo1;
-					Info2 = filelist[selected].epgInfo2;
-					Thumbnail = filelist[selected].tfile;
-					if(!filelist[selected].epgTitle.empty())
-						sel_filename = filelist[selected].epgTitle;
-					else
-						sel_filename = filelist[selected].file.getFileName();
-				}
+				
 				//
- 
 				update_lcd = true;
 				start_play = true;
 			} 
@@ -903,7 +880,7 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.update((duration - position) / 1000);
 			}
 
-			FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+			FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 
 			time_t jetzt = time(NULL);
 
@@ -1012,7 +989,7 @@ void CMoviePlayerGui::PlayFile(void)
 
 				//
 				//FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 
 				timeStartShowingInfo = time(NULL);	
 			}
@@ -1121,7 +1098,7 @@ void CMoviePlayerGui::PlayFile(void)
 				else 
 				{
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 
 					timeStartShowingInfo = time(NULL);
 				}
@@ -1167,7 +1144,7 @@ void CMoviePlayerGui::PlayFile(void)
 				else 
 				{
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 
 					//timeStartShowingInfo = time(NULL); 
 				}
@@ -1179,7 +1156,7 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.hide();
 			
 			//			
-			if(filelist[selected].Url.empty())
+			if(filelist[selected].ytid.empty())
 			{
 				int pos_sec = position / 1000;
 
@@ -1309,7 +1286,7 @@ void CMoviePlayerGui::PlayFile(void)
 				else 
 				{
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 
 					timeStartShowingInfo = time(NULL);
 				}
@@ -1322,7 +1299,7 @@ void CMoviePlayerGui::PlayFile(void)
 				else
 				{
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+					FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 
 					timeStartShowingInfo = time(NULL);
 				}
@@ -1351,7 +1328,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1382,7 +1359,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1398,7 +1375,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1414,7 +1391,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1429,7 +1406,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1444,7 +1421,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1459,7 +1436,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1474,7 +1451,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1489,7 +1466,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1514,7 +1491,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1530,7 +1507,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1545,7 +1522,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1561,7 +1538,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].Url.empty());
+				FileTime.show(Title, Info1.empty()? Info2 : Info1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1616,26 +1593,27 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				selected--;
 
-				if(filelist[selected].Url.empty())
-				{
-					filename = filelist[selected].file.Name;
-					Title = filelist[selected].epgTitle;
-					Info1 = filelist[selected].epgInfo1;
-					Info2 = filelist[selected].epgInfo2;
-					Thumbnail = filelist[selected].tfile;
-					if(!filelist[selected].epgTitle.empty())
-						sel_filename = filelist[selected].epgTitle;
-					else
-						sel_filename = filelist[selected].file.getFileName();
+				//
+				filename = filelist[selected].file.Name;
+				Title = filelist[selected].epgTitle;
+				Info1 = filelist[selected].epgInfo1;
+				Info2 = filelist[selected].epgInfo2;
+				Thumbnail = filelist[selected].tfile;
+				if(!filelist[selected].epgTitle.empty())
+					sel_filename = filelist[selected].epgTitle;
+				else
+					sel_filename = filelist[selected].file.getFileName();
 
-					//
+				//
+				if(filelist[selected].ytid.empty())
+				{
 					if(!filelist[selected].audioPids.empty()) 
 					{
-						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;	//FIXME
+						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;
 						g_currentac3 = filelist[selected].audioPids[0].atype;
 
-						//
-						currentapid = g_currentapid;
+							//
+							currentapid = g_currentapid;
 					}
 
 					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
@@ -1645,7 +1623,7 @@ void CMoviePlayerGui::PlayFile(void)
 #if defined (PLATFORM_COOLSTREAM)
 							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
 #else
-							g_currentapid = i;	//FIXME
+							g_currentapid = i;
 #endif
 							g_currentac3 = filelist[selected].audioPids[i].atype;
 
@@ -1661,19 +1639,8 @@ void CMoviePlayerGui::PlayFile(void)
 					// startposition			
 					startposition = 1000 * showStartPosSelectionMenu();
 				}
-				else
-				{
-					filename = filelist[selected].Url;
-					Title = filelist[selected].epgTitle;
-					Info1 = filelist[selected].epgInfo1;
-					Info2 = filelist[selected].epgInfo2;
-					Thumbnail = filelist[selected].tfile;
-					if(!filelist[selected].epgTitle.empty())
-						sel_filename = filelist[selected].epgTitle;
-					else
-						sel_filename = filelist[selected].file.getFileName();
-				}
-				
+
+				//
 				update_lcd = true;
 				start_play = true;
 			}
@@ -1685,39 +1652,37 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				selected++;
 
-				if(filelist[selected].Url.empty())
-				{
-					filename = filelist[selected].file.Name;
-					Title = filelist[selected].epgTitle;
-					Info1 = filelist[selected].epgInfo1;
-					Info2 = filelist[selected].epgInfo2;
-					Thumbnail = filelist[selected].tfile;
-					if(!filelist[selected].epgTitle.empty())
-						sel_filename = filelist[selected].epgTitle;
-					else
-						sel_filename = filelist[selected].file.getFileName();
+				//
+				filename = filelist[selected].file.Name;
+				Title = filelist[selected].epgTitle;
+				Info1 = filelist[selected].epgInfo1;
+				Info2 = filelist[selected].epgInfo2;
+				Thumbnail = filelist[selected].tfile;
+				if(!filelist[selected].epgTitle.empty())
+					sel_filename = filelist[selected].epgTitle;
+				else
+					sel_filename = filelist[selected].file.getFileName();
 
-					//
+				//
+				if(filelist[selected].ytid.empty())
+				{
 					if(!filelist[selected].audioPids.empty()) 
 					{
-						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;	//FIXME
+						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;
 						g_currentac3 = filelist[selected].audioPids[0].atype;
 
-						//
-						currentapid = g_currentapid;
+							//
+							currentapid = g_currentapid;
 					}
 
 					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
 					{
-						//g_ac3flags[i] = filelist[selected].audioPids[i].atype;
-						//g_numpida++;
-
 						if (filelist[selected].audioPids[i].selected) 
 						{
 #if defined (PLATFORM_COOLSTREAM)
 							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
 #else
-							g_currentapid = i;	//FIXME
+							g_currentapid = i;
 #endif							
 							g_currentac3 = filelist[selected].audioPids[i].atype;
 
@@ -1733,19 +1698,8 @@ void CMoviePlayerGui::PlayFile(void)
 					// startposition			
 					startposition = 1000 * showStartPosSelectionMenu();
 				}
-				else
-				{
-					filename = filelist[selected].Url;
-					Title = filelist[selected].epgTitle;
-					Info1 = filelist[selected].epgInfo1;
-					Info2 = filelist[selected].epgInfo2;
-					Thumbnail = filelist[selected].tfile;
-					if(!filelist[selected].epgTitle.empty())
-						sel_filename = filelist[selected].epgTitle;
-					else
-						sel_filename = filelist[selected].file.getFileName();
-				}
 				
+				//
 				update_lcd = true;
 				start_play = true;
 			}
@@ -1779,7 +1733,7 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (2)\n");	
 
-			if(filelist[selected].Url.empty() && filelist[selected].file.getType() != CFile::FILE_AUDIO)
+			if(filelist[selected].ytid.empty() && filelist[selected].file.getType() != CFile::FILE_AUDIO)
 			{
 				// if we have a movie information, try to save the stop position
 				ftime(&current_time);

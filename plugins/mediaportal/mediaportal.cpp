@@ -44,8 +44,8 @@ void CMediaPortal::musicDeluxe(void)
 	mfile.epgInfo1 = "stream";
 	mfile.epgInfo2 = "Musik Sender";
 	mfile.tfile = PLUGINDIR "/mediaportal/musicdeluxe.png";
-	mfile.file.Name = "musicdeluxe";
-	mfile.Url = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
+	mfile.ytid = "musicdeluxe";
+	mfile.file.Name = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
 
 	CMoviePlayerGui tmpMoviePlayerGui;
 					

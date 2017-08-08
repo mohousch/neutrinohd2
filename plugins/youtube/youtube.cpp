@@ -333,8 +333,7 @@ REPEAT:
 		movieInfo.tfile = ylist[i].tfile;
 		movieInfo.ytdate = ylist[i].published;
 		movieInfo.ytid = ylist[i].id;
-		movieInfo.file.Name = ylist[i].title;
-		movieInfo.Url = ylist[i].GetUrl();
+		movieInfo.file.Name = ylist[i].GetUrl();
 		
 		m_vMovieInfo.push_back(movieInfo);
 	}

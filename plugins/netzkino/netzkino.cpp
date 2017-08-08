@@ -280,8 +280,7 @@ void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 		movieInfo.tfile = ylist[count].tfile;
 		movieInfo.ytdate = ylist[count].published;
 		movieInfo.ytid = ylist[count].id;
-		movieInfo.file.Name = ylist[count].title;
-		movieInfo.Url = ylist[count].url;
+		movieInfo.file.Name = ylist[count].url;
 		
 		m_vMovieInfo.push_back(movieInfo);
 	}

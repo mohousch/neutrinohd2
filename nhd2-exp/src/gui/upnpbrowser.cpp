@@ -569,9 +569,8 @@ void CUpnpBrowserGui::handleFolder(void)
 				{
 					MI_MOVIE_INFO mfile;
 					
-					mfile.Url = (*entries)[i].resources[preferred].url.c_str();
-					mfile.file.Name = mfile.Url;
-					mfile.epgTitle = mfile.Url; 
+					mfile.file.Name = (*entries)[i].resources[preferred].url.c_str();
+					mfile.epgTitle = mfile.file.getFileName(); 
 					
 					tmpMoviePlayerGui.addToPlaylist(mfile);
 					
@@ -883,9 +882,8 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 						m_frameBuffer->blit();	
 						
 						MI_MOVIE_INFO mfile;
-						mfile.Url = (*entries)[selected - index].resources[preferred].url.c_str(); 
-						mfile.file.Name = mfile.Url;
-						mfile.epgTitle = mfile.Url; 
+						mfile.file.Name = (*entries)[selected - index].resources[preferred].url.c_str(); 
+						mfile.epgTitle = mfile.file.getFileName(); 
 						
 						CMoviePlayerGui tmpMoviePlayerGui;
 						tmpMoviePlayerGui.addToPlaylist(mfile);
