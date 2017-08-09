@@ -99,19 +99,6 @@
 
 extern cPlayback *playback;
 
-//
-extern t_channel_id live_channel_id; 			//defined in zapit.cpp
-
-#define MOVIE_HINT_BOX_TIMER 	5			// time to show bookmark hints in seconds
-#define TIMESHIFT_SECONDS 	3
-
-int timeshift = CMoviePlayerGui::NO_TIMESHIFT;
-extern char rec_filename[1024];				// defined in stream2file.cpp
-
-// for timeshift epg infos
-bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGData * epgdata);
-bool sectionsd_getEPGidShort(event_id_t epgID, CShortEPGData * epgdata);
-
 // movieplayer
 CMoviePlayerGui::CMoviePlayerGui()
 {
@@ -278,7 +265,6 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	m_multiselect = false;
 	isMovieBrowser = false;
 	isURL = false;
-	timeshift = NO_TIMESHIFT;
 	
 	// for playing
 	playstate = CMoviePlayerGui::STOPPED;
@@ -303,7 +289,6 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	{
 		open_filebrowser = true;
 		isMovieBrowser = true;
-		timeshift = NO_TIMESHIFT;
 		isURL = false;
 		
 		// moviebrowser
@@ -314,33 +299,16 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	{
 		open_filebrowser = true;
 		isMovieBrowser = true;
-		timeshift = NO_TIMESHIFT;
 		isURL = false;
 		
 		// moviebrowser
 		moviebrowser = new CMovieBrowser();
 		moviebrowser->setMode(MB_SHOW_FILES);
 	}
-	else if (actionKey == "timeshift") 
-	{
-		timeshift = TIMESHIFT;
-		open_filebrowser = false;
-	} 
-	else if (actionKey == "ptimeshift") 
-	{
-		timeshift = P_TIMESHIFT;
-		open_filebrowser = false;
-	} 
-	else if (actionKey == "rtimeshift") 
-	{
-		timeshift = R_TIMESHIFT;
-		open_filebrowser = false;
-	} 
 	else if(actionKey == "urlplayback")
 	{
 		open_filebrowser = false;
 		isMovieBrowser = false;
-		timeshift = NO_TIMESHIFT;
 		isURL = true;
 	}
 	
@@ -377,12 +345,6 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	//
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 
-	if (timeshift) 
-	{
-		timeshift = NO_TIMESHIFT;
-		return menu_return::RETURN_EXIT_ALL;
-	}
-
 	return menu_return::RETURN_REPAINT;
 }
 
@@ -393,9 +355,6 @@ void CMoviePlayerGui::PlayFile(void)
 
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
-	
-	// timeshift
-	bool timesh = timeshift;
 	
 	// url
 	if(isURL)
@@ -556,74 +515,6 @@ void CMoviePlayerGui::PlayFile(void)
 			playstate = CMoviePlayerGui::STOPPED;
 			break;
 		}
-
-		// timeshift
-		if (timesh) 
-		{
-			timesh = false;
-
-			char fname[255];
-			int cnt = 10 * 1000000;
-
-			while (!strlen(rec_filename)) 
-			{
-				usleep(1000);
-				cnt -= 1000;
-				if (!cnt)
-					break;
-			}
-
-			if (!strlen(rec_filename))
-				return;
-
-			sprintf(fname, "%s.ts", rec_filename);
-			
-			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: Timeshift: %s\n", fname);
-
-			MI_MOVIE_INFO mfile;
-			cMovieInfo.clearMovieInfo(&mfile);
-
-			mfile.file.Name = fname;
-			
-			// extract channel epg infos
-			CEPGData epgData;
-			event_id_t epgid = 0;
-			
-			if(sectionsd_getActualEPGServiceKey(live_channel_id&0xFFFFFFFFFFFFULL, &epgData))
-				epgid = epgData.eventID;
-
-			if(epgid != 0) 
-			{
-				CShortEPGData epgdata;
-				
-				if(sectionsd_getEPGidShort(epgid, &epgdata)) 
-				{
-					if (!(epgdata.title.empty())) 
-						mfile.epgTitle = epgdata.title;
-					
-					if(!(epgdata.info1.empty()))
-						mfile.epgInfo1 = epgdata.info1;
-					
-					if(!(epgdata.info2.empty()))
-						mfile.epgInfo2 = epgdata.info2;
-				}
-			}
-
-			// epgTitle
-			if(mfile.epgTitle.empty())
-			{
-				std::string Title = mfile.file.getFileName();
-				removeExtension(Title);
-				mfile.epgTitle = Title;
-			}
-
-			addToPlaylist(mfile);
-
-			update_lcd = true;
-			start_play = true;
-			
-			CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
-		}
 		
 		// do bookmarks
 		bool doBookmark = true;
@@ -710,7 +601,6 @@ void CMoviePlayerGui::PlayFile(void)
 		if (open_filebrowser) 
 		{
 			open_filebrowser = false;
-			timeshift = false;
 			
 			FileTime.hide();
 
@@ -814,9 +704,8 @@ void CMoviePlayerGui::PlayFile(void)
 
 			start_play = false;
 			
-			// stop playing if already playing (multiselect)
-			if(playback->playing)
-				playback->Close();
+			//
+			playback->Close();
 
 			// init player
 #if defined (PLATFORM_COOLSTREAM)
@@ -846,58 +735,8 @@ void CMoviePlayerGui::PlayFile(void)
 
 				CVFD::getInstance()->ShowIcon(VFD_ICON_PLAY, true);
 				
-				// PlayBack SetStartPosition for timeshift
-				if(timeshift != NO_TIMESHIFT) 
-				{
-					startposition = -1;
-					int i;
-					int towait = (timeshift == TIMESHIFT) ? TIMESHIFT_SECONDS + 1 : TIMESHIFT_SECONDS;
-					
-					for(i = 0; i < 500; i++) 
-					{
-#if defined (PLATFORM_COOLSTREAM)					  
-						playback->GetPosition(position, duration);
-#else						
-						playback->GetPosition((int64_t &)position, (int64_t &)duration);
-#endif						
-						startposition = (duration - position);
-
-						dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: waiting for data, position %d duration %d (%d)\n", position, duration, towait);
-						
-						if(startposition > towait*1000)
-							break;
-						
-						usleep(TIMESHIFT_SECONDS*1000);
-					}
-					
-					if(timeshift == TIMESHIFT)
-					{
-						startposition = 0;
-						
-						//wait
-						usleep(TIMESHIFT_SECONDS*1000);
-					}
-					else if(timeshift == R_TIMESHIFT) 
-					{
-						startposition = duration;	
-					}
-					else if(timeshift == P_TIMESHIFT)
-					{
-						if(duration > 1000000)
-							startposition = duration - TIMESHIFT_SECONDS*1000;
-						else
-							startposition = 0;
-					}
-					
-					dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: Timeshift %d, position %d, seek to %d seconds\n", timeshift, position, startposition/1000);
-				}
-				
 				// set position 
 				playback->SetPosition((int64_t)startposition);
-				
-				//
-				if(timeshift == R_TIMESHIFT) 
-					playback->SetSpeed(-1);
 				
 				//
 #if defined (PLATFORM_COOLSTREAM)
@@ -949,16 +788,23 @@ void CMoviePlayerGui::PlayFile(void)
 			//exit play
 			playstate = CMoviePlayerGui::STOPPED;
 			
-			if(timeshift == TIMESHIFT) //timeshift
+			if(filelist[selected].ytid == "timeshift")
 			{
-				CVCRControl::getInstance()->Stop();
-				
-				g_Timerd->stopTimerEvent(CNeutrinoApp::getInstance()->recording_id); // this stop immediatly timeshift
-				CNeutrinoApp::getInstance()->recording_id = 0;
-				CNeutrinoApp::getInstance()->recordingstatus = 0;
-				CNeutrinoApp::getInstance()->timeshiftstatus = 0;
-				
-				CVFD::getInstance()->ShowIcon(VFD_ICON_TIMESHIFT, false );
+				// stop record if recording
+				if( CNeutrinoApp::getInstance()->recordingstatus) 
+				{
+					if(MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 30, true) == CMessageBox::mbrYes)
+					{
+						CVCRControl::getInstance()->Stop();
+						g_Timerd->stopTimerEvent(CNeutrinoApp::getInstance()->recording_id);
+						CVFD::getInstance()->ShowIcon(VFD_ICON_TIMESHIFT, false );
+
+						CNeutrinoApp::getInstance()->recording_id = 0;
+						CNeutrinoApp::getInstance()->recordingstatus = 0;
+						CNeutrinoApp::getInstance()->timeshiftstatus = 0;
+					}
+				} 
+				//
 			}
 			
 			if(isURL)
@@ -984,7 +830,7 @@ void CMoviePlayerGui::PlayFile(void)
 				speed = 1;
 				playback->SetSpeed(speed);
 			} 
-			else if (!timeshift) //???
+			else if(filelist[selected].ytid != "timeshift")
 			{
 				open_filebrowser = true;
 			}
@@ -1000,7 +846,7 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.hide();
 
 			// movie title
-			if(!timeshift)
+			if(filelist[selected].ytid != "timeshift")
 			{
 				if (FileTime.IsVisible()) 
 				{
@@ -1046,7 +892,7 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 
 			//show MovieInfoBar
-			if(!timeshift)
+			if(filelist[selected].ytid != "timeshift")
 			{
 				if (FileTime.IsVisible()) 
 				{
@@ -1188,7 +1034,8 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 		else if ( msg == (neutrino_msg_t) g_settings.mpkey_time || msg == CRCInput::RC_info)
 		{
-			if(!timeshift)
+			//if(!timeshift)
+			if(filelist[selected].ytid != "timeshift")
 			{
 				if (FileTime.IsVisible()) 
 				{

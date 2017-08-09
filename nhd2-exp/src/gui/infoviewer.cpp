@@ -582,7 +582,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 			res = messages_return::cancel_all;
 			hideIt = true;
 		} 
-		else if ( !timeshift ) 
+		else if ( !CNeutrinoApp::getInstance()->timeshiftstatus) 
 		{
 			if ((msg == (neutrino_msg_t) g_settings.key_quickzap_up) || (msg == (neutrino_msg_t) g_settings.key_quickzap_down) || (msg == CRCInput::RC_0) || (msg == NeutrinoMessages::SHOW_INFOBAR)) 
 			{

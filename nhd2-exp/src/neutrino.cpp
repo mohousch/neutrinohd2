@@ -139,6 +139,7 @@
 #include <gui/misc_setup.h>
 #include <gui/vfdcontroler.h>
 #include <gui/dvbsub_select.h>
+#include <gui/movieinfo.h>
 
 #include <system/setting_helpers.h>
 #include <system/settings.h>
@@ -170,11 +171,7 @@
 #include <playback_cs.h>
 cPlayback * playback = NULL;
 
-// ugly and dirty://FIXME
-#if defined (USE_PLAYBACK)
 extern char rec_filename[1024];				// defined in stream2file.cpp
-#endif
-
 
 extern tallchans allchans;				// defined in zapit.cpp
 extern CBouquetManager * g_bouquetManager;		// defined in zapit.cpp
@@ -187,7 +184,6 @@ uint32_t shift_timer;
 uint32_t scrambled_timer;
 char recDir[255];
 char timeshiftDir[255];
-std::string tmode;
 
 // tuxtxt
 //extern int  tuxtxt_init();
@@ -1899,6 +1895,7 @@ void CNeutrinoApp::setupRecordingDevice(void)
 
 bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGData * epgdata);
 bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData * epgdata);
+bool sectionsd_getEPGidShort(event_id_t epgID, CShortEPGData * epgdata);
 
 #if defined (USE_PLAYBACK)
 int startOpenGLplayback()
@@ -2016,7 +2013,6 @@ int startAutoRecord(bool addTimer)
 	autoshift = 1;
 	CNeutrinoApp::getInstance()->recordingstatus = 1;
 	CNeutrinoApp::getInstance()->timeshiftstatus = 1;
-	tmode = "ptimeshift";
 
 	if( CVCRControl::getInstance()->Record(&eventinfo) == false ) 
 	{
@@ -3001,11 +2997,6 @@ void CNeutrinoApp::RealRun(void)
 				{
 					if (recDir != NULL)
 					{
-						if(recordingstatus)
-							tmode = "ptimeshift"; 	// already recording, pause(timeshift)
-						else
-							tmode = "timeshift";
-
 						if(g_RemoteControl->is_video_started) 
 						{		
 							// ptimeshift
@@ -3038,17 +3029,75 @@ void CNeutrinoApp::RealRun(void)
 					}
 				}
 			}
-			else if( ((msg == (neutrino_msg_t)g_settings.mpkey_play || msg == (neutrino_msg_t)g_settings.mpkey_rewind) && timeshiftstatus) && (mode != mode_iptv)) // play timeshift
-			{
-				if(msg == CRCInput::RC_rewind)
-					tmode = "rtimeshift"; // rewind
-						
-				dprintf(DEBUG_NORMAL, "[neutrino] %s\n", tmode.c_str());
-						
+			else if( ((msg == (neutrino_msg_t)g_settings.mpkey_play) && timeshiftstatus) && (mode != mode_iptv)) // play timeshift
+			{		
 				if(g_RemoteControl->is_video_started) 
 				{
 					CMoviePlayerGui tmpMoviePlayerGui;
-					tmpMoviePlayerGui.exec(NULL, tmode);
+					CMovieInfo cMovieInfo;
+					MI_MOVIE_INFO mfile;
+
+					//
+					char fname[255];
+					int cnt = 10*1000000;
+
+					while (!strlen(rec_filename)) 
+					{
+						usleep(1000);
+						cnt -= 1000;
+
+						if (!cnt)
+							break;
+					}
+
+					if (!strlen(rec_filename))
+						return;
+
+					sprintf(fname, "%s.ts", rec_filename);
+			
+					//
+					cMovieInfo.clearMovieInfo(&mfile);
+
+					mfile.file.Name = fname;
+			
+					// extract channel epg infos
+					CEPGData epgData;
+					event_id_t epgid = 0;
+			
+					if(sectionsd_getActualEPGServiceKey(live_channel_id&0xFFFFFFFFFFFFULL, &epgData))
+						epgid = epgData.eventID;
+
+					if(epgid != 0) 
+					{
+						CShortEPGData epgdata;
+				
+						if(sectionsd_getEPGidShort(epgid, &epgdata)) 
+						{
+							if (!(epgdata.title.empty())) 
+								mfile.epgTitle = epgdata.title;
+					
+							if(!(epgdata.info1.empty()))
+								mfile.epgInfo1 = epgdata.info1;
+					
+							if(!(epgdata.info2.empty()))
+								mfile.epgInfo2 = epgdata.info2;
+						}
+					}
+
+					// epgTitle
+					if(mfile.epgTitle.empty())
+					{
+						std::string Title = mfile.file.getFileName();
+						removeExtension(Title);
+						mfile.epgTitle = Title;
+					}
+
+					mfile.ytid = "timeshift";
+
+					tmpMoviePlayerGui.addToPlaylist(mfile);
+
+					tmpMoviePlayerGui.exec(NULL, "urlplayback");
+					//
 				}
 			}
 			else if(msg == (neutrino_msg_t)g_settings.mpkey_play && mode == mode_iptv)

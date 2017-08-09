@@ -125,13 +125,6 @@ class CMoviePlayerGui : public CMenuTarget
 			SOFTRESET   = 99
 		};
 		
-		enum {
-			NO_TIMESHIFT = 0,
-			TIMESHIFT,
-			P_TIMESHIFT,	// paused timeshift
-			R_TIMESHIFT	// rewind timeshift
-		};
-		
 	private:
 		int playstate;
 
