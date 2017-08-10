@@ -9,7 +9,6 @@ SUBDIRS = \
 	libxmltree \
 	libtuxtxt \
 	libdvbsub \
-	libupnpclient \
 	jsoncpp
 
 if !BOXTYPE_COOLSTREAM

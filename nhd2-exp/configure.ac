@@ -153,7 +153,6 @@ lib/sectionsdclient/Makefile
 lib/timerdclient/Makefile
 lib/libtuxtxt/Makefile
 lib/libdvbsub/Makefile
-lib/libupnpclient/Makefile
 lib/liblcddisplay/Makefile
 lib/libdvbapi/Makefile
 lib/libeplayer3/Makefile

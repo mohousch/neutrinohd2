@@ -35,7 +35,7 @@
 #include <unistd.h>
 #include <cstdio>
 
-#include "upnpclient.h"
+#include <upnpclient.h>
 #include <system/debug.h>
 
 
