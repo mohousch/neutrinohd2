@@ -71,7 +71,6 @@ void plugin_exec(void)
 
 	icecastHandler->readDir_ic();
 	
-	//tmpAudioPlayerGui.hidePlayList(false);
 	tmpAudioPlayerGui.setTitle("Ice Cast");
 	tmpAudioPlayerGui.exec(NULL, "");
 
