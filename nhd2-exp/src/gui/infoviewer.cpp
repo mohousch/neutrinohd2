@@ -67,7 +67,7 @@
 #include <time.h>
 #include <sys/param.h>
 
-/*zapit includes*/
+//
 #include <satconfig.h>
 #include <frontend_c.h>
 
@@ -90,8 +90,6 @@ extern int FrontendCount;				// defined in zapit.cpp
 
 extern bool autoshift;
 extern uint32_t shift_timer;
-
-extern int timeshift;			// defined in movieplayer.cpp
 
 extern std::string ext_channel_name;	// defined in vcrcontrol.cpp
 extern bool timeset;			// defined in sectionsd.cpp

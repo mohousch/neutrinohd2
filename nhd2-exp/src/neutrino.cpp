@@ -3095,9 +3095,7 @@ void CNeutrinoApp::RealRun(void)
 					mfile.ytid = "timeshift";
 
 					tmpMoviePlayerGui.addToPlaylist(mfile);
-
 					tmpMoviePlayerGui.exec(NULL, "urlplayback");
-					//
 				}
 			}
 			else if(msg == (neutrino_msg_t)g_settings.mpkey_play && mode == mode_iptv)
