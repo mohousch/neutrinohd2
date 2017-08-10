@@ -17,6 +17,7 @@ SUBDIRS = \
 	satipclient \
 	satipcast \
 	icecast \
-	upnpbrowser
+	upnpbrowser \
+	internetradio
 
 

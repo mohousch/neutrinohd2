@@ -199,16 +199,6 @@ class CAudioPlayerGui : public CMenuTarget
 		*/
 		void processPlaylistUrl(const char *url, const char *name = NULL, const time_t bitrate = 0);
 
-		/**
-		* Loads a given XML file of internet audiostreams or playlists and processes them
-		*/
-		void scanXmlFile(std::string filename);
-
-		/**
-		* Processes a loaded XML file/data of internet audiostreams or playlists
-		*/
-		void scanXmlData(xmlDocPtr answer_parser, const char *nametag, const char *urltag, const char *bitratetag = NULL, bool usechild = false);
-
 		void selectTitle(unsigned char selectionChar);
 		/**
 		* Appends the file information to the given string.
@@ -262,6 +252,8 @@ class CAudioPlayerGui : public CMenuTarget
 		int exec(CMenuTarget *parent, const std::string &actionKey);
 
 		//
+		void scanXmlFile(std::string filename);
+		void scanXmlData(xmlDocPtr answer_parser, const char *nametag, const char *urltag, const char *bitratetag = NULL, bool usechild = false);
 		void addToPlaylist(CAudiofileExt &file);
 		void removeFromPlaylist(long pos);
 		void clearPlaylist(void);
