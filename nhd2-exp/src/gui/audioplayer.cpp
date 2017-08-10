@@ -1594,7 +1594,8 @@ void CAudioPlayerGui::paintInfo()
 		
 		m_frameBuffer->paintBoxRel(m_x + 2, m_y + 2 , m_width - 4, m_title_height - 4, COL_MENUHEAD_INFO_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient); //FIXME:gradient
 
-		// first line (Track number)
+		// first line 
+		// Track number
 		std::string tmp;
 		if (m_inetmode) 
 		{
@@ -1608,7 +1609,6 @@ void CAudioPlayerGui::paintInfo()
 			tmp += sNr ;
 		}
 
-		// first line
 		int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
 		int xstart = (m_width - w) / 2;
 		if(xstart < BORDER_LEFT)
@@ -1616,11 +1616,9 @@ void CAudioPlayerGui::paintInfo()
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + m_fheight, m_width - 20, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8
 
-		// second line (Artist/Title...)
-		if (m_curr_audiofile.FileExtension != CFile::EXTENSION_URL) //FIXME: need to relaod id3tag
-		{
-			GetMetaData(m_curr_audiofile);
-		}
+		// second line 
+		// Artist/Title
+		GetMetaData(m_curr_audiofile);
 
 		if (m_curr_audiofile.MetaData.title.empty())
 			tmp = m_curr_audiofile.MetaData.artist;
@@ -1659,10 +1657,14 @@ void CAudioPlayerGui::paintInfo()
 				m_frameBuffer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 4, m_title_height - 4);		
 		}
 		
-		// ???
+		//
 		m_metainfo.clear();
+		m_time_total = 0;
+		m_time_played = 0;
+
 		updateMetaData();
 
+		// third line
 		if(updateMeta || updateScreen)
 		{
 			int xstart = ((m_width - 20 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(m_metainfo))/2)+10;
@@ -1670,8 +1672,6 @@ void CAudioPlayerGui::paintInfo()
 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + xstart, m_y + m_fheight + m_fheight + 2 + m_sheight, m_width- 2*xstart, m_metainfo, COL_MENUHEAD_INFO);
 		}
 
-		m_time_total = 0;
-		m_time_played = 0;
 		updateTimes(true);
 
 		info_visible = true;

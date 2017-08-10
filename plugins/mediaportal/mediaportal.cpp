@@ -76,6 +76,11 @@ void CMediaPortal::ard(void)
 	ard = NULL;
 }
 
+void CMediaPortal::internetRadio(void)
+{
+	g_PluginList->startPlugin("internetradio");
+}
+
 int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMediaPortal::exec: actionKey:%s\n", actionKey.c_str());
@@ -115,7 +120,12 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "internetradio")
+	{
+		internetRadio();
 
+		return menu_return::RETURN_REPAINT;
+	}
 
 	showMenu();
 	
@@ -139,7 +149,10 @@ void CMediaPortal::showMenu(void)
 	mediaPortal->addItem(new CMenuFrameBoxItem("Ice Cast", this, "icecast", PLUGINDIR "/icecast/icecast.png"));
 
 	// ard
-	mediaPortal->addItem(new CMenuFrameBoxItem("ARD Mediathek", new CARD(), "ard", PLUGINDIR "/mediaportal/ard.png"));
+	mediaPortal->addItem(new CMenuFrameBoxItem("ARD Mediathek", this, "ard", PLUGINDIR "/mediaportal/ard.png"));
+
+	// internetradio
+	mediaPortal->addItem(new CMenuFrameBoxItem("Internet Radio", this, "internetradio", PLUGINDIR "/internetradio/internetradio.png"));
 
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();

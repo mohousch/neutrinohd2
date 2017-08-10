@@ -127,11 +127,6 @@ CAudioPlayer * CAudioPlayer::getInstance()
 	return AudioPlayer;
 }
 
-void ShoutcastCallback(void *arg)
-{
-	CAudioPlayer::getInstance()->sc_callback(arg);
-}
-
 void * CAudioPlayer::PlayThread( void * /*dummy*/ )
 {
 	//stop playing if already playing (multiselect)

@@ -52,6 +52,7 @@ class CAudiofile
 		CAudioMetaData MetaData;
 		std::string Filename;
 		CFile::FileExtension FileExtension;
+		CFile::FileType FileType;
 };
 
 typedef std::vector<CAudiofile> CPlayList;

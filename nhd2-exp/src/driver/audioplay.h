@@ -36,7 +36,9 @@
 #include <driver/audiometadata.h>
 #include <string>
 
+#include <driver/audiodec/netfile.h>
 
+#if 0
 typedef struct
 {
 	void	(*cb)(void *);		/* user provided callback function */
@@ -50,6 +52,7 @@ typedef struct
 	char	artist[4096];		/* artist currently playing */
 	char	title[4096];			/* title currently playing */
 } CSTATE;
+#endif
 
 class CAudioPlayer
 {

@@ -43,19 +43,43 @@
 #include <global.h>
 #include <neutrino.h>
 
+#include <netfile.h>
+#include <driver/audioplay.h>
 #include <system/debug.h>
 
 
 unsigned int CBaseDec::mSamplerate = 0;
 
+void ShoutcastCallback(void *arg)
+{
+	CAudioPlayer::getInstance()->sc_callback(arg);
+}
 
 bool CBaseDec::GetMetaDataBase(CAudiofile* const in, const bool nice)
 {
 	bool Status = true;
+	FILE* fp;
 
-	if ( in->FileExtension == CFile::EXTENSION_MP3 || in->FileExtension == CFile::EXTENSION_WAV || in->FileExtension == CFile::EXTENSION_CDR || in->FileExtension == CFile::EXTENSION_FLAC )
+	if( in->FileType == CFile::FILE_URL )
 	{
-		FILE * fp = fopen( in->Filename.c_str(), "r" );
+		fp = fopen( in->Filename.c_str(), "rc" );
+
+		if ( fp == NULL )
+		{
+			dprintf(DEBUG_DEBUG, "CBaseDec::GetMetaDataBase: Error opening file %s for meta data reading.\n", in->Filename.c_str() );
+			Status = false;
+		}
+		else
+		{
+
+			if ( fstatus(fp, ShoutcastCallback ) < 0 )
+				fprintf( stderr, "Error adding shoutcast callback: %s", err_txt );
+		}
+	}
+	else if ( in->FileExtension == CFile::EXTENSION_MP3 || in->FileExtension == CFile::EXTENSION_WAV || in->FileExtension == CFile::EXTENSION_CDR || in->FileExtension == CFile::EXTENSION_FLAC )
+	{
+		fp = fopen( in->Filename.c_str(), "r" );
+
 		if ( fp == NULL )
 		{
 			dprintf(DEBUG_DEBUG, "CBaseDec::GetMetaDataBase: Error opening file %s for meta data reading.\n", in->Filename.c_str() );

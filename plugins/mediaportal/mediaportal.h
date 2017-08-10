@@ -33,6 +33,7 @@ class CMediaPortal : public CMenuTarget
 		void netzKino(void);
 		void iceCast(void);
 		void ard(void);
+		void internetRadio(void);
 	
 	public:
 		CMediaPortal();
