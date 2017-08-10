@@ -259,6 +259,7 @@ class CAudioPlayerGui : public CMenuTarget
 		void clearPlaylist(void);
 		void hidePlayList(bool hide = false){hide_playlist = hide;};
 		void setTitle(const std::string& title){ m_title = title;};
+		void setInetMode(void){m_inetmode = true; m_Path = CONFIGDIR "/";};
 };
 
 #endif

@@ -33,6 +33,7 @@ void plugin_exec(void)
 		
 		tmpAudioPlayerGui.scanXmlData(answer_parser, "server_name", "listen_url", "bitrate", true);
 		tmpAudioPlayerGui.setTitle("Ice Cast");
+		tmpAudioPlayerGui.setInetMode();
 		tmpAudioPlayerGui.exec(NULL, "");
 	}
 	else

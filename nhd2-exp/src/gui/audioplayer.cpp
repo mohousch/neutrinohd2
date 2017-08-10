@@ -919,30 +919,30 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 	CURL *curl_handle;
 	struct MemoryStruct chunk;
 	
-	chunk.memory = NULL; 	/* we expect realloc(NULL, size) to work */
-	chunk.size = 0;    	/* no data at this point */
+	chunk.memory = NULL; 	// we expect realloc(NULL, size) to work
+	chunk.size = 0;    	// no data at this point
 
 	curl_global_init(CURL_GLOBAL_ALL);
 
-	/* init the curl session */
+	// init the curl session
 	curl_handle = curl_easy_init();
 
-	/* specify URL to get */
+	// specify URL to get
 	curl_easy_setopt(curl_handle, CURLOPT_URL, url);
 
-	/* send all data to this function  */
+	// send all data to this function
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 
-	/* we pass our 'chunk' struct to the callback function */
+	// we pass our 'chunk' struct to the callback function
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
 
-	/* some servers don't like requests that are made without a user-agent field, so we provide one */
+	// some servers don't like requests that are made without a user-agent field, so we provide one
 	curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
 
-	/* don't use signal for timeout */
+	// don't use signal for timeout
 	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
 
-	/* set timeout to 10 seconds */
+	// set timeout to 10 seconds
 	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, GET_PLAYLIST_TIMEOUT);
 	
 	if(strcmp(g_settings.softupdate_proxyserver, "") != 0)
@@ -959,22 +959,11 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 		}
 	}
 
-	/* get it! */
+	// get it! 
 	curl_easy_perform(curl_handle);
 
-	/* cleanup curl stuff */
+	// cleanup curl stuff
 	curl_easy_cleanup(curl_handle);
-
-	/*
-	* Now, our chunk.memory points to a memory block that is chunk.size
-	* bytes big and contains the remote file.
-	*
-	* Do something nice with it!
-	*
-	* You should be aware of the fact that at this point we might have an
-	* allocated data block, and nothing has yet deallocated that data. So when
-	* you're done with it, you should free() it as a nice application.
-	*/
 
 	long res_code;
 	if (curl_easy_getinfo(curl_handle, CURLINFO_HTTP_CODE, &res_code ) ==  CURLE_OK) 
@@ -1015,7 +1004,7 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 	if(chunk.memory)
 		free(chunk.memory);
  
-	/* we're done with libcurl, so clean it up */
+	// we're done with libcurl, so clean it up
 	curl_global_cleanup();
 }
 
@@ -1056,7 +1045,7 @@ void CAudioPlayerGui::scanXmlData(xmlDocPtr answer_parser, const char *nametag, 
 			element = element_tmp;
 			long listPos = -1;
 			
-			progress.setTitle(/*LOCALE_AUDIOPLAYER_LOAD_RADIO_STATIONS*/LOCALE_AUDIOPLAYER_READING_FILES);
+			progress.setTitle(LOCALE_AUDIOPLAYER_READING_FILES);
 			progress.exec(this, "");
 			
 			neutrino_msg_t      msg;
@@ -1203,7 +1192,6 @@ bool CAudioPlayerGui::openFilebrowser(void)
 			{
 				m_title = files->getFileName();
 				removeExtension(m_title);
-				m_inetmode = true;
 
 				std::string filename = files->Name;
 				FILE *fd = fopen(filename.c_str(), "r");
@@ -1231,7 +1219,6 @@ bool CAudioPlayerGui::openFilebrowser(void)
 			{
 				m_title = files->getFileName();
 				removeExtension(m_title);
-				m_inetmode = true;
 
 				std::string sPath = files->Name.substr(0, files->Name.rfind('/'));
 				std::ifstream infile;
@@ -1328,7 +1315,6 @@ bool CAudioPlayerGui::openFilebrowser(void)
 				{
 					m_title = files->getFileName();
 					removeExtension(m_title);
-					m_inetmode = true;
 
 					scanXmlFile(files->Name);
 				}

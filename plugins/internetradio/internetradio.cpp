@@ -28,6 +28,7 @@ void plugin_exec(void)
 
 	tmpAudioPlayerGui.scanXmlFile(RADIO_STATION_XML_FILE);	
 	tmpAudioPlayerGui.setTitle(g_Locale->getText(LOCALE_INETRADIO_NAME));
+	tmpAudioPlayerGui.setInetMode();
 	tmpAudioPlayerGui.exec(NULL, "");
 }
 
