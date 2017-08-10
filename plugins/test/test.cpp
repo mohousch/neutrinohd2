@@ -76,7 +76,6 @@ class CTestMenu : public CMenuTarget
 		void testTSPlayer();
 		void testMoviePlayer();
 		void testPictureViewer();
-		void testUPNPBrowser();
 
 		//
 		void testPlayMovieURL();
@@ -942,12 +941,6 @@ void CTestMenu::testPictureViewer()
 {
 	CPictureViewerGui tmpPictureViewerGui;
 	tmpPictureViewerGui.exec(NULL, "");
-}
-
-void CTestMenu::testUPNPBrowser()
-{
-	CUpnpBrowserGui tmpUPNPBrowserGui;
-	tmpUPNPBrowserGui.exec(NULL, "");
 }
 
 void CTestMenu::testPlayMovieURL()
@@ -2361,10 +2354,6 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testPictureViewer();
 	}
-	else if(actionKey == "upnpbrowser")
-	{
-		testUPNPBrowser();
-	}
 	else if(actionKey == "playmovieurl")
 	{
 		testPlayMovieURL();
@@ -2637,7 +2626,6 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("TS Player", true, NULL, this, "tsplayer"));
 	mainMenu->addItem(new CMenuForwarder("Movie Player", true, NULL, this, "movieplayer"));
 	mainMenu->addItem(new CMenuForwarder("PictureViewer", true, NULL, this, "pictureviewer"));
-	mainMenu->addItem(new CMenuForwarder("UPNPBrowser", true, NULL, this, "upnpbrowser"));
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("PlayMovieURL", true, NULL, this, "playmovieurl"));

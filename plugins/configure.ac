@@ -38,5 +38,6 @@ mediaportal/Makefile
 satipclient/Makefile
 satipcast/Makefile
 icecast/Makefile
+upnpbrowser/Makefile
 ])
 

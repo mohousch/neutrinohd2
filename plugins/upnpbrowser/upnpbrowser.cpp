@@ -37,8 +37,6 @@
 #include <sstream>
 #include <stdexcept>
 
-#include <gui/upnpbrowser.h>
-
 #include <global.h>
 #include <neutrino.h>
 #include <xmltree.h>
@@ -71,6 +69,13 @@
 #include <gui/pictureviewer.h>
 #include <gui/movieplayer.h>
 #include <gui/audioplayer.h>
+
+#include <upnpbrowser.h>
+
+
+extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
 
 
 const struct button_label RescanButton = {NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_UPNPBROWSER_RESCAN, NULL };
@@ -1296,4 +1301,25 @@ void CUpnpBrowserGui::paintItem2DetailsLine(int pos)
 {
 	::paintItem2DetailsLine(m_x, m_y, m_width, m_height - m_info_height, m_info_height, m_title_height + m_theight, m_fheight, pos);
 }
+
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
+}
+
+void plugin_exec(void)
+{
+	// class handler
+	CUpnpBrowserGui * upnpHandler = new CUpnpBrowserGui();
+	
+	upnpHandler->exec(NULL, "");
+	
+	delete upnpHandler;
+	upnpHandler = NULL;
+}
+
+
 

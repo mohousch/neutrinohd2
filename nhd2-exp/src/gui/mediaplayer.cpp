@@ -36,7 +36,6 @@
 #include <gui/audioplayer.h>
 #include <gui/movieplayer.h>
 #include <gui/pictureviewer.h>
-#include <gui/upnpbrowser.h>
 
 
 CMediaPlayerMenu::CMediaPlayerMenu()
@@ -86,10 +85,6 @@ void CMediaPlayerMenu::showMenu()
 
 	// pictureViewer
 	MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_PICTUREVIEWER, true, new CPictureViewerGui(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_PICTUREVIEWER, LOCALE_HELPTEXT_PICTUREVIEWER ));
-	
-	// UPNP Browser
-	CUpnpBrowserGui * upnp = new CUpnpBrowserGui();
-	 MediaPlayer->addItem(new CMenuForwarderExtended(LOCALE_UPNPBROWSER_HEAD, true, upnp, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_UPNPBROWSER, LOCALE_HELPTEXT_UPNPBROWSER ));
 
 	MediaPlayer->integratePlugins(CPlugins::I_TYPE_MULTIMEDIA, shortcutMediaPlayer++);
 	
@@ -97,8 +92,6 @@ void CMediaPlayerMenu::showMenu()
 	MediaPlayer->hide();
 	delete MediaPlayer;
 	MediaPlayer = NULL;
-	delete upnp;
-	upnp = NULL;
 }
 
 // smart
@@ -121,9 +114,6 @@ void CMediaPlayerMenu::showMenuSmart(void)
 
 	// pictureViewer
 	MediaPlayer->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_PICTUREVIEWER, new CPictureViewerGui(), NULL, NEUTRINO_ICON_SMART_PICTUREVIEWER));
-	
-	// UPNP Browser
-	 MediaPlayer->addItem(new CMenuFrameBoxItem(LOCALE_UPNPBROWSER_HEAD, new CUpnpBrowserGui(), NULL, NEUTRINO_ICON_SMART_UPNPBROWSER));
 
 	MediaPlayer->integratePlugins(CPlugins::I_TYPE_MULTIMEDIA);
 	
@@ -153,9 +143,6 @@ void CMediaPlayerMenu::showMenuClassic()
 
 	// pictureViewer
 	MediaPlayer->addItem(new CMenuForwarder(LOCALE_MAINMENU_PICTUREVIEWER, true, NULL, new CPictureViewerGui(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_CLASSIC_PICTUREVIEWER, LOCALE_HELPTEXT_PICTUREVIEWER));
-	
-	// UPNP Browser
-	 MediaPlayer->addItem(new CMenuForwarder(LOCALE_UPNPBROWSER_HEAD, true, NULL, new CUpnpBrowserGui(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_CLASSIC_UPNPBROWSER, LOCALE_HELPTEXT_UPNPBROWSER));
 
 	MediaPlayer->integratePlugins(CPlugins::I_TYPE_MULTIMEDIA);
 	

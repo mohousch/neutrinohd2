@@ -16,6 +16,7 @@ SUBDIRS = \
 	mediaportal \
 	satipclient \
 	satipcast \
-	icecast
+	icecast \
+	upnpbrowser
 
 
