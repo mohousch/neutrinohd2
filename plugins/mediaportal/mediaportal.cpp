@@ -113,9 +113,6 @@ void CMediaPortal::showMenu(void)
 {
 	CMenuFrameBox* mediaPortal = new CMenuFrameBox("Media Portal", PLUGINDIR "/mediaportal/mp.png");
 
-	// musicdeluxe
-	mediaPortal->addItem(new CMenuFrameBoxItem("Music Deluxe", this, "musicdeluxe", PLUGINDIR "/mediaportal/musicdeluxe.png"));
-
 	// youtube
 	mediaPortal->addItem(new CMenuFrameBoxItem("You Tube", this, "youtube", PLUGINDIR "/youtube/youtube.png"));
 

@@ -274,7 +274,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE , NeutrinoMessages::mode_audio );
 	
 	// remember last mode
-	m_LastMode = (CNeutrinoApp::getInstance()->getLastMode());
+	m_LastMode = (CNeutrinoApp::getInstance()->getLastMode() | NeutrinoMessages::norezap);
 	
 	// stop playback
 	CNeutrinoApp::getInstance()->lockPlayBack();

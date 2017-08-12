@@ -117,6 +117,9 @@ class CTestMenu : public CMenuTarget
 		// without movieplayergui call
 		void  testTSBrowserDirect();
 		void testMovieBrowserDirect();
+
+		// new
+		void spinner(void);
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -2231,6 +2234,41 @@ BROWSER:
 	delete movieBrowser;
 }
 
+void CTestMenu::spinner(void)
+{
+	CBox Box;
+	
+	Box.iX = g_settings.screen_StartX + 10;
+	Box.iY = g_settings.screen_StartY + 10;
+
+	//
+	int count = 0;
+
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	while(true)
+	{
+		char filename[30];
+		sprintf(filename, PLUGINDIR "/test/" "%d.png", count);
+		//printf("SPINNER:%s\n", filename);
+		CFrameBuffer::getInstance()->paintIcon(filename, Box.iX, Box.iY);
+		CFrameBuffer::getInstance()->blit();
+
+		count = (count + 1) % 11;
+
+		usleep(500000);
+
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg == CRCInput::RC_home) 
+		{
+			break;
+		}
+	}
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
@@ -2559,6 +2597,10 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCMenuWidgetStandard();
 	}
+	else if(actionKey == "spinner")
+	{
+		spinner();
+	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -2648,6 +2690,8 @@ void CTestMenu::showTestMenu()
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
+
+	mainMenu->addItem(new CMenuForwarder("Spinner", true, NULL, this, "spinner"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
