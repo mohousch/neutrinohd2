@@ -24,8 +24,7 @@
 #define __cam_menu__
 
 
-#include "widget/menue.h"
-#include <dvb-ci.h>
+#include <gui/widget/menue.h>
 
 
 using namespace std;
@@ -34,7 +33,6 @@ class CCAMMenuHandler : public CMenuTarget
 {
 	private:
 		CHintBox * hintBox;
-		cDvbCi * ci;
 		unsigned long long timeoutEnd;
 
 		int handleCamMsg (const neutrino_msg_t msg, neutrino_msg_data_t data, bool from_menu = false);

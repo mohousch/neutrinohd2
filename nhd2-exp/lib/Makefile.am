@@ -23,6 +23,10 @@ if ENABLE_LCD
 SUBDIRS += liblcddisplay
 endif
 
+if ENABLE_CI
+SUBDIRS += libdvbci
+endif
+
 
 
 

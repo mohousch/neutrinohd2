@@ -61,14 +61,15 @@
 
 #include <gui/cam_menu.h>
 
-#include <dvb-ci.h>
 #include <sectionsd/edvbstring.h>
+#include <libdvbci/dvb-ci.h>
 
+
+extern cDvbCi * ci;
 
 void CCAMMenuHandler::init(void)
 {
 	hintBox = NULL;
-	ci = cDvbCi::getInstance();
 }
 
 int CCAMMenuHandler::exec(CMenuTarget * parent, const std::string &actionKey)

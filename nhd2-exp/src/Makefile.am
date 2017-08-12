@@ -20,6 +20,9 @@ AM_CPPFLAGS += -I$(top_srcdir)/src/zapit/include \
 	-I$(top_srcdir)/lib/libcoolstream
 else
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbapi
+if ENABLE_CI
+AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbci
+endif
 endif
 
 if !ENABLE_GSTREAMER
@@ -80,6 +83,9 @@ neutrino_LDFLAGS = -Wl,--export-dynamic
 
 if !BOXTYPE_COOLSTREAM
 neutrino_LDADD += $(top_builddir)/lib/libdvbapi/libdvbapi.a
+if ENABLE_CI
+neutrino_LDADD += $(top_builddir)/lib/libdvbci/libdvbci.a
+endif
 endif
 
 if BOXTYPE_COOLSTREAM

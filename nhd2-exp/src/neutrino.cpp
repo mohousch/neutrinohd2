@@ -168,6 +168,8 @@
 #include <cs_api.h>
 #endif
 
+#include <libdvbci/dvb-ci.h>
+
 #include <playback_cs.h>
 cPlayback * playback = NULL;
 
