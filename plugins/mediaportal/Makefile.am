@@ -11,7 +11,6 @@ AM_CPPFLAGS =  \
 	-I$(top_srcdir)/../nhd2-exp/lib/libxmltree \
 	-I$(top_srcdir)/../nhd2-exp/lib/libmd5sum \
 	-I$(top_srcdir)/../nhd2-exp/lib/libdvbapi \
-	-I$(top_srcdir)/../nhd2-exp/lib/libupnpclient \
 	@FREETYPE_CFLAGS@ 
 
 noinst_LTLIBRARIES = mediaportal.la
@@ -27,7 +26,6 @@ install-exec-local:
 	install .libs/mediaportal.so $(DESTDIR)$(PLUGINDIR)/mediaportal
 	install -m 0644 mediaportal.cfg $(DESTDIR)$(PLUGINDIR)/mediaportal
 	install -m 0644 mp.png $(DESTDIR)$(PLUGINDIR)/mediaportal
-	install -m 0644 musicdeluxe.png $(DESTDIR)$(PLUGINDIR)/mediaportal
 	install -m 0644 ard.png $(DESTDIR)$(PLUGINDIR)/mediaportal
 	install -m 0644 ard_small.png $(DESTDIR)$(PLUGINDIR)/mediaportal
 
@@ -35,7 +33,6 @@ uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/mediaportal.so
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/mediaportal.cfg
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/mp.png
-	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/musicdeluxe.png
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/ard.png
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/ard_small.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/mediaportal

@@ -216,10 +216,8 @@ void getOpts()
 	int i;
 	FILE *fd = NULL;
 
-#ifndef RADIOBOX //a not generic thing in a generic library
 	/* options which can be set from within neutrino */
 	enable_metadata = /*g_settings.audioplayer_enable_sc_metadata*/1;
-#endif /* RADIOBOX */
 
 	if (got_opts) /* prevent reading in options multiple times */
 		return;
@@ -1368,8 +1366,7 @@ int getCacheSlot(FILE *fd)
 {
 	int i;
 
-	for(i=0; ( (i<CACHEENTMAX) && ((cache[i].fd != fd) || (!cache[i].cache))
-		); i++){};
+	for(i = 0; ( (i < CACHEENTMAX) && ((cache[i].fd != fd) || (!cache[i].cache))); i++){};
 
 	return (i == CACHEENTMAX) ? -1 : i;
 }
@@ -1679,14 +1676,15 @@ int f_status(FILE *stream, void (*cb)(void*))
 		return -1;
 	}
 
-	/* lookup the stream ID in the cache table */
+	// lookup the stream ID in the cache table
 	i = getCacheSlot(stream);
+
 	if (i < 0)
 		return -1;
 
 	if(cache[i].fd == stream)
 	{
-		/* hook the users function into the steam filter */
+		// hook the users function into the steam filter
 		if(cache[i].filter_arg)
 		{
 			if(cache[i].filter_arg->state)

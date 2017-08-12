@@ -11,7 +11,6 @@ SUBDIRS = \
 	tuxcom \
 	dvdplayer \
 	mediaplayer \
-	tuxcal \
 	fileexplorer \
 	mediaportal \
 	satipclient \

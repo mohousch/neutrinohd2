@@ -36,23 +36,6 @@ CMediaPortal::~CMediaPortal()
 	dprintf(DEBUG_NORMAL, "CMediaPortal: del\n");
 }
 
-void CMediaPortal::musicDeluxe(void)
-{
-	MI_MOVIE_INFO mfile;
-		
-	mfile.epgTitle = "Music deluxe";
-	mfile.epgInfo1 = "stream";
-	mfile.epgInfo2 = "Musik Sender";
-	mfile.tfile = PLUGINDIR "/mediaportal/musicdeluxe.png";
-	mfile.ytid = "musicdeluxe";
-	mfile.file.Name = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
-
-	CMoviePlayerGui tmpMoviePlayerGui;
-					
-	tmpMoviePlayerGui.addToPlaylist(mfile);
-	tmpMoviePlayerGui.exec(NULL, "urlplayback");
-}
-
 void CMediaPortal::youTube(void)
 {
 	g_PluginList->startPlugin("youtube");
@@ -90,13 +73,7 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 	if(parent) 
 		parent->hide();
 
-	if(actionKey == "musicdeluxe")
-	{
-		musicDeluxe();
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "youtube")
+	if(actionKey == "youtube")
 	{
 		youTube();
 

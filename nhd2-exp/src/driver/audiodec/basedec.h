@@ -61,6 +61,8 @@ class CBaseDec
 		static bool GetMetaDataBase(CAudiofile* const in, const bool nice);
 		static void Init();
 
+		static RetCode DecoderBase(CAudiofile* const in);
+
 		CBaseDec(){};
 		
 	private:

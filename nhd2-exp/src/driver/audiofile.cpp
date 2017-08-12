@@ -37,26 +37,26 @@
 #include <driver/audiofile.h>
 
 
-/* default constructor */
+// default constructor
 CAudiofile::CAudiofile()
   : MetaData(), Filename(), FileExtension( CFile::EXTENSION_UNKNOWN )
 {
 }
 
-/* constructor */
+// constructor
 CAudiofile::CAudiofile( std::string name, CFile::FileExtension extension )
 	: MetaData(), Filename( name ), FileExtension( extension )
 {
 }
 
-/* copy constructor */
+// copy constructor
 CAudiofile::CAudiofile( const CAudiofile& src )
   : MetaData( src.MetaData ), Filename( src.Filename ),
 	FileExtension( src.FileExtension )
 {
 }
 
-/* assignment operator */
+// assignment operator 
 void CAudiofile::operator=( const CAudiofile& src )
 {
 	MetaData = src.MetaData;

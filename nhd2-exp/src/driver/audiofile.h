@@ -34,8 +34,9 @@
 
 #include <string>
 #include <vector>
-#include "driver/audiometadata.h"
-#include "driver/file.h"
+
+#include <driver/audiometadata.h>
+#include <driver/file.h>
 
 
 class CAudiofile
@@ -52,7 +53,6 @@ class CAudiofile
 		CAudioMetaData MetaData;
 		std::string Filename;
 		CFile::FileExtension FileExtension;
-		CFile::FileType FileType;
 };
 
 typedef std::vector<CAudiofile> CPlayList;

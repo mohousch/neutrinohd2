@@ -55,28 +55,43 @@ void ShoutcastCallback(void *arg)
 	CAudioPlayer::getInstance()->sc_callback(arg);
 }
 
-bool CBaseDec::GetMetaDataBase(CAudiofile* const in, const bool nice)
+CBaseDec::RetCode CBaseDec::DecoderBase(CAudiofile* const in)
 {
-	bool Status = true;
-	FILE* fp;
+	RetCode Status = OK;
 
-	if( in->FileType == CFile::FILE_URL )
+	FILE* fp = NULL;
+	if(in->FileExtension == CFile::EXTENSION_URL)
 	{
 		fp = fopen( in->Filename.c_str(), "rc" );
 
 		if ( fp == NULL )
 		{
-			dprintf(DEBUG_DEBUG, "CBaseDec::GetMetaDataBase: Error opening file %s for meta data reading.\n", in->Filename.c_str() );
-			Status = false;
+			dprintf(DEBUG_DEBUG, "CAudioPlayer::play: Error opening file %s for meta data reading.\n", in->Filename.c_str() );
+
+			Status = INTERNAL_ERR;
 		}
 		else
 		{
 
-			if ( fstatus(fp, ShoutcastCallback ) < 0 )
-				fprintf( stderr, "Error adding shoutcast callback: %s", err_txt );
+			if ( fstatus(fp, ShoutcastCallback) < 0 )
+				fprintf( stderr, "Error adding shoutcast callback: %s\n", err_txt );
+		}
+
+		if ( fclose( fp ) == EOF )
+		{
+			fprintf( stderr, "Could not close file %s.\n", in->Filename.c_str() );
 		}
 	}
-	else if ( in->FileExtension == CFile::EXTENSION_MP3 || in->FileExtension == CFile::EXTENSION_WAV || in->FileExtension == CFile::EXTENSION_CDR || in->FileExtension == CFile::EXTENSION_FLAC )
+
+	return Status;
+}
+
+bool CBaseDec::GetMetaDataBase(CAudiofile* const in, const bool nice)
+{
+	bool Status = true;
+	FILE* fp;
+
+	if ( in->FileExtension == CFile::EXTENSION_MP3 || in->FileExtension == CFile::EXTENSION_WAV || in->FileExtension == CFile::EXTENSION_CDR || in->FileExtension == CFile::EXTENSION_FLAC )
 	{
 		fp = fopen( in->Filename.c_str(), "r" );
 

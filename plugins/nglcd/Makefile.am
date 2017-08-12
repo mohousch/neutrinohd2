@@ -9,7 +9,6 @@ AM_CPPFLAGS =  \
 	-I$(top_srcdir)/../nhd2-exp/lib/libxmltree \
 	-I$(top_srcdir)/../nhd2-exp/lib/libmd5sum \
 	-I$(top_srcdir)/../nhd2-exp/lib/libdvbapi \
-	-I$(top_srcdir)/../nhd2-exp/lib/libupnpclient \
 	@FREETYPE_CFLAGS@ 
 
 noinst_LTLIBRARIES = nglcd.la

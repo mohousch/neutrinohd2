@@ -3,7 +3,7 @@ noinst_LIBRARIES = libtuxbox-upnpclient.a
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/../nhd2-exp/lib/libxmltree \
 	-I$(top_srcdir)/../nhd2-exp/src \
-	-I$(top_srcdir)/upnpbrowser/libupnpclient
+	-I$(top_builddir)/upnpbrowser/libupnpclient
 
 AM_CPPFLAGS += -fno-rtti -fPIC
 
