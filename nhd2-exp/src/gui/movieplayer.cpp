@@ -128,7 +128,7 @@ void CMoviePlayerGui::cutNeutrino()
 	CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, NeutrinoMessages::mode_ts);
 	
 	// save (remeber) last mode
-	m_LastMode = (CNeutrinoApp::getInstance()->getLastMode() | NeutrinoMessages::norezap);
+	m_LastMode = CNeutrinoApp::getInstance()->getLastMode();
 	
 	//
 	CNeutrinoApp::getInstance()->lockPlayBack();
@@ -227,6 +227,12 @@ void CMoviePlayerGui::removeFromPlaylist(long pos)
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::removeFromPlayList:\n");
 
 	filelist.erase(filelist.begin() + pos); 
+}
+
+void CMoviePlayerGui::hide()
+{
+	frameBuffer->ClearFrameBuffer();
+	frameBuffer->blit();
 }
 
 int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
@@ -705,7 +711,8 @@ void CMoviePlayerGui::PlayFile(void)
 			start_play = false;
 			
 			//
-			playback->Close();
+			if(playback->playing)
+				playback->Close();
 
 			// init player
 #if defined (PLATFORM_COOLSTREAM)

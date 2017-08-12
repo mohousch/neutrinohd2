@@ -323,6 +323,8 @@ void CPictureViewer::showBusy(fb_pixel_t col)
 {
 	dprintf(DEBUG_INFO, "CPictureViewer::Show Busy\n");
 
+	CFrameBuffer::getInstance()->ClearFrameBuffer();
+
 	CFrameBuffer::getInstance()->paintBoxRel(m_busy_x, m_busy_y, m_busy_width, m_busy_height, col);
 	
 	CFrameBuffer::getInstance()->blit();

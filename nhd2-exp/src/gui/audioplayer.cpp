@@ -261,6 +261,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	if(parent)
 		parent->hide(); 
 	
+	// save background
 	bool usedBackground = m_frameBuffer->getuseBackground();
 	if (usedBackground)
 		m_frameBuffer->saveBackgroundImage();

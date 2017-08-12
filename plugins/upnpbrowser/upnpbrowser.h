@@ -71,13 +71,13 @@ class CUpnpBrowserGui : public CMenuTarget
 		CUpnpBrowserGui();
 		~CUpnpBrowserGui();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
+		void hide();
 
 	private:
 		std::vector<CUPnPDevice> m_devices;
 		UPnPEntry      m_playing_entry;
 		CUPnPSocket  * m_socket;
 		CFrameBuffer * m_frameBuffer;
-		int            m_LastMode;
 		int            m_width;
 		int            m_height;
 		int            m_x;

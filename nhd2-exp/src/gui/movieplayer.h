@@ -192,6 +192,7 @@ class CMoviePlayerGui : public CMenuTarget
 		CMoviePlayerGui();
 		~CMoviePlayerGui();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
+		void hide();
 		
 		// 
 		void showFileInfo();

@@ -111,12 +111,6 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string & /*actionKey*/
 	if(parent)
 		parent->hide();
 
-	// tell neutrino we're in audio mode
-	CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , NeutrinoMessages::mode_audio);
-	
-	// remember last mode
-	m_LastMode = (CNeutrinoApp::getInstance()->getLastMode());
-
 	m_width = (g_settings.screen_EndX - g_settings.screen_StartX) - ConnectLineBox_Width;
 	m_height = (g_settings.screen_EndY - g_settings.screen_StartY);
 
@@ -154,9 +148,6 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string & /*actionKey*/
 	m_selecteddevice = 0;
 
 	selectDevice();
-
-	CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , m_LastMode );
-	g_RCInput->postMsg( NeutrinoMessages::SHOW_INFOBAR, 0 );
 
 	// always repaint
 	return menu_return::RETURN_REPAINT;
@@ -450,8 +441,7 @@ void CUpnpBrowserGui::selectDevice()
 		}
 		else if( msg == CRCInput::RC_blue)
 		{
-			m_frameBuffer->ClearFrameBuffer();
-			m_frameBuffer->blit();	
+			hide();
 
 			scanBox->paint();
 
@@ -494,8 +484,7 @@ void CUpnpBrowserGui::selectDevice()
 	fileHelper.removeDir(thumbnail_dir.c_str());
 	
 	// hide
-	m_frameBuffer->ClearFrameBuffer();
-	m_frameBuffer->blit();
+	hide();
 }
 
 void CUpnpBrowserGui::handleFolder(void)
@@ -631,19 +620,16 @@ void CUpnpBrowserGui::handleFolder(void)
 	if(audioFolder)
 	{
 		tmpAudioPlayerGui.hidePlayList(true);
-		tmpAudioPlayerGui.exec(NULL, "urlplayback");
+		tmpAudioPlayerGui.exec(this, "urlplayback");
 	}
 	else if(videoFolder)
 	{
-		m_frameBuffer->ClearFrameBuffer();
-		m_frameBuffer->blit();	
-
-		tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		tmpMoviePlayerGui.exec(this, "urlplayback");
 	}
 	else if(picFolder)
 	{
 		//tmpPictureViewerGui.setState(CPictureViewerGui::SLIDESHOW);
-		tmpPictureViewerGui.exec(NULL, "urlplayback");
+		tmpPictureViewerGui.exec(this, "urlplayback");
 	}
 }
 
@@ -834,7 +820,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 						CAudiofileExt audiofile((*entries)[selected - index].resources[preferred].url, CFile::EXTENSION_MP3);
 						tmpAudioPlayerGui.addToPlaylist(audiofile);
 						tmpAudioPlayerGui.hidePlayList(true);
-						tmpAudioPlayerGui.exec(NULL, "urlplayback");
+						tmpAudioPlayerGui.exec(this, "urlplayback");
 					}
 					else if ((mime == "image/gif") || (mime == "image/jpeg"))
 					{
@@ -877,16 +863,13 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 						pic.Date = statbuf.st_mtime;
 				
 						tmpPictureViewerGui.addToPlaylist(pic);
-						tmpPictureViewerGui.exec(NULL, "urlplayback");
+						tmpPictureViewerGui.exec(this, "urlplayback");
 
 						changed = true;
 					}
 
 					else if (mime.substr(0,6) == "video/")
 					{
-						m_frameBuffer->ClearFrameBuffer();
-						m_frameBuffer->blit();	
-						
 						MI_MOVIE_INFO mfile;
 						mfile.file.Name = (*entries)[selected - index].resources[preferred].url.c_str(); 
 						mfile.epgTitle = (*entries)[selected - index].title;
@@ -894,7 +877,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 						
 						CMoviePlayerGui tmpMoviePlayerGui;
 						tmpMoviePlayerGui.addToPlaylist(mfile);
-						tmpMoviePlayerGui.exec(NULL, "urlplayback");
+						tmpMoviePlayerGui.exec(this, "urlplayback");
 						
 						changed = true;
 					}
@@ -921,7 +904,6 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 			loop = false;
 			g_RCInput->postMsg(msg, data);
 		}
-
 		else if(msg == NeutrinoMessages::EVT_TIMER)
 		{
 			CNeutrinoApp::getInstance()->handleMsg( msg, data );
@@ -939,10 +921,15 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 	if (entries)
 		delete entries;
 	
-	m_frameBuffer->ClearFrameBuffer();
-	m_frameBuffer->blit();
+	hide();
 	
 	return endall;
+}
+
+void CUpnpBrowserGui::hide()
+{
+	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->blit();
 }
 
 void CUpnpBrowserGui::paintDevicePos(unsigned int pos)
