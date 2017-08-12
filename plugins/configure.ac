@@ -18,6 +18,18 @@ PKG_CHECK_MODULES(CURL,libcurl)
 PKG_CHECK_MODULES(FREETYPE,freetype2)
 PKG_CHECK_MODULES(PNG,libpng)
 
+# nglcd
+AC_ARG_ENABLE(nglcd,
+	AS_HELP_STRING(--enable-nglcd,include nglcd support),
+	,[enable_nglcd=no])
+AM_CONDITIONAL(ENABLE_NGLCD,test "$enable_nglcd" = "yes")
+
+# tuxcalender
+AC_ARG_ENABLE(tuxcal,
+	AS_HELP_STRING(--enable-tuxcal,include tuxcalender support),
+	,[enable_tuxcal=no])
+AM_CONDITIONAL(ENABLE_TUXCAL,test "$enable_tuxcal" = "yes")
+
 AC_OUTPUT([
 Makefile
 test/Makefile

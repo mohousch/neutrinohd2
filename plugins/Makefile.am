@@ -19,4 +19,12 @@ SUBDIRS = \
 	upnpbrowser \
 	internetradio
 
+if ENABLE_NGLCD
+SUBDIRS += nglcd
+endif
+
+if ENABLE_TUXCAL
+SUBDIRS += tuxcal
+endif
+
 
