@@ -385,13 +385,19 @@ void CMoviePlayerGui::PlayFile(void)
 					if (filelist[0].audioPids[i].selected) 
 					{
 #if defined (PLATFORM_COOLSTREAM)
-							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
+						g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
 #else
-							g_currentapid = i;	//FIXME
+						g_currentapid = i;	//FIXME
 #endif						
 						g_currentac3 = filelist[0].audioPids[i].atype;
 						//
+
+#if defined (PLATFORM_COOLSTREAM)
 						currentapid = g_currentapid;
+						currentac3 = g_currentac3;
+#else
+						currentapid = 0;
+#endif
 					}
 				}
 
@@ -485,7 +491,12 @@ void CMoviePlayerGui::PlayFile(void)
 							g_currentac3 = filelist[selected].audioPids[i].atype;
 
 							//
+#if defined (PLATFORM_COOLSTREAM)
 							currentapid = g_currentapid;
+							currentac3 = g_currentac3;
+#else
+							currentapid = 0;
+#endif
 						}
 					}
 
@@ -647,7 +658,12 @@ void CMoviePlayerGui::PlayFile(void)
 #endif								
 								g_currentac3 = filelist[0].audioPids[i].atype;
 								//
+#if defined (PLATFORM_COOLSTREAM)
 								currentapid = g_currentapid;
+								currentac3 = g_currentac3;
+#else
+								currentapid = 0;
+#endif
 							}
 						}
 
@@ -728,8 +744,12 @@ void CMoviePlayerGui::PlayFile(void)
 			if(filelist[selected].length != 0)
 				duration = filelist[selected].length * 60 * 1000;
 			  
-			// PlayBack Start			  
+			// PlayBack Start
+#if defined (PLATFORM_COOLSTREAM)			  
 			if(!playback->Start((char *)filelist[selected].file.Name.c_str(), g_vpid, g_vtype, g_currentapid, g_currentac3, duration))
+#else
+			if(!playback->Start((char *)filelist[selected].file.Name.c_str()))
+#endif
 			{
 				dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: Starting Playback failed!\n");
 				playback->Close();
@@ -1390,7 +1410,12 @@ void CMoviePlayerGui::PlayFile(void)
 							g_currentac3 = filelist[selected].audioPids[i].atype;
 
 							//
+#if defined (PLATFORM_COOLSTREAM)
 							currentapid = g_currentapid;
+							currentac3 = g_currentac3;
+#else
+							currentapid = 0;
+#endif
 						}
 					}
 
@@ -1438,7 +1463,12 @@ void CMoviePlayerGui::PlayFile(void)
 							g_currentac3 = filelist[selected].audioPids[i].atype;
 
 							//
+#if defined (PLATFORM_COOLSTREAM)
 							currentapid = g_currentapid;
+							currentac3 = g_currentac3;
+#else
+							currentapid = 0;
+#endif
 						}
 					}
 

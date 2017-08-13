@@ -31,17 +31,13 @@ class cPlayback
 	private:
 		int mSpeed;
 		int mAudioStream;
-		//int mVideoStream;
-		//int mVideoType;
-		//int mAC3;
-		//int mDuration;
 		
 	public:
 		bool playing;
 
 		bool Open();
 		void Close(void);
-		bool Start(char * filename, unsigned short _vp = 0, int _vtype = 0, unsigned short _ap = 0, int _ac3 = 0, int _duration = 0);
+		bool Start(char * filename);
 		
 		bool Play(void);
 		bool Stop(void);
