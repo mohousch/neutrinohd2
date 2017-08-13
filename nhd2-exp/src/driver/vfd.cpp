@@ -120,23 +120,28 @@ CVFD::CVFD()
 			
 			if(fd < 0)
 			{
-				// probe /proc/vfd (e.g gigablue)
-				fd = open("/proc/vfd", O_RDWR);
-				
+				fd = open("/dev/mcu", O_RDWR);
+
 				if(fd < 0)
 				{
-					// probe /dev/dbox/oled0
-					fd = open("/dev/dbox/oled0", O_RDWR);
-		
-					if(fd < 0) 
+					// probe /proc/vfd (e.g gigablue)
+					fd = open("/proc/vfd", O_RDWR);
+				
+					if(fd < 0)
 					{
-						// probe /dev/oled0
-						fd = open("/dev/oled0", O_RDWR);
-						
-						if(fd < 0)
+						// probe /dev/dbox/oled0
+						fd = open("/dev/dbox/oled0", O_RDWR);
+		
+						if(fd < 0) 
 						{
-							dprintf(DEBUG_NORMAL, "CVFD::init no VFD/LCD detected\n");
-							has_lcd = 0;
+							// probe /dev/oled0
+							fd = open("/dev/oled0", O_RDWR);
+						
+							if(fd < 0)
+							{
+								dprintf(DEBUG_NORMAL, "CVFD::init no VFD/LCD detected\n");
+								has_lcd = 0;
+							}
 						}
 					}
 				}
