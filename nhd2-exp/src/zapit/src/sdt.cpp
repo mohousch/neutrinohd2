@@ -316,8 +316,7 @@ int parse_current_sdt( const t_transport_stream_id p_transport_stream_id, const 
 			return ret;
 		}
 		
-		dmx->Stop();
-
+		//
 		section_length = ((buffer[1] & 0x0F) << 8) | buffer[2];
 		transport_stream_id = (buffer[3] << 8) | buffer[4];
 		original_network_id = (buffer[8] << 8) | buffer[9];

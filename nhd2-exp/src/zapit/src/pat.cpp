@@ -81,18 +81,15 @@ int parse_pat(CZapitChannel * const channel, CFrontend * fe)
 		if(buffer[7]) 
 			printf("parse_pat: section 0x%X last 0x%X\n", buffer[6], buffer[7]);
 		
+		// set pids
 		for (i = 8; i < (((buffer[1] & 0x0F) << 8) | buffer[2]) + 3; i += 4) 
 		{
 			if (channel->getServiceId() == ((buffer[i] << 8) | buffer[i+1])) 
 			{
 				channel->setPmtPid(((buffer[i + 2] & 0x1F) << 8) | buffer[i+3]);
-
-				//
-				delete dmx;
-				
-				return 0;
 			}
 		}
+	
 	} while (filter[4]++ != buffer[7]);
 	
 	delete dmx;
