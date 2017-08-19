@@ -419,7 +419,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 	showRecordIcon(show_dot);
 
 	// snr/sig
-	showSNR();	
+	//showSNR();	
 		
 	// botton bar
 	frameBuffer->paintBoxRel(buttonBarStartX, buttonBarStartY, BoxWidth, buttonBarHeight, COL_INFOBAR_BUTTONS_BACKGROUND, RADIUS_MID, CORNER_BOTTOM);
@@ -502,6 +502,9 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 	//
 	showTitle(_ChanNum, ChannelName, _satellitePosition);
 
+	//
+	showSNR();
+
 	// show current_next epg data
 	getCurrentNextEPG(channel_id, new_chan, _epgpos);
 
@@ -534,12 +537,13 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 		dprintf(DEBUG_NORMAL, "show: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
 		// ???
-		//sigscale->reset(); 
-		//snrscale->reset(); 
+		sigscale->reset(); 
+		snrscale->reset(); 
 		timescale->reset();
 
 		showTitle(_ChanNum, ChannelName, _satellitePosition);
 		show_Data();
+		showSNR();
 
 		if ( msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
 		{
@@ -1135,16 +1139,13 @@ int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 {
  	if ((msg == NeutrinoMessages::EVT_CURRENTNEXT_EPG) || (msg == NeutrinoMessages::EVT_NEXTPROGRAM)) 
 	{
-		//if ((*(t_channel_id *) data) == (channel_id & 0xFFFFFFFFFFFFULL)) 
-		{
-	  		getEPG(*(t_channel_id *)data, info_CurrentNext);
-	  		if ( is_visible )
-				show_Data(true);
+	  	getEPG(*(t_channel_id *)data, info_CurrentNext);
+	  	if ( is_visible )
+			show_Data(true);
 			
 #if ENABLE_LCD			
-	  		showLcdPercentOver();
+	  	showLcdPercentOver();
 #endif			
-		}
 
 		return messages_return::handled;
   	} 
@@ -1366,6 +1367,8 @@ void CInfoViewer::getEPG(const t_channel_id for_channel_id, CSectionsdClient::Cu
 	{
 		char *p = new char[sizeof(t_channel_id)];
 		memcpy(p, &for_channel_id, sizeof(t_channel_id));
+
+		//
 		g_RCInput->postMsg(NeutrinoMessages::EVT_NOEPG_YET, (const neutrino_msg_data_t) p, false);
 		
 		return;
@@ -1386,6 +1389,8 @@ void CInfoViewer::getEPG(const t_channel_id for_channel_id, CSectionsdClient::Cu
 		}
 		else
 			msg = NeutrinoMessages::EVT_NOEPG_YET;
+
+		//
 		g_RCInput->postMsg(msg, (const neutrino_msg_data_t)p, false); // data is pointer to allocated memory
 	}
 }
@@ -1584,8 +1589,6 @@ void CInfoViewer::show_Data(bool calledFromEvent)
 	  		struct tm * pStartZeit = localtime(&info_CurrentNext.current_zeit.startzeit);
 	  		sprintf(runningStart, "%02d:%02d", pStartZeit->tm_hour, pStartZeit->tm_min);
 		} 
-		//else
-		//	last_curr_id = 0;
 
 		if (info_CurrentNext.flags & CSectionsdClient::epgflags::has_next) 
 		{
@@ -1594,9 +1597,6 @@ void CInfoViewer::show_Data(bool calledFromEvent)
 	  		struct tm *pStartZeit = localtime (&info_CurrentNext.next_zeit.startzeit);
 	  		sprintf(nextStart, "%02d:%02d", pStartZeit->tm_hour, pStartZeit->tm_min);
 		} 
-		//else
-		//	last_next_id = 0;
-
 		
 	  	//percent
 	  	if (info_CurrentNext.flags & CSectionsdClient::epgflags::has_current) 
@@ -1677,50 +1677,6 @@ void CInfoViewer::show_Data(bool calledFromEvent)
 		}
   	}
 }
-
-#if 0
-void CInfoViewer::showIcon_Audio(const int ac3state) const
-{
-	const char *dd_icon;
-	
-	switch (ac3state)
-	{
-		case AC3_ACTIVE:
-			dd_icon = NEUTRINO_ICON_DD;
-			break;
-			
-		case AC3_AVAILABLE:
-			dd_icon = NEUTRINO_ICON_DD_AVAIL;
-			break;
-			
-		case NO_AC3:
-		default:
-			dd_icon = NEUTRINO_ICON_DD_GREY;
-			break;
-	}
-
-	if(is_visible)
-		frameBuffer->paintIcon(dd_icon, BoxEndX - (BORDER_RIGHT + icon_w_subt + ICON_TO_ICON_OFFSET + icon_w_vtxt + ICON_TO_ICON_OFFSET + icon_w_dd), buttonBarStartY + (buttonBarHeight - icon_h_dd)/2 );
-	
-	if (ac3state == AC3_ACTIVE)
-	{
-		CVFD::getInstance()->ShowIcon(VFD_ICON_DOLBY, true);
-#if defined(PLATFORM_SPARK7162)
-		CVFD::getInstance()->ShowIcon(VFD_ICON_AC3, true);
-		CVFD::getInstance()->ShowIcon(VFD_ICON_MP3, false);//FIXME:@dbo: why???
-#endif
-		//CVFD::getInstance()->ShowIcon(VFD_ICON_MP3, false);//FIXME:@dbo: why???
-	}
-	else
-	{
-		CVFD::getInstance()->ShowIcon(VFD_ICON_DOLBY, false);
-#if defined(PLATFORM_SPARK7162)
-		CVFD::getInstance()->ShowIcon(VFD_ICON_AC3, false);
-		CVFD::getInstance()->ShowIcon(VFD_ICON_MP3, true); //FIXME:@dbo: why???
-#endif
-	}
-}
-#endif
 
 void CInfoViewer::showButton_Audio()
 {
