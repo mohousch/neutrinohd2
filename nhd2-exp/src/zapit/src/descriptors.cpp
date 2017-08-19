@@ -425,10 +425,6 @@ uint8_t fix_service_type(uint8_t type)
 	return type;
 }
 
-//extern int parse_pat(int feindex = 0);
-//extern int pat_get_pmt_pid(CZapitChannel * const channel);
-//extern int parse_pmt(CZapitChannel * const channel, CFrontend * fe);
-
 /* 0x48 */
 void service_descriptor(const unsigned char * const buffer, const t_service_id service_id, const t_transport_stream_id transport_stream_id, const t_original_network_id original_network_id, t_satellite_position satellitePosition, freq_id_t freq, bool free_ca, int feindex)
 {
@@ -694,34 +690,6 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 		default:
 			break;
 	}
-
-	//set channel pidflags
-	/*
-	if(channel) 
-	{
-		if(tpchange)
-			parse_pat(feindex);
-		
-		channel->resetPids();
-		
-		if(!pat_get_pmt_pid(channel)) 
-		{
-			if( !parse_pmt(channel, getFE(feindex)) ) 
-			{
-				if ((channel->getPreAudioPid() != 0) || (channel->getVideoPid() != 0)) 
-				{
-					channel->setPidsFlag();
-				}
-			}
-		}
-	}
-
-	// set live_channel_id
-	if( !live_channel_id && (channel && (channel->getServiceType() == ST_DIGITAL_TELEVISION_SERVICE) && !channel->scrambled) )
-	{
-		live_channel_id = channel->getChannelID();
-	}
-	*/
 }
 
 void current_service_descriptor(const unsigned char * const buffer, const t_service_id service_id, const t_transport_stream_id transport_stream_id, const t_original_network_id original_network_id, t_satellite_position satellitePosition, freq_id_t freq)
