@@ -425,9 +425,9 @@ uint8_t fix_service_type(uint8_t type)
 	return type;
 }
 
-extern int parse_pat(int feindex = 0);
-extern int pat_get_pmt_pid(CZapitChannel * const channel);
-extern int parse_pmt(CZapitChannel * const channel, CFrontend * fe);
+//extern int parse_pat(int feindex = 0);
+//extern int pat_get_pmt_pid(CZapitChannel * const channel);
+//extern int parse_pmt(CZapitChannel * const channel, CFrontend * fe);
 
 /* 0x48 */
 void service_descriptor(const unsigned char * const buffer, const t_service_id service_id, const t_transport_stream_id transport_stream_id, const t_original_network_id original_network_id, t_satellite_position satellitePosition, freq_id_t freq, bool free_ca, int feindex)

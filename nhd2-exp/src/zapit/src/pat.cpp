@@ -101,6 +101,7 @@ int parse_pat(CZapitChannel * const channel, CFrontend * fe)
 }
 
 // scan pat needed in descriptor
+/*
 static unsigned char pbuffer[PAT_SIZE];
 
 int parse_pat(int feindex)
@@ -155,4 +156,5 @@ int pat_get_pmt_pid(CZapitChannel * const channel)
 	
 	return -1;
 }
+*/
 
