@@ -155,8 +155,6 @@ class CInfoViewer
 		int timescale_posy;
 		char runningPercent;
 
-		bool newfreq;
-
 		char aspectRatio;
 		uint32_t sec_timer_id;
 		bool virtual_zap_mode;

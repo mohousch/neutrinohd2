@@ -417,9 +417,6 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 
 	// record icon
 	showRecordIcon(show_dot);
-
-	// snr/sig
-	//showSNR();	
 		
 	// botton bar
 	frameBuffer->paintBoxRel(buttonBarStartX, buttonBarStartY, BoxWidth, buttonBarHeight, COL_INFOBAR_BUTTONS_BACKGROUND, RADIUS_MID, CORNER_BOTTOM);
@@ -457,7 +454,6 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 	show_dot = true;
 	is_visible = true;
 	new_chan = false;
-	newfreq = true;
 	showButtonBar = !_calledFromNumZap;
 	//last_curr_id = last_next_id = 0;
 	runningPercent = 0;
@@ -536,10 +532,11 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 
 		dprintf(DEBUG_NORMAL, "show: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
-		// ???
+		/*
 		sigscale->reset(); 
 		snrscale->reset(); 
 		timescale->reset();
+		*/
 
 		showTitle(_ChanNum, ChannelName, _satellitePosition);
 		show_Data();
@@ -565,8 +562,6 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 		} 			
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			//
-			showSNR();
 			showRecordIcon(show_dot);
 			show_dot = !show_dot;
 				
@@ -1412,7 +1407,7 @@ void CInfoViewer::showSNR()
 		if(is_visible)
 		{
 			// freq
-			if (newfreq && chanready) 
+			if (chanready) 
 			{
 				char freq[20];
 				
