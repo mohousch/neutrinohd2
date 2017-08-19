@@ -354,6 +354,16 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 		}
 	}
 
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+	{
+		satNameWidth = g_SignalFont->getRenderWidth("WebTV");
+			
+		if (satNameWidth > ((BoxEndX - BoxStartX) / 3) ) 
+			satNameWidth = (BoxEndX - BoxStartX) / 3;
+				
+		g_SignalFont->RenderString( BoxStartX + BORDER_LEFT, BoxStartY + (SAT_INFOBOX_HEIGHT - SatNameHeight)/2 + SatNameHeight, satNameWidth, "WebTV", COL_INFOBAR );
+	}
+
 	// channel number/logo/name
 	if (satellitePosition != 0 && satellitePositions.size() ) 
 	{
