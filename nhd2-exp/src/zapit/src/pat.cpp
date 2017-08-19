@@ -77,16 +77,17 @@ int parse_pat(CZapitChannel * const channel, CFrontend * fe)
 			delete dmx;
 			return -1;
 		}
-
-		if(buffer[7]) 
-			printf("parse_pat: section 0x%X last 0x%X\n", buffer[6], buffer[7]);
 		
 		// set pids
 		for (i = 8; i < (((buffer[1] & 0x0F) << 8) | buffer[2]) + 3; i += 4) 
 		{
-			if (channel->getServiceId() == ((buffer[i] << 8) | buffer[i+1])) 
+			if (channel->getServiceId() == ((buffer[i] << 8) | buffer[i + 1])) 
 			{
-				channel->setPmtPid(((buffer[i + 2] & 0x1F) << 8) | buffer[i+3]);
+				channel->setPmtPid(((buffer[i + 2] & 0x1F) << 8) | buffer[i + 3]);
+
+				delete dmx;
+
+				return 0;
 			}
 		}
 	
@@ -99,7 +100,7 @@ int parse_pat(CZapitChannel * const channel, CFrontend * fe)
 	return -1;
 }
 
-// scan pat
+// scan pat needed in descriptor
 static unsigned char pbuffer[PAT_SIZE];
 
 int parse_pat(int feindex)
@@ -137,7 +138,7 @@ int parse_pat(int feindex)
 	return ret;
 }
 
-int pat_get_pmt_pid (CZapitChannel * const channel)
+int pat_get_pmt_pid(CZapitChannel * const channel)
 {
 	unsigned short i;
 
