@@ -532,12 +532,12 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 
 		dprintf(DEBUG_NORMAL, "show: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
-		/*
+		//
 		sigscale->reset(); 
 		snrscale->reset(); 
 		timescale->reset();
-		*/
 
+		//
 		showTitle(_ChanNum, ChannelName, _satellitePosition);
 		show_Data();
 		showSNR();
