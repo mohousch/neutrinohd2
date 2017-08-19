@@ -54,10 +54,10 @@ int parse_pat(CZapitChannel * const channel, CFrontend * fe)
 	dmx->Open(DMX_PSI_CHANNEL, PAT_SIZE, fe );
 #endif	
 
-	/* buffer for program association table */
+	// buffer for program association table
 	unsigned char buffer[PAT_SIZE];
 
-	/* current positon in buffer */
+	// current positon in buffer
 	unsigned short i;
 
 	unsigned char filter[DMX_FILTER_SIZE];
@@ -70,8 +70,6 @@ int parse_pat(CZapitChannel * const channel, CFrontend * fe)
 	mask[4] = 0xFF;
 
 	do {
-		/* set filter for program association section */
-		/* read section */
 		if ( (dmx->sectionFilter(0, filter, mask, 5) < 0) || (i = dmx->Read(buffer, PAT_SIZE) < 0))
 		{
 			dprintf(DEBUG_NORMAL, "parse_pat: dmx read failed\n");
@@ -83,14 +81,14 @@ int parse_pat(CZapitChannel * const channel, CFrontend * fe)
 		if(buffer[7]) 
 			printf("parse_pat: section 0x%X last 0x%X\n", buffer[6], buffer[7]);
 		
-		/* loop over service id / program map table pid pairs */
 		for (i = 8; i < (((buffer[1] & 0x0F) << 8) | buffer[2]) + 3; i += 4) 
 		{
-			/* compare service id */
 			if (channel->getServiceId() == ((buffer[i] << 8) | buffer[i+1])) 
 			{
-				/* store program map table pid */
-				channel->setPmtPid(((buffer[i+2] & 0x1F) << 8) | buffer[i+3]);
+				channel->setPmtPid(((buffer[i + 2] & 0x1F) << 8) | buffer[i+3]);
+
+				//
+				delete dmx;
 				
 				return 0;
 			}
@@ -148,11 +146,9 @@ int pat_get_pmt_pid (CZapitChannel * const channel)
 
 	for (i = 8; i < (((pbuffer[1] & 0x0F) << 8) | pbuffer[2]) + 3; i += 4) 
 	{
-		/* compare service id */
-		if (channel->getServiceId() == ((pbuffer[i] << 8) | pbuffer[i+1])) 
+		if (channel->getServiceId() == ((pbuffer[i] << 8) | pbuffer[i + 1])) 
 		{
-			/* store program map table pid */
-			channel->setPmtPid(((pbuffer[i+2] & 0x1F) << 8) | pbuffer[i+3]);
+			channel->setPmtPid(((pbuffer[i + 2] & 0x1F) << 8) | pbuffer[i + 3]);
 			return 0;
 		}
 	}

@@ -65,15 +65,16 @@ int parse_nit(t_satellite_position satellitePosition, freq_id_t freq, int feinde
 
 	unsigned char buffer[NIT_SIZE];
 
-	/* position in buffer */
+	// position in buffer
 	unsigned short pos;
 	unsigned short pos2;
 
-	/* network_information_section elements */
+	// network_information_section elements 
 	unsigned short section_length;
 	unsigned short network_descriptors_length;
 	unsigned short transport_descriptors_length;
 	unsigned short transport_stream_loop_length;
+
 	t_transport_stream_id transport_stream_id;
 	t_original_network_id original_network_id;
 	unsigned short network_id;
@@ -122,10 +123,6 @@ int parse_nit(t_satellite_position satellitePosition, freq_id_t freq, int feinde
 		{
 			switch (buffer[pos])
 			{
-				/*case 0x0F:
-					Private_data_indicator_descriptor(buffer + pos);
-					break;*/
-
 				case 0x40:
 					network_name_descriptor(buffer + pos);
 					break;
@@ -142,10 +139,10 @@ int parse_nit(t_satellite_position satellitePosition, freq_id_t freq, int feinde
 					private_data_specifier_descriptor(buffer + pos);
 					break;*/
 
-				case 0x80: /* unknown, Eutelsat 13.0E */
+				case 0x80: // unknown, Eutelsat 13.0E
 					break;
 
-				case 0x90: /* unknown, Eutelsat 13.0E */
+				case 0x90: // unknown, Eutelsat 13.0E 
 					break;
 
 				default:
@@ -165,65 +162,61 @@ int parse_nit(t_satellite_position satellitePosition, freq_id_t freq, int feinde
 			original_network_id = (buffer[pos + 2] << 8) | buffer[pos + 3];
 			transport_descriptors_length = ((buffer[pos + 4] & 0x0F) << 8) | buffer[pos + 5];
 
-			//if (transponders.find((transport_stream_id << 16) | original_network_id) == transponders.end())
-			//if (scantransponders.find(CREATE_TRANSPONDER_ID_FROM_SATELLITEPOSITION_ORIGINALNETWORK_TRANSPORTSTREAM_ID(freq, satellitePosition, original_network_id, transport_stream_id)) == scantransponders.end())
+			//
+			for (pos2 = pos + 6; pos2 < pos + transport_descriptors_length + 6; pos2 += buffer[pos2 + 1] + 2)
 			{
-				for (pos2 = pos + 6; pos2 < pos + transport_descriptors_length + 6; pos2 += buffer[pos2 + 1] + 2)
+				switch (buffer[pos2])
 				{
-					switch (buffer[pos2])
-					{
-						case 0x41:
-							service_list_descriptor(buffer + pos2, transport_stream_id, original_network_id, satellitePosition, freq);
-							break;
+					case 0x41:
+						service_list_descriptor(buffer + pos2, transport_stream_id, original_network_id, satellitePosition, freq);
+						break;
 
-						case 0x42:
-							stuffing_descriptor(buffer + pos2);
-							break;
+					case 0x42:
+						stuffing_descriptor(buffer + pos2);
+						break;
 
-						case 0x43:
-							if (satellite_delivery_system_descriptor(buffer + pos2, transport_stream_id, original_network_id, satellitePosition, freq, feindex) < 0)
-							{
-								ret = -2;
-								goto _return;
-							}
-							break;
+					case 0x43:
+						if (satellite_delivery_system_descriptor(buffer + pos2, transport_stream_id, original_network_id, satellitePosition, freq, feindex) < 0)
+						{
+							ret = -2;
+							goto _return;
+						}
+						break;
 
-						case 0x44:
-							if (cable_delivery_system_descriptor(buffer + pos2, transport_stream_id, original_network_id, satellitePosition, freq, feindex) < 0)
-							{
-								ret = -2;
-								goto _return;
-							}
-							break;
+					case 0x44:
+						if (cable_delivery_system_descriptor(buffer + pos2, transport_stream_id, original_network_id, satellitePosition, freq, feindex) < 0)
+						{
+							ret = -2;
+							goto _return;
+						}
+						break;
 
-						case 0x5A:
-							if(terrestrial_delivery_system_descriptor(buffer + pos2, transport_stream_id, original_network_id, satellitePosition, freq, feindex) < 0)
-							{
-								ret = -2;
-								goto _return;
-							}
-							break;
+					case 0x5A:
+						if(terrestrial_delivery_system_descriptor(buffer + pos2, transport_stream_id, original_network_id, satellitePosition, freq, feindex) < 0)
+						{
+							ret = -2;
+							goto _return;
+						}
+						break;
 
-						case 0x5F:
-							private_data_specifier_descriptor(buffer + pos2);
-							break;
+					case 0x5F:
+						private_data_specifier_descriptor(buffer + pos2);
+						break;
 
-						case 0x62:
-							frequency_list_descriptor(buffer + pos2);
-							break;
+					case 0x62:
+						frequency_list_descriptor(buffer + pos2);
+						break;
 
-						case 0x82: /* unknown, Eutelsat 13.0E */
-							break;
+					case 0x82: // unknown, Eutelsat 13.0E
+						break;
 
-						default:
-							dprintf(DEBUG_DEBUG, "parse_nit: second_descriptor_tag: %02x\n", buffer[pos2]);
-							break;
-					}
+					default:
+						dprintf(DEBUG_DEBUG, "parse_nit: second_descriptor_tag: %02x\n", buffer[pos2]);
+						break;
 				}
 			}
 		}
 	} while(sectotal < buffer[7]);
-	//} while (filter[4]++ != buffer[7]);
 
 _return:
 	delete dmx;

@@ -477,10 +477,10 @@ int parse_pmt(CZapitChannel * const channel, CFrontend * fe)
 	unsigned short i;
 	unsigned char buffer[PMT_SIZE];
 
-	/* length of elementary stream description */
+	// length of elementary stream description
 	unsigned short ES_info_length;
 
-	/* TS_program_map_section elements */
+	// TS_program_map_section elements
 	unsigned short section_length;
 	unsigned short program_info_length;
 
@@ -506,11 +506,11 @@ int parse_pmt(CZapitChannel * const channel, CFrontend * fe)
 	memset(filter, 0x00, DMX_FILTER_SIZE);
 	memset(mask, 0x00, DMX_FILTER_SIZE);
 
-	filter[0] = 0x02;	/* pmt tid */
+	filter[0] = 0x02;	// pmt tid 
 	filter[1] = channel->getServiceId() >> 8;
 	filter[2] = channel->getServiceId();
-	filter[3] = 0x01;	/* current_next_indicator */
-	filter[4] = 0x00;	/* section_number */
+	filter[3] = 0x01;	// current_next_indicator 
+	filter[4] = 0x00;	// section_number
 	mask[0] = 0xFF;
 	mask[1] = 0xFF;
 	mask[2] = 0xFF;
@@ -563,13 +563,14 @@ int parse_pmt(CZapitChannel * const channel, CFrontend * fe)
 	pos = 10;
 	if(!scan_runs) 
 	{
-		while(pos + 2<pmtlen) 
+		while(pos + 2 < pmtlen) 
 		{
 			dpmtlen = ((buffer[pos] & 0x0f) << 8) | buffer[pos + 1];
-			for ( ia=pos+2;ia<(dpmtlen+pos+2);ia += descriptor_length + 2 ) 
+			for ( ia = pos + 2; ia < (dpmtlen + pos + 2); ia += descriptor_length + 2 ) 
 			{
 				descriptor_length = buffer[ia + 1];
 				if ( ia < pmtlen - 4 )
+				{
 					if(buffer[ia] == 0x09 && buffer[ia + 1] > 0) 
 					{
 						switch(buffer[ia+2]) 
@@ -598,15 +599,16 @@ int parse_pmt(CZapitChannel * const channel, CFrontend * fe)
 								   break;
 						} //switch
 					} // if
+				}
 			} // for
 			pos += dpmtlen + 5;
 		} // while
-	} /* if !scan_runs */
+	} // if !scan_runs
 	
 	// ca pmt
 	CCaPmt * caPmt = new CCaPmt();
 
-	/* ca pmt */
+	// ca pmt 
 	caPmt->program_number = (buffer[3] << 8) + buffer[4];
 	caPmt->reserved1 = buffer[5] >> 6;
 	caPmt->version_number = (buffer[5] >> 1) & 0x1F;
@@ -622,7 +624,7 @@ int parse_pmt(CZapitChannel * const channel, CFrontend * fe)
 			channel->resetPids();
 	}
 	
-	/* capmt descriptor*/
+	// capmt descriptor
 	section_length = ((buffer[1] & 0x0F) << 8) + buffer[2];
 	channel->setPcrPid(((buffer[8] & 0x1F) << 8) + buffer[9]);
 	program_info_length = ((buffer[10] & 0x0F) << 8) | buffer[11];
@@ -643,7 +645,7 @@ int parse_pmt(CZapitChannel * const channel, CFrontend * fe)
 		}
 	}
 
-	/* capmt parse ES_Info */
+	// capmt parse ES_Info
 	for (i = 12 + program_info_length; i < section_length - 1; i += ES_info_length + 5)
 		ES_info_length = parse_ES_info(buffer + i, channel, caPmt);
 
@@ -669,8 +671,8 @@ int parse_pmt(CZapitChannel * const channel, CFrontend * fe)
 	return 0;
 }
 
-/* globals */
-cDemux * pmtDemux;
+//
+cDemux * pmtDemux = NULL;
 
 int pmt_set_update_filter( CZapitChannel * const channel, int * fd, CFrontend * fe)
 {
@@ -698,10 +700,10 @@ int pmt_set_update_filter( CZapitChannel * const channel, int * fd, CFrontend * 
 	memset(mask, 0x00, DMX_FILTER_SIZE);
 	memset(mode, 0x00, DMX_FILTER_SIZE);
 
-	filter[0] = 0x02;	/* pmt tid */
+	filter[0] = 0x02;	// pmt tid 
 	filter[1] = channel->getServiceId() >> 8;
 	filter[2] = channel->getServiceId();
-	filter[4] = 0x00;	/* section_number */
+	filter[4] = 0x00;	// section_number 
 
 	mask[0] = 0xFF;
 	mask[1] = 0xFF;

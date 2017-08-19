@@ -65,11 +65,11 @@ int parse_sdt(t_transport_stream_id *p_transport_stream_id,t_original_network_id
 
 	unsigned char buffer[SDT_SIZE];
 
-	/* position in buffer */
+	// position in buffer 
 	unsigned short pos;
 	unsigned short pos2;
 
-	/* service_description_section elements */
+	// service_description_section elements
 	unsigned short section_length;
 	unsigned short transport_stream_id;
 	unsigned short original_network_id;
@@ -87,7 +87,7 @@ int parse_sdt(t_transport_stream_id *p_transport_stream_id,t_original_network_id
 	memset(filter, 0x00, DMX_FILTER_SIZE);
 	memset(mask, 0x00, DMX_FILTER_SIZE);
 
-	filter[0] = 0x42;	/* sdt tid */
+	filter[0] = 0x42;	// sdt tid 
 	mask[0] = 0xFF;
 
 	if (dmx->sectionFilter(0x11, filter, mask, 1) < 0) 
@@ -135,8 +135,6 @@ int parse_sdt(t_transport_stream_id *p_transport_stream_id,t_original_network_id
 
 			for (pos2 = pos + 5; pos2 < pos + descriptors_loop_length + 5; pos2 += buffer[pos2 + 1] + 2) 
 			{
-				//printf("[sdt] descriptor %X\n", buffer[pos2]);
-				
 				switch (buffer[pos2]) 
 				{
 					case 0x0A:
@@ -197,47 +195,44 @@ int parse_sdt(t_transport_stream_id *p_transport_stream_id,t_original_network_id
 						data_broadcast_descriptor(buffer + pos2);
 						break;
 	
-					case 0x80: /* unknown, Eutelsat 13.0E */
+					case 0x80: // unknown, Eutelsat 13.0E
 						break;
 	
-					case 0x84: /* unknown, Eutelsat 13.0E */
+					case 0x84: // unknown, Eutelsat 13.0E
 						break;
 	
-					case 0x86: /* unknown, Eutelsat 13.0E */
+					case 0x86: // unknown, Eutelsat 13.0E
 						break;
 	
-					case 0x88: /* unknown, Astra 19.2E */
+					case 0x88: // unknown, Astra 19.2E
 						break;
 	
-					case 0xB2: /* unknown, Eutelsat 13.0E */
+					case 0xB2: // unknown, Eutelsat 13.0E
 						break;
 	
-					case 0xC0: /* unknown, Eutelsat 13.0E */
+					case 0xC0: // unknown, Eutelsat 13.0E
 						break;
 	
-					case 0xE4: /* unknown, Astra 19.2E */
+					case 0xE4: // unknown, Astra 19.2E
 						break;
 	
-					case 0xE5: /* unknown, Astra 19.2E */
+					case 0xE5: // unknown, Astra 19.2E 
 						break;
 	
-					case 0xE7: /* unknown, Eutelsat 13.0E */
+					case 0xE7: // unknown, Eutelsat 13.0E
 						break;
 	
-					case 0xED: /* unknown, Astra 19.2E */
+					case 0xED: // unknown, Astra 19.2E
 						break;
 	
-					case 0xF8: /* unknown, Astra 19.2E */
+					case 0xF8: // unknown, Astra 19.2E
 						break;
 	
-					case 0xF9: /* unknown, Astra 19.2E */
+					case 0xF9: // unknown, Astra 19.2E
 						break;
 	
 					default:
-						/*
-						DBG("descriptor_tag: %02x\n", buffer[pos2]);
-						generic_descriptor(buffer + pos2);
-						*/
+						//generic_descriptor(buffer + pos2);
 						break;
 				}
 			}
@@ -270,11 +265,11 @@ int parse_current_sdt( const t_transport_stream_id p_transport_stream_id, const 
 
 	unsigned char buffer[SDT_SIZE];
 
-	/* position in buffer */
+	// position in buffer
 	unsigned short pos;
 	unsigned short pos2;
 
-	/* service_description_section elements */
+	// service_description_section elements
 	unsigned short section_length;
 	unsigned short transport_stream_id;
 	unsigned short original_network_id;
@@ -292,7 +287,7 @@ int parse_current_sdt( const t_transport_stream_id p_transport_stream_id, const 
 	curchans.clear();
 	
 	//
-	filter[0] = 0x42;	/* sdt tid */
+	filter[0] = 0x42;	// sdt tid
 	filter[1] = (p_transport_stream_id >> 8) & 0xff;
 	filter[2] = p_transport_stream_id & 0xff;
 	filter[3] = 0x00;
@@ -338,8 +333,6 @@ int parse_current_sdt( const t_transport_stream_id p_transport_stream_id, const 
 
 			for (pos2 = pos + 5; pos2 < pos + descriptors_loop_length + 5; pos2 += buffer[pos2 + 1] + 2) 
 			{
-				//printf("[sdt] descriptor %X\n", buffer[pos2]);
-				
 				switch (buffer[pos2]) 
 				{
 					case 0x48:
@@ -348,16 +341,14 @@ int parse_current_sdt( const t_transport_stream_id p_transport_stream_id, const 
 						break;
 	
 					default:
-						/*
-						DBG("descriptor_tag: %02x\n", buffer[pos2]);
-						generic_descriptor(buffer + pos2);
-						*/
+						//generic_descriptor(buffer + pos2);
 						break;
 				}
 			}
 		}
 	}
 	while (filter[4]++ != buffer[7]);
+
 	delete dmx;
 
 	return ret;
