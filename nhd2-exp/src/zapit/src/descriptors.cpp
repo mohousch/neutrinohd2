@@ -541,17 +541,12 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 	tallchans_iterator I = allchans.find(channel_id);
 
 	if (I != allchans.end()) 
-	{
-		//if(strcmp(serviceName.c_str(), I->second.getName().c_str())) 
-		{
-			//printf("[scan] channel %s (%llx at %d) exist with name %s at %d !!\n", serviceName.c_str(), channel_id, freq, I->second.getName().c_str(), I->second.getFreqId());//FIXME
-			
-			service_wr = 0;
-			I->second.setName(serviceName);
-			I->second.setServiceType(real_type);
-			I->second.scrambled = free_ca;
-			channel = &I->second;
-		}
+	{	
+		service_wr = 0;
+		I->second.setName(serviceName);
+		I->second.setServiceType(real_type);
+		I->second.scrambled = free_ca;
+		channel = &I->second;
 	}
 
 	transponder_id_t tpid = CREATE_TRANSPONDER_ID_FROM_SATELLITEPOSITION_ORIGINALNETWORK_TRANSPORTSTREAM_ID( freq, satellitePosition, original_network_id, transport_stream_id);
@@ -573,15 +568,6 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 
 #define UNKNOWN_PROVIDER_NAME "Unknown Provider"
 
-#if 0
-	static unsigned int last_transport_stream_id = 0;
-	if(last_transport_stream_id != transport_stream_id ) 
-	{
-		last_transport_stream_id=transport_stream_id;
-		tpchange = true;
-	}
-#endif
-	//printf("[scan] last tp %llx new %llx\n", last_tpid, tpid);
 	if(last_tpid != tpid) 
 	{
 		last_tpid = tpid;
@@ -600,7 +586,7 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 		memset(filter, 0x00, DMX_FILTER_SIZE);
 		memset(mask, 0x00, DMX_FILTER_SIZE);
 
-		filter[0] = 0x40; /* nit tid */
+		filter[0] = 0x40; // nit tid
 		filter[4] = 0x00;
 		mask[0] = 0xFF;
 		mask[4] = 0xFF;
@@ -622,8 +608,8 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 					switch (buff[pos]) 
 					{
 						case 0x40:
-							if (buff[pos+1] > 30)
-								buff[pos+1] = 30;
+							if (buff[pos + 1] > 30)
+								buff[pos + 1] = 30;
 
 							providerName = CDVBString((const char*)&(buff[pos+2]), buff[pos+1]).getContent();
 							break;
@@ -646,11 +632,9 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 			providerName = CDVBString(UNKNOWN_PROVIDER_NAME, strlen(UNKNOWN_PROVIDER_NAME)).getContent();
 	}
 
-	//if (lastProviderName != providerName)
-	{
-		lastProviderName = providerName;
-		eventServer->sendEvent(CZapitClient::EVT_SCAN_PROVIDER, CEventServer::INITID_ZAPIT, (void *) lastProviderName.c_str(), lastProviderName.length() + 1);
-	}
+	//
+	lastProviderName = providerName;
+	eventServer->sendEvent(CZapitClient::EVT_SCAN_PROVIDER, CEventServer::INITID_ZAPIT, (void *) lastProviderName.c_str(), lastProviderName.length() + 1);
 
 	switch (service_type) 
 	{
@@ -712,6 +696,7 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 	}
 
 	//set channel pidflags
+	/*
 	if(channel) 
 	{
 		if(tpchange)
@@ -736,6 +721,7 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 	{
 		live_channel_id = channel->getChannelID();
 	}
+	*/
 }
 
 void current_service_descriptor(const unsigned char * const buffer, const t_service_id service_id, const t_transport_stream_id transport_stream_id, const t_original_network_id original_network_id, t_satellite_position satellitePosition, freq_id_t freq)
