@@ -164,34 +164,29 @@ class CInfoViewer
 		CChannelEventList evtlist;
 		CChannelEventList::iterator eli;
 
+		CProgressBar *snrscale, *sigscale, *timescale;
+		std::string eventname;
+
 		void show_Data(bool calledFromEvent = false);
 		void paintTime(int posx, int posy, CFont * timeFont);
-		
 		void showButton_Audio();
 		void showButton_SubServices();
-		
 		void showIcon_16_9();		
 		void showIcon_RadioText(bool rt_available) const;		
-	
 		void showIcon_CA_Status(int);
-
 		void showIcon_VTXT()      const;
 		void showRecordIcon(const bool show);
 		void showIcon_SubT() const;
-
 		void showIcon_Resolution() const;
-		void showIcon_Audio(const int ac3state) const;
-		
 		void showFailure();
 		void showMotorMoving(int duration);
 		void showLcdPercentOver();
 		void showSNR();
 		void showAktivTuner();
+		void Set_CA_Status(int Status);
 
+		//
 		void getCurrentNextEPG(t_channel_id ChannelID, bool newChan = false, int EPGPos = 0);
-
-		CProgressBar *snrscale, *sigscale, *timescale;
-		std::string eventname;
 
  public:
 		bool chanready;
@@ -218,19 +213,17 @@ class CInfoViewer
 
 		void killTitle();
 		
-		void getEPG(const t_channel_id for_channel_id, CSectionsdClient::CurrentNextInfo &info);
+		void getEPG(const t_channel_id for_channel_id, CSectionsdClient::CurrentNextInfo &info); // needed by CSleepTimerWidget
 		CSectionsdClient::CurrentNextInfo getCurrentNextInfo() { return info_CurrentNext; }
-	
-		void showSubchan();
-		void Set_CA_Status(int Status);
 	
 		int handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data);
 		void clearVirtualZapMode() {virtual_zap_mode = false;}
 		
-		void showEpgInfo();
-				
-		void showRadiotext();
-		void killRadiotext();
+		//
+		void showRadiotext(); // needed in radiotext
+		void killRadiotext(); // needed in radiotext
+		void showSubchan(); // needed in CNVODChangeExec
+		void showEpgInfo(); // neede in remotecontrol
 };
 
 class CInfoViewerHandler : public CMenuTarget
