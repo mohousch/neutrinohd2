@@ -380,7 +380,7 @@ class CMovieBrowser : public CMenuTarget
 		void getStorageInfo(void); // P3
 		
 		///// Menu //////////////////////////////////// 
-		bool showMenu(MI_MOVIE_INFO* movie_info); // P2
+		bool showMenu(); // P2
         	void showMovieInfoMenu(MI_MOVIE_INFO* movie_info); // P2
 		
 		///// settings /////////////////////////////////// 

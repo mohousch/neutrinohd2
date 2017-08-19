@@ -1227,8 +1227,6 @@ bool CFileHelpers::readDir(const std::string& dirname, CFileList* flist, CFileFi
 				}
 				
 				flist->push_back(file);
-
-				//dprintf(DEBUG_NORMAL, "CFileHelpers::add file %s\n", file.Name.c_str());
 			}
 		}
 		free(namelist[i]);
@@ -1244,8 +1242,14 @@ void CFileHelpers::addRecursiveDir(CFileList * re_filelist, std::string rpath, C
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 	int n;
+	int dir_count = 0;
 
 	dprintf(DEBUG_INFO, "CFileHelpers::addRecursiveDir %s\n", rpath.c_str());
+
+	if (dir_count > 10)
+	{
+		return; // do not go deeper than 10 directories
+	}
 
 	bool bCancel = false;
 
@@ -1263,6 +1267,8 @@ void CFileHelpers::addRecursiveDir(CFileList * re_filelist, std::string rpath, C
 	
 	if(bCancel)
 		return;
+
+	dir_count++;
 
 	CFileList tmplist;
 	if(!readDir(rpath, &tmplist, NULL, false)) //dont skip dirs 
@@ -1294,6 +1300,8 @@ void CFileHelpers::addRecursiveDir(CFileList * re_filelist, std::string rpath, C
 			}
 		}
 	}
+
+	dir_count--;
 }
 
 
