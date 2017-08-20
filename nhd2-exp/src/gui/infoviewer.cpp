@@ -1763,6 +1763,8 @@ void CInfoViewer::showButton_Audio()
 
 void CInfoViewer::killTitle()
 {
+	dprintf(DEBUG_NORMAL, "CInfoViewer::killTitle:\n");
+
   	if (is_visible) 
 	{
 		is_visible = false;

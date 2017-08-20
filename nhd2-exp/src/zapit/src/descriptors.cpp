@@ -44,7 +44,6 @@
 #include <dmx_cs.h>
 #include <math.h>
 
-#include <gui/scan_setup.h>
 
 extern CBouquetManager *g_bouquetManager;
 extern CZapitClient::scanType scanType;
@@ -61,8 +60,6 @@ std::string lastServiceName;
 std::map <t_channel_id, uint8_t> service_types;
 
 extern CEventServer *eventServer;
-extern CScanSettings * scanSettings;
-extern t_channel_id live_channel_id;
 
 CFrontend * getFE(int index);
 
@@ -71,7 +68,8 @@ int add_to_scan(transponder_id_t TsidOnid, FrontendParameters *feparams, uint8_t
 void generic_descriptor(const unsigned char * const)
 {
 #if 0
-	DBG("generic descriptor dump:");
+	dprintf(DEBUG_NORMAL, "generic descriptor dump:");
+
 	for (unsigned short i = 0; i < buffer[1] + 2; i++)
 		printf(" %02x", buffer[i]);
 	printf("\n");

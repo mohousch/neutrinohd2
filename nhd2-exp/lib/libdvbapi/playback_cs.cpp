@@ -63,6 +63,22 @@ extern int GLWidth;
 extern int GLHeight;
 #endif
 
+typedef enum
+{
+	GST_PLAY_FLAG_VIDEO         = (1 << 0),
+	GST_PLAY_FLAG_AUDIO         = (1 << 1),
+	GST_PLAY_FLAG_TEXT          = (1 << 2),
+	GST_PLAY_FLAG_VIS           = (1 << 3),
+	GST_PLAY_FLAG_SOFT_VOLUME   = (1 << 4),
+	GST_PLAY_FLAG_NATIVE_AUDIO  = (1 << 5),
+	GST_PLAY_FLAG_NATIVE_VIDEO  = (1 << 6),
+	GST_PLAY_FLAG_DOWNLOAD      = (1 << 7),
+	GST_PLAY_FLAG_BUFFERING     = (1 << 8),
+	GST_PLAY_FLAG_DEINTERLACE   = (1 << 9),
+	GST_PLAY_FLAG_SOFT_COLORBALANCE = (1 << 10),
+	GST_PLAY_FLAG_FORCE_FILTERS = (1 << 11),
+} GstPlayFlags;
+
 GstElement * m_gst_playbin = NULL;
 GstElement * audioSink = NULL;
 GstElement * videoSink = NULL;
@@ -128,6 +144,7 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 	
 	// source
 	GstObject * source;
+	GstElement *subsink;
 	source = GST_MESSAGE_SRC(msg);
 	
 	if (!GST_IS_OBJECT(source))
@@ -191,7 +208,64 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 			break;
 		}
 
-#if 0
+		//
+		case GST_MESSAGE_TAG:
+		{
+			GstTagList *tags, *result;
+			gst_message_parse_tag(msg, &tags);
+			GstTagList *m_stream_tags = 0;
+
+			result = gst_tag_list_merge(m_stream_tags, tags, GST_TAG_MERGE_REPLACE);
+			if (result)
+			{
+				if (m_stream_tags && gst_tag_list_is_equal(m_stream_tags, result))
+				{
+					gst_tag_list_free(tags);
+					gst_tag_list_free(result);
+					break;
+				}
+				if (m_stream_tags)
+					gst_tag_list_free(m_stream_tags);
+				m_stream_tags = result;
+			}
+
+			const GValue *gv_image = gst_tag_list_get_value_index(tags, GST_TAG_IMAGE, 0);
+			if ( gv_image )
+			{
+				GstBuffer *buf_image;
+#if GST_VERSION_MAJOR < 1
+				buf_image = gst_value_get_buffer(gv_image);
+#else
+				GstSample *sample;
+				sample = (GstSample *)g_value_get_boxed(gv_image);
+				buf_image = gst_sample_get_buffer(sample);
+#endif
+				int fd = open("/tmp/.id3coverart", O_CREAT|O_WRONLY|O_TRUNC, 0644);
+				if (fd >= 0)
+				{
+					guint8 *data;
+					gsize size;
+#if GST_VERSION_MAJOR < 1
+					data = GST_BUFFER_DATA(buf_image);
+					size = GST_BUFFER_SIZE(buf_image);
+#else
+					GstMapInfo map;
+					gst_buffer_map(buf_image, &map, GST_MAP_READ);
+					data = map.data;
+					size = map.size;
+#endif
+					int ret = write(fd, data, size);
+#if GST_VERSION_MAJOR >= 1
+					gst_buffer_unmap(buf_image, &map);
+#endif
+					close(fd);
+				}
+			}
+			gst_tag_list_free(tags);
+			break;
+		}
+		//
+
 #if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_WARNING:
 		{
@@ -203,7 +277,7 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 			after movie was restarted with a resume position is solved. */
 			if(!strncmp(warn->message , "Internal data flow problem", 26) && !strncmp(sourceName, "subtitle_sink", 13))
 			{
-				printf("[eServiceMP3] Gstreamer warning : %s (%i) from %s" , warn->message, warn->code, sourceName);
+				printf("Gstreamer warning : %s (%i) from %s\n" , warn->message, warn->code, sourceName);
 				subsink = gst_bin_get_by_name(GST_BIN(m_gst_playbin), "subtitle_sink");
 				if(subsink)
 				{
@@ -211,7 +285,7 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 						GST_SEEK_TYPE_SET, m_last_seek_pos,
 						GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE))
 					{
-						printf("[eServiceMP3] seekToImpl subsink failed\n");
+						printf("seekToImpl subsink failed\n");
 					}
 					gst_object_unref(subsink);
 				}
@@ -220,7 +294,6 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 			g_error_free(warn);
 			break;
 		}
-#endif
 #endif
 		
 		case GST_MESSAGE_STATE_CHANGED:
@@ -251,6 +324,35 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 					GValue result = { 0, };
 #endif
 					GstIterator * children;
+
+					//
+					subsink = gst_bin_get_by_name(GST_BIN(m_gst_playbin), "subtitle_sink");
+					if (subsink)
+					{
+#ifdef GSTREAMER_SUBTITLE_SYNC_MODE_BUG
+						/*
+						 * HACK: disable sync mode for now, gstreamer suffers from a bug causing sparse streams to loose sync, after pause/resume / skip
+						 * see: https://bugzilla.gnome.org/show_bug.cgi?id=619434
+						 * Sideeffect of using sync=false is that we receive subtitle buffers (far) ahead of their
+						 * display time.
+						 * Not too far ahead for subtitles contained in the media container.
+						 * But for external srt files, we could receive all subtitles at once.
+						 * And not just once, but after each pause/resume / skip.
+						 * So as soon as gstreamer has been fixed to keep sync in sparse streams, sync needs to be re-enabled.
+						 */
+						g_object_set (G_OBJECT (subsink), "sync", FALSE, NULL);
+#endif
+#if 0
+						/* we should not use ts-offset to sync with the decoder time, we have to do our own decoder timekeeping */
+						g_object_set (G_OBJECT (subsink), "ts-offset", -2LL * GST_SECOND, NULL);
+						/* late buffers probably will not occur very often */
+						g_object_set (G_OBJECT (subsink), "max-lateness", 0LL, NULL);
+						/* avoid prerolling (it might not be a good idea to preroll a sparse stream) */
+						g_object_set (G_OBJECT (subsink), "async", TRUE, NULL);
+#endif
+						// eDebug("[eServiceMP3] subsink properties set!");
+						gst_object_unref(subsink);
+					}
 					
 					if (audioSink)
 					{
@@ -442,6 +544,15 @@ void cPlayback::Close(void)
 	
 #if ENABLE_GSTREAMER
 	end_eof = false;
+
+	// disconnect subtitle callback
+	GstElement *subsink = gst_bin_get_by_name(GST_BIN(m_gst_playbin), "subtitle_sink");
+
+	if (subsink)
+	{
+		//g_signal_handler_disconnect (subsink, m_subs_to_pull_handler_id);
+		gst_object_unref(subsink);
+	}
 	
 	// disconnect bus handler
 	if (m_gst_playbin)
@@ -562,9 +673,6 @@ bool cPlayback::Start(char *filename)
 
 	if(m_gst_playbin)
 	{
-		// set uri
-		g_object_set(G_OBJECT (m_gst_playbin), "uri", uri, NULL);	
-
 		// increase the default 2 second / 2 MB buffer limitations to 5s / 5MB
 		if(isHTTP)
 		{
@@ -577,7 +685,28 @@ bool cPlayback::Start(char *filename)
 		}
 		
 		// set flags
-		g_object_set(G_OBJECT (m_gst_playbin), "flags", flags, NULL);	
+		g_object_set(G_OBJECT (m_gst_playbin), "flags", flags, NULL);
+
+		// set uri
+		g_object_set(G_OBJECT (m_gst_playbin), "uri", uri, NULL);
+
+		// subsink
+		GstElement *subsink = gst_element_factory_make("subsink", "subtitle_sink");
+		if (!subsink)
+		{
+			dprintf(DEBUG_NORMAL, "sorry, can't play: missing gst-plugin-subsink\n");
+		}
+		else
+		{
+			//m_subs_to_pull_handler_id = g_signal_connect (subsink, "new-buffer", G_CALLBACK (gstCBsubtitleAvail), this);
+#if GST_VERSION_MAJOR < 1
+			g_object_set (G_OBJECT (subsink), "caps", gst_caps_from_string("text/plain; text/x-plain; text/x-raw; text/x-pango-markup; video/x-dvd-subpicture; subpicture/x-pgs"), NULL);
+#else
+			g_object_set (G_OBJECT (subsink), "caps", gst_caps_from_string("text/plain; text/x-plain; text/x-raw; text/x-pango-markup; subpicture/x-dvd; subpicture/x-pgs"), NULL);
+#endif
+			g_object_set (G_OBJECT (m_gst_playbin), "text-sink", subsink, NULL);
+			//g_object_set (G_OBJECT (m_gst_playbin), "current-text", m_currentSubtitleStream, NULL);
+		}	
 		
 		//gstbus handler
 		bus = gst_pipeline_get_bus(GST_PIPELINE (m_gst_playbin));

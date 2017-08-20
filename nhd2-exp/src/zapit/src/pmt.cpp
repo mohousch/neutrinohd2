@@ -84,7 +84,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 	std::string description = "";
 	unsigned char componentTag = 0xFF;
 
-	/* elementary stream info for ca pmt */
+	// elementary stream info for ca pmt
 	CEsInfo * esInfo = new CEsInfo();
 
 	esInfo->stream_type = buffer[0];
@@ -94,6 +94,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 
 	ES_info_length = ((buffer[3] & 0x0F) << 8) | buffer[4];
 
+	// parse descriptor tag
 	for (pos = 5; pos < ES_info_length + 5; pos += descriptor_length + 2) 
 	{
 		descriptor_tag = buffer[pos];
@@ -244,6 +245,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 		}
 	}
 
+	// parse stream type
 	switch (esInfo->stream_type) 
 	{
 		case 0x01:	// MPEG 1 video
@@ -267,7 +269,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 			break;
 
 		case 0x03:
-		case 0x04: /* audio es_pids */
+		case 0x04: // audio es_pids
 			if (description == "")
 				description = esInfo->elementary_PID;
 			
@@ -295,7 +297,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 
 					switch (descriptor_tag) 
 					{
-						case 0x5F: //DESCR_PRIV_DATA_SPEC:
+						case PRIVATE_DATA_SPECIFIER_DESCRIPTOR:
 							if ( ((buffer[pos + 2]<<24) | (buffer[pos + 3]<<16) | (buffer[pos + 4]<<8) | (buffer[pos + 5])) == 190 )
 								tmp |= 1;
 							break;
@@ -305,7 +307,8 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 								if ( descriptor_length == 4 && !buffer[pos + 2] && !buffer[pos + 3] && buffer[pos + 4] == 0xFF && buffer[pos + 5] == 0xFF )
 									tmp |= 2;
 							}
-							//break;??	
+							//break;??
+	
 						case APPLICATION_SIGNALLING_DESCRIPTOR:
 							channel->setaitPid(esInfo->elementary_PID);
 							dprintf(DEBUG_NORMAL, "[pmt]0x05:parse_ES_info: channel->setaitPid(0x%x)\n", esInfo->elementary_PID);
@@ -635,7 +638,7 @@ int parse_pmt(CZapitChannel * const channel, CFrontend * fe)
 		{
 			switch (buffer[i]) 
 			{
-				case 0x09:
+				case CA_DESCRIPTOR:
 					caPmt->addCaDescriptor(buffer + i);
 					break;
 				default:

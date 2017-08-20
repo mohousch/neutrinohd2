@@ -27,6 +27,5 @@
 
 
 int parse_pat(CZapitChannel * const channel, CFrontend * fe);
-int parse_pat(int feindex = 0);
 
 #endif /* __zapit_pat_h__ */
