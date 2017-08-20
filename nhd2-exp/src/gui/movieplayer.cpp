@@ -763,17 +763,18 @@ void CMoviePlayerGui::PlayFile(void)
 				CVFD::getInstance()->ShowIcon(VFD_ICON_PLAY, true);
 				
 				// set position 
-				//playback->SetPosition((int64_t)startposition);
+#if GST_VERSION_MAJOR < 1
+				playback->SetPosition((int64_t)startposition);
+#endif
 				
 				//
 #if defined (PLATFORM_COOLSTREAM)
 				playback->GetPosition(position, duration);
 #else
-				//playback->GetPosition((int64_t &)position, (int64_t &)duration);
+				playback->GetPosition((int64_t &)position, (int64_t &)duration);
 #endif
 
-				//
-				//FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				// movieInfoviewer
 				FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 
 				timeStartShowingInfo = time(NULL);	

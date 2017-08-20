@@ -265,7 +265,7 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 			break;
 		}
 		//
-
+#if 0
 #if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_WARNING:
 		{
@@ -296,6 +296,7 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 			g_error_free(warn);
 			break;
 		}
+#endif
 #endif
 		
 		case GST_MESSAGE_STATE_CHANGED:
@@ -328,6 +329,7 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 					GstIterator * children;
 
 					//
+					#if 0
 					subsink = gst_bin_get_by_name(GST_BIN(m_gst_playbin), "subtitle_sink");
 					if (subsink)
 					{
@@ -355,6 +357,7 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 						// eDebug("[eServiceMP3] subsink properties set!");
 						gst_object_unref(subsink);
 					}
+					#endif
 					
 					if (audioSink)
 					{
@@ -548,6 +551,7 @@ void cPlayback::Close(void)
 	end_eof = false;
 
 	// disconnect subtitle callback
+	/*
 	GstElement *subsink = gst_bin_get_by_name(GST_BIN(m_gst_playbin), "subtitle_sink");
 
 	if (subsink)
@@ -555,6 +559,7 @@ void cPlayback::Close(void)
 		//g_signal_handler_disconnect (subsink, m_subs_to_pull_handler_id);
 		gst_object_unref(subsink);
 	}
+	*/
 	
 	// disconnect bus handler
 	if (m_gst_playbin)
@@ -693,6 +698,7 @@ bool cPlayback::Start(char *filename)
 		g_object_set(G_OBJECT (m_gst_playbin), "uri", uri, NULL);
 
 		// subsink
+		#if 0
 		GstElement *subsink = gst_element_factory_make("subsink", "subtitle_sink");
 		if (!subsink)
 		{
@@ -708,7 +714,8 @@ bool cPlayback::Start(char *filename)
 #endif
 			g_object_set (G_OBJECT (m_gst_playbin), "text-sink", subsink, NULL);
 			//g_object_set (G_OBJECT (m_gst_playbin), "current-text", m_currentSubtitleStream, NULL);
-		}	
+		}
+		#endif	
 		
 		//gstbus handler
 		bus = gst_pipeline_get_bus(GST_PIPELINE (m_gst_playbin));
