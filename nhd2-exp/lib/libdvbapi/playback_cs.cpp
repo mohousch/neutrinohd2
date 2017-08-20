@@ -135,7 +135,6 @@ void playbinNotifySource(GObject *object, GParamSpec *unused, gpointer /*user_da
 		gst_object_unref(source);
 	}
 }
-//
 
 GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user_data*/)
 {
@@ -671,7 +670,7 @@ bool cPlayback::Start(char *filename)
 	end_eof = false;
 	
 	int m_buffer_size = 5*1024*1024;
-	int flags = 0x47; //(GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_AUDIO | GST_PLAY_FLAG_NATIVE_VIDEO | GST_PLAY_FLAG_TEXT);
+	int flags = GST_PLAY_FLAG_AUDIO | GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_TEXT | GST_PLAY_FLAG_NATIVE_VIDEO;
 	
 	if (isHTTP)
 		uri = g_strdup_printf("%s", filename);
@@ -688,7 +687,7 @@ bool cPlayback::Start(char *filename)
 			// set buffer size
 			g_object_set(G_OBJECT(m_gst_playbin), "buffer-size", m_buffer_size, NULL);
 			g_object_set(G_OBJECT(m_gst_playbin), "buffer-duration", 5LL * GST_SECOND, NULL);
-			flags |= 0x100; // USE_BUFFERING
+			flags |= GST_PLAY_FLAG_BUFFERING;
 		}
 		
 		// set flags
