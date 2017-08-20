@@ -269,7 +269,8 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 #if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_WARNING:
 		{
-			gdouble m_currentTrickRatio = 1.0; 
+			gdouble m_currentTrickRatio = 1.0;
+			gint64 m_last_seek_pos = 0; 
 			gchar *debug_warn = NULL;
 			GError *warn = NULL;
 			gst_message_parse_warning (msg, &warn, &debug_warn);
