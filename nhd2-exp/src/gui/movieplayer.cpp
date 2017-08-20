@@ -763,13 +763,13 @@ void CMoviePlayerGui::PlayFile(void)
 				CVFD::getInstance()->ShowIcon(VFD_ICON_PLAY, true);
 				
 				// set position 
-				playback->SetPosition((int64_t)startposition);
+				//playback->SetPosition((int64_t)startposition);
 				
 				//
 #if defined (PLATFORM_COOLSTREAM)
 				playback->GetPosition(position, duration);
 #else
-				playback->GetPosition((int64_t &)position, (int64_t &)duration);
+				//playback->GetPosition((int64_t &)position, (int64_t &)duration);
 #endif
 
 				//
