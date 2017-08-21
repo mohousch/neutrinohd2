@@ -169,7 +169,7 @@ class CMoviePlayerGui : public CMenuTarget
 
 		time_t timeStartShowingInfo;
 
-	private:
+		//
 		CFrameBuffer * frameBuffer;
 		int m_LastMode;	
 		bool stopped;
@@ -182,20 +182,16 @@ class CMoviePlayerGui : public CMenuTarget
 		void cutNeutrino();
 		void restoreNeutrino();
 		void PlayFile();
-	
-
 		void showHelpTS(void);
 		void updateLcd(const std::string & lcd_filename);
 		int showStartPosSelectionMenu(void);
+		void showFileInfo();
 		
 	public:
 		CMoviePlayerGui();
 		~CMoviePlayerGui();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 		void hide();
-		
-		// 
-		void showFileInfo();
 
 		//
 		void addToPlaylist(MI_MOVIE_INFO& mfile);
