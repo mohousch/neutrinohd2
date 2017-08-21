@@ -1740,7 +1740,7 @@ void CMovieInfoViewer::show(const std::string _Title, const std::string _Info, s
 	visible = true;
 
 	//FIXME
-	showMovieInfo(_Title, _Info, _Percent, _ac3state, _speed, _playstate, _show_bookmark);
+	//showMovieInfo(_Title, _Info, _Percent, _ac3state, _speed, _playstate, _show_bookmark);
 }
 
 void CMovieInfoViewer::GetDimensions()
