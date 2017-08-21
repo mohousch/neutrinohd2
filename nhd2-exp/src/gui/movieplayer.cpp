@@ -714,7 +714,7 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.update((duration - position) / 1000);
 			}
 
-			FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
+			FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty() ? true : false);
 
 			time_t jetzt = time(NULL);
 
