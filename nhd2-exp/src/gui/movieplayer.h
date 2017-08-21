@@ -101,10 +101,9 @@ class CMovieInfoViewer
 		void show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark = false);
 		void update(time_t time_show = 0);
 		void hide();
-		bool IsVisible() {return visible;}
-		//bool IsmVisible() {return m_visible;}
-		void SetMode(mode m) { m_mode = m;}
-		mode GetMode() { return m_mode;}
+		bool IsVisible() {return visible;};
+		void SetMode(mode m) { m_mode = m; visible = true;};
+		mode GetMode() { return m_mode;};
 
 		//
 		void showMovieInfo(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark = false);

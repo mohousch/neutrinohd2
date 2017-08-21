@@ -714,7 +714,7 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.update((duration - position) / 1000);
 			}
 
-			//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
+			FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 
 			time_t jetzt = time(NULL);
 
@@ -776,7 +776,7 @@ void CMoviePlayerGui::PlayFile(void)
 #endif
 
 				// movieInfoviewer
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
+				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
 
 				timeStartShowingInfo = time(NULL);	
 			}
@@ -892,7 +892,6 @@ void CMoviePlayerGui::PlayFile(void)
 				else 
 				{
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-					//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 
 					timeStartShowingInfo = time(NULL);
 				}
@@ -938,7 +937,6 @@ void CMoviePlayerGui::PlayFile(void)
 				else 
 				{
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-					//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 
 					//timeStartShowingInfo = time(NULL); 
 				}
@@ -1081,7 +1079,6 @@ void CMoviePlayerGui::PlayFile(void)
 				else 
 				{
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-					//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 
 					timeStartShowingInfo = time(NULL);
 				}
@@ -1094,7 +1091,6 @@ void CMoviePlayerGui::PlayFile(void)
 				else
 				{
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-					//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 
 					timeStartShowingInfo = time(NULL);
 				}
@@ -1123,7 +1119,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1154,7 +1149,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1170,7 +1164,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1186,7 +1179,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1201,7 +1193,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1216,7 +1207,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1231,7 +1221,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1246,7 +1235,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1261,7 +1249,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1286,7 +1273,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1302,7 +1288,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1317,7 +1302,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
@@ -1333,7 +1317,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-				//FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0?(position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty());
 					
 				time_forced = true;
 
