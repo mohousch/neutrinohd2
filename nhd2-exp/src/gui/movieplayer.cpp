@@ -714,7 +714,7 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.update((duration - position) / 1000);
 			}
 
-			FileTime.show(filelist[selected].epgTitle, filelist[selected].epgInfo1.empty()? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, duration != 0? (position / (duration / 100)) : 0, ac3state, speed, playstate, filelist[selected].ytid.empty() ? true : false);
+			FileTime.show(filelist[selected].epgTitle, (filelist[selected].epgInfo1.empty())? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, (duration != 0)? (position / (duration / 100)) : 0, ac3state, speed, playstate, (filelist[selected].ytid.empty())? true : false);
 
 			time_t jetzt = time(NULL);
 
@@ -1740,7 +1740,9 @@ void CMovieInfoViewer::show(const std::string _Title, const std::string _Info, s
 	visible = true;
 
 	//FIXME
-	//showMovieInfo(_Title, _Info, _Percent, _ac3state, _speed, _playstate, _show_bookmark);
+#if !defined (PLATFORM_GIGABLUE)
+	showMovieInfo(_Title, _Info, _Percent, _ac3state, _speed, _playstate, _show_bookmark);
+#endif
 }
 
 void CMovieInfoViewer::GetDimensions()

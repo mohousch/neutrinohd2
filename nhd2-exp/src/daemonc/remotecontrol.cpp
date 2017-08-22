@@ -325,11 +325,6 @@ int CRemoteControl::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data
 			
 			// get pids
 			g_Zapit->getPIDS(current_PIDs );
-			
-			// sectionsd set pid
-#ifdef ENABLE_PPT			
-			sectionsd_setPrivatePid( current_PIDs.PIDs.privatepid );
-#endif
 
 			t_channel_id * p = new t_channel_id;
 			*p = current_channel_id;
@@ -683,7 +678,6 @@ const std::string & CRemoteControl::setSubChannel(const int numSub, const bool f
 
 const std::string & CRemoteControl::subChannelUp(void)
 {
-	//return setSubChannel((subChannels.size() == 0) ? -1 : (int)((selected_subchannel + 1) % subChannels.size()));
  	// if there are any NVOD/subchannels switch these else switch audio channel (if any)
   	if (subChannels.size() > 0 )
   	{
@@ -701,7 +695,6 @@ const std::string & CRemoteControl::subChannelUp(void)
 
 const std::string & CRemoteControl::subChannelDown(void)
 {
-	//return setSubChannel((selected_subchannel <= 0) ? (subChannels.size() - 1) : (selected_subchannel - 1));
 	// if there are any NVOD/subchannels switch these else switch audio channel (if any)
   	if (subChannels.size() > 0 )
   	{

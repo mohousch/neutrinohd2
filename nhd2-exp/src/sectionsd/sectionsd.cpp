@@ -86,7 +86,7 @@
 #include "SIsections.hpp"
 #include "SIlanguage.hpp"
 
-#include <driver/encoding.h>"
+#include <driver/encoding.h>
 #include <system/debug.h>
 
 // 60 Minuten Zyklus...
@@ -4554,7 +4554,6 @@ static void *viasateitThread(void *)
 //
 static void *eitThread(void *)
 {
-
 	struct SI_section_header *header;
 	/* we are holding the start_stop lock during this timeout, so don't
 	   make it too long... */
@@ -4841,7 +4840,6 @@ static void *eitThread(void *)
 //
 static void *cnThread(void *)
 {
-
 	struct SI_section_header *header;
 	/* we are holding the start_stop lock during this timeout, so don't
 	   make it too long... */
@@ -5277,7 +5275,7 @@ void sectionsd_main_thread(void */*data*/)
 	//NTP-Config laden
 	if (!ntp_config.loadConfig(CONF_FILE))
 	{
-		/* set defaults if no configuration file exists */
+		// set defaults if no configuration file exists
 		printf("sectionsd_main_thread: %s not found\n", CONF_FILE);
 	}
 
@@ -6129,3 +6127,4 @@ bool sectionsd_isReady(void)
 {
 	return sectionsd_ready;
 }
+

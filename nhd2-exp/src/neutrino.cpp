@@ -2553,7 +2553,8 @@ int CNeutrinoApp::run(int argc, char **argv)
 	pthread_create(&nhttpd_thread, NULL, nhttpd_main_thread, (void *) NULL);	
 
 	// streamts thread
-	pthread_create(&stream_thread, NULL, streamts_main_thread, (void *) NULL);	
+	//FIXME:
+	//pthread_create(&stream_thread, NULL, streamts_main_thread, (void *) NULL);	
 
 	// sectionsd thread
 	pthread_create(&sections_thread, NULL, sectionsd_main_thread, (void *) NULL);
