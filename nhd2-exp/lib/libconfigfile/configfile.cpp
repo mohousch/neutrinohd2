@@ -53,7 +53,7 @@ bool CConfigFile::loadConfig(const char * const filename)
 {
 	std::ifstream configFile(filename);
 
-	if (configFile != NULL)
+	if (configFile.good())
 	{
 		std::string s;
 		clear();
@@ -93,7 +93,7 @@ bool CConfigFile::saveConfig(const char * const filename)
 {
 	std::ofstream configFile(filename);
 
-	if (configFile != NULL)
+	if (configFile.good())
 	{
 		for (ConfigDataMap::const_iterator it = configData.begin(); it != configData.end(); it++)
 		{

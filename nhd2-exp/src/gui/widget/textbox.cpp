@@ -308,10 +308,10 @@ void CTextBox::refreshTextLineArray(void)
 	if( !access(thumbnail.c_str(), F_OK) && m_nCurrentPage == 0)
 		lineBreakWidth = m_cFrameTextRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + tw + BORDER_LEFT + BORDER_RIGHT);
 	
-	int TextChars = m_cText.size();
+	const int TextChars = m_cText.size();
 	
 	// do not parse, if text is empty 
-	if(TextChars > 0)
+	if(!m_cText.empty())
 	{
 		while(loop)
 		{
@@ -324,10 +324,12 @@ void CTextBox::refreshTextLineArray(void)
 				pos = m_cText.find_first_of("\n-. ", pos_prev);
 			}
 
-			if(pos == -1)
+			//if(pos == -1)
+			if(pos > TextChars || pos < 0)
 			{
-				pos = TextChars + 1;
-				loop = false; // note, this is not 100% correct. if the last characters does not fit in one line, the characters after are cut
+				//pos = TextChars + 1;
+				//loop = false; // note, this is not 100% correct. if the last characters does not fit in one line, the characters after are cut
+				break;
 			}
 
 			aktWord = m_cText.substr(pos_prev, pos - pos_prev + 1);

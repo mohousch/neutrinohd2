@@ -1403,7 +1403,7 @@ void CRCInput::getMsg_us(neutrino_msg_t * msg, neutrino_msg_data_t * data, unsig
 					if ( !dont_delete_p )
 					{
 						delete[] p;
-						p= NULL;
+						p = NULL;
 					}
 				}
 			}

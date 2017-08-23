@@ -49,7 +49,11 @@ bool isTS = false;
 #include <gst/pbutils/missing-plugins.h>
 
 #if defined (USE_OPENGL)
+#if !GST_CHECK_VERSION(1,0,0)
 #include <gst/interfaces/xoverlay.h>
+#else
+#include <gst/video/videooverlay.h>
+#endif
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>

@@ -63,12 +63,19 @@ std::string replace_all(const std::string &in, const std::string &entity, const 
 unsigned long long getcurrenttime();
 void strReplace(std::string & orig, const char *fstr, const std::string rstr);
 std::string& htmlEntityDecode(std::string& text, bool removeTags = false);
+
+#if __cplusplus < 201103L
 std::string to_string(int);
 std::string to_string(unsigned int);
 std::string to_string(long);
 std::string to_string(unsigned long);
 std::string to_string(long long);
 std::string to_string(unsigned long long);
+#else
+/* hack... */
+#define to_string(x) std::to_string(x)
+#endif
+
 std::string to_hexstring(unsigned long long);
 
 std::string Lang2ISO639_1(std::string& lang);

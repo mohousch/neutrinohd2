@@ -77,7 +77,7 @@ void CLogging::printf(const char *fmt, ...) {
 	va_end(arglist);
 
 	pthread_mutex_lock(&Log_mutex);
-	::printf(buffer);
+	::printf("%s", buffer);
 	if (LogToFile) {
 		; //FIXME Logging to File
 	}

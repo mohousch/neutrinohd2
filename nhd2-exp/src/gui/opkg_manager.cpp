@@ -445,7 +445,7 @@ bool COPKGManager::execCmd(const char * cmdstr)
 {
 	char cmd[100];
 
-	snprintf(cmd, sizeof(cmd), cmdstr);
+	snprintf(cmd, sizeof(cmd),"%s", cmdstr);
 	
 	printf("COPKGManager: executing %s\n", cmd);
 	

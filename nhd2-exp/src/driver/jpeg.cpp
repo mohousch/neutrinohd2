@@ -97,11 +97,11 @@ int fh_jpeg_load_local(const char *filename,unsigned char **buffer,int* x,int* y
 
 	if(*x == (int)ciptr->image_width)
 		ciptr->scale_denom = 1;
-	else if(abs(*x*2 - ciptr->image_width) < 2)
+	else if(abs(*x*2 - (int)ciptr->image_width) < 2)
 		ciptr->scale_denom = 2;
-	else if(abs(*x*4 - ciptr->image_width) < 4)
+	else if(abs(*x*4 - (int)ciptr->image_width) < 4)
 		ciptr->scale_denom = 4;
-	else if(abs(*x*8 - ciptr->image_width) < 8)
+	else if(abs(*x*8 - (int)ciptr->image_width) < 8)
 		ciptr->scale_denom = 8;
 	else
 		ciptr->scale_denom = 1;

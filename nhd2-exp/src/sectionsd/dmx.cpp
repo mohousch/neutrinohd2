@@ -384,7 +384,9 @@ int DMX::getSection(uint8_t *buf, const unsigned timeoutInMSeconds, int &timeout
 			else
 			{
 				//section was not read before - insert in list
-				myDMXOrderUniqueKey.insert(std::make_pair(s_id, extended_header->version_number));
+				uint8_t version_number = extended_header->version_number;
+				myDMXOrderUniqueKey.insert(std::make_pair(s_id, version_number));
+
 				//check if table is now complete
 				if (check_complete(initial_header->table_id,
 						   eh_tbl_extension_id,

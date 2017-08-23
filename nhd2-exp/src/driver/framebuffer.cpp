@@ -72,6 +72,10 @@ static uint32_t * virtual_fb = NULL;
 CFrameBuffer::CFrameBuffer()
 : active ( true )
 {
+#if defined (USE_OPENGL)
+	mpGLThreadObj = NULL;
+#endif
+
 	iconBasePath = "";
 	available  = 0;
 	cmap.start = 0;
@@ -259,7 +263,7 @@ CFrameBuffer::~CFrameBuffer()
 	
 	if (background) 
 	{
-		delete[] background;
+		free(background);
 		background = NULL;
 	}
 
@@ -1273,7 +1277,7 @@ bool CFrameBuffer::loadBackgroundPic(const std::string & filename, bool show)
 	dprintf(DEBUG_INFO, "CFrameBuffer::loadBackgroundPic: %s\n", filename.c_str());	
 
 	if (background)
-		delete[] background;
+		free(background);
 	
 	// get bg image
 	background = getImage(iconBasePath + filename, BACKGROUNDIMAGEWIDTH, BACKGROUNDIMAGEHEIGHT);
@@ -1305,7 +1309,7 @@ void CFrameBuffer::useBackground(bool ub)
 	
 	if(!useBackgroundPaint) 
 	{
-		delete[] background;
+		free(background);
 		background = 0;
 	}
 }

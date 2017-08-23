@@ -155,10 +155,10 @@ int CNFSMountGui::exec( CMenuTarget *parent, const std::string &actionKey )
 				FILESYSTEM_ENCODING_TO_UTF8(g_settings.network_nfs_dir[i]),
 				FILESYSTEM_ENCODING_TO_UTF8(g_settings.network_nfs_local_dir[i]),
 				g_Locale->getText(g_settings.network_nfs_automount[i] ? LOCALE_MESSAGEBOX_YES : LOCALE_MESSAGEBOX_NO));
-			sprintf(ISO_8859_1_entry[i], UTF8_to_Latin1(m_entry[i]).c_str());
+			sprintf(ISO_8859_1_entry[i], "%s", UTF8_to_Latin1(m_entry[i]).c_str());
 		}
 	}
-	else if(actionKey.substr(0,7) == "domount")
+	else if(actionKey.substr(0, 7) == "domount")
 	{
 		int nr = atoi(actionKey.substr(7,1).c_str());
 		CFSMounter::mount(g_settings.network_nfs_ip[nr].c_str(), g_settings.network_nfs_dir[nr], 
@@ -168,7 +168,7 @@ int CNFSMountGui::exec( CMenuTarget *parent, const std::string &actionKey )
 		// TODO show msg in case of error
 		returnval = menu_return::RETURN_EXIT;
 	}
-	else if(actionKey.substr(0,3) == "dir")
+	else if(actionKey.substr(0, 3) == "dir")
 	{
 		if(parent)
 			parent->hide();
@@ -199,7 +199,7 @@ int CNFSMountGui::menu()
 	for(int i = 0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++)
 	{
 		sprintf(s2, "mountentry%d", i);
-		sprintf(ISO_8859_1_entry[i], UTF8_to_Latin1(m_entry[i]).c_str()); 
+		sprintf(ISO_8859_1_entry[i], "%s", UTF8_to_Latin1(m_entry[i]).c_str());
 		CMenuForwarder *forwarder = new CMenuForwarder("", true, ISO_8859_1_entry[i], this, s2);
 		
 		if (CFSMounter::isMounted(g_settings.network_nfs_local_dir[i]))

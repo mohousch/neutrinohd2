@@ -538,6 +538,7 @@ unsigned long long getcurrenttime()
 	return (unsigned long long) tv.tv_usec + (unsigned long long)((unsigned long long) tv.tv_sec * (unsigned long long) 1000000);
 }
 
+#if __cplusplus < 201103L
 std::string to_string(int i)
 {
 	std::stringstream s;
@@ -579,6 +580,7 @@ std::string to_string(unsigned long long i)
 	s << i;
 	return s.str();
 }
+#endif
 
 std::string to_hexstring(unsigned long long i)
 {
