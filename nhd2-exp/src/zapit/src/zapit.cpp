@@ -4171,9 +4171,8 @@ void leaveStandby(void)
 	openAVDecoder();
 #endif	
 
-	// if we have already zapped channel
-	if (live_channel)
-		zapTo_ChannelID(live_channel_id, current_is_nvod);
+	// zap
+	zapTo_ChannelID(live_channel_id, current_is_nvod);
 }
 
 unsigned zapTo(const unsigned int bouquet, const unsigned int channel)
@@ -5022,6 +5021,7 @@ int zapit_main_thread(void *data)
 		}
 #endif
 		
+		// pmt update
 		if (pmt_update_fd != -1) 
 		{
 			unsigned char buf[4096];

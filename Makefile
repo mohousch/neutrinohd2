@@ -39,7 +39,7 @@ DEST = $(PWD)/$(BOXTYPE)
 
 N_SRC  = $(PWD)/nhd2-exp
 
-CFLAGS = -Wall -Wshadow -O2 -fno-strict-aliasing
+CFLAGS = -Wall -Wshadow -O2 -fno-strict-aliasing -O0 -g -ggdb3
 #CFLAGS += -rdynamic
 #CFLAGS += -DPEDANTIC_VALGRIND_SETUP
 ### enable --as-needed for catching more build problems...
