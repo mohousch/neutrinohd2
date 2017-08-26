@@ -255,9 +255,6 @@ CFrontend * live_fe = NULL;
 CFrontend * record_fe = NULL;
 
 //
-bool havevtuner = false; // set to true to test
-
-//
 bool retune = false;
 
 void initFrontend()
@@ -286,21 +283,15 @@ void initFrontend()
 				live_fe = fe;
 
 				// check if isusbtuner/vtuner
-				#if 0
-#if !defined (USE_PLAYBACK)
 				char devicename[256];
-				//snprintf(devicename, sizeof(devicename), "/sys/class/dvb/dvb%d.frontend0/device/ep_00", fe->fe_adapter);
+				snprintf(devicename, sizeof(devicename), "/sys/class/dvb/dvb0.frontend%d", fe->fenumber);
 
-				// fallback to video device node
-				snprintf(devicename, sizeof(devicename), "/dev/dvb/adapter%d/video0", fe->fe_adapter);
 				if(access(devicename, X_OK) < 0)
 				{
 					fe->isvtuner = true;
 
 					dprintf(DEBUG_NORMAL, "fe(%d,%d) is assigned as vtuner\n", fe->fe_adapter, fe->fenumber);
 				}
-#endif
-				#endif
 				
 				// set it to standby
 				fe->Close();
@@ -1105,7 +1096,7 @@ CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in_nvod)
 
 		if (cit == nvodchannels.end()) 
 		{
-			dprintf(DEBUG_INFO, "%s channel_id (%llx) not found\n", __FUNCTION__, channel_id);
+			dprintf(DEBUG_INFO, "%s channel_id (%llx) AS NVOD not found\n", __FUNCTION__, channel_id);
 			return NULL;
 		}
 	} 
@@ -1117,14 +1108,8 @@ CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in_nvod)
 
 		if (cit == allchans.end()) 
 		{
-			// check again if we have nvod channel
-			cit = nvodchannels.find(channel_id);
-			if (cit == nvodchannels.end()) 
-			{
-				dprintf(DEBUG_INFO, "channel_id (%llx) AS NVOD not found\n", channel_id);
-				return NULL;
-			}
-			current_is_nvod = true;
+			dprintf(DEBUG_INFO, "%s channel_id (%llx) not found\n", __FUNCTION__, channel_id);
+			return NULL;
 		}
 	}
 	
@@ -4846,8 +4831,7 @@ int zapit_main_thread(void *data)
 #endif
 
 	// init vtuner
-	if(havevtuner)
-	//if (getVTuner() != NULL)
+	if (getVTuner() != NULL)
 	{
 		char type[8];
 		struct dmx_pes_filter_params filter;
@@ -5111,7 +5095,7 @@ int zapit_main_thread(void *data)
 	stopPlayBack();
 
 	// stop vtuner pump thread
-	if(havevtuner)
+	if (getVTuner() != NULL)
 	{
 		pthread_cancel(eventthread);
 		pthread_join(eventthread, NULL);

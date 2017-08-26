@@ -76,7 +76,6 @@ static int prov_found;
 short abort_scan;
 short scan_runs;
 short curr_sat;
-//static int status = 0;
 uint32_t processed_transponders;
 uint32_t failed_transponders;
 uint32_t  actual_freq;

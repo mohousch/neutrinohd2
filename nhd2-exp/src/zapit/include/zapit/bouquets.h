@@ -97,7 +97,7 @@ class CBouquetManager
 		void saveBouquets(void);
 		void saveUBouquets(void);
 		void saveBouquets(const CZapitClient::bouquetMode bouquetMode, const char * const providerName);
-		void loadBouquets(bool ignoreBouquetFile = false);
+		void loadBouquets(bool loadCurrentBouquet = false);
 		void renumServices();
 
 		CZapitBouquet * addBouquet(const std::string & name, bool ub = false, bool myfav = false);

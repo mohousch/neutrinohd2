@@ -294,14 +294,14 @@ void CBouquetManager::saveBouquets(const CZapitClient::bouquetMode bouquetMode, 
 	if (bouquetMode == CZapitClient::BM_DELETEBOUQUETS) 
 	{
 		dprintf(DEBUG_INFO, "CBouquetManager::saveBouquets: removing existing bouquets");
-		//unlink(BOUQUETS_XML);
 		g_bouquetManager->clearAll();
+		unlink(BOUQUETS_XML);
 	}
-	
-	if (bouquetMode == CZapitClient::BM_DONTTOUCHBOUQUETS)
+	else if (bouquetMode == CZapitClient::BM_DONTTOUCHBOUQUETS)
+	{
 		return;
-
-	if (bouquetMode == CZapitClient::BM_CREATESATELLITEBOUQUET) 
+	}
+	else if (bouquetMode == CZapitClient::BM_CREATESATELLITEBOUQUET) 
 	{
 		while (Bouquets.size() > 1) 
 		{
@@ -311,11 +311,11 @@ void CBouquetManager::saveBouquets(const CZapitClient::bouquetMode bouquetMode, 
 			delete (*it);
 			Bouquets.erase(it);
 		}
+
 		if(Bouquets.size() > 0)
 			Bouquets[0]->Name = providerName;
 	}
-
-	if ((bouquetMode == CZapitClient::BM_UPDATEBOUQUETS) || (bouquetMode == CZapitClient::BM_CREATESATELLITEBOUQUET)) 
+	else if (bouquetMode == CZapitClient::BM_UPDATEBOUQUETS) 
 	{
 		while (!(Bouquets.empty())) 
 		{
@@ -478,31 +478,32 @@ void CBouquetManager::makeBouquetfromCurrentservices(const xmlNodePtr root)
 	}
 }
 
-void CBouquetManager::loadBouquets(bool ignoreBouquetFile)
+void CBouquetManager::loadBouquets(bool loadCurrentBouquet)
 {
 	dprintf(DEBUG_NORMAL, "CBouquetManager::loadBouquets:\n");
 
 	clearAll();
 	
-	if (ignoreBouquetFile == false) 
-	{
+	// bouquets
+	parseBouquetsXml(BOUQUETS_XML, false);
+	sortBouquets();
 
-		parseBouquetsXml(BOUQUETS_XML, false);
-		sortBouquets();
-	}
-
+	// ubouquets
 	parseBouquetsXml(UBOUQUETS_XML, true);
 	
-	// current
-	xmlDocPtr parser = NULL;
-	parser = parseXmlFile(CURRENTSERVICES_XML);
-	if (parser != NULL)
+	// current bouquets
+	if(loadCurrentBouquet)
 	{
-		dprintf(DEBUG_NORMAL, "reading %s\n", CURRENTSERVICES_XML);
+		xmlDocPtr parser = NULL;
+		parser = parseXmlFile(CURRENTSERVICES_XML);
+		if (parser != NULL)
+		{
+			dprintf(DEBUG_NORMAL, "reading %s\n", CURRENTSERVICES_XML);
 
-		makeBouquetfromCurrentservices(xmlDocGetRootElement(parser));
-		xmlFreeDoc(parser);
-		parser = NULL;
+			makeBouquetfromCurrentservices(xmlDocGetRootElement(parser));
+			xmlFreeDoc(parser);
+			parser = NULL;
+		}
 	}
 
 	renumServices();
