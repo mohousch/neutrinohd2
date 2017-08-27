@@ -2201,8 +2201,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			response.cmd = CZapitMessages::CMD_READY;
 			CBasicServer::send_data(connfd, &response, sizeof(response));
 			
-			//live_fe->setTsidOnid(0);
-			zapit(live_channel_id, current_is_nvod);
+			//zapit(live_channel_id, current_is_nvod);
 
 			eventServer->sendEvent(CZapitClient::EVT_BOUQUETS_CHANGED, CEventServer::INITID_ZAPIT);
 			break;

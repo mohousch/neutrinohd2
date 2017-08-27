@@ -72,7 +72,8 @@
 
 TP_params TP;
 CFrontend * getFE(int index);
-extern CScanSettings * scanSettings;		// defined in 
+extern CScanSettings * scanSettings;		// defined in scan_setup.cpp
+extern t_channel_id live_channel_id; 		//defined in zapit.cpp
 
 
 CScanTs::CScanTs(int num)
@@ -295,9 +296,6 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 
 			if (test && (msg <= CRCInput::RC_MaxRC)) 
 			{
-				// rezap
-				g_Zapit->Rezap();
-				
 				istheend = true;
 				msg = CRCInput::RC_timeout;
 			}
@@ -367,10 +365,16 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 	
 	// start sectionsd
 	g_Sectionsd->setPauseScanning(false);
-	
-#if defined (USE_OPENGL)
-	g_Zapit->startPlayBack();
-#endif
+
+	// zap
+	if (CNeutrinoApp::getInstance()->channelList)
+	{
+		//NOTE: remember me get live_channel_id if it was 0 (first start)
+		if(live_channel_id == 0)
+			live_channel_id = CNeutrinoApp::getInstance()->channelList->getActiveChannel_ChannelID();
+
+		CNeutrinoApp::getInstance()->channelList->zapTo_ChannelID(live_channel_id);
+	}
 	
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 

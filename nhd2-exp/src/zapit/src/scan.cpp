@@ -82,7 +82,7 @@ uint32_t  actual_freq;
 uint32_t actual_polarisation;
 int scan_mode = 0;
 int scan_sat_mode = 0;
-CBouquetManager *scanBouquetManager;
+CBouquetManager *scanBouquetManager = NULL;
 
 std::map <transponder_id_t, transponder> scantransponders;		// TP list to scan
 std::map <transponder_id_t, transponder> scanedtransponders;		// global TP list for current scan
@@ -643,9 +643,6 @@ void * start_scanthread(void *scanmode)
 	else 
 	{
 		stop_scan(false);
-
-		//live_fe->setTsidOnid(0);
-		zapit(live_channel_id, 0);
 	}
 
 	scantransponders.clear();
@@ -740,9 +737,6 @@ void * scan_transponder(void * arg)
 	else 
 	{
 		stop_scan(false);
-
-		//live_fe->setTsidOnid(0);
-		zapit(live_channel_id, 0);
 	}
 	
 	scantransponders.clear();
