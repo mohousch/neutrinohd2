@@ -138,10 +138,7 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		void SetupFonts();
 		
 		//
-		void extendedMenu(void);
-		void smartMenu(void);
-		void classicMenu(void);
-		
+		void mainMenu(void);
 		bool showUserMenu(int button);
 		void SelectNVOD();
                 bool getNVODMenu(CMenuWidget * menu);

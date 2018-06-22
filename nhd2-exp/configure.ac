@@ -189,12 +189,6 @@ data/themes/Makefile
 data/webtv/Makefile
 data/scripts/Makefile
 data/design/Makefile
-data/design/standard/Makefile
-data/design/standard/icons/Makefile
-data/design/classic/Makefile
-data/design/classic/icons/Makefile
-data/design/smart/Makefile
-data/design/smart/icons/Makefile
 src/sectionsd/Makefile
 src/timerd/Makefile
 src/zapit/Makefile

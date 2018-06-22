@@ -87,110 +87,13 @@ int CServiceSetup::exec(CMenuTarget* parent, const std::string& actionKey)
 		return ret;
 	}
 	
-	if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_STANDARD)
-		showMenu();
-	else if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_CLASSIC)
-		showMenuClassic();
-	else if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_SMART)
-		showMenuSmart();
+	showMenu();
 	
 	return ret;
 }
 
-// standard
-void CServiceSetup::showMenu()
-{
-	dprintf(DEBUG_NORMAL, "CServiceSetup::showMenu\n");
-	
-	int shortcutService = 1;
-	
-	CMenuWidgetExtended* service = new CMenuWidgetExtended(LOCALE_SERVICEMENU_HEAD, NEUTRINO_ICON_SETTINGS);
-	
-	// scan setup
-	if(FrontendCount > 1)
-	{
-		// scan settings
-		service->addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_SCANTS, true, new CTunerSetup(), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_SCANSETTINGS, LOCALE_HELPTEXT_SCANSETUP ));
-	}
-	else
-	{
-	// scan settings
-	service->addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_SCANTS, true, new CScanSetup(), "", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_SCANSETTINGS, LOCALE_HELPTEXT_SCANSETUP ));
-	}
-
-	// reload Channels
-	service->addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_RELOAD, true, this, "reloadchannels", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RELOADCHANNELS, LOCALE_HELPTEXT_RELOADCHANNELS ));
-
-	// Bouquets Editor
-	service->addItem(new CMenuForwarderExtended(LOCALE_BOUQUETEDITOR_NAME, true, new CBEBouquetWidget(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_BOUQUETSEDITOR, LOCALE_HELPTEXT_BOUQUETSEDITOR ));
-	
-	// CI Cam 	
-#if defined (ENABLE_CI)
-	service->addItem(new CMenuForwarderExtended(LOCALE_CAM_SETTINGS, true, g_CamHandler, NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, NEUTRINO_ICON_MENUITEM_CICAM, LOCALE_HELPTEXT_CAM ));
-#endif
-	
-	// image info
-	service->addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_IMAGEINFO,  true, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_IMAGEINFO, LOCALE_HELPTEXT_IMAGEINFO), false);
-	
-	// software update
-	service->addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_UPDATE, true, new CUpdateSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SOFTUPDATE, LOCALE_HELPTEXT_SOFTWAREUPDATE ));
-
-	service->integratePlugins(CPlugins::I_TYPE_SERVICE, shortcutService++);
-	
-	service->exec(NULL, "");
-	service->hide();
-	delete service;
-	service = NULL;
-}
-
-// smart
-void CServiceSetup::showMenuSmart(void)
-{
-	dprintf(DEBUG_NORMAL, "CServiceSetup::showMenuSmart\n");
-	
-	int shortcutService = 1;
-	
-	CMenuFrameBox* service = new CMenuFrameBox(LOCALE_SERVICEMENU_HEAD, NEUTRINO_ICON_SETTINGS);
-	
-	// scan setup
-	if(FrontendCount > 1)
-	{
-		// scan settings
-		service->addItem(new CMenuFrameBoxItem(LOCALE_SERVICEMENU_SCANTS, new CTunerSetup(), NULL, NEUTRINO_ICON_SMART_SCANSETTINGS));
-	}
-	else
-	{
-		// scan settings
-		service->addItem(new CMenuFrameBoxItem(LOCALE_SERVICEMENU_SCANTS, new CScanSetup(), NULL, NEUTRINO_ICON_SMART_SCANSETTINGS));
-	}
-
-	// reload Channels
-	service->addItem(new CMenuFrameBoxItem(LOCALE_SERVICEMENU_RELOAD, this, "reloadchannels", NEUTRINO_ICON_SMART_RELOADCHANNELS));
-
-	// Bouquets Editor
-	service->addItem(new CMenuFrameBoxItem(LOCALE_BOUQUETEDITOR_NAME, new CBEBouquetWidget(), NULL, NEUTRINO_ICON_SMART_BOUQUETSEDITOR));
-	
-	// CI Cam 	
-#if defined (ENABLE_CI)
-	service->addItem(new CMenuFrameBoxItem(LOCALE_CAM_SETTINGS, g_CamHandler, NULL, NEUTRINO_ICON_SMART_CICAM));
-#endif
-	
-	// image info
-	service->addItem(new CMenuFrameBoxItem(LOCALE_SERVICEMENU_IMAGEINFO, new CImageInfo(), NULL, NEUTRINO_ICON_SMART_IMAGEINFO), false);
-	
-	// software update
-	service->addItem(new CMenuFrameBoxItem(LOCALE_SERVICEMENU_UPDATE, new CUpdateSettings(), NULL, NEUTRINO_ICON_SMART_SOFTUPDATE));
-
-	service->integratePlugins(CPlugins::I_TYPE_SERVICE);
-	
-	service->exec(NULL, "");
-	service->hide();
-	delete service;
-	service = NULL;
-}
-
-// classic
-void CServiceSetup::showMenuClassic(void)
+// showmenu
+void CServiceSetup::showMenu(void)
 {
 	dprintf(DEBUG_NORMAL, "CServiceSetup::showMenuClassic\n");
 	
@@ -202,30 +105,30 @@ void CServiceSetup::showMenuClassic(void)
 	if(FrontendCount > 1)
 	{
 		// scan settings
-		service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_SCANTS, true, NULL, new CTunerSetup(), NULL, CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_SCANSETTINGS, LOCALE_HELPTEXT_SCANSETUP));
+		service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_SCANTS, true, NULL, new CTunerSetup(), NULL, CRCInput::RC_red, NEUTRINO_ICON_MENUITEM_SCANSETTINGS, LOCALE_HELPTEXT_SCANSETUP));
 	}
 	else
 	{
 		// scan settings
-		service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_SCANTS, true, NULL, new CScanSetup(), NULL, CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_SCANSETTINGS, LOCALE_HELPTEXT_SCANSETUP));
+		service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_SCANTS, true, NULL, new CScanSetup(), NULL, CRCInput::RC_red, NEUTRINO_ICON_MENUITEM_SCANSETTINGS, LOCALE_HELPTEXT_SCANSETUP));
 	}
 
 	// reload Channels
-	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_RELOAD, true, NULL, this, "reloadchannels", CRCInput::RC_green, NEUTRINO_ICON_CLASSIC_RELOADCHANNELS, LOCALE_HELPTEXT_RELOADCHANNELS));
+	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_RELOAD, true, NULL, this, "reloadchannels", CRCInput::RC_green, NEUTRINO_ICON_MENUITEM_RELOADCHANNELS, LOCALE_HELPTEXT_RELOADCHANNELS));
 
 	// Bouquets Editor
-	service->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_NAME, true, NULL, new CBEBouquetWidget(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_CLASSIC_BOUQUETSEDITOR, LOCALE_HELPTEXT_BOUQUETSEDITOR));
+	service->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_NAME, true, NULL, new CBEBouquetWidget(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_MENUITEM_BOUQUETSEDITOR, LOCALE_HELPTEXT_BOUQUETSEDITOR));
 	
 	// CI Cam 	
 #if defined (ENABLE_CI)
-	service->addItem(new CMenuForwarder(LOCALE_CAM_SETTINGS, true, NULL, g_CamHandler, NULL, CRCInput::convertDigitToKey(shortcutService++), NEUTRINO_ICON_CLASSIC_CICAM, LOCALE_HELPTEXT_CAM));
+	service->addItem(new CMenuForwarder(LOCALE_CAM_SETTINGS, true, NULL, g_CamHandler, NULL, CRCInput::convertDigitToKey(shortcutService++), NEUTRINO_ICON_MENUITEM_CICAM, LOCALE_HELPTEXT_CAM));
 #endif
 	
 	// image info
-	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_IMAGEINFO,  true, NULL, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_CLASSIC_IMAGEINFO, LOCALE_HELPTEXT_IMAGEINFO), false);
+	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_IMAGEINFO,  true, NULL, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_MENUITEM_IMAGEINFO, LOCALE_HELPTEXT_IMAGEINFO), false);
 	
 	// software update
-	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_UPDATE, true, NULL, new CUpdateSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_CLASSIC_SOFTUPDATE, LOCALE_HELPTEXT_SOFTWAREUPDATE));
+	service->addItem(new CMenuForwarder(LOCALE_SERVICEMENU_UPDATE, true, NULL, new CUpdateSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_MENUITEM_SOFTUPDATE, LOCALE_HELPTEXT_SOFTWAREUPDATE));
 
 	service->integratePlugins(CPlugins::I_TYPE_SERVICE);
 	

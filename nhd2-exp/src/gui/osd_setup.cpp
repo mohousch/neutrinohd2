@@ -112,110 +112,13 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 		return ret;
 	}
 	
-	if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_STANDARD)
-		showMenu();
-	else if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_CLASSIC)
-		showMenuClassic();
-	else if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_SMART)
-		showMenuSmart();
+	showMenu();
 	
 	return ret;
 }
 
-// standard
+// showmenu
 void COSDSettings::showMenu(void)
-{
-	dprintf(DEBUG_NORMAL, "COSDSettings::showMenu:\n");
-	
-	int shortcutOSD = 1;
-	
-	CMenuWidgetExtended* osdSettings = new CMenuWidgetExtended(LOCALE_MAINSETTINGS_OSD, NEUTRINO_ICON_COLORS );
-
-	// Themes
-	CThemes * osdSettings_Themes = new CThemes();
-	
-	osdSettings->addItem( new CMenuForwarderExtended(LOCALE_COLORMENU_THEMESELECT, true, osdSettings_Themes, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_THEMES, LOCALE_HELPTEXT_THEMES));
-
-	// menu colors
-	osdSettings->addItem( new CMenuForwarderExtended(LOCALE_COLORMENU_MENUCOLORS, true, new COSDMenuColorSettings(), NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_MENUCOLORS, LOCALE_HELPTEXT_MENUCOLORS));
-
-	// infobar
-	osdSettings->addItem( new CMenuForwarderExtended(LOCALE_COLORSTATUSBAR_HEAD, true, new COSDInfoBarColorSettings(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_INFOBARCOLORS, LOCALE_HELPTEXT_INFOBARCOLORS));
-
-	// language
-	osdSettings->addItem(new CMenuForwarderExtended(LOCALE_MAINSETTINGS_LANGUAGE, true, new CLanguageSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_LANGUAGE, LOCALE_HELPTEXT_LANGUAGE));
-	
-	// select font
-	osdSettings->addItem( new CMenuForwarderExtended(LOCALE_EPGPLUS_SELECT_FONT_NAME, true, this, "select_font", CRCInput::convertDigitToKey(shortcutOSD++), NULL, NEUTRINO_ICON_MENUITEM_FONT, LOCALE_HELPTEXT_FONT));
-	
-	//font scaling
-	osdSettings->addItem(new CMenuForwarderExtended(LOCALE_FONTMENU_SCALING, true, this, "font_scaling", CRCInput::convertDigitToKey(shortcutOSD++), NULL, NEUTRINO_ICON_MENUITEM_FONTSCALING, LOCALE_HELPTEXT_FONTSCALING));
-
-	// osd timing
-	osdSettings->addItem(new CMenuForwarderExtended(LOCALE_TIMING_HEAD, true, new COSDTimingSettings(), NULL, CRCInput::convertDigitToKey(shortcutOSD++), NULL, NEUTRINO_ICON_MENUITEM_OSDTIMING, LOCALE_HELPTEXT_OSDTIMING));
-
-	// sceensetup
-	osdSettings->addItem(new CMenuForwarderExtended(LOCALE_VIDEOMENU_SCREENSETUP, true, new CScreenSetup(), NULL, CRCInput::convertDigitToKey(shortcutOSD++), NULL, NEUTRINO_ICON_MENUITEM_SCREENSETUP, LOCALE_HELPTEXT_SCREENSETUP));
-	
-	// alpha setup
-	//FIXME:
-	//CAlphaSetup * chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
-	//osdSettings->addItem( new CMenuForwarderExtended(LOCALE_COLORMENU_GTX_ALPHA, true, chAlphaSetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++), NULL, NEUTRINO_ICON_MENUITEM_ALPHASETUP, LOCALE_HELPTEXT_ALPHASETUP));
-	
-	osdSettings->exec(NULL, "");
-	osdSettings->hide();
-	delete osdSettings;
-	osdSettings = NULL;
-}
-
-// smart
-void COSDSettings::showMenuSmart(void)
-{
-	dprintf(DEBUG_NORMAL, "COSDSettings::showMenuSmart:\n");
-	
-	int shortcutOSD = 1;
-	
-	CMenuFrameBox * osdSettings = new CMenuFrameBox(LOCALE_MAINSETTINGS_OSD, NEUTRINO_ICON_COLORS );
-
-	// Themes
-	CThemes * osdSettings_Themes = new CThemes();
-	
-	osdSettings->addItem( new CMenuFrameBoxItem(LOCALE_COLORMENU_THEMESELECT, osdSettings_Themes, NULL, NEUTRINO_ICON_SMART_THEMES));
-
-	// menu colors
-	osdSettings->addItem( new CMenuFrameBoxItem(LOCALE_COLORMENU_MENUCOLORS, new COSDMenuColorSettings(), NULL, NEUTRINO_ICON_SMART_MENUCOLORS));
-
-	// infobar
-	osdSettings->addItem( new CMenuFrameBoxItem(LOCALE_COLORSTATUSBAR_HEAD, new COSDInfoBarColorSettings(), NULL, NEUTRINO_ICON_SMART_INFOBARCOLORS));
-
-	// language
-	osdSettings->addItem(new CMenuFrameBoxItem(LOCALE_MAINSETTINGS_LANGUAGE, new CLanguageSettings(), NULL, NEUTRINO_ICON_SMART_LANGUAGE));
-	
-	// select font
-	osdSettings->addItem( new CMenuFrameBoxItem(LOCALE_EPGPLUS_SELECT_FONT_NAME, this, "select_font", NEUTRINO_ICON_SMART_FONT));
-	
-	//font scaling
-	osdSettings->addItem(new CMenuFrameBoxItem(LOCALE_FONTMENU_SCALING, this, "font_scaling", NEUTRINO_ICON_SMART_FONTSCALING));
-
-	// osd timing
-	osdSettings->addItem(new CMenuFrameBoxItem(LOCALE_TIMING_HEAD, new COSDTimingSettings(), NULL, NEUTRINO_ICON_SMART_OSDTIMING));
-
-	// sceensetup
-	osdSettings->addItem(new CMenuFrameBoxItem(LOCALE_VIDEOMENU_SCREENSETUP, new CScreenSetup(), NULL, NEUTRINO_ICON_SMART_SCREENSETUP));
-	
-	// alpha setup
-	//FIXME:
-	//CAlphaSetup * chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
-	//osdSettings->addItem( new CMenuFrameBoxItem(LOCALE_COLORMENU_GTX_ALPHA, chAlphaSetup, NULL, NEUTRINO_ICON_SMART_ALPHASETUP));
-	
-	osdSettings->exec(NULL, "");
-	osdSettings->hide();
-	delete osdSettings;
-	osdSettings = NULL;
-}
-
-// classic
-void COSDSettings::showMenuClassic(void)
 {
 	dprintf(DEBUG_NORMAL, "COSDSettings::showMenuClassic:\n");
 	
@@ -226,33 +129,33 @@ void COSDSettings::showMenuClassic(void)
 	// Themes
 	CThemes * osdSettings_Themes = new CThemes();
 	
-	osdSettings->addItem( new CMenuForwarder(LOCALE_COLORMENU_THEMESELECT, true, NULL, osdSettings_Themes, NULL, CRCInput::RC_red, NEUTRINO_ICON_CLASSIC_THEMES, LOCALE_HELPTEXT_THEMES));
+	osdSettings->addItem( new CMenuForwarder(LOCALE_COLORMENU_THEMESELECT, true, NULL, osdSettings_Themes, NULL, CRCInput::RC_red, NEUTRINO_ICON_MENUITEM_THEMES, LOCALE_HELPTEXT_THEMES));
 
 	// menu colors
-	osdSettings->addItem( new CMenuForwarder(LOCALE_COLORMENU_MENUCOLORS, true, NULL, new COSDMenuColorSettings(), NULL, CRCInput::RC_green, NEUTRINO_ICON_CLASSIC_MENUCOLORS, LOCALE_HELPTEXT_MENUCOLORS));
+	osdSettings->addItem( new CMenuForwarder(LOCALE_COLORMENU_MENUCOLORS, true, NULL, new COSDMenuColorSettings(), NULL, CRCInput::RC_green, NEUTRINO_ICON_MENUITEM_MENUCOLORS, LOCALE_HELPTEXT_MENUCOLORS));
 
 	// infobar
-	osdSettings->addItem( new CMenuForwarder(LOCALE_COLORSTATUSBAR_HEAD, true, NULL, new COSDInfoBarColorSettings(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_CLASSIC_INFOBARCOLORS, LOCALE_HELPTEXT_INFOBARCOLORS));
+	osdSettings->addItem( new CMenuForwarder(LOCALE_COLORSTATUSBAR_HEAD, true, NULL, new COSDInfoBarColorSettings(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_MENUITEM_INFOBARCOLORS, LOCALE_HELPTEXT_INFOBARCOLORS));
 
 	// language
-	osdSettings->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_LANGUAGE, true, NULL, new CLanguageSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_CLASSIC_LANGUAGE, LOCALE_HELPTEXT_LANGUAGE));
+	osdSettings->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_LANGUAGE, true, NULL, new CLanguageSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_MENUITEM_LANGUAGE, LOCALE_HELPTEXT_LANGUAGE));
 	
 	// select font
-	osdSettings->addItem( new CMenuForwarder(LOCALE_EPGPLUS_SELECT_FONT_NAME, true, NULL, this, "select_font", CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_CLASSIC_FONT, LOCALE_HELPTEXT_FONT));
+	osdSettings->addItem( new CMenuForwarder(LOCALE_EPGPLUS_SELECT_FONT_NAME, true, NULL, this, "select_font", CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_MENUITEM_FONT, LOCALE_HELPTEXT_FONT));
 	
 	//font scaling
-	osdSettings->addItem(new CMenuForwarder(LOCALE_FONTMENU_SCALING, true, NULL, this, "font_scaling", CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_CLASSIC_FONTSCALING, LOCALE_HELPTEXT_FONTSCALING));
+	osdSettings->addItem(new CMenuForwarder(LOCALE_FONTMENU_SCALING, true, NULL, this, "font_scaling", CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_MENUITEM_FONTSCALING, LOCALE_HELPTEXT_FONTSCALING));
 
 	// osd timing
-	osdSettings->addItem(new CMenuForwarder(LOCALE_TIMING_HEAD, true, NULL, new COSDTimingSettings(), NULL, CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_CLASSIC_OSDTIMING, LOCALE_HELPTEXT_OSDTIMING));
+	osdSettings->addItem(new CMenuForwarder(LOCALE_TIMING_HEAD, true, NULL, new COSDTimingSettings(), NULL, CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_MENUITEM_OSDTIMING, LOCALE_HELPTEXT_OSDTIMING));
 
 	// sceensetup
-	osdSettings->addItem(new CMenuForwarder(LOCALE_VIDEOMENU_SCREENSETUP, true, NULL, new CScreenSetup(), NULL, CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_CLASSIC_SCREENSETUP, LOCALE_HELPTEXT_SCREENSETUP));
+	osdSettings->addItem(new CMenuForwarder(LOCALE_VIDEOMENU_SCREENSETUP, true, NULL, new CScreenSetup(), NULL, CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_MENUITEM_SCREENSETUP, LOCALE_HELPTEXT_SCREENSETUP));
 	
 	// alpha setup
 	//FIXME:
 	//CAlphaSetup * chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
-	//osdSettings->addItem( new CMenuForwarder(LOCALE_COLORMENU_GTX_ALPHA, true, NULL, chAlphaSetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_CLASSIC_ALPHASETUP, LOCALE_HELPTEXT_ALPHA_SETUP));
+	//osdSettings->addItem( new CMenuForwarder(LOCALE_COLORMENU_GTX_ALPHA, true, NULL, chAlphaSetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++), NEUTRINO_ICON_MENUITEM_ALPHASETUP, LOCALE_HELPTEXT_ALPHA_SETUP));
 	
 	osdSettings->exec(NULL, "");
 	osdSettings->hide();

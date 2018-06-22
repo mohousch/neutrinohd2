@@ -175,7 +175,7 @@ void CInfoViewer::initDimension(void)
 	frameBuffer->getIconSize(NEUTRINO_ICON_VTXT, &icon_w_vtxt, &icon_h_vtxt);
 	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_000, &icon_w_reso, &icon_h_reso);
 	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_SD2, &icon_w_sd, &icon_h_sd);
-	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_HD2, &icon_hd_w, &icon_hd_h);
+	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_HD2, &icon_w_hd, &icon_h_hd);
 	frameBuffer->getIconSize(NEUTRINO_ICON_SUBT, &icon_w_subt, &icon_h_subt);
 	frameBuffer->getIconSize(NEUTRINO_ICON_DD, &icon_w_dd, &icon_h_dd);
 	frameBuffer->getIconSize(NEUTRINO_ICON_SCRAMBLED2_GREY, &icon_w_ca, &icon_h_ca);

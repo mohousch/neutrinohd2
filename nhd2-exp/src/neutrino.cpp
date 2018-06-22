@@ -2898,12 +2898,7 @@ void CNeutrinoApp::RealRun(void)
 
 				StopSubtitles();
 
-				if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_STANDARD)
-					extendedMenu();
-				else if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_CLASSIC)
-					classicMenu();
-				else if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_SMART)
-					smartMenu();
+				mainMenu();
 
 				// restore mute symbol
 				AudioMute(current_muted, true);
