@@ -1010,6 +1010,9 @@ int CMenuOptionChooser::paint(bool selected, bool AfterPulldown)
 	// paint icon (left)
 	int icon_w = 0;
 	int icon_h = 0;
+
+	// icons 
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 		
 	if (!(iconName.empty()))
 	{
@@ -1036,7 +1039,7 @@ int CMenuOptionChooser::paint(bool selected, bool AfterPulldown)
         }
 
 	int stringwidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_option, true); // UTF-8
-	int stringstartposName = x + BORDER_LEFT + (icon_w? icon_w + ICON_OFFSET : 0);
+	int stringstartposName = x + BORDER_LEFT + icon_w + ICON_OFFSET;
 	int stringstartposOption = x + dx - (stringwidth + BORDER_RIGHT); //+ offx
 
 	// locale
@@ -1182,7 +1185,11 @@ int CMenuOptionNumberChooser::paint(bool selected, bool /*AfterPulldown*/)
 		l_option = g_Locale->getText(localized_value_name);
 
 	int stringwidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_option, true); // UTF-8
-	int stringstartposName = x + BORDER_LEFT;
+	// icons 
+	int icon_w, icon_h;
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+
+	int stringstartposName = x + BORDER_LEFT + icon_w + ICON_OFFSET;
 	int stringstartposOption = x + dx - stringwidth - BORDER_RIGHT; //+ offx
 
 	const char * l_name;
@@ -1375,6 +1382,9 @@ int CMenuOptionStringChooser::paint( bool selected, bool afterPulldown)
 	// paint icon
 	int icon_w = 0;
 	int icon_h = 0;
+
+	// icons 
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 		
 	if (!(iconName.empty()))
 	{
@@ -1408,7 +1418,7 @@ int CMenuOptionStringChooser::paint( bool selected, bool afterPulldown)
 	else
         	l_name = g_Locale->getText(name);
 	
-	int stringstartposName = x + BORDER_LEFT + (icon_w? icon_w + ICON_OFFSET : 0);
+	int stringstartposName = x + BORDER_LEFT + icon_w + ICON_OFFSET;
 	
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposName, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_RIGHT - (stringstartposName - x),  l_name, color, 0, true); // UTF-8
 	
@@ -1507,6 +1517,9 @@ int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 	// paint icon
 	int icon_w = 0;
 	int icon_h = 0;
+
+	// icons 
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	
 	if (!(iconName.empty()))
 	{
@@ -1516,7 +1529,7 @@ int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 	}
 
 	// locale
-	int stringstartposOption = x + BORDER_LEFT + (icon_w? icon_w + ICON_OFFSET: 0);
+	int stringstartposOption = x + BORDER_LEFT + icon_w + ICON_OFFSET;
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_RIGHT - (stringstartposOption - x), optionValue, color, 0, true); //UTF-8
 
 	// vfd
@@ -1689,7 +1702,11 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	// paint icon/direkt-key
 	int icon_w = 0;
 	int icon_h = 0;
+
+	// icons 
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	
+	// recalculate iw and ih
 	if (!iconName.empty())
 	{
 		//get icon size
@@ -1717,7 +1734,8 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	
 	// locale text
-	stringstartposX = x + BORDER_LEFT + (icon_w? icon_w + ICON_OFFSET : 0);
+	//stringstartposX = x + BORDER_LEFT + (icon_w? icon_w + ICON_OFFSET : 0);
+	stringstartposX = x + BORDER_LEFT + icon_w + ICON_OFFSET;
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_LEFT - BORDER_RIGHT - (icon_w? icon_w + ICON_OFFSET : 0), l_text, color, 0, true); // UTF-8
 
 	//option-text

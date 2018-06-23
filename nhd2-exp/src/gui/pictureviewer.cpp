@@ -57,6 +57,8 @@
 #include <gui/widget/helpbox.h>
 #include <gui/widget/stringinput.h>
 
+#include <gui/pictureviewer_setup.h>
+
 #include <system/settings.h>
 #include <system/debug.h>
 
@@ -116,19 +118,19 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	selected = 0;
 	
 	//
-	width = frameBuffer->getScreenWidth(true) - 10; 
-	height = frameBuffer->getScreenHeight(true) - 10;
+	width = (g_settings.screen_EndX - g_settings.screen_StartX - 40);
+	height = (g_settings.screen_EndY - g_settings.screen_StartY - 40);
 
-	if((g_settings.screen_EndX- g_settings.screen_StartX) < width)
-		width = (g_settings.screen_EndX- g_settings.screen_StartX);
-	if((g_settings.screen_EndY- g_settings.screen_StartY) < height)
-		height = (g_settings.screen_EndY- g_settings.screen_StartY);
+	if((g_settings.screen_EndX - g_settings.screen_StartX) < width)
+		width = (g_settings.screen_EndX - g_settings.screen_StartX);
+	if((g_settings.screen_EndY - g_settings.screen_StartY) < height)
+		height = (g_settings.screen_EndY - g_settings.screen_StartY);
 
 	sheight = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 	
 	// foot
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_foot_w, &icon_foot_h);
-	buttonHeight = 2*(std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), icon_foot_h)) + 6;
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_foot_w, &icon_foot_h);
+	buttonHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), icon_foot_h) + 6;
 	
 	// head
 	frameBuffer->getIconSize(NEUTRINO_ICON_PICTURE, &icon_head_w, &icon_head_h);
@@ -141,8 +143,8 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	// recalculate height
 	height = theight + buttonHeight + listmaxshow*fheight;	// recalc height
 
-	x = (((g_settings.screen_EndX- g_settings.screen_StartX) - width)/ 2) + g_settings.screen_StartX;
-	y = (((g_settings.screen_EndY- g_settings.screen_StartY) - height)/ 2) + g_settings.screen_StartY;
+	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - width) / 2;
+	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height) / 2;
 
 	//
 	g_PicViewer->SetScaling( (CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
@@ -566,8 +568,11 @@ int CPictureViewerGui::show()
 		{
 			if(m_state == MENU)
 			{
-				CNFSSmallMenu nfsMenu;
-				nfsMenu.exec(this, "");
+				CPictureViewerSettings * pictureViewerSettingsMenu = new CPictureViewerSettings();
+				pictureViewerSettingsMenu->exec(this, "");
+				delete pictureViewerSettingsMenu;
+				pictureViewerSettingsMenu = NULL;	
+
 				update = true;
 
 				CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_PICTUREVIEWER_HEAD));				
@@ -667,16 +672,27 @@ void CPictureViewerGui::paintHead()
 	frameBuffer->paintIcon(NEUTRINO_ICON_PICTURE, x + BORDER_LEFT, y + (theight - icon_head_h)/2);
 	
 	//head title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 5, y + theight, width - (BORDER_LEFT + BORDER_RIGHT + icon_head_w + 10) , strCaption, COL_MENUHEAD, 0, true); // UTF-8
-	
-	// icon help
-	int icon_w, icon_h;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + width - BORDER_RIGHT - 2*icon_w - 5, y + (theight - icon_h)/2);
+	//g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 5, y + theight, width - (BORDER_LEFT + BORDER_RIGHT + icon_head_w + 10) , strCaption, COL_MENUHEAD, 0, true); // UTF-8
 	
 	// icon setup
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_SETUP, x + width - BORDER_RIGHT - icon_w, y + (theight - icon_h)/2);
+	int icon_setup_w, icon_setup_h;
+	
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_setup_w, &icon_setup_h);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_SETUP, x + width - BORDER_RIGHT - icon_setup_w, y + (theight - icon_setup_h)/2);
+
+	// help
+	int icon_help_w, icon_help_h;
+
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_help_w, &icon_help_h);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + width - BORDER_RIGHT - icon_setup_w - ICON_OFFSET - icon_help_w, y + (theight - icon_help_h)/2);
+
+	// button 5
+	int icon_5_w, icon_5_h;
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_5, &icon_5_w, &icon_5_h);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_5, x + width - BORDER_RIGHT - icon_setup_w - ICON_OFFSET - icon_help_w - ICON_OFFSET - icon_5_w, y + (theight - icon_5_h)/2);
+
+	//head title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 5, y + theight, width - BORDER_LEFT - icon_head_w - BORDER_RIGHT - icon_setup_w - ICON_OFFSET - icon_help_w - ICON_OFFSET - icon_5_w - ICON_OFFSET, strCaption, COL_MENUHEAD, 0, true); // UTF-8
 }
 
 const struct button_label PictureViewerButtons[4] =
@@ -690,7 +706,7 @@ const struct button_label PictureViewerButtons[4] =
 void CPictureViewerGui::paintFoot()
 {
 	int ButtonWidth = (width - BORDER_LEFT - BORDER_RIGHT)/4;
-	int ButtonWidth2 = (width - 50) / 2;
+	//int ButtonWidth2 = (width - 50) / 2;
 	
 	int icon_w, icon_h;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
@@ -700,11 +716,13 @@ void CPictureViewerGui::paintFoot()
 	if (!playlist.empty())
 	{
 		//OK
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + ButtonWidth2 + 25, y + (height - buttonHeight) + buttonHeight/2 + (buttonHeight/2 - icon_foot_h)/2);
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ButtonWidth2 + 53 , y + (height - buttonHeight) + buttonHeight/2 + (buttonHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth2 - 28, g_Locale->getText(LOCALE_PICTUREVIEWER_SHOW), COL_INFOBAR, 0, true); // UTF-8
+		//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + ButtonWidth2 + 25, y + (height - buttonHeight) + buttonHeight/2 + (buttonHeight/2 - icon_foot_h)/2);
+		//g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ButtonWidth2 + 53 , y + (height - buttonHeight) + buttonHeight/2 + (buttonHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth2 - 28, g_Locale->getText(LOCALE_PICTUREVIEWER_SHOW), COL_INFOBAR, 0, true); // UTF-8
 
 		// 5
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_5, x + BORDER_LEFT, y + (height - buttonHeight) + buttonHeight/2 + (buttonHeight/2 - icon_foot_h)/2);
+		//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_5, x + BORDER_LEFT, y + (height - buttonHeight) + buttonHeight/2 + (buttonHeight/2 - icon_foot_h)/2);
+
+		/*
 		std::string tmp = g_Locale->getText(LOCALE_PICTUREVIEWER_SORTORDER);
 		tmp += ' ';
 		if(m_sort == FILENAME)
@@ -713,12 +731,13 @@ void CPictureViewerGui::paintFoot()
 			tmp += g_Locale->getText(LOCALE_PICTUREVIEWER_SORTORDER_FILENAME);
 		
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + BORDER_LEFT + icon_w + 5 , y + (height - buttonHeight) + buttonHeight/2 + (buttonHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth2 - 28, tmp, COL_INFOBAR, 0, true); // UTF-8
+		*/
 
 		// foot buttons
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - buttonHeight + 3, ButtonWidth, 4, PictureViewerButtons, buttonHeight/2);
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - buttonHeight, ButtonWidth, 4, PictureViewerButtons, buttonHeight);
 	}
 	else
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + ButtonWidth, y + height - buttonHeight + 3, ButtonWidth, 1, &(PictureViewerButtons[1]), buttonHeight/2);
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + ButtonWidth, y + height - buttonHeight, ButtonWidth, 1, &(PictureViewerButtons[1]), buttonHeight);
 }
 
 void CPictureViewerGui::paint()

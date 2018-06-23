@@ -78,6 +78,10 @@ install_DATA += \
 	standby.png \
 	reboot.png \
 	shutdown.png
+
+# no preview
+install_DATA += \
+	nopreview.png
 	
 
 

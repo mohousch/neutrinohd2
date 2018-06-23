@@ -365,7 +365,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 	}
 
 	// channel number/logo/name
-	if (satellitePosition != 0 && satellitePositions.size() ) 
+	if ( (satellitePosition != 0 && satellitePositions.size()) || (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)) 
 	{
 		// ChannelNumber
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]->RenderString(ChanNumberX, ChanNameY + ChanNameHeight, CHANNUMBER_WIDTH, strChanNum, col_NumBoxText);
