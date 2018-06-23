@@ -165,6 +165,7 @@
 #define NEUTRINO_ICON_RADIOTEXTWAIT		"radiotextwait"
 
 // webtv
+#define NEUTRINO_ICON_WEBTV			"webtv"
 #define NEUTRINO_ICON_WEBTV_SMALL		"webtv_small"
 
 // mp infobar

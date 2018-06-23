@@ -658,7 +658,7 @@ int CChannelList::show()
 		}
 		else if (msg == (neutrino_msg_t) g_settings.key_list_end) 
 		{
-			selected=chanlist.size()-1;
+			selected = chanlist.size() - 1;
 			liststart = (selected/listmaxshow)*listmaxshow;
 			paint();
 			

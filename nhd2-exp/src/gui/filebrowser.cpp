@@ -529,6 +529,9 @@ bool CFileBrowser::exec(const char * const dirname)
 			{
 				ChangeDir("..");
 			}
+
+			if (!(filelist.empty()))
+				paintFoot();
 		}
 		else if ( msg == CRCInput::RC_blue )
 		{
