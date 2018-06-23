@@ -783,10 +783,6 @@ void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigne
 	{
 		if ((g_PluginList->getIntegration(count) == integration) && !g_PluginList->isHidden(count))
 		{
-			//
-			if(IconName.empty())
-				IconName = NEUTRINO_ICON_PLUGIN;
-
 			std::string icon("");
 			icon = g_PluginList->getIcon(count);
 
@@ -798,6 +794,9 @@ void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigne
 				IconName += "/";
 				IconName += g_PluginList->getIcon(count);
 			}
+
+			if(IconName.empty() || access(IconName.c_str(), F_OK))
+				IconName = NEUTRINO_ICON_PLUGIN;
 
 			//
 			CMenuForwarder *fw_plugin = new CMenuForwarder(g_PluginList->getName(count), enabled, NULL, CPluginsExec::getInstance(), to_string(count).c_str(), CRCInput::RC_nokey, paintIcon? IconName.c_str() : "");
@@ -2098,6 +2097,7 @@ int CMenuWidgetExtended::exec(CMenuTarget* parent, const std::string&)
 						paintItems();
 					}
 
+					paintItemIcon(selected);
 					paintFootInfo(selected);
 					pos = selected;
 
@@ -2140,6 +2140,7 @@ int CMenuWidgetExtended::exec(CMenuTarget* parent, const std::string&)
 									{
 										items[selected]->paint( false );
 										item->paint( true );
+										paintItemIcon(pos);
 										paintFootInfo(pos);
 										selected = pos;
 									} 
@@ -2165,6 +2166,7 @@ int CMenuWidgetExtended::exec(CMenuTarget* parent, const std::string&)
 									{
 										items[selected]->paint( false );
 										item->paint( true );
+										paintItemIcon(pos);
 										paintFootInfo(pos);
 										selected = pos;
 									} 
@@ -2193,6 +2195,7 @@ int CMenuWidgetExtended::exec(CMenuTarget* parent, const std::string&)
 								{
 									items[selected]->paint( false );
 									item->paint( true );
+									paintItemIcon(pos);
 									paintFootInfo(pos);
 									selected = pos;
 								} 
@@ -2236,6 +2239,7 @@ int CMenuWidgetExtended::exec(CMenuTarget* parent, const std::string&)
 									items[selected]->paint(false);
 									//select new
 									item->paint(true);
+									paintItemIcon(pos);
 									paintFootInfo(pos);
 									selected = pos;
 								} 
@@ -2557,6 +2561,7 @@ void CMenuWidgetExtended::paintItems()
 
 			if (selected == count) 
 			{
+				paintItemIcon(count);
 				paintFootInfo(count);
 			}
 			
@@ -2622,8 +2627,16 @@ void CMenuWidgetExtended::paintFootInfo(int pos)
 	{
 		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET, y + full_height - fheight + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), full_width - BORDER_LEFT - BORDER_RIGHT - iw, item->itemHelpText.c_str(), COL_MENUFOOT, 0, true); // UTF-8
 	}
+}
 
-	// itemIcon
+void CMenuWidgetExtended::paintItemIcon(int pos)
+{
+	CMenuItem* item = items[pos];
+
+	item->getYPosition();
+
+	// info icon
+	int iw, ih;
 
 	// check for minimum hight
 	if(full_height - hheight - 2*sp_height - fheight >= ITEM_ICON_H)
