@@ -76,12 +76,13 @@ int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string& actionK
 }
 
 // CMenuItem
-void CMenuItem::init(const int X, const int Y, const int DX, const int OFFX)
+void CMenuItem::init(const int X, const int Y, const int DX, const int OFFX, const int WIDGET)
 {
 	x    = X;
 	y    = Y;
 	dx   = DX;
 	offx = OFFX;
+	widgetType = WIDGET;
 }
 
 void CMenuItem::setActive(const bool Active)
@@ -106,16 +107,6 @@ void CMenuItem::setHelpText(const std::string& ItemHelpText)
 {
 	itemHelpText =  ItemHelpText;
 }
-
-/*
-void CMenuItem::setMarked(const bool Marked)
-{
-	marked = Marked;
-
-	if (x != -1)
-		paint();
-}
-*/
 
 // CMenuWidget
 CMenuWidget::CMenuWidget()
@@ -562,7 +553,6 @@ void CMenuWidget::paint()
 	page_start.clear();
 	page_start.push_back(0);
 	total_pages = 1;
-	//sp_height = 5;
 	heightFirstPage = 0;
 	
 	for (unsigned int i = 0; i < items.size(); i++) 
@@ -2029,6 +2019,7 @@ void CMenuWidgetExtended::Init(const std::string & Icon, const int mwidth, const
 	background	= NULL;
 
 	disableMenuPos = false;
+	widgetType = WIDGET_EXTENDED;
 }
 
 void CMenuWidgetExtended::move(int xoff, int yoff)
@@ -2427,7 +2418,6 @@ void CMenuWidgetExtended::paint()
 	page_start.clear();
 	page_start.push_back(0);
 	total_pages = 1;
-	sp_height = 5;
 	heightFirstPage = 0;
 	
 	for (unsigned int i = 0; i < items.size(); i++) 
@@ -2466,7 +2456,7 @@ void CMenuWidgetExtended::paint()
 		height = hheight + heightFirstPage + fheight;
 	
 	full_width = width;
-	full_height = height + 2*sp_height;
+	full_height = height;
 
 	// coordinations
 	x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width ) >> 1 );
@@ -2488,6 +2478,12 @@ void CMenuWidgetExtended::paint()
 		x = offx + frameBuffer->getScreenX() + frameBuffer->getScreenWidth() - width - BORDER_RIGHT;
 		y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
 	}
+
+	// widget type
+	if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_STANDARD) //extended
+		widgetType = WIDGET_EXTENDED;
+	else if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_CLASSIC)
+		widgetType = WIDGET_CLASSIC;
 	
 	//
 	if(savescreen) 
@@ -2502,17 +2498,11 @@ void CMenuWidgetExtended::paint()
 	// head title
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 2*ICON_OFFSET, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_RIGHT - BORDER_RIGHT - icon_head_w - 2*ICON_OFFSET, l_name, COL_MENUHEAD, 0, true); // UTF-8
 	
-	// paint head separator
-	frameBuffer->paintBoxRel(x, y + hheight, full_width, sp_height, COL_MENUCONTENTDARK_PLUS_0);
-	
-	// paint foot seperator
-	frameBuffer->paintBoxRel(x, y + full_height - (fheight + sp_height), full_width, sp_height, COL_MENUCONTENTDARK_PLUS_0);
-	
 	//paint foot
 	frameBuffer->paintBoxRel(x, y + full_height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 	
 	//item_start_y
-	item_start_y = y + hheight + sp_height;
+	item_start_y = y + hheight;
 	
 	// paint items
 	paintItems();
@@ -2522,7 +2512,7 @@ void CMenuWidgetExtended::paint()
 void CMenuWidgetExtended::paintItems()
 {
 	// items height
-	items_height = full_height - (hheight + sp_height + sp_height + fheight);
+	items_height = full_height - (hheight + fheight);
 	
 	// items width
 	sb_width = 0;
@@ -2532,7 +2522,11 @@ void CMenuWidgetExtended::paintItems()
 	else
 		sb_width = 0;
 	
-	items_width = ((full_width - BORDER_LEFT - BORDER_RIGHT - sb_width)/3)*2;
+	////
+	items_width = full_width - sb_width;
+
+	if(widgetType == WIDGET_EXTENDED)
+		items_width = ((full_width - BORDER_LEFT - BORDER_RIGHT - sb_width)/3)*2;
 	
 	// item not currently on screen
 	if (selected >= 0)
@@ -2560,7 +2554,12 @@ void CMenuWidgetExtended::paintItems()
 
 	// paint items
 	int ypos = item_start_y;
-	int xpos = x + BORDER_LEFT;
+
+	////
+	int xpos = x;
+
+	if(widgetType == WIDGET_EXTENDED)
+		xpos = x + BORDER_LEFT;
 	
 	for (unsigned int count = 0; count < items.size(); count++) 
 	{
@@ -2568,7 +2567,7 @@ void CMenuWidgetExtended::paintItems()
 
 		if ((count >= page_start[current_page]) && (count < page_start[current_page + 1])) 
 		{
-			item->init(xpos, ypos, items_width, iconOffset);
+			item->init(xpos, ypos, items_width, iconOffset, widgetType);
 
 			if( (item->isSelectable()) && (selected == -1) ) 
 			{
@@ -2647,6 +2646,9 @@ void CMenuWidgetExtended::paintFootInfo(int pos)
 
 void CMenuWidgetExtended::paintItemIcon(int pos)
 {
+	if(widgetType == WIDGET_CLASSIC)
+		return;
+
 	CMenuItem* item = items[pos];
 
 	item->getYPosition();
@@ -2655,15 +2657,18 @@ void CMenuWidgetExtended::paintItemIcon(int pos)
 	int iw, ih;
 
 	// check for minimum hight
-	if(full_height - hheight - 2*sp_height - fheight >= ITEM_ICON_H)
-	{  
+	if(full_height - hheight - fheight >= ITEM_ICON_H)
+	{ 
+		printf("CMenuWidgetExtended::paintItemIcon:%s\n", item->itemIcon.c_str()); 
 		frameBuffer->getIconSize(item->itemIcon.c_str(), &iw, &ih);
 
 		// refreshbox
 		frameBuffer->paintBoxRel(x + BORDER_LEFT + items_width + (full_width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H, COL_MENUCONTENTDARK_PLUS_0);
 
 		// icon
-		frameBuffer->paintIcon(item->itemIcon.c_str(), x + BORDER_LEFT + items_width + (full_width - BORDER_LEFT - items_width - iw)/2, y + (full_height - ih)/2, 0, true, (iw > ITEM_ICON_W? ITEM_ICON_W : iw), (ih > ITEM_ICON_H? ITEM_ICON_H : ih));
+		//frameBuffer->paintIcon(item->itemIcon.c_str(), x + BORDER_LEFT + items_width + (full_width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, 0, true, /*(iw > ITEM_ICON_W? ITEM_ICON_W : iw)*/ITEM_ICON_W, /*(ih > ITEM_ICON_H? ITEM_ICON_H : ih)*/ITEM_ICON_H);
+
+		frameBuffer->DisplayImage(item->itemIcon.c_str(), x + BORDER_LEFT + items_width + (full_width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H);
 	}
 }
 
@@ -2697,7 +2702,7 @@ void CMenuWidgetExtended::integratePlugins(CPlugins::i_type_t integration, const
 			neutrino_msg_t dk = (shortcut != CRCInput::RC_nokey) ? CRCInput::convertDigitToKey(sc++) : CRCInput::RC_nokey;
 
 			//
-			CMenuForwarderExtended *fw_plugin = new CMenuForwarderExtended(g_PluginList->getName(count), enabled, CPluginsExec::getInstance(), to_string(count).c_str(), dk, "", IconName.c_str());
+			CMenuForwarderExtended *fw_plugin = new CMenuForwarderExtended(g_PluginList->getName(count), enabled, CPluginsExec::getInstance(), to_string(count).c_str(), dk, IconName.c_str(), IconName.c_str());
 
 			fw_plugin->setHelpText(g_PluginList->getDescription(count));
 			addItem(fw_plugin);
@@ -2744,7 +2749,7 @@ int CMenuForwarderExtended::getHeight(void) const
 {
 	int iconName_w = 0;
 	int iconName_h = 0;
-	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iconName_w, &iconName_h);
+	CFrameBuffer::getInstance()->getIconSize(itemIcon.c_str(), &iconName_w, &iconName_h);
 	
 	return std::max(iconName_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()) + 3;
 }
@@ -2814,13 +2819,18 @@ int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 	// paint icon/direkt-key
 	int icon_w = 0;
 	int icon_h = 0;
+	
+	if(widgetType == WIDGET_CLASSIC)
+	{	
+		if (!iconName.empty())
+		{
+			frameBuffer->getIconSize(iconName.c_str(), &icon_w, &icon_h);
 		
-	if (!iconName.empty())
-	{
-		frameBuffer->getIconSize(iconName.c_str(), &icon_w, &icon_h);
-		
-		frameBuffer->paintIcon(iconName, x + BORDER_LEFT, y + ((height - icon_h)/2) );
+			frameBuffer->paintIcon(iconName, x + BORDER_LEFT, y + ((height - icon_h)/2) );
+		}
 	}
+
+	/*
 	else if (CRCInput::isNumeric(directKey))
 	{
 		// define icon name depends of numeric value
@@ -2838,6 +2848,7 @@ int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 		else
 			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + BORDER_LEFT, y + height, height, CRCInput::getKeyName(directKey), color, height);
 	}
+	*/
 	
 	//local-text
 	stringstartposX = x + BORDER_LEFT + (icon_w? icon_w + ICON_OFFSET : 0);

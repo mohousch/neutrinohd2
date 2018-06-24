@@ -67,6 +67,15 @@ enum
 	ITEM_TYPE_LIST_BOX
 };
 
+//FIXME: rename it
+enum
+{
+	WIDGET_STANDARD = 0,
+	WIDGET_CLASSIC,
+	WIDGET_EXTENDED,
+	WIDGET_FRAME
+};
+
 struct menu_return
 {
 	enum
@@ -131,14 +140,13 @@ class CMenuItem
 		neutrino_msg_t msg;
 		bool can_arrow;
 		std::string iconName;
-
-		//bool marked;
 		std::string info1, option_info1;
 		std::string info2, option_info2;
 		std::string itemName;
 		std::string itemHelpText;
 		std::string itemIcon;
 		int itemType;
+		int widgetType;
 
 		CMenuItem()
 		{
@@ -149,7 +157,7 @@ class CMenuItem
 		}
 		virtual ~CMenuItem(){}
 
-		virtual void init(const int X, const int Y, const int DX, const int OFFX);
+		virtual void init(const int X, const int Y, const int DX, const int OFFX, const int WIDGET = WIDGET_STANDARD);
 		virtual int paint(bool selected = false, bool AfterPulldown = false) = 0;
 		virtual int getHeight(void) const = 0;
 		virtual int getWidth(void) const
@@ -163,7 +171,6 @@ class CMenuItem
 		
 		//
 		virtual void setActive(const bool Active);
-		//virtual void setMarked(const bool Marked);
 
 		//
 		virtual int getYPosition(void) const { return y; }
@@ -559,9 +566,7 @@ class CMenuWidgetExtended : public CMenuTarget
 		
 		int hheight;
 		int fheight;
-		int sp_height;
 		int item_height;
-		//int item_width;
 		int sb_width;
 		int itemHeightTotal;
 		int heightCurrPage;
@@ -571,6 +576,7 @@ class CMenuWidgetExtended : public CMenuTarget
 		int listmaxshow;
 
 		bool disableMenuPos;
+		int widgetType;
 		
 	public:
 		CMenuWidgetExtended();
