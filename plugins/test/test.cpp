@@ -2147,6 +2147,8 @@ void CTestMenu::testFrameBox()
 {
 	CMenuFrameBox* mainMenu = new CMenuFrameBox(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
 
+	mainMenu->setItemsPerPage(4, 3);
+
 	// tv
 	mainMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_TVMODE, CNeutrinoApp::getInstance(), "tv", NEUTRINO_ICON_MENUITEM_TV), true);
 
