@@ -312,7 +312,8 @@ extra.rotor_swap Swap rotor east/west
 servicemenu.tuner_to_scan Tuner to scan
 extra.menu_design Menu Design
 extra.menu_design_classic Classic
-extra.menu_design_smart Smart
+extra.menu_design_extended Extended
+extra.menu_design_frame Frame
 extra.menu_design_standard Standard
 extra.menu_position Menu position
 extra.menu_position_left Left

@@ -137,7 +137,8 @@ const CMenuOptionChooser::keyval MENU_DESIGN_OPTIONS[MENU_DESIGN_OPTION_COUNT] =
 {
 	{ SNeutrinoSettings::MENU_DESIGN_STANDARD, LOCALE_EXTRA_MENU_DESIGN_STANDARD, NULL },
 	{ SNeutrinoSettings::MENU_DESIGN_CLASSIC, LOCALE_EXTRA_MENU_DESIGN_CLASSIC, NULL },
-	{ SNeutrinoSettings::MENU_DESIGN_SMART, LOCALE_EXTRA_MENU_DESIGN_SMART, NULL }
+	{ SNeutrinoSettings::MENU_DESIGN_EXTENDED, LOCALE_EXTRA_MENU_DESIGN_EXTENDED, NULL },
+	//{ SNeutrinoSettings::MENU_DESIGN_FRAME, LOCALE_EXTRA_MENU_DESIGN_FRAME, NULL }
 };
 
 #define MENU_POSITION_OPTION_COUNT 3
@@ -227,25 +228,27 @@ void CMiscSettings::showMenu(void)
 
 	CMenuWidget * miscSettings = new CMenuWidget(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
 
+	miscSettings->enableWidgetChange();
+
 	//miscSettings general
-	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_GENERAL, true, NULL, new CGeneralSettings(), NULL, CRCInput::RC_red, NEUTRINO_ICON_MENUITEM_GENERALSETTINGS, LOCALE_HELPTEXT_GENERALSETTINGS));
+	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_GENERAL, true, NULL, new CGeneralSettings(), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_GENERALSETTINGS, LOCALE_HELPTEXT_GENERALSETTINGS));
 	
 	//channellist settings
-	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_CHANNELLIST, true, NULL, new CChannelListSettings(), NULL, CRCInput::RC_green, NEUTRINO_ICON_MENUITEM_CHANNELLISTSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSCHANNELSETTINGS));
+	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_CHANNELLIST, true, NULL, new CChannelListSettings(), NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_CHANNELLISTSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSCHANNELSETTINGS));
 
 	// epg settings
-	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_HEAD, true, NULL, new CEPGSettings(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_MENUITEM_EPGSETTINGS, LOCALE_HELPTEXT_EPGSETTINGS));
+	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_HEAD, true, NULL, new CEPGSettings(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_EPGSETTINGS, LOCALE_HELPTEXT_EPGSETTINGS));
 
 	// filebrowser settings
-	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_FILEBROWSER, true, NULL, new CFileBrowserSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_MENUITEM_FILEBROWSERSETTINGS, LOCALE_HELPTEXT_FILEBROWSERSETTINGS));
+	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_FILEBROWSER, true, NULL, new CFileBrowserSettings(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_FILEBROWSERSETTINGS, LOCALE_HELPTEXT_FILEBROWSERSETTINGS));
 	
 	// zapit setup (start channel)
-	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_ZAPIT, true, NULL, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NEUTRINO_ICON_MENUITEM_STARTCHANNELSETTINGS, LOCALE_HELPTEXT_STARTCHANNELSETTINGS));
+	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_ZAPIT, true, NULL, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_STARTCHANNELSETTINGS, LOCALE_HELPTEXT_STARTCHANNELSETTINGS));
 	
 	// psi setup
 	//FIXME:	
 	//CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
-	//miscSettings->addItem( new CMenuForwarder(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NEUTRINO_ICON_MENUITEM_PSISETTINGS, LOCALE_HELPTEXT_LOCALE_HELPTEXT_PSISETTINGS));
+	//miscSettings->addItem( new CMenuForwarder(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_PSISETTINGS, LOCALE_HELPTEXT_LOCALE_HELPTEXT_PSISETTINGS));
 	
 	miscSettings->exec(NULL, "");
 	miscSettings->hide();

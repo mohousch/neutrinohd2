@@ -66,10 +66,8 @@ class CTestMenu : public CMenuTarget
 		void testCButtons();
 		void testCMenuWidgetListBox();
 		void testCMenuWidgetListBox1();
-		void testCMenuWidget();
-		void testCMenuWidgetClassic();
-		void testCMenuWidgetExtended();
 		void testFrameBox();
+		void testCMenuWidget();
 	
 		// mediapalyers
 		void testAudioPlayer();
@@ -1995,147 +1993,49 @@ void CTestMenu::testCMenuWidget()
 {
 	int shortcut = 1;
 
-	CMenuWidget * mainMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
+	dprintf(DEBUG_NORMAL, "testCMenuWidget\n");
+
+	CMenuWidget* mainMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
+
+	mainMenu->enableWidgetChange();
 	  
 	// tv modus
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, LOCALE_HELPTEXT_TVMODE), true);
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
 
 	// radio modus
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, LOCALE_HELPTEXT_RADIOMODE));	
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE ));	
 	
 	// webtv
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_HELPTEXT_WEBTVMODE));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE) );
 	
 #if defined (ENABLE_SCART)
 	// scart
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, LOCALE_HELPTEXT_SCART));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART) );
 #endif
 
 	// mediaplayer
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MOVIE, LOCALE_HELPTEXT_MEDIAPLAYER));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_MEDIAPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER ));
 	
 	// main setting menu
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_BUTTON_SETUP, LOCALE_HELPTEXT_MAINSETTINGS));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_SETTINGS, LOCALE_HELPTEXT_MAINSETTINGS ));
 
 	// service
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_UPDATE, LOCALE_HELPTEXT_SERVICE));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SERVICE ));
 	
 	
 	// timerlist
-	mainMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_TIMER, LOCALE_HELPTEXT_TIMERLIST));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST ));
 	
 	// features
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_GAMES, LOCALE_HELPTEXT_FEATURES));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES ));
 
 	// power menu
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, LOCALE_HELPTEXT_POWERMENU));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU ));
 
 	//box info
-	mainMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP, LOCALE_HELPTEXT_BOXINFO));
+	mainMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
 
-	mainMenu->integratePlugins(CPlugins::I_TYPE_MAIN, CRCInput::RC_nokey, true, false);
-
-	mainMenu->exec(NULL, "");
-	mainMenu->hide();
-	delete mainMenu;
-	mainMenu = NULL;
-}
-
-void CTestMenu::testCMenuWidgetClassic()
-{
-	int shortcut = 1;
-
-	CMenuWidget * mainMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
-	  
-	// tv modus
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE), true);
-
-	// radio modus
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE));	
-	
-	// webtv
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE));
-	
-#if defined (ENABLE_SCART)
-	// scart
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART));
-#endif
-
-	// mediaplayer
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_MEDIAPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER));
-	
-	// main setting menu
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_SETTINGS, LOCALE_HELPTEXT_MAINSETTINGS));
-
-	// service
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SERVICE));
-	
-	
-	// timerlist
-	mainMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST));
-	
-	// features
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES));
-
-	// power menu
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU));
-
-	//box info
-	mainMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO));
-
-	mainMenu->integratePlugins(CPlugins::I_TYPE_MAIN);
-
-	mainMenu->exec(NULL, "");
-	mainMenu->hide();
-	delete mainMenu;
-	mainMenu = NULL;
-}
-
-void CTestMenu::testCMenuWidgetExtended()
-{
-	int shortcut = 1;
-
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::extendedMenu\n");
-
-	CMenuWidgetExtended* mainMenu = new CMenuWidgetExtended(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
-	  
-	// tv modus
-	mainMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_TVMODE, true, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_MENUITEM_TV, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
-
-	// radio modus
-	mainMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_RADIOMODE, true, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_MENUITEM_RADIO, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE ));	
-	
-	// webtv
-	mainMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_WEBTVMODE, true, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_MENUITEM_WEBTV, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE) );
-	
-#if defined (ENABLE_SCART)
-	// scart
-	mainMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SCARTMODE, true, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_MENUITEM_SCART, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART) );
-#endif
-
-	// mediaplayer
-	mainMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_MEDIAPLAYER, true, new CMediaPlayerMenu(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_MEDIAPLAYER, NEUTRINO_ICON_MENUITEM_MEDIAPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER ));
-	
-	// main setting menu
-	mainMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SETTINGS, true, new CMainSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_SETTINGS, NEUTRINO_ICON_MENUITEM_SETTINGS, LOCALE_HELPTEXT_MAINSETTINGS ));
-
-	// service
-	mainMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SERVICE, true, new CServiceSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_SERVICE, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SERVICE ));
-	
-	
-	// timerlist
-	mainMenu->addItem(new CMenuForwarderExtended(LOCALE_TIMERLIST_NAME, true, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_TIMERLIST, NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST ));
-	
-	// features
-	mainMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_FEATURES, true, this, "features", CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_FEATURES, NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES ));
-
-	// power menu
-	mainMenu->addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_POWERMENU, true, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_MENUITEM_POWERMENU, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU ));
-
-	//box info
-	mainMenu->addItem( new CMenuForwarderExtended(LOCALE_DBOXINFO, true, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_MENUITEM_BOXINFO, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
-
-	mainMenu->integratePlugins(CPlugins::I_TYPE_MAIN);
+	mainMenu->integratePlugins(CPlugins::I_TYPE_MAIN, shortcut++);
 
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
@@ -2626,14 +2526,6 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCMenuWidget();
 	}
-	else if(actionKey == "testmenuwidgetclassic")
-	{
-		testCMenuWidgetClassic();
-	}
-	else if(actionKey == "testmenuwidgetextended")
-	{
-		testCMenuWidgetExtended();
-	}
 	else if(actionKey == "spinner")
 	{
 		spinner();
@@ -2674,12 +2566,10 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("ColorChooser", true, NULL, this, "colorchooser"));
 	mainMenu->addItem(new CMenuForwarder("KeyChooser", true, NULL, this, "keychooser"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
-	mainMenu->addItem(new CMenuForwarder("CMenuWidget", true, NULL, this, "testmenuwidget"));
-	mainMenu->addItem(new CMenuForwarder("CMenuWidget (Icons)", true, NULL, this, "testmenuwidgetclassic"));
-	mainMenu->addItem(new CMenuForwarder("CMenuWidgetExtended", true, NULL, this, "testmenuwidgetextended"));
 	mainMenu->addItem(new CMenuForwarder("CMenuFrameBox", true, NULL, this, "framebox"));
 	mainMenu->addItem(new CMenuForwarder("CMenulistBox(channellist)", true, NULL, this, "menuwidgetlistbox"));
 	mainMenu->addItem(new CMenuForwarder("CMenulistBox(Audioplayer)", true, NULL, this, "menuwidgetlistbox1"));
+	mainMenu->addItem(new CMenuForwarder("CMenuWidget", true, NULL, this, "testmenuwidget"));
 	
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));

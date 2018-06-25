@@ -11,7 +11,7 @@ install_DATA = \
 	colors.png setup.png setup_small.png \
 	dd.png dd_avail.png dd_gray.png \
 	down.png up.png right.png left.png \
-	error.png file.png folder.png games.png \
+	error.png file.png folder.png games.png features.png \
 	help.png help_small.png hidden.png home.png info.png \
 	keybinding.png lcd.png lock.png mainmenu.png \
 	mounted.png movie.png \

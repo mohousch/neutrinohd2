@@ -78,44 +78,46 @@ void CNeutrinoApp::mainMenu(void)
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::classicMenu:\n");
 
 	CMenuWidget * mainMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
+
+	mainMenu->enableWidgetChange();
 	  
 	// tv modus
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE), true);
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE), true);
 
 	// radio modus
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE));	
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE));	
 	
 	// webtv
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE));
 	
 #if defined (ENABLE_SCART)
 	// scart
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART));
 #endif
 
 	// mediaplayer
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_MEDIAPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_MEDIAPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER));
 	
 	// main setting menu
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_SETTINGS, LOCALE_HELPTEXT_MAINSETTINGS));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SETTINGS, LOCALE_HELPTEXT_MAINSETTINGS));
 
 	// service
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SERVICE));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SERVICE));
 	
 	
 	// timerlist
-	mainMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST));
 	
 	// features
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES));
 
 	// power menu
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU));
 
 	//box info
-	mainMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO));
+	mainMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO));
 
-	mainMenu->integratePlugins(CPlugins::I_TYPE_MAIN);
+	mainMenu->integratePlugins(CPlugins::I_TYPE_MAIN, shortcut++);
 
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
@@ -247,6 +249,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 
 	//
 	//menu->disableMenuPosition();
+	menu->enableWidgetChange();
 
 	// intros
 	//menu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -263,7 +266,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 		                menu_items++;
 		                menu_prev = SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB;
 		                keyhelper.get(&key, &icon, CRCInput::RC_red);
-				menu_item = new CMenuForwarder(LOCALE_MOVIEPLAYER_RECORDS, true, NULL, new CMoviePlayerGui(), "tsmoviebrowser", key, NEUTRINO_ICON_MENUITEM_TSPLAYER);
+				menu_item = new CMenuForwarder(LOCALE_MOVIEPLAYER_RECORDS, true, NULL, new CMoviePlayerGui(), "tsmoviebrowser", key, icon, NEUTRINO_ICON_MENUITEM_TSPLAYER);
 		                menu->addItem(menu_item, false);
 		                break;
 			
@@ -272,7 +275,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 		                menu_items++;
 		                menu_prev = SNeutrinoSettings::ITEM_MOVIEPLAYER_MB;
 		                keyhelper.get(&key, &icon, CRCInput::RC_green);
-				menu_item = new CMenuForwarder(LOCALE_MOVIEPLAYER_MOVIES, true, NULL, new CMoviePlayerGui(), "moviebrowser", key, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER);
+				menu_item = new CMenuForwarder(LOCALE_MOVIEPLAYER_MOVIES, true, NULL, new CMoviePlayerGui(), "moviebrowser", key, icon, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER);
 		                menu->addItem(menu_item, false);
 		                break;
 
@@ -281,7 +284,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 		                menu_items++;
 		                menu_prev = SNeutrinoSettings::ITEM_TIMERLIST;
 		                keyhelper.get(&key, &icon, CRCInput::RC_yellow);
-				menu_item = new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, "-1", key, NEUTRINO_ICON_MENUITEM_TIMERLIST);
+				menu_item = new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, "-1", key, icon, NEUTRINO_ICON_MENUITEM_TIMERLIST);
 		                menu->addItem(menu_item, false);
 		                break;
 
@@ -290,7 +293,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 		                menu_items++;
 		                menu_prev = SNeutrinoSettings::ITEM_REMOTE;
 		                keyhelper.get(&key, &icon);
-				menu_item = new CMenuForwarder(LOCALE_RCLOCK_MENUEADD, true, NULL, this->rcLock, "-1", key, NEUTRINO_ICON_MENUITEM_PARENTALLOCKSETTINGS);
+				menu_item = new CMenuForwarder(LOCALE_RCLOCK_MENUEADD, true, NULL, this->rcLock, "-1", key, icon, NEUTRINO_ICON_MENUITEM_PARENTALLOCKSETTINGS);
 		                menu->addItem(menu_item, false);
 		                break;
 			
@@ -301,7 +304,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 					menu_items++;
 					menu_prev = SNeutrinoSettings::ITEM_VTXT;
 					keyhelper.get(&key, &icon);
-					menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_VTXT, true, NULL, new CTuxtxtChangeExec, "-1", key, NEUTRINO_ICON_MENUITEM_AUDIOPLAYER);
+					menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_VTXT, true, NULL, new CTuxtxtChangeExec, "-1", key, icon, NEUTRINO_ICON_MENUITEM_AUDIOPLAYER);
 					menu->addItem(menu_item, false);
 				}
 				break;	
@@ -314,7 +317,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 				tmpOPKGManager = new COPKGManager();
 				
 				keyhelper.get(&key, &icon);
-		                menu_item = new CMenuForwarder(LOCALE_OPKG_MANAGER, true, NULL, tmpOPKGManager, "-1", key, NEUTRINO_ICON_MENUITEM_SOFTUPDATE);
+		                menu_item = new CMenuForwarder(LOCALE_OPKG_MANAGER, true, NULL, tmpOPKGManager, "-1", key, icon, NEUTRINO_ICON_MENUITEM_SOFTUPDATE);
 		                menu->addItem(menu_item, false);
 		                break;
 			
@@ -324,7 +327,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 				menu_item++;
 				menu_prev = SNeutrinoSettings::ITEM_PLUGIN;
 				keyhelper.get(&key, &icon, CRCInput::RC_blue);
-				menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, NULL, new CPluginList( LOCALE_USERMENU_ITEM_PLUGINS, CPlugins::P_TYPE_NEUTRINO | CPlugins::P_TYPE_TOOL | CPlugins::P_TYPE_SCRIPT ), "-1", key, NEUTRINO_ICON_MENUITEM_FEATURES);
+				menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, NULL, new CPluginList( LOCALE_USERMENU_ITEM_PLUGINS, CPlugins::P_TYPE_NEUTRINO | CPlugins::P_TYPE_TOOL | CPlugins::P_TYPE_SCRIPT ), "-1", key, icon, NEUTRINO_ICON_MENUITEM_FEATURES);
 				menu->addItem(menu_item, false);
 			}
 			break;
@@ -335,7 +338,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 				menu_item++;
 				menu_prev = SNeutrinoSettings::ITEM_GAME;
 				keyhelper.get(&key, &icon);
-				menu_item = new CMenuForwarder(LOCALE_MAINMENU_GAMES, true, NULL, new CPluginList(LOCALE_MAINMENU_GAMES, CPlugins::P_TYPE_GAME), "-1", key, NEUTRINO_ICON_MENUITEM_FEATURES);
+				menu_item = new CMenuForwarder(LOCALE_MAINMENU_GAMES, true, NULL, new CPluginList(LOCALE_MAINMENU_GAMES, CPlugins::P_TYPE_GAME), "-1", key, icon, NEUTRINO_ICON_MENUITEM_FEATURES);
 				menu->addItem(menu_item, false);
 			}
 			break;
@@ -351,7 +354,8 @@ bool CNeutrinoApp::showUserMenu(int button)
 	//
 	if( button == SNeutrinoSettings::BUTTON_BLUE) 
 	{
-		menu->integratePlugins(CPlugins::I_TYPE_USER);
+		keyhelper.get(&key, &icon);
+		menu->integratePlugins(CPlugins::I_TYPE_USER, key);
 	}
 
         if(menu_items > 1 ) 
