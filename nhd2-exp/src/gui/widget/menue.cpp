@@ -1751,14 +1751,13 @@ void CMenuWidget::paintItemIcon(int pos)
 		// check for minimum hight
 		if(full_height - hheight - fheight >= ITEM_ICON_H)
 		{ 
-			printf("CMenuWidgetExtended::paintItemIcon:%s\n", item->itemIcon.c_str()); 
 			frameBuffer->getIconSize(item->itemIcon.c_str(), &iw, &ih);
 
 			// refreshbox
 			frameBuffer->paintBoxRel(x + BORDER_LEFT + items_width + (full_width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H, COL_MENUCONTENTDARK_PLUS_0);
 
 			// icon
-			//frameBuffer->paintIcon(item->itemIcon.c_str(), x + BORDER_LEFT + items_width + (full_width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, 0, true, /*(iw > ITEM_ICON_W? ITEM_ICON_W : iw)*/ITEM_ICON_W, /*(ih > ITEM_ICON_H? ITEM_ICON_H : ih)*/ITEM_ICON_H);
+			//frameBuffer->paintIcon(item->itemIcon.c_str(), x + BORDER_LEFT + items_width + (full_width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, 0, true, ITEM_ICON_W, ITEM_ICON_H);
 
 			frameBuffer->DisplayImage(item->itemIcon.c_str(), x + BORDER_LEFT + items_width + (full_width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H);
 		}
@@ -1777,7 +1776,7 @@ void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigne
 		if ((g_PluginList->getIntegration(count) == integration) && !g_PluginList->isHidden(count))
 		{
 			//
-			IconName = NEUTRINO_ICON_PLUGIN;
+			IconName = NEUTRINO_ICON_MENUITEM_PLUGIN;
 
 			std::string icon("");
 			icon = g_PluginList->getIcon(count);
@@ -1892,7 +1891,10 @@ int CMenuForwarder::getHeight(void) const
 	if(widgetType == WIDGET_STANDARD)
 		CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iw, &ih);
 	else if(widgetType == WIDGET_EXTENDED)
+	{
 		CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iw, &ih);
+		return std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()) + 10;
+	}
 	else if(widgetType == WIDGET_CLASSIC)
 		CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &iw, &ih);
 	

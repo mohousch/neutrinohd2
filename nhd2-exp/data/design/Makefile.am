@@ -81,7 +81,7 @@ install_DATA += \
 
 # no preview
 install_DATA += \
-	nopreview.png
+	nopreview.png plugin.png
 	
 
 

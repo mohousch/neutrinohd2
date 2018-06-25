@@ -251,6 +251,7 @@
 #define NEUTRINO_ICON_MENUITEM_REBOOT			CONFIGDIR "/design/reboot.png"
 #define NEUTRINO_ICON_MENUITEM_SHUTDOWN			CONFIGDIR "/design/shutdown.png"
 
+#define NEUTRINO_ICON_MENUITEM_PLUGIN			CONFIGDIR "/design/plugin.png"
 #define NEUTRINO_ICON_MENUITEM_NOPREVIEW		CONFIGDIR "/design/nopreview.png"
 
 // misc

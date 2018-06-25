@@ -1982,6 +1982,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 	audioMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
 	audioMenu->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
 	audioMenu->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
+	audioMenu->addKey(CRCInput::RC_stop, this, CRCInput::getSpecialKeyName(CRCInput::RC_stop));
 
 	audioMenu->exec(NULL, "");
 	//audioMenu->hide();
@@ -2459,10 +2460,20 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_info")
 	{
 		g_EpgData->show(Channels[listMenu->getSelected()]->channel_id);
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_red")
 	{
 		g_EventList->exec(Channels[listMenu->getSelected()]->channel_id, Channels[listMenu->getSelected()]->getName());
+	}
+	else if(actionKey == "RC_stop")
+	{
+
+		if (CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
+		{
+			CAudioPlayer::getInstance()->stop();
+		}
+
 	}
 	else if(actionKey == "RC_green")
 	{
@@ -2494,6 +2505,8 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		selected = audioMenu->getSelected();
 		CAudiofileExt audiofile(audioFileList[audioMenu->getSelected()].Name, audioFileList[audioMenu->getSelected()].getExtension());
+
+		/*
 		CAudioPlayerGui tmpAudioPlayerGui;
 		tmpAudioPlayerGui.addToPlaylist(audiofile);
 
@@ -2506,6 +2519,13 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		tmpAudioPlayerGui.hidePlayList(true);
 		tmpAudioPlayerGui.exec(NULL, "urlplayback");
+		*/
+
+		CAudioPlayer::getInstance()->init();
+		CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, NeutrinoMessages::mode_audio);
+
+		CAudiofile mp3(audioFileList[audioMenu->getSelected()].Name, audioFileList[audioMenu->getSelected()].getExtension());
+		CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);		
 	}
 	else if(actionKey == "RC_setup1")
 	{
