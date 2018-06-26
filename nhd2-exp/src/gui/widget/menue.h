@@ -148,6 +148,10 @@ class CMenuItem
 		int itemType;
 		int widgetType;
 
+		//
+		int item_height;
+		int item_width;
+
 		CMenuItem()
 		{
 			x = -1;
@@ -501,6 +505,13 @@ class CMenuWidget : public CMenuTarget
 		bool disableMenuPos;
 		int widgetType;
 		bool WidgetChange;
+
+		// frame
+		fb_pixel_t backgroundColor;
+		int itemsPerX;
+		int itemsPerY;
+		int maxItemsPerPage;
+		int item_width;
 		
 	public:
 		CMenuWidget();
@@ -531,6 +542,10 @@ class CMenuWidget : public CMenuTarget
 		void paintItemIcon(int pos);
 
 		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = CRCInput::RC_nokey, bool enabled = true);
+
+		//
+		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
+		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 };
 
 /// CMenuFrameBox
