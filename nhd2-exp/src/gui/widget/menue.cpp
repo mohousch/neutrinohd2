@@ -1512,6 +1512,15 @@ void CMenuWidget::paint()
 
 	if(widgetType == WIDGET_FRAME)
 	{
+		itemHeightTotal = 0;
+		//item_height = 0;
+		//heightCurrPage = 0;
+		page_start.clear();
+		page_start.push_back(0);
+		total_pages = 1;
+		//heightFirstPage = 0;
+
+		//
 		x = g_settings.screen_StartX + 20;
 		y = g_settings.screen_StartY + 20;
 		width = g_settings.screen_EndX - g_settings.screen_StartX - 40;
@@ -1560,6 +1569,8 @@ void CMenuWidget::paint()
 
 			item->item_width = item_width;
 			item->item_height = item_height;
+
+			item->item_backgroundColor = backgroundColor;
 		} 
 
 		//item_start_y
@@ -2151,13 +2162,17 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 			//frameBuffer->DisplayImage(items[oldselected]->iconName, frameBox.iX + oldposx*frameBox.iWidth + 5, frameBox.iY + oldposy*frameBox.iHeight + 5, frameBox.iWidth - 10, frameBox.iHeight - 10);
 
 			// new itembox
-			frameBuffer->paintBoxRel(x, y, item_width, item_height, COL_MENUCONTENT_PLUS_0, RADIUS_SMALL, CORNER_BOTH);
+			frameBuffer->paintBoxRel(x, y, item_width, item_height, COL_MENUCONTENTSELECTED_PLUS_0, RADIUS_SMALL, CORNER_BOTH);
 
 			// new item
 			frameBuffer->DisplayImage(itemIcon, x + ICON_OFFSET, y + ICON_OFFSET, item_width - 10, item_height - 10);
 		}
 		else
+		{
+			frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor, RADIUS_SMALL, CORNER_BOTH);
+
 			frameBuffer->DisplayImage(itemIcon, x + ICON_OFFSET, y + ICON_OFFSET, item_width - 10, item_height - 10);
+		}
 
 		return y + item_height;
 	}

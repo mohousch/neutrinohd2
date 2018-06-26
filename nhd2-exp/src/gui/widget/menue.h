@@ -151,6 +151,7 @@ class CMenuItem
 		//
 		int item_height;
 		int item_width;
+		fb_pixel_t item_backgroundColor;
 
 		CMenuItem()
 		{
