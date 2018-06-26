@@ -633,11 +633,11 @@ void CTestMenu::testCListFrame()
 
 	// rowwidth
 	listFrameLines.rowWidth[0] = MAX_WINDOW_WIDTH / 20;
-	listFrameLines.rowWidth[1] = MAX_WINDOW_WIDTH / 6;
-	listFrameLines.rowWidth[2] = MAX_WINDOW_WIDTH / 6;
-	listFrameLines.rowWidth[3] = MAX_WINDOW_WIDTH / 6;
-	listFrameLines.rowWidth[4] = MAX_WINDOW_WIDTH / 6;
-	listFrameLines.rowWidth[5] = MAX_WINDOW_WIDTH / 6;
+	listFrameLines.rowWidth[1] = MAX_WINDOW_WIDTH / 4;
+	listFrameLines.rowWidth[2] = MAX_WINDOW_WIDTH / 12;
+	listFrameLines.rowWidth[3] = MAX_WINDOW_WIDTH / 8;
+	listFrameLines.rowWidth[4] = MAX_WINDOW_WIDTH / 5;
+	listFrameLines.rowWidth[5] = MAX_WINDOW_WIDTH / 10;
 
 	// headertitle
 	listFrameLines.lineHeader[0] = "Nr";
@@ -651,7 +651,7 @@ void CTestMenu::testCListFrame()
 	CListFrame * listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::TITLE | CListFrame::HEADER_LINE | CListFrame::SCROLL, &listFrameBox);
 
 	// title
-	listFrame->setTitle("listFrame", NEUTRINO_ICON_MOVIE);
+	listFrame->setTitle("listFrame (AudioPlayer)", NEUTRINO_ICON_MOVIE);
 	
 	// fill lineArrays list
 	CFileFilter fileFilter;
@@ -746,6 +746,11 @@ void CTestMenu::testCListFrame()
 	listFrame->showSelection(true);
 
 	CFrameBuffer::getInstance()->blit();
+
+	CAudioPlayer::getInstance()->init();
+	CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, NeutrinoMessages::mode_audio);
+	int state = CAudioPlayerGui::STOP;
+	int index = 0;
 	
 	// loop
 	neutrino_msg_t msg;
@@ -756,9 +761,19 @@ REPEAT:
 	while(1)
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+
+		if (CAudioPlayer::getInstance()->getState() == CBaseDec::STOP)
+			state = CAudioPlayerGui::STOP;
 		
 		if (msg == CRCInput::RC_home) 
 		{
+			//
+			if (CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
+			{
+				CAudioPlayer::getInstance()->stop();
+			}
+
+			//
 			for(int i = 0; i < MAX_ROWS; i++)
 			{
 				listFrameLines.lineArray[i].clear();
@@ -778,26 +793,49 @@ REPEAT:
 			listFrame->scrollLineUp(1);
 			listFrame->refresh();
 		}
+		else if(msg == CRCInput::RC_page_down)
+		{
+			listFrame->scrollPageDown(1);
+			listFrame->refresh();
+		}
+		else if(msg == CRCInput::RC_page_up)
+		{
+			listFrame->scrollPageUp(1);
+			listFrame->refresh();
+		}
 		else if(msg == CRCInput::RC_ok)
 		{
 			selected = listFrame->getSelectedLine();
-			CAudiofileExt audiofile(audioFileList[selected].Name, audioFileList[selected].getExtension());
-			CAudioPlayerGui tmpAudioPlayerGui;
 
-			// add selected file
-			tmpAudioPlayerGui.addToPlaylist(audiofile);
+			index = selected;
 
-			// add the whole list
-			for(int i = 0; i < audioFileList.size(); i++)
+			CAudiofile mp3(audioFileList[index].Name, audioFileList[index].getExtension());
+			CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
+
+			state = CAudioPlayerGui::PLAY;	
+
+			//goto REPEAT;
+		}
+		else if(msg == CRCInput::RC_stop)
+		{
+			if (CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
 			{
-				CAudiofileExt audiofile(audioFileList[i].Name, audioFileList[i].getExtension());
-				tmpAudioPlayerGui.addToPlaylist(audiofile);
+				CAudioPlayer::getInstance()->stop();
 			}
 
-			tmpAudioPlayerGui.hidePlayList(true);
-			tmpAudioPlayerGui.exec(NULL, "urlplayback");
+			state = CAudioPlayerGui::STOP;
+		}
+		else if(msg == CRCInput::RC_right)
+		{
+			//if (CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
+			{
+				CAudioPlayer::getInstance()->stop();
+				state = CAudioPlayerGui::STOP;
 
-			goto REPEAT;
+				CAudiofile mp3(audioFileList[index++].Name, audioFileList[index++].getExtension());
+				CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
+				state = CAudioPlayerGui::PLAY;
+			}
 		}
 
 		//listFrame->refresh();
@@ -1900,6 +1938,8 @@ void CTestMenu::testCMenuWidgetListBox1()
 	// itemBox
 	audioMenu = new CMenulistBox("CMenuListBox (audioplayer)", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
+	audioFileList.clear();
+
 	if(CFileHelpers::getInstance()->readDir(Path_local, &audioFileList, &fileFilter))
 	{
 		int count = 0;
@@ -2529,10 +2569,10 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_setup1")
 	{
-		CNFSSmallMenu * mountSmallMenu = new CNFSSmallMenu(true);
-		mountSmallMenu->exec(NULL, "");
-		delete mountSmallMenu;
-		mountSmallMenu = NULL;
+		CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
+		audioPlayerSettingsMenu->exec(this, "");
+		delete audioPlayerSettingsMenu;
+		audioPlayerSettingsMenu = NULL;	
 	}
 	else if(actionKey == "testtsbrowser")
 	{
