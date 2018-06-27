@@ -62,7 +62,6 @@ enum
 	ITEM_TYPE_SEPARATOR,
 	ITEM_TYPE_FORWARDER,
 	ITEM_TYPE_SELECTOR,
-	ITEM_TYPE_FORWARDER_EXTENDED,
 	ITEM_TYPE_FRAME_BOX,
 	ITEM_TYPE_LIST_BOX
 };
@@ -513,7 +512,6 @@ class CMenuWidget : public CMenuTarget
 		int itemsPerY;
 		int maxItemsPerPage;
 		int item_width;
-		int itemsPerPage;
 		
 	public:
 		CMenuWidget();

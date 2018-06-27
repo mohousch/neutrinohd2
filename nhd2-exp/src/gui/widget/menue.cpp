@@ -1064,7 +1064,6 @@ CMenuWidget::CMenuWidget()
 	itemsPerY = 3;
 
 	maxItemsPerPage = itemsPerX*itemsPerY;
-	itemsPerPage = 0;
 }
 
 CMenuWidget::CMenuWidget(const neutrino_locale_t Name, const std::string & Icon, const int mwidth, const int mheight)
@@ -1113,7 +1112,6 @@ void CMenuWidget::Init(const std::string & Icon, const int mwidth, const int mhe
 	itemsPerY = 3;
 
 	maxItemsPerPage = itemsPerX*itemsPerY;
-	itemsPerPage = 0;
 }
 
 void CMenuWidget::move(int xoff, int yoff)
@@ -1603,23 +1601,6 @@ void CMenuWidget::paint()
 
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8 );
 
-	height = wanted_height;
-
-	// recalculate height
-	if(height > ((int)frameBuffer->getScreenHeight() - 10))
-		height = frameBuffer->getScreenHeight() - 10;
-
-	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(l_name, true); // UTF-8
-
-	// recalculate width
-	if (neededWidth > width - 48) 
-	{
-		width = neededWidth + 49;
-		
-		if(width > (int)frameBuffer->getScreenWidth())
-			width = frameBuffer->getScreenWidth();
-	}
-
 	// widget type
 	if(WidgetChange)
 	{
@@ -1663,12 +1644,10 @@ void CMenuWidget::paint()
 
 		page_start.push_back(items.size());
 
-		printf("CMenuWidget::paint: items.size:%d total_pages:%d page_start.size:%d\n", items.size(), total_pages, page_start.size());
-
 		//
 		x = g_settings.screen_StartX + 20;
 		y = g_settings.screen_StartY + 20;
-		width = g_settings.screen_EndX - g_settings.screen_StartX - 40;
+		int width = g_settings.screen_EndX - g_settings.screen_StartX - 40;
 		height = g_settings.screen_EndY - g_settings.screen_StartY - 40;
 
 		full_width = width;
@@ -1717,6 +1696,23 @@ void CMenuWidget::paint()
 	}
 	else
 	{
+		height = wanted_height;
+
+		// recalculate height
+		if(height > ((int)frameBuffer->getScreenHeight() - 10))
+			height = frameBuffer->getScreenHeight() - 10;
+
+		int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(l_name, true); // UTF-8
+
+		// recalculate width
+		if (neededWidth > width - 48) 
+		{
+			width = neededWidth + 49;
+		
+			if(width > (int)frameBuffer->getScreenWidth())
+				width = frameBuffer->getScreenWidth();
+		}
+
 		// head height
 		int icon_head_w = 0;
 		int icon_head_h = 0;
@@ -1803,7 +1799,7 @@ void CMenuWidget::paint()
 			saveScreen();
 
 		// paint head
-		frameBuffer->paintBoxRel(x, y, full_width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
+		frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 		//paint icon
 		frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
@@ -1812,7 +1808,7 @@ void CMenuWidget::paint()
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 2*ICON_OFFSET, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_RIGHT - BORDER_RIGHT - icon_head_w - 2*ICON_OFFSET, l_name, COL_MENUHEAD, 0, true); // UTF-8
 	
 		//paint foot
-		frameBuffer->paintBoxRel(x, y + full_height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+		frameBuffer->paintBoxRel(x, y + height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 	
 		//item_start_y
 		item_start_y = y + hheight;
@@ -1837,11 +1833,7 @@ void CMenuWidget::paintItems()
 				current_page++;
 		}
 
-		printf("CMenuWidget::paintItems: selected:%d current_page:%d page_start[current_page]:%d\n", selected, current_page, (int)page_start[current_page]);
-
 		int count = (int)page_start[current_page];
-
-		printf("CMenuWidget::paintItems: count:%d\n", count);
 
 		for (unsigned int _y = 0; _y < itemsPerY; _y++)
 		{
@@ -1881,7 +1873,7 @@ void CMenuWidget::paintItems()
 	else
 	{
 		// items height
-		items_height = full_height - (hheight + fheight);
+		items_height = height - (hheight + fheight);
 	
 		// items width
 		sb_width = 0;
@@ -1892,10 +1884,10 @@ void CMenuWidget::paintItems()
 			sb_width = 0;
 	
 		////
-		items_width = full_width - sb_width;
+		items_width = width - sb_width;
 
 		if(widgetType == WIDGET_EXTENDED)
-			items_width = ((full_width - BORDER_LEFT - BORDER_RIGHT - sb_width)/3)*2;
+			items_width = ((width - BORDER_LEFT - BORDER_RIGHT - sb_width)/3)*2;
 	
 		// item not currently on screen
 		if (selected >= 0)
@@ -1908,7 +1900,7 @@ void CMenuWidget::paintItems()
 		}
 	
 		// paint items background
-		frameBuffer->paintBoxRel(x, item_start_y, full_width, items_height, COL_MENUCONTENTDARK_PLUS_0);
+		frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENTDARK_PLUS_0);
 	
 		// paint right scroll bar if we have more then one page
 		if(total_pages > 1)
@@ -2018,7 +2010,7 @@ void CMenuWidget::paintFootInfo(int pos)
 		item->getYPosition();
 
 		//paint foot
-		frameBuffer->paintBoxRel(x, y + full_height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+		frameBuffer->paintBoxRel(x, y + full_height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 		// info icon
 		int iw, ih;
@@ -2028,7 +2020,7 @@ void CMenuWidget::paintFootInfo(int pos)
 		// itemHelpText
 		if(!item->itemHelpText.empty())
 		{
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET, y + full_height - fheight + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), full_width - BORDER_LEFT - BORDER_RIGHT - iw, item->itemHelpText.c_str(), COL_MENUFOOT, 0, true); // UTF-8
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET, y + full_height - fheight + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - iw, item->itemHelpText.c_str(), COL_MENUFOOT, 0, true); // UTF-8
 		}
 	}
 }
@@ -2050,12 +2042,12 @@ void CMenuWidget::paintItemIcon(int pos)
 			frameBuffer->getIconSize(item->itemIcon.c_str(), &iw, &ih);
 
 			// refreshbox
-			frameBuffer->paintBoxRel(x + BORDER_LEFT + items_width + (full_width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H, COL_MENUCONTENTDARK_PLUS_0);
+			frameBuffer->paintBoxRel(x + BORDER_LEFT + items_width + (width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H, COL_MENUCONTENTDARK_PLUS_0);
 
 			// icon
 			//frameBuffer->paintIcon(item->itemIcon.c_str(), x + BORDER_LEFT + items_width + (full_width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, 0, true, ITEM_ICON_W, ITEM_ICON_H);
 
-			frameBuffer->DisplayImage(item->itemIcon.c_str(), x + BORDER_LEFT + items_width + (full_width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H);
+			frameBuffer->DisplayImage(item->itemIcon.c_str(), x + BORDER_LEFT + items_width + (width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H);
 		}
 	}
 }
