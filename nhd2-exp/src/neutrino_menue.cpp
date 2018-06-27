@@ -80,6 +80,7 @@ void CNeutrinoApp::mainMenu(void)
 	CMenuWidget * mainMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
 
 	mainMenu->enableWidgetChange();
+	mainMenu->setItemsPerPage(3, 2);
 	  
 	// tv modus
 	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE), true);

@@ -513,6 +513,7 @@ class CMenuWidget : public CMenuTarget
 		int itemsPerY;
 		int maxItemsPerPage;
 		int item_width;
+		int itemsPerPage;
 		
 	public:
 		CMenuWidget();
