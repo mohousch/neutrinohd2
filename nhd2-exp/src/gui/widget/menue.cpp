@@ -1343,6 +1343,42 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 							}
 						}
 					}
+					else
+					{
+						//search next / prev selectable item
+						//for (unsigned int count = 1; count < items.size(); count++) 		
+						{
+							pos = selected - itemsPerX;
+
+							if(pos < 0)
+								pos = selected;
+
+							dprintf(DEBUG_NORMAL, "CMenuWidget::exec: (items.size():%d) (total_pages:%d) (current_page:%d) (selected:%d) (pos:%d) (firstItemPos:%d)\n", items.size(), total_pages, current_page, selected, pos, (int)page_start[current_page]);
+
+							CMenuItem * item = items[pos];
+
+							if ( item->isSelectable() ) 
+							{
+								if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
+								{ 
+									// Item is currently on screen
+									//clear prev. selected
+									items[selected]->paint(false);
+									//select new
+									item->paint(true);
+									paintItemIcon(pos);
+									paintFootInfo(pos);
+									selected = pos;
+								} 
+								else 
+								{
+									selected = pos;
+									paintItems();
+								}
+								//break;
+							}
+						}
+					}
 					break;
 
 				case (CRCInput::RC_down) :
@@ -1375,6 +1411,45 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 								}
 								break;
 							}
+						}
+					}
+					else
+					{
+						//for (unsigned int count = 1; count < items.size(); count++) 
+						{
+
+							pos = selected + itemsPerX;
+
+							//FIXME:
+							if (pos >= items.size())
+								pos -= itemsPerX;
+
+
+							dprintf(DEBUG_NORMAL, "CMenuWidget::exec: (items.size():%d) (total_pages:%d) (current_page:%d) (selected:%d) (pos:%d) (firstItemPos:%d)\n", items.size(), total_pages, current_page, selected, pos, (int)page_start[current_page]);
+							//
+
+							CMenuItem * item = items[pos];
+
+							if ( item->isSelectable() ) 
+							{
+								if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
+								{ 
+									// Item is currently on screen
+									//clear prev. selected
+									items[selected]->paint(false);
+									//select new
+									item->paint(true);
+									paintItemIcon(pos);
+									paintFootInfo(pos);
+									selected = pos;
+								} 
+								else 
+								{
+									selected = pos;
+									paintItems();
+								}
+							}
+							//break;
 						}
 					}
 					break;
@@ -3023,12 +3098,12 @@ int CMenuFrameBox::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 				y = 0;
 			}
 
-			selected = selected = maxItemsPerPage*(currentPage - 1) + y*itemsPerX + x;
+			selected = maxItemsPerPage*(currentPage - 1) + y*itemsPerX + x;
 
 			if(selected > (items.size() - 1))
 			{
 				y = 0;
-				selected = selected = maxItemsPerPage*(currentPage - 1) + y*itemsPerX + x;	
+				selected = maxItemsPerPage*(currentPage - 1) + y*itemsPerX + x;	
 			}
 
 			dprintf(DEBUG_NORMAL, "CMenuFrameBox::exec: (items.size():%d) (totalPages:%d) (currentPage:%d) (itemsPerPage:%d) (selected:%d) (firstItemPos:%d)\n", items.size(), totalPages, currentPage, itemsPerPage, selected, firstItemPos);
