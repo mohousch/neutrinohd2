@@ -95,7 +95,7 @@ int CServiceSetup::exec(CMenuTarget* parent, const std::string& actionKey)
 // showmenu
 void CServiceSetup::showMenu(void)
 {
-	dprintf(DEBUG_NORMAL, "CServiceSetup::showMenuClassic\n");
+	dprintf(DEBUG_NORMAL, "CServiceSetup::showMenu\n");
 	
 	int shortcutService = 1;
 	

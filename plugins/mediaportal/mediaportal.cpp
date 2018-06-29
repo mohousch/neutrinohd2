@@ -111,22 +111,24 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 
 void CMediaPortal::showMenu(void)
 {
-	CMenuFrameBox* mediaPortal = new CMenuFrameBox("Media Portal", PLUGINDIR "/mediaportal/mp.png");
+	CMenuWidget* mediaPortal = new CMenuWidget("Media Portal", PLUGINDIR "/mediaportal/mp.png");
+
+	mediaPortal->enableWidgetChange();
 
 	// youtube
-	mediaPortal->addItem(new CMenuFrameBoxItem("You Tube", this, "youtube", PLUGINDIR "/youtube/youtube.png"));
+	mediaPortal->addItem(new CMenuForwarder("You Tube", true, NULL, this, "youtube", CRCInput::RC_nokey, NULL, PLUGINDIR "/youtube/youtube.png"));
 
 	// netzkino
-	mediaPortal->addItem(new CMenuFrameBoxItem("NetzKino", this, "netzkino", PLUGINDIR "/netzkino/netzkino.png"));
+	mediaPortal->addItem(new CMenuForwarder("NetzKino", true, NULL, this, "netzkino", CRCInput::RC_nokey, NULL, PLUGINDIR "/netzkino/netzkino.png"));
 
 	// icecast
-	mediaPortal->addItem(new CMenuFrameBoxItem("Ice Cast", this, "icecast", PLUGINDIR "/icecast/icecast.png"));
+	mediaPortal->addItem(new CMenuForwarder("Ice Cast", true, NULL, this, "icecast", CRCInput::RC_nokey, NULL, PLUGINDIR "/icecast/icecast.png"));
 
 	// ard
-	mediaPortal->addItem(new CMenuFrameBoxItem("ARD Mediathek", this, "ard", PLUGINDIR "/mediaportal/ard.png"));
+	mediaPortal->addItem(new CMenuForwarder("ARD Mediathek", true, NULL, this, "ard", CRCInput::RC_nokey, NULL, PLUGINDIR "/mediaportal/ard.png"));
 
 	// internetradio
-	mediaPortal->addItem(new CMenuFrameBoxItem("Internet Radio", this, "internetradio", PLUGINDIR "/internetradio/internetradio.png"));
+	mediaPortal->addItem(new CMenuForwarder("Internet Radio", true, NULL, this, "internetradio", CRCInput::RC_nokey, NULL,  PLUGINDIR "/internetradio/internetradio.png"));
 
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();

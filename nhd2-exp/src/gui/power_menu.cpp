@@ -89,7 +89,7 @@ int CPowerMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 // showmenu
 void CPowerMenu::showMenu(void)
 {
-	dprintf(DEBUG_NORMAL, "CPowerMenu::showMenuClassic:\n");
+	dprintf(DEBUG_NORMAL, "CPowerMenu::showMenu:\n");
 
 	int shortcut = 1;
 

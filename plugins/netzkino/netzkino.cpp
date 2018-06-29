@@ -182,11 +182,12 @@ void CNKMovies::showNKCategoriesMenu()
 	CMenuWidget mainMenu(LOCALE_NETZKINO, NEUTRINO_ICON_NETZKINO_SMALL);
 
 	mainMenu.disableMenuPosition();
+	mainMenu.enableWidgetChange();
 
 	// categories
 	for (unsigned i = 0; i < cats.size(); i++)
 	{
-		mainMenu.addItem(new CMenuForwarder(cats[i].title.c_str(), true, NULL, new CNKMovies(cNKFeedParser::CATEGORY, cats[i].id, cats[i].title), "", CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
+		mainMenu.addItem(new CMenuForwarder(cats[i].title.c_str(), true, NULL, new CNKMovies(cNKFeedParser::CATEGORY, cats[i].id, cats[i].title), "", CRCInput::RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
 	}
 
 	// search
@@ -196,9 +197,9 @@ void CNKMovies::showNKCategoriesMenu()
 
 	std::string search;
 	CStringInputSMS * stringInput = new CStringInputSMS(LOCALE_YT_SEARCH, &search);
-	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, search, stringInput, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
+	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, search, stringInput, NULL, CRCInput::RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
 
-	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, selector, to_string(cNKFeedParser::SEARCH).c_str(), CRCInput::RC_nokey, NEUTRINO_ICON_NETZKINO));
+	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, selector, to_string(cNKFeedParser::SEARCH).c_str(), CRCInput::RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
 
 	mainMenu.exec(NULL, "");
 	delete selector;

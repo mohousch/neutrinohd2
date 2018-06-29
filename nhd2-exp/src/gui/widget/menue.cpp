@@ -92,19 +92,19 @@ void CMenuItem::setActive(const bool Active)
 		paint();
 }
 
-void CMenuItem::setHelpText(const neutrino_locale_t ItemHelpText)
+void CMenuItem::setHelpText(const neutrino_locale_t Text)
 {
-	itemHelpText =  g_Locale->getText(ItemHelpText);
+	itemHelpText =  g_Locale->getText(Text);
 }
 
-void CMenuItem::setHelpText(const char* const ItemHelpText)
+void CMenuItem::setHelpText(const char* const Text)
 {
-	itemHelpText =  ItemHelpText;
+	itemHelpText =  Text;
 }
 
-void CMenuItem::setHelpText(const std::string& ItemHelpText)
+void CMenuItem::setHelpText(const std::string& Text)
 {
-	itemHelpText =  ItemHelpText;
+	itemHelpText =  Text;
 }
 
 // CMenuOptionChooser
@@ -1060,6 +1060,7 @@ CMenuWidget::CMenuWidget()
 
 	//
 	backgroundColor = COL_BACKGROUND;
+	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
 
@@ -1108,6 +1109,7 @@ void CMenuWidget::Init(const std::string & Icon, const int mwidth, const int mhe
 
 	//
 	backgroundColor = COL_BACKGROUND;
+	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
 
@@ -1223,6 +1225,44 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					break;
 					
 				case (CRCInput::RC_page_up) :
+					if(widgetType == WIDGET_FRAME)
+					{
+						printf("CMenuWidget:exec: (items.size:%d) (total_pages:%d) (current_page:%d) (page_start:%d) (page_start nextPage:%d)\n", items.size(), total_pages, current_page, (int)page_start[current_page], (int)page_start[current_page + 1]);
+
+						pos = (int) page_start[current_page + 1];
+						if(pos >= (int) items.size()) 
+							pos = items.size() - 1;
+
+						#if 0
+						for (unsigned int count = pos ; count < items.size(); count++) 
+						{
+							CMenuItem * item = items[pos];
+							if ( item->isSelectable() ) 
+							{
+								if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page])) 
+								{
+									items[selected]->paint( false );
+									item->paint( true );
+									paintItemIcon(pos);
+									paintFootInfo(pos);
+									selected = pos;
+								}
+								/* 
+								else 
+								{
+									selected = pos;
+									paintItems();
+								}
+								*/
+								break;
+							}
+							//pos++;
+						}
+						#endif
+						selected = pos;
+						paintItems();
+					}
+					else
 					{
 						if(current_page) 
 						{
@@ -1280,6 +1320,73 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					break;
 
 				case (CRCInput::RC_page_down) :
+					if(widgetType == WIDGET_FRAME)
+					{
+						printf("CMenuWidget:exec: (items.size:%d) (total_pages:%d) (current_page:%d) (page_start:%d) (page_start nextPage:%d)\n", items.size(), total_pages, current_page, (int)page_start[current_page], (int)page_start[current_page + 1]);
+
+						if(current_page) 
+						{
+							pos = (int) page_start[current_page] - 1;
+
+							#if 0
+							for (unsigned int count = pos ; count > 0; count--) 
+							{
+								CMenuItem * item = items[pos];
+								if ( item->isSelectable() ) 
+								{
+									if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page])) 
+									{
+										items[selected]->paint( false );
+										item->paint( true );
+										paintItemIcon(pos);
+										paintFootInfo(pos);
+										selected = pos;
+									}
+									/* 
+									else 
+									{
+										selected = pos;
+										paintItems();
+									}
+									*/
+									break;
+								}
+								//pos--;
+							}
+							#endif
+							selected = pos;
+							paintItems();
+						}
+						/* 
+						else 
+						{
+							pos = 0;
+							for (unsigned int count = 0; count < items.size(); count++) 
+							{
+								CMenuItem * item = items[pos];
+								if ( item->isSelectable() ) 
+								{
+									if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page])) 
+									{
+										items[selected]->paint( false );
+										item->paint( true );
+										paintItemIcon(pos);
+										paintFootInfo(pos);
+										selected = pos;
+									} 
+									else 
+									{
+										selected = pos;
+										paintItems();
+									}
+									break;
+								}
+								pos++;
+							}
+						}
+						*/
+					}
+					else
 					{
 						pos = (int) page_start[current_page + 1];
 						if(pos >= (int) items.size()) 
@@ -1310,7 +1417,34 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					break;
 					
 				case (CRCInput::RC_up) :
-					if(widgetType != WIDGET_FRAME)
+					if(widgetType == WIDGET_FRAME)
+					{
+						printf("CMenuWidget:exec: (items.size:%d) (total_pages:%d) (current_page:%d) (page_start:%d) (page_start nextPage:%d)\n", items.size(), total_pages, current_page, (int)page_start[current_page], (int)page_start[current_page + 1]);
+
+						pos = selected - itemsPerX;
+
+						if(pos < 0)
+							pos = selected;
+
+
+						CMenuItem * item = items[pos];
+
+						if ( item->isSelectable() ) 
+						{
+							if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
+							{ 
+								// Item is currently on screen
+								//clear prev. selected
+								items[selected]->paint(false);
+								//select new
+								item->paint(true);
+								paintItemIcon(pos);
+								paintFootInfo(pos);
+								selected = pos;
+							}
+						}
+					}
+					else
 					{
 						//search next / prev selectable item
 						for (unsigned int count = 1; count < items.size(); count++) 
@@ -1343,46 +1477,38 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 							}
 						}
 					}
-					else
-					{
-						//search next / prev selectable item
-						//for (unsigned int count = 1; count < items.size(); count++) 		
-						{
-							pos = selected - itemsPerX;
-
-							if(pos < 0)
-								pos = selected;
-
-							dprintf(DEBUG_NORMAL, "CMenuWidget::exec: (items.size():%d) (total_pages:%d) (current_page:%d) (selected:%d) (pos:%d) (firstItemPos:%d)\n", items.size(), total_pages, current_page, selected, pos, (int)page_start[current_page]);
-
-							CMenuItem * item = items[pos];
-
-							if ( item->isSelectable() ) 
-							{
-								if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
-								{ 
-									// Item is currently on screen
-									//clear prev. selected
-									items[selected]->paint(false);
-									//select new
-									item->paint(true);
-									paintItemIcon(pos);
-									paintFootInfo(pos);
-									selected = pos;
-								} 
-								else 
-								{
-									selected = pos;
-									paintItems();
-								}
-								//break;
-							}
-						}
-					}
+					
 					break;
 
 				case (CRCInput::RC_down) :
-					if(widgetType != WIDGET_FRAME)
+					if(widgetType == WIDGET_FRAME)
+					{
+						printf("CMenuWidget:exec: (items.size:%d) (total_pages:%d) (current_page:%d) (page_start:%d) (page_start nextPage:%d)\n", items.size(), total_pages, current_page, (int)page_start[current_page], (int)page_start[current_page + 1]);
+
+						pos = selected + itemsPerX;
+
+						//FIXME:
+						if (pos >= items.size())
+							pos -= itemsPerX;
+
+						CMenuItem * item = items[pos];
+
+						if ( item->isSelectable() ) 
+						{
+							if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
+							{ 
+								// Item is currently on screen
+								//clear prev. selected
+								items[selected]->paint(false);
+								//select new
+								item->paint(true);
+								paintItemIcon(pos);
+								paintFootInfo(pos);
+								selected = pos;
+							} 
+						}
+					}
+					else
 					{
 						//search next / prev selectable item
 						for (unsigned int count = 1; count < items.size(); count++) 
@@ -1413,57 +1539,26 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 							}
 						}
 					}
-					else
-					{
-						//for (unsigned int count = 1; count < items.size(); count++) 
-						{
-
-							pos = selected + itemsPerX;
-
-							//FIXME:
-							if (pos >= items.size())
-								pos -= itemsPerX;
-
-
-							dprintf(DEBUG_NORMAL, "CMenuWidget::exec: (items.size():%d) (total_pages:%d) (current_page:%d) (selected:%d) (pos:%d) (firstItemPos:%d)\n", items.size(), total_pages, current_page, selected, pos, (int)page_start[current_page]);
-							//
-
-							CMenuItem * item = items[pos];
-
-							if ( item->isSelectable() ) 
-							{
-								if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
-								{ 
-									// Item is currently on screen
-									//clear prev. selected
-									items[selected]->paint(false);
-									//select new
-									item->paint(true);
-									paintItemIcon(pos);
-									paintFootInfo(pos);
-									selected = pos;
-								} 
-								else 
-								{
-									selected = pos;
-									paintItems();
-								}
-							}
-							//break;
-						}
-					}
+					
 					break;
 					
 				case (CRCInput::RC_left):
 					//
 					if(widgetType == WIDGET_FRAME)
 					{
+						printf("CMenuWidget:exec: (items.size:%d) (total_pages:%d) (current_page:%d) (page_start:%d) (page_start nextPage:%d)\n", items.size(), total_pages, current_page, (int)page_start[current_page], (int)page_start[current_page + 1]);
+
 						//search next / prev selectable item
-						for (unsigned int count = 1; count < items.size(); count++) 
+						for (unsigned int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
 						{
-							pos = selected - count;
-							if ( pos < 0 )
-								pos += items.size();
+							//pos = selected - count;
+							pos = selected - 1;
+
+							// jump to page end
+							if(pos < (int)page_start[current_page])
+								pos = (int)page_start[current_page + 1] - 1;
+							//if ( pos < 0 )
+							//	pos += ((int)page_start[current_page + 1] - (int)page_start[current_page]);
 
 							CMenuItem * item = items[pos];
 
@@ -1479,12 +1574,8 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 									paintItemIcon(pos);
 									paintFootInfo(pos);
 									selected = pos;
-								} 
-								else 
-								{
-									selected = pos;
-									paintItems();
 								}
+								
 								break;
 							}
 						}
@@ -1504,10 +1595,19 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 				case (CRCInput::RC_right):
 					if(widgetType == WIDGET_FRAME)
 					{
+						printf("CMenuWidget:exec: (items.size:%d) (total_pages:%d) (current_page:%d) (page_start:%d) (page_start nextPage:%d) (selected:%d)\n", items.size(), total_pages, current_page, (int)page_start[current_page], (int)page_start[current_page + 1], selected);
+
 						//search next / prev selectable item
-						for (unsigned int count = 1; count < items.size(); count++) 
+						for (unsigned int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
 						{
-							pos = (selected + count)%items.size();
+							pos = /*(selected + count)%((int)page_start[current_page + 1])*/selected + 1;
+
+							
+							// jump to page start
+							if(pos == (int)page_start[current_page + 1])
+								pos = (int)page_start[current_page];
+
+							printf("POS:%d\n", pos);
 
 							CMenuItem * item = items[pos];
 
@@ -1523,12 +1623,8 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 									paintItemIcon(pos);
 									paintFootInfo(pos);
 									selected = pos;
-								} 
-								else 
-								{
-									selected = pos;
-									paintItems();
 								}
+								
 								break;
 							}
 						}
@@ -1704,20 +1800,16 @@ void CMenuWidget::paint()
 
 		for (unsigned int i = 0; i < items.size(); i++) 
 		{
-			// total pages
-			if( ((i + 1) == (maxItemsPerPage)*(total_pages + 1)))
+			if(i == maxItemsPerPage*total_pages)
 			{
+				page_start.push_back(i);
 				total_pages++;
-			}
-
-			// page start
-			if( ((i + 1) == (maxItemsPerPage)*total_pages))
-			{
-				page_start.push_back(i + 1);
 			}
 		}
 
 		page_start.push_back(items.size());
+
+		printf("CMenuWidget::paint: (items.size:%d) (total_pages:%d)\n", items.size(), total_pages);
 
 		//
 		x = g_settings.screen_StartX + 20;
@@ -1727,6 +1819,10 @@ void CMenuWidget::paint()
 
 		full_width = width;
 		full_height = height;
+
+		//
+		if(savescreen) 
+			saveScreen();
 
 		// paint background
 		frameBuffer->paintBoxRel(x, y, width, height, backgroundColor);
@@ -1759,8 +1855,8 @@ void CMenuWidget::paint()
 
 			item->item_width = item_width;
 			item->item_height = item_height;
-
 			item->item_backgroundColor = backgroundColor;
+			item->item_selectedColor = itemBoxColor;
 		} 
 
 		//item_start_y
@@ -1898,6 +1994,11 @@ void CMenuWidget::paintItems()
 {
 	if(widgetType == WIDGET_FRAME)
 	{
+		// paint background
+		int width = g_settings.screen_EndX - g_settings.screen_StartX - 40;
+
+		frameBuffer->paintBoxRel(x, y + hheight + 2*ICON_OFFSET, width, height - hheight - fheight - 2*ICON_OFFSET, backgroundColor);
+
 		// item not currently on screen
 		if (selected >= 0)
 		{
@@ -1908,7 +2009,15 @@ void CMenuWidget::paintItems()
 				current_page++;
 		}
 
+		for (unsigned int i = 0; i < items.size(); i++) 
+		{
+			CMenuItem * item = items[i];	
+			item->init(-1, 0, 0, 0);
+		}
+
 		int count = (int)page_start[current_page];
+
+		printf("CMenuWidget::painItems: (items.size:%d) (total_pages:%d) (current_page:%d) (page_start:%d) (page_start nextPage:%d) (count:%d)\n", items.size(), total_pages, current_page, (int)page_start[current_page], (int)page_start[current_page + 1], count);
 
 		for (unsigned int _y = 0; _y < itemsPerY; _y++)
 		{
@@ -1932,18 +2041,17 @@ void CMenuWidget::paintItems()
 
 				count++;
 
-				if (count == (int)page_start[current_page + 1])
+				if ( (count == (int)page_start[current_page + 1]) || (count == (int)items.size()))
 				{
 					break;
 				}
 			}
 
-			if (count == (int)page_start[current_page + 1])
+			if ( (count == (int)page_start[current_page + 1]) || (count == (int)items.size()))
 			{
 				break;
-			}			
+			}		
 		}
-	
 	}
 	else
 	{
@@ -1958,11 +2066,11 @@ void CMenuWidget::paintItems()
 		else
 			sb_width = 0;
 	
-		////
+		//
 		items_width = width - sb_width;
 
 		if(widgetType == WIDGET_EXTENDED)
-			items_width = ((width - BORDER_LEFT - BORDER_RIGHT - sb_width)/3)*2;
+			items_width = 2*(width/3) - sb_width;
 	
 		// item not currently on screen
 		if (selected >= 0)
@@ -1982,7 +2090,6 @@ void CMenuWidget::paintItems()
 		{
 			int sbh = ((items_height - 4) / total_pages);
 
-			//scrollbar
 			frameBuffer->paintBoxRel(x + items_width, item_start_y, SCROLLBAR_WIDTH, items_height, COL_MENUCONTENT_PLUS_1);
 
 			frameBuffer->paintBoxRel(x + items_width + 2, item_start_y + 2 + current_page * sbh, SCROLLBAR_WIDTH - 4, sbh, COL_MENUCONTENT_PLUS_3);
@@ -1990,12 +2097,7 @@ void CMenuWidget::paintItems()
 
 		// paint items
 		int ypos = item_start_y;
-
-		////
 		int xpos = x;
-
-		if(widgetType == WIDGET_EXTENDED)
-			xpos = x + BORDER_LEFT;
 	
 		for (unsigned int count = 0; count < items.size(); count++) 
 		{
@@ -2117,12 +2219,9 @@ void CMenuWidget::paintItemIcon(int pos)
 			frameBuffer->getIconSize(item->itemIcon.c_str(), &iw, &ih);
 
 			// refreshbox
-			frameBuffer->paintBoxRel(x + BORDER_LEFT + items_width + (width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H, COL_MENUCONTENTDARK_PLUS_0);
+			frameBuffer->paintBoxRel(x + items_width + (width - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H, COL_MENUCONTENTDARK_PLUS_0);
 
-			// icon
-			//frameBuffer->paintIcon(item->itemIcon.c_str(), x + BORDER_LEFT + items_width + (full_width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, 0, true, ITEM_ICON_W, ITEM_ICON_H);
-
-			frameBuffer->DisplayImage(item->itemIcon.c_str(), x + BORDER_LEFT + items_width + (width - BORDER_LEFT - items_width - ITEM_ICON_W)/2, y + (height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H);
+			frameBuffer->DisplayImage(item->itemIcon.c_str(), x + items_width + (width - items_width - ITEM_ICON_W)/2, y + (height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H);
 		}
 	}
 }
@@ -2336,7 +2435,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		//
 		if(selected)
 		{
-			frameBuffer->paintBoxRel(x, y, item_width, item_height, COL_MENUCONTENTSELECTED_PLUS_0, RADIUS_SMALL, CORNER_BOTH);
+			frameBuffer->paintBoxRel(x, y, item_width, item_height, item_selectedColor, RADIUS_SMALL, CORNER_BOTH);
 
 		}
 
@@ -2386,8 +2485,6 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	
 			if (!iconName.empty())
 			{
-				//frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-		
 				frameBuffer->paintIcon(iconName, x + BORDER_LEFT, y + ((height - icon_h)/2) );
 			}
 			else if (CRCInput::isNumeric(directKey))
@@ -2414,17 +2511,13 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 
 			if (!itemIcon.empty())
 			{
-				frameBuffer->getIconSize(itemIcon.c_str(), &icon_w, &icon_h);
-		
-				frameBuffer->paintIcon(itemIcon, x + BORDER_LEFT, y + ((height - icon_h)/2) );
+				//frameBuffer->paintIcon(itemIcon, x + BORDER_LEFT, y + ((height - icon_h)/2) );
+				frameBuffer->DisplayImage(itemIcon.c_str(), x + BORDER_LEFT, y + ((height - icon_h)/2), icon_w, icon_h);
 			}
 		}
 	
 		//local-text
-		//if(widgetType == WIDGET_EXTENDED)
-		//	stringstartposX = x + BORDER_LEFT;
-		//else
-			stringstartposX = x + BORDER_LEFT + icon_w + ICON_OFFSET;
+		stringstartposX = x + BORDER_LEFT + icon_w + ICON_OFFSET;
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_RIGHT - icon_w - (stringstartposX - x), l_text, color, 0, true); // UTF-8
 

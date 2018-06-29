@@ -120,7 +120,7 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 // showmenu
 void COSDSettings::showMenu(void)
 {
-	dprintf(DEBUG_NORMAL, "COSDSettings::showMenuClassic:\n");
+	dprintf(DEBUG_NORMAL, "COSDSettings::showMenu:\n");
 	
 	int shortcutOSD = 1;
 	

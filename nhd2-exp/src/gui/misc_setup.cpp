@@ -222,7 +222,7 @@ int CMiscSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 // showmenu
 void CMiscSettings::showMenu(void)
 {
-	dprintf(DEBUG_NORMAL, "CMiscSettings::showMenuClassic:\n");
+	dprintf(DEBUG_NORMAL, "CMiscSettings::showMenu:\n");
 	
 	int shortcutMiscSettings = 1;
 

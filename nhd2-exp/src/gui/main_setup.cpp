@@ -80,7 +80,7 @@ int CMainSetup::exec(CMenuTarget* parent, const std::string& actionKey)
 // showmenu
 void CMainSetup::showMenu(void)
 {
-	dprintf(DEBUG_NORMAL, "CMainSetup::showMenuClassic:\n");
+	dprintf(DEBUG_NORMAL, "CMainSetup::showMenu:\n");
 	
 	int shortcutMainSettings = 1;
 

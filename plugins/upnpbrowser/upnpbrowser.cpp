@@ -214,8 +214,8 @@ std::vector<UPnPEntry> *CUpnpBrowserGui::decodeResult(std::string result)
 		if (!strcmp(node->GetType(), "container"))
 		{
 			std::vector<UPnPResource> resources;
-			isdir=true;
-			for (snode=node->GetChild(); snode; snode=snode->GetNext())
+			isdir = true;
+			for (snode = node->GetChild(); snode; snode = snode->GetNext())
 			{
 				type=snode->GetType();
 				p = strchr(type,':');

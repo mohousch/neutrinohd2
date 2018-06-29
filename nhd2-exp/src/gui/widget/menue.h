@@ -151,6 +151,7 @@ class CMenuItem
 		int item_height;
 		int item_width;
 		fb_pixel_t item_backgroundColor;
+		fb_pixel_t item_selectedColor;
 
 		CMenuItem()
 		{
@@ -181,21 +182,33 @@ class CMenuItem
 		virtual int getItemType(){ return itemType;};
 
 		//
-		virtual void setFootInfo(const char* const Info1, const char*  const OptionInfo1, const char* const Info2, const char* const OptionInfo2)
+		virtual void setInfo1(const char* const text)
 		{
-			info1 = Info1;
-			option_info1 = OptionInfo1;
-			info2 = Info2;
-			option_info2 = OptionInfo2;
+			info1 = text;
+		};
+
+		virtual void setInfo2(const char* const text)
+		{
+			info2 = text;
+		};
+
+		virtual void setOptionInfo1(const char* const text)
+		{
+			option_info1 = text;
+		};
+
+		virtual void setOptionInfo2(const char* const text)
+		{
+			option_info2 = text;
 		};
 
 		//
-		virtual void setHelpText(const neutrino_locale_t ItemHelpText);
-		virtual void setHelpText(const char* const ItemHelpText);
-		virtual void setHelpText(const std::string& ItemHelpText);
+		virtual void setHelpText(const neutrino_locale_t Text);
+		virtual void setHelpText(const char* const Text);
+		virtual void setHelpText(const std::string& Text);
 
 		//
-		virtual void setItemIcon(const char* const ItemIcon){itemIcon = ItemIcon;};
+		virtual void setItemIcon(const char* const icon){itemIcon = icon;};
 };
 
 // CAbstractMenuOptionChooser
@@ -503,11 +516,14 @@ class CMenuWidget : public CMenuTarget
 		int listmaxshow;
 
 		bool disableMenuPos;
+
+		//
 		int widgetType;
 		bool WidgetChange;
 
 		// frame
 		fb_pixel_t backgroundColor;
+		fb_pixel_t itemBoxColor;
 		int itemsPerX;
 		int itemsPerY;
 		int maxItemsPerPage;
@@ -535,16 +551,18 @@ class CMenuWidget : public CMenuTarget
 		void enableSaveScreen(bool enable);
 		void disableMenuPosition(void) {disableMenuPos = true;};
 
-		void enableWidgetChange(void){WidgetChange = true;};
-		void setWidgetType(int type){widgetType = type;};
-
 		void paintFootInfo(int pos);
 		void paintItemIcon(int pos);
 
 		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = CRCInput::RC_nokey, bool enabled = true);
 
 		//
+		void enableWidgetChange(void){WidgetChange = true;};
+		void setWidgetType(int type){widgetType = type;};
+
+		//
 		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
+		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 };
 
