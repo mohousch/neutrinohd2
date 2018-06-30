@@ -60,7 +60,8 @@ class CWebTV : public CMenuTarget
 		// bouquets
 		std::string title;
 
-		CMenulistBox* webTVlistMenu;
+		ClistBox* webTVlistMenu;
+		ClistBoxItem* m;
 
 		int tuned;
 		

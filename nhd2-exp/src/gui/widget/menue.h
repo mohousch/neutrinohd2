@@ -139,6 +139,7 @@ class CMenuItem
 		neutrino_msg_t msg;
 		bool can_arrow;
 		std::string iconName;
+		std::string optionInfo;
 		std::string info1, option_info1;
 		std::string info2, option_info2;
 		std::string itemName;
@@ -152,6 +153,12 @@ class CMenuItem
 		int item_width;
 		fb_pixel_t item_backgroundColor;
 		fb_pixel_t item_selectedColor;
+
+		//
+		std::string icon1;
+		std::string icon2;
+		int number;
+		int runningPercent;
 
 		CMenuItem()
 		{
@@ -182,25 +189,14 @@ class CMenuItem
 		virtual int getItemType(){ return itemType;};
 
 		//
-		virtual void setInfo1(const char* const text)
-		{
-			info1 = text;
-		};
+		virtual void setOptionInfo(const char* text){optionInfo = text;};
+		virtual void setInfo1(const char* const text){info1 = text;};
 
-		virtual void setInfo2(const char* const text)
-		{
-			info2 = text;
-		};
+		virtual void setInfo2(const char* const text){info2 = text;};
 
-		virtual void setOptionInfo1(const char* const text)
-		{
-			option_info1 = text;
-		};
+		virtual void setOptionInfo1(const char* const text){option_info1 = text;};
 
-		virtual void setOptionInfo2(const char* const text)
-		{
-			option_info2 = text;
-		};
+		virtual void setOptionInfo2(const char* const text){option_info2 = text;};
 
 		//
 		virtual void setHelpText(const neutrino_locale_t Text);
@@ -209,6 +205,12 @@ class CMenuItem
 
 		//
 		virtual void setItemIcon(const char* const icon){itemIcon = icon;};
+
+		//
+		virtual void setIcon1(const char* const icon){icon1 = icon;};
+		virtual void setIcon2(const char* const icon){icon2 = icon;};
+		virtual void setNumber(int nr){number = nr;};
+		virtual void setPercent(int percent = -1){runningPercent = percent;};
 };
 
 // CAbstractMenuOptionChooser
@@ -560,7 +562,7 @@ class CMenuWidget : public CMenuTarget
 		void enableWidgetChange(void){WidgetChange = true;};
 		void setWidgetType(int type){widgetType = type;};
 
-		//
+		// Frame
 		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
 		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
@@ -672,7 +674,7 @@ class CMenuFrameBoxItem : public CMenuItem
 };
 
 /// CMenulistBox
-class CMenulistBox : public CMenuTarget
+class ClistBox : public CMenuTarget
 {
 	protected:
 		//
@@ -751,13 +753,24 @@ class CMenulistBox : public CMenuTarget
 
 		//
 		unsigned long long int timeout;
+
+		//
+		int widgetType;
+		bool WidgetChange;
+
+		// frame
+		fb_pixel_t backgroundColor;
+		fb_pixel_t itemBoxColor;
+		int itemsPerX;
+		int itemsPerY;
+		int maxItemsPerPage;
 		
 	public:
-		CMenulistBox();
-		CMenulistBox(const char * const Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
-		CMenulistBox(const neutrino_locale_t Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
+		ClistBox();
+		ClistBox(const char * const Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
+		ClistBox(const neutrino_locale_t Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
 		
-		~CMenulistBox();
+		~ClistBox();
 
 		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
 		bool hasItem();
@@ -791,13 +804,25 @@ class CMenulistBox : public CMenuTarget
 		void setTimeOut(int to = 0){timeout = to;};
 		void setFootInfoHeight(int height = 70);
 		void resizeFrames();
+
+		//
+		void enableWidgetChange(void){WidgetChange = true;};
+		void setWidgetType(int type){widgetType = type;};
+
+		// Frame
+		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
+		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
+		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 };
 
 // CMenulistBoxItem
-class CMenulistBoxItem : public CMenuItem
+class ClistBoxItem : public CMenuItem
 {
 	CMenuTarget * jumpTarget;
 	std::string actionKey;
+
+	const char * option;
+	const std::string * option_string;
 
 	protected:
 		//
@@ -805,19 +830,12 @@ class CMenulistBoxItem : public CMenuItem
 		std::string textString;
 
 		//
-		int number;
-		int runningPercent;
-		std::string description;
-		std::string icon1, icon2;
-		std::string optionText1, optionText2;
-
-		//
 		virtual const char * getName(void);
+		virtual const char * getOption(void);
 	public:
+		ClistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const Icon = NULL, const char* const ItemIcon = NULL);
 
-		CMenulistBoxItem(const neutrino_locale_t Text, const bool Active = true, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const OptionText1 = NULL, const char* const OptionText2 = NULL, const char* const Info1 = NULL, const char* const OptionInfo1 = NULL, const char* const Info2 = NULL, const char* const OptionInfo2 = NULL);
-
-		CMenulistBoxItem(const char * const Text, const bool Active = true, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const char * const IconName = NULL, const int Num = 0, const int Percent = -1, const char* const Descr = NULL, const char* const Icon1 = NULL, const char* const Icon2 = NULL, const char* const OptionText1 = NULL, const char* const OptionText2 = NULL, const char* const Info1 = NULL, const char* const OptionInfo1 = NULL, const char* const Info2 = NULL, const char* const OptionInfo2 = NULL);
+		ClistBoxItem(const char* const Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const IconName = NULL, const char* const ItemIcon = NULL);
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;

@@ -30,12 +30,12 @@ class CTestMenu : public CMenuTarget
 	private:
 		// variables
 		CFrameBuffer* frameBuffer;
-		CMenulistBox* listMenu;
+		ClistBox* listMenu;
 		ZapitChannelList Channels;
 		int selected;
 		bool displayNext;
 		//
-		CMenulistBox* audioMenu;
+		ClistBox* audioMenu;
 		CFileList audioFileList;
 
 		// widgets
@@ -1777,7 +1777,9 @@ void CTestMenu::testCMenuWidgetListBox()
 	}
 
 	// itemBox
-	listMenu = new CMenulistBox(LOCALE_CHANNELLIST_HEAD, "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	listMenu = new ClistBox(LOCALE_CHANNELLIST_HEAD, "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+
+	ClistBoxItem *mc;
 
 	std::string title;
 	time_t jetzt = time(NULL);
@@ -1835,7 +1837,18 @@ void CTestMenu::testCMenuWidgetListBox()
 		}
 
 		// a la Channelist
-		listMenu->addItem(new CMenulistBoxItem(Channels[i]->getName().c_str(), true, this, "zapto", NULL, (i +1), runningPercent, p_event->description.c_str(), Channels[i]->isHD() ? NEUTRINO_ICON_HD : "", Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "", "", "", p_event->description.c_str(), cSeit, p_event->text.c_str(), cNoch));
+		mc = new ClistBoxItem(Channels[i]->getName().c_str(), true, p_event->description.c_str(), this, "zapto");
+
+		mc->setNumber(i + 1);
+		mc->setPercent(runningPercent);
+		mc->setIcon1(Channels[i]->isHD() ? NEUTRINO_ICON_HD : "");
+		mc->setIcon2(Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "");
+		mc->setInfo1(p_event->description.c_str());
+		mc->setOptionInfo1(cSeit);
+		mc->setInfo2(p_event->text.c_str());
+		mc->setOptionInfo2(cNoch);
+
+		listMenu->addItem(mc);
 	}
 
 	listMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
@@ -1932,11 +1945,13 @@ void CTestMenu::testCMenuWidgetListBox1()
 	fileFilter.addFilter("aac");
 	fileFilter.addFilter("dts");
 	fileFilter.addFilter("m4a");
+
+	ClistBoxItem * ma;
 	
 	std::string Path_local = g_settings.network_nfs_audioplayerdir;
 
 	// itemBox
-	audioMenu = new CMenulistBox("CMenuListBox (audioplayer)", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	audioMenu = new ClistBox("ClistBox (audioplayer)", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	audioFileList.clear();
 
@@ -1998,10 +2013,22 @@ void CTestMenu::testCMenuWidgetListBox1()
 					snprintf(duration, 8, "(%ld:%02ld)", audiofile.MetaData.total_time / 60, audiofile.MetaData.total_time % 60);
 				}
 
-				audioMenu->addItem(new CMenulistBoxItem(title.c_str(), true, this, "play", "", count, -1, "", "", "", duration, "", title.c_str(), genre.c_str(), artist.c_str(), date.c_str()));
+				//
+				ma = new ClistBoxItem(title.c_str(), true, NULL, this, "play");
+			
+				ma->setOptionInfo(duration);
+				ma->setNumber(count);
+				ma->setInfo1(title.c_str());
+				ma->setOptionInfo1(genre.c_str());
+				ma->setInfo2(artist.c_str());
+				ma->setOptionInfo2(date.c_str());
+
+				audioMenu->addItem(ma);
 			}
 		}
 	}
+
+	audioMenu->move(0, 40);
 
 	//audioMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	audioMenu->setSelected(selected);
@@ -2627,8 +2654,8 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("KeyChooser", true, NULL, this, "keychooser"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	mainMenu->addItem(new CMenuForwarder("CMenuFrameBox", true, NULL, this, "framebox"));
-	mainMenu->addItem(new CMenuForwarder("CMenulistBox(channellist)", true, NULL, this, "menuwidgetlistbox"));
-	mainMenu->addItem(new CMenuForwarder("CMenulistBox(Audioplayer)", true, NULL, this, "menuwidgetlistbox1"));
+	mainMenu->addItem(new CMenuForwarder("ClistBox(channellist)", true, NULL, this, "menuwidgetlistbox"));
+	mainMenu->addItem(new CMenuForwarder("ClistBox(Audioplayer)", true, NULL, this, "menuwidgetlistbox1"));
 	mainMenu->addItem(new CMenuForwarder("CMenuWidget", true, NULL, this, "testmenuwidget"));
 	
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );

@@ -638,13 +638,20 @@ void CWebTV::show(bool reload, bool reinit)
 		loadChannels();
 
 	//
-	webTVlistMenu = new CMenulistBox(title.c_str(), NEUTRINO_ICON_WEBTV_SMALL, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	webTVlistMenu = new ClistBox(title.c_str(), NEUTRINO_ICON_WEBTV_SMALL, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
 	if(channels.size())
 	{
 		for(unsigned int i = 0; i< channels.size(); i++)
 		{
-			webTVlistMenu->addItem(new CMenulistBoxItem(channels[i]->title.c_str(), true, this, "zapit", NULL, (i +1), file_prozent, channels[i]->description.c_str(), "", "", "", "", channels[i]->title.c_str(), "", channels[i]->description.c_str(), ""));
+			m = new ClistBoxItem(channels[i]->title.c_str(), true, channels[i]->description.c_str(), this, "zapit");
+
+			m->setNumber(i + 1);
+			m->setInfo1(title.c_str());
+			m->setOptionInfo1(channels[i]->description.c_str());
+
+			webTVlistMenu->addItem(m);
+			//webTVlistMenu->addItem(new CMenulistBoxItem(channels[i]->title.c_str(), true, this, "zapit", NULL, (i +1), file_prozent, channels[i]->description.c_str(), "", "", "", "", channels[i]->title.c_str(), "", channels[i]->description.c_str(), ""));
 		}
 	}
 
