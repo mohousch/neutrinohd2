@@ -1911,7 +1911,7 @@ void CTestMenu::testClistBoxnLines()
 		IconName += g_PluginList->getIcon(count);
 
 			
-		mc = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), !IconName.empty()? IconName.c_str() : NEUTRINO_ICON_PLUGIN);
+		mc = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), (g_PluginList->getIcon(count) != NULL)? IconName.c_str() : NEUTRINO_ICON_PLUGIN);
 
 		mc->setInfo1(g_PluginList->getDescription(count).c_str());
 
@@ -2187,6 +2187,7 @@ void CTestMenu::testCMenuWidget()
 
 void CTestMenu::testFrameBox()
 {
+	/*
 	CMenuFrameBox* mainMenu = new CMenuFrameBox(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
 
 	mainMenu->setItemsPerPage(4, 3);
@@ -2225,8 +2226,47 @@ void CTestMenu::testFrameBox()
 
 	//box info
 	mainMenu->addItem( new CMenuFrameBoxItem(LOCALE_DBOXINFO, new CDBoxInfoWidget, NULL, NEUTRINO_ICON_MENUITEM_BOXINFO));
+	*/
 
-	mainMenu->integratePlugins(CPlugins::I_TYPE_MAIN);
+	ClistBox* mainMenu = new ClistBox(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
+
+	mainMenu->setWidgetType(WIDGET_FRAME);
+	mainMenu->setItemsPerPage(4, 3);
+
+	// tv
+	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_TVMODE, true, NULL, CNeutrinoApp::getInstance(), "tv", NULL, NEUTRINO_ICON_MENUITEM_TV), true);
+
+	// radio
+	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_RADIOMODE, true, NULL, CNeutrinoApp::getInstance(), "radio", NULL, NEUTRINO_ICON_MENUITEM_RADIO));
+
+	// webtv
+	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_WEBTVMODE, true, NULL, CNeutrinoApp::getInstance(), "webtv", NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+
+#if defined (ENABLE_SCART)
+	// scart
+	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_SCARTMODE, true, NULL, CNeutrinoApp::getInstance(), "scart", NULL, NEUTRINO_ICON_MENUITEM_SCART));
+#endif
+
+	// mediaplayer
+	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL, NULL, NEUTRINO_ICON_MENUITEM_MEDIAPLAYER));
+	
+	// main setting menu
+	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL, NULL, NEUTRINO_ICON_MENUITEM_SETTINGS));
+
+	// service
+	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL, NULL, NEUTRINO_ICON_MENUITEM_SERVICE));
+	
+	// timerlist
+	mainMenu->addItem(new ClistBoxItem(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, NULL, NEUTRINO_ICON_MENUITEM_TIMERLIST));
+	
+	// features
+	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_FEATURES, true, NULL, CNeutrinoApp::getInstance(), "features", NULL, NEUTRINO_ICON_MENUITEM_FEATURES));
+
+	// power menu
+	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, NULL, NEUTRINO_ICON_MENUITEM_POWERMENU));
+
+	//box info
+	mainMenu->addItem( new ClistBoxItem(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, NULL, NEUTRINO_ICON_MENUITEM_BOXINFO));
 
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();

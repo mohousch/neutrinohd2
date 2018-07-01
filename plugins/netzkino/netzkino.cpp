@@ -80,13 +80,17 @@ void CNKMovies::showNKMoviesMenu()
 	title += ": ";
 	title += caption;
 
-	moviesMenu = new CMenuFrameBox(title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL);
+	moviesMenu = new /*CMenuFrameBox*/ClistBox(title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL);
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		moviesMenu->addItem(new CMenuFrameBoxItem(m_vMovieInfo[i].epgTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
+		//moviesMenu->addItem(new CMenuFrameBoxItem(m_vMovieInfo[i].epgTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
+
+		//
+		moviesMenu->addItem(new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "play", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
 	}
 
+	moviesMenu->setWidgetType(WIDGET_FRAME);
 	moviesMenu->setItemsPerPage(6, 2);
 	moviesMenu->setItemBoxColor(COL_YELLOW);
 	moviesMenu->setHeaderButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
