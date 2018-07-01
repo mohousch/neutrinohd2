@@ -38,6 +38,9 @@ class CTestMenu : public CMenuTarget
 		ClistBox* audioMenu;
 		CFileList audioFileList;
 
+		//
+		ClistBox* plist;
+
 		// widgets
 		void testCBox();
 		void testCIcon();
@@ -68,6 +71,7 @@ class CTestMenu : public CMenuTarget
 		void testCMenuWidgetListBox1();
 		void testFrameBox();
 		void testCMenuWidget();
+		void testClistBoxnLines();
 	
 		// mediapalyers
 		void testAudioPlayer();
@@ -1536,7 +1540,7 @@ void CTestMenu::testUmountGUI()
 
 void CTestMenu::testMountSmallMenu()
 {
-	CNFSSmallMenu * mountSmallMenu = new CNFSSmallMenu(true);
+	CNFSSmallMenu * mountSmallMenu = new CNFSSmallMenu();
 	mountSmallMenu->exec(NULL, "");
 	delete mountSmallMenu;
 	mountSmallMenu = NULL;
@@ -1851,6 +1855,7 @@ void CTestMenu::testCMenuWidgetListBox()
 		listMenu->addItem(mc);
 	}
 
+	listMenu->enableSaveScreen();
 	listMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	listMenu->setSelected(selected);
 
@@ -1874,6 +1879,72 @@ void CTestMenu::testCMenuWidgetListBox()
 	//listMenu->hide();
 	delete listMenu;
 	listMenu = NULL;
+}
+
+#define NUM_LIST_BUTTONS 2
+struct button_label CPluginListButtons[NUM_LIST_BUTTONS] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_PLUGINLIST_REMOVE_PLUGIN },
+	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_PLUGINLIST_START_PLUGIN }
+};
+
+void CTestMenu::testClistBoxnLines()
+{
+	dprintf(DEBUG_NORMAL, "CTestMenu::testClistBoxnLines\n");
+
+
+	// itemBox
+	plist = new ClistBox("ClistBox (plugins list", NEUTRINO_ICON_SHELL, MENU_WIDTH, h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+
+	plist->enableMenuPosition();
+
+	ClistBoxItem *mc;
+
+	//
+	for(unsigned int count = 0; count < (unsigned int)g_PluginList->getNumberOfPlugins(); count++)
+	{
+		std::string IconName = "";
+		IconName = PLUGINDIR;
+		IconName += "/";
+		IconName += g_PluginList->getFileName(count);
+		IconName += "/";
+		IconName += g_PluginList->getIcon(count);
+
+			
+		mc = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), !IconName.empty()? IconName.c_str() : NEUTRINO_ICON_PLUGIN);
+
+		mc->setInfo1(g_PluginList->getDescription(count).c_str());
+
+		mc->setnLinesItem();
+		mc->switchnLinesItem();
+
+		plist->addItem(mc);
+	}
+
+	plist->enablePaintDate();
+	plist->enableFootInfo();
+	plist->setFootInfoHeight(40); 
+
+	//plist->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
+	plist->setSelected(selected);
+
+	//plist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS);
+
+	// head
+	plist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
+	//plist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
+
+	// footer
+	plist->addKey(CRCInput::RC_red, this, /*CRCInput::getSpecialKeyName(CRCInput::RC_red)*/"pred");
+	plist->addKey(CRCInput::RC_green, this, /*CRCInput::getSpecialKeyName(CRCInput::RC_green)*/"pgreen");
+	//plist->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
+	//plist->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
+
+	plist->exec(NULL, "");
+	//plist->hide();
+	delete plist;
+	plist = NULL;
 }
 
 #define HEAD1_BUTTONS_COUNT	1
@@ -2018,6 +2089,8 @@ void CTestMenu::testCMenuWidgetListBox1()
 			
 				ma->setOptionInfo(duration);
 				ma->setNumber(count);
+
+				// details Box
 				ma->setInfo1(title.c_str());
 				ma->setOptionInfo1(genre.c_str());
 				ma->setInfo2(artist.c_str());
@@ -2065,6 +2138,7 @@ void CTestMenu::testCMenuWidget()
 
 	CMenuWidget* mainMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
 
+	mainMenu->enableMenuPosition();
 	mainMenu->enableWidgetChange();
 	  
 	// tv modus
@@ -2613,6 +2687,15 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCMenuWidget();
 	}
+	else if(actionKey == "listboxnlines")
+	{
+		testClistBoxnLines();
+	}
+	else if(actionKey == "pred")
+	{
+		g_PluginList->removePlugin(plist->getSelected());
+		return menu_return::RETURN_EXIT_ALL;
+	}
 	else if(actionKey == "spinner")
 	{
 		spinner();
@@ -2625,6 +2708,8 @@ void CTestMenu::showTestMenu()
 {
 	/// menue.cpp
 	CMenuWidget * mainMenu = new CMenuWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
+
+	mainMenu->enableMenuPosition();
 	
 	mainMenu->addItem(new CMenuForwarder("CBox", true, NULL, this, "box"));
 	mainMenu->addItem(new CMenuForwarder("CIcon", true, NULL, this, "icon"));
@@ -2656,6 +2741,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CMenuFrameBox", true, NULL, this, "framebox"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(channellist)", true, NULL, this, "menuwidgetlistbox"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(Audioplayer)", true, NULL, this, "menuwidgetlistbox1"));
+	mainMenu->addItem(new CMenuForwarder("ClistBox(plugins list)", true, NULL, this, "listboxnlines"));
 	mainMenu->addItem(new CMenuForwarder("CMenuWidget", true, NULL, this, "testmenuwidget"));
 	
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );

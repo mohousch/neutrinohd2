@@ -452,7 +452,6 @@ void CMoviePlayerGui::PlayFile(void)
 	CSelectedMenu cSelectedMenuBookStart[BOOKMARK_START_MENU_MAX_ITEMS];
 
 	CMenuWidget bookStartMenu(LOCALE_MOVIEBROWSER_BOOK_NEW, NEUTRINO_ICON_STREAMING);
-	bookStartMenu.disableMenuPosition();
 
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_NEW, true, NULL, &cSelectedMenuBookStart[0]));
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_TYPE_FORWARD, true, NULL, &cSelectedMenuBookStart[1]));
@@ -1642,8 +1641,7 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	char book[MI_MOVIE_BOOK_USER_MAX][20];
 
 	CMenuWidget startPosSelectionMenu(LOCALE_MOVIEBROWSER_START_HEAD , NEUTRINO_ICON_STREAMING);
-	startPosSelectionMenu.enableSaveScreen(true);
-	startPosSelectionMenu.disableMenuPosition();
+	startPosSelectionMenu.enableSaveScreen();
 	
 	// intros
 	//WARNING: dont delete this line , without getselected line return line - 1

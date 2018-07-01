@@ -228,6 +228,7 @@ void CMiscSettings::showMenu(void)
 
 	CMenuWidget * miscSettings = new CMenuWidget(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
 
+	miscSettings->enableMenuPosition();
 	miscSettings->enableWidgetChange();
 
 	//miscSettings general
@@ -670,9 +671,8 @@ int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionK
 // channellist settings
 extern t_channel_id live_channel_id;
 
-CChannelListSettings::CChannelListSettings(bool disablePosition)
+CChannelListSettings::CChannelListSettings()
 {
-	disablePos = disablePosition;
 }
 
 CChannelListSettings::~CChannelListSettings()
@@ -728,9 +728,7 @@ void CChannelListSettings::showMenu()
 	dprintf(DEBUG_NORMAL, "CChannelListSettings::showMenu:\n");
 	
 	CMenuWidget miscSettingsChannelList(LOCALE_MISCSETTINGS_CHANNELLIST, NEUTRINO_ICON_SETTINGS);
-	miscSettingsChannelList.enableSaveScreen(true);
-	if(disablePos)
-		miscSettingsChannelList.disableMenuPosition();
+	miscSettingsChannelList.enableSaveScreen();
 	
 	int shortcutMiscChannel = 1;
 	

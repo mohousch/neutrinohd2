@@ -106,7 +106,6 @@ void CAudioSelectMenuHandler::doMenu()
 	dprintf(DEBUG_NORMAL, "CAudioSelectMenuHandler::doMenu\n");
 
 	CMenuWidget AudioSelector(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
-	AudioSelector.disableMenuPosition();
 	
 	unsigned int count;
 	

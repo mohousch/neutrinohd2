@@ -90,13 +90,12 @@ class CGeneralSettings : public CMenuTarget, CChangeObserver
 class CChannelListSettings : public CMenuTarget, CChangeObserver
 {
 	private:
-		bool disablePos;
 		void showMenu();
 		
 		bool changeNotify(const neutrino_locale_t OptionName, void *);
 		
 	public:
-		CChannelListSettings(bool disablePostion = false);
+		CChannelListSettings();
 		~CChannelListSettings();
 		
 		int exec(CMenuTarget* parent, const std::string& actionKey);

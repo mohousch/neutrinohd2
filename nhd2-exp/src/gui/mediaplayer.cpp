@@ -69,6 +69,7 @@ void CMediaPlayerMenu::showMenu()
 	
 	CMenuWidget * MediaPlayer = new CMenuWidget(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_MOVIE);
 
+	MediaPlayer->enableMenuPosition();
 	MediaPlayer->enableWidgetChange();
 
 	// audioPlayer

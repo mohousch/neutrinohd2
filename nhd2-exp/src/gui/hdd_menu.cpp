@@ -297,7 +297,7 @@ int CHDDMenuHandler::hddMenu()
 
 		/* hdd menu */
 		tempMenu[i] = new CMenuWidget(str, NEUTRINO_ICON_SETTINGS);
-		tempMenu[i]->enableSaveScreen(true);
+		tempMenu[i]->enableSaveScreen();
 		
 		tempMenu[i]->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 		tempMenu[i]->addItem(new CMenuSeparator(CMenuSeparator::LINE));
@@ -337,7 +337,7 @@ int CHDDMenuHandler::hddMenu()
 			
 			/* part submenu */
 			PartMenu[j] = new CMenuWidget(PART, NEUTRINO_ICON_SETTINGS);
-			PartMenu[j]->enableSaveScreen(true);
+			PartMenu[j]->enableSaveScreen();
 			
 
 			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));

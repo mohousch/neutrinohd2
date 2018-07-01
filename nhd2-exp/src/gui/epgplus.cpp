@@ -961,8 +961,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 			else if (msg == (neutrino_msg_t) CRCInput::RC_red) 
 			{
 				CMenuWidget menuWidgetActions(LOCALE_EPGPLUS_ACTIONS, NEUTRINO_ICON_FEATURES, 400);
-				menuWidgetActions.disableMenuPosition();
-				menuWidgetActions.enableSaveScreen(true);
+				menuWidgetActions.enableSaveScreen();
 
 				// record
 				if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
@@ -983,8 +982,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 			else if (msg == (neutrino_msg_t) CRCInput::RC_blue) 
 			{
 				CMenuWidget menuWidgetOptions(LOCALE_EPGPLUS_OPTIONS, NEUTRINO_ICON_FEATURES, 500);
-				menuWidgetOptions.disableMenuPosition();
-				menuWidgetOptions.enableSaveScreen(true);
+				menuWidgetOptions.enableSaveScreen();
 				
 				menuWidgetOptions.addItem(new MenuOptionChooserSwitchSwapMode (this));
 				menuWidgetOptions.addItem(new MenuOptionChooserSwitchViewMode (this));

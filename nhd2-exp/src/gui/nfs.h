@@ -70,11 +70,8 @@ class CNFSUmountGui : public CMenuTarget
 
 class CNFSSmallMenu : public CMenuTarget
 {
-	private:
-		bool DisableMenuPos;
-
 	public:
-		CNFSSmallMenu(bool disableMenuPos = false);
+		CNFSSmallMenu();
 		~CNFSSmallMenu();
 		int exec( CMenuTarget* parent, const std::string & actionKey );
 };

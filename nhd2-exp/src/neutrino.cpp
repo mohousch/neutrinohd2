@@ -3146,7 +3146,6 @@ void CNeutrinoApp::RealRun(void)
 
 				// event list
 				CMenuWidget redMenu(LOCALE_INFOVIEWER_EVENTLIST, NEUTRINO_ICON_FEATURES);
-				redMenu.disableMenuPosition();
 
 				// intros
 				redMenu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -5449,7 +5448,6 @@ void CNeutrinoApp::SelectNVOD()
                 // NVOD/SubService- Kanal!
                 CMenuWidget NVODSelector(g_RemoteControl->are_subchannels ? LOCALE_NVODSELECTOR_SUBSERVICE : LOCALE_NVODSELECTOR_HEAD, NEUTRINO_ICON_VIDEO);
 
-		NVODSelector.disableMenuPosition();
 		
                 if(getNVODMenu(&NVODSelector))
                         NVODSelector.exec(NULL, "");
@@ -5468,8 +5466,6 @@ bool CNeutrinoApp::getNVODMenu(CMenuWidget * menu)
 {
         if(menu == NULL)
                 return false;
-
-	menu->disableMenuPosition();
 	
         if (g_RemoteControl->subChannels.empty())
                 return false;

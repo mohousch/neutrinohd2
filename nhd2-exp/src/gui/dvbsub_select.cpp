@@ -68,7 +68,6 @@ int CDVBSubSelectMenuHandler::doMenu()
 	dprintf(DEBUG_NORMAL, "CDVBSubSelectMenuHandler::doMenu:\n");
 
 	CMenuWidget DVBSubSelector(LOCALE_SUBTITLES_HEAD, NEUTRINO_ICON_SUBT);
-	DVBSubSelector.disableMenuPosition();
 	
 	CSubtitleChangeExec SubtitleChanger;
 	unsigned int count;

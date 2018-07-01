@@ -18,8 +18,6 @@ void CARDverpasst::showMenu(void)
 {
 	CMenuWidget * catMenu = new CMenuWidget("Sendung verpasst", PLUGINDIR "/mediaportal/ard_small.png");
 
-	catMenu->disableMenuPosition();
-
 	catMenu->addItem(new CMenuForwarder("Das Erste", true, NULL, new CARDverpasstSub("Das Erste"), ""));
 	catMenu->addItem(new CMenuForwarder("Tagesschau24", true, NULL, new CARDverpasstSub("Tagesschau24"), ""));
 	catMenu->addItem(new CMenuForwarder("Einsplus", true, NULL, new CARDverpasstSub("Einsplus"), ""));
@@ -66,8 +64,6 @@ void CARDverpasstSub::showMenu(void)
 {
 	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/mediaportal/ard_small.png");
 
-	catMenu->disableMenuPosition();
-
 	catMenu->addItem(new CMenuForwarder("Heute", true, getNowTimeStr("%d.%m.%Y").c_str(), new CARDtime("Heute"), ""));
 	catMenu->addItem(new CMenuForwarder("Gestern", true, NULL, new CARDtime("Gestern"), ""));
 	//catMenu->addItem(new CMenuForwarder("Mittwoch", true, NULL, new CARDtime("Mittwoch"), ""));
@@ -107,8 +103,6 @@ CARDtime::~CARDtime()
 void CARDtime::showMenu(void)
 {
 	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/mediaportal/ard_small.png");
-
-	catMenu->disableMenuPosition();
 
 	catMenu->addItem(new CMenuForwarder("00:00-12:00", true, NULL, new CARDstreams("00:00-12:00"), ""));
 	catMenu->addItem(new CMenuForwarder("12:00-18:00", true, NULL, new CARDstreams("12:00-18:00"), ""));
@@ -298,8 +292,6 @@ CARD::~CARD()
 void CARD::showMenu(void)
 {
 	CMenuWidget * catMenu = new CMenuWidget("ARD Mediathek", PLUGINDIR "/mediaportal/ard_small.png");
-
-	catMenu->disableMenuPosition();
 
 	catMenu->addItem(new CMenuForwarder("Sendung verpasst", true, NULL, new CARDverpasst(), ""));
 	catMenu->addItem(new CMenuForwarder("Sendungen A-Z", true, NULL, new CARDaz(), ""));

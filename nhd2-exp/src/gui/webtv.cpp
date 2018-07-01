@@ -542,8 +542,7 @@ void CWebTV::Bouquets(void)
 	//
 	CFileList filelist;
 	CMenuWidget m(LOCALE_WEBTV_BOUQUETS, NEUTRINO_ICON_WEBTV_SMALL, MENU_WIDTH + 100);
-	m.disableMenuPosition();
-	m.enableSaveScreen(true);
+	m.enableSaveScreen();
 
 	int select = -1;
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
@@ -651,7 +650,6 @@ void CWebTV::show(bool reload, bool reinit)
 			m->setOptionInfo1(channels[i]->description.c_str());
 
 			webTVlistMenu->addItem(m);
-			//webTVlistMenu->addItem(new CMenulistBoxItem(channels[i]->title.c_str(), true, this, "zapit", NULL, (i +1), file_prozent, channels[i]->description.c_str(), "", "", "", "", channels[i]->title.c_str(), "", channels[i]->description.c_str(), ""));
 		}
 	}
 

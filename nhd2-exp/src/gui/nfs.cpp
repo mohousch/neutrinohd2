@@ -189,7 +189,6 @@ int CNFSMountGui::exec( CMenuTarget *parent, const std::string &actionKey )
 int CNFSMountGui::menu()
 {
 	CMenuWidget mountMenuW(LOCALE_NFS_MOUNT, NEUTRINO_ICON_NETWORK, 720);
-	mountMenuW.disableMenuPosition();
 	
 	// intros
 	mountMenuW.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -276,7 +275,6 @@ int CNFSMountGui::menuEntry(int nr)
 	   (m_smbfs_sup != CFSMounter::FS_UNSUPPORTED && *type != (int)CFSMounter::SMBFS);
 
 	CMenuWidget mountMenuEntryW(LOCALE_NFS_MOUNT, NEUTRINO_ICON_NETWORK);
-	mountMenuEntryW.disableMenuPosition();
 	
 	// intros
 	mountMenuEntryW.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -358,7 +356,6 @@ int CNFSUmountGui::menu()
 	int count = 0;
 	CFSMounter::MountInfos infos;
 	CMenuWidget umountMenu(LOCALE_NFS_UMOUNT, NEUTRINO_ICON_NETWORK);
-	umountMenu.disableMenuPosition();
 	
 	// intros
 	umountMenu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -387,9 +384,8 @@ int CNFSUmountGui::menu()
 }
 
 // CNFSSmallMenu
-CNFSSmallMenu::CNFSSmallMenu(bool disableMenuPos)
+CNFSSmallMenu::CNFSSmallMenu()
 {
-	DisableMenuPos = disableMenuPos;
 }
 
 CNFSSmallMenu::~CNFSSmallMenu()
@@ -403,9 +399,6 @@ int CNFSSmallMenu::exec( CMenuTarget* parent, const std::string & actionKey )
 	if (actionKey.empty())
 	{
 		CMenuWidget menu(LOCALE_NFSMENU_HEAD, NEUTRINO_ICON_NETWORK);
-
-		if(DisableMenuPos)
-			menu.disableMenuPosition();
 
 		CNFSMountGui mountGui;
 		CNFSUmountGui umountGui;

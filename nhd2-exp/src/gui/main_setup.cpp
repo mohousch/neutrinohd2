@@ -86,6 +86,7 @@ void CMainSetup::showMenu(void)
 
 	CMenuWidget * mainSettings = new CMenuWidget(LOCALE_MAINSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
 
+	mainSettings->enableMenuPosition();
 	mainSettings->enableWidgetChange();
 
 	// video settings

@@ -95,6 +95,7 @@ void CPowerMenu::showMenu(void)
 
 	CMenuWidget * powerMenu = new CMenuWidget(LOCALE_MAINMENU_POWERMENU, NEUTRINO_ICON_BUTTON_POWER);
 
+	powerMenu->enableMenuPosition();
 	powerMenu->enableWidgetChange();
 	
 	// sleep timer

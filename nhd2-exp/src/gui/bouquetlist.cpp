@@ -243,8 +243,7 @@ int CBouquetList::doMenu()
 		return 0;
 
 	CMenuWidget * menu = new CMenuWidget(LOCALE_CHANNELLIST_EDIT, NEUTRINO_ICON_SETTINGS);
-	menu->enableSaveScreen(true);
-	menu->disableMenuPosition();
+	menu->enableSaveScreen();
 	
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 

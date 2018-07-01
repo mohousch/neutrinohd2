@@ -27,9 +27,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <global.h>
+
 #include <system/debug.h>
 #include <system/helpers.h>
-#include <global.h>
 
 #include "record_cs.h"
 

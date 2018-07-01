@@ -101,6 +101,7 @@ void CServiceSetup::showMenu(void)
 	
 	CMenuWidget * service = new CMenuWidget(LOCALE_SERVICEMENU_HEAD, NEUTRINO_ICON_SETTINGS);
 
+	service->enableMenuPosition();
 	service->enableWidgetChange();
 	
 	// scan setup

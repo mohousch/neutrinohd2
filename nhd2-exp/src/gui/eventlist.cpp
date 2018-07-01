@@ -1170,7 +1170,6 @@ int CEventFinderMenu::showMenu(void)
 	CMenuForwarder * mf0 = new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, this, "1", CRCInput::RC_5 );
 	
 	CMenuWidget searchMenu(LOCALE_EVENTFINDER_HEAD, NEUTRINO_ICON_FEATURES);
-	searchMenu.disableMenuPosition();
 
         searchMenu.addItem(mf2, false);
         searchMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));

@@ -384,8 +384,7 @@ neutrino_locale_t CYTBrowser::getFeedLocale(void)
 int CYTBrowser::showYTMenu(void)
 {
 	CMenuWidget mainMenu(LOCALE_YOUTUBE, NEUTRINO_ICON_YT_SMALL, MENU_WIDTH + 100);
-	mainMenu.disableMenuPosition();
-	mainMenu.enableSaveScreen(true);
+	mainMenu.enableSaveScreen();
 
 	int select = -1;
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);

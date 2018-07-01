@@ -99,8 +99,7 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 			parent->hide();
 		
 		CMenuWidget fontscale(LOCALE_FONTMENU_HEAD, NEUTRINO_ICON_COLORS);
-		fontscale.enableSaveScreen(true);
-		fontscale.disableMenuPosition();
+		fontscale.enableSaveScreen();
 
 		fontscale.addItem(new CMenuOptionNumberChooser(LOCALE_FONTMENU_SCALING_X, &g_settings.screen_xres, true, 50, 200, NULL) );
 		fontscale.addItem(new CMenuOptionNumberChooser(LOCALE_FONTMENU_SCALING_Y, &g_settings.screen_yres, true, 50, 200, NULL) );
@@ -126,6 +125,7 @@ void COSDSettings::showMenu(void)
 	
 	CMenuWidget * osdSettings = new CMenuWidget(LOCALE_MAINSETTINGS_OSD, NEUTRINO_ICON_COLORS );
 
+	osdSettings->enableMenuPosition();
 	osdSettings->enableWidgetChange();
 
 	// Themes

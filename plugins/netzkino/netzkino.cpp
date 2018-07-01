@@ -181,8 +181,7 @@ void CNKMovies::showNKCategoriesMenu()
 	// menu
 	CMenuWidget mainMenu(LOCALE_NETZKINO, NEUTRINO_ICON_NETZKINO_SMALL);
 
-	mainMenu.disableMenuPosition();
-	mainMenu.enableWidgetChange();
+	mainMenu.setWidgetType(WIDGET_CLASSIC);
 
 	// categories
 	for (unsigned i = 0; i < cats.size(); i++)

@@ -79,6 +79,7 @@ void CNeutrinoApp::mainMenu(void)
 
 	CMenuWidget * mainMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
 
+	mainMenu->enableMenuPosition();
 	mainMenu->enableWidgetChange();
 	//mainMenu->setItemsPerPage(3, 2);
 	  
@@ -249,12 +250,8 @@ bool CNeutrinoApp::showUserMenu(int button)
                 return 0;
 
 	//
-	//menu->disableMenuPosition();
+	menu->enableMenuPosition();
 	menu->enableWidgetChange();
-
-	// intros
-	//menu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	//menu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
 	// go through any postition number
 	for(int pos = 0; pos < SNeutrinoSettings::ITEM_MAX ; pos++) 
@@ -350,15 +347,16 @@ bool CNeutrinoApp::showUserMenu(int button)
 		}
 	}
 
-        // show menu if there are more than 2 items only
-	// otherwise, we start the item directly (must be the last one)
-	//
+	// integragte user plugins
 	if( button == SNeutrinoSettings::BUTTON_BLUE) 
 	{
 		keyhelper.get(&key, &icon);
 		menu->integratePlugins(CPlugins::I_TYPE_USER, key);
 	}
 
+	// show menu if there are more than 2 items only
+	// otherwise, we start the item directly (must be the last one)
+	//
         if(menu_items > 1 ) 
 	{
 		menu->setSelected(selected[button]);
