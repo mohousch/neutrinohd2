@@ -611,7 +611,7 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		}
 	}
 
-	infoBox->setText(&print_buffer, movie_info.tfile, p_w, p_h, CTextBox::TOP_LEFT);
+	infoBox->setText(&print_buffer, movie_info.tfile, p_w, p_h);
 	infoBox->exec();
 	delete infoBox;
 }

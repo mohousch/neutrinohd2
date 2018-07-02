@@ -60,7 +60,7 @@ class CYTBrowser : public CMenuTarget
 		void showMovieInfo(void);
 		
 		//
-		CMenuFrameBox* moviesMenu;
+		ClistBox* moviesMenu;
 		
 	public:
 		CYTBrowser();

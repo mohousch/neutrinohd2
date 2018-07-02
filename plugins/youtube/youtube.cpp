@@ -140,7 +140,7 @@ void CYTBrowser::showYTMoviesMenu(bool reload)
 	if (loc == LOCALE_YT_SEARCH)
 		title += " \"" + m_settings.ytsearch + "\"";
 
-	moviesMenu = new CMenuFrameBox(title.c_str(), NEUTRINO_ICON_YT_SMALL);
+	moviesMenu = new ClistBox(title.c_str(), NEUTRINO_ICON_YT_SMALL);
 	
 	std::string itemTitle;
 
@@ -148,9 +148,10 @@ void CYTBrowser::showYTMoviesMenu(bool reload)
 	{
 		itemTitle = m_vMovieInfo[i].epgTitle + " (" + to_string(m_vMovieInfo[i].length) + " Min)";
  
-		moviesMenu->addItem(new CMenuFrameBoxItem(itemTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
+		moviesMenu->addItem(new ClistBoxItem(itemTitle.c_str(), true, NULL, this, "play", NULL,  file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
 	}
 
+	moviesMenu->setWidgetType(WIDGET_FRAME);
 	moviesMenu->setItemsPerPage(3, 2);
 	moviesMenu->setItemBoxColor(COL_YELLOW);
 	moviesMenu->setHeaderButtons(YTHeadButtons, YT_HEAD_BUTTONS_COUNT);
@@ -198,48 +199,7 @@ void CYTBrowser::playMovie(void)
 
 void CYTBrowser::showMovieInfo(void)
 {
-	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-	
-	CInfoBox * infoBox = new CInfoBox(m_vMovieInfo[moviesMenu->getSelected()].epgInfo2.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, m_vMovieInfo[moviesMenu->getSelected()].epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_MOVIE);
-
-	// icon
-	int picw = 320; //FIXME
-	int pich = 256;	//FIXME
-
-	int p_w = 0;
-	int p_h = 0;
-	int nbpp = 0;
-
-	if(!access(m_vMovieInfo[moviesMenu->getSelected()].tfile.c_str(), F_OK))
-	{
-		CFrameBuffer::getInstance()->getSize(m_vMovieInfo[moviesMenu->getSelected()].tfile, &p_w, &p_h, &nbpp);
-
-		// scale
-		if(p_w <= picw && p_h <= pich)
-		{
-			picw = p_w;
-			pich = p_h;
-		}
-		else
-		{
-			float aspect = (float)(p_w) / (float)(p_h);
-					
-			if (((float)(p_w) / (float)picw) > ((float)(p_h) / (float)pich)) 
-			{
-				p_w = picw;
-				p_h = (int)(picw / aspect);
-			}
-			else
-			{
-				p_h = pich;
-				p_w = (int)(pich * aspect);
-			}
-		}
-	}
-
-	infoBox->setText(&m_vMovieInfo[moviesMenu->getSelected()].epgInfo2, m_vMovieInfo[moviesMenu->getSelected()].tfile, p_w, p_h);
-	infoBox->exec();
-	delete infoBox;
+	m_movieInfo.showMovieInfo(m_vMovieInfo[moviesMenu->getSelected()]);
 }
 
 int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)

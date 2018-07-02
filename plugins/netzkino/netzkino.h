@@ -41,7 +41,7 @@ class CNKMovies : public CMenuTarget
 		int catMode;
 		std::string caption;
 
-		/*CMenuFrameBox*/ClistBox* moviesMenu;
+		ClistBox* moviesMenu;
 
 		void loadNKTitles(int mode, std::string search, int id);
 

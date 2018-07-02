@@ -80,12 +80,10 @@ void CNKMovies::showNKMoviesMenu()
 	title += ": ";
 	title += caption;
 
-	moviesMenu = new /*CMenuFrameBox*/ClistBox(title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL);
+	moviesMenu = new ClistBox(title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL);
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		//moviesMenu->addItem(new CMenuFrameBoxItem(m_vMovieInfo[i].epgTitle.c_str(), this, "play", file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
-
 		//
 		moviesMenu->addItem(new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "play", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
 	}
@@ -93,8 +91,8 @@ void CNKMovies::showNKMoviesMenu()
 	moviesMenu->setWidgetType(WIDGET_FRAME);
 	moviesMenu->setItemsPerPage(6, 2);
 	moviesMenu->setItemBoxColor(COL_YELLOW);
-	moviesMenu->setHeaderButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
 
+	moviesMenu->setHeaderButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
 
@@ -117,48 +115,7 @@ void CNKMovies::playMovie(void)
 
 void CNKMovies::showMovieInfo(void)
 {
-	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-	
-	CInfoBox * infoBox = new CInfoBox(m_vMovieInfo[moviesMenu->getSelected()].epgInfo2.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, m_vMovieInfo[moviesMenu->getSelected()].epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_MOVIE);
-
-	// icon
-	int picw = 320; //FIXME
-	int pich = 256;	//FIXME
-
-	int p_w = 0;
-	int p_h = 0;
-	int nbpp = 0;
-
-	if(!access(m_vMovieInfo[moviesMenu->getSelected()].tfile.c_str(), F_OK))
-	{
-		CFrameBuffer::getInstance()->getSize(m_vMovieInfo[moviesMenu->getSelected()].tfile, &p_w, &p_h, &nbpp);
-
-		// scale
-		if(p_w <= picw && p_h <= pich)
-		{
-			picw = p_w;
-			pich = p_h;
-		}
-		else
-		{
-			float aspect = (float)(p_w) / (float)(p_h);
-					
-			if (((float)(p_w) / (float)picw) > ((float)(p_h) / (float)pich)) 
-			{
-				p_w = picw;
-				p_h = (int)(picw / aspect);
-			}
-			else
-			{
-				p_h = pich;
-				p_w = (int)(pich * aspect);
-			}
-		}
-	}
-
-	infoBox->setText(&m_vMovieInfo[moviesMenu->getSelected()].epgInfo2, m_vMovieInfo[moviesMenu->getSelected()].tfile, p_w, p_h);
-	infoBox->exec();
-	delete infoBox;
+	m_movieInfo.showMovieInfo(m_vMovieInfo[moviesMenu->getSelected()]);
 }
 
 void CNKMovies::showNKCategoriesMenu()

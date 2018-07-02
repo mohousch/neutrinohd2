@@ -41,6 +41,11 @@ class CTestMenu : public CMenuTarget
 		//
 		ClistBox* plist;
 
+		//
+		CMovieInfo m_movieInfo;
+		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
+		ClistBox* mlist;
+
 		// widgets
 		void testCBox();
 		void testCIcon();
@@ -147,18 +152,7 @@ CTestMenu::~CTestMenu()
 {
 	Channels.clear();
 	audioFileList.clear();
-
-	if(listMenu)
-	{
-		delete listMenu;
-		listMenu = NULL;
-	}
-
-	if(audioMenu)
-	{
-		delete audioMenu;
-		audioMenu = NULL;
-	}
+	m_vMovieInfo.clear();
 }
 
 void CTestMenu::hide()
@@ -1911,7 +1905,7 @@ void CTestMenu::testClistBoxnLines()
 		IconName += g_PluginList->getIcon(count);
 
 			
-		mc = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), (g_PluginList->getIcon(count) != NULL)? IconName.c_str() : NEUTRINO_ICON_PLUGIN);
+		mc = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), file_exists(IconName.c_str())? IconName.c_str() : NEUTRINO_ICON_PLUGIN);
 
 		mc->setInfo1(g_PluginList->getDescription(count).c_str());
 
@@ -1922,8 +1916,9 @@ void CTestMenu::testClistBoxnLines()
 	}
 
 	plist->enablePaintDate();
-	plist->enableFootInfo();
-	plist->setFootInfoHeight(40); 
+
+	//plist->enableFootInfo();
+	//plist->setFootInfoHeight(40); 
 
 	//plist->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	plist->setSelected(selected);
@@ -2187,91 +2182,103 @@ void CTestMenu::testCMenuWidget()
 
 void CTestMenu::testFrameBox()
 {
-	/*
-	CMenuFrameBox* mainMenu = new CMenuFrameBox(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
-
-	mainMenu->setItemsPerPage(4, 3);
-
-	// tv
-	mainMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_TVMODE, CNeutrinoApp::getInstance(), "tv", NEUTRINO_ICON_MENUITEM_TV), true);
-
-	// radio
-	mainMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_RADIOMODE, CNeutrinoApp::getInstance(), "radio", NEUTRINO_ICON_MENUITEM_RADIO));
-
-	// webtv
-	mainMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_WEBTVMODE, CNeutrinoApp::getInstance(), "webtv", NEUTRINO_ICON_MENUITEM_WEBTV));
-
-#if defined (ENABLE_SCART)
-	// scart
-	mainMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SCARTMODE, CNeutrinoApp::getInstance(), "scart", NEUTRINO_ICON_MENUITEM_SCART));
-#endif
-
-	// mediaplayer
-	mainMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_MEDIAPLAYER, new CMediaPlayerMenu(), NULL, NEUTRINO_ICON_MENUITEM_MEDIAPLAYER));
+	ClistBox* mlist = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE);
 	
-	// main setting menu
-	mainMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SETTINGS, new CMainSetup(), NULL, NEUTRINO_ICON_MENUITEM_SETTINGS));
-
-	// service
-	mainMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_SERVICE, new CServiceSetup(), NULL, NEUTRINO_ICON_MENUITEM_SERVICE));
+	//
+	CFileFilter fileFilter;
 	
-	// timerlist
-	mainMenu->addItem(new CMenuFrameBoxItem(LOCALE_TIMERLIST_NAME, new CTimerList, NULL, NEUTRINO_ICON_MENUITEM_TIMERLIST));
+	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
 	
-	// features
-	mainMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_FEATURES, CNeutrinoApp::getInstance(), "features", NEUTRINO_ICON_MENUITEM_FEATURES));
+	std::string Path_local = g_settings.network_nfs_recordingdir;
 
-	// power menu
-	mainMenu->addItem(new CMenuFrameBoxItem(LOCALE_MAINMENU_POWERMENU, new CPowerMenu(), NULL, NEUTRINO_ICON_MENUITEM_POWERMENU));
-
-	//box info
-	mainMenu->addItem( new CMenuFrameBoxItem(LOCALE_DBOXINFO, new CDBoxInfoWidget, NULL, NEUTRINO_ICON_MENUITEM_BOXINFO));
-	*/
-
-	ClistBox* mainMenu = new ClistBox(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
-
-	mainMenu->setWidgetType(WIDGET_FRAME);
-	mainMenu->setItemsPerPage(4, 3);
-
-	// tv
-	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_TVMODE, true, NULL, CNeutrinoApp::getInstance(), "tv", NULL, NEUTRINO_ICON_MENUITEM_TV), true);
-
-	// radio
-	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_RADIOMODE, true, NULL, CNeutrinoApp::getInstance(), "radio", NULL, NEUTRINO_ICON_MENUITEM_RADIO));
-
-	// webtv
-	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_WEBTVMODE, true, NULL, CNeutrinoApp::getInstance(), "webtv", NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
-
-#if defined (ENABLE_SCART)
-	// scart
-	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_SCARTMODE, true, NULL, CNeutrinoApp::getInstance(), "scart", NULL, NEUTRINO_ICON_MENUITEM_SCART));
-#endif
-
-	// mediaplayer
-	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL, NULL, NEUTRINO_ICON_MENUITEM_MEDIAPLAYER));
+	CFileList filelist;
 	
-	// main setting menu
-	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL, NULL, NEUTRINO_ICON_MENUITEM_SETTINGS));
+	//
+	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	{
+		// filter them
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
 
-	// service
-	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL, NULL, NEUTRINO_ICON_MENUITEM_SERVICE));
-	
-	// timerlist
-	mainMenu->addItem(new ClistBoxItem(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, NULL, NEUTRINO_ICON_MENUITEM_TIMERLIST));
-	
-	// features
-	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_FEATURES, true, NULL, CNeutrinoApp::getInstance(), "features", NULL, NEUTRINO_ICON_MENUITEM_FEATURES));
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
+		{
+			//
+			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+					
+			movieInfo.file.Name = files->Name;
+					
+			// load movie infos (from xml file)
+			m_movieInfo.loadMovieInfo(&movieInfo);
 
-	// power menu
-	mainMenu->addItem(new ClistBoxItem(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, NULL, NEUTRINO_ICON_MENUITEM_POWERMENU));
+			std::string tmp_str = files->getFileName();
 
-	//box info
-	mainMenu->addItem( new ClistBoxItem(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, NULL, NEUTRINO_ICON_MENUITEM_BOXINFO));
+			removeExtension(tmp_str);
 
-	mainMenu->exec(NULL, "");
-	mainMenu->hide();
-	delete mainMenu;
-	mainMenu = NULL;
+			// refill if empty
+			if(movieInfo.epgTitle.empty())
+				movieInfo.epgTitle = tmp_str;
+
+			if(movieInfo.epgInfo1.empty())
+				movieInfo.epgInfo1 = tmp_str;
+
+			//if(movieInfo.epgInfo2.empty())
+			//	movieInfo.epgInfo2 = tmp_str;
+
+			//thumbnail
+			std::string fname = "";
+			fname = files->Name;
+			changeFileNameExt(fname, ".jpg");
+					
+			if(!access(fname.c_str(), F_OK) )
+				movieInfo.tfile = fname.c_str();
+					
+			// 
+			m_vMovieInfo.push_back(movieInfo);
+		}
+	}
+
+	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+	{
+		mlist->addItem(new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
+	}
+
+	mlist->setWidgetType(WIDGET_FRAME);
+	mlist->setItemsPerPage(6, 2);
+	mlist->setItemBoxColor(COL_YELLOW);
+
+	mlist->setSelected(selected);
+
+	mlist->addKey(CRCInput::RC_info, this, "minfo");
+
+	mlist->exec(NULL, "");
+	mlist->hide();
+	delete mlist;
+	mlist = NULL;
 }
 
 void CTestMenu::testTSBrowserDirect()
@@ -2687,21 +2694,6 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		selected = audioMenu->getSelected();
 		CAudiofileExt audiofile(audioFileList[audioMenu->getSelected()].Name, audioFileList[audioMenu->getSelected()].getExtension());
 
-		/*
-		CAudioPlayerGui tmpAudioPlayerGui;
-		tmpAudioPlayerGui.addToPlaylist(audiofile);
-
-		// add the whole list
-		for(int i = 0; i < audioFileList.size(); i++)
-		{
-			CAudiofileExt audiofile(audioFileList[i].Name, audioFileList[i].getExtension());
-			tmpAudioPlayerGui.addToPlaylist(audiofile);
-		}
-
-		tmpAudioPlayerGui.hidePlayList(true);
-		tmpAudioPlayerGui.exec(NULL, "urlplayback");
-		*/
-
 		CAudioPlayer::getInstance()->init();
 		CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, NeutrinoMessages::mode_audio);
 
@@ -2735,6 +2727,22 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		g_PluginList->removePlugin(plist->getSelected());
 		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "mplay")
+	{
+		//selected = mlist->getSelected();
+		CMoviePlayerGui tmpMoviePlayerGui;
+
+		if (&m_vMovieInfo[/*mlist->getSelected()*/1].file != NULL) 
+		{
+			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[/*mlist->getSelected()*/1]);
+			tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		}
+	}
+	else if(actionKey == "minfo")
+	{
+		//selected = mlist->getSelected();
+		m_movieInfo.showMovieInfo(m_vMovieInfo[/*mlist->getSelected()*/1]);
 	}
 	else if(actionKey == "spinner")
 	{
@@ -2778,7 +2786,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("ColorChooser", true, NULL, this, "colorchooser"));
 	mainMenu->addItem(new CMenuForwarder("KeyChooser", true, NULL, this, "keychooser"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
-	mainMenu->addItem(new CMenuForwarder("CMenuFrameBox", true, NULL, this, "framebox"));
+	mainMenu->addItem(new CMenuForwarder("ClistBox(movie browser)", true, NULL, this, "framebox"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(channellist)", true, NULL, this, "menuwidgetlistbox"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(Audioplayer)", true, NULL, this, "menuwidgetlistbox1"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(plugins list)", true, NULL, this, "listboxnlines"));
