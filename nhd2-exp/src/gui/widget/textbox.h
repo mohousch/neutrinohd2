@@ -68,6 +68,7 @@ class CTextBox
 		{
 			TOP_RIGHT = 0,
 			TOP_LEFT = 1,
+			TOP_CENTER
 		}tmode;
 
 	private:

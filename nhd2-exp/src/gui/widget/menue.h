@@ -140,7 +140,6 @@ class CMenuItem
 		bool can_arrow;
 		std::string iconName;
 		std::string optionInfo;
-		//std::string description;
 		std::string info1, option_info1;
 		std::string info2, option_info2;
 		std::string itemName;
@@ -693,6 +692,10 @@ class ClistBox : public CMenuTarget
 		int itemsPerX;
 		int itemsPerY;
 		int maxItemsPerPage;
+
+		//
+		//CBox cFrameBoxText;
+		//CTextBox* textBox;
 		
 	public:
 		ClistBox();
@@ -749,6 +752,9 @@ class ClistBox : public CMenuTarget
 		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
 		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
+
+		//
+		void paintItemIcon(int pos);
 };
 
 // CMenulistBoxItem

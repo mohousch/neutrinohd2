@@ -23,11 +23,6 @@ noinst_LIBRARIES = libdvbapi.a
 libdvbapi_a_SOURCES = audio_cs.cpp dmx_cs.cpp playback_cs.cpp record_cs.cpp \
 	video_cs.cpp
 
-# dvb-ci
-#if ENABLE_CI
-#libdvbapi_a_SOURCES += dvb-ci.cpp \
-#	dvbci_session.cpp dvbci_mmi.cpp dvbci_camgr.cpp dvbci_appmgr.cpp dvbci_datetimemgr.cpp #dvbci_resmgr.cpp
-#endif
 
 
 

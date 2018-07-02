@@ -305,7 +305,8 @@ void CTextBox::refreshTextLineArray(void)
 		lineBreakWidth = m_cFrameTextRel.iWidth - BORDER_LEFT - BORDER_RIGHT;
 	}
 	
-	if( !access(thumbnail.c_str(), F_OK) && m_nCurrentPage == 0)
+	//
+	if( (!access(thumbnail.c_str(), F_OK) && m_nCurrentPage == 0) && m_tMode != TOP_CENTER)
 		lineBreakWidth = m_cFrameTextRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + tw + BORDER_LEFT + BORDER_RIGHT);
 	
 	const int TextChars = m_cText.size();
@@ -400,7 +401,11 @@ void CTextBox::refreshTextLineArray(void)
 			reSizeMainFrameHeight(m_nNrOfLines * m_nFontTextHeight);
 		}
 
-		m_nLinesPerPage = (m_cFrameTextRel.iHeight - BORDER_LEFT - BORDER_RIGHT) / m_nFontTextHeight;
+		if(m_tMode == TOP_CENTER)
+			m_nLinesPerPage = (m_cFrameTextRel.iHeight - BORDER_LEFT - BORDER_RIGHT - th) / m_nFontTextHeight;
+		else
+			m_nLinesPerPage = (m_cFrameTextRel.iHeight - BORDER_LEFT - BORDER_RIGHT) / m_nFontTextHeight;
+
 		m_nNrOfPages =	((m_nNrOfLines-1) / m_nLinesPerPage) + 1;
 
 		if(m_nCurrentPage >= m_nNrOfPages)
@@ -450,9 +455,14 @@ void CTextBox::refreshText(void)
 	}
 	
 	// paint text
-	int y = m_cFrameTextRel.iY + BORDER_LEFT;
+	int y = m_cFrameTextRel.iY + 10;
 	int i;
 	int x_center = 0;
+
+	if(m_tMode == TOP_CENTER)
+	{
+		y = y + th + 10;
+	}
 
 	for(i = m_nCurrentLine; i < m_nNrOfLines && i < m_nCurrentLine + m_nLinesPerPage; i++)
 	{
@@ -587,6 +597,11 @@ bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _
 		else if(m_tMode == TOP_LEFT)
 		{
 			lx = m_cFrame.iX + 10;
+			ly = m_cFrame.iY + 10;
+		}
+		else if(m_tMode == TOP_CENTER)
+		{
+			lx = m_cFrame.iX + (m_cFrame.iWidth - tw)/2;
 			ly = m_cFrame.iY + 10;
 		}
 	}

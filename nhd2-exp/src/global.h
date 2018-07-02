@@ -36,7 +36,7 @@
 
 #include <stdio.h>
 
-/* zapit includes */
+// zapit includes
 #include <client/zapitclient.h>
 
 #include <sectionsdclient/sectionsdclient.h>

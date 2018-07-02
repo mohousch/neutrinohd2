@@ -1695,7 +1695,7 @@ void CNeutrinoApp::SetChannelMode(int newmode, int nMode)
 
 	if(nMode == mode_radio)
 		channelList = RADIOchannelList;
-	else if(nMode = mode_tv)
+	else if(nMode == mode_tv)
 		channelList = TVchannelList;
 
 	switch(newmode) 

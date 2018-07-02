@@ -1890,14 +1890,13 @@ void CTestMenu::testClistBoxnLines()
 	// itemBox
 	plist = new ClistBox("ClistBox (plugins list", NEUTRINO_ICON_SHELL, MENU_WIDTH, h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
-	plist->enableMenuPosition();
-
 	ClistBoxItem *mc;
 
 	//
 	for(unsigned int count = 0; count < (unsigned int)g_PluginList->getNumberOfPlugins(); count++)
 	{
 		std::string IconName = "";
+
 		IconName = PLUGINDIR;
 		IconName += "/";
 		IconName += g_PluginList->getFileName(count);
@@ -1905,7 +1904,7 @@ void CTestMenu::testClistBoxnLines()
 		IconName += g_PluginList->getIcon(count);
 
 			
-		mc = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), file_exists(IconName.c_str())? IconName.c_str() : NEUTRINO_ICON_PLUGIN);
+		mc = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), NULL, file_exists(IconName.c_str())? IconName.c_str() : NEUTRINO_ICON_MENUITEM_PLUGIN);
 
 		mc->setInfo1(g_PluginList->getDescription(count).c_str());
 
@@ -1915,29 +1914,23 @@ void CTestMenu::testClistBoxnLines()
 		plist->addItem(mc);
 	}
 
+	plist->setWidgetType(WIDGET_CLASSIC);
+	plist->enableMenuPosition();
 	plist->enablePaintDate();
 
-	//plist->enableFootInfo();
 	//plist->setFootInfoHeight(40); 
+	//plist->enableFootInfo();
 
-	//plist->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	plist->setSelected(selected);
 
-	//plist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS);
 
-	// head
-	plist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	//plist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
-
 	// footer
-	plist->addKey(CRCInput::RC_red, this, /*CRCInput::getSpecialKeyName(CRCInput::RC_red)*/"pred");
-	plist->addKey(CRCInput::RC_green, this, /*CRCInput::getSpecialKeyName(CRCInput::RC_green)*/"pgreen");
-	//plist->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
-	//plist->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
+	plist->addKey(CRCInput::RC_red, this, "pred");
+	plist->addKey(CRCInput::RC_green, this, "pgreen");
 
 	plist->exec(NULL, "");
-	//plist->hide();
+	plist->hide();
 	delete plist;
 	plist = NULL;
 }
@@ -2080,7 +2073,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 				}
 
 				//
-				ma = new ClistBoxItem(title.c_str(), true, NULL, this, "play");
+				ma = new ClistBoxItem(title.c_str(), true, NULL, this, "aplay");
 			
 				ma->setOptionInfo(duration);
 				ma->setNumber(count);
@@ -2109,15 +2102,15 @@ void CTestMenu::testCMenuWidgetListBox1()
 	audioMenu->setFootInfoHeight(30); 
 
 	// head
-	audioMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	audioMenu->addKey(CRCInput::RC_setup, this, "RC_setup1");
+	audioMenu->addKey(CRCInput::RC_info, this, /*CRCInput::getSpecialKeyName(CRCInput::RC_info)*/"ainfo");
+	audioMenu->addKey(CRCInput::RC_setup, this, "asetup");
 
 	// footer
-	audioMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
-	audioMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
-	audioMenu->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
-	audioMenu->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
-	audioMenu->addKey(CRCInput::RC_stop, this, CRCInput::getSpecialKeyName(CRCInput::RC_stop));
+	audioMenu->addKey(CRCInput::RC_red, this, "ared");
+	audioMenu->addKey(CRCInput::RC_green, this, "agreen");
+	audioMenu->addKey(CRCInput::RC_yellow, this, "ayellow");
+	audioMenu->addKey(CRCInput::RC_blue, this, "ablue");
+	audioMenu->addKey(CRCInput::RC_stop, this, "astop");
 
 	audioMenu->exec(NULL, "");
 	//audioMenu->hide();
@@ -2654,15 +2647,6 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		g_EventList->exec(Channels[listMenu->getSelected()]->channel_id, Channels[listMenu->getSelected()]->getName());
 	}
-	else if(actionKey == "RC_stop")
-	{
-
-		if (CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
-		{
-			CAudioPlayer::getInstance()->stop();
-		}
-
-	}
 	else if(actionKey == "RC_green")
 	{
 		selected = listMenu->getSelected();
@@ -2689,7 +2673,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCMenuWidgetListBox1();
 	}
-	else if(actionKey == "play")
+	else if(actionKey == "aplay")
 	{
 		selected = audioMenu->getSelected();
 		CAudiofileExt audiofile(audioFileList[audioMenu->getSelected()].Name, audioFileList[audioMenu->getSelected()].getExtension());
@@ -2700,7 +2684,16 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		CAudiofile mp3(audioFileList[audioMenu->getSelected()].Name, audioFileList[audioMenu->getSelected()].getExtension());
 		CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);		
 	}
-	else if(actionKey == "RC_setup1")
+	else if(actionKey == "astop")
+	{
+
+		if (CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
+		{
+			CAudioPlayer::getInstance()->stop();
+		}
+
+	}
+	else if(actionKey == "asetup")
 	{
 		CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
 		audioPlayerSettingsMenu->exec(this, "");
