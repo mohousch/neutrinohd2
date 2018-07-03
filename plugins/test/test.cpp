@@ -2175,7 +2175,8 @@ void CTestMenu::testCMenuWidget()
 
 void CTestMenu::testFrameBox()
 {
-	ClistBox* mlist = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE);
+	mlist = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	ClistBoxItem* mm;
 	
 	//
 	CFileFilter fileFilter;
@@ -2257,14 +2258,20 @@ void CTestMenu::testFrameBox()
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		mlist->addItem(new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
+		mm = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		mm->setOptionInfo(m_vMovieInfo[i].epgInfo2.c_str());
+
+		mlist->addItem(mm);
 	}
 
-	mlist->setWidgetType(WIDGET_FRAME);
+	mlist->setWidgetType(WIDGET_EXTENDED);
 	mlist->setItemsPerPage(6, 2);
 	mlist->setItemBoxColor(COL_YELLOW);
 
 	mlist->setSelected(selected);
+
+	mlist->enablePaintDate();
 
 	mlist->addKey(CRCInput::RC_info, this, "minfo");
 
@@ -2723,19 +2730,19 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "mplay")
 	{
-		//selected = mlist->getSelected();
+		selected = mlist->getSelected();
 		CMoviePlayerGui tmpMoviePlayerGui;
 
-		if (&m_vMovieInfo[/*mlist->getSelected()*/1].file != NULL) 
+		if (&m_vMovieInfo[mlist->getSelected()].file != NULL) 
 		{
-			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[/*mlist->getSelected()*/1]);
+			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[mlist->getSelected()]);
 			tmpMoviePlayerGui.exec(NULL, "urlplayback");
 		}
 	}
 	else if(actionKey == "minfo")
 	{
-		//selected = mlist->getSelected();
-		m_movieInfo.showMovieInfo(m_vMovieInfo[/*mlist->getSelected()*/1]);
+		selected = mlist->getSelected();
+		m_movieInfo.showMovieInfo(m_vMovieInfo[mlist->getSelected()]);
 	}
 	else if(actionKey == "spinner")
 	{
