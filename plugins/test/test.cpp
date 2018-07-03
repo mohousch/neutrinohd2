@@ -1725,6 +1725,7 @@ void CTestMenu::testShowPictureDir()
 	}
 }
 
+//// channel list
 #define HEAD_BUTTONS_COUNT	3
 const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
@@ -1745,6 +1746,11 @@ struct button_label FButtons[FOOT_BUTTONS_COUNT] =
 void CTestMenu::testCMenuWidgetListBox()
 {
 	dprintf(DEBUG_NORMAL, "CTestMenu::testCMenuWidgetListBox\n");
+
+	// itemBox
+	listMenu = new ClistBox(LOCALE_CHANNELLIST_HEAD, "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+
+	ClistBoxItem *mc;
 
 	// load all tv channels
 	Channels.clear();
@@ -1773,11 +1779,6 @@ void CTestMenu::testCMenuWidgetListBox()
 	{
 		FButtons[1].locale = LOCALE_INFOVIEWER_NEXT;
 	}
-
-	// itemBox
-	listMenu = new ClistBox(LOCALE_CHANNELLIST_HEAD, "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
-
-	ClistBoxItem *mc;
 
 	std::string title;
 	time_t jetzt = time(NULL);
@@ -1875,6 +1876,7 @@ void CTestMenu::testCMenuWidgetListBox()
 	listMenu = NULL;
 }
 
+//// plugins list
 #define NUM_LIST_BUTTONS 2
 struct button_label CPluginListButtons[NUM_LIST_BUTTONS] =
 {
@@ -1890,7 +1892,7 @@ void CTestMenu::testClistBoxnLines()
 	// itemBox
 	plist = new ClistBox("ClistBox (plugins list", NEUTRINO_ICON_SHELL, MENU_WIDTH, h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
-	ClistBoxItem *mc;
+	ClistBoxItem *pc;
 
 	//
 	for(unsigned int count = 0; count < (unsigned int)g_PluginList->getNumberOfPlugins(); count++)
@@ -1904,14 +1906,14 @@ void CTestMenu::testClistBoxnLines()
 		IconName += g_PluginList->getIcon(count);
 
 			
-		mc = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), NULL, file_exists(IconName.c_str())? IconName.c_str() : NEUTRINO_ICON_MENUITEM_PLUGIN);
+		pc = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), NULL, file_exists(IconName.c_str())? IconName.c_str() : NEUTRINO_ICON_MENUITEM_PLUGIN);
 
-		mc->setInfo1(g_PluginList->getDescription(count).c_str());
+		pc->setInfo1(g_PluginList->getDescription(count).c_str());
 
-		mc->setnLinesItem();
-		mc->switchnLinesItem();
+		pc->setnLinesItem();
+		pc->switchnLinesItem();
 
-		plist->addItem(mc);
+		plist->addItem(pc);
 	}
 
 	plist->setWidgetType(WIDGET_CLASSIC);
@@ -1935,6 +1937,7 @@ void CTestMenu::testClistBoxnLines()
 	plist = NULL;
 }
 
+//// audioplayer
 #define HEAD1_BUTTONS_COUNT	1
 const struct button_label Head1Buttons[HEAD1_BUTTONS_COUNT] =
 {
@@ -2073,7 +2076,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 				}
 
 				//
-				ma = new ClistBoxItem(title.c_str(), true, NULL, this, "aplay");
+				ma = new ClistBoxItem(title.c_str(), true, "", this, "aplay");
 			
 				ma->setOptionInfo(duration);
 				ma->setNumber(count);
@@ -2115,61 +2118,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 	audioMenu = NULL;
 }
 
-void CTestMenu::testCMenuWidget()
-{
-	int shortcut = 1;
-
-	dprintf(DEBUG_NORMAL, "testCMenuWidget\n");
-
-	CMenuWidget* mainMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
-
-	mainMenu->enableMenuPosition();
-	mainMenu->enableWidgetChange();
-	  
-	// tv modus
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
-
-	// radio modus
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE ));	
-	
-	// webtv
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE) );
-	
-#if defined (ENABLE_SCART)
-	// scart
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART) );
-#endif
-
-	// mediaplayer
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_MEDIAPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER ));
-	
-	// main setting menu
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_SETTINGS, LOCALE_HELPTEXT_MAINSETTINGS ));
-
-	// service
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SERVICE ));
-	
-	
-	// timerlist
-	mainMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST ));
-	
-	// features
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES ));
-
-	// power menu
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU ));
-
-	//box info
-	mainMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
-
-	mainMenu->integratePlugins(CPlugins::I_TYPE_MAIN, shortcut++);
-
-	mainMenu->exec(NULL, "");
-	mainMenu->hide();
-	delete mainMenu;
-	mainMenu = NULL;
-}
-
+//// CMenulist (frame| extended widget) movie browser
 #define mHEAD_BUTTONS_COUNT	2
 const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
 {
@@ -2286,6 +2235,62 @@ void CTestMenu::testFrameBox()
 	mlist->hide();
 	delete mlist;
 	mlist = NULL;
+}
+
+// CMenuWidget
+void CTestMenu::testCMenuWidget()
+{
+	int shortcut = 1;
+
+	dprintf(DEBUG_NORMAL, "testCMenuWidget\n");
+
+	CMenuWidget* mainMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
+
+	mainMenu->enableMenuPosition();
+	mainMenu->enableWidgetChange();
+	  
+	// tv modus
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
+
+	// radio modus
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE ));	
+	
+	// webtv
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE) );
+	
+#if defined (ENABLE_SCART)
+	// scart
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART) );
+#endif
+
+	// mediaplayer
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_MEDIAPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER ));
+	
+	// main setting menu
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_SETTINGS, LOCALE_HELPTEXT_MAINSETTINGS ));
+
+	// service
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SERVICE ));
+	
+	
+	// timerlist
+	mainMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST ));
+	
+	// features
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES ));
+
+	// power menu
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU ));
+
+	//box info
+	mainMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
+
+	mainMenu->integratePlugins(CPlugins::I_TYPE_MAIN, shortcut++);
+
+	mainMenu->exec(NULL, "");
+	mainMenu->hide();
+	delete mainMenu;
+	mainMenu = NULL;
 }
 
 void CTestMenu::testTSBrowserDirect()
