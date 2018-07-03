@@ -139,6 +139,7 @@ class CMenuItem
 		neutrino_msg_t msg;
 		bool can_arrow;
 		std::string iconName;
+		std::string option;
 		std::string optionInfo;
 		std::string info1, option_info1;
 		std::string info2, option_info2;
@@ -211,8 +212,8 @@ class CMenuItem
 		virtual int getItemType(){ return itemType;};
 
 		//
+		virtual void setOption(const char* text){option = text;};
 		virtual void setOptionInfo(const char* text){optionInfo = text;};
-		//virtual void setDescription(const char* text){description = text;};
 		virtual void setInfo1(const char* const text){info1 = text;};
 		virtual void setInfo2(const char* const text){info2 = text;};
 		virtual void setOptionInfo1(const char* const text){option_info1 = text;};
@@ -747,6 +748,7 @@ class ClistBox : public CMenuTarget
 
 		//
 		void setWidgetType(int type){widgetType = type;};
+		int getWidgetType(void){return widgetType;};
 
 		// Frame
 		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
@@ -763,9 +765,6 @@ class ClistBoxItem : public CMenuItem
 	CMenuTarget * jumpTarget;
 	std::string actionKey;
 
-	const char * option;
-	const std::string * option_string;
-
 	protected:
 		//
 		neutrino_locale_t text;
@@ -773,7 +772,7 @@ class ClistBoxItem : public CMenuItem
 
 		//
 		virtual const char * getName(void);
-		virtual const char * getOption(void);
+
 	public:
 		ClistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const Icon = NULL, const char* const ItemIcon = NULL);
 

@@ -2101,11 +2101,8 @@ void CTestMenu::testCMenuWidgetListBox1()
 	audioMenu->enableFootInfo();
 	audioMenu->setFootInfoHeight(30); 
 
-	// head
-	audioMenu->addKey(CRCInput::RC_info, this, /*CRCInput::getSpecialKeyName(CRCInput::RC_info)*/"ainfo");
+	audioMenu->addKey(CRCInput::RC_info, this, "ainfo");
 	audioMenu->addKey(CRCInput::RC_setup, this, "asetup");
-
-	// footer
 	audioMenu->addKey(CRCInput::RC_red, this, "ared");
 	audioMenu->addKey(CRCInput::RC_green, this, "agreen");
 	audioMenu->addKey(CRCInput::RC_yellow, this, "ayellow");
@@ -2173,9 +2170,16 @@ void CTestMenu::testCMenuWidget()
 	mainMenu = NULL;
 }
 
+#define mHEAD_BUTTONS_COUNT	2
+const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
+};
+
 void CTestMenu::testFrameBox()
 {
-	mlist = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	mlist = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	ClistBoxItem* mm;
 	
 	//
@@ -2271,9 +2275,12 @@ void CTestMenu::testFrameBox()
 
 	mlist->setSelected(selected);
 
+	mlist->setHeaderButtons(mHeadButtons, mHEAD_BUTTONS_COUNT);
+
 	mlist->enablePaintDate();
 
 	mlist->addKey(CRCInput::RC_info, this, "minfo");
+	mlist->addKey(CRCInput::RC_setup, this, "msetup");
 
 	mlist->exec(NULL, "");
 	mlist->hide();
@@ -2743,6 +2750,18 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		selected = mlist->getSelected();
 		m_movieInfo.showMovieInfo(m_vMovieInfo[mlist->getSelected()]);
+	}
+	else if(actionKey == "msetup")
+	{
+		mlist->hide();
+
+		if(mlist->getWidgetType() == WIDGET_EXTENDED)
+			mlist->setWidgetType(WIDGET_FRAME);
+		else 
+			if(mlist->getWidgetType() == WIDGET_FRAME)
+			mlist->setWidgetType(WIDGET_EXTENDED);
+
+		mlist->exec(NULL, "");
 	}
 	else if(actionKey == "spinner")
 	{

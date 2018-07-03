@@ -3025,7 +3025,7 @@ void ClistBox::paintItems()
 		else
 			sb_width = 0;
 	
-		items_width = full_width - sb_width;
+		items_width = width - sb_width;
 
 		if(widgetType == WIDGET_EXTENDED)
 		{
@@ -3054,13 +3054,12 @@ void ClistBox::paintItems()
 		}
 	
 		// paint items background
-		//frameBuffer->paintBoxRel(x, item_start_y, full_width, items_height, COL_MENUCONTENT_PLUS_0);
 		frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENTDARK_PLUS_0);
 	
 		// paint right scrollBar if we have more then one page
 		if(total_pages > 1)
 		{
-			::paintScrollBar(x + full_width - SCROLLBAR_WIDTH, item_start_y, items_height, total_pages, current_page);
+			::paintScrollBar(x + items_width - SCROLLBAR_WIDTH, item_start_y, items_height, total_pages, current_page);
 		}
 
 		// paint items
@@ -3108,10 +3107,16 @@ void ClistBox::paintFootInfo(int pos)
 		{
 			CMenuItem* item = items[pos];
 	
-			// foot text
+			// itemName
 			if(!item->itemName.empty())
 			{
 				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height - fheight + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE] ->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT, item->itemName.c_str(), COL_MENUFOOT_INFO);
+			}
+
+			// option
+			if(!item->option.empty())
+			{
+				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + BORDER_LEFT, y + height, width - BORDER_LEFT - BORDER_RIGHT, item->option.c_str(), COL_MENUFOOT_INFO);
 			}
 		}
 	}
@@ -3248,7 +3253,44 @@ void ClistBox::paintItemIcon(int pos)
 
 		item->getYPosition();
 
-		textBox->setText(&item->optionInfo, item->itemIcon, 220, 300, CTextBox::TOP_CENTER);
+		//
+		int picw = 320;
+		int pich = 256;
+
+		int p_w = 0;
+		int p_h = 0;
+		int nbpp = 0;
+		
+		std::string fname = item->itemIcon;
+		
+		if( (!fname.empty() && !access(fname.c_str(), F_OK)) )
+		{
+			CFrameBuffer::getInstance()->getSize(fname, &p_w, &p_h, &nbpp);
+
+			// scale
+			if(p_w <= picw && p_h <= pich)
+			{
+				picw = p_w;
+				pich = p_h;
+			}
+			else
+			{
+				float aspect = (float)(p_w) / (float)(p_h);
+					
+				if (((float)(p_w) / (float)picw) > ((float)(p_h) / (float)pich)) 
+				{
+					p_w = picw;
+					p_h = (int)(picw / aspect);
+				}
+				else
+				{
+					p_h = pich;
+					p_w = (int)(pich * aspect);
+				}
+			}
+		}
+
+		textBox->setText(&item->optionInfo, item->itemIcon, p_w, p_h, CTextBox::TOP_CENTER);
 	}
 }
 
@@ -3673,15 +3715,9 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 
 						break;
 					}
-					else
+					else if (widgetType == WIDGET_EXTENDED)
 					{
-						/*
-						if(!(items[selected]->can_arrow)) 
-						{
-							msg = CRCInput::RC_timeout;
-							break;
-						}
-						*/
+						textBox->scrollPageDown(1);
 					}
 					
 				case (CRCInput::RC_right):
@@ -3717,35 +3753,9 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 							}
 						}
 					}
-					else
+					else if (widgetType == WIDGET_EXTENDED)
 					{
-						/*
-						if(hasItem()) 
-						{
-							//exec this item...
-							CMenuItem * item = items[selected];
-							item->msg = msg;
-							
-							int rv = item->exec(this);
-							
-							switch ( rv ) 
-							{
-								case menu_return::RETURN_EXIT_ALL:
-									retval = menu_return::RETURN_EXIT_ALL;
-									
-								case menu_return::RETURN_EXIT:
-									msg = CRCInput::RC_timeout;
-									break;
-									
-								case menu_return::RETURN_REPAINT:
-									hide();
-									paint();
-									break;
-							}
-						} 
-						else
-							msg = CRCInput::RC_timeout;
-						*/
+						textBox->scrollPageUp(1);
 					}
 					break;
 
@@ -3844,7 +3854,7 @@ ClistBoxItem::ClistBoxItem(const neutrino_locale_t Text, const bool Active, cons
 	textString = g_Locale->getText(Text);
 
 	option = Option;
-	option_string = NULL;
+	//option_string = NULL;
 
 	active = Active;
 	jumpTarget = Target;
@@ -3863,7 +3873,7 @@ ClistBoxItem::ClistBoxItem(const char* Text, const bool Active, const char* cons
 	textString = Text;
 
 	option = Option;
-	option_string = NULL;
+	//option_string = NULL;
 
 	active = Active;
 	jumpTarget = Target;
@@ -3903,9 +3913,16 @@ int ClistBoxItem::getHeight(void) const
 
 int ClistBoxItem::getWidth(void) const
 {
-	int tw = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(textString); //FIXME:
+	if(widgetType == WIDGET_FRAME)
+	{
+		return item_width;
+	}
+	else
+	{
+		int tw = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(textString); //FIXME:
 
-	return tw;
+		return tw;
+	}
 }
 
 int ClistBoxItem::exec(CMenuTarget* parent)
@@ -3934,6 +3951,7 @@ const char * ClistBoxItem::getName(void)
 	return l_name;
 }
 
+/*
 const char * ClistBoxItem::getOption(void)
 {
 	if (option)
@@ -3944,6 +3962,7 @@ const char * ClistBoxItem::getOption(void)
 		else
 			return NULL;
 }
+*/
 
 int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 {
@@ -3965,14 +3984,12 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 
 		frameBuffer->DisplayImage(itemIcon, x + ICON_OFFSET, y + ICON_OFFSET, item_width - 2*ICON_OFFSET, item_height - 2*ICON_OFFSET);
 
-		return y + item_height;
+		return 0;
 	}
 	else
 	{
 		int height = getHeight();
 		const char * l_text = getName();
-
-		const char * option_text = getOption();	
 
 		uint8_t color = COL_MENUCONTENT;
 		fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
@@ -4089,8 +4106,8 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 			timescale.paint(x + BORDER_LEFT + numwidth + ICON_OFFSET, y + (height - pBarHeight)/2, runningPercent);
 		}
 	
-		// locale text|option text
-		int l_text_width = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]/*textFont*/->getRenderWidth(l_text, true);
+		// locale|option text
+		int l_text_width = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true);
 
 		if(widgetType == WIDGET_EXTENDED)
 		{
@@ -4103,9 +4120,9 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT + icon_w/2 + numwidth + ICON_OFFSET + pBarWidth + ICON_OFFSET, nLinesItemSwitch?y + height : y + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 3, dx - BORDER_RIGHT - BORDER_LEFT - numwidth - pBarWidth - 2*ICON_OFFSET - icon_w - icon1_w - icon2_w - optionInfo_width - ICON_OFFSET, l_text, color, 0, true); // UTF-8
 			}
 
-			if(option_text != NULL)
+			if(!option.empty())
 			{
-				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + BORDER_LEFT + icon_w/2 + numwidth + ICON_OFFSET + pBarWidth + ICON_OFFSET, nLinesItemSwitch? y + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight() + 3: y + height, dx - BORDER_LEFT - BORDER_RIGHT, option_text, color, 0, true);
+				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + BORDER_LEFT + icon_w/2 + numwidth + ICON_OFFSET + pBarWidth + ICON_OFFSET, nLinesItemSwitch? y + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight() + 3: y + height, dx - BORDER_LEFT - BORDER_RIGHT, option.c_str(), color, 0, true);
 			}
 		}
 		else if (widgetType == WIDGET_CLASSIC)
@@ -4121,9 +4138,9 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT + icon_w + numwidth + ICON_OFFSET + pBarWidth + ICON_OFFSET, nLinesItemSwitch?y + height : y + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 3, dx - BORDER_RIGHT - BORDER_LEFT - numwidth - pBarWidth - 2*ICON_OFFSET - icon_w - icon1_w - icon2_w - optionInfo_width - ICON_OFFSET, l_text, color, 0, true); // UTF-8
 				}
 
-				if(option_text != NULL)
+				if(!option.empty())
 				{
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]/*optionFont*/->RenderString(x + BORDER_LEFT + icon_w + numwidth + ICON_OFFSET + pBarWidth + ICON_OFFSET, nLinesItemSwitch? y + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight() + 3: y + height, dx - BORDER_LEFT - BORDER_RIGHT, option_text, color, 0, true);
+					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + BORDER_LEFT + icon_w + numwidth + ICON_OFFSET + pBarWidth + ICON_OFFSET, nLinesItemSwitch? y + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight() + 3: y + height, dx - BORDER_LEFT - BORDER_RIGHT, option.c_str(), color, 0, true);
 				}
 			}
 			else
@@ -4138,26 +4155,18 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 				}
 
 				// option
-				//bool paintDescription = true;
 				std::string Option;
 			
-				if(option_text != NULL)
+				if(!option.empty())
 				{
 					int iw, ih;
 					//get icon size
 					frameBuffer->getIconSize(NEUTRINO_ICON_HD, &iw, &ih);
 
-					//Option_width = dx - BORDER_LEFT - numwidth - ICON_OFFSET - icon_w - icon1_w - icon2_w - l_text_width;
-					//if (descr_width < 0) 
-					//	paintDescription = false;
+					Option = " - ";
+					Option += option;
 
-					//if(paintDescription)
-					{
-						Option = " - ";
-						Option += option_text;
-
-						g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]/*optionFont*/->RenderString(x + BORDER_LEFT + numwidth + pBarWidth + ICON_OFFSET + l_text_width + ICON_OFFSET, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]/*optionFont*/->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]/*optionFont*/->getHeight(), dx - BORDER_LEFT - BORDER_RIGHT - numwidth - ICON_OFFSET - pBarWidth - ICON_OFFSET - l_text_width - icon_w - icon1_w - ICON_OFFSET - icon2_w - ICON_OFFSET - 2*iw, Option.c_str(), COL_COLORED_EVENTS_CHANNELLIST, 0, true);
-					}
+					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + BORDER_LEFT + numwidth + pBarWidth + ICON_OFFSET + l_text_width + ICON_OFFSET, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), dx - BORDER_LEFT - BORDER_RIGHT - numwidth - ICON_OFFSET - pBarWidth - ICON_OFFSET - l_text_width - icon_w - icon1_w - ICON_OFFSET - icon2_w - ICON_OFFSET - 2*iw, Option.c_str(), COL_COLORED_EVENTS_CHANNELLIST, 0, true);
 				}
 			}
 		}
@@ -4169,30 +4178,22 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 
 			if(l_text != NULL)
 			{
-				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]/*textFont*/->RenderString(x + BORDER_LEFT + icon_w + numwidth + ICON_OFFSET + pBarWidth + ICON_OFFSET, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_RIGHT - BORDER_LEFT - numwidth - pBarWidth - 2*ICON_OFFSET - icon_w - icon1_w - icon2_w - optionInfo_width - ICON_OFFSET, l_text, color, 0, true); // UTF-8
+				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + BORDER_LEFT + icon_w + numwidth + ICON_OFFSET + pBarWidth + ICON_OFFSET, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_RIGHT - BORDER_LEFT - numwidth - pBarWidth - 2*ICON_OFFSET - icon_w - icon1_w - icon2_w - optionInfo_width - ICON_OFFSET, l_text, color, 0, true); // UTF-8
 			}
 
 			// option
-			//bool paintDescription = true;
 			std::string Option;
 			
-			if(option_text != NULL)
+			if(!option.empty())
 			{
 				int iw, ih;
 				//get icon size
 				frameBuffer->getIconSize(NEUTRINO_ICON_HD, &iw, &ih);
 
-				//Option_width = dx - BORDER_LEFT - numwidth - ICON_OFFSET - icon_w - icon1_w - icon2_w - l_text_width;
-				//if (descr_width < 0) 
-				//	paintDescription = false;
+				Option = " - ";
+				Option += option;
 
-				//if(paintDescription)
-				{
-					Option = " - ";
-					Option += option_text;
-
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]/*optionFont*/->RenderString(x + BORDER_LEFT + numwidth + pBarWidth + ICON_OFFSET + l_text_width + ICON_OFFSET, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]/*optionFont*/->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]/*optionFont*/->getHeight(), dx - BORDER_LEFT - BORDER_RIGHT - numwidth - ICON_OFFSET - pBarWidth - ICON_OFFSET - l_text_width - icon_w - icon1_w - ICON_OFFSET - icon2_w - ICON_OFFSET - 2*iw, Option.c_str(), COL_COLORED_EVENTS_CHANNELLIST, 0, true);
-				}
+				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + BORDER_LEFT + numwidth + pBarWidth + ICON_OFFSET + l_text_width + ICON_OFFSET, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), dx - BORDER_LEFT - BORDER_RIGHT - numwidth - ICON_OFFSET - pBarWidth - ICON_OFFSET - l_text_width - icon_w - icon1_w - ICON_OFFSET - icon2_w - ICON_OFFSET - 2*iw, Option.c_str(), COL_COLORED_EVENTS_CHANNELLIST, 0, true);
 			}
 		}
 

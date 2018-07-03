@@ -94,7 +94,7 @@ void CNKMovies::showNKMoviesMenu()
 		moviesMenu->addItem(nm);
 	}
 
-	moviesMenu->setWidgetType(WIDGET_EXTENDED);
+	moviesMenu->setWidgetType(WIDGET_FRAME);
 	moviesMenu->setItemsPerPage(6, 2);
 	moviesMenu->setItemBoxColor(COL_YELLOW);
 
