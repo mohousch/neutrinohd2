@@ -125,7 +125,7 @@ class CPlugins
 
 		bool parseCfg(plugin *plugin_data);
 		void addPlugin(const char *dir);
-		int find_plugin(const std::string & filename);
+	
 	public:
 
 		~CPlugins();
@@ -136,6 +136,9 @@ class CPlugins
 		void loadPlugins();
 
 		void setPluginDir(const std::string & dir) { plugin_dir = dir; }
+
+		//
+		int find_plugin(const std::string & filename);
 
 		//
 		inline int getNumberOfPlugins(void) const { return plugin_list.size(); }

@@ -258,8 +258,9 @@ void CARDstreams::showMenu(void)
 	
 	//items
 	for (int i = 0; i < 6; i++)
-		catMenu->addItem(new ClistBoxItem("coming soon!", true, NULL, this, NULL, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
+		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 
+	catMenu->setWidgetType(WIDGET_FRAME);
 	catMenu->setItemsPerPage(3, 2);
 	catMenu->setItemBoxColor(COL_YELLOW);
 

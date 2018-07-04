@@ -37,8 +37,6 @@ class CMainSetup : public CMenuTarget
 {
 	private:
 		void showMenu(void);
-		void showMenuSmart(void);
-		void showMenuClassic(void);
 		
 	public:
 		CMainSetup();

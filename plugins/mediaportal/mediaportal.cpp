@@ -115,20 +115,37 @@ void CMediaPortal::showMenu(void)
 
 	mediaPortal->enableWidgetChange();
 
+	CMenuItem* menu_item = NULL;
+
 	// youtube
-	mediaPortal->addItem(new CMenuForwarder("You Tube", true, NULL, this, "youtube", CRCInput::RC_nokey, NULL, PLUGINDIR "/youtube/youtube.png"));
+	menu_item = new CMenuForwarder("You Tube", true, NULL, this, "youtube", CRCInput::RC_nokey, NULL, PLUGINDIR "/youtube/youtube.png");
+
+	menu_item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("youtube")));
+
+	mediaPortal->addItem(menu_item);
 
 	// netzkino
-	mediaPortal->addItem(new CMenuForwarder("NetzKino", true, NULL, this, "netzkino", CRCInput::RC_nokey, NULL, PLUGINDIR "/netzkino/netzkino.png"));
+	menu_item = new CMenuForwarder("NetzKino", true, NULL, this, "netzkino", CRCInput::RC_nokey, NULL, PLUGINDIR "/netzkino/netzkino.png");
+	menu_item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("netzkino")));
+
+	mediaPortal->addItem(menu_item);
 
 	// icecast
-	mediaPortal->addItem(new CMenuForwarder("Ice Cast", true, NULL, this, "icecast", CRCInput::RC_nokey, NULL, PLUGINDIR "/icecast/icecast.png"));
+	menu_item = new CMenuForwarder("Ice Cast", true, NULL, this, "icecast", CRCInput::RC_nokey, NULL, PLUGINDIR "/icecast/icecast.png");
+	menu_item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("icecast")));
 
-	// ard
-	mediaPortal->addItem(new CMenuForwarder("ARD Mediathek", true, NULL, this, "ard", CRCInput::RC_nokey, NULL, PLUGINDIR "/mediaportal/ard.png"));
+	mediaPortal->addItem(menu_item);
 
 	// internetradio
-	mediaPortal->addItem(new CMenuForwarder("Internet Radio", true, NULL, this, "internetradio", CRCInput::RC_nokey, NULL,  PLUGINDIR "/internetradio/internetradio.png"));
+	menu_item = new CMenuForwarder("Internet Radio", true, NULL, this, "internetradio", CRCInput::RC_nokey, NULL,  PLUGINDIR "/internetradio/internetradio.png");
+	menu_item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("internetradio")));
+	
+	mediaPortal->addItem(menu_item);
+
+	// ard
+	menu_item = new CMenuForwarder("ARD Mediathek", true, NULL, this, "ard", CRCInput::RC_nokey, NULL, PLUGINDIR "/mediaportal/ard.png");
+
+	mediaPortal->addItem(menu_item);
 
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();

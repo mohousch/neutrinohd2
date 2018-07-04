@@ -148,7 +148,7 @@ void CYTBrowser::showYTMoviesMenu(bool reload)
 	{
 		itemTitle = m_vMovieInfo[i].epgTitle + " (" + to_string(m_vMovieInfo[i].length) + " Min)";
  
-		moviesMenu->addItem(new ClistBoxItem(itemTitle.c_str(), true, NULL, this, "play", NULL,  file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
+		moviesMenu->addItem(new ClistBoxItem(itemTitle.c_str(), true, m_vMovieInfo[i].epgInfo2.c_str(), this, "play", NULL,  file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
 	}
 
 	moviesMenu->setWidgetType(WIDGET_FRAME);

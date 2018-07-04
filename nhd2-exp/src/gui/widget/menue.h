@@ -62,7 +62,6 @@ enum
 	ITEM_TYPE_SEPARATOR,
 	ITEM_TYPE_FORWARDER,
 	ITEM_TYPE_SELECTOR,
-	ITEM_TYPE_FRAME_BOX,
 	ITEM_TYPE_LIST_BOX
 };
 
@@ -72,7 +71,8 @@ enum
 	WIDGET_STANDARD = 0,
 	WIDGET_CLASSIC,
 	WIDGET_EXTENDED,
-	WIDGET_FRAME
+	WIDGET_FRAME,
+	WIDGET_INFO
 };
 
 struct menu_return
@@ -693,10 +693,6 @@ class ClistBox : public CMenuTarget
 		int itemsPerX;
 		int itemsPerY;
 		int maxItemsPerPage;
-
-		//
-		//CBox cFrameBoxText;
-		//CTextBox* textBox;
 		
 	public:
 		ClistBox();

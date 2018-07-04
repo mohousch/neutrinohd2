@@ -2129,6 +2129,7 @@ const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
 void CTestMenu::testFrameBox()
 {
 	mlist = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+
 	ClistBoxItem* mm;
 	
 	//
@@ -2159,10 +2160,11 @@ void CTestMenu::testFrameBox()
 	fileFilter.addFilter("mp3");
 	fileFilter.addFilter("wma");
 	fileFilter.addFilter("ogg");
-	
-	std::string Path_local = g_settings.network_nfs_recordingdir;
 
 	CFileList filelist;
+	
+	// recordingdir
+	std::string Path_local = g_settings.network_nfs_recordingdir;
 	
 	//
 	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
@@ -2218,7 +2220,15 @@ void CTestMenu::testFrameBox()
 		mlist->addItem(mm);
 	}
 
-	mlist->setWidgetType(WIDGET_EXTENDED);
+	#if 0
+	mm = new ClistBoxItem(m_vMovieInfo[1].epgTitle.c_str(), true, m_vMovieInfo[1].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[1].tfile.c_str())? m_vMovieInfo[1].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+	mm->setOptionInfo(m_vMovieInfo[1].epgInfo2.c_str());
+
+	mlist->addItem(mm);
+	#endif
+
+	mlist->setWidgetType(WIDGET_FRAME);
 	mlist->setItemsPerPage(6, 2);
 	mlist->setItemBoxColor(COL_YELLOW);
 
@@ -2686,7 +2696,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		selected = listMenu->getSelected();
 		g_Zapit->zapTo_serviceID(Channels[listMenu->getSelected()]->channel_id);
-		return menu_return::RETURN_EXIT_ALL;
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "menuwidgetlistbox1")
 	{
@@ -2762,8 +2772,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		if(mlist->getWidgetType() == WIDGET_EXTENDED)
 			mlist->setWidgetType(WIDGET_FRAME);
-		else 
-			if(mlist->getWidgetType() == WIDGET_FRAME)
+		else if(mlist->getWidgetType() == WIDGET_FRAME)
 			mlist->setWidgetType(WIDGET_EXTENDED);
 
 		mlist->exec(NULL, "");

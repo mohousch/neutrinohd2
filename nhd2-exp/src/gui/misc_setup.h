@@ -46,8 +46,6 @@ class CMiscSettings : public CMenuTarget, CChangeObserver
 {
 	private:
 		void showMenu(void);
-		void showMenuSmart(void);
-		void showMenuClassic(void);
 		
 	public:
 		CMiscSettings();

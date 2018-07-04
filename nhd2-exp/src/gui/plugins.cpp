@@ -303,7 +303,6 @@ void CPlugins::startPlugin(const char * const name)
 		
 		HintBox(LOCALE_MESSAGEBOX_INFO, hint.c_str());
 	}
-
 }
 
 void CPlugins::startScriptPlugin(int number)
