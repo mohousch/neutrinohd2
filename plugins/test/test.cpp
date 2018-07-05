@@ -1890,7 +1890,7 @@ void CTestMenu::testClistBoxnLines()
 
 
 	// itemBox
-	plist = new ClistBox("ClistBox (plugins list", NEUTRINO_ICON_SHELL, MENU_WIDTH, h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	plist = new ClistBox("ClistBox (plugins list)", NEUTRINO_ICON_SHELL, MENU_WIDTH, h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	ClistBoxItem *pc;
 
@@ -1917,19 +1917,20 @@ void CTestMenu::testClistBoxnLines()
 	}
 
 	plist->setWidgetType(WIDGET_CLASSIC);
-	plist->enableMenuPosition();
 	plist->enablePaintDate();
 
+	plist->enableFootInfo();
 	//plist->setFootInfoHeight(40); 
-	//plist->enableFootInfo();
 
 	plist->setSelected(selected);
 
+	// footer
 	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS);
 
-	// footer
+	//
 	plist->addKey(CRCInput::RC_red, this, "pred");
 	plist->addKey(CRCInput::RC_green, this, "pgreen");
+	plist->addKey(CRCInput::RC_setup, this, "psetup");
 
 	plist->exec(NULL, "");
 	plist->hide();
@@ -2215,7 +2216,7 @@ void CTestMenu::testFrameBox()
 	{
 		mm = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		mm->setOptionInfo(m_vMovieInfo[i].epgInfo2.c_str());
+		mm->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
 
 		mlist->addItem(mm);
 	}
@@ -2748,7 +2749,32 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "pred")
 	{
 		g_PluginList->removePlugin(plist->getSelected());
-		return menu_return::RETURN_EXIT_ALL;
+		//return menu_return::RETURN_EXIT_ALL;
+		plist->hide();
+		plist->exec(NULL, "");
+	}
+	else if(actionKey == "pgreen")
+	{
+		g_PluginList->startPlugin(plist->getSelected());
+	}
+	else if(actionKey == "psetup")
+	{
+		plist->hide();
+
+		if(plist->getWidgetType() == WIDGET_STANDARD)
+			plist->setWidgetType(WIDGET_CLASSIC);
+		else if(plist->getWidgetType() == WIDGET_CLASSIC)
+			plist->setWidgetType(WIDGET_EXTENDED);
+		else if(plist->getWidgetType() == WIDGET_EXTENDED)
+			plist->setWidgetType(WIDGET_FRAME);
+		else if(plist->getWidgetType() == WIDGET_FRAME)
+			plist->setWidgetType(WIDGET_STANDARD);
+
+		plist->initFrames();
+		plist->paint();
+		plist->paintHead();
+		plist->paintFoot();
+
 	}
 	else if(actionKey == "mplay")
 	{
@@ -2775,7 +2801,10 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		else if(mlist->getWidgetType() == WIDGET_FRAME)
 			mlist->setWidgetType(WIDGET_EXTENDED);
 
-		mlist->exec(NULL, "");
+		mlist->initFrames();
+		mlist->paint();
+		mlist->paintHead();
+		mlist->paintFoot();
 	}
 	else if(actionKey == "spinner")
 	{

@@ -542,11 +542,8 @@ class CMenuWidget : public CMenuTarget
 		int fheight;
 		int item_height;
 		int sb_width;
-		int itemHeightTotal;
-		int heightCurrPage;
 		int items_height;
 		int items_width;
-		int heightFirstPage;
 		int listmaxshow;
 
 		bool MenuPos;
@@ -617,6 +614,7 @@ class ClistBox : public CMenuTarget
 		int width;
 		int height;
 		int wanted_height;
+		int wanted_width;
 		int x;
 		int y;
 		int offx, offy;
@@ -644,14 +642,9 @@ class ClistBox : public CMenuTarget
 		int item_height;
 		int item_width;
 		int sb_width;
-		int itemHeightTotal;
-		int heightCurrPage;
 		int items_height;
 		int items_width;
-		int heightFirstPage;
 		int listmaxshow;
-
-		bool MenuPos;
 
 		//
 		int fbutton_count;
@@ -725,7 +718,6 @@ class ClistBox : public CMenuTarget
 		
 		//
 		void enableSaveScreen();
-		void enableMenuPosition(){MenuPos = true;};
 
 		//
 		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count);
@@ -736,9 +728,9 @@ class ClistBox : public CMenuTarget
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 
 		//
-		void enableFootInfo(){FootInfo = true; initFrames();};
-		void setFootInfoHeight(int height = 70);
 		void resizeFrames();
+		void enableFootInfo(){FootInfo = true; initFrames();};
+		void setFootInfoHeight(int height = 70){footInfoHeight = height; resizeFrames();};
 
 		void setTimeOut(int to = 0){timeout = to;};
 

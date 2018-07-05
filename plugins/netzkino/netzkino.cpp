@@ -99,6 +99,7 @@ void CNKMovies::showNKMoviesMenu()
 	moviesMenu->setHeaderButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
+	moviesMenu->addKey(CRCInput::RC_9, this, CRCInput::getSpecialKeyName(CRCInput::RC_9));
 
 	moviesMenu->exec(NULL, "");
 	//moviesMenu->hide();
@@ -203,6 +204,26 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_setup")
 	{
 		showNKCategoriesMenu();
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "RC_9")
+	{
+		hide();
+
+		if(moviesMenu->getWidgetType() == WIDGET_STANDARD)
+			moviesMenu->setWidgetType(WIDGET_CLASSIC);
+		else if(moviesMenu->getWidgetType() == WIDGET_CLASSIC)
+			moviesMenu->setWidgetType(WIDGET_EXTENDED);
+		else if(moviesMenu->getWidgetType() == WIDGET_EXTENDED)
+			moviesMenu->setWidgetType(WIDGET_FRAME);
+		else if(moviesMenu->getWidgetType() == WIDGET_FRAME)
+			moviesMenu->setWidgetType(WIDGET_STANDARD);
+
+		moviesMenu->initFrames();
+		moviesMenu->paint();
+		moviesMenu->paintHead();
+		moviesMenu->paintFoot();
 
 		return menu_return::RETURN_REPAINT;
 	}
