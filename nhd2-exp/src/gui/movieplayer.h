@@ -151,13 +151,12 @@ class CMoviePlayerGui : public CMenuTarget
 		bool update_lcd;
 		bool start_play;
 		bool exit;
-		bool was_file;
-		bool isMovieBrowser;
-		bool isURL;
+
+		//
 		bool m_loop;
 		bool m_multiselect;
 		
-		bool is_file_player;
+		bool is_file_player; // coolstream
 		
 		// timeosd
 		bool time_forced;

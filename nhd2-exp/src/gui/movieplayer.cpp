@@ -262,10 +262,8 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	update_lcd = false;
 	start_play = false;
 	exit = false;
-	was_file = false;
 	m_loop = false;
 	m_multiselect = false;
-	isURL = false;
 	
 	// for playing
 	playstate = CMoviePlayerGui::STOPPED;
@@ -285,14 +283,6 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	
 	// cutneutrino
 	cutNeutrino();
-
-	//
-	if(actionKey == "urlplayback")
-	{
-		//open_filebrowser = false;
-		//isMovieBrowser = false;
-		isURL = true;
-	}
 	
 	//
 	PlayFile();
@@ -328,65 +318,59 @@ void CMoviePlayerGui::PlayFile(void)
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 	
-	// url
-	if(isURL)
+	//
+	if(!filelist.empty())
 	{
 		//
-		if(!filelist.empty())
+		if(filelist[0].ytid.empty())
 		{
-			//
-			if(filelist[0].ytid.empty())
+			if(!filelist[0].audioPids.empty()) 
 			{
-				if(!filelist[0].audioPids.empty()) 
-				{
-					g_currentapid = filelist[0].audioPids[0].epgAudioPid;
-					g_currentac3 = filelist[0].audioPids[0].atype;
-
-					//
-					currentapid = g_currentapid;
-				}
-
-				for (int i = 0; i < (int)filelist[0].audioPids.size(); i++) 
-				{
-					if (filelist[0].audioPids[i].selected) 
-					{
-#if defined (PLATFORM_COOLSTREAM)
-						g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
-#else
-						g_currentapid = i;	//FIXME
-#endif						
-						g_currentac3 = filelist[0].audioPids[i].atype;
-						//
-
-#if defined (PLATFORM_COOLSTREAM)
-						currentapid = g_currentapid;
-						currentac3 = g_currentac3;
-#else
-						currentapid = 0;
-#endif
-					}
-				}
+				g_currentapid = filelist[0].audioPids[0].epgAudioPid;
+				g_currentac3 = filelist[0].audioPids[0].atype;
 
 				//
-				g_vpid = filelist[0].epgVideoPid;
-				g_vtype = filelist[0].VideoType;
+				currentapid = g_currentapid;
+			}
 
-				// startposition			
-				startposition = 1000 * showStartPosSelectionMenu();
+			for (int i = 0; i < (int)filelist[0].audioPids.size(); i++) 
+			{
+				if (filelist[0].audioPids[i].selected) 
+				{
+#if defined (PLATFORM_COOLSTREAM)
+					g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
+#else
+					g_currentapid = i;	//FIXME
+#endif						
+					g_currentac3 = filelist[0].audioPids[i].atype;
+
+#if defined (PLATFORM_COOLSTREAM)
+					currentapid = g_currentapid;
+					currentac3 = g_currentac3;
+#else
+					currentapid = 0;
+#endif
+				}
 			}
 
 			//
-			update_lcd = true;
-			start_play = true;
-			was_file = true;
+			g_vpid = filelist[0].epgVideoPid;
+			g_vtype = filelist[0].VideoType;
 
-			//
-			if(filelist.size() > 1)
-				m_multiselect = true;
+			// startposition			
+			startposition = 1000 * showStartPosSelectionMenu();
 		}
-						
-		CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);	
+
+		//
+		update_lcd = true;
+		start_play = true;
+
+		//
+		if(filelist.size() > 1)
+			m_multiselect = true;
 	}
+						
+	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);	
 
 	// bookmarks menu
 	timeb current_time;
@@ -426,7 +410,7 @@ void CMoviePlayerGui::PlayFile(void)
  go_repeat:
 	do {
 		// multi select|loop
-		if (playstate == CMoviePlayerGui::STOPPED && was_file && selected > 0) 
+		if (playstate == CMoviePlayerGui::STOPPED && selected > 0) 
 		{
 			if(selected + 1 < filelist.size()) 
 			{
@@ -716,9 +700,6 @@ void CMoviePlayerGui::PlayFile(void)
 				} 
 				//
 			}
-			
-			if(isURL)
-				was_file = false;
 			
 			if(m_loop)
 				m_loop = false;
@@ -1405,12 +1386,11 @@ void CMoviePlayerGui::PlayFile(void)
 	CVFD::getInstance()->ShowIcon(VFD_ICON_PLAY, false);
 	CVFD::getInstance()->ShowIcon(VFD_ICON_PAUSE, false);
 
-	if (was_file) 
+	if(m_multiselect || m_loop) 
 	{
 		usleep(3000);
 		
-		if(m_multiselect || m_loop)
-			start_play = true;
+		start_play = true;
 		
 		goto go_repeat;
 	}
