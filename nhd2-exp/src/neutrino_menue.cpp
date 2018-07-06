@@ -259,6 +259,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 		// now compare pos with the position of any item. Add this item if position is the same
 		switch(g_settings.usermenu[button][pos]) 
 		{
+			/*
 			// tsbrowser
 			case SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB:
 		                menu_items++;
@@ -276,6 +277,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 				menu_item = new CMenuForwarder(LOCALE_MOVIEPLAYER_MOVIES, true, NULL, new CMoviePlayerGui(), "moviebrowser", key, icon, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_MOVIEBROWSER);
 		                menu->addItem(menu_item, false);
 		                break;
+			*/
 
 			// timerlist
 		       case SNeutrinoSettings::ITEM_TIMERLIST:

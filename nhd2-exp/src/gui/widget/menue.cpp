@@ -3163,7 +3163,7 @@ void ClistBox::paintFootInfo(int pos)
 			}
 		}
 	}
-	else /*if(widgetType == WIDGET_STANDARD || widgetType == WIDGET_CLASSIC)*/
+	else if(widgetType == WIDGET_STANDARD || widgetType == WIDGET_CLASSIC)
 	{
 		if(FootInfo == false)
 			return;
@@ -3220,7 +3220,7 @@ void ClistBox::paintFootInfo(int pos)
 
 void ClistBox::hideFootInfo()
 {
-	//if(widgetType == WIDGET_STANDARD || widgetType == WIDGET_CLASSIC)
+	if(widgetType == WIDGET_STANDARD || widgetType == WIDGET_CLASSIC)
 	{
 		//
 		cFrameFootInfo.iX = x;

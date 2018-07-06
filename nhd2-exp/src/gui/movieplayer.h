@@ -149,7 +149,6 @@ class CMoviePlayerGui : public CMenuTarget
 		
 		// global flags
 		bool update_lcd;
-		bool open_filebrowser;
 		bool start_play;
 		bool exit;
 		bool was_file;
@@ -172,9 +171,6 @@ class CMoviePlayerGui : public CMenuTarget
 		CFrameBuffer * frameBuffer;
 		int m_LastMode;	
 		bool stopped;
-
-		std::string Path_local;
-		CMovieBrowser * moviebrowser;
 		
 		CMovieInfo cMovieInfo;	
 

@@ -18,7 +18,9 @@ SUBDIRS = \
 	icecast \
 	upnpbrowser \
 	internetradio \
-	moviebrowser
+	moviebrowser \
+	tsplayer \
+	movieplayer
 
 if ENABLE_NGLCD
 SUBDIRS += nglcd

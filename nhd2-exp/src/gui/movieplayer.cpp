@@ -106,12 +106,6 @@ CMoviePlayerGui::CMoviePlayerGui()
 
 	frameBuffer = CFrameBuffer::getInstance();
 
-	// local path
-	if (strlen(g_settings.network_nfs_moviedir) != 0)
-		Path_local = g_settings.network_nfs_moviedir;
-	else
-		Path_local = "/";
-
 	selected = 0;
 }
 
@@ -266,13 +260,11 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	
 	// global flags
 	update_lcd = false;
-	open_filebrowser = false;
 	start_play = false;
 	exit = false;
 	was_file = false;
 	m_loop = false;
 	m_multiselect = false;
-	isMovieBrowser = false;
 	isURL = false;
 	
 	// for playing
@@ -294,30 +286,11 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	// cutneutrino
 	cutNeutrino();
 
-	if (actionKey == "tsmoviebrowser") 
+	//
+	if(actionKey == "urlplayback")
 	{
-		open_filebrowser = true;
-		isMovieBrowser = true;
-		isURL = false;
-		
-		// moviebrowser
-		moviebrowser = new CMovieBrowser();
-		moviebrowser->setMode(MB_SHOW_RECORDS);
-	}
-	else if (actionKey == "moviebrowser") 
-	{
-		open_filebrowser = true;
-		isMovieBrowser = true;
-		isURL = false;
-		
-		// moviebrowser
-		moviebrowser = new CMovieBrowser();
-		moviebrowser->setMode(MB_SHOW_FILES);
-	}
-	else if(actionKey == "urlplayback")
-	{
-		open_filebrowser = false;
-		isMovieBrowser = false;
+		//open_filebrowser = false;
+		//isMovieBrowser = false;
 		isURL = true;
 	}
 	
@@ -337,16 +310,6 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	// clear filelist
 	if(!filelist.empty())
 		filelist.clear();
-	
-	//
-	if (actionKey == "tsmoviebrowser" || actionKey == "moviebrowser") 
-	{
-		if (moviebrowser != NULL)
-		{
-			delete moviebrowser;
-			moviebrowser = NULL;
-		}
-	}
 
 	// restore neutrino
 	restoreNeutrino();
@@ -519,10 +482,6 @@ void CMoviePlayerGui::PlayFile(void)
 				update_lcd = true;
 				start_play = true;
 			}
-			else 
-			{
-				open_filebrowser = true;
-			}
 		}
 		
 		// exit
@@ -615,83 +574,6 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 			}
 		}	
-
-		// moviebrowser/filebrowser
-		if (open_filebrowser) 
-		{
-			open_filebrowser = false;
-			
-			FileTime.hide();
-
-			// moviebrowser
-			if (isMovieBrowser == true) //moviebrowser
-			{	
-				if (moviebrowser->exec(Path_local.c_str())) 
-				{
-					// get the current path and file name
-					Path_local = moviebrowser->getCurrentDir();
-
-					if (moviebrowser->getSelectedFile() != NULL) 
-					{
-						// clear playlist
-						clearPlaylist();
-
-						// add to playlist
-						addToPlaylist(*moviebrowser->getCurrentMovieInfo());
-
-						//
-						if(!filelist[0].audioPids.empty()) 
-						{
-							g_currentapid = filelist[0].audioPids[0].epgAudioPid;	//FIXME
-							g_currentac3 = filelist[0].audioPids[0].atype;
-
-							//
-							currentapid = g_currentapid;
-						}
-
-						for (int i = 0; i < (int)filelist[0].audioPids.size(); i++) 
-						{
-							if (filelist[0].audioPids[i].selected) 
-							{
-#if defined (PLATFORM_COOLSTREAM)
-								g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
-#else
-								g_currentapid = i;	//FIXME
-#endif								
-								g_currentac3 = filelist[0].audioPids[i].atype;
-								//
-#if defined (PLATFORM_COOLSTREAM)
-								currentapid = g_currentapid;
-								currentac3 = g_currentac3;
-#else
-								currentapid = 0;
-#endif
-							}
-						}
-
-						// startposition					
-						startposition = 1000 * showStartPosSelectionMenu();						
-
-						//
-						g_vpid = filelist[0].epgVideoPid;
-						g_vtype = filelist[0].VideoType;
-						
-						dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: file:%s apid:0x%X atype:%d vpid:0x%X vtype:%d startposition:%d\n", filelist[selected].file.Name.c_str(), g_currentapid, g_currentac3, g_vpid, g_vtype, startposition/1000);
-						
-						update_lcd = true;
-						start_play = true;
-						was_file = true;
-					}
-				} 
-				else if (playstate == CMoviePlayerGui::STOPPED) 
-				{
-					was_file = false;
-					break;
-				}
-				
-				CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);	
-			}
-		}
 
 		// LCD 
 		if (update_lcd) 
@@ -857,11 +739,13 @@ void CMoviePlayerGui::PlayFile(void)
 				
 				speed = 1;
 				playback->SetSpeed(speed);
-			} 
+			}
+			/* 
 			else if(filelist[selected].ytid != "timeshift")
 			{
 				open_filebrowser = true;
 			}
+			*/
 
 			if (time_forced) 
 			{
@@ -1469,7 +1353,7 @@ void CMoviePlayerGui::PlayFile(void)
 				start_play = true;
 			}
 		}
-		else if (msg == (neutrino_msg_t)g_settings.key_screenshot && isMovieBrowser == true )
+		else if (msg == (neutrino_msg_t)g_settings.key_screenshot /*&& isMovieBrowser == true*/ )
 		{
          		if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SCREENSHOT_ANNOUNCE), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
 			{
@@ -1524,9 +1408,6 @@ void CMoviePlayerGui::PlayFile(void)
 	if (was_file) 
 	{
 		usleep(3000);
-		
-		if(!isURL)
-			open_filebrowser = true;
 		
 		if(m_multiselect || m_loop)
 			start_play = true;

@@ -54,5 +54,7 @@ upnpbrowser/libupnpclient/Makefile
 upnpbrowser/Makefile
 internetradio/Makefile
 moviebrowser/Makefile
+tsplayer/Makefile
+movieplayer/Makefile
 ])
 
