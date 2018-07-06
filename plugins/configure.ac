@@ -53,5 +53,6 @@ icecast/Makefile
 upnpbrowser/libupnpclient/Makefile
 upnpbrowser/Makefile
 internetradio/Makefile
+moviebrowser/Makefile
 ])
 

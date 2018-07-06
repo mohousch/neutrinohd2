@@ -17,7 +17,8 @@ SUBDIRS = \
 	satipcast \
 	icecast \
 	upnpbrowser \
-	internetradio
+	internetradio \
+	moviebrowser
 
 if ENABLE_NGLCD
 SUBDIRS += nglcd
