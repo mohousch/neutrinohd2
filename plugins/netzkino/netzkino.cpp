@@ -45,6 +45,12 @@ CNKMovies::~CNKMovies()
 	nkparser.Cleanup();
 }
 
+void CNKMovies::hide()
+{
+	CFrameBuffer::getInstance()->paintBackground();
+	CFrameBuffer::getInstance()->blit();
+}
+
 #define NK_HEAD_BUTTONS_COUNT	2
 const struct button_label NKHeadButtons[NK_HEAD_BUTTONS_COUNT] =
 {
@@ -82,11 +88,13 @@ void CNKMovies::showNKMoviesMenu()
 
 	moviesMenu = new ClistBox(title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
-	ClistBoxItem* nm;
+	CMenuItem* nm;
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		nm = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgInfo2.c_str(), this, "play", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		nm->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
 
 		//
 		moviesMenu->addItem(nm);
@@ -97,9 +105,10 @@ void CNKMovies::showNKMoviesMenu()
 	moviesMenu->setItemBoxColor(COL_YELLOW);
 
 	moviesMenu->setHeaderButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
+
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
-	moviesMenu->addKey(CRCInput::RC_9, this, CRCInput::getSpecialKeyName(CRCInput::RC_9));
+	moviesMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
 
 	moviesMenu->exec(NULL, "");
 	//moviesMenu->hide();
@@ -184,8 +193,6 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CNKMovies::exec: actionKey:%s\n", actionKey.c_str());
 
-	int returnval = menu_return::RETURN_REPAINT;
-
 	if(parent) 
 		parent->hide();
 
@@ -207,9 +214,9 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "RC_9")
+	else if(actionKey == "RC_red")
 	{
-		hide();
+		moviesMenu->hide();
 
 		if(moviesMenu->getWidgetType() == WIDGET_STANDARD)
 			moviesMenu->setWidgetType(WIDGET_CLASSIC);

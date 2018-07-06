@@ -158,13 +158,13 @@ void CYTBrowser::showYTMoviesMenu(bool reload)
 
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
-	moviesMenu->addKey(CRCInput::RC_0, this, CRCInput::getSpecialKeyName(CRCInput::RC_0));
+	//moviesMenu->addKey(CRCInput::RC_0, this, CRCInput::getSpecialKeyName(CRCInput::RC_0));
+	//moviesMenu->addKey(CRCInput::RC_9, this, CRCInput::getSpecialKeyName(CRCInput::RC_9));
 
 	moviesMenu->exec(NULL, "");
-	//moviesMenu->hide();
+	moviesMenu->hide();
 	delete moviesMenu;
 	moviesMenu = NULL;
-	//
 }
 
 void CYTBrowser::playMovie(void)
@@ -235,13 +235,35 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		else
 			return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "RC_0" || actionKey == "RC_unknown")
+	/*
+	else if(actionKey == "RC_0")
 	{
 		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		m_settings.ytmode = cYTFeedParser::RELATED;
 
 		showYTMoviesMenu();
 	}
+	else if(actionKey == "RC_unknown")
+	{
+		moviesMenu->hide();
+
+		if(moviesMenu->getWidgetType() == WIDGET_STANDARD)
+			moviesMenu->setWidgetType(WIDGET_CLASSIC);
+		else if(moviesMenu->getWidgetType() == WIDGET_CLASSIC)
+			moviesMenu->setWidgetType(WIDGET_EXTENDED);
+		else if(moviesMenu->getWidgetType() == WIDGET_EXTENDED)
+			moviesMenu->setWidgetType(WIDGET_FRAME);
+		else if(moviesMenu->getWidgetType() == WIDGET_FRAME)
+			moviesMenu->setWidgetType(WIDGET_STANDARD);
+
+		moviesMenu->initFrames();
+		moviesMenu->paint();
+		moviesMenu->paintHead();
+		moviesMenu->paintFoot();
+
+		return menu_return::RETURN_REPAINT;	
+	}
+	*/
 	
 	return menu_return::RETURN_EXIT;
 }

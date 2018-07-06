@@ -1890,7 +1890,7 @@ void CTestMenu::testClistBoxnLines()
 
 
 	// itemBox
-	plist = new ClistBox("ClistBox (plugins list)", NEUTRINO_ICON_SHELL, MENU_WIDTH, h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	plist = new ClistBox("ClistBox (plugins list)", NEUTRINO_ICON_SHELL, MENU_WIDTH, MENU_HEIGHT - 100);
 
 	ClistBoxItem *pc;
 
@@ -1919,7 +1919,7 @@ void CTestMenu::testClistBoxnLines()
 	plist->setWidgetType(WIDGET_CLASSIC);
 	plist->enablePaintDate();
 
-	plist->enableFootInfo();
+	//plist->enableFootInfo();
 	//plist->setFootInfoHeight(40); 
 
 	plist->setSelected(selected);
