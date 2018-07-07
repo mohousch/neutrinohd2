@@ -1637,13 +1637,16 @@ void CAudioPlayerGui::paintInfo()
 		w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
 		xstart = (m_width - w)/2;
 		if(xstart < BORDER_LEFT)
-			xstart = BORDER_LEFT;
+			//xstart = BORDER_LEFT;
+			xstart = BORDER_LEFT + m_title_height - 4 + m_title_height + ICON_OFFSET;
 
+		/*
 		if (!m_curr_audiofile.MetaData.cover.empty())
 		{
 			if(xstart < (BORDER_LEFT + m_title_height - 4))
-				xstart = BORDER_LEFT + m_title_height - 4;
+				xstart = BORDER_LEFT + m_title_height - 4 + m_title_height + ICON_OFFSET;
 		}
+		*/
 		
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 2 + m_fheight + 2 + m_fheight, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8		
 		
@@ -1653,6 +1656,22 @@ void CAudioPlayerGui::paintInfo()
 			if(!access("/tmp/cover.jpg", F_OK))
 				m_frameBuffer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 4, m_title_height - 4);		
 		}
+
+		//playstate
+		int icon_w, icon_h;
+		const char* icon = NEUTRINO_ICON_PLAY;
+		
+		switch(m_state)
+		{
+			case CAudioPlayerGui::PAUSE: icon = NEUTRINO_ICON_PAUSE; break;
+			case CAudioPlayerGui::PLAY: icon = NEUTRINO_ICON_PLAY; break;
+			case CAudioPlayerGui::REV: icon = NEUTRINO_ICON_REW; break;
+			case CAudioPlayerGui::FF: icon = NEUTRINO_ICON_FF; break;
+			case CAudioPlayerGui::STOP: break;
+		}
+	
+		m_frameBuffer->getIconSize(icon, &icon_w, &icon_h);
+		m_frameBuffer->paintIcon(icon, m_x + m_title_height + ICON_OFFSET, m_y + (m_title_height - icon_h)/2);
 		
 		//
 		m_metainfo.clear();

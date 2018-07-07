@@ -1837,7 +1837,7 @@ void CMovieInfoViewer::showMovieInfo(std::string Title, std::string Info, short 
 	frameBuffer->paintIcon(NEUTRINO_ICON_FF_SMALL, cFrameBoxButton.iX + cFrameBoxButton.iWidth - BORDER_RIGHT - icon_w_ac3 - ICON_TO_ICON_OFFSET - icon_w_asp - ICON_TO_ICON_OFFSET - icon_w, cFrameBoxButton.iY + (cFrameBoxButton.iHeight - icon_h)/2);
 		
 	//playstate
-	const char *icon = NEUTRINO_ICON_PLAY;
+	const char* icon = NEUTRINO_ICON_PLAY;
 		
 	switch(playstate)
 	{

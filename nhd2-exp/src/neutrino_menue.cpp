@@ -259,6 +259,10 @@ bool CNeutrinoApp::showUserMenu(int button)
 		// now compare pos with the position of any item. Add this item if position is the same
 		switch(g_settings.usermenu[button][pos]) 
 		{
+			case SNeutrinoSettings::ITEM_NONE:
+			{
+				continue;
+			}
 			/*
 			// tsbrowser
 			case SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB:
@@ -333,6 +337,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 			break;
 				
 			// games
+			/*
 			case SNeutrinoSettings::ITEM_GAME:
 			{
 				menu_item++;
@@ -342,6 +347,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 				menu->addItem(menu_item, false);
 			}
 			break;
+			*/
 
 			default:
 				dprintf(DEBUG_NORMAL, "[neutrino] WARNING! menu wrong item!!\n");

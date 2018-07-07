@@ -793,12 +793,12 @@ int CNeutrinoApp::loadSetup(const char * fname)
         //-------------------------------------------
         // this is as the current neutrino usermen
         const char * usermenu_default[SNeutrinoSettings::BUTTON_MAX] = {
-                "0, 1, 2, 3, 4, 5, 6, 7",   	// BLUE
+                "ITEM_TIMERLIST, ITEM_PLUGIN, ITEM_VTXT, ITEM_OPKG, ITEM_REMOTE",   	// BLUE
 #if defined (ENABLE_FUNCTIONKEYS)
-		"0",				// F1
-		"0",				// F2
-		"0",				// F3
-		"0",				// F4
+		"ITEM_TIMERLIST",				// F1
+		"ITEM_TIMERLIST",				// F2
+		"ITEM_TIMERLIST",				// F3
+		"ITEM_TIMERLIST",				// F4
 #endif
         };
         char txt1[81];

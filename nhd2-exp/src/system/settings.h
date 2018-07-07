@@ -369,14 +369,15 @@ struct SNeutrinoSettings
 
         typedef enum
         {
-		ITEM_MOVIEPLAYER_TSMB = 0,
-                ITEM_MOVIEPLAYER_MB = 1,
-                ITEM_TIMERLIST = 2,
-                ITEM_PLUGIN = 3,
-                ITEM_VTXT = 4,
-                ITEM_GAME = 5,
-                ITEM_OPKG = 6, 
-		ITEM_REMOTE = 7,              
+		ITEM_NONE = 0,
+		//ITEM_MOVIEPLAYER_TSMB = 0,
+                //ITEM_MOVIEPLAYER_MB = 1,
+                ITEM_TIMERLIST = 1,
+                ITEM_PLUGIN = 2,
+                ITEM_VTXT = 3,
+                //ITEM_GAME = 5,
+                ITEM_OPKG = 4, 
+		ITEM_REMOTE = 5,              
                 ITEM_MAX   // MUST be always the last in the list
         }USER_ITEM;
 	

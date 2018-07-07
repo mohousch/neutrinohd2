@@ -2093,7 +2093,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 		}
 	}
 
-	audioMenu->move(0, 40);
+	//audioMenu->move(0, 40);
 
 	//audioMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	audioMenu->setSelected(selected);
@@ -2103,7 +2103,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 	
 	audioMenu->enablePaintDate();
 	audioMenu->enableFootInfo();
-	audioMenu->setFootInfoHeight(30); 
+	//audioMenu->setFootInfoHeight(30); 
 
 	audioMenu->addKey(CRCInput::RC_info, this, "ainfo");
 	audioMenu->addKey(CRCInput::RC_setup, this, "asetup");
