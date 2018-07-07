@@ -108,12 +108,13 @@ bool CYTBrowser::saveSettings(YTB_SETTINGS *settings)
 }
 
 //
-#define YT_HEAD_BUTTONS_COUNT	3
+#define YT_HEAD_BUTTONS_COUNT	4
 const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL},
-	{ NEUTRINO_ICON_BUTTON_0, NONEXISTANT_LOCALE, NULL}
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL},
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL}
 };
 
 void CYTBrowser::showYTMoviesMenu(bool reload)
@@ -141,14 +142,20 @@ void CYTBrowser::showYTMoviesMenu(bool reload)
 		title += " \"" + m_settings.ytsearch + "\"";
 
 	moviesMenu = new ClistBox(title.c_str(), NEUTRINO_ICON_YT_SMALL);
+
+	CMenuItem* menu_item = NULL;
 	
 	std::string itemTitle;
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		itemTitle = m_vMovieInfo[i].epgTitle + " (" + to_string(m_vMovieInfo[i].length) + " Min)";
+
+		menu_item = new ClistBoxItem(itemTitle.c_str(), true, m_vMovieInfo[i].epgInfo2.c_str(), this, "play", NULL,  file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		menu_item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
  
-		moviesMenu->addItem(new ClistBoxItem(itemTitle.c_str(), true, m_vMovieInfo[i].epgInfo2.c_str(), this, "play", NULL,  file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg"));
+		moviesMenu->addItem(menu_item);
 	}
 
 	moviesMenu->setWidgetType(WIDGET_FRAME);
@@ -158,11 +165,11 @@ void CYTBrowser::showYTMoviesMenu(bool reload)
 
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
-	//moviesMenu->addKey(CRCInput::RC_0, this, CRCInput::getSpecialKeyName(CRCInput::RC_0));
-	//moviesMenu->addKey(CRCInput::RC_9, this, CRCInput::getSpecialKeyName(CRCInput::RC_9));
+	moviesMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
+	moviesMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
 
 	moviesMenu->exec(NULL, "");
-	moviesMenu->hide();
+	//moviesMenu->hide();
 	delete moviesMenu;
 	moviesMenu = NULL;
 }
@@ -235,15 +242,14 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		else
 			return menu_return::RETURN_REPAINT;
 	}
-	/*
-	else if(actionKey == "RC_0")
+	else if(actionKey == "RC_red")
 	{
 		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		m_settings.ytmode = cYTFeedParser::RELATED;
 
 		showYTMoviesMenu();
 	}
-	else if(actionKey == "RC_unknown")
+	else if(actionKey == "RC_green")
 	{
 		moviesMenu->hide();
 
@@ -263,7 +269,6 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_REPAINT;	
 	}
-	*/
 	
 	return menu_return::RETURN_EXIT;
 }
