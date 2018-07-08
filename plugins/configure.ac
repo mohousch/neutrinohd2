@@ -56,5 +56,6 @@ internetradio/Makefile
 moviebrowser/Makefile
 tsplayer/Makefile
 movieplayer/Makefile
+picviewer/Makefile
 ])
 

@@ -67,20 +67,6 @@ class CAudiofileExt : public CAudiofile
 
 typedef std::vector<CAudiofileExt> CAudioPlayList;
 
-class RandomNumber
-{
-	public:
-		RandomNumber()
-		{
-			srand(time(0));
-		}
-
-		int operator()(int n)
-		{
-			return ((long long)n * rand() / RAND_MAX);
-		}
-};
-
 class CAudioPlayerGui : public CMenuTarget
 {
 	public:
@@ -105,6 +91,8 @@ class CAudioPlayerGui : public CMenuTarget
 		//
 		unsigned int   m_selected;
 		int            m_current;
+
+		// gui
 		unsigned int   m_liststart;
 		unsigned int   m_listmaxshow;
 		int            m_fheight; 	// Fonthoehe Playlist-Inhalt
@@ -161,20 +149,22 @@ class CAudioPlayerGui : public CMenuTarget
 		//
 		void Init(void);
 
-		//
+		// gui
 		void paintItem(int pos);
 		void paint();
 		void paintHead();
 		void paintFoot();
 		void paintInfo();
-		void paintLCD();
 		void hide();
+		void paintItemID3DetailsLine(int pos);
+		void clearItemID3DetailsLine();
+
+		// lcd
+		void paintLCD();
 
 		//
 		void get_id3(CAudiofileExt * audiofile);
 		void get_mp3info(CAudiofileExt * audiofile);
-		void paintItemID3DetailsLine(int pos);
-		void clearItemID3DetailsLine();
 		void play(unsigned int pos);
 		void stop();
 		void pause();
@@ -186,8 +176,6 @@ class CAudioPlayerGui : public CMenuTarget
 		void updateTimes(const bool force = false);
 		void showMetaData();
 		bool getNumericInput(neutrino_msg_t& msg,int& val);
-
-		//void removeFromPlaylist(long pos);
 
 		/**
 		* Adds an url (icecast, ...) to the to the audioplayer playlist
@@ -237,7 +225,6 @@ class CAudioPlayerGui : public CMenuTarget
 		* @return true if file should be overwritten, false otherwise
 		*/
 		bool askToOverwriteFile(const std::string& filename);
-		//bool clearPlaylist(void);
 		bool shufflePlaylist(void);
 		bool playNext(bool allow_rotate = false);
 		bool playPrev(bool allow_rotate = false);

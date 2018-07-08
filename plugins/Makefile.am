@@ -20,7 +20,8 @@ SUBDIRS = \
 	internetradio \
 	moviebrowser \
 	tsplayer \
-	movieplayer
+	movieplayer \
+	picviewer
 
 if ENABLE_NGLCD
 SUBDIRS += nglcd

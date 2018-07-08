@@ -713,19 +713,23 @@ class ClistBox : public CMenuTarget
 		int getSelected() { return selected; };
 		void move(int xoff, int yoff);
 		int getSelectedLine(void){return exit_pressed ? -1 : selected;};
-		
 		int getHeight(void) const {return height;}
+		int getWidth(void) const {return width;};
+		int getX(void) const {return x;};
+		int getY(void) const {return y;};
 		
 		//
 		void enableSaveScreen();
 
 		//
-		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count);
 		void addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string &action);
 
 		//
-		void enablePaintDate(void){PaintDate = true;};
+		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count);
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
+
+		//
+		void enablePaintDate(void){PaintDate = true;};
 
 		//
 		void resizeFrames();

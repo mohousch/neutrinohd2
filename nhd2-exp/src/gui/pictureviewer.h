@@ -57,8 +57,7 @@ class CPictureViewerGui : public CMenuTarget
 	public:
 		enum State
 		{
-			VIEW = 0,
-			MENU,
+			SINGLE = 0,
 			SLIDESHOW
 		};
 		
@@ -71,57 +70,24 @@ class CPictureViewerGui : public CMenuTarget
 		
 	private:
 
-		CFrameBuffer		* frameBuffer;
+		CFrameBuffer* frameBuffer;
 
 		//
-		int 			width;
-		int 			height;
-		int 			x;
-		int 			y;
-		int         		m_title_w;
-
-		int icon_foot_w;
-		int icon_foot_h;
-		int icon_head_w;
-		int icon_head_h;
-
-		unsigned int		liststart;
-		unsigned int		listmaxshow;
-		int			fheight; // Fonthoehe Playlist-Inhalt
-		int			theight; // Fonthoehe Playlist-Titel
-		int			sheight; // Fonthoehe MP Info
-		int			buttonHeight;
-
-		void paintItem(int pos);
-		void paint();
-		void paintHead();
-		void paintFoot();
-		void hide();
-
-		//
-		CPictureViewer * g_PicViewer;
-
-		CFileFilter picture_filter;
-
-		unsigned int selected;
-		bool isURL;
-		bool visible;			
+		CPictureViewer* g_PicViewer;
+		unsigned int selected;		
 		State m_state;
 		SortOrder m_sort;
 
 		CPicturePlayList playlist;
-		std::string Path;
 
 		long m_time;
 		int m_LastMode;
 
+		// lcd
 		void paintLCD();
 
 		void view(unsigned int nr);
-		void endView();
 		int  show();
-
-		void showHelp();
 		
 	public:
 		CPictureViewerGui();
@@ -130,7 +96,8 @@ class CPictureViewerGui : public CMenuTarget
 		void addToPlaylist(CPicture& file);
 		void clearPlaylist(void);
 		void removeFromPlaylist(long pos);
-		void setState(State state = VIEW){m_state = state;};
+		void setState(State state = SINGLE){m_state = state;};
+		void showHelp();
 };
 
 #endif

@@ -117,6 +117,21 @@ ssize_t _writeall(int fd, const void *buf, size_t count);
 ssize_t _read(int fd, void *buf, size_t count);
 
 //
+class RandomNumber
+{
+	public:
+		RandomNumber()
+		{
+			srand(time(0));
+		}
+
+		int operator()(int n)
+		{
+			return ((long long)n * rand() / RAND_MAX);
+		}
+};
+
+//
 class CFileHelpers
 {
 	public:
