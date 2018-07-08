@@ -419,6 +419,7 @@ int CAudioPlayerGui::show()
 
 		if (msg == CRCInput::RC_home)
 		{ 
+			/*
 			if (m_state != CAudioPlayerGui::STOP)
 			{
 				if(hide_playlist)
@@ -427,6 +428,7 @@ int CAudioPlayerGui::show()
 					stop();
 			}
 			else
+			*/
 				loop = false;
 		}
 		else if (msg == CRCInput::RC_left)
@@ -767,8 +769,9 @@ int CAudioPlayerGui::show()
 			}
 
 		}
-		else if( ((msg == CRCInput::RC_setup) || (msg == CRCInput::RC_vfdmenu)) && !hide_playlist)
+		else if( ((msg == CRCInput::RC_setup) || (msg == CRCInput::RC_vfdmenu)) /*&& !hide_playlist*/)
 		{
+			/*
 			CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
 			audioPlayerSettingsMenu->exec(this, "");
 			delete audioPlayerSettingsMenu;
@@ -778,6 +781,8 @@ int CAudioPlayerGui::show()
 			paintLCD();
 			
 			update = true;
+			*/
+			loop = false;
 		}
 		else if(msg == NeutrinoMessages::CHANGEMODE)
 		{
@@ -815,7 +820,7 @@ int CAudioPlayerGui::show()
 	hide();
 
 	//if(m_state != CAudioPlayerGui::STOP)
-	stop();	
+	//stop();	
 
 	return ret;
 }

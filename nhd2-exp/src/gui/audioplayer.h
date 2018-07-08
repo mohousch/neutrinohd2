@@ -166,7 +166,7 @@ class CAudioPlayerGui : public CMenuTarget
 		void get_id3(CAudiofileExt * audiofile);
 		void get_mp3info(CAudiofileExt * audiofile);
 		void play(unsigned int pos);
-		void stop();
+		//void stop();
 		void pause();
 		void ff(unsigned int seconds = 0);
 		void rev(unsigned int seconds = 0);
@@ -225,7 +225,6 @@ class CAudioPlayerGui : public CMenuTarget
 		* @return true if file should be overwritten, false otherwise
 		*/
 		bool askToOverwriteFile(const std::string& filename);
-		bool shufflePlaylist(void);
 		bool playNext(bool allow_rotate = false);
 		bool playPrev(bool allow_rotate = false);
 
@@ -247,6 +246,8 @@ class CAudioPlayerGui : public CMenuTarget
 		void hidePlayList(bool hide = false){hide_playlist = hide;};
 		void setTitle(const std::string& title){ m_title = title;};
 		void setInetMode(void){m_inetmode = true; m_Path = CONFIGDIR "/";};
+		bool shufflePlaylist(void);
+		void stop();
 };
 
 #endif

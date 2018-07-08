@@ -21,7 +21,8 @@ SUBDIRS = \
 	moviebrowser \
 	tsplayer \
 	movieplayer \
-	picviewer
+	picviewer \
+	audioplayer
 
 if ENABLE_NGLCD
 SUBDIRS += nglcd
