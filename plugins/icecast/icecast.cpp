@@ -26,6 +26,8 @@
 # include <plugin.h>
 
 
+#define NEUTRINO_ICON_ICECAST_SMALL		PLUGINDIR "/icecast/icecast_small.png"
+
 #define SHOW_FILE_LOAD_LIMIT 50
 #define AUDIOPLAYER_CHECK_FOR_DUPLICATES
 
@@ -731,7 +733,7 @@ const struct button_label AudioPlayerButtons[FOOT_BUTTONS_COUNT] =
 
 void CIceCast::showMenu(bool reload)
 {
-	ilist = new ClistBox("Ice Cast", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	ilist = new ClistBox("Ice Cast", NEUTRINO_ICON_ICECAST_SMALL, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 	
 	//
 	if(reload)

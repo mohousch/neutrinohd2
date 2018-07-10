@@ -26,11 +26,13 @@ install-exec-local:
 	install .libs/icecast.so $(DESTDIR)$(PLUGINDIR)/icecast
 	install -m 0644 icecast.cfg $(DESTDIR)$(PLUGINDIR)/icecast
 	install -m 0644 icecast.png $(DESTDIR)$(PLUGINDIR)/icecast
+	install -m 0644 icecast_small.png $(DESTDIR)$(PLUGINDIR)/icecast
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/icecast/icecast.so
 	-rm $(DESTDIR)$(PLUGINDIR)/icecast/icecast.cfg
 	-rm $(DESTDIR)$(PLUGINDIR)/icecast/icecast.png
+	-rm $(DESTDIR)$(PLUGINDIR)/icecast/icecast_small.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/icecast
 
 	
