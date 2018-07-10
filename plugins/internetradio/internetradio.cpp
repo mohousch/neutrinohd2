@@ -24,11 +24,13 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
+/*
 	CAudioPlayerGui tmpAudioPlayerGui;
 
 	tmpAudioPlayerGui.scanXmlFile(RADIO_STATION_XML_FILE);	
 	tmpAudioPlayerGui.setTitle(g_Locale->getText(LOCALE_INETRADIO_NAME));
 	tmpAudioPlayerGui.setInetMode();
 	tmpAudioPlayerGui.exec(NULL, "");
+*/
 }
 

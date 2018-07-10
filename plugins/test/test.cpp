@@ -1677,7 +1677,7 @@ void CTestMenu::testPlayAudioDir()
 			}
 		}
 		
-		tmpAudioPlayerGui.hidePlayList(true);
+		//tmpAudioPlayerGui.hidePlayList(true);
 		tmpAudioPlayerGui.exec(NULL, "urlplayback");
 	}
 }

@@ -129,7 +129,7 @@ BROWSER:
 			
 				CAudiofileExt audiofile(file->Name, file->getExtension());
 				tmpAudioPlayerGui.addToPlaylist(audiofile);
-				tmpAudioPlayerGui.hidePlayList(true);
+				//tmpAudioPlayerGui.hidePlayList(true);
 				tmpAudioPlayerGui.exec(NULL, "urlplayback");
 			}
 			else

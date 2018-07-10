@@ -89,32 +89,14 @@ class CAudioPlayerGui : public CMenuTarget
 		CFrameBuffer * m_frameBuffer;
 
 		//
-		unsigned int   m_selected;
 		int            m_current;
 
 		// gui
-		unsigned int   m_liststart;
-		unsigned int   m_listmaxshow;
-		int            m_fheight; 	// Fonthoehe Playlist-Inhalt
-		int            m_theight; 	// Fonthoehe Playlist-Titel
-		int            m_sheight; 	// Fonthoehe MP Info
-		int            m_buttonHeight;
-		int            m_title_height;
-		int            m_info_height;
-		int            m_width;
-		int            m_height;
-		int            m_x;
-		int            m_y;
-		int            m_title_w;
-		
-		int icon_foot_w;
-		int icon_foot_h;
-		int icon_head_w;
-		int icon_head_h;
+		int m_x, m_y;
+		int m_title_height;
+		int m_width;
 
 		//
-		int            m_key_level;
-		bool           m_visible;
 		State          m_state;
 		time_t         m_time_total;
 		time_t         m_time_played;
@@ -126,38 +108,26 @@ class CAudioPlayerGui : public CMenuTarget
 		CAudioPlayList m_playlist;
 		CTitle2Pos     m_title2Pos;
 		CAudiofileExt  m_curr_audiofile;
-		std::string    m_Path;
 
 		int            m_LastMode;
 		int            m_idletime;
 		bool           m_inetmode;
 		uint32_t       stimer;
 		
-		bool 		info_visible;
-
+		//
 		SMSKeyInput    m_SMSKeyInput;
-		bool hide_playlist;
-		bool isURL;
 
+		//
 		bool updateMeta;
 		bool updateLcd;
 		bool updateScreen;
-
-		std::string m_title;
-		CFileFilter audiofilefilter;
 
 		//
 		void Init(void);
 
 		// gui
-		void paintItem(int pos);
-		void paint();
-		void paintHead();
-		void paintFoot();
-		void paintInfo();
 		void hide();
-		void paintItemID3DetailsLine(int pos);
-		void clearItemID3DetailsLine();
+		void paintInfo();
 
 		// lcd
 		void paintLCD();
@@ -165,27 +135,14 @@ class CAudioPlayerGui : public CMenuTarget
 		//
 		void get_id3(CAudiofileExt * audiofile);
 		void get_mp3info(CAudiofileExt * audiofile);
-		void play(unsigned int pos);
-		//void stop();
-		void pause();
-		void ff(unsigned int seconds = 0);
-		void rev(unsigned int seconds = 0);
+
+		//
 		int getNext();
 		void GetMetaData(CAudiofileExt &File);
 		void updateMetaData();
 		void updateTimes(const bool force = false);
 		void showMetaData();
 		bool getNumericInput(neutrino_msg_t& msg,int& val);
-
-		/**
-		* Adds an url (icecast, ...) to the to the audioplayer playlist
-		*/
-		void addUrl2Playlist(const char *url, const char *name = NULL, const time_t bitrate = 0);
-
-		/**
-		* Adds a url which points to an .m3u format (playlist, ...) to the audioplayer playlist
-		*/
-		void processPlaylistUrl(const char *url, const char *name = NULL, const time_t bitrate = 0);
 
 		void selectTitle(unsigned char selectionChar);
 		/**
@@ -225,11 +182,13 @@ class CAudioPlayerGui : public CMenuTarget
 		* @return true if file should be overwritten, false otherwise
 		*/
 		bool askToOverwriteFile(const std::string& filename);
-		bool playNext(bool allow_rotate = false);
-		bool playPrev(bool allow_rotate = false);
 
 		//
-		bool openFilebrowser(void);
+		void pause();
+		void ff(unsigned int seconds = 0);
+		void rev(unsigned int seconds = 0);
+		bool playNext(bool allow_rotate = false);
+		bool playPrev(bool allow_rotate = false);
 	
 	public:
 		CAudioPlayerGui();
@@ -238,16 +197,18 @@ class CAudioPlayerGui : public CMenuTarget
 		int exec(CMenuTarget *parent, const std::string &actionKey);
 
 		//
-		void scanXmlFile(std::string filename);
-		void scanXmlData(xmlDocPtr answer_parser, const char *nametag, const char *urltag, const char *bitratetag = NULL, bool usechild = false);
 		void addToPlaylist(CAudiofileExt &file);
 		void removeFromPlaylist(long pos);
 		void clearPlaylist(void);
-		void hidePlayList(bool hide = false){hide_playlist = hide;};
-		void setTitle(const std::string& title){ m_title = title;};
-		void setInetMode(void){m_inetmode = true; m_Path = CONFIGDIR "/";};
-		bool shufflePlaylist(void);
+
+		//
+		void setInetMode(void){m_inetmode = true;};
+
+		//
+		void play(unsigned int pos);
 		void stop();
+
+		void setCurrent(int pos = 0){m_current = pos;};
 };
 
 #endif

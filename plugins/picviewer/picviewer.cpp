@@ -46,7 +46,7 @@ class CPicViewer : public CMenuTarget
 		~CPicViewer();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-		void showMenu();
+		void showMenu(bool reload = true);
 };
 
 CPicViewer::CPicViewer()
@@ -150,14 +150,14 @@ int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "pyellow")
 	{
-		tmpPictureViewerGui.clearPlaylist();
+		//tmpPictureViewerGui.clearPlaylist();
 		playlist.clear();
-		showMenu();
+		showMenu(false);
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "pred")
 	{
-		tmpPictureViewerGui.removeFromPlaylist(plist->getSelected());
+		//tmpPictureViewerGui.removeFromPlaylist(plist->getSelected());
 		CPicturePlayList::iterator p = playlist.begin() + plist->getSelected();
 		playlist.erase(p);
 
@@ -188,13 +188,13 @@ const struct button_label PictureViewerButtons[FOOT_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_PICTUREVIEWER_SLIDESHOW, NULL }
 };
 
-void CPicViewer::showMenu()
+void CPicViewer::showMenu(bool reload)
 {
 	plist = new ClistBox(LOCALE_PICTUREVIEWER_HEAD, NEUTRINO_ICON_PICTURE, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 	
 	Path = g_settings.network_nfs_picturedir;
 
-	if(g_settings.picviewer_read_playlist_at_start)
+	if(g_settings.picviewer_read_playlist_at_start && reload)
 	{
 		if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
 		{
