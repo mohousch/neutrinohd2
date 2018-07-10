@@ -1913,7 +1913,7 @@ void CTestMenu::testClistBoxnLines()
 		pc->setInfo1(g_PluginList->getDescription(count).c_str());
 
 		pc->setnLinesItem();
-		pc->switchnLinesItem();
+		//pc->switchnLinesItem();
 
 		plist->addItem(pc);
 	}

@@ -1219,7 +1219,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
 			
-				showFileInfo();
+			cMovieInfo.showMovieInfo(filelist[selected]);
 		}
 		else if(msg == CRCInput::RC_home)
 		{
@@ -1419,61 +1419,6 @@ void CMoviePlayerGui::showHelpTS()
 	hide();
 
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
-}
-
-void CMoviePlayerGui::showFileInfo()
-{
-	dprintf(DEBUG_INFO, "CMoviePlayerGui::showFileInfo:%s %s %s\n", filelist[selected].epgTitle.c_str(), filelist[selected].epgInfo1.c_str(), filelist[selected].epgInfo2.c_str());
-	
-	std::string buffer;
-	
-	// prepare print buffer  
-	buffer = filelist[selected].epgInfo1;
-	buffer += "\n";
-	buffer += filelist[selected].epgInfo2;
-	buffer += "\n";
-
-	// tfile
-	int picw = 320;
-	int pich = 256;
-
-	int p_w = 0;
-	int p_h = 0;
-	int nbpp = 0;	
-
-	if(!access(filelist[selected].tfile.c_str(), F_OK))
-	{
-		CFrameBuffer::getInstance()->getSize(filelist[selected].tfile, &p_w, &p_h, &nbpp);
-
-		if(p_w <= picw && p_h <= pich)
-		{
-			picw = p_w;
-			pich = p_h;
-		}
-		else
-		{
-			float aspect = (float)(p_w) / (float)(p_h);
-					
-			if (((float)(p_w) / (float)picw) > ((float)(p_h) / (float)pich)) 
-			{
-				p_w = picw;
-				p_h = (int)(picw / aspect);
-			}
-			else
-			{
-				p_h = pich;
-				p_w = (int)(pich * aspect);
-			}
-		}
-	}
-	
-	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-	
-	CInfoBox * infoBox = new CInfoBox(buffer.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, filelist[selected].epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_MOVIE);
-
-	infoBox->setText(&buffer, filelist[selected].tfile, p_w, p_h);
-	infoBox->exec();
-	delete infoBox;
 }
 
 int CMoviePlayerGui::showStartPosSelectionMenu(void)

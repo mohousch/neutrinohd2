@@ -177,7 +177,6 @@ class CMoviePlayerGui : public CMenuTarget
 		void showHelpTS(void);
 		void updateLcd(const std::string & lcd_filename);
 		int showStartPosSelectionMenu(void);
-		void showFileInfo();
 		
 	public:
 		CMoviePlayerGui();
