@@ -178,7 +178,7 @@ int CPictureViewerGui::show()
 
 	//		
 	if (!playlist.empty())
-		view(0);
+		view(selected);
 	
 	while(loop)
 	{

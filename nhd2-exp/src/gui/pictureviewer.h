@@ -74,6 +74,8 @@ class CPictureViewerGui : public CMenuTarget
 
 		//
 		CPictureViewer* g_PicViewer;
+
+		//
 		unsigned int selected;		
 		State m_state;
 		SortOrder m_sort;
@@ -98,6 +100,8 @@ class CPictureViewerGui : public CMenuTarget
 		void removeFromPlaylist(long pos);
 		void setState(State state = SINGLE){m_state = state;};
 		void showHelp();
+		int getSelected(void){return selected;};
+		void setCurrent(int pos){selected = pos;};
 };
 
 #endif

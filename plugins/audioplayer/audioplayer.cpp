@@ -1,5 +1,5 @@
 /*
-  $Id: test.cpp 2014/01/22 mohousch Exp $
+  $Id: audioplayer.cpp 2018/07/10 mohousch Exp $
 
   License: GPL
 
@@ -46,20 +46,19 @@ class CMP3Player : public CMenuTarget
 		std::string Path;
 		int selected;
 
-		//
-		//void addToPlaylist(CAudiofileExt &file);
-		//void removeFromPlaylist(long pos);
+		void loadPlaylist(bool reload = true);
 
 		//
 		bool shufflePlaylist(void);
 
-		//
+/*
 		void addUrl2Playlist(const char *url, const char *name = NULL, const time_t bitrate = 0);
 		void processPlaylistUrl(const char *url, const char *name = NULL, const time_t bitrate = 0);
 		void scanXmlFile(std::string filename);
 		void scanXmlData(xmlDocPtr answer_parser, const char *nametag, const char *urltag, const char *bitratetag = NULL, bool usechild = false);
 
 		bool openFileBrowser(void);
+*/
 		
 	public:
 		CMP3Player();
@@ -95,9 +94,6 @@ CMP3Player::CMP3Player()
 CMP3Player::~CMP3Player()
 {
 	playlist.clear();
-
-	if(CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
-		CAudioPlayer::getInstance()->stop();
 }
 
 void CMP3Player::hide()
@@ -131,6 +127,7 @@ bool CMP3Player::shufflePlaylist(void)
 	return(result);
 }
 
+/*
 void CMP3Player::addUrl2Playlist(const char *url, const char *name, const time_t bitrate) 
 {
 	dprintf(DEBUG_NORMAL, "CMP3Player::addUrl2Playlist: name = %s, url = %s\n", name, url);
@@ -554,6 +551,32 @@ bool CMP3Player::openFileBrowser(void)
 
 	return ( result);
 }
+*/
+
+void CMP3Player::loadPlaylist(bool reload)
+{
+	Path = g_settings.network_nfs_audioplayerdir;
+
+	if(g_settings.audioplayer_read_playlist_at_start || reload)
+	{
+		if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
+		{		
+			CFileList::iterator files = filelist.begin();
+			for(; files != filelist.end() ; files++)
+			{
+				if ( (files->getExtension() == CFile::EXTENSION_CDR)
+					||  (files->getExtension() == CFile::EXTENSION_MP3)
+					||  (files->getExtension() == CFile::EXTENSION_WAV)
+					||  (files->getExtension() == CFile::EXTENSION_FLAC))
+				{
+					CAudiofileExt audiofile(files->Name, files->getExtension());
+				
+					playlist.push_back(audiofile);
+				}
+			}
+		}
+	}
+}
 
 int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 {
@@ -574,24 +597,28 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 		tmpAudioPlayerGui.setCurrent(selected);
 		tmpAudioPlayerGui.exec(NULL, "");
 	}
-	else if(actionKey == "asetup")
+	else if(actionKey == "RC_setup")
 	{
 		CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
 		audioPlayerSettingsMenu->exec(this, "");
 		delete audioPlayerSettingsMenu;
 		audioPlayerSettingsMenu = NULL;						
 	}
-	else if(actionKey == "ablue")
+	else if(actionKey == "RC_red")
 	{
-		shufflePlaylist();
+		CAudioPlayList::iterator p = playlist.begin() + alist->getSelected();
+		playlist.erase(p);
+
+		if (selected >= playlist.size())
+			selected = playlist.size() - 1;
+
 		showMenu();
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "agreen")
+	else if(actionKey == "RC_green")
 	{
 		playlist.clear();
 
-/*
 		CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
 
 		filebrowser.Multi_Select = true;
@@ -615,32 +642,23 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 				}
 			}
 		}
-*/
-		openFileBrowser();
 
 		showMenu();
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "ayellow")
+	else if(actionKey == "RC_yellow")
 	{
-		//tmpAudioPlayerGui.clearPlaylist();
 		playlist.clear();
 		showMenu(false);
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "ared")
+	else if(actionKey == "RC_blue")
 	{
-		//tmpAudioPlayerGui.removeFromPlaylist(alist->getSelected());
-		CAudioPlayList::iterator p = playlist.begin() + alist->getSelected();
-		playlist.erase(p);
-
-		if (selected >= playlist.size())
-			selected = playlist.size() - 1;
-
+		shufflePlaylist();
 		showMenu();
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "astop")
+	else if(actionKey == "RC_stop")
 	{
 		tmpAudioPlayerGui.stop();
 	}
@@ -667,28 +685,9 @@ const struct button_label AudioPlayerButtons[FOOT_BUTTONS_COUNT] =
 void CMP3Player::showMenu(bool reload)
 {
 	alist = new ClistBox(LOCALE_AUDIOPLAYER_HEAD, NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
-	
-	Path = g_settings.network_nfs_audioplayerdir;
 
-	if(g_settings.audioplayer_read_playlist_at_start && reload)
-	{
-		if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
-		{		
-			CFileList::iterator files = filelist.begin();
-			for(; files != filelist.end() ; files++)
-			{
-				if ( (files->getExtension() == CFile::EXTENSION_CDR)
-					||  (files->getExtension() == CFile::EXTENSION_MP3)
-					||  (files->getExtension() == CFile::EXTENSION_WAV)
-					||  (files->getExtension() == CFile::EXTENSION_FLAC))
-				{
-					CAudiofileExt audiofile(files->Name, files->getExtension());
-				
-					playlist.push_back(audiofile);
-				}
-			}
-		}
-	}
+	//
+	loadPlaylist(reload);
 
 	for(unsigned int i = 0; i < playlist.size(); i++)
 	{
@@ -703,7 +702,7 @@ void CMP3Player::showMenu(bool reload)
 
 		if (!ret || (playlist[i].MetaData.artist.empty() && playlist[i].MetaData.title.empty() ))
 		{
-			// //remove extension (.mp3)
+			//remove extension (.mp3)
 			std::string tmp = playlist[i].Filename.substr(playlist[i].Filename.rfind('/') + 1);
 			tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
 
@@ -760,14 +759,12 @@ void CMP3Player::showMenu(bool reload)
 	alist->enableFootInfo();
 	alist->enablePaintDate();
 
-	alist->addKey(CRCInput::RC_setup, this, "asetup");
-	alist->addKey(CRCInput::RC_red, this, "ared");
-	alist->addKey(CRCInput::RC_green, this, "agreen");
-	alist->addKey(CRCInput::RC_yellow, this, "ayellow");
-	alist->addKey(CRCInput::RC_blue, this, "ablue");
-	alist->addKey(CRCInput::RC_info, this, "ainfo");
-
-	alist->addKey(CRCInput::RC_stop, this, "astop");
+	alist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
+	alist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
+	alist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
+	alist->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
+	alist->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
+	alist->addKey(CRCInput::RC_stop, this, CRCInput::getSpecialKeyName(CRCInput::RC_stop));
 
 	alist->exec(NULL, "");
 	//alist->hide();

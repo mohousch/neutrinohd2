@@ -1,3 +1,23 @@
+/*
+  $Id: icecast.cpp 2018/07/10 mohousch Exp $
+
+  License: GPL
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
 #include <algorithm>
 #include <sys/time.h>
 #include <fstream>
@@ -10,6 +30,8 @@
 #define AUDIOPLAYER_CHECK_FOR_DUPLICATES
 
 const long int GET_PLAYLIST_TIMEOUT = 10;
+
+//
 std::string icecasturl = "http://dir.xiph.org/yp.xml";
 const long int GET_ICECAST_TIMEOUT = 90; 		// list is about 500kB!
 
@@ -43,6 +65,10 @@ class CIceCast : public CMenuTarget
 		void scanXmlData(xmlDocPtr answer_parser, const char *nametag, const char *urltag, const char *bitratetag = NULL, bool usechild = false);
 
 		bool openFileBrowser(void);
+
+		//
+		void GetMetaData(CAudiofileExt &File);
+		void getFileInfoToDisplay(std::string& fileInfo, CAudiofileExt &file);
 		
 	public:
 		CIceCast();
@@ -76,8 +102,8 @@ CIceCast::~CIceCast()
 
 void CIceCast::hide()
 {
-	CFrameBuffer::getInstance()->paintBackground();
-	CFrameBuffer::getInstance()->blit();
+	frameBuffer->paintBackground();
+	frameBuffer->blit();
 }
 
 bool CIceCast::shufflePlaylist(void)
@@ -117,7 +143,7 @@ void CIceCast::addUrl2Playlist(const char *url, const char *name, const time_t b
 	} 
 	else 
 	{
-		std::string tmp = mp3.Filename.substr(mp3.Filename.rfind('/')+1);
+		std::string tmp = mp3.Filename.substr(mp3.Filename.rfind('/') + 1);
 		mp3.MetaData.title = tmp;
 	}
 	
@@ -358,7 +384,7 @@ bool CIceCast::openFileBrowser(void)
 
 	m_Path = g_settings.network_nfs_audioplayerdir;
 
-	//hide();
+	hide();
 
 	if (filebrowser.exec(m_Path.c_str()))
 	{
@@ -484,7 +510,7 @@ bool CIceCast::openFileBrowser(void)
 										playlist.erase(playlist.begin() + i); 
 								}
 #endif
-								if(strcasecmp(filename.substr(filename.length() - 3, 3).c_str(), "url")==0)
+								if(strcasecmp(filename.substr(filename.length() - 3, 3).c_str(), "url") == 0)
 								{
 									addUrl2Playlist(filename.c_str());
 								}
@@ -530,6 +556,93 @@ bool CIceCast::openFileBrowser(void)
 	}
 
 	return ( result);
+}
+
+void CIceCast::GetMetaData(CAudiofileExt &File)
+{
+	dprintf(DEBUG_DEBUG, "CIceCast::GetMetaData: fileExtension:%d\n", File.FileExtension);
+	
+	bool ret = 1;
+
+	if (CFile::EXTENSION_URL != File.FileExtension)
+		ret = CAudioPlayer::getInstance()->readMetaData(&File, /*m_state != CAudioPlayerGui::STOP && !g_settings.audioplayer_highprio*/true);
+
+	if (!ret || (File.MetaData.artist.empty() && File.MetaData.title.empty() ))
+	{
+		//Set from Filename
+		std::string tmp = File.Filename.substr(File.Filename.rfind('/') + 1);
+		tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
+		std::string::size_type i = tmp.rfind(" - ");
+		
+		if(i != std::string::npos)
+		{ 
+			// Trennzeichen " - " gefunden
+			File.MetaData.artist = tmp.substr(0, i);
+			File.MetaData.title = tmp.substr(i + 3);
+		}
+		else
+		{
+			i = tmp.rfind('-');
+			if(i != std::string::npos)
+			{ //Trennzeichen "-"
+				File.MetaData.artist = tmp.substr(0, i);
+				File.MetaData.title = tmp.substr(i + 1);
+			}
+			else
+				File.MetaData.title = tmp;
+		}
+		
+		File.MetaData.artist = FILESYSTEM_ENCODING_TO_UTF8(std::string(File.MetaData.artist).c_str());
+		File.MetaData.title  = FILESYSTEM_ENCODING_TO_UTF8(std::string(File.MetaData.title).c_str());
+	}
+}
+
+void CIceCast::getFileInfoToDisplay(std::string &info, CAudiofileExt &file)
+{
+	std::string fileInfo;
+	std::string artist;
+	std::string title;
+
+	if (!file.MetaData.bitrate)
+	{
+		GetMetaData(file);
+	}
+
+	if (!file.MetaData.artist.empty())
+		artist = file.MetaData.artist;
+
+	if (!file.MetaData.title.empty())
+		title = file.MetaData.title;
+
+	if(g_settings.audioplayer_display == CAudioPlayerGui::TITLE_ARTIST)
+	{
+		fileInfo += title;
+		if (!title.empty() && !artist.empty()) 
+			fileInfo += ", ";
+		
+		fileInfo += artist;
+	}
+	else //if(g_settings.audioplayer_display == ARTIST_TITLE)
+	{
+		fileInfo += artist;
+		if (!title.empty() && !artist.empty()) fileInfo += ", ";
+		fileInfo += title;
+	}
+
+	if (!file.MetaData.album.empty())
+	{
+		fileInfo += " (";
+		fileInfo += file.MetaData.album;
+		fileInfo += ')';
+	} 
+	
+	if (fileInfo.empty())
+	{
+		fileInfo += "Unknown";
+	}
+	
+	file.firstChar = tolower(fileInfo[0]);
+	info += fileInfo;
 }
 
 int CIceCast::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -637,64 +750,32 @@ void CIceCast::showMenu(bool reload)
 
 	for(unsigned int i = 0; i < playlist.size(); i++)
 	{
-		std::string title;
-		std::string artist;
-		std::string genre;
-		std::string date;
-		char duration[9] = "";
-
-		// read metadata
-		int ret = CAudioPlayer::getInstance()->readMetaData(&playlist[i], true);
-
-		if (!ret || (playlist[i].MetaData.artist.empty() && playlist[i].MetaData.title.empty() ))
+		//
+		if (playlist[i].FileExtension != CFile::EXTENSION_URL && !playlist[i].MetaData.bitrate)
 		{
-			// //remove extension (.mp3)
-			std::string tmp = playlist[i].Filename.substr(playlist[i].Filename.rfind('/') + 1);
-			tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
+			// 
+			GetMetaData(playlist[i]);
+		}
 
-			std::string::size_type j = tmp.rfind(" - ");
+		std::string tmp;
 		
-			if(j != std::string::npos)
-			{ 
-				title = tmp.substr(0, j);
-				artist = tmp.substr(j + 3);
-			}
-			else
-			{
-				j = tmp.rfind('-');
-				if(j != std::string::npos)
-				{
-					title = tmp.substr(0, j);
-					artist = tmp.substr(j + 1);
-				}
-				else
-					title = tmp;
-			}
+		//
+		getFileInfoToDisplay(tmp, playlist[i]);
 
-			playlist[i].MetaData.artist = FILESYSTEM_ENCODING_TO_UTF8(std::string(playlist[i].MetaData.artist).c_str());
-			playlist[i].MetaData.title  = FILESYSTEM_ENCODING_TO_UTF8(std::string(playlist[i].MetaData.title).c_str());
-		}
-		else
-		{
-			title = playlist[i].MetaData.title;
-			artist = playlist[i].MetaData.artist;
-			genre = playlist[i].MetaData.genre;	
-			date = playlist[i].MetaData.date;
-
-			snprintf(duration, 8, "%ldk", playlist[i].MetaData.total_time);
-		}
+		char duration[9];
+		snprintf(duration, 8, "%ldk", playlist[i].MetaData.total_time);
 
 		//
-		item = new ClistBoxItem(title.c_str(), true, "", this, "iplay");
+		item = new ClistBoxItem(tmp.c_str(), true, "", this, "iplay");
 			
 		item->setOptionInfo(duration);
 		item->setNumber(i + 1);
 
 		// details Box
-		item->setInfo1(title.c_str());
-		item->setOptionInfo1(genre.c_str());
-		item->setInfo2(artist.c_str());
-		item->setOptionInfo2(date.c_str());
+		item->setInfo1(tmp.c_str());
+		//item->setOptionInfo1(genre.c_str());
+		//item->setInfo2(artist.c_str());
+		//item->setOptionInfo2(date.c_str());
 
 		ilist->addItem(item);
 	}

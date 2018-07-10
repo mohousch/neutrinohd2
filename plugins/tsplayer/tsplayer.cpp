@@ -1,5 +1,5 @@
 /*
-  $Id: test.cpp 2014/01/22 mohousch Exp $
+  $Id: tsplayer.cpp 2018/07/10 mohousch Exp $
 
   License: GPL
 
@@ -29,6 +29,13 @@ class CTSPlayer : public CMenuTarget
 {
 	private:
 		CFrameBuffer* frameBuffer;
+
+		//
+		CMoviePlayerGui tmpMoviePlayerGui;	
+		CMovieBrowser * movieBrowser;
+		MI_MOVIE_INFO * mfile;
+
+		std::string Path;		
 		
 	public:
 		CTSPlayer();
@@ -41,6 +48,10 @@ class CTSPlayer : public CMenuTarget
 CTSPlayer::CTSPlayer()
 {
 	frameBuffer = CFrameBuffer::getInstance();
+
+	//	
+	movieBrowser = NULL;
+	mfile = NULL;
 }
 
 CTSPlayer::~CTSPlayer()
@@ -49,8 +60,8 @@ CTSPlayer::~CTSPlayer()
 
 void CTSPlayer::hide()
 {
-	CFrameBuffer::getInstance()->paintBackground();
-	CFrameBuffer::getInstance()->blit();
+	frameBuffer->paintBackground();
+	frameBuffer->blit();
 }
 
 int CTSPlayer::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -68,27 +79,23 @@ void CTSPlayer::showMenu()
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 	
-	CMoviePlayerGui tmpMoviePlayerGui;	
-	CMovieBrowser * movieBrowser;
-	MI_MOVIE_INFO * mfile;
-	
 	movieBrowser = new CMovieBrowser();
 	
 	movieBrowser->setMode(MB_SHOW_RECORDS);
 	
-	std::string Path_local = g_settings.network_nfs_moviedir;
+	Path = g_settings.network_nfs_moviedir;
 
 BROWSER:
-	if (movieBrowser->exec(Path_local.c_str()))
+	if (movieBrowser->exec(Path.c_str()))
 	{
-		Path_local = movieBrowser->getCurrentDir();
+		Path = movieBrowser->getCurrentDir();
 		
 		if (movieBrowser->getSelectedFile()!= NULL) 
 		{
 			mfile = movieBrowser->getCurrentMovieInfo();
 					
 			tmpMoviePlayerGui.addToPlaylist(*mfile);
-			tmpMoviePlayerGui.exec(NULL, "urlplayback");
+			tmpMoviePlayerGui.exec(NULL, "");
 		}
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec

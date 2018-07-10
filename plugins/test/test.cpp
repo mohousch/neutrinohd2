@@ -30,6 +30,8 @@ class CTestMenu : public CMenuTarget
 	private:
 		// variables
 		CFrameBuffer* frameBuffer;
+
+		//
 		ClistBox* listMenu;
 		ZapitChannelList Channels;
 		int selected;
@@ -157,8 +159,8 @@ CTestMenu::~CTestMenu()
 
 void CTestMenu::hide()
 {
-	CFrameBuffer::getInstance()->paintBackground();
-	CFrameBuffer::getInstance()->blit();
+	frameBuffer->paintBackground();
+	frameBuffer->blit();
 }
 
 void CTestMenu::testCBox()

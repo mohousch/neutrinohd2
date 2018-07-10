@@ -1,5 +1,5 @@
 /*
-  $Id: test.cpp 2014/01/22 mohousch Exp $
+  $Id: test.cpp 2018/07/10 mohousch Exp $
 
   License: GPL
 
@@ -33,9 +33,21 @@ class CMBrowser : public CMenuTarget
 		int selected;
 
 		//
+		ClistBox* mlist;
+		CMenuItem* item;
+
+		//
 		CMovieInfo m_movieInfo;
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
-		ClistBox* mlist;
+		CFileFilter fileFilter;
+		CFileList filelist;
+		std::string Path;
+
+		//
+		CMoviePlayerGui tmpMoviePlayerGui;
+
+		//
+		void loadPlaylist();
 
 	public:
 		CMBrowser();
@@ -51,77 +63,12 @@ CMBrowser::CMBrowser()
 
 	//
 	mlist = NULL;
-	selected = 0;
-}
+	item = NULL;
 
-CMBrowser::~CMBrowser()
-{
-	m_vMovieInfo.clear();
-}
-
-void CMBrowser::hide()
-{
-	CFrameBuffer::getInstance()->paintBackground();
-	CFrameBuffer::getInstance()->blit();
-}
-
-int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
-{
-	dprintf(DEBUG_NORMAL, "\nCMBrowser::exec: actionKey:%s\n", actionKey.c_str());
-	
-	if(parent)
-		hide();
-	
-	if(actionKey == "mplay")
-	{
-		selected = mlist->getSelected();
-		CMoviePlayerGui tmpMoviePlayerGui;
-
-		if (&m_vMovieInfo[mlist->getSelected()].file != NULL) 
-		{
-			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[mlist->getSelected()]);
-			tmpMoviePlayerGui.exec(NULL, "urlplayback");
-		}
-	}
-	else if(actionKey == "minfo")
-	{
-		selected = mlist->getSelected();
-		m_movieInfo.showMovieInfo(m_vMovieInfo[mlist->getSelected()]);
-	}
-	else if(actionKey == "msetup")
-	{
-		mlist->hide();
-
-		if(mlist->getWidgetType() == WIDGET_EXTENDED)
-			mlist->setWidgetType(WIDGET_FRAME);
-		else if(mlist->getWidgetType() == WIDGET_FRAME)
-			mlist->setWidgetType(WIDGET_EXTENDED);
-
-		mlist->initFrames();
-		mlist->paint();
-		mlist->paintHead();
-		mlist->paintFoot();
-	}
-	
-	return menu_return::RETURN_REPAINT;
-}
-
-#define mHEAD_BUTTONS_COUNT	2
-const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
-{
-	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
-};
-
-void CMBrowser::showMenu()
-{
-	mlist = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
-
-	CMenuItem* mm;
-	
 	//
-	CFileFilter fileFilter;
-	
+	selected = 0;
+
+	//
 	fileFilter.addFilter("ts");
 	fileFilter.addFilter("mpg");
 	fileFilter.addFilter("mpeg");
@@ -147,14 +94,26 @@ void CMBrowser::showMenu()
 	fileFilter.addFilter("mp3");
 	fileFilter.addFilter("wma");
 	fileFilter.addFilter("ogg");
+}
 
-	CFileList filelist;
-	
+CMBrowser::~CMBrowser()
+{
+	m_vMovieInfo.clear();
+}
+
+void CMBrowser::hide()
+{
+	CFrameBuffer::getInstance()->paintBackground();
+	CFrameBuffer::getInstance()->blit();
+}
+
+void CMBrowser::loadPlaylist()
+{
 	// recordingdir
-	std::string Path_local = g_settings.network_nfs_recordingdir;
+	Path = g_settings.network_nfs_recordingdir;
 	
 	//
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
 	{
 		// filter them
 		MI_MOVIE_INFO movieInfo;
@@ -197,14 +156,70 @@ void CMBrowser::showMenu()
 			m_vMovieInfo.push_back(movieInfo);
 		}
 	}
+}
+
+int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "\nCMBrowser::exec: actionKey:%s\n", actionKey.c_str());
+	
+	if(parent)
+		hide();
+	
+	if(actionKey == "mplay")
+	{
+		selected = mlist->getSelected();
+
+		if (&m_vMovieInfo[mlist->getSelected()].file != NULL) 
+		{
+			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[mlist->getSelected()]);
+			tmpMoviePlayerGui.exec(NULL, "");
+		}
+	}
+	else if(actionKey == "RC_info")
+	{
+		selected = mlist->getSelected();
+		m_movieInfo.showMovieInfo(m_vMovieInfo[mlist->getSelected()]);
+	}
+	else if(actionKey == "RC_setup")
+	{
+		mlist->hide();
+
+		if(mlist->getWidgetType() == WIDGET_EXTENDED)
+			mlist->setWidgetType(WIDGET_FRAME);
+		else if(mlist->getWidgetType() == WIDGET_FRAME)
+			mlist->setWidgetType(WIDGET_EXTENDED);
+
+		mlist->initFrames();
+		mlist->paint();
+		mlist->paintHead();
+		mlist->paintFoot();
+	}
+	
+	return menu_return::RETURN_REPAINT;
+}
+
+#define HEAD_BUTTONS_COUNT	2
+const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
+};
+
+void CMBrowser::showMenu()
+{
+	mlist = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	
+	
+	// load playlist
+	loadPlaylist();
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		mm = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		mm->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
+		item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
 
-		mlist->addItem(mm);
+		mlist->addItem(item);
 	}
 
 
@@ -214,12 +229,12 @@ void CMBrowser::showMenu()
 
 	mlist->setSelected(selected);
 
-	mlist->setHeaderButtons(mHeadButtons, mHEAD_BUTTONS_COUNT);
+	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 
 	mlist->enablePaintDate();
 
-	mlist->addKey(CRCInput::RC_info, this, "minfo");
-	mlist->addKey(CRCInput::RC_setup, this, "msetup");
+	mlist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
+	mlist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
 
 	mlist->exec(NULL, "");
 	mlist->hide();

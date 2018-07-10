@@ -1,5 +1,5 @@
 /*
-  $Id: test.cpp 2014/01/22 mohousch Exp $
+  $Id: test.cpp 2018/07/10 mohousch Exp $
 
   License: GPL
 
@@ -40,6 +40,8 @@ class CPicViewer : public CMenuTarget
 		CPicturePlayList playlist;
 		std::string Path;
 		int selected;
+
+		void loadPlaylist(bool reload = true);
 		
 	public:
 		CPicViewer();
@@ -53,6 +55,7 @@ CPicViewer::CPicViewer()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
+	plist = NULL;
 	item = NULL;
 
 	selected = 0;
@@ -74,6 +77,37 @@ void CPicViewer::hide()
 	CFrameBuffer::getInstance()->blit();
 }
 
+void CPicViewer::loadPlaylist(bool reload)
+{
+	Path = g_settings.network_nfs_picturedir;
+
+	if(g_settings.picviewer_read_playlist_at_start && reload)
+	{
+		if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
+		{
+			struct stat statbuf;
+				
+			CFileList::iterator files = filelist.begin();
+			for(; files != filelist.end() ; files++)
+			{
+				if (files->getType() == CFile::FILE_PICTURE)
+				{
+					pic.Filename = files->Name;
+					std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
+					pic.Name = tmp.substr(0, tmp.rfind('.'));
+					pic.Type = tmp.substr(tmp.rfind('.') + 1);
+			
+					if(stat(pic.Filename.c_str(), &statbuf) != 0)
+						printf("stat error");
+					pic.Date = statbuf.st_mtime;
+				
+					playlist.push_back(pic);
+				}
+			}
+		}
+	}
+}
+
 int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CPicViewer::exec: actionKey:%s\n", actionKey.c_str());
@@ -84,35 +118,33 @@ int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(actionKey == "view")
 	{
 		selected = plist->getSelected();
-		CMoviePlayerGui tmpMoviePlayerGui;
 
 		tmpPictureViewerGui.addToPlaylist(playlist[plist->getSelected()]);
 		tmpPictureViewerGui.exec(NULL, "");
 	}
-	else if(actionKey == "psetup")
+	else if(actionKey == "RC_setup")
 	{
 		CPictureViewerSettings * pictureViewerSettingsMenu = new CPictureViewerSettings();
 		pictureViewerSettingsMenu->exec(NULL, "");
 		delete pictureViewerSettingsMenu;
 		pictureViewerSettingsMenu = NULL;					
 	}
-	else if(actionKey == "pblue")
-	{
-		tmpPictureViewerGui.addToPlaylist(playlist[plist->getSelected()]);
-
-		for (unsigned int i = 0; i < playlist.size(); i++)
-		{
-			tmpPictureViewerGui.addToPlaylist(playlist[i]);
-		}
-
-		tmpPictureViewerGui.setState(CPictureViewerGui::SLIDESHOW);		
-		tmpPictureViewerGui.exec(NULL, "");
-	}
-	else if(actionKey == "pinfo")
+	else if(actionKey == "RC_info")
 	{
 		tmpPictureViewerGui.showHelp();
 	}
-	else if(actionKey == "pgreen")
+	else if(actionKey == "RC_red")
+	{
+		CPicturePlayList::iterator p = playlist.begin() + plist->getSelected();
+		playlist.erase(p);
+
+		if (selected >= playlist.size())
+			selected = playlist.size() - 1;
+
+		showMenu();
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_green")
 	{
 		playlist.clear();
 
@@ -148,24 +180,24 @@ int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 		showMenu();
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "pyellow")
+	else if(actionKey == "RC_yellow")
 	{
-		//tmpPictureViewerGui.clearPlaylist();
 		playlist.clear();
 		showMenu(false);
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "pred")
+	else if(actionKey == "RC_blue")
 	{
-		//tmpPictureViewerGui.removeFromPlaylist(plist->getSelected());
-		CPicturePlayList::iterator p = playlist.begin() + plist->getSelected();
-		playlist.erase(p);
+		selected = plist->getSelected();
 
-		if (selected >= playlist.size())
-			selected = playlist.size() - 1;
+		for (unsigned int i = 0; i < playlist.size(); i++)
+		{
+			tmpPictureViewerGui.addToPlaylist(playlist[i]);
+		}
 
-		showMenu();
-		return menu_return::RETURN_EXIT_ALL;
+		tmpPictureViewerGui.setCurrent(selected);
+		tmpPictureViewerGui.setState(CPictureViewerGui::SLIDESHOW);		
+		tmpPictureViewerGui.exec(NULL, "");
 	}
 	
 	return menu_return::RETURN_REPAINT;
@@ -192,33 +224,8 @@ void CPicViewer::showMenu(bool reload)
 {
 	plist = new ClistBox(LOCALE_PICTUREVIEWER_HEAD, NEUTRINO_ICON_PICTURE, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 	
-	Path = g_settings.network_nfs_picturedir;
-
-	if(g_settings.picviewer_read_playlist_at_start && reload)
-	{
-		if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
-		{
-			struct stat statbuf;
-				
-			CFileList::iterator files = filelist.begin();
-			for(; files != filelist.end() ; files++)
-			{
-				if (files->getType() == CFile::FILE_PICTURE)
-				{
-					pic.Filename = files->Name;
-					std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
-					pic.Name = tmp.substr(0, tmp.rfind('.'));
-					pic.Type = tmp.substr(tmp.rfind('.') + 1);
-			
-					if(stat(pic.Filename.c_str(), &statbuf) != 0)
-						printf("stat error");
-					pic.Date = statbuf.st_mtime;
-				
-					playlist.push_back(pic);
-				}
-			}
-		}
-	}
+	// load playlist
+	loadPlaylist(reload);
 
 	for(unsigned int i = 0; i < playlist.size(); i++)
 	{
@@ -246,12 +253,12 @@ void CPicViewer::showMenu(bool reload)
 	
 	plist->enablePaintDate();
 
-	plist->addKey(CRCInput::RC_info, this, "pinfo");
-	plist->addKey(CRCInput::RC_setup, this, "psetup");
-	plist->addKey(CRCInput::RC_red, this, "pred");
-	plist->addKey(CRCInput::RC_green, this, "pgreen");
-	plist->addKey(CRCInput::RC_yellow, this, "pyellow");
-	plist->addKey(CRCInput::RC_blue, this, "pblue");
+	plist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
+	plist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
+	plist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
+	plist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
+	plist->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
+	plist->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
 
 	plist->exec(NULL, "");
 	//plist->hide();

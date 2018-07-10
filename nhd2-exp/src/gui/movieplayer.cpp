@@ -272,8 +272,6 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	//
 	time_forced = false;
 	
-	selected = 0;
-	
 	// 
 	g_numpida = 0;
 	g_vpid = 0;
@@ -322,27 +320,27 @@ void CMoviePlayerGui::PlayFile(void)
 	if(!filelist.empty())
 	{
 		//
-		if(filelist[0].ytid.empty())
+		if(filelist[selected].ytid.empty())
 		{
-			if(!filelist[0].audioPids.empty()) 
+			if(!filelist[selected].audioPids.empty()) 
 			{
-				g_currentapid = filelist[0].audioPids[0].epgAudioPid;
-				g_currentac3 = filelist[0].audioPids[0].atype;
+				g_currentapid = filelist[selected].audioPids[0].epgAudioPid;
+				g_currentac3 = filelist[selected].audioPids[0].atype;
 
 				//
 				currentapid = g_currentapid;
 			}
 
-			for (int i = 0; i < (int)filelist[0].audioPids.size(); i++) 
+			for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
 			{
-				if (filelist[0].audioPids[i].selected) 
+				if (filelist[selected].audioPids[i].selected) 
 				{
 #if defined (PLATFORM_COOLSTREAM)
 					g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
 #else
 					g_currentapid = i;	//FIXME
 #endif						
-					g_currentac3 = filelist[0].audioPids[i].atype;
+					g_currentac3 = filelist[selected].audioPids[i].atype;
 
 #if defined (PLATFORM_COOLSTREAM)
 					currentapid = g_currentapid;
@@ -354,8 +352,8 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 
 			//
-			g_vpid = filelist[0].epgVideoPid;
-			g_vtype = filelist[0].VideoType;
+			g_vpid = filelist[selected].epgVideoPid;
+			g_vtype = filelist[selected].VideoType;
 
 			// startposition			
 			startposition = 1000 * showStartPosSelectionMenu();

@@ -1,5 +1,5 @@
 /*
-  $Id: mediaplayer.cpp 2014/01/25 mohousch Exp $
+  $Id: mediaplayer.cpp 2018/07/10 mohousch Exp $
 
   License: GPL
 
@@ -25,24 +25,37 @@ extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
 
-void plugin_init(void)
-{
-}
 
-void plugin_del(void)
+class CMediaPlayer : CMenuTarget
 {
-}
+	private:
+		CFrameBuffer* frameBuffer;
 
-void plugin_exec(void)
-{
-	CMoviePlayerGui tmpMoviePlayerGui;
+		CMoviePlayerGui tmpMoviePlayerGui;
 					
-	CFileBrowser * fileBrowser;
-	
-	fileBrowser = new CFileBrowser();
-	
-	CFileFilter fileFilter;
-	
+		CFileBrowser * fileBrowser;
+		CFileFilter fileFilter;
+
+		MI_MOVIE_INFO mfile;
+		CMovieInfo cMovieInfo;
+		
+		std::string Path;
+
+	public:
+		CMediaPlayer();
+		~CMediaPlayer();
+		int exec(CMenuTarget* parent, const std::string& actionKey);
+		void hide();
+		void showMenu();
+};
+
+CMediaPlayer::CMediaPlayer()
+{
+	frameBuffer = CFrameBuffer::getInstance();
+
+	//					
+	fileBrowser = NULL;
+
 	fileFilter.addFilter("ts");
 	fileFilter.addFilter("mpg");
 	fileFilter.addFilter("mpeg");
@@ -68,18 +81,41 @@ void plugin_exec(void)
 	fileFilter.addFilter("mp3");
 	fileFilter.addFilter("wma");
 	fileFilter.addFilter("ogg");
+}
 
+CMediaPlayer::~CMediaPlayer()
+{
+}
+
+void CMediaPlayer::hide()
+{
+	frameBuffer->paintBackground();
+	frameBuffer->blit();
+}
+
+int CMediaPlayer::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CMediaPlayer::exec: actionKey:%s\n", actionKey.c_str());
+	
+	if(parent)
+		hide();
+	
+	return menu_return::RETURN_REPAINT;
+}
+
+void CMediaPlayer::showMenu()
+{
+	fileBrowser = new CFileBrowser();
+	
 	fileBrowser->Multi_Select = true;
 	fileBrowser->Filter = &fileFilter;
 	
-	std::string Path_local = g_settings.network_nfs_moviedir;
+	Path = g_settings.network_nfs_moviedir;
 
 BROWSER:
-	if (fileBrowser->exec(Path_local.c_str()))
+	if (fileBrowser->exec(Path.c_str()))
 	{
-		Path_local = fileBrowser->getCurrentDir();
-		MI_MOVIE_INFO mfile;
-		CMovieInfo cMovieInfo;
+		Path = fileBrowser->getCurrentDir();
 
 		CFileList::const_iterator files = fileBrowser->getSelectedFiles().begin();
 		for(; files != fileBrowser->getSelectedFiles().end(); files++)
@@ -126,7 +162,7 @@ BROWSER:
 			tmpMoviePlayerGui.addToPlaylist(mfile);
 		}
 		
-		tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		tmpMoviePlayerGui.exec(NULL, "");
 		
 		neutrino_msg_t msg;
 		neutrino_msg_data_t data;
@@ -140,4 +176,22 @@ BROWSER:
 	}
 	
 	delete fileBrowser;
+}
+
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
+}
+
+void plugin_exec(void)
+{
+	CMediaPlayer* mediaPlayerHandler = new CMediaPlayer();
+	
+	mediaPlayerHandler->showMenu();
+	
+	delete mediaPlayerHandler;
+	mediaPlayerHandler = NULL;
 }

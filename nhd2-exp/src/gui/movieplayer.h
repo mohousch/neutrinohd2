@@ -126,10 +126,8 @@ class CMoviePlayerGui : public CMenuTarget
 		
 	private:
 		int playstate;
-
 		int speed;
 		int slow;
-
 		int position;
 		int duration;
 		int file_prozent;
@@ -191,6 +189,7 @@ class CMoviePlayerGui : public CMenuTarget
 		void addToPlaylist(MI_MOVIE_INFO& mfile);
 		void clearPlaylist(void);
 		void removeFromPlaylist(long pos);
+		void setCurrent(int pos){selected = pos;};
 };
 
 #endif
