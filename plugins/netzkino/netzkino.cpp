@@ -54,12 +54,11 @@ void CNKMovies::hide()
 	CFrameBuffer::getInstance()->blit();
 }
 
-#define NK_HEAD_BUTTONS_COUNT	3
+#define NK_HEAD_BUTTONS_COUNT	2
 const struct button_label NKHeadButtons[NK_HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL},
-	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL}
+	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL}
 };
 
 void CNKMovies::showNKMoviesMenu()
@@ -110,7 +109,6 @@ void CNKMovies::showNKMoviesMenu()
 
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
-	moviesMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
 
 	moviesMenu->exec(NULL, "");
 	//moviesMenu->hide();
@@ -213,26 +211,6 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_setup")
 	{
 		showNKCategoriesMenu();
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "RC_red")
-	{
-		moviesMenu->hide();
-
-		if(moviesMenu->getWidgetType() == WIDGET_STANDARD)
-			moviesMenu->setWidgetType(WIDGET_CLASSIC);
-		else if(moviesMenu->getWidgetType() == WIDGET_CLASSIC)
-			moviesMenu->setWidgetType(WIDGET_EXTENDED);
-		else if(moviesMenu->getWidgetType() == WIDGET_EXTENDED)
-			moviesMenu->setWidgetType(WIDGET_FRAME);
-		else if(moviesMenu->getWidgetType() == WIDGET_FRAME)
-			moviesMenu->setWidgetType(WIDGET_STANDARD);
-
-		moviesMenu->initFrames();
-		moviesMenu->paint();
-		moviesMenu->paintHead();
-		moviesMenu->paintFoot();
 
 		return menu_return::RETURN_REPAINT;
 	}

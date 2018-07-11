@@ -50,10 +50,6 @@
 #include <ctime>
 
 
-typedef std::set<long> CPosList;
-typedef std::map<unsigned char, CPosList> CTitle2Pos;
-typedef std::pair<unsigned char, CPosList> CTitle2PosItem;
-
 class CAudiofileExt : public CAudiofile
 {
 	public:
@@ -79,17 +75,11 @@ class CAudioPlayerGui : public CMenuTarget
 			REV
 		};
 
-		enum DisplayOrder 
-		{
-			ARTIST_TITLE = 0, 
-			TITLE_ARTIST = 1
-		};
-
 	private:
 		CFrameBuffer * m_frameBuffer;
 
 		//
-		int            m_current;
+		int m_current;
 
 		// gui
 		int m_x, m_y;
@@ -101,21 +91,15 @@ class CAudioPlayerGui : public CMenuTarget
 		time_t         m_time_total;
 		time_t         m_time_played;
 		std::string    m_metainfo;
-		bool           m_select_title_by_name;
-		bool           m_playlistHasChanged;
 
 		//
 		CAudioPlayList m_playlist;
-		CTitle2Pos     m_title2Pos;
 		CAudiofileExt  m_curr_audiofile;
 
 		int            m_LastMode;
 		int            m_idletime;
 		bool           m_inetmode;
 		uint32_t       stimer;
-		
-		//
-		SMSKeyInput    m_SMSKeyInput;
 
 		//
 		bool updateMeta;
@@ -141,19 +125,13 @@ class CAudioPlayerGui : public CMenuTarget
 		void GetMetaData(CAudiofileExt &File);
 		void updateMetaData();
 		void updateTimes(const bool force = false);
-		void showMetaData();
-		bool getNumericInput(neutrino_msg_t& msg,int& val);
-
-		void selectTitle(unsigned char selectionChar);
+		
 		/**
 		* Appends the file information to the given string.
 		* @param fileInfo a string where the file information will be appended
 		* @param file the file to return the information for
 		*/
 		void getFileInfoToDisplay(std::string& fileInfo, CAudiofileExt &file);
-		void printSearchTree();
-		void buildSearchTree();
-		unsigned char getFirstChar(CAudiofileExt &file);
 
 		/**
 		* Saves the current playlist into a .m3u playlist file.
@@ -183,7 +161,6 @@ class CAudioPlayerGui : public CMenuTarget
 		*/
 		bool askToOverwriteFile(const std::string& filename);
 
-		//
 		//
 		void play(unsigned int pos);
 		void stop();

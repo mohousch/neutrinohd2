@@ -123,7 +123,7 @@ void CMP3Player::loadPlaylist(bool reload)
 {
 	Path = g_settings.network_nfs_audioplayerdir;
 
-	if(g_settings.audioplayer_read_playlist_at_start || reload)
+	if(reload)
 	{
 		if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
 		{		
@@ -178,11 +178,12 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 		if (selected >= playlist.size())
 			selected = playlist.size() - 1;
 
-		showMenu();
+		showMenu(false);
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
+		alist->clearItems();
 		playlist.clear();
 
 		CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
@@ -209,7 +210,7 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 			}
 		}
 
-		showMenu();
+		showMenu(false);
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_yellow")

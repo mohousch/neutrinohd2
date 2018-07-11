@@ -109,13 +109,12 @@ bool CYTBrowser::saveSettings(YTB_SETTINGS *settings)
 }
 
 //
-#define YT_HEAD_BUTTONS_COUNT	4
+#define YT_HEAD_BUTTONS_COUNT	3
 const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL},
-	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL},
-	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL}
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL}
 };
 
 void CYTBrowser::showYTMoviesMenu(bool reload)
@@ -165,7 +164,6 @@ void CYTBrowser::showYTMoviesMenu(bool reload)
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
 	moviesMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
-	moviesMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
 
 	moviesMenu->exec(NULL, "");
 	//moviesMenu->hide();
@@ -247,26 +245,6 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		m_settings.ytmode = cYTFeedParser::RELATED;
 
 		showYTMoviesMenu();
-	}
-	else if(actionKey == "RC_green")
-	{
-		moviesMenu->hide();
-
-		if(moviesMenu->getWidgetType() == WIDGET_STANDARD)
-			moviesMenu->setWidgetType(WIDGET_CLASSIC);
-		else if(moviesMenu->getWidgetType() == WIDGET_CLASSIC)
-			moviesMenu->setWidgetType(WIDGET_EXTENDED);
-		else if(moviesMenu->getWidgetType() == WIDGET_EXTENDED)
-			moviesMenu->setWidgetType(WIDGET_FRAME);
-		else if(moviesMenu->getWidgetType() == WIDGET_FRAME)
-			moviesMenu->setWidgetType(WIDGET_STANDARD);
-
-		moviesMenu->initFrames();
-		moviesMenu->paint();
-		moviesMenu->paintHead();
-		moviesMenu->paintFoot();
-
-		return menu_return::RETURN_REPAINT;	
 	}
 	
 	return menu_return::RETURN_EXIT;

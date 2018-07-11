@@ -81,7 +81,7 @@ void CPicViewer::loadPlaylist(bool reload)
 {
 	Path = g_settings.network_nfs_picturedir;
 
-	if(g_settings.picviewer_read_playlist_at_start && reload)
+	if(reload)
 	{
 		if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
 		{

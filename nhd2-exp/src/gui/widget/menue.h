@@ -696,9 +696,11 @@ class ClistBox : public CMenuTarget
 
 		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
 		bool hasItem();
-		void initFrames();
+		int getItemsCount()const{return items.size();};
+		void clearItems(void){items.clear();};
 
 		//
+		void initFrames();
 		virtual void paintHead();
 		virtual void paintFoot();
 		virtual void paint();

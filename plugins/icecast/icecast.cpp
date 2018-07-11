@@ -617,20 +617,11 @@ void CIceCast::getFileInfoToDisplay(std::string &info, CAudiofileExt &file)
 	if (!file.MetaData.title.empty())
 		title = file.MetaData.title;
 
-	if(g_settings.audioplayer_display == CAudioPlayerGui::TITLE_ARTIST)
-	{
-		fileInfo += title;
-		if (!title.empty() && !artist.empty()) 
-			fileInfo += ", ";
+	fileInfo += title;
+	if (!title.empty() && !artist.empty()) 
+		fileInfo += ", ";
 		
-		fileInfo += artist;
-	}
-	else //if(g_settings.audioplayer_display == ARTIST_TITLE)
-	{
-		fileInfo += artist;
-		if (!title.empty() && !artist.empty()) fileInfo += ", ";
-		fileInfo += title;
-	}
+	fileInfo += artist;
 
 	if (!file.MetaData.album.empty())
 	{
