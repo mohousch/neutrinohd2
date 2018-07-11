@@ -25,10 +25,12 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)/tuxdns
 	install .libs/tuxdns.so $(DESTDIR)$(PLUGINDIR)/tuxdns
 	install -m 0644 tuxdns.cfg $(DESTDIR)$(PLUGINDIR)/tuxdns
+	install -m 0644 tuxdns.png $(DESTDIR)$(PLUGINDIR)/tuxdns
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/tuxdns/tuxdns.so
 	-rm $(DESTDIR)$(PLUGINDIR)/tuxdns/tuxdns.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/tuxdns/tuxdns.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/tuxdns
 	
 	

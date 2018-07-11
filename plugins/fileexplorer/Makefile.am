@@ -24,10 +24,12 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)/fileexplorer
 	install .libs/fileexplorer.so $(DESTDIR)$(PLUGINDIR)/fileexplorer
 	install -m 0644  fileexplorer.cfg $(DESTDIR)$(PLUGINDIR)/fileexplorer
+	install -m 0644  fileexplorer.png $(DESTDIR)$(PLUGINDIR)/fileexplorer
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/fileexplorer/fileexplorer.so
 	-rm $(DESTDIR)$(PLUGINDIR)/fileexplorer/fileexplorer.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/fileexplorer/fileexplorer.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/fileexplorer
 	
 

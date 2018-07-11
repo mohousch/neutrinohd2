@@ -24,10 +24,12 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)/moviebrowser
 	install .libs/moviebrowser.so $(DESTDIR)$(PLUGINDIR)/moviebrowser
 	install -m 0644  moviebrowser.cfg $(DESTDIR)$(PLUGINDIR)/moviebrowser
+	install -m 0644  moviebrowser.png $(DESTDIR)$(PLUGINDIR)/moviebrowser
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/moviebrowser/moviebrowser.so
 	-rm $(DESTDIR)$(PLUGINDIR)/moviebrowser/moviebrowser.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/moviebrowser/moviebrowser.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/moviebrowser
 	
 

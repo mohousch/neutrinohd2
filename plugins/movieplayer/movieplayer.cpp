@@ -60,8 +60,8 @@ CMoviePlayer::~CMoviePlayer()
 
 void CMoviePlayer::hide()
 {
-	CFrameBuffer::getInstance()->paintBackground();
-	CFrameBuffer::getInstance()->blit();
+	frameBuffer->paintBackground();
+	frameBuffer->blit();
 }
 
 int CMoviePlayer::exec(CMenuTarget* parent, const std::string& actionKey)

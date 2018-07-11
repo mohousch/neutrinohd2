@@ -42,8 +42,6 @@ class CMBrowser : public CMenuTarget
 		CFileFilter fileFilter;
 		CFileList filelist;
 		std::string Path;
-
-		//
 		CMoviePlayerGui tmpMoviePlayerGui;
 
 		//
@@ -103,8 +101,8 @@ CMBrowser::~CMBrowser()
 
 void CMBrowser::hide()
 {
-	CFrameBuffer::getInstance()->paintBackground();
-	CFrameBuffer::getInstance()->blit();
+	frameBuffer->paintBackground();
+	frameBuffer->blit();
 }
 
 void CMBrowser::loadPlaylist()

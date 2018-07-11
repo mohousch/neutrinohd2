@@ -25,10 +25,12 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)/restart_enigma
 	install .libs/restart_enigma.so $(DESTDIR)$(PLUGINDIR)/restart_enigma
 	install -m 0644 restart_enigma.cfg $(DESTDIR)$(PLUGINDIR)/restart_enigma
+	install -m 0644 restart.png $(DESTDIR)$(PLUGINDIR)/restart_enigma
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/restart_enigma/restart_enigma.so
 	-rm $(DESTDIR)$(PLUGINDIR)/restart_enigma/restart_enigma.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/restart_enigma/restart.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/restart_enigma
 	
 

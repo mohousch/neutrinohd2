@@ -184,6 +184,9 @@ class CAudioPlayerGui : public CMenuTarget
 		bool askToOverwriteFile(const std::string& filename);
 
 		//
+		//
+		void play(unsigned int pos);
+		void stop();
 		void pause();
 		void ff(unsigned int seconds = 0);
 		void rev(unsigned int seconds = 0);
@@ -203,10 +206,6 @@ class CAudioPlayerGui : public CMenuTarget
 
 		//
 		void setInetMode(void){m_inetmode = true;};
-
-		//
-		void play(unsigned int pos);
-		void stop();
 
 		void setCurrent(int pos = 0){m_current = pos;};
 };

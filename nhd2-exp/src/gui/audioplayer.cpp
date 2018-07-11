@@ -283,10 +283,10 @@ int CAudioPlayerGui::show()
 			if(m_curr_audiofile.FileExtension != CFile::EXTENSION_URL)
 				playNext();
 		}
-
-		paintInfo();
 		
 		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
+
+		paintInfo();
 
 		if (msg == CRCInput::RC_home)
 		{ 
@@ -542,16 +542,8 @@ void CAudioPlayerGui::paintInfo()
 	w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
 	xstart = (m_width - w)/2;
 	if(xstart < BORDER_LEFT)
-		//xstart = BORDER_LEFT;
 		xstart = BORDER_LEFT + m_title_height - 4 + m_title_height + ICON_OFFSET;
 
-	/*
-	if (!m_curr_audiofile.MetaData.cover.empty())
-	{
-		if(xstart < (BORDER_LEFT + m_title_height - 4))
-			xstart = BORDER_LEFT + m_title_height - 4 + m_title_height + ICON_OFFSET;
-	}
-	*/
 		
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 2 + m_title_height/3 + 2 + m_title_height/3, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8		
 		
@@ -816,7 +808,7 @@ void CAudioPlayerGui::updateTimes(const bool force)
 
 			if ((m_state != CAudioPlayerGui::PAUSE) || (tv.tv_sec & 1))
 			{
-					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - w2 - 11, m_y + 4 + m_title_height/3, w2 + 4, play_time, COL_MENUHEAD_INFO);
+				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - w2 - 11, m_y + 4 + m_title_height/3, w2 + 4, play_time, COL_MENUHEAD_INFO);
 			}
 		}			
 		
@@ -1104,7 +1096,7 @@ void CAudioPlayerGui::selectTitle(unsigned char selectionChar)
 
 	CTitle2Pos::iterator it = m_title2Pos.find(selectionChar);
 
-	if (it!=m_title2Pos.end())
+	if (it != m_title2Pos.end())
 	{
 		// search for the next greater id
 		// if nothing found take the first

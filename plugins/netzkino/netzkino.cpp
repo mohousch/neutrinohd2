@@ -32,6 +32,9 @@ CNKMovies::CNKMovies(int mode, int id, std::string title)
 {
 	dprintf(DEBUG_NORMAL, "CNKMovies: mode:%d id:%d title:%s\n", mode, id, title.c_str());
 
+	moviesMenu = NULL;
+	item = NULL;
+
 	catMode = mode;
 	catID = id;
 	caption = title;
@@ -89,16 +92,14 @@ void CNKMovies::showNKMoviesMenu()
 
 	moviesMenu = new ClistBox(title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
-	CMenuItem* nm;
-
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		nm = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgInfo2.c_str(), this, "play", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgInfo2.c_str(), this, "play", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		nm->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
+		item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
 
 		//
-		moviesMenu->addItem(nm);
+		moviesMenu->addItem(item);
 	}
 
 	moviesMenu->setWidgetType(WIDGET_FRAME);

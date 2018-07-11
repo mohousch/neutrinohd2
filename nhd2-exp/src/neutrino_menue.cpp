@@ -263,25 +263,6 @@ bool CNeutrinoApp::showUserMenu(int button)
 			{
 				continue;
 			}
-			/*
-			// tsbrowser
-			case SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB:
-		                menu_items++;
-		                menu_prev = SNeutrinoSettings::ITEM_MOVIEPLAYER_TSMB;
-		                keyhelper.get(&key, &icon, CRCInput::RC_red);
-				menu_item = new CMenuForwarder(LOCALE_MOVIEPLAYER_RECORDS, true, NULL, new CMoviePlayerGui(), "tsmoviebrowser", key, icon, NEUTRINO_ICON_MENUITEM_TSPLAYER, LOCALE_HELPTEXT_TSBROWSER);
-		                menu->addItem(menu_item, false);
-		                break;
-			
-			// moviebrowser	
-			case SNeutrinoSettings::ITEM_MOVIEPLAYER_MB:
-		                menu_items++;
-		                menu_prev = SNeutrinoSettings::ITEM_MOVIEPLAYER_MB;
-		                keyhelper.get(&key, &icon, CRCInput::RC_green);
-				menu_item = new CMenuForwarder(LOCALE_MOVIEPLAYER_MOVIES, true, NULL, new CMoviePlayerGui(), "moviebrowser", key, icon, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_MOVIEBROWSER);
-		                menu->addItem(menu_item, false);
-		                break;
-			*/
 
 			// timerlist
 		       case SNeutrinoSettings::ITEM_TIMERLIST:
@@ -331,23 +312,10 @@ bool CNeutrinoApp::showUserMenu(int button)
 				menu_item++;
 				menu_prev = SNeutrinoSettings::ITEM_PLUGIN;
 				keyhelper.get(&key, &icon, CRCInput::RC_blue);
-				menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, NULL, new CPluginList( LOCALE_USERMENU_ITEM_PLUGINS, CPlugins::P_TYPE_NEUTRINO | CPlugins::P_TYPE_TOOL | CPlugins::P_TYPE_SCRIPT ), "-1", key, icon, NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES);
+				menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, NULL, new CPluginList(), "-1", key, icon, NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES);
 				menu->addItem(menu_item, false);
 			}
 			break;
-				
-			// games
-			/*
-			case SNeutrinoSettings::ITEM_GAME:
-			{
-				menu_item++;
-				menu_prev = SNeutrinoSettings::ITEM_GAME;
-				keyhelper.get(&key, &icon);
-				menu_item = new CMenuForwarder(LOCALE_MAINMENU_GAMES, true, NULL, new CPluginList(LOCALE_MAINMENU_GAMES, CPlugins::P_TYPE_GAME), "-1", key, icon, NEUTRINO_ICON_MENUITEM_FEATURES);
-				menu->addItem(menu_item, false);
-			}
-			break;
-			*/
 
 			default:
 				dprintf(DEBUG_NORMAL, "[neutrino] WARNING! menu wrong item!!\n");

@@ -32,10 +32,13 @@ class CTestMenu : public CMenuTarget
 		CFrameBuffer* frameBuffer;
 
 		//
+		int selected;
+
+		//
 		ClistBox* listMenu;
 		ZapitChannelList Channels;
-		int selected;
 		bool displayNext;
+
 		//
 		ClistBox* audioMenu;
 		CFileList audioFileList;
@@ -44,9 +47,9 @@ class CTestMenu : public CMenuTarget
 		ClistBox* plist;
 
 		//
+		ClistBox* mlist;
 		CMovieInfo m_movieInfo;
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
-		ClistBox* mlist;
 
 		// widgets
 		void testCBox();
@@ -1570,7 +1573,7 @@ void CTestMenu::testKeyChooser()
 
 void CTestMenu::testPluginsList()
 {
-	CPluginList * pluginList = new CPluginList( LOCALE_USERMENU_ITEM_PLUGINS);
+	CPluginList * pluginList = new CPluginList(/*LOCALE_USERMENU_ITEM_PLUGINS*/);
 	pluginList->exec(NULL, "");
 	delete pluginList;
 	pluginList = NULL;

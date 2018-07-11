@@ -55,59 +55,24 @@ class CPluginList : public CMenuTarget
 		} result;
 
 	private:
-		struct pluginitem
-		{
-			int         number;
-			std::string name;   	// UTF-8 encoded
-			std::string desc;   	// UTF-8 encoded
-			std::string version;
-			
-			std::string icon;	// icon
-		};
-		
-		neutrino_locale_t name;
-		uint pluginlisttype;
+		CFrameBuffer* frameBuffer;
 
-		CFrameBuffer * frameBuffer;
+		CMenuItem* item;
 
-		CBox cFrameBox;
-		CBox cFrameBoxTitle;
-		CBox cFrameBoxBody;
-		CBox cFrameBoxItem;
-		CBox cFrameBoxFoot;
-		CBox cFrameBoxScrollBar;
-
-		CIcon titleIcon;
-		CIcon footIcon;
-		CIcon itemIcon;
-		
-		unsigned int liststart;
-		unsigned int listmaxshow;
-		
-		//int sb_width;
-		int nrOfPages; 
-		int currPage;
-
-		void paintHead();
-		void paintFoot();
-		void paintItem(int pos);
-		void paintItems();
-		void paint();
+		int selected;
 
 	protected:
-
-		unsigned int selected;
-		std::vector<pluginitem *> pluginlist;
-
 		virtual CPluginList::result_ pluginSelected();
 
 	public:
-	
-		CPluginList(const neutrino_locale_t Name, const uint listtype = CPlugins::P_TYPE_NEUTRINO | CPlugins::P_TYPE_TOOL | CPlugins::P_TYPE_SCRIPT);
-		virtual ~CPluginList();
+		ClistBox* plist;
+
+		CPluginList();
+		~CPluginList();
 
 		void hide();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
+		void showMenu();
 };
 
 class CPluginChooser : public CPluginList
@@ -119,10 +84,9 @@ class CPluginChooser : public CPluginList
 		CPluginList::result_ pluginSelected();
 
 	public:
-		CPluginChooser(const neutrino_locale_t Name, const uint listtype, char* pluginname);
+		CPluginChooser(char* pluginname);
 };
 
-//
 class CPluginsExec : public CMenuTarget
 {
 	public:

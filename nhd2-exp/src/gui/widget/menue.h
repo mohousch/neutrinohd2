@@ -734,7 +734,7 @@ class ClistBox : public CMenuTarget
 		//
 		void resizeFrames();
 		void enableFootInfo(){FootInfo = true; initFrames();};
-		void setFootInfoHeight(int height = 70){footInfoHeight = height; resizeFrames();};
+		void setFootInfoHeight(int _height = 70){footInfoHeight = _height; resizeFrames();};
 
 		void setTimeOut(int to = 0){timeout = to;};
 

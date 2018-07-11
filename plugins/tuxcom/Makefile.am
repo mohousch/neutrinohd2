@@ -27,8 +27,11 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)/tuxcom
 	install .libs/tuxcom.so $(DESTDIR)$(PLUGINDIR)/tuxcom
 	install -m 0644 $(srcdir)/tuxcom.cfg $(DESTDIR)$(PLUGINDIR)/tuxcom
+	install -m 0644 $(srcdir)/tuxcom.png $(DESTDIR)$(PLUGINDIR)/tuxcom
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/tuxcom/tuxcom.so
 	-rm $(DESTDIR)$(PLUGINDIR)/tuxcom/tuxcom.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/tuxcom/tuxcom.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/tuxcom
+

@@ -61,6 +61,7 @@ class CYTBrowser : public CMenuTarget
 		
 		//
 		ClistBox* moviesMenu;
+		CMenuItem* item;
 		
 	public:
 		CYTBrowser();

@@ -82,6 +82,7 @@ CInternetRadio::CInternetRadio()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
+	ilist = NULL;
 	item = NULL;
 
 	selected = 0;
@@ -703,10 +704,6 @@ int CInternetRadio::exec(CMenuTarget* parent, const std::string& actionKey)
 		showMenu();
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "RC_stop")
-	{
-		tmpAudioPlayerGui.stop();
-	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -779,12 +776,11 @@ void CInternetRadio::showMenu(bool reload)
 	ilist->enablePaintDate();
 
 	ilist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
+	ilist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	ilist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
 	ilist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
 	ilist->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
 	ilist->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
-	ilist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	ilist->addKey(CRCInput::RC_stop, this, CRCInput::getSpecialKeyName(CRCInput::RC_stop));
 
 	ilist->exec(NULL, "");
 	//ilist->hide();

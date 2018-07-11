@@ -25,10 +25,12 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)/dvdplayer
 	install .libs/dvdplayer.so $(DESTDIR)$(PLUGINDIR)/dvdplayer
 	install -m 0644 dvdplayer.cfg $(DESTDIR)$(PLUGINDIR)/dvdplayer
+	install -m 0644 dvdplayer.png $(DESTDIR)$(PLUGINDIR)/dvdplayer
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/dvdplayer/dvdplayer.so
 	-rm $(DESTDIR)$(PLUGINDIR)/dvdplayer/dvdplayer.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/dvdplayer/dvdplayer.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/dvdplayer
 
 

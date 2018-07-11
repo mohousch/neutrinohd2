@@ -1,5 +1,5 @@
 /* 
-  $Id: youtube.cpp 2014/10/03 mohousch Exp $
+  $Id: youtube.cpp 2018/07/11 mohousch Exp $
 
   License: GPL
 
@@ -38,7 +38,8 @@ const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTIO
  
 CYTBrowser::CYTBrowser(): configfile ('\t')
 {
-	dprintf(DEBUG_NORMAL, "$Id: youtube Browser, v 0.0.1 2014/09/15 12:00:30 mohousch Exp $\n");
+	moviesMenu = NULL;
+	item = NULL;
 
 	init();
 }
@@ -142,8 +143,6 @@ void CYTBrowser::showYTMoviesMenu(bool reload)
 		title += " \"" + m_settings.ytsearch + "\"";
 
 	moviesMenu = new ClistBox(title.c_str(), NEUTRINO_ICON_YT_SMALL);
-
-	CMenuItem* menu_item = NULL;
 	
 	std::string itemTitle;
 
@@ -151,11 +150,11 @@ void CYTBrowser::showYTMoviesMenu(bool reload)
 	{
 		itemTitle = m_vMovieInfo[i].epgTitle + " (" + to_string(m_vMovieInfo[i].length) + " Min)";
 
-		menu_item = new ClistBoxItem(itemTitle.c_str(), true, m_vMovieInfo[i].epgInfo2.c_str(), this, "play", NULL,  file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(itemTitle.c_str(), true, m_vMovieInfo[i].epgInfo2.c_str(), this, "play", NULL,  file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		menu_item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
+		item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
  
-		moviesMenu->addItem(menu_item);
+		moviesMenu->addItem(item);
 	}
 
 	moviesMenu->setWidgetType(WIDGET_FRAME);

@@ -73,8 +73,8 @@ CPicViewer::~CPicViewer()
 
 void CPicViewer::hide()
 {
-	CFrameBuffer::getInstance()->paintBackground();
-	CFrameBuffer::getInstance()->blit();
+	frameBuffer->paintBackground();
+	frameBuffer->blit();
 }
 
 void CPicViewer::loadPlaylist(bool reload)
