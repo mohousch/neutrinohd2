@@ -473,10 +473,13 @@ void CGeneralSettings::showMenu()
 	// key
 	miscSettingsGeneral.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
+/*
 	std::string key = g_settings.tmdbkey;
 	
 	CStringInputSMS* keyInput = new CStringInputSMS("tmdb Key:", (char *)key.c_str());
 	miscSettingsGeneral.addItem(new CMenuForwarder("tmdb:", true, key, keyInput));
+*/
+
 	miscSettingsGeneral.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO, (int*)(&g_settings.prefer_tmdb_info), MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true ));
 
 	// reset factory setup
@@ -489,8 +492,8 @@ void CGeneralSettings::showMenu()
 	
 	miscSettingsGeneral.exec(NULL, "");
 	miscSettingsGeneral.hide();
-	delete keyInput;
-	keyInput = NULL;
+//	delete keyInput;
+//	keyInput = NULL;
 }
 
 // TZ notifier

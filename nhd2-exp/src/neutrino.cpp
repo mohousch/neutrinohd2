@@ -978,7 +978,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// mode
 	//g_settings.mode = configfile.getInt32("mode", mode_tv);
 
-	g_settings.tmdbkey = configfile.getString("tmdbkey", "");
+	//g_settings.tmdbkey = configfile.getString("tmdbkey", "");
 	g_settings.prefer_tmdb_info = configfile.getInt32("prefer_tmdb_info", 0);
 	
 	//set OSD resolution
@@ -1409,7 +1409,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32("Foot_Info_gradient", g_settings.Foot_Info_gradient);
 	configfile.setInt32("infobar_gradient", g_settings.infobar_gradient);
 
-	configfile.setString("tmdbkey", g_settings.tmdbkey);
+	//configfile.setString("tmdbkey", g_settings.tmdbkey);
 	configfile.setInt32("prefer_tmdb_info", g_settings.prefer_tmdb_info);
 	// END MISC OPTS
 
