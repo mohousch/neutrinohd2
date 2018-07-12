@@ -118,6 +118,7 @@ class CWebTV : public CMenuTarget
 		
 		bool readChannellist(std::string filename);
 		void updateEvents(void);
+		void getEvents(t_channel_id chid);
 };
 
 #endif

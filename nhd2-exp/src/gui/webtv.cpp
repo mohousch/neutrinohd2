@@ -231,7 +231,7 @@ void CWebTV::addUrl2Playlist(const char * url, const char *name, const char * de
 	
 	webtv_channels * tmp = new webtv_channels();
 	
-	tmp->id = id&0xFFFFFFFFFFFFULL;				
+	tmp->id = id/*&0xFFFFFFFFFFFFULL*/;				
 	tmp->title = name;
 	tmp->url = url;
 	tmp->description = description;
@@ -444,6 +444,62 @@ bool CWebTV::readChannellist(std::string filename)
 	return false;
 }
 
+//
+void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid/*, t_channel_id chid = 0*/);
+
+// get events
+void CWebTV::getEvents(t_channel_id chid)
+{
+	std::string evUrl = "http://";
+	evUrl += g_settings.satip_serverbox_ip;
+	uint64_t ID = 0;
+
+	if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
+	{
+		evUrl += "/web/epgservice?sRef=1:0:"; 
+
+		evUrl += to_hexstring(1);
+		evUrl += ":";
+		evUrl += to_hexstring(GET_SERVICE_ID_FROM_CHANNEL_ID(chid)); //sid
+		evUrl += ":";
+		evUrl += to_hexstring(GET_TRANSPORT_STREAM_ID_FROM_CHANNEL_ID(chid)); //tsid
+		evUrl += ":";
+		evUrl += to_hexstring(GET_ORIGINAL_NETWORK_ID_FROM_CHANNEL_ID(chid)); //onid
+		evUrl += ":";
+
+		if(g_settings.satip_serverbox_type == DVB_C)
+		{
+			evUrl += "FFFF"; // namenspace for cable
+		}
+		else if (g_settings.satip_serverbox_type == DVB_T)
+		{
+			evUrl += "EEEE"; // namenspace for terrestrial
+		}
+		else if (g_settings.satip_serverbox_type == DVB_S)
+		{
+			// namenspace for sat
+			evUrl += to_hexstring(chid >> 64); //satpos
+		}
+
+		evUrl += "0000";
+		evUrl += ":";
+		evUrl += "0:0:0:";
+	}
+	else if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
+	{
+		evUrl += "/control/epg?channelid=";
+
+		ID = ((uint64_t)(0xFFFF) << 48) | (uint64_t)chid;
+
+         	evUrl += to_hexstring(ID);
+
+		evUrl += "&xml=true&details=true";
+	}
+
+	insertEventsfromHttp(evUrl, GET_ORIGINAL_NETWORK_ID_FROM_CHANNEL_ID(chid), GET_TRANSPORT_STREAM_ID_FROM_CHANNEL_ID(chid), GET_SERVICE_ID_FROM_CHANNEL_ID(chid)/*, ID & 0xFFFFFFFFFFFFULL*/);
+}
+//
+
 bool CWebTV::startPlayBack(int pos)
 {
 	dprintf(DEBUG_NORMAL, "CWebTV::startPlayBack\n");
@@ -461,6 +517,8 @@ bool CWebTV::startPlayBack(int pos)
 	
 	playstate = PLAY;
 	speed = 1;
+
+	getEvents(channels[pos]->id);
 
 	g_Sectionsd->setServiceChanged(channels[pos]->id&0xFFFFFFFFFFFFULL, false);
 
@@ -688,17 +746,6 @@ void CWebTV::updateEvents(void)
 	
 	events.clear();
 }
-
-/*
-#define FOOT_BUTTONS_COUNT 4
-struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
-{
-	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_WEBTV_USER, NULL},
-	{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_FILEBROWSER_NEXTPAGE, NULL},
-	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE, NULL},
-	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_WEBTV_BOUQUETS, NULL}
-};
-*/
 
 #define FOOT_BUTTONS_COUNT 4
 struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
