@@ -102,9 +102,10 @@ extern CBouquetManager * g_bouquetManager;
 extern cVideo * videoDecoder;
 extern CZapitChannel * live_channel;
 
-/* events */
+// channel events
 void sectionsd_getChannelEvents(CChannelEventList &eList, const bool tv_mode, t_channel_id *chidlist, int clen);
 void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventList &eList, char search = 0, std::string search_text = "");
+
 //
 void addChannelToBouquet(const unsigned int bouquet, const t_channel_id channel_id);	// defined in zapit.cpp
 

@@ -48,7 +48,7 @@
 cTmdb::cTmdb(std::string epgtitle)
 {
 	minfo.epgtitle = epgtitle;
-	key = g_settings.tmdbkey;
+	key = "507930c8d6d400c85eae3a7e7b3f6c78";
 	cover = "/tmp/" + minfo.epgtitle + ".jpg";
 
 	std::string language = g_settings.language;

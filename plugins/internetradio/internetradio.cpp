@@ -23,6 +23,8 @@
 #include <fstream>
 #include <iostream>
 
+#include <string>
+
 # include <plugin.h>
 
 
@@ -412,17 +414,6 @@ bool CInternetRadio::openFileBrowser(void)
 				int global = 100*currentProgress/maxProgress;
 				progress.showGlobalStatus(global);
 				progress.showStatusMessageUTF(files->Name);
-			}
-			
-			//cdr/mp3/wav/flac
-			if ( (files->getExtension() == CFile::EXTENSION_CDR)
-					||  (files->getExtension() == CFile::EXTENSION_MP3)
-					||  (files->getExtension() == CFile::EXTENSION_WAV)
-					||  (files->getExtension() == CFile::EXTENSION_FLAC)
-			)
-			{
-				CAudiofileExt audiofile(files->Name, files->getExtension());
-				playlist.push_back(audiofile);
 			}
 			
 			//url

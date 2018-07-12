@@ -23,6 +23,15 @@
 #include <fstream>
 #include <iostream>
 
+#include <string>
+#include <set>
+#include <map>
+#include <cstdlib>
+#include <ctime>
+
+#include <unistd.h>
+#include <dirent.h>
+
 # include <plugin.h>
 
 
@@ -414,17 +423,6 @@ bool CIceCast::openFileBrowser(void)
 				int global = 100*currentProgress/maxProgress;
 				progress.showGlobalStatus(global);
 				progress.showStatusMessageUTF(files->Name);
-			}
-			
-			//cdr/mp3/wav/flac
-			if ( (files->getExtension() == CFile::EXTENSION_CDR)
-					||  (files->getExtension() == CFile::EXTENSION_MP3)
-					||  (files->getExtension() == CFile::EXTENSION_WAV)
-					||  (files->getExtension() == CFile::EXTENSION_FLAC)
-			)
-			{
-				CAudiofileExt audiofile(files->Name, files->getExtension());
-				playlist.push_back(audiofile);
 			}
 			
 			//url

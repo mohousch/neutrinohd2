@@ -182,7 +182,7 @@ int CPluginList::exec(CMenuTarget * parent, const std::string& actionKey)
 		if(pluginSelected() == close)
 			return menu_return::RETURN_EXIT_ALL;
 		else
-			menu_return::RETURN_REPAINT;
+			return menu_return::RETURN_REPAINT;
 	}
 
 	showMenu();

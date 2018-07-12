@@ -80,6 +80,9 @@ CWebTV::CWebTV()
 	
 	playstate = STOPPED;
 	speed = 0;
+
+	webTVlistMenu = NULL;
+	item = NULL;
 }
 
 CWebTV::~CWebTV()
@@ -613,6 +616,80 @@ void CWebTV::userBouquet(void)
 	}
 }
 
+// channel events
+void sectionsd_getChannelEvents(CChannelEventList &eList, const bool tv_mode, t_channel_id *chidlist, int clen);
+void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventList &eList, char search = 0, std::string search_text = "");
+
+void CWebTV::updateEvents(void)
+{
+	CChannelEventList events;
+
+	if (displayNext) 
+	{
+		if (channels.size()) 
+		{
+			time_t atime = time(NULL);
+			unsigned int count;
+			
+			for (count = 0; count < channels.size(); count++)
+			{		
+				//
+				events.clear();
+
+				sectionsd_getEventsServiceKey(channels[count]->id, events);
+				channels[count]->nextEvent.startTime = (long)0x7fffffff;
+				
+				for ( CChannelEventList::iterator e = events.begin(); e != events.end(); ++e ) 
+				{
+					if (((long)(e->startTime) > atime) && ((e->startTime) < (long)(channels[count]->nextEvent.startTime)))
+					{
+						channels[count]->nextEvent= *e;
+						break;
+					}
+				}
+			}
+		}
+	} 
+	else 
+	{
+		t_channel_id * p_requested_channels = NULL;
+		int size_requested_channels = 0;
+
+		if (channels.size()) 
+		{
+			size_requested_channels = channels.size()*sizeof(t_channel_id);
+			p_requested_channels = (t_channel_id*)malloc(size_requested_channels);
+			
+			for (uint32_t count = 0; count < channels.size(); count++)
+			{
+				p_requested_channels[count] = channels[count]->id&0xFFFFFFFFFFFFULL;
+			}
+
+			CChannelEventList pevents;
+			sectionsd_getChannelEvents(pevents, (CNeutrinoApp::getInstance()->getMode()) != NeutrinoMessages::mode_radio, p_requested_channels, size_requested_channels);
+			
+			for (uint32_t count = 0; count < channels.size(); count++) 
+			{
+				channels[count]->currentEvent = CChannelEvent();
+				
+				for ( CChannelEventList::iterator e = pevents.begin(); e != pevents.end(); ++e )
+				{
+					if ((channels[count]->id&0xFFFFFFFFFFFFULL) == e->get_channel_id())
+					{
+						channels[count]->currentEvent= *e;
+						break;
+					}
+				}
+			}
+			if (p_requested_channels != NULL) 
+				free(p_requested_channels);
+		}
+	}
+	
+	events.clear();
+}
+
+/*
 #define FOOT_BUTTONS_COUNT 4
 struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
 {
@@ -620,6 +697,16 @@ struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_FILEBROWSER_NEXTPAGE, NULL},
 	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE, NULL},
 	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_WEBTV_BOUQUETS, NULL}
+};
+*/
+
+#define FOOT_BUTTONS_COUNT 4
+struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_INFOVIEWER_EVENTLIST, NULL},
+	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_INFOVIEWER_NEXT, NULL},
+	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_NEXTPAGE, NULL},
+	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_WEBTV_BOUQUETS, NULL},
 };
 
 #define HEAD_BUTTONS_COUNT 1
@@ -637,19 +724,90 @@ void CWebTV::show(bool reload, bool reinit)
 		loadChannels();
 
 	//
+	CChannelEvent* p_event = NULL;
+	time_t jetzt = time(NULL);
+	int runningPercent = 0;
+
+	updateEvents();
+
+	if (displayNext) 
+	{
+		FootButtons[1].locale = LOCALE_INFOVIEWER_NOW;
+	} 
+	else 
+	{
+		FootButtons[1].locale = LOCALE_INFOVIEWER_NEXT;
+	}
+
+	//
 	webTVlistMenu = new ClistBox(title.c_str(), NEUTRINO_ICON_WEBTV_SMALL, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
 	if(channels.size())
 	{
 		for(unsigned int i = 0; i< channels.size(); i++)
 		{
-			m = new ClistBoxItem(channels[i]->title.c_str(), true, channels[i]->description.c_str(), this, "zapit");
+			std::string desc = channels[i]->description;
+			char cSeit[50] = " ";
+			char cNoch[50] = " ";
 
-			m->setNumber(i + 1);
-			m->setInfo1(title.c_str());
-			m->setOptionInfo1(channels[i]->description.c_str());
+			if (displayNext) 
+			{
+				p_event = &channels[i]->nextEvent;
+			} 
+			else 
+			{
+				p_event = &channels[i]->currentEvent;
+			}
 
-			webTVlistMenu->addItem(m);
+			// runningPercent
+			runningPercent = 0;
+			
+			if (((jetzt - p_event->startTime + 30) / 60) < 0 )
+			{
+				runningPercent = 0;
+			}
+			else
+			{
+				//printf("(jetzt:%d) (p_event->startTime:%d) (p_event->duration:%d)\n", jetzt, p_event->startTime, p_event->duration);
+
+				if(p_event->duration > 0)
+					runningPercent = (jetzt - p_event->startTime) * 30 / p_event->duration;
+			}
+
+			// description
+			if (p_event != NULL && !(p_event->description.empty())) 
+			{
+				desc = p_event->description;
+
+				struct tm * pStartZeit = localtime(&p_event->startTime);
+				unsigned seit = ( time(NULL) - p_event->startTime ) / 60;
+
+				if (displayNext) 
+				{
+					sprintf(cNoch, "(%d min)", p_event->duration / 60);
+					sprintf(cSeit, g_Locale->getText(LOCALE_CHANNELLIST_START), pStartZeit->tm_hour, pStartZeit->tm_min);
+				} 
+				else 
+				{
+					sprintf(cSeit, g_Locale->getText(LOCALE_CHANNELLIST_SINCE), pStartZeit->tm_hour, pStartZeit->tm_min);
+					int noch = (p_event->startTime + p_event->duration - time(NULL)) / 60;
+					if ((noch < 0) || (noch >= 10000))
+						noch = 0;
+					sprintf(cNoch, "(%d / %d min)", seit, noch);
+				}
+			}
+			//
+
+			item = new ClistBoxItem(channels[i]->title.c_str(), true, desc.c_str(), this, "zapit");
+
+			item->setNumber(i + 1);
+			item->setPercent(runningPercent);
+			item->setInfo1(desc.c_str());
+			item->setOptionInfo1(cSeit);
+			item->setInfo2(p_event->text.c_str());
+			item->setOptionInfo2(cNoch);
+
+			webTVlistMenu->addItem(item);
 		}
 	}
 
@@ -715,14 +873,21 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_red")
 	{
-		//g_EventList->exec(channels[webTVlistMenu->getSelected()]->id, channels[webTVlistMenu->getSelected()]->title);
+		g_EventList->exec(channels[webTVlistMenu->getSelected()]->id, channels[webTVlistMenu->getSelected()]->title);
+		/*
 		userBouquet(); 
 		show(false, true);
+		*/
+
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
-		g_RCInput->postMsg(CRCInput::RC_page_down, 0);
+		//g_RCInput->postMsg(CRCInput::RC_page_down, 0);
+		//selected = webTVlistMenu->getSelected();
+		displayNext = !displayNext;
+		show(false, true);
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_yellow")
 	{

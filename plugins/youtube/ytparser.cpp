@@ -77,6 +77,8 @@ cYTFeedParser::cYTFeedParser()
 	max_results = 25;
 
 	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
+
+	key = "AIzaSyCH1FAGAy7OW-Vk4QZYic4GxgFdXebu0B8";
 }
 
 cYTFeedParser::~cYTFeedParser()
@@ -162,7 +164,7 @@ bool cYTFeedParser::parseFeedDetailsJSON(cYTVideoInfo &vinfo)
 {
 	dprintf(DEBUG_NORMAL, "cYTFeedParser::parseFeedDetailsJSON:\n");
 	
-	key = m_settings.ytkey;
+	//key = m_settings.ytkey;
 	
 	vinfo.duration = 0;
 	// See at https://developers.google.com/youtube/v3/docs/videos
@@ -338,7 +340,7 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 {
 	dprintf(DEBUG_NORMAL, "cYTFeedParser::parseFeed(1)\n");
 	
-	key = m_settings.ytkey;
+	//key = m_settings.ytkey;
 	std::string answer;
 	std::string url = "https://www.googleapis.com/youtube/v3/search?";
 	bool append_res = true;

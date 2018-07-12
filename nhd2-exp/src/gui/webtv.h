@@ -46,10 +46,11 @@ class CWebTV : public CMenuTarget
 {
 	private:
 		struct webtv_channels {
-			t_channel_id id;
 			std::string title;
 			std::string url;
 			std::string description;
+			t_channel_id id;
+			CChannelEvent currentEvent, nextEvent;
 		};
 
 		xmlDocPtr parser;
@@ -61,9 +62,10 @@ class CWebTV : public CMenuTarget
 		std::string title;
 
 		ClistBox* webTVlistMenu;
-		ClistBoxItem* m;
+		CMenuItem* item;
 
 		int tuned;
+		bool displayNext;
 		
 		unsigned int position;
 		unsigned int duration;
@@ -115,6 +117,7 @@ class CWebTV : public CMenuTarget
 		void ClearChannels(void);
 		
 		bool readChannellist(std::string filename);
+		void updateEvents(void);
 };
 
 #endif
