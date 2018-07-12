@@ -145,11 +145,14 @@ void * CAudioPlayer::PlayThread( void * /*arg*/)
 		return NULL;
 	
 #if defined (PLATFORM_COOLSTREAM)
-	if(!playback->Start( (char *)getInstance()->m_Audiofile.Filename.c_str(), 0, 0, 0, 0, 0 ))
+	if(!playback->Start( (char*)getInstance()->m_Audiofile.Filename.c_str(), 0, 0, 0, 0, 0 ))
 #else		
-	if(!playback->Start( (char *)getInstance()->m_Audiofile.Filename.c_str() ))
+	if(!playback->Start( (char*)getInstance()->m_Audiofile.Filename.c_str() ))
 #endif
+	{
+		playback->Close();
 		return NULL;
+	}
 		
 	getInstance()->state = CBaseDec::PLAY;
 	
@@ -173,6 +176,7 @@ void * CAudioPlayer::PlayThread( void * /*arg*/)
 		getInstance()->m_played_time = position/1000;	// in sec
 	}while(getInstance()->state != CBaseDec::STOP_REQ);
 	
+	playback->Close();
 	getInstance()->state = CBaseDec::STOP;
 	
 	pthread_exit(0);

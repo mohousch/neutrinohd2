@@ -376,7 +376,7 @@ void CIceCast::scanXmlData(xmlDocPtr answer_parser, const char *nametag, const c
 
 bool CIceCast::openFileBrowser(void)
 {
-	dprintf(DEBUG_INFO, "CIceCast::openFilebrowser\n");
+	dprintf(DEBUG_INFO, "CIceCast::openFileBrowser\n");
 	
 	bool result = false;
 	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_audioplayerdir : "");
@@ -568,7 +568,7 @@ void CIceCast::GetMetaData(CAudiofileExt &File)
 	bool ret = 1;
 
 	if (CFile::EXTENSION_URL != File.FileExtension)
-		ret = CAudioPlayer::getInstance()->readMetaData(&File, /*m_state != CAudioPlayerGui::STOP && !g_settings.audioplayer_highprio*/true);
+		ret = CAudioPlayer::getInstance()->readMetaData(&File, true);
 
 	if (!ret || (File.MetaData.artist.empty() && File.MetaData.title.empty() ))
 	{
@@ -650,8 +650,6 @@ int CIceCast::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		selected = ilist->getSelected();
 
-		tmpAudioPlayerGui.clearPlaylist();
-
 		tmpAudioPlayerGui.addToPlaylist(playlist[selected]);
 
 		tmpAudioPlayerGui.setCurrent(0);
@@ -682,14 +680,12 @@ int CIceCast::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_yellow")
 	{
-		//tmpAudioPlayerGui.clearPlaylist();
 		playlist.clear();
 		showMenu(false);
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_red")
 	{
-		//tmpAudioPlayerGui.removeFromPlaylist(ilist->getSelected());
 		CAudioPlayList::iterator p = playlist.begin() + ilist->getSelected();
 		playlist.erase(p);
 
@@ -763,9 +759,6 @@ void CIceCast::showMenu(bool reload)
 
 		// details Box
 		item->setInfo1(tmp.c_str());
-		//item->setOptionInfo1(genre.c_str());
-		//item->setInfo2(artist.c_str());
-		//item->setOptionInfo2(date.c_str());
 
 		ilist->addItem(item);
 	}
@@ -803,21 +796,6 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-/*
-	std::string answer = "";
-
-	if(::getUrl(icecasturl, answer, " ", GET_ICECAST_TIMEOUT))
-	{
-		xmlDocPtr answer_parser = parseXml(answer.c_str());
-		
-		//tmpAudioPlayerGui.scanXmlData(answer_parser, "server_name", "listen_url", "bitrate", true);
-		tmpAudioPlayerGui.setTitle("Ice Cast");
-		tmpAudioPlayerGui.setInetMode();
-		tmpAudioPlayerGui.exec(NULL, "");
-	}
-	else
-		HintBox(LOCALE_MESSAGEBOX_INFO, "can't load icecast list");
-*/
 	CIceCast* iceCastHandler = new CIceCast();
 	
 	iceCastHandler->showMenu();

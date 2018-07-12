@@ -374,48 +374,6 @@ int CAudioPlayerGui::show()
 	return ret;
 }
 
-bool CAudioPlayerGui::playNext(bool allow_rotate)
-{
-	bool result = false;
-
-	if (!(m_playlist.empty()))
-	{
-		int next = getNext();
-		
-		if(next >= 0)
-			play(next);
-		else if(allow_rotate)
-			play(0);
-		else
-			stop();
-		
-		result = true;
-	}
-
-	return(result);
-}
-
-bool CAudioPlayerGui::playPrev(bool allow_rotate)
-{
-	bool result = false;
-
-	if (!(m_playlist.empty()))
-	{
-		if(m_current == -1)
-			stop();
-		else if(m_current - 1 > 0)
-			play(m_current - 1);
-		else if(allow_rotate)
-			play(m_playlist.size()-1);
-		else
-			play(0);
-
-		result = true;
-	}
-
-	return(result);
-}
-
 void CAudioPlayerGui::hide()
 {
 	// infos
@@ -518,10 +476,51 @@ void CAudioPlayerGui::paintInfo()
 	updateTimes(true);
 }
 
+bool CAudioPlayerGui::playNext(bool allow_rotate)
+{
+	bool result = false;
+
+	if (!(m_playlist.empty()))
+	{
+		int next = getNext();
+		
+		if(next >= 0)
+			play(next);
+		else if(allow_rotate)
+			play(0);
+		else
+			stop();
+		
+		result = true;
+	}
+
+	return(result);
+}
+
+bool CAudioPlayerGui::playPrev(bool allow_rotate)
+{
+	bool result = false;
+
+	if (!(m_playlist.empty()))
+	{
+		if(m_current == -1)
+			stop();
+		else if(m_current - 1 > 0)
+			play(m_current - 1);
+		else if(allow_rotate)
+			play(m_playlist.size() - 1);
+		else
+			play(0);
+
+		result = true;
+	}
+
+	return(result);
+}
+
 void CAudioPlayerGui::stop()
 {
 	m_state = CAudioPlayerGui::STOP;
-	//m_current = 0;
 		
 	//LCD
 	paintLCD();	
@@ -586,8 +585,6 @@ void CAudioPlayerGui::play(unsigned int pos)
 
 	if(!m_playlist.size())
 		return;
-	
-	unsigned int old_current = m_current;
 
 	m_current = pos;
 
@@ -599,11 +596,13 @@ void CAudioPlayerGui::play(unsigned int pos)
 	
 	m_metainfo.clear();
 	m_time_played = 0;
-	m_time_total = m_playlist[m_current].MetaData.total_time;
+	m_time_total = m_playlist[/*m_current*/pos].MetaData.total_time;
 	m_state = CAudioPlayerGui::PLAY;
 
 	//
-	m_curr_audiofile = m_playlist[m_current];
+	m_curr_audiofile = m_playlist[/*m_current*/pos];
+
+	//printf("Kazalla: pos:%d m_current:%d\n", pos, m_current);
 
 	// play
 	CAudioPlayer::getInstance()->play(&m_curr_audiofile, g_settings.audioplayer_highprio == 1);
@@ -909,7 +908,7 @@ void CAudioPlayerGui::clearPlaylist(void)
 	if (!(m_playlist.empty()))
 	{
 		m_playlist.clear();
-		m_current = -1;
+		m_current = 0;
 	}
 }
 

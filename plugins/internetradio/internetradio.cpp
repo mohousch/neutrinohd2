@@ -374,7 +374,7 @@ void CInternetRadio::scanXmlData(xmlDocPtr answer_parser, const char *nametag, c
 
 bool CInternetRadio::openFileBrowser(void)
 {
-	dprintf(DEBUG_INFO, "CInternetRadio::openFilebrowser\n");
+	dprintf(DEBUG_INFO, "CInternetRadio::openFileBrowser\n");
 	
 	bool result = false;
 	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_audioplayerdir : "");
@@ -566,7 +566,7 @@ void CInternetRadio::GetMetaData(CAudiofileExt &File)
 	bool ret = 1;
 
 	if (CFile::EXTENSION_URL != File.FileExtension)
-		ret = CAudioPlayer::getInstance()->readMetaData(&File, /*m_state != CAudioPlayerGui::STOP && !g_settings.audioplayer_highprio*/true);
+		ret = CAudioPlayer::getInstance()->readMetaData(&File, true);
 
 	if (!ret || (File.MetaData.artist.empty() && File.MetaData.title.empty() ))
 	{
@@ -647,8 +647,6 @@ int CInternetRadio::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(actionKey == "iplay")
 	{
 		selected = ilist->getSelected();
-
-		tmpAudioPlayerGui.clearPlaylist();
 
 		tmpAudioPlayerGui.addToPlaylist(playlist[selected]);
 
@@ -750,9 +748,6 @@ void CInternetRadio::showMenu(bool reload)
 
 		// details Box
 		item->setInfo1(tmp.c_str());
-		//item->setOptionInfo1(genre.c_str());
-		//item->setInfo2(artist.c_str());
-		//item->setOptionInfo2(date.c_str());
 
 		ilist->addItem(item);
 	}
@@ -798,15 +793,4 @@ void plugin_exec(void)
 	internetRadioHandler = NULL;
 }
 
-/*
-void plugin_exec(void)
-{
-	CAudioPlayerGui tmpAudioPlayerGui;
-
-	tmpAudioPlayerGui.scanXmlFile(RADIO_STATION_XML_FILE);	
-	tmpAudioPlayerGui.setTitle(g_Locale->getText(LOCALE_INETRADIO_NAME));
-	tmpAudioPlayerGui.setInetMode();
-	tmpAudioPlayerGui.exec(NULL, "");
-}
-*/
 

@@ -745,7 +745,8 @@ bool cPlayback::Start(char *filename)
 		playing = false;
 	}
 	
-	g_free(uri);
+	if(uri != NULL)
+		g_free(uri);
 #else	
 	//open file
 	if(player && player->playback && player->playback->Command(player, PLAYBACK_OPEN, (char *)file.c_str()) >= 0) 
