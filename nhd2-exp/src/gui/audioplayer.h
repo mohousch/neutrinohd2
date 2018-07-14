@@ -50,19 +50,6 @@
 #include <ctime>
 
 
-class CAudiofileExt : public CAudiofile
-{
-	public:
-		CAudiofileExt();
-		CAudiofileExt(std::string name, CFile::FileExtension extension);
-		CAudiofileExt(const CAudiofileExt& src);
-		void operator=(const CAudiofileExt& src);
-
-		char firstChar;
-};
-
-typedef std::vector<CAudiofileExt> CAudioPlayList;
-
 class CAudioPlayerGui : public CMenuTarget
 {
 	public:
@@ -94,7 +81,6 @@ class CAudioPlayerGui : public CMenuTarget
 
 		//
 		CAudioPlayList m_playlist;
-		CAudiofileExt  m_curr_audiofile;
 
 		int            m_LastMode;
 		int            m_idletime;
@@ -117,12 +103,12 @@ class CAudioPlayerGui : public CMenuTarget
 		void paintLCD();
 
 		//
-		void get_id3(CAudiofileExt * audiofile);
-		void get_mp3info(CAudiofileExt * audiofile);
+		void get_id3(CAudiofile* audiofile);
+		void get_mp3info(CAudiofile* audiofile);
 
 		//
 		int getNext();
-		void GetMetaData(CAudiofileExt &File);
+		void GetMetaData(CAudiofile& File);
 		void updateMetaData();
 		void updateTimes(const bool force = false);
 		
@@ -131,7 +117,7 @@ class CAudioPlayerGui : public CMenuTarget
 		* @param fileInfo a string where the file information will be appended
 		* @param file the file to return the information for
 		*/
-		void getFileInfoToDisplay(std::string& fileInfo, CAudiofileExt &file);
+		void getFileInfoToDisplay(std::string& fileInfo, CAudiofile& file);
 
 		/**
 		* Saves the current playlist into a .m3u playlist file.
@@ -177,7 +163,7 @@ class CAudioPlayerGui : public CMenuTarget
 		int exec(CMenuTarget *parent, const std::string &actionKey);
 
 		//
-		void addToPlaylist(CAudiofileExt &file);
+		void addToPlaylist(CAudiofile& file);
 		void removeFromPlaylist(long pos);
 		void clearPlaylist(void);
 

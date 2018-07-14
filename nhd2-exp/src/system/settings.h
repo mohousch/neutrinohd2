@@ -502,10 +502,16 @@ struct SNeutrinoSettings
 		SATIP_SERVERBOX_GUI_ENIGMA2
 	};
 
+/*
 	int satip_allow_satip;
 	std::string satip_serverbox_ip;
 	int satip_serverbox_type;
 	int satip_serverbox_gui;
+*/
+	
+	std::string epg_serverbox_ip;
+	int epg_serverbox_type;
+	int epg_serverbox_gui;
 
 	// MODE
 	//int mode;

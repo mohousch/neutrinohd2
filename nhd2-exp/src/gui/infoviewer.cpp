@@ -94,6 +94,8 @@ extern uint32_t shift_timer;
 extern std::string ext_channel_name;	// defined in vcrcontrol.cpp
 extern bool timeset;			// defined in sectionsd.cpp
 
+extern t_channel_id live_channel_id; 			//defined in zapit.cpp
+
 #define COL_INFOBAR_BUTTONS            (COL_INFOBAR_SHADOW + 1)
 #define COL_INFOBAR_BUTTONS_BACKGROUND (COL_INFOBAR_SHADOW_PLUS_1)
 
@@ -166,6 +168,8 @@ void CInfoViewer::Init()
 	
 	// init dimension
 	initDimension();
+
+	channel_id = live_channel_id;
 }
 
 void CInfoViewer::initDimension(void)
@@ -232,7 +236,8 @@ void CInfoViewer::initDimension(void)
 	ChanNameHeight = (CHANNEL_LOGO_HEIGHT - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]->getHeight(); //FIXME
 	
 	// satname
-	SatNameHeight = g_SignalFont->getHeight();
+	satNameHeight = g_SignalFont->getHeight();
+	satNameWidth = 0;
 	
 	//
 	TunerNumWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth("T9", true);
@@ -240,6 +245,8 @@ void CInfoViewer::initDimension(void)
 
 	timescale_posx = BoxStartX + BORDER_LEFT;
 	timescale_posy = BoxStartY + SAT_INFOBOX_HEIGHT;
+
+	//channel_id = 0;
 }
 
 void CInfoViewer::start()
@@ -350,7 +357,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 			if (satNameWidth > ((BoxEndX - BoxStartX) / 3) ) 
 				satNameWidth = (BoxEndX - BoxStartX) / 3;
 				
-			g_SignalFont->RenderString( BoxStartX + BORDER_LEFT, BoxStartY + (SAT_INFOBOX_HEIGHT - SatNameHeight)/2 + SatNameHeight, satNameWidth, sit->second.name, COL_INFOBAR );
+			g_SignalFont->RenderString( BoxStartX + BORDER_LEFT, BoxStartY + (SAT_INFOBOX_HEIGHT - satNameHeight)/2 + satNameHeight, satNameWidth, sit->second.name, COL_INFOBAR );
 		}
 	}
 
@@ -361,7 +368,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 		if (satNameWidth > ((BoxEndX - BoxStartX) / 3) ) 
 			satNameWidth = (BoxEndX - BoxStartX) / 3;
 				
-		g_SignalFont->RenderString( BoxStartX + BORDER_LEFT, BoxStartY + (SAT_INFOBOX_HEIGHT - SatNameHeight)/2 + SatNameHeight, satNameWidth, "WebTV", COL_INFOBAR );
+		g_SignalFont->RenderString( BoxStartX + BORDER_LEFT, BoxStartY + (SAT_INFOBOX_HEIGHT - satNameHeight)/2 + satNameHeight, satNameWidth, "WebTV", COL_INFOBAR );
 	}
 
 	// channel number/logo/name
@@ -455,7 +462,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 }
 
 //
-void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t_satellite_position _satellitePosition, const t_channel_id _new_channel_id, const bool _calledFromNumZap, int _epgpos)
+void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_satellite_position _satellitePosition, const t_channel_id _new_channel_id, const bool _calledFromNumZap, int _epgpos)
 {
 	dprintf(DEBUG_NORMAL, "CInfoViewer::show:\n");
 
@@ -465,7 +472,6 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 	is_visible = true;
 	new_chan = false;
 	showButtonBar = !_calledFromNumZap;
-	//last_curr_id = last_next_id = 0;
 	runningPercent = 0;
 
 	// init progressbar
@@ -480,13 +486,25 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 	if (!gotTime)
 		gotTime = timeset;
 
+	// channel id
+	channel_id = _new_channel_id;
+
+	dprintf(DEBUG_NORMAL, "CInfoViewer::show: channel:%llx\n", channel_id);
+
+	// subchannel
+	if (! _calledFromNumZap && !(g_RemoteControl->subChannels.empty()) && (g_RemoteControl->selected_subchannel > 0))
+	{
+		ChannelName = g_RemoteControl->subChannels[g_RemoteControl->selected_subchannel].subservice_name;
+		channel_id = g_RemoteControl->subChannels[g_RemoteControl->selected_subchannel].getChannelID();
+	} 
+
 	//
 	if (virtual_zap_mode) 
 	{
 		if ((channel_id != _new_channel_id) || (evtlist.empty())) 
 		{
 			evtlist.clear();
-			sectionsd_getEventsServiceKey(_new_channel_id & 0xFFFFFFFFFFFFULL, evtlist);
+			sectionsd_getEventsServiceKey(_new_channel_id&0xFFFFFFFFFFFFULL, evtlist);
 			
 			if (!evtlist.empty())
 				sort(evtlist.begin(),evtlist.end(), sortByDateTime);
@@ -494,16 +512,6 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 			new_chan = true;
 		}
 	} 
-
-	if (! _calledFromNumZap && !(g_RemoteControl->subChannels.empty()) && (g_RemoteControl->selected_subchannel > 0))
-	{
-		ChannelName = g_RemoteControl->subChannels[g_RemoteControl->selected_subchannel].subservice_name;
-		channel_id = g_RemoteControl->subChannels[g_RemoteControl->selected_subchannel].getChannelID();
-	} 
-	else 
-	{
-		channel_id = _new_channel_id;
-	}
 
 	//
 	showTitle(_ChanNum, ChannelName, _satellitePosition);
@@ -647,7 +655,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string & _Channel, const t
 
 void CInfoViewer::getCurrentNextEPG(t_channel_id ChannelID, bool newChan, int EPGPos)
 {
-	sectionsd_getCurrentNextServiceKey(ChannelID & 0xFFFFFFFFFFFFULL, info_CurrentNext);
+	sectionsd_getCurrentNextServiceKey(ChannelID&0xFFFFFFFFFFFFULL, info_CurrentNext);
 	
 	if (!evtlist.empty()) 
 	{
@@ -886,7 +894,7 @@ void CInfoViewer::showIcon_VTXT() const
 {
 	if (is_visible)
 	{
-		frameBuffer->paintIcon((g_RemoteControl->current_PIDs.PIDs.vtxtpid != 0 && !g_settings.satip_allow_satip) ? NEUTRINO_ICON_VTXT : NEUTRINO_ICON_VTXT_GREY, BoxEndX - (BORDER_RIGHT + icon_w_subt + ICON_TO_ICON_OFFSET + icon_w_vtxt), buttonBarStartY + (buttonBarHeight - icon_h_vtxt)/2 );
+		frameBuffer->paintIcon((g_RemoteControl->current_PIDs.PIDs.vtxtpid != 0) ? NEUTRINO_ICON_VTXT : NEUTRINO_ICON_VTXT_GREY, BoxEndX - (BORDER_RIGHT + icon_w_subt + ICON_TO_ICON_OFFSET + icon_w_vtxt), buttonBarStartY + (buttonBarHeight - icon_h_vtxt)/2 );
 	}
 }
 
@@ -1021,12 +1029,17 @@ void CInfoViewer::showIcon_Resolution() const
 void CInfoViewer::showIcon_SubT() const
 {
         bool have_sub = false;
-	CZapitChannel * cc = CNeutrinoApp::getInstance()->channelList->getChannel(CNeutrinoApp::getInstance()->channelList->getActiveChannelNumber());
-	if(cc && cc->getSubtitleCount())
-		have_sub = true;
 
-	if(is_visible)
-		frameBuffer->paintIcon(have_sub ? NEUTRINO_ICON_SUBT : NEUTRINO_ICON_SUBT_GREY, BoxEndX - (BORDER_RIGHT + icon_w_subt), buttonBarStartY + (buttonBarHeight - icon_h_subt)/2 );
+	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+	{
+		CZapitChannel * cc = CNeutrinoApp::getInstance()->channelList->getChannel(CNeutrinoApp::getInstance()->channelList->getActiveChannelNumber());
+
+		if(cc && cc->getSubtitleCount())
+			have_sub = true;
+
+		if(is_visible)
+			frameBuffer->paintIcon(have_sub ? NEUTRINO_ICON_SUBT : NEUTRINO_ICON_SUBT_GREY, BoxEndX - (BORDER_RIGHT + icon_w_subt), buttonBarStartY + (buttonBarHeight - icon_h_subt)/2 );
+	}
 }
 
 void CInfoViewer::showFailure()
@@ -1412,7 +1425,7 @@ void CInfoViewer::showSNR()
 	int posy = 0;
   	int barwidth = BAR_WIDTH;
 	
-  	if (g_settings.infobar_sat_display && !g_settings.satip_allow_satip && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv) 
+  	if (g_settings.infobar_sat_display && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv) 
 	{
 		if(is_visible)
 		{
@@ -1443,7 +1456,7 @@ void CInfoViewer::showSNR()
 				// see above comment about lenght of sat name
 				freqStartX = BoxStartX + satNameWidth + 20;
 
-				g_SignalFont->RenderString(freqStartX, BoxStartY + (SAT_INFOBOX_HEIGHT - SatNameHeight)/2 + SatNameHeight, freqWidth, freq, COL_INFOBAR );
+				g_SignalFont->RenderString(freqStartX, BoxStartY + (SAT_INFOBOX_HEIGHT - satNameHeight)/2 + satNameHeight, freqWidth, freq, COL_INFOBAR );
 			
 				if(live_fe != NULL)
 				{
@@ -1456,7 +1469,7 @@ void CInfoViewer::showSNR()
 				sig = ((ssig * 100 + 0x8001) >> 16);
 				snr = ((ssnr * 100 + 0x8001) >> 16);
 				
-				posy = BoxStartY + (SAT_INFOBOX_HEIGHT - SatNameHeight)/2 + SatNameHeight;
+				posy = BoxStartY + (SAT_INFOBOX_HEIGHT - satNameHeight)/2 + satNameHeight;
 
 				// sig
 				// I commented this out because in case : (sigscale->getPercent() == sig)
@@ -1500,7 +1513,7 @@ void CInfoViewer::showSNR()
 void CInfoViewer::showAktivTuner()
 { 
 	/*
-  	if (!g_settings.satip_allow_satip) 
+  	//if (!g_settings.satip_allow_satip) 
 	{
 		if(is_visible)
 		{

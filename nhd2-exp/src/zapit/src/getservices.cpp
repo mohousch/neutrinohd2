@@ -63,7 +63,14 @@ extern map<t_channel_id, audio_map_set_t> audio_map;		// defined in zapit.cpp
 extern int FrontendCount;
 extern CFrontend * getFE(int index);
 
-extern void parseScanInputXml(fe_type_t fe_type);
+bool have_s = false;
+bool have_c = false;
+bool have_t = false;
+
+// fake tuner (for testing without dvb device)
+bool fake_tuner = false;
+
+extern void parseScanInputXml(fe_type_t fe_type);	// defined in zapit.cpp
 
 
 void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, uint8_t Source )
@@ -177,7 +184,7 @@ void ParseChannels(xmlNodePtr node, const t_transport_stream_id transport_stream
 		vtype = xmlGetNumericAttribute(node, "vt", 16);
 		scrambled = xmlGetNumericAttribute(node, "s", 16);
 
-		chid = CREATE_CHANNEL_ID;
+		chid = CREATE_CHANNEL_ID64;
 		char *ptr = xmlGetAttribute(node, "action");
 		bool remove = ptr ? (!strcmp(ptr, "remove") || !strcmp(ptr, "replace")) : false;
 		bool add    = ptr ? (!strcmp(ptr, "add")    || !strcmp(ptr, "replace")) : true;
@@ -249,10 +256,6 @@ void FindTransponder(xmlNodePtr search)
 	uint8_t Source;
 	newtpid = 0xC000;
 	
-	bool have_s = false;
-	bool have_c = false;
-	bool have_t = false;
-	
 	// frontend type
 	for(int i = 0; i < FrontendCount; i++)
 	{
@@ -265,18 +268,6 @@ void FindTransponder(xmlNodePtr search)
 		if( fe->getDeliverySystem() == DVB_T ) 
 			have_t = true;
 	}
-
-	// satip
-	if(g_settings.satip_allow_satip)
-	{
-		if(g_settings.satip_serverbox_type == DVB_C)
-			have_c = true;
-		else if(g_settings.satip_serverbox_type == DVB_S)
-			have_s = true;
-		else if(g_settings.satip_serverbox_type == DVB_T)
-			have_t = true;
-	}
-	
 	
 	while (search) 
 	{
@@ -516,7 +507,7 @@ int loadTransponders()
 	bool satcleared = 0;
 	scnt = 0;
 	
-	t_satellite_position position = 0; //first postion
+	t_satellite_position position = 0; //first position
 
 	dprintf(DEBUG_NORMAL, "getServices:loadTransponders:\n");
 	
@@ -528,6 +519,7 @@ int loadTransponders()
 
 	satcleared = 1;
 
+	//
 	fe_type_t fe_type = FE_QAM;
 
 	// parse sat tp
@@ -536,7 +528,6 @@ int loadTransponders()
 		CFrontend * fe = getFE(i);
 		fe_type = fe->getInfo()->type;
 
-		//parseScanInputXml(i);
 		parseScanInputXml(fe_type);
 			
 		if ( scanInputParser != NULL ) 
@@ -607,16 +598,8 @@ int loadTransponders()
 		}
 	}
 
-	// satip
-	if(g_settings.satip_allow_satip)
+	if(fake_tuner)
 	{
-		if(g_settings.satip_serverbox_type == DVB_C)
-			fe_type = FE_QAM;
-		else if(g_settings.satip_serverbox_type == DVB_S)
-			fe_type = FE_QPSK;
-		else if(g_settings.satip_serverbox_type == DVB_T)
-			fe_type = FE_OFDM;
-
 		parseScanInputXml(fe_type);
 			
 		if ( scanInputParser != NULL ) 
@@ -684,7 +667,7 @@ int loadTransponders()
 				
 				search = search->xmlNextNode;
 			}
-		}	
+		}
 	}
 	
 	return 0;

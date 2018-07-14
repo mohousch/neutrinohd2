@@ -426,7 +426,7 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 	
 	CZapitClient::responseGetPIDs pids;
 	g_Zapit->getRecordPIDS (pids);
-	CZapitClient::CCurrentServiceInfo si = g_Zapit->getRecordServiceInfo ();
+	CZapitClient::CCurrentServiceInfo si = g_Zapit->getRecordServiceInfo();
 
         APIDList apid_list;
         getAPIDs(apids, apid_list);
@@ -524,7 +524,8 @@ bool CVCRControl::CFileDevice::Stop()
 
 	bool return_value = (::stop_recording(extMessage.c_str()) == STREAM2FILE_OK);
 
-	RestoreNeutrino();
+	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+		RestoreNeutrino();
 
 	deviceState = CMD_VCR_STOP;
 
@@ -540,13 +541,16 @@ bool CVCRControl::CFileDevice::Stop()
 std::string ext_channel_name;
 bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, const event_id_t epgid, const std::string& epgTitle, unsigned char apids, const time_t epg_time) 
 {
-	// cut neutrino
-	CutBackNeutrino(channel_id, mode);
-
-#define MAXPIDS		64
+	#define MAXPIDS		64
 	unsigned short pids[MAXPIDS];
 	unsigned int numpids;
 	unsigned int pos;
+
+	// cut neutrino
+	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+	{
+	CutBackNeutrino(channel_id, mode);
+	}
 
 	CZapitClient::CCurrentServiceInfo si = g_Zapit->getRecordServiceInfo();
 	numpids = 0;
@@ -584,7 +588,11 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 
 	pos = strlen(filename);
 
-	ext_channel_name = g_Zapit->getChannelName(channel_id);
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		ext_channel_name = g_Webtv->getLiveChannelName();
+	else
+		ext_channel_name = g_Zapit->getChannelName(channel_id);
+
 	if (!(ext_channel_name.empty()))
 	{
 		strcpy(&(filename[pos]), UTF8_TO_FILESYSTEM_ENCODING(ext_channel_name.c_str()));
@@ -694,7 +702,8 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 	}
 	else 
 	{
-		RestoreNeutrino();
+		if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+			RestoreNeutrino();
 
 		printf("[CVCRControl] stream2file error code: %d\n", error_msg);
 #warning FIXME: Use better error message

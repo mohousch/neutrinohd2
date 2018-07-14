@@ -54,12 +54,10 @@
 #include <gui/filebrowser.h>
 #include <gui/widget/progressbar.h>
 #include <gui/pictureviewer.h>
-#include <gui/webtv.h>
 
 #include <system/debug.h>
 
 
-extern CWebTV * webtv;
 #define PIC_W 		78
 
 static CProgressBar * timescale;
@@ -879,7 +877,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 
 				// 31.05.2002 dirch		record timer
 				case CRCInput::RC_red:
-					if (recDir != NULL && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv))
+					if (recDir != NULL)
 					{
 						if(g_Timerd->isTimerdAvailable())
 						{
@@ -922,7 +920,6 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 				// 31.05.2002 dirch		zapto timer
 				case CRCInput::RC_yellow:
 				{
-					if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 					{
 						//CTimerdClient timerdclient;
 						if(g_Timerd->isTimerdAvailable())
@@ -1216,7 +1213,7 @@ void CEpgData::showTimerEventBar(bool _show)
 	frameBuffer->paintBoxRel(x, y, w, h, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	// Button Red: Timer Record & Channelswitch
-	if (recDir != NULL && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv))
+	if (recDir != NULL)
 	{
 		pos = 0;
 	
@@ -1230,14 +1227,11 @@ void CEpgData::showTimerEventBar(bool _show)
 	//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, x + ICON_OFFSET + cellwidth*pos, y + h_offset );
 	
 	// Button Yellow: Timer Channelswitch
-	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-	{
-		pos = 2;
-		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + ICON_OFFSET + cellwidth*pos, y + /*h_offset*/(h - icon_h)/2 );
+	pos = 2;
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + ICON_OFFSET + cellwidth*pos, y + /*h_offset*/(h - icon_h)/2 );
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ICON_OFFSET + cellwidth*pos + icon_w + ICON_OFFSET, y + h_offset + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w - ICON_OFFSET - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_TIMERBAR_CHANNELSWITCH), COL_INFOBAR, 0, true); // UTF-8
-	}
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ICON_OFFSET + cellwidth*pos + icon_w + ICON_OFFSET, y + h_offset + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w - ICON_OFFSET - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_TIMERBAR_CHANNELSWITCH), COL_INFOBAR, 0, true); // UTF-8
 	
 	
 	// --Button Blue: empty
@@ -1266,7 +1260,7 @@ int CEPGDataHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 
 	//
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		e->show(webtv->getLiveChannelID());
+		e->show(g_Webtv->getLiveChannelID());
 	else
 		e->show(channelList->getActiveChannel_ChannelID());
 	

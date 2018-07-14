@@ -35,12 +35,29 @@
 
 #include <gui/widget/menue.h>
 
-#include <xmlinterface.h>
+//#include <xmlinterface.h>
 
 #include <channel.h>
 
 
 #define DEFAULT_WEBTV_FILE 		CONFIGDIR "/webtv/webtv.xml"
+
+extern "C" {
+#include <libmd5sum/md5.h>
+}
+#include <string.h>
+
+static inline t_channel_id create_channel_id(const char *url = NULL)
+{
+	if (url) 
+	{
+		t_channel_id cid;
+		unsigned char md5[16];
+		md5_buffer(url, strlen(url), md5);
+		memcpy(&cid, md5, sizeof(cid));
+		return cid | 0xFFFFFFFF00000000;
+	}
+}
 
 class CWebTV : public CMenuTarget
 {
@@ -53,7 +70,7 @@ class CWebTV : public CMenuTarget
 			CChannelEvent currentEvent, nextEvent;
 		};
 
-		xmlDocPtr parser;
+		//xmlDocPtr parser;
 		
 		// channels
 		std::vector<webtv_channels *> channels;
@@ -110,7 +127,8 @@ class CWebTV : public CMenuTarget
 		//
 		unsigned int getTunedChannel() {if(tuned < 0) tuned = 0; return tuned;};
 		t_channel_id getLiveChannelID() { if(tuned < 0) tuned = 0; return channels[tuned]->id;};
-		const std::string& getLiveChannelName(void) {if(tuned < 0) tuned = 0; return channels[tuned]->title;};
+		const std::string& getLiveChannelName(void){if(tuned < 0) tuned = 0; return channels[tuned]->title;};
+		const std::string& getLiveChannelUrl(void){if(tuned < 0) tuned = 0; return channels[tuned]->url;};
 		
 		//
 		void loadChannels(void);

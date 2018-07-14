@@ -36,30 +36,25 @@
 #include <linux/dvb/frontend.h>
 
 
-/*zapit types*/
 typedef uint16_t t_service_id;
-#define SCANF_SERVICE_ID_TYPE "%hx"
-
 typedef uint16_t t_original_network_id;
-#define SCANF_ORIGINAL_NETWORK_ID_TYPE "%hx"
-
 typedef uint16_t t_transport_stream_id;
-#define SCANF_TRANSPORT_STREAM_ID_TYPE "%hx"
-
 typedef int16_t t_satellite_position;
-#define SCANF_SATELLITE_POSITION_TYPE "%hd"
-
 typedef uint16_t t_network_id;
-//Introduced by Nirvana 11/05. Didn't check if there are similar types
-
 typedef uint16_t t_bouquet_id;
-//Introduced by Nirvana 11/05. Didn't check if there are similar types
-
-#define CREATE_TRANSPONDER_ID_FROM_ORIGINALNETWORK_TRANSPORTSTREAM_ID(original_network_id, transport_stream_id) ((((t_original_network_id) original_network_id) << 16) | (t_transport_stream_id) transport_stream_id)
-
-/* unique channel identification */
 typedef uint64_t t_channel_id;
+typedef uint64_t transponder_id_t;
+typedef uint16_t freq_id_t;
 
+#define SCANF_SERVICE_ID_TYPE "%hx"
+#define SCANF_ORIGINAL_NETWORK_ID_TYPE "%hx"
+#define SCANF_TRANSPORT_STREAM_ID_TYPE "%hx"
+#define SCANF_SATELLITE_POSITION_TYPE "%hd"
+#define PRINTF_CHANNEL_ID_TYPE "%llx"
+#define SCANF_CHANNEL_ID_TYPE "%llx"
+#define PRINTF_TRANSPONDER_ID_TYPE "%12llx"
+
+// channel
 #define CREATE_CHANNEL_ID_FROM_SERVICE_ORIGINALNETWORK_TRANSPORTSTREAM_ID(service_id, original_network_id, transport_stream_id) ((((t_channel_id)transport_stream_id) << 32) | (((t_channel_id)original_network_id) << 16) | (t_channel_id)service_id)
 
 #define CREATE_CHANNEL_ID CREATE_CHANNEL_ID_FROM_SERVICE_ORIGINALNETWORK_TRANSPORTSTREAM_ID(service_id, original_network_id, transport_stream_id)
@@ -70,27 +65,23 @@ typedef uint64_t t_channel_id;
 #define GET_TRANSPORT_STREAM_ID_FROM_CHANNEL_ID(channel_id) ((t_transport_stream_id)((channel_id) >> 32))
 #define GET_ORIGINAL_NETWORK_ID_FROM_CHANNEL_ID(channel_id) ((t_original_network_id)((channel_id) >> 16))
 #define GET_SERVICE_ID_FROM_CHANNEL_ID(channel_id) ((t_service_id)(channel_id))
+#define GET_SATELLITEPOSITION_FROM_CHANNEL_ID(channel_id) ((t_satellite_position )(channel_id >> 32) & 0xFFFF)
 
-#define PRINTF_CHANNEL_ID_TYPE "%llx"
-#define SCANF_CHANNEL_ID_TYPE "%llx"
-
-/* same transponder */
-#define SAME_TRANSPONDER(id1, id2) ((id1 >> 16) == (id2 >> 16))
-
-typedef uint64_t transponder_id_t;
-typedef uint16_t freq_id_t;
-
-#define PRINTF_TRANSPONDER_ID_TYPE "%12llx"
-
+// transponder
 #define CREATE_TRANSPONDER_ID_FROM_SATELLITEPOSITION_ORIGINALNETWORK_TRANSPORTSTREAM_ID(freq, satellitePosition, original_network_id, transport_stream_id) ( ((uint64_t)freq << 48) |  ((uint64_t) ( satellitePosition >= 0 ? satellitePosition : (uint64_t)(0xF000+ abs(satellitePosition))) << 32) | ((uint64_t)transport_stream_id << 16) | (uint64_t)original_network_id)
 
-#define GET_ORIGINAL_NETWORK_ID_FROM_TRANSPONDER_ID(transponder_id) ((t_original_network_id)(transponder_id      ))
+#define CREATE_TRANSPONDER_ID64(freq, satellitePosition,original_network_id, transport_stream_id) \
+ ( ((uint64_t)freq << 48) |  ((uint64_t) ( satellitePosition >= 0 ? satellitePosition : (uint64_t)(0xF000+ abs(satellitePosition))) << 32) | ((uint64_t)transport_stream_id << 16) | (uint64_t)original_network_id)
+
+#define GET_ORIGINAL_NETWORK_ID_FROM_TRANSPONDER_ID(transponder_id) ((t_original_network_id)(transponder_id ))
+
 #define GET_TRANSPORT_STREAM_ID_FROM_TRANSPONDER_ID(transponder_id) ((t_transport_stream_id)(transponder_id >> 16))
 
-#define GET_SATELLITEPOSITION_FROM_TRANSPONDER_ID(transponder_id)   ((t_satellite_position )(transponder_id >> 32))
+#define GET_SATELLITEPOSITION_FROM_TRANSPONDER_ID(transponder_id)((t_satellite_position )(transponder_id >> 32) & 0xFFFF)
 
-#define GET_SAT_FROM_TPID(transponder_id)   ((t_satellite_position )(transponder_id >> 32) & 0xFFFF)
-#define GET_FREQ_FROM_TPID(transponder_id) ((freq_id_t)(transponder_id >> 48))
+#define GET_FREQ_FROM_TRANSPONDER_ID(transponder_id) ((freq_id_t)(transponder_id >> 48))
+
+#define SAME_TRANSPONDER(id1, id2) ((id1 >> 16) == (id2 >> 16))
 
 enum ChannelVideoType {
 	CHANNEL_VIDEO_MPEG2 	= 0,

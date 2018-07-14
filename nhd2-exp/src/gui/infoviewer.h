@@ -87,7 +87,7 @@ class CInfoViewer
 		
 		// sat info
 		int satNameWidth;
-		int SatNameHeight;
+		int satNameHeight;
 		int freqStartX;
 		int freqWidth;
 		
@@ -150,6 +150,7 @@ class CInfoViewer
 		int		asize;
 		bool show_dot;
 		bool new_chan;
+
 		CSectionsdClient::CurrentNextInfo info_CurrentNext;
 		t_channel_id   channel_id;
 
@@ -200,9 +201,9 @@ class CInfoViewer
 
 		void start();
 
-		void showTitle(const int ChanNum, const std::string & Channel, const t_satellite_position satellitePosition); // Channel must be UTF-8 encoded
+		void showTitle(const int ChanNum, const std::string& Channel, const t_satellite_position satellitePosition); // Channel must be UTF-8 encoded
 
-		void show(const int _ChanNum, const std::string & _Channel, const t_satellite_position _satellitePosition, const t_channel_id _new_channel_id = 0, const bool _calledFromNumZap = false, int _epgpos = 0); // Channel must be UTF-8 encoded
+		void show(const int _ChanNum, const std::string& _Channel, const t_satellite_position _satellitePosition, const t_channel_id _new_channel_id = 0, const bool _calledFromNumZap = false, int _epgpos = 0); // Channel must be UTF-8 encoded
 
 		enum
 		{

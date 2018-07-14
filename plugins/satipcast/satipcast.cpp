@@ -98,7 +98,7 @@ int CSatIPSetup::exec(CMenuTarget* parent, const std::string& actionKey)
 void CSatIPSetup::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CSatIPSetup::showMenu\n");
-
+#if 0
 	int rec = CNeutrinoApp::getInstance()->recordingstatus;
 	int allow_ip = g_settings.satip_allow_satip;
 	
@@ -117,6 +117,8 @@ void CSatIPSetup::showMenu()
 	// items
 	satIP.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
+/*
+
 	// allow satip on/off
 	CSatIPNotifier * satIPNotifier = new CSatIPNotifier;
 
@@ -129,18 +131,20 @@ void CSatIPSetup::showMenu()
 	// server gui (neutrino/neutrinohd/enigma2)
 	satIP.addItem(new CMenuOptionChooser("Server Box GUI", &g_settings.satip_serverbox_gui, SATIP_SERVERBOX_GUI_OPTIONS, SATIP_SERVERBOX_GUI_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcut++), "", true ));
 
-	// client box type (sat/cable/terrestrial)
+	// server box type (sat/cable/terrestrial)
 	satIP.addItem(new CMenuOptionChooser("Client Box type", &g_settings.satip_serverbox_type, SATIP_SERVERBOX_TYPE_OPTIONS, SATIP_SERVERBOX_TYPE_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcut++), "", true ));
 
 	if (rec)
 		HintBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SATIPCAST_REC_HINT, HINTBOX_WIDTH, 6);
+*/
 	
 	satIP.exec(NULL, "");
 	satIP.hide();
 
-	delete satip_IP;
-	satip_IP = NULL;
-	delete satIPNotifier;
+	//delete satip_IP;
+//	satip_IP = NULL;
+	//delete satIPNotifier;
+#endif
 }
 
 // satipcast notifier
@@ -165,14 +169,14 @@ bool CSatIPNotifier::changeNotify(const neutrino_locale_t, void * Data)
 			g_Zapit->lockPlayBack();
 			// a little wait is needed here !! 
 			sleep(1);
-			g_settings.satip_allow_satip = allowip;
+			//g_settings.satip_allow_satip = allowip;
 			g_Zapit->Rezap();
 		}
 		else
 		{
 			// stop ip-playback
 			g_Zapit->stopPlayBack();
-			g_settings.satip_allow_satip = allowip;
+			//g_settings.satip_allow_satip = allowip;
 			// open video-, audiodecoder and start playback
 			g_Zapit->unlockPlayBack();
 			// start epg scanning
@@ -181,8 +185,8 @@ bool CSatIPNotifier::changeNotify(const neutrino_locale_t, void * Data)
 		}
 	}
 
-	else if (mode == 8)				// web-tv
-		g_settings.satip_allow_satip = allowip;
+	//else if (mode == 8)				// web-tv
+	//	g_settings.satip_allow_satip = allowip;
 	
         return true;
 }

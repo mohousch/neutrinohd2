@@ -5570,15 +5570,13 @@ void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventL
 /* was: commandCurrentNextInfoChannelID */
 void sectionsd_getCurrentNextServiceKey(t_channel_id uniqueServiceKey, CSectionsdClient::responseGetCurrentNextInfoChannelID& current_next )
 {
-	dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_getCurrentNextServiceKey: Request of current/next information for " PRINTF_CHANNEL_ID_TYPE "\n", uniqueServiceKey);
+	dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_getCurrentNextServiceKey: Request of current/next information for: %llx\n", uniqueServiceKey);
 
 	SIevent currentEvt;
 	SIevent nextEvt;
-	unsigned flag = 0, flag2=0;
+	unsigned flag = 0, flag2 = 0;
 	/* ugly hack: retry fetching current/next by restarting dmxCN if this is true */
 	bool change = false;
-
-	//t_channel_id * uniqueServiceKey = (t_channel_id *)data;
 
 	readLockEvents();
 
@@ -6131,7 +6129,7 @@ bool sectionsd_isReady(void)
 	return sectionsd_ready;
 }
 
-void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid/*, t_channel_id chid = 0*/)
+void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid)
 {
 	dprintf(DEBUG_NORMAL, "sectionsd:insertEventsfromHttp: url:%s\n", url.c_str());
 
@@ -6148,7 +6146,7 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 
 	answer = "/tmp/epg.xml";
 
-	if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
+	if(g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
 	{
 		if (!::downloadUrl(url, answer))
 			return;
@@ -6312,7 +6310,7 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 			xmlFreeDoc(index_parser);
 		}
 	}
-	else if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
+	else if(g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
 	{
 		/*
 		<e2eventlist>

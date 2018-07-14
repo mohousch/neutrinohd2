@@ -164,7 +164,7 @@ int add_to_scan(transponder_id_t TsidOnid, FrontendParameters *feparams, uint8_t
 			t_transport_stream_id transport_stream_id = tI->second.transport_stream_id;
 			t_original_network_id original_network_id = tI->second.original_network_id;
 
-			freq_id_t freq1 = GET_FREQ_FROM_TPID(tI->first);
+			freq_id_t freq1 = GET_FREQ_FROM_TRANSPONDER_ID(tI->first);
 
 			t_satellite_position satellitePosition = GET_SATELLITEPOSITION_FROM_TRANSPONDER_ID(tI->first) & 0xFFF;
 
@@ -185,7 +185,7 @@ int add_to_scan(transponder_id_t TsidOnid, FrontendParameters *feparams, uint8_t
 	{
 		poltmp2 = tI->second.polarization & 1;
 		
-		if((abs(GET_FREQ_FROM_TPID(tI->first) - freq) <= 3))
+		if((abs(GET_FREQ_FROM_TRANSPONDER_ID(tI->first) - freq) <= 3))
 			if(poltmp2 == poltmp1)
                         	break;
         }

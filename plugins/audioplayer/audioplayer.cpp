@@ -135,7 +135,7 @@ void CMP3Player::loadPlaylist(bool reload)
 					||  (files->getExtension() == CFile::EXTENSION_WAV)
 					||  (files->getExtension() == CFile::EXTENSION_FLAC))
 				{
-					CAudiofileExt audiofile(files->Name, files->getExtension());
+					CAudiofile/*Ext*/ audiofile(files->Name, files->getExtension());
 				
 					playlist.push_back(audiofile);
 				}
@@ -203,7 +203,7 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 					||  (files->getExtension() == CFile::EXTENSION_WAV)
 					||  (files->getExtension() == CFile::EXTENSION_FLAC))
 				{
-					CAudiofileExt audiofile(files->Name, files->getExtension());
+					CAudiofile audiofile(files->Name, files->getExtension());
 							
 					playlist.push_back(audiofile);
 				}

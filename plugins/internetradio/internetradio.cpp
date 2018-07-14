@@ -69,8 +69,8 @@ class CInternetRadio : public CMenuTarget
 		bool openFileBrowser(void);
 
 		//
-		void GetMetaData(CAudiofileExt &File);
-		void getFileInfoToDisplay(std::string& fileInfo, CAudiofileExt &file);
+		void GetMetaData(CAudiofile& File);
+		void getFileInfoToDisplay(std::string& fileInfo, CAudiofile& file);
 		
 	public:
 		CInternetRadio();
@@ -138,7 +138,7 @@ void CInternetRadio::addUrl2Playlist(const char *url, const char *name, const ti
 {
 	dprintf(DEBUG_NORMAL, "CInternetRadio::addUrl2Playlist: name = %s, url = %s\n", name, url);
 	
-	CAudiofileExt mp3(url, CFile::EXTENSION_URL);
+	CAudiofile mp3(url, CFile::EXTENSION_URL);
 	
 	if (name != NULL) 
 	{
@@ -518,7 +518,7 @@ bool CInternetRadio::openFileBrowser(void)
 											|| fileExtension == CFile::EXTENSION_FLAC
 									)
 									{
-										CAudiofileExt audioFile(filename, fileExtension);
+										CAudiofile audioFile(filename, fileExtension);
 										playlist.push_back(audioFile);
 									} 
 									else
@@ -550,7 +550,7 @@ bool CInternetRadio::openFileBrowser(void)
 	return ( result);
 }
 
-void CInternetRadio::GetMetaData(CAudiofileExt &File)
+void CInternetRadio::GetMetaData(CAudiofile& File)
 {
 	dprintf(DEBUG_DEBUG, "CInternetRadio::GetMetaData: fileExtension:%d\n", File.FileExtension);
 	
@@ -589,7 +589,7 @@ void CInternetRadio::GetMetaData(CAudiofileExt &File)
 	}
 }
 
-void CInternetRadio::getFileInfoToDisplay(std::string &info, CAudiofileExt &file)
+void CInternetRadio::getFileInfoToDisplay(std::string &info, CAudiofile& file)
 {
 	std::string fileInfo;
 	std::string artist;
@@ -624,7 +624,6 @@ void CInternetRadio::getFileInfoToDisplay(std::string &info, CAudiofileExt &file
 		fileInfo += "Unknown";
 	}
 	
-	file.firstChar = tolower(fileInfo[0]);
 	info += fileInfo;
 }
 

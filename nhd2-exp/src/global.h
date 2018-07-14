@@ -63,6 +63,7 @@
 #include <gui/eventlist.h>
 
 #include <driver/radiotext.h>
+#include <gui/webtv.h>
 
 #ifndef NEUTRINO_CPP
   #define NEUTRINO_CPP extern
@@ -101,5 +102,7 @@ NEUTRINO_CPP  EventList			*g_EventList;
 NEUTRINO_CPP CLocaleManager		*g_Locale;
 
 NEUTRINO_CPP CRadioText			*g_Radiotext;
+
+NEUTRINO_CPP CWebTV			*g_Webtv;
 
 #endif /* __neutrino_global_h__ */

@@ -67,6 +67,7 @@
 
 extern tallchans allchans;
 extern cPlayback *playback;
+xmlDocPtr parser;
 
 CWebTV::CWebTV()
 {
@@ -231,7 +232,7 @@ void CWebTV::addUrl2Playlist(const char * url, const char *name, const char * de
 	
 	webtv_channels * tmp = new webtv_channels();
 	
-	tmp->id = id/*&0xFFFFFFFFFFFFULL*/;				
+	tmp->id = id&0xFFFFFFFFFFFFULL;				
 	tmp->title = name;
 	tmp->url = url;
 	tmp->description = description;
@@ -303,12 +304,16 @@ bool CWebTV::readChannellist(std::string filename)
 
 					id = 0;
 
+					/*
 					// grad channel id from channellist
 					for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
 					{
 						if(strcasecmp(it->second.getName().c_str(), title.c_str()) == 0)
 							id = it->second.getChannelID();
 					}
+					*/
+					if(id == 0)
+						id = create_channel_id(url.c_str());
 					
 					addUrl2Playlist(::decodeUrl(url).c_str(), title.c_str(), description.c_str(), id);
 				}
@@ -359,13 +364,24 @@ bool CWebTV::readChannellist(std::string filename)
 						title = xmlGetAttribute(l1, (char *)"title");
 						url = xmlGetAttribute(l1, (char *)"url");
 						description = xmlGetAttribute(l1, (char *)"description");
+						const char *epgid = xmlGetAttribute(l1, "epgid");
 
-						// grab channel id from channellist
-						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+						if (epgid)
+							id = strtoull(epgid, NULL, 16);
+
+						/*
+						if(id == 0)
 						{
-							if(strcasecmp(it->second.getName().c_str(), title) == 0)
-								id = it->second.getChannelID();
+							// grab channel id from channellist
+							for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+							{
+								if(strcasecmp(it->second.getName().c_str(), title) == 0)
+									id = it->second.getChannelID();
+							}
 						}
+						*/
+						if(id == 0)
+							id = create_channel_id(url);
 						
 						addUrl2Playlist(url, title, description, id);
 					}	
@@ -376,6 +392,9 @@ bool CWebTV::readChannellist(std::string filename)
 						title = xmlGetAttribute(l1, (char *)"name");
 						url = xmlGetAttribute(l1, (char *)"url");
 						description = "stream";
+
+						if(id == 0)
+							id = create_channel_id(url);
 						
 						processPlaylistUrl(url, title, description) ;
 					}
@@ -427,11 +446,15 @@ bool CWebTV::readChannellist(std::string filename)
 						// grab channel id from channellist
 						id = 0;
 
+						/*
 						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
 						{
 								if(strcasecmp(it->second.getName().c_str(), name) == 0)
 									id = it->second.getChannelID();
 						}
+						*/
+						if(id == 0)
+							id = create_channel_id(url);
 					
 						addUrl2Playlist(url, name, description.c_str(), id);
 					}
@@ -445,16 +468,16 @@ bool CWebTV::readChannellist(std::string filename)
 }
 
 //
-void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid/*, t_channel_id chid = 0*/);
+void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid);
 
 // get events
 void CWebTV::getEvents(t_channel_id chid)
 {
 	std::string evUrl = "http://";
-	evUrl += g_settings.satip_serverbox_ip;
-	uint64_t ID = 0;
+	evUrl += g_settings.epg_serverbox_ip;
+	//uint64_t ID = 0;
 
-	if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
+	if(g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
 	{
 		evUrl += "/web/epgservice?sRef=1:0:"; 
 
@@ -467,36 +490,36 @@ void CWebTV::getEvents(t_channel_id chid)
 		evUrl += to_hexstring(GET_ORIGINAL_NETWORK_ID_FROM_CHANNEL_ID(chid)); //onid
 		evUrl += ":";
 
-		if(g_settings.satip_serverbox_type == DVB_C)
+		if(g_settings.epg_serverbox_type == DVB_C)
 		{
 			evUrl += "FFFF"; // namenspace for cable
 		}
-		else if (g_settings.satip_serverbox_type == DVB_T)
+		else if (g_settings.epg_serverbox_type == DVB_T)
 		{
 			evUrl += "EEEE"; // namenspace for terrestrial
 		}
-		else if (g_settings.satip_serverbox_type == DVB_S)
+		else if (g_settings.epg_serverbox_type == DVB_S)
 		{
 			// namenspace for sat
-			evUrl += to_hexstring(chid >> 64); //satpos
+			evUrl += to_hexstring(GET_SATELLITEPOSITION_FROM_CHANNEL_ID(chid)); //satpos
 		}
 
 		evUrl += "0000";
 		evUrl += ":";
 		evUrl += "0:0:0:";
 	}
-	else if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
+	else if(g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
 	{
 		evUrl += "/control/epg?channelid=";
 
-		ID = ((uint64_t)(0xFFFF) << 48) | (uint64_t)chid;
+		//ID = ((uint64_t)(0xFFFF) << 48) | (uint64_t)chid;
 
-         	evUrl += to_hexstring(ID);
+         	evUrl += to_hexstring(chid);
 
 		evUrl += "&xml=true&details=true";
 	}
 
-	insertEventsfromHttp(evUrl, GET_ORIGINAL_NETWORK_ID_FROM_CHANNEL_ID(chid), GET_TRANSPORT_STREAM_ID_FROM_CHANNEL_ID(chid), GET_SERVICE_ID_FROM_CHANNEL_ID(chid)/*, ID & 0xFFFFFFFFFFFFULL*/);
+	insertEventsfromHttp(evUrl, GET_ORIGINAL_NETWORK_ID_FROM_CHANNEL_ID(chid), GET_TRANSPORT_STREAM_ID_FROM_CHANNEL_ID(chid), GET_SERVICE_ID_FROM_CHANNEL_ID(chid));
 }
 //
 
@@ -518,7 +541,7 @@ bool CWebTV::startPlayBack(int pos)
 	playstate = PLAY;
 	speed = 1;
 
-	getEvents(channels[pos]->id);
+	getEvents(channels[pos]->id&0xFFFFFFFFFFFFULL);
 
 	g_Sectionsd->setServiceChanged(channels[pos]->id&0xFFFFFFFFFFFFULL, false);
 

@@ -1107,7 +1107,7 @@ BROWSER:
 			
 			if (file->getType() == CFile::FILE_AUDIO)
 			{
-				CAudiofileExt audiofile(file->Name, file->getExtension());
+				CAudiofile audiofile(file->Name, file->getExtension());
 				tmpAudioPlayerGui.addToPlaylist(audiofile);
 				tmpAudioPlayerGui.exec(NULL, "urlplayback");
 			}
@@ -1309,7 +1309,7 @@ BROWSER:
 					||  (files->getExtension() == CFile::EXTENSION_FLAC)
 			)
 			{
-				CAudiofileExt audiofile(files->Name, files->getExtension());
+				CAudiofile audiofile(files->Name, files->getExtension());
 				tmpAudioPlayerGui.addToPlaylist(audiofile);
 			}
 		}
@@ -1677,7 +1677,7 @@ void CTestMenu::testPlayAudioDir()
 					||  (files->getExtension() == CFile::EXTENSION_FLAC)
 			)
 			{
-				CAudiofileExt audiofile(files->Name, files->getExtension());
+				CAudiofile audiofile(files->Name, files->getExtension());
 				tmpAudioPlayerGui.addToPlaylist(audiofile);
 			}
 		}
@@ -2711,7 +2711,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "aplay")
 	{
 		selected = audioMenu->getSelected();
-		CAudiofileExt audiofile(audioFileList[audioMenu->getSelected()].Name, audioFileList[audioMenu->getSelected()].getExtension());
+		CAudiofile audiofile(audioFileList[audioMenu->getSelected()].Name, audioFileList[audioMenu->getSelected()].getExtension());
 
 		CAudioPlayer::getInstance()->init();
 		CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, NeutrinoMessages::mode_audio);

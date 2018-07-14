@@ -86,8 +86,6 @@ void stopOpenGLplayback();
 
 // satip cast
 #include <playback_cs.h>
-#include <system/helpers.h>
-#include <gui/audio_video_select.h>
 extern cPlayback *playback;
 
 // globals 
@@ -1312,20 +1310,14 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0)
 	firstzap = false;
 
 	// stop update pmt filter
-	if(!g_settings.satip_allow_satip)
-	{
-		pmt_stop_update_filter(&pmt_update_fd);
-	}
+	pmt_stop_update_filter(&pmt_update_fd);
 	
 	// FIXME: how to stop ci_capmt or we dont need this???
 	stopPlayBack(!forupdate);
 
 	// reset channel pids
-	if(!g_settings.satip_allow_satip)
-	{
-		if(!forupdate && live_channel)
-			live_channel->resetPids();
-	}
+	if(!forupdate && live_channel)
+		live_channel->resetPids();
 
 	live_channel = newchannel;
 
@@ -1334,62 +1326,56 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0)
 	saveZapitSettings(false, false);
 	
 	// find live_fe to tune
-	if(!g_settings.satip_allow_satip)
+	CFrontend * fe = getFrontend(live_channel);
+	if(fe == NULL) 
 	{
-		CFrontend * fe = getFrontend(live_channel);
-		if(fe == NULL) 
-		{
-			dprintf(DEBUG_INFO, "%s can not allocate live frontend\n", __FUNCTION__);
-			return -1;
-		}
+		dprintf(DEBUG_INFO, "%s can not allocate live frontend\n", __FUNCTION__);
+		return -1;
+	}
 	
-		live_fe = fe;
+	live_fe = fe;
 	
-		dprintf(DEBUG_NORMAL, "%s zap to %s(%llx) fe(%d,%d)\n", __FUNCTION__, live_channel->getName().c_str(), live_channel_id, live_fe->fe_adapter, live_fe->fenumber );
+	dprintf(DEBUG_NORMAL, "%s zap to %s(%llx) fe(%d,%d)\n", __FUNCTION__, live_channel->getName().c_str(), live_channel_id, live_fe->fe_adapter, live_fe->fenumber );
 
-		// tune live frontend
-		if(!tune_to_channel(live_fe, live_channel, transponder_change))
-			return -1;
+	// tune live frontend
+	if(!tune_to_channel(live_fe, live_channel, transponder_change))
+		return -1;
 
-		// check if nvod
-		if (live_channel->getServiceType() == ST_NVOD_REFERENCE_SERVICE) 
-		{
-			current_is_nvod = true;
-			return 0;
-		}
+	// check if nvod
+	if (live_channel->getServiceType() == ST_NVOD_REFERENCE_SERVICE) 
+	{
+		current_is_nvod = true;
+		return 0;
+	}
 		
-		int retry = false;
+	int retry = false;
 	
 tune_again:
-		// parse pat pmt
-		failed = !parse_channel_pat_pmt(live_channel, live_fe);
+	// parse pat pmt
+	failed = !parse_channel_pat_pmt(live_channel, live_fe);
 
-		if(failed && !retry)
-		{
-			usleep(2500);  /* give some 2500us for demuxer: borrowed from e2*/
-			retry = true;
-			dprintf(DEBUG_NORMAL, "[zapit] trying again\n");
-			goto tune_again;
-		}	
+	if(failed && !retry)
+	{
+		usleep(2500);  /* give some 2500us for demuxer: borrowed from e2*/
+		retry = true;
+		dprintf(DEBUG_NORMAL, "[zapit] trying again\n");
+		goto tune_again;
+	}	
 
-		if ((!failed) && (live_channel->getAudioPid() == 0) && (live_channel->getVideoPid() == 0)) 
-		{
-			dprintf(DEBUG_NORMAL, "[zapit] neither audio nor video pid found\n");
-			failed = true;
-		}
-
-		/* 
-		 * start sdt scan even if the service was not found in pat or pmt
-		 * if the frontend did not tune, we don't get here, so this is fine 
-		 */
-		if (transponder_change)
-			sdt_wakeup = true;
-
-		if (failed)
-			return -1;
-
-		live_channel->getCaPmt()->ca_pmt_list_management = transponder_change ? 0x03 : 0x04;
+	if ((!failed) && (live_channel->getAudioPid() == 0) && (live_channel->getVideoPid() == 0)) 
+	{
+		dprintf(DEBUG_NORMAL, "[zapit] neither audio nor video pid found\n");
+		failed = true;
 	}
+
+	
+	if (transponder_change)
+		sdt_wakeup = true;
+
+	if (failed)
+		return -1;
+
+	live_channel->getCaPmt()->ca_pmt_list_management = transponder_change ? 0x03 : 0x04;
 
 	// restore channel pids
 	restore_channel_pids(live_channel);
@@ -1397,28 +1383,25 @@ tune_again:
 	// start playback (live)
 	startPlayBack(live_channel);
 
-	if(!g_settings.satip_allow_satip)
-	{
-		// cam
-		sendCaPmtPlayBackStart(live_channel, live_fe);
+	// cam
+	sendCaPmtPlayBackStart(live_channel, live_fe);
 	
-		// ci cam
+	// ci cam
 #if defined (ENABLE_CI)	
-		if(live_channel != NULL)
-		{
-			if(live_fe != NULL)
-				ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
-		}
+	if(live_channel != NULL)
+	{
+		if(live_fe != NULL)
+			ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
+	}
 #endif		
 	
-		// send caid
-		int caid = 1;
+	// send caid
+	int caid = 1;
 
-		eventServer->sendEvent(CZapitClient::EVT_ZAP_CA_ID, CEventServer::INITID_ZAPIT, &caid, sizeof(int));
+	eventServer->sendEvent(CZapitClient::EVT_ZAP_CA_ID, CEventServer::INITID_ZAPIT, &caid, sizeof(int));
 
-		// start pmt update filter
-		pmt_set_update_filter(live_channel, &pmt_update_fd, live_fe);
-	}	
+	// start pmt update filter
+	pmt_set_update_filter(live_channel, &pmt_update_fd, live_fe);	
 
 	return 0;
 }
@@ -3326,11 +3309,9 @@ void sendChannels(int connfd, const CZapitClient::channelsMode mode, const CZapi
 	internalSendChannels(connfd, &channels, 0, false);
 }
 
-void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid/*, t_channel_id chid = 0*/);
+void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid);
 
 // startplayback
-// satip cast
-std::string ChannelURL;
 int startPlayBack(CZapitChannel * thisChannel)
 {
 	if(!thisChannel)
@@ -3342,114 +3323,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 	if (!thisChannel || playing)
 		return -1;
 
-	if(g_settings.satip_allow_satip)
-	{
-		dprintf(DEBUG_NORMAL, "zapit:startPlayBack: pmtpid 0x%X videopid 0x%X audiopid 0x%X\n", thisChannel->getPmtPid(), thisChannel->getVideoPid(), thisChannel->getPreAudioPid() );
-
-		// build channel url
-		ChannelURL;
-
-		ChannelURL = "http://";
-		ChannelURL += g_settings.satip_serverbox_ip;
-
-		if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
-		{
-			uint64_t ID = ((uint64_t)(thisChannel->getSatellitePosition() + thisChannel->getFreqId() * 4) << 48) | (uint64_t)thisChannel->getChannelID();
-
-         		ChannelURL += ":31339/id=";
-
-         		ChannelURL += to_hexstring(ID);
-		}
-		else if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
-		{
-			ChannelURL += ":8001/1:0:";
-
-			ChannelURL += to_hexstring(thisChannel->getServiceType(true));
-			ChannelURL += ":";
-			ChannelURL += to_hexstring(thisChannel->getServiceId());
-			ChannelURL += ":";
-			ChannelURL += to_hexstring(thisChannel->getTransportStreamId());
-			ChannelURL += ":";
-			ChannelURL += to_hexstring(thisChannel->getOriginalNetworkId());
-			ChannelURL += ":";
-
-			if(g_settings.satip_serverbox_type == DVB_C)
-			{
-				ChannelURL += "FFFF"; // namenspace for cable
-			}
-			else if (g_settings.satip_serverbox_type == DVB_T)
-			{
-				ChannelURL += "EEEE"; // namenspace for terrestrial
-			}
-			else if (g_settings.satip_serverbox_type == DVB_S)
-			{
-				// namenspace for sat
-				ChannelURL += to_hexstring(thisChannel->getSatellitePosition());
-			}
-
-			ChannelURL += "0000";
-			ChannelURL += ":";
-			ChannelURL += "0:0:0:";
-		}
-
-		if(playback)
-		{
-			playback->Open();
-			playback->Start((char *)ChannelURL.c_str());
-			currentapid = 0;
-		}
-
-		// get events
-		std::string evUrl = "http://";
-		evUrl += g_settings.satip_serverbox_ip;
-		uint64_t ID = 0;
-
-		if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
-		{
-			evUrl += "/web/epgservice?sRef=1:0:"; 
-
-			evUrl += to_hexstring(thisChannel->getServiceType(true));
-			evUrl += ":";
-			evUrl += to_hexstring(thisChannel->getServiceId());
-			evUrl += ":";
-			evUrl += to_hexstring(thisChannel->getTransportStreamId());
-			evUrl += ":";
-			evUrl += to_hexstring(thisChannel->getOriginalNetworkId());
-			evUrl += ":";
-
-			if(g_settings.satip_serverbox_type == DVB_C)
-			{
-					evUrl += "FFFF"; // namenspace for cable
-			}
-			else if (g_settings.satip_serverbox_type == DVB_T)
-			{
-					evUrl += "EEEE"; // namenspace for terrestrial
-			}
-			else if (g_settings.satip_serverbox_type == DVB_S)
-			{
-					// namenspace for sat
-					evUrl += to_hexstring(thisChannel->getSatellitePosition());
-			}
-
-			evUrl += "0000";
-			evUrl += ":";
-			evUrl += "0:0:0:";
-		}
-		else if(g_settings.satip_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
-		{
-			evUrl += "/control/epg?channelid=";
-
-			ID = ((uint64_t)(thisChannel->getSatellitePosition() + thisChannel->getFreqId() * 4) << 48) | (uint64_t)thisChannel->getChannelID();
-
-         		evUrl += to_hexstring(ID);
-
-			evUrl += "&xml=true&details=true";
-		}
-
-		insertEventsfromHttp(evUrl, thisChannel->getOriginalNetworkId(), thisChannel->getTransportStreamId(), thisChannel->getServiceId()/*, ID & 0xFFFFFFFFFFFFULL*/);
-	}
-	else
-	{
+	//{
 		if (playbackStopForced)
 			return -1;
 
@@ -3702,7 +3576,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 #if defined (USE_PLAYBACK)
 		startOpenGLplayback();
 #endif
-	}
+	//}
 
 	playing = true;
 	
@@ -3716,55 +3590,47 @@ int stopPlayBack(bool sendPmt)
 	if (!playing)
 		return 0;
 	
-	if(g_settings.satip_allow_satip)
-	{
-		if(playback)
-			playback->Close();
-	}
-	else 
-	{
-		if (playbackStopForced)
-			return -1;
+	if (playbackStopForced)
+		return -1;
 
-		// capmt
-		sendcapmtPlayBackStop(sendPmt);
+	// capmt
+	sendcapmtPlayBackStop(sendPmt);
 		
-		// stop audio decoder
-		audioDecoder->Stop();
+	// stop audio decoder
+	audioDecoder->Stop();
 
-		// stop audio demux
-		if (audioDemux)
-		{
-			// stop
-			audioDemux->Stop();
-			delete audioDemux;  //destructor closes dmx
-			audioDemux = NULL;
-		}
+	// stop audio demux
+	if (audioDemux)
+	{
+		// stop
+		audioDemux->Stop();
+		delete audioDemux;  //destructor closes dmx
+		audioDemux = NULL;
+	}
 
-		// stop video demux
-		if (videoDemux)
-		{
-			// stop
-			videoDemux->Stop();
-			delete videoDemux;	//destructor closes dmx
-			videoDemux = NULL;
-		}
+	// stop video demux
+	if (videoDemux)
+	{
+		// stop
+		videoDemux->Stop();
+		delete videoDemux;	//destructor closes dmx
+		videoDemux = NULL;
+	}
 	
-		// stop video decoder (blanking)
-		videoDecoder->Stop(true);
+	// stop video decoder (blanking)
+	videoDecoder->Stop(true);
 	
-		if (pcrDemux)
-		{
-			// stop
-			pcrDemux->Stop();
-			delete pcrDemux; //destructor closes dmx
-			pcrDemux = NULL;
-		}
+	if (pcrDemux)
+	{
+		// stop
+		pcrDemux->Stop();
+		delete pcrDemux; //destructor closes dmx
+		pcrDemux = NULL;
+	}
 
 #if defined (USE_PLAYBACK)
-		stopOpenGLplayback();
+	stopOpenGLplayback();
 #endif
-	}
 
 	playing = false;
 	
@@ -3783,41 +3649,35 @@ int stopPlayBack(bool sendPmt)
 void closeAVDecoder(void)
 {
 #if !defined (USE_PLAYBACK)
-	if(!g_settings.satip_allow_satip)
-	{
-		// close videodecoder
-		if(videoDecoder)
-			videoDecoder->Close();
+	// close videodecoder
+	if(videoDecoder)
+		videoDecoder->Close();
 	
-		// close audiodecoder
-		if(audioDecoder)
-			audioDecoder->Close();
-	}
+	// close audiodecoder
+	if(audioDecoder)
+		audioDecoder->Close();
 #endif
 }
 
 void openAVDecoder(void)
 {
 #if !defined (USE_PLAYBACK)
-	if(!g_settings.satip_allow_satip)
+	if(videoDecoder)
 	{
-		if(videoDecoder)
-		{
-			// open video decoder
-			videoDecoder->Open(/*live_fe*/);
+		// open video decoder
+		videoDecoder->Open(/*live_fe*/);
 	
-			// set source
-			videoDecoder->setSource(VIDEO_SOURCE_DEMUX);	
-		}	
+		// set source
+		videoDecoder->setSource(VIDEO_SOURCE_DEMUX);	
+	}	
 	
-		if(audioDecoder)
-		{
-			// open audiodecoder
-			audioDecoder->Open(/*live_fe*/);
+	if(audioDecoder)
+	{
+		// open audiodecoder
+		audioDecoder->Open(/*live_fe*/);
 		
-			// set source
-			audioDecoder->setSource(AUDIO_SOURCE_DEMUX);
-		}
+		// set source
+		audioDecoder->setSource(AUDIO_SOURCE_DEMUX);
 	}	
 #endif
 }

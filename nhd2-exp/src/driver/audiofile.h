@@ -55,6 +55,6 @@ class CAudiofile
 		CFile::FileExtension FileExtension;
 };
 
-typedef std::vector<CAudiofile> CPlayList;
+typedef std::vector<CAudiofile> CAudioPlayList;
 
 #endif /* __AUDIOFILE_H__ */

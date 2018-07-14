@@ -39,6 +39,7 @@
 #include <xmlinterface.h>
 
 #include <gui/widget/messagebox.h>
+#include <gui/widget/stringinput_ext.h>
 
 #include <gui/filebrowser.h>
 #include <gui/misc_setup.h>
@@ -814,6 +815,21 @@ int CEPGSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 	return ret;
 }
 
+#define EPG_SERVERBOX_TYPE_OPTION_COUNT 3
+const CMenuOptionChooser::keyval EPG_SERVERBOX_TYPE_OPTIONS[EPG_SERVERBOX_TYPE_OPTION_COUNT] =
+{
+	{ DVB_C, NONEXISTANT_LOCALE, "Cable" },
+	{ DVB_S, NONEXISTANT_LOCALE, "Sat" },
+	{ DVB_T, NONEXISTANT_LOCALE, "Terrestrial" }
+};
+
+#define EPG_SERVERBOX_GUI_OPTION_COUNT 2
+const CMenuOptionChooser::keyval EPG_SERVERBOX_GUI_OPTIONS[EPG_SERVERBOX_GUI_OPTION_COUNT] =
+{
+	{ SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP, NONEXISTANT_LOCALE, "NeutrinoMP" },
+	{ SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2, NONEXISTANT_LOCALE, "enigma2" }
+};
+
 void CEPGSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CEPGSettings::showMenu:\n");
@@ -876,9 +892,25 @@ void CEPGSettings::showMenu()
 	// epglang
 	for(int i = 0; i < 3; i++) 
 		miscSettingsEPG.addItem(epglangSelect[i]);
+
+	// epg from http
+	miscSettingsEPG.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+
+	// server box ip
+	CIPInput * epg_IP = new CIPInput(LOCALE_STREAMINGMENU_SERVER_IP, g_settings.epg_serverbox_ip);
+	miscSettingsEPG.addItem(new CMenuForwarder("Server Box IP", true, g_settings.epg_serverbox_ip, epg_IP, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++)));
+
+	// server gui (neutrino/neutrinohd/enigma2)
+	miscSettingsEPG.addItem(new CMenuOptionChooser("Server Box GUI", &g_settings.epg_serverbox_gui, EPG_SERVERBOX_GUI_OPTIONS, EPG_SERVERBOX_GUI_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++), "", true ));
+
+	// server box type (sat/cable/terrestrial)
+	miscSettingsEPG.addItem(new CMenuOptionChooser("Server Box type", &g_settings.epg_serverbox_type, EPG_SERVERBOX_TYPE_OPTIONS, EPG_SERVERBOX_TYPE_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++), "", true ));
 	
 	miscSettingsEPG.exec(NULL, "");
 	miscSettingsEPG.hide();
+
+	delete epg_IP;
+	epg_IP = NULL;
 }
 
 // epg language select notifier

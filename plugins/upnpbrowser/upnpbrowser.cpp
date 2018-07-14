@@ -554,7 +554,7 @@ void CUpnpBrowserGui::handleFolder(void)
 				
 				if (mime == "audio/mpeg")
 				{
-					CAudiofileExt audiofile((*entries)[i].resources[preferred].url, CFile::EXTENSION_MP3);
+					CAudiofile audiofile((*entries)[i].resources[preferred].url, CFile::EXTENSION_MP3);
 					tmpAudioPlayerGui.addToPlaylist(audiofile);
 				
 					audioFolder = true;
@@ -817,7 +817,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 					{
 						CAudioPlayerGui tmpAudioPlayerGui;
 			
-						CAudiofileExt audiofile((*entries)[selected - index].resources[preferred].url, CFile::EXTENSION_MP3);
+						CAudiofile audiofile((*entries)[selected - index].resources[preferred].url, CFile::EXTENSION_MP3);
 						tmpAudioPlayerGui.addToPlaylist(audiofile);
 						//tmpAudioPlayerGui.hidePlayList(true);
 						tmpAudioPlayerGui.exec(this, "urlplayback");

@@ -1279,7 +1279,7 @@ REPEAT:
 				{
 					CAudioPlayerGui tmpAudioPlayerGui;
 			
-					CAudiofileExt audiofile(file->Name, file->getExtension());
+					CAudiofile audiofile(file->Name, file->getExtension());
 					tmpAudioPlayerGui.addToPlaylist(audiofile);
 					tmpAudioPlayerGui.exec(NULL, "urlplayback");
 				}

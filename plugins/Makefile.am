@@ -14,7 +14,6 @@ SUBDIRS = \
 	fileexplorer \
 	mediaportal \
 	satipclient \
-	satipcast \
 	icecast \
 	upnpbrowser \
 	internetradio \

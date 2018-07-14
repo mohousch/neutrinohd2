@@ -91,31 +91,6 @@ extern int current_muted;
 #define AUDIOPLAYER_START_SCRIPT 			CONFIGDIR "/audioplayer.start"
 #define AUDIOPLAYER_END_SCRIPT 				CONFIGDIR "/audioplayer.end"
 
-
-CAudiofileExt::CAudiofileExt()
-: CAudiofile(), firstChar('\0')
-{
-}
-
-CAudiofileExt::CAudiofileExt(std::string name, CFile::FileExtension extension)
-: CAudiofile(name, extension), firstChar('\0')
-{
-}
-
-CAudiofileExt::CAudiofileExt(const CAudiofileExt& src)
-: CAudiofile(src), firstChar(src.firstChar)
-{
-}
-
-void CAudiofileExt::operator=(const CAudiofileExt& src)
-{
-	if (&src == this)
-		return;
-	
-	CAudiofile::operator=(src);
-	firstChar = src.firstChar;
-}
-
 CAudioPlayerGui::CAudioPlayerGui()
 {
 	m_frameBuffer = CFrameBuffer::getInstance();
@@ -253,7 +228,7 @@ int CAudioPlayerGui::show()
 				loop = false;	
 			}
 
-			if(m_curr_audiofile.FileExtension != CFile::EXTENSION_URL)
+			if(m_playlist[m_current].FileExtension != CFile::EXTENSION_URL)
 				playNext();
 		}
 		
@@ -394,7 +369,7 @@ void CAudioPlayerGui::paintInfo()
 	std::string tmp;
 	if (m_inetmode) 
 	{
-		tmp = m_curr_audiofile.MetaData.album;
+		tmp = m_playlist[m_current].MetaData.album;
 	} 
 	else 
 	{
@@ -413,17 +388,17 @@ void CAudioPlayerGui::paintInfo()
 
 	// second line 
 	// Artist/Title
-	GetMetaData(m_curr_audiofile);
+	GetMetaData(m_playlist[m_current]);
 
-	if (m_curr_audiofile.MetaData.title.empty())
-		tmp = m_curr_audiofile.MetaData.artist;
-	else if (m_curr_audiofile.MetaData.artist.empty())
-		tmp = m_curr_audiofile.MetaData.title;
+	if (m_playlist[m_current].MetaData.title.empty())
+		tmp = m_playlist[m_current].MetaData.artist;
+	else if (m_playlist[m_current].MetaData.artist.empty())
+		tmp = m_playlist[m_current].MetaData.title;
 	else 
 	{
-		tmp = m_curr_audiofile.MetaData.title;
+		tmp = m_playlist[m_current].MetaData.title;
 		tmp += " / ";
-		tmp += m_curr_audiofile.MetaData.artist;
+		tmp += m_playlist[m_current].MetaData.artist;
 	}
 
 	w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
@@ -435,7 +410,7 @@ void CAudioPlayerGui::paintInfo()
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 2 + m_title_height/3 + 2 + m_title_height/3, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8		
 		
 	// cover
-	if (!m_curr_audiofile.MetaData.cover.empty())
+	if (!m_playlist[m_current].MetaData.cover.empty())
 	{
 		if(!access("/tmp/cover.jpg", F_OK))
 			m_frameBuffer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 4, m_title_height - 4);		
@@ -588,6 +563,8 @@ void CAudioPlayerGui::play(unsigned int pos)
 
 	m_current = pos;
 
+	CAudioPlayer::getInstance()->stop();
+
 	// metadata
 	if ( (m_playlist[pos].FileExtension != CFile::EXTENSION_M3U || m_playlist[pos].FileExtension != CFile::EXTENSION_URL || m_playlist[pos].FileExtension != CFile::EXTENSION_PLS) && !m_playlist[pos].MetaData.bitrate)
 	{
@@ -596,16 +573,11 @@ void CAudioPlayerGui::play(unsigned int pos)
 	
 	m_metainfo.clear();
 	m_time_played = 0;
-	m_time_total = m_playlist[/*m_current*/pos].MetaData.total_time;
+	m_time_total = m_playlist[pos].MetaData.total_time;
 	m_state = CAudioPlayerGui::PLAY;
 
-	//
-	m_curr_audiofile = m_playlist[/*m_current*/pos];
-
-	//printf("Kazalla: pos:%d m_current:%d\n", pos, m_current);
-
 	// play
-	CAudioPlayer::getInstance()->play(&m_curr_audiofile, g_settings.audioplayer_highprio == 1);
+	CAudioPlayer::getInstance()->play(&m_playlist[pos], g_settings.audioplayer_highprio == 1);
 
 	//lcd	
 	paintLCD();
@@ -659,23 +631,23 @@ void CAudioPlayerGui::updateMetaData()
 		m_metainfo = meta.type_info + info.str();
 		updateMeta = true;
 
-		if (!meta.artist.empty()  && meta.artist != m_curr_audiofile.MetaData.artist)
+		if (!meta.artist.empty()  && meta.artist != m_playlist[m_current].MetaData.artist)
 		{
-			m_curr_audiofile.MetaData.artist = meta.artist;
+			m_playlist[m_current].MetaData.artist = meta.artist;
 			updateScreen = true;
 			updateLcd = true;
 		}
 		
-		if (!meta.title.empty() && meta.title != m_curr_audiofile.MetaData.title)
+		if (!meta.title.empty() && meta.title != m_playlist[m_current].MetaData.title)
 		{
-			m_curr_audiofile.MetaData.title = meta.title;
+			m_playlist[m_current].MetaData.title = meta.title;
 			updateScreen = true;
 			updateLcd = true;
 		}
 		
-		if (!meta.sc_station.empty()  && meta.sc_station != m_curr_audiofile.MetaData.album)
+		if (!meta.sc_station.empty()  && meta.sc_station != m_playlist[m_current].MetaData.album)
 		{
-			m_curr_audiofile.MetaData.album = meta.sc_station;
+			m_playlist[m_current].MetaData.album = meta.sc_station;
 			updateLcd = true;
 		}
 	}
@@ -697,9 +669,9 @@ void CAudioPlayerGui::updateTimes(const bool force)
 		if (m_time_total != CAudioPlayer::getInstance()->getTimeTotal())
 		{
 			m_time_total = CAudioPlayer::getInstance()->getTimeTotal();
-			if (m_curr_audiofile.MetaData.total_time != CAudioPlayer::getInstance()->getTimeTotal())
+			if (m_playlist[m_current].MetaData.total_time != CAudioPlayer::getInstance()->getTimeTotal())
 			{
-				m_curr_audiofile.MetaData.total_time = CAudioPlayer::getInstance()->getTimeTotal();
+				m_playlist[m_current].MetaData.total_time = CAudioPlayer::getInstance()->getTimeTotal();
 				if(m_current >= 0)
 					m_playlist[m_current].MetaData.total_time = CAudioPlayer::getInstance()->getTimeTotal();
 			}
@@ -751,7 +723,7 @@ void CAudioPlayerGui::updateTimes(const bool force)
 
 void CAudioPlayerGui::paintLCD()
 {
-/*
+#if 0
 	switch(m_state)
 	{
 		case CAudioPlayerGui::STOP:
@@ -768,10 +740,10 @@ void CAudioPlayerGui::paintLCD()
 			if (CVFD::getInstance()->is4digits)
 				CVFD::getInstance()->LCDshowText(m_selected + 1);
 			else
-				CVFD::getInstance()->showAudioTrack(m_curr_audiofile.MetaData.artist, m_curr_audiofile.MetaData.title, m_curr_audiofile.MetaData.album);			
+				CVFD::getInstance()->showAudioTrack(m_playlist[m_current].MetaData.artist, m_playlist[m_current].MetaData.title, m_playlist[m_current].MetaData.album);			
 					
 #if ENABLE_LCD
-			if(m_curr_audiofile.FileExtension != CFile::EXTENSION_URL && m_time_total != 0)
+			if(m_playlist[m_current].FileExtension != CFile::EXTENSION_URL && m_time_total != 0)
 				CVFD::getInstance()->showAudioProgress(100 * m_time_played / m_time_total, current_muted);
 #endif
 
@@ -781,7 +753,7 @@ void CAudioPlayerGui::paintLCD()
 			if (CVFD::getInstance()->is4digits)
 				CVFD::getInstance()->LCDshowText(m_selected + 1);
 			else
-				CVFD::getInstance()->showAudioTrack(m_curr_audiofile.MetaData.artist, m_curr_audiofile.MetaData.title, m_curr_audiofile.MetaData.album);				
+				CVFD::getInstance()->showAudioTrack(m_playlist[m_current].MetaData.artist, m_playlist[m_current].MetaData.title, m_playlist[m_current].MetaData.album);				
 			break;
 			
 		case CAudioPlayerGui::FF:
@@ -789,7 +761,7 @@ void CAudioPlayerGui::paintLCD()
 			if (CVFD::getInstance()->is4digits)
 				CVFD::getInstance()->LCDshowText(m_selected + 1);
 			else
-				CVFD::getInstance()->showAudioTrack(m_curr_audiofile.MetaData.artist, m_curr_audiofile.MetaData.title, m_curr_audiofile.MetaData.album);				
+				CVFD::getInstance()->showAudioTrack(m_playlist[m_current].MetaData.artist, m_playlist[m_current].MetaData.title, m_playlist[m_current].MetaData.album);				
 			break;
 			
 		case CAudioPlayerGui::REV:
@@ -797,13 +769,13 @@ void CAudioPlayerGui::paintLCD()
 			if (CVFD::getInstance()->is4digits)
 				CVFD::getInstance()->LCDshowText(m_selected + 1);
 			else
-				CVFD::getInstance()->showAudioTrack(m_curr_audiofile.MetaData.artist, m_curr_audiofile.MetaData.title, m_curr_audiofile.MetaData.album);			
+				CVFD::getInstance()->showAudioTrack(m_playlist[m_current].MetaData.artist, m_playlist[m_current].MetaData.title, m_playlist[m_current].MetaData.album);			
 			break;
 	}
-*/
+#endif
 }
 
-void CAudioPlayerGui::GetMetaData(CAudiofileExt &File)
+void CAudioPlayerGui::GetMetaData(CAudiofile& File)
 {
 	dprintf(DEBUG_DEBUG, "CAudioPlayerGui::GetMetaData: fileExtension:%d\n", File.FileExtension);
 	
@@ -842,7 +814,7 @@ void CAudioPlayerGui::GetMetaData(CAudiofileExt &File)
 	}
 }
 
-void CAudioPlayerGui::getFileInfoToDisplay(std::string &info, CAudiofileExt &file)
+void CAudioPlayerGui::getFileInfoToDisplay(std::string &info, CAudiofile& file)
 {
 	std::string fileInfo;
 	std::string artist;
@@ -890,11 +862,10 @@ void CAudioPlayerGui::getFileInfoToDisplay(std::string &info, CAudiofileExt &fil
 		fileInfo += "Unknown";
 	}
 	
-	file.firstChar = tolower(fileInfo[0]);
 	info += fileInfo;
 }
 
-void CAudioPlayerGui::addToPlaylist(CAudiofileExt &file)
+void CAudioPlayerGui::addToPlaylist(CAudiofile& file)
 {	
 	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::add2Playlist: %s\n", file.Filename.c_str());
 
@@ -1053,7 +1024,7 @@ bool CAudioPlayerGui::askToOverwriteFile(const std::string& filename)
 	
 	snprintf(msg, filename.length() + 126, "%s\n%s", g_Locale->getText(LOCALE_AUDIOPLAYER_PLAYLIST_FILEOVERWRITE_MSG), filename.c_str());
 	bool res = (MessageBox(LOCALE_AUDIOPLAYER_PLAYLIST_FILEOVERWRITE_TITLE, msg, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes);
-	//this->paint();
+	
 	return res;
 }
 

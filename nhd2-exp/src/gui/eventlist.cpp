@@ -67,10 +67,7 @@
 
 #include <gui/widget/infobox.h>
 
-#include <gui/webtv.h>
 
-
-extern CWebTV * webtv;
 extern CBouquetList * bouquetList;
 extern t_channel_id live_channel_id;
 extern char recDir[255];			// defined in neutrino.cpp
@@ -382,7 +379,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 		// add record
 		else if ( msg == (neutrino_msg_t)g_settings.key_channelList_addrecord )
 		{
-			if (recDir != NULL && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv))
+			if (recDir != NULL)
 			{
 				int tID = -1;
 				CTimerd::CTimerEventTypes etype = isScheduled(channel_id, &evtlist[selected], &tID);
@@ -430,31 +427,28 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 		// add remind
 		else if ( msg == (neutrino_msg_t) g_settings.key_channelList_addremind )		  
 		{
-			if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-			{
-				int tID = -1;
-				CTimerd::CTimerEventTypes etype = isScheduled(channel_id, &evtlist[selected], &tID);
+			int tID = -1;
+			CTimerd::CTimerEventTypes etype = isScheduled(channel_id, &evtlist[selected], &tID);
 			
-				if(etype == CTimerd::TIMER_ZAPTO) 
-				{
-					g_Timerd->removeTimerEvent(tID);
-					timerlist.clear();
-					g_Timerd->getTimerList (timerlist);
-					paint(channel_id);
-					continue;
-				}
+			if(etype == CTimerd::TIMER_ZAPTO) 
+			{
+				g_Timerd->removeTimerEvent(tID);
+				timerlist.clear();
+				g_Timerd->getTimerList (timerlist);
+				paint(channel_id);
+				continue;
+			}
 
-				g_Timerd->addZaptoTimerEvent(channel_id, 
+			g_Timerd->addZaptoTimerEvent(channel_id, 
 						evtlist[selected].startTime,
 						evtlist[selected].startTime - ANNOUNCETIME, 0,
 						evtlist[selected].eventID, evtlist[selected].startTime, 0);
 					
-				MessageBox(LOCALE_TIMER_EVENTTIMED_TITLE, LOCALE_TIMER_EVENTTIMED_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
-				timerlist.clear();
-				g_Timerd->getTimerList (timerlist);
+			MessageBox(LOCALE_TIMER_EVENTTIMED_TITLE, LOCALE_TIMER_EVENTTIMED_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+			timerlist.clear();
+			g_Timerd->getTimerList (timerlist);
 			
-				paint(channel_id);
-			}
+			paint(channel_id);
 		}
 		else if (msg == CRCInput::RC_timeout)
 		{
@@ -855,7 +849,7 @@ void  EventList::showFunctionBar(bool show)
 	frameBuffer->paintBoxRel(x, by, width, bh, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	// -- Button Red: Timer Record & Channelswitch
-	if ( (recDir != NULL) && ((unsigned int) g_settings.key_channelList_addrecord != CRCInput::RC_nokey) && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv))	  
+	if ( (recDir != NULL) && ((unsigned int) g_settings.key_channelList_addrecord != CRCInput::RC_nokey))	  
 	{
 		pos = 0;
 	
@@ -876,7 +870,7 @@ void  EventList::showFunctionBar(bool show)
 	}
 
 	// Button: Timer Channelswitch	
-	if ((unsigned int) g_settings.key_channelList_addremind != CRCInput::RC_nokey && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)  
+	if ((unsigned int) g_settings.key_channelList_addremind != CRCInput::RC_nokey)  
 	{
 		pos = 2;
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
@@ -934,7 +928,7 @@ int CEventListHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*
 	channelList = CNeutrinoApp::getInstance()->channelList;
 
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		e->exec(webtv->getLiveChannelID(), webtv->getLiveChannelName());
+		e->exec(g_Webtv->getLiveChannelID(), g_Webtv->getLiveChannelName());
 	else
 		e->exec(live_channel_id, channelList->getActiveChannelName());
 	delete e;

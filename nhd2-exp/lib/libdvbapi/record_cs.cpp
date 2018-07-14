@@ -28,9 +28,12 @@
 #include <unistd.h>
 
 #include <global.h>
+#include <neutrino.h>
 
 #include <system/debug.h>
 #include <system/helpers.h>
+
+#include <gui/webtv.h>
 
 #include "record_cs.h"
 
@@ -147,7 +150,7 @@ void cRecord::RecordThread()
 #define BUFSIZE (1 << 20) /* 1024 kB */
 #define READSIZE (BUFSIZE / 16)
 
-	if(g_settings.satip_allow_satip)
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
 	{
 #define FILENAMEBUFFERSIZE 1024
 		char buf[FILENAMEBUFFERSIZE];
@@ -155,7 +158,10 @@ void cRecord::RecordThread()
 
 		sprintf(buf, "%s.ts", rec_filename);
 
-		extern std::string ChannelURL;
+		std::string ChannelURL;
+		
+		if(g_Webtv)
+			ChannelURL = g_Webtv->getLiveChannelUrl();
 
 		//
 		CURL * curl_handle = curl_easy_init();

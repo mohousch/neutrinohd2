@@ -318,7 +318,7 @@ static void initGlobals(void)
 
 	g_Radiotext     = NULL;
 	
-	webtv = new CWebTV();
+	g_Webtv = new CWebTV();
 }
 
 // CNeutrinoApp - Constructor, initialize g_fontRenderer
@@ -970,10 +970,16 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// END VFD
 
 	// satip
+/*
 	g_settings.satip_allow_satip = configfile.getBool("satip_allow_satip", false);
 	g_settings.satip_serverbox_ip = configfile.getString("satip_serverbox_ip", "192.168.0.12");
 	g_settings.satip_serverbox_type = configfile.getInt32("satip_serverbox_type", DVB_C);
 	g_settings.satip_serverbox_gui = configfile.getInt32("satip_serverbox_gui", SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2);
+*/
+
+	g_settings.epg_serverbox_ip = configfile.getString("epg_serverbox_ip", "192.168.0.12");
+	g_settings.epg_serverbox_type = configfile.getInt32("epg_serverbox_type", DVB_C);
+	g_settings.epg_serverbox_gui = configfile.getInt32("epg_serverbox_gui", SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2);
 
 	// mode
 	//g_settings.mode = configfile.getInt32("mode", mode_tv);
@@ -1284,7 +1290,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	
 	// webtv
 	configfile.setString( "webtv_userBouquet", g_settings.webtv_userBouquet);
-	//configfile.setInt32("webtv_lastselectedchannel", webtv->getlastSelectedChannel());
+	//configfile.setInt32("webtv_lastselectedchannel", g_Webtv->getlastSelectedChannel());
 	
         // USERMENU
         char txt1[81];
@@ -1437,10 +1443,16 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	// END VFD
 
 	// satip
+/*
 	configfile.setBool("satip_allow_satip", g_settings.satip_allow_satip);
 	configfile.setString("satip_serverbox_ip", g_settings.satip_serverbox_ip);
 	configfile.setInt32("satip_serverbox_type", g_settings.satip_serverbox_type);
 	configfile.setInt32("satip_serverbox_gui", g_settings.satip_serverbox_gui);
+*/
+
+	configfile.setString("epg_serverbox_ip", g_settings.epg_serverbox_ip);
+	configfile.setInt32("epg_serverbox_type", g_settings.epg_serverbox_type);
+	configfile.setInt32("epg_serverbox_gui", g_settings.epg_serverbox_gui);
 
 	// mode
 	//configfile.setInt32("mode", mode);	
@@ -1576,6 +1588,7 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	tmp->channelList->SortAlpha();
 	RADIOallList->orgChannelList = RADIOchannelList;
 
+	// sat
 	int bnum;
 	sat_iterator_t sit;
 	for(sit = satellitePositions.begin(); sit != satellitePositions.end(); sit++) 
@@ -2749,8 +2762,8 @@ void CNeutrinoApp::quickZap(int msg)
 	
 	if(mode == mode_iptv)
 	{
-		if(webtv)
-			webtv->quickZap(msg);
+		if(g_Webtv)
+			g_Webtv->quickZap(msg);
 	}
 	else
 	{
@@ -2831,7 +2844,7 @@ void CNeutrinoApp::RealRun(void)
 				StopSubtitles();
 
 				if(mode == mode_iptv)
-					g_EpgData->show(webtv->getLiveChannelID());
+					g_EpgData->show(g_Webtv->getLiveChannelID());
 				else
 					g_EpgData->show(live_channel_id);
 
@@ -2842,7 +2855,7 @@ void CNeutrinoApp::RealRun(void)
 				StopSubtitles();
 				
 				if(mode == mode_iptv)
-					g_EventList->exec(webtv->getLiveChannelID(), webtv->getLiveChannelName()); 
+					g_EventList->exec(g_Webtv->getLiveChannelID(), g_Webtv->getLiveChannelName()); 
 				else
 					g_EventList->exec(live_channel_id, channelList->getActiveChannelName());
 
@@ -2968,17 +2981,19 @@ void CNeutrinoApp::RealRun(void)
 			}
 			else if( msg == (neutrino_msg_t) g_settings.key_timeshift) // start timeshift recording
 			{
+/*
 				if(mode == mode_iptv)
 				{
 					if(webtv)
 					{
-						if(webtv->playstate == CWebTV::PAUSE)
-							webtv->continuePlayBack();
-						else if(webtv->playstate == CWebTV::PLAY)
-							webtv->pausePlayBack();
+						if(g_Webtv->playstate == CWebTV::PAUSE)
+							g_Webtv->continuePlayBack();
+						else if(g_Webtv->playstate == CWebTV::PLAY)
+							g_Webtv->pausePlayBack();
 					}
 				}
 				else
+*/
 				{
 					if (recDir != NULL)
 					{
@@ -2998,23 +3013,15 @@ void CNeutrinoApp::RealRun(void)
 
 								doGuiRecord(timeshiftDir, true);
 							}
-							
-							if(g_settings.satip_allow_satip)
-							{
-								if(playback)
-									playback->SetSpeed(0);
-							}
-							else
-							{
-								// freeze audio/video
-								audioDecoder->Stop();
-								videoDecoder->Stop(false); // dont blank
-							}
+
+							// freeze audio/video
+							audioDecoder->Stop();
+							videoDecoder->Stop(false); // dont blank
 						}
 					}
 				}
 			}
-			else if( ((msg == (neutrino_msg_t)g_settings.mpkey_play) && timeshiftstatus) && (mode != mode_iptv)) // play timeshift
+			else if( ((msg == (neutrino_msg_t)g_settings.mpkey_play) && timeshiftstatus) /*&& (mode != mode_iptv)*/) // play timeshift
 			{		
 				if(g_RemoteControl->is_video_started) 
 				{
@@ -3083,20 +3090,22 @@ void CNeutrinoApp::RealRun(void)
 					tmpMoviePlayerGui.exec(NULL, "urlplayback");
 				}
 			}
+/*
 			else if(msg == (neutrino_msg_t)g_settings.mpkey_play && mode == mode_iptv)
 			{
 				if(mode == mode_iptv)
 				{
 					if(webtv)
 					{
-						if(webtv->playstate == CWebTV::PAUSE)
-							webtv->continuePlayBack();
-						else if(webtv->playstate == CWebTV::STOPPED)
-							webtv->startPlayBack(webtv->getTunedChannel());
+						if(g_Webtv->playstate == CWebTV::PAUSE)
+							g_Webtv->continuePlayBack();
+						else if(g_Webtv->playstate == CWebTV::STOPPED)
+							g_Webtv->startPlayBack(g_Webtv->getTunedChannel());
 					}
 				}
 			}
-			else if( (msg == CRCInput::RC_record || msg == CRCInput::RC_stop) && (mode != mode_iptv) ) 
+*/
+			else if( (msg == CRCInput::RC_record || msg == CRCInput::RC_stop) /*&& (mode != mode_iptv)*/ ) 
 			{
 				dprintf(DEBUG_NORMAL, "CNeutrinoApp::RealRun\n");
 				
@@ -3174,6 +3183,7 @@ void CNeutrinoApp::RealRun(void)
 				}
 				else
 				{
+/*
 					if(g_settings.satip_allow_satip)
 					{
 						CAVPIDSelectWidget * AVSelectHandler = new CAVPIDSelectWidget();
@@ -3183,6 +3193,7 @@ void CNeutrinoApp::RealRun(void)
 						AVSelectHandler = NULL;
 					}
 					else
+*/
 					{
 						StopSubtitles();
 
@@ -3425,9 +3436,9 @@ void CNeutrinoApp::RealRun(void)
 
 				if(mode == mode_iptv)
 				{
-					if(webtv)
+					if(g_Webtv)
 					{
-						webtv->showInfo();
+						g_Webtv->showInfo();
 					}
 				}
 				else
@@ -3668,9 +3679,9 @@ _repeat:
 		}
 		else if(mode == mode_iptv)
 		{
-			if(webtv)
+			if(g_Webtv)
 			{
-				webtv->show();
+				g_Webtv->show();
 			}
 			
 			return messages_return::handled;
@@ -4748,10 +4759,10 @@ void CNeutrinoApp::tvMode( bool rezap )
 	}
 	else if(mode == mode_iptv)
 	{
-		if(webtv)
+		if(g_Webtv)
 		{
-			webtv->stopPlayBack();
-			webtv->ClearChannels();
+			g_Webtv->stopPlayBack();
+			g_Webtv->ClearChannels();
 		}
 			
 		// start playback
@@ -4829,10 +4840,10 @@ void CNeutrinoApp::radioMode( bool rezap)
 	}
 	if(mode == mode_iptv)
 	{
-		if(webtv)
+		if(g_Webtv)
 		{
-			webtv->stopPlayBack();
-			webtv->ClearChannels();
+			g_Webtv->stopPlayBack();
+			g_Webtv->ClearChannels();
 		}
 
 		// start playback
@@ -4951,9 +4962,9 @@ void CNeutrinoApp::webtvMode( bool rezap)
 	mode = mode_iptv;
 
 	// show streams channel list
-	if(webtv)
+	if(g_Webtv)
 	{
-		webtv->show(true);
+		g_Webtv->show(true);
 	}
 }
 
@@ -4973,8 +4984,8 @@ void CNeutrinoApp::scartMode( bool bOnOff )
 		// FIXME:modes?
 		if(mode == mode_iptv)
 		{
-			if(webtv)
-				webtv->stopPlayBack();
+			if(g_Webtv)
+				g_Webtv->stopPlayBack();
 		}
 
 		lastMode = mode;
@@ -5067,8 +5078,8 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 		
 		if(mode == mode_iptv)
 		{
-			if(webtv)
-				webtv->stopPlayBack();
+			if(g_Webtv)
+				g_Webtv->stopPlayBack();
 		}
 		else
 		{
@@ -5143,8 +5154,8 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 
 		if(lastMode == mode_iptv)
 		{
-			if(webtv)
-				webtv->startPlayBack(webtv->getTunedChannel());
+			if(g_Webtv)
+				g_Webtv->startPlayBack(g_Webtv->getTunedChannel());
 			
 			mode = mode_iptv;
 		}
@@ -5524,8 +5535,8 @@ void CNeutrinoApp::lockPlayBack(void)
 	// stop playback
 	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
 	{
-		if(webtv)
-			webtv->stopPlayBack();
+		if(g_Webtv)
+			g_Webtv->stopPlayBack();
 	}
 	else
 	{
@@ -5542,8 +5553,8 @@ void CNeutrinoApp::unlockPlayBack(void)
 	// start playback
 	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
 	{
-		if(webtv)
-			webtv->startPlayBack(webtv->getTunedChannel());
+		if(g_Webtv)
+			g_Webtv->startPlayBack(g_Webtv->getTunedChannel());
 	}
 	else
 	{

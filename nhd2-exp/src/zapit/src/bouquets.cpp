@@ -386,6 +386,11 @@ void CBouquetManager::parseBouquetsXml(const char* fname, bool bUser)
 		t_service_id service_id;
 		t_transport_stream_id transport_stream_id;
 
+		//
+		t_satellite_position  satellitePosition = 0;
+		freq_id_t freq = 0;
+		
+
 		dprintf(DEBUG_INFO, "CBouquetManager::parseBouquetsXml: %s\n", fname);
 
 		while ((search = xmlGetNextOccurence(search, "Bouquet")) != NULL) 
@@ -406,7 +411,18 @@ void CBouquetManager::parseBouquetsXml(const char* fname, bool bUser)
 				GET_ATTR(channel_node, (char *) "on", SCANF_ORIGINAL_NETWORK_ID_TYPE, original_network_id);
 				GET_ATTR(channel_node, (char *) "t", SCANF_TRANSPORT_STREAM_ID_TYPE, transport_stream_id);
 
-				CZapitChannel *chan = findChannelByChannelID(CREATE_CHANNEL_ID);
+				// grab satelliteposition from channel map
+				for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+				{
+					if(it->second.getServiceId() == service_id)
+					{
+						satellitePosition = it->second.getSatellitePosition();
+						freq = it->second.getFreqId();
+					}
+				}
+				//
+
+				CZapitChannel *chan = findChannelByChannelID(CREATE_CHANNEL_ID64);
 
 				if (chan != NULL) 
 				{
