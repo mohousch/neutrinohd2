@@ -1072,6 +1072,10 @@ CMenuWidget::CMenuWidget()
 	itemsPerY = 3;
 
 	maxItemsPerPage = itemsPerX*itemsPerY;
+
+	//
+	FootInfo = false;
+	cFrameFootInfo.iHeight = 0;	
 }
 
 CMenuWidget::CMenuWidget(const neutrino_locale_t Name, const std::string & Icon, const int mwidth, const int mheight)
@@ -1123,6 +1127,10 @@ void CMenuWidget::Init(const std::string & Icon, const int mwidth, const int mhe
 	itemsPerY = 3;
 
 	maxItemsPerPage = itemsPerX*itemsPerY;
+
+	//
+	FootInfo = false;
+	cFrameFootInfo.iHeight = 0;
 }
 
 void CMenuWidget::move(int xoff, int yoff)
@@ -1681,7 +1689,9 @@ void CMenuWidget::hide()
 	if( savescreen && background)
 		restoreScreen();
 	else
-		frameBuffer->paintBackgroundBoxRel(x, y, full_width, full_height); 
+		frameBuffer->paintBackgroundBoxRel(x, y, full_width, full_height);
+
+	hideFootInfo();  
 	
 	frameBuffer->blit();
 }
@@ -1859,6 +1869,15 @@ void CMenuWidget::paint()
 			}
 		}
 
+		//
+		cFrameFootInfo.iHeight = 0;
+
+		if(FootInfo && widgetType == WIDGET_STANDARD)
+		{
+			cFrameFootInfo.iHeight = 70;
+			cFrameFootInfo.iWidth = width;
+		}
+
 		// shrink menu if less items
 		if(hheight + itemHeightTotal + fheight < height)
 			height = hheight + heightCurrPage + fheight;
@@ -1867,7 +1886,7 @@ void CMenuWidget::paint()
 
 		//	
 		full_width = width;
-		full_height = height;
+		full_height = height + cFrameFootInfo.iHeight;
 
 		// coordinations
 		x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - full_width ) >> 1 );
@@ -1888,6 +1907,13 @@ void CMenuWidget::paint()
 		{
 			x = offx + frameBuffer->getScreenX() + frameBuffer->getScreenWidth() - full_width - BORDER_RIGHT;
 			y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
+		}
+
+		//
+		if(FootInfo)
+		{
+			cFrameFootInfo.iX = x;
+			cFrameFootInfo.iY = y + height;
 		}
 
 		//
@@ -2110,7 +2136,7 @@ void CMenuWidget::paintFootInfo(int pos)
 			}
 		}
 	}
-	else
+	else if(widgetType == WIDGET_CLASSIC || widgetType == WIDGET_EXTENDED)
 	{
 		CMenuItem* item = items[pos];
 
@@ -2130,6 +2156,64 @@ void CMenuWidget::paintFootInfo(int pos)
 			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET, y + full_height - fheight + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - iw, item->itemHelpText.c_str(), COL_MENUFOOT, 0, true); // UTF-8
 		}
 	}
+	else if(widgetType == WIDGET_STANDARD)
+	{
+		if(FootInfo)
+		{
+			CMenuItem* item = items[pos];
+
+			item->getYPosition();
+	
+			// detailslines|box
+			::paintItem2DetailsLineD(x, y, width, height, cFrameFootInfo.iHeight, hheight, item->getHeight(), item->getYPosition());
+
+
+			// info icon
+			int iw, ih;
+
+			// check for minimum hight
+			if(full_height - hheight - fheight >= ITEM_ICON_H)
+			{ 
+				frameBuffer->getIconSize(item->itemIcon.c_str(), &iw, &ih);
+
+				frameBuffer->DisplayImage(item->itemIcon.c_str(), x + ICON_OFFSET, y + height + (cFrameFootInfo.iHeight - 40)/2, 100, 40);
+			}
+
+			// itemHelpText
+			if(!item->itemHelpText.empty())
+			{
+				g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + 100 + ICON_OFFSET, y + height + (cFrameFootInfo.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - 100, item->itemHelpText.c_str(), COL_MENUFOOT, 0, true); // UTF-8
+			}
+		}
+		else
+		{
+			CMenuItem* item = items[pos];
+
+			item->getYPosition();
+
+			// refresh box
+			frameBuffer->paintBoxRel(x, y + full_height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+
+			// info icon
+			int iw, ih;
+			frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &iw, &ih);
+			frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT, y + full_height - fheight + (fheight - ih)/2);
+
+			// itemHelpText
+			if(!item->itemHelpText.empty())
+			{
+				g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET, y + full_height - fheight + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - iw, item->itemHelpText.c_str(), COL_MENUFOOT, 0, true); // UTF-8
+			}
+		}
+	}
+}
+
+void CMenuWidget::hideFootInfo()
+{
+	if(widgetType == WIDGET_STANDARD && FootInfo)
+	{
+		::clearItem2DetailsLine(x, y, width + ConnectLineBox_Width, height, cFrameFootInfo.iHeight);
+	}  
 }
 
 void CMenuWidget::paintItemIcon(int pos)

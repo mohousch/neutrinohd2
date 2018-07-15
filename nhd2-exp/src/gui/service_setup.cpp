@@ -103,6 +103,7 @@ void CServiceSetup::showMenu(void)
 
 	service->enableMenuPosition();
 	service->enableWidgetChange();
+	service->enableFootInfo();
 	
 	// scan setup
 	if(FrontendCount > 1)

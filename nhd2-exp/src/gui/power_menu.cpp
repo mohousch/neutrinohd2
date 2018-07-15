@@ -97,6 +97,7 @@ void CPowerMenu::showMenu(void)
 
 	powerMenu->enableMenuPosition();
 	powerMenu->enableWidgetChange();
+	powerMenu->enableFootInfo();
 	
 	// sleep timer
 	powerMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SLEEPTIMER, true, NULL, new CSleepTimerWidget, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SLEEPTIMER, LOCALE_HELPTEXT_SLEEPTIMER));

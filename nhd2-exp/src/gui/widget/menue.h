@@ -559,6 +559,10 @@ class CMenuWidget : public CMenuTarget
 		int itemsPerY;
 		int maxItemsPerPage;
 		int item_width;
+
+		// footInfo
+		bool FootInfo;
+		CBox cFrameFootInfo;
 		
 	public:
 		CMenuWidget();
@@ -582,8 +586,8 @@ class CMenuWidget : public CMenuTarget
 		void enableSaveScreen();
 		void enableMenuPosition(){MenuPos = true;};
 
-		void paintFootInfo(int pos);
-		void paintItemIcon(int pos);
+		virtual void paintFootInfo(int pos);
+		virtual void paintItemIcon(int pos);
 
 		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = CRCInput::RC_nokey, bool enabled = true);
 
@@ -595,6 +599,10 @@ class CMenuWidget : public CMenuTarget
 		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
 		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
+
+		//
+		void enableFootInfo(){FootInfo = true;};
+		virtual void hideFootInfo();
 };
 
 /// CMenulistBox

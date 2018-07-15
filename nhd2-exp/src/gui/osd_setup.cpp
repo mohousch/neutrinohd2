@@ -127,6 +127,7 @@ void COSDSettings::showMenu(void)
 
 	osdSettings->enableMenuPosition();
 	osdSettings->enableWidgetChange();
+	osdSettings->enableFootInfo();
 
 	// Themes
 	CThemes * osdSettings_Themes = new CThemes();

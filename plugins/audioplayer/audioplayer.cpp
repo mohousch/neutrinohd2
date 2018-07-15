@@ -212,6 +212,7 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_yellow")
 	{
 		playlist.clear();
+		alist->clearItems();
 		showMenu(false);
 		return menu_return::RETURN_EXIT_ALL;
 	}
