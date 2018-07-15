@@ -268,6 +268,7 @@ CBouquetList   		* RADIOsatList;
 CBouquetList   		* RADIOfavList;
 CBouquetList   		* RADIOallList;
 
+//
 CPlugins       		* g_PluginList;
 CRemoteControl 		* g_RemoteControl;
 
@@ -275,11 +276,9 @@ CRemoteControl 		* g_RemoteControl;
 CCAMMenuHandler 	* g_CamHandler;
 #endif
 
-// webtv
-CWebTV * webtv;
 
 // timezone for wizard
-extern CMenuOptionStringChooser * tzSelect;
+extern CMenuOptionStringChooser* tzSelect;
 
 bool parentallocked = false;
 static char **global_argv;
@@ -4384,8 +4383,8 @@ void CNeutrinoApp::ExitRun(int retcode)
 		if(playback)
 			delete playback;
 		
-		if (webtv)
-			delete webtv;
+		if (g_Webtv)
+			delete g_Webtv;
 			
 		if (g_RCInput != NULL)
 			delete g_RCInput;

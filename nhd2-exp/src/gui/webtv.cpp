@@ -302,16 +302,6 @@ bool CWebTV::readChannellist(std::string filename)
 				
 					description = "stream";
 
-					id = 0;
-
-					/*
-					// grad channel id from channellist
-					for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
-					{
-						if(strcasecmp(it->second.getName().c_str(), title.c_str()) == 0)
-							id = it->second.getChannelID();
-					}
-					*/
 					if(id == 0)
 						id = create_channel_id(url.c_str());
 					
@@ -369,17 +359,6 @@ bool CWebTV::readChannellist(std::string filename)
 						if (epgid)
 							id = strtoull(epgid, NULL, 16);
 
-						/*
-						if(id == 0)
-						{
-							// grab channel id from channellist
-							for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
-							{
-								if(strcasecmp(it->second.getName().c_str(), title) == 0)
-									id = it->second.getChannelID();
-							}
-						}
-						*/
 						if(id == 0)
 							id = create_channel_id(url);
 						
@@ -443,16 +422,6 @@ bool CWebTV::readChannellist(std::string filename)
 					{
 						description = "stream";
 
-						// grab channel id from channellist
-						id = 0;
-
-						/*
-						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
-						{
-								if(strcasecmp(it->second.getName().c_str(), name) == 0)
-									id = it->second.getChannelID();
-						}
-						*/
 						if(id == 0)
 							id = create_channel_id(url);
 					
@@ -475,7 +444,6 @@ void CWebTV::getEvents(t_channel_id chid)
 {
 	std::string evUrl = "http://";
 	evUrl += g_settings.epg_serverbox_ip;
-	//uint64_t ID = 0;
 
 	if(g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
 	{
@@ -511,8 +479,6 @@ void CWebTV::getEvents(t_channel_id chid)
 	else if(g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
 	{
 		evUrl += "/control/epg?channelid=";
-
-		//ID = ((uint64_t)(0xFFFF) << 48) | (uint64_t)chid;
 
          	evUrl += to_hexstring(chid);
 

@@ -130,8 +130,7 @@ CAudioPlayer * CAudioPlayer::getInstance()
 void * CAudioPlayer::PlayThread( void * /*arg*/)
 {
 	//
-	CBaseDec::RetCode Status = CBaseDec::DecoderBase( &getInstance()->m_Audiofile);
-	//
+	CBaseDec::RetCode Status = CBaseDec::DecoderBase(&getInstance()->m_Audiofile);
 
 	//stop playing if already playing (multiselect)
 	if(playback->playing)
@@ -173,6 +172,7 @@ void * CAudioPlayer::PlayThread( void * /*arg*/)
 				
 			break;	
 		}
+
 		getInstance()->m_played_time = position/1000;	// in sec
 	}while(getInstance()->state != CBaseDec::STOP_REQ);
 	

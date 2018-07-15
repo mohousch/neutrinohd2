@@ -120,6 +120,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	
 	m_state = CAudioPlayerGui::STOP;
 
+	// playInfo
 	m_width = m_frameBuffer->getScreenWidth(true) - 20; 
 	
 	if((g_settings.screen_EndX - g_settings.screen_StartX) < m_width+ConnectLineBox_Width)
@@ -129,7 +130,13 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 
 	m_x = (((g_settings.screen_EndX - g_settings.screen_StartX) - m_width)/ 2) + g_settings.screen_StartX;
 
-	m_y = g_settings.screen_StartY + 10;
+	m_y = g_settings.screen_EndY - 10 - m_title_height;
+
+	// timeBox
+	timeBox.iY = g_settings.screen_StartY + 10;
+	timeBox.iWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth("00:00 / 00:00") + 4;
+	timeBox.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 4;
+	timeBox.iX = g_settings.screen_EndX - 10 - timeBox.iWidth;
 	
 	m_idletime = time(NULL);
 
@@ -234,7 +241,7 @@ int CAudioPlayerGui::show()
 		
 		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
 
-		paintInfo();
+		updateTimes(true);
 
 		if (msg == CRCInput::RC_home)
 		{ 
@@ -259,6 +266,14 @@ int CAudioPlayerGui::show()
 		else if(msg == CRCInput::RC_play)
 		{
 			play(m_current);
+		}
+		else if(msg == CRCInput::RC_forward)
+		{
+			ff(1);
+		}
+		else if(msg == CRCInput::RC_rewind)
+		{
+			rev(1);
 		}
 		else if(msg == CRCInput::RC_green)
 		{
@@ -381,8 +396,9 @@ void CAudioPlayerGui::paintInfo()
 
 	int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
 	int xstart = (m_width - w) / 2;
-	if(xstart < BORDER_LEFT)
-		xstart = BORDER_LEFT;
+	
+	if(xstart < (BORDER_LEFT + 2*m_title_height + ICON_OFFSET))
+		xstart = BORDER_LEFT + 2*m_title_height + ICON_OFFSET;
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + m_title_height/3, m_width - 20, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8
 
@@ -403,11 +419,11 @@ void CAudioPlayerGui::paintInfo()
 
 	w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
 	xstart = (m_width - w)/2;
-	if(xstart < BORDER_LEFT)
-		xstart = BORDER_LEFT + m_title_height - 4 + m_title_height + ICON_OFFSET;
+	if(xstart < (BORDER_LEFT + 2*m_title_height + ICON_OFFSET))
+		xstart = BORDER_LEFT + 2*m_title_height + ICON_OFFSET;
 
 		
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 2 + m_title_height/3 + 2 + m_title_height/3, m_width - BORDER_LEFT - BORDER_RIGHT, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8		
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 2 + m_title_height/3 + 2 + m_title_height/3, m_width - BORDER_LEFT - BORDER_RIGHT - 2*m_title_height - ICON_OFFSET, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8		
 		
 	// cover
 	if (!m_playlist[m_current].MetaData.cover.empty())
@@ -426,7 +442,7 @@ void CAudioPlayerGui::paintInfo()
 		case CAudioPlayerGui::PLAY: icon = NEUTRINO_ICON_PLAY; break;
 		case CAudioPlayerGui::REV: icon = NEUTRINO_ICON_REW; break;
 		case CAudioPlayerGui::FF: icon = NEUTRINO_ICON_FF; break;
-		case CAudioPlayerGui::STOP: break;
+		case CAudioPlayerGui::STOP: icon = NEUTRINO_ICON_STOP_SMALL; break;
 	}
 	
 	m_frameBuffer->getIconSize(icon, &icon_w, &icon_h);
@@ -446,9 +462,6 @@ void CAudioPlayerGui::paintInfo()
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + xstart, m_y + m_title_height - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()/2, m_width- 2*xstart, m_metainfo, COL_MENUHEAD_INFO);
 	}
-
-	// update time
-	updateTimes(true);
 }
 
 bool CAudioPlayerGui::playNext(bool allow_rotate)
@@ -495,10 +508,12 @@ bool CAudioPlayerGui::playPrev(bool allow_rotate)
 
 void CAudioPlayerGui::stop()
 {
-	m_state = CAudioPlayerGui::STOP;
-		
+	m_state = CAudioPlayerGui::STOP;	
+
+	paintInfo();
+
 	//LCD
-	paintLCD();	
+	paintLCD();
 
 	if(CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
 		CAudioPlayer::getInstance()->stop();
@@ -516,6 +531,8 @@ void CAudioPlayerGui::pause()
 		m_state = CAudioPlayerGui::PLAY;
 		CAudioPlayer::getInstance()->pause();
 	}
+
+	paintInfo();
 		
 	paintLCD();	
 }
@@ -533,6 +550,7 @@ void CAudioPlayerGui::ff(unsigned int seconds)
 		CAudioPlayer::getInstance()->ff(seconds);
 	}
 	
+	paintInfo();
 	paintLCD();	
 }
 
@@ -551,6 +569,7 @@ void CAudioPlayerGui::rev(unsigned int seconds)
 		CAudioPlayer::getInstance()->rev(seconds);
 	}
 
+	paintInfo();
 	paintLCD();
 }
 
@@ -666,6 +685,12 @@ void CAudioPlayerGui::updateTimes(const bool force)
 		bool updateTotal = force;
 		bool updatePlayed = force;
 
+		// time shadow
+		m_frameBuffer->paintBoxRel(timeBox.iX + SHADOW_OFFSET, timeBox.iY + SHADOW_OFFSET, timeBox.iWidth, timeBox.iHeight, COL_INFOBAR_SHADOW_PLUS_0);
+
+		// time window
+		m_frameBuffer->paintBoxRel(timeBox.iX + SHADOW_OFFSET, timeBox.iY + SHADOW_OFFSET, timeBox.iWidth, timeBox.iHeight, COL_MENUHEAD_INFO_PLUS_0);
+
 		if (m_time_total != CAudioPlayer::getInstance()->getTimeTotal())
 		{
 			m_time_total = CAudioPlayer::getInstance()->getTimeTotal();
@@ -675,6 +700,7 @@ void CAudioPlayerGui::updateTimes(const bool force)
 				if(m_current >= 0)
 					m_playlist[m_current].MetaData.total_time = CAudioPlayer::getInstance()->getTimeTotal();
 			}
+
 			updateTotal = true;
 		}
 		
@@ -684,11 +710,15 @@ void CAudioPlayerGui::updateTimes(const bool force)
 			updatePlayed = true;
 		}
 		
-		//NOTE:time played
+		// total time
 		char tot_time[11];
 		snprintf(tot_time, 10, " / %ld:%02ld", m_time_total / 60, m_time_total % 60);
+
+		//
 		char tmp_time[8];
 		snprintf(tmp_time, 7, "%ld:00", m_time_total / 60);
+
+		//
 		char play_time[8];
 		snprintf(play_time, 7, "%ld:%02ld", m_time_played / 60, m_time_played % 60);
 
@@ -698,7 +728,7 @@ void CAudioPlayerGui::updateTimes(const bool force)
 		if (updateTotal)
 		{
 			if(m_time_total > 0)
-				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - 10, m_y + 4 + m_title_height/3, w1, tot_time, COL_MENUHEAD_INFO);
+				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(timeBox.iX + timeBox.iWidth - timeBox.iWidth/2, timeBox.iY + timeBox.iHeight + (timeBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2, w1, tot_time, COL_MENUHEAD_INFO);
 		}
 			
 		if (updatePlayed || (m_state == CAudioPlayerGui::PAUSE))
@@ -708,7 +738,7 @@ void CAudioPlayerGui::updateTimes(const bool force)
 
 			if ((m_state != CAudioPlayerGui::PAUSE) || (tv.tv_sec & 1))
 			{
-				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - w2 - 11, m_y + 4 + m_title_height/3, w2 + 4, play_time, COL_MENUHEAD_INFO);
+				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(timeBox.iX + SHADOW_OFFSET + timeBox.iWidth/2 - w2 - 2, timeBox.iY + timeBox.iHeight + (timeBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2, w2, play_time, COL_MENUHEAD_INFO);
 			}
 		}			
 		
@@ -723,7 +753,6 @@ void CAudioPlayerGui::updateTimes(const bool force)
 
 void CAudioPlayerGui::paintLCD()
 {
-#if 0
 	switch(m_state)
 	{
 		case CAudioPlayerGui::STOP:
@@ -738,7 +767,7 @@ void CAudioPlayerGui::paintLCD()
 
 			// audio-track	
 			if (CVFD::getInstance()->is4digits)
-				CVFD::getInstance()->LCDshowText(m_selected + 1);
+				CVFD::getInstance()->LCDshowText(m_current + 1);
 			else
 				CVFD::getInstance()->showAudioTrack(m_playlist[m_current].MetaData.artist, m_playlist[m_current].MetaData.title, m_playlist[m_current].MetaData.album);			
 					
@@ -751,7 +780,7 @@ void CAudioPlayerGui::paintLCD()
 		case CAudioPlayerGui::PAUSE:
 			CVFD::getInstance()->showAudioPlayMode(CVFD::AUDIO_MODE_PAUSE);
 			if (CVFD::getInstance()->is4digits)
-				CVFD::getInstance()->LCDshowText(m_selected + 1);
+				CVFD::getInstance()->LCDshowText(m_current + 1);
 			else
 				CVFD::getInstance()->showAudioTrack(m_playlist[m_current].MetaData.artist, m_playlist[m_current].MetaData.title, m_playlist[m_current].MetaData.album);				
 			break;
@@ -759,7 +788,7 @@ void CAudioPlayerGui::paintLCD()
 		case CAudioPlayerGui::FF:
 			CVFD::getInstance()->showAudioPlayMode(CVFD::AUDIO_MODE_FF);
 			if (CVFD::getInstance()->is4digits)
-				CVFD::getInstance()->LCDshowText(m_selected + 1);
+				CVFD::getInstance()->LCDshowText(m_current + 1);
 			else
 				CVFD::getInstance()->showAudioTrack(m_playlist[m_current].MetaData.artist, m_playlist[m_current].MetaData.title, m_playlist[m_current].MetaData.album);				
 			break;
@@ -767,12 +796,11 @@ void CAudioPlayerGui::paintLCD()
 		case CAudioPlayerGui::REV:
 			CVFD::getInstance()->showAudioPlayMode(CVFD::AUDIO_MODE_REV);
 			if (CVFD::getInstance()->is4digits)
-				CVFD::getInstance()->LCDshowText(m_selected + 1);
+				CVFD::getInstance()->LCDshowText(m_current + 1);
 			else
 				CVFD::getInstance()->showAudioTrack(m_playlist[m_current].MetaData.artist, m_playlist[m_current].MetaData.title, m_playlist[m_current].MetaData.album);			
 			break;
 	}
-#endif
 }
 
 void CAudioPlayerGui::GetMetaData(CAudiofile& File)

@@ -26,11 +26,6 @@ extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
 
-#define SHOW_FILE_LOAD_LIMIT 50
-#define AUDIOPLAYER_CHECK_FOR_DUPLICATES
-
-const long int GET_PLAYLIST_TIMEOUT = 10;
-
 class CMP3Player : public CMenuTarget
 {
 	private:
@@ -135,7 +130,7 @@ void CMP3Player::loadPlaylist(bool reload)
 					||  (files->getExtension() == CFile::EXTENSION_WAV)
 					||  (files->getExtension() == CFile::EXTENSION_FLAC))
 				{
-					CAudiofile/*Ext*/ audiofile(files->Name, files->getExtension());
+					CAudiofile audiofile(files->Name, files->getExtension());
 				
 					playlist.push_back(audiofile);
 				}
