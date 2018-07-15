@@ -600,6 +600,30 @@ void CAudioPlayerGui::play(unsigned int pos)
 
 	//lcd	
 	paintLCD();
+
+	// funart
+	GetMetaData(m_playlist[m_current]);
+
+	if (!m_playlist[m_current].MetaData.cover.empty())
+	{
+		if(!access("/tmp/cover.jpg", F_OK))
+		{
+			m_frameBuffer->loadBackgroundPic("/tmp/cover.jpg");
+			m_frameBuffer->blit();
+		}
+		else
+		{
+			m_frameBuffer->loadBackgroundPic("mp3.jpg");
+			m_frameBuffer->blit();	
+		}
+				
+	}
+	else
+	{
+		m_frameBuffer->loadBackgroundPic("mp3.jpg");
+		m_frameBuffer->blit();	
+	}
+		
 	
 	paintInfo();
 }

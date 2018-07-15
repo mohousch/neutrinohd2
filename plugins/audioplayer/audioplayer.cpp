@@ -206,6 +206,7 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 		}
 
 		showMenu(false);
+
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_yellow")
@@ -217,7 +218,7 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_blue")
 	{
 		shufflePlaylist();
-		showMenu();
+		showMenu(false);
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	
