@@ -586,8 +586,8 @@ class CMenuWidget : public CMenuTarget
 		void enableSaveScreen();
 		void enableMenuPosition(){MenuPos = true;};
 
-		virtual void paintFootInfo(int pos);
-		virtual void paintItemIcon(int pos);
+		virtual void paintItemInfo(int pos);
+		virtual void hideItemInfo();
 
 		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = CRCInput::RC_nokey, bool enabled = true);
 
@@ -602,7 +602,6 @@ class CMenuWidget : public CMenuTarget
 
 		//
 		void enableFootInfo(){FootInfo = true;};
-		virtual void hideFootInfo();
 };
 
 /// CMenulistBox
@@ -712,8 +711,8 @@ class ClistBox : public CMenuTarget
 		virtual void paintHead();
 		virtual void paintFoot();
 		virtual void paint();
-		virtual void paintFootInfo(int pos);
-		virtual void hideFootInfo();
+		virtual void paintItemInfo(int pos);
+		virtual void hideItemInfo();
 		virtual void hide();
 
 		//
@@ -756,9 +755,6 @@ class ClistBox : public CMenuTarget
 		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
 		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
-
-		//
-		void paintItemIcon(int pos);
 };
 
 // CMenulistBoxItem

@@ -159,14 +159,10 @@ int CPluginList::exec(CMenuTarget * parent, const std::string& actionKey)
 	{
 		plist->hide();
 
-		if(plist->getWidgetType() == WIDGET_STANDARD)
-			plist->setWidgetType(WIDGET_CLASSIC);
-		else if(plist->getWidgetType() == WIDGET_CLASSIC)
-			plist->setWidgetType(WIDGET_EXTENDED);
-		else if(plist->getWidgetType() == WIDGET_EXTENDED)
+		if(plist->getWidgetType() == WIDGET_CLASSIC)
 			plist->setWidgetType(WIDGET_FRAME);
 		else if(plist->getWidgetType() == WIDGET_FRAME)
-			plist->setWidgetType(WIDGET_STANDARD);
+			plist->setWidgetType(WIDGET_CLASSIC);
 
 		plist->initFrames();
 		plist->paint();

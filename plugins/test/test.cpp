@@ -1855,6 +1855,7 @@ void CTestMenu::testCMenuWidgetListBox()
 		listMenu->addItem(mc);
 	}
 
+	listMenu->setWidgetType(WIDGET_STANDARD);
 	listMenu->enableSaveScreen();
 	listMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	listMenu->setSelected(selected);

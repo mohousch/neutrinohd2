@@ -28,24 +28,6 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-	***********************************************************
-
-	Module Name: infobox.cpp: .
-
-	Description: Implementation of the CMsgBox class
-				 This class provides a  message box using CTextBox.
-
-  	Date:	Nov 2005
-
-	Author: Günther@tuxbox.berlios.org
-		based on code of Steffen Hehn 'McClean'
-
-	Revision History:
-	Date			Author		Change Description
-	   Nov 2005		Gnther	initial implementation
-	   
-	   renamed to infobox.cpp
 */
 
 #ifdef HAVE_CONFIG_H

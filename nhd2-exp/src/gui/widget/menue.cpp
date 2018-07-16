@@ -1214,8 +1214,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 						paintItems();
 					}
 
-					paintItemIcon(selected);
-					paintFootInfo(selected);
+					paintItemInfo(selected);
 					pos = selected;
 
 					msg = CRCInput::RC_ok;
@@ -1265,8 +1264,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 									{
 										items[selected]->paint( false );
 										item->paint( true );
-										paintItemIcon(pos);
-										paintFootInfo(pos);
+										paintItemInfo(pos);
 										selected = pos;
 									} 
 									else 
@@ -1291,8 +1289,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 									{
 										items[selected]->paint( false );
 										item->paint( true );
-										paintItemIcon(pos);
-										paintFootInfo(pos);
+										paintItemInfo(pos);
 										selected = pos;
 									} 
 									else 
@@ -1333,8 +1330,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 								{
 									items[selected]->paint( false );
 									item->paint( true );
-									paintItemIcon(pos);
-									paintFootInfo(pos);
+									paintItemInfo(pos);
 									selected = pos;
 								} 
 								else 
@@ -1369,8 +1365,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 								items[selected]->paint(false);
 								//select new
 								item->paint(true);
-								paintItemIcon(pos);
-								paintFootInfo(pos);
+								paintItemInfo(pos);
 								selected = pos;
 							}
 						}
@@ -1395,8 +1390,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 									items[selected]->paint(false);
 									//select new
 									item->paint(true);
-									paintItemIcon(pos);
-									paintFootInfo(pos);
+									paintItemInfo(pos);
 									selected = pos;
 								} 
 								else 
@@ -1431,8 +1425,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 								items[selected]->paint(false);
 								//select new
 								item->paint(true);
-								paintItemIcon(pos);
-								paintFootInfo(pos);
+								paintItemInfo(pos);
 								selected = pos;
 							} 
 						}
@@ -1455,8 +1448,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 									items[selected]->paint(false);
 									//select new
 									item->paint(true);
-									paintItemIcon(pos);
-									paintFootInfo(pos);
+									paintItemInfo(pos);
 									selected = pos;
 								} 
 								else 
@@ -1496,8 +1488,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 									items[selected]->paint(false);
 									//select new
 									item->paint(true);
-									paintItemIcon(pos);
-									paintFootInfo(pos);
+									paintItemInfo(pos);
 									selected = pos;
 								}
 								
@@ -1541,8 +1532,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 									items[selected]->paint(false);
 									//select new
 									item->paint(true);
-									paintItemIcon(pos);
-									paintFootInfo(pos);
+									paintItemInfo(pos);
 									selected = pos;
 								}
 								
@@ -1691,7 +1681,7 @@ void CMenuWidget::hide()
 	else
 		frameBuffer->paintBackgroundBoxRel(x, y, full_width, full_height);
 
-	hideFootInfo();  
+	hideItemInfo();  
 	
 	frameBuffer->blit();
 }
@@ -1983,7 +1973,7 @@ void CMenuWidget::paintItems()
 
 				if (selected == count) 
 				{
-					paintFootInfo(count);
+					paintItemInfo(count);
 				}
 
 				item->paint( selected == ((signed int) count));
@@ -2063,8 +2053,7 @@ void CMenuWidget::paintItems()
 
 				if (selected == count) 
 				{
-					paintItemIcon(count);
-					paintFootInfo(count);
+					paintItemInfo(count);
 				}
 			
 				ypos = item->paint( selected == ((signed int) count) );
@@ -2111,7 +2100,7 @@ void CMenuWidget::enableSaveScreen()
 	}
 }
 
-void CMenuWidget::paintFootInfo(int pos)
+void CMenuWidget::paintItemInfo(int pos)
 {
 	if(widgetType == WIDGET_FRAME)
 	{
@@ -2136,7 +2125,7 @@ void CMenuWidget::paintFootInfo(int pos)
 			}
 		}
 	}
-	else if(widgetType == WIDGET_CLASSIC || widgetType == WIDGET_EXTENDED)
+	else if(widgetType == WIDGET_CLASSIC)
 	{
 		CMenuItem* item = items[pos];
 
@@ -2154,6 +2143,39 @@ void CMenuWidget::paintFootInfo(int pos)
 		if(!item->itemHelpText.empty())
 		{
 			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET, y + full_height - fheight + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - iw, item->itemHelpText.c_str(), COL_MENUFOOT, 0, true); // UTF-8
+		}
+	}
+	else if(widgetType == WIDGET_EXTENDED)
+	{
+		CMenuItem* item = items[pos];
+
+		item->getYPosition();
+
+		// item info
+		// refresh box
+		frameBuffer->paintBoxRel(x, y + full_height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+
+		// info icon
+		int iw, ih;
+		frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &iw, &ih);
+		frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT, y + full_height - fheight + (fheight - ih)/2);
+
+		// itemHelpText
+		if(!item->itemHelpText.empty())
+		{
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET, y + full_height - fheight + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - iw, item->itemHelpText.c_str(), COL_MENUFOOT, 0, true); // UTF-8
+		}
+
+		// item icon
+		// check for minimum hight
+		if(full_height - hheight - fheight >= ITEM_ICON_H)
+		{ 
+			frameBuffer->getIconSize(item->itemIcon.c_str(), &iw, &ih);
+
+			// refreshbox
+			frameBuffer->paintBoxRel(x + items_width + (width - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H, COL_MENUCONTENTDARK_PLUS_0);
+
+			frameBuffer->DisplayImage(item->itemIcon.c_str(), x + items_width + (width - items_width - ITEM_ICON_W)/2, y + (height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H);
 		}
 	}
 	else if(widgetType == WIDGET_STANDARD)
@@ -2208,36 +2230,12 @@ void CMenuWidget::paintFootInfo(int pos)
 	}
 }
 
-void CMenuWidget::hideFootInfo()
+void CMenuWidget::hideItemInfo()
 {
 	if(widgetType == WIDGET_STANDARD && FootInfo)
 	{
 		::clearItem2DetailsLine(x, y, width + ConnectLineBox_Width, height, cFrameFootInfo.iHeight);
 	}  
-}
-
-void CMenuWidget::paintItemIcon(int pos)
-{
-	if(widgetType == WIDGET_EXTENDED)
-	{
-		CMenuItem* item = items[pos];
-
-		item->getYPosition();
-
-		// info icon
-		int iw, ih;
-
-		// check for minimum hight
-		if(full_height - hheight - fheight >= ITEM_ICON_H)
-		{ 
-			frameBuffer->getIconSize(item->itemIcon.c_str(), &iw, &ih);
-
-			// refreshbox
-			frameBuffer->paintBoxRel(x + items_width + (width - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H, COL_MENUCONTENTDARK_PLUS_0);
-
-			frameBuffer->DisplayImage(item->itemIcon.c_str(), x + items_width + (width - items_width - ITEM_ICON_W)/2, y + (height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H);
-		}
-	}
 }
 
 void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigned int shortcut, bool enabled)
@@ -2607,6 +2605,7 @@ ClistBox::ClistBox()
 	//
 	FootInfo = false;
 	footInfoHeight = 70;
+	cFrameFootInfo.iHeight = 0;
 
 	//
 	widgetType = WIDGET_STANDARD;
@@ -2679,6 +2678,7 @@ void ClistBox::Init(const std::string & Icon, const int mwidth, const int mheigh
 	//
 	FootInfo = false;
 	footInfoHeight = 70;
+	cFrameFootInfo.iHeight = 0;
 
 	timeout = 0;
 
@@ -2843,7 +2843,12 @@ void ClistBox::initFrames()
 	else
 	{
 		// footInfo height
-		cFrameFootInfo.iHeight = (FootInfo)? footInfoHeight : 0;
+		cFrameFootInfo.iHeight = 0;
+
+		if(FootInfo && widgetType == WIDGET_STANDARD)
+		{
+			cFrameFootInfo.iHeight = footInfoHeight;
+		}
 
 		height = wanted_height;
 
@@ -2891,7 +2896,7 @@ void ClistBox::initFrames()
 			itemHeightTotal += item_height;
 			heightCurrPage += item_height;
 
-			if( (heightCurrPage + hheight + fheight + cFrameFootInfo.iHeight) > height)
+			if( (heightCurrPage + hheight + fheight) > height)
 			{
 				page_start.push_back(i);
 				heightFirstPage = heightCurrPage - item_height;
@@ -2915,17 +2920,25 @@ void ClistBox::initFrames()
 		}
 
 		// recalculate height
-		listmaxshow = (height - hheight - fheight - cFrameFootInfo.iHeight)/item_height;
+		listmaxshow = (height - hheight - fheight)/item_height;
 
-		height = hheight + listmaxshow*item_height + fheight + cFrameFootInfo.iHeight;
+		height = hheight + listmaxshow*item_height + fheight;
 
 		//
 		full_width = width;
-		full_height = height /*+ cFrameFootInfo.iHeight*/;
+		full_height = height + cFrameFootInfo.iHeight;
 		
 		// coordinations
 		x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - full_width ) >> 1 );
 		y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
+
+		//
+		if(FootInfo && widgetType == WIDGET_STANDARD)
+		{
+			cFrameFootInfo.iX = x;
+			cFrameFootInfo.iY = y + height;
+			cFrameFootInfo.iWidth = width;
+		}
 	}
 }
 
@@ -3024,12 +3037,12 @@ void ClistBox::paintFoot()
 	if(widgetType != WIDGET_FRAME)
 	{
 		//paint foot
-		frameBuffer->paintBoxRel(x, y + height - cFrameFootInfo.iHeight - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+		frameBuffer->paintBoxRel(x, y + height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 		// Foot Buttons
 		if (fbutton_count)
 		{
-			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - cFrameFootInfo.iHeight - fheight, width/fbutton_count, fbutton_count, fbutton_labels, fheight);
+			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - fheight, width/fbutton_count, fbutton_count, fbutton_labels, fheight);
 		}
 	}
 }
@@ -3070,7 +3083,7 @@ void ClistBox::paint()
 		}
 		else
 		{
-			frameBuffer->paintBoxRel(x, item_start_y, width, height - hheight - fheight - cFrameFootInfo.iHeight, COL_MENUCONTENTDARK_PLUS_0);
+			frameBuffer->paintBoxRel(x, item_start_y, width, height - hheight - fheight, COL_MENUCONTENTDARK_PLUS_0);
 		}
 	
 		paintItems();
@@ -3118,7 +3131,7 @@ void ClistBox::paintItems()
 
 				if (selected == count) 
 				{
-					paintFootInfo(count);
+					paintItemInfo(count);
 				}
 
 				item->paint( selected == ((signed int) count));
@@ -3140,7 +3153,7 @@ void ClistBox::paintItems()
 	else /*if(widgetType == WIDGET_STANDARD || widgetType == WIDGET_CLASSIC || widgetType == WIDGET_EXTENDED || WIDGET_INFO)*/
 	{
 		// items height
-		items_height = height - hheight - fheight - cFrameFootInfo.iHeight;
+		items_height = height - hheight - fheight;
 	
 		// items width
 		sb_width = 0;
@@ -3179,7 +3192,7 @@ void ClistBox::paintItems()
 		if(widgetType == WIDGET_EXTENDED)
 		{
 			// paint items background
-			frameBuffer->paintBoxRel(x, item_start_y, width, height - hheight - fheight - cFrameFootInfo.iHeight, COL_MENUCONTENT_PLUS_0);
+			frameBuffer->paintBoxRel(x, item_start_y, width, height - hheight - fheight, COL_MENUCONTENT_PLUS_0);
 		}
 		else
 			frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENT_PLUS_0);
@@ -3209,8 +3222,7 @@ void ClistBox::paintItems()
 
 				if (selected == count) 
 				{
-					paintItemIcon(count);
-					paintFootInfo(count);
+					paintItemInfo(count);
 				}
 
 				ypos = item->paint(selected == ((signed int) count));
@@ -3224,7 +3236,7 @@ void ClistBox::paintItems()
 	}
 }
 
-void ClistBox::paintFootInfo(int pos)
+void ClistBox::paintItemInfo(int pos)
 {
 	if(widgetType == WIDGET_FRAME)
 	{
@@ -3247,128 +3259,55 @@ void ClistBox::paintFootInfo(int pos)
 			}
 		}
 	}
-	else if(widgetType == WIDGET_STANDARD || widgetType == WIDGET_CLASSIC)
+	else if(widgetType == WIDGET_STANDARD)
 	{
-		if(FootInfo == false)
-			return;
+		if(FootInfo)
+		{
+			CMenuItem* item = items[pos];
 
-		//
-		cFrameFootInfo.iX = x;
-		cFrameFootInfo.iY = y + height - cFrameFootInfo.iHeight;
-		cFrameFootInfo.iWidth = width;
-
-		CMenuItem* item = items[pos];
-
-		item->getYPosition();
+			item->getYPosition();
 	
-		// detailslines
-		::paintItem2DetailsLineD(x, y, width, height - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight, hheight, item->getHeight(), item->getYPosition());
+			// detailslines
+			::paintItem2DetailsLineD(x, y, width, height, cFrameFootInfo.iHeight, hheight, item->getHeight(), item->getYPosition());
 
-		// option_info1
-		int l_ow1 = 0;
-		if(!item->option_info1.empty())
-		{
-			l_ow1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->option_info1.c_str());
+			// option_info1
+			int l_ow1 = 0;
+			if(!item->option_info1.empty())
+			{
+				l_ow1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->option_info1.c_str());
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + width - BORDER_RIGHT - l_ow1, y + height - cFrameFootInfo.iHeight + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->option_info1.c_str(), COL_MENUFOOT_INFO, 0, true);
-		}
+				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + width - BORDER_RIGHT - l_ow1, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->option_info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+			}
 
-		// info1
-		int l_w1 = 0;
-		if(!item->info1.empty())
-		{
-			l_w1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(item->info1.c_str());
+			// info1
+			int l_w1 = 0;
+			if(!item->info1.empty())
+			{
+				l_w1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(item->info1.c_str());
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height - cFrameFootInfo.iHeight + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->info1.c_str(), COL_MENUFOOT_INFO, 0, true);
-		}
+				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+			}
 
-		// option_info2
-		int l_ow2 = 0;
-		if(!item->option_info2.empty())
-		{
-			l_ow2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(item->option_info2.c_str());
+			// option_info2
+			int l_ow2 = 0;
+			if(!item->option_info2.empty())
+			{
+				l_ow2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(item->option_info2.c_str());
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + width - BORDER_RIGHT - l_ow2, y + height - cFrameFootInfo.iHeight + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->option_info2.c_str(), COL_MENUFOOT_INFO, 0, true);
-		}
+				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + width - BORDER_RIGHT - l_ow2, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->option_info2.c_str(), COL_MENUFOOT_INFO, 0, true);
+			}
 
-		// info2
-		int l_w2 = 0;
-		if(!item->info2.empty())
-		{
-			l_w2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->info2.c_str());
+			// info2
+			int l_w2 = 0;
+			if(!item->info2.empty())
+			{
+				l_w2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->info2.c_str());
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height - cFrameFootInfo.iHeight + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->info2.c_str(), COL_MENUFOOT_INFO, 0, true); // UTF-8
+				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->info2.c_str(), COL_MENUFOOT_INFO, 0, true); // UTF-8
+			}
 		}
 	}
-}
-
-void ClistBox::hideFootInfo()
-{
-	if(widgetType == WIDGET_STANDARD || widgetType == WIDGET_CLASSIC)
-	{
-		//
-		cFrameFootInfo.iX = x;
-		cFrameFootInfo.iY = y + height - cFrameFootInfo.iHeight;
-		cFrameFootInfo.iWidth = width;
-
-		::clearItem2DetailsLine(x, y, width + ConnectLineBox_Width, height - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight);
-	}  
-}
-
-void ClistBox::saveScreen()
-{
-	if(!savescreen)
-		return;
-
-	delete[] background;
-
-	background = new fb_pixel_t[full_width*full_height];
-	
-	if(background)
-		frameBuffer->SaveScreen(x, y, full_width, full_height, background);
-}
-
-void ClistBox::restoreScreen()
-{
-	if(background) 
-	{
-		if(savescreen)
-			frameBuffer->RestoreScreen(x, y, full_width, full_height, background);
-	}
-}
-
-void ClistBox::enableSaveScreen()
-{
-	savescreen = true;
-	
-	if(!savescreen && background) 
-	{
-		delete[] background;
-		background = NULL;
-	}
-}
-
-void ClistBox::setFooterButtons(const struct button_label* _fbutton_labels, const int _fbutton_count)
-{
-	fbutton_count = _fbutton_count;
-	fbutton_labels = _fbutton_labels;
-}
-
-void ClistBox::addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string & action)
-{
-	keyActionMap[key].menue = menue;
-	keyActionMap[key].action = action;
-}
-
-void ClistBox::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
-{
-	hbutton_count = _hbutton_count;
-	hbutton_labels = _hbutton_labels;
-}
-
-void ClistBox::paintItemIcon(int pos)
-{
-	if(widgetType == WIDGET_EXTENDED)
+	else if(widgetType == WIDGET_EXTENDED)
 	{
 		CMenuItem* item = items[pos];
 
@@ -3412,7 +3351,66 @@ void ClistBox::paintItemIcon(int pos)
 		}
 
 		textBox->setText(&item->info1, item->itemIcon, p_w, p_h, CTextBox::TOP_CENTER);
-		//textBox->paint();
+	}
+	
+}
+
+void ClistBox::hideItemInfo()
+{
+	if(widgetType == WIDGET_STANDARD)
+	{
+		::clearItem2DetailsLine(x, y, width + ConnectLineBox_Width, height, cFrameFootInfo.iHeight);
+	}  
+}
+
+void ClistBox::setFooterButtons(const struct button_label* _fbutton_labels, const int _fbutton_count)
+{
+	fbutton_count = _fbutton_count;
+	fbutton_labels = _fbutton_labels;
+}
+
+void ClistBox::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
+{
+	hbutton_count = _hbutton_count;
+	hbutton_labels = _hbutton_labels;
+}
+
+void ClistBox::addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string & action)
+{
+	keyActionMap[key].menue = menue;
+	keyActionMap[key].action = action;
+}
+
+void ClistBox::saveScreen()
+{
+	if(!savescreen)
+		return;
+
+	delete[] background;
+
+	background = new fb_pixel_t[full_width*full_height];
+	
+	if(background)
+		frameBuffer->SaveScreen(x, y, full_width, full_height, background);
+}
+
+void ClistBox::restoreScreen()
+{
+	if(background) 
+	{
+		if(savescreen)
+			frameBuffer->RestoreScreen(x, y, full_width, full_height, background);
+	}
+}
+
+void ClistBox::enableSaveScreen()
+{
+	savescreen = true;
+	
+	if(!savescreen && background) 
+	{
+		delete[] background;
+		background = NULL;
 	}
 }
 
@@ -3425,7 +3423,7 @@ void ClistBox::hide()
 	else
 		frameBuffer->paintBackgroundBoxRel(x, y, full_width, full_height);
 
-	ClistBox::hideFootInfo(); 
+	hideItemInfo(); 
 	
 	frameBuffer->blit();
 
@@ -3495,8 +3493,8 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 					msg = CRCInput::RC_timeout;
 					break;
 				case menu_return::RETURN_REPAINT:
-					paintHead();
 					paint();
+					paintHead();
 					paintFoot();
 					break;
 			}
@@ -3520,8 +3518,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 						paintItems();
 					}
 
-					paintFootInfo(selected);
-					paintItemIcon(selected);
+					paintItemInfo(selected);
 					pos = selected;
 					msg = CRCInput::RC_ok;
 				} 
@@ -3578,7 +3575,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 										items[selected]->paint(false);
 
 										// new item
-										paintFootInfo(pos);
+										paintItemInfo(pos);
 										item->paint(true);
 										selected = pos;
 									} 
@@ -3606,7 +3603,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 										items[selected]->paint(false);
 
 										// new item
-										paintFootInfo(pos);
+										paintItemInfo(pos);
 										item->paint(true);
 										selected = pos;
 									} 
@@ -3657,7 +3654,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 									items[selected]->paint(false);
 
 									// paint new item
-									paintFootInfo(pos);
+									paintItemInfo(pos);
 									item->paint(true);
 									selected = pos;
 								} 
@@ -3697,8 +3694,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 								items[selected]->paint(false);
 								//select new
 								item->paint(true);
-								paintItemIcon(pos);
-								paintFootInfo(pos);
+								paintItemInfo(pos);
 								selected = pos;
 							}
 						}
@@ -3729,8 +3725,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 									//clear prev. selected
 									items[selected]->paint(false);
 									//select new
-									paintItemIcon(pos);
-									paintFootInfo(pos);
+									paintItemInfo(pos);
 									item->paint(true);
 									selected = pos;
 								} 
@@ -3765,8 +3760,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 								items[selected]->paint(false);
 								//select new
 								item->paint(true);
-								paintItemIcon(pos);
-								paintFootInfo(pos);
+								paintItemInfo(pos);
 								selected = pos;
 							} 
 						}
@@ -3797,8 +3791,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 									//clear prev. selected
 									items[selected]->paint(false);
 									//select new
-									paintItemIcon(pos);
-									paintFootInfo(pos);
+									paintItemInfo(pos);
 									item->paint(true);
 									selected = pos;
 								} 
@@ -3838,8 +3831,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 									items[selected]->paint(false);
 									//select new
 									item->paint(true);
-									paintItemIcon(pos);
-									paintFootInfo(pos);
+									paintItemInfo(pos);
 									selected = pos;
 								}
 								
@@ -3849,12 +3841,10 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 
 						break;
 					}
-					/*
 					else if (widgetType == WIDGET_EXTENDED)
 					{
 						textBox->scrollPageDown(1);
 					}
-					*/
 					
 				case (CRCInput::RC_right):
 					if(widgetType == WIDGET_FRAME)
@@ -3880,8 +3870,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 									items[selected]->paint(false);
 									//select new
 									item->paint(true);
-									paintItemIcon(pos);
-									paintFootInfo(pos);
+									paintItemInfo(pos);
 									selected = pos;
 								}
 								
@@ -3889,12 +3878,10 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 							}
 						}
 					}
-					/*
 					else if (widgetType == WIDGET_EXTENDED)
 					{
 						textBox->scrollPageUp(1);
 					}
-					*/
 					break;
 
 				case (CRCInput::RC_ok):
@@ -3918,8 +3905,8 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 									
 								case menu_return::RETURN_REPAINT:
 									hide();
-									paintHead();
 									paint();
+									paintHead();
 									paintFoot();
 									break;
 							}

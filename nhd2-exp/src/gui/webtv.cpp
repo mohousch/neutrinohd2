@@ -847,6 +847,7 @@ void CWebTV::show(bool reload, bool reinit)
 		}
 	}
 
+	webTVlistMenu->setWidgetType(WIDGET_STANDARD);
 	webTVlistMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	webTVlistMenu->setSelected(reinit? 0 : tuned);
 
