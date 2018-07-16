@@ -655,6 +655,7 @@ class ClistBox : public CMenuTarget
 
 		//
 		int fbutton_count;
+		int fbutton_width;
 		const struct button_label* fbutton_labels;
 
 		//
@@ -734,7 +735,7 @@ class ClistBox : public CMenuTarget
 		void addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string &action);
 
 		//
-		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count);
+		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count, const int _fbutton_width = 0);
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 
 		//

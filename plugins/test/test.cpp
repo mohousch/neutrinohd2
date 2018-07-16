@@ -51,6 +51,8 @@ class CTestMenu : public CMenuTarget
 		CMovieInfo m_movieInfo;
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
 
+		CMenuItem* item;
+
 		// widgets
 		void testCBox();
 		void testCIcon();
@@ -145,12 +147,16 @@ CTestMenu::CTestMenu()
 	frameBuffer = CFrameBuffer::getInstance();
 
 	//
-	listMenu = NULL;
 	selected = 0;
 	displayNext = false;
 
 	//
-	audioMenu = NULL;
+	listMenu = NULL; 	// channellist
+	audioMenu = NULL; 	// audioplayer
+	plist = NULL;		// pluginslist
+	mlist = NULL;		// moviebrowser
+
+	item = NULL;
 }
 
 CTestMenu::~CTestMenu()
@@ -1755,8 +1761,6 @@ void CTestMenu::testCMenuWidgetListBox()
 	// itemBox
 	listMenu = new ClistBox(LOCALE_CHANNELLIST_HEAD, "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
-	ClistBoxItem *mc;
-
 	// load all tv channels
 	Channels.clear();
 
@@ -1841,18 +1845,18 @@ void CTestMenu::testCMenuWidgetListBox()
 		}
 
 		// a la Channelist
-		mc = new ClistBoxItem(Channels[i]->getName().c_str(), true, p_event->description.c_str(), this, "zapto");
+		item = new ClistBoxItem(Channels[i]->getName().c_str(), true, p_event->description.c_str(), this, "zapto");
 
-		mc->setNumber(i + 1);
-		mc->setPercent(runningPercent);
-		mc->setIcon1(Channels[i]->isHD() ? NEUTRINO_ICON_HD : "");
-		mc->setIcon2(Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "");
-		mc->setInfo1(p_event->description.c_str());
-		mc->setOptionInfo1(cSeit);
-		mc->setInfo2(p_event->text.c_str());
-		mc->setOptionInfo2(cNoch);
+		item->setNumber(i + 1);
+		item->setPercent(runningPercent);
+		item->setIcon1(Channels[i]->isHD() ? NEUTRINO_ICON_HD : "");
+		item->setIcon2(Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "");
+		item->setInfo1(p_event->description.c_str());
+		item->setOptionInfo1(cSeit);
+		item->setInfo2(p_event->text.c_str());
+		item->setOptionInfo2(cNoch);
 
-		listMenu->addItem(mc);
+		listMenu->addItem(item);
 	}
 
 	listMenu->setWidgetType(WIDGET_STANDARD);
@@ -1898,8 +1902,6 @@ void CTestMenu::testClistBoxnLines()
 	// itemBox
 	plist = new ClistBox("ClistBox (plugins list)", NEUTRINO_ICON_SHELL, MENU_WIDTH, MENU_HEIGHT - 100);
 
-	ClistBoxItem *pc;
-
 	//
 	for(unsigned int count = 0; count < (unsigned int)g_PluginList->getNumberOfPlugins(); count++)
 	{
@@ -1912,26 +1914,24 @@ void CTestMenu::testClistBoxnLines()
 		IconName += g_PluginList->getIcon(count);
 
 			
-		pc = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), NULL, file_exists(IconName.c_str())? IconName.c_str() : NEUTRINO_ICON_MENUITEM_PLUGIN);
+		item = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), NULL, file_exists(IconName.c_str())? IconName.c_str() : NEUTRINO_ICON_MENUITEM_PLUGIN);
 
-		pc->setInfo1(g_PluginList->getDescription(count).c_str());
+		item->setInfo1(g_PluginList->getDescription(count).c_str());
 
-		pc->setnLinesItem();
-		//pc->switchnLinesItem();
+		item->setnLinesItem();
+		//item->switchnLinesItem();
 
-		plist->addItem(pc);
+		plist->addItem(item);
 	}
 
 	plist->setWidgetType(WIDGET_CLASSIC);
 	plist->enablePaintDate();
-
-	//plist->enableFootInfo();
-	//plist->setFootInfoHeight(40); 
+	plist->enableFootInfo();
 
 	plist->setSelected(selected);
 
 	// footer
-	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS);
+	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS, MENU_WIDTH/2);
 
 	//
 	plist->addKey(CRCInput::RC_red, this, "pred");
@@ -2014,8 +2014,6 @@ void CTestMenu::testCMenuWidgetListBox1()
 	fileFilter.addFilter("aac");
 	fileFilter.addFilter("dts");
 	fileFilter.addFilter("m4a");
-
-	ClistBoxItem * ma;
 	
 	std::string Path_local = g_settings.network_nfs_audioplayerdir;
 
@@ -2083,24 +2081,23 @@ void CTestMenu::testCMenuWidgetListBox1()
 				}
 
 				//
-				ma = new ClistBoxItem(title.c_str(), true, "", this, "aplay");
+				item = new ClistBoxItem(title.c_str(), true, "", this, "aplay");
 			
-				ma->setOptionInfo(duration);
-				ma->setNumber(count);
+				item->setOptionInfo(duration);
+				item->setNumber(count);
 
 				// details Box
-				ma->setInfo1(title.c_str());
-				ma->setOptionInfo1(genre.c_str());
-				ma->setInfo2(artist.c_str());
-				ma->setOptionInfo2(date.c_str());
+				item->setInfo1(title.c_str());
+				item->setOptionInfo1(genre.c_str());
+				item->setInfo2(artist.c_str());
+				item->setOptionInfo2(date.c_str());
 
-				audioMenu->addItem(ma);
+				audioMenu->addItem(item);
 			}
 		}
 	}
 
 	//audioMenu->move(0, 40);
-
 	//audioMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	audioMenu->setSelected(selected);
 
@@ -2136,8 +2133,6 @@ const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
 void CTestMenu::testFrameBox()
 {
 	mlist = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
-
-	ClistBoxItem* mm;
 	
 	//
 	CFileFilter fileFilter;
@@ -2220,20 +2215,12 @@ void CTestMenu::testFrameBox()
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		mm = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		mm->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
+		item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
 
-		mlist->addItem(mm);
+		mlist->addItem(item);
 	}
-
-	#if 0
-	mm = new ClistBoxItem(m_vMovieInfo[1].epgTitle.c_str(), true, m_vMovieInfo[1].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[1].tfile.c_str())? m_vMovieInfo[1].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
-
-	mm->setOptionInfo(m_vMovieInfo[1].epgInfo2.c_str());
-
-	mlist->addItem(mm);
-	#endif
 
 	mlist->setWidgetType(WIDGET_FRAME);
 	mlist->setItemsPerPage(6, 2);

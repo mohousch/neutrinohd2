@@ -123,7 +123,7 @@ void CPluginList::showMenu()
 	plist->setSelected(selected);
 
 	// footer
-	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS);
+	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS, MENU_WIDTH/2);
 
 	//
 	plist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));

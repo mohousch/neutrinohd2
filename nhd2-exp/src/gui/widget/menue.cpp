@@ -2666,6 +2666,7 @@ void ClistBox::Init(const std::string & Icon, const int mwidth, const int mheigh
 	//
 	fbutton_count	= 0;
 	fbutton_labels	= NULL;
+	fbutton_width = width;
 
 	//
 	PaintDate = false;
@@ -3042,7 +3043,7 @@ void ClistBox::paintFoot()
 		// Foot Buttons
 		if (fbutton_count)
 		{
-			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - fheight, width/fbutton_count, fbutton_count, fbutton_labels, fheight);
+			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - fheight, fbutton_width/fbutton_count, fbutton_count, fbutton_labels, fheight);
 		}
 	}
 }
@@ -3363,10 +3364,11 @@ void ClistBox::hideItemInfo()
 	}  
 }
 
-void ClistBox::setFooterButtons(const struct button_label* _fbutton_labels, const int _fbutton_count)
+void ClistBox::setFooterButtons(const struct button_label* _fbutton_labels, const int _fbutton_count, const int _fbutton_width)
 {
 	fbutton_count = _fbutton_count;
 	fbutton_labels = _fbutton_labels;
+	fbutton_width = (_fbutton_width == 0)? width : _fbutton_width;
 }
 
 void ClistBox::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
