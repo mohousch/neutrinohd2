@@ -126,7 +126,8 @@ void CVCRControl::registerDevice(CDevice * const device)
 
 bool CVCRControl::Record(const CTimerd::RecordingInfo * const eventinfo)
 {
-	int mode = g_Zapit->isChannelTVChannel(eventinfo->channel_id) ? NeutrinoMessages::mode_tv : NeutrinoMessages::mode_radio;
+	//int mode = g_Zapit->isChannelTVChannel(eventinfo->channel_id) ? NeutrinoMessages::mode_tv : NeutrinoMessages::mode_radio;
+	int mode = CNeutrinoApp::getInstance()->getMode();
 
 	return Device->Record(eventinfo->channel_id, mode, eventinfo->epgID, eventinfo->epgTitle, eventinfo->apids, eventinfo->epg_starttime); 
 }
@@ -141,7 +142,10 @@ void CVCRControl::CDevice::getAPIDs(const unsigned char ap, APIDList & apid_list
         apid_list.clear();
         CZapitClient::responseGetPIDs allpids;
 	
-        g_Zapit->getRecordPIDS(allpids);
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		g_Webtv->getPIDS(allpids);
+	else
+        	g_Zapit->getRecordPIDS(allpids);
 
         // assume smallest apid ist std apid
         if (apids & TIMERD_APIDS_STD)
@@ -168,7 +172,7 @@ void CVCRControl::CDevice::getAPIDs(const unsigned char ap, APIDList & apid_list
         if (apids & TIMERD_APIDS_ALT)
         {
                 uint32_t apid_min=UINT_MAX;
-                uint32_t apid_min_idx=0;
+                uint32_t apid_min_idx = 0;
                 for(unsigned int i = 0; i < allpids.APIDs.size(); i++)
                 {
                         if (allpids.APIDs[i].pid < apid_min && !allpids.APIDs[i].is_ac3)
@@ -245,8 +249,8 @@ void CVCRControl::CDevice::getAPIDs(const unsigned char ap, APIDList & apid_list
                         apid_list.push_back(a);
                 }
                 
-                for(APIDList::iterator it = apid_list.begin(); it != apid_list.end(); it++)
-                        printf("[CVCRControl] Record APID 0x%X %d\n",it->apid, it->ac3);
+                //for(APIDList::iterator it = apid_list.begin(); it != apid_list.end(); it++)
+                //      printf("[CVCRControl] Record APID 0x%X %d\n",it->apid, it->ac3);
         }
 }
 
@@ -277,31 +281,34 @@ bool CVCRControl::CVCRDevice::Record(const t_channel_id channel_id, int mode, co
 		CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , mode | NeutrinoMessages::norezap );
 	}
 	
-	// zapit
-	if(channel_id != 0)	// wenn ein channel angegeben ist
+	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 	{
-		// zap for record
-		g_Zapit->zapTo_record(channel_id);			// for recording
+		// zapit
+		if(channel_id != 0)	// wenn ein channel angegeben ist
+		{
+			// zap for record
+			g_Zapit->zapTo_record(channel_id);			// for recording
+		}
+
+		// apids
+		if(! (apids & TIMERD_APIDS_STD)) // nicht std apid
+		{
+		        APIDList apid_list;
+		        getAPIDs(apids, apid_list);
+
+		        if(!apid_list.empty())
+		        {
+		                if(!apid_list.begin()->ac3)
+		                        g_Zapit->setAudioChannel(apid_list.begin()->index);
+		                else
+		                        g_Zapit->setAudioChannel(0); //sonst apid 0, also auf jeden fall ac3 aus !
+		        }
+		        else
+		                g_Zapit->setAudioChannel(0); //sonst apid 0, also auf jeden fall ac3 aus !
+		}
+		else
+		        g_Zapit->setAudioChannel(0); //sonst apid 0, also auf jeden fall ac3 aus !
 	}
-
-	// apids
-        if(! (apids & TIMERD_APIDS_STD)) // nicht std apid
-        {
-                APIDList apid_list;
-                getAPIDs(apids, apid_list);
-
-                if(!apid_list.empty())
-                {
-                        if(!apid_list.begin()->ac3)
-                                g_Zapit->setAudioChannel(apid_list.begin()->index);
-                        else
-                                g_Zapit->setAudioChannel(0); //sonst apid 0, also auf jeden fall ac3 aus !
-                }
-                else
-                        g_Zapit->setAudioChannel(0); //sonst apid 0, also auf jeden fall ac3 aus !
-        }
-        else
-                g_Zapit->setAudioChannel(0); //sonst apid 0, also auf jeden fall ac3 aus !
 
 	// switch to scart
 	if(SwitchToScart)
@@ -334,57 +341,62 @@ void CVCRControl::CFileAndServerDevice::RestoreNeutrino(void)
 	
 	// unset record mode
 	// after this zapit send EVT_RECORDMODE_DEACTIVATED, so neutrino getting NeutrinoMessages::EVT_RECORDMODE
-	g_Zapit->setRecordMode( false );
 
-	// start playback
-	if (!g_Zapit->isPlayBackActive() && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_standby))
-		g_Zapit->startPlayBack();
-
-	// alten mode wieder herstellen (ausser wen zwischenzeitlich auf oder aus sb geschalten wurde)
-	if(CNeutrinoApp::getInstance()->getMode() != last_mode && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_standby && last_mode != NeutrinoMessages::mode_standby)
+	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 	{
-		if(!autoshift) 
-			g_RCInput->postMsg( NeutrinoMessages::CHANGEMODE , last_mode);
-	}
+		g_Zapit->setRecordMode( false );
 
-	if(last_mode == NeutrinoMessages::mode_standby && CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_standby )
-	{
-		//Wenn vorher und jetzt standby, dann die zapit wieder auf sb schalten
-		g_Zapit->setStandby(true);
+		// start playback
+		if (!g_Zapit->isPlayBackActive() && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_standby))
+			g_Zapit->startPlayBack();
+
+		// alten mode wieder herstellen (ausser wen zwischenzeitlich auf oder aus sb geschalten wurde)
+		if(CNeutrinoApp::getInstance()->getMode() != last_mode && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_standby && last_mode != NeutrinoMessages::mode_standby)
+		{
+			if(!autoshift) 
+				g_RCInput->postMsg( NeutrinoMessages::CHANGEMODE , last_mode);
+		}
+
+		if(last_mode == NeutrinoMessages::mode_standby && CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_standby )
+		{
+			//Wenn vorher und jetzt standby, dann die zapit wieder auf sb schalten
+			g_Zapit->setStandby(true);
+		}
 	}	
 }
 
 void CVCRControl::CFileAndServerDevice::CutBackNeutrino(const t_channel_id channel_id, const int mode)
 {
-	//printf("CutBackNeutrino\n");fflush(stdout);
-	
 	last_mode = CNeutrinoApp::getInstance()->getMode();
 
-	if(last_mode == NeutrinoMessages::mode_standby)
+	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
 	{
-		g_Zapit->setStandby(false);
-	}
-	
-	if (channel_id != 0) 
-	{
-		if (mode != last_mode && (last_mode != NeutrinoMessages::mode_standby || mode != CNeutrinoApp::getInstance()->getLastMode())) 
+		if(last_mode == NeutrinoMessages::mode_standby)
 		{
-			CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , mode | NeutrinoMessages::norezap );
-			// Wenn wir im Standby waren, dann brauchen wir f�rs streamen nicht aufwachen...
-			if(last_mode == NeutrinoMessages::mode_standby)
-				CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , NeutrinoMessages::mode_standby);
+			g_Zapit->setStandby(false);
 		}
+	
+		if (channel_id != 0) 
+		{
+			if (mode != last_mode && (last_mode != NeutrinoMessages::mode_standby || mode != CNeutrinoApp::getInstance()->getLastMode())) 
+			{
+				CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , mode | NeutrinoMessages::norezap );
+				// Wenn wir im Standby waren, dann brauchen wir f�rs streamen nicht aufwachen...
+				if(last_mode == NeutrinoMessages::mode_standby)
+					CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , NeutrinoMessages::mode_standby);
+			}
 		
-		// zap to record
-		g_Zapit->zapTo_record(channel_id);
+			// zap to record
+			g_Zapit->zapTo_record(channel_id);
+		}
+
+		// after this zapit send EVT_RECORDMODE_ACTIVATED, so neutrino getting NeutrinoMessages::EVT_RECORDMODE
+		g_Zapit->setRecordMode( true );
+
+		// stop playback im standby
+		if( last_mode == NeutrinoMessages::mode_standby )
+			g_Zapit->stopPlayBack();
 	}
-
-	// after this zapit send EVT_RECORDMODE_ACTIVATED, so neutrino getting NeutrinoMessages::EVT_RECORDMODE
-	g_Zapit->setRecordMode( true );
-
-	// stop playback im standby
-	if( last_mode == NeutrinoMessages::mode_standby )
-		g_Zapit->stopPlayBack();
 }
 
 //
@@ -424,9 +436,20 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 		"\">\n"
 		"\t\t<channelname>";
 	
+	//
 	CZapitClient::responseGetPIDs pids;
-	g_Zapit->getRecordPIDS (pids);
-	CZapitClient::CCurrentServiceInfo si = g_Zapit->getRecordServiceInfo();
+
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		g_Webtv->getPIDS(pids);
+	else
+		g_Zapit->getRecordPIDS(pids);
+
+	CZapitClient::CCurrentServiceInfo si;
+
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		si = g_Webtv->getServiceInfo();
+	else
+	 	si = g_Zapit->getRecordServiceInfo();
 
         APIDList apid_list;
         getAPIDs(apids, apid_list);
@@ -440,7 +463,12 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
                 apids_selected += tmp;
         }
 
-	std::string tmpstring = g_Zapit->getChannelName(channel_id);
+	std::string tmpstring;
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		tmpstring = g_Webtv->getLiveChannelName();
+	else
+		tmpstring = g_Zapit->getChannelName(channel_id);
+
 	if (tmpstring.empty())
 		extMessage += "unknown";
 	else
@@ -465,6 +493,7 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 	{
 		tmpstring = epgTitle;
 	}
+
 	extMessage += UTF8_to_UTF8XML(tmpstring.c_str());
 	
 	extMessage += "</epgtitle>\n\t\t<id>";
@@ -480,6 +509,7 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 	sprintf(tmp, "%llu", epgid);
 	extMessage += tmp;
 	extMessage += "</epgid>\n\t\t<mode>";
+
 	sprintf(tmp, "%d", g_Zapit->getMode());
 	extMessage += tmp;
 	extMessage += "</mode>\n\t\t<videopid>";
@@ -487,6 +517,7 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 	extMessage += tmp;
 	extMessage += "</videopid>\n\t\t<audiopids selected=\"";
 	extMessage += apids_selected;
+
 	extMessage += "\">\n";
 	
 	// audio desc
@@ -524,8 +555,8 @@ bool CVCRControl::CFileDevice::Stop()
 
 	bool return_value = (::stop_recording(extMessage.c_str()) == STREAM2FILE_OK);
 
-	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-		RestoreNeutrino();
+	//
+	RestoreNeutrino();
 
 	deviceState = CMD_VCR_STOP;
 
@@ -547,12 +578,15 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 	unsigned int pos;
 
 	// cut neutrino
-	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-	{
 	CutBackNeutrino(channel_id, mode);
-	}
 
-	CZapitClient::CCurrentServiceInfo si = g_Zapit->getRecordServiceInfo();
+	CZapitClient::CCurrentServiceInfo si;
+
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		si = g_Webtv->getServiceInfo();
+	else
+		si = g_Zapit->getRecordServiceInfo();
+
 	numpids = 0;
 
 	// vpid
@@ -570,7 +604,11 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
         }
         
         CZapitClient::responseGetPIDs allpids;
-        g_Zapit->getRecordPIDS(allpids);
+
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		g_Webtv->getPIDS(allpids);
+	else
+        	g_Zapit->getRecordPIDS(allpids);
 
 	//record file name format
 	char filename[512]; // UTF-8
@@ -702,8 +740,7 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 	}
 	else 
 	{
-		if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-			RestoreNeutrino();
+		RestoreNeutrino();
 
 		printf("[CVCRControl] stream2file error code: %d\n", error_msg);
 #warning FIXME: Use better error message
@@ -722,7 +759,7 @@ bool CVCRControl::Screenshot(const t_channel_id channel_id, char * fname, bool m
 	char filename[512]; // UTF-8
 	char cmd[512];
 	std::string channel_name;
-	CEPGData                epgData;
+	CEPGData epgData;
 	event_id_t epgid = 0;
 	unsigned int pos;
 
@@ -747,7 +784,11 @@ bool CVCRControl::Screenshot(const t_channel_id channel_id, char * fname, bool m
 		strcpy(filename, str2);
 	
 		pos = strlen(filename);
-		channel_name = g_Zapit->getChannelName(channel_id);
+
+		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+			channel_name = g_Webtv->getLiveChannelName();
+		else
+			channel_name = g_Zapit->getChannelName(channel_id);
 
 		if (!(channel_name.empty())) 
 		{
@@ -838,11 +879,26 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 
 	g_cMovieInfo->clearMovieInfo(g_movieInfo);
 
-	g_Zapit->getRecordPIDS(pids);
-	CZapitClient::CCurrentServiceInfo si = g_Zapit->getRecordServiceInfo();
-	
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		g_Webtv->getPIDS(pids);
+	else
+		g_Zapit->getRecordPIDS(pids);
 
-	std::string tmpstring = g_Zapit->getChannelName(channel_id);
+
+	CZapitClient::CCurrentServiceInfo si;
+
+	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+		si = g_Webtv->getServiceInfo();
+	else
+		si = g_Zapit->getRecordServiceInfo();
+
+	std::string tmpstring;
+
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		tmpstring = g_Webtv->getLiveChannelName();
+	else
+		tmpstring = g_Zapit->getChannelName(channel_id);
+
 	if (tmpstring.empty())
 		g_movieInfo->epgChannel = "unknown";
 	else
@@ -878,6 +934,7 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 	g_movieInfo->epgInfo1		= UTF8_to_UTF8XML(info1.c_str());
 	g_movieInfo->epgInfo2		= UTF8_to_UTF8XML(info2.c_str());
 	g_movieInfo->epgEpgId		= epgid ;
+
 	g_movieInfo->epgMode		= g_Zapit->getMode();
 	g_movieInfo->epgVideoPid	= si.vpid;
 	g_movieInfo->VideoType		= si.vtype;
@@ -933,8 +990,6 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 	g_movieInfo->epgVTXPID = si.vtxtpid;
 
 	g_cMovieInfo->encodeMovieInfoXml(&extMessage, g_movieInfo);
-	
-	//g_movieInfo->audioPids.clear();
 
 	return extMessage;
 }

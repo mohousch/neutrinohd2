@@ -374,6 +374,31 @@ void CAudioPlayerGui::hide()
 
 void CAudioPlayerGui::paintInfo()
 {
+	// get meta data
+	GetMetaData(m_playlist[m_current]);
+
+	// paint funart
+	if (!m_playlist[m_current].MetaData.cover.empty())
+	{
+		if(!access("/tmp/cover.jpg", F_OK))
+		{
+			m_frameBuffer->loadBackgroundPic("/tmp/cover.jpg");
+			m_frameBuffer->blit();
+		}
+		else
+		{
+			m_frameBuffer->loadBackgroundPic("mp3.jpg");
+			m_frameBuffer->blit();	
+		}
+				
+	}
+	else
+	{
+		m_frameBuffer->loadBackgroundPic("mp3.jpg");
+		m_frameBuffer->blit();	
+	}
+
+
 	// title info box
 	m_frameBuffer->paintBoxRel(m_x, m_y, m_width, m_title_height, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
 		
@@ -404,8 +429,6 @@ void CAudioPlayerGui::paintInfo()
 
 	// second line 
 	// Artist/Title
-	GetMetaData(m_playlist[m_current]);
-
 	if (m_playlist[m_current].MetaData.title.empty())
 		tmp = m_playlist[m_current].MetaData.artist;
 	else if (m_playlist[m_current].MetaData.artist.empty())
@@ -429,7 +452,10 @@ void CAudioPlayerGui::paintInfo()
 	if (!m_playlist[m_current].MetaData.cover.empty())
 	{
 		if(!access("/tmp/cover.jpg", F_OK))
-			m_frameBuffer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 4, m_title_height - 4);		
+		{
+			m_frameBuffer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 4, m_title_height - 4);
+
+		}		
 	}
 
 	//playstate
@@ -458,7 +484,7 @@ void CAudioPlayerGui::paintInfo()
 	// third line
 	if(updateMeta || updateScreen)
 	{
-		int xstart = ((m_width - 20 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(m_metainfo))/2) + 10;
+		int xstart = ((m_width - BORDER_LEFT - BORDER_RIGHT - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(m_metainfo))/2) + BORDER_LEFT;
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + xstart, m_y + m_title_height - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()/2, m_width- 2*xstart, m_metainfo, COL_MENUHEAD_INFO);
 	}
@@ -585,6 +611,7 @@ void CAudioPlayerGui::play(unsigned int pos)
 	CAudioPlayer::getInstance()->stop();
 
 	// metadata
+/*
 	if ( (m_playlist[pos].FileExtension != CFile::EXTENSION_M3U || m_playlist[pos].FileExtension != CFile::EXTENSION_URL || m_playlist[pos].FileExtension != CFile::EXTENSION_PLS) && !m_playlist[pos].MetaData.bitrate)
 	{
 		GetMetaData(m_playlist[pos]);
@@ -593,39 +620,16 @@ void CAudioPlayerGui::play(unsigned int pos)
 	m_metainfo.clear();
 	m_time_played = 0;
 	m_time_total = m_playlist[pos].MetaData.total_time;
+*/
 	m_state = CAudioPlayerGui::PLAY;
 
 	// play
 	CAudioPlayer::getInstance()->play(&m_playlist[pos], g_settings.audioplayer_highprio == 1);
+	
+	paintInfo();
 
 	//lcd	
 	paintLCD();
-
-	// funart
-	GetMetaData(m_playlist[m_current]);
-
-	if (!m_playlist[m_current].MetaData.cover.empty())
-	{
-		if(!access("/tmp/cover.jpg", F_OK))
-		{
-			m_frameBuffer->loadBackgroundPic("/tmp/cover.jpg");
-			m_frameBuffer->blit();
-		}
-		else
-		{
-			m_frameBuffer->loadBackgroundPic("mp3.jpg");
-			m_frameBuffer->blit();	
-		}
-				
-	}
-	else
-	{
-		m_frameBuffer->loadBackgroundPic("mp3.jpg");
-		m_frameBuffer->blit();	
-	}
-		
-	
-	paintInfo();
 }
 
 int CAudioPlayerGui::getNext()

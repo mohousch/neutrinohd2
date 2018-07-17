@@ -487,6 +487,39 @@ void CWebTV::getEvents(t_channel_id chid)
 
 	insertEventsfromHttp(evUrl, GET_ORIGINAL_NETWORK_ID_FROM_CHANNEL_ID(chid), GET_TRANSPORT_STREAM_ID_FROM_CHANNEL_ID(chid), GET_SERVICE_ID_FROM_CHANNEL_ID(chid));
 }
+
+CZapitClient::CCurrentServiceInfo CWebTV::getServiceInfo()
+{
+	CZapitClient::CCurrentServiceInfo serviceInfo;
+	memset(&serviceInfo, 0, sizeof(CZapitClient::CCurrentServiceInfo));
+
+	serviceInfo.onid = 0;
+	serviceInfo.sid = 0;
+	serviceInfo.tsid = 0;
+	serviceInfo.vpid = 0;
+	serviceInfo.apid = 0;
+	serviceInfo.vtxtpid = 0;
+	serviceInfo.pmtpid = 0;		
+	serviceInfo.pmt_version = 0xff;			
+	serviceInfo.pcrpid = 0;
+	serviceInfo.tsfrequency = 0;
+	serviceInfo.rate = 0;
+	serviceInfo.fec = (fe_code_rate)0;					
+	serviceInfo.polarisation = 0;
+	serviceInfo.vtype = 0;
+}
+
+void CWebTV::getPIDS(CZapitClient::responseGetPIDs& pids)
+{
+	CZapitClient::responseGetOtherPIDs otherPIDs;
+
+	otherPIDs.vpid = 0;
+	otherPIDs.vtxtpid = 0;
+	otherPIDs.pmtpid = 0;
+	otherPIDs.pcrpid = 0;
+	otherPIDs.selected_apid = 0;
+	otherPIDs.privatepid = 0;
+}
 //
 
 bool CWebTV::startPlayBack(int pos)
@@ -933,7 +966,7 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_blue")
 	{
 		Bouquets();
-		show(false, true);
+		show(true, true);
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_pause")

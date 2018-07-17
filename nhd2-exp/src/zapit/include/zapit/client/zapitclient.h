@@ -335,7 +335,7 @@ class CZapitClient : public CBasicClient
 		void getPIDS( responseGetPIDs& pids );
 		
 		/* get record channel APID-List */
-		void getRecordPIDS( /*responseGetRecordPIDs*/responseGetPIDs& pids );
+		void getRecordPIDS(responseGetPIDs& pids);
 
 		/* get info about the current service */
 		CZapitClient::CCurrentServiceInfo getCurrentServiceInfo();

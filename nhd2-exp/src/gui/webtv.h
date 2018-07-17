@@ -35,9 +35,8 @@
 
 #include <gui/widget/menue.h>
 
-//#include <xmlinterface.h>
-
 #include <channel.h>
+#include <client/zapitclient.h>
 
 
 #define DEFAULT_WEBTV_FILE 		CONFIGDIR "/webtv/webtv.xml"
@@ -55,8 +54,11 @@ static inline t_channel_id create_channel_id(const char *url = NULL)
 		unsigned char md5[16];
 		md5_buffer(url, strlen(url), md5);
 		memcpy(&cid, md5, sizeof(cid));
+
 		return cid | 0xFFFFFFFF00000000;
 	}
+
+	return 0xFFFFFFFF00000000;
 }
 
 class CWebTV : public CMenuTarget
@@ -69,10 +71,7 @@ class CWebTV : public CMenuTarget
 			t_channel_id id;
 			CChannelEvent currentEvent, nextEvent;
 		};
-
-		//xmlDocPtr parser;
 		
-		// channels
 		std::vector<webtv_channels *> channels;
 		
 		// bouquets
@@ -111,18 +110,17 @@ class CWebTV : public CMenuTarget
 		void show(bool reload = false, bool reinit = false);
 		void userBouquet();
 		void Bouquets();
-		
-		//
 		void quickZap(int key);
+		//
+		void updateEvents(void);
+		void getEvents(t_channel_id chid);
+		void showInfo();
 		
 		// playback
 		bool startPlayBack(int pos);
 		void stopPlayBack(void);
 		void pausePlayBack(void);
 		void continuePlayBack(void);
-		
-		//
-		void showInfo();
 
 		//
 		unsigned int getTunedChannel() {if(tuned < 0) tuned = 0; return tuned;};
@@ -135,8 +133,10 @@ class CWebTV : public CMenuTarget
 		void ClearChannels(void);
 		
 		bool readChannellist(std::string filename);
-		void updateEvents(void);
-		void getEvents(t_channel_id chid);
+
+		//
+		CZapitClient::CCurrentServiceInfo getServiceInfo();
+		void getPIDS(CZapitClient::responseGetPIDs& pids);
 };
 
 #endif

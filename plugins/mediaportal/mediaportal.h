@@ -28,6 +28,9 @@
 class CMediaPortal : public CMenuTarget
 {
 	private:
+		CMenuWidget* mediaPortal;
+		CMenuItem* item;
+
 		void youTube(void);
 		void netzKino(void);
 		void iceCast(void);

@@ -2086,10 +2086,14 @@ bool CNeutrinoApp::doGuiRecord(char * preselectedDir, bool addTimer)
 			int pre = 0, post = 0;
 
 			// get EPG info
-			eventinfo.channel_id = live_channel_id;
+			if(mode == mode_iptv)
+				eventinfo.channel_id = g_Webtv->getLiveChannelID();
+			else
+				eventinfo.channel_id = live_channel_id;
+
 			CEPGData epgData;
 
-			if (sectionsd_getActualEPGServiceKey(live_channel_id&0xFFFFFFFFFFFFULL, &epgData ))
+			if (sectionsd_getActualEPGServiceKey(eventinfo.channel_id&0xFFFFFFFFFFFFULL, &epgData ))
 			{
 				eventinfo.epgID = epgData.eventID;
 				eventinfo.epg_starttime = epgData.epg_times.startzeit;
@@ -2980,19 +2984,12 @@ void CNeutrinoApp::RealRun(void)
 			}
 			else if( msg == (neutrino_msg_t) g_settings.key_timeshift) // start timeshift recording
 			{
-/*
 				if(mode == mode_iptv)
 				{
-					if(webtv)
-					{
-						if(g_Webtv->playstate == CWebTV::PAUSE)
-							g_Webtv->continuePlayBack();
-						else if(g_Webtv->playstate == CWebTV::PLAY)
-							g_Webtv->pausePlayBack();
-					}
+					if(g_Webtv->playstate == CWebTV::PLAY)
+						g_Webtv->pausePlayBack();
 				}
 				else
-*/
 				{
 					if (recDir != NULL)
 					{
@@ -3009,8 +3006,7 @@ void CNeutrinoApp::RealRun(void)
 								recordingstatus = 1;
 									
 								timeshiftstatus = recordingstatus;
-
-								doGuiRecord(timeshiftDir, true);
+									doGuiRecord(timeshiftDir, true);
 							}
 
 							// freeze audio/video
@@ -3020,91 +3016,84 @@ void CNeutrinoApp::RealRun(void)
 					}
 				}
 			}
-			else if( ((msg == (neutrino_msg_t)g_settings.mpkey_play) && timeshiftstatus) /*&& (mode != mode_iptv)*/) // play timeshift
-			{		
-				if(g_RemoteControl->is_video_started) 
-				{
-					CMoviePlayerGui tmpMoviePlayerGui;
-					CMovieInfo cMovieInfo;
-					MI_MOVIE_INFO mfile;
-
-					//
-					char fname[255];
-					int cnt = 10*1000000;
-
-					while (!strlen(rec_filename)) 
-					{
-						usleep(1000);
-						cnt -= 1000;
-
-						if (!cnt)
-							break;
-					}
-
-					if (!strlen(rec_filename))
-						return;
-
-					sprintf(fname, "%s.ts", rec_filename);
-			
-					//
-					cMovieInfo.clearMovieInfo(&mfile);
-
-					mfile.file.Name = fname;
-			
-					// extract channel epg infos
-					CEPGData epgData;
-					event_id_t epgid = 0;
-			
-					if(sectionsd_getActualEPGServiceKey(live_channel_id&0xFFFFFFFFFFFFULL, &epgData))
-						epgid = epgData.eventID;
-
-					if(epgid != 0) 
-					{
-						CShortEPGData epgdata;
-				
-						if(sectionsd_getEPGidShort(epgid, &epgdata)) 
-						{
-							if (!(epgdata.title.empty())) 
-								mfile.epgTitle = epgdata.title;
-					
-							if(!(epgdata.info1.empty()))
-								mfile.epgInfo1 = epgdata.info1;
-					
-							if(!(epgdata.info2.empty()))
-								mfile.epgInfo2 = epgdata.info2;
-						}
-					}
-
-					// epgTitle
-					if(mfile.epgTitle.empty())
-					{
-						std::string Title = mfile.file.getFileName();
-						removeExtension(Title);
-						mfile.epgTitle = Title;
-					}
-
-					mfile.ytid = "timeshift";
-
-					tmpMoviePlayerGui.addToPlaylist(mfile);
-					tmpMoviePlayerGui.exec(NULL, "urlplayback");
-				}
-			}
-/*
-			else if(msg == (neutrino_msg_t)g_settings.mpkey_play && mode == mode_iptv)
+			else if( ((msg == (neutrino_msg_t)g_settings.mpkey_play) && timeshiftstatus)) // play timeshift
 			{
 				if(mode == mode_iptv)
 				{
-					if(webtv)
+					if(g_Webtv->playstate == CWebTV::PLAY)
+						g_Webtv->continuePlayBack();
+				}
+				else
+				{		
+					if(g_RemoteControl->is_video_started) 
 					{
-						if(g_Webtv->playstate == CWebTV::PAUSE)
-							g_Webtv->continuePlayBack();
-						else if(g_Webtv->playstate == CWebTV::STOPPED)
-							g_Webtv->startPlayBack(g_Webtv->getTunedChannel());
+						CMoviePlayerGui tmpMoviePlayerGui;
+						CMovieInfo cMovieInfo;
+						MI_MOVIE_INFO mfile;
+
+						//
+						char fname[255];
+						int cnt = 10*1000000;
+
+						while (!strlen(rec_filename)) 
+						{
+							usleep(1000);
+							cnt -= 1000;
+
+							if (!cnt)
+								break;
+						}
+
+						if (!strlen(rec_filename))
+							return;
+
+						sprintf(fname, "%s.ts", rec_filename);
+			
+						//
+						cMovieInfo.clearMovieInfo(&mfile);
+
+						mfile.file.Name = fname;
+			
+						// extract channel epg infos
+						CEPGData epgData;
+						event_id_t epgid = 0;
+			
+						if(sectionsd_getActualEPGServiceKey(live_channel_id&0xFFFFFFFFFFFFULL, &epgData))
+							epgid = epgData.eventID;
+
+						if(epgid != 0) 
+						{
+							CShortEPGData epgdata;
+				
+							if(sectionsd_getEPGidShort(epgid, &epgdata)) 
+							{
+								if (!(epgdata.title.empty())) 
+									mfile.epgTitle = epgdata.title;
+					
+								if(!(epgdata.info1.empty()))
+									mfile.epgInfo1 = epgdata.info1;
+					
+								if(!(epgdata.info2.empty()))
+									mfile.epgInfo2 = epgdata.info2;
+							}
+						}
+
+						// epgTitle
+						if(mfile.epgTitle.empty())
+						{
+							std::string Title = mfile.file.getFileName();
+							removeExtension(Title);
+							mfile.epgTitle = Title;
+						}
+
+						mfile.ytid = "timeshift";
+
+						tmpMoviePlayerGui.addToPlaylist(mfile);
+						tmpMoviePlayerGui.exec(NULL, "urlplayback");
 					}
 				}
 			}
-*/
-			else if( (msg == CRCInput::RC_record || msg == CRCInput::RC_stop) /*&& (mode != mode_iptv)*/ ) 
+			else if( (msg == CRCInput::RC_record || msg == CRCInput::RC_stop) ) 
 			{
 				dprintf(DEBUG_NORMAL, "CNeutrinoApp::RealRun\n");
 				
@@ -3182,30 +3171,17 @@ void CNeutrinoApp::RealRun(void)
 				}
 				else
 				{
-/*
-					if(g_settings.satip_allow_satip)
-					{
-						CAVPIDSelectWidget * AVSelectHandler = new CAVPIDSelectWidget();
-						AVSelectHandler->exec(NULL, "");
+					StopSubtitles();
+
+					// audio handler
+					CAudioSelectMenuHandler* audioSelectMenuHandler = new CAudioSelectMenuHandler();
+
+					audioSelectMenuHandler->exec(NULL, "");
 							
-						delete AVSelectHandler;
-						AVSelectHandler = NULL;
-					}
-					else
-*/
-					{
-						StopSubtitles();
+					delete audioSelectMenuHandler;
+					audioSelectMenuHandler = NULL;
 
-						// audio handler
-						CAudioSelectMenuHandler* audioSelectMenuHandler = new CAudioSelectMenuHandler();
-
-						audioSelectMenuHandler->exec(NULL, "");
-							
-						delete audioSelectMenuHandler;
-						audioSelectMenuHandler = NULL;
-
-						StartSubtitles();
-					}
+					StartSubtitles();
 				}
 			}
 			else if( (msg == CRCInput::RC_yellow || msg == CRCInput::RC_multifeed) && (mode != mode_iptv))
@@ -3288,7 +3264,6 @@ void CNeutrinoApp::RealRun(void)
 				CAudioPlayerGui tmpAudioPlayerGui;
 				tmpAudioPlayerGui.exec(NULL, "");
 			}
-			/*
 			else if( msg == (neutrino_msg_t)g_settings.key_inetradio ) 	// internet radio
 			{
 				if(g_InfoViewer->is_visible)
@@ -3296,19 +3271,16 @@ void CNeutrinoApp::RealRun(void)
 	  
 				StopSubtitles();
 
-				CAudioPlayerGui tmpAudioPlayerGui();
-				tmpAudioPlayerGui.exec(NULL, "");
+				g_PluginList->startPlugin("internetradio");
 
 				StartSubtitles();	
-			}
-			*/			
+			}			
 			else if( msg == (neutrino_msg_t)g_settings.key_recordsbrowser )	// recordsbrowser
 			{
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
 
-				CMoviePlayerGui tmpMoviePlayerGui;
-				tmpMoviePlayerGui.exec(NULL, "tsmoviebrowser");
+				g_PluginList->startPlugin("tsplayer");
 
 				if( mode == mode_radio )
 				{
@@ -3324,8 +3296,7 @@ void CNeutrinoApp::RealRun(void)
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
 
-				CMoviePlayerGui tmpMoviePlayerGui;
-				tmpMoviePlayerGui.exec(NULL, "moviebrowser");
+				g_PluginList->startPlugin("movieplayer");
 
 				if( mode == mode_radio )
 				{
@@ -3341,8 +3312,7 @@ void CNeutrinoApp::RealRun(void)
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
 
-				CMoviePlayerGui tmpMoviePlayerGui;
-				tmpMoviePlayerGui.exec(NULL, "fileplayback");
+				g_PluginList->startPlugin("mediaplayer");
 
 				if( mode == mode_radio )
 				{
@@ -3369,8 +3339,7 @@ void CNeutrinoApp::RealRun(void)
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
 
-				CPictureViewerGui tmpPictureViewerGui;
-				tmpPictureViewerGui.exec(NULL, "");
+				g_PluginList->startPlugin("picviewer");
 			}			
 			else if ( CRCInput::isNumeric(msg) && g_RemoteControl->director_mode && (mode != mode_iptv)) 
 			{
@@ -3573,11 +3542,13 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 		{
 			scrambled_timer = 0;
 			
-			//if(videoDecoder->getBlank() && videoDecoder->getPlayState()) 
-			//{
-			//	const char * text = g_Locale->getText(LOCALE_SCRAMBLED_CHANNEL);
-			//	HintBox(LOCALE_MESSAGEBOX_INFO, text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth (text, true) + 10, 5);
-			//}
+/*
+			if(true && (videoDecoder->getBlank() && videoDecoder->getPlayState())) 
+			{
+				const char * text = g_Locale->getText(LOCALE_SCRAMBLED_CHANNEL);
+				HintBox(LOCALE_MESSAGEBOX_INFO, text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth (text, true) + 10, 5);
+			}
+*/
 
 			return messages_return::handled;	
 		}
@@ -3692,10 +3663,6 @@ _repeat:
 		{
 			neutrino_msg_t new_msg;
 
-			/* 
-			* Note: pressing the power button on the box (not the remote control) over 1 second
-			* shuts down the system even if !g_settings.shutdown_real_rcdelay (see below)
-			*/
 			gettimeofday(&standby_pressed_at, NULL);
 
 			if ((mode != mode_standby) && (g_settings.shutdown_real)) 
@@ -3751,10 +3718,6 @@ _repeat:
 		}
 		else if (standby_pressed_at.tv_sec != 0)
 		{
-			/* check if we received a KEY_POWER pressed event before */
-		        /* required for correct handling of KEY_POWER events of  */
-			/* the power button on the dbox (not the remote control) */
-			
 			struct timeval endtime;
 			gettimeofday(&endtime, NULL);
 			time_t seconds = endtime.tv_sec - standby_pressed_at.tv_sec;
@@ -3851,9 +3814,6 @@ _repeat:
 		puts("CNeutrinoApp::handleMsg: executing " NEUTRINO_RECORDING_START_SCRIPT ".");
 		if (system(NEUTRINO_RECORDING_START_SCRIPT) != 0)
 			perror(NEUTRINO_RECORDING_START_SCRIPT " failed");
-		/* set nextRecordingInfo to current event (replace other scheduled recording if available) */
-		/* Note: CTimerd::RecordingInfo is a class!
-		 * => typecast to avoid destructor call */
 
 		if (nextRecordingInfo != NULL)
 			delete[] (unsigned char *) nextRecordingInfo;
@@ -3903,8 +3863,6 @@ _repeat:
 		{
 			if(((CTimerd::RecordingStopInfo*)data)->eventID == nextRecordingInfo->eventID) 
 			{
-				/* Note: CTimerd::RecordingInfo is a class!
-				 * => typecast to avoid destructor call */
 				delete[] (unsigned char *) nextRecordingInfo;
 				nextRecordingInfo=NULL;
 			}
@@ -3983,7 +3941,7 @@ _repeat:
 				{
 					CEPGData epgdata;
 					zAddData += " :\n";
-					//if (g_Sectionsd->getEPGid(timer.epgID, timer.epg_starttime, &epgdata))
+					
 					if (sectionsd_getEPGid(timer.epgID, timer.epg_starttime, &epgdata)) 
 					{
 						zAddData += epgdata.title;
@@ -4154,9 +4112,6 @@ _repeat:
 			else
 				goto skip_message;
 
-			/* use a short timeout of only 5 seconds in case it was only a temporary network problem
-			 in case of STREAM2FILE_STATUS_IDLE we might even have to immediately start the next recording 
-			*/
 			MessageBox(LOCALE_MESSAGEBOX_INFO, msgbody, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO, 450, 5);
 
 skip_message:
@@ -4165,11 +4120,7 @@ skip_message:
 		
 		if ((* (stream2file_status2_t *) data).status != STREAM2FILE_STATUS_IDLE) 
 		{
-			/*
-			 * note that changeNotify does not distinguish between LOCALE_MAINMENU_RECORDING_START and LOCALE_MAINMENU_RECORDING_STOP
-			 * instead it checks the state of the variable recordingstatus
-			 */
-			/* restart recording */
+			// restart recording
 			//FIXME doGuiRecord((*(stream2file_status2_t *) data).dir);
 			//changeNotify(LOCALE_MAINMENU_RECORDING_START, data);
 		}
