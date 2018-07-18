@@ -929,8 +929,14 @@ std::string CTimerList::convertTimerRepeat2String(const CTimerd::CTimerEventRepe
 
 std::string CTimerList::convertChannelId2String(const t_channel_id id) // UTF-8
 {
-	//CZapitClient Zapit;
-	std::string name = g_Zapit->getChannelName(id); // UTF-8
+	
+	std::string name;
+
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		name = g_Webtv->getChannelName(id);
+	else
+		name = g_Zapit->getChannelName(id); // UTF-8
+
 	if (name.empty())
 		name = g_Locale->getText(LOCALE_TIMERLIST_PROGRAM_UNKNOWN);
 

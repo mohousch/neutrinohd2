@@ -520,6 +520,28 @@ void CWebTV::getPIDS(CZapitClient::responseGetPIDs& pids)
 	otherPIDs.selected_apid = 0;
 	otherPIDs.privatepid = 0;
 }
+
+const std::string& CWebTV::getChannelName(t_channel_id id)
+{
+	for(unsigned int i = 0; i < channels.size(); i++)
+	{
+		if(channels[i]->id == id)
+			return channels[i]->title;
+	}
+
+	return std::string("");
+}
+
+const std::string& CWebTV::getChannelURL(t_channel_id id)
+{
+	for(unsigned int i = 0; i < channels.size(); i++)
+	{
+		if(channels[i]->id == id)
+			return channels[i]->url;
+	}
+
+	return std::string("");
+}
 //
 
 bool CWebTV::startPlayBack(int pos)

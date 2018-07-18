@@ -75,9 +75,11 @@ bool cRecord::Open()
 	return true;
 }
 
-bool cRecord::Start(int fd, unsigned short vpid, unsigned short * apids, int numpids, CFrontend *fe)
+bool cRecord::Start(int fd, unsigned short vpid, unsigned short * apids, int numpids, CFrontend *fe, const std::string& uri)
 {
 	dprintf(DEBUG_INFO, "%s %s\n", FILENAME, __FUNCTION__);
+
+	url = uri;
 	
 	int i;
 
@@ -158,12 +160,6 @@ void cRecord::RecordThread()
 
 		sprintf(buf, "%s.ts", rec_filename);
 
-		std::string ChannelURL;
-		
-		if(g_Webtv)
-			ChannelURL = g_Webtv->getLiveChannelUrl();
-
-		//
 		CURL * curl_handle = curl_easy_init();
 
 		fp = fopen(buf, "wb");
@@ -173,7 +169,7 @@ void cRecord::RecordThread()
 			return;
 		}
 
-		curl_easy_setopt(curl_handle, CURLOPT_URL, ChannelURL.c_str());
+		curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
 		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, NULL);
 		curl_easy_setopt(curl_handle, CURLOPT_FILE, fp);
 		curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);

@@ -86,7 +86,7 @@ static stream2file_status_t exit_flag = STREAM2FILE_STATUS_IDLE;
 
 char rec_filename[FILENAMEBUFFERSIZE];
 
-stream2file_error_msg_t start_recording(const char * const filename, const char * const info, const unsigned short vpid, const unsigned short * const pids, const unsigned int numpids)
+stream2file_error_msg_t start_recording(const char * const filename, const char * const info, const unsigned short vpid, const unsigned short * const pids, const unsigned int numpids, std::string uri)
 {
 	int fd;
 	char buf[FILENAMEBUFFERSIZE];
@@ -144,16 +144,29 @@ stream2file_error_msg_t start_recording(const char * const filename, const char 
 	record->Open();
 
 	// start_recording
-#if defined (PLATFORM_COOLSTREAM)
-	if(!record->Start(fd, (unsigned short ) vpid, (unsigned short *) pids, numpids, 0))
-#else	  
-	if(!record->Start(fd, (unsigned short ) vpid, (unsigned short *) pids, numpids, record_fe)) 
-#endif	  
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
 	{
-		record->Stop();
-		delete record;
-		record = NULL;
-		return STREAM2FILE_INVALID_DIRECTORY;
+		if(!record->Start(fd, (unsigned short ) vpid, (unsigned short *) pids, numpids, record_fe, uri)) 
+		{
+			record->Stop();
+			delete record;
+			record = NULL;
+			return STREAM2FILE_INVALID_DIRECTORY;
+		}
+	}
+	else
+	{
+#if defined (PLATFORM_COOLSTREAM)
+		if(!record->Start(fd, (unsigned short ) vpid, (unsigned short *) pids, numpids, 0))
+#else	  
+		if(!record->Start(fd, (unsigned short ) vpid, (unsigned short *) pids, numpids, record_fe)) 
+#endif	  
+		{
+			record->Stop();
+			delete record;
+			record = NULL;
+			return STREAM2FILE_INVALID_DIRECTORY;
+		}
 	}
 	
 	// take screenshot if !standby

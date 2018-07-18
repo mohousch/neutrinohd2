@@ -465,7 +465,7 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 
 	std::string tmpstring;
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		tmpstring = g_Webtv->getLiveChannelName();
+		tmpstring = g_Webtv->getChannelName(channel_id);
 	else
 		tmpstring = g_Zapit->getChannelName(channel_id);
 
@@ -627,7 +627,7 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 	pos = strlen(filename);
 
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		ext_channel_name = g_Webtv->getLiveChannelName();
+		ext_channel_name = g_Webtv->getChannelName(channel_id);
 	else
 		ext_channel_name = g_Zapit->getChannelName(channel_id);
 
@@ -731,7 +731,8 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 			      getMovieInfoString(CMD_VCR_RECORD, channel_id, epgid, epgTitle, apid_list, epg_time).c_str(), 
 			      si.vpid, 
 			      pids, 
-			      numpids);
+			      numpids,
+			      g_Webtv->getChannelURL(channel_id));
 
 	if (error_msg == STREAM2FILE_OK) 
 	{
@@ -786,7 +787,7 @@ bool CVCRControl::Screenshot(const t_channel_id channel_id, char * fname, bool m
 		pos = strlen(filename);
 
 		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-			channel_name = g_Webtv->getLiveChannelName();
+			channel_name = g_Webtv->getChannelName(channel_id);
 		else
 			channel_name = g_Zapit->getChannelName(channel_id);
 
@@ -895,7 +896,7 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 	std::string tmpstring;
 
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		tmpstring = g_Webtv->getLiveChannelName();
+		tmpstring = g_Webtv->getChannelName(channel_id);
 	else
 		tmpstring = g_Zapit->getChannelName(channel_id);
 

@@ -50,6 +50,7 @@ neutrino_LDADD = \
 	gui/movieinfo.o \
 	gui/moviebrowser.o \
 	gui/pictureviewer.o \
+	gui/audioplayer.o \
 	driver/audiodec/libneutrino_driver_audiodec.a \
 	gui/bedit/bouqueteditor_bouquets.o \
 	gui/libneutrino_gui2.a \
