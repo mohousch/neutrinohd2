@@ -222,7 +222,7 @@ int genpsi(int fd2)
 	
 	//-- for each audio stream, write row with desc. --
 	ofs += SIZE_ENIGMA_TAB_ROW;  
-	for (i=0; i<avPids.nba; i++)
+	for (i = 0; i < avPids.nba; i++)
 	{
 		pkt[ofs]   = EN_TYPE_AUDIO;
 		pkt[ofs+1] = 0x03;
@@ -243,7 +243,7 @@ int genpsi(int fd2)
 	calc_crc32psi(&pkt[data_len], &pkt[OFS_HDR_2], data_len-OFS_HDR_2 );
 	
 	//-- write TS packet --
-	/*bytes +=*/ write(fd2, pkt, SIZE_TS_PKT);
+	write(fd2, pkt, SIZE_TS_PKT);
 	
 	//-- (II) build PAT --
 	data_len = COPY_TEMPLATE(pkt, pkt_pat);
@@ -252,7 +252,7 @@ int genpsi(int fd2)
 	calc_crc32psi(&pkt[data_len], &pkt[OFS_HDR_2], data_len-OFS_HDR_2 );
 	
 	//-- write TS packet --
-	/*bytes +=*/ write(fd2, pkt, SIZE_TS_PKT);
+	write(fd2, pkt, SIZE_TS_PKT);
 
 	//-- (III) build PMT --
 	data_len = COPY_TEMPLATE(pkt, pkt_pmt);
@@ -291,7 +291,7 @@ int genpsi(int fd2)
 	calc_crc32psi(&pkt[data_len], &pkt[OFS_HDR_2], data_len-OFS_HDR_2 );
 	
 	//-- write TS packet --
-	/*bytes +=*/ write(fd2, pkt, SIZE_TS_PKT);
+	write(fd2, pkt, SIZE_TS_PKT);
 	
 	//-- finish --
 	avPids.vpid = 0;

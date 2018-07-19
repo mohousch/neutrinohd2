@@ -109,6 +109,7 @@ void CNKMovies::showNKMoviesMenu()
 
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
+	moviesMenu->addKey(CRCInput::RC_record, this, CRCInput::getSpecialKeyName(CRCInput::RC_record));
 
 	moviesMenu->exec(NULL, "");
 	//moviesMenu->hide();
@@ -130,6 +131,26 @@ void CNKMovies::playMovie(void)
 void CNKMovies::showMovieInfo(void)
 {
 	m_movieInfo.showMovieInfo(m_vMovieInfo[moviesMenu->getSelected()]);
+}
+
+void CNKMovies::recordMovie(void)
+{
+	std::string infoString;
+
+	MI_MOVIE_INFO g_movieInfo;
+	m_movieInfo.clearMovieInfo(&g_movieInfo); // refresh structure
+		
+	g_movieInfo.epgTitle = m_vMovieInfo[moviesMenu->getSelected()].epgTitle;
+	//g_movieInfo.epgInfo1 = "";
+	g_movieInfo.epgInfo2 = m_vMovieInfo[moviesMenu->getSelected()].epgInfo2;
+	g_movieInfo.tfile = m_vMovieInfo[moviesMenu->getSelected()].tfile;
+	g_movieInfo.ytdate = m_vMovieInfo[moviesMenu->getSelected()].ytdate;
+	g_movieInfo.ytid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
+	g_movieInfo.file.Name = m_vMovieInfo[moviesMenu->getSelected()].file.Name;
+
+	m_movieInfo.encodeMovieInfoXml(&infoString, &g_movieInfo);
+
+	::start_file_recording(m_vMovieInfo[moviesMenu->getSelected()].epgTitle.c_str(), infoString.c_str(), m_vMovieInfo[moviesMenu->getSelected()].file.Name.c_str());
 }
 
 void CNKMovies::showNKCategoriesMenu()
@@ -212,6 +233,11 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		showNKCategoriesMenu();
 
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "RC_record")
+	{
+		recordMovie();
 		return menu_return::RETURN_REPAINT;
 	}
 

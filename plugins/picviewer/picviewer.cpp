@@ -1,5 +1,5 @@
 /*
-  $Id: test.cpp 2018/07/10 mohousch Exp $
+  $Id: picviewer.cpp 2018/07/10 mohousch Exp $
 
   License: GPL
 

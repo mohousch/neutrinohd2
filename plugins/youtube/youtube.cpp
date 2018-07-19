@@ -164,6 +164,7 @@ void CYTBrowser::showYTMoviesMenu(bool reload)
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
 	moviesMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
+	moviesMenu->addKey(CRCInput::RC_record, this, CRCInput::getSpecialKeyName(CRCInput::RC_record));
 
 	moviesMenu->exec(NULL, "");
 	//moviesMenu->hide();
@@ -206,6 +207,11 @@ void CYTBrowser::showMovieInfo(void)
 	m_movieInfo.showMovieInfo(m_vMovieInfo[moviesMenu->getSelected()]);
 }
 
+void CYTBrowser::recordMovie(void)
+{
+	::start_file_recording(m_vMovieInfo[moviesMenu->getSelected()].epgTitle.c_str(), m_vMovieInfo[moviesMenu->getSelected()].epgInfo2.c_str(), m_vMovieInfo[moviesMenu->getSelected()].file.Name.c_str());
+}
+
 int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CYTBrowser::exec: actionKey:%s\n", actionKey.c_str());
@@ -243,8 +249,12 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		m_settings.ytmode = cYTFeedParser::RELATED;
-
 		showYTMoviesMenu();
+	}
+	else if(actionKey == "RC_record")
+	{
+		recordMovie();
+		return menu_return::RETURN_REPAINT;
 	}
 	
 	return menu_return::RETURN_EXIT;

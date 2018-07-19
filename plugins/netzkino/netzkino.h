@@ -57,6 +57,7 @@ class CNKMovies : public CMenuTarget
 		void hide();
 
 		void showNKMoviesMenu();
+		void recordMovie(void);
 };
 
 #endif //__NK__

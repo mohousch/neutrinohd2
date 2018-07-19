@@ -58,6 +58,7 @@ class CYTBrowser : public CMenuTarget
 		int showYTMenu(void);
 		void playMovie(void);
 		void showMovieInfo(void);
+		void recordMovie(void);
 		
 		//
 		ClistBox* moviesMenu;

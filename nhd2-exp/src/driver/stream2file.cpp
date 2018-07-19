@@ -93,13 +93,23 @@ stream2file_error_msg_t start_recording(const char * const filename, const char 
 	struct statfs s;
 
 	// rip rec_filename
-	if(autoshift || CNeutrinoApp::getInstance()->timeshiftstatus)
-		sprintf(rec_filename, "%s_temp", filename);
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+	{
+		if(autoshift || CNeutrinoApp::getInstance()->timeshiftstatus)
+			sprintf(rec_filename, "%s_temp.ts", filename);
+		else
+			sprintf(rec_filename, "%s.ts", filename);
+	}
 	else
-		sprintf(rec_filename, "%s", filename);
+	{
+		if(autoshift || CNeutrinoApp::getInstance()->timeshiftstatus)
+			sprintf(rec_filename, "%s_temp", filename);
+		else
+			sprintf(rec_filename, "%s", filename);
+	}
 
 	// write stream information (should wakeup the disk from standby, too)
-	sprintf(buf, "%s.xml", rec_filename);
+	sprintf(buf, "%s.xml", filename);
 
 	char * dir = strdup(buf);
 	int ret = statfs(dirname(dir), &s);
@@ -123,9 +133,9 @@ stream2file_error_msg_t start_recording(const char * const filename, const char 
 
 	exit_flag = STREAM2FILE_STATUS_RUNNING;
 
-	sprintf(buf, "%s.ts", rec_filename);
+	sprintf(buf, "%s.ts", filename);
 
-	dprintf(DEBUG_NORMAL, "[Stream2File] Record start: file %s vpid 0x%x apid 0x%x\n", buf, vpid, pids[0]);
+	//dprintf(DEBUG_NORMAL, "[Stream2File] Record start: file %s vpid 0x%x apid 0x%x\n", buf, vpid, pids[0]);
 
 	fd = open(buf, O_CREAT | O_RDWR | O_LARGEFILE | O_TRUNC , S_IRWXO | S_IRWXG | S_IRWXU);
 	if(fd < 0) 
@@ -182,6 +192,102 @@ stream2file_error_msg_t start_recording(const char * const filename, const char 
 		// say "cheers :)"
 		if(!preview_ok)
 			CVCRControl::getInstance()->Screenshot(0, fname, false);
+	}
+
+	return STREAM2FILE_OK;
+}
+
+stream2file_error_msg_t start_file_recording(const char * const filename, const char* const info, std::string uri)
+{
+	int fd;
+	char buf[FILENAMEBUFFERSIZE];
+	struct statfs s;
+
+	//
+	char file[512];
+	unsigned int pos;
+
+	std::string Directory = g_settings.network_nfs_recordingdir;
+
+	pos = Directory.size();
+	strcpy(file, Directory.c_str());
+
+	if ((pos == 0) || (file[pos - 1] != '/')) 
+	{
+		file[pos] = '/';
+		pos++;
+		file[pos] = '\0';
+	}
+
+	pos = strlen(file);
+	
+	if (filename != NULL)
+	{
+		strcpy(&(file[pos]), filename);
+		char * p_act = &(file[pos]);
+		do {
+			p_act += strcspn(p_act, "/ \"%&-\t`'�!,:;");
+			if (*p_act) 
+			{
+				*p_act++ = '_';
+			}
+		} while (*p_act);
+	}
+
+	// write stream information (should wakeup the disk from standby, too)
+	sprintf(buf, "%s.xml", file);
+
+	char * dir = strdup(buf);
+	int ret = statfs(dirname(dir), &s);
+	free(dir);
+
+	if((ret != 0) || (s.f_type == 0x72b6) || (s.f_type == 0x24051905)) 
+	{
+		return STREAM2FILE_INVALID_DIRECTORY;
+	}
+
+	if ((fd = open(buf, O_SYNC | O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) >= 0) 
+	{
+		write(fd, info, strlen(info));
+		fdatasync(fd);
+		close(fd);
+	} 
+	else 
+	{
+		return STREAM2FILE_INVALID_DIRECTORY;
+	}
+
+	exit_flag = STREAM2FILE_STATUS_RUNNING;
+
+	//TODO: get extension from uri
+	std::string ext =  getFileExt(uri);
+	printf("ext:%s\n", ext.c_str());
+	sprintf(buf, "%s.%s", file, ext.c_str());
+	sprintf(rec_filename, "%s.%s", file, ext.c_str());
+
+	dprintf(DEBUG_NORMAL, "[Stream2File] Record start: filename: %s\n", rec_filename);
+
+	fd = open(buf, O_CREAT | O_RDWR | O_LARGEFILE | O_TRUNC , S_IRWXO | S_IRWXG | S_IRWXU);
+	if(fd < 0) 
+	{
+		perror(buf);
+		return STREAM2FILE_INVALID_DIRECTORY;
+	}
+
+	// init record
+	if(!record)
+		record = new cRecord();
+	
+	// open
+	record->Open();
+
+	// start_recording
+	if(!record->Start(fd, (unsigned short ) 0, (unsigned short *) 0, 0, NULL, uri)) 
+	{
+			record->Stop();
+			delete record;
+			record = NULL;
+			return STREAM2FILE_INVALID_DIRECTORY;
 	}
 
 	return STREAM2FILE_OK;

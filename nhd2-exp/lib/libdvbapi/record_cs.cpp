@@ -152,20 +152,17 @@ void cRecord::RecordThread()
 #define BUFSIZE (1 << 20) /* 1024 kB */
 #define READSIZE (BUFSIZE / 16)
 
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+	if (!url.empty())
 	{
 #define FILENAMEBUFFERSIZE 1024
-		char buf[FILENAMEBUFFERSIZE];
 		extern char rec_filename[FILENAMEBUFFERSIZE];
-
-		sprintf(buf, "%s.ts", rec_filename);
 
 		CURL * curl_handle = curl_easy_init();
 
-		fp = fopen(buf, "wb");
+		fp = fopen(rec_filename, "wb");
 		if (fp == NULL) 
 		{
-			perror(buf);
+			perror(rec_filename);
 			return;
 		}
 

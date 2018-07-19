@@ -2313,81 +2313,72 @@ bool CMovieBrowser::onButtonPressMovieInfoList(neutrino_msg_t msg)
 void CMovieBrowser::onDeleteFile(MI_MOVIE_INFO& movieSelectionHandler)
 {
 	dprintf(DEBUG_INFO, "CMovieBrowser::onDeleteFile:");
-	
-	int test = movieSelectionHandler.file.Name.find(".ts");
-	if(test == -1) 
-	{ 
-		// not a TS file, return!!!!! 
-		dprintf(DEBUG_NORMAL,  "show_ts_info: not a TS file ");
-	}
-	else
+
+	std::string msg = g_Locale->getText(LOCALE_FILEBROWSER_DODELETE1);
+	msg += "\r\n ";
+	if (movieSelectionHandler.file.Name.length() > 40)
 	{
-		std::string msg = g_Locale->getText(LOCALE_FILEBROWSER_DODELETE1);
-		msg += "\r\n ";
-		if (movieSelectionHandler.file.Name.length() > 40)
-		{
 			msg += movieSelectionHandler.file.Name.substr(0, 40);
 			msg += "...";
-		}
-		else
-			msg += movieSelectionHandler.file.Name;
+	}
+	else
+		msg += movieSelectionHandler.file.Name;
 			
-		msg += "\r\n ";
-		msg += g_Locale->getText(LOCALE_FILEBROWSER_DODELETE2);
-		if (MessageBox(LOCALE_FILEBROWSER_DELETE, msg, CMessageBox::mbrNo, CMessageBox::mbYes|CMessageBox::mbNo) == CMessageBox::mbrYes)
-		{
-			delFile(movieSelectionHandler.file);
+	msg += "\r\n ";
+	msg += g_Locale->getText(LOCALE_FILEBROWSER_DODELETE2);
+	if (MessageBox(LOCALE_FILEBROWSER_DELETE, msg, CMessageBox::mbrNo, CMessageBox::mbYes|CMessageBox::mbNo) == CMessageBox::mbrYes)
+	{
+		delFile(movieSelectionHandler.file);
 			
-                        int i = 1;
-                        char newpath[1024];
-                        do {
-                                sprintf(newpath, "%s.%03d", movieSelectionHandler.file.Name.c_str(), i);
-                                if(access(newpath, R_OK)) 
-				{
-                                        break;
-                                } 
-                                else 
-				{
-                                        unlink(newpath);
-					dprintf(DEBUG_NORMAL, "  delete file: %s\r\n", newpath);
-                                }
-                                i++;
-                        } while(1);
+                int i = 1;
+                char newpath[1024];
+                do {
+			sprintf(newpath, "%s.%03d", movieSelectionHandler.file.Name.c_str(), i);
+			if(access(newpath, R_OK)) 
+			{
+				break;
+                        } 
+                        else 
+			{
+				unlink(newpath);
+				dprintf(DEBUG_NORMAL, "  delete file: %s\r\n", newpath);
+                        }
+                        i++;
+                } while(1);
 			
-                        std::string fname = movieSelectionHandler.file.Name;
+                std::string fname = movieSelectionHandler.file.Name;
                        
-			int ext_pos = 0;
-			ext_pos = fname.rfind('.');
-			if( ext_pos > 0)
-			{
-				std::string extension;
-				extension = fname.substr(ext_pos + 1, fname.length() - ext_pos);
-				extension = "." + extension;
-				strReplace(fname, extension.c_str(), ".jpg");
-			}
-			
-                        unlink(fname.c_str());
-
-			CFile file_xml  = movieSelectionHandler.file; 
-			if(m_movieInfo.convertTs2XmlName(&file_xml.Name) == true)  
-			{
-				delFile(file_xml);
-	    		}
-	    	
-			m_vMovieInfo.erase( (std::vector<MI_MOVIE_INFO>::iterator)&movieSelectionHandler);
-			dprintf(DEBUG_NORMAL, "List size: %d\n", m_vMovieInfo.size());
-			//if(m_vMovieInfo.size() == 0) fileInfoStale();
-			//if(m_vMovieInfo.size() == 0) onSetGUIWindow(m_settings.gui);
-			updateSerienames();
-			refreshBrowserList();
-			refreshLastPlayList();	
-			refreshLastRecordList();	
-			refreshMovieInfo();
-	    		
-			//loadMovies(); // //TODO we might remove the handle from the handle list only, to avoid reload .....
-			refresh();
+		int ext_pos = 0;
+		ext_pos = fname.rfind('.');
+		if( ext_pos > 0)
+		{
+			std::string extension;
+			extension = fname.substr(ext_pos + 1, fname.length() - ext_pos);
+			extension = "." + extension;
+			strReplace(fname, extension.c_str(), ".jpg");
 		}
-	} 
+			
+                unlink(fname.c_str());
+
+		CFile file_xml  = movieSelectionHandler.file; 
+		if(m_movieInfo.convertTs2XmlName(&file_xml.Name) == true)  
+		{
+			delFile(file_xml);
+	    	}
+	    	
+		m_vMovieInfo.erase( (std::vector<MI_MOVIE_INFO>::iterator)&movieSelectionHandler);
+		dprintf(DEBUG_NORMAL, "List size: %d\n", m_vMovieInfo.size());
+		//if(m_vMovieInfo.size() == 0) fileInfoStale();
+		//if(m_vMovieInfo.size() == 0) onSetGUIWindow(m_settings.gui);
+		updateSerienames();
+		refreshBrowserList();
+		refreshLastPlayList();	
+		refreshLastRecordList();	
+		refreshMovieInfo();
+	    		
+		//loadMovies(); // //TODO we might remove the handle from the handle list only, to avoid reload .....
+		refresh();
+	}
 }
 
 void CMovieBrowser::onSetGUIWindow(MB_GUI gui)

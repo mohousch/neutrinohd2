@@ -1,5 +1,5 @@
 /*
-  $Id: inrternetradio.cpp 2018/07/10 mohousch Exp $
+  $Id: internetradio.cpp 2018/07/10 mohousch Exp $
 
   License: GPL
 
