@@ -792,11 +792,16 @@ int CMenuOptionLanguageChooser::exec(CMenuTarget*)
 	
 	if(observ)
 		wantsRepaint = observ->changeNotify(LOCALE_LANGUAGESETUP_SELECT, optionValue);
-	
+
+	return menu_return::RETURN_EXIT;
+
+	//FIXME:
+/*	
 	if ( wantsRepaint )
 		return menu_return::RETURN_REPAINT;
 	else
 		return menu_return::RETURN_NONE;
+*/
 }
 
 int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)

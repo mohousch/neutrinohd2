@@ -63,6 +63,13 @@ static inline t_channel_id create_channel_id(const char *url = NULL)
 
 class CWebTV : public CMenuTarget
 {
+	public:
+		enum result_
+		{
+			close  = 0,
+			resume = 1,
+		} result;
+
 	private:
 		struct webtv_channels {
 			std::string title;
@@ -92,6 +99,9 @@ class CWebTV : public CMenuTarget
 
 		void processPlaylistUrl(const char *url, const char *name, const char * description) ;
 		void addUrl2Playlist(const char * url, const char *name, const char * description, t_channel_id id = 0);
+
+	protected:
+		virtual CWebTV::result_ itemSelected();
 		
 	public:
 		enum state

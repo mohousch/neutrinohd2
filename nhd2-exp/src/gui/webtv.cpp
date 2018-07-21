@@ -939,6 +939,24 @@ void CWebTV::hide()
 	CFrameBuffer::getInstance()->blit();
 }
 
+CWebTV::result_ CWebTV::itemSelected()
+{
+	if(webTVlistMenu->getSelected() != tuned)
+	{
+		stopPlayBack();
+		startPlayBack(webTVlistMenu->getSelected());
+		tuned = webTVlistMenu->getSelected();
+
+		//infoviewer
+		g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
+
+		// kill infobar
+		g_InfoViewer->killTitle();
+	}
+	
+	return resume;
+}
+
 int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CWebTV::exec: actionKey: %s\n", actionKey.c_str());
@@ -948,6 +966,7 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	if(actionKey == "zapit")
 	{
+/*
 		if(webTVlistMenu->getSelected() != tuned)
 		{
 			stopPlayBack();
@@ -962,6 +981,11 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 		}
 
 		return menu_return::RETURN_EXIT;
+*/
+		if(itemSelected() == close)
+			return menu_return::RETURN_EXIT_ALL;
+		else
+			return menu_return::RETURN_EXIT;
 	}
 	else if(actionKey == "RC_red")
 	{
