@@ -46,6 +46,18 @@ extern "C" {
 }
 #include <string.h>
 
+/*
+struct webtv_channels {
+			std::string title;
+			std::string url;
+			std::string description;
+			t_channel_id id;
+			CChannelEvent currentEvent, nextEvent;
+};
+		
+std::vector<webtv_channels *> channels;
+*/
+
 static inline t_channel_id create_channel_id(const char *url = NULL)
 {
 	if (url) 
@@ -70,7 +82,8 @@ class CWebTV : public CMenuTarget
 			resume = 1,
 		} result;
 
-	private:
+	public:
+
 		struct webtv_channels {
 			std::string title;
 			std::string url;
@@ -81,10 +94,11 @@ class CWebTV : public CMenuTarget
 		
 		std::vector<webtv_channels *> channels;
 		
+	private:
 		// bouquets
 		std::string title;
 
-		ClistBox* webTVlistMenu;
+		//ClistBox* webTVlistMenu;
 		CMenuItem* item;
 
 		int tuned;
@@ -110,6 +124,8 @@ class CWebTV : public CMenuTarget
 			PLAY        =  1,
 			PAUSE       =  2
 		};
+
+		ClistBox* webTVlistMenu;
 		
 		unsigned int playstate;
 		
@@ -149,6 +165,18 @@ class CWebTV : public CMenuTarget
 		//
 		CZapitClient::CCurrentServiceInfo getServiceInfo();
 		void getPIDS(CZapitClient::responseGetPIDs& pids);
+};
+
+class CWebTVChooser : public CWebTV
+{
+	private:
+		char *selected_item;
+		
+	protected:
+		CWebTV::result_ itemSelected();
+
+	public:
+		CWebTVChooser(char* channelname);
 };
 
 #endif

@@ -176,7 +176,9 @@ void * CAudioPlayer::PlayThread( void * /*arg*/)
 		getInstance()->m_played_time = position/1000;	// in sec
 	}while(getInstance()->state != CBaseDec::STOP_REQ);
 	
-	playback->Close();
+	if(playback->playing)
+		playback->Close();
+
 	getInstance()->state = CBaseDec::STOP;
 	
 	pthread_exit(0);

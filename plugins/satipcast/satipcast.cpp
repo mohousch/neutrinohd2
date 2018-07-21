@@ -98,7 +98,7 @@ int CSatIPSetup::exec(CMenuTarget* parent, const std::string& actionKey)
 void CSatIPSetup::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CSatIPSetup::showMenu\n");
-#if 0
+
 	int rec = CNeutrinoApp::getInstance()->recordingstatus;
 	int allow_ip = g_settings.satip_allow_satip;
 	
@@ -117,8 +117,6 @@ void CSatIPSetup::showMenu()
 	// items
 	satIP.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
-/*
-
 	// allow satip on/off
 	CSatIPNotifier * satIPNotifier = new CSatIPNotifier;
 
@@ -136,15 +134,13 @@ void CSatIPSetup::showMenu()
 
 	if (rec)
 		HintBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SATIPCAST_REC_HINT, HINTBOX_WIDTH, 6);
-*/
 	
 	satIP.exec(NULL, "");
 	satIP.hide();
 
-	//delete satip_IP;
-//	satip_IP = NULL;
-	//delete satIPNotifier;
-#endif
+	delete satip_IP;
+	satip_IP = NULL;
+	delete satIPNotifier;
 }
 
 // satipcast notifier

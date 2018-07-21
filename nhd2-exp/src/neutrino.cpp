@@ -792,12 +792,12 @@ int CNeutrinoApp::loadSetup(const char * fname)
         //-------------------------------------------
         // this is as the current neutrino usermen
         const char * usermenu_default[SNeutrinoSettings::BUTTON_MAX] = {
-                "ITEM_TIMERLIST, ITEM_PLUGIN, ITEM_VTXT, ITEM_OPKG, ITEM_REMOTE",   	// BLUE
+                "1, 2, 3, 4, 5",   	// BLUE
 #if defined (ENABLE_FUNCTIONKEYS)
-		"ITEM_TIMERLIST",				// F1
-		"ITEM_TIMERLIST",				// F2
-		"ITEM_TIMERLIST",				// F3
-		"ITEM_TIMERLIST",				// F4
+		"0",				// F1
+		"0",				// F2
+		"0",				// F3
+		"0",				// F4
 #endif
         };
         char txt1[81];
@@ -968,9 +968,10 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.lcd_ledcolor = configfile.getInt32("lcd_ledcolor", 1);
 	// END VFD
 
-	// satip
+	// online epg
+	g_settings.epg_enable_online_epg = configfile.getBool("epg_enable_online_epg", false);
+
 /*
-	g_settings.satip_allow_satip = configfile.getBool("satip_allow_satip", false);
 	g_settings.satip_serverbox_ip = configfile.getString("satip_serverbox_ip", "192.168.0.12");
 	g_settings.satip_serverbox_type = configfile.getInt32("satip_serverbox_type", DVB_C);
 	g_settings.satip_serverbox_gui = configfile.getInt32("satip_serverbox_gui", SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2);
@@ -1441,9 +1442,9 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32("lcd_ledcolor", g_settings.lcd_ledcolor);
 	// END VFD
 
-	// satip
+	// online epg
+	configfile.setBool("epg_enable_online_epg", g_settings.epg_enable_online_epg);
 /*
-	configfile.setBool("satip_allow_satip", g_settings.satip_allow_satip);
 	configfile.setString("satip_serverbox_ip", g_settings.satip_serverbox_ip);
 	configfile.setInt32("satip_serverbox_type", g_settings.satip_serverbox_type);
 	configfile.setInt32("satip_serverbox_gui", g_settings.satip_serverbox_gui);

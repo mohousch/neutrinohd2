@@ -107,11 +107,23 @@ class CEPGlangSelectNotifier : public CChangeObserver
 		bool changeNotify(const neutrino_locale_t, void * /*data*/);
 };
 
+// satip notifier
+class COnlineEPGNotifier : public CChangeObserver
+{
+	private:
+		CMenuForwarder* item1;
+		CMenuOptionChooser* item2;
+		CMenuOptionChooser* item3;
+        public:
+		COnlineEPGNotifier(CMenuForwarder* m1, CMenuOptionChooser* m2, CMenuOptionChooser* m3);
+                bool changeNotify(/*const std::string&*/const neutrino_locale_t, void *);
+};
+
 // epg config notifier
 class CEPGConfigNotifier : public CChangeObserver
 {
         public:
-                bool changeNotify(const neutrino_locale_t, void * );
+                bool changeNotify(const neutrino_locale_t, void *);
 };
 
 // epg settings

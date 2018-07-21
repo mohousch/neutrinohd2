@@ -894,24 +894,56 @@ void CEPGSettings::showMenu()
 	for(int i = 0; i < 3; i++) 
 		miscSettingsEPG.addItem(epglangSelect[i]);
 
-	// epg from http
+	// online EPG
 	miscSettingsEPG.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
 	// server box ip
 	CIPInput * epg_IP = new CIPInput(LOCALE_STREAMINGMENU_SERVER_IP, g_settings.epg_serverbox_ip);
-	miscSettingsEPG.addItem(new CMenuForwarder("Server Box IP", true, g_settings.epg_serverbox_ip, epg_IP, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++)));
+	CMenuForwarder* o1 = new CMenuForwarder("Server Box IP", g_settings.epg_enable_online_epg, g_settings.epg_serverbox_ip, epg_IP, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++));
 
 	// server gui (neutrino/neutrinohd/enigma2)
-	miscSettingsEPG.addItem(new CMenuOptionChooser("Server Box GUI", &g_settings.epg_serverbox_gui, EPG_SERVERBOX_GUI_OPTIONS, EPG_SERVERBOX_GUI_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++), "", true ));
+	CMenuOptionChooser* o2 = new CMenuOptionChooser("Server Box GUI", &g_settings.epg_serverbox_gui, EPG_SERVERBOX_GUI_OPTIONS, EPG_SERVERBOX_GUI_OPTION_COUNT, g_settings.epg_enable_online_epg, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++));
 
 	// server box type (sat/cable/terrestrial)
-	miscSettingsEPG.addItem(new CMenuOptionChooser("Server Box type", &g_settings.epg_serverbox_type, EPG_SERVERBOX_TYPE_OPTIONS, EPG_SERVERBOX_TYPE_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++), "", true ));
+	CMenuOptionChooser* o3 = new CMenuOptionChooser("Server Box type", &g_settings.epg_serverbox_type, EPG_SERVERBOX_TYPE_OPTIONS, EPG_SERVERBOX_TYPE_OPTION_COUNT, g_settings.epg_enable_online_epg, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++));
+
+	// online EPG on/off
+	COnlineEPGNotifier* onlineEPGNotifier = new COnlineEPGNotifier(o1, o2, o3);
+
+	miscSettingsEPG.addItem(new CMenuOptionChooser("Online EPG", &g_settings.epg_enable_online_epg, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, onlineEPGNotifier, CRCInput::convertDigitToKey(shortcutMiscEpg++)));
+
+	miscSettingsEPG.addItem(o1);
+	miscSettingsEPG.addItem(o2);
+	miscSettingsEPG.addItem(o3);
 	
 	miscSettingsEPG.exec(NULL, "");
 	miscSettingsEPG.hide();
 
 	delete epg_IP;
 	epg_IP = NULL;
+	delete onlineEPGNotifier;
+	onlineEPGNotifier = NULL;
+}
+
+// satipcast notifier
+COnlineEPGNotifier::COnlineEPGNotifier(CMenuForwarder* m1, CMenuOptionChooser* m2, CMenuOptionChooser* m3)
+{
+	item1 = m1;
+	item2 = m2;
+	item3 = m3;
+}
+
+bool COnlineEPGNotifier::changeNotify(const neutrino_locale_t, void *)
+{
+	dprintf(DEBUG_NORMAL, "COnlineEPGNotifier::changeNotify\n");
+
+	{
+		item1->setActive(g_settings.epg_enable_online_epg);
+		item2->setActive(g_settings.epg_enable_online_epg);
+		item3->setActive(g_settings.epg_enable_online_epg);
+	}
+	
+        return true;
 }
 
 // epg language select notifier

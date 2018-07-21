@@ -75,7 +75,7 @@
 #define gUserAgent 				"neutrino/softupdater 1.0"
 
 #define LIST_OF_UPDATES_LOCAL_FILENAME 		"update.list"
-#define RELEASE_CYCLE                  		"2.2"
+#define RELEASE_CYCLE                  		"3.0"
 #define FILEBROWSER_UPDATE_FILTER      		"img"
 
 #define MTD_OF_WHOLE_IMAGE             		0
@@ -891,7 +891,7 @@ void CUpdateSettings::showMenu()
 	//static CFlashVersionInfo versionInfo(versionString);
 
 	// release cycle
-	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTRELEASECYCLE, false, /*versionInfo.getReleaseCycle()*/ "2.2" ));
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTRELEASECYCLE, false, /*versionInfo.getReleaseCycle()*/ RELEASE_CYCLE));
 		
 	// date
 	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONDATE, false, /*versionInfo.getDate()*/ __DATE__ ));

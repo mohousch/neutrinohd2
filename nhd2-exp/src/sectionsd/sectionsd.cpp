@@ -6133,6 +6133,9 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 {
 	dprintf(DEBUG_NORMAL, "sectionsd:insertEventsfromHttp: url:%s\n", url.c_str());
 
+	if(!g_settings.epg_enable_online_epg)
+		return;
+
 	std::string answer;
 
 	//

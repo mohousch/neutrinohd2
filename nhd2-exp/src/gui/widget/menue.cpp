@@ -831,9 +831,11 @@ int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 	
 	if (!(iconName.empty()))
 	{
-		frameBuffer->getIconSize(iconName.c_str(), &icon_w, &icon_h);
+		int iw, ih;
+
+		frameBuffer->getIconSize(iconName.c_str(), &iw, &ih);
 		
-		frameBuffer->paintIcon(iconName, x + BORDER_LEFT, y+ ((height - icon_h)/2) );
+		frameBuffer->paintIcon(iconName, x + BORDER_LEFT, y+ ((height - ih)/2) );
 	}
 
 	// locale
@@ -1963,38 +1965,41 @@ void CMenuWidget::paintItems()
 
 		int count = (int)page_start[current_page];
 
-		for (unsigned int _y = 0; _y < itemsPerY; _y++)
+		if(items.size() > 0)
 		{
-			for (unsigned int _x = 0; _x < itemsPerX; _x++)
+			for (unsigned int _y = 0; _y < itemsPerY; _y++)
 			{
-				CMenuItem * item = items[count];
-
-				item->init(x + _x*item_width, item_start_y + _y*item_height, items_width, iconOffset);
-
-				if( (item->isSelectable()) && (selected == -1) ) 
+				for (unsigned int _x = 0; _x < itemsPerX; _x++)
 				{
-					selected = count;
-				} 
+					CMenuItem * item = items[count];
 
-				if (selected == count) 
-				{
-					paintItemInfo(count);
+					item->init(x + _x*item_width, item_start_y + _y*item_height, items_width, iconOffset);
+
+					if( (item->isSelectable()) && (selected == -1) ) 
+					{
+						selected = count;
+					} 
+
+					if (selected == count) 
+					{
+						paintItemInfo(count);
+					}
+
+					item->paint( selected == ((signed int) count));
+
+					count++;
+
+					if ( (count == (int)page_start[current_page + 1]) || (count == (int)items.size()))
+					{
+						break;
+					}
 				}
-
-				item->paint( selected == ((signed int) count));
-
-				count++;
 
 				if ( (count == (int)page_start[current_page + 1]) || (count == (int)items.size()))
 				{
 					break;
-				}
+				}		
 			}
-
-			if ( (count == (int)page_start[current_page + 1]) || (count == (int)items.size()))
-			{
-				break;
-			}		
 		}
 	}
 	else
@@ -3122,38 +3127,41 @@ void ClistBox::paintItems()
 
 		int count = (int)page_start[current_page];
 
-		for (unsigned int _y = 0; _y < itemsPerY; _y++)
+		if(items.size() > 0)
 		{
-			for (unsigned int _x = 0; _x < itemsPerX; _x++)
+			for (unsigned int _y = 0; _y < itemsPerY; _y++)
 			{
-				CMenuItem * item = items[count];
-
-				item->init(x + _x*item_width, item_start_y + _y*item_height, items_width, iconOffset);
-
-				if( (item->isSelectable()) && (selected == -1) ) 
+				for (unsigned int _x = 0; _x < itemsPerX; _x++)
 				{
-					selected = count;
-				} 
+					CMenuItem * item = items[count];
 
-				if (selected == count) 
-				{
-					paintItemInfo(count);
+					item->init(x + _x*item_width, item_start_y + _y*item_height, items_width, iconOffset);
+
+					if( (item->isSelectable()) && (selected == -1) ) 
+					{
+						selected = count;
+					} 
+
+					if (selected == count) 
+					{
+						paintItemInfo(count);
+					}
+
+					item->paint( selected == ((signed int) count));
+
+					count++;
+
+					if ( (count == (int)page_start[current_page + 1]) || (count == (int)items.size()))
+					{
+						break;
+					}
 				}
-
-				item->paint( selected == ((signed int) count));
-
-				count++;
 
 				if ( (count == (int)page_start[current_page + 1]) || (count == (int)items.size()))
 				{
 					break;
-				}
+				}		
 			}
-
-			if ( (count == (int)page_start[current_page + 1]) || (count == (int)items.size()))
-			{
-				break;
-			}		
 		}
 	}
 	else /*if(widgetType == WIDGET_STANDARD || widgetType == WIDGET_CLASSIC || widgetType == WIDGET_EXTENDED || WIDGET_INFO)*/
