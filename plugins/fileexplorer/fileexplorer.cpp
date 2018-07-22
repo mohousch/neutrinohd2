@@ -1,5 +1,5 @@
 /*
-  $Id: fileexplorer.cpp 2015/06/26 mohousch Exp $
+  $Id: fileexplorer.cpp 2018/07/22 mohousch Exp $
 
   License: GPL
 
@@ -25,22 +25,35 @@ extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
 
-void plugin_init(void)
+
+class CFileExplorer : public CMenuTarget
+{
+	private:
+		CFileBrowser filebrowser;
+		std::string Path_local;
+
+		neutrino_msg_t msg;
+		neutrino_msg_data_t data;
+
+		void showMenu(void);
+
+	public:
+		CFileExplorer();
+		~CFileExplorer();
+		int exec(CMenuTarget* parent, const std::string& actionKey);
+};
+
+CFileExplorer::CFileExplorer()
 {
 }
 
-void plugin_del(void)
+CFileExplorer::~CFileExplorer()
 {
 }
 
-void plugin_exec(void)
-{
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
-		
-	CFileBrowser filebrowser;
-	
-	std::string Path_local = "/media/hdd";
+void CFileExplorer::showMenu()
+{	
+	Path_local = "/media/hdd";
 	
 	
 BROWSER:	
@@ -162,3 +175,35 @@ BROWSER:
 		}
 	}
 }
+
+int CFileExplorer::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CFileExplorer::exec: %s\n", actionKey.c_str());
+
+	if(parent)
+		hide();
+
+	showMenu();
+
+	return menu_return::RETURN_REPAINT;
+}
+
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
+}
+
+void plugin_exec(void)
+{
+	CFileExplorer* fileExplorerHandler = new CFileExplorer();
+
+	fileExplorerHandler->exec(NULL, "");
+
+	delete fileExplorerHandler;
+	fileExplorerHandler = NULL;
+}
+
+

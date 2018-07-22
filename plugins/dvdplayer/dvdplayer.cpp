@@ -1,5 +1,5 @@
 /*
-  $Id: dvdplayer.cpp 2014/02/01 mohousch Exp $
+  $Id: dvdplayer.cpp 2018/07/22 mohousch Exp $
 
   License: GPL
 
@@ -25,27 +25,43 @@ extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
 
-void plugin_init(void)
+class CDVDPlayer : public CMenuTarget
+{
+	private:
+		CFileBrowser fileBrowser;
+		CFileFilter fileFilter;
+	
+		CMoviePlayerGui tmpMoviePlayerGui;
+		std::string Path_dvd ;
+
+		neutrino_msg_t msg;
+		neutrino_msg_data_t data;
+
+		void showMenu(void);
+
+	public:
+		CDVDPlayer();
+		~CDVDPlayer();
+		int exec(CMenuTarget* parent, const std::string& actionKey);
+};
+
+CDVDPlayer::CDVDPlayer()
 {
 }
 
-void plugin_del(void)
+CDVDPlayer::~CDVDPlayer()
 {
 }
 
-void plugin_exec(void)
+void CDVDPlayer::showMenu()
 {
-	CFileBrowser fileBrowser;
-	CFileFilter fileFilter;
-	
-	CMoviePlayerGui tmpMoviePlayerGui;
-	
 	fileFilter.addFilter("vob");
+
 	fileBrowser.Filter = &fileFilter;
 	fileBrowser.Multi_Select    = true;
 	fileBrowser.Dirs_Selectable = false;
 	
-	std::string Path_dvd = "/mnt/dvd";
+	Path_dvd = "/mnt/dvd";
 				
 	// create mount path
 	safe_mkdir((char *)Path_dvd.c_str());
@@ -71,9 +87,6 @@ DVD_BROWSER:
 		}
 		
 		tmpMoviePlayerGui.exec(NULL, "urlplayback");
-		
-		neutrino_msg_t msg;
-		neutrino_msg_data_t data;
 
 		g_RCInput->getMsg_ms(&msg, &data, 10);
 		
@@ -82,4 +95,34 @@ DVD_BROWSER:
 			goto DVD_BROWSER;
 		}
 	}
+}
+
+int CDVDPlayer::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CDVDPlayer::exec:%s\n", actionKey.c_str());
+
+	if(parent)
+		hide();
+
+	showMenu();
+
+	return menu_return::RETURN_REPAINT;
+}
+
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
+}
+
+void plugin_exec(void)
+{
+	CDVDPlayer* dvdPlayerHandler = new CDVDPlayer();
+
+	dvdPlayerHandler->exec(NULL, "");
+
+	delete dvdPlayerHandler;
+	dvdPlayerHandler = NULL;
 }

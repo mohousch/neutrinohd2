@@ -1,5 +1,5 @@
 /*
-  $Id: mediaplayer.cpp 2018/07/10 mohousch Exp $
+  $Id: mediaplayer.cpp 2018/07/22 mohousch Exp $
 
   License: GPL
 
@@ -93,16 +93,6 @@ void CMediaPlayer::hide()
 	frameBuffer->blit();
 }
 
-int CMediaPlayer::exec(CMenuTarget* parent, const std::string& actionKey)
-{
-	dprintf(DEBUG_NORMAL, "CMediaPlayer::exec: actionKey:%s\n", actionKey.c_str());
-	
-	if(parent)
-		hide();
-	
-	return menu_return::RETURN_REPAINT;
-}
-
 void CMediaPlayer::showMenu()
 {
 	fileBrowser = new CFileBrowser();
@@ -178,6 +168,18 @@ BROWSER:
 	delete fileBrowser;
 }
 
+int CMediaPlayer::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CMediaPlayer::exec: actionKey:%s\n", actionKey.c_str());
+	
+	if(parent)
+		hide();
+
+	showMenu();
+	
+	return menu_return::RETURN_REPAINT;
+}
+
 void plugin_init(void)
 {
 }
@@ -190,7 +192,7 @@ void plugin_exec(void)
 {
 	CMediaPlayer* mediaPlayerHandler = new CMediaPlayer();
 	
-	mediaPlayerHandler->showMenu();
+	mediaPlayerHandler->exec(NULL, "");
 	
 	delete mediaPlayerHandler;
 	mediaPlayerHandler = NULL;
