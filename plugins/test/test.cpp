@@ -967,28 +967,22 @@ void CTestMenu::testCButtons()
 
 void CTestMenu::testAudioPlayer()
 {
-	CAudioPlayerGui tmpAudioPlayerGui;
-	tmpAudioPlayerGui.exec(NULL, "");
+	g_PluginList->startPlugin("audioplayer");
 }
 
 void CTestMenu::testTSPlayer()
 {
-	CMoviePlayerGui tmpMoviePlayerGui;
-					
-	tmpMoviePlayerGui.exec(NULL, "tsmoviebrowser");
+	g_PluginList->startPlugin("tsplayer");
 }
 
 void CTestMenu::testMoviePlayer()
 {
-	CMoviePlayerGui tmpMoviePlayerGui;
-					
-	tmpMoviePlayerGui.exec(NULL, "moviebrowser");
+	g_PluginList->startPlugin("movieplayer");
 }
 
 void CTestMenu::testPictureViewer()
 {
-	CPictureViewerGui tmpPictureViewerGui;
-	tmpPictureViewerGui.exec(NULL, "");
+	g_PluginList->startPlugin("picviewer");
 }
 
 void CTestMenu::testPlayMovieURL()
@@ -2894,7 +2888,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
 
-	mainMenu->addItem(new CMenuForwarder("Spinner", true, NULL, this, "spinner"));
+	//mainMenu->addItem(new CMenuForwarder("Spinner", true, NULL, this, "spinner"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();

@@ -59,7 +59,6 @@
 #include <gui/audio_select.h>
 #include <gui/epgplus.h>
 #include <gui/streaminfo2.h>
-#include <gui/opkg_manager.h>
 #include <gui/movieplayer.h>
 #include <gui/pluginlist.h>
 
@@ -232,9 +231,6 @@ bool CNeutrinoApp::showUserMenu(int button)
 #endif		
 	};
 
-        // define classes
-	COPKGManager * tmpOPKGManager = NULL;
-
         std::string txt = g_settings.usermenu_text[button];
 
 	if( button == SNeutrinoSettings::BUTTON_BLUE) 
@@ -294,18 +290,6 @@ bool CNeutrinoApp::showUserMenu(int button)
 					menu->addItem(menu_item, false);
 				}
 				break;	
-
-			// opkg
-			case SNeutrinoSettings::ITEM_OPKG:
-				menu_items++;
-				menu_prev = SNeutrinoSettings::ITEM_OPKG;
-		                       
-				tmpOPKGManager = new COPKGManager();
-				
-				keyhelper.get(&key, &icon);
-		                menu_item = new CMenuForwarder(LOCALE_OPKG_MANAGER, true, NULL, tmpOPKGManager, "-1", key, icon, NEUTRINO_ICON_MENUITEM_SOFTUPDATE);
-		                menu->addItem(menu_item, false);
-		                break;
 			
 			// plugins
 			case SNeutrinoSettings::ITEM_PLUGIN:
@@ -342,10 +326,6 @@ bool CNeutrinoApp::showUserMenu(int button)
 	}
         else if (menu_item != NULL)
                 menu_item->exec(NULL);
-
-        // clear the heap
-	if(tmpOPKGManager)
-		delete tmpOPKGManager;
 
         if(menu)
 		delete menu;

@@ -102,7 +102,6 @@ libneutrino_gui2_a_SOURCES = \
 	alphasetup.cpp \
 	dvbsub_select.cpp \
 	psisetup.cpp \
-	opkg_manager.cpp \
 	webtv.cpp \
 	channel_select.cpp \
 	audio_video_select.cpp \

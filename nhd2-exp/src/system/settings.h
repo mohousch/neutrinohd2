@@ -373,8 +373,7 @@ struct SNeutrinoSettings
                 ITEM_TIMERLIST = 1,
                 ITEM_PLUGIN = 2,
                 ITEM_VTXT = 3,
-                ITEM_OPKG = 4, 
-		ITEM_REMOTE = 5,              
+		ITEM_REMOTE = 4,              
                 ITEM_MAX   // MUST be always the last in the list
         }USER_ITEM;
 	
@@ -384,7 +383,6 @@ struct SNeutrinoSettings
 
 	// AUDIOPLAYER
 	char network_nfs_audioplayerdir[100];
-	//int   audioplayer_follow;
 	int   audioplayer_highprio;
 	int   audioplayer_repeat_on;
 	// END AUDIOPLAYER
@@ -498,13 +496,6 @@ struct SNeutrinoSettings
 		SATIP_SERVERBOX_GUI_NMP,
 		SATIP_SERVERBOX_GUI_ENIGMA2
 	};
-
-/*
-	int satip_allow_satip;
-	std::string satip_serverbox_ip;
-	int satip_serverbox_type;
-	int satip_serverbox_gui;
-*/
 	
 	int epg_enable_online_epg;
 	std::string epg_serverbox_ip;

@@ -772,7 +772,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.key_audioplayer = configfile.getInt32( "key_audioplayer", CRCInput::RC_nokey );
 	g_settings.key_pictureviewer = configfile.getInt32( "key_pictureviewer", CRCInput::RC_nokey );
 	g_settings.key_timerlist = configfile.getInt32( "key_timerlist", CRCInput::RC_nokey );
-	g_settings.key_inetradio = configfile.getInt32( "key_inetraio", CRCInput::RC_nokey );
+	g_settings.key_inetradio = configfile.getInt32( "key_inetradio", CRCInput::RC_nokey );
 	g_settings.key_moviebrowser = configfile.getInt32( "key_moviebrowser", CRCInput::RC_nokey );
 	g_settings.key_filebrowser = configfile.getInt32( "key_filebrowser", CRCInput::RC_nokey );
 	g_settings.key_webtv = configfile.getInt32( "key_webtv", CRCInput::RC_nokey );
@@ -792,7 +792,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
         //-------------------------------------------
         // this is as the current neutrino usermen
         const char * usermenu_default[SNeutrinoSettings::BUTTON_MAX] = {
-                "1, 2, 3, 4, 5",   	// BLUE
+                "1, 2, 3, 4",   	// BLUE
 #if defined (ENABLE_FUNCTIONKEYS)
 		"0",				// F1
 		"0",				// F2
@@ -970,13 +970,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 
 	// online epg
 	g_settings.epg_enable_online_epg = configfile.getBool("epg_enable_online_epg", false);
-
-/*
-	g_settings.satip_serverbox_ip = configfile.getString("satip_serverbox_ip", "192.168.0.12");
-	g_settings.satip_serverbox_type = configfile.getInt32("satip_serverbox_type", DVB_C);
-	g_settings.satip_serverbox_gui = configfile.getInt32("satip_serverbox_gui", SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2);
-*/
-
 	g_settings.epg_serverbox_ip = configfile.getString("epg_serverbox_ip", "192.168.0.12");
 	g_settings.epg_serverbox_type = configfile.getInt32("epg_serverbox_type", DVB_C);
 	g_settings.epg_serverbox_gui = configfile.getInt32("epg_serverbox_gui", SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2);
@@ -1444,12 +1437,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 
 	// online epg
 	configfile.setBool("epg_enable_online_epg", g_settings.epg_enable_online_epg);
-/*
-	configfile.setString("satip_serverbox_ip", g_settings.satip_serverbox_ip);
-	configfile.setInt32("satip_serverbox_type", g_settings.satip_serverbox_type);
-	configfile.setInt32("satip_serverbox_gui", g_settings.satip_serverbox_gui);
-*/
-
 	configfile.setString("epg_serverbox_ip", g_settings.epg_serverbox_ip);
 	configfile.setInt32("epg_serverbox_type", g_settings.epg_serverbox_type);
 	configfile.setInt32("epg_serverbox_gui", g_settings.epg_serverbox_gui);

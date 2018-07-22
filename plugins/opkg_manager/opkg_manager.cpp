@@ -43,7 +43,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "gui/opkg_manager.h"
+#include "opkg_manager.h"
 
 #include <global.h>
 #include <neutrino.h>
@@ -57,6 +57,10 @@
 
 #include <system/debug.h>
 
+
+extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
 
 COPKGManager::COPKGManager()
 {
@@ -458,3 +462,24 @@ bool COPKGManager::execCmd(const char * cmdstr)
 
 	return true;
 }
+
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
+}
+
+void plugin_exec(void)
+{
+	// class handler
+	COPKGManager * opkgHandler = new COPKGManager;
+	
+	opkgHandler->exec(NULL, "");
+	
+	delete opkgHandler;
+	opkgHandler = NULL;
+}
+
+

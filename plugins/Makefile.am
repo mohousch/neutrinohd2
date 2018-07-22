@@ -21,7 +21,8 @@ SUBDIRS = \
 	tsplayer \
 	movieplayer \
 	picviewer \
-	audioplayer
+	audioplayer \
+	opkg_manager
 
 if ENABLE_NGLCD
 SUBDIRS += nglcd
