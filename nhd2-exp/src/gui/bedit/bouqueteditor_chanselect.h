@@ -40,7 +40,7 @@
 #include <gui/widget/window.h>
 #include <gui/widget/scrollbar.h>
 
-/*zapit includes*/
+// zapit includes
 #include <client/zapitclient.h>
 #include <channel.h>
 #include <bouquets.h>
@@ -48,6 +48,10 @@
 
 class CBEChannelSelectWidget
 {
+	public:
+		ZapitChannelList Channels;
+		ZapitChannelList * bouquetChannels;
+
 	private:
 		//
 		CFrameBuffer* frameBuffer;
@@ -99,9 +103,6 @@ class CBEChannelSelectWidget
 		void clearItem2DetailsLine();
 
 	public:
-		ZapitChannelList Channels;
-		ZapitChannelList * bouquetChannels;
-
 		CBEChannelSelectWidget(const std::string & Caption, unsigned int Bouquet, CZapitClient::channelsMode Mode);
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 		bool hasChanged();

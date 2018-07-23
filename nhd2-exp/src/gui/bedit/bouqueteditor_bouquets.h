@@ -37,7 +37,7 @@
 #include <driver/framebuffer.h>
 #include <gui/widget/menue.h>
 
-/*zapit*/
+// zapit
 #include <client/zapitclient.h>
 #include <channel.h>
 #include <bouquets.h>
@@ -57,6 +57,9 @@ class CBouquetEditorEvents
 
 class CBEBouquetWidget : public CMenuWidget
 {
+	public:
+		BouquetList* Bouquets;
+
 	private:
 
 		CFrameBuffer	*frameBuffer;
@@ -77,7 +80,9 @@ class CBEBouquetWidget : public CMenuWidget
 		unsigned int		selected;
 		unsigned int		origPosition;
 		unsigned int		newPosition;
+		bool		bouquetsChanged;
 
+//gui
 		unsigned int		liststart;
 		unsigned int		listmaxshow;
 		int			fheight; // Fonthoehe Bouquetlist-Inhalt
@@ -87,7 +92,6 @@ class CBEBouquetWidget : public CMenuWidget
 		int			iconoffset;
 		int			iheight; // item height
 		
-		bool		bouquetsChanged;
 		int		width;
 		int		height;
 		int		x;
@@ -105,6 +109,7 @@ class CBEBouquetWidget : public CMenuWidget
 		void paintHead();
 		void paintFoot();
 		void hide();
+//
 
 		void deleteBouquet();
 		void addBouquet();
@@ -119,14 +124,12 @@ class CBEBouquetWidget : public CMenuWidget
 		void saveChanges();
 		void discardChanges();
 
-		std::string inputName(const char * const defaultName, const neutrino_locale_t caption);
+		std::string inputName(const char* const defaultName, const neutrino_locale_t caption);
 
 	public:
 		CBEBouquetWidget();
 		~CBEBouquetWidget();
-
-		BouquetList * Bouquets;
-		int exec(CMenuTarget* parent, const std::string & actionKey);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 

@@ -48,8 +48,11 @@
 
 class CBEChannelWidget : public CMenuWidget
 {
+	public:
+		ZapitChannelList* Channels;
+
 	private:
-		CFrameBuffer	*frameBuffer;
+		CFrameBuffer* frameBuffer;
 	
 		enum state_
 		{
@@ -60,22 +63,19 @@ class CBEChannelWidget : public CMenuWidget
 		unsigned int		selected;
 		unsigned int		origPosition;
 		unsigned int		newPosition;
+		bool			channelsChanged;
+		std::string		caption;
+		CZapitClient::channelsMode mode;
+		unsigned int bouquet;
 
+		// gui
 		unsigned int		liststart;
 		unsigned int		listmaxshow;
 		unsigned int		numwidth;
 		int			fheight;
 		int			theight;
 		int 			info_height;
-
 		int 			ButtonHeight;
-		std::string		caption;
-		bool			channelsChanged;
-
-		CZapitClient::channelsMode mode;
-
-		unsigned int bouquet;
-
 		int		width;
 		int		height;
 		int		x;
@@ -111,9 +111,8 @@ class CBEChannelWidget : public CMenuWidget
 
 	public:
 		CBEChannelWidget( const std::string & Caption, unsigned int Bouquet);
-
-		ZapitChannelList * Channels;
 		int exec(CMenuTarget* parent, const std::string & actionKey);
+
 		bool hasChanged();
 };
 

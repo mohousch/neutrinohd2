@@ -921,12 +921,6 @@ void CWebTV::show(bool reload, bool reinit)
 	webTVlistMenu->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
 	webTVlistMenu->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
 
-	//
-/*
-	webTVlistMenu->addKey(CRCInput::RC_pause, this, CRCInput::getSpecialKeyName(CRCInput::RC_pause));
-	webTVlistMenu->addKey(CRCInput::RC_play, this, CRCInput::getSpecialKeyName(CRCInput::RC_play));
-*/
-
 	webTVlistMenu->exec(NULL, "");
 	//webTVlistMenu->hide();
 	delete webTVlistMenu;
@@ -992,17 +986,11 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_red")
 	{
 		g_EventList->exec(channels[webTVlistMenu->getSelected()]->id, channels[webTVlistMenu->getSelected()]->title);
-		/*
-		userBouquet(); 
-		show(false, true);
-		*/
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
-		//g_RCInput->postMsg(CRCInput::RC_page_down, 0);
-		//selected = webTVlistMenu->getSelected();
 		displayNext = !displayNext;
 		show(false, true);
 
@@ -1019,29 +1007,6 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
-/*
-	else if(actionKey == "RC_pause")
-	{
-		pausePlayBack();
-
-		//infoviewer
-		g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "RC_play")
-	{
-		continuePlayBack();
-
-		//infoviewer
-		g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
-
-		// kill infobar
-		g_InfoViewer->killTitle();
-
-		return menu_return::RETURN_REPAINT;
-	}
-*/
 	else if(actionKey == "RC_info")
 	{
 		g_EpgData->show(channels[webTVlistMenu->getSelected()]->id);

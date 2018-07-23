@@ -58,9 +58,9 @@
 #include <gui/bedit/bouqueteditor_chanselect.h>
 
 
-extern tallchans allchans;
-extern CBouquetManager * g_bouquetManager;
-void addChannelToBouquet(const unsigned int bouquet, const t_channel_id channel_id);
+extern tallchans allchans;			// defined in zapit.cpp
+extern CBouquetManager * g_bouquetManager;	// defined in zapit.cpp
+void addChannelToBouquet(const unsigned int bouquet, const t_channel_id channel_id); // defined in zapit.cpp
 
 CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string & Caption, unsigned int Bouquet, CZapitClient::channelsMode Mode)
 {
@@ -93,7 +93,7 @@ CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string & Caption, unsi
 	cFrameItem.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), itemIcon2.iHeight) + 2;
 
 	// FootInfo
-	cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 20;
+	cFrameFootInfo.iHeight = /*g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 20*/ 70;
 	
 	cFrameBox.iWidth = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
 	cFrameBox.iHeight = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));

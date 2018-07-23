@@ -55,7 +55,7 @@
 #include <system/debug.h>
 
 
-extern CBouquetManager * g_bouquetManager;
+extern CBouquetManager * g_bouquetManager;	// defined in der zapit.cpp
 
 CBEBouquetWidget::CBEBouquetWidget()
 {
@@ -290,11 +290,6 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				cancelMoveBouquet();
 			}
 		}
-		//
-		// -- For more convenience: include browsing of list (paging)  (rasc, 2002-04-02)
-		// -- The keys should be configurable. Problem is: red/green key, which is the
-		// -- default in neutrino is used as a function key here... so use left/right
-		//
 		else if (msg == CRCInput::RC_up || msg == CRCInput::RC_page_up)
 		{
 			if (!(Bouquets->empty()))
@@ -620,3 +615,5 @@ void CBEBouquetWidget::discardChanges()
 	hintBox->hide();
 	delete hintBox;
 }
+
+

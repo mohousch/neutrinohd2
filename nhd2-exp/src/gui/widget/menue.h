@@ -230,6 +230,7 @@ class CMenuItem
 		virtual void setHelpText(const std::string& Text);
 
 		//
+		virtual void setIconName(const char* const icon){iconName = icon;};
 		virtual void setItemIcon(const char* const icon){itemIcon = icon;};
 
 		//
@@ -725,13 +726,21 @@ class ClistBox : public CMenuTarget
 		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
-		int getSelected() { return selected; };
+		int getSelected() { 
+			if(selected >= 0) 
+				return selected; 
+			else
+				return 0;
+		};
+
 		void move(int xoff, int yoff);
 		int getSelectedLine(void){return exit_pressed ? -1 : selected;};
 		int getHeight(void) const {return height;}
 		int getWidth(void) const {return width;};
 		int getX(void) const {return x;};
 		int getY(void) const {return y;};
+
+		int getListMaxShow(void) const {return listmaxshow;};
 		
 		//
 		void enableSaveScreen();

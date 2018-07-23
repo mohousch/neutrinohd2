@@ -3904,7 +3904,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 						if(hasItem()) 
 						{
 							//exec this item...
-							CMenuItem * item = items[selected];
+							CMenuItem* item = items[selected];
 							item->msg = msg;
 							
 							int rv = item->exec(this);

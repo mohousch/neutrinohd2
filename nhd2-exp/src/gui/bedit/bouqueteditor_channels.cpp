@@ -60,8 +60,8 @@
 #include <system/debug.h>
 
 
-extern tallchans allchans;
-extern CBouquetManager * g_bouquetManager;
+extern tallchans allchans;			// defined in zapit.cpp
+extern CBouquetManager * g_bouquetManager;	// defined in zapit.cpp
 
 CBEChannelWidget::CBEChannelWidget(const std::string & Caption, unsigned int Bouquet)
 {
@@ -150,15 +150,15 @@ void CBEChannelWidget::paint()
 	liststart = (selected/listmaxshow)*listmaxshow;
 	int lastnum =  liststart + listmaxshow;
 
-	if(lastnum<10)
+	if(lastnum < 10)
 		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("0");
-	else if(lastnum<100)
+	else if(lastnum < 100)
 		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("00");
-	else if(lastnum<1000)
+	else if(lastnum < 1000)
 		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("000");
-	else if(lastnum<10000)
+	else if(lastnum < 10000)
 		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("0000");
-	else // if(lastnum<100000)
+	else // if(lastnum < 100000)
 		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("00000");
 
 	for(unsigned int count = 0; count < listmaxshow; count++)
@@ -266,7 +266,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 
 	// info height
-	info_height = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 20;
+	info_height = /*g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 20*/ 70;
 	
 	listmaxshow = (height - theight - ButtonHeight - info_height)/fheight;
 	height = theight + listmaxshow*fheight + ButtonHeight + info_height; // recalc height
