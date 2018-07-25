@@ -2211,12 +2211,23 @@ void CTestMenu::testFrameBox()
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
+		//
+		std::string tmp = m_vMovieInfo[i].epgTitle;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo1;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo2;
+
+		item->setInfo1(tmp.c_str());
+
+		//item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
+
+		item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]);
 
 		mlist->addItem(item);
 	}
 
-	mlist->setWidgetType(WIDGET_FRAME);
+	mlist->setWidgetType(WIDGET_INFO);
 	mlist->setItemsPerPage(6, 2);
 	mlist->setItemBoxColor(COL_YELLOW);
 
@@ -2783,10 +2794,12 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		mlist->hide();
 
-		if(mlist->getWidgetType() == WIDGET_EXTENDED)
+		if(mlist->getWidgetType() == WIDGET_INFO)
 			mlist->setWidgetType(WIDGET_FRAME);
 		else if(mlist->getWidgetType() == WIDGET_FRAME)
 			mlist->setWidgetType(WIDGET_EXTENDED);
+		else if(mlist->getWidgetType() == WIDGET_EXTENDED)
+			mlist->setWidgetType(WIDGET_INFO);
 
 		mlist->initFrames();
 		mlist->paint();

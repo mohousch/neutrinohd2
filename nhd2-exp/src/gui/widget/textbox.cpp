@@ -166,6 +166,7 @@ void CTextBox::initVar(void)
 
 	radius = NO_RADIUS;
 	type = CORNER_NONE;
+	gradient = nogradient;
 
 	painted = false;
 }
@@ -443,6 +444,7 @@ void CTextBox::refreshText(void)
 	m_cBoxWindow.setDimension(&m_cFrame);
 	m_cBoxWindow.setColor(m_textBackgroundColor);
 	m_cBoxWindow.setCorner(radius, type);
+	m_cBoxWindow.setGradient(gradient);
 	m_cBoxWindow.paint();
 	
 	// setthumbnail (paint picture only on first page)

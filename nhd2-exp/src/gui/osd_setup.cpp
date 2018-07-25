@@ -39,6 +39,7 @@
 #include <gui/widget/hintbox.h>
 
 #include <gui/widget/colorchooser.h>
+#include <gui/widget/stringinput.h>
 
 #include <gui/filebrowser.h>
 #include <gui/osd_setup.h>

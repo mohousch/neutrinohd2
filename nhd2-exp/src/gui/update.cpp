@@ -48,6 +48,7 @@
 
 #include <gui/widget/messagebox.h>
 #include <gui/widget/hintbox.h>
+#include <gui/widget/stringinput.h>
 
 #include <system/flashtool.h>
 #include <system/httptool.h>

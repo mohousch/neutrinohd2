@@ -34,8 +34,8 @@
 #include <stdio.h>
 
 #include <gui/widget/hintbox.h>
-
 #include <gui/widget/keychooser.h>
+#include <gui/widget/stringinput.h>
 
 #include <gui/rc_setup.h>
 

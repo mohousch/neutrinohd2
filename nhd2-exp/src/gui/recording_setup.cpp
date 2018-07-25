@@ -34,6 +34,7 @@
 #include <stdio.h> 
 
 #include <gui/widget/hintbox.h>
+#include <gui/widget/stringinput.h>
 
 #include <gui/filebrowser.h>
 #include <gui/recording_setup.h>

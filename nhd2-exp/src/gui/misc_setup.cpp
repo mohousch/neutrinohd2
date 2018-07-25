@@ -40,6 +40,7 @@
 
 #include <gui/widget/messagebox.h>
 #include <gui/widget/stringinput_ext.h>
+#include <gui/widget/stringinput.h>
 
 #include <gui/filebrowser.h>
 #include <gui/misc_setup.h>

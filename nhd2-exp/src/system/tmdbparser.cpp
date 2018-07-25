@@ -65,11 +65,16 @@ cTmdb::~cTmdb()
 	unlink(cover.c_str());
 }
 
-bool cTmdb::GetMovieDetails(std::string lang)
+bool cTmdb::GetMovieDetails(std::string lang, const std::string& request)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails:\n");
 
-	std::string url	= "http://api.themoviedb.org/3/search/multi?api_key=" + key + "&language=" + lang + "&query=" + encodeUrl(minfo.epgtitle);
+	std::string url	= "http://api.themoviedb.org/3/";
+
+	if(request == "search")
+	{
+		url += request + "/multi?api_key=" + key + "&language=" + lang + "&query=" + encodeUrl(minfo.epgtitle);
+	}
 
 	std::string answer;
 	if (!::getUrl(url, answer))

@@ -33,6 +33,7 @@
 
 #include <stdio.h>
 
+#include <gui/widget/stringinput.h>
 #include <gui/parentallock_setup.h>
 
 #include <system/debug.h>

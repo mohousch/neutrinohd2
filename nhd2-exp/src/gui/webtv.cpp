@@ -891,6 +891,7 @@ void CWebTV::show(bool reload, bool reinit)
 
 			item = new ClistBoxItem(channels[i]->title.c_str(), true, desc.c_str(), this, "zapit");
 
+			item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]);
 			item->setNumber(i + 1);
 			item->setPercent(runningPercent);
 			item->setInfo1(desc.c_str());

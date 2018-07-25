@@ -49,6 +49,17 @@
 #include <gui/color.h>
 #include <gui/plugins.h>
 
+#include <system/settings.h>
+
+extern CFont* g_Font[FONT_TYPE_COUNT];
+
+/*
+class CMenuItem;
+
+CFont* CMenuItem::nameFont = NULL;
+CFont* CMenuItem::optionFont = NULL;
+*/
+
 
 #define MENU_WIDTH			590
 #define MENU_HEIGHT			700
@@ -144,13 +155,21 @@ class CMenuItem
 		neutrino_msg_t msg;
 		bool can_arrow;
 		std::string iconName;
+		std::string itemName;
 		std::string option;
 		std::string optionInfo;
-		std::string info1, option_info1;
-		std::string info2, option_info2;
-		std::string itemName;
 		std::string itemHelpText;
 		std::string itemIcon;
+		std::string info1, option_info1;
+		std::string info2, option_info2;
+
+		//
+		std::string icon1;
+		std::string icon2;
+		int number;
+		int runningPercent;
+
+		//
 		int itemType;
 		int widgetType;
 
@@ -161,40 +180,12 @@ class CMenuItem
 		fb_pixel_t item_selectedColor;
 
 		//
-		std::string icon1;
-		std::string icon2;
-		int number;
-		int runningPercent;
-
-		/*
-		static CFont* textFont;
+		static CFont* nameFont;
 		static CFont* optionFont;
-		static CFont* descFont;
-		uint8_t optionFontColor;
-		*/
 
-		bool nLinesItem;
-		bool nLinesItemSwitch;
+		bool nLinesItem; // 2 lines Item
 
-		CMenuItem()
-		{
-			x = -1;
-			directKey = CRCInput::RC_nokey;
-			iconName = "";
-			can_arrow = false;
-
-			number = 0;
-			runningPercent = -1;
-
-			/*
-			textFont = g_Font[SNeutrinoSettings::FONT_TYPE_MENU];
-			optionFont = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR];
-			descFont = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER];
-			optionFontColor = COL_COLORED_EVENTS_CHANNELLIST;
-			*/
-			nLinesItem = false;
-			nLinesItemSwitch = false;
-		}
+		CMenuItem();
 		virtual ~CMenuItem(){}
 
 		virtual void init(const int X, const int Y, const int DX, const int OFFX);
@@ -239,16 +230,10 @@ class CMenuItem
 		virtual void setNumber(int nr){number = nr;};
 		virtual void setPercent(int percent = -1){runningPercent = percent;};
 
-		/*
-		virtual void setTextFont(CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]){textFont = font;};
-		virtual void setOptionFont(CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]){optionFont = font;};
-		virtual void setDescFont(CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]){descFont = font;};
-
-		virtual void setOptionFontColor(uint8_t col = COL_COLORED_EVENTS_CHANNELLIST){optionFontColor = col;};
-		*/
+		virtual void setNameFont(CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]){nameFont = font;};
+		virtual void setOptionFont(CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]){optionFont = font;};
 
 		virtual void setnLinesItem(void){nLinesItem = true;};
-		virtual void switchnLinesItem(void){nLinesItemSwitch = true;};
 };
 
 // CAbstractMenuOptionChooser

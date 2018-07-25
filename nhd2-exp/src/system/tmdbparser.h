@@ -51,7 +51,7 @@ class cTmdb
 		std::string key; // tmdb api key
 		std::string cover;
 
-		bool GetMovieDetails(std::string lang);
+		bool GetMovieDetails(std::string lang, const std::string& request = "search");
 
 	public:
 		cTmdb(std::string epgtitle);
