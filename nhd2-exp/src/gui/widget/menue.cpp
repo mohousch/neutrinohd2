@@ -2504,7 +2504,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		//
 		frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor, RADIUS_SMALL, CORNER_BOTH);
 
-		frameBuffer->DisplayImage(itemIcon, x + ICON_OFFSET, y + ICON_OFFSET, item_width - 2*ICON_OFFSET, item_height - 2*ICON_OFFSET);
+		frameBuffer->DisplayImage(itemIcon, x + 2*ICON_OFFSET, y + 2*ICON_OFFSET, item_width - 4*ICON_OFFSET, item_height - 4*ICON_OFFSET);
 
 		//
 		if(selected)
@@ -4260,7 +4260,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		//
 		frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor, RADIUS_SMALL, CORNER_BOTH);
 
-		frameBuffer->DisplayImage(itemIcon, x + ICON_OFFSET, y + ICON_OFFSET, item_width - 2*ICON_OFFSET, item_height - 2*ICON_OFFSET);
+		frameBuffer->DisplayImage(itemIcon, x + 2*ICON_OFFSET, y + 2*ICON_OFFSET, item_width - 4*ICON_OFFSET, item_height - 4*ICON_OFFSET);
 
 		//
 		if(selected)
