@@ -250,16 +250,16 @@ void CTextBox::initFramesRel(void)
 {
 	dprintf(DEBUG_DEBUG, "CTextBox::InitFramesRel:\r\n");
 
-	m_cFrameTextRel.iX = m_cFrame.iX;
-	m_cFrameTextRel.iY = m_cFrame.iY;
-	m_cFrameTextRel.iHeight	= m_cFrame.iHeight ;
+	m_cFrameTextRel.iX = m_cFrame.iX + BORDER_LEFT;
+	m_cFrameTextRel.iY = m_cFrame.iY + 10;
+	m_cFrameTextRel.iHeight	= m_cFrame.iHeight - 20;
 	
 	if(m_nMode & SCROLL)
 	{
 		m_cFrameScrollRel.iX = m_cFrame.iX + m_cFrame.iWidth - SCROLLBAR_WIDTH;
-		m_cFrameScrollRel.iY = m_cFrameTextRel.iY;
+		m_cFrameScrollRel.iY = m_cFrame.iY;
 		m_cFrameScrollRel.iWidth = SCROLLBAR_WIDTH;
-		m_cFrameScrollRel.iHeight = m_cFrameTextRel.iHeight;
+		m_cFrameScrollRel.iHeight = m_cFrame.iHeight;
 	}
 	else
 	{
@@ -269,9 +269,9 @@ void CTextBox::initFramesRel(void)
 		m_cFrameScrollRel.iWidth = 0;
 	}
 
-	m_cFrameTextRel.iWidth = m_cFrame.iWidth - m_cFrameScrollRel.iWidth;
+	m_cFrameTextRel.iWidth = m_cFrame.iWidth - BORDER_LEFT - BORDER_RIGHT - m_cFrameScrollRel.iWidth;
 
-	m_nLinesPerPage = (m_cFrameTextRel.iHeight - (BORDER_LEFT + BORDER_RIGHT))/m_nFontTextHeight;
+	m_nLinesPerPage = (m_cFrameTextRel.iHeight)/m_nFontTextHeight;
 }
 
 void CTextBox::refreshTextLineArray(void)
@@ -298,17 +298,17 @@ void CTextBox::refreshTextLineArray(void)
 	if( m_nMode & AUTO_WIDTH)
 	{
 		// In case of autowidth, we calculate the max allowed width of the textbox
-		lineBreakWidth = MAX_WINDOW_WIDTH - m_cFrameScrollRel.iWidth - BORDER_LEFT - BORDER_RIGHT;
+		lineBreakWidth = MAX_WINDOW_WIDTH - BORDER_LEFT - BORDER_RIGHT - m_cFrameScrollRel.iWidth;
 	}
 	else
 	{
 		// If not autowidth, we just take the actuall textframe width
-		lineBreakWidth = m_cFrameTextRel.iWidth - BORDER_LEFT - BORDER_RIGHT;
+		lineBreakWidth = m_cFrameTextRel.iWidth;
 	}
 	
 	//
 	if( (!access(thumbnail.c_str(), F_OK) && m_nCurrentPage == 0) && m_tMode != TOP_CENTER)
-		lineBreakWidth = m_cFrameTextRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + tw + BORDER_LEFT + BORDER_RIGHT);
+		lineBreakWidth = m_cFrameTextRel.iWidth - tw - 10;
 	
 	const int TextChars = m_cText.size();
 	
@@ -375,17 +375,28 @@ void CTextBox::refreshTextLineArray(void)
 				}
 				
 				//recalculate breaklinewidth for other pages or when pic dont exists
-				if( (m_nNrOfLines > th / m_nFontTextHeight ) || (m_nNrOfLines > ((m_cFrameTextRel.iHeight - (BORDER_LEFT + BORDER_RIGHT)) / m_nFontTextHeight)) )
+				if(m_nNrOfLines > (th / m_nFontTextHeight))
 				{
 					if( m_nMode & AUTO_WIDTH)
 					{
-						// In case of autowidth, we calculate the max allowed width of the textbox
 						lineBreakWidth = MAX_WINDOW_WIDTH - m_cFrameScrollRel.iWidth - BORDER_LEFT - BORDER_RIGHT;
 					}
 					else
 					{
-						// If not autowidth, we just take the actuall textframe width
-						lineBreakWidth = m_cFrameTextRel.iWidth - BORDER_LEFT - BORDER_RIGHT;
+						lineBreakWidth = m_cFrameTextRel.iWidth;
+					}
+				}
+
+				// 2nd page and over
+				if(m_nNrOfLines > ((m_cFrameTextRel.iHeight) / m_nFontTextHeight))
+				{
+					if( m_nMode & AUTO_WIDTH)
+					{
+						lineBreakWidth = MAX_WINDOW_WIDTH - m_cFrameScrollRel.iWidth - BORDER_LEFT - BORDER_RIGHT;
+					}
+					else
+					{
+						lineBreakWidth = m_cFrameTextRel.iWidth;
 					}
 				}
 			}
@@ -402,12 +413,14 @@ void CTextBox::refreshTextLineArray(void)
 			reSizeMainFrameHeight(m_nNrOfLines * m_nFontTextHeight);
 		}
 
-		if(m_tMode == TOP_CENTER)
-			m_nLinesPerPage = (m_cFrameTextRel.iHeight - BORDER_LEFT - BORDER_RIGHT - th) / m_nFontTextHeight;
-		else
-			m_nLinesPerPage = (m_cFrameTextRel.iHeight - BORDER_LEFT - BORDER_RIGHT) / m_nFontTextHeight;
+		// linesPerPage
+		m_nLinesPerPage = (m_cFrameTextRel.iHeight) / m_nFontTextHeight;
 
-		m_nNrOfPages =	((m_nNrOfLines-1) / m_nLinesPerPage) + 1;
+		if(m_tMode == TOP_CENTER && m_nCurrentPage == 0)
+			m_nLinesPerPage = (m_cFrameTextRel.iHeight - th - 10) / m_nFontTextHeight;
+
+		// NrOfPages
+		m_nNrOfPages =	((m_nNrOfLines - 1) / m_nLinesPerPage) + 1;
 
 		if(m_nCurrentPage >= m_nNrOfPages)
 		{
@@ -459,9 +472,9 @@ void CTextBox::refreshText(void)
 	// paint text
 	int y = m_cFrameTextRel.iY + 10;
 	int i;
-	int x_center = 0;
+	int x_start = 0;
 
-	if(m_tMode == TOP_CENTER)
+	if(m_tMode == TOP_CENTER && m_nCurrentPage == 0)
 	{
 		y = y + th + 10;
 	}
@@ -470,23 +483,17 @@ void CTextBox::refreshText(void)
 	{
 		y += m_nFontTextHeight;
 
-		if( m_nMode & CENTER )
-		{
-			x_center = (m_cFrameTextRel.iWidth - m_pcFontText->getRenderWidth(m_cLineArray[i], true))>>1;
-		}
-		
+		// x_start		
 		if( !access(thumbnail.c_str(), F_OK) && (m_nCurrentPage == 0))
 		{
 			if (m_tMode == TOP_LEFT)
 			{
 				if(i <= (th / m_nFontTextHeight))
-					x_center = tw + BORDER_LEFT;
-				else
-					x_center = 0;
+					x_start = tw;
 			}
 		}
 
-		m_pcFontText->RenderString(m_cFrameTextRel.iX + BORDER_LEFT + x_center, y, m_cFrameTextRel.iWidth, m_cLineArray[i].c_str(), COL_MENUCONTENT, 0, true); // UTF-8
+		m_pcFontText->RenderString(m_cFrameTextRel.iX + x_start, y, m_cFrameTextRel.iWidth, m_cLineArray[i].c_str(), COL_MENUCONTENT, 0, true); // UTF-8
 	}
 }
 

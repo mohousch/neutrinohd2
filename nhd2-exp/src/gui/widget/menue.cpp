@@ -2238,7 +2238,7 @@ void CMenuWidget::paintItemInfo(int pos)
 
 /*
 			cFrameBoxText.iX = x + 100 + ICON_OFFSET;
-			cFrameBoxText.iY = y + height + 2;
+			cFrameBoxText.iY = y + full_height - cFrameFootInfo.iHeight + 2;
 			cFrameBoxText.iWidth = full_width - 100 - ICON_OFFSET - 2;
 			cFrameBoxText.iHeight = cFrameFootInfo.iHeight - 4;
 
@@ -2258,9 +2258,6 @@ void CMenuWidget::paintItemInfo(int pos)
 			{
 				textBox->setText(&item->itemHelpText);
 			}
-
-			textBox->paint();
-			textBox->refresh();
 */
 		}
 		else
@@ -2292,13 +2289,11 @@ void CMenuWidget::hideItemInfo()
 	{
 		::clearItem2DetailsLine(x, y, width + ConnectLineBox_Width, height, cFrameFootInfo.iHeight);
 
-/*
 		if(textBox)
 		{
 			delete textBox;
 			textBox = NULL;
 		}
-*/
 	}  
 }
 
@@ -2509,16 +2504,18 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		//
 		frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor, RADIUS_SMALL, CORNER_BOTH);
 
+		frameBuffer->DisplayImage(itemIcon, x + ICON_OFFSET, y + ICON_OFFSET, item_width - 2*ICON_OFFSET, item_height - 2*ICON_OFFSET);
+
 		//
 		if(selected)
 		{
 			frameBuffer->paintBoxRel(x, y, item_width, item_height, item_selectedColor, RADIUS_SMALL, CORNER_BOTH);
 
+			frameBuffer->DisplayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
+
 		}
 
-		frameBuffer->DisplayImage(itemIcon, x + ICON_OFFSET, y + ICON_OFFSET, item_width - 2*ICON_OFFSET, item_height - 2*ICON_OFFSET);
-
-		return y + item_height;
+		return 0;
 	}
 	else
 	{
@@ -3246,9 +3243,6 @@ void ClistBox::paintItems()
 			cFrameBoxText.iHeight = items_height;
 
 			textBox = new CTextBox("", g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER], CTextBox::SCROLL, &cFrameBoxText, COL_MENUCONTENTDARK_PLUS_0);
-
-
-			textBox->paint();
 		}
 		else if(widgetType == WIDGET_INFO)
 		{
@@ -3955,7 +3949,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 					}
 					else if (widgetType == WIDGET_EXTENDED)
 					{
-						textBox->scrollPageDown(1);
+						textBox->scrollPageUp(1);
 					}
 					else if(widgetType == WIDGET_INFO)
 					{
@@ -4025,7 +4019,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 					}
 					else if (widgetType == WIDGET_EXTENDED)
 					{
-						textBox->scrollPageUp(1);
+						textBox->scrollPageDown(1);
 					}
 					else if(widgetType == WIDGET_INFO)
 					{
@@ -4266,61 +4260,22 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		//
 		frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor, RADIUS_SMALL, CORNER_BOTH);
 
+		frameBuffer->DisplayImage(itemIcon, x + ICON_OFFSET, y + ICON_OFFSET, item_width - 2*ICON_OFFSET, item_height - 2*ICON_OFFSET);
+
 		//
 		if(selected)
 		{
 			frameBuffer->paintBoxRel(x, y, item_width, item_height, item_selectedColor, RADIUS_SMALL, CORNER_BOTH);
 
-		}
+			frameBuffer->DisplayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
 
-		frameBuffer->DisplayImage(itemIcon, x + ICON_OFFSET, y + ICON_OFFSET, item_width - 2*ICON_OFFSET, item_height - 2*ICON_OFFSET);
+		}
 
 		return 0;
 	}
 	else if(widgetType == WIDGET_INFO)
 	{
 		int height = getHeight();
-/*
-		//
-		int picw = 320;
-		int pich = 256;
-
-		int p_w = 0;
-		int p_h = 0;
-		int nbpp = 0;
-		
-		std::string fname = itemIcon;
-		
-		if( (!fname.empty() && !access(fname.c_str(), F_OK)) )
-		{
-			CFrameBuffer::getInstance()->getSize(fname, &p_w, &p_h, &nbpp);
-
-			// scale
-			if(p_w <= picw && p_h <= pich)
-			{
-				picw = p_w;
-				pich = p_h;
-			}
-			else
-			{
-				float aspect = (float)(p_w) / (float)(p_h);
-					
-				if (((float)(p_w) / (float)picw) > ((float)(p_h) / (float)pich)) 
-				{
-					p_w = picw;
-					p_h = (int)(picw / aspect);
-				}
-				else
-				{
-					p_h = pich;
-					p_w = (int)(pich * aspect);
-				}
-			}
-		}
-
-		textBox->setText(&optionInfo, itemIcon, p_w, p_h);
-		textBox->paint();
-*/
 
 		return y + height;
 	}

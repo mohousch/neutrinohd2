@@ -177,7 +177,7 @@ void CEpgData::start()
 	toph = topboxheight;
 }
 
-void CEpgData::addTextToArray(const std::string & text) // UTF-8
+void CEpgData::addTextToArray(const std::string& text) // UTF-8
 {
 	//printf("line: >%s<\n", text.c_str() );
 	
@@ -216,7 +216,7 @@ void CEpgData::processTextToArray(std::string text) // UTF-8
 
 			// check the wordwidth - add to this line if size ok
 			int aktWordWidth = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO2]->getRenderWidth(aktWord, true);
-			if((aktWordWidth+aktWidth)<(ox- 20- 15))
+			if((aktWordWidth + aktWidth) < (ox- 20- 15))
 			{
 				//space ok, add
 				aktWidth += aktWordWidth;
