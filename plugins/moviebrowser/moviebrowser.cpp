@@ -46,6 +46,9 @@ class CMBrowser : public CMenuTarget
 
 		//
 		void loadPlaylist();
+		void doTMDB();
+		bool delFile(CFile& file);
+		void onDeleteFile(MI_MOVIE_INFO& movieFile);
 
 	public:
 		CMBrowser();
@@ -156,6 +159,132 @@ void CMBrowser::loadPlaylist()
 	}
 }
 
+void CMBrowser::doTMDB()
+{
+	//				
+	cTmdb * tmdb = new cTmdb(m_vMovieInfo[mlist->getSelected()].epgTitle);
+	
+	if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
+	{
+		std::string buffer;
+
+		buffer = tmdb->getTitle().c_str();
+		buffer += "\n";
+	
+		// prepare print buffer  
+		buffer += tmdb->CreateEPGText();
+
+		// thumbnail
+		int pich = 246;	//FIXME
+		int picw = 162; 	//FIXME
+	
+		std::string thumbnail = "";
+	
+		// saved to /tmp
+		std::string fname = "/tmp/" + m_vMovieInfo[mlist->getSelected()].epgTitle + ".jpg";
+				
+		if(!access(fname.c_str(), F_OK) )
+			thumbnail = fname.c_str();
+	
+		CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+		CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
+
+		infoBox->setText(&buffer, thumbnail, picw, pich);
+		infoBox->exec();
+		delete infoBox;
+
+		if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
+		{
+			// rewrite tfile
+			std::string tname = m_vMovieInfo[mlist->getSelected()].file.Name;
+			changeFileNameExt(tname, ".jpg");
+			if(tmdb->getBigCover(tname)) 
+				m_vMovieInfo[mlist->getSelected()].tfile = tname;
+
+			if(m_vMovieInfo[mlist->getSelected()].epgInfo2.empty())
+				m_vMovieInfo[mlist->getSelected()].epgInfo2 = tmdb->getDescription();
+
+			m_movieInfo.saveMovieInfo(m_vMovieInfo[mlist->getSelected()]);
+		}  
+	}
+	else
+	{
+		MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_STREAMINFO_NOT_AVAILABLE), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+	}
+
+	delete tmdb;
+	tmdb = NULL;
+}
+
+bool CMBrowser::delFile(CFile& file)
+{
+	bool result = true;
+	unlink(file.Name.c_str()); // fix: use full path
+	dprintf(DEBUG_NORMAL, "CMBrowser::delete file: %s\r\n", file.Name.c_str());
+	return(result);
+}
+
+void CMBrowser::onDeleteFile(MI_MOVIE_INFO& movieFile)
+{
+	std::string msg = g_Locale->getText(LOCALE_FILEBROWSER_DODELETE1);
+	msg += "\r\n ";
+
+	if (movieFile.file.Name.length() > 40)
+	{
+			msg += movieFile.file.Name.substr(0, 40);
+			msg += "...";
+	}
+	else
+		msg += movieFile.file.Name;
+			
+	msg += "\r\n ";
+	msg += g_Locale->getText(LOCALE_FILEBROWSER_DODELETE2);
+
+	if (MessageBox(LOCALE_FILEBROWSER_DELETE, msg, CMessageBox::mbrNo, CMessageBox::mbYes|CMessageBox::mbNo) == CMessageBox::mbrYes)
+	{
+		delFile(movieFile.file);
+			
+                int i = 1;
+                char newpath[1024];
+                do {
+			sprintf(newpath, "%s.%03d", movieFile.file.Name.c_str(), i);
+			if(access(newpath, R_OK)) 
+			{
+				break;
+                        } 
+                        else 
+			{
+				unlink(newpath);
+				dprintf(DEBUG_NORMAL, "  delete file: %s\r\n", newpath);
+                        }
+                        i++;
+                } while(1);
+			
+                std::string fname = movieFile.file.Name;
+                       
+		int ext_pos = 0;
+		ext_pos = fname.rfind('.');
+		if( ext_pos > 0)
+		{
+			std::string extension;
+			extension = fname.substr(ext_pos + 1, fname.length() - ext_pos);
+			extension = "." + extension;
+			strReplace(fname, extension.c_str(), ".jpg");
+		}
+			
+                unlink(fname.c_str());
+
+		CFile file_xml  = movieFile.file; 
+		if(m_movieInfo.convertTs2XmlName(&file_xml.Name) == true)  
+		{
+			delFile(file_xml);
+	    	}
+	    	
+		m_vMovieInfo.erase( (std::vector<MI_MOVIE_INFO>::iterator)&movieFile);
+	}
+}
+
 int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCMBrowser::exec: actionKey:%s\n", actionKey.c_str());
@@ -182,10 +311,12 @@ int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		mlist->hide();
 
-		if(mlist->getWidgetType() == WIDGET_EXTENDED)
-			mlist->setWidgetType(WIDGET_FRAME);
-		else if(mlist->getWidgetType() == WIDGET_FRAME)
+		if(mlist->getWidgetType() == WIDGET_FRAME)
 			mlist->setWidgetType(WIDGET_EXTENDED);
+		else if(mlist->getWidgetType() == WIDGET_EXTENDED)
+			mlist->setWidgetType(WIDGET_INFO);
+		else if(mlist->getWidgetType() == WIDGET_INFO)
+			mlist->setWidgetType(WIDGET_FRAME);
 
 		mlist->initFrames();
 		mlist->paint();
@@ -194,9 +325,9 @@ int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_red")
 	{
+/*
 		hide();
-
-		//				
+				
 		cTmdb * tmdb = new cTmdb(m_vMovieInfo[mlist->getSelected()].epgTitle);
 	
 		if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
@@ -250,6 +381,22 @@ int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		delete tmdb;
 		tmdb = NULL;
+*/
+		hide();
+		doTMDB();
+	}
+	else if (actionKey == "RC_spkr") 
+	{
+		if(m_vMovieInfo.size() > 0)
+		{	
+			if (&m_vMovieInfo[mlist->getSelected()].file != NULL) 
+			{
+			 	onDeleteFile(m_vMovieInfo[mlist->getSelected()]);
+			}
+		}
+
+		showMenu();
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	
 	return menu_return::RETURN_REPAINT;
@@ -274,7 +421,16 @@ void CMBrowser::showMenu()
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
+		//item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
+		std::string tmp = m_vMovieInfo[i].epgTitle;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo1;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo2;
+
+		item->setInfo1(tmp.c_str());
+
+		item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]);
 
 		mlist->addItem(item);
 	}
@@ -293,9 +449,10 @@ void CMBrowser::showMenu()
 	mlist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	mlist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
 	mlist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
+	mlist->addKey(CRCInput::RC_spkr, this, CRCInput::getSpecialKeyName(CRCInput::RC_spkr));
 
 	mlist->exec(NULL, "");
-	mlist->hide();
+	//mlist->hide();
 	delete mlist;
 	mlist = NULL;
 }
