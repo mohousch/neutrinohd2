@@ -44,8 +44,8 @@ class CAudioPlayer
 	private:		
 		time_t m_played_time;	
 		int  m_sc_buffered;
-		pthread_t	thrPlay;
-		FILE		*fp;
+		pthread_t thrPlay;
+		FILE* fp;
 		CBaseDec::State state;
 		static void *PlayThread(void*);
 		void clearFileData();

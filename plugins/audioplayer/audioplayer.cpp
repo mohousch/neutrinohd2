@@ -42,6 +42,7 @@ class CMP3Player : public CMenuTarget
 		int selected;
 
 		void loadPlaylist(bool reload = true);
+		void openFileBrowser();
 
 		//
 		bool shufflePlaylist(void);
@@ -139,6 +140,32 @@ void CMP3Player::loadPlaylist(bool reload)
 	}
 }
 
+void CMP3Player::openFileBrowser()
+{
+	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
+
+	filebrowser.Multi_Select = true;
+	filebrowser.Dirs_Selectable = true;
+	filebrowser.Filter = &fileFilter;
+
+	if (filebrowser.exec(Path.c_str()))
+	{
+		Path = filebrowser.getCurrentDir();
+		CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
+		for(; files != filebrowser.getSelectedFiles().end(); files++)
+		{
+			if ( (files->getExtension() == CFile::EXTENSION_CDR)
+					||  (files->getExtension() == CFile::EXTENSION_MP3)
+					||  (files->getExtension() == CFile::EXTENSION_WAV)
+					||  (files->getExtension() == CFile::EXTENSION_FLAC))
+			{
+				CAudiofile audiofile(files->Name, files->getExtension());		
+				playlist.push_back(audiofile);
+			}
+		}
+	}
+}
+
 int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMP3Player::exec: actionKey:%s\n", actionKey.c_str());
@@ -181,29 +208,7 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 		alist->clearItems();
 		playlist.clear();
 
-		CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
-
-		filebrowser.Multi_Select = true;
-		filebrowser.Dirs_Selectable = true;
-		filebrowser.Filter = &fileFilter;
-
-		if (filebrowser.exec(Path.c_str()))
-		{
-			Path = filebrowser.getCurrentDir();
-			CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
-			for(; files != filebrowser.getSelectedFiles().end(); files++)
-			{
-				if ( (files->getExtension() == CFile::EXTENSION_CDR)
-					||  (files->getExtension() == CFile::EXTENSION_MP3)
-					||  (files->getExtension() == CFile::EXTENSION_WAV)
-					||  (files->getExtension() == CFile::EXTENSION_FLAC))
-				{
-					CAudiofile audiofile(files->Name, files->getExtension());
-							
-					playlist.push_back(audiofile);
-				}
-			}
-		}
+		openFileBrowser();
 
 		showMenu(false);
 

@@ -51,14 +51,17 @@ void CAudioPlayer::stop()
 {
 	state = CBaseDec::STOP_REQ;
 	
-	if(playback->playing)
-		playback->Close();
+	//if(playback->playing)
+	//	playback->Close();
 
 	//
 	if(thrPlay)
 		pthread_join(thrPlay, NULL);
 	
 	thrPlay = 0;
+
+	if(playback->playing)
+		playback->Close();
 	
 	state = CBaseDec::STOP;
 }
@@ -193,10 +196,6 @@ bool CAudioPlayer::play(const CAudiofile *file, const bool highPrio)
 
 	getInstance()->clearFileData();
 
-	/* 
-	transfer information from CAudiofile to member variable, so that it does not have to be gathered again
-	this assignment is important, otherwise the player would crash if the file currently played was deleted from the playlist
-	*/
 	m_Audiofile = *file;
 	
 	state = CBaseDec::PLAY;

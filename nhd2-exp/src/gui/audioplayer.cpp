@@ -484,7 +484,7 @@ void CAudioPlayerGui::paintInfo()
 	// third line
 	if(updateMeta || updateScreen)
 	{
-		int xstart = ((m_width - BORDER_LEFT - BORDER_RIGHT - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(m_metainfo))/2) + BORDER_LEFT;
+		xstart = ((m_width - BORDER_LEFT - BORDER_RIGHT - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(m_metainfo))/2) + BORDER_LEFT;
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + xstart, m_y + m_title_height - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()/2, m_width- 2*xstart, m_metainfo, COL_MENUHEAD_INFO);
 	}
@@ -536,13 +536,11 @@ void CAudioPlayerGui::stop()
 {
 	m_state = CAudioPlayerGui::STOP;	
 
-	paintInfo();
-
-	//LCD
-	paintLCD();
-
 	if(CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
 		CAudioPlayer::getInstance()->stop();
+
+	paintInfo();
+	paintLCD();
 }
 
 void CAudioPlayerGui::pause()
@@ -558,8 +556,7 @@ void CAudioPlayerGui::pause()
 		CAudioPlayer::getInstance()->pause();
 	}
 
-	paintInfo();
-		
+	paintInfo();	
 	paintLCD();	
 }
 
@@ -608,27 +605,14 @@ void CAudioPlayerGui::play(unsigned int pos)
 
 	m_current = pos;
 
-	CAudioPlayer::getInstance()->stop();
-
-	// metadata
-/*
-	if ( (m_playlist[pos].FileExtension != CFile::EXTENSION_M3U || m_playlist[pos].FileExtension != CFile::EXTENSION_URL || m_playlist[pos].FileExtension != CFile::EXTENSION_PLS) && !m_playlist[pos].MetaData.bitrate)
-	{
-		GetMetaData(m_playlist[pos]);
-	}
-	
-	m_metainfo.clear();
-	m_time_played = 0;
-	m_time_total = m_playlist[pos].MetaData.total_time;
-*/
-	m_state = CAudioPlayerGui::PLAY;
+	//CAudioPlayer::getInstance()->stop();
 
 	// play
 	CAudioPlayer::getInstance()->play(&m_playlist[pos], g_settings.audioplayer_highprio == 1);
+
+	m_state = CAudioPlayerGui::PLAY;
 	
 	paintInfo();
-
-	//lcd	
 	paintLCD();
 }
 
