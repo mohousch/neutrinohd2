@@ -620,7 +620,7 @@ void CWebTV::quickZap(int key)
 	startPlayBack(tuned);
 
 	//infoviewer
-	g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
+	g_InfoViewer->show(tuned + 1, channels[tuned]->title, -1, channels[tuned]->id);
 }
 
 void CWebTV::showInfo()
@@ -915,8 +915,6 @@ void CWebTV::show(bool reload, bool reinit)
 
 	//
 	webTVlistMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-
-	// footer
 	webTVlistMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
 	webTVlistMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
 	webTVlistMenu->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
@@ -943,12 +941,6 @@ CWebTV::result_ CWebTV::itemSelected()
 		stopPlayBack();
 		startPlayBack(webTVlistMenu->getSelected());
 		tuned = webTVlistMenu->getSelected();
-
-		//infoviewer
-		g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
-
-		// kill infobar
-		g_InfoViewer->killTitle();
 	}
 	
 	return resume;
@@ -963,26 +955,13 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	if(actionKey == "zapit")
 	{
-/*
-		if(webTVlistMenu->getSelected() != tuned)
-		{
-			stopPlayBack();
-			startPlayBack(webTVlistMenu->getSelected());
-			tuned = webTVlistMenu->getSelected();
-
-			//infoviewer
-			g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
-
-			// kill infobar
-			g_InfoViewer->killTitle();
-		}
-
-		return menu_return::RETURN_EXIT;
-*/
 		if(itemSelected() == close)
 			return menu_return::RETURN_EXIT_ALL;
-		else
-			return menu_return::RETURN_EXIT;
+		else // resume
+		{
+			g_InfoViewer->show(tuned + 1, getLiveChannelName(), -1, getLiveChannelID());
+			return menu_return::RETURN_NONE;
+		}
 	}
 	else if(actionKey == "RC_red")
 	{

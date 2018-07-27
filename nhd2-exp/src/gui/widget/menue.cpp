@@ -3539,7 +3539,7 @@ void ClistBox::enableSaveScreen()
 
 void ClistBox::hide()
 {
-	dprintf(DEBUG_DEBUG, "ClistBox::hide:\n");
+	dprintf(DEBUG_NORMAL, "ClistBox::hide:\n");
 
 	if( savescreen && background)
 		restoreScreen();
@@ -4079,6 +4079,13 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 									paintHead();
 									paintFoot();
 									break;
+								case menu_return::RETURN_NONE:
+									g_RCInput->killTimer(sec_timer_id);
+									sec_timer_id = 0;
+									retval = menu_return::RETURN_NONE;
+									msg = CRCInput::RC_timeout;
+									break;
+									
 							}
 						} 
 						else
@@ -4112,8 +4119,11 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 		frameBuffer->blit();
 	}
 	while ( msg != CRCInput::RC_timeout );
+
+	printf("listBox:exec: retval:%d\n", retval);
 	
-	hide();
+	if(retval != menu_return::RETURN_NONE)
+		hide();	
 
 	//
 	if(PaintDate)

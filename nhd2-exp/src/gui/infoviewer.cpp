@@ -548,9 +548,8 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 	{
 		g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
 
-		dprintf(DEBUG_NORMAL, "show: msg:%s\n", CRCInput::getSpecialKeyName(msg));
+		dprintf(DEBUG_NORMAL, "CInfoViewer::show: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
-		//
 		sigscale->reset(); 
 		snrscale->reset(); 
 		timescale->reset();
@@ -562,7 +561,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 
 		if ( msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
 		{
-			g_RCInput->postMsg (msg, 0);
+			g_RCInput->postMsg(msg, 0);
 			res = messages_return::cancel_info;
 		}
 		else if ( msg == CRCInput::RC_info )
@@ -589,7 +588,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 
 			showIcon_16_9();
 				
-			if ( is_visible && showButtonBar ) 
+			if (showButtonBar) 
 				showIcon_Resolution();
 		} 
 		else if ( g_settings.virtual_zap_mode && ((msg == CRCInput::RC_right) || msg == CRCInput::RC_left) && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)) 
@@ -630,9 +629,10 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 					
 				if (res & messages_return::unhandled) 
 				{
+					printf("CInfoViewer::show: message unhandled\n");
 					// raus hier und im Hauptfenster behandeln...
-					g_RCInput->postMsg (msg, data);
-					res = messages_return::cancel_info;
+					//g_RCInput->postMsg (msg, data);
+					//res = messages_return::cancel_info;
 				}
 			}
 		}
@@ -1892,10 +1892,9 @@ int CInfoViewerHandler::exec(CMenuTarget * parent, const std::string &/*actionke
 {
 	dprintf(DEBUG_NORMAL, "CInfoViewerHandler::exec:\n");
 
-
 	int res = menu_return::RETURN_EXIT_ALL;
-	CChannelList * channelList;
-	CInfoViewer * i;
+	CChannelList* channelList;
+	CInfoViewer* i;
 	
 	if (parent) 
 		parent->hide();

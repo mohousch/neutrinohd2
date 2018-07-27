@@ -53,13 +53,6 @@
 
 extern CFont* g_Font[FONT_TYPE_COUNT];
 
-/*
-class CMenuItem;
-
-CFont* CMenuItem::nameFont = NULL;
-CFont* CMenuItem::optionFont = NULL;
-*/
-
 
 #define MENU_WIDTH			590
 #define MENU_HEIGHT			700
@@ -755,6 +748,8 @@ class ClistBox : public CMenuTarget
 		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
 		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
+
+		void setName(const std::string& name){nameString = name;};
 };
 
 // CMenulistBoxItem
