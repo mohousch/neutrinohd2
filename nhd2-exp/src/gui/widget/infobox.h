@@ -28,22 +28,6 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-	***********************************************************
-  
-	Module Name: msgbox.h .
-
-	Description: interface of the CMsgBox class
-
-	Date:	  Nov 2005
-
-	Author: Günther@tuxbox.berlios.org
-		based on code of Steffen Hehn 'McClean'
-
-	Revision History:
-	Date			Author		Change Description
-	   Nov 2005		Günther	initial implementation
-
 */
 
 #if !defined(INFOBOX_H)

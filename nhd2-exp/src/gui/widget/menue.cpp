@@ -1094,7 +1094,7 @@ CMenuWidget::CMenuWidget()
 
 	//
 	backgroundColor = COL_BACKGROUND;
-	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
+	itemBoxColor = COL_YELLOW /*COL_MENUCONTENTSELECTED_PLUS_0*/;
 	itemsPerX = 6;
 	itemsPerY = 3;
 
@@ -1149,7 +1149,7 @@ void CMenuWidget::Init(const std::string & Icon, const int mwidth, const int mhe
 
 	//
 	backgroundColor = COL_BACKGROUND;
-	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
+	itemBoxColor = COL_YELLOW /*COL_MENUCONTENTSELECTED_PLUS_0*/;
 	itemsPerX = 6;
 	itemsPerY = 3;
 
@@ -2675,7 +2675,7 @@ ClistBox::ClistBox()
 
 	//
 	backgroundColor = COL_BACKGROUND;
-	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
+	itemBoxColor = COL_YELLOW /*COL_MENUCONTENTSELECTED_PLUS_0*/;
 	itemsPerX = 6;
 	itemsPerY = 3;
 
@@ -2751,7 +2751,7 @@ void ClistBox::Init(const std::string & Icon, const int mwidth, const int mheigh
 
 	//
 	backgroundColor = COL_BACKGROUND;
-	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
+	itemBoxColor = COL_YELLOW /*COL_MENUCONTENTSELECTED_PLUS_0*/;
 	itemsPerX = 6;
 	itemsPerY = 3;
 

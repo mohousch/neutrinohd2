@@ -136,8 +136,6 @@ void CWindow::paint()
 
 	// window Box
 	frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, bgcolor, radius, corner, gradient);
-
-	frameBuffer->blit();
 }
 
 void CWindow::hide()
@@ -146,8 +144,6 @@ void CWindow::hide()
 		restoreScreen();
 	else
 		frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, full_width, full_height);
-
-	frameBuffer->blit();
 }
 
 

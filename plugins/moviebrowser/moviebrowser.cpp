@@ -325,63 +325,6 @@ int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_red")
 	{
-/*
-		hide();
-				
-		cTmdb * tmdb = new cTmdb(m_vMovieInfo[mlist->getSelected()].epgTitle);
-	
-		if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
-		{
-			std::string buffer;
-
-			buffer = tmdb->getTitle().c_str();
-			buffer += "\n";
-	
-			// prepare print buffer  
-			buffer += tmdb->CreateEPGText();
-
-			// thumbnail
-			int pich = 246;	//FIXME
-			int picw = 162; 	//FIXME
-	
-			std::string thumbnail = "";
-	
-			// saved to /tmp
-			std::string fname = "/tmp/" + m_vMovieInfo[mlist->getSelected()].epgTitle + ".jpg";
-				
-			if(!access(fname.c_str(), F_OK) )
-				thumbnail = fname.c_str();
-	
-			CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-	
-			CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
-
-			infoBox->setText(&buffer, thumbnail, picw, pich);
-			infoBox->exec();
-			delete infoBox;
-
-			if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
-			{
-				// rewrite tfile
-				std::string tname = m_vMovieInfo[mlist->getSelected()].file.Name;
-				changeFileNameExt(tname, ".jpg");
-				if(tmdb->getBigCover(tname)) 
-					m_vMovieInfo[mlist->getSelected()].tfile = tname;
-
-				if(m_vMovieInfo[mlist->getSelected()].epgInfo2.empty())
-					m_vMovieInfo[mlist->getSelected()].epgInfo2 = tmdb->getDescription();
-
-				m_movieInfo.saveMovieInfo(m_vMovieInfo[mlist->getSelected()]);
-			}  
-		}
-		else
-		{
-			MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_STREAMINFO_NOT_AVAILABLE), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
-		}
-
-		delete tmdb;
-		tmdb = NULL;
-*/
 		hide();
 		doTMDB();
 	}

@@ -119,6 +119,7 @@ void CPluginList::showMenu()
 
 	plist->setWidgetType(WIDGET_CLASSIC);
 	plist->enablePaintDate();
+	plist->setItemBoxColor(COL_YELLOW);
 
 	plist->setSelected(selected);
 

@@ -641,7 +641,7 @@ void CTextBox::paint(void)
 	dprintf(DEBUG_NORMAL, "CTextBox::paint:\n");
 
 	painted = true;
-	refresh();
+	//refresh();
 }
 
 void CTextBox::hide(void)

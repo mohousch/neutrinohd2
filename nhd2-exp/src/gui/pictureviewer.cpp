@@ -294,6 +294,9 @@ int CPictureViewerGui::show()
 		frameBuffer->blit();	
 	}
 
+	frameBuffer->paintBackground();
+	frameBuffer->blit();
+
 	return(res);
 }
 

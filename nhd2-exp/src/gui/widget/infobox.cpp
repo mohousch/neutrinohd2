@@ -115,7 +115,7 @@ CInfoBox::CInfoBox(  const char * text,
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-CInfoBox::CInfoBox(const char * text)
+CInfoBox::CInfoBox(const char* text)
 {
 	initVar();
 
