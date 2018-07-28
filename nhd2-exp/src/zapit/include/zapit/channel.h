@@ -124,72 +124,77 @@ class CCaPmt;
 class CZapitChannel
 {
 	private:
-		/* channel name */
-		std::string name;
-
-		/* pids of this channel */
+		// pids of this channel
 		std::vector <CZapitAbsSub* > channelSubs;
 		std::vector <CZapitAudioChannel *> audioChannels;
 		
-		unsigned short			pcrPid;
-		unsigned short			pmtPid;
-		unsigned short			teletextPid;
-		unsigned short			videoPid;
-		unsigned short			audioPid;
-		unsigned short			privatePid;
-		unsigned short			aitPid;
-		std::string			hbbtvUrl;
+		unsigned short pcrPid;
+		unsigned short pmtPid;
+		unsigned short teletextPid;
+		unsigned short videoPid;
+		unsigned short audioPid;
+		unsigned short privatePid;
+		unsigned short aitPid;
 
-		/* set true when pids are set up */
+		// set true when pids are set up
 		bool pidsFlag;
 
-		/* last selected audio channel */
-		unsigned char			currentAudioChannel;
+		// last selected audio channel
+		unsigned char currentAudioChannel;
 
-		/* chosen subtitle stream */
-		unsigned char                   currentSub;
+		// chosen subtitle stream
+		unsigned char currentSub;
 
-		/* read only properties, set by constructor */
+		// read only properties, set by constructor
 		t_service_id			service_id;
 		t_transport_stream_id		transport_stream_id;
 		t_original_network_id		original_network_id;
 		t_satellite_position		satellitePosition;
 		freq_id_t			freq;
 
-		/* read/write properties (write possibility needed by scan) */
-		unsigned char			serviceType;
+		// read/write properties (write possibility needed by scan)
+		unsigned char serviceType;
 
-		/* the conditional access program map table of this channel */
-		CCaPmt * 			caPmt;
-		unsigned char * 		rawPmt;
-		int				pmtLen;
+		// the conditional access program map table of this channel
+		CCaPmt* caPmt;
+		unsigned char* rawPmt;
+		int pmtLen;
 		
-		/* from neutrino CChannel class */
-		uint64_t      last_unlocked_EPGid;
-		time_t        last_unlocked_time;
+		// from neutrino CChannel class
+		uint64_t last_unlocked_EPGid;
+		time_t last_unlocked_time;
 
 		std::string ttx_language_code;
 
 		friend class CChannelList;
 
 	public:
+		// channel name
+		std::string name;
+
 		bool bAlwaysLocked;
 
-		int             number;
-		CChannelEvent   currentEvent, nextEvent;
-		int 		videoType;
-		t_channel_id	channel_id;
-		unsigned char 	scrambled;
-		char * pname;
+		int number;
+		CChannelEvent currentEvent, nextEvent;
+		int videoType;
+		t_channel_id channel_id;
+		unsigned char scrambled;
+		char * pname; //?
 		
 		uint8_t	polarization;
 
-		/* constructor, desctructor */
-		CZapitChannel(const std::string & p_name, t_service_id p_sid, t_transport_stream_id p_tsid, t_original_network_id p_onid, unsigned char p_service_type, t_satellite_position p_satellite_position, freq_id_t p_freq );
+		//
+		std::string url;
+		std::string description;
+
+
+		// constructor, desctructor
+		CZapitChannel(const std::string& p_name, t_service_id p_sid, t_transport_stream_id p_tsid, t_original_network_id p_onid, unsigned char p_service_type, t_satellite_position p_satellite_position, freq_id_t p_freq );
+		CZapitChannel(const std::string& p_name, t_channel_id p_chid, const std::string& p_description);
 
 		~CZapitChannel(void);
 
-		/* get methods - read only variables */
+		// get methods - read only variables
 		t_service_id		getServiceId(void)         	const { return service_id; }
 		t_transport_stream_id	getTransportStreamId(void) 	const { return transport_stream_id; }
 		t_original_network_id	getOriginalNetworkId(void) 	const { return original_network_id; }
@@ -219,7 +224,8 @@ class CZapitChannel
 		CCaPmt *		getCaPmt(void)			{ return caPmt; }
 		unsigned char *		getRawPmt(int &len)		{ len = pmtLen; return rawPmt; };
 		unsigned short		getaitPid(void)			{return aitPid;};
-		std::string		getUrl(void)			{return hbbtvUrl;};
+		std::string		getUrl(void)			{return url;};
+		std::string		getDescription(void)		{return description;};
 
 		CZapitAudioChannel * 	getAudioChannel(unsigned char index = 0xFF);
 		unsigned short 		getAudioPid(unsigned char index = 0xFF);

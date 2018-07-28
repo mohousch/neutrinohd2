@@ -196,6 +196,9 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	if(!access("/tmp/cover.jpg", F_OK))
 		remove("/tmp/cover.jpg");
 
+	if(!m_playlist.empty())
+		m_playlist.clear();
+
 	//always repaint
 	return menu_return::RETURN_REPAINT;
 }
@@ -324,7 +327,10 @@ int CAudioPlayerGui::show()
 		}
 		else if( ((msg == CRCInput::RC_setup) || (msg == CRCInput::RC_vfdmenu)))
 		{
-			loop = false;
+			CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
+			audioPlayerSettingsMenu->exec(NULL, "");
+			delete audioPlayerSettingsMenu;
+			audioPlayerSettingsMenu = NULL;						
 		}
 		else if(msg == NeutrinoMessages::CHANGEMODE)
 		{

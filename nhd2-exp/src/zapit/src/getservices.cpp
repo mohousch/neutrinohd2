@@ -133,7 +133,7 @@ void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, 
 		else if(Source == DVB_T)
 			freq = feparams.frequency/1000000;
 
-		// add current transponder to list
+		// add current transponder to TP list
 		transponder_id_t tid = CREATE_TRANSPONDER_ID_FROM_SATELLITEPOSITION_ORIGINALNETWORK_TRANSPORTSTREAM_ID(freq, satellitePosition, original_network_id, transport_stream_id);
 
 		pair<map<transponder_id_t, transponder>::iterator, bool> ret;
@@ -209,6 +209,7 @@ void ParseChannels(xmlNodePtr node, const t_transport_stream_id transport_stream
 			apid = audio_map_it->second.apid;
 		}
 
+		// insert channels
 		pair<map<t_channel_id, CZapitChannel>::iterator, bool> ret;
 
 		ret = allchans.insert (std::pair <t_channel_id, CZapitChannel> (chid, CZapitChannel( name, 
@@ -598,6 +599,7 @@ int loadTransponders()
 		}
 	}
 
+	// remove this
 	if(fake_tuner)
 	{
 		parseScanInputXml(fe_type);

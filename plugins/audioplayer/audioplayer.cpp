@@ -201,15 +201,14 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 			selected = playlist.size() - 1;
 
 		showMenu(false);
+
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
 		alist->clearItems();
 		playlist.clear();
-
 		openFileBrowser();
-
 		showMenu(false);
 
 		return menu_return::RETURN_EXIT_ALL;
@@ -219,12 +218,14 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 		playlist.clear();
 		alist->clearItems();
 		showMenu(false);
+
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_blue")
 	{
 		shufflePlaylist();
 		showMenu(false);
+
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	

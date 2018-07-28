@@ -42,6 +42,7 @@ class CPicViewer : public CMenuTarget
 		int selected;
 
 		void loadPlaylist(bool reload = true);
+		void openFileBrowser();
 		
 	public:
 		CPicViewer();
@@ -108,6 +109,38 @@ void CPicViewer::loadPlaylist(bool reload)
 	}
 }
 
+void CPicViewer::openFileBrowser()
+{
+	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
+
+	filebrowser.Multi_Select = true;
+	filebrowser.Dirs_Selectable = true;
+	filebrowser.Filter = &fileFilter;
+
+	if (filebrowser.exec(Path.c_str()))
+	{
+		Path = filebrowser.getCurrentDir();
+		CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
+		for(; files != filebrowser.getSelectedFiles().end(); files++)
+		{
+			if(files->getType() == CFile::FILE_PICTURE)
+			{
+				CPicture pic;
+				pic.Filename = files->Name;
+				std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
+				pic.Name = tmp.substr(0, tmp.rfind('.'));
+				pic.Type = tmp.substr(tmp.rfind('.') + 1);
+				struct stat statbuf;
+				if(stat(pic.Filename.c_str(),&statbuf) != 0)
+					printf("stat error");
+				pic.Date = statbuf.st_mtime;
+							
+				playlist.push_back(pic);
+			}
+		}
+	}
+}
+
 int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CPicViewer::exec: actionKey:%s\n", actionKey.c_str());
@@ -141,49 +174,24 @@ int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 		if (selected >= playlist.size())
 			selected = playlist.size() - 1;
 
-		showMenu();
+		showMenu(false);
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
 		playlist.clear();
+		plist->clearItems();
+		openFileBrowser();
+		showMenu(false);
 
-		CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
-
-		filebrowser.Multi_Select = true;
-		filebrowser.Dirs_Selectable = true;
-		filebrowser.Filter = &fileFilter;
-
-		if (filebrowser.exec(Path.c_str()))
-		{
-			Path = filebrowser.getCurrentDir();
-			CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
-			for(; files != filebrowser.getSelectedFiles().end(); files++)
-			{
-				if(files->getType() == CFile::FILE_PICTURE)
-				{
-					CPicture pic;
-					pic.Filename = files->Name;
-					std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
-					pic.Name = tmp.substr(0, tmp.rfind('.'));
-					pic.Type = tmp.substr(tmp.rfind('.') + 1);
-					struct stat statbuf;
-					if(stat(pic.Filename.c_str(),&statbuf) != 0)
-						printf("stat error");
-					pic.Date = statbuf.st_mtime;
-							
-					playlist.push_back(pic);
-				}
-			}
-		}
-
-		showMenu();
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_yellow")
 	{
 		playlist.clear();
+		plist->clearItems();
 		showMenu(false);
+
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_blue")

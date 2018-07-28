@@ -239,7 +239,6 @@
 #define NEUTRINO_ICON_MENUITEM_RELOADCHANNELS		CONFIGDIR "/design/reloadchannels.png"
 #define NEUTRINO_ICON_MENUITEM_BOUQUETSEDITOR		CONFIGDIR "/design/bouquetseditor.png"
 #define NEUTRINO_ICON_MENUITEM_CICAM			CONFIGDIR "/design/cicam.png"
-#define NEUTRINO_ICON_MENUITEM_SATIP			CONFIGDIR "/design/satip.png"
 #define NEUTRINO_ICON_MENUITEM_IMAGEINFO		CONFIGDIR "/design/imageinfo.png"
 #define NEUTRINO_ICON_MENUITEM_SOFTUPDATE		CONFIGDIR "/design/softupdate.png"
 

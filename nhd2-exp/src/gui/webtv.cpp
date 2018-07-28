@@ -65,7 +65,6 @@
 #include <bouquets.h>
 
 
-extern tallchans allchans;
 extern cPlayback *playback;
 xmlDocPtr parser;
 
@@ -101,10 +100,10 @@ void CWebTV::ClearChannels(void)
 		parser = NULL;
 	}
 	
-	for(unsigned int j = 0; j < channels.size(); j++)
+	for (std::vector<CZapitChannel*>::iterator it = channels.begin(); it != channels.end(); it++) 
 	{
-		delete channels[j];
-	}
+               	delete (*it);
+        }
 	
 	channels.clear();
 }
@@ -127,30 +126,30 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 	CURL *curl_handle;
 	struct MemoryStruct chunk;
 	
-	chunk.memory = NULL; 	/* we expect realloc(NULL, size) to work */
-	chunk.size = 0;    	/* no data at this point */
+	chunk.memory = NULL; 	// we expect realloc(NULL, size) to work
+	chunk.size = 0;    	// no data at this point
 
 	curl_global_init(CURL_GLOBAL_ALL);
 
-	/* init the curl session */
+	// init the curl session
 	curl_handle = curl_easy_init();
 
-	/* specify URL to get */
+	// specify URL to get
 	curl_easy_setopt(curl_handle, CURLOPT_URL, url);
 
-	/* send all data to this function  */
+	// send all data to this function 
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 
-	/* we pass our 'chunk' struct to the callback function */
+	// we pass our 'chunk' struct to the callback function
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
 
-	/* some servers don't like requests that are made without a user-agent field, so we provide one */
+	// some servers don't like requests that are made without a user-agent field, so we provide one
 	curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
 
-	/* don't use signal for timeout */
+	// don't use signal for timeout
 	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
 
-	/* set timeout to 10 seconds */
+	// set timeout to 10 seconds
 	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 10);
 	
 	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
@@ -167,10 +166,10 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 		}
 	}
 
-	/* get it! */
+	// get it!
 	curl_easy_perform(curl_handle);
 
-	/* cleanup curl stuff */
+	// cleanup curl stuff
 	curl_easy_cleanup(curl_handle);
 
 	long res_code;
@@ -178,7 +177,6 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 	{
 		if (200 == res_code) 
 		{
-			//printf("\nchunk = %s\n", chunk.memory);
 			std::istringstream iss;
 			iss.str (std::string(chunk.memory, chunk.size));
 			char line[512];
@@ -190,7 +188,6 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 				iss.getline(line, 512);
 				if (line[0] != '#') 
 				{
-					//printf("chunk: line = %s\n", line);
 					ptr = strstr(line, "http://");
 					if (ptr != NULL) 
 					{
@@ -202,15 +199,6 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 						tmp = strchr(line, '\n');
 						if (tmp != NULL)
 							*tmp = '\0';
-
-						// grab channel id from channellist
-						id = 0;
-
-						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
-						{
-								if(strcasecmp(it->second.getName().c_str(), name) == 0)
-									id = it->second.getChannelID();
-						}
 						
 						addUrl2Playlist(ptr, name, description, id);
 					}
@@ -222,7 +210,7 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 	if(chunk.memory)
 		free(chunk.memory);
  
-	/* we're done with libcurl, so clean it up */
+	// we're done with libcurl, so clean it up
 	curl_global_cleanup();
 }
 
@@ -230,10 +218,10 @@ void CWebTV::addUrl2Playlist(const char * url, const char *name, const char * de
 {
 	dprintf(DEBUG_DEBUG, "CWebTV::addUrl2Playlist\n");
 	
-	webtv_channels * tmp = new webtv_channels();
+	CZapitChannel * tmp = new CZapitChannel(name, id, description);
 	
-	tmp->id = id&0xFFFFFFFFFFFFULL;				
-	tmp->title = name;
+	tmp->channel_id = id&0xFFFFFFFFFFFFULL;				
+	tmp->name = name;
 	tmp->url = url;
 	tmp->description = description;
 						
@@ -266,6 +254,7 @@ bool CWebTV::readChannellist(std::string filename)
 	if(iptv)
 	{
 		FILE * f = fopen(filename.c_str(), "r");
+
 		std::string title;
 		std::string URL;
 		std::string url;
@@ -525,8 +514,8 @@ const std::string& CWebTV::getChannelName(t_channel_id id)
 {
 	for(unsigned int i = 0; i < channels.size(); i++)
 	{
-		if(channels[i]->id == id)
-			return channels[i]->title;
+		if(channels[i]->channel_id == id)
+			return channels[i]->name;
 	}
 
 	return std::string("");
@@ -536,7 +525,7 @@ const std::string& CWebTV::getChannelURL(t_channel_id id)
 {
 	for(unsigned int i = 0; i < channels.size(); i++)
 	{
-		if(channels[i]->id == id)
+		if(channels[i]->channel_id == id)
 			return channels[i]->url;
 	}
 
@@ -562,14 +551,14 @@ bool CWebTV::startPlayBack(int pos)
 	playstate = PLAY;
 	speed = 1;
 
-	getEvents(channels[pos]->id&0xFFFFFFFFFFFFULL);
+	getEvents(channels[pos]->channel_id&0xFFFFFFFFFFFFULL);
 
-	g_Sectionsd->setServiceChanged(channels[pos]->id&0xFFFFFFFFFFFFULL, false);
+	g_Sectionsd->setServiceChanged(channels[pos]->channel_id&0xFFFFFFFFFFFFULL, false);
 
 	if (CVFD::getInstance()->is4digits)					
 		CVFD::getInstance()->LCDshowText(pos + 1);
 	else
-		CVFD::getInstance()->showServicename(channels[pos]->title); 
+		CVFD::getInstance()->showServicename(channels[pos]->name); 
 
 	return true;
 }
@@ -620,7 +609,7 @@ void CWebTV::quickZap(int key)
 	startPlayBack(tuned);
 
 	//infoviewer
-	g_InfoViewer->show(tuned + 1, channels[tuned]->title, -1, channels[tuned]->id);
+	g_InfoViewer->show(tuned + 1, channels[tuned]->name, -1, channels[tuned]->channel_id);
 }
 
 void CWebTV::showInfo()
@@ -738,7 +727,7 @@ void CWebTV::updateEvents(void)
 				//
 				events.clear();
 
-				sectionsd_getEventsServiceKey(channels[count]->id, events);
+				sectionsd_getEventsServiceKey(channels[count]->channel_id, events);
 				channels[count]->nextEvent.startTime = (long)0x7fffffff;
 				
 				for ( CChannelEventList::iterator e = events.begin(); e != events.end(); ++e ) 
@@ -764,7 +753,7 @@ void CWebTV::updateEvents(void)
 			
 			for (uint32_t count = 0; count < channels.size(); count++)
 			{
-				p_requested_channels[count] = channels[count]->id&0xFFFFFFFFFFFFULL;
+				p_requested_channels[count] = channels[count]->channel_id&0xFFFFFFFFFFFFULL;
 			}
 
 			CChannelEventList pevents;
@@ -776,7 +765,7 @@ void CWebTV::updateEvents(void)
 				
 				for ( CChannelEventList::iterator e = pevents.begin(); e != pevents.end(); ++e )
 				{
-					if ((channels[count]->id&0xFFFFFFFFFFFFULL) == e->get_channel_id())
+					if ((channels[count]->channel_id&0xFFFFFFFFFFFFULL) == e->get_channel_id())
 					{
 						channels[count]->currentEvent= *e;
 						break;
@@ -889,7 +878,7 @@ void CWebTV::show(bool reload, bool reinit)
 			}
 			//
 
-			item = new ClistBoxItem(channels[i]->title.c_str(), true, desc.c_str(), this, "zapit");
+			item = new ClistBoxItem(channels[i]->name.c_str(), true, desc.c_str(), this, "zapit");
 
 			item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]);
 			item->setNumber(i + 1);
@@ -965,7 +954,7 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_red")
 	{
-		g_EventList->exec(channels[webTVlistMenu->getSelected()]->id, channels[webTVlistMenu->getSelected()]->title);
+		g_EventList->exec(channels[webTVlistMenu->getSelected()]->channel_id, channels[webTVlistMenu->getSelected()]->name);
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
@@ -989,7 +978,7 @@ int CWebTV::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_info")
 	{
-		g_EpgData->show(channels[webTVlistMenu->getSelected()]->id);
+		g_EpgData->show(channels[webTVlistMenu->getSelected()]->channel_id);
 
 		return menu_return::RETURN_REPAINT;
 	}
@@ -1008,7 +997,7 @@ CWebTVChooser::CWebTVChooser(char* channelname)
 
 CWebTV::result_ CWebTVChooser::itemSelected()
 {
-	strcpy(selected_item, channels[webTVlistMenu->getSelected()]->title.c_str());
+	strcpy(selected_item, channels[webTVlistMenu->getSelected()]->name.c_str());
 
 	return CWebTV::close;
 }

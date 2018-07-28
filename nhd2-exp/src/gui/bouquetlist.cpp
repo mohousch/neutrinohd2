@@ -62,7 +62,7 @@
 
 extern CBouquetManager * g_bouquetManager;
 
-CBouquetList::CBouquetList(const char * const Name)
+CBouquetList::CBouquetList(const char* const Name)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	selected    = 0;
@@ -84,7 +84,7 @@ CBouquetList::~CBouquetList()
 	Bouquets.clear();
 }
 
-CBouquet * CBouquetList::addBouquet(CZapitBouquet * zapitBouquet)
+CBouquet * CBouquetList::addBouquet(CZapitBouquet* zapitBouquet)
 {
 	CBouquet * tmp = addBouquet(zapitBouquet->Name.c_str(), -1, zapitBouquet->bLocked);
 	tmp->zapitBouquet = zapitBouquet;
@@ -166,7 +166,7 @@ void CBouquetList::adjustToChannelID(t_channel_id channel_id)
 	}
 }
 
-/* used in channellist to switch bouquets up/down */
+// used in channellist to switch bouquets up/down
 int CBouquetList::showChannelList( int nBouquet)
 {
 	dprintf(DEBUG_NORMAL, "CBouquetList::showChannelList\n");

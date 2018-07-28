@@ -70,7 +70,7 @@ class CChannelList
 		int			buttonHeight;
 
 		std::string             name;
-		std::vector<CZapitChannel *>	chanlist;
+		std::vector<CZapitChannel*>	chanlist;
 		CZapProtection * 	zapProtection;
 
 		int 			width;

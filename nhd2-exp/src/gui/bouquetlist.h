@@ -40,7 +40,7 @@
 #include <driver/framebuffer.h>
 #include <system/lastchannel.h>
 
-/* zapit includes */
+// zapit includes
 #include <bouquets.h>
 
 #include <string>
@@ -57,10 +57,10 @@ typedef enum bouquetSwitchMode
 class CBouquet
 {
 	public:
-		int		unique_key;
-		bool		bLocked;
-		CChannelList *	channelList;
-		CZapitBouquet * zapitBouquet;
+		int unique_key;
+		bool bLocked;
+		CChannelList*	channelList;
+		CZapitBouquet* zapitBouquet;
 
 		CBouquet(const int Unique_key, const char * const Name, const bool locked)
 		{
@@ -79,22 +79,24 @@ class CBouquet
 class CBouquetList
 {
 	private:
-		CFrameBuffer		* frameBuffer;
+		CFrameBuffer* frameBuffer;
 
-		std::string		name;
-		unsigned int		selected;
-		unsigned int		liststart;
-		unsigned int		listmaxshow;
-		unsigned int		numwidth;
-		unsigned int		maxpos;
-		int			fheight; // Fonthoehe Bouquetlist-Inhalt
-		int			theight; // Fonthoehe Bouquetlist-Titel
-		int			buttonHeight;
+		std::string name;
 
-		int		width;
-		int		height;
-		int		x;
-		int		y;
+		//
+		unsigned int selected;
+		unsigned int liststart;
+		unsigned int listmaxshow;
+		unsigned int numwidth;
+		unsigned int maxpos;
+		int fheight; // Fonthoehe Bouquetlist-Inhalt
+		int theight; // Fonthoehe Bouquetlist-Titel
+		int buttonHeight;
+
+		int width;
+		int height;
+		int x;
+		int y;
 		
 		int icon_head_w;
 		int icon_head_h;
@@ -112,11 +114,11 @@ class CBouquetList
 		CBouquetList(const char * const Name = NULL);
 		~CBouquetList();
 
-		std::vector<CBouquet*>	Bouquets;
-		CChannelList * orgChannelList;
+		std::vector<CBouquet*> Bouquets;
+		CChannelList* orgChannelList;
 		
-		CBouquet * addBouquet(const char * const _name, int BouquetKey = -1, bool locked = false );
-		CBouquet * addBouquet(CZapitBouquet * zapitBouquet);
+		CBouquet* addBouquet(const char * const _name, int BouquetKey = -1, bool locked = false );
+		CBouquet* addBouquet(CZapitBouquet * zapitBouquet);
 		void deleteBouquet(CBouquet* bouquet);
 		int getActiveBouquetNumber();
 		int activateBouquet(int id, bool bShowChannelList);

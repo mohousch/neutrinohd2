@@ -69,24 +69,11 @@
 #include <sys/time.h>
 
 
-bool comparePictureByDate (const CPicture& a, const CPicture& b)
-{
-	return a.Date < b.Date ;
-}
-
-extern bool comparetolower(const char a, const char b); /* filebrowser.cpp */
-
-bool comparePictureByFilename (const CPicture& a, const CPicture& b)
-{
-	return std::lexicographical_compare(a.Filename.begin(), a.Filename.end(), b.Filename.begin(), b.Filename.end(), comparetolower);
-}
-
 CPictureViewerGui::CPictureViewerGui()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
 	m_state = SINGLE;
-	m_sort = FILENAME;
 
 	g_PicViewer = new CPictureViewer();
 
@@ -157,6 +144,9 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	// Restore last mode
 	CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , m_LastMode );
 
+	if(!playlist.empty())
+		playlist.clear();
+
 	// 
 	return menu_return::RETURN_REPAINT;
 }
@@ -196,15 +186,11 @@ int CPictureViewerGui::show()
 		if( msg == CRCInput::RC_home)
 		{
 			loop = false;
-			clearPlaylist();
 		}
 		else if (msg == CRCInput::RC_timeout)
 		{
-			printf("RC_timeout\n");
 			if(m_state == SLIDESHOW)
 			{
-				printf("m_state == SLIDESHOW\n");
-
 				m_time = (long)time(NULL);
 				unsigned int next = selected + 1;
 				if (next >= playlist.size())
@@ -265,6 +251,13 @@ int CPictureViewerGui::show()
 			if (!playlist.empty())
 				view(selected);
 		}
+		else if(msg == CRCInput::RC_setup)
+		{
+			CPictureViewerSettings * pictureViewerSettingsMenu = new CPictureViewerSettings();
+			pictureViewerSettingsMenu->exec(NULL, "");
+			delete pictureViewerSettingsMenu;
+			pictureViewerSettingsMenu = NULL;					
+		}
 		else if(msg == NeutrinoMessages::CHANGEMODE)
 		{
 			if((data & NeutrinoMessages::mode_mask) !=NeutrinoMessages::mode_pic)
@@ -317,11 +310,6 @@ void CPictureViewerGui::addToPlaylist(CPicture& file)
 	dprintf(DEBUG_NORMAL, "CPictureViewerGui::addToPlaylist: %s\n", file.Filename.c_str());
 	
 	playlist.push_back(file);
-	
-	if (m_sort == FILENAME)
-		std::sort(playlist.begin(), playlist.end(), comparePictureByFilename);
-	else if (m_sort == DATE)
-		std::sort(playlist.begin(), playlist.end(), comparePictureByDate);
 }
 
 void CPictureViewerGui::clearPlaylist(void)

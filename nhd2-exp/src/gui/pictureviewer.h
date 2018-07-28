@@ -61,13 +61,6 @@ class CPictureViewerGui : public CMenuTarget
 			SLIDESHOW
 		};
 		
-		enum SortOrder
-		{
-			DATE = 0,
-			FILENAME,
-			NAME
-		};
-		
 	private:
 
 		CFrameBuffer* frameBuffer;
@@ -78,18 +71,15 @@ class CPictureViewerGui : public CMenuTarget
 		//
 		unsigned int selected;		
 		State m_state;
-		SortOrder m_sort;
 
 		CPicturePlayList playlist;
 
 		long m_time;
 		int m_LastMode;
 
-		// lcd
-		void paintLCD();
-
 		void view(unsigned int nr);
 		int  show();
+		void paintLCD();
 		
 	public:
 		CPictureViewerGui();

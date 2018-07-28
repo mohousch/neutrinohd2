@@ -25,7 +25,7 @@
 #include <system/debug.h>
 
 
-CZapitChannel::CZapitChannel(const std::string & p_name, t_service_id p_sid, t_transport_stream_id p_tsid, t_original_network_id p_onid, unsigned char p_service_type, t_satellite_position p_satellite_position, freq_id_t p_freq )
+CZapitChannel::CZapitChannel(const std::string& p_name, t_service_id p_sid, t_transport_stream_id p_tsid, t_original_network_id p_onid, unsigned char p_service_type, t_satellite_position p_satellite_position, freq_id_t p_freq )
 {
 	name = p_name;
 	service_id = p_sid;
@@ -48,6 +48,28 @@ CZapitChannel::CZapitChannel(const std::string & p_name, t_service_id p_sid, t_t
 	ttx_language_code = "";
 	last_unlocked_EPGid = 0;
 	last_unlocked_time = 0;	
+}
+
+CZapitChannel::CZapitChannel(const std::string& p_name, t_channel_id p_chid, const std::string& p_description)
+{
+	name = p_name;
+	channel_id = p_chid;
+	description = p_description;
+
+	service_id = 0;
+	transport_stream_id = 0;
+	original_network_id = 0;
+	serviceType = ST_DIGITAL_TELEVISION_SERVICE;
+	satellitePosition = 0;
+	freq = 0;
+	caPmt = NULL;
+	rawPmt = NULL;
+	videoType = CHANNEL_VIDEO_MPEG2;
+	number = 0;
+	scrambled = 0;
+	pname = NULL;
+	
+	pmtPid = 0;
 }
 
 CZapitChannel::~CZapitChannel(void)

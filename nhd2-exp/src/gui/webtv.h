@@ -83,22 +83,12 @@ class CWebTV : public CMenuTarget
 		} result;
 
 	public:
-
-		struct webtv_channels {
-			std::string title;
-			std::string url;
-			std::string description;
-			t_channel_id id;
-			CChannelEvent currentEvent, nextEvent;
-		};
-		
-		std::vector<webtv_channels *> channels;
+		std::vector<CZapitChannel*> channels;
 		
 	private:
 		// bouquets
 		std::string title;
 
-		//ClistBox* webTVlistMenu;
 		CMenuItem* item;
 
 		int tuned;
@@ -150,8 +140,8 @@ class CWebTV : public CMenuTarget
 
 		//
 		unsigned int getTunedChannel() {if(tuned < 0) tuned = 0; return tuned;};
-		t_channel_id getLiveChannelID() { if(tuned < 0) tuned = 0; return channels[tuned]->id;};
-		const std::string& getLiveChannelName(void){if(tuned < 0) tuned = 0; return channels[tuned]->title;};
+		t_channel_id getLiveChannelID() { if(tuned < 0) tuned = 0; return channels[tuned]->channel_id;};
+		const std::string& getLiveChannelName(void){if(tuned < 0) tuned = 0; return channels[tuned]->name;};
 		const std::string& getLiveChannelUrl(void){if(tuned < 0) tuned = 0; return channels[tuned]->url;};
 		const std::string& getChannelName(t_channel_id id);
 		const std::string& getChannelURL(t_channel_id id);

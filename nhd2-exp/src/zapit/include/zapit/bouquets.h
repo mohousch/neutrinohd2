@@ -25,17 +25,16 @@ using namespace std;
 
 typedef map<t_channel_id, CZapitChannel> tallchans;
 typedef tallchans::iterator tallchans_iterator;
-
 typedef vector<CZapitChannel*> ZapitChannelList;
 
 class CZapitBouquet
 {
 	public:
 		std::string Name;
-		bool        bHidden;
-		bool        bLocked;
-		bool        bUser;
-		bool        bFav;
+		bool bHidden;
+		bool bLocked;
+		bool bUser;
+		bool bFav;
 		t_satellite_position satellitePosition;
 
 		ZapitChannelList radioChannels;
@@ -59,7 +58,7 @@ typedef vector<CZapitBouquet *> BouquetList;
 class CBouquetManager
 {
 	private:
-		CZapitBouquet * remainChannels;
+		CZapitBouquet* remainChannels;
 
 		void makeRemainingChannelsBouquet(void);
 		void parseBouquetsXml(const char* fname, bool ub = false);
@@ -100,7 +99,7 @@ class CBouquetManager
 		void loadBouquets(bool loadCurrentBouquet = false);
 		void renumServices();
 
-		CZapitBouquet * addBouquet(const std::string & name, bool ub = false, bool myfav = false);
+		CZapitBouquet* addBouquet(const std::string & name, bool ub = false, bool myfav = false);
 		void deleteBouquet(const unsigned int id);
 		void deleteBouquet(const CZapitBouquet* bouquet);
 		int  existsBouquet(char const * const name);

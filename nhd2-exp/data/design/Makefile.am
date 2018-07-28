@@ -67,7 +67,6 @@ install_DATA += \
 	reloadchannels.png \
 	bouquetseditor.png \
 	cicam.png \
-	satip.png \
 	imageinfo.png \
 	softupdate.png
 

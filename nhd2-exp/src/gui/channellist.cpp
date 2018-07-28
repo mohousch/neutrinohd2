@@ -76,7 +76,7 @@
 
 
 extern CBouquetList * bouquetList;      		// neutrino.cpp
-extern CRemoteControl * g_RemoteControl; 		// neutrino.cpp			// defined in neutrino
+extern CRemoteControl * g_RemoteControl; 		// neutrino.cpp	
 extern CBouquetList   * TVbouquetList;
 extern CBouquetList   * TVsatList;
 extern CBouquetList   * TVfavList;
@@ -94,8 +94,8 @@ extern bool autoshift;
 int info_height = 0;
 bool new_mode_active = 0;
 
-extern int FrontendCount;			// defined in zapit.cpp
-extern bool CanZap(CZapitChannel * thischannel);
+extern int FrontendCount;				// defined in zapit.cpp
+extern bool CanZap(CZapitChannel * thischannel);	// defined in zapit.cpp
 
 extern CBouquetManager * g_bouquetManager;
 
@@ -1036,13 +1036,9 @@ bool CChannelList::adjustToChannelID(const t_channel_id channel_id, bool bToo)
 				}
 			}
 			
-			//printf("CChannelList::adjustToChannelID me %x to %llx bToo %s OK: %d\n", (int) this, channel_id, bToo ? "yes" : "no", i);fflush(stdout);
-			
 			return true;
 		}
 	}
-	
-	//printf("CChannelList::adjustToChannelID me %x to %llx bToo %s FAILED\n", (int) this, channel_id, bToo ? "yes" : "no");fflush(stdout);
 
 	return false;
 }
@@ -1448,7 +1444,7 @@ void CChannelList::virtual_zap_mode(bool up)
 		epgpos = 0;
                 g_RCInput->getMsg( &msg, &data, 15*10 ); // 15 seconds, not user changable
 		
-                //printf("%u %u %u\n", msg, NeutrinoMessages::EVT_TIMER, CRCInput::RC_timeout);
+                //dprintf(DEBUG_NORMAL, "%u %u %u\n", msg, NeutrinoMessages::EVT_TIMER, CRCInput::RC_timeout);
 
                 if ( msg == CRCInput::RC_ok )
                 {
