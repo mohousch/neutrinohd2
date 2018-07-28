@@ -511,6 +511,9 @@ struct SNeutrinoSettings
 	std::string tmdbkey;
 	int prefer_tmdb_info;
 
+	// youtube
+	std::string ytkey;
+
 	// progressbar color
 	int progressbar_color;
 

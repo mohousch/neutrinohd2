@@ -22,7 +22,7 @@
 #define __YT__
 
 #include <plugin.h>
-#include <ytparser.h>
+#include <system/ytparser.h>
 
 
 #define YTBROWSER_SETTINGS_FILE          PLUGINDIR "/youtube/yt.conf"
@@ -35,8 +35,6 @@ typedef struct
 	std::string ytregion;
 	std::string ytvid;
 	std::string ytsearch;
-	std::string ytkey;
-
 	int ytautoplay;
 }YTB_SETTINGS;
 

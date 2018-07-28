@@ -485,6 +485,11 @@ void CGeneralSettings::showMenu()
 
 	miscSettingsGeneral.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO, (int*)(&g_settings.prefer_tmdb_info), MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true ));
 
+	std::string key = g_settings.ytkey;
+	
+	CStringInputSMS* keyInput = new CStringInputSMS("youtube ID Key:", (char *)key.c_str());
+	miscSettingsGeneral.addItem(new CMenuForwarder("YT:", true, key, keyInput));
+
 	// reset factory setup
 	miscSettingsGeneral.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	

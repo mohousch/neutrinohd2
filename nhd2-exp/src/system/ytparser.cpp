@@ -34,18 +34,15 @@
 
 #include <jsoncpp/include/json/json.h>
 
-#include <ytparser.h>
+#include <system/ytparser.h>
 
 #include <system/debug.h>
 #include <system/helpers.h>
-
-#include <plugin.h>
-
-#include <youtube.h>
+#include <system/settings.h>
+#include <global.h>
 
 
 #define URL_TIMEOUT 		60
-extern YTB_SETTINGS m_settings;
 
 std::string cYTVideoInfo::GetUrl(int fmt)
 {
@@ -162,7 +159,7 @@ bool cYTFeedParser::parseFeedDetailsJSON(cYTVideoInfo &vinfo)
 {
 	dprintf(DEBUG_NORMAL, "cYTFeedParser::parseFeedDetailsJSON:\n");
 	
-	key = m_settings.ytkey;
+	key = g_settings.ytkey;
 	
 	vinfo.duration = 0;
 	// See at https://developers.google.com/youtube/v3/docs/videos
@@ -338,7 +335,7 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 {
 	dprintf(DEBUG_NORMAL, "cYTFeedParser::parseFeed(1)\n");
 	
-	key = m_settings.ytkey;
+	key = g_settings.ytkey;
 	std::string answer;
 	std::string url = "https://www.googleapis.com/youtube/v3/search?";
 	bool append_res = true;

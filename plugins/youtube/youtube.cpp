@@ -75,8 +75,6 @@ bool CYTBrowser::loadSettings(YTB_SETTINGS *settings)
 		settings->ytorderby = configfile.getInt32("ytorderby", cYTFeedParser::ORDERBY_PUBLISHED);
 		settings->ytregion = configfile.getString("ytregion", "default");
 		settings->ytsearch = configfile.getString("ytsearch", "");
-		settings->ytkey = configfile.getString("ytkey", "");
-
 		settings->ytautoplay = configfile.getInt32("ytautoplay", 0);
 	}
 	else
@@ -98,8 +96,6 @@ bool CYTBrowser::saveSettings(YTB_SETTINGS *settings)
 	configfile.setInt32("ytorderby", settings->ytorderby);
 	configfile.setString("ytregion", settings->ytregion);
 	configfile.setString("ytsearch", settings->ytsearch);
-	configfile.setString("ytkey", settings->ytkey);
-
 	configfile.setInt32("ytautoplay", settings->ytautoplay);
  
  	if (configfile.getModifiedFlag())
@@ -403,18 +399,11 @@ int CYTBrowser::showYTMenu(void)
 	// key
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
-	std::string key = m_settings.ytkey;
-	
-	CStringInputSMS* keyInput = new CStringInputSMS("YT Key:", (char *)key.c_str());
-	mainMenu.addItem(new CMenuForwarder("YT:", true, key, keyInput));
-
 	// autoplay
 	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_AUTOPLAY, &m_settings.ytautoplay, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true));
 
 	mainMenu.exec(NULL, "");
 	delete selector;
-	delete keyInput;
-	keyInput = NULL;
 
 	printf("select: %d\n", select);
 

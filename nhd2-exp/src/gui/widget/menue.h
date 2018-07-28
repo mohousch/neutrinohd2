@@ -749,7 +749,7 @@ class ClistBox : public CMenuTarget
 		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 
-		void setName(const std::string& name){nameString = name;};
+		void setName(const std::string& p_name){nameString = p_name;};
 };
 
 // CMenulistBoxItem

@@ -979,6 +979,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 
 	//g_settings.tmdbkey = configfile.getString("tmdbkey", "");
 	g_settings.prefer_tmdb_info = configfile.getInt32("prefer_tmdb_info", 0);
+	g_settings.ytkey = configfile.getString("ytkey", "");
 	
 	//set OSD resolution
 #if defined (USE_OPENGL)
@@ -1410,6 +1411,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 
 	//configfile.setString("tmdbkey", g_settings.tmdbkey);
 	configfile.setInt32("prefer_tmdb_info", g_settings.prefer_tmdb_info);
+	configfile.setString("ytkey", g_settings.ytkey);
 	// END MISC OPTS
 
 	// HDD

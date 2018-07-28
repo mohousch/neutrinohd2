@@ -16,9 +16,10 @@ AM_CPPFLAGS =  \
 
 noinst_LTLIBRARIES = youtube.la
 
-youtube_la_SOURCES = ytparser.cpp youtube.cpp
+youtube_la_SOURCES = youtube.cpp
 	 
 youtube_la_LDFLAGS = -rpath $(PLUGINDIR) -module
+youtube_la_LIBADD = $(top_srcdir)/../nhd2-exp/src/system/ytparser.o
 
 youtube_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
