@@ -306,7 +306,7 @@ int CMenuOptionChooser::paint(bool selected, bool AfterPulldown)
 	// paint item
 	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor); //FIXME
 
-	neutrino_locale_t p_option = NONEXISTANT_LOCALE;
+	neutrino_locale_t option = NONEXISTANT_LOCALE;
 	const char * l_option = NULL;
 
 	for(unsigned int count = 0 ; count < number_of_options; count++) 
@@ -317,7 +317,7 @@ int CMenuOptionChooser::paint(bool selected, bool AfterPulldown)
 			if(options[count].valname != 0)
 				l_option = options[count].valname;
 			else
-				l_option = g_Locale->getText(p_option);
+				l_option = g_Locale->getText(option);
 			break;
 		}
 	}
@@ -329,7 +329,7 @@ int CMenuOptionChooser::paint(bool selected, bool AfterPulldown)
 		if(options[0].valname != 0)
 			l_option = options[0].valname;
 		else
-			l_option = g_Locale->getText(p_option);
+			l_option = g_Locale->getText(option);
 	}
 
 	// paint icon (left)
