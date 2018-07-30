@@ -133,7 +133,7 @@ void CMenuItem::setHelpText(const std::string& Text)
 }
 
 // CMenuOptionChooser
-CMenuOptionChooser::CMenuOptionChooser(const neutrino_locale_t OptionName, int *const OptionValue, const struct keyval *const Options, const unsigned Number_Of_Options, const bool Active, CChangeObserver * const Observ, const neutrino_msg_t DirectKey, const std::string & IconName, bool Pulldown, bool EnableMenuPos)
+CMenuOptionChooser::CMenuOptionChooser(const neutrino_locale_t OptionName, int *const OptionValue, const struct keyval* const Options, const unsigned Number_Of_Options, const bool Active, CChangeObserver* const Observ, const neutrino_msg_t DirectKey, const std::string& IconName, bool Pulldown, bool EnableMenuPos)
 {
 	int iconName_w = 0;
 	int iconName_h = 0;
@@ -161,7 +161,7 @@ CMenuOptionChooser::CMenuOptionChooser(const neutrino_locale_t OptionName, int *
 	itemType = ITEM_TYPE_OPTION_CHOOSER;
 }
 
-CMenuOptionChooser::CMenuOptionChooser(const char *OptionName, int *const OptionValue, const struct keyval *const Options, const unsigned Number_Of_Options, const bool Active, CChangeObserver * const Observ, const neutrino_msg_t DirectKey, const std::string & IconName, bool Pulldown, bool EnableMenuPos)
+CMenuOptionChooser::CMenuOptionChooser(const char* OptionName, int* const OptionValue, const struct keyval *const Options, const unsigned Number_Of_Options, const bool Active, CChangeObserver* const Observ, const neutrino_msg_t DirectKey, const std::string & IconName, bool Pulldown, bool EnableMenuPos)
 {
 	int iconName_w = 0;
 	int iconName_h = 0;
@@ -221,7 +221,7 @@ int CMenuOptionChooser::exec(CMenuTarget* parent)
 		if(enableMenuPos)
 			menu->enableMenuPosition();
 		
-		CMenuSelectorTarget *selector = new CMenuSelectorTarget(&select);
+		CMenuSelectorTarget* selector = new CMenuSelectorTarget(&select);
 
 		for(unsigned int count = 0; count < number_of_options; count++) 
 		{
@@ -885,9 +885,7 @@ CMenuSeparator::CMenuSeparator(const int Type, const neutrino_locale_t Text)
 
 int CMenuSeparator::getHeight(void) const
 {
-	if (text == NONEXISTANT_LOCALE)
-		return (g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() >> 1);
-	return  g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	return (text == NONEXISTANT_LOCALE) ? 10 : g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 }
 
 int CMenuSeparator::getWidth(void) const
@@ -902,12 +900,14 @@ const char * CMenuSeparator::getString(void)
 
 int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
 {
-	dprintf(DEBUG_DEBUG, "CMenuSeparator::paint\n");
+	dprintf(DEBUG_DEBUG, "CMenuSeparator::paint:\n");
 
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
 	int height;
 	height = getHeight();
+
+	printf("height:%d (height >> 1:%d) (%d)", height, (height >> 1), (height >> 1) + 1);
 
 	frameBuffer->paintBoxRel(x, y, dx, height, COL_MENUCONTENT_PLUS_0);
 
@@ -2024,7 +2024,7 @@ void CMenuWidget::paintItems()
 	else
 	{
 		// items height
-		items_height = height - (hheight + fheight);
+		items_height = height - hheight - fheight;
 	
 		// items width
 		sb_width = 0;
@@ -2051,7 +2051,10 @@ void CMenuWidget::paintItems()
 		}
 	
 		// paint items background
-		frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENTDARK_PLUS_0);
+		if(widgetType == WIDGET_EXTENDED)
+			frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENTDARK_PLUS_0);
+		else
+			frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENT_PLUS_0);
 	
 		// paint right scroll bar if we have more then one page
 		if(total_pages > 1)
@@ -3258,7 +3261,7 @@ void ClistBox::paintItems()
 			cFrameBoxText.iWidth = width;
 			cFrameBoxText.iHeight = items_height;
 
-			textBox = new CTextBox("", CMenuItem::optionFont, CTextBox::SCROLL, &cFrameBoxText, COL_MENUCONTENTDARK_PLUS_0);
+			textBox = new CTextBox("", CMenuItem::optionFont, CTextBox::SCROLL, &cFrameBoxText, COL_MENUCONTENT_PLUS_0);
 		}
 	
 		// item not currently on screen

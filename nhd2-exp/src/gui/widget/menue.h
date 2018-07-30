@@ -235,7 +235,7 @@ class CAbstractMenuOptionChooser : public CMenuItem
 	protected:
 		neutrino_locale_t optionName;
 		int height;
-		int * optionValue;
+		int* optionValue;
 
 		int getHeight(void) const
 		{
@@ -256,13 +256,13 @@ class CMenuOptionChooser : public CAbstractMenuOptionChooser
 		{
 			const int key;
 			const neutrino_locale_t value;
-			const char * valname;
+			const char* valname;
 		};
 
 	private:
-		const struct keyval * options;
+		const struct keyval* options;
 		unsigned number_of_options;
-		CChangeObserver * observ;
+		CChangeObserver* observ;
 		
 		std::string optionNameString;
 		
