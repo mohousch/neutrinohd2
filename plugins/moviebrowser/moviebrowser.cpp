@@ -162,7 +162,9 @@ void CMBrowser::loadPlaylist()
 void CMBrowser::doTMDB()
 {
 	//				
-	cTmdb * tmdb = new cTmdb(m_vMovieInfo[mlist->getSelected()].epgTitle);
+	CTmdb * tmdb = new CTmdb();
+
+	tmdb->getMovieDetails(m_vMovieInfo[mlist->getSelected()].epgTitle);
 	
 	if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 	{
@@ -181,7 +183,7 @@ void CMBrowser::doTMDB()
 		std::string thumbnail = "";
 	
 		// saved to /tmp
-		std::string fname = "/tmp/" + m_vMovieInfo[mlist->getSelected()].epgTitle + ".jpg";
+		std::string fname = tmdb->getCover();
 				
 		if(!access(fname.c_str(), F_OK) )
 			thumbnail = fname.c_str();
@@ -199,6 +201,7 @@ void CMBrowser::doTMDB()
 			// rewrite tfile
 			std::string tname = m_vMovieInfo[mlist->getSelected()].file.Name;
 			changeFileNameExt(tname, ".jpg");
+
 			if(tmdb->getBigCover(tname)) 
 				m_vMovieInfo[mlist->getSelected()].tfile = tname;
 

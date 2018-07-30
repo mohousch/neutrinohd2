@@ -114,14 +114,8 @@ BROWSER:
 				// first prefer tmdb cover
 				if(g_settings.prefer_tmdb_info)
 				{
-					cTmdb * tmdb = new cTmdb(mfile.epgTitle);
-	
-					fname = "/tmp/" + mfile.epgTitle + ".jpg";				
-					if (tmdb->getBigCover(fname)) 
-					{
-						if(!access(fname.c_str(), F_OK) )
-							mfile.tfile= fname.c_str();
-					}
+					CTmdb * tmdb = new CTmdb();
+					tmdb->getMovieDetails(mfile.epgTitle);
 
 					// epgInfo2
 					if(mfile.epgInfo2.empty() && !tmdb->getDescription().empty())

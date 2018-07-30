@@ -1222,7 +1222,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 		
 		int handled = false;
 
-		dprintf(DEBUG_NORMAL, "CMenuWidget::exec:msg: %s\n", CRCInput::getSpecialKeyName(msg));
+		dprintf(DEBUG_DEBUG, "CMenuWidget::exec:msg: %s\n", CRCInput::getSpecialKeyName(msg));
 
 		for (unsigned int i = 0; i < items.size(); i++) 
 		{
@@ -3601,7 +3601,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 		
 		int handled = false;
 
-		dprintf(DEBUG_NORMAL, "ClistBox::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
+		dprintf(DEBUG_DEBUG, "ClistBox::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
 		std::map<neutrino_msg_t, keyAction>::iterator it = keyActionMap.find(msg);
 			
@@ -4119,8 +4119,6 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 		frameBuffer->blit();
 	}
 	while ( msg != CRCInput::RC_timeout );
-
-	printf("listBox:exec: retval:%d\n", retval);
 	
 	if(retval != menu_return::RETURN_NONE)
 		hide();	

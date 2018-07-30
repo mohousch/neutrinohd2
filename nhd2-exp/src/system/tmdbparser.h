@@ -26,7 +26,7 @@
 
 
 typedef struct {
-	std::string epgtitle;
+	std::string title;
 	std::string poster_path;
 	std::string overview;
 	std::string original_title;
@@ -42,33 +42,37 @@ typedef struct {
 	int         episodes;
 	int         seasons;
 	std::string cast;
+	std::string cover;
 }tmdbinfo;
 
-class cTmdb
+class CTmdb
 {
 	private:
 		tmdbinfo minfo;
 		std::string key; // tmdb api key
 		std::string cover;
+		std::string lang;
+		std::string thumbnail_dir;
 
-		bool GetMovieDetails(std::string lang, const std::string& request = "search");
+		CFileHelpers fileHelper;
 
 	public:
-		cTmdb(std::string epgtitle);
-		~cTmdb();
+		CTmdb();
+		~CTmdb();
+		bool getMovieDetails(std::string text, const std::string& request = "search");
 		std::string CreateEPGText();
 
-		std::string getTitle()				{ return minfo.epgtitle;}
-		std::string getOrgTitle()			{ return minfo.original_title;}
-		std::string getReleaseDate()			{ return minfo.release_date;}
-		std::string getDescription()			{ return minfo.overview;}
-		std::string getVote()				{ return minfo.vote_average;}
-		std::string getCast()				{ return minfo.cast;}
-		bool        hasCover()				{ return !minfo.poster_path.empty();}
-		bool        getBigCover(std::string cover)	{ return downloadUrl("http://image.tmdb.org/t/p/w342" + minfo.poster_path, cover);}
-		bool        getSmallCover(std::string cover)	{ return downloadUrl("http://image.tmdb.org/t/p/w185" + minfo.poster_path, cover);}
-		int         getResults()			{ return minfo.result;}
-		int         getStars()				{ return (int) (atof(minfo.vote_average.c_str()) + 0.5);}
+		std::string getTitle(){ return minfo.title;}
+		std::string getOrgTitle(){ return minfo.original_title;}
+		std::string getReleaseDate(){ return minfo.release_date;}
+		std::string getDescription(){ return minfo.overview;}
+		std::string getVote(){ return minfo.vote_average;}
+		std::string getCast(){ return minfo.cast;}
+		bool getBigCover(std::string fname);
+		bool getSmallCover(std::string fname);
+		int getResults(){ return minfo.result;}
+		int getStars(){ return (int) (atof(minfo.vote_average.c_str()) + 0.5);}
+		std::string getCover(){return cover;};
 };
 
 #endif

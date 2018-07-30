@@ -137,7 +137,9 @@ BROWSER:
 			{
 	 			if(g_settings.prefer_tmdb_info)
 				{
-					cTmdb * tmdb = new cTmdb(mfile.epgTitle);
+					CTmdb * tmdb = new CTmdb();
+
+					tmdb->getMovieDetails(mfile.epgTitle);
 	
 					// epgInfo2
 					if(mfile.epgInfo2.empty() && !tmdb->getDescription().empty())

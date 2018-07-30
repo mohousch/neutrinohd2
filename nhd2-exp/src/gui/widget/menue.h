@@ -717,7 +717,7 @@ class ClistBox : public CMenuTarget
 		int getWidth(void) const {return width;};
 		int getX(void) const {return x;};
 		int getY(void) const {return y;};
-
+		bool getExitPressed(){return exit_pressed;};
 		int getListMaxShow(void) const {return listmaxshow;};
 		
 		//

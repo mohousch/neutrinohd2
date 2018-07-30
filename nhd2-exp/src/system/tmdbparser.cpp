@@ -45,27 +45,24 @@
 #include <system/tmdbparser.h>
 
 
-cTmdb::cTmdb(std::string epgtitle)
+CTmdb::CTmdb()
 {
-	minfo.epgtitle = epgtitle;
+	thumbnail_dir = "/tmp/tmdbparser";
+
 	key = "507930c8d6d400c85eae3a7e7b3f6c78";
-	cover = "/tmp/" + minfo.epgtitle + ".jpg";
 
 	std::string language = g_settings.language;
-	std::string lang = Lang2ISO639_1(language);
+	lang = Lang2ISO639_1(language);
 
-	GetMovieDetails(lang);
-
-	if ((minfo.result < 1 || minfo.overview.empty()) && lang != "en")
-		GetMovieDetails("en");
+	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
 }
 
-cTmdb::~cTmdb()
+CTmdb::~CTmdb()
 {
-	unlink(cover.c_str());
+	fileHelper.removeDir(thumbnail_dir.c_str());
 }
 
-bool cTmdb::GetMovieDetails(std::string lang, const std::string& request)
+bool CTmdb::getMovieDetails(std::string text, const std::string& request)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails:\n");
 
@@ -73,8 +70,10 @@ bool cTmdb::GetMovieDetails(std::string lang, const std::string& request)
 
 	if(request == "search")
 	{
-		url += request + "/multi?api_key=" + key + "&language=" + lang + "&query=" + encodeUrl(minfo.epgtitle);
+		url += request + "/multi?api_key=" + key + "&language=" + lang + "&query=" + encodeUrl(text);
 	}
+
+	minfo.title = text;
 
 	std::string answer;
 	if (!::getUrl(url, answer))
@@ -91,7 +90,7 @@ bool cTmdb::GetMovieDetails(std::string lang, const std::string& request)
 		return false;
 	}
 
-	minfo.result = root.get("total_results",0).asInt();
+	minfo.result = root.get("total_results", 0).asInt();
 
 	dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails: results: %d\n", minfo.result);
 
@@ -99,8 +98,8 @@ bool cTmdb::GetMovieDetails(std::string lang, const std::string& request)
 	{
 		Json::Value elements = root["results"];
 
-		minfo.id = elements[0].get("id",-1).asInt();
-		minfo.media_type = elements[0].get("media_type","").asString();
+		minfo.id = elements[0].get("id", -1).asInt();
+		minfo.media_type = elements[0].get("media_type", "").asString();
 
 		if (minfo.id > -1) 
 		{
@@ -119,20 +118,21 @@ bool cTmdb::GetMovieDetails(std::string lang, const std::string& request)
 				return false;
 			}
 
-			minfo.overview = root.get("overview","").asString();
-			minfo.poster_path = root.get("poster_path","").asString();
-			minfo.original_title = root.get("original_title","").asString();
-			minfo.release_date = root.get("release_date","").asString();
-			minfo.vote_average = root.get("vote_average","").asString();
-			minfo.vote_count = root.get("vote_count",0).asInt();
-			minfo.runtime = root.get("runtime",0).asInt();
+			minfo.overview = root.get("overview", "").asString();
+			minfo.poster_path = root.get("poster_path", "").asString();
+			minfo.original_title = root.get("original_title", "").asString();
+			minfo.release_date = root.get("release_date", "").asString();
+			minfo.vote_average = root.get("vote_average", "").asString();
+			minfo.vote_count = root.get("vote_count", 0).asInt();
+			minfo.runtime = root.get("runtime", 0).asInt();
 
 			if (minfo.media_type == "tv") 
 			{
-				minfo.original_title = root.get("original_name","").asString();
-				minfo.episodes = root.get("number_of_episodes",0).asInt();
-				minfo.seasons = root.get("number_of_seasons",0).asInt();
-				minfo.release_date = root.get("first_air_date","").asString();
+				minfo.original_title = root.get("original_name", "").asString();
+				minfo.episodes = root.get("number_of_episodes", 0).asInt();
+				minfo.seasons = root.get("number_of_seasons", 0).asInt();
+				minfo.release_date = root.get("first_air_date", "").asString();
+
 				elements = root["episode_run_time"];
 				minfo.runtimes = elements[0].asString();
 				for (unsigned int i = 1; i < elements.size(); i++) 
@@ -142,21 +142,28 @@ bool cTmdb::GetMovieDetails(std::string lang, const std::string& request)
 			}
 
 			elements = root["genres"];
-			minfo.genres = elements[0].get("name","").asString();
+			minfo.genres = elements[0].get("name", "").asString();
 			for (unsigned int i = 1; i < elements.size(); i++) 
 			{
-				minfo.genres += ", " + elements[i].get("name","").asString();
+				minfo.genres += ", " + elements[i].get("name", "").asString();
 			}
 
 			elements = root["credits"]["cast"];
 			for (unsigned int i = 0; i < elements.size() && i < 10; i++) 
 			{
-				minfo.cast +=  "  " + elements[i].get("character","").asString() + " (" + elements[i].get("name","").asString() + ")\n";
+				minfo.cast +=  "  " + elements[i].get("character", "").asString() + " (" + elements[i].get("name", "").asString() + ")\n";
 			}
 
 			//
-			if (hasCover())
-				getBigCover(cover);
+			if (!minfo.poster_path.empty())
+			{
+				std::string tname = thumbnail_dir;
+				tname += "/";
+				tname += minfo.title;
+				tname += ".jpg";
+
+				getBigCover(tname);
+			}
 
 			return true;
 		}
@@ -167,7 +174,50 @@ bool cTmdb::GetMovieDetails(std::string lang, const std::string& request)
 	return false;
 }
 
-std::string cTmdb::CreateEPGText()
+bool CTmdb::getBigCover(std::string fname)
+{ 
+	dprintf(DEBUG_NORMAL, "CTmdb::getBigCover: %s\n", fname.c_str());
+
+	bool ret = false;
+
+	if (!minfo.poster_path.empty())
+	{
+		bool found = false;
+		found = ::downloadUrl("http://image.tmdb.org/t/p/w342" + minfo.poster_path, fname);
+
+		if (found)
+		{
+			minfo.cover = fname;
+			cover = fname;
+		}
+
+		ret |= found;
+	}
+
+	return ret;
+}
+
+bool CTmdb::getSmallCover(std::string fname)
+{ 
+	bool ret = false;
+
+	if (!minfo.poster_path.empty())
+	{
+		bool found = false;
+		found = ::downloadUrl("http://image.tmdb.org/t/p/w185" + minfo.poster_path, fname);
+		if (found)
+		{
+			minfo.cover = fname;
+			cover = fname;
+		}
+
+		ret |= found;
+	}
+
+	return ret;
+}
+
+std::string CTmdb::CreateEPGText()
 {
 	std::string epgtext;
 	epgtext += "\n";

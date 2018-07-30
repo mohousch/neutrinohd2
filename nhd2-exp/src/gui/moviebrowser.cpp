@@ -1010,7 +1010,8 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 			m_pcWindow->blit();
 
 			//				
-			cTmdb * tmdb = new cTmdb(m_movieSelectionHandler->epgTitle);
+			CTmdb * tmdb = new CTmdb();
+			tmdb->getMovieDetails(m_movieSelectionHandler->epgTitle);
 	
 			if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 			{
@@ -1029,7 +1030,7 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 				std::string thumbnail = "";
 	
 				// saved to /tmp
-				std::string fname = "/tmp/" + m_movieSelectionHandler->epgTitle + ".jpg";
+				std::string fname = tmdb->getCover();
 				
 				if(!access(fname.c_str(), F_OK) )
 					thumbnail = fname.c_str();
@@ -2030,7 +2031,9 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			m_pcWindow->blit();
 
 			//				
-			cTmdb * tmdb = new cTmdb(m_movieSelectionHandler->epgTitle);
+			CTmdb * tmdb = new CTmdb();
+
+			tmdb->getMovieDetails(m_movieSelectionHandler->epgTitle);
 	
 			if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 			{
@@ -2049,7 +2052,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				std::string thumbnail = "";
 	
 				// saved to /tmp
-				std::string fname = "/tmp/" + m_movieSelectionHandler->epgTitle + ".jpg";
+				std::string fname = tmdb->getCover();
 				
 				if(!access(fname.c_str(), F_OK) )
 					thumbnail = fname.c_str();
