@@ -756,17 +756,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.key_pip = configfile.getInt32("key_pip", CRCInput::RC_pip);
 	//g_settings.key_pip_subchannel = configfile.getInt32("key_pip_subchannel", CRCInput::RC_pipsubch);
 
-	// mpkeys
-	g_settings.mpkey_rewind = configfile.getInt32( "mpkey.rewind", CRCInput::RC_rewind );
-	g_settings.mpkey_forward = configfile.getInt32( "mpkey.forward", CRCInput::RC_forward );
-	g_settings.mpkey_pause = configfile.getInt32( "mpkey.pause", CRCInput::RC_pause );
-	g_settings.mpkey_stop = configfile.getInt32( "mpkey.stop", CRCInput::RC_stop );
-	g_settings.mpkey_play = configfile.getInt32( "mpkey.play", CRCInput::RC_play );
-	g_settings.mpkey_audio = configfile.getInt32( "mpkey.audio", CRCInput::RC_green );
-	g_settings.mpkey_time = configfile.getInt32( "mpkey.time", CRCInput::RC_setup );
-	g_settings.mpkey_bookmark = configfile.getInt32( "mpkey.bookmark", CRCInput::RC_blue );
-	g_settings.key_timeshift = configfile.getInt32( "key_timeshift", CRCInput::RC_pause );	
-
 	// media keys
 	g_settings.key_recordsbrowser = configfile.getInt32( "key_recordsbrowser", CRCInput::RC_nokey );
 	g_settings.key_audioplayer = configfile.getInt32( "key_audioplayer", CRCInput::RC_nokey );
@@ -1251,19 +1240,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 
 	configfile.setInt32( "key_list_start", g_settings.key_list_start );
 	configfile.setInt32( "key_list_end", g_settings.key_list_end );
-	
 	configfile.setInt32( "key_pip", g_settings.key_pip );
-	
-	// mp keys
-	configfile.setInt32( "mpkey.rewind", g_settings.mpkey_rewind );
-	configfile.setInt32( "mpkey.forward", g_settings.mpkey_forward );
-	configfile.setInt32( "mpkey.pause", g_settings.mpkey_pause );
-	configfile.setInt32( "mpkey.stop", g_settings.mpkey_stop );
-	configfile.setInt32( "mpkey.play", g_settings.mpkey_play );
-	configfile.setInt32( "mpkey.audio", g_settings.mpkey_audio );
-	configfile.setInt32( "mpkey.time", g_settings.mpkey_time );
-	configfile.setInt32( "mpkey.bookmark", g_settings.mpkey_bookmark );
-	configfile.setInt32( "key_timeshift", g_settings.key_timeshift );
 	
 	// media keys
 	configfile.setInt32( "key_recordsbrowser", g_settings.key_recordsbrowser );
@@ -2972,7 +2949,7 @@ void CNeutrinoApp::RealRun(void)
 
 				StartSubtitles(res < 0);
 			}
-			else if( msg == (neutrino_msg_t) g_settings.key_timeshift) // start timeshift recording
+			else if( msg == CRCInput::RC_pause) // start timeshift recording
 			{
 				if(mode == mode_iptv)
 				{
@@ -3006,7 +2983,7 @@ void CNeutrinoApp::RealRun(void)
 					}
 				}
 			}
-			else if( ((msg == (neutrino_msg_t)g_settings.mpkey_play) && timeshiftstatus)) // play timeshift
+			else if( ((msg == CRCInput::RC_play) && timeshiftstatus)) // play timeshift
 			{
 				if(mode == mode_iptv)
 				{

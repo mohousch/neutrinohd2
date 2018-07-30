@@ -324,17 +324,7 @@ struct SNeutrinoSettings
 	//pip
 	int key_pip;
 
-	int mpkey_rewind;
-	int mpkey_forward;
-	int mpkey_pause;
-	int mpkey_stop;
-	int mpkey_play;
-	int mpkey_audio;
-	int mpkey_time;
-	int mpkey_bookmark;
-
-	int key_timeshift;
-	
+	// media	
 	int key_recordsbrowser;
 	int key_audioplayer;
 	int key_pictureviewer;

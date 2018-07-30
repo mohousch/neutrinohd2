@@ -68,17 +68,6 @@ enum keynames {
 	KEY_LASTCHANNEL,
 	KEY_SAME_TP,
 	
-	// mp
-        MPKEY_REWIND,
-        MPKEY_FORWARD,
-        MPKEY_PAUSE,
-        MPKEY_STOP,
-        MPKEY_PLAY,
-        MPKEY_AUDIO,
-        MPKEY_TIME,
-        MPKEY_BOOKMARK,
-	KEY_TIMESHIFT,
-	
 	// media
 	KEY_EXTRAS_RECORDSBROWSER,
 	KEY_EXTRAS_AUDIOPLAYER,
@@ -120,17 +109,6 @@ const neutrino_locale_t keydescription_head[KEYBINDS_COUNT] =
 	LOCALE_KEYBINDINGMENU_ZAPHISTORY,
 	LOCALE_KEYBINDINGMENU_LASTCHANNEL,
 	LOCALE_KEYBINDINGMENU_PIP,
-	
-	// mp
-        LOCALE_MPKEY_REWIND,
-        LOCALE_MPKEY_FORWARD,
-        LOCALE_MPKEY_PAUSE,
-        LOCALE_MPKEY_STOP,
-        LOCALE_MPKEY_PLAY,
-        LOCALE_MPKEY_AUDIO,
-        LOCALE_MPKEY_TIME,
-        LOCALE_MPKEY_BOOKMARK,
-	LOCALE_EXTRA_KEY_TIMESHIFT,
 
 	// media
 	LOCALE_KEYBINDINGMENU_RECORDSBROWSER,
@@ -172,17 +150,6 @@ const neutrino_locale_t keydescription[KEYBINDS_COUNT] =
 	LOCALE_KEYBINDINGMENU_ZAPHISTORY,
 	LOCALE_KEYBINDINGMENU_LASTCHANNEL,
 	LOCALE_KEYBINDINGMENU_PIP,
-	
-	// mp
-        LOCALE_MPKEY_REWIND,
-        LOCALE_MPKEY_FORWARD,
-        LOCALE_MPKEY_PAUSE,
-        LOCALE_MPKEY_STOP,
-        LOCALE_MPKEY_PLAY,
-        LOCALE_MPKEY_AUDIO,
-        LOCALE_MPKEY_TIME,
-        LOCALE_MPKEY_BOOKMARK,
-	LOCALE_EXTRA_KEY_TIMESHIFT,
 	
 	// media
 	LOCALE_KEYBINDINGMENU_RECORDSBROWSER,
@@ -357,17 +324,6 @@ void CKeysBindingSettings::showMenu()
 		&g_settings.key_zaphistory,
 		&g_settings.key_lastchannel,
 		&g_settings.key_pip,
-
-		// mp
-		&g_settings.mpkey_rewind,
-		&g_settings.mpkey_forward,
-		&g_settings.mpkey_pause,
-		&g_settings.mpkey_stop,
-		&g_settings.mpkey_play,
-		&g_settings.mpkey_audio,
-		&g_settings.mpkey_time,
-		&g_settings.mpkey_bookmark,
-		&g_settings.key_timeshift,
 		
 		// media
 		&g_settings.key_recordsbrowser,
@@ -418,11 +374,6 @@ void CKeysBindingSettings::showMenu()
 	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_KEYBINDINGMENU_QUICKZAP));
 
 	for (int i = KEY_CHANNEL_UP; i <= KEY_SAME_TP; i++)
-		bindSettings.addItem(new CMenuForwarder(keydescription[i], true, NULL, keychooser[i]));
-
-	// mp keys
-	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_MAINMENU_MOVIEPLAYER));
-	for (int i = MPKEY_REWIND; i <= KEY_TIMESHIFT; i++)
 		bindSettings.addItem(new CMenuForwarder(keydescription[i], true, NULL, keychooser[i]));
 	
 	// media

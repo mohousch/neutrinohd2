@@ -71,6 +71,7 @@
 #include <gui/infoviewer.h>
 #include <gui/nfs.h>
 #include <gui/audio_video_select.h>
+#include <gui/movieplayer_setup.h>
 
 #include <gui/widget/buttons.h>
 #include <gui/widget/icons.h>
@@ -666,14 +667,14 @@ void CMoviePlayerGui::PlayFile(void)
 				if(filelist.size() > 1 && selected + 1 < filelist.size())
 					g_RCInput->postMsg(CRCInput::RC_next, 0);
 				else
-					g_RCInput->postMsg((neutrino_msg_t) g_settings.mpkey_stop, 0);
+					g_RCInput->postMsg(CRCInput::RC_stop, 0);
 			}
 		}
 		
 		// loop msg
 		g_RCInput->getMsg(&msg, &data, 10);	// 1 secs
 		
-		if (msg == (neutrino_msg_t) g_settings.mpkey_stop) 
+		if (msg == CRCInput::RC_stop) 
 		{
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (1)\n");
 
@@ -707,7 +708,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			exit = true;
 		} 
-		else if (msg == (neutrino_msg_t) g_settings.mpkey_play) 
+		else if (msg == CRCInput::RC_play) 
 		{
 			if (playstate >= CMoviePlayerGui::PLAY) 
 			{
@@ -759,7 +760,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 			}
 		} 
-		else if ( msg == (neutrino_msg_t) g_settings.mpkey_pause) 
+		else if ( msg == CRCInput::RC_pause) 
 		{
 			update_lcd = true;
 			
@@ -804,7 +805,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 			}
 		} 
-		else if (msg == (neutrino_msg_t) g_settings.mpkey_bookmark) 
+		else if (msg == CRCInput::RC_blue) 
 		{
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
@@ -902,7 +903,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 			}		
 		} 
-		else if ( (msg == (neutrino_msg_t) g_settings.mpkey_audio) || ( msg == CRCInput::RC_audio) ) 
+		else if ( msg == CRCInput::RC_audio ) 
 		{
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
@@ -921,7 +922,7 @@ void CMoviePlayerGui::PlayFile(void)
 			//show help
 			showHelpTS();
 		}
-		else if ( msg == (neutrino_msg_t) g_settings.mpkey_time || msg == CRCInput::RC_info)
+		else if (msg == CRCInput::RC_info)
 		{
 			//if(!timeshift)
 			if(filelist[selected].ytid != "timeshift")
@@ -957,8 +958,16 @@ void CMoviePlayerGui::PlayFile(void)
 					timeStartShowingInfo = time(NULL);
 				}
 			}
+		}
+		else if(msg == CRCInput::RC_setup)
+		{
+			CMoviePlayerSettings* moviePlayerSettings = new CMoviePlayerSettings();
+
+			moviePlayerSettings->exec(NULL, "");
+			delete moviePlayerSettings;
+			moviePlayerSettings = NULL;
 		} 
-		else if (msg == (neutrino_msg_t) g_settings.mpkey_rewind) 
+		else if (msg == CRCInput::RC_rewind) 
 		{
 			// backward
 			speed = (speed >= 0) ? -1 : speed - 1;
@@ -987,7 +996,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		}
-		else if (msg == (neutrino_msg_t) g_settings.mpkey_forward) 
+		else if (msg == CRCInput::RC_forward) 
 		{	// fast-forward
 			speed = (speed <= 0) ? 2 : speed + 1;
 						
@@ -1332,7 +1341,7 @@ void CMoviePlayerGui::PlayFile(void)
 				start_play = true;
 			}
 		}
-		else if (msg == (neutrino_msg_t)g_settings.key_screenshot /*&& isMovieBrowser == true*/ )
+		else if (msg == (neutrino_msg_t)g_settings.key_screenshot)
 		{
          		if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SCREENSHOT_ANNOUNCE), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
 			{
