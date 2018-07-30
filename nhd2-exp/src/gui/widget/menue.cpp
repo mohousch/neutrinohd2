@@ -2499,6 +2499,9 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
+	int height = getHeight();
+	const char * l_text = getName();
+
 	if(widgetType == WIDGET_FRAME)
 	{
 		//
@@ -2525,8 +2528,6 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	else
 	{
-		int height = getHeight();
-		const char * l_text = getName();
 		int stringstartposX = x + (offx == 0? 0: offx);
 
 		const char * option_text = getOption();	
@@ -4269,6 +4270,9 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
+	int height = getHeight();
+	const char * l_text = getName();
+
 	if(widgetType == WIDGET_FRAME)
 	{
 		//
@@ -4295,8 +4299,6 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	else if(widgetType == WIDGET_INFO)
 	{
-		int height = getHeight();
-
 		// vfd
 		if (selected)
 		{
@@ -4307,9 +4309,6 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	else // standard|classic|extended
 	{
-		int height = getHeight();
-		const char * l_text = getName();
-
 		uint8_t color = COL_MENUCONTENT;
 		fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 
