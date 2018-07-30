@@ -55,6 +55,7 @@ class CMBrowser : public CMenuTarget
 		~CMBrowser();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
+
 		void showMenu();
 };
 
@@ -164,7 +165,7 @@ void CMBrowser::doTMDB()
 	//				
 	CTmdb * tmdb = new CTmdb();
 
-	tmdb->getMovieDetails(m_vMovieInfo[mlist->getSelected()].epgTitle);
+	tmdb->getMovieInfo(m_vMovieInfo[mlist->getSelected()].epgTitle);
 	
 	if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 	{
@@ -174,7 +175,7 @@ void CMBrowser::doTMDB()
 		buffer += "\n";
 	
 		// prepare print buffer  
-		buffer += tmdb->CreateEPGText();
+		buffer += tmdb->createInfoText();
 
 		// thumbnail
 		int pich = 246;	//FIXME
@@ -330,6 +331,8 @@ int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		hide();
 		doTMDB();
+		showMenu();
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if (actionKey == "RC_spkr") 
 	{
@@ -405,12 +408,12 @@ void CMBrowser::showMenu()
 
 void plugin_init(void)
 {
-	dprintf(DEBUG_NORMAL, "test: plugin_init\n");
+	dprintf(DEBUG_NORMAL, "CMBrowser: plugin_init\n");
 }
 
 void plugin_del(void)
 {
-	dprintf(DEBUG_NORMAL, "test: plugin_del\n");
+	dprintf(DEBUG_NORMAL, "CMBrowser: plugin_del\n");
 }
 
 void plugin_exec(void)

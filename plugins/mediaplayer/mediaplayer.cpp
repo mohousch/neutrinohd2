@@ -139,7 +139,7 @@ BROWSER:
 				{
 					CTmdb * tmdb = new CTmdb();
 
-					tmdb->getMovieDetails(mfile.epgTitle);
+					tmdb->getMovieInfo(mfile.epgTitle);
 	
 					// epgInfo2
 					if(mfile.epgInfo2.empty() && !tmdb->getDescription().empty())

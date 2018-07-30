@@ -62,9 +62,9 @@ CTmdb::~CTmdb()
 	fileHelper.removeDir(thumbnail_dir.c_str());
 }
 
-bool CTmdb::getMovieDetails(std::string text, const std::string& request)
+bool CTmdb::getMovieInfo(std::string text, const std::string& request)
 {
-	dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails:\n");
+	dprintf(DEBUG_NORMAL, "cTmdb::getMovieInfo: %s\n", text.c_str());
 
 	std::string url	= "http://api.themoviedb.org/3/";
 
@@ -76,6 +76,7 @@ bool CTmdb::getMovieDetails(std::string text, const std::string& request)
 	minfo.title = text;
 
 	std::string answer;
+
 	if (!::getUrl(url, answer))
 		return false;
 
@@ -85,14 +86,14 @@ bool CTmdb::getMovieDetails(std::string text, const std::string& request)
 
 	if (!parsedSuccess) 
 	{
-		dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails: Failed to parse JSON\n");
-		dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails: %s\n", reader.getFormattedErrorMessages().c_str());
+		dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: Failed to parse JSON\n");
+		dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: %s\n", reader.getFormattedErrorMessages().c_str());
 		return false;
 	}
 
 	minfo.result = root.get("total_results", 0).asInt();
 
-	dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails: results: %d\n", minfo.result);
+	dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: results: %d\n", minfo.result);
 
 	if (minfo.result > 0) 
 	{
@@ -112,8 +113,8 @@ bool CTmdb::getMovieDetails(std::string text, const std::string& request)
 			parsedSuccess = reader.parse(answer, root);
 			if (!parsedSuccess) 
 			{
-				dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails: Failed to parse JSON\n");
-				dprintf(DEBUG_NORMAL, "cTmdb::GetMovieDetails: %s\n", reader.getFormattedErrorMessages().c_str());
+				dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: Failed to parse JSON\n");
+				dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: %s\n", reader.getFormattedErrorMessages().c_str());
 
 				return false;
 			}
@@ -188,7 +189,6 @@ bool CTmdb::getBigCover(std::string fname)
 		if (found)
 		{
 			minfo.cover = fname;
-			cover = fname;
 		}
 
 		ret |= found;
@@ -197,18 +197,23 @@ bool CTmdb::getBigCover(std::string fname)
 	return ret;
 }
 
-bool CTmdb::getSmallCover(std::string fname)
+bool CTmdb::getSmallCover()
 { 
 	bool ret = false;
 
 	if (!minfo.poster_path.empty())
 	{
 		bool found = false;
-		found = ::downloadUrl("http://image.tmdb.org/t/p/w185" + minfo.poster_path, fname);
+
+		std::string tname = thumbnail_dir;
+		tname += "/";
+		tname += minfo.title;
+		tname += "_small.jpg";
+
+		found = ::downloadUrl("http://image.tmdb.org/t/p/w185" + minfo.poster_path, tname);
 		if (found)
 		{
-			minfo.cover = fname;
-			cover = fname;
+			minfo.cover = tname;
 		}
 
 		ret |= found;
@@ -217,26 +222,31 @@ bool CTmdb::getSmallCover(std::string fname)
 	return ret;
 }
 
-std::string CTmdb::CreateEPGText()
+std::string CTmdb::createInfoText()
 {
-	std::string epgtext;
-	epgtext += "\n";
-	epgtext += "Vote: " + minfo.vote_average.substr(0,3) + "/10 Votecount: " + to_string(minfo.vote_count) + "\n";
-	epgtext += "\n";
-	epgtext += minfo.overview + "\n";
-	epgtext += "\n";
+	dprintf(DEBUG_NORMAL, "CTmdb::createInfoText\n");
+
+	std::string infoText;
+	infoText += "\n";
+	infoText += "Vote: " + minfo.vote_average.substr(0,3) + "/10 Votecount: " + to_string(minfo.vote_count) + "\n";
+	infoText += "\n";
+	infoText += minfo.overview + "\n";
+	infoText += "\n";
 
 	if (minfo.media_type == "tv")
-		epgtext += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + minfo.runtimes+"\n";
+		infoText += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + minfo.runtimes+"\n";
 	else
-		epgtext += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + to_string(minfo.runtime)+"\n";
-	epgtext += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_GENRE) + ": " + minfo.genres + "\n";
-	epgtext += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ORIGINAL_TITLE) + " : " + minfo.original_title + "\n";
-	epgtext += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_YEAR_OF_PRODUCTION) + " : " + minfo.release_date.substr(0,4) + "\n";
+		infoText += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + to_string(minfo.runtime)+"\n";
+
+	infoText += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_GENRE) + ": " + minfo.genres + "\n";
+	infoText += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ORIGINAL_TITLE) + " : " + minfo.original_title + "\n";
+	infoText += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_YEAR_OF_PRODUCTION) + " : " + minfo.release_date.substr(0,4) + "\n";
+
 	if (minfo.media_type == "tv")
-		epgtext += "Seasons/Episodes: " + to_string(minfo.seasons) + "/" + to_string(minfo.episodes)+"\n";
+		infoText += "Seasons/Episodes: " + to_string(minfo.seasons) + "/" + to_string(minfo.episodes)+"\n";
 	if (!minfo.cast.empty())
-		epgtext += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS) + ":\n" + minfo.cast + "\n";
-	return epgtext;
+		infoText += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS) + ":\n" + minfo.cast + "\n";
+
+	return infoText;
 }
 

@@ -1254,7 +1254,7 @@ REPEAT:
 					{
 						CTmdb * tmdb = new CTmdb();
 
-						tmdb->getMovieDetails(mfile.epgTitle);
+						tmdb->getMovieInfo(mfile.epgTitle);
 
 						// epgInfo1
 						if((mfile.epgInfo1.empty() && mfile.epgInfo2.empty()) && !tmdb->getDescription().empty())

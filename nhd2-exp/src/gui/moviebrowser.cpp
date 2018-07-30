@@ -1011,7 +1011,7 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 
 			//				
 			CTmdb * tmdb = new CTmdb();
-			tmdb->getMovieDetails(m_movieSelectionHandler->epgTitle);
+			tmdb->getMovieInfo(m_movieSelectionHandler->epgTitle);
 	
 			if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 			{
@@ -1021,7 +1021,7 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 				buffer += "\n";
 	
 				// prepare print buffer  
-				buffer += tmdb->CreateEPGText();
+				buffer += tmdb->createInfoText();
 
 				// thumbnail
 				int pich = 246;	//FIXME
@@ -2033,7 +2033,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			//				
 			CTmdb * tmdb = new CTmdb();
 
-			tmdb->getMovieDetails(m_movieSelectionHandler->epgTitle);
+			tmdb->getMovieInfo(m_movieSelectionHandler->epgTitle);
 	
 			if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 			{
@@ -2043,7 +2043,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				buffer += "\n";
 	
 				// prepare print buffer  
-				buffer += tmdb->CreateEPGText();
+				buffer += tmdb->createInfoText();
 
 				// thumbnail
 				int pich = 246;	//FIXME

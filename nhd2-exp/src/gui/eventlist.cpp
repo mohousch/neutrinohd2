@@ -526,9 +526,9 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 				//
 				if(!evtlist[selected].description.empty())
 				{
-					CTmdb * tmdb = new CTmdb(/*evtlist[selected].description*/);
+					CTmdb * tmdb = new CTmdb();
 
-					tmdb->getMovieDetails(evtlist[selected].description);
+					tmdb->getMovieInfo(evtlist[selected].description);
 	
 					if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 					{
@@ -538,13 +538,13 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 						buffer += "\n";
 	
 						// prepare print buffer  
-						buffer += tmdb->CreateEPGText();
+						buffer += tmdb->createInfoText();
 
 						// thumbnail
 						int pich = 246;	//FIXME
 						int picw = 162; 	//FIXME
 
-							std::string thumbnail = /*"/tmp/" + evtlist[selected].description + ".jpg"*/ tmdb->getCover();
+						std::string thumbnail = tmdb->getCover();
 						if(access(thumbnail.c_str(), F_OK))
 							thumbnail = "";
 	

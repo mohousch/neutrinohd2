@@ -42,8 +42,6 @@
 #include <global.h>
 
 
-#define URL_TIMEOUT 		60
-
 std::string cYTVideoInfo::GetUrl(int fmt)
 {
 	yt_urlmap_iterator_t it;

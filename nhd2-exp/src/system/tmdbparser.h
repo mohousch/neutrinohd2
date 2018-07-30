@@ -50,7 +50,7 @@ class CTmdb
 	private:
 		tmdbinfo minfo;
 		std::string key; // tmdb api key
-		std::string cover;
+		//std::string cover;
 		std::string lang;
 		std::string thumbnail_dir;
 
@@ -59,8 +59,8 @@ class CTmdb
 	public:
 		CTmdb();
 		~CTmdb();
-		bool getMovieDetails(std::string text, const std::string& request = "search");
-		std::string CreateEPGText();
+		bool getMovieInfo(std::string text, const std::string& request = "search");
+		std::string createInfoText();
 
 		std::string getTitle(){ return minfo.title;}
 		std::string getOrgTitle(){ return minfo.original_title;}
@@ -69,10 +69,10 @@ class CTmdb
 		std::string getVote(){ return minfo.vote_average;}
 		std::string getCast(){ return minfo.cast;}
 		bool getBigCover(std::string fname);
-		bool getSmallCover(std::string fname);
+		bool getSmallCover();
 		int getResults(){ return minfo.result;}
 		int getStars(){ return (int) (atof(minfo.vote_average.c_str()) + 0.5);}
-		std::string getCover(){return cover;};
+		std::string getCover(){return minfo.cover;};
 };
 
 #endif
