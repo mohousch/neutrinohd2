@@ -177,6 +177,7 @@ void CNFilm::loadPlaylist()
 				movieInfo.tfile = tname;
 
 			//file.name extract from youtube
+			std::string search_string;
 			ytparser.Cleanup();
 
 			// setregion
@@ -184,13 +185,15 @@ void CNFilm::loadPlaylist()
 
 			// set max result
 			ytparser.SetMaxResults(1);
+
+			search_string = "Kinocheck " + movieInfo.epgTitle + " Trailer German";
 			
 			// parse feed
-			if (ytparser.ParseFeed(cYTFeedParser::SEARCH, movieInfo.epgTitle))
+			if (ytparser.ParseFeed(cYTFeedParser::SEARCH, search_string))
 			{
 				yt_video_list_t &ylist = ytparser.GetVideoList();
 	
-				for (unsigned int j = 0; j < 1/*ylist.size()*/; j++) 
+				for (unsigned int j = 0; j < ylist.size(); j++) 
 				{
 					movieInfo.ytid = ylist[j].id;
 					movieInfo.file.Name = ylist[j].GetUrl();
