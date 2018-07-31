@@ -155,6 +155,7 @@ void CYTBrowser::showYTMoviesMenu(bool reload)
 	moviesMenu->setWidgetType(WIDGET_FRAME);
 	moviesMenu->setItemsPerPage(3, 2);
 	moviesMenu->setItemBoxColor(COL_YELLOW);
+
 	moviesMenu->setHeaderButtons(YTHeadButtons, YT_HEAD_BUTTONS_COUNT);
 
 	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));

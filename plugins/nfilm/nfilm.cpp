@@ -59,7 +59,7 @@ class CNFilm : public CMenuTarget
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
 
-		void showMenu();
+		void showMenu(bool reload = true);
 };
 
 CNFilm::CNFilm()
@@ -162,7 +162,8 @@ void CNFilm::loadPlaylist()
 
 		if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 		{
-			movieInfo.epgInfo1 = tmdb->createInfoText();
+			movieInfo.epgInfo1 = tmdb->getDescription();
+			movieInfo.epgInfo2 = tmdb->createInfoText();
 			movieInfo.ytdate = tmdb->getReleaseDate();
 			
 			std::string tname = thumbnail_dir;
@@ -189,10 +190,10 @@ void CNFilm::loadPlaylist()
 			{
 				yt_video_list_t &ylist = ytparser.GetVideoList();
 	
-				for (unsigned i = 0; i < 1/*ylist.size()*/; i++) 
+				for (unsigned int j = 0; j < 1/*ylist.size()*/; j++) 
 				{
-					movieInfo.ytid = ylist[i].id;
-					movieInfo.file.Name = ylist[i].GetUrl();
+					movieInfo.ytid = ylist[j].id;
+					movieInfo.file.Name = ylist[j].GetUrl();
 				}
 			} 
 		}
@@ -207,25 +208,24 @@ void CNFilm::loadPlaylist()
 	loadBox.hide();
 }
 
-void CNFilm::showMenu()
+void CNFilm::showMenu(bool reload)
 {
-	mlist = new ClistBox("NFilm", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	mlist = new ClistBox("Kino Trailer", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	
 	// load playlist
-	loadPlaylist();
+	if(reload)
+		loadPlaylist();
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].ytdate.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
-
-		std::string tmp = m_vMovieInfo[i].epgTitle;
-		tmp += "\n";
+		std::string tmp = m_vMovieInfo[i].ytdate;
+		tmp += " ";
 		tmp += m_vMovieInfo[i].epgInfo1;
 
-		item->setInfo1(tmp.c_str());
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, tmp.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]);
+		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
 
 		mlist->addItem(item);
 	}
@@ -234,17 +234,14 @@ void CNFilm::showMenu()
 	mlist->setWidgetType(WIDGET_FRAME);
 	mlist->setItemsPerPage(6, 2);
 	mlist->setItemBoxColor(COL_YELLOW);
-
 	mlist->setSelected(selected);
-
-	//mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
-
 	mlist->enablePaintDate();
 
+	// widget
+	mlist->addWidget(WIDGET_EXTENDED);
+	mlist->enableWidgetChange();
+
 	mlist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	//mlist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
-	//mlist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
-	//mlist->addKey(CRCInput::RC_spkr, this, CRCInput::getSpecialKeyName(CRCInput::RC_spkr));
 
 	mlist->exec(NULL, "");
 	//mlist->hide();

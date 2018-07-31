@@ -284,7 +284,7 @@ class CMenuOptionChooser : public CAbstractMenuOptionChooser
 // CMenuOptionNumberChooser
 class CMenuOptionNumberChooser : public CAbstractMenuOptionChooser
 {
-	const char * optionString;
+	const char* optionString;
 
 	int lower_bound;
 	int upper_bound;
@@ -348,7 +348,7 @@ class CMenuOptionLanguageChooser : public CMenuItem
 		CMenuOptionLanguageChooser(char *Name, CChangeObserver *Observ = NULL, const char *const IconName = NULL);
 		~CMenuOptionLanguageChooser();
 
-		void addOption(const char * value);
+		void addOption(const char* value);
 
 		int paint(bool selected, bool AfterPulldown = false);
 		int getHeight(void) const {return height;}
@@ -534,7 +534,7 @@ class CMenuWidget : public CMenuTarget
 
 		//
 		int widgetType;
-		bool WidgetChange;
+		bool widgetChange;
 
 		// frame
 		fb_pixel_t backgroundColor;
@@ -576,8 +576,9 @@ class CMenuWidget : public CMenuTarget
 		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = CRCInput::RC_nokey, bool enabled = true);
 
 		//
-		void enableWidgetChange(void){WidgetChange = true;};
+		void enableWidgetChange(void){widgetChange = true;};
 		void setWidgetType(int type){widgetType = type;};
+		int getWidgetType(void){return widgetType;};
 
 		// Frame
 		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
@@ -670,7 +671,8 @@ class ClistBox : public CMenuTarget
 
 		//
 		int widgetType;
-		bool WidgetChange;
+		bool widgetChange;
+		std::vector<int> widget;
 
 		// frame
 		fb_pixel_t backgroundColor;
@@ -741,8 +743,10 @@ class ClistBox : public CMenuTarget
 		void setTimeOut(int to = 0){timeout = to;};
 
 		//
-		void setWidgetType(int type){widgetType = type;};
+		void setWidgetType(int type){widgetType = type; widget.push_back(widgetType);};
 		int getWidgetType(void){return widgetType;};
+		void enableWidgetChange(void){widgetChange = true;};
+		void addWidget(int wtype){widget.push_back(wtype);};
 
 		// Frame
 		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};

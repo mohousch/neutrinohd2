@@ -311,22 +311,6 @@ int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		selected = mlist->getSelected();
 		m_movieInfo.showMovieInfo(m_vMovieInfo[mlist->getSelected()]);
 	}
-	else if(actionKey == "RC_setup")
-	{
-		mlist->hide();
-
-		if(mlist->getWidgetType() == WIDGET_FRAME)
-			mlist->setWidgetType(WIDGET_EXTENDED);
-		else if(mlist->getWidgetType() == WIDGET_EXTENDED)
-			mlist->setWidgetType(WIDGET_INFO);
-		else if(mlist->getWidgetType() == WIDGET_INFO)
-			mlist->setWidgetType(WIDGET_FRAME);
-
-		mlist->initFrames();
-		mlist->paint();
-		mlist->paintHead();
-		mlist->paintFoot();
-	}
 	else if(actionKey == "RC_red")
 	{
 		hide();
@@ -360,7 +344,7 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 
 void CMBrowser::showMenu()
 {
-	mlist = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	mlist = new ClistBox("Extended Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	
 	// load playlist
@@ -370,7 +354,6 @@ void CMBrowser::showMenu()
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		//item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
 		std::string tmp = m_vMovieInfo[i].epgTitle;
 		tmp += "\n";
 		tmp += m_vMovieInfo[i].epgInfo1;
@@ -388,15 +371,17 @@ void CMBrowser::showMenu()
 	mlist->setWidgetType(WIDGET_FRAME);
 	mlist->setItemsPerPage(6, 2);
 	mlist->setItemBoxColor(COL_YELLOW);
-
 	mlist->setSelected(selected);
+	mlist->enablePaintDate();
+
+	// widget
+	mlist->addWidget(WIDGET_EXTENDED);
+	mlist->addWidget(WIDGET_INFO);
+	mlist->enableWidgetChange();
 
 	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 
-	mlist->enablePaintDate();
-
 	mlist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	mlist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
 	mlist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
 	mlist->addKey(CRCInput::RC_spkr, this, CRCInput::getSpecialKeyName(CRCInput::RC_spkr));
 

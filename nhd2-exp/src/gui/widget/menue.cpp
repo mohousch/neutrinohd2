@@ -1090,7 +1090,7 @@ CMenuWidget::CMenuWidget()
 
 	//
 	widgetType = WIDGET_STANDARD;
-	WidgetChange = false;
+	widgetChange = false;
 
 	//
 	backgroundColor = COL_BACKGROUND;
@@ -1145,7 +1145,7 @@ void CMenuWidget::Init(const std::string & Icon, const int mwidth, const int mhe
 
 	//
 	widgetType = WIDGET_STANDARD;
-	WidgetChange = false;
+	widgetChange = false;
 
 	//
 	backgroundColor = COL_BACKGROUND;
@@ -1640,7 +1640,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					
 				//
 				case (CRCInput::RC_setup):
-					if(WidgetChange)
+					if(widgetChange)
 					{
 						hide();
 
@@ -1726,7 +1726,7 @@ void CMenuWidget::paint()
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8 );
 
 	// widget type
-	if(WidgetChange)
+	if(widgetChange)
 	{
 		if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_STANDARD)
 			widgetType = WIDGET_STANDARD;
@@ -2681,7 +2681,7 @@ ClistBox::ClistBox()
 
 	//
 	widgetType = WIDGET_STANDARD;
-	WidgetChange = false;
+	widgetChange = false;
 
 	//
 	backgroundColor = COL_BACKGROUND;
@@ -2757,7 +2757,7 @@ void ClistBox::Init(const std::string & Icon, const int mwidth, const int mheigh
 
 	//
 	widgetType = WIDGET_STANDARD;
-	WidgetChange = false;
+	widgetChange = false;
 
 	//
 	backgroundColor = COL_BACKGROUND;
@@ -3576,6 +3576,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 
 	int pos = 0;
 	exit_pressed = false;
+	int cnt = 0;
 
 	if (parent)
 		parent->hide();
@@ -3586,8 +3587,6 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 
 	//
 	initFrames();
-
-	//
 	paint();
 	paintHead();
 	paintFoot();
@@ -4100,6 +4099,27 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 						} 
 						else
 							msg = CRCInput::RC_timeout;
+					}
+					break;
+				//
+				case (CRCInput::RC_setup):
+					if(widgetChange)
+					{
+						hide();
+
+						cnt++;
+
+						if(cnt >= (int)widget.size())
+						{
+							cnt = 0;
+						}
+					
+						widgetType = widget[cnt];
+
+						initFrames();
+						paint();
+						paintHead();
+						paintFoot();
 					}
 					break;
 

@@ -120,8 +120,10 @@ void CPluginList::showMenu()
 	plist->setWidgetType(WIDGET_CLASSIC);
 	plist->enablePaintDate();
 	plist->setItemBoxColor(COL_YELLOW);
-
 	plist->setSelected(selected);
+
+	plist->addWidget(WIDGET_FRAME);
+	plist->enableWidgetChange();
 
 	// footer
 	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS, MENU_WIDTH/2);
@@ -129,7 +131,6 @@ void CPluginList::showMenu()
 	//
 	plist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
 	plist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
-	plist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
 	plist->addKey(CRCInput::RC_ok, this, CRCInput::getSpecialKeyName(CRCInput::RC_ok));
 
 	plist->exec(NULL, "");
@@ -155,22 +156,6 @@ int CPluginList::exec(CMenuTarget * parent, const std::string& actionKey)
 	{
 		selected = plist->getSelected();
 		g_PluginList->startPlugin(plist->getSelected());
-	}
-	else if(actionKey == "RC_setup")
-	{
-		plist->hide();
-
-		if(plist->getWidgetType() == WIDGET_CLASSIC)
-			plist->setWidgetType(WIDGET_FRAME);
-		else if(plist->getWidgetType() == WIDGET_FRAME)
-			plist->setWidgetType(WIDGET_CLASSIC);
-
-		plist->initFrames();
-		plist->paint();
-		plist->paintHead();
-		plist->paintFoot();
-		
-		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_ok")
 	{

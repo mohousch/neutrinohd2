@@ -1930,7 +1930,6 @@ void CTestMenu::testClistBoxnLines()
 	//
 	plist->addKey(CRCInput::RC_red, this, "pred");
 	plist->addKey(CRCInput::RC_green, this, "pgreen");
-	plist->addKey(CRCInput::RC_setup, this, "psetup");
 
 	plist->exec(NULL, "");
 	plist->hide();
@@ -2238,7 +2237,6 @@ void CTestMenu::testFrameBox()
 	mlist->enablePaintDate();
 
 	mlist->addKey(CRCInput::RC_info, this, "minfo");
-	mlist->addKey(CRCInput::RC_setup, this, "msetup");
 
 	mlist->exec(NULL, "");
 	mlist->hide();
@@ -2755,25 +2753,6 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		g_PluginList->startPlugin(plist->getSelected());
 	}
-	else if(actionKey == "psetup")
-	{
-		plist->hide();
-
-		if(plist->getWidgetType() == WIDGET_STANDARD)
-			plist->setWidgetType(WIDGET_CLASSIC);
-		else if(plist->getWidgetType() == WIDGET_CLASSIC)
-			plist->setWidgetType(WIDGET_EXTENDED);
-		else if(plist->getWidgetType() == WIDGET_EXTENDED)
-			plist->setWidgetType(WIDGET_FRAME);
-		else if(plist->getWidgetType() == WIDGET_FRAME)
-			plist->setWidgetType(WIDGET_STANDARD);
-
-		plist->initFrames();
-		plist->paint();
-		plist->paintHead();
-		plist->paintFoot();
-
-	}
 	else if(actionKey == "mplay")
 	{
 		selected = mlist->getSelected();
@@ -2789,22 +2768,6 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		selected = mlist->getSelected();
 		m_movieInfo.showMovieInfo(m_vMovieInfo[mlist->getSelected()]);
-	}
-	else if(actionKey == "msetup")
-	{
-		mlist->hide();
-
-		if(mlist->getWidgetType() == WIDGET_INFO)
-			mlist->setWidgetType(WIDGET_FRAME);
-		else if(mlist->getWidgetType() == WIDGET_FRAME)
-			mlist->setWidgetType(WIDGET_EXTENDED);
-		else if(mlist->getWidgetType() == WIDGET_EXTENDED)
-			mlist->setWidgetType(WIDGET_INFO);
-
-		mlist->initFrames();
-		mlist->paint();
-		mlist->paintHead();
-		mlist->paintFoot();
 	}
 	else if(actionKey == "spinner")
 	{
