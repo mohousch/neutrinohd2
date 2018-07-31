@@ -186,14 +186,14 @@ void CYTBrowser::playMovie(void)
 				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[i]);
 		}
 
-		tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		tmpMoviePlayerGui.exec(NULL, "");
 	}
 	else
 	{
 		if (&m_vMovieInfo[moviesMenu->getSelected()].file != NULL) 
 		{
 			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[moviesMenu->getSelected()]);
-			tmpMoviePlayerGui.exec(NULL, "urlplayback");
+			tmpMoviePlayerGui.exec(NULL, "");
 		}
 	}
 }

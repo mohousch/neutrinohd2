@@ -22,6 +22,7 @@
 
 #include <fstream>
 #include <jsoncpp/include/json/json.h>
+#include <system/ytparser.h>
 
 
 extern "C" void plugin_exec(void);
@@ -43,6 +44,7 @@ class CNFilm : public CMenuTarget
 		CTmdb* tmdb;
 		std::string thumbnail_dir;
 		CFileHelpers fileHelper;
+		cYTFeedParser ytparser;
 
 		CMovieInfo m_movieInfo;
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
@@ -90,6 +92,9 @@ void CNFilm::hide()
 
 void CNFilm::loadPlaylist()
 {
+	CHintBox loadBox("Kino Trailer", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	loadBox.paint();
+
 /*
 	std::string url = "https://api.trakt.tv/movies/popular";
 	std::vector<std::string*> title;
@@ -150,26 +155,46 @@ void CNFilm::loadPlaylist()
 
 		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
 
-		movieInfo.file.Name = filmTitle[i];
+		movieInfo.epgTitle = filmTitle[i];
 
 		// load infos from tmdb
-		tmdb->getMovieInfo(movieInfo.file.Name);
+		tmdb->getMovieInfo(movieInfo.epgTitle, false, "search");
 
 		if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 		{
-			movieInfo.epgTitle = tmdb->getTitle();
 			movieInfo.epgInfo1 = tmdb->createInfoText();
-			movieInfo.epgChannel = tmdb->getReleaseDate();
+			movieInfo.ytdate = tmdb->getReleaseDate();
 			
 			std::string tname = thumbnail_dir;
 			tname += "/";
 			tname += tmdb->getTitle();
 			tname += ".jpg";
 
-			tmdb->getBigCover(tname);
+			tmdb->getSmallCover(tname);
 
 			if(!tname.empty())
 				movieInfo.tfile = tname;
+
+			//file.name extract from youtube
+			ytparser.Cleanup();
+
+			// setregion
+			ytparser.SetRegion("DE");
+
+			// set max result
+			ytparser.SetMaxResults(1);
+			
+			// parse feed
+			if (ytparser.ParseFeed(cYTFeedParser::SEARCH, movieInfo.epgTitle))
+			{
+				yt_video_list_t &ylist = ytparser.GetVideoList();
+	
+				for (unsigned i = 0; i < 1/*ylist.size()*/; i++) 
+				{
+					movieInfo.ytid = ylist[i].id;
+					movieInfo.file.Name = ylist[i].GetUrl();
+				}
+			} 
 		}
 					
 		// 
@@ -178,6 +203,8 @@ void CNFilm::loadPlaylist()
 		delete tmdb;
 		tmdb = NULL;
 	}
+
+	loadBox.hide();
 }
 
 void CNFilm::showMenu()
@@ -190,13 +217,11 @@ void CNFilm::showMenu()
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].ytdate.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
 		std::string tmp = m_vMovieInfo[i].epgTitle;
 		tmp += "\n";
 		tmp += m_vMovieInfo[i].epgInfo1;
-		tmp += "\n";
-		tmp += m_vMovieInfo[i].epgInfo2;
 
 		item->setInfo1(tmp.c_str());
 
@@ -234,10 +259,22 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(parent)
 		hide();
 
-	if(actionKey == "RC_info" || actionKey == "mplay")
+	if(actionKey == "RC_info")
 	{
 		selected = mlist->getSelected();
 		m_movieInfo.showMovieInfo(m_vMovieInfo[mlist->getSelected()]);
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "mplay")
+	{
+		selected = mlist->getSelected();
+		
+		if (&m_vMovieInfo[selected].file != NULL) 
+		{
+			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
+			tmpMoviePlayerGui.exec(NULL, "");
+		}
 
 		return menu_return::RETURN_REPAINT;
 	}

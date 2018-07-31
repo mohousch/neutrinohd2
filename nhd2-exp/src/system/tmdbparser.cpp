@@ -62,7 +62,7 @@ CTmdb::~CTmdb()
 	fileHelper.removeDir(thumbnail_dir.c_str());
 }
 
-bool CTmdb::getMovieInfo(std::string text, const std::string& request)
+bool CTmdb::getMovieInfo(std::string text, bool cover, const std::string& request)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getMovieInfo: %s\n", text.c_str());
 
@@ -155,7 +155,7 @@ bool CTmdb::getMovieInfo(std::string text, const std::string& request)
 				minfo.cast +=  "  " + elements[i].get("character", "").asString() + " (" + elements[i].get("name", "").asString() + ")\n";
 			}
 
-			if (!minfo.poster_path.empty())
+			if (cover)
 			{
 				std::string tname = thumbnail_dir;
 				tname += "/";
@@ -174,20 +174,20 @@ bool CTmdb::getMovieInfo(std::string text, const std::string& request)
 	return false;
 }
 
-bool CTmdb::getBigCover(std::string fname)
+bool CTmdb::getBigCover(std::string tname)
 { 
-	dprintf(DEBUG_NORMAL, "CTmdb::getBigCover: %s\n", fname.c_str());
+	dprintf(DEBUG_NORMAL, "CTmdb::getBigCover: %s\n", tname.c_str());
 
 	bool ret = false;
 
 	if (!minfo.poster_path.empty())
 	{
 		bool found = false;
-		found = ::downloadUrl("http://image.tmdb.org/t/p/w342" + minfo.poster_path, fname);
+		found = ::downloadUrl("http://image.tmdb.org/t/p/w342" + minfo.poster_path, tname);
 
 		if (found)
 		{
-			minfo.cover = fname;
+			minfo.cover = tname;
 		}
 
 		ret |= found;
@@ -196,18 +196,13 @@ bool CTmdb::getBigCover(std::string fname)
 	return ret;
 }
 
-bool CTmdb::getSmallCover()
+bool CTmdb::getSmallCover(std::string tname)
 { 
 	bool ret = false;
 
 	if (!minfo.poster_path.empty())
 	{
 		bool found = false;
-
-		std::string tname = thumbnail_dir;
-		tname += "/";
-		tname += minfo.title;
-		tname += "_small.jpg";
 
 		found = ::downloadUrl("http://image.tmdb.org/t/p/w185" + minfo.poster_path, tname);
 		if (found)

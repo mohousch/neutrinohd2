@@ -141,7 +141,6 @@ void CNKMovies::recordMovie(void)
 	m_movieInfo.clearMovieInfo(&g_movieInfo); // refresh structure
 		
 	g_movieInfo.epgTitle = m_vMovieInfo[moviesMenu->getSelected()].epgTitle;
-	//g_movieInfo.epgInfo1 = "";
 	g_movieInfo.epgInfo2 = m_vMovieInfo[moviesMenu->getSelected()].epgInfo2;
 	g_movieInfo.tfile = m_vMovieInfo[moviesMenu->getSelected()].tfile;
 	g_movieInfo.ytdate = m_vMovieInfo[moviesMenu->getSelected()].ytdate;
@@ -274,7 +273,6 @@ void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
 		
 		movieInfo.epgTitle = ylist[count].title;
-		//movieInfo.epgInfo1 = "";
 		movieInfo.epgInfo2 = ylist[count].description;
 		movieInfo.tfile = ylist[count].tfile;
 		movieInfo.ytdate = ylist[count].published;
