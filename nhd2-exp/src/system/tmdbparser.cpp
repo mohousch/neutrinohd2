@@ -155,7 +155,6 @@ bool CTmdb::getMovieInfo(std::string text, const std::string& request)
 				minfo.cast +=  "  " + elements[i].get("character", "").asString() + " (" + elements[i].get("name", "").asString() + ")\n";
 			}
 
-			//
 			if (!minfo.poster_path.empty())
 			{
 				std::string tname = thumbnail_dir;

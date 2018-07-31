@@ -57,5 +57,6 @@ movieplayer/Makefile
 picviewer/Makefile
 audioplayer/Makefile
 opkg_manager/Makefile
+nfilm/Makefile
 ])
 

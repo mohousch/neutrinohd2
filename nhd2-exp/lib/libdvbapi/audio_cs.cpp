@@ -278,7 +278,7 @@ void cAudio::SetStreamType(AUDIO_FORMAT type)
 	if (audio_fd < 0)
 		return;
 	
-	const char *aAUDIOFORMAT[] = {
+	const char* aAUDIOFORMAT[] = {
 		"AUDIO_STREAMTYPE_AC3",
 		"AUDIO_STREAMTYPE_MPEG",
 		"AUDIO_STREAMTYPE_DTS"

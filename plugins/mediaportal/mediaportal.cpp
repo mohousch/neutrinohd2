@@ -18,13 +18,36 @@
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <mediaportal.h>
+#include <plugin.h>
+#include <ard.h>
 
 
 extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
 
+
+class CMediaPortal : public CMenuTarget
+{
+	private:
+		CMenuWidget* mediaPortal;
+		CMenuItem* item;
+
+		void youTube(void);
+		void netzKino(void);
+		void iceCast(void);
+		void internetRadio(void);
+		void ard(void);
+		void nFilm(void);
+	
+	public:
+		CMediaPortal();
+		~CMediaPortal();
+		
+		int exec(CMenuTarget* parent, const std::string& actionKey);
+		void showMenu(void);
+
+};
 
 CMediaPortal::CMediaPortal()
 {
@@ -54,6 +77,11 @@ void CMediaPortal::iceCast(void)
 	g_PluginList->startPlugin("icecast");
 }
 
+void CMediaPortal::internetRadio(void)
+{
+	g_PluginList->startPlugin("internetradio");
+}
+
 void CMediaPortal::ard(void)
 {
 	CARD* ard = new CARD();
@@ -62,9 +90,9 @@ void CMediaPortal::ard(void)
 	ard = NULL;
 }
 
-void CMediaPortal::internetRadio(void)
+void CMediaPortal::nFilm()
 {
-	g_PluginList->startPlugin("internetradio");
+	g_PluginList->startPlugin("nfilm");
 }
 
 int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
@@ -94,15 +122,21 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "internetradio")
+	{
+		internetRadio();
+
+		return menu_return::RETURN_REPAINT;
+	}
 	else if(actionKey == "ard")
 	{
 		ard();
 
 		return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "internetradio")
+	else if(actionKey == "nfilm")
 	{
-		internetRadio();
+		nFilm();
 
 		return menu_return::RETURN_REPAINT;
 	}
@@ -146,6 +180,12 @@ void CMediaPortal::showMenu(void)
 
 	// ard
 	item = new CMenuForwarder("ARD Mediathek", true, NULL, this, "ard", CRCInput::RC_nokey, NULL, PLUGINDIR "/mediaportal/ard.png");
+
+	mediaPortal->addItem(item);
+
+	// nFilm
+	item = new CMenuForwarder("Kino Info", true, NULL, this, "nfilm", CRCInput::RC_nokey, NULL, PLUGINDIR "/nfilm/nfilm.png");
+	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("nfilm")));
 
 	mediaPortal->addItem(item);
 
