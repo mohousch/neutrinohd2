@@ -96,6 +96,7 @@ class cYTFeedParser
 			PREV,
 			RELATED,
 			SEARCH,
+			SEARCH_BY_ID,
 			MODE_LAST
 		};
 		

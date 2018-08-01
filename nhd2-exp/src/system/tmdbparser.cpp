@@ -66,6 +66,8 @@ bool CTmdb::getMovieInfo(std::string text, bool cover, const std::string& reques
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getMovieInfo: %s\n", text.c_str());
 
+	minfo.cast.clear();
+
 	std::string url	= "http://api.themoviedb.org/3/";
 
 	if(request == "search")
@@ -191,6 +193,7 @@ bool CTmdb::getMovieInfo(std::string text, bool cover, const std::string& reques
 			minfo.vid = results[0].get("id", "").asString();
 			minfo.vkey = results[0].get("key", "").asString();
 			minfo.vname = results[0].get("name", "").asString();
+			minfo.vtype = results[0].get("type", "").asString();
 
 			return true;
 		}

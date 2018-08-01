@@ -132,7 +132,7 @@ void CNFilm::loadPlaylist()
 	for (unsigned int count = 0; count < mvlist.size(); count++) 
 	{
 		MI_MOVIE_INFO Info;
-		m_movieInfo.clearMovieInfo(&Info); // refresh structure
+		m_movieInfo.clearMovieInfo(&Info);
 		
 		Info.epgTitle = mvlist[count].title;
 		
@@ -142,7 +142,7 @@ void CNFilm::loadPlaylist()
 	for (unsigned int i = 0; i < listMovie.size(); i++)
 	{
 		MI_MOVIE_INFO movieInfo;
-		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+		m_movieInfo.clearMovieInfo(&movieInfo); 
 
 		movieInfo.epgTitle = listMovie[i].epgTitle;
 
@@ -172,10 +172,10 @@ void CNFilm::loadPlaylist()
 			ytparser.SetRegion("DE");
 
 			// set max result
-			ytparser.SetMaxResults(2);
+			ytparser.SetMaxResults(1);
 			
 			// parse feed
-			if (ytparser.ParseFeed(cYTFeedParser::SEARCH, tmdb->getVName(), tmdb->getVId()))
+			if (ytparser.ParseFeed(cYTFeedParser::SEARCH, tmdb->getVName()))
 			{
 				yt_video_list_t &ylist = ytparser.GetVideoList();
 	

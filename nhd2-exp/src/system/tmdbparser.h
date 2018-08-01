@@ -48,6 +48,7 @@ typedef struct {
 	std::string vid;
 	std::string vkey;
 	std::string vname;
+	std::string vtype;
 }tmdbinfo;
 
 class CTmdb
@@ -83,6 +84,7 @@ class CTmdb
 		std::string getVId(){return minfo.vid;};
 		std::string getVKey(){return minfo.vkey;};
 		std::string getVName(){return minfo.vname;};
+		std::string getVType(){return minfo.vtype;};
 
 		//
 		void cleanUp(void){listInfo.clear();};

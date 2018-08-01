@@ -50,10 +50,13 @@ class CYTBrowser : public CMenuTarget
 		//
 		CMoviePlayList m_vMovieInfo;
 		CMovieInfo m_movieInfo;
+		CMoviePlayerGui tmpMoviePlayerGui;
+
 		cYTFeedParser ytparser;
+
 		neutrino_locale_t getFeedLocale(void);
 		void loadYTTitles(int mode, std::string search = "", std::string id = "");
-		int showYTMenu(void);
+		int showMenu(void);
 		void playMovie(void);
 		void showMovieInfo(void);
 		void recordMovie(void);
@@ -66,7 +69,7 @@ class CYTBrowser : public CMenuTarget
 		CYTBrowser();
 		~CYTBrowser();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
-		void showYTMoviesMenu(bool reload = true);
+		void showMoviesMenu(bool reload = true);
 }; 
 
 #endif //__YT__

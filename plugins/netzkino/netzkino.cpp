@@ -54,6 +54,44 @@ void CNKMovies::hide()
 	CFrameBuffer::getInstance()->blit();
 }
 
+void CNKMovies::loadNKTitles(int mode, std::string search, int id)
+{
+	dprintf(DEBUG_NORMAL, "CNKMovies::loadNKTitles: (mode:%d) search:%s (id:%d)\n", mode, search.c_str(), id);
+
+	nkparser.Cleanup();
+
+	//
+	if (nkparser.ParseFeed((cNKFeedParser::nk_feed_mode_t)mode, search, id)) 
+	{
+		nkparser.DownloadThumbnails();
+	} 
+	else 
+	{
+		//FIXME show error
+		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_NK_ERROR), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+		
+		return;
+	}
+	
+	m_vMovieInfo.clear();
+	nk_video_list_t &ylist = nkparser.GetVideoList();
+	
+	for (unsigned int count = 0; count < ylist.size(); count++) 
+	{
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+		
+		movieInfo.epgTitle = ylist[count].title;
+		movieInfo.epgInfo2 = ylist[count].description;
+		movieInfo.tfile = ylist[count].tfile;
+		movieInfo.ytdate = ylist[count].published;
+		movieInfo.ytid = ylist[count].id;
+		movieInfo.file.Name = ylist[count].url;
+		
+		m_vMovieInfo.push_back(movieInfo);
+	}
+}
+
 #define NK_HEAD_BUTTONS_COUNT	2
 const struct button_label NKHeadButtons[NK_HEAD_BUTTONS_COUNT] =
 {
@@ -61,9 +99,9 @@ const struct button_label NKHeadButtons[NK_HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL}
 };
 
-void CNKMovies::showNKMoviesMenu()
+void CNKMovies::showMoviesMenu()
 {
-	dprintf(DEBUG_NORMAL, "CNKMovies::showNKMoviesMenu: mode:%d id:%d title:%s\n", catMode, catID, caption.c_str());
+	dprintf(DEBUG_NORMAL, "CNKMovies::showMoviesMenu: mode:%d id:%d title:%s\n", catMode, catID, caption.c_str());
 
 	//
 	CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
@@ -119,12 +157,10 @@ void CNKMovies::showNKMoviesMenu()
 
 void CNKMovies::playMovie(void)
 {
-	CMoviePlayerGui tmpMoviePlayerGui;
-
 	if (&m_vMovieInfo[moviesMenu->getSelected()].file != NULL) 
 	{
 		tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[moviesMenu->getSelected()]);
-		tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		tmpMoviePlayerGui.exec(NULL, "");
 	}
 }
 
@@ -152,9 +188,9 @@ void CNKMovies::recordMovie(void)
 	::start_file_recording(m_vMovieInfo[moviesMenu->getSelected()].epgTitle.c_str(), infoString.c_str(), m_vMovieInfo[moviesMenu->getSelected()].file.Name.c_str());
 }
 
-void CNKMovies::showNKCategoriesMenu()
+void CNKMovies::showCategoriesMenu()
 {
-	dprintf(DEBUG_NORMAL, "CNKMovies::showNKCategoriesMenu:\n");
+	dprintf(DEBUG_NORMAL, "CNKMovies::showCategoriesMenu:\n");
 
 	// load Categories
 	CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_NK_SCAN_FOR_CATEGORIES));
@@ -197,7 +233,9 @@ void CNKMovies::showNKCategoriesMenu()
 
 	mainMenu.exec(NULL, "");
 	delete selector;
+	selector = NULL;
 	delete stringInput;
+	stringInput = NULL;
 
 	if(select == cNKFeedParser::SEARCH)
 	{
@@ -230,7 +268,7 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_setup")
 	{
-		showNKCategoriesMenu();
+		showCategoriesMenu();
 
 		return menu_return::RETURN_REPAINT;
 	}
@@ -240,49 +278,10 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 		return menu_return::RETURN_REPAINT;
 	}
 
-	showNKMoviesMenu();
+	showMoviesMenu();
 	
 	return menu_return::RETURN_EXIT;
 }
-
-void CNKMovies::loadNKTitles(int mode, std::string search, int id)
-{
-	dprintf(DEBUG_NORMAL, "CNKMovies::loadNKTitles:\n");
-
-	nkparser.Cleanup();
-
-	//
-	if (nkparser.ParseFeed((cNKFeedParser::nk_feed_mode_t)mode, search, id)) 
-	{
-		nkparser.DownloadThumbnails();
-	} 
-	else 
-	{
-		//FIXME show error
-		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_NK_ERROR), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
-		
-		return;
-	}
-	
-	m_vMovieInfo.clear();
-	nk_video_list_t &ylist = nkparser.GetVideoList();
-	
-	for (unsigned int count = 0; count < ylist.size(); count++) 
-	{
-		MI_MOVIE_INFO movieInfo;
-		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-		
-		movieInfo.epgTitle = ylist[count].title;
-		movieInfo.epgInfo2 = ylist[count].description;
-		movieInfo.tfile = ylist[count].tfile;
-		movieInfo.ytdate = ylist[count].published;
-		movieInfo.ytid = ylist[count].id;
-		movieInfo.file.Name = ylist[count].url;
-		
-		m_vMovieInfo.push_back(movieInfo);
-	}
-}
-//
 
 // plugin API
 void plugin_init(void)

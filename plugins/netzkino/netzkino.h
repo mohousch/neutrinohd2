@@ -32,6 +32,8 @@ class CNKMovies : public CMenuTarget
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
 		CMovieInfo m_movieInfo;
 
+		CMoviePlayerGui tmpMoviePlayerGui;
+
 		//
 		cNKFeedParser nkparser;
 		nk_category_list_t cats;
@@ -46,17 +48,16 @@ class CNKMovies : public CMenuTarget
 
 		void loadNKTitles(int mode, std::string search, int id);
 
-		//void showNKMoviesMenu();
 		void playMovie(void);
 		void showMovieInfo(void);
-		void showNKCategoriesMenu();
+		void showCategoriesMenu();
 	public:
 		CNKMovies(int mode, int id, std::string title);
 		~CNKMovies();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
 
-		void showNKMoviesMenu();
+		void showMoviesMenu();
 		void recordMovie(void);
 };
 

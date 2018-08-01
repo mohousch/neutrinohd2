@@ -406,6 +406,17 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 		const char *orderby_values[] = { "date", "relevance", "viewCount", "rating", "title", "videoCount"};
 		url += "&order=" + std::string(orderby_values[orderby & 3]);
 	}
+	else if(mode == SEARCH_BY_ID)
+	{
+		if(search.empty())
+			return false;
+
+		search = encodeUrl(search);
+
+		url = "https://www.googleapis.com/youtube/v3/&part=snippet";
+		url += "&topicId=" + vid;
+		url += "&type=" + search;
+	}
 
 	feedmode = mode;
 	if (append_res) 

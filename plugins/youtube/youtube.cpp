@@ -113,9 +113,9 @@ const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL}
 };
 
-void CYTBrowser::showYTMoviesMenu(bool reload)
+void CYTBrowser::showMoviesMenu(bool reload)
 {
-	dprintf(DEBUG_NORMAL, "CYTBrowser::loadMovies:\n");
+	dprintf(DEBUG_NORMAL, "CYTBrowser::showMoviesMenu:\n");
 
 	if(reload)
 	{
@@ -171,8 +171,6 @@ void CYTBrowser::showYTMoviesMenu(bool reload)
 
 void CYTBrowser::playMovie(void)
 {
-	CMoviePlayerGui tmpMoviePlayerGui;
-
 	if(m_settings.ytautoplay)
 	{
 		// add selected video
@@ -207,54 +205,6 @@ void CYTBrowser::showMovieInfo(void)
 void CYTBrowser::recordMovie(void)
 {
 	::start_file_recording(m_vMovieInfo[moviesMenu->getSelected()].epgTitle.c_str(), m_vMovieInfo[moviesMenu->getSelected()].epgInfo2.c_str(), m_vMovieInfo[moviesMenu->getSelected()].file.Name.c_str());
-}
-
-int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
-{
-	dprintf(DEBUG_NORMAL, "CYTBrowser::exec: actionKey:%s\n", actionKey.c_str());
-
-	if(parent) 
-		parent->hide();
-
-	if(actionKey == "play")
-	{
-		playMovie();
-
-		if(m_settings.ytautoplay)
-		{
-			showYTMoviesMenu(false);
-		}
-		else
-			return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "RC_info")
-	{
-		showMovieInfo();
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "RC_setup")
-	{
-		int res = showYTMenu();
-
-		if( res >= 0 && res <= 6)
-			showYTMoviesMenu();
-		else
-			return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "RC_red")
-	{
-		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
-		m_settings.ytmode = cYTFeedParser::RELATED;
-		showYTMoviesMenu();
-	}
-	else if(actionKey == "RC_record")
-	{
-		recordMovie();
-		return menu_return::RETURN_REPAINT;
-	}
-	
-	return menu_return::RETURN_EXIT;
 }
 
 void CYTBrowser::loadYTTitles(int mode, std::string search, std::string id)
@@ -352,7 +302,7 @@ neutrino_locale_t CYTBrowser::getFeedLocale(void)
 	return ret;
 }
 
-int CYTBrowser::showYTMenu(void)
+int CYTBrowser::showMenu(void)
 {
 	CMenuWidget mainMenu(LOCALE_YOUTUBE, NEUTRINO_ICON_YT_SMALL, MENU_WIDTH + 100);
 	mainMenu.enableSaveScreen();
@@ -397,7 +347,6 @@ int CYTBrowser::showYTMenu(void)
 	region->addOption("US");
 	mainMenu.addItem(region);
 
-	// key
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	// autoplay
@@ -405,8 +354,7 @@ int CYTBrowser::showYTMenu(void)
 
 	mainMenu.exec(NULL, "");
 	delete selector;
-
-	printf("select: %d\n", select);
+	selector = NULL;
 
 	int newmode = -1;
 
@@ -441,6 +389,54 @@ int CYTBrowser::showYTMenu(void)
 	return (select);
 }
 
+int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CYTBrowser::exec: actionKey:%s\n", actionKey.c_str());
+
+	if(parent) 
+		parent->hide();
+
+	if(actionKey == "play")
+	{
+		playMovie();
+
+		if(m_settings.ytautoplay)
+		{
+			showMoviesMenu(false);
+		}
+		else
+			return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "RC_info")
+	{
+		showMovieInfo();
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "RC_setup")
+	{
+		int res = showMenu();
+
+		if( res >= 0 && res <= 6)
+			showMoviesMenu();
+		else
+			return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "RC_red")
+	{
+		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
+		m_settings.ytmode = cYTFeedParser::RELATED;
+		showMoviesMenu();
+	}
+	else if(actionKey == "RC_record")
+	{
+		recordMovie();
+		return menu_return::RETURN_REPAINT;
+	}
+	
+	return menu_return::RETURN_EXIT;
+}
+
 //
 void plugin_init(void)
 {
@@ -454,7 +450,7 @@ void plugin_exec(void)
 {
 	CYTBrowser * YTHandler = new CYTBrowser();
 	
-	YTHandler->showYTMoviesMenu();
+	YTHandler->showMoviesMenu();
 	YTHandler->exec(NULL, "");
 	
 	delete YTHandler;
