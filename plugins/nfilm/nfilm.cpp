@@ -49,10 +49,15 @@ class CNFilm : public CMenuTarget
 		CMovieInfo m_movieInfo;
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
 		std::vector<MI_MOVIE_INFO> listMovie;
+
+		std::string plist;
+		unsigned int page;
 		
 		CMoviePlayerGui tmpMoviePlayerGui;
 
-		void loadPlaylist(std::string list);
+		void loadPlaylist();
+		void createThumbnailDir();
+		void removeThumbnailDir();
 
 	public:
 		CNFilm();
@@ -60,7 +65,7 @@ class CNFilm : public CMenuTarget
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
 
-		void showMovies(std::string list = "now_playing");
+		void showMovies();
 		void showMenu();
 };
 
@@ -78,6 +83,9 @@ CNFilm::CNFilm()
 
 	//
 	selected = 0;
+
+	plist = "now_playing";
+	page = 1;
 }
 
 CNFilm::~CNFilm()
@@ -92,19 +100,32 @@ void CNFilm::hide()
 	frameBuffer->blit();
 }
 
-void CNFilm::loadPlaylist(std::string list)
+void CNFilm::createThumbnailDir()
 {
-	CHintBox loadBox("Kino Trailer", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
-	loadBox.paint();
+	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
+}
 
+void CNFilm::removeThumbnailDir()
+{
+	fileHelper.removeDir(thumbnail_dir.c_str());
+}
+
+void CNFilm::loadPlaylist()
+{
 	m_vMovieInfo.clear();
 	listMovie.clear();
+
+	removeThumbnailDir();
+	createThumbnailDir();
+
+	CHintBox loadBox("Kino Trailer", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	loadBox.paint();
 
 	//
 	tmdb = new CTmdb();
 
 	tmdb->cleanUp();
-	tmdb->getMovieList(list);
+	tmdb->getMovieList(plist, page);
 
 	std::vector<tmdbinfo> &mvlist = tmdb->getList();
 	
@@ -179,14 +200,23 @@ void CNFilm::loadPlaylist(std::string list)
 	loadBox.hide();
 }
 
-void CNFilm::showMovies(std::string list)
+#define HEAD_BUTTONS_COUNT	4
+const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
-	std::string caption = "Kino Trailer (" + list + ")";
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL }
+};
+
+void CNFilm::showMovies()
+{
+	std::string caption = "Kino Trailer (" + plist + ")";
 	mlist = new ClistBox(caption.c_str(), NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	
 	// load playlist
-	loadPlaylist(list);
+	loadPlaylist();
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
@@ -212,8 +242,12 @@ void CNFilm::showMovies(std::string list)
 	mlist->addWidget(WIDGET_EXTENDED);
 	mlist->enableWidgetChange();
 
+	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+
 	mlist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	mlist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
+	mlist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
+	mlist->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
 
 	mlist->exec(NULL, "");
 	//mlist->hide();
@@ -271,6 +305,9 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "now_playing")
 	{
 		mlist->clearItems();
+		selected = 0;
+		page = 1;
+		plist = "now_playing";
 		showMovies();
 
 		return menu_return::RETURN_EXIT;
@@ -278,21 +315,50 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "popular")
 	{
 		mlist->clearItems();
-		showMovies("popular");
+		selected = 0;
+		page = 1;
+		plist = "popular";
+		showMovies();
 
 		return menu_return::RETURN_EXIT;
 	}
 	else if(actionKey == "top_rated")
 	{
 		mlist->clearItems();
-		showMovies("top_rated");
+		selected = 0;
+		page = 1;
+		plist = "top_rated";
+		showMovies();
 
 		return menu_return::RETURN_EXIT;
 	}
 	else if(actionKey == "upcoming")
 	{
 		mlist->clearItems();
-		showMovies("upcoming");
+		selected = 0;
+		page = 1;
+		plist = "upcoming";
+		showMovies();
+
+		return menu_return::RETURN_EXIT;
+	}
+	else if(actionKey == "RC_green")
+	{
+		page++;
+		selected = 0;
+		showMovies();
+
+		return menu_return::RETURN_EXIT;
+	}
+	else if(actionKey == "RC_yellow")
+	{
+		page--;
+
+		if(page <= 1)
+			page = 1;
+
+		selected = 0;
+		showMovies();
 
 		return menu_return::RETURN_EXIT;
 	}

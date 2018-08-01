@@ -274,7 +274,7 @@ bool CTmdb::getMovieList(const std::string list, const int page)
 
 	std::string url	= "http://api.themoviedb.org/3/movie/";
 
-	url += list + "?api_key=" + key + "&language=" + lang /*+ "&page=" + to_string(page)*/;
+	url += list + "?api_key=" + key + "&language=" + lang + "&page=" + to_string(page);
 
 	std::string answer;
 
