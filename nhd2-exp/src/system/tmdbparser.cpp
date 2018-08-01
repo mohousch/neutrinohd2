@@ -104,6 +104,7 @@ bool CTmdb::getMovieInfo(std::string text, bool cover, const std::string& reques
 
 		if (minfo.id > -1) 
 		{
+			// detailed infos
 			url = "http://api.themoviedb.org/3/" + minfo.media_type + "/" + to_string(minfo.id) + "?api_key=" + key + "&language=" + lang + "&append_to_response=credits";
 
 			answer.clear();
@@ -166,7 +167,6 @@ bool CTmdb::getMovieInfo(std::string text, bool cover, const std::string& reques
 			}
 
 			// vurl
-			/*
 			url = "http://api.themoviedb.org/3/movie/" + to_string(minfo.id) + "/videos?api_key=" + key + "&language=" + lang;
 
 			answer.clear();
@@ -181,12 +181,16 @@ bool CTmdb::getMovieInfo(std::string text, bool cover, const std::string& reques
 
 				return false;
 			}
-			*/
 
-			// lists
-			/*
-			url = "https://api.themoviedb.org/3/movie/now_playing?api_key=507930c8d6d400c85eae3a7e7b3f6c78&language=de&page=1"
-			*/
+			Json::Value results = root.get("results", "");
+			Json::Value v;
+
+			if (results.type() != Json::arrayValue)
+				return false;
+
+			minfo.vid = results[0].get("id", "").asString();
+			minfo.vkey = results[0].get("key", "").asString();
+			minfo.vname = results[0].get("name", "").asString();
 
 			return true;
 		}
@@ -281,7 +285,7 @@ bool CTmdb::getMovieList(const std::string list, const int page)
 	if (!::getUrl(url, answer))
 		return false;
 
-	Json::Value root, v;
+	Json::Value root;
 	Json::Reader reader;
 	bool parsedSuccess = reader.parse(answer, root);
 
@@ -301,14 +305,9 @@ bool CTmdb::getMovieList(const std::string list, const int page)
 
 	for(unsigned int i = 0; i < results.size(); ++i)
 	{
-		const Json::Value flick = results[i];
 		tmdbinfo vinfo;
-		v = flick.get("title", "");
-		if (v.type() == Json::stringValue) 
-		{
-			vinfo.title = v.asString();
-			htmlEntityDecode(vinfo.title, true);
-		}
+
+		vinfo.title = results[i].get("title", "").asString();
 
 		if (!vinfo.title.empty())
 			listInfo.push_back(vinfo);

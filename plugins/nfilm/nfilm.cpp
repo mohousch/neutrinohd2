@@ -166,19 +166,16 @@ void CNFilm::loadPlaylist()
 				movieInfo.tfile = tname;
 
 			//file.name extract from youtube
-			std::string search_string;
 			ytparser.Cleanup();
 
 			// setregion
 			ytparser.SetRegion("DE");
 
 			// set max result
-			ytparser.SetMaxResults(1);
-
-			search_string = movieInfo.epgTitle;
+			ytparser.SetMaxResults(2);
 			
 			// parse feed
-			if (ytparser.ParseFeed(cYTFeedParser::SEARCH, search_string))
+			if (ytparser.ParseFeed(cYTFeedParser::SEARCH, tmdb->getVName(), tmdb->getVId()))
 			{
 				yt_video_list_t &ylist = ytparser.GetVideoList();
 	

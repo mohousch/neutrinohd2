@@ -43,7 +43,11 @@ typedef struct {
 	int         seasons;
 	std::string cast;
 	std::string cover;
-	std::string vurl;
+
+	//
+	std::string vid;
+	std::string vkey;
+	std::string vname;
 }tmdbinfo;
 
 class CTmdb
@@ -76,6 +80,9 @@ class CTmdb
 		int getResults(){ return minfo.result;}
 		int getStars(){ return (int) (atof(minfo.vote_average.c_str()) + 0.5);}
 		std::string getCover(){return minfo.cover;};
+		std::string getVId(){return minfo.vid;};
+		std::string getVKey(){return minfo.vkey;};
+		std::string getVName(){return minfo.vname;};
 
 		//
 		void cleanUp(void){listInfo.clear();};
