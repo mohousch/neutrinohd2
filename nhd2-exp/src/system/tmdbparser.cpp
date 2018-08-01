@@ -165,6 +165,29 @@ bool CTmdb::getMovieInfo(std::string text, bool cover, const std::string& reques
 				getBigCover(tname);
 			}
 
+			// vurl
+			/*
+			url = "http://api.themoviedb.org/3/movie/" + to_string(minfo.id) + "/videos?api_key=" + key + "&language=" + lang;
+
+			answer.clear();
+			if (!::getUrl(url, answer))
+				return false;
+
+			parsedSuccess = reader.parse(answer, root);
+			if (!parsedSuccess) 
+			{
+				dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: Failed to parse JSON\n");
+				dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: %s\n", reader.getFormattedErrorMessages().c_str());
+
+				return false;
+			}
+			*/
+
+			// lists
+			/*
+			url = "https://api.themoviedb.org/3/movie/now_playing?api_key=507930c8d6d400c85eae3a7e7b3f6c78&language=de&page=1"
+			*/
+
 			return true;
 		}
 	} 
@@ -243,4 +266,59 @@ std::string CTmdb::createInfoText()
 
 	return infoText;
 }
+
+//
+bool CTmdb::getMovieList(const std::string list, const int page)
+{
+	dprintf(DEBUG_NORMAL, "cTmdb::getMovieList: %s\n", list.c_str());
+
+	std::string url	= "http://api.themoviedb.org/3/movie/";
+
+	url += list + "?api_key=" + key + "&language=" + lang /*+ "&page=" + to_string(page)*/;
+
+	std::string answer;
+
+	if (!::getUrl(url, answer))
+		return false;
+
+	Json::Value root, v;
+	Json::Reader reader;
+	bool parsedSuccess = reader.parse(answer, root);
+
+	if (!parsedSuccess) 
+	{
+		dprintf(DEBUG_NORMAL, "CTmdb::getMovieList: Failed to parse JSON\n");
+		dprintf(DEBUG_NORMAL, "CTmdb::getMovieList: %s\n", reader.getFormattedErrorMessages().c_str());
+		return false;
+	}
+
+	listInfo.clear();
+
+	Json::Value results = root.get("results", "");
+
+	if (results.type() != Json::arrayValue)
+		return false;
+
+	for(unsigned int i = 0; i < results.size(); ++i)
+	{
+		const Json::Value flick = results[i];
+		tmdbinfo vinfo;
+		v = flick.get("title", "");
+		if (v.type() == Json::stringValue) 
+		{
+			vinfo.title = v.asString();
+			htmlEntityDecode(vinfo.title, true);
+		}
+
+		if (!vinfo.title.empty())
+			listInfo.push_back(vinfo);
+	} 
+
+	if(!listInfo.empty())
+		return true;
+
+	return false;
+}
+
+
 

@@ -43,6 +43,7 @@ typedef struct {
 	int         seasons;
 	std::string cast;
 	std::string cover;
+	std::string url;
 }tmdbinfo;
 
 class CTmdb
@@ -50,16 +51,18 @@ class CTmdb
 	private:
 		tmdbinfo minfo;
 		std::string key; // tmdb api key
-		//std::string cover;
 		std::string lang;
 		std::string thumbnail_dir;
 
 		CFileHelpers fileHelper;
 
+		std::vector<tmdbinfo> listInfo;
+
 	public:
 		CTmdb();
 		~CTmdb();
 		bool getMovieInfo(std::string text, bool cover = true, const std::string& request = "search");
+		bool getMovieList(const std::string list = "now_playing", const int page = 1);
 		std::string createInfoText();
 
 		std::string getTitle(){ return minfo.title;}
@@ -73,6 +76,10 @@ class CTmdb
 		int getResults(){ return minfo.result;}
 		int getStars(){ return (int) (atof(minfo.vote_average.c_str()) + 0.5);}
 		std::string getCover(){return minfo.cover;};
+
+		//
+		void cleanUp(void){listInfo.clear();};
+		std::vector<tmdbinfo>& getList(){return listInfo;};
 };
 
 #endif
