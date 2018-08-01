@@ -43,7 +43,7 @@ typedef struct {
 	int         seasons;
 	std::string cast;
 	std::string cover;
-	std::string url;
+	std::string vurl;
 }tmdbinfo;
 
 class CTmdb

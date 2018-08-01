@@ -211,7 +211,19 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 
 void CNFilm::showMovies()
 {
-	std::string caption = "Kino Trailer (" + plist + ")";
+	std::string caption;
+
+	caption = "Kino Trailer (";
+
+	if(plist == "now_playing")
+		caption += "in den Kinos)";
+	else if(plist == "popular")
+		caption += "am populärsten)";
+	else if(plist == "top_rated")
+		caption += "am meist bewertet)";
+	else if(plist == "upcoming")
+		caption += "Neue Filme)";
+
 	mlist = new ClistBox(caption.c_str(), NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	
@@ -259,10 +271,10 @@ void CNFilm::showMenu()
 {
 	CMenuWidget* menu = new CMenuWidget("Kino Trailer");
 
-	menu->addItem(new CMenuForwarder("Now Playing", true, NULL, this, "now_playing"));
-	menu->addItem(new CMenuForwarder("Most Popular", true, NULL, this, "popular"));
-	menu->addItem(new CMenuForwarder("Top rated", true, NULL, this, "top_rated"));
-	menu->addItem(new CMenuForwarder("Up coming", true, NULL, this, "upcoming"));
+	menu->addItem(new CMenuForwarder("In den Kinos", true, NULL, this, "now_playing"));
+	menu->addItem(new CMenuForwarder("Am populärsten", true, NULL, this, "popular"));
+	menu->addItem(new CMenuForwarder("Meist bewertet", true, NULL, this, "top_rated"));
+	menu->addItem(new CMenuForwarder("Neue Filme", true, NULL, this, "upcoming"));
 
 	menu->exec(NULL, "");
 	menu->hide();
@@ -363,9 +375,7 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		return menu_return::RETURN_EXIT;
 	}
 
-	showMovies();
-
-	return menu_return::RETURN_REPAINT;
+	return menu_return::RETURN_EXIT;
 }
 
 void plugin_init(void)
@@ -382,7 +392,7 @@ void plugin_exec(void)
 {
 	CNFilm* nFilmHandler = new CNFilm();
 	
-	nFilmHandler->exec(NULL, "");
+	nFilmHandler->showMovies();
 	
 	delete nFilmHandler;
 	nFilmHandler = NULL;
