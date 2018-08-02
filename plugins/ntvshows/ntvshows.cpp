@@ -1,5 +1,5 @@
 /*
-  $Id: nfilm.cpp 2018/07/31 mohousch Exp $
+  $Id: ntvshows.cpp 2018/08/02 mohousch Exp $
 
   License: GPL
 
@@ -29,7 +29,7 @@ extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
 
-class CNFilm : public CMenuTarget
+class CTVShows : public CMenuTarget
 {
 	private:
 		// variables
@@ -70,8 +70,8 @@ class CNFilm : public CMenuTarget
 		void showMovieInfo(MI_MOVIE_INFO& movie);
 
 	public:
-		CNFilm();
-		~CNFilm();
+		CTVShows();
+		~CTVShows();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
 
@@ -79,7 +79,7 @@ class CNFilm : public CMenuTarget
 		void showMenu();
 };
 
-CNFilm::CNFilm()
+CTVShows::CTVShows()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
@@ -88,20 +88,20 @@ CNFilm::CNFilm()
 	item = NULL;
 
 	tmdb = NULL;
-	thumbnail_dir = "/tmp/nfilm";
+	thumbnail_dir = "/tmp/ntvshows";
 	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
 
 	//
 	selected = 0;
 
-	plist = "now_playing";
+	plist = "popular";
 	page = 1;
 	list_id = 0;
 
-	caption = "Movie Trailer (";
+	caption = "Serien Trailer (";
 }
 
-CNFilm::~CNFilm()
+CTVShows::~CTVShows()
 {
 	m_vMovieInfo.clear();
 	fileHelper.removeDir(thumbnail_dir.c_str());
@@ -110,30 +110,30 @@ CNFilm::~CNFilm()
 	genres.clear();
 }
 
-void CNFilm::hide()
+void CTVShows::hide()
 {
 	frameBuffer->paintBackground();
 	frameBuffer->blit();
 }
 
-void CNFilm::createThumbnailDir()
+void CTVShows::createThumbnailDir()
 {
 	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
 }
 
-void CNFilm::removeThumbnailDir()
+void CTVShows::removeThumbnailDir()
 {
 	fileHelper.removeDir(thumbnail_dir.c_str());
 }
 
-void CNFilm::loadMoviesTitle(void)
+void CTVShows::loadMoviesTitle(void)
 {
 	list.clear();
 
 	removeThumbnailDir();
 	createThumbnailDir();
 
-	CHintBox loadBox("Movie Trailer", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	CHintBox loadBox("Serien Trailer", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	loadBox.paint();
 
 	//
@@ -141,7 +141,7 @@ void CNFilm::loadMoviesTitle(void)
 
 	tmdb->clearMovieList();
 
-	tmdb->getMovieList("movie", plist, page);
+	tmdb->getMovieList("tv", plist, page);
 
 	std::vector<tmdbinfo> &mvlist = tmdb->getMovies();
 	
@@ -155,19 +155,18 @@ void CNFilm::loadMoviesTitle(void)
 		list.push_back(Info);
 	}
 	
-
 	delete tmdb;
 	tmdb = NULL;
 }
 
-void CNFilm::loadGenreMoviesTitle()
+void CTVShows::loadGenreMoviesTitle()
 {
 	list.clear();
 
 	removeThumbnailDir();
 	createThumbnailDir();
 
-	CHintBox loadBox("Movie Trailer", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	CHintBox loadBox("Serien Trailer", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	loadBox.paint();
 
 	//
@@ -192,7 +191,7 @@ void CNFilm::loadGenreMoviesTitle()
 	tmdb = NULL;
 }
 
-void CNFilm::loadPlaylist()
+void CTVShows::loadPlaylist()
 {
 	m_vMovieInfo.clear();
 
@@ -256,7 +255,7 @@ void CNFilm::loadPlaylist()
 	tmdb = NULL;
 }
 
-void CNFilm::showMovieInfo(MI_MOVIE_INFO& movie)
+void CTVShows::showMovieInfo(MI_MOVIE_INFO& movie)
 {
 	std::string buffer;
 	
@@ -289,7 +288,7 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL }
 };
 
-void CNFilm::showMovies()
+void CTVShows::showMovies()
 {
 	mlist = new ClistBox(caption.c_str(), NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
@@ -303,7 +302,7 @@ void CNFilm::showMovies()
 		tmp += " ";
 		tmp += m_vMovieInfo[i].epgInfo1;
 
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, tmp.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, tmp.c_str(), this, "season", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
 		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
 
@@ -330,16 +329,17 @@ void CNFilm::showMovies()
 	mlist = NULL;
 }
 
-void CNFilm::showMenu()
+void CTVShows::showMenu()
 {
-	CMenuWidget* menu = new CMenuWidget("Kino Trailer");
+	CMenuWidget* menu = new CMenuWidget("Serien Trailer");
 
-	menu->addItem(new CMenuForwarder("In den Kinos", true, NULL, this, "now_playing"));
-	menu->addItem(new CMenuForwarder("Am populärsten", true, NULL, this, "popular"));
-	menu->addItem(new CMenuForwarder("Meist bewertet", true, NULL, this, "top_rated"));
-	menu->addItem(new CMenuForwarder("Neue Filme", true, NULL, this, "upcoming"));
+	menu->addItem(new CMenuForwarder("Airing today", true, NULL, this, "airing_today"));
+	menu->addItem(new CMenuForwarder("On the air", true, NULL, this, "on_the_air"));
+	menu->addItem(new CMenuForwarder("popular", true, NULL, this, "popular"));
+	menu->addItem(new CMenuForwarder("top rated", true, NULL, this, "top_rated"));
 
 	// genres
+/*
 	menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	genres.clear();
@@ -363,6 +363,7 @@ void CNFilm::showMenu()
 
 	delete tmdb;
 	tmdb = NULL;
+*/
 
 	menu->exec(NULL, "");
 	menu->hide();
@@ -370,13 +371,13 @@ void CNFilm::showMenu()
 	menu = NULL;
 }
 
-int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
+int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 {
-	dprintf(DEBUG_NORMAL, "CNFilm::exec: actionKey: %s\n", actionKey.c_str());
+	dprintf(DEBUG_NORMAL, "CTVShows::exec: actionKey: %s\n", actionKey.c_str());
 
 	caption.clear();
 
-	caption = "Movie Trailer (";
+	caption = "Serien Trailer (";
 
 	if(parent)
 		hide();
@@ -407,14 +408,26 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "now_playing")
+	else if(actionKey == "airing_today")
 	{
 		mlist->clearItems();
 		selected = 0;
 		page = 1;
-		plist = "now_playing";
+		plist = "airing_today";
 		loadMoviesTitle();
-		caption += "in den Kinos)";
+		caption += "Airing today)";
+		showMovies();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "on_the_air")
+	{
+		mlist->clearItems();
+		selected = 0;
+		page = 1;
+		plist = "on_the_air";
+		loadMoviesTitle();
+		caption += "on the air)";
 		showMovies();
 
 		return menu_return::RETURN_EXIT_ALL;
@@ -438,19 +451,7 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		page = 1;
 		plist = "top_rated";
 		loadMoviesTitle();
-		caption += "am meist bewertet)";
-		showMovies();
-
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "upcoming")
-	{
-		mlist->clearItems();
-		selected = 0;
-		page = 1;
-		plist = "upcoming";
-		loadMoviesTitle();
-		caption += "Neue Filme)";
+		caption += "am meisten bewertet)";
 		showMovies();
 
 		return menu_return::RETURN_EXIT_ALL;
@@ -505,22 +506,22 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 
 void plugin_init(void)
 {
-	dprintf(DEBUG_NORMAL, "CNFilm: plugin_init\n");
+	dprintf(DEBUG_NORMAL, "CTVShows: plugin_init\n");
 }
 
 void plugin_del(void)
 {
-	dprintf(DEBUG_NORMAL, "CNFilm: plugin_del\n");
+	dprintf(DEBUG_NORMAL, "CTVShows: plugin_del\n");
 }
 
 void plugin_exec(void)
 {
-	CNFilm* nFilmHandler = new CNFilm();
+	CTVShows* nTVShowsHandler = new CTVShows();
 	
-	nFilmHandler->exec(NULL, "");
+	nTVShowsHandler->exec(NULL, "");
 	
-	delete nFilmHandler;
-	nFilmHandler = NULL;
+	delete nTVShowsHandler;
+	nTVShowsHandler = NULL;
 }
 
 

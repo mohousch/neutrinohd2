@@ -243,13 +243,13 @@ bool CTmdb::getSmallCover(std::string tname)
 }
 
 //
-bool CTmdb::getMovieList(const std::string list, const int page)
+bool CTmdb::getMovieList(std::string mtype, std::string list, int page)
 {
-	dprintf(DEBUG_NORMAL, "cTmdb::getMovieList: %s\n", list.c_str());
+	dprintf(DEBUG_NORMAL, "cTmdb::getMovieList: %s: %s (page:%d)\n", mtype.c_str(), list.c_str(), page);
 
-	std::string url	= "http://api.themoviedb.org/3/movie/";
+	std::string url	= "http://api.themoviedb.org/3/";
 
-	url += list + "?api_key=" + key + "&language=" + lang + "&page=" + to_string(page);
+	url += mtype + "/" + list + "?api_key=" + key + "&language=" + lang + "&page=" + to_string(page);
 
 	std::string answer;
 
@@ -278,7 +278,10 @@ bool CTmdb::getMovieList(const std::string list, const int page)
 	{
 		tmdbinfo vinfo;
 
-		vinfo.title = results[i].get("title", "").asString();
+		if(mtype == "tv")
+			vinfo.title = results[i].get("name", "").asString();
+		else
+			vinfo.title = results[i].get("title", "").asString();
 
 		if (!vinfo.title.empty())
 			movieList.push_back(vinfo);

@@ -69,7 +69,7 @@ class CTmdb
 		CTmdb();
 		~CTmdb();
 		bool getMovieInfo(std::string text, bool cover = true);
-		bool getMovieList(const std::string list = "now_playing", const int page = 1);
+		bool getMovieList(std::string mtype = "movie", std::string list = "now_playing", int page = 1);
 		bool getGenreList(std::string mtype = "movie");
 		bool getGenreMovieList(const int id);
 

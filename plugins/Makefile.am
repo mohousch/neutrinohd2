@@ -23,7 +23,8 @@ SUBDIRS = \
 	picviewer \
 	audioplayer \
 	opkg_manager \
-	nfilm
+	nfilm \
+	ntvshows
 
 if ENABLE_NGLCD
 SUBDIRS += nglcd
