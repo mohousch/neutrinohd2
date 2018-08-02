@@ -66,7 +66,7 @@ class CTmdb
 	public:
 		CTmdb();
 		~CTmdb();
-		bool getMovieInfo(std::string text, bool cover = true, const std::string& request = "search");
+		bool getMovieInfo(std::string text, bool cover = true);
 		bool getMovieList(const std::string list = "now_playing", const int page = 1);
 		std::string createInfoText();
 
@@ -76,15 +76,18 @@ class CTmdb
 		std::string getDescription(){ return minfo.overview;}
 		std::string getVote(){ return minfo.vote_average;}
 		std::string getCast(){ return minfo.cast;}
-		bool getBigCover(std::string tname);
-		bool getSmallCover(std::string tname);
 		int getResults(){ return minfo.result;}
 		int getStars(){ return (int) (atof(minfo.vote_average.c_str()) + 0.5);}
+		int getID(){return minfo.id;};
 		std::string getCover(){return minfo.cover;};
 		std::string getVId(){return minfo.vid;};
 		std::string getVKey(){return minfo.vkey;};
 		std::string getVName(){return minfo.vname;};
 		std::string getVType(){return minfo.vtype;};
+
+		//
+		bool getBigCover(std::string tname);
+		bool getSmallCover(std::string tname);
 
 		//
 		void cleanUp(void){listInfo.clear();};

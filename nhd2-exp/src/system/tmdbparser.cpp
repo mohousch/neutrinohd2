@@ -62,7 +62,7 @@ CTmdb::~CTmdb()
 	fileHelper.removeDir(thumbnail_dir.c_str());
 }
 
-bool CTmdb::getMovieInfo(std::string text, bool cover, const std::string& request)
+bool CTmdb::getMovieInfo(std::string text, bool cover)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getMovieInfo: %s\n", text.c_str());
 
@@ -70,10 +70,7 @@ bool CTmdb::getMovieInfo(std::string text, bool cover, const std::string& reques
 
 	std::string url	= "http://api.themoviedb.org/3/";
 
-	if(request == "search")
-	{
-		url += request + "/multi?api_key=" + key + "&language=" + lang + "&query=" + encodeUrl(text);
-	}
+	url += "search/multi?api_key=" + key + "&language=" + lang + "&query=" + encodeUrl(text);
 
 	minfo.title = text;
 

@@ -48,7 +48,7 @@ class CNFilm : public CMenuTarget
 
 		CMovieInfo m_movieInfo;
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
-		std::vector<MI_MOVIE_INFO> listMovie;
+		std::vector<MI_MOVIE_INFO> list;
 
 		std::string plist;
 		unsigned int page;
@@ -58,6 +58,7 @@ class CNFilm : public CMenuTarget
 		void loadPlaylist();
 		void createThumbnailDir();
 		void removeThumbnailDir();
+		void showMovieInfo(MI_MOVIE_INFO& movie);
 
 	public:
 		CNFilm();
@@ -113,7 +114,7 @@ void CNFilm::removeThumbnailDir()
 void CNFilm::loadPlaylist()
 {
 	m_vMovieInfo.clear();
-	listMovie.clear();
+	list.clear();
 
 	removeThumbnailDir();
 	createThumbnailDir();
@@ -136,18 +137,18 @@ void CNFilm::loadPlaylist()
 		
 		Info.epgTitle = mvlist[count].title;
 		
-		listMovie.push_back(Info);
+		list.push_back(Info);
 	}
 
-	for (unsigned int i = 0; i < listMovie.size(); i++)
+	for (unsigned int i = 0; i < list.size(); i++)
 	{
 		MI_MOVIE_INFO movieInfo;
 		m_movieInfo.clearMovieInfo(&movieInfo); 
 
-		movieInfo.epgTitle = listMovie[i].epgTitle;
+		movieInfo.epgTitle = list[i].epgTitle;
 
 		// load infos from tmdb
-		tmdb->getMovieInfo(movieInfo.epgTitle, false, "search");
+		tmdb->getMovieInfo(movieInfo.epgTitle, false);
 
 		if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 		{
@@ -195,6 +196,33 @@ void CNFilm::loadPlaylist()
 	tmdb = NULL;
 
 	loadBox.hide();
+}
+
+void CNFilm::showMovieInfo(MI_MOVIE_INFO& movie)
+{
+	std::string buffer;
+
+	//buffer = movie.epgTitle;
+	//buffer += "\n";
+	
+	// prepare print buffer  
+	buffer += movie.epgInfo2;
+
+	// thumbnail
+	int pich = 246;	//FIXME
+	int picw = 162; 	//FIXME
+
+	std::string thumbnail = movie.tfile;
+	if(access(thumbnail.c_str(), F_OK))
+		thumbnail = "";
+	
+	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+	CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, movie.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_MOVIE);
+
+	infoBox->setText(&buffer, thumbnail, picw, pich);
+	infoBox->exec();
+	delete infoBox;
 }
 
 #define HEAD_BUTTONS_COUNT	4
@@ -289,7 +317,8 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(actionKey == "RC_info")
 	{
 		selected = mlist->getSelected();
-		m_movieInfo.showMovieInfo(m_vMovieInfo[mlist->getSelected()]);
+
+		showMovieInfo(m_vMovieInfo[selected]);
 
 		return menu_return::RETURN_REPAINT;
 	}
@@ -319,7 +348,7 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		plist = "now_playing";
 		showMovies();
 
-		return menu_return::RETURN_EXIT;
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "popular")
 	{
@@ -329,7 +358,7 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		plist = "popular";
 		showMovies();
 
-		return menu_return::RETURN_EXIT;
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "top_rated")
 	{
@@ -339,7 +368,7 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		plist = "top_rated";
 		showMovies();
 
-		return menu_return::RETURN_EXIT;
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "upcoming")
 	{
@@ -349,7 +378,7 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		plist = "upcoming";
 		showMovies();
 
-		return menu_return::RETURN_EXIT;
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
@@ -357,7 +386,7 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		selected = 0;
 		showMovies();
 
-		return menu_return::RETURN_EXIT;
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_yellow")
 	{
@@ -369,10 +398,10 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		selected = 0;
 		showMovies();
 
-		return menu_return::RETURN_EXIT;
+		return menu_return::RETURN_EXIT_ALL;
 	}
 
-	return menu_return::RETURN_EXIT;
+	return menu_return::RETURN_REPAINT;
 }
 
 void plugin_init(void)
