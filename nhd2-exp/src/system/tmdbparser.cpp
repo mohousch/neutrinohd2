@@ -182,7 +182,6 @@ bool CTmdb::getMovieInfo(std::string text, bool cover)
 			}
 
 			Json::Value results = root.get("results", "");
-			Json::Value v;
 
 			if (results.type() != Json::arrayValue)
 				return false;
@@ -243,6 +242,150 @@ bool CTmdb::getSmallCover(std::string tname)
 	return ret;
 }
 
+//
+bool CTmdb::getMovieList(const std::string list, const int page)
+{
+	dprintf(DEBUG_NORMAL, "cTmdb::getMovieList: %s\n", list.c_str());
+
+	std::string url	= "http://api.themoviedb.org/3/movie/";
+
+	url += list + "?api_key=" + key + "&language=" + lang + "&page=" + to_string(page);
+
+	std::string answer;
+
+	if (!::getUrl(url, answer))
+		return false;
+
+	Json::Value root;
+	Json::Reader reader;
+	bool parsedSuccess = reader.parse(answer, root);
+
+	if (!parsedSuccess) 
+	{
+		dprintf(DEBUG_NORMAL, "CTmdb::getMovieList: Failed to parse JSON\n");
+		dprintf(DEBUG_NORMAL, "CTmdb::getMovieList: %s\n", reader.getFormattedErrorMessages().c_str());
+		return false;
+	}
+
+	movieList.clear();
+
+	Json::Value results = root.get("results", "");
+
+	if (results.type() != Json::arrayValue)
+		return false;
+
+	for(unsigned int i = 0; i < results.size(); ++i)
+	{
+		tmdbinfo vinfo;
+
+		vinfo.title = results[i].get("title", "").asString();
+
+		if (!vinfo.title.empty())
+			movieList.push_back(vinfo);
+	} 
+
+	if(!movieList.empty())
+		return true;
+
+	return false;
+}
+
+//
+bool CTmdb::getGenreList(std::string mtype)
+{
+	dprintf(DEBUG_NORMAL, "cTmdb::getGenreList:\n");
+
+	std::string url	= "http://api.themoviedb.org/3/genre/";
+
+	url += mtype + "/list?api_key=" + key + "&language=" + lang;
+
+	std::string answer;
+
+	if (!::getUrl(url, answer))
+		return false;
+
+	Json::Value root;
+	Json::Reader reader;
+	bool parsedSuccess = reader.parse(answer, root);
+
+	if (!parsedSuccess) 
+	{
+		dprintf(DEBUG_NORMAL, "CTmdb::getGenreList: Failed to parse JSON\n");
+		dprintf(DEBUG_NORMAL, "CTmdb::getGenreList: %s\n", reader.getFormattedErrorMessages().c_str());
+		return false;
+	}
+
+	genreList.clear();
+
+	Json::Value genres = root.get("genres", "");
+
+	if (genres.type() != Json::arrayValue)
+		return false;
+
+	for(unsigned int i = 0; i < genres.size(); ++i)
+	{
+		tmdbinfo vinfo;
+
+		vinfo.id = genres[i].get("id", 0).asInt();
+		vinfo.title = genres[i].get("name", "").asString();
+
+		if (!vinfo.title.empty())
+			genreList.push_back(vinfo);
+	} 
+
+	if(!genreList.empty())
+		return true;
+
+	return false;
+}
+
+bool CTmdb::getGenreMovieList(const int id)
+{
+	dprintf(DEBUG_NORMAL, "cTmdb::getGenreMovieList:\n");
+
+	std::string url	= "http://api.themoviedb.org/3/list/";
+
+	url += to_string(id) + "?api_key=" + key + "&language=" + lang;
+
+	std::string answer;
+
+	if (!::getUrl(url, answer))
+		return false;
+
+	Json::Value root;
+	Json::Reader reader;
+	bool parsedSuccess = reader.parse(answer, root);
+
+	if (!parsedSuccess) 
+	{
+		dprintf(DEBUG_NORMAL, "CTmdb::getGenreMovieList: Failed to parse JSON\n");
+		dprintf(DEBUG_NORMAL, "CTmdb::getGenreMovieList: %s\n", reader.getFormattedErrorMessages().c_str());
+		return false;
+	}
+
+	genreMovieList.clear();
+
+	Json::Value items = root.get("items", "");
+
+	if (items.type() != Json::arrayValue)
+		return false;
+
+	for(unsigned int i = 0; i < items.size(); ++i)
+	{
+		tmdbinfo vinfo;
+
+		vinfo.title = items[i].get("title", "").asString();
+
+		if (!vinfo.title.empty())
+			genreMovieList.push_back(vinfo);
+	} 
+
+	if(!genreMovieList.empty())
+		return true;
+
+	return false;
+}
+
 std::string CTmdb::createInfoText()
 {
 	dprintf(DEBUG_NORMAL, "CTmdb::createInfoText\n");
@@ -270,54 +413,4 @@ std::string CTmdb::createInfoText()
 
 	return infoText;
 }
-
-//
-bool CTmdb::getMovieList(const std::string list, const int page)
-{
-	dprintf(DEBUG_NORMAL, "cTmdb::getMovieList: %s\n", list.c_str());
-
-	std::string url	= "http://api.themoviedb.org/3/movie/";
-
-	url += list + "?api_key=" + key + "&language=" + lang + "&page=" + to_string(page);
-
-	std::string answer;
-
-	if (!::getUrl(url, answer))
-		return false;
-
-	Json::Value root;
-	Json::Reader reader;
-	bool parsedSuccess = reader.parse(answer, root);
-
-	if (!parsedSuccess) 
-	{
-		dprintf(DEBUG_NORMAL, "CTmdb::getMovieList: Failed to parse JSON\n");
-		dprintf(DEBUG_NORMAL, "CTmdb::getMovieList: %s\n", reader.getFormattedErrorMessages().c_str());
-		return false;
-	}
-
-	listInfo.clear();
-
-	Json::Value results = root.get("results", "");
-
-	if (results.type() != Json::arrayValue)
-		return false;
-
-	for(unsigned int i = 0; i < results.size(); ++i)
-	{
-		tmdbinfo vinfo;
-
-		vinfo.title = results[i].get("title", "").asString();
-
-		if (!vinfo.title.empty())
-			listInfo.push_back(vinfo);
-	} 
-
-	if(!listInfo.empty())
-		return true;
-
-	return false;
-}
-
-
 

@@ -907,8 +907,6 @@ int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
 	int height;
 	height = getHeight();
 
-	printf("height:%d (height >> 1:%d) (%d)", height, (height >> 1), (height >> 1) + 1);
-
 	frameBuffer->paintBoxRel(x, y, dx, height, COL_MENUCONTENT_PLUS_0);
 
 	// line

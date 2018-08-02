@@ -61,13 +61,19 @@ class CTmdb
 
 		CFileHelpers fileHelper;
 
-		std::vector<tmdbinfo> listInfo;
+		std::vector<tmdbinfo> movieList;
+		std::vector<tmdbinfo> genreList;
+		std::vector<tmdbinfo> genreMovieList;
 
 	public:
 		CTmdb();
 		~CTmdb();
 		bool getMovieInfo(std::string text, bool cover = true);
 		bool getMovieList(const std::string list = "now_playing", const int page = 1);
+		bool getGenreList(std::string mtype = "movie");
+		bool getGenreMovieList(const int id);
+
+		//
 		std::string createInfoText();
 
 		std::string getTitle(){ return minfo.title;}
@@ -90,8 +96,16 @@ class CTmdb
 		bool getSmallCover(std::string tname);
 
 		//
-		void cleanUp(void){listInfo.clear();};
-		std::vector<tmdbinfo>& getList(){return listInfo;};
+		void clearMovieList(void){movieList.clear();};
+		std::vector<tmdbinfo>& getMovies(){return movieList;};
+
+		//
+		void clearGenreList(void) {genreList.clear();};
+		std::vector<tmdbinfo>& getGenres(){return genreList;};
+
+		//
+		void clearGenreMovieList(void){genreMovieList.clear();};
+		std::vector<tmdbinfo>& getGenreMovies(){return genreMovieList;};
 };
 
 #endif
