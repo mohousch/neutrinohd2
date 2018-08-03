@@ -19,6 +19,7 @@
 */
 
 #include <plugin.h>
+#include <system/ytparser.h>
 
 
 class CNEpisodes : public CMenuTarget
@@ -28,6 +29,9 @@ class CNEpisodes : public CMenuTarget
 		ClistBox* listBox;
 		CMenuItem* item;
 		int selected;
+
+		CMoviePlayerGui tmpMoviePlayerGui;
+		cYTFeedParser ytparser;
 
 		CMovieInfo m_movieInfo;
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo; // items

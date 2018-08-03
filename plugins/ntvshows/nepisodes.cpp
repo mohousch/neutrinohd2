@@ -104,7 +104,35 @@ void CNEpisodes::loadEpisodesTitle()
 
 		if(!tname.empty())
 			Info.tfile = tname;
+		
+		// testing
+		//tmdb->clearVideoInfo();
+		//tmdb->getVideoInfo("tv", episodelist[count].id);
 
+		//std::vector<tmdbinfo> &vinfoList = tmdb->getVideoInfos();
+
+		tmdb->getMovieInfo(Info.epgTitle, false);
+	
+		//file.name extract from youtube
+		ytparser.Cleanup();
+
+		// setregion
+		ytparser.SetRegion("DE");
+
+		// set max result
+		ytparser.SetMaxResults(1);
+			
+		// parse feed
+		if (ytparser.ParseFeed(cYTFeedParser::SEARCH, tmdb->getVName()))
+		{
+			yt_video_list_t &ylist = ytparser.GetVideoList();
+	
+			for (unsigned int j = 0; j < ylist.size(); j++) 
+			{
+					Info.ytid = ylist[j].id;
+					Info.file.Name = ylist[j].GetUrl();
+			}
+		} 
 		
 		m_vMovieInfo.push_back(Info);
 	}
@@ -153,7 +181,7 @@ void CNEpisodes::showMenu()
 	
 	
 	// load playlist
-	 loadEpisodesTitle();
+	loadEpisodesTitle();
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
@@ -161,7 +189,7 @@ void CNEpisodes::showMenu()
 		tmp += " ";
 		tmp += m_vMovieInfo[i].epgInfo1;
 
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, tmp.c_str(), this, "play", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, tmp.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
 		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
 
@@ -197,6 +225,18 @@ int CNEpisodes::exec(CMenuTarget* parent, const std::string& actionKey)
 		selected = listBox->getSelected();
 
 		showMovieInfo(m_vMovieInfo[selected]);
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "mplay")
+	{
+		selected = listBox->getSelected();
+		
+		if (&m_vMovieInfo[selected].file != NULL) 
+		{
+			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
+			tmpMoviePlayerGui.exec(NULL, "");
+		}
 
 		return menu_return::RETURN_REPAINT;
 	}

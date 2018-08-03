@@ -62,6 +62,7 @@ CTmdb::~CTmdb()
 	fileHelper.removeDir(thumbnail_dir.c_str());
 }
 
+// movie infos with name
 bool CTmdb::getMovieInfo(std::string text, bool cover)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getMovieInfo: %s\n", text.c_str());
@@ -166,7 +167,7 @@ bool CTmdb::getMovieInfo(std::string text, bool cover)
 			}
 
 			// vurl
-			url = "http://api.themoviedb.org/3/movie/" + to_string(minfo.id) + "/videos?api_key=" + key + "&language=" + lang;
+			url = "http://api.themoviedb.org/3/" + minfo.media_type + "/" + to_string(minfo.id) + "/videos?api_key=" + key + "&language=" + lang;
 
 			answer.clear();
 			if (!::getUrl(url, answer))
@@ -242,14 +243,14 @@ bool CTmdb::getSmallCover(std::string tname)
 	return ret;
 }
 
-//
+// movie/tv list
 bool CTmdb::getMovieTVList(std::string mtype, std::string list, int page)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getMovieList: %s: %s (page:%d)\n", mtype.c_str(), list.c_str(), page);
 
 	std::string url	= "http://api.themoviedb.org/3/";
 
-	url += mtype + "/" + list + "?api_key=" + key + "&language=" + lang + "&page=" + to_string(page);
+	url += mtype + "/" + encodeUrl(list) + "?api_key=" + key + "&language=" + lang + "&page=" + to_string(page);
 
 	std::string answer;
 
@@ -305,7 +306,7 @@ bool CTmdb::getMovieTVList(std::string mtype, std::string list, int page)
 	return false;
 }
 
-//
+// genre list
 bool CTmdb::getGenreList(std::string mtype)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getGenreList:\n");
@@ -354,6 +355,7 @@ bool CTmdb::getGenreList(std::string mtype)
 	return false;
 }
 
+// genre movie list
 bool CTmdb::getGenreMovieList(const int id)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getGenreMovieList:\n");
@@ -401,6 +403,7 @@ bool CTmdb::getGenreMovieList(const int id)
 	return false;
 }
 
+// season list
 bool CTmdb::getSeasonsList(int id)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getSeasonsList: %d\n", id);
@@ -454,7 +457,7 @@ bool CTmdb::getSeasonsList(int id)
 	return false;
 }
 
-// episodes
+// episodes list
 bool CTmdb::getEpisodesList(int id, int nr)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getEpisodesList: %d\n", id);
@@ -508,7 +511,55 @@ bool CTmdb::getEpisodesList(int id, int nr)
 	return false;
 }
 
-//
+// video info
+bool CTmdb::getVideoInfo(std::string mtype, int id)
+{
+	dprintf(DEBUG_NORMAL, "cTmdb::getVideoInfo: %s %d\n", mtype.c_str(), id);
+
+	videoInfo.clear();
+
+	std::string url = "http://api.themoviedb.org/3/" + mtype + "/" + to_string(id) + "/videos?api_key=" + key + "&language=" + lang + "&append_to_response=credits";
+	std::string answer;
+
+	Json::Value root;
+	Json::Reader reader;
+
+	if (!::getUrl(url, answer))
+		return false;
+
+	bool parsedSuccess = reader.parse(answer, root);
+	if (!parsedSuccess) 
+	{
+		dprintf(DEBUG_NORMAL, "CTmdb::getVideoInfo: Failed to parse JSON\n");
+		dprintf(DEBUG_NORMAL, "CTmdb::getVideoInfo: %s\n", reader.getFormattedErrorMessages().c_str());
+
+		return false;
+	}
+
+	Json::Value results = root.get("results", "");
+
+	if (results.type() != Json::arrayValue)
+		return false;
+
+	for(unsigned int i = 0; i < results.size(); i++)
+	{
+		tmdbinfo tmp;
+
+		tmp.vid = results[i].get("id", "").asString();
+		tmp.vkey = results[i].get("key", "").asString();
+		tmp.vname = results[i].get("name", "").asString();
+		tmp.vtype = results[i].get("type", "").asString();
+
+		videoInfo.push_back(tmp);
+	}
+
+	if(!videoInfo.empty())
+		return true;
+
+	return false;
+}
+
+// movie/tv info with id
 bool CTmdb::getMovieTVInfo(std::string mtype, int id)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getMovieTVInfo: %d\n", id);
