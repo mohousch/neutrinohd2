@@ -39,6 +39,7 @@ class CMediaPortal : public CMenuTarget
 		void internetRadio(void);
 		void ard(void);
 		void nFilm(void);
+		void nTVShows(void);
 	
 	public:
 		CMediaPortal();
@@ -95,6 +96,11 @@ void CMediaPortal::nFilm()
 	g_PluginList->startPlugin("nfilm");
 }
 
+void CMediaPortal::nTVShows()
+{
+	g_PluginList->startPlugin("ntvshows");
+}
+
 int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMediaPortal::exec: actionKey:%s\n", actionKey.c_str());
@@ -140,6 +146,12 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "ntvshows")
+	{
+		nTVShows();
+
+		return menu_return::RETURN_REPAINT;
+	}
 
 	showMenu();
 	
@@ -179,13 +191,19 @@ void CMediaPortal::showMenu(void)
 	mediaPortal->addItem(item);
 
 	// ard
-	item = new CMenuForwarder("ARD Mediathek", true, NULL, this, "ard", CRCInput::RC_nokey, NULL, PLUGINDIR "/mediaportal/ard.png");
+	//item = new CMenuForwarder("ARD Mediathek", true, NULL, this, "ard", CRCInput::RC_nokey, NULL, PLUGINDIR "/mediaportal/ard.png");
+
+	//mediaPortal->addItem(item);
+
+	// nFilm
+	item = new CMenuForwarder("Movie Trailer", true, NULL, this, "nfilm", CRCInput::RC_nokey, NULL, PLUGINDIR "/nfilm/nfilm.png");
+	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("nfilm")));
 
 	mediaPortal->addItem(item);
 
-	// nFilm
-	item = new CMenuForwarder("Kino Info", true, NULL, this, "nfilm", CRCInput::RC_nokey, NULL, PLUGINDIR "/nfilm/nfilm.png");
-	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("nfilm")));
+	// nTVShows
+	item = new CMenuForwarder("Serien Trailer", true, NULL, this, "ntvshows", CRCInput::RC_nokey, NULL, PLUGINDIR "/ntvshows/ntvshows.png");
+	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("ntvshows")));
 
 	mediaPortal->addItem(item);
 

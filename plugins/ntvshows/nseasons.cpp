@@ -148,20 +148,17 @@ void CNSeasons::showMovieInfo(MI_MOVIE_INFO& movie)
 	delete infoBox;
 }
 
-#define HEAD_BUTTONS_COUNT	4
+#define HEAD_BUTTONS_COUNT	1
 const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL }
 };
 
 void CNSeasons::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CNSeasons::showMenu:\n");
 
-	listBox = new ClistBox("Seasons", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	listBox = new ClistBox("Staffeln", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	
 	// load playlist
@@ -193,9 +190,6 @@ void CNSeasons::showMenu()
 	listBox->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 
 	listBox->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	listBox->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
-	listBox->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
-	listBox->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
 
 	listBox->exec(NULL, "");
 	//listBox->hide();

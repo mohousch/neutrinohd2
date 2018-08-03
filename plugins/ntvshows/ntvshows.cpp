@@ -70,7 +70,7 @@ class CTVShows : public CMenuTarget
 		void showMovieInfo(MI_MOVIE_INFO& movie);
 
 	public:
-		CTVShows();
+		CTVShows(std::string tvlist = "popular");
 		~CTVShows();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
@@ -79,7 +79,7 @@ class CTVShows : public CMenuTarget
 		void showMenu();
 };
 
-CTVShows::CTVShows()
+CTVShows::CTVShows(std::string tvlist)
 {
 	//
 	mlist = NULL;
@@ -92,7 +92,7 @@ CTVShows::CTVShows()
 	//
 	selected = 0;
 
-	plist = "popular";
+	plist = tvlist;
 	page = 1;
 	season_id = 0;
 
@@ -263,6 +263,15 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 
 void CTVShows::showMovies(bool reload)
 {
+	if(plist == "airing_today")
+		caption += "Heute auf Sendung)";
+	else if(plist == "Auf Sendung")
+		caption += "On the air)";
+	else if(plist == "popular")
+		caption += "Am populärsten)";
+	else if(plist == "top_rated")
+		caption += "Am besten bewertet)";
+
 	mlist = new ClistBox(caption.c_str(), NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	
@@ -281,7 +290,7 @@ void CTVShows::showMovies(bool reload)
 		tmp += " ";
 		tmp += m_vMovieInfo[i].epgInfo1;
 
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, tmp.c_str(), /*this*/new CNSeasons(season_id), NULL, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, tmp.c_str(), new CNSeasons(season_id), NULL, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
 		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
 
@@ -312,10 +321,10 @@ void CTVShows::showMenu()
 {
 	CMenuWidget* menu = new CMenuWidget("Serien Trailer");
 
-	menu->addItem(new CMenuForwarder("Airing today", true, NULL, this, "airing_today"));
-	menu->addItem(new CMenuForwarder("On the air", true, NULL, this, "on_the_air"));
-	menu->addItem(new CMenuForwarder("popular", true, NULL, this, "popular"));
-	menu->addItem(new CMenuForwarder("top rated", true, NULL, this, "top_rated"));
+	menu->addItem(new CMenuForwarder("Heute auf Sendung", true, NULL, new CTVShows("airing_today"), "airing_today"));
+	menu->addItem(new CMenuForwarder("Auf Sendung", true, NULL, new CTVShows("on_the_air"), "on_the_air"));
+	menu->addItem(new CMenuForwarder("Am populärsten", true, NULL, new CTVShows("popular"), "popular"));
+	menu->addItem(new CMenuForwarder("Am besten bewertet", true, NULL, new CTVShows("top_rated"), "top_rated"));
 
 	menu->exec(NULL, "");
 	menu->hide();
@@ -326,10 +335,6 @@ void CTVShows::showMenu()
 int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CTVShows::exec: actionKey: %s\n", actionKey.c_str());
-
-	caption.clear();
-
-	caption = "Serien Trailer (";
 
 	if(parent)
 		hide();
@@ -345,54 +350,6 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_setup")
 	{
 		showMenu();
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "airing_today")
-	{
-		mlist->clearItems();
-		selected = 0;
-		page = 1;
-		plist = "airing_today";
-		loadMoviesTitle();
-		caption += "Airing today)";
-		showMovies();
-
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "on_the_air")
-	{
-		mlist->clearItems();
-		selected = 0;
-		page = 1;
-		plist = "on_the_air";
-		loadMoviesTitle();
-		caption += "on the air)";
-		showMovies();
-
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "popular")
-	{
-		mlist->clearItems();
-		selected = 0;
-		page = 1;
-		plist = "popular";
-		loadMoviesTitle();
-		caption += "am populärsten)";
-		showMovies();
-
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "top_rated")
-	{
-		mlist->clearItems();
-		selected = 0;
-		page = 1;
-		plist = "top_rated";
-		loadMoviesTitle();
-		caption += "am meisten bewertet)";
-		showMovies();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
@@ -420,10 +377,9 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 
 	loadMoviesTitle();
-	caption += "am populärsten)";
 	showMovies();
 
-	return menu_return::RETURN_REPAINT;
+	return menu_return::RETURN_EXIT;
 }
 
 void plugin_init(void)

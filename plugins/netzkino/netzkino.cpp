@@ -270,7 +270,7 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		showCategoriesMenu();
 
-		return menu_return::RETURN_REPAINT;
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_record")
 	{
