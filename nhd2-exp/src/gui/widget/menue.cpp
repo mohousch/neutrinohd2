@@ -1081,8 +1081,8 @@ CMenuWidget::CMenuWidget()
 	offx = offy = 0;
 	
 	//
-	savescreen	= false;
-	background	= NULL;
+	savescreen = false;
+	background = NULL;
 
 	MenuPos = false;
 
@@ -1136,8 +1136,8 @@ void CMenuWidget::Init(const std::string & Icon, const int mwidth, const int mhe
 	offx = offy = 0;
 	
 	//
-	savescreen	= false;
-	background	= NULL;
+	savescreen = false;
+	background = NULL;
 
 	MenuPos = false;
 
@@ -2657,8 +2657,8 @@ ClistBox::ClistBox()
 	offx = offy = 0;
 	
 	//
-	savescreen	= false;
-	background	= NULL;
+	savescreen = false;
+	background = NULL;
 
 	//
 	fbutton_count	= 0;
@@ -2730,8 +2730,8 @@ void ClistBox::Init(const std::string & Icon, const int mwidth, const int mheigh
 	offx = offy = 0;
 	
 	//
-	savescreen	= false;
-	background	= NULL;
+	savescreen = false;
+	background = NULL;
 
 	//
 	fbutton_count	= 0;
@@ -3580,8 +3580,8 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 		parent->hide();
 
 	//
-	if(savescreen) 
-		saveScreen();
+	//if(savescreen) 
+	//	saveScreen();
 
 	//
 	initFrames();
@@ -3600,64 +3600,65 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 	//control loop
 	do {
 		g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
-
-		if ( msg <= CRCInput::RC_MaxRC ) 
-		{
-			timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
-		}
 		
 		int handled = false;
 
 		dprintf(DEBUG_DEBUG, "ClistBox::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
-		std::map<neutrino_msg_t, keyAction>::iterator it = keyActionMap.find(msg);
-			
-		if (it != keyActionMap.end()) 
+		if ( msg <= CRCInput::RC_MaxRC ) 
 		{
-			int rv = it->second.menue->exec(this, it->second.action);
-			switch ( rv ) 
-			{
-				case menu_return::RETURN_EXIT_ALL:
-					retval = menu_return::RETURN_EXIT_ALL;
-				case menu_return::RETURN_EXIT:
-					msg = CRCInput::RC_timeout;
-					break;
-				case menu_return::RETURN_REPAINT:
-					paint();
-					paintHead();
-					paintFoot();
-					break;
-			}
-			continue;
-		}
-
-		for (unsigned int i = 0; i < items.size(); i++) 
-		{
-			CMenuItem * titem = items[i];
+			timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
+			std::map<neutrino_msg_t, keyAction>::iterator it = keyActionMap.find(msg);
 			
-			if ((titem->directKey != CRCInput::RC_nokey) && (titem->directKey == msg)) 
+			if (it != keyActionMap.end()) 
 			{
-				if (titem->isSelectable()) 
+				int rv = it->second.menue->exec(this, it->second.action);
+				switch ( rv ) 
 				{
-					items[selected]->paint(false);
-					selected = i;
-
-					if (selected > page_start[current_page + 1] || selected < page_start[current_page]) 
-					{
-						// different page
-						paintItems();
-					}
-
-					paintItemInfo(selected);
-					pos = selected;
-					msg = CRCInput::RC_ok;
-				} 
-				else 
-				{
-					// swallow-key...
-					handled = true;
+					case menu_return::RETURN_EXIT_ALL:
+						retval = menu_return::RETURN_EXIT_ALL;
+					case menu_return::RETURN_EXIT:
+						msg = CRCInput::RC_timeout;
+						break;
+					case menu_return::RETURN_REPAINT:
+						paint();
+						paintHead();
+						paintFoot();
+						break;
 				}
-				break;
+
+				frameBuffer->blit();
+				continue;
+			}
+
+			for (unsigned int i = 0; i < items.size(); i++) 
+			{
+				CMenuItem * titem = items[i];
+			
+				if ((titem->directKey != CRCInput::RC_nokey) && (titem->directKey == msg)) 
+				{
+					if (titem->isSelectable()) 
+					{
+						items[selected]->paint(false);
+						selected = i;
+
+						if (selected > page_start[current_page + 1] || selected < page_start[current_page]) 
+						{
+							// different page
+							paintItems();
+						}
+
+						paintItemInfo(selected);
+						pos = selected;
+						msg = CRCInput::RC_ok;
+					} 
+					else 
+					{
+						// swallow-key...
+						handled = true;
+					}
+					break;
+				}
 			}
 		}
 

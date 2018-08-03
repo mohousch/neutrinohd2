@@ -24,6 +24,8 @@
 #include <jsoncpp/include/json/json.h>
 #include <system/ytparser.h>
 
+#include "nseasons.h"
+
 
 extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
@@ -32,8 +34,7 @@ extern "C" void plugin_del(void);
 class CTVShows : public CMenuTarget
 {
 	private:
-		// variables
-		CFrameBuffer* frameBuffer;
+		//
 		int selected;
 
 		//
@@ -53,16 +54,15 @@ class CTVShows : public CMenuTarget
 		std::vector<MI_MOVIE_INFO> list;
 
 		//
-		std::vector<tmdbinfo> genres;
+		std::vector<tmdbinfo> db_movies;
 
 		std::string plist;
 		unsigned int page;
-		int list_id;
+		int season_id;
 		
 		CMoviePlayerGui tmpMoviePlayerGui;
 
 		void loadMoviesTitle(void);
-		void loadGenreMoviesTitle(void);
 
 		void loadPlaylist();
 		void createThumbnailDir();
@@ -75,14 +75,12 @@ class CTVShows : public CMenuTarget
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
 
-		void showMovies();
+		void showMovies(bool reload = true);
 		void showMenu();
 };
 
 CTVShows::CTVShows()
 {
-	frameBuffer = CFrameBuffer::getInstance();
-
 	//
 	mlist = NULL;
 	item = NULL;
@@ -96,7 +94,7 @@ CTVShows::CTVShows()
 
 	plist = "popular";
 	page = 1;
-	list_id = 0;
+	season_id = 0;
 
 	caption = "Serien Trailer (";
 }
@@ -104,16 +102,16 @@ CTVShows::CTVShows()
 CTVShows::~CTVShows()
 {
 	m_vMovieInfo.clear();
-	fileHelper.removeDir(thumbnail_dir.c_str());
-
 	list.clear();
-	genres.clear();
+	db_movies.clear();
+
+	fileHelper.removeDir(thumbnail_dir.c_str());
 }
 
 void CTVShows::hide()
 {
-	frameBuffer->paintBackground();
-	frameBuffer->blit();
+	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->blit();
 }
 
 void CTVShows::createThumbnailDir()
@@ -129,6 +127,7 @@ void CTVShows::removeThumbnailDir()
 void CTVShows::loadMoviesTitle(void)
 {
 	list.clear();
+	db_movies.clear();
 
 	removeThumbnailDir();
 	createThumbnailDir();
@@ -141,7 +140,7 @@ void CTVShows::loadMoviesTitle(void)
 
 	tmdb->clearMovieList();
 
-	tmdb->getMovieList("tv", plist, page);
+	tmdb->getMovieTVList("tv", plist, page);
 
 	std::vector<tmdbinfo> &mvlist = tmdb->getMovies();
 	
@@ -151,42 +150,35 @@ void CTVShows::loadMoviesTitle(void)
 		m_movieInfo.clearMovieInfo(&Info);
 		
 		Info.epgTitle = mvlist[count].title;
+		Info.epgInfo1 = mvlist[count].overview;
+		Info.ytdate = mvlist[count].release_date;
+
+		std::string tname = thumbnail_dir;
+		tname += "/";
+		tname += mvlist[count].poster_path;
+		tname += ".jpg";
+
+		if (!mvlist[count].poster_path.empty())
+		{
+
+			::downloadUrl("http://image.tmdb.org/t/p/w185" + mvlist[count].poster_path, tname);
+		}
+
+		if(!tname.empty())
+			Info.tfile = tname;
+
+		//
+		tmdbinfo tmp;
+
+		tmp.title = mvlist[count].title;
+		tmp.id = mvlist[count].id;
+		tmp.seasons = mvlist[count].seasons;
+
+		db_movies.push_back(tmp);
 		
 		list.push_back(Info);
 	}
 	
-	delete tmdb;
-	tmdb = NULL;
-}
-
-void CTVShows::loadGenreMoviesTitle()
-{
-	list.clear();
-
-	removeThumbnailDir();
-	createThumbnailDir();
-
-	CHintBox loadBox("Serien Trailer", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
-	loadBox.paint();
-
-	//
-	tmdb = new CTmdb();
-
-	tmdb->clearGenreMovieList();
-	tmdb->getGenreMovieList(list_id);
-
-	std::vector<tmdbinfo> &mglist = tmdb->getGenreMovies();
-	
-	for (unsigned int count = 0; count < mglist.size(); count++) 
-	{
-		MI_MOVIE_INFO Info;
-		m_movieInfo.clearMovieInfo(&Info);
-		
-		Info.epgTitle = mglist[count].title;
-		
-		list.push_back(Info);
-	}
-
 	delete tmdb;
 	tmdb = NULL;
 }
@@ -198,7 +190,7 @@ void CTVShows::loadPlaylist()
 	//
 	tmdb = new CTmdb();
 	
-	// fill our structure
+	// refill our structure
 	for (unsigned int i = 0; i < list.size(); i++)
 	{
 		MI_MOVIE_INFO movieInfo;
@@ -224,27 +216,6 @@ void CTVShows::loadPlaylist()
 
 			if(!tname.empty())
 				movieInfo.tfile = tname;
-
-			//file.name extract from youtube
-			ytparser.Cleanup();
-
-			// setregion
-			ytparser.SetRegion("DE");
-
-			// set max result
-			ytparser.SetMaxResults(1);
-			
-			// parse feed
-			if (ytparser.ParseFeed(cYTFeedParser::SEARCH, tmdb->getVName()))
-			{
-				yt_video_list_t &ylist = ytparser.GetVideoList();
-	
-				for (unsigned int j = 0; j < ylist.size(); j++) 
-				{
-					movieInfo.ytid = ylist[j].id;
-					movieInfo.file.Name = ylist[j].GetUrl();
-				}
-			} 
 		}
 					
 		// 
@@ -260,6 +231,8 @@ void CTVShows::showMovieInfo(MI_MOVIE_INFO& movie)
 	std::string buffer;
 	
 	// prepare print buffer  
+	buffer += movie.epgInfo1;
+	buffer += "\n";
 	buffer += movie.epgInfo2;
 
 	// thumbnail
@@ -288,21 +261,27 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL }
 };
 
-void CTVShows::showMovies()
+void CTVShows::showMovies(bool reload)
 {
 	mlist = new ClistBox(caption.c_str(), NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	
 	// load playlist
+	if(reload)
 	loadPlaylist();
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
+		//
+		if(db_movies[i].title == m_vMovieInfo[i].epgTitle)
+				season_id = db_movies[i].id; 
+		//
+
 		std::string tmp = m_vMovieInfo[i].ytdate;
 		tmp += " ";
 		tmp += m_vMovieInfo[i].epgInfo1;
 
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, tmp.c_str(), this, "season", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, tmp.c_str(), /*this*/new CNSeasons(season_id), NULL, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
 		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
 
@@ -338,33 +317,6 @@ void CTVShows::showMenu()
 	menu->addItem(new CMenuForwarder("popular", true, NULL, this, "popular"));
 	menu->addItem(new CMenuForwarder("top rated", true, NULL, this, "top_rated"));
 
-	// genres
-/*
-	menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
-
-	genres.clear();
-	tmdb = new CTmdb();
-	tmdb->clearGenreList();
-	tmdb->getGenreList();
-
-	std::vector<tmdbinfo> &mgenrelist = tmdb->getGenres();
-	
-	for (unsigned int count = 0; count < mgenrelist.size(); count++) 
-	{
-		tmdbinfo tmp;
-
-		tmp.title = mgenrelist[count].title;
-		tmp.id = mgenrelist[count].id;
-
-		genres.push_back(tmp);
-
-		menu->addItem(new CMenuForwarder(mgenrelist[count].title.c_str(), true, NULL, this, to_string(mgenrelist[count].id).c_str()));
-	}
-
-	delete tmdb;
-	tmdb = NULL;
-*/
-
 	menu->exec(NULL, "");
 	menu->hide();
 	delete menu;
@@ -387,18 +339,6 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 		selected = mlist->getSelected();
 
 		showMovieInfo(m_vMovieInfo[selected]);
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "mplay")
-	{
-		selected = mlist->getSelected();
-		
-		if (&m_vMovieInfo[selected].file != NULL) 
-		{
-			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
-			tmpMoviePlayerGui.exec(NULL, "");
-		}
 
 		return menu_return::RETURN_REPAINT;
 	}
@@ -478,27 +418,9 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(!actionKey.empty())
-	{
-		mlist->clearItems();
-		selected = 0;
-		list_id = atoi(actionKey.c_str());
-		loadGenreMoviesTitle();
-
-		for(unsigned int i = 0; i < genres.size(); i++)
-		{
-			if(genres[i].id == list_id)
-			{
-				caption += genres[i].title + ")";
-			}
-		}
-		showMovies();
-
-		return menu_return::RETURN_EXIT_ALL;
-	}
 
 	loadMoviesTitle();
-	caption += "in den Kinos)";
+	caption += "am populärsten)";
 	showMovies();
 
 	return menu_return::RETURN_REPAINT;

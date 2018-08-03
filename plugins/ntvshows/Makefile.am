@@ -14,7 +14,7 @@ AM_CPPFLAGS =  \
 
 noinst_LTLIBRARIES = ntvshows.la
 
-ntvshows_la_SOURCES = ntvshows.cpp
+ntvshows_la_SOURCES = ntvshows.cpp nseasons.cpp nepisodes.cpp
 	 
 ntvshows_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 ntvshows_la_LIBADD = $(top_srcdir)/../nhd2-exp/src/system/ytparser.o

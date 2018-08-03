@@ -141,7 +141,7 @@ void CNFilm::loadMoviesTitle(void)
 
 	tmdb->clearMovieList();
 
-	tmdb->getMovieList("movie", plist, page);
+	tmdb->getMovieTVList("movie", plist, page);
 
 	std::vector<tmdbinfo> &mvlist = tmdb->getMovies();
 	

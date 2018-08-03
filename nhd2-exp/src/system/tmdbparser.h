@@ -64,14 +64,20 @@ class CTmdb
 		std::vector<tmdbinfo> movieList;
 		std::vector<tmdbinfo> genreList;
 		std::vector<tmdbinfo> genreMovieList;
+		std::vector<tmdbinfo> seasonList;
+		std::vector<tmdbinfo> episodeList;
 
 	public:
 		CTmdb();
 		~CTmdb();
-		bool getMovieInfo(std::string text, bool cover = true);
-		bool getMovieList(std::string mtype = "movie", std::string list = "now_playing", int page = 1);
+
+		bool getMovieTVInfo(std::string mtype = "movie", int id = 0);
+		bool getMovieInfo(std::string text, bool cover = true); //search
+		bool getMovieTVList(std::string mtype = "movie", std::string list = "now_playing", int page = 1);
 		bool getGenreList(std::string mtype = "movie");
-		bool getGenreMovieList(const int id);
+		bool getGenreMovieList(int id);
+		bool getSeasonsList(int id);
+		bool getEpisodesList(int id, int nr = 0);
 
 		//
 		std::string createInfoText();
@@ -106,6 +112,14 @@ class CTmdb
 		//
 		void clearGenreMovieList(void){genreMovieList.clear();};
 		std::vector<tmdbinfo>& getGenreMovies(){return genreMovieList;};
+
+		//
+		void clearSeasonList(void){seasonList.clear();};
+		std::vector<tmdbinfo>& getSeasons(){return seasonList;};
+
+		//
+		void clearEpisodeList(void){episodeList.clear();};
+		std::vector<tmdbinfo>& getEpisodes(){return episodeList;};
 };
 
 #endif
