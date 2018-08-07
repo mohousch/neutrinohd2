@@ -203,7 +203,7 @@ void CMBrowser::doTMDB()
 			std::string tname = m_vMovieInfo[mlist->getSelected()].file.Name;
 			changeFileNameExt(tname, ".jpg");
 
-			if(tmdb->getBigCover(tname)) 
+			if(tmdb->getBigCover(tmdb->getPosterPath(), tname)) 
 				m_vMovieInfo[mlist->getSelected()].tfile = tname;
 
 			if(m_vMovieInfo[mlist->getSelected()].epgInfo2.empty())

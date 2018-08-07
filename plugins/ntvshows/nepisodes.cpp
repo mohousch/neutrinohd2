@@ -106,12 +106,9 @@ void CNEpisodes::loadEpisodesTitle()
 			Info.tfile = tname;
 		
 		// testing
-		//tmdb->clearVideoInfo();
-		//tmdb->getVideoInfo("tv", episodelist[count].id);
-
-		//std::vector<tmdbinfo> &vinfoList = tmdb->getVideoInfos();
-
-		tmdb->getMovieInfo(Info.epgTitle, false);
+		//tmdb->getVideoInfo("tv", episodelist[count].id, count);
+		//tmdb->getMovieInfo(Info.epgTitle, false);
+		tmdb->getVideoInfo("tv", episodelist[count].id);
 	
 		//file.name extract from youtube
 		ytparser.Cleanup();

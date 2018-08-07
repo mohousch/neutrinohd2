@@ -1048,7 +1048,7 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 					// rewrite tfile
 					std::string tname = m_movieSelectionHandler->file.Name;
 					changeFileNameExt(tname, ".jpg");
-					if(tmdb->getBigCover(tname)) 
+					if(tmdb->getBigCover(tmdb->getPosterPath(), tname)) 
 						m_movieSelectionHandler->tfile = tname;
 
 					if(m_movieSelectionHandler->epgInfo2.empty())
@@ -2070,7 +2070,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 					// rewrite tfile
 					std::string tname = m_movieSelectionHandler->file.Name;
 					changeFileNameExt(tname, ".jpg");
-					if(tmdb->getBigCover(tname)) 
+					if(tmdb->getBigCover(tmdb->getPosterPath(), tname)) 
 						m_movieSelectionHandler->tfile = tname;
 
 					if(m_movieSelectionHandler->epgInfo2.empty())

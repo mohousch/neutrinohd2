@@ -31,7 +31,7 @@ typedef struct {
 	std::string overview;
 	std::string original_title;
 	std::string release_date;
-	std::string vote_average;
+	float vote_average;
 	int         vote_count;
 	int         id;
 	std::string media_type;
@@ -42,6 +42,11 @@ typedef struct {
 	int         episodes;
 	int         seasons;
 	std::string cast;
+	float popularity;
+	bool video;
+	std::string original_language;
+
+	//
 	std::string cover;
 
 	//
@@ -54,13 +59,15 @@ typedef struct {
 class CTmdb
 {
 	private:
-		tmdbinfo minfo;
+		std::vector<tmdbinfo> minfo;
 		std::string key; // tmdb api key
 		std::string lang;
 		std::string thumbnail_dir;
 
 		CFileHelpers fileHelper;
 
+		//
+		std::vector<tmdbinfo> movieInfo;
 		std::vector<tmdbinfo> movieList;
 		std::vector<tmdbinfo> genreList;
 		std::vector<tmdbinfo> genreMovieList;
@@ -72,36 +79,49 @@ class CTmdb
 		CTmdb();
 		~CTmdb();
 
+		bool getMovieInfo(std::string text, bool downloadCover = true); //search
+
+		//
+		std::string createInfoText();
+
+		//
+		std::string getTitle(){ return minfo[0].title;}
+		std::string getOriginaleTitle(){ return minfo[0].original_title;}
+		std::string getReleaseDate(){ return minfo[0].release_date;}
+		std::string getDescription(){ return minfo[0].overview;}
+		std::string getCast(){ return minfo[0].cast;}
+		int getResults(){ return minfo[0].result;}
+		int getID(){return minfo[0].id;};
+		float getVoteAverage(){return minfo[0].vote_average;};
+		int getVoteCount(){return minfo[0].vote_count;};
+		float getPopularity(){return minfo[0].popularity;};
+		bool getVideo(){return minfo[0].video;};
+		std::string getPosterPath(){return minfo[0].poster_path;};
+		std::string getOriginalLanguage(){return minfo[0].original_language;};
+
+		//
+		std::string getCover(){return minfo[0].cover;};
+
+		//
+		std::string getVID(){return minfo[0].vid;};
+		std::string getVKey(){return minfo[0].vkey;};
+		std::string getVName(){return minfo[0].vname;};
+		std::string getVType(){return minfo[0].vtype;};
+
+		//
+		bool getBigCover(std::string cover, std::string tname);
+		bool getSmallCover(std::string cover, std::string tname);
+
+
+		//
 		bool getMovieTVInfo(std::string mtype = "movie", int id = 0); //FIXME
-		bool getMovieInfo(std::string text, bool cover = true); //search
 		bool getMovieTVList(std::string mtype = "movie", std::string list = "now_playing", int page = 1);
 		bool getGenreList(std::string mtype = "movie");
 		bool getGenreMovieList(int id);
 		bool getSeasonsList(int id);
 		bool getEpisodesList(int id, int nr = 0);
-		bool getVideoInfo(std::string mtype = "movie", int id = 0); //FIXME
-
-		//
-		std::string createInfoText();
-
-		std::string getTitle(){ return minfo.title;}
-		std::string getOrgTitle(){ return minfo.original_title;}
-		std::string getReleaseDate(){ return minfo.release_date;}
-		std::string getDescription(){ return minfo.overview;}
-		std::string getVote(){ return minfo.vote_average;}
-		std::string getCast(){ return minfo.cast;}
-		int getResults(){ return minfo.result;}
-		int getStars(){ return (int) (atof(minfo.vote_average.c_str()) + 0.5);}
-		int getID(){return minfo.id;};
-		std::string getCover(){return minfo.cover;};
-		std::string getVId(){return minfo.vid;};
-		std::string getVKey(){return minfo.vkey;};
-		std::string getVName(){return minfo.vname;};
-		std::string getVType(){return minfo.vtype;};
-
-		//
-		bool getBigCover(std::string tname);
-		bool getSmallCover(std::string tname);
+		bool getVideoInfo(std::string mtype = "movie", int id = 0, int s_nr = 0); //FIXME
+		bool getMovieCover(std::string cover, std::string tname);
 
 		// movie list
 		void clearMovieList(void){movieList.clear();};
@@ -122,6 +142,10 @@ class CTmdb
 		// episode list
 		void clearEpisodeList(void){episodeList.clear();};
 		std::vector<tmdbinfo>& getEpisodes(){return episodeList;};
+
+		// movie info
+		void clearMovieInfo(void){movieInfo.clear();};
+		std::vector<tmdbinfo>& getMovieInfos(){return movieInfo;};
 
 		// video info
 		void clearVideoInfo(void){videoInfo.clear();};

@@ -126,14 +126,14 @@ bool cYTFeedParser::parseFeedJSON(std::string &answer)
 		{
 			vinfo.id = elements[i].get("id", "").asString();
 		}
-		vinfo.title             = elements[i]["snippet"].get("title", "").asString();
-		vinfo.description       = elements[i]["snippet"].get("description", "").asString();
-		vinfo.published         = elements[i]["snippet"].get("publishedAt", "").asString().substr(0, 10);
-		std::string thumbnail   = elements[i]["snippet"]["thumbnails"]["default"].get("url", "").asString();
+		vinfo.title = elements[i]["snippet"].get("title", "").asString();
+		vinfo.description = elements[i]["snippet"].get("description", "").asString();
+		vinfo.published = elements[i]["snippet"].get("publishedAt", "").asString().substr(0, 10);
+		std::string thumbnail = elements[i]["snippet"]["thumbnails"]["default"].get("url", "").asString();
 		// save thumbnail "default", if "high" not found
-		vinfo.thumbnail         = elements[i]["snippet"]["thumbnails"]["high"].get("url", thumbnail).asString();
-		vinfo.author            = elements[i]["snippet"].get("channelTitle", "unkown").asString();
-		vinfo.category          = "";
+		vinfo.thumbnail = elements[i]["snippet"]["thumbnails"]["high"].get("url", thumbnail).asString();
+		vinfo.author = elements[i]["snippet"].get("channelTitle", "unkown").asString();
+		vinfo.category = "";
 		
 		
 		// duration/url
@@ -162,6 +162,7 @@ bool cYTFeedParser::parseFeedDetailsJSON(cYTVideoInfo &vinfo)
 	vinfo.duration = 0;
 	// See at https://developers.google.com/youtube/v3/docs/videos
 	std::string url = "https://www.googleapis.com/youtube/v3/videos?id=" + vinfo.id + "&part=contentDetails&key=" + key;
+
 	std::string answer;
 	
 	if (!::getUrl(url, answer))
@@ -245,8 +246,6 @@ bool cYTFeedParser::decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo)
 			{
 				uparams[j] = ::decodeUrl(uparams[j]);
 
-				//dprintf(DEBUG_DEBUG, "	param: %s\n", uparams[j].c_str());
-
 				::splitString(uparams[j], "=", smap);
 			}
 
@@ -318,6 +317,7 @@ bool cYTFeedParser::ParseFeed(std::string &url)
 	videos.clear();
 
 	std::string answer;
+
 	curfeedfile = thumbnail_dir;
 	curfeedfile += "/";
 	curfeedfile += curfeed;
@@ -408,14 +408,27 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 	}
 	else if(mode == SEARCH_BY_ID)
 	{
-		if(search.empty())
+		if(vid.empty())
 			return false;
 
-		search = encodeUrl(search);
+		videos.clear();
+		cYTVideoInfo vinfo;
 
-		url = "https://www.googleapis.com/youtube/v3/&part=snippet";
-		url += "&topicId=" + vid;
-		url += "&type=" + search;
+		vinfo.id = vid;
+
+		if (!vinfo.id.empty()) 
+		{
+			// duration
+			parseFeedDetailsJSON(vinfo);
+		
+			// url/fill videos list
+			if(ParseVideoInfo(vinfo))
+				videos.push_back(vinfo);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	feedmode = mode;

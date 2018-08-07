@@ -75,7 +75,7 @@ class CTVShows : public CMenuTarget
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
 
-		void showMovies(bool reload = true);
+		void showMovies();
 		void showMenu();
 };
 
@@ -95,8 +95,6 @@ CTVShows::CTVShows(std::string tvlist)
 	plist = tvlist;
 	page = 1;
 	season_id = 0;
-
-	caption = "Serien Trailer (";
 }
 
 CTVShows::~CTVShows()
@@ -191,17 +189,20 @@ void CTVShows::loadPlaylist()
 	tmdb = new CTmdb();
 	
 	// refill our structure
-	for (unsigned int i = 0; i < list.size(); i++)
+	//for (unsigned int i = 0; i < list.size(); i++)
+	for (unsigned int i = 0; i < db_movies.size(); i++)
 	{
 		MI_MOVIE_INFO movieInfo;
 		m_movieInfo.clearMovieInfo(&movieInfo); 
 
-		movieInfo.epgTitle = list[i].epgTitle;
+		//movieInfo.epgTitle = list[i].epgTitle;
+		movieInfo.epgTitle = db_movies[i].title;
 
 		// load infos from tmdb
-		tmdb->getMovieInfo(movieInfo.epgTitle, false);
+		//tmdb->getMovieInfo(movieInfo.epgTitle, false);
+		tmdb->getMovieTVInfo("tv", db_movies[i].id);
 
-		if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
+		//if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
 		{
 			movieInfo.epgInfo1 = tmdb->getDescription();
 			movieInfo.epgInfo2 = tmdb->createInfoText();
@@ -209,10 +210,10 @@ void CTVShows::loadPlaylist()
 			
 			std::string tname = thumbnail_dir;
 			tname += "/";
-			tname += tmdb->getTitle();
+			tname += movieInfo.epgTitle;
 			tname += ".jpg";
 
-			tmdb->getSmallCover(tname);
+			tmdb->getSmallCover(tmdb->getPosterPath(), tname);
 
 			if(!tname.empty())
 				movieInfo.tfile = tname;
@@ -261,22 +262,21 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL }
 };
 
-void CTVShows::showMovies(bool reload)
+void CTVShows::showMovies()
 {
 	if(plist == "airing_today")
-		caption += "Heute auf Sendung)";
-	else if(plist == "Auf Sendung")
-		caption += "On the air)";
+		caption = "Heute auf Sendung";
+	else if(plist == "on_the_air")
+		caption = "Auf Sendung";
 	else if(plist == "popular")
-		caption += "Am populärsten)";
+		caption = "Am populärsten";
 	else if(plist == "top_rated")
-		caption += "Am besten bewertet)";
+		caption = "Am besten bewertet";
 
 	mlist = new ClistBox(caption.c_str(), NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	
 	// load playlist
-	if(reload)
 	loadPlaylist();
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)

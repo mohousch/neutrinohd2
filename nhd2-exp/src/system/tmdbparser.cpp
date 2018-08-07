@@ -63,17 +63,16 @@ CTmdb::~CTmdb()
 }
 
 // movie infos with name
-bool CTmdb::getMovieInfo(std::string text, bool cover)
+bool CTmdb::getMovieInfo(std::string text, bool downloadCover)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getMovieInfo: %s\n", text.c_str());
 
-	minfo.cast.clear();
+	//minfo.cast.clear();
+	minfo.clear();
 
 	std::string url	= "http://api.themoviedb.org/3/";
 
 	url += "search/multi?api_key=" + key + "&language=" + lang + "&query=" + encodeUrl(text);
-
-	minfo.title = text;
 
 	std::string answer;
 
@@ -91,21 +90,25 @@ bool CTmdb::getMovieInfo(std::string text, bool cover)
 		return false;
 	}
 
-	minfo.result = root.get("total_results", 0).asInt();
+	//minfo.result = root.get("total_results", 0).asInt();
+	Json::Value results = root.get("results", 0).asInt();
 
-	dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: results: %d\n", minfo.result);
+	dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: results: %d\n", results.size());
 
-	if (minfo.result > 0) 
+	//if (minfo.result > 0) 
+	for (unsigned int i = 0; i < results.size(); i++) 
 	{
-		Json::Value elements = root["results"];
+		//Json::Value elements = root["results"];
+		tmdbinfo tmp;
 
-		minfo.id = elements[0].get("id", -1).asInt();
-		minfo.media_type = elements[0].get("media_type", "").asString();
+		tmp.id = results[i].get("id", -1).asInt();
+		tmp.media_type = results[i].get("media_type", "").asString();
+		tmp.title = results[i].get("title", "").asString();
 
-		if (minfo.id > -1) 
+		if (tmp.id > -1) 
 		{
 			// detailed infos
-			url = "http://api.themoviedb.org/3/" + minfo.media_type + "/" + to_string(minfo.id) + "?api_key=" + key + "&language=" + lang + "&append_to_response=credits";
+			url = "http://api.themoviedb.org/3/" + tmp.media_type + "/" + to_string(tmp.id) + "?api_key=" + key + "&language=" + lang + "&append_to_response=credits";
 
 			answer.clear();
 			if (!::getUrl(url, answer))
@@ -120,54 +123,54 @@ bool CTmdb::getMovieInfo(std::string text, bool cover)
 				return false;
 			}
 
-			minfo.overview = root.get("overview", "").asString();
-			minfo.poster_path = root.get("poster_path", "").asString();
-			minfo.original_title = root.get("original_title", "").asString();
-			minfo.release_date = root.get("release_date", "").asString();
-			minfo.vote_average = root.get("vote_average", "").asString();
-			minfo.vote_count = root.get("vote_count", 0).asInt();
-			minfo.runtime = root.get("runtime", 0).asInt();
+			tmp.overview = root.get("overview", "").asString();
+			tmp.poster_path = root.get("poster_path", "").asString();
+			tmp.original_title = root.get("original_title", "").asString();
+			tmp.release_date = root.get("release_date", "").asString();
+			tmp.vote_average = root.get("vote_average", 0.0).asFloat();
+			tmp.vote_count = root.get("vote_count", 0).asInt();
+			tmp.runtime = root.get("runtime", 0).asInt();
 
-			if (minfo.media_type == "tv") 
+			if (tmp.media_type == "tv") 
 			{
-				minfo.original_title = root.get("original_name", "").asString();
-				minfo.episodes = root.get("number_of_episodes", 0).asInt();
-				minfo.seasons = root.get("number_of_seasons", 0).asInt();
-				minfo.release_date = root.get("first_air_date", "").asString();
+				tmp.original_title = root.get("original_name", "").asString();
+				tmp.episodes = root.get("number_of_episodes", 0).asInt();
+				tmp.seasons = root.get("number_of_seasons", 0).asInt();
+				tmp.release_date = root.get("first_air_date", "").asString();
 
-				elements = root["episode_run_time"];
-				minfo.runtimes = elements[0].asString();
-				for (unsigned int i = 1; i < elements.size(); i++) 
+				results = root["episode_run_time"];
+				tmp.runtimes = results[0].asString();
+				for (unsigned int i = 1; i < results.size(); i++) 
 				{
-					minfo.runtimes +=  + ", " + elements[i].asString();
+					tmp.runtimes +=  + ", " + results[i].asString();
 				}
 			}
 
-			elements = root["genres"];
-			minfo.genres = elements[0].get("name", "").asString();
-			for (unsigned int i = 1; i < elements.size(); i++) 
+			results = root["genres"];
+			tmp.genres = results[0].get("name", "").asString();
+			for (unsigned int i = 1; i < results.size(); i++) 
 			{
-				minfo.genres += ", " + elements[i].get("name", "").asString();
+				tmp.genres += ", " + results[i].get("name", "").asString();
 			}
 
-			elements = root["credits"]["cast"];
-			for (unsigned int i = 0; i < elements.size() && i < 10; i++) 
+			results = root["credits"]["cast"];
+			for (unsigned int i = 0; i < results.size() && i < 10; i++) 
 			{
-				minfo.cast +=  "  " + elements[i].get("character", "").asString() + " (" + elements[i].get("name", "").asString() + ")\n";
+				tmp.cast +=  "  " + results[i].get("character", "").asString() + " (" + results[i].get("name", "").asString() + ")\n";
 			}
 
-			if (cover)
+			if (downloadCover)
 			{
 				std::string tname = thumbnail_dir;
 				tname += "/";
-				tname += minfo.title;
+				tname += tmp.title;
 				tname += ".jpg";
 
-				getBigCover(tname);
+				getBigCover(tmp.poster_path, tname);
 			}
 
-			// vurl
-			url = "http://api.themoviedb.org/3/" + minfo.media_type + "/" + to_string(minfo.id) + "/videos?api_key=" + key + "&language=" + lang;
+			// vurl (only for movies)
+			url = "http://api.themoviedb.org/3/" + tmp.media_type + "/" + to_string(tmp.id) + "/videos?api_key=" + key + "&language=" + lang;
 
 			answer.clear();
 			if (!::getUrl(url, answer))
@@ -182,39 +185,40 @@ bool CTmdb::getMovieInfo(std::string text, bool cover)
 				return false;
 			}
 
-			Json::Value results = root.get("results", "");
+			results = root.get("results", "");
 
 			if (results.type() != Json::arrayValue)
 				return false;
 
-			minfo.vid = results[0].get("id", "").asString();
-			minfo.vkey = results[0].get("key", "").asString();
-			minfo.vname = results[0].get("name", "").asString();
-			minfo.vtype = results[0].get("type", "").asString();
-
-			return true;
+			tmp.vid = results[0].get("id", "").asString();
+			tmp.vkey = results[0].get("key", "").asString();
+			tmp.vname = results[0].get("name", "").asString();
+			tmp.vtype = results[0].get("type", "").asString();
 		}
+
+		minfo.push_back(tmp);
 	} 
-	else
-		return false;
+
+	if(!minfo.empty())
+		return true;
 
 	return false;
 }
 
-bool CTmdb::getBigCover(std::string tname)
+bool CTmdb::getBigCover(std::string cover, std::string tname)
 { 
 	dprintf(DEBUG_NORMAL, "CTmdb::getBigCover: %s\n", tname.c_str());
 
 	bool ret = false;
 
-	if (!minfo.poster_path.empty())
+	if (!cover.empty())
 	{
 		bool found = false;
-		found = ::downloadUrl("http://image.tmdb.org/t/p/w342" + minfo.poster_path, tname);
+		found = ::downloadUrl("http://image.tmdb.org/t/p/w342" + cover, tname);
 
 		if (found)
 		{
-			minfo.cover = tname;
+			minfo[0].cover = tname;
 		}
 
 		ret |= found;
@@ -223,18 +227,18 @@ bool CTmdb::getBigCover(std::string tname)
 	return ret;
 }
 
-bool CTmdb::getSmallCover(std::string tname)
+bool CTmdb::getSmallCover(std::string cover, std::string tname)
 { 
 	bool ret = false;
 
-	if (!minfo.poster_path.empty())
+	if (!cover.empty())
 	{
 		bool found = false;
 
-		found = ::downloadUrl("http://image.tmdb.org/t/p/w185" + minfo.poster_path, tname);
+		found = ::downloadUrl("http://image.tmdb.org/t/p/w185" + cover, tname);
 		if (found)
 		{
-			minfo.cover = tname;
+			minfo[0].cover = tname;
 		}
 
 		ret |= found;
@@ -243,10 +247,41 @@ bool CTmdb::getSmallCover(std::string tname)
 	return ret;
 }
 
+std::string CTmdb::createInfoText()
+{
+	dprintf(DEBUG_NORMAL, "CTmdb::createInfoText\n");
+
+	std::string infoText;
+
+	infoText += "\n";
+	infoText += "Vote: " + to_string(minfo[0].vote_average) + "/10 Votecount: " + to_string(minfo[0].vote_count) + "\n";
+	infoText += "\n";
+	infoText += minfo[0].overview + "\n";
+	infoText += "\n";
+
+	if (minfo[0].media_type == "tv")
+		infoText += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + minfo[0].runtimes + "\n";
+	else
+		infoText += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + to_string(minfo[0].runtime) + "\n";
+
+	infoText += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_GENRE) + ": " + minfo[0].genres + "\n";
+	infoText += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ORIGINAL_TITLE) + " : " + minfo[0].original_title + "\n";
+	infoText += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_YEAR_OF_PRODUCTION) + " : " + minfo[0].release_date.substr(0,4) + "\n";
+
+	if (minfo[0].media_type == "tv")
+		infoText += "Seasons/Episodes: " + to_string(minfo[0].seasons) + "/" + to_string(minfo[0].episodes)+"\n";
+
+	if (!minfo[0].cast.empty())
+		infoText += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS) + ":\n" + minfo[0].cast + "\n";
+
+	return infoText;
+}
+
+/// neu
 // movie/tv list
 bool CTmdb::getMovieTVList(std::string mtype, std::string list, int page)
 {
-	dprintf(DEBUG_NORMAL, "cTmdb::getMovieList: %s: %s (page:%d)\n", mtype.c_str(), list.c_str(), page);
+	dprintf(DEBUG_NORMAL, "cTmdb::getMovieTVList: %s: %s page:%d\n", mtype.c_str(), list.c_str(), page);
 
 	std::string url	= "http://api.themoviedb.org/3/";
 
@@ -279,6 +314,11 @@ bool CTmdb::getMovieTVList(std::string mtype, std::string list, int page)
 	{
 		tmdbinfo tmp;
 
+		tmp.vote_count = results[i].get("vote_count", 0).asInt();
+		tmp.id = results[i].get("id", 0).asInt();
+		tmp.video = results[i].get("video", false).asBool();
+		tmp.vote_average = results[i].get("vote_average", 0.0).asFloat();
+
 		if(mtype == "tv")
 		{
 			tmp.title = results[i].get("name", "").asString();
@@ -290,11 +330,11 @@ bool CTmdb::getMovieTVList(std::string mtype, std::string list, int page)
 			tmp.release_date = results[i].get("release_date", "").asString();
 		}
 
-		tmp.id = results[i].get("id", 0).asInt();
+		tmp.popularity = results[i].get("popularity", 0.0).asFloat();
 		tmp.poster_path = results[i].get("poster_path", "").asString();
+		tmp.original_language = results[i].get("original_language", "").asString();
+		tmp.original_title = results[i].get("original_title", "").asString();
 		tmp.overview = results[i].get("overview", "").asString();
-		tmp.vote_count = results[i].get("vote_count", 0).asInt();
-		tmp.vote_average = results[i].get("vote_average", "").asString();
 
 		if (!tmp.title.empty())
 			movieList.push_back(tmp);
@@ -449,7 +489,6 @@ bool CTmdb::getSeasonsList(int id)
 
 		seasonList.push_back(tmp);
 	}
-	//
 
 	if(!seasonList.empty())
 		return true;
@@ -496,9 +535,8 @@ bool CTmdb::getEpisodesList(int id, int nr)
 
 		tmp.title = seasons[count].get("name", "").asString();
 		tmp.release_date = seasons[count].get("air_date", "").asString();
-		//tmp.episodes = seasons[count].get("episode_count", 0).asInt();
 		tmp.overview = seasons[count].get("overview", "").asString();
-		//tmp.id = seasons[count].get("id", 0).asInt();
+		tmp.id = seasons[count].get("id", 0).asInt();
 		tmp.poster_path = seasons[count].get("still_path", "").asString();
 
 		episodeList.push_back(tmp);
@@ -512,13 +550,22 @@ bool CTmdb::getEpisodesList(int id, int nr)
 }
 
 // video info
-bool CTmdb::getVideoInfo(std::string mtype, int id)
+bool CTmdb::getVideoInfo(std::string mtype, int id, int s_nr)
 {
-	dprintf(DEBUG_NORMAL, "cTmdb::getVideoInfo: %s %d\n", mtype.c_str(), id);
+	dprintf(DEBUG_NORMAL, "cTmdb::getVideoInfo: %s (id:%d) (ep_nr:%d)\n", mtype.c_str(), id, s_nr);
 
 	videoInfo.clear();
 
-	std::string url = "http://api.themoviedb.org/3/" + mtype + "/" + to_string(id) + "/videos?api_key=" + key + "&language=" + lang + "&append_to_response=credits";
+	std::string url;
+
+	if(mtype == "tv")
+		url = "http://api.themoviedb.org/3/tv/" + to_string(id) + "/season/" + to_string(s_nr) + "/videos?api_key=" + key + "&language=" + lang;
+	else
+		url = "http://api.themoviedb.org/3/movie/" + to_string(id) + "/videos?api_key=" +
+ key + "&language=" + lang + "&append_to_response=credits";
+
+	dprintf(DEBUG_NORMAL, "CTmdb::getVideoInfo: %s\n", url.c_str())
+
 	std::string answer;
 
 	Json::Value root;
@@ -541,17 +588,14 @@ bool CTmdb::getVideoInfo(std::string mtype, int id)
 	if (results.type() != Json::arrayValue)
 		return false;
 
-	for(unsigned int i = 0; i < results.size(); i++)
-	{
-		tmdbinfo tmp;
+	tmdbinfo tmp;
 
-		tmp.vid = results[i].get("id", "").asString();
-		tmp.vkey = results[i].get("key", "").asString();
-		tmp.vname = results[i].get("name", "").asString();
-		tmp.vtype = results[i].get("type", "").asString();
+	tmp.vid = results[0].get("id", "").asString();
+	tmp.vkey = results[0].get("key", "").asString();
+	tmp.vname = results[0].get("name", "").asString();
+	tmp.vtype = results[0].get("type", "").asString();
 
-		videoInfo.push_back(tmp);
-	}
+	videoInfo.push_back(tmp);
 
 	if(!videoInfo.empty())
 		return true;
@@ -564,7 +608,7 @@ bool CTmdb::getMovieTVInfo(std::string mtype, int id)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getMovieTVInfo: %d\n", id);
 
-	minfo.cast.clear();
+	movieInfo.clear();
 
 	std::string url = "http://api.themoviedb.org/3/" + mtype + "/" + to_string(id) + "?api_key=" + key + "&language=" + lang + "&append_to_response=credits";
 
@@ -585,102 +629,78 @@ bool CTmdb::getMovieTVInfo(std::string mtype, int id)
 		return false;
 	}
 
-	Json::Value elements = root.get("results", "");
+	Json::Value elements = root.get("genres", "");
 
 	if (elements.type() != Json::arrayValue)
 		return false;
 
-	minfo.overview = root.get("overview", "").asString();
-	minfo.poster_path = root.get("poster_path", "").asString();
-	minfo.original_title = root.get("original_title", "").asString();
-	minfo.release_date = root.get("release_date", "").asString();
-	minfo.vote_average = root.get("vote_average", "").asString();
-	minfo.vote_count = root.get("vote_count", 0).asInt();
-	minfo.runtime = root.get("runtime", 0).asInt();
+	tmdbinfo tmp;
 
-	if (minfo.media_type == "tv") 
+	if(mtype == "movie")
+		tmp.title = root.get("name", "").asString();
+	else
+		tmp.title = root.get("title", "").asString();
+
+	tmp.overview = root.get("overview", "").asString();
+	tmp.poster_path = root.get("poster_path", "").asString();
+	tmp.original_title = root.get("original_title", "").asString();
+	tmp.release_date = root.get("release_date", "").asString();
+	tmp.vote_average = root.get("vote_average", 0.0).asFloat();
+	tmp.vote_count = root.get("vote_count", 0).asInt();
+	tmp.runtime = root.get("runtime", 0).asInt();
+
+	if (mtype == "tv") 
 	{
-		minfo.original_title = root.get("original_name", "").asString();
-		minfo.episodes = root.get("number_of_episodes", 0).asInt();
-		minfo.seasons = root.get("number_of_seasons", 0).asInt();
-		minfo.release_date = root.get("first_air_date", "").asString();
+		tmp.original_title = root.get("original_name", "").asString();
+		tmp.episodes = root.get("number_of_episodes", 0).asInt();
+		tmp.seasons = root.get("number_of_seasons", 0).asInt();
+		tmp.release_date = root.get("first_air_date", "").asString();
 
 		elements = root["episode_run_time"];
-		minfo.runtimes = elements[0].asString();
+		tmp.runtimes = elements[0].asString();
+
 		for (unsigned int i = 1; i < elements.size(); i++) 
 		{
-			minfo.runtimes +=  + ", " + elements[i].asString();
+			tmp.runtimes +=  + ", " + elements[i].asString();
 		}
 	}
 
-	elements = root["genres"];
-	minfo.genres = elements[0].get("name", "").asString();
+	tmp.genres = elements[0].get("name", "").asString();
+
 	for (unsigned int i = 1; i < elements.size(); i++) 
 	{
-		minfo.genres += ", " + elements[i].get("name", "").asString();
+		tmp.genres += ", " + elements[i].get("name", "").asString();
 	}
 
 	elements = root["credits"]["cast"];
 	for (unsigned int i = 0; i < elements.size() && i < 10; i++) 
 	{
-		minfo.cast +=  "  " + elements[i].get("character", "").asString() + " (" + elements[i].get("name", "").asString() + ")\n";
+		tmp.cast +=  "  " + elements[i].get("character", "").asString() + " (" + elements[i].get("name", "").asString() + ")\n";
 	}
 
-	// vurl
-	url = "http://api.themoviedb.org/3/movie/" + to_string(minfo.id) + "/videos?api_key=" + key + "&language=" + lang;
+	movieInfo.push_back(tmp);
 
-	answer.clear();
-	if (!::getUrl(url, answer))
-		return false;
+	if(!movieInfo.empty())
+		return true;
 
-	parsedSuccess = reader.parse(answer, root);
-	if (!parsedSuccess) 
+	return false;
+}
+
+bool CTmdb::getMovieCover(std::string cover, std::string tname)
+{ 
+	bool ret = false;
+
+	if (!cover.empty())
 	{
-		dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: Failed to parse JSON\n");
-		dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: %s\n", reader.getFormattedErrorMessages().c_str());
+		bool found = false;
 
-		return false;
+		found = ::downloadUrl("http://image.tmdb.org/t/p/w185" + cover, tname);
+
+		ret |= found;
 	}
 
-	Json::Value results = root.get("results", "");
-
-	if (results.type() != Json::arrayValue)
-		return false;
-
-	minfo.vid = results[0].get("id", "").asString();
-	minfo.vkey = results[0].get("key", "").asString();
-	minfo.vname = results[0].get("name", "").asString();
-	minfo.vtype = results[0].get("type", "").asString();
-
-	return true;
+	return ret;
 }
 
 
-std::string CTmdb::createInfoText()
-{
-	dprintf(DEBUG_NORMAL, "CTmdb::createInfoText\n");
-
-	std::string infoText;
-	infoText += "\n";
-	infoText += "Vote: " + minfo.vote_average.substr(0,3) + "/10 Votecount: " + to_string(minfo.vote_count) + "\n";
-	infoText += "\n";
-	infoText += minfo.overview + "\n";
-	infoText += "\n";
-
-	if (minfo.media_type == "tv")
-		infoText += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + minfo.runtimes+"\n";
-	else
-		infoText += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + to_string(minfo.runtime)+"\n";
-
-	infoText += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_GENRE) + ": " + minfo.genres + "\n";
-	infoText += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ORIGINAL_TITLE) + " : " + minfo.original_title + "\n";
-	infoText += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_YEAR_OF_PRODUCTION) + " : " + minfo.release_date.substr(0,4) + "\n";
-
-	if (minfo.media_type == "tv")
-		infoText += "Seasons/Episodes: " + to_string(minfo.seasons) + "/" + to_string(minfo.episodes)+"\n";
-	if (!minfo.cast.empty())
-		infoText += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS) + ":\n" + minfo.cast + "\n";
-
-	return infoText;
-}
 

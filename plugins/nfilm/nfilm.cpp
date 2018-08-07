@@ -52,6 +52,8 @@ class CNFilm : public CMenuTarget
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
 		std::vector<MI_MOVIE_INFO> list;
 
+		std::vector<tmdbinfo> m_movielist;
+
 		//
 		std::vector<tmdbinfo> genres;
 
@@ -68,6 +70,7 @@ class CNFilm : public CMenuTarget
 		void createThumbnailDir();
 		void removeThumbnailDir();
 		void showMovieInfo(MI_MOVIE_INFO& movie);
+		void getMovieVideoUrl(MI_MOVIE_INFO& movie);
 
 	public:
 		CNFilm(std::string movielist = "popular", int id = 0);
@@ -97,8 +100,6 @@ CNFilm::CNFilm(std::string movielist, int id)
 	plist = movielist;
 	genre_id = id;
 	page = 1;
-
-	caption = "Movie Trailer (";
 }
 
 CNFilm::~CNFilm()
@@ -108,6 +109,7 @@ CNFilm::~CNFilm()
 
 	list.clear();
 	genres.clear();
+	m_movielist.clear();
 }
 
 void CNFilm::hide()
@@ -131,6 +133,7 @@ void CNFilm::loadMoviesTitle(void)
 	dprintf(DEBUG_NORMAL, "CNFilm::loadMoviesTitle:\n");
 
 	list.clear();
+	m_movielist.clear();
 
 	removeThumbnailDir();
 	createThumbnailDir();
@@ -151,8 +154,14 @@ void CNFilm::loadMoviesTitle(void)
 	{
 		MI_MOVIE_INFO Info;
 		m_movieInfo.clearMovieInfo(&Info);
+
+		tmdbinfo tmp;
 		
 		Info.epgTitle = mvlist[count].title;
+		tmp.title = mvlist[count].title;
+		tmp.id = mvlist[count].id;
+
+		m_movielist.push_back(tmp);
 		
 		list.push_back(Info);
 	}
@@ -202,59 +211,77 @@ void CNFilm::loadPlaylist()
 
 	m_vMovieInfo.clear();
 
-	//
 	tmdb = new CTmdb();
 	
 	// fill our structure
-	for (unsigned int i = 0; i < list.size(); i++)
+	for(unsigned int i = 0; i < m_movielist.size(); i++)
 	{
 		MI_MOVIE_INFO movieInfo;
 		m_movieInfo.clearMovieInfo(&movieInfo); 
 
-		movieInfo.epgTitle = list[i].epgTitle;
+		tmdb->clearMovieInfo();
+		tmdb->getMovieTVInfo("movie", m_movielist[i].id);
+		std::vector<tmdbinfo>& movieInfo_list = tmdb->getMovieInfos();
 
-		// load infos from tmdb
-		tmdb->getMovieInfo(movieInfo.epgTitle, false);
+		movieInfo.epgTitle = m_movielist[i].title;
 
-		if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
+		movieInfo.epgInfo1 = movieInfo_list[0].overview;
+		movieInfo.ytdate = movieInfo_list[0].release_date;
+		movieInfo.vote_average = movieInfo_list[0].vote_average;
+		movieInfo.vote_count = movieInfo_list[0].vote_count;
+		movieInfo.original_title = movieInfo_list[0].original_title;
+		movieInfo.release_date = movieInfo_list[0].release_date;
+		movieInfo.media_type = movieInfo_list[0].media_type;
+		movieInfo.runtime = movieInfo_list[0].runtime;
+		movieInfo.runtimes = movieInfo_list[0].runtimes;
+		movieInfo.genres = movieInfo_list[0].genres;
+		movieInfo.cast = movieInfo_list[0].cast;
+		movieInfo.seasons = movieInfo_list[0].seasons;
+		movieInfo.episodes = movieInfo_list[0].episodes;
+			
+		std::string tname = thumbnail_dir;
+		tname += "/";
+		tname += movieInfo.epgTitle;
+		tname += ".jpg";
+
+		tmdb->getMovieCover(movieInfo_list[0].poster_path, tname);
+
+		if(!tname.empty())
+			movieInfo.tfile = tname;
+
+		// video url
+		tmdb->clearVideoInfo();
+		tmdb->getVideoInfo("movie", m_movielist[i].id);
+
+		std::vector<tmdbinfo>& videoInfo_list = tmdb->getVideoInfos();
+
+		/*
+		ytparser.Cleanup();
+
+		// setregion
+		ytparser.SetRegion("DE");
+
+		// set max result
+		ytparser.SetMaxResults(1);
+
+		std::string search = videoInfo_list[0].title + " Deutsch kinocheck";
+			
+		// parse feed
+		if (ytparser.ParseFeed(cYTFeedParser::SEARCH, search, videoInfo_list[0].vkey))
 		{
-			movieInfo.epgInfo1 = tmdb->getDescription();
-			movieInfo.epgInfo2 = tmdb->createInfoText();
-			movieInfo.ytdate = tmdb->getReleaseDate();
-			
-			std::string tname = thumbnail_dir;
-			tname += "/";
-			tname += tmdb->getTitle();
-			tname += ".jpg";
-
-			tmdb->getSmallCover(tname);
-
-			if(!tname.empty())
-				movieInfo.tfile = tname;
-
-			//file.name extract from youtube
-			ytparser.Cleanup();
-
-			// setregion
-			ytparser.SetRegion("DE");
-
-			// set max result
-			ytparser.SetMaxResults(1);
-			
-			// parse feed
-			if (ytparser.ParseFeed(cYTFeedParser::SEARCH, tmdb->getVName()))
-			{
-				yt_video_list_t &ylist = ytparser.GetVideoList();
+			yt_video_list_t &ylist = ytparser.GetVideoList();
 	
-				for (unsigned int j = 0; j < ylist.size(); j++) 
-				{
-					movieInfo.ytid = ylist[j].id;
-					movieInfo.file.Name = ylist[j].GetUrl();
-				}
-			} 
-		}
-					
-		// 
+			for (unsigned int j = 0; j < ylist.size(); j++) 
+			{
+				movieInfo.ytid = ylist[j].id;
+				movieInfo.file.Name = ylist[j].GetUrl();
+			}
+		} 
+		*/
+		movieInfo.vid = videoInfo_list[0].vid;
+		movieInfo.vkey = videoInfo_list[0].vkey;
+		movieInfo.vname = videoInfo_list[0].vname;
+
 		m_vMovieInfo.push_back(movieInfo);
 	}
 
@@ -269,7 +296,20 @@ void CNFilm::showMovieInfo(MI_MOVIE_INFO& movie)
 	std::string buffer;
 	
 	// prepare print buffer  
-	buffer += movie.epgInfo2;
+	buffer += movie.epgInfo1;
+	buffer = "Vote: " + to_string(movie.vote_average) + "/10 Votecount: " + to_string(movie.vote_count) + "\n";
+	buffer += "\n";
+	buffer += movie.epgInfo1;
+	buffer += "\n";
+
+	buffer += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + to_string(movie.runtime) + "\n";
+
+	buffer += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_GENRE) + ": " + movie.genres + "\n";
+	buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ORIGINAL_TITLE) + " : " + movie.original_title + "\n";
+	buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_YEAR_OF_PRODUCTION) + " : " + movie.release_date.substr(0,4) + "\n";
+
+	if (!movie.cast.empty())
+		buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS) + ":\n" + movie.cast + "\n";
 
 	// thumbnail
 	int pich = 246;	//FIXME
@@ -288,6 +328,29 @@ void CNFilm::showMovieInfo(MI_MOVIE_INFO& movie)
 	delete infoBox;
 }
 
+void CNFilm::getMovieVideoUrl(MI_MOVIE_INFO& movie)
+{
+	ytparser.Cleanup();
+
+	// setregion
+	ytparser.SetRegion("DE");
+
+	// set max result
+	ytparser.SetMaxResults(1);
+			
+	// parse feed
+	if (ytparser.ParseFeed(cYTFeedParser::SEARCH_BY_ID, movie.vname, movie.vkey))
+	{
+		yt_video_list_t &ylist = ytparser.GetVideoList();
+	
+		for (unsigned int j = 0; j < ylist.size(); j++) 
+		{
+			movie.ytid = ylist[j].id;
+			movie.file.Name = ylist[j].GetUrl();
+		}
+	} 
+}
+
 #define HEAD_BUTTONS_COUNT	4
 const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
@@ -302,20 +365,20 @@ void CNFilm::showMovies()
 	dprintf(DEBUG_NORMAL, "CNFilm::showMovies:\n");
 
 	if(plist == "now_playing")
-		caption += "In den Kinos)";
+		caption = "In den Kinos";
 	else if(plist == "popular")
-		caption += "Am populärsten)";
+		caption = "Am populärsten";
 	else if(plist == "top_rated")
-		caption += "Am besten bewertet)";
+		caption = "Am besten bewertet";
 	else if(plist == "upcoming")
-		caption += "Neue Filme";
+		caption = "Neue Filme";
 	else if(plist == "genre")
 	{
 		for(unsigned int i = 0; i < genres.size(); i++)
 		{
 			if(genres[i].id == genre_id)
 			{
-				caption += genres[i].title + ")";
+				caption = genres[i].title;
 			}
 		}
 	}
@@ -420,7 +483,11 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "mplay")
 	{
 		selected = mlist->getSelected();
+
+		// get video url
+		getMovieVideoUrl(m_vMovieInfo[selected]);
 		
+		// play
 		if (&m_vMovieInfo[selected].file != NULL) 
 		{
 			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);

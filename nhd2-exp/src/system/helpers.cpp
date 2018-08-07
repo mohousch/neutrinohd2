@@ -580,6 +580,13 @@ std::string to_string(unsigned long long i)
 	s << i;
 	return s.str();
 }
+
+std::string to_string(float i)
+{
+	std::stringstream s;
+	s << i;
+	return s.str();
+}
 #endif
 
 std::string to_hexstring(unsigned long long i)
