@@ -35,7 +35,7 @@ typedef struct {
 	int         vote_count;
 	int         id;
 	std::string media_type;
-	int         result;
+	//int         result;
 	int         runtime;
 	std::string runtimes;
 	std::string genres;
@@ -47,7 +47,7 @@ typedef struct {
 	std::string original_language;
 
 	//
-	std::string cover;
+	//std::string cover;
 
 	//
 	std::string vid;
@@ -79,7 +79,7 @@ class CTmdb
 		CTmdb();
 		~CTmdb();
 
-		bool getMovieInfo(std::string text, bool downloadCover = true); //search
+		bool getMovieInfo(std::string text, bool downloadCover = false); //search
 
 		//
 		std::string createInfoText();
@@ -90,7 +90,7 @@ class CTmdb
 		std::string getReleaseDate(){ return minfo[0].release_date;}
 		std::string getDescription(){ return minfo[0].overview;}
 		std::string getCast(){ return minfo[0].cast;}
-		int getResults(){ return minfo[0].result;}
+		//int getResults(){ return minfo[0].result;}
 		int getID(){return minfo[0].id;};
 		float getVoteAverage(){return minfo[0].vote_average;};
 		int getVoteCount(){return minfo[0].vote_count;};
@@ -100,7 +100,8 @@ class CTmdb
 		std::string getOriginalLanguage(){return minfo[0].original_language;};
 
 		//
-		std::string getCover(){return minfo[0].cover;};
+		//std::string getCover(){return minfo[0].cover;};
+		std::string getThumbnailDir(void){return thumbnail_dir;};
 
 		//
 		std::string getVID(){return minfo[0].vid;};

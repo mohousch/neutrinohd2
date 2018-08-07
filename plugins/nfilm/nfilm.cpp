@@ -255,29 +255,6 @@ void CNFilm::loadPlaylist()
 
 		std::vector<tmdbinfo>& videoInfo_list = tmdb->getVideoInfos();
 
-		/*
-		ytparser.Cleanup();
-
-		// setregion
-		ytparser.SetRegion("DE");
-
-		// set max result
-		ytparser.SetMaxResults(1);
-
-		std::string search = videoInfo_list[0].title + " Deutsch kinocheck";
-			
-		// parse feed
-		if (ytparser.ParseFeed(cYTFeedParser::SEARCH, search, videoInfo_list[0].vkey))
-		{
-			yt_video_list_t &ylist = ytparser.GetVideoList();
-	
-			for (unsigned int j = 0; j < ylist.size(); j++) 
-			{
-				movieInfo.ytid = ylist[j].id;
-				movieInfo.file.Name = ylist[j].GetUrl();
-			}
-		} 
-		*/
 		movieInfo.vid = videoInfo_list[0].vid;
 		movieInfo.vkey = videoInfo_list[0].vkey;
 		movieInfo.vname = videoInfo_list[0].vname;
@@ -313,7 +290,7 @@ void CNFilm::showMovieInfo(MI_MOVIE_INFO& movie)
 
 	// thumbnail
 	int pich = 246;	//FIXME
-	int picw = 162; 	//FIXME
+	int picw = 162; //FIXME
 
 	std::string thumbnail = movie.tfile;
 	if(access(thumbnail.c_str(), F_OK))

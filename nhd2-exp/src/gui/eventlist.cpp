@@ -530,7 +530,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 
 					tmdb->getMovieInfo(evtlist[selected].description);
 	
-					if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
+					if (/*(tmdb->getResults() > 0) &&*/ (!tmdb->getDescription().empty())) 
 					{
 						std::string buffer;
 
@@ -544,9 +544,20 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 						int pich = 246;	//FIXME
 						int picw = 162; 	//FIXME
 
-						std::string thumbnail = tmdb->getCover();
-						if(access(thumbnail.c_str(), F_OK))
-							thumbnail = "";
+						std::string thumbnail = "";
+						//tmdb->getCover();
+						//
+						std::string tname = tmdb->getThumbnailDir();
+						tname += "/";
+						tname += evtlist[selected].description;
+						tname += ".jpg";
+
+						tmdb->getMovieCover(tmdb->getPosterPath(), tname);
+
+						//thumbnail = tname;
+						//
+						if(!access(tname.c_str(), F_OK))
+							thumbnail = tname;
 	
 						CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	

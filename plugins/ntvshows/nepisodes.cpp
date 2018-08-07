@@ -104,31 +104,18 @@ void CNEpisodes::loadEpisodesTitle()
 
 		if(!tname.empty())
 			Info.tfile = tname;
-		
-		// testing
-		//tmdb->getVideoInfo("tv", episodelist[count].id, count);
-		//tmdb->getMovieInfo(Info.epgTitle, false);
-		tmdb->getVideoInfo("tv", episodelist[count].id);
-	
-		//file.name extract from youtube
-		ytparser.Cleanup();
 
-		// setregion
-		ytparser.SetRegion("DE");
+		tmdb->clearVideoInfo();
 
-		// set max result
-		ytparser.SetMaxResults(1);
-			
-		// parse feed
-		if (ytparser.ParseFeed(cYTFeedParser::SEARCH, tmdb->getVName()))
+
+		if(tmdb->getVideoInfo("tv", episodelist[count].id))
 		{
-			yt_video_list_t &ylist = ytparser.GetVideoList();
+			std::vector<tmdbinfo>& videoInfo_list = tmdb->getVideoInfos();
 	
-			for (unsigned int j = 0; j < ylist.size(); j++) 
-			{
-					Info.ytid = ylist[j].id;
-					Info.file.Name = ylist[j].GetUrl();
-			}
+			
+			Info.vid = videoInfo_list[0].vid;
+			Info.vkey = videoInfo_list[0].vkey;
+			Info.vname = videoInfo_list[0].vname;
 		} 
 		
 		m_vMovieInfo.push_back(Info);
@@ -162,6 +149,29 @@ void CNEpisodes::showMovieInfo(MI_MOVIE_INFO& movie)
 	infoBox->setText(&buffer, thumbnail, picw, pich);
 	infoBox->exec();
 	delete infoBox;
+}
+
+void CNEpisodes::getMovieVideoUrl(MI_MOVIE_INFO& movie)
+{
+	ytparser.Cleanup();
+
+	// setregion
+	ytparser.SetRegion("DE");
+
+	// set max result
+	ytparser.SetMaxResults(1);
+			
+	// parse feed
+	if (ytparser.ParseFeed(cYTFeedParser::SEARCH_BY_ID, movie.vname, movie.vkey))
+	{
+		yt_video_list_t &ylist = ytparser.GetVideoList();
+	
+		for (unsigned int j = 0; j < ylist.size(); j++) 
+		{
+			movie.ytid = ylist[j].id;
+			movie.file.Name = ylist[j].GetUrl();
+		}
+	} 
 }
 
 #define HEAD_BUTTONS_COUNT	1
@@ -228,6 +238,9 @@ int CNEpisodes::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "mplay")
 	{
 		selected = listBox->getSelected();
+
+		// get video url
+		getMovieVideoUrl(m_vMovieInfo[selected]);
 		
 		if (&m_vMovieInfo[selected].file != NULL) 
 		{

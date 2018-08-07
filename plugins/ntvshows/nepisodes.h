@@ -48,6 +48,7 @@ class CNEpisodes : public CMenuTarget
 
 		void loadEpisodesTitle(void);
 		void showMovieInfo(MI_MOVIE_INFO& movie);
+		void getMovieVideoUrl(MI_MOVIE_INFO& movie);
 
 	public:
 		CNEpisodes(int id, int nr = 0);

@@ -167,7 +167,7 @@ void CMBrowser::doTMDB()
 
 	tmdb->getMovieInfo(m_vMovieInfo[mlist->getSelected()].epgTitle);
 	
-	if ((tmdb->getResults() > 0) && (!tmdb->getDescription().empty())) 
+	if (/*(tmdb->getResults() > 0) &&*/ (!tmdb->getDescription().empty())) 
 	{
 		std::string buffer;
 
@@ -179,15 +179,25 @@ void CMBrowser::doTMDB()
 
 		// thumbnail
 		int pich = 246;	//FIXME
-		int picw = 162; 	//FIXME
+		int picw = 162; //FIXME
 	
 		std::string thumbnail = "";
 	
 		// saved to /tmp
-		std::string fname = tmdb->getCover();
+		//std::string fname = tmdb->getCover();
+
+
+		//
+		std::string tname = tmdb->getThumbnailDir();
+		tname += "/";
+		tname += m_vMovieInfo[mlist->getSelected()].epgTitle;
+		tname += ".jpg";
+
+		tmdb->getMovieCover(tmdb->getPosterPath(), tname);
+		//
 				
-		if(!access(fname.c_str(), F_OK) )
-			thumbnail = fname.c_str();
+		if(!access(tname.c_str(), F_OK) )
+			thumbnail = tname.c_str();
 	
 		CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
