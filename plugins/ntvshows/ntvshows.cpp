@@ -62,8 +62,6 @@ class CTVShows : public CMenuTarget
 		
 		CMoviePlayerGui tmpMoviePlayerGui;
 
-		void loadMoviesTitle(void);
-
 		void loadPlaylist();
 		void createThumbnailDir();
 		void removeThumbnailDir();
@@ -76,7 +74,8 @@ class CTVShows : public CMenuTarget
 		void hide();
 
 		void showMovies();
-		void showMenu();
+		int showMenu();
+		void loadMoviesTitle(void);
 };
 
 CTVShows::CTVShows(std::string tvlist)
@@ -322,8 +321,10 @@ void CTVShows::showMovies()
 	mlist = NULL;
 }
 
-void CTVShows::showMenu()
+int CTVShows::showMenu()
 {
+	int res = -1;
+
 	CMenuWidget* menu = new CMenuWidget("Serien Trailer");
 
 	menu->addItem(new CMenuForwarder("Heute auf Sendung", true, NULL, new CTVShows("airing_today"), "airing_today"));
@@ -333,8 +334,11 @@ void CTVShows::showMenu()
 
 	menu->exec(NULL, "");
 	menu->hide();
+	res = menu->getSelectedLine();
 	delete menu;
 	menu = NULL;
+
+	return res;
 }
 
 int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -354,9 +358,17 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_setup")
 	{
-		showMenu();
+		int res = showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		if(res >= 0 && res <= 3)
+		{
+			loadMoviesTitle();
+			showMovies();
+
+			return menu_return::RETURN_EXIT_ALL;
+		}
+		else
+			return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_green")
 	{
@@ -381,8 +393,8 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 		return menu_return::RETURN_EXIT_ALL;
 	}
 
-	loadMoviesTitle();
-	showMovies();
+	//loadMoviesTitle();
+	//showMovies();
 
 	return menu_return::RETURN_EXIT;
 }
@@ -400,7 +412,9 @@ void plugin_del(void)
 void plugin_exec(void)
 {
 	CTVShows* nTVShowsHandler = new CTVShows();
-	
+
+	nTVShowsHandler->loadMoviesTitle();
+	nTVShowsHandler->showMovies();
 	nTVShowsHandler->exec(NULL, "");
 	
 	delete nTVShowsHandler;

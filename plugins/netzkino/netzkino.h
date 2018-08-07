@@ -52,7 +52,7 @@ class CNKMovies : public CMenuTarget
 
 		void playMovie(void);
 		void showMovieInfo(void);
-		void showCategoriesMenu();
+		int showCategoriesMenu();
 	public:
 		CNKMovies(int mode, int id, std::string title);
 		~CNKMovies();

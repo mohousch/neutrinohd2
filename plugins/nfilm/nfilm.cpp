@@ -63,7 +63,6 @@ class CNFilm : public CMenuTarget
 		
 		CMoviePlayerGui tmpMoviePlayerGui;
 
-		void loadMoviesTitle(void);
 		void loadGenreMoviesTitle(void);
 
 		void loadPlaylist();
@@ -79,7 +78,8 @@ class CNFilm : public CMenuTarget
 		void hide();
 
 		void showMovies();
-		void showMenu();
+		int showMenu();
+		void loadMoviesTitle(void);
 };
 
 CNFilm::CNFilm(std::string movielist, int id)
@@ -367,9 +367,11 @@ void CNFilm::showMovies()
 	mlist = NULL;
 }
 
-void CNFilm::showMenu()
+int CNFilm::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CNFilm::showMenu:\n");
+
+	int res = -1;
 
 	CMenuWidget* menu = new CMenuWidget("Kino Trailer");
 
@@ -378,7 +380,9 @@ void CNFilm::showMenu()
 	menu->addItem(new CMenuForwarder("Am besten bewertet", true, NULL, new CNFilm("top_rated"), NULL));
 	menu->addItem(new CMenuForwarder("Neue Filme", true, NULL, new CNFilm("upcoming"), NULL));
 
+
 	// genres
+/*
 	menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	genres.clear();
@@ -403,11 +407,15 @@ void CNFilm::showMenu()
 
 	delete tmdb;
 	tmdb = NULL;
+*/
 
 	menu->exec(NULL, "");
 	menu->hide();
+	res = menu->getSelectedLine();
 	delete menu;
 	menu = NULL;
+
+	return res;
 }
 
 int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -443,18 +451,35 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_setup")
 	{
-		showMenu();
+		int res = showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		if(res >= 0 && res <=3)
+		{
+			if(plist == "genre")
+				loadGenreMoviesTitle();
+			else
+				loadMoviesTitle();
+
+			showMovies();
+
+			return menu_return::RETURN_EXIT_ALL;
+		}
+		else
+			return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_green")
 	{
 		page++;
 		selected = 0;
-		//loadMoviesTitle();
-		//showMovies();
 
-		//return menu_return::RETURN_EXIT_ALL;
+		if(plist == "genre")
+			loadGenreMoviesTitle();
+		else
+			loadMoviesTitle();
+
+		showMovies();
+
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_yellow")
 	{
@@ -464,18 +489,16 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 			page = 1;
 
 		selected = 0;
-		//loadMoviesTitle();
-		//showMovies();
+		
+		if(plist == "genre")
+			loadGenreMoviesTitle();
+		else
+			loadMoviesTitle();
 
-		//return menu_return::RETURN_EXIT_ALL;
+		showMovies();
+
+		return menu_return::RETURN_EXIT_ALL;
 	}
-
-	if(plist == "genre")
-		loadGenreMoviesTitle();
-	else
-		loadMoviesTitle();
-
-	showMovies();
 
 	return menu_return::RETURN_EXIT;
 }
@@ -493,6 +516,10 @@ void plugin_del(void)
 void plugin_exec(void)
 {
 	CNFilm* nFilmHandler = new CNFilm();
+
+	nFilmHandler->loadMoviesTitle();
+
+	nFilmHandler->showMovies();
 	
 	nFilmHandler->exec(NULL, "");
 	

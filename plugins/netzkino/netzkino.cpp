@@ -189,9 +189,11 @@ void CNKMovies::recordMovie(void)
 	::start_file_recording(m_vMovieInfo[moviesMenu->getSelected()].epgTitle.c_str(), infoString.c_str(), m_vMovieInfo[moviesMenu->getSelected()].file.Name.c_str());
 }
 
-void CNKMovies::showCategoriesMenu()
+int CNKMovies::showCategoriesMenu()
 {
 	dprintf(DEBUG_NORMAL, "CNKMovies::showCategoriesMenu:\n");
+
+	int res = -1;
 
 	// load Categories
 	CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_NK_SCAN_FOR_CATEGORIES));
@@ -207,7 +209,7 @@ void CNKMovies::showCategoriesMenu()
 		//FIXME show error
 		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_NK_ERROR), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 		
-		return;
+		return false;
 	}
 
 	// menu
@@ -234,6 +236,7 @@ void CNKMovies::showCategoriesMenu()
 	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, selector, to_string(cNKFeedParser::SEARCH).c_str(), CRCInput::RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
 
 	mainMenu.exec(NULL, "");
+	res = mainMenu.getSelectedLine();
 
 	delete stringInput;
 	stringInput = NULL;
@@ -250,6 +253,8 @@ void CNKMovies::showCategoriesMenu()
 		delete test;
 		test = NULL;
 	}
+
+	return res;
 }
 
 int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -273,17 +278,18 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_setup")
 	{
-		showCategoriesMenu();
+		int res = showCategoriesMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		if(res >= 0 && res <= 24)
+			return menu_return::RETURN_EXIT_ALL;
+		else
+			return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_record")
 	{
 		recordMovie();
 		return menu_return::RETURN_REPAINT;
 	}
-
-	showMoviesMenu();
 	
 	return menu_return::RETURN_EXIT;
 }
@@ -301,6 +307,7 @@ void plugin_exec(void)
 {
 	CNKMovies * NKHandler = new CNKMovies(cNKFeedParser::CATEGORY, 8, "Highlights");
 	
+	NKHandler->showMoviesMenu();
 	NKHandler->exec(NULL, "");
 	
 	delete NKHandler;

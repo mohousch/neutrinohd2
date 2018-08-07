@@ -716,7 +716,7 @@ size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data)
         return size*nmemb;
 }
 
-bool getUrl(std::string &url, std::string &answer, std::string userAgent, unsigned int timeout)
+bool getUrl(std::string& url, std::string& answer, std::string userAgent, unsigned int timeout)
 {
 	dprintf(DEBUG_NORMAL, "getUrl: url:%s\n", url.c_str());
 

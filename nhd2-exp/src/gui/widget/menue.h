@@ -706,12 +706,7 @@ class ClistBox : public CMenuTarget
 		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
-		int getSelected() { 
-			if(selected >= 0) 
-				return selected; 
-			else
-				return 0;
-		};
+		int getSelected() {return selected;};
 
 		void move(int xoff, int yoff);
 		int getSelectedLine(void){return exit_pressed ? -1 : selected;};
