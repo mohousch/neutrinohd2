@@ -46,6 +46,7 @@ CNKMovies::~CNKMovies()
 
 	m_vMovieInfo.clear();
 	nkparser.Cleanup();
+	search_string.clear();
 }
 
 void CNKMovies::hide()
@@ -221,25 +222,29 @@ void CNKMovies::showCategoriesMenu()
 	}
 
 	// search
-	//mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+
 	int select = -1;
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
+	
+	CStringInputSMS * stringInput = new CStringInputSMS(LOCALE_YT_SEARCH, &search_string);
 
-	std::string search;
-	CStringInputSMS * stringInput = new CStringInputSMS(LOCALE_YT_SEARCH, &search);
-	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, search, stringInput, NULL, CRCInput::RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
+	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, search_string, stringInput, NULL, CRCInput::RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
 
 	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, selector, to_string(cNKFeedParser::SEARCH).c_str(), CRCInput::RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
 
 	mainMenu.exec(NULL, "");
-	delete selector;
-	selector = NULL;
+
 	delete stringInput;
 	stringInput = NULL;
 
+	delete selector;
+	selector = NULL;
+
 	if(select == cNKFeedParser::SEARCH)
 	{
-		CNKMovies * test = new CNKMovies(cNKFeedParser::SEARCH, 0, search);
+		CNKMovies* test = new CNKMovies(cNKFeedParser::SEARCH, 0, search_string);
+
 		test->exec(NULL, "");
 		//test->hide();
 		delete test;

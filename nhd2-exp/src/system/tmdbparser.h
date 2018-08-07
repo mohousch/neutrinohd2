@@ -124,6 +124,10 @@ class CTmdb
 		bool getVideoInfo(std::string mtype = "movie", int id = 0, int s_nr = 0); //FIXME
 		bool getMovieCover(std::string cover, std::string tname);
 
+		// minfo
+		void clearMInfo(void){return minfo.clear();};
+		std::vector<tmdbinfo>& getMInfos(){return minfo;};
+
 		// movie list
 		void clearMovieList(void){movieList.clear();};
 		std::vector<tmdbinfo>& getMovies(){return movieList;};

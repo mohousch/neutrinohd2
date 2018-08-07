@@ -69,7 +69,6 @@ static CTextBox* textBox = NULL;
 CFont* CMenuItem::nameFont = NULL;
 CFont* CMenuItem::optionFont = NULL;
 
-
 // CMenuSelectorTarget
 int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string& actionKey)
 {

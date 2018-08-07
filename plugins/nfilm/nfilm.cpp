@@ -232,7 +232,7 @@ void CNFilm::loadPlaylist()
 		movieInfo.original_title = movieInfo_list[0].original_title;
 		movieInfo.release_date = movieInfo_list[0].release_date;
 		movieInfo.media_type = movieInfo_list[0].media_type;
-		movieInfo.runtime = movieInfo_list[0].runtime;
+		movieInfo.length = movieInfo_list[0].runtime;
 		movieInfo.runtimes = movieInfo_list[0].runtimes;
 		movieInfo.genres = movieInfo_list[0].genres;
 		movieInfo.cast = movieInfo_list[0].cast;
@@ -270,39 +270,7 @@ void CNFilm::showMovieInfo(MI_MOVIE_INFO& movie)
 {
 	dprintf(DEBUG_NORMAL, "CNFilm::showMovieInfo:\n");
 
-	std::string buffer;
-	
-	// prepare print buffer  
-	buffer += movie.epgInfo1;
-	buffer = "Vote: " + to_string(movie.vote_average) + "/10 Votecount: " + to_string(movie.vote_count) + "\n";
-	buffer += "\n";
-	buffer += movie.epgInfo1;
-	buffer += "\n";
-
-	buffer += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + to_string(movie.runtime) + "\n";
-
-	buffer += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_GENRE) + ": " + movie.genres + "\n";
-	buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ORIGINAL_TITLE) + " : " + movie.original_title + "\n";
-	buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_YEAR_OF_PRODUCTION) + " : " + movie.release_date.substr(0,4) + "\n";
-
-	if (!movie.cast.empty())
-		buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS) + ":\n" + movie.cast + "\n";
-
-	// thumbnail
-	int pich = 246;	//FIXME
-	int picw = 162; //FIXME
-
-	std::string thumbnail = movie.tfile;
-	if(access(thumbnail.c_str(), F_OK))
-		thumbnail = "";
-	
-	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-	
-	CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, movie.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_MOVIE);
-
-	infoBox->setText(&buffer, thumbnail, picw, pich);
-	infoBox->exec();
-	delete infoBox;
+	m_movieInfo.showMovieInfo(movie);
 }
 
 void CNFilm::getMovieVideoUrl(MI_MOVIE_INFO& movie)

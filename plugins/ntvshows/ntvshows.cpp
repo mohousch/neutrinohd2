@@ -207,7 +207,7 @@ void CTVShows::loadPlaylist()
 		movieInfo.original_title = movieInfo_list[0].original_title;
 		movieInfo.release_date = movieInfo_list[0].release_date;
 		movieInfo.media_type = movieInfo_list[0].media_type;
-		movieInfo.runtime = movieInfo_list[0].runtime;
+		movieInfo.length = movieInfo_list[0].runtime;
 		movieInfo.runtimes = movieInfo_list[0].runtimes;
 		movieInfo.genres = movieInfo_list[0].genres;
 		movieInfo.cast = movieInfo_list[0].cast;

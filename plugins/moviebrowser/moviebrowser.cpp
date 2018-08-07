@@ -165,17 +165,31 @@ void CMBrowser::doTMDB()
 	//				
 	CTmdb * tmdb = new CTmdb();
 
-	tmdb->getMovieInfo(m_vMovieInfo[mlist->getSelected()].epgTitle);
-	
-	if (/*(tmdb->getResults() > 0) &&*/ (!tmdb->getDescription().empty())) 
+	tmdb->clearMInfo();
+
+	if(tmdb->getMovieInfo(m_vMovieInfo[mlist->getSelected()].epgTitle))
 	{
+		std::vector<tmdbinfo>& minfo_list = tmdb->getMInfos();
+
 		std::string buffer;
 
-		buffer = tmdb->getTitle().c_str();
+		buffer = minfo_list[0].title;
 		buffer += "\n";
 	
 		// prepare print buffer  
-		buffer += tmdb->createInfoText();
+		buffer = "Vote: " + to_string(minfo_list[0].vote_average) + "/10 Votecount: " + to_string(minfo_list[0].vote_count) + "\n";
+		buffer += "\n";
+		buffer += minfo_list[0].overview;
+		buffer += "\n";
+
+		buffer += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + to_string(minfo_list[0].runtime) + "\n";
+
+		buffer += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_GENRE) + ": " + minfo_list[0].genres + "\n";
+		buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ORIGINAL_TITLE) + " : " + minfo_list[0].original_title + "\n";
+		buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_YEAR_OF_PRODUCTION) + " : " + minfo_list[0].release_date.substr(0,4) + "\n";
+
+		if (!minfo_list[0].cast.empty())
+			buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS) + ":\n" + minfo_list[0].cast + "\n";
 
 		// thumbnail
 		int pich = 246;	//FIXME
@@ -183,17 +197,13 @@ void CMBrowser::doTMDB()
 	
 		std::string thumbnail = "";
 	
-		// saved to /tmp
-		//std::string fname = tmdb->getCover();
-
-
 		//
 		std::string tname = tmdb->getThumbnailDir();
 		tname += "/";
 		tname += m_vMovieInfo[mlist->getSelected()].epgTitle;
 		tname += ".jpg";
 
-		tmdb->getMovieCover(tmdb->getPosterPath(), tname);
+		tmdb->getMovieCover(minfo_list[0].poster_path, tname);
 		//
 				
 		if(!access(tname.c_str(), F_OK) )
@@ -213,11 +223,11 @@ void CMBrowser::doTMDB()
 			std::string tname = m_vMovieInfo[mlist->getSelected()].file.Name;
 			changeFileNameExt(tname, ".jpg");
 
-			if(tmdb->getBigCover(tmdb->getPosterPath(), tname)) 
+			if(tmdb->getBigCover(minfo_list[0].poster_path, tname)) 
 				m_vMovieInfo[mlist->getSelected()].tfile = tname;
 
 			if(m_vMovieInfo[mlist->getSelected()].epgInfo2.empty())
-				m_vMovieInfo[mlist->getSelected()].epgInfo2 = tmdb->getDescription();
+				m_vMovieInfo[mlist->getSelected()].epgInfo2 = buffer;
 
 			m_movieInfo.saveMovieInfo(m_vMovieInfo[mlist->getSelected()]);
 		}  
@@ -372,7 +382,7 @@ void CMBrowser::showMenu()
 
 		item->setInfo1(tmp.c_str());
 
-		item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]);
+		item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]); //FIXME: menue.cpp
 
 		mlist->addItem(item);
 	}

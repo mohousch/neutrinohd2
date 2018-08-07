@@ -458,11 +458,53 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 	std::string print_buffer;
 	tm *date_tm;
 	char date_char[100];
+
+	// prepare print buffer 
+	if(movie_info.vote_count != 0)
+	{
+		print_buffer = "Vote: " + to_string(movie_info.vote_average) + "/10 Votecount: " + to_string(movie_info.vote_count);
+
+		print_buffer += "\n";
+	}
+
+	if(!movie_info.epgInfo1.empty())
+	{
+		print_buffer += "\n";
+		print_buffer += movie_info.epgInfo1;
+		print_buffer += "\n";
+	}
+
+	if(!movie_info.genres.empty())
+	{
+		print_buffer += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_GENRE) + ": " + movie_info.genres;
+		print_buffer += "\n";
+	}
+
+	if(!movie_info.original_title.empty())
+	{
+		print_buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ORIGINAL_TITLE) + " : " + movie_info.original_title;
+		print_buffer += "\n";
+	}
+
+	if(!movie_info.release_date.empty())
+	{
+		print_buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_YEAR_OF_PRODUCTION) + " : " + movie_info.release_date.substr(0,4);
+		print_buffer += "\n";
+	}
+
+	if (!movie_info.cast.empty())
+	{
+		print_buffer += "\n";
+		print_buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS) + ":\n" + movie_info.cast;
+		print_buffer += "\n";
+	}
 	
-	// prepare print buffer  
-	print_buffer = movie_info.epgInfo1;
-	print_buffer += "\n";
-	print_buffer += movie_info.epgInfo2;
+	if(!movie_info.epgInfo2.empty())
+	{
+		print_buffer += "\n";
+		print_buffer += movie_info.epgInfo2;
+		print_buffer += "\n";
+	}
 
 	if (movie_info.productionCountry.size() != 0 || movie_info.productionDate != 0) 
 	{
@@ -471,22 +513,28 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		print_buffer += " ";
 		snprintf(date_char, 12, "%4d", movie_info.productionDate + 1900);
 		print_buffer += date_char;
+
+		print_buffer += "\n";
 	}
 
 	if (!movie_info.serieName.empty()) 
 	{
-		print_buffer += "\n\n";
+		print_buffer += "\n";
 		print_buffer += g_Locale->getText(LOCALE_MOVIEBROWSER_INFO_SERIE);
 		print_buffer += ": ";
 		print_buffer += movie_info.serieName;
+
+		print_buffer += "\n";
 	}
 	
 	if (!movie_info.epgChannel.empty()) 
 	{
-		print_buffer += "\n\n";
+		print_buffer += "\n";
 		print_buffer += g_Locale->getText(LOCALE_MOVIEBROWSER_INFO_CHANNEL);
 		print_buffer += ": ";
 		print_buffer += movie_info.epgChannel;
+
+		print_buffer += "\n";
 	}
 	
 	if (movie_info.quality != 0) 
@@ -496,6 +544,8 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		print_buffer += ": ";
 		snprintf(date_char, 12, "%2d", movie_info.quality);
 		print_buffer += date_char;
+
+		print_buffer += "\n";
 	}
 	
 	if (movie_info.parentalLockAge != 0) 
@@ -506,6 +556,8 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		snprintf(date_char, 12, "%2d", movie_info.parentalLockAge);
 		print_buffer += date_char;
 		print_buffer += " Jahre";
+
+		print_buffer += "\n";
 	}
 	
 	if (movie_info.length != 0) 
@@ -515,6 +567,8 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		print_buffer += ": ";
 		snprintf(date_char, 12, "%3d", movie_info.length);
 		print_buffer += date_char;
+
+		print_buffer += "\n";
 	}
 	
 	if (movie_info.audioPids.size() != 0) 
@@ -527,12 +581,14 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 			print_buffer += movie_info.audioPids[i].epgAudioPidName;
 			print_buffer += ", ";
 		}
+
+		print_buffer += "\n";
 	}
 
 	// ytdate
 	if(movie_info.ytdate.empty())
 	{
-		print_buffer += "\n\n";
+		print_buffer += "\n";
 		print_buffer += g_Locale->getText(LOCALE_MOVIEBROWSER_INFO_PREVPLAYDATE);
 		print_buffer += ": ";
 		date_tm = localtime(&movie_info.dateOfLastPlay);
@@ -544,6 +600,8 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		date_tm = localtime(&movie_info.file.Time);
 		snprintf(date_char, 12, "%02d.%02d.%04d", date_tm->tm_mday, date_tm->tm_mon + 1, date_tm->tm_year + 1900);
 		print_buffer += date_char;
+
+		print_buffer += "\n";
 	}
 	
 	// file size
@@ -555,7 +613,8 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		//snprintf(date_char, 12,"%4llu",movie_info.file.Size>>20);
 		sprintf(date_char, "%llu", movie_info.file.Size >> 20);
 		print_buffer += date_char;
-		//print_buffer += "\n"; 
+
+		print_buffer += "\n"; 
 	}
 	
 	// file path
@@ -565,6 +624,7 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		print_buffer += g_Locale->getText(LOCALE_MOVIEBROWSER_INFO_PATH);
 		print_buffer += ": ";
 		print_buffer += movie_info.file.Name;
+
 		print_buffer += "\n";
 	}
 	
@@ -1004,7 +1064,21 @@ void CMovieInfo::clearMovieInfo(MI_MOVIE_INFO * movie_info)
 	
 	movie_info->tfile = "";
 	movie_info->ytdate = "";
-	movie_info->ytid = "";	
+	movie_info->ytid = "";
+
+	movie_info->original_title = "";
+	movie_info->release_date = "";
+	movie_info->media_type = "";
+	movie_info->vote_count = 0;
+	movie_info->vote_average = 0.0;
+	movie_info->runtimes = "";
+	movie_info->seasons = 0;
+	movie_info->episodes = 0;
+	movie_info->cast = "";
+	movie_info->vid = "";
+	movie_info->vkey = "";
+	movie_info->vname = "";
+		
 }
 
 bool CMovieInfo::loadFile(CFile & file, char *buffer, int buffer_size)

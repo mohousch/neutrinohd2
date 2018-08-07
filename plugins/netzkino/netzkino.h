@@ -46,6 +46,8 @@ class CNKMovies : public CMenuTarget
 		ClistBox* moviesMenu;
 		CMenuItem* item;
 
+		std::string search_string;
+
 		void loadNKTitles(int mode, std::string search, int id);
 
 		void playMovie(void);

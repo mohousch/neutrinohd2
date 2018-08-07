@@ -168,12 +168,13 @@ typedef struct
 	float vote_average;
 	int vote_count;
 	std::string media_type;
-	int runtime;
 	std::string runtimes;
 	std::string genres;
 	int episodes;
 	int seasons;
 	std::string cast;
+
+	//
 	std::string vid;					// for media future use
 	std::string vkey;
 	std::string vname;
