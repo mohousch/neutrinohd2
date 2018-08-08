@@ -279,7 +279,7 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_setup")
 	{
 		int res = showCategoriesMenu();
-
+		
 		if(res >= 0 && res <= 24)
 			return menu_return::RETURN_EXIT_ALL;
 		else
@@ -290,6 +290,8 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 		recordMovie();
 		return menu_return::RETURN_REPAINT;
 	}
+
+	showMoviesMenu();
 	
 	return menu_return::RETURN_EXIT;
 }
@@ -307,7 +309,6 @@ void plugin_exec(void)
 {
 	CNKMovies * NKHandler = new CNKMovies(cNKFeedParser::CATEGORY, 8, "Highlights");
 	
-	NKHandler->showMoviesMenu();
 	NKHandler->exec(NULL, "");
 	
 	delete NKHandler;

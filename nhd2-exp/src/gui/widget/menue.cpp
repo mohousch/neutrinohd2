@@ -2778,6 +2778,7 @@ ClistBox::~ClistBox()
 		CMenuItem * item = items[count];
 		
 		delete item;
+		item = NULL;
 	}
 
 	items.clear();
@@ -4264,13 +4265,9 @@ int ClistBoxItem::exec(CMenuTarget* parent)
 	dprintf(DEBUG_DEBUG, "ClistBoxItem::exec:\n");
 
 	if(jumpTarget)
-	{
 		return jumpTarget->exec(parent, actionKey);
-	}
 	else
-	{
 		return menu_return::RETURN_EXIT;
-	}
 }
 
 const char * ClistBoxItem::getName(void)

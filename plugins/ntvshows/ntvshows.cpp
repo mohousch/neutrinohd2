@@ -218,7 +218,7 @@ void CTVShows::loadPlaylist()
 		tname += movieInfo.epgTitle;
 		tname += ".jpg";
 
-		tmdb->getMovieCover(movieInfo_list[0].poster_path, tname);
+		tmdb->getSmallCover(movieInfo_list[0].poster_path, tname);
 
 		if(!tname.empty())
 			movieInfo.tfile = tname;
@@ -235,7 +235,9 @@ void CTVShows::showMovieInfo(MI_MOVIE_INFO& movie)
 {
 	std::string buffer;
 	
-	// prepare print buffer  
+	// prepare print buffer 
+	buffer = movie.epgTitle;
+	buffer += "\n"; 
 	buffer += movie.epgInfo1;
 	buffer += "\n";
 	buffer += movie.epgInfo2;

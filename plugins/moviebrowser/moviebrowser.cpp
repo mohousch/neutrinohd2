@@ -46,7 +46,7 @@ class CMBrowser : public CMenuTarget
 
 		//
 		void loadPlaylist();
-		void doTMDB();
+		void doTMDB(MI_MOVIE_INFO& movieFile);
 		bool delFile(CFile& file);
 		void onDeleteFile(MI_MOVIE_INFO& movieFile);
 
@@ -160,36 +160,40 @@ void CMBrowser::loadPlaylist()
 	}
 }
 
-void CMBrowser::doTMDB()
+void CMBrowser::doTMDB(MI_MOVIE_INFO& movieFile)
 {
 	//				
 	CTmdb * tmdb = new CTmdb();
 
 	tmdb->clearMInfo();
 
-	if(tmdb->getMovieInfo(m_vMovieInfo[mlist->getSelected()].epgTitle))
+	if(tmdb->getMovieInfo(movieFile.epgTitle))
 	{
 		std::vector<tmdbinfo>& minfo_list = tmdb->getMInfos();
 
 		std::string buffer;
 
-		buffer = minfo_list[0].title;
+		buffer = movieFile.epgTitle;
 		buffer += "\n";
 	
 		// prepare print buffer  
-		buffer = "Vote: " + to_string(minfo_list[0].vote_average) + "/10 Votecount: " + to_string(minfo_list[0].vote_count) + "\n";
+		buffer += "Vote: " + to_string(minfo_list[0].vote_average) + "/10 Votecount: " + to_string(minfo_list[0].vote_count);
 		buffer += "\n";
 		buffer += minfo_list[0].overview;
 		buffer += "\n";
 
-		buffer += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + to_string(minfo_list[0].runtime) + "\n";
+		buffer += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + to_string(minfo_list[0].runtime);
+		buffer += "\n";
 
-		buffer += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_GENRE) + ": " + minfo_list[0].genres + "\n";
-		buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ORIGINAL_TITLE) + " : " + minfo_list[0].original_title + "\n";
-		buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_YEAR_OF_PRODUCTION) + " : " + minfo_list[0].release_date.substr(0,4) + "\n";
+		buffer += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_GENRE) + ": " + minfo_list[0].genres;
+		buffer += "\n";
+		buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ORIGINAL_TITLE) + " : " + minfo_list[0].original_title;
+		buffer += "\n";
+		buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_YEAR_OF_PRODUCTION) + " : " + minfo_list[0].release_date.substr(0,4);
+		buffer += "\n";
 
 		if (!minfo_list[0].cast.empty())
-			buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS) + ":\n" + minfo_list[0].cast + "\n";
+			buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS) + ":\n" + minfo_list[0].cast;
 
 		// thumbnail
 		int pich = 246;	//FIXME
@@ -200,10 +204,10 @@ void CMBrowser::doTMDB()
 		//
 		std::string tname = tmdb->getThumbnailDir();
 		tname += "/";
-		tname += m_vMovieInfo[mlist->getSelected()].epgTitle;
+		tname += movieFile.epgTitle;
 		tname += ".jpg";
 
-		tmdb->getMovieCover(minfo_list[0].poster_path, tname);
+		tmdb->getSmallCover(minfo_list[0].poster_path, tname);
 		//
 				
 		if(!access(tname.c_str(), F_OK) )
@@ -224,12 +228,12 @@ void CMBrowser::doTMDB()
 			changeFileNameExt(tname, ".jpg");
 
 			if(tmdb->getBigCover(minfo_list[0].poster_path, tname)) 
-				m_vMovieInfo[mlist->getSelected()].tfile = tname;
+				movieFile.tfile = tname;
 
 			if(m_vMovieInfo[mlist->getSelected()].epgInfo2.empty())
-				m_vMovieInfo[mlist->getSelected()].epgInfo2 = buffer;
+				movieFile.epgInfo2 = buffer;
 
-			m_movieInfo.saveMovieInfo(m_vMovieInfo[mlist->getSelected()]);
+			m_movieInfo.saveMovieInfo(movieFile);
 		}  
 	}
 	else
@@ -333,8 +337,9 @@ int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_red")
 	{
+		selected = mlist->getSelected();
 		hide();
-		doTMDB();
+		doTMDB(m_vMovieInfo[mlist->getSelected()]);
 		showMenu();
 		return menu_return::RETURN_EXIT_ALL;
 	}

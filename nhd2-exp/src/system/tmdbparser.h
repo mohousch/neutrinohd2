@@ -79,7 +79,7 @@ class CTmdb
 		CTmdb();
 		~CTmdb();
 
-		bool getMovieInfo(std::string text, bool downloadCover = false); //search
+		bool getMovieInfo(std::string text); //search
 
 		//
 		std::string createInfoText();
@@ -90,7 +90,6 @@ class CTmdb
 		std::string getReleaseDate(){ return minfo[0].release_date;}
 		std::string getDescription(){ return minfo[0].overview;}
 		std::string getCast(){ return minfo[0].cast;}
-		//int getResults(){ return minfo[0].result;}
 		int getID(){return minfo[0].id;};
 		float getVoteAverage(){return minfo[0].vote_average;};
 		int getVoteCount(){return minfo[0].vote_count;};
@@ -100,7 +99,6 @@ class CTmdb
 		std::string getOriginalLanguage(){return minfo[0].original_language;};
 
 		//
-		//std::string getCover(){return minfo[0].cover;};
 		std::string getThumbnailDir(void){return thumbnail_dir;};
 
 		//
@@ -122,7 +120,7 @@ class CTmdb
 		bool getSeasonsList(int id);
 		bool getEpisodesList(int id, int nr = 0);
 		bool getVideoInfo(std::string mtype = "movie", int id = 0, int s_nr = 0); //FIXME
-		bool getMovieCover(std::string cover, std::string tname);
+		bool searchMovieInfo(std::string text);
 
 		// minfo
 		void clearMInfo(void){return minfo.clear();};

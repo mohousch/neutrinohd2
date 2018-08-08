@@ -244,7 +244,7 @@ void CNFilm::loadPlaylist()
 		tname += movieInfo.epgTitle;
 		tname += ".jpg";
 
-		tmdb->getMovieCover(movieInfo_list[0].poster_path, tname);
+		tmdb->getSmallCover(movieInfo_list[0].poster_path, tname);
 
 		if(!tname.empty())
 			movieInfo.tfile = tname;

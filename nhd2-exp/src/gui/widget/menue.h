@@ -176,7 +176,7 @@ class CMenuItem
 		static CFont* nameFont;
 		static CFont* optionFont;
 
-		bool nLinesItem; // 2 lines Item
+		bool nLinesItem; // 2 lines Item (classicWidget)
 
 		CMenuItem();
 		virtual ~CMenuItem(){}
@@ -437,24 +437,24 @@ class CMenuSelector : public CMenuItem
 // CMenuForwarder
 class CMenuForwarder : public CMenuItem
 {
-	CMenuTarget * jumpTarget;
+	CMenuTarget* jumpTarget;
 	std::string actionKey;
 
-	const char * option;
-	const std::string * option_string;
+	const char* option;
+	const std::string* option_string;
 
 	protected:
 		std::string textString;
 		neutrino_locale_t text;
 
-		virtual const char * getName(void);
-		virtual const char * getOption(void);
+		virtual const char* getName(void);
+		virtual const char* getOption(void);
 	public:
 
-		CMenuForwarder(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const char * const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
-		CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const char * const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
-		CMenuForwarder(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const char * const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
-		CMenuForwarder(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const char * const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
+		CMenuForwarder(const neutrino_locale_t Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char* const IconName = NULL, const char* const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
+		CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string& Option, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char* const IconName = NULL, const char* const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
+		CMenuForwarder(const char* const Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char* const IconName = NULL, const char* const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
+		CMenuForwarder(const char* const Text, const bool Active, const std::string& Option, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char* const IconName = NULL, const char * const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
@@ -754,7 +754,7 @@ class ClistBox : public CMenuTarget
 // CMenulistBoxItem
 class ClistBoxItem : public CMenuItem
 {
-	CMenuTarget * jumpTarget;
+	CMenuTarget* jumpTarget;
 	std::string actionKey;
 
 	protected:
@@ -763,7 +763,7 @@ class ClistBoxItem : public CMenuItem
 		std::string textString;
 
 		//
-		virtual const char * getName(void);
+		virtual const char* getName(void);
 
 	public:
 		ClistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const Icon = NULL, const char* const ItemIcon = NULL);

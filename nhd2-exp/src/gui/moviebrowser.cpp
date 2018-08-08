@@ -1017,7 +1017,7 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 			{
 				std::string buffer;
 
-				buffer = tmdb->getTitle().c_str();
+				buffer = m_movieSelectionHandler->epgTitle;
 				buffer += "\n";
 	
 				// prepare print buffer  
@@ -1035,7 +1035,7 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 				tname += m_movieSelectionHandler->epgTitle;
 				tname += ".jpg";
 
-				tmdb->getMovieCover(tmdb->getPosterPath(), tname);
+				tmdb->getSmallCover(tmdb->getPosterPath(), tname);
 				
 				if(!access(tname.c_str(), F_OK) )
 					thumbnail = tname.c_str();
@@ -1053,7 +1053,7 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 					// rewrite tfile
 					std::string tname = m_movieSelectionHandler->file.Name;
 					changeFileNameExt(tname, ".jpg");
-					if(tmdb->getBigCover(tmdb->getPosterPath(), tname)) 
+					if(tmdb->getSmallCover(tmdb->getPosterPath(), tname)) 
 						m_movieSelectionHandler->tfile = tname;
 
 					if(m_movieSelectionHandler->epgInfo2.empty())
@@ -2044,7 +2044,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			{
 				std::string buffer;
 
-				buffer = tmdb->getTitle().c_str();
+				buffer = m_movieSelectionHandler->epgTitle;
 				buffer += "\n";
 	
 				// prepare print buffer  
@@ -2061,7 +2061,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				tname += m_movieSelectionHandler->epgTitle;
 				tname += ".jpg";
 
-				tmdb->getMovieCover(tmdb->getPosterPath(), tname);
+				tmdb->getSmallCover(tmdb->getPosterPath(), tname);
 				//
 				
 				if(!access(tname.c_str(), F_OK) )
@@ -2080,7 +2080,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 					// rewrite tfile
 					std::string tname = m_movieSelectionHandler->file.Name;
 					changeFileNameExt(tname, ".jpg");
-					if(tmdb->getBigCover(tmdb->getPosterPath(), tname)) 
+					if(tmdb->getSmallCover(tmdb->getPosterPath(), tname)) 
 						m_movieSelectionHandler->tfile = tname;
 
 					if(m_movieSelectionHandler->epgInfo2.empty())
