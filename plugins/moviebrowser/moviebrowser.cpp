@@ -174,11 +174,11 @@ void CMBrowser::doTMDB(MI_MOVIE_INFO& movieFile)
 		std::string buffer;
 
 		buffer = movieFile.epgTitle;
-		buffer += "\n";
+		buffer += "\n\n";
 	
 		// prepare print buffer  
 		buffer += "Vote: " + to_string(minfo_list[0].vote_average) + "/10 Votecount: " + to_string(minfo_list[0].vote_count);
-		buffer += "\n";
+		buffer += "\n\n";
 		buffer += minfo_list[0].overview;
 		buffer += "\n";
 
