@@ -2634,9 +2634,8 @@ int CNeutrinoApp::run(int argc, char **argv)
 		// setup network
 		if(ret != menu_return::RETURN_EXIT_ALL)
 		{
-			CNetworkSettings * networkSettings = new CNetworkSettings();
-			networkSettings->exec(NULL, "");
-			delete networkSettings;
+			CNetworkSettings networkSettings;
+			networkSettings.exec(NULL, "");
 		}
 		
 		// recordingsettings

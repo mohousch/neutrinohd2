@@ -109,6 +109,8 @@ void CPictureViewerSettings::showMenu()
 	dprintf(DEBUG_NORMAL, "CPicTureViewerSettings::showMenu:\n");
 	
 	CMenuWidget PicViewerSettings(LOCALE_PICTUREVIEWERSETTINGS_GENERAL, NEUTRINO_ICON_SETTINGS );
+
+	PicViewerSettings.enableSaveScreen();
 	
 	int shortcutPicViewer = 1;
 	

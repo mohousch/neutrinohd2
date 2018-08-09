@@ -607,10 +607,11 @@ int CUpnpBrowserGui::showMenuEntry(std::string id)
 
 	elist->exec(NULL, "");
 	//elist->hide();
+	selected = elist->getSelectedLine();
 	delete elist;
 	elist = NULL;
 
-	return menu_return::RETURN_REPAINT;
+	return selected;
 }
 
 int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -626,21 +627,23 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		gui = UPNP_GUI_ENTRY;
 
-		selected = ulist->getSelected();
+		//selected = ulist->getSelected();
 
 		showMenuEntry("0");
 
-		return menu_return::RETURN_EXIT;
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "sub_entry")
 	{
 		gui = UPNP_GUI_ENTRY;
 
-		selected = elist->getSelected();
+		//selected = elist->getSelected();
 
 		if ((*entries)[selected].isdir)
 		{
 			showMenuEntry((*entries)[selected].id);
+
+			return menu_return::RETURN_REPAINT;
 		}
 		else /*if (!(*entries)[selected].isdir)*/
 		{
@@ -721,19 +724,10 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_EXIT;
 	}
-	else if(actionKey == "RC_home")
-	{
-		//endall = true;
-
-		printf("\nKazalla(RC_home): endall%d\n", endall);
-
-		return menu_return::RETURN_EXIT;
-	}
 
 	showMenuDevice();
 
-	// 
-	return menu_return::RETURN_REPAINT;
+	return menu_return::RETURN_EXIT;
 }
 
 void plugin_init(void)
