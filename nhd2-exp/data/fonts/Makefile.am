@@ -19,5 +19,6 @@ install_DATA = \
 	nmsbd.ttf \
 	tuxcal.ttf \
 	tuxmail.ttf \
-	nmsbd_3d.ttf
+	nmsbd_3d.ttf \
+	arial.ttf
 	
