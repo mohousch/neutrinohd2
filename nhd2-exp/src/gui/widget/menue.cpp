@@ -3580,8 +3580,8 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 		parent->hide();
 
 	//
-	//if(savescreen) 
-	//	saveScreen();
+	if(savescreen) 
+		saveScreen();
 
 	//
 	initFrames();

@@ -63,7 +63,7 @@ class CAudioPlayerGui : public CMenuTarget
 		};
 
 	private:
-		CFrameBuffer * m_frameBuffer;
+		CFrameBuffer* m_frameBuffer;
 
 		CBox timeBox;
 
@@ -74,6 +74,7 @@ class CAudioPlayerGui : public CMenuTarget
 		int m_x, m_y;
 		int m_title_height;
 		int m_width;
+		//fb_pixel_t * background;
 
 		//
 		State          m_state;
@@ -161,7 +162,7 @@ class CAudioPlayerGui : public CMenuTarget
 	public:
 		CAudioPlayerGui();
 		~CAudioPlayerGui();
-		int show();
+		int show(CMenuTarget* parent);
 		int exec(CMenuTarget *parent, const std::string &actionKey);
 
 		//
@@ -171,7 +172,6 @@ class CAudioPlayerGui : public CMenuTarget
 
 		//
 		void setInetMode(void){m_inetmode = true;};
-
 		void setCurrent(int pos = 0){m_current = pos;};
 };
 

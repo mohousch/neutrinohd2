@@ -111,6 +111,8 @@ void CMBrowser::hide()
 
 void CMBrowser::loadPlaylist()
 {
+	m_vMovieInfo.clear();
+
 	// recordingdir
 	Path = g_settings.network_nfs_recordingdir;
 	
@@ -313,53 +315,6 @@ void CMBrowser::onDeleteFile(MI_MOVIE_INFO& movieFile)
 	}
 }
 
-int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
-{
-	dprintf(DEBUG_NORMAL, "\nCMBrowser::exec: actionKey:%s\n", actionKey.c_str());
-	
-	if(parent)
-		hide();
-	
-	if(actionKey == "mplay")
-	{
-		selected = mlist->getSelected();
-
-		if (&m_vMovieInfo[mlist->getSelected()].file != NULL) 
-		{
-			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[mlist->getSelected()]);
-			tmpMoviePlayerGui.exec(NULL, "");
-		}
-	}
-	else if(actionKey == "RC_info")
-	{
-		selected = mlist->getSelected();
-		m_movieInfo.showMovieInfo(m_vMovieInfo[mlist->getSelected()]);
-	}
-	else if(actionKey == "RC_red")
-	{
-		selected = mlist->getSelected();
-		hide();
-		doTMDB(m_vMovieInfo[mlist->getSelected()]);
-		showMenu();
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if (actionKey == "RC_spkr") 
-	{
-		if(m_vMovieInfo.size() > 0)
-		{	
-			if (&m_vMovieInfo[mlist->getSelected()].file != NULL) 
-			{
-			 	onDeleteFile(m_vMovieInfo[mlist->getSelected()]);
-			}
-		}
-
-		showMenu();
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	
-	return menu_return::RETURN_REPAINT;
-}
-
 #define HEAD_BUTTONS_COUNT	2
 const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
@@ -370,10 +325,6 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 void CMBrowser::showMenu()
 {
 	mlist = new ClistBox("Extended Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
-	
-	
-	// load playlist
-	loadPlaylist();
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
@@ -391,7 +342,6 @@ void CMBrowser::showMenu()
 
 		mlist->addItem(item);
 	}
-
 
 	mlist->setWidgetType(WIDGET_FRAME);
 	mlist->setItemsPerPage(6, 2);
@@ -416,6 +366,61 @@ void CMBrowser::showMenu()
 	mlist = NULL;
 }
 
+int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "\nCMBrowser::exec: actionKey:%s\n", actionKey.c_str());
+	
+	if(parent)
+		hide();
+	
+	if(actionKey == "mplay")
+	{
+		selected = mlist->getSelected();
+
+		if (&m_vMovieInfo[mlist->getSelected()].file != NULL) 
+		{
+			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[mlist->getSelected()]);
+			tmpMoviePlayerGui.exec(NULL, "");
+		}
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "RC_info")
+	{
+		selected = mlist->getSelected();
+		m_movieInfo.showMovieInfo(m_vMovieInfo[mlist->getSelected()]);
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "RC_red")
+	{
+		selected = mlist->getSelected();
+		hide();
+		doTMDB(m_vMovieInfo[mlist->getSelected()]);
+		showMenu();
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if (actionKey == "RC_spkr") 
+	{
+		if(m_vMovieInfo.size() > 0)
+		{	
+			if (&m_vMovieInfo[mlist->getSelected()].file != NULL) 
+			{
+			 	onDeleteFile(m_vMovieInfo[mlist->getSelected()]);
+			}
+		}
+
+		loadPlaylist();
+		showMenu();
+		return menu_return::RETURN_EXIT_ALL;
+	}
+
+	loadPlaylist();
+	showMenu();
+	
+	return menu_return::RETURN_EXIT;
+}
+
 void plugin_init(void)
 {
 	dprintf(DEBUG_NORMAL, "CMBrowser: plugin_init\n");
@@ -430,7 +435,7 @@ void plugin_exec(void)
 {
 	CMBrowser* movieBrowserHandler = new CMBrowser();
 	
-	movieBrowserHandler->showMenu();
+	movieBrowserHandler->exec(NULL, "");
 	
 	delete movieBrowserHandler;
 	movieBrowserHandler = NULL;

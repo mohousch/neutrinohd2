@@ -144,13 +144,15 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 		parent->hide(); 
 	
 	// save background
+/*
 	bool usedBackground = m_frameBuffer->getuseBackground();
 	if (usedBackground)
 		m_frameBuffer->saveBackgroundImage();
 	
 	//show audio background pic	
 	m_frameBuffer->loadBackgroundPic("mp3.jpg");
-	m_frameBuffer->blit();	
+	m_frameBuffer->blit();
+*/	
 	
 	// tell neutrino we're in audio mode
 	CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE , NeutrinoMessages::mode_audio );
@@ -167,14 +169,17 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 		perror("Datei " AUDIOPLAYER_START_SCRIPT " fehlt.Bitte erstellen, wenn gebraucht.\nFile " AUDIOPLAYER_START_SCRIPT " not found. Please create if needed.\n");
 
 	//show
-	show();
+	show(parent);
 
 	//restore previous background
+/*
 	if (usedBackground)
 		m_frameBuffer->restoreBackgroundImage();
 	
 	m_frameBuffer->useBackground(usedBackground);
-		
+	
+*/
+	
 	m_frameBuffer->paintBackground();
 	m_frameBuffer->blit();		
 
@@ -200,10 +205,10 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 		m_playlist.clear();
 
 	//always repaint
-	return menu_return::RETURN_REPAINT;
+	return menu_return::RETURN_EXIT;
 }
 
-int CAudioPlayerGui::show()
+int CAudioPlayerGui::show(CMenuTarget* parent)
 {
 	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::show\n");
 
@@ -330,7 +335,20 @@ int CAudioPlayerGui::show()
 			CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
 			audioPlayerSettingsMenu->exec(NULL, "");
 			delete audioPlayerSettingsMenu;
-			audioPlayerSettingsMenu = NULL;						
+			audioPlayerSettingsMenu = NULL;					
+		}
+		else if(msg == CRCInput::RC_ok)
+		{
+/*
+			if(parent)
+			{
+				hide();
+				parent->exec(NULL, "");	
+
+				paintInfo();
+				updateTimes(true);
+			}
+*/					
 		}
 		else if(msg == NeutrinoMessages::CHANGEMODE)
 		{
@@ -375,6 +393,10 @@ void CAudioPlayerGui::hide()
 	// infos
 	m_frameBuffer->paintBackgroundBoxRel(m_x, m_y, m_width, m_title_height);
 
+	// times
+	// time shadow
+	m_frameBuffer->paintBackgroundBoxRel(timeBox.iX, timeBox.iY, timeBox.iWidth + SHADOW_OFFSET, timeBox.iHeight + SHADOW_OFFSET);
+
 	m_frameBuffer->blit();
 }
 
@@ -403,7 +425,6 @@ void CAudioPlayerGui::paintInfo()
 		m_frameBuffer->loadBackgroundPic("mp3.jpg");
 		m_frameBuffer->blit();	
 	}
-
 
 	// title info box
 	m_frameBuffer->paintBoxRel(m_x, m_y, m_width, m_title_height, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
@@ -610,8 +631,6 @@ void CAudioPlayerGui::play(unsigned int pos)
 		return;
 
 	m_current = pos;
-
-	//CAudioPlayer::getInstance()->stop();
 
 	// play
 	CAudioPlayer::getInstance()->play(&m_playlist[pos], g_settings.audioplayer_highprio == 1);

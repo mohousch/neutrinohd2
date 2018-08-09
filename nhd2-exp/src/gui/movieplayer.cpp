@@ -235,7 +235,7 @@ void CMoviePlayerGui::hide()
 
 int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 {
-	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::exec: actionKey = %s\n", actionKey.c_str());
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::exec: actionKey:%s\n", actionKey.c_str());
 
 	if (parent) 
 		parent->hide();
@@ -306,7 +306,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	//
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 
-	return menu_return::RETURN_REPAINT;
+	return menu_return::RETURN_EXIT;
 }
 
 //

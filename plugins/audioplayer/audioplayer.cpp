@@ -41,7 +41,7 @@ class CMP3Player : public CMenuTarget
 		std::string Path;
 		int selected;
 
-		void loadPlaylist(bool reload = true);
+		void loadPlaylist();
 		void openFileBrowser();
 
 		//
@@ -52,7 +52,7 @@ class CMP3Player : public CMenuTarget
 		~CMP3Player();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-		void showMenu(bool reload = true);
+		void showMenu();
 };
 
 CMP3Player::CMP3Player()
@@ -115,26 +115,25 @@ bool CMP3Player::shufflePlaylist(void)
 	return(result);
 }
 
-void CMP3Player::loadPlaylist(bool reload)
+void CMP3Player::loadPlaylist()
 {
+	playlist.clear();
+
 	Path = g_settings.network_nfs_audioplayerdir;
 
-	if(reload)
-	{
-		if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
-		{		
-			CFileList::iterator files = filelist.begin();
-			for(; files != filelist.end() ; files++)
-			{
-				if ( (files->getExtension() == CFile::EXTENSION_CDR)
+	if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
+	{		
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
+		{
+			if ( (files->getExtension() == CFile::EXTENSION_CDR)
 					||  (files->getExtension() == CFile::EXTENSION_MP3)
 					||  (files->getExtension() == CFile::EXTENSION_WAV)
 					||  (files->getExtension() == CFile::EXTENSION_FLAC))
-				{
-					CAudiofile audiofile(files->Name, files->getExtension());
+			{
+				CAudiofile audiofile(files->Name, files->getExtension());
 				
-					playlist.push_back(audiofile);
-				}
+				playlist.push_back(audiofile);
 			}
 		}
 	}
@@ -159,77 +158,19 @@ void CMP3Player::openFileBrowser()
 					||  (files->getExtension() == CFile::EXTENSION_WAV)
 					||  (files->getExtension() == CFile::EXTENSION_FLAC))
 			{
-				CAudiofile audiofile(files->Name, files->getExtension());		
+				CAudiofile audiofile(files->Name, files->getExtension());
+
+				// skip duplicate
+				for (unsigned long i = 0; i < playlist.size(); i++)
+				{
+					if(playlist[i].Filename == audiofile.Filename)
+						playlist.erase(playlist.begin() + i); 
+				}
+		
 				playlist.push_back(audiofile);
 			}
 		}
 	}
-}
-
-int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
-{
-	dprintf(DEBUG_NORMAL, "CMP3Player::exec: actionKey:%s\n", actionKey.c_str());
-	
-	if(parent)
-		hide();
-
-	if(actionKey == "aplay")
-	{
-		selected = alist->getSelected();
-
-		for (unsigned int i = 0; i < playlist.size(); i++)
-		{
-			tmpAudioPlayerGui.addToPlaylist(playlist[i]);
-		}
-
-		tmpAudioPlayerGui.setCurrent(selected);
-		tmpAudioPlayerGui.exec(NULL, "");
-	}
-	else if(actionKey == "RC_setup")
-	{
-		CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
-		audioPlayerSettingsMenu->exec(this, "");
-		delete audioPlayerSettingsMenu;
-		audioPlayerSettingsMenu = NULL;						
-	}
-	else if(actionKey == "RC_red")
-	{
-		CAudioPlayList::iterator p = playlist.begin() + alist->getSelected();
-		playlist.erase(p);
-
-		if (selected >= playlist.size())
-			selected = playlist.size() - 1;
-
-		showMenu(false);
-
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "RC_green")
-	{
-		alist->clearItems();
-		playlist.clear();
-		openFileBrowser();
-		showMenu(false);
-
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "RC_yellow")
-	{
-		playlist.clear();
-		alist->clearItems();
-		showMenu(false);
-
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "RC_blue")
-	{
-		shufflePlaylist();
-		showMenu(false);
-
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	
-	return menu_return::RETURN_REPAINT;
 }
 
 #define HEAD_BUTTONS_COUNT 2
@@ -248,12 +189,9 @@ const struct button_label AudioPlayerButtons[FOOT_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_AUDIOPLAYER_SHUFFLE, NULL }
 };
 
-void CMP3Player::showMenu(bool reload)
+void CMP3Player::showMenu()
 {
 	alist = new ClistBox(LOCALE_AUDIOPLAYER_HEAD, NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
-
-	//
-	loadPlaylist(reload);
 
 	for(unsigned int i = 0; i < playlist.size(); i++)
 	{
@@ -337,6 +275,80 @@ void CMP3Player::showMenu(bool reload)
 	alist = NULL;
 }
 
+int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CMP3Player::exec: actionKey:%s\n", actionKey.c_str());
+	
+	if(parent)
+		hide();
+
+	if(actionKey == "aplay")
+	{
+		if(alist != NULL)
+			selected = alist->getSelected();
+		else
+			selected = 0;
+
+		for (unsigned int i = 0; i < playlist.size(); i++)
+		{
+			tmpAudioPlayerGui.addToPlaylist(playlist[i]);
+		}
+
+		tmpAudioPlayerGui.setCurrent(selected);
+		tmpAudioPlayerGui.exec(this, "");
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "RC_setup")
+	{
+		CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
+		audioPlayerSettingsMenu->exec(this, "");
+		delete audioPlayerSettingsMenu;
+		audioPlayerSettingsMenu = NULL;	
+
+		return menu_return::RETURN_REPAINT;					
+	}
+	else if(actionKey == "RC_red")
+	{
+		CAudioPlayList::iterator p = playlist.begin() + alist->getSelected();
+		playlist.erase(p);
+
+		if (selected >= playlist.size())
+			selected = playlist.size() - 1;
+
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_green")
+	{
+		openFileBrowser();
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_yellow")
+	{
+		playlist.clear();
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_blue")
+	{
+		shufflePlaylist();
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+
+	//
+	loadPlaylist();
+	showMenu();
+	
+	return menu_return::RETURN_EXIT;
+}
+
 void plugin_init(void)
 {
 	dprintf(DEBUG_NORMAL, "CMP3Player: plugin_init\n");
@@ -351,7 +363,7 @@ void plugin_exec(void)
 {
 	CMP3Player* audioPlayerHandler = new CMP3Player();
 	
-	audioPlayerHandler->showMenu();
+	audioPlayerHandler->exec(NULL, "");
 	
 	delete audioPlayerHandler;
 	audioPlayerHandler = NULL;

@@ -148,7 +148,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 		playlist.clear();
 
 	// 
-	return menu_return::RETURN_REPAINT;
+	return menu_return::RETURN_EXIT;
 }
 
 int CPictureViewerGui::show()

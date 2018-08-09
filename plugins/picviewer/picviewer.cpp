@@ -41,7 +41,7 @@ class CPicViewer : public CMenuTarget
 		std::string Path;
 		int selected;
 
-		void loadPlaylist(bool reload = true);
+		void loadPlaylist();
 		void openFileBrowser();
 		
 	public:
@@ -49,7 +49,7 @@ class CPicViewer : public CMenuTarget
 		~CPicViewer();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-		void showMenu(bool reload = true);
+		void showMenu();
 };
 
 CPicViewer::CPicViewer()
@@ -78,32 +78,31 @@ void CPicViewer::hide()
 	frameBuffer->blit();
 }
 
-void CPicViewer::loadPlaylist(bool reload)
+void CPicViewer::loadPlaylist()
 {
+	playlist.clear();
+
 	Path = g_settings.network_nfs_picturedir;
 
-	if(reload)
+	if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
 	{
-		if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
+		struct stat statbuf;
+				
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
 		{
-			struct stat statbuf;
-				
-			CFileList::iterator files = filelist.begin();
-			for(; files != filelist.end() ; files++)
+			if (files->getType() == CFile::FILE_PICTURE)
 			{
-				if (files->getType() == CFile::FILE_PICTURE)
-				{
-					pic.Filename = files->Name;
-					std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
-					pic.Name = tmp.substr(0, tmp.rfind('.'));
-					pic.Type = tmp.substr(tmp.rfind('.') + 1);
+				pic.Filename = files->Name;
+				std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
+				pic.Name = tmp.substr(0, tmp.rfind('.'));
+				pic.Type = tmp.substr(tmp.rfind('.') + 1);
 			
-					if(stat(pic.Filename.c_str(), &statbuf) != 0)
-						printf("stat error");
-					pic.Date = statbuf.st_mtime;
+				if(stat(pic.Filename.c_str(), &statbuf) != 0)
+					printf("stat error");
+				pic.Date = statbuf.st_mtime;
 				
-					playlist.push_back(pic);
-				}
+				playlist.push_back(pic);
 			}
 		}
 	}
@@ -134,81 +133,18 @@ void CPicViewer::openFileBrowser()
 				if(stat(pic.Filename.c_str(),&statbuf) != 0)
 					printf("stat error");
 				pic.Date = statbuf.st_mtime;
+
+				// skip duplicate
+				for (unsigned long i = 0; i < playlist.size(); i++)
+				{
+					if(playlist[i].Filename == pic.Filename)
+						playlist.erase(playlist.begin() + i); 
+				}
 							
 				playlist.push_back(pic);
 			}
 		}
 	}
-}
-
-int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
-{
-	dprintf(DEBUG_NORMAL, "CPicViewer::exec: actionKey:%s\n", actionKey.c_str());
-	
-	if(parent)
-		hide();
-
-	if(actionKey == "view")
-	{
-		selected = plist->getSelected();
-
-		tmpPictureViewerGui.addToPlaylist(playlist[plist->getSelected()]);
-		tmpPictureViewerGui.exec(NULL, "");
-	}
-	else if(actionKey == "RC_setup")
-	{
-		CPictureViewerSettings * pictureViewerSettingsMenu = new CPictureViewerSettings();
-		pictureViewerSettingsMenu->exec(NULL, "");
-		delete pictureViewerSettingsMenu;
-		pictureViewerSettingsMenu = NULL;					
-	}
-	else if(actionKey == "RC_info")
-	{
-		tmpPictureViewerGui.showHelp();
-	}
-	else if(actionKey == "RC_red")
-	{
-		CPicturePlayList::iterator p = playlist.begin() + plist->getSelected();
-		playlist.erase(p);
-
-		if (selected >= playlist.size())
-			selected = playlist.size() - 1;
-
-		showMenu(false);
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "RC_green")
-	{
-		playlist.clear();
-		plist->clearItems();
-		openFileBrowser();
-		showMenu(false);
-
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "RC_yellow")
-	{
-		playlist.clear();
-		plist->clearItems();
-		showMenu(false);
-
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "RC_blue")
-	{
-		selected = plist->getSelected();
-
-		for (unsigned int i = 0; i < playlist.size(); i++)
-		{
-			tmpPictureViewerGui.addToPlaylist(playlist[i]);
-		}
-
-		tmpPictureViewerGui.setCurrent(selected);
-		tmpPictureViewerGui.setState(CPictureViewerGui::SLIDESHOW);		
-		tmpPictureViewerGui.exec(NULL, "");
-	}
-	
-	return menu_return::RETURN_REPAINT;
 }
 
 #define HEAD_BUTTONS_COUNT	3
@@ -228,12 +164,9 @@ const struct button_label PictureViewerButtons[FOOT_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_PICTUREVIEWER_SLIDESHOW, NULL }
 };
 
-void CPicViewer::showMenu(bool reload)
+void CPicViewer::showMenu()
 {
 	plist = new ClistBox(LOCALE_PICTUREVIEWER_HEAD, NEUTRINO_ICON_PICTURE, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
-	
-	// load playlist
-	loadPlaylist(reload);
 
 	for(unsigned int i = 0; i < playlist.size(); i++)
 	{
@@ -274,6 +207,84 @@ void CPicViewer::showMenu(bool reload)
 	plist = NULL;
 }
 
+int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CPicViewer::exec: actionKey:%s\n", actionKey.c_str());
+	
+	if(parent)
+		hide();
+
+	if(actionKey == "view")
+	{
+		selected = plist->getSelected();
+
+		tmpPictureViewerGui.addToPlaylist(playlist[plist->getSelected()]);
+		tmpPictureViewerGui.exec(NULL, "");
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "RC_setup")
+	{
+		CPictureViewerSettings * pictureViewerSettingsMenu = new CPictureViewerSettings();
+		pictureViewerSettingsMenu->exec(NULL, "");
+		delete pictureViewerSettingsMenu;
+		pictureViewerSettingsMenu = NULL;
+
+		return menu_return::RETURN_REPAINT;					
+	}
+	else if(actionKey == "RC_info")
+	{
+		tmpPictureViewerGui.showHelp();
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "RC_red")
+	{
+		CPicturePlayList::iterator p = playlist.begin() + plist->getSelected();
+		playlist.erase(p);
+
+		if (selected >= playlist.size())
+			selected = playlist.size() - 1;
+
+		showMenu();
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_green")
+	{
+		openFileBrowser();
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_yellow")
+	{
+		playlist.clear();
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_blue")
+	{
+		selected = plist->getSelected();
+
+		for (unsigned int i = 0; i < playlist.size(); i++)
+		{
+			tmpPictureViewerGui.addToPlaylist(playlist[i]);
+		}
+
+		tmpPictureViewerGui.setCurrent(selected);
+		tmpPictureViewerGui.setState(CPictureViewerGui::SLIDESHOW);		
+		tmpPictureViewerGui.exec(NULL, "");
+
+		return menu_return::RETURN_REPAINT;
+	}
+
+	loadPlaylist();
+	showMenu();
+	
+	return menu_return::RETURN_REPAINT;
+}
+
 void plugin_init(void)
 {
 	dprintf(DEBUG_NORMAL, "CPicViewer: plugin_init\n");
@@ -288,7 +299,7 @@ void plugin_exec(void)
 {
 	CPicViewer* picViewerHandler = new CPicViewer();
 	
-	picViewerHandler->showMenu();
+	picViewerHandler->exec(NULL, "");
 	
 	delete picViewerHandler;
 	picViewerHandler = NULL;
