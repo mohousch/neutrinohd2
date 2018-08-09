@@ -3,7 +3,12 @@
 
 #include <ard.h>
 #include <system/debug.h>
+#include <plugin.h>
 
+
+extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
 
 // verpasst
 CARDverpasst::CARDverpasst()
@@ -16,7 +21,7 @@ CARDverpasst::~CARDverpasst()
 
 void CARDverpasst::showMenu(void)
 {
-	CMenuWidget * catMenu = new CMenuWidget("Sendung verpasst", PLUGINDIR "/mediaportal/ard_small.png");
+	CMenuWidget * catMenu = new CMenuWidget("Sendung verpasst", PLUGINDIR "/ard/ard_small.png");
 
 	catMenu->addItem(new CMenuForwarder("Das Erste", true, NULL, new CARDverpasstSub("Das Erste"), ""));
 	catMenu->addItem(new CMenuForwarder("Tagesschau24", true, NULL, new CARDverpasstSub("Tagesschau24"), ""));
@@ -62,7 +67,7 @@ CARDverpasstSub::~CARDverpasstSub()
 
 void CARDverpasstSub::showMenu(void)
 {
-	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/mediaportal/ard_small.png");
+	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");
 
 	catMenu->addItem(new CMenuForwarder("Heute", true, getNowTimeStr("%d.%m.%Y").c_str(), new CARDtime("Heute"), ""));
 	catMenu->addItem(new CMenuForwarder("Gestern", true, NULL, new CARDtime("Gestern"), ""));
@@ -102,7 +107,7 @@ CARDtime::~CARDtime()
 
 void CARDtime::showMenu(void)
 {
-	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/mediaportal/ard_small.png");
+	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");
 
 	catMenu->addItem(new CMenuForwarder("00:00-12:00", true, NULL, new CARDstreams("00:00-12:00"), ""));
 	catMenu->addItem(new CMenuForwarder("12:00-18:00", true, NULL, new CARDstreams("12:00-18:00"), ""));
@@ -138,7 +143,7 @@ CARDaz::~CARDaz()
 
 void CARDaz::showMenu(void)
 {
-	ClistBox * catMenu = new ClistBox("Sendungen A-Z", PLUGINDIR "/mediaportal/ard_small.png");
+	ClistBox * catMenu = new ClistBox("Sendungen A-Z", PLUGINDIR "/ard/ard_small.png");
 
 	//items
 	for (int i = 0; i < 6; i++)
@@ -177,7 +182,7 @@ CARDTVlive::~CARDTVlive()
 
 void CARDTVlive::showMenu(void)
 {
-	ClistBox * catMenu = new ClistBox("TV-Livestreams", PLUGINDIR "/mediaportal/ard_small.png");
+	ClistBox * catMenu = new ClistBox("TV-Livestreams", PLUGINDIR "/ard/ard_small.png");
 
 	//items
 	for (int i = 0; i < 6; i++)
@@ -216,7 +221,7 @@ CARDRadiolive::~CARDRadiolive()
 
 void CARDRadiolive::showMenu(void)
 {
-	ClistBox * catMenu = new ClistBox("Radio-Livestreams", PLUGINDIR "/mediaportal/ard_small.png");
+	ClistBox * catMenu = new ClistBox("Radio-Livestreams", PLUGINDIR "/ard/ard_small.png");
 
 	//items
 	for (int i = 0; i < 6; i++)
@@ -256,7 +261,7 @@ CARDstreams::~CARDstreams()
 
 void CARDstreams::showMenu(void)
 {
-	ClistBox * catMenu = new ClistBox(Title.c_str(), PLUGINDIR "/mediaportal/ard_small.png");	
+	ClistBox * catMenu = new ClistBox(Title.c_str(), PLUGINDIR "/ard/ard_small.png");	
 	
 	//items
 	for (int i = 0; i < 6; i++)
@@ -295,7 +300,7 @@ CARD::~CARD()
 
 void CARD::showMenu(void)
 {
-	CMenuWidget * catMenu = new CMenuWidget("ARD Mediathek", PLUGINDIR "/mediaportal/ard_small.png");
+	CMenuWidget * catMenu = new CMenuWidget("ARD Mediathek", PLUGINDIR "/ard/ard_small.png");
 
 	catMenu->addItem(new CMenuForwarder("Sendung verpasst", true, NULL, new CARDverpasst(), ""));
 	catMenu->addItem(new CMenuForwarder("Sendungen A-Z", true, NULL, new CARDaz(), ""));
@@ -318,6 +323,25 @@ int CARD::exec(CMenuTarget* parent, const std::string& actionKey)
 	showMenu();
 
 	return menu_return::RETURN_REPAINT;
+}
+
+//plugin API
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
+}
+
+void plugin_exec(void)
+{
+	CARD * ardHandler = new CARD();
+	
+	ardHandler->exec(NULL, "");
+	
+	delete ardHandler;
+	ardHandler = NULL;
 }
 
 

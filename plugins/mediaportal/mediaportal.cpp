@@ -19,7 +19,6 @@
 */
 
 #include <plugin.h>
-#include <ard.h>
 
 
 extern "C" void plugin_exec(void);
@@ -85,10 +84,7 @@ void CMediaPortal::internetRadio(void)
 
 void CMediaPortal::ard(void)
 {
-	CARD* ard = new CARD();
-	ard->exec(NULL, "");
-	delete ard;
-	ard = NULL;
+	g_PluginList->startPlugin("ard");
 }
 
 void CMediaPortal::nFilm()

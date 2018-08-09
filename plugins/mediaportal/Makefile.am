@@ -15,7 +15,7 @@ AM_CPPFLAGS =  \
 
 noinst_LTLIBRARIES = mediaportal.la
 
-mediaportal_la_SOURCES = mediaportal.cpp ard.cpp
+mediaportal_la_SOURCES = mediaportal.cpp
 	 
 mediaportal_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 
@@ -26,15 +26,11 @@ install-exec-local:
 	install .libs/mediaportal.so $(DESTDIR)$(PLUGINDIR)/mediaportal
 	install -m 0644 mediaportal.cfg $(DESTDIR)$(PLUGINDIR)/mediaportal
 	install -m 0644 mp.png $(DESTDIR)$(PLUGINDIR)/mediaportal
-	install -m 0644 ard.png $(DESTDIR)$(PLUGINDIR)/mediaportal
-	install -m 0644 ard_small.png $(DESTDIR)$(PLUGINDIR)/mediaportal
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/mediaportal.so
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/mediaportal.cfg
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/mp.png
-	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/ard.png
-	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/ard_small.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/mediaportal
 
 

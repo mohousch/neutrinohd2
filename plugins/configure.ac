@@ -59,5 +59,7 @@ audioplayer/Makefile
 opkg_manager/Makefile
 nfilm/Makefile
 ntvshows/Makefile
+upnp/Makefile
+ard/Makefile
 ])
 

@@ -34,4 +34,8 @@ if ENABLE_TUXCAL
 SUBDIRS += tuxcal
 endif
 
+#for testing
+SUBDIRS += upnp \
+	ard
+
 
