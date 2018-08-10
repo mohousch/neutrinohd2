@@ -64,16 +64,6 @@ void CTSPlayer::hide()
 	frameBuffer->blit();
 }
 
-int CTSPlayer::exec(CMenuTarget* parent, const std::string& actionKey)
-{
-	dprintf(DEBUG_NORMAL, "\nCTSPlayer::exec: actionKey:%s\n", actionKey.c_str());
-	
-	if(parent)
-		hide();
-	
-	return menu_return::RETURN_REPAINT;
-}
-
 void CTSPlayer::showMenu()
 {
 	neutrino_msg_t msg;
@@ -109,6 +99,18 @@ BROWSER:
 	delete movieBrowser;
 }
 
+int CTSPlayer::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "\nCTSPlayer::exec: actionKey:%s\n", actionKey.c_str());
+	
+	if(parent)
+		hide();
+
+	showMenu();
+	
+	return menu_return::RETURN_EXIT;
+}
+
 void plugin_init(void)
 {
 	dprintf(DEBUG_NORMAL, "test: plugin_init\n");
@@ -123,7 +125,7 @@ void plugin_exec(void)
 {
 	CTSPlayer* tsPlayerHandler = new CTSPlayer();
 	
-	tsPlayerHandler->showMenu();
+	tsPlayerHandler->exec(NULL, "");
 	
 	delete tsPlayerHandler;
 	tsPlayerHandler = NULL;

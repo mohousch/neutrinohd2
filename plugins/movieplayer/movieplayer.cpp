@@ -64,16 +64,6 @@ void CMoviePlayer::hide()
 	frameBuffer->blit();
 }
 
-int CMoviePlayer::exec(CMenuTarget* parent, const std::string& actionKey)
-{
-	dprintf(DEBUG_NORMAL, "\nCMoviePlayer::exec: actionKey:%s\n", actionKey.c_str());
-	
-	if(parent)
-		hide();
-	
-	return menu_return::RETURN_REPAINT;
-}
-
 void CMoviePlayer::showMenu()
 {
 	neutrino_msg_t msg;
@@ -109,6 +99,18 @@ BROWSER:
 	delete movieBrowser;
 }
 
+int CMoviePlayer::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "\nCMoviePlayer::exec: actionKey:%s\n", actionKey.c_str());
+	
+	if(parent)
+		hide();
+
+	showMenu();
+	
+	return menu_return::RETURN_EXIT;
+}
+
 void plugin_init(void)
 {
 	dprintf(DEBUG_NORMAL, "test: plugin_init\n");
@@ -123,7 +125,7 @@ void plugin_exec(void)
 {
 	CMoviePlayer* moviePlayerHandler = new CMoviePlayer();
 	
-	moviePlayerHandler->showMenu();
+	moviePlayerHandler->exec(NULL, "");
 	
 	delete moviePlayerHandler;
 	moviePlayerHandler = NULL;
