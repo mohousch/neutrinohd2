@@ -833,7 +833,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// pictureviewer
 	strcpy( g_settings.network_nfs_picturedir, configfile.getString( "network_nfs_picturedir", "/media/hdd/picture" ).c_str() );
 
-	strcpy( g_settings.picviewer_slide_time, configfile.getString( "picviewer_slide_time", "10" ).c_str() );
+	g_settings.picviewer_slide_time = configfile.getInt32("picviewer_slide_time", 10);
 	g_settings.picviewer_scaling = configfile.getInt32("picviewer_scaling", (int)CFrameBuffer::SIMPLE);
 
 	// misc opts
@@ -1292,13 +1292,13 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "audioplayer_repeat_on", g_settings.audioplayer_repeat_on );
 
 	// PICVIEWER
-	configfile.setString( "network_nfs_picturedir", g_settings.network_nfs_picturedir);
+	configfile.setString("network_nfs_picturedir", g_settings.network_nfs_picturedir);
 
-	configfile.setString( "picviewer_slide_time", g_settings.picviewer_slide_time );
-	configfile.setInt32( "picviewer_scaling", g_settings.picviewer_scaling );
+	configfile.setInt32("picviewer_slide_time", g_settings.picviewer_slide_time);
+	configfile.setInt32("picviewer_scaling", g_settings.picviewer_scaling);
 
 	// MISC OPTS
-	configfile.setInt32( "power_standby", g_settings.power_standby);
+	configfile.setInt32("power_standby", g_settings.power_standby);
 	configfile.setBool("shutdown_real", g_settings.shutdown_real);
 	configfile.setBool("shutdown_real_rcdelay", g_settings.shutdown_real_rcdelay);
 	configfile.setString("shutdown_count", g_settings.shutdown_count);

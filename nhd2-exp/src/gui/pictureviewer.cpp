@@ -179,9 +179,11 @@ void CPictureViewerGui::show(CMenuTarget* p)
 			timeout = 10; 
 		else
 		{
-			timeout = (m_time + atoi(g_settings.picviewer_slide_time) - (long)time(NULL))*10;
+			timeout = (int)(m_time + g_settings.picviewer_slide_time - (long)time(NULL))*10;
 			if(timeout < 0 )
 				timeout = 1;
+			else if(timeout >= 999)
+				timeout = 999;
 		}
 
 		g_RCInput->getMsg(&msg, &data, timeout);
@@ -326,7 +328,7 @@ void CPictureViewerGui::view(unsigned int index)
 
 void CPictureViewerGui::addToPlaylist(CPicture& file)
 {	
-	dprintf(DEBUG_NORMAL, "CPictureViewerGui::addToPlaylist: %s\n", file.Filename.c_str());
+	dprintf(DEBUG_DEBUG, "CPictureViewerGui::addToPlaylist: %s\n", file.Filename.c_str());
 	
 	playlist.push_back(file);
 }

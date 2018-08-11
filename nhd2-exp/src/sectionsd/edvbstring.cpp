@@ -777,4 +777,88 @@ std::string convertDVBUTF8(const char *data, int len, int table, int tsidonid)
 	return std::string((char*)res, t);
 }
 
+const std::string convertLatin1UTF8(const std::string &string)
+{
+	unsigned int t=0, i=0, len=string.size();
+
+	unsigned char res[2048];
+	memset(res,0,sizeof(res));
+
+	while (i < len)
+	{
+		unsigned long code=string[i++];
+		// Unicode->UTF8 encoding
+		if (code < 0x80) // identity latin <-> utf8 mapping
+			res[t++]=char(code);
+		else if (code < 0x800) // two byte mapping
+		{
+			res[t++]=(code>>6)|0xC0;
+			res[t++]=(code&0x3F)|0x80;
+		} else if (code < 0x10000) // three bytes mapping
+		{
+			res[t++]=(code>>12)|0xE0;
+			res[t++]=((code>>6)&0x3F)|0x80;
+			res[t++]=(code&0x3F)|0x80;
+		} else
+		{
+			res[t++]=(code>>18)|0xF0;
+			res[t++]=((code>>12)&0x3F)|0x80;
+			res[t++]=((code>>6)&0x3F)|0x80;
+			res[t++]=(code&0x3F)|0x80;
+		}
+		if (t+4 > 2047)
+		{
+			{} //eDebug("convertLatin1UTF8 buffer to small.. break now");
+			break;
+		}
+	}
+	return std::string((char*)res, t);
+}
+
+int isUTF8(const std::string &string)
+{
+	unsigned int len=string.size();
+	unsigned char c;
+
+	for (unsigned int i=0; i < len;)
+	{
+		int trailing = 0;
+		c = string[i] & 0xFF;
+
+		if (c >> 7 == 0)		// 0xxxxxxx
+		{
+			i++;
+			continue;
+		}
+		if (c >> 5 == 6)		// 110xxxxx 10xxxxxx
+		{
+			if (++i >= len)
+				return 0;
+			trailing = 1;
+		}
+		else if (c >> 4 == 14)		// 1110xxxx 10xxxxxx 10xxxxxx
+		{
+			if (++i >= len)
+				return 0;
+			trailing = 2;
+		}
+		else if (c >> 3 == 30)		// 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+		{
+			if (++i >= len)
+				return 0;
+			trailing = 3;
+		} else
+			return 0;
+
+		while (trailing) {
+			if (i >= len || (string[i] & 0xFF) >> 6 != 2)
+				return 0;
+			trailing--;
+			i++;
+		}
+	}
+	return 1; // can be UTF8 (or pure ASCII, at least no non-UTF-8 8bit characters)
+}
+
+
 

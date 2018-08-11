@@ -381,8 +381,8 @@ struct SNeutrinoSettings
 
 	// PICVIEWER
 	char network_nfs_picturedir[100];
-	char   picviewer_slide_time[3];
-	int    picviewer_scaling;
+	int picviewer_slide_time;
+	int picviewer_scaling;
 	// END PICVIEWER
 
 	// MISC OPTS
