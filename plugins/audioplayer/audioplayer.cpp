@@ -82,6 +82,9 @@ CMP3Player::CMP3Player()
 CMP3Player::~CMP3Player()
 {
 	playlist.clear();
+
+	if(CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
+		CAudioPlayer::getInstance()->stop();
 }
 
 void CMP3Player::hide()
@@ -282,20 +285,18 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(parent)
 		hide();
 
+	if(alist != NULL)
+		selected = alist->getSelected();
+
 	if(actionKey == "aplay")
 	{
-		if(alist != NULL)
-			selected = alist->getSelected();
-		else
-			selected = 0;
-
 		for (unsigned int i = 0; i < playlist.size(); i++)
 		{
 			tmpAudioPlayerGui.addToPlaylist(playlist[i]);
 		}
 
 		tmpAudioPlayerGui.setCurrent(selected);
-		tmpAudioPlayerGui.exec(this, "");
+		tmpAudioPlayerGui.exec(NULL, "");
 
 		return menu_return::RETURN_REPAINT;
 	}

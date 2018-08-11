@@ -90,6 +90,12 @@ CPictureViewerGui::~CPictureViewerGui()
 	g_PicViewer = NULL;
 }
 
+void CPictureViewerGui::hide()
+{
+	frameBuffer->paintBackground();
+	frameBuffer->blit();
+}
+
 int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CPictureViewerGui::exec: actionKey:%s\n", actionKey.c_str());
@@ -124,7 +130,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	//
 	CNeutrinoApp::getInstance()->lockPlayBack();
 
-	show();
+	show(parent);
 
 	// free picviewer mem
 	g_PicViewer->Cleanup();
@@ -134,15 +140,13 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	{
 		frameBuffer->restoreBackgroundImage();
 		frameBuffer->useBackground(true);
-		frameBuffer->paintBackground();
-		frameBuffer->blit();	
 	}
 	
 	//
 	CNeutrinoApp::getInstance()->unlockPlayBack();
 
 	// Restore last mode
-	CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , m_LastMode );
+	CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, m_LastMode);
 
 	if(!playlist.empty())
 		playlist.clear();
@@ -151,20 +155,19 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	return menu_return::RETURN_EXIT;
 }
 
-int CPictureViewerGui::show()
+void CPictureViewerGui::show(CMenuTarget* p)
 {
 	dprintf(DEBUG_NORMAL, "CPictureViewerGui::show\n");
 
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 
-	int res = -1;
-
 	CVFD::getInstance()->setMode(CVFD::MODE_PIC, g_Locale->getText(LOCALE_PICTUREVIEWER_HEAD));
 
 	int timeout;
 
 	bool loop = true;
+	bool ok_pressed = false;
 
 	//		
 	if (!playlist.empty())
@@ -258,6 +261,22 @@ int CPictureViewerGui::show()
 			delete pictureViewerSettingsMenu;
 			pictureViewerSettingsMenu = NULL;					
 		}
+		else if(msg == CRCInput::RC_ok)
+		{
+			ok_pressed = true;
+			loop = false;
+
+/*
+			if(p)
+			{
+				loop = false;
+				hide();
+
+				p->exec(this, "");
+				p->hide();
+			}
+*/
+		}
 		else if(msg == NeutrinoMessages::CHANGEMODE)
 		{
 			if((data & NeutrinoMessages::mode_mask) !=NeutrinoMessages::mode_pic)
@@ -287,10 +306,10 @@ int CPictureViewerGui::show()
 		frameBuffer->blit();	
 	}
 
-	frameBuffer->paintBackground();
-	frameBuffer->blit();
-
-	return(res);
+	if(!ok_pressed)
+	{
+		hide();
+	}
 }
 
 void CPictureViewerGui::view(unsigned int index)

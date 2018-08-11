@@ -78,8 +78,9 @@ class CPictureViewerGui : public CMenuTarget
 		int m_LastMode;
 
 		void view(unsigned int nr);
-		int  show();
+		void show(CMenuTarget* p);
 		void paintLCD();
+		void hide();
 		
 	public:
 		CPictureViewerGui();

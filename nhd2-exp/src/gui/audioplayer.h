@@ -158,11 +158,13 @@ class CAudioPlayerGui : public CMenuTarget
 		void rev(unsigned int seconds = 0);
 		bool playNext(bool allow_rotate = false);
 		bool playPrev(bool allow_rotate = false);
+
+		bool shufflePlaylist(void);
 	
 	public:
 		CAudioPlayerGui();
 		~CAudioPlayerGui();
-		int show(CMenuTarget* parent);
+		void playFile(CMenuTarget* p);
 		int exec(CMenuTarget *parent, const std::string &actionKey);
 
 		//

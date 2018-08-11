@@ -51,6 +51,7 @@
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
 #include <driver/audiometadata.h>
+#include <driver/screen_max.h>
 
 #include <daemonc/remotecontrol.h>
 
@@ -82,8 +83,8 @@
 
 #include <system/debug.h>
 
-#include <curl/curl.h>
-#include <curl/easy.h>
+//#include <curl/curl.h>
+//#include <curl/easy.h>
 
 
 extern int current_muted;
@@ -144,18 +145,16 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 		parent->hide(); 
 	
 	// save background
-/*
 	bool usedBackground = m_frameBuffer->getuseBackground();
 	if (usedBackground)
 		m_frameBuffer->saveBackgroundImage();
 	
 	//show audio background pic	
 	m_frameBuffer->loadBackgroundPic("mp3.jpg");
-	m_frameBuffer->blit();
-*/	
+	m_frameBuffer->blit();	
 	
 	// tell neutrino we're in audio mode
-	CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE , NeutrinoMessages::mode_audio );
+	CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, NeutrinoMessages::mode_audio );
 	
 	// remember last mode
 	m_LastMode = (CNeutrinoApp::getInstance()->getLastMode() | NeutrinoMessages::norezap);
@@ -169,25 +168,19 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 		perror("Datei " AUDIOPLAYER_START_SCRIPT " fehlt.Bitte erstellen, wenn gebraucht.\nFile " AUDIOPLAYER_START_SCRIPT " not found. Please create if needed.\n");
 
 	//show
-	show(parent);
+	playFile(parent);
 
 	//restore previous background
-/*
 	if (usedBackground)
+	{
 		m_frameBuffer->restoreBackgroundImage();
-	
-	m_frameBuffer->useBackground(usedBackground);
-	
-*/
-	
+		m_frameBuffer->useBackground(usedBackground);
+	}
+
+	// hide background image
 	m_frameBuffer->paintBackground();
 	m_frameBuffer->blit();		
 
-	// end-script
-	puts("[audioplayer.cpp] executing " AUDIOPLAYER_END_SCRIPT "."); 
-	if (system(AUDIOPLAYER_END_SCRIPT) != 0) 
-		perror("Datei " AUDIOPLAYER_END_SCRIPT " fehlt. Bitte erstellen, wenn gebraucht.\nFile " AUDIOPLAYER_END_SCRIPT " not found. Please create if needed.\n");
-	
 	// start playback
 	CNeutrinoApp::getInstance()->unlockPlayBack();
 
@@ -208,20 +201,19 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	return menu_return::RETURN_EXIT;
 }
 
-int CAudioPlayerGui::show(CMenuTarget* parent)
+void CAudioPlayerGui::playFile(CMenuTarget* p)
 {
-	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::show\n");
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::playFile\n");
 
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
-
-	int ret = -1;
 
 	CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));
 		
 	paintLCD();		
 
 	bool loop = true;
+	bool ok_pressed = false;
 	
 	//
 	if(!m_playlist.empty())
@@ -339,11 +331,19 @@ int CAudioPlayerGui::show(CMenuTarget* parent)
 		}
 		else if(msg == CRCInput::RC_ok)
 		{
+
+			ok_pressed = true;
+			loop = false;
+
 /*
-			if(parent)
+			if(p)
 			{
 				hide();
-				parent->exec(NULL, "");	
+
+				int res = p->exec(this, "");
+
+				printf("RC_OK:res:%d\n", res);	
+				//p->hide();
 
 				paintInfo();
 				updateTimes(true);
@@ -383,9 +383,8 @@ int CAudioPlayerGui::show(CMenuTarget* parent)
 		m_frameBuffer->blit();	
 	}
 	
-	stop();	
-
-	return ret;
+	if(!ok_pressed)
+		stop();
 }
 
 void CAudioPlayerGui::hide()
@@ -394,7 +393,6 @@ void CAudioPlayerGui::hide()
 	m_frameBuffer->paintBackgroundBoxRel(m_x, m_y, m_width, m_title_height);
 
 	// times
-	// time shadow
 	m_frameBuffer->paintBackgroundBoxRel(timeBox.iX, timeBox.iY, timeBox.iWidth + SHADOW_OFFSET, timeBox.iHeight + SHADOW_OFFSET);
 
 	m_frameBuffer->blit();
@@ -932,7 +930,7 @@ void CAudioPlayerGui::getFileInfoToDisplay(std::string &info, CAudiofile& file)
 
 void CAudioPlayerGui::addToPlaylist(CAudiofile& file)
 {	
-	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::add2Playlist: %s\n", file.Filename.c_str());
+	dprintf(DEBUG_DEBUG, "CAudioPlayerGui::add2Playlist: %s\n", file.Filename.c_str());
 
 	m_playlist.push_back(file);
 }
@@ -1139,4 +1137,28 @@ std::string CAudioPlayerGui::absPath2Rel(const std::string& fromDir, const std::
 	return res;
 }
 
+bool CAudioPlayerGui::shufflePlaylist(void)
+{
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::shufflePlaylist\n");
+	
+	RandomNumber rnd;
+	bool result = false;
+	
+	if (!(m_playlist.empty()))
+	{
+		if (m_current > 0)
+		{
+			std::swap(m_playlist[0], m_playlist[m_current]);
+			m_current = 0;
+		}
+
+		std::random_shuffle((m_current != 0) ? m_playlist.begin() : m_playlist.begin() + 1, m_playlist.end(), rnd);
+
+		m_current = 0;
+
+		result = true;
+	}
+	
+	return(result);
+}
 

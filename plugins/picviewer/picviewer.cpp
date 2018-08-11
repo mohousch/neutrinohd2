@@ -70,6 +70,8 @@ CPicViewer::CPicViewer()
 CPicViewer::~CPicViewer()
 {
 	playlist.clear();
+
+	hide();
 }
 
 void CPicViewer::hide()
@@ -188,6 +190,7 @@ void CPicViewer::showMenu()
 
 	//plist->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	plist->setSelected(selected);
+	plist->enableSaveScreen();
 
 	plist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	plist->setFooterButtons(PictureViewerButtons, FOOT_BUTTONS_COUNT);
@@ -214,11 +217,14 @@ int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(parent)
 		hide();
 
+	if(plist != NULL)
+		selected = plist->getSelected();
+	else
+		selected = 0;
+
 	if(actionKey == "view")
 	{
-		selected = plist->getSelected();
-
-		tmpPictureViewerGui.addToPlaylist(playlist[plist->getSelected()]);
+		tmpPictureViewerGui.addToPlaylist(playlist[selected]);
 		tmpPictureViewerGui.exec(NULL, "");
 
 		return menu_return::RETURN_REPAINT;
@@ -265,8 +271,6 @@ int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_blue")
 	{
-		selected = plist->getSelected();
-
 		for (unsigned int i = 0; i < playlist.size(); i++)
 		{
 			tmpPictureViewerGui.addToPlaylist(playlist[i]);
@@ -282,7 +286,7 @@ int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 	loadPlaylist();
 	showMenu();
 	
-	return menu_return::RETURN_REPAINT;
+	return menu_return::RETURN_EXIT;
 }
 
 void plugin_init(void)
