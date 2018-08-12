@@ -745,7 +745,6 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
-/*
 	else if(actionKey == "RC_home")
 	{
 		selected = 0;
@@ -761,7 +760,6 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else
-*/
 	{
 		loadDevices();
 		showMenuDevice();
