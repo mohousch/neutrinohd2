@@ -86,31 +86,45 @@ const struct button_label PlayButton   = {NEUTRINO_ICON_BUTTON_RED, LOCALE_AUDIO
 const struct button_label PUpButton    = {NEUTRINO_ICON_BUTTON_GREEN, LOCALE_FILEBROWSER_NEXTPAGE, NULL };
 const struct button_label PDownButton  = {NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE, NULL };
 
+/*
+CUpnpEntry::CUpnpEntry()
+{
+	m_frameBuffer = CFrameBuffer::getInstance();
+
+	elist = NULL;
+	item = NULL;
+}
+
+CUpnpEntry::~CUpnpEntry()
+{
+}
+
+void CUpnpEntry::hide()
+{
+	m_frameBuffer->ClearFrameBuffer();
+	m_frameBuffer->blit();
+}
+*/
+
 CUpnpBrowserGui::CUpnpBrowserGui()
 {
-	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::CUpnpBrowserGui:\n");
-
 	m_socket = new CUPnPSocket();
 	m_frameBuffer = CFrameBuffer::getInstance();
 
 	thumbnail_dir = "/tmp/upnpbrowser";
 
 	ulist = NULL;
-	elist = NULL;
+	//elist = NULL;
 	item = NULL;
 
 	selected = 0;
 	gui = UPNP_GUI_DEVICE;
 
 	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
-
-	endall = false;
 }
 
 CUpnpBrowserGui::~CUpnpBrowserGui()
 {
-	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::~CUpnpBrowserGui:\n");
-
 	if(m_socket)
 		delete m_socket;
 
@@ -348,11 +362,10 @@ bool CUpnpBrowserGui::loadItem(std::string id)
 {
 	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::loadItem: %s\n", id.c_str());
 
-	//bool endall = false;
-	unsigned int index, selected, dirnum;
+	unsigned int index, _selected, dirnum;
 
 	index = 0;
-	selected = 0;
+	_selected = 0;
 	dirnum = 0;
 	entries = NULL;
 
@@ -382,7 +395,7 @@ bool CUpnpBrowserGui::loadItem(std::string id)
 	attribs.push_back(UPnPAttribute("RequestedCount", /*scount.str()*/"100"));
 	attribs.push_back(UPnPAttribute("SortCriteria", ""));
 
-	results = m_devices[selected].SendSOAP("urn:schemas-upnp-org:service:ContentDirectory:1", "Browse", attribs);
+	results = m_devices[_selected].SendSOAP("urn:schemas-upnp-org:service:ContentDirectory:1", "Browse", attribs);
 
 	for (i = results.begin(); i != results.end(); i++)
 	{
@@ -406,34 +419,32 @@ bool CUpnpBrowserGui::loadItem(std::string id)
 	}
 
 	if (!entries)
-		return endall;
+		return false;
 
 	if (!nfound || !tfound || !rfound)
 	{
 		delete entries;
-		return endall;
+		return false;
 	}
 
 	if (returned != entries->size())
 	{
 		delete entries;
-		return endall;
+		return false;
 	}
 
 	if (returned == 0)
 	{
 		delete entries;
-		return endall;
+		return false;
 	}
-
-	printf("\nKazalla:loadItem: endall%d\n", endall);
 	
-	return endall;
+	return true;
 }
 
-void CUpnpBrowserGui::showMenuDevice()
+void CUpnpBrowserGui::loadDevices()
 {
-	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::showMenuDevice:\n");
+	m_devices.clear();
 
 	CHintBox *scanBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_UPNPBROWSER_SCANNING)); // UTF-8
 
@@ -451,6 +462,13 @@ void CUpnpBrowserGui::showMenuDevice()
 
 	delete scanBox;
 	scanBox = NULL;
+}
+
+void CUpnpBrowserGui::showMenuDevice()
+{
+	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::showMenuDevice:\n");
+
+	selected = 0;
 
 	// new
 	ulist = new ClistBox(LOCALE_UPNPBROWSER_HEAD, NEUTRINO_ICON_UPNP, w_max ( (m_frameBuffer->getScreenWidth() / 20 * 17), (m_frameBuffer->getScreenWidth() / 20 )), h_max ( (m_frameBuffer->getScreenHeight() / 20 * 16), (m_frameBuffer->getScreenHeight() / 20)));
@@ -496,11 +514,11 @@ void CUpnpBrowserGui::showMenuDevice()
 	ulist = NULL;
 }
 
-int CUpnpBrowserGui::showMenuEntry(std::string id)
+void CUpnpBrowserGui::showMenuEntry()
 {
-	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::showMenuEntry: (id:%s)\n", id.c_str());
+	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::showMenuEntry:\n");
 
-	loadItem(id);
+	selected = 0;
 
 	elist = new ClistBox(LOCALE_UPNPBROWSER_HEAD, NEUTRINO_ICON_UPNP, w_max ( (m_frameBuffer->getScreenWidth() / 20 * 17), (m_frameBuffer->getScreenWidth() / 20 )), h_max ( (m_frameBuffer->getScreenHeight() / 20 * 16), (m_frameBuffer->getScreenHeight() / 20)));
 
@@ -577,8 +595,8 @@ int CUpnpBrowserGui::showMenuEntry(std::string id)
 			tmp = "";
 			if (preferred != -1)
 			{
-				std::string proto, network, mime, info;
-				splitProtocol((*entries)[i].resources[preferred].protocol, proto, network, mime, info);
+				std::string proto, network, mime, _info;
+				splitProtocol((*entries)[i].resources[preferred].protocol, proto, network, mime, _info);
 				tmp = "Protocol: " + proto + ", MIME-Type: " + mime;
 			}
 
@@ -607,11 +625,8 @@ int CUpnpBrowserGui::showMenuEntry(std::string id)
 
 	elist->exec(NULL, "");
 	//elist->hide();
-	selected = elist->getSelectedLine();
 	delete elist;
 	elist = NULL;
-
-	return selected;
 }
 
 int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -627,23 +642,27 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		gui = UPNP_GUI_ENTRY;
 
-		//selected = ulist->getSelected();
-
-		showMenuEntry("0");
+		loadItem("0");
+		showMenuEntry();
 
 		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "sub_entry")
 	{
-		gui = UPNP_GUI_ENTRY;
+		gui = UPNP_GUI_SUBENTRY;
 
-		//selected = elist->getSelected();
+		if(elist)
+			selected = elist->getSelected();
 
 		if ((*entries)[selected].isdir)
 		{
-			showMenuEntry((*entries)[selected].id);
+			loadItem((*entries)[selected].id);
 
-			return menu_return::RETURN_REPAINT;
+			showMenuEntry();
+
+			endall = true;
+
+			return menu_return::RETURN_EXIT_ALL;
 		}
 		else /*if (!(*entries)[selected].isdir)*/
 		{
@@ -720,12 +739,33 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_blue")
 	{
 		gui = UPNP_GUI_DEVICE;
+
+		loadDevices();
 		showMenuDevice();
 
-		return menu_return::RETURN_EXIT;
+		return menu_return::RETURN_EXIT_ALL;
+	}
+/*
+	else if(actionKey == "RC_home")
+	{
+		selected = 0;
+
+		return menu_return::RETURN_EXIT_ALL;
 	}
 
-	showMenuDevice();
+	if(endall)
+	{
+		loadItem("0");
+		showMenuEntry();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else
+*/
+	{
+		loadDevices();
+		showMenuDevice();
+	}
 
 	return menu_return::RETURN_EXIT;
 }

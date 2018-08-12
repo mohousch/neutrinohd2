@@ -680,6 +680,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 			attribs.push_back(UPnPAttribute("SortCriteria", ""));
 
 			results = m_devices[m_selecteddevice].SendSOAP("urn:schemas-upnp-org:service:ContentDirectory:1", "Browse", attribs);
+
 			for (i = results.begin(); i != results.end(); i++)
 			{
 				if (i->first == "NumberReturned")
@@ -687,24 +688,29 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 					returned = atoi(i->second.c_str());
 					nfound = true;
 				}
+
 				if (i->first == "TotalMatches")
 				{
 					dirnum = atoi(i->second.c_str());
 					tfound = true;
 				}
+
 				if (i->first == "Result")
 				{
 					entries = decodeResult(i->second);
 					rfound = true;
 				}
 			}
+
 			if (!entries)
 				return endall;
+
 			if (!nfound || !tfound || !rfound)
 			{
 				delete entries;
 				return endall;
 			}
+
 			if (returned != entries->size())
 			{
 				delete entries;
@@ -716,6 +722,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 				delete entries;
 				return endall;
 			}
+
 			rchanged = false;
 			changed = true;
 		}
@@ -744,7 +751,6 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 		{
 			loop = false;
 		}
-
 		else if (msg_repeatok == CRCInput::RC_up && selected > 0)
 		{
 			selected--;

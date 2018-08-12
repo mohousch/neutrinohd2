@@ -65,17 +65,38 @@ struct UPnPEntry
 	int		preferred;
 };
 
+/*
+class CUpnpEntry : public CMenuTarget
+{
+	private:
+		CFrameBuffer* m_frameBuffer;
+
+		ClistBox* elist;
+		CMenuItem* item;
+		
+		unsigned int eselected;
+
+	public:
+		CUpnpEntry();
+		~CUpnpEntry();
+
+		int exec(CMenuTarget* parent, const std::string& actionKey);	
+		void hide();
+};
+*/
+
 class CUpnpBrowserGui : public CMenuTarget
 {
 	private:
 		std::vector<CUPnPDevice> m_devices;
-		std::vector<UPnPEntry> *entries;
-		CUPnPSocket  * m_socket;
+		std::vector<UPnPEntry>* entries;
+		CUPnPSocket* m_socket;
 
 		// gui
 		typedef enum {
 			UPNP_GUI_DEVICE = 0,
 			UPNP_GUI_ENTRY,
+			UPNP_GUI_SUBENTRY
 		}UPNP_GUI;
 
 		CFrameBuffer * m_frameBuffer;
@@ -85,10 +106,9 @@ class CUpnpBrowserGui : public CMenuTarget
 		CMenuItem* item;
 
 		UPNP_GUI gui;
-		bool endall;
 
 		unsigned int selected;
-		int            m_playid;
+		//int m_playid;
 		std::string thumbnail_dir;
 		CFileHelpers fileHelper;
 
@@ -98,12 +118,13 @@ class CUpnpBrowserGui : public CMenuTarget
 		CMoviePlayerGui tmpMoviePlayerGui;
 
 		//
-		std::vector<UPnPEntry> *decodeResult(std::string);
+		std::vector<UPnPEntry>* decodeResult(std::string);
 		void splitProtocol(std::string &protocol, std::string &prot, std::string &network, std::string &mime, std::string &additional);
 
 		void showMenuDevice();
-		int showMenuEntry(std::string);
+		void showMenuEntry();
 		bool loadItem(std::string);
+		void loadDevices();
 
 	public:
 		CUpnpBrowserGui();
