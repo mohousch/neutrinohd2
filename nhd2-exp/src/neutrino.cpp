@@ -692,7 +692,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.menu_FootInfo_Text_green = configfile.getInt32( "menu_FootInfo_Text_green", 100);
 	g_settings.menu_FootInfo_Text_blue = configfile.getInt32( "menu_FootInfo_Text_blue", 100);
 
-	strcpy( g_settings.font_file, configfile.getString( "font_file", DATADIR "/neutrino/fonts/micron.ttf" ).c_str() );
+	strcpy( g_settings.font_file, configfile.getString( "font_file", DATADIR "/neutrino/fonts/arial.ttf" ).c_str() );
 
 	// menue timing
 	for (int i = 0; i < TIMING_SETTING_COUNT; i++)
@@ -1767,14 +1767,14 @@ void CNeutrinoApp::SetupFonts()
 
 	if(access(g_settings.font_file, F_OK)) 
 	{
-		if(!access(DATADIR "/neutrino/fonts/micron.ttf", F_OK))
+		if(!access(DATADIR "/neutrino/fonts/arial.ttf", F_OK))
 		{
-			font.filename = strdup(DATADIR "/neutrino/fonts/micron.ttf");
+			font.filename = strdup(DATADIR "/neutrino/fonts/arial.ttf");
 			strcpy(g_settings.font_file, font.filename);
 		}
 		else
 		{
-			  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", DATADIR "/neutrino/fonts/micron.ttf");
+			  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", DATADIR "/neutrino/fonts/arial.ttf");
 			  _exit(0);
 		}
 	}
@@ -1782,19 +1782,19 @@ void CNeutrinoApp::SetupFonts()
 	{
 		font.filename = strdup(g_settings.font_file);
 		
-		// check??? (use only true type fonts or fallback to micron.ttf
+		// check??? (use only true type fonts or fallback to arial.ttf
 		if( !strstr(font.filename, ".ttf") )
 		{
-			dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetupFonts: font file %s not ok falling back to micron.ttf\n", g_settings.font_file);
+			dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetupFonts: font file %s not ok falling back to arial.ttf\n", g_settings.font_file);
 			
-			if(!access(DATADIR "/neutrino/fonts/micron.ttf", F_OK))
+			if(!access(DATADIR "/neutrino/fonts/arial.ttf", F_OK))
 			{
-				font.filename = strdup(DATADIR "/neutrino/fonts/micron.ttf");
+				font.filename = strdup(DATADIR "/neutrino/fonts/arial.ttf");
 				strcpy(g_settings.font_file, font.filename);
 			}
 			else
 			{
-				  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", DATADIR "/neutrino/fonts/micron.ttf");
+				  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", DATADIR "/neutrino/fonts/arial.ttf");
 				  _exit(0);
 			}
 		}

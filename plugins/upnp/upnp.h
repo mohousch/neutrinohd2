@@ -121,13 +121,14 @@ class CUpnpBrowserGui : public CMenuTarget
 		std::vector<UPnPEntry>* decodeResult(std::string);
 		void splitProtocol(std::string &protocol, std::string &prot, std::string &network, std::string &mime, std::string &additional);
 
-		void showMenuDevice();
-		void showMenuEntry();
 		bool loadItem(std::string);
 		void loadDevices();
 
+		void showMenuDevice();
+		void showMenuEntry();
+
 	public:
-		CUpnpBrowserGui();
+		CUpnpBrowserGui(UPNP_GUI g = UPNP_GUI_DEVICE);
 		~CUpnpBrowserGui();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();

@@ -106,7 +106,7 @@ void CUpnpEntry::hide()
 }
 */
 
-CUpnpBrowserGui::CUpnpBrowserGui()
+CUpnpBrowserGui::CUpnpBrowserGui(UPNP_GUI g)
 {
 	m_socket = new CUPnPSocket();
 	m_frameBuffer = CFrameBuffer::getInstance();
@@ -114,11 +114,11 @@ CUpnpBrowserGui::CUpnpBrowserGui()
 	thumbnail_dir = "/tmp/upnpbrowser";
 
 	ulist = NULL;
-	//elist = NULL;
+	elist = NULL;
 	item = NULL;
 
 	selected = 0;
-	gui = UPNP_GUI_DEVICE;
+	gui = g;
 
 	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
 }
@@ -386,7 +386,7 @@ bool CUpnpBrowserGui::loadItem(std::string id)
 	bool tfound = false;
 
 	sindex << index;
-	scount << ulist->getListMaxShow();
+	scount << /*ulist->getListMaxShow()*/100;
 
 	attribs.push_back(UPnPAttribute("ObjectID", id));
 	attribs.push_back(UPnPAttribute("BrowseFlag", "BrowseDirectChildren"));
@@ -634,6 +634,7 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::exec: %s\n", actionKey.c_str());
 
 	bool endall = false;
+	int cnt = 0;
 
 	if(parent)
 		parent->hide();
@@ -650,6 +651,7 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "sub_entry")
 	{
 		gui = UPNP_GUI_SUBENTRY;
+		cnt++;
 
 		if(elist)
 			selected = elist->getSelected();
@@ -657,14 +659,13 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 		if ((*entries)[selected].isdir)
 		{
 			loadItem((*entries)[selected].id);
-
 			showMenuEntry();
 
-			endall = true;
+			loadItem("0");
 
 			return menu_return::RETURN_EXIT_ALL;
 		}
-		else /*if (!(*entries)[selected].isdir)*/
+		else if (!(*entries)[selected].isdir)
 		{
 			int preferred = (*entries)[selected].preferred;
 			if (preferred != -1)
@@ -720,7 +721,7 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 					tmpPictureViewerGui.addToPlaylist(pic);
 					tmpPictureViewerGui.exec(this, "");
 				}
-				else if (mime.substr(0,6) == "video/")
+				else if (mime.substr(0, 6) == "video/")
 				{
 					MI_MOVIE_INFO mfile;
 					mfile.file.Name = (*entries)[selected].resources[preferred].url.c_str(); 
@@ -734,7 +735,6 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 
 			return menu_return::RETURN_REPAINT;
 		}
-
 	}
 	else if(actionKey == "RC_blue")
 	{
@@ -745,14 +745,23 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
+	/*
 	else if(actionKey == "RC_home")
 	{
 		selected = 0;
+		endall = true;
 
-		return menu_return::RETURN_EXIT_ALL;
+		//loadItem("0");
+		//showMenuEntry();
+
+		//return menu_return::RETURN_EXIT_ALL;
 	}
+	*/
 
-	if(endall)
+	printf("cnt:%d\n", cnt);
+
+/*
+	if(endall && gui == UPNP_GUI_SUBENTRY)
 	{
 		loadItem("0");
 		showMenuEntry();
@@ -760,12 +769,14 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else
+*/
+	if(gui == UPNP_GUI_DEVICE)
 	{
 		loadDevices();
 		showMenuDevice();
 	}
 
-	return menu_return::RETURN_EXIT;
+	return menu_return::RETURN_EXIT_ALL;
 }
 
 void plugin_init(void)
