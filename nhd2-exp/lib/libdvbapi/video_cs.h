@@ -288,6 +288,10 @@ class cVideo
 		void setSaturation(int saturation);
 		void setBrightness(int brightness);
 		void setTint(int tint);
+
+		//
+		void ShowPicture(const char * fname);
+		void StopPicture();
 };
 
 #endif

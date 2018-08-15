@@ -91,7 +91,7 @@ void CWindow::saveScreen()
 	background = new fb_pixel_t[full_width*full_height];
 	
 	if(background)
-		frameBuffer->SaveScreen(cFrameBox.iX, cFrameBox.iY, full_width, full_height, background);
+		frameBuffer->saveScreen(cFrameBox.iX, cFrameBox.iY, full_width, full_height, background);
 }
 
 void CWindow::restoreScreen()
@@ -101,7 +101,7 @@ void CWindow::restoreScreen()
 
 	if(background) 
 	{
-		frameBuffer->RestoreScreen(cFrameBox.iX, cFrameBox.iY, full_width, full_height, background);
+		frameBuffer->restoreScreen(cFrameBox.iX, cFrameBox.iY, full_width, full_height, background);
 	}
 
 	delete[] background;

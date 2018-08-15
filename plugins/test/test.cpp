@@ -259,7 +259,7 @@ void CTestMenu::testCImage()
 	// paint testImage
 	testImage.setImage(PLUGINDIR "/netzkino/netzkino.png");
 
-	CFrameBuffer::getInstance()->DisplayImage(testImage.imageName.c_str(), testBox.iX + BORDER_LEFT, testBox.iY, testImage.iWidth, testImage.iHeight);
+	CFrameBuffer::getInstance()->displayImage(testImage.imageName.c_str(), testBox.iX + BORDER_LEFT, testBox.iY, testImage.iWidth, testImage.iHeight);
 
 	CFrameBuffer::getInstance()->blit();
 

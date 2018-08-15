@@ -85,7 +85,7 @@ CPictureViewerGui::~CPictureViewerGui()
 	playlist.clear();
 
 	// free picviewer mem
-	g_PicViewer->Cleanup();
+	g_PicViewer->cleanup();
 	delete g_PicViewer;
 	g_PicViewer = NULL;
 }
@@ -101,13 +101,13 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	dprintf(DEBUG_NORMAL, "CPictureViewerGui::exec: actionKey:%s\n", actionKey.c_str());
 	
 	// 
-	g_PicViewer->SetScaling( (CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
-	g_PicViewer->SetVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
+	g_PicViewer->setScaling( (CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
+	g_PicViewer->setVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
 
 	if(g_settings.video_Ratio == 1)
-		g_PicViewer->SetAspectRatio(16.0/9);
+		g_PicViewer->setAspectRatio(16.0/9);
 	else
-		g_PicViewer->SetAspectRatio(4.0/3);
+		g_PicViewer->setAspectRatio(4.0/3);
 
 	if(parent)
 		parent->hide();
@@ -123,7 +123,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	if (usedBackground) 
 	{
 		frameBuffer->saveBackgroundImage();
-		frameBuffer->ClearFrameBuffer();
+		frameBuffer->clearFrameBuffer();
 		frameBuffer->blit();
 	}
 	
@@ -133,7 +133,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	show(parent);
 
 	// free picviewer mem
-	g_PicViewer->Cleanup();
+	g_PicViewer->cleanup();
 
 	// Restore previous background	
 	if (usedBackground) 
@@ -223,32 +223,32 @@ void CPictureViewerGui::show(CMenuTarget* p)
 		}
 		else if( msg == CRCInput::RC_1 )
 		{ 
-			g_PicViewer->Zoom(2.0/3);
+			g_PicViewer->zoom(2.0/3);
 		}
 		else if( msg == CRCInput::RC_2 )
 		{ 
-			g_PicViewer->Move(0, -10);
+			g_PicViewer->move(0, -10);
 		}
 		else if( msg == CRCInput::RC_3 )
 		{ 
-			g_PicViewer->Zoom(1.5);
+			g_PicViewer->zoom(1.5);
 		}
 		else if( msg == CRCInput::RC_4 )
 		{ 
-			g_PicViewer->Move(-10, 0);
+			g_PicViewer->move(-10, 0);
 		}
 		else if( msg == CRCInput::RC_6 )
 		{ 
 			if (playlist.empty())
 			{
-				g_PicViewer->Move(10, 0);
+				g_PicViewer->move(10, 0);
 			}
 		}
 		else if( msg == CRCInput::RC_8 )
 		{ 
 			if (playlist.empty())
 			{
-				g_PicViewer->Move(0, 10);
+				g_PicViewer->move(0, 10);
 			}
 		}
 		else if(msg == CRCInput::RC_0)
@@ -323,7 +323,7 @@ void CPictureViewerGui::view(unsigned int index)
 	else
 		CVFD::getInstance()->showMenuText(0, playlist[index].Name.c_str());
 	
-	g_PicViewer->ShowImage(playlist[index].Filename);
+	g_PicViewer->showImage(playlist[index].Filename);
 }
 
 void CPictureViewerGui::addToPlaylist(CPicture& file)

@@ -49,7 +49,7 @@ CNEpisodes::~CNEpisodes()
 
 void CNEpisodes::hide()
 {
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->clearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
 }
 

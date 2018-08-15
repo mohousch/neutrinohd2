@@ -781,7 +781,7 @@ void EventList::paintHead(t_channel_id channel_id)
 		frameBuffer->getLogoSize(channel_id, &logo_w, &logo_h, &logo_bpp);
 		
 		// display logo
-		frameBuffer->DisplayLogo(channel_id, x + BORDER_LEFT, y, (logo_bpp == 4 && logo_w > PIC_W)?  PIC_W: PIC_W_1, theight, (logo_h > theight)? true : false, false, true);
+		frameBuffer->displayLogo(channel_id, x + BORDER_LEFT, y, (logo_bpp == 4 && logo_w > PIC_W)?  PIC_W: PIC_W_1, theight, (logo_h > theight)? true : false, false, true);
 		
 		// title
 		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->RenderString(x + BORDER_LEFT + ( (logo_bpp == 4)? logo_w : PIC_W_1) + 5, y + theight + 1, width - BORDER_LEFT - ( (logo_bpp == 4)? logo_w : PIC_W_1) - BORDER_RIGHT - icon_h_w - 5 - timestr_len, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8

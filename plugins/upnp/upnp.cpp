@@ -133,7 +133,7 @@ CUpnpBrowserGui::~CUpnpBrowserGui()
 
 void CUpnpBrowserGui::hide()
 {
-	m_frameBuffer->ClearFrameBuffer();
+	m_frameBuffer->clearFrameBuffer();
 	m_frameBuffer->blit();
 }
 

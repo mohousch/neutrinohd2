@@ -395,7 +395,7 @@ void EpgPlus::ChannelEntry::paint (bool isSelected, time_t selectedTime)
 			this->frameBuffer->getLogoSize(this->channel->getChannelID(), &logo_w, &logo_h, &logo_bpp);
 		
 			// paint logo (png with alpha channel)
-			this->frameBuffer->DisplayLogo(this->channel->getChannelID(), this->x + 1 + ((logo_bpp == 4)? 0 : (this->width - 2 - PIC_W)/2), this->y + 1, (logo_bpp == 4)? this->width -2 : PIC_W, this->font->getHeight() - 2, true);
+			this->frameBuffer->displayLogo(this->channel->getChannelID(), this->x + 1 + ((logo_bpp == 4)? 0 : (this->width - 2 - PIC_W)/2), this->y + 1, (logo_bpp == 4)? this->width -2 : PIC_W, this->font->getHeight() - 2, true);
 		}
 	}
 	

@@ -3810,7 +3810,7 @@ void plugin_exec(void)
 
 	// clear fb
 	//RenderBox(0, 0, var_screeninfo.xres, var_screeninfo.yres, FILL, BLACK);
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->clearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
 
 	//init data
@@ -4537,7 +4537,7 @@ void plugin_exec(void)
 	ClearZipEntries(LEFTFRAME );
 	ClearZipEntries(RIGHTFRAME);
 	
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->clearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
 }
 

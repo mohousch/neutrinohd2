@@ -2246,7 +2246,7 @@ void plugin_exec()
 	WriteConf();
 
 	// clear fb
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->clearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
 
 	startx = sx;
@@ -2542,6 +2542,6 @@ void plugin_exec()
 	// signal daemon to reread the database
 	ControlDaemon(RELOAD_DB);
 	
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->clearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
 }

@@ -4409,8 +4409,7 @@ void CNeutrinoApp::AudioMute( int newValue, bool isEvent )
 			
 			if(mute_pixbuf)
 			{
-				frameBuffer->SaveScreen(x, y, dx, dy, mute_pixbuf);
-			
+				frameBuffer->saveScreen(x, y, dx, dy, mute_pixbuf);
 				frameBuffer->blit();						
 			}
 		
@@ -4421,8 +4420,7 @@ void CNeutrinoApp::AudioMute( int newValue, bool isEvent )
 		{
 			if( mute_pixbuf) 
 			{
-				frameBuffer->RestoreScreen(x, y, dx, dy, mute_pixbuf);
-
+				frameBuffer->restoreScreen(x, y, dx, dy, mute_pixbuf);
 				frameBuffer->blit();
 	
 				delete [] mute_pixbuf;
@@ -4496,8 +4494,7 @@ void CNeutrinoApp::setVolume(const neutrino_msg_t key, const bool bDoPaint, bool
 
 		if(pixbuf != NULL)
 		{
-			frameBuffer->SaveScreen(x, y, dx, dy, pixbuf);
-			
+			frameBuffer->saveScreen(x, y, dx, dy, pixbuf);
 			frameBuffer->blit();				
 		}
 
@@ -4613,8 +4610,7 @@ void CNeutrinoApp::setVolume(const neutrino_msg_t key, const bool bDoPaint, bool
 
 	if( (bDoPaint) && (pixbuf != NULL) ) 
 	{
-		frameBuffer->RestoreScreen(x, y, dx, dy, pixbuf);
-
+		frameBuffer->restoreScreen(x, y, dx, dy, pixbuf);
 		frameBuffer->blit();
 	
 		delete [] pixbuf;

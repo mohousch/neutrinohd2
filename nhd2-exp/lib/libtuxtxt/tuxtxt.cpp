@@ -244,15 +244,13 @@ void RenderClearMenuLineBB(char *p, tstPageAttr *attrcol, tstPageAttr *attr)
 
 void ClearBB(int /*color*/)
 {
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
-		
+	CFrameBuffer::getInstance()->clearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();	
 }
 
 void ClearFB(int /*color*/)
 {
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
-		
+	CFrameBuffer::getInstance()->clearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
 }
 
@@ -2101,8 +2099,7 @@ void CleanUp()
 #endif
 
 	/* clear screen */
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
-	
+	CFrameBuffer::getInstance()->clearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
 
 	/* close freetype */

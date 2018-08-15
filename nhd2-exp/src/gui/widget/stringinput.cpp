@@ -873,7 +873,7 @@ int CPLPINInput::exec( CMenuTarget* parent, const std::string & )
 
 	if (pixbuf != NULL)
 	{
-		frameBuffer->SaveScreen(x- borderwidth, y- borderwidth, width+ 2* borderwidth, height+ 2* borderwidth, pixbuf);
+		frameBuffer->saveScreen(x- borderwidth, y- borderwidth, width+ 2* borderwidth, height+ 2* borderwidth, pixbuf);
 		
 		frameBuffer->blit();
 	}
@@ -886,11 +886,11 @@ int CPLPINInput::exec( CMenuTarget* parent, const std::string & )
 	
 	frameBuffer->blit();
 
-	int res = CPINInput::exec ( parent, "" );
+	int res = CPINInput::exec (parent, "");
 
 	if (pixbuf != NULL)
 	{
-		frameBuffer->RestoreScreen(x- borderwidth, y- borderwidth, width+ 2* borderwidth, height+ 2* borderwidth, pixbuf);
+		frameBuffer->restoreScreen(x- borderwidth, y- borderwidth, width+ 2* borderwidth, height+ 2* borderwidth, pixbuf);
 
 		frameBuffer->blit();
 		

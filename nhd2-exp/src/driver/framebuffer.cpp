@@ -219,7 +219,7 @@ void CFrameBuffer::init(const char * const fbDevice)
 	// icons cache
 	cache_size = 0;
 	
-	// Windows Colors
+	// windows colors
 	paletteSetColor(0x1, 0x010101, tr);
         paletteSetColor(COL_DARK_RED0, 0x800000, tr);
         paletteSetColor(COL_DARK_GREEN0, 0x008000, tr);
@@ -1360,7 +1360,7 @@ void CFrameBuffer::paintBackgroundBoxRel(int x, int y, int dx, int dy)
 
 		fb_pixel_t * bkpos = background + x + BACKGROUNDIMAGEWIDTH * y;
 
-		for(int count = 0;count < dy; count++)
+		for(int count = 0; count < dy; count++)
 		{
 			memcpy(fbpos, bkpos, dx * sizeof(fb_pixel_t));
 			fbpos += stride;
@@ -1385,9 +1385,9 @@ void CFrameBuffer::paintBackground()
 	}	
 }
 
-void CFrameBuffer::SaveScreen(int x, int y, int dx, int dy, fb_pixel_t * const memp)
+void CFrameBuffer::saveScreen(int x, int y, int dx, int dy, fb_pixel_t * const memp)
 {
-	dprintf(DEBUG_DEBUG, "CFrameBuffer::SaveScreen\n");
+	dprintf(DEBUG_DEBUG, "CFrameBuffer::saveScreen\n");
 	
 	if (!getActive())
 		return;
@@ -1406,9 +1406,9 @@ void CFrameBuffer::SaveScreen(int x, int y, int dx, int dy, fb_pixel_t * const m
 	}
 }
 
-void CFrameBuffer::RestoreScreen(int x, int y, int dx, int dy, fb_pixel_t * const memp)
+void CFrameBuffer::restoreScreen(int x, int y, int dx, int dy, fb_pixel_t * const memp)
 {
-	dprintf(DEBUG_DEBUG, "CFrameBuffer::RestoreScreen\n");
+	dprintf(DEBUG_DEBUG, "CFrameBuffer::restoreScreen\n");
 	
 	if (!getActive())
 		return;
@@ -1425,7 +1425,7 @@ void CFrameBuffer::RestoreScreen(int x, int y, int dx, int dy, fb_pixel_t * cons
 	}
 }
 
-void CFrameBuffer::ClearFrameBuffer()
+void CFrameBuffer::clearFrameBuffer()
 {
 	paintBackground();
 }
@@ -1720,7 +1720,7 @@ void CFrameBuffer::getSize(const std::string &name, int * width, int * height, i
 }
 
 // resize
-unsigned char * CFrameBuffer::Resize(unsigned char * origin, int ox, int oy, int dx, int dy, ScalingMode type, unsigned char * dst, bool alpha)
+unsigned char * CFrameBuffer::resize(unsigned char * origin, int ox, int oy, int dx, int dy, ScalingMode type, unsigned char * dst, bool alpha)
 {
 	unsigned char * cr;
 	
@@ -1923,9 +1923,9 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 
 					// alpha
 					if(_bpp == 4)
-						buffer = Resize(buffer, x, y, width, height, scaling, NULL, true);
+						buffer = resize(buffer, x, y, width, height, scaling, NULL, true);
 					else
-						buffer = Resize(buffer, x, y, width, height, scaling);
+						buffer = resize(buffer, x, y, width, height, scaling);
 				
 					x = width ;
 					y = height;
@@ -1962,9 +1962,9 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 }
 
 // display image
-bool CFrameBuffer::DisplayImage(const std::string& name, int posx, int posy, int width, int height, ScalingMode scaling, int x_pan, int y_pan, bool clearfb)
+bool CFrameBuffer::displayImage(const std::string& name, int posx, int posy, int width, int height, ScalingMode scaling, int x_pan, int y_pan, bool clearfb)
 {
-	dprintf(DEBUG_DEBUG, "CFrameBuffer::DisplayImage %s\n", name.c_str());
+	dprintf(DEBUG_DEBUG, "CFrameBuffer::displayImage %s\n", name.c_str());
 	
 	if(!getActive())
 		return false;
@@ -1984,10 +1984,10 @@ bool CFrameBuffer::DisplayImage(const std::string& name, int posx, int posy, int
 	if( name.find(".png") == (name.length() - 4) )
 		isPNG = true;
 	
-	fb_pixel_t * data = getImage(name, dx, dy, scaling);
+	fb_pixel_t* data = getImage(name, dx, dy, scaling);
 
 	if(clearfb)
-                ClearFrameBuffer();
+                clearFrameBuffer();
 
 	if(data) 
 	{
@@ -1999,7 +1999,7 @@ bool CFrameBuffer::DisplayImage(const std::string& name, int posx, int posy, int
 	return false;
 }
 
-// display RGB
+// display RGB (used in pictureviewer)
 void CFrameBuffer::displayRGB(unsigned char * rgbbuff, int x_size, int y_size, int x_pan, int y_pan, int x_offs, int y_offs, bool clearfb)
 {
         void * fbbuff = NULL;
@@ -2026,7 +2026,7 @@ void CFrameBuffer::displayRGB(unsigned char * rgbbuff, int x_size, int y_size, i
 
         // ClearFB if image is smaller
         if(clearfb)
-                ClearFrameBuffer();
+                clearFrameBuffer();
 
 	// blit2fb
         blit2FB(fbbuff, x_size, y_size, x_offs, y_offs, x_pan, y_pan);
@@ -2095,7 +2095,7 @@ void CFrameBuffer::getLogoSize(t_channel_id channel_id, int * width, int * heigh
 }
 
 // display logo
-bool CFrameBuffer::DisplayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale, bool center_x, bool center_y)
+bool CFrameBuffer::displayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale, bool center_x, bool center_y)
 {	
         std::string logo_name;
 	bool ret = false;
@@ -2150,11 +2150,11 @@ bool CFrameBuffer::DisplayLogo(t_channel_id channel_id, int posx, int posy, int 
 				}
 			}
 			
-			ret = DisplayImage(logo_name, center_x?posx + (width - logo_w)/2 : posx, center_y?posy + (height - logo_h)/2 : posy, logo_w, logo_h);
+			ret = displayImage(logo_name, center_x?posx + (width - logo_w)/2 : posx, center_y?posy + (height - logo_h)/2 : posy, logo_w, logo_h);
 		}
 		else
 		{
-			ret = DisplayImage(logo_name, posx, posy, width, height);
+			ret = displayImage(logo_name, posx, posy, width, height);
 		}
         }
 

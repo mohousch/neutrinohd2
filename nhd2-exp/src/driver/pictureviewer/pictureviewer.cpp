@@ -72,7 +72,7 @@ CPictureViewer::CPictureViewer ()
 	m_busy_height = 10;
 }
 
-void CPictureViewer::SetVisible (int startx, int endx, int starty, int endy)
+void CPictureViewer::setVisible (int startx, int endx, int starty, int endy)
 {
 	m_startx = startx;
 	m_endx = endx;
@@ -80,9 +80,9 @@ void CPictureViewer::SetVisible (int startx, int endx, int starty, int endy)
 	m_endy = endy;
 }
 
-bool CPictureViewer::DecodeImage(const std::string & name, bool showBusySign)
+bool CPictureViewer::decodeImage(const std::string & name, bool showBusySign)
 {
-	dprintf(DEBUG_NORMAL, "CPictureViewer::DecodeImage: %s\n", name.c_str()); 
+	dprintf(DEBUG_NORMAL, "CPictureViewer::decodeImage: %s\n", name.c_str()); 
 	
 	int x;
 	int y;
@@ -111,7 +111,7 @@ bool CPictureViewer::DecodeImage(const std::string & name, bool showBusySign)
 
 		if (m_Pic_Buffer == NULL) 
 		{
-			dprintf(DEBUG_NORMAL, "CPictureViewer::DecodeImage: Error: malloc\n");
+			dprintf(DEBUG_NORMAL, "CPictureViewer::decodeImage: Error: malloc\n");
 			return false;
 		}
 
@@ -131,7 +131,7 @@ bool CPictureViewer::DecodeImage(const std::string & name, bool showBusySign)
 				}
 
 				// resize
-				m_Pic_Buffer = CFrameBuffer::getInstance()->Resize(m_Pic_Buffer, x, y, imx, imy, m_scaling);
+				m_Pic_Buffer = CFrameBuffer::getInstance()->resize(m_Pic_Buffer, x, y, imx, imy, m_scaling);
 
 				x = imx;
 				y = imy;
@@ -162,14 +162,14 @@ bool CPictureViewer::DecodeImage(const std::string & name, bool showBusySign)
 		} 
 		else 
 		{
-			dprintf(DEBUG_NORMAL, "CPictureViewer::DecodeImage: Unable to read file !\n");
+			dprintf(DEBUG_NORMAL, "CPictureViewer::decodeImage: Unable to read file !\n");
 
 			free (m_Pic_Buffer);
 			m_Pic_Buffer = (unsigned char *) malloc (3);
 
 			if (m_Pic_Buffer == NULL) 
 			{
-				printf(DEBUG_NORMAL, "CPictureViewer::DecodeImage: Error: malloc\n");
+				printf(DEBUG_NORMAL, "CPictureViewer::decodeImage: Error: malloc\n");
 				return false;
 			}
 			memset(m_Pic_Buffer, 0, 3);
@@ -183,7 +183,7 @@ bool CPictureViewer::DecodeImage(const std::string & name, bool showBusySign)
 	} 
 	else 
 	{
-		dprintf (DEBUG_NORMAL, "CPictureViewer::DecodeImage: Unable to read file or format not recognized!\n");
+		dprintf (DEBUG_NORMAL, "CPictureViewer::decodeImage: Unable to read file or format not recognized!\n");
 		
 		if (m_Pic_Buffer != NULL) 
 		{
@@ -193,7 +193,7 @@ bool CPictureViewer::DecodeImage(const std::string & name, bool showBusySign)
 		m_Pic_Buffer = (unsigned char *) malloc (3);
 		if (m_Pic_Buffer == NULL) 
 		{
-			dprintf(DEBUG_NORMAL, "CPictureViewer::DecodeImage: Error: malloc\n");
+			dprintf(DEBUG_NORMAL, "CPictureViewer::decodeImage: Error: malloc\n");
 			return false;
 		}
 
@@ -212,9 +212,9 @@ bool CPictureViewer::DecodeImage(const std::string & name, bool showBusySign)
 	return (m_Pic_Buffer != NULL);
 }
 
-bool CPictureViewer::DisplayImage()
+bool CPictureViewer::displayImage()
 {
-	dprintf(DEBUG_NORMAL, "CPictureViewer::DisplayImage\n");
+	dprintf(DEBUG_NORMAL, "CPictureViewer::displayImage\n");
 
   	if (m_Pic_Buffer != NULL)
 		CFrameBuffer::getInstance()->displayRGB(m_Pic_Buffer, m_Pic_X, m_Pic_Y, m_Pic_XPan, m_Pic_YPan, m_Pic_XPos, m_Pic_YPos);
@@ -222,22 +222,22 @@ bool CPictureViewer::DisplayImage()
   	return true;
 }
 
-bool CPictureViewer::ShowImage(const std::string & filename)
+bool CPictureViewer::showImage(const std::string & filename)
 {
-	dprintf(DEBUG_NORMAL, "CPictureViewer::ShowImage: %s\n", filename.c_str());
+	dprintf(DEBUG_NORMAL, "CPictureViewer::showImage: %s\n", filename.c_str());
 
 	// decode image
-  	DecodeImage(filename, true);
+  	decodeImage(filename, true);
 	
 	// display next image
-  	DisplayImage();
+  	displayImage();
 	
   	return true;
 }
 
-void CPictureViewer::Zoom(float factor)
+void CPictureViewer::zoom(float factor)
 {
-	dprintf(DEBUG_INFO, "CPictureViewer::Zoom %f\n",factor);
+	dprintf(DEBUG_INFO, "CPictureViewer::zoom %f\n",factor);
 	
 	showBusy(COL_YELLOW);
 	
@@ -247,7 +247,7 @@ void CPictureViewer::Zoom(float factor)
 	m_Pic_X = (int) (factor * m_Pic_X);
 	m_Pic_Y = (int) (factor * m_Pic_Y);
 	
-	m_Pic_Buffer = CFrameBuffer::getInstance()->Resize(m_Pic_Buffer, oldx, oldy, m_Pic_X, m_Pic_Y, m_scaling);
+	m_Pic_Buffer = CFrameBuffer::getInstance()->resize(m_Pic_Buffer, oldx, oldy, m_Pic_X, m_Pic_Y, m_scaling);
 	
 	if (m_Pic_Buffer == oldBuf) 
 	{
@@ -279,9 +279,9 @@ void CPictureViewer::Zoom(float factor)
 	CFrameBuffer::getInstance()->displayRGB(m_Pic_Buffer, m_Pic_X, m_Pic_Y, m_Pic_XPan, m_Pic_YPan, m_Pic_XPos, m_Pic_YPos);
 }
 
-void CPictureViewer::Move(int dx, int dy)
+void CPictureViewer::move(int dx, int dy)
 {
-	dprintf(DEBUG_INFO, "CPictureViewer::Move %d %d\n", dx, dy);
+	dprintf(DEBUG_INFO, "CPictureViewer::move %d %d\n", dx, dy);
 	
 	showBusy(COL_GREEN);
 	
@@ -323,7 +323,7 @@ void CPictureViewer::showBusy(fb_pixel_t col)
 {
 	dprintf(DEBUG_INFO, "CPictureViewer::Show Busy\n");
 
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->clearFrameBuffer();
 
 	CFrameBuffer::getInstance()->paintBoxRel(m_busy_x, m_busy_y, m_busy_width, m_busy_height, col);
 	
@@ -339,9 +339,9 @@ void CPictureViewer::hideBusy()
 	CFrameBuffer::getInstance()->blit();	
 }
 
-void CPictureViewer::Cleanup()
+void CPictureViewer::cleanup()
 {
-	dprintf(DEBUG_INFO, "CPictureViewer::Cleanup\n");
+	dprintf(DEBUG_INFO, "CPictureViewer::cleanup\n");
 
 	if (m_Pic_Buffer != NULL) 
 	{

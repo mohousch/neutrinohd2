@@ -50,7 +50,7 @@ CNSeasons::~CNSeasons()
 
 void CNSeasons::hide()
 {
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->clearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
 }
 

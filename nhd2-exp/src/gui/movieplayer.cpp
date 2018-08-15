@@ -229,7 +229,7 @@ void CMoviePlayerGui::removeFromPlaylist(long pos)
 
 void CMoviePlayerGui::hide()
 {
-	frameBuffer->ClearFrameBuffer();
+	frameBuffer->clearFrameBuffer();
 	frameBuffer->blit();
 }
 
@@ -245,7 +245,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	if (usedBackground) 
 	{
 		frameBuffer->saveBackgroundImage();
-		frameBuffer->ClearFrameBuffer();
+		frameBuffer->clearFrameBuffer();
 		frameBuffer->blit();
 	}
 	

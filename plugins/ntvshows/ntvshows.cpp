@@ -107,7 +107,7 @@ CTVShows::~CTVShows()
 
 void CTVShows::hide()
 {
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->clearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
 }
 

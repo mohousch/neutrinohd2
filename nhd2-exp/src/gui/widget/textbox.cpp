@@ -466,7 +466,7 @@ void CTextBox::refreshText(void)
 		CFrameBuffer::getInstance()->paintFrameBox(lx, ly, tw, th, COL_WHITE);
 		
 		// picture
-		CFrameBuffer::getInstance()->DisplayImage(thumbnail.c_str(), lx + THUMBNAIL_OFFSET, ly + THUMBNAIL_OFFSET, tw - THUMBNAIL_OFFSET, th - THUMBNAIL_OFFSET);
+		CFrameBuffer::getInstance()->displayImage(thumbnail.c_str(), lx + THUMBNAIL_OFFSET, ly + THUMBNAIL_OFFSET, tw - THUMBNAIL_OFFSET, th - THUMBNAIL_OFFSET);
 	}
 	
 	// paint text

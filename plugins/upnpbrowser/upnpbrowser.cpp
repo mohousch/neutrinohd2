@@ -934,7 +934,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 
 void CUpnpBrowserGui::hide()
 {
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->clearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
 }
 

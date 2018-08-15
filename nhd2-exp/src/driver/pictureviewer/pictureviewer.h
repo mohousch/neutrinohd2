@@ -63,13 +63,13 @@ class CPictureViewer
 		
 	public:
 		CPictureViewer();
-		~CPictureViewer(){Cleanup();};
+		~CPictureViewer(){cleanup();};
 		
 		//
-		void SetScaling( CFrameBuffer::ScalingMode s){m_scaling = s;}
-		void SetAspectRatio(float aspect_ratio) {m_aspect = aspect_ratio;}
-		void Cleanup();
-		void SetVisible(int startx, int endx, int starty, int endy);
+		void setScaling( CFrameBuffer::ScalingMode s){m_scaling = s;}
+		void setAspectRatio(float aspect_ratio) {m_aspect = aspect_ratio;}
+		void cleanup();
+		void setVisible(int startx, int endx, int starty, int endy);
 		static double m_aspect_ratio_correction;
 
 		//
@@ -77,13 +77,13 @@ class CPictureViewer
 		void hideBusy();
 
 		//
-		bool ShowImage(const std::string & filename);
-		bool DecodeImage(const std::string & name, bool showBusySign = false);
-		bool DisplayImage();
+		bool showImage(const std::string & filename);
+		bool decodeImage(const std::string & name, bool showBusySign = false);
+		bool displayImage();
 
 		//
-		void Zoom(float factor);
-		void Move(int dx, int dy);
+		void zoom(float factor);
+		void move(int dx, int dy);
 };
 
 #endif

@@ -545,7 +545,7 @@ void CEpgData::showHead(const t_channel_id channel_id)
 		frameBuffer->getLogoSize(channel_id, &logo_w, &logo_h, &logo_bpp);
 		
 		// display logo
-		frameBuffer->DisplayLogo(channel_id, sx + BORDER_LEFT, sy - toph, (logo_bpp == 4 && logo_w > PIC_W)?  PIC_W: PIC_W_1, topboxheight, (logo_h > topboxheight)? true : false, false, true);
+		frameBuffer->displayLogo(channel_id, sx + BORDER_LEFT, sy - toph, (logo_bpp == 4 && logo_w > PIC_W)?  PIC_W: PIC_W_1, topboxheight, (logo_h > topboxheight)? true : false, false, true);
 		
 		// title
 		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(sx + BORDER_LEFT + ( (logo_bpp == 4)? logo_w : PIC_W_1) + 5, sy - toph + topheight + 3, ox - BORDER_LEFT - timestr_len - 5 - ( (logo_bpp == 4)? logo_w : PIC_W_1), text1, COL_MENUHEAD, 0, true);

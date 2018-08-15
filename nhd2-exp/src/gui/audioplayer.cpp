@@ -478,7 +478,7 @@ void CAudioPlayerGui::paintInfo()
 	{
 		if(!access("/tmp/cover.jpg", F_OK))
 		{
-			m_frameBuffer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 4, m_title_height - 4);
+			m_frameBuffer->displayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 4, m_title_height - 4);
 
 		}		
 	}

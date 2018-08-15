@@ -328,7 +328,7 @@ bool CGeneralSettings::changeNotify(const neutrino_locale_t OptionName, void */*
 				if (usedBackground) 
 				{
 					CFrameBuffer::getInstance()->saveBackgroundImage();
-					CFrameBuffer::getInstance()->ClearFrameBuffer();
+					CFrameBuffer::getInstance()->clearFrameBuffer();
 
 					CFrameBuffer::getInstance()->blit();
 				}

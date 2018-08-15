@@ -396,7 +396,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 			frameBuffer->getLogoSize(channel_id, &logo_w, &logo_h, &logo_bpp);
 		
 			// display logo
-			frameBuffer->DisplayLogo(channel_id, PIC_X, PIC_Y, (logo_bpp == 4 && !g_settings.show_channelname)? logo_w : PIC_W, PIC_H, (logo_h > PIC_H)? true : false, false, true);
+			frameBuffer->displayLogo(channel_id, PIC_X, PIC_Y, (logo_bpp == 4 && !g_settings.show_channelname)? logo_w : PIC_W, PIC_H, (logo_h > PIC_H)? true : false, false, true);
 
 			// recalculate ChanNameWidth //FIXME: timewidth
 			ChanNameWidth = BoxWidth - (30 + CHANNUMBER_WIDTH + logo_w + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]->getRenderWidth(ChannelName, true));
@@ -801,7 +801,7 @@ void CInfoViewer::showSubchan()
 		}
 
 		fb_pixel_t pixbuf[(dx + 2 * borderwidth) * (dy + 2 * borderwidth)];
-		frameBuffer->SaveScreen (x - borderwidth, y - borderwidth, dx + 2 * borderwidth, dy + 2 * borderwidth, pixbuf);		
+		frameBuffer->saveScreen (x - borderwidth, y - borderwidth, dx + 2 * borderwidth, dy + 2 * borderwidth, pixbuf);		
 
 		// clear border
 		frameBuffer->paintBackgroundBoxRel(x - borderwidth, y - borderwidth, dx + 2 * borderwidth, borderwidth);
@@ -847,7 +847,7 @@ void CInfoViewer::showSubchan()
 	  		}
 		}
 
-		frameBuffer->RestoreScreen(x - borderwidth, y - borderwidth, dx + 2 * borderwidth, dy + 2 * borderwidth, pixbuf);
+		frameBuffer->restoreScreen(x - borderwidth, y - borderwidth, dx + 2 * borderwidth, dy + 2 * borderwidth, pixbuf);
 		frameBuffer->blit();	
   		
 	} 
