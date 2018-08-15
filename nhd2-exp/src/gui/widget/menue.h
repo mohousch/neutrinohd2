@@ -51,7 +51,7 @@
 
 #include <system/settings.h>
 
-extern CFont* g_Font[FONT_TYPE_COUNT];
+//extern CFont* g_Font[FONT_TYPE_COUNT];
 
 
 #define MENU_WIDTH			590
@@ -173,8 +173,8 @@ class CMenuItem
 		fb_pixel_t item_selectedColor;
 
 		//
-		static CFont* nameFont;
-		static CFont* optionFont;
+		//static CFont* nameFont;
+		//static CFont* optionFont;
 
 		bool nLinesItem; // 2 lines Item (classicWidget)
 
@@ -223,8 +223,8 @@ class CMenuItem
 		virtual void setNumber(int nr){number = nr;};
 		virtual void setPercent(int percent = -1){runningPercent = percent;};
 
-		virtual void setNameFont(CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]){nameFont = font;};
-		virtual void setOptionFont(CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]){optionFont = font;};
+		//virtual void setNameFont(CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]){nameFont = font;};
+		//virtual void setOptionFont(CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]){optionFont = font;};
 
 		virtual void setnLinesItem(void){nLinesItem = true;};
 };

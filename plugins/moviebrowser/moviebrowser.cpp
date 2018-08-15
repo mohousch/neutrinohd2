@@ -338,7 +338,7 @@ void CMBrowser::showMenu()
 
 		item->setInfo1(tmp.c_str());
 
-		item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]); //FIXME: menue.cpp
+		//item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]); //FIXME: menue.cpp
 
 		mlist->addItem(item);
 	}

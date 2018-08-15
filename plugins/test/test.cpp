@@ -2125,7 +2125,7 @@ const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
 
 void CTestMenu::testFrameBox()
 {
-	mlist = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	mlist = new ClistBox("EXTENDED Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	//
 	CFileFilter fileFilter;
@@ -2219,9 +2219,7 @@ void CTestMenu::testFrameBox()
 
 		item->setInfo1(tmp.c_str());
 
-		//item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
-
-		item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]);
+		//item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]);
 
 		mlist->addItem(item);
 	}
