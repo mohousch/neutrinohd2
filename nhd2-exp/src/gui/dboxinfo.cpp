@@ -97,7 +97,7 @@ CDBoxInfoWidget::CDBoxInfoWidget()
 	// Body
 	cFrameBoxItem.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 	
-	cFrameBox.iWidth = w_max(MENU_WIDTH + 100, 0);
+	cFrameBox.iWidth = w_max(MENU_WIDTH + 200, 0);
 	cFrameBox.iHeight = h_max(cFrameBoxTitle.iHeight + (10 + FrontendCount)*cFrameBoxItem.iHeight + 20, 0);
 	
     	cFrameBox.iX = (((g_settings.screen_EndX - g_settings.screen_StartX) - cFrameBox.iWidth) / 2) + g_settings.screen_StartX;

@@ -67,6 +67,7 @@ class CIceCast : public CMenuTarget
 		int selected;
 
 		//
+		void loadPlaylist(void);
 		bool shufflePlaylist(void);
 
 		//
@@ -75,18 +76,19 @@ class CIceCast : public CMenuTarget
 		void scanXmlFile(std::string filename);
 		void scanXmlData(xmlDocPtr answer_parser, const char *nametag, const char *urltag, const char *bitratetag = NULL, bool usechild = false);
 
-		bool openFileBrowser(void);
-
 		//
 		void GetMetaData(CAudiofile& File);
 		void getFileInfoToDisplay(std::string& fileInfo, CAudiofile& file);
+
+		bool openFileBrowser(void);
+
+		void showMenu();
 		
 	public:
 		CIceCast();
 		~CIceCast();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-		void showMenu(bool reload = true);
 };
 
 CIceCast::CIceCast()
@@ -307,7 +309,7 @@ void CIceCast::scanXmlData(xmlDocPtr answer_parser, const char *nametag, const c
 			long listPos = -1;
 			
 			progress.setTitle(LOCALE_AUDIOPLAYER_READING_FILES);
-			progress.exec(this, "");
+			progress.exec(NULL, "");
 			
 			neutrino_msg_t      msg;
 			neutrino_msg_data_t data;
@@ -377,8 +379,11 @@ void CIceCast::scanXmlData(xmlDocPtr answer_parser, const char *nametag, const c
 				g_RCInput->getMsg(&msg, &data, 0);
 
 			}
+
+			usleep(1000000);
 			progress.hide();
 		}
+
 		xmlFreeDoc(answer_parser);
 	}
 }
@@ -407,7 +412,7 @@ bool CIceCast::openFileBrowser(void)
 		if (maxProgress > SHOW_FILE_LOAD_LIMIT)
 		{
 			progress.setTitle(LOCALE_AUDIOPLAYER_READING_FILES);
-			progress.exec(this, "");	
+			progress.exec(NULL, "");	
 		}
 
 		m_Path = filebrowser.getCurrentDir();
@@ -551,6 +556,7 @@ bool CIceCast::openFileBrowser(void)
 			}
 		}
 		
+		usleep(1000000);
 		progress.hide();
 		
 		result = true;
@@ -636,64 +642,18 @@ void CIceCast::getFileInfoToDisplay(std::string &info, CAudiofile &file)
 	info += fileInfo;
 }
 
-int CIceCast::exec(CMenuTarget* parent, const std::string& actionKey)
+void CIceCast::loadPlaylist(void)
 {
-	dprintf(DEBUG_NORMAL, "CIceCast::exec: actionKey:%s\n", actionKey.c_str());
-	
-	if(parent)
-		hide();
+	std::string answer = "";
 
-	if(actionKey == "iplay")
+	if(::getUrl(icecasturl, answer, " ", GET_ICECAST_TIMEOUT))
 	{
-		selected = ilist->getSelected();
-
-		tmpAudioPlayerGui.addToPlaylist(playlist[selected]);
-
-		tmpAudioPlayerGui.setCurrent(0);
-		tmpAudioPlayerGui.setInetMode();
-		tmpAudioPlayerGui.exec(NULL, "");
+		xmlDocPtr answer_parser = parseXml(answer.c_str());
+		
+		scanXmlData(answer_parser, "server_name", "listen_url", "bitrate", true);
 	}
-	else if(actionKey == "RC_setup")
-	{
-		CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
-		audioPlayerSettingsMenu->exec(this, "");
-		delete audioPlayerSettingsMenu;
-		audioPlayerSettingsMenu = NULL;						
-	}
-	else if(actionKey == "RC_blue")
-	{
-		shufflePlaylist();
-		showMenu();
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "RC_green")
-	{
-		playlist.clear();
-
-		openFileBrowser();
-
-		showMenu(false);
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "RC_yellow")
-	{
-		playlist.clear();
-		showMenu(false);
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	else if(actionKey == "RC_red")
-	{
-		CAudioPlayList::iterator p = playlist.begin() + ilist->getSelected();
-		playlist.erase(p);
-
-		if (selected >= playlist.size())
-			selected = playlist.size() - 1;
-
-		showMenu();
-		return menu_return::RETURN_EXIT_ALL;
-	}
-	
-	return menu_return::RETURN_REPAINT;
+	else
+		HintBox(LOCALE_MESSAGEBOX_INFO, "can't load icecast list");
 }
 
 #define HEAD_BUTTONS_COUNT 2
@@ -712,24 +672,9 @@ const struct button_label AudioPlayerButtons[FOOT_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_AUDIOPLAYER_SHUFFLE, NULL }
 };
 
-void CIceCast::showMenu(bool reload)
+void CIceCast::showMenu()
 {
 	ilist = new ClistBox("Ice Cast", NEUTRINO_ICON_ICECAST_SMALL, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
-	
-	//
-	if(reload)
-	{
-		std::string answer = "";
-
-		if(::getUrl(icecasturl, answer, " ", GET_ICECAST_TIMEOUT))
-		{
-			xmlDocPtr answer_parser = parseXml(answer.c_str());
-		
-			scanXmlData(answer_parser, "server_name", "listen_url", "bitrate", true);
-		}
-		else
-			HintBox(LOCALE_MESSAGEBOX_INFO, "can't load icecast list");
-	}
 
 	for(unsigned int i = 0; i < playlist.size(); i++)
 	{
@@ -782,6 +727,73 @@ void CIceCast::showMenu(bool reload)
 	ilist = NULL;
 }
 
+int CIceCast::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CIceCast::exec: actionKey:%s\n", actionKey.c_str());
+	
+	if(parent)
+		hide();
+
+	if(actionKey == "iplay")
+	{
+		selected = ilist->getSelected();
+
+		tmpAudioPlayerGui.addToPlaylist(playlist[selected]);
+
+		tmpAudioPlayerGui.setCurrent(0);
+		tmpAudioPlayerGui.setInetMode();
+		tmpAudioPlayerGui.exec(NULL, "");
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "RC_setup")
+	{
+		CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
+		audioPlayerSettingsMenu->exec(this, "");
+		delete audioPlayerSettingsMenu;
+		audioPlayerSettingsMenu = NULL;	
+
+		return menu_return::RETURN_REPAINT;					
+	}
+	else if(actionKey == "RC_blue")
+	{
+		shufflePlaylist();
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_green")
+	{
+		openFileBrowser();
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_yellow")
+	{
+		playlist.clear();
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_red")
+	{
+		CAudioPlayList::iterator p = playlist.begin() + ilist->getSelected();
+		playlist.erase(p);
+
+		if (selected >= playlist.size())
+			selected = playlist.size() - 1;
+
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+
+	loadPlaylist();
+	showMenu();
+	
+	return menu_return::RETURN_EXIT_ALL;
+}
 
 void plugin_init(void)
 {
@@ -795,7 +807,7 @@ void plugin_exec(void)
 {
 	CIceCast* iceCastHandler = new CIceCast();
 	
-	iceCastHandler->showMenu();
+	iceCastHandler->exec(NULL, "");
 	
 	delete iceCastHandler;
 	iceCastHandler = NULL;

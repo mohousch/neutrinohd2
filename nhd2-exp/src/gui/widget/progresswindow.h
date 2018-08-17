@@ -68,15 +68,16 @@ class CProgressWindow : public CMenuTarget
 	public:
 
 		CProgressWindow();
-		void setTitle(const neutrino_locale_t title);
-		void setTitle(const char * const title);
+
 		void hide();
+		int exec(CMenuTarget* parent, const std::string & actionKey);
 
-		int exec( CMenuTarget* parent, const std::string & actionKey );
-
+		void setTitle(const neutrino_locale_t title);
+		void setTitle(const char* const title);
 		void showGlobalStatus(const unsigned int prog);
-		unsigned int getGlobalStatus(void);
 		void showStatusMessageUTF(const std::string & text); // UTF-8
+
+		unsigned int getGlobalStatus(void);
 };
 
 #endif

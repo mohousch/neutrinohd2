@@ -238,10 +238,14 @@ void CAudioPlayerGui::playFile(CMenuTarget* p)
 			if(m_playlist[m_current].FileExtension != CFile::EXTENSION_URL)
 				playNext();
 		}
+
+		if(!m_inetmode)
+			updateTimes(true);
 		
 		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
 
-		updateTimes(true);
+		//if(!m_inetmode)
+		//	updateTimes(true);
 
 		if (msg == CRCInput::RC_home)
 		{ 
