@@ -43,13 +43,14 @@ class CPicViewer : public CMenuTarget
 
 		void loadPlaylist();
 		void openFileBrowser();
+
+		void showMenu();
 		
 	public:
 		CPicViewer();
 		~CPicViewer();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-		void showMenu();
 };
 
 CPicViewer::CPicViewer()

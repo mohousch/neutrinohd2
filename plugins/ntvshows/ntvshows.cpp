@@ -389,14 +389,15 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 			page = 1;
 
 		selected = 0;
+
 		loadMoviesTitle();
 		showMovies();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
 
-	//loadMoviesTitle();
-	//showMovies();
+	loadMoviesTitle();
+	showMovies();
 
 	return menu_return::RETURN_EXIT;
 }
@@ -415,8 +416,6 @@ void plugin_exec(void)
 {
 	CTVShows* nTVShowsHandler = new CTVShows();
 
-	nTVShowsHandler->loadMoviesTitle();
-	nTVShowsHandler->showMovies();
 	nTVShowsHandler->exec(NULL, "");
 	
 	delete nTVShowsHandler;

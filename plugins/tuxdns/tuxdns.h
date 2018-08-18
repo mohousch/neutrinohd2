@@ -37,12 +37,13 @@ class CTuxdnsConf : public CMenuTarget
 		
 		void readSettings();
 		bool SaveSettings();
+
+		void showMenu();
 	public:
 		CTuxdnsConf();
 		~CTuxdnsConf();
 		int  exec(CMenuTarget* parent, const std::string & actionKey);
 		void hide();
-		void TuxdnsSettings();
 };
 
 #endif //__tuxdnsconf__

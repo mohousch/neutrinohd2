@@ -49,7 +49,7 @@ void CFBCallMonitor::hide()
 	CFrameBuffer::getInstance()->blit();
 }
 
-void CFBCallMonitor::ReadSettings() 
+void CFBCallMonitor::readSettings() 
 {
 	CConfigFile *bpfbconfig = new CConfigFile(',');
 	bpfbconfig->clear();
@@ -75,7 +75,7 @@ void CFBCallMonitor::ReadSettings()
 	FB_INVERS = bpfbconfig->getInt32("invers", 1);
 }
 
-bool CFBCallMonitor::SaveSettings() 
+bool CFBCallMonitor::saveSettings() 
 {
 	CConfigFile *bpfbconfig = new CConfigFile(',');
 	
@@ -103,27 +103,10 @@ bool CFBCallMonitor::SaveSettings()
 	return true;
 }
 
-int CFBCallMonitor::exec(CMenuTarget* parent, const std::string &actionKey)
-{
-	if(parent)
-		parent->hide();
-	
-	if(actionKey == "save")
-	{
-		//SaveSettings();
-		if(this->SaveSettings())
-		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert!");
-		else
-		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert!");
-	}
-	
-	return menu_return::RETURN_REPAINT;
-}
-
-void CFBCallMonitor::doMenu()
+void CFBCallMonitor::showMenu()
 {
 	// read settings
-	ReadSettings();
+	readSettings();
 	
 	// create menu
 	CMenuWidget * FritzBoxCallSettingsMenu = new CMenuWidget("FritzBoxCallMonitor", NEUTRINO_ICON_SETTINGS);
@@ -183,6 +166,26 @@ void CFBCallMonitor::doMenu()
 	FritzBoxCallSettingsMenu->hide();
 	
 	delete FritzBoxCallSettingsMenu;
+	FritzBoxCallSettingsMenu = NULL;
+}
+
+int CFBCallMonitor::exec(CMenuTarget* parent, const std::string &actionKey)
+{
+	if(parent)
+		parent->hide();
+	
+	if(actionKey == "save")
+	{
+		//SaveSettings();
+		if(this->saveSettings())
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MAINSETTINGS_SAVESETTINGSNOW_HINT));
+
+		return menu_return::RETURN_REPAINT;
+	}
+	
+	showMenu();
+
+	return menu_return::RETURN_EXIT_ALL;
 }
 
 void plugin_init(void)
@@ -201,7 +204,8 @@ void plugin_exec(void)
 {
 	// class handler
 	CFBCallMonitor * FBCallMonitorHandler = new CFBCallMonitor();
-	FBCallMonitorHandler->doMenu();
+
+	FBCallMonitorHandler->exec(NULL, "");
 	
 	delete FBCallMonitorHandler;
 }

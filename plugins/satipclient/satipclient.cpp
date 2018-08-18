@@ -153,40 +153,7 @@ bool CSatIPClient::stopSatIPClient()
 	return true;
 }
 
-int CSatIPClient::exec(CMenuTarget* parent, const std::string &actionKey)
-{
-	if(parent)
-		parent->hide();
-	
-	if(actionKey == "save")
-	{
-		//SaveSettings();
-		if(this->SaveSettings())
-		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert!");
-		else
-		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert!");
-	}
-	else if(actionKey == "start")
-	{
-		// load vtuner driver
-		loadVTuner();
-
-		// start satip_client
-		startSatIPClient();
-	}
-	else if(actionKey == "stop")
-	{
-		// stop satip_client
-		stopSatIPClient();
-
-		// unload vtuner driver
-		unloadVTuner();
-	}
-	
-	return menu_return::RETURN_REPAINT;
-}
-
-void CSatIPClient::doMenu()
+void CSatIPClient::showMenu()
 {
 	// read settings
 	ReadSettings();
@@ -237,6 +204,41 @@ void CSatIPClient::doMenu()
 	satIPClientMenu = NULL;
 }
 
+int CSatIPClient::exec(CMenuTarget* parent, const std::string &actionKey)
+{
+	if(parent)
+		parent->hide();
+	
+	if(actionKey == "save")
+	{
+		//SaveSettings();
+		if(this->SaveSettings())
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MAINSETTINGS_SAVESETTINGSNOW_HINT));
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "start")
+	{
+		// load vtuner driver
+		loadVTuner();
+
+		// start satip_client
+		startSatIPClient();
+	}
+	else if(actionKey == "stop")
+	{
+		// stop satip_client
+		stopSatIPClient();
+
+		// unload vtuner driver
+		unloadVTuner();
+	}
+	
+	showMenu();
+
+	return menu_return::RETURN_EXIT_ALL;
+}
+
 void plugin_init(void)
 {
 	CSatIPClient * SatIPClientHandler = new CSatIPClient();
@@ -271,7 +273,7 @@ void plugin_exec(void)
 {
 	// class handler
 	CSatIPClient * SatIPClientHandler = new CSatIPClient();
-	SatIPClientHandler->doMenu();
+	SatIPClientHandler->exec(NULL, "");
 	
 	delete SatIPClientHandler;
 }

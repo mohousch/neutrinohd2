@@ -554,7 +554,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// network
 	g_settings.network_ntpserver = configfile.getString("network_ntpserver", "time.fu-berlin.de");
         g_settings.network_ntprefresh = configfile.getString("network_ntprefresh", "30" );
-        g_settings.network_ntpenable = configfile.getBool("network_ntpenable", false);
+        g_settings.network_ntpenable = configfile.getBool("network_ntpenable", true);
 	
 	snprintf(g_settings.ifname, sizeof(g_settings.ifname), "%s", configfile.getString("ifname", "eth0").c_str());
 

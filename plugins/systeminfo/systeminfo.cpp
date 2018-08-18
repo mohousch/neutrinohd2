@@ -155,7 +155,7 @@ void CSysInfoWidget::hide()
 }
 
 // main
-int CSysInfoWidget::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
+int CSysInfoWidget::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 {
 	dprintf(DEBUG_NORMAL, "CsysInfoWidget::exec:\n");
 

@@ -105,23 +105,7 @@ bool CTuxdnsConf::SaveSettings()
 	return true;
 }
 
-int CTuxdnsConf::exec(CMenuTarget* parent, const std::string & actionKey)
-{
-	if (parent)
-		parent->hide();
-	
-	if(actionKey == "savesettings") 
-	{
-		if(this->SaveSettings())
-		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert!");
-		else
-		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert!");
-	}
-
-	return menu_return::RETURN_REPAINT;
-}
-
-void CTuxdnsConf::TuxdnsSettings()
+void CTuxdnsConf::showMenu()
 {
 	readSettings();
 	
@@ -157,6 +141,24 @@ void CTuxdnsConf::TuxdnsSettings()
 	delete tuxDNSMenu;
 }
 
+int CTuxdnsConf::exec(CMenuTarget* parent, const std::string & actionKey)
+{
+	if (parent)
+		parent->hide();
+	
+	if(actionKey == "savesettings") 
+	{
+		if(this->SaveSettings())
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MAINSETTINGS_SAVESETTINGSNOW_HINT));
+		
+		return menu_return::RETURN_REPAINT;
+	}
+
+	showMenu();
+
+	return menu_return::RETURN_EXIT_ALL;
+}
+
 //
 void plugin_init(void)
 {
@@ -170,7 +172,7 @@ void plugin_exec(void)
 {
 	CTuxdnsConf * TuxdnsConf = new CTuxdnsConf();
 	
-	TuxdnsConf->TuxdnsSettings();
+	TuxdnsConf->exec(NULL, "");
 	
 	delete TuxdnsConf;
 }

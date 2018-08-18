@@ -104,28 +104,32 @@ bool CYTBrowser::saveSettings(YTB_SETTINGS *settings)
 	return (result);
 }
 
+/*
+void CYTBrowser::loadPlaylist(void)
+{
+	CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	loadBox.paint();
+
+	loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+
+	loadBox.hide();
+}
+*/
+
 //
-#define YT_HEAD_BUTTONS_COUNT	3
+#define YT_HEAD_BUTTONS_COUNT	5
 const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL},
-	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL}
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL},
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL},
+	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL}
 };
 
-void CYTBrowser::showMoviesMenu(bool reload)
+void CYTBrowser::showMoviesMenu()
 {
 	dprintf(DEBUG_NORMAL, "CYTBrowser::showMoviesMenu:\n");
-
-	if(reload)
-	{
-		CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
-		loadBox.paint();
-
-		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
-
-		loadBox.hide();
-	}
 
 	//
 	std::string title;
@@ -162,6 +166,8 @@ void CYTBrowser::showMoviesMenu(bool reload)
 	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
 	moviesMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
 	moviesMenu->addKey(CRCInput::RC_record, this, CRCInput::getSpecialKeyName(CRCInput::RC_record));
+	moviesMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
+	moviesMenu->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
 
 	moviesMenu->exec(NULL, "");
 	//moviesMenu->hide();
@@ -177,7 +183,7 @@ void CYTBrowser::playMovie(void)
 		tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[moviesMenu->getSelected()]);
 
 		// get related videos
-		loadYTTitles(cYTFeedParser::RELATED, "", m_vMovieInfo[moviesMenu->getSelected()].ytid);
+		loadYTTitles(cYTFeedParser::RELATED, "", m_vMovieInfo[moviesMenu->getSelected()].ytid, false);
 
 		for(int i = 0; i < m_vMovieInfo.size(); i++)
 		{
@@ -207,9 +213,14 @@ void CYTBrowser::recordMovie(void)
 	::start_file_recording(m_vMovieInfo[moviesMenu->getSelected()].epgTitle.c_str(), m_vMovieInfo[moviesMenu->getSelected()].epgInfo2.c_str(), m_vMovieInfo[moviesMenu->getSelected()].file.Name.c_str());
 }
 
-void CYTBrowser::loadYTTitles(int mode, std::string search, std::string id)
+void CYTBrowser::loadYTTitles(int mode, std::string search, std::string id, bool show_hint)
 {
 	dprintf(DEBUG_NORMAL, "CYTBrowser::loadYTTitles: parsed %d old mode %d new mode %d region %s\n", ytparser.Parsed(), ytparser.GetFeedMode(), m_settings.ytmode, m_settings.ytregion.c_str());
+
+	CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+
+	if(show_hint)
+		loadBox.paint();
 
 	//
 	ytparser.Cleanup();
@@ -261,12 +272,15 @@ REPEAT:
 		
 		m_vMovieInfo.push_back(movieInfo);
 	}
+
+	if(show_hint)
+		loadBox.hide();
 }
 
 const CMenuOptionChooser::keyval YT_FEED_OPTIONS[] =
 {
-        { cYTFeedParser::MOST_POPULAR, LOCALE_YT_MOST_POPULAR, NULL },
-        { cYTFeedParser::MOST_POPULAR_ALL_TIME, LOCALE_YT_MOST_POPULAR_ALL_TIME, NULL },
+       // { cYTFeedParser::MOST_POPULAR, LOCALE_YT_MOST_POPULAR, NULL },
+        //{ cYTFeedParser::MOST_POPULAR_ALL_TIME, LOCALE_YT_MOST_POPULAR_ALL_TIME, NULL },
 	{ cYTFeedParser::NEXT, LOCALE_YT_NEXT_RESULTS, NULL },
 	{ cYTFeedParser::PREV, LOCALE_YT_PREV_RESULTS, NULL }
 };
@@ -311,6 +325,7 @@ int CYTBrowser::showMenu(void)
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 
 	char cnt[5];
+	/*
 	for (unsigned i = 0; i < YT_FEED_OPTION_COUNT; i++) 
 	{
 		sprintf(cnt, "%d", YT_FEED_OPTIONS[i].key);
@@ -318,6 +333,8 @@ int CYTBrowser::showMenu(void)
 	}
 
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	*/
+
 	std::string search = m_settings.ytsearch;
 	
 	// search
@@ -402,7 +419,8 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		if(m_settings.ytautoplay)
 		{
-			showMoviesMenu(false);
+			showMoviesMenu();
+			return menu_return::RETURN_EXIT_ALL;
 		}
 		else
 			return menu_return::RETURN_REPAINT;
@@ -418,7 +436,10 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		int res = showMenu();
 
 		if( res >= 0 && res <= 6)
+		{
 			showMoviesMenu();
+			return menu_return::RETURN_EXIT_ALL;
+		}
 		else
 			return menu_return::RETURN_REPAINT;
 	}
@@ -426,15 +447,46 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		m_settings.ytmode = cYTFeedParser::RELATED;
+
+		//loadPlaylist();
+		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
 		showMoviesMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_green")
+	{
+		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
+		m_settings.ytmode = cYTFeedParser::NEXT;
+
+		//loadPlaylist();
+		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+		showMoviesMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_yellow")
+	{
+		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
+		m_settings.ytmode = cYTFeedParser::PREV;
+
+		//loadPlaylist();
+		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+		showMoviesMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_record")
 	{
 		recordMovie();
 		return menu_return::RETURN_REPAINT;
 	}
+
+	//loadPlaylist();
+	loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+	showMoviesMenu();
 	
-	return menu_return::RETURN_EXIT;
+	return menu_return::RETURN_EXIT_ALL;
 }
 
 //
@@ -448,9 +500,8 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	CYTBrowser * YTHandler = new CYTBrowser();
+	CYTBrowser* YTHandler = new CYTBrowser();
 	
-	YTHandler->showMoviesMenu();
 	YTHandler->exec(NULL, "");
 	
 	delete YTHandler;

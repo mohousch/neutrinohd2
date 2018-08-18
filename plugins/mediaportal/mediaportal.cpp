@@ -222,7 +222,6 @@ void plugin_exec(void)
 {
 	CMediaPortal * mpHandler = new CMediaPortal();
 	
-	//mpHandler->showMenu();
 	mpHandler->exec(NULL, "");
 	
 	delete mpHandler;

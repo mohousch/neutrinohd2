@@ -296,6 +296,57 @@ void CNFilm::getMovieVideoUrl(MI_MOVIE_INFO& movie)
 	} 
 }
 
+int CNFilm::showMenu()
+{
+	dprintf(DEBUG_NORMAL, "CNFilm::showMenu:\n");
+
+	int res = -1;
+
+	CMenuWidget* menu = new CMenuWidget("Kino Trailer");
+
+	menu->addItem(new CMenuForwarder("In den Kinos", true, NULL, new CNFilm("now_playing"), NULL));
+	menu->addItem(new CMenuForwarder("Am populärsten", true, NULL, new CNFilm("popular"), NULL));
+	menu->addItem(new CMenuForwarder("Am besten bewertet", true, NULL, new CNFilm("top_rated"), NULL));
+	menu->addItem(new CMenuForwarder("Neue Filme", true, NULL, new CNFilm("upcoming"), NULL));
+
+
+	// genres
+/*
+	menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+
+	genres.clear();
+	tmdb = new CTmdb();
+	tmdb->clearGenreList();
+	tmdb->getGenreList();
+
+	std::vector<tmdbinfo> &mgenrelist = tmdb->getGenres();
+	
+	for (unsigned int count = 0; count < mgenrelist.size(); count++) 
+	{
+		// fill genres for callback
+		tmdbinfo tmp;
+
+		tmp.title = mgenrelist[count].title;
+		tmp.id = mgenrelist[count].id;
+
+		genres.push_back(tmp);
+
+		menu->addItem(new CMenuForwarder(mgenrelist[count].title.c_str(), true, NULL, new CNFilm("genre", mgenrelist[count].id), NULL));
+	}
+
+	delete tmdb;
+	tmdb = NULL;
+*/
+
+	menu->exec(NULL, "");
+	menu->hide();
+	res = menu->getSelectedLine();
+	delete menu;
+	menu = NULL;
+
+	return res;
+}
+
 #define HEAD_BUTTONS_COUNT	4
 const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
@@ -367,57 +418,6 @@ void CNFilm::showMovies()
 	mlist = NULL;
 }
 
-int CNFilm::showMenu()
-{
-	dprintf(DEBUG_NORMAL, "CNFilm::showMenu:\n");
-
-	int res = -1;
-
-	CMenuWidget* menu = new CMenuWidget("Kino Trailer");
-
-	menu->addItem(new CMenuForwarder("In den Kinos", true, NULL, new CNFilm("now_playing"), NULL));
-	menu->addItem(new CMenuForwarder("Am populärsten", true, NULL, new CNFilm("popular"), NULL));
-	menu->addItem(new CMenuForwarder("Am besten bewertet", true, NULL, new CNFilm("top_rated"), NULL));
-	menu->addItem(new CMenuForwarder("Neue Filme", true, NULL, new CNFilm("upcoming"), NULL));
-
-
-	// genres
-/*
-	menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
-
-	genres.clear();
-	tmdb = new CTmdb();
-	tmdb->clearGenreList();
-	tmdb->getGenreList();
-
-	std::vector<tmdbinfo> &mgenrelist = tmdb->getGenres();
-	
-	for (unsigned int count = 0; count < mgenrelist.size(); count++) 
-	{
-		// fill genres for callback
-		tmdbinfo tmp;
-
-		tmp.title = mgenrelist[count].title;
-		tmp.id = mgenrelist[count].id;
-
-		genres.push_back(tmp);
-
-		menu->addItem(new CMenuForwarder(mgenrelist[count].title.c_str(), true, NULL, new CNFilm("genre", mgenrelist[count].id), NULL));
-	}
-
-	delete tmdb;
-	tmdb = NULL;
-*/
-
-	menu->exec(NULL, "");
-	menu->hide();
-	res = menu->getSelectedLine();
-	delete menu;
-	menu = NULL;
-
-	return res;
-}
-
 int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CNFilm::exec: actionKey: %s\n", actionKey.c_str());
@@ -456,11 +456,10 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		if(res >= 0 && res <=3)
 		{
 			if(plist == "genre")
+			{
 				loadGenreMoviesTitle();
-			else
-				loadMoviesTitle();
-
-			showMovies();
+				showMovies();
+			}
 
 			return menu_return::RETURN_EXIT_ALL;
 		}
@@ -500,6 +499,9 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		return menu_return::RETURN_EXIT_ALL;
 	}
 
+	loadMoviesTitle();
+	showMovies();
+
 	return menu_return::RETURN_EXIT;
 }
 
@@ -516,10 +518,6 @@ void plugin_del(void)
 void plugin_exec(void)
 {
 	CNFilm* nFilmHandler = new CNFilm();
-
-	nFilmHandler->loadMoviesTitle();
-
-	nFilmHandler->showMovies();
 	
 	nFilmHandler->exec(NULL, "");
 	

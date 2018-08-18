@@ -230,7 +230,7 @@ void CAudioPlayerGui::playFile(CMenuTarget* p)
 		
 		if ((m_state != CAudioPlayerGui::STOP) && (CAudioPlayer::getInstance()->getState() == CBaseDec::STOP) && (!m_playlist.empty()))
 		{
-			if(m_current == (m_playlist.size() - 1))
+			if(m_current == (m_playlist.size() - 1) && !g_settings.audioplayer_repeat_on)
 			{
 				loop = false;	
 			}

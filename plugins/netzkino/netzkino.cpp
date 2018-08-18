@@ -93,6 +93,19 @@ void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 	}
 }
 
+void CNKMovies::loadPlaylist(void)
+{
+	//
+	CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	
+	loadBox.paint();
+
+	// loadNKTitles
+	loadNKTitles(catMode, caption, catID);
+
+	loadBox.hide();
+}
+
 #define NK_HEAD_BUTTONS_COUNT	2
 const struct button_label NKHeadButtons[NK_HEAD_BUTTONS_COUNT] =
 {
@@ -103,16 +116,6 @@ const struct button_label NKHeadButtons[NK_HEAD_BUTTONS_COUNT] =
 void CNKMovies::showMoviesMenu()
 {
 	dprintf(DEBUG_NORMAL, "CNKMovies::showMoviesMenu: mode:%d id:%d title:%s\n", catMode, catID, caption.c_str());
-
-	//
-	CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
-	
-	loadBox.paint();
-
-	// loadNKTitles
-	loadNKTitles(catMode, caption, catID);
-
-	loadBox.hide();
 	
 	if(m_vMovieInfo.empty())
 	{
@@ -291,6 +294,7 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 		return menu_return::RETURN_REPAINT;
 	}
 
+	loadPlaylist();
 	showMoviesMenu();
 	
 	return menu_return::RETURN_EXIT;
