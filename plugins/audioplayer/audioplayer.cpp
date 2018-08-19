@@ -46,13 +46,14 @@ class CMP3Player : public CMenuTarget
 
 		//
 		bool shufflePlaylist(void);
+
+		void showMenu();
 		
 	public:
 		CMP3Player();
 		~CMP3Player();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-		void showMenu();
 };
 
 CMP3Player::CMP3Player()

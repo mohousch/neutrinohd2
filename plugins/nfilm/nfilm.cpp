@@ -71,15 +71,16 @@ class CNFilm : public CMenuTarget
 		void showMovieInfo(MI_MOVIE_INFO& movie);
 		void getMovieVideoUrl(MI_MOVIE_INFO& movie);
 
+		int showCategoriesMenu();
+		void loadMoviesTitle(void);
+
+		void showMenu();
+
 	public:
 		CNFilm(std::string movielist = "popular", int id = 0);
 		~CNFilm();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-
-		void showMovies();
-		int showMenu();
-		void loadMoviesTitle(void);
 };
 
 CNFilm::CNFilm(std::string movielist, int id)
@@ -296,9 +297,9 @@ void CNFilm::getMovieVideoUrl(MI_MOVIE_INFO& movie)
 	} 
 }
 
-int CNFilm::showMenu()
+int CNFilm::showCategoriesMenu()
 {
-	dprintf(DEBUG_NORMAL, "CNFilm::showMenu:\n");
+	dprintf(DEBUG_NORMAL, "CNFilm::showCategoriesMenu:\n");
 
 	int res = -1;
 
@@ -356,9 +357,9 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL }
 };
 
-void CNFilm::showMovies()
+void CNFilm::showMenu()
 {
-	dprintf(DEBUG_NORMAL, "CNFilm::showMovies:\n");
+	dprintf(DEBUG_NORMAL, "CNFilm::showMenu:\n");
 
 	if(plist == "now_playing")
 		caption = "In den Kinos";
@@ -451,14 +452,14 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_setup")
 	{
-		int res = showMenu();
+		int res = showCategoriesMenu();
 
 		if(res >= 0 && res <=3)
 		{
 			if(plist == "genre")
 			{
 				loadGenreMoviesTitle();
-				showMovies();
+				showMenu();
 			}
 
 			return menu_return::RETURN_EXIT_ALL;
@@ -476,7 +477,7 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		else
 			loadMoviesTitle();
 
-		showMovies();
+		showMenu();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
@@ -494,13 +495,13 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		else
 			loadMoviesTitle();
 
-		showMovies();
+		showMenu();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
 
 	loadMoviesTitle();
-	showMovies();
+	showMenu();
 
 	return menu_return::RETURN_EXIT;
 }

@@ -67,15 +67,16 @@ class CTVShows : public CMenuTarget
 		void removeThumbnailDir();
 		void showMovieInfo(MI_MOVIE_INFO& movie);
 
+		void loadMoviesTitle(void);
+		int showCategoriesMenu();
+
+		void showMenu();
+	
 	public:
 		CTVShows(std::string tvlist = "popular");
 		~CTVShows();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-
-		void showMovies();
-		int showMenu();
-		void loadMoviesTitle(void);
 };
 
 CTVShows::CTVShows(std::string tvlist)
@@ -268,8 +269,10 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL }
 };
 
-void CTVShows::showMovies()
+void CTVShows::showMenu()
 {
+	dprintf(DEBUG_NORMAL, "CTVShows::showMenu:");
+
 	if(plist == "airing_today")
 		caption = "Heute auf Sendung";
 	else if(plist == "on_the_air")
@@ -323,8 +326,10 @@ void CTVShows::showMovies()
 	mlist = NULL;
 }
 
-int CTVShows::showMenu()
+int CTVShows::showCategoriesMenu()
 {
+	dprintf(DEBUG_NORMAL, "showCategoriesMenu:\n");
+
 	int res = -1;
 
 	CMenuWidget* menu = new CMenuWidget("Serien Trailer");
@@ -360,12 +365,12 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_setup")
 	{
-		int res = showMenu();
+		int res = showCategoriesMenu();
 
 		if(res >= 0 && res <= 3)
 		{
 			loadMoviesTitle();
-			showMovies();
+			showMenu();
 
 			return menu_return::RETURN_EXIT_ALL;
 		}
@@ -377,7 +382,7 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 		page++;
 		selected = 0;
 		loadMoviesTitle();
-		showMovies();
+		showMenu();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
@@ -391,15 +396,15 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 		selected = 0;
 
 		loadMoviesTitle();
-		showMovies();
+		showMenu();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
 
 	loadMoviesTitle();
-	showMovies();
+	showMenu();
 
-	return menu_return::RETURN_EXIT;
+	return menu_return::RETURN_EXIT_ALL;
 }
 
 void plugin_init(void)

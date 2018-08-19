@@ -50,13 +50,13 @@ class CNEpisodes : public CMenuTarget
 		void showMovieInfo(MI_MOVIE_INFO& movie);
 		void getMovieVideoUrl(MI_MOVIE_INFO& movie);
 
+		void showMenu();
+
 	public:
 		CNEpisodes(int id, int nr = 0);
 		~CNEpisodes();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-
-		void showMenu();
 };
 
 

@@ -39,14 +39,14 @@ class CMediaPortal : public CMenuTarget
 		void ard(void);
 		void nFilm(void);
 		void nTVShows(void);
+
+		void showMenu(void);
 	
 	public:
 		CMediaPortal();
 		~CMediaPortal();
 		
 		int exec(CMenuTarget* parent, const std::string& actionKey);
-		void showMenu(void);
-
 };
 
 CMediaPortal::CMediaPortal()

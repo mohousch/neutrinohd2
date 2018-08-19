@@ -50,13 +50,13 @@ class CMBrowser : public CMenuTarget
 		bool delFile(CFile& file);
 		void onDeleteFile(MI_MOVIE_INFO& movieFile);
 
+		void showMenu();
+
 	public:
 		CMBrowser();
 		~CMBrowser();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-
-		void showMenu();
 };
 
 CMBrowser::CMBrowser()

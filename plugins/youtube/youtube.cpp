@@ -36,12 +36,14 @@ const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTIO
         { 1, LOCALE_OPTIONS_ON, NULL }
 };
  
-CYTBrowser::CYTBrowser(): configfile ('\t')
+CYTBrowser::CYTBrowser(int mode): configfile ('\t')
 {
 	moviesMenu = NULL;
 	item = NULL;
 
 	init();
+
+	m_settings.ytmode = mode;
 }
 
 CYTBrowser::~CYTBrowser()
@@ -104,18 +106,6 @@ bool CYTBrowser::saveSettings(YTB_SETTINGS *settings)
 	return (result);
 }
 
-/*
-void CYTBrowser::loadPlaylist(void)
-{
-	CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
-	loadBox.paint();
-
-	loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
-
-	loadBox.hide();
-}
-*/
-
 //
 #define YT_HEAD_BUTTONS_COUNT	5
 const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
@@ -127,9 +117,9 @@ const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL}
 };
 
-void CYTBrowser::showMoviesMenu()
+void CYTBrowser::showMenu()
 {
-	dprintf(DEBUG_NORMAL, "CYTBrowser::showMoviesMenu:\n");
+	dprintf(DEBUG_NORMAL, "CYTBrowser::showMenu:\n");
 
 	//
 	std::string title;
@@ -279,10 +269,10 @@ REPEAT:
 
 const CMenuOptionChooser::keyval YT_FEED_OPTIONS[] =
 {
-       // { cYTFeedParser::MOST_POPULAR, LOCALE_YT_MOST_POPULAR, NULL },
+       	{ cYTFeedParser::MOST_POPULAR, LOCALE_YT_MOST_POPULAR, NULL },
         //{ cYTFeedParser::MOST_POPULAR_ALL_TIME, LOCALE_YT_MOST_POPULAR_ALL_TIME, NULL },
-	{ cYTFeedParser::NEXT, LOCALE_YT_NEXT_RESULTS, NULL },
-	{ cYTFeedParser::PREV, LOCALE_YT_PREV_RESULTS, NULL }
+	//{ cYTFeedParser::NEXT, LOCALE_YT_NEXT_RESULTS, NULL },
+	//{ cYTFeedParser::PREV, LOCALE_YT_PREV_RESULTS, NULL }
 };
 
 #define YT_FEED_OPTION_COUNT (sizeof(YT_FEED_OPTIONS)/sizeof(CMenuOptionChooser::keyval))
@@ -316,24 +306,19 @@ neutrino_locale_t CYTBrowser::getFeedLocale(void)
 	return ret;
 }
 
-int CYTBrowser::showMenu(void)
+int CYTBrowser::showCategoriesMenu(void)
 {
+	dprintf(DEBUG_NORMAL, "CYTBrowser::showCategoriesMenu:");
+
 	CMenuWidget mainMenu(LOCALE_YOUTUBE, NEUTRINO_ICON_YT_SMALL, MENU_WIDTH + 100);
 	mainMenu.enableSaveScreen();
 
 	int select = -1;
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 
-	char cnt[5];
-	/*
-	for (unsigned i = 0; i < YT_FEED_OPTION_COUNT; i++) 
-	{
-		sprintf(cnt, "%d", YT_FEED_OPTIONS[i].key);
-		mainMenu.addItem(new CMenuForwarder(YT_FEED_OPTIONS[i].value, true, NULL, selector, cnt, CRCInput::convertDigitToKey(i + 1)), m_settings.ytmode == (int) YT_FEED_OPTIONS[i].key);
-	}
+	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_MOST_POPULAR, true, NULL, new CYTBrowser(cYTFeedParser::MOST_POPULAR), NULL));
 
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
-	*/
 
 	std::string search = m_settings.ytsearch;
 	
@@ -345,8 +330,7 @@ int CYTBrowser::showMenu(void)
 	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_ORDERBY, &m_settings.ytorderby, YT_ORDERBY_OPTIONS, YT_ORDERBY_OPTION_COUNT, true, NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true));
 
 	// search
-	sprintf(cnt, "%d", cYTFeedParser::SEARCH);
-	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, selector, cnt, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
+	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, new CYTBrowser(cYTFeedParser::SEARCH), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
@@ -419,7 +403,7 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		if(m_settings.ytautoplay)
 		{
-			showMoviesMenu();
+			showMenu();
 			return menu_return::RETURN_EXIT_ALL;
 		}
 		else
@@ -433,11 +417,11 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_setup")
 	{
-		int res = showMenu();
+		int res = showCategoriesMenu();
 
 		if( res >= 0 && res <= 6)
 		{
-			showMoviesMenu();
+			showMenu();
 			return menu_return::RETURN_EXIT_ALL;
 		}
 		else
@@ -448,9 +432,8 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		m_settings.ytmode = cYTFeedParser::RELATED;
 
-		//loadPlaylist();
 		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
-		showMoviesMenu();
+		showMenu();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
@@ -459,9 +442,8 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		m_settings.ytmode = cYTFeedParser::NEXT;
 
-		//loadPlaylist();
 		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
-		showMoviesMenu();
+		showMenu();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
@@ -470,9 +452,8 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		m_settings.ytmode = cYTFeedParser::PREV;
 
-		//loadPlaylist();
 		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
-		showMoviesMenu();
+		showMenu();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
@@ -481,12 +462,33 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		recordMovie();
 		return menu_return::RETURN_REPAINT;
 	}
+/*
+	else if(actionKey == "search")
+	{
+		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
+		m_settings.ytmode = cYTFeedParser::SEARCH;
 
-	//loadPlaylist();
+		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "most_popular")
+	{
+		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
+		m_settings.ytmode = cYTFeedParser::MOST_POPULAR;
+
+		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
+	}
+*/
+
 	loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
-	showMoviesMenu();
+	showMenu();
 	
-	return menu_return::RETURN_EXIT_ALL;
+	return menu_return::RETURN_EXIT;
 }
 
 //

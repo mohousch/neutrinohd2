@@ -41,12 +41,13 @@ class CMediaPlayer : CMenuTarget
 		
 		std::string Path;
 
+		void showMenu();
+
 	public:
 		CMediaPlayer();
 		~CMediaPlayer();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-		void showMenu();
 };
 
 CMediaPlayer::CMediaPlayer()

@@ -273,6 +273,7 @@ void plugin_exec(void)
 {
 	// class handler
 	CSatIPClient * SatIPClientHandler = new CSatIPClient();
+
 	SatIPClientHandler->exec(NULL, "");
 	
 	delete SatIPClientHandler;

@@ -56,7 +56,8 @@ class CYTBrowser : public CMenuTarget
 
 		neutrino_locale_t getFeedLocale(void);
 		void loadYTTitles(int mode, std::string search = "", std::string id = "", bool show_hint = true);
-		int showMenu(void);
+		int showCategoriesMenu(void);
+
 		void playMovie(void);
 		void showMovieInfo(void);
 		void recordMovie(void);
@@ -65,10 +66,10 @@ class CYTBrowser : public CMenuTarget
 		ClistBox* moviesMenu;
 		CMenuItem* item;
 
-		void showMoviesMenu();
+		void showMenu();
 		
 	public:
-		CYTBrowser();
+		CYTBrowser(int mode = cYTFeedParser::MOST_POPULAR);
 		~CYTBrowser();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 }; 

@@ -47,13 +47,13 @@ class CNSeasons : public CMenuTarget
 		void loadSeasonsTitle(void);
 		void showMovieInfo(MI_MOVIE_INFO& movie);
 
+		void showMenu();
+
 	public:
 		CNSeasons(int id);
 		~CNSeasons();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-
-		void showMenu();
 };
 
 

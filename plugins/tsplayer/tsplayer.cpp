@@ -35,14 +35,15 @@ class CTSPlayer : public CMenuTarget
 		CMovieBrowser * movieBrowser;
 		MI_MOVIE_INFO * mfile;
 
-		std::string Path;		
+		std::string Path;
+
+		void showMenu();		
 		
 	public:
 		CTSPlayer();
 		~CTSPlayer();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-		void showMenu();
 };
 
 CTSPlayer::CTSPlayer()

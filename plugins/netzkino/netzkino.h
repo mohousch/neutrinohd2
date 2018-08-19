@@ -55,14 +55,14 @@ class CNKMovies : public CMenuTarget
 		int showCategoriesMenu();
 
 		void loadPlaylist(void);
+
+		void showMoviesMenu();
+		void recordMovie(void);
 	public:
 		CNKMovies(int mode, int id, std::string title);
 		~CNKMovies();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-
-		void showMoviesMenu();
-		void recordMovie(void);
 };
 
 #endif //__NK__

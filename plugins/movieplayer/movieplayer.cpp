@@ -36,13 +36,14 @@ class CMoviePlayer : public CMenuTarget
 		MI_MOVIE_INFO * mfile;
 
 		std::string Path;
+
+		void showMenu();
 		
 	public:
 		CMoviePlayer();
 		~CMoviePlayer();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-		void showMenu();
 };
 
 CMoviePlayer::CMoviePlayer()

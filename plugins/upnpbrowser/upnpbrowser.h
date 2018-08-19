@@ -67,12 +67,6 @@ struct UPnPEntry
 
 class CUpnpBrowserGui : public CMenuTarget
 {
-	public:
-		CUpnpBrowserGui();
-		~CUpnpBrowserGui();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
-		void hide();
-
 	private:
 		std::vector<CUPnPDevice> m_devices;
 		UPnPEntry      m_playing_entry;
@@ -118,6 +112,12 @@ class CUpnpBrowserGui : public CMenuTarget
 		void paintDetails(std::vector<UPnPEntry> *entry, unsigned int index, bool use_playing = false);
 		void clearItem2DetailsLine(void);
 		void paintItem2DetailsLine(int pos);
+
+	public:
+		CUpnpBrowserGui();
+		~CUpnpBrowserGui();
+		int exec(CMenuTarget* parent, const std::string & actionKey);
+		void hide();
 };
 
 #endif

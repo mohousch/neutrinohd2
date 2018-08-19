@@ -36,6 +36,8 @@ class CSatIPClient : public CMenuTarget
 		int SatIPFrontendTyp;
 		std::string SatIPVtunerDevice;
 		int SatIPDebug;
+
+		void showMenu();
         public:
 		CMenuWidget * satIPClientMenu;
 		int selected;
@@ -43,9 +45,10 @@ class CSatIPClient : public CMenuTarget
 		~CSatIPClient();
 		
 		int exec(CMenuTarget* parent,  const std::string& actionkey);
-		void showMenu();
+		//void showMenu();
 		void hide();
 
+		//
 		void ReadSettings();
 		bool SaveSettings();
 
