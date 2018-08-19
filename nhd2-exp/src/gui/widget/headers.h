@@ -1,5 +1,5 @@
 /*
- * $Id: items2detailsline.h 2016/01/30 mohousch Exp $
+ * $Id: headers.h 2018/08/19 mohousch Exp $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,15 +17,18 @@
  *
  */
 
-#ifndef __items2detailsline__
-#define __items2detailsline__
+#ifndef __HEADERS_H__
+#define __HEADERS_H__
 
 #include <driver/fontrenderer.h>
 #include <driver/framebuffer.h>
 
+// head
+void paintHead(int x, int y, int dx, int dy, const char* icon, const neutrino_locale_t caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL);
 
-void paintItem2DetailsLine(int x, int y, int width, int height, int info_height, int theight, int iheight, int pos);
-void paintItem2DetailsLineD(int x, int y, int width, int height, int info_height, int theight, int iheight, int iy);
-void clearItem2DetailsLine(int x, int y, int width, int height, int info_height);
+void paintHead(int x, int y, int dx, int dy, const char* icon, const std::string caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL);
 
-#endif 
+// foot
+void paintFoot(int x, int y, int dx, int dy, const unsigned int buttonwidth = 0, const unsigned int count = 0, const struct button_label * const content = NULL);
+
+#endif

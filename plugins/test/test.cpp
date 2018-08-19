@@ -79,6 +79,13 @@ class CTestMenu : public CMenuTarget
 		void testCProgressBar();
 		void testCProgressWindow();
 		void testCButtons();
+		void testCHeaders();
+		void testVFDController();
+		void testColorChooser();
+		void testKeyChooser();
+		void testMountChooser();
+
+		//
 		void testCMenuWidgetListBox();
 		void testCMenuWidgetListBox1();
 		void testFrameBox();
@@ -116,9 +123,6 @@ class CTestMenu : public CMenuTarget
 		void testMountGUI();
 		void testUmountGUI();
 		void testMountSmallMenu();
-		void testVFDController();
-		void testColorChooser();
-		void testKeyChooser();
 		
 		//
 		void testPluginsList();
@@ -757,9 +761,10 @@ void CTestMenu::testCListFrame()
 	CFrameBuffer::getInstance()->blit();
 
 	CAudioPlayer::getInstance()->init();
-	CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, NeutrinoMessages::mode_audio);
-	int state = CAudioPlayerGui::STOP;
+	//CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, NeutrinoMessages::mode_audio);
+	//int state = CAudioPlayerGui::STOP;
 	int index = 0;
+	CAudioPlayerGui tmpAudioPlayerGui;
 	
 	// loop
 	neutrino_msg_t msg;
@@ -771,8 +776,8 @@ REPEAT:
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
-		if (CAudioPlayer::getInstance()->getState() == CBaseDec::STOP)
-			state = CAudioPlayerGui::STOP;
+		//if (CAudioPlayer::getInstance()->getState() == CBaseDec::STOP)
+		//	state = CAudioPlayerGui::STOP;
 		
 		if (msg == CRCInput::RC_home) 
 		{
@@ -819,12 +824,21 @@ REPEAT:
 			index = selected;
 
 			CAudiofile mp3(audioFileList[index].Name, audioFileList[index].getExtension());
-			CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
+			//CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
 
-			state = CAudioPlayerGui::PLAY;	
+			//state = CAudioPlayerGui::PLAY;	
 
 			//goto REPEAT;
+
+			tmpAudioPlayerGui.addToPlaylist(mp3);
+
+			//tmpAudioPlayerGui.setCurrent(selected);
+			tmpAudioPlayerGui.exec(NULL, "");
+
+			//listFrame->refresh();
+			goto REPEAT;
 		}
+		/*
 		else if(msg == CRCInput::RC_stop)
 		{
 			if (CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
@@ -846,6 +860,7 @@ REPEAT:
 				state = CAudioPlayerGui::PLAY;
 			}
 		}
+		*/
 
 		//listFrame->refresh();
 		CFrameBuffer::getInstance()->blit();
@@ -961,8 +976,79 @@ void CTestMenu::testCButtons()
 
 	CFrameBuffer::getInstance()->blit();
 
-	usleep(1000000);
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	while(1)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg == CRCInput::RC_home) 
+		{
+			CFrameBuffer::getInstance()->paintBackground();
+			CFrameBuffer::getInstance()->blit();
+
+			break;
+		}
+	}
+}
+
+void CTestMenu::testCHeaders()
+{
+	// head
+	::paintHead(g_settings.screen_StartX + 10, g_settings.screen_StartY + 10, (g_settings.screen_EndX - g_settings.screen_StartX - 20), 40, NEUTRINO_ICON_MP3, "paintHeaders", true, BUTTONS_COUNT, Buttons);
+
+	// foot
+	::paintFoot(g_settings.screen_StartX + 10, g_settings.screen_EndY - 10 - 40 - 70, (g_settings.screen_EndX - g_settings.screen_StartX - 20), 40, (g_settings.screen_EndX - g_settings.screen_StartX - 20)/BUTTONS_COUNT, BUTTONS_COUNT, Buttons);
+
+	// scrollbar
+	::paintScrollBar(g_settings.screen_StartX + 10 + (g_settings.screen_EndX - g_settings.screen_StartX - 20) - SCROLLBAR_WIDTH, g_settings.screen_StartY + 10 + 40, g_settings.screen_EndY - g_settings.screen_StartY - 20 - 40 - 40 - 70, 3, 0);
+
+	// itemsdetailsline
+	::paintItem2DetailsLine(g_settings.screen_StartX + 10, g_settings.screen_StartY + 10, (g_settings.screen_EndX - g_settings.screen_StartX - 20), g_settings.screen_EndY - g_settings.screen_StartY - 20 - 40 - 40, 70, 40, 40, 0);
+
+	// body
+	CBox Box;
+	
+	Box.iX = g_settings.screen_StartX + 10;
+	Box.iY = g_settings.screen_StartY + 10 + 40;
+	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20) - SCROLLBAR_WIDTH;
+	Box.iHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20 - 40 - 40 - 70;
+
+	//
+	CWindow window;
+
+	window.setDimension(Box.iX, Box.iY, Box.iWidth, Box.iHeight);
+
+	window.setColor(COL_MENUHEAD_PLUS_0);
+	//window.setCorner(RADIUS_MID, CORNER_ALL);
+	//window.setGradient(gradientDark2Light2Dark);
+
+	window.paint();
+
+	CFrameBuffer::getInstance()->blit();
+
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	bool loop = true;
+
+	while(loop)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg == CRCInput::RC_home) 
+		{
+			loop = false;
+		}
+
+		CFrameBuffer::getInstance()->blit();
+	}
+
 	hide();
+	::clearItem2DetailsLine(g_settings.screen_StartX + 10, g_settings.screen_StartY + 10, (g_settings.screen_EndX - g_settings.screen_StartX - 20), g_settings.screen_EndY - g_settings.screen_StartY - 20 - 40 - 40, 70);
 }
 
 void CTestMenu::testAudioPlayer()
@@ -1569,6 +1655,15 @@ void CTestMenu::testKeyChooser()
 	keyChooser->exec(NULL, "");
 	delete keyChooser;
 	keyChooser = NULL;
+}
+
+void CTestMenu::testMountChooser()
+{
+	CMountChooser * mountChooser = new CMountChooser("testing CMountChooser");
+
+	mountChooser->exec(NULL, "");
+	delete mountChooser;
+	mountChooser = NULL;
 }
 
 void CTestMenu::testPluginsList()
@@ -2519,6 +2614,10 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCButtons();
 	}
+	else if(actionKey == "headers")
+	{
+		testCHeaders();
+	}
 	else if(actionKey == "audioplayer")
 	{
 		testAudioPlayer();
@@ -2630,6 +2729,10 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "keychooser")
 	{
 		testKeyChooser();
+	}
+	else if(actionKey == "mountchooser")
+	{
+		testMountChooser();
 	}
 	else if(actionKey == "framebox")
 	{
@@ -2808,7 +2911,10 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
 	mainMenu->addItem(new CMenuForwarder("ColorChooser", true, NULL, this, "colorchooser"));
 	mainMenu->addItem(new CMenuForwarder("KeyChooser", true, NULL, this, "keychooser"));
+	mainMenu->addItem(new CMenuForwarder("VFDController", true, NULL, this, "vfdcontroller"));
+	mainMenu->addItem(new CMenuForwarder("MountChooser", true, NULL, this, "mountchooser"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
+	mainMenu->addItem(new CMenuForwarder("CHeaders", true, NULL, this, "headers"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(movie browser)", true, NULL, this, "framebox"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(channellist)", true, NULL, this, "menuwidgetlistbox"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(Audioplayer)", true, NULL, this, "menuwidgetlistbox1"));
@@ -2829,7 +2935,6 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("MountGUI", true, NULL, this, "mountgui"));
 	mainMenu->addItem(new CMenuForwarder("UmountGUI", true, NULL, this, "umountgui"));
 	mainMenu->addItem(new CMenuForwarder("MountSmallMenu", true, NULL, this, "mountsmallmenu"));
-	mainMenu->addItem(new CMenuForwarder("VFDController", true, NULL, this, "vfdcontroller"));
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("PluginsList", true, NULL, this, "pluginslist"));

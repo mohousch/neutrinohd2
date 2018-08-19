@@ -1,15 +1,5 @@
-
-/***************************************************************************
-	Neutrino-GUI  -   DBoxII-Project
-
-	Homepage: http://dbox.cyberphoria.org/
-
-	Kommentar:
-
-	Diese GUI wurde von Grund auf neu programmiert und sollte nun vom
-	Aufbau und auch den Ausbaumoeglichkeiten gut aussehen. Neutrino basiert
-	auf der Client-Server Idee, diese GUI ist also von der direkten DBox-
-	Steuerung getrennt. Diese wird dann von Daemons uebernommen.
+/*
+	$Id: listbox.h 2018.08.19 mohousch Exp $
 
 
 	License: GPL
@@ -27,25 +17,10 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
-	***********************************************************
-
-	Module Name: listframe.h .
-
-	Description: interface of the CTextBox class
-
-	Date:	Nov 2005
-
-	Author: Günther@tuxbox.berlios.org
-		based on code of Steffen Hehn 'McClean'
-
-	Revision History:
-	Date			Author		Change Description
-	   Nov 2005		Günther	initial implementation
-****************************************************************************/
-
-#if !defined(LISTFRAME_H_)
-#define LISTFRAME_H_
+#if !defined(LISTBOX_H_)
+#define LISTBOX_H_
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -53,50 +28,38 @@
 
 #include <string>
 #include <vector>
-#include <gui/widget/textbox.h>
 
 
-#define LF_MAX_ROWS 6
-
-typedef struct
-{
-	int rows;
-	std::string lineHeader[LF_MAX_ROWS];
-	std::vector<std::string> lineArray[LF_MAX_ROWS];
-	int rowWidth[LF_MAX_ROWS];
-}LF_LINES;
-
-class CListFrame  
+class ClistBoxEntry : public CMenuItem
 {
 	private:
+		std::vector<CMenuItem*>	items;
+
 		// Functions 
 		void onNewLineArray(void);
 		void initVar(void);
 		void initFramesRel(void);
-		void refreshTitle(void);
+		//void refreshTitle(void);
 		void refreshScroll(void);
 		void refreshList(void);
-		void refreshHeaderList(void);
+		//void refreshHeaderList(void);
 		void reSizeMainFrameWidth(int maxTextWidth);
 		void reSizeMainFrameHeight(int maxTextHeight);
 
-		// Variables 
-		LF_LINES* m_pLines;
-
 		CBox m_cFrame;
-		CBox m_cFrameTitleRel;
-		CBox m_cFrameListRel;
+		//CBox m_cFrameTitleRel;
+		//CBox m_cFrameListRel;
 		CBox m_cFrameScrollRel;
-		CBox m_cFrameHeaderListRel;
+		//CBox m_cFrameHeaderListRel;
 
 		int m_nMaxHeight;
 		int m_nMaxWidth;
 
-		int m_nMode;
+		//int m_nMode;
 
 		int m_nNrOfPages;
 		int m_nNrOfLines;
-		int m_nNrOfRows;
+		//int m_nNrOfRows;
 		int m_nMaxLineWidth;
 		int m_nLinesPerPage;
 		int m_nCurrentLine;
@@ -105,33 +68,25 @@ class CListFrame
 
 		bool m_showSelection;
 		
-		static CFont* m_pcFontTitle;
-		std::string m_textTitle;
-		int m_nFontTitleHeight;
+		//static CFont* m_pcFontTitle;
+		//std::string m_textTitle;
+		//int m_nFontTitleHeight;
 		
-		static CFont* m_pcFontList;
-		int m_nFontListHeight;
+		//static CFont* m_pcFontList;
+		//int m_nFontListHeight;
 		
-		static CFont* m_pcFontHeaderList;
-		int m_nFontHeaderListHeight;
+		//static CFont* m_pcFontHeaderList;
+		//int m_nFontHeaderListHeight;
 		
 		//
 		int LinesPerPage;
 
 		CFrameBuffer * frameBuffer;
-		std::string m_iconTitle;
-	public:
-		/* Constructor */
-		CListFrame();
-		CListFrame(LF_LINES* lines);
-		CListFrame(LF_LINES* lines, 
-					CFont* font_text,
-					const int mode, 
-					const CBox* position,
-					const char* textTitle = NULL,
-					CFont *font_title = NULL);
+		//std::string m_iconTitle;
 
-		virtual ~CListFrame();
+	public:
+		ClistBoxEntry();
+		virtual ~ClistBoxEntry();
 
 		// Functions
 		void    refresh(void);
@@ -140,8 +95,8 @@ class CListFrame
 		void    scrollPageUp(const int pages);				
 		void 	scrollLineDown(const int lines);
 		void 	scrollLineUp(const int lines);
-		bool	setLines(LF_LINES* lines);
-		bool	setTitle(const char* title = "", const std::string& icon = NULL);
+		//bool	setLines(LF_LINES* lines);
+		//bool	setTitle(const char* title = "", const std::string& icon = NULL);
 		bool    setSelectedLine(int selection);
 		void	hide(void);
 		void	paint(void);
@@ -155,18 +110,6 @@ class CListFrame
 		inline	void	movePosition(int x, int y)	{m_cFrame.iX = x; m_cFrame.iY = y;};
 		
 		inline int 	getLinesPerPage(void)		{return(LinesPerPage);};
-
-
-		// variables
-		typedef enum mode_
-		{
-			AUTO_WIDTH	= 0x01,
-			AUTO_HIGH	= 0x02,
-			SCROLL		= 0x04,
-			TITLE  		= 0x08,
-			HEADER_LINE 	= 0x80
-		}mode;
 };
 
-#endif //LISTFRAME_H_
-
+#endif // LISTBOX_H_

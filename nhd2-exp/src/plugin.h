@@ -97,6 +97,9 @@
 #include <gui/widget/window.h>
 #include <gui/widget/progressbar.h>
 #include <gui/widget/icons.h>
+#include <gui/widget/items2detailsline.h>
+#include <gui/widget/headers.h>
+#include <gui/widget/listbox.h>
 
 #include <gui/bedit/bouqueteditor_bouquets.h>
 #include <gui/bedit/bouqueteditor_chanselect.h>

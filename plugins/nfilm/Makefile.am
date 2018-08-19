@@ -17,7 +17,6 @@ noinst_LTLIBRARIES = nfilm.la
 nfilm_la_SOURCES = nfilm.cpp
 	 
 nfilm_la_LDFLAGS = -rpath $(PLUGINDIR) -module
-nfilm_la_LIBADD = $(top_srcdir)/../nhd2-exp/src/system/ytparser.o
 
 nfilm_la_CXXFLAGS = -fno-rtti -fno-exceptions
 

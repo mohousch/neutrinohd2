@@ -17,7 +17,6 @@ noinst_LTLIBRARIES = ntvshows.la
 ntvshows_la_SOURCES = ntvshows.cpp nseasons.cpp nepisodes.cpp
 	 
 ntvshows_la_LDFLAGS = -rpath $(PLUGINDIR) -module
-ntvshows_la_LIBADD = $(top_srcdir)/../nhd2-exp/src/system/ytparser.o
 
 nfilm_la_CXXFLAGS = -fno-rtti -fno-exceptions
 

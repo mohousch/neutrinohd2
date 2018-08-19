@@ -46,6 +46,8 @@ neutrino_LDADD = \
 	driver/pictureviewer/libneutrino_pictureviewer.a \
 	system/libneutrino_system.a \
 	system/helpers.o \
+	system/ytparser.o \
+	system/tmdbparser.o \
 	driver/libneutrino_driver.a \
 	gui/movieinfo.o \
 	gui/moviebrowser.o \
@@ -64,6 +66,7 @@ neutrino_LDADD = \
 	gui/video_setup.o \
 	gui/widget/items2detailsline.o \
 	gui/widget/window.o \
+	gui/widget/headers.o \
 	$(top_builddir)/lib/sectionsdclient/libsectionsdclient.a \
 	$(top_builddir)/lib/timerdclient/libtimerdclient.a \
 	$(top_builddir)/src/zapit/lib/libzapitclient.a \
