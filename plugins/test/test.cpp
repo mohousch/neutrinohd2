@@ -377,7 +377,7 @@ void CTestMenu::testCWindowShadow()
 void CTestMenu::testCStringInput()
 {
 	std::string value;
-	CStringInput * stringInput = new CStringInput("CStringInput", (char *)value.c_str());
+	CStringInput * stringInput = new CStringInput("CStringInput", (char*)value.c_str());
 	
 	stringInput->exec(NULL, "");
 	stringInput->hide();
@@ -996,36 +996,56 @@ void CTestMenu::testCButtons()
 
 void CTestMenu::testCHeaders()
 {
-	// head
-	::paintHead(g_settings.screen_StartX + 10, g_settings.screen_StartY + 10, (g_settings.screen_EndX - g_settings.screen_StartX - 20), 40, NEUTRINO_ICON_MP3, "paintHeaders", true, BUTTONS_COUNT, Buttons);
-
-	// foot
-	::paintFoot(g_settings.screen_StartX + 10, g_settings.screen_EndY - 10 - 40 - 70, (g_settings.screen_EndX - g_settings.screen_StartX - 20), 40, (g_settings.screen_EndX - g_settings.screen_StartX - 20)/BUTTONS_COUNT, BUTTONS_COUNT, Buttons);
-
-	// scrollbar
-	::paintScrollBar(g_settings.screen_StartX + 10 + (g_settings.screen_EndX - g_settings.screen_StartX - 20) - SCROLLBAR_WIDTH, g_settings.screen_StartY + 10 + 40, g_settings.screen_EndY - g_settings.screen_StartY - 20 - 40 - 40 - 70, 3, 0);
-
-	// itemsdetailsline
-	::paintItem2DetailsLine(g_settings.screen_StartX + 10, g_settings.screen_StartY + 10, (g_settings.screen_EndX - g_settings.screen_StartX - 20), g_settings.screen_EndY - g_settings.screen_StartY - 20 - 40 - 40, 70, 40, 40, 0);
-
-	// body
 	CBox Box;
 	
-	Box.iX = g_settings.screen_StartX + 10;
-	Box.iY = g_settings.screen_StartY + 10 + 40;
-	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20) - SCROLLBAR_WIDTH;
-	Box.iHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20 - 40 - 40 - 70;
+	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
+	Box.iHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20;
 
-	//
+	Box.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - Box.iWidth ) >> 1 );
+	Box.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - Box.iHeight) >> 1 );
+
+	int hheight = 40;
+	int fheight = 40;
+	int iheight = 30;
+
+	// background
 	CWindow window;
 
 	window.setDimension(Box.iX, Box.iY, Box.iWidth, Box.iHeight);
-
 	window.setColor(COL_MENUHEAD_PLUS_0);
-	//window.setCorner(RADIUS_MID, CORNER_ALL);
-	//window.setGradient(gradientDark2Light2Dark);
-
 	window.paint();
+
+	// head
+	::paintHead(Box.iX, Box.iY, Box.iWidth, hheight, NEUTRINO_ICON_MP3, "CHeaders", true, BUTTONS_COUNT, Buttons);
+
+	// foot
+	::paintFoot(Box.iX, Box.iY + Box.iHeight - fheight, Box.iWidth, fheight, Box.iWidth/BUTTONS_COUNT, BUTTONS_COUNT, Buttons);
+
+	// our listbox
+	CBox cFrameBox;
+	cFrameBox.iX = Box.iX;
+	cFrameBox.iY = Box.iY + hheight;
+	cFrameBox.iWidth = Box.iWidth;
+	cFrameBox.iHeight = Box.iHeight - hheight - fheight;
+
+	ClistBoxEntry* listBox = new ClistBoxEntry(&cFrameBox);
+
+	CMenuItem* item = NULL;
+
+	for (unsigned int i = 0; i < 100; i++)
+	{
+		std::string itemName = "item-";
+		itemName += to_string(i + 1);
+
+		item = new ClistBoxEntryItem(itemName.c_str(), true, "test", this, NULL, NULL, NEUTRINO_ICON_MENUITEM_PLUGIN);
+
+		item->setWidgetType(WIDGET_CLASSIC);
+		item->setnLinesItem();
+
+		listBox->addItem(item);
+	}
+
+	listBox->paint();
 
 	CFrameBuffer::getInstance()->blit();
 
@@ -1043,12 +1063,36 @@ void CTestMenu::testCHeaders()
 		{
 			loop = false;
 		}
+		else if(msg == CRCInput::RC_down)
+		{
+			listBox->scrollLineDown();
+		}
+		else if(msg == CRCInput::RC_up)
+		{
+			listBox->scrollLineUp();
+		}
+		else if(msg == CRCInput::RC_page_down)
+		{
+			listBox->scrollPageDown();
+		}
+		else if(msg == CRCInput::RC_page_up)
+		{
+			listBox->scrollPageUp();
+		}
+		else if(msg == CRCInput::RC_ok)
+		{
+			int res = listBox->resume();
+
+			printf("CHeaders:RC_ok: res:%d\n", res);
+		}
 
 		CFrameBuffer::getInstance()->blit();
 	}
 
 	hide();
-	::clearItem2DetailsLine(g_settings.screen_StartX + 10, g_settings.screen_StartY + 10, (g_settings.screen_EndX - g_settings.screen_StartX - 20), g_settings.screen_EndY - g_settings.screen_StartY - 20 - 40 - 40, 70);
+	listBox->hide();
+	delete listBox;
+	listBox = NULL;
 }
 
 void CTestMenu::testAudioPlayer()

@@ -227,6 +227,7 @@ class CMenuItem
 		//virtual void setOptionFont(CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]){optionFont = font;};
 
 		virtual void setnLinesItem(void){nLinesItem = true;};
+		virtual void setWidgetType(int type){widgetType = type;};
 };
 
 // CAbstractMenuOptionChooser

@@ -98,6 +98,7 @@ CMenuItem::CMenuItem()
 			
 	//
 	nLinesItem = false;
+	widgetType = WIDGET_STANDARD;
 }
 
 void CMenuItem::init(const int X, const int Y, const int DX, const int OFFX)
@@ -2999,7 +3000,6 @@ void ClistBox::initFrames()
 
 		// recalculate height
 		listmaxshow = (height - hheight - fheight)/item_height;
-
 		height = hheight + listmaxshow*item_height + fheight;
 
 		//
@@ -4087,13 +4087,13 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 									paintHead();
 									paintFoot();
 									break;
+
 								case menu_return::RETURN_NONE:
 									g_RCInput->killTimer(sec_timer_id);
 									sec_timer_id = 0;
 									retval = menu_return::RETURN_NONE;
 									msg = CRCInput::RC_timeout;
-									break;
-									
+									break;	
 							}
 						} 
 						else

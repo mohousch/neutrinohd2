@@ -23,6 +23,7 @@
 #include <driver/fontrenderer.h>
 #include <driver/framebuffer.h>
 
+
 // head
 void paintHead(int x, int y, int dx, int dy, const char* icon, const neutrino_locale_t caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL);
 

@@ -29,87 +29,87 @@
 #include <string>
 #include <vector>
 
+#include <gui/widget/menue.h>
 
-class ClistBoxEntry : public CMenuItem
+
+class ClistBoxEntry
 {
 	private:
+		CFrameBuffer* frameBuffer;
 		std::vector<CMenuItem*>	items;
 
-		// Functions 
-		void onNewLineArray(void);
-		void initVar(void);
-		void initFramesRel(void);
-		//void refreshTitle(void);
-		void refreshScroll(void);
-		void refreshList(void);
-		//void refreshHeaderList(void);
-		void reSizeMainFrameWidth(int maxTextWidth);
-		void reSizeMainFrameHeight(int maxTextHeight);
+		CBox cFrameBox;
 
-		CBox m_cFrame;
-		//CBox m_cFrameTitleRel;
-		//CBox m_cFrameListRel;
-		CBox m_cFrameScrollRel;
-		//CBox m_cFrameHeaderListRel;
+		virtual void paintItems();
+		int selected;
 
-		int m_nMaxHeight;
-		int m_nMaxWidth;
-
-		//int m_nMode;
-
-		int m_nNrOfPages;
-		int m_nNrOfLines;
-		//int m_nNrOfRows;
-		int m_nMaxLineWidth;
-		int m_nLinesPerPage;
-		int m_nCurrentLine;
-		int m_nCurrentPage;
-		int m_nSelectedLine;
-
-		bool m_showSelection;
-		
-		//static CFont* m_pcFontTitle;
-		//std::string m_textTitle;
-		//int m_nFontTitleHeight;
-		
-		//static CFont* m_pcFontList;
-		//int m_nFontListHeight;
-		
-		//static CFont* m_pcFontHeaderList;
-		//int m_nFontHeaderListHeight;
-		
 		//
-		int LinesPerPage;
+		std::vector<unsigned int> page_start;
+		unsigned int current_page;
+		unsigned int total_pages;
+		int item_height;
+		int item_width;
+		int sb_width;
+		//int items_height;
+		//int items_width;
+		int listmaxshow;
+		int iconOffset;
+		int pos;
 
-		CFrameBuffer * frameBuffer;
-		//std::string m_iconTitle;
+		virtual void initFrames();
+		virtual void paintItemInfo(int pos);
+		virtual void hideItemInfo();
 
 	public:
-		ClistBoxEntry();
+		ClistBoxEntry(const int x, int const y, const int dx, const int dy);
+		ClistBoxEntry(CBox* position);
 		virtual ~ClistBoxEntry();
 
-		// Functions
-		void    refresh(void);
-		void    refreshLine(int line);
-		void    scrollPageDown(const int pages);
-		void    scrollPageUp(const int pages);				
-		void 	scrollLineDown(const int lines);
-		void 	scrollLineUp(const int lines);
-		//bool	setLines(LF_LINES* lines);
-		//bool	setTitle(const char* title = "", const std::string& icon = NULL);
-		bool    setSelectedLine(int selection);
-		void	hide(void);
-		void	paint(void);
+		virtual void addItem(CMenuItem* menuItem, const bool defaultselected = false);
+		bool hasItem();
+		int getItemsCount()const{return items.size();};
+		void clearItems(void){items.clear();};
 
-		inline	CBox	getWindowsPos(void)		{return(m_cFrame);};
-		inline	int	getMaxLineWidth(void)		{return(m_nMaxLineWidth);};
-		inline  int     getSelectedLine(void)		{return(m_nSelectedLine);};
-		inline  int     getLines(void)			{return(m_nNrOfLines);};
-		inline  int     getPages(void)			{return(m_nNrOfPages);};
-		inline  void    showSelection(bool show)	{m_showSelection = show; refreshLine(m_nSelectedLine);};
-		inline	void	movePosition(int x, int y)	{m_cFrame.iX = x; m_cFrame.iY = y;};
+		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
+		int getSelected() {return selected;};
+		inline	CBox getWindowsPos(void){return(cFrameBox);};
+
+		//
+		virtual void paint();
+		virtual void hide();
+
+		virtual void scrollLineDown();
+		virtual void scrollLineUp();
+		virtual void scrollPageDown();
+		virtual void scrollPageUp();
+		virtual int resume();
+};
+
+// CMenulistBoxItem
+class ClistBoxEntryItem : public CMenuItem
+{
+	CMenuTarget* jumpTarget;
+	std::string actionKey;
+
+	protected:
+		//
+		neutrino_locale_t text;
+		std::string textString;
+
+		//
+		virtual const char* getName(void);
+
+	public:
+		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = "", CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const Icon = NULL, const char* const ItemIcon = NULL);
+
+		ClistBoxEntryItem(const char* const Text, const bool Active = true, const char* const Option = "", CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const IconName = NULL, const char* const ItemIcon = NULL);
 		
-		inline int 	getLinesPerPage(void)		{return(LinesPerPage);};
+		int paint(bool selected = false, bool AfterPulldown = false);
+		int getHeight(void) const;
+		int getWidth(void) const;
+
+		int exec(CMenuTarget* parent);
+		bool isSelectable(void) const {return active;}
 };
 
 #endif // LISTBOX_H_
