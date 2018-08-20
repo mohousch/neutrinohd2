@@ -996,6 +996,7 @@ void CTestMenu::testCButtons()
 
 void CTestMenu::testCHeaders()
 {
+REPEAT:
 	CBox Box;
 	
 	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
@@ -1032,19 +1033,107 @@ void CTestMenu::testCHeaders()
 
 	CMenuItem* item = NULL;
 
-	for (unsigned int i = 0; i < 100; i++)
+	//
+	//
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
+
+	CFileList filelist;
+	
+	// recordingdir
+	std::string Path_local = g_settings.network_nfs_recordingdir;
+	m_vMovieInfo.clear();
+	
+	//
+	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
 	{
-		std::string itemName = "item-";
-		itemName += to_string(i + 1);
+		// filter them
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
 
-		item = new ClistBoxEntryItem(itemName.c_str(), true, "test", this, NULL, NULL, NEUTRINO_ICON_MENUITEM_PLUGIN);
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
+		{
+			//
+			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+					
+			movieInfo.file.Name = files->Name;
+					
+			// load movie infos (from xml file)
+			m_movieInfo.loadMovieInfo(&movieInfo);
 
+			std::string tmp_str = files->getFileName();
+
+			removeExtension(tmp_str);
+
+			// refill if empty
+			if(movieInfo.epgTitle.empty())
+				movieInfo.epgTitle = tmp_str;
+
+			if(movieInfo.epgInfo1.empty())
+				movieInfo.epgInfo1 = tmp_str;
+
+			//if(movieInfo.epgInfo2.empty())
+			//	movieInfo.epgInfo2 = tmp_str;
+
+			//thumbnail
+			std::string fname = "";
+			fname = files->Name;
+			changeFileNameExt(fname, ".jpg");
+					
+			if(!access(fname.c_str(), F_OK) )
+				movieInfo.tfile = fname.c_str();
+					
+			// 
+			m_vMovieInfo.push_back(movieInfo);
+		}
+	}
+
+	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+	{
+		item = new ClistBoxEntryItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), NULL, "", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		//
+		std::string tmp = m_vMovieInfo[i].epgTitle;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo1;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo2;
+
+		item->setInfo1(tmp.c_str());
 		item->setWidgetType(WIDGET_CLASSIC);
 		item->setnLinesItem();
 
 		listBox->addItem(item);
 	}
+	//
 
+	listBox->setSelected(selected);
 	listBox->paint();
 
 	CFrameBuffer::getInstance()->blit();
@@ -1081,9 +1170,26 @@ void CTestMenu::testCHeaders()
 		}
 		else if(msg == CRCInput::RC_ok)
 		{
-			int res = listBox->resume();
 
-			printf("CHeaders:RC_ok: res:%d\n", res);
+			hide();
+
+			selected = listBox->getSelected();
+			CMoviePlayerGui tmpMoviePlayerGui;
+
+			if (&m_vMovieInfo[selected].file != NULL) 
+			{
+				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
+				tmpMoviePlayerGui.exec(NULL, "");
+			}
+
+			goto REPEAT;
+		}
+		else if(msg == CRCInput::RC_info)
+		{
+			hide();
+			selected = listBox->getSelected();
+			m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
+			goto REPEAT;
 		}
 
 		CFrameBuffer::getInstance()->blit();

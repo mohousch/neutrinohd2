@@ -293,6 +293,8 @@ void ClistBoxEntry::scrollLineUp()
 			break;
 		}
 	}
+
+	printf("scrollLineDown: selected:%d\n", selected);
 }
 
 void ClistBoxEntry::scrollPageDown()
@@ -386,39 +388,6 @@ void ClistBoxEntry::scrollPageUp()
 			pos++;
 		}
 	}
-}
-
-int ClistBoxEntry::resume()
-{
-	int retval = menu_return::RETURN_REPAINT;
-
-	if(hasItem()) 
-	{
-		//exec this item...
-		CMenuItem* item = items[selected];
-							
-		int rv = item->exec(NULL);
-							
-		switch ( rv ) 
-		{
-			case menu_return::RETURN_EXIT_ALL:
-				retval = menu_return::RETURN_EXIT_ALL;
-									
-			case menu_return::RETURN_EXIT:
-				retval = menu_return::RETURN_EXIT;
-				break;
-									
-			case menu_return::RETURN_REPAINT:
-				retval = menu_return::RETURN_REPAINT;
-				break;
-
-			case menu_return::RETURN_NONE:
-				retval = menu_return::RETURN_NONE;
-				break;							
-		}
-	} 
-	
-	return retval;
 }
 
 //ClistBoxEntryItem

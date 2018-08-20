@@ -50,8 +50,6 @@ class ClistBoxEntry
 		int item_height;
 		int item_width;
 		int sb_width;
-		//int items_height;
-		//int items_width;
 		int listmaxshow;
 		int iconOffset;
 		int pos;
@@ -82,7 +80,6 @@ class ClistBoxEntry
 		virtual void scrollLineUp();
 		virtual void scrollPageDown();
 		virtual void scrollPageUp();
-		virtual int resume();
 };
 
 // CMenulistBoxItem
