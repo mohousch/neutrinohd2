@@ -79,7 +79,7 @@ class CTestMenu : public CMenuTarget
 		void testCProgressBar();
 		void testCProgressWindow();
 		void testCButtons();
-		void testCHeaders();
+		void testClistBoxEntry();
 		void testVFDController();
 		void testColorChooser();
 		void testKeyChooser();
@@ -994,7 +994,7 @@ void CTestMenu::testCButtons()
 	}
 }
 
-void CTestMenu::testCHeaders()
+void CTestMenu::testClistBoxEntry()
 {
 	CBox Box;
 	
@@ -1004,37 +1004,10 @@ void CTestMenu::testCHeaders()
 	Box.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - Box.iWidth ) >> 1 );
 	Box.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - Box.iHeight) >> 1 );
 
-	int hheight = 40;
-	int fheight = 40;
-	int iheight = 30;
-
-	// background
-/*
-	CWindow window;
-
-	window.setDimension(Box.iX, Box.iY, Box.iWidth, Box.iHeight);
-	window.setColor(COL_MENUHEAD_PLUS_0);
-	window.paint();
-
-	// head
-	::paintHead(Box.iX, Box.iY, Box.iWidth, hheight, NEUTRINO_ICON_MP3, "CHeaders", true, BUTTONS_COUNT, Buttons);
-
-	// foot
-	::paintFoot(Box.iX, Box.iY + Box.iHeight - fheight, Box.iWidth, fheight, Box.iWidth/BUTTONS_COUNT, BUTTONS_COUNT, Buttons);
-*/
-
-	// our listbox
-	CBox cFrameBox;
-	cFrameBox.iX = Box.iX;
-	cFrameBox.iY = Box.iY + hheight;
-	cFrameBox.iWidth = Box.iWidth;
-	cFrameBox.iHeight = Box.iHeight - hheight - fheight;
-
-	ClistBoxEntry* listBox = new ClistBoxEntry(&cFrameBox);
+	ClistBoxEntry* listBox = new ClistBoxEntry(&Box);
 
 	CMenuItem* item = NULL;
 
-	//
 	//
 	CFileFilter fileFilter;
 	
@@ -1132,13 +1105,15 @@ void CTestMenu::testCHeaders()
 
 		listBox->addItem(item);
 	}
-	//
 
 	listBox->setTitle("ClistBoxEntry");
 	listBox->setIcon(NEUTRINO_ICON_MP3);
+	listBox->enablePaintHead();
 	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
-	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
 	listBox->enablePaintDate();
+	listBox->enablePaintFoot();
+	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+	listBox->enablePaintFootInfo(40);
 
 REPEAT:
 	listBox->setSelected(selected);
@@ -2783,9 +2758,9 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCButtons();
 	}
-	else if(actionKey == "headers")
+	else if(actionKey == "listboxentry")
 	{
-		testCHeaders();
+		testClistBoxEntry();
 	}
 	else if(actionKey == "audioplayer")
 	{
@@ -3083,7 +3058,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("VFDController", true, NULL, this, "vfdcontroller"));
 	mainMenu->addItem(new CMenuForwarder("MountChooser", true, NULL, this, "mountchooser"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
-	mainMenu->addItem(new CMenuForwarder("CHeaders", true, NULL, this, "headers"));
+	mainMenu->addItem(new CMenuForwarder("ClistBoxEntry", true, NULL, this, "listboxentry"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(movie browser)", true, NULL, this, "framebox"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(channellist)", true, NULL, this, "menuwidgetlistbox"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(Audioplayer)", true, NULL, this, "menuwidgetlistbox1"));

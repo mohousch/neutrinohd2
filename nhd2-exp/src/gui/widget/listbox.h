@@ -71,6 +71,9 @@ class ClistBoxEntry
 		const struct button_label* fbutton_labels;
 
 		bool paintDate;
+		bool paintTitle;
+		bool paint_Foot;
+		bool paintFootInfo;
 
 		virtual void initFrames();
 		virtual void paintItems();
@@ -82,14 +85,9 @@ class ClistBoxEntry
 
 		virtual void addItem(CMenuItem* menuItem, const bool defaultselected = false);
 		bool hasItem();
-		int getItemsCount()const{return items.size();};
 		void clearItems(void){items.clear();};
-
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
-		int getSelected() {return selected;};
-		inline	CBox getWindowsPos(void){return(cFrameBox);};
 
-		//
 		virtual void paint();
 		virtual void hide();
 		virtual void paintHead();
@@ -101,11 +99,22 @@ class ClistBoxEntry
 		void setTitle(const char* title){l_name = title;};
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count, const int _fbutton_width = 0);
+		void enablePaintHead(){paintTitle = true;};
+		void enablePaintFoot(){paint_Foot = true;};
+		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh;};
 
 		virtual void scrollLineDown();
 		virtual void scrollLineUp();
 		virtual void scrollPageDown();
 		virtual void scrollPageUp();
+
+		int getItemsCount()const{return items.size();};
+		int getSelected(){return selected;};
+		inline CBox getWindowsPos(void){return(cFrameBox);};
+		int getTitleHeight(){return hheight;};
+		int getFootHeight(){return fheight;};
+		int getItemHeight(){return item_height;};
+		int getFootInfoHeight(){return footInfoHeight;};
 };
 
 // CMenulistBoxItem
