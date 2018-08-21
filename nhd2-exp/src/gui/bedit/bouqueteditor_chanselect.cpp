@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: bouqueteditor_chanselect.cpp 2013/10/12 mohousch Exp $
+	$Id: bouqueteditor_chanselect.cpp 2018/08/21 mohousch Exp $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -59,15 +59,14 @@
 
 
 extern tallchans allchans;			// defined in zapit.cpp
-extern CBouquetManager * g_bouquetManager;	// defined in zapit.cpp
+extern CBouquetManager* g_bouquetManager;	// defined in zapit.cpp
 void addChannelToBouquet(const unsigned int bouquet, const t_channel_id channel_id); // defined in zapit.cpp
 
-CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string & Caption, unsigned int Bouquet, CZapitClient::channelsMode Mode)
+CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string& Caption, unsigned int Bouquet, CZapitClient::channelsMode Mode)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
 	//
-	liststart = 0;
 	selected =  0;
 
 	caption = Caption;
@@ -78,41 +77,20 @@ CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string & Caption, unsi
 	bouquet = Bouquet;
 	mode = Mode;
 
-	// Title
-	cFrameTitle.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
-	
-	// Foot
-	footIcon.setIcon(NEUTRINO_ICON_BUTTON_OKAY);
-	cFrameFoot.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), footIcon.iHeight) + 6;
-	
-	// Item
-	itemIcon1.setIcon(NEUTRINO_ICON_HD);
-	itemIcon2.setIcon(NEUTRINO_ICON_SCRAMBLED);
-	
-	cFrameItem.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), itemIcon1.iHeight) + 2;
-	cFrameItem.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), itemIcon2.iHeight) + 2;
-
-	// FootInfo
-	cFrameFootInfo.iHeight = /*g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 20*/ 70;
-	
+	// box	
 	cFrameBox.iWidth = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
 	cFrameBox.iHeight = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 	
-	listmaxshow = (cFrameBox.iHeight - cFrameTitle.iHeight - cFrameFoot.iHeight - cFrameFootInfo.iHeight)/cFrameItem.iHeight;
-
-	// recalculate height
-	cFrameBox.iHeight = cFrameTitle.iHeight + listmaxshow*cFrameItem.iHeight + cFrameFoot.iHeight + cFrameFootInfo.iHeight;
-	
-	cFrameBox.iX = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - (cFrameBox.iWidth + ConnectLineBox_Width)) / 2 + ConnectLineBox_Width;
+	cFrameBox.iX = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - cFrameBox.iWidth) / 2;
 	cFrameBox.iY = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - cFrameBox.iHeight) / 2;
+
+	listBox = NULL;
+	item = NULL;
+
+	listBox = new ClistBoxEntry(&cFrameBox);
 }
 
-uint CBEChannelSelectWidget::getItemCount()
-{
-	return Channels.size();
-}
-
-bool CBEChannelSelectWidget::isChannelInBouquet( int index)
+bool CBEChannelSelectWidget::isChannelInBouquet(int index)
 {
 	for (unsigned int i = 0; i< bouquetChannels->size(); i++)
 	{
@@ -128,95 +106,6 @@ bool CBEChannelSelectWidget::hasChanged()
 	return modified;
 }
 
-void CBEChannelSelectWidget::paintHead()
-{
-	// headBox
-	cFrameTitle.iX = cFrameBox.iX;
-	cFrameTitle.iY = cFrameBox.iY;
-	cFrameTitle.iWidth = cFrameBox.iWidth;
-	
-	cWindowTitle.init();
-	cWindowTitle.setDimension(&cFrameTitle);
-	cWindowTitle.setColor(COL_MENUHEAD_PLUS_0);
-	cWindowTitle.setCorner(RADIUS_MID, CORNER_TOP);
-	cWindowTitle.setGradient(g_settings.Head_gradient);
-	cWindowTitle.paint();
-	
-	// title
-	int timestr_len = 0;
-	std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
-		
-	timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
-	
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameTitle.iX + BORDER_LEFT, cFrameTitle.iY + cFrameTitle.iHeight, cFrameTitle.iWidth - BORDER_LEFT - BORDER_RIGHT - timestr_len, caption.c_str() , COL_MENUHEAD);
-
-	// paint time/date	
-	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(cFrameTitle.iX + cFrameTitle.iWidth - BORDER_RIGHT - timestr_len, cFrameTitle.iY + (cFrameTitle.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
-}
-
-void CBEChannelSelectWidget::paintItem(int pos)
-{
-	int ypos = cFrameBox.iY + cFrameTitle.iHeight + pos*cFrameItem.iHeight;
-
-	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
-	unsigned int current = liststart + pos;
-	
-	if (current == selected)
-	{
-		color   = COL_MENUCONTENTSELECTED;
-		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-		
-		// itemlines	
-		paintItem2DetailsLine(pos);		
-		
-		// details
-		paintDetails(current);
-	}
-	else
-	{
-		color = COL_MENUCONTENT;
-		bgcolor = COL_MENUCONTENT_PLUS_0;
-	}
-	
-	// itemBox
-	frameBuffer->paintBoxRel(cFrameBox.iX, ypos, cFrameBox.iWidth - SCROLLBAR_WIDTH, cFrameItem.iHeight, bgcolor);
-
-	//
-	itemIcon3.setIcon(NEUTRINO_ICON_BUTTON_MARK);
-	
-	if(current < getItemCount())
-	{
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(cFrameBox.iX + BORDER_LEFT + itemIcon3.iWidth + ICON_OFFSET, ypos + (cFrameItem.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), cFrameBox.iWidth - (BORDER_LEFT + itemIcon3.iWidth + ICON_OFFSET + BORDER_RIGHT), Channels[current]->getName(), color, 0, true);
-
-		if( isChannelInBouquet(current))
-		{
-			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_MARK, cFrameBox.iX + BORDER_LEFT, ypos + (cFrameItem.iHeight - itemIcon3.iHeight)/2);
-		}
-		else
-		{
-			frameBuffer->paintBoxRel(cFrameBox.iX + BORDER_LEFT, ypos + 4, itemIcon3.iWidth, cFrameItem.iHeight - 4, bgcolor);
-		}
-		
-		//FIXME???
-		// hd/scrambled icons
-		if (g_settings.channellist_ca)
-		{
-			// scrambled icon
-			if( Channels[current]->scrambled) 
-				frameBuffer->paintIcon(NEUTRINO_ICON_SCRAMBLED, cFrameBox.iX + cFrameBox.iWidth - (SCROLLBAR_WIDTH + ICON_OFFSET + itemIcon2.iWidth), ypos + (cFrameItem.iHeight - itemIcon2.iHeight)/2 );
-			
-			// hd icon
-			if( Channels[current]->isHD() ) 
-				frameBuffer->paintIcon(NEUTRINO_ICON_HD, cFrameBox.iX + cFrameBox.iWidth - (SCROLLBAR_WIDTH + ICON_OFFSET + itemIcon2.iWidth + ICON_OFFSET + itemIcon1.iWidth), ypos + (cFrameItem.iHeight - itemIcon1.iHeight)/2 );
-
-			// uhd icon
-			else if(Channels[current]->isUHD()) 
-				frameBuffer->paintIcon(NEUTRINO_ICON_UHD, cFrameBox.iX + cFrameBox.iWidth - (SCROLLBAR_WIDTH + ICON_OFFSET + itemIcon2.iWidth + ICON_OFFSET + itemIcon1.iWidth), ypos + (cFrameItem.iHeight - itemIcon1.iHeight)/2 );
-		}
-	}
-}
-
 #define BUTTONS_COUNT 2
 const struct button_label Buttons[BUTTONS_COUNT] =
 {
@@ -224,93 +113,74 @@ const struct button_label Buttons[BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_HOME, LOCALE_BOUQUETEDITOR_RETURN, NULL }	
 };
 
-void CBEChannelSelectWidget::paintFoot()
-{
-	cFrameFoot.iX = cFrameBox.iX;
-	cFrameFoot.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - cFrameFoot.iHeight;
-	cFrameFoot.iWidth = cFrameBox.iWidth;
-
-	cWindowFoot.init();
-	cWindowFoot.setDimension(&cFrameFoot);
-	cWindowFoot.setColor(COL_MENUHEAD_PLUS_0);
-	cWindowFoot.setCorner(RADIUS_MID, CORNER_BOTTOM);
-	cWindowFoot.setGradient(g_settings.Foot_gradient);
-	cWindowFoot.paint();
-
-	// Buttons
-	int ButtonWidth = cFrameBox.iWidth / BUTTONS_COUNT;
-
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, cFrameFoot.iX + BORDER_LEFT, cFrameFoot.iY, ButtonWidth, BUTTONS_COUNT, Buttons, cFrameFoot.iHeight);	
-}
-
 void CBEChannelSelectWidget::paint()
 {
 	dprintf(DEBUG_DEBUG, "CBEChannelSelectWidget::paint\n");
 
-	liststart = (selected/listmaxshow)*listmaxshow;
-
-	// items
-	for(unsigned int count = 0; count < listmaxshow; count++)
+	for (unsigned int count = 0; count < Channels.size(); count++)
 	{
-		paintItem(count);
-	}
+		item = new ClistBoxEntryItem(Channels[count]->getName().c_str(), true);
 
-	// scrollbar
-	cFrameScrollBar.iX = cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH;
-	cFrameScrollBar.iY = cFrameBox.iY + cFrameTitle.iHeight;
-	cFrameScrollBar.iWidth = SCROLLBAR_WIDTH;
-	cFrameScrollBar.iHeight = cFrameItem.iHeight*listmaxshow;
+		// marked
+		std::string marked_icon = "";
+		if(isChannelInBouquet(count))
+			marked_icon = NEUTRINO_ICON_BUTTON_MARK;
 
-	::paintScrollBar(&cFrameScrollBar, ((getItemCount() - 1)/ listmaxshow) + 1, (selected/listmaxshow));
-}
+		item->setIconName(marked_icon.c_str());
 
-//
-void CBEChannelSelectWidget::paintDetails(int index)
-{
-	// infobox refresh
-	cFrameFootInfo.iX = cFrameBox.iX;
-	cFrameFootInfo.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight;
-	cFrameFootInfo.iWidth = cFrameBox.iWidth;
-	
-	if(Channels.empty())
-		return;
-	
-	char buf[128];
-	transponder_id_t ct = Channels[index]->getTransponderId();
-	transponder_list_t::iterator tpI = transponders.find(ct);
-	int len = snprintf(buf, sizeof(buf), "%d ", Channels[index]->getFreqId());
+		// scrambled
+		std::string scrambled_icon = "";
+		if(Channels[count]->scrambled)
+			scrambled_icon = NEUTRINO_ICON_SCRAMBLED;
 
-	// satname
-	sat_iterator_t sit = satellitePositions.find(Channels[index]->getSatellitePosition());
+		item->setIcon1(scrambled_icon.c_str());
+
+		// hd/uhd
+		std::string hd_icon = "";
+		if(Channels[count]->isHD())
+			hd_icon = NEUTRINO_ICON_HD;
+		else if(Channels[count]->isUHD()) 
+			hd_icon = NEUTRINO_ICON_UHD,
+
+		item->setIcon2(hd_icon.c_str()); 
+
+		// info1
+		char buf[128];
+		transponder_id_t ct = Channels[count]->getTransponderId();
+		transponder_list_t::iterator tpI = transponders.find(ct);
+		int len = snprintf(buf, sizeof(buf), "%d ", Channels[count]->getFreqId());
+
+		// satname
+		sat_iterator_t sit = satellitePositions.find(Channels[count]->getSatellitePosition());
 		
-	if(sit != satellitePositions.end()) 
-	{
-		snprintf(&buf[len], sizeof(buf) - len, "(%s)\n", sit->second.name.c_str());
+		if(sit != satellitePositions.end()) 
+		{
+			snprintf(&buf[len], sizeof(buf) - len, "(%s)\n", sit->second.name.c_str());
+		}
+
+		item->setInfo1(buf);
+
+		listBox->addItem(item);
 	}
-	
-	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(cFrameFootInfo.iX + BORDER_LEFT, cFrameFootInfo.iY + (cFrameFootInfo.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), cFrameFootInfo.iWidth - BORDER_LEFT - BORDER_RIGHT, buf, COL_MENUFOOT_INFO);
-}
 
-void CBEChannelSelectWidget::paintItem2DetailsLine(int pos)
-{
-	::paintItem2DetailsLine(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight, cFrameTitle.iHeight, cFrameItem.iHeight, pos);
-}
+	listBox->setTitle(caption.c_str());
+	listBox->enablePaintHead();
+	listBox->enablePaintDate();
+	listBox->enablePaintFoot();
+	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+	listBox->enablePaintFootInfo();
 
-void CBEChannelSelectWidget::clearItem2DetailsLine()
-{  
-	::clearItem2DetailsLine(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight);  
+	//
+	listBox->setSelected(selected);
+	listBox->paint();
 }
 
 void CBEChannelSelectWidget::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
-	
-	clearItem2DetailsLine();
-	
-	frameBuffer->blit();
+	listBox->hide();
 }
 
-int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actionKey)
+int CBEChannelSelectWidget::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CBEChannelSelectWidget::exec: actionKey:%s\n", actionKey.c_str());
 
@@ -342,10 +212,7 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 	if (parent)
 		parent->hide();
 
-	paintHead();
 	paint();
-	paintFoot();
-	
 	frameBuffer->blit();
 
 	bool loop = true;
@@ -365,19 +232,19 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 
 		if( msg == CRCInput::RC_ok)
 		{
+			selected = listBox->getSelected();
+
 			setModified();
 	
 			if (isChannelInBouquet(selected))
 				g_bouquetManager->Bouquets[bouquet]->removeService(Channels[selected]->channel_id);
 			else
-				addChannelToBouquet( bouquet, Channels[selected]->channel_id);
+				addChannelToBouquet(bouquet, Channels[selected]->channel_id);
 
 			bouquetChannels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
 	
-			// paint item with marked icon
-			paintItem(selected - liststart);
-
-			// jump to next item
+			listBox->clearItems();
+			paint();
 			g_RCInput->postMsg(CRCInput::RC_down, 0);
 		}
 		else if (msg == CRCInput::RC_home)
@@ -386,76 +253,23 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 		}
 		else if (msg == CRCInput::RC_page_up)
 		{
-			if ((int(selected) - int(listmaxshow)) < 0)
-				selected = 0;
-			else
-				selected -= listmaxshow;
-			liststart = (selected/listmaxshow)*listmaxshow;
-			paint();
+			listBox->scrollPageUp();
 		}
 		else if (msg == CRCInput::RC_page_down)
 		{
-			selected += listmaxshow;
-			if (selected > getItemCount() - 1)
-				selected = getItemCount() - 1;
-			liststart = (selected/listmaxshow)*listmaxshow;
-			paint();
+			listBox->scrollPageDown();
 		}
 		else if (msg == CRCInput::RC_up)
 		{
-			int prevselected = selected;
-			
-			if(getItemCount())
-			{
-				if(selected == 0)
-				{
-					selected = getItemCount() - 1;
-				}
-				else
-					selected--;
-				
-				paintItem(prevselected - liststart);
-
-				unsigned int oldliststart = liststart;
-				liststart = (selected/listmaxshow)*listmaxshow;
-
-				if(oldliststart != liststart)
-				{
-					paint();
-				}
-				else
-				{
-					paintItem(selected - liststart);
-				}
-			}
+			listBox->scrollLineUp();
 		}
 		else if (msg == CRCInput::RC_down)
 		{
-			int prevselected = selected;
-			
-			if(getItemCount())
-			{
-				selected = (selected + 1)%getItemCount();
-				paintItem(prevselected - liststart);
-
-				unsigned int oldliststart = liststart;
-				liststart = (selected/listmaxshow)*listmaxshow;
-
-				if(oldliststart != liststart)
-				{
-					paint();
-				}
-				else
-				{
-					paintItem(selected - liststart);
-				}
-			}
+			listBox->scrollLineDown();
 		}
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			paintHead();
-			//paint();
-			//paintFoot();
+			listBox->paintHead();
 		}
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 		{

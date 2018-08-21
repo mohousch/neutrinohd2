@@ -39,6 +39,7 @@
 #include <driver/framebuffer.h>
 #include <gui/widget/window.h>
 #include <gui/widget/scrollbar.h>
+#include <gui/widget/listbox.h>
 
 // zapit includes
 #include <client/zapitclient.h>
@@ -50,26 +51,12 @@ class CBEChannelSelectWidget
 {
 	public:
 		ZapitChannelList Channels;
-		ZapitChannelList * bouquetChannels;
+		ZapitChannelList* bouquetChannels;
 
 	private:
 		//
 		CFrameBuffer* frameBuffer;
-
-		//
 		CBox cFrameBox;
-		CBox cFrameTitle;
-		CBox cFrameFoot;
-		CBox cFrameScrollBar;
-		CBox cFrameItem;
-		CBox cFrameFootInfo;
-
-		CWindow cWindowTitle;
-		CWindow cWindowFoot;
-		CWindow cWindowFootInfo;
-
-		CIcon footIcon;
-		CIcon itemIcon1, itemIcon2, itemIcon3;
 
 		uint32_t sec_timer_id;
 
@@ -83,28 +70,20 @@ class CBEChannelSelectWidget
 
 		//
 		unsigned int	selected;
-		unsigned int	liststart;
-		unsigned int	listmaxshow;
 
 		void setModified(){modified = true;};
 
-		uint getItemCount();
-		void paintItem(int pos);
+		//
+		void paint();
+		void hide();
 
 		//
-		void paintHead();
-		void paint();
-		void paintFoot();
-		void hide();
-		
-		//		
-		void paintDetails(int index);
-		void paintItem2DetailsLine(int pos);
-		void clearItem2DetailsLine();
+		ClistBoxEntry* listBox;
+		CMenuItem* item;
 
 	public:
-		CBEChannelSelectWidget(const std::string & Caption, unsigned int Bouquet, CZapitClient::channelsMode Mode);
-		int exec(CMenuTarget* parent, const std::string & actionKey);
+		CBEChannelSelectWidget(const std::string& Caption, unsigned int Bouquet, CZapitClient::channelsMode Mode);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 		bool hasChanged();
 };
 

@@ -35,9 +35,13 @@ void paintHead(int x, int y, int dx, int dy, const char* icon, const neutrino_lo
 	CFrameBuffer::getInstance()->paintBoxRel(x, y, dx, dy, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 
 	// left icon
-	int i_w, i_h;
-	CFrameBuffer::getInstance()->getIconSize(icon, &i_w, &i_h);
-	CFrameBuffer::getInstance()->paintIcon(icon, x + BORDER_LEFT, y + (dy - i_h)/2);
+	int i_w = 0;
+	int i_h = 0;
+	if(icon != NULL)
+	{
+		CFrameBuffer::getInstance()->getIconSize(icon, &i_w, &i_h);
+		CFrameBuffer::getInstance()->paintIcon(icon, x + BORDER_LEFT, y + (dy - i_h)/2);
+	}
 
 	// right buttons
 	int iw[count], ih[count];
@@ -81,9 +85,13 @@ void paintHead(int x, int y, int dx, int dy, const char* icon, const std::string
 	CFrameBuffer::getInstance()->paintBoxRel(x, y, dx, dy, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 
 	// left icon
-	int i_w, i_h;
-	CFrameBuffer::getInstance()->getIconSize(icon, &i_w, &i_h);
-	CFrameBuffer::getInstance()->paintIcon(icon, x + BORDER_LEFT, y + (dy - i_h)/2);
+	int i_w = 0;
+	int i_h = 0;
+	if(icon != NULL)
+	{
+		CFrameBuffer::getInstance()->getIconSize(icon, &i_w, &i_h);
+		CFrameBuffer::getInstance()->paintIcon(icon, x + BORDER_LEFT, y + (dy - i_h)/2);
+	}
 
 	// right buttons
 	int iw[count], ih[count];

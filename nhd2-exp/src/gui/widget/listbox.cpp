@@ -265,7 +265,7 @@ void ClistBoxEntry::paintItems()
 void ClistBoxEntry::paintHead()
 {
 	if(paintTitle)
-		::paintHead(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, NEUTRINO_ICON_MP3, l_name.c_str(), paintDate, hbutton_count, hbutton_labels);
+		::paintHead(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, iconfile.c_str(), l_name.c_str(), paintDate, hbutton_count, hbutton_labels);
 }
 
 void ClistBoxEntry::paintFoot()
@@ -422,8 +422,6 @@ void ClistBoxEntry::scrollLineUp()
 			break;
 		}
 	}
-
-	printf("scrollLineDown: selected:%d\n", selected);
 }
 
 void ClistBoxEntry::scrollPageDown()
