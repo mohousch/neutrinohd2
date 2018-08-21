@@ -996,7 +996,6 @@ void CTestMenu::testCButtons()
 
 void CTestMenu::testCHeaders()
 {
-REPEAT:
 	CBox Box;
 	
 	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
@@ -1010,6 +1009,7 @@ REPEAT:
 	int iheight = 30;
 
 	// background
+/*
 	CWindow window;
 
 	window.setDimension(Box.iX, Box.iY, Box.iWidth, Box.iHeight);
@@ -1021,6 +1021,7 @@ REPEAT:
 
 	// foot
 	::paintFoot(Box.iX, Box.iY + Box.iHeight - fheight, Box.iWidth, fheight, Box.iWidth/BUTTONS_COUNT, BUTTONS_COUNT, Buttons);
+*/
 
 	// our listbox
 	CBox cFrameBox;
@@ -1133,6 +1134,13 @@ REPEAT:
 	}
 	//
 
+	listBox->setTitle("ClistBoxEntry");
+	listBox->setIcon(NEUTRINO_ICON_MP3);
+	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
+	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+	listBox->enablePaintDate();
+
+REPEAT:
 	listBox->setSelected(selected);
 	listBox->paint();
 
@@ -1141,14 +1149,22 @@ REPEAT:
 	// loop
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
+	uint32_t sec_timer_id = 0;
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 	bool loop = true;
 
 	while(loop)
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
-		
-		if (msg == CRCInput::RC_home) 
+
+		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			listBox->paintHead();
+		} 
+		else if (msg == CRCInput::RC_home) 
 		{
 			loop = false;
 		}
@@ -1199,6 +1215,9 @@ REPEAT:
 	listBox->hide();
 	delete listBox;
 	listBox = NULL;
+
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
 }
 
 void CTestMenu::testAudioPlayer()

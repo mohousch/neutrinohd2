@@ -35,6 +35,7 @@
 #include <gui/widget/scrollbar.h>
 #include <gui/widget/textbox.h>
 #include <gui/widget/stringinput.h>
+#include <gui/widget/headers.h>
 
 #include <gui/color.h>
 
@@ -48,14 +49,26 @@ ClistBoxEntry::ClistBoxEntry(const int x, const int y, const int dx, const int d
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
-	 selected = -1;
-	 current_page = 0;
+	selected = -1;
+	current_page = 0;
 	pos = 0;
 
 	cFrameBox.iX = x;
 	cFrameBox.iY = y;
 	cFrameBox.iWidth = dx;
 	cFrameBox.iHeight = dy;
+
+	hheight = 0;
+	fheight = 0;
+	footInfoHeight = 0;
+
+	hbutton_count	= 0;
+	hbutton_labels	= NULL;
+	fbutton_count	= 0;
+	fbutton_labels	= NULL;
+	fbutton_width = cFrameBox.iWidth;
+
+	paintDate = false;
 
 	initFrames();
 }
@@ -64,11 +77,23 @@ ClistBoxEntry::ClistBoxEntry(CBox* position)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
-	 selected = -1;
-	 current_page = 0;
+	selected = -1;
+	current_page = 0;
 	pos = 0;
 
 	cFrameBox = *position;
+
+	hheight = 0;
+	fheight = 0;
+	footInfoHeight = 0;
+
+	hbutton_count	= 0;
+	hbutton_labels	= NULL;
+	fbutton_count	= 0;
+	fbutton_labels	= NULL;
+	fbutton_width = cFrameBox.iWidth;
+
+	paintDate = false;
 
 	initFrames();
 }
@@ -101,6 +126,16 @@ bool ClistBoxEntry::hasItem()
 
 void ClistBoxEntry::initFrames()
 {
+	// head height
+	int iw = 0;
+	int ih = 0;
+	frameBuffer->getIconSize(iconfile.c_str(), &iw, &ih);
+	hheight = std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+	
+	// foot height
+	frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &iw, &ih);
+	fheight = std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+
 	// calculate some values
 	int itemHeightTotal = 0;
 	item_height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 3;
@@ -116,7 +151,7 @@ void ClistBoxEntry::initFrames()
 		itemHeightTotal += item_height;
 		heightCurrPage += item_height;
 
-		if(heightCurrPage > cFrameBox.iHeight)
+		if((heightCurrPage + hheight + fheight)> cFrameBox.iHeight)
 		{
 			page_start.push_back(i);
 			heightFirstPage = heightCurrPage - item_height;
@@ -140,14 +175,19 @@ void ClistBoxEntry::initFrames()
 	}
 
 	// recalculate height
-	//listmaxshow = cFrameBox.iHeight/item_height;
-	//cFrameBox.iHeight = listmaxshow*item_height;
+	listmaxshow = (cFrameBox.iHeight - hheight - fheight)/item_height;
+	cFrameBox.iHeight = hheight + listmaxshow*item_height + fheight;
+
+	cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth ) >> 1 );
+	cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
 }
 
 void ClistBoxEntry::paint()
 {
 	initFrames();
 	paintItems();
+	paintHead();
+	paintFoot();
 }
 
 void ClistBoxEntry::paintItems()
@@ -169,16 +209,16 @@ void ClistBoxEntry::paintItems()
 			current_page++;
 	}
 
-	frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, COL_MENUCONTENT_PLUS_0);
+	frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight, COL_MENUCONTENT_PLUS_0);
 	
 	// paint right scrollBar if we have more then one page
 	if(total_pages > 1)
 	{
-		::paintScrollBar(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, cFrameBox.iY, cFrameBox.iHeight, total_pages, current_page);
+		::paintScrollBar(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, cFrameBox.iY + hheight, cFrameBox.iHeight - hheight - fheight, total_pages, current_page);
 	}
 
 	// paint items
-	int ypos = cFrameBox.iY;
+	int ypos = cFrameBox.iY + hheight;
 	int xpos = cFrameBox.iX;
 	
 	for (unsigned int count = 0; count < items.size(); count++) 
@@ -207,6 +247,29 @@ void ClistBoxEntry::paintItems()
 			item->init(-1, 0, 0, 0);
 		}	
 	} 
+}
+
+void ClistBoxEntry::paintHead()
+{
+	::paintHead(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, NEUTRINO_ICON_MP3, l_name.c_str(), paintDate, hbutton_count, hbutton_labels);
+}
+
+void ClistBoxEntry::paintFoot()
+{
+	::paintFoot(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - fheight, cFrameBox.iWidth, fheight, cFrameBox.iWidth/fbutton_count, fbutton_count, fbutton_labels);
+}
+
+void ClistBoxEntry::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
+{
+	hbutton_count = _hbutton_count;
+	hbutton_labels = _hbutton_labels;
+}
+
+void ClistBoxEntry::setFooterButtons(const struct button_label* _fbutton_labels, const int _fbutton_count, const int _fbutton_width)
+{
+	fbutton_count = _fbutton_count;
+	fbutton_labels = _fbutton_labels;
+	fbutton_width = (_fbutton_width == 0)? cFrameBox.iWidth : _fbutton_width;
 }
 
 void ClistBoxEntry::paintItemInfo(int pos)

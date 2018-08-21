@@ -40,8 +40,11 @@ class ClistBoxEntry
 
 		CBox cFrameBox;
 
-		virtual void paintItems();
 		int selected;
+
+		//
+		std::string iconfile;
+		std::string l_name;
 
 		//
 		std::vector<unsigned int> page_start;
@@ -54,9 +57,23 @@ class ClistBoxEntry
 		int iconOffset;
 		int pos;
 
+		//
+		int hheight;
+		int fheight;
+		int footInfoHeight;
+
+		//
+		int hbutton_count;
+		const struct button_label* hbutton_labels;
+		//
+		int fbutton_count;
+		int fbutton_width;
+		const struct button_label* fbutton_labels;
+
+		bool paintDate;
+
 		virtual void initFrames();
-		virtual void paintItemInfo(int pos);
-		virtual void hideItemInfo();
+		virtual void paintItems();
 
 	public:
 		ClistBoxEntry(const int x, int const y, const int dx, const int dy);
@@ -75,6 +92,15 @@ class ClistBoxEntry
 		//
 		virtual void paint();
 		virtual void hide();
+		virtual void paintHead();
+		virtual void paintFoot();
+		virtual void paintItemInfo(int pos);
+		virtual void hideItemInfo();
+		void enablePaintDate(void){paintDate = true;};
+		void setIcon(const char* icon){iconfile = icon;};
+		void setTitle(const char* title){l_name = title;};
+		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
+		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count, const int _fbutton_width = 0);
 
 		virtual void scrollLineDown();
 		virtual void scrollLineUp();
