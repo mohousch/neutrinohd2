@@ -195,9 +195,11 @@ void ClistBoxEntry::initFrames()
 	cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
 }
 
-void ClistBoxEntry::paint()
+void ClistBoxEntry::paint(bool reinit)
 {
-	initFrames();
+	if(reinit)
+		initFrames();
+
 	paintItems();
 	paintHead();
 	paintFoot();

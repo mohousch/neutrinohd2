@@ -88,7 +88,7 @@ class ClistBoxEntry
 		void clearItems(void){items.clear();};
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
 
-		virtual void paint();
+		virtual void paint(bool reinit = true);
 		virtual void hide();
 		virtual void paintHead();
 		virtual void paintFoot();
@@ -115,6 +115,7 @@ class ClistBoxEntry
 		int getFootHeight(){return fheight;};
 		int getItemHeight(){return item_height;};
 		int getFootInfoHeight(){return footInfoHeight;};
+		int getListMaxShow(void) const {return listmaxshow;};
 };
 
 // CMenulistBoxItem

@@ -44,6 +44,7 @@
 #include <bouquets.h>
 
 #include <string>
+#include <gui/widget/listbox.h>
 
 
 class CBEChannelWidget : public CMenuWidget
@@ -53,6 +54,9 @@ class CBEChannelWidget : public CMenuWidget
 
 	private:
 		CFrameBuffer* frameBuffer;
+		CBox cFrameBox;
+		ClistBoxEntry* listBox;
+		CMenuItem* item;
 	
 		enum state_
 		{
@@ -68,38 +72,9 @@ class CBEChannelWidget : public CMenuWidget
 		CZapitClient::channelsMode mode;
 		unsigned int bouquet;
 
-		// gui
-		unsigned int		liststart;
-		unsigned int		listmaxshow;
-		unsigned int		numwidth;
-		int			fheight;
-		int			theight;
-		int 			info_height;
-		int 			ButtonHeight;
-		int		width;
-		int		height;
-		int		x;
-		int		y;
-		
-		int icon_w_hd;
-		int icon_h_hd;
-		int icon_w_s;
-		int icon_h_s;
-		
-		int icon_head_w;
-		int icon_head_h;
-		int icon_foot_w;
-		int icon_foot_h;
-
 		uint32_t sec_timer_id;
 
-		void paintItem(int pos);
-		void paint();
-		void paintHead();
-		void paintFoot();
-		void paintDetails(int index);
-		void clearItem2DetailsLine();
-		void paintItem2DetailsLine(int pos);
+		void paint(bool reinit = true);
 		void hide();
 
 		void deleteChannel();

@@ -79,7 +79,7 @@ CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string& Caption, unsig
 
 	// box	
 	cFrameBox.iWidth = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
-	cFrameBox.iHeight = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
+	cFrameBox.iHeight = h_max ( (frameBuffer->getScreenHeight() / 20 * 20), (frameBuffer->getScreenHeight() / 20));
 	
 	cFrameBox.iX = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - cFrameBox.iWidth) / 2;
 	cFrameBox.iY = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - cFrameBox.iHeight) / 2;
@@ -284,6 +284,9 @@ int CBEChannelSelectWidget::exec(CMenuTarget* parent, const std::string& actionK
 	
 	g_RCInput->killTimer(sec_timer_id);
 	sec_timer_id = 0;
+
+	delete listBox;
+	listBox = NULL;
 	
 	return res;
 }
