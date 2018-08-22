@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: bouqueteditor_channels.cpp 2013/10/12 mohousch Exp $
+	$Id: bouqueteditor_channels.cpp 2018/08/22 mohousch Exp $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -82,8 +82,6 @@ CBEChannelWidget::CBEChannelWidget(const std::string & Caption, unsigned int Bou
 	
 	cFrameBox.iX = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - cFrameBox.iWidth) / 2;
 	cFrameBox.iY = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - cFrameBox.iHeight) / 2;
-
-	listBox = new ClistBoxEntry(&cFrameBox);
 }
 
 #define BUTTONS_COUNT 4
@@ -171,6 +169,8 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 		parent->hide();
 
 	Channels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
+
+	listBox = new ClistBoxEntry(&cFrameBox);
 	
 	paint();
 	frameBuffer->blit();	
@@ -259,8 +259,8 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 
 			int prev_selected = selected;
 			int next_selected = selected + 1;
-				if (next_selected > Channels->size())
-					next_selected = Channels->size();
+			if (next_selected > Channels->size())
+				next_selected = Channels->size();
 
 			if (state == beDefault)
 			{

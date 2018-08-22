@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: bouqueteditor_bouquets.cpp 2013/10/12 mohousch Exp $
+	$Id: bouqueteditor_bouquets.cpp 2018/08/22 mohousch Exp $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -61,121 +61,79 @@ CBEBouquetWidget::CBEBouquetWidget()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
-	// foot
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_foot_w, &icon_foot_h);
-	ButtonHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), icon_foot_h) + 6;
-
-	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
-	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
-
 	selected = 0;
-	liststart = 0;
 	state = beDefault;
 	blueFunction = beRename;
 	
 	Bouquets = &g_bouquetManager->Bouquets;
+
+	listBox = NULL;
+	item = NULL;
+
+	// box	
+	cFrameBox.iWidth = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
+	cFrameBox.iHeight = h_max ( (frameBuffer->getScreenHeight() / 20 * 18), (frameBuffer->getScreenHeight() / 20));
+	
+	cFrameBox.iX = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - cFrameBox.iWidth) / 2;
+	cFrameBox.iY = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - cFrameBox.iHeight) / 2;
 }
 
 CBEBouquetWidget::~CBEBouquetWidget()
 {
 }
 
-void CBEBouquetWidget::paintItem(int pos)
-{
-	uint8_t    color;
-	fb_pixel_t bgcolor;
-	int ypos = y + theight + pos*fheight;
-	unsigned int current = liststart + pos;
+#define BUTTONS_COUNT	3
 
-	if (current == selected) 
-	{
-		color   = COL_MENUCONTENTSELECTED;
-		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-	} 
-	else 
-	{
-		bool has_channels = true;
-		if(current < Bouquets->size())
-			has_channels = ((*Bouquets)[current]->tvChannels.size() > 0) || ((*Bouquets)[current]->radioChannels.size() > 0);
-		
-		color   = has_channels ? COL_MENUCONTENT : COL_MENUCONTENTINACTIVE;
-		bgcolor = has_channels ? COL_MENUCONTENT_PLUS_0 : COL_MENUCONTENTINACTIVE_PLUS_0;
-	}
-	
-	// itemBox
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
-
-	if(current < Bouquets->size()) 
-	{
-		if ((current == selected) && (state == beMoving))
-			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + 8, ypos + 4);
-
-		if ((*Bouquets)[current]->bLocked)
-			frameBuffer->paintIcon(NEUTRINO_ICON_LOCK, x + 7, ypos);
-
-		if ((*Bouquets)[current]->bHidden)
-			frameBuffer->paintIcon(NEUTRINO_ICON_HIDDEN, x + 37, ypos);
-
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 68, ypos + fheight, width - 68, (*Bouquets)[current]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[current]->Name, color, 0, true);
-	}
-}
-
-void CBEBouquetWidget::paint()
-{
-	dprintf(DEBUG_NORMAL, "CBEBouquetWidget::paint:\n");
-
-	liststart = (selected/listmaxshow)*listmaxshow;
-
-	for(unsigned int count = 0; count < listmaxshow; count++)
-	{
-		paintItem(count);
-	}
-
-	// scrollbar
-	int ypos = y + theight;
-	
-	int sb = fheight*listmaxshow;
-	frameBuffer->paintBoxRel(x + width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
-
-	int sbc= ((Bouquets->size() - 1)/ listmaxshow)+ 1;
-	float sbh= (sb- 4)/ sbc;
-	int sbs= (selected/listmaxshow);
-
-	frameBuffer->paintBoxRel(x + width - 13, ypos + 2 + int(sbs* sbh) , 11, int(sbh),  COL_MENUCONTENT_PLUS_3);
-}
-
-void CBEBouquetWidget::paintHead()
-{
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
-	
-	// paint time/date
-	int timestr_len = 0;
-	std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
-		
-	timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
-
-	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - timestr_len, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
-
-	// title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() , width - BORDER_LEFT - BORDER_RIGHT - timestr_len, g_Locale->getText(LOCALE_BOUQUETLIST_HEAD), COL_MENUHEAD, 0, true); // UTF-8
-}
-
-const struct button_label CBEBouquetWidgetButtons[3] =
+const struct button_label CBEBouquetWidgetButtons[BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_BOUQUETEDITOR_DELETE, NULL },
 	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_BOUQUETEDITOR_ADD, NULL },
 	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_BOUQUETEDITOR_MOVE, NULL }
 };
 
-void CBEBouquetWidget::paintFoot()
+const struct button_label HButton = {NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL };
+
+void CBEBouquetWidget::paint(bool reinit)
 {
+	dprintf(DEBUG_NORMAL, "CBEBouquetWidget::paint:\n");
+
+	for (unsigned int count = 0; count < Bouquets->size(); count++)
+	{
+		item = new ClistBoxEntryItem((*Bouquets)[count]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[count]->Name.c_str(), true);
+
+		if(state == beMoving && count == selected)
+			item->setIconName(NEUTRINO_ICON_BUTTON_YELLOW);
+
+		// locked
+		std::string locked_icon = "";
+		if((*Bouquets)[count]->bLocked)
+			locked_icon = NEUTRINO_ICON_LOCK;
+
+		item->setIcon1(locked_icon.c_str());
+
+		// hidden
+		std::string hiden_icon = "";
+		if((*Bouquets)[count]->bHidden)
+			hiden_icon = NEUTRINO_ICON_HIDDEN;
+
+		item->setIcon2(hiden_icon.c_str()); 
+
+		listBox->addItem(item);
+	}
+
+	listBox->setTitle(g_Locale->getText(LOCALE_BOUQUETLIST_HEAD));
+	listBox->enablePaintHead();
+	listBox->enablePaintDate();
+	listBox->setHeaderButtons(&HButton, 1);
+
+	// foot
+	listBox->enablePaintFoot();
+
 	struct button_label Button[4];
 	Button[0] = CBEBouquetWidgetButtons[0];
 	Button[1] = CBEBouquetWidgetButtons[1];
 	Button[2] = CBEBouquetWidgetButtons[2];
 	Button[3].button = NEUTRINO_ICON_BUTTON_BLUE;
-
-	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 
 	switch( blueFunction)
 	{
@@ -195,18 +153,16 @@ void CBEBouquetWidget::paintFoot()
 			break;
 	}
 
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, (width - icon_foot_w - BORDER_LEFT) / 4, 4, Button, ButtonHeight);
-	
-	// setup icon
-	int icon_w, icon_h;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_SETUP, x + width - icon_w - BORDER_RIGHT, y + height - ButtonHeight + (ButtonHeight - icon_h)/2);
+	listBox->setFooterButtons(Button, 4);
+
+	//
+	listBox->setSelected(selected);
+	listBox->paint(reinit);
 }
 
 void CBEBouquetWidget::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
-	frameBuffer->blit();
+	listBox->hide();
 }
 
 int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
@@ -220,22 +176,12 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 
 	if (parent)
 		parent->hide();
-
-	width = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
-	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
-	
-	listmaxshow = (height - theight - ButtonHeight)/fheight;
-	height = theight + ButtonHeight + listmaxshow*fheight; // recalc height
-	
-        x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - width) / 2;
-        y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height) / 2;
 	
 	Bouquets = &g_bouquetManager->Bouquets;
+
+	listBox = new ClistBoxEntry(&cFrameBox);
 	
-	paintHead();
 	paint();
-	paintFoot();
-	
 	frameBuffer->blit();
 
 	bouquetsChanged = false;
@@ -274,9 +220,8 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 						break;
 						
 						case CMessageBox::mbrCancel :
-							paintHead();
-							paint();
-							paintFoot();
+							listBox->clearItems();
+							paint(false);
 						break;
 					}
 				}
@@ -290,100 +235,111 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				cancelMoveBouquet();
 			}
 		}
-		else if (msg == CRCInput::RC_up || msg == CRCInput::RC_page_up)
+		else if (msg == CRCInput::RC_page_up)
+		{
+			if (state == beDefault)
+				listBox->scrollPageUp();
+			else if(state == beMoving)
+			{
+				selected = listBox->getSelected();
+				int next_selected = selected - listBox->getListMaxShow();
+
+				if (next_selected < 0)
+					next_selected = 0;
+
+				internalMoveBouquet(selected, next_selected);
+			}
+		}
+		else if (msg == CRCInput::RC_page_down)
+		{
+			if (state == beDefault)
+				listBox->scrollPageDown();
+			else if(state == beMoving)
+			{
+				selected = listBox->getSelected();
+
+				int next_selected = selected + listBox->getListMaxShow();
+
+				if (next_selected > Bouquets->size())
+					next_selected = Bouquets->size();
+
+				internalMoveBouquet(selected, next_selected);
+			}
+		}
+		else if (msg == CRCInput::RC_up)
 		{
 			if (!(Bouquets->empty()))
 			{
-				int step = 0;
-				int prev_selected = selected;
-
-				step = (msg == CRCInput::RC_page_up) ? listmaxshow : 1;  // browse or step 1
-				selected -= step;
-				if((prev_selected - step) < 0)		// because of uint
-				{
-					selected = Bouquets->size() - 1;
-				}
-
 				if (state == beDefault)
 				{
-					paintItem(prev_selected - liststart);
-					unsigned int oldliststart = liststart;
-					liststart = (selected/listmaxshow)*listmaxshow;
-					if(oldliststart != liststart)
-					{
-						paint();
-					}
-					else
-					{
-						paintItem(selected - liststart);
-					}
+					listBox->scrollLineUp();
 				}
 				else if (state == beMoving)
 				{
-					internalMoveBouquet(prev_selected, selected);
+					selected = listBox->getSelected();
+
+					int prev_selected = selected;
+					int next_selected = selected - 1;
+					if (next_selected < 0)
+						next_selected = 0;
+
+					internalMoveBouquet(prev_selected, next_selected);
 				}
 			}
 		}
-		else if (msg == CRCInput::RC_down || msg == CRCInput::RC_page_down)
+		else if (msg == CRCInput::RC_down)
 		{
-			unsigned int step = 0;
-			int prev_selected = selected;
-
-			step = (msg == CRCInput::RC_page_down) ? listmaxshow : 1;  // browse or step 1
-			selected += step;
-
-			if(selected >= Bouquets->size())
-			{
-				if (((Bouquets->size() / listmaxshow) + 1) * listmaxshow == Bouquets->size() + listmaxshow) // last page has full entries
-					selected = 0;
-				else
-					selected = ((step == listmaxshow) && (selected < (((Bouquets->size() / listmaxshow) + 1) * listmaxshow))) ? (Bouquets->size() - 1) : 0;
-			}
-
 			if (state == beDefault)
-			{
-				paintItem(prev_selected - liststart);
-				unsigned int oldliststart = liststart;
-				liststart = (selected/listmaxshow)*listmaxshow;
-				if(oldliststart!=liststart)
-				{
-					paint();
-				}
-				else
-				{
-					paintItem(selected - liststart);
-				}
+			{	
+				listBox->scrollLineDown();
 			}
 			else if (state == beMoving)
 			{
-				internalMoveBouquet(prev_selected, selected);
+				selected = listBox->getSelected();
+
+				int prev_selected = selected;
+				int next_selected = selected + 1;
+				if (next_selected > Bouquets->size())
+					next_selected = Bouquets->size();
+
+				internalMoveBouquet(prev_selected, next_selected);
 			}
 		}
 		else if(msg == CRCInput::RC_red)
 		{
+			selected = listBox->getSelected();
+
 			if (state == beDefault)
 				deleteBouquet();
 		}
 		else if(msg == CRCInput::RC_green)
 		{
+			selected = listBox->getSelected();
+
 			if (state == beDefault)
 				addBouquet();
 		}
 		else if(msg == CRCInput::RC_yellow)
 		{
+			selected = listBox->getSelected();
+
 			if (selected < Bouquets->size()) /* Bouquets->size() might be 0 */
 			{
-				liststart = (selected/listmaxshow)*listmaxshow;
 				if (state == beDefault)
 					beginMoveBouquet();
-				paintItem(selected - liststart);
+
+				listBox->clearItems();
+				paint(false);
 			}
 		}
 		else if(msg==CRCInput::RC_blue)
 		{
 			if (selected < Bouquets->size()) /* Bouquets->size() might be 0 */
 			{
+				selected = listBox->getSelected();
+
 				if (state == beDefault)
+				{
 					switch (blueFunction)
 					{
 						case beRename:
@@ -396,29 +352,36 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 							switchLockBouquet();
 							break;
 					}
+				}
 			}
 		}
 		else if(msg == CRCInput::RC_setup)
 		{
 			if (state == beDefault)
-			switch (blueFunction)
 			{
-				case beRename:
-					blueFunction = beHide;
-				break;
-				case beHide:
-					blueFunction = beLock;
-				break;
-				case beLock:
-					blueFunction = beRename;
-				break;
+				switch (blueFunction)
+				{
+					case beRename:
+						blueFunction = beHide;
+					break;
+					case beHide:
+						blueFunction = beLock;
+					break;
+					case beLock:
+						blueFunction = beRename;
+					break;
+				}
+
+				listBox->clearItems();
+				paint();
 			}
-			paintFoot();
 		}
 		else if(msg == CRCInput::RC_ok)
 		{
 			if (state == beDefault)
 			{
+				selected = listBox->getSelected();
+
 				if (selected < Bouquets->size()) /* Bouquets->size() might be 0 */
 				{
 					CBEChannelWidget* channelWidget = new CBEChannelWidget((*Bouquets)[selected]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[selected]->Name, selected);
@@ -427,9 +390,9 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 					if (channelWidget->hasChanged())
 						bouquetsChanged = true;
 					delete channelWidget;
-					paintHead();
-					paint();
-					paintFoot();
+
+					listBox->clearItems();
+					paint(false);
 				}
 			}
 			else if (state == beMoving)
@@ -453,9 +416,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 		}
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			paintHead();
-			//paint();
-			//paintFoot();
+			listBox->paintHead();
 		}
 		else
 		{
@@ -470,6 +431,9 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 
 	g_RCInput->killTimer(sec_timer_id);
 	sec_timer_id = 0;
+
+	delete listBox;
+	listBox = NULL;
 	
 	return res;
 }
@@ -487,7 +451,9 @@ void CBEBouquetWidget::deleteBouquet()
 	if (selected >= Bouquets->size())
 		selected = Bouquets->empty() ? 0 : (Bouquets->size() - 1);
 	bouquetsChanged = true;
-	paint();
+
+	listBox->clearItems();
+	paint(false);
 }
 
 void CBEBouquetWidget::addBouquet()
@@ -501,9 +467,8 @@ void CBEBouquetWidget::addBouquet()
 		bouquetsChanged = true;
 	}
 	
-	paintHead();
-	paint();
-	paintFoot();
+	listBox->clearItems();
+	paint(false);
 }
 
 void CBEBouquetWidget::beginMoveBouquet()
@@ -521,7 +486,9 @@ void CBEBouquetWidget::finishMoveBouquet()
 		Bouquets = &g_bouquetManager->Bouquets;
 		bouquetsChanged = true;
 	}
-	paint();
+
+	listBox->clearItems();
+	paint(false);
 }
 
 void CBEBouquetWidget::cancelMoveBouquet()
@@ -542,6 +509,8 @@ void CBEBouquetWidget::internalMoveBouquet( unsigned int fromPosition, unsigned 
 
 	selected = toPosition;
 	newPosition = toPosition;
+
+	listBox->clearItems();
 	paint();
 }
 
@@ -558,9 +527,9 @@ void CBEBouquetWidget::renameBouquet()
 
 		bouquetsChanged = true;
 	}
-	paintHead();
-	paint();
-	paintFoot();
+
+	listBox->clearItems();
+	paint(false);
 }
 
 void CBEBouquetWidget::switchHideBouquet()
@@ -568,7 +537,8 @@ void CBEBouquetWidget::switchHideBouquet()
 	bouquetsChanged = true;
 	(*Bouquets)[selected]->bHidden = !(*Bouquets)[selected]->bHidden;
 
-	paint();
+	listBox->clearItems();
+	paint(false);
 }
 
 void CBEBouquetWidget::switchLockBouquet()
@@ -576,7 +546,8 @@ void CBEBouquetWidget::switchLockBouquet()
 	bouquetsChanged = true;
 	(*Bouquets)[selected]->bLocked = !(*Bouquets)[selected]->bLocked;
 
-	paint();
+	listBox->clearItems();
+	paint(false);
 }
 
 std::string CBEBouquetWidget::inputName(const char * const defaultName, const neutrino_locale_t caption)

@@ -86,8 +86,6 @@ CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string& Caption, unsig
 
 	listBox = NULL;
 	item = NULL;
-
-	listBox = new ClistBoxEntry(&cFrameBox);
 }
 
 bool CBEChannelSelectWidget::isChannelInBouquet(int index)
@@ -211,6 +209,8 @@ int CBEChannelSelectWidget::exec(CMenuTarget* parent, const std::string& actionK
 
 	if (parent)
 		parent->hide();
+
+	listBox = new ClistBoxEntry(&cFrameBox);
 
 	paint();
 	frameBuffer->blit();

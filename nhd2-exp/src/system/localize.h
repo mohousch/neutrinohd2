@@ -67,7 +67,7 @@ class CLocaleManager
 
 		loadLocale_ret_t loadLocale(const char * const locale);
 
-		const char * getText(const neutrino_locale_t keyName) const;
+		const char* getText(const neutrino_locale_t keyName) const;
 
 		static neutrino_locale_t getMonth  (const struct tm * struct_tm_p);
 		static neutrino_locale_t getWeekday(const struct tm * struct_tm_p);

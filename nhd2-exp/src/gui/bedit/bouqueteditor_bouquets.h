@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: bouqueteditor_bouquets.h 2013/10/12 mohousch Exp $
+	$Id: bouqueteditor_bouquets.h 2018/08/22 mohousch Exp $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -43,17 +43,20 @@
 #include <bouquets.h>
 
 #include <string>
+#include <gui/widget/listbox.h>
 
 /* class for handling when bouquets changed.                  */
 /* This class should be a temporarily work around             */
 /* and should be replaced by standard neutrino event handlers */
 /* (libevent) */
+#if 0
 class CBouquetEditorEvents
 {
 	public:
 		virtual void onBouquetsChanged() {};
 		virtual ~CBouquetEditorEvents() {};
 };
+#endif
 
 class CBEBouquetWidget : public CMenuWidget
 {
@@ -62,7 +65,10 @@ class CBEBouquetWidget : public CMenuWidget
 
 	private:
 
-		CFrameBuffer	*frameBuffer;
+		CFrameBuffer* frameBuffer;
+		CBox cFrameBox;
+		ClistBoxEntry* listBox;
+		CMenuItem* item;
 
 		enum
 		{
@@ -82,34 +88,10 @@ class CBEBouquetWidget : public CMenuWidget
 		unsigned int		newPosition;
 		bool		bouquetsChanged;
 
-//gui
-		unsigned int		liststart;
-		unsigned int		listmaxshow;
-		int			fheight; // Fonthoehe Bouquetlist-Inhalt
-		int			theight; // Fonthoehe Bouquetlist-Titel
-
-		int 			ButtonHeight;
-		int			iconoffset;
-		int			iheight; // item height
-		
-		int		width;
-		int		height;
-		int		x;
-		int		y;
-		
-		int icon_head_w;
-		int icon_head_h;
-		int icon_foot_w;
-		int icon_foot_h;
-
 		uint32_t sec_timer_id;
 
-		void paintItem(int pos);
-		void paint();
-		void paintHead();
-		void paintFoot();
+		void paint(bool reinit = true);
 		void hide();
-//
 
 		void deleteBouquet();
 		void addBouquet();
