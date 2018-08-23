@@ -57,6 +57,8 @@ class CBEChannelSelectWidget
 		//
 		CFrameBuffer* frameBuffer;
 		CBox cFrameBox;
+		ClistBoxEntry* listBox;
+		CMenuItem* item;
 
 		uint32_t sec_timer_id;
 
@@ -76,10 +78,6 @@ class CBEChannelSelectWidget
 		//
 		void paint();
 		void hide();
-
-		//
-		ClistBoxEntry* listBox;
-		CMenuItem* item;
 
 	public:
 		CBEChannelSelectWidget(const std::string& Caption, unsigned int Bouquet, CZapitClient::channelsMode Mode);

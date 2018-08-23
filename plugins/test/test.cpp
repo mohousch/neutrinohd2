@@ -344,7 +344,7 @@ void CTestMenu::testCWindowShadow()
 
 	window->setColor(COL_MENUCONTENT_PLUS_0);
 	window->setCorner(RADIUS_MID, CORNER_ALL);
-	window->enableShadow();
+	//window->enableShadow();
 	window->enableSaveScreen();
 
 	window->paint();

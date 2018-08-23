@@ -122,9 +122,17 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	m_state = CAudioPlayerGui::STOP;
 
 	// playInfo
+	//
+	cFrameBox.iWidth = m_frameBuffer->getScreenWidth(true) - 20; 
+	if((g_settings.screen_EndX - g_settings.screen_StartX) < cFrameBox.iWidth)
+		cFrameBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX) - 20;
+	cFrameBox.iHeight = 80;
+	cFrameBox.iX = (((g_settings.screen_EndX - g_settings.screen_StartX) - cFrameBox.iWidth)/ 2) + g_settings.screen_StartX;
+	cFrameBox.iY = g_settings.screen_EndY - 10 - cFrameBox.iHeight;
+	/*
 	m_width = m_frameBuffer->getScreenWidth(true) - 20; 
 	
-	if((g_settings.screen_EndX - g_settings.screen_StartX) < m_width+ConnectLineBox_Width)
+	if((g_settings.screen_EndX - g_settings.screen_StartX) < m_width)
 		m_width = (g_settings.screen_EndX - g_settings.screen_StartX) - 10;
 
 	m_title_height = 80;
@@ -132,12 +140,13 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	m_x = (((g_settings.screen_EndX - g_settings.screen_StartX) - m_width)/ 2) + g_settings.screen_StartX;
 
 	m_y = g_settings.screen_EndY - 10 - m_title_height;
+	*/
 
 	// timeBox
-	timeBox.iY = g_settings.screen_StartY + 10;
 	timeBox.iWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth("00:00 / 00:00") + 4;
 	timeBox.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 4;
 	timeBox.iX = g_settings.screen_EndX - 10 - timeBox.iWidth;
+	timeBox.iY = g_settings.screen_StartY + 10;
 	
 	m_idletime = time(NULL);
 
@@ -394,10 +403,10 @@ void CAudioPlayerGui::playFile(CMenuTarget* p)
 void CAudioPlayerGui::hide()
 {
 	// infos
-	m_frameBuffer->paintBackgroundBoxRel(m_x, m_y, m_width, m_title_height);
+	m_frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 
 	// times
-	m_frameBuffer->paintBackgroundBoxRel(timeBox.iX, timeBox.iY, timeBox.iWidth + SHADOW_OFFSET, timeBox.iHeight + SHADOW_OFFSET);
+	m_frameBuffer->paintBackgroundBoxRel(timeBox.iX, timeBox.iY, timeBox.iWidth, timeBox.iHeight);
 
 	m_frameBuffer->blit();
 }
@@ -429,9 +438,9 @@ void CAudioPlayerGui::paintInfo()
 	}
 
 	// title info box
-	m_frameBuffer->paintBoxRel(m_x, m_y, m_width, m_title_height, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
+	m_frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
 		
-	m_frameBuffer->paintBoxRel(m_x + 2, m_y + 2 , m_width - 4, m_title_height - 4, COL_MENUHEAD_INFO_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient); //FIXME:gradient
+	m_frameBuffer->paintBoxRel(cFrameBox.iX + 2, cFrameBox.iY + 2 , cFrameBox.iWidth - 4, cFrameBox.iHeight - 4, COL_MENUHEAD_INFO_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient); //FIXME:gradient
 
 	// first line 
 	// Track number
@@ -449,12 +458,12 @@ void CAudioPlayerGui::paintInfo()
 	}
 
 	int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
-	int xstart = (m_width - w) / 2;
+	int xstart = (cFrameBox.iWidth - w) / 2;
 	
-	if(xstart < (BORDER_LEFT + 2*m_title_height + ICON_OFFSET))
-		xstart = BORDER_LEFT + 2*m_title_height + ICON_OFFSET;
+	if(xstart < (BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET))
+		xstart = BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET;
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + m_title_height/3, m_width - 20, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + 4 + cFrameBox.iHeight/3, cFrameBox.iWidth - 20, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8
 
 	// second line 
 	// Artist/Title
@@ -470,19 +479,19 @@ void CAudioPlayerGui::paintInfo()
 	}
 
 	w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
-	xstart = (m_width - w)/2;
-	if(xstart < (BORDER_LEFT + 2*m_title_height + ICON_OFFSET))
-		xstart = BORDER_LEFT + 2*m_title_height + ICON_OFFSET;
+	xstart = (cFrameBox.iWidth - w)/2;
+	if(xstart < (BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET))
+		xstart = BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET;
 
 		
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 2 + m_title_height/3 + 2 + m_title_height/3, m_width - BORDER_LEFT - BORDER_RIGHT - 2*m_title_height - ICON_OFFSET, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8		
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + 2 + cFrameBox.iHeight/3 + 2 + cFrameBox.iHeight/3, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - 2*cFrameBox.iHeight - ICON_OFFSET, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8		
 		
 	// cover
 	if (!m_playlist[m_current].MetaData.cover.empty())
 	{
 		if(!access("/tmp/cover.jpg", F_OK))
 		{
-			m_frameBuffer->displayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 4, m_title_height - 4);
+			m_frameBuffer->displayImage("/tmp/cover.jpg", cFrameBox.iX + 2, cFrameBox.iY + 2, cFrameBox.iHeight - 4, cFrameBox.iHeight - 4);
 
 		}		
 	}
@@ -501,7 +510,7 @@ void CAudioPlayerGui::paintInfo()
 	}
 	
 	m_frameBuffer->getIconSize(icon, &icon_w, &icon_h);
-	m_frameBuffer->paintIcon(icon, m_x + m_title_height + ICON_OFFSET, m_y + (m_title_height - icon_h)/2);
+	m_frameBuffer->paintIcon(icon, cFrameBox.iX + cFrameBox.iHeight + ICON_OFFSET, cFrameBox.iY + (cFrameBox.iHeight - icon_h)/2);
 		
 	//
 	m_metainfo.clear();
@@ -513,9 +522,9 @@ void CAudioPlayerGui::paintInfo()
 	// third line
 	if(updateMeta || updateScreen)
 	{
-		xstart = ((m_width - BORDER_LEFT - BORDER_RIGHT - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(m_metainfo))/2) + BORDER_LEFT;
+		xstart = ((cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(m_metainfo))/2) + BORDER_LEFT;
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + xstart, m_y + m_title_height - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()/2, m_width- 2*xstart, m_metainfo, COL_MENUHEAD_INFO);
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + cFrameBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()/2, cFrameBox.iWidth- 2*xstart, m_metainfo, COL_MENUHEAD_INFO);
 	}
 }
 
@@ -724,11 +733,10 @@ void CAudioPlayerGui::updateTimes(const bool force)
 		bool updateTotal = force;
 		bool updatePlayed = force;
 
-		// time shadow
-		m_frameBuffer->paintBoxRel(timeBox.iX + SHADOW_OFFSET, timeBox.iY + SHADOW_OFFSET, timeBox.iWidth, timeBox.iHeight, COL_INFOBAR_SHADOW_PLUS_0);
-
-		// time window
-		m_frameBuffer->paintBoxRel(timeBox.iX + SHADOW_OFFSET, timeBox.iY + SHADOW_OFFSET, timeBox.iWidth, timeBox.iHeight, COL_MENUHEAD_INFO_PLUS_0);
+		//
+		//m_frameBuffer->paintBoxRel(timeBox.iX, timeBox.iY, timeBox.iWidth, timeBox.iHeight, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
+		
+	m_frameBuffer->paintBoxRel(timeBox.iX, timeBox.iY, timeBox.iWidth, timeBox.iHeight, COL_MENUHEAD_INFO_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient); //FIXME:gradient
 
 		if (m_time_total != CAudioPlayer::getInstance()->getTimeTotal())
 		{
@@ -767,7 +775,7 @@ void CAudioPlayerGui::updateTimes(const bool force)
 		if (updateTotal)
 		{
 			if(m_time_total > 0)
-				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(timeBox.iX + timeBox.iWidth - timeBox.iWidth/2, timeBox.iY + timeBox.iHeight + (timeBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2, w1, tot_time, COL_MENUHEAD_INFO);
+				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(timeBox.iX + timeBox.iWidth - timeBox.iWidth/2, timeBox.iY + (timeBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), w1, tot_time, COL_MENUHEAD_INFO);
 		}
 			
 		if (updatePlayed || (m_state == CAudioPlayerGui::PAUSE))
@@ -777,7 +785,7 @@ void CAudioPlayerGui::updateTimes(const bool force)
 
 			if ((m_state != CAudioPlayerGui::PAUSE) || (tv.tv_sec & 1))
 			{
-				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(timeBox.iX + SHADOW_OFFSET + timeBox.iWidth/2 - w2 - 2, timeBox.iY + timeBox.iHeight + (timeBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2, w2, play_time, COL_MENUHEAD_INFO);
+				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(timeBox.iX + timeBox.iWidth/2 - w2 - 2, timeBox.iY + (timeBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), w2, play_time, COL_MENUHEAD_INFO);
 			}
 		}			
 		

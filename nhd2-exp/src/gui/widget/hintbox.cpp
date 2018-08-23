@@ -195,7 +195,7 @@ void CHintBox::paint(void)
 	// Box
 	m_cBoxWindow.setDimension(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 
-	m_cBoxWindow.enableShadow();
+	//m_cBoxWindow.enableShadow();
 	m_cBoxWindow.enableSaveScreen();
 	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
 	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);

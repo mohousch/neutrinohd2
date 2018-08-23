@@ -106,7 +106,7 @@ CColorChooser::CColorChooser(const neutrino_locale_t Name, unsigned char *R, uns
 
 	//
 	m_cBoxWindow.setDimension(&cFrameBox);
-	m_cBoxWindow.enableShadow();
+	//m_cBoxWindow.enableShadow();
 	m_cBoxWindow.enableSaveScreen();
 }
 
@@ -148,7 +148,7 @@ CColorChooser::CColorChooser(const char * const Name, unsigned char *R, unsigned
 
 	//
 	m_cBoxWindow.setDimension(&cFrameBox);
-	m_cBoxWindow.enableShadow();
+	//m_cBoxWindow.enableShadow();
 	m_cBoxWindow.enableSaveScreen();
 }
 

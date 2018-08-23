@@ -74,7 +74,7 @@ void CWindow::init(void)
 	bgcolor = COL_MENUHEAD_PLUS_0;
 	gradient = nogradient;
 
-	enableshadow = false;
+	//enableshadow = false;
 
 	savescreen = false;
 	background = NULL;
@@ -85,8 +85,8 @@ void CWindow::init(void)
 
 void CWindow::saveScreen()
 {
-	full_width = enableshadow? cFrameBox.iWidth + SHADOW_OFFSET : cFrameBox.iWidth;
-	full_height = enableshadow? cFrameBox.iHeight + SHADOW_OFFSET : cFrameBox.iHeight;
+	full_width = /*enableshadow? cFrameBox.iWidth + SHADOW_OFFSET :*/ cFrameBox.iWidth;
+	full_height = /*enableshadow? cFrameBox.iHeight + SHADOW_OFFSET :*/ cFrameBox.iHeight;
 
 	background = new fb_pixel_t[full_width*full_height];
 	
@@ -96,8 +96,8 @@ void CWindow::saveScreen()
 
 void CWindow::restoreScreen()
 {
-	full_width = enableshadow? cFrameBox.iWidth + SHADOW_OFFSET : cFrameBox.iWidth;
-	full_height = enableshadow? cFrameBox.iHeight + SHADOW_OFFSET : cFrameBox.iHeight;
+	full_width = /*enableshadow? cFrameBox.iWidth + SHADOW_OFFSET :*/ cFrameBox.iWidth;
+	full_height = /*enableshadow? cFrameBox.iHeight + SHADOW_OFFSET :*/ cFrameBox.iHeight;
 
 	if(background) 
 	{
@@ -131,8 +131,8 @@ void CWindow::paint()
 		saveScreen();
 
 	// shadow Box
-	if(enableshadow)
-		frameBuffer->paintBoxRel(cFrameBox.iX + SHADOW_OFFSET, cFrameBox.iY + SHADOW_OFFSET, cFrameBox.iWidth, cFrameBox.iHeight, COL_INFOBAR_SHADOW_PLUS_0, radius, corner);
+	//if(enableshadow)
+	//	frameBuffer->paintBoxRel(cFrameBox.iX + SHADOW_OFFSET, cFrameBox.iY + SHADOW_OFFSET, cFrameBox.iWidth, cFrameBox.iHeight, COL_INFOBAR_SHADOW_PLUS_0, radius, corner);
 
 	// window Box
 	frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, bgcolor, radius, corner, gradient);

@@ -48,7 +48,7 @@ class CWindow
 		fb_pixel_t bgcolor;
 		int gradient;
 
-		bool enableshadow;
+		//bool enableshadow;
 		bool savescreen;
 
 		void saveScreen();
@@ -66,7 +66,7 @@ class CWindow
 		void setColor(fb_pixel_t col){bgcolor = col;};
 		void setCorner(int ra, int co){radius = ra; corner = co;};
 		void setGradient(int grad){gradient = grad;};
-		void enableShadow(void){enableshadow = true;};
+		//void enableShadow(void){enableshadow = true;};
 		void enableSaveScreen(void){savescreen = true;};
 
 		void paint(void);
