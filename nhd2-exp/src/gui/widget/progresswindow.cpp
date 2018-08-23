@@ -160,15 +160,15 @@ void CProgressWindow::paint()
 	int ypos = y;
 
 	// box
-	//m_cBoxWindow.enableShadow();
 	m_cBoxWindow.enableSaveScreen();
 	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
-	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	//m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.enableShadow();
 	m_cBoxWindow.paint();
 	
 	// title
 	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
-	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
+	//m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
 	m_cTitleWindow.setGradient(g_settings.Head_gradient);
 	m_cTitleWindow.paint();
 	

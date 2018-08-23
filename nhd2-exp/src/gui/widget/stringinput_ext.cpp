@@ -314,7 +314,7 @@ int CExtendedInput::exec( CMenuTarget* parent, const std::string & )
 
 void CExtendedInput::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width /*+ SHADOW_OFFSET*/, height /*+ SHADOW_OFFSET*/);
+	frameBuffer->paintBackgroundBoxRel(x - 2, y - 2, width + 4, height + 4);
 
 	frameBuffer->blit();
 }
@@ -323,17 +323,14 @@ void CExtendedInput::paint()
 {
 	dprintf(DEBUG_NORMAL, "CExtendedInput::paint\n");
 
-	//head shadow
-	//frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);
+	//
+	frameBuffer->paintBoxRel(x - 2, y - 2, width + 4, height + 4, COL_MENUCONTENT_PLUS_6);
 	
 	// headbox
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
-	
-	//foot shadow
-	//frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_gradient);
 
 	// body / footbox
-	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, NO_RADIUS, CORNER_NONE);
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width - BORDER_LEFT - BORDER_RIGHT, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 

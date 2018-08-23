@@ -195,10 +195,10 @@ void CHintBox::paint(void)
 	// Box
 	m_cBoxWindow.setDimension(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 
-	//m_cBoxWindow.enableShadow();
 	m_cBoxWindow.enableSaveScreen();
 	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
-	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	//m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.enableShadow();
 	m_cBoxWindow.paint();
 
 	refresh();
@@ -211,7 +211,8 @@ void CHintBox::refresh(void)
 	//body
 	m_cBodyWindow.setDimension(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 	m_cBodyWindow.setColor(COL_MENUCONTENT_PLUS_0);
-	m_cBodyWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	//m_cBodyWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.enableShadow();
 	m_cBodyWindow.paint();
 	
 	// title
@@ -222,7 +223,7 @@ void CHintBox::refresh(void)
 	m_cTitleWindow.setDimension(cFrameBoxTitle.iX, cFrameBoxTitle.iY, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight);
 
 	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
-	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
+	//m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
 	m_cTitleWindow.setGradient(g_settings.Head_gradient);
 	m_cTitleWindow.paint();
 	
@@ -341,7 +342,6 @@ int CHintBox::exec(int timeout)
 	return res;
 }
 
-//
 int HintBox(const neutrino_locale_t Caption, const char * const Text, const int Width, int timeout, const char * const Icon)
 {
 	int res = messages_return::none;

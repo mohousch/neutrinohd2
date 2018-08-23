@@ -344,7 +344,7 @@ void CTestMenu::testCWindowShadow()
 
 	window->setColor(COL_MENUCONTENT_PLUS_0);
 	window->setCorner(RADIUS_MID, CORNER_ALL);
-	//window->enableShadow();
+	window->enableShadow();
 	window->enableSaveScreen();
 
 	window->paint();
@@ -362,7 +362,6 @@ void CTestMenu::testCWindowShadow()
 		
 		if (msg == CRCInput::RC_home) 
 		{
-			//CFrameBuffer::getInstance()->paintBackground();
 			window->hide();
 			CFrameBuffer::getInstance()->blit();
 
@@ -515,8 +514,23 @@ void CTestMenu::testCHintBox()
 	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, "testing CHintBox");
 	
 	hintBox->exec();
-	delete hintBox;
-	hintBox = NULL;
+
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	while(1)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg == CRCInput::RC_home) 
+		{
+			delete hintBox;
+			hintBox = NULL;
+
+			break;
+		}
+	}
 }
 
 void CTestMenu::testCHintBoxInfo()

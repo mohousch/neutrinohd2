@@ -350,10 +350,10 @@ void CMessageBox::paint(void)
                                m_width,
                                m_height);
 
-	//m_cBoxWindow.enableShadow();
 	m_cBoxWindow.enableSaveScreen();
 	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
-	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	//m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.enableShadow();
 	m_cBoxWindow.paint();
 
 	refresh();
@@ -368,14 +368,14 @@ void CMessageBox::refresh()
                                m_height);
 
 	m_cBodyWindow.setColor(COL_MENUCONTENT_PLUS_0);
-	m_cBodyWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	//m_cBodyWindow.setCorner(RADIUS_MID, CORNER_ALL);
 	m_cBodyWindow.paint();
 
 	// title
 	m_cTitleWindow.setDimension(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1), CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), m_width, m_theight);
 
 	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
-	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
+	//m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
 	m_cTitleWindow.setGradient(g_settings.Head_gradient);
 	m_cTitleWindow.paint();
 

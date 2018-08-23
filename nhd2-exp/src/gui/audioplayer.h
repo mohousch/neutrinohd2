@@ -70,12 +70,6 @@ class CAudioPlayerGui : public CMenuTarget
 		//
 		int m_current;
 
-		// gui
-		int m_x, m_y;
-		int m_title_height;
-		int m_width;
-		//fb_pixel_t * background;
-
 		//
 		State          m_state;
 		time_t         m_time_total;

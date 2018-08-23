@@ -1254,12 +1254,13 @@ REPEAT:
 					{
 						CTmdb * tmdb = new CTmdb();
 
-						tmdb->getMovieInfo(mfile.epgTitle);
-
-						// epgInfo1
-						if((mfile.epgInfo1.empty() && mfile.epgInfo2.empty()) && !tmdb->getDescription().empty())
+						if(tmdb->getMovieInfo(mfile.epgTitle))
 						{
-							mfile.epgInfo2 = tmdb->getDescription();
+							// epgInfo1
+							if((mfile.epgInfo1.empty() && mfile.epgInfo2.empty()) && !tmdb->getDescription().empty())
+							{
+								mfile.epgInfo2 = tmdb->getDescription();
+							}
 						}
 
 						delete tmdb;

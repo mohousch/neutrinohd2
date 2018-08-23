@@ -93,6 +93,9 @@ bool CTmdb::getMovieInfo(std::string text)
 
 	dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: results: %d\n", results.size());
 
+	if((int)results.size() <= 0)
+		return false;
+
 	tmdbinfo tmp;
 
 	tmp.id = results[0].get("id", -1).asInt();

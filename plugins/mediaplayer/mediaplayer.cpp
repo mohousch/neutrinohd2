@@ -140,12 +140,13 @@ BROWSER:
 				{
 					CTmdb * tmdb = new CTmdb();
 
-					tmdb->getMovieInfo(mfile.epgTitle);
-	
-					// epgInfo2
-					if(mfile.epgInfo2.empty() && !tmdb->getDescription().empty())
+					if(tmdb->getMovieInfo(mfile.epgTitle))
 					{
-						mfile.epgInfo2 = tmdb->getDescription();
+						// epgInfo2
+						if(mfile.epgInfo2.empty() && !tmdb->getDescription().empty())
+						{
+							mfile.epgInfo2 = tmdb->getDescription();
+						}
 					}
 					delete tmdb;
 					tmdb = NULL;

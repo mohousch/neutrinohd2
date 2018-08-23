@@ -63,9 +63,6 @@ class CStringInput : public CMenuTarget
 		int mheight; // menu font height
 		int iheight;
 
-		//CBox m_cBox;
-		//CBox m_cTitle;
-
 		CWindow m_cBoxWindow;
 		CWindow m_cTitleWindow;
 		

@@ -291,7 +291,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 
 void CVfdControler::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width /*+ SHADOW_OFFSET*/, height /*+ SHADOW_OFFSET*/);
+	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
 
 	frameBuffer->blit();
 }
@@ -301,17 +301,9 @@ void CVfdControler::paint()
 	dprintf(DEBUG_NORMAL, "CVfdControler::paint\n");
 
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
-
-	// top
-	//shadow
-	//frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);//round
 	
 	// title
 	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);//round
-	
-	// body
-	//shadow
-	//frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 
 	// body
 	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round

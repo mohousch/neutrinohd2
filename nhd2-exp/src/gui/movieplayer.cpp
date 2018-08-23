@@ -1578,7 +1578,7 @@ void CMovieInfoViewer::GetDimensions()
 	cFrameBoxInfo.iHeight = BOXHEIGHT_MOVIEINFO;
 	cFrameBoxInfo.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - BORDER_LEFT - BORDER_RIGHT;
 	cFrameBoxInfo.iX = g_settings.screen_StartX + 10;
-	cFrameBoxInfo.iY = g_settings.screen_EndY - 10 - cFrameBoxInfo.iHeight /*- SHADOW_OFFSET*/;
+	cFrameBoxInfo.iY = g_settings.screen_EndY - 10 - cFrameBoxInfo.iHeight;
 
 	//movieinfo buttonbar
 	cFrameBoxButton.iWidth = cFrameBoxInfo.iWidth;
@@ -1641,10 +1641,10 @@ void CMovieInfoViewer::update(time_t time_show)
 		strftime(cDisplayTime, 9, "%T", gmtime(&tDisplayTime));
 		
 		// time shadow
-		//frameBuffer->paintBoxRel(m_xend - m_width - 10 /*+ SHADOW_OFFSET*/, m_y /*+ SHADOW_OFFSET*/, m_width + 10, m_height, COL_INFOBAR_SHADOW_PLUS_0);
+		frameBuffer->paintBoxRel(m_xend - m_width - 10, m_y, m_width + 10, m_height, COL_MENUCONTENT_PLUS_6);
 
 		// time window
-		frameBuffer->paintBoxRel(m_xend - m_width - 10, m_y, m_width + 10, m_height, color1, RADIUS_SMALL, CORNER_TOP, g_settings.infobar_gradient);
+		frameBuffer->paintBoxRel(m_xend - m_width - 10 + 2, m_y + 2, m_width + 10 - 4, m_height - 4, color1, NO_RADIUS, CORNER_NONE, g_settings.infobar_gradient);
 
 		// time
 		g_Font[TIMEOSD_FONT]->RenderString(m_xend - m_width - 5, m_y + m_height, m_width + 5, cDisplayTime, color2);
@@ -1663,12 +1663,12 @@ void CMovieInfoViewer::hide()
 		return;
 
 	// hide time
-	frameBuffer->paintBackgroundBoxRel(m_xend - m_width - 10, m_y, m_width + 10 /*+ SHADOW_OFFSET*/, m_height /*+ SHADOW_OFFSET*/ );
+	frameBuffer->paintBackgroundBoxRel(m_xend - m_width - 10, m_y, m_width + 10, m_height);
 
 	visible = false;
 
 	// hide infoviewer
-	frameBuffer->paintBackgroundBoxRel(cFrameBoxInfo.iX, cFrameBoxInfo.iY, cFrameBoxInfo.iWidth /*+ SHADOW_OFFSET*/, cFrameBoxInfo.iHeight /*+ SHADOW_OFFSET*/);
+	frameBuffer->paintBackgroundBoxRel(cFrameBoxInfo.iX - 2, cFrameBoxInfo.iY - 2, cFrameBoxInfo.iWidth + 4, cFrameBoxInfo.iHeight + 4);
 
 	frameBuffer->blit();
 }
@@ -1696,13 +1696,13 @@ void CMovieInfoViewer::showMovieInfo(std::string Title, std::string Info, short 
 	moviescale.reset();
 	
 	// paint shadow
-	//frameBuffer->paintBoxRel(cFrameBoxInfo.iX + SHADOW_OFFSET, cFrameBoxInfo.iY + SHADOW_OFFSET, cFrameBoxInfo.iWidth, cFrameBoxInfo.iHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH );
+	frameBuffer->paintBoxRel(cFrameBoxInfo.iX - 2, cFrameBoxInfo.iY - 2, cFrameBoxInfo.iWidth + 4, cFrameBoxInfo.iHeight + 4, COL_MENUCONTENT_PLUS_6);
 		
 	// paint info box
-	frameBuffer->paintBoxRel(cFrameBoxInfo.iX, cFrameBoxInfo.iY, cFrameBoxInfo.iWidth, cFrameBoxInfo.iHeight, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.infobar_gradient); 
+	frameBuffer->paintBoxRel(cFrameBoxInfo.iX, cFrameBoxInfo.iY, cFrameBoxInfo.iWidth, cFrameBoxInfo.iHeight, COL_INFOBAR_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.infobar_gradient); 
 		
 	// bottum bar
-	frameBuffer->paintBoxRel(cFrameBoxButton.iX, cFrameBoxButton.iY, cFrameBoxButton.iWidth, cFrameBoxButton.iHeight, COL_INFOBAR_SHADOW_PLUS_1,  RADIUS_MID, CORNER_BOTTOM); 
+	frameBuffer->paintBoxRel(cFrameBoxButton.iX, cFrameBoxButton.iY, cFrameBoxButton.iWidth, cFrameBoxButton.iHeight, COL_INFOBAR_SHADOW_PLUS_1,  NO_RADIUS, CORNER_NONE); 
 	
 	// show date/time
 	std::string datestr = getNowTimeStr("%d.%m.%Y %H:%M");

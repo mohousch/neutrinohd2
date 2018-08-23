@@ -139,7 +139,6 @@ void CDBoxInfoWidget::paint()
 	int i = 0;
 	
 	// Box
-	//m_cBoxWindow.enableShadow();
 	m_cBoxWindow.enableSaveScreen();
 	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
 	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);

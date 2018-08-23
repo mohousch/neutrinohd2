@@ -199,7 +199,7 @@ void CInfoViewer::initDimension(void)
 	buttonBarHeight = (icon_h_vtxt? icon_h_vtxt : BUTTON_BAR_HEIGHT) + 6;
 	
 	BoxEndX = g_settings.screen_EndX - 10;
-	BoxEndY = g_settings.screen_EndY - (10 /*+ SHADOW_OFFSET*/ + buttonBarHeight);
+	BoxEndY = g_settings.screen_EndY - 10 - buttonBarHeight;
 	BoxStartX = g_settings.screen_StartX + 10;
 	BoxStartY = BoxEndY - BoxHeight;
 	BoxWidth = BoxEndX - BoxStartX;
@@ -292,7 +292,7 @@ void CInfoViewer::showRecordIcon(const bool show)
 			if(!autoshift && !shift_timer) 
 			{
 				// shadow
-				//frameBuffer->paintBoxRel(BoxStartX + BORDER_LEFT + icon_w_rec + ICON_OFFSET + SHADOW_OFFSET, BoxStartY - 30 + SHADOW_OFFSET, REC_INFOBOX_WIDTH, REC_INFOBOX_HEIGHT, COL_INFOBAR_SHADOW_PLUS_0);
+				frameBuffer->paintBoxRel(BoxStartX + BORDER_LEFT + icon_w_rec + ICON_OFFSET - 1, BoxStartY - 30 - 1, REC_INFOBOX_WIDTH + 2, REC_INFOBOX_HEIGHT + 2, COL_MENUCONTENT_PLUS_6);
 				
 				// rec info box
 				frameBuffer->paintBoxRel(BoxStartX + BORDER_LEFT + icon_w_rec + ICON_OFFSET, BoxStartY - 30, REC_INFOBOX_WIDTH, REC_INFOBOX_HEIGHT, COL_INFOBAR_PLUS_0);
@@ -332,10 +332,10 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 	}
 	
 	// infobar shadow
-	//frameBuffer->paintBoxRel(BoxStartX + SHADOW_OFFSET, BoxStartY + SHADOW_OFFSET, BoxWidth, BoxHeight + buttonBarHeight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH);
+	frameBuffer->paintBoxRel(BoxStartX - 2, BoxStartY - 2, BoxWidth + 4, BoxHeight + buttonBarHeight + 4, COL_MENUCONTENT_PLUS_6);
 	
 	// infobarbox
-	frameBuffer->paintBoxRel(BoxStartX, BoxStartY, BoxWidth, BoxHeight, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.infobar_gradient);
+	frameBuffer->paintBoxRel(BoxStartX, BoxStartY, BoxWidth, BoxHeight, COL_INFOBAR_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.infobar_gradient);
 
 	//time
 	paintTime(BoxEndX, ChanNameY, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]);
@@ -1783,7 +1783,7 @@ void CInfoViewer::killTitle()
 	{
 		is_visible = false;
 
-		frameBuffer->paintBackgroundBox(BoxStartX, BoxStartY - 30, BoxEndX /*+ SHADOW_OFFSET*/, buttonBarStartY /*+ SHADOW_OFFSET*/ + buttonBarHeight);
+		frameBuffer->paintBackgroundBox(BoxStartX - 2, BoxStartY - 30 - 2, BoxEndX + 2, buttonBarStartY + buttonBarHeight + 2);
 
 		// hide radiotext	
 		if (g_settings.radiotext_enable && g_Radiotext) 
