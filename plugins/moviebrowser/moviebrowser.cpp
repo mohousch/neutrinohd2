@@ -49,6 +49,7 @@ class CMBrowser : public CMenuTarget
 		void doTMDB(MI_MOVIE_INFO& movieFile);
 		bool delFile(CFile& file);
 		void onDeleteFile(MI_MOVIE_INFO& movieFile);
+		void openFileBrowser();
 
 		void showMenu();
 
@@ -91,11 +92,6 @@ CMBrowser::CMBrowser()
 	fileFilter.addFilter("vdr");
 	fileFilter.addFilter("mts");
 	fileFilter.addFilter("wmv");
-	fileFilter.addFilter("wav");
-	fileFilter.addFilter("flac");
-	fileFilter.addFilter("mp3");
-	fileFilter.addFilter("wma");
-	fileFilter.addFilter("ogg");
 }
 
 CMBrowser::~CMBrowser()
@@ -155,6 +151,71 @@ void CMBrowser::loadPlaylist()
 					
 			if(!access(fname.c_str(), F_OK) )
 				movieInfo.tfile = fname.c_str();
+					
+			// 
+			m_vMovieInfo.push_back(movieInfo);
+		}
+	}
+}
+
+void CMBrowser::openFileBrowser()
+{
+	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
+
+	filebrowser.Multi_Select = true;
+	filebrowser.Dirs_Selectable = true;
+	filebrowser.Filter = &fileFilter;
+
+	if (filebrowser.exec(Path.c_str()))
+	{
+		Path = filebrowser.getCurrentDir();
+
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+
+		CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
+		for(; files != filebrowser.getSelectedFiles().end(); files++)
+		{
+			// filter them
+			MI_MOVIE_INFO movieInfo;
+			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+
+			//
+			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+					
+			movieInfo.file.Name = files->Name;
+					
+			// load movie infos (from xml file)
+			m_movieInfo.loadMovieInfo(&movieInfo);
+
+			std::string tmp_str = files->getFileName();
+
+			removeExtension(tmp_str);
+
+			// refill if empty
+			if(movieInfo.epgTitle.empty())
+				movieInfo.epgTitle = tmp_str;
+
+			if(movieInfo.epgInfo1.empty())
+				movieInfo.epgInfo1 = tmp_str;
+
+			//if(movieInfo.epgInfo2.empty())
+			//	movieInfo.epgInfo2 = tmp_str;
+
+			//thumbnail
+			std::string fname = "";
+			fname = files->Name;
+			changeFileNameExt(fname, ".jpg");
+					
+			if(!access(fname.c_str(), F_OK) )
+				movieInfo.tfile = fname.c_str();
+
+			// skip duplicate
+			for (unsigned long i = 0; i < m_vMovieInfo.size(); i++)
+			{
+				if(m_vMovieInfo[i].file.getFileName() == movieInfo.file.getFileName())
+					m_vMovieInfo.erase(m_vMovieInfo.begin() + i); 
+			}
 					
 			// 
 			m_vMovieInfo.push_back(movieInfo);
@@ -315,11 +376,13 @@ void CMBrowser::onDeleteFile(MI_MOVIE_INFO& movieFile)
 	}
 }
 
-#define HEAD_BUTTONS_COUNT	2
+#define HEAD_BUTTONS_COUNT	4
 const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL },
 };
 
 void CMBrowser::showMenu()
@@ -358,6 +421,7 @@ void CMBrowser::showMenu()
 
 	mlist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	mlist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
+	mlist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
 	mlist->addKey(CRCInput::RC_spkr, this, CRCInput::getSpecialKeyName(CRCInput::RC_spkr));
 
 	mlist->exec(NULL, "");
@@ -398,6 +462,13 @@ int CMBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		hide();
 		doTMDB(m_vMovieInfo[mlist->getSelected()]);
 		showMenu();
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_green")
+	{
+		openFileBrowser();
+		showMenu();
+
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if (actionKey == "RC_spkr") 
