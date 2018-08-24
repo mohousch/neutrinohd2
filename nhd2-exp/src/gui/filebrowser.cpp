@@ -834,8 +834,8 @@ void CFileBrowser::paint(bool reinit)
 	Button[2].locale = Multi_Select?LOCALE_FILEBROWSER_MARK : NONEXISTANT_LOCALE;
 	Button[2].localename = NULL;
 
-	Button[3].button = NEUTRINO_ICON_BUTTON_BLUE;
-	Button[3].locale = use_filter?LOCALE_FILEBROWSER_FILTER_INACTIVE : LOCALE_FILEBROWSER_FILTER_ACTIVE;
+	Button[3].button = (Filter != NULL)? NEUTRINO_ICON_BUTTON_BLUE : NULL;
+	Button[3].locale = (Filter != NULL)? (use_filter)?LOCALE_FILEBROWSER_FILTER_INACTIVE : LOCALE_FILEBROWSER_FILTER_ACTIVE : NONEXISTANT_LOCALE;
 	Button[3].localename = NULL;
 
 	listBox->setFooterButtons(Button, 4);
