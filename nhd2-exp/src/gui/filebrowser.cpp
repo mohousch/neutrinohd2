@@ -309,8 +309,9 @@ void CFileBrowser::ChangeDir(const std::string& filename, int selection)
 	if ((selection != -1) && (selection < (int)filelist.size()))
 		selected = selection;
 	
+	hide();
 	listBox->clearItems();
-	paint(false);
+	paint(true);
 }
 
 bool CFileBrowser::readDir(const std::string& dirname, CFileList* flist)
