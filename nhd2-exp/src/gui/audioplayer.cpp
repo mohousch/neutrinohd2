@@ -440,7 +440,7 @@ void CAudioPlayerGui::paintInfo()
 	// title info box
 	m_frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
 		
-	m_frameBuffer->paintBoxRel(cFrameBox.iX + 2, cFrameBox.iY + 2 , cFrameBox.iWidth - 4, cFrameBox.iHeight - 4, COL_MENUHEAD_INFO_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient); //FIXME:gradient
+	m_frameBuffer->paintBoxRel(cFrameBox.iX + 1, cFrameBox.iY + 1 , cFrameBox.iWidth - 2, cFrameBox.iHeight - 2, COL_MENUHEAD_INFO_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient); //FIXME:gradient
 
 	// first line 
 	// Track number

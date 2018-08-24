@@ -314,7 +314,7 @@ int CExtendedInput::exec( CMenuTarget* parent, const std::string & )
 
 void CExtendedInput::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x - 2, y - 2, width + 4, height + 4);
+	frameBuffer->paintBackgroundBoxRel(x - 1, y - 1, width + 2, height + 2);
 
 	frameBuffer->blit();
 }
@@ -324,7 +324,7 @@ void CExtendedInput::paint()
 	dprintf(DEBUG_NORMAL, "CExtendedInput::paint\n");
 
 	//
-	frameBuffer->paintBoxRel(x - 2, y - 2, width + 4, height + 4, COL_MENUCONTENT_PLUS_6);
+	frameBuffer->paintBoxRel(x - 1, y - 1, width + 2, height + 2, COL_MENUCONTENT_PLUS_6);
 	
 	// headbox
 	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_gradient);

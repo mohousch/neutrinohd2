@@ -37,17 +37,20 @@ void paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CL
 	
 	for (unsigned int i = 0; i < count; i++)
 	{
-		frameBuffer->getIconSize(content[i].button, &iw, &ih);
-		int f_h = font->getHeight();
+		if(content[i].button != NULL)
+		{
+			frameBuffer->getIconSize(content[i].button, &iw, &ih);
+			int f_h = font->getHeight();
 
-		if(content[i].localename != 0)
-			l_option = content[i].localename;
-		else
-			l_option = localemanager->getText(content[i].locale);
+			if(content[i].localename != 0)
+				l_option = content[i].localename;
+			else
+				l_option = localemanager->getText(content[i].locale);
 		
-		frameBuffer->paintIcon(content[i].button, x + i * buttonwidth, y + (dy - ih)/2);
+			frameBuffer->paintIcon(content[i].button, x + i * buttonwidth, y + (dy - ih)/2);
 
-		font->RenderString(x + iw + ICON_OFFSET + i * buttonwidth, y + f_h + (dy - f_h)/2, buttonwidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
+			font->RenderString(x + iw + ICON_OFFSET + i * buttonwidth, y + f_h + (dy - f_h)/2, buttonwidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
+		}
 	}
 }
 
@@ -59,11 +62,14 @@ void paintHeadButtons(CFrameBuffer * const frameBuffer, const int x, const int y
 	
 	for (unsigned int i = 0; i < count; i++)
 	{
-		frameBuffer->getIconSize(content[i].button, &iw[i], &ih[i]);
+		if(content[i].button != NULL)
+		{
+			frameBuffer->getIconSize(content[i].button, &iw[i], &ih[i]);
 		
-		startx -= (iw[i] + ICON_TO_ICON_OFFSET);
+			startx -= (iw[i] + ICON_TO_ICON_OFFSET);
 
-		frameBuffer->paintIcon(content[i].button, startx, y + (dy - ih[i])/2);
+			frameBuffer->paintIcon(content[i].button, startx, y + (dy - ih[i])/2);
+		}
 	}
 }
 

@@ -144,6 +144,7 @@ class CMenuItem
 		
 	public:
 		bool active;
+		bool marked;
 		neutrino_msg_t directKey;
 		neutrino_msg_t msg;
 		bool can_arrow;
@@ -195,6 +196,7 @@ class CMenuItem
 		
 		//
 		virtual void setActive(const bool Active);
+		virtual void setMarked(const bool Marked);
 
 		//
 		virtual int getYPosition(void) const { return y; }

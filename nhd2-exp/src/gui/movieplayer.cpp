@@ -1668,7 +1668,7 @@ void CMovieInfoViewer::hide()
 	visible = false;
 
 	// hide infoviewer
-	frameBuffer->paintBackgroundBoxRel(cFrameBoxInfo.iX - 2, cFrameBoxInfo.iY - 2, cFrameBoxInfo.iWidth + 4, cFrameBoxInfo.iHeight + 4);
+	frameBuffer->paintBackgroundBoxRel(cFrameBoxInfo.iX - 1, cFrameBoxInfo.iY - 1, cFrameBoxInfo.iWidth + 2, cFrameBoxInfo.iHeight + 2);
 
 	frameBuffer->blit();
 }
@@ -1696,7 +1696,7 @@ void CMovieInfoViewer::showMovieInfo(std::string Title, std::string Info, short 
 	moviescale.reset();
 	
 	// paint shadow
-	frameBuffer->paintBoxRel(cFrameBoxInfo.iX - 2, cFrameBoxInfo.iY - 2, cFrameBoxInfo.iWidth + 4, cFrameBoxInfo.iHeight + 4, COL_MENUCONTENT_PLUS_6);
+	frameBuffer->paintBoxRel(cFrameBoxInfo.iX - 1, cFrameBoxInfo.iY - 1, cFrameBoxInfo.iWidth + 2, cFrameBoxInfo.iHeight + 2, COL_MENUCONTENT_PLUS_6);
 		
 	// paint info box
 	frameBuffer->paintBoxRel(cFrameBoxInfo.iX, cFrameBoxInfo.iY, cFrameBoxInfo.iWidth, cFrameBoxInfo.iHeight, COL_INFOBAR_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.infobar_gradient); 

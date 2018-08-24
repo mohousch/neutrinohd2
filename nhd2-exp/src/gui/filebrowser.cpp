@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: filebrowser.cpp 2013/10/12 mohousch Exp $
+	$Id: filebrowser.cpp 2018/08/24 mohousch Exp $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -199,49 +199,22 @@ void CFileBrowser::commonInit()
 	selected_filelist.clear();
 	filelist.clear();
 
-	x = g_settings.screen_StartX + 20;
-	y = g_settings.screen_StartY + 20;
-
-	width = (g_settings.screen_EndX - g_settings.screen_StartX - 40);
-	height = (g_settings.screen_EndY - g_settings.screen_StartY - 40);
-
-	// head
-	int ih, iw;
-	frameBuffer->getIconSize(NEUTRINO_ICON_FOLDER, &iw, &ih);
-	theight = std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
-
-	// item
-	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight();
-
-	//foot;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iw, &ih);
-	foheight = std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
-
-	liststart = 0;
-	listmaxshow = (height - theight - foheight)/fheight;
-
-	//recalc height
-	height = theight + listmaxshow*fheight + foheight;
-
-	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - width) / 2;
-	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height) / 2;
-
 	// sms key input timeout
 	m_SMSKeyInput.setTimeout(FILEBROWSER_SMSKEY_TIMEOUT);
+
+	listBox = NULL;
+	item = NULL;
+
+	// box	
+	cFrameBox.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 40;
+	cFrameBox.iHeight = g_settings.screen_EndY - g_settings.screen_StartY - 40;
+	
+	cFrameBox.iX = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - cFrameBox.iWidth) / 2;
+	cFrameBox.iY = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - cFrameBox.iHeight) / 2;
 }
 
 CFileBrowser::~CFileBrowser()
 {
-	/*
-	if(!selections.empty())
-		selections.clear();
-	
-	if(!selected_filelist.empty())
-		selected_filelist.clear();
-	
-	if(!filelist.empty())
-		filelist.clear();
-	*/
 }
 
 CFile * CFileBrowser::getSelectedFile()
@@ -336,8 +309,8 @@ void CFileBrowser::ChangeDir(const std::string& filename, int selection)
 	if ((selection != -1) && (selection < (int)filelist.size()))
 		selected = selection;
 	
-	paintHead();
-	paint();
+	listBox->clearItems();
+	paint(false);
 }
 
 bool CFileBrowser::readDir(const std::string& dirname, CFileList* flist)
@@ -349,6 +322,7 @@ bool CFileBrowser::readDir(const std::string& dirname, CFileList* flist)
 	int n;
 
 	n = my_scandir(dirname.c_str(), &namelist, 0, my_alphasort);
+
 	if (n < 0)
 	{
 		perror(("Filebrowser scandir: " + dirname).c_str());
@@ -392,6 +366,10 @@ bool CFileBrowser::exec(const char * const dirname)
 
 	bool res = false;
 
+	listBox = new ClistBoxEntry(&cFrameBox);
+
+	paint();
+
 	name = dirname;
 	std::replace(name.begin(), name.end(), '\\', '/');
 	
@@ -402,9 +380,6 @@ bool CFileBrowser::exec(const char * const dirname)
 		
 	ChangeDir(name, selection);
 
-	paintHead();
-	paintFoot();
-		
 	frameBuffer->blit();
 
 	int oldselected = selected;
@@ -427,6 +402,8 @@ bool CFileBrowser::exec(const char * const dirname)
 
 		if (msg == CRCInput::RC_yellow)
 		{
+			selected = listBox->getSelected();
+
 			if ((Multi_Select) && (selected < filelist.size()))
 			{
 				if(filelist[selected].getFileName() != "..")
@@ -434,7 +411,9 @@ bool CFileBrowser::exec(const char * const dirname)
 					if( (S_ISDIR(filelist[selected].Mode) && Dirs_Selectable) || !S_ISDIR(filelist[selected].Mode) )
 					{
 						filelist[selected].Marked = !filelist[selected].Marked;
-						paintItem(selected - liststart);
+
+						listBox->clearItems();
+						paint(false);
 					}
 				}
 				msg_repeatok = CRCInput::RC_down;	// jump to next item
@@ -443,61 +422,19 @@ bool CFileBrowser::exec(const char * const dirname)
 
 		if ((msg == CRCInput::RC_red) || msg == CRCInput::RC_page_down)
 		{
-			selected += listmaxshow;
-			if (selected >= filelist.size()) {
-				if (((filelist.size() / listmaxshow) + 1) * listmaxshow == filelist.size() + listmaxshow) // last page has full entries
-					selected = 0;
-				else
-					selected = selected < (((filelist.size() / listmaxshow) + 1) * listmaxshow) ? (filelist.size() - 1) : 0;
-			}
-			liststart = (selected / listmaxshow) * listmaxshow;
-			paint();
+			listBox->scrollPageDown();
 		}
 		else if ((msg == CRCInput::RC_green) || (msg == CRCInput::RC_page_up) )
 		{
-			if ((int(selected) - int(listmaxshow)) < 0)
-				selected = filelist.size()-1;
-			else
-				selected -= listmaxshow;
-
-			liststart = (selected/listmaxshow)*listmaxshow;
-			paint();
+			listBox->scrollPageUp();
 		}
 		else if (msg_repeatok == CRCInput::RC_up)
 		{
-			int prevselected = selected;
-			if(selected == 0)
-			{
-				selected = filelist.size() - 1;
-			}
-			else
-				selected--;
-			paintItem(prevselected - liststart);
-			unsigned int oldliststart = liststart;
-			liststart = (selected/listmaxshow)*listmaxshow;
-			if(oldliststart != liststart)
-			{
-				paint();
-			}
-			else
-			{
-				paintItem(selected - liststart);
-			}
+			listBox->scrollLineUp();
 		}
 		else if (msg_repeatok == CRCInput::RC_down)
 		{
-			if (!(filelist.empty()))
-			{
-				int prevselected = selected;
-				selected = (selected + 1) % filelist.size();
-				paintItem(prevselected - liststart);
-				unsigned int oldliststart = liststart;
-				liststart = (selected/listmaxshow)*listmaxshow;
-				if(oldliststart != liststart)
-					paint();
-				else
-					paintItem(selected - liststart);
-			}
+			listBox->scrollLineDown();
 		}
 		else if ( ( msg == CRCInput::RC_timeout ) )
 		{
@@ -506,6 +443,8 @@ bool CFileBrowser::exec(const char * const dirname)
 		}
 		else if ( msg == CRCInput::RC_right )
 		{
+			selected = listBox->getSelected();
+
 			if (!(filelist.empty()))
 			{
 				if (S_ISDIR(filelist[selected].Mode))
@@ -530,15 +469,18 @@ bool CFileBrowser::exec(const char * const dirname)
 				ChangeDir("..");
 			}
 
-			if (!(filelist.empty()))
-				paintFoot();
+			if (!(filelist.empty()))	
+			{
+				listBox->clearItems();
+				paint(false);
+			}
 		}
 		else if ( msg == CRCInput::RC_blue )
 		{
 			if(Filter != NULL)
 			{
 				use_filter = !use_filter;
-				paintFoot();
+
 				ChangeDir(Path);
 			}
 		}
@@ -548,6 +490,8 @@ bool CFileBrowser::exec(const char * const dirname)
 		}
 		else if ( msg == CRCInput::RC_spkr)
 		{
+			selected = listBox->getSelected();
+
 			if(".." !=(filelist[selected].getFileName().substr(0, 2))) // do not delete that
 			{
 				std::stringstream _msg;
@@ -575,6 +519,8 @@ bool CFileBrowser::exec(const char * const dirname)
 		}
 		else if (msg == CRCInput::RC_ok)
 		{
+			selected = listBox->getSelected();
+
 			if (!(filelist.empty()))
 			{
 				if (filelist[selected].getFileName() == "..")
@@ -626,8 +572,8 @@ bool CFileBrowser::exec(const char * const dirname)
 
 			sort(filelist.begin(), filelist.end(), sortBy[g_settings.filebrowser_sortmethod]);
 
-			paint();
-			paintFoot();
+			listBox->clearItems();
+			paint(false);
 		}
 		else if (CRCInput::isNumeric(msg_repeatok))
 		{
@@ -665,6 +611,9 @@ bool CFileBrowser::exec(const char * const dirname)
 		}
 	}
 
+	delete listBox;
+	listBox = NULL;
+
 	return res;
 }
 
@@ -681,6 +630,7 @@ void CFileBrowser::addRecursiveDir(CFileList * re_filelist, std::string rpath, b
 		bCancel = false;
 
 	g_RCInput->getMsg_us(&msg, &data, 1);
+
 	if (msg == CRCInput::RC_home)
 	{
 		// home key cancel scan
@@ -733,241 +683,165 @@ void CFileBrowser::addRecursiveDir(CFileList * re_filelist, std::string rpath, b
 
 void CFileBrowser::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
-	
-	frameBuffer->blit();
+	listBox->hide();
 }
 
-void CFileBrowser::paintItem(unsigned int pos)
-{
-	int colwidth1, colwidth2, colwidth3, colwidth1_dir, colwidth2_dir;
-	uint8_t color;
-	fb_pixel_t bgcolor;
-	int ypos = y + theight + pos*fheight;
-	CFile * actual_file = NULL;
-	std::string fileicon;
-
-	colwidth2_dir = 180;
-	colwidth1_dir = width - 35 - colwidth2_dir - 10;
-
-	if (liststart + pos == selected)
-	{
-		color   = COL_MENUCONTENTSELECTED;
-		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-	}
-	else
-	{
-		color   = COL_MENUCONTENT;//DARK;
-		bgcolor = COL_MENUCONTENT_PLUS_0;//DARK;
-	}
-
-	if( (liststart + pos) < filelist.size() )
-	{
-		actual_file = &filelist[liststart + pos];
-		if (actual_file->Marked)
-		{
-			color = COL_MENUCONTENTINACTIVE;
-			bgcolor = (liststart + pos == selected) ? COL_MENUCONTENTSELECTED_PLUS_2 : COL_MENUCONTENT_PLUS_2;
-		}
-
-		if (g_settings.filebrowser_showrights == 0 && S_ISREG(actual_file->Mode))
-		{
-			colwidth2 = 0;
-			colwidth3 = 90;
-		}
-		else
-		{
-			colwidth2 = 90;
-			colwidth3 = 90;
-		}
-		colwidth1 = width - 35 - colwidth2 - colwidth3 - 10;
-
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
-
-		if ( actual_file->Name.length() > 0 )
-		{
-			if (liststart + pos == selected)
-				CVFD::getInstance()->showMenuText(0, FILESYSTEM_ENCODING_TO_UTF8(std::string(actual_file->getFileName()).c_str()), -1, true); // UTF-8
-
-			switch(actual_file->getType())
-			{
-				case CFile::FILE_AUDIO:
-					fileicon = NEUTRINO_ICON_MP3;
-					break;
-
-				case CFile::FILE_DIR:
-					fileicon = NEUTRINO_ICON_FOLDER;
-					break;
-
-				case CFile::FILE_PICTURE:
-					fileicon = NEUTRINO_ICON_PICTURE;
-					break;
-				
-				case CFile::FILE_VIDEO:
-					fileicon = NEUTRINO_ICON_MOVIE;
-					break;
-					
-				case CFile::FILE_TEXT:
-				default:
-					fileicon = NEUTRINO_ICON_FILE;
-			}
-			int ih, iw;
-			frameBuffer->getIconSize(fileicon.c_str(), &iw, &ih);
-			frameBuffer->paintIcon(fileicon, x + ICON_OFFSET, ypos + (fheight - ih) / 2 );
-
-			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(x + 30 + ICON_OFFSET, ypos + fheight, colwidth1 - BORDER_RIGHT, FILESYSTEM_ENCODING_TO_UTF8(std::string(actual_file->getFileName()).c_str()), color, 0, true); // UTF-8
-
-			if( S_ISREG(actual_file->Mode) )
-			{
-				if (g_settings.filebrowser_showrights != 0)
-				{
-					const char * attribute = "xwr";
-					char modestring[9 + 1];
-					for (int m = 8; m >= 0; m--)
-					{
-						modestring[8 - m] = (actual_file->Mode & (1 << m)) ? attribute[m % 3] : '-';
-					}
-					modestring[9] = 0;
-
-					g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(x + 35 + colwidth1 , ypos+ fheight, colwidth2 - 10, modestring, color, 0, true); // UTF-8
-				}
-
-#define GIGABYTE 1073741824LL
-#define MEGABYTE 1048576LL
-#define KILOBYTE 1024LL
-				char tmpstr[256];
-				const char *unit = "";
-				long long factor = 0;
-				if (actual_file->Size >= GIGABYTE)
-				{
-					factor = GIGABYTE;
-					unit = "G";
-				}
-				else if (actual_file->Size >= MEGABYTE)
-				{
-					factor = MEGABYTE;
-					unit = "M";
-				}
-				else if (actual_file->Size >= KILOBYTE)
-				{
-					factor = KILOBYTE;
-					unit = "k";
-				}
-				if (factor)
-				{
-					int a = actual_file->Size / factor;
-					int b = (actual_file->Size - a * factor) * 1000 / factor;
-					snprintf(tmpstr, sizeof(tmpstr), "%d.%03d%s", a, b, unit);
-				}
-				else
-					snprintf(tmpstr,sizeof(tmpstr),"%d", (int)actual_file->Size);
-
-				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(x + 35 + colwidth1 + colwidth2, ypos+ fheight, colwidth3 - 10, tmpstr, color);
-			}
-
-			if( S_ISDIR(actual_file->Mode) )
-			{
-				char timestring[18];
-				time_t rawtime;
-
-				rawtime = actual_file->Time;
-				strftime(timestring, 18, "%d-%m-%Y %H:%M", gmtime(&rawtime));
-
-				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(x + 35 + colwidth1_dir, ypos+ fheight, colwidth2_dir - 10, timestring, color);
-			}
-		}
-	}
-	else
-		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, COL_MENUCONTENT_PLUS_0);
-}
-
-void CFileBrowser::paintHead()
-{
-	char l_name[100];
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
-	
-	// icon
-	int icon_w, icon_h;
-	frameBuffer->getIconSize(NEUTRINO_ICON_FOLDER, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_FOLDER, x + BORDER_LEFT, y + (theight - icon_h)/2);
-
-	// help button
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + width - BORDER_RIGHT - icon_w, y + (theight - icon_h)/2);
-
-	// mute button
-	int iw, ih;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_MUTE_SMALL, &iw, &ih);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_MUTE_SMALL, x + width - BORDER_RIGHT - icon_w - ICON_OFFSET - iw, y + (theight - ih)/2);
-
-	//
-	snprintf(l_name, sizeof(l_name), "%s %s", g_Locale->getText(LOCALE_FILEBROWSER_HEAD), FILESYSTEM_ENCODING_TO_UTF8(std::string(name).c_str())); // UTF-8
-
-	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->RenderString(x + BORDER_LEFT + icon_w + ICON_OFFSET, y + theight + 1, width - BORDER_LEFT - icon_w - ICON_OFFSET - BORDER_RIGHT - icon_w - ICON_OFFSET - iw - ICON_OFFSET, l_name, COL_MENUHEAD, 0, true); // UTF-8
-}
-
-const struct button_label FileBrowserButtons[3] =
+const struct button_label FileBrowserButtons[4] =
 {
 	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_FILEBROWSER_NEXTPAGE, NULL },
 	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_FILEBROWSER_PREVPAGE, NULL },
 	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_MARK, NULL },
-};
-
-const struct button_label FileBrowserFilterButton[2] =
-{
 	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_FILEBROWSER_FILTER_INACTIVE, NULL },
-	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_FILEBROWSER_FILTER_ACTIVE, NULL },
 };
 
-void CFileBrowser::paintFoot()
+const struct button_label HButtons[2] =
 {
-	int dx = width / 4;
+	{ NEUTRINO_ICON_BUTTON_MUTE_SMALL, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
+};
+
+void CFileBrowser::paint(bool reinit)
+{
+	dprintf(DEBUG_NORMAL, "CFileBrowser::paint:\n");
+
+	for (unsigned int count = 0; count < filelist.size(); count++)
+	{
+		item = new ClistBoxEntryItem(FILESYSTEM_ENCODING_TO_UTF8(std::string(filelist[count].getFileName()).c_str()), true);
+
+		// marked
+		if (filelist[count].Marked)
+		{
+			item->setMarked(true);
+		}
+
+		// iconName
+		std::string fileicon = "";
+
+		switch(filelist[count].getType())
+		{
+			case CFile::FILE_AUDIO:
+				fileicon = NEUTRINO_ICON_MP3;
+				break;
+
+			case CFile::FILE_DIR:
+				fileicon = NEUTRINO_ICON_FOLDER;
+				break;
+
+			case CFile::FILE_PICTURE:
+				fileicon = NEUTRINO_ICON_PICTURE;
+				break;
+				
+			case CFile::FILE_VIDEO:
+				fileicon = NEUTRINO_ICON_MOVIE;
+				break;
+					
+			case CFile::FILE_TEXT:
+			default:
+				fileicon = NEUTRINO_ICON_FILE;
+		}
+
+		item->setIconName(fileicon.c_str());
+
+		std::string tmp;
+
+		//
+		if( S_ISREG(filelist[count].Mode) )
+		{
+			if (g_settings.filebrowser_showrights != 0)
+			{
+				const char * attribute = "xwr";
+				char modestring[9 + 1];
+
+				for (int m = 8; m >= 0; m--)
+				{
+					modestring[8 - m] = (filelist[count].Mode & (1 << m)) ? attribute[m % 3] : '-';
+				}
+
+				modestring[9] = 0;
+
+				tmp = modestring;
+			}
+
+#define GIGABYTE 1073741824LL
+#define MEGABYTE 1048576LL
+#define KILOBYTE 1024LL
+			char tmpstr[256];
+			const char *unit = "";
+			long long factor = 0;
+
+			if (filelist[count].Size >= GIGABYTE)
+			{
+				factor = GIGABYTE;
+				unit = "G";
+			}
+			else if (filelist[count].Size >= MEGABYTE)
+			{
+				factor = MEGABYTE;
+				unit = "M";
+			}
+			else if (filelist[count].Size >= KILOBYTE)
+			{
+				factor = KILOBYTE;
+				unit = "k";
+			}
+
+			if (factor)
+			{
+				int a = filelist[count].Size / factor;
+				int b = (filelist[count].Size - a * factor) * 1000 / factor;
+				snprintf(tmpstr, sizeof(tmpstr), "%d.%03d%s", a, b, unit);
+			}
+			else
+				snprintf(tmpstr,sizeof(tmpstr),"%d", (int)filelist[count].Size);
+
+			tmp += " ";
+			tmp += tmpstr;
+
+			if( S_ISDIR(filelist[count].Mode) )
+			{
+				char timestring[18];
+				time_t rawtime;
+
+				rawtime = filelist[count].Time;
+				strftime(timestring, 18, "%d-%m-%Y %H:%M", gmtime(&rawtime));
+
+				tmp = timestring;
+			}
+		}
+
+		item->setOptionInfo(tmp.c_str()); 
+
+		listBox->addItem(item);
+	}
+
+	char l_name[100];
+	snprintf(l_name, sizeof(l_name), "%s %s", g_Locale->getText(LOCALE_FILEBROWSER_HEAD), FILESYSTEM_ENCODING_TO_UTF8(std::string(name).c_str())); // UTF-8
+
+	listBox->setTitle(l_name);
+	listBox->enablePaintHead();
+	listBox->enablePaintDate();
+	listBox->setHeaderButtons(HButtons, 2);
 
 	// foot
-	frameBuffer->paintBoxRel(x, y + height - foheight, width, foheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+	listBox->enablePaintFoot();
 
-	if (!(filelist.empty()))
-	{
-		int by = y + height - foheight;
+	struct button_label Button[4];
+	Button[0] = FileBrowserButtons[0];
+	Button[1] = FileBrowserButtons[1];
 
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, by, dx, Multi_Select ? 3 : 2, FileBrowserButtons, foheight/1);
+	Button[2].button = Multi_Select? NEUTRINO_ICON_BUTTON_YELLOW : NULL;
+	Button[2].locale = Multi_Select?LOCALE_FILEBROWSER_MARK : NONEXISTANT_LOCALE;
+	Button[2].localename = NULL;
 
-		if(Filter != NULL)
-			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + (3 * dx), by, dx, 1, &(FileBrowserFilterButton[use_filter? 0 : 1]), foheight/1);
+	Button[3].button = NEUTRINO_ICON_BUTTON_BLUE;
+	Button[3].locale = use_filter?LOCALE_FILEBROWSER_FILTER_INACTIVE : LOCALE_FILEBROWSER_FILTER_ACTIVE;
+	Button[3].localename = NULL;
 
-		//FIXME:?
-		/*
-		int by2 = y + height - foheight + foheight/2;
-		if(m_SMSKeyInput.getOldKey() != 0)
-		{
-			char cKey[2] = {m_SMSKeyInput.getOldKey(), 0};
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 16, by2 , 16, cKey, COL_MENUHEAD, 0, true); // UTF-8
-	
-			frameBuffer->blit();	
-		}
-		*/
-	}
-}
+	listBox->setFooterButtons(Button, 4);
 
-void CFileBrowser::paint()
-{
-	liststart = (selected/listmaxshow)*listmaxshow;
-
-	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_FILEBROWSER_HEAD));	
-
-	// paint items
-	for(unsigned int count = 0; count < listmaxshow; count++)
-		paintItem(count);
-
-	int ypos = y + theight;
-	int sb = fheight* listmaxshow;
-	frameBuffer->paintBoxRel(x + width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
-
-	int sbc= ((filelist.size() - 1)/ listmaxshow) + 1;
-	int sbs= (selected/listmaxshow);
-
-	// scroll bar
-	frameBuffer->paintBoxRel(x + width - (SCROLLBAR_WIDTH - 2), ypos + 2 + sbs*(sb - 4)/sbc, 11, (sb - 4)/sbc, COL_MENUCONTENT_PLUS_3 );
+	//
+	listBox->setSelected(selected);
+	listBox->paint(reinit);
 }
 
 void CFileBrowser::SMSInput(const neutrino_msg_t msg)
@@ -982,21 +856,9 @@ void CFileBrowser::SMSInput(const neutrino_msg_t msg)
 			break;
 		}
 	}
-	
-	int prevselected = selected;
-	selected = i;
-	paintItem(prevselected - liststart);
-	unsigned int oldliststart = liststart;
-	liststart = (selected/listmaxshow)*listmaxshow;
-	
-	if(oldliststart!=liststart)
-	{
-		paint();
-	}
-	else
-	{
-		paintItem(selected - liststart);
-	}
+
+	listBox->clearItems();
+	paint(false);
 }
 
 void CFileBrowser::recursiveDelete(const char *file)

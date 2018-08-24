@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: filebrowser.h 2013/10/12 mohousch Exp $
+	$Id: filebrowser.h 2018/08/24 mohousch Exp $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -48,6 +48,7 @@
 #include <gui/infoviewer.h>
 
 #include <gui/widget/menue.h>
+#include <gui/widget/listbox.h>
 
 #include <system/settings.h>
 
@@ -61,6 +62,9 @@ class CFileBrowser
 {
 	private:
 		CFrameBuffer * frameBuffer;
+		CBox cFrameBox;
+		ClistBoxEntry* listBox;
+		CMenuItem* item;
 
 		CFileList selected_filelist;
 		CFileList filelist;
@@ -77,31 +81,41 @@ class CFileBrowser
 		void SMSInput(const neutrino_msg_t msg);
 
 		unsigned int selected;
+
+/*
 		unsigned int liststart;
 		unsigned int listmaxshow;
+*/
+
 		std::vector<unsigned int> selections;
 
+/*
 		int fheight;	// Fonthoehe Filelist-Inhalt
 		int theight;	// Fonthoehe Filelist-Titel
 		int foheight;	// Hoehe der button leiste
+*/
 		
 		std::string name;
 		std::string base;
 		
+/*
 		int width;
 		int height;
+*/
 		
 		bool bCancel;
 
+/*
 		int x;
 		int y;
+*/
 
 		SMSKeyInput m_SMSKeyInput;
 
-		void paintItem(unsigned pos);
-		void paint();
-		void paintHead();
-		void paintFoot();
+		//void paintItem(unsigned pos);
+		void paint(bool reinit = true);
+		//void paintHead();
+		//void paintFoot();
 		void recursiveDelete(const char* file);
 		void hide();
 

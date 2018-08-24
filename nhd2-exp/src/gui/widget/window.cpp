@@ -85,23 +85,23 @@ void CWindow::init(void)
 
 void CWindow::saveScreen()
 {
-	full_width = enableshadow? cFrameBox.iWidth + 4 : cFrameBox.iWidth;
-	full_height = enableshadow? cFrameBox.iHeight + 4 : cFrameBox.iHeight;
+	full_width = enableshadow? cFrameBox.iWidth + 2 : cFrameBox.iWidth;
+	full_height = enableshadow? cFrameBox.iHeight + 2 : cFrameBox.iHeight;
 
 	background = new fb_pixel_t[full_width*full_height];
 	
 	if(background)
-		frameBuffer->saveScreen(enableshadow? cFrameBox.iX - 2 : cFrameBox.iX, enableshadow? cFrameBox.iY - 2 : cFrameBox.iY, full_width, full_height, background);
+		frameBuffer->saveScreen(enableshadow? cFrameBox.iX - 1 : cFrameBox.iX, enableshadow? cFrameBox.iY - 1 : cFrameBox.iY, full_width, full_height, background);
 }
 
 void CWindow::restoreScreen()
 {
-	full_width = enableshadow? cFrameBox.iWidth + 4 : cFrameBox.iWidth;
-	full_height = enableshadow? cFrameBox.iHeight + 4 : cFrameBox.iHeight;
+	full_width = enableshadow? cFrameBox.iWidth + 2 : cFrameBox.iWidth;
+	full_height = enableshadow? cFrameBox.iHeight + 2 : cFrameBox.iHeight;
 
 	if(background) 
 	{
-		frameBuffer->restoreScreen(enableshadow? cFrameBox.iX - 2 : cFrameBox.iX, enableshadow? cFrameBox.iY - 2 : cFrameBox.iY, full_width, full_height, background);
+		frameBuffer->restoreScreen(enableshadow? cFrameBox.iX - 1 : cFrameBox.iX, enableshadow? cFrameBox.iY - 1 : cFrameBox.iY, full_width, full_height, background);
 	}
 
 	delete[] background;
@@ -132,7 +132,7 @@ void CWindow::paint()
 
 	// shadow Box
 	if(enableshadow)
-		frameBuffer->paintBoxRel(cFrameBox.iX - 2, cFrameBox.iY - 2, cFrameBox.iWidth + 4, cFrameBox.iHeight + 4, COL_MENUCONTENT_PLUS_6);
+		frameBuffer->paintBoxRel(cFrameBox.iX - 1, cFrameBox.iY - 1, cFrameBox.iWidth + 2, cFrameBox.iHeight + 2, COL_MENUCONTENT_PLUS_6);
 
 	// window Box
 	frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, bgcolor, enableshadow? NO_RADIUS : radius, enableshadow? CORNER_NONE : corner, gradient);
@@ -143,7 +143,7 @@ void CWindow::hide()
 	if( savescreen && background)
 		restoreScreen();
 	else
-		frameBuffer->paintBackgroundBoxRel(enableshadow?cFrameBox.iX - 2 : cFrameBox.iX, enableshadow?cFrameBox.iY - 2 : cFrameBox.iY, full_width, full_height);
+		frameBuffer->paintBackgroundBoxRel(enableshadow?cFrameBox.iX - 1 : cFrameBox.iX, enableshadow?cFrameBox.iY - 1 : cFrameBox.iY, full_width, full_height);
 }
 
 

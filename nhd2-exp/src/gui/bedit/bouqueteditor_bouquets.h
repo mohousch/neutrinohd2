@@ -45,18 +45,6 @@
 #include <string>
 #include <gui/widget/listbox.h>
 
-/* class for handling when bouquets changed.                  */
-/* This class should be a temporarily work around             */
-/* and should be replaced by standard neutrino event handlers */
-/* (libevent) */
-#if 0
-class CBouquetEditorEvents
-{
-	public:
-		virtual void onBouquetsChanged() {};
-		virtual ~CBouquetEditorEvents() {};
-};
-#endif
 
 class CBEBouquetWidget : public CMenuWidget
 {

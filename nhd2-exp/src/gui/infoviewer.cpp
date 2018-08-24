@@ -332,7 +332,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 	}
 	
 	// infobar shadow
-	frameBuffer->paintBoxRel(BoxStartX - 2, BoxStartY - 2, BoxWidth + 4, BoxHeight + buttonBarHeight + 4, COL_MENUCONTENT_PLUS_6);
+	frameBuffer->paintBoxRel(BoxStartX - 1, BoxStartY - 1, BoxWidth + 2, BoxHeight + buttonBarHeight + 2, COL_MENUCONTENT_PLUS_6);
 	
 	// infobarbox
 	frameBuffer->paintBoxRel(BoxStartX, BoxStartY, BoxWidth, BoxHeight, COL_INFOBAR_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.infobar_gradient);
@@ -436,7 +436,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 	showRecordIcon(show_dot);
 		
 	// botton bar
-	frameBuffer->paintBoxRel(buttonBarStartX, buttonBarStartY, BoxWidth, buttonBarHeight, COL_INFOBAR_BUTTONS_BACKGROUND, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(buttonBarStartX, buttonBarStartY, BoxWidth, buttonBarHeight, COL_INFOBAR_BUTTONS_BACKGROUND, NO_RADIUS, CORNER_NONE);
 
 	// blue button
 	// features
@@ -1109,9 +1109,9 @@ void CInfoViewer::showRadiotext()
 					sprintf(stext[0], g_Radiotext->RT_PTY == 0 ? "%s %s%s" : "%s (%s)%s", tr("Radiotext"), g_Radiotext->RT_PTY == 0 ? g_Radiotext->RDS_PTYN : g_Radiotext->ptynr2string(g_Radiotext->RT_PTY), ":");
 					
 					// shadow
-					//frameBuffer->paintBoxRel(rt_x + SHADOW_OFFSET, rt_y + SHADOW_OFFSET, rt_dx, rt_dy, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);
+					frameBuffer->paintBoxRel(rt_x, rt_y, rt_dx, rt_dy, COL_MENUCONTENT_PLUS_6, RADIUS_MID, CORNER_TOP);
 
-					frameBuffer->paintBoxRel(rt_x, rt_y, rt_dx, rt_dy, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_TOP);
+					frameBuffer->paintBoxRel(rt_x + 1, rt_y + 1, rt_dx - 2, rt_dy - 2, COL_INFOBAR_PLUS_0, NO_RADIUS, CORNER_NONE);
 					g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(rt_x + 10, rt_y + 30, rt_dx - 20, stext[0], COL_INFOBAR, 0, RTisIsUTF); // UTF-8
 				}
 				yoff = 17;
@@ -1121,9 +1121,9 @@ void CInfoViewer::showRadiotext()
 			// Body
 			if (lines) 
 			{
-				//frameBuffer->paintBoxRel(rt_x + SHADOW_OFFSET, rt_y+rt_dy+SHADOW_OFFSET, rt_dx, 7+rt_dy* g_Radiotext->S_RtOsdRows, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+				frameBuffer->paintBoxRel(rt_x, rt_y+rt_dy, rt_dx, 7 + rt_dy* g_Radiotext->S_RtOsdRows, COL_MENUCONTENT_PLUS_6, NO_RADIUS, CORNER_NONE);
 
-				frameBuffer->paintBoxRel(rt_x, rt_y+rt_dy, rt_dx, 7+rt_dy* g_Radiotext->S_RtOsdRows, COL_INFOBAR_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+				frameBuffer->paintBoxRel(rt_x + 1, rt_y + rt_dy + 1, rt_dx - 2, 7 + rt_dy* g_Radiotext->S_RtOsdRows - 2, COL_INFOBAR_PLUS_0, NO_RADIUS, CORNER_NONE);
 
 				// RT-Text roundloop
 				int ind = (g_Radiotext->RT_Index == 0) ? g_Radiotext->S_RtOsdRows - 1 : g_Radiotext->RT_Index - 1;
@@ -1783,7 +1783,7 @@ void CInfoViewer::killTitle()
 	{
 		is_visible = false;
 
-		frameBuffer->paintBackgroundBox(BoxStartX - 2, BoxStartY - 30 - 2, BoxEndX + 2, buttonBarStartY + buttonBarHeight + 2);
+		frameBuffer->paintBackgroundBox(BoxStartX - 1, BoxStartY - 30 - 1, BoxEndX + 1, buttonBarStartY + buttonBarHeight + 1);
 
 		// hide radiotext	
 		if (g_settings.radiotext_enable && g_Radiotext) 

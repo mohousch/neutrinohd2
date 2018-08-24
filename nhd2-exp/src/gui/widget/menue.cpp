@@ -99,6 +99,8 @@ CMenuItem::CMenuItem()
 	//
 	nLinesItem = false;
 	widgetType = WIDGET_STANDARD;
+
+	marked = false;
 }
 
 void CMenuItem::init(const int X, const int Y, const int DX, const int OFFX)
@@ -112,6 +114,14 @@ void CMenuItem::init(const int X, const int Y, const int DX, const int OFFX)
 void CMenuItem::setActive(const bool Active)
 {
 	active = Active;
+	
+	if (x != -1)
+		paint();
+}
+
+void CMenuItem::setMarked(const bool Marked)
+{
+	marked = Marked;
 	
 	if (x != -1)
 		paint();
