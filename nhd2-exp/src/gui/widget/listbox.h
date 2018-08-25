@@ -95,8 +95,7 @@ class ClistBoxEntry
 		virtual void paintItemInfo(int pos);
 		virtual void hideItemInfo();
 		void enablePaintDate(void){paintDate = true;};
-		void setIcon(const char* icon){iconfile = icon;};
-		void setTitle(const char* title){l_name = title;};
+		void setTitle(const char* title, const char* icon = NULL){l_name = title; iconfile = icon;};
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count, const int _fbutton_width = 0);
 		void enablePaintHead(){paintTitle = true;};

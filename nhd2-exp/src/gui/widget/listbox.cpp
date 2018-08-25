@@ -138,7 +138,8 @@ void ClistBoxEntry::initFrames()
 
 	if(paintTitle)
 	{
-		frameBuffer->getIconSize(iconfile.c_str(), &iw, &ih);
+		if(!iconfile.empty())
+			frameBuffer->getIconSize(iconfile.c_str(), &iw, &ih);
 		hheight = std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
 	}
 	

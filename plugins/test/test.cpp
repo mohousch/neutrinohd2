@@ -1120,8 +1120,7 @@ void CTestMenu::testClistBoxEntry()
 		listBox->addItem(item);
 	}
 
-	listBox->setTitle("ClistBoxEntry");
-	listBox->setIcon(NEUTRINO_ICON_MP3);
+	listBox->setTitle("ClistBoxEntry", NEUTRINO_ICON_MP3);
 	listBox->enablePaintHead();
 	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
 	listBox->enablePaintDate();
