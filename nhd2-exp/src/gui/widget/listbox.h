@@ -75,7 +75,6 @@ class ClistBoxEntry
 		bool paint_Foot;
 		bool paintFootInfo;
 
-		virtual void initFrames();
 		virtual void paintItems();
 
 	public:
@@ -88,6 +87,7 @@ class ClistBoxEntry
 		void clearItems(void){items.clear();};
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
 
+		virtual void initFrames();
 		virtual void paint(bool reinit = true);
 		virtual void hide();
 		virtual void paintHead();
@@ -95,7 +95,7 @@ class ClistBoxEntry
 		virtual void paintItemInfo(int pos);
 		virtual void hideItemInfo();
 		void enablePaintDate(void){paintDate = true;};
-		void setTitle(const char* title, const char* icon = NULL){l_name = title; iconfile = icon;};
+		void setTitle(const char* title = "", const char* icon = NULL){l_name = title; if(icon != NULL) iconfile = icon;};
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count, const int _fbutton_width = 0);
 		void enablePaintHead(){paintTitle = true;};

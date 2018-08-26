@@ -101,14 +101,18 @@ class CUpnpBrowserGui : public CMenuTarget
 
 		CFrameBuffer * m_frameBuffer;
 
+/*
 		ClistBox* ulist;
 		ClistBox* elist;
+*/
+		CBox cFrameBox;
+		ClistBoxEntry* listBox;
 		CMenuItem* item;
+		uint32_t sec_timer_id;
 
 		UPNP_GUI gui;
 
 		unsigned int selected;
-		//int m_playid;
 		std::string thumbnail_dir;
 		CFileHelpers fileHelper;
 
@@ -122,6 +126,7 @@ class CUpnpBrowserGui : public CMenuTarget
 		void splitProtocol(std::string &protocol, std::string &prot, std::string &network, std::string &mime, std::string &additional);
 
 		bool loadItem(std::string);
+		bool selectItem(std::string);
 		void loadDevices();
 
 		void showMenuDevice();

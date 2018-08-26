@@ -153,7 +153,7 @@ int CStreamInfo2::doSignalStrengthLoop()
 	snrscale = new CProgressBar(BAR_WIDTH, BAR_HEIGHT, RED_BAR, GREEN_BAR, YELLOW_BAR);
 
 	neutrino_msg_t msg;
-	unsigned long long maxb, minb, lastb, tmp_rate;
+	uint64_t maxb, minb, lastb, tmp_rate;
 	int cnt = 0,i=0;
 	uint16_t ssig, ssnr;
 	uint32_t  ber;
@@ -179,7 +179,7 @@ int CStreamInfo2::doSignalStrengthLoop()
 	{
 		neutrino_msg_data_t data;
 
-		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd_MS (100);
+		uint64_t timeoutEnd = CRCInput::calcTimeoutEnd_MS (100);
 		g_RCInput->getMsgAbsoluteTimeout (&msg, &data, &timeoutEnd);
 
 		if(live_fe != NULL)
@@ -804,7 +804,7 @@ long delta_time_ms (struct timeval *tv, struct timeval *last_tv)
 	return timeval_to_ms (tv) - timeval_to_ms (last_tv);
 }
 
-unsigned long long b_total;
+uint64_t b_total;
 
 int CStreamInfo2::ts_setup()
 {
@@ -883,15 +883,15 @@ int CStreamInfo2::update_rate()
 	if (d_tim_ms <= 0)
 		d_tim_ms = 1;			//  ignore usecs 
 
-	bit_s = (((unsigned long long) b * 8000ULL) + ((unsigned long long) d_tim_ms / 2ULL))
-		/ (unsigned long long) d_tim_ms;
+	bit_s = (((uint64_t) b * 8000ULL) + ((uint64_t) d_tim_ms / 2ULL))
+		/ (uint64_t) d_tim_ms;
 
 	d_tim_ms = delta_time_ms (&tv, &first_tv);
 	if (d_tim_ms <= 0)
 		d_tim_ms = 1;			//  ignore usecs 
 
-	abit_s = ((b_total * 8000ULL) + ((unsigned long long) d_tim_ms / 2ULL))
-		/ (unsigned long long) d_tim_ms;
+	abit_s = ((b_total * 8000ULL) + ((uint64_t) d_tim_ms / 2ULL))
+		/ (uint64_t) d_tim_ms;
 
 	last_tv.tv_sec = tv.tv_sec;
 	last_tv.tv_usec = tv.tv_usec;

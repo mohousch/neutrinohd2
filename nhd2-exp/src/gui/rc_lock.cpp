@@ -67,7 +67,7 @@ void CRCLock::lockBox()
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	unsigned long long timeoutEnd;
+	uint64_t timeoutEnd;
 
 	// -- Loop until release key pressed
 	// -- Key sequence:  <RED> <DBOX> within 5 secs

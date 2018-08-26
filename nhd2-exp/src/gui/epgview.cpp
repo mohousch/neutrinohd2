@@ -562,12 +562,12 @@ void CEpgData::showHead(const t_channel_id channel_id)
 	}
 }
 
-int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_t * a_startzeit, bool doLoop )
+int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_startzeit, bool doLoop )
 {
 	dprintf(DEBUG_NORMAL, "CEpgData::show: %llx\n", channel_id);
 
 	int res = menu_return::RETURN_REPAINT;
-	static unsigned long long id;
+	static uint64_t id;
 	static time_t startzeit;
 	 
 	if(a_startzeit)
@@ -790,7 +790,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 
 		bool loop = true;
 
-		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
+		uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
 
 		while(loop)
 		{
@@ -1020,7 +1020,7 @@ void CEpgData::hide()
 bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData * epgdata);
 bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGData * epgdata);
 
-void CEpgData::GetEPGData(const t_channel_id channel_id, unsigned long long id, time_t* startzeit, bool clear)
+void CEpgData::GetEPGData(const t_channel_id channel_id, uint64_t id, time_t* startzeit, bool clear)
 {
 	dprintf(DEBUG_NORMAL, "channel_id:%llx\n", channel_id);
 
@@ -1076,7 +1076,7 @@ void CEpgData::GetEPGData(const t_channel_id channel_id, unsigned long long id, 
 	}
 }
 
-void CEpgData::GetPrevNextEPGData( unsigned long long id, time_t* startzeit )
+void CEpgData::GetPrevNextEPGData(uint64_t id, time_t* startzeit)
 {
         prev_id = 0;
         next_id = 0;

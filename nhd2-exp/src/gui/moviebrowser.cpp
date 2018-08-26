@@ -1193,7 +1193,7 @@ int CMovieBrowser::exec(const char * path)
 	if ( timeout == -1 )
 		timeout = g_settings.timing[SNeutrinoSettings::TIMING_FILEBROWSER];
 
-	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd( timeout );
+	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd( timeout );
 
 	// remount
 	if(m_settings.remount == true)

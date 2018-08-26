@@ -371,7 +371,7 @@ int CBouquetList::show(bool bShowChannelList)
 	unsigned int chn = 0;
 	int pos = maxpos1;
 
-	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
+	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	
 	int mode = CNeutrinoApp::getInstance()->getMode();
 

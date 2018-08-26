@@ -1217,7 +1217,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 	frameBuffer->blit();
 
 	int retval = menu_return::RETURN_REPAINT;
-	unsigned long long int timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
+	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
 
 	//control loop
 	do {
@@ -3605,7 +3605,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 	int retval = menu_return::RETURN_REPAINT;
-	unsigned long long int timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
+	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
 
 	//control loop
 	do {

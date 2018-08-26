@@ -308,10 +308,6 @@ void CFileBrowser::ChangeDir(const std::string& filename, int selection)
 	selected = 0;
 	if ((selection != -1) && (selection < (int)filelist.size()))
 		selected = selection;
-	
-	hide();
-	listBox->clearItems();
-	paint(true);
 }
 
 bool CFileBrowser::readDir(const std::string& dirname, CFileList* flist)
@@ -369,7 +365,7 @@ bool CFileBrowser::exec(const char * const dirname)
 
 	listBox = new ClistBoxEntry(&cFrameBox);
 
-	paint();
+	listBox->initFrames();
 
 	name = dirname;
 	std::replace(name.begin(), name.end(), '\\', '/');
@@ -381,11 +377,12 @@ bool CFileBrowser::exec(const char * const dirname)
 		
 	ChangeDir(name, selection);
 
+	paint();
 	frameBuffer->blit();
 
 	int oldselected = selected;
 
-	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_FILEBROWSER]);
+	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_FILEBROWSER]);
 
 	bool loop = true;
 	while (loop)
@@ -454,6 +451,9 @@ bool CFileBrowser::exec(const char * const dirname)
 					{
 						selections.push_back(selected);
 						ChangeDir(filelist[selected].Name);
+						hide();
+						listBox->clearItems();
+						paint(true);
 					}
 				}
 			}
@@ -464,10 +464,16 @@ bool CFileBrowser::exec(const char * const dirname)
 			{
 				ChangeDir("..", selections.back());
 				selections.pop_back();
+				hide();
+				listBox->clearItems();
+				paint(true);
 			} 
 			else
 			{
 				ChangeDir("..");
+				hide();
+				listBox->clearItems();
+				paint(true);
 			}
 
 			if (!(filelist.empty()))	
@@ -483,6 +489,9 @@ bool CFileBrowser::exec(const char * const dirname)
 				use_filter = !use_filter;
 
 				ChangeDir(Path);
+				hide();
+				listBox->clearItems();
+				paint(true);
 			}
 		}
 		else if ( msg == CRCInput::RC_home )
@@ -514,7 +523,9 @@ bool CFileBrowser::exec(const char * const dirname)
 						recursiveDelete((filelist[selected].Name.substr(0,filelist[selected].Name.length()-7)+".xml").c_str());//remove bla.xml von bla.ts
 					}
 					ChangeDir(Path);
-
+					hide();
+					listBox->clearItems();
+					paint(true);
 				}
 			}
 		}
@@ -530,6 +541,9 @@ bool CFileBrowser::exec(const char * const dirname)
 					{
 						ChangeDir("..", selections.back());
 						selections.pop_back();
+						hide();
+						listBox->clearItems();
+						paint(true);
 					} 
 					else
 					{
@@ -537,6 +551,9 @@ bool CFileBrowser::exec(const char * const dirname)
 						if (pos != std::string::npos) 
 						{
 							ChangeDir("..");
+							hide();
+							listBox->clearItems();
+							paint(true);
 						}
 						else 
 						{
@@ -555,6 +572,9 @@ bool CFileBrowser::exec(const char * const dirname)
 						{
 							selections.push_back(selected);
 							ChangeDir(filelist[selected].Name);
+							hide();
+							listBox->clearItems();
+							paint(true);
 						}
 						else
 						{

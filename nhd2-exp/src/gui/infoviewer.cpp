@@ -540,7 +540,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 	bool hideIt = false;
 	virtual_zap_mode = false;
 
-	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd (g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]);
+	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd (g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]);
 
 	int res = messages_return::none;
 
@@ -820,7 +820,7 @@ void CInfoViewer::showSubchan()
 		
 		frameBuffer->blit();	
 
-		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(2);
+		uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(2);
 		int res = messages_return::none;
 
 		neutrino_msg_t msg;

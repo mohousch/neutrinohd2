@@ -73,6 +73,9 @@ ClistBoxEntry::ClistBoxEntry(const int x, const int y, const int dx, const int d
 	paint_Foot = false;
 	paintFootInfo = false;
 
+	l_name = "";
+	iconfile = "";
+
 	initFrames();
 }
 
@@ -100,6 +103,9 @@ ClistBoxEntry::ClistBoxEntry(CBox* position)
 	paintTitle = false;
 	paint_Foot = false;
 	paintFootInfo = false;
+
+	l_name = "";
+	iconfile = "";
 
 	initFrames();
 }

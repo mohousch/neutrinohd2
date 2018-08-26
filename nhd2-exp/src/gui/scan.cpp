@@ -289,7 +289,7 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 	{
 		paintRadar();
 
-		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd_MS( 250 );
+		uint64_t timeoutEnd = CRCInput::calcTimeoutEnd_MS( 250 );
 
 		do {
 			g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
@@ -350,7 +350,7 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 			
 		frameBuffer->blit();		
 	
-		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(0xFFFF);
+		uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(0xFFFF);
 
 		do {
 			g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);

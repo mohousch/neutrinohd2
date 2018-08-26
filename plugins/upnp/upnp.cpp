@@ -113,14 +113,22 @@ CUpnpBrowserGui::CUpnpBrowserGui(UPNP_GUI g)
 
 	thumbnail_dir = "/tmp/upnpbrowser";
 
-	ulist = NULL;
-	elist = NULL;
+	//ulist = NULL;
+	//elist = NULL;
+	listBox = NULL;
 	item = NULL;
 
 	selected = 0;
 	gui = g;
 
 	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
+
+	// box	
+	cFrameBox.iWidth = w_max ( (m_frameBuffer->getScreenWidth() / 20 * 17), (m_frameBuffer->getScreenWidth() / 20 ));
+	cFrameBox.iHeight = h_max ( (m_frameBuffer->getScreenHeight() / 20 * 18), (m_frameBuffer->getScreenHeight() / 20));
+	
+	cFrameBox.iX = m_frameBuffer->getScreenX() + (m_frameBuffer->getScreenWidth() - cFrameBox.iWidth) / 2;
+	cFrameBox.iY = m_frameBuffer->getScreenY() + (m_frameBuffer->getScreenHeight() - cFrameBox.iHeight) / 2;
 }
 
 CUpnpBrowserGui::~CUpnpBrowserGui()
@@ -133,8 +141,11 @@ CUpnpBrowserGui::~CUpnpBrowserGui()
 
 void CUpnpBrowserGui::hide()
 {
+/*
 	m_frameBuffer->clearFrameBuffer();
 	m_frameBuffer->blit();
+*/
+	listBox->hide();
 }
 
 void CUpnpBrowserGui::splitProtocol(std::string &protocol, std::string &prot, std::string &network, std::string &mime, std::string &additional)
@@ -438,6 +449,243 @@ bool CUpnpBrowserGui::loadItem(std::string id)
 		delete entries;
 		return false;
 	}
+
+	listBox->clearItems();
+	showMenuEntry();
+
+	//
+	neutrino_msg_t      msg;
+	neutrino_msg_data_t data;
+
+	bool loop = true;
+
+	while (loop)
+	{
+		//listBox->clearItems();
+		//showMenuEntry();
+
+		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
+		//neutrino_msg_t msg_repeatok = msg & ~CRCInput::RC_Repeat;
+
+		if( msg == CRCInput::RC_timeout)
+		{
+			// nothing
+		}
+		else if(msg == CRCInput::RC_home)
+		{
+			loop = false;
+			//endall = true;
+		}
+		else if(msg == CRCInput::RC_left)
+		{
+			loop = false;
+		}
+		else if (msg == CRCInput::RC_up /*&& selected > 0*/)
+		{
+/*
+			selected--;
+			if (selected < index)
+			{
+				index -= m_listmaxshow;
+				rchanged = true;
+			}
+*/
+			//selected--;
+			//if(selected < 0)
+			//	selected = 0;
+			listBox->scrollLineUp();
+			//rchanged = true;
+		}
+
+		else if( (msg == CRCInput::RC_yellow || (int) msg == CRCInput::RC_page_up) /*&& selected > 0*/)
+		{
+/*
+			if (index > 0)
+			{
+				index -= m_listmaxshow;
+				selected -= m_listmaxshow;
+				rchanged=true;
+			}
+			else
+				selected=0;
+*/
+			listBox->scrollPageUp();
+			//rchanged = true;
+			//changed = true;
+		}
+		else if (msg == CRCInput::RC_down /*&& selected + 1 < dirnum*/)
+		{
+/*
+			selected++;
+			if (selected + 1 > index + m_listmaxshow)
+			{
+				index += m_listmaxshow;
+				rchanged = true;
+			}
+*/
+			//selected++;
+			//	if(selected > listBox->getItemsCount())
+			//		selected = 0;
+			listBox->scrollLineDown();
+			//rchanged = true;
+			//changed = true;
+		}
+		else if( (msg == CRCInput::RC_green || (int) msg == CRCInput::RC_page_down) /*&& selected + 1 < dirnum*/)
+		{
+/*
+			if (index < ((dirnum - 1) / m_listmaxshow) * m_listmaxshow)
+			{
+				index += m_listmaxshow;
+				selected += m_listmaxshow;
+				if (selected + 1 >= dirnum)
+					selected = dirnum - 1;
+				rchanged = true;
+			}
+			else
+				selected = dirnum - 1;
+*/
+			listBox->scrollPageDown();
+			//rchanged = true;
+		}
+		else if(msg == CRCInput::RC_right)
+		{
+			selected = listBox->getSelected();
+
+			if ((*entries)[selected - index].isdir)
+			{
+				bool endall = loadItem((*entries)[selected - index].id);
+				if (endall)
+					loop = false;
+			}
+			//changed = true;
+		}
+		else if(msg == CRCInput::RC_red || msg == CRCInput::RC_ok)
+		{
+			selected = listBox->getSelected();
+
+			if (!(*entries)[selected - index].isdir)
+			{
+				int preferred = (*entries)[selected - index].preferred;
+				if (preferred != -1)
+				{
+					std::string protocol, prot, network, mime, additional;
+					protocol=(*entries)[selected - index].resources[preferred].protocol;
+					splitProtocol(protocol, prot, network, mime, additional);
+					
+					if (mime == "audio/mpeg")
+					{
+						//CAudioPlayerGui tmpAudioPlayerGui;
+			
+						CAudiofile audiofile((*entries)[selected - index].resources[preferred].url, CFile::EXTENSION_MP3);
+						tmpAudioPlayerGui.addToPlaylist(audiofile);
+						//tmpAudioPlayerGui.hidePlayList(true);
+						tmpAudioPlayerGui.exec(this, "urlplayback");
+					}
+					else if ((mime == "image/gif") || (mime == "image/jpeg"))
+					{
+						//CPictureViewerGui tmpPictureViewerGui;
+
+						std::string fname;
+
+						//DownloadImage
+						if(!((*entries)[selected - index].resources[preferred].url).empty())
+						{
+							fname = thumbnail_dir;
+
+							fname += (*entries)[selected - index].resources[preferred].url.substr((*entries)[selected - index].resources[preferred].url.find_last_of("/"));
+
+							int ext_pos = 0;
+							ext_pos = fname.rfind('?');
+	
+							if( ext_pos > 0)
+							{
+								std::string extension;
+								extension = fname.substr(ext_pos + 1, fname.length() - ext_pos);
+
+								fname = fname.substr(0, fname.length() - (extension.length() + 1));
+							}
+
+							::downloadUrl((*entries)[selected - index].resources[preferred].url, fname);
+						}
+					
+						//
+						CPicture pic;
+						struct stat statbuf;
+				
+						pic.Filename = fname;
+						std::string tmp = fname.substr(fname.rfind('/') + 1);
+						pic.Name = tmp.substr(0, tmp.rfind('.'));
+						pic.Type = tmp.substr(tmp.rfind('.') + 1);
+			
+						if(stat(pic.Filename.c_str(), &statbuf) != 0)
+							printf("stat error");
+						pic.Date = statbuf.st_mtime;
+				
+						tmpPictureViewerGui.addToPlaylist(pic);
+						tmpPictureViewerGui.exec(this, "urlplayback");
+
+						//changed = true;
+					}
+
+					else if (mime.substr(0,6) == "video/")
+					{
+						MI_MOVIE_INFO mfile;
+						mfile.file.Name = (*entries)[selected - index].resources[preferred].url.c_str(); 
+						mfile.epgTitle = (*entries)[selected - index].title;
+						mfile.ytid = "upnp"; 
+						
+						//CMoviePlayerGui tmpMoviePlayerGui;
+						tmpMoviePlayerGui.addToPlaylist(mfile);
+						tmpMoviePlayerGui.exec(this, "urlplayback");
+						
+						//changed = true;
+					}
+					
+					//m_playing_entry = (*entries)[selected - index];
+				}
+
+			}
+/* 
+			else 
+			{
+				m_playfolder = (*entries)[selected - index].id;
+				m_playid = 0;
+				handleFolder();
+			}
+*/
+			
+			//changed = true;
+		}
+		else if(msg == NeutrinoMessages::RECORD_START ||
+			msg == NeutrinoMessages::ZAPTO ||
+			msg == NeutrinoMessages::STANDBY_ON ||
+			msg == NeutrinoMessages::SHUTDOWN ||
+			msg == NeutrinoMessages::SLEEPTIMER)
+		{
+			loop = false;
+			g_RCInput->postMsg(msg, data);
+		}
+		else if(msg == NeutrinoMessages::EVT_TIMER)
+		{
+			CNeutrinoApp::getInstance()->handleMsg( msg, data );
+		}
+		else
+		{
+			if( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
+				loop = false;
+			//changed = true;
+		}
+								
+		m_frameBuffer->blit();	
+	}
+	
+	//if (entries)
+	//	delete entries;
+	
+	hide();
+	
+	//return endall;
+	//
 	
 	return true;
 }
@@ -468,10 +716,10 @@ void CUpnpBrowserGui::showMenuDevice()
 {
 	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::showMenuDevice:\n");
 
-	selected = 0;
+	//selected = 0;
 
 	// new
-	ulist = new ClistBox(LOCALE_UPNPBROWSER_HEAD, NEUTRINO_ICON_UPNP, w_max ( (m_frameBuffer->getScreenWidth() / 20 * 17), (m_frameBuffer->getScreenWidth() / 20 )), h_max ( (m_frameBuffer->getScreenHeight() / 20 * 16), (m_frameBuffer->getScreenHeight() / 20)));
+	//ulist = new ClistBox(LOCALE_UPNPBROWSER_HEAD, NEUTRINO_ICON_UPNP, w_max ( (m_frameBuffer->getScreenWidth() / 20 * 17), (m_frameBuffer->getScreenWidth() / 20 )), h_max ( (m_frameBuffer->getScreenHeight() / 20 * 16), (m_frameBuffer->getScreenHeight() / 20)));
 
 	// add items
 	for(unsigned int i = 0; i < m_devices.size(); i++)
@@ -490,10 +738,11 @@ void CUpnpBrowserGui::showMenuDevice()
 		item->setInfo2(m_devices[i].modeldescription.c_str());
 		item->setOptionInfo2(m_devices[i].modelnumber.c_str());
 
-		ulist->addItem(item);
+		//ulist->addItem(item);
+		listBox->addItem(item);
 	}
 	
-	//
+	/*
 	ulist->setWidgetType(WIDGET_STANDARD);
 	//ulist->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	ulist->setSelected(selected);
@@ -512,15 +761,354 @@ void CUpnpBrowserGui::showMenuDevice()
 	//list->hide();
 	delete ulist;
 	ulist = NULL;
+	*/
+
+	listBox->setTitle(g_Locale->getText(LOCALE_UPNPBROWSER_HEAD), NEUTRINO_ICON_UPNP);
+	listBox->enablePaintHead();
+	listBox->enablePaintDate();
+	listBox->enablePaintFoot();
+	listBox->setFooterButtons(&RescanButton, 1);
+
+	//
+	listBox->setSelected(selected);
+	listBox->paint(/*reinit*/);
 }
+
+bool CUpnpBrowserGui::selectItem(std::string id)
+{
+	bool loop = true;
+	bool endall = false;
+	bool changed = true;
+	bool rchanged = true;
+	neutrino_msg_t      msg;
+	neutrino_msg_data_t data;
+	std::vector<UPnPEntry> *entries;
+	unsigned int index, selected, dirnum;
+
+	index = 0;
+	selected = 0;
+	dirnum = 0;
+	entries = NULL;
+
+	while (loop)
+	{
+		if (rchanged)
+		{
+			if (entries)
+				delete entries;
+			
+			entries = NULL;
+
+			std::list<UPnPAttribute>attribs;
+			std::list<UPnPAttribute>results;
+			std::list<UPnPAttribute>::iterator i;
+			std::stringstream sindex;
+			std::stringstream scount;
+			unsigned int returned = 0;
+
+			bool rfound = false;
+			bool nfound = false;
+			bool tfound = false;
+
+			sindex << index;
+			scount << /*m_listmaxshow*/100;
+
+			attribs.push_back(UPnPAttribute("ObjectID", id));
+			attribs.push_back(UPnPAttribute("BrowseFlag", "BrowseDirectChildren"));
+			attribs.push_back(UPnPAttribute("Filter", "*"));
+			attribs.push_back(UPnPAttribute("StartingIndex", sindex.str()));
+			attribs.push_back(UPnPAttribute("RequestedCount", scount.str()));
+			attribs.push_back(UPnPAttribute("SortCriteria", ""));
+
+			results = m_devices[/*m_selecteddevice*/0].SendSOAP("urn:schemas-upnp-org:service:ContentDirectory:1", "Browse", attribs);
+
+			for (i = results.begin(); i != results.end(); i++)
+			{
+				if (i->first == "NumberReturned")
+				{
+					returned = atoi(i->second.c_str());
+					nfound = true;
+				}
+
+				if (i->first == "TotalMatches")
+				{
+					dirnum = atoi(i->second.c_str());
+					tfound = true;
+				}
+
+				if (i->first == "Result")
+				{
+					entries = decodeResult(i->second);
+					rfound = true;
+				}
+			}
+
+			if (!entries)
+				return endall;
+
+			if (!nfound || !tfound || !rfound)
+			{
+				delete entries;
+				return endall;
+			}
+
+			if (returned != entries->size())
+			{
+				delete entries;
+				return endall;
+			}
+
+			if (returned == 0)
+			{
+				delete entries;
+				return endall;
+			}
+
+			rchanged = false;
+			changed = true;
+		}
+
+		if (changed)
+		{
+			//paintItem(entries, selected - index, dirnum - index, index);
+			//listBox->clearItems();
+			//showMenuEntry();
+			changed = false;
+		}
+		
+		m_frameBuffer->blit();
+
+		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
+		neutrino_msg_t msg_repeatok = msg & ~CRCInput::RC_Repeat;
+
+		if( msg == CRCInput::RC_timeout)
+		{
+			// nothing
+		}
+		else if(msg == CRCInput::RC_home)
+		{
+			loop = false;
+			endall = true;
+		}
+		else if(msg == CRCInput::RC_left)
+		{
+			loop = false;
+		}
+		else if (msg == CRCInput::RC_up /*&& selected > 0*/)
+		{
+/*
+			selected--;
+			if (selected < index)
+			{
+				index -= m_listmaxshow;
+				rchanged = true;
+			}
+*/
+			selected--;
+			if(selected < 0)
+				selected = 0;
+			listBox->scrollLineUp();
+			rchanged = true;
+		}
+
+		else if( (msg == CRCInput::RC_yellow || (int) msg == CRCInput::RC_page_up) /*&& selected > 0*/)
+		{
+/*
+			if (index > 0)
+			{
+				index -= m_listmaxshow;
+				selected -= m_listmaxshow;
+				rchanged=true;
+			}
+			else
+				selected=0;
+*/
+			listBox->scrollPageUp();
+			rchanged = true;
+			changed = true;
+		}
+		else if (msg == CRCInput::RC_down /*&& selected + 1 < dirnum*/)
+		{
+/*
+			selected++;
+			if (selected + 1 > index + m_listmaxshow)
+			{
+				index += m_listmaxshow;
+				rchanged = true;
+			}
+*/
+			selected++;
+				if(selected > listBox->getItemsCount())
+					selected = 0;
+			listBox->scrollLineDown();
+			rchanged = true;
+			changed = true;
+		}
+		else if( (msg == CRCInput::RC_green || (int) msg == CRCInput::RC_page_down) /*&& selected + 1 < dirnum*/)
+		{
+/*
+			if (index < ((dirnum - 1) / m_listmaxshow) * m_listmaxshow)
+			{
+				index += m_listmaxshow;
+				selected += m_listmaxshow;
+				if (selected + 1 >= dirnum)
+					selected = dirnum - 1;
+				rchanged = true;
+			}
+			else
+				selected = dirnum - 1;
+*/
+			listBox->scrollPageDown();
+			rchanged = true;
+		}
+		else if(msg == CRCInput::RC_right)
+		{
+			selected = listBox->getSelected();
+
+			if ((*entries)[selected - index].isdir)
+			{
+				endall = selectItem((*entries)[selected - index].id);
+				if (endall)
+					loop = false;
+			}
+			changed = true;
+		}
+		else if(msg == CRCInput::RC_red || msg == CRCInput::RC_ok)
+		{
+			selected = listBox->getSelected();
+
+			if (!(*entries)[selected - index].isdir)
+			{
+				int preferred = (*entries)[selected - index].preferred;
+				if (preferred != -1)
+				{
+					std::string protocol, prot, network, mime, additional;
+					protocol=(*entries)[selected - index].resources[preferred].protocol;
+					splitProtocol(protocol, prot, network, mime, additional);
+					
+					if (mime == "audio/mpeg")
+					{
+						//CAudioPlayerGui tmpAudioPlayerGui;
+			
+						CAudiofile audiofile((*entries)[selected - index].resources[preferred].url, CFile::EXTENSION_MP3);
+						tmpAudioPlayerGui.addToPlaylist(audiofile);
+						//tmpAudioPlayerGui.hidePlayList(true);
+						tmpAudioPlayerGui.exec(this, "urlplayback");
+					}
+					else if ((mime == "image/gif") || (mime == "image/jpeg"))
+					{
+						//CPictureViewerGui tmpPictureViewerGui;
+
+						std::string fname;
+
+						//DownloadImage
+						if(!((*entries)[selected - index].resources[preferred].url).empty())
+						{
+							fname = thumbnail_dir;
+
+							fname += (*entries)[selected - index].resources[preferred].url.substr((*entries)[selected - index].resources[preferred].url.find_last_of("/"));
+
+							int ext_pos = 0;
+							ext_pos = fname.rfind('?');
+	
+							if( ext_pos > 0)
+							{
+								std::string extension;
+								extension = fname.substr(ext_pos + 1, fname.length() - ext_pos);
+
+								fname = fname.substr(0, fname.length() - (extension.length() + 1));
+							}
+
+							::downloadUrl((*entries)[selected - index].resources[preferred].url, fname);
+						}
+					
+						//
+						CPicture pic;
+						struct stat statbuf;
+				
+						pic.Filename = fname;
+						std::string tmp = fname.substr(fname.rfind('/') + 1);
+						pic.Name = tmp.substr(0, tmp.rfind('.'));
+						pic.Type = tmp.substr(tmp.rfind('.') + 1);
+			
+						if(stat(pic.Filename.c_str(), &statbuf) != 0)
+							printf("stat error");
+						pic.Date = statbuf.st_mtime;
+				
+						tmpPictureViewerGui.addToPlaylist(pic);
+						tmpPictureViewerGui.exec(this, "urlplayback");
+
+						changed = true;
+					}
+
+					else if (mime.substr(0,6) == "video/")
+					{
+						MI_MOVIE_INFO mfile;
+						mfile.file.Name = (*entries)[selected - index].resources[preferred].url.c_str(); 
+						mfile.epgTitle = (*entries)[selected - index].title;
+						mfile.ytid = "upnp"; 
+						
+						//CMoviePlayerGui tmpMoviePlayerGui;
+						tmpMoviePlayerGui.addToPlaylist(mfile);
+						tmpMoviePlayerGui.exec(this, "urlplayback");
+						
+						changed = true;
+					}
+					
+					//m_playing_entry = (*entries)[selected - index];
+				}
+
+			}
+/* 
+			else 
+			{
+				m_playfolder = (*entries)[selected - index].id;
+				m_playid = 0;
+				handleFolder();
+			}
+*/
+			
+			changed = true;
+		}
+		else if(msg == NeutrinoMessages::RECORD_START ||
+			msg == NeutrinoMessages::ZAPTO ||
+			msg == NeutrinoMessages::STANDBY_ON ||
+			msg == NeutrinoMessages::SHUTDOWN ||
+			msg == NeutrinoMessages::SLEEPTIMER)
+		{
+			loop = false;
+			g_RCInput->postMsg(msg, data);
+		}
+		else if(msg == NeutrinoMessages::EVT_TIMER)
+		{
+			CNeutrinoApp::getInstance()->handleMsg( msg, data );
+		}
+		else
+		{
+			if( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
+				loop = false;
+			changed = true;
+		}
+								
+		m_frameBuffer->blit();	
+	}
+	
+	if (entries)
+		delete entries;
+	
+	hide();
+	
+	return endall;
+}
+//
 
 void CUpnpBrowserGui::showMenuEntry()
 {
 	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::showMenuEntry:\n");
 
-	selected = 0;
+	//selected = 0;
 
-	elist = new ClistBox(LOCALE_UPNPBROWSER_HEAD, NEUTRINO_ICON_UPNP, w_max ( (m_frameBuffer->getScreenWidth() / 20 * 17), (m_frameBuffer->getScreenWidth() / 20 )), h_max ( (m_frameBuffer->getScreenHeight() / 20 * 16), (m_frameBuffer->getScreenHeight() / 20)));
+	//elist = new ClistBox(LOCALE_UPNPBROWSER_HEAD, NEUTRINO_ICON_UPNP, w_max ( (m_frameBuffer->getScreenWidth() / 20 * 17), (m_frameBuffer->getScreenWidth() / 20 )), h_max ( (m_frameBuffer->getScreenHeight() / 20 * 16), (m_frameBuffer->getScreenHeight() / 20)));
 
 	
 	for(unsigned int i = 0; i < entries->size(); i++)
@@ -604,10 +1192,11 @@ void CUpnpBrowserGui::showMenuEntry()
 
 		item->setInfo2(tmp.c_str());
 
-		elist->addItem(item);
+		//elist->addItem(item);
+		listBox->addItem(item);
 	}
 
-	//
+	/*
 	elist->setWidgetType(WIDGET_STANDARD);
 	//elist->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	elist->setSelected(selected);
@@ -627,12 +1216,24 @@ void CUpnpBrowserGui::showMenuEntry()
 	//elist->hide();
 	delete elist;
 	elist = NULL;
+	*/
+
+	listBox->setTitle(g_Locale->getText(LOCALE_UPNPBROWSER_HEAD), NEUTRINO_ICON_UPNP);
+	listBox->enablePaintHead();
+	listBox->enablePaintDate();
+	listBox->enablePaintFoot();
+	listBox->setFooterButtons(&RescanButton, 1);
+
+	//
+	listBox->setSelected(selected);
+	listBox->paint(/*reinit*/);
 }
 
 int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CUpnpBrowserGui::exec: %s\n", actionKey.c_str());
 
+#if 0
 	bool endall = false;
 	int cnt = 0;
 
@@ -777,6 +1378,118 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 
 	return menu_return::RETURN_EXIT_ALL;
+#endif
+
+	neutrino_msg_t      msg;
+	neutrino_msg_data_t data;
+	bool changed = true;
+
+	int res = menu_return::RETURN_REPAINT;
+
+	if (parent)
+		parent->hide();
+
+	//
+
+	listBox = new ClistBoxEntry(&cFrameBox);
+	loadDevices();
+	//showMenuDevice();
+	m_frameBuffer->blit();
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
+	//uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
+
+	bool loop = true;
+
+	while(loop)
+	{
+		if (changed)
+		{
+			listBox->clearItems();
+			showMenuDevice();
+			changed = false;
+		}
+		
+		m_frameBuffer->blit();
+
+		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
+		//neutrino_msg_t msg_repeatok = msg & ~CRCInput::RC_Repeat;
+
+		if( msg == CRCInput::RC_timeout)
+		{
+			// nothing
+		}
+		else if( msg == CRCInput::RC_home)
+		{
+			loop = false;
+		}
+		else if (msg == CRCInput::RC_page_up)
+		{
+			listBox->scrollPageUp();
+			changed = true;
+		} 
+		else if (msg == CRCInput::RC_page_down)
+		{
+			listBox->scrollPageDown();
+			changed = true;
+		}
+		else if (msg == CRCInput::RC_up)
+		{
+			listBox->scrollLineUp();
+			changed = true;
+		} 
+		else if (msg == CRCInput::RC_down)
+		{
+			listBox->scrollLineDown();
+			changed = true;
+		}
+		else if (msg == CRCInput::RC_right)
+		{
+			listBox->clearItems();
+			loadItem("0");
+			changed = true;
+		}
+		else if (msg == CRCInput::RC_left)
+		{
+			loop = false;
+		}
+		else if (msg == CRCInput::RC_ok)
+		{
+			listBox->clearItems();
+			selectItem("0");
+			changed = true;
+		} 
+		else if (msg == CRCInput::RC_blue)
+		{
+			listBox->clearItems();
+			loadDevices();
+			changed = true;
+		}       
+		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			listBox->paintHead();
+		}
+		else
+		{
+			if( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
+				loop = false;
+			changed = true;
+		}
+
+		m_frameBuffer->blit();	
+	}
+
+	hide();
+
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
+
+	delete listBox;
+	listBox = NULL;
+	
+	return res;
 }
 
 void plugin_init(void)

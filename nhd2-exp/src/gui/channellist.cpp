@@ -568,7 +568,7 @@ int CChannelList::show()
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 	// loop control
-	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
+	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 
 	bool loop = true;
 	while (loop) 
