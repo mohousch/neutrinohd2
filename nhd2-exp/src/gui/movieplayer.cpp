@@ -1,7 +1,7 @@
 /*
   Neutrino-GUI  -   DBoxII-Project
   
-  $Id: movieplayer.cpp 2013/10/12 mohousch Exp $
+  $Id: movieplayer.cpp 24.12.2018 mohousch Exp $
 
   Movieplayer (c) 2003, 2004 by gagga
   Based on code by Dirch, obi and the Metzler Bros. Thanks.
@@ -1422,8 +1422,7 @@ void CMoviePlayerGui::showHelpTS()
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_7, g_Locale->getText(LOCALE_MOVIEPLAYER_TSHELP10));
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_8, g_Locale->getText(LOCALE_MOVIEPLAYER_TSHELP14));
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_9, g_Locale->getText(LOCALE_MOVIEPLAYER_TSHELP11));
-	helpbox.addLine("Version: $Revision: 1.97 $");
-	helpbox.addLine("Movieplayer (c) 2003, 2004 by gagga");
+	helpbox.addLine("Version: $Revision: 3.0 $");
 
 	hide();
 
@@ -1437,7 +1436,7 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	int pos = -1;
 	int result = 0;
 	int menu_nr = 0;
-	int position[MAX_NUMBER_OF_BOOKMARK_ITEMS];
+	int position[MI_MOVIE_BOOK_USER_MAX];
 	
 	if(filelist[selected].bookmarks.lastPlayStop == 0 /*|| filelist[selected].bookmarks.start == 0*/)
 		return(result);
@@ -1480,7 +1479,7 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 
 	int sep_pos = menu_nr;
 
-	for(int i = 0 ; i < MI_MOVIE_BOOK_USER_MAX && menu_nr < MAX_NUMBER_OF_BOOKMARK_ITEMS; i++ )
+	for(int i = 0 ; i < MI_MOVIE_BOOK_USER_MAX && menu_nr < MI_MOVIE_BOOK_USER_MAX; i++ )
 	{
 		if( filelist[selected].bookmarks.user[i].pos != 0 )
 		{
@@ -1508,7 +1507,7 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	if(result < 0)
 		return -1;
 	
-	if(result != 0 && result <= MAX_NUMBER_OF_BOOKMARK_ITEMS)
+	if(result != 0 && result <= MI_MOVIE_BOOK_USER_MAX)
 	{
 		result--;
 		if(result > sep_pos) 

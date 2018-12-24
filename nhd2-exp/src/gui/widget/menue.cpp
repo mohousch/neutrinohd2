@@ -3354,6 +3354,29 @@ void ClistBox::paintItemInfo(int pos)
 			}
 		}
 	}
+	else if(widgetType == WIDGET_CLASSIC)
+	{
+		if(fbutton_count == 0)
+		{
+			CMenuItem* item = items[pos];
+
+			item->getYPosition();
+
+			// refresh box
+			frameBuffer->paintBoxRel(x, y + full_height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+
+			// info icon
+			int iw, ih;
+			frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &iw, &ih);
+			frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT, y + full_height - fheight + (fheight - ih)/2);
+
+			// itemHelpText
+			if(!item->itemHelpText.empty())
+			{
+				g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET, y + full_height - fheight + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - iw, item->itemHelpText.c_str(), COL_MENUFOOT, 0, true); // UTF-8
+			}
+		}
+	}
 	else if(widgetType == WIDGET_STANDARD)
 	{
 		if(FootInfo)
@@ -3595,9 +3618,9 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 	if(savescreen) 
 		saveScreen();
 
-	paint();
 	paintHead();
 	paintFoot();
+	paint();
 
 	frameBuffer->blit();
 
@@ -3631,9 +3654,9 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 						msg = CRCInput::RC_timeout;
 						break;
 					case menu_return::RETURN_REPAINT:
-						paint();
 						paintHead();
 						paintFoot();
+						paint();
 						break;
 				}
 
@@ -4093,9 +4116,9 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 									
 								case menu_return::RETURN_REPAINT:
 									hide();
-									paint();
 									paintHead();
 									paintFoot();
+									paint();
 									break;
 
 								case menu_return::RETURN_NONE:
@@ -4126,9 +4149,9 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 						widgetType = widget[cnt];
 
 						initFrames();
-						paint();
 						paintHead();
 						paintFoot();
+						paint();
 					}
 					break;
 

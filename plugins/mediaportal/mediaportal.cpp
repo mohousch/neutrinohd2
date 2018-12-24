@@ -29,7 +29,7 @@ extern "C" void plugin_del(void);
 class CMediaPortal : public CMenuTarget
 {
 	private:
-		CMenuWidget* mediaPortal;
+		ClistBox* mediaPortal;
 		CMenuItem* item;
 
 		void youTube(void);
@@ -156,49 +156,50 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 
 void CMediaPortal::showMenu(void)
 {
-	mediaPortal = new CMenuWidget("Media Portal", PLUGINDIR "/mediaportal/mp.png");
+	mediaPortal = new ClistBox("Media Portal", PLUGINDIR "/mediaportal/mp.png");
 
+	mediaPortal->setWidgetType(WIDGET_CLASSIC);
+	mediaPortal->addWidget(WIDGET_FRAME);
 	mediaPortal->enableWidgetChange();
-	mediaPortal->enableFootInfo();
 
 	// youtube
-	item = new CMenuForwarder("You Tube", true, NULL, this, "youtube", CRCInput::RC_nokey, NULL, PLUGINDIR "/youtube/youtube.png");
+	item = new ClistBoxItem("You Tube", true, "", this, "youtube", NULL, PLUGINDIR "/youtube/youtube.png");
 
 	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("youtube")));
 
 	mediaPortal->addItem(item);
 
 	// netzkino
-	item = new CMenuForwarder("NetzKino", true, NULL, this, "netzkino", CRCInput::RC_nokey, NULL, PLUGINDIR "/netzkino/netzkino.png");
+	item = new ClistBoxItem("NetzKino", true, "", this, "netzkino", NULL, PLUGINDIR "/netzkino/netzkino.png");
 	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("netzkino")));
 
 	mediaPortal->addItem(item);
 
 	// icecast
-	item = new CMenuForwarder("Ice Cast", true, NULL, this, "icecast", CRCInput::RC_nokey, NULL, PLUGINDIR "/icecast/icecast.png");
+	item = new ClistBoxItem("Ice Cast", true, "", this, "icecast", NULL, PLUGINDIR "/icecast/icecast.png");
 	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("icecast")));
 
 	mediaPortal->addItem(item);
 
 	// internetradio
-	item = new CMenuForwarder("Internet Radio", true, NULL, this, "internetradio", CRCInput::RC_nokey, NULL,  PLUGINDIR "/internetradio/internetradio.png");
+	item = new ClistBoxItem("Internet Radio", true, "", this, "internetradio", NULL,  PLUGINDIR "/internetradio/internetradio.png");
 	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("internetradio")));
 	
 	mediaPortal->addItem(item);
 
 	// ard
-	//item = new CMenuForwarder("ARD Mediathek", true, NULL, this, "ard", CRCInput::RC_nokey, NULL, PLUGINDIR "/mediaportal/ard.png");
+	//item = new ClistBoxItem("ARD Mediathek", true, "", this, "ard", NULL, PLUGINDIR "/mediaportal/ard.png");
 
 	//mediaPortal->addItem(item);
 
 	// nFilm
-	item = new CMenuForwarder("Movie Trailer", true, NULL, this, "nfilm", CRCInput::RC_nokey, NULL, PLUGINDIR "/nfilm/nfilm.png");
+	item = new ClistBoxItem("Movie Trailer", true, "", this, "nfilm", NULL, PLUGINDIR "/nfilm/nfilm.png");
 	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("nfilm")));
 
 	mediaPortal->addItem(item);
 
 	// nTVShows
-	item = new CMenuForwarder("Serien Trailer", true, NULL, this, "ntvshows", CRCInput::RC_nokey, NULL, PLUGINDIR "/ntvshows/ntvshows.png");
+	item = new ClistBoxItem("Serien Trailer", true, "", this, "ntvshows", NULL, PLUGINDIR "/ntvshows/ntvshows.png");
 	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("ntvshows")));
 
 	mediaPortal->addItem(item);

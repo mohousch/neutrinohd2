@@ -230,8 +230,8 @@ bool cNKFeedParser::ParseFeed(nk_feed_mode_t mode, std::string search, int categ
 	
 	if (mode == SEARCH) 
 	{
-		if (search.empty())
-			return false;
+		//if (search.empty())
+		//	return false;
 		
 		url += "get_search_results?search=" + ::encodeUrl(search);
 	} 

@@ -132,10 +132,6 @@ class CTestMenu : public CMenuTarget
 		void testPlayAudioDir();
 		void testShowPictureDir();
 
-		// without movieplayergui call
-		void  testTSBrowserDirect();
-		void testMovieBrowserDirect();
-
 		// new
 		void spinner(void);
 	public:
@@ -2550,85 +2546,6 @@ void CTestMenu::testCMenuWidget()
 	mainMenu = NULL;
 }
 
-void CTestMenu::testTSBrowserDirect()
-{
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
-	
-	CMoviePlayerGui tmpMoviePlayerGui;	
-	CMovieBrowser * movieBrowser;
-	MI_MOVIE_INFO * mfile;
-	
-	movieBrowser = new CMovieBrowser();
-	
-	movieBrowser->setMode(MB_SHOW_RECORDS);
-	
-	std::string Path_local = g_settings.network_nfs_moviedir;
-
-BROWSER:
-	if (movieBrowser->exec(Path_local.c_str()))
-	{
-		Path_local = movieBrowser->getCurrentDir();
-		
-		if (movieBrowser->getSelectedFile()!= NULL) 
-		{
-			mfile = movieBrowser->getCurrentMovieInfo();
-					
-			tmpMoviePlayerGui.addToPlaylist(*mfile);
-			tmpMoviePlayerGui.exec(NULL, "urlplayback");
-		}
-
-		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
-		
-		if (msg != CRCInput::RC_home) 
-		{
-			goto BROWSER;
-		}
-	}
-	
-	delete movieBrowser;
-}
-
-
-void CTestMenu::testMovieBrowserDirect()
-{
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
-	
-	CMoviePlayerGui tmpMoviePlayerGui;	
-	CMovieBrowser * movieBrowser;
-	MI_MOVIE_INFO * mfile;
-	
-	movieBrowser = new CMovieBrowser();
-	
-	movieBrowser->setMode(MB_SHOW_FILES);
-	
-	std::string Path_local = g_settings.network_nfs_moviedir;
-
-BROWSER:
-	if (movieBrowser->exec(Path_local.c_str()))
-	{
-		Path_local = movieBrowser->getCurrentDir();
-		
-		if (movieBrowser->getSelectedFile() != NULL) 
-		{
-			mfile = movieBrowser->getCurrentMovieInfo();
-					
-			tmpMoviePlayerGui.addToPlaylist(*mfile);
-			tmpMoviePlayerGui.exec(NULL, "urlplayback");
-		}
-
-		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
-		
-		if (msg != CRCInput::RC_home) 
-		{
-			goto BROWSER;
-		}
-	}
-	
-	delete movieBrowser;
-}
-
 void CTestMenu::spinner(void)
 {
 	CBox Box;
@@ -2984,14 +2901,6 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		delete audioPlayerSettingsMenu;
 		audioPlayerSettingsMenu = NULL;	
 	}
-	else if(actionKey == "testtsbrowser")
-	{
-		testTSBrowserDirect();
-	}
-	else if(actionKey == "testmoviebrowser")
-	{
-		testMovieBrowserDirect();
-	}
 	else if(actionKey == "testmenuwidget")
 	{
 		testCMenuWidget();
@@ -3118,8 +3027,6 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("ShowPictureDir(without Browser)", true, NULL, this, "showpicturedir"));
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	mainMenu->addItem(new CMenuForwarder("Test TS Browser", true, NULL, this, "testtsbrowser"));
-	mainMenu->addItem(new CMenuForwarder("Test Movie Browser", true, NULL, this, "testmoviebrowser"));
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));

@@ -30,6 +30,12 @@ AC_ARG_ENABLE(tuxcal,
 	,[enable_tuxcal=no])
 AM_CONDITIONAL(ENABLE_TUXCAL,test "$enable_tuxcal" = "yes")
 
+# testing
+AC_ARG_ENABLE(testing,
+	AS_HELP_STRING(--enable-testing,include testing plugins support),
+	,[enable_testing=no])
+AM_CONDITIONAL(ENABLE_TESTING,test "$enable_testing" = "yes")
+
 AC_OUTPUT([
 Makefile
 test/Makefile
@@ -51,9 +57,8 @@ satipclient/Makefile
 icecast/Makefile
 upnpbrowser/Makefile
 internetradio/Makefile
+tsbrowser/Makefile
 moviebrowser/Makefile
-tsplayer/Makefile
-movieplayer/Makefile
 picviewer/Makefile
 audioplayer/Makefile
 opkg_manager/Makefile

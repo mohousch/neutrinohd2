@@ -14,7 +14,7 @@ AM_CPPFLAGS =  \
 
 noinst_LTLIBRARIES = moviebrowser.la
 
-moviebrowser_la_SOURCES = moviebrowser.cpp
+moviebrowser_la_SOURCES = movieplayer.cpp moviebrowser.cpp tstool.cpp
 	 
 moviebrowser_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 
@@ -23,8 +23,8 @@ moviebrowser_la_CXXFLAGS = -fno-rtti -fno-exceptions
 install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)/moviebrowser
 	install .libs/moviebrowser.so $(DESTDIR)$(PLUGINDIR)/moviebrowser
-	install -m 0644  moviebrowser.cfg $(DESTDIR)$(PLUGINDIR)/moviebrowser
-	install -m 0644  moviebrowser.png $(DESTDIR)$(PLUGINDIR)/moviebrowser
+	install -m 0644 moviebrowser.cfg $(DESTDIR)$(PLUGINDIR)/moviebrowser
+	install -m 0664 moviebrowser.png $(DESTDIR)$(PLUGINDIR)/moviebrowser
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/moviebrowser/moviebrowser.so

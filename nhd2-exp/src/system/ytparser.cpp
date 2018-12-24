@@ -331,7 +331,7 @@ bool cYTFeedParser::ParseFeed(std::string &url)
 
 bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::string vid, yt_feed_orderby_t orderby)
 {
-	dprintf(DEBUG_NORMAL, "cYTFeedParser::parseFeed(1)\n");
+	dprintf(DEBUG_NORMAL, "cYTFeedParser::parseFeed(1) mode:%d search:%s vid:%s order:%d\n", mode, search.c_str(), vid.c_str(), orderby);
 	
 	key = g_settings.ytkey;
 	std::string answer;
@@ -394,8 +394,8 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 	}
 	else if (mode == SEARCH) 
 	{
-		if (search.empty())
-			return false;
+		//if (search.empty())
+		//	return false;
 		
 		search = encodeUrl(search);
 	

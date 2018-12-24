@@ -53,7 +53,6 @@
 #include <system/helpers.h>
 
 // configfiles
-#include <gui/moviebrowser.h>
 #include <timerd/timermanager.h>
 #include <nhttpd/yconfig.h>
 
@@ -569,9 +568,6 @@ int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionK
 		
 		// neutrino settings
 		unlink(NEUTRINO_SETTINGS_FILE);
-		
-		// moviebrowser settings
-		unlink(MOVIEBROWSER_SETTINGS_FILE);
 		
 		// timerd settings
 		unlink(TIMERD_CONFIGFILE);

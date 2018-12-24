@@ -57,8 +57,7 @@ libneutrino_driver_a_SOURCES = \
 	jpeg.cpp \
 	bmp.cpp \
 	gif.cpp \
-	crw.cpp \
-	tstool.cpp
+	crw.cpp
 
 if ENABLE_LCD
 libneutrino_driver_a_SOURCES += lcdd.cpp	

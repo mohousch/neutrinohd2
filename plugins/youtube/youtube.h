@@ -30,11 +30,8 @@
 // settings
 typedef struct
 {
-	int ytmode;
 	int ytorderby;
 	std::string ytregion;
-	std::string ytvid;
-	std::string ytsearch;
 	int ytautoplay;
 }YTB_SETTINGS;
 
@@ -42,6 +39,10 @@ class CYTBrowser : public CMenuTarget
 {
 	private:
 		CConfigFile configfile;
+
+		int ytmode;
+		std::string ytvid;
+		std::string ytsearch;
 		
 		void init(void);
 		bool loadSettings(YTB_SETTINGS* settings);

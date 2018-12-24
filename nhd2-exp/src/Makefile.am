@@ -50,7 +50,6 @@ neutrino_LDADD = \
 	system/tmdbparser.o \
 	driver/libneutrino_driver.a \
 	gui/movieinfo.o \
-	gui/moviebrowser.o \
 	gui/pictureviewer.o \
 	gui/audioplayer.o \
 	driver/audiodec/libneutrino_driver_audiodec.a \
@@ -68,6 +67,7 @@ neutrino_LDADD = \
 	gui/widget/window.o \
 	gui/widget/headers.o \
 	gui/widget/listbox.o \
+	gui/widget/listframe.o \
 	$(top_builddir)/lib/sectionsdclient/libsectionsdclient.a \
 	$(top_builddir)/lib/timerdclient/libtimerdclient.a \
 	$(top_builddir)/src/zapit/lib/libzapitclient.a \

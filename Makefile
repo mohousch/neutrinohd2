@@ -119,7 +119,8 @@ $(PLUGINS_SRC)/config.status: $(PLUGINS_SRC) $(DEST)
 			--with-boxtype=$(BOXTYPE) \
 			--with-datadir=$(DEST)/share/tuxbox \
 			--with-plugindir=$(DEST)/var/tuxbox/plugins \
-			--with-configdir=$(DEST)/var/tuxbox/config
+			--with-configdir=$(DEST)/var/tuxbox/config \
+			--enable-testing
 
 plugins-update:
 	git pull

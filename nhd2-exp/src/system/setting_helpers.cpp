@@ -74,7 +74,6 @@
 #include <gui/filebrowser.h>
 
 /* configfiles */
-#include <gui/moviebrowser.h>
 #include <timerd/timermanager.h>
 #include <nhttpd/yconfig.h>
 

@@ -82,40 +82,16 @@ class CFileBrowser
 
 		unsigned int selected;
 
-/*
-		unsigned int liststart;
-		unsigned int listmaxshow;
-*/
-
 		std::vector<unsigned int> selections;
-
-/*
-		int fheight;	// Fonthoehe Filelist-Inhalt
-		int theight;	// Fonthoehe Filelist-Titel
-		int foheight;	// Hoehe der button leiste
-*/
 		
 		std::string name;
 		std::string base;
 		
-/*
-		int width;
-		int height;
-*/
-		
 		bool bCancel;
-
-/*
-		int x;
-		int y;
-*/
 
 		SMSKeyInput m_SMSKeyInput;
 
-		//void paintItem(unsigned pos);
 		void paint(bool reinit = true);
-		//void paintHead();
-		//void paintFoot();
 		void recursiveDelete(const char* file);
 		void hide();
 

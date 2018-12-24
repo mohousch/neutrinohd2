@@ -17,9 +17,8 @@ SUBDIRS = \
 	icecast \
 	upnpbrowser \
 	internetradio \
+	tsbrowser \
 	moviebrowser \
-	tsplayer \
-	movieplayer \
 	picviewer \
 	audioplayer \
 	opkg_manager \
@@ -34,8 +33,10 @@ if ENABLE_TUXCAL
 SUBDIRS += tuxcal
 endif
 
-#for testing
+#testing
+if ENABLE_TESTING
 SUBDIRS += upnp \
 	ard
+endif
 
 

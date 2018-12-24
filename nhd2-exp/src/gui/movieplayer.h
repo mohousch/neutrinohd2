@@ -1,7 +1,7 @@
 /*
   Neutrino-GUI  -   DBoxII-Project
   
-  $Id: movieplayer.h 2013/10/12 mohousch Exp $
+  $Id: movieplayer.h 24.12.2018 mohousch Exp $
 
   Copyright (C) 2003,2004 gagga
   Homepage: http://www.giggo.de/dbox
@@ -47,9 +47,7 @@
 #include <gui/widget/menue.h>
 #include <gui/widget/progressbar.h>
 
-#include <gui/moviebrowser.h>
 #include <gui/movieinfo.h>
-#include <gui/filebrowser.h>
 
 
 #if !defined (_FILE_OFFSET_BITS) && !defined (__USE_FILE_OFFSET64) && !defined (_DARWIN_USE_64_BIT_INODE)

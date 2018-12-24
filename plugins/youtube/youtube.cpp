@@ -43,7 +43,7 @@ CYTBrowser::CYTBrowser(int mode): configfile ('\t')
 
 	init();
 
-	m_settings.ytmode = mode;
+	ytmode = mode;
 }
 
 CYTBrowser::~CYTBrowser()
@@ -55,6 +55,7 @@ CYTBrowser::~CYTBrowser()
 	ytparser.Cleanup();
 
 	saveSettings(&m_settings);
+	ytsearch.clear();
 }
 
 void CYTBrowser::init(void)
@@ -72,11 +73,8 @@ bool CYTBrowser::loadSettings(YTB_SETTINGS *settings)
 	
 	if(configfile.loadConfig(YTBROWSER_SETTINGS_FILE))
 	{
-		//settings->ytmode = configfile.getInt32("ytmode", cYTFeedParser::MOST_POPULAR);
-		m_settings.ytmode = cYTFeedParser::MOST_POPULAR;
 		settings->ytorderby = configfile.getInt32("ytorderby", cYTFeedParser::ORDERBY_PUBLISHED);
 		settings->ytregion = configfile.getString("ytregion", "default");
-		settings->ytsearch = configfile.getString("ytsearch", "");
 		settings->ytautoplay = configfile.getInt32("ytautoplay", 0);
 	}
 	else
@@ -94,10 +92,8 @@ bool CYTBrowser::saveSettings(YTB_SETTINGS *settings)
 	bool result = true;
 	dprintf(DEBUG_NORMAL, "CYTBrowser::saveSettings\r\n");
 
-	//configfile.setInt32("ytmode", settings->ytmode);
 	configfile.setInt32("ytorderby", settings->ytorderby);
 	configfile.setString("ytregion", settings->ytregion);
-	configfile.setString("ytsearch", settings->ytsearch);
 	configfile.setInt32("ytautoplay", settings->ytautoplay);
  
  	if (configfile.getModifiedFlag())
@@ -112,9 +108,9 @@ const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL},
-	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL},
+	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL},
 	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL},
-	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL}
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL}
 };
 
 void CYTBrowser::showMenu()
@@ -129,7 +125,7 @@ void CYTBrowser::showMenu()
 	neutrino_locale_t loc = getFeedLocale();
 	title += g_Locale->getText(loc);
 	if (loc == LOCALE_YT_SEARCH)
-		title += " \"" + m_settings.ytsearch + "\"";
+		title += " \"" + ytsearch + "\"";
 
 	moviesMenu = new ClistBox(title.c_str(), NEUTRINO_ICON_YT_SMALL);
 	
@@ -205,7 +201,7 @@ void CYTBrowser::recordMovie(void)
 
 void CYTBrowser::loadYTTitles(int mode, std::string search, std::string id, bool show_hint)
 {
-	dprintf(DEBUG_NORMAL, "CYTBrowser::loadYTTitles: parsed %d old mode %d new mode %d region %s\n", ytparser.Parsed(), ytparser.GetFeedMode(), m_settings.ytmode, m_settings.ytregion.c_str());
+	dprintf(DEBUG_NORMAL, "CYTBrowser::loadYTTitles: parsed %d old mode %d new mode %d region %s\n", ytparser.Parsed(), ytparser.GetFeedMode(), ytmode, m_settings.ytregion.c_str());
 
 	CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 
@@ -291,15 +287,15 @@ neutrino_locale_t CYTBrowser::getFeedLocale(void)
 {
 	neutrino_locale_t ret = LOCALE_YT_MOST_POPULAR;
 
-	if (m_settings.ytmode == cYTFeedParser::RELATED)
+	if (ytmode == cYTFeedParser::RELATED)
 		return LOCALE_YT_RELATED;
 
-	if (m_settings.ytmode == cYTFeedParser::SEARCH)
+	if (ytmode == cYTFeedParser::SEARCH)
 		return LOCALE_YT_SEARCH;
 
 	for (unsigned i = 0; i < YT_FEED_OPTION_COUNT; i++) 
 	{
-		if (m_settings.ytmode == YT_FEED_OPTIONS[i].key)
+		if (ytmode == YT_FEED_OPTIONS[i].key)
 			return YT_FEED_OPTIONS[i].value;
 	}
 	
@@ -310,27 +306,24 @@ int CYTBrowser::showCategoriesMenu(void)
 {
 	dprintf(DEBUG_NORMAL, "CYTBrowser::showCategoriesMenu:");
 
+	int res = -1;
+
 	CMenuWidget mainMenu(LOCALE_YOUTUBE, NEUTRINO_ICON_YT_SMALL, MENU_WIDTH + 100);
 	mainMenu.enableSaveScreen();
-
-	int select = -1;
-	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 
 	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_MOST_POPULAR, true, NULL, new CYTBrowser(cYTFeedParser::MOST_POPULAR), NULL));
 
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
-
-	std::string search = m_settings.ytsearch;
 	
 	// search
-	CStringInputSMS stringInput(LOCALE_YT_SEARCH, &search);
-	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, search, &stringInput, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	CStringInputSMS stringInput(LOCALE_YT_SEARCH, (char *)ytsearch.c_str());
+	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, ytsearch, &stringInput, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	
 	// ytorder
 	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_ORDERBY, &m_settings.ytorderby, YT_ORDERBY_OPTIONS, YT_ORDERBY_OPTION_COUNT, true, NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true));
 
 	// search
-	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, new CYTBrowser(cYTFeedParser::SEARCH), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
+	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, this, "search", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
@@ -354,40 +347,15 @@ int CYTBrowser::showCategoriesMenu(void)
 	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_AUTOPLAY, &m_settings.ytautoplay, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true));
 
 	mainMenu.exec(NULL, "");
-	delete selector;
-	selector = NULL;
-
-	int newmode = -1;
-
-	if (select >= 0) 
-	{
-		newmode = select;
-		if (newmode == cYTFeedParser::NEXT || newmode == cYTFeedParser::PREV) 
-		{
-			m_settings.ytmode = newmode;
-		}
-		else if (select == cYTFeedParser::SEARCH) 
-		{
-			if (!search.empty()) 
-			{
-				m_settings.ytsearch = search;
-				m_settings.ytmode = newmode;
-			}
-		}
-		else if (m_settings.ytmode != newmode) 
-		{
-			m_settings.ytmode = newmode;
-		}
-	}
 	
 	if(rstr != m_settings.ytregion) 
 	{
 		m_settings.ytregion = rstr;
-		if (newmode < 0)
-			newmode = m_settings.ytmode;
 	}
 
-	return (select);
+	res = mainMenu.getSelectedLine();
+
+	return res;
 }
 
 int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -429,30 +397,30 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "RC_red")
 	{
-		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
-		m_settings.ytmode = cYTFeedParser::RELATED;
+		ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
+		ytmode = cYTFeedParser::RELATED;
 
-		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+		loadYTTitles(ytmode, ytsearch, ytvid);
 		showMenu();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
-		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
-		m_settings.ytmode = cYTFeedParser::NEXT;
+		ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
+		ytmode = cYTFeedParser::NEXT;
 
-		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+		loadYTTitles(ytmode, ytsearch, ytvid);
 		showMenu();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_yellow")
 	{
-		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
-		m_settings.ytmode = cYTFeedParser::PREV;
+		ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
+		ytmode = cYTFeedParser::PREV;
 
-		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+		loadYTTitles(ytmode, ytsearch, ytvid);
 		showMenu();
 
 		return menu_return::RETURN_EXIT_ALL;
@@ -462,30 +430,30 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		recordMovie();
 		return menu_return::RETURN_REPAINT;
 	}
-/*
 	else if(actionKey == "search")
 	{
-		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
-		m_settings.ytmode = cYTFeedParser::SEARCH;
+		//ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
+		ytmode = cYTFeedParser::SEARCH;
 
-		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+		loadYTTitles(ytmode, ytsearch, ytvid);
 		showMenu();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
+/*
 	else if(actionKey == "most_popular")
 	{
-		m_settings.ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
-		m_settings.ytmode = cYTFeedParser::MOST_POPULAR;
+		ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
+		ytmode = cYTFeedParser::MOST_POPULAR;
 
-		loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+		loadYTTitles(ytmode, ytsearch, ytvid);
 		showMenu();
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
 */
 
-	loadYTTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
+	loadYTTitles(ytmode, ytsearch, ytvid);
 	showMenu();
 	
 	return menu_return::RETURN_EXIT;
@@ -502,7 +470,7 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	CYTBrowser* YTHandler = new CYTBrowser();
+	CYTBrowser* YTHandler = new CYTBrowser(cYTFeedParser::MOST_POPULAR);
 	
 	YTHandler->exec(NULL, "");
 	
