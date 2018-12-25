@@ -73,25 +73,6 @@ CTSBrowser::CTSBrowser()
 
 	//
 	fileFilter.addFilter("ts");
-	fileFilter.addFilter("mpg");
-	fileFilter.addFilter("mpeg");
-	fileFilter.addFilter("divx");
-	fileFilter.addFilter("avi");
-	fileFilter.addFilter("mkv");
-	fileFilter.addFilter("asf");
-	fileFilter.addFilter("aiff");
-	fileFilter.addFilter("m2p");
-	fileFilter.addFilter("mpv");
-	fileFilter.addFilter("m2ts");
-	fileFilter.addFilter("vob");
-	fileFilter.addFilter("mp4");
-	fileFilter.addFilter("mov");	
-	fileFilter.addFilter("flv");	
-	fileFilter.addFilter("dat");
-	fileFilter.addFilter("trp");
-	fileFilter.addFilter("vdr");
-	fileFilter.addFilter("mts");
-	fileFilter.addFilter("wmv");
 }
 
 CTSBrowser::~CTSBrowser()

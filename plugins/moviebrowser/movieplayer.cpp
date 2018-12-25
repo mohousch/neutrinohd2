@@ -26,7 +26,7 @@ extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
 
-class CTSPlayer : public CMenuTarget
+class CMoviePlayer : public CMenuTarget
 {
 	private:
 		CFrameBuffer* frameBuffer;
@@ -41,13 +41,13 @@ class CTSPlayer : public CMenuTarget
 		void showMenu();		
 		
 	public:
-		CTSPlayer();
-		~CTSPlayer();
+		CMoviePlayer();
+		~CMoviePlayer();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
 };
 
-CTSPlayer::CTSPlayer()
+CMoviePlayer::CMoviePlayer()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
@@ -56,24 +56,22 @@ CTSPlayer::CTSPlayer()
 	mfile = NULL;
 }
 
-CTSPlayer::~CTSPlayer()
+CMoviePlayer::~CMoviePlayer()
 {
 }
 
-void CTSPlayer::hide()
+void CMoviePlayer::hide()
 {
 	frameBuffer->paintBackground();
 	frameBuffer->blit();
 }
 
-void CTSPlayer::showMenu()
+void CMoviePlayer::showMenu()
 {
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 	
 	movieBrowser = new CMovieBrowser();
-	
-	//movieBrowser->setMode(MB_SHOW_RECORDS);
 	
 	Path = g_settings.network_nfs_moviedir;
 
@@ -101,9 +99,9 @@ BROWSER:
 	delete movieBrowser;
 }
 
-int CTSPlayer::exec(CMenuTarget* parent, const std::string& actionKey)
+int CMoviePlayer::exec(CMenuTarget* parent, const std::string& actionKey)
 {
-	dprintf(DEBUG_NORMAL, "\nCTSPlayer::exec: actionKey:%s\n", actionKey.c_str());
+	dprintf(DEBUG_NORMAL, "CMoviePlayer::exec: actionKey:%s\n", actionKey.c_str());
 	
 	if(parent)
 		hide();
@@ -115,22 +113,20 @@ int CTSPlayer::exec(CMenuTarget* parent, const std::string& actionKey)
 
 void plugin_init(void)
 {
-	dprintf(DEBUG_NORMAL, "test: plugin_init\n");
 }
 
 void plugin_del(void)
 {
-	dprintf(DEBUG_NORMAL, "test: plugin_del\n");
 }
 
 void plugin_exec(void)
 {
-	CTSPlayer* tsPlayerHandler = new CTSPlayer();
+	CMoviePlayer* moviePlayerHandler = new CMoviePlayer();
 	
-	tsPlayerHandler->exec(NULL, "");
+	moviePlayerHandler->exec(NULL, "");
 	
-	delete tsPlayerHandler;
-	tsPlayerHandler = NULL;
+	delete moviePlayerHandler;
+	moviePlayerHandler = NULL;
 }
 
 

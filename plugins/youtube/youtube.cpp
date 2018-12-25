@@ -316,7 +316,7 @@ int CYTBrowser::showCategoriesMenu(void)
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// search
-	CStringInputSMS stringInput(LOCALE_YT_SEARCH, (char *)ytsearch.c_str());
+	CStringInputSMS stringInput(LOCALE_YT_SEARCH, &ytsearch);
 	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, ytsearch, &stringInput, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	
 	// ytorder

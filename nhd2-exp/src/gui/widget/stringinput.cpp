@@ -111,6 +111,25 @@ CStringInput::CStringInput(char * Head, char* Value, int Size, const neutrino_lo
         init();
 }
 
+CStringInput::CStringInput(char* Head, std::string* Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
+{
+        frameBuffer = CFrameBuffer::getInstance();
+         head = strdup(Head);
+        value = new char[Size+1];
+        value[Size] = '\0';
+        strncpy(value, Value->c_str(), Size);
+        valueString = Value;
+        size = Size;
+
+        hint_1 = Hint_1;
+        hint_2 = Hint_2;
+        validchars = Valid_Chars;
+        iconfile = Icon ? Icon : "";
+
+        observ = Observ;
+        init();
+}
+
 CStringInput::~CStringInput() 
 {
 	if (valueString != NULL) 
@@ -579,6 +598,12 @@ CStringInputSMS::CStringInputSMS(char * Head, char* Value, int Size, const neutr
 	initSMS(Valid_Chars);
 }
 
+CStringInputSMS::CStringInputSMS(char* Head, std::string* Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
+		: CStringInput(Head, Value, Size, Hint_1, Hint_2, Valid_Chars, Observ, Icon)
+{
+	initSMS(Valid_Chars);
+}
+
 void CStringInputSMS::initSMS(const char * const Valid_Chars)
 {
 	last_digit = -1;				// no key pressed yet
@@ -737,13 +762,13 @@ void CStringInputSMS::paint()
 	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, ((width - 20)/4)*2, 2, CStringInputSMSButtons, ButtonHeight);
 }
 
+//PINInput
 void CPINInput::paintChar(int pos)
 {
 	CStringInput::paintChar(pos, (value[pos] == ' ') ? ' ' : '*');
 }
 
-//CPINInput
-int CPINInput::exec( CMenuTarget* parent, const std::string & )
+int CPINInput::exec( CMenuTarget* parent, const std::string&)
 {
 	dprintf(DEBUG_NORMAL, "CPINInput::exec\n");
 
@@ -755,7 +780,7 @@ int CPINInput::exec( CMenuTarget* parent, const std::string & )
 	if (parent)
 		parent->hide();
 
-	for(int count=strlen(value)-1;count<size-1;count++)
+	for(int count = strlen(value) - 1; count < size - 1; count++)
 		strcat(value, " ");
 
 	paint();
@@ -768,7 +793,7 @@ int CPINInput::exec( CMenuTarget* parent, const std::string & )
 	{
 		g_RCInput->getMsg( &msg, &data, 300 );
 
-		if (msg==CRCInput::RC_left)
+		if (msg == CRCInput::RC_left)
 		{
 			keyLeftPressed();
 		}
@@ -816,18 +841,18 @@ int CPINInput::exec( CMenuTarget* parent, const std::string & )
 
 	hide();
 
-	for(int count=size-1;count>=0;count--)
+	for(int count = size - 1; count >= 0; count--)
 	{
-		if((value[count]==' ') || (value[count]==0))
+		if((value[count] == ' ') || (value[count] == 0))
 		{
-			value[count]=0;
+			value[count] = 0;
 		}
 		else
 			break;
 	}
-	value[size]=0;
+	value[size] = 0;
 
-	if ( (observ) && (msg==CRCInput::RC_ok) )
+	if ( (observ) && (msg == CRCInput::RC_ok) )
 	{
 		observ->changeNotify(name, value);
 	}
@@ -835,6 +860,7 @@ int CPINInput::exec( CMenuTarget* parent, const std::string & )
 	return res;
 }
 
+//PLPINInput
 int CPLPINInput::handleOthers(neutrino_msg_t msg, neutrino_msg_data_t data)
 {
 	int res = messages_return::unhandled;
@@ -873,16 +899,16 @@ int CPLPINInput::exec( CMenuTarget* parent, const std::string & )
 
 	if (pixbuf != NULL)
 	{
-		frameBuffer->saveScreen(x- borderwidth, y- borderwidth, width+ 2* borderwidth, height+ 2* borderwidth, pixbuf);
+		frameBuffer->saveScreen(x- borderwidth, y- borderwidth, width+ 2*borderwidth, height + 2*borderwidth, pixbuf);
 		
 		frameBuffer->blit();
 	}
 
 	// clear border
-	frameBuffer->paintBackgroundBoxRel(x- borderwidth, y- borderwidth, width+ 2* borderwidth, borderwidth);
-	frameBuffer->paintBackgroundBoxRel(x- borderwidth, y+ height, width+ 2* borderwidth, borderwidth);
-	frameBuffer->paintBackgroundBoxRel(x- borderwidth, y, borderwidth, height);
-	frameBuffer->paintBackgroundBoxRel(x+ width, y, borderwidth, height);
+	frameBuffer->paintBackgroundBoxRel(x- borderwidth, y - borderwidth, width + 2*borderwidth, borderwidth);
+	frameBuffer->paintBackgroundBoxRel(x - borderwidth, y + height, width + 2*borderwidth, borderwidth);
+	frameBuffer->paintBackgroundBoxRel(x - borderwidth, y, borderwidth, height);
+	frameBuffer->paintBackgroundBoxRel(x + width, y, borderwidth, height);
 	
 	frameBuffer->blit();
 

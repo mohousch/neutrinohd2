@@ -559,12 +559,12 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 		show_Data();
 		showSNR();
 
-		if ( msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
+		if (msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
 		{
 			g_RCInput->postMsg(msg, 0);
 			res = messages_return::cancel_info;
 		}
-		else if ( msg == CRCInput::RC_info )
+		else if (msg == CRCInput::RC_info)
 		{
 			g_RCInput->postMsg(NeutrinoMessages::SHOW_EPG, 0);
 				
@@ -629,10 +629,11 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 					
 				if (res & messages_return::unhandled) 
 				{
-					printf("CInfoViewer::show: message unhandled\n");
+					dprintf(DEBUG_NORMAL, "CInfoViewer::show: message unhandled\n");
+
 					// raus hier und im Hauptfenster behandeln...
-					//g_RCInput->postMsg (msg, data);
-					//res = messages_return::cancel_info;
+					g_RCInput->postMsg(msg, data);
+					res = messages_return::cancel_info;
 				}
 			}
 		}
@@ -1156,6 +1157,8 @@ void CInfoViewer::showRadiotext()
 
 int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 {
+	dprintf(DEBUG_NORMAL, "CInfoViewer::handleMsg: msg:%s\n", CRCInput::getSpecialKeyName(msg));
+
  	if ((msg == NeutrinoMessages::EVT_CURRENTNEXT_EPG) || (msg == NeutrinoMessages::EVT_NEXTPROGRAM)) 
 	{
 	  	getEPG(*(t_channel_id *)data, info_CurrentNext);

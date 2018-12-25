@@ -364,7 +364,7 @@ void CTestMenu::testCWindowShadow()
 void CTestMenu::testCStringInput()
 {
 	std::string value;
-	CStringInput * stringInput = new CStringInput("CStringInput", (char*)value.c_str());
+	CStringInput * stringInput = new CStringInput("CStringInput", &value);
 	
 	stringInput->exec(NULL, "");
 	stringInput->hide();
@@ -375,7 +375,7 @@ void CTestMenu::testCStringInput()
 void CTestMenu::testCStringInputSMS()
 {
 	std::string value;
-	CStringInputSMS * stringInputSMS = new CStringInputSMS("CStringInputSMS", (char *)value.c_str());
+	CStringInputSMS * stringInputSMS = new CStringInputSMS("CStringInputSMS", &value);
 	
 	stringInputSMS->exec(NULL, "");
 	stringInputSMS->hide();
@@ -386,11 +386,12 @@ void CTestMenu::testCStringInputSMS()
 void CTestMenu::testCPINInput()
 {
 	std::string value;
-	CPINInput * pinInput = new CPINInput("CPINInput", (char *)value.c_str());
+	CPINInput * pinInput = new CPINInput("CPINInput", &value);
 	
 	pinInput->exec(NULL, "");
 	pinInput->hide();
 	delete pinInput;
+	pinInput = NULL;
 	value.clear();
 }
 
@@ -413,6 +414,7 @@ void CTestMenu::testCMACInput()
 	macInput->exec(NULL, "");
 	macInput->hide();
 	delete macInput;
+	macInput = NULL;
 	value.clear();
 }
 
@@ -434,6 +436,7 @@ void CTestMenu::testCTimeInput()
 	timeInput->exec(NULL, "");
 	timeInput->hide();
 	delete timeInput;
+	timeInput = NULL;
 	value.clear();
 }
 
@@ -445,6 +448,7 @@ void CTestMenu::testCIntInput()
 	intInput->exec(NULL, "");
 	intInput->hide();
 	delete intInput;
+	intInput = NULL;	
 }
 
 void CTestMenu::testCInfoBox()

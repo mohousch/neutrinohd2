@@ -48,8 +48,6 @@
 #include <system/settings.h>
 
 
-//#define MAX_INPUT_CHARS		40
-
 class CStringInput : public CMenuTarget
 {
 	protected:
@@ -101,13 +99,15 @@ class CStringInput : public CMenuTarget
 
 	public:
 
-		CStringInput(const neutrino_locale_t Name, char *Value, int Size = 10, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char * const Valid_Chars= (const char *) "0123456789. ", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
-		CStringInput(char * Head, char *Value, int Size = 10, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char * const Valid_Chars= (const char *) "0123456789. ", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
-		CStringInput(const neutrino_locale_t Name, std::string *Value, int Size = 10, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char * const Valid_Chars= (const char *) "0123456789. ", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
+		CStringInput(const neutrino_locale_t Name, char* Value, int Size = 10, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char* const Valid_Chars = (const char*) "0123456789. ", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
+		CStringInput(char* Head, char* Value, int Size = 10, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char * const Valid_Chars= (const char*) "0123456789. ", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
+		CStringInput(const neutrino_locale_t Name, std::string* Value, int Size = 10, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char* const Valid_Chars = (const char*) "0123456789. ", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
+		CStringInput(char* Head, std::string* Value, int Size = 10, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char * const Valid_Chars = (const char*) "0123456789. ", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
+		
 		~CStringInput();
 
 		void hide();
-		int exec( CMenuTarget* parent, const std::string & actionKey );
+		int exec( CMenuTarget* parent, const std::string& actionKey);
 };
 
 class CStringInputSMS : public CStringInput
@@ -131,9 +131,10 @@ class CStringInputSMS : public CStringInput
 		void initSMS(const char * const Valid_Chars);
 
 	public:
-		CStringInputSMS(const neutrino_locale_t Name, char *Value, int Size = MAX_INPUT_CHARS, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char * const Valid_Chars = "abcdefghijklmnopqrstuvwxyz0123456789 -_/()<>=+.,:!?\\'", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
-		CStringInputSMS(const neutrino_locale_t Name, std::string* Value, int Size = MAX_INPUT_CHARS, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char * const Valid_Chars = "abcdefghijklmnopqrstuvwxyz0123456789 -_/()<>=+.,:!?\\'", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
-		CStringInputSMS(char * Head, char * Value, int Size = MAX_INPUT_CHARS, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char * const Valid_Chars = "abcdefghijklmnopqrstuvwxyz0123456789 -_/()<>=+.,:!?\\'", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
+		CStringInputSMS(const neutrino_locale_t Name, char* Value, int Size = MAX_INPUT_CHARS, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char* const Valid_Chars = "abcdefghijklmnopqrstuvwxyz0123456789 -_/()<>=+.,:!?\\'", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
+		CStringInputSMS(const neutrino_locale_t Name, std::string* Value, int Size = MAX_INPUT_CHARS, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char* const Valid_Chars = "abcdefghijklmnopqrstuvwxyz0123456789 -_/()<>=+.,:!?\\'", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
+		CStringInputSMS(char* Head, char* Value, int Size = MAX_INPUT_CHARS, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char* const Valid_Chars = "abcdefghijklmnopqrstuvwxyz0123456789 -_/()<>=+.,:!?\\'", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
+		CStringInputSMS(char* Head, std::string* Value, int Size = MAX_INPUT_CHARS, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char* const Valid_Chars = "abcdefghijklmnopqrstuvwxyz0123456789 -_/()<>=+.,:!?\\'", CChangeObserver* Observ = NULL, const char * const Icon = NULL);
 };
 
 class CPINInput : public CStringInput
@@ -141,12 +142,17 @@ class CPINInput : public CStringInput
 	protected:
 		virtual void paintChar(int pos);
 	public:
-		CPINInput(const neutrino_locale_t Name, char* Value, int Size = 10, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char * const Valid_Chars = (const char *)"0123456789", CChangeObserver* Observ = NULL)
+		CPINInput(const neutrino_locale_t Name, char* Value, int Size = 10, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char* const Valid_Chars = (const char*)"0123456789", CChangeObserver* Observ = NULL)
 		 : CStringInput(Name, (char *)Value, Size, Hint_1, Hint_2, Valid_Chars, Observ, (char *)NEUTRINO_ICON_LOCK) {};
 		CPINInput(char * Head, char* Value, int Size = 10, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char * const Valid_Chars = (const char *)"0123456789", CChangeObserver* Observ = NULL)
 		 : CStringInput(Head, (char *)Value, Size, Hint_1, Hint_2, Valid_Chars, Observ, (char *)NEUTRINO_ICON_LOCK) {};
+		
+		CPINInput(const neutrino_locale_t Name, std::string* Value, int Size = 10, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char * const Valid_Chars = (const char *)"0123456789", CChangeObserver* Observ = NULL)
+		 : CStringInput(Name, (char *)Value, Size, Hint_1, Hint_2, Valid_Chars, Observ, (char *)NEUTRINO_ICON_LOCK) {};
+		CPINInput(char* Head, std::string* Value, int Size = 10, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, const char * const Valid_Chars = (const char *)"0123456789", CChangeObserver* Observ = NULL)
+		 : CStringInput(Head, (char *)Value, Size, Hint_1, Hint_2, Valid_Chars, Observ, (char *)NEUTRINO_ICON_LOCK) {};
 
-		 int exec( CMenuTarget* parent, const std::string & actionKey );
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 class CPLPINInput : public CPINInput
@@ -162,6 +168,8 @@ class CPLPINInput : public CPINInput
 	public:
 		CPLPINInput(const neutrino_locale_t Name, char* Value, int Size, const neutrino_locale_t Hint_2, int FSK )
 		 : CPINInput(Name, (char *)Value, Size, NONEXISTANT_LOCALE, Hint_2) { fsk = FSK; };
+		CPLPINInput(char* Name, char* Value, int Size, const neutrino_locale_t Hint_2, int FSK )
+		 : CPINInput(Name, (char *)Value, Size, NONEXISTANT_LOCALE, Hint_2) { fsk = FSK; };
 
 		int exec( CMenuTarget* parent, const std::string & actionKey );
 };
@@ -170,6 +178,12 @@ class CPINChangeWidget : public CStringInput
 {
 	public:
 		CPINChangeWidget(const neutrino_locale_t Name, char* Value, int Size, const neutrino_locale_t Hint_1, const char * const Valid_Chars= (const char *) "0123456789", CChangeObserver* Observ = NULL)
+		: CStringInput(Name, (char *)Value, Size, Hint_1, NONEXISTANT_LOCALE, Valid_Chars, Observ){};
+		CPINChangeWidget(char* Name, char* Value, int Size, const neutrino_locale_t Hint_1, const char * const Valid_Chars= (const char *) "0123456789", CChangeObserver* Observ = NULL)
+		: CStringInput(Name, (char *)Value, Size, Hint_1, NONEXISTANT_LOCALE, Valid_Chars, Observ){};
+		CPINChangeWidget(const neutrino_locale_t Name, std::string* Value, int Size, const neutrino_locale_t Hint_1, const char * const Valid_Chars= (const char *) "0123456789", CChangeObserver* Observ = NULL)
+		: CStringInput(Name, (char *)Value, Size, Hint_1, NONEXISTANT_LOCALE, Valid_Chars, Observ){};
+		CPINChangeWidget(char* Name, std::string* Value, int Size, const neutrino_locale_t Hint_1, const char * const Valid_Chars= (const char *) "0123456789", CChangeObserver* Observ = NULL)
 		: CStringInput(Name, (char *)Value, Size, Hint_1, NONEXISTANT_LOCALE, Valid_Chars, Observ){};
 };
 
