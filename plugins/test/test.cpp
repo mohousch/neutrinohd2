@@ -40,14 +40,9 @@ class CTestMenu : public CMenuTarget
 		bool displayNext;
 
 		//
-		ClistBox* audioMenu;
 		CFileList audioFileList;
 
 		//
-		ClistBox* plist;
-
-		//
-		ClistBox* mlist;
 		CMovieInfo m_movieInfo;
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
 
@@ -151,10 +146,7 @@ CTestMenu::CTestMenu()
 	displayNext = false;
 
 	//
-	listMenu = NULL; 	// channellist
-	audioMenu = NULL; 	// audioplayer
-	plist = NULL;		// pluginslist
-	mlist = NULL;		// moviebrowser
+	listMenu = NULL;
 
 	item = NULL;
 }
@@ -1211,12 +1203,12 @@ void CTestMenu::testAudioPlayer()
 
 void CTestMenu::testTSPlayer()
 {
-	g_PluginList->startPlugin("tsplayer");
+	g_PluginList->startPlugin("tsbrowser");
 }
 
 void CTestMenu::testMoviePlayer()
 {
-	g_PluginList->startPlugin("movieplayer");
+	g_PluginList->startPlugin("moviebrowser");
 }
 
 void CTestMenu::testPictureViewer()
@@ -2142,7 +2134,7 @@ void CTestMenu::testClistBoxnLines()
 
 
 	// itemBox
-	plist = new ClistBox("ClistBox (plugins list)", NEUTRINO_ICON_SHELL, MENU_WIDTH, MENU_HEIGHT - 100);
+	listMenu = new ClistBox("ClistBox (plugins list)", NEUTRINO_ICON_SHELL, MENU_WIDTH, MENU_HEIGHT - 100);
 
 	//
 	for(unsigned int count = 0; count < (unsigned int)g_PluginList->getNumberOfPlugins(); count++)
@@ -2163,26 +2155,26 @@ void CTestMenu::testClistBoxnLines()
 		item->setnLinesItem();
 		//item->switchnLinesItem();
 
-		plist->addItem(item);
+		listMenu->addItem(item);
 	}
 
-	plist->setWidgetType(WIDGET_CLASSIC);
-	plist->enablePaintDate();
-	plist->enableFootInfo();
+	listMenu->setWidgetType(WIDGET_CLASSIC);
+	listMenu->enablePaintDate();
+	listMenu->enableFootInfo();
 
-	plist->setSelected(selected);
+	listMenu->setSelected(selected);
 
 	// footer
-	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS, MENU_WIDTH/2);
+	listMenu->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS, MENU_WIDTH/2);
 
 	//
-	plist->addKey(CRCInput::RC_red, this, "pred");
-	plist->addKey(CRCInput::RC_green, this, "pgreen");
+	listMenu->addKey(CRCInput::RC_red, this, "pred");
+	listMenu->addKey(CRCInput::RC_green, this, "pgreen");
 
-	plist->exec(NULL, "");
-	plist->hide();
-	delete plist;
-	plist = NULL;
+	listMenu->exec(NULL, "");
+	listMenu->hide();
+	delete listMenu;
+	listMenu = NULL;
 }
 
 //// audioplayer
@@ -2259,7 +2251,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 	std::string Path_local = g_settings.network_nfs_audioplayerdir;
 
 	// itemBox
-	audioMenu = new ClistBox("ClistBox (audioplayer)", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	listMenu = new ClistBox("ClistBox (audioplayer)", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	audioFileList.clear();
 
@@ -2333,34 +2325,34 @@ void CTestMenu::testCMenuWidgetListBox1()
 				item->setInfo2(artist.c_str());
 				item->setOptionInfo2(date.c_str());
 
-				audioMenu->addItem(item);
+				listMenu->addItem(item);
 			}
 		}
 	}
 
-	//audioMenu->move(0, 40);
-	//audioMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
-	audioMenu->setSelected(selected);
+	//listMenu->move(0, 40);
+	//listMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
+	listMenu->setSelected(selected);
 
-	audioMenu->setHeaderButtons(Head1Buttons, HEAD1_BUTTONS_COUNT);
-	audioMenu->setFooterButtons(AudioPlayerButtons[0], FOOT_BUTTONS_COUNT);
+	listMenu->setHeaderButtons(Head1Buttons, HEAD1_BUTTONS_COUNT);
+	listMenu->setFooterButtons(AudioPlayerButtons[0], FOOT_BUTTONS_COUNT);
 	
-	audioMenu->enablePaintDate();
-	audioMenu->enableFootInfo();
-	//audioMenu->setFootInfoHeight(30); 
+	listMenu->enablePaintDate();
+	listMenu->enableFootInfo();
+	//listMenu->setFootInfoHeight(30); 
 
-	audioMenu->addKey(CRCInput::RC_info, this, "ainfo");
-	audioMenu->addKey(CRCInput::RC_setup, this, "asetup");
-	audioMenu->addKey(CRCInput::RC_red, this, "ared");
-	audioMenu->addKey(CRCInput::RC_green, this, "agreen");
-	audioMenu->addKey(CRCInput::RC_yellow, this, "ayellow");
-	audioMenu->addKey(CRCInput::RC_blue, this, "ablue");
-	audioMenu->addKey(CRCInput::RC_stop, this, "astop");
+	listMenu->addKey(CRCInput::RC_info, this, "ainfo");
+	listMenu->addKey(CRCInput::RC_setup, this, "asetup");
+	listMenu->addKey(CRCInput::RC_red, this, "ared");
+	listMenu->addKey(CRCInput::RC_green, this, "agreen");
+	listMenu->addKey(CRCInput::RC_yellow, this, "ayellow");
+	listMenu->addKey(CRCInput::RC_blue, this, "ablue");
+	listMenu->addKey(CRCInput::RC_stop, this, "astop");
 
-	audioMenu->exec(NULL, "");
-	//audioMenu->hide();
-	delete audioMenu;
-	audioMenu = NULL;
+	listMenu->exec(NULL, "");
+	//listMenu->hide();
+	delete listMenu;
+	listMenu = NULL;
 }
 
 //// CMenulist (frame| extended widget) movie browser
@@ -2373,7 +2365,7 @@ const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
 
 void CTestMenu::testFrameBox()
 {
-	mlist = new ClistBox("EXTENDED Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	listMenu = new ClistBox("EXTENDED Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	//
 	CFileFilter fileFilter;
@@ -2469,25 +2461,25 @@ void CTestMenu::testFrameBox()
 
 		//item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]);
 
-		mlist->addItem(item);
+		listMenu->addItem(item);
 	}
 
-	mlist->setWidgetType(WIDGET_INFO);
-	mlist->setItemsPerPage(6, 2);
-	mlist->setItemBoxColor(COL_YELLOW);
+	listMenu->setWidgetType(WIDGET_INFO);
+	listMenu->setItemsPerPage(6, 2);
+	listMenu->setItemBoxColor(COL_YELLOW);
 
-	mlist->setSelected(selected);
+	listMenu->setSelected(selected);
 
-	mlist->setHeaderButtons(mHeadButtons, mHEAD_BUTTONS_COUNT);
+	listMenu->setHeaderButtons(mHeadButtons, mHEAD_BUTTONS_COUNT);
 
-	mlist->enablePaintDate();
+	listMenu->enablePaintDate();
 
-	mlist->addKey(CRCInput::RC_info, this, "minfo");
+	listMenu->addKey(CRCInput::RC_info, this, "minfo");
 
-	mlist->exec(NULL, "");
-	mlist->hide();
-	delete mlist;
-	mlist = NULL;
+	listMenu->exec(NULL, "");
+	listMenu->hide();
+	delete listMenu;
+	listMenu = NULL;
 }
 
 // CMenuWidget
@@ -2876,13 +2868,13 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "aplay")
 	{
-		selected = audioMenu->getSelected();
-		CAudiofile audiofile(audioFileList[audioMenu->getSelected()].Name, audioFileList[audioMenu->getSelected()].getExtension());
+		selected = listMenu->getSelected();
+		CAudiofile audiofile(audioFileList[listMenu->getSelected()].Name, audioFileList[listMenu->getSelected()].getExtension());
 
 		CAudioPlayer::getInstance()->init();
 		CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, NeutrinoMessages::mode_audio);
 
-		CAudiofile mp3(audioFileList[audioMenu->getSelected()].Name, audioFileList[audioMenu->getSelected()].getExtension());
+		CAudiofile mp3(audioFileList[listMenu->getSelected()].Name, audioFileList[listMenu->getSelected()].getExtension());
 		CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);		
 	}
 	else if(actionKey == "astop")
@@ -2911,30 +2903,30 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "pred")
 	{
-		g_PluginList->removePlugin(plist->getSelected());
+		g_PluginList->removePlugin(listMenu->getSelected());
 		//return menu_return::RETURN_EXIT_ALL;
-		plist->hide();
-		plist->exec(NULL, "");
+		listMenu->hide();
+		listMenu->exec(NULL, "");
 	}
 	else if(actionKey == "pgreen")
 	{
-		g_PluginList->startPlugin(plist->getSelected());
+		g_PluginList->startPlugin(listMenu->getSelected());
 	}
 	else if(actionKey == "mplay")
 	{
-		selected = mlist->getSelected();
+		selected = listMenu->getSelected();
 		CMoviePlayerGui tmpMoviePlayerGui;
 
-		if (&m_vMovieInfo[mlist->getSelected()].file != NULL) 
+		if (&m_vMovieInfo[listMenu->getSelected()].file != NULL) 
 		{
-			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[mlist->getSelected()]);
+			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[listMenu->getSelected()]);
 			tmpMoviePlayerGui.exec(NULL, "urlplayback");
 		}
 	}
 	else if(actionKey == "minfo")
 	{
-		selected = mlist->getSelected();
-		m_movieInfo.showMovieInfo(m_vMovieInfo[mlist->getSelected()]);
+		selected = listMenu->getSelected();
+		m_movieInfo.showMovieInfo(m_vMovieInfo[listMenu->getSelected()]);
 	}
 	else if(actionKey == "spinner")
 	{
@@ -3025,8 +3017,6 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("PlayMovieDir(without Browser)", true, NULL, this, "playmoviedir"));
 	mainMenu->addItem(new CMenuForwarder("PlayAudioDir(without Browser)", true, NULL, this, "playaudiodir"));
 	mainMenu->addItem(new CMenuForwarder("ShowPictureDir(without Browser)", true, NULL, this, "showpicturedir"));
-
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
