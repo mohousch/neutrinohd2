@@ -66,13 +66,11 @@
 
 
 extern cPlayback *playback;
-xmlDocPtr parser;
+extern CBouquetManager * g_bouquetManager;	// defined in der zapit.cpp
 
 CWebTV::CWebTV()
 {
 	tuned = -1;
-	
-	parser = NULL;
 	
 	position = 0;
 	duration = 0;
@@ -93,336 +91,47 @@ CWebTV::~CWebTV()
 void CWebTV::ClearChannels(void)
 {
 	dprintf(DEBUG_INFO, "CWebTV::ClearChannels\n");
-
-	if (parser != NULL)
-	{
-		xmlFreeDoc(parser);
-		parser = NULL;
-	}
 	
+/*
 	for (std::vector<CZapitChannel*>::iterator it = channels.begin(); it != channels.end(); it++) 
 	{
                	delete (*it);
         }
 	
 	channels.clear();
+*/
 }
-
+extern tallchans allchans;	// defined in bouquets.h
+std::vector<CZapitBouquet *> bouquets;
 void CWebTV::loadChannels(void)
 {
 	dprintf(DEBUG_INFO, "CWebTV::loadChannels\n");
 
-	readChannellist(g_settings.webtv_userBouquet);
+	// load all tv channels
+	channels.clear();
+
+	//
+	bouquets = g_bouquetManager->Bouquets;
+
+	for (unsigned int count = 0; count < bouquets.size(); count++)
+	{
+		if(bouquets[count]->bWebTV)
+			channels = g_bouquetManager->Bouquets[count]->tvChannels;
+	}
+	//
+
+	/*
+	for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+	{
+		//if (IS_WEBTV(it->second.getChannelID()))
+		if(it->second.isWebTV)
+			channels.push_back(&(it->second));
+	}
+	*/
 	
 	title = std::string(rindex(g_settings.webtv_userBouquet.c_str(), '/') + 1);
 
 	removeExtension(title);
-}
-
-void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * description) 
-{
-	dprintf(DEBUG_DEBUG, "CWebTV::processPlaylistUrl\n");
-	
-	CURL *curl_handle;
-	struct MemoryStruct chunk;
-	
-	chunk.memory = NULL; 	// we expect realloc(NULL, size) to work
-	chunk.size = 0;    	// no data at this point
-
-	curl_global_init(CURL_GLOBAL_ALL);
-
-	// init the curl session
-	curl_handle = curl_easy_init();
-
-	// specify URL to get
-	curl_easy_setopt(curl_handle, CURLOPT_URL, url);
-
-	// send all data to this function 
-	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-
-	// we pass our 'chunk' struct to the callback function
-	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
-
-	// some servers don't like requests that are made without a user-agent field, so we provide one
-	curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-
-	// don't use signal for timeout
-	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
-
-	// set timeout to 10 seconds
-	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 10);
-	
-	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
-	{
-		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
-		
-		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
-		{
-			char tmp[200];
-			strcpy(tmp, g_settings.softupdate_proxyusername);
-			strcat(tmp, ":");
-			strcat(tmp, g_settings.softupdate_proxypassword);
-			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
-		}
-	}
-
-	// get it!
-	curl_easy_perform(curl_handle);
-
-	// cleanup curl stuff
-	curl_easy_cleanup(curl_handle);
-
-	long res_code;
-	if (curl_easy_getinfo(curl_handle, CURLINFO_HTTP_CODE, &res_code ) ==  CURLE_OK) 
-	{
-		if (200 == res_code) 
-		{
-			std::istringstream iss;
-			iss.str (std::string(chunk.memory, chunk.size));
-			char line[512];
-			char *ptr;
-			t_channel_id id = 0;
-			
-			while (iss.rdstate() == std::ifstream::goodbit) 
-			{
-				iss.getline(line, 512);
-				if (line[0] != '#') 
-				{
-					ptr = strstr(line, "http://");
-					if (ptr != NULL) 
-					{
-						char *tmp;
-						// strip \n and \r characters from url
-						tmp = strchr(line, '\r');
-						if (tmp != NULL)
-							*tmp = '\0';
-						tmp = strchr(line, '\n');
-						if (tmp != NULL)
-							*tmp = '\0';
-						
-						addUrl2Playlist(ptr, name, description, id);
-					}
-				}
-			}
-		}
-	}
-
-	if(chunk.memory)
-		free(chunk.memory);
- 
-	// we're done with libcurl, so clean it up
-	curl_global_cleanup();
-}
-
-void CWebTV::addUrl2Playlist(const char * url, const char *name, const char * description, t_channel_id id)
-{
-	dprintf(DEBUG_DEBUG, "CWebTV::addUrl2Playlist\n");
-	
-	CZapitChannel * tmp = new CZapitChannel(name, id, description);
-	
-	tmp->channel_id = id&0xFFFFFFFFFFFFULL;				
-	tmp->name = name;
-	tmp->url = url;
-	tmp->description = description;
-						
-	// fill channelslist
-	channels.push_back(tmp);
-}
-
-// readxml file
-bool CWebTV::readChannellist(std::string filename)
-{
-	dprintf(DEBUG_NORMAL, "CWebTV::readChannellist parsing %s\n", filename.c_str());
-	
-	// clear channellist
-	ClearChannels();
-	
-	// check for extension
-	bool iptv = false;
-	bool webtv = false;
-	bool playlist = false;
-					
-	std::string extension = getFileExt(filename);
-						
-	if( strcasecmp("tv", extension.c_str()) == 0)
-		iptv = true;
-	else if( strcasecmp("m3u", extension.c_str()) == 0)
-			playlist = true;
-	if( strcasecmp("xml", extension.c_str()) == 0)
-		webtv = true;
-	
-	if(iptv)
-	{
-		FILE * f = fopen(filename.c_str(), "r");
-
-		std::string title;
-		std::string URL;
-		std::string url;
-		std::string description;
-		t_channel_id id = 0;
-		
-		if(f != NULL)
-		{
-			while(true)
-			{
-				char line[1024];
-				if (!fgets(line, 1024, f))
-					break;
-				
-				size_t len = strlen(line);
-				if (len < 2)
-					// Lines with less than one char aren't meaningful
-					continue;
-				
-				// strip newline
-				line[--len] = 0;
-				
-				// strip carriage return (when found)
-				if (line[len - 1] == '\r')
-					line[len - 1 ] = 0;
-				
-				if (strncmp(line, "#SERVICE 4097:0:1:0:0:0:0:0:0:0:", 32) == 0)
-					url = line + 32;
-				else if (strncmp(line, "#DESCRIPTION", 12) == 0)
-				{
-					int offs = line[12] == ':' ? 14 : 13;
-			
-					title = line + offs;
-				
-					description = "stream";
-
-					if(id == 0)
-						id = create_channel_id(url.c_str());
-					
-					addUrl2Playlist(::decodeUrl(url).c_str(), title.c_str(), description.c_str(), id);
-				}
-			}
-			
-			fclose(f);
-			
-			return true;
-		}
-	}
-	else if(webtv)
-	{
-		if (parser != NULL)
-		{
-			xmlFreeDoc(parser);
-			parser = NULL;
-		}
-
-		parser = parseXmlFile(filename.c_str());
-		
-		if (parser) 
-		{
-			xmlNodePtr l0 = NULL;
-			xmlNodePtr l1 = NULL;
-			l0 = xmlDocGetRootElement(parser);
-			l1 = l0->xmlChildrenNode;
-			
-			neutrino_msg_t      msg;
-			neutrino_msg_data_t data;
-			
-			CHintBox* hintBox = NULL;
-			hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SERVICEMENU_RELOAD_HINT));
-			
-			g_RCInput->getMsg(&msg, &data, 0);
-			
-			if (l1) 
-			{
-				while ( ((xmlGetNextOccurence(l1, "webtv")) || (xmlGetNextOccurence(l1, "station"))) && msg != CRCInput::RC_home) 
-				{
-					char * title;
-					char * url;
-					char * description;
-					t_channel_id id = 0;
-					
-					// title
-					if(xmlGetNextOccurence(l1, "webtv"))
-					{
-						title = xmlGetAttribute(l1, (char *)"title");
-						url = xmlGetAttribute(l1, (char *)"url");
-						description = xmlGetAttribute(l1, (char *)"description");
-						const char *epgid = xmlGetAttribute(l1, "epgid");
-
-						if (epgid)
-							id = strtoull(epgid, NULL, 16);
-
-						if(id == 0)
-							id = create_channel_id(url);
-						
-						addUrl2Playlist(url, title, description, id);
-					}	
-					else if (xmlGetNextOccurence(l1, "station"))
-					{
-						hintBox->paint();
-						
-						title = xmlGetAttribute(l1, (char *)"name");
-						url = xmlGetAttribute(l1, (char *)"url");
-						description = "stream";
-
-						if(id == 0)
-							id = create_channel_id(url);
-						
-						processPlaylistUrl(url, title, description) ;
-					}
-
-					l1 = l1->xmlNextNode;
-					g_RCInput->getMsg(&msg, &data, 0);
-				}
-			}
-			hintBox->hide();
-			delete hintBox;
-			hintBox = NULL;
-			
-			return true;
-		}
-		
-		xmlFreeDoc(parser);
-		parser = NULL;
-	}
-	else if(playlist)
-	{
-		std::ifstream infile;
-		char cLine[1024];
-		char name[1024] = { 0 };
-		int duration;
-		std::string description;
-		t_channel_id id = 0;
-				
-		infile.open(filename.c_str(), std::ifstream::in);
-
-		while (infile.good())
-		{
-			infile.getline(cLine, sizeof(cLine));
-					
-			// remove CR
-			if(cLine[strlen(cLine) - 1] == '\r')
-				cLine[strlen(cLine) - 1] = 0;
-					
-			sscanf(cLine, "#EXTINF:%d,%[^\n]\n", &duration, name);
-					
-			if(strlen(cLine) > 0 && cLine[0] != '#')
-			{
-				char *url = NULL;
-				if ((url = strstr(cLine, "http://")) || (url = strstr(cLine, "rtmp://")) || (url = strstr(cLine, "rtsp://")) || (url = strstr(cLine, "mmsh://")) ) 
-				{
-					if (url != NULL) 
-					{
-						description = "stream";
-
-						if(id == 0)
-							id = create_channel_id(url);
-					
-						addUrl2Playlist(url, name, description.c_str(), id);
-					}
-				}
-			}
-		}
-		infile.close();
-	}
-	
-	return false;
 }
 
 //
@@ -675,6 +384,9 @@ void CWebTV::Bouquets(void)
 		g_settings.webtv_userBouquet = filelist[select].Name.c_str();
 		
 		dprintf(DEBUG_NORMAL, "CWebTV::addUserBouquet: settings file %s\n", g_settings.webtv_userBouquet.c_str());
+
+		// reload allchans and bouquets
+		g_Zapit->reinitChannels();
 		
 		// load channels
 		loadChannels();
@@ -701,6 +413,9 @@ void CWebTV::userBouquet(void)
 		g_settings.webtv_userBouquet = filebrowser.getSelectedFile()->Name.c_str();
 		
 		printf("[webtv] webtv settings file %s\n", g_settings.webtv_userBouquet.c_str());
+
+		// reload allchans and bouquets
+		g_Zapit->reinitChannels();
 		
 		// load channels
 		loadChannels();

@@ -235,7 +235,7 @@ static int PlaybackOpen(Context_t  *context, char * uri)
 			{
 				// mms is in reality called rtsp, and ffmpeg expects this
 				char * tUri = (char*)malloc(strlen(uri) + 2);
-				strncpy(tUri + 1, uri, strlen(uri) + 1);
+				strncpy(tUri+1, uri, strlen(uri)+1);
 				strncpy(tUri, "rtsp", 4);
 				free(context->playback->uri);
 				context->playback->uri = strdup(tUri);
@@ -593,7 +593,7 @@ static int PlaybackFastForward(Context_t  *context, int* speed)
 	playback_printf(10, "speed %d\n", *speed);
 
 	/* Audio only forwarding not supported */
-	if (context->playback->isVideo /*&& !context->playback->isHttp*/ && !context->playback->BackWard && (!context->playback->isPaused || context->playback->isPlaying)) 
+	if (context->playback->isVideo && !context->playback->isHttp && !context->playback->BackWard && (!context->playback->isPaused || context->playback->isPlaying)) 
 	{
 		if ((*speed <= 0) || (*speed > cMaxSpeed_ff))
 		{
@@ -660,7 +660,7 @@ static int PlaybackFastBackward(Context_t  *context,int* speed)
 	playback_printf(10, "speed %d\n", *speed);
 
 	/* Audio only backwarding not supported */
-	if (context->playback->isVideo /*&& !context->playback->isHttp*/ && !context->playback->isForwarding && (!context->playback->isPaused || context->playback->isPlaying)) 
+	if (context->playback->isVideo && !context->playback->isHttp && !context->playback->isForwarding && (!context->playback->isPaused || context->playback->isPlaying)) 
 	{
 	    
 		if ((*speed > 0) || (*speed < cMaxSpeed_fr))
@@ -707,7 +707,7 @@ static int PlaybackSlowMotion(Context_t  *context,int* speed)
 	playback_printf(10, "\n");
 
 	//Audio only forwarding not supported
-	if (context->playback->isVideo /*&& !context->playback->isHttp*/ && context->playback->isPlaying) 
+	if (context->playback->isVideo && !context->playback->isHttp && context->playback->isPlaying) 
 	{
 		if(context->playback->isPaused)
 			PlaybackContinue(context);
@@ -747,7 +747,7 @@ static int PlaybackSeek(Context_t  *context, float * pos)
 
 	playback_printf(10, "pos: %f\n", *pos);
 
-	if (/*!context->playback->isHttp &&*/ context->playback->isPlaying && !context->playback->isForwarding && !context->playback->BackWard && !context->playback->SlowMotion && !context->playback->isPaused) 
+	if (!context->playback->isHttp && context->playback->isPlaying && !context->playback->isForwarding && !context->playback->BackWard && !context->playback->SlowMotion && !context->playback->isPaused) 
 	{
 		context->playback->isSeeking = 1;
 

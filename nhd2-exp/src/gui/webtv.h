@@ -41,37 +41,8 @@
 
 #define DEFAULT_WEBTV_FILE 		CONFIGDIR "/webtv/webtv.xml"
 
-extern "C" {
-#include <libmd5sum/md5.h>
-}
 #include <string.h>
 
-/*
-struct webtv_channels {
-			std::string title;
-			std::string url;
-			std::string description;
-			t_channel_id id;
-			CChannelEvent currentEvent, nextEvent;
-};
-		
-std::vector<webtv_channels *> channels;
-*/
-
-static inline t_channel_id create_channel_id(const char *url = NULL)
-{
-	if (url) 
-	{
-		t_channel_id cid;
-		unsigned char md5[16];
-		md5_buffer(url, strlen(url), md5);
-		memcpy(&cid, md5, sizeof(cid));
-
-		return cid | 0xFFFFFFFF00000000;
-	}
-
-	return 0xFFFFFFFF00000000;
-}
 
 class CWebTV : public CMenuTarget
 {
@@ -100,9 +71,6 @@ class CWebTV : public CMenuTarget
 		unsigned int speed;
 		
 		void hide();
-
-		void processPlaylistUrl(const char *url, const char *name, const char * description) ;
-		void addUrl2Playlist(const char * url, const char *name, const char * description, t_channel_id id = 0);
 
 	protected:
 		virtual CWebTV::result_ itemSelected();
@@ -149,8 +117,6 @@ class CWebTV : public CMenuTarget
 		//
 		void loadChannels(void);
 		void ClearChannels(void);
-		
-		bool readChannellist(std::string filename);
 
 		//
 		CZapitClient::CCurrentServiceInfo getServiceInfo();

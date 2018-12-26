@@ -3,17 +3,12 @@ AUTOMAKE_OPTIONS = gnu
 SUBDIRS = \
 	test \
 	netzkino \
-	fbcallmonitor \
 	youtube \
 	systeminfo \
-	tuxdns \
-	restart_enigma \
 	tuxcom \
-	dvdplayer \
 	mediaplayer \
 	fileexplorer \
 	mediaportal \
-	satipclient \
 	icecast \
 	upnpbrowser \
 	internetradio \
@@ -21,7 +16,6 @@ SUBDIRS = \
 	moviebrowser \
 	picviewer \
 	audioplayer \
-	opkg_manager \
 	nfilm \
 	ntvshows
 
@@ -36,7 +30,13 @@ endif
 #testing
 if ENABLE_TESTING
 SUBDIRS += upnp \
-	ard
+	ard \
+	fbcallmonitor \
+	tuxdns \
+	restart_enigma \
+	dvdplayer \
+	satipclient \
+	opkg_manager
 endif
 
 

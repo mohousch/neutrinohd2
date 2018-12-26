@@ -30,6 +30,10 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+#include <algorithm>    // std::sort
+#include <fstream>
+#include <iostream>
+
 // tuxbox headers
 #include <configfile.h>
 
@@ -41,14 +45,19 @@
 
 // system
 #include <system/debug.h>
+#include <system/helpers.h>
+
+#include <global.h>
+#include <neutrino.h>
+
+// curl
+#include <curl/curl.h>
+#include <curl/easy.h>
 
 
 extern tallchans allchans;   			//  defined in zapit.cpp
 extern CConfigFile config;   			//  defined in zapit.cpp
 extern CBouquetManager * g_bouquetManager;	//  defined in zapit.cpp
-
-char *getFrontendName(void);
-void cp(char * from, char * to);
 
 #define TIMER_START()                                                                   \
         static struct timeval tv, tv2;                                                  \
@@ -68,7 +77,7 @@ void cp(char * from, char * to);
         }                                                               \
         while (0)
 
-// -- servicetype 0 queries TV and Radio Channels
+// CZapitBouquet
 CZapitChannel * CZapitBouquet::getChannelByChannelID(const t_channel_id channel_id, const unsigned char serviceType)
 {
 	CZapitChannel * result = NULL;
@@ -178,6 +187,7 @@ void CZapitBouquet::moveService(const unsigned int oldPosition, const unsigned i
 	}
 }
 
+// CBouquetManager
 void CBouquetManager::writeBouquetHeader(FILE * bouq_fd, uint32_t i, const char * bouquetName)
 {
 	fprintf(bouq_fd, "\t<Bouquet name=\"%s\" hidden=\"%d\" locked=\"%d\">\n", bouquetName, Bouquets[i]->bHidden ? 1 : 0, Bouquets[i]->bLocked ? 1 : 0);
@@ -369,7 +379,7 @@ void CBouquetManager::sortBouquets(void)
 
 void CBouquetManager::parseBouquetsXml(const char* fname, bool bUser)
 {
-	xmlDocPtr parser;
+	xmlDocPtr parser = NULL;
 
 	parser = parseXmlFile(fname);
 	if (parser == NULL)
@@ -411,7 +421,7 @@ void CBouquetManager::parseBouquetsXml(const char* fname, bool bUser)
 				GET_ATTR(channel_node, (char *) "on", SCANF_ORIGINAL_NETWORK_ID_TYPE, original_network_id);
 				GET_ATTR(channel_node, (char *) "t", SCANF_TRANSPORT_STREAM_ID_TYPE, transport_stream_id);
 
-				// grab satelliteposition from channel map
+				// grab satelliteposition and freq from channel map
 				for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
 				{
 					if(it->second.getServiceId() == service_id)
@@ -480,7 +490,7 @@ void CBouquetManager::makeBouquetfromCurrentservices(const xmlNodePtr root)
 					GET_ATTR(transponder, "id", SCANF_TRANSPORT_STREAM_ID_TYPE, transport_stream_id);
 					GET_ATTR(channel_node, "service_id", SCANF_SERVICE_ID_TYPE, service_id);
 								
-					CZapitChannel *chan = findChannelByChannelID(CREATE_CHANNEL_ID);
+					CZapitChannel *chan = findChannelByChannelID(CREATE_CHANNEL_ID(service_id, original_network_id, transport_stream_id));
 
 					if (chan != NULL)
 						newBouquet->addService(chan);
@@ -494,6 +504,330 @@ void CBouquetManager::makeBouquetfromCurrentservices(const xmlNodePtr root)
 	}
 }
 
+// webtv 
+void CBouquetManager::processPlaylistUrl(const char *url, const char *name, const char * description) 
+{
+	dprintf(DEBUG_DEBUG, "CBouquetManager::processPlaylistUrl\n");
+	
+	CURL *curl_handle;
+	struct MemoryStruct chunk;
+	
+	chunk.memory = NULL; 	// we expect realloc(NULL, size) to work
+	chunk.size = 0;    	// no data at this point
+
+	curl_global_init(CURL_GLOBAL_ALL);
+
+	// init the curl session
+	curl_handle = curl_easy_init();
+
+	// specify URL to get
+	curl_easy_setopt(curl_handle, CURLOPT_URL, url);
+
+	// send all data to this function 
+	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+
+	// we pass our 'chunk' struct to the callback function
+	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
+
+	// some servers don't like requests that are made without a user-agent field, so we provide one
+	curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+
+	// don't use signal for timeout
+	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
+
+	// set timeout to 10 seconds
+	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 10);
+	
+	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
+	{
+		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
+		
+		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
+		{
+			char tmp[200];
+			strcpy(tmp, g_settings.softupdate_proxyusername);
+			strcat(tmp, ":");
+			strcat(tmp, g_settings.softupdate_proxypassword);
+			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
+		}
+	}
+
+	// get it!
+	curl_easy_perform(curl_handle);
+
+	// cleanup curl stuff
+	curl_easy_cleanup(curl_handle);
+
+	long res_code;
+	if (curl_easy_getinfo(curl_handle, CURLINFO_HTTP_CODE, &res_code ) ==  CURLE_OK) 
+	{
+		if (200 == res_code) 
+		{
+			std::istringstream iss;
+			iss.str (std::string(chunk.memory, chunk.size));
+			char line[512];
+			char *ptr;
+			t_channel_id id = 0;
+			
+			while (iss.rdstate() == std::ifstream::goodbit) 
+			{
+				iss.getline(line, 512);
+				if (line[0] != '#') 
+				{
+					ptr = strstr(line, "http://");
+					if (ptr != NULL) 
+					{
+						char *tmp;
+						// strip \n and \r characters from url
+						tmp = strchr(line, '\r');
+						if (tmp != NULL)
+							*tmp = '\0';
+						tmp = strchr(line, '\n');
+						if (tmp != NULL)
+							*tmp = '\0';
+						
+						id = create_channel_id64(0, 0, 0, 0, 0, ptr);
+						CZapitChannel * chan = new CZapitChannel(name, id, ptr,  description);	
+
+						if (chan != NULL) 
+						{
+							webTVBouquet->addService(chan);
+
+							// insert to allchans
+							//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, ptr, description)));
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if(chunk.memory)
+		free(chunk.memory);
+ 
+	// we're done with libcurl, so clean it up
+	curl_global_cleanup();
+}
+
+void CBouquetManager::loadWebTVBouquet(std::string filename)
+{
+	dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet: parsing %s\n", filename.c_str());
+
+	webTVBouquet = NULL;
+	webTVBouquet = addBouquet("WebTV");
+	webTVBouquet->bHidden = true;
+	webTVBouquet->bLocked = true;
+	webTVBouquet->bWebTV = true;
+
+	xmlDocPtr parser = NULL;
+	
+	// check for extension
+	bool iptv = false;
+	bool webtv = false;
+	bool playlist = false;
+					
+	std::string extension = getFileExt(filename);
+						
+	if( strcasecmp("tv", extension.c_str()) == 0)
+		iptv = true;
+	else if( strcasecmp("m3u", extension.c_str()) == 0)
+		playlist = true;
+	if( strcasecmp("xml", extension.c_str()) == 0)
+		webtv = true;
+	
+	if(iptv)
+	{
+		FILE * f = fopen(filename.c_str(), "r");
+
+		std::string title;
+		std::string URL;
+		std::string url;
+		std::string description;
+		t_channel_id id = 0;
+		
+		if(f != NULL)
+		{
+			while(true)
+			{
+				char line[1024];
+				if (!fgets(line, 1024, f))
+					break;
+				
+				size_t len = strlen(line);
+				if (len < 2)
+					// Lines with less than one char aren't meaningful
+					continue;
+				
+				// strip newline
+				line[--len] = 0;
+				
+				// strip carriage return (when found)
+				if (line[len - 1] == '\r')
+					line[len - 1 ] = 0;
+				
+				if (strncmp(line, "#SERVICE 4097:0:1:0:0:0:0:0:0:0:", 32) == 0)
+					url = line + 32;
+				else if (strncmp(line, "#DESCRIPTION", 12) == 0)
+				{
+					int offs = line[12] == ':' ? 14 : 13;
+			
+					title = line + offs;
+				
+					description = "stream";
+
+					if(id == 0)
+						 id = create_channel_id64(0, 0, 0, 0, 0, url.c_str());
+					
+					CZapitChannel * chan = new CZapitChannel(title, id, url, description);
+
+					if (chan != NULL) 
+					{
+						webTVBouquet->addService(chan);
+
+						// insert to allchans
+						//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+					}
+				}
+			}
+			
+			fclose(f);
+		}
+	}
+	else if(webtv)
+	{
+		if (parser != NULL)
+		{
+			xmlFreeDoc(parser);
+			parser = NULL;
+		}
+
+		parser = parseXmlFile(filename.c_str());
+		
+		if (parser) 
+		{
+			xmlNodePtr l0 = NULL;
+			xmlNodePtr l1 = NULL;
+			l0 = xmlDocGetRootElement(parser);
+			l1 = l0->xmlChildrenNode;
+			
+			neutrino_msg_t      msg;
+			neutrino_msg_data_t data;
+			
+			g_RCInput->getMsg(&msg, &data, 0);
+			
+			if (l1) 
+			{
+				while ( ((xmlGetNextOccurence(l1, "webtv")) || (xmlGetNextOccurence(l1, "station"))) && msg != CRCInput::RC_home) 
+				{
+					char * title;
+					char * url;
+					char * description;
+					t_channel_id id = 0;
+					
+					// title
+					if(xmlGetNextOccurence(l1, "webtv"))
+					{
+						title = xmlGetAttribute(l1, (char *)"title");
+						url = xmlGetAttribute(l1, (char *)"url");
+						description = xmlGetAttribute(l1, (char *)"description");
+						const char *epgid = xmlGetAttribute(l1, "epgid");
+
+						if (epgid)
+							id = strtoull(epgid, NULL, 16);
+
+						if(id == 0)
+							id = create_channel_id64(0, 0, 0, 0, 0, url);
+						
+						CZapitChannel * chan = new CZapitChannel(title, id, url,  description);
+
+
+						if (chan != NULL) 
+						{
+							webTVBouquet->addService(chan);
+
+							// insert to allchans
+							//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+						}
+					}	
+					else if (xmlGetNextOccurence(l1, "station"))
+					{
+						title = xmlGetAttribute(l1, (char *)"name");
+						url = xmlGetAttribute(l1, (char *)"url");
+						description = "stream";
+
+						if(id == 0)
+							id = create_channel_id64(0, 0, 0, 0, 0, url);
+						
+						CZapitChannel * chan = new CZapitChannel(title, id, url,  description);
+
+						if (chan != NULL) 
+						{
+							webTVBouquet->addService(chan);
+
+							// insert to allchans
+							//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+						}
+					}
+
+					l1 = l1->xmlNextNode;
+					g_RCInput->getMsg(&msg, &data, 0);
+				}
+			}
+		}
+		
+		xmlFreeDoc(parser);
+		parser = NULL;
+	}
+	else if(playlist)
+	{
+		std::ifstream infile;
+		char cLine[1024];
+		char name[1024] = { 0 };
+		int duration;
+		std::string description;
+		t_channel_id id = 0;
+				
+		infile.open(filename.c_str(), std::ifstream::in);
+
+		while (infile.good())
+		{
+			infile.getline(cLine, sizeof(cLine));
+					
+			// remove CR
+			if(cLine[strlen(cLine) - 1] == '\r')
+				cLine[strlen(cLine) - 1] = 0;
+					
+			sscanf(cLine, "#EXTINF:%d,%[^\n]\n", &duration, name);
+					
+			if(strlen(cLine) > 0 && cLine[0] != '#')
+			{
+				char *url = NULL;
+				if ((url = strstr(cLine, "http://")) || (url = strstr(cLine, "rtmp://")) || (url = strstr(cLine, "rtsp://")) || (url = strstr(cLine, "mmsh://")) ) 
+				{
+					if (url != NULL) 
+					{
+						description = "stream";
+
+						if(id == 0)
+							id = create_channel_id64(0, 0, 0, 0, 0, url);
+					
+						CZapitChannel * chan = new CZapitChannel(name, id, url,  description);
+
+						if (chan != NULL) 
+						{
+							webTVBouquet->addService(chan);
+
+							// insert to allchans
+							//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, url, description)));
+						}
+					}
+				}
+			}
+		}
+		infile.close();
+	}
+}
+
 void CBouquetManager::loadBouquets(bool loadCurrentBouquet)
 {
 	dprintf(DEBUG_NORMAL, "CBouquetManager::loadBouquets:\n");
@@ -503,6 +837,9 @@ void CBouquetManager::loadBouquets(bool loadCurrentBouquet)
 	// bouquets
 	parseBouquetsXml(BOUQUETS_XML, false);
 	sortBouquets();
+
+	// webtv
+	loadWebTVBouquet(g_settings.webtv_userBouquet);
 
 	// ubouquets
 	parseBouquetsXml(UBOUQUETS_XML, true);

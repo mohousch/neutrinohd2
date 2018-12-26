@@ -28,12 +28,14 @@
 CZapitChannel::CZapitChannel(const std::string& p_name, t_service_id p_sid, t_transport_stream_id p_tsid, t_original_network_id p_onid, unsigned char p_service_type, t_satellite_position p_satellite_position, freq_id_t p_freq )
 {
 	name = p_name;
+
 	service_id = p_sid;
 	transport_stream_id = p_tsid;
 	original_network_id = p_onid;
 	serviceType = p_service_type;
 	satellitePosition = p_satellite_position;
 	freq = p_freq;
+
 	channel_id = CREATE_CHANNEL_ID64;
 	caPmt = NULL;
 	rawPmt = NULL;
@@ -47,13 +49,16 @@ CZapitChannel::CZapitChannel(const std::string& p_name, t_service_id p_sid, t_tr
 	
 	ttx_language_code = "";
 	last_unlocked_EPGid = 0;
-	last_unlocked_time = 0;	
+	last_unlocked_time = 0;
+
+	isWebTV = false;	
 }
 
-CZapitChannel::CZapitChannel(const std::string& p_name, t_channel_id p_chid, const std::string& p_description)
+CZapitChannel::CZapitChannel(const std::string& p_name, t_channel_id p_chid, const std::string& p_url, const std::string& p_description)
 {
 	name = p_name;
 	channel_id = p_chid;
+	url = p_url;
 	description = p_description;
 
 	service_id = 0;
@@ -70,6 +75,8 @@ CZapitChannel::CZapitChannel(const std::string& p_name, t_channel_id p_chid, con
 	pname = NULL;
 	
 	pmtPid = 0;
+
+	isWebTV = true;
 }
 
 CZapitChannel::~CZapitChannel(void)

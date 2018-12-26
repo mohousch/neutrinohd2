@@ -1001,7 +1001,8 @@ bool CChannelList::adjustToChannelID(const t_channel_id channel_id, bool bToo)
 {
 	unsigned int i;
 
-	//printf("CChannelList::adjustToChannelID me %x list size %d channel_id %llx\n", (int) this, chanlist.size(), channel_id);fflush(stdout);
+	printf("CChannelList::adjustToChannelID me %x list size %d channel_id %llx\n", (int) this, chanlist.size(), channel_id);
+	fflush(stdout);
 	
 	for (i = 0; i < chanlist.size(); i++) 
 	{

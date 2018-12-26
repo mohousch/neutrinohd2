@@ -1350,10 +1350,10 @@ void CControlAPI::ZaptoCGI(CyhookHandler *hh)
 			sectionsd_getCurrentNextServiceKey(current_channel&0xFFFFFFFFFFFFULL, currentNextInfo);
 			if (sectionsd_getLinkageDescriptorsUniqueKey(currentNextInfo.current_uniqueKey,desc))
 			{
-				for(unsigned int i=0;i< desc.size();i++)
+				for(unsigned int i = 0; i< desc.size(); i++)
 				{
 					t_channel_id sub_channel_id =
-						CREATE_CHANNEL_ID_FROM_SERVICE_ORIGINALNETWORK_TRANSPORTSTREAM_ID(
+						CREATE_CHANNEL_ID(
 						desc[i].serviceId, desc[i].originalNetworkId, desc[i].transportStreamId);
 					hh->printf(PRINTF_CHANNEL_ID_TYPE
 						" %s\n",

@@ -3729,19 +3729,24 @@ _repeat:
 	{
 		channelsInit();
 
-		channelList->adjustToChannelID(live_channel_id);//FIXME
-		
-		if(old_b_id >= 0) 
+		if(mode != mode_iptv)
 		{
-			bouquetList->activateBouquet(old_b_id, false);
-			old_b_id = -1;
-			g_RCInput->postMsg(CRCInput::RC_ok, 0);
+			channelList->adjustToChannelID(live_channel_id);//FIXME
+		
+			if(old_b_id >= 0) 
+			{
+				bouquetList->activateBouquet(old_b_id, false);
+				old_b_id = -1;
+				g_RCInput->postMsg(CRCInput::RC_ok, 0);
+			}
 		}
 	}
 	else if( msg == NeutrinoMessages::EVT_BOUQUETSCHANGED ) 
 	{
 		channelsInit();
-		channelList->adjustToChannelID(live_channel_id);//FIXME what if deleted ?
+
+		if(mode != mode_iptv)
+			channelList->adjustToChannelID(live_channel_id);//FIXME what if deleted ?
 
 		return messages_return::handled;
 	}
@@ -4213,7 +4218,9 @@ skip_message:
 	{
 		//FIXME:remember this
 		channelsInit();
-		channelList->adjustToChannelID(live_channel_id);
+
+		if(mode != mode_iptv)
+			channelList->adjustToChannelID(live_channel_id);
 	}
 	
 	if ((msg >= CRCInput::RC_WithData) && (msg < CRCInput::RC_WithData + 0x10000000))

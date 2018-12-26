@@ -2787,11 +2787,11 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 	
 			while (CBasicServer::receive_data(connfd, &msgAddSubService, sizeof(msgAddSubService))) 
 			{
-				dprintf(DEBUG_DEBUG, "NVOD insert %llx\n", CREATE_CHANNEL_ID_FROM_SERVICE_ORIGINALNETWORK_TRANSPORTSTREAM_ID(msgAddSubService.service_id, msgAddSubService.original_network_id, msgAddSubService.transport_stream_id));
+				dprintf(DEBUG_DEBUG, "NVOD insert %llx\n", CREATE_CHANNEL_ID(msgAddSubService.service_id, msgAddSubService.original_network_id, msgAddSubService.transport_stream_id));
 				
 				nvodchannels.insert (
 				std::pair <t_channel_id, CZapitChannel> (
-					CREATE_CHANNEL_ID_FROM_SERVICE_ORIGINALNETWORK_TRANSPORTSTREAM_ID(msgAddSubService.service_id, msgAddSubService.original_network_id, msgAddSubService.transport_stream_id),
+					CREATE_CHANNEL_ID(msgAddSubService.service_id, msgAddSubService.original_network_id, msgAddSubService.transport_stream_id),
 					CZapitChannel (
 					"NVOD",
 					//service_id,
