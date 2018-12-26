@@ -1718,7 +1718,7 @@ void CMovieBrowser::refreshTitle(void)
 	std::string title = m_textTitle.c_str();
 	std::string mb_icon = NEUTRINO_ICON_MOVIE;
 	
-	title = g_Locale->getText(LOCALE_MOVIEPLAYER_MOVIES);
+	title = g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD);
 
 	// head box
 	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
@@ -3001,7 +3001,7 @@ void CMovieBrowser::loadMovies(void)
 	m_pcWindow->paintBackground();
 	m_pcWindow->blit();	
 
-	CHintBox loadBox(LOCALE_MOVIEPLAYER_MOVIES, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	CHintBox loadBox(LOCALE_MOVIEBROWSER_HEAD, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	
 	loadBox.paint();
 

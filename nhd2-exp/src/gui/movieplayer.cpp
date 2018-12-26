@@ -720,12 +720,6 @@ void CMoviePlayerGui::PlayFile(void)
 				speed = 1;
 				playback->SetSpeed(speed);
 			}
-			/* 
-			else if(filelist[selected].ytid != "timeshift")
-			{
-				open_filebrowser = true;
-			}
-			*/
 
 			if (time_forced) 
 			{
