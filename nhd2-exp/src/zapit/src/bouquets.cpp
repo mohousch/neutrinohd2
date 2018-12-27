@@ -594,7 +594,7 @@ void CBouquetManager::processPlaylistUrl(const char *url, const char *name, cons
 							webTVBouquet->addService(chan);
 
 							// insert to allchans
-							allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, ptr, description)));
+							//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, ptr, description)));
 						}
 					}
 				}
@@ -686,7 +686,7 @@ void CBouquetManager::loadWebTVBouquet(std::string filename)
 						webTVBouquet->addService(chan);
 
 						// insert to allchans
-						allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+						//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 					}
 				}
 			}
@@ -747,7 +747,7 @@ void CBouquetManager::loadWebTVBouquet(std::string filename)
 							webTVBouquet->addService(chan);
 
 							// insert to allchans
-							allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+							//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 						}
 					}	
 					else if (xmlGetNextOccurence(l1, "station"))
@@ -766,7 +766,7 @@ void CBouquetManager::loadWebTVBouquet(std::string filename)
 							webTVBouquet->addService(chan);
 
 							// insert to allchans
-							allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+							//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 						}
 					}
 
@@ -819,7 +819,7 @@ void CBouquetManager::loadWebTVBouquet(std::string filename)
 							webTVBouquet->addService(chan);
 
 							// insert to allchans
-							allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, url, description)));
+							//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, url, description)));
 						}
 					}
 				}
