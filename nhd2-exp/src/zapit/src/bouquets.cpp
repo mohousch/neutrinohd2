@@ -258,7 +258,7 @@ void CBouquetManager::saveBouquets(void)
 		{
 			dprintf(DEBUG_INFO, "CBouquetManager::saveBouquets: name %s user: %d\n", Bouquets[i]->Name.c_str(), Bouquets[i]->bUser);
 			
-			if(!Bouquets[i]->bUser) 
+			if(!Bouquets[i]->bUser && !Bouquets[i]->bWebTV)
 			{
 				writeBouquetHeader(bouq_fd, i, convert_UTF8_To_UTF8_XML(Bouquets[i]->Name.c_str()).c_str());
 				writeBouquetChannels(bouq_fd, i);
@@ -616,7 +616,7 @@ void CBouquetManager::loadWebTVBouquet(std::string filename)
 	webTVBouquet = NULL;
 	//webTVBouquet = addBouquet("WebTV", true);
 	webTVBouquet = addBouquetIfNotExist("WebTV");
-	webTVBouquet->bHidden = false;
+	webTVBouquet->bHidden = true;
 	webTVBouquet->bLocked = false;
 	webTVBouquet->bWebTV = true;
 
