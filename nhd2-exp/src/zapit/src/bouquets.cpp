@@ -594,7 +594,7 @@ void CBouquetManager::processPlaylistUrl(const char *url, const char *name, cons
 							webTVBouquet->addService(chan);
 
 							// insert to allchans
-							//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, ptr, description)));
+							allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, ptr, description)));
 						}
 					}
 				}
@@ -614,9 +614,10 @@ void CBouquetManager::loadWebTVBouquet(std::string filename)
 	dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet: parsing %s\n", filename.c_str());
 
 	webTVBouquet = NULL;
-	webTVBouquet = addBouquet("WebTV");
-	webTVBouquet->bHidden = true;
-	webTVBouquet->bLocked = true;
+	//webTVBouquet = addBouquet("WebTV", true);
+	webTVBouquet = addBouquetIfNotExist("WebTV");
+	webTVBouquet->bHidden = false;
+	webTVBouquet->bLocked = false;
 	webTVBouquet->bWebTV = true;
 
 	xmlDocPtr parser = NULL;
@@ -685,7 +686,7 @@ void CBouquetManager::loadWebTVBouquet(std::string filename)
 						webTVBouquet->addService(chan);
 
 						// insert to allchans
-						//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+						allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 					}
 				}
 			}
@@ -746,7 +747,7 @@ void CBouquetManager::loadWebTVBouquet(std::string filename)
 							webTVBouquet->addService(chan);
 
 							// insert to allchans
-							//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+							allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 						}
 					}	
 					else if (xmlGetNextOccurence(l1, "station"))
@@ -765,7 +766,7 @@ void CBouquetManager::loadWebTVBouquet(std::string filename)
 							webTVBouquet->addService(chan);
 
 							// insert to allchans
-							//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+							allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 						}
 					}
 
@@ -818,7 +819,7 @@ void CBouquetManager::loadWebTVBouquet(std::string filename)
 							webTVBouquet->addService(chan);
 
 							// insert to allchans
-							//allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, url, description)));
+							allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, url, description)));
 						}
 					}
 				}
@@ -965,6 +966,19 @@ CZapitBouquet * CBouquetManager::addBouquet(const std::string & name, bool ub, b
 	return newBouquet;
 }
 
+CZapitBouquet* CBouquetManager::addBouquetIfNotExist(const std::string &name)
+{
+	CZapitBouquet* bouquet = NULL;
+
+	int bouquetId = existsBouquet(name.c_str(), true);
+	if (bouquetId == -1)
+		bouquet = addBouquet(name, false);
+	else
+		bouquet = Bouquets[bouquetId];
+
+	return bouquet;
+}
+
 void CBouquetManager::deleteBouquet(const unsigned int id)
 {
 	if (id < Bouquets.size() && Bouquets[id] != remainChannels)
@@ -987,11 +1001,12 @@ void CBouquetManager::deleteBouquet(const CZapitBouquet* bouquet)
 
 // -- Find Bouquet-Name, if BQ exists   (2002-04-02 rasc)
 // -- Return: Bouqet-ID (found: 0..n)  or -1 (Bouquet does not exist)
-int CBouquetManager::existsBouquet(char const * const name)
+int CBouquetManager::existsBouquet(char const * const name, bool ignore_user)
 {
 	for (unsigned int i = 0; i < Bouquets.size(); i++) 
 	{
-		if (Bouquets[i]->Name == name)
+		//if (Bouquets[i]->Name == name)
+		if ((!ignore_user || !Bouquets[i]->bUser) && (Bouquets[i]->Name == name))
 			return (int)i;
 	}
 	
