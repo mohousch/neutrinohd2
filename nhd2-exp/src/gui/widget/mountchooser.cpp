@@ -44,8 +44,8 @@
 #include <system/debug.h>
 
 
-CMountChooser::CMountChooser(const neutrino_locale_t Name, const std::string & Icon, int * chosenIndex, char * chosenLocalDir, const char * const selectedLocalDir, const int mwidth, const int mheight)
-	: CMenuWidget(Name, Icon,mwidth,mheight), index(chosenIndex), localDir(chosenLocalDir)
+CMountChooser::CMountChooser(const neutrino_locale_t Name, const std::string& Icon, int* chosenIndex, char * chosenLocalDir, const char * const selectedLocalDir, const int mwidth, const int mheight)
+	: CMenuWidget(Name, Icon, mwidth, mheight), index(chosenIndex), localDir(chosenLocalDir)
 {
 	char indexStr[2];
 	for(int i = 0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++)
@@ -67,8 +67,8 @@ CMountChooser::CMountChooser(const neutrino_locale_t Name, const std::string & I
 	}	
 }
 
-CMountChooser::CMountChooser(const char * const Name, const std::string & Icon, int * chosenIndex, char * chosenLocalDir, const char * const selectedLocalDir, const int mwidth, const int mheight)
-	: CMenuWidget(Name, Icon,mwidth,mheight), index(chosenIndex), localDir(chosenLocalDir)
+CMountChooser::CMountChooser(const char* const Name, const std::string& Icon, int* chosenIndex, char* chosenLocalDir, const char* const selectedLocalDir, const int mwidth, const int mheight)
+	: CMenuWidget(Name, Icon, mwidth, mheight), index(chosenIndex), localDir(chosenLocalDir)
 {
 	char indexStr[2];
 	for(int i = 0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++)
@@ -90,12 +90,12 @@ CMountChooser::CMountChooser(const char * const Name, const std::string & Icon, 
 	}	
 }
 
-int CMountChooser::exec(CMenuTarget* parent, const std::string & actionKey)
+int CMountChooser::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMountChooser::exec: actionKey:%s\n", actionKey.c_str());
 
 	const char * key = actionKey.c_str();
-	if (strncmp(key, "MID:",4) == 0)
+	if (strncmp(key, "MID:", 4) == 0)
 	{
 		int mount_id = -1;
 		sscanf(&key[4],"%d",&mount_id);

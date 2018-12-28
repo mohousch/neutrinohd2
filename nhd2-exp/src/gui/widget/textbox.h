@@ -81,7 +81,7 @@ class CTextBox
 		int m_nMaxHeight;
 		int m_nMaxWidth;
 
-		// Variables
+		// variables
 		std::string m_cText;
 		std::vector<std::string> m_cLineArray;
 

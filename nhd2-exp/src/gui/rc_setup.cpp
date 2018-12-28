@@ -77,12 +77,7 @@ enum keynames {
 	KEY_EXTRAS_MOVIEBROWSER,
 	KEY_EXTRAS_FILEBROWSER,
 	KEY_EXTRAS_WEBTV,
-	KEY_EXTRAS_SCREENSHOT,
-	
-	// mb
-	KEY_EXTRAS_MB_COPY_JUMP,
-	KEY_EXTRAS_MB_CUT_JUMP,
-	KEY_EXTRAS_MB_TRUNCATE
+	KEY_EXTRAS_SCREENSHOT
 };
 
 #define KEYBINDS_COUNT 41
@@ -119,12 +114,7 @@ const neutrino_locale_t keydescription_head[KEYBINDS_COUNT] =
 	LOCALE_KEYBINDINGMENU_MOVIEBROWSER,
 	LOCALE_KEYBINDINGMENU_FILEBROWSER,
 	LOCALE_KEYBINDINGMENU_WEBTV,
-	LOCALE_KEYBINDINGMENU_SCREENSHOT,
-	
-	// mb
-	LOCALE_KEYBINDINGMENU_MB_COPY_JUMP,
-	LOCALE_KEYBINDINGMENU_MB_CUT_JUMP,
-	LOCALE_KEYBINDINGMENU_MB_TRUNCATE
+	LOCALE_KEYBINDINGMENU_SCREENSHOT
 };
 
 const neutrino_locale_t keydescription[KEYBINDS_COUNT] =
@@ -160,12 +150,7 @@ const neutrino_locale_t keydescription[KEYBINDS_COUNT] =
 	LOCALE_KEYBINDINGMENU_MOVIEBROWSER,
 	LOCALE_KEYBINDINGMENU_FILEBROWSER,
 	LOCALE_KEYBINDINGMENU_WEBTV,
-	LOCALE_KEYBINDINGMENU_SCREENSHOT,
-	
-	// mb
-	LOCALE_KEYBINDINGMENU_MB_COPY_JUMP,
-	LOCALE_KEYBINDINGMENU_MB_CUT_JUMP,
-	LOCALE_KEYBINDINGMENU_MB_TRUNCATE
+	LOCALE_KEYBINDINGMENU_SCREENSHOT
 };
 
 CRemoteControlSettings::CRemoteControlSettings()
@@ -336,12 +321,7 @@ void CKeysBindingSettings::showMenu()
 		&g_settings.key_webtv,
 		
 		// misc
-		&g_settings.key_screenshot,
-		
-		// mb
-		&g_settings.mb_copy_jump,
-		&g_settings.mb_cut_jump,
-		&g_settings.mb_truncate
+		&g_settings.key_screenshot
 	};
 
 	CKeyChooser * keychooser[KEYBINDS_COUNT];
@@ -379,11 +359,6 @@ void CKeysBindingSettings::showMenu()
 	// media
 	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_MAINMENU_MEDIAPLAYER));
 	for (int i = KEY_EXTRAS_RECORDSBROWSER; i <= KEY_EXTRAS_WEBTV; i++)
-		bindSettings.addItem(new CMenuForwarder(keydescription[i], true, NULL, keychooser[i]));
-	
-	// mb
-	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_MOVIEBROWSER_HEAD));
-	for (int i = KEY_EXTRAS_MB_COPY_JUMP; i <= KEY_EXTRAS_MB_TRUNCATE; i++)
 		bindSettings.addItem(new CMenuForwarder(keydescription[i], true, NULL, keychooser[i]));
 
 	// misc

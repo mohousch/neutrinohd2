@@ -761,13 +761,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.key_moviebrowser = configfile.getInt32( "key_moviebrowser", CRCInput::RC_nokey );
 	g_settings.key_filebrowser = configfile.getInt32( "key_filebrowser", CRCInput::RC_nokey );
 	g_settings.key_webtv = configfile.getInt32( "key_webtv", CRCInput::RC_nokey );
-	
 	g_settings.key_screenshot = configfile.getInt32( "key_screenshot", CRCInput::RC_record );
-	
-	// mb
-	g_settings.mb_copy_jump = configfile.getInt32( "mb_copy_jump", CRCInput::RC_nokey );
-	g_settings.mb_cut_jump = configfile.getInt32( "mb_cut_jump", CRCInput::RC_nokey );
-	g_settings.mb_truncate = configfile.getInt32( "mb_truncate", CRCInput::RC_nokey );
 	
 	// webtv
 	g_settings.webtv_userBouquet = configfile.getString("webtv_userBouquet", DEFAULT_WEBTV_FILE);
@@ -1249,11 +1243,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "key_webtv", g_settings.key_webtv );
 	
 	configfile.setInt32( "key_screenshot", g_settings.key_screenshot );
-	
-	// mb
-	configfile.setInt32( "mb_copy_jump", g_settings.mb_copy_jump );
-	configfile.setInt32( "mb_cut_jump", g_settings.mb_cut_jump );
-	configfile.setInt32( "mb_truncate", g_settings.mb_truncate );
 	
 	// webtv
 	configfile.setString( "webtv_userBouquet", g_settings.webtv_userBouquet);
@@ -3223,8 +3212,7 @@ void CNeutrinoApp::RealRun(void)
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
 
-				CAudioPlayerGui tmpAudioPlayerGui;
-				tmpAudioPlayerGui.exec(NULL, "");
+				g_PluginList->startPlugin("audioplayer");
 			}
 			else if( msg == (neutrino_msg_t)g_settings.key_inetradio ) 	// internet radio
 			{
@@ -3242,7 +3230,7 @@ void CNeutrinoApp::RealRun(void)
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
 
-				g_PluginList->startPlugin("tsplayer");
+				g_PluginList->startPlugin("tsbrowser");
 
 				if( mode == mode_radio )
 				{
@@ -3258,7 +3246,7 @@ void CNeutrinoApp::RealRun(void)
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
 
-				g_PluginList->startPlugin("movieplayer");
+				g_PluginList->startPlugin("moviebrowser");
 
 				if( mode == mode_radio )
 				{

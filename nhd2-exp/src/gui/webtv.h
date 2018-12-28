@@ -55,6 +55,9 @@ class CWebTV : public CMenuTarget
 
 	public:
 		std::vector<CZapitChannel*> channels;
+
+		void processPlaylistUrl(const char *url, const char *name, const char * description);
+		void loadWebTVBouquet(std::string filename);
 		
 	private:
 		// bouquets

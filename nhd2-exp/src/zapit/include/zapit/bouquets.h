@@ -68,9 +68,6 @@ class CBouquetManager
 		void writeBouquetChannels(FILE * bouq_fd, uint32_t i, bool bUser = false);
 		void makeBouquetfromCurrentservices (const xmlNodePtr root);
 
-		CZapitBouquet * webTVBouquet;
-		void processPlaylistUrl(const char *url, const char *name, const char * description) ;
-
 	public:
 		CBouquetManager() { remainChannels = NULL; };
 		class ChannelIterator
@@ -100,7 +97,6 @@ class CBouquetManager
 		void saveUBouquets(void);
 		void saveBouquets(const CZapitClient::bouquetMode bouquetMode, const char * const providerName);
 
-		void loadWebTVBouquet(std::string filename);
 		void loadBouquets(bool loadCurrentBouquet = false);
 		void renumServices();
 

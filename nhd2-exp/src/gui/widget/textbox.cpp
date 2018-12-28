@@ -180,9 +180,9 @@ void CTextBox::setCorner(int Radius, int Type)
 	if(m_nMode & SCROLL)
 	{
 		m_cFrameScrollRel.iX = m_cFrame.iX + m_cFrame.iWidth - SCROLLBAR_WIDTH;
-		m_cFrameScrollRel.iY = m_cFrameTextRel.iY;
+		m_cFrameScrollRel.iY = m_cFrame.iY;
 		m_cFrameScrollRel.iWidth = SCROLLBAR_WIDTH;
-		m_cFrameScrollRel.iHeight = radius? m_cFrameTextRel.iHeight - 2*radius : m_cFrameTextRel.iHeight;
+		m_cFrameScrollRel.iHeight = radius? m_cFrame.iHeight - 2*radius : m_cFrame.iHeight;
 	}
 	else
 	{
@@ -259,7 +259,7 @@ void CTextBox::initFramesRel(void)
 		m_cFrameScrollRel.iX = m_cFrame.iX + m_cFrame.iWidth - SCROLLBAR_WIDTH;
 		m_cFrameScrollRel.iY = m_cFrame.iY;
 		m_cFrameScrollRel.iWidth = SCROLLBAR_WIDTH;
-		m_cFrameScrollRel.iHeight = m_cFrame.iHeight;
+		m_cFrameScrollRel.iHeight = /*m_cFrame.iHeight*/radius? m_cFrame.iHeight - 2*radius : m_cFrame.iHeight;
 	}
 	else
 	{
@@ -641,7 +641,7 @@ void CTextBox::paint(void)
 	dprintf(DEBUG_NORMAL, "CTextBox::paint:\n");
 
 	painted = true;
-	//refresh();
+	refresh();
 }
 
 void CTextBox::hide(void)

@@ -336,12 +336,6 @@ struct SNeutrinoSettings
 	
 	int key_screenshot;
 	
-	// mb
-	int mb_copy_jump;
-	int mb_cut_jump;
-	int mb_truncate;
-	// END KEYBINDING
-	
 	// webtv
 	std::string webtv_userBouquet;
 	unsigned int webtv_lastselectedchannel;

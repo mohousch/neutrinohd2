@@ -80,8 +80,6 @@ extern char recDir[255];			// defined in neutrino.cpp
 
 #include <string.h>
 
-//#define info_height 60
-
 
 class CTimerListNewNotifier : public CChangeObserver
 {
@@ -1033,7 +1031,7 @@ int CTimerList::modifyTimer()
 	if(!strlen(timer->recordingDir))
 		strncpy(timer->recordingDir, g_settings.network_nfs_recordingdir, sizeof(timer->recordingDir));
 
-	CMountChooser recDirs(LOCALE_TIMERLIST_RECORDING_DIR,NEUTRINO_ICON_SETTINGS,NULL, timer->recordingDir, g_settings.network_nfs_recordingdir);
+	CMountChooser recDirs(LOCALE_TIMERLIST_RECORDING_DIR, NEUTRINO_ICON_SETTINGS, NULL, timer->recordingDir, g_settings.network_nfs_recordingdir);
 
 	if (!recDirs.hasItem())
 	{

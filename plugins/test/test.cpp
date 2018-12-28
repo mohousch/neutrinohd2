@@ -1799,7 +1799,7 @@ void CTestMenu::testColorChooser()
 
 void CTestMenu::testKeyChooser()
 {
-	CKeyChooserItem * keyChooser = new CKeyChooserItem("testing CKeyChooser", &g_settings.mb_truncate);
+	CKeyChooserItem * keyChooser = new CKeyChooserItem("testing CKeyChooser", &g_settings.key_screenshot);
 
 	keyChooser->exec(NULL, "");
 	delete keyChooser;
@@ -1808,7 +1808,7 @@ void CTestMenu::testKeyChooser()
 
 void CTestMenu::testMountChooser()
 {
-	CMountChooser * mountChooser = new CMountChooser("testing CMountChooser");
+	CMountChooser * mountChooser = new CMountChooser("testing CMountChooser", NEUTRINO_ICON_SETTINGS, NULL, g_settings.network_nfs_moviedir, g_settings.network_nfs_recordingdir);
 
 	mountChooser->exec(NULL, "");
 	delete mountChooser;
@@ -2471,6 +2471,10 @@ void CTestMenu::testFrameBox()
 	listMenu->setWidgetType(WIDGET_INFO);
 	listMenu->setItemsPerPage(6, 2);
 	listMenu->setItemBoxColor(COL_YELLOW);
+	listMenu->addWidget(WIDGET_CLASSIC);
+	listMenu->addWidget(WIDGET_FRAME);
+	listMenu->addWidget(WIDGET_EXTENDED);
+	listMenu->enableWidgetChange();
 
 	listMenu->setSelected(selected);
 
