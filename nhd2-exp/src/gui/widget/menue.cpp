@@ -57,8 +57,10 @@
 #include <system/debug.h>
 
 
-#define ITEM_ICON_W	128	// min=100, max=128
-#define ITEM_ICON_H	128	// min=100, max=128
+#define ITEM_ICON_W		128
+#define ITEM_ICON_H		128
+#define ITEM_ICON_W_MINI	100
+#define ITEM_ICON_H_MINI	40	
 
 extern CPlugins * g_PluginList;    // defined in neutrino.cpp
 
@@ -2445,7 +2447,11 @@ int CMenuForwarder::getHeight(void) const
 		return std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()) + 10;
 	}
 	else if(widgetType == WIDGET_CLASSIC)
-		CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &iw, &ih);
+	{
+		//CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &iw, &ih);
+		iw = ITEM_ICON_W_MINI;
+		ih = ITEM_ICON_H_MINI;
+	}
 	else if(widgetType == WIDGET_FRAME)
 	{
 		return item_height;
@@ -4260,7 +4266,9 @@ int ClistBoxItem::getHeight(void) const
 	}
 	else if(widgetType == WIDGET_EXTENDED || widgetType == WIDGET_CLASSIC)
 	{
-		CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &iw, &ih);
+		//CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &iw, &ih);
+		iw = ITEM_ICON_W_MINI;
+		ih = ITEM_ICON_H_MINI;
 		return std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()) + 6;
 	}
 	else if(widgetType == WIDGET_INFO)
@@ -4383,7 +4391,9 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 
 		if(widgetType == WIDGET_CLASSIC)
 		{
-			frameBuffer->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &icon_w, &icon_h);
+			//frameBuffer->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &icon_w, &icon_h);
+			icon_w = ITEM_ICON_W_MINI;
+			icon_h = ITEM_ICON_H_MINI;
 
 			if (!itemIcon.empty())
 			{
@@ -4392,7 +4402,9 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		}
 		else if(widgetType == WIDGET_EXTENDED)
 		{
-			frameBuffer->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &icon_w, &icon_h);
+			//frameBuffer->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &icon_w, &icon_h);
+			icon_w = ITEM_ICON_W_MINI;
+			icon_h = ITEM_ICON_H_MINI;
 
 			if (!itemIcon.empty())
 			{

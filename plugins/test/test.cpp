@@ -2157,7 +2157,6 @@ void CTestMenu::testClistBoxnLines()
 		item->setInfo1(g_PluginList->getDescription(count).c_str());
 
 		item->setnLinesItem();
-		//item->switchnLinesItem();
 
 		listMenu->addItem(item);
 	}
@@ -2165,8 +2164,13 @@ void CTestMenu::testClistBoxnLines()
 	listMenu->setWidgetType(WIDGET_CLASSIC);
 	listMenu->enablePaintDate();
 	listMenu->enableFootInfo();
-
 	listMenu->setSelected(selected);
+
+	listMenu->addWidget(WIDGET_STANDARD);
+	listMenu->addWidget(WIDGET_EXTENDED);
+	listMenu->addWidget(WIDGET_FRAME);
+	listMenu->addWidget(WIDGET_INFO);
+	listMenu->enableWidgetChange();
 
 	// footer
 	listMenu->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS, MENU_WIDTH/2);
@@ -2369,7 +2373,7 @@ const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
 
 void CTestMenu::testFrameBox()
 {
-	listMenu = new ClistBox("EXTENDED Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	listMenu = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	//
 	CFileFilter fileFilter;
@@ -2468,12 +2472,14 @@ void CTestMenu::testFrameBox()
 		listMenu->addItem(item);
 	}
 
-	listMenu->setWidgetType(WIDGET_INFO);
+	listMenu->setWidgetType(WIDGET_CLASSIC);
 	listMenu->setItemsPerPage(6, 2);
 	listMenu->setItemBoxColor(COL_YELLOW);
-	listMenu->addWidget(WIDGET_CLASSIC);
+
+	listMenu->addWidget(WIDGET_STANDARD);
 	listMenu->addWidget(WIDGET_FRAME);
 	listMenu->addWidget(WIDGET_EXTENDED);
+	listMenu->addWidget(WIDGET_INFO);
 	listMenu->enableWidgetChange();
 
 	listMenu->setSelected(selected);
