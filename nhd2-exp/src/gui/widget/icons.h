@@ -158,6 +158,7 @@
 // tmdb
 #define NEUTRINO_ICON_TMDB			"tmdb"
 
+// radiotext
 #define NEUTRINO_ICON_RADIOTEXTOFF		"radiotextoff"
 #define NEUTRINO_ICON_RADIOTEXTGET		"radiotextget"
 #define NEUTRINO_ICON_RADIOTEXTWAIT		"radiotextwait"
@@ -166,10 +167,11 @@
 #define NEUTRINO_ICON_WEBTV			"webtv"
 #define NEUTRINO_ICON_WEBTV_SMALL		"webtv_small"
 
-// mp infobar
+// infoviewer
 #define NEUTRINO_ICON_IPTV			"iptv"
-#define NEUTRINO_ICON_MP			"mp"
 
+// mp
+#define NEUTRINO_ICON_MP			"mp"
 #define NEUTRINO_ICON_PAUSE			"mp_pause"
 #define NEUTRINO_ICON_PAUSE_SMALL		"mp_pause_small"
 #define NEUTRINO_ICON_PLAY 			"mp_play"
@@ -179,9 +181,6 @@
 #define NEUTRINO_ICON_FF 			"mp_ff"
 #define NEUTRINO_ICON_FF_SMALL 			"mp_ff_small"
 #define NEUTRINO_ICON_STOP_SMALL 		"mp_stop_small"
-
-#define NEUTRINO_ICON_USB			"usb"
-#define NEUTRINO_ICON_USB_GREY			"usb_gray"
 
 // standard icons
 #define NEUTRINO_ICON_MENUITEM_TV			CONFIGDIR "/design/tv.png"
@@ -195,14 +194,6 @@
 #define NEUTRINO_ICON_MENUITEM_TIMERLIST		CONFIGDIR "/design/timerlist.png"
 #define NEUTRINO_ICON_MENUITEM_POWERMENU		CONFIGDIR "/design/powermenu.png"
 #define NEUTRINO_ICON_MENUITEM_BOXINFO			CONFIGDIR "/design/boxinfo.png"
-
-#define NEUTRINO_ICON_MENUITEM_INTERNETRADIO		CONFIGDIR "/design/internetradio.png"
-#define NEUTRINO_ICON_MENUITEM_AUDIOPLAYER		CONFIGDIR "/design/audioplayer.png"
-#define NEUTRINO_ICON_MENUITEM_TSPLAYER			CONFIGDIR "/design/tsplayer.png"
-#define NEUTRINO_ICON_MENUITEM_MOVIEPLAYER		CONFIGDIR "/design/movieplayer.png"
-#define NEUTRINO_ICON_MENUITEM_FILEPLAYER		CONFIGDIR "/design/fileplayer.png"
-#define NEUTRINO_ICON_MENUITEM_PICTUREVIEWER		CONFIGDIR "/design/pictureviewer.png"
-#define NEUTRINO_ICON_MENUITEM_UPNPBROWSER		CONFIGDIR "/design/upnpbrowser.png"
 
 #define NEUTRINO_ICON_MENUITEM_VIDEOSETTINGS		CONFIGDIR "/design/videosettings.png"
 #define NEUTRINO_ICON_MENUITEM_AUDIOSETTINGS		CONFIGDIR "/design/audiosettings.png"
@@ -250,6 +241,7 @@
 
 #define NEUTRINO_ICON_MENUITEM_PLUGIN			CONFIGDIR "/design/plugin.png"
 #define NEUTRINO_ICON_MENUITEM_NOPREVIEW		CONFIGDIR "/design/nopreview.png"
+#define NEUTRINO_ICON_MENUITEM_VTXT			CONFIGDIR "/design/vtxt.png"
 
 // misc
 #define DUMMY_ICON					"dummy"

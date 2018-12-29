@@ -2605,11 +2605,12 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		}
 		else if(widgetType == WIDGET_CLASSIC)
 		{
-			frameBuffer->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &icon_w, &icon_h);
+			//frameBuffer->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &icon_w, &icon_h);
+			icon_w = ITEM_ICON_W_MINI;
+			icon_h = ITEM_ICON_H_MINI;
 
 			if (!itemIcon.empty())
 			{
-				//frameBuffer->paintIcon(itemIcon, x + BORDER_LEFT, y + ((height - icon_h)/2) );
 				frameBuffer->displayImage(itemIcon.c_str(), x + BORDER_LEFT, y + ((height - icon_h)/2), icon_w, icon_h);
 			}
 		}

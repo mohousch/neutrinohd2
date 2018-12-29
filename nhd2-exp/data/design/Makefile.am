@@ -14,16 +14,6 @@ install_DATA = \
 	powermenu.png \
 	boxinfo.png
 
-# mediaplayer
-install_DATA += \
-	internetradio.png \
-	audioplayer.png \
-	tsplayer.png \
-	movieplayer.png \
-	fileplayer.png \
-	pictureviewer.png \
-	upnpbrowser.png
-
 # settings
 install_DATA += \
 	videosettings.png \
@@ -78,9 +68,9 @@ install_DATA += \
 	reboot.png \
 	shutdown.png
 
-# no preview
+# divers
 install_DATA += \
-	nopreview.png plugin.png
+	nopreview.png plugin.png vtxt.png
 	
 
 

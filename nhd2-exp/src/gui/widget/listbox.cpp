@@ -571,7 +571,9 @@ int ClistBoxEntryItem::getHeight(void) const
 
 	if(widgetType == WIDGET_CLASSIC)
 	{
-		CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &iw, &ih);
+		//CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &iw, &ih);
+		iw = 100;
+		ih = 40;
 		height = std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()) + 6;
 	}
 	else
@@ -644,7 +646,9 @@ int ClistBoxEntryItem::paint(bool selected, bool /*AfterPulldown*/)
 
 	if(widgetType == WIDGET_CLASSIC)
 	{
-		frameBuffer->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &icon_w, &icon_h);
+		//frameBuffer->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &icon_w, &icon_h);
+		icon_w = 100;
+		icon_h = 40;
 
 		if (!itemIcon.empty())
 		{
