@@ -2522,7 +2522,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	if(widgetType == WIDGET_FRAME)
 	{
 		//
-		frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor, RADIUS_SMALL, CORNER_BOTH);
+		frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor);
 
 		frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
 
@@ -4336,7 +4336,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	if(widgetType == WIDGET_FRAME)
 	{
 		//
-		frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor, RADIUS_SMALL, CORNER_BOTH);
+		frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor);
 
 		frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
 
