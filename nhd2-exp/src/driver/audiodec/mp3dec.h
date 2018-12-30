@@ -70,7 +70,7 @@ class CMP3Dec : public CBaseDec
 	public:
 		static CMP3Dec* getInstance();
 		bool GetMetaData(FILE *in, const bool nice, CAudioMetaData* const m);
-		bool SaveCover(FILE*, CAudioMetaData * const m);
+
 		CMP3Dec(){};
 };
 

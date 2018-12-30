@@ -41,55 +41,55 @@
 
 class CAudioMetaData
 {
-public:
-	// constructor
-	CAudioMetaData();
-	// copy constructor
-	CAudioMetaData( const CAudioMetaData& src );
-	// assignment operator
-	void operator=( const CAudioMetaData& src );
-	void clear();
+	public:
+		// constructor
+		CAudioMetaData();
+		// copy constructor
+		CAudioMetaData( const CAudioMetaData& src );
+		// assignment operator
+		void operator=( const CAudioMetaData& src );
+		void clear();
 
-	enum AudioType
-	{
-		NONE,
-		CDR,
-		MP3,
-		OGG,
-		WAV,
-		FLAC
-	};
+		enum AudioType
+		{
+			NONE,
+			CDR,
+			MP3,
+			OGG,
+			WAV,
+			FLAC
+		};
 
-	//
-	AudioType type;
-	std::string type_info;
+		//
+		AudioType type;
+		std::string type_info;
 
-	long filesize; // filesize in bits (for mp3: without leading id3 tag)
+		long filesize; // filesize in bits (for mp3: without leading id3 tag)
 
-	unsigned int bitrate; // overall bitrate, vbr file: current bitrate
-	unsigned int avg_bitrate; // average bitrate in case of vbr file 
-	unsigned int samplerate;
-	enum mad_layer layer;
-	enum mad_mode mode;
-	time_t total_time;
-	long audio_start_pos; // position of first audio frame
-	bool vbr;
-	/* 
-	   if the variable hasInfoOrXingTag is true, this means the values of
-	   VBR and Duration are correct and should not be changed by the
-	   decoder 
-	*/
-	bool hasInfoOrXingTag;
+		unsigned int bitrate; // overall bitrate, vbr file: current bitrate
+		unsigned int avg_bitrate; // average bitrate in case of vbr file 
+		unsigned int samplerate;
+		enum mad_layer layer;
+		enum mad_mode mode;
+		time_t total_time;
+		long audio_start_pos; // position of first audio frame
+		bool vbr;
+		/* 
+		   if the variable hasInfoOrXingTag is true, this means the values of
+		   VBR and Duration are correct and should not be changed by the
+		   decoder 
+		*/
+		bool hasInfoOrXingTag;
 
-	std::string artist;
-	std::string title;
-	std::string album;
-	std::string sc_station;
-	std::string date;
-	std::string genre;
-	std::string track;
-	std::string cover;
-	bool changed;
+		std::string artist;
+		std::string title;
+		std::string album;
+		std::string sc_station;
+		std::string date;
+		std::string genre;
+		std::string track;
+		std::string cover;
+		bool changed;
 };
 
 #endif /* __AUDIO_METADATA__ */

@@ -3747,12 +3747,7 @@ int CMovieHelp::exec(CMenuTarget* /*parent*/, const std::string&/*actionKey*/)
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_BLUE, "Filminfos neu laden");
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_SETUP, "Hauptmenü");
 	helpbox.addLine("'+/-'  Ansicht wechseln");
-	helpbox.addLine("Während der Filmwiedergabe:");
-	helpbox.addLine(NEUTRINO_ICON_BUTTON_BLUE, " Markierungsmenu ");
-	helpbox.addLine(NEUTRINO_ICON_BUTTON_0, " Markierungsaktion nicht ausführen");
-	helpbox.addLine("");
-	helpbox.addLine("MovieBrowser $Revision: 1.10 $");
-	helpbox.addLine("by Günther");
+
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
 
 	return menu_return::RETURN_REPAINT;

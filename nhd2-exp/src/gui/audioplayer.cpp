@@ -69,6 +69,8 @@
 #include <gui/widget/stringinput_ext.h>
 #include <gui/widget/progresswindow.h>
 #include <gui/widget/items2detailsline.h>
+#include <gui/widget/helpbox.h>
+
 #include <gui/audioplayer_setup.h>
 
 #include <system/settings.h>
@@ -82,9 +84,6 @@
 #include <iostream>
 
 #include <system/debug.h>
-
-//#include <curl/curl.h>
-//#include <curl/easy.h>
 
 
 extern int current_muted;
@@ -106,6 +105,8 @@ void CAudioPlayerGui::Init(void)
 	stimer = 0;
 	m_current = 0;
 	m_metainfo.clear();
+
+	infoPainted = false;
 }
 
 CAudioPlayerGui::~CAudioPlayerGui()
@@ -129,18 +130,6 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	cFrameBox.iHeight = 80;
 	cFrameBox.iX = (((g_settings.screen_EndX - g_settings.screen_StartX) - cFrameBox.iWidth)/ 2) + g_settings.screen_StartX;
 	cFrameBox.iY = g_settings.screen_EndY - 10 - cFrameBox.iHeight;
-	/*
-	m_width = m_frameBuffer->getScreenWidth(true) - 20; 
-	
-	if((g_settings.screen_EndX - g_settings.screen_StartX) < m_width)
-		m_width = (g_settings.screen_EndX - g_settings.screen_StartX) - 10;
-
-	m_title_height = 80;
-
-	m_x = (((g_settings.screen_EndX - g_settings.screen_StartX) - m_width)/ 2) + g_settings.screen_StartX;
-
-	m_y = g_settings.screen_EndY - 10 - m_title_height;
-	*/
 
 	// timeBox
 	timeBox.iWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth("00:00 / 00:00") + 4;
@@ -177,7 +166,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 		perror("Datei " AUDIOPLAYER_START_SCRIPT " fehlt.Bitte erstellen, wenn gebraucht.\nFile " AUDIOPLAYER_START_SCRIPT " not found. Please create if needed.\n");
 
 	//show
-	playFile(parent);
+	playFile();
 
 	//restore previous background
 	if (usedBackground)
@@ -210,7 +199,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	return menu_return::RETURN_EXIT;
 }
 
-void CAudioPlayerGui::playFile(CMenuTarget* p)
+void CAudioPlayerGui::playFile()
 {
 	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::playFile\n");
 
@@ -250,11 +239,11 @@ void CAudioPlayerGui::playFile(CMenuTarget* p)
 
 		if(!m_inetmode)
 			updateTimes(true);
+
+		if(!infoPainted)
+			paintInfo(m_playlist[m_current]);
 		
 		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
-
-		//if(!m_inetmode)
-		//	updateTimes(true);
 
 		if (msg == CRCInput::RC_home)
 		{ 
@@ -288,7 +277,7 @@ void CAudioPlayerGui::playFile(CMenuTarget* p)
 		{
 			rev(1);
 		}
-		else if(msg == CRCInput::RC_green)
+		else if(msg == CRCInput::RC_red)
 		{
 			if(m_state == CAudioPlayerGui::STOP)
 			{
@@ -300,8 +289,11 @@ void CAudioPlayerGui::playFile(CMenuTarget* p)
 						
 					paintLCD();
 				}
-			} 
-			else
+			}
+		} 
+		else if(msg == CRCInput::RC_green)
+		{
+			if(m_state != CAudioPlayerGui::STOP)
 			{
 				// is no stream, so we do not have to test for this case
 				int seconds = 0;
@@ -335,6 +327,10 @@ void CAudioPlayerGui::playFile(CMenuTarget* p)
 					ff(seconds);
 			}
 		}
+		else if(msg == CRCInput::RC_blue)
+		{
+			shufflePlaylist();
+		}
 		else if( ((msg == CRCInput::RC_setup) || (msg == CRCInput::RC_vfdmenu)))
 		{
 			CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
@@ -342,26 +338,15 @@ void CAudioPlayerGui::playFile(CMenuTarget* p)
 			delete audioPlayerSettingsMenu;
 			audioPlayerSettingsMenu = NULL;					
 		}
+		else if(msg == CRCInput::RC_info)
+		{
+			showHelp();
+		}
 		else if(msg == CRCInput::RC_ok)
 		{
 
 			ok_pressed = true;
-			loop = false;
-
-/*
-			if(p)
-			{
-				hide();
-
-				int res = p->exec(this, "");
-
-				printf("RC_OK:res:%d\n", res);	
-				//p->hide();
-
-				paintInfo();
-				updateTimes(true);
-			}
-*/					
+			loop = false;				
 		}
 		else if(msg == NeutrinoMessages::CHANGEMODE)
 		{
@@ -405,19 +390,17 @@ void CAudioPlayerGui::hide()
 	// infos
 	m_frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 
+	infoPainted = false;
+
 	// times
 	m_frameBuffer->paintBackgroundBoxRel(timeBox.iX, timeBox.iY, timeBox.iWidth, timeBox.iHeight);
 
 	m_frameBuffer->blit();
 }
 
-void CAudioPlayerGui::paintInfo()
+void CAudioPlayerGui::paintFanArt(CAudiofile& File)
 {
-	// get meta data
-	GetMetaData(m_playlist[m_current]);
-
-	// paint funart
-	if (!m_playlist[m_current].MetaData.cover.empty())
+	if (!File.MetaData.cover.empty())
 	{
 		if(!access("/tmp/cover.jpg", F_OK))
 		{
@@ -436,8 +419,11 @@ void CAudioPlayerGui::paintInfo()
 		m_frameBuffer->loadBackgroundPic("mp3.jpg");
 		m_frameBuffer->blit();	
 	}
+}
 
-	// title info box
+void CAudioPlayerGui::paintInfo(CAudiofile& File)
+{
+	// title info box shadow
 	m_frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
 		
 	m_frameBuffer->paintBoxRel(cFrameBox.iX + 1, cFrameBox.iY + 1 , cFrameBox.iWidth - 2, cFrameBox.iHeight - 2, COL_MENUHEAD_INFO_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Head_Info_gradient); //FIXME:gradient
@@ -447,7 +433,7 @@ void CAudioPlayerGui::paintInfo()
 	std::string tmp;
 	if (m_inetmode) 
 	{
-		tmp = m_playlist[m_current].MetaData.album;
+		tmp = /*m_playlist[m_current]*/File.MetaData.album;
 	} 
 	else 
 	{
@@ -467,15 +453,15 @@ void CAudioPlayerGui::paintInfo()
 
 	// second line 
 	// Artist/Title
-	if (m_playlist[m_current].MetaData.title.empty())
-		tmp = m_playlist[m_current].MetaData.artist;
-	else if (m_playlist[m_current].MetaData.artist.empty())
-		tmp = m_playlist[m_current].MetaData.title;
+	if (/*m_playlist[m_current]*/File.MetaData.title.empty())
+		tmp = /*m_playlist[m_current]*/File.MetaData.artist;
+	else if (/*m_playlist[m_current]*/File.MetaData.artist.empty())
+		tmp = /*m_playlist[m_current]*/File.MetaData.title;
 	else 
 	{
-		tmp = m_playlist[m_current].MetaData.title;
+		tmp = /*m_playlist[m_current]*/File.MetaData.title;
 		tmp += " / ";
-		tmp += m_playlist[m_current].MetaData.artist;
+		tmp += /*m_playlist[m_current]*/File.MetaData.artist;
 	}
 
 	w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
@@ -487,7 +473,7 @@ void CAudioPlayerGui::paintInfo()
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + 2 + cFrameBox.iHeight/3 + 2 + cFrameBox.iHeight/3, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - 2*cFrameBox.iHeight - ICON_OFFSET, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8		
 		
 	// cover
-	if (!m_playlist[m_current].MetaData.cover.empty())
+	if (!/*m_playlist[m_current]*/File.MetaData.cover.empty())
 	{
 		if(!access("/tmp/cover.jpg", F_OK))
 		{
@@ -526,6 +512,8 @@ void CAudioPlayerGui::paintInfo()
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + cFrameBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()/2, cFrameBox.iWidth- 2*xstart, m_metainfo, COL_MENUHEAD_INFO);
 	}
+
+	infoPainted = true;
 }
 
 bool CAudioPlayerGui::playNext(bool allow_rotate)
@@ -577,7 +565,7 @@ void CAudioPlayerGui::stop()
 	if(CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
 		CAudioPlayer::getInstance()->stop();
 
-	paintInfo();
+	paintInfo(m_playlist[m_current]);
 	paintLCD();
 }
 
@@ -594,7 +582,7 @@ void CAudioPlayerGui::pause()
 		CAudioPlayer::getInstance()->pause();
 	}
 
-	paintInfo();	
+	paintInfo(m_playlist[m_current]);	
 	paintLCD();	
 }
 
@@ -611,7 +599,7 @@ void CAudioPlayerGui::ff(unsigned int seconds)
 		CAudioPlayer::getInstance()->ff(seconds);
 	}
 	
-	paintInfo();
+	paintInfo(m_playlist[m_current]);
 	paintLCD();	
 }
 
@@ -630,7 +618,7 @@ void CAudioPlayerGui::rev(unsigned int seconds)
 		CAudioPlayer::getInstance()->rev(seconds);
 	}
 
-	paintInfo();
+	paintInfo(m_playlist[m_current]);
 	paintLCD();
 }
 
@@ -648,7 +636,9 @@ void CAudioPlayerGui::play(unsigned int pos)
 
 	m_state = CAudioPlayerGui::PLAY;
 	
-	paintInfo();
+	GetMetaData(m_playlist[pos]);
+	paintFanArt(m_playlist[pos]);
+	paintInfo(m_playlist[pos]);
 	paintLCD();
 }
 
@@ -1173,4 +1163,19 @@ bool CAudioPlayerGui::shufflePlaylist(void)
 	
 	return(result);
 }
+
+void CAudioPlayerGui::showHelp()
+{
+	CHelpBox helpbox;
+
+	helpbox.addLine(NEUTRINO_ICON_BUTTON_RED, "save playlist");
+	helpbox.addLine(NEUTRINO_ICON_BUTTON_GREEN, "jump prev");
+	helpbox.addLine(NEUTRINO_ICON_BUTTON_YELLOW, "jump ff");
+	helpbox.addLine(NEUTRINO_ICON_BUTTON_BLUE, "shuffle playlist");
+	helpbox.addLine(NEUTRINO_ICON_BUTTON_SETUP, "Audio Player Setup");
+
+	hide();
+	helpbox.show(LOCALE_MESSAGEBOX_INFO);
+}
+
 

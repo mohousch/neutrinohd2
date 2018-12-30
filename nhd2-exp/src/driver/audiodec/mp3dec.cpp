@@ -366,7 +366,7 @@ CMP3Dec* CMP3Dec::getInstance()
 	return MP3Dec;
 }
 
-bool CMP3Dec::GetMetaData(FILE * in, const bool nice, CAudioMetaData * const m)
+bool CMP3Dec::GetMetaData(FILE* in, const bool nice, CAudioMetaData* const m)
 {
 	bool res;
 	
@@ -379,7 +379,7 @@ bool CMP3Dec::GetMetaData(FILE * in, const bool nice, CAudioMetaData * const m)
 		GetID3(in, m);
 		
 		// id3tag cover
-		SaveCover(in, m);
+		//SaveCover(in, m);
 	}
 	else
 	{
@@ -400,7 +400,7 @@ bool CMP3Dec::GetMetaData(FILE * in, const bool nice, CAudioMetaData * const m)
  * Based on scan_header() from Robert Leslie's "MAD Plug-in for Winamp".
  */
 #define BUFFER_SIZE (2*8192) // big enough to skip id3 tags containing jpegs
-long CMP3Dec::scanHeader( FILE* input, struct mad_header* const header, struct tag* const ftag, const bool nice )
+long CMP3Dec::scanHeader(FILE* input, struct mad_header* const header, struct tag* const ftag, const bool nice)
 {
 	struct mad_stream stream;
 	struct mad_frame frame;
@@ -520,7 +520,7 @@ long CMP3Dec::scanHeader( FILE* input, struct mad_header* const header, struct t
  * Inspired by get_fileinfo() from Robert Leslie's "MAD Plug-in for Winamp" and
  * decode_filter() from Robert Leslie's "madplay".
  */
-bool CMP3Dec::GetMP3Info( FILE* input, const bool nice, CAudioMetaData* const meta )
+bool CMP3Dec::GetMP3Info(FILE* input, const bool nice, CAudioMetaData* const meta)
 {
 	dprintf(DEBUG_DEBUG, "CMP3Dec::GetMP3Info\n");
 	
@@ -538,7 +538,7 @@ bool CMP3Dec::GetMP3Info( FILE* input, const bool nice, CAudioMetaData* const me
 		meta->mode = header.mode;
 		meta->samplerate = header.samplerate;
 
-		if ( fseek( input, 0, SEEK_END ) )
+		if (fseek( input, 0, SEEK_END ))
 		{
 			perror( "fseek()" );
 			result = false;
@@ -627,13 +627,14 @@ void CMP3Dec::GetID3(FILE* in, CAudioMetaData * const m)
 			{ "TENC",           "Encoder"}
 		};
 
-	/* text information */
+	// text information
 	struct id3_file * id3file = id3_file_fdopen(fileno(in), ID3_FILE_MODE_READONLY);
 	if(id3file != 0)
 	{
 		id3_tag * tag = id3_file_tag(id3file);
 		if(tag)
 		{
+			//
 			for(i = 0; i < sizeof(info) / sizeof(info[0]); ++i)
 			{
 				union id3_field const *field;
@@ -665,15 +666,19 @@ void CMP3Dec::GetID3(FILE* in, CAudioMetaData * const m)
 
 					if (j == 0 && name)
 					{
-						if(strcmp(name,"Title") == 0)
+						if(strcmp(name, "Title") == 0)
 							m->title = (char *) utf8;
-						if(strcmp(name,"Artist") == 0)
+
+						if(strcmp(name, "Artist") == 0)
 							m->artist = (char *) utf8;
-						if(strcmp(name,"Year") == 0)
+
+						if(strcmp(name, "Year") == 0)
 							m->date = (char *) utf8;
-						if(strcmp(name,"Album") == 0)
+
+						if(strcmp(name, "Album") == 0)
 							m->album = (char *) utf8;
-						if(strcmp(name,"Genre") == 0)
+
+						if(strcmp(name, "Genre") == 0)
 							m->genre = (char *) utf8;
 					}
 					else
@@ -688,9 +693,8 @@ void CMP3Dec::GetID3(FILE* in, CAudioMetaData * const m)
 				}
 			}
 
+			// comments
 #ifdef INCLUDE_UNUSED_STUFF
-			/* comments */
-
 			i = 0;
 			while((frame = id3_tag_findframe(tag, ID3_FRAME_COMMENT, i++)))
 			{
@@ -758,39 +762,15 @@ void CMP3Dec::GetID3(FILE* in, CAudioMetaData * const m)
 				break;
 			}
 #endif
-			id3_tag_delete(tag);
-		}
 
-		id3_finish_file(id3file);
-	}
-	
-	if(0)
-	{
-fail:
-		dprintf(DEBUG_DEBUG, "id3: not enough memory to display tag\n");
-	}
-}
+			// cover
+			const char * coverfile = "/tmp/cover.jpg";
 
-bool CMP3Dec::SaveCover(FILE * in, CAudioMetaData * const m)
-{
-	dprintf(DEBUG_DEBUG, "CMP3Dec::SaveCover\n");
-	
-	struct id3_frame const *frame;
-	const char * coverfile = "/tmp/cover.jpg";
-
-	/* text information */
-	struct id3_file *id3file = id3_file_fdopen(fileno(in), ID3_FILE_MODE_READONLY);
-    
-	if(id3file != 0)
-	{
-		id3_tag * tag = id3_file_tag(id3file);
-		if(tag)
-		{
 			frame = id3_tag_findframe(tag, "APIC", 0);
 			
 			if (frame)
 			{
-				// Picture file data
+				// picture file data
 				unsigned int j;
 				union id3_field const *field;
 				
@@ -808,9 +788,10 @@ bool CMP3Dec::SaveCover(FILE * in, CAudioMetaData * const m)
 								dprintf(DEBUG_DEBUG, "CMP3Dec::SaveCover: Cover found\n");
 								
 								m->cover = coverfile;
+
 								FILE * pFile;
-								pFile = fopen ( coverfile , "wb" );
-								fwrite (data , 1 , size , pFile );
+								pFile = fopen(coverfile, "wb");
+								fwrite(data, 1 , size , pFile);
 								fclose (pFile);
 							}	
 							break;
@@ -827,22 +808,15 @@ bool CMP3Dec::SaveCover(FILE * in, CAudioMetaData * const m)
 		
 			id3_tag_delete(tag);
 		}
-		else
-		{
-			dprintf(DEBUG_DEBUG, "CMP3Dec::SaveCover: error open id3 tag\n");
-			return false;
-		}
 
 		id3_finish_file(id3file);
 	}
-    
+	
 	if(0)
 	{
-		dprintf(DEBUG_DEBUG, "CMP3Dec::SaveCover:id3: not enough memory to display tag\n");
-		return false;
+fail:
+		dprintf(DEBUG_DEBUG, "id3: not enough memory to display tag\n");
 	}
-	
-	return true;
 }
 
 // this is a copy of static libid3tag function "finish_file"

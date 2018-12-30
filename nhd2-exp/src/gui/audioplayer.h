@@ -41,8 +41,6 @@
 #include "gui/filebrowser.h"
 #include "gui/widget/menue.h"
 
-#include <libxmltree/xmlinterface.h>
-
 #include <string>
 #include <set>
 #include <map>
@@ -88,13 +86,15 @@ class CAudioPlayerGui : public CMenuTarget
 		bool updateMeta;
 		bool updateLcd;
 		bool updateScreen;
+		bool infoPainted;
 
 		//
 		void Init(void);
 
 		// gui
 		void hide();
-		void paintInfo();
+		void paintInfo(CAudiofile& File);
+		void paintFanArt(CAudiofile& File);
 
 		// lcd
 		void paintLCD();
@@ -154,11 +154,13 @@ class CAudioPlayerGui : public CMenuTarget
 		bool playPrev(bool allow_rotate = false);
 
 		bool shufflePlaylist(void);
+
+		void playFile();
 	
 	public:
 		CAudioPlayerGui();
 		~CAudioPlayerGui();
-		void playFile(CMenuTarget* p);
+
 		int exec(CMenuTarget *parent, const std::string &actionKey);
 
 		//
@@ -169,6 +171,7 @@ class CAudioPlayerGui : public CMenuTarget
 		//
 		void setInetMode(void){m_inetmode = true;};
 		void setCurrent(int pos = 0){m_current = pos;};
+		void showHelp();
 };
 
 #endif
