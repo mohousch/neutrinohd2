@@ -433,7 +433,7 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 	std::string tmp;
 	if (m_inetmode) 
 	{
-		tmp = /*m_playlist[m_current]*/File.MetaData.album;
+		tmp = File.MetaData.album;
 	} 
 	else 
 	{
@@ -453,15 +453,15 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 
 	// second line 
 	// Artist/Title
-	if (/*m_playlist[m_current]*/File.MetaData.title.empty())
-		tmp = /*m_playlist[m_current]*/File.MetaData.artist;
-	else if (/*m_playlist[m_current]*/File.MetaData.artist.empty())
-		tmp = /*m_playlist[m_current]*/File.MetaData.title;
+	if (File.MetaData.title.empty())
+		tmp = File.MetaData.artist;
+	else if (File.MetaData.artist.empty())
+		tmp = File.MetaData.title;
 	else 
 	{
-		tmp = /*m_playlist[m_current]*/File.MetaData.title;
+		tmp = File.MetaData.title;
 		tmp += " / ";
-		tmp += /*m_playlist[m_current]*/File.MetaData.artist;
+		tmp += File.MetaData.artist;
 	}
 
 	w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
@@ -473,7 +473,7 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + 2 + cFrameBox.iHeight/3 + 2 + cFrameBox.iHeight/3, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - 2*cFrameBox.iHeight - ICON_OFFSET, tmp, COL_MENUHEAD_INFO, 0, true); // UTF-8		
 		
 	// cover
-	if (!/*m_playlist[m_current]*/File.MetaData.cover.empty())
+	if (!File.MetaData.cover.empty())
 	{
 		if(!access("/tmp/cover.jpg", F_OK))
 		{
@@ -630,6 +630,10 @@ void CAudioPlayerGui::play(unsigned int pos)
 		return;
 
 	m_current = pos;
+
+	// stop if playing
+	if(CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
+		CAudioPlayer::getInstance()->stop();
 
 	// play
 	CAudioPlayer::getInstance()->play(&m_playlist[pos], g_settings.audioplayer_highprio == 1);
