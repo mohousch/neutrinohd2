@@ -289,12 +289,12 @@ AC_ARG_WITH(boxtype,
 			BOXMODEL="$withval"
 			;;
 
-		hd)
+		hd*)
 			BOXTYPE="hd"
 			BOXMODEL="$withval"
 			;;
 
-		gi)
+		gi*)
 			BOXTYPE="gi"
 			BOXMODEL="$withval"
 			;;
