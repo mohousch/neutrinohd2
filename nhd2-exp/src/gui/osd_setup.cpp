@@ -412,9 +412,9 @@ bool CLanguageSettings::changeNotify(const neutrino_locale_t OptionName, void */
 		if(strstr(g_settings.language, "arabic"))
 		{
 			// check for nsmbd font
-			if(!access(DATADIR "/neutrino/fonts/nmsbd.ttf", F_OK))
+			if(!access(DATADIR "/neutrino/fonts/arial.ttf", F_OK))
 			{
-				strcpy(g_settings.font_file, DATADIR "/neutrino/fonts/nmsbd.ttf");
+				strcpy(g_settings.font_file, DATADIR "/neutrino/fonts/arial.ttf");
 				printf("CLanguageSettings::changeNotify:new font file %s\n", g_settings.font_file);
 				CNeutrinoApp::getInstance()->SetupFonts();
 			}
