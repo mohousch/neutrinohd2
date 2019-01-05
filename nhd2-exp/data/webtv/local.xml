@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<webtvs>
+<webtv title="Das Erste HD" url="http://192.168.0.12:8001/1:0:19:2B5C:41B:A401:FFFF0000:0:0:0:" description="Stream" epgid="41BA4012B5C" />
+<webtv title="ZDF HD" url="http://192.168.0.12:8001/1:0:19:2B66:437:66:FFFF0000:0:0:0:" description="Stream" epgid="043700662b66" />
+<webtv title="WDR HD" url="http://192.168.0.12:8001/1:0:19:2B93:6F:270F:FFFF0000:0:0:0:" description="Stream" epgid="6f270f2b93" />
+<webtv title="Sat.1" url="http://192.168.0.12:8001/1:0:1:2F46:A1:270F:FFFF0000:0:0:0:" description="Stream" epgid="a1270f2f46" />
+<webtv title="RTL Television" url="http://192.168.0.12:8001/1:0:1:2F45:A1:270F:FFFF0000:0:0:0:" description="Stream" epgid="a1270f2f45" />
+<webtv title="VOX" url="http://192.168.0.12:8001/1:0:1:2F48:A1:270F:FFFF0000:0:0:0:" description="Stream" epgid="a1270f2f48" />
+<webtv title="Prosieben" url="http://192.168.0.12:8001/1:0:1:2F47:A1:270F:FFFF0000:0:0:0:" description="Stream" epgid="00a1270f2f47" />
+<webtv title="RTL2" url="http://192.168.0.12:8001/1:0:1:2F49:A1:270F:FFFF0000:0:0:0:" description="Stream" epgid="a1270f2f49" />
+<webtv title="Super RTL" url="http://192.168.0.12:8001/1:0:1:2F4B:A1:270F:FFFF0000:0:0:0:" description="Stream" epgid="00a1270f2f4b" />
+<webtv title="XITE" url="http://192.168.0.12:8001/1:0:1:5E38:F1:270F:FFFF0000:0:0:0:" description="Stream" epgid="f1270f5e38" />
+<webtv title="ZDF" url="http://192.168.0.12:8001/1:0:1:6D6B:437:66:FFFF0000:0:0:0:" description="Stream" epgid="043700666d6d" />
+</webtvs>
+
