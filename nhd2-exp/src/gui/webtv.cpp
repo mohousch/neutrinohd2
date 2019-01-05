@@ -62,7 +62,6 @@
 #include <curl/easy.h>
 
 #include <webtv.h>
-//#include <bouquets.h>
 
 
 extern cPlayback *playback;
@@ -80,6 +79,8 @@ CWebTV::CWebTV()
 
 	webTVlistMenu = NULL;
 	item = NULL;
+
+	displayNext = false;
 }
 
 CWebTV::~CWebTV()
