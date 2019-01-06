@@ -143,7 +143,7 @@ void CVCRControl::CDevice::getAPIDs(const unsigned char ap, APIDList & apid_list
         CZapitClient::responseGetPIDs allpids;
 	
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		g_Webtv->getPIDS(allpids);
+		g_WebTV->getPIDS(allpids);
 	else
         	g_Zapit->getRecordPIDS(allpids);
 
@@ -440,14 +440,14 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 	CZapitClient::responseGetPIDs pids;
 
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		g_Webtv->getPIDS(pids);
+		g_WebTV->getPIDS(pids);
 	else
 		g_Zapit->getRecordPIDS(pids);
 
 	CZapitClient::CCurrentServiceInfo si;
 
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		si = g_Webtv->getServiceInfo();
+		si = g_WebTV->getServiceInfo();
 	else
 	 	si = g_Zapit->getRecordServiceInfo();
 
@@ -465,7 +465,7 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 
 	std::string tmpstring;
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		tmpstring = g_Webtv->getChannelName(channel_id);
+		tmpstring = g_WebTV->getChannelName(channel_id);
 	else
 		tmpstring = g_Zapit->getChannelName(channel_id);
 
@@ -583,7 +583,7 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 	CZapitClient::CCurrentServiceInfo si;
 
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		si = g_Webtv->getServiceInfo();
+		si = g_WebTV->getServiceInfo();
 	else
 		si = g_Zapit->getRecordServiceInfo();
 
@@ -606,7 +606,7 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
         CZapitClient::responseGetPIDs allpids;
 
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		g_Webtv->getPIDS(allpids);
+		g_WebTV->getPIDS(allpids);
 	else
         	g_Zapit->getRecordPIDS(allpids);
 
@@ -627,7 +627,7 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 	pos = strlen(filename);
 
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		ext_channel_name = g_Webtv->getChannelName(channel_id);
+		ext_channel_name = g_WebTV->getChannelName(channel_id);
 	else
 		ext_channel_name = g_Zapit->getChannelName(channel_id);
 
@@ -732,7 +732,7 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 			      si.vpid, 
 			      pids, 
 			      numpids,
-			      g_Webtv->getChannelURL(channel_id));
+			      g_WebTV->getChannelURL(channel_id));
 
 	if (error_msg == STREAM2FILE_OK) 
 	{
@@ -787,7 +787,7 @@ bool CVCRControl::Screenshot(const t_channel_id channel_id, char * fname, bool m
 		pos = strlen(filename);
 
 		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-			channel_name = g_Webtv->getChannelName(channel_id);
+			channel_name = g_WebTV->getChannelName(channel_id);
 		else
 			channel_name = g_Zapit->getChannelName(channel_id);
 
@@ -881,7 +881,7 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 	g_cMovieInfo->clearMovieInfo(g_movieInfo);
 
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		g_Webtv->getPIDS(pids);
+		g_WebTV->getPIDS(pids);
 	else
 		g_Zapit->getRecordPIDS(pids);
 
@@ -889,14 +889,14 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 	CZapitClient::CCurrentServiceInfo si;
 
 	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
-		si = g_Webtv->getServiceInfo();
+		si = g_WebTV->getServiceInfo();
 	else
 		si = g_Zapit->getRecordServiceInfo();
 
 	std::string tmpstring;
 
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		tmpstring = g_Webtv->getChannelName(channel_id);
+		tmpstring = g_WebTV->getChannelName(channel_id);
 	else
 		tmpstring = g_Zapit->getChannelName(channel_id);
 

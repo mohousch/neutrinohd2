@@ -400,7 +400,7 @@ bool CMP3Dec::GetMetaData(FILE* in, const bool nice, CAudioMetaData* const m)
  * Based on scan_header() from Robert Leslie's "MAD Plug-in for Winamp".
  */
 #define BUFFER_SIZE (2*8192) // big enough to skip id3 tags containing jpegs
-long CMP3Dec::scanHeader(FILE* input, struct mad_header* const header, struct tag* const ftag, const bool nice)
+long CMP3Dec::scanHeader(FILE* input, struct mad_header* const header, struct _tag* const ftag, const bool nice)
 {
 	struct mad_stream stream;
 	struct mad_frame frame;
@@ -525,7 +525,7 @@ bool CMP3Dec::GetMP3Info(FILE* input, const bool nice, CAudioMetaData* const met
 	dprintf(DEBUG_DEBUG, "CMP3Dec::GetMP3Info\n");
 	
 	struct mad_header header;
-	struct tag ftag;
+	struct _tag ftag;
 	mad_header_init( &header );
 	tag_init( &ftag );
 	bool result = true;

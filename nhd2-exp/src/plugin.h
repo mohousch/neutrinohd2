@@ -274,7 +274,7 @@ extern CPictureViewer 		* g_PicViewer;
 //extern CCAMMenuHandler 	* g_CamHandler;
 
 // webtv
-extern CWebTV * webtv;
+extern CWebTV * g_WebTV;
 extern CVCRControl::CDevice * recordingdevice;
 
 //

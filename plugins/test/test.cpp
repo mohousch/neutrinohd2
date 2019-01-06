@@ -48,6 +48,10 @@ class CTestMenu : public CMenuTarget
 
 		CMenuItem* item;
 
+		//
+		CChannelList* webTVchannelList;
+		CBouquetList* webTVBouquetList;
+
 		// widgets
 		void testCBox();
 		void testCIcon();
@@ -127,6 +131,10 @@ class CTestMenu : public CMenuTarget
 		void testPlayAudioDir();
 		void testShowPictureDir();
 
+		//
+		void testChannellist();
+		void testBouquetlist();
+
 		// new
 		void spinner(void);
 	public:
@@ -141,13 +149,17 @@ CTestMenu::CTestMenu()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
-	//
 	selected = 0;
+
+	//
 	displayNext = false;
 
 	//
-	listMenu = NULL;
+	webTVchannelList = NULL;
+	webTVBouquetList = NULL;
 
+	//
+	listMenu = NULL;
 	item = NULL;
 }
 
@@ -156,6 +168,12 @@ CTestMenu::~CTestMenu()
 	Channels.clear();
 	audioFileList.clear();
 	m_vMovieInfo.clear();
+
+	if(webTVchannelList)
+	{
+		delete webTVchannelList;
+		webTVchannelList = NULL;
+	}
 }
 
 void CTestMenu::hide()
@@ -2004,8 +2022,8 @@ void CTestMenu::testCMenuWidgetListBox()
 
 	for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
 	{
-			if (it->second.getServiceType() != ST_DIGITAL_RADIO_SOUND_SERVICE)
-				Channels.push_back(&(it->second));
+		if (it->second.getServiceType() != ST_DIGITAL_RADIO_SOUND_SERVICE)
+			Channels.push_back(&(it->second));
 	}
 
 	// sort them
@@ -2552,6 +2570,77 @@ void CTestMenu::testCMenuWidget()
 	mainMenu = NULL;
 }
 
+void CTestMenu::testChannellist()
+{
+	g_WebTV->loadChannels();
+
+	Channels.clear();
+
+	Channels = g_WebTV->getChannels();
+
+	webTVchannelList = new CChannelList("CTestMenu::testChannellist:");
+
+	webTVchannelList->setSize(Channels.size());
+
+	for(unsigned count = 0; count < Channels.size(); count++)
+	{
+		webTVchannelList->addChannel(Channels[count]);
+	}
+
+	webTVchannelList->exec();
+}
+
+void CTestMenu::testBouquetlist()
+{
+	webTVBouquetList = new CBouquetList("CTestMenu::testBouquetlist");
+
+/*
+	webTVBouquetList->addBouquet("enigma2");
+	webTVBouquetList->addBouquet("Music");
+	webTVBouquetList->addBouquet("Arabic");
+	webTVBouquetList->addBouquet("Sky");
+*/
+	CBouquet* webBouquet = NULL;
+
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("xml");
+	fileFilter.addFilter("tv");
+	fileFilter.addFilter("m3u");
+
+	//
+	CFileList filelist;
+
+	if(CFileHelpers::getInstance()->readDir(CONFIGDIR "/webtv", &filelist, &fileFilter))
+	{
+		std::string bTitle;
+
+		for (unsigned int i = 0; i < filelist.size(); i++)
+		{
+			g_settings.webtv_userBouquet = filelist[i].Name.c_str();
+			g_WebTV->loadChannels();
+			Channels.clear();
+			Channels = g_WebTV->getChannels();
+
+			bTitle = filelist[i].getFileName();
+
+			removeExtension(bTitle);
+
+			//webTVBouquetList->addBouquet(bTitle.c_str());
+			webBouquet = new CBouquet(0, (char *)bTitle.c_str(), 0);
+
+			for(unsigned count = 0; count < Channels.size(); count++)
+			{
+				webBouquet->channelList->addChannel(Channels[count]);
+			}
+
+			webTVBouquetList->Bouquets.push_back(webBouquet);
+		}
+	}
+
+	webTVBouquetList->exec(true);
+}
+
 void CTestMenu::spinner(void)
 {
 	CBox Box;
@@ -2942,6 +3031,14 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		selected = listMenu->getSelected();
 		m_movieInfo.showMovieInfo(m_vMovieInfo[listMenu->getSelected()]);
 	}
+	else if(actionKey == "channellist")
+	{
+		testChannellist();
+	}
+	else if(actionKey == "bouquetlist")
+	{
+		testBouquetlist();
+	}
 	else if(actionKey == "spinner")
 	{
 		spinner();
@@ -3034,6 +3131,10 @@ void CTestMenu::showTestMenu()
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
+
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem(new CMenuForwarder("CChannelList:", true, NULL, this, "channellist"));
+	mainMenu->addItem(new CMenuForwarder("CBouquetList:", true, NULL, this, "bouquetlist"));
 
 	//mainMenu->addItem(new CMenuForwarder("Spinner", true, NULL, this, "spinner"));
 	

@@ -157,7 +157,7 @@ void ParseChannels(xmlNodePtr node, const t_transport_stream_id transport_stream
 {
 	t_service_id service_id;
 	std::string  name;
-	uint8_t      service_type;
+	uint8_t service_type;
 	unsigned short vpid, apid, pcrpid, pmtpid, txpid, vtype, scrambled;
 	std::string desc = "";
 	desc += "Preset";

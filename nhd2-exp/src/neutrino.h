@@ -57,6 +57,8 @@
 
 #include <daemonc/remotecontrol.h>    		/* st_rmsg      */
 
+#include <gui/bouquetlist.h>
+
 /*zapit*/
 #include <client/zapitclient.h>
 
@@ -147,16 +149,19 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		void setVolume(const neutrino_msg_t key, const bool bDoPaint = true, bool nowait = false);
 		~CNeutrinoApp();
 
-		// channel list
-		CChannelList *TVchannelList;
-		CChannelList *RADIOchannelList;
-		CChannelList * channelList;
+		// channellist
+		CChannelList* TVchannelList;
+		CChannelList* RADIOchannelList;
+		CChannelList* webTVchannelList;
+		CChannelList* channelList;
+
+		//
+		void channelsInit(bool bOnly = false);
+		void webTVChannelsInit(bool bOnly = false);
 		
 		CColorSetupNotifier *colorSetupNotifier;
 
 		static CNeutrinoApp * getInstance();
-
-		void channelsInit(bool bOnly = false);
 
 		//
 		void initSectionsdClient();

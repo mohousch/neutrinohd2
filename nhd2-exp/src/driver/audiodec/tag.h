@@ -162,7 +162,7 @@ struct tag_lame {
 };
 #endif /* INCLUDE_UNUSED_STUFF */
 
-struct tag {
+struct _tag {
   int flags;
   struct tag_xing xing;
 #ifdef INCLUDE_UNUSED_STUFF
@@ -171,11 +171,11 @@ struct tag {
 #endif /* INCLUDE_UNUSED_STUFF */
 };
 
-void tag_init(struct tag *);
+void tag_init(struct _tag *);
 
 # define tag_finish(tag)	/* nothing */
 
-int tag_parse(struct tag *, struct mad_stream const *);
+int tag_parse(struct _tag *, struct mad_stream const *);
 #ifdef INCLUDE_UNUSED_STUFF
 void tag_parse_rgain(struct tag_rgain *, struct mad_bitptr *);
 #endif /* INCLUDE_UNUSED_STUFF */

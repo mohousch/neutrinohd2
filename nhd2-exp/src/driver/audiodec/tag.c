@@ -40,7 +40,7 @@
  * NAME:	tag->init()
  * DESCRIPTION:	initialize tag structure
  */
-void tag_init(struct tag *tag)
+void tag_init(struct _tag *tag)
 {
   tag->flags      = 0;
 #ifdef INCLUDE_UNUSED_STUFF
@@ -228,7 +228,7 @@ int parse_lame(struct tag_lame *lame,
  * NAME:	tag->parse()
  * DESCRIPTION:	parse Xing/LAME tag(s)
  */
-int tag_parse(struct tag *tag, struct mad_stream const *stream)
+int tag_parse(struct _tag *tag, struct mad_stream const *stream)
 {
   struct mad_bitptr ptr = stream->anc_ptr;
   struct mad_bitptr start = ptr;

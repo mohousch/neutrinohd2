@@ -59,19 +59,14 @@ class CChannelList
 {
 	private:
 		CFrameBuffer		*frameBuffer;
-		unsigned int		selected;
-		t_channel_id		selected_chid;
-		CLastChannel		lastChList;
+
+		// gui
 		unsigned int		liststart;
 		unsigned int		listmaxshow;
 		unsigned int		numwidth;
 		int			iheight; 	// Fonthoehe Channellist-Inhalt
 		int			theight; 	// Fonthoehe Channellist-Titel
 		int			buttonHeight;
-
-		std::string             name;
-		std::vector<CZapitChannel*>	chanlist;
-		CZapProtection * 	zapProtection;
 
 		int 			width;
 		int 			height;
@@ -91,12 +86,6 @@ class CChannelList
 		int icon_setup_w;
 		int icon_setup_h;
 
-		bool historyMode;
-		bool vlist; 				// "virtual" list, not bouquet
-		bool displayNext;
-
-		SMSKeyInput c_SMSKeyInput;
-
 		void paintDetails(int index);
 		void clearItem2DetailsLine();
 		void paintItem2DetailsLine(int pos);
@@ -104,6 +93,21 @@ class CChannelList
 		void paint();
 		void paintHead();
 		void hide();
+
+		//
+		unsigned int		selected;
+		t_channel_id		selected_chid;
+		CLastChannel		lastChList;
+
+		std::string             name;
+		std::vector<CZapitChannel*>	chanlist;
+		CZapProtection * 	zapProtection;
+
+		bool historyMode;
+		bool vlist; 				// "virtual" list, not bouquet
+		bool displayNext;
+
+		SMSKeyInput c_SMSKeyInput;
 
 		//
 		uint32_t sec_timer_id;
@@ -121,8 +125,8 @@ class CChannelList
 		CZapitChannel * operator[]( uint32_t index) { if (chanlist.size() > index) return chanlist[index]; else return NULL;};
 		int getKey(int);
 
-		const char * getName(void) const { return name.c_str(); };
-		const std::string &  getActiveChannelName      (void) const; // UTF-8
+		const char* getName(void) const { return name.c_str(); };
+		const std::string&  getActiveChannelName      (void) const; // UTF-8
 		t_satellite_position getActiveSatellitePosition(void) const;
 		int                  getActiveChannelNumber    (void) const;
 		t_channel_id         getActiveChannel_ChannelID(void) const;
@@ -152,7 +156,7 @@ class CChannelList
 		void SortSat(void);
 		void ClearList(void);
 		
-		bool canZap(CZapitChannel * channel = NULL);
+		bool canZap(CZapitChannel* channel = NULL);
 };
 
 #endif

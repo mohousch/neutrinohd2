@@ -56,7 +56,7 @@ class CWebTV : public CMenuTarget
 	public:
 		std::vector<CZapitChannel*> channels;
 
-		void processPlaylistUrl(const char *url, const char *name, const char * description);
+		void processPlaylistUrl(const char *url, const char *name, const char * description, int nr);
 		void loadWebTVBouquet(std::string filename);
 		
 	private:
@@ -116,6 +116,9 @@ class CWebTV : public CMenuTarget
 		const std::string& getLiveChannelUrl(void){if(tuned < 0) tuned = 0; return channels[tuned]->url;};
 		const std::string& getChannelName(t_channel_id id);
 		const std::string& getChannelURL(t_channel_id id);
+		const std::string& getBouquetName(){return title;};
+
+		std::vector<CZapitChannel*> getChannels(void){return channels;};
 		
 		//
 		void loadChannels(void);
@@ -124,6 +127,8 @@ class CWebTV : public CMenuTarget
 		//
 		CZapitClient::CCurrentServiceInfo getServiceInfo();
 		void getPIDS(CZapitClient::responseGetPIDs& pids);
+
+		unsigned int zapTo_ChannelID_NOWAIT(const t_channel_id channel_id);
 };
 
 class CWebTVChooser : public CWebTV

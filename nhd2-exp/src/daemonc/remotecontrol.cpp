@@ -773,9 +773,15 @@ void CRemoteControl::zapTo_ChannelID(const t_channel_id channel_id, const std::s
 		}
 		
 		abort_zapit = 1;
-		
-		// zapto baby
-		g_Zapit->zapTo_serviceID_NOWAIT(channel_id);
+
+		// zap
+		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		{
+			g_WebTV->zapTo_ChannelID_NOWAIT(channel_id);
+			g_WebTV->getEvents(channel_id&0xFFFFFFFFFFFFULL);
+		}
+		else
+			g_Zapit->zapTo_serviceID_NOWAIT(channel_id);
 		
 		abort_zapit = 0;
 

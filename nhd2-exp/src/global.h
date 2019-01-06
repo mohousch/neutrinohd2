@@ -103,6 +103,6 @@ NEUTRINO_CPP CLocaleManager		*g_Locale;
 
 NEUTRINO_CPP CRadioText			*g_Radiotext;
 
-NEUTRINO_CPP CWebTV			*g_Webtv;
+NEUTRINO_CPP CWebTV			*g_WebTV;
 
 #endif /* __neutrino_global_h__ */

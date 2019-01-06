@@ -65,7 +65,7 @@ class CMP3Dec : public CBaseDec
 		void CreateInfo(CAudioMetaData* const, const int);
 		bool GetMP3Info(FILE*, const bool, CAudioMetaData* const);
 		void GetID3(FILE*, CAudioMetaData* const);
-		long scanHeader( FILE*, struct mad_header* const, struct tag* const, const bool );
+		long scanHeader( FILE*, struct mad_header* const, struct _tag* const, const bool );
 
 	public:
 		static CMP3Dec* getInstance();

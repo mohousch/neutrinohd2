@@ -88,7 +88,7 @@ CWebTV::~CWebTV()
 	ClearChannels();
 }
 
-void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * description) 
+void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * description, int nr) 
 {
 	dprintf(DEBUG_DEBUG, "CWebTV::processPlaylistUrl\n");
 	
@@ -175,6 +175,7 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 
 						if (chan != NULL) 
 						{
+							chan->number = nr;
 							channels.push_back(chan);
 						}
 					}
@@ -200,6 +201,7 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 	bool iptv = false;
 	bool webtv = false;
 	bool playlist = false;
+	int cnt = 1;
 					
 	std::string extension = getFileExt(filename);
 						
@@ -257,9 +259,14 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 
 					if (chan != NULL) 
 					{
+						chan->number = cnt;
 						channels.push_back(chan);
 					}
+
+					cnt++;
 				}
+
+				//cnt++;
 			}
 			
 			fclose(f);
@@ -315,6 +322,7 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 
 						if (chan != NULL) 
 						{
+							chan->number = cnt;
 							channels.push_back(chan);
 						}
 					}	
@@ -324,11 +332,12 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 						url = xmlGetAttribute(l1, (char *)"url");
 						description = "stream";
 
-						processPlaylistUrl(url, title, description) ;
+						processPlaylistUrl(url, title, description, cnt) ;
 					}
 
 					l1 = l1->xmlNextNode;
 					g_RCInput->getMsg(&msg, &data, 0);
+					cnt++;
 				}
 			}
 		}
@@ -373,11 +382,16 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 
 						if (chan != NULL) 
 						{
+							chan->number = cnt;
 							channels.push_back(chan);
 						}
+
+						cnt++;
 					}
 				}
 			}
+
+			//cnt++;
 		}
 		infile.close();
 	}
@@ -741,7 +755,7 @@ void CWebTV::updateEvents(void)
 			}
 
 			CChannelEventList pevents;
-			sectionsd_getChannelEvents(pevents, (CNeutrinoApp::getInstance()->getMode()) != NeutrinoMessages::mode_radio, p_requested_channels, size_requested_channels);
+			sectionsd_getChannelEvents(pevents, true, p_requested_channels, size_requested_channels);
 			
 			for (uint32_t count = 0; count < channels.size(); count++) 
 			{
@@ -989,4 +1003,34 @@ CWebTV::result_ CWebTVChooser::itemSelected()
 
 	return CWebTV::close;
 }
+
+#include <libeventserver/eventserver.h>
+extern CEventServer *eventServer;
+unsigned int CWebTV::zapTo_ChannelID_NOWAIT(t_channel_id channel_id)
+{
+	unsigned int result = 0;
+
+	playback->Close();
+
+	playback->Open();
+	
+	if (!playback->Start((char *)getChannelURL(channel_id).c_str()))
+	{
+		dprintf(DEBUG_NORMAL, "CWebTV::zapTo_ChannelID: zapit failed, chid %llx\n", channel_id);
+		
+		eventServer->sendEvent(CZapitClient::EVT_ZAP_FAILED, CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
+		
+		return result;
+	}
+
+	result |= CZapitClient::ZAP_OK;
+
+	dprintf(DEBUG_NORMAL, "CWebTV::zapTo_ChannelID: zapit OK, chid %llx\n", channel_id);
+	
+	eventServer->sendEvent(CZapitClient::EVT_ZAP_COMPLETE, CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
+
+	return result;
+}
+
+
 

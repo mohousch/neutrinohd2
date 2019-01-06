@@ -81,10 +81,7 @@ class CBouquetList
 	private:
 		CFrameBuffer* frameBuffer;
 
-		std::string name;
-
-		//
-		unsigned int selected;
+		// gui
 		unsigned int liststart;
 		unsigned int listmaxshow;
 		unsigned int numwidth;
@@ -107,17 +104,21 @@ class CBouquetList
 		void paint();
 		void paintHead();
 		void hide();
+
+		unsigned int selected;
+
+		std::string name;
 		
 		int doMenu();
 
 	public:
-		CBouquetList(const char * const Name = NULL);
+		CBouquetList(const char* const Name = NULL);
 		~CBouquetList();
 
 		std::vector<CBouquet*> Bouquets;
 		CChannelList* orgChannelList;
 		
-		CBouquet* addBouquet(const char * const _name, int BouquetKey = -1, bool locked = false );
+		CBouquet* addBouquet(const char* const _name, int BouquetKey = -1, bool locked = false );
 		CBouquet* addBouquet(CZapitBouquet * zapitBouquet);
 		void deleteBouquet(CBouquet* bouquet);
 		int getActiveBouquetNumber();
@@ -126,7 +127,7 @@ class CBouquetList
 		int showChannelList(int nBouquet = -1);
 		void adjustToChannel(int nChannelNr);
 		void adjustToChannelID(t_channel_id channel_id);
-		int exec( bool bShowChannelList);
+		int exec(bool bShowChannelList);
 };
 
 #endif

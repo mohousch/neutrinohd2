@@ -1706,7 +1706,8 @@ void CChannelList::paintItem(int pos)
 		// due to extended info
 		if(g_settings.channellist_extended)
 		{
-			prg_offset = 42;
+			//prg_offset = 42;
+			prg_offset = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("00:00");
 			title_offset = 6;
 		}
 
@@ -1714,7 +1715,7 @@ void CChannelList::paintItem(int pos)
 
 		CChannelEvent * p_event = NULL;
 
-		int pBarWidth = 35;
+		int pBarWidth = prg_offset;
 		int pBarHeight = iheight/3;
 		CProgressBar timescale(pBarWidth, pBarHeight);
 

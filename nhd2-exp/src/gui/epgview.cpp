@@ -1258,11 +1258,7 @@ int CEPGDataHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 
 	channelList = CNeutrinoApp::getInstance()->channelList;
 
-	//
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		e->show(g_Webtv->getLiveChannelID());
-	else
-		e->show(channelList->getActiveChannel_ChannelID());
+	e->show(channelList->getActiveChannel_ChannelID());
 	
 	delete e;
 
