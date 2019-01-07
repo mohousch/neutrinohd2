@@ -43,6 +43,7 @@
 #include <gui/color.h>
 #include <gui/eventlist.h>
 #include <gui/infoviewer.h>
+#include <gui/filebrowser.h>
 
 #include <gui/widget/menue.h>
 #include <gui/widget/buttons.h>

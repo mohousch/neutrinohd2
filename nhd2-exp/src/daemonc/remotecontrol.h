@@ -120,6 +120,8 @@ class CRemoteControl
 		int handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data);
 		inline const std::string & getCurrentChannelName(void) const { return current_channel_name; };
 		inline int getCurrentChannelNumber(void) { return current_channel_number; };
+
+		void getEvents(t_channel_id chid);
 };
 
 #endif

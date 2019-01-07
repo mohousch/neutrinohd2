@@ -140,7 +140,6 @@
 #include <gui/audio_select.h>
 #include <gui/scan_setup.h>
 #include <gui/dvbsub_select.h>
-#include <gui/webtv.h>
 #include <gui/channel_select.h>
 #include <gui/audio_video_select.h>
 #include <gui/psisetup.h>
@@ -180,6 +179,7 @@
 #include <satconfig.h>
 #include <channel.h>
 #include <bouquets.h>
+#include <webtv.h>
 
 // libdvbapi
 #include <playback_cs.h>

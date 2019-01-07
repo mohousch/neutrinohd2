@@ -603,6 +603,7 @@ int CChannelList::show()
 		{ 
 			//FIXME: show bqt list
 			bShowBouquetList = true;
+
 			loop = false;
 		}
 		else if( msg == CRCInput::RC_blue ) //epgplus
@@ -626,23 +627,30 @@ int CChannelList::show()
 		}
 		else if ( msg == CRCInput::RC_setup ) 
 		{
-			// chan list setup (add/move)
-			old_b_id = bouquetList->getActiveBouquetNumber();
-			int ret = doChannelMenu();
-			
-			if(ret) 
+			if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
 			{
-				res = -4;
+				webTVUserBouquet();
 				loop = false;
-			} 
-			else 
-			{
-				old_b_id = -1;
-
-				paintHead();
-				paint();
 			}
+			else
+			{
+				// chan list setup (add/move)
+				old_b_id = bouquetList->getActiveBouquetNumber();
+				int ret = doChannelMenu();
 			
+				if(ret) 
+				{
+					res = -4;
+					loop = false;
+				} 
+				else 
+				{
+					old_b_id = -1;
+
+					paintHead();
+					paint();
+				}
+			}
 		}
 		else if (msg == (neutrino_msg_t) g_settings.key_list_start) 
 		{
@@ -907,8 +915,13 @@ int CChannelList::show()
 	sec_timer_id = 0;
 	
 	// bouquets mode
-	if (bShowBouquetList) 
-		res = bouquetList->exec(true);
+	if (bShowBouquetList)
+	{
+		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+			webTVBouquets();
+ 		else
+			res = bouquetList->exec(true);
+	}
 	
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 	
@@ -1950,3 +1963,90 @@ int CChannelList::getSelectedChannelIndex() const
 {
 	return this->selected;
 }
+
+//
+void CChannelList::webTVBouquets(void)
+{
+	dprintf(DEBUG_NORMAL, "CChannelList::Bouquets\n");
+
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("xml");
+	fileFilter.addFilter("tv");
+	fileFilter.addFilter("m3u");
+
+	//
+	CFileList filelist;
+	CMenuWidget m(LOCALE_WEBTV_BOUQUETS, NEUTRINO_ICON_WEBTV_SMALL, MENU_WIDTH + 100);
+	m.enableSaveScreen();
+
+	int select = -1;
+	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
+	int count = 0;
+	static int old_select = 0;
+
+	std::string Path_local = CONFIGDIR "/webtv";
+
+	// read list
+	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	{
+		std::string bTitle;
+
+		for (unsigned int i = 0; i < filelist.size(); i++)
+		{
+			bTitle = filelist[i].getFileName();
+
+			removeExtension(bTitle);
+
+			m.addItem(new CMenuForwarder(bTitle.c_str(), true, NULL, selector, to_string(count).c_str()), old_select == count);
+
+			count++;
+		}
+	}
+
+	m.exec(NULL, "");
+	delete selector;
+
+	// select
+	if(select >= 0)
+	{
+		old_select = select;
+
+		g_settings.webtv_userBouquet.clear();
+		
+		g_settings.webtv_userBouquet = filelist[select].Name.c_str();
+		
+		dprintf(DEBUG_NORMAL, "CChannelList::addUserBouquet: settings file %s\n", g_settings.webtv_userBouquet.c_str());
+		
+		// load channels
+		CNeutrinoApp::getInstance()->webTVChannelsInit();
+	}
+}
+
+void CChannelList::webTVUserBouquet(void)
+{
+	dprintf(DEBUG_NORMAL, "CChannelList::addUserBouquet\n");
+
+	CFileBrowser filebrowser;
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("xml");
+	fileFilter.addFilter("tv");
+	fileFilter.addFilter("m3u");
+
+	filebrowser.Filter = &fileFilter;
+
+	if (filebrowser.exec(CONFIGDIR "/webtv"))
+	{
+		g_settings.webtv_userBouquet.clear();
+		
+		g_settings.webtv_userBouquet = filebrowser.getSelectedFile()->Name.c_str();
+		
+		dprintf(DEBUG_NORMAL, "CChannelList::userBouquet: webtv settings file %s\n", g_settings.webtv_userBouquet.c_str());
+		
+		// load channels
+		CNeutrinoApp::getInstance()->webTVChannelsInit();
+	}
+}
+//
+

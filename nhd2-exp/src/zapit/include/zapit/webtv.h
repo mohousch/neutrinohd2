@@ -33,8 +33,6 @@
 #include <string>
 #include <vector>
 
-#include <gui/widget/menue.h>
-
 #include <channel.h>
 #include <client/zapitclient.h>
 
@@ -44,15 +42,8 @@
 #include <string.h>
 
 
-class CWebTV : public CMenuTarget
+class CWebTV
 {
-	public:
-		enum result_
-		{
-			close  = 0,
-			resume = 1,
-		} result;
-
 	public:
 		std::vector<CZapitChannel*> channels;
 
@@ -62,21 +53,6 @@ class CWebTV : public CMenuTarget
 	private:
 		// bouquets
 		std::string title;
-
-		CMenuItem* item;
-
-		int tuned;
-		bool displayNext;
-		
-		unsigned int position;
-		unsigned int duration;
-		unsigned int file_prozent;
-		unsigned int speed;
-		
-		void hide();
-
-	protected:
-		virtual CWebTV::result_ itemSelected();
 		
 	public:
 		enum state
@@ -85,35 +61,17 @@ class CWebTV : public CMenuTarget
 			PLAY        =  1,
 			PAUSE       =  2
 		};
-
-		ClistBox* webTVlistMenu;
 		
 		unsigned int playstate;
 		
 		CWebTV();
 		~CWebTV();
-		int exec(CMenuTarget* parent, const std::string& actionKey);
 		
-		void show(bool reload = false, bool reinit = false);
-		void userBouquet();
-		void Bouquets();
-		void quickZap(int key);
-		//
-		void updateEvents(void);
-		void getEvents(t_channel_id chid);
-		void showInfo();
-		
-		// playback
-		bool startPlayBack(int pos);
+		bool startPlayBack(t_channel_id chid);
 		void stopPlayBack(void);
 		void pausePlayBack(void);
 		void continuePlayBack(void);
 
-		//
-		unsigned int getTunedChannel() {if(tuned < 0) tuned = 0; return tuned;};
-		t_channel_id getLiveChannelID() { if(tuned < 0) tuned = 0; return channels[tuned]->channel_id;};
-		const std::string& getLiveChannelName(void){if(tuned < 0) tuned = 0; return channels[tuned]->name;};
-		const std::string& getLiveChannelUrl(void){if(tuned < 0) tuned = 0; return channels[tuned]->url;};
 		const std::string& getChannelName(t_channel_id id);
 		const std::string& getChannelURL(t_channel_id id);
 		const std::string& getBouquetName(){return title;};
@@ -129,18 +87,6 @@ class CWebTV : public CMenuTarget
 		void getPIDS(CZapitClient::responseGetPIDs& pids);
 
 		unsigned int zapTo_ChannelID_NOWAIT(const t_channel_id channel_id);
-};
-
-class CWebTVChooser : public CWebTV
-{
-	private:
-		char *selected_item;
-		
-	protected:
-		CWebTV::result_ itemSelected();
-
-	public:
-		CWebTVChooser(char* channelname);
 };
 
 #endif

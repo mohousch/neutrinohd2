@@ -778,7 +778,7 @@ void CRemoteControl::zapTo_ChannelID(const t_channel_id channel_id, const std::s
 		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
 		{
 			g_WebTV->zapTo_ChannelID_NOWAIT(channel_id);
-			g_WebTV->getEvents(channel_id&0xFFFFFFFFFFFFULL);
+			getEvents(channel_id&0xFFFFFFFFFFFFULL);
 		}
 		else
 			g_Zapit->zapTo_serviceID_NOWAIT(channel_id);
@@ -832,4 +832,58 @@ void CRemoteControl::tvMode()
 	CVFD::getInstance()->ShowIcon(VFD_ICON_RADIO, false);
 	CVFD::getInstance()->ShowIcon(VFD_ICON_TV, true);
 }
+
+// defined in sectionsd.cpp
+void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid);
+
+// get events
+void CRemoteControl::getEvents(t_channel_id chid)
+{
+	std::string evUrl = "http://";
+	evUrl += g_settings.epg_serverbox_ip;
+
+	if(g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_ENIGMA2)
+	{
+		evUrl += "/web/epgservice?sRef=1:0:"; 
+
+		evUrl += to_hexstring(1);
+		evUrl += ":";
+		evUrl += to_hexstring(GET_SERVICE_ID_FROM_CHANNEL_ID(chid)); //sid
+		evUrl += ":";
+		evUrl += to_hexstring(GET_TRANSPORT_STREAM_ID_FROM_CHANNEL_ID(chid)); //tsid
+		evUrl += ":";
+		evUrl += to_hexstring(GET_ORIGINAL_NETWORK_ID_FROM_CHANNEL_ID(chid)); //onid
+		evUrl += ":";
+
+		if(g_settings.epg_serverbox_type == DVB_C)
+		{
+			evUrl += "FFFF"; // namenspace for cable
+		}
+		else if (g_settings.epg_serverbox_type == DVB_T)
+		{
+			evUrl += "EEEE"; // namenspace for terrestrial
+		}
+		else if (g_settings.epg_serverbox_type == DVB_S)
+		{
+			// namenspace for sat
+			evUrl += to_hexstring(GET_SATELLITEPOSITION_FROM_CHANNEL_ID(chid)); //satpos
+		}
+
+		evUrl += "0000";
+		evUrl += ":";
+		evUrl += "0:0:0:";
+	}
+	else if(g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
+	{
+		evUrl += "/control/epg?channelid=";
+
+         	evUrl += to_hexstring(chid);
+
+		evUrl += "&xml=true&details=true";
+	}
+
+	insertEventsfromHttp(evUrl, GET_ORIGINAL_NETWORK_ID_FROM_CHANNEL_ID(chid), GET_TRANSPORT_STREAM_ID_FROM_CHANNEL_ID(chid), GET_SERVICE_ID_FROM_CHANNEL_ID(chid));
+}
+
+
 
