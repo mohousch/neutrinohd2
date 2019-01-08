@@ -1340,12 +1340,7 @@ int CEPGplusHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 	
 	e = new EpgPlus;
 
-/*	
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		channelList = CNeutrinoApp::getInstance()->webTVchannelList;
-	else
-*/
-		channelList = CNeutrinoApp::getInstance()->channelList;
+	channelList = CNeutrinoApp::getInstance()->channelList;
 
 	e->exec(channelList, channelList->getSelectedChannelIndex(), bouquetList);
 	delete e;

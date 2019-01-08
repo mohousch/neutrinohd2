@@ -935,10 +935,7 @@ int CEventListHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*
 
 	channelList = CNeutrinoApp::getInstance()->channelList;
 
-	//if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		e->exec(channelList->getActiveChannel_ChannelID(), channelList->getActiveChannelName());
-	//else
-	//	e->exec(live_channel_id, channelList->getActiveChannelName());
+	e->exec(channelList->getActiveChannel_ChannelID(), channelList->getActiveChannelName());
 
 	delete e;
 

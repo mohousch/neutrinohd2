@@ -2594,12 +2594,6 @@ void CTestMenu::testBouquetlist()
 {
 	webTVBouquetList = new CBouquetList("CTestMenu::testBouquetlist");
 
-/*
-	webTVBouquetList->addBouquet("enigma2");
-	webTVBouquetList->addBouquet("Music");
-	webTVBouquetList->addBouquet("Arabic");
-	webTVBouquetList->addBouquet("Sky");
-*/
 	CBouquet* webBouquet = NULL;
 
 	CFileFilter fileFilter;
@@ -2626,7 +2620,6 @@ void CTestMenu::testBouquetlist()
 
 			removeExtension(bTitle);
 
-			//webTVBouquetList->addBouquet(bTitle.c_str());
 			webBouquet = new CBouquet(0, (char *)bTitle.c_str(), 0);
 
 			for(unsigned count = 0; count < Channels.size(); count++)

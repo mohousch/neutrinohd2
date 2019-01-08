@@ -48,10 +48,6 @@
 // libdvbapi
 #include <playback_cs.h>
 
-// curl
-#include <curl/curl.h>
-#include <curl/easy.h>
-
 #include <webtv.h>
 
 
@@ -64,110 +60,7 @@ CWebTV::CWebTV()
 
 CWebTV::~CWebTV()
 {
-	ClearChannels();
-}
-
-void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * description, int nr) 
-{
-	dprintf(DEBUG_DEBUG, "CWebTV::processPlaylistUrl\n");
-	
-	CURL *curl_handle;
-	struct MemoryStruct chunk;
-	
-	chunk.memory = NULL; 	// we expect realloc(NULL, size) to work
-	chunk.size = 0;    	// no data at this point
-
-	curl_global_init(CURL_GLOBAL_ALL);
-
-	// init the curl session
-	curl_handle = curl_easy_init();
-
-	// specify URL to get
-	curl_easy_setopt(curl_handle, CURLOPT_URL, url);
-
-	// send all data to this function 
-	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-
-	// we pass our 'chunk' struct to the callback function
-	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
-
-	// some servers don't like requests that are made without a user-agent field, so we provide one
-	curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-
-	// don't use signal for timeout
-	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
-
-	// set timeout to 10 seconds
-	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 10);
-	
-	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
-	{
-		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
-		
-		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
-		{
-			char tmp[200];
-			strcpy(tmp, g_settings.softupdate_proxyusername);
-			strcat(tmp, ":");
-			strcat(tmp, g_settings.softupdate_proxypassword);
-			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
-		}
-	}
-
-	// get it!
-	curl_easy_perform(curl_handle);
-
-	// cleanup curl stuff
-	curl_easy_cleanup(curl_handle);
-
-	long res_code;
-	if (curl_easy_getinfo(curl_handle, CURLINFO_HTTP_CODE, &res_code ) ==  CURLE_OK) 
-	{
-		if (200 == res_code) 
-		{
-			std::istringstream iss;
-			iss.str (std::string(chunk.memory, chunk.size));
-			char line[512];
-			char *ptr;
-			t_channel_id id = 0;
-			
-			while (iss.rdstate() == std::ifstream::goodbit) 
-			{
-				iss.getline(line, 512);
-				if (line[0] != '#') 
-				{
-					ptr = strstr(line, "http://");
-					if (ptr != NULL) 
-					{
-						char *tmp;
-						// strip \n and \r characters from url
-						tmp = strchr(line, '\r');
-						if (tmp != NULL)
-							*tmp = '\0';
-						tmp = strchr(line, '\n');
-						if (tmp != NULL)
-							*tmp = '\0';
-						
-						id = create_channel_id64(0, 0, 0, 0, 0, ptr);
-
-						CZapitChannel * chan = new CZapitChannel(name, id, ptr,  description);	
-
-						if (chan != NULL) 
-						{
-							chan->number = nr;
-							channels.push_back(chan);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if(chunk.memory)
-		free(chunk.memory);
- 
-	// we're done with libcurl, so clean it up
-	curl_global_cleanup();
+	clearChannels();
 }
 
 void CWebTV::loadWebTVBouquet(std::string filename)
@@ -244,8 +137,6 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 
 					cnt++;
 				}
-
-				//cnt++;
 			}
 			
 			fclose(f);
@@ -304,14 +195,6 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 							chan->number = cnt;
 							channels.push_back(chan);
 						}
-					}	
-					else if (xmlGetNextOccurence(l1, "station"))
-					{
-						title = xmlGetAttribute(l1, (char *)"name");
-						url = xmlGetAttribute(l1, (char *)"url");
-						description = "stream";
-
-						processPlaylistUrl(url, title, description, cnt) ;
 					}
 
 					l1 = l1->xmlNextNode;
@@ -369,16 +252,14 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 					}
 				}
 			}
-
-			//cnt++;
 		}
 		infile.close();
 	}
 }
 
-void CWebTV::ClearChannels(void)
+void CWebTV::clearChannels(void)
 {
-	dprintf(DEBUG_INFO, "CWebTV::ClearChannels\n");
+	dprintf(DEBUG_INFO, "CWebTV::clearChannels\n");
 	
 	for (std::vector<CZapitChannel*>::iterator it = channels.begin(); it != channels.end(); it++) 
 	{

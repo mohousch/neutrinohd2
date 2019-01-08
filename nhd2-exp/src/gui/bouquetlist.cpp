@@ -186,7 +186,7 @@ int CBouquetList::showChannelList( int nBouquet)
 	return nNewChannel;
 }
 
-/* bShowChannelList default to false , return seems not checked anywhere */
+// bShowChannelList default to false , return seems not checked anywhere
 int CBouquetList::activateBouquet( int id, bool bShowChannelList)
 {
 	int res = -1;
@@ -239,7 +239,7 @@ int CBouquetList::doMenu()
 
 	zapitBouquet = Bouquets[selected]->zapitBouquet;
 	
-	/* zapitBouquet not NULL only on real bouquets, not on virtual SAT or HD */
+	// zapitBouquet not NULL only on real bouquets, not on virtual SAT or HD 
 	if(!zapitBouquet)
 		return 0;
 
@@ -437,7 +437,7 @@ int CBouquetList::show(bool bShowChannelList)
 		}
 		else if ( msg == (neutrino_msg_t) g_settings.key_list_end ) 
 		{
-			selected = Bouquets.size()-1;
+			selected = Bouquets.size()- 1;
 			liststart = (selected/listmaxshow)*listmaxshow;
 			paint();
 		}

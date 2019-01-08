@@ -917,8 +917,12 @@ int CChannelList::show()
 	// bouquets mode
 	if (bShowBouquetList)
 	{
+		//FIXME:
 		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		{
+			res = -2;
 			webTVBouquets();
+		}
  		else
 			res = bouquetList->exec(true);
 	}
@@ -1977,7 +1981,7 @@ void CChannelList::webTVBouquets(void)
 
 	//
 	CFileList filelist;
-	CMenuWidget m(LOCALE_WEBTV_BOUQUETS, NEUTRINO_ICON_WEBTV_SMALL, MENU_WIDTH + 100);
+	CMenuWidget m("WebTV", NEUTRINO_ICON_WEBTV_SMALL, MENU_WIDTH + 100);
 	m.enableSaveScreen();
 
 	int select = -1;

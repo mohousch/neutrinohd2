@@ -44,17 +44,15 @@
 
 class CWebTV
 {
-	public:
-		std::vector<CZapitChannel*> channels;
-
-		void processPlaylistUrl(const char *url, const char *name, const char * description, int nr);
-		void loadWebTVBouquet(std::string filename);
-		
 	private:
 		// bouquets
 		std::string title;
-		
+
 	public:
+		std::vector<CZapitChannel*> channels;
+
+		void loadWebTVBouquet(std::string filename);
+		
 		enum state
 		{
 			STOPPED     =  0,
@@ -80,7 +78,7 @@ class CWebTV
 		
 		//
 		void loadChannels(void);
-		void ClearChannels(void);
+		void clearChannels(void);
 
 		//
 		CZapitClient::CCurrentServiceInfo getServiceInfo();
