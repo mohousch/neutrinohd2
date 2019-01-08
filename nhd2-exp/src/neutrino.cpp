@@ -2771,7 +2771,7 @@ void CNeutrinoApp::quickZap(int msg)
 {
 	StopSubtitles();
 	
-	if(mode != mode_iptv) //FIXME:
+	//if(mode != mode_iptv) //FIXME:
 	{
 		if(g_settings.zap_cycle && (bouquetList != NULL) && !(bouquetList->Bouquets.empty()))
 			bouquetList->Bouquets[bouquetList->getActiveBouquetNumber()]->channelList->quickZap(msg, true);

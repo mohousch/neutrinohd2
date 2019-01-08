@@ -22,7 +22,7 @@
 #include <config.h>
 #endif
 
-/*zapit includes*/
+// zapit includes
 #include <bouquets.h>
 
 #include "gui/channel_select.h"
@@ -42,12 +42,14 @@ CSelectChannelWidget::CSelectChannelWidget()
 {
 	ChannelTVID = g_settings.startchanneltv_id;
 	ChannelRadioID = g_settings.startchannelradio_id;
+	ChannelWebTVID = g_settings.startchannelwebtv_id;
 }
 
 CSelectChannelWidget::~CSelectChannelWidget()
 {
 	ChannelTVID = -1;
 	ChannelRadioID = -1;
+	ChannelWebTVID = -1;
 }
 
 int CSelectChannelWidget::exec(CMenuTarget *parent, const std::string &actionKey)
@@ -67,6 +69,11 @@ int CSelectChannelWidget::exec(CMenuTarget *parent, const std::string &actionKey
 	else if(actionKey == "radio")
 	{
 		InitZapitChannelHelper(CZapitClient::MODE_RADIO);
+		return res;
+	}
+	else if(actionKey == "webtv")
+	{
+		InitZapitChannelHelper(CZapitClient::MODE_WEBTV);
 		return res;
 	}
 
@@ -90,7 +97,7 @@ _repeat:
 		CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, NeutrinoMessages::mode_tv);
 	else if(mode == CZapitClient::MODE_RADIO)
 		CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, NeutrinoMessages::mode_radio);
-	else 
+	else if(mode == CZapitClient::MODE_WEBTV)
 		CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, NeutrinoMessages::mode_iptv);
 	
 	// get activ channel number
@@ -119,6 +126,8 @@ _repeat:
 			ChannelTVID = g_settings.startchanneltv_id;
 		else if(mode == CZapitClient::MODE_RADIO)
 			ChannelRadioID = g_settings.startchannelradio_id;
+		else if(mode == CZapitClient::MODE_WEBTV)
+			ChannelWebTVID = g_settings.startchannelwebtv_id;
 	}
 	else
 	{
@@ -126,6 +135,8 @@ _repeat:
 			ChannelTVID = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannel_ChannelID();
 		else if(mode == CZapitClient::MODE_RADIO)
 			ChannelRadioID = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannel_ChannelID();
+		else if(mode == CZapitClient::MODE_WEBTV)
+			ChannelWebTVID = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannel_ChannelID();
 	}
 	
 	// set last channel mode

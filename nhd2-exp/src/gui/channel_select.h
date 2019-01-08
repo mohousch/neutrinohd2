@@ -35,6 +35,7 @@ class CSelectChannelWidget : public CMenuWidget
 	private:
 		t_channel_id ChannelTVID;
 		t_channel_id ChannelRadioID;
+		t_channel_id ChannelWebTVID;
 
 		void InitZapitChannelHelper(CZapitClient::channelsMode mode);
 

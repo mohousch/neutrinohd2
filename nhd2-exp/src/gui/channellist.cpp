@@ -920,11 +920,10 @@ int CChannelList::show()
 		//FIXME:
 		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
 		{
-			res = -2;
 			webTVBouquets();
 		}
- 		else
-			res = bouquetList->exec(true);
+ 
+		res = bouquetList->exec(true);
 	}
 	
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
