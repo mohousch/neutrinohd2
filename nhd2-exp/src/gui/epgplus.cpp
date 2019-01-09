@@ -95,8 +95,8 @@ static EpgPlus::SizeSetting sizeSettingTable[] = {
 	{EpgPlus::EPGPlus_vergap2_width, 4},
 };
 
+// Header
 CFont * EpgPlus::Header::font = NULL;
-
 EpgPlus::Header::Header(CFrameBuffer * _frameBuffer, int _x, int _y, int _width)
 {
 	this->frameBuffer = _frameBuffer;
@@ -116,7 +116,7 @@ void EpgPlus::Header::init ()
 
 void EpgPlus::Header::paint()
 {
-	this->frameBuffer->paintBoxRel (this->x, this->y, this->width, this->font->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
+	this->frameBuffer->paintBoxRel (this->x, this->y, this->width, this->font->getHeight() + 10, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
 	// paint time/date
 	int timestr_len = 0;
@@ -132,18 +132,19 @@ void EpgPlus::Header::paint()
 		strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
 		timestr_len = this->font->getRenderWidth(timestr, true); // UTF-8
 		
-		this->font->RenderString(this->x + this->width - 10 - timestr_len, this->y + this->font->getHeight(), timestr_len+1, timestr, COL_MENUHEAD, 0, true); // UTF-8
+		this->font->RenderString(this->x + this->width - 10 - timestr_len, this->y + this->font->getHeight() + 5, timestr_len + 1, timestr, COL_MENUHEAD, 0, true); // UTF-8
 	}
 
 	// title
-	this->font->RenderString (this->x + 10, this->y + this->font->getHeight(), this->width - 20, g_Locale->getText (LOCALE_EPGPLUS_HEAD) , COL_MENUHEAD, 0, true);
+	this->font->RenderString (this->x + 10, this->y + this->font->getHeight() + 5, this->width - 20, g_Locale->getText(LOCALE_EPGPLUS_HEAD) , COL_MENUHEAD, 0, true);
 }
 
 int EpgPlus::Header::getUsedHeight ()
 {
-  	return font->getHeight ();
+  	return font->getHeight() + 10;
 }
 
+// TimeLine
 CFont *EpgPlus::TimeLine::fontTime = NULL;
 CFont *EpgPlus::TimeLine::fontDate = NULL;
 
@@ -259,6 +260,7 @@ int EpgPlus::TimeLine::getUsedHeight()
 	return std::max(fontDate->getHeight(), fontTime->getHeight()) + fontTime->getHeight ();
 }
 
+// ChannelEventEntry
 CFont * EpgPlus::ChannelEventEntry::font = NULL;
 int EpgPlus::ChannelEventEntry::separationLineHeight = 0;
 
@@ -294,14 +296,14 @@ bool EpgPlus::ChannelEventEntry::isSelected (time_t selectedTime) const
 bool sectionsd_getEPGidShort(event_id_t epgID, CShortEPGData * epgdata);
 void EpgPlus::ChannelEventEntry::paint (bool _isSelected, bool toggleColor)
 {
-	this->frameBuffer->paintBoxRel(this->x, this->y, this->width, this->font->getHeight(), this->channelEvent.description.empty()? COL_MENUCONTENT_PLUS_0 : (_isSelected ? COL_MENUCONTENTSELECTED_PLUS_0 : (toggleColor ? COL_MENUCONTENT_PLUS_1 : COL_MENUCONTENT_PLUS_2)));
+	this->frameBuffer->paintBoxRel(this->x, this->y, this->width, this->font->getHeight() + 10, this->channelEvent.description.empty()? COL_MENUCONTENT_PLUS_0 : (_isSelected ? COL_MENUCONTENTSELECTED_PLUS_0 : (toggleColor ? COL_MENUCONTENT_PLUS_1 : COL_MENUCONTENT_PLUS_2)));
 	
-	this->font->RenderString(this->x + 2, this->y + this->font->getHeight(), this->width - 4 > 0 ? this->width - 4 : 0, this->channelEvent.description, _isSelected ? COL_MENUCONTENTSELECTED : (toggleColor ? COL_MENUCONTENT_P1 : COL_MENUCONTENT_P2), 0, true);
+	this->font->RenderString(this->x + 2, this->y + this->font->getHeight() + 5, this->width - 4 > 0 ? this->width - 4 : 0, this->channelEvent.description, _isSelected ? COL_MENUCONTENTSELECTED : (toggleColor ? COL_MENUCONTENT_P1 : COL_MENUCONTENT_P2), 0, true);
 	
 	// paint the separation line
 	if (separationLineHeight > 0) 
 	{
-		this->frameBuffer->paintBoxRel(this->x, this->y + this->font->getHeight(), this->width, this->separationLineHeight, COL_MENUCONTENT_PLUS_5);
+		this->frameBuffer->paintBoxRel(this->x, this->y + this->font->getHeight() + 10, this->width, this->separationLineHeight, COL_MENUCONTENT_PLUS_5);
 	}
 	
 	if (_isSelected) 
@@ -325,9 +327,10 @@ void EpgPlus::ChannelEventEntry::paint (bool _isSelected, bool toggleColor)
 
 int EpgPlus::ChannelEventEntry::getUsedHeight()
 {
-  	return font->getHeight() + separationLineHeight;
+  	return font->getHeight() + 10 + separationLineHeight;
 }
 
+// ChannelEntry
 CFont * EpgPlus::ChannelEntry::font = NULL;
 int EpgPlus::ChannelEntry::separationLineHeight = 0;
 
@@ -373,7 +376,7 @@ EpgPlus::ChannelEntry::~ChannelEntry()
 
 void EpgPlus::ChannelEntry::paint (bool isSelected, time_t selectedTime)
 {
-	this->frameBuffer->paintBoxRel(this->x, this->y, this->width, this->font->getHeight(), isSelected ? COL_MENUCONTENTSELECTED_PLUS_0 : COL_MENUCONTENT_PLUS_0);
+	this->frameBuffer->paintBoxRel(this->x, this->y, this->width, this->font->getHeight() + 10, isSelected ? COL_MENUCONTENTSELECTED_PLUS_0 : COL_MENUCONTENT_PLUS_0);
 	
 	//FIXME
 	// display channel picon
@@ -382,7 +385,7 @@ void EpgPlus::ChannelEntry::paint (bool isSelected, time_t selectedTime)
 	if(g_settings.epgplus_show_logo)
 	{
 		int logo_w = this->width -2; 
-		int logo_h = this->font->getHeight() - 2;
+		int logo_h = this->font->getHeight() + 10 - 2;
 		int PIC_W = (this->font->getHeight() - 2)*1.67;
 		int logo_bpp = 0;
 		
@@ -395,13 +398,13 @@ void EpgPlus::ChannelEntry::paint (bool isSelected, time_t selectedTime)
 			this->frameBuffer->getLogoSize(this->channel->getChannelID(), &logo_w, &logo_h, &logo_bpp);
 		
 			// paint logo (png with alpha channel)
-			this->frameBuffer->displayLogo(this->channel->getChannelID(), this->x + 1 + ((logo_bpp == 4)? 0 : (this->width - 2 - PIC_W)/2), this->y + 1, (logo_bpp == 4)? this->width -2 : PIC_W, this->font->getHeight() - 2, true);
+			this->frameBuffer->displayLogo(this->channel->getChannelID(), this->x + 1 + ((logo_bpp == 4)? 0 : (this->width - 2 - PIC_W)/2), this->y + 1, (logo_bpp == 4)? this->width -2 : PIC_W, this->font->getHeight() + 10 - 2, true);
 		}
 	}
 	
 	if(!logo_ok)
 		// display channel number+ channel name
-		this->font->RenderString (this->x + 2, this->y + this->font->getHeight(), this->width - 4, this->displayName, isSelected ? COL_MENUCONTENTSELECTED : COL_MENUCONTENT, 0, true);
+		this->font->RenderString (this->x + 2, this->y + this->font->getHeight() + 5, this->width - 4, this->displayName, isSelected ? COL_MENUCONTENTSELECTED : COL_MENUCONTENT, 0, true);
 	
 	if (isSelected) 
 	{
@@ -427,7 +430,7 @@ void EpgPlus::ChannelEntry::paint (bool isSelected, time_t selectedTime)
 	// paint the separation line
 	if (separationLineHeight > 0) 
 	{
-		this->frameBuffer->paintBoxRel (this->x, this->y + this->font->getHeight (), this->width, this->separationLineHeight, COL_MENUCONTENT_PLUS_5);
+		this->frameBuffer->paintBoxRel (this->x, this->y + this->font->getHeight() + 10, this->width, this->separationLineHeight, COL_MENUCONTENT_PLUS_5);
 	}
 	
 	bool toggleColor = false;
@@ -441,10 +444,10 @@ void EpgPlus::ChannelEntry::paint (bool isSelected, time_t selectedTime)
 
 int EpgPlus::ChannelEntry::getUsedHeight ()
 {
-	return font->getHeight ()
-		+ separationLineHeight;
+	return font->getHeight() + 10 + separationLineHeight;
 }
 
+// Footer
 CFont *EpgPlus::Footer::fontBouquetChannelName = NULL;
 CFont *EpgPlus::Footer::fontEventDescription = NULL;
 CFont *EpgPlus::Footer::fontEventShortDescription = NULL;
@@ -479,7 +482,7 @@ void EpgPlus::Footer::setBouquetChannelName (const std::string & newBouquetName,
 
 int EpgPlus::Footer::getUsedHeight ()
 {
-	return fontBouquetChannelName->getHeight() + fontEventDescription->getHeight() + fontEventShortDescription->getHeight() + fontButtons->getHeight();
+	return fontBouquetChannelName->getHeight() + fontEventDescription->getHeight() + fontEventShortDescription->getHeight() + fontButtons->getHeight() + 10;
 }
 
 void EpgPlus::Footer::paintEventDetails (const std::string & description, const std::string & shortDescription)
@@ -526,7 +529,7 @@ struct button_label buttonLabels[] = {
 
 void EpgPlus::Footer::paintButtons(button_label * _buttonLabels, int numberOfButtons)
 {
-	int yPos = this->y + this->getUsedHeight() - this->fontButtons->getHeight();
+	int yPos = this->y + this->getUsedHeight() - (this->fontButtons->getHeight() + 10);
 	
 	int buttonWidth = (this->width - 20) / 4;
 	
@@ -536,9 +539,9 @@ void EpgPlus::Footer::paintButtons(button_label * _buttonLabels, int numberOfBut
 	this->frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	
 	// paint foot box
-	this->frameBuffer->paintBoxRel(this->x, yPos, this->width, this->fontButtons->getHeight(), COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+	this->frameBuffer->paintBoxRel(this->x, yPos, this->width, this->fontButtons->getHeight() + 10, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 	
-	::paintButtons(this->frameBuffer, this->fontButtons, g_Locale, this->x + 10, yPos, buttonWidth, numberOfButtons, _buttonLabels, this->fontButtons->getHeight());
+	::paintButtons(this->frameBuffer, this->fontButtons, g_Locale, this->x + 10, yPos, buttonWidth, numberOfButtons, _buttonLabels, this->fontButtons->getHeight() + 10);
 }
 
 EpgPlus::EpgPlus ()
@@ -964,10 +967,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 				menuWidgetActions.enableSaveScreen();
 
 				// record
-				if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv)
-				{
-		  			menuWidgetActions.addItem (new CMenuForwarder (LOCALE_EPGPLUS_RECORD, true, NULL, new MenuTargetAddRecordTimer(this), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED), false);
-				}
+		  		menuWidgetActions.addItem (new CMenuForwarder (LOCALE_EPGPLUS_RECORD, true, NULL, new MenuTargetAddRecordTimer(this), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED), false);
 
 				// refresh
 				menuWidgetActions.addItem (new CMenuForwarder (LOCALE_EPGPLUS_REFRESH_EPG, true, NULL, new MenuTargetRefreshEpg(this), NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN), false);
