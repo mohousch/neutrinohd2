@@ -627,7 +627,7 @@ int CChannelList::show()
 		}
 		else if ( msg == CRCInput::RC_setup ) 
 		{
-			if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+			if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
 			{
 				webTVUserBouquet();
 				loop = false;
@@ -918,7 +918,7 @@ int CChannelList::show()
 	if (bShowBouquetList)
 	{
 		//FIXME:
-		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
 		{
 			webTVBouquets();
 		}

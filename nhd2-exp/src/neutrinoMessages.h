@@ -168,7 +168,7 @@ struct NeutrinoMessages {
 		mode_audio = 5,
 		mode_pic = 6,
 		mode_ts = 7,
-		mode_iptv = 8,
+		mode_webtv = 8,
 		mode_mask = 0xFF,
 		norezap = 0x100
 	};

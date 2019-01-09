@@ -964,7 +964,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 				menuWidgetActions.enableSaveScreen();
 
 				// record
-				if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+				if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv)
 				{
 		  			menuWidgetActions.addItem (new CMenuForwarder (LOCALE_EPGPLUS_RECORD, true, NULL, new MenuTargetAddRecordTimer(this), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED), false);
 				}

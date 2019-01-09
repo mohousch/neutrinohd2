@@ -1045,7 +1045,7 @@ void CLCD::setMode(const MODES m, const char * const title)
 		showTime();      /* "showclock = true;" implies that "showTime();" does a "displayUpdate();" */
 		                 /* "showTime()" clears the whole lcd in MODE_STANDBY                         */
 		break;
-	case MODE_IPTV:
+	case MODE_WEBTV:
 		showServicename(servicename);
 		showclock = false;
 		break;

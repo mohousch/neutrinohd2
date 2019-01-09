@@ -281,7 +281,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 			
 			// vtxt	
 			case SNeutrinoSettings::ITEM_VTXT:
-				if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+				if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv)
 				{
 					menu_items++;
 					menu_prev = SNeutrinoSettings::ITEM_VTXT;

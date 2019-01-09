@@ -62,7 +62,7 @@ install_DATA += \
 
 # webtv
 install_DATA += \
-	webtv_small.png iptv.png
+	webtv_small.png webtv.png
 
 # misc
 install_DATA += \

@@ -1694,8 +1694,8 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 	// vfd
 	if(!parent)
 	{
-		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-			CVFD::getInstance()->setMode(CVFD::MODE_IPTV);
+		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
+			CVFD::getInstance()->setMode(CVFD::MODE_WEBTV);
 		else
 			CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 	}
@@ -4203,8 +4203,8 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 	// vfd
 	if(!parent)
 	{
-		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-			CVFD::getInstance()->setMode(CVFD::MODE_IPTV);
+		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
+			CVFD::getInstance()->setMode(CVFD::MODE_WEBTV);
 		else
 			CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 	}

@@ -98,7 +98,7 @@ _repeat:
 	else if(mode == CZapitClient::MODE_RADIO)
 		CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, NeutrinoMessages::mode_radio);
 	else if(mode == CZapitClient::MODE_WEBTV)
-		CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, NeutrinoMessages::mode_iptv);
+		CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, NeutrinoMessages::mode_webtv);
 	
 	// get activ channel number
 	if(bouquetList->Bouquets.size())

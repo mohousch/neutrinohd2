@@ -361,7 +361,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 		}
 	}
 
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
 	{
 		satNameWidth = g_SignalFont->getRenderWidth("WebTV");
 			
@@ -372,7 +372,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 	}
 
 	// channel number/logo/name
-	if ( (satellitePosition != 0 && satellitePositions.size()) || (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)) 
+	if ( (satellitePosition != 0 && satellitePositions.size()) || (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)) 
 	{
 		// ChannelNumber
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]->RenderString(ChanNumberX, ChanNameY + ChanNameHeight, CHANNUMBER_WIDTH, strChanNum, col_NumBoxText);
@@ -591,7 +591,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 			if (showButtonBar) 
 				showIcon_Resolution();
 		} 
-		else if ( g_settings.virtual_zap_mode && ((msg == CRCInput::RC_right) || msg == CRCInput::RC_left) && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)) 
+		else if ( g_settings.virtual_zap_mode && ((msg == CRCInput::RC_right) || msg == CRCInput::RC_left) && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv)) 
 		{
 			virtual_zap_mode = true;
 			res = messages_return::cancel_all;
@@ -1031,7 +1031,7 @@ void CInfoViewer::showIcon_SubT() const
 {
         bool have_sub = false;
 
-	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
+	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv)
 	{
 		CZapitChannel * cc = CNeutrinoApp::getInstance()->channelList->getChannel(CNeutrinoApp::getInstance()->channelList->getActiveChannelNumber());
 
@@ -1429,7 +1429,7 @@ void CInfoViewer::showSNR()
 	int posy = 0;
   	int barwidth = BAR_WIDTH;
 	
-  	if (g_settings.infobar_sat_display && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv) 
+  	if (g_settings.infobar_sat_display && CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv) 
 	{
 		if(is_visible)
 		{
@@ -1714,7 +1714,7 @@ void CInfoViewer::showButton_Audio()
 	{
 		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, BoxStartX + BORDER_LEFT + icon_w + ICON_TO_ICON_OFFSET + asize, buttonBarStartY + (buttonBarHeight - icon_h)/2 );
 
-	  	if (count > 0 || CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv) 
+	  	if (count > 0 || CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv) 
 		{
 			int sx = BoxStartX + BORDER_LEFT + icon_w + ICON_TO_ICON_OFFSET + asize + icon_w + ICON_TO_ICON_OFFSET;
 

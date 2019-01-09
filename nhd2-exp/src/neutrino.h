@@ -86,7 +86,7 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 			mode_audio = 5,		// audioplayer mode
 			mode_pic = 6,		// pictureviewer mode
 			mode_ts = 7,		// movieplayer mode
-			mode_iptv = 8,		// webtv mode
+			mode_webtv = 8,		// webtv mode
 			mode_mask = 0xFF,	//
 			norezap = 0x100		//
 		};

@@ -168,7 +168,7 @@
 #define NEUTRINO_ICON_WEBTV_SMALL		"webtv_small"
 
 // infoviewer
-#define NEUTRINO_ICON_IPTV			"iptv"
+#define NEUTRINO_ICON_WEBTV			"webtv"
 
 // mp
 #define NEUTRINO_ICON_MP			"mp"
