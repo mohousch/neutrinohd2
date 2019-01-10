@@ -159,7 +159,6 @@ class CChannelList
 		bool canZap(CZapitChannel* channel = NULL);
 
 		//
-		void webTVUserBouquet();
 		void webTVBouquets();
 };
 

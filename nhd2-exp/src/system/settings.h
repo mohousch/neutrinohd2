@@ -338,7 +338,7 @@ struct SNeutrinoSettings
 	
 	// webtv
 	std::string webtv_userBouquet;
-	unsigned int webtv_lastselectedchannel;
+	//unsigned int webtv_lastselectedchannel;
 
 	// USERMENU
         typedef enum
@@ -427,6 +427,7 @@ struct SNeutrinoSettings
 	t_channel_id startchannelwebtv_id;
 	int startchanneltv_nr;
 	int startchannelradio_nr;
+	int startchannelwebtv_nr;
 	int uselastchannel;
 	
 	// inter without GUI setup

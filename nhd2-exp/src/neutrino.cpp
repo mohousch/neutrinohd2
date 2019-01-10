@@ -120,7 +120,6 @@
 #include <gui/dboxinfo.h>
 #include <gui/audio_select.h>
 #include <gui/scan_setup.h>
-//#include <gui/webtv.h>
 #include <gui/audio_video_select.h>
 #include <gui/mediaplayer.h>
 #include <gui/service_setup.h>
@@ -170,7 +169,7 @@
 #include <libdvbci/dvb-ci.h>
 
 #include <playback_cs.h>
-cPlayback * playback = NULL;
+cPlayback* playback = NULL;
 
 extern char rec_filename[1024];				// defined in stream2file.cpp
 
@@ -244,8 +243,8 @@ void * sectionsd_main_thread(void *data);
 extern bool timeset;
 
 // Audio/Video Decoder
-extern cVideo 		* videoDecoder;		//libcoolstream (video_cs.cpp)
-extern cAudio 		* audioDecoder;		//libcoolstream (audio_cs.cpp)
+extern cVideo* videoDecoder;		//libcoolstream (video_cs.cpp)
+extern cAudio* audioDecoder;		//libcoolstream (audio_cs.cpp)
 
 int prev_video_Mode;
 
@@ -336,10 +335,7 @@ CNeutrinoApp::CNeutrinoApp()
 	channelList = NULL;
 	TVchannelList = NULL;
 	RADIOchannelList = NULL;
-
-	//
 	webTVchannelList = NULL;
-	//webTVBouquetList = NULL;
 	
 	nextRecordingInfo = NULL;
 	skipShutdownTimer = false;
@@ -725,7 +721,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	
 	g_settings.menu_design = configfile.getInt32("menu_design", SNeutrinoSettings::MENU_DESIGN_CLASSIC);
 	g_settings.menu_position = configfile.getInt32("menu_position", SNeutrinoSettings::MENU_POSITION_LEFT);
-	// END OSD
+	// end OSD
 
 	// keysbinding
 	strcpy(g_settings.repeat_blocker, configfile.getString("repeat_blocker", "250").c_str());
@@ -770,7 +766,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	
 	// webtv
 	g_settings.webtv_userBouquet = configfile.getString("webtv_userBouquet", DEFAULT_WEBTV_FILE);
-	g_settings.webtv_lastselectedchannel = configfile.getInt32("webtv_lastselectedchannel", 0);
+	//g_settings.webtv_lastselectedchannel = configfile.getInt32("webtv_lastselectedchannel", 0);
 	
         // USERMENU -> in system/settings.h
         //-------------------------------------------
@@ -825,15 +821,16 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// audioplayer
 	strcpy( g_settings.network_nfs_audioplayerdir, configfile.getString( "network_nfs_audioplayerdir", "/media/hdd/music" ).c_str() );
 
-	//g_settings.audioplayer_follow  = configfile.getInt32("audioplayer_follow", 0);
 	g_settings.audioplayer_highprio  = configfile.getInt32("audioplayer_highprio", 0);
 	g_settings.audioplayer_repeat_on = configfile.getInt32("audioplayer_repeat_on", 0);
+	// end audioplayer
 
 	// pictureviewer
 	strcpy( g_settings.network_nfs_picturedir, configfile.getString( "network_nfs_picturedir", "/media/hdd/picture" ).c_str() );
 
 	g_settings.picviewer_slide_time = configfile.getInt32("picviewer_slide_time", 10);
 	g_settings.picviewer_scaling = configfile.getInt32("picviewer_scaling", (int)CFrameBuffer::SIMPLE);
+	// end pictureviewer
 
 	// misc opts
 	g_settings.channel_mode = configfile.getInt32("channel_mode", LIST_MODE_ALL);
@@ -860,9 +857,11 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.StartChannelTV = configfile.getString("startchanneltv", "");
 	g_settings.StartChannelRadio = configfile.getString("startchannelradio", "");
 	g_settings.startchanneltv_id =  configfile.getInt64("startchanneltv_id", 0) & 0xFFFFFFFFFFFFULL; 
-	g_settings.startchannelradio_id = configfile.getInt64("startchannelradio_id", 0);
+	g_settings.startchannelradio_id = configfile.getInt64("startchannelradio_id", 0) & 0xFFFFFFFFFFFFULL;
+	g_settings.startchannelwebtv_id = configfile.getInt64("startchannelwebtv_id", 0) & 0xFFFFFFFFFFFFULL;
 	g_settings.startchanneltv_nr =  configfile.getInt32("startchanneltv_nr", 0);
 	g_settings.startchannelradio_nr = configfile.getInt32("startchannelradio_nr", 0);
+	g_settings.startchannelwebtv_nr = configfile.getInt32("startchannelwebtv_nr", 0);
 	g_settings.uselastchannel = configfile.getInt32("uselastchannel" , 1);
 
 	// epg
@@ -934,13 +933,13 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.hdd_noise = configfile.getInt32( "hdd_noise", 254);
 	// END HDD
 
-	// SOFT UPDATE
+	// software update
 	strcpy(g_settings.softupdate_proxyserver, configfile.getString("softupdate_proxyserver", "" ).c_str());
 	strcpy(g_settings.softupdate_proxyusername, configfile.getString("softupdate_proxyusername", "" ).c_str());
 	strcpy(g_settings.softupdate_proxypassword, configfile.getString("softupdate_proxypassword", "" ).c_str());
 	strcpy( g_settings.update_dir, configfile.getString( "update_dir", "/tmp" ).c_str() );
 	strcpy(g_settings.softupdate_url_file, configfile.getString("softupdate_url_file", "/var/etc/update.urls").c_str());
-	// END UPDATE
+	// end software update
 
 	// VFD
 	for (int i = 0; i < LCD_SETTING_COUNT; i++)
@@ -950,7 +949,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.lcd_setting_dim_brightness = configfile.getInt32("lcd_dim_brightness", 0);
 	
 	g_settings.lcd_ledcolor = configfile.getInt32("lcd_ledcolor", 1);
-	// END VFD
+	// end VFD
 
 	// online epg
 	g_settings.epg_enable_online_epg = configfile.getBool("epg_enable_online_epg", false);
@@ -961,7 +960,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// mode
 	//g_settings.mode = configfile.getInt32("mode", mode_tv);
 
-	//g_settings.tmdbkey = configfile.getString("tmdbkey", "");
+	// tmdb
 	g_settings.prefer_tmdb_info = configfile.getInt32("prefer_tmdb_info", 0);
 	g_settings.ytkey = configfile.getString("ytkey", "");
 	
@@ -1251,7 +1250,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	
 	// webtv
 	configfile.setString( "webtv_userBouquet", g_settings.webtv_userBouquet);
-	//configfile.setInt32("webtv_lastselectedchannel", g_WebTV->getlastSelectedChannel());
 	
         // USERMENU
         char txt1[81];
@@ -1280,14 +1278,11 @@ void CNeutrinoApp::saveSetup(const char * fname)
 
 	// AUDIOPLAYER
 	configfile.setString( "network_nfs_audioplayerdir", g_settings.network_nfs_audioplayerdir);
-
-	//configfile.setInt32( "audioplayer_follow", g_settings.audioplayer_follow );
 	configfile.setInt32( "audioplayer_highprio", g_settings.audioplayer_highprio );
 	configfile.setInt32( "audioplayer_repeat_on", g_settings.audioplayer_repeat_on );
 
 	// PICVIEWER
 	configfile.setString("network_nfs_picturedir", g_settings.network_nfs_picturedir);
-
 	configfile.setInt32("picviewer_slide_time", g_settings.picviewer_slide_time);
 	configfile.setInt32("picviewer_scaling", g_settings.picviewer_scaling);
 
@@ -1344,8 +1339,10 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setString("startchannelradio", g_settings.StartChannelRadio );
 	configfile.setInt64("startchanneltv_id", g_settings.startchanneltv_id);
 	configfile.setInt64("startchannelradio_id", g_settings.startchannelradio_id);
+	configfile.setInt64("startchannelwebtv_id", g_settings.startchannelwebtv_id);
 	configfile.setInt32("startchanneltv_nr", g_settings.startchanneltv_nr);
 	configfile.setInt32("startchannelradio_nr", g_settings.startchannelradio_nr);
+	configfile.setInt32("startchannelwebtv_nr", g_settings.startchannelwebtv_nr);
 	configfile.setInt32("uselastchannel", g_settings.uselastchannel);
 	
 	// radiotext	
@@ -4701,6 +4698,9 @@ void CNeutrinoApp::tvMode( bool rezap )
 
 		// start epg scanning
 		g_Sectionsd->setPauseScanning(false);
+
+		// save active channel nr
+		g_settings.startchannelwebtv_nr = channelList->getActiveChannelNumber();
 	}
 
 	bool stopauto = (mode != mode_ts);	
@@ -4782,6 +4782,9 @@ void CNeutrinoApp::radioMode( bool rezap)
 
 		// start epg scanning
 		g_Sectionsd->setPauseScanning(false);
+
+		// save active channel nr
+		g_settings.startchannelwebtv_nr = channelList->getActiveChannelNumber();
 	}
 
 	mode = mode_radio;
@@ -4894,6 +4897,12 @@ void CNeutrinoApp::webtvMode( bool rezap)
 
 	//
 	webTVChannelsInit();
+
+	if(rezap) 
+	{
+		channelList->tuned = 0xfffffff;
+		channelList->zapTo(g_settings.startchannelwebtv_nr - 1);
+	}
 }
 
 // scart Mode

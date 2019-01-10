@@ -1288,7 +1288,7 @@ streaminfo.audiotype Audiotyp
 streaminfo.audiotype_unknown Audiotyp: unbekannt
 streaminfo.bitrate Bitrate
 streaminfo.framerate Bildrate
-streaminfo.framerate_unknown Bildrate: unbekannt
+streaminfo.framerate_unknown unbekannt
 streaminfo.head Tech. Information
 streaminfo.not_available nicht verfügbar
 streaminfo.mode Auflösung

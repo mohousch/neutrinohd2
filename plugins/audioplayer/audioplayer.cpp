@@ -310,6 +310,12 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_REPAINT;					
 	}
+	else if(actionKey == "RC_info")
+	{
+		tmpAudioPlayerGui.showHelp();
+
+		return menu_return::RETURN_REPAINT;
+	}
 	else if(actionKey == "RC_red")
 	{
 		CAudioPlayList::iterator p = playlist.begin() + alist->getSelected();
