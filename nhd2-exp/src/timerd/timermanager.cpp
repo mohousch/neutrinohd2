@@ -508,7 +508,7 @@ void CTimerManager::loadEventsFromConfig()
 						new CTimerEvent_Zapto(&config, savedIDs[i]);
 						if((event->alarmTime >= now) || (event->stopTime > now))
 						{
-							addEvent(event,false);
+							addEvent(event, false);
 						}
 						else if(event->eventRepeat != CTimerd::TIMERREPEAT_ONCE)
 						{

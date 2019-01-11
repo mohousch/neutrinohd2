@@ -3866,17 +3866,20 @@ _repeat:
 		
 		if(recordingstatus == 0) 
 		{
-			bool isTVMode = g_Zapit->isChannelTVChannel(eventinfo->channel_id);
-
-			dvbsub_stop();
-
-			if ((!isTVMode) && (mode != mode_radio)) 
+			if(mode != NeutrinoMessages::mode_webtv)
 			{
-				radioMode(false);
-			}
-			else if (isTVMode && (mode != mode_tv)) 
-			{
-				tvMode(false);
+				bool isTVMode = g_Zapit->isChannelTVChannel(eventinfo->channel_id);
+
+				dvbsub_stop();
+
+				if ((!isTVMode) && (mode != mode_radio)) 
+				{
+					radioMode(false);
+				}
+				else if (isTVMode && (mode != mode_tv)) 
+				{
+					tvMode(false);
+				}
 			}
 			
 			channelList->zapTo_ChannelID(eventinfo->channel_id);
@@ -3917,7 +3920,7 @@ _repeat:
 					zAddData = g_Locale->getText(LOCALE_TIMERLIST_PROGRAM_UNKNOWN);
 				}
 
-				if(timer.epgID!=0) 
+				if(timer.epgID != 0) 
 				{
 					CEPGData epgdata;
 					zAddData += " :\n";

@@ -251,6 +251,7 @@ class CTimerListApidNotifier : public CChangeObserver
 CTimerList::CTimerList()
 {
 	frameBuffer = CFrameBuffer::getInstance();
+
 	visible = false;
 	selected = 0;
 	liststart = 0;
@@ -623,7 +624,7 @@ void CTimerList::hide()
 {
 	if(visible)
 	{
-		frameBuffer->paintBackgroundBoxRel(x, y, width, height /*+ info_height*/);
+		frameBuffer->paintBackgroundBoxRel(x, y, width, height);
 		frameBuffer->blit();
 		
 		visible = false;

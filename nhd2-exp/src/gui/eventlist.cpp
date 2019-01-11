@@ -434,7 +434,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 			{
 				g_Timerd->removeTimerEvent(tID);
 				timerlist.clear();
-				g_Timerd->getTimerList (timerlist);
+				g_Timerd->getTimerList(timerlist);
 				paint(channel_id);
 				continue;
 			}
