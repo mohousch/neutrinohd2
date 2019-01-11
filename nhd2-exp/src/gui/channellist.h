@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: channellist.h 2013/10/12 mohousch Exp $
+	$Id: channellist.h 11.01.2019 mohousch Exp $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -36,11 +36,12 @@
 
 #include <driver/framebuffer.h>
 #include <gui/widget/menue.h>
+#include <gui/widget/listbox.h>
 #include <system/lastchannel.h>
 
 #include <sectionsdclient/sectionsdclient.h>
 
-/*zapit includes*/
+// zapit includes
 #include <client/zapitclient.h>
 #include <channel.h>
 
@@ -60,57 +61,29 @@ class CChannelList
 	private:
 		CFrameBuffer		*frameBuffer;
 
-		// gui
-		unsigned int		liststart;
-		unsigned int		listmaxshow;
-		unsigned int		numwidth;
-		int			iheight; 	// Fonthoehe Channellist-Inhalt
-		int			theight; 	// Fonthoehe Channellist-Titel
-		int			buttonHeight;
+		CBox cFrameBox;
+		ClistBoxEntry* listBox;
+		CMenuItem* item;
 
-		int 			width;
-		int 			height;
-		int 			x;
-		int 			y;
-		
-		int icon_head_w;
-		int icon_head_h;
-		int icon_footer_w;
-		int icon_footer_h;
-		int icon_ca_w;
-		int icon_ca_h;
-		int icon_hd_w;
-		int icon_hd_h;
-		int icon_help_w;
-		int icon_help_h;
-		int icon_setup_w;
-		int icon_setup_h;
+		uint32_t sec_timer_id;
+		unsigned int selected;
 
-		void paintDetails(int index);
-		void clearItem2DetailsLine();
-		void paintItem2DetailsLine(int pos);
-		void paintItem(int pos);
-		void paint();
-		void paintHead();
+		void paint(bool reinit = true);
 		void hide();
 
 		//
-		unsigned int		selected;
-		t_channel_id		selected_chid;
-		CLastChannel		lastChList;
+		t_channel_id selected_chid;
+		CLastChannel lastChList;
 
-		std::string             name;
-		std::vector<CZapitChannel*>	chanlist;
-		CZapProtection * 	zapProtection;
+		std::string name;
+		std::vector<CZapitChannel*> chanlist;
+		CZapProtection* zapProtection;
 
 		bool historyMode;
-		bool vlist; 				// "virtual" list, not bouquet
+		bool vlist; 		// "virtual" list, not bouquet
 		bool displayNext;
 
 		SMSKeyInput c_SMSKeyInput;
-
-		//
-		uint32_t sec_timer_id;
 
 	public:
 		CChannelList(const char * const Name, bool _historyMode = false, bool _vlist = false );

@@ -82,6 +82,7 @@ class CBouquetList
 {
 	private:
 		CFrameBuffer* frameBuffer;
+
 		CBox cFrameBox;
 		ClistBoxEntry* listBox;
 		CMenuItem* item;
