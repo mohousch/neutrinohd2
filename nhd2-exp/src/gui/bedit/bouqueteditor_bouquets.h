@@ -58,6 +58,8 @@ class CBEBouquetWidget : public CMenuWidget
 		ClistBoxEntry* listBox;
 		CMenuItem* item;
 
+		uint32_t sec_timer_id;
+
 		enum
 		{
 			beDefault,
@@ -71,12 +73,10 @@ class CBEBouquetWidget : public CMenuWidget
 			beLock
 		} blueFunction;
 
-		unsigned int		selected;
-		unsigned int		origPosition;
-		unsigned int		newPosition;
-		bool		bouquetsChanged;
-
-		uint32_t sec_timer_id;
+		unsigned int selected;
+		unsigned int origPosition;
+		unsigned int newPosition;
+		bool bouquetsChanged;
 
 		void paint(bool reinit = true);
 		void hide();

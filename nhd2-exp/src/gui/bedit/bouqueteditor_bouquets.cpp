@@ -323,7 +323,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 		{
 			selected = listBox->getSelected();
 
-			if (selected < Bouquets->size()) /* Bouquets->size() might be 0 */
+			if (selected < Bouquets->size()) // Bouquets->size() might be 0
 			{
 				if (state == beDefault)
 					beginMoveBouquet();
@@ -332,9 +332,9 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				paint(false);
 			}
 		}
-		else if(msg==CRCInput::RC_blue)
+		else if(msg == CRCInput::RC_blue)
 		{
-			if (selected < Bouquets->size()) /* Bouquets->size() might be 0 */
+			if (selected < Bouquets->size()) // Bouquets->size() might be 0
 			{
 				selected = listBox->getSelected();
 

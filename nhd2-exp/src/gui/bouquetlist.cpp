@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: bouquetlist.cpp 2013/10/12 mohousch Exp $
+	$Id: bouquetlist.cpp 11.01.2019 mohousch Exp $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -67,12 +67,22 @@ CBouquetList::CBouquetList(const char* const Name)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	selected    = 0;
-	liststart   = 0;
 	
 	if(Name == NULL)
 		name = g_Locale->getText(LOCALE_BOUQUETLIST_HEAD);
 	else
-		name = Name;		
+		name = Name;
+
+	//
+	listBox = NULL;
+	item = NULL;
+
+	// box	
+	cFrameBox.iWidth = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
+	cFrameBox.iHeight = h_max ( (frameBuffer->getScreenHeight() / 20 * 18), (frameBuffer->getScreenHeight() / 20));
+	
+	cFrameBox.iX = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - cFrameBox.iWidth) / 2;
+	cFrameBox.iY = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - cFrameBox.iHeight) / 2;		
 }
 
 CBouquetList::~CBouquetList()
@@ -322,7 +332,7 @@ int CBouquetList::doMenu()
 	return 0;
 }
 
-/* bShowChannelList default to true, returns new bouquet or -1/-2 */
+// bShowChannelList default to true, returns new bouquet or -1/-2
 int CBouquetList::show(bool bShowChannelList)
 {
 	dprintf(DEBUG_NORMAL, "CBouquetList::show\n");
@@ -332,51 +342,23 @@ int CBouquetList::show(bool bShowChannelList)
 	int res = -1;
 	
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);	
-	
-	// windows size
-	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
-	
-	width  = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
-	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 
-	// foot height
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_foot_w, &icon_foot_h);
-	buttonHeight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 10;
-	
-	// head height
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_head_w, &icon_head_h);
-	theight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), icon_head_h) + 6;
-	
 	//
-	listmaxshow = (height - theight - buttonHeight)/fheight;
-	height = theight + buttonHeight + listmaxshow*fheight; // recalc height
+	listBox = new ClistBoxEntry(&cFrameBox);
 
-	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - width) / 2;
-	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height) / 2;
-
-	int maxpos1 = 1;
-	int i = Bouquets.size();
-	
-	while ((i = i/10) != 0)
-		maxpos1++;
-
-	paintHead();
 	paint();
 		
 	frameBuffer->blit();
 
-	int oldselected = selected;
-	int firstselected = selected + 1;
 	int zapOnExit = false;
 
-	unsigned int chn = 0;
-	int pos = maxpos1;
-
 	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 	
 	int mode = CNeutrinoApp::getInstance()->getMode();
 
-	// control-loop
 	bool loop = true;
 	while (loop) 
 	{
@@ -387,7 +369,6 @@ int CBouquetList::show(bool bShowChannelList)
 
 		if ((msg == CRCInput::RC_timeout) || (msg == (neutrino_msg_t)g_settings.key_channelList_cancel))
 		{
-			selected = oldselected;
 			loop = false;
 		}
 		else if(msg == CRCInput::RC_red || msg == CRCInput::RC_favorites) 
@@ -420,119 +401,49 @@ int CBouquetList::show(bool bShowChannelList)
 		}
 		else if ( msg == CRCInput::RC_setup ) 
 		{
+			selected = listBox->getSelected();
+
 			int ret = doMenu();
 			if(ret) 
 			{
 				res = -4;
 				loop = false;
 			} 
-			else
-				paint();
 		}
 		else if ( msg == (neutrino_msg_t) g_settings.key_list_start ) 
 		{
 			selected = 0;
-			liststart = (selected/listmaxshow)*listmaxshow;
-			paint();
+			listBox->clearItems();
+			paint(false);
 		}
 		else if ( msg == (neutrino_msg_t) g_settings.key_list_end ) 
 		{
 			selected = Bouquets.size()- 1;
-			liststart = (selected/listmaxshow)*listmaxshow;
-			paint();
+
+			listBox->clearItems();
+			paint(false);
 		}
 		else if (msg == CRCInput::RC_up || (int) msg == g_settings.key_channelList_pageup )
 		{
-			int step = 0;
-			int prev_selected = selected;
-
-			step = ((int) msg == g_settings.key_channelList_pageup) ? listmaxshow : 1;  // browse or step 1
-			selected -= step;
-			if((prev_selected-step) < 0)            // because of uint
-				selected = Bouquets.size()-1;
-
-			paintItem(prev_selected - liststart);
-			unsigned int oldliststart = liststart;
-			liststart = (selected/listmaxshow)*listmaxshow;
-			if(oldliststart!=liststart)
-				paint();
-			else
-				paintItem(selected - liststart);
+			listBox->scrollLineUp();
 		}
 		else if ( msg == CRCInput::RC_down || (int) msg == g_settings.key_channelList_pagedown )
 		{
-			unsigned int step = 0;
-			int prev_selected = selected;
-
-			step = ((int) msg == g_settings.key_channelList_pagedown) ? listmaxshow : 1;  // browse or step 1
-			selected += step;
-
-			if(selected >= Bouquets.size()) 
-			{
-				if (((Bouquets.size() / listmaxshow) + 1) * listmaxshow == Bouquets.size() + listmaxshow) // last page has full entries
-					selected = 0;
-				else
-					selected = ((step == listmaxshow) && (selected < (((Bouquets.size() / listmaxshow) + 1) * listmaxshow))) ? (Bouquets.size() - 1) : 0;
-			}
-			
-			paintItem(prev_selected - liststart);
-			unsigned int oldliststart = liststart;
-			liststart = (selected/listmaxshow)*listmaxshow;
-			
-			if(oldliststart!=liststart)
-				paint();
-			else
-				paintItem(selected - liststart);
+			listBox->scrollLineDown();
 		}
 		else if ( msg == CRCInput::RC_ok ) 
 		{
+			selected = listBox->getSelected();
+
 			if(!bShowChannelList || Bouquets[selected]->channelList->getSize() > 0) 
 			{
 				zapOnExit = true;
 				loop = false;
 			}
 		}
-		else if (CRCInput::isNumeric(msg)) 
+		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			if (pos == maxpos1) 
-			{
-				if (msg == CRCInput::RC_0) 
-				{
-					chn = firstselected;
-					pos = maxpos1;
-				} 
-				else 
-				{
-					chn = CRCInput::getNumericValue(msg);
-					pos = 1;
-				}
-			} 
-			else 
-			{
-				chn = chn * 10 + CRCInput::getNumericValue(msg);
-				pos++;
-			}
-
-			if (chn > Bouquets.size()) 
-			{
-				chn = firstselected;
-				pos = maxpos1;
-			}
-
-			int prevselected = selected;
-			selected = (chn - 1) % Bouquets.size(); // is % necessary (i.e. can firstselected be > Bouquets.size()) ?
-			paintItem(prevselected - liststart);
-			unsigned int oldliststart = liststart;
-			liststart = (selected/listmaxshow)*listmaxshow;
-			
-			if(oldliststart != liststart) 
-			{
-				paint();
-			} 
-			else 
-			{
-				paintItem(selected - liststart);
-			}
+			listBox->paintHead();
 		} 
 		else 
 		{
@@ -547,6 +458,13 @@ int CBouquetList::show(bool bShowChannelList)
 	}
 	
 	hide();
+
+	//
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
+
+	delete listBox;
+	listBox = NULL;
 	
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 	
@@ -558,53 +476,10 @@ int CBouquetList::show(bool bShowChannelList)
 
 void CBouquetList::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
-	frameBuffer->blit();
+	listBox->hide();
 }
 
-void CBouquetList::paintItem(int pos)
-{
-	int ypos = y + theight + pos*fheight;
-	uint8_t    color;
-	fb_pixel_t bgcolor;
-	bool iscurrent = true;
-	int npos = liststart + pos;
-	const char * lname = NULL;
-
-	if(npos < (int) Bouquets.size())
-		lname = (Bouquets[npos]->zapitBouquet && Bouquets[npos]->zapitBouquet->bFav) ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : Bouquets[npos]->channelList->getName();
-
-	if (npos == (int) selected) 
-	{
-		color   = COL_MENUCONTENTSELECTED;
-		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-		
-		if(npos < (int) Bouquets.size())
-			CVFD::getInstance()->showMenuText(0, lname, -1, true);		
-	} 
-	else 
-	{
-		if(npos < (int) Bouquets.size())
-			iscurrent = Bouquets[npos]->channelList->getSize() > 0;
-		
-                color = iscurrent ? COL_MENUCONTENT : COL_MENUCONTENTINACTIVE;
-                bgcolor = iscurrent ? COL_MENUCONTENT_PLUS_0 : COL_MENUCONTENTINACTIVE_PLUS_0;
-	}
-	
-	// itemBox
-	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
-
-	if(npos < (int) Bouquets.size()) 
-	{
-		char tmp[10];
-		sprintf((char*) tmp, "%d", npos + 1);
-
-		int numpos = x + 5 + numwidth - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(tmp);
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(numpos, ypos + fheight, numwidth + 5, tmp, color, fheight);
-
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 5 + numwidth + 10, ypos + fheight, width - numwidth - 20 - 15, lname, color, 0, true); // UTF-8
-	}
-}
+const struct button_label HButton = {NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL };
 
 const struct button_label CBouquetListButtons[4] =
 {
@@ -614,65 +489,30 @@ const struct button_label CBouquetListButtons[4] =
         { NEUTRINO_ICON_BUTTON_BLUE, LOCALE_CHANNELLIST_HEAD}
 };
 
-void CBouquetList::paintHead()
-{
-	// head box
-	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
-	
-	// setup icon
-	if(CNeutrinoApp::getInstance()->GetChannelMode() == LIST_MODE_FAV || CNeutrinoApp::getInstance()->GetChannelMode() == LIST_MODE_PROV)
-	{
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_SETUP, x + width - BORDER_RIGHT - icon_head_w, y + (theight - icon_head_h)/2); // setup icon
-	}
-	
-	// head title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width, name, COL_MENUHEAD, 0, true); // UTF-8
-}
-
-void CBouquetList::paint()
+void CBouquetList::paint(bool reinit)
 {
 	dprintf(DEBUG_NORMAL, "CBouquetList::paint\n");
 
-	liststart = (selected/listmaxshow)*listmaxshow;
-	int lastnum =  liststart + listmaxshow;
-	int bsize = Bouquets.size() > 0 ? Bouquets.size() : 1;
-
-	if(lastnum<10)
-		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("0");
-	else if(lastnum<100)
-		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("00");
-	else if(lastnum<1000)
-		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("000");
-	else if(lastnum<10000)
-		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("0000");
-	else // if(lastnum<100000)
-		numwidth = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth("00000");
-
-	frameBuffer->paintBoxRel(x, y + theight, width, height - theight - buttonHeight, COL_MENUCONTENT_PLUS_0);
-
-	// foot
-	int ButtonWidth = (width - BORDER_RIGHT - BORDER_LEFT) / 4;
-
-	frameBuffer->paintBoxRel(x, y + height - buttonHeight, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
-	
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - buttonHeight, ButtonWidth, sizeof(CBouquetListButtons)/sizeof(CBouquetListButtons[0]), CBouquetListButtons, buttonHeight);
-
-	if(Bouquets.size()) 
+	for (unsigned int count = 0; count < Bouquets.size(); count++)
 	{
-		for(unsigned int count = 0; count < listmaxshow; count++) 
-		{
-			paintItem(count);
-		}
+		item = new ClistBoxEntryItem((Bouquets[count]->zapitBouquet && Bouquets[count]->zapitBouquet->bFav) ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : Bouquets[count]->channelList->getName(), true);
+
+		item->setNumber(count + 1);
+		listBox->addItem(item);
 	}
 
-	int ypos = y + theight;
-	int sb = fheight*listmaxshow;
-	
-	frameBuffer->paintBoxRel(x + width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
+	listBox->setTitle(name.c_str());
+	listBox->enablePaintHead();
+	listBox->enablePaintDate();
+	listBox->setHeaderButtons(&HButton, 1);
 
-	int sbc = ((bsize - 1)/ listmaxshow)+ 1;
-	float sbh = (sb - 4)/ sbc;
-	int sbs = (selected/listmaxshow);
+	// foot
+	listBox->enablePaintFoot();
+	listBox->setFooterButtons(CBouquetListButtons, 4);
 
-	frameBuffer->paintBoxRel(x + width - 13, ypos + 2 + int(sbs* sbh) , 11, int(sbh),  COL_MENUCONTENT_PLUS_3);
+	//
+	listBox->setSelected(selected);
+	listBox->paint(reinit);
 }
+
+

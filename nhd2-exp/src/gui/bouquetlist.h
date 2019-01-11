@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: bouquetlist.h 2013/10/12 mohousch Exp $
+	$Id: bouquetlist.h 11.01.2019 mohousch Exp $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -46,6 +46,8 @@
 #include <string>
 #include <vector>
 
+#include <gui/widget/listbox.h>
+
 
 typedef enum bouquetSwitchMode
 {
@@ -80,32 +82,15 @@ class CBouquetList
 {
 	private:
 		CFrameBuffer* frameBuffer;
+		CBox cFrameBox;
+		ClistBoxEntry* listBox;
+		CMenuItem* item;
 
-		// gui
-		unsigned int liststart;
-		unsigned int listmaxshow;
-		unsigned int numwidth;
-		unsigned int maxpos;
-		int fheight; // Fonthoehe Bouquetlist-Inhalt
-		int theight; // Fonthoehe Bouquetlist-Titel
-		int buttonHeight;
-
-		int width;
-		int height;
-		int x;
-		int y;
-		
-		int icon_head_w;
-		int icon_head_h;
-		int icon_foot_w;
-		int icon_foot_h;
-
-		void paintItem(int pos);
-		void paint();
-		void paintHead();
-		void hide();
-
+		uint32_t sec_timer_id;
 		unsigned int selected;
+
+		void paint(bool reinit = true);
+		void hide();
 
 		std::string name;
 		
