@@ -786,22 +786,10 @@ int CChannelList::show()
 					
 					if(i < chanlist.size()) 
 					{
-/*
-						int prevselected = selected;
 						selected = i;
 
-						paintItem(prevselected - liststart);
-						unsigned int oldliststart = liststart;
-						liststart = (selected/listmaxshow)*listmaxshow;
-						if(oldliststart!=liststart) 
-						{
-							paint();
-						} 
-						else 
-						{
-							paintItem(selected - liststart);
-						}
-*/
+						listBox->clearItems();
+						paint(false);
 					}
 					c_SMSKeyInput.resetOldKey();
 				}
@@ -1539,15 +1527,6 @@ struct button_label CChannelListButtons[NUM_LIST_BUTTONS] =
 	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_EPGMENU_EPGPLUS, NULL},
 };
 
-#define NUM_VLIST_BUTTONS 4
-const struct button_label CChannelVListButtons[NUM_VLIST_BUTTONS] =
-{
-	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_INFOVIEWER_EVENTLIST, NULL},
-	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_INFOVIEWER_NEXT, NULL},
-	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_BOUQUETLIST_HEAD, NULL},
-	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_EPGMENU_EPGPLUS, NULL}
-};
-
 #define HEAD_BUTTONS_COUNT	3
 const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
@@ -1658,7 +1637,7 @@ void CChannelList::paint(bool reinit)
 		CChannelListButtons[1].locale = LOCALE_INFOVIEWER_NEXT;
 	}
 
-	listBox->setFooterButtons(vlist ? CChannelVListButtons : CChannelListButtons, 4);
+	listBox->setFooterButtons(CChannelListButtons, NUM_LIST_BUTTONS);
 
 	// foot info
 	listBox->enablePaintFootInfo();
