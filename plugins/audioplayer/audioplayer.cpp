@@ -258,7 +258,7 @@ void CMP3Player::showMenu()
 		alist->addItem(item);
 	}
 
-	//plist->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
+	//alist->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	alist->setSelected(selected);
 
 	alist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
@@ -268,6 +268,7 @@ void CMP3Player::showMenu()
 	alist->enablePaintDate();
 
 	alist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
+	alist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	alist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
 	alist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
 	alist->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));

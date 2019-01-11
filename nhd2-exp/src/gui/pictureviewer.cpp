@@ -382,8 +382,8 @@ void CPictureViewerGui::showHelp()
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_8, g_Locale->getText(LOCALE_PICTUREVIEWER_HELP19));
 	helpbox.addLine(NEUTRINO_ICON_BUTTON_HOME, g_Locale->getText(LOCALE_PICTUREVIEWER_HELP22));
 	helpbox.addPagebreak();
-
 	helpbox.addLine("Version: $Revision: 2.0 $");
+
 	hide();
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
 }

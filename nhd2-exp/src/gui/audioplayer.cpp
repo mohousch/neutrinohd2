@@ -107,6 +107,21 @@ void CAudioPlayerGui::Init(void)
 	m_metainfo.clear();
 
 	infoPainted = false;
+
+	// playInfo
+	//
+	cFrameBox.iWidth = m_frameBuffer->getScreenWidth(true) - 20; 
+	if((g_settings.screen_EndX - g_settings.screen_StartX) < cFrameBox.iWidth)
+		cFrameBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX) - 20;
+	cFrameBox.iHeight = 80;
+	cFrameBox.iX = (((g_settings.screen_EndX - g_settings.screen_StartX) - cFrameBox.iWidth)/ 2) + g_settings.screen_StartX;
+	cFrameBox.iY = g_settings.screen_EndY - 10 - cFrameBox.iHeight;
+
+	// timeBox
+	timeBox.iWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth("00:00 / 00:00") + 4;
+	timeBox.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 4;
+	timeBox.iX = g_settings.screen_EndX - 10 - timeBox.iWidth;
+	timeBox.iY = g_settings.screen_StartY + 10;
 }
 
 CAudioPlayerGui::~CAudioPlayerGui()
