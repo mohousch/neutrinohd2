@@ -3467,7 +3467,7 @@ void CNeutrinoApp::RealRun(void)
 // handle msg
 int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 {
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: msg:%s\n", CRCInput::getSpecialKeyName(msg));
+	dprintf(DEBUG_DEBUG, "CNeutrinoApp::handleMsg: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
 	int res = 0;
 

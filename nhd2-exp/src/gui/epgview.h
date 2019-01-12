@@ -54,29 +54,32 @@
 class CEpgData
 {
 	private:
-		CFrameBuffer		* frameBuffer;
-		CChannelEventList	evtlist;
-		CEPGData		epgData;
+		CFrameBuffer* frameBuffer;
 
-		std::string 		epg_date;
-		std::string 		epg_start;
-		std::string 		epg_end;
-		int			epg_done;
+		//
+		int ox, oy, sx, sy, toph, sb;
+		int topheight,topboxheight;
+		int botheight,botboxheight;
+		int medlineheight, medlinecount;
+
+		CChannelEventList evtlist;
+		CEPGData epgData;
+
+		std::string epg_date;
+		std::string epg_start;
+		std::string epg_end;
+		int epg_done;
 		
-		bool			bigFonts;
+		bool bigFonts;
 
-		uint64_t	prev_id;
-		time_t			prev_zeit;
-		uint64_t 	next_id;
-		time_t 			next_zeit;
+		uint64_t prev_id;
+		time_t prev_zeit;
+		uint64_t next_id;
+		time_t next_zeit;
 
-		int			ox, oy, sx, sy, toph, sb;
-		int			emptyLineCount, info1_lines;
-		int         		textCount;
+		int emptyLineCount, info1_lines;
+		int textCount;
 		std::vector<std::string> epgText;
-		int			topheight,topboxheight;
-		int			botheight,botboxheight;
-		int			medlineheight,medlinecount;
 
 		void GetEPGData(const t_channel_id channel_id, uint64_t id, time_t* startzeit, bool clear = true);
 		void GetPrevNextEPGData( uint64_t id, time_t* startzeit );

@@ -448,7 +448,6 @@ std::string CNeutrinoYParser::func_get_bouquets_with_epg(CyhookHandler *hh, std:
 					NeutrinoAPI->Zapit->setSubServices(subServiceList);
 			}
 		}
-
 		else if ((event = NeutrinoAPI->ChannelListEvents[channel->channel_id]))
 		{
 			bool has_current_next = true;
