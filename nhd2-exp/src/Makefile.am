@@ -14,7 +14,8 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/lib/libxmltree \
 	-I$(top_srcdir)/lib/libmd5sum \
 	-I$(top_srcdir)/lib/libupnpclient \
-	@FREETYPE_CFLAGS@
+	@FREETYPE_CFLAGS@ \
+	@FRIBIDI_CFLAGS@
 
 if BOXTYPE_COOLSTREAM
 AM_CPPFLAGS += -I$(top_srcdir)/src/zapit/include \
@@ -86,6 +87,7 @@ neutrino_LDADD = \
 	@PNG_LIBS@ \
 	@MAD_LIBS@ \
 	@ID3TAG_LIBS@ \
+	@FRIBIDI_LIBS@ \
 	-ljpeg -lrt -lpthread -lblkid -ldl -lFLAC -lavformat -lavcodec -lavutil -lgif
 
 neutrino_LDFLAGS = -Wl,--export-dynamic
@@ -120,9 +122,6 @@ neutrino_LDADD += \
 	-lglut -lGL -lGLU -lGLEW -lOpenThreads 
 endif
 
-if ENABLE_FRIBIDI
-neutrino_LDADD += -lfribidi
-endif
 
 
 

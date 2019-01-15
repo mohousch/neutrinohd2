@@ -42,10 +42,7 @@
 #include <global.h>
 
 // fribidi
-#if defined (ENABLE_FRIBIDI)
 #include <fribidi/fribidi.h>
-#include <sectionsd/edvbstring.h>
-#endif
 
 
 FT_Error FBFontRenderClass::myFTC_Face_Requester(FTC_FaceID  face_id,
@@ -369,7 +366,6 @@ int UTF8ToUnicode(const char * &text, bool utf8_encoded) // returns -1 on error
 }
 
 //
-#if defined (ENABLE_FRIBIDI)
 std::string fribidiShapeChar(const char* text, bool utf8_encoded)
 {
 	if(utf8_encoded) // fribidi requires utf-8
@@ -411,7 +407,6 @@ std::string fribidiShapeChar(const char* text, bool utf8_encoded)
 	
 	return std::string(text);
 }
-#endif
 
 #define F_MUL 0x7FFF
 
@@ -439,10 +434,8 @@ void CFont::RenderString(int x, int y, const int width, const char *text, const 
 	pthread_mutex_lock( &renderer->render_mutex );
 	
 	// fribidi
-#if defined (ENABLE_FRIBIDI)
 	std::string Text = fribidiShapeChar(text, utf8_encoded);
-	text = Text.c_str();
-#endif	
+	text = Text.c_str();	
 	
 	FT_Error err = FTC_Manager_LookupSize(renderer->cacheManager, &scaler, &size);
 	
@@ -701,10 +694,8 @@ int CFont::getRenderWidth(const char *text, bool utf8_encoded)
 	pthread_mutex_lock( &renderer->render_mutex );
 	
 	// fribidi	
-#if defined (ENABLE_FRIBIDI)
 	std::string Text = fribidiShapeChar(text, utf8_encoded);
-	text = Text.c_str();
-#endif	
+	text = Text.c_str();	
 
 	FT_Error err = FTC_Manager_LookupSize(renderer->cacheManager, &scaler, &size);
 	

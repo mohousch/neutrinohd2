@@ -24,13 +24,13 @@
 #                                valid for iqonios: iqonios100hd,iqonios300hd,mediabox,optimussos1,optimussos2
 #  --enable-keyboard-no-rc enable keyboard control, disable rc control
 #  --enable-opengl         include opengl framebuffer support for x86
+#  --enable-playback       include enable playback for opengl and satip
 #  --enable-libeplayer3    include libeplayer3 as player engine support
 #  --enable-gstreamer      include gstreamer as player engine support
 #  --enable-lcd            include lcd support
 #  --enable-scart          enable scart output
 #  --enable-ci             enable ci cam
 #  --enable-4digits        include 5 segment lcd support
-#  --enable-fribidi        include fribidi support
 #  --enable-functionkeys   include RC functions keys support
 ################################################################################################################################################################################################################################################################
 
@@ -77,8 +77,7 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--enable-scart \
 			--enable-ci \
 			--enable-gstreamer \
-			--with-gstversion=0.10 \
-			--enable-fribidi
+			--with-gstversion=0.10
 				
 $(DEST):
 	mkdir $@
