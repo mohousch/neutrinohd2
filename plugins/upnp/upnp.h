@@ -65,26 +65,6 @@ struct UPnPEntry
 	int		preferred;
 };
 
-/*
-class CUpnpEntry : public CMenuTarget
-{
-	private:
-		CFrameBuffer* m_frameBuffer;
-
-		ClistBox* elist;
-		CMenuItem* item;
-		
-		unsigned int eselected;
-
-	public:
-		CUpnpEntry();
-		~CUpnpEntry();
-
-		int exec(CMenuTarget* parent, const std::string& actionKey);	
-		void hide();
-};
-*/
-
 class CUpnpBrowserGui : public CMenuTarget
 {
 	private:
@@ -101,10 +81,6 @@ class CUpnpBrowserGui : public CMenuTarget
 
 		CFrameBuffer * m_frameBuffer;
 
-/*
-		ClistBox* ulist;
-		ClistBox* elist;
-*/
 		CBox cFrameBox;
 		ClistBoxEntry* listBox;
 		CMenuItem* item;
@@ -125,9 +101,9 @@ class CUpnpBrowserGui : public CMenuTarget
 		std::vector<UPnPEntry>* decodeResult(std::string);
 		void splitProtocol(std::string &protocol, std::string &prot, std::string &network, std::string &mime, std::string &additional);
 
-		bool loadItem(std::string);
-		bool selectItem(std::string);
-		void loadDevices();
+		bool loadItem(std::string, int _selected);
+		//bool selectItem(std::string);
+		void loadDevices(bool hint = true);
 
 		void showMenuDevice();
 		void showMenuEntry();
