@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: epgview.h 2013/10/12 mohousch Exp $
+	$Id: epgview.h 15.01.2019 mohousch Exp $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -56,11 +56,15 @@ class CEpgData
 	private:
 		CFrameBuffer* frameBuffer;
 
-		//
-		int ox, oy, sx, sy, toph, sb;
-		int topheight,topboxheight;
-		int botheight,botboxheight;
-		int medlineheight, medlinecount;
+		CBox cFrameBox;
+		CBox cHeadBox;
+		CBox cFootBox;
+		CBox cFollowScreeningBox;
+		CBox cScrollBar;
+
+		int sb;
+		int medlineheight;
+		int medlinecount;
 
 		CChannelEventList evtlist;
 		CEPGData epgData;

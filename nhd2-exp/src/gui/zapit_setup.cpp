@@ -23,7 +23,7 @@
 #include <config.h>
 #endif
 
-/*zapit includes*/
+// zapit includes
 #include <bouquets.h>
 
 #include "gui/zapit_setup.h"
