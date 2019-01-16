@@ -1627,7 +1627,6 @@ void CChannelList::paint(bool reinit)
 	// foot
 	listBox->enablePaintFoot();
 
-	// foot
 	if (displayNext) 
 	{
 		CChannelListButtons[1].locale = LOCALE_INFOVIEWER_NOW;

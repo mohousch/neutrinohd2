@@ -45,6 +45,7 @@ class CSelectChannelWidget : public CMenuWidget
 		int exec(CMenuTarget *parent, const std::string & actionKey);
 		t_channel_id getChanTVID(){return ChannelTVID;};
 		t_channel_id getChanRadioID(){return ChannelRadioID;};
+		t_channel_id getChanWebTVID(){return ChannelWebTVID;};
 };
 
 #endif

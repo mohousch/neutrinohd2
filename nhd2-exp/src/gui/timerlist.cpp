@@ -304,6 +304,19 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 		
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "webtv")
+	{
+		CSelectChannelWidgetHandler = new CSelectChannelWidget();
+		CSelectChannelWidgetHandler->exec(NULL, "webtv");
+		
+		timerNew_chan_id = CSelectChannelWidgetHandler->getChanWebTVID();
+		timerNew_channel_name = g_WebTV->getChannelName(CSelectChannelWidgetHandler->getChanWebTVID());
+		
+		delete CSelectChannelWidgetHandler;
+		CSelectChannelWidgetHandler = NULL;
+		
+		return menu_return::RETURN_REPAINT;
+	}
 	else if (strcmp(key, "modifytimer") == 0)
 	{
 		timerlist[selected].announceTime = timerlist[selected].alarmTime -60;
@@ -1111,10 +1124,10 @@ int CTimerList::newTimer()
 	CMenuForwarder *m5 = new CMenuForwarder(LOCALE_TIMERLIST_REPEATCOUNT, false, timerSettings_repeatCount.getValue(), &timerSettings_repeatCount);
 
 	CTimerListRepeatNotifier notifier((int *)&timerNew.eventRepeat, m4, m5);
-	strcpy((char*)m_weekdaysStr.c_str(), "-------");
+	//strcpy((char*)m_weekdaysStr.c_str(), "-------");
 	CMenuOptionChooser* m3 = new CMenuOptionChooser(LOCALE_TIMERLIST_REPEAT, (int *)&timerNew.eventRepeat, TIMERLIST_REPEAT_OPTIONS, TIMERLIST_REPEAT_OPTION_COUNT, true, &notifier);
 
-	strcpy((char *)timerNew_channel_name.c_str(), "---");
+	//strcpy((char *)timerNew_channel_name.c_str(), "---");
 	
 	CMenuForwarder *m6 = new CMenuForwarder(LOCALE_TIMERLIST_CHANNEL, true, timerNew_channel_name, this, CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_tv? "tv" : CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio? "radio" : "webtv");
 
@@ -1130,7 +1143,7 @@ int CTimerList::newTimer()
 	CStringInputSMS timerSettings_msg(LOCALE_TIMERLIST_MESSAGE, timerNew.message);
 	CMenuForwarder *m9 = new CMenuForwarder(LOCALE_TIMERLIST_MESSAGE, false, timerNew.message, &timerSettings_msg );
 
-	strcpy(timerNew.pluginName, "---");
+	//strcpy(timerNew.pluginName, "---");
 	CPluginChooser plugin_chooser(timerNew.pluginName);
 	CMenuForwarder *m10 = new CMenuForwarder(LOCALE_TIMERLIST_PLUGIN, false, timerNew.pluginName, &plugin_chooser);
 
