@@ -87,7 +87,7 @@ void CMoviePlayerSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerSettings::showMenu:\n");
 	
-	CMenuWidget moviePlayerSettings(LOCALE_STREAMINGMENU_HEAD, NEUTRINO_ICON_MP);
+	CMenuWidget moviePlayerSettings(LOCALE_STREAMINGMENU_HEAD, NEUTRINO_ICON_MOVIE);
 	
 	// intros
 	moviePlayerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));

@@ -3059,7 +3059,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	CIntInput bookLastIntInput (LOCALE_MOVIEBROWSER_EDIT_BOOK,  (int&)movie_info->bookmarks.lastPlayStop, 5, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO2);
 	CIntInput bookEndIntInput (LOCALE_MOVIEBROWSER_EDIT_BOOK,   (int&)movie_info->bookmarks.end, 5, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO2);
 
-	CMenuWidget bookmarkMenu(LOCALE_MOVIEBROWSER_BOOK_HEAD, NEUTRINO_ICON_MP);
+	CMenuWidget bookmarkMenu(LOCALE_MOVIEBROWSER_BOOK_HEAD, NEUTRINO_ICON_MOVIE);
 	//bookmarkMenu.enableSaveScreen(true);
 
 	// intros
@@ -3076,7 +3076,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 		pBookPosIntInput[i1] =  new CIntInput (LOCALE_MOVIEBROWSER_EDIT_BOOK, (int&) movie_info->bookmarks.user[i1].pos, 20, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO2);
 		pBookTypeIntInput[i1] = new CIntInput (LOCALE_MOVIEBROWSER_EDIT_BOOK, (int&) movie_info->bookmarks.user[i1].length, 20, LOCALE_MOVIEBROWSER_EDIT_BOOK_TYPE_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_TYPE_INFO2);
 
-		pBookItemMenu[i1] = new CMenuWidget(LOCALE_MOVIEBROWSER_BOOK_HEAD, NEUTRINO_ICON_MP);
+		pBookItemMenu[i1] = new CMenuWidget(LOCALE_MOVIEBROWSER_BOOK_HEAD, NEUTRINO_ICON_MOVIE);
 		//pBookItemMenu[i1]->enableSaveScreen();
 		
 		
@@ -3090,7 +3090,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	// serie Menu
 	CStringInputSMS serieUserInput(LOCALE_MOVIEBROWSER_EDIT_SERIE, &movie_info->serieName);
 
-	CMenuWidget serieMenu(LOCALE_MOVIEBROWSER_SERIE_HEAD, NEUTRINO_ICON_MP);
+	CMenuWidget serieMenu(LOCALE_MOVIEBROWSER_SERIE_HEAD, NEUTRINO_ICON_MOVIE);
 	//serieMenu.enableSaveScreen();
 	
 	serieMenu.addItem( new CMenuForwarder(LOCALE_MOVIEBROWSER_SERIE_NAME, true, movie_info->serieName, &serieUserInput));
@@ -3105,7 +3105,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	
         movieInfoUpdateAllIfDestEmptyOnly = true;
 
-        CMenuWidget movieInfoMenuUpdate(LOCALE_MOVIEBROWSER_INFO_HEAD_UPDATE, NEUTRINO_ICON_MP);
+        CMenuWidget movieInfoMenuUpdate(LOCALE_MOVIEBROWSER_INFO_HEAD_UPDATE, NEUTRINO_ICON_MOVIE);
 	//movieInfoMenuUpdate.enableSaveScreen();
 	
 	// save 
@@ -3176,7 +3176,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	CIntInput yearUserIntInput(LOCALE_MOVIEBROWSER_INFO_PRODYEAR, (int&)movie_info->productionDate, 4, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE);
 
 	// 
-	CMenuWidget movieInfoMenu(LOCALE_MOVIEBROWSER_INFO_HEAD, NEUTRINO_ICON_MP, m_cBoxFrame.iWidth);
+	CMenuWidget movieInfoMenu(LOCALE_MOVIEBROWSER_INFO_HEAD, NEUTRINO_ICON_MOVIE, m_cBoxFrame.iWidth);
 
 	// save
 	movieInfoMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_MENU_SAVE, true, NULL, this, "save_movie_info", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
@@ -3278,14 +3278,14 @@ bool CMovieBrowser::showMenu()
 	CDirMenu dirMenu(&m_dir);
 
 	// parentallock menu
-	CMenuWidget parentalMenu(LOCALE_MOVIEBROWSER_MENU_PARENTAL_LOCK_HEAD, NEUTRINO_ICON_MP);
+	CMenuWidget parentalMenu(LOCALE_MOVIEBROWSER_MENU_PARENTAL_LOCK_HEAD, NEUTRINO_ICON_MOVIE);
 	
 	parentalMenu.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_MENU_PARENTAL_LOCK_ACTIVATED, (int*)(&m_parentalLock), MESSAGEBOX_PARENTAL_LOCK_OPTIONS, MESSAGEBOX_PARENTAL_LOCK_OPTIONS_COUNT, true ));
 
 	parentalMenu.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_MENU_PARENTAL_LOCK_RATE_HEAD, (int*)(&m_settings.parentalLockAge), MESSAGEBOX_PARENTAL_LOCKAGE_OPTIONS, MESSAGEBOX_PARENTAL_LOCKAGE_OPTION_COUNT, true ));
 
 	// optionsMenuDir
-	CMenuWidget optionsMenuDir(LOCALE_MOVIEBROWSER_MENU_DIRECTORIES_HEAD , NEUTRINO_ICON_MP);
+	CMenuWidget optionsMenuDir(LOCALE_MOVIEBROWSER_MENU_DIRECTORIES_HEAD , NEUTRINO_ICON_MOVIE);
 	
 	optionsMenuDir.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_USE_REC_DIR, (int*)(&m_settings.storageDirRecUsed), MESSAGEBOX_YES_NO_OPTIONS, MESSAGEBOX_YES_NO_OPTIONS_COUNT, true ));
 	optionsMenuDir.addItem( new CMenuForwarder( LOCALE_MOVIEBROWSER_DIR, false ,g_settings.network_nfs_recordingdir));
@@ -3323,7 +3323,7 @@ bool CMovieBrowser::showMenu()
 	for(i = 0; i < MB_MAX_ROWS ;i++)
 		browserRowWidthIntInput[i] = new CIntInput(LOCALE_MOVIEBROWSER_BROWSER_ROW_WIDTH,(int&) m_settings.browserRowWidth[i], 3, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE);
 
-	CMenuWidget optionsMenuBrowser(LOCALE_MOVIEBROWSER_OPTION_BROWSER , NEUTRINO_ICON_MP);
+	CMenuWidget optionsMenuBrowser(LOCALE_MOVIEBROWSER_OPTION_BROWSER , NEUTRINO_ICON_MOVIE);
 	
 	optionsMenuBrowser.addItem( new CMenuForwarder(LOCALE_MOVIEBROWSER_LAST_PLAY_MAX_ITEMS, true, playMaxUserIntInput.getValue(),   &playMaxUserIntInput));
 	optionsMenuBrowser.addItem( new CMenuForwarder(LOCALE_MOVIEBROWSER_LAST_RECORD_MAX_ITEMS, true, recMaxUserIntInput.getValue(), &recMaxUserIntInput));
@@ -3340,7 +3340,7 @@ bool CMovieBrowser::showMenu()
 	}
 
 	// optionsMenu
-	CMenuWidget optionsMenu(LOCALE_EPGPLUS_OPTIONS, NEUTRINO_ICON_MP);
+	CMenuWidget optionsMenu(LOCALE_EPGPLUS_OPTIONS, NEUTRINO_ICON_MOVIE);
 
 	optionsMenu.addItem( new CMenuForwarder(LOCALE_MOVIEBROWSER_MENU_SAVE, true, NULL, this, "save_options", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	optionsMenu.addItem( new CMenuSeparator(CMenuSeparator::LINE));
@@ -3365,7 +3365,7 @@ bool CMovieBrowser::showMenu()
 	CMovieHelp * movieHelp = new CMovieHelp();
 	CNFSSmallMenu * nfs = new CNFSSmallMenu();
 
-	CMenuWidget mainMenu(LOCALE_MOVIEBROWSER_MENU_MAIN_HEAD, NEUTRINO_ICON_MP);
+	CMenuWidget mainMenu(LOCALE_MOVIEBROWSER_MENU_MAIN_HEAD, NEUTRINO_ICON_MOVIE);
 	
 	// show movie info
 	mainMenu.addItem( new CMenuForwarder(LOCALE_MOVIEBROWSER_INFO_HEAD, (m_movieSelectionHandler != NULL), NULL, this, "show_movie_info_menu", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
@@ -3949,7 +3949,7 @@ void CDirMenu::show(void)
 	
 	char tmp[20];
 	
-	CMenuWidget dirMenu(LOCALE_MOVIEBROWSER_MENU_DIRECTORIES_HEAD , NEUTRINO_ICON_MP);
+	CMenuWidget dirMenu(LOCALE_MOVIEBROWSER_MENU_DIRECTORIES_HEAD , NEUTRINO_ICON_MOVIE);
 	dirMenu.enableSaveScreen();
 	
 	updateDirState();
