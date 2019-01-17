@@ -72,6 +72,7 @@
 
 #include <upnpbrowser.h>
 
+#define UPNP_ICON_SMALL PLUGINDIR "/upnp/upnp_small.png"
 
 extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
@@ -122,7 +123,7 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string & /*actionKey*/
 	m_buttonHeight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
 
 	// title height
-	m_frameBuffer->getIconSize(NEUTRINO_ICON_UPNP, &icon_head_w, &icon_head_h);
+	m_frameBuffer->getIconSize(UPNP_ICON_SMALL, &icon_head_w, &icon_head_h);
 	m_theight = std::max(icon_head_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6; 
 
 	//
@@ -635,6 +636,8 @@ void CUpnpBrowserGui::handleFolder(void)
 
 bool CUpnpBrowserGui::selectItem(std::string id)
 {
+	printf("CUpnpBrowserGui::selectItem: %s\n", id.c_str());
+
 	bool loop = true;
 	bool endall = false;
 	bool changed = true;
@@ -761,7 +764,6 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 			}
 			changed = true;
 		}
-
 		else if( (msg == CRCInput::RC_yellow || (int) msg == CRCInput::RC_page_up) && selected > 0)
 		{
 			if (index > 0)
@@ -1055,6 +1057,8 @@ void CUpnpBrowserGui::paintItemPos(std::vector<UPnPEntry> *entry, unsigned int p
 
 void CUpnpBrowserGui::paintDevice()
 {
+	printf("CUpnpBrowserGui::paintDevice()\n");
+
 	std::string tmp;
 	int w, xstart, ypos, top;
 
@@ -1098,7 +1102,7 @@ void CUpnpBrowserGui::paintDevice()
 	tmp = g_Locale->getText(LOCALE_UPNPBROWSER_HEAD);
 	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 
-	m_frameBuffer->paintIcon(NEUTRINO_ICON_UPNP, m_x + BORDER_LEFT, m_y + m_title_height + (m_theight -icon_head_h)/2);
+	m_frameBuffer->paintIcon(UPNP_ICON_SMALL, m_x + BORDER_LEFT, m_y + m_title_height + (m_theight -icon_head_h)/2);
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(m_x + BORDER_LEFT + icon_head_w + 5, m_y + m_theight + m_title_height + 0, m_width - 45, tmp, COL_MENUHEAD, 0, true); // UTF-8
 	ypos = m_y + m_title_height;
@@ -1129,10 +1133,12 @@ void CUpnpBrowserGui::paintDevice()
 
 void CUpnpBrowserGui::paintItem(std::vector<UPnPEntry> *entry, unsigned int selected, unsigned int max, unsigned int offset)
 {
+	printf("CUpnpBrowserGui::paintItem:\n");
+
 	std::string tmp;
 	std::stringstream ts;
 	int w, xstart, ypos, top;
-	int preferred=(*entry)[selected].preferred;
+	int preferred = (*entry)[selected].preferred;
 
 	// LCD
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, "Select UPnP Entry");
@@ -1202,7 +1208,7 @@ void CUpnpBrowserGui::paintItem(std::vector<UPnPEntry> *entry, unsigned int sele
 	// Head
 	tmp = g_Locale->getText(LOCALE_UPNPBROWSER_HEAD);
 	m_frameBuffer->paintBoxRel(m_x, m_y + m_title_height, m_width, m_theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, true);
-	m_frameBuffer->paintIcon(NEUTRINO_ICON_UPNP, m_x + BORDER_LEFT, m_y + m_title_height + (m_theight - icon_head_h)/2);
+	m_frameBuffer->paintIcon(UPNP_ICON_SMALL, m_x + BORDER_LEFT, m_y + m_title_height + (m_theight - icon_head_h)/2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(m_x + BORDER_LEFT + icon_head_w + 5, m_y + m_theight + m_title_height, m_width - 45, tmp, COL_MENUHEAD, 0, true); // UTF-8
 	
 	//

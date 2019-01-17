@@ -110,7 +110,7 @@ void CTuxdnsConf::showMenu()
 	readSettings();
 	
 	//
-	CMenuWidget * tuxDNSMenu = new CMenuWidget("TuxDNS", NEUTRINO_ICON_STREAMING);
+	CMenuWidget * tuxDNSMenu = new CMenuWidget("TuxDNS", NEUTRINO_ICON_BUTTON_SETUP);
 	
 	tuxDNSMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	tuxDNSMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));

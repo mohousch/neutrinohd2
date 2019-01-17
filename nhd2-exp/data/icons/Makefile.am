@@ -18,11 +18,11 @@ install_DATA = \
 	mp3.png mute.png mute_small.png mute_zap_gray.png mute_zap_green.png \
 	network.png not_mounted.png numericpad.png ok.png power.png \
 	rec.png recording.png \
-	settings.png shell.png softupdate.png streaming.png \
+	settings.png shell.png softupdate.png \
 	subt.png subt_gray.png timer.png video.png \
 	volume.png volumebody.png volumeslider2.png volumeslider2alpha.png \
 	volumeslider2blue.png volumeslider2green.png volumeslider2red.png \
-	vtxt.png vtxt_gray.png upnp.png
+	vtxt.png vtxt_gray.png
 
 # service scan radar
 install_DATA += \
@@ -35,11 +35,12 @@ install_DATA += \
 
 # audio player background
 install_DATA += \
-	mp3.jpg mp3-0.jpg mp3-1.jpg mp3-2.jpg mp3-3.jpg mp3-4.jpg mp3-5.jpg mp3-6.jpg mp3-7.jpg mp3.m2v
+	mp3.jpg 
 
 # background
 install_DATA += \
-	radiomode.jpg scan.jpg shutdown.jpg start.jpg radiomode.m2v
+	radiomode.jpg scan.jpg shutdown.jpg start.jpg 
+#radiomode.m2v
 
 # mp icons
 install_DATA += \
@@ -51,10 +52,6 @@ install_DATA += \
 	res_1280.png res_1440.png res_1080.png res_720.png res_704.png res_576.png \
 	res_528.png res_544.png res_480.png res_382.png res_352.png res_288.png res_000.png \
 	res_hd2.png res_sd2.png res_uhd2.png res_1980.png res_2160.png
-
-# usb hdd
-install_DATA += \
-	usb.png usb_gray.png
 
 # new
 install_DATA += \

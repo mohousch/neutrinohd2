@@ -54,29 +54,19 @@
 
 #define NEUTRINO_ICON_BUTTON_TOP		"up"
 #define NEUTRINO_ICON_BUTTON_TOP_SMALL		"up_small"
-#define NEUTRINO_ICON_BUTTON_RIGHT		"right"
 #define NEUTRINO_ICON_BUTTON_DOWN		"down"
 #define NEUTRINO_ICON_BUTTON_DOWN_SMALL		"down_small"
+#define NEUTRINO_ICON_BUTTON_RIGHT		"right"
 #define NEUTRINO_ICON_BUTTON_LEFT		"left"
 
 #define NEUTRINO_ICON_BUTTON_PLUS		"plus"
 #define NEUTRINO_ICON_BUTTON_MINUS		"minus"
 
-#define NEUTRINO_ICON_BUTTON_F1			"f1"
-#define NEUTRINO_ICON_BUTTON_F2			"f2"
-#define NEUTRINO_ICON_BUTTON_F3			"f3"
-#define NEUTRINO_ICON_BUTTON_F4			"f4"
-
 #define NEUTRINO_ICON_BUTTON_MARK		"mark"
 
 // misc
-#define NEUTRINO_ICON_16_9			"16_9"
-#define NEUTRINO_ICON_16_9_GREY			"16_9_gray"
 #define NEUTRINO_ICON_AUDIO			"audio"
 #define NEUTRINO_ICON_COLORS			"colors"
-#define NEUTRINO_ICON_DD			"dd"
-#define NEUTRINO_ICON_DD_AVAIL			"dd_avail"
-#define NEUTRINO_ICON_DD_GREY			"dd_gray"
 #define NEUTRINO_ICON_EPGINFO			"epginfo"
 #define NEUTRINO_ICON_ERROR			"error"
 #define NEUTRINO_ICON_FEATURES			"features"
@@ -95,11 +85,9 @@
 #define NEUTRINO_ICON_REC			"rec"
 #define NEUTRINO_ICON_SETTINGS			"settings"
 #define NEUTRINO_ICON_SHELL			"shell"
-#define NEUTRINO_ICON_STREAMING			"streaming"
 #define NEUTRINO_ICON_TIMER			"timer"
 #define NEUTRINO_ICON_UPDATE			"softupdate"
 #define NEUTRINO_ICON_UPDATE_SMALL		"softupdate_small"
-#define NEUTRINO_ICON_UPNP			"upnp"
 #define NEUTRINO_ICON_VIDEO			"video"
 #define NEUTRINO_ICON_VOLUMEBODY		"volumebody"
 #define NEUTRINO_ICON_VOLUMESLIDER2		"volumeslider2"
@@ -107,14 +95,7 @@
 #define NEUTRINO_ICON_VOLUMESLIDER2BLUE		"volumeslider2blue"
 #define NEUTRINO_ICON_VOLUMESLIDER2GREEN	"volumeslider2green"
 #define NEUTRINO_ICON_VOLUMESLIDER2RED		"volumeslider2red"
-#define NEUTRINO_ICON_VTXT			"vtxt"
-#define NEUTRINO_ICON_VTXT_GREY			"vtxt_gray"
-#define NEUTRINO_ICON_SUBT			"subt"
-#define NEUTRINO_ICON_SUBT_GREY			"subt_gray"
-#define NEUTRINO_ICON_AUTO_SHIFT		"ats"
 #define NEUTRINO_ICON_NUMERIC_PAD		"numericpad"
-#define NEUTRINO_ICON_SCRAMBLED2		"ca2"
-#define NEUTRINO_ICON_SCRAMBLED2_GREY		"ca2_gray"
 #define NEUTRINO_ICON_BORDER_UL			"border_ul"
 #define NEUTRINO_ICON_BORDER_LR			"border_lr"
 #define NEUTRINO_ICON_MAINMENU			"mainmenu"
@@ -124,6 +105,20 @@
 #define NEUTRINO_ICON_VOLUME			"volume"
 #define NEUTRINO_ICON_BUTTON_MUTE_ZAP_ACTIVE 	"mute_zap_green"
 #define NEUTRINO_ICON_BUTTON_MUTE_ZAP_INACTIVE 	"mute_zap_gray"
+
+// infoviewer
+#define NEUTRINO_ICON_16_9			"16_9"
+#define NEUTRINO_ICON_16_9_GREY			"16_9_gray"
+#define NEUTRINO_ICON_DD			"dd"
+#define NEUTRINO_ICON_DD_AVAIL			"dd_avail"
+#define NEUTRINO_ICON_DD_GREY			"dd_gray"
+#define NEUTRINO_ICON_VTXT			"vtxt"
+#define NEUTRINO_ICON_VTXT_GREY			"vtxt_gray"
+#define NEUTRINO_ICON_SUBT			"subt"
+#define NEUTRINO_ICON_SUBT_GREY			"subt_gray"
+#define NEUTRINO_ICON_AUTO_SHIFT		"ats"
+#define NEUTRINO_ICON_SCRAMBLED2		"ca2"
+#define NEUTRINO_ICON_SCRAMBLED2_GREY		"ca2_gray"
 
 #define NEUTRINO_ICON_RESOLUTION_2160		"res_2160"
 #define NEUTRINO_ICON_RESOLUTION_1980		"res_1980"
@@ -145,12 +140,13 @@
 #define NEUTRINO_ICON_RESOLUTION_SD2		"res_sd2"
 #define NEUTRINO_ICON_RESOLUTION_UHD2		"res_uhd2"
 
+// channellist
 #define NEUTRINO_ICON_SCRAMBLED			"ca"
 #define NEUTRINO_ICON_HD			"res_hd"
 #define NEUTRINO_ICON_UHD			"res_uhd"
 
 
-// for browser
+// filebrowser
 #define NEUTRINO_ICON_MOVIE			"movie"
 #define NEUTRINO_ICON_PICTURE			"picture"
 #define NEUTRINO_ICON_PLUGIN			"plugin"
@@ -167,9 +163,6 @@
 #define NEUTRINO_ICON_WEBTV			"webtv"
 #define NEUTRINO_ICON_WEBTV_SMALL		"webtv_small"
 
-// infoviewer
-#define NEUTRINO_ICON_WEBTV			"webtv"
-
 // mp
 #define NEUTRINO_ICON_MP			"mp"
 #define NEUTRINO_ICON_PAUSE			"mp_pause"
@@ -182,7 +175,7 @@
 #define NEUTRINO_ICON_FF_SMALL 			"mp_ff_small"
 #define NEUTRINO_ICON_STOP_SMALL 		"mp_stop_small"
 
-// standard icons
+// design icons
 #define NEUTRINO_ICON_MENUITEM_TV			CONFIGDIR "/design/tv.png"
 #define NEUTRINO_ICON_MENUITEM_RADIO			CONFIGDIR "/design/radio.png"
 #define NEUTRINO_ICON_MENUITEM_WEBTV			CONFIGDIR "/design/webtv.png"

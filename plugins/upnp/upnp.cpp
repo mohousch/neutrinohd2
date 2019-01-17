@@ -678,7 +678,7 @@ void CUpnpBrowserGui::showMenuDevice()
 	}
 
 	// head
-	listBox->setTitle(g_Locale->getText(LOCALE_UPNPBROWSER_HEAD), NEUTRINO_ICON_UPNP);
+	listBox->setTitle(g_Locale->getText(LOCALE_UPNPBROWSER_HEAD), UPNP_ICON_SMALL);
 	listBox->enablePaintHead();
 	listBox->enablePaintDate();
 
@@ -1070,7 +1070,7 @@ void CUpnpBrowserGui::showMenuEntry()
 	}
 
 	// head
-	listBox->setTitle(g_Locale->getText(LOCALE_UPNPBROWSER_HEAD), NEUTRINO_ICON_UPNP);
+	listBox->setTitle(g_Locale->getText(LOCALE_UPNPBROWSER_HEAD), UPNP_ICON_SMALL);
 	listBox->enablePaintHead();
 	listBox->enablePaintDate();
 
