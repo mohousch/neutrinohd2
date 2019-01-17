@@ -55,7 +55,6 @@ fileexplorer/Makefile
 mediaportal/Makefile
 satipclient/Makefile
 icecast/Makefile
-upnpbrowser/Makefile
 internetradio/Makefile
 tsbrowser/Makefile
 moviebrowser/Makefile

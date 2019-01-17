@@ -10,7 +10,7 @@ SUBDIRS = \
 	fileexplorer \
 	mediaportal \
 	icecast \
-	upnpbrowser \
+	upnp \
 	internetradio \
 	tsbrowser \
 	moviebrowser \
@@ -29,8 +29,7 @@ endif
 
 #testing
 if ENABLE_TESTING
-SUBDIRS += upnp \
-	ard \
+SUBDIRS += ard \
 	fbcallmonitor \
 	tuxdns \
 	restart_enigma \

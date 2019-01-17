@@ -28,11 +28,13 @@ install-exec-local:
 	install .libs/upnp.so $(DESTDIR)$(PLUGINDIR)/upnp
 	install -m 0644 upnp.cfg $(DESTDIR)$(PLUGINDIR)/upnp
 	install -m 0644 upnp.png $(DESTDIR)$(PLUGINDIR)/upnp
+	install -m 0644 upnp_small.png $(DESTDIR)$(PLUGINDIR)/upnp
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/upnp/upnp.so
 	-rm $(DESTDIR)$(PLUGINDIR)/upnp/upnp.cfg
 	-rm $(DESTDIR)$(PLUGINDIR)/upnp/upnp.png
+	-rm $(DESTDIR)$(PLUGINDIR)/upnp/upnp_small.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/upnp
 
 	
