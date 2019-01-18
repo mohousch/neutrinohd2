@@ -1114,7 +1114,10 @@ void CTestMenu::testClistBoxEntry()
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxEntryItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), NULL, "", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxEntryItem(m_vMovieInfo[i].epgTitle.c_str());
+
+		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+		item->setIconName(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
 		//
 		std::string tmp = m_vMovieInfo[i].epgTitle;
@@ -1124,18 +1127,22 @@ void CTestMenu::testClistBoxEntry()
 		tmp += m_vMovieInfo[i].epgInfo2;
 
 		item->setInfo1(tmp.c_str());
-		item->setWidgetType(WIDGET_CLASSIC);
 		item->setnLinesItem();
 
 		listBox->addItem(item);
 	}
 
-	listBox->setTitle("ClistBoxEntry", NEUTRINO_ICON_MP3);
+	// head
+	listBox->setTitle("ClistBoxEntry", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
 	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
 	listBox->enablePaintDate();
+
+	// footer
 	listBox->enablePaintFoot();
 	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+
+	// footinfo
 	listBox->enablePaintFootInfo(40);
 
 REPEAT:

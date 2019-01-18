@@ -2161,4 +2161,30 @@ bool CFrameBuffer::displayLogo(t_channel_id channel_id, int posx, int posy, int 
 	return ret;
 }
 
+std::string CFrameBuffer::getLogoName(t_channel_id channel_id)
+{
+	std::string logo_name = "";
+	bool logo_ok = false;
+	
+	// check for logo/convert channelid to logo
+	std::string strLogoExt[2] = { ".png", ".jpg" };
+	
+	// check for logo
+	for (int i = 0; i < 2; i++)
+	{
+		logo_name = g_settings.logos_dir;
+		logo_name += "/";
+		logo_name += to_hexstring(channel_id & 0xFFFFFFFFFFFFULL);
+		logo_name += strLogoExt[i].c_str();
+
+		if(!access(logo_name.c_str(), F_OK)) 
+		{
+			logo_ok = true;
+			break;
+		}
+	}
+
+	return logo_name;
+}
+
 

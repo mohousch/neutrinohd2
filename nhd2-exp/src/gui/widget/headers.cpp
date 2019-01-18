@@ -29,7 +29,7 @@
 #include <gui/widget/headers.h>
 
 
-void paintHead(int x, int y, int dx, int dy, const char* icon, const neutrino_locale_t caption, bool paintDate, const unsigned int count, const struct button_label* const content)
+void paintHead(int x, int y, int dx, int dy, const char* icon, const neutrino_locale_t caption, bool paintDate, const unsigned int count, const struct button_label* const content, bool logo)
 {
 	// box
 	CFrameBuffer::getInstance()->paintBoxRel(x, y, dx, dy, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
@@ -40,7 +40,19 @@ void paintHead(int x, int y, int dx, int dy, const char* icon, const neutrino_lo
 	if(icon != NULL)
 	{
 		CFrameBuffer::getInstance()->getIconSize(icon, &i_w, &i_h);
-		CFrameBuffer::getInstance()->paintIcon(icon, x + BORDER_LEFT, y + (dy - i_h)/2);
+
+		// limit icon dimensions
+		if(i_h > dy)
+			i_h = dy - 2;
+
+		if(logo)
+		{
+			i_w = i_h*1.67;
+
+			CFrameBuffer::getInstance()->paintIcon(icon, x + BORDER_LEFT, y + (dy - i_h)/2, 0, true, i_w, i_h);
+		}
+		else
+			CFrameBuffer::getInstance()->paintIcon(icon, x + BORDER_LEFT, y + (dy - i_h)/2);
 	}
 
 	// right buttons
@@ -79,7 +91,7 @@ void paintHead(int x, int y, int dx, int dy, const char* icon, const neutrino_lo
 	
 }
 
-void paintHead(int x, int y, int dx, int dy, const char* icon, const std::string caption, bool paintDate, const unsigned int count, const struct button_label* const content)
+void paintHead(int x, int y, int dx, int dy, const char* icon, const std::string caption, bool paintDate, const unsigned int count, const struct button_label* const content, bool logo)
 {
 	// box
 	CFrameBuffer::getInstance()->paintBoxRel(x, y, dx, dy, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
@@ -90,7 +102,19 @@ void paintHead(int x, int y, int dx, int dy, const char* icon, const std::string
 	if(icon != NULL)
 	{
 		CFrameBuffer::getInstance()->getIconSize(icon, &i_w, &i_h);
-		CFrameBuffer::getInstance()->paintIcon(icon, x + BORDER_LEFT, y + (dy - i_h)/2);
+
+		// limit icon dimensions
+		if(i_h > dy)
+			i_h = dy - 2;
+
+		if(logo)
+		{
+			i_w = i_h*1.67;
+
+			CFrameBuffer::getInstance()->paintIcon(icon, x + BORDER_LEFT, y + (dy - i_h)/2, 0, true, i_w, i_h);
+		}
+		else
+			CFrameBuffer::getInstance()->paintIcon(icon, x + BORDER_LEFT, y + (dy - i_h)/2);
 	}
 
 	// right buttons
@@ -139,7 +163,7 @@ void paintFoot(int x, int y, int dx, int dy, const unsigned int buttonwidth, con
 
 
 	// buttons
-	if (count)
+	if(count)
 	{
 		::paintButtons(CFrameBuffer::getInstance(), g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y, buttonwidth, count, content, dy);
 	}

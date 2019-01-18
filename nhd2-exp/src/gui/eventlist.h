@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: eventlist.h 2013/10/12 mohousch Exp $
+	$Id: eventlist.h 18.01.2019 mohousch Exp $
 
 	Copyright (C) 2001 Steffen Hehn 'McClean'
 	Homepage: http://dbox.cyberphoria.org/
@@ -43,10 +43,11 @@
 #include <driver/rcinput.h>
 #include <system/settings.h>
 
-#include "color.h"
-#include "infoviewer.h"
+#include <gui/color.h>
+#include <gui/infoviewer.h>
 
-#include "widget/menue.h"
+#include <gui/widget/menue.h>
+#include <gui/widget/listbox.h>
 
 #include <string>
 
@@ -84,19 +85,9 @@ class EventList
 		CFrameBuffer	* frameBuffer;
 
 		//
-		unsigned int liststart;
-		unsigned int listmaxshow;
-		unsigned int numwidth;
-		int fheight; // Fonthoehe Channellist-Inhalt
-		int fheight1, fheight2;
-		int fwidth1, fwidth2;
-		int theight; // Fonthoehe Channellist-Titel
-		int iheight; // Height info bar
-
-		int width;
-		int height;
-		int x;
-		int y;
+		ClistBoxEntry* listBox;
+		CMenuItem* item;
+		CBox cFrameBox;
 
 		uint32_t sec_timer_id;
 
