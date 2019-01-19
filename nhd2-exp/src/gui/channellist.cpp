@@ -643,7 +643,7 @@ int CChannelList::show()
 				zapTo(selected); 
 			}
 		}
-                else if ( msg == CRCInput::RC_up || (int) msg == g_settings.key_channelList_pageup )
+                else if (msg == CRCInput::RC_up)
                 {
 			listBox->scrollLineUp();
 
@@ -655,9 +655,33 @@ int CChannelList::show()
 				zapTo(selected); 
 			}
                 }
-                else if ( msg == CRCInput::RC_down || (int) msg == g_settings.key_channelList_pagedown )
+		else if ( msg == CRCInput::RC_page_up )
+                {
+			listBox->scrollPageUp();
+
+			if(new_mode_active) 
+			{
+				selected = listBox->getSelected();
+ 
+				actzap = true; 
+				zapTo(selected); 
+			}
+                }
+                else if (msg == CRCInput::RC_down)
                 {
 			listBox->scrollLineDown();
+
+			if(new_mode_active) 
+			{ 
+				selected = listBox->getSelected();
+
+				actzap = true; 
+				zapTo(selected); 
+			}
+                }
+		else if (msg == CRCInput::RC_page_down )
+                {
+			listBox->scrollPageDown();
 
 			if(new_mode_active) 
 			{ 
@@ -1614,21 +1638,8 @@ void CChannelList::paint(bool reinit)
 			item->setInfo2(p_event->text.c_str());
 			item->setOptionInfo2(cNoch);
 
-			// scrambled
-			std::string scrambled_icon = "";
-			if(chanlist[i]->scrambled)
-				scrambled_icon = NEUTRINO_ICON_SCRAMBLED;
-
-			item->setIcon1(scrambled_icon.c_str());
-
-			// hd/uhd
-			std::string hd_icon = "";
-			if(chanlist[i]->isHD())
-				hd_icon = NEUTRINO_ICON_HD;
-			else if(chanlist[i]->isUHD()) 
-				hd_icon = NEUTRINO_ICON_UHD,
-
-			item->setIcon2(hd_icon.c_str()); 
+			item->setIcon1(chanlist[i]->isHD() ? NEUTRINO_ICON_HD : chanlist[i]->isUHD()? NEUTRINO_ICON_UHD : "");
+			item->setIcon2(chanlist[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : ""); 
 
 			listBox->addItem(item);
 		}

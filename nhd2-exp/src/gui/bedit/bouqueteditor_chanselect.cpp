@@ -126,21 +126,8 @@ void CBEChannelSelectWidget::paint()
 
 		item->setIconName(marked_icon.c_str());
 
-		// scrambled
-		std::string scrambled_icon = "";
-		if(Channels[count]->scrambled)
-			scrambled_icon = NEUTRINO_ICON_SCRAMBLED;
-
-		item->setIcon1(scrambled_icon.c_str());
-
-		// hd/uhd
-		std::string hd_icon = "";
-		if(Channels[count]->isHD())
-			hd_icon = NEUTRINO_ICON_HD;
-		else if(Channels[count]->isUHD()) 
-			hd_icon = NEUTRINO_ICON_UHD,
-
-		item->setIcon2(hd_icon.c_str()); 
+		item->setIcon1(Channels[count]->isHD() ? NEUTRINO_ICON_HD : Channels[count]->isUHD()? NEUTRINO_ICON_UHD : "");
+		item->setIcon2(Channels[count]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "");
 
 		// info1
 		char buf[128];
