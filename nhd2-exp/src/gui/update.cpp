@@ -76,7 +76,8 @@
 #define gUserAgent 				"neutrino/softupdater 1.0"
 
 #define LIST_OF_UPDATES_LOCAL_FILENAME 		"update.list"
-#define RELEASE_CYCLE                  		"3.0"
+#define RELEASE_CYCLE                  		"4.0"
+#define RELEASE_TYPE				"Snapshot"
 #define FILEBROWSER_UPDATE_FILTER      		"img"
 
 #define MTD_OF_WHOLE_IMAGE             		0
@@ -319,7 +320,7 @@ bool CFlashUpdate::checkVersion4Update()
 			}
 
 			// check if not release ask to install (beta + snapshot)
-			if ((strcmp("Release", versionInfo->getType()) != 0) &&
+			if ((strcmp(RELEASE_TYPE, versionInfo->getType()) != 0) &&
 		    	    (MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_FLASHUPDATE_EXPERIMENTALIMAGE, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes))
 			{
 				delete versionInfo;

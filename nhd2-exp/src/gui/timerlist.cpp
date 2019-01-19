@@ -648,15 +648,17 @@ void CTimerList::paint()
 		if (timer.eventRepeat != CTimerd::TIMERREPEAT_ONCE)
 		{
 			char srepeatcount[25] = {0};
-			if (timer.repeatCount == 0)
+	
+			if (timer.repeatCount != 0)
 			// Unicode 8734 (hex: 221E) not available in all fonts
 			// sprintf(srepeatcount,"∞");
 				sprintf(srepeatcount, "00");
 			else
 				sprintf(srepeatcount, "%ux", timer.repeatCount);
 
-			alarm += " ";
-			alarm += srepeatcount;
+			//alarm += " ";
+			//alarm += srepeatcount;
+			//FIXME: dont need to show repeatscount
 		}
 
 		//
