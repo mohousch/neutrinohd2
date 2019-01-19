@@ -540,38 +540,28 @@ void ClistBoxEntry::scrollPageUp()
 }
 
 //ClistBoxEntryItem
-ClistBoxEntryItem::ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active, const char* const Option, CMenuTarget* Target, const char* const ActionKey, const char* const IconName, const char* const ItemIcon)
+ClistBoxEntryItem::ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active, const char* const Option, const char* const IconName)
 {
 	text = Text;
 	textString = g_Locale->getText(Text);
-
 	option = Option;
 
 	active = Active;
-	jumpTarget = Target;
-	actionKey = ActionKey ? ActionKey : "";
 
 	iconName = IconName ? IconName : "";
-
-	itemIcon = ItemIcon? ItemIcon : "";
 	itemName = g_Locale->getText(Text);
 	itemType = ITEM_TYPE_LIST_BOX;
 }
 
-ClistBoxEntryItem::ClistBoxEntryItem(const char* Text, const bool Active, const char* const Option, CMenuTarget* Target, const char* const ActionKey, const char* const IconName, const char* const ItemIcon)
+ClistBoxEntryItem::ClistBoxEntryItem(const char* Text, const bool Active, const char* const Option, const char* const IconName)
 {
 	text = NONEXISTANT_LOCALE;
 	textString = Text;
-
 	option = Option;
 
 	active = Active;
-	jumpTarget = Target;
-	actionKey = ActionKey ? ActionKey : "";
 
 	iconName = IconName ? IconName : "";
-
-	itemIcon = ItemIcon? ItemIcon : "";
 	itemName = Text;
 	itemType = ITEM_TYPE_LIST_BOX;
 }
@@ -600,16 +590,6 @@ int ClistBoxEntryItem::getWidth(void) const
 	int tw = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(textString); //FIXME:
 
 	return tw;
-}
-
-int ClistBoxEntryItem::exec(CMenuTarget* parent)
-{
-	dprintf(DEBUG_DEBUG, "ClistBoxEntryItem::exec:\n");
-
-	if(jumpTarget)
-		return jumpTarget->exec(parent, actionKey);
-	else
-		return menu_return::RETURN_EXIT;
 }
 
 const char * ClistBoxEntryItem::getName(void)

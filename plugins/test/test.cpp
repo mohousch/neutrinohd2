@@ -1117,7 +1117,7 @@ void CTestMenu::testClistBoxEntry()
 		item = new ClistBoxEntryItem(m_vMovieInfo[i].epgTitle.c_str());
 
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
-		item->setIconName(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		//item->setIconName(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
 		//
 		std::string tmp = m_vMovieInfo[i].epgTitle;

@@ -121,9 +121,6 @@ class ClistBoxEntry
 // CMenulistBoxItem
 class ClistBoxEntryItem : public CMenuItem
 {
-	CMenuTarget* jumpTarget;
-	std::string actionKey;
-
 	protected:
 		//
 		neutrino_locale_t text;
@@ -133,15 +130,14 @@ class ClistBoxEntryItem : public CMenuItem
 		virtual const char* getName(void);
 
 	public:
-		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = "", CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const Icon = NULL, const char* const ItemIcon = NULL);
+		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = "", const char* const Icon = NULL);
 
-		ClistBoxEntryItem(const char* const Text, const bool Active = true, const char* const Option = "", CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const IconName = NULL, const char* const ItemIcon = NULL);
+		ClistBoxEntryItem(const char* const Text, const bool Active = true, const char* const Option = "", const char* const IconName = NULL);
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
 		int getWidth(void) const;
 
-		int exec(CMenuTarget* parent);
 		bool isSelectable(void) const {return active;}
 };
 

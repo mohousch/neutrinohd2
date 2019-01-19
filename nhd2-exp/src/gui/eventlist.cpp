@@ -673,6 +673,9 @@ void EventList::paint(t_channel_id channel_id)
 		item->setIconName(icontype.c_str());
 		item->setnLinesItem();
 
+		if(count == current_event)
+			item->setMarked(true);
+
 		listBox->addItem(item);
 	}
 
