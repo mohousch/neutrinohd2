@@ -695,6 +695,12 @@ void EventList::paint(t_channel_id channel_id)
 
 	// foot
 	listBox->enablePaintFoot();
+
+	if(sort_mode == SORT_DESCRIPTION)
+		FootButtons[3].locale = LOCALE_EVENTLISTBAR_EVENTSORTALPHA;
+	else
+		FootButtons[3].locale = LOCALE_EVENTLISTBAR_EVENTSORTTIME;
+
 	listBox->setFooterButtons(FootButtons, NUM_LIST_BUTTONS);
 
 	//
