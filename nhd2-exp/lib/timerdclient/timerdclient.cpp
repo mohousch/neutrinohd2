@@ -80,7 +80,7 @@ int CTimerdClient::setSleeptimer(time_t announcetime, time_t alarmtime, int time
 	}
 	else
 	{
-		timerID = addTimerEvent(CTimerd::TIMER_SLEEPTIMER,NULL,announcetime,alarmtime,0);
+		timerID = addTimerEvent(CTimerd::TIMER_SLEEPTIMER, NULL, announcetime, alarmtime, 0);
 	}
 
 	return timerID;   
@@ -223,8 +223,7 @@ int CTimerdClient::addTimerEvent( CTimerEventTypes evType, void* data , int min,
 }
 */
 
-int CTimerdClient::addTimerEvent( CTimerd::CTimerEventTypes evType, void* data, time_t announcetime, time_t alarmtime,time_t stoptime,
-				  CTimerd::CTimerEventRepeat evrepeat, uint32_t repeatcount,bool forceadd)
+int CTimerdClient::addTimerEvent( CTimerd::CTimerEventTypes evType, void* data, time_t announcetime, time_t alarmtime,time_t stoptime, CTimerd::CTimerEventRepeat evrepeat, uint32_t repeatcount,bool forceadd)
 {
 
 	if (!forceadd)
@@ -435,17 +434,17 @@ void CTimerdClient::setWeekdaysToStr(CTimerd::CTimerEventRepeat rep, char* str)
 {
 	if(rep >= CTimerd::TIMERREPEAT_WEEKDAYS)
 	{
-		for(int n=0;n<7;n++)
+		for(int n = 0; n < 7; n++)
 		{
-			if(rep & (1 << (n+9)))
-				str[n]='X';
+			if(rep & (1 << (n + 9)))
+				str[n] = 'X';
 			else
-				str[n]='-';
+				str[n] = '-';
 		}
-		str[7]=0;
+		str[7] = 0;
 	}
-	else
-		strcpy(str,"-------");
+	//else
+	//	strcpy(str,"-------");
 }
 
 void CTimerdClient::stopTimerEvent( int evId)

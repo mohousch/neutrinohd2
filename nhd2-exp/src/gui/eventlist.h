@@ -93,11 +93,8 @@ class EventList
 
 		unsigned int selected;
 
-		void paintItem(unsigned pos, t_channel_id channel_id = 0);
 		void paint(t_channel_id channel_id = 0);
-		void paintHead(t_channel_id channel_id);
 		void hide();
-		void showFunctionBar(bool show);
 
 		//
 		int m_search_epg_item;

@@ -1614,6 +1614,22 @@ void CChannelList::paint(bool reinit)
 			item->setInfo2(p_event->text.c_str());
 			item->setOptionInfo2(cNoch);
 
+			// scrambled
+			std::string scrambled_icon = "";
+			if(chanlist[i]->scrambled)
+				scrambled_icon = NEUTRINO_ICON_SCRAMBLED;
+
+			item->setIcon1(scrambled_icon.c_str());
+
+			// hd/uhd
+			std::string hd_icon = "";
+			if(chanlist[i]->isHD())
+				hd_icon = NEUTRINO_ICON_HD;
+			else if(chanlist[i]->isUHD()) 
+				hd_icon = NEUTRINO_ICON_UHD,
+
+			item->setIcon2(hd_icon.c_str()); 
+
 			listBox->addItem(item);
 		}
 	}

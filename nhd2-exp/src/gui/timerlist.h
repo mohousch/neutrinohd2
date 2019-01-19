@@ -39,6 +39,7 @@
 #include <timerdclient/timerdclient.h>
 
 #include <gui/widget/menue.h>
+#include <gui/widget/listbox.h>
 
 #include <driver/framebuffer.h>
 
@@ -46,19 +47,24 @@
 class CTimerList : public CMenuTarget
 {
 	private:
-		CFrameBuffer		*frameBuffer;
-		unsigned int		selected;
-		unsigned int		liststart;
-		unsigned int		listmaxshow;
-		int			fheight; // Fonthoehe Timerlist-Inhalt
-		int			theight; // Fonthoehe Timerlist-Titel
-		int               	buttonHeight;
-		bool			visible;			
+		CFrameBuffer* frameBuffer;
+
+		//
+		ClistBoxEntry* listBox;
+		CMenuItem* item;
+		CBox cFrameBox;
+
+		uint32_t sec_timer_id;
+
+		void paint();
+		void hide();
+
+		unsigned int selected;
+		bool visible;			
 
 		CTimerd::TimerList timerlist;             // List of timers		
 		CTimerd::responseGetTimer timerNew;
 		int timerNew_standby_on;
-		//char m_weekdaysStr[8];
 		std::string m_weekdaysStr;
 		
 		t_channel_id timerNew_chan_id;
@@ -69,21 +75,8 @@ class CTimerList : public CMenuTarget
 		int timer_apids_ac3;
 		int timer_apids_alt;
 
-		int width;
-		int height;
-		int x;
-		int y;
-		
-		int icon_foot_w;
-		int icon_foot_h;
-
 		int skipEventID;
 
-		void paintItem(int pos);
-		void paint();
-		void paintHead();
-		void paintFoot();
-		void hide();
 		int modifyTimer();
 		int newTimer();
 

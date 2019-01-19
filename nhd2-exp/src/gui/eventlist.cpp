@@ -110,6 +110,7 @@ EventList::EventList()
 	m_search_channel_id = 1;
 	m_search_bouquet_id= 1;
 
+	//
 	listBox = NULL;
 	item = NULL;
 
