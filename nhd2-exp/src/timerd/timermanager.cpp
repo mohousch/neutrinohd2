@@ -803,7 +803,7 @@ void CTimerManager::shutdownOnWakeup(int currEventID)
 			// Bei anstehendem/laufendem RECORD oder ZAPTO Timer nicht runterfahren
 			if(event->announceTime < nextAnnounceTime || nextAnnounceTime==0)
 			{
-				nextAnnounceTime=event->announceTime;
+				nextAnnounceTime = event->announceTime;
 			}
 		}
 	}
@@ -824,9 +824,9 @@ void CTimerManager::shutdownOnWakeup(int currEventID)
 
 void CTimerManager::setRecordingSafety(int pre, int post)
 {
-	m_extraTimeStart=pre;
-	m_extraTimeEnd=post;
-   	m_saveEvents=true; // also saves extra times
+	m_extraTimeStart = pre;
+	m_extraTimeEnd = post;
+   	m_saveEvents = true; // also saves extra times
 }
 
 CTimerEvent::CTimerEvent( CTimerd::CTimerEventTypes evtype, time_t announcetime, time_t alarmtime, time_t stoptime, CTimerd::CTimerEventRepeat evrepeat, uint32_t repeatcount)

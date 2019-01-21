@@ -35,18 +35,12 @@ class CThemes : public CMenuTarget, CChangeObserver
 		CConfigFile themefile;
 		CColorSetupNotifier * notifier;
 
-		int width;
-		int oldThemeValues[68];
-
-		bool hasThemeChanged;
+		//int oldThemeValues[68];
 
 		int Show();
 		void readFile(char* themename);
 		void saveFile(char* themename);
 		void readThemes(CMenuWidget &);
-		void rememberOldTheme(bool remember);
-		
-		//std::string file_name;
 
 	public:
 		CThemes();

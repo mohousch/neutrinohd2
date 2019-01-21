@@ -33,20 +33,25 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/wait.h>
+
 #include <global.h>
 #include <neutrino.h>
-#include "widget/menue.h"
+
 #include <system/setting_helpers.h>
 #include <system/debug.h>
+
+#include <gui/widget/menue.h>
 #include <gui/widget/stringinput.h>
 #include <gui/widget/stringinput_ext.h>
 #include <gui/widget/messagebox.h>
+#include <gui/widget/hintbox.h>
+
 #include <driver/screen_max.h>
 
 #include <sys/stat.h>
 #include <sys/time.h>
 
-#include "themes.h"
+#include <gui/themes.h>
 
 
 #define THEMEDIR 		DATADIR "/neutrino/themes/"
@@ -56,9 +61,7 @@
 CThemes::CThemes()
 : themefile('\t')
 {
-	width 	= MENU_WIDTH;
 	notifier = NULL;
-	hasThemeChanged = false;
 }
 
 int CThemes::exec(CMenuTarget * parent, const std::string & actionKey)
@@ -67,16 +70,43 @@ int CThemes::exec(CMenuTarget * parent, const std::string & actionKey)
 
 	int res = menu_return::RETURN_REPAINT;
 
+	if (parent)
+		parent->hide();
+
 	if( !actionKey.empty() )
 	{
-		if (actionKey == "theme_default")
+		if(actionKey == "savesettings")
+		{
+			CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
+
+			return res;
+		}
+		else if(actionKey == "saveCurrentTheme")
+		{
+			std::string file_name = "";
+			CStringInputSMS nameInput(LOCALE_COLORTHEMEMENU_NAME, &file_name);
+
+			nameInput.exec(NULL, "");
+			
+			if (file_name.length() > 1)
+			{
+				HintBox(LOCALE_COLORTHEMEMENU_SAVE, g_Locale->getText(LOCALE_MAINSETTINGS_SAVESETTINGSNOW_HINT));
+
+				saveFile((char*)((std::string)USERDIR + file_name + FILE_PREFIX).c_str());
+			}
+
+			Show();
+
+			return menu_return::RETURN_EXIT;
+		}
+		else if (actionKey == "theme_default")
 		{
 			setupDefaultColors();
 			notifier = new CColorSetupNotifier();
 			notifier->changeNotify(NONEXISTANT_LOCALE, NULL);
 			delete notifier;
 
-			CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
+			return res;
 		}
 		else
 		{
@@ -88,16 +118,10 @@ int CThemes::exec(CMenuTarget * parent, const std::string & actionKey)
 			} 
 			else
 				readFile((char*)((std::string)THEMEDIR + themeFile + FILE_PREFIX).c_str());
+
+			return res;
 		}
-		
-		return res;
 	}
-
-	if (parent)
-		parent->hide();
-
-	if ( !hasThemeChanged )
-		rememberOldTheme( true );
 
 	return Show();
 }
@@ -112,7 +136,7 @@ void CThemes::readThemes(CMenuWidget &themes)
 	std::string userThemeFile = "";
 	CMenuForwarder* oj;
 
-	for(int p = 0;p < 2;p++)
+	for(int p = 0; p < 2; p++)
 	{
 		n = scandir(pfade[p], &themelist, 0, alphasort);
 		if(n < 0)
@@ -123,6 +147,7 @@ void CThemes::readThemes(CMenuWidget &themes)
 			{
 				char *file = themelist[count]->d_name;
 				char *pos = strstr(file, ".theme");
+
 				if(pos != NULL)
 				{
 					if ( p == 0 && hasCVSThemes == false ) 
@@ -158,247 +183,27 @@ int CThemes::Show()
 {
 	dprintf(DEBUG_NORMAL, "CThemes::Show:\n");
 
-	std::string file_name = "";
+	CMenuWidget themes(LOCALE_COLORMENU_MENUCOLORS, NEUTRINO_ICON_SETTINGS);
 
-	CMenuWidget themes(LOCALE_COLORMENU_MENUCOLORS, NEUTRINO_ICON_SETTINGS, width);
+	// intros
+	themes.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	themes.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	
+	// save settings
+	themes.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+
+	themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_SAVE, true , NULL, this, "saveCurrentTheme", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
+
+	themes.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
 	//set default theme
 	themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_DEFAULT_THEME, true, NULL, this, "theme_default" ));
 	
 	readThemes(themes);
 
-	CStringInputSMS nameInput(LOCALE_COLORTHEMEMENU_NAME, &file_name);
-	CMenuForwarder * m1 = new CMenuForwarder(LOCALE_COLORTHEMEMENU_SAVE, true , NULL, &nameInput, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED);
-
-	// Don't show SAVE if UserDir does'nt exist
-	if ( access(USERDIR, F_OK) != 0 ) 
-	{ 
-		// check for existance
-		// mkdir must be called for each subdir which does not exist 
-		// mkdir (USERDIR, S_IRUSR | S_IREAD | S_IWUSR | S_IWRITE | S_IXUSR | S_IEXEC) == 0) {
-		
-		if (system (((std::string)"mkdir -p " + USERDIR).c_str()) != 0) 
-		{
-			printf("[neutrino theme] error creating %s\n", USERDIR);
-		}
-	}
-	
-	if (access(USERDIR, F_OK) == 0 ) 
-	{
-		themes.addItem(new CMenuSeparator(CMenuSeparator::LINE));
-		themes.addItem(m1);
-	} 
-	else 
-	{
-		delete m1;
-		printf("[neutrino theme] error accessing %s\n", USERDIR);
-	}
-
 	int res = themes.exec(NULL, "");
-
-	if (file_name.length() > 1) 
-	{
-		saveFile((char*)((std::string)USERDIR + file_name + FILE_PREFIX).c_str());
-	}
-
-	if (hasThemeChanged) 
-	{
-		if (MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_COLORTHEMEMENU_QUESTION, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_SETTINGS) != CMessageBox::mbrYes)
-		{
-			rememberOldTheme( false );
-		}
-		else
-		{	
-			CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
-			hasThemeChanged = false;
-		}
-	}
 	
 	return res;
-}
-
-void CThemes::rememberOldTheme(bool remember)
-{
-	if ( remember ) 
-	{
-		oldThemeValues[0]  = g_settings.menu_Head_alpha;
-		oldThemeValues[1]  = g_settings.menu_Head_red;
-		oldThemeValues[2]  = g_settings.menu_Head_green;
-		oldThemeValues[3]  = g_settings.menu_Head_blue;
-		
-		oldThemeValues[4]  = g_settings.menu_Head_Text_alpha;
-		oldThemeValues[5]  = g_settings.menu_Head_Text_red;
-		oldThemeValues[6]  = g_settings.menu_Head_Text_green;
-		oldThemeValues[7]  = g_settings.menu_Head_Text_blue;
-
-		oldThemeValues[8]  = g_settings.menu_Content_alpha;
-		oldThemeValues[9]  = g_settings.menu_Content_red;
-		oldThemeValues[10] = g_settings.menu_Content_green;
-		oldThemeValues[11] = g_settings.menu_Content_blue;
-
-		oldThemeValues[12] = g_settings.menu_Content_Text_alpha;
-		oldThemeValues[13] = g_settings.menu_Content_Text_red;
-		oldThemeValues[14] = g_settings.menu_Content_Text_green;
-		oldThemeValues[15] = g_settings.menu_Content_Text_blue;
-
-		oldThemeValues[16] = g_settings.menu_Content_Selected_alpha;
-		oldThemeValues[17] = g_settings.menu_Content_Selected_red;
-		oldThemeValues[18] = g_settings.menu_Content_Selected_green;
-		oldThemeValues[19] = g_settings.menu_Content_Selected_blue;
-
-		oldThemeValues[20] = g_settings.menu_Content_Selected_Text_alpha;
-		oldThemeValues[21] = g_settings.menu_Content_Selected_Text_red;
-		oldThemeValues[22] = g_settings.menu_Content_Selected_Text_green;
-		oldThemeValues[23] = g_settings.menu_Content_Selected_Text_blue;
-
-		oldThemeValues[24] = g_settings.menu_Content_inactive_alpha;
-		oldThemeValues[25] = g_settings.menu_Content_inactive_red;
-		oldThemeValues[26] = g_settings.menu_Content_inactive_green;
-		oldThemeValues[27] = g_settings.menu_Content_inactive_blue;
-
-		oldThemeValues[28] = g_settings.menu_Content_inactive_Text_alpha;
-		oldThemeValues[29] = g_settings.menu_Content_inactive_Text_red;
-		oldThemeValues[30] = g_settings.menu_Content_inactive_Text_green;
-		oldThemeValues[31] = g_settings.menu_Content_inactive_Text_blue;
-
-		oldThemeValues[32] = g_settings.infobar_alpha;
-		oldThemeValues[33] = g_settings.infobar_red;
-		oldThemeValues[34] = g_settings.infobar_green;
-		oldThemeValues[35] = g_settings.infobar_blue;
-
-		oldThemeValues[36] = g_settings.infobar_Text_alpha;
-		oldThemeValues[37] = g_settings.infobar_Text_red;
-		oldThemeValues[38] = g_settings.infobar_Text_green;
-		oldThemeValues[39] = g_settings.infobar_Text_blue;
-		
-		oldThemeValues[40] = g_settings.infobar_colored_events_alpha;
-		oldThemeValues[41] = g_settings.infobar_colored_events_red;
-		oldThemeValues[42] = g_settings.infobar_colored_events_green;
-		oldThemeValues[43] = g_settings.infobar_colored_events_blue;
-		
-		oldThemeValues[44]  = g_settings.menu_Foot_alpha;
-		oldThemeValues[45]  = g_settings.menu_Foot_red;
-		oldThemeValues[46]  = g_settings.menu_Foot_green;
-		oldThemeValues[47]  = g_settings.menu_Foot_blue;
-		
-		oldThemeValues[48] = g_settings.menu_Foot_Text_alpha;
-		oldThemeValues[49] = g_settings.menu_Foot_Text_red;
-		oldThemeValues[50] = g_settings.menu_Foot_Text_green;
-		oldThemeValues[51] = g_settings.menu_Foot_Text_blue;
-
-		oldThemeValues[52]  = g_settings.menu_HeadInfo_alpha;
-		oldThemeValues[53]  = g_settings.menu_HeadInfo_red;
-		oldThemeValues[54]  = g_settings.menu_HeadInfo_green;
-		oldThemeValues[55]  = g_settings.menu_HeadInfo_blue;
-		
-		oldThemeValues[56]  = g_settings.menu_HeadInfo_Text_alpha;
-		oldThemeValues[57]  = g_settings.menu_HeadInfo_Text_red;
-		oldThemeValues[58]  = g_settings.menu_HeadInfo_Text_green;
-		oldThemeValues[59]  = g_settings.menu_HeadInfo_Text_blue;
-
-		oldThemeValues[60]  = g_settings.menu_FootInfo_alpha;
-		oldThemeValues[61]  = g_settings.menu_FootInfo_red;
-		oldThemeValues[62]  = g_settings.menu_FootInfo_green;
-		oldThemeValues[63]  = g_settings.menu_FootInfo_blue;
-		
-		oldThemeValues[64] = g_settings.menu_FootInfo_Text_alpha;
-		oldThemeValues[65] = g_settings.menu_FootInfo_Text_red;
-		oldThemeValues[66] = g_settings.menu_FootInfo_Text_green;
-		oldThemeValues[67] = g_settings.menu_FootInfo_Text_blue;
-	} 
-	else 
-	{
-		g_settings.menu_Head_alpha 			= oldThemeValues[0];
-		g_settings.menu_Head_red 			= oldThemeValues[1];
-		g_settings.menu_Head_green 			= oldThemeValues[2];
-		g_settings.menu_Head_blue 			= oldThemeValues[3];
-
-		g_settings.menu_Head_Text_alpha 		= oldThemeValues[4];
-		g_settings.menu_Head_Text_red 			= oldThemeValues[5];
-		g_settings.menu_Head_Text_green 		= oldThemeValues[6];
-		g_settings.menu_Head_Text_blue 			= oldThemeValues[7];
-
-		g_settings.menu_Content_alpha 			= oldThemeValues[8];
-		g_settings.menu_Content_red 			= oldThemeValues[9];
-		g_settings.menu_Content_green 			= oldThemeValues[10];
-		g_settings.menu_Content_blue 			= oldThemeValues[11];
-
-		g_settings.menu_Content_Text_alpha 		= oldThemeValues[12];
-		g_settings.menu_Content_Text_red 		= oldThemeValues[13];
-		g_settings.menu_Content_Text_green 		= oldThemeValues[14];
-		g_settings.menu_Content_Text_blue 		= oldThemeValues[15];
-
-		g_settings.menu_Content_Selected_alpha 		= oldThemeValues[16];
-		g_settings.menu_Content_Selected_red 		= oldThemeValues[17];
-		g_settings.menu_Content_Selected_green 		= oldThemeValues[18];
-		g_settings.menu_Content_Selected_blue 		= oldThemeValues[19];
-
-		g_settings.menu_Content_Selected_Text_alpha 	= oldThemeValues[20];
-		g_settings.menu_Content_Selected_Text_red 	= oldThemeValues[21];
-		g_settings.menu_Content_Selected_Text_green 	= oldThemeValues[22];
-		g_settings.menu_Content_Selected_Text_blue 	= oldThemeValues[23];
-
-		g_settings.menu_Content_inactive_alpha 		= oldThemeValues[24];
-		g_settings.menu_Content_inactive_red 		= oldThemeValues[25];
-		g_settings.menu_Content_inactive_green 		= oldThemeValues[26];
-		g_settings.menu_Content_inactive_blue		= oldThemeValues[27];
-
-		g_settings.menu_Content_inactive_Text_alpha 	= oldThemeValues[28];
-		g_settings.menu_Content_inactive_Text_red 	= oldThemeValues[29];
-		g_settings.menu_Content_inactive_Text_green 	= oldThemeValues[30];
-		g_settings.menu_Content_inactive_Text_blue 	= oldThemeValues[31];
-
-		g_settings.infobar_alpha 			= oldThemeValues[32];
-		g_settings.infobar_red 				= oldThemeValues[33];
-		g_settings.infobar_green 			= oldThemeValues[34];
-		g_settings.infobar_blue 			= oldThemeValues[35];
-
-		g_settings.infobar_Text_alpha 			= oldThemeValues[36];
-		g_settings.infobar_Text_red 			= oldThemeValues[37];
-		g_settings.infobar_Text_green 			= oldThemeValues[38];
-		g_settings.infobar_Text_blue 			= oldThemeValues[39];
-		
-		g_settings.infobar_colored_events_alpha		= oldThemeValues[40];
-		g_settings.infobar_colored_events_red 		= oldThemeValues[41];
-		g_settings.infobar_colored_events_green 	= oldThemeValues[42];
-		g_settings.infobar_colored_events_blue 		= oldThemeValues[43];
-		
-		g_settings.menu_Foot_alpha 			= oldThemeValues[44];
-		g_settings.menu_Foot_red 			= oldThemeValues[45];
-		g_settings.menu_Foot_green 			= oldThemeValues[46];
-		g_settings.menu_Foot_blue 			= oldThemeValues[47];
-		
-		g_settings.menu_Foot_Text_alpha			= oldThemeValues[48];
-		g_settings.menu_Foot_Text_red 			= oldThemeValues[49];
-		g_settings.menu_Foot_Text_green 		= oldThemeValues[50];
-		g_settings.menu_Foot_Text_blue 			= oldThemeValues[51];
-
-		g_settings.menu_HeadInfo_alpha 			= oldThemeValues[52];
-		g_settings.menu_HeadInfo_red 			= oldThemeValues[53];
-		g_settings.menu_HeadInfo_green 			= oldThemeValues[54];
-		g_settings.menu_HeadInfo_blue 			= oldThemeValues[55];
-
-		g_settings.menu_HeadInfo_Text_alpha 		= oldThemeValues[56];
-		g_settings.menu_HeadInfo_Text_red 		= oldThemeValues[57];
-		g_settings.menu_HeadInfo_Text_green 		= oldThemeValues[58];
-		g_settings.menu_HeadInfo_Text_blue 		= oldThemeValues[59];
-
-		g_settings.menu_FootInfo_alpha 			= oldThemeValues[60];
-		g_settings.menu_FootInfo_red 			= oldThemeValues[61];
-		g_settings.menu_FootInfo_green 			= oldThemeValues[62];
-		g_settings.menu_FootInfo_blue 			= oldThemeValues[63];
-		
-		g_settings.menu_FootInfo_Text_alpha		= oldThemeValues[64];
-		g_settings.menu_FootInfo_Text_red 		= oldThemeValues[65];
-		g_settings.menu_FootInfo_Text_green 		= oldThemeValues[66];
-		g_settings.menu_FootInfo_Text_blue 		= oldThemeValues[67];
-
-		notifier = new CColorSetupNotifier;
-		notifier->changeNotify(NONEXISTANT_LOCALE, NULL);
-		hasThemeChanged = false;
-		
-		delete notifier;
-	}
 }
 
 void CThemes::readFile(char* themename)
@@ -492,7 +297,6 @@ void CThemes::readFile(char* themename)
 
 		notifier = new CColorSetupNotifier;
 		notifier->changeNotify(NONEXISTANT_LOCALE, NULL);
-		hasThemeChanged = true;
 		
 		delete notifier;
 	}
