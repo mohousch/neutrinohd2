@@ -107,7 +107,7 @@ class CStringInput : public CMenuTarget
 		~CStringInput();
 
 		void hide();
-		int exec( CMenuTarget* parent, const std::string& actionKey);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 class CStringInputSMS : public CStringInput

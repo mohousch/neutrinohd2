@@ -1671,6 +1671,7 @@ const char * locale_real_names[] = {
 	
 	// netzkino
 	"netzkino.netzkino",
+	"netzkino.nk_movies_error"
 	"netzkino.nk_error",
 	"netzkino.nk_categories",
 	"netzkino.nk_scan_for_categories",

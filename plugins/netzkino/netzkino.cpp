@@ -72,7 +72,7 @@ void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 	else 
 	{
 		//FIXME show error
-		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_NK_ERROR), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_NK_MOVIES_ERROR), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 		
 		return;
 	}
@@ -220,12 +220,8 @@ int CNKMovies::showCategoriesMenu()
 
 	// search
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
-	
-	CStringInputSMS stringInput(LOCALE_YT_SEARCH, &nksearch);
 
-	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, nksearch, &stringInput, NULL, CRCInput::RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
-
-	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, this, "search", CRCInput::RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
+	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, nksearch, this, "search", CRCInput::RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
 
 	mainMenu.exec(NULL, "");
 	res = mainMenu.getSelectedLine();
@@ -268,10 +264,18 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "search")
 	{
-		loadNKTitles(cNKFeedParser::SEARCH, nksearch, 0);
-		showMenu();
+		CStringInputSMS stringInput(LOCALE_YT_SEARCH, &nksearch);
+		int ret = stringInput.exec(NULL, "");
 
-		return menu_return::RETURN_EXIT_ALL;
+		if(ret && !nksearch.empty())
+		{
+			loadNKTitles(cNKFeedParser::SEARCH, nksearch, 0);
+			showMenu();
+
+			return menu_return::RETURN_EXIT_ALL;
+		}
+		else
+			return menu_return::RETURN_REPAINT;
 	}
 
 	loadNKTitles(catMode, caption, catID);

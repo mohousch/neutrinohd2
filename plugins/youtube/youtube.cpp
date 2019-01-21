@@ -316,14 +316,10 @@ int CYTBrowser::showCategoriesMenu(void)
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// search
-	CStringInputSMS stringInput(LOCALE_YT_SEARCH, &ytsearch);
-	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, ytsearch, &stringInput, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, ytsearch, this, "search", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	
 	// ytorder
 	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_ORDERBY, &m_settings.ytorderby, YT_ORDERBY_OPTIONS, YT_ORDERBY_OPTION_COUNT, true, NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true));
-
-	// search
-	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, this, "search", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
@@ -435,10 +431,18 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		//ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		ytmode = cYTFeedParser::SEARCH;
 
-		loadYTTitles(ytmode, ytsearch, ytvid);
-		showMenu();
+		CStringInputSMS stringInput(LOCALE_YT_SEARCH, &ytsearch);
+		int ret = stringInput.exec(NULL, "");
 
-		return menu_return::RETURN_EXIT_ALL;
+		if(ret && !ytsearch.empty())
+		{
+			loadYTTitles(ytmode, ytsearch, ytvid);
+			showMenu();
+
+			return menu_return::RETURN_EXIT_ALL;
+		}
+		else
+			return menu_return::RETURN_REPAINT;
 	}
 /*
 	else if(actionKey == "most_popular")

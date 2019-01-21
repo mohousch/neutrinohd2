@@ -25,6 +25,9 @@ libneutrino_gui_widget_a_SOURCES = \
 	drawable.cpp \
 	buttons.cpp \
 	items2detailsline.cpp \
+	headers.cpp \
+	scrollbar.cpp \
+	window.cpp \
 	menue.cpp \
 	stringinput.cpp \
 	stringinput_ext.cpp \
@@ -34,9 +37,6 @@ libneutrino_gui_widget_a_SOURCES = \
 	helpbox.cpp \
 	textbox.cpp \
 	listframe.cpp \
-	window.cpp \
-	scrollbar.cpp \
-	headers.cpp \
 	listbox.cpp
 
 libneutrino_gui_widget2_a_SOURCES = \
