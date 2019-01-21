@@ -131,6 +131,18 @@ if test "$enable_functionkeys" = "yes"; then
 AC_DEFINE(ENABLE_FUNCTIONKEYS,1,[include RC function keys support])
 fi
 
+# python
+AC_ARG_ENABLE(python,
+	AS_HELP_STRING(--enable-python,include python as interface),
+	,[enable_python=no])
+AM_CONDITIONAL(ENABLE_PYTHON,test "$enable_python" = "yes")
+
+if test "$enable_python" = "yes"; then
+AC_DEFINE(ENABLE_PYTHON,1,[include python as interface support])
+
+PKG_CHECK_MODULES(PYTHON, python-2.7)
+fi
+
 AC_OUTPUT([
 Makefile
 lib/Makefile
@@ -186,5 +198,7 @@ src/timerd/Makefile
 src/zapit/Makefile
 src/zapit/lib/Makefile
 src/zapit/src/Makefile
+src/interfaces/Makefile
+src/interfaces/python/Makefile
 ])
 

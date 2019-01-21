@@ -53,7 +53,8 @@ typedef enum plugin_type
 	PLUGIN_TYPE_GAME     = 1,
 	PLUGIN_TYPE_TOOL     = 2,
 	PLUGIN_TYPE_SCRIPT   = 3,
-	PLUGIN_TYPE_NEUTRINO = 4
+	PLUGIN_TYPE_NEUTRINO = 4,
+	PLUGIN_TYPE_PYTHON   = 5
 }
 plugin_type_t;
 
@@ -78,7 +79,8 @@ class CPlugins
 			P_TYPE_GAME     = 0x2,
 			P_TYPE_TOOL     = 0x4,
 			P_TYPE_SCRIPT   = 0x8,
-			P_TYPE_NEUTRINO = 0x10
+			P_TYPE_NEUTRINO = 0x10,
+			P_TYPE_PYTHON   = 0x20
 		}
 		p_type_t;
 

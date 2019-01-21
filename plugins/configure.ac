@@ -65,5 +65,6 @@ nfilm/Makefile
 ntvshows/Makefile
 upnp/Makefile
 ard/Makefile
+python/Makefile
 ])
 

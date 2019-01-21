@@ -58,6 +58,10 @@
 
 #include <gui/widget/hintbox.h>
 
+#if ENABLE_PYTHON
+#include <interfaces/python/nhdpython.h>
+#endif
+
 
 extern CPlugins * g_PluginList;    /* neutrino.cpp */
 
@@ -162,6 +166,10 @@ void CPlugins::addPlugin(const char * dir)
 							dprintf(DEBUG_DEBUG, "[CPlugins] init done...\n");
 						}
 					}
+				}
+				else if (new_plugin.type == CPlugins::P_TYPE_PYTHON)
+				{
+					new_plugin.pluginfile.append(".py");
 				}
 				
 				//
@@ -416,6 +424,19 @@ void CPlugins::startPlugin(int number)
 			
 		g_RCInput->clearRCMsg();
 	}
+
+#if ENABLE_PYTHON
+	if (plugin_list[number].type == CPlugins::P_TYPE_PYTHON)
+	{
+		nhd2Python* pythonInvoker = new nhd2Python();
+
+		pythonInvoker->execFile(plugin_list[number].pluginfile.c_str());
+		//pythonInvoker->execute(plugin_list[number].pluginfile.c_str(), plugin_list[number].pluginfile.c_str());
+
+		delete pythonInvoker;
+		pythonInvoker = NULL;
+	}
+#endif
 }
 
 void CPlugins::removePlugin(int number)
@@ -496,6 +517,10 @@ CPlugins::p_type_t CPlugins::getPluginType(int type)
 			
 		case PLUGIN_TYPE_NEUTRINO:
 			return P_TYPE_NEUTRINO;
+			break;
+
+		case PLUGIN_TYPE_PYTHON:
+			return P_TYPE_PYTHON;
 			break;
 			
 		default:

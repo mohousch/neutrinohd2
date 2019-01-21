@@ -17,7 +17,8 @@ SUBDIRS = \
 	picviewer \
 	audioplayer \
 	nfilm \
-	ntvshows
+	ntvshows \
+	python
 
 if ENABLE_NGLCD
 SUBDIRS += nglcd

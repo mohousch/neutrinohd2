@@ -1,5 +1,9 @@
 SUBDIRS = driver system zapit timerd nhttpd sectionsd daemonc gui
 
+if ENABLE_PYTHON
+SUBDIRS += interfaces
+endif
+
 AM_CPPFLAGS = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
@@ -120,6 +124,11 @@ endif
 if USE_OPENGL
 neutrino_LDADD += \
 	-lglut -lGL -lGLU -lGLEW -lOpenThreads 
+endif
+
+if ENABLE_PYTHON
+neutrino_LDADD += interfaces/python/libneutrino_interfaces_python.a \
+	@PYTHON_LIBS@
 endif
 
 
