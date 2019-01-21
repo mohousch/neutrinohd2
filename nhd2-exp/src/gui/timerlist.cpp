@@ -325,6 +325,8 @@ int CTimerList::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if (strcmp(key, "modifytimer") == 0)
 	{
+		selected = listBox->getSelected();
+
 		timerlist[selected].announceTime = timerlist[selected].alarmTime -60;
 		if(timerlist[selected].eventRepeat >= CTimerd::TIMERREPEAT_WEEKDAYS)
 			g_Timerd->getWeekdaysFromStr(&timerlist[selected].eventRepeat, m_weekdaysStr.c_str());
@@ -511,6 +513,8 @@ int CTimerList::show()
 		}
 		else if((msg == CRCInput::RC_red) && !(timerlist.empty()))
 		{
+			selected = listBox->getSelected();
+
 			g_Timerd->removeTimerEvent(timerlist[selected].eventID);
 			skipEventID = timerlist[selected].eventID;
 			update = true;
@@ -542,6 +546,8 @@ int CTimerList::show()
 		}
 		else if(msg == CRCInput::RC_info)
 		{
+			selected = listBox->getSelected();
+
 			CTimerd::responseGetTimer *timer = &timerlist[selected];
 			if(timer != NULL)
 			{
@@ -881,7 +887,9 @@ const CMenuOptionChooser::keyval MESSAGEBOX_NO_YES_OPTIONS[MESSAGEBOX_NO_YES_OPT
 
 int CTimerList::modifyTimer()
 {
-	CTimerd::responseGetTimer* timer=&timerlist[selected];
+	selected = listBox->getSelected();
+
+	CTimerd::responseGetTimer* timer = &timerlist[selected];
 	CMenuWidget timerSettings(LOCALE_TIMERLIST_MENUMODIFY, NEUTRINO_ICON_SETTINGS);
 	
 	// intros
