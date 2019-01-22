@@ -397,7 +397,6 @@ struct SNeutrinoSettings
 
 	// channellist
 	int zap_cycle;
-	int sms_channel;
 	int virtual_zap_mode;
 	int channellist_ca;
 	int make_hd_list;

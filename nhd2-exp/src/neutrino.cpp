@@ -847,7 +847,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 
 	g_settings.rotor_swap = configfile.getInt32( "rotor_swap", 0);
 	g_settings.zap_cycle = configfile.getInt32( "zap_cycle", 1 );
-	g_settings.sms_channel = configfile.getInt32( "sms_channel", 0 );
 
 	//timezone
 	strcpy(g_settings.timezone, configfile.getString("timezone", "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Vienna").c_str());
@@ -1330,7 +1329,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	// scan/channellist
 	configfile.setInt32( "rotor_swap", g_settings.rotor_swap);
 	configfile.setInt32( "zap_cycle", g_settings.zap_cycle );
-	configfile.setInt32( "sms_channel", g_settings.sms_channel );
+	//configfile.setInt32( "sms_channel", g_settings.sms_channel );
 	configfile.setBool("virtual_zap_mode", g_settings.virtual_zap_mode);
 	
 	//zapit setup

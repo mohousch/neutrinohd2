@@ -475,13 +475,6 @@ void CGeneralSettings::showMenu()
 	// key
 	miscSettingsGeneral.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
-/*
-	std::string key = g_settings.tmdbkey;
-	
-	CStringInputSMS* keyInput = new CStringInputSMS("tmdb Key:", (char *)key.c_str());
-	miscSettingsGeneral.addItem(new CMenuForwarder("tmdb:", true, key, keyInput));
-*/
-
 	miscSettingsGeneral.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO, (int*)(&g_settings.prefer_tmdb_info), MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true ));
 
 	std::string key = g_settings.ytkey;
@@ -743,9 +736,6 @@ void CChannelListSettings::showMenu()
 	
 	// zap cycle
 	miscSettingsChannelList.addItem(new CMenuOptionChooser(LOCALE_EXTRA_ZAP_CYCLE, &g_settings.zap_cycle, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscChannel++) ));
-	
-	// sms channel
-	//miscSettingsChannelList.addItem(new CMenuOptionChooser(LOCALE_EXTRA_SMS_CHANNEL, &g_settings.sms_channel, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, false, NULL, CRCInput::convertDigitToKey(shortcutMiscChannel++) ));
 	
 	// channellist ca
 	miscSettingsChannelList.addItem(new CMenuOptionChooser(LOCALE_CHANNELLIST_SHOWCA, &g_settings.channellist_ca, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscChannel++) ));

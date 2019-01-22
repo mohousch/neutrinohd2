@@ -28,12 +28,12 @@
 
 %module neutrino
 %{
-#define SWIG_COMPILE
-#include <config.h>
-
 #include <driver/framebuffer.h>
 #include <driver/fontrenderer.h>
+#include <driver/rcinput.h>
+*/
 
+/*
 #include <gui/widget/icons.h>
 #include <gui/widget/drawable.h>
 #include <gui/widget/buttons.h>
@@ -57,13 +57,14 @@
 #include <gui/widget/mountchooser.h>
 #include <gui/widget/progresswindow.h>
 #include <gui/widget/progressbar.h>
+*/
 %}
-
-%include <config.h>
 
 %include <driver/framebuffer.h>
 %include <driver/fontrenderer.h>
+%include <driver/rcinput.h>
 
+/*
 %include <gui/widget/icons.h>
 %include <gui/widget/drawable.h>
 %include <gui/widget/buttons.h>
@@ -87,5 +88,6 @@
 %include <gui/widget/mountchooser.h>
 %include <gui/widget/progresswindow.h>
 %include <gui/widget/progressbar.h>
+*/
 
 

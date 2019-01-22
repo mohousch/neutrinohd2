@@ -40,8 +40,11 @@ noinst_LIBRARIES = libneutrino_interfaces_python.a
 libneutrino_interfaces_python_a_SOURCES = \
 	nhdpython.cpp
 
-#@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/python/neutrino_python.Pcpp@am__quote@
-#
+#pkgpython_PYTHON = neutrino.py
+
+EXTRA_DIST = \
+	python/neutrino_python.i
+
 .i.cpp:
 	$(AM_V_GEN)$(SWIG) $(AX_SWIG_PYTHON_OPT) -MT $@ -MD -MF $(DEPDIR)/$*.Tpo -I$(top_srcdir) -O -nortti -nothreads -o $@ $<
 	$(AM_V_at)mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Pcpp
@@ -49,9 +52,9 @@ libneutrino_interfaces_python_a_SOURCES = \
 
 python/neutrino.py: python/nhdpython.cpp
 
-#CLEANFILES += python/neutrino.py python/nhdpython.cpp
-#
-#nobase_install_PYTHON += \
+CLEANFILES = python/neutrino.py python/nhdpython.cpp
+
+#nobase_install_PYTHON = \
 #	python/neutrino.py
 
 

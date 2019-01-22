@@ -765,7 +765,7 @@ int CChannelList::show()
 			listBox->clearItems();
 			paint(false);
 		}
-		else if (CRCInput::isNumeric(msg) && ( this->historyMode || g_settings.sms_channel)) 
+		else if (CRCInput::isNumeric(msg) && this->historyMode) 
 		{ 
 			if (this->historyMode) 
 			{ 
@@ -773,51 +773,6 @@ int CChannelList::show()
 				zapOnExit = true;
 				loop = false;
     			}
-			else if(g_settings.sms_channel) 
-			{
-				uint32_t i;
-				unsigned char smsKey = 0;
-				c_SMSKeyInput.setTimeout(CHANNEL_SMSKEY_TIMEOUT);
-
-				do {
-					smsKey = c_SMSKeyInput.handleMsg(msg);
-					dprintf(DEBUG_INFO, "SMS new key: %c\n", smsKey);
-					g_RCInput->getMsg_ms(&msg, &data, CHANNEL_SMSKEY_TIMEOUT - 100);
-				} while ((msg >= CRCInput::RC_1) && (msg <= CRCInput::RC_9));
-
-				if (msg == CRCInput::RC_timeout || msg == CRCInput::RC_nokey) 
-				{
-					for(i = selected + 1; i < chanlist.size(); i++) 
-					{
-						char firstCharOfTitle = chanlist[i]->name.c_str()[0];
-						if(tolower(firstCharOfTitle) == smsKey) 
-						{
-							break;
-						}
-					}
-					
-					if(i >= chanlist.size()) 
-					{
-						for(i = 0; i < chanlist.size(); i++) 
-						{
-							char firstCharOfTitle = chanlist[i]->name.c_str()[0];
-							if(tolower(firstCharOfTitle) == smsKey) 
-							{
-								break;
-							}
-						}
-					}
-					
-					if(i < chanlist.size()) 
-					{
-						selected = i;
-
-						listBox->clearItems();
-						paint(false);
-					}
-					c_SMSKeyInput.resetOldKey();
-				}
-			}
 		}
 		else if(CRCInput::isNumeric(msg)) 
 		{
