@@ -2,5 +2,4 @@ AUTOMAKE_OPTIONS = gnu
 
 SUBDIRS = lib src data
 
-ACLOCAL_AMFLAGS = -I m4
 

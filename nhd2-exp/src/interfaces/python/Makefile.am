@@ -17,7 +17,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/lib/libupnpclient \
 	@FREETYPE_CFLAGS@ \
 	@FRIBIDI_CFLAGS@ \
-	@PYTHON_CFLAGS@
+	@PYTHON_CPPFLAGS@
 
 if BOXTYPE_COOLSTREAM
 AM_CPPFLAGS += -I$(top_srcdir)/src/zapit/include \
