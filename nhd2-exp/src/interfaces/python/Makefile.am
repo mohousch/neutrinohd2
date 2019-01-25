@@ -37,22 +37,29 @@ AM_CPPFLAGS += -fno-rtti -fno-exceptions
 
 noinst_LIBRARIES = libneutrino_interfaces_python.a
 
-libneutrino_interfaces_python_a_SOURCES = \
-	nhdpython.cpp
-
-#pkgpython_PYTHON = neutrino.py
-
-EXTRA_DIST = \
-	python/neutrino_python.i
-
-.i.cpp:
-	$(AM_V_GEN)$(SWIG) $(AX_SWIG_PYTHON_OPT) -MT $@ -MD -MF $(DEPDIR)/$*.Tpo -I$(top_srcdir) -O -nortti -nothreads -o $@ $<
-	$(AM_V_at)mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Pcpp
+neutrino_python_wrap.cxx :
+	$(AM_V_GEN)$(SWIG) $(AX_SWIG_PYTHON_OPT) neutrino_python.i
 	$(AM_V_at)$(PYTHON) python/neutrino.py
 
-python/neutrino.py: python/nhdpython.cpp
+#EXTRA_DIST = \
+#	python/neutrino_python.i
 
-CLEANFILES = python/neutrino.py python/nhdpython.cpp
+#.i.cpp:
+#	$(AM_V_GEN)$(SWIG) $(AX_SWIG_PYTHON_OPT) -MT neutrino_python.i -MD -MF $(DEPDIR)/$*.Tpo -I#$(top_srcdir) -O -nortti -nothreads -o neutrino_python.i $<
+#	$(AM_V_at)mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Pcpp
+#	$(AM_V_at)$(PYTHON) python/neutrino.py
+
+libneutrino_interfaces_python_a_SOURCES = \
+	nhdpython.cpp neutrino_python_wrap.cxx
+
+####
+#installdir = $(pkglibdir)/python
+
+#python/neutrino.py: python/nhdpython.cpp
+
+#CLEANFILES = python/neutrino.py python/nhdpython.cpp
+
+#pkgpython_PYTHON = neutrino.py
 
 #nobase_install_PYTHON = \
 #	python/neutrino.py

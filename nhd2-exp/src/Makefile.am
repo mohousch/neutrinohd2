@@ -91,8 +91,9 @@ neutrino_LDADD = \
 	@PNG_LIBS@ \
 	@MAD_LIBS@ \
 	@ID3TAG_LIBS@ \
+	@PTHREAD_LIBS@ \
 	@FRIBIDI_LIBS@ \
-	-ljpeg -lrt -lpthread -lblkid -ldl -lFLAC -lavformat -lavcodec -lavutil -lgif
+	-ljpeg -lrt -lblkid -ldl -lFLAC -lavformat -lavcodec -lavutil -lgif
 
 neutrino_LDFLAGS = -Wl,--export-dynamic
 
@@ -128,9 +129,9 @@ endif
 
 if ENABLE_PYTHON
 neutrino_LDADD += interfaces/python/libneutrino_interfaces_python.a \
+	interfaces/python/neutrino_python_wrap.o \
 	@PYTHON_LDFLAGS@
 endif
-
 
 
 
