@@ -39,7 +39,6 @@ noinst_LIBRARIES = libneutrino_interfaces_python.a
 
 neutrino_python_wrap.cxx :
 	$(AM_V_GEN)$(SWIG) $(AX_SWIG_PYTHON_OPT) neutrino_python.i
-	$(AM_V_at)$(PYTHON) python/neutrino.py
 
 libneutrino_interfaces_python_a_SOURCES = \
 	neutrino_python.cpp neutrino_python_wrap.cxx
