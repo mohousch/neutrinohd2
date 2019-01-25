@@ -1,5 +1,5 @@
 /*
-	$Id: nhdpython.h 20.01.2019 mohousch Exp $
+	$Id: neutrino_python.i 20.01.2019 mohousch Exp $
 
 	Kommentar:
 
@@ -26,25 +26,8 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __nhdpython_h__
-#define __nhdpython_h__
-
-#include <string>
-
-
-class nhd2Python
-{
-	private:
-
-	public:
-		nhd2Python();
-		~nhd2Python();
-
-		int execFile(const char *filename);
-		int execute(const std::string &pythonfile, const std::string &funcname);
-};
-
-#endif
-
+%module neutrino
+%{
+%}
 
 

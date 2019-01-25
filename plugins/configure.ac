@@ -66,5 +66,6 @@ ntvshows/Makefile
 upnp/Makefile
 ard/Makefile
 python/Makefile
+lua/Makefile
 ])
 

@@ -133,6 +133,11 @@ neutrino_LDADD += interfaces/python/libneutrino_interfaces_python.a \
 	@PYTHON_LDFLAGS@
 endif
 
+if ENABLE_LUA
+neutrino_LDADD += interfaces/lua/libneutrino_interfaces_lua.a \
+	@LUA_LIB@
+endif
+
 
 
 

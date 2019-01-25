@@ -1,5 +1,5 @@
 /*
-	$Id: nhdpython.cpp 20.01.2019 mohousch Exp $
+	$Id: neutrino_python.cpp 20.01.2019 mohousch Exp $
 
 	Kommentar:
 
@@ -28,21 +28,22 @@
 
 #include <config.h>
 #include <Python.h>
-#include <interfaces/python/nhdpython.h>
+
+#include <interfaces/python/neutrino_python.h>
 
 
-nhd2Python::nhd2Python()
+neutrinoPython::neutrinoPython()
 {
 	Py_Initialize();
 	PyEval_InitThreads();
 }
 
-nhd2Python::~nhd2Python()
+neutrinoPython::~neutrinoPython()
 {
 	//Py_Finalize();
 }
 
-int nhd2Python::execFile(const char *filename)
+int neutrinoPython::execFile(const char *filename)
 {
 	FILE *fp = fopen(filename, "r");
 	if (!fp)
@@ -54,7 +55,7 @@ int nhd2Python::execFile(const char *filename)
 	return ret;
 }
 
-int nhd2Python::execute(const std::string &pythonfile, const std::string &funcname)
+int neutrinoPython::execute(const std::string &pythonfile, const std::string &funcname)
 {
 	PyObject* pName;
 	PyObject* pModule;

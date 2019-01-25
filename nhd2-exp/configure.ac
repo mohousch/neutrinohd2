@@ -16,6 +16,17 @@ AX_SWIG_PYTHON
 AX_PYTHON_DEVEL
 AX_PTHREAD
 
+AX_PROG_LUA
+AX_PROG_LUA
+_AX_LUA_CHK_IS_INTRP
+_AX_LUA_CHK_VER
+_AX_LUA_FND_PRFX_PTH
+AX_LUA_HEADERS
+AX_LUA_HEADERS_VERSION
+AX_LUA_LIBS
+AX_LUA_READLINE
+
+
 AC_PROG_CC
 AC_PROG_CXX
 
@@ -141,14 +152,22 @@ fi
 
 # python
 AC_ARG_ENABLE(python,
-	AS_HELP_STRING(--enable-python,include python as interface),
+	AS_HELP_STRING(--enable-python,include python interface),
 	,[enable_python=no])
 AM_CONDITIONAL(ENABLE_PYTHON,test "$enable_python" = "yes")
 
 if test "$enable_python" = "yes"; then
 AC_DEFINE(ENABLE_PYTHON,1,[include python as interface support])
+fi
 
-#PKG_CHECK_MODULES(PYTHON, python-2.7)
+# lua
+AC_ARG_ENABLE(lua,
+	AS_HELP_STRING(--enable-lua,include lua interface),
+	,[enable_lua=no])
+AM_CONDITIONAL(ENABLE_LUA,test "$enable_lua" = "yes")
+
+if test "$enable_lua" = "yes"; then
+AC_DEFINE(ENABLE_LUA,1,[include lua interface support])
 fi
 
 AC_OUTPUT([
@@ -208,5 +227,6 @@ src/zapit/lib/Makefile
 src/zapit/src/Makefile
 src/interfaces/Makefile
 src/interfaces/python/Makefile
+src/interfaces/lua/Makefile
 ])
 

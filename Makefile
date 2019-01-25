@@ -78,7 +78,8 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--enable-ci \
 			--enable-gstreamer \
 			--with-gstversion=0.10 \
-			--enable-python
+			--enable-python \
+			--enable-lua
 				
 $(DEST):
 	mkdir $@

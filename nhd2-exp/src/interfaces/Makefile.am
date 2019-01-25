@@ -1,6 +1,14 @@
 AUTOMAKE_OPTIONS = gnu
 
-SUBDIRS = python
+SUBDIRS =
+
+if ENABLE_PYTHON
+SUBDIRS += python
+endif
+
+if ENABLE_LUA
+SUBDIRS += lua
+endif
 
 
 

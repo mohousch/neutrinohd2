@@ -59,7 +59,11 @@
 #include <gui/widget/hintbox.h>
 
 #if ENABLE_PYTHON
-#include <interfaces/python/nhdpython.h>
+#include <interfaces/python/neutrino_python.h>
+#endif
+
+#if ENABLE_LUA
+#include <interfaces/lua/neutrino_lua.h>
 #endif
 
 
@@ -170,6 +174,10 @@ void CPlugins::addPlugin(const char * dir)
 				else if (new_plugin.type == CPlugins::P_TYPE_PYTHON)
 				{
 					new_plugin.pluginfile.append(".py");
+				}
+				else if (new_plugin.type == CPlugins::P_TYPE_LUA)
+				{
+					new_plugin.pluginfile.append(".lua");
 				}
 				
 				//
@@ -428,13 +436,25 @@ void CPlugins::startPlugin(int number)
 #if ENABLE_PYTHON
 	if (plugin_list[number].type == CPlugins::P_TYPE_PYTHON)
 	{
-		nhd2Python* pythonInvoker = new nhd2Python();
+		neutrinoPython* pythonInvoker = new neutrinoPython();
 
 		pythonInvoker->execFile(plugin_list[number].pluginfile.c_str());
 		//pythonInvoker->execute(plugin_list[number].pluginfile.c_str(), plugin_list[number].pluginfile.c_str());
 
 		delete pythonInvoker;
 		pythonInvoker = NULL;
+	}
+#endif
+
+#if ENABLE_LUA
+	if (plugin_list[number].type == CPlugins::P_TYPE_LUA)
+	{
+		neutrinoLua* luaInvoker = new neutrinoLua();
+
+		luaInvoker->runScript(plugin_list[number].pluginfile.c_str());
+
+		delete luaInvoker;
+		luaInvoker = NULL;
 	}
 #endif
 }
@@ -521,6 +541,10 @@ CPlugins::p_type_t CPlugins::getPluginType(int type)
 
 		case PLUGIN_TYPE_PYTHON:
 			return P_TYPE_PYTHON;
+			break;
+
+		case PLUGIN_TYPE_LUA:
+			return P_TYPE_LUA;
 			break;
 			
 		default:

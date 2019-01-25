@@ -17,7 +17,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/lib/libupnpclient \
 	@FREETYPE_CFLAGS@ \
 	@FRIBIDI_CFLAGS@ \
-	@PYTHON_CPPFLAGS@
+	@LUA_INCLUDE@
 
 if BOXTYPE_COOLSTREAM
 AM_CPPFLAGS += -I$(top_srcdir)/src/zapit/include \
@@ -35,14 +35,15 @@ endif
 
 AM_CPPFLAGS += -fno-rtti -fno-exceptions
 
-noinst_LIBRARIES = libneutrino_interfaces_python.a
+noinst_LIBRARIES = libneutrino_interfaces_lua.a
 
-neutrino_python_wrap.cxx :
-	$(AM_V_GEN)$(SWIG) $(AX_SWIG_PYTHON_OPT) neutrino_python.i
-	$(AM_V_at)$(PYTHON) python/neutrino.py
+neutrino_lua_wrap.cxx :
+	$(AM_V_GEN)$(SWIG) -lua neutrino_lua.i
 
-libneutrino_interfaces_python_a_SOURCES = \
-	neutrino_python.cpp neutrino_python_wrap.cxx
+libneutrino_interfaces_lua_a_SOURCES = \
+	neutrino_lua.cpp neutrino_lua_wrap.cxx
+
+
 
 
 

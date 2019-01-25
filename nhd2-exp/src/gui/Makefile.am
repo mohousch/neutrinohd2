@@ -46,6 +46,10 @@ if !ENABLE_GSTREAMER
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
+if ENABLE_LUA
+AM_CPPFLAGS += @LUA_INCLUDE@
+endif
+
 AM_CPPFLAGS += -fno-rtti -fno-exceptions
 
 noinst_LIBRARIES = libtimerlist.a libneutrino_gui.a libneutrino_gui2.a

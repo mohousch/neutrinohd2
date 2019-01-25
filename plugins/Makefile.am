@@ -18,7 +18,8 @@ SUBDIRS = \
 	audioplayer \
 	nfilm \
 	ntvshows \
-	python
+	python \
+	lua
 
 if ENABLE_NGLCD
 SUBDIRS += nglcd
