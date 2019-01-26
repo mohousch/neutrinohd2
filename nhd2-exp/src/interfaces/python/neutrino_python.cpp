@@ -31,11 +31,14 @@
 
 #include <interfaces/python/neutrino_python.h>
 
+extern "C" void init_neutrino();
 
 neutrinoPython::neutrinoPython()
 {
 	Py_Initialize();
 	PyEval_InitThreads();
+
+	init_neutrino();
 }
 
 neutrinoPython::~neutrinoPython()

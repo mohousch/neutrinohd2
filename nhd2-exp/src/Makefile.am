@@ -135,6 +135,7 @@ endif
 
 if ENABLE_LUA
 neutrino_LDADD += interfaces/lua/libneutrino_interfaces_lua.a \
+	interfaces/lua/neutrino_lua_wrap.o \
 	@LUA_LIB@
 endif
 

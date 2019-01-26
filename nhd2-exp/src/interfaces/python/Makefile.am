@@ -43,7 +43,8 @@ neutrino_python_wrap.cxx :
 libneutrino_interfaces_python_a_SOURCES = \
 	neutrino_python.cpp neutrino_python_wrap.cxx
 
-installdir = $(DESTDIR)$(pkglibdir)/python
+pkgconfigdir = $(libdir)/pkgconfig
+installdir = $(pkglibdir)/python
 
 nobase_install_PYTHON = \
 	neutrino.py

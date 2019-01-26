@@ -40,11 +40,15 @@
 #include <system/helpers.h>
 #include <system/debug.h>
 
+extern "C" int luaopen_neutrino(lua_State* L); // declare the wrapped module
 
 neutrinoLua::neutrinoLua()
 {
-	// Create the intepreter object
 	lua = luaL_newstate();
+
+	luaL_openlibs(lua);
+
+	luaopen_neutrino(lua);
 }
 
 neutrinoLua::~neutrinoLua()
@@ -56,16 +60,10 @@ neutrinoLua::~neutrinoLua()
 	}
 }
 
-// Run the given script.
 void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv, std::string *result_code, std::string *result_string, std::string *error_string)
 {
-	luaL_dofile(lua, fileName);
-
-#if 0
 	// run the script 
 	int status = luaL_loadfile(lua, fileName);
-
-	printf("neutrinoLua::runScript: status:%d\n", status);
 
 	if (status) 
 	{
@@ -83,8 +81,6 @@ void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv
 
 	int argvSize = 1;
 	int n = 0;
-
-	//set_lua_variables(lua);
 
 	if (argv && (!argv->empty()))
 		argvSize += argv->size();
@@ -107,8 +103,6 @@ void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv
 
 	status = lua_pcall(lua, 0, LUA_MULTRET, 0);
 
-	printf("neutrinoLua::runScript: status-1:%d\n", status);
-
 	if (result_code)
 		*result_code = to_string(status);
 
@@ -127,7 +121,6 @@ void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv
 		if (error_string)
 			*error_string = std::string(lua_tostring(lua, -1));
 	}
-#endif
 }
 
 // Example: runScript(fileName, "Arg1", "Arg2", "Arg3", ..., NULL);
