@@ -6,7 +6,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/zapit/include/zapit \
 	-I$(top_srcdir)/src/gui/widget \
-	-I$(top_srcdir)/src/interfaces/python \
+	-I$(top_srcdir)/src/interfaces \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/lib/connection \
 	-I$(top_srcdir)/lib/libeventserver \
@@ -42,6 +42,13 @@ neutrino_python_wrap.cxx :
 
 libneutrino_interfaces_python_a_SOURCES = \
 	neutrino_python.cpp neutrino_python_wrap.cxx
+
+installdir = $(DESTDIR)$(pkglibdir)/python
+
+nobase_install_PYTHON = \
+	neutrino.py
+
+CLEANFILES = neutrino.py neutrino_python_wrap.cxx
 
 
 

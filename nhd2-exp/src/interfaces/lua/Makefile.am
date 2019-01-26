@@ -6,7 +6,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/zapit/include/zapit \
 	-I$(top_srcdir)/src/gui/widget \
-	-I$(top_srcdir)/src/interfaces/python \
+	-I$(top_srcdir)/src/interfaces \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/lib/connection \
 	-I$(top_srcdir)/lib/libeventserver \
@@ -42,6 +42,8 @@ neutrino_lua_wrap.cxx :
 
 libneutrino_interfaces_lua_a_SOURCES = \
 	neutrino_lua.cpp neutrino_lua_wrap.cxx
+
+CLEANFILES = neutrino_lua_wrap.cxx
 
 
 

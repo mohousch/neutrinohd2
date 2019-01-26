@@ -35,16 +35,16 @@
 
 #include <interfaces/lua/neutrino_lua.h>
 
+#include <gui/widget/messagebox.h>
+
 #include <system/helpers.h>
+#include <system/debug.h>
 
 
 neutrinoLua::neutrinoLua()
 {
 	// Create the intepreter object
 	lua = luaL_newstate();
-
-	// register standard + custom functions
-	//LuaInstRegisterFunctions(lua);
 }
 
 neutrinoLua::~neutrinoLua()
@@ -65,14 +65,16 @@ void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv
 	// run the script 
 	int status = luaL_loadfile(lua, fileName);
 
+	printf("neutrinoLua::runScript: status:%d\n", status);
+
 	if (status) 
 	{
 		bool isString = lua_isstring(lua, -1);
 		const char *null = "NULL";
 
-		fprintf(stderr, "[CLuaInstance::%s] Can't load file: %s\n", __func__, isString ? lua_tostring(lua, -1):null);
+		dprintf(DEBUG_NORMAL, "neutrinoLua::runScript: can't load file: %s\n", isString ? lua_tostring(lua, -1) : null);
 
-		//DisplayErrorMessage(isString ? lua_tostring(lua, -1):null, "Lua Script Error:");
+		MessageBox(LOCALE_MESSAGEBOX_ERROR, isString ? lua_tostring(lua, -1) : "", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 
 		if (error_string)
 			*error_string = std::string(lua_tostring(lua, -1));
@@ -81,6 +83,7 @@ void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv
 
 	int argvSize = 1;
 	int n = 0;
+
 	//set_lua_variables(lua);
 
 	if (argv && (!argv->empty()))
@@ -104,16 +107,23 @@ void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv
 
 	status = lua_pcall(lua, 0, LUA_MULTRET, 0);
 
+	printf("neutrinoLua::runScript: status-1:%d\n", status);
+
 	if (result_code)
 		*result_code = to_string(status);
+
 	if (result_string && lua_isstring(lua, -1))
 		*result_string = std::string(lua_tostring(lua, -1));
+
 	if (status)
 	{
 		bool isString = lua_isstring(lua,-1);
 		const char *null = "NULL";
-		fprintf(stderr, "[CLuaInstance::%s] error in script: %s\n", __func__, isString ? lua_tostring(lua, -1):null);
-		//DisplayErrorMessage(isString ? lua_tostring(lua, -1):null, "Lua Script Error:");
+
+		dprintf(DEBUG_NORMAL, "neutrinoLua::runScript: error in script: %s\n", isString ? lua_tostring(lua, -1) : null);
+
+		MessageBox(LOCALE_MESSAGEBOX_ERROR, isString ? lua_tostring(lua, -1) : "", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+
 		if (error_string)
 			*error_string = std::string(lua_tostring(lua, -1));
 	}
@@ -125,6 +135,8 @@ void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv
 //	The last parameter to NULL is imperative.
 void neutrinoLua::runScript(const char *fileName, const char *arg0, ...)
 {
+	dprintf(DEBUG_NORMAL, "neutrinoLua::runScript:\n");
+
 	int i = 0;
 	std::vector<std::string> args;
 	args.push_back(arg0);
@@ -136,11 +148,14 @@ void neutrinoLua::runScript(const char *fileName, const char *arg0, ...)
 	{
 		if (i >= 64) 
 		{
-			//fprintf(stderr, "CLuaInstance::runScript: too many arguments!\n");
+			dprintf(DEBUG_NORMAL, "neutrinoLua::runScript: too many arguments!\n");
+
 			args.clear();
 			va_end(list);
+
 			return;
 		}
+
 		args.push_back(temp);
 		temp = va_arg(list, const char*);
 		i++;
