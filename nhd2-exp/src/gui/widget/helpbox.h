@@ -55,9 +55,10 @@ class CHelpBox
 		void addLine(const char *text, CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU], uint8_t col = COL_MENUCONTENT, const bool bg = false);
 		void addLine(std::string& icon, std::string& text);
 		void addLine(const char *icon, const char *text);
+		void addSeparator();
 		void addPagebreak();
 		
-		void show(const neutrino_locale_t Caption, const int Width = HELPBOX_WIDTH, int timeout = -1, const CMessageBox::result_ Default = CMessageBox::mbrBack, /*const CMessageBox::buttons_ Button*/const uint32_t ShowButtons = CMessageBox::mbBack);
+		void show(const neutrino_locale_t Caption, const int Width = HELPBOX_WIDTH, int timeout = -1, const CMessageBox::result_ Default = CMessageBox::mbrBack, const uint32_t ShowButtons = CMessageBox::mbBack);
 		
 	private:
 		ContentLines m_lines;

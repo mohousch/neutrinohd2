@@ -2705,6 +2705,8 @@ ClistBox::ClistBox()
 	itemsPerY = 3;
 
 	maxItemsPerPage = itemsPerX*itemsPerY;
+
+	shrinkMenu = false;
 }
 
 ClistBox::ClistBox(const neutrino_locale_t Name, const std::string & Icon, const int mwidth, const int mheight)
@@ -2781,6 +2783,8 @@ void ClistBox::Init(const std::string & Icon, const int mwidth, const int mheigh
 	itemsPerY = 3;
 
 	maxItemsPerPage = itemsPerX*itemsPerY;
+
+	shrinkMenu = false;
 }
 
 void ClistBox::move(int xoff, int yoff)
@@ -2808,8 +2812,7 @@ void ClistBox::addItem(CMenuItem *menuItem, const bool defaultselected)
 	if (defaultselected)
 		selected = items.size();
 	
-	if(menuItem->getItemType() == ITEM_TYPE_LIST_BOX)
-		items.push_back(menuItem);
+	items.push_back(menuItem);
 }
 
 bool ClistBox::hasItem()
@@ -3018,6 +3021,15 @@ void ClistBox::initFrames()
 		// recalculate height
 		listmaxshow = (height - hheight - fheight)/item_height;
 		height = hheight + listmaxshow*item_height + fheight;
+
+		// shrink menu if less items
+		if(shrinkMenu)
+		{
+			if(hheight + itemHeightTotal + fheight < height)
+				height = hheight + heightCurrPage + fheight;
+			else 	
+				height = hheight + heightFirstPage + fheight;
+		}
 
 		//
 		full_width = width;

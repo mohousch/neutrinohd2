@@ -60,7 +60,7 @@ CHelpBox::~CHelpBox()
   	}
 }
 
-void CHelpBox::show(const neutrino_locale_t Caption, const int Width, int timeout, const CMessageBox::result_ Default, /*CMessageBox::buttons_ Button*/const uint32_t ShowButtons)
+void CHelpBox::show(const neutrino_locale_t Caption, const int Width, int timeout, const CMessageBox::result_ Default, const uint32_t ShowButtons)
 {
 	dprintf(DEBUG_NORMAL, "Helpbox::show\n");
 
@@ -102,6 +102,14 @@ void CHelpBox::addLine(std::string& icon, std::string& text)
 	Drawable *dt = new DText(text);
 	v.push_back(di);
 	v.push_back(dt);
+	m_lines.push_back(v);
+}
+
+void CHelpBox::addSeparator(void)
+{
+	std::vector<Drawable*> v;
+	Drawable *p = new DSeparator();
+	v.push_back(p);
 	m_lines.push_back(v);
 }
 

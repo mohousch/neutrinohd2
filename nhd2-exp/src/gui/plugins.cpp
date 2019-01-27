@@ -443,27 +443,29 @@ void CPlugins::removePlugin(int number)
 	dprintf(DEBUG_NORMAL, "CPlugins::removePlugin: %s type:%d\n", plugin_list[number].pluginfile.c_str(), plugin_list[number].type);
 	
 	// unload plugin
-	// load
-	handle = dlopen ( plugin_list[number].pluginfile.c_str(), RTLD_NOW);
-	if (!handle)
+	if (plugin_list[number].type == CPlugins::P_TYPE_NEUTRINO)
 	{
-		fputs (dlerror(), stderr);
-	} 
-	else 
-	{
-		delPlugin = (PluginDel) dlsym(handle, "plugin_del");
-		if ((error = dlerror()) != NULL)
+		handle = dlopen ( plugin_list[number].pluginfile.c_str(), RTLD_NOW);
+		if (!handle)
 		{
-			fputs(error, stderr);
-			dlclose(handle);
+			fputs (dlerror(), stderr);
 		} 
 		else 
 		{
-			dprintf(DEBUG_NORMAL, "[CPlugins] try del...\n");			
+			delPlugin = (PluginDel) dlsym(handle, "plugin_del");
+			if ((error = dlerror()) != NULL)
+			{
+				fputs(error, stderr);
+				dlclose(handle);
+			} 
+			else 
+			{
+				dprintf(DEBUG_NORMAL, "[CPlugins] try del...\n");			
 					
-			delPlugin();
-			dlclose(handle);
-			dprintf(DEBUG_NORMAL, "[CPlugins] del done...\n");
+				delPlugin();
+				dlclose(handle);
+				dprintf(DEBUG_NORMAL, "[CPlugins] del done...\n");
+			}
 		}
 	}
 	

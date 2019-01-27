@@ -683,6 +683,8 @@ class ClistBox : public CMenuTarget
 		int itemsPerX;
 		int itemsPerY;
 		int maxItemsPerPage;
+
+		bool shrinkMenu;
 		
 	public:
 		ClistBox();
@@ -752,6 +754,8 @@ class ClistBox : public CMenuTarget
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 
 		void setName(const std::string& p_name){nameString = p_name;};
+
+		void enableShrinkMenu(){shrinkMenu = true;};
 };
 
 // CMenulistBoxItem

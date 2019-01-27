@@ -57,7 +57,7 @@ class Drawable
 			DTYPE_DRAWABLE,
 			DTYPE_TEXT,
 			DTYPE_ICON,
-			DTYPE_PICTURE,
+			DTYPE_SEPARATOR,
 			DTYPE_PAGEBREAK
 		};
 
@@ -125,6 +125,18 @@ class DIcon : public Drawable
 
 	protected:
 		std::string m_icon;
+};
+
+/**
+ * This class draws separator line.
+ */
+class DSeparator : public Drawable
+{
+	public:
+		DSeparator();
+
+		void draw(int x, int y, int width);
+		DType getType();
 };
 
 /**

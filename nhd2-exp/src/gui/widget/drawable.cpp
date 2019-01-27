@@ -130,6 +130,30 @@ Drawable::DType DIcon::getType(void)
 	return Drawable::DTYPE_ICON;
 }
 
+// DSeparator
+DSeparator::DSeparator()
+{
+	m_height = 10;
+	m_width = 0;
+}
+
+void DSeparator::draw(int x, int y, int width)
+{
+	int height = 10;
+
+	CFrameBuffer::getInstance()->paintBoxRel(x, y, width, height, COL_MENUCONTENT_PLUS_0);
+
+	// line
+	CFrameBuffer::getInstance()->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + (height >> 1), COL_MENUCONTENTDARK_PLUS_0 );
+
+	CFrameBuffer::getInstance()->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + (height >> 1) + 1, COL_MENUCONTENTDARK_PLUS_0 );	
+}
+
+Drawable::DType DSeparator::getType(void)
+{
+	return Drawable::DTYPE_SEPARATOR;
+}
+
 // DPageBreak
 DPagebreak::DPagebreak()
 {
