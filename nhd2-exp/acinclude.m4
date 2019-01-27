@@ -2126,7 +2126,8 @@ AC_DEFUN([AX_LUA_LIBS],
 
   dnl Test the result and run user code.
   AS_IF([test "x$_ax_found_lua_libs" = 'xyes'], [$1],
-    [m4_default([$2], [AC_MSG_ERROR([cannot find Lua libs])])])
+#    [m4_default([$2], [AC_MSG_ERROR([cannot find Lua libs])])])
+     LUA_LIB="-llua -ldl")
 ])
 
 

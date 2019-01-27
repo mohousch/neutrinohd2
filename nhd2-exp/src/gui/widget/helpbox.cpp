@@ -85,21 +85,21 @@ void CHelpBox::addLine(const char *text, CFont* font, uint8_t col, const bool bg
 	m_lines.push_back(v);
 }
 
-void CHelpBox::addLine(const char *icon, const char *text)
+void CHelpBox::addLine(const char *icon, const char *text, CFont* font, uint8_t col, const bool bg)
 {
 	std::vector<Drawable*> v;
 	Drawable *di = new DIcon(icon);
-	Drawable *dt = new DText(text);
+	Drawable *dt = new DText(text, font, col, bg);
 	v.push_back(di);
 	v.push_back(dt);
 	m_lines.push_back(v);
 }
 
-void CHelpBox::addLine(std::string& icon, std::string& text)
+void CHelpBox::addLine(std::string& icon, std::string& text, CFont* font, uint8_t col, const bool bg)
 {
 	std::vector<Drawable*> v;
 	Drawable *di = new DIcon(icon);
-	Drawable *dt = new DText(text);
+	Drawable *dt = new DText(text, font, col, bg);
 	v.push_back(di);
 	v.push_back(dt);
 	m_lines.push_back(v);

@@ -408,7 +408,7 @@ void CMessageBox::refresh()
 		int xPos = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + BORDER_LEFT;
 		int maxHeight = 0;
 		
-		for (std::vector<Drawable*>::iterator d = it->begin(); d!=it->end(); d++)
+		for (std::vector<Drawable*>::iterator d = it->begin(); d != it->end(); d++)
 		{
   			(*d)->draw(xPos, yPos, m_width - BORDER_LEFT - BORDER_RIGHT);
 

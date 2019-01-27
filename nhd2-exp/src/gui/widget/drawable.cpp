@@ -89,12 +89,12 @@ DText::DText(const char *text, CFont* font, uint8_t col, const bool bg)
 void DText::init()
 {
 	m_width = m_font->getRenderWidth(m_text, true); // UTF-8
-	m_height = m_font->getHeight();	
+	m_height = m_font->getHeight() + 4;	
 }
 
 void DText::draw(int x, int y, int width)
 {
-	m_font->RenderString(x, y + m_height, width, m_text.c_str(), m_color, 0, true, m_background); // UTF-8	
+	m_font->RenderString(x, y + m_font->getHeight() + 2, width, m_text.c_str(), m_color, 0, true, m_background); // UTF-8	
 }
 
 Drawable::DType DText::getType(void)
@@ -118,11 +118,13 @@ DIcon::DIcon(const char *icon)
 void DIcon::init()
 {
 	CFrameBuffer::getInstance()->getIconSize(m_icon.c_str(), &m_width, &m_height);
+
+	m_height = m_height + 4;
 }
 
 void DIcon::draw(int x, int y, int)
 {
-	CFrameBuffer::getInstance()->paintIcon(m_icon.c_str(), x, y);	
+	CFrameBuffer::getInstance()->paintIcon(m_icon.c_str(), x, y + 2);	
 }
 
 Drawable::DType DIcon::getType(void)

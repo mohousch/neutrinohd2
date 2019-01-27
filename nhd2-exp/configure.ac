@@ -167,8 +167,6 @@ if test "$enable_lua" = "yes"; then
 AC_DEFINE(ENABLE_LUA,1,[include lua interface support])
 fi
 
-CXXFLAGS = $PTHREAD_CFLAGS
-
 AC_OUTPUT([
 Makefile
 lib/Makefile
