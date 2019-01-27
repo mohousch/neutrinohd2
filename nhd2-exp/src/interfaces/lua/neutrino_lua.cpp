@@ -35,7 +35,7 @@
 
 #include <interfaces/lua/neutrino_lua.h>
 
-#include <gui/widget/messagebox.h>
+#include <gui/widget/infobox.h>
 
 #include <system/helpers.h>
 #include <system/debug.h>
@@ -72,7 +72,7 @@ void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv
 
 		dprintf(DEBUG_NORMAL, "neutrinoLua::runScript: can't load file: %s\n", isString ? lua_tostring(lua, -1) : null);
 
-		MessageBox(LOCALE_MESSAGEBOX_ERROR, isString ? lua_tostring(lua, -1) : "", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+		InfoBox(isString ? lua_tostring(lua, -1) : "", g_Locale->getText(LOCALE_MESSAGEBOX_ERROR), NEUTRINO_ICON_ERROR);	
 
 		if (error_string)
 			*error_string = std::string(lua_tostring(lua, -1));
@@ -116,7 +116,7 @@ void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv
 
 		dprintf(DEBUG_NORMAL, "neutrinoLua::runScript: error in script: %s\n", isString ? lua_tostring(lua, -1) : null);
 
-		MessageBox(LOCALE_MESSAGEBOX_ERROR, isString ? lua_tostring(lua, -1) : "", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+		InfoBox(isString ? lua_tostring(lua, -1) : "", g_Locale->getText(LOCALE_MESSAGEBOX_ERROR), NEUTRINO_ICON_ERROR);
 
 		if (error_string)
 			*error_string = std::string(lua_tostring(lua, -1));

@@ -37,11 +37,14 @@ AM_CPPFLAGS += -fno-rtti -fno-exceptions
 
 noinst_LIBRARIES = libneutrino_interfaces_python.a
 
+libneutrino_interfaces_python_a_SOURCES = \
+	neutrino_python.cpp
+
+nodist_libneutrino_interfaces_python_a_SOURCES = \
+	neutrino_python_wrap.cxx
+
 neutrino_python_wrap.cxx :
 	$(AM_V_GEN)$(SWIG) $(AX_SWIG_PYTHON_OPT) neutrino_python.i
-
-libneutrino_interfaces_python_a_SOURCES = \
-	neutrino_python.cpp neutrino_python_wrap.cxx
 
 pkgconfigdir = $(libdir)/pkgconfig
 installdir = $(pkglibdir)/python

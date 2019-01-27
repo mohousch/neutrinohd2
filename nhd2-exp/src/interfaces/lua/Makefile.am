@@ -37,11 +37,14 @@ AM_CPPFLAGS += -fno-rtti -fno-exceptions
 
 noinst_LIBRARIES = libneutrino_interfaces_lua.a
 
+libneutrino_interfaces_lua_a_SOURCES = \
+	neutrino_lua.cpp
+
+nodist_libneutrino_interfaces_lua_a_SOURCES = \
+	neutrino_lua_wrap.cxx
+
 neutrino_lua_wrap.cxx :
 	$(AM_V_GEN)$(SWIG) -lua neutrino_lua.i
-
-libneutrino_interfaces_lua_a_SOURCES = \
-	neutrino_lua.cpp neutrino_lua_wrap.cxx
 
 CLEANFILES = neutrino_lua_wrap.cxx
 

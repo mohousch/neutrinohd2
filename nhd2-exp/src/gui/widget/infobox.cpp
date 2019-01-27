@@ -152,12 +152,12 @@ CInfoBox::~CInfoBox()
 //////////////////////////////////////////////////////////////////////
 void CInfoBox::initVar(void)
 {
-	m_cTitle = "";
-	m_cIcon = "";
+	m_cTitle = g_Locale->getText(LOCALE_MESSAGEBOX_INFO);
+	m_cIcon = NEUTRINO_ICON_INFO;
 	m_nMode = CTextBox::SCROLL;
 
 	// set the title variables
-	m_pcFontTitle  =  g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE];
+	m_pcFontTitle = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE];
 	m_nFontTitleHeight = m_pcFontTitle->getHeight();
 
 	// set the main frame to default
@@ -185,7 +185,7 @@ void CInfoBox::initFramesRel(void)
 	m_cBoxFrameTitleRel.iX		= m_cBoxFrame.iX;
 	m_cBoxFrameTitleRel.iY		= m_cBoxFrame.iY;
 	m_cBoxFrameTitleRel.iWidth	= m_cBoxFrame.iWidth;
-	m_cBoxFrameTitleRel.iHeight	= m_nFontTitleHeight + 2;
+	m_cBoxFrameTitleRel.iHeight	= m_nFontTitleHeight + 6;
 
 	// init the text frame
 	m_cBoxFrameText.iY		= m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight;
@@ -223,7 +223,7 @@ void CInfoBox::refreshTitle(void)
 	}
 
 	//
-	m_pcFontTitle->RenderString(m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + 5, m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + 2*iw + 5), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	m_pcFontTitle->RenderString(m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + ICON_OFFSET, m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2 + m_pcFontTitle->getHeight(), m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + 2*iw + ICON_OFFSET), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -442,5 +442,22 @@ bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _
 	
 	return(_result);
 }
+
+// helpers
+void InfoBox(const char * text, const char * title, const char * icon, std::string thumbnail, int tw, int th, int tmode)
+{
+	std::string buffer = text;
+
+	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+	CInfoBox * infoBox = new CInfoBox(text, g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, title, g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], icon);
+
+	infoBox->setText(&buffer, thumbnail, tw, th, tmode);
+	infoBox->exec();
+	delete infoBox;
+	infoBox = NULL;
+}
+
+
 
 

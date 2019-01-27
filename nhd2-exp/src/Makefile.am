@@ -129,16 +129,13 @@ endif
 
 if ENABLE_PYTHON
 neutrino_LDADD += interfaces/python/libneutrino_interfaces_python.a \
-	interfaces/python/neutrino_python_wrap.o \
 	@PYTHON_LDFLAGS@
 endif
 
 if ENABLE_LUA
 neutrino_LDADD += interfaces/lua/libneutrino_interfaces_lua.a \
-	interfaces/lua/neutrino_lua_wrap.o \
 	@LUA_LIB@
 endif
-
 
 
 

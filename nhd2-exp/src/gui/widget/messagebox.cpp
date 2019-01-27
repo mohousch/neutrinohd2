@@ -46,7 +46,8 @@
 #include <gui/widget/messagebox.h>
 
 
-#define MESSAGEBOX_MAX_HEIGHT 420
+#define MESSAGEBOX_MAX_HEIGHT 		420
+#define MESSAGEBOX_MAX_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX )
 
 CMessageBox::CMessageBox(const neutrino_locale_t Caption, const char * const Text, const int Width, const char * const Icon, const CMessageBox::result_ Default, const uint32_t ShowButtons)
 {
@@ -234,7 +235,7 @@ CMessageBox::~CMessageBox(void)
 
 void CMessageBox::init(const char * const Caption, const int Width, const char * const Icon)
 {
-	m_width   = Width;
+	m_width = Width;
 	int nw = 0;
 	m_theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	m_fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
@@ -264,7 +265,9 @@ void CMessageBox::init(const char * const Caption, const int Width, const char *
 			//
 			if ((*item)->getHeight() > maxHeight)
 				maxHeight = (*item)->getHeight();
+
 			lineWidth += (*item)->getWidth();
+
 			if ((*item)->getType() == Drawable::DTYPE_PAGEBREAK)
 				pagebreak = true;
 			
@@ -275,7 +278,11 @@ void CMessageBox::init(const char * const Caption, const int Width, const char *
 		lineWidth += count * 20;
 		
                 if (lineWidth > maxWidth)
+		{
+			lineWidth = MESSAGEBOX_MAX_WIDTH - 20;
 			maxWidth = lineWidth;
+		}
+
 		m_height += maxHeight;
 		
 		if (m_height > MESSAGEBOX_MAX_HEIGHT || pagebreak) 
@@ -649,6 +656,7 @@ int CMessageBox::exec(int timeout)
 	return result;
 }
 
+// helpers
 int MessageBox(const neutrino_locale_t Caption, const char * const Text, const CMessageBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
 {
    	CMessageBox * messageBox = new CMessageBox(Caption, Text, Width, Icon, Default, ShowButtons);
