@@ -81,14 +81,15 @@ void CPluginList::hide()
 	frameBuffer->blit();	
 }
 
-#define NUM_LIST_BUTTONS 4
+#define NUM_LIST_BUTTONS 3
 struct button_label CPluginListButtons[NUM_LIST_BUTTONS] =
 {
 	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_PLUGINLIST_REMOVE_PLUGIN },
 	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_PLUGINLIST_START_PLUGIN },
-	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_SERVICEMENU_GETPLUGINS },
-	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_MESSAGEBOX_INFO }
+	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_SERVICEMENU_GETPLUGINS }
 };
+
+struct button_label CPluginListHeadButtons = {NEUTRINO_ICON_BUTTON_HELP_SMALL, NONEXISTANT_LOCALE, NULL};
 
 void CPluginList::showMenu()
 {
@@ -109,8 +110,9 @@ void CPluginList::showMenu()
 		IconName += "/";
 		IconName += g_PluginList->getIcon(count);
 
+		bool enabled = g_PluginList->getType(count) != CPlugins::P_TYPE_DISABLED;
 			
-		item = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), NULL, file_exists(IconName.c_str())? IconName.c_str() : NEUTRINO_ICON_MENUITEM_PLUGIN);
+		item = new ClistBoxItem(g_PluginList->getName(count), enabled, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), NULL, file_exists(IconName.c_str())? IconName.c_str() : NEUTRINO_ICON_MENUITEM_PLUGIN);
 
 		item->setInfo1(g_PluginList->getDescription(count).c_str());
 
@@ -127,6 +129,9 @@ void CPluginList::showMenu()
 	plist->addWidget(WIDGET_FRAME);
 	plist->enableWidgetChange();
 
+	// head
+	plist->setHeaderButtons(&CPluginListHeadButtons, 1);
+
 	// footer
 	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS);
 
@@ -134,7 +139,7 @@ void CPluginList::showMenu()
 	plist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
 	plist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
 	plist->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
-	plist->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
+	plist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
 	plist->addKey(CRCInput::RC_ok, this, CRCInput::getSpecialKeyName(CRCInput::RC_ok));
 
 	plist->exec(NULL, "");
@@ -177,7 +182,7 @@ int CPluginList::exec(CMenuTarget * parent, const std::string& actionKey)
 		showMenu();
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "RC_blue")
+	else if(actionKey == "RC_info")
 	{
 		selected = plist->getSelected();
 		std::string buffer;

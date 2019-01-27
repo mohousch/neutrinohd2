@@ -135,14 +135,6 @@ void CPlugins::addPlugin(const char * dir)
 				if (new_plugin.type == CPlugins::P_TYPE_SCRIPT)
 				{
 					new_plugin.pluginfile.append(".sh");
-				} 
-				else if (new_plugin.type == CPlugins::P_TYPE_GAME)
-				{
-					new_plugin.pluginfile.append(".so");
-				}
-				else if (new_plugin.type == CPlugins::P_TYPE_TOOL)
-				{
-					new_plugin.pluginfile.append(".so");
 				}
 				else if (new_plugin.type == CPlugins::P_TYPE_NEUTRINO)
 				{
@@ -377,24 +369,6 @@ void CPlugins::startPlugin(int number)
 
 		return;
 	}
-
-	// neutrinoHD plugins (standalone)
-	if ( (plugin_list[number].type == CPlugins::P_TYPE_TOOL) || (plugin_list[number].type == CPlugins::P_TYPE_GAME) )
-	{
-		/* stop rc input */
-		g_RCInput->stopInput();
-		
-		safe_system((char *) plugin_list[number].pluginfile.c_str());
-		
-		frameBuffer->paintBackground();
-
-		frameBuffer->blit();
-	
-		g_RCInput->restartInput();
-		g_RCInput->clearRCMsg();
-		
-		return;
-	}
 	else if (plugin_list[number].type == CPlugins::P_TYPE_NEUTRINO)
 	{
 		PluginExec execPlugin;
@@ -435,7 +409,7 @@ void CPlugins::startPlugin(int number)
 	}
 
 #if ENABLE_PYTHON
-	if (plugin_list[number].type == CPlugins::P_TYPE_PYTHON)
+	else if (plugin_list[number].type == CPlugins::P_TYPE_PYTHON)
 	{
 		neutrinoPython* pythonInvoker = new neutrinoPython();
 
@@ -448,7 +422,7 @@ void CPlugins::startPlugin(int number)
 #endif
 
 #if ENABLE_LUA
-	if (plugin_list[number].type == CPlugins::P_TYPE_LUA)
+	else if (plugin_list[number].type == CPlugins::P_TYPE_LUA)
 	{
 		neutrinoLua* luaInvoker = new neutrinoLua();
 
@@ -524,14 +498,6 @@ CPlugins::p_type_t CPlugins::getPluginType(int type)
 			return P_TYPE_DISABLED;
 			break;
 			
-		case PLUGIN_TYPE_GAME:
-			return P_TYPE_GAME;
-			break;
-			
-		case PLUGIN_TYPE_TOOL:
-			return P_TYPE_TOOL;
-			break;
-			
 		case PLUGIN_TYPE_SCRIPT:
 			return P_TYPE_SCRIPT;
 			break;
@@ -582,6 +548,5 @@ CPlugins::i_type_t CPlugins::getPluginIntegration(int integration)
 			return I_TYPE_DISABLED;
 	}
 }
-
 
 

@@ -1,6 +1,4 @@
-from neutrino import CMessageBox
-
-CMessageBox.exec();
+print("Hello World")
 
 
 
