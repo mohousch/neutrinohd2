@@ -152,11 +152,17 @@ int CPluginList::exec(CMenuTarget * parent, const std::string& actionKey)
 
 	if(actionKey == "RC_red")
 	{
+		selected = plist->getSelected();
+
 		// remove selected plugin
-		g_PluginList->removePlugin(plist->getSelected());
+		g_PluginList->removePlugin(selected);
 
 		// relaod plugins
 		g_PluginList->loadPlugins();
+
+		if(selected > (unsigned int)g_PluginList->getNumberOfPlugins() - 1)
+			selected = (unsigned int)g_PluginList->getNumberOfPlugins() - 1;
+
 		showMenu();
 		return menu_return::RETURN_EXIT_ALL;
 	}

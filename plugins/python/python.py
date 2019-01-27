@@ -1,5 +1,6 @@
-print "Hello World !)"
-print "neutrinoHD2"
+from neutrino import CMessageBox
+
+CMessageBox.exec();
 
 
 
