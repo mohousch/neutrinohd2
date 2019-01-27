@@ -136,15 +136,11 @@ class CPlugins
 		
 		bool pluginfile_exists(const std::string & filename);
 		bool plugin_exists(const std::string & filename);
-
 		void loadPlugins();
-
 		void setPluginDir(const std::string & dir) { plugin_dir = dir; }
-
-		//
 		int find_plugin(const std::string & filename);
 
-		//
+		// get methods
 		inline int getNumberOfPlugins(void) const { return plugin_list.size(); }
 		inline const char* getName(const int number) const { return plugin_list[number].name.c_str(); }
 		inline const char* getPluginFile(const int number) const { return plugin_list[number].pluginfile.c_str(); }
@@ -154,20 +150,20 @@ class CPlugins
 		inline int getType(const int number) const { return plugin_list[number].type; }
 		inline int getIntegration(const int number) const { return plugin_list[number].integration; }
 		inline const char* getIcon(const int number) const { return plugin_list[number].icon.c_str();}
-		inline bool isHidden(const int number) const { return plugin_list[number].hide; }
 
-		//
 		CPlugins::p_type_t getPluginType(int type);
 		CPlugins::i_type_t getPluginIntegration(int integration);
 
+		inline bool isHidden(const int number) const { return plugin_list[number].hide; }
+
 		//
 		void startPlugin(int number);
-		void start_plugin_by_name(const std::string & filename);	// start plugins by "name=" in .cfg
+		void start_plugin_by_name(const std::string & filename);
 		void startScriptPlugin(int number);
-
-		void startPlugin(const char * const filename); 			// start plugins also by name
+		void startPlugin(const char * const filename);
 		bool hasPlugin(CPlugins::p_type_t type);
 		
+		//
 		void removePlugin(int number);
 };
 

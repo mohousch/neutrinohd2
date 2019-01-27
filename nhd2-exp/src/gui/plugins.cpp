@@ -131,6 +131,7 @@ void CPlugins::addPlugin(const char * dir)
 			if (plugin_ok) 
 			{
 				new_plugin.pluginfile = fname;
+
 				if (new_plugin.type == CPlugins::P_TYPE_SCRIPT)
 				{
 					new_plugin.pluginfile.append(".sh");
@@ -280,7 +281,7 @@ bool CPlugins::parseCfg(plugin *plugin_data)
 		}
 		else if (cmd == "hide")
 		{
-			plugin_data->hide = ((parm == "1")?true:false);
+			plugin_data->hide = ((parm == "1")? true : false);
 		}
 		else if (cmd == "integration")
 		{

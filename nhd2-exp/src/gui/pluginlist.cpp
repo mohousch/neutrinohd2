@@ -39,7 +39,7 @@
 #include <plugin.h>
 
 #include <gui/pluginlist.h>
-#include <gui/widget/messagebox.h>
+#include <gui/widget/infobox.h>
 #include <gui/widget/icons.h>
 
 #include <sstream>
@@ -81,11 +81,13 @@ void CPluginList::hide()
 	frameBuffer->blit();	
 }
 
-#define NUM_LIST_BUTTONS 2
+#define NUM_LIST_BUTTONS 4
 struct button_label CPluginListButtons[NUM_LIST_BUTTONS] =
 {
 	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_PLUGINLIST_REMOVE_PLUGIN },
-	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_PLUGINLIST_START_PLUGIN }
+	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_PLUGINLIST_START_PLUGIN },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_SERVICEMENU_GETPLUGINS },
+	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_MESSAGEBOX_INFO }
 };
 
 void CPluginList::showMenu()
@@ -126,11 +128,13 @@ void CPluginList::showMenu()
 	plist->enableWidgetChange();
 
 	// footer
-	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS, MENU_WIDTH/2);
+	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS);
 
 	//
 	plist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
 	plist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
+	plist->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
+	plist->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
 	plist->addKey(CRCInput::RC_ok, this, CRCInput::getSpecialKeyName(CRCInput::RC_ok));
 
 	plist->exec(NULL, "");
@@ -148,7 +152,11 @@ int CPluginList::exec(CMenuTarget * parent, const std::string& actionKey)
 
 	if(actionKey == "RC_red")
 	{
+		// remove selected plugin
 		g_PluginList->removePlugin(plist->getSelected());
+
+		// relaod plugins
+		g_PluginList->loadPlugins();
 		showMenu();
 		return menu_return::RETURN_EXIT_ALL;
 	}
@@ -156,6 +164,38 @@ int CPluginList::exec(CMenuTarget * parent, const std::string& actionKey)
 	{
 		selected = plist->getSelected();
 		g_PluginList->startPlugin(plist->getSelected());
+	}
+	else if(actionKey == "RC_yellow")
+	{
+		g_PluginList->loadPlugins();
+		showMenu();
+		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_blue")
+	{
+		selected = plist->getSelected();
+		std::string buffer;
+
+		buffer = "Name: ";
+		buffer += g_PluginList->getName(selected);
+		buffer += "\n";
+
+		if(!g_PluginList->getDescription(selected).empty())
+		{
+			buffer += "Description: ";
+			buffer += g_PluginList->getDescription(selected);
+			buffer += "\n";
+		}
+
+		if(!g_PluginList->getVersion(selected).empty())
+		{
+			buffer += "Version: ";
+			buffer += g_PluginList->getVersion(selected);
+			buffer += "\n";
+		}
+		
+		InfoBox(buffer.c_str(), g_Locale->getText(LOCALE_USERMENU_ITEM_PLUGINS), NEUTRINO_ICON_SHELL);
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_ok")
 	{
