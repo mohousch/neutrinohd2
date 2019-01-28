@@ -69,6 +69,15 @@ void CHelpBox::show(const neutrino_locale_t Caption, const int Width, int timeou
 	msgBox.exec(timeout);
 }
 
+void CHelpBox::show(const char* Caption, const int Width, int timeout, const CMessageBox::result_ Default, const uint32_t ShowButtons)
+{
+	dprintf(DEBUG_NORMAL, "Helpbox::show\n");
+
+ 	CMessageBox msgBox(Caption, m_lines, Width, NEUTRINO_ICON_INFO, Default, ShowButtons);
+
+	msgBox.exec(timeout);
+}
+
 void CHelpBox::addLine(std::string& text, CFont* font, uint8_t col, const bool bg)
 {
 	std::vector<Drawable*> v;
@@ -100,6 +109,16 @@ void CHelpBox::addLine(std::string& icon, std::string& text, CFont* font, uint8_
 	std::vector<Drawable*> v;
 	Drawable *di = new DIcon(icon);
 	Drawable *dt = new DText(text, font, col, bg);
+	v.push_back(di);
+	v.push_back(dt);
+	m_lines.push_back(v);
+}
+
+void CHelpBox::add2Line(const char *text1, const char *text2, CFont* font1, uint8_t col1, const bool bg1, CFont* font2, uint8_t col2, const bool bg2)
+{
+	std::vector<Drawable*> v;
+	Drawable *di = new DText(text1, font1, col1, bg1);
+	Drawable *dt = new DText(text2, font2, col2, bg2);
 	v.push_back(di);
 	v.push_back(dt);
 	m_lines.push_back(v);

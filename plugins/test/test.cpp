@@ -555,7 +555,7 @@ void CTestMenu::testCHelpBox()
 	// text
 	helpBox->addLine("helpBox");
 
-	// icon
+	// icon|text
 	helpBox->addLine(NEUTRINO_ICON_BUTTON_RED, "Huhu :-P", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], COL_RED0, true);
 
 	//
@@ -568,7 +568,9 @@ void CTestMenu::testCHelpBox()
 	
 
 	//
-	//helpBox->addPagebreak();
+	helpBox->addSeparator();
+	
+	helpBox->add2Line("Gui: ", "neutrinoHD2 the best GUI :-P", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], COL_MENUCONTENTINACTIVE, true, g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], COL_BLUE0, true);
 
 	// icon
 	helpBox->addLine(NEUTRINO_ICON_BUTTON_YELLOW, "Huhu :-P", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], COL_GREEN0, true);
@@ -580,6 +582,12 @@ void CTestMenu::testCHelpBox()
 
 	//
 	helpBox->addLine(NEUTRINO_ICON_BUTTON_BLUE, "neutrinoHD2 the best GUI :-P", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], COL_YELLOW0, true);
+
+	helpBox->addSeparator();
+
+	helpBox->addLine(NEUTRINO_ICON_HDD, "neutrinoHD2 the best GUI :-P", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], COL_YELLOW0, true);
+
+	helpBox->addLine(NEUTRINO_ICON_TUNER, "neutrinoHD2 the best GUI :-P", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], COL_YELLOW0, true);
 
 	helpBox->show(LOCALE_MESSAGEBOX_INFO, HELPBOX_WIDTH, -1, CMessageBox::mbrBack, CMessageBox::mbNone);
 	

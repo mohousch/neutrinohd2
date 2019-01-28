@@ -467,7 +467,6 @@ void CSysInfoWidget::cpuinfo()
 	unlink("/tmp/systmp");
 	
 	readList();
-
 }
 
 void CSysInfoWidget::dmesg()

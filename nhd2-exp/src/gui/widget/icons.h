@@ -151,9 +151,6 @@
 #define NEUTRINO_ICON_PICTURE			"picture"
 #define NEUTRINO_ICON_PLUGIN			"plugin"
 
-// tmdb
-#define NEUTRINO_ICON_TMDB			"tmdb"
-
 // radiotext
 #define NEUTRINO_ICON_RADIOTEXTOFF		"radiotextoff"
 #define NEUTRINO_ICON_RADIOTEXTGET		"radiotextget"
@@ -174,6 +171,11 @@
 #define NEUTRINO_ICON_FF 			"mp_ff"
 #define NEUTRINO_ICON_FF_SMALL 			"mp_ff_small"
 #define NEUTRINO_ICON_STOP_SMALL 		"mp_stop_small"
+
+// misc
+#define NEUTRINO_ICON_TMDB			"tmdb"
+#define NEUTRINO_ICON_HDD	 		"hdd"
+#define NEUTRINO_ICON_TUNER	 		"tuner"
 
 // design icons
 #define NEUTRINO_ICON_MENUITEM_TV			CONFIGDIR "/design/tv.png"

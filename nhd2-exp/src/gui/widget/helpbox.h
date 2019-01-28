@@ -55,10 +55,13 @@ class CHelpBox
 		void addLine(const char *text, CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU], uint8_t col = COL_MENUCONTENT, const bool bg = false);
 		void addLine(std::string& icon, std::string& text, CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU], uint8_t col = COL_MENUCONTENT, const bool bg = false);
 		void addLine(const char *icon, const char *text, CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU], uint8_t col = COL_MENUCONTENT, const bool bg = false);
+		void add2Line(const char *text1, const char *text2, CFont* font1 = g_Font[SNeutrinoSettings::FONT_TYPE_MENU], uint8_t col1 = COL_MENUCONTENT, const bool bg1 = false, CFont* font2 = g_Font[SNeutrinoSettings::FONT_TYPE_MENU], uint8_t col2 = COL_MENUCONTENT, const bool bg2 = false);
 		void addSeparator();
 		void addPagebreak();
 		
 		void show(const neutrino_locale_t Caption, const int Width = HELPBOX_WIDTH, int timeout = -1, const CMessageBox::result_ Default = CMessageBox::mbrBack, const uint32_t ShowButtons = CMessageBox::mbBack);
+
+		void show(const char* Caption, const int Width = HELPBOX_WIDTH, int timeout = -1, const CMessageBox::result_ Default = CMessageBox::mbrBack, const uint32_t ShowButtons = CMessageBox::mbBack);
 		
 	private:
 		ContentLines m_lines;

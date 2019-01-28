@@ -41,25 +41,15 @@
 
 #include <gui/widget/menue.h>
 #include <gui/widget/window.h>
+#include <gui/widget/helpbox.h>
 
 
 class CDBoxInfoWidget : public CMenuTarget
 {
 	private:
+		CHelpBox* dboxInfo;
 
-		CFrameBuffer	*frameBuffer;
-
-		CBox cFrameBox;
-		CBox cFrameBoxTitle;
-		CBox cFrameBoxBody;
-		CBox cFrameBoxItem;
-
-		CIcon titleIcon;
-
-		CWindow m_cBoxWindow;
-		CWindow m_cTitleWindow;
-
-		void paint();
+		void showInfo();
 
 	public:
 

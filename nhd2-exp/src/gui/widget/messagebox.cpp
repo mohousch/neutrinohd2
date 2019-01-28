@@ -636,7 +636,7 @@ int CMessageBox::exec(int timeout)
 			paintButtons();
 
 		}
-		else if(msg == CRCInput::RC_ok)
+		else if(msg == CRCInput::RC_ok || (msg == CRCInput::RC_home && (showbuttons & mbNone)))
 		{
 			loop = false;
 		}
