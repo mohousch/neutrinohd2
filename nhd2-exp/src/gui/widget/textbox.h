@@ -47,7 +47,9 @@
 #include <global.h>
 #include <driver/framebuffer.h>
 #include <gui/color.h>
-#include "window.h"
+
+#include <gui/widget/window.h>
+#include <gui/widget/scrollbar.h>
 
 
 class CTextBox  
@@ -118,6 +120,8 @@ class CTextBox
 		int gradient;
 
 		bool painted;
+
+		CScrollBar scrollBar;
 
 		// Functions
 		void refreshTextLineArray(void);

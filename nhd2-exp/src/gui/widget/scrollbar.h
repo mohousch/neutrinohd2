@@ -43,7 +43,14 @@
 #include <gui/widget/window.h>
 
 
-void paintScrollBar(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage);
-void paintScrollBar(CBox* position, const int NrOfPages, const int CurrentPage);
+class CScrollBar
+{
+	private:
+	public:
+		CScrollBar();
+
+		void paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage);
+		void paint(CBox* position, const int NrOfPages, const int CurrentPage);
+};
 
 #endif

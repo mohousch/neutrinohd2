@@ -25,7 +25,11 @@
 #include <gui/widget/scrollbar.h>
 
 
-void paintScrollBar(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage)
+CScrollBar::CScrollBar()
+{
+}
+
+void CScrollBar::paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage)
 {
 	// scrollBar
 	CBox cFrameScrollBar;
@@ -57,7 +61,7 @@ void paintScrollBar(const int x, const int y, const int dy, const int NrOfPages,
 	cSliderWindow.paint();
 }
 
-void paintScrollBar(CBox* position, const int NrOfPages, const int CurrentPage)
+void CScrollBar::paint(CBox* position, const int NrOfPages, const int CurrentPage)
 {
 	// scrollBar
 	CBox cFrameScrollBar;

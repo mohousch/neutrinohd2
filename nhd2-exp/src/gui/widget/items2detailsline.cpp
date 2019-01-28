@@ -31,7 +31,11 @@
 #include <gui/widget/items2detailsline.h>
 
 
-void paintItem2DetailsLine(int x, int y, int width, int height, int info_height, int theight, int iheight, int pos)
+CItems2DetailsLine::CItems2DetailsLine()
+{
+}
+
+void CItems2DetailsLine::paint(int x, int y, int width, int height, int info_height, int theight, int iheight, int pos)
 {
 	int xpos  = x - ConnectLineBox_Width;
 	int ypos1 = y + theight + pos*iheight;
@@ -76,7 +80,7 @@ void paintItem2DetailsLine(int x, int y, int width, int height, int info_height,
 	}
 }
 
-void paintItem2DetailsLineD(int x, int y, int width, int height, int info_height, int theight, int iheight, int iy)
+void CItems2DetailsLine::paintD(int x, int y, int width, int height, int info_height, int theight, int iheight, int iy)
 {
 	int xpos  = x - ConnectLineBox_Width;
 	int ypos1 = iy;
@@ -122,7 +126,7 @@ void paintItem2DetailsLineD(int x, int y, int width, int height, int info_height
 }
 
 
-void clearItem2DetailsLine(int x, int y, int width, int height, int info_height)
+void CItems2DetailsLine::clear(int x, int y, int width, int height, int info_height)
 { 
 	// lines
 	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x - ConnectLineBox_Width, y, ConnectLineBox_Width, height + info_height);

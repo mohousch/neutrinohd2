@@ -242,7 +242,7 @@ void ClistBoxEntry::paintItems()
 	// paint right scrollBar if we have more then one page
 	if(total_pages > 1)
 	{
-		::paintScrollBar(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, cFrameBox.iY + hheight, cFrameBox.iHeight - hheight - fheight - footInfoHeight, total_pages, current_page);
+		scrollBar.paint(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, cFrameBox.iY + hheight, cFrameBox.iHeight - hheight - fheight - footInfoHeight, total_pages, current_page);
 	}
 
 	// paint items
@@ -324,7 +324,7 @@ void ClistBoxEntry::paintItemInfo(int pos)
 		item->getYPosition();
 	
 		// detailslines
-		::paintItem2DetailsLineD(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight - footInfoHeight, footInfoHeight, hheight, item->getHeight(), item->getYPosition());
+		itemsLine.paintD(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight - footInfoHeight, footInfoHeight, hheight, item->getHeight(), item->getYPosition());
 
 		// option_info1
 		int l_ow1 = 0;
@@ -367,7 +367,7 @@ void ClistBoxEntry::paintItemInfo(int pos)
 void ClistBoxEntry::hideItemInfo()
 {
 	if(paintFootInfo)
-		::clearItem2DetailsLine(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth + ConnectLineBox_Width, cFrameBox.iHeight - footInfoHeight, footInfoHeight);
+		itemsLine.clear(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth + ConnectLineBox_Width, cFrameBox.iHeight - footInfoHeight, footInfoHeight);
 }
 
 void ClistBoxEntry::hide()

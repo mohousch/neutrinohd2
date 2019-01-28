@@ -30,6 +30,8 @@
 #include <vector>
 
 #include <gui/widget/menue.h>
+#include <gui/widget/items2detailsline.h>
+#include <gui/widget/scrollbar.h>
 
 
 class ClistBoxEntry
@@ -75,6 +77,10 @@ class ClistBoxEntry
 		bool paint_Foot;
 		bool paintFootInfo;
 		bool logo;
+
+		//
+		CItems2DetailsLine itemsLine;
+		CScrollBar scrollBar;
 
 		virtual void paintItems();
 

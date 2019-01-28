@@ -2069,11 +2069,7 @@ void CMenuWidget::paintItems()
 		// paint right scroll bar if we have more then one page
 		if(total_pages > 1)
 		{
-			int sbh = ((items_height - 4) / total_pages);
-
-			frameBuffer->paintBoxRel(x + items_width, item_start_y, SCROLLBAR_WIDTH, items_height, COL_MENUCONTENT_PLUS_1);
-
-			frameBuffer->paintBoxRel(x + items_width + 2, item_start_y + 2 + current_page * sbh, SCROLLBAR_WIDTH - 4, sbh, COL_MENUCONTENT_PLUS_3);
+			scrollBar.paint(x + items_width, item_start_y, items_height, total_pages, current_page);
 		}
 
 		// paint items
@@ -2229,7 +2225,7 @@ void CMenuWidget::paintItemInfo(int pos)
 			item->getYPosition();
 	
 			// detailslines|box
-			::paintItem2DetailsLineD(x, y, width, height, cFrameFootInfo.iHeight, hheight, item->getHeight(), item->getYPosition());
+			itemsLine.paintD(x, y, width, height, cFrameFootInfo.iHeight, hheight, item->getHeight(), item->getYPosition());
 
 
 			// info icon
@@ -2300,7 +2296,7 @@ void CMenuWidget::hideItemInfo()
 {
 	if(widgetType == WIDGET_STANDARD && FootInfo)
 	{
-		::clearItem2DetailsLine(x, y, width + ConnectLineBox_Width, height, cFrameFootInfo.iHeight);
+		itemsLine.clear(x, y, width + ConnectLineBox_Width, height, cFrameFootInfo.iHeight);
 
 		if(textBox)
 		{
@@ -3313,7 +3309,7 @@ void ClistBox::paintItems()
 		{
 			if(total_pages > 1)
 			{
-				::paintScrollBar(x + width - SCROLLBAR_WIDTH, item_start_y, items_height, total_pages, current_page);
+				scrollBar.paint(x + width - SCROLLBAR_WIDTH, item_start_y, items_height, total_pages, current_page);
 			}
 		}
 
@@ -3405,7 +3401,7 @@ void ClistBox::paintItemInfo(int pos)
 			item->getYPosition();
 	
 			// detailslines
-			::paintItem2DetailsLineD(x, y, width, height, cFrameFootInfo.iHeight, hheight, item->getHeight(), item->getYPosition());
+			itemsLine.paintD(x, y, width, height, cFrameFootInfo.iHeight, hheight, item->getHeight(), item->getYPosition());
 
 			// option_info1
 			int l_ow1 = 0;
@@ -3540,7 +3536,7 @@ void ClistBox::hideItemInfo()
 {
 	if(widgetType == WIDGET_STANDARD)
 	{
-		::clearItem2DetailsLine(x, y, width + ConnectLineBox_Width, height, cFrameFootInfo.iHeight);
+		itemsLine.clear(x, y, width + ConnectLineBox_Width, height, cFrameFootInfo.iHeight);
 	}  
 }
 

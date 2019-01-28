@@ -45,6 +45,8 @@
 #include <system/helpers.h>
 
 #include <gui/widget/buttons.h>
+#include <gui/widget/items2detailsline.h>
+#include <gui/widget/scrollbar.h>
 
 #include <gui/color.h>
 #include <gui/plugins.h>
@@ -550,6 +552,10 @@ class CMenuWidget : public CMenuTarget
 		// footInfo
 		bool FootInfo;
 		CBox cFrameFootInfo;
+
+		//
+		CItems2DetailsLine itemsLine;
+		CScrollBar scrollBar;
 		
 	public:
 		CMenuWidget();
@@ -685,6 +691,10 @@ class ClistBox : public CMenuTarget
 		int maxItemsPerPage;
 
 		bool shrinkMenu;
+
+		//
+		CItems2DetailsLine itemsLine;
+		CScrollBar scrollBar;
 		
 	public:
 		ClistBox();
