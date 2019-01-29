@@ -1,5 +1,7 @@
-print("Hello World !)")
-print("neutrinoHD2")
+print("lua: Hello World")
+
+neutrino = require 'neutrino'
+
 
 
 

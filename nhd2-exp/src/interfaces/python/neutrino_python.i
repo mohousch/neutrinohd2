@@ -28,7 +28,8 @@
 
 %module neutrino
 %{
-#define SWIG_COMPILE
+//#define SWIG_COMPILE
+#define SWIG_FILE_WITH_INIT
 #include <gui/widget/messagebox.h>
 %}
 
