@@ -52,6 +52,8 @@ class CTestMenu : public CMenuTarget
 		CChannelList* webTVchannelList;
 		CBouquetList* webTVBouquetList;
 
+		CButtons buttons;
+
 		// widgets
 		void testCBox();
 		void testCIcon();
@@ -1008,7 +1010,7 @@ void CTestMenu::testCButtons()
 {
 	int icon_w, icon_h;
 	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-	::paintButtons(CFrameBuffer::getInstance(), g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, (g_settings.screen_EndX - g_settings.screen_StartX - 100)/BUTTONS_COUNT, BUTTONS_COUNT, Buttons, icon_h);
+	buttons.paintButtons(CFrameBuffer::getInstance(), g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, (g_settings.screen_EndX - g_settings.screen_StartX - 100)/BUTTONS_COUNT, BUTTONS_COUNT, Buttons, icon_h);
 
 	CFrameBuffer::getInstance()->blit();
 

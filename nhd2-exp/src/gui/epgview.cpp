@@ -294,14 +294,10 @@ void CEpgData::showText(int startPos, int ypos)
 	}
 
 	// ScrollBar
-	frameBuffer->paintBoxRel(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
+	int NrOfPages = ((_textCount - 1)/ medlinecount) + 1;
+	int currentPage = (startPos + 1)/ medlinecount;
 
-	// ScrollBar Slider
-	int sbc = ((_textCount - 1)/ medlinecount) + 1;
-	float sbh = (sb - 4)/ sbc;
-	int sbs = (startPos + 1)/ medlinecount;
-
-	frameBuffer->paintBoxRel(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH + 2, ypos + 2 + int(sbs*sbh), SCROLLBAR_INNER_WIDTH, int(sbh),  COL_MENUCONTENT_PLUS_3);
+	scrollBar.paint(&cScrollBar, NrOfPages, currentPage);
 }
 
 #define GENRE_MOVIE_COUNT 9
@@ -829,7 +825,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 					if(showPos < 0)
 						showPos = 0;
 					else
-						showText(showPos,textypos);
+						showText(showPos, textypos);
 					break;
 
 				// 31.05.2002 dirch		record timer

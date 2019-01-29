@@ -42,7 +42,7 @@
 
 #include <stdint.h>
 
-#include <gui/color.h>
+#include <driver/color.h>
 #include <global.h>
 #include <system/debug.h>
 #include <system/helpers.h>

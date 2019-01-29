@@ -62,7 +62,7 @@
 #include <global.h>
 #include <system/settings.h>
 #include <neutrino.h>
-#include <gui/color.h>
+#include <driver/color.h>
 
 #include "radiotext.h"
 #include "radiotools.h"

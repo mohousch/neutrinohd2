@@ -44,7 +44,7 @@
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
 
-#include <gui/color.h>
+#include <driver/color.h>
 #include <gui/infoviewer.h>
 
 #include <gui/widget/menue.h>

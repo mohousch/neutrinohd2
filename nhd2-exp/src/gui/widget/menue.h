@@ -48,8 +48,9 @@
 #include <gui/widget/items2detailsline.h>
 #include <gui/widget/scrollbar.h>
 #include <gui/widget/headers.h>
+#include <gui/widget/buttons.h>
 
-#include <gui/color.h>
+#include <driver/color.h>
 #include <gui/plugins.h>
 
 #include <system/settings.h>
@@ -698,6 +699,7 @@ class ClistBox : public CMenuTarget
 		CHeaders headers;
 		CItems2DetailsLine itemsLine;
 		CScrollBar scrollBar;
+		CButtons buttons;
 		
 	public:
 		ClistBox();

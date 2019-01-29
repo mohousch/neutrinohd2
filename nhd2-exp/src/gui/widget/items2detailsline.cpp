@@ -25,7 +25,7 @@
 
 #include <global.h>
 
-#include <gui/color.h>
+#include <driver/color.h>
 #include <system/settings.h>
 
 #include <gui/widget/items2detailsline.h>

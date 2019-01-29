@@ -36,6 +36,8 @@ class CSysInfoWidget : public CMenuTarget
 		
 		CFrameBuffer *frameBuffer;
 
+		CHeaders headers;
+
 		std::string buffer;
 
 		bool syslistChanged;

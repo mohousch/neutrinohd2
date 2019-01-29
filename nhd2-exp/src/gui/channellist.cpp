@@ -43,8 +43,8 @@
 #include <driver/fontrenderer.h>
 #include <driver/screen_max.h>
 #include <driver/rcinput.h>
+#include <driver/color.h>
 
-#include <gui/color.h>
 #include <gui/eventlist.h>
 #include <gui/infoviewer.h>
 #include <gui/widget/buttons.h>

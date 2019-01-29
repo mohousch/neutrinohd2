@@ -34,9 +34,17 @@ typedef struct button_label
 	const char * localename;
 } button_label_struct;
 
-void paintButtons(CFrameBuffer* const frameBuffer, CFont* const font, const CLocaleManager* const localemanager, const int x, const int y, const unsigned int buttonwidth, const unsigned int count, const struct button_label* const content, const int dy);
 
-// head buttons right
-void paintHeadButtons(CFrameBuffer * const frameBuffer, const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content);
+class CButtons
+{
+	private:
+	public:
+		CButtons();
+
+		void paintButtons(CFrameBuffer* const frameBuffer, CFont* const font, const CLocaleManager* const localemanager, const int x, const int y, const unsigned int buttonwidth, const unsigned int count, const struct button_label* const content, const int dy);
+
+		// head buttons right
+		void paintHeadButtons(CFrameBuffer * const frameBuffer, const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content);
+};
 
 #endif /* __gui_widget_buttons_h__ */

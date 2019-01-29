@@ -24,7 +24,7 @@
 
 #include <unistd.h>
 
-#include "neutrino.h"
+#include <neutrino.h>
 #include <gui/widget/stringinput.h>
 
 #include <sys/vfs.h> // for statfs
@@ -38,10 +38,11 @@
 #include <system/debug.h>
 
 #include <gui/movieinfo.h>
-#include <gui/color.h>
 
+#include <driver/color.h>
 #include <driver/framebuffer.h>
-#include <settings.h>
+
+#include <system/settings.h>
 
 
 #define my_scandir scandir64

@@ -41,8 +41,8 @@
 #include <driver/encoding.h>
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
+#include <driver/color.h>
 
-#include <gui/color.h>
 #include <gui/filebrowser.h>
 #include <system/fsmounter.h>
 

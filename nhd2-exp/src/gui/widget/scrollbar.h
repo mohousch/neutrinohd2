@@ -39,7 +39,7 @@
 
 #include <driver/framebuffer.h>
 #include <system/settings.h>
-#include <gui/color.h>
+#include <driver/color.h>
 #include <gui/widget/window.h>
 
 

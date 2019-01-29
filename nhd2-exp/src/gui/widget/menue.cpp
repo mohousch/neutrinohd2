@@ -43,12 +43,10 @@
 
 #include <gui/widget/menue.h>
 #include <gui/widget/icons.h>
-#include <gui/widget/items2detailsline.h>
-#include <gui/widget/scrollbar.h>
 #include <gui/widget/textbox.h>
-#include <gui/widget/stringinput.h>
+#include <gui/widget/stringinput.h> // locked menu
 
-#include <gui/color.h>
+#include <driver/color.h>
 #include <gui/pluginlist.h>
 
 #include <driver/fontrenderer.h>
@@ -1948,15 +1946,6 @@ void CMenuWidget::paint()
 
 		// paint head
 		headers.paintHead(x, y, width, hheight, iconfile.c_str(), l_name);
-/*
-		frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
-	
-		//paint icon
-		frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
-	
-		// head title
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 2*ICON_OFFSET, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_RIGHT - BORDER_RIGHT - icon_head_w - 2*ICON_OFFSET, l_name, COL_MENUHEAD, 0, true); // UTF-8
-*/
 	
 		//paint foot
 		frameBuffer->paintBoxRel(x, y + height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
@@ -3081,7 +3070,7 @@ void ClistBox::paintHead()
 				buttonWidth += iw[i];
 			}
 
-			::paintHeadButtons(frameBuffer, x, y, width, hheight, hbutton_count, hbutton_labels);
+			buttons.paintHeadButtons(frameBuffer, x, y, width, hheight, hbutton_count, hbutton_labels);
 		}
 
 		// paint time/date
@@ -3100,44 +3089,6 @@ void ClistBox::paintHead()
 	else
 	{
 		headers.paintHead(x, y, width, hheight, iconfile.c_str(), l_name, true, hbutton_count, hbutton_labels);
-
-/*
-		// box
-		frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
-	
-		// icon
-		frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
-
-		// Buttons
-		int iw[hbutton_count], ih[hbutton_count];
-		int xstartPos = x + width - BORDER_RIGHT;
-		int buttonWidth = 0; //FIXME
-
-		if (hbutton_count)
-		{
-			for (unsigned int i = 0; i < hbutton_count; i++)
-			{
-				frameBuffer->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
-				xstartPos -= (iw[i] + ICON_TO_ICON_OFFSET);
-				buttonWidth += iw[i];
-			}
-
-			::paintHeadButtons(frameBuffer, x, y, width, hheight, hbutton_count, hbutton_labels);
-		}
-
-		// time/date
-		if(PaintDate)
-		{
-			std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
-		
-			timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
-	
-			g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(xstartPos - timestr_len, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
-		}
-	
-		// title
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 2*ICON_OFFSET, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_RIGHT - BORDER_RIGHT - icon_head_w - 2*ICON_OFFSET - timestr_len - buttonWidth - (hbutton_count - 1)*ICON_TO_ICON_OFFSET, l_name, COL_MENUHEAD, 0, true); // UTF-8
-*/
 	}
 }
 
@@ -3151,17 +3102,6 @@ void ClistBox::paintFoot()
 			fbutton_w = fbutton_width/fbutton_count;
 
 		headers.paintFoot(x, y + height - fheight, width, fheight, fbutton_w, fbutton_count, fbutton_labels);
-
-/*
-		// box
-		frameBuffer->paintBoxRel(x, y + height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
-
-		// buttons
-		if (fbutton_count)
-		{
-			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - fheight, fbutton_width/fbutton_count, fbutton_count, fbutton_labels, fheight);
-		}
-*/
 	}
 }
 

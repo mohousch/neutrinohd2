@@ -99,7 +99,6 @@ libneutrino_gui_a_SOURCES = \
 	power_menu.cpp
 
 libneutrino_gui2_a_SOURCES = \
-	color.cpp \
 	motorcontrol.cpp \
 	hdd_menu.cpp \
 	alphasetup.cpp \

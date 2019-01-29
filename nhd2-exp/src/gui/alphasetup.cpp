@@ -39,11 +39,10 @@
 
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
-
-#include <gui/color.h>
+#include <driver/color.h>
+#include <driver/screen_max.h>
 
 #include <gui/widget/messagebox.h>
-#include <driver/screen_max.h>
 
 #include <fcntl.h>
 #include <stdio.h>

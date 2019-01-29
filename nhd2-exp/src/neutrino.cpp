@@ -74,6 +74,7 @@
 #include <driver/stream2file.h>
 #include <driver/vcrcontrol.h>
 #include <driver/shutdown_count.h>
+#include <driver/color.h>
 
 #include <gui/epgplus.h>
 #include <gui/streaminfo2.h>
@@ -87,8 +88,6 @@
 #include <gui/widget/stringinput.h>
 #include <gui/widget/stringinput_ext.h>
 #include <gui/widget/mountchooser.h>
-
-#include <gui/color.h>
 
 #include <gui/bedit/bouqueteditor_bouquets.h>
 #include <gui/bouquetlist.h>

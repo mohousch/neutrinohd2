@@ -38,7 +38,7 @@
 #include <global.h>
 #include <neutrino.h>
 
-#include <gui/color.h>
+#include <driver/color.h>
 #include <driver/screen_max.h>
 
 #include <system/debug.h>

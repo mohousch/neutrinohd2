@@ -42,7 +42,8 @@
 #include <driver/rcinput.h>
 #include <driver/screen_max.h>
 
-#include <gui/color.h>
+#include <driver/color.h>
+
 #include <gui/widget/messagebox.h>
 #include <gui/widget/colorchooser.h>
 

@@ -43,10 +43,11 @@
 #include <driver/fontrenderer.h>
 #include <system/settings.h>
 
-#include <gui/color.h>
+#include <driver/color.h>
 
 #include <gui/widget/menue.h>
 #include <gui/widget/headers.h>
+#include <gui/widget/scrollbar.h>
 
 #include <sectionsdclient/sectionsdclient.h>
 
@@ -65,6 +66,7 @@ class CEpgData
 		CBox cScrollBar;
 
 		CHeaders headers;
+		CScrollBar scrollBar;
 
 		int sb;
 		int medlineheight;

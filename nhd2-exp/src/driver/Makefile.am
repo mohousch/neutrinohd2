@@ -41,6 +41,7 @@ libneutrino_driver_a_SOURCES = \
 	encoding.cpp \
 	fontrenderer.cpp \
 	framebuffer.cpp \
+	color.cpp \
 	rcinput.cpp \
 	vcrcontrol.cpp \
 	audioplay.cpp \

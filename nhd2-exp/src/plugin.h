@@ -78,6 +78,7 @@
 #include <driver/vfd.h>
 #endif
 #include <driver/file.h>
+#include <driver/color.h>
 
 #include <daemonc/remotecontrol.h>
 
@@ -112,7 +113,6 @@
 #include <gui/eventlist.h>
 #include <gui/epgplus.h>
 #include <gui/streaminfo2.h>
-#include <gui/color.h>
 #include <gui/bouquetlist.h>
 #include <gui/eventlist.h>
 #include <gui/channellist.h>

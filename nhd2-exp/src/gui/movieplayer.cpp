@@ -60,6 +60,7 @@
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
 #include <driver/vcrcontrol.h>
+#include <driver/color.h>
 
 #include <daemonc/remotecontrol.h>
 
@@ -67,7 +68,6 @@
 #include <system/helpers.h>
 
 #include <gui/eventlist.h>
-#include <gui/color.h>
 #include <gui/infoviewer.h>
 #include <gui/nfs.h>
 #include <gui/audio_video_select.h>

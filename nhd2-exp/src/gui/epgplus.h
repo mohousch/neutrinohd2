@@ -40,12 +40,14 @@
 #include <driver/rcinput.h>
 #include <system/settings.h>
 
-#include "color.h"
-#include "channellist.h"
-#include "infoviewer.h"
-#include "filebrowser.h"
+#include <driver/color.h>
 
-#include "widget/menue.h"
+#include <gui/channellist.h>
+#include <gui/infoviewer.h>
+#include <gui/filebrowser.h>
+
+#include <gui/widget/menue.h>
+#include <gui/widget/buttons.h>
 
 #include <string>
 
@@ -302,6 +304,8 @@ class EpgPlus
 				int x;
 				int y;
 				int width;
+
+				CButtons buttons;
 
 				static CFont*  fontBouquetChannelName;
 				static CFont*  fontEventDescription;     

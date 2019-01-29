@@ -37,7 +37,7 @@
 #include <gui/widget/stringinput.h>
 #include <gui/widget/headers.h>
 
-#include <gui/color.h>
+#include <driver/color.h>
 
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>

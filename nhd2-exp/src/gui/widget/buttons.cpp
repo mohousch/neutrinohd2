@@ -25,12 +25,16 @@
 
 #include <global.h>
 
-#include <gui/color.h>
+#include <driver/color.h>
 #include <system/settings.h>
 #include <gui/widget/buttons.h>
 
 
-void paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CLocaleManager * const localemanager, const int x, const int y, const unsigned int buttonwidth, const unsigned int count, const struct button_label * const content, const int dy)
+CButtons::CButtons()
+{
+}
+
+void CButtons::paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CLocaleManager * const localemanager, const int x, const int y, const unsigned int buttonwidth, const unsigned int count, const struct button_label * const content, const int dy)
 {
 	int iw, ih;
 	const char *l_option;
@@ -55,7 +59,7 @@ void paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CL
 }
 
 // head buttons (right)
-void paintHeadButtons(CFrameBuffer * const frameBuffer, const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content)
+void CButtons::paintHeadButtons(CFrameBuffer * const frameBuffer, const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content)
 {
 	int iw[count], ih[count];
 	int startx = x + dx - BORDER_RIGHT;

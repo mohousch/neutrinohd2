@@ -42,9 +42,8 @@
 #include <driver/rcinput.h>
 #include <driver/screen_max.h>
 
-#include <gui/color.h>
+#include <driver/color.h>
 
-#include <gui/widget/buttons.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/messagebox.h>
 
@@ -759,7 +758,7 @@ void CStringInputSMS::paint()
 	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Foot_gradient);
 
 	// foot buttons
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, ((width - 20)/4)*2, 2, CStringInputSMSButtons, ButtonHeight);
+	buttons.paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, ((width - 20)/4)*2, 2, CStringInputSMSButtons, ButtonHeight);
 }
 
 //PINInput

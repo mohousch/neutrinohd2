@@ -43,7 +43,7 @@
 #include <driver/rcinput.h>
 #include <system/settings.h>
 
-#include <gui/color.h>
+#include <driver/color.h>
 #include <gui/infoviewer.h>
 
 #include <gui/widget/menue.h>

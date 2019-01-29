@@ -45,8 +45,9 @@
 #include <vector>
 
 #include <global.h>
+
 #include <driver/framebuffer.h>
-#include <gui/color.h>
+#include <driver/color.h>
 
 #include <gui/widget/window.h>
 #include <gui/widget/scrollbar.h>

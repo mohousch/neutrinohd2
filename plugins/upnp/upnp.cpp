@@ -49,11 +49,11 @@
 #include <driver/audiofile.h>
 #include <driver/audiometadata.h>
 #include <driver/screen_max.h>
+#include <driver/color.h>
 
 #include <daemonc/remotecontrol.h>
 
 #include <gui/eventlist.h>
-#include <gui/color.h>
 #include <gui/infoviewer.h>
 
 #include <gui/widget/buttons.h>

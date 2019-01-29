@@ -33,16 +33,20 @@
 
 #include <global.h>
 #include <neutrino.h>
+
 #include <driver/rcinput.h>
-#include <gui/motorcontrol.h>
-#include <gui/color.h>
-#include <gui/widget/menue.h>
-#include <gui/widget/messagebox.h>
-#include <system/settings.h>
-#include <system/debug.h>
+#include <driver/color.h>
 #include <driver/screen_max.h>
 
-/*zapit includes*/
+#include <gui/motorcontrol.h>
+
+#include <gui/widget/menue.h>
+#include <gui/widget/messagebox.h>
+
+#include <system/settings.h>
+#include <system/debug.h>
+
+// zapit includes
 #include <satconfig.h>
 #include <frontend_c.h>
 
