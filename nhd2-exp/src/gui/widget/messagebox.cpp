@@ -424,10 +424,8 @@ void CMessageBox::refresh()
 	if (has_scrollbar()) 
 	{
 		yPos = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_theight;
-		CFrameBuffer::getInstance()->paintBoxRel(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + m_width - SCROLLBAR_WIDTH, yPos, SCROLLBAR_WIDTH, m_maxEntriesPerPage*m_fheight, COL_MENUCONTENT_PLUS_1);
-		
-		unsigned int marker_size = (m_maxEntriesPerPage*m_fheight) / m_pages;
-		CFrameBuffer::getInstance()->paintBoxRel(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + m_width - 13, yPos + m_currentPage * marker_size, 11, marker_size, COL_MENUCONTENT_PLUS_3);
+
+		scrollBar.paint(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + m_width - SCROLLBAR_WIDTH, yPos, m_maxEntriesPerPage*m_fheight, m_pages, m_currentPage);
 	}
 }
 

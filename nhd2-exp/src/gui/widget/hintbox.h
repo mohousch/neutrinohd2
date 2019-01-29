@@ -44,6 +44,7 @@
 #include <system/settings.h>
 
 #include <gui/widget/icons.h>
+#include <gui/widget/scrollbar.h>
 
 
 #define HINTBOX_WIDTH			550
@@ -66,6 +67,8 @@ class CHintBox
 		char * message;
 		std::vector<char *>line;
 		std::string iconfile;
+
+		CScrollBar scrollBar;
 		
 		void refresh(void);
 

@@ -45,6 +45,7 @@
 
 
 #define HINTBOX_MAX_HEIGHT 420
+#define HINTBOX_MAX_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX )
 
 
 CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, const int Width, const char * const Icon)
@@ -110,7 +111,10 @@ CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, con
 	{
 		nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(*it, true); // UTF-8
 		if (nw > cFrameBox.iWidth)
+		{
+			nw = HINTBOX_MAX_WIDTH;
 			cFrameBox.iWidth = nw;
+		}
 	}
 }
 
@@ -175,7 +179,10 @@ CHintBox::CHintBox(const char * Caption, const char * const Text, const int Widt
 	{
 		nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(*it, true); // UTF-8
 		if (nw > cFrameBox.iWidth)
+		{
+			nw = HINTBOX_MAX_WIDTH;
 			cFrameBox.iWidth = nw;
+		}
 	}
 }
 
@@ -250,12 +257,9 @@ void CHintBox::refresh(void)
 	// scrollBar #TODO
 	if (entries_per_page < line.size())
 	{
-		ypos = cFrameBoxTitle.iHeight + (cFrameBoxItem.iHeight >> 1);
-		CFrameBuffer::getInstance()->paintBoxRel(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, entries_per_page*cFrameBoxItem.iHeight, COL_MENUCONTENT_PLUS_1);
+		ypos = cFrameBox.iY + cFrameBoxTitle.iHeight;
 
-		unsigned int marker_size = (entries_per_page*cFrameBoxItem.iHeight) / ((line.size() + entries_per_page - 1) / entries_per_page);
-
-		CFrameBuffer::getInstance()->paintBoxRel(cFrameBox.iX + cFrameBox.iWidth - (SCROLLBAR_WIDTH - 2), ypos + current_page*marker_size, SCROLLBAR_WIDTH - 4, marker_size, COL_MENUCONTENT_PLUS_3);
+		scrollBar.paint(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, ypos, entries_per_page*cFrameBoxItem.iHeight, (line.size() + entries_per_page - 1) / entries_per_page, current_page);
 	}	
 }
 

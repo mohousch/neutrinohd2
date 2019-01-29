@@ -46,6 +46,7 @@
 #include <gui/widget/drawable.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/window.h>
+#include <gui/widget/scrollbar.h>
 
 
 #define MESSAGEBOX_WIDTH			550
@@ -72,6 +73,8 @@ class CMessageBox
 		char * m_message;
 		ContentLines m_lines;
 		std::string  m_iconfile;
+
+		CScrollBar scrollBar;
 		
 		void refresh();
 
