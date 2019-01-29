@@ -44,7 +44,9 @@
 #include <system/settings.h>
 
 #include <gui/color.h>
-#include "widget/menue.h"
+
+#include <gui/widget/menue.h>
+#include <gui/widget/headers.h>
 
 #include <sectionsdclient/sectionsdclient.h>
 
@@ -61,6 +63,8 @@ class CEpgData
 		CBox cFootBox;
 		CBox cFollowScreeningBox;
 		CBox cScrollBar;
+
+		CHeaders headers;
 
 		int sb;
 		int medlineheight;

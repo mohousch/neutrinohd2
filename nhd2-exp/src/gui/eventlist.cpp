@@ -681,15 +681,11 @@ void EventList::paint(t_channel_id channel_id)
 	}
 
 	// head
-	bool logo_ok = false;
-
 	std::string logo;
 
 	logo = frameBuffer->getLogoName(channel_id);
 
-	logo_ok = frameBuffer->checkLogo(channel_id);
-
-	listBox->setTitle(name.c_str(), logo.c_str(), logo_ok);
+	listBox->setTitle(name.c_str(), logo.c_str(), true);
 	listBox->enablePaintHead();
 	listBox->enablePaintDate();
 	listBox->setHeaderButtons(&HeadButtons, 1);

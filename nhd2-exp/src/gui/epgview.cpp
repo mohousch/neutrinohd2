@@ -506,84 +506,11 @@ void CEpgData::showHead(const t_channel_id channel_id)
 	int pos;
 	std::string text1 = epgData.title;
 
-/*
-	std::string text2 = "";
-	
-	if (g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getRenderWidth(text1, true) > ox - PIC_W - 5)
-	{
-		do
-		{
-			pos = text1.find_last_of("[ .]+");
-			if ( pos!=-1 )
-				text1 = text1.substr( 0, pos );
-		} while ( ( pos != -1 ) && (g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getRenderWidth(text1, true) > 520 - PIC_W - 5));
-		
-		text2 = epgData.title.substr(text1.length()+ 1, uint(-1) );
-	}
+	std::string logo;
 
-	int oldtoph = toph;
+	logo = frameBuffer->getLogoName(channel_id);
 
-	toph = text2 != "" ? 2*topboxheight : topboxheight;
-
-	if (oldtoph > toph)
-	{
-		frameBuffer->paintBackgroundBox(sx, sy - oldtoph - 1, sx + ox, sy );
-
-		frameBuffer->blit();
-	}
-*/
-
-	//show the epg title
-	frameBuffer->paintBoxRel(cHeadBox.iX, cHeadBox.iY, cHeadBox.iWidth, cHeadBox.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
-	
-	// paint time/date
-	int timestr_len = 0;
-	char timestr[18];
-	
-	time_t now = time(NULL);
-	struct tm *tm = localtime(&now);
-	
-	bool gotTime = g_Sectionsd->getIsTimeSet();
-
-	if(gotTime)
-	{
-		strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
-		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
-		
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(cHeadBox.iX + cHeadBox.iWidth - BORDER_RIGHT - timestr_len, cHeadBox.iY + (cHeadBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2  + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr, COL_MENUHEAD, 0, true); // UTF-8
-	}
-	
-	//channel logo
-	int PIC_W_1 = cHeadBox.iHeight*1.67;
-	int logo_w = PIC_W_1; 
-	int logo_h = cHeadBox.iHeight;
-	int logo_bpp = 0;
-	bool logo_ok = false;
-	
-	// check for logo
-	logo_ok = frameBuffer->checkLogo(channel_id);
-		
-	if(logo_ok)
-	{
-		// get logo size	
-		frameBuffer->getLogoSize(channel_id, &logo_w, &logo_h, &logo_bpp);
-		
-		// display logo
-		frameBuffer->displayLogo(channel_id, cHeadBox.iX + BORDER_LEFT, cHeadBox.iY, (logo_bpp == 4 && logo_w > PIC_W)?  PIC_W: PIC_W_1, cHeadBox.iHeight, (logo_h > cHeadBox.iHeight)? true : false, false, true);
-		
-		// title
-		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(cHeadBox.iX + BORDER_LEFT + ( (logo_bpp == 4)? logo_w : PIC_W_1) + 5, cHeadBox.iY + (cHeadBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), cHeadBox.iWidth - BORDER_LEFT - timestr_len - 5 - ( (logo_bpp == 4)? logo_w : PIC_W_1), text1, COL_MENUHEAD, 0, true);
-		
-		//if (!(text2.empty()))
-		//	g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(sx + BORDER_LEFT + 5 + (logo_ok? PIC_W + BORDER_LEFT : 0), sy - toph + 2*topheight + 3, ox - BORDER_LEFT - (logo_ok ? PIC_W + 5 : 0), text2, COL_MENUHEAD, 0, true);
-	}
-	else
-	{
-		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(cHeadBox.iX + BORDER_LEFT, cHeadBox.iY + (cHeadBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), cHeadBox.iWidth - BORDER_LEFT - timestr_len - 5, text1, COL_MENUHEAD, 0, true);
-	
-		//if (!(text2.empty()))
-		//	g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(sx + 10, sy - toph + 2*topheight + 3, ox - BORDER_RIGHT, text2, COL_MENUHEAD, 0, true);
-	}
+	headers.paintHead(cHeadBox.iX, cHeadBox.iY, cHeadBox.iWidth, cHeadBox.iHeight, logo.c_str(), text1, true, 0, NULL, true);
 }
 
 int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_startzeit, bool doLoop )
@@ -1207,11 +1134,15 @@ int CEpgData::FollowScreenings (const t_channel_id /*channel_id*/, const std::st
 	return count;
 }
 
-//
-// -- Just display or hide TimerEventbar
-// -- 2002-05-13 rasc
-//
 // foot
+struct button_label FButtons[4] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL},
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL},
+	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_EVENTLISTBAR_CHANNELSWITCH, NULL},
+	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, NULL}
+};
+
 void CEpgData::showTimerEventBar(bool _show)
 {
 	int  x, y, w, h;
@@ -1239,24 +1170,10 @@ void CEpgData::showTimerEventBar(bool _show)
 		return;
 	}
 
-	frameBuffer->paintBoxRel(x, y, w, h, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
-
-	// Button Red: Timer Record & Channelswitch
 	if (recDir != NULL)
-	{
-		pos = 0;
-	
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, x + ICON_OFFSET + cellwidth*pos, y + (h - icon_h)/2 );
+		FButtons[0].locale = LOCALE_EVENTLISTBAR_RECORDEVENT;
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ICON_OFFSET + icon_w + ICON_OFFSET + cellwidth*pos, y + (h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w - ICON_OFFSET - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_TIMERBAR_RECORDEVENT), COL_INFOBAR, 0, true); // UTF-8
-	}
-	
-	// Button Yellow: Timer Channelswitch
-	pos = 2;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + ICON_OFFSET + cellwidth*pos, y + (h - icon_h)/2 );
-
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + ICON_OFFSET + cellwidth*pos + icon_w + ICON_OFFSET, y + (h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w - ICON_OFFSET - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_TIMERBAR_CHANNELSWITCH), COL_INFOBAR, 0, true); // UTF-8
+	headers.paintFoot(x, y, w, h, cellwidth, 4, FButtons);
 }
 
 //  -- EPG Data Viewer Menu Handler Class

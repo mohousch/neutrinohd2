@@ -42,6 +42,8 @@
 #include <gui/widget/textbox.h>
 
 #include <gui/widget/icons.h>
+#include <gui/widget/headers.h>
+
 #include <driver/framebuffer.h>
 
 
@@ -51,6 +53,8 @@ class CInfoBox
 		CBox	m_cBoxFrame;
 		CBox	m_cBoxFrameText;
 		CBox	m_cBoxFrameTitleRel;
+
+		CHeaders headers;
 
 		// variables
 		std::string m_cIcon;

@@ -53,7 +53,9 @@
 
 #include <string>
 #include <vector>
+
 #include <gui/widget/textbox.h>
+#include <gui/widget/scrollbar.h>
 
 
 #define LF_MAX_ROWS 6
@@ -120,8 +122,9 @@ class CListFrame
 
 		CFrameBuffer * frameBuffer;
 		std::string m_iconTitle;
+
+		CScrollBar scrollBar;
 	public:
-		/* Constructor */
 		CListFrame();
 		CListFrame(LF_LINES* lines);
 		CListFrame(LF_LINES* lines, 

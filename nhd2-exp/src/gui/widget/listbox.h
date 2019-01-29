@@ -32,6 +32,7 @@
 #include <gui/widget/menue.h>
 #include <gui/widget/items2detailsline.h>
 #include <gui/widget/scrollbar.h>
+#include <gui/widget/headers.h>
 
 
 class ClistBoxEntry
@@ -81,6 +82,7 @@ class ClistBoxEntry
 		//
 		CItems2DetailsLine itemsLine;
 		CScrollBar scrollBar;
+		CHeaders headers;
 
 		virtual void paintItems();
 

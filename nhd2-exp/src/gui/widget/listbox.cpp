@@ -280,7 +280,8 @@ void ClistBoxEntry::paintItems()
 void ClistBoxEntry::paintHead()
 {
 	if(paintTitle)
-		::paintHead(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, iconfile.c_str(), l_name.c_str(), paintDate, hbutton_count, hbutton_labels, logo);
+		headers.paintHead(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, iconfile.c_str(), l_name.c_str(), paintDate, hbutton_count, hbutton_labels, logo);
+		
 }
 
 void ClistBoxEntry::paintFoot()
@@ -292,7 +293,7 @@ void ClistBoxEntry::paintFoot()
 		if(fbutton_count != 0)
 			fbutton_w = cFrameBox.iWidth/fbutton_count;
 
-		::paintFoot(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - footInfoHeight - fheight, cFrameBox.iWidth, fheight, fbutton_w, fbutton_count, fbutton_labels);
+		headers.paintFoot(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - footInfoHeight - fheight, cFrameBox.iWidth, fheight, fbutton_w, fbutton_count, fbutton_labels);
 	}
 }
 

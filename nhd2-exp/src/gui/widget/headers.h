@@ -24,12 +24,23 @@
 #include <driver/framebuffer.h>
 
 
-// head
-void paintHead(int x, int y, int dx, int dy, const char* icon, const neutrino_locale_t caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL, bool logo = false);
+class CHeaders
+{
+	private:
+	public:
+		CHeaders();
 
-void paintHead(int x, int y, int dx, int dy, const char* icon, const std::string caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL, bool logo = false);
+		// head
+		void paintHead(int x, int y, int dx, int dy, const char* icon, const neutrino_locale_t caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL, bool logo = false);
 
-// foot
-void paintFoot(int x, int y, int dx, int dy, const unsigned int buttonwidth = 0, const unsigned int count = 0, const struct button_label * const content = NULL);
+		void paintHead(CBox position, const char* icon, const neutrino_locale_t caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL, bool logo = false);
+
+		void paintHead(int x, int y, int dx, int dy, const char* icon, const std::string caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL, bool logo = false);
+		void paintHead(CBox position, const char* icon, const std::string caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL, bool logo = false);
+
+		// foot
+		void paintFoot(int x, int y, int dx, int dy, const unsigned int buttonwidth = 0, const unsigned int count = 0, const struct button_label * const content = NULL);
+		void paintFoot(CBox position, const unsigned int buttonwidth = 0, const unsigned int count = 0, const struct button_label * const content = NULL);
+};
 
 #endif

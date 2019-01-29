@@ -47,6 +47,7 @@
 #include <gui/widget/buttons.h>
 #include <gui/widget/items2detailsline.h>
 #include <gui/widget/scrollbar.h>
+#include <gui/widget/headers.h>
 
 #include <gui/color.h>
 #include <gui/plugins.h>
@@ -554,6 +555,7 @@ class CMenuWidget : public CMenuTarget
 		CBox cFrameFootInfo;
 
 		//
+		CHeaders headers;
 		CItems2DetailsLine itemsLine;
 		CScrollBar scrollBar;
 		
@@ -693,6 +695,7 @@ class ClistBox : public CMenuTarget
 		bool shrinkMenu;
 
 		//
+		CHeaders headers;
 		CItems2DetailsLine itemsLine;
 		CScrollBar scrollBar;
 		

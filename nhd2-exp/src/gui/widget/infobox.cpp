@@ -204,26 +204,7 @@ void CInfoBox::initFramesRel(void)
 //////////////////////////////////////////////////////////////////////
 void CInfoBox::refreshTitle(void)
 {
-	// titlebox
-	frameBuffer->paintBoxRel(m_cBoxFrameTitleRel.iX, 
-					m_cBoxFrameTitleRel.iY, 
-					m_cBoxFrameTitleRel.iWidth, 
-					m_cBoxFrameTitleRel.iHeight, 
-					COL_MENUHEAD_PLUS_0, 
-					RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
-
-	// icon
-	int iw = 0;
-	int ih = 0;
-	if (!m_cIcon.empty())
-	{
-		frameBuffer->getIconSize(m_cIcon.c_str(), &iw, &ih);
-	
-		frameBuffer->paintIcon(m_cIcon.c_str(), m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
-	}
-
-	//
-	m_pcFontTitle->RenderString(m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + ICON_OFFSET, m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2 + m_pcFontTitle->getHeight(), m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + 2*iw + ICON_OFFSET), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	headers.paintHead(m_cBoxFrameTitleRel, m_cIcon.c_str(), m_cTitle.c_str());
 }
 
 //////////////////////////////////////////////////////////////////////
