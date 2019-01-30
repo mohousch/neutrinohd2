@@ -79,6 +79,25 @@ void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv
 		return;
 	}
 
+	///
+	status = lua_pcall(lua, 0, LUA_MULTRET, 0);
+
+	if (status)
+	{
+		bool isString = lua_isstring(lua, -1);
+		const char *null = "NULL";
+
+		dprintf(DEBUG_NORMAL, "neutrinoLua::runScript: error in script: %s\n", isString ? lua_tostring(lua, -1) : null);
+
+		InfoBox(isString ? lua_tostring(lua, -1) : "", g_Locale->getText(LOCALE_MESSAGEBOX_ERROR), NEUTRINO_ICON_ERROR);
+
+		if (error_string)
+			*error_string = std::string(lua_tostring(lua, -1));
+	}
+	///
+
+/*
+
 	int argvSize = 1;
 	int n = 0;
 
@@ -99,7 +118,7 @@ void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv
 		}
 	}
 
-	lua_setglobal(lua, "arg");
+	//lua_setglobal(lua, "arg");
 
 	status = lua_pcall(lua, 0, LUA_MULTRET, 0);
 
@@ -121,6 +140,7 @@ void neutrinoLua::runScript(const char *fileName, std::vector<std::string> *argv
 		if (error_string)
 			*error_string = std::string(lua_tostring(lua, -1));
 	}
+*/
 }
 
 // Example: runScript(fileName, "Arg1", "Arg2", "Arg3", ..., NULL);
