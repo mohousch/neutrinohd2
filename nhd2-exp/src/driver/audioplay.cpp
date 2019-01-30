@@ -232,6 +232,10 @@ CAudioPlayer::CAudioPlayer()
 	init();
 }
 
+CAudioPlayer::~CAudioPlayer()
+{
+}
+
 void CAudioPlayer::init()
 {
 	CBaseDec::Init();

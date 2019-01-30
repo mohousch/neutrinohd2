@@ -66,7 +66,7 @@ class CBaseDec
 		CBaseDec(){};
 		
 	private:
-		unsigned static int mSamplerate;
+		static unsigned int mSamplerate;
 };
 
 #endif

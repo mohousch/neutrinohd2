@@ -40,11 +40,14 @@ libneutrino_gui_widget_a_SOURCES = \
 	listbox.cpp
 
 libneutrino_gui_widget2_a_SOURCES = \
-	colorchooser.cpp \
-	keychooser.cpp \
-	mountchooser.cpp \
 	progresswindow.cpp \
 	progressbar.cpp
+
+libneutrino_gui_widget2_a_SOURCES += \
+	colorchooser.cpp \
+	keychooser.cpp \
+	mountchooser.cpp
+
 
 
 

@@ -119,7 +119,7 @@ class CFrameBuffer
 			uint8_t r;
 			uint8_t g;
 			uint8_t b;
-		} __attribute__ ((packed));
+		} /*__attribute__ ((packed))*/;
 
 		struct rawHeader
 		{
@@ -128,7 +128,7 @@ class CFrameBuffer
 			uint8_t height_lo;
 			uint8_t height_hi;
 			uint8_t transp;
-		} __attribute__ ((packed));
+		} /*__attribute__ ((packed))*/;
 		
 		// icon
 		struct Icon
@@ -243,7 +243,7 @@ class CFrameBuffer
 		//
 		fb_pixel_t* paintBoxRel2Buf(const int dx, const int dy, const fb_pixel_t col, fb_pixel_t* buf = NULL, int radius = 0, int type = CORNER_ALL);
 
-		inline void paintHLineRelInternal2Buf(const int& x, const int& dx, const int& y, const int& box_dx, const fb_pixel_t& col, fb_pixel_t* buf);
+		void paintHLineRelInternal2Buf(const int& x, const int& dx, const int& y, const int& box_dx, const fb_pixel_t& col, fb_pixel_t* buf);
 
 		int  limitRadius(const int& dx, const int& dy, int& radius);
 		void setCornerFlags(const int& type);
@@ -267,7 +267,7 @@ class CFrameBuffer
 		void paintHLineRel(int x, int dx, int y, const fb_pixel_t col);
 
 		void paintFrameBox(const int x, const int y, const int dx, const int dy, const fb_pixel_t col);
-		void paintFrameBox(const int x, const int y, const int dx, const int dy, const int px, const fb_pixel_t col, int radius = 0, int type = CORNER_ALL);
+		//void paintFrameBox(const int x, const int y, const int dx, const int dy, const int px, const fb_pixel_t col, int radius = 0, int type = CORNER_ALL);
 
 		void setIconBasePath(const std::string & iconPath);
 		void getIconSize(const char * const filename, int* width, int *height);
@@ -313,7 +313,7 @@ class CFrameBuffer
 		fb_pixel_t * getImage (const std::string & name, int width, int height, ScalingMode scaling = COLOR);
 		void * convertRGB2FB(unsigned char * rgbbuff, unsigned long x, unsigned long y, int transp = 0xFF, int m_transparent = TM_BLACK, bool alpha = false);
 		void displayRGB(unsigned char * rgbbuff, int x_size, int y_size, int x_pan, int y_pan, int x_offs, int y_offs, bool clearfb = true);
-		bool displayImage(const std::string & name, int posx = 0, int posy = 0, int width = CFrameBuffer::getInstance()->getScreenWidth(true), int height = CFrameBuffer::getInstance()->getScreenHeight(true), ScalingMode scaling = COLOR, int x_pan = 0, int y_pan = 0, bool clearfb = false);
+		bool displayImage(const std::string & name, int posx = 0, int posy = 0, int width = DEFAULT_XRES, int height = DEFAULT_YRES, ScalingMode scaling = COLOR, int x_pan = 0, int y_pan = 0, bool clearfb = false);
 
 		//
 		bool displayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale = false, bool center_x = true, bool center_y = true);
