@@ -47,7 +47,7 @@ neutrino_python_wrap.cxx :
 	$(AM_V_GEN)$(SWIG) $(AX_SWIG_PYTHON_OPT) neutrino_python.i
 
 #installdir = $(pkglibdir)/python
-installdir = $(PLUGINDIR)/neutrinohd2/python
+installdir = $(DATADIR)/neutrinohd2/python
 
 nobase_install_PYTHON = \
 	neutrino.py
