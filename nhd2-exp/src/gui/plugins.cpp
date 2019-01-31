@@ -426,7 +426,7 @@ void CPlugins::startPlugin(int number)
 	{
 		neutrinoLua* luaInvoker = new neutrinoLua();
 
-		luaInvoker->runScript(plugin_list[number].pluginfile.c_str());
+		luaInvoker->execFile(plugin_list[number].pluginfile.c_str());
 
 		delete luaInvoker;
 		luaInvoker = NULL;

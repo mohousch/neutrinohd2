@@ -5534,7 +5534,6 @@ int main(int argc, char *argv[])
 	// set python path
 #if ENABLE_PYTHON
 	setenv("PYTHONPATH", DATADIR "/neutrinohd2/python", 0);
-	//setenv("PYTHONPATH", eEnv::resolve("${libdir}/enigma2/python").c_str(), 0);
 #endif
 
 	return CNeutrinoApp::getInstance()->run(argc, argv);

@@ -40,8 +40,8 @@ class neutrinoPython
 		neutrinoPython();
 		~neutrinoPython();
 
-		int execFile(const char *filename);
-		int execute(const std::string &pythonfile, const std::string &funcname);
+		int execFile(const char *fileName);
+		int execute(const std::string &moduleName, const std::string &funcName);
 };
 
 #endif

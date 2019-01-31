@@ -46,7 +46,6 @@ nodist_libneutrino_interfaces_python_a_SOURCES = \
 neutrino_python_wrap.cxx :
 	$(AM_V_GEN)$(SWIG) $(AX_SWIG_PYTHON_OPT) -I$(top_srcdir) -cpperraswarn neutrino_python.i
 
-#installdir = $(pkglibdir)/python
 installdir = $(DATADIR)/neutrinohd2/python
 
 nobase_install_PYTHON = \

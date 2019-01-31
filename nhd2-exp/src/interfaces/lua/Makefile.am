@@ -44,7 +44,7 @@ nodist_libneutrino_interfaces_lua_a_SOURCES = \
 	neutrino_lua_wrap.cxx
 
 neutrino_lua_wrap.cxx :
-	$(AM_V_GEN)$(SWIG) -lua neutrino_lua.i
+	$(AM_V_GEN)$(SWIG) -lua -I$(top_srcdir) -cpperraswarn neutrino_lua.i
 
 CLEANFILES = neutrino_lua_wrap.cxx
 

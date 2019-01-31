@@ -49,13 +49,7 @@ class neutrinoLua
 		neutrinoLua();
 		~neutrinoLua();
 
-		void runScript(const char *fileName, std::vector<std::string> *argv = NULL, std::string *result_code = NULL, std::string *result_string = NULL, std::string *error_string = NULL);
-	void abortScript();
-
-		// Example: runScript(fileName, "Arg1", "Arg2", "Arg3", ..., NULL);
-		// Type of all parameters: const char*
-		// The last parameter to NULL is imperative.
-		void runScript(const char *fileName, const char *arg0, ...);
+		int execFile(const char *fileName);
 };
 
 #endif

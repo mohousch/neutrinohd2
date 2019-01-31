@@ -80,8 +80,18 @@
 #include <gui/widget/progressbar.h>
 #include <gui/widget/progresswindow.h>
 
+#include <gui/widget/menue.h>
 #include <gui/widget/messagebox.h>
+
+// gui
+#include <gui/movieinfo.h>
+#include <gui/audioplayer.h>
+#include <gui/movieplayer.h>
+#include <gui/pictureviewer.h>
 %}
+
+%include "typemaps.i"
+%include "std_string.i"
 
 %include <config.h>
 %include <src/global.h>
@@ -131,6 +141,14 @@
 %include <src/gui/widget/progressbar.h>
 %include <src/gui/widget/progresswindow.h>
 
+//%include <src/gui/widget/menue.h>
 %include <src/gui/widget/messagebox.h>
+
+// gui
+%include <src/gui/movieinfo.h>
+%include <src/gui/audioplayer.h>
+%include <src/gui/movieplayer.h>
+%include <src/gui/pictureviewer.h>
+
 
 

@@ -58,7 +58,7 @@ int neutrinoPython::execFile(const char *filename)
 	return ret;
 }
 
-int neutrinoPython::execute(const std::string &pythonfile, const std::string &funcname)
+int neutrinoPython::execute(const std::string &moduleName, const std::string &funcName)
 {
 	PyObject* pName;
 	PyObject* pModule;
@@ -67,7 +67,7 @@ int neutrinoPython::execute(const std::string &pythonfile, const std::string &fu
 	PyObject* pArgs;
 	PyObject* pValue;
 
-	pName = PyString_FromString(pythonfile.c_str());
+	pName = PyString_FromString(moduleName.c_str());
 
 	pModule = PyImport_Import(pName);
 	Py_DECREF(pName);
@@ -76,7 +76,7 @@ int neutrinoPython::execute(const std::string &pythonfile, const std::string &fu
 	{
 		pDict = PyModule_GetDict(pModule);
 
-		pFunc = PyDict_GetItemString(pDict, funcname.c_str());
+		pFunc = PyDict_GetItemString(pDict, funcName.c_str());
 
 		if (pFunc && PyCallable_Check(pFunc))
 		{

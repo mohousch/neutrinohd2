@@ -1,5 +1,5 @@
 /*
-	$Id: neutrino_lua.i 20.01.2019 mohousch Exp $
+	$Id: neutrino_python.i 20.01.2019 mohousch Exp $
 
 	Kommentar:
 
@@ -28,81 +28,129 @@
 
 %module neutrino
 %{
-#define SWIG_FILE_WITH_INIT
+#define SWIG_COMPILE
+
+#include <config.h>
+#include <src/global.h>
+#include <src/neutrino.h>
+
+// libs
+#include <libconfigfile/configfile.h>
+
+/*
+#include <lib/connection/basicclient.h>
+#include <lib/connection/basicserver.h>
+#include <lib/connection/basicsocket.h>
+#include <lib/connection/basicmessage.h>
+#include <lib/connection/messagetools.h>
+*/
+
+// driver
+#include <driver/framebuffer.h>
+#include <driver/fontrenderer.h>
+#include <driver/color.h>
+#include <driver/rcinput.h>
+#include <driver/file.h>
+#include <driver/audiofile.h>
+#include <driver/audiometadata.h>
+#include <driver/screen_max.h>
+#include <driver/encoding.h>
+#include <driver/pictureviewer/pictureviewer.h>
+#include <driver/audioplay.h>
+#include <driver/audiodec/basedec.h>
+
+// system
+#include <system/settings.h>
+#include <system/debug.h>
+#include <system/localize.h>
+#include <system/locals.h>
+#include <system/setting_helpers.h>
+#include <system/helpers.h>
+#include <system/tmdbparser.h>
+#include <system/ytparser.h>
+
+// widget
+#include <gui/widget/icons.h>
+#include <gui/widget/drawable.h>
+#include <gui/widget/window.h>
+#include <gui/widget/headers.h>
+#include <gui/widget/scrollbar.h>
+#include <gui/widget/icons.h>
+#include <gui/widget/items2detailsline.h>
+#include <gui/widget/progressbar.h>
+#include <gui/widget/progresswindow.h>
+
+#include <gui/widget/menue.h>
 #include <gui/widget/messagebox.h>
+#include <gui/widget/helpbox.h>
+
+// gui
+#include <gui/movieinfo.h>
+#include <gui/audioplayer.h>
+#include <gui/movieplayer.h>
+#include <gui/pictureviewer.h>
 %}
 
-class CMessageBox
-{
-	protected:
-		CWindow m_cBoxWindow;
-		CWindow m_cTitleWindow;
-		CWindow m_cBodyWindow;
+%include "typemaps.i"
+%include "std_string.i"
 
-		unsigned int m_currentPage;
-		std::vector<int>m_startEntryOfPage;
-		int m_maxEntriesPerPage;
-		int m_pages;
+%include <config.h>
+%include <src/global.h>
+%include <src/neutrino.h>
 
-		int m_width;
-		int m_height;
+// libs
+%include <lib/libconfigfile/configfile.h>
+/*
+%include <lib/connection/basicclient.h>
+%include <lib/connection/basicserver.h>
+%include <lib/connection/basicsocket.h>
+%include <lib/connection/messagetools.h>
+*/
 
-		int m_fheight;
-		int m_theight;
+// driver
+%include <src/driver/fontrenderer.h>
+%include <src/driver/framebuffer.h>
+%include <src/driver/color.h>
+%include <src/driver/rcinput.h>
+%include <src/driver/file.h>
+%include <src/driver/audiofile.h>
+%include <src/driver/audiometadata.h>
+%include <src/driver/screen_max.h>
+%include <src/driver/encoding.h>
+%include <src/driver/pictureviewer/pictureviewer.h>
+%include <src/driver/audioplay.h>
+%include <src/driver/audiodec/basedec.h>
 
-		std::string m_caption;
-		char * m_message;
-		ContentLines m_lines;
-		std::string  m_iconfile;
-		
-		void refresh();
+// system
+%include <src/system/settings.h>
+%include <src/system/debug.h>
+%include <src/system/localize.h>
+%include <src/system/locals.h>
+%include <src/system/setting_helpers.h>
+%include <src/system/helpers.h>
+%include <src/system/tmdbparser.h>
+%include <src/system/ytparser.h>
 
-		void init(const char* const Caption, const int Width, const char * const Icon);
+// widget
+%include <src/gui/widget/icons.h>
+%include <src/gui/widget/drawable.h>
+%include <src/gui/widget/window.h>
+%include <src/gui/widget/headers.h>
+%include <src/gui/widget/scrollbar.h>
+%include <src/gui/widget/icons.h>
+%include <src/gui/widget/items2detailsline.h>
+%include <src/gui/widget/progressbar.h>
+%include <src/gui/widget/progresswindow.h>
 
-		bool has_scrollbar(void);
-		void scroll_up(void);
-		void scroll_down(void);
+//%include <src/gui/widget/menue.h>
+%include <src/gui/widget/messagebox.h>
+%include <src/gui/widget/helpbox.h>
 
-		void paint(void);
-		void hide(void);
+// gui
+%include <src/gui/movieinfo.h>
+%include <src/gui/audioplayer.h>
+%include <src/gui/movieplayer.h>
+%include <src/gui/pictureviewer.h>
 
-	private:
-		uint32_t  showbuttons;
-		bool returnDefaultOnTimeout;
-
-		void paintButtons();
-
-	public:
-		enum result_
-		{
-			mbrYes    = 0,
-			mbrNo     = 1,
-			mbrCancel = 2,
-			mbrBack   = 3,
-			mbrOk     = 4
-		} result;
-	
-		enum buttons_
-		{
-			mbYes= 0x01,
-			mbNo = 0x02,
-			mbCancel = 0x04,
-			mbAll = 0x07,
-			mbBack = 0x08,
-			mbOk = 0x10,
-			mbNone = 0x20
-		} buttons;
-	
-		// Text & Caption are always UTF-8 encoded
-		CMessageBox(const neutrino_locale_t Caption, const char * const Text, const int Width = MESSAGEBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
-		CMessageBox(const neutrino_locale_t Caption, ContentLines& Lines, const int Width = MESSAGEBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
-		CMessageBox(const char * const Caption, const char * const Text, const int Width = MESSAGEBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
-		CMessageBox(const char * const Caption, ContentLines& Lines, const int Width = MESSAGEBOX_WIDTH, const char * const Icon = NULL, const CMessageBox::result_ Default = mbrYes, const uint32_t ShowButtons = mbAll);
-
-		~CMessageBox(void);
-
-		int exec(int timeout = -1);
-		void returnDefaultValueOnTimeout(bool returnDefault);
-};
 
 
