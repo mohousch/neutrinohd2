@@ -37,14 +37,6 @@
 // libs
 #include <libconfigfile/configfile.h>
 
-/*
-#include <lib/connection/basicclient.h>
-#include <lib/connection/basicserver.h>
-#include <lib/connection/basicsocket.h>
-#include <lib/connection/basicmessage.h>
-#include <lib/connection/messagetools.h>
-*/
-
 // driver
 #include <driver/framebuffer.h>
 #include <driver/fontrenderer.h>
@@ -79,19 +71,28 @@
 #include <gui/widget/items2detailsline.h>
 #include <gui/widget/progressbar.h>
 #include <gui/widget/progresswindow.h>
-
-#include <gui/widget/menue.h>
 #include <gui/widget/messagebox.h>
+#include <gui/widget/helpbox.h>
+#include <gui/widget/listbox.h>
+#include <gui/widget/hintbox.h>
+#include <gui/widget/infobox.h>
+#include <gui/widget/listframe.h>
+#include <gui/widget/stringinput.h>
+#include <gui/widget/textbox.h>
+#include <gui/widget/menue.h>
 
 // gui
 #include <gui/movieinfo.h>
 #include <gui/audioplayer.h>
 #include <gui/movieplayer.h>
 #include <gui/pictureviewer.h>
+#include <gui/filebrowser.h>
 %}
 
 %include "typemaps.i"
 %include "std_string.i"
+%include "stdint.i"
+//%include "std_vector.i"
 
 %include <config.h>
 %include <src/global.h>
@@ -99,12 +100,6 @@
 
 // libs
 %include <lib/libconfigfile/configfile.h>
-/*
-%include <lib/connection/basicclient.h>
-%include <lib/connection/basicserver.h>
-%include <lib/connection/basicsocket.h>
-%include <lib/connection/messagetools.h>
-*/
 
 // driver
 %include <src/driver/fontrenderer.h>
@@ -140,15 +135,25 @@
 %include <src/gui/widget/items2detailsline.h>
 %include <src/gui/widget/progressbar.h>
 %include <src/gui/widget/progresswindow.h>
-
-//%include <src/gui/widget/menue.h>
 %include <src/gui/widget/messagebox.h>
+%include <src/gui/widget/helpbox.h>
+%include <src/gui/widget/listbox.h>
+%include <src/gui/widget/hintbox.h>
+%include <src/gui/widget/infobox.h>
+%include <src/gui/widget/listframe.h>
+%include <src/gui/widget/stringinput.h>
+//%include <src/gui/widget/textbox.h>
+//%include <src/gui/widget/menue.h>
 
 // gui
 %include <src/gui/movieinfo.h>
 %include <src/gui/audioplayer.h>
 %include <src/gui/movieplayer.h>
 %include <src/gui/pictureviewer.h>
+%include <src/gui/filebrowser.h>
+
+
+
 
 
 
