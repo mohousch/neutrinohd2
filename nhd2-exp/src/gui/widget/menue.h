@@ -588,13 +588,13 @@ class CMenuWidget : public CMenuTarget
 		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = CRCInput::RC_nokey, bool enabled = true);
 
 		//
-		void enableWidgetChange(void){widgetChange = true;};
+		void enableWidgetChange(){widgetChange = true;};
 		void setWidgetType(int type){widgetType = type;};
-		int getWidgetType(void){return widgetType;};
+		int getWidgetType(){return widgetType;};
 
 		// Frame
-		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
-		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
+		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
+		void setItemBoxColor(fb_pixel_t col) {itemBoxColor = col;};
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 
 		//
@@ -759,13 +759,13 @@ class ClistBox : public CMenuTarget
 
 		//
 		void setWidgetType(int type){widgetType = type; widget.push_back(widgetType);};
-		int getWidgetType(void){return widgetType;};
-		void enableWidgetChange(void){widgetChange = true;};
+		int getWidgetType(){return widgetType;};
+		void enableWidgetChange(){widgetChange = true;};
 		void addWidget(int wtype){widget.push_back(wtype);};
 
 		// Frame
-		void setBackgroundColor(fb_pixel_t col = COL_BACKGROUND) {backgroundColor = col;};
-		void setItemBoxColor(fb_pixel_t col = COL_MENUCONTENTSELECTED_PLUS_0) {itemBoxColor = col;};
+		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
+		void setItemBoxColor(fb_pixel_t col) {itemBoxColor = col;};
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 
 		void setName(const std::string& p_name){nameString = p_name;};

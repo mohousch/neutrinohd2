@@ -139,9 +139,9 @@ class CTextBox
 		CTextBox(const char* text);
 		CTextBox(const char* text, 
 					CFont* font_text,
-					const int mode = SCROLL, 
-					const CBox* position = NULL,
-					fb_pixel_t textBackgroundColor = COL_MENUCONTENT_PLUS_0);
+					const int mode, 
+					const CBox* position,
+					fb_pixel_t textBackgroundColor);
 
 		virtual ~CTextBox();
 
@@ -160,7 +160,7 @@ class CTextBox
 		inline	void	movePosition(int x, int y){m_cFrame.iX = x; m_cFrame.iY = y;};
 
 		void setCorner(int Radius = NO_RADIUS, int Type = CORNER_NONE);
-		void setBackGroundColor(fb_pixel_t col = COL_MENUCONTENT_PLUS_0){m_textBackgroundColor = col;};
+		void setBackGroundColor(fb_pixel_t col){m_textBackgroundColor = col;};
 		void setGradient(int grad = nogradient){gradient = grad;};
 
 		void paint (void);

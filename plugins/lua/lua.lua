@@ -3,13 +3,16 @@ print("lua: Hello World")
 neutrino = require 'neutrino'
 
 -- messagebox
-mBox = neutrino.CMessageBox("neutrino: lua","first test\ntesting CMessageBox\ndas ist alles ;-)")
+mBox = neutrino.CMessageBox("CMessageBox: lua","first test\ntesting CMessageBox\ndas ist alles ;-)")
 mBox:exec(-1)
 
 -- helpbox
 --hbox = neutrino.CHelpBox()
---hbox.addSeparator(null)
---hbox:show("neutrino: lua")
+--hbox.addLine(hbox,"neutrino: lua")
+--hbox.addSeparator(hbox)
+--hbox.addLine(hbox,"first test")
+--hbox.addLine(hbox,"testing CHelpBox\ndas ist alles ;-)")
+--hbox:show("CHelpBox: lua")
 
 -- pictureviewergui
 --Pic = neutrino.CPictureViewerGui()
@@ -17,6 +20,8 @@ mBox:exec(-1)
 
 -- movieplayergui
 --Movie = neutrino.CMoviePlayerGui()
+--m = neutrino.MI_MOVIE_INFO("/home/Music/AUD-20160209-WA0000.mp3")
+--Movie.addToPlaylist(Movie,m)
 --Movie:exec(null,"")
 
 -- filebrowser
@@ -42,7 +47,7 @@ mBox:exec(-1)
 --il:paint(150,10,550,615,80,35,30,1)
 --
 
--- listbox
+-- listboxEntry
 --listbox = neutrino.ClistBoxEntry(150,10,550,615)
 --listbox:setTitle("test", neutrino.NEUTRINO_ICON_MOVIE)
 --listbox:enablePaintHead()
@@ -58,16 +63,33 @@ mBox:exec(-1)
 --info = neutrino.CInfoBox("first test\ntesting CHintBox\ndas ist alles ;-)")
 --info:exec()
 
--- stringinput
-
 -- pictureviewer
 --pic = neutrino.CPictureViewer()
 --pic:showImage("/home/mohousch/funart.png")
---pic:displayImage()
 
 -- framebuffer
 --frame = neutrino.CFrameBuffer()
 --frame:paintBackground()
+
+-- listbox
+--listbox = neutrino.ClistBox("test", neutrino.NEUTRINO_ICON_MOVIE)
+--listbox:enablePaintDate()
+--listbox.addWidget(listbox, neutrino.WIDGET_CLASSIC)
+--listbox.addWidget(listbox, neutrino.WIDGET_FRAME)
+--listbox.enableWidgetChange(listbox)
+--listbox:exec(null, "")
+
+-- menuwidget
+--listbox = neutrino.CMenuWidget("test", neutrino.NEUTRINO_ICON_MOVIE)
+--listbox.enableWidgetChange(listbox)
+--listbox:exec(null, "")
+
+-- playback
+--playback = neutrino.cPlayback()
+--playback:Close()
+--playback:Open()
+--playback:Start("/home/Music/AUD-20160209-WA0000.mp3")
+--playback:Play()
 
 
 

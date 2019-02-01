@@ -36,6 +36,7 @@
 
 // libs
 #include <libconfigfile/configfile.h>
+#include <libdvbapi/playback_cs.h>
 
 // driver
 #include <driver/framebuffer.h>
@@ -93,6 +94,8 @@
 %include "std_string.i"
 %include "stdint.i"
 //%include "std_vector.i"
+%include "carrays.i"
+%include "cpointer.i"
 
 %include <config.h>
 %include <src/global.h>
@@ -100,6 +103,7 @@
 
 // libs
 %include <lib/libconfigfile/configfile.h>
+%include <lib/libdvbapi/playback_cs.h>
 
 // driver
 %include <src/driver/fontrenderer.h>
@@ -142,8 +146,8 @@
 %include <src/gui/widget/infobox.h>
 %include <src/gui/widget/listframe.h>
 %include <src/gui/widget/stringinput.h>
-//%include <src/gui/widget/textbox.h>
-//%include <src/gui/widget/menue.h>
+%include <src/gui/widget/textbox.h>
+%include <src/gui/widget/menue.h>
 
 // gui
 %include <src/gui/movieinfo.h>

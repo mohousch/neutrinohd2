@@ -87,7 +87,7 @@ CInfoBox::CInfoBox(  const char * text,
 	// initialise the window frames first
 	initFramesRel();
 
-	m_pcTextBox = new CTextBox(text, fontText, _mode, &m_cBoxFrameText);
+	m_pcTextBox = new CTextBox(text, fontText, _mode, &m_cBoxFrameText, COL_MENUCONTENT_PLUS_0);
 
 	if(_mode & CTextBox::AUTO_WIDTH || _mode & CTextBox::AUTO_HIGH)
 	{

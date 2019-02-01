@@ -42,7 +42,7 @@ CSysInfoWidget::CSysInfoWidget(int m)
        
 	//foot height
 	footIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
-	cFrameBoxFoot.iHeight = /*std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), footIcon.iHeight) + 6*/cFrameBoxTitle.iHeight;
+	cFrameBoxFoot.iHeight = cFrameBoxTitle.iHeight;
 	
 	// coordinate
 	cFrameBox.iX = (((g_settings.screen_EndX - g_settings.screen_StartX) - cFrameBox.iWidth) / 2) + g_settings.screen_StartX;
@@ -56,7 +56,7 @@ CSysInfoWidget::CSysInfoWidget(int m)
 	cFrameBoxText.iWidth = cFrameBox.iWidth;
 	cFrameBoxText.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight;
 
-	textBox = new CTextBox("", g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST], CTextBox::SCROLL, &cFrameBoxText);
+	textBox = new CTextBox("", g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST], CTextBox::SCROLL, &cFrameBoxText, COL_MENUCONTENT_PLUS_0);
 }
 
 CSysInfoWidget::~CSysInfoWidget()

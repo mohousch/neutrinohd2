@@ -606,7 +606,7 @@ void CTestMenu::testCTextBox()
 	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
 	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20);
 	
-	CTextBox * textBox = new CTextBox("CTextBox", NULL, CTextBox::SCROLL, &Box);
+	CTextBox * textBox = new CTextBox("CTextBox", NULL, CTextBox::SCROLL, &Box, COL_MENUCONTENT_PLUS_0);
 	
 	std::string text = "testing CTextBox";
 		
