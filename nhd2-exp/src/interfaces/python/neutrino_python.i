@@ -93,9 +93,9 @@
 %include "typemaps.i"
 %include "std_string.i"
 %include "stdint.i"
-//%include "std_vector.i"
 %include "carrays.i"
 %include "cpointer.i"
+//%include "std_vector.i"
 
 %include <config.h>
 %include <src/global.h>

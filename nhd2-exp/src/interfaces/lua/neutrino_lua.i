@@ -93,7 +93,7 @@
 %include "typemaps.i"
 %include "std_string.i"
 %include "stdint.i"
-//%include "std_vector.i"
+%include "std_vector.i"
 %include "carrays.i"
 %include "cpointer.i"
 
