@@ -1,8 +1,4 @@
-SUBDIRS = driver system zapit timerd nhttpd sectionsd daemonc gui
-
-if ENABLE_PYTHON
-SUBDIRS += interfaces
-endif
+SUBDIRS = driver system zapit timerd nhttpd sectionsd daemonc gui interfaces
 
 AM_CPPFLAGS = \
 	-I$(top_builddir) \

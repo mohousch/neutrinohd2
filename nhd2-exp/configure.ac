@@ -9,8 +9,7 @@ TUXBOX_APPS_DVB
 TUXBOX_APPS_DRIVER
 TUXBOX_BOXTYPE
 
-AX_PKG_SWIG
-AX_SWIG_ENABLE_CXX
+AX_PTHREAD
 
 AC_PROG_CC
 AC_PROG_CXX
@@ -143,9 +142,11 @@ AM_CONDITIONAL(ENABLE_PYTHON,test "$enable_python" = "yes")
 
 if test "$enable_python" = "yes"; then
 AM_PATH_PYTHON
+AX_PKG_SWIG
+AX_SWIG_ENABLE_CXX
+AX_PTHREAD
 AX_SWIG_PYTHON
 AX_PYTHON_DEVEL
-AX_PTHREAD
 
 AC_DEFINE(ENABLE_PYTHON,1,[include python as interface support])
 fi
@@ -157,10 +158,11 @@ AC_ARG_ENABLE(lua,
 AM_CONDITIONAL(ENABLE_LUA,test "$enable_lua" = "yes")
 
 if test "$enable_lua" = "yes"; then
+AX_PKG_SWIG
+AX_SWIG_ENABLE_CXX
 AX_PROG_LUA
 AX_LUA_HEADERS
 AX_LUA_LIBS
-AX_PTHREAD
 
 AC_DEFINE(ENABLE_LUA,1,[include lua interface support])
 fi
