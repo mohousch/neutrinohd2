@@ -156,9 +156,12 @@ AC_ARG_ENABLE(lua,
 AM_CONDITIONAL(ENABLE_LUA,test "$enable_lua" = "yes")
 
 if test "$enable_lua" = "yes"; then
+AX_PKG_SWIG
+AX_SWIG_ENABLE_CXX
 AX_PROG_LUA
 AX_LUA_HEADERS
 AX_LUA_LIBS
+AX_PTHREAD
 
 AC_DEFINE(ENABLE_LUA,1,[include lua interface support])
 fi
