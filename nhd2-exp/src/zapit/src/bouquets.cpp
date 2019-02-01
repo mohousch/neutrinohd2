@@ -379,16 +379,16 @@ void CBouquetManager::sortBouquets(void)
 
 void CBouquetManager::parseBouquetsXml(const char* fname, bool bUser)
 {
-	xmlDocPtr parser = NULL;
+	_xmlDocPtr parser = NULL;
 
 	parser = parseXmlFile(fname);
 	if (parser == NULL)
 		return;
 
-	xmlNodePtr root = xmlDocGetRootElement(parser);
+	_xmlNodePtr root = xmlDocGetRootElement(parser);
 
-	xmlNodePtr search = root->xmlChildrenNode;
-	xmlNodePtr channel_node;
+	_xmlNodePtr search = root->xmlChildrenNode;
+	_xmlNodePtr channel_node;
 
 	if (search) 
 	{
@@ -458,9 +458,9 @@ void CBouquetManager::parseBouquetsXml(const char* fname, bool bUser)
 	parser = NULL;
 }
 
-void CBouquetManager::makeBouquetfromCurrentservices(const xmlNodePtr root)
+void CBouquetManager::makeBouquetfromCurrentservices(const _xmlNodePtr root)
 {
-	xmlNodePtr provider = root->xmlChildrenNode;
+	_xmlNodePtr provider = root->xmlChildrenNode;
 	
 	// TODO: use locales
 	CZapitBouquet * newBouquet = addBouquet("Neue Sender");
@@ -474,11 +474,11 @@ void CBouquetManager::makeBouquetfromCurrentservices(const xmlNodePtr root)
 	
 	while (provider) 
 	{	
-		xmlNodePtr transponder = provider->xmlChildrenNode;
+		_xmlNodePtr transponder = provider->xmlChildrenNode;
 		
 		while (xmlGetNextOccurence(transponder, "transponder") != NULL) 
 		{
-			xmlNodePtr channel_node = transponder->xmlChildrenNode;
+			_xmlNodePtr channel_node = transponder->xmlChildrenNode;
 			
 			while (xmlGetNextOccurence(channel_node, "channel") != NULL) 
 			{
@@ -520,7 +520,7 @@ void CBouquetManager::loadBouquets(bool loadCurrentBouquet)
 	// current bouquets
 	if(loadCurrentBouquet)
 	{
-		xmlDocPtr parser = NULL;
+		_xmlDocPtr parser = NULL;
 		parser = parseXmlFile(CURRENTSERVICES_XML);
 		if (parser != NULL)
 		{

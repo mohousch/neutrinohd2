@@ -3195,11 +3195,11 @@ static void *insertEventsfromFile(void *)
 {
 	dprintf(DEBUG_NORMAL, "insertEventsfromFile\n");
 
-	xmlDocPtr event_parser = NULL;
-	xmlNodePtr eventfile = NULL;
-	xmlNodePtr service = NULL;
-	xmlNodePtr event = NULL;
-	xmlNodePtr node = NULL;
+	_xmlDocPtr event_parser = NULL;
+	_xmlNodePtr eventfile = NULL;
+	_xmlNodePtr service = NULL;
+	_xmlNodePtr event = NULL;
+	_xmlNodePtr node = NULL;
 	t_original_network_id onid = 0;
 	t_transport_stream_id tsid = 0;
 	t_service_id sid = 0;
@@ -3218,7 +3218,7 @@ static void *insertEventsfromFile(void *)
 	{
 		indexname = epg_dir + "index.xml";
 
-		xmlDocPtr index_parser = parseXmlFile(indexname.c_str());
+		_xmlDocPtr index_parser = parseXmlFile(indexname.c_str());
 
 		if (index_parser != NULL) 
 		{
@@ -5191,7 +5191,7 @@ static void *houseKeepingThread(void *)
 
 static void readEPGFilter(void)
 {
-	xmlDocPtr filter_parser = parseXmlFile(epg_filter_dir.c_str());
+	_xmlDocPtr filter_parser = parseXmlFile(epg_filter_dir.c_str());
 
 	t_original_network_id onid = 0;
 	t_transport_stream_id tsid = 0;
@@ -5201,7 +5201,7 @@ static void readEPGFilter(void)
 	{
 		dprintf(DEBUG_DEBUG, "Reading EPGFilters\n");
 
-		xmlNodePtr filter = xmlDocGetRootElement(filter_parser);
+		_xmlNodePtr filter = xmlDocGetRootElement(filter_parser);
 		if (xmlGetNumericAttribute(filter, "is_whitelist", 10) == 1)
 			epg_filter_is_whitelist = true;
 		if (xmlGetNumericAttribute(filter, "except_current_next", 10) == 1)
@@ -5226,7 +5226,7 @@ static void readEPGFilter(void)
 
 static void readDVBTimeFilter(void)
 {
-	xmlDocPtr filter_parser = parseXmlFile(dvbtime_filter_dir.c_str());
+	_xmlDocPtr filter_parser = parseXmlFile(dvbtime_filter_dir.c_str());
 
 	t_original_network_id onid = 0;
 	t_transport_stream_id tsid = 0;
@@ -5236,7 +5236,7 @@ static void readDVBTimeFilter(void)
 	{
 		dprintf(DEBUG_DEBUG, "Reading DVBTimeFilters\n");
 
-		xmlNodePtr filter = xmlDocGetRootElement(filter_parser);
+		_xmlNodePtr filter = xmlDocGetRootElement(filter_parser);
 		filter = filter->xmlChildrenNode;
 
 		while (filter) 
@@ -6182,11 +6182,11 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 		*/
 
 		//
-		xmlNodePtr event = NULL;
-		xmlNodePtr node = NULL;
+		_xmlNodePtr event = NULL;
+		_xmlNodePtr node = NULL;
 
 		//
-		xmlDocPtr index_parser = parseXmlFile(answer.c_str());
+		_xmlDocPtr index_parser = parseXmlFile(answer.c_str());
 
 		if (index_parser != NULL) 
 		{
@@ -6334,11 +6334,11 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 			return;
 
 		//
-		xmlNodePtr event = NULL;
-		xmlNodePtr node = NULL;
+		_xmlNodePtr event = NULL;
+		_xmlNodePtr node = NULL;
 
 		//
-		xmlDocPtr index_parser = parseXmlFile(answer.c_str());
+		_xmlDocPtr index_parser = parseXmlFile(answer.c_str());
 
 		if (index_parser != NULL) 
 		{

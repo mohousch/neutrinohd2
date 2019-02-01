@@ -65,7 +65,7 @@ extern CFrontend * getFE(int index);
 extern CFrontend * live_fe;
 extern void initTuner(CFrontend * fe);
 
-extern xmlDocPtr scanInputParser;
+extern _xmlDocPtr scanInputParser;
 
 void SaveServices(bool tocopy);
 
@@ -332,7 +332,7 @@ _repeat:
 	return 0;
 }
 
-int scan_transponder(xmlNodePtr transponder, uint8_t diseqc_pos, t_satellite_position satellitePosition, bool /*satfeed*/, int feindex)
+int scan_transponder(_xmlNodePtr transponder, uint8_t diseqc_pos, t_satellite_position satellitePosition, bool /*satfeed*/, int feindex)
 {
 	uint8_t polarization = 0;
 	uint8_t system = 0, modulation = 1;
@@ -400,11 +400,11 @@ int scan_transponder(xmlNodePtr transponder, uint8_t diseqc_pos, t_satellite_pos
 	return 0;
 }
 
-void scan_provider(xmlNodePtr search, t_satellite_position satellitePosition, uint8_t diseqc_pos, bool satfeed, int feindex)
+void scan_provider(_xmlNodePtr search, t_satellite_position satellitePosition, uint8_t diseqc_pos, bool satfeed, int feindex)
 {
 	dprintf(DEBUG_NORMAL, "%s\n", __FUNCTION__);
 	
-	xmlNodePtr tps = NULL;
+	_xmlNodePtr tps = NULL;
 	found_transponders = 0;
 	processed_transponders = 0;
 
@@ -547,7 +547,7 @@ void * start_scanthread(void *scanmode)
 	// get provider position and name
 	parseScanInputXml(getFE(feindex)->getInfo()->type);
 	
-	xmlNodePtr search = xmlDocGetRootElement(scanInputParser)->xmlChildrenNode;
+	_xmlNodePtr search = xmlDocGetRootElement(scanInputParser)->xmlChildrenNode;
 
 	// read all sat or cable sections
 	while ( (search = xmlGetNextOccurence(search, frontendType)) != NULL ) 

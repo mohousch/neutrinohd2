@@ -3,8 +3,8 @@ print("lua: Hello World")
 neutrino = require 'neutrino'
 
 -- messagebox
-mBox = neutrino.CMessageBox("CMessageBox: lua","first test\ntesting CMessageBox\ndas ist alles ;-)")
-mBox:exec(-1)
+--mBox = neutrino.CMessageBox("CMessageBox: lua","first test\ntesting CMessageBox\ndas ist alles ;-)")
+--mBox:exec(-1)
 
 -- helpbox
 --hbox = neutrino.CHelpBox()
@@ -85,11 +85,11 @@ mBox:exec(-1)
 --listbox:exec(null, "")
 
 -- playback
---playback = neutrino.cPlayback()
---playback:Close()
---playback:Open()
---playback:Start("/home/Music/AUD-20160209-WA0000.mp3")
---playback:Play()
+playback = neutrino.cPlayback()
+playback:Close()
+playback:Open()
+playback:Start("/home/Music/AUD-20160209-WA0000.mp3")
+playback:Play()
 
 
 

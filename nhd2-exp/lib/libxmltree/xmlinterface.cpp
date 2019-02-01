@@ -44,7 +44,7 @@
 #endif /* USE_LIBXML */
 
 
-unsigned long xmlGetNumericAttribute(const xmlNodePtr node, const char *name, const int base)
+unsigned long xmlGetNumericAttribute(const _xmlNodePtr node, const char *name, const int base)
 {
 	char *ptr = xmlGetAttribute(node, name);
 
@@ -54,7 +54,7 @@ unsigned long xmlGetNumericAttribute(const xmlNodePtr node, const char *name, co
 	return strtoul(ptr, 0, base);
 }
 
-long xmlGetSignedNumericAttribute(const xmlNodePtr node, const char *name, const int base)
+long xmlGetSignedNumericAttribute(const _xmlNodePtr node, const char *name, const int base)
 {
 	char *ptr = xmlGetAttribute(node, name);
 
@@ -64,7 +64,7 @@ long xmlGetSignedNumericAttribute(const xmlNodePtr node, const char *name, const
 	return strtol(ptr, 0, base);
 }
 
-xmlNodePtr xmlGetNextOccurence(xmlNodePtr cur, const char * s)
+_xmlNodePtr xmlGetNextOccurence(_xmlNodePtr cur, const char * s)
 {
 	while ((cur != NULL) && (strcmp(xmlGetName(cur), s) != 0))
 		cur = cur->xmlNextNode;
@@ -174,7 +174,7 @@ xmlDocPtr parseXmlFile(const char * filename, bool warning_by_nonexistence /* = 
 	}
 }
 #else /* USE_LIBXML */
-xmlDocPtr parseXml(const char * data)
+_xmlDocPtr parseXml(const char * data)
 {
 	XMLTreeParser* tree_parser;
 
@@ -199,7 +199,7 @@ xmlDocPtr parseXml(const char * data)
 	return tree_parser;
 }
 
-xmlDocPtr parseXmlFile(const char * filename, bool warning_by_nonexistence /* = true */)
+_xmlDocPtr parseXmlFile(const char * filename, bool warning_by_nonexistence /* = true */)
 {
 	char buffer[2048];
 	XMLTreeParser* tree_parser;

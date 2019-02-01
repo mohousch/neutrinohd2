@@ -36,9 +36,9 @@
 #define zapped_chan_is_nvod 0x80
 
 
-void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, uint8_t Source );
-void ParseChannels(xmlNodePtr node, const t_transport_stream_id transport_stream_id, const t_original_network_id original_network_id, t_satellite_position satellitePosition, freq_id_t freq, uint8_t polarisation );
-void FindTransponder(xmlNodePtr root);
+void ParseTransponders(_xmlNodePtr node, t_satellite_position satellitePosition, uint8_t Source );
+void ParseChannels(_xmlNodePtr node, const t_transport_stream_id transport_stream_id, const t_original_network_id original_network_id, t_satellite_position satellitePosition, freq_id_t freq, uint8_t polarisation );
+void FindTransponder(_xmlNodePtr root);
 int loadTransponders();
 int loadServices(bool only_current);
 void SaveServices(bool tocopy=false);

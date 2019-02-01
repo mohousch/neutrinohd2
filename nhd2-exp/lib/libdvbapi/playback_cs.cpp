@@ -475,14 +475,7 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 /* its called only one time, (mainmenu/movieplayergui init)*/
 cPlayback::cPlayback(int /*num*/)
 { 
-	dprintf(DEBUG_NORMAL, "%s:%s\n", FILENAME, __FUNCTION__);
-
-	/* init gstreamer */
-#if ENABLE_GSTREAMER
-	gst_init(NULL, NULL);
-	
-	dprintf(DEBUG_NORMAL, "%s:%s gst initialized\n", FILENAME, __FUNCTION__);
-#endif	
+	dprintf(DEBUG_NORMAL, "%s:%s\n", FILENAME, __FUNCTION__);	
 }
 
 /* called at housekepping */

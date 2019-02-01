@@ -45,7 +45,7 @@
 #include <system/settings.h>
 
 
-extern xmlDocPtr scanInputParser;				// defined in zapit.cpp
+extern _xmlDocPtr scanInputParser;				// defined in zapit.cpp
 extern transponder_list_t transponders;				// defined in zapit.cpp // from services.xml
 extern tallchans allchans;					// defined in zapit.cpp
 extern int scanSDT;						// defined in zapit.cpp
@@ -73,7 +73,7 @@ bool fake_tuner = false;
 extern void parseScanInputXml(fe_type_t fe_type);	// defined in zapit.cpp
 
 
-void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, uint8_t Source )
+void ParseTransponders(_xmlNodePtr node, t_satellite_position satellitePosition, uint8_t Source )
 {
 	t_transport_stream_id transport_stream_id;
 	t_original_network_id original_network_id;
@@ -153,7 +153,7 @@ void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, 
 	return;
 }
 
-void ParseChannels(xmlNodePtr node, const t_transport_stream_id transport_stream_id, const t_original_network_id original_network_id, t_satellite_position satellitePosition, freq_id_t freq, uint8_t polarisation)
+void ParseChannels(_xmlNodePtr node, const t_transport_stream_id transport_stream_id, const t_original_network_id original_network_id, t_satellite_position satellitePosition, freq_id_t freq, uint8_t polarisation)
 {
 	t_service_id service_id;
 	std::string  name;
@@ -251,7 +251,7 @@ void ParseChannels(xmlNodePtr node, const t_transport_stream_id transport_stream
 }
 
 // scan services.xml
-void FindTransponder(xmlNodePtr search)
+void FindTransponder(_xmlNodePtr search)
 {
 	t_satellite_position satellitePosition = 0;
 	uint8_t Source;
@@ -326,7 +326,7 @@ void FindTransponder(xmlNodePtr search)
 
 // parse sat transponder from satellites/cables/terrestrials.xml
 static uint32_t fake_tid, fake_nid;
-void ParseSatTransponders(fe_type_t frontendType, xmlNodePtr search, t_satellite_position satellitePosition)
+void ParseSatTransponders(fe_type_t frontendType, _xmlNodePtr search, t_satellite_position satellitePosition)
 {
 	uint8_t polarization = 0;
 	uint8_t system = 0;
@@ -335,7 +335,7 @@ void ParseSatTransponders(fe_type_t frontendType, xmlNodePtr search, t_satellite
 	FrontendParameters feparams;
 	fake_tid = fake_nid = 0;
 
-	xmlNodePtr tps = search->xmlChildrenNode;
+	_xmlNodePtr tps = search->xmlChildrenNode;
 
 	while ((tps = xmlGetNextOccurence(tps, "transponder")) != NULL) 
 	{
@@ -533,7 +533,7 @@ int loadTransponders()
 			
 		if ( scanInputParser != NULL ) 
 		{
-			xmlNodePtr search = xmlDocGetRootElement(scanInputParser)->xmlChildrenNode;
+			_xmlNodePtr search = xmlDocGetRootElement(scanInputParser)->xmlChildrenNode;
 
 			while (search) 
 			{
@@ -606,7 +606,7 @@ int loadTransponders()
 			
 		if ( scanInputParser != NULL ) 
 		{
-			xmlNodePtr search = xmlDocGetRootElement(scanInputParser)->xmlChildrenNode;
+			_xmlNodePtr search = xmlDocGetRootElement(scanInputParser)->xmlChildrenNode;
 
 			while (search) 
 			{
@@ -678,7 +678,7 @@ int loadTransponders()
 // load services
 int loadServices(bool only_current)
 {
-	xmlDocPtr parser;
+	_xmlDocPtr parser;
 	scnt = 0;
 
 	dprintf(DEBUG_NORMAL, "getServices:loadServices:\n");
@@ -691,7 +691,7 @@ int loadServices(bool only_current)
 
 	if (parser != NULL) 
 	{
-		xmlNodePtr search = xmlDocGetRootElement(parser)->xmlChildrenNode;
+		_xmlNodePtr search = xmlDocGetRootElement(parser)->xmlChildrenNode;
 
 		while (search) 
 		{

@@ -160,7 +160,7 @@ CZapitChannel * live_channel = NULL;
 CZapitChannel * rec_channel = NULL;
 
 // transponder scan xml input
-xmlDocPtr scanInputParser = NULL;
+_xmlDocPtr scanInputParser = NULL;
 
 // bouquet manager
 CBouquetManager * g_bouquetManager = NULL;

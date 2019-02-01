@@ -396,14 +396,14 @@ void CGeneralSettings::showMenu()
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_STARTSTANDBY, &g_settings.power_standby, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true));
 
 	// timezone
-	xmlDocPtr parser;
+	_xmlDocPtr parser;
 
 	parser = parseXmlFile("/etc/timezone.xml");
 	if (parser != NULL) 
 	{	
 		tzSelect = new CMenuOptionStringChooser(LOCALE_MAINSETTINGS_TIMEZONE, g_settings.timezone, true, new CTZChangeNotifier(), CRCInput::RC_nokey, "", true);
 
-		xmlNodePtr search = xmlDocGetRootElement(parser)->xmlChildrenNode;
+		_xmlNodePtr search = xmlDocGetRootElement(parser)->xmlChildrenNode;
 		bool found = false;
 
 		while (search) 
@@ -504,11 +504,11 @@ bool CTZChangeNotifier::changeNotify(const neutrino_locale_t, void * Data)
 	
 	dprintf(DEBUG_NORMAL, "CTZChangeNotifier::changeNotify: %s\n", (char *) Data);
 
-        xmlDocPtr parser = parseXmlFile("/etc/timezone.xml");
+        _xmlDocPtr parser = parseXmlFile("/etc/timezone.xml");
 	
         if (parser != NULL) 
 	{
-                xmlNodePtr search = xmlDocGetRootElement(parser)->xmlChildrenNode;
+                _xmlNodePtr search = xmlDocGetRootElement(parser)->xmlChildrenNode;
                 while (search) 
 		{
                         if (!strcmp(xmlGetName(search), "zone")) 

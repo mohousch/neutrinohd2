@@ -46,27 +46,27 @@ inline char*      xmlGetName          (xmlNodePtr cur)                 { return 
 
 #else  /* use libxmltree */
 #include "xmltree.h"
-typedef XMLTreeParser* xmlDocPtr;
-typedef XMLTreeNode*   xmlNodePtr;
+typedef XMLTreeParser* _xmlDocPtr;
+typedef XMLTreeNode*   _xmlNodePtr;
 #define xmlChildrenNode GetChild()
 #define xmlNextNode     GetNext()
-inline xmlNodePtr xmlDocGetRootElement(xmlDocPtr  doc)                 { return doc->RootNode(); };
-inline void       xmlFreeDoc          (xmlDocPtr  doc)                 { delete doc; };
-inline char*      xmlGetAttribute     (xmlNodePtr cur, const char *s)  { return cur->GetAttributeValue(s); };
-inline char*      xmlGetName          (xmlNodePtr cur)                 { return cur->GetType();  };
-inline char*      xmlGetData          (xmlNodePtr cur)                 { return cur->GetData();  };
+inline _xmlNodePtr xmlDocGetRootElement(_xmlDocPtr  doc)                 { return doc->RootNode(); };
+inline void       xmlFreeDoc          (_xmlDocPtr  doc)                 { delete doc; };
+inline char*      xmlGetAttribute     (_xmlNodePtr cur, const char *s)  { return cur->GetAttributeValue(s); };
+inline char*      xmlGetName          (_xmlNodePtr cur)                 { return cur->GetType();  };
+inline char*      xmlGetData          (_xmlNodePtr cur)                 { return cur->GetData();  };
 #endif /* USE_LIBXML */
 
 
-unsigned long xmlGetNumericAttribute  (const xmlNodePtr node, const char *name, const int base);
-long xmlGetSignedNumericAttribute     (const xmlNodePtr node, const char *name, const int base);
-xmlNodePtr xmlGetNextOccurence        (xmlNodePtr cur, const char * s);
+unsigned long xmlGetNumericAttribute  (const _xmlNodePtr node, const char *name, const int base);
+long xmlGetSignedNumericAttribute     (const _xmlNodePtr node, const char *name, const int base);
+_xmlNodePtr xmlGetNextOccurence        (_xmlNodePtr cur, const char * s);
 
 std::string Unicode_Character_to_UTF8(const int character);
 
 std::string convert_UTF8_To_UTF8_XML(const char *s);
 
-xmlDocPtr parseXml(const char *data);
-xmlDocPtr parseXmlFile(const char * filename, bool warning_by_nonexistence = true);
+_xmlDocPtr parseXml(const char *data);
+_xmlDocPtr parseXmlFile(const char * filename, bool warning_by_nonexistence = true);
 
 #endif /* __xmlinterface_h__ */

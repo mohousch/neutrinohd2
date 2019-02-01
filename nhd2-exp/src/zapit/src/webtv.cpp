@@ -67,7 +67,7 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 {
 	dprintf(DEBUG_NORMAL, "CWebTV::loadWebTVBouquet: parsing %s\n", filename.c_str());
 
-	xmlDocPtr parser = NULL;
+	_xmlDocPtr parser = NULL;
 	
 	// check for extension
 	bool iptv = false;
@@ -154,8 +154,8 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 		
 		if (parser) 
 		{
-			xmlNodePtr l0 = NULL;
-			xmlNodePtr l1 = NULL;
+			_xmlNodePtr l0 = NULL;
+			_xmlNodePtr l1 = NULL;
 			l0 = xmlDocGetRootElement(parser);
 			l1 = l0->xmlChildrenNode;
 			

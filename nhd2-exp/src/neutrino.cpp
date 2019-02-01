@@ -167,6 +167,11 @@
 
 #include <libdvbci/dvb-ci.h>
 
+#if defined ENABLE_GSTREAMER
+#include <gst/gst.h>
+#include <gst/pbutils/missing-plugins.h>
+#endif
+
 #include <playback_cs.h>
 cPlayback* playback = NULL;
 
@@ -5518,6 +5523,12 @@ int main(int argc, char *argv[])
 	
 	// init globals
 	initGlobals();
+
+#if ENABLE_GSTREAMER
+	gst_init(NULL, NULL);
+	
+	dprintf(DEBUG_NORMAL, "gst initialized\n");
+#endif
 
 	char * buf = (char *)malloc(64);
 	int count;

@@ -31,7 +31,9 @@ AM_CPPFLAGS += -I$(top_srcdir)/lib/libdvbci
 endif
 endif
 
-if !ENABLE_GSTREAMER
+if ENABLE_GSTREAMER
+AM_CPPFLAGS += @GSTREAMER_CFLAGS@
+else
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
