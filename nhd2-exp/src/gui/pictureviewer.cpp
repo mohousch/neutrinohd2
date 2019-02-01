@@ -130,7 +130,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	//
 	CNeutrinoApp::getInstance()->lockPlayBack();
 
-	show(parent);
+	show();
 
 	// free picviewer mem
 	g_PicViewer->cleanup();
@@ -155,7 +155,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 	return menu_return::RETURN_EXIT;
 }
 
-void CPictureViewerGui::show(CMenuTarget* p)
+void CPictureViewerGui::show()
 {
 	dprintf(DEBUG_NORMAL, "CPictureViewerGui::show\n");
 
@@ -267,17 +267,6 @@ void CPictureViewerGui::show(CMenuTarget* p)
 		{
 			ok_pressed = true;
 			loop = false;
-
-/*
-			if(p)
-			{
-				loop = false;
-				hide();
-
-				p->exec(this, "");
-				p->hide();
-			}
-*/
 		}
 		else if(msg == NeutrinoMessages::CHANGEMODE)
 		{
@@ -387,4 +376,30 @@ void CPictureViewerGui::showHelp()
 	hide();
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
 }
+
+void CPictureViewerGui::showFileName(const char* fileName)
+{
+
+	CFile file;
+	file.Name = fileName;
+
+	CPicture pic;
+	struct stat statbuf;
+				
+	pic.Filename = file.Name;
+	std::string tmp = file.Name.substr(file.Name.rfind('/') + 1);
+	pic.Name = tmp.substr(0, tmp.rfind('.'));
+	pic.Type = tmp.substr(tmp.rfind('.') + 1);
+				
+	if(stat(pic.Filename.c_str(), &statbuf) != 0)
+		printf("stat error");
+	pic.Date = statbuf.st_mtime;
+
+	playlist.push_back(pic);
+
+	exec(NULL, "");
+}
+
+
+
 

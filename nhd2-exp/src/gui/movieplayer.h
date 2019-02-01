@@ -187,6 +187,9 @@ class CMoviePlayerGui : public CMenuTarget
 		void clearPlaylist(void);
 		void removeFromPlaylist(long pos);
 		void setCurrent(int pos){selected = pos;};
+
+		//
+		void playFileName(const char* fileName);
 };
 
 #endif

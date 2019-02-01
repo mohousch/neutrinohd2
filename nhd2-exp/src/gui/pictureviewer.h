@@ -78,7 +78,7 @@ class CPictureViewerGui : public CMenuTarget
 		int m_LastMode;
 
 		void view(unsigned int nr);
-		void show(CMenuTarget* p);
+		void show();
 		void paintLCD();
 		void hide();
 		
@@ -93,6 +93,9 @@ class CPictureViewerGui : public CMenuTarget
 		void showHelp();
 		int getSelected(void){return selected;};
 		void setCurrent(int pos){selected = pos;};
+
+		//
+		void showFileName(const char* fileName);
 };
 
 #endif

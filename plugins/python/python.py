@@ -1,6 +1,6 @@
 print("python: Hello World")
 
-from neutrino import CMessageBox, CHelpBox, CHeaders, CWindow, CScrollBar, CItems2DetailsLine, CPictureViewer, CFrameBuffer, ClistBox, CMenuWidget, cPlayback
+from neutrino import CMessageBox, CHelpBox, CHeaders, CWindow, CScrollBar, CItems2DetailsLine, CPictureViewer, CFrameBuffer, ClistBox, CMenuWidget, cPlayback, CAudioPlayerGui, CMoviePlayerGui, CPictureViewerGui
 
 msg = CMessageBox("neutrino: python", "first test\ntesting CMessageBox\ndas ist alles ;-)")
 msg._exec(-1)
@@ -27,9 +27,6 @@ msg._exec(-1)
 ## itemsdetailsline
 #CItems2DetailsLine().paint(150,10,550,615,80,35,30,1)
 
-## pictureviewer
-#CPictureViewer().showImage("/home/mohousch/funart.png")
-
 ## framebuffer
 #CFrameBuffer().paintBackground()
 
@@ -48,8 +45,20 @@ msg._exec(-1)
 #playback = cPlayback(1)
 #playback.Close()
 #playback.Open()
-#playback.Start("/home/Music/AUD-20160209-WA0000.mp3")
+#playback.Start("/home/mohousch/Music/AUD-20160209-WA0000.mp3")
 #playback.Play()
+
+## audioplayergui
+#aplay = CAudioPlayerGui()
+#aplay.playFileName('/home/mohousch/Music/AUD-20160209-WA0000.mp3')
+
+## movieplayergui
+#mplay=CMoviePlayerGui()
+#mplay.playFileName('/home/mohousch/Videos/ProSieben_20150619_201430.ts')
+
+## pictureviewergui
+#pic=CPictureViewerGui()
+#pic.showFileName("/home/mohousch/funart.png")
 
 
 

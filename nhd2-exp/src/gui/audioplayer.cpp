@@ -1197,4 +1197,18 @@ void CAudioPlayerGui::showHelp()
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
 }
 
+void CAudioPlayerGui::playFileName(const char* fileName)
+{
+
+	CFile file;
+	file.Name = fileName;
+
+	CAudiofile audiofile(file.Name, file.getExtension());
+				
+	m_playlist.push_back(audiofile);
+
+	exec(NULL, "");
+}
+
+
 

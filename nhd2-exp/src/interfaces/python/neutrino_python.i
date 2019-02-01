@@ -88,6 +88,13 @@
 #include <gui/movieplayer.h>
 #include <gui/pictureviewer.h>
 #include <gui/filebrowser.h>
+
+// zapit
+#include <zapit/include/zapit/bouquets.h>
+#include <zapit/include/zapit/channel.h>
+#include <zapit/include/zapit/webtv.h>
+#include <zapit/include/zapit/client/zapittypes.h>
+#include <zapit/include/zapit/client/zapitclient.h>
 %}
 
 %include "typemaps.i"
@@ -95,7 +102,14 @@
 %include "stdint.i"
 %include "carrays.i"
 %include "cpointer.i"
-//%include "std_vector.i"
+/*
+%include "std_vector.i"
+%include "std_list.i"
+%include "std_map.i"
+%include "std_pair.i"
+%include "std_set.i"
+*/
+%include "exception.i"
 
 %include <config.h>
 %include <src/global.h>
@@ -155,6 +169,16 @@
 %include <src/gui/movieplayer.h>
 %include <src/gui/pictureviewer.h>
 %include <src/gui/filebrowser.h>
+
+// zapit
+//%include <src/zapit/include/zapit/bouquets.h>
+%include <src/zapit/include/zapit/channel.h>
+%include <src/zapit/include/zapit/webtv.h>
+%include <src/zapit/include/zapit/client/zapittypes.h>
+%include <src/zapit/include/zapit/client/zapitclient.h>
+
+
+
 
 
 
