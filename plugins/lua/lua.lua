@@ -10,7 +10,7 @@ mBox:exec(-1)
 --[[
 hbox = neutrino.CHelpBox()
 hbox:addLine("neutrino: lua")
-hbox:addSeparator(hbox)
+hbox:addSeparator()
 hbox:addLine("first test")
 hbox:addLine("testing CHelpBox\ndas ist alles ;-)")
 hbox:show("CHelpBox: lua")
