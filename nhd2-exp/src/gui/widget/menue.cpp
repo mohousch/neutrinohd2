@@ -4106,7 +4106,7 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 					break;
 				//
 				case (CRCInput::RC_setup):
-					if(widgetChange)
+					if(widgetChange && widget.size())
 					{
 						hide();
 

@@ -88,6 +88,7 @@
 #include <gui/movieplayer.h>
 #include <gui/pictureviewer.h>
 #include <gui/filebrowser.h>
+#include <gui/plugins.h>
 
 // zapit
 #include <zapit/include/zapit/bouquets.h>
@@ -167,6 +168,7 @@
 %include <src/gui/movieplayer.h>
 %include <src/gui/pictureviewer.h>
 %include <src/gui/filebrowser.h>
+%include <src/gui/plugins.h>
 
 // zapit
 //%include <src/zapit/include/zapit/bouquets.h>

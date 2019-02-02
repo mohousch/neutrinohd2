@@ -47,16 +47,6 @@ il = neutrino.CItems2DetailsLine()
 il:paint(150,10,550,615,80,35,30,1)
 ]]
 
--- listboxEntry
---[[
-listbox = neutrino.ClistBoxEntry(150,10,550,615)
-listbox:setTitle("test", neutrino.NEUTRINO_ICON_MOVIE)
-listbox:enablePaintHead()
-listbox:enablePaintDate()
-listbox:enablePaintFoot()
-listbox:paint()
-]]
-
 -- hintbox
 --[[
 hint = neutrino.CHintBox("neutrino: lua","first test\ntesting CHintBox\ndas ist alles ;-)")
@@ -66,28 +56,43 @@ hint:exec()
 -- infobox
 --[[
 info = neutrino.CInfoBox("first test\ntesting CHintBox\ndas ist alles ;-)")
+info:setText("first test\ntesting CHintBox\ndas ist alles ;-)")
 info:exec()
 ]]
 
 -- framebuffer
 --[[
-frame = neutrino.CFrameBuffer()
-frame:paintBackground()
+frameBuffer = neutrino.CFrameBuffer()
+frameBuffer:getInstance():paintBackground()
 ]]
 
 -- listbox
---listbox = neutrino.ClistBox("test", neutrino.NEUTRINO_ICON_MOVIE)
---listbox:enablePaintDate()
---listbox:addWidget(neutrino.WIDGET_CLASSIC)
---listbox:addWidget(neutrino.WIDGET_FRAME)
---listbox:enableWidgetChange()
---listbox:exec(null, "")
+--[[
+listbox = neutrino.ClistBox("test", neutrino.NEUTRINO_ICON_MOVIE)
+listbox:enablePaintDate()
+listbox:addWidget(neutrino.WIDGET_CLASSIC)
+listbox:addWidget(neutrino.WIDGET_FRAME)
+listbox:enableWidgetChange()
+listbox:exec(null, "")
+listbox:hide()
+]]
 
 -- menuwidget
 --[[
-listbox = neutrino.CMenuWidget("test", neutrino.NEUTRINO_ICON_MOVIE)
-listbox:enableWidgetChange()
-listbox:exec(null, "")
+menu = neutrino.CMenuWidget("test", neutrino.NEUTRINO_ICON_MOVIE)
+menu:enableWidgetChange()
+menu:exec(null, "")
+menu:hide()
+]]
+
+-- listboxEntry
+--[[
+listboxEntry = neutrino.ClistBoxEntry(150,10,550,615)
+listboxEntry:setTitle("test", neutrino.NEUTRINO_ICON_MOVIE)
+listboxEntry:enablePaintHead()
+listboxEntry:enablePaintDate()
+listboxEntry:enablePaintFoot()
+listboxEntry:paint()
 ]]
 
 -- playback
@@ -116,8 +121,14 @@ mplay:exec(null,"")
 -- pictureviewergui
 --[[
 pic=neutrino.CPictureViewerGui()
-pic:addToPlaylist("/home/mohousch/funart.png")
+pic:addToPlaylist("/home/mohousch/Pictures/funart.png")
 pic:exec(null,"")
+]]
+
+-- CPlugins
+--[[
+plugins = neutrino.CPlugins()
+plugins:startPlugin("youtube")
 ]]
 
 

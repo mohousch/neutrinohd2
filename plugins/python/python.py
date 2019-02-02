@@ -1,6 +1,6 @@
 print("python: Hello World")
 
-from neutrino import CMessageBox, CHelpBox, CHeaders, CWindow, CScrollBar, CItems2DetailsLine, CPictureViewer, CFrameBuffer, ClistBox, CMenuWidget, cPlayback, CAudioPlayerGui, CMoviePlayerGui, CPictureViewerGui
+from neutrino import CMessageBox, CHelpBox, CHeaders, CWindow, CScrollBar, CItems2DetailsLine, CPictureViewer, CFrameBuffer, ClistBox, CMenuWidget, ClistBoxEntry, CInfoBox, cPlayback, CAudioPlayerGui, CMoviePlayerGui, CPictureViewerGui, CPlugins
 
 msg = CMessageBox("neutrino: python", "first test\ntesting CMessageBox\ndas ist alles ;-)")
 msg._exec(-1)
@@ -27,19 +27,38 @@ msg._exec(-1)
 ## itemsdetailsline
 #CItems2DetailsLine().paint(150,10,550,615,80,35,30,1)
 
+## infobox
+#infoBox = CInfoBox("first test\ntesting CHintBox\ndas ist alles ;-)")
+#infoBox.setText("first test\ntesting CHintBox\ndas ist alles ;-)")
+#infoBox._exec()
+
 ## framebuffer
-#CFrameBuffer().paintBackground()
+#frameBuffer=CFrameBuffer()
+#CFrameBuffer.paintBackground()
 
 ## listbox
 #listbox = ClistBox("test", "mp3")
 #listbox.enablePaintDate()
+##listbox.addWidget(WIDGET_CLASSIC)
+##listbox.addWidget(WIDGET_FRAME)
+##listbox.enableWidgetChange()
 #listbox._exec(None, "")
+#listbox.hide()
 
 ## menuwidget
-#listbox = CMenuWidget("test", "mp3")
-#listbox.enableWidgetChange()
-#listbox.enableFootInfo()
-#listbox._exec(None, "")
+#menu = CMenuWidget("test", "mp3")
+#menu.enableWidgetChange()
+#menu.enableFootInfo()
+#menu._exec(None, "")
+#menu.hide()
+
+## listboxEntry
+#listboxEntry = ClistBoxEntry(150,10,550,615)
+#listboxEntry.setTitle("test", "mp3")
+#listboxEntry.enablePaintHead()
+#listboxEntry.enablePaintDate()
+#listboxEntry.enablePaintFoot()
+#listboxEntry.paint()
 
 ## playback
 #playback = cPlayback(1)
@@ -60,8 +79,12 @@ msg._exec(-1)
 
 ## pictureviewergui
 #pic=CPictureViewerGui()
-#pic.addToPlaylist("/home/mohousch/funart.png")
+#pic.addToPlaylist("/home/mohousch/Pictures/funart.png")
 #pic._exec(None,"")
+
+## CPlugins
+#plugins = CPlugins()
+#plugins.startPlugin("nfilm")
 
 
 
