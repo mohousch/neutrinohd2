@@ -86,16 +86,15 @@ class CPictureViewerGui : public CMenuTarget
 		CPictureViewerGui();
 		~CPictureViewerGui();
 		int  exec(CMenuTarget* parent, const std::string& actionKey);
+
 		void addToPlaylist(CPicture& file);
+		void addToPlaylist(const char* fileName);
 		void clearPlaylist(void);
 		void removeFromPlaylist(long pos);
 		void setState(State state = SINGLE){m_state = state;};
 		void showHelp();
 		int getSelected(void){return selected;};
 		void setCurrent(int pos){selected = pos;};
-
-		//
-		void showFileName(const char* fileName);
 };
 
 #endif

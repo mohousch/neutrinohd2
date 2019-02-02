@@ -209,6 +209,48 @@ void CMoviePlayerGui::addToPlaylist(MI_MOVIE_INFO& mfile)
 	filelist.push_back(mfile);
 }
 
+void CMoviePlayerGui::addToPlaylist(const char* fileName)
+{
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::addToPlaylist: %s\n", fileName);
+
+	CFile file;
+	file.Name = fileName;
+
+	MI_MOVIE_INFO movieInfo;
+	cMovieInfo.clearMovieInfo(&movieInfo); // refresh structure
+
+	movieInfo.file.Name = file.Name;
+					
+	// load movie infos (from xml file)
+	cMovieInfo.loadMovieInfo(&movieInfo);
+
+	std::string tmp_str = file.getFileName();
+
+	removeExtension(tmp_str);
+
+	// refill if empty
+	if(movieInfo.epgTitle.empty())
+		movieInfo.epgTitle = tmp_str;
+
+	if(movieInfo.epgInfo1.empty())
+		movieInfo.epgInfo1 = tmp_str;
+
+	//if(movieInfo.epgInfo2.empty())
+		//movieInfo.epgInfo2 = tmp_str;
+
+	//thumbnail
+	std::string fname = "";
+	fname = file.Name;
+	changeFileNameExt(fname, ".jpg");
+					
+	if(!access(fname.c_str(), F_OK) )
+		movieInfo.tfile = fname.c_str();
+					
+	// 
+	filelist.push_back(movieInfo);
+}
+
+
 void CMoviePlayerGui::clearPlaylist(void)
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::clearPlaylist:\n");
@@ -1842,47 +1884,5 @@ void CMovieInfoViewer::showMovieInfo(std::string Title, std::string Info, short 
 	moviescale.paint(cFrameBoxInfo.iX + BORDER_LEFT, cFrameBoxInfo.iY + 30, runningPercent);
 	
 	frameBuffer->blit();
-}
-
-void CMoviePlayerGui::playFileName(const char* fileName)
-{
-
-	CFile file;
-	file.Name = fileName;
-
-	MI_MOVIE_INFO movieInfo;
-	cMovieInfo.clearMovieInfo(&movieInfo); // refresh structure
-
-	movieInfo.file.Name = file.Name;
-					
-	// load movie infos (from xml file)
-	cMovieInfo.loadMovieInfo(&movieInfo);
-
-	std::string tmp_str = file.getFileName();
-
-	removeExtension(tmp_str);
-
-	// refill if empty
-	if(movieInfo.epgTitle.empty())
-		movieInfo.epgTitle = tmp_str;
-
-	if(movieInfo.epgInfo1.empty())
-		movieInfo.epgInfo1 = tmp_str;
-
-	//if(movieInfo.epgInfo2.empty())
-		//movieInfo.epgInfo2 = tmp_str;
-
-	//thumbnail
-	std::string fname = "";
-	fname = file.Name;
-	changeFileNameExt(fname, ".jpg");
-					
-	if(!access(fname.c_str(), F_OK) )
-		movieInfo.tfile = fname.c_str();
-					
-	// 
-	filelist.push_back(movieInfo);
-
-	exec(NULL, "");
 }
 

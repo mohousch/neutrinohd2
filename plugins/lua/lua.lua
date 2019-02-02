@@ -9,10 +9,10 @@ mBox:exec(-1)
 -- helpbox
 --[[
 hbox = neutrino.CHelpBox()
-hbox.addLine(hbox,"neutrino: lua")
-hbox.addSeparator(hbox)
-hbox.addLine(hbox,"first test")
-hbox.addLine(hbox,"testing CHelpBox\ndas ist alles ;-)")
+hbox:addLine("neutrino: lua")
+hbox:addSeparator(hbox)
+hbox:addLine("first test")
+hbox:addLine("testing CHelpBox\ndas ist alles ;-)")
 hbox:show("CHelpBox: lua")
 ]]
 
@@ -78,15 +78,15 @@ frame:paintBackground()
 -- listbox
 --listbox = neutrino.ClistBox("test", neutrino.NEUTRINO_ICON_MOVIE)
 --listbox:enablePaintDate()
---listbox.addWidget(listbox, neutrino.WIDGET_CLASSIC)
---listbox.addWidget(listbox, neutrino.WIDGET_FRAME)
---listbox.enableWidgetChange(listbox)
+--listbox:addWidget(neutrino.WIDGET_CLASSIC)
+--listbox:addWidget(neutrino.WIDGET_FRAME)
+--listbox:enableWidgetChange()
 --listbox:exec(null, "")
 
 -- menuwidget
 --[[
 listbox = neutrino.CMenuWidget("test", neutrino.NEUTRINO_ICON_MOVIE)
-listbox.enableWidgetChange(listbox)
+listbox:enableWidgetChange()
 listbox:exec(null, "")
 ]]
 
@@ -102,20 +102,24 @@ playback:Play()
 -- audioplayergui
 --[[
 aplay = neutrino.CAudioPlayerGui()
-aplay.playFileName(aplay, '/home/mohousch/Music/AUD-20160209-WA0000.mp3')
+aplay:addToPlaylist('/home/mohousch/Music/AUD-20160209-WA0000.mp3')
+aplay:exec(null,"")
 ]]
 
 -- movieplayergui
 --[[
 mplay=neutrino.CMoviePlayerGui()
-mplay.playFileName(mplay, '/home/mohousch/Videos/ProSieben_20150619_201430.ts')
+mplay:addToPlaylist('/home/mohousch/Videos/ProSieben_20150619_201430.ts')
+mplay:exec(null,"")
 ]]
 
 -- pictureviewergui
 --[[
 pic=neutrino.CPictureViewerGui()
-pic.showFileName(pic,"/home/mohousch/funart.png")
+pic:addToPlaylist("/home/mohousch/funart.png")
+pic:exec(null,"")
 ]]
+
 
 
 

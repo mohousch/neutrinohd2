@@ -184,12 +184,10 @@ class CMoviePlayerGui : public CMenuTarget
 
 		//
 		void addToPlaylist(MI_MOVIE_INFO& mfile);
+		void addToPlaylist(const char* fileName);
 		void clearPlaylist(void);
 		void removeFromPlaylist(long pos);
 		void setCurrent(int pos){selected = pos;};
-
-		//
-		void playFileName(const char* fileName);
 };
 
 #endif

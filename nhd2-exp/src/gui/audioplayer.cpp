@@ -956,6 +956,18 @@ void CAudioPlayerGui::addToPlaylist(CAudiofile& file)
 	m_playlist.push_back(file);
 }
 
+void CAudioPlayerGui::addToPlaylist(const char* fileName)
+{
+	dprintf(DEBUG_DEBUG, "CAudioPlayerGui::add2Playlist: %s\n", fileName);
+
+	CFile file;
+	file.Name = fileName;
+
+	CAudiofile audiofile(file.Name, file.getExtension());
+				
+	m_playlist.push_back(audiofile);
+}
+
 void CAudioPlayerGui::clearPlaylist(void)
 {
 	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::clearPlaylist:\n");
@@ -1197,18 +1209,6 @@ void CAudioPlayerGui::showHelp()
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
 }
 
-void CAudioPlayerGui::playFileName(const char* fileName)
-{
-
-	CFile file;
-	file.Name = fileName;
-
-	CAudiofile audiofile(file.Name, file.getExtension());
-				
-	m_playlist.push_back(audiofile);
-
-	exec(NULL, "");
-}
 
 
 

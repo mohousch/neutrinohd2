@@ -165,6 +165,7 @@ class CAudioPlayerGui : public CMenuTarget
 
 		//
 		void addToPlaylist(CAudiofile& file);
+		void addToPlaylist(const char* fileName);
 		void removeFromPlaylist(long pos);
 		void clearPlaylist(void);
 
@@ -172,9 +173,6 @@ class CAudioPlayerGui : public CMenuTarget
 		void setInetMode(void){m_inetmode = true;};
 		void setCurrent(int pos = 0){m_current = pos;};
 		void showHelp();
-
-		//
-		void playFileName(const char* fileName);
 };
 
 #endif

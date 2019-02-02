@@ -50,15 +50,18 @@ msg._exec(-1)
 
 ## audioplayergui
 #aplay = CAudioPlayerGui()
-#aplay.playFileName('/home/mohousch/Music/AUD-20160209-WA0000.mp3')
+#aplay.addToPlaylist('/home/mohousch/Music/AUD-20160209-WA0000.mp3')
+#aplay._exec(None,"")
 
 ## movieplayergui
 #mplay=CMoviePlayerGui()
-#mplay.playFileName('/home/mohousch/Videos/ProSieben_20150619_201430.ts')
+#mplay.addToPlaylist('/home/mohousch/Videos/ProSieben_20150619_201430.ts')
+#mplay._exec(None,"")
 
 ## pictureviewergui
 #pic=CPictureViewerGui()
-#pic.showFileName("/home/mohousch/funart.png")
+#pic.addToPlaylist("/home/mohousch/funart.png")
+#pic._exec(None,"")
 
 
 
