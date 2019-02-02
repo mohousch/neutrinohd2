@@ -112,8 +112,10 @@ CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, con
 		nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(*it, true); // UTF-8
 		if (nw > cFrameBox.iWidth)
 		{
-			nw = HINTBOX_MAX_WIDTH;
 			cFrameBox.iWidth = nw;
+
+			if(cFrameBox.iWidth > HINTBOX_MAX_WIDTH)
+				cFrameBox.iWidth = HINTBOX_MAX_WIDTH;
 		}
 	}
 }
@@ -180,8 +182,10 @@ CHintBox::CHintBox(const char * Caption, const char * const Text, const int Widt
 		nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(*it, true); // UTF-8
 		if (nw > cFrameBox.iWidth)
 		{
-			nw = HINTBOX_MAX_WIDTH;
 			cFrameBox.iWidth = nw;
+
+			if(cFrameBox.iWidth > HINTBOX_MAX_WIDTH)
+				cFrameBox.iWidth = HINTBOX_MAX_WIDTH;		
 		}
 	}
 }
