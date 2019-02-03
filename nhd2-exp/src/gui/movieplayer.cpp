@@ -209,7 +209,7 @@ void CMoviePlayerGui::addToPlaylist(MI_MOVIE_INFO& mfile)
 	filelist.push_back(mfile);
 }
 
-void CMoviePlayerGui::addToPlaylist(CFile& file)
+void CMoviePlayerGui::addToPlaylist(const CFile& file)
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::addToPlaylist: %s\n", file.Name.c_str());
 

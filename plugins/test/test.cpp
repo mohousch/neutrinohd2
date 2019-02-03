@@ -219,20 +219,11 @@ void CTestMenu::testCIcon()
 {
 	//CIcon testIcon(NEUTRINO_ICON_BUTTON_RED);
 	CIcon testIcon;
-	
-	CBox testBox;
-	testBox.iX = g_settings.screen_StartX + 10;
-	testBox.iY = g_settings.screen_StartY + 10;
-	testBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/2;
-	testBox.iHeight = 40; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
-
-	// paint testBox
-	//CFrameBuffer::getInstance()->paintBoxRel(testBox.iX, testBox.iY, testBox.iWidth, testBox.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_ALL, gradientDark2Light2Dark);
 
 	// paint testIcon
 	testIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
 
-	CFrameBuffer::getInstance()->paintIcon(testIcon.iconName.c_str(), testBox.iX + BORDER_LEFT, testBox.iY + (testBox.iHeight - testIcon.iHeight)/2);
+	CFrameBuffer::getInstance()->paintIcon(testIcon.iconName.c_str(), 10 + BORDER_LEFT, 10);
 
 	CFrameBuffer::getInstance()->blit();
 
@@ -258,20 +249,11 @@ void CTestMenu::testCImage()
 {
 	//CImage testImage(PLUGINDIR "/netzkino/netzkino.png");
 	CImage testImage;
-	
-	CBox testBox;
-	testBox.iX = g_settings.screen_StartX + 10;
-	testBox.iY = g_settings.screen_StartY + 10;
-	testBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/2;
-	testBox.iHeight = 40; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
-
-	// paint testBox
-	//CFrameBuffer::getInstance()->paintBoxRel(testBox.iX, testBox.iY, testBox.iWidth, testBox.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_ALL, gradientDark2Light2Dark);
 
 	// paint testImage
 	testImage.setImage(PLUGINDIR "/netzkino/netzkino.png");
 
-	CFrameBuffer::getInstance()->displayImage(testImage.imageName.c_str(), testBox.iX + BORDER_LEFT, testBox.iY, testImage.iWidth, testImage.iHeight);
+	CFrameBuffer::getInstance()->displayImage(testImage.imageName.c_str(), 10 + BORDER_LEFT, 10, 100, 40);
 
 	CFrameBuffer::getInstance()->blit();
 
@@ -1311,22 +1293,9 @@ BROWSER:
 		CFile * file;
 		
 		if ((file = fileBrowser->getSelectedFile()) != NULL) 
-		{
-			MI_MOVIE_INFO mfile;
-			
-			mfile.file.Name = file->Name;
-			mfile.epgTitle = file->getFileName();
-			mfile.epgInfo1 = file->getFileName(); 
-
-			std::string fname = "";
-			fname = file->Name;
-			changeFileNameExt(fname, ".jpg");
-						
-			if(!access(fname.c_str(), F_OK) )
-				mfile.tfile = fname.c_str();
-					
-			tmpMoviePlayerGui.addToPlaylist(mfile);
-			tmpMoviePlayerGui.exec(NULL, "urlplayback");
+		{		
+			tmpMoviePlayerGui.addToPlaylist(*file);
+			tmpMoviePlayerGui.exec(NULL, "");
 		}
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
@@ -1381,8 +1350,7 @@ BROWSER:
 			
 			if (file->getType() == CFile::FILE_AUDIO)
 			{
-				CAudiofile audiofile(file->Name, file->getExtension());
-				tmpAudioPlayerGui.addToPlaylist(audiofile);
+				tmpAudioPlayerGui.addToPlaylist(*file);
 				tmpAudioPlayerGui.exec(NULL, "urlplayback");
 			}
 		}
@@ -1430,20 +1398,9 @@ BROWSER:
 		if ((file = fileBrowser->getSelectedFile()) != NULL) 
 		{
 			CPictureViewerGui tmpPictureViewerGui;
-			CPicture pic;
-			struct stat statbuf;
-			
-			pic.Filename = file->Name;
-			std::string tmp = file->Name.substr(file->Name.rfind('/') + 1);
-			pic.Name = tmp.substr(0, tmp.rfind('.'));
-			pic.Type = tmp.substr(tmp.rfind('.') + 1);
-			
-			if(stat(pic.Filename.c_str(), &statbuf) != 0)
-				printf("stat error");
-			pic.Date = statbuf.st_mtime;
 							
-			tmpPictureViewerGui.addToPlaylist(pic);
-			tmpPictureViewerGui.exec(NULL, "urlplayback");
+			tmpPictureViewerGui.addToPlaylist(*file);
+			tmpPictureViewerGui.exec(NULL, "");
 		}
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
@@ -1502,22 +1459,11 @@ BROWSER:
 	if (fileBrowser->exec(Path_local.c_str()))
 	{
 		Path_local = fileBrowser->getCurrentDir();
-		MI_MOVIE_INFO mfile;
+		
 		CFileList::const_iterator files = fileBrowser->getSelectedFiles().begin();
 		for(; files != fileBrowser->getSelectedFiles().end(); files++)
-		{
-			mfile.file.Name = files->Name;
-			mfile.epgTitle = files->getFileName();
-			mfile.epgInfo1 = files->getFileName();
-
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-						
-			if(!access(fname.c_str(), F_OK) )
-				mfile.tfile = fname.c_str();
-					
-			tmpMoviePlayerGui.addToPlaylist(mfile);
+		{		
+			tmpMoviePlayerGui.addToPlaylist(*files);
 		}
 		
 		tmpMoviePlayerGui.exec(NULL, "urlplayback");
@@ -1583,8 +1529,7 @@ BROWSER:
 					||  (files->getExtension() == CFile::EXTENSION_FLAC)
 			)
 			{
-				CAudiofile audiofile(files->Name, files->getExtension());
-				tmpAudioPlayerGui.addToPlaylist(audiofile);
+				tmpAudioPlayerGui.addToPlaylist(*files);
 			}
 		}
 		
@@ -1631,8 +1576,6 @@ BROWSER:
 		Path_local = fileBrowser->getCurrentDir();
 		
 		CPictureViewerGui tmpPictureViewerGui;
-		CPicture pic;
-		struct stat statbuf;
 				
 		CFileList::const_iterator files = fileBrowser->getSelectedFiles().begin();
 		
@@ -1641,16 +1584,7 @@ BROWSER:
 
 			if (files->getType() == CFile::FILE_PICTURE)
 			{
-				pic.Filename = files->Name;
-				std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
-				pic.Name = tmp.substr(0, tmp.rfind('.'));
-				pic.Type = tmp.substr(tmp.rfind('.') + 1);
-			
-				if(stat(pic.Filename.c_str(), &statbuf) != 0)
-					printf("stat error");
-				pic.Date = statbuf.st_mtime;
-				
-				tmpPictureViewerGui.addToPlaylist(pic);
+				tmpPictureViewerGui.addToPlaylist(*files);
 			}
 		}
 		
@@ -1902,23 +1836,10 @@ void CTestMenu::testPlayMovieDir()
 
 	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
 	{
-		// filter them
-		MI_MOVIE_INFO mfile;
 		CFileList::iterator files = filelist.begin();
 		for(; files != filelist.end() ; files++)
 		{
-			mfile.file.Name = files->Name;
-			mfile.epgTitle = files->getFileName();
-			mfile.epgInfo1 = files->getFileName();
-
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-						
-			if(!access(fname.c_str(), F_OK) )
-				mfile.tfile = fname.c_str();
-	
-			tmpMoviePlayerGui.addToPlaylist(mfile);
+			tmpMoviePlayerGui.addToPlaylist(*files);
 		}
 		
 		tmpMoviePlayerGui.exec(NULL, "urlplayback");
@@ -1960,13 +1881,11 @@ void CTestMenu::testPlayAudioDir()
 					||  (files->getExtension() == CFile::EXTENSION_FLAC)
 			)
 			{
-				CAudiofile audiofile(files->Name, files->getExtension());
-				tmpAudioPlayerGui.addToPlaylist(audiofile);
+				tmpAudioPlayerGui.addToPlaylist(*files);
 			}
 		}
 		
-		//tmpAudioPlayerGui.hidePlayList(true);
-		tmpAudioPlayerGui.exec(NULL, "urlplayback");
+		tmpAudioPlayerGui.exec(NULL, "");
 	}
 }
 
@@ -1987,25 +1906,13 @@ void CTestMenu::testShowPictureDir()
 	CFileList filelist;
 
 	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		CPicture pic;
-		struct stat statbuf;
-				
+	{		
 		CFileList::iterator files = filelist.begin();
 		for(; files != filelist.end() ; files++)
 		{
 			if (files->getType() == CFile::FILE_PICTURE)
 			{
-				pic.Filename = files->Name;
-				std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
-				pic.Name = tmp.substr(0, tmp.rfind('.'));
-				pic.Type = tmp.substr(tmp.rfind('.') + 1);
-			
-				if(stat(pic.Filename.c_str(), &statbuf) != 0)
-					printf("stat error");
-				pic.Date = statbuf.st_mtime;
-				
-				tmpPictureViewerGui.addToPlaylist(pic);
+				tmpPictureViewerGui.addToPlaylist(*files);
 			}
 		}
 		

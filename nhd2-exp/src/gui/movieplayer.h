@@ -184,7 +184,7 @@ class CMoviePlayerGui : public CMenuTarget
 
 		//
 		void addToPlaylist(MI_MOVIE_INFO& mfile);
-		void addToPlaylist(CFile& file);
+		void addToPlaylist(const CFile& file);
 		void addToPlaylist(const char* fileName);
 		void clearPlaylist(void);
 		void removeFromPlaylist(long pos);

@@ -322,7 +322,7 @@ void CPictureViewerGui::addToPlaylist(CPicture& file)
 	playlist.push_back(file);
 }
 
-void CPictureViewerGui::addToPlaylist(CFile& file)
+void CPictureViewerGui::addToPlaylist(const CFile& file)
 {
 	dprintf(DEBUG_DEBUG, "CPictureViewerGui::addToPlaylist: %s\n", file.Name.c_str());
 

@@ -88,7 +88,7 @@ class CPictureViewerGui : public CMenuTarget
 		int  exec(CMenuTarget* parent, const std::string& actionKey);
 
 		void addToPlaylist(CPicture& file);
-		void addToPlaylist(CFile& file);
+		void addToPlaylist(const CFile& file);
 		void addToPlaylist(const char* fileName);
 		void clearPlaylist(void);
 		void removeFromPlaylist(long pos);
