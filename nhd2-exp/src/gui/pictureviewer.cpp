@@ -322,6 +322,25 @@ void CPictureViewerGui::addToPlaylist(CPicture& file)
 	playlist.push_back(file);
 }
 
+void CPictureViewerGui::addToPlaylist(CFile& file)
+{
+	dprintf(DEBUG_DEBUG, "CPictureViewerGui::addToPlaylist: %s\n", file.Name.c_str());
+
+	CPicture pic;
+	struct stat statbuf;
+				
+	pic.Filename = file.Name;
+	std::string tmp = file.Name.substr(file.Name.rfind('/') + 1);
+	pic.Name = tmp.substr(0, tmp.rfind('.'));
+	pic.Type = tmp.substr(tmp.rfind('.') + 1);
+				
+	if(stat(pic.Filename.c_str(), &statbuf) != 0)
+		printf("stat error");
+	pic.Date = statbuf.st_mtime;
+
+	playlist.push_back(pic);
+}
+
 void CPictureViewerGui::addToPlaylist(const char* fileName)
 {
 	dprintf(DEBUG_DEBUG, "CPictureViewerGui::addToPlaylist: %s\n", fileName);

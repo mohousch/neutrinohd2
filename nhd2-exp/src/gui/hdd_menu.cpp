@@ -1209,73 +1209,22 @@ REPEAT:
 				if(file->getType() == CFile::FILE_PICTURE)
 				{
 					CPictureViewerGui tmpPictureViewerGui;
-					CPicture pic;
-					struct stat statbuf;
-					
-					pic.Filename = file->Name;
-					std::string tmp = file->Name.substr(file->Name.rfind('/') + 1);
-					pic.Name = tmp.substr(0, tmp.rfind('.'));
-					pic.Type = tmp.substr(tmp.rfind('.') + 1);
-					
-					if(stat(pic.Filename.c_str(), &statbuf) != 0)
-						printf("stat error");
-					pic.Date = statbuf.st_mtime;
-									
-					tmpPictureViewerGui.addToPlaylist(pic);
+			
+					tmpPictureViewerGui.addToPlaylist(*file);
 					tmpPictureViewerGui.exec(NULL, "urlplayback");	
 				}
 				else if(file->getType() == CFile::FILE_VIDEO)
 				{
-					CMovieInfo cMovieInfo;
-					MI_MOVIE_INFO mfile;
 					CMoviePlayerGui tmpMoviePlayerGui;
-	 
-					cMovieInfo.clearMovieInfo(&mfile);
-					mfile.file.Name = file->Name;
 
-					// other infos if there is xml file
-					cMovieInfo.loadMovieInfo(&mfile, file);
-
-					// epgTitle
-					if(mfile.epgTitle.empty())
-					{
-						std::string Title = file->getFileName();
-						removeExtension(Title);
-						mfile.epgTitle = Title;
-					}
-
-					// tfile
-					std:string fname = file->Name;
-					changeFileNameExt(fname, ".jpg");
-					if(!access(fname.c_str(), F_OK) )
-						mfile.tfile = fname.c_str();
-
-					if(g_settings.prefer_tmdb_info)
-					{
-						CTmdb * tmdb = new CTmdb();
-
-						if(tmdb->getMovieInfo(mfile.epgTitle))
-						{
-							// epgInfo1
-							if((mfile.epgInfo1.empty() && mfile.epgInfo2.empty()) && !tmdb->getDescription().empty())
-							{
-								mfile.epgInfo2 = tmdb->getDescription();
-							}
-						}
-
-						delete tmdb;
-						tmdb = NULL;
-					}
-
-					tmpMoviePlayerGui.addToPlaylist(mfile);
+					tmpMoviePlayerGui.addToPlaylist(*file);
 					tmpMoviePlayerGui.exec(NULL, "urlplayback");
 				}
 				else if(file->getType() == CFile::FILE_AUDIO)
 				{
 					CAudioPlayerGui tmpAudioPlayerGui;
 			
-					CAudiofile audiofile(file->Name, file->getExtension());
-					tmpAudioPlayerGui.addToPlaylist(audiofile);
+					tmpAudioPlayerGui.addToPlaylist(*file);
 					tmpAudioPlayerGui.exec(NULL, "urlplayback");
 				}
 				else

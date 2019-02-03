@@ -165,6 +165,7 @@ class CAudioPlayerGui : public CMenuTarget
 
 		//
 		void addToPlaylist(CAudiofile& file);
+		void addToPlaylist(CFile& file);
 		void addToPlaylist(const char* fileName);
 		void removeFromPlaylist(long pos);
 		void clearPlaylist(void);

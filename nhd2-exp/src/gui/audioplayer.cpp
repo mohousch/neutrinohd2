@@ -956,6 +956,15 @@ void CAudioPlayerGui::addToPlaylist(CAudiofile& file)
 	m_playlist.push_back(file);
 }
 
+void CAudioPlayerGui::addToPlaylist(CFile& file)
+{
+	dprintf(DEBUG_DEBUG, "CAudioPlayerGui::add2Playlist: %s\n", file.Name.c_str());
+
+	CAudiofile audiofile(file.Name, file.getExtension());
+				
+	m_playlist.push_back(audiofile);
+}
+
 void CAudioPlayerGui::addToPlaylist(const char* fileName)
 {
 	dprintf(DEBUG_DEBUG, "CAudioPlayerGui::add2Playlist: %s\n", fileName);
