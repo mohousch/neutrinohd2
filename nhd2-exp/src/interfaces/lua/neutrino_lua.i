@@ -34,9 +34,14 @@
 #include <src/global.h>
 #include <src/neutrino.h>
 
-// libs
+// libconfigfile
 #include <libconfigfile/configfile.h>
+
+// libdvbapi
 #include <libdvbapi/playback_cs.h>
+#include <libdvbapi/audio_cs.h>
+#include <libdvbapi/video_cs.h>
+#include <libdvbapi/dmx_cs.h>
 
 // driver
 #include <driver/framebuffer.h>
@@ -51,6 +56,8 @@
 #include <driver/pictureviewer/pictureviewer.h>
 #include <driver/audioplay.h>
 #include <driver/audiodec/basedec.h>
+#include <driver/stream2file.h>
+#include <driver/vcrcontrol.h>
 
 // system
 #include <system/settings.h>
@@ -61,6 +68,8 @@
 #include <system/helpers.h>
 #include <system/tmdbparser.h>
 #include <system/ytparser.h>
+#include <system/httptool.h>
+#include <system/flashtool.h>
 
 // widget
 #include <gui/widget/icons.h>
@@ -96,6 +105,22 @@
 #include <zapit/include/zapit/webtv.h>
 #include <zapit/include/zapit/client/zapittypes.h>
 #include <zapit/include/zapit/client/zapitclient.h>
+
+// sectionsd
+#include <sectionsdclient/sectionsdMsg.h>
+#include <sectionsdclient/sectionsdtypes.h>
+#include <sectionsdclient/sectionsdclient.h>
+
+// timerd
+#include <timerdclient/timerdmsg.h>
+#include <timerdclient/timerdtypes.h>
+#include <timerdclient/timerdclient.h>
+
+// libupnp
+#include <libupnpclient/upnpclient.h>
+
+// deamonc
+#include <daemonc/remotecontrol.h>
 %}
 
 %include "typemaps.i"
@@ -114,9 +139,14 @@
 %include <src/global.h>
 %include <src/neutrino.h>
 
-// libs
+// libconfigfile
 %include <lib/libconfigfile/configfile.h>
+
+// libdvbapi
 %include <lib/libdvbapi/playback_cs.h>
+%include <lib/libdvbapi/audio_cs.h>
+%include <lib/libdvbapi/video_cs.h>
+%include <lib/libdvbapi/dmx_cs.h>
 
 // driver
 %include <src/driver/fontrenderer.h>
@@ -131,6 +161,9 @@
 %include <src/driver/pictureviewer/pictureviewer.h>
 %include <src/driver/audioplay.h>
 %include <src/driver/audiodec/basedec.h>
+%include <src/driver/stream2file.h>
+%include <src/driver/vcrcontrol.h>
+
 
 // system
 %include <src/system/settings.h>
@@ -141,6 +174,8 @@
 %include <src/system/helpers.h>
 %include <src/system/tmdbparser.h>
 %include <src/system/ytparser.h>
+%include <src/system/httptool.h>
+%include <src/system/flashtool.h>
 
 // widget
 %include <src/gui/widget/icons.h>
@@ -176,6 +211,22 @@
 %include <src/zapit/include/zapit/webtv.h>
 %include <src/zapit/include/zapit/client/zapittypes.h>
 %include <src/zapit/include/zapit/client/zapitclient.h>
+
+// sectionsd
+//%include <lib/sectionsdclient/sectionsdMsg.h>
+%include <lib/sectionsdclient/sectionsdtypes.h>
+%include <lib/sectionsdclient/sectionsdclient.h>
+
+// timerd
+//%include <lib/timerdclient/timerdmsg.h>
+%include <lib/timerdclient/timerdtypes.h>
+%include <lib/timerdclient/timerdclient.h>
+
+// libupnp
+//%include <lib/libupnpclient/upnpclient.h>
+
+// deamonc
+%include <src/daemonc/remotecontrol.h>
 
 
 

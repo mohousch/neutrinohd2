@@ -271,7 +271,7 @@ class cVideo
 		void SetInput(int val);
 		void SetStandby(int val);
 		
-		void Pig(int x, int y, int w, int h, int osd_w = CFrameBuffer::getInstance()->getScreenWidth(true), int osd_h = CFrameBuffer::getInstance()->getScreenHeight(true), int num = 0);
+		void Pig(int x, int y, int w, int h, int osd_w = DEFAULT_XRES, int osd_h = DEFAULT_YRES, int num = 0);
 
 		void SetWideScreen(int val);
 		void SetAnalogMode(int mode); //analog		

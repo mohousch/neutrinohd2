@@ -126,7 +126,7 @@ class CSectionsdClient : private CBasicClient
 		{
 			time_t startzeit;
 			unsigned dauer;
-		} __attribute__ ((packed)) ;
+		} /*__attribute__ ((packed))*/ ;
 
 		struct responseGetNVODTimes
 		{

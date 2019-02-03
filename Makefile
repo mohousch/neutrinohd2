@@ -90,9 +90,6 @@ $(N_SRC):
 
 neutrino-checkout: $(N_SRC)
 
-neutrino-update:
-	git pull
-
 neutrino-clean:
 	-$(MAKE) -C $(N_SRC) clean
 
@@ -124,15 +121,15 @@ $(PLUGINS_SRC)/config.status: $(PLUGINS_SRC) $(DEST)
 			--with-configdir=$(DEST)/var/tuxbox/config \
 			--enable-testing
 
-plugins-update:
-	git pull
-
 plugins-clean:
 	-$(MAKE) -C $(PLUGINS_SRC) clean
 
 plugins-distclean:
 	-$(MAKE) -C $(PLUGINS_SRC) distclean
 	rm -f $(PLUGINS)/config.status
+
+update:
+	git pull
 
 clean: neutrino-clean plugins-clean
 distclean: neutrino-distclean plugins-distclean
