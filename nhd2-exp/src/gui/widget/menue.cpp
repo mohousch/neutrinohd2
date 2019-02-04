@@ -1687,7 +1687,14 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 	}
 	while ( msg != CRCInput::RC_timeout );
 	
-	hide();	
+	hide();
+
+	//test
+	if (background) 
+	{
+		delete[] background;
+		background = NULL;
+	}	
 
 	// vfd
 	if(!parent)
@@ -1710,6 +1717,8 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 
 void CMenuWidget::hide()
 {
+	dprintf(DEBUG_NORMAL, "CMenuWidget::hide:\n");
+
 	if( savescreen && background)
 		restoreScreen();
 	else
@@ -1722,7 +1731,7 @@ void CMenuWidget::hide()
 
 void CMenuWidget::paint()
 {
-	dprintf(DEBUG_DEBUG, "CMenuWidget::paint\n");
+	dprintf(DEBUG_NORMAL, "CMenuWidget::paint\n");
 
 	const char * l_name;
 	
@@ -3107,7 +3116,7 @@ void ClistBox::paintFoot()
 
 void ClistBox::paint()
 {
-	dprintf(DEBUG_DEBUG, "ClistBox::paint:\n");
+	dprintf(DEBUG_NORMAL, "ClistBox::paint:\n");
 
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8 );
 
@@ -4154,7 +4163,14 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 	while ( msg != CRCInput::RC_timeout );
 	
 	if(retval != menu_return::RETURN_NONE)
-		hide();	
+		hide();
+
+	//test
+	if (background) 
+	{
+		delete[] background;
+		background = NULL;
+	}		
 
 	//
 	if(PaintDate)

@@ -72,6 +72,8 @@ static uint32_t * virtual_fb = NULL;
 CFrameBuffer::CFrameBuffer()
 : active ( true )
 {
+	dprintf(DEBUG_NORMAL, "CFrameBuffer::CFrameBuffer()");
+
 #if defined (USE_OPENGL)
 	mpGLThreadObj = NULL;
 #endif
@@ -253,6 +255,8 @@ nolfb:
 
 CFrameBuffer::~CFrameBuffer()
 {
+	dprintf(DEBUG_NORMAL, "~CFrameBuffer()\n");
+
 	std::map<std::string, Icon>::iterator it;
 
 	for(it = icon_cache.begin(); it != icon_cache.end(); it++) 

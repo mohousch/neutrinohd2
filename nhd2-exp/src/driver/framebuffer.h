@@ -108,7 +108,6 @@ typedef struct cformathandler CFormathandler;
 // png/jpg/bmp/gif/crw
 CFormathandler* fh_getsize(const char * name, int * x, int * y, int width_wanted, int height_wanted);
 
-// Ausf�hrung als Singleton
 class CFrameBuffer
 {
 	private:
@@ -267,7 +266,6 @@ class CFrameBuffer
 		void paintHLineRel(int x, int dx, int y, const fb_pixel_t col);
 
 		void paintFrameBox(const int x, const int y, const int dx, const int dy, const fb_pixel_t col);
-		//void paintFrameBox(const int x, const int y, const int dx, const int dy, const int px, const fb_pixel_t col, int radius = 0, int type = CORNER_ALL);
 
 		void setIconBasePath(const std::string & iconPath);
 		void getIconSize(const char * const filename, int* width, int *height);
