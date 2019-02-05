@@ -145,7 +145,7 @@
 // libdvbapi
 %include <lib/libdvbapi/playback_cs.h>
 %include <lib/libdvbapi/audio_cs.h>
-%include <lib/libdvbapi/video_cs.h>
+//%include <lib/libdvbapi/video_cs.h>
 %include <lib/libdvbapi/dmx_cs.h>
 
 // driver
