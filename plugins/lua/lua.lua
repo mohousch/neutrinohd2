@@ -147,6 +147,12 @@ function startPlugin()
 	plugins:startPlugin("youtube")
 end
 
+-- CRCInput
+function rcInput()
+	rc = neutrino.CRCInput()
+	rc:messageLoop()
+end
+
 -- main
 function main()
 	messageBox()

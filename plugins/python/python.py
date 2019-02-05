@@ -1,6 +1,6 @@
 print("python: Hello World")
 
-from neutrino import CMessageBox, CHelpBox, CHeaders, CWindow, CScrollBar, CItems2DetailsLine, CPictureViewer, CFrameBuffer, ClistBox, CMenuWidget, CMenuForwarder, ClistBoxEntry, CInfoBox, cPlayback, CAudioPlayerGui, CMoviePlayerGui, CPictureViewerGui, CPlugins, CFile
+from neutrino import CMessageBox, CHelpBox, CHeaders, CWindow, CScrollBar, CItems2DetailsLine, CPictureViewer, CFrameBuffer, CRCInput, ClistBox, CMenuWidget, CMenuForwarder, ClistBoxEntry, CInfoBox, cPlayback, CAudioPlayerGui, CMoviePlayerGui, CPictureViewerGui, CPlugins, CFile
 
 ## CMessageBox
 def messageBox():
@@ -42,8 +42,8 @@ def infoBox():
 
 ## CFrameBuffer
 def fb():
-	frameBuffer=CFrameBuffer()
-	CFrameBuffer.paintBackground()
+	frameBuffer = CFrameBuffer.getInstance()
+	frameBuffer.paintBackground()
 
 ## ClistBox
 def listBox():
@@ -114,16 +114,28 @@ def plugins():
 	plugins = CPlugins()
 	plugins.startPlugin("nfilm")
 
+def rcInput():
+	rc = CRCInput()
+	rc.messageLoop()
+
+
+#class main():
+#	def __init__(self, session):
+#		self.session = session
+#
+#	messageBox()
+#
+#def start(session, **kwargs):
+#	session.open(main)
 
 class main():
-	def __init__(self, session):
-		self.session = session
+	def __init__(self):
+		pass
 
 	messageBox()
 
-def start(session, **kwargs):
-	session.open(main)
-
+if __name__ == "__main__":
+	main()
 
 
 

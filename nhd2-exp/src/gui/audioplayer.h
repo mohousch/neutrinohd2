@@ -35,11 +35,12 @@
 #define __audioplayergui__
 
 
-#include "driver/framebuffer.h"
-#include "driver/audiofile.h"
-#include "driver/audioplay.h"
-#include "gui/filebrowser.h"
-#include "gui/widget/menue.h"
+#include <driver/framebuffer.h>
+#include <driver/audiofile.h>
+#include <driver/audioplay.h>
+
+#include <gui/filebrowser.h>
+#include <gui/widget/menue.h>
 
 #include <string>
 #include <set>
@@ -80,7 +81,7 @@ class CAudioPlayerGui : public CMenuTarget
 		int            m_LastMode;
 		int            m_idletime;
 		bool           m_inetmode;
-		uint32_t       stimer;
+		//uint32_t       stimer;
 
 		//
 		bool updateMeta;

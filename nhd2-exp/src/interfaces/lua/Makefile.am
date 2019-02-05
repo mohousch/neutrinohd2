@@ -33,7 +33,7 @@ if !ENABLE_GSTREAMER
 AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
-AM_CPPFLAGS += -fno-rtti -fno-exceptions
+AM_CPPFLAGS += -fno-rtti -fno-exceptions -D__KERNEL_STRICT_NAMES
 
 noinst_LIBRARIES = libneutrino_interfaces_lua.a
 

@@ -42,3 +42,4 @@ eplayer3_LDADD = $(LIBEPLAYER3_LIBS)
 
 meta_SOURCES = tools/meta.c
 meta_LDADD = $(LIBEPLAYER3_LIBS)
+

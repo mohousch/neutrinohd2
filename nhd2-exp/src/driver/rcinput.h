@@ -133,7 +133,7 @@
 #define KEY_NET		0x096
 #endif
 
-/* VFD */
+// VFD
 #define VFD_UP		0x042
 #define VFD_DOWN	0x043
 #define VFD_RIGHT	0x057
@@ -370,7 +370,7 @@ class CRCInput
 		neutrino_msg_t key_next;
 		neutrino_msg_t key_prev;			
 
-		/* added from cuberevo3000hd so fix it please */
+		//
 		neutrino_msg_t key_music;
 		neutrino_msg_t key_picture;	
 		neutrino_msg_t key_repeat;
@@ -444,9 +444,7 @@ class CRCInput
 		int messageLoop( bool anyKeyCancels = false, int timeout= -1 );
 };
 
-/**
- * Converts input of numeric keys to SMS style char input.
- */
+// Converts input of numeric keys to SMS style char input
 class SMSKeyInput
 {
 	// time since last input

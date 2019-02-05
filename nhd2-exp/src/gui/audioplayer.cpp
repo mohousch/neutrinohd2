@@ -102,7 +102,6 @@ void CAudioPlayerGui::Init(void)
 {
 	m_inetmode = false;
 
-	stimer = 0;
 	m_current = 0;
 	m_metainfo.clear();
 

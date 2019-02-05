@@ -48,7 +48,7 @@ CFLAGS = -Wall -O2 -fno-strict-aliasing -O0 -g -ggdb3
 CXXFLAGS = $(CFLAGS)
 
 export CFLAGS CXXFLAGS
-export LD_LIBRARY_PATH = $(DEST)/lib/neutrinohd2/python
+#export LD_LIBRARY_PATH = $(DEST)/lib/neutrinohd2/python
 
 # first target is default...
 default: neutrino plugins
