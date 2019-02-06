@@ -70,7 +70,7 @@ class CAlphaSetup : public CMenuTarget
 		~CAlphaSetup();
 
 		void hide();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 #endif

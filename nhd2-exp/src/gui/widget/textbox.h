@@ -88,8 +88,6 @@ class CTextBox
 		std::string m_cText;
 		std::vector<std::string> m_cLineArray;
 
-		bool m_showTextFrame;
-
 		int m_nMode;
 		int m_tMode;
 
@@ -137,11 +135,7 @@ class CTextBox
 		// Constructor
 		CTextBox();
 		CTextBox(const char* text);
-		CTextBox(const char* text, 
-					CFont* font_text,
-					const int mode, 
-					const CBox* position,
-					fb_pixel_t textBackgroundColor);
+		CTextBox(const char* text, CFont* font_text, const int mode, const CBox* position, fb_pixel_t textBackgroundColor);
 
 		virtual ~CTextBox();
 
@@ -151,20 +145,20 @@ class CTextBox
 		void    scrollPageUp(const int pages);				
 		bool	setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int _tmode = TOP_RIGHT);
 		
-		inline	bool isPainted(void){return painted;};
+		inline bool isPainted(void){return painted;};
 
-		inline	CBox	getWindowsPos(void)			{return(m_cFrame);};
-		inline	int	getMaxLineWidth(void)			{return(m_nMaxLineWidth);};
-		inline  int     getLines(void)				{return(m_nNrOfLines);};
-		inline  int     getPages(void)				{return(m_nNrOfPages);};
-		inline	void	movePosition(int x, int y){m_cFrame.iX = x; m_cFrame.iY = y;};
+		inline CBox getWindowsPos(void){return(m_cFrame);};
+		inline int getMaxLineWidth(void){return(m_nMaxLineWidth);};
+		inline int getLines(void){return(m_nNrOfLines);};
+		inline int getPages(void){return(m_nNrOfPages);};
+		inline void movePosition(int x, int y){m_cFrame.iX = x; m_cFrame.iY = y;};
 
 		void setCorner(int Radius = NO_RADIUS, int Type = CORNER_NONE);
 		void setBackGroundColor(fb_pixel_t col){m_textBackgroundColor = col;};
 		void setGradient(int grad = nogradient){gradient = grad;};
 
-		void paint (void);
-		void hide (void);
+		void paint(void);
+		void hide(void);
 
 		void setBigFonts(bool bigfont = false);
 };

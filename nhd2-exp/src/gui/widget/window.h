@@ -35,9 +35,8 @@
 class CWindow  
 {
 	private:
-		CBox cFrameBox;
-
 		CFrameBuffer* frameBuffer;
+		CBox cFrameBox;
 
 		fb_pixel_t * background;
 		int full_width;

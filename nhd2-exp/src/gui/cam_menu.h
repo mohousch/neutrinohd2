@@ -23,8 +23,8 @@
 #ifndef __cam_menu__
 #define __cam_menu__
 
-
 #include <gui/widget/menue.h>
+#include <gui/widget/hintbox.h>
 
 
 using namespace std;
@@ -32,14 +32,14 @@ using namespace std;
 class CCAMMenuHandler : public CMenuTarget
 {
 	private:
-		CHintBox * hintBox;
+		CHintBox* hintBox;
 		unsigned long long timeoutEnd;
 
 		int handleCamMsg (const neutrino_msg_t msg, neutrino_msg_data_t data, bool from_menu = false);
 		
 	public:
 		void init(void);
-		int exec(CMenuTarget * parent,  const std::string &actionKey);
+		int exec(CMenuTarget *parent,  const std::string &actionKey);
 
 		int doMenu(int slot);
 		void doMainMenu();

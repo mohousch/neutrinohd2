@@ -30,12 +30,17 @@ class CTestMenu : public CMenuTarget
 	private:
 		// variables
 		CFrameBuffer* frameBuffer;
+		ClistBox* listMenu;
+		CMenuItem* item;
+
+		CAudioPlayerGui tmpAudioPlayerGui;
+		CMoviePlayerGui tmpMoviePlayerGui;
+		CPictureViewerGui tmpPictureViewerGui;
 
 		//
 		int selected;
 
 		//
-		ClistBox* listMenu;
 		ZapitChannelList Channels;
 		bool displayNext;
 
@@ -45,8 +50,6 @@ class CTestMenu : public CMenuTarget
 		//
 		CMovieInfo m_movieInfo;
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
-
-		CMenuItem* item;
 
 		//
 		CChannelList* webTVchannelList;
@@ -223,7 +226,7 @@ void CTestMenu::testCIcon()
 	// paint testIcon
 	testIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
 
-	CFrameBuffer::getInstance()->paintIcon(testIcon.iconName.c_str(), 10 + BORDER_LEFT, 10);
+	CFrameBuffer::getInstance()->paintIcon(testIcon.iconName.c_str(), 150 + BORDER_LEFT, 150);
 
 	CFrameBuffer::getInstance()->blit();
 
@@ -253,7 +256,7 @@ void CTestMenu::testCImage()
 	// paint testImage
 	testImage.setImage(PLUGINDIR "/netzkino/netzkino.png");
 
-	CFrameBuffer::getInstance()->displayImage(testImage.imageName.c_str(), 10 + BORDER_LEFT, 10, 100, 40);
+	CFrameBuffer::getInstance()->displayImage(testImage.imageName.c_str(), 150 + BORDER_LEFT, 150, 100, 40);
 
 	CFrameBuffer::getInstance()->blit();
 
@@ -781,10 +784,7 @@ void CTestMenu::testCListFrame()
 	CFrameBuffer::getInstance()->blit();
 
 	CAudioPlayer::getInstance()->init();
-	//CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, NeutrinoMessages::mode_audio);
-	//int state = CAudioPlayerGui::STOP;
 	int index = 0;
-	CAudioPlayerGui tmpAudioPlayerGui;
 	
 	// loop
 	neutrino_msg_t msg;
@@ -795,9 +795,6 @@ REPEAT:
 	while(1)
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
-
-		//if (CAudioPlayer::getInstance()->getState() == CBaseDec::STOP)
-		//	state = CAudioPlayerGui::STOP;
 		
 		if (msg == CRCInput::RC_home) 
 		{
@@ -844,11 +841,6 @@ REPEAT:
 			index = selected;
 
 			CAudiofile mp3(audioFileList[index].Name, audioFileList[index].getExtension());
-			//CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
-
-			//state = CAudioPlayerGui::PLAY;	
-
-			//goto REPEAT;
 
 			tmpAudioPlayerGui.addToPlaylist(mp3);
 
@@ -858,29 +850,6 @@ REPEAT:
 			//listFrame->refresh();
 			goto REPEAT;
 		}
-		/*
-		else if(msg == CRCInput::RC_stop)
-		{
-			if (CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
-			{
-				CAudioPlayer::getInstance()->stop();
-			}
-
-			state = CAudioPlayerGui::STOP;
-		}
-		else if(msg == CRCInput::RC_right)
-		{
-			//if (CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
-			{
-				CAudioPlayer::getInstance()->stop();
-				state = CAudioPlayerGui::STOP;
-
-				CAudiofile mp3(audioFileList[index++].Name, audioFileList[index++].getExtension());
-				CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
-				state = CAudioPlayerGui::PLAY;
-			}
-		}
-		*/
 
 		//listFrame->refresh();
 		CFrameBuffer::getInstance()->blit();
@@ -1191,7 +1160,6 @@ REPEAT:
 			hide();
 
 			selected = listBox->getSelected();
-			CMoviePlayerGui tmpMoviePlayerGui;
 
 			if (&m_vMovieInfo[selected].file != NULL) 
 			{
@@ -1245,8 +1213,7 @@ void CTestMenu::testPlayMovieURL()
 {
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
-	
-	CMoviePlayerGui tmpMoviePlayerGui;	
+		
 	CFileBrowser * fileBrowser;
 	
 	fileBrowser = new CFileBrowser();
@@ -1345,9 +1312,7 @@ BROWSER:
 		CFile * file;
 		
 		if ((file = fileBrowser->getSelectedFile()) != NULL) 
-		{
-			CAudioPlayerGui tmpAudioPlayerGui;
-			
+		{	
 			if (file->getType() == CFile::FILE_AUDIO)
 			{
 				tmpAudioPlayerGui.addToPlaylist(*file);
@@ -1396,9 +1361,7 @@ BROWSER:
 		CFile * file;
 		
 		if ((file = fileBrowser->getSelectedFile()) != NULL) 
-		{
-			CPictureViewerGui tmpPictureViewerGui;
-							
+		{					
 			tmpPictureViewerGui.addToPlaylist(*file);
 			tmpPictureViewerGui.exec(NULL, "");
 		}
@@ -1416,8 +1379,6 @@ BROWSER:
 
 void CTestMenu::testPlayMovieFolder()
 {
-	CMoviePlayerGui tmpMoviePlayerGui;
-	
 	CFileBrowser * fileBrowser;
 	
 	fileBrowser = new CFileBrowser();
@@ -1516,8 +1477,7 @@ BROWSER:
 	if (fileBrowser->exec(Path_local.c_str()))
 	{
 		Path_local = fileBrowser->getCurrentDir();
-		
-		CAudioPlayerGui tmpAudioPlayerGui;
+
 		CFileList::const_iterator files = fileBrowser->getSelectedFiles().begin();
 		
 		for(; files != fileBrowser->getSelectedFiles().end(); files++)
@@ -1574,8 +1534,6 @@ BROWSER:
 	if (fileBrowser->exec(Path_local.c_str()))
 	{
 		Path_local = fileBrowser->getCurrentDir();
-		
-		CPictureViewerGui tmpPictureViewerGui;
 				
 		CFileList::const_iterator files = fileBrowser->getSelectedFiles().begin();
 		
@@ -1826,9 +1784,6 @@ void CTestMenu::testPlayMovieDir()
 	fileFilter.addFilter("mp3");
 	fileFilter.addFilter("wma");
 	fileFilter.addFilter("ogg");
-	//
-
-	CMoviePlayerGui tmpMoviePlayerGui;
 	
 	std::string Path_local = g_settings.network_nfs_moviedir;
 
@@ -1862,8 +1817,6 @@ void CTestMenu::testPlayAudioDir()
 	fileFilter.addFilter("aac");
 	fileFilter.addFilter("dts");
 	fileFilter.addFilter("m4a");
-
-	CAudioPlayerGui tmpAudioPlayerGui;
 	
 	std::string Path_local = g_settings.network_nfs_audioplayerdir;
 
@@ -1898,8 +1851,6 @@ void CTestMenu::testShowPictureDir()
 	fileFilter.addFilter("bmp");
 	fileFilter.addFilter("jpg");
 	fileFilter.addFilter("jpeg");
-
-	CPictureViewerGui tmpPictureViewerGui;
 	
 	std::string Path_local = g_settings.network_nfs_picturedir;
 
@@ -2301,7 +2252,7 @@ void CTestMenu::testCMenuWidgetListBox1()
 	listMenu->addKey(CRCInput::RC_green, this, "agreen");
 	listMenu->addKey(CRCInput::RC_yellow, this, "ayellow");
 	listMenu->addKey(CRCInput::RC_blue, this, "ablue");
-	listMenu->addKey(CRCInput::RC_stop, this, "astop");
+	//listMenu->addKey(CRCInput::RC_stop, this, "astop");
 
 	listMenu->exec(NULL, "");
 	//listMenu->hide();
@@ -2597,7 +2548,7 @@ void CTestMenu::spinner(void)
 	}
 }
 
-int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
+int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
 	
@@ -2607,323 +2558,451 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(actionKey == "box")
 	{
 		testCBox();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "icon")
 	{
 		testCIcon();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "image")
 	{
 		testCImage();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "window")
 	{
 		testCWindow();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "windowshadow")
 	{
 		testCWindowShadow();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "stringinput")
 	{
 		testCStringInput();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "stringinputsms")
 	{
 		testCStringInputSMS();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "pininput")
 	{
 		testCPINInput();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "ipinput")
 	{
 		testCIPInput();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "macinput")
 	{
 		testCMACInput();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "dateinput")
 	{
 		testCDateInput();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "timeinput")
 	{
 		testCTimeInput();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "intinput")
 	{
 		testCIntInput();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "infobox")
 	{
 		testCInfoBox();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "messagebox")
 	{
 		testCMessageBox();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "messageboxinfomsg")
 	{
 		testCMessageBoxInfoMsg();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "messageboxerrormsg")
 	{
 		testCMessageBoxErrorMsg();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "hintbox")
 	{
 		testCHintBox();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "hintboxinfo")
 	{
 		testCHintBoxInfo();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "helpbox")
 	{
 		testCHelpBox();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "textbox")
 	{
 		testCTextBox();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "listframe")
 	{
 		testCListFrame();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "progressbar")
 	{
 		testCProgressBar();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "progresswindow")
 	{
 		testCProgressWindow();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "buttons")
 	{
 		testCButtons();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "listboxentry")
 	{
 		testClistBoxEntry();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "audioplayer")
 	{
 		testAudioPlayer();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "tsplayer")
 	{
 		testTSPlayer();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "movieplayer")
 	{
 		testMoviePlayer();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "pictureviewer")
 	{
 		testPictureViewer();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "playmovieurl")
 	{
 		testPlayMovieURL();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "playaudiourl")
 	{
 		testPlayAudioURL();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "showpictureurl")
 	{
 		testShowPictureURL();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "playmoviefolder")
 	{
 		testPlayMovieFolder();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "playaudiofolder")
 	{
 		testPlayAudioFolder();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "showpicturefolder")
 	{
 		testShowPictureFolder();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "startplugin")
 	{
 		testStartPlugin();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "showepg")
 	{
 		testShowActuellEPG();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "channelselect")
 	{
 		testChannelSelectWidget();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "bewidget")
 	{
 		testBEWidget();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "avselect")
 	{
 		testAVSelectWidget();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "aselect")
 	{
 		testAudioSelectWidget();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "dvbsubselect")
 	{
 		testDVBSubSelectWidget();
+
+		return menu_return::RETURN_REPAINT;
 	}
-	/*
+/*
 	else if(actionKey == "alphasetup")
 	{
 		testAlphaSetupWidget();
+
+		return menu_return::RETURN_REPAINT;
 	}
-	*/
-	/*
+*/
+/*
 	else if(actionKey == "psisetup")
 	{
 		testPSISetup();
+
+		return menu_return::RETURN_REPAINT;
 	}
-	*/
+*/
 	else if(actionKey == "rclock")
 	{
 		testRCLock();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "sleeptimer")
 	{
 		testSleepTimerWidget();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "mountgui")
 	{
 		testMountGUI();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "umountgui")
 	{
 		testUmountGUI();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "mountsmallmenu")
 	{
 		testMountSmallMenu();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "vfdcontroller")
 	{
 		testVFDController();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "colorchooser")
 	{
 		testColorChooser();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "keychooser")
 	{
 		testKeyChooser();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "mountchooser")
 	{
 		testMountChooser();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "framebox")
 	{
 		testFrameBox();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "pluginslist")
 	{
 		testPluginsList();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "playmoviedir")
 	{
 		testPlayMovieDir();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "playaudiodir")
 	{
 		testPlayAudioDir();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "showpicturedir")
 	{
 		testShowPictureDir();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "menuwidgetlistbox")
 	{
 		testCMenuWidgetListBox();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_setup")
 	{
 		CChannelListSettings * testChannelMenu = new CChannelListSettings();
 		testChannelMenu->exec(NULL, "");
 		delete testChannelMenu;
-		testChannelMenu = NULL;		
+		testChannelMenu = NULL;	
+
+		return menu_return::RETURN_REPAINT;	
 	}
 	else if(actionKey == "RC_info")
 	{
 		g_EpgData->show(Channels[listMenu->getSelected()]->channel_id);
+
 		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_red")
 	{
 		g_EventList->exec(Channels[listMenu->getSelected()]->channel_id, Channels[listMenu->getSelected()]->getName());
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_green")
 	{
 		selected = listMenu->getSelected();
 		displayNext = !displayNext;
 		testCMenuWidgetListBox();
+
 		return menu_return::RETURN_EXIT_ALL;		
 	}
 	else if(actionKey == "RC_yellow")
 	{
 		bouquetList->exec(true);
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_blue")
 	{
 		CEPGplusHandler eplus;
 		eplus.exec(NULL, "");
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "zapto")
 	{
 		selected = listMenu->getSelected();
 		g_Zapit->zapTo_serviceID(Channels[listMenu->getSelected()]->channel_id);
+
 		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "menuwidgetlistbox1")
 	{
 		testCMenuWidgetListBox1();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "aplay")
 	{
 		selected = listMenu->getSelected();
-		CAudiofile audiofile(audioFileList[listMenu->getSelected()].Name, audioFileList[listMenu->getSelected()].getExtension());
 
-		CAudioPlayer::getInstance()->init();
-		CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, NeutrinoMessages::mode_audio);
+		tmpAudioPlayerGui.addToPlaylist(audioFileList[listMenu->getSelected()].Name.c_str());
+		tmpAudioPlayerGui.exec(NULL, "");
 
-		CAudiofile mp3(audioFileList[listMenu->getSelected()].Name, audioFileList[listMenu->getSelected()].getExtension());
-		CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);		
-	}
-	else if(actionKey == "astop")
-	{
-
-		if (CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
-		{
-			CAudioPlayer::getInstance()->stop();
-		}
-
+		return menu_return::RETURN_REPAINT;		
 	}
 	else if(actionKey == "asetup")
 	{
 		CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
 		audioPlayerSettingsMenu->exec(this, "");
 		delete audioPlayerSettingsMenu;
-		audioPlayerSettingsMenu = NULL;	
+		audioPlayerSettingsMenu = NULL;
+
+		return menu_return::RETURN_REPAINT;	
 	}
 	else if(actionKey == "testmenuwidget")
 	{
 		testCMenuWidget();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "listboxnlines")
 	{
 		testClistBoxnLines();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "pred")
 	{
@@ -2931,46 +3010,60 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		//return menu_return::RETURN_EXIT_ALL;
 		listMenu->hide();
 		listMenu->exec(NULL, "");
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "pgreen")
 	{
 		g_PluginList->startPlugin(listMenu->getSelected());
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "mplay")
 	{
 		selected = listMenu->getSelected();
-		CMoviePlayerGui tmpMoviePlayerGui;
 
 		if (&m_vMovieInfo[listMenu->getSelected()].file != NULL) 
 		{
 			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[listMenu->getSelected()]);
 			tmpMoviePlayerGui.exec(NULL, "urlplayback");
 		}
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "minfo")
 	{
 		selected = listMenu->getSelected();
 		m_movieInfo.showMovieInfo(m_vMovieInfo[listMenu->getSelected()]);
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "channellist")
 	{
 		testChannellist();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "bouquetlist")
 	{
 		testBouquetlist();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "spinner")
 	{
 		spinner();
+
+		return menu_return::RETURN_REPAINT;
 	}
+
+	showTestMenu();
 	
 	return menu_return::RETURN_REPAINT;
 }
 
 void CTestMenu::showTestMenu()
 {
-	/// menue.cpp
 	CMenuWidget * mainMenu = new CMenuWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
 
 	mainMenu->enableMenuPosition();
@@ -3077,11 +3170,12 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	CTestMenu* testMenu = new CTestMenu();
+	CTestMenu *testMenu = new CTestMenu();
 	
-	testMenu->showTestMenu();
+	testMenu->exec(NULL, "");
 	
 	delete testMenu;
+	testMenu = NULL;
 }
 
 

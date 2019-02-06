@@ -38,6 +38,7 @@
 #include <system/helpers.h>
 #include <system/debug.h>
 
+
 extern "C" int luaopen_neutrino(lua_State* L); // declare the wrapped module
 
 neutrinoLua::neutrinoLua()
@@ -45,6 +46,12 @@ neutrinoLua::neutrinoLua()
 	lua = luaL_newstate();
 
 	luaL_openlibs(lua);
+
+	// without require
+/*
+	lua_pushliteral(lua,"neutrino");
+	luaopen_neutrino(lua);
+*/
 
 	// load wrapped module this require require
 	lua_getglobal(lua, "package");
