@@ -201,21 +201,9 @@ void CTestMenu::testCBox()
 	CFrameBuffer::getInstance()->blit();
 
 	// loop
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
+	g_RCInput->messageLoop();
 
-	while(1)
-	{
-		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
-		
-		if (msg == CRCInput::RC_home) 
-		{
-			CFrameBuffer::getInstance()->paintBackground();
-			CFrameBuffer::getInstance()->blit();
-
-			break;
-		}
-	}
+	hide();
 }
 
 void CTestMenu::testCIcon()
@@ -231,21 +219,9 @@ void CTestMenu::testCIcon()
 	CFrameBuffer::getInstance()->blit();
 
 	// loop
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
+	g_RCInput->messageLoop();
 
-	while(1)
-	{
-		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
-		
-		if (msg == CRCInput::RC_home) 
-		{
-			CFrameBuffer::getInstance()->paintBackground();
-			CFrameBuffer::getInstance()->blit();
-
-			break;
-		}
-	}
+	hide();
 }
 
 void CTestMenu::testCImage()
@@ -261,21 +237,9 @@ void CTestMenu::testCImage()
 	CFrameBuffer::getInstance()->blit();
 
 	// loop
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
+	g_RCInput->messageLoop();
 
-	while(1)
-	{
-		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
-		
-		if (msg == CRCInput::RC_home) 
-		{
-			CFrameBuffer::getInstance()->paintBackground();
-			CFrameBuffer::getInstance()->blit();
-
-			break;
-		}
-	}
+	hide();
 }
 
 void CTestMenu::testCWindow()
@@ -297,28 +261,12 @@ void CTestMenu::testCWindow()
 	window->setGradient(gradientDark2Light2Dark);
 
 	window->paint();
-
 	CFrameBuffer::getInstance()->blit();
-	//
 
 	// loop
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
+	g_RCInput->messageLoop();
 
-	while(1)
-	{
-		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
-		
-		if (msg == CRCInput::RC_home) 
-		{
-			//CFrameBuffer::getInstance()->paintBackground();
-			window->hide();
-			CFrameBuffer::getInstance()->blit();
-
-			break;
-		}
-	}
-
+	window->hide();
 	delete window;
 	window = NULL;
 }
@@ -341,26 +289,12 @@ void CTestMenu::testCWindowShadow()
 	window->enableSaveScreen();
 
 	window->paint();
-
 	CFrameBuffer::getInstance()->blit();
-	//
 
 	// loop
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
+	g_RCInput->messageLoop();
 
-	while(1)
-	{
-		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
-		
-		if (msg == CRCInput::RC_home) 
-		{
-			window->hide();
-			CFrameBuffer::getInstance()->blit();
-
-			break;
-		}
-	}
+	window->hide();
 
 	delete window;
 	window = NULL;
@@ -391,7 +325,7 @@ void CTestMenu::testCStringInputSMS()
 void CTestMenu::testCPINInput()
 {
 	std::string value;
-	CPINInput * pinInput = new CPINInput("CPINInput", &value);
+	CPINInput * pinInput = new CPINInput("CPINInput", (char*)value.c_str());
 	
 	pinInput->exec(NULL, "");
 	pinInput->hide();
@@ -510,29 +444,15 @@ void CTestMenu::testCHintBox()
 {
 	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, "testing CHintBox");
 	
-	hintBox->exec();
+	hintBox->exec(10);
 
-	// loop
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
-
-	while(1)
-	{
-		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
-		
-		if (msg == CRCInput::RC_home) 
-		{
-			delete hintBox;
-			hintBox = NULL;
-
-			break;
-		}
-	}
+	delete hintBox;
+	hintBox = NULL;
 }
 
 void CTestMenu::testCHintBoxInfo()
 {
-	HintBox(LOCALE_MESSAGEBOX_INFO, "testing CHintBoxInfo");
+	HintBox(LOCALE_MESSAGEBOX_INFO, "testing CHintBoxInfo", HINTBOX_WIDTH, 10, NEUTRINO_ICON_INFO);
 }
 
 void CTestMenu::testCHelpBox()
@@ -614,8 +534,9 @@ void CTestMenu::testCTextBox()
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 	bool bigFonts = false;
+	bool loop = true;
 
-	while(1)
+	while(loop)
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
@@ -624,7 +545,7 @@ void CTestMenu::testCTextBox()
 			textBox->hide();
 			CFrameBuffer::getInstance()->blit();
 
-			break;
+			loop = false;
 		}
 		else if(msg == CRCInput::RC_info)
 		{
@@ -790,9 +711,11 @@ void CTestMenu::testCListFrame()
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 
+	bool loop = true;
+
 REPEAT:
 	listFrame->refresh();
-	while(1)
+	while(loop)
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
@@ -812,7 +735,7 @@ REPEAT:
 
 			listFrame->hide();
 
-			break;
+			loop = false;
 		}
 		else if(msg == CRCInput::RC_down)
 		{
@@ -966,21 +889,8 @@ void CTestMenu::testCButtons()
 	CFrameBuffer::getInstance()->blit();
 
 	// loop
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
-
-	while(1)
-	{
-		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
-		
-		if (msg == CRCInput::RC_home) 
-		{
-			CFrameBuffer::getInstance()->paintBackground();
-			CFrameBuffer::getInstance()->blit();
-
-			break;
-		}
-	}
+	g_RCInput->messageLoop();
+	hide();
 }
 
 void CTestMenu::testClistBoxEntry()
@@ -1748,7 +1658,7 @@ void CTestMenu::testMountChooser()
 
 void CTestMenu::testPluginsList()
 {
-	CPluginList * pluginList = new CPluginList(/*LOCALE_USERMENU_ITEM_PLUGINS*/);
+	CPluginList * pluginList = new CPluginList();
 	pluginList->exec(NULL, "");
 	delete pluginList;
 	pluginList = NULL;

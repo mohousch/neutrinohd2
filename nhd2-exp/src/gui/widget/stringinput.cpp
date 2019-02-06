@@ -184,6 +184,9 @@ void CStringInput::init()
 	smstimer = 0;
 	
 	selected = 0;
+
+	m_cBoxWindow.setDimension(x, y, width, height);
+	m_cTitleWindow.setDimension(x, y, width, hheight);
 }
 
 void CStringInput::NormalKeyPressed(const neutrino_msg_t key)
@@ -332,7 +335,7 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 	neutrino_msg_data_t data;
 	int res = menu_return::RETURN_REPAINT;
 
-        char oldval[size+1], dispval[size+1];
+        char oldval[size + 1], dispval[size + 1];
         oldval[size] = 0;
         dispval[size] = 0;
 
@@ -485,6 +488,8 @@ int CStringInput::handleOthers(const neutrino_msg_t /*msg*/, const neutrino_msg_
 
 void CStringInput::hide()
 {
+	dprintf(DEBUG_NORMAL, "CStringInput::hide\n");
+
 	m_cBoxWindow.hide();
 	frameBuffer->blit();
 }
@@ -501,6 +506,7 @@ void CStringInput::paint()
 	int iconoffset;
 	int icol_w = 28, icol_h = 16;
 
+	// reinit
 	m_cBoxWindow.setDimension(x, y, width, height);
 	m_cTitleWindow.setDimension(x, y, width, hheight);
 
@@ -537,6 +543,7 @@ void CStringInput::paint()
 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_INFO]->RenderString(x + 20, y + hheight + mheight + iheight*2 + 40, width - 20, g_Locale->getText(hint_2), COL_MENUCONTENT, 0, true); // UTF-8
 	}
 
+	// chars grid
 	for (int count = 0; count < size; count++)
 		paintChar(count);
 }
@@ -545,7 +552,7 @@ void CStringInput::paintChar(int pos, const char c)
 {
 	const int xs = 20;
 	int ys = mheight;
-	int xpos = x + 20 + pos* xs;
+	int xpos = x + 20 + pos*xs;
 	int ypos = y + hheight + 25;
 
 	char ch[2] = {c, 0};
@@ -761,7 +768,7 @@ void CStringInputSMS::paint()
 	buttons.paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - ButtonHeight, ((width - 20)/4)*2, 2, CStringInputSMSButtons, ButtonHeight);
 }
 
-//PINInput
+// CPINInput
 void CPINInput::paintChar(int pos)
 {
 	CStringInput::paintChar(pos, (value[pos] == ' ') ? ' ' : '*');
@@ -783,7 +790,6 @@ int CPINInput::exec( CMenuTarget* parent, const std::string&)
 		strcat(value, " ");
 
 	paint();
-	
 	frameBuffer->blit();
 
 	bool loop = true;
