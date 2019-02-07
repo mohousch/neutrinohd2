@@ -140,10 +140,10 @@ class CTextBox
 		virtual ~CTextBox();
 
 		// Functions
-		void    refresh(void);
-		void    scrollPageDown(const int pages);
-		void    scrollPageUp(const int pages);				
-		bool	setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int _tmode = TOP_RIGHT);
+		void refresh(void);
+		void scrollPageDown(const int pages);
+		void scrollPageUp(const int pages);				
+		bool setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int _tmode = TOP_RIGHT);
 		
 		inline bool isPainted(void){return painted;};
 

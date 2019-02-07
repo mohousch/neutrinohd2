@@ -50,6 +50,8 @@
 class CInfoBox  
 {
 	private:
+		CFrameBuffer * frameBuffer;
+
 		CBox	m_cBoxFrame;
 		CBox	m_cBoxFrameText;
 		CBox	m_cBoxFrameTitleRel;
@@ -67,8 +69,6 @@ class CInfoBox
 
 		CTextBox *m_pcTextBox;
 
-		CFrameBuffer * frameBuffer;
-
 		bool bigFonts;
 
 		bool hide(void);
@@ -79,11 +79,11 @@ class CInfoBox
 		void refreshTitle(void);
 		void refreshText(void);
 
-		bool    paint(void);
-		void    refresh(void);
+		bool paint(void);
+		void refresh(void);
 
-		void    scrollPageDown(const int pages);
-		void    scrollPageUp(const int pages);
+		void scrollPageDown(const int pages);
+		void scrollPageUp(const int pages);
 
 		void setBigFonts();
 
@@ -99,8 +99,8 @@ class CInfoBox
 				   const char * icon = NEUTRINO_ICON_INFO);
 
 		// functions
-		int     exec(int timeout = -1);
-		bool	setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int tmode = CTextBox::TOP_RIGHT);
+		int exec(int timeout = -1);
+		bool setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int tmode = CTextBox::TOP_RIGHT);
 };
 
 //

@@ -142,12 +142,15 @@ class CTestMenu : public CMenuTarget
 
 		// new
 		void spinner(void);
+
+		// our widgetMenu
+		void showTestMenu();
+
 	public:
 		CTestMenu();
 		~CTestMenu();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 		void hide();
-		void showTestMenu();
 };
 
 CTestMenu::CTestMenu()
@@ -511,16 +514,14 @@ void CTestMenu::testCTextBox()
 	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
 	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20);
 	
-	CTextBox * textBox = new CTextBox("CTextBox", NULL, CTextBox::SCROLL, &Box, COL_MENUCONTENT_PLUS_0);
+	CTextBox * textBox = new CTextBox("CTextBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &Box, COL_MENUCONTENT_PLUS_0);
 	
-	std::string text = "testing CTextBox";
+	std::string text = "testing CTextBox: blah blah blah boaah";
 		
 	int pich = 246;	//FIXME
 	int picw = 162; 	//FIXME
 		
-	std::string fname;
-
-	fname = PLUGINDIR "/netzkino/netzkino.png";
+	std::string fname = PLUGINDIR "/netzkino/netzkino.png";
 		
 	if(access(fname.c_str(), F_OK))
 		fname = "";
@@ -705,7 +706,6 @@ void CTestMenu::testCListFrame()
 	CFrameBuffer::getInstance()->blit();
 
 	CAudioPlayer::getInstance()->init();
-	int index = 0;
 	
 	// loop
 	neutrino_msg_t msg;
@@ -761,13 +761,12 @@ REPEAT:
 		{
 			selected = listFrame->getSelectedLine();
 
-			index = selected;
+			for (unsigned int i = 0; i < audioFileList.size(); i++)
+			{
+				tmpAudioPlayerGui.addToPlaylist(audioFileList[i]);
+			}
 
-			CAudiofile mp3(audioFileList[index].Name, audioFileList[index].getExtension());
-
-			tmpAudioPlayerGui.addToPlaylist(mp3);
-
-			//tmpAudioPlayerGui.setCurrent(selected);
+			tmpAudioPlayerGui.setCurrent(selected);
 			tmpAudioPlayerGui.exec(NULL, "");
 
 			//listFrame->refresh();

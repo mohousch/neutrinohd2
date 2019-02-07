@@ -460,7 +460,7 @@ void CTextBox::refreshText(void)
 	m_cBoxWindow.setGradient(gradient);
 	m_cBoxWindow.paint();
 	
-	// setthumbnail (paint picture only on first page)
+	// paint thumbnail (paint picture only on first page)
 	if(m_nCurrentPage == 0 && !access(thumbnail.c_str(), F_OK) )
 	{
 		CFrameBuffer::getInstance()->paintFrameBox(lx, ly, tw, th, COL_WHITE);
