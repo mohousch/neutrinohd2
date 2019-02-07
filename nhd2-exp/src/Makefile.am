@@ -71,6 +71,7 @@ neutrino_LDADD = \
 	gui/widget/headers.o \
 	gui/widget/listbox.o \
 	gui/widget/listframe.o \
+	gui/widget/components.o \
 	$(top_builddir)/lib/sectionsdclient/libsectionsdclient.a \
 	$(top_builddir)/lib/timerdclient/libtimerdclient.a \
 	$(top_builddir)/src/zapit/lib/libzapitclient.a \

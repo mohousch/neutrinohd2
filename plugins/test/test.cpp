@@ -1,5 +1,5 @@
 /*
-  $Id: test.cpp 2014/01/22 mohousch Exp $
+  $Id: test.cpp 07.02.2019 mohousch Exp $
 
   License: GPL
 
@@ -95,21 +95,17 @@ class CTestMenu : public CMenuTarget
 		void testFrameBox();
 		void testCMenuWidget();
 		void testClistBoxnLines();
-	
-		// mediapalyers
-		void testAudioPlayer();
-		void testTSPlayer();
-		void testMoviePlayer();
-		void testPictureViewer();
 
 		//
 		void testPlayMovieURL();
 		void testPlayAudioURL();
 		void testShowPictureURL();
+
 		//
 		void testPlayMovieFolder();
 		void testPlayAudioFolder();
 		void testShowPictureFolder();
+
 		//
 		void testStartPlugin();
 
@@ -144,7 +140,7 @@ class CTestMenu : public CMenuTarget
 		void spinner(void);
 
 		// our widgetMenu
-		void showTestMenu();
+		void showMenu();
 
 	public:
 		CTestMenu();
@@ -190,8 +186,11 @@ void CTestMenu::hide()
 	frameBuffer->blit();
 }
 
+// CBox
 void CTestMenu::testCBox()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CBox\n");
+
 	CBox Box;
 	
 	Box.iX = g_settings.screen_StartX + 10;
@@ -209,8 +208,11 @@ void CTestMenu::testCBox()
 	hide();
 }
 
+// CIcon
 void CTestMenu::testCIcon()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CIcon\n");
+
 	//CIcon testIcon(NEUTRINO_ICON_BUTTON_RED);
 	CIcon testIcon;
 
@@ -227,8 +229,11 @@ void CTestMenu::testCIcon()
 	hide();
 }
 
+// CImage
 void CTestMenu::testCImage()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CImage\n");
+
 	//CImage testImage(PLUGINDIR "/netzkino/netzkino.png");
 	CImage testImage;
 
@@ -245,8 +250,11 @@ void CTestMenu::testCImage()
 	hide();
 }
 
+// Cwindow
 void CTestMenu::testCWindow()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CWindow\n");
+
 	CBox Box;
 	
 	Box.iX = g_settings.screen_StartX + 10;
@@ -274,8 +282,11 @@ void CTestMenu::testCWindow()
 	window = NULL;
 }
 
+// CWindow
 void CTestMenu::testCWindowShadow()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CWindow with shadow\n");
+
 	CBox Box;
 	
 	Box.iX = g_settings.screen_StartX + 10;
@@ -303,8 +314,11 @@ void CTestMenu::testCWindowShadow()
 	window = NULL;
 }
 
+// CStringInput
 void CTestMenu::testCStringInput()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CStringInput\n");
+
 	std::string value;
 	CStringInput * stringInput = new CStringInput("CStringInput", &value);
 	
@@ -314,8 +328,12 @@ void CTestMenu::testCStringInput()
 	stringInput = NULL;
 	value.clear();
 }
+
+// CStringInputSMS
 void CTestMenu::testCStringInputSMS()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CStringInputSMS\n");
+
 	std::string value;
 	CStringInputSMS * stringInputSMS = new CStringInputSMS("CStringInputSMS", &value);
 	
@@ -325,8 +343,11 @@ void CTestMenu::testCStringInputSMS()
 	value.clear();
 }
 
+// CPINInput
 void CTestMenu::testCPINInput()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CPINInput\n");
+
 	std::string value;
 	CPINInput * pinInput = new CPINInput("CPINInput", (char*)value.c_str());
 	
@@ -337,8 +358,11 @@ void CTestMenu::testCPINInput()
 	value.clear();
 }
 
+// CIPInput
 void CTestMenu::testCIPInput()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CIPInput\n");
+
 	std::string value;
 	CIPInput * ipInput = new CIPInput(LOCALE_STREAMINGMENU_SERVER_IP, value);
 	
@@ -348,8 +372,11 @@ void CTestMenu::testCIPInput()
 	value.clear();
 }
 
+// CMACInput
 void CTestMenu::testCMACInput()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CMACInput\n");
+
 	std::string value;
 	CMACInput * macInput = new CMACInput(LOCALE_RECORDINGMENU_SERVER_MAC, (char *)value.c_str());
 	
@@ -360,8 +387,11 @@ void CTestMenu::testCMACInput()
 	value.clear();
 }
 
+// CDateInput
 void CTestMenu::testCDateInput()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CDateInput\n");
+
 	time_t value;
 	CDateInput * dateInput = new CDateInput(LOCALE_FILEBROWSER_SORT_DATE, &value);
 	
@@ -370,8 +400,11 @@ void CTestMenu::testCDateInput()
 	delete dateInput;
 }
 
+// CTimeInput
 void CTestMenu::testCTimeInput()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CTimeInput\n");
+
 	std::string value;
 	CTimeInput * timeInput = new CTimeInput(LOCALE_FILEBROWSER_SORT_DATE, (char *)value.c_str());
 	
@@ -382,8 +415,11 @@ void CTestMenu::testCTimeInput()
 	value.clear();
 }
 
+// CIntInput
 void CTestMenu::testCIntInput()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CIntInput\n");
+
 	int value;
 	CIntInput * intInput = new CIntInput(LOCALE_FILEBROWSER_SORT_DATE, value);
 	
@@ -393,8 +429,11 @@ void CTestMenu::testCIntInput()
 	intInput = NULL;	
 }
 
+// CInfoBox
 void CTestMenu::testCInfoBox()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CInfoBox\n");
+
 	std::string buffer;
 	
 	// prepare print buffer  
@@ -421,8 +460,11 @@ void CTestMenu::testCInfoBox()
 	infoBox = NULL;
 }
 
+// CMessageBox
 void CTestMenu::testCMessageBox()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CMessageBox\n");
+
 	CMessageBox * messageBox = new CMessageBox(LOCALE_MESSAGEBOX_INFO, "testing CMessageBox"/*, 600, NEUTRINO_ICON_INFO, CMessageBox::mbrYes, CMessageBox::mbNone*/);
 	
 	int res = messageBox->exec();
@@ -433,18 +475,27 @@ void CTestMenu::testCMessageBox()
 	messageBox = NULL;
 }
 
+// MessageBox
 void CTestMenu::testCMessageBoxInfoMsg()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting MessageBox\n");
+
 	MessageBox(LOCALE_MESSAGEBOX_INFO, "testing CMessageBoxInfoMsg", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 }
 
+// MessageBox
 void CTestMenu::testCMessageBoxErrorMsg()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting MessageBox\n");
+
 	MessageBox(LOCALE_MESSAGEBOX_ERROR, "testing CMessageBoxErrorMsg", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 }
 
+// CHintBox
 void CTestMenu::testCHintBox()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CHintBox\n");
+
 	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, "testing CHintBox");
 	
 	hintBox->exec(10);
@@ -453,13 +504,19 @@ void CTestMenu::testCHintBox()
 	hintBox = NULL;
 }
 
+// HintBox
 void CTestMenu::testCHintBoxInfo()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting HintBox\n");
+
 	HintBox(LOCALE_MESSAGEBOX_INFO, "testing CHintBoxInfo", HINTBOX_WIDTH, 10, NEUTRINO_ICON_INFO);
 }
 
+// CHelpBox
 void CTestMenu::testCHelpBox()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CHelpBox\n");
+
 	CHelpBox * helpBox = new CHelpBox();
 	
 	// text
@@ -505,8 +562,11 @@ void CTestMenu::testCHelpBox()
 	helpBox = NULL;
 }
 
+// CTextBox
 void CTestMenu::testCTextBox()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CTextBox\n");
+
 	CBox Box;
 	
 	Box.iX = g_settings.screen_StartX + 10;
@@ -559,8 +619,11 @@ void CTestMenu::testCTextBox()
 	textBox = NULL;
 }
 
+// ClistFrame
 void CTestMenu::testCListFrame()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting ClistFrame\n");
+
 	CBox listFrameBox;
 	LF_LINES listFrameLines;
 	int selected = 0;
@@ -781,8 +844,11 @@ REPEAT:
 	listFrame = NULL;
 }
 
+// CProgressBar
 void CTestMenu::testCProgressBar()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CProgressBar\n");
+
 	CProgressBar *timescale = NULL;
 	
 	CBox Box;
@@ -831,8 +897,11 @@ void CTestMenu::testCProgressBar()
 	hide();
 }
 
+// CProgressWindow
 void CTestMenu::testCProgressWindow()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CProgressWindow\n");
+
 	CProgressWindow * progress;
 	
 	progress = new CProgressWindow();
@@ -869,6 +938,7 @@ void CTestMenu::testCProgressWindow()
         
 }
 
+// CButtons
 #define BUTTONS_COUNT	4
 const struct button_label Buttons[BUTTONS_COUNT] =
 {
@@ -881,6 +951,8 @@ const struct button_label Buttons[BUTTONS_COUNT] =
 
 void CTestMenu::testCButtons()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting CButtons\n");
+
 	int icon_w, icon_h;
 	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	buttons.paintButtons(CFrameBuffer::getInstance(), g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, (g_settings.screen_EndX - g_settings.screen_StartX - 100)/BUTTONS_COUNT, BUTTONS_COUNT, Buttons, icon_h);
@@ -892,8 +964,11 @@ void CTestMenu::testCButtons()
 	hide();
 }
 
+// ClistBoxEntry
 void CTestMenu::testClistBoxEntry()
 {
+	dprintf(DEBUG_NORMAL, "\ntesting ClistBoxEntry\n");
+
 	CBox Box;
 	
 	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
@@ -1098,26 +1173,7 @@ REPEAT:
 	sec_timer_id = 0;
 }
 
-void CTestMenu::testAudioPlayer()
-{
-	g_PluginList->startPlugin("audioplayer");
-}
-
-void CTestMenu::testTSPlayer()
-{
-	g_PluginList->startPlugin("tsbrowser");
-}
-
-void CTestMenu::testMoviePlayer()
-{
-	g_PluginList->startPlugin("moviebrowser");
-}
-
-void CTestMenu::testPictureViewer()
-{
-	g_PluginList->startPlugin("picviewer");
-}
-
+// play Movie Url
 void CTestMenu::testPlayMovieURL()
 {
 	neutrino_msg_t msg;
@@ -1185,6 +1241,7 @@ BROWSER:
 	delete fileBrowser;
 }
 
+// play audio Url
 void CTestMenu::testPlayAudioURL()
 {
 	neutrino_msg_t msg;
@@ -1240,6 +1297,7 @@ BROWSER:
 	delete fileBrowser;
 }
 
+// show pic url
 void CTestMenu::testShowPictureURL()
 {
 	neutrino_msg_t msg;
@@ -1286,6 +1344,7 @@ BROWSER:
 	delete fileBrowser;
 }
 
+// play movie folder
 void CTestMenu::testPlayMovieFolder()
 {
 	CFileBrowser * fileBrowser;
@@ -1352,6 +1411,7 @@ BROWSER:
 	delete fileBrowser;
 }
 
+// play audio folder
 void CTestMenu::testPlayAudioFolder()
 {
 	neutrino_msg_t msg;
@@ -1415,6 +1475,7 @@ BROWSER:
 	delete fileBrowser;
 }
 
+// show pic folder
 void CTestMenu::testShowPictureFolder()
 {
 	neutrino_msg_t msg;
@@ -1425,7 +1486,6 @@ void CTestMenu::testShowPictureFolder()
 	CFileFilter fileFilter;
 	
 	CFileList filelist;
-	//int selected = 0;
 	
 	fileFilter.addFilter("png");
 	fileFilter.addFilter("bmp");
@@ -1468,11 +1528,13 @@ BROWSER:
 	delete fileBrowser;
 }
 
+// start plugin
 void CTestMenu::testStartPlugin()
 {
 	g_PluginList->startPlugin("youtube");
 }
 
+// show actuell epg
 void CTestMenu::testShowActuellEPG()
 {
 	std::string title = "testShowActuellEPG:";
@@ -1482,7 +1544,7 @@ void CTestMenu::testShowActuellEPG()
 	CEPGData epgData;
 	event_id_t epgid = 0;
 			
-	if(sectionsd_getActualEPGServiceKey(live_channel_id&0xFFFFFFFFFFFFULL, &epgData))
+	if(sectionsd_getActualEPGServiceKey(CNeutrinoApp::getInstance()->channelList->getActiveChannel_ChannelID(), &epgData))
 		epgid = epgData.eventID;
 
 	if(epgid != 0) 
@@ -2620,30 +2682,6 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "audioplayer")
-	{
-		testAudioPlayer();
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "tsplayer")
-	{
-		testTSPlayer();
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "movieplayer")
-	{
-		testMoviePlayer();
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "pictureviewer")
-	{
-		testPictureViewer();
-
-		return menu_return::RETURN_REPAINT;
-	}
 	else if(actionKey == "playmovieurl")
 	{
 		testPlayMovieURL();
@@ -2966,12 +3004,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		return menu_return::RETURN_REPAINT;
 	}
 
-	showTestMenu();
+	showMenu();
 	
 	return menu_return::RETURN_REPAINT;
 }
 
-void CTestMenu::showTestMenu()
+void CTestMenu::showMenu()
 {
 	CMenuWidget * mainMenu = new CMenuWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
 
@@ -3030,12 +3068,6 @@ void CTestMenu::showTestMenu()
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("PluginsList", true, NULL, this, "pluginslist"));
-
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	mainMenu->addItem(new CMenuForwarder("AudioPlayer", true, NULL, this, "audioplayer"));
-	mainMenu->addItem(new CMenuForwarder("TS Player", true, NULL, this, "tsplayer"));
-	mainMenu->addItem(new CMenuForwarder("Movie Player", true, NULL, this, "movieplayer"));
-	mainMenu->addItem(new CMenuForwarder("PictureViewer", true, NULL, this, "pictureviewer"));
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("PlayMovieURL", true, NULL, this, "playmovieurl"));
