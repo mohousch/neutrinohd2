@@ -52,7 +52,7 @@ endif
 
 AM_CPPFLAGS += -fno-rtti -fno-exceptions
 
-noinst_LIBRARIES = libtimerlist.a libneutrino_gui.a libneutrino_gui2.a
+noinst_LIBRARIES = libneutrino_gui.a libneutrino_gui2.a
 
 libneutrino_gui_a_SOURCES = \
 	bouquetlist.cpp \
@@ -96,23 +96,24 @@ libneutrino_gui_a_SOURCES = \
 	recording_setup.cpp \
 	misc_setup.cpp \
 	main_setup.cpp \
-	power_menu.cpp
+	power_menu.cpp \
+	mediaplayer.cpp \
+	audio_video_select.cpp \
+	channel_select.cpp \
+	hdd_menu.cpp \
+	dvbsub_select.cpp \
+	timerlist.cpp
 
 libneutrino_gui2_a_SOURCES = \
 	motorcontrol.cpp \
-	hdd_menu.cpp \
 	alphasetup.cpp \
-	dvbsub_select.cpp \
 	psisetup.cpp \
-	channel_select.cpp \
-	audio_video_select.cpp \
-	mediaplayer.cpp \
 	vfdcontroler.cpp 
 
 if ENABLE_CI
 libneutrino_gui2_a_SOURCES += cam_menu.cpp
 endif
 
-libtimerlist_a_SOURCES = timerlist.cpp
+#libtimerlist_a_SOURCES = timerlist.cpp
 
 

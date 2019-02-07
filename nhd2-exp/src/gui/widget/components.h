@@ -41,6 +41,10 @@ class CComponents
 		void paintBackground();
 		void paintBackgroundBoxRel(int x, int y, int dx, int dy);
 		bool loadBackgroundPic(const std::string& filename, bool show = true);
+		void saveBackgroundImage(void); 
+		void restoreBackgroundImage(void);
+		void saveScreen(int x, int y, int dx, int dy, fb_pixel_t * const memp);
+		void restoreScreen(int x, int y, int dx, int dy, fb_pixel_t * const memp);
 
 		void paintVLineRel(int x, int y, int dy, const fb_pixel_t col);
 		void paintHLineRel(int x, int dx, int y, const fb_pixel_t col);

@@ -569,7 +569,6 @@ int CMessageBox::exec(int timeout)
 
 	// paint
 	paint();
-
 	paintButtons();
 
 	CFrameBuffer::getInstance()->blit();

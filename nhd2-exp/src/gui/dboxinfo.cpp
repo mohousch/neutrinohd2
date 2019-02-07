@@ -291,8 +291,6 @@ void CDBoxInfoWidget::showInfo()
 		
 		free(namelist[i1]);
 		
-		int offset = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth((char *)"HDD: ", true); // UTF-8
-		
 		dboxInfo->add2Line("HDD:", str, g_Font[SNeutrinoSettings::FONT_TYPE_MENU], COL_MENUCONTENTINACTIVE, false, g_Font[SNeutrinoSettings::FONT_TYPE_MENU], COL_MENUCONTENT);
 	}
 	

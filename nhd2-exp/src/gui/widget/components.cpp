@@ -76,6 +76,27 @@ void CComponents::paintFrameBox(const int x, const int y, const int dx, const in
 	CFrameBuffer::getInstance()->paintFrameBox(x, y, dx, dy, col);
 }
 
+void CComponents::saveBackgroundImage(void)
+{
+	CFrameBuffer::getInstance()->saveBackgroundImage();
+}
+
+void CComponents::restoreBackgroundImage(void)
+{
+	CFrameBuffer::getInstance()->restoreBackgroundImage();
+}
+
+void CComponents::saveScreen(int x, int y, int dx, int dy, fb_pixel_t * const memp)
+{
+	CFrameBuffer::getInstance()->saveScreen(x, y, dx, dy, memp);
+}
+
+void CComponents::restoreScreen(int x, int y, int dx, int dy, fb_pixel_t * const memp)
+{
+	CFrameBuffer::getInstance()->restoreScreen(x, y, dx, dy, memp);
+}
+
+
 
 
 
