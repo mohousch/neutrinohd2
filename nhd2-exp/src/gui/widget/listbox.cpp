@@ -77,8 +77,9 @@ ClistBoxEntry::ClistBoxEntry(const int x, const int y, const int dx, const int d
 	iconfile = "";
 
 	logo = false;
+	enableCenter = true;
 
-	initFrames();
+	//initFrames();
 }
 
 ClistBoxEntry::ClistBoxEntry(CBox* position)
@@ -110,8 +111,9 @@ ClistBoxEntry::ClistBoxEntry(CBox* position)
 	iconfile = "";
 
 	logo = false;
+	enableCenter = true;
 
-	initFrames();
+	//initFrames();
 }
 
 ClistBoxEntry::~ClistBoxEntry()
@@ -148,17 +150,12 @@ void ClistBoxEntry::initFrames()
 
 	if(paintTitle)
 	{
-		//if(!iconfile.empty())
-		//	frameBuffer->getIconSize(iconfile.c_str(), &iw, &ih);
-		//hheight = std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
 		hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
 	}
 	
 	// foot height
 	if(paint_Foot)
 	{
-		//frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &iw, &ih);
-		//fheight = std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
 		fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
 	}
 
@@ -204,13 +201,16 @@ void ClistBoxEntry::initFrames()
 	listmaxshow = (cFrameBox.iHeight - hheight - fheight - footInfoHeight)/item_height;
 	cFrameBox.iHeight = hheight + listmaxshow*item_height + fheight + footInfoHeight;
 
-	cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth ) >> 1 );
-	cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
+	if(enableCenter)
+	{
+		cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth ) >> 1 );
+		cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
+	}
 }
 
 void ClistBoxEntry::paint(bool reinit)
 {
-	if(reinit)
+	//if(reinit)
 		initFrames();
 
 	paintItems();

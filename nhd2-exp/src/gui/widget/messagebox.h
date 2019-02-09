@@ -88,7 +88,7 @@ class CMessageBox
 		void hide(void);
 
 	private:
-		uint32_t  showbuttons;
+		uint32_t showbuttons;
 		bool returnDefaultOnTimeout;
 
 		void paintButtons();

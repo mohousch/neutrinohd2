@@ -29,6 +29,8 @@
 #include <string>
 #include <vector>
 
+#include <driver/framebuffer.h>
+
 #include <gui/widget/menue.h>
 #include <gui/widget/items2detailsline.h>
 #include <gui/widget/scrollbar.h>
@@ -45,7 +47,7 @@ class ClistBoxEntry
 
 		int selected;
 
-		//
+		// title
 		std::string iconfile;
 		std::string l_name;
 
@@ -78,6 +80,7 @@ class ClistBoxEntry
 		bool paint_Foot;
 		bool paintFootInfo;
 		bool logo;
+		bool enableCenter;
 
 		//
 		CItems2DetailsLine itemsLine;
@@ -124,6 +127,8 @@ class ClistBoxEntry
 		int getItemHeight(){return item_height;};
 		int getFootInfoHeight(){return footInfoHeight;};
 		int getListMaxShow(void) const {return listmaxshow;};
+
+		void disableCenter(){enableCenter = false; initFrames();};
 };
 
 // CMenulistBoxItem

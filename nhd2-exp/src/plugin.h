@@ -103,6 +103,7 @@
 #include <gui/widget/listbox.h>
 #include <gui/widget/listframe.h>
 #include <gui/widget/components.h>
+#include <gui/widget/framebox.h>
 
 #include <gui/bedit/bouqueteditor_bouquets.h>
 #include <gui/bedit/bouqueteditor_chanselect.h>

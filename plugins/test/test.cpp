@@ -56,6 +56,10 @@ class CTestMenu : public CMenuTarget
 		CBouquetList* webTVBouquetList;
 
 		CButtons buttons;
+		CHeaders headers;
+
+		// testing
+		void testCFrameBox();
 
 		// widgets
 		void testCBox();
@@ -181,6 +185,205 @@ void CTestMenu::hide()
 {
 	frameBuffer->paintBackground();
 	frameBuffer->blit();
+}
+
+// CFrameBox
+void CTestMenu::testCFrameBox()
+{
+	dprintf(DEBUG_NORMAL, "\ntesting CFrameBox\n");
+
+	CBox headBox;
+	headBox.iX = g_settings.screen_StartX + 10;
+	headBox.iY = g_settings.screen_StartY + 10;
+	headBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	headBox.iHeight = 60;
+
+	CBox footBox;
+	footBox.iX = g_settings.screen_StartX + 10;
+	footBox.iY = g_settings.screen_EndY - 10 - 60;
+	footBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	footBox.iHeight = 60;
+
+	// frameBox
+	CBox Box;
+	
+	Box.iX = g_settings.screen_StartX + 10;
+	Box.iY = headBox.iY + headBox.iHeight + 5;
+	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	Box.iHeight = 120; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+
+	CFrameBox *frameBox = new CFrameBox(&Box);
+	CFrame * frame = NULL;
+
+	for(unsigned int count = 0; count < 5; count++)
+	{
+		std::string tmp = "frame-";
+		tmp += to_string(count).c_str();
+		frame = new CFrame(tmp);
+
+		frameBox->addFrame(frame);
+	}
+
+	// menu left
+	CBox leftBox;
+	leftBox.iX = g_settings.screen_StartX + 10;
+	leftBox.iY = headBox.iY + headBox.iHeight + 5 + Box.iHeight + 5;
+	leftBox.iWidth = 150;
+	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - footBox.iHeight - Box.iHeight - 2 - 5 - 5;
+
+	ClistBoxEntry *listBoxEntry = new ClistBoxEntry(&leftBox);
+
+	ClistBoxEntryItem *item1 = new ClistBoxEntryItem("item 1");
+	ClistBoxEntryItem *item2 = new ClistBoxEntryItem("item 2");
+	ClistBoxEntryItem *item3 = new ClistBoxEntryItem("item 3");
+	ClistBoxEntryItem *item4 = new ClistBoxEntryItem("item 4");
+	
+	CMenuForwarder *item5 = new CMenuForwarder("item 1", true, "", NULL, "");
+
+	listBoxEntry->addItem(item1);
+	listBoxEntry->addItem(item2);
+	listBoxEntry->addItem(item3);
+	listBoxEntry->addItem(item4);
+	listBoxEntry->addItem(item5);
+
+	listBoxEntry->disableCenter();
+
+	// right menu
+	CBox rightBox;
+
+	rightBox.iX = g_settings.screen_StartX + 10 + leftBox.iWidth + 5 + 10 + 5;
+	rightBox.iY = headBox.iY + headBox.iHeight + 5 + Box.iHeight + 5;
+	rightBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20) - 150 - 20;
+	rightBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - footBox.iHeight - Box.iHeight - 2 - 5 - 5 - 10 - 5;
+
+	CTextBox * textBox = new CTextBox("CTextBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &rightBox, COL_MENUCONTENT_PLUS_0);
+	
+	std::string text = "testing CTextBox: blah blah blah boaah";
+		
+	int pich = 246;	//FIXME
+	int picw = 162; 	//FIXME
+		
+	std::string fname = PLUGINDIR "/netzkino/netzkino.png";
+		
+	if(access(fname.c_str(), F_OK))
+		fname = "";
+	
+	textBox->setText(&text, fname, picw, pich);
+	
+
+	int focus = 0; // frameBox
+
+	// loop
+	//g_RCInput->messageLoop();
+REPEAT:
+	//setFocus
+
+	// head
+	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true);
+
+	// foot
+	headers.paintFoot(footBox);
+	frameBox->paint();
+	listBoxEntry->paint();
+	textBox->paint();
+
+	CFrameBuffer::getInstance()->blit();
+
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	uint32_t sec_timer_id = 0;
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
+	bool loop = true;
+
+	while(loop)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+
+		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true);
+		} 
+		else if (msg == CRCInput::RC_home) 
+		{
+			loop = false;
+		}
+		else if(msg == CRCInput::RC_right)
+		{
+			if(focus == 0)
+				frameBox->swipRight();
+		}
+		else if(msg == CRCInput::RC_left)
+		{
+			if(focus == 0)
+				frameBox->swipLeft();
+		}
+		else if(msg == CRCInput::RC_up)
+		{
+			if(focus == 1)
+				listBoxEntry->scrollLineUp();
+		}
+		else if(msg == CRCInput::RC_down)
+		{
+			if(focus == 1)
+				listBoxEntry->scrollLineDown();
+		}
+		else if(msg == CRCInput::RC_yellow)
+		{
+			if(focus == 0)
+			{
+				focus = 1;
+
+				listBoxEntry->setSelected(0);
+				frameBox->setSelected(-1);
+			}
+			else if (focus == 1)
+			{
+				focus = 2;
+				frameBox->setSelected(-1);
+				listBoxEntry->setSelected(-1);
+			}
+			else if (focus == 2)
+			{
+				focus = 0;
+				frameBox->setSelected(0);
+			}
+
+			goto REPEAT;
+		}
+		else if(msg == CRCInput::RC_ok)
+		{
+
+			//hide();
+
+			selected = frameBox->getSelected();
+
+			MessageBox(LOCALE_MESSAGEBOX_INFO, "\nhuhu\nHUHUUU\n", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+
+			goto REPEAT;
+		}
+
+		CFrameBuffer::getInstance()->blit();
+	}
+
+
+	hide();
+
+	delete frameBox;
+	frameBox = NULL;
+
+	delete textBox;
+	textBox = NULL;
+
+	delete listBoxEntry;
+	listBoxEntry = NULL;
+
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
 }
 
 // CBox
@@ -2179,7 +2382,13 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	if(parent)
 		hide();
 	
-	if(actionKey == "box")
+	if(actionKey == "framebox")
+	{
+		testCFrameBox();
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "box")
 	{
 		testCBox();
 
@@ -2687,6 +2896,9 @@ void CTestMenu::showMenu()
 	CMenuWidget * mainMenu = new CMenuWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
 
 	mainMenu->enableMenuPosition();
+	
+	mainMenu->addItem(new CMenuForwarder("CFrameBox", true, NULL, this, "framebox"));
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
 	mainMenu->addItem(new CMenuForwarder("CBox", true, NULL, this, "box"));
 	mainMenu->addItem(new CMenuForwarder("CIcon", true, NULL, this, "icon"));

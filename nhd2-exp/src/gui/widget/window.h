@@ -70,6 +70,8 @@ class CWindow
 
 		void paint(void);
 		void hide(void);
+
+		CBox getWindowsPos(void){return(cFrameBox);};
 };
 
 #endif
