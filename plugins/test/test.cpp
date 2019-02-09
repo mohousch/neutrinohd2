@@ -42,7 +42,7 @@ class CTestMenu : public CMenuTarget
 
 		//
 		ZapitChannelList Channels;
-		bool displayNext;
+		//bool displayNext;
 
 		//
 		CFileList audioFileList;
@@ -63,6 +63,7 @@ class CTestMenu : public CMenuTarget
 		void testCImage();
 		void testCWindow();
 		void testCWindowShadow();
+		void testCWindowCustomColor();
 		void testCStringInput();
 		void testCStringInputSMS();
 		void testCPINInput();
@@ -78,39 +79,30 @@ class CTestMenu : public CMenuTarget
 		void testCHintBox();
 		void testCHintBoxInfo();
 		void testCHelpBox();
-		void testCTextBox();
-		void testCListFrame();
 		void testCProgressBar();
 		void testCProgressWindow();
 		void testCButtons();
-		void testClistBoxEntry();
 		void testVFDController();
 		void testColorChooser();
 		void testKeyChooser();
 		void testMountChooser();
 
 		//
-		void testCMenuWidgetListBox();
-		void testCMenuWidgetListBox1();
-		void testFrameBox();
+		void testCTextBox();
+		void testCListFrame();
+		void testClistBoxEntry();
+
+		//
+		void testClistBox();
 		void testCMenuWidget();
-		void testClistBoxnLines();
-
-		//
-		void testPlayMovieURL();
-		void testPlayAudioURL();
-		void testShowPictureURL();
-
-		//
-		void testPlayMovieFolder();
-		void testPlayAudioFolder();
-		void testShowPictureFolder();
 
 		//
 		void testStartPlugin();
 
 		//
 		void testShowActuellEPG();
+
+		// gui
 		void testChannelSelectWidget();
 		void testBEWidget();
 		void testAVSelectWidget();
@@ -123,9 +115,17 @@ class CTestMenu : public CMenuTarget
 		void testMountGUI();
 		void testUmountGUI();
 		void testMountSmallMenu();
-		
-		//
 		void testPluginsList();
+
+		//
+		void testPlayMovieURL();
+		void testPlayAudioURL();
+		void testShowPictureURL();
+
+		//
+		void testPlayMovieFolder();
+		void testPlayAudioFolder();
+		void testShowPictureFolder();
 
 		//
 		void testPlayMovieDir();
@@ -154,9 +154,6 @@ CTestMenu::CTestMenu()
 	frameBuffer = CFrameBuffer::getInstance();
 
 	selected = 0;
-
-	//
-	displayNext = false;
 
 	//
 	webTVchannelList = NULL;
@@ -298,6 +295,45 @@ void CTestMenu::testCWindowShadow()
 	CWindow* window = new CWindow(&Box);
 
 	window->setColor(COL_MENUCONTENT_PLUS_0);
+	window->setCorner(RADIUS_MID, CORNER_ALL);
+	window->enableShadow();
+	window->enableSaveScreen();
+
+	window->paint();
+	CFrameBuffer::getInstance()->blit();
+
+	// loop
+	g_RCInput->messageLoop();
+
+	window->hide();
+
+	delete window;
+	window = NULL;
+}
+
+// custom Color
+void CTestMenu::testCWindowCustomColor()
+{
+	dprintf(DEBUG_NORMAL, "\ntesting CWindow with custom color\n");
+
+	// set custom color
+#define COL_TEST 254-8*13
+#define COL_TEST_PLUS_0              (CFrameBuffer::getInstance()->realcolor[(COL_TEST + 0)])
+
+	setColor(COL_TEST, 50, 50, 50, 50);
+	//
+
+	CBox Box;
+	
+	Box.iX = g_settings.screen_StartX + 10;
+	Box.iY = g_settings.screen_StartY + 10;
+	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/2;
+	Box.iHeight = 200; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+
+	//
+	CWindow* window = new CWindow(&Box);
+
+	window->setColor(COL_TEST_PLUS_0);
 	window->setCorner(RADIUS_MID, CORNER_ALL);
 	window->enableShadow();
 	window->enableSaveScreen();
@@ -1066,10 +1102,14 @@ void CTestMenu::testClistBoxEntry()
 		item = new ClistBoxEntryItem(m_vMovieInfo[i].epgTitle.c_str());
 
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
-		//item->setIconName(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		//item->setOptionInfo("OptionInfo");
 
 		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+		//item->setOptionInfo1("OptionInfo1");
+
 		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+		//item->setOptionInfo2("OptionInfo2");
+
 		item->setnLinesItem();
 
 		listBox->addItem(item);
@@ -1569,6 +1609,7 @@ void CTestMenu::testShowActuellEPG()
 	infoBox = NULL;	
 }
 
+// CChannelSelect
 void CTestMenu::testChannelSelectWidget()
 {
 	CSelectChannelWidget * CSelectChannelWidgetHandler = new CSelectChannelWidget();
@@ -1581,6 +1622,7 @@ void CTestMenu::testChannelSelectWidget()
 	CSelectChannelWidgetHandler = NULL;
 }
 
+// Bedit
 void CTestMenu::testBEWidget()
 {	
 	CBEBouquetWidget* BEWidget = new CBEBouquetWidget();
@@ -1591,6 +1633,7 @@ void CTestMenu::testBEWidget()
 	BEWidget = NULL;
 }
 
+// AVSelect
 void CTestMenu::testAVSelectWidget()
 {
 	CAVPIDSelectWidget * AVSelectHandler = new CAVPIDSelectWidget();
@@ -1600,6 +1643,7 @@ void CTestMenu::testAVSelectWidget()
 	AVSelectHandler = NULL;
 }
 
+// CAudioSelect
 void CTestMenu::testAudioSelectWidget()
 {
 	CAudioSelectMenuHandler * ASelectHandler = new CAudioSelectMenuHandler();
@@ -1608,6 +1652,7 @@ void CTestMenu::testAudioSelectWidget()
 	ASelectHandler = NULL;
 }
 
+// DVBSubSelect
 void CTestMenu::testDVBSubSelectWidget()
 {
 	CDVBSubSelectMenuHandler * dvbSubSelectHandler = new CDVBSubSelectMenuHandler();
@@ -1836,396 +1881,7 @@ void CTestMenu::testShowPictureDir()
 	}
 }
 
-//// channel list
-#define HEAD_BUTTONS_COUNT	3
-const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
-{
-	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_MUTE_ZAP_ACTIVE, NONEXISTANT_LOCALE, NULL }
-};
-
-#define FOOT_BUTTONS_COUNT 4
-struct button_label FButtons[FOOT_BUTTONS_COUNT] =
-{
-	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_INFOVIEWER_EVENTLIST, NULL},
-	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_INFOVIEWER_NEXT, NULL},
-	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_BOUQUETLIST_HEAD, NULL},
-	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_EPGMENU_EPGPLUS, NULL},
-};
-
-void CTestMenu::testCMenuWidgetListBox()
-{
-	dprintf(DEBUG_NORMAL, "CTestMenu::testCMenuWidgetListBox\n");
-
-	// itemBox
-	listMenu = new ClistBox(LOCALE_CHANNELLIST_HEAD, "", w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
-
-	// load all tv channels
-	Channels.clear();
-
-	for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
-	{
-		if (it->second.getServiceType() != ST_DIGITAL_RADIO_SOUND_SERVICE)
-			Channels.push_back(&(it->second));
-	}
-
-	// sort them
-	sort(Channels.begin(), Channels.end(), CmpChannelByChName());
-
-	// channels events
-	CChannelEvent * p_event = NULL;
-
-	//
-	CNeutrinoApp::getInstance()->TVchannelList->updateEvents();
-
-	//bool displayNext = false;
-	if (displayNext) 
-	{
-		FButtons[1].locale = LOCALE_INFOVIEWER_NOW;
-	} 
-	else 
-	{
-		FButtons[1].locale = LOCALE_INFOVIEWER_NEXT;
-	}
-
-	std::string title;
-	time_t jetzt = time(NULL);
-	int runningPercent = 0;
-
-	for(unsigned int i = 0; i < Channels.size(); i++)
-	{
-		// item description
-		if (displayNext) 
-		{
-			p_event = &Channels[i]->nextEvent;
-		} 
-		else 
-		{
-			p_event = &Channels[i]->currentEvent;
-		}
-
-		// runningPercent
-		runningPercent = 0;
-			
-		if (((jetzt - p_event->startTime + 30) / 60) < 0 )
-		{
-			runningPercent = 0;
-		}
-		else
-		{
-			//printf("(jetzt:%d) (p_event->startTime:%d) (p_event->duration:%d)\n", jetzt, p_event->startTime, p_event->duration);
-
-			if(p_event->duration > 0)
-				runningPercent = (jetzt - p_event->startTime) * 30 / p_event->duration;
-		}
-
-		//
-		char cSeit[50] = " ";
-		char cNoch[50] = " ";
-
-		if ( p_event != NULL && !p_event->description.empty()) 
-		{
-			struct tm * pStartZeit = localtime(&p_event->startTime);
-			unsigned seit = ( time(NULL) - p_event->startTime ) / 60;
-
-			if (displayNext) 
-			{
-				sprintf(cNoch, "(%d min)", p_event->duration / 60);
-				sprintf(cSeit, g_Locale->getText(LOCALE_CHANNELLIST_START), pStartZeit->tm_hour, pStartZeit->tm_min);
-			} 
-			else 
-			{
-				sprintf(cSeit, g_Locale->getText(LOCALE_CHANNELLIST_SINCE), pStartZeit->tm_hour, pStartZeit->tm_min);
-				int noch = (p_event->startTime + p_event->duration - time(NULL)) / 60;
-				if ((noch < 0) || (noch >= 10000))
-					noch = 0;
-				sprintf(cNoch, "(%d / %d min)", seit, noch);
-			}
-		}
-
-		// a la Channelist
-		item = new ClistBoxItem(Channels[i]->getName().c_str(), true, p_event->description.c_str(), this, "zapto");
-
-		item->setNumber(i + 1);
-		item->setPercent(runningPercent);
-		item->setIcon1(Channels[i]->isHD() ? NEUTRINO_ICON_HD : "");
-		item->setIcon2(Channels[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "");
-		item->setInfo1(p_event->description.c_str());
-		item->setOptionInfo1(cSeit);
-		item->setInfo2(p_event->text.c_str());
-		item->setOptionInfo2(cNoch);
-
-		listMenu->addItem(item);
-	}
-
-	listMenu->setWidgetType(WIDGET_STANDARD);
-	listMenu->enableSaveScreen();
-	listMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
-	listMenu->setSelected(selected);
-
-	listMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
-	listMenu->setFooterButtons(FButtons, FOOT_BUTTONS_COUNT);
-	
-	listMenu->enablePaintDate();
-	listMenu->enableFootInfo(); 
-
-	// head
-	listMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	listMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
-
-	// footer
-	listMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
-	listMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
-	listMenu->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
-	listMenu->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
-
-	listMenu->exec(NULL, "");
-	//listMenu->hide();
-	delete listMenu;
-	listMenu = NULL;
-}
-
-//// plugins list
-#define NUM_LIST_BUTTONS 2
-struct button_label CPluginListButtons[NUM_LIST_BUTTONS] =
-{
-	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_PLUGINLIST_REMOVE_PLUGIN },
-	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_PLUGINLIST_START_PLUGIN }
-};
-
-void CTestMenu::testClistBoxnLines()
-{
-	dprintf(DEBUG_NORMAL, "CTestMenu::testClistBoxnLines\n");
-
-
-	// itemBox
-	listMenu = new ClistBox("ClistBox (plugins list)", NEUTRINO_ICON_SHELL, MENU_WIDTH, MENU_HEIGHT - 100);
-
-	//
-	for(unsigned int count = 0; count < (unsigned int)g_PluginList->getNumberOfPlugins(); count++)
-	{
-		std::string IconName = "";
-
-		IconName = PLUGINDIR;
-		IconName += "/";
-		IconName += g_PluginList->getFileName(count);
-		IconName += "/";
-		IconName += g_PluginList->getIcon(count);
-
-			
-		item = new ClistBoxItem(g_PluginList->getName(count), true, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), NULL, file_exists(IconName.c_str())? IconName.c_str() : NEUTRINO_ICON_MENUITEM_PLUGIN);
-
-		item->setInfo1(g_PluginList->getDescription(count).c_str());
-
-		item->setnLinesItem();
-
-		listMenu->addItem(item);
-	}
-
-	listMenu->setWidgetType(WIDGET_CLASSIC);
-	listMenu->enablePaintDate();
-	listMenu->enableFootInfo();
-	listMenu->setSelected(selected);
-
-	listMenu->addWidget(WIDGET_STANDARD);
-	listMenu->addWidget(WIDGET_EXTENDED);
-	listMenu->addWidget(WIDGET_FRAME);
-	listMenu->addWidget(WIDGET_INFO);
-	listMenu->enableWidgetChange();
-
-	// footer
-	listMenu->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS, MENU_WIDTH/2);
-
-	//
-	listMenu->addKey(CRCInput::RC_red, this, "pred");
-	listMenu->addKey(CRCInput::RC_green, this, "pgreen");
-
-	listMenu->exec(NULL, "");
-	listMenu->hide();
-	delete listMenu;
-	listMenu = NULL;
-}
-
-//// audioplayer
-#define HEAD1_BUTTONS_COUNT	1
-const struct button_label Head1Buttons[HEAD1_BUTTONS_COUNT] =
-{
-	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL }
-};
-
-const struct button_label AudioPlayerButtons[][4] =
-{
-	{
-		{ NEUTRINO_ICON_BUTTON_RED, LOCALE_AUDIOPLAYER_STOP, NULL },
-		{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_AUDIOPLAYER_REWIND, NULL },
-		{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_AUDIOPLAYER_PAUSE, NULL},
-		{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_AUDIOPLAYER_FASTFORWARD, NULL},
-	},
-	{
-		{ NEUTRINO_ICON_BUTTON_RED   , LOCALE_AUDIOPLAYER_DELETE, NULL },
-		{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_AUDIOPLAYER_ADD, NULL },
-		{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_AUDIOPLAYER_DELETEALL, NULL },
-		{ NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_AUDIOPLAYER_SHUFFLE, NULL },
-	},
-	{		
-		{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_AUDIOPLAYER_JUMP_BACKWARDS, NULL },
-		{ NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_AUDIOPLAYER_JUMP_FORWARDS, NULL },
-	},
-	{
-		{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_AUDIOPLAYER_JUMP_BACKWARDS, NULL },
-		{ NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_AUDIOPLAYER_JUMP_FORWARDS, NULL },
-	},
-	{
-		{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_AUDIOPLAYER_SAVE_PLAYLIST, NULL },
-		{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_AUDIOPLAYER_BUTTON_SELECT_TITLE_BY_ID, NULL },
-	},
-	{
-		{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_AUDIOPLAYER_SAVE_PLAYLIST, NULL },
-		{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_AUDIOPLAYER_BUTTON_SELECT_TITLE_BY_NAME, NULL },
-	},
-	{
-		{ NEUTRINO_ICON_BUTTON_RED   , LOCALE_AUDIOPLAYER_STOP, NULL },
-		{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_AUDIOPLAYER_PAUSE, NULL },
-	},
-	{
-		{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_AUDIOPLAYER_ADD, NULL },
-		{ NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_INETRADIO_NAME, NULL },
-	},
-	{
-		{ NEUTRINO_ICON_BUTTON_RED   , LOCALE_AUDIOPLAYER_DELETE, NULL },
-		{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_AUDIOPLAYER_ADD, NULL },
-		{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_AUDIOPLAYER_DELETEALL, NULL },
-		{ NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_INETRADIO_NAME, NULL },
-	},
-};
-
-void CTestMenu::testCMenuWidgetListBox1()
-{
-	//
-	CFileFilter fileFilter;
-
-	// music
-	fileFilter.addFilter("cdr");
-	fileFilter.addFilter("mp3");
-	fileFilter.addFilter("m2a");
-	fileFilter.addFilter("mpa");
-	fileFilter.addFilter("mp2");
-	fileFilter.addFilter("ogg");
-	fileFilter.addFilter("wav");
-	fileFilter.addFilter("flac");
-	fileFilter.addFilter("aac");
-	fileFilter.addFilter("dts");
-	fileFilter.addFilter("m4a");
-	
-	std::string Path_local = g_settings.network_nfs_audioplayerdir;
-
-	// itemBox
-	listMenu = new ClistBox("ClistBox (audioplayer)", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
-
-	audioFileList.clear();
-
-	if(CFileHelpers::getInstance()->readDir(Path_local, &audioFileList, &fileFilter))
-	{
-		int count = 0;
-				
-		CFileList::iterator files = audioFileList.begin();
-		for(; files != audioFileList.end() ; files++)
-		{
-			count++;
-			if (files->getType() == CFile::FILE_AUDIO)
-			{
-				std::string title;
-				std::string artist;
-				std::string genre;
-				std::string date;
-				char duration[9] = "";
-
-				// metaData
-				CAudiofile audiofile(files->Name, files->getExtension());
-
-				CAudioPlayer::getInstance()->init();
-
-				int ret = CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
-
-				if (!ret || (audiofile.MetaData.artist.empty() && audiofile.MetaData.title.empty() ))
-				{
-					// //remove extension (.mp3)
-					std::string tmp = files->getFileName().substr(files->getFileName().rfind('/') + 1);
-					tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
-
-					std::string::size_type i = tmp.rfind(" - ");
-		
-					if(i != std::string::npos)
-					{ 
-						title = tmp.substr(0, i);
-						artist = tmp.substr(i + 3);
-					}
-					else
-					{
-						i = tmp.rfind('-');
-						if(i != std::string::npos)
-						{
-							title = tmp.substr(0, i);
-							artist = tmp.substr(i + 1);
-						}
-						else
-							title = tmp;
-					}
-				}
-				else
-				{
-					title = audiofile.MetaData.title;
-					artist = audiofile.MetaData.artist;
-					genre = audiofile.MetaData.genre;	
-					date = audiofile.MetaData.date;
-
-					snprintf(duration, 8, "(%ld:%02ld)", audiofile.MetaData.total_time / 60, audiofile.MetaData.total_time % 60);
-				}
-
-				//
-				item = new ClistBoxItem(title.c_str(), true, "", this, "aplay");
-			
-				item->setOptionInfo(duration);
-				item->setNumber(count);
-
-				// details Box
-				item->setInfo1(title.c_str());
-				item->setOptionInfo1(genre.c_str());
-				item->setInfo2(artist.c_str());
-				item->setOptionInfo2(date.c_str());
-
-				listMenu->addItem(item);
-			}
-		}
-	}
-
-	//listMenu->move(0, 40);
-	//listMenu->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
-	listMenu->setSelected(selected);
-
-	listMenu->setHeaderButtons(Head1Buttons, HEAD1_BUTTONS_COUNT);
-	listMenu->setFooterButtons(AudioPlayerButtons[0], FOOT_BUTTONS_COUNT);
-	
-	listMenu->enablePaintDate();
-	listMenu->enableFootInfo();
-	//listMenu->setFootInfoHeight(30); 
-
-	listMenu->addKey(CRCInput::RC_info, this, "ainfo");
-	listMenu->addKey(CRCInput::RC_setup, this, "asetup");
-	listMenu->addKey(CRCInput::RC_red, this, "ared");
-	listMenu->addKey(CRCInput::RC_green, this, "agreen");
-	listMenu->addKey(CRCInput::RC_yellow, this, "ayellow");
-	listMenu->addKey(CRCInput::RC_blue, this, "ablue");
-	//listMenu->addKey(CRCInput::RC_stop, this, "astop");
-
-	listMenu->exec(NULL, "");
-	//listMenu->hide();
-	delete listMenu;
-	listMenu = NULL;
-}
-
-//// CMenulist (frame| extended widget) movie browser
+// ClistBox
 #define mHEAD_BUTTONS_COUNT	2
 const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
 {
@@ -2233,7 +1889,7 @@ const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
 };
 
-void CTestMenu::testFrameBox()
+void CTestMenu::testClistBox()
 {
 	listMenu = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
@@ -2414,6 +2070,7 @@ void CTestMenu::testCMenuWidget()
 	mainMenu = NULL;
 }
 
+// CChannellist
 void CTestMenu::testChannellist()
 {
 	g_WebTV->loadChannels();
@@ -2434,6 +2091,8 @@ void CTestMenu::testChannellist()
 	webTVchannelList->exec();
 }
 
+
+// CBouquetlist
 void CTestMenu::testBouquetlist()
 {
 	webTVBouquetList = new CBouquetList("CTestMenu::testBouquetlist");
@@ -2548,6 +2207,11 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	{
 		testCWindowShadow();
 
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "windowcustomcolor")
+	{
+		testCWindowCustomColor();
 		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "stringinput")
@@ -2824,9 +2488,9 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "framebox")
+	else if(actionKey == "listbox")
 	{
-		testFrameBox();
+		testClistBox();
 
 		return menu_return::RETURN_REPAINT;
 	}
@@ -2854,12 +2518,15 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+/*
 	else if(actionKey == "menuwidgetlistbox")
 	{
 		testCMenuWidgetListBox();
 
 		return menu_return::RETURN_REPAINT;
 	}
+*/
+/*
 	else if(actionKey == "RC_setup")
 	{
 		CChannelListSettings * testChannelMenu = new CChannelListSettings();
@@ -2909,12 +2576,18 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+*/
+
+/*
 	else if(actionKey == "menuwidgetlistbox1")
 	{
 		testCMenuWidgetListBox1();
 
 		return menu_return::RETURN_REPAINT;
 	}
+*/
+
+/*
 	else if(actionKey == "aplay")
 	{
 		selected = listMenu->getSelected();
@@ -2933,12 +2606,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;	
 	}
+*/
+
 	else if(actionKey == "testmenuwidget")
 	{
 		testCMenuWidget();
 
 		return menu_return::RETURN_REPAINT;
 	}
+
+/*
 	else if(actionKey == "listboxnlines")
 	{
 		testClistBoxnLines();
@@ -2960,6 +2637,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+*/
+
 	else if(actionKey == "mplay")
 	{
 		selected = listMenu->getSelected();
@@ -3014,6 +2693,7 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CImage", true, NULL, this, "image"));
 	mainMenu->addItem(new CMenuForwarder("CWindow", true, NULL, this, "window"));
 	mainMenu->addItem(new CMenuForwarder("CWindow(with shadow)", true, NULL, this, "windowshadow"));
+	mainMenu->addItem(new CMenuForwarder("customColor", true, NULL, this, "windowcustomcolor"));
 	mainMenu->addItem(new CMenuForwarder("CStringInput", true, NULL, this, "stringinput"));
 	mainMenu->addItem(new CMenuForwarder("CStringInputSMS", true, NULL, this, "stringinputsms"));
 	mainMenu->addItem(new CMenuForwarder("CPINInput", true, NULL, this, "pininput"));
@@ -3039,14 +2719,10 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("MountChooser", true, NULL, this, "mountchooser"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	mainMenu->addItem(new CMenuForwarder("ClistBoxEntry", true, NULL, this, "listboxentry"));
-	mainMenu->addItem(new CMenuForwarder("ClistBox(movie browser)", true, NULL, this, "framebox"));
-	mainMenu->addItem(new CMenuForwarder("ClistBox(channellist)", true, NULL, this, "menuwidgetlistbox"));
-	mainMenu->addItem(new CMenuForwarder("ClistBox(Audioplayer)", true, NULL, this, "menuwidgetlistbox1"));
-	mainMenu->addItem(new CMenuForwarder("ClistBox(plugins list)", true, NULL, this, "listboxnlines"));
+	mainMenu->addItem(new CMenuForwarder("ClistBox(movie browser)", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarder("CMenuWidget", true, NULL, this, "testmenuwidget"));
 	
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));
 	mainMenu->addItem(new CMenuForwarder("ChannelSelectWidget", true, NULL, this, "channelselect"));
 	mainMenu->addItem(new CMenuForwarder("BEWidget", true, NULL, this, "bewidget"));
 	mainMenu->addItem(new CMenuForwarder("AudioVideoSelectWidget", true, NULL, this, "avselect"));
@@ -3059,8 +2735,6 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("MountGUI", true, NULL, this, "mountgui"));
 	mainMenu->addItem(new CMenuForwarder("UmountGUI", true, NULL, this, "umountgui"));
 	mainMenu->addItem(new CMenuForwarder("MountSmallMenu", true, NULL, this, "mountsmallmenu"));
-
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("PluginsList", true, NULL, this, "pluginslist"));
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
@@ -3080,6 +2754,7 @@ void CTestMenu::showMenu()
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
+	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("CChannelList:", true, NULL, this, "channellist"));

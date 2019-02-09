@@ -157,4 +157,6 @@ fb_pixel_t* gradientOneColor(fb_pixel_t col, fb_pixel_t *gradientBuf, int bSize,
 
 fb_pixel_t* gradientColorToColor(fb_pixel_t start_col, fb_pixel_t end_col, fb_pixel_t *gradientBuf, int bSize, int mode, int intensity = normal);
 
+void setColor(int col, unsigned char r, unsigned char g, unsigned char b, unsigned char alpha);
+
 #endif
