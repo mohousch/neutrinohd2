@@ -36,8 +36,7 @@
 
 #include <unistd.h>
 
-#include <textbox.h>
-
+#include <gui/widget/textbox.h>
 #include <gui/widget/icons.h>
 
 #include <system/debug.h>
@@ -164,13 +163,16 @@ void CTextBox::initVar(void)
 
 	bigFonts = false;
 
+/*
 	radius = NO_RADIUS;
 	type = CORNER_NONE;
 	gradient = nogradient;
+*/
 
 	painted = false;
 }
 
+/*
 void CTextBox::setCorner(int Radius, int Type)
 {
 	radius = Radius;
@@ -192,6 +194,7 @@ void CTextBox::setCorner(int Radius, int Type)
 		m_cFrameScrollRel.iWidth = 0;
 	}
 }
+*/
 
 void CTextBox::setBigFonts(bool bigfont)
 {
@@ -259,7 +262,7 @@ void CTextBox::initFramesRel(void)
 		m_cFrameScrollRel.iX = m_cFrame.iX + m_cFrame.iWidth - SCROLLBAR_WIDTH;
 		m_cFrameScrollRel.iY = m_cFrame.iY;
 		m_cFrameScrollRel.iWidth = SCROLLBAR_WIDTH;
-		m_cFrameScrollRel.iHeight = radius? m_cFrame.iHeight - 2*radius : m_cFrame.iHeight;
+		m_cFrameScrollRel.iHeight = /*radius? m_cFrame.iHeight - 2*radius :*/ m_cFrame.iHeight;
 	}
 	else
 	{
@@ -456,8 +459,8 @@ void CTextBox::refreshText(void)
 	// paint text background
 	m_cBoxWindow.setDimension(&m_cFrame);
 	m_cBoxWindow.setColor(m_textBackgroundColor);
-	m_cBoxWindow.setCorner(radius, type);
-	m_cBoxWindow.setGradient(gradient);
+	//m_cBoxWindow.setCorner(radius, type);
+	//m_cBoxWindow.setGradient(gradient);
 	m_cBoxWindow.paint();
 	
 	// paint thumbnail (paint picture only on first page)

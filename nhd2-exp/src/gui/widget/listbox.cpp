@@ -78,8 +78,8 @@ ClistBoxEntry::ClistBoxEntry(const int x, const int y, const int dx, const int d
 
 	logo = false;
 	enableCenter = true;
-
-	//initFrames();
+	outFocus = false;
+	shrinkMenu = true;
 }
 
 ClistBoxEntry::ClistBoxEntry(CBox* position)
@@ -112,8 +112,8 @@ ClistBoxEntry::ClistBoxEntry(CBox* position)
 
 	logo = false;
 	enableCenter = true;
-
-	//initFrames();
+	outFocus = false;
+	shrinkMenu = true;
 }
 
 ClistBoxEntry::~ClistBoxEntry()
@@ -198,8 +198,11 @@ void ClistBoxEntry::initFrames()
 	}
 
 	// recalculate height
-	listmaxshow = (cFrameBox.iHeight - hheight - fheight - footInfoHeight)/item_height;
-	cFrameBox.iHeight = hheight + listmaxshow*item_height + fheight + footInfoHeight;
+	if(shrinkMenu)
+	{
+		listmaxshow = (cFrameBox.iHeight - hheight - fheight - footInfoHeight)/item_height;
+		cFrameBox.iHeight = hheight + listmaxshow*item_height + fheight + footInfoHeight;
+	}
 
 	if(enableCenter)
 	{
@@ -211,7 +214,7 @@ void ClistBoxEntry::initFrames()
 void ClistBoxEntry::paint(bool reinit)
 {
 	//if(reinit)
-		initFrames();
+	initFrames();
 
 	paintItems();
 	paintHead();
@@ -220,6 +223,8 @@ void ClistBoxEntry::paint(bool reinit)
 
 void ClistBoxEntry::paintItems()
 {
+	dprintf(DEBUG_NORMAL, "ClistBoxEntry::paintItems:selected:%d focus:%d\n", selected, outFocus);
+
 	sb_width = 0;
 	
 	if(total_pages > 1)
@@ -257,7 +262,7 @@ void ClistBoxEntry::paintItems()
 		{
 			item->init(xpos, ypos, iwidth, iconOffset);
 			
-			if( (item->isSelectable()) && (selected == -1) ) 
+			if( !outFocus && ((item->isSelectable()) && (selected == -1)) ) 
 			{
 				selected = count;
 			} 

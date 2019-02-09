@@ -196,13 +196,13 @@ void CTestMenu::testCFrameBox()
 	headBox.iX = g_settings.screen_StartX + 10;
 	headBox.iY = g_settings.screen_StartY + 10;
 	headBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
-	headBox.iHeight = 60;
+	headBox.iHeight = 40;
 
 	CBox footBox;
+	footBox.iHeight = 40;
 	footBox.iX = g_settings.screen_StartX + 10;
-	footBox.iY = g_settings.screen_EndY - 10 - 60;
+	footBox.iY = g_settings.screen_EndY - 10 - footBox.iHeight;
 	footBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
-	footBox.iHeight = 60;
 
 	// frameBox
 	CBox Box;
@@ -224,17 +224,22 @@ void CTestMenu::testCFrameBox()
 		frameBox->addFrame(frame);
 	}
 
+	frameBox->setSelected(0);
+	//frameBox->setOutFocus(false);
+
 	// menu left
 	CBox leftBox;
 	leftBox.iX = g_settings.screen_StartX + 10;
 	leftBox.iY = headBox.iY + headBox.iHeight + 5 + Box.iHeight + 5;
 	leftBox.iWidth = 150;
-	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - footBox.iHeight - Box.iHeight - 2 - 5 - 5;
+	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - Box.iHeight - 5 - footBox.iHeight - 5;
 
 	ClistBoxEntry *listBoxEntry = new ClistBoxEntry(&leftBox);
 
 	ClistBoxEntryItem *item1 = new ClistBoxEntryItem("item 1");
 	ClistBoxEntryItem *item2 = new ClistBoxEntryItem("item 2");
+	item2->setOption("option");
+	item2->setnLinesItem();
 	ClistBoxEntryItem *item3 = new ClistBoxEntryItem("item 3");
 	ClistBoxEntryItem *item4 = new ClistBoxEntryItem("item 4");
 	
@@ -247,14 +252,17 @@ void CTestMenu::testCFrameBox()
 	listBoxEntry->addItem(item5);
 
 	listBoxEntry->disableCenter();
+	listBoxEntry->setSelected(-1);
+	listBoxEntry->setOutFocus(true);
+	listBoxEntry->disableShrinkMenu();
 
 	// right menu
 	CBox rightBox;
 
-	rightBox.iX = g_settings.screen_StartX + 10 + leftBox.iWidth + 5 + 10 + 5;
+	rightBox.iX = g_settings.screen_StartX + 10 + leftBox.iWidth + 5;
 	rightBox.iY = headBox.iY + headBox.iHeight + 5 + Box.iHeight + 5;
-	rightBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20) - 150 - 20;
-	rightBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - footBox.iHeight - Box.iHeight - 2 - 5 - 5 - 10 - 5;
+	rightBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20) - 150 - 5;
+	rightBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - Box.iHeight - 5 - footBox.iHeight - 5;
 
 	CTextBox * textBox = new CTextBox("CTextBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &rightBox, COL_MENUCONTENT_PLUS_0);
 	
@@ -276,12 +284,8 @@ void CTestMenu::testCFrameBox()
 	// loop
 	//g_RCInput->messageLoop();
 REPEAT:
-	//setFocus
-
-	// head
+	// paint all
 	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true);
-
-	// foot
 	headers.paintFoot(footBox);
 	frameBox->paint();
 	listBoxEntry->paint();
@@ -339,18 +343,30 @@ REPEAT:
 				focus = 1;
 
 				listBoxEntry->setSelected(0);
+				listBoxEntry->setOutFocus(false);
+
 				frameBox->setSelected(-1);
+				frameBox->setOutFocus(true);
 			}
 			else if (focus == 1)
 			{
 				focus = 2;
+
 				frameBox->setSelected(-1);
+				frameBox->setOutFocus(true);
+
 				listBoxEntry->setSelected(-1);
+				listBoxEntry->setOutFocus(true);
 			}
 			else if (focus == 2)
 			{
 				focus = 0;
+
+				listBoxEntry->setSelected(-1);
+				listBoxEntry->setOutFocus(true);
+
 				frameBox->setSelected(0);
+				frameBox->setOutFocus(false);
 			}
 
 			goto REPEAT;

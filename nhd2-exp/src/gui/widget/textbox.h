@@ -114,9 +114,9 @@ class CTextBox
 
 		bool bigFonts;
 
-		int radius;
-		int type;
-		int gradient;
+		//int radius;
+		//int type;
+		//int gradient;
 
 		bool painted;
 
@@ -153,9 +153,9 @@ class CTextBox
 		inline int getPages(void){return(m_nNrOfPages);};
 		inline void movePosition(int x, int y){m_cFrame.iX = x; m_cFrame.iY = y;};
 
-		void setCorner(int Radius = NO_RADIUS, int Type = CORNER_NONE);
+		//void setCorner(int Radius = NO_RADIUS, int Type = CORNER_NONE);
 		void setBackGroundColor(fb_pixel_t col){m_textBackgroundColor = col;};
-		void setGradient(int grad = nogradient){gradient = grad;};
+		//void setGradient(int grad = nogradient){gradient = grad;};
 
 		void paint(void);
 		void hide(void);

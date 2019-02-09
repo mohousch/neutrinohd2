@@ -81,6 +81,8 @@ class ClistBoxEntry
 		bool paintFootInfo;
 		bool logo;
 		bool enableCenter;
+		bool outFocus;
+		bool shrinkMenu;
 
 		//
 		CItems2DetailsLine itemsLine;
@@ -97,7 +99,7 @@ class ClistBoxEntry
 		virtual void addItem(CMenuItem* menuItem, const bool defaultselected = false);
 		bool hasItem();
 		void clearItems(void){items.clear();};
-		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
+		void setSelected(unsigned int _new) { /*if(_new <= items.size())*/ selected = _new; };
 
 		virtual void initFrames();
 		virtual void paint(bool reinit = true);
@@ -128,7 +130,10 @@ class ClistBoxEntry
 		int getFootInfoHeight(){return footInfoHeight;};
 		int getListMaxShow(void) const {return listmaxshow;};
 
-		void disableCenter(){enableCenter = false; initFrames();};
+		void disableCenter(){enableCenter = false;};
+		void setOutFocus(bool focus){outFocus = focus;};
+
+		void disableShrinkMenu(){shrinkMenu = false;};
 };
 
 // CMenulistBoxItem

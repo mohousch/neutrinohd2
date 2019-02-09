@@ -28,7 +28,7 @@
 
 CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 {
-	dprintf(DEBUG_NORMAL, "CFrameBox:\n");
+	dprintf(DEBUG_NORMAL, "CFrameBox::CFrameBox:\n");
 
 	frameBuffer = CFrameBuffer::getInstance();
 
@@ -39,13 +39,14 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 
 	selected = -1;
 	pos = 0;
+	outFocus = false;
 
 	initFrames();
 }
 
 CFrameBox::CFrameBox(CBox* position)
 {
-	dprintf(DEBUG_NORMAL, "CFrameBox:\n");
+	dprintf(DEBUG_NORMAL, "CFrameBox::CFrameBox:\n");
 
 	frameBuffer = CFrameBuffer::getInstance();
 
@@ -53,6 +54,7 @@ CFrameBox::CFrameBox(CBox* position)
 
 	selected = -1;
 	pos = 0;
+	outFocus = false;
 
 	initFrames();
 }
@@ -90,7 +92,7 @@ void CFrameBox::initFrames()
 
 void CFrameBox::paintFrames()
 {
-	dprintf(DEBUG_NORMAL, "paintFrames:\n");
+	dprintf(DEBUG_NORMAL, "CFrameBox::paintFrames:selected:%d focus:%d\n", selected, outFocus);
 
 	// frame width
 	int frame_width = 0;
@@ -115,7 +117,7 @@ void CFrameBox::paintFrames()
 
 		frame->window.enableShadow();
 
-		if(selected == -1) 
+		if(!outFocus && (selected == -1)) 
 		{
 			selected = count;
 		}
@@ -126,7 +128,7 @@ void CFrameBox::paintFrames()
 
 void CFrameBox::paint()
 {
-	dprintf(DEBUG_NORMAL, "paint:\n");
+	dprintf(DEBUG_NORMAL, "CFrameBox::paint:\n");
 
 	cFrameWindow.setColor(COL_MENUCONTENT_PLUS_0);
 	//cFrameWindow.setCorner(RADIUS_MID, CORNER_ALL);
@@ -142,18 +144,22 @@ void CFrameBox::paint()
 
 void CFrameBox::hide()
 {
-	dprintf(DEBUG_NORMAL, "hide:\n");
+	dprintf(DEBUG_NORMAL, "CFrameBox::hide:\n");
 
 	cFrameWindow.hide();
 }
 
 void CFrameBox::swipRight()
 {
-	dprintf(DEBUG_NORMAL, "swipRight:\n");
+	dprintf(DEBUG_NORMAL, "CFrameBox::swipRight:\n");
 
 	for (unsigned int count = 0; count < frames.size(); count++) 
 	{
 		pos = selected + 1;
+
+		if(pos >= (int)frames.size())
+			pos = 0;
+
 		CFrame * frame = frames[pos];
 
 		if(pos < frames.size())
@@ -169,13 +175,14 @@ void CFrameBox::swipRight()
 
 void CFrameBox::swipLeft()
 {
-	dprintf(DEBUG_NORMAL, "swipLeft:\n");
+	dprintf(DEBUG_NORMAL, "CFrameBox::swipLeft:\n");
 
 	for (unsigned int count = 0; count < frames.size(); count++) 
 	{
 		pos = selected - 1;
 		if(pos < 0)
-			pos = 0;
+			pos = frames.size() - 1;
+
 		CFrame * frame = frames[pos];
 
 		if(pos < frames.size())
@@ -227,7 +234,6 @@ int CFrame::paint(bool selected)
 	}
 
 	// frame
-	//window.enableShadow();
 	window.setColor(bgcolor);
 	window.paint();
 

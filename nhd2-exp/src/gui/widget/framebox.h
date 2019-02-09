@@ -58,6 +58,8 @@ class CFrameBox
 		int selected;
 		int pos;
 
+		bool outFocus;
+
 		std::vector<CFrame*> frames;
 
 		virtual void paintFrames();
@@ -70,7 +72,7 @@ class CFrameBox
 		virtual void addFrame(CFrame *frame, const bool defaultselected = false);
 		bool hasFrame();
 		void clearFrames(void){frames.clear();};
-		void setSelected(unsigned int _new) { if(_new <= frames.size()) selected = _new; };
+		void setSelected(unsigned int _new) { /*if(_new <= frames.size())*/ selected = _new; };
 
 		virtual void initFrames();
 		virtual void paint();
@@ -80,6 +82,8 @@ class CFrameBox
 		virtual void swipLeft();
 
 		int getSelected(){return selected;};
+
+		void setOutFocus(bool focus){outFocus = focus;};
 };
 
 #endif

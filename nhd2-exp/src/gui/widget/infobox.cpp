@@ -308,7 +308,7 @@ bool CInfoBox::paint(void)
 	if(m_pcTextBox != NULL)
 	{
 		// set corner
-		m_pcTextBox->setCorner(RADIUS_MID, CORNER_BOTTOM);
+		//m_pcTextBox->setCorner(RADIUS_MID, CORNER_BOTTOM);
 
 		// paint
 		m_pcTextBox->paint();
