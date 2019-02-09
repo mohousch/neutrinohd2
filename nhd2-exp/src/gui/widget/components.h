@@ -50,6 +50,12 @@ class CComponents
 		void paintHLineRel(int x, int dx, int y, const fb_pixel_t col);
 
 		void paintFrameBox(const int x, const int y, const int dx, const int dy, const fb_pixel_t col);
+
+		// fontrenderer
+		void RenderString(int font_type, int x, int y, const int width, const char * text, const uint8_t color, const int boxheight = 0, bool utf8_encoded = true, const bool useBackground = false);
+
+		int getRenderWidth(int font_type, const char *text, bool utf8_encoded = true);
+		int getHeight(int font_type);
 };
 
 #endif

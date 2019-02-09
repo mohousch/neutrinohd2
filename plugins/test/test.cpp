@@ -1068,14 +1068,8 @@ void CTestMenu::testClistBoxEntry()
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
 		//item->setIconName(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		//
-		std::string tmp = m_vMovieInfo[i].epgTitle;
-		tmp += "\n";
-		tmp += m_vMovieInfo[i].epgInfo1;
-		tmp += "\n";
-		tmp += m_vMovieInfo[i].epgInfo2;
-
-		item->setInfo1(tmp.c_str());
+		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 		item->setnLinesItem();
 
 		listBox->addItem(item);
@@ -1092,7 +1086,7 @@ void CTestMenu::testClistBoxEntry()
 	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
 
 	// footinfo
-	listBox->enablePaintFootInfo(40);
+	listBox->enablePaintFootInfo(80);
 
 REPEAT:
 	listBox->setSelected(selected);

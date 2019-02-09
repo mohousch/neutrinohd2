@@ -33,17 +33,17 @@ void CComponents::paintBoxRel(const int x, const int y, const int dx, const int 
 
 bool CComponents::paintIcon(const std::string & filename, const int x, const int y, const int h, bool paint, int width, int height)
 {
-	CFrameBuffer::getInstance()->paintIcon(filename, x, y, h, paint, width, height);
+	return CFrameBuffer::getInstance()->paintIcon(filename, x, y, h, paint, width, height);
 }
 
 bool CComponents::displayImage(const std::string & name, int posx, int posy, int width, int height, CFrameBuffer::ScalingMode scaling, int x_pan, int y_pan, bool clearfb)
 {
-	CFrameBuffer::getInstance()->displayImage(name, posx, posy, width, height, scaling, x_pan, y_pan, clearfb);
+	return CFrameBuffer::getInstance()->displayImage(name, posx, posy, width, height, scaling, x_pan, y_pan, clearfb);
 }
 
 bool CComponents::displayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale, bool center_x, bool center_y)
 {
-	CFrameBuffer::getInstance()->displayLogo(channel_id, posx, posy, width, height, upscale, center_x, center_y);
+	return CFrameBuffer::getInstance()->displayLogo(channel_id, posx, posy, width, height, upscale, center_x, center_y);
 }
 
 void CComponents::paintBackground()
@@ -58,7 +58,7 @@ void CComponents::paintBackgroundBoxRel(int x, int y, int dx, int dy)
 
 bool CComponents::loadBackgroundPic(const std::string& filename, bool show)
 {
-	CFrameBuffer::getInstance()->loadBackgroundPic(filename, show);
+	return CFrameBuffer::getInstance()->loadBackgroundPic(filename, show);
 }
 
 void CComponents::paintVLineRel(int x, int y, int dy, const fb_pixel_t col)
@@ -94,6 +94,21 @@ void CComponents::saveScreen(int x, int y, int dx, int dy, fb_pixel_t * const me
 void CComponents::restoreScreen(int x, int y, int dx, int dy, fb_pixel_t * const memp)
 {
 	CFrameBuffer::getInstance()->restoreScreen(x, y, dx, dy, memp);
+}
+
+void CComponents::RenderString(int font_type, int x, int y, const int width, const char * text, const uint8_t color, const int boxheight, bool utf8_encoded, const bool useBackground)
+{
+	g_Font[font_type]->RenderString(x, y, width, text, color, boxheight, utf8_encoded, useBackground);
+}
+
+int CComponents::getRenderWidth(int font_type, const char *text, bool utf8_encoded)
+{
+	return g_Font[font_type]->getRenderWidth(text, utf8_encoded);
+}
+
+int CComponents::getHeight(int font_type)
+{
+	return g_Font[font_type]->getHeight();
 }
 
 
