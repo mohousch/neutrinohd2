@@ -92,7 +92,7 @@ void CFrameBox::initFrames()
 
 void CFrameBox::paintFrames()
 {
-	dprintf(DEBUG_NORMAL, "CFrameBox::paintFrames:selected:%d focus:%d\n", selected, outFocus);
+	dprintf(DEBUG_NORMAL, "CFrameBox::paintFrames:\n");
 
 	// frame width
 	int frame_width = 0;

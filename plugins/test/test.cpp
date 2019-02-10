@@ -188,6 +188,23 @@ void CTestMenu::hide()
 }
 
 // CFrameBox
+#define FRAMEBOX_HEAD_BUTTONS_COUNT	2
+const struct button_label frameBoxHeadButtons[FRAMEBOX_HEAD_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL },
+};
+
+#define BUTTONS_COUNT	4
+const struct button_label frameButtons[BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, "add" },
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, "remove" },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, "delete" },
+	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, "rename" },
+	
+};
+
 void CTestMenu::testCFrameBox()
 {
 	dprintf(DEBUG_NORMAL, "\ntesting CFrameBox\n");
@@ -266,7 +283,10 @@ void CTestMenu::testCFrameBox()
 
 	CTextBox * textBox = new CTextBox("CTextBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &rightBox, COL_MENUCONTENT_PLUS_0);
 	
-	std::string text = "testing CTextBox: blah blah blah boaah";
+	std::string title = "testing CTextBox:";
+	title += "\n";
+	title += getNowTimeStr("%d.%m.%Y %H:%M");
+	title += "\n";
 		
 	int pich = 246;	//FIXME
 	int picw = 162; 	//FIXME
@@ -275,8 +295,34 @@ void CTestMenu::testCFrameBox()
 		
 	if(access(fname.c_str(), F_OK))
 		fname = "";
+
+	// get EPG
+	CEPGData epgData;
+	event_id_t epgid = 0;
+			
+	if(sectionsd_getActualEPGServiceKey(CNeutrinoApp::getInstance()->channelList->getActiveChannel_ChannelID(), &epgData))
+		epgid = epgData.eventID;
+
+	if(epgid != 0) 
+	{
+		CShortEPGData epgdata;
+				
+		if(sectionsd_getEPGidShort(epgid, &epgdata)) 
+		{
+			title += CNeutrinoApp::getInstance()->channelList->getActiveChannelName();
+			title += "\n";
+			title += epgdata.title;
+
+			title += "\n";
+
+			title += epgdata.info1;
+			title += "\n";
+			title += epgdata.info2;
+			title += "\n";	
+		}
+	}
 	
-	textBox->setText(&text, fname, picw, pich);
+	textBox->setText(&title, fname, picw, pich);
 	
 
 	int focus = 0; // frameBox
@@ -285,8 +331,8 @@ void CTestMenu::testCFrameBox()
 	//g_RCInput->messageLoop();
 REPEAT:
 	// paint all
-	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true);
-	headers.paintFoot(footBox);
+	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true, 2, frameBoxHeadButtons);
+	headers.paintFoot(footBox, footBox.iWidth/4, 4, frameButtons);
 	frameBox->paint();
 	listBoxEntry->paint();
 	textBox->paint();
@@ -303,6 +349,7 @@ REPEAT:
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 	bool loop = true;
+	bool bigFonts = false;
 
 	while(loop)
 	{
@@ -310,7 +357,7 @@ REPEAT:
 
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true);
+			headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true, 2, frameBoxHeadButtons);
 		} 
 		else if (msg == CRCInput::RC_home) 
 		{
@@ -367,6 +414,10 @@ REPEAT:
 
 				frameBox->setSelected(0);
 				frameBox->setOutFocus(false);
+
+				//
+				if(bigFonts)
+					textBox->setBigFonts(false);
 			}
 
 			goto REPEAT;
@@ -381,6 +432,28 @@ REPEAT:
 			MessageBox(LOCALE_MESSAGEBOX_INFO, "\nhuhu\nHUHUUU\n", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 
 			goto REPEAT;
+		}
+		else if(msg == CRCInput::RC_info)
+		{
+			if(focus == 2)
+			{
+				bigFonts = bigFonts? false : true;
+				textBox->setBigFonts(bigFonts);
+			}
+		}
+		else if(msg == CRCInput::RC_page_down)
+		{
+			if(focus == 2)
+			{
+				textBox->scrollPageDown(1);
+			}
+		}
+		else if(msg == CRCInput::RC_page_up)
+		{
+			if(focus == 2)
+			{
+				textBox->scrollPageUp(1);
+			}
 		}
 
 		CFrameBuffer::getInstance()->blit();
@@ -1806,7 +1879,7 @@ void CTestMenu::testShowActuellEPG()
 				
 		if(sectionsd_getEPGidShort(epgid, &epgdata)) 
 		{
-			title += g_Zapit->getChannelName(live_channel_id);
+			title += CNeutrinoApp::getInstance()->channelList->getActiveChannelName();
 			title += ":";
 			title += epgdata.title;
 
