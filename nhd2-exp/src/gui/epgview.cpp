@@ -142,6 +142,8 @@ CEpgData::CEpgData()
 	frameBuffer = CFrameBuffer::getInstance();
 	timescale = new CProgressBar(TIMESCALE_W, TIMESCALE_H);
 
+	epgBuffer.clear();
+
 	textBox = NULL;
 
 	start();
@@ -824,6 +826,8 @@ void CEpgData::hide()
 
 	delete textBox;
 	textBox = NULL;
+
+	epgBuffer.clear();
 }
 
 bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData * epgdata);
