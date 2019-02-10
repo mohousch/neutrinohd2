@@ -519,26 +519,29 @@ void ClistBoxEntry::scrollLineDown()
 {
 	if(widgetType == WIDGET_FRAME)
 	{
-		pos = selected + itemsPerX;
-
-		//FIXME:
-		if (pos >= items.size())
-			pos -= itemsPerX;
-
-		CMenuItem * item = items[pos];
-
-		if ( item->isSelectable() ) 
+		if(items.size())
 		{
-			if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
-			{ 
-				// Item is currently on screen
-				//clear prev. selected
-				items[selected]->paint(false);
-				//select new
-				item->paint(true);
-				paintItemInfo(pos);
-				selected = pos;
-			} 
+			pos = selected + itemsPerX;
+
+			//FIXME:
+			if (pos >= items.size())
+				pos -= itemsPerX;
+
+			CMenuItem * item = items[pos];
+
+			if ( item->isSelectable() ) 
+			{
+				if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
+				{ 
+					// Item is currently on screen
+					//clear prev. selected
+					items[selected]->paint(false);
+					//select new
+					item->paint(true);
+					paintItemInfo(pos);
+					selected = pos;
+				} 
+			}
 		}
 	}
 	else
@@ -577,24 +580,27 @@ void ClistBoxEntry::scrollLineUp()
 {
 	if(widgetType == WIDGET_FRAME)
 	{
-		pos = selected - itemsPerX;
-
-		if(pos < 0)
-			pos = selected;
-
-		CMenuItem * item = items[pos];
-
-		if ( item->isSelectable() ) 
+		if(items.size())
 		{
-			if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
-			{ 
-				// Item is currently on screen
-				//clear prev. selected
-				items[selected]->paint(false);
-				//select new
-				item->paint(true);
-				paintItemInfo(pos);
-				selected = pos;
+			pos = selected - itemsPerX;
+
+			if(pos < 0)
+				pos = selected;
+
+			CMenuItem * item = items[pos];
+
+			if ( item->isSelectable() ) 
+			{
+				if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
+				{ 
+					// Item is currently on screen
+					//clear prev. selected
+					items[selected]->paint(false);
+					//select new
+					item->paint(true);
+					paintItemInfo(pos);
+					selected = pos;
+				}
 			}
 		}
 	}
@@ -636,12 +642,15 @@ void ClistBoxEntry::scrollPageDown()
 {
 	if(widgetType == WIDGET_FRAME)
 	{
-		if(current_page) 
+		if(items.size())
 		{
-			pos = (int) page_start[current_page] - 1;
+			if(current_page) 
+			{
+				pos = (int) page_start[current_page] - 1;
 
-			selected = pos;
-			paintItems();
+				selected = pos;
+				paintItems();
+			}
 		}
 	}
 	else
@@ -682,12 +691,15 @@ void ClistBoxEntry::scrollPageUp()
 {
 	if(widgetType == WIDGET_FRAME)
 	{
-		pos = (int) page_start[current_page + 1];
-		if(pos >= (int) items.size()) 
-			pos = items.size() - 1;
+		if(items.size())
+		{
+			pos = (int) page_start[current_page + 1];
+			if(pos >= (int) items.size()) 
+				pos = items.size() - 1;
 
-		selected = pos;
-		paintItems();
+			selected = pos;
+			paintItems();
+		}
 	}
 	else
 	{
@@ -756,32 +768,35 @@ void ClistBoxEntry::swipLeft()
 
 	if(widgetType == WIDGET_FRAME)
 	{
-		//search next / prev selectable item
-		for (unsigned int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
+		if(items.size())
 		{
-			//pos = selected - count;
-			pos = selected - 1;
-
-			// jump to page end
-			if(pos < (int)page_start[current_page])
-				pos = (int)page_start[current_page + 1] - 1;
-
-			CMenuItem * item = items[pos];
-
-			if ( item->isSelectable() ) 
+			//search next / prev selectable item
+			for (unsigned int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
 			{
-				if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
-				{ 
-					// Item is currently on screen
-					//clear prev. selected
-					items[selected]->paint(false);
-					//select new
-					item->paint(true);
-					paintItemInfo(pos);
-					selected = pos;
-				}
+				//pos = selected - count;
+				pos = selected - 1;
+
+				// jump to page end
+				if(pos < (int)page_start[current_page])
+					pos = (int)page_start[current_page + 1] - 1;
+
+				CMenuItem * item = items[pos];
+
+				if ( item->isSelectable() ) 
+				{
+					if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
+					{ 
+						// Item is currently on screen
+						//clear prev. selected
+						items[selected]->paint(false);
+						//select new
+						item->paint(true);
+						paintItemInfo(pos);
+						selected = pos;
+					}
 								
-				break;
+					break;
+				}
 			}
 		}
 	}
@@ -793,31 +808,34 @@ void ClistBoxEntry::swipRight()
 
 	if(widgetType == WIDGET_FRAME)
 	{
-		//search next / prev selectable item
-		for (unsigned int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
+		if(items.size())
 		{
-			pos = selected + 1;
-
-			// jump to page start
-			if(pos == (int)page_start[current_page + 1])
-				pos = (int)page_start[current_page];
-
-			CMenuItem * item = items[pos];
-
-			if ( item->isSelectable() ) 
+			//search next / prev selectable item
+			for (unsigned int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
 			{
-				if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
-				{ 
-					// Item is currently on screen
-					//clear prev. selected
-					items[selected]->paint(false);
-					//select new
-					item->paint(true);
-					paintItemInfo(pos);
-					selected = pos;
-				}
+				pos = selected + 1;
+
+				// jump to page start
+				if(pos == (int)page_start[current_page + 1])
+					pos = (int)page_start[current_page];
+
+				CMenuItem * item = items[pos];
+
+				if ( item->isSelectable() ) 
+				{
+					if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
+					{ 
+						// Item is currently on screen
+						//clear prev. selected
+						items[selected]->paint(false);
+						//select new
+						item->paint(true);
+						paintItemInfo(pos);
+						selected = pos;
+					}
 								
-				break;
+					break;
+				}
 			}
 		}
 	}

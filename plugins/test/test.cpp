@@ -232,6 +232,7 @@ void CTestMenu::testCFrameBox()
 	CFrameBox *frameBox = new CFrameBox(&Box);
 	CFrame * frame = NULL;
 
+/*
 	for(unsigned int count = 0; count < 5; count++)
 	{
 		std::string tmp = "frame-";
@@ -240,6 +241,15 @@ void CTestMenu::testCFrameBox()
 
 		frameBox->addFrame(frame);
 	}
+*/
+	frame = new CFrame("Neu Filme");
+	frameBox->addFrame(frame);
+	
+	frame = new CFrame("Im Kino");
+	frameBox->addFrame(frame);
+
+	frame = new CFrame("Am populärsten");
+	frameBox->addFrame(frame);
 
 	frameBox->setSelected(0);
 	//frameBox->setOutFocus(false);
@@ -251,27 +261,30 @@ void CTestMenu::testCFrameBox()
 	leftBox.iWidth = 150;
 	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - Box.iHeight - 5 - footBox.iHeight - 5;
 
-	ClistBoxEntry *listBoxEntry = new ClistBoxEntry(&leftBox);
+	ClistBoxEntry *listBoxLeft = new ClistBoxEntry(&leftBox);
 
-	ClistBoxEntryItem *item1 = new ClistBoxEntryItem("item 1");
-	ClistBoxEntryItem *item2 = new ClistBoxEntryItem("item 2");
-	item2->setOption("option");
+	ClistBoxEntryItem *item1 = new ClistBoxEntryItem("Filme");
+	ClistBoxEntryItem *item2 = new ClistBoxEntryItem("Serien");
+	item2->setOption("(neu)");
 	item2->setnLinesItem();
-	ClistBoxEntryItem *item3 = new ClistBoxEntryItem("item 3");
-	ClistBoxEntryItem *item4 = new ClistBoxEntryItem("item 4");
-	
-	CMenuForwarder *item5 = new CMenuForwarder("item 1", true, "", NULL, "");
+	ClistBoxEntryItem *item3 = new ClistBoxEntryItem("TV shows");
+	ClistBoxEntryItem *item4 = new ClistBoxEntryItem("Suche");
+	ClistBoxEntryItem *item5 = new ClistBoxEntryItem("", false);
+	ClistBoxEntryItem *item6 = new ClistBoxEntryItem("", false);
+	ClistBoxEntryItem *item7 = new ClistBoxEntryItem("Beenden");
 
-	listBoxEntry->addItem(item1);
-	listBoxEntry->addItem(item2);
-	listBoxEntry->addItem(item3);
-	listBoxEntry->addItem(item4);
-	listBoxEntry->addItem(item5);
+	listBoxLeft->addItem(item1);
+	listBoxLeft->addItem(item2);
+	listBoxLeft->addItem(item3);
+	listBoxLeft->addItem(item4);
+	listBoxLeft->addItem(item5);
+	listBoxLeft->addItem(item6);
+	listBoxLeft->addItem(item7);
 
-	listBoxEntry->disableCenter();
-	listBoxEntry->setSelected(-1);
-	listBoxEntry->setOutFocus(true);
-	listBoxEntry->disableShrinkMenu();
+	listBoxLeft->disableCenter();
+	listBoxLeft->setSelected(-1);
+	listBoxLeft->setOutFocus(true);
+	listBoxLeft->disableShrinkMenu();
 
 	// right menu
 	CBox rightBox;
@@ -281,6 +294,7 @@ void CTestMenu::testCFrameBox()
 	rightBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20) - 150 - 5;
 	rightBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - Box.iHeight - 5 - footBox.iHeight - 5;
 
+/*
 	CTextBox * textBox = new CTextBox("CTextBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &rightBox, COL_MENUCONTENT_PLUS_0);
 	
 	std::string title = "testing CTextBox:";
@@ -323,12 +337,11 @@ void CTestMenu::testCFrameBox()
 	}
 	
 	textBox->setText(&title, fname, picw, pich);
-
-
-	////
-	ClistBoxEntry* listBox = new ClistBoxEntry(&rightBox);
+*/
 
 	//
+	ClistBoxEntry* listBoxRight = new ClistBoxEntry(&rightBox);
+
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("ts");
@@ -408,6 +421,7 @@ void CTestMenu::testCFrameBox()
 		}
 	}
 
+	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		item = new ClistBoxEntryItem(m_vMovieInfo[i].epgTitle.c_str());
@@ -424,25 +438,23 @@ void CTestMenu::testCFrameBox()
 		//item->setnLinesItem();
 		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		listBox->addItem(item);
+		listBoxRight->addItem(item);
 	}
 
-	listBox->setWidgetType(WIDGET_FRAME);
-	listBox->setItemsPerPage(6, 2);
-	////
+	listBoxRight->setWidgetType(WIDGET_FRAME);
+	listBoxRight->setItemsPerPage(6, 2);
 	
 	int focus = 0; // frameBox
 
-	// loop
-	//g_RCInput->messageLoop();
+	// _exec()
 REPEAT:
 	// paint all
 	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true, 2, frameBoxHeadButtons);
 	headers.paintFoot(footBox, footBox.iWidth/4, 4, frameButtons);
 	frameBox->paint();
-	listBoxEntry->paint();
+	listBoxLeft->paint();
 	//textBox->paint();
-	listBox->paint();
+	listBoxRight->paint();
 
 	CFrameBuffer::getInstance()->blit();
 
@@ -456,7 +468,7 @@ REPEAT:
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 	bool loop = true;
-	bool bigFonts = false;
+	//bool bigFonts = false;
 
 	while(loop)
 	{
@@ -475,28 +487,28 @@ REPEAT:
 			if(focus == 0)
 				frameBox->swipRight();
 			else if(focus == 2)
-				listBox->swipRight();
+				listBoxRight->swipRight();
 		}
 		else if(msg == CRCInput::RC_left)
 		{
 			if(focus == 0)
 				frameBox->swipLeft();
 			else if(focus == 2)
-				listBox->swipLeft();
+				listBoxRight->swipLeft();
 		}
 		else if(msg == CRCInput::RC_up)
 		{
 			if(focus == 1)
-				listBoxEntry->scrollLineUp();
+				listBoxLeft->scrollLineUp();
 			else if(focus == 2)
-				listBox->scrollLineUp();
+				listBoxRight->scrollLineUp();
 		}
 		else if(msg == CRCInput::RC_down)
 		{
 			if(focus == 1)
-				listBoxEntry->scrollLineDown();
+				listBoxLeft->scrollLineDown();
 			else if(focus == 2)
-				listBox->scrollLineDown();
+				listBoxRight->scrollLineDown();
 		}
 		else if(msg == CRCInput::RC_yellow)
 		{
@@ -504,8 +516,8 @@ REPEAT:
 			{
 				focus = 1;
 
-				listBoxEntry->setSelected(0);
-				listBoxEntry->setOutFocus(false);
+				listBoxLeft->setSelected(0);
+				listBoxLeft->setOutFocus(false);
 
 				frameBox->setSelected(-1);
 				frameBox->setOutFocus(true);
@@ -517,22 +529,22 @@ REPEAT:
 				frameBox->setSelected(-1);
 				frameBox->setOutFocus(true);
 
-				listBoxEntry->setSelected(-1);
-				listBoxEntry->setOutFocus(true);
+				listBoxLeft->setSelected(-1);
+				listBoxLeft->setOutFocus(true);
 			}
 			else if (focus == 2)
 			{
 				focus = 0;
 
-				listBoxEntry->setSelected(-1);
-				listBoxEntry->setOutFocus(true);
+				listBoxLeft->setSelected(-1);
+				listBoxLeft->setOutFocus(true);
 
 				frameBox->setSelected(0);
 				frameBox->setOutFocus(false);
 
 				//
-				if(bigFonts)
-					textBox->setBigFonts(false);
+				//if(bigFonts)
+				//	textBox->setBigFonts(false);
 			}
 
 			goto REPEAT;
@@ -542,18 +554,11 @@ REPEAT:
 
 			//hide();
 
-/*
-			selected = frameBox->getSelected();
-
-			MessageBox(LOCALE_MESSAGEBOX_INFO, "\nhuhu\nHUHUUU\n", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
-
-			goto REPEAT;
-*/
 			if(focus == 2)
 			{
 				hide();
 
-				selected = listBox->getSelected();
+				selected = listBoxRight->getSelected();
 
 				if (&m_vMovieInfo[selected].file != NULL) 
 				{
@@ -562,6 +567,15 @@ REPEAT:
 				}
 
 				goto REPEAT;
+			}
+			else if(focus == 1)
+			{
+				selected = listBoxLeft->getSelected();
+
+				printf("selected:%d\n", selected);
+
+				if(selected == 6)
+					loop = false;
 			}
 		}
 		else if(msg == CRCInput::RC_info)
@@ -572,7 +586,7 @@ REPEAT:
 				//textBox->setBigFonts(bigFonts);
 
 				hide();
-				selected = listBox->getSelected();
+				selected = listBoxRight->getSelected();
 				m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
 				goto REPEAT;
 			}
@@ -581,14 +595,14 @@ REPEAT:
 		{
 			if(focus == 2)
 			{
-				listBox->scrollPageDown();
+				listBoxRight->scrollPageDown();
 			}
 		}
 		else if(msg == CRCInput::RC_page_up)
 		{
 			if(focus == 2)
 			{
-				listBox->scrollPageUp();
+				listBoxRight->scrollPageUp();
 			}
 		}
 
@@ -601,11 +615,14 @@ REPEAT:
 	delete frameBox;
 	frameBox = NULL;
 
-	delete textBox;
-	textBox = NULL;
+	//delete textBox;
+	//textBox = NULL;
 
-	delete listBoxEntry;
-	listBoxEntry = NULL;
+	delete listBoxLeft;
+	listBoxLeft = NULL;
+
+	delete listBoxRight;
+	listBoxRight = NULL;
 
 	g_RCInput->killTimer(sec_timer_id);
 	sec_timer_id = 0;
