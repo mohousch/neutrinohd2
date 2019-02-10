@@ -2700,7 +2700,6 @@ ClistBox::ClistBox()
 	itemBoxColor = COL_YELLOW /*COL_MENUCONTENTSELECTED_PLUS_0*/;
 	itemsPerX = 6;
 	itemsPerY = 3;
-
 	maxItemsPerPage = itemsPerX*itemsPerY;
 
 	shrinkMenu = false;
@@ -2778,7 +2777,6 @@ void ClistBox::Init(const std::string & Icon, const int mwidth, const int mheigh
 	itemBoxColor = COL_YELLOW /*COL_MENUCONTENTSELECTED_PLUS_0*/;
 	itemsPerX = 6;
 	itemsPerY = 3;
-
 	maxItemsPerPage = itemsPerX*itemsPerY;
 
 	shrinkMenu = false;
@@ -2824,7 +2822,7 @@ void ClistBox::initFrames()
 	else
         	l_name = g_Locale->getText(name);
 
-	//
+	// widgettype forwarded to item 
 	for (unsigned int count = 0; count < items.size(); count++) 
 	{
 		CMenuItem * item = items[count];
@@ -3966,7 +3964,6 @@ int ClistBox::exec(CMenuTarget* parent, const std::string&)
 							}
 						}
 
-						//break;
 					}
 					else if (widgetType == WIDGET_EXTENDED)
 					{

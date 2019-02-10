@@ -89,6 +89,22 @@ class ClistBoxEntry
 		CScrollBar scrollBar;
 		CHeaders headers;
 
+		// frame
+		fb_pixel_t backgroundColor;
+		fb_pixel_t itemBoxColor;
+		int itemsPerX;
+		int itemsPerY;
+		int maxItemsPerPage;
+
+		unsigned int item_start_y;
+		int items_height;
+		int items_width;
+
+		//
+		int widgetType;
+		bool widgetChange;
+		std::vector<int> widget;
+
 		virtual void paintItems();
 
 	public:
@@ -134,6 +150,20 @@ class ClistBoxEntry
 		void setOutFocus(bool focus){outFocus = focus;};
 
 		void disableShrinkMenu(){shrinkMenu = false;};
+
+		// Frame
+		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
+		void setItemBoxColor(fb_pixel_t col) {itemBoxColor = col;};
+		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
+
+		virtual void swipLeft();
+		virtual void swipRight();
+
+		//
+		void setWidgetType(int type){widgetType = type; widget.push_back(widgetType);};
+		int getWidgetType(){return widgetType;};
+		void enableWidgetChange(){widgetChange = true;};
+		void addWidget(int wtype){widget.push_back(wtype);};
 };
 
 // CMenulistBoxItem

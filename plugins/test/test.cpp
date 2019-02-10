@@ -323,8 +323,114 @@ void CTestMenu::testCFrameBox()
 	}
 	
 	textBox->setText(&title, fname, picw, pich);
-	
 
+
+	////
+	ClistBoxEntry* listBox = new ClistBoxEntry(&rightBox);
+
+	//
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
+
+	CFileList filelist;
+	
+	// recordingdir
+	std::string Path_local = g_settings.network_nfs_recordingdir;
+	m_vMovieInfo.clear();
+	
+	//
+	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	{
+		// filter them
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
+		{
+			//
+			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+					
+			movieInfo.file.Name = files->Name;
+					
+			// load movie infos (from xml file)
+			m_movieInfo.loadMovieInfo(&movieInfo);
+
+			std::string tmp_str = files->getFileName();
+
+			removeExtension(tmp_str);
+
+			// refill if empty
+			if(movieInfo.epgTitle.empty())
+				movieInfo.epgTitle = tmp_str;
+
+			if(movieInfo.epgInfo1.empty())
+				movieInfo.epgInfo1 = tmp_str;
+
+			//if(movieInfo.epgInfo2.empty())
+			//	movieInfo.epgInfo2 = tmp_str;
+
+			//thumbnail
+			std::string fname = "";
+			fname = files->Name;
+			changeFileNameExt(fname, ".jpg");
+					
+			if(!access(fname.c_str(), F_OK) )
+				movieInfo.tfile = fname.c_str();
+					
+			// 
+			m_vMovieInfo.push_back(movieInfo);
+		}
+	}
+
+	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+	{
+		item = new ClistBoxEntryItem(m_vMovieInfo[i].epgTitle.c_str());
+
+		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+		//item->setOptionInfo("OptionInfo");
+
+		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+		//item->setOptionInfo1("OptionInfo1");
+
+		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+		//item->setOptionInfo2("OptionInfo2");
+
+		//item->setnLinesItem();
+		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		listBox->addItem(item);
+	}
+
+	listBox->setWidgetType(WIDGET_FRAME);
+	listBox->setItemsPerPage(6, 2);
+	////
+	
 	int focus = 0; // frameBox
 
 	// loop
@@ -335,7 +441,8 @@ REPEAT:
 	headers.paintFoot(footBox, footBox.iWidth/4, 4, frameButtons);
 	frameBox->paint();
 	listBoxEntry->paint();
-	textBox->paint();
+	//textBox->paint();
+	listBox->paint();
 
 	CFrameBuffer::getInstance()->blit();
 
@@ -367,21 +474,29 @@ REPEAT:
 		{
 			if(focus == 0)
 				frameBox->swipRight();
+			else if(focus == 2)
+				listBox->swipRight();
 		}
 		else if(msg == CRCInput::RC_left)
 		{
 			if(focus == 0)
 				frameBox->swipLeft();
+			else if(focus == 2)
+				listBox->swipLeft();
 		}
 		else if(msg == CRCInput::RC_up)
 		{
 			if(focus == 1)
 				listBoxEntry->scrollLineUp();
+			else if(focus == 2)
+				listBox->scrollLineUp();
 		}
 		else if(msg == CRCInput::RC_down)
 		{
 			if(focus == 1)
 				listBoxEntry->scrollLineDown();
+			else if(focus == 2)
+				listBox->scrollLineDown();
 		}
 		else if(msg == CRCInput::RC_yellow)
 		{
@@ -427,32 +542,53 @@ REPEAT:
 
 			//hide();
 
+/*
 			selected = frameBox->getSelected();
 
 			MessageBox(LOCALE_MESSAGEBOX_INFO, "\nhuhu\nHUHUUU\n", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 
 			goto REPEAT;
+*/
+			if(focus == 2)
+			{
+				hide();
+
+				selected = listBox->getSelected();
+
+				if (&m_vMovieInfo[selected].file != NULL) 
+				{
+					tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
+					tmpMoviePlayerGui.exec(NULL, "");
+				}
+
+				goto REPEAT;
+			}
 		}
 		else if(msg == CRCInput::RC_info)
 		{
 			if(focus == 2)
 			{
-				bigFonts = bigFonts? false : true;
-				textBox->setBigFonts(bigFonts);
+				//bigFonts = bigFonts? false : true;
+				//textBox->setBigFonts(bigFonts);
+
+				hide();
+				selected = listBox->getSelected();
+				m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
+				goto REPEAT;
 			}
 		}
 		else if(msg == CRCInput::RC_page_down)
 		{
 			if(focus == 2)
 			{
-				textBox->scrollPageDown(1);
+				listBox->scrollPageDown();
 			}
 		}
 		else if(msg == CRCInput::RC_page_up)
 		{
 			if(focus == 2)
 			{
-				textBox->scrollPageUp(1);
+				listBox->scrollPageUp();
 			}
 		}
 
