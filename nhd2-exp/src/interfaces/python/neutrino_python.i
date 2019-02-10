@@ -33,6 +33,7 @@
 #include <config.h>
 #include <src/global.h>
 #include <src/neutrino.h>
+#include <swig_helpers.h>
 
 // libconfigfile
 #include <libconfigfile/configfile.h>
@@ -90,7 +91,6 @@
 #include <gui/widget/stringinput.h>
 #include <gui/widget/textbox.h>
 #include <gui/widget/menue.h>
-#include <gui/widget/components.h>
 
 // gui
 #include <gui/movieinfo.h>
@@ -141,6 +141,7 @@
 %include <config.h>
 %include <src/global.h>
 %include <src/neutrino.h>
+%include <src/swig_helpers.h>
 
 // libconfigfile
 %include <lib/libconfigfile/configfile.h>
@@ -198,7 +199,6 @@
 %include <src/gui/widget/stringinput.h>
 %include <src/gui/widget/textbox.h>
 %include <src/gui/widget/menue.h>
-%include <src/gui/widget/components.h>
 
 // gui
 %include <src/gui/movieinfo.h>

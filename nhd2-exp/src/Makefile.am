@@ -37,7 +37,7 @@ AM_CPPFLAGS += -fno-rtti -fno-exceptions
 
 bin_PROGRAMS = neutrino
 
-neutrino_SOURCES = neutrino_menue.cpp neutrino.cpp
+neutrino_SOURCES = neutrino_menue.cpp neutrino.cpp swig_helpers.cpp
 
 neutrino_LDADD = \
 	daemonc/libneutrino_daemonc.a \
@@ -70,7 +70,6 @@ neutrino_LDADD = \
 	gui/widget/headers.o \
 	gui/widget/listbox.o \
 	gui/widget/listframe.o \
-	gui/widget/components.o \
 	gui/widget/framebox.o \
 	$(top_builddir)/lib/sectionsdclient/libsectionsdclient.a \
 	$(top_builddir)/lib/timerdclient/libtimerdclient.a \

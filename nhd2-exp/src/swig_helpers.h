@@ -1,5 +1,5 @@
 /*
- * $Id: compenents.h 07.02.2019 mohousch Exp $
+ * $Id: swig_helpers.h 07.02.2019 mohousch Exp $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,17 +17,17 @@
  *
  */
 
-#ifndef __COMPONENTS_H__
-#define __COMPONENTS_H__
+#ifndef __SWIG_HELPERS_H__
+#define __SWIG_HELPERS_H__
 
 #include <driver/framebuffer.h>
 
 
-class CComponents
+class CSwigHelpers
 {
 	private:
 	public:
-		CComponents(){};
+		CSwigHelpers(){};
 
 		// frameBuffer stuff
 		void paintBoxRel(const int x, const int y, const int dx, const int dy, fb_pixel_t col, int radius = 0, int type = CORNER_NONE, int mode = nogradient);

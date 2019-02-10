@@ -45,8 +45,7 @@ libneutrino_gui_widget_a_SOURCES = \
 libneutrino_gui_widget2_a_SOURCES = \
 	colorchooser.cpp \
 	keychooser.cpp \
-	mountchooser.cpp \
-	components.cpp
+	mountchooser.cpp
 
 
 
