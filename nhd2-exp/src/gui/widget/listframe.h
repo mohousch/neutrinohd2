@@ -54,7 +54,8 @@
 #include <string>
 #include <vector>
 
-#include <gui/widget/textbox.h>
+#include <driver/fontrenderer.h>
+
 #include <gui/widget/scrollbar.h>
 
 

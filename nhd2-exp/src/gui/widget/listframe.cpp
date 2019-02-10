@@ -34,6 +34,8 @@
 
 #include <stdlib.h>
 
+#include <global.h>
+
 #include <gui/widget/listframe.h>
 #include <gui/widget/icons.h>
 

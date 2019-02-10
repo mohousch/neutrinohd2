@@ -48,6 +48,8 @@
 #include <gui/widget/menue.h>
 #include <gui/widget/headers.h>
 #include <gui/widget/scrollbar.h>
+#include <gui/widget/textbox.h>
+#include <gui/widget/window.h>
 
 #include <sectionsdclient/sectionsdclient.h>
 
@@ -60,17 +62,22 @@ class CEpgData
 		CFrameBuffer* frameBuffer;
 
 		CBox cFrameBox;
-		CBox cHeadBox;
-		CBox cFootBox;
+
 		CBox cFollowScreeningBox;
-		CBox cScrollBar;
+		CWindow cFollowScreeningWindow;
+
+		CBox cLeftFBox;
+		CWindow cLeftFWindow;
+
+		CBox cRightFBox;
+		CWindow cRightFWindow;
 
 		CHeaders headers;
-		CScrollBar scrollBar;
+		CBox cHeadBox;
+		CBox cFootBox;
 
-		int sb;
-		int medlineheight;
-		int medlinecount;
+		CBox cTextBox;
+		CTextBox *textBox;
 
 		CChannelEventList evtlist;
 		CEPGData epgData;
@@ -87,15 +94,10 @@ class CEpgData
 		uint64_t next_id;
 		time_t next_zeit;
 
-		int emptyLineCount, info1_lines;
-		int textCount;
-		std::vector<std::string> epgText;
+		std::string epgBuffer;
 
 		void GetEPGData(const t_channel_id channel_id, uint64_t id, time_t* startzeit, bool clear = true);
 		void GetPrevNextEPGData( uint64_t id, time_t* startzeit );
-		void addTextToArray( const std::string& text );
-		void processTextToArray(std::string text);
-		void showText( int startPos, int ypos );
 		bool hasFollowScreenings(const t_channel_id channel_id, const std::string & title);
 		int FollowScreenings(const t_channel_id channel_id, const std::string & title);
 		void showTimerEventBar(bool show);

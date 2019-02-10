@@ -44,10 +44,11 @@
 #include <string>
 #include <vector>
 
-#include <global.h>
+//#include <global.h>
 
 #include <driver/framebuffer.h>
 #include <driver/color.h>
+#include <driver/fontrenderer.h>
 
 #include <gui/widget/window.h>
 #include <gui/widget/scrollbar.h>

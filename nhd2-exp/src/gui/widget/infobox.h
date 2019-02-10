@@ -39,8 +39,9 @@
 
 #include <string>
 
-#include <gui/widget/textbox.h>
+#include <global.h>
 
+#include <gui/widget/textbox.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/headers.h>
 
