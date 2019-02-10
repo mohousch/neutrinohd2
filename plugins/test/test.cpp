@@ -449,6 +449,9 @@ void CTestMenu::testCFrameBox()
 	// _exec()
 REPEAT:
 	// paint all
+	std::string fname = PLUGINDIR "/test/ard_mediathek.jpg";
+	CFrameBuffer::getInstance()->loadBackgroundPic(fname);
+
 	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true, 2, frameBoxHeadButtons);
 	headers.paintFoot(footBox, footBox.iWidth/4, 4, frameButtons);
 	frameBox->paint();

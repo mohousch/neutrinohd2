@@ -103,7 +103,7 @@ class ClistBoxEntry
 		//
 		int widgetType;
 		bool widgetChange;
-		std::vector<int> widget;
+		//std::vector<int> widget;
 
 		virtual void paintItems();
 
@@ -160,10 +160,10 @@ class ClistBoxEntry
 		virtual void swipRight();
 
 		//
-		void setWidgetType(int type){widgetType = type; widget.push_back(widgetType);};
+		void setWidgetType(int type){widgetType = type; /*widget.push_back(widgetType);*/};
 		int getWidgetType(){return widgetType;};
 		void enableWidgetChange(){widgetChange = true;};
-		void addWidget(int wtype){widget.push_back(wtype);};
+		//void addWidget(int wtype){widget.push_back(wtype);};
 };
 
 // CMenulistBoxItem
