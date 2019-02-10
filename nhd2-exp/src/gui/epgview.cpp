@@ -423,15 +423,11 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 	
 	id = a_id;
 
-	int height;
-	height = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_DATE]->getHeight();
+	// init gui
+	start();
 
-	if (doLoop)
-	{
-		start();
-	}
-
-	GetEPGData(channel_id, id, &startzeit );
+	// getepg data
+	GetEPGData(channel_id, id, &startzeit);
 	
 	if (doLoop)
 	{
@@ -441,13 +437,6 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 		
 		// Houdini added for Private Premiere EPG start sorted by start date/time 2005-08-15
   		sort(evtlist.begin(), evtlist.end(), sortByDateTime);
-	}
-
-	if (epgData.title.empty()) // no epg info found
-	{
-		HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_EPGVIEWER_NOTFOUND)); // UTF-8
-		hide();
-		return res;
 	}
 
 	// 21.07.2005 - rainerk
@@ -610,13 +599,14 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
         }
 
 	//show progressbar
-	if ( epg_done!= -1 )
+	if ( epg_done != -1 )
 	{
 		int pbx = cFrameBox.iX + BORDER_LEFT + widthl + 10 + ((cFrameBox.iWidth - TIMESCALE_W - 4 - widthr - widthl - 10 - 10 - 20)>>1);
 		timescale->reset();
 		timescale->paint(pbx + 2, cFrameBox.iY + cFrameBox.iHeight - cFootBox.iHeight - cFollowScreeningBox.iHeight + (cFollowScreeningBox.iHeight - TIMESCALE_H)/2, epg_done);
 	}
 
+	// get prevnext epg data
 	GetPrevNextEPGData( epgData.eventID, &epgData.epg_times.startzeit );
 
 	// prev
