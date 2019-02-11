@@ -240,28 +240,24 @@ void CTSBrowser::doTMDB(MI_MOVIE_INFO& movieFile)
 			buffer += (std::string)g_Locale->getText(LOCALE_EPGEXTENDED_ACTORS) + ":\n" + minfo_list[0].cast;
 
 		// thumbnail
-		int pich = 246;	//FIXME
-		int picw = 162; //FIXME
-	
-		std::string thumbnail = "";
-	
-		//
 		std::string tname = tmdb->getThumbnailDir();
 		tname += "/";
 		tname += movieFile.epgTitle;
 		tname += ".jpg";
 
 		tmdb->getSmallCover(minfo_list[0].poster_path, tname);
-		//
-				
-		if(!access(tname.c_str(), F_OK) )
-			thumbnail = tname.c_str();
+		
+		// scale pic
+		int p_w = 0;
+		int p_h = 0;
+
+		CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
 	
 		CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
 		CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
 
-		infoBox->setText(&buffer, thumbnail, picw, pich);
+		infoBox->setText(&buffer, tname, p_w, p_h);
 		infoBox->exec();
 		delete infoBox;
 

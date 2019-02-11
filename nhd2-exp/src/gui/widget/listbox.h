@@ -118,7 +118,7 @@ class ClistBoxEntry
 		void setSelected(unsigned int _new) { /*if(_new <= items.size())*/ selected = _new; };
 
 		virtual void initFrames();
-		virtual void paint(bool reinit = true);
+		virtual void paint();
 		virtual void hide();
 		virtual void paintHead();
 		virtual void paintFoot();

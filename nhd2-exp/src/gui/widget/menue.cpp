@@ -53,12 +53,8 @@
 #include <driver/rcinput.h>
 
 #include <system/debug.h>
-
-
-#define ITEM_ICON_W		128
-#define ITEM_ICON_H		128
-#define ITEM_ICON_W_MINI	100
-#define ITEM_ICON_H_MINI	40	
+#include <system/settings.h>
+	
 
 extern CPlugins * g_PluginList;    // defined in neutrino.cpp
 

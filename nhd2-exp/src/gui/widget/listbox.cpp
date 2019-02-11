@@ -273,9 +273,8 @@ void ClistBoxEntry::initFrames()
 	}
 }
 
-void ClistBoxEntry::paint(bool reinit)
+void ClistBoxEntry::paint()
 {
-	//if(reinit)
 	initFrames();
 
 	paintItems();

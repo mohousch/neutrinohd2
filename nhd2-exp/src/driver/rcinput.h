@@ -145,8 +145,8 @@
 
 
 
-typedef size_t neutrino_msg_t;
-typedef size_t neutrino_msg_data_t;
+typedef unsigned long neutrino_msg_t;
+typedef unsigned long neutrino_msg_data_t;
 
 #define NEUTRINO_UDS_NAME 		"/tmp/neutrino.sock"
 #define NEUTRINO_KEYMAP_FILE		CONFIGDIR "/keymap.conf"

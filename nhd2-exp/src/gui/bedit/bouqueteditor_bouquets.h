@@ -46,7 +46,7 @@
 #include <gui/widget/listbox.h>
 
 
-class CBEBouquetWidget : public CMenuWidget
+class CBEBouquetWidget : public CMenuTarget
 {
 	public:
 		BouquetList* Bouquets;
@@ -78,7 +78,7 @@ class CBEBouquetWidget : public CMenuWidget
 		unsigned int newPosition;
 		bool bouquetsChanged;
 
-		void paint(bool reinit = true);
+		void paint();
 		void hide();
 
 		void deleteBouquet();

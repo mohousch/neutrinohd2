@@ -124,13 +124,13 @@ class CInfoViewer
 		int TunerNumHeight;
 		
 		// channel logo
-		int PIC_W;
-		int PIC_H;
+		int pic_w;
+		int pic_h;
 		int logo_w; 
 		int logo_h;
 		int logo_bpp;
-		int PIC_X;
-		int PIC_Y;
+		int pic_x;
+		int pic_y;
 		
 		// date
 		int dateWidth;

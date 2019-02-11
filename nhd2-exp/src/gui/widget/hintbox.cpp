@@ -40,12 +40,9 @@
 #include <neutrino.h>
 
 #include <system/debug.h>
+#include <system/settings.h>
 
 #include <gui/widget/hintbox.h>
-
-
-#define HINTBOX_MAX_HEIGHT 420
-#define HINTBOX_MAX_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX )
 
 
 CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, const int Width, const char * const Icon)

@@ -47,7 +47,7 @@
 #include <gui/widget/listbox.h>
 
 
-class CBEChannelWidget : public CMenuWidget
+class CBEChannelWidget : public CMenuTarget
 {
 	public:
 		ZapitChannelList* Channels;
@@ -74,7 +74,7 @@ class CBEChannelWidget : public CMenuWidget
 
 		uint32_t sec_timer_id;
 
-		void paint(bool reinit = true);
+		void paint();
 		void hide();
 
 		void deleteChannel();

@@ -90,7 +90,7 @@ class CBouquetList
 		uint32_t sec_timer_id;
 		unsigned int selected;
 
-		void paint(bool reinit = true);
+		void paint();
 		void hide();
 
 		std::string name;

@@ -42,12 +42,10 @@
 #include <driver/screen_max.h>
 
 #include <system/debug.h>
+#include <system/settings.h>
 
 #include <gui/widget/messagebox.h>
 
-
-#define MESSAGEBOX_MAX_HEIGHT 		420
-#define MESSAGEBOX_MAX_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX )
 
 CMessageBox::CMessageBox(const neutrino_locale_t Caption, const char * const Text, const int Width, const char * const Icon, const CMessageBox::result_ Default, const uint32_t ShowButtons)
 {

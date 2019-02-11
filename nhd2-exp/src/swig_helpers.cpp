@@ -111,7 +111,23 @@ int CSwigHelpers::getHeight(int font_type)
 	return g_Font[font_type]->getHeight();
 }
 
+// CRCInput
+int CSwigHelpers::getRCcode(int ms)
+{
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+	
+	g_RCInput->getMsg_ms(&msg, &data, ms);
+	rccode = -1;
 
+	if (msg <= CRCInput::RC_MaxRC) 
+	{
+		rccode = msg;
+		return 1;
+	}
+	
+	return 0;
+}
 
 
 

@@ -64,6 +64,7 @@
 #include <system/debug.h>
 #include <system/helpers.h>
 #include <system/tmdbparser.h>
+#include <system/settings.h>
 
 
 CMovieInfo::CMovieInfo()
@@ -637,39 +638,11 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 	
 	CInfoBox * infoBox = new CInfoBox(movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_MOVIE);
 
-	int picw = 320; //FIXME
-	int pich = 256;	//FIXME
-
+	// scale pic
 	int p_w = 0;
 	int p_h = 0;
-	int nbpp = 0;
 
-	if(!access(movie_info.tfile.c_str(), F_OK))
-	{
-		CFrameBuffer::getInstance()->getSize(movie_info.tfile, &p_w, &p_h, &nbpp);
-
-		// scale
-		if(p_w <= picw && p_h <= pich)
-		{
-			picw = p_w;
-			pich = p_h;
-		}
-		else
-		{
-			float aspect = (float)(p_w) / (float)(p_h);
-					
-			if (((float)(p_w) / (float)picw) > ((float)(p_h) / (float)pich)) 
-			{
-				p_w = picw;
-				p_h = (int)(picw / aspect);
-			}
-			else
-			{
-				p_h = pich;
-				p_w = (int)(pich * aspect);
-			}
-		}
-	}
+	CFrameBuffer::getInstance()->scaleImage(movie_info.tfile, &p_w, &p_h);
 
 	infoBox->setText(&print_buffer, movie_info.tfile, p_w, p_h);
 	infoBox->exec();

@@ -93,7 +93,7 @@ const struct button_label CBEChannelWidgetButtons[BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_BOUQUETEDITOR_SWITCHMODE, NULL }
 };
 
-void CBEChannelWidget::paint(bool reinit)
+void CBEChannelWidget::paint()
 {
 	dprintf(DEBUG_NORMAL, "CBEChannelWidget::paint:\n");
 
@@ -135,7 +135,7 @@ void CBEChannelWidget::paint(bool reinit)
 
 	//
 	listBox->setSelected(selected);
-	listBox->paint(reinit);
+	listBox->paint();
 }
 
 void CBEChannelWidget::hide()
@@ -280,7 +280,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				beginMoveChannel();
 
 			listBox->clearItems();
-			paint(false);
+			paint();
 		}
 		else if(msg == CRCInput::RC_blue)
 		{
@@ -296,7 +296,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				selected = 0;
 
 				listBox->clearItems();
-				paint(false);
+				paint();
 			}
 		}
 		else if(msg == CRCInput::RC_ok)
@@ -368,7 +368,7 @@ void CBEChannelWidget::deleteChannel()
 	channelsChanged = true;
 
 	listBox->clearItems();
-	paint(false);
+	paint();
 }
 
 void CBEChannelWidget::addChannel()
@@ -386,7 +386,7 @@ void CBEChannelWidget::addChannel()
 	delete channelSelectWidget;
 
 	listBox->clearItems();
-	paint(false);
+	paint();
 }
 
 void CBEChannelWidget::beginMoveChannel()
@@ -401,7 +401,7 @@ void CBEChannelWidget::finishMoveChannel()
 	state = beDefault;
 
 	listBox->clearItems();
-	paint(false);
+	paint();
 }
 
 void CBEChannelWidget::cancelMoveChannel()
@@ -428,7 +428,7 @@ void CBEChannelWidget::internalMoveChannel(unsigned int fromPosition, unsigned i
 	newPosition = toPosition;
 
 	listBox->clearItems();
-	paint(false);
+	paint();
 }
 
 bool CBEChannelWidget::hasChanged()

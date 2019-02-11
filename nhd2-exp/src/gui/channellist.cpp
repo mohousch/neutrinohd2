@@ -568,7 +568,7 @@ int CChannelList::show()
 			}
 
 			listBox->clearItems();
-			paint(false);
+			paint();
 		}
 		else if ( msg == CRCInput::RC_yellow && ( bouquetList != NULL ) ) //bouquets
 		{ 
@@ -587,7 +587,7 @@ int CChannelList::show()
 			eplus.exec(NULL, "");
 
 			listBox->clearItems();
-			paint(false);
+			paint();
 		}
 		else if ( msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
 		{
@@ -614,7 +614,7 @@ int CChannelList::show()
 				old_b_id = -1;
 
 				listBox->clearItems();
-				paint(false);
+				paint();
 			}
 		}
 		else if (msg == (neutrino_msg_t) g_settings.key_list_start) 
@@ -622,7 +622,7 @@ int CChannelList::show()
 			selected = 0;
 
 			listBox->clearItems();
-			paint(false);
+			paint();
 			
 			if(new_mode_active) 
 			{ 
@@ -635,7 +635,7 @@ int CChannelList::show()
 			selected = chanlist.size() - 1;
 
 			listBox->clearItems();
-			paint(false);
+			paint();
 			
 			if(new_mode_active) 
 			{ 
@@ -763,7 +763,7 @@ int CChannelList::show()
 			new_mode_active = (new_mode_active ? 0 : 1);
 			
 			listBox->clearItems();
-			paint(false);
+			paint();
 		}
 		else if (CRCInput::isNumeric(msg) && this->historyMode) 
 		{ 
@@ -790,7 +790,7 @@ int CChannelList::show()
 			updateEvents();
 
 			listBox->clearItems();
-			paint(false);
+			paint();
 		} 
 		else if ( (msg == CRCInput::RC_info) )
 		{
@@ -800,7 +800,7 @@ int CChannelList::show()
 			g_EpgData->show(chanlist[selected]->channel_id); 
 
 			listBox->clearItems();
-			paint(false);
+			paint();
 		}
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
@@ -1521,7 +1521,7 @@ const struct button_label HeadNewModeButtons[HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_MUTE_ZAP_ACTIVE, NONEXISTANT_LOCALE, NULL }
 };
 
-void CChannelList::paint(bool reinit)
+void CChannelList::paint()
 {
 	dprintf(DEBUG_NORMAL, "CChannelList::paint\n");
 
@@ -1625,7 +1625,7 @@ void CChannelList::paint(bool reinit)
 
 	//
 	listBox->setSelected(selected);
-	listBox->paint(reinit);
+	listBox->paint();
 }
 
 int CChannelList::getSize() const

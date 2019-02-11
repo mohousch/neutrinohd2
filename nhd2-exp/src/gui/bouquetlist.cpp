@@ -415,14 +415,14 @@ int CBouquetList::show(bool bShowChannelList)
 		{
 			selected = 0;
 			listBox->clearItems();
-			paint(false);
+			paint();
 		}
 		else if ( msg == (neutrino_msg_t) g_settings.key_list_end ) 
 		{
 			selected = Bouquets.size()- 1;
 
 			listBox->clearItems();
-			paint(false);
+			paint();
 		}
 		else if (msg == CRCInput::RC_up || (int) msg == g_settings.key_channelList_pageup )
 		{
@@ -490,7 +490,7 @@ const struct button_label CBouquetListButtons[4] =
         { NEUTRINO_ICON_BUTTON_BLUE, LOCALE_CHANNELLIST_HEAD}
 };
 
-void CBouquetList::paint(bool reinit)
+void CBouquetList::paint()
 {
 	dprintf(DEBUG_NORMAL, "CBouquetList::paint\n");
 
@@ -513,7 +513,7 @@ void CBouquetList::paint(bool reinit)
 
 	//
 	listBox->setSelected(selected);
-	listBox->paint(reinit);
+	listBox->paint();
 }
 
 

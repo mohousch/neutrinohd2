@@ -448,10 +448,14 @@ void CTestMenu::testCFrameBox()
 
 	// _exec()
 REPEAT:
-	// paint all
+	// background
+	bool usedBackground = CFrameBuffer::getInstance()->getuseBackground();
+	if (usedBackground)
+		CFrameBuffer::getInstance()->saveBackgroundImage();
 	std::string fname = PLUGINDIR "/test/ard_mediathek.jpg";
 	CFrameBuffer::getInstance()->loadBackgroundPic(fname);
 
+	// paint all widget
 	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true, 2, frameBoxHeadButtons);
 	headers.paintFoot(footBox, footBox.iWidth/4, 4, frameButtons);
 	frameBox->paint();
@@ -612,6 +616,12 @@ REPEAT:
 		CFrameBuffer::getInstance()->blit();
 	}
 
+	//restore previous background
+	if (usedBackground)
+	{
+		CFrameBuffer::getInstance()->restoreBackgroundImage();
+		CFrameBuffer::getInstance()->useBackground(usedBackground);
+	}
 
 	hide();
 
@@ -927,18 +937,20 @@ void CTestMenu::testCInfoBox()
 	buffer += "\n";
 
 	// thumbnail
-	int pich = 246;	//FIXME
-	int picw = 162; 	//FIXME
+	std::string tname = PLUGINDIR "/netzkino/netzkino.png";
 	
-	std::string thumbnail = PLUGINDIR "/netzkino/netzkino.png";
-	if(access(thumbnail.c_str(), F_OK))
-		thumbnail = "";
+	// scale pic
+	int p_w = 0;
+	int p_h = 0;
+
+	CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
+		
 	
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
 	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_INFO);
 
-	infoBox->setText(&buffer, thumbnail, picw, pich);
+	infoBox->setText(&buffer, tname, p_w, p_h);
 	infoBox->exec();
 	delete infoBox;
 	infoBox = NULL;
@@ -1062,15 +1074,15 @@ void CTestMenu::testCTextBox()
 	
 	std::string text = "testing CTextBox: blah blah blah boaah";
 		
-	int pich = 246;	//FIXME
-	int picw = 162; 	//FIXME
-		
-	std::string fname = PLUGINDIR "/netzkino/netzkino.png";
-		
-	if(access(fname.c_str(), F_OK))
-		fname = "";
+	std::string tname = PLUGINDIR "/netzkino/netzkino.png";
 	
-	textBox->setText(&text, fname, picw, pich);
+	// scale pic
+	int p_w = 0;
+	int p_h = 0;
+	
+	CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
+	
+	textBox->setText(&text, tname, p_w, p_h);
 	
 	textBox->paint();
 	CFrameBuffer::getInstance()->blit();

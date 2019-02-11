@@ -91,7 +91,7 @@ class CFileBrowser
 
 		SMSKeyInput m_SMSKeyInput;
 
-		void paint(bool reinit = true);
+		void paint();
 		void recursiveDelete(const char* file);
 		void hide();
 

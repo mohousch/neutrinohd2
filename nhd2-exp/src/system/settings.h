@@ -551,6 +551,35 @@ extern const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT];
 #define ICON_OFFSET			5	// offset from left border
 #define ICON_TO_ICON_OFFSET		2
 
+// CMenuWidget
+#define ITEM_ICON_W		128
+#define ITEM_ICON_H		128
+#define ITEM_ICON_W_MINI	100
+#define ITEM_ICON_H_MINI	40
+
+// CHintBox
+#define HINTBOX_MAX_HEIGHT 420
+#define HINTBOX_MAX_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX )
+
+// CMessageBox
+#define MESSAGEBOX_MAX_HEIGHT 		420
+#define MESSAGEBOX_MAX_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX )
+
+// 
+#define PIC_W 		320
+#define PIC_H		256
+
+// CInfoBox
+#define MAX_WINDOW_WIDTH  			(g_settings.screen_EndX - g_settings.screen_StartX )
+#define MAX_WINDOW_HEIGHT 			(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
+
+#define MIN_WINDOW_WIDTH  			(MAX_WINDOW_WIDTH>>1)
+#define MIN_WINDOW_HEIGHT 			40
+
+// CTextBox
+#define THUMBNAIL_OFFSET	3
+#define BIG_FONT_FAKTOR 	1.5
+
 // parentallock
 const int PARENTALLOCK_PROMPT_NEVER          = 0;
 const int PARENTALLOCK_PROMPT_ONSTART        = 1;

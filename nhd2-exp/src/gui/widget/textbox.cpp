@@ -42,17 +42,7 @@
 #include <gui/widget/icons.h>
 
 #include <system/debug.h>
-
-
-#define MAX_WINDOW_WIDTH  	(g_settings.screen_EndX - g_settings.screen_StartX - 40)
-#define MAX_WINDOW_HEIGHT 	(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
-
-#define MIN_WINDOW_WIDTH  	((g_settings.screen_EndX - g_settings.screen_StartX)>>1)
-#define MIN_WINDOW_HEIGHT 	40
-
-#define THUMBNAIL_OFFSET	3
-
-#define BIG_FONT_FAKTOR 1.5
+#include <system/settings.h>
 
 
 CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const CBox * position, fb_pixel_t textBackgroundColor)

@@ -40,13 +40,8 @@
 #include <neutrino.h>
 
 #include <system/debug.h>
-
-
-#define MAX_WINDOW_WIDTH  			(g_settings.screen_EndX - g_settings.screen_StartX )
-#define MAX_WINDOW_HEIGHT 			(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
-
-#define MIN_WINDOW_WIDTH  			(MAX_WINDOW_WIDTH>>1)
-#define MIN_WINDOW_HEIGHT 			40	
+#include <system/settings.h>
+	
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -307,9 +302,6 @@ bool CInfoBox::paint(void)
 	// textBox
 	if(m_pcTextBox != NULL)
 	{
-		// set corner
-		//m_pcTextBox->setCorner(RADIUS_MID, CORNER_BOTTOM);
-
 		// paint
 		m_pcTextBox->paint();
 	}

@@ -64,7 +64,7 @@
 #include <unistd.h>
 
 #include <gui/nfs.h>
-#include "neutrino.h"
+#include <neutrino.h>
 #include <gui/widget/stringinput.h>
 #include <sys/vfs.h> // for statfs
 #include <gui/widget/icons.h>
@@ -74,6 +74,8 @@
 
 #include <system/debug.h>
 #include <system/helpers.h>
+#include <system/settings.h>
+
 #include <driver/vcrcontrol.h>
 
 #include <gui/widget/infobox.h>
@@ -143,19 +145,12 @@ const CMenuOptionChooser::keyval MESSAGEBOX_PARENTAL_LOCKAGE_OPTIONS[MESSAGEBOX_
 	{ 16, LOCALE_MOVIEBROWSER_INFO_PARENTAL_LOCKAGE_16YEAR, NULL },
 	{ 18, LOCALE_MOVIEBROWSER_INFO_PARENTAL_LOCKAGE_18YEAR, NULL },
 	{ 99, LOCALE_MOVIEBROWSER_INFO_PARENTAL_LOCKAGE_ALWAYS, NULL }
-};
-
-#define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
-#define MAX_WINDOW_HEIGHT 		(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
-
-#define MIN_WINDOW_WIDTH  		((g_settings.screen_EndX - g_settings.screen_StartX)>>1)
-#define MIN_WINDOW_HEIGHT 		200	
+};	
 
 #define TITLE_FONT 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]
 #define FOOT_FONT 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]
 
 #define INTER_FRAME_SPACE 		4  // space between e.g. upper and lower window
-//#define TEXT_BORDER_WIDTH 		8
 
 CFont* CMovieBrowser::m_pcFontFoot = NULL;
 CFont* CMovieBrowser::m_pcFontTitle = NULL;
@@ -1006,12 +1001,6 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 	
 				// prepare print buffer  
 				buffer += tmdb->createInfoText();
-
-				// thumbnail
-				int pich = 246;	//FIXME
-				int picw = 162; //FIXME
-	
-				std::string thumbnail = "";
 	
 				//
 				std::string tname = tmdb->getThumbnailDir();
@@ -1021,14 +1010,17 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 
 				tmdb->getSmallCover(tmdb->getPosterPath(), tname);
 				
-				if(!access(tname.c_str(), F_OK) )
-					thumbnail = tname.c_str();
-	
+				// scale pic
+				int p_w = 0;
+				int p_h = 0;
+				
+				CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
+
 				CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
 				CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
 
-				infoBox->setText(&buffer, thumbnail, picw, pich);
+				infoBox->setText(&buffer, tname, p_w, p_h);
 				infoBox->exec();
 				delete infoBox;
 
@@ -1385,41 +1377,12 @@ void CMovieBrowser::refreshMovieInfo(void)
 	}
 	else
 	{
-		int picw = 320;
-		int pich = 256;
+		std::string fname = m_movieSelectionHandler->tfile;
 
 		int p_w = 0;
 		int p_h = 0;
-		int nbpp = 0;
 		
-		std::string fname = m_movieSelectionHandler->tfile;
-		
-		if( (!fname.empty() && !access(fname.c_str(), F_OK)) && m_settings.gui != MB_GUI_FILTER )
-		{
-			m_pcWindow->getSize(fname, &p_w, &p_h, &nbpp);
-
-			// scale
-			if(p_w <= picw && p_h <= pich)
-			{
-				picw = p_w;
-				pich = p_h;
-			}
-			else
-			{
-				float aspect = (float)(p_w) / (float)(p_h);
-					
-				if (((float)(p_w) / (float)picw) > ((float)(p_h) / (float)pich)) 
-				{
-					p_w = picw;
-					p_h = (int)(picw / aspect);
-				}
-				else
-				{
-					p_h = pich;
-					p_w = (int)(pich * aspect);
-				}
-			}
-		}
+		CFrameBuffer::getInstance()->scaleImage(fname, &p_w, &p_h);
 		
 		m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, fname, p_w, p_h);
 	}
@@ -1973,12 +1936,6 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	
 				// prepare print buffer  
 				buffer += tmdb->createInfoText();
-
-				// thumbnail
-				int pich = 246;	//FIXME
-				int picw = 162; //FIXME
-	
-				std::string thumbnail = "";
 	
 				std::string tname = tmdb->getThumbnailDir();
 				tname += "/";
@@ -1986,16 +1943,18 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				tname += ".jpg";
 
 				tmdb->getSmallCover(tmdb->getPosterPath(), tname);
-				//
 				
-				if(!access(tname.c_str(), F_OK) )
-					thumbnail = tname.c_str();
+				// scale pic
+				int p_w = 0;
+				int p_h = 0;
+				
+				CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
 	
 				CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
 				CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
 
-				infoBox->setText(&buffer, thumbnail, picw, pich);
+				infoBox->setText(&buffer, tname, p_w, p_h);
 				infoBox->exec();
 				delete infoBox;
 

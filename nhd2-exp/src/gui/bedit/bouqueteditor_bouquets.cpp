@@ -93,7 +93,7 @@ const struct button_label CBEBouquetWidgetButtons[BUTTONS_COUNT] =
 
 const struct button_label HButton = {NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL };
 
-void CBEBouquetWidget::paint(bool reinit)
+void CBEBouquetWidget::paint()
 {
 	dprintf(DEBUG_NORMAL, "CBEBouquetWidget::paint:\n");
 
@@ -157,7 +157,7 @@ void CBEBouquetWidget::paint(bool reinit)
 
 	//
 	listBox->setSelected(selected);
-	listBox->paint(reinit);
+	listBox->paint();
 }
 
 void CBEBouquetWidget::hide()
@@ -221,7 +221,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 						
 						case CMessageBox::mbrCancel :
 							listBox->clearItems();
-							paint(false);
+							paint();
 						break;
 					}
 				}
@@ -329,7 +329,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 					beginMoveBouquet();
 
 				listBox->clearItems();
-				paint(false);
+				paint();
 			}
 		}
 		else if(msg == CRCInput::RC_blue)
@@ -392,7 +392,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 					delete channelWidget;
 
 					listBox->clearItems();
-					paint(false);
+					paint();
 				}
 			}
 			else if (state == beMoving)
@@ -453,7 +453,7 @@ void CBEBouquetWidget::deleteBouquet()
 	bouquetsChanged = true;
 
 	listBox->clearItems();
-	paint(false);
+	paint();
 }
 
 void CBEBouquetWidget::addBouquet()
@@ -468,7 +468,7 @@ void CBEBouquetWidget::addBouquet()
 	}
 	
 	listBox->clearItems();
-	paint(false);
+	paint();
 }
 
 void CBEBouquetWidget::beginMoveBouquet()
@@ -488,7 +488,7 @@ void CBEBouquetWidget::finishMoveBouquet()
 	}
 
 	listBox->clearItems();
-	paint(false);
+	paint();
 }
 
 void CBEBouquetWidget::cancelMoveBouquet()
@@ -529,7 +529,7 @@ void CBEBouquetWidget::renameBouquet()
 	}
 
 	listBox->clearItems();
-	paint(false);
+	paint();
 }
 
 void CBEBouquetWidget::switchHideBouquet()
@@ -538,7 +538,7 @@ void CBEBouquetWidget::switchHideBouquet()
 	(*Bouquets)[selected]->bHidden = !(*Bouquets)[selected]->bHidden;
 
 	listBox->clearItems();
-	paint(false);
+	paint();
 }
 
 void CBEBouquetWidget::switchLockBouquet()
@@ -547,7 +547,7 @@ void CBEBouquetWidget::switchLockBouquet()
 	(*Bouquets)[selected]->bLocked = !(*Bouquets)[selected]->bLocked;
 
 	listBox->clearItems();
-	paint(false);
+	paint();
 }
 
 std::string CBEBouquetWidget::inputName(const char * const defaultName, const neutrino_locale_t caption)

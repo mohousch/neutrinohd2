@@ -58,7 +58,6 @@
 #include <system/debug.h>
 
 
-#define PIC_W 		78
 #define TIMESCALE_W	100
 #define TIMESCALE_H	12
 

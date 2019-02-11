@@ -71,7 +71,7 @@ class CBEChannelSelectWidget
 		std::string caption;
 
 		//
-		unsigned int	selected;
+		unsigned int selected;
 
 		void setModified(){modified = true;};
 
@@ -81,7 +81,7 @@ class CBEChannelSelectWidget
 
 	public:
 		CBEChannelSelectWidget(const std::string& Caption, unsigned int Bouquet, CZapitClient::channelsMode Mode);
-		int exec(CMenuTarget* parent, const std::string& actionKey);
+		int exec(CMenuTarget *parent, const std::string &actionKey);
 		bool hasChanged();
 };
 

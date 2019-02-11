@@ -209,8 +209,8 @@ void CInfoViewer::initDimension(void)
 	buttonBarStartY = BoxStartY + BoxHeight;
 	
 	// channel logo
-	PIC_X = BoxStartX + CHANNUMBER_WIDTH + BORDER_LEFT;
-	PIC_Y = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5;
+	pic_x = BoxStartX + CHANNUMBER_WIDTH + BORDER_LEFT;
+	pic_y = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5;
 	
 	// channel number
 	ChanNumberX = BoxStartX + BORDER_LEFT;
@@ -221,12 +221,12 @@ void CInfoViewer::initDimension(void)
 	ChanNameY = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5;
 	
 	// channel logo
-	PIC_W = CHANNEL_LOGO_HEIGHT*1.67;
-	PIC_H = CHANNEL_LOGO_HEIGHT;
+	pic_w = CHANNEL_LOGO_HEIGHT*1.67;
+	pic_h = CHANNEL_LOGO_HEIGHT;
 	
 	// channel info
 	ChanInfoX = BoxStartX + CHANNUMBER_WIDTH + BORDER_LEFT;
-	ChanInfoY = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5 + CHANNEL_LOGO_HEIGHT + 3; //PIC_Y + CHANNEL_LOGO_HEIGHT + 5
+	ChanInfoY = BoxStartY + SAT_INFOBOX_HEIGHT + TIMESCALE_BAR_HEIGHT + 5 + CHANNEL_LOGO_HEIGHT + 3; //pic_y + CHANNEL_LOGO_HEIGHT + 5
 	ChanInfoHeight = std::max(CHANINFO_HEIGHT, (g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight() > CHANINFO_HEIGHT)? CHANINFO_HEIGHT : g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight());
 
 	// button cell width
@@ -383,8 +383,8 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 		bool logo_ok = false;
 		
 		//
-		logo_w = PIC_W; 
-		logo_h = PIC_H;
+		logo_w = pic_w; 
+		logo_h = pic_h;
 		logo_bpp = 0;
 		
 		// check logo
@@ -396,14 +396,14 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 			frameBuffer->getLogoSize(channel_id, &logo_w, &logo_h, &logo_bpp);
 		
 			// display logo
-			frameBuffer->displayLogo(channel_id, PIC_X, PIC_Y, (logo_bpp == 4 && !g_settings.show_channelname)? logo_w : PIC_W, PIC_H, (logo_h > PIC_H)? true : false, false, true);
+			frameBuffer->displayLogo(channel_id, pic_x, pic_y, (logo_bpp == 4 && !g_settings.show_channelname)? logo_w : pic_w, pic_h, (logo_h > pic_h)? true : false, false, true);
 
 			// recalculate ChanNameWidth //FIXME: timewidth
 			ChanNameWidth = BoxWidth - (30 + CHANNUMBER_WIDTH + logo_w + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]->getRenderWidth(ChannelName, true));
 			
 			// ChannelName
 			if(g_settings.show_channelname)
-				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]->RenderString(PIC_X + ((logo_bpp == 4)? logo_w : PIC_W) + BORDER_LEFT, ChanNameY + ChanNameHeight, ChanNameWidth, ChannelName, COL_INFOBAR, 0, true);	// UTF-8
+				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]->RenderString(pic_x + ((logo_bpp == 4)? logo_w : pic_w) + BORDER_LEFT, ChanNameY + ChanNameHeight, ChanNameWidth, ChannelName, COL_INFOBAR, 0, true);	// UTF-8
 		}
 		else
 		{
