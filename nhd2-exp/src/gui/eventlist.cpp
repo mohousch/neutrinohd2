@@ -72,8 +72,6 @@ extern CBouquetList * bouquetList;
 extern t_channel_id live_channel_id;
 extern char recDir[255];			// defined in neutrino.cpp
 
-#define PIC_W 120
-
 void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventList &eList, char search = 0, std::string search_text = "");
 bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGData * epgdata);
 bool sectionsd_getLinkageDescriptorsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::LinkageDescriptorList& descriptors);
