@@ -496,10 +496,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 						buffer += tmdb->createInfoText();
 
 						// thumbnail
-						int pich = 246;	//FIXME
-						int picw = 162; 	//FIXME
-
-						std::string thumbnail = "";
 						std::string tname = tmdb->getThumbnailDir();
 						tname += "/";
 						tname += evtlist[selected].description;
@@ -507,14 +503,17 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 
 						tmdb->getSmallCover(tmdb->getPosterPath(), tname);
 
-						if(!access(tname.c_str(), F_OK))
-							thumbnail = tname;
+						// scale pic
+						int p_w = 0;
+						int p_h = 0;
+
+						CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
 	
 						CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
 						CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_TMDB);
 
-						infoBox->setText(&buffer, thumbnail, picw, pich);
+						infoBox->setText(&buffer, tname, p_w, p_h);
 						infoBox->exec();
 						delete infoBox;
 					}
@@ -608,7 +607,11 @@ struct button_label FootButtons[NUM_LIST_BUTTONS] =
 	{ NEUTRINO_ICON_BUTTON_SETUP_SMALL, LOCALE_KEYBINDINGMENU_RELOAD, NULL}
 };
 
-struct button_label HeadButtons = {NEUTRINO_ICON_BUTTON_HELP_SMALL, NONEXISTANT_LOCALE, NULL};
+struct button_label HeadButtons[2] = 
+{
+	{NEUTRINO_ICON_BUTTON_HELP_SMALL, NONEXISTANT_LOCALE, NULL},
+	{NEUTRINO_ICON_BUTTON_0, NONEXISTANT_LOCALE, NULL}
+};
 
 void EventList::paint(t_channel_id channel_id)
 {
@@ -688,7 +691,7 @@ void EventList::paint(t_channel_id channel_id)
 	listBox->setTitle(name.c_str(), logo.c_str(), true);
 	listBox->enablePaintHead();
 	listBox->enablePaintDate();
-	listBox->setHeaderButtons(&HeadButtons, 1);
+	listBox->setHeaderButtons(HeadButtons, 2);
 
 	// foot
 	listBox->enablePaintFoot();
