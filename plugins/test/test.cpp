@@ -294,51 +294,6 @@ void CTestMenu::testCFrameBox()
 	rightBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20) - 150 - 5;
 	rightBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - Box.iHeight - 5 - footBox.iHeight - 5;
 
-/*
-	CTextBox * textBox = new CTextBox("CTextBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &rightBox, COL_MENUCONTENT_PLUS_0);
-	
-	std::string title = "testing CTextBox:";
-	title += "\n";
-	title += getNowTimeStr("%d.%m.%Y %H:%M");
-	title += "\n";
-		
-	int pich = 246;	//FIXME
-	int picw = 162; 	//FIXME
-		
-	std::string fname = PLUGINDIR "/netzkino/netzkino.png";
-		
-	if(access(fname.c_str(), F_OK))
-		fname = "";
-
-	// get EPG
-	CEPGData epgData;
-	event_id_t epgid = 0;
-			
-	if(sectionsd_getActualEPGServiceKey(CNeutrinoApp::getInstance()->channelList->getActiveChannel_ChannelID(), &epgData))
-		epgid = epgData.eventID;
-
-	if(epgid != 0) 
-	{
-		CShortEPGData epgdata;
-				
-		if(sectionsd_getEPGidShort(epgid, &epgdata)) 
-		{
-			title += CNeutrinoApp::getInstance()->channelList->getActiveChannelName();
-			title += "\n";
-			title += epgdata.title;
-
-			title += "\n";
-
-			title += epgdata.info1;
-			title += "\n";
-			title += epgdata.info2;
-			title += "\n";	
-		}
-	}
-	
-	textBox->setText(&title, fname, picw, pich);
-*/
-
 	//
 	ClistBoxEntry* listBoxRight = new ClistBoxEntry(&rightBox);
 
@@ -443,6 +398,8 @@ void CTestMenu::testCFrameBox()
 
 	listBoxRight->setWidgetType(WIDGET_FRAME);
 	listBoxRight->setItemsPerPage(6, 2);
+	listBoxRight->setSelected(-1);
+	listBoxRight->setOutFocus(true);
 	
 	int focus = 0; // frameBox
 
@@ -451,16 +408,18 @@ REPEAT:
 	// background
 	bool usedBackground = CFrameBuffer::getInstance()->getuseBackground();
 	if (usedBackground)
+	{
 		CFrameBuffer::getInstance()->saveBackgroundImage();
-	std::string fname = PLUGINDIR "/test/ard_mediathek.jpg";
-	CFrameBuffer::getInstance()->loadBackgroundPic(fname);
+
+		std::string fname = PLUGINDIR "/test/ard_mediathek.jpg";
+		CFrameBuffer::getInstance()->loadBackgroundPic(fname);
+	}
 
 	// paint all widget
 	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true, 2, frameBoxHeadButtons);
 	headers.paintFoot(footBox, footBox.iWidth/4, 4, frameButtons);
 	frameBox->paint();
 	listBoxLeft->paint();
-	//textBox->paint();
 	listBoxRight->paint();
 
 	CFrameBuffer::getInstance()->blit();
@@ -475,7 +434,6 @@ REPEAT:
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
 	bool loop = true;
-	//bool bigFonts = false;
 
 	while(loop)
 	{
@@ -528,10 +486,16 @@ REPEAT:
 
 				frameBox->setSelected(-1);
 				frameBox->setOutFocus(true);
+
+				listBoxRight->setSelected(-1);
+				listBoxRight->setOutFocus(true);
 			}
 			else if (focus == 1)
 			{
 				focus = 2;
+
+				listBoxRight->setSelected(0);
+				listBoxRight->setOutFocus(false);
 
 				frameBox->setSelected(-1);
 				frameBox->setOutFocus(true);
@@ -546,21 +510,17 @@ REPEAT:
 				listBoxLeft->setSelected(-1);
 				listBoxLeft->setOutFocus(true);
 
+				listBoxRight->setSelected(-1);
+				listBoxRight->setOutFocus(true);
+
 				frameBox->setSelected(0);
 				frameBox->setOutFocus(false);
-
-				//
-				//if(bigFonts)
-				//	textBox->setBigFonts(false);
 			}
 
 			goto REPEAT;
 		}
 		else if(msg == CRCInput::RC_ok)
 		{
-
-			//hide();
-
 			if(focus == 2)
 			{
 				hide();
@@ -589,9 +549,6 @@ REPEAT:
 		{
 			if(focus == 2)
 			{
-				//bigFonts = bigFonts? false : true;
-				//textBox->setBigFonts(bigFonts);
-
 				hide();
 				selected = listBoxRight->getSelected();
 				m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
@@ -616,6 +573,8 @@ REPEAT:
 		CFrameBuffer::getInstance()->blit();
 	}
 
+	hide();
+
 	//restore previous background
 	if (usedBackground)
 	{
@@ -623,13 +582,8 @@ REPEAT:
 		CFrameBuffer::getInstance()->useBackground(usedBackground);
 	}
 
-	hide();
-
 	delete frameBox;
 	frameBox = NULL;
-
-	//delete textBox;
-	//textBox = NULL;
 
 	delete listBoxLeft;
 	listBoxLeft = NULL;
