@@ -50,8 +50,8 @@ class CTimerList : public CMenuTarget
 		CFrameBuffer* frameBuffer;
 
 		//
-		ClistBoxEntry* listBox;
-		CMenuItem* item;
+		ClistBox *listBox;
+		CMenuItem *item;
 		CBox cFrameBox;
 
 		uint32_t sec_timer_id;

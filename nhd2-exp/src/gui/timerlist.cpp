@@ -462,7 +462,7 @@ int CTimerList::show()
 	int res = menu_return::RETURN_REPAINT;
 
 	//
-	listBox = new ClistBoxEntry(&cFrameBox);
+	listBox = new ClistBox(&cFrameBox);
 
 	// add sec timer
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
@@ -891,7 +891,7 @@ int CTimerList::modifyTimer()
 
 	CTimerd::responseGetTimer* timer = &timerlist[selected];
 
-	ClistBox timerSettings(LOCALE_TIMERLIST_MENUMODIFY, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget timerSettings(LOCALE_TIMERLIST_MENUMODIFY, NEUTRINO_ICON_SETTINGS);
 	timerSettings.enablePaintDate();
 	timerSettings.enableShrinkMenu();
 	
@@ -991,7 +991,7 @@ int CTimerList::newTimer()
 	timerNew_standby_on = false;
 	strncpy(timerNew.recordingDir, g_settings.network_nfs_recordingdir, sizeof(timerNew.recordingDir));
 
-	ClistBox timerSettings(LOCALE_TIMERLIST_MENUNEW, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget timerSettings(LOCALE_TIMERLIST_MENUNEW, NEUTRINO_ICON_SETTINGS);
 	timerSettings.enablePaintDate();
 	timerSettings.enableShrinkMenu();
 	

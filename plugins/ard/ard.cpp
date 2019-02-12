@@ -143,13 +143,13 @@ CARDaz::~CARDaz()
 
 void CARDaz::showMenu(void)
 {
-	ClistBox * catMenu = new ClistBox("Sendungen A-Z", PLUGINDIR "/ard/ard_small.png");
+	ClistBoxWidget * catMenu = new ClistBoxWidget("Sendungen A-Z", PLUGINDIR "/ard/ard_small.png");
 
 	//items
 	for (int i = 0; i < 6; i++)
 		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
-	catMenu->setWidgetType(WIDGET_FRAME);
+	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
 	catMenu->setItemBoxColor(COL_YELLOW);
 
@@ -182,13 +182,13 @@ CARDTVlive::~CARDTVlive()
 
 void CARDTVlive::showMenu(void)
 {
-	ClistBox * catMenu = new ClistBox("TV-Livestreams", PLUGINDIR "/ard/ard_small.png");
+	ClistBoxWidget * catMenu = new ClistBoxWidget("TV-Livestreams", PLUGINDIR "/ard/ard_small.png");
 
 	//items
 	for (int i = 0; i < 6; i++)
 		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
-	catMenu->setWidgetType(WIDGET_FRAME);
+	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
 	catMenu->setItemBoxColor(COL_YELLOW);
 
@@ -221,13 +221,13 @@ CARDRadiolive::~CARDRadiolive()
 
 void CARDRadiolive::showMenu(void)
 {
-	ClistBox * catMenu = new ClistBox("Radio-Livestreams", PLUGINDIR "/ard/ard_small.png");
+	ClistBoxWidget * catMenu = new ClistBoxWidget("Radio-Livestreams", PLUGINDIR "/ard/ard_small.png");
 
 	//items
 	for (int i = 0; i < 6; i++)
 		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
-	catMenu->setWidgetType(WIDGET_FRAME);
+	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
 	catMenu->setItemBoxColor(COL_YELLOW);
 
@@ -261,13 +261,13 @@ CARDstreams::~CARDstreams()
 
 void CARDstreams::showMenu(void)
 {
-	ClistBox * catMenu = new ClistBox(Title.c_str(), PLUGINDIR "/ard/ard_small.png");	
+	ClistBoxWidget * catMenu = new ClistBoxWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");	
 	
 	//items
 	for (int i = 0; i < 6; i++)
 		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 
-	catMenu->setWidgetType(WIDGET_FRAME);
+	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
 	catMenu->setItemBoxColor(COL_YELLOW);
 

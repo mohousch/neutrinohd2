@@ -33,7 +33,7 @@ class CTSBrowser : public CMenuTarget
 		int selected;
 
 		//
-		ClistBox* mlist;
+		ClistBoxWidget* mlist;
 		CMenuItem* item;
 
 		//
@@ -364,7 +364,7 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 
 void CTSBrowser::showMenu()
 {
-	mlist = new ClistBox("TS Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	mlist = new ClistBoxWidget("TS Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
@@ -383,15 +383,15 @@ void CTSBrowser::showMenu()
 		mlist->addItem(item);
 	}
 
-	mlist->setWidgetType(WIDGET_FRAME);
+	mlist->setWidgetType(WIDGET_TYPE_FRAME);
 	mlist->setItemsPerPage(6, 2);
 	mlist->setItemBoxColor(COL_YELLOW);
 	mlist->setSelected(selected);
 	mlist->enablePaintDate();
 
 	// widget
-	mlist->addWidget(WIDGET_EXTENDED);
-	mlist->addWidget(WIDGET_INFO);
+	mlist->addWidget(WIDGET_TYPE_EXTENDED);
+	mlist->addWidget(WIDGET_TYPE_INFO);
 	mlist->enableWidgetChange();
 
 	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);

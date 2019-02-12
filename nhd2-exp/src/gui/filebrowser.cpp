@@ -363,7 +363,7 @@ bool CFileBrowser::exec(const char * const dirname)
 
 	bool res = false;
 
-	listBox = new ClistBoxEntry(&cFrameBox);
+	listBox = new ClistBox(&cFrameBox);
 
 	listBox->initFrames();
 

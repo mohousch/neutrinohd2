@@ -61,10 +61,10 @@
 class CFileBrowser
 {
 	private:
-		CFrameBuffer * frameBuffer;
+		CFrameBuffer *frameBuffer;
 		CBox cFrameBox;
-		ClistBoxEntry* listBox;
-		CMenuItem* item;
+		ClistBox *listBox;
+		CMenuItem *item;
 
 		CFileList selected_filelist;
 		CFileList filelist;

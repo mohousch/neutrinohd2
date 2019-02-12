@@ -59,11 +59,11 @@ enum {
 class CChannelList
 {
 	private:
-		CFrameBuffer		*frameBuffer;
+		CFrameBuffer *frameBuffer;
 
 		CBox cFrameBox;
-		ClistBoxEntry* listBox;
-		CMenuItem* item;
+		ClistBox *listBox;
+		CMenuItem *item;
 
 		uint32_t sec_timer_id;
 		unsigned int selected;

@@ -82,8 +82,8 @@ class CUpnpBrowserGui : public CMenuTarget
 		CFrameBuffer * m_frameBuffer;
 
 		CBox cFrameBox;
-		ClistBoxEntry* listBox;
-		CMenuItem* item;
+		ClistBox *listBox;
+		CMenuItem *item;
 		uint32_t sec_timer_id;
 
 		UPNP_GUI gui;

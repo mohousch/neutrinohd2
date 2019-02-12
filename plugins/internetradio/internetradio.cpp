@@ -47,7 +47,7 @@ class CInternetRadio : public CMenuTarget
 	private:
 		CFrameBuffer* frameBuffer;
 
-		ClistBox* ilist;
+		ClistBoxWidget* ilist;
 		CMenuItem* item;
 
 		CAudioPlayerGui tmpAudioPlayerGui;
@@ -655,7 +655,7 @@ const struct button_label AudioPlayerButtons[FOOT_BUTTONS_COUNT] =
 
 void CInternetRadio::showMenu()
 {
-	ilist = new ClistBox("Ice Cast", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	ilist = new ClistBoxWidget("Internet Radio", NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	for(unsigned int i = 0; i < playlist.size(); i++)
 	{

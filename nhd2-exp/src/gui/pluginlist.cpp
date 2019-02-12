@@ -97,7 +97,7 @@ void CPluginList::showMenu()
 
 
 	// itemBox
-	plist = new ClistBox(LOCALE_USERMENU_ITEM_PLUGINS, NEUTRINO_ICON_SHELL, MENU_WIDTH, MENU_HEIGHT - 100);
+	plist = new ClistBoxWidget(LOCALE_USERMENU_ITEM_PLUGINS, NEUTRINO_ICON_SHELL, MENU_WIDTH, MENU_HEIGHT - 100);
 
 	//
 	for(unsigned int count = 0; count < (unsigned int)g_PluginList->getNumberOfPlugins(); count++)
@@ -121,12 +121,12 @@ void CPluginList::showMenu()
 		plist->addItem(item);
 	}
 
-	plist->setWidgetType(WIDGET_CLASSIC);
+	plist->setWidgetType(WIDGET_TYPE_CLASSIC);
 	plist->enablePaintDate();
 	plist->setItemBoxColor(COL_YELLOW);
 	plist->setSelected(selected);
 
-	plist->addWidget(WIDGET_FRAME);
+	plist->addWidget(WIDGET_TYPE_FRAME);
 	plist->enableWidgetChange();
 
 	// head

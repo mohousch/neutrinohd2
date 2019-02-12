@@ -26,7 +26,7 @@ class CNEpisodes : public CMenuTarget
 {
 	private:
 		CFrameBuffer* frameBuffer;
-		ClistBox* listBox;
+		ClistBoxWidget* listBox;
 		CMenuItem* item;
 		int selected;
 

@@ -70,17 +70,18 @@ enum
 	ITEM_TYPE_SEPARATOR,
 	ITEM_TYPE_FORWARDER,
 	ITEM_TYPE_SELECTOR,
-	ITEM_TYPE_LIST_BOX
+	ITEM_TYPE_LIST_BOX,
+	ITEM_TYPE_LIST_BOX_ENTRY
 };
 
 //FIXME: rename it
 enum
 {
-	WIDGET_STANDARD = 0,
-	WIDGET_CLASSIC,
-	WIDGET_EXTENDED,
-	WIDGET_FRAME,
-	WIDGET_INFO
+	WIDGET_TYPE_STANDARD = 0,
+	WIDGET_TYPE_CLASSIC,
+	WIDGET_TYPE_EXTENDED,
+	WIDGET_TYPE_FRAME,
+	WIDGET_TYPE_INFO
 };
 
 struct menu_return
@@ -491,7 +492,34 @@ class CLockedMenuForwarder : public CMenuForwarder, public CPINProtection
 		virtual int exec(CMenuTarget* parent);
 };
 
-/// CMenuWidget
+// CMenulistBoxItem
+class ClistBoxItem : public CMenuItem
+{
+	CMenuTarget* jumpTarget;
+	std::string actionKey;
+
+	protected:
+		//
+		neutrino_locale_t text;
+		std::string textString;
+
+		//
+		virtual const char* getName(void);
+
+	public:
+		ClistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const Icon = NULL, const char* const ItemIcon = NULL);
+
+		ClistBoxItem(const char* const Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const IconName = NULL, const char* const ItemIcon = NULL);
+		
+		int paint(bool selected = false, bool AfterPulldown = false);
+		int getHeight(void) const;
+		int getWidth(void) const;
+
+		int exec(CMenuTarget* parent);
+		bool isSelectable(void) const {return active;}
+};
+
+// CMenuWidget
 class CMenuWidget : public CMenuTarget
 {
 	protected:
@@ -602,7 +630,7 @@ class CMenuWidget : public CMenuTarget
 };
 
 /// CMenulistBox
-class ClistBox : public CMenuTarget
+class ClistBoxWidget : public CMenuTarget
 {
 	protected:
 		//
@@ -702,11 +730,11 @@ class ClistBox : public CMenuTarget
 		CButtons buttons;
 		
 	public:
-		ClistBox();
-		ClistBox(const char * const Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
-		ClistBox(const neutrino_locale_t Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
+		ClistBoxWidget();
+		ClistBoxWidget(const char * const Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
+		ClistBoxWidget(const neutrino_locale_t Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
 		
-		~ClistBox();
+		~ClistBoxWidget();
 
 		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
 		bool hasItem();
@@ -771,33 +799,6 @@ class ClistBox : public CMenuTarget
 		void setName(const std::string& p_name){nameString = p_name;};
 
 		void enableShrinkMenu(){shrinkMenu = true;};
-};
-
-// CMenulistBoxItem
-class ClistBoxItem : public CMenuItem
-{
-	CMenuTarget* jumpTarget;
-	std::string actionKey;
-
-	protected:
-		//
-		neutrino_locale_t text;
-		std::string textString;
-
-		//
-		virtual const char* getName(void);
-
-	public:
-		ClistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const Icon = NULL, const char* const ItemIcon = NULL);
-
-		ClistBoxItem(const char* const Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const IconName = NULL, const char* const ItemIcon = NULL);
-		
-		int paint(bool selected = false, bool AfterPulldown = false);
-		int getHeight(void) const;
-		int getWidth(void) const;
-
-		int exec(CMenuTarget* parent);
-		bool isSelectable(void) const {return active;}
 };
 
 #endif

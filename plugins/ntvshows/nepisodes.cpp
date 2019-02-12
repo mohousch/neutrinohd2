@@ -184,7 +184,7 @@ void CNEpisodes::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CNEpisodes::showMenu:\n");
 
-	listBox = new ClistBox("Folgen", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	listBox = new ClistBoxWidget("Folgen", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	
 	// load playlist
@@ -204,7 +204,7 @@ void CNEpisodes::showMenu()
 	}
 
 
-	listBox->setWidgetType(WIDGET_FRAME);
+	listBox->setWidgetType(WIDGET_TYPE_FRAME);
 	listBox->setItemsPerPage(3, 2);
 	listBox->setItemBoxColor(COL_YELLOW);
 	listBox->setSelected(selected);

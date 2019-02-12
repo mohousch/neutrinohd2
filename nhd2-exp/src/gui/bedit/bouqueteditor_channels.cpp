@@ -157,7 +157,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 
 	Channels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
 
-	listBox = new ClistBoxEntry(&cFrameBox);
+	listBox = new ClistBox(&cFrameBox);
 	
 	paint();
 	frameBuffer->blit();	

@@ -35,7 +35,7 @@ class CNFilm : public CMenuTarget
 		int selected;
 
 		//
-		ClistBox* mlist;
+		ClistBoxWidget* mlist;
 		CMenuItem* item;
 
 		std::string caption;
@@ -378,7 +378,7 @@ void CNFilm::showMenu()
 		}
 	}
 
-	mlist = new ClistBox(caption.c_str(), NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	mlist = new ClistBoxWidget(caption.c_str(), NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	
 	// load playlist
@@ -398,7 +398,7 @@ void CNFilm::showMenu()
 	}
 
 
-	mlist->setWidgetType(WIDGET_FRAME);
+	mlist->setWidgetType(WIDGET_TYPE_FRAME);
 	mlist->setItemsPerPage(6, 2);
 	mlist->setItemBoxColor(COL_YELLOW);
 	mlist->setSelected(selected);

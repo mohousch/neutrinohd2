@@ -179,7 +179,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	
 	Bouquets = &g_bouquetManager->Bouquets;
 
-	listBox = new ClistBoxEntry(&cFrameBox);
+	listBox = new ClistBox(&cFrameBox);
 	
 	paint();
 	frameBuffer->blit();

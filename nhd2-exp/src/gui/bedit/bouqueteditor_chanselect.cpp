@@ -197,7 +197,7 @@ int CBEChannelSelectWidget::exec(CMenuTarget* parent, const std::string& actionK
 	if (parent)
 		parent->hide();
 
-	listBox = new ClistBoxEntry(&cFrameBox);
+	listBox = new ClistBox(&cFrameBox);
 
 	paint();
 	frameBuffer->blit();

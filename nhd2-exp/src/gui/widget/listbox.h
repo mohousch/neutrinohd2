@@ -37,7 +37,7 @@
 #include <gui/widget/headers.h>
 
 
-class ClistBoxEntry
+class ClistBox
 {
 	private:
 		CFrameBuffer* frameBuffer;
@@ -108,9 +108,9 @@ class ClistBoxEntry
 		virtual void paintItems();
 
 	public:
-		ClistBoxEntry(const int x, int const y, const int dx, const int dy);
-		ClistBoxEntry(CBox* position);
-		virtual ~ClistBoxEntry();
+		ClistBox(const int x, int const y, const int dx, const int dy);
+		ClistBox(CBox* position);
+		virtual ~ClistBox();
 
 		virtual void addItem(CMenuItem* menuItem, const bool defaultselected = false);
 		bool hasItem();

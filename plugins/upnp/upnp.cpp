@@ -1100,7 +1100,7 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 	if (parent)
 		parent->hide();
 
-	listBox = new ClistBoxEntry(&cFrameBox);
+	listBox = new ClistBox(&cFrameBox);
 	loadDevices();
 	showMenuDevice();
 	m_frameBuffer->blit();

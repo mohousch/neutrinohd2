@@ -45,7 +45,7 @@
 #include <system/debug.h>
 
 
-ClistBoxEntry::ClistBoxEntry(const int x, const int y, const int dx, const int dy)
+ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
@@ -89,11 +89,11 @@ ClistBoxEntry::ClistBoxEntry(const int x, const int y, const int dx, const int d
 	maxItemsPerPage = itemsPerX*itemsPerY;
 
 	//
-	widgetType = WIDGET_STANDARD;
+	widgetType = WIDGET_TYPE_STANDARD;
 	widgetChange = false;
 }
 
-ClistBoxEntry::ClistBoxEntry(CBox* position)
+ClistBox::ClistBox(CBox* position)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
@@ -134,11 +134,11 @@ ClistBoxEntry::ClistBoxEntry(CBox* position)
 	maxItemsPerPage = itemsPerX*itemsPerY;
 
 	//
-	widgetType = WIDGET_STANDARD;
+	widgetType = WIDGET_TYPE_STANDARD;
 	widgetChange = false;
 }
 
-ClistBoxEntry::~ClistBoxEntry()
+ClistBox::~ClistBox()
 {
 	for(unsigned int count = 0; count < items.size(); count++) 
 	{
@@ -151,7 +151,7 @@ ClistBoxEntry::~ClistBoxEntry()
 	items.clear();
 }
 
-void ClistBoxEntry::addItem(CMenuItem *menuItem, const bool defaultselected)
+void ClistBox::addItem(CMenuItem *menuItem, const bool defaultselected)
 {
 	if (defaultselected)
 		selected = items.size();
@@ -159,12 +159,12 @@ void ClistBoxEntry::addItem(CMenuItem *menuItem, const bool defaultselected)
 	items.push_back(menuItem);
 }
 
-bool ClistBoxEntry::hasItem()
+bool ClistBox::hasItem()
 {
 	return !items.empty();
 }
 
-void ClistBoxEntry::initFrames()
+void ClistBox::initFrames()
 {
 	// widgettype forwarded to item 
 	for (unsigned int count = 0; count < items.size(); count++) 
@@ -187,7 +187,7 @@ void ClistBoxEntry::initFrames()
 	}
 
 	////
-	if(widgetType == WIDGET_FRAME)
+	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		page_start.clear();
 		page_start.push_back(0);
@@ -273,7 +273,7 @@ void ClistBoxEntry::initFrames()
 	}
 }
 
-void ClistBoxEntry::paint()
+void ClistBox::paint()
 {
 	initFrames();
 
@@ -282,11 +282,11 @@ void ClistBoxEntry::paint()
 	paintFoot();
 }
 
-void ClistBoxEntry::paintItems()
+void ClistBox::paintItems()
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxEntry::paintItems:\n");
+	dprintf(DEBUG_NORMAL, "ClistBox::paintItems:\n");
 
-	if(widgetType == WIDGET_FRAME)
+	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		item_start_y = cFrameBox.iY + hheight;
 
@@ -408,14 +408,14 @@ void ClistBoxEntry::paintItems()
 	}
 }
 
-void ClistBoxEntry::paintHead()
+void ClistBox::paintHead()
 {
 	if(paintTitle)
 		headers.paintHead(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, iconfile.c_str(), l_name.c_str(), paintDate, hbutton_count, hbutton_labels, logo);
 		
 }
 
-void ClistBoxEntry::paintFoot()
+void ClistBox::paintFoot()
 {
 	if(paint_Foot)
 	{
@@ -428,7 +428,7 @@ void ClistBoxEntry::paintFoot()
 	}
 }
 
-void ClistBoxEntry::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
+void ClistBox::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
 {
 	if(paintTitle)
 	{
@@ -437,7 +437,7 @@ void ClistBoxEntry::setHeaderButtons(const struct button_label* _hbutton_labels,
 	}
 }
 
-void ClistBoxEntry::setFooterButtons(const struct button_label* _fbutton_labels, const int _fbutton_count, const int _fbutton_width)
+void ClistBox::setFooterButtons(const struct button_label* _fbutton_labels, const int _fbutton_count, const int _fbutton_width)
 {
 	if(paint_Foot)
 	{
@@ -447,7 +447,7 @@ void ClistBoxEntry::setFooterButtons(const struct button_label* _fbutton_labels,
 	}
 }
 
-void ClistBoxEntry::paintItemInfo(int pos)
+void ClistBox::paintItemInfo(int pos)
 {
 	if(paintFootInfo)
 	{
@@ -496,15 +496,15 @@ void ClistBoxEntry::paintItemInfo(int pos)
 	}
 }
 
-void ClistBoxEntry::hideItemInfo()
+void ClistBox::hideItemInfo()
 {
 	if(paintFootInfo)
 		itemsLine.clear(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth + ConnectLineBox_Width, cFrameBox.iHeight - footInfoHeight, footInfoHeight);
 }
 
-void ClistBoxEntry::hide()
+void ClistBox::hide()
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxEntry::hide:\n");
+	dprintf(DEBUG_NORMAL, "ClistBox::hide:\n");
 
 	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 
@@ -514,9 +514,9 @@ void ClistBoxEntry::hide()
 
 }
 
-void ClistBoxEntry::scrollLineDown()
+void ClistBox::scrollLineDown()
 {
-	if(widgetType == WIDGET_FRAME)
+	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		if(items.size())
 		{
@@ -575,9 +575,9 @@ void ClistBoxEntry::scrollLineDown()
 	}
 }
 
-void ClistBoxEntry::scrollLineUp()
+void ClistBox::scrollLineUp()
 {
-	if(widgetType == WIDGET_FRAME)
+	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		if(items.size())
 		{
@@ -637,9 +637,9 @@ void ClistBoxEntry::scrollLineUp()
 	}
 }
 
-void ClistBoxEntry::scrollPageDown()
+void ClistBox::scrollPageDown()
 {
-	if(widgetType == WIDGET_FRAME)
+	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		if(items.size())
 		{
@@ -686,9 +686,9 @@ void ClistBoxEntry::scrollPageDown()
 	}
 }
 
-void ClistBoxEntry::scrollPageUp()
+void ClistBox::scrollPageUp()
 {
-	if(widgetType == WIDGET_FRAME)
+	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		if(items.size())
 		{
@@ -761,11 +761,11 @@ void ClistBoxEntry::scrollPageUp()
 	}
 }
 
-void ClistBoxEntry::swipLeft()
+void ClistBox::swipLeft()
 {
 	dprintf(DEBUG_NORMAL, "ClistBoxEntry::swipLeft:\n");
 
-	if(widgetType == WIDGET_FRAME)
+	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		if(items.size())
 		{
@@ -801,11 +801,11 @@ void ClistBoxEntry::swipLeft()
 	}
 }
 
-void ClistBoxEntry::swipRight()
+void ClistBox::swipRight()
 {
 	dprintf(DEBUG_NORMAL, "ClistBoxEntry::swipRight:\n");
 
-	if(widgetType == WIDGET_FRAME)
+	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		if(items.size())
 		{
@@ -851,7 +851,7 @@ ClistBoxEntryItem::ClistBoxEntryItem(const neutrino_locale_t Text, const bool Ac
 
 	iconName = IconName ? IconName : "";
 	itemName = g_Locale->getText(Text);
-	itemType = ITEM_TYPE_LIST_BOX;
+	itemType = ITEM_TYPE_LIST_BOX_ENTRY;
 }
 
 ClistBoxEntryItem::ClistBoxEntryItem(const char* Text, const bool Active, const char* const Option, const char* const IconName)
@@ -864,12 +864,12 @@ ClistBoxEntryItem::ClistBoxEntryItem(const char* Text, const bool Active, const 
 
 	iconName = IconName ? IconName : "";
 	itemName = Text;
-	itemType = ITEM_TYPE_LIST_BOX;
+	itemType = ITEM_TYPE_LIST_BOX_ENTRY;
 }
 
 int ClistBoxEntryItem::getHeight(void) const
 {
-	if(widgetType == WIDGET_FRAME)
+	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		return item_height;
 	}
@@ -895,7 +895,7 @@ int ClistBoxEntryItem::getHeight(void) const
 
 int ClistBoxEntryItem::getWidth(void) const
 {
-	if(widgetType == WIDGET_FRAME)
+	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		return item_width;
 	}
@@ -928,7 +928,7 @@ int ClistBoxEntryItem::paint(bool selected, bool /*AfterPulldown*/)
 	int height = getHeight();
 	const char * l_text = getName();
 
-	if(widgetType == WIDGET_FRAME)
+	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		//
 		frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor);

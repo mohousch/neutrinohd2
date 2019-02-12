@@ -123,7 +123,7 @@ void CNKMovies::showMenu()
 	title += ": ";
 	title += caption;
 
-	moviesMenu = new ClistBox(title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	moviesMenu = new ClistBoxWidget(title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
@@ -135,7 +135,7 @@ void CNKMovies::showMenu()
 		moviesMenu->addItem(item);
 	}
 
-	moviesMenu->setWidgetType(WIDGET_FRAME);
+	moviesMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	moviesMenu->setItemsPerPage(6, 2);
 	moviesMenu->setItemBoxColor(COL_YELLOW);
 
@@ -210,7 +210,7 @@ int CNKMovies::showCategoriesMenu()
 	// menu
 	CMenuWidget mainMenu(LOCALE_NETZKINO, NEUTRINO_ICON_NETZKINO_SMALL);
 
-	mainMenu.setWidgetType(WIDGET_CLASSIC);
+	mainMenu.setWidgetType(WIDGET_TYPE_CLASSIC);
 
 	// categories
 	for (unsigned i = 0; i < cats.size(); i++)

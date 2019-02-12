@@ -127,7 +127,7 @@ void CYTBrowser::showMenu()
 	if (loc == LOCALE_YT_SEARCH)
 		title += " \"" + ytsearch + "\"";
 
-	moviesMenu = new ClistBox(title.c_str(), NEUTRINO_ICON_YT_SMALL);
+	moviesMenu = new ClistBoxWidget(title.c_str(), NEUTRINO_ICON_YT_SMALL);
 	
 	std::string itemTitle;
 
@@ -142,7 +142,7 @@ void CYTBrowser::showMenu()
 		moviesMenu->addItem(item);
 	}
 
-	moviesMenu->setWidgetType(WIDGET_FRAME);
+	moviesMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	moviesMenu->setItemsPerPage(3, 2);
 	moviesMenu->setItemBoxColor(COL_YELLOW);
 

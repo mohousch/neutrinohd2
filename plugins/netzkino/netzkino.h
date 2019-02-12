@@ -43,7 +43,7 @@ class CNKMovies : public CMenuTarget
 		int catMode;
 		std::string caption;
 
-		ClistBox* moviesMenu;
+		ClistBoxWidget* moviesMenu;
 		CMenuItem* item;
 
 		std::string nksearch;

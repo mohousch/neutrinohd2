@@ -30,7 +30,7 @@ class CTestMenu : public CMenuTarget
 	private:
 		// variables
 		CFrameBuffer* frameBuffer;
-		ClistBox* listMenu;
+		ClistBoxWidget* listMenu;
 		CMenuItem* item;
 
 		CAudioPlayerGui tmpAudioPlayerGui;
@@ -261,7 +261,7 @@ void CTestMenu::testCFrameBox()
 	leftBox.iWidth = 150;
 	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - Box.iHeight - 5 - footBox.iHeight - 5;
 
-	ClistBoxEntry *listBoxLeft = new ClistBoxEntry(&leftBox);
+	ClistBox *listBoxLeft = new ClistBox(&leftBox);
 
 	ClistBoxEntryItem *item1 = new ClistBoxEntryItem("Filme");
 	ClistBoxEntryItem *item2 = new ClistBoxEntryItem("Serien");
@@ -295,7 +295,7 @@ void CTestMenu::testCFrameBox()
 	rightBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - Box.iHeight - 5 - footBox.iHeight - 5;
 
 	//
-	ClistBoxEntry* listBoxRight = new ClistBoxEntry(&rightBox);
+	ClistBox *listBoxRight = new ClistBox(&rightBox);
 
 	CFileFilter fileFilter;
 	
@@ -396,7 +396,7 @@ void CTestMenu::testCFrameBox()
 		listBoxRight->addItem(item);
 	}
 
-	listBoxRight->setWidgetType(WIDGET_FRAME);
+	listBoxRight->setWidgetType(WIDGET_TYPE_FRAME);
 	listBoxRight->setItemsPerPage(6, 2);
 	listBoxRight->setSelected(-1);
 	listBoxRight->setOutFocus(true);
@@ -1417,7 +1417,7 @@ void CTestMenu::testCButtons()
 // ClistBoxEntry
 void CTestMenu::testClistBoxEntry()
 {
-	dprintf(DEBUG_NORMAL, "\ntesting ClistBoxEntry\n");
+	dprintf(DEBUG_NORMAL, "\ntesting ClistBox\n");
 
 	CBox Box;
 	
@@ -1427,7 +1427,7 @@ void CTestMenu::testClistBoxEntry()
 	Box.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - Box.iWidth ) >> 1 );
 	Box.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - Box.iHeight) >> 1 );
 
-	ClistBoxEntry* listBox = new ClistBoxEntry(&Box);
+	ClistBox *listBox = new ClistBox(&Box);
 
 	CMenuItem* item = NULL;
 
@@ -1530,7 +1530,7 @@ void CTestMenu::testClistBoxEntry()
 	}
 
 	// head
-	listBox->setTitle("ClistBoxEntry", NEUTRINO_ICON_MOVIE);
+	listBox->setTitle("ClistBox", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
 	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
 	listBox->enablePaintDate();
@@ -2305,7 +2305,7 @@ const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
 
 void CTestMenu::testClistBox()
 {
-	listMenu = new ClistBox("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	listMenu = new ClistBoxWidget("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	//
 	CFileFilter fileFilter;
@@ -2404,14 +2404,14 @@ void CTestMenu::testClistBox()
 		listMenu->addItem(item);
 	}
 
-	listMenu->setWidgetType(WIDGET_CLASSIC);
+	listMenu->setWidgetType(WIDGET_TYPE_CLASSIC);
 	listMenu->setItemsPerPage(6, 2);
 	listMenu->setItemBoxColor(COL_YELLOW);
 
-	listMenu->addWidget(WIDGET_STANDARD);
-	listMenu->addWidget(WIDGET_FRAME);
-	listMenu->addWidget(WIDGET_EXTENDED);
-	listMenu->addWidget(WIDGET_INFO);
+	listMenu->addWidget(WIDGET_TYPE_STANDARD);
+	listMenu->addWidget(WIDGET_TYPE_FRAME);
+	listMenu->addWidget(WIDGET_TYPE_EXTENDED);
+	listMenu->addWidget(WIDGET_TYPE_INFO);
 	listMenu->enableWidgetChange();
 
 	listMenu->setSelected(selected);
@@ -3141,7 +3141,7 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("VFDController", true, NULL, this, "vfdcontroller"));
 	mainMenu->addItem(new CMenuForwarder("MountChooser", true, NULL, this, "mountchooser"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
-	mainMenu->addItem(new CMenuForwarder("ClistBoxEntry", true, NULL, this, "listboxentry"));
+	mainMenu->addItem(new CMenuForwarder("ClistBox", true, NULL, this, "listboxentry"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(movie browser)", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarder("CMenuWidget", true, NULL, this, "testmenuwidget"));
 	

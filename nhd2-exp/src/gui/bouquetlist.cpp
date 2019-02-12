@@ -345,7 +345,7 @@ int CBouquetList::show(bool bShowChannelList)
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);	
 
 	//
-	listBox = new ClistBoxEntry(&cFrameBox);
+	listBox = new ClistBox(&cFrameBox);
 
 	paint();
 		

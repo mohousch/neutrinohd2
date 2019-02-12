@@ -243,7 +243,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 	readEvents(channel_id);
 
 	//
-	listBox = new ClistBoxEntry(&cFrameBox);
+	listBox = new ClistBox(&cFrameBox);
 	paint(channel_id);
 	
 	// blit

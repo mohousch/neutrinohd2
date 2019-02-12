@@ -85,7 +85,7 @@ class EventList
 		CFrameBuffer	* frameBuffer;
 
 		//
-		ClistBoxEntry* listBox;
+		ClistBox* listBox;
 		CMenuItem* item;
 		CBox cFrameBox;
 

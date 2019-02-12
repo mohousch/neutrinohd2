@@ -49,14 +49,14 @@
 class CBEBouquetWidget : public CMenuTarget
 {
 	public:
-		BouquetList* Bouquets;
+		BouquetList *Bouquets;
 
 	private:
 
-		CFrameBuffer* frameBuffer;
+		CFrameBuffer *frameBuffer;
 		CBox cFrameBox;
-		ClistBoxEntry* listBox;
-		CMenuItem* item;
+		ClistBox *listBox;
+		CMenuItem *item;
 
 		uint32_t sec_timer_id;
 

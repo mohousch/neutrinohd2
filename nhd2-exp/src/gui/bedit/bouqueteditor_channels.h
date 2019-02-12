@@ -50,13 +50,13 @@
 class CBEChannelWidget : public CMenuTarget
 {
 	public:
-		ZapitChannelList* Channels;
+		ZapitChannelList *Channels;
 
 	private:
-		CFrameBuffer* frameBuffer;
+		CFrameBuffer *frameBuffer;
 		CBox cFrameBox;
-		ClistBoxEntry* listBox;
-		CMenuItem* item;
+		ClistBox *listBox;
+		CMenuItem *item;
 	
 		enum state_
 		{

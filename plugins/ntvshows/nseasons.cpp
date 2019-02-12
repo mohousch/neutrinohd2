@@ -158,7 +158,7 @@ void CNSeasons::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CNSeasons::showMenu:\n");
 
-	listBox = new ClistBox("Staffeln", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	listBox = new ClistBoxWidget("Staffeln", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	
 	// load playlist
@@ -181,7 +181,7 @@ void CNSeasons::showMenu()
 	}
 
 
-	listBox->setWidgetType(WIDGET_FRAME);
+	listBox->setWidgetType(WIDGET_TYPE_FRAME);
 	listBox->setItemsPerPage(6, 2);
 	listBox->setItemBoxColor(COL_YELLOW);
 	listBox->setSelected(selected);

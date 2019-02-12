@@ -54,10 +54,11 @@ class CPluginList : public CMenuTarget
 			resume = 1,
 		} result;
 
+		ClistBoxWidget* plist;
+		CMenuItem* item;
+
 	private:
 		CFrameBuffer* frameBuffer;
-
-		CMenuItem* item;
 
 		int selected;
 
@@ -65,8 +66,6 @@ class CPluginList : public CMenuTarget
 		virtual CPluginList::result_ pluginSelected();
 
 	public:
-		ClistBox* plist;
-
 		CPluginList();
 		~CPluginList();
 

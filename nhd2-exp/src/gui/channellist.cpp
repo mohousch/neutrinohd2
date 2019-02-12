@@ -520,7 +520,7 @@ int CChannelList::show()
 	updateEvents();
 
 	//
-	listBox = new ClistBoxEntry(&cFrameBox);
+	listBox = new ClistBox(&cFrameBox);
 
 	paint();
 		
