@@ -990,53 +990,58 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 
 			//				
 			CTmdb * tmdb = new CTmdb();
-			tmdb->getMovieInfo(m_movieSelectionHandler->epgTitle);
-	
-			if ((!tmdb->getDescription().empty())) 
+			if(tmdb->getMovieInfo(m_movieSelectionHandler->epgTitle))
 			{
-				std::string buffer;
-
-				buffer = m_movieSelectionHandler->epgTitle;
-				buffer += "\n";
-	
-				// prepare print buffer  
-				buffer += tmdb->createInfoText();
-	
-				//
-				std::string tname = tmdb->getThumbnailDir();
-				tname += "/";
-				tname += m_movieSelectionHandler->epgTitle;
-				tname += ".jpg";
-
-				tmdb->getSmallCover(tmdb->getPosterPath(), tname);
-				
-				// scale pic
-				int p_w = 0;
-				int p_h = 0;
-				
-				CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
-
-				CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-	
-				CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
-
-				infoBox->setText(&buffer, tname, p_w, p_h);
-				infoBox->exec();
-				delete infoBox;
-
-				if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
+				if ((!tmdb->getDescription().empty())) 
 				{
-					// rewrite tfile
-					std::string tname = m_movieSelectionHandler->file.Name;
-					changeFileNameExt(tname, ".jpg");
-					if(tmdb->getSmallCover(tmdb->getPosterPath(), tname)) 
-						m_movieSelectionHandler->tfile = tname;
+					std::string buffer;
 
-					if(m_movieSelectionHandler->epgInfo2.empty())
-						m_movieSelectionHandler->epgInfo2 = tmdb->getDescription();
+					buffer = m_movieSelectionHandler->epgTitle;
+					buffer += "\n";
+	
+					// prepare print buffer  
+					buffer += tmdb->createInfoText();
+	
+					//
+					std::string tname = tmdb->getThumbnailDir();
+					tname += "/";
+					tname += m_movieSelectionHandler->epgTitle;
+					tname += ".jpg";
 
-					m_movieInfo.saveMovieInfo( *m_movieSelectionHandler);
-				}  
+					tmdb->getSmallCover(tmdb->getPosterPath(), tname);
+				
+					// scale pic
+					int p_w = 0;
+					int p_h = 0;
+				
+					CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
+
+					CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+					CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
+
+					infoBox->setText(&buffer, tname, p_w, p_h);
+					infoBox->exec();
+					delete infoBox;
+
+					if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
+					{
+						// rewrite tfile
+						std::string tname = m_movieSelectionHandler->file.Name;
+						changeFileNameExt(tname, ".jpg");
+						if(tmdb->getSmallCover(tmdb->getPosterPath(), tname)) 
+							m_movieSelectionHandler->tfile = tname;
+
+						if(m_movieSelectionHandler->epgInfo2.empty())
+							m_movieSelectionHandler->epgInfo2 = tmdb->getDescription();
+
+						m_movieInfo.saveMovieInfo( *m_movieSelectionHandler);
+					}  
+				}
+				else
+				{
+					MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_STREAMINFO_NOT_AVAILABLE), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+				}
 			}
 			else
 			{
@@ -1925,52 +1930,57 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			//				
 			CTmdb * tmdb = new CTmdb();
 
-			tmdb->getMovieInfo(m_movieSelectionHandler->epgTitle);
-	
-			if ((!tmdb->getDescription().empty())) 
+			if(tmdb->getMovieInfo(m_movieSelectionHandler->epgTitle))
 			{
-				std::string buffer;
-
-				buffer = m_movieSelectionHandler->epgTitle;
-				buffer += "\n";
-	
-				// prepare print buffer  
-				buffer += tmdb->createInfoText();
-	
-				std::string tname = tmdb->getThumbnailDir();
-				tname += "/";
-				tname += m_movieSelectionHandler->epgTitle;
-				tname += ".jpg";
-
-				tmdb->getSmallCover(tmdb->getPosterPath(), tname);
-				
-				// scale pic
-				int p_w = 0;
-				int p_h = 0;
-				
-				CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
-	
-				CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-	
-				CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
-
-				infoBox->setText(&buffer, tname, p_w, p_h);
-				infoBox->exec();
-				delete infoBox;
-
-				if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
+				if ((!tmdb->getDescription().empty())) 
 				{
-					// rewrite tfile
-					std::string tname = m_movieSelectionHandler->file.Name;
-					changeFileNameExt(tname, ".jpg");
-					if(tmdb->getSmallCover(tmdb->getPosterPath(), tname)) 
-						m_movieSelectionHandler->tfile = tname;
+					std::string buffer;
 
-					if(m_movieSelectionHandler->epgInfo2.empty())
-						m_movieSelectionHandler->epgInfo2 = tmdb->getDescription();
+					buffer = m_movieSelectionHandler->epgTitle;
+					buffer += "\n";
+	
+					// prepare print buffer  
+					buffer += tmdb->createInfoText();
+	
+					std::string tname = tmdb->getThumbnailDir();
+					tname += "/";
+					tname += m_movieSelectionHandler->epgTitle;
+					tname += ".jpg";
 
-					m_movieInfo.saveMovieInfo( *m_movieSelectionHandler);
-				}  
+					tmdb->getSmallCover(tmdb->getPosterPath(), tname);
+				
+					// scale pic
+					int p_w = 0;
+					int p_h = 0;
+				
+					CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
+	
+					CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+					CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
+
+					infoBox->setText(&buffer, tname, p_w, p_h);
+					infoBox->exec();
+					delete infoBox;
+
+					if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
+					{
+						// rewrite tfile
+						std::string tname = m_movieSelectionHandler->file.Name;
+						changeFileNameExt(tname, ".jpg");
+						if(tmdb->getSmallCover(tmdb->getPosterPath(), tname)) 
+							m_movieSelectionHandler->tfile = tname;
+
+						if(m_movieSelectionHandler->epgInfo2.empty())
+							m_movieSelectionHandler->epgInfo2 = tmdb->getDescription();
+
+						m_movieInfo.saveMovieInfo( *m_movieSelectionHandler);
+					}  
+				}
+				else
+				{
+					MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_STREAMINFO_NOT_AVAILABLE), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+				}
 			}
 			else
 			{

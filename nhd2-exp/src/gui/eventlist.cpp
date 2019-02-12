@@ -481,42 +481,49 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 				{
 					CTmdb * tmdb = new CTmdb();
 
-					tmdb->getMovieInfo(evtlist[selected].description);
-	
-					if ((!tmdb->getDescription().empty())) 
+					if(tmdb->getMovieInfo(evtlist[selected].description))
 					{
-						std::string buffer;
+						if ((!tmdb->getDescription().empty())) 
+						{
+							std::string buffer;
 
-						buffer = evtlist[selected].description;
-						buffer += "\n";
+							buffer = evtlist[selected].description;
+							buffer += "\n";
 	
-						// prepare print buffer  
-						buffer += tmdb->createInfoText();
+							// prepare print buffer  
+							buffer += tmdb->createInfoText();
 
-						// thumbnail
-						std::string tname = tmdb->getThumbnailDir();
-						tname += "/";
-						tname += evtlist[selected].description;
-						tname += ".jpg";
+							// thumbnail
+							std::string tname = tmdb->getThumbnailDir();
+							tname += "/";
+							tname += evtlist[selected].description;
+							tname += ".jpg";
 
-						tmdb->getSmallCover(tmdb->getPosterPath(), tname);
+							tmdb->getSmallCover(tmdb->getPosterPath(), tname);
 
-						// scale pic
-						int p_w = 0;
-						int p_h = 0;
+							// scale pic
+							int p_w = 0;
+							int p_h = 0;
 
-						CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
+							CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
 	
-						CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+							CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-						CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_TMDB);
+							CInfoBox * infoBox = new CInfoBox("", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_TMDB);
 
-						infoBox->setText(&buffer, tname, p_w, p_h);
-						infoBox->exec();
-						delete infoBox;
+							infoBox->setText(&buffer, tname, p_w, p_h);
+							infoBox->exec();
+							delete infoBox;
+						}
+						else
+						{
+							MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_STREAMINFO_NOT_AVAILABLE), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+						}
 					}
 					else
+					{
 						MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_STREAMINFO_NOT_AVAILABLE), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+					}
 
 					delete tmdb;
 					tmdb = NULL;	
