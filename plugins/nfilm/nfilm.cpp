@@ -50,6 +50,7 @@ class CNFilm : public CMenuTarget
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
 		std::vector<MI_MOVIE_INFO> list;
 
+		//
 		std::vector<tmdbinfo> m_movielist;
 
 		//

@@ -38,15 +38,20 @@ class CFrame
 {
 	public:
 		CWindow window;
+		std::string iconName;
 		std::string caption;
+		std::string option;
 
-		CFrame(const std::string title);
+		CFrame(const std::string title, const char * const icon = NULL);
 		virtual ~CFrame(){}
 
-		//virtual void init(const int X, const int Y, const int DX, const int DY);
 		int paint(bool selected = false);
 		int getHeight(void) const;
 		int getWidth(void) const;
+
+		//
+		virtual void setIconName(const char* const icon){iconName = icon;};
+		virtual void setOption(const char* text){option = text;};
 };
 
 class CFrameBox

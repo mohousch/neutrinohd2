@@ -173,6 +173,7 @@
 #include <system/fsmounter.h>
 #include <system/helpers.h>
 #include <system/tmdbparser.h>
+#include <system/ytparser.h>
 
 // zapit
 #include <frontend_c.h>

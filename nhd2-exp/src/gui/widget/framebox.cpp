@@ -26,6 +26,7 @@
 #include <system/settings.h>
 #include <system/debug.h>
 
+
 CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::CFrameBox:\n");
@@ -61,7 +62,7 @@ CFrameBox::CFrameBox(CBox* position)
 
 CFrameBox::~CFrameBox()
 {
-	for(unsigned int count = 0; count < frames.size(); count++) 
+	for(unsigned int count = 0; count < (unsigned int)frames.size(); count++) 
 	{
 		CFrame * frame = frames[count];
 		
@@ -102,12 +103,12 @@ void CFrameBox::paintFrames()
 
 	// frame hight
 	int frame_height = 0;
-	frame_height = cFrameBox.iHeight - 2*(cFrameBox.iHeight/3);
+	frame_height = cFrameBox.iHeight - 2*(cFrameBox.iHeight/4);
 
 	int frame_x = cFrameBox.iX + BORDER_LEFT;
 	int frame_y = cFrameBox.iY + (cFrameBox.iHeight - frame_height)/2;
 
-	for (unsigned int count = 0; count < frames.size(); count++) 
+	for (unsigned int count = 0; count < (unsigned int)frames.size(); count++) 
 	{
 		CFrame * frame = frames[count];
 
@@ -162,7 +163,7 @@ void CFrameBox::swipRight()
 
 		CFrame * frame = frames[pos];
 
-		if(pos < frames.size())
+		if(pos < (int)frames.size())
 		{
 			frames[selected]->paint(false);
 			frame->paint(true);
@@ -185,7 +186,7 @@ void CFrameBox::swipLeft()
 
 		CFrame * frame = frames[pos];
 
-		if(pos < frames.size())
+		if(pos < (int)frames.size())
 		{
 			frames[selected]->paint(false);
 			frame->paint(true);
@@ -197,23 +198,24 @@ void CFrameBox::swipLeft()
 }
 
 // CFrame
-CFrame::CFrame(const std::string title)
+CFrame::CFrame(const std::string title, const char * const icon)
 {
 	caption = title;
+	iconName = icon ? icon : "";
 }
 
 int CFrame::getHeight(void) const
 {
-	int height = 50;
+	//return = window.getWindowsPos().iHeight;
 
-	return height;
+	return 50;
 }
 
 int CFrame::getWidth(void) const
 {
-	int tw = 50;
+	//return = window.getWindowsPos().iWidth;
 
-	return tw;
+	return 50;
 }
 
 int CFrame::paint(bool selected)
@@ -237,8 +239,33 @@ int CFrame::paint(bool selected)
 	window.setColor(bgcolor);
 	window.paint();
 
+	// icon
+	int iw, ih;
+	CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iw, &ih);
+	CFrameBuffer::getInstance()->paintIcon(iconName, window.getWindowsPos().iX, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - ih)/2);
+
 	// caption
-	g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, caption.c_str(), COL_MENUFOOT_INFO);
+	if(!option.empty())
+	{
+		// caption
+		if(!caption.empty())
+		{
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT, window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, caption.c_str(), COL_MENUFOOT_INFO, 0, true); //
+		}
+
+		// option
+		if(!option.empty())
+		{
+				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(window.getWindowsPos().iX + BORDER_LEFT, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, option.c_str(), COL_MENUFOOT_INFO, 0, true);
+		}
+	}
+	else
+	{
+		if(!caption.empty())
+		{
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, caption.c_str(), COL_MENUFOOT_INFO);
+		}
+	}
 
 	return height;
 }

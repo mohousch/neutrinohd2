@@ -52,6 +52,16 @@ class CTestMenu : public CMenuTarget
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
 
 		//
+		CTmdb* tmdb;
+		std::vector<MI_MOVIE_INFO> list;
+		std::vector<tmdbinfo> m_movielist;
+		std::string thumbnail_dir;
+		CFileHelpers fileHelper;
+		cYTFeedParser ytparser;
+		std::string plist;
+		unsigned int page;
+
+		//
 		CChannelList* webTVchannelList;
 		CBouquetList* webTVBouquetList;
 
@@ -249,6 +259,7 @@ void CTestMenu::testCFrameBox()
 	frameBox->addFrame(frame);
 
 	frame = new CFrame("Am populärsten");
+	frame->setOption("(2019)");
 	frameBox->addFrame(frame);
 
 	frameBox->setSelected(0);
@@ -297,6 +308,7 @@ void CTestMenu::testCFrameBox()
 	//
 	ClistBox *listBoxRight = new ClistBox(&rightBox);
 
+/*
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("ts");
@@ -375,6 +387,105 @@ void CTestMenu::testCFrameBox()
 			m_vMovieInfo.push_back(movieInfo);
 		}
 	}
+*/
+	///
+	thumbnail_dir = "/tmp/nfilm";
+	page = 1;
+	plist = "popular";
+
+	list.clear();
+	m_movielist.clear();
+
+	fileHelper.removeDir(thumbnail_dir.c_str());
+	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
+
+	CHintBox loadBox("Movie Trailer", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	loadBox.paint();
+
+	//
+	tmdb = new CTmdb();
+
+	tmdb->clearMovieList();
+
+	tmdb->getMovieTVList("movie", plist, page);
+
+	std::vector<tmdbinfo> &mvlist = tmdb->getMovies();
+	
+	for (unsigned int count = 0; count < mvlist.size(); count++) 
+	{
+		MI_MOVIE_INFO Info;
+		m_movieInfo.clearMovieInfo(&Info);
+
+		tmdbinfo tmp;
+		
+		Info.epgTitle = mvlist[count].title;
+		tmp.title = mvlist[count].title;
+		tmp.id = mvlist[count].id;
+
+		m_movielist.push_back(tmp);
+		
+		list.push_back(Info);
+	}
+	
+	///
+	thumbnail_dir = "/tmp/nfilm";
+	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
+
+	m_vMovieInfo.clear();
+	
+	// fill our structure
+	for(unsigned int i = 0; i < m_movielist.size(); i++)
+	{
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); 
+
+		tmdb->clearMovieInfo();
+		tmdb->getMovieTVInfo("movie", m_movielist[i].id);
+		std::vector<tmdbinfo>& movieInfo_list = tmdb->getMovieInfos();
+
+		movieInfo.epgTitle = m_movielist[i].title;
+
+		movieInfo.epgInfo1 = movieInfo_list[0].overview;
+		movieInfo.ytdate = movieInfo_list[0].release_date;
+		movieInfo.vote_average = movieInfo_list[0].vote_average;
+		movieInfo.vote_count = movieInfo_list[0].vote_count;
+		movieInfo.original_title = movieInfo_list[0].original_title;
+		movieInfo.release_date = movieInfo_list[0].release_date;
+		movieInfo.media_type = movieInfo_list[0].media_type;
+		movieInfo.length = movieInfo_list[0].runtime;
+		movieInfo.runtimes = movieInfo_list[0].runtimes;
+		movieInfo.genres = movieInfo_list[0].genres;
+		movieInfo.cast = movieInfo_list[0].cast;
+		movieInfo.seasons = movieInfo_list[0].seasons;
+		movieInfo.episodes = movieInfo_list[0].episodes;
+			
+		std::string tname = thumbnail_dir;
+		tname += "/";
+		tname += movieInfo.epgTitle;
+		tname += ".jpg";
+
+		tmdb->getSmallCover(movieInfo_list[0].poster_path, tname);
+
+		if(!tname.empty())
+			movieInfo.tfile = tname;
+
+		// video url
+		tmdb->clearVideoInfo();
+		tmdb->getVideoInfo("movie", m_movielist[i].id);
+
+		std::vector<tmdbinfo>& videoInfo_list = tmdb->getVideoInfos();
+
+		movieInfo.vid = videoInfo_list[0].vid;
+		movieInfo.vkey = videoInfo_list[0].vkey;
+		movieInfo.vname = videoInfo_list[0].vname;
+
+		m_vMovieInfo.push_back(movieInfo);
+	}
+
+	delete tmdb;
+	tmdb = NULL;
+
+	loadBox.hide();
 
 	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
@@ -527,6 +638,28 @@ REPEAT:
 
 				selected = listBoxRight->getSelected();
 
+				///
+				ytparser.Cleanup();
+
+				// setregion
+				ytparser.SetRegion("DE");
+
+				// set max result
+				ytparser.SetMaxResults(1);
+			
+				// parse feed
+				if (ytparser.ParseFeed(cYTFeedParser::SEARCH_BY_ID, m_vMovieInfo[selected].vname, m_vMovieInfo[selected].vkey))
+				{
+					yt_video_list_t &ylist = ytparser.GetVideoList();
+	
+					for (unsigned int j = 0; j < ylist.size(); j++) 
+					{
+						m_vMovieInfo[selected].ytid = ylist[j].id;
+						m_vMovieInfo[selected].file.Name = ylist[j].GetUrl();
+					}
+				} 
+				///
+
 				if (&m_vMovieInfo[selected].file != NULL) 
 				{
 					tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
@@ -593,6 +726,11 @@ REPEAT:
 
 	g_RCInput->killTimer(sec_timer_id);
 	sec_timer_id = 0;
+
+	fileHelper.removeDir(thumbnail_dir.c_str());
+	m_vMovieInfo.clear();
+	list.clear();
+	m_movielist.clear();
 }
 
 // CBox
