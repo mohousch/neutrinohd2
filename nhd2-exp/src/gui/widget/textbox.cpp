@@ -418,7 +418,7 @@ void CTextBox::refreshText(void)
 	dprintf(DEBUG_DEBUG, "CTextBox::refreshText:\r\n");
 
 	// paint text background
-	m_cBoxWindow.setDimension(&m_cFrame);
+	m_cBoxWindow.setPosition(&m_cFrame);
 	m_cBoxWindow.setColor(m_textBackgroundColor);
 	m_cBoxWindow.paint();
 	
@@ -614,7 +614,7 @@ void CTextBox::hide(void)
 		m_pcFontText->setSize((int)(m_pcFontText->getSize() / BIG_FONT_FAKTOR));
 	}
 	
-	m_cBoxWindow.setDimension(&m_cFrame);
+	m_cBoxWindow.setPosition(&m_cFrame);
 	m_cBoxWindow.hide();
 
 	painted = false;

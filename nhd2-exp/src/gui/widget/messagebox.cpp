@@ -352,7 +352,7 @@ void CMessageBox::paint(void)
 {
 	dprintf(DEBUG_NORMAL, "CMessageBox::paint\n");
 
-	m_cBoxWindow.setDimension(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1),
+	m_cBoxWindow.setPosition(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1),
                                CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2),
                                m_width,
                                m_height);
@@ -369,7 +369,7 @@ void CMessageBox::paint(void)
 void CMessageBox::refresh()
 {
 	// box
-	m_cBodyWindow.setDimension(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1),
+	m_cBodyWindow.setPosition(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1),
                                CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2),
                                m_width,
                                m_height);
@@ -379,7 +379,7 @@ void CMessageBox::refresh()
 	m_cBodyWindow.paint();
 
 	// title
-	m_cTitleWindow.setDimension(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1), CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), m_width, m_theight);
+	m_cTitleWindow.setPosition(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1), CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), m_width, m_theight);
 
 	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
 	//m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);

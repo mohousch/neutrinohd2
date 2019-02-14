@@ -106,7 +106,7 @@ CColorChooser::CColorChooser(const neutrino_locale_t Name, unsigned char *R, uns
 	cFrameBoxColorPreview.iY = cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight/2;
 
 	//
-	m_cBoxWindow.setDimension(&cFrameBox);
+	m_cBoxWindow.setPosition(&cFrameBox);
 	m_cBoxWindow.enableSaveScreen();
 }
 
@@ -147,7 +147,7 @@ CColorChooser::CColorChooser(const char * const Name, unsigned char *R, unsigned
 	cFrameBoxColorPreview.iY = cFrameBox.iY + cFrameBoxTitle.iHeight + cFrameBoxItem.iHeight/2;
 
 	//
-	m_cBoxWindow.setDimension(&cFrameBox);
+	m_cBoxWindow.setPosition(&cFrameBox);
 	m_cBoxWindow.enableSaveScreen();
 }
 
@@ -322,7 +322,7 @@ void CColorChooser::paint()
 	cFrameBoxTitle.iY = cFrameBox.iY;
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
-	m_cTitleWindow.setDimension(&cFrameBoxTitle);
+	m_cTitleWindow.setPosition(&cFrameBoxTitle);
 
 	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
 	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);

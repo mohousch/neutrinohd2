@@ -53,8 +53,6 @@ class CTestMenu : public CMenuTarget
 
 		//
 		CTmdb* tmdb;
-		std::vector<MI_MOVIE_INFO> list;
-		std::vector<tmdbinfo> m_movielist;
 		std::string thumbnail_dir;
 		CFileHelpers fileHelper;
 		cYTFeedParser ytparser;
@@ -232,47 +230,37 @@ void CTestMenu::testCFrameBox()
 	footBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
 
 	// frameBox
-	CBox Box;
+	CBox topBox;
 	
-	Box.iX = g_settings.screen_StartX + 10;
-	Box.iY = headBox.iY + headBox.iHeight + 5;
-	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
-	Box.iHeight = 120; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+	topBox.iX = g_settings.screen_StartX + 10;
+	topBox.iY = headBox.iY + headBox.iHeight + 5;
+	topBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	topBox.iHeight = 120; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
 
-	CFrameBox *frameBox = new CFrameBox(&Box);
+	CFrameBox *topWidget = new CFrameBox(&topBox);
 	CFrame * frame = NULL;
 
-/*
-	for(unsigned int count = 0; count < 5; count++)
-	{
-		std::string tmp = "frame-";
-		tmp += to_string(count).c_str();
-		frame = new CFrame(tmp);
-
-		frameBox->addFrame(frame);
-	}
-*/
 	frame = new CFrame("Neu Filme");
-	frameBox->addFrame(frame);
+	topWidget->addFrame(frame);
 	
 	frame = new CFrame("Im Kino");
-	frameBox->addFrame(frame);
+	topWidget->addFrame(frame);
 
 	frame = new CFrame("Am populärsten");
 	frame->setOption("(2019)");
-	frameBox->addFrame(frame);
+	topWidget->addFrame(frame);
 
-	frameBox->setSelected(0);
-	//frameBox->setOutFocus(false);
+	topWidget->setSelected(0);
+	//topWidget->setOutFocus(false);
 
-	// menu left
+	// leftWidget
 	CBox leftBox;
 	leftBox.iX = g_settings.screen_StartX + 10;
-	leftBox.iY = headBox.iY + headBox.iHeight + 5 + Box.iHeight + 5;
+	leftBox.iY = headBox.iY + headBox.iHeight + 5 + topBox.iHeight + 5;
 	leftBox.iWidth = 150;
-	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - Box.iHeight - 5 - footBox.iHeight - 5;
+	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - topBox.iHeight - 5 - footBox.iHeight - 5;
 
-	ClistBox *listBoxLeft = new ClistBox(&leftBox);
+	ClistBox *leftWidget = new ClistBox(&leftBox);
 
 	ClistBoxEntryItem *item1 = new ClistBoxEntryItem("Filme");
 	ClistBoxEntryItem *item2 = new ClistBoxEntryItem("Serien");
@@ -284,119 +272,34 @@ void CTestMenu::testCFrameBox()
 	ClistBoxEntryItem *item6 = new ClistBoxEntryItem("", false);
 	ClistBoxEntryItem *item7 = new ClistBoxEntryItem("Beenden");
 
-	listBoxLeft->addItem(item1);
-	listBoxLeft->addItem(item2);
-	listBoxLeft->addItem(item3);
-	listBoxLeft->addItem(item4);
-	listBoxLeft->addItem(item5);
-	listBoxLeft->addItem(item6);
-	listBoxLeft->addItem(item7);
+	leftWidget->addItem(item1);
+	leftWidget->addItem(item2);
+	leftWidget->addItem(item3);
+	leftWidget->addItem(item4);
+	leftWidget->addItem(item5);
+	leftWidget->addItem(item6);
+	leftWidget->addItem(item7);
 
-	listBoxLeft->disableCenter();
-	listBoxLeft->setSelected(-1);
-	listBoxLeft->setOutFocus(true);
-	listBoxLeft->disableShrinkMenu();
+	leftWidget->disableCenter();
+	leftWidget->setSelected(-1);
+	leftWidget->setOutFocus(true);
+	leftWidget->disableShrinkMenu();
 
 	// right menu
 	CBox rightBox;
 
 	rightBox.iX = g_settings.screen_StartX + 10 + leftBox.iWidth + 5;
-	rightBox.iY = headBox.iY + headBox.iHeight + 5 + Box.iHeight + 5;
+	rightBox.iY = headBox.iY + headBox.iHeight + 5 + topBox.iHeight + 5;
 	rightBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20) - 150 - 5;
-	rightBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - Box.iHeight - 5 - footBox.iHeight - 5;
+	rightBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - topBox.iHeight - 5 - footBox.iHeight - 5;
 
 	//
-	ClistBox *listBoxRight = new ClistBox(&rightBox);
+	ClistBox *rightWidget = new ClistBox(&rightBox);
 
-/*
-	CFileFilter fileFilter;
-	
-	fileFilter.addFilter("ts");
-	fileFilter.addFilter("mpg");
-	fileFilter.addFilter("mpeg");
-	fileFilter.addFilter("divx");
-	fileFilter.addFilter("avi");
-	fileFilter.addFilter("mkv");
-	fileFilter.addFilter("asf");
-	fileFilter.addFilter("aiff");
-	fileFilter.addFilter("m2p");
-	fileFilter.addFilter("mpv");
-	fileFilter.addFilter("m2ts");
-	fileFilter.addFilter("vob");
-	fileFilter.addFilter("mp4");
-	fileFilter.addFilter("mov");	
-	fileFilter.addFilter("flv");	
-	fileFilter.addFilter("dat");
-	fileFilter.addFilter("trp");
-	fileFilter.addFilter("vdr");
-	fileFilter.addFilter("mts");
-	fileFilter.addFilter("wmv");
-	fileFilter.addFilter("wav");
-	fileFilter.addFilter("flac");
-	fileFilter.addFilter("mp3");
-	fileFilter.addFilter("wma");
-	fileFilter.addFilter("ogg");
-
-	CFileList filelist;
-	
-	// recordingdir
-	std::string Path_local = g_settings.network_nfs_recordingdir;
-	m_vMovieInfo.clear();
-	
-	//
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		// filter them
-		MI_MOVIE_INFO movieInfo;
-		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-
-		CFileList::iterator files = filelist.begin();
-		for(; files != filelist.end() ; files++)
-		{
-			//
-			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-					
-			movieInfo.file.Name = files->Name;
-					
-			// load movie infos (from xml file)
-			m_movieInfo.loadMovieInfo(&movieInfo);
-
-			std::string tmp_str = files->getFileName();
-
-			removeExtension(tmp_str);
-
-			// refill if empty
-			if(movieInfo.epgTitle.empty())
-				movieInfo.epgTitle = tmp_str;
-
-			if(movieInfo.epgInfo1.empty())
-				movieInfo.epgInfo1 = tmp_str;
-
-			//if(movieInfo.epgInfo2.empty())
-			//	movieInfo.epgInfo2 = tmp_str;
-
-			//thumbnail
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-					
-			if(!access(fname.c_str(), F_OK) )
-				movieInfo.tfile = fname.c_str();
-					
-			// 
-			m_vMovieInfo.push_back(movieInfo);
-		}
-	}
-*/
-	///
 	thumbnail_dir = "/tmp/nfilm";
 	page = 1;
 	plist = "popular";
 
-	list.clear();
-	m_movielist.clear();
-
-	fileHelper.removeDir(thumbnail_dir.c_str());
 	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
 
 	CHintBox loadBox("Movie Trailer", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
@@ -410,40 +313,20 @@ void CTestMenu::testCFrameBox()
 	tmdb->getMovieTVList("movie", plist, page);
 
 	std::vector<tmdbinfo> &mvlist = tmdb->getMovies();
-	
-	for (unsigned int count = 0; count < mvlist.size(); count++) 
-	{
-		MI_MOVIE_INFO Info;
-		m_movieInfo.clearMovieInfo(&Info);
-
-		tmdbinfo tmp;
-		
-		Info.epgTitle = mvlist[count].title;
-		tmp.title = mvlist[count].title;
-		tmp.id = mvlist[count].id;
-
-		m_movielist.push_back(tmp);
-		
-		list.push_back(Info);
-	}
-	
-	///
-	thumbnail_dir = "/tmp/nfilm";
-	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
 
 	m_vMovieInfo.clear();
 	
 	// fill our structure
-	for(unsigned int i = 0; i < m_movielist.size(); i++)
+	for(unsigned int i = 0; i < mvlist.size(); i++)
 	{
 		MI_MOVIE_INFO movieInfo;
 		m_movieInfo.clearMovieInfo(&movieInfo); 
 
 		tmdb->clearMovieInfo();
-		tmdb->getMovieTVInfo("movie", m_movielist[i].id);
+		tmdb->getMovieTVInfo("movie", mvlist[i].id);
 		std::vector<tmdbinfo>& movieInfo_list = tmdb->getMovieInfos();
 
-		movieInfo.epgTitle = m_movielist[i].title;
+		movieInfo.epgTitle = mvlist[i].title;
 
 		movieInfo.epgInfo1 = movieInfo_list[0].overview;
 		movieInfo.ytdate = movieInfo_list[0].release_date;
@@ -471,7 +354,7 @@ void CTestMenu::testCFrameBox()
 
 		// video url
 		tmdb->clearVideoInfo();
-		tmdb->getVideoInfo("movie", m_movielist[i].id);
+		tmdb->getVideoInfo("movie", mvlist[i].id);
 
 		std::vector<tmdbinfo>& videoInfo_list = tmdb->getVideoInfos();
 
@@ -493,24 +376,20 @@ void CTestMenu::testCFrameBox()
 		item = new ClistBoxEntryItem(m_vMovieInfo[i].epgTitle.c_str());
 
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
-		//item->setOptionInfo("OptionInfo");
 
 		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
-		//item->setOptionInfo1("OptionInfo1");
 
 		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
-		//item->setOptionInfo2("OptionInfo2");
 
-		//item->setnLinesItem();
 		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		listBoxRight->addItem(item);
+		rightWidget->addItem(item);
 	}
 
-	listBoxRight->setWidgetType(WIDGET_TYPE_FRAME);
-	listBoxRight->setItemsPerPage(6, 2);
-	listBoxRight->setSelected(-1);
-	listBoxRight->setOutFocus(true);
+	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
+	rightWidget->setItemsPerPage(6, 2);
+	rightWidget->setSelected(-1);
+	rightWidget->setOutFocus(true);
 	
 	int focus = 0; // frameBox
 
@@ -529,9 +408,9 @@ REPEAT:
 	// paint all widget
 	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true, 2, frameBoxHeadButtons);
 	headers.paintFoot(footBox, footBox.iWidth/4, 4, frameButtons);
-	frameBox->paint();
-	listBoxLeft->paint();
-	listBoxRight->paint();
+	topWidget->paint();
+	leftWidget->paint();
+	rightWidget->paint();
 
 	CFrameBuffer::getInstance()->blit();
 
@@ -561,30 +440,30 @@ REPEAT:
 		else if(msg == CRCInput::RC_right)
 		{
 			if(focus == 0)
-				frameBox->swipRight();
+				topWidget->swipRight();
 			else if(focus == 2)
-				listBoxRight->swipRight();
+				rightWidget->swipRight();
 		}
 		else if(msg == CRCInput::RC_left)
 		{
 			if(focus == 0)
-				frameBox->swipLeft();
+				topWidget->swipLeft();
 			else if(focus == 2)
-				listBoxRight->swipLeft();
+				rightWidget->swipLeft();
 		}
 		else if(msg == CRCInput::RC_up)
 		{
 			if(focus == 1)
-				listBoxLeft->scrollLineUp();
+				leftWidget->scrollLineUp();
 			else if(focus == 2)
-				listBoxRight->scrollLineUp();
+				rightWidget->scrollLineUp();
 		}
 		else if(msg == CRCInput::RC_down)
 		{
 			if(focus == 1)
-				listBoxLeft->scrollLineDown();
+				leftWidget->scrollLineDown();
 			else if(focus == 2)
-				listBoxRight->scrollLineDown();
+				rightWidget->scrollLineDown();
 		}
 		else if(msg == CRCInput::RC_yellow)
 		{
@@ -592,40 +471,40 @@ REPEAT:
 			{
 				focus = 1;
 
-				listBoxLeft->setSelected(0);
-				listBoxLeft->setOutFocus(false);
+				leftWidget->setSelected(0);
+				leftWidget->setOutFocus(false);
 
-				frameBox->setSelected(-1);
-				frameBox->setOutFocus(true);
+				topWidget->setSelected(-1);
+				topWidget->setOutFocus(true);
 
-				listBoxRight->setSelected(-1);
-				listBoxRight->setOutFocus(true);
+				rightWidget->setSelected(-1);
+				rightWidget->setOutFocus(true);
 			}
 			else if (focus == 1)
 			{
 				focus = 2;
 
-				listBoxRight->setSelected(0);
-				listBoxRight->setOutFocus(false);
+				rightWidget->setSelected(0);
+				rightWidget->setOutFocus(false);
 
-				frameBox->setSelected(-1);
-				frameBox->setOutFocus(true);
+				topWidget->setSelected(-1);
+				topWidget->setOutFocus(true);
 
-				listBoxLeft->setSelected(-1);
-				listBoxLeft->setOutFocus(true);
+				leftWidget->setSelected(-1);
+				leftWidget->setOutFocus(true);
 			}
 			else if (focus == 2)
 			{
 				focus = 0;
 
-				listBoxLeft->setSelected(-1);
-				listBoxLeft->setOutFocus(true);
+				leftWidget->setSelected(-1);
+				leftWidget->setOutFocus(true);
 
-				listBoxRight->setSelected(-1);
-				listBoxRight->setOutFocus(true);
+				rightWidget->setSelected(-1);
+				rightWidget->setOutFocus(true);
 
-				frameBox->setSelected(0);
-				frameBox->setOutFocus(false);
+				topWidget->setSelected(0);
+				topWidget->setOutFocus(false);
 			}
 
 			goto REPEAT;
@@ -636,7 +515,7 @@ REPEAT:
 			{
 				hide();
 
-				selected = listBoxRight->getSelected();
+				selected = rightWidget->getSelected();
 
 				///
 				ytparser.Cleanup();
@@ -670,7 +549,7 @@ REPEAT:
 			}
 			else if(focus == 1)
 			{
-				selected = listBoxLeft->getSelected();
+				selected = leftWidget->getSelected();
 
 				printf("selected:%d\n", selected);
 
@@ -683,7 +562,7 @@ REPEAT:
 			if(focus == 2)
 			{
 				hide();
-				selected = listBoxRight->getSelected();
+				selected = rightWidget->getSelected();
 				m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
 				goto REPEAT;
 			}
@@ -692,14 +571,14 @@ REPEAT:
 		{
 			if(focus == 2)
 			{
-				listBoxRight->scrollPageDown();
+				rightWidget->scrollPageDown();
 			}
 		}
 		else if(msg == CRCInput::RC_page_up)
 		{
 			if(focus == 2)
 			{
-				listBoxRight->scrollPageUp();
+				rightWidget->scrollPageUp();
 			}
 		}
 
@@ -715,22 +594,22 @@ REPEAT:
 		CFrameBuffer::getInstance()->useBackground(usedBackground);
 	}
 
-	delete frameBox;
-	frameBox = NULL;
+	delete topWidget;
+	topWidget = NULL;
 
-	delete listBoxLeft;
-	listBoxLeft = NULL;
+	delete leftWidget;
+	leftWidget = NULL;
 
-	delete listBoxRight;
-	listBoxRight = NULL;
+	delete rightWidget;
+	rightWidget = NULL;
 
 	g_RCInput->killTimer(sec_timer_id);
 	sec_timer_id = 0;
 
 	fileHelper.removeDir(thumbnail_dir.c_str());
 	m_vMovieInfo.clear();
-	list.clear();
-	m_movielist.clear();
+	//list.clear();
+	//m_movielist.clear();
 }
 
 // CBox
@@ -812,7 +691,7 @@ void CTestMenu::testCWindow()
 	//
 	CWindow* window = new CWindow();
 
-	window->setDimension(Box.iX, Box.iY, Box.iWidth, Box.iHeight);
+	window->setPosition(Box.iX, Box.iY, Box.iWidth, Box.iHeight);
 
 	window->setColor(COL_MENUHEAD_PLUS_0);
 	window->setCorner(RADIUS_MID, CORNER_ALL);

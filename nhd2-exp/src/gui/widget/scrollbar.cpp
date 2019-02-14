@@ -41,7 +41,7 @@ void CScrollBar::paint(const int x, const int y, const int dy, const int NrOfPag
 	cFrameScrollBar.iHeight = dy;
 
 
-	cScrollBarWindow.setDimension(&cFrameScrollBar);
+	cScrollBarWindow.setPosition(&cFrameScrollBar);
 	cScrollBarWindow.setColor(COL_SCROLLBAR);
 	cScrollBarWindow.setCorner(NO_RADIUS, CORNER_ALL);
 	cScrollBarWindow.paint();
@@ -55,7 +55,7 @@ void CScrollBar::paint(const int x, const int y, const int dy, const int NrOfPag
 	cFrameSlider.iWidth = cFrameScrollBar.iWidth - 4;
 	cFrameSlider.iHeight = cFrameScrollBar.iHeight/NrOfPages;
 
-	cSliderWindow.setDimension(&cFrameSlider);
+	cSliderWindow.setPosition(&cFrameSlider);
 	cSliderWindow.setColor(COL_SCROLLBAR_SLIDER);
 	cSliderWindow.setCorner(NO_RADIUS, CORNER_ALL);
 	cSliderWindow.paint();
@@ -69,7 +69,7 @@ void CScrollBar::paint(CBox* position, const int NrOfPages, const int CurrentPag
 
 	cFrameScrollBar = *position;
 
-	cScrollBarWindow.setDimension(&cFrameScrollBar);
+	cScrollBarWindow.setPosition(&cFrameScrollBar);
 	cScrollBarWindow.setColor(COL_SCROLLBAR);
 	cScrollBarWindow.setCorner(NO_RADIUS, CORNER_ALL);
 	cScrollBarWindow.paint();
@@ -83,7 +83,7 @@ void CScrollBar::paint(CBox* position, const int NrOfPages, const int CurrentPag
 	cFrameSlider.iWidth = cFrameScrollBar.iWidth - 4;
 	cFrameSlider.iHeight = cFrameScrollBar.iHeight/NrOfPages;
 
-	cSliderWindow.setDimension(&cFrameSlider);
+	cSliderWindow.setPosition(&cFrameSlider);
 	cSliderWindow.setColor(COL_SCROLLBAR_SLIDER);
 	cSliderWindow.setCorner(NO_RADIUS, CORNER_ALL);
 	cSliderWindow.paint();

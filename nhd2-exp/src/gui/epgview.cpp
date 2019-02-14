@@ -176,7 +176,7 @@ void CEpgData::start()
 	cFollowScreeningBox.iX = cFrameBox.iX;
 	cFollowScreeningBox.iY = cFrameBox.iY + cFrameBox.iHeight - cFootBox.iHeight - cFollowScreeningBox.iHeight;
 
-	cFollowScreeningWindow.setDimension(&cFollowScreeningBox); 
+	cFollowScreeningWindow.setPosition(&cFollowScreeningBox); 
 
 	// left fbar
 	cLeftFBox.iX = cFollowScreeningBox.iX + 5;
@@ -184,7 +184,7 @@ void CEpgData::start()
 	cLeftFBox.iWidth = cFollowScreeningBox.iHeight - 8;
 	cLeftFBox.iHeight = cFollowScreeningBox.iHeight - 8;
 
-	cLeftFWindow.setDimension(&cLeftFBox);
+	cLeftFWindow.setPosition(&cLeftFBox);
 
 	// right fbar
 	cRightFBox.iX = cFollowScreeningBox.iX + cFollowScreeningBox.iWidth - 5 - cFollowScreeningBox.iHeight + 8;
@@ -192,7 +192,7 @@ void CEpgData::start()
 	cRightFBox.iWidth = cFollowScreeningBox.iHeight - 8;
 	cRightFBox.iHeight = cFollowScreeningBox.iHeight - 8;
 
-	cRightFWindow.setDimension(&cRightFBox);
+	cRightFWindow.setPosition(&cRightFBox);
 
 	// textBox
 	cTextBox.iX = cFrameBox.iX;

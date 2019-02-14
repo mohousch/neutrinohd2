@@ -201,7 +201,7 @@ void CHintBox::paint(void)
 	cFrameBox.iY = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - cFrameBox.iHeight) >> 2);
 	
 	// Box
-	m_cBoxWindow.setDimension(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
+	m_cBoxWindow.setPosition(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 
 	m_cBoxWindow.enableSaveScreen();
 	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
@@ -217,7 +217,7 @@ void CHintBox::paint(void)
 void CHintBox::refresh(void)
 {
 	//body
-	m_cBodyWindow.setDimension(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
+	m_cBodyWindow.setPosition(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 	m_cBodyWindow.setColor(COL_MENUCONTENT_PLUS_0);
 	//m_cBodyWindow.setCorner(RADIUS_MID, CORNER_ALL);
 	m_cBoxWindow.enableShadow();
@@ -228,7 +228,7 @@ void CHintBox::refresh(void)
 	cFrameBoxTitle.iY = cFrameBox.iY;
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
-	m_cTitleWindow.setDimension(cFrameBoxTitle.iX, cFrameBoxTitle.iY, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight);
+	m_cTitleWindow.setPosition(cFrameBoxTitle.iX, cFrameBoxTitle.iY, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight);
 
 	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
 	//m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);

@@ -108,7 +108,7 @@ void CWindow::restoreScreen()
 	background = NULL;
 }
 
-void CWindow::setDimension(const int x, const int y, const int dx, const int dy)
+void CWindow::setPosition(const int x, const int y, const int dx, const int dy)
 {
 	cFrameBox.iX = x;
 	cFrameBox.iY = y;
@@ -118,7 +118,7 @@ void CWindow::setDimension(const int x, const int y, const int dx, const int dy)
 	init();
 }
 
-void CWindow::setDimension(CBox* position)
+void CWindow::setPosition(CBox* position)
 {
 	cFrameBox = *position;
 

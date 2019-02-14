@@ -185,8 +185,8 @@ void CStringInput::init()
 	
 	selected = 0;
 
-	m_cBoxWindow.setDimension(x, y, width, height);
-	m_cTitleWindow.setDimension(x, y, width, hheight);
+	m_cBoxWindow.setPosition(x, y, width, height);
+	m_cTitleWindow.setPosition(x, y, width, hheight);
 }
 
 void CStringInput::NormalKeyPressed(const neutrino_msg_t key)
@@ -507,8 +507,8 @@ void CStringInput::paint()
 	int icol_w = 28, icol_h = 16;
 
 	// reinit
-	m_cBoxWindow.setDimension(x, y, width, height);
-	m_cTitleWindow.setDimension(x, y, width, hheight);
+	m_cBoxWindow.setPosition(x, y, width, height);
+	m_cTitleWindow.setPosition(x, y, width, hheight);
 
 	//box
 	m_cBoxWindow.enableSaveScreen();

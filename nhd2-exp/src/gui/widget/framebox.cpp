@@ -88,7 +88,7 @@ bool CFrameBox::hasFrame()
 
 void CFrameBox::initFrames()
 {
-	cFrameWindow.setDimension(&cFrameBox);
+	cFrameWindow.setPosition(&cFrameBox);
 }
 
 void CFrameBox::paintFrames()
@@ -114,7 +114,7 @@ void CFrameBox::paintFrames()
 
 		// init frame
 		// frame
-		frame->window.setDimension(frame_x + count*frame_width, cFrameBox.iY + (cFrameBox.iHeight - frame_height)/2, frame_width - BORDER_LEFT - BORDER_RIGHT, frame_height);
+		frame->window.setPosition(frame_x + count*frame_width, cFrameBox.iY + (cFrameBox.iHeight - frame_height)/2, frame_width - BORDER_LEFT - BORDER_RIGHT, frame_height);
 
 		frame->window.enableShadow();
 
@@ -250,20 +250,26 @@ int CFrame::paint(bool selected)
 		// caption
 		if(!caption.empty())
 		{
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT, window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, caption.c_str(), COL_MENUFOOT_INFO, 0, true); //
+			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getRenderWidth(caption);
+
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + ((window.getWindowsPos().iWidth - c_w) >> 1), window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, caption.c_str(), COL_MENUFOOT_INFO, 0, true); //
 		}
 
 		// option
 		if(!option.empty())
 		{
-				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(window.getWindowsPos().iX + BORDER_LEFT, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, option.c_str(), COL_MENUFOOT_INFO, 0, true);
+			int o_w = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(option);
+
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + ((window.getWindowsPos().iWidth - o_w) >> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, option.c_str(), COL_MENUFOOT_INFO, 0, true);
 		}
 	}
 	else
 	{
 		if(!caption.empty())
 		{
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, caption.c_str(), COL_MENUFOOT_INFO);
+			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getRenderWidth(caption);
+
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + ((window.getWindowsPos().iWidth - c_w)>> 1), window.getWindowsPos().iY + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, caption.c_str(), COL_MENUFOOT_INFO);
 		}
 	}
 

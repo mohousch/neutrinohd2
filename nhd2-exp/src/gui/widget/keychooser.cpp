@@ -180,7 +180,7 @@ void CKeyChooserItem::paint()
 	m_cBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - m_cBox.iHeight) >> 1);
 
 	//box
-	m_cBoxWindow.setDimension(&m_cBox);
+	m_cBoxWindow.setPosition(&m_cBox);
 	m_cBoxWindow.enableSaveScreen();
 	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
 	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
@@ -193,7 +193,7 @@ void CKeyChooserItem::paint()
 	m_cTitle.iX = m_cBox.iX;
 	m_cTitle.iY = m_cBox.iY;
 
-	m_cTitleWindow.setDimension(&m_cTitle);
+	m_cTitleWindow.setPosition(&m_cTitle);
 	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
 	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
 	m_cTitleWindow.setGradient(g_settings.Head_gradient);

@@ -60,10 +60,10 @@ CProgressWindow::CProgressWindow()
 	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
 	
 	// box
-	m_cBoxWindow.setDimension(x, y, width, height);
+	m_cBoxWindow.setPosition(x, y, width, height);
 
 	// title
-	m_cTitleWindow.setDimension(x, y, width, hheight);
+	m_cTitleWindow.setPosition(x, y, width, hheight);
 
 	// progressbar
 	progressBar = new CProgressBar(width - BORDER_LEFT - BORDER_RIGHT - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth("100%") - 10, 10);
