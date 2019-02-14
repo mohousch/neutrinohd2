@@ -197,9 +197,11 @@ void CInfoBox::initFramesRel(void)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
+const struct button_label HButton = { NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE};
+
 void CInfoBox::refreshTitle(void)
 {
-	headers.paintHead(m_cBoxFrameTitleRel, m_cIcon.c_str(), m_cTitle.c_str());
+	headers.paintHead(m_cBoxFrameTitleRel, m_cIcon.c_str(), m_cTitle.c_str(), false, 1, &HButton);
 }
 
 //////////////////////////////////////////////////////////////////////
