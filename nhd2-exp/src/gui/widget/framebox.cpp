@@ -204,27 +204,11 @@ CFrame::CFrame(const std::string title, const char * const icon)
 	iconName = icon ? icon : "";
 }
 
-int CFrame::getHeight(void) const
-{
-	//return = window.getWindowsPos().iHeight;
-
-	return 50;
-}
-
-int CFrame::getWidth(void) const
-{
-	//return = window.getWindowsPos().iWidth;
-
-	return 50;
-}
-
 int CFrame::paint(bool selected)
 {
 	dprintf(DEBUG_DEBUG, "CFrame::paint:\n");
 
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
-
-	int height = getHeight();
 
 	uint8_t color = COL_MENUCONTENT;
 	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
@@ -240,9 +224,18 @@ int CFrame::paint(bool selected)
 	window.paint();
 
 	// icon
-	int iw, ih;
-	CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iw, &ih);
-	CFrameBuffer::getInstance()->paintIcon(iconName, window.getWindowsPos().iX, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - ih)/2);
+	int iw = 0;
+	int ih = 0;
+	int iconOffset = 0;
+
+	if(!iconName.empty())
+	{
+		iconOffset = ICON_OFFSET;
+
+		CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iw, &ih);
+
+		CFrameBuffer::getInstance()->paintIcon(iconName, window.getWindowsPos().iX + ICON_OFFSET, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - ih)/2);
+	}
 
 	// caption
 	if(!option.empty())
@@ -252,7 +245,7 @@ int CFrame::paint(bool selected)
 		{
 			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getRenderWidth(caption);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + ((window.getWindowsPos().iWidth - c_w) >> 1), window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, caption.c_str(), COL_MENUFOOT_INFO, 0, true); //
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w) >> 1), window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), COL_MENUFOOT_INFO, 0, true); //
 		}
 
 		// option
@@ -260,7 +253,7 @@ int CFrame::paint(bool selected)
 		{
 			int o_w = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(option);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + ((window.getWindowsPos().iWidth - o_w) >> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, option.c_str(), COL_MENUFOOT_INFO, 0, true);
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - o_w) >> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset -iw, option.c_str(), COL_MENUFOOT_INFO, 0, true);
 		}
 	}
 	else
@@ -269,11 +262,11 @@ int CFrame::paint(bool selected)
 		{
 			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getRenderWidth(caption);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + ((window.getWindowsPos().iWidth - c_w)>> 1), window.getWindowsPos().iY + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - 2*BORDER_RIGHT, caption.c_str(), COL_MENUFOOT_INFO);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w)>> 1), window.getWindowsPos().iY + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), COL_MENUFOOT_INFO);
 		}
 	}
 
-	return height;
+	return 0;
 }
 
 

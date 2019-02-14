@@ -406,7 +406,7 @@ REPEAT:
 	}
 
 	// paint all widget
-	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true, 2, frameBoxHeadButtons);
+	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "Movie Trailer", true, 2, frameBoxHeadButtons);
 	headers.paintFoot(footBox, footBox.iWidth/4, 4, frameButtons);
 	topWidget->paint();
 	leftWidget->paint();

@@ -46,8 +46,6 @@ class CFrame
 		virtual ~CFrame(){}
 
 		int paint(bool selected = false);
-		int getHeight(void) const;
-		int getWidth(void) const;
 
 		//
 		virtual void setIconName(const char* const icon){iconName = icon;};

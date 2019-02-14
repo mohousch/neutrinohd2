@@ -74,7 +74,6 @@ enum
 	ITEM_TYPE_LIST_BOX_ENTRY
 };
 
-//FIXME: rename it
 enum
 {
 	WIDGET_TYPE_STANDARD = 0,
