@@ -47,6 +47,7 @@
 #include <gui/widget/icons.h>
 #include <gui/widget/window.h>
 #include <gui/widget/scrollbar.h>
+#include <gui/widget/headers.h>
 
 
 #define MESSAGEBOX_WIDTH			550
@@ -55,8 +56,8 @@ class CMessageBox
 {
 	protected:
 		CWindow m_cBoxWindow;
-		CWindow m_cTitleWindow;
 		CWindow m_cBodyWindow;
+		CHeaders headers;
 
 		unsigned int m_currentPage;
 		std::vector<int>m_startEntryOfPage;

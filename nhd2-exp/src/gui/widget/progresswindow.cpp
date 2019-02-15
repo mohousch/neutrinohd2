@@ -62,9 +62,6 @@ CProgressWindow::CProgressWindow()
 	// box
 	m_cBoxWindow.setPosition(x, y, width, height);
 
-	// title
-	m_cTitleWindow.setPosition(x, y, width, hheight);
-
 	// progressbar
 	progressBar = new CProgressBar(width - BORDER_LEFT - BORDER_RIGHT - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth("100%") - 10, 10);
 
@@ -167,26 +164,14 @@ void CProgressWindow::paint()
 	m_cBoxWindow.paint();
 	
 	// title
-	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
-	//m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
-	m_cTitleWindow.setGradient(g_settings.Head_gradient);
-	m_cTitleWindow.paint();
-	
-	// icon
-	int icon_w = 0;
-	int icon_h = 0;
-	
-	frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_w, &icon_h);
-	frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT, ypos + (hheight - icon_h)/2);
-	
-	// caption
 	const char * l_caption;
 	if (caption != NONEXISTANT_LOCALE)
 		l_caption = g_Locale->getText(caption);
 	else
 		l_caption = captionString.c_str();
-	  
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_w + ICON_OFFSET, ypos + hheight, width - BORDER_LEFT - BORDER_RIGHT - ICON_OFFSET, l_caption, COL_MENUHEAD, 0, true); // UTF-8
+
+	headers.setCorner();
+	headers.paintHead(x, y, width, hheight, NEUTRINO_ICON_INFO, l_caption);
 
 	// msg status
 	ypos += hheight + (mheight>>1);

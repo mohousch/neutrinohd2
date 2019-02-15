@@ -35,6 +35,7 @@
 #include <gui/widget/menue.h>
 #include <gui/widget/progressbar.h>
 #include <gui/widget/window.h>
+#include <gui/widget/headers.h>
 
 
 class CProgressWindow : public CMenuTarget
@@ -44,7 +45,7 @@ class CProgressWindow : public CMenuTarget
 		CFrameBuffer* frameBuffer;
 
 		CWindow m_cBoxWindow;
-		CWindow m_cTitleWindow;
+		CHeaders headers;
 
 		neutrino_locale_t caption;
 		std::string captionString;

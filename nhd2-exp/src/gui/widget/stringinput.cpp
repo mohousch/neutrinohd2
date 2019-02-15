@@ -186,7 +186,6 @@ void CStringInput::init()
 	selected = 0;
 
 	m_cBoxWindow.setPosition(x, y, width, height);
-	m_cTitleWindow.setPosition(x, y, width, hheight);
 }
 
 void CStringInput::NormalKeyPressed(const neutrino_msg_t key)
@@ -508,7 +507,6 @@ void CStringInput::paint()
 
 	// reinit
 	m_cBoxWindow.setPosition(x, y, width, height);
-	m_cTitleWindow.setPosition(x, y, width, hheight);
 
 	//box
 	m_cBoxWindow.enableSaveScreen();
@@ -518,23 +516,8 @@ void CStringInput::paint()
 	m_cBoxWindow.paint();
 
 	// head
-	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
-	//m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
-	m_cTitleWindow.setGradient(g_settings.Head_gradient);
-	m_cTitleWindow.paint();
-
-	if (!(iconfile.empty()))
-	{
-		frameBuffer->getIconSize(iconfile.c_str(), &icol_w, &icol_h);
-		
-		frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icol_h)/2); 
-
-		iconoffset = icol_w + BORDER_LEFT;
-	}
-	else
-		iconoffset = 0;
-
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + iconoffset + BORDER_LEFT, y + hheight, width - BORDER_RIGHT - iconoffset, head ? head : g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
+	headers.setCorner();
+	headers.paintHead(x, y, width, hheight, iconfile.c_str(), head ? head : g_Locale->getText(name));
 
 	if (hint_1 != NONEXISTANT_LOCALE)
 	{

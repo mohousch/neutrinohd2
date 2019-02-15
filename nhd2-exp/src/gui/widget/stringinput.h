@@ -45,6 +45,7 @@
 #include <gui/widget/menue.h>
 #include <gui/widget/window.h>
 #include <gui/widget/buttons.h>
+#include <gui/widget/headers.h>
 
 #include <system/settings.h>
 
@@ -63,7 +64,7 @@ class CStringInput : public CMenuTarget
 		int iheight;
 
 		CWindow m_cBoxWindow;
-		CWindow m_cTitleWindow;
+		CHeaders headers;
 		
 		uint32_t smstimer;
 

@@ -379,26 +379,8 @@ void CMessageBox::refresh()
 	m_cBodyWindow.paint();
 
 	// title
-	m_cTitleWindow.setPosition(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1), CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), m_width, m_theight);
-
-	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
-	//m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
-	m_cTitleWindow.setGradient(g_settings.Head_gradient);
-	m_cTitleWindow.paint();
-
-	int icon_w = 0;
-	int icon_h = 0;
-
-	if (!m_iconfile.empty())
-	{
-		CFrameBuffer::getInstance()->getIconSize(m_iconfile.c_str(), &icon_w, &icon_h);
-		CFrameBuffer::getInstance()->paintIcon(m_iconfile.c_str(), 
-			CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + BORDER_LEFT, 
-			CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), 
-			m_theight);
-	}
-
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1) + BORDER_LEFT + icon_w + BORDER_LEFT, CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_theight, m_width - BORDER_LEFT - icon_w - BORDER_LEFT, m_caption.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	headers.setCorner();
+	headers.paintHead(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1), CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), m_width, m_theight, m_iconfile.c_str(), m_caption);
 
 	//Body
 	int yPos  = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_theight + (m_fheight >> 1);

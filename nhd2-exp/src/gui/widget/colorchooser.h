@@ -41,6 +41,7 @@
 #include <system/localize.h>
 #include <gui/widget/menue.h>
 #include <gui/widget/window.h>
+#include <gui/widget/headers.h>
 
 
 class CColorChooser : public CMenuTarget
@@ -58,7 +59,7 @@ class CColorChooser : public CMenuTarget
 		CIcon volumeBodyIcon;
 
 		CWindow m_cBoxWindow;
-		CWindow m_cTitleWindow;
+		CHeaders headers;
 
 		unsigned char * value[4]; // r, g, b, alpha
 

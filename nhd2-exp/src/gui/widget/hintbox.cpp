@@ -228,23 +228,8 @@ void CHintBox::refresh(void)
 	cFrameBoxTitle.iY = cFrameBox.iY;
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
-	m_cTitleWindow.setPosition(cFrameBoxTitle.iX, cFrameBoxTitle.iY, cFrameBoxTitle.iWidth, cFrameBoxTitle.iHeight);
-
-	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
-	//m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
-	m_cTitleWindow.setGradient(g_settings.Head_gradient);
-	m_cTitleWindow.paint();
-	
-	int icon_w = 0;
-	int icon_h = 0;
-
-	if (!iconfile.empty())
-	{
-		CFrameBuffer::getInstance()->getIconSize(iconfile.c_str(), &icon_w, &icon_h);
-		CFrameBuffer::getInstance()->paintIcon(iconfile.c_str(), cFrameBoxTitle.iX + BORDER_LEFT, cFrameBoxTitle.iY, cFrameBoxTitle.iHeight);
-	}
-	
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameBoxTitle.iX + BORDER_LEFT + icon_w + BORDER_LEFT, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - icon_w - BORDER_LEFT, caption.c_str(), COL_MENUHEAD, 0, true); 
+	headers.setCorner();
+	headers.paintHead(cFrameBoxTitle, iconfile.c_str(), caption);
 
 	// body text
 	int count = entries_per_page;

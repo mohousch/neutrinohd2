@@ -322,19 +322,7 @@ void CColorChooser::paint()
 	cFrameBoxTitle.iY = cFrameBox.iY;
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
-	m_cTitleWindow.setPosition(&cFrameBoxTitle);
-
-	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
-	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
-	m_cTitleWindow.setGradient(g_settings.Head_gradient);
-	m_cTitleWindow.paint();
-	
-
-	// Head Icon
-	frameBuffer->paintIcon(titleIcon.iconName.c_str(), cFrameBoxTitle.iX + BORDER_LEFT, cFrameBoxTitle.iY + (cFrameBoxTitle.iHeight - titleIcon.iHeight)/2);
-	
-	// head title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameBoxTitle.iX + BORDER_LEFT + titleIcon.iWidth + ICON_OFFSET, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - BORDER_RIGHT - titleIcon.iWidth, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	headers.paintHead(cFrameBoxTitle, titleIcon.iconName.c_str(), name);
 
 	// slider
 	for (int i = 0; i < ITEMS_COUNT; i++)

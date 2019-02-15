@@ -185,7 +185,6 @@ void CKeyChooserItem::paint()
 	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
 	m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
 	m_cBoxWindow.paint();
-	
 
 	//head 
 	m_cTitle.iWidth = m_cBox.iWidth;
@@ -193,19 +192,7 @@ void CKeyChooserItem::paint()
 	m_cTitle.iX = m_cBox.iX;
 	m_cTitle.iY = m_cBox.iY;
 
-	m_cTitleWindow.setPosition(&m_cTitle);
-	m_cTitleWindow.setColor(COL_MENUHEAD_PLUS_0);
-	m_cTitleWindow.setCorner(RADIUS_MID, CORNER_TOP);
-	m_cTitleWindow.setGradient(g_settings.Head_gradient);
-	m_cTitleWindow.paint();
-
-	// icon
-	int iw, ih;
-	frameBuffer->getIconSize(NEUTRINO_ICON_KEYBINDING, &iw, &ih);
-	frameBuffer->paintIcon(NEUTRINO_ICON_KEYBINDING, m_cTitle.iX + BORDER_LEFT, m_cTitle.iY + (hheight - ih)/2);
-
-	// title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(m_cTitle.iX + BORDER_LEFT + iw + BORDER_LEFT, m_cTitle.iY + hheight, m_cTitle.iWidth, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	headers.paintHead(m_cTitle, NEUTRINO_ICON_KEYBINDING, name);
 
 	//paint msg...
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_cBox.iX + BORDER_LEFT, m_cBox.iY + hheight + mheight, m_cBox.iWidth, g_Locale->getText(LOCALE_KEYCHOOSER_TEXT1), COL_MENUCONTENT, 0, true); // UTF-8

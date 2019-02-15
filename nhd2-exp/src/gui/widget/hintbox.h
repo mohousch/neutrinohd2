@@ -45,6 +45,7 @@
 
 #include <gui/widget/icons.h>
 #include <gui/widget/scrollbar.h>
+#include <gui/widget/headers.h>
 
 
 #define HINTBOX_WIDTH			550
@@ -57,8 +58,8 @@ class CHintBox
 		CBox cFrameBoxItem;
 		
 		CWindow m_cBoxWindow;
-		CWindow m_cTitleWindow;
 		CWindow m_cBodyWindow;
+		CHeaders headers;
 
 		unsigned int entries_per_page;
 		unsigned int current_page;

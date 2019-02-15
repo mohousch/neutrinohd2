@@ -44,6 +44,7 @@
 
 #include <gui/widget/menue.h>
 #include <gui/widget/window.h>
+#include <gui/widget/headers.h>
 
 
 class CKeyChooserItem;
@@ -72,7 +73,7 @@ class CKeyChooserItem : public CMenuTarget
 		CBox m_cTitle;
 
 		CWindow m_cBoxWindow;
-		CWindow m_cTitleWindow;
+		CHeaders headers;
 
 		std::string name;
 		int* key;
