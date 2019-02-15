@@ -938,7 +938,7 @@ int ClistBoxEntryItem::paint(bool selected, bool /*AfterPulldown*/)
 		//
 		if(selected)
 		{
-			frameBuffer->paintBoxRel(x, y, item_width, item_height, item_selectedColor, RADIUS_SMALL, CORNER_BOTH);
+			frameBuffer->paintBoxRel(x, y, item_width, item_height, item_selectedColor);
 
 			frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
 

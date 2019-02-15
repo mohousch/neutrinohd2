@@ -365,9 +365,6 @@ void CTestMenu::testCFrameBox()
 		m_vMovieInfo.push_back(movieInfo);
 	}
 
-	delete tmdb;
-	tmdb = NULL;
-
 	loadBox.hide();
 
 	// load items
@@ -390,8 +387,14 @@ void CTestMenu::testCFrameBox()
 	rightWidget->setItemsPerPage(6, 2);
 	rightWidget->setSelected(-1);
 	rightWidget->setOutFocus(true);
+
+	enum {
+		WIDGET_TOP,
+		WIDGET_LEFT,
+		WIDGET_RIGHT
+	}WIDGET_FOCUS;
 	
-	int focus = 0; // frameBox
+	int focus = WIDGET_TOP; // frameBox
 
 	// _exec()
 REPEAT:
@@ -439,37 +442,37 @@ REPEAT:
 		}
 		else if(msg == CRCInput::RC_right)
 		{
-			if(focus == 0)
+			if(focus == WIDGET_TOP)
 				topWidget->swipRight();
-			else if(focus == 2)
+			else if(focus == WIDGET_RIGHT)
 				rightWidget->swipRight();
 		}
 		else if(msg == CRCInput::RC_left)
 		{
-			if(focus == 0)
+			if(focus == WIDGET_TOP)
 				topWidget->swipLeft();
-			else if(focus == 2)
+			else if(focus == WIDGET_RIGHT)
 				rightWidget->swipLeft();
 		}
 		else if(msg == CRCInput::RC_up)
 		{
-			if(focus == 1)
+			if(focus == WIDGET_LEFT)
 				leftWidget->scrollLineUp();
-			else if(focus == 2)
+			else if(focus == WIDGET_RIGHT)
 				rightWidget->scrollLineUp();
 		}
 		else if(msg == CRCInput::RC_down)
 		{
-			if(focus == 1)
+			if(focus == WIDGET_LEFT)
 				leftWidget->scrollLineDown();
-			else if(focus == 2)
+			else if(focus == WIDGET_RIGHT)
 				rightWidget->scrollLineDown();
 		}
 		else if(msg == CRCInput::RC_yellow)
 		{
-			if(focus == 0)
+			if(focus == WIDGET_TOP)
 			{
-				focus = 1;
+				focus = WIDGET_LEFT;
 
 				leftWidget->setSelected(0);
 				leftWidget->setOutFocus(false);
@@ -480,9 +483,9 @@ REPEAT:
 				rightWidget->setSelected(-1);
 				rightWidget->setOutFocus(true);
 			}
-			else if (focus == 1)
+			else if (focus == WIDGET_LEFT)
 			{
-				focus = 2;
+				focus = WIDGET_RIGHT;
 
 				rightWidget->setSelected(0);
 				rightWidget->setOutFocus(false);
@@ -493,9 +496,9 @@ REPEAT:
 				leftWidget->setSelected(-1);
 				leftWidget->setOutFocus(true);
 			}
-			else if (focus == 2)
+			else if (focus == WIDGET_RIGHT)
 			{
-				focus = 0;
+				focus = WIDGET_TOP;
 
 				leftWidget->setSelected(-1);
 				leftWidget->setOutFocus(true);
@@ -511,7 +514,7 @@ REPEAT:
 		}
 		else if(msg == CRCInput::RC_ok)
 		{
-			if(focus == 2)
+			if(focus == WIDGET_RIGHT)
 			{
 				hide();
 
@@ -547,7 +550,7 @@ REPEAT:
 
 				goto REPEAT;
 			}
-			else if(focus == 1)
+			else if(focus == WIDGET_LEFT)
 			{
 				selected = leftWidget->getSelected();
 
@@ -559,7 +562,7 @@ REPEAT:
 		}
 		else if(msg == CRCInput::RC_info)
 		{
-			if(focus == 2)
+			if(focus == WIDGET_RIGHT)
 			{
 				hide();
 				selected = rightWidget->getSelected();
@@ -569,14 +572,14 @@ REPEAT:
 		}
 		else if(msg == CRCInput::RC_page_down)
 		{
-			if(focus == 2)
+			if(focus == WIDGET_RIGHT)
 			{
 				rightWidget->scrollPageDown();
 			}
 		}
 		else if(msg == CRCInput::RC_page_up)
 		{
-			if(focus == 2)
+			if(focus == WIDGET_RIGHT)
 			{
 				rightWidget->scrollPageUp();
 			}
@@ -608,8 +611,9 @@ REPEAT:
 
 	fileHelper.removeDir(thumbnail_dir.c_str());
 	m_vMovieInfo.clear();
-	//list.clear();
-	//m_movielist.clear();
+	
+	delete tmdb;
+	tmdb = NULL;
 }
 
 // CBox
