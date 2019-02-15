@@ -3452,7 +3452,9 @@ void ClistBoxWidget::paintHead()
 	}
 	else
 	{
-		headers.paintHead(x, y, width, hheight, iconfile.c_str(), l_name, true, hbutton_count, hbutton_labels);
+		headers.enablePaintDate();
+		headers.setHeaderButtons(hbutton_labels, hbutton_count);
+		headers.paintHead(x, y, width, hheight, iconfile.c_str(), l_name);
 	}
 }
 
@@ -3460,12 +3462,7 @@ void ClistBoxWidget::paintFoot()
 {
 	if(widgetType != WIDGET_TYPE_FRAME)
 	{
-		int fbutton_w = 0;
-
-		if(fbutton_count != 0)
-			fbutton_w = fbutton_width/fbutton_count;
-
-		headers.paintFoot(x, y + height - fheight, width, fheight, fbutton_w, fbutton_count, fbutton_labels);
+		headers.paintFoot(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
 	}
 }
 

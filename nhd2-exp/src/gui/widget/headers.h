@@ -23,24 +23,54 @@
 #include <driver/fontrenderer.h>
 #include <driver/framebuffer.h>
 
+#include <gui/widget/buttons.h>
+
+#include <system/settings.h>
+
 
 class CHeaders
 {
 	private:
+		// head
+		fb_pixel_t bgcolor;
+		int radius;
+		int corner;
+		int gradient;
+		bool paintDate;
+		bool logo;
+		int hbutton_count;
+		const struct button_label* hbutton_labels;
+
+		// foot
+		fb_pixel_t fbgcolor;
+		int fradius;
+		int fcorner;
+		int fgradient;
+	
 	public:
 		CHeaders();
 
 		// head
-		void paintHead(int x, int y, int dx, int dy, const char* icon, const neutrino_locale_t caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL, bool logo = false);
+		void paintHead(int x, int y, int dx, int dy, const char* icon, const neutrino_locale_t caption);
+		void paintHead(int x, int y, int dx, int dy, const char* icon, const std::string caption);
 
-		void paintHead(CBox position, const char* icon, const neutrino_locale_t caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL, bool logo = false);
+		void paintHead(CBox position, const char* icon, const neutrino_locale_t caption);
+		void paintHead(CBox position, const char* icon, const std::string caption);
 
-		void paintHead(int x, int y, int dx, int dy, const char* icon, const std::string caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL, bool logo = false);
-		void paintHead(CBox position, const char* icon, const std::string caption, bool paintDate = false, const unsigned int count = 0, const struct button_label* const content = NULL, bool logo = false);
+		void setColor(fb_pixel_t col){bgcolor = col;};
+		void setCorner(int ra = NO_RADIUS, int co = CORNER_NONE){radius = ra; corner = co;};
+		void setGradient(int grad){gradient = grad;};
+		void enablePaintDate(void){paintDate = true;};
+		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
+		void enableLogo(void){logo = true;};
 
 		// foot
-		void paintFoot(int x, int y, int dx, int dy, const unsigned int buttonwidth = 0, const unsigned int count = 0, const struct button_label * const content = NULL);
-		void paintFoot(CBox position, const unsigned int buttonwidth = 0, const unsigned int count = 0, const struct button_label * const content = NULL);
+		void paintFoot(int x, int y, int dx, int dy, const unsigned int count = 0, const struct button_label * const content = NULL);
+		void paintFoot(CBox position, const unsigned int count = 0, const struct button_label * const content = NULL);
+
+		void setFootColor(fb_pixel_t col){bgcolor = col;};
+		void setFootCorner(int ra = NO_RADIUS, int co = CORNER_NONE){radius = ra; corner = co;};
+		void setFootGradient(int grad){gradient = grad;};
 };
 
 #endif

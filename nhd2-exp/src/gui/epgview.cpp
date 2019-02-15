@@ -408,7 +408,9 @@ void CEpgData::showHead(const t_channel_id channel_id)
 
 	logo = frameBuffer->getLogoName(channel_id);
 
-	headers.paintHead(cHeadBox.iX, cHeadBox.iY, cHeadBox.iWidth, cHeadBox.iHeight, logo.c_str(), text1, true, 0, NULL, true);
+	headers.enablePaintDate();
+	headers.enableLogo();
+	headers.paintHead(cHeadBox.iX, cHeadBox.iY, cHeadBox.iWidth, cHeadBox.iHeight, logo.c_str(), text1);
 }
 
 int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_startzeit, bool doLoop )
@@ -987,10 +989,10 @@ int CEpgData::FollowScreenings (const t_channel_id /*channel_id*/, const std::st
 // foot
 struct button_label FButtons[4] =
 {
-	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL},
-	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL},
+	{ NULL, NONEXISTANT_LOCALE, NULL},
+	{ NULL, NONEXISTANT_LOCALE, NULL},
 	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_EVENTLISTBAR_CHANNELSWITCH, NULL},
-	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, NULL}
+	{ NULL, NONEXISTANT_LOCALE, NULL}
 };
 
 void CEpgData::showTimerEventBar(bool _show)
@@ -1007,9 +1009,12 @@ void CEpgData::showTimerEventBar(bool _show)
 	}
 
 	if (recDir != NULL)
+	{
+		FButtons[0].button = NEUTRINO_ICON_BUTTON_RED;
 		FButtons[0].locale = LOCALE_EVENTLISTBAR_RECORDEVENT;
+	}
 
-	headers.paintFoot(cFootBox.iX, cFootBox.iY, cFootBox.iWidth, cFootBox.iHeight, cFootBox.iWidth/4, 4, FButtons);
+	headers.paintFoot(cFootBox.iX, cFootBox.iY, cFootBox.iWidth, cFootBox.iHeight, 4, FButtons);
 }
 
 //  -- EPG Data Viewer Menu Handler Class

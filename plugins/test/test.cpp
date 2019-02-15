@@ -409,8 +409,10 @@ REPEAT:
 	}
 
 	// paint all widget
-	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "Movie Trailer", true, 2, frameBoxHeadButtons);
-	headers.paintFoot(footBox, footBox.iWidth/4, 4, frameButtons);
+	headers.enablePaintDate();
+	headers.setHeaderButtons(frameBoxHeadButtons, 2);
+	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "Movie Trailer");
+	headers.paintFoot(footBox, 4, frameButtons);
 	topWidget->paint();
 	leftWidget->paint();
 	rightWidget->paint();
@@ -434,7 +436,9 @@ REPEAT:
 
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			headers.paintHead(headBox, NEUTRINO_ICON_MP3, "CFrameBox", true, 2, frameBoxHeadButtons);
+			headers.enablePaintDate();
+			headers.setHeaderButtons(frameBoxHeadButtons, 2);
+			headers.paintHead(headBox, NEUTRINO_ICON_MP3, "Movie Trailer");
 		} 
 		else if (msg == CRCInput::RC_home) 
 		{

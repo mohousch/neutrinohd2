@@ -82,18 +82,6 @@ void CSysInfoWidget::paintHead()
 	cFrameBoxTitle.iX = cFrameBox.iX;
 	cFrameBoxTitle.iY = cFrameBox.iY;
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
-
-	// Box
-/*
-	HeadWindow.setDimension(&cFrameBoxTitle);
-	HeadWindow.setColor(COL_MENUHEAD_PLUS_0);
-	HeadWindow.setCorner(RADIUS_MID, CORNER_TOP);
-	HeadWindow.setGradient(g_settings.Head_gradient);
-	HeadWindow.paint();
-	
-	// icon
-	frameBuffer->paintIcon(titleIcon.iconName.c_str(), cFrameBoxTitle.iX + BORDER_LEFT, cFrameBoxTitle.iY + (cFrameBoxTitle.iHeight - titleIcon.iHeight)/2);
-*/
 	
 	if(mode == SYSINFO)
 		sprintf((char *) buf, "%s", "System-Info:");
@@ -108,9 +96,8 @@ void CSysInfoWidget::paintHead()
 		sprintf((char *) buf, "%s", "Prozess-Liste:");
 	
 	// title
-	//g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(cFrameBoxTitle.iX + BORDER_LEFT + titleIcon.iWidth + ICON_OFFSET, cFrameBoxTitle.iY + cFrameBoxTitle.iHeight, cFrameBoxTitle.iWidth - BORDER_LEFT - BORDER_RIGHT - titleIcon.iWidth - ICON_OFFSET, buf, COL_MENUHEAD);
-
-	headers.paintHead(cFrameBoxTitle, titleIcon.iconName.c_str(), buf, true);
+	headers.enablePaintDate();
+	headers.paintHead(cFrameBoxTitle, titleIcon.iconName.c_str(), buf);
 }
 
 // paint foot
@@ -130,24 +117,7 @@ void CSysInfoWidget::paintFoot()
 	cFrameBoxFoot.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameBoxFoot.iHeight;
 	cFrameBoxFoot.iWidth = cFrameBox.iWidth;
 
-	int ButtonWidth = (cFrameBoxFoot.iWidth - BORDER_LEFT - BORDER_RIGHT) / 4;
-
-	headers.paintFoot(cFrameBoxFoot, ButtonWidth, 4, Buttons);
-
-/*
-	// Foot
-	FootWindow.setDimension(&cFrameBoxFoot);
-	FootWindow.setColor(COL_MENUHEAD_PLUS_0);
-	FootWindow.setCorner(RADIUS_MID, CORNER_BOTTOM);
-	FootWindow.setGradient(g_settings.Foot_gradient);
-	FootWindow.paint();
-
-	
-	// Buttons
-	int ButtonWidth = (cFrameBoxFoot.iWidth - BORDER_LEFT - BORDER_RIGHT) / 4;
-
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, cFrameBoxFoot.iX + BORDER_LEFT, cFrameBoxFoot.iY, ButtonWidth, 4, Buttons, cFrameBoxFoot.iHeight);
-*/
+	headers.paintFoot(cFrameBoxFoot, 4, Buttons);
 }
 
 // hide

@@ -411,20 +411,19 @@ void ClistBox::paintItems()
 void ClistBox::paintHead()
 {
 	if(paintTitle)
-		headers.paintHead(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, iconfile.c_str(), l_name.c_str(), paintDate, hbutton_count, hbutton_labels, logo);
-		
+	{
+		headers.enablePaintDate();
+		headers.enableLogo();
+		headers.setHeaderButtons(hbutton_labels, hbutton_count);
+		headers.paintHead(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, iconfile.c_str(), l_name.c_str());
+	}	
 }
 
 void ClistBox::paintFoot()
 {
 	if(paint_Foot)
 	{
-		int fbutton_w = 0;
-
-		if(fbutton_count != 0)
-			fbutton_w = cFrameBox.iWidth/fbutton_count;
-
-		headers.paintFoot(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - footInfoHeight - fheight, cFrameBox.iWidth, fheight, fbutton_w, fbutton_count, fbutton_labels);
+		headers.paintFoot(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - footInfoHeight - fheight, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
 	}
 }
 
