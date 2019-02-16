@@ -61,17 +61,21 @@
 CVfdControler::CVfdControler(const neutrino_locale_t Name, CChangeObserver* Observer)
 {
 	frameBuffer = CFrameBuffer::getInstance();
+
 	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+
 	observer = Observer;
 	
 	nameStringOption = Name;
 	name = g_Locale->getText(Name);
 
 	width = w_max(MENU_WIDTH, 0);
-	height = h_max(hheight+ mheight*4 + mheight/2, 0);
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth()-width) >> 1);
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight()-height)>> 1);
+	height = h_max(hheight + mheight*4 + mheight/2, 0);
+	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) >> 1);
+	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1);
+
+	mainWindow.setPosition(x, y, width, height);
 
 	brightness = CVFD::getInstance()->getBrightness();
 	brightnessstandby = CVFD::getInstance()->getBrightnessStandby();
@@ -80,8 +84,10 @@ CVfdControler::CVfdControler(const neutrino_locale_t Name, CChangeObserver* Obse
 CVfdControler::CVfdControler(const char* const Name, CChangeObserver* Observer)
 {
 	frameBuffer = CFrameBuffer::getInstance();
+
 	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+
 	observer = Observer;
 
 	name = Name;
@@ -89,8 +95,10 @@ CVfdControler::CVfdControler(const char* const Name, CChangeObserver* Observer)
 
 	width = w_max(MENU_WIDTH, 0);
 	height = h_max(hheight+ mheight*3 + mheight/2, 0);
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth()-width) >> 1);
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight()-height)>> 1);
+	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) >> 1);
+	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height)>> 1);
+
+	mainWindow.setPosition(x, y, width, height);
 
 	brightness = CVFD::getInstance()->getBrightness();
 	brightnessstandby = CVFD::getInstance()->getBrightnessStandby();
@@ -125,7 +133,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 
 	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
 
-	bool loop=true;
+	bool loop = true;
 	while (loop)
 	{
 		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd, true );
@@ -290,7 +298,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 
 void CVfdControler::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
+	mainWindow.hide();
 
 	frameBuffer->blit();
 }
@@ -301,14 +309,13 @@ void CVfdControler::paint()
 
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 	
-	// title
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);//round
+	// main window
+	mainWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	mainWindow.setCorner(RADIUS_MID, CORNER_BOTTOM);
+	mainWindow.paint();
 
-	// body
-	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
-
-	// head title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	// head
+	headers.paintHead(x, y, width, hheight, NEUTRINO_ICON_LCD, name);
 
 	paintSlider(x + BORDER_LEFT, y + hheight, brightness, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESS, true);
 	paintSlider(x + BORDER_LEFT, y + hheight + mheight, brightnessstandby, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESSSTANDBY, false);
@@ -342,3 +349,5 @@ void CVfdControler::paintSlider(int _x, int _y, unsigned int spos, float factor,
 	frameBuffer->paintBoxRel(_x + startx + 120 + 10, _y, 50, mheight, COL_MENUCONTENT_PLUS_0);
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(_x + startx + 120 + 10, _y + mheight, width, wert, COL_MENUCONTENT, 0, true); // UTF-8
 }
+
+

@@ -65,6 +65,8 @@ neutrino_LDADD = \
 	nhttpd/yhttpd_mods/libyhttpdmods.a \
 	nhttpd/yhttpd_core/libyhttpd.a \
 	gui/video_setup.o \
+	gui/psisetup.o \
+	gui/alphasetup.o \
 	gui/widget/items2detailsline.o \
 	gui/widget/window.o \
 	gui/widget/headers.o \

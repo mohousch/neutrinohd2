@@ -114,6 +114,5 @@ if ENABLE_CI
 libneutrino_gui2_a_SOURCES += cam_menu.cpp
 endif
 
-#libtimerlist_a_SOURCES = timerlist.cpp
 
 

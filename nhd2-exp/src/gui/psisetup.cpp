@@ -69,6 +69,19 @@ extern cVideo * videoDecoder;
 CPSISetup::CPSISetup(const neutrino_locale_t Name, unsigned char *Contrast, unsigned char *Saturation, unsigned char *Brightness, unsigned char *Tint, CChangeObserver *Observer)
 {
 	frameBuffer = CFrameBuffer::getInstance();
+
+	width = w_max(MENU_WIDTH, 0);
+
+	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+
+	height = hheight + mheight*4;
+
+	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) >> 1);
+	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1);
+
+	mainWindow.setPosition(x, y, width, height);
+
 	observer = Observer;
 	name = Name;
 
@@ -89,16 +102,6 @@ int CPSISetup::exec(CMenuTarget * parent, const std::string &)
 
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
-
-	width = w_max(MENU_WIDTH, 0);
-
-	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-
-	height = hheight + mheight*4;
-
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) >> 1);
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1);
 
 	int res = menu_return::RETURN_REPAINT;
 	
@@ -372,7 +375,8 @@ int CPSISetup::exec(CMenuTarget * parent, const std::string &)
 
 void CPSISetup::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
+	//frameBuffer->paintBackgroundBoxRel(x, y, width, height);
+	mainWindow.hide();
 	frameBuffer->blit();
 }
 
@@ -380,14 +384,13 @@ void CPSISetup::paint()
 {
 	dprintf(DEBUG_DEBUG, "CPSISetup::paint\n");
 
-	// headbox
-	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
-	
-	// title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width, g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
-	
-	//box bottom
-	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	// main window
+	mainWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	mainWindow.setCorner(RADIUS_MID, CORNER_BOTTOM);
+	mainWindow.paint();
+
+	// head
+	headers.paintHead(x, y, width, hheight, NEUTRINO_ICON_COLORS, g_Locale->getText(name));
 	
 	//paint slider
 	// contrast

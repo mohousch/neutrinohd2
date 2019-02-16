@@ -57,8 +57,6 @@ class CInfoBox
 		CBox	m_cBoxFrameText;
 		CBox	m_cBoxFrameTitleRel;
 
-		CHeaders headers;
-
 		// variables
 		std::string m_cIcon;
 		std::string m_cTitle;
@@ -68,6 +66,7 @@ class CInfoBox
 		CFont *m_pcFontTitle;
 		int m_nFontTitleHeight;
 
+		CHeaders headers;
 		CTextBox *m_pcTextBox;
 
 		bool bigFonts;

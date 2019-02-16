@@ -120,8 +120,8 @@ class CTestMenu : public CMenuTarget
 		void testAVSelectWidget();
 		void testAudioSelectWidget();
 		void testDVBSubSelectWidget();
-		//void testAlphaSetupWidget();
-		//void testPSISetup();
+		void testAlphaSetupWidget();
+		void testPSISetup();
 		void testRCLock();
 		void testSleepTimerWidget();
 		void testMountGUI();
@@ -2100,7 +2100,6 @@ void CTestMenu::testDVBSubSelectWidget()
 	dvbSubSelectHandler = NULL;
 }
 
-/*
 void CTestMenu::testAlphaSetupWidget()
 {
 	CAlphaSetup * alphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
@@ -2108,9 +2107,7 @@ void CTestMenu::testAlphaSetupWidget()
 	delete alphaSetup;
 	alphaSetup = NULL;
 }
-*/
 
-/*
 void CTestMenu::testPSISetup()
 {
 	CPSISetup * psiSetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
@@ -2118,7 +2115,6 @@ void CTestMenu::testPSISetup()
 	delete psiSetup;
 	psiSetup = NULL;
 }
-*/
 
 void CTestMenu::testRCLock()
 {
@@ -2863,22 +2859,18 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
-/*
 	else if(actionKey == "alphasetup")
 	{
 		testAlphaSetupWidget();
 
 		return menu_return::RETURN_REPAINT;
 	}
-*/
-/*
 	else if(actionKey == "psisetup")
 	{
 		testPSISetup();
 
 		return menu_return::RETURN_REPAINT;
 	}
-*/
 	else if(actionKey == "rclock")
 	{
 		testRCLock();
@@ -3176,8 +3168,8 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("AudioVideoSelectWidget", true, NULL, this, "avselect"));
 	mainMenu->addItem(new CMenuForwarder("AudioSelectWidget", true, NULL, this, "aselect"));
 	mainMenu->addItem(new CMenuForwarder("DVBSubSelectWidget", true, NULL, this, "dvbsubselect"));
-	//mainMenu->addItem(new CMenuForwarder("AlphaSetup", true, NULL, this, "alphasetup"));
-	//mainMenu->addItem(new CMenuForwarder("PSISetup", true, NULL, this, "psisetup"));
+	mainMenu->addItem(new CMenuForwarder("AlphaSetup", true, NULL, this, "alphasetup"));
+	mainMenu->addItem(new CMenuForwarder("PSISetup", true, NULL, this, "psisetup"));
 	mainMenu->addItem(new CMenuForwarder("RCLock", true, NULL, this, "rclock"));
 	mainMenu->addItem(new CMenuForwarder("SleepTimerWidget", true, NULL, this, "sleeptimer"));
 	mainMenu->addItem(new CMenuForwarder("MountGUI", true, NULL, this, "mountgui"));

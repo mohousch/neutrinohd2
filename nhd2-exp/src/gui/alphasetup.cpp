@@ -64,6 +64,18 @@
 CAlphaSetup::CAlphaSetup(const neutrino_locale_t Name, unsigned char * Alpha, CChangeObserver * Observer)
 {
 	frameBuffer = CFrameBuffer::getInstance();
+
+	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+
+	mainBox.iWidth = w_max(MENU_WIDTH, 0);
+	mainBox.iHeight = hheight + mheight*2;
+
+	mainBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - mainBox.iWidth) >> 1);
+	mainBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - mainBox.iHeight) >> 1);
+
+	mainWindow.setPosition(&mainBox);
+
 	observer = Observer;
 	name = Name;
 
@@ -83,15 +95,18 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	width = w_max(MENU_WIDTH, 0);
-
+/*
 	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 
-	height = hheight + mheight*2;
+	mainBox.iWidth = w_max(MENU_WIDTH, 0);
+	mainBox.iHeight = hheight + mheight*2;
 
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth()-width) >> 1);
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight()-height) >> 1);
+	mainBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - mainBox.iWidth) >> 1);
+	mainBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - mainBox.iHeight) >> 1);
+
+	mainWindow.setPosition(&mainBox);
+*/
 
 	int res = menu_return::RETURN_REPAINT;
 	
@@ -124,12 +139,12 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 				{
 					if(selected < max)
 					{
-						paintSlider(x + BORDER_LEFT, y + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2, false);
+						paintSlider(mainBox.iX + BORDER_LEFT, mainBox.iY + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2, false);
 						
 						selected++;
 
 						if(selected == 0)
-							paintSlider(x + BORDER_LEFT, y + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2RED, true );
+							paintSlider(mainBox.iX + BORDER_LEFT, mainBox.iY + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2RED, true );
 					}
 					break;
 				}
@@ -138,12 +153,12 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 				{
 					if (selected > 0)
 					{
-						paintSlider(x + BORDER_LEFT, y + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2, false);
+						paintSlider(mainBox.iX + BORDER_LEFT, mainBox.iY + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2, false);
 
 						selected--;
 
 						if(selected == 0)
-							paintSlider(x + BORDER_LEFT, y + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2RED, true );
+							paintSlider(mainBox.iX + BORDER_LEFT, mainBox.iY + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2RED, true );
 					}
 					break;
 				}
@@ -159,7 +174,7 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 							else
 								*alpha = 255;
 								
-							paintSlider(x + BORDER_LEFT, y + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2RED, true );
+							paintSlider(mainBox.iX + BORDER_LEFT, mainBox.iY + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2RED, true );
 							frameBuffer->setBlendLevel(*alpha);
 						}
 					
@@ -178,7 +193,7 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 							else
 								*alpha = 0;
 								
-							paintSlider(x + BORDER_LEFT, y + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2RED, true );
+							paintSlider(mainBox.iX + BORDER_LEFT, mainBox.iY + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2RED, true );
 							frameBuffer->setBlendLevel(*alpha);
 						}
 					}
@@ -224,7 +239,7 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 
 void CAlphaSetup::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
+	mainWindow.hide();
 	
 	// blit
 	frameBuffer->blit();
@@ -234,17 +249,16 @@ void CAlphaSetup::paint()
 {
 	dprintf(DEBUG_NORMAL, "CAlphaSetup::paint\n");
 
+	// main window
+	mainWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	mainWindow.setCorner(RADIUS_MID, CORNER_BOTTOM);
+	mainWindow.paint();
+
 	// head
-	frameBuffer->paintBoxRel(x, y, width,hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
-	
-	// head title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width, g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
-	
-	// foot
-	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	headers.paintHead(mainBox.iX, mainBox.iY, mainBox.iWidth, hheight, NEUTRINO_ICON_COLORS, g_Locale->getText(name));
 
 	// slider
-	paintSlider(x + BORDER_LEFT, y + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2RED, true );
+	paintSlider(mainBox.iX + BORDER_LEFT, mainBox.iY + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2RED, true );
 }
 
 void CAlphaSetup::paintSlider(const int _x, const int _y, const unsigned char * const spos, const neutrino_locale_t text, const char * const iconname, const bool /*selected*/) // UTF-8
@@ -262,17 +276,19 @@ void CAlphaSetup::paintSlider(const int _x, const int _y, const unsigned char * 
 	
 	int slider_w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth("100", true); //UTF-8
 	
-	int startx = width - icon_w - slider_w - 50;
+	int startx = mainBox.iWidth - icon_w - slider_w - 50;
 
 	frameBuffer->paintBoxRel(_x + startx, _y, 120, mheight, COL_MENUCONTENT_PLUS_0);
 
 	frameBuffer->paintIcon(NEUTRINO_ICON_VOLUMEBODY, _x + startx, _y + 2 + mheight / 4);
 	frameBuffer->paintIcon(iconname, _x + startx + 3 + sspos, _y + mheight / 4);
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(_x, _y + mheight, width, g_Locale->getText(text), COL_MENUCONTENT, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(_x, _y + mheight, mainBox.iWidth, g_Locale->getText(text), COL_MENUCONTENT, 0, true); // UTF-8
 	
 	sprintf(wert, "%3d", sspos); // UTF-8 encoded
 
 	frameBuffer->paintBoxRel(_x + startx + 120 + 10, _y, 50, mheight, COL_MENUCONTENT_PLUS_0);
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(_x + startx + 120 + 10, _y + mheight, width, wert, COL_MENUCONTENT, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(_x + startx + 120 + 10, _y + mheight, mainBox.iWidth, wert, COL_MENUCONTENT, 0, true); // UTF-8
 }
+
+

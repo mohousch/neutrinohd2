@@ -39,18 +39,26 @@
 #include <system/localize.h>
 
 #include <gui/widget/menue.h>
+#include <gui/widget/window.h>
+#include <gui/widget/headers.h>
 
 #include <string>
+
 
 class CVfdControler : public CMenuTarget
 {
 	private:
 		CFrameBuffer	*frameBuffer;
+
 		int x;
 		int y;
 		int width;
 		int height;
-		int hheight,mheight; // head/menu font height
+
+		int hheight, mheight; // head/menu font height
+
+		CHeaders headers;
+		CWindow mainWindow;
 
 		unsigned char brightness;
 		unsigned char brightnessstandby;

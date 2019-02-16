@@ -34,7 +34,9 @@
 #define __psisetup__
 
 
-#include "widget/menue.h"
+#include <gui/widget/menue.h>
+#include <gui/widget/headers.h>
+#include <gui/widget/window.h>
 
 #include <driver/framebuffer.h>
 #include <system/localize.h>
@@ -46,12 +48,16 @@ class CPSISetup : public CMenuTarget
 {
 	private:
 		CFrameBuffer *frameBuffer;
+
 		int x;
 		int y;
 		int width;
 		int height;
 		int hheight;		// head font height
 		int mheight; 		// menu font height
+
+		CHeaders headers;
+		CWindow mainWindow;
 
 		unsigned char *contrast;
 		unsigned char *saturation;

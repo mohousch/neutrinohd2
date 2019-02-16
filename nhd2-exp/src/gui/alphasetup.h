@@ -36,7 +36,9 @@
 #define __alphasetup__
 
 
-#include "widget/menue.h"
+#include <gui/widget/menue.h>
+#include <gui/widget/headers.h>
+#include <gui/widget/window.h>
 
 #include <driver/framebuffer.h>
 #include <system/localize.h>
@@ -48,17 +50,17 @@ class CAlphaSetup : public CMenuTarget
 {
 	private:
 		CFrameBuffer *frameBuffer;
-		int x;
-		int y;
-		int width;
-		int height;
+
+		CBox mainBox;
+
 		int hheight;		// head menu font height
 		int mheight; 		// menu font height
 
-		unsigned char *alpha;
-	
-		neutrino_locale_t name;
+		CHeaders headers;
+		CWindow mainWindow;
 
+		unsigned char *alpha;
+		neutrino_locale_t name;
 		CChangeObserver *observer;
 
 		void paint();
@@ -70,7 +72,7 @@ class CAlphaSetup : public CMenuTarget
 		~CAlphaSetup();
 
 		void hide();
-		int exec(CMenuTarget* parent, const std::string& actionKey);
+		int exec(CMenuTarget *parent, const std::string &actionKey);
 };
 
 #endif
