@@ -252,7 +252,7 @@ void CTestMenu::testCFrameBox()
 
 	topWidget->setSelected(selected);
 	//topWidget->setOutFocus(false);
-	topWidget->setBackgroundColor(COL_BLUE);
+	topWidget->setBackgroundColor(COL_RED);
 
 	// leftWidget
 	CBox leftBox;
@@ -286,7 +286,7 @@ void CTestMenu::testCFrameBox()
 	leftWidget->setOutFocus(true);
 	leftWidget->disableShrinkMenu();
 
-	leftWidget->setBackgroundColor(COL_BLUE);
+	leftWidget->setBackgroundColor(COL_RED);
 
 	// right menu
 	CBox rightBox;
@@ -391,7 +391,7 @@ void CTestMenu::testCFrameBox()
 	rightWidget->setSelected(-1);
 	rightWidget->setOutFocus(true);
 
-	rightWidget->setBackgroundColor(COL_BLUE);
+	rightWidget->setBackgroundColor(COL_RED);
 	//rightWidget->enablePaintHead();
 	//rightWidget->setHeaderButtons(frameBoxHeadButtons, 2);
 	//rightWidget->enablePaintFoot();
@@ -416,7 +416,7 @@ REPEAT:
 		std::string fname = PLUGINDIR "/test/ard_mediathek.jpg";
 		//CFrameBuffer::getInstance()->loadBackgroundPic(fname);
 
-		CFrameBuffer::getInstance()->setBackgroundColor(COL_BLUE);
+		CFrameBuffer::getInstance()->setBackgroundColor(COL_RED);
 		CFrameBuffer::getInstance()->paintBackground();
 	}
 
