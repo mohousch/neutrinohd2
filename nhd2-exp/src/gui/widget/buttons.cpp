@@ -34,32 +34,39 @@ CButtons::CButtons()
 {
 }
 
-void CButtons::paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CLocaleManager * const localemanager, const int x, const int y, const unsigned int buttonwidth, const unsigned int count, const struct button_label * const content, const int dy)
+void CButtons::paintButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content)
 {
 	int iw, ih;
 	const char *l_option;
+
+	int buttonWidth = 0;
 	
-	for (unsigned int i = 0; i < count; i++)
+	if(count)
 	{
-		if(content[i].button != NULL)
+		buttonWidth = (dx - BORDER_LEFT - BORDER_RIGHT)/count;
+
+		for (unsigned int i = 0; i < count; i++)
 		{
-			frameBuffer->getIconSize(content[i].button, &iw, &ih);
-			int f_h = font->getHeight();
+			if(content[i].button != NULL)
+			{
+				CFrameBuffer::getInstance()->getIconSize(content[i].button, &iw, &ih);
+				int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
-			if(content[i].localename != 0)
-				l_option = content[i].localename;
-			else
-				l_option = localemanager->getText(content[i].locale);
+				if(content[i].localename != 0)
+					l_option = content[i].localename;
+				else
+					l_option = g_Locale->getText(content[i].locale);
 		
-			frameBuffer->paintIcon(content[i].button, x + i * buttonwidth, y + (dy - ih)/2);
+				CFrameBuffer::getInstance()->paintIcon(content[i].button, x + BORDER_LEFT + i*buttonWidth, y + (dy - ih)/2);
 
-			font->RenderString(x + iw + ICON_OFFSET + i * buttonwidth, y + f_h + (dy - f_h)/2, buttonwidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
+				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET + i*buttonWidth, y + f_h + (dy - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
+			}
 		}
 	}
 }
 
 // head buttons (right)
-void CButtons::paintHeadButtons(CFrameBuffer * const frameBuffer, const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content)
+void CButtons::paintHeadButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content)
 {
 	int iw[count], ih[count];
 	int startx = x + dx - BORDER_RIGHT;
@@ -68,11 +75,11 @@ void CButtons::paintHeadButtons(CFrameBuffer * const frameBuffer, const int x, c
 	{
 		if(content[i].button != NULL)
 		{
-			frameBuffer->getIconSize(content[i].button, &iw[i], &ih[i]);
+			CFrameBuffer::getInstance()->getIconSize(content[i].button, &iw[i], &ih[i]);
 		
 			startx -= (iw[i] + ICON_TO_ICON_OFFSET);
 
-			frameBuffer->paintIcon(content[i].button, startx, y + (dy - ih[i])/2);
+			CFrameBuffer::getInstance()->paintIcon(content[i].button, startx, y + (dy - ih[i])/2);
 		}
 	}
 }

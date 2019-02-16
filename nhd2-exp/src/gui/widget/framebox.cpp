@@ -41,6 +41,7 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 	selected = -1;
 	pos = 0;
 	outFocus = false;
+	backgroundColor = COL_MENUCONTENT_PLUS_0;
 
 	initFrames();
 }
@@ -56,6 +57,7 @@ CFrameBox::CFrameBox(CBox* position)
 	selected = -1;
 	pos = 0;
 	outFocus = false;
+	backgroundColor = COL_MENUCONTENT_PLUS_0;
 
 	initFrames();
 }
@@ -117,6 +119,7 @@ void CFrameBox::paintFrames()
 		frame->window.setPosition(frame_x + count*frame_width, cFrameBox.iY + (cFrameBox.iHeight - frame_height)/2, frame_width - BORDER_LEFT - BORDER_RIGHT, frame_height);
 
 		frame->window.enableShadow();
+		frame->item_backgroundColor = backgroundColor;
 
 		if(!outFocus && (selected == -1)) 
 		{
@@ -131,7 +134,7 @@ void CFrameBox::paint()
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::paint:\n");
 
-	cFrameWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	cFrameWindow.setColor(backgroundColor);
 	//cFrameWindow.setCorner(RADIUS_MID, CORNER_ALL);
 	//cFrameWindow.enableShadow();
 	//cFrameWindow.enableSaveScreen();
@@ -211,7 +214,7 @@ int CFrame::paint(bool selected)
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
+	fb_pixel_t bgcolor = /*COL_MENUCONTENT_PLUS_0*/item_backgroundColor;
 
 	if (selected)
 	{

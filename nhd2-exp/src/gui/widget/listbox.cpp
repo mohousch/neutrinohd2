@@ -82,8 +82,8 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	shrinkMenu = true;
 
 	//
-	backgroundColor = COL_BACKGROUND;
-	itemBoxColor = COL_YELLOW /*COL_MENUCONTENTSELECTED_PLUS_0*/;
+	backgroundColor = COL_MENUCONTENT_PLUS_0/*COL_BACKGROUND*/;
+	//itemBoxColor = COL_YELLOW /*COL_MENUCONTENTSELECTED_PLUS_0*/;
 	itemsPerX = 6;
 	itemsPerY = 3;
 	maxItemsPerPage = itemsPerX*itemsPerY;
@@ -127,8 +127,8 @@ ClistBox::ClistBox(CBox* position)
 	shrinkMenu = true;
 
 	//
-	backgroundColor = COL_BACKGROUND;
-	itemBoxColor = COL_YELLOW /*COL_MENUCONTENTSELECTED_PLUS_0*/;
+	backgroundColor = COL_MENUCONTENT_PLUS_0/*COL_BACKGROUND*/;
+	//itemBoxColor = COL_YELLOW /*COL_MENUCONTENTSELECTED_PLUS_0*/;
 	itemsPerX = 6;
 	itemsPerY = 3;
 	maxItemsPerPage = itemsPerX*itemsPerY;
@@ -215,7 +215,7 @@ void ClistBox::initFrames()
 			item->item_width = item_width;
 			item->item_height = item_height;
 			item->item_backgroundColor = backgroundColor;
-			item->item_selectedColor = itemBoxColor;
+			//item->item_selectedColor = itemBoxColor;
 		} 
 	}
 	else 
@@ -258,6 +258,14 @@ void ClistBox::initFrames()
 			}
 		}
 
+		//
+		for (unsigned int count = 0; count < items.size(); count++) 
+		{
+			CMenuItem * item = items[count];
+
+			item->item_backgroundColor = backgroundColor;
+		} 
+
 		// recalculate height
 		if(shrinkMenu)
 		{
@@ -291,7 +299,7 @@ void ClistBox::paintItems()
 		item_start_y = cFrameBox.iY + hheight;
 
 		// items background
-		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight + 2*ICON_OFFSET, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - 2*ICON_OFFSET, backgroundColor);
+		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - footInfoHeight, backgroundColor);
 
 		// item not currently on screen
 		if (selected >= 0)
@@ -367,7 +375,7 @@ void ClistBox::paintItems()
 				current_page++;
 		}
 
-		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - footInfoHeight, COL_MENUCONTENT_PLUS_0);
+		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - footInfoHeight, backgroundColor);
 	
 		// paint right scrollBar if we have more then one page
 		if(total_pages > 1)
@@ -927,17 +935,33 @@ int ClistBoxEntryItem::paint(bool selected, bool /*AfterPulldown*/)
 	int height = getHeight();
 	const char * l_text = getName();
 
+	uint8_t color = COL_MENUCONTENT;
+	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : /*COL_MENUCONTENT_PLUS_0*/item_backgroundColor;
+
+	if (selected)
+	{
+		color = COL_MENUCONTENTSELECTED;
+		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
+	}
+/*
+	else if (!active)
+	{
+		color = COL_MENUCONTENTINACTIVE;
+		bgcolor = COL_MENUCONTENTINACTIVE_PLUS_0;
+	}
+*/
+	
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		//
-		frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor);
+		frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_backgroundColor*/bgcolor);
 
 		frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
 
 		//
 		if(selected)
 		{
-			frameBuffer->paintBoxRel(x, y, item_width, item_height, item_selectedColor);
+			frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/bgcolor);
 
 			frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
 
@@ -952,21 +976,7 @@ int ClistBoxEntryItem::paint(bool selected, bool /*AfterPulldown*/)
 		return 0;
 	}
 	else
-	{
-		uint8_t color = COL_MENUCONTENT;
-		fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : COL_MENUCONTENT_PLUS_0;
-
-		if (selected)
-		{
-			color = COL_MENUCONTENTSELECTED;
-			bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-		}
-		else if (!active)
-		{
-			color = COL_MENUCONTENTINACTIVE;
-			bgcolor = COL_MENUCONTENTINACTIVE_PLUS_0;
-		}
-	
+	{	
 		// itemBox
 		frameBuffer->paintBoxRel(x, y, dx, height, bgcolor); //FIXME
 	

@@ -250,8 +250,9 @@ void CTestMenu::testCFrameBox()
 	frame->setOption("(2019)");
 	topWidget->addFrame(frame);
 
-	topWidget->setSelected(0);
+	topWidget->setSelected(selected);
 	//topWidget->setOutFocus(false);
+	topWidget->setBackgroundColor(COL_BLUE);
 
 	// leftWidget
 	CBox leftBox;
@@ -268,8 +269,8 @@ void CTestMenu::testCFrameBox()
 	item2->setnLinesItem();
 	ClistBoxEntryItem *item3 = new ClistBoxEntryItem("TV shows");
 	ClistBoxEntryItem *item4 = new ClistBoxEntryItem("Suche");
-	ClistBoxEntryItem *item5 = new ClistBoxEntryItem("", false);
-	ClistBoxEntryItem *item6 = new ClistBoxEntryItem("", false);
+	ClistBoxEntryItem *item5 = new ClistBoxEntryItem("", false); // FIXME
+	ClistBoxEntryItem *item6 = new ClistBoxEntryItem("", false); // FIXME
 	ClistBoxEntryItem *item7 = new ClistBoxEntryItem("Beenden");
 
 	leftWidget->addItem(item1);
@@ -284,6 +285,8 @@ void CTestMenu::testCFrameBox()
 	leftWidget->setSelected(-1);
 	leftWidget->setOutFocus(true);
 	leftWidget->disableShrinkMenu();
+
+	leftWidget->setBackgroundColor(COL_BLUE);
 
 	// right menu
 	CBox rightBox;
@@ -388,6 +391,12 @@ void CTestMenu::testCFrameBox()
 	rightWidget->setSelected(-1);
 	rightWidget->setOutFocus(true);
 
+	rightWidget->setBackgroundColor(COL_BLUE);
+	//rightWidget->enablePaintHead();
+	//rightWidget->setHeaderButtons(frameBoxHeadButtons, 2);
+	//rightWidget->enablePaintFoot();
+	//rightWidget->setFooterButtons(frameButtons, 4);
+
 	enum {
 		WIDGET_TOP,
 		WIDGET_LEFT,
@@ -399,20 +408,23 @@ void CTestMenu::testCFrameBox()
 	// _exec()
 REPEAT:
 	// background
-	bool usedBackground = CFrameBuffer::getInstance()->getuseBackground();
+	bool usedBackground = /*CFrameBuffer::getInstance()->getuseBackground()*/true;
 	if (usedBackground)
 	{
-		CFrameBuffer::getInstance()->saveBackgroundImage();
+		//CFrameBuffer::getInstance()->saveBackgroundImage();
 
 		std::string fname = PLUGINDIR "/test/ard_mediathek.jpg";
-		CFrameBuffer::getInstance()->loadBackgroundPic(fname);
+		//CFrameBuffer::getInstance()->loadBackgroundPic(fname);
+
+		CFrameBuffer::getInstance()->setBackgroundColor(COL_BLUE);
+		CFrameBuffer::getInstance()->paintBackground();
 	}
 
 	// paint all widget
 	headers.enablePaintDate();
 	headers.setHeaderButtons(frameBoxHeadButtons, 2);
-	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "Movie Trailer");
-	headers.paintFoot(footBox, 4, frameButtons);
+	//headers.paintHead(headBox, NEUTRINO_ICON_MP3, "Movie Trailer");
+	//headers.paintFoot(footBox, 4, frameButtons);
 	topWidget->paint();
 	leftWidget->paint();
 	rightWidget->paint();
@@ -436,9 +448,9 @@ REPEAT:
 
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			headers.enablePaintDate();
-			headers.setHeaderButtons(frameBoxHeadButtons, 2);
-			headers.paintHead(headBox, NEUTRINO_ICON_MP3, "Movie Trailer");
+			//headers.enablePaintDate();
+			//headers.setHeaderButtons(frameBoxHeadButtons, 2);
+			//headers.paintHead(headBox, NEUTRINO_ICON_MP3, "Movie Trailer");
 		} 
 		else if (msg == CRCInput::RC_home) 
 		{
@@ -478,27 +490,27 @@ REPEAT:
 			{
 				focus = WIDGET_LEFT;
 
-				leftWidget->setSelected(0);
-				leftWidget->setOutFocus(false);
-
 				topWidget->setSelected(-1);
 				topWidget->setOutFocus(true);
 
 				rightWidget->setSelected(-1);
 				rightWidget->setOutFocus(true);
+
+				leftWidget->setSelected(0);
+				leftWidget->setOutFocus(false);
 			}
 			else if (focus == WIDGET_LEFT)
 			{
 				focus = WIDGET_RIGHT;
 
-				rightWidget->setSelected(0);
-				rightWidget->setOutFocus(false);
+				leftWidget->setSelected(-1);
+				leftWidget->setOutFocus(true);
 
 				topWidget->setSelected(-1);
 				topWidget->setOutFocus(true);
 
-				leftWidget->setSelected(-1);
-				leftWidget->setOutFocus(true);
+				rightWidget->setSelected(0);
+				rightWidget->setOutFocus(false);
 			}
 			else if (focus == WIDGET_RIGHT)
 			{
@@ -592,14 +604,15 @@ REPEAT:
 		CFrameBuffer::getInstance()->blit();
 	}
 
-	hide();
-
 	//restore previous background
 	if (usedBackground)
 	{
-		CFrameBuffer::getInstance()->restoreBackgroundImage();
-		CFrameBuffer::getInstance()->useBackground(usedBackground);
+		//CFrameBuffer::getInstance()->restoreBackgroundImage();
+		//CFrameBuffer::getInstance()->useBackground(usedBackground);
+		CFrameBuffer::getInstance()->setBackgroundColor(COL_BACKGROUND);
 	}
+
+	hide();
 
 	delete topWidget;
 	topWidget = NULL;
@@ -1430,7 +1443,7 @@ void CTestMenu::testCButtons()
 
 	int icon_w, icon_h;
 	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-	buttons.paintButtons(CFrameBuffer::getInstance(), g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, (g_settings.screen_EndX - g_settings.screen_StartX - 100)/BUTTONS_COUNT, BUTTONS_COUNT, Buttons, icon_h);
+	buttons.paintButtons(g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, (g_settings.screen_EndX - g_settings.screen_StartX - 100), icon_h, BUTTONS_COUNT, Buttons);
 
 	CFrameBuffer::getInstance()->blit();
 

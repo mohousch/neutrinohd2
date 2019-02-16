@@ -42,6 +42,8 @@ class CFrame
 		std::string caption;
 		std::string option;
 
+		fb_pixel_t item_backgroundColor;
+
 		CFrame(const std::string title, const char * const icon = NULL);
 		virtual ~CFrame(){}
 
@@ -60,6 +62,8 @@ class CFrameBox
 		CWindow cFrameWindow;
 		int selected;
 		int pos;
+
+		fb_pixel_t backgroundColor;
 
 		bool outFocus;
 
@@ -87,6 +91,7 @@ class CFrameBox
 		int getSelected(){return selected;};
 
 		void setOutFocus(bool focus){outFocus = focus;};
+		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
 };
 
 #endif

@@ -3434,7 +3434,7 @@ void ClistBoxWidget::paintHead()
 				buttonWidth += iw[i];
 			}
 
-			buttons.paintHeadButtons(frameBuffer, x, y, width, hheight, hbutton_count, hbutton_labels);
+			buttons.paintHeadButtons(x, y, width, hheight, hbutton_count, hbutton_labels);
 		}
 
 		// paint time/date

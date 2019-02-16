@@ -91,7 +91,7 @@ class ClistBox
 
 		// frame
 		fb_pixel_t backgroundColor;
-		fb_pixel_t itemBoxColor;
+		//fb_pixel_t itemBoxColor;
 		int itemsPerX;
 		int itemsPerY;
 		int maxItemsPerPage;
@@ -153,7 +153,7 @@ class ClistBox
 
 		// Frame
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
-		void setItemBoxColor(fb_pixel_t col) {itemBoxColor = col;};
+		//void setItemBoxColor(fb_pixel_t col) {itemBoxColor = col;};
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 
 		virtual void swipLeft();

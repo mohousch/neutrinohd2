@@ -318,7 +318,7 @@ void CHeaders::paintFoot(int x, int y, int dx, int dy, const unsigned int count,
 
 	if(count)
 	{
-		buttonWidth = dx/count;
+		buttonWidth = (dx - BORDER_LEFT - BORDER_RIGHT)/count;
 		int iw, ih;
 		const char *l_option;
 	
@@ -334,9 +334,9 @@ void CHeaders::paintFoot(int x, int y, int dx, int dy, const unsigned int count,
 				else
 					l_option = g_Locale->getText(content[i].locale);
 		
-				CFrameBuffer::getInstance()->paintIcon(content[i].button, x + BORDER_LEFT+ i * buttonWidth, y + (dy - ih)/2);
+				CFrameBuffer::getInstance()->paintIcon(content[i].button, x + BORDER_LEFT + i*buttonWidth, y + (dy - ih)/2);
 
-				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET + i * buttonWidth, y + f_h + (dy - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
+				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET + i*buttonWidth, y + f_h + (dy - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
 			}
 		}
 	}
@@ -351,7 +351,7 @@ void CHeaders::paintFoot(CBox position, const unsigned int count, const struct b
 	int buttonWidth = 0;
 	if(count)
 	{
-		buttonWidth = position.iWidth/count;
+		buttonWidth = (position.iWidth - BORDER_LEFT - BORDER_RIGHT)/count;
 		int iw, ih;
 		const char *l_option;
 	
