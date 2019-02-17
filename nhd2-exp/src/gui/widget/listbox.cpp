@@ -82,8 +82,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	shrinkMenu = true;
 
 	//
-	backgroundColor = COL_MENUCONTENT_PLUS_0/*COL_BACKGROUND*/;
-	//itemBoxColor = COL_YELLOW /*COL_MENUCONTENTSELECTED_PLUS_0*/;
+	backgroundColor = COL_MENUCONTENT_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
 	maxItemsPerPage = itemsPerX*itemsPerY;
@@ -127,8 +126,7 @@ ClistBox::ClistBox(CBox* position)
 	shrinkMenu = true;
 
 	//
-	backgroundColor = COL_MENUCONTENT_PLUS_0/*COL_BACKGROUND*/;
-	//itemBoxColor = COL_YELLOW /*COL_MENUCONTENTSELECTED_PLUS_0*/;
+	backgroundColor = COL_MENUCONTENT_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
 	maxItemsPerPage = itemsPerX*itemsPerY;
@@ -215,7 +213,6 @@ void ClistBox::initFrames()
 			item->item_width = item_width;
 			item->item_height = item_height;
 			item->item_backgroundColor = backgroundColor;
-			//item->item_selectedColor = itemBoxColor;
 		} 
 	}
 	else 
@@ -936,7 +933,7 @@ int ClistBoxEntryItem::paint(bool selected, bool /*AfterPulldown*/)
 	const char * l_text = getName();
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : /*COL_MENUCONTENT_PLUS_0*/item_backgroundColor;
+	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : item_backgroundColor;
 
 	if (selected)
 	{
@@ -954,14 +951,14 @@ int ClistBoxEntryItem::paint(bool selected, bool /*AfterPulldown*/)
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		//
-		frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_backgroundColor*/bgcolor);
+		frameBuffer->paintBoxRel(x, y, item_width, item_height, bgcolor);
 
 		frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
 
 		//
 		if(selected)
 		{
-			frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/bgcolor);
+			frameBuffer->paintBoxRel(x, y, item_width, item_height, bgcolor);
 
 			frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
 

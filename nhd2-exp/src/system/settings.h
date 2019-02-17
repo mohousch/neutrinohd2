@@ -580,6 +580,9 @@ extern const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT];
 #define THUMBNAIL_OFFSET	3
 #define BIG_FONT_FAKTOR 	1.5
 
+// multi widget
+#define INTER_FRAME_SPACE 	4 
+
 // parentallock
 const int PARENTALLOCK_PROMPT_NEVER          = 0;
 const int PARENTALLOCK_PROMPT_ONSTART        = 1;

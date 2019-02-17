@@ -150,8 +150,6 @@ const CMenuOptionChooser::keyval MESSAGEBOX_PARENTAL_LOCKAGE_OPTIONS[MESSAGEBOX_
 #define TITLE_FONT 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]
 #define FOOT_FONT 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]
 
-#define INTER_FRAME_SPACE 		4  // space between e.g. upper and lower window
-
 CFont* CMovieBrowser::m_pcFontFoot = NULL;
 CFont* CMovieBrowser::m_pcFontTitle = NULL;
 

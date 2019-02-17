@@ -68,9 +68,9 @@ class CHeaders
 		void paintFoot(int x, int y, int dx, int dy, const unsigned int count = 0, const struct button_label * const content = NULL);
 		void paintFoot(CBox position, const unsigned int count = 0, const struct button_label * const content = NULL);
 
-		void setFootColor(fb_pixel_t col){bgcolor = col;};
-		void setFootCorner(int ra = NO_RADIUS, int co = CORNER_NONE){radius = ra; corner = co;};
-		void setFootGradient(int grad){gradient = grad;};
+		void setFootColor(fb_pixel_t col){fbgcolor = col;};
+		void setFootCorner(int ra = NO_RADIUS, int co = CORNER_NONE){fradius = ra; fcorner = co;};
+		void setFootGradient(int grad){fgradient = grad;};
 };
 
 #endif

@@ -214,7 +214,7 @@ int CFrame::paint(bool selected)
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = /*COL_MENUCONTENT_PLUS_0*/item_backgroundColor;
+	fb_pixel_t bgcolor = item_backgroundColor;
 
 	if (selected)
 	{
