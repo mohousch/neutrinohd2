@@ -260,7 +260,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 
 				int next_selected = selected + listBox->getListMaxShow();
 
-				if (next_selected > Bouquets->size())
+				if (next_selected > (int)Bouquets->size())
 					next_selected = Bouquets->size();
 
 				internalMoveBouquet(selected, next_selected);
@@ -299,7 +299,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 
 				int prev_selected = selected;
 				int next_selected = selected + 1;
-				if (next_selected > Bouquets->size())
+				if (next_selected > (int)Bouquets->size())
 					next_selected = Bouquets->size();
 
 				internalMoveBouquet(prev_selected, next_selected);

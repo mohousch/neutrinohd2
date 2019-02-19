@@ -880,8 +880,6 @@ int CChannelList::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 		// werden sollte (vorgesperrt) da ist
 		// oder das bouquet des Kanals ist vorgesperrt
 
-		printf("CChannelList::handleMsg: program-lock-status: %d\n", data);
-
 		if ((g_settings.parentallock_prompt == PARENTALLOCK_PROMPT_ONSIGNAL) || (g_settings.parentallock_prompt == PARENTALLOCK_PROMPT_CHANGETOLOCKED))
 		{
 			if ( zapProtection != NULL )

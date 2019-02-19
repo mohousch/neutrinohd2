@@ -90,7 +90,7 @@ CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string& Caption, unsig
 
 bool CBEChannelSelectWidget::isChannelInBouquet(int index)
 {
-	for (unsigned int i = 0; i< bouquetChannels->size(); i++)
+	for (unsigned int i = 0; i < bouquetChannels->size(); i++)
 	{
 		if ((*bouquetChannels)[i]->channel_id == Channels[index]->channel_id)
 			return true;

@@ -213,7 +213,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 
 				int next_selected = selected + listBox->getListMaxShow();
 
-				if (next_selected > Channels->size())
+				if (next_selected > (int)Channels->size())
 					next_selected = Channels->size();
 
 				internalMoveChannel(selected, next_selected);
@@ -246,7 +246,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 
 			int prev_selected = selected;
 			int next_selected = selected + 1;
-			if (next_selected > Channels->size())
+			if (next_selected > (int)Channels->size())
 				next_selected = Channels->size();
 
 			if (state == beDefault)

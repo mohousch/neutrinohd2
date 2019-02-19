@@ -116,7 +116,7 @@ void CFrameBox::paintFrames()
 
 		// init frame
 		// frame
-		frame->window.setPosition(frame_x + count*frame_width, cFrameBox.iY + (cFrameBox.iHeight - frame_height)/2, frame_width - BORDER_LEFT - BORDER_RIGHT, frame_height);
+		frame->window.setPosition(frame_x + count*frame_width, /*cFrameBox.iY + (cFrameBox.iHeight - frame_height)/2*/frame_y, frame_width - BORDER_LEFT - BORDER_RIGHT, frame_height);
 
 		frame->window.enableShadow();
 		frame->item_backgroundColor = backgroundColor;
@@ -211,7 +211,7 @@ int CFrame::paint(bool selected)
 {
 	dprintf(DEBUG_DEBUG, "CFrame::paint:\n");
 
-	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
+	//CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
 	uint8_t color = COL_MENUCONTENT;
 	fb_pixel_t bgcolor = item_backgroundColor;
@@ -248,7 +248,7 @@ int CFrame::paint(bool selected)
 		{
 			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getRenderWidth(caption);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w) >> 1), window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), COL_MENUFOOT_INFO, 0, true); //
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w) >> 1), window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), /*COL_MENUFOOT_INFO*/color, 0, true); //
 		}
 
 		// option
@@ -256,7 +256,7 @@ int CFrame::paint(bool selected)
 		{
 			int o_w = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(option);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - o_w) >> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset -iw, option.c_str(), COL_MENUFOOT_INFO, 0, true);
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - o_w) >> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset -iw, option.c_str(), /*COL_MENUFOOT_INFO*/color, 0, true);
 		}
 	}
 	else
@@ -265,7 +265,7 @@ int CFrame::paint(bool selected)
 		{
 			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getRenderWidth(caption);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w)>> 1), window.getWindowsPos().iY + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), COL_MENUFOOT_INFO);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w)>> 1), window.getWindowsPos().iY + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), /*COL_MENUFOOT_INFO*/color);
 		}
 	}
 

@@ -165,8 +165,8 @@ int CPluginList::exec(CMenuTarget * parent, const std::string& actionKey)
 		// relaod plugins
 		g_PluginList->loadPlugins();
 
-		if(selected > (unsigned int)g_PluginList->getNumberOfPlugins() - 1)
-			selected = (unsigned int)g_PluginList->getNumberOfPlugins() - 1;
+		if(selected > (int)g_PluginList->getNumberOfPlugins() - 1)
+			selected = (int)g_PluginList->getNumberOfPlugins() - 1;
 
 		showMenu();
 		return menu_return::RETURN_EXIT_ALL;

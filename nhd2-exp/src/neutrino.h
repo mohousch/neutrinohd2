@@ -59,7 +59,7 @@
 
 #include <gui/bouquetlist.h>
 
-/*zapit*/
+// zapit
 #include <client/zapitclient.h>
 
 

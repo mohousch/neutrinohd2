@@ -401,7 +401,6 @@ bool sectionsd_getComponentTagsUniqueKey(const event_id_t uniqueKey, CSectionsdC
 // head
 void CEpgData::showHead(const t_channel_id channel_id)
 {
-	int pos;
 	std::string text1 = epgData.title;
 
 	std::string logo;

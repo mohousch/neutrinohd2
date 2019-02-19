@@ -330,7 +330,7 @@ int CBouquetList::doMenu()
 		}
 	}
 	
-	return 0;
+	return ret;
 }
 
 // bShowChannelList default to true, returns new bouquet or -1/-2

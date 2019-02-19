@@ -162,7 +162,7 @@ CUPnPDevice::CUPnPDevice(std::string url)
 
 	if (body == "")
 		//throw std::runtime_error(std::string("desc body empty"));
-		printf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: desc body empty\n");
+		dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: desc body empty\n");
 
 	if (!check_response(head, charset, rcode))
 		//throw std::runtime_error(std::string("protocol error"));
@@ -170,7 +170,7 @@ CUPnPDevice::CUPnPDevice(std::string url)
 
 	if (rcode != "200")
 		//throw std::runtime_error(std::string("description url returned ") + rcode);
-		printf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: description url error\n");
+		dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: description url error\n");
 	
 	XMLTreeParser parser(charset.c_str());
 	parser.Parse(body.c_str(), body.size(), 1);

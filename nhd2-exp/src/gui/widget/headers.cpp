@@ -88,7 +88,7 @@ void CHeaders::paintHead(int x, int y, int dx, int dy, const char* icon, const n
 
 	if(hbutton_count)
 	{
-		for (unsigned int i = 0; i < hbutton_count; i++)
+		for (int i = 0; i < hbutton_count; i++)
 		{
 			CFrameBuffer::getInstance()->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
 		
@@ -150,7 +150,7 @@ void CHeaders::paintHead(CBox position, const char* icon, const neutrino_locale_
 
 	if(hbutton_count)
 	{
-		for (unsigned int i = 0; i < hbutton_count; i++)
+		for (int i = 0; i < hbutton_count; i++)
 		{
 			CFrameBuffer::getInstance()->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
 		
@@ -212,7 +212,7 @@ void CHeaders::paintHead(int x, int y, int dx, int dy, const char* icon, const s
 
 	if(hbutton_count)
 	{
-		for (unsigned int i = 0; i < hbutton_count; i++)
+		for (int i = 0; i < hbutton_count; i++)
 		{
 			CFrameBuffer::getInstance()->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
 		
@@ -276,7 +276,7 @@ void CHeaders::paintHead(CBox position, const char* icon, const std::string capt
 
 	if(hbutton_count)
 	{
-		for (unsigned int i = 0; i < hbutton_count; i++)
+		for (int i = 0; i < hbutton_count; i++)
 		{
 			CFrameBuffer::getInstance()->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
 		
