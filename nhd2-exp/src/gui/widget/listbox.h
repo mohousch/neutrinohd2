@@ -104,6 +104,19 @@ class ClistBox
 		bool widgetChange;
 		//std::vector<int> widget;
 
+		// head
+		fb_pixel_t headColor;
+		int headRadius;
+		int headCorner;
+		int headGradient;
+
+		// foot
+		fb_pixel_t footColor;
+		int footRadius;
+		int footCorner;
+		int footGradient;
+
+		// methods
 		virtual void paintItems();
 
 	public:
@@ -123,12 +136,24 @@ class ClistBox
 		virtual void paintFoot();
 		virtual void paintItemInfo(int pos);
 		virtual void hideItemInfo();
+
+		// head
+		void enablePaintHead(){paintTitle = true;};
 		void enablePaintDate(void){paintDate = true;};
 		void setTitle(const char* title = "", const char* icon = NULL, bool logo_ok = false){l_name = title; if(icon != NULL) iconfile = icon; logo = logo_ok;};
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
-		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count, const int _fbutton_width = 0);
-		void enablePaintHead(){paintTitle = true;};
+		void setHeadColor(fb_pixel_t col) {headColor = col;};
+		void setHeadCorner(int ra, int co){headRadius = ra; headCorner = co;};
+		void setHeadGradient(int grad){headGradient = grad;};
+		
+		// foot
 		void enablePaintFoot(){paint_Foot = true;};
+		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count, const int _fbutton_width = 0);
+		void setFootColor(fb_pixel_t col) {footColor = col;};
+		void setFootCorner(int ra, int co){footRadius = ra; footCorner = co;};
+		void setFootGradient(int grad){footGradient = grad;};
+
+		// itemInfo
 		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh;};
 
 		virtual void scrollLineDown();
@@ -176,9 +201,9 @@ class ClistBoxEntryItem : public CMenuItem
 		virtual const char* getName(void);
 
 	public:
-		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = "", const char* const Icon = NULL);
+		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = "", const char * const Icon = NULL);
 
-		ClistBoxEntryItem(const char* const Text, const bool Active = true, const char* const Option = "", const char* const IconName = NULL);
+		ClistBoxEntryItem(const char * const Text, const bool Active = true, const char * const Option = "", const char * const IconName = NULL);
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;

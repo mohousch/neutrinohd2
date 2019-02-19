@@ -32,19 +32,20 @@
 CHeaders::CHeaders()
 {
 	// head
+	bgcolor = COL_MENUHEAD_PLUS_0;
 	radius = RADIUS_MID;
 	corner = CORNER_TOP;
-	bgcolor = COL_MENUHEAD_PLUS_0;
 	gradient = g_settings.Head_gradient;
+
 	paintDate = false;
 	logo = false;
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
 
 	// foot
+	fbgcolor = COL_MENUFOOT_PLUS_0;
 	fradius = RADIUS_MID;
 	fcorner = CORNER_BOTTOM;
-	fbgcolor = COL_MENUFOOT_PLUS_0;
 	fgradient = g_settings.Foot_gradient;
 }
 

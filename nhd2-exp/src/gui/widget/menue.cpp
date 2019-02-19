@@ -1848,12 +1848,14 @@ void CMenuWidget::move(int xoff, int yoff)
 
 CMenuWidget::~CMenuWidget()
 {
+/*
 	for(unsigned int count = 0; count < items.size(); count++) 
 	{
 		CMenuItem * item = items[count];
 		
 		delete item;
 	}
+*/
 
 	items.clear();
 	page_start.clear();
@@ -3147,6 +3149,7 @@ void ClistBoxWidget::move(int xoff, int yoff)
 
 ClistBoxWidget::~ClistBoxWidget()
 {
+/*
 	for(unsigned int count = 0; count < items.size(); count++) 
 	{
 		CMenuItem * item = items[count];
@@ -3154,6 +3157,7 @@ ClistBoxWidget::~ClistBoxWidget()
 		delete item;
 		item = NULL;
 	}
+*/
 
 	items.clear();
 	page_start.clear();

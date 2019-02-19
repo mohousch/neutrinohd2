@@ -56,7 +56,6 @@
 class CSwigHelpers
 {
 	private:
-		unsigned short rccode;
 
 	public:
 		CSwigHelpers(){};

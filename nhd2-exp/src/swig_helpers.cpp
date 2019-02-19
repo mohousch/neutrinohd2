@@ -22,6 +22,7 @@
 #endif
 
 #include <global.h>
+#include <neutrino.h>
 
 #include <swig_helpers.h>
 
@@ -117,16 +118,12 @@ int CSwigHelpers::getRCcode(int ms)
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 	
-	g_RCInput->getMsg_ms(&msg, &data, ms);
-	rccode = -1;
-
-	if (msg <= CRCInput::RC_MaxRC) 
+	if (msg != CRCInput::RC_timeout && msg > CRCInput::RC_MaxRC)
 	{
-		rccode = msg;
-		return 1;
+		CNeutrinoApp::getInstance()->handleMsg(msg, data);
 	}
-	
-	return 0;
+
+	return (int)msg;
 }
 
 

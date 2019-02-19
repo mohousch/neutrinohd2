@@ -40,17 +40,12 @@
 #include <gui/widget/icons.h>
 
 #include <system/debug.h>
+#include <system/settings.h>
 
 #define	TEXT_BORDER_WIDTH		8
 #define ROW_BORDER_WIDTH             	4
 #define	SCROLL_FRAME_WIDTH		SCROLLBAR_WIDTH
-#define	SCROLL_MARKER_BORDER		2
-
-#define MAX_WINDOW_WIDTH  		(frameBuffer->getScreenWidth() - 40)
-#define MAX_WINDOW_HEIGHT 		(frameBuffer->getScreenHeight() - 40)	
-
-#define MIN_WINDOW_WIDTH  		(frameBuffer->getScreenWidth() >> 1)
-#define MIN_WINDOW_HEIGHT 		40	
+#define	SCROLL_MARKER_BORDER		2	
 
 #define TITLE_BACKGROUND_COLOR 		COL_MENUHEAD_PLUS_0
 #define LIST_BACKGROUND_COLOR 		COL_MENUCONTENT_PLUS_0

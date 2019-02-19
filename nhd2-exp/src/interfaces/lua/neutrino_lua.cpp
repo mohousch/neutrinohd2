@@ -45,19 +45,11 @@ neutrinoLua::neutrinoLua()
 {
 	lua = luaL_newstate();
 
+	// call lua basic libs
 	luaL_openlibs(lua);
 
-	// without require
-/*
-	lua_pushliteral(lua,"neutrino");
+	// call wrapped module
 	luaopen_neutrino(lua);
-*/
-
-	// load wrapped module this require require
-	lua_getglobal(lua, "package");
-	lua_getfield(lua, -1, "preload");
-	lua_pushcfunction(lua, luaopen_neutrino);
-	lua_setfield(lua, -2, "neutrino");
 }
 
 neutrinoLua::~neutrinoLua()

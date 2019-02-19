@@ -1,7 +1,5 @@
 print("lua: Hello World")
 
-neutrino = require 'neutrino'
-
 -- messagebox
 function messageBox()
 	mBox = neutrino.CMessageBox("CMessageBox: lua","first test\ntesting CMessageBox\ndas ist alles ;-)")
@@ -27,8 +25,8 @@ end
 -- headers
 function headers()
 	head = neutrino.CHeaders()
-	head:paintHead(150,10,550,35,neutrino.NEUTRINO_ICON_MP3,"test", true,0,null,false)
-	head:paintFoot(150, 570,550,35,550)
+	head:paintHead(150,10,550,35,neutrino.NEUTRINO_ICON_MP3,"test")
+	head:paintFoot(150, 570,550,35)
 end
 
 -- window
@@ -70,13 +68,26 @@ end
 
 -- listbox
 function listBox()
-	listbox = neutrino.ClistBox("test", neutrino.NEUTRINO_ICON_MOVIE)
+	listbox = neutrino.ClistBoxWidget("test", neutrino.NEUTRINO_ICON_MOVIE)
 	listbox:enablePaintDate()
-	listbox:addWidget(neutrino.WIDGET_CLASSIC)
-	listbox:addWidget(neutrino.WIDGET_FRAME)
+	listbox:addWidget(neutrino.WIDGET_TYPE_CLASSIC)
+	listbox:addWidget(neutrino.WIDGET_TYPE_FRAME)
 	listbox:enableWidgetChange()
+
+	item1 = neutrino.CMenuForwarder("item1", true, nil, nil, "red_action")
+	item1:setIconName(neutrino.NEUTRINO_ICON_BUTTON_RED)
+	item1:setItemIcon(neutrino.NEUTRINO_ICON_BUTTON_RED)
+
+	item2 = neutrino.CMenuForwarder("item2", true, nil, nil, "green_action")
+	item3 = neutrino.CMenuForwarder("item3", true, nil, nil, "yellow_action")
+	item4 = neutrino.CMenuForwarder("item4", true, nil, nil, "blue_action")
+
+	listbox:addItem(item1)
+	listbox:addItem(item2)
+	listbox:addItem(item3)
+	listbox:addItem(item4)
+
 	listbox:exec(null, "")
-	listbox:hide()
 end
 
 -- menuwidget
@@ -84,13 +95,13 @@ function menuWidget()
 	menu = neutrino.CMenuWidget("test", neutrino.NEUTRINO_ICON_MOVIE)
 	menu:enableWidgetChange()
 
-	item1 = neutrino.CMenuForwarder("item1", true, "python-test", nil, "red_action")
+	item1 = neutrino.CMenuForwarder("item1", true, nil, nil, "red_action")
 	item1:setIconName(neutrino.NEUTRINO_ICON_BUTTON_RED)
 	item1:setItemIcon(neutrino.NEUTRINO_ICON_BUTTON_RED)
 
-	item2 = neutrino.CMenuForwarder("item2", true, "python-test", nil, "green_action")
-	item3 = neutrino.CMenuForwarder("item3", true, "python-test", nil, "yellow_action")
-	item4 = neutrino.CMenuForwarder("item4", true, "python-test", nil, "blue_action")
+	item2 = neutrino.CMenuForwarder("item2", true, nil, nil, "green_action")
+	item3 = neutrino.CMenuForwarder("item3", true, nil, nil, "yellow_action")
+	item4 = neutrino.CMenuForwarder("item4", true, nil, nil, "blue_action")
 
 	menu:addItem(item1)
 	menu:addItem(item2)
@@ -98,17 +109,33 @@ function menuWidget()
 	menu:addItem(item4)
 
 	menu:exec(null, "")
-	menu:hide()
 end
 
 -- listboxEntry
 function listEntry()
-	listboxEntry = neutrino.ClistBoxEntry(150,10,550,615)
+	listboxEntry = neutrino.ClistBox(150,10,550,615)
 	listboxEntry:setTitle("test", neutrino.NEUTRINO_ICON_MOVIE)
 	listboxEntry:enablePaintHead()
 	listboxEntry:enablePaintDate()
 	listboxEntry:enablePaintFoot()
+
+	item1 = neutrino.CMenuForwarder("item1", true, nil, nil, "red_action")
+	item1:setIconName(neutrino.NEUTRINO_ICON_BUTTON_RED)
+	item1:setItemIcon(neutrino.NEUTRINO_ICON_BUTTON_RED)
+
+	item2 = neutrino.CMenuForwarder("item2", true, nil, nil, "green_action")
+	item3 = neutrino.CMenuForwarder("item3", true, nil, nil, "yellow_action")
+	item4 = neutrino.CMenuForwarder("item4", true, nil, nil, "blue_action")
+
+	listboxEntry:addItem(item1)
+	listboxEntry:addItem(item2)
+	listboxEntry:addItem(item3)
+	listboxEntry:addItem(item4)
+
 	listboxEntry:paint()
+
+	rc = neutrino.CRCInput()
+	rc:messageLoop()
 end
 
 -- playback

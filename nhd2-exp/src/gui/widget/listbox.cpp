@@ -87,6 +87,18 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	itemsPerY = 3;
 	maxItemsPerPage = itemsPerX*itemsPerY;
 
+	// head
+	headColor = COL_MENUHEAD_PLUS_0;
+	headRadius = RADIUS_MID;
+	headCorner = CORNER_TOP;
+	headGradient = g_settings.Head_gradient;
+
+	// foot
+	footColor = COL_MENUFOOT_PLUS_0;
+	footRadius = RADIUS_MID;
+	footCorner = CORNER_BOTTOM;
+	footGradient = g_settings.Foot_gradient;
+
 	//
 	widgetType = WIDGET_TYPE_STANDARD;
 	widgetChange = false;
@@ -131,6 +143,18 @@ ClistBox::ClistBox(CBox* position)
 	itemsPerY = 3;
 	maxItemsPerPage = itemsPerX*itemsPerY;
 
+	// head
+	headColor = COL_MENUHEAD_PLUS_0;
+	headRadius = RADIUS_MID;
+	headCorner = CORNER_TOP;
+	headGradient = g_settings.Head_gradient;
+
+	// foot
+	footColor = COL_MENUFOOT_PLUS_0;
+	footRadius = RADIUS_MID;
+	footCorner = CORNER_BOTTOM;
+	footGradient = g_settings.Foot_gradient;
+
 	//
 	widgetType = WIDGET_TYPE_STANDARD;
 	widgetChange = false;
@@ -138,6 +162,7 @@ ClistBox::ClistBox(CBox* position)
 
 ClistBox::~ClistBox()
 {
+/*
 	for(unsigned int count = 0; count < items.size(); count++) 
 	{
 		CMenuItem * item = items[count];
@@ -145,6 +170,7 @@ ClistBox::~ClistBox()
 		delete item;
 		item = NULL;
 	}
+*/
 
 	items.clear();
 }
@@ -184,7 +210,7 @@ void ClistBox::initFrames()
 		fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
 	}
 
-	////
+	//
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		page_start.clear();
@@ -417,9 +443,13 @@ void ClistBox::paintHead()
 {
 	if(paintTitle)
 	{
+		headers.setColor(headColor);
+		headers.setCorner(headRadius, headCorner);
+		headers.setGradient(headGradient);
 		headers.enablePaintDate();
 		headers.enableLogo();
 		headers.setHeaderButtons(hbutton_labels, hbutton_count);
+
 		headers.paintHead(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, iconfile.c_str(), l_name.c_str());
 	}	
 }
@@ -428,6 +458,10 @@ void ClistBox::paintFoot()
 {
 	if(paint_Foot)
 	{
+		headers.setFootColor(footColor);
+		headers.setFootCorner(footRadius, footCorner);
+		headers.setFootGradient(footGradient);
+
 		headers.paintFoot(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - footInfoHeight - fheight, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
 	}
 }

@@ -1,6 +1,6 @@
 print("python: Hello World")
 
-from neutrino import CMessageBox, CHelpBox, CHeaders, CWindow, CScrollBar, CItems2DetailsLine, CPictureViewer, CFrameBuffer, CRCInput, ClistBox, CMenuWidget, CMenuForwarder, ClistBoxEntry, CInfoBox, cPlayback, CAudioPlayerGui, CMoviePlayerGui, CPictureViewerGui, CPlugins, CFile
+from neutrino import CMessageBox, CHelpBox, CHeaders, CWindow, CScrollBar, CItems2DetailsLine, CPictureViewer, CFrameBuffer, CRCInput, ClistBoxWidget, CMenuWidget, CMenuForwarder, ClistBox, CInfoBox, cPlayback, CAudioPlayerGui, CMoviePlayerGui, CPictureViewerGui, CPlugins, CFile, WIDGET_TYPE_CLASSIC, WIDGET_TYPE_FRAME
 
 ## CMessageBox
 def messageBox():
@@ -19,7 +19,7 @@ def helpBox():
 
 ## CHeaders
 def headers():
-	CHeaders().paintHead(150,10,550,35,"mp3","test", 1,0,None,0)
+	CHeaders().paintHead(150,10,550,35,"mp3","test")
 	CHeaders().paintFoot(150, 570,550,35,550)
 
 ## CWindow
@@ -47,10 +47,10 @@ def fb():
 
 ## ClistBox
 def listBox():
-	listbox = ClistBox("test", "mp3")
+	listbox = ClistBoxWidget("test", "mp3")
 	listbox.enablePaintDate()
-	listbox.addWidget(WIDGET_CLASSIC)
-	listbox.addWidget(WIDGET_FRAME)
+	listbox.addWidget(WIDGET_TYPE_CLASSIC)
+	listbox.addWidget(WIDGET_TYPE_FRAME)
 	listbox.enableWidgetChange()
 	listbox._exec(None, "")
 	listbox.hide()
@@ -76,7 +76,7 @@ def menuWidget():
 
 ## ClistBoxEntry
 def listEntry():
-	listboxEntry = ClistBoxEntry(150,10,550,615)
+	listboxEntry = ClistBox(150,10,550,615)
 	listboxEntry.setTitle("test", "mp3")
 	listboxEntry.enablePaintHead()
 	listboxEntry.enablePaintDate()
@@ -119,23 +119,15 @@ def rcInput():
 	rc.messageLoop()
 
 
-#class main():
-#	def __init__(self, session):
-#		self.session = session
-#
-#	messageBox()
-#
-#def start(session, **kwargs):
-#	session.open(main)
-
 class main():
-	def __init__(self):
-		pass
+	def __init__(self, session):
+		self.session = session
 
-	messageBox()
+	menuWidget()
 
-if __name__ == "__main__":
-	main()
+def start(session, **kwargs):
+	session.open(main)
+
 
 
 

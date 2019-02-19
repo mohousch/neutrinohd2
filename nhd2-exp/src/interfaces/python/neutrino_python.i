@@ -91,6 +91,7 @@
 #include <gui/widget/stringinput.h>
 #include <gui/widget/textbox.h>
 #include <gui/widget/menue.h>
+#include <gui/widget/framebox.h>
 
 // gui
 #include <gui/movieinfo.h>
@@ -199,6 +200,7 @@
 %include <src/gui/widget/stringinput.h>
 %include <src/gui/widget/textbox.h>
 %include <src/gui/widget/menue.h>
+%include <src/gui/widget/framebox.h>
 
 // gui
 %include <src/gui/movieinfo.h>

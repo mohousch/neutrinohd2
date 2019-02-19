@@ -117,18 +117,18 @@ class CMenuTarget
 		CMenuTarget(){}
 		virtual ~CMenuTarget(){}
 		virtual void hide(){}
-		virtual int exec(CMenuTarget* parent, const std::string& actionKey) = 0;
+		virtual int exec(CMenuTarget *parent, const std::string &actionKey) = 0;
 };
 
-// CMenuseletorTarget
+// CMenuSeletorTarget
 class CMenuSelectorTarget : public CMenuTarget
 {
+	private:
+                int *m_select;
+
         public:
                 CMenuSelectorTarget(int *select) {m_select = select;};
-                int exec(CMenuTarget* parent, const std::string& actionKey);
-
-        private:
-                int *m_select;
+                int exec(CMenuTarget * parent, const std::string &actionKey);
 };
 
 // CSelectedMenu: used in movieplayer for bookmarks
@@ -237,6 +237,7 @@ class CMenuItem
 };
 
 // CAbstractMenuOptionChooser
+/*
 class CAbstractMenuOptionChooser : public CMenuItem
 {
 	protected:
@@ -254,10 +255,26 @@ class CAbstractMenuOptionChooser : public CMenuItem
 			return active;
 		}
 };
+*/
 
 // CMenuOptionChooser
-class CMenuOptionChooser : public CAbstractMenuOptionChooser
+class CMenuOptionChooser : public /*CAbstractMenuOptionChooser*/CMenuItem
 {
+	protected:
+		neutrino_locale_t optionName;
+		int height;
+		int* optionValue;
+
+		int getHeight(void) const
+		{
+			return height;
+		}
+		
+		bool isSelectable(void) const
+		{
+			return active;
+		}
+
 	public:
 		struct keyval
 		{
@@ -289,7 +306,7 @@ class CMenuOptionChooser : public CAbstractMenuOptionChooser
 };
 
 // CMenuOptionNumberChooser
-class CMenuOptionNumberChooser : public CAbstractMenuOptionChooser
+class CMenuOptionNumberChooser : public /*CAbstractMenuOptionChooser*/CMenuItem
 {
 	const char* optionString;
 
@@ -304,6 +321,21 @@ class CMenuOptionNumberChooser : public CAbstractMenuOptionChooser
 	std::string nameString;
 	neutrino_locale_t name;
 
+	protected:
+		neutrino_locale_t optionName;
+		int height;
+		int* optionValue;
+
+		int getHeight(void) const
+		{
+			return height;
+		}
+		
+		bool isSelectable(void) const
+		{
+			return active;
+		}
+
 	private:
 		CChangeObserver * observ;
 
@@ -313,20 +345,20 @@ class CMenuOptionNumberChooser : public CAbstractMenuOptionChooser
 		
 		int paint(bool selected, bool AfterPulldown = false);
 
-		int exec(CMenuTarget* parent);
+		int exec(CMenuTarget *parent);
 };
 
 // CMenuOptionStringChooser
 class CMenuOptionStringChooser : public CMenuItem
 {
-		std::string nameString;
-		neutrino_locale_t name;
-		int height;
-		char * optionValue;
-		std::vector<std::string> options;
-		CChangeObserver * observ;
-		bool pulldown;
-		bool enableMenuPos;
+	std::string nameString;
+	neutrino_locale_t name;
+	int height;
+	char * optionValue;
+	std::vector<std::string> options;
+	CChangeObserver * observ;
+	bool pulldown;
+	bool enableMenuPos;
 
 	public:
 		CMenuOptionStringChooser(const neutrino_locale_t Name, char* OptionValue, bool Active = false, CChangeObserver* Observ = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const std::string & IconName= "", bool Pulldown = false, bool EnableMenuPos = false);
@@ -346,10 +378,10 @@ class CMenuOptionStringChooser : public CMenuItem
 // CMenuOptionLanguageChooser
 class CMenuOptionLanguageChooser : public CMenuItem
 {
-		int height;
-		char * optionValue;
-		std::vector<std::string> options;
-		CChangeObserver * observ;
+	int height;
+	char * optionValue;
+	std::vector<std::string> options;
+	CChangeObserver * observ;
 
 	public:
 		CMenuOptionLanguageChooser(char *Name, CChangeObserver *Observ = NULL, const char *const IconName = NULL);
@@ -392,30 +424,6 @@ class CMenuSeparator : public CMenuItem
 		int getWidth(void) const;
 
 		virtual const char * getString(void);
-};
-
-// CPINProtection
-class CPINProtection
-{
-	protected:
-		char * validPIN;
-		bool check();
-		virtual CMenuTarget * getParent() = 0;
-	public:
-		CPINProtection( char *validpin){ validPIN = validpin;};
-		virtual ~CPINProtection(){}
-};
-
-// CZapProtection
-class CZapProtection : public CPINProtection
-{
-	protected:
-		virtual CMenuTarget * getParent() { return( NULL);};
-	public:
-		int fsk;
-
-		CZapProtection( char * validpin, int FSK ) : CPINProtection(validpin){ fsk = FSK; };
-		bool check();
 };
 
 // CMenuSelector
@@ -469,6 +477,30 @@ class CMenuForwarder : public CMenuItem
 
 		int exec(CMenuTarget* parent);
 		bool isSelectable(void) const {return active;}
+};
+
+// CPINProtection
+class CPINProtection
+{
+	protected:
+		char * validPIN;
+		bool check();
+		virtual CMenuTarget * getParent() = 0;
+	public:
+		CPINProtection( char *validpin){ validPIN = validpin;};
+		virtual ~CPINProtection(){}
+};
+
+// CZapProtection
+class CZapProtection : public CPINProtection
+{
+	protected:
+		virtual CMenuTarget * getParent() { return( NULL);};
+	public:
+		int fsk;
+
+		CZapProtection( char * validpin, int FSK ) : CPINProtection(validpin){ fsk = FSK; };
+		bool check();
 };
 
 // CLockedMenuForwarder
