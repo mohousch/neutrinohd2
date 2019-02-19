@@ -137,7 +137,7 @@ void CNKMovies::showMenu()
 
 	moviesMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	moviesMenu->setItemsPerPage(6, 2);
-	moviesMenu->setItemBoxColor(COL_YELLOW);
+	//moviesMenu->setItemBoxColor(COL_YELLOW);
 
 	moviesMenu->setHeaderButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
 

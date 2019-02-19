@@ -151,7 +151,7 @@ void CARDaz::showMenu(void)
 	
 	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
-	catMenu->setItemBoxColor(COL_YELLOW);
+	//catMenu->setItemBoxColor(COL_YELLOW);
 
 	catMenu->exec(NULL, "");
 	catMenu->hide();
@@ -190,7 +190,7 @@ void CARDTVlive::showMenu(void)
 	
 	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
-	catMenu->setItemBoxColor(COL_YELLOW);
+	//catMenu->setItemBoxColor(COL_YELLOW);
 
 	catMenu->exec(NULL, "");
 	catMenu->hide();
@@ -229,7 +229,7 @@ void CARDRadiolive::showMenu(void)
 	
 	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
-	catMenu->setItemBoxColor(COL_YELLOW);
+	//catMenu->setItemBoxColor(COL_YELLOW);
 
 	catMenu->exec(NULL, "");
 	catMenu->hide();
@@ -269,7 +269,7 @@ void CARDstreams::showMenu(void)
 
 	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
-	catMenu->setItemBoxColor(COL_YELLOW);
+	//catMenu->setItemBoxColor(COL_YELLOW);
 
 	catMenu->exec(NULL, "");
 	catMenu->hide();

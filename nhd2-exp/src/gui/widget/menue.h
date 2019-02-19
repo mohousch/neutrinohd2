@@ -613,6 +613,7 @@ class CMenuWidget : public CMenuTarget
 		// footInfo
 		bool FootInfo;
 		CBox cFrameFootInfo;
+		int interFrame;
 
 		//
 		CHeaders headers;
@@ -736,6 +737,7 @@ class ClistBoxWidget : public CMenuTarget
 		bool FootInfo;
 		CBox cFrameFootInfo;
 		int footInfoHeight;
+		int interFrame;
 
 		//
 		unsigned long long int timeout;

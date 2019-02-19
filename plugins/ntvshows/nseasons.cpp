@@ -183,7 +183,7 @@ void CNSeasons::showMenu()
 
 	listBox->setWidgetType(WIDGET_TYPE_FRAME);
 	listBox->setItemsPerPage(6, 2);
-	listBox->setItemBoxColor(COL_YELLOW);
+	//listBox->setItemBoxColor(COL_YELLOW);
 	listBox->setSelected(selected);
 	listBox->enablePaintDate();
 

@@ -61,6 +61,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	hheight = 0;
 	fheight = 0;
 	footInfoHeight = 0;
+	interFrame = 0;
 
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
@@ -83,6 +84,9 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 
 	//
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
+
+	//
+	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
 	maxItemsPerPage = itemsPerX*itemsPerY;
@@ -117,6 +121,7 @@ ClistBox::ClistBox(CBox* position)
 	hheight = 0;
 	fheight = 0;
 	footInfoHeight = 0;
+	interFrame = 0;
 
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
@@ -139,6 +144,9 @@ ClistBox::ClistBox(CBox* position)
 
 	//
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
+
+	//
+	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
 	maxItemsPerPage = itemsPerX*itemsPerY;
@@ -196,6 +204,8 @@ void ClistBox::initFrames()
 		CMenuItem * item = items[count];
 
 		item->widgetType = widgetType;
+		item->item_backgroundColor = backgroundColor;
+		item->item_selectedColor = itemBoxColor;
 	} 
 
 	// head
@@ -238,7 +248,6 @@ void ClistBox::initFrames()
 
 			item->item_width = item_width;
 			item->item_height = item_height;
-			item->item_backgroundColor = backgroundColor;
 		} 
 	}
 	else 
@@ -258,7 +267,7 @@ void ClistBox::initFrames()
 			itemHeightTotal += item_height;
 			heightCurrPage += item_height;
 
-			if((heightCurrPage + hheight + fheight + footInfoHeight)> cFrameBox.iHeight)
+			if((heightCurrPage + hheight + fheight + footInfoHeight + interFrame)> cFrameBox.iHeight)
 			{
 				page_start.push_back(i);
 				heightFirstPage = heightCurrPage - item_height;
@@ -281,19 +290,11 @@ void ClistBox::initFrames()
 			}
 		}
 
-		//
-		for (unsigned int count = 0; count < items.size(); count++) 
-		{
-			CMenuItem * item = items[count];
-
-			item->item_backgroundColor = backgroundColor;
-		} 
-
 		// recalculate height
 		if(shrinkMenu)
 		{
-			listmaxshow = (cFrameBox.iHeight - hheight - fheight - footInfoHeight)/item_height;
-			cFrameBox.iHeight = hheight + listmaxshow*item_height + fheight + footInfoHeight;
+			listmaxshow = (cFrameBox.iHeight - hheight - fheight - footInfoHeight - interFrame)/item_height;
+			cFrameBox.iHeight = hheight + listmaxshow*item_height + fheight + footInfoHeight + interFrame;
 		}
 
 		if(enableCenter)
@@ -322,7 +323,7 @@ void ClistBox::paintItems()
 		item_start_y = cFrameBox.iY + hheight;
 
 		// items background
-		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - footInfoHeight, backgroundColor);
+		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - footInfoHeight - interFrame, backgroundColor);
 
 		// item not currently on screen
 		if (selected >= 0)
@@ -398,12 +399,12 @@ void ClistBox::paintItems()
 				current_page++;
 		}
 
-		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - footInfoHeight, backgroundColor);
+		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - footInfoHeight - interFrame, backgroundColor);
 	
 		// paint right scrollBar if we have more then one page
 		if(total_pages > 1)
 		{
-			scrollBar.paint(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, cFrameBox.iY + hheight, cFrameBox.iHeight - hheight - fheight - footInfoHeight, total_pages, current_page);
+			scrollBar.paint(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, cFrameBox.iY + hheight, cFrameBox.iHeight - hheight - fheight - footInfoHeight - interFrame, total_pages, current_page);
 		}
 
 		// paint items
@@ -462,7 +463,7 @@ void ClistBox::paintFoot()
 		headers.setFootCorner(footRadius, footCorner);
 		headers.setFootGradient(footGradient);
 
-		headers.paintFoot(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - footInfoHeight - fheight, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
+		headers.paintFoot(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - footInfoHeight - fheight - interFrame, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
 	}
 }
 
@@ -992,7 +993,7 @@ int ClistBoxEntryItem::paint(bool selected, bool /*AfterPulldown*/)
 		//
 		if(selected)
 		{
-			frameBuffer->paintBoxRel(x, y, item_width, item_height, bgcolor);
+			frameBuffer->paintBoxRel(x, y, item_width, item_height, item_selectedColor);
 
 			frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
 

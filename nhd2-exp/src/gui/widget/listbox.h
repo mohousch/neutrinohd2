@@ -66,6 +66,7 @@ class ClistBox
 		int hheight;
 		int fheight;
 		int footInfoHeight;
+		int interFrame;
 
 		//
 		int hbutton_count;
@@ -91,6 +92,7 @@ class ClistBox
 
 		// frame
 		fb_pixel_t backgroundColor;
+		fb_pixel_t itemBoxColor;
 		int itemsPerX;
 		int itemsPerY;
 		int maxItemsPerPage;
@@ -154,7 +156,7 @@ class ClistBox
 		void setFootGradient(int grad){footGradient = grad;};
 
 		// itemInfo
-		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh;};
+		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh; interFrame = 5;};
 
 		virtual void scrollLineDown();
 		virtual void scrollLineUp();
@@ -177,6 +179,7 @@ class ClistBox
 
 		// Frame
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
+		void setItemBoxColor(fb_pixel_t col) {itemBoxColor = col;};
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 
 		virtual void swipLeft();

@@ -2608,7 +2608,7 @@ void CTestMenu::testClistBox()
 
 	listMenu->setWidgetType(WIDGET_TYPE_CLASSIC);
 	listMenu->setItemsPerPage(6, 2);
-	listMenu->setItemBoxColor(COL_YELLOW);
+	//listMenu->setItemBoxColor(COL_YELLOW);
 
 	listMenu->addWidget(WIDGET_TYPE_STANDARD);
 	listMenu->addWidget(WIDGET_TYPE_FRAME);
