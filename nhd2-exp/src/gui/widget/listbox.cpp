@@ -803,7 +803,7 @@ void ClistBox::scrollPageUp()
 
 void ClistBox::swipLeft()
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxEntry::swipLeft:\n");
+	dprintf(DEBUG_NORMAL, "ClistBox::swipLeft:\n");
 
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
@@ -843,7 +843,7 @@ void ClistBox::swipLeft()
 
 void ClistBox::swipRight()
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxEntry::swipRight:\n");
+	dprintf(DEBUG_NORMAL, "ClistBox::swipRight:\n");
 
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
