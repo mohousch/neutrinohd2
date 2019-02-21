@@ -184,7 +184,7 @@ void CAudioSettings::showMenu()
 #endif	
 	
 	// pref sub/lang
-	audioSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_AUDIOMENU_PREF_LANG_HEAD));
+	audioSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_AUDIOMENU_PREF_LANG_HEAD)));
 	
 	// auto ac3 
 	CMenuOptionChooser * a1 = new CMenuOptionChooser(LOCALE_AUDIOMENU_DOLBYDIGITAL, &g_settings.audio_DolbyDigital, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, g_settings.auto_lang, audioSetupNotifier );
@@ -215,7 +215,7 @@ void CAudioSettings::showMenu()
 		audioSettings.addItem(audiolangSelect[i]);
 	
 	// sublang
-	audioSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_AUDIOMENU_PREF_SUBS_HEAD));
+	audioSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_AUDIOMENU_PREF_SUBS_HEAD)));
 	
 	CMenuOptionStringChooser * sublangSelect[3];
 	for(int i = 0; i < 3; i++) 

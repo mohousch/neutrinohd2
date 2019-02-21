@@ -502,9 +502,6 @@ void CStringInput::paint()
 {
 	dprintf(DEBUG_NORMAL, "CStringInput::paint\n");
 
-	int iconoffset;
-	int icol_w = 28, icol_h = 16;
-
 	// reinit
 	m_cBoxWindow.setPosition(x, y, width, height);
 
@@ -516,8 +513,9 @@ void CStringInput::paint()
 	m_cBoxWindow.paint();
 
 	// head
-	headers.setCorner();
-	headers.paintHead(x, y, width, hheight, iconfile.c_str(), head ? head : g_Locale->getText(name));
+	headers.setHeadPosition(x, y, width, hheight);
+	headers.setHeadCorner();
+	headers.paintHead(head ? head : g_Locale->getText(name), iconfile.c_str());
 
 	if (hint_1 != NONEXISTANT_LOCALE)
 	{
@@ -748,7 +746,7 @@ void CStringInputSMS::paint()
 	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Foot_gradient);
 
 	// foot buttons
-	buttons.paintButtons(x, y + height - ButtonHeight, width, ButtonHeight, 4, CStringInputSMSButtons);
+	buttons.paintFootButtons(x, y + height - ButtonHeight, width, ButtonHeight, 4, CStringInputSMSButtons);
 }
 
 // CPINInput

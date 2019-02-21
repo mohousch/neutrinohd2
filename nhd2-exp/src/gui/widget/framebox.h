@@ -47,9 +47,8 @@ class CFrame
 		CFrame(const std::string title, const char * const icon = NULL);
 		virtual ~CFrame(){}
 
-		int paint(bool selected = false);
+		int paint(bool selected = false, bool AfterPulldown = false);
 
-		//
 		virtual void setIconName(const char* const icon){iconName = icon;};
 		virtual void setOption(const char* text){option = text;};
 };

@@ -236,29 +236,8 @@ class CMenuItem
 		virtual void setWidgetType(int type){widgetType = type;};
 };
 
-// CAbstractMenuOptionChooser
-/*
-class CAbstractMenuOptionChooser : public CMenuItem
-{
-	protected:
-		neutrino_locale_t optionName;
-		int height;
-		int* optionValue;
-
-		int getHeight(void) const
-		{
-			return height;
-		}
-		
-		bool isSelectable(void) const
-		{
-			return active;
-		}
-};
-*/
-
 // CMenuOptionChooser
-class CMenuOptionChooser : public /*CAbstractMenuOptionChooser*/CMenuItem
+class CMenuOptionChooser : public CMenuItem
 {
 	protected:
 		neutrino_locale_t optionName;
@@ -306,7 +285,7 @@ class CMenuOptionChooser : public /*CAbstractMenuOptionChooser*/CMenuItem
 };
 
 // CMenuOptionNumberChooser
-class CMenuOptionNumberChooser : public /*CAbstractMenuOptionChooser*/CMenuItem
+class CMenuOptionNumberChooser : public CMenuItem
 {
 	const char* optionString;
 
@@ -403,8 +382,8 @@ class CMenuSeparator : public CMenuItem
 	int type;
 
 	public:
-		neutrino_locale_t text;
-		std::string textString;
+		//neutrino_locale_t text;
+		const char * textString;
 
 		enum
 		{
@@ -417,7 +396,8 @@ class CMenuSeparator : public CMenuItem
 		};
 
 
-		CMenuSeparator(const int Type = EMPTY, const neutrino_locale_t Text = NONEXISTANT_LOCALE);
+		//CMenuSeparator(const int Type = EMPTY, const neutrino_locale_t Text = NONEXISTANT_LOCALE);
+		CMenuSeparator(const int Type = EMPTY, const char * const Text = NULL);
 
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;

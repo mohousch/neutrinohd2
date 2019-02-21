@@ -235,11 +235,12 @@ void CTestMenu::test()
 	footBox.iY = g_settings.screen_EndY - 10 - footBox.iHeight;
 	footBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
 
+	headers.setHeadPosition(&headBox);
 	headers.enablePaintDate();
 	headers.setHeaderButtons(frameBoxHeadButtons, FRAMEBOX_HEAD_BUTTONS_COUNT);
 	//headers.setColor(COL_BLUE);
-	headers.setCorner();
-	headers.setGradient(nogradient);
+	headers.setHeadCorner();
+	headers.setHeadGradient(nogradient);
 
 	//headers.setFootColor(COL_BLUE);
 	headers.setFootCorner();
@@ -454,7 +455,7 @@ REPEAT:
 	}
 
 	// paint all widget
-	headers.paintHead(headBox, NEUTRINO_ICON_MP3, "Movie Trailer");
+	headers.paintHead("Movie Trailer", NEUTRINO_ICON_MP3);
 	headers.paintFoot(footBox, 4, frameButtons);
 	//topWidget->paint();
 	leftWidget->paint();
@@ -479,7 +480,7 @@ REPEAT:
 
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			headers.paintHead(headBox, NEUTRINO_ICON_MP3, "Movie Trailer");
+			headers.paintHead("Movie Trailer", NEUTRINO_ICON_MP3);
 		} 
 		else if (msg == CRCInput::RC_home) 
 		{
@@ -1541,7 +1542,7 @@ void CTestMenu::testCButtons()
 
 	int icon_w, icon_h;
 	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-	buttons.paintButtons(g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, (g_settings.screen_EndX - g_settings.screen_StartX - 100), icon_h, BUTTONS_COUNT, Buttons);
+	buttons.paintFootButtons(g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, (g_settings.screen_EndX - g_settings.screen_StartX - 100), icon_h, BUTTONS_COUNT, Buttons);
 
 	CFrameBuffer::getInstance()->blit();
 

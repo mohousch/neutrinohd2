@@ -878,6 +878,7 @@ int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 }
 
 // CMenuSeparator
+/*
 CMenuSeparator::CMenuSeparator(const int Type, const neutrino_locale_t Text)
 {
 	directKey = CRCInput::RC_nokey;
@@ -888,10 +889,23 @@ CMenuSeparator::CMenuSeparator(const int Type, const neutrino_locale_t Text)
 
 	itemType = ITEM_TYPE_SEPARATOR;
 }
+*/
+
+CMenuSeparator::CMenuSeparator(const int Type, const char * const Text)
+{
+	directKey = CRCInput::RC_nokey;
+	iconName = "";
+	type = Type;
+	//text = NONEXISTANT_LOCALE;
+	textString = Text;
+
+	itemType = ITEM_TYPE_SEPARATOR;
+}
 
 int CMenuSeparator::getHeight(void) const
 {
-	return (text == NONEXISTANT_LOCALE) ? 10 : g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	return (textString == NULL) ? 10 : g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	
 }
 
 int CMenuSeparator::getWidth(void) const
@@ -901,7 +915,7 @@ int CMenuSeparator::getWidth(void) const
 
 const char * CMenuSeparator::getString(void)
 {
-	return textString.c_str();
+	return textString;
 }
 
 int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
@@ -926,7 +940,8 @@ int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
 	if ((type & STRING))
 	{
 
-		if (!textString.empty())
+		//if (!textString.empty())
+		if(textString != NULL)
 		{
 			int stringstartposX;
 
@@ -2126,7 +2141,8 @@ void CMenuWidget::paint()
 			saveScreen();
 
 		// paint head
-		headers.paintHead(x, y, width, hheight, iconfile.c_str(), l_name);
+		headers.setHeadPosition(x, y, width, hheight);
+		headers.paintHead(l_name, iconfile.c_str());
 	
 		//paint foot
 		frameBuffer->paintBoxRel(x, y + height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
@@ -2169,9 +2185,9 @@ void CMenuWidget::paintItems()
 
 		if(items.size() > 0)
 		{
-			for (unsigned int _y = 0; _y < itemsPerY; _y++)
+			for (int _y = 0; _y < itemsPerY; _y++)
 			{
-				for (unsigned int _x = 0; _x < itemsPerX; _x++)
+				for (int _x = 0; _x < itemsPerX; _x++)
 				{
 					CMenuItem * item = items[count];
 
@@ -2262,7 +2278,7 @@ void CMenuWidget::paintItems()
 					selected = count;
 				} 
 
-				if (selected == count) 
+				if (selected == (signed int)count) 
 				{
 					paintItemInfo(count);
 				}
@@ -2561,7 +2577,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					items[selected]->paint(false);
 					selected = i;
 
-					if (selected > page_start[current_page + 1] || selected < page_start[current_page]) 
+					if (selected > (int)page_start[current_page + 1] || selected < (int)page_start[current_page]) 
 					{
 						// different page
 						paintItems();
@@ -2764,7 +2780,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 						pos = selected + itemsPerX;
 
 						//FIXME:
-						if (pos >= items.size())
+						if (pos >= (int)items.size())
 							pos -= itemsPerX;
 
 						CMenuItem * item = items[pos];
@@ -2820,7 +2836,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						//search next / prev selectable item
-						for (unsigned int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
+						for (int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
 						{
 							//pos = selected - count;
 							pos = selected - 1;
@@ -2864,7 +2880,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						//search next / prev selectable item
-						for (unsigned int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
+						for (int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
 						{
 							pos = selected + 1;
 
@@ -3452,7 +3468,7 @@ void ClistBoxWidget::paintHead()
 
 		if (hbutton_count)
 		{
-			for (unsigned int i = 0; i < hbutton_count; i++)
+			for (int i = 0; i < hbutton_count; i++)
 			{
 				frameBuffer->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
 				xstartPos -= (iw[i] + ICON_TO_ICON_OFFSET);
@@ -3477,9 +3493,10 @@ void ClistBoxWidget::paintHead()
 	}
 	else
 	{
+		headers.setHeadPosition(x, y, width, hheight);
 		headers.enablePaintDate();
 		headers.setHeaderButtons(hbutton_labels, hbutton_count);
-		headers.paintHead(x, y, width, hheight, iconfile.c_str(), l_name);
+		headers.paintHead(l_name, iconfile.c_str());
 	}
 }
 
@@ -3558,9 +3575,9 @@ void ClistBoxWidget::paintItems()
 
 		if(items.size() > 0)
 		{
-			for (unsigned int _y = 0; _y < itemsPerY; _y++)
+			for (int _y = 0; _y < itemsPerY; _y++)
 			{
-				for (unsigned int _x = 0; _x < itemsPerX; _x++)
+				for (int _x = 0; _x < itemsPerX; _x++)
 				{
 					CMenuItem * item = items[count];
 
@@ -3672,7 +3689,7 @@ void ClistBoxWidget::paintItems()
 					selected = count;
 				} 
 
-				if (selected == count) 
+				if (selected == (signed int)count) 
 				{
 					paintItemInfo(count);
 				}
@@ -3760,7 +3777,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 			{
 				l_w1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(item->info1.c_str());
 
-				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + + interFrame + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + + interFrame + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_w1, item->info1.c_str(), COL_MENUFOOT_INFO, 0, true);
 			}
 
 			// option_info2
@@ -3778,7 +3795,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 			{
 				l_w2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->info2.c_str());
 
-				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + + interFrame + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->info2.c_str(), COL_MENUFOOT_INFO, 0, true); // UTF-8
+				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + + interFrame + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_w2, item->info2.c_str(), COL_MENUFOOT_INFO, 0, true); // UTF-8
 			}
 		}
 	}
@@ -3974,7 +3991,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 						items[selected]->paint(false);
 						selected = i;
 
-						if (selected > page_start[current_page + 1] || selected < page_start[current_page]) 
+						if (selected > (int)page_start[current_page + 1] || selected < (int)page_start[current_page]) 
 						{
 							// different page
 							paintItems();
@@ -4201,7 +4218,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 						pos = selected + itemsPerX;
 
 						//FIXME:
-						if (pos >= items.size())
+						if (pos >= (int)items.size())
 							pos -= itemsPerX;
 
 						CMenuItem * item = items[pos];
@@ -4256,7 +4273,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						//search next / prev selectable item
-						for (unsigned int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
+						for (int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
 						{
 							//pos = selected - count;
 							pos = selected - 1;
@@ -4329,7 +4346,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						//search next / prev selectable item
-						for (unsigned int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
+						for (int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
 						{
 							pos = selected + 1;
 

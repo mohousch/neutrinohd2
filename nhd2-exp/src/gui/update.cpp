@@ -139,7 +139,7 @@ class CNonLocalizedMenuSeparator : public CMenuSeparator
 	const char * the_text;
 
 	public:
-		CNonLocalizedMenuSeparator(const char *ltext, const neutrino_locale_t Text) : CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, Text)
+		CNonLocalizedMenuSeparator(const char *ltext, const neutrino_locale_t Text) : CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(Text))
 		{
 			the_text = ltext;
 		}
@@ -881,7 +881,7 @@ void CUpdateSettings::showMenu()
 	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_URL_FILE, true, g_settings.softupdate_url_file, updateSettings_url_file));
 
 	// show current version
-	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_FLASHUPDATE_CURRENTVERSION_SEP));
+	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_FLASHUPDATE_CURRENTVERSION_SEP)));
 
 	// get current version SBBB YYYY MM TT HH MM -- formatsting
 	//CConfigFile lconfigfile('\t');

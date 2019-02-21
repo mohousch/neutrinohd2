@@ -198,7 +198,7 @@ void CListFrame::reSizeMainFrameWidth(int textWidth)
 	if( iNewWindowWidth > m_nMaxWidth) 
 		iNewWindowWidth = m_nMaxWidth;
 	
-	if((unsigned int) iNewWindowWidth < MIN_WINDOW_WIDTH) 
+	if((int) iNewWindowWidth < MIN_WINDOW_WIDTH) 
 		iNewWindowWidth = MIN_WINDOW_WIDTH;
 
 	m_cFrame.iWidth	= iNewWindowWidth;

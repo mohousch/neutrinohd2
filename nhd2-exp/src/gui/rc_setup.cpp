@@ -206,7 +206,7 @@ void CRemoteControlSettings::showMenu()
 	CStringInput * remoteControlSettings_repeatBlocker = new CStringInput(LOCALE_KEYBINDINGMENU_REPEATBLOCK, g_settings.repeat_blocker, 3, LOCALE_REPEATBLOCKER_HINT_1, LOCALE_REPEATBLOCKER_HINT_2, "0123456789 ", keySetupNotifier);
 	keySetupNotifier->changeNotify(NONEXISTANT_LOCALE, NULL);
 
-	remoteControlSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_KEYBINDINGMENU_RC));
+	remoteControlSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_KEYBINDINGMENU_RC)));
 	
 	// repeat blocker
 	remoteControlSettings.addItem(new CMenuForwarder(LOCALE_KEYBINDINGMENU_REPEATBLOCK, true, g_settings.repeat_blocker, remoteControlSettings_repeatBlocker, NULL, CRCInput::convertDigitToKey(shortcutkeysettings++)));
@@ -215,12 +215,12 @@ void CRemoteControlSettings::showMenu()
  	remoteControlSettings.addItem(new CMenuForwarder(LOCALE_KEYBINDINGMENU_REPEATBLOCKGENERIC, true, g_settings.repeat_genericblocker, remoteControlSettings_repeat_genericblocker, NULL, CRCInput::convertDigitToKey(shortcutkeysettings++)));
 
 	// keybinding menu
-	remoteControlSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_KEYBINDINGMENU_HEAD));
+	remoteControlSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_KEYBINDINGMENU_HEAD)));
 	
 	remoteControlSettings.addItem(new CMenuForwarder(LOCALE_KEYBINDINGMENU_HEAD, true, NULL, new CKeysBindingSettings(), NULL, CRCInput::convertDigitToKey(shortcutkeysettings++)));
 
         // usermenu 
-        remoteControlSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_USERMENU_HEAD));
+        remoteControlSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_USERMENU_HEAD)));
 
 	// blue
         remoteControlSettings.addItem(new CMenuForwarder(LOCALE_USERMENU_BUTTON_BLUE, true, NULL, new CUserMenuMenu(LOCALE_USERMENU_BUTTON_BLUE, 0), NULL, CRCInput::convertDigitToKey(shortcutkeysettings++) ));
@@ -339,30 +339,30 @@ void CKeysBindingSettings::showMenu()
 	// save settings
 	bindSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 
-	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_KEYBINDINGMENU_MODECHANGE));
+	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_KEYBINDINGMENU_MODECHANGE)));
 	
 	// tv/radio mode
 	bindSettings.addItem(new CMenuForwarder(keydescription[KEY_TV_RADIO_MODE], true, NULL, keychooser[KEY_TV_RADIO_MODE]));
 
 	// channellist
-	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_KEYBINDINGMENU_CHANNELLIST));
+	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_KEYBINDINGMENU_CHANNELLIST)));
 
 	for (int i = KEY_PAGE_UP; i <= KEY_BOUQUET_DOWN; i++)
 		bindSettings.addItem(new CMenuForwarder(keydescription[i], true, NULL, keychooser[i]));
 
 	// quick zap
-	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_KEYBINDINGMENU_QUICKZAP));
+	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_KEYBINDINGMENU_QUICKZAP)));
 
 	for (int i = KEY_CHANNEL_UP; i <= KEY_SAME_TP; i++)
 		bindSettings.addItem(new CMenuForwarder(keydescription[i], true, NULL, keychooser[i]));
 	
 	// media
-	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_MAINMENU_MEDIAPLAYER));
+	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_MAINMENU_MEDIAPLAYER)));
 	for (int i = KEY_EXTRAS_RECORDSBROWSER; i <= KEY_EXTRAS_WEBTV; i++)
 		bindSettings.addItem(new CMenuForwarder(keydescription[i], true, NULL, keychooser[i]));
 
 	// misc
-	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_MAINSETTINGS_MISC));
+	bindSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_MAINSETTINGS_MISC)));
 	
 	// screenshot key
 	bindSettings.addItem(new CMenuForwarder(keydescription[KEY_EXTRAS_SCREENSHOT], true, NULL, keychooser[KEY_EXTRAS_SCREENSHOT]));

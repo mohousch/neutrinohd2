@@ -443,7 +443,7 @@ void CBEBouquetWidget::deleteBouquet()
 	if (selected >= Bouquets->size()) /* Bouquets->size() might be 0 */
 		return;
 
-	if (MessageBox(LOCALE_FILEBROWSER_DELETE, (*Bouquets)[selected]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[selected]->Name, CMessageBox::mbrNo, CMessageBox::mbYes|CMessageBox::mbNo) != CMessageBox::mbrYes)
+	if (MessageBox(LOCALE_FILEBROWSER_DELETE, (*Bouquets)[selected]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[selected]->Name.c_str(), CMessageBox::mbrNo, CMessageBox::mbYes|CMessageBox::mbNo) != CMessageBox::mbrYes)
 		return;
 
 	g_bouquetManager->deleteBouquet(selected);

@@ -379,8 +379,9 @@ void CMessageBox::refresh()
 	m_cBodyWindow.paint();
 
 	// title
-	headers.setCorner();
-	headers.paintHead(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1), CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), m_width, m_theight, m_iconfile.c_str(), m_caption);
+	headers.setHeadPosition(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1), CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), m_width, m_theight);
+	headers.setHeadCorner();
+	headers.paintHead(m_caption, m_iconfile.c_str());
 
 	//Body
 	int yPos  = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2) + m_theight + (m_fheight >> 1);
@@ -652,10 +653,12 @@ int MessageBox(const neutrino_locale_t Caption, const neutrino_locale_t Text, co
 	return MessageBox(Caption, g_Locale->getText(Text), Default, ShowButtons, Icon, Width, timeout,returnDefaultOnTimeout);
 }
 
+#if 0
 int MessageBox(const neutrino_locale_t Caption, const std::string & Text, const CMessageBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
 {
 	return MessageBox(Caption, Text.c_str(), Default, ShowButtons, Icon, Width, timeout,returnDefaultOnTimeout);
 }
+#endif
 
 int MessageBox(const char * const Caption, const char * const Text, const CMessageBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
 {
@@ -673,9 +676,11 @@ int MessageBox(const char * const Caption, const neutrino_locale_t Text, const C
 	return MessageBox(Caption, g_Locale->getText(Text), Default, ShowButtons, Icon, Width, timeout,returnDefaultOnTimeout);
 }
 
+#if 0
 int MessageBox(const char * const Caption, const std::string & Text, const CMessageBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
 {
 	return MessageBox(Caption, Text.c_str(), Default, ShowButtons, Icon, Width, timeout,returnDefaultOnTimeout);
 }
+#endif
 
 

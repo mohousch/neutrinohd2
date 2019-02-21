@@ -34,10 +34,9 @@ CButtons::CButtons()
 {
 }
 
-void CButtons::paintButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content)
+void CButtons::paintFootButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content)
 {
 	int iw, ih;
-	const char *l_option;
 
 	int buttonWidth = 0;
 	
@@ -49,10 +48,15 @@ void CButtons::paintButtons(const int x, const int y, const int dx, const int dy
 		{
 			if(content[i].button != NULL)
 			{
+				//const char * l_option = NULL;
+				std::string l_option("");
+
+				l_option.clear();
+
 				CFrameBuffer::getInstance()->getIconSize(content[i].button, &iw, &ih);
 				int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
-				if(content[i].localename != 0)
+				if(content[i].localename != NULL)
 					l_option = content[i].localename;
 				else
 					l_option = g_Locale->getText(content[i].locale);

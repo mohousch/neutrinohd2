@@ -118,15 +118,14 @@ def rcInput():
 	rc = CRCInput()
 	rc.messageLoop()
 
-
 class main():
-	def __init__(self, session):
-		self.session = session
+	def __init__(self):
+		pass
 
-	menuWidget()
+	messageBox()
 
-def start(session, **kwargs):
-	session.open(main)
+if __name__ == "__main__":
+	main()
 
 
 

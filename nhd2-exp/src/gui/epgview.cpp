@@ -407,9 +407,10 @@ void CEpgData::showHead(const t_channel_id channel_id)
 
 	logo = frameBuffer->getLogoName(channel_id);
 
+	headers.setHeadPosition(&cHeadBox);
 	headers.enablePaintDate();
 	headers.enableLogo();
-	headers.paintHead(cHeadBox.iX, cHeadBox.iY, cHeadBox.iWidth, cHeadBox.iHeight, logo.c_str(), text1);
+	headers.paintHead(text1, logo.c_str());
 }
 
 int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_startzeit, bool doLoop )

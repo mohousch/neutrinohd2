@@ -29,7 +29,7 @@
 
 typedef struct button_label
 {
-	const char* button;
+	const char * button;
 	neutrino_locale_t locale;
 	const char * localename;
 } button_label_struct;
@@ -41,7 +41,7 @@ class CButtons
 	public:
 		CButtons();
 
-		void paintButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label* const content);
+		void paintFootButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label* const content);
 
 		// head buttons right
 		void paintHeadButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content);

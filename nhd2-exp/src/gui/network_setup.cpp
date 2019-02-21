@@ -345,7 +345,7 @@ void CNetworkSettings::showMenu()
 	}
 	
 	// ntp
-	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_NETWORKMENU_NTPTITLE));
+	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_NETWORKMENU_NTPTITLE)));
 
 	networkSettings.addItem(new CMenuOptionChooser(LOCALE_NETWORKMENU_NTPENABLE, &g_settings.network_ntpenable, OPTIONS_NTPENABLE_OPTIONS, OPTIONS_NTPENABLE_OPTION_COUNT, true, sectionsdConfigNotifier));
 
@@ -360,7 +360,7 @@ void CNetworkSettings::showMenu()
 	networkSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_PROXYSERVER_SEP, true, NULL, new CProxySetup(LOCALE_FLASHUPDATE_PROXYSERVER_SEP), NULL, CRCInput::RC_nokey, NULL));
 
 	// mount manager
-	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_NETWORKMENU_MOUNT));
+	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_NETWORKMENU_MOUNT)));
 
 	networkSettings.addItem(new CMenuForwarder(LOCALE_NFS_MOUNT , true, NULL, new CNFSMountGui(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
@@ -490,7 +490,7 @@ void testNetworkSettings(const char* ip, const char* netmask, const char* broadc
 	text += "\nwww.google.de: ";
 	text += mypinghost("173.194.35.152");
 
-	MessageBox(LOCALE_NETWORKMENU_TEST, text, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
+	MessageBox(LOCALE_NETWORKMENU_TEST, text.c_str(), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
 }
 
 void showCurrentNetworkSettings()
@@ -539,7 +539,7 @@ void showCurrentNetworkSettings()
 		text += router;
 	}
 	
-	MessageBox(LOCALE_NETWORKMENU_SHOW, text, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
+	MessageBox(LOCALE_NETWORKMENU_SHOW, text.c_str(), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
 }
 
 

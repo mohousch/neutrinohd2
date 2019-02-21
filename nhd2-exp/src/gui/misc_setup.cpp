@@ -461,7 +461,7 @@ void CGeneralSettings::showMenu()
 	miscSettingsGeneral.addItem(as);
 
 	// osd
-	miscSettingsGeneral.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_VIDEOMENU_OSD));
+	miscSettingsGeneral.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_VIDEOMENU_OSD)));
 
 	// menu position
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_MENU_POSITION, &g_settings.menu_position, MENU_POSITION_OPTIONS, MENU_POSITION_OPTION_COUNT, true));
@@ -867,7 +867,7 @@ void CEPGSettings::showMenu()
         miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_DIR, true, g_settings.epg_dir, this, "epgdir", CRCInput::convertDigitToKey(shortcutMiscEpg++) ));
 	
 	// epglang
-	miscSettingsEPG.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_MISCSETTINGS_PREF_EPGS_HEAD));
+	miscSettingsEPG.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_MISCSETTINGS_PREF_EPGS_HEAD)));
 	
 	CMenuOptionStringChooser * epglangSelect[3];
 	CEPGlangSelectNotifier * EPGlangNotifier = new CEPGlangSelectNotifier();

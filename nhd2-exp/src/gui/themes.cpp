@@ -152,12 +152,12 @@ void CThemes::readThemes(CMenuWidget &themes)
 				{
 					if ( p == 0 && hasCVSThemes == false ) 
 					{
-						themes.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_COLORTHEMEMENU_SELECT2));
+						themes.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_COLORTHEMEMENU_SELECT2)));
 						hasCVSThemes = true;
 					} 
 					else if ( p == 1 && hasUserThemes == false ) 
 					{
-						themes.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_COLORTHEMEMENU_SELECT1));
+						themes.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_COLORTHEMEMENU_SELECT1)));
 						hasUserThemes = true;
 					}
 					

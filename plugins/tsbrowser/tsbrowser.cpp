@@ -309,7 +309,7 @@ void CTSBrowser::onDeleteFile(MI_MOVIE_INFO& movieFile)
 	msg += "\r\n ";
 	msg += g_Locale->getText(LOCALE_FILEBROWSER_DODELETE2);
 
-	if (MessageBox(LOCALE_FILEBROWSER_DELETE, msg, CMessageBox::mbrNo, CMessageBox::mbYes|CMessageBox::mbNo) == CMessageBox::mbrYes)
+	if (MessageBox(LOCALE_FILEBROWSER_DELETE, msg.c_str(), CMessageBox::mbrNo, CMessageBox::mbYes|CMessageBox::mbNo) == CMessageBox::mbrYes)
 	{
 		delFile(movieFile.file);
 			

@@ -1111,5 +1111,5 @@ bool askUserOnTimerConflict(time_t announceTime, time_t stopTime)
 	// todo: localize message
 	//g_Locale->getText(TIMERLIST_OVERLAPPING_MESSAGE);
 
-	return (MessageBox(LOCALE_MESSAGEBOX_INFO, timerbuf, CMessageBox::mbrNo, CMessageBox::mbNo|CMessageBox::mbYes) == CMessageBox::mbrYes);
+	return (MessageBox(LOCALE_MESSAGEBOX_INFO, timerbuf.c_str(), CMessageBox::mbrNo, CMessageBox::mbNo|CMessageBox::mbYes) == CMessageBox::mbrYes);
 }

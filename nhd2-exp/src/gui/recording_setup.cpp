@@ -219,12 +219,12 @@ void CRecordingSettings::showMenu()
 	recordingSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	recordingSettings.addItem(new CMenuForwarder(LOCALE_RECORDINGMENU_SETUPNOW, true, NULL, this, "recording", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 
-	recordingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_TIMERSETTINGS_SEPARATOR));
+	recordingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_TIMERSETTINGS_SEPARATOR)));
 	recordingSettings.addItem(fTimerBefore);
 	recordingSettings.addItem(fTimerAfter);
 
 	//apids
-	recordingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_RECORDINGMENU_APIDS));
+	recordingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_RECORDINGMENU_APIDS)));
 	recordingSettings.addItem(aoj1);
 	recordingSettings.addItem(aoj2);
 	recordingSettings.addItem(aoj3);
@@ -243,7 +243,7 @@ void CRecordingSettings::showMenu()
 	recordingSettings.addItem(fRecDir);
 	
 	// timeshift
-	recordingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_EXTRA_TIMESHIFT));
+	recordingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_EXTRA_TIMESHIFT)));
 	
 	// record time
 	recordingSettings.addItem(new CMenuOptionNumberChooser(LOCALE_EXTRA_RECORD_TIME, &g_settings.record_hours, true, 1, 24, NULL) );

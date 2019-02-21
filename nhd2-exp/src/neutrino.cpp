@@ -4098,7 +4098,7 @@ skip_message:
 		}
 		
 		if( mode != mode_scart )
-			MessageBox(LOCALE_TIMERLIST_TYPE_REMIND, text, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
+			MessageBox(LOCALE_TIMERLIST_TYPE_REMIND, text.c_str(), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
 			
 		delete[] (unsigned char*) data;
 		

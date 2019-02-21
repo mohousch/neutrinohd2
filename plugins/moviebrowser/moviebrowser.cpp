@@ -576,8 +576,8 @@ void CMovieBrowser::initFrames(void)
 	m_cBoxFrame.iWidth = 			g_settings.screen_EndX - g_settings.screen_StartX - 20;
 	m_cBoxFrame.iHeight = 			g_settings.screen_EndY - g_settings.screen_StartY - 20;
 
-	m_cBoxFrameTitleRel.iX =		0;
-	m_cBoxFrameTitleRel.iY = 		0;
+	m_cBoxFrameTitleRel.iX =		m_cBoxFrame.iX;
+	m_cBoxFrameTitleRel.iY = 		m_cBoxFrame.iY;
 	m_cBoxFrameTitleRel.iWidth = 		m_cBoxFrame.iWidth;
 	m_cBoxFrameTitleRel.iHeight = 		m_pcFontTitle->getHeight();
 
@@ -586,8 +586,8 @@ void CMovieBrowser::initFrames(void)
 	m_cBoxFrameBrowserList.iWidth = 	m_cBoxFrame.iWidth;
 	m_cBoxFrameBrowserList.iHeight = 	m_settings.browserFrameHeight;
 
-	m_cBoxFrameFootRel.iX = 		0;
-	m_cBoxFrameFootRel.iY = 		m_cBoxFrame.iHeight - m_pcFontFoot->getHeight()*2;//FIXME
+	m_cBoxFrameFootRel.iX = 		m_cBoxFrame.iX;
+	m_cBoxFrameFootRel.iY = 		m_cBoxFrame.iY + m_cBoxFrame.iHeight - m_pcFontFoot->getHeight()*2;//FIXME
 	m_cBoxFrameFootRel.iWidth = 		m_cBoxFrameBrowserList.iWidth;
 	m_cBoxFrameFootRel.iHeight = 		m_pcFontFoot->getHeight()*2;//FIXME
 
@@ -1675,6 +1675,15 @@ void CMovieBrowser::refreshBookmarkList(void) // P3
 	dprintf(DEBUG_DEBUG, "CMovieBrowser::refreshBookmarkList:\r\n");
 }
 
+#define MB_HEAD_BUTTONS_COUNT	4
+const struct button_label MBHeadButtons[MB_HEAD_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_0, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_MUTE_SMALL, NONEXISTANT_LOCALE, NULL },
+};
+
 void CMovieBrowser::refreshTitle(void) 
 {
 	//Paint Text Background
@@ -1686,94 +1695,47 @@ void CMovieBrowser::refreshTitle(void)
 	
 	title = g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD);
 
-	// head box
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
-	
-	// movie icon
-	int icon_w, icon_h;
-	m_pcWindow->getIconSize(mb_icon.c_str(), &icon_w, &icon_h);
-	m_pcWindow->paintIcon(mb_icon, m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_h)/2);
-
-	int xpos1 = m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + m_cBoxFrameTitleRel.iWidth - BORDER_RIGHT;
-
-	// setup icon
-	int icon_s_w, icon_s_h;
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_s_w, &icon_s_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_SETUP, xpos1 - icon_s_w, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_s_h)/2);
-
-	// help icon
-	int icon_h_w, icon_h_h;
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_h_w, &icon_h_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HELP, xpos1 - icon_s_w - ICON_TO_ICON_OFFSET - icon_h_w, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_h_h)/2);
-
-	// 0 icon (tmdb)
-	int icon_t_w, icon_t_h;
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_0, &icon_t_w, &icon_t_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_0, xpos1 - icon_s_w - ICON_TO_ICON_OFFSET - icon_h_w - ICON_TO_ICON_OFFSET - icon_t_w, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_t_h)/2);
-	
-	// mute icon
-	int icon_m_w = 0;
-	int icon_m_h = 0;
-	
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_MUTE_SMALL, &icon_m_w, &icon_m_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_MUTE_SMALL, xpos1 - icon_s_w - ICON_TO_ICON_OFFSET - icon_h_w - ICON_TO_ICON_OFFSET - icon_t_w - ICON_TO_ICON_OFFSET - icon_m_w, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_m_h)/2);
-	
-	// head title
-	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT + icon_w + ICON_OFFSET, m_cBoxFrame.iY+m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight, m_cBoxFrameTitleRel.iWidth - BORDER_LEFT - BORDER_RIGHT - icon_w - icon_s_w - ICON_TO_ICON_OFFSET - icon_h_w - ICON_TO_ICON_OFFSET - icon_t_w - ICON_TO_ICON_OFFSET - icon_m_w, title.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	headers.setHeadPosition(&m_cBoxFrameTitleRel);
+	headers.enablePaintDate();
+	headers.setHeaderButtons(MBHeadButtons, MB_HEAD_BUTTONS_COUNT);
+	headers.paintHead(title, NEUTRINO_ICON_MOVIE);
 }
+
+#define MB_FOOT_BUTTONS_COUNT	4
+struct button_label MBFootButtons[MB_FOOT_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES, NULL },
+	
+};
 
 void CMovieBrowser::refreshFoot(void) 
 {
 	dprintf(DEBUG_INFO, "CMovieBrowser::refreshFoot:\r\n");
-	
-	uint8_t color = COL_MENUHEAD;
 
-	// filter
-	std::string filter_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_FILTER);
-	std::string sort_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_SORT);
+	if (m_settings.gui != MB_GUI_LAST_PLAY && m_settings.gui != MB_GUI_LAST_RECORD)
+	{
+		// red
+		std::string sort_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_SORT);
+		sort_text += g_Locale->getText(m_localizedItemName[m_settings.sorting.item]);
 	
-	// filter
-	filter_text += m_settings.filter.optionString;
+		//MBFootButtons[0].localename = sort_text.c_str();
+		MBFootButtons[0].locale = /*LOCALE_MOVIEBROWSER_FOOT_SORT*/m_localizedItemName[m_settings.sorting.item];
 		
-	// sort
-	sort_text += g_Locale->getText(m_localizedItemName[m_settings.sorting.item]);
-	
-	// ok (play)
-	std::string next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
-	
-	// footbox
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+		
+		// green
+		std::string filter_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_FILTER);
+		filter_text += m_settings.filter.optionString;
 
-	int width = m_cBoxFrameFootRel.iWidth>>2;
-	int xpos1 = m_cBoxFrameFootRel.iX + 2*ICON_OFFSET;
-	int xpos2 = xpos1 + width;
-	int xpos3 = xpos2 + width;
-	int xpos4 = xpos3 + width;
-	
-	int icon_w = 0;
-	int icon_h = 0;
-	
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-
-	// red
-	if (m_settings.gui != MB_GUI_LAST_PLAY && m_settings.gui != MB_GUI_LAST_RECORD)
-	{
-		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, m_cBoxFrame.iX + xpos1, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
-
-		m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + ICON_OFFSET + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_pcFontFoot->getHeight() + (m_cBoxFrameFootRel.iHeight + 6 - m_pcFontFoot->getHeight())/2, width - ICON_OFFSET - icon_w, sort_text.c_str(), color, 0, true); // UTF-8
-	}
-
-	// green
-	if (m_settings.gui != MB_GUI_LAST_PLAY && m_settings.gui != MB_GUI_LAST_RECORD)
-	{
-		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
-		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, m_cBoxFrame.iX + xpos2, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
-
-		m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + ICON_OFFSET + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_pcFontFoot->getHeight() + (m_cBoxFrameFootRel.iHeight + 6 - m_pcFontFoot->getHeight())/2, width - ICON_OFFSET - icon_w, filter_text.c_str(), color, 0, true); // UTF-8
+		//MBFootButtons[1].localename = filter_text.c_str();
+		MBFootButtons[1].locale = LOCALE_MOVIEBROWSER_FOOT_FILTER;
 	}
 
 	// yellow
+	std::string next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
+
 	if(m_settings.gui == MB_GUI_FILTER && m_windowFocus == MB_FOCUS_FILTER)
 	{
 		next_text = "select";
@@ -1783,17 +1745,10 @@ void CMovieBrowser::refreshFoot(void)
 		next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
 	}
 
-	// yellow
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, m_cBoxFrame.iX + xpos3, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
+	//MBFootButtons[2].localename = next_text.c_str();
+	MBFootButtons[2].locale = LOCALE_MOVIEBROWSER_NEXT_FOCUS;
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + ICON_OFFSET + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_pcFontFoot->getHeight() + (m_cBoxFrameFootRel.iHeight + 6 - m_pcFontFoot->getHeight())/2, width - ICON_OFFSET - icon_w, next_text.c_str(), color, 0, true); // UTF-8
-
-	// blue
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX + xpos4, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
-
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + ICON_OFFSET + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_pcFontFoot->getHeight() + (m_cBoxFrameFootRel.iHeight + 6 - m_pcFontFoot->getHeight())/2, width - ICON_OFFSET - icon_w, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
+	headers.paintFoot(m_cBoxFrameFootRel, MB_FOOT_BUTTONS_COUNT, MBFootButtons);
 }
 
 bool CMovieBrowser::onButtonPress(neutrino_msg_t msg)
@@ -2230,7 +2185,7 @@ void CMovieBrowser::onDeleteFile(MI_MOVIE_INFO& movieSelectionHandler)
 			
 	msg += "\r\n ";
 	msg += g_Locale->getText(LOCALE_FILEBROWSER_DODELETE2);
-	if (MessageBox(LOCALE_FILEBROWSER_DELETE, msg, CMessageBox::mbrNo, CMessageBox::mbYes|CMessageBox::mbNo) == CMessageBox::mbrYes)
+	if (MessageBox(LOCALE_FILEBROWSER_DELETE, msg.c_str(), CMessageBox::mbrNo, CMessageBox::mbYes|CMessageBox::mbNo) == CMessageBox::mbrYes)
 	{
 		delFile(movieSelectionHandler.file);
 			
@@ -3260,7 +3215,7 @@ bool CMovieBrowser::showMenu()
 	optionsMenuDir.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_USE_MOVIE_DIR, (int*)(&m_settings.storageDirMovieUsed), MESSAGEBOX_YES_NO_OPTIONS, MESSAGEBOX_YES_NO_OPTIONS_COUNT, true ));
 	optionsMenuDir.addItem( new CMenuForwarder (LOCALE_MOVIEBROWSER_DIR, false , g_settings.network_nfs_moviedir));
 	
-	optionsMenuDir.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_MOVIEBROWSER_DIR_HEAD));
+	optionsMenuDir.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_MOVIEBROWSER_DIR_HEAD)));
 	
 	CFileChooser * dirInput[MB_MAX_DIRS];
 	CMenuOptionChooser * chooser[MB_MAX_DIRS];
@@ -3295,7 +3250,7 @@ bool CMovieBrowser::showMenu()
 	optionsMenuBrowser.addItem( new CMenuForwarder(LOCALE_MOVIEBROWSER_LAST_PLAY_MAX_ITEMS, true, playMaxUserIntInput.getValue(),   &playMaxUserIntInput));
 	optionsMenuBrowser.addItem( new CMenuForwarder(LOCALE_MOVIEBROWSER_LAST_RECORD_MAX_ITEMS, true, recMaxUserIntInput.getValue(), &recMaxUserIntInput));
 	optionsMenuBrowser.addItem( new CMenuForwarder(LOCALE_MOVIEBROWSER_BROWSER_FRAME_HIGH, true, browserFrameUserIntInput.getValue(), &browserFrameUserIntInput));
-	optionsMenuBrowser.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_MOVIEBROWSER_BROWSER_ROW_HEAD));
+	optionsMenuBrowser.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_MOVIEBROWSER_BROWSER_ROW_HEAD)));
 	optionsMenuBrowser.addItem( new CMenuForwarder(LOCALE_MOVIEBROWSER_BROWSER_ROW_NR, true, browserRowNrIntInput.getValue(), &browserRowNrIntInput));
 	
 	for(i = 0; i < MB_MAX_ROWS; i++)

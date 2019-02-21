@@ -390,7 +390,8 @@ void CPSISetup::paint()
 	mainWindow.paint();
 
 	// head
-	headers.paintHead(x, y, width, hheight, NEUTRINO_ICON_COLORS, g_Locale->getText(name));
+	headers.setHeadPosition(x, y, width, hheight);
+	headers.paintHead(g_Locale->getText(name), NEUTRINO_ICON_COLORS);
 	
 	//paint slider
 	// contrast

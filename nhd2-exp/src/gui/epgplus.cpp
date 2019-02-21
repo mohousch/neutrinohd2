@@ -532,7 +532,7 @@ void EpgPlus::Footer::paintButtons(button_label * _buttonLabels, int numberOfBut
 	// paint foot box
 	this->frameBuffer->paintBoxRel(this->x, this->y + this->getUsedHeight() - (this->fontButtons->getHeight() + 10), this->width, this->fontButtons->getHeight() + 10, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
 	
-	buttons.paintButtons(this->x, this->y + this->getUsedHeight() - (this->fontButtons->getHeight() + 10), this->width, this->fontButtons->getHeight() + 10, numberOfButtons, _buttonLabels);
+	buttons.paintFootButtons(this->x, this->y + this->getUsedHeight() - (this->fontButtons->getHeight() + 10), this->width, this->fontButtons->getHeight() + 10, numberOfButtons, _buttonLabels);
 }
 
 EpgPlus::EpgPlus ()
