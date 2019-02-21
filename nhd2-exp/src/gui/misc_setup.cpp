@@ -438,7 +438,7 @@ void CGeneralSettings::showMenu()
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_MISCSETTINGS_INFOBAR_RADIOTEXT, &g_settings.radiotext_enable, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, this ));
 	
 	// logos dir
-	miscSettingsGeneral.addItem( new CMenuForwarder(LOCALE_MISCSETTINGS_LOGOSDIR, true, g_settings.logos_dir, this, "logos_dir" ) );
+	miscSettingsGeneral.addItem( new CMenuForwarder(LOCALE_MISCSETTINGS_LOGOSDIR, true, g_settings.logos_dir.c_str(), this, "logos_dir" ) );
 	
 	// epgplus logos
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_MISCSETTINGS_EPGPLUS_SHOW_LOGOS, &g_settings.epgplus_show_logo, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true ));
@@ -480,7 +480,7 @@ void CGeneralSettings::showMenu()
 	std::string key = g_settings.ytkey;
 	
 	CStringInputSMS* keyInput = new CStringInputSMS("youtube ID Key:", (char *)key.c_str());
-	miscSettingsGeneral.addItem(new CMenuForwarder("YT:", true, key, keyInput));
+	miscSettingsGeneral.addItem(new CMenuForwarder("YT:", true, key.c_str(), keyInput));
 
 	// reset factory setup
 	miscSettingsGeneral.addItem(new CMenuSeparator(CMenuSeparator::LINE));
@@ -849,22 +849,22 @@ void CEPGSettings::showMenu()
 
 	// epg cache
         CStringInput * miscSettings_epg_cache = new CStringInput(LOCALE_MISCSETTINGS_EPG_CACHE, &g_settings.epg_cache, 2,LOCALE_MISCSETTINGS_EPG_CACHE_HINT1, LOCALE_MISCSETTINGS_EPG_CACHE_HINT2 , "0123456789 ", sectionsdConfigNotifier);
-        miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_CACHE, true, g_settings.epg_cache, miscSettings_epg_cache, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++) ));
+        miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_CACHE, true, g_settings.epg_cache.c_str(), miscSettings_epg_cache, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++) ));
 
 	// extended epg cache
         CStringInput * miscSettings_epg_cache_e = new CStringInput(LOCALE_MISCSETTINGS_EPG_EXTENDEDCACHE, &g_settings.epg_extendedcache, 3,LOCALE_MISCSETTINGS_EPG_EXTENDEDCACHE_HINT1, LOCALE_MISCSETTINGS_EPG_EXTENDEDCACHE_HINT2 , "0123456789 ", sectionsdConfigNotifier);
-        miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_EXTENDEDCACHE, true, g_settings.epg_extendedcache, miscSettings_epg_cache_e, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++)));
+        miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_EXTENDEDCACHE, true, g_settings.epg_extendedcache.c_str(), miscSettings_epg_cache_e, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++)));
 
 	// old events
         CStringInput * miscSettings_epg_old_events = new CStringInput(LOCALE_MISCSETTINGS_EPG_OLD_EVENTS, &g_settings.epg_old_events, 2,LOCALE_MISCSETTINGS_EPG_OLD_EVENTS_HINT1, LOCALE_MISCSETTINGS_EPG_OLD_EVENTS_HINT2 , "0123456789 ", sectionsdConfigNotifier);
-        miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_OLD_EVENTS, true, g_settings.epg_old_events, miscSettings_epg_old_events, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++) ));
+        miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_OLD_EVENTS, true, g_settings.epg_old_events.c_str(), miscSettings_epg_old_events, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++) ));
 
 	// max epg events
         CStringInput * miscSettings_epg_max_events = new CStringInput(LOCALE_MISCSETTINGS_EPG_MAX_EVENTS, &g_settings.epg_max_events, 5,LOCALE_MISCSETTINGS_EPG_MAX_EVENTS_HINT1, LOCALE_MISCSETTINGS_EPG_MAX_EVENTS_HINT2 , "0123456789 ", sectionsdConfigNotifier);
-        miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_MAX_EVENTS, true, g_settings.epg_max_events, miscSettings_epg_max_events, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++) ));
+        miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_MAX_EVENTS, true, g_settings.epg_max_events.c_str(), miscSettings_epg_max_events, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++) ));
 
 	// epg save dir
-        miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_DIR, true, g_settings.epg_dir, this, "epgdir", CRCInput::convertDigitToKey(shortcutMiscEpg++) ));
+        miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_DIR, true, g_settings.epg_dir.c_str(), this, "epgdir", CRCInput::convertDigitToKey(shortcutMiscEpg++) ));
 	
 	// epglang
 	miscSettingsEPG.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_MISCSETTINGS_PREF_EPGS_HEAD)));
@@ -891,7 +891,7 @@ void CEPGSettings::showMenu()
 
 	// server box ip
 	CIPInput * epg_IP = new CIPInput(LOCALE_STREAMINGMENU_SERVER_IP, g_settings.epg_serverbox_ip);
-	CMenuForwarder* o1 = new CMenuForwarder("Server Box IP", g_settings.epg_enable_online_epg, g_settings.epg_serverbox_ip, epg_IP, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++));
+	CMenuForwarder* o1 = new CMenuForwarder("Server Box IP", g_settings.epg_enable_online_epg, g_settings.epg_serverbox_ip.c_str(), epg_IP, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++));
 
 	// server gui (neutrino/neutrinohd/enigma2)
 	CMenuOptionChooser* o2 = new CMenuOptionChooser("Server Box GUI", &g_settings.epg_serverbox_gui, EPG_SERVERBOX_GUI_OPTIONS, EPG_SERVERBOX_GUI_OPTION_COUNT, g_settings.epg_enable_online_epg, NULL, CRCInput::convertDigitToKey(shortcutMiscEpg++));

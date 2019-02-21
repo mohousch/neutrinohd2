@@ -173,18 +173,18 @@ void CSatIPClient::showMenu()
 	
 	// satipserver ip
 	CStringInputSMS * SATIPSERVER_IP = new CStringInputSMS((char *)"SatIP Server IP", (char *)SatIPServerIP.c_str());
-	satIPClientMenu->addItem(new CMenuForwarder("SatIP Server IP", true, SatIPServerIP, SATIPSERVER_IP, NULL));
+	satIPClientMenu->addItem(new CMenuForwarder("SatIP Server IP", true, SatIPServerIP.c_str(), SATIPSERVER_IP, NULL));
 	
 	// satipserver port
 	CStringInputSMS * SATIPSERVER_PORT = new CStringInputSMS((char *)"SatIP Server Port", (char *)SatIPServerPort.c_str());
-	satIPClientMenu->addItem(new CMenuForwarder("SatIP Server Port", false, SatIPServerPort, SATIPSERVER_PORT, NULL));
+	satIPClientMenu->addItem(new CMenuForwarder("SatIP Server Port", false, SatIPServerPort.c_str(), SATIPSERVER_PORT, NULL));
 	
 	// frontendtyp
 	satIPClientMenu->addItem(new CMenuOptionChooser("Tuner typ", &SatIPFrontendTyp, SATIP_FRONTEND_TYPE_OPTIONS, SATIP_FRONTEND_TYPE_OPTION_COUNT, true, NULL));
 
 	// vtuner device
 	CStringInputSMS * VTUNER_DEVICE = new CStringInputSMS((char *)"VTuner Device", (char *)SatIPVtunerDevice.c_str());
-	satIPClientMenu->addItem(new CMenuForwarder("VTuner Device", true, SatIPVtunerDevice, VTUNER_DEVICE, NULL));
+	satIPClientMenu->addItem(new CMenuForwarder("VTuner Device", true, SatIPVtunerDevice.c_str(), VTUNER_DEVICE, NULL));
 
 	// debug
 	satIPClientMenu->addItem(new CMenuOptionChooser("SatIP Client Debug", &SatIPDebug, SATIP_DEBUG_LEVEL_OPTIONS, SATIP_DEBUG_LEVEL_OPTION_COUNT, true, NULL));

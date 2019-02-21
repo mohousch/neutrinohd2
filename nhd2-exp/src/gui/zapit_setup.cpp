@@ -137,10 +137,10 @@ void CZapitSetup::showMenu()
 	CMenuOptionChooser * m2 = new CMenuOptionChooser(LOCALE_ZAPITSETUP_LAST_MODE, &g_settings.lastChannelMode, OPTIONS_LASTMODE_OPTIONS, OPTIONS_LASTMODE_OPTION_COUNT, !g_settings.uselastchannel, NULL, CRCInput::convertDigitToKey(shortcut++));
 
 	// last channel TV
-	CMenuForwarder * m3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, !g_settings.uselastchannel, g_settings.StartChannelTV, this, "tv", CRCInput::convertDigitToKey(shortcut++));
+	CMenuForwarder * m3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, !g_settings.uselastchannel, g_settings.StartChannelTV.c_str(), this, "tv", CRCInput::convertDigitToKey(shortcut++));
 
 	// last channel radio
-	CMenuForwarder * m4 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, !g_settings.uselastchannel, g_settings.StartChannelRadio, this, "radio", CRCInput::convertDigitToKey(shortcut++));
+	CMenuForwarder * m4 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, !g_settings.uselastchannel, g_settings.StartChannelRadio.c_str(), this, "radio", CRCInput::convertDigitToKey(shortcut++));
 	
 	CZapitSetupNotifier zapitSetupNotifier(m2, m3, m4);
 

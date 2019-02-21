@@ -218,7 +218,7 @@ void CNetworkSettings::showMenu()
 	MyIPChanger = new CIPChangeNotifier;
 	
 	//eth id
-	CMenuForwarder * mac = new CMenuForwarder("MAC", false, mac_addr);
+	CMenuForwarder * mac = new CMenuForwarder("MAC", false, mac_addr.c_str());
 	
 	CIPInput * networkSettings_NetworkIP = new CIPInput(LOCALE_NETWORKMENU_IPADDRESS, networkConfig->address, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2, MyIPChanger);
 
@@ -240,21 +240,21 @@ void CNetworkSettings::showMenu()
 
 	CMenuForwarder * m0 = new CMenuForwarder(LOCALE_NETWORKMENU_SETUPNOW, true, NULL, this, "network", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN);
 
-	CMenuForwarder * m1 = new CMenuForwarder(LOCALE_NETWORKMENU_IPADDRESS, networkConfig->inet_static, networkConfig->address, networkSettings_NetworkIP );
+	CMenuForwarder * m1 = new CMenuForwarder(LOCALE_NETWORKMENU_IPADDRESS, networkConfig->inet_static, networkConfig->address.c_str(), networkSettings_NetworkIP);
 
-	CMenuForwarder * m2 = new CMenuForwarder(LOCALE_NETWORKMENU_NETMASK, networkConfig->inet_static, networkConfig->netmask, networkSettings_NetMask   );
+	CMenuForwarder * m2 = new CMenuForwarder(LOCALE_NETWORKMENU_NETMASK, networkConfig->inet_static, networkConfig->netmask.c_str(), networkSettings_NetMask);
 
-	CMenuForwarder * m3 = new CMenuForwarder(LOCALE_NETWORKMENU_BROADCAST, networkConfig->inet_static, networkConfig->broadcast, networkSettings_Broadcast );
+	CMenuForwarder * m3 = new CMenuForwarder(LOCALE_NETWORKMENU_BROADCAST, networkConfig->inet_static, networkConfig->broadcast.c_str(), networkSettings_Broadcast );
 
-	CMenuForwarder * m4 = new CMenuForwarder(LOCALE_NETWORKMENU_GATEWAY, networkConfig->inet_static, networkConfig->gateway, networkSettings_Gateway   );
+	CMenuForwarder * m4 = new CMenuForwarder(LOCALE_NETWORKMENU_GATEWAY, networkConfig->inet_static, networkConfig->gateway.c_str(), networkSettings_Gateway   );
 
-	CMenuForwarder * m5 = new CMenuForwarder(LOCALE_NETWORKMENU_NAMESERVER, networkConfig->inet_static, networkConfig->nameserver, networkSettings_NameServer);
+	CMenuForwarder * m5 = new CMenuForwarder(LOCALE_NETWORKMENU_NAMESERVER, networkConfig->inet_static, networkConfig->nameserver.c_str(), networkSettings_NameServer);
 
-        CMenuForwarder * m6 = new CMenuForwarder( LOCALE_NETWORKMENU_NTPSERVER, true, g_settings.network_ntpserver, networkSettings_NtpServer );
+        CMenuForwarder * m6 = new CMenuForwarder( LOCALE_NETWORKMENU_NTPSERVER, true, g_settings.network_ntpserver.c_str(), networkSettings_NtpServer );
 
-        CMenuForwarder * m7 = new CMenuForwarder( LOCALE_NETWORKMENU_NTPREFRESH, true, g_settings.network_ntprefresh, networkSettings_NtpRefresh );
+        CMenuForwarder * m7 = new CMenuForwarder( LOCALE_NETWORKMENU_NTPREFRESH, true, g_settings.network_ntprefresh.c_str(), networkSettings_NtpRefresh );
 	
-	CMenuForwarder * m8 = new CMenuForwarder(LOCALE_NETWORKMENU_HOSTNAME, true, network_hostname, networkSettings_Hostname);
+	CMenuForwarder * m8 = new CMenuForwarder(LOCALE_NETWORKMENU_HOSTNAME, true, network_hostname.c_str(), networkSettings_Hostname);
 
 	CDHCPNotifier * dhcpNotifier = new CDHCPNotifier(m1, m2, m3, m4, m5);
 
@@ -322,11 +322,11 @@ void CNetworkSettings::showMenu()
 	{
 		//ssid
 		CStringInputSMS * networkSettings_ssid = new CStringInputSMS(LOCALE_NETWORKMENU_SSID, &network_ssid);
-		CMenuForwarder * m9 = new CMenuForwarder(LOCALE_NETWORKMENU_SSID, networkConfig->wireless, network_ssid , networkSettings_ssid );
+		CMenuForwarder * m9 = new CMenuForwarder(LOCALE_NETWORKMENU_SSID, networkConfig->wireless, network_ssid.c_str(), networkSettings_ssid );
 
 		//key
 		CStringInputSMS *networkSettings_key = new CStringInputSMS(LOCALE_NETWORKMENU_PASSWORD, &network_key);
-		CMenuForwarder *m10 = new CMenuForwarder(LOCALE_NETWORKMENU_PASSWORD, networkConfig->wireless, network_key , networkSettings_key );
+		CMenuForwarder *m10 = new CMenuForwarder(LOCALE_NETWORKMENU_PASSWORD, networkConfig->wireless, network_key.c_str(), networkSettings_key );
 
 		wlanEnable[0] = m9;
 		wlanEnable[1] = m10;

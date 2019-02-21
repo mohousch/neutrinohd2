@@ -754,7 +754,7 @@ int EventList::findEvents(void)
 		
 		if(m_search_list == SEARCH_LIST_CHANNEL)
 		{
-			sectionsd_getEventsServiceKey(m_search_channel_id & 0xFFFFFFFFFFFFULL, evtlist, m_search_epg_item,m_search_keyword);
+			sectionsd_getEventsServiceKey(m_search_channel_id & 0xFFFFFFFFFFFFULL, evtlist, m_search_epg_item, m_search_keyword);
 		}
 		else if(m_search_list == SEARCH_LIST_BOUQUET)
 		{
@@ -763,7 +763,7 @@ int EventList::findEvents(void)
 			{
 				channel_id = bouquetList->Bouquets[m_search_bouquet_id]->channelList->getChannelFromIndex(channel)->channel_id;
 				
-				sectionsd_getEventsServiceKey(channel_id & 0xFFFFFFFFFFFFULL, evtlist, m_search_epg_item,m_search_keyword);
+				sectionsd_getEventsServiceKey(channel_id & 0xFFFFFFFFFFFFULL, evtlist, m_search_epg_item, m_search_keyword);
 			}
 		}
 		else if(m_search_list == SEARCH_LIST_ALL)
@@ -779,7 +779,7 @@ int EventList::findEvents(void)
 				{
 					channel_id = bouquetList->Bouquets[bouquet]->channelList->getChannelFromIndex(channel)->channel_id;
 					
-					sectionsd_getEventsServiceKey(channel_id & 0xFFFFFFFFFFFFULL,evtlist, m_search_epg_item,m_search_keyword);
+					sectionsd_getEventsServiceKey(channel_id & 0xFFFFFFFFFFFFULL,evtlist, m_search_epg_item, m_search_keyword);
 				}
 			}
 			box.hide();
@@ -842,12 +842,12 @@ const CMenuOptionChooser::keyval SEARCH_EPG_OPTIONS[SEARCH_EPG_OPTION_COUNT] =
 	{ EventList::SEARCH_EPG_INFO2       , LOCALE_FONTSIZE_EPG_INFO2, NULL }
 };
 
-CEventFinderMenu::CEventFinderMenu(int* event, int* search_epg_item, std::string* search_keyword, int* search_list, t_channel_id* search_channel_id, t_bouquet_id * search_bouquet_id)
+CEventFinderMenu::CEventFinderMenu(int * event, int * search_epg_item, std::string * search_keyword, int * search_list, t_channel_id * search_channel_id, t_bouquet_id * search_bouquet_id)
 {
 	m_event = event;
-	m_search_epg_item   = search_epg_item;
-	m_search_keyword	= search_keyword;
-	m_search_list       = search_list;
+	m_search_epg_item = search_epg_item;
+	m_search_keyword = search_keyword;
+	m_search_list = search_list;
 	m_search_channel_id = search_channel_id;
 	m_search_bouquet_id = search_bouquet_id;
 }
@@ -955,9 +955,9 @@ int CEventFinderMenu::showMenu(void)
 	
 	CStringInputSMS stringInput(LOCALE_EVENTFINDER_KEYWORD, m_search_keyword);
 	
-	CMenuForwarder * mf2 = new CMenuForwarder(LOCALE_EVENTFINDER_KEYWORD, true, *m_search_keyword, &stringInput, NULL, CRCInput::RC_1 );
+	CMenuForwarder * mf2 = new CMenuForwarder(LOCALE_EVENTFINDER_KEYWORD, true, m_search_keyword->c_str(), &stringInput, NULL, CRCInput::RC_1 );
 	CMenuOptionChooser * mo0 = new CMenuOptionChooser(LOCALE_EVENTFINDER_SEARCH_WITHIN_LIST, m_search_list, SEARCH_LIST_OPTIONS, SEARCH_LIST_OPTION_COUNT, true, NULL, CRCInput::RC_2);
-	CMenuForwarder * mf1 = new CMenuForwarder("", *m_search_list != EventList::SEARCH_LIST_ALL, m_search_channelname, this, "3", CRCInput::RC_3 );
+	CMenuForwarder * mf1 = new CMenuForwarder("", *m_search_list != EventList::SEARCH_LIST_ALL, m_search_channelname.c_str(), this, "3", CRCInput::RC_3 );
 	CMenuOptionChooser * mo1 = new CMenuOptionChooser(LOCALE_EVENTFINDER_SEARCH_WITHIN_EPG, m_search_epg_item, SEARCH_EPG_OPTIONS, SEARCH_EPG_OPTION_COUNT, true, NULL, CRCInput::RC_4);
 	CMenuForwarder * mf0 = new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, this, "1", CRCInput::RC_5 );
 	

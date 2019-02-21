@@ -221,7 +221,7 @@ int CNKMovies::showCategoriesMenu()
 	// search
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
-	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, nksearch, this, "search", CRCInput::RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
+	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, nksearch.c_str(), this, "search", CRCInput::RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
 
 	mainMenu.exec(NULL, "");
 	res = mainMenu.getSelectedLine();

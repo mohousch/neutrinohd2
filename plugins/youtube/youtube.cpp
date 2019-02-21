@@ -316,7 +316,7 @@ int CYTBrowser::showCategoriesMenu(void)
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// search
-	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, ytsearch, this, "search", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, ytsearch.c_str(), this, "search", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	
 	// ytorder
 	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_ORDERBY, &m_settings.ytorderby, YT_ORDERBY_OPTIONS, YT_ORDERBY_OPTION_COUNT, true, NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true));

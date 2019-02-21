@@ -885,7 +885,7 @@ ClistBoxEntryItem::ClistBoxEntryItem(const neutrino_locale_t Text, const bool Ac
 {
 	text = Text;
 	textString = g_Locale->getText(Text);
-	option = Option;
+	option = Option? Option : "";
 
 	active = Active;
 
@@ -898,7 +898,7 @@ ClistBoxEntryItem::ClistBoxEntryItem(const char* Text, const bool Active, const 
 {
 	text = NONEXISTANT_LOCALE;
 	textString = Text;
-	option = Option;
+	option = Option? Option : "";
 
 	active = Active;
 

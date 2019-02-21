@@ -1019,7 +1019,7 @@ int CTimerList::newTimer()
 	
 	CMenuOptionChooser* m3 = new CMenuOptionChooser(LOCALE_TIMERLIST_REPEAT, (int *)&timerNew.eventRepeat, TIMERLIST_REPEAT_OPTIONS, TIMERLIST_REPEAT_OPTION_COUNT, true, &notifier);
 	
-	CMenuForwarder *m6 = new CMenuForwarder(LOCALE_TIMERLIST_CHANNEL, true, timerNew_channel_name, this, CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_tv? "tv" : CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio? "radio" : "webtv");
+	CMenuForwarder *m6 = new CMenuForwarder(LOCALE_TIMERLIST_CHANNEL, true, timerNew_channel_name.c_str(), this, CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_tv? "tv" : CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio? "radio" : "webtv");
 
 	CMountChooser recDirs(LOCALE_TIMERLIST_RECORDING_DIR,NEUTRINO_ICON_SETTINGS, NULL, timerNew.recordingDir, g_settings.network_nfs_recordingdir);
 	if (!recDirs.hasItem())
