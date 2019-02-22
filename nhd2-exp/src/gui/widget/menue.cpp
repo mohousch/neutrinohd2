@@ -904,8 +904,7 @@ CMenuSeparator::CMenuSeparator(const int Type, const char * const Text)
 
 int CMenuSeparator::getHeight(void) const
 {
-	return (textString == NULL) ? 10 : g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	
+	return (textString == NULL) ? 10 : g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();	
 }
 
 int CMenuSeparator::getWidth(void) const
@@ -1272,7 +1271,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	const char * l_text = getName();
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = item_backgroundColor;
+	fb_pixel_t bgcolor = /*item_backgroundColor*/COL_MENUCONTENT_PLUS_0;
 
 	if (selected)
 	{
@@ -1288,7 +1287,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		//
-		frameBuffer->paintBoxRel(x, y, item_width, item_height, bgcolor);
+		frameBuffer->paintBoxRel(x, y, item_width, item_height, /*bgcolor*/item_backgroundColor);
 
 		frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
 
@@ -1798,10 +1797,8 @@ CMenuWidget::CMenuWidget()
 	widgetType = WIDGET_TYPE_STANDARD;
 	widgetChange = false;
 
-	//
+	// frame
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
-
-	//
 	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
@@ -1835,6 +1832,7 @@ void CMenuWidget::Init(const std::string & Icon, const int mwidth, const int mhe
         frameBuffer = CFrameBuffer::getInstance();
         iconfile = Icon;
         selected = -1;
+
         width = mwidth;
 	
         if(width > (int) frameBuffer->getScreenWidth())
@@ -1856,10 +1854,8 @@ void CMenuWidget::Init(const std::string & Icon, const int mwidth, const int mhe
 	widgetType = WIDGET_TYPE_STANDARD;
 	widgetChange = false;
 
-	//
+	// frame
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
-
-	//
 	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
@@ -2152,8 +2148,13 @@ void CMenuWidget::paint()
 			saveScreen();
 
 		// paint head
-		headers.setHeadPosition(x, y, width, hheight);
-		headers.paintHead(l_name, iconfile.c_str());
+		//headers.setHeadPosition(x, y, width, hheight);
+		//headers.paintHead(l_name, iconfile.c_str()); //FIXME
+		frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
+
+		frameBuffer->paintIcon(iconfile.c_str(), x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + ICON_OFFSET, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - icon_head_w - ICON_OFFSET, l_name, COL_MENUHEAD);
 	
 		//paint foot
 		frameBuffer->paintBoxRel(x, y + height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
@@ -2264,7 +2265,7 @@ void CMenuWidget::paintItems()
 		if(widgetType == WIDGET_TYPE_EXTENDED)
 			frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENTDARK_PLUS_0);
 		else
-			frameBuffer->paintBoxRel(x, item_start_y, width, items_height, backgroundColor);
+			frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENT_PLUS_0);
 	
 		// paint right scroll bar if we have more then one page
 		if(total_pages > 1)
