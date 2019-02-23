@@ -1289,14 +1289,16 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		//
 		frameBuffer->paintBoxRel(x, y, item_width, item_height, /*bgcolor*/item_backgroundColor);
 
-		frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
+		if(!itemIcon.empty())
+			frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
 
 		//
 		if(selected)
 		{
 			frameBuffer->paintBoxRel(x, y, item_width, item_height, item_selectedColor);
 
-			frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
+			if(!itemIcon.empty())
+				frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
 
 		}
 
@@ -1427,7 +1429,6 @@ ClistBoxItem::ClistBoxItem(const neutrino_locale_t Text, const bool Active, cons
 	actionKey = ActionKey ? ActionKey : "";
 
 	iconName = IconName ? IconName : "";
-
 	itemIcon = ItemIcon? ItemIcon : "";
 	itemName = g_Locale->getText(Text);
 	itemType = ITEM_TYPE_LIST_BOX;
@@ -1445,7 +1446,6 @@ ClistBoxItem::ClistBoxItem(const char* Text, const bool Active, const char* cons
 	actionKey = ActionKey ? ActionKey : "";
 
 	iconName = IconName ? IconName : "";
-
 	itemIcon = ItemIcon? ItemIcon : "";
 	itemName = Text;
 	itemType = ITEM_TYPE_LIST_BOX;
@@ -1546,14 +1546,16 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		//
 		frameBuffer->paintBoxRel(x, y, item_width, item_height, bgcolor);
 
-		frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
+		if(!itemIcon.empty())
+			frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
 
 		//
 		if(selected)
 		{
 			frameBuffer->paintBoxRel(x, y, item_width, item_height, item_selectedColor);
 
-			frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
+			if(!itemIcon.empty())
+				frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
 
 		}
 

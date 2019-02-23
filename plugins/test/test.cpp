@@ -238,11 +238,11 @@ void CTestMenu::test()
 	headers.setHeadPosition(&headBox);
 	headers.enablePaintDate();
 	headers.setHeaderButtons(frameBoxHeadButtons, FRAMEBOX_HEAD_BUTTONS_COUNT);
-	//headers.setColor(COL_BLUE);
+	headers.setHeadColor(COL_BLUE);
 	headers.setHeadCorner();
 	headers.setHeadGradient(nogradient);
 
-	//headers.setFootColor(COL_BLUE);
+	headers.setFootColor(COL_BLUE);
 	headers.setFootCorner();
 	headers.setFootGradient(nogradient);
 
@@ -313,7 +313,7 @@ void CTestMenu::test()
 	leftWidget->setOutFocus(false);
 	leftWidget->disableShrinkMenu();
 
-	//leftWidget->setBackgroundColor(COL_BLUE);
+	leftWidget->setBackgroundColor(COL_BLUE);
 
 	// right menu
 	CBox rightBox;
@@ -426,7 +426,7 @@ DOFILM:
 	rightWidget->setSelected(-1);
 	rightWidget->setOutFocus(true);
 
-	//rightWidget->setBackgroundColor(COL_BLUE);
+	rightWidget->setBackgroundColor(COL_BLUE);
 	//rightWidget->enablePaintHead();
 	//rightWidget->setHeaderButtons(frameBoxHeadButtons, 2);
 	//rightWidget->enablePaintFoot();

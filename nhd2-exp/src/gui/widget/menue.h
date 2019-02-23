@@ -383,7 +383,7 @@ class CMenuSeparator : public CMenuItem
 
 	public:
 		//neutrino_locale_t text;
-		const char * const textString;
+		const char * textString;
 
 		enum
 		{

@@ -182,11 +182,17 @@ void CInfoBox::initFramesRel(void)
 	m_cBoxFrameTitleRel.iWidth	= m_cBoxFrame.iWidth;
 	m_cBoxFrameTitleRel.iHeight	= m_nFontTitleHeight + 6;
 
+	// init the foot frame
+	m_cBoxFrameFootRel.iX		= m_cBoxFrame.iX;
+	m_cBoxFrameFootRel.iWidth	= m_cBoxFrame.iWidth;
+	m_cBoxFrameFootRel.iHeight	= m_nFontTitleHeight + 6;
+	m_cBoxFrameFootRel.iY		= m_cBoxFrame.iY + m_cBoxFrame.iHeight - m_cBoxFrameFootRel.iHeight;
+
 	// init the text frame
-	m_cBoxFrameText.iY		= m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight;
-	m_cBoxFrameText.iX		= m_cBoxFrameTitleRel.iX;
-	m_cBoxFrameText.iHeight		= m_cBoxFrame.iHeight - m_cBoxFrameTitleRel.iHeight;
-	m_cBoxFrameText.iWidth		= m_cBoxFrame.iWidth;		
+	m_cBoxFrameText.iY		= m_cBoxFrame.iY + m_cBoxFrameTitleRel.iHeight;
+	m_cBoxFrameText.iX		= m_cBoxFrame.iX;
+	m_cBoxFrameText.iHeight		= m_cBoxFrame.iHeight - m_cBoxFrameTitleRel.iHeight - m_cBoxFrameFootRel.iHeight;
+	m_cBoxFrameText.iWidth		= m_cBoxFrame.iWidth;	
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -204,6 +210,19 @@ void CInfoBox::refreshTitle(void)
 	headers.setHeadPosition(&m_cBoxFrameTitleRel);
 	headers.setHeaderButtons(&HButton, 1);
 	headers.paintHead(m_cTitle.c_str(), m_cIcon.c_str());
+}
+
+//////////////////////////////////////////////////////////////////////
+// Function Name:	RefreshFoot	
+// Description:		
+// Parameters:		
+// Data IN/OUT:		
+// Return:		
+// Notes:		
+//////////////////////////////////////////////////////////////////////
+void CInfoBox::refreshFoot(void)
+{
+	headers.paintFoot(m_cBoxFrameFootRel);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -309,6 +328,8 @@ bool CInfoBox::paint(void)
 		// paint
 		m_pcTextBox->paint();
 	}
+
+	refreshFoot();
 	
 	return (true);
 }
@@ -331,6 +352,8 @@ void CInfoBox::refresh(void)
 	{
 		m_pcTextBox->refresh();
 	}
+
+	refreshFoot();
 }
 
 //////////////////////////////////////////////////////////////////////

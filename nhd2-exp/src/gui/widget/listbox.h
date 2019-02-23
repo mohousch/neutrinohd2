@@ -37,6 +37,28 @@
 #include <gui/widget/headers.h>
 
 
+// CMenulistBoxItem
+class ClistBoxEntryItem : public CMenuItem
+{
+	protected:
+		neutrino_locale_t text;
+		std::string textString;
+
+		//
+		virtual const char* getName(void);
+
+	public:
+		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, const char * const Icon = NULL);
+
+		ClistBoxEntryItem(const char * const Text, const bool Active = true, const char * const Option = NULL, const char * const IconName = NULL);
+		
+		int paint(bool selected = false, bool AfterPulldown = false);
+		int getHeight(void) const;
+		int getWidth(void) const;
+
+		bool isSelectable(void) const {return active;}
+};
+
 class ClistBox
 {
 	private:
@@ -126,7 +148,7 @@ class ClistBox
 		ClistBox(CBox* position);
 		virtual ~ClistBox();
 
-		virtual void addItem(CMenuItem* menuItem, const bool defaultselected = false);
+		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
 		bool hasItem();
 		void clearItems(void){items.clear(); current_page = 0;};
 		void setSelected(unsigned int _new) { /*if(_new <= items.size())*/ selected = _new; };
@@ -190,28 +212,6 @@ class ClistBox
 		int getWidgetType(){return widgetType;};
 		void enableWidgetChange(){widgetChange = true;};
 		//void addWidget(int wtype){widget.push_back(wtype);};
-};
-
-// CMenulistBoxItem
-class ClistBoxEntryItem : public CMenuItem
-{
-	protected:
-		neutrino_locale_t text;
-		std::string textString;
-
-		//
-		virtual const char* getName(void);
-
-	public:
-		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, const char * const Icon = NULL);
-
-		ClistBoxEntryItem(const char * const Text, const bool Active = true, const char * const Option = NULL, const char * const IconName = NULL);
-		
-		int paint(bool selected = false, bool AfterPulldown = false);
-		int getHeight(void) const;
-		int getWidth(void) const;
-
-		bool isSelectable(void) const {return active;}
 };
 
 #endif // LISTBOX_H_

@@ -1,6 +1,15 @@
-print("python: Hello World")
-
-from neutrino import CMessageBox, CHelpBox, CHeaders, CWindow, CScrollBar, CItems2DetailsLine, CPictureViewer, CFrameBuffer, CRCInput, ClistBoxWidget, CMenuWidget, CMenuForwarder, ClistBox, CInfoBox, cPlayback, CAudioPlayerGui, CMoviePlayerGui, CPictureViewerGui, CPlugins, CFile, WIDGET_TYPE_CLASSIC, WIDGET_TYPE_FRAME
+from neutrino import CMenuTarget
+from neutrino import CMessageBox, CHelpBox, CHeaders, CWindow, CScrollBar, CItems2DetailsLine, CInfoBox 
+from neutrino import ClistBoxWidget, CMenuWidget, CMenuForwarder, ClistBoxItem
+from neutrino import ClistBox, ClistBoxEntryItem
+from neutrino import CFrameBuffer, CRCInput
+from neutrino import cPlayback
+from neutrino import CAudioPlayerGui, CMoviePlayerGui, CPictureViewerGui
+from neutrino import CPlugins
+from neutrino import CBox, CFile, CSwigHelpers
+from neutrino import DATADIR
+from neutrino import WIDGET_TYPE_CLASSIC, WIDGET_TYPE_FRAME
+from neutrino import NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MOVIE, NEUTRINO_ICON_PLUGIN
 
 ## CMessageBox
 def messageBox():
