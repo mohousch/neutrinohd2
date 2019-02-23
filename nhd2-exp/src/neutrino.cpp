@@ -677,16 +677,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.menu_Foot_Text_green = configfile.getInt32( "menu_Foot_Text_green", 100);
 	g_settings.menu_Foot_Text_blue = configfile.getInt32( "menu_Foot_Text_blue", 100);
 
-	g_settings.menu_HeadInfo_alpha = configfile.getInt32( "menu_HeadInfo_alpha", 0);
-	g_settings.menu_HeadInfo_red = configfile.getInt32( "menu_HeadInfo_red", 35);
-	g_settings.menu_HeadInfo_green = configfile.getInt32( "menu_HeadInfo_green", 35);
-	g_settings.menu_HeadInfo_blue = configfile.getInt32( "menu_HeadInfo_blue", 35);
-
-	g_settings.menu_HeadInfo_Text_alpha = configfile.getInt32( "menu_HeadInfo_Text_alpha", 0);
-	g_settings.menu_HeadInfo_Text_red = configfile.getInt32( "menu_HeadInfo_Text_red", 100 );
-	g_settings.menu_HeadInfo_Text_green = configfile.getInt32( "menu_HeadInfo_Text_green", 100 );
-	g_settings.menu_HeadInfo_Text_blue = configfile.getInt32( "menu_HeadInfo_Text_blue", 100 );
-
 	g_settings.menu_FootInfo_alpha = configfile.getInt32( "menu_FootInfo_alpha", 0);
 	g_settings.menu_FootInfo_red = configfile.getInt32( "menu_FootInfo_red", 35);
 	g_settings.menu_FootInfo_green = configfile.getInt32( "menu_FootInfo_green", 35);
@@ -926,7 +916,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// gradient
 	g_settings.Head_gradient = configfile.getInt32("Head_gradient", gradientLight2Dark);
 	g_settings.Foot_gradient = configfile.getInt32("Foot_gradient", gradientDark2Light);
-	g_settings.Head_Info_gradient = configfile.getInt32("Head_Info_gradient", gradientLight2Dark);
 	g_settings.Foot_Info_gradient = configfile.getInt32("Foot_Info_gradient", gradientDark2Light);
 	g_settings.infobar_gradient = configfile.getInt32("infobar_gradient", gradientLight2Dark);
 	// END MISC OPTS
@@ -1170,16 +1159,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "menu_Foot_Text_green", g_settings.menu_Foot_Text_green );
 	configfile.setInt32( "menu_Foot_Text_blue", g_settings.menu_Foot_Text_blue );
 
-	configfile.setInt32( "menu_HeadInfo_alpha", g_settings.menu_HeadInfo_alpha );
-	configfile.setInt32( "menu_HeadInfo_red", g_settings.menu_HeadInfo_red );
-	configfile.setInt32( "menu_HeadInfo_green", g_settings.menu_HeadInfo_green );
-	configfile.setInt32( "menu_HeadInfo_blue", g_settings.menu_HeadInfo_blue );
-
-	configfile.setInt32( "menu_HeadInfo_Text_alpha", g_settings.menu_HeadInfo_Text_alpha );
-	configfile.setInt32( "menu_HeadInfo_Text_red", g_settings.menu_HeadInfo_Text_red );
-	configfile.setInt32( "menu_HeadInfo_Text_green", g_settings.menu_HeadInfo_Text_green );
-	configfile.setInt32( "menu_HeadInfo_Text_blue", g_settings.menu_HeadInfo_Text_blue );
-
 	configfile.setInt32( "menu_FootInfo_alpha", g_settings.menu_FootInfo_alpha );
 	configfile.setInt32( "menu_FootInfo_red", g_settings.menu_FootInfo_red );
 	configfile.setInt32( "menu_FootInfo_green", g_settings.menu_FootInfo_green );
@@ -1372,7 +1351,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 
 	configfile.setInt32("Head_gradient", g_settings.Head_gradient);
 	configfile.setInt32("Foot_gradient", g_settings.Foot_gradient);
-	configfile.setInt32("Head_Info_gradient", g_settings.Head_Info_gradient);
 	configfile.setInt32("Foot_Info_gradient", g_settings.Foot_Info_gradient);
 	configfile.setInt32("infobar_gradient", g_settings.infobar_gradient);
 

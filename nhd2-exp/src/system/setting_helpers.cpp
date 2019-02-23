@@ -159,9 +159,6 @@ bool CColorSetupNotifier::changeNotify(const neutrino_locale_t, void *)
 	// channellist colored events
 	frameBuffer->paletteGenFade(COL_COLORED_EVENTS_CHANNELLIST, convertSetupColor2RGB(g_settings.menu_Content_red, g_settings.menu_Content_green, g_settings.menu_Content_blue), convertSetupColor2RGB(g_settings.infobar_colored_events_red, g_settings.infobar_colored_events_green, g_settings.infobar_colored_events_blue), 8, convertSetupAlpha2Alpha(g_settings.menu_Content_alpha) );
 
-	// head info
-	frameBuffer->paletteGenFade(COL_MENUHEAD_INFO, convertSetupColor2RGB(g_settings.menu_HeadInfo_red, g_settings.menu_HeadInfo_green, g_settings.menu_HeadInfo_blue), convertSetupColor2RGB(g_settings.menu_HeadInfo_Text_red, g_settings.menu_HeadInfo_Text_green, g_settings.menu_HeadInfo_Text_blue), 8, convertSetupAlpha2Alpha( g_settings.menu_HeadInfo_alpha ) );
-
 	// foot info
 	frameBuffer->paletteGenFade(COL_MENUFOOT_INFO, convertSetupColor2RGB(g_settings.menu_FootInfo_red, g_settings.menu_FootInfo_green, g_settings.menu_FootInfo_blue), convertSetupColor2RGB(g_settings.menu_FootInfo_Text_red, g_settings.menu_FootInfo_Text_green, g_settings.menu_FootInfo_Text_blue), 8, convertSetupAlpha2Alpha( g_settings.menu_FootInfo_alpha ) );
 

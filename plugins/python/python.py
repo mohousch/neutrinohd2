@@ -127,11 +127,10 @@ def rcInput():
 	rc = CRCInput()
 	rc.messageLoop()
 
-class main():
+class main(CMessageBox):
 	def __init__(self):
-		pass
-
-	messageBox()
+		CMessageBox.__init__(self, "neutrino: python", "first test\ntesting CMessageBox\ndas ist alles ;-)")
+		self._exec(-1)
 
 if __name__ == "__main__":
 	main()

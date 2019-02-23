@@ -201,16 +201,6 @@ struct SNeutrinoSettings
 	unsigned char menu_Foot_Text_green;
 	unsigned char menu_Foot_Text_blue;
 
-	unsigned char menu_HeadInfo_alpha;
-	unsigned char menu_HeadInfo_red;
-	unsigned char menu_HeadInfo_green;
-	unsigned char menu_HeadInfo_blue;
-
-	unsigned char menu_HeadInfo_Text_alpha;
-	unsigned char menu_HeadInfo_Text_red;
-	unsigned char menu_HeadInfo_Text_green;
-	unsigned char menu_HeadInfo_Text_blue;
-
 	unsigned char menu_FootInfo_alpha;
 	unsigned char menu_FootInfo_red;
 	unsigned char menu_FootInfo_green;
@@ -505,7 +495,6 @@ struct SNeutrinoSettings
 	// gradient
 	int Head_gradient;
 	int Foot_gradient;
-	int Head_Info_gradient;
 	int Foot_Info_gradient;
 	int infobar_gradient;
 

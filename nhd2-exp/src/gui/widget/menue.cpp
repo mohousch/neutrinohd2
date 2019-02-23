@@ -1271,7 +1271,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	const char * l_text = getName();
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = /*item_backgroundColor*/COL_MENUCONTENT_PLUS_0;
+	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 
 	if (selected)
 	{
@@ -1287,7 +1287,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		//
-		frameBuffer->paintBoxRel(x, y, item_width, item_height, /*bgcolor*/item_backgroundColor);
+		frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor);
 
 		if(!itemIcon.empty())
 			frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
@@ -1528,7 +1528,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	const char * l_text = getName();
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = item_backgroundColor;
+	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 
 	if (selected)
 	{
@@ -1544,7 +1544,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		//
-		frameBuffer->paintBoxRel(x, y, item_width, item_height, bgcolor);
+		frameBuffer->paintBoxRel(x, y, item_width, item_height, item_backgroundColor);
 
 		if(!itemIcon.empty())
 			frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
@@ -1878,15 +1878,6 @@ void CMenuWidget::move(int xoff, int yoff)
 
 CMenuWidget::~CMenuWidget()
 {
-/*
-	for(unsigned int count = 0; count < items.size(); count++) 
-	{
-		CMenuItem * item = items[count];
-		
-		delete item;
-	}
-*/
-
 	items.clear();
 	page_start.clear();
 }
@@ -3098,10 +3089,8 @@ ClistBoxWidget::ClistBoxWidget()
 	widgetType = WIDGET_TYPE_STANDARD;
 	widgetChange = false;
 
-	//
+	// frame
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
-
-	//
 	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
@@ -3178,10 +3167,8 @@ void ClistBoxWidget::Init(const std::string & Icon, const int mwidth, const int 
 	widgetType = WIDGET_TYPE_STANDARD;
 	widgetChange = false;
 
-	//
+	// frame
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
-
-	//
 	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
@@ -3198,16 +3185,6 @@ void ClistBoxWidget::move(int xoff, int yoff)
 
 ClistBoxWidget::~ClistBoxWidget()
 {
-/*
-	for(unsigned int count = 0; count < items.size(); count++) 
-	{
-		CMenuItem * item = items[count];
-		
-		delete item;
-		item = NULL;
-	}
-*/
-
 	items.clear();
 	page_start.clear();
 }
@@ -3553,7 +3530,7 @@ void ClistBoxWidget::paint()
 		}
 		else
 		{
-			frameBuffer->paintBoxRel(x, item_start_y, width, height - hheight - fheight, backgroundColor);
+			frameBuffer->paintBoxRel(x, item_start_y, width, height - hheight - fheight, COL_MENUCONTENT_PLUS_0);
 		}
 	}
 
@@ -3672,10 +3649,10 @@ void ClistBoxWidget::paintItems()
 		if(widgetType == WIDGET_TYPE_EXTENDED)
 		{
 			// paint items background
-			frameBuffer->paintBoxRel(x, item_start_y, width, height - hheight - fheight, backgroundColor);
+			frameBuffer->paintBoxRel(x, item_start_y, width, height - hheight - fheight, COL_MENUCONTENTDARK_PLUS_0);
 		}
 		else
-			frameBuffer->paintBoxRel(x, item_start_y, width, items_height, backgroundColor);
+			frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENT_PLUS_0);
 	
 		// paint right scrollBar if we have more then one page
 		if(widgetType != WIDGET_TYPE_INFO)
