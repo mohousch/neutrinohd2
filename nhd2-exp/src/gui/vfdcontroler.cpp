@@ -315,8 +315,7 @@ void CVfdControler::paint()
 	mainWindow.paint();
 
 	// head
-	headers.setHeadPosition(x, y, width, hheight);
-	headers.paintHead(name, NEUTRINO_ICON_LCD);
+	headers.paintHead(x, y, width, hheight, name.c_str(), NEUTRINO_ICON_LCD);
 
 	paintSlider(x + BORDER_LEFT, y + hheight, brightness, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESS, true);
 	paintSlider(x + BORDER_LEFT, y + hheight + mheight, brightnessstandby, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESSSTANDBY, false);

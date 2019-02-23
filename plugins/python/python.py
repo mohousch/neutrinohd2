@@ -28,8 +28,8 @@ def helpBox():
 
 ## CHeaders
 def headers():
-	CHeaders().paintHead(150,10,550,35,"mp3","test")
-	CHeaders().paintFoot(150, 570,550,35,550)
+	CHeaders().paintHead(150, 50, 550, 40, "pythonTest", NEUTRINO_ICON_MOVIE)
+	CHeaders().paintFoot(150, 570, 550, 40)
 
 ## CWindow
 def window():

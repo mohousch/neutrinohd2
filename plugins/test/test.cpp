@@ -235,7 +235,6 @@ void CTestMenu::test()
 	footBox.iY = g_settings.screen_EndY - 10 - footBox.iHeight;
 	footBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
 
-	headers.setHeadPosition(&headBox);
 	headers.enablePaintDate();
 	headers.setHeaderButtons(frameBoxHeadButtons, FRAMEBOX_HEAD_BUTTONS_COUNT);
 	headers.setHeadColor(COL_BLUE);
@@ -455,7 +454,7 @@ REPEAT:
 	}
 
 	// paint all widget
-	headers.paintHead("Movie Trailer", NEUTRINO_ICON_MP3);
+	headers.paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
 	headers.paintFoot(footBox, 4, frameButtons);
 	//topWidget->paint();
 	leftWidget->paint();
@@ -480,7 +479,7 @@ REPEAT:
 
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			headers.paintHead("Movie Trailer", NEUTRINO_ICON_MP3);
+			headers.paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
 		} 
 		else if (msg == CRCInput::RC_home) 
 		{

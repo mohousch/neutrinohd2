@@ -255,8 +255,7 @@ void CAlphaSetup::paint()
 	mainWindow.paint();
 
 	// head
-	headers.setHeadPosition(mainBox.iX, mainBox.iY, mainBox.iWidth, hheight);
-	headers.paintHead(g_Locale->getText(name), NEUTRINO_ICON_COLORS);
+	headers.paintHead(mainBox.iX, mainBox.iY, mainBox.iWidth, hheight, g_Locale->getText(name), NEUTRINO_ICON_COLORS);
 
 	// slider
 	paintSlider(mainBox.iX + BORDER_LEFT, mainBox.iY + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, NEUTRINO_ICON_VOLUMESLIDER2RED, true );

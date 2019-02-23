@@ -21,6 +21,7 @@
 #define __SWIG_HELPERS_H__
 
 #include <driver/framebuffer.h>
+#include <driver/rcinput.h>
 
 
 #define RC0        	CRCInput::RC_0
@@ -89,7 +90,7 @@ class CSwigHelpers
 		int getHeight(int font_type);
 
 		// CRCInput
-		int getRCcode(int ms = 10);
+		int getRCCode(int ms = 10);
 };
 
 #endif

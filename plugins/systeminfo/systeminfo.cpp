@@ -96,9 +96,8 @@ void CSysInfoWidget::paintHead()
 		sprintf((char *) buf, "%s", "Prozess-Liste:");
 	
 	// title
-	headers.setHeadPosition(&cFrameBoxTitle);
 	headers.enablePaintDate();
-	headers.paintHead(buf, titleIcon.iconName.c_str());
+	headers.paintHead(cFrameBoxTitle, buf, titleIcon.iconName.c_str());
 }
 
 // paint foot

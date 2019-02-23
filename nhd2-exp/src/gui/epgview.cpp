@@ -399,6 +399,8 @@ void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventL
 bool sectionsd_getComponentTagsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::ComponentTagList& tags);
 
 // head
+struct button_label HButton = { NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE};
+
 void CEpgData::showHead(const t_channel_id channel_id)
 {
 	std::string text1 = epgData.title;
@@ -407,10 +409,11 @@ void CEpgData::showHead(const t_channel_id channel_id)
 
 	logo = frameBuffer->getLogoName(channel_id);
 
-	headers.setHeadPosition(&cHeadBox);
 	headers.enablePaintDate();
 	headers.enableLogo();
-	headers.paintHead(text1, logo.c_str());
+	headers.setHeaderButtons(&HButton, 1);
+
+	headers.paintHead(cHeadBox, text1.c_str(), logo.c_str());
 }
 
 int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_startzeit, bool doLoop )

@@ -37,28 +37,6 @@
 #include <gui/widget/headers.h>
 
 
-// CMenulistBoxItem
-class ClistBoxEntryItem : public CMenuItem
-{
-	protected:
-		neutrino_locale_t text;
-		std::string textString;
-
-		//
-		virtual const char* getName(void);
-
-	public:
-		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, const char * const Icon = NULL);
-
-		ClistBoxEntryItem(const char * const Text, const bool Active = true, const char * const Option = NULL, const char * const IconName = NULL);
-		
-		int paint(bool selected = false, bool AfterPulldown = false);
-		int getHeight(void) const;
-		int getWidth(void) const;
-
-		bool isSelectable(void) const {return active;}
-};
-
 class ClistBox
 {
 	private:

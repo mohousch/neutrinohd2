@@ -513,9 +513,8 @@ void CStringInput::paint()
 	m_cBoxWindow.paint();
 
 	// head
-	headers.setHeadPosition(x, y, width, hheight);
 	headers.setHeadCorner();
-	headers.paintHead(head ? head : g_Locale->getText(name), iconfile.c_str());
+	headers.paintHead(x, y, width, hheight, head ? head : g_Locale->getText(name), iconfile.c_str());
 
 	if (hint_1 != NONEXISTANT_LOCALE)
 	{

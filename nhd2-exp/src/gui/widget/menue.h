@@ -215,9 +215,7 @@ class CMenuItem
 		virtual void setOptionInfo2(const char* const text){option_info2 = text;};
 
 		//
-		virtual void setHelpText(const neutrino_locale_t Text);
-		virtual void setHelpText(const char* const Text);
-		virtual void setHelpText(const std::string& Text);
+		virtual void setHelpText(const char* const Text){itemHelpText =  Text;};
 
 		//
 		virtual void setIconName(const char* const icon){iconName = icon;};
@@ -435,9 +433,6 @@ class CMenuForwarder : public CMenuItem
 	CMenuTarget* jumpTarget;
 	std::string actionKey;
 
-	//const char* option;
-	//const std::string* option_string;
-
 	protected:
 		std::string textString;
 		neutrino_locale_t text;
@@ -447,9 +442,8 @@ class CMenuForwarder : public CMenuItem
 	public:
 
 		CMenuForwarder(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char* const IconName = NULL, const char* const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
-		//CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string& Option, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char* const IconName = NULL, const char* const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
+		
 		CMenuForwarder(const char* const Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char* const IconName = NULL, const char* const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
-		//CMenuForwarder(const char* const Text, const bool Active, const std::string& Option, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char* const IconName = NULL, const char * const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
@@ -518,15 +512,37 @@ class ClistBoxItem : public CMenuItem
 		virtual const char* getName(void);
 
 	public:
-		ClistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const Icon = NULL, const char* const ItemIcon = NULL);
+		ClistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = NULL, CMenuTarget * Target = NULL, const char* const ActionKey = NULL, const char* const Icon = NULL, const char* const ItemIcon = NULL);
 
-		ClistBoxItem(const char* const Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const char* const IconName = NULL, const char* const ItemIcon = NULL);
+		ClistBoxItem(const char* const Text, const bool Active = true, const char* const Option = NULL, CMenuTarget * Target = NULL, const char* const ActionKey = NULL, const char* const IconName = NULL, const char* const ItemIcon = NULL);
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
 		int getWidth(void) const;
 
 		int exec(CMenuTarget* parent);
+		bool isSelectable(void) const {return active;}
+};
+
+// CMenulistBoxEntryItem
+class ClistBoxEntryItem : public CMenuItem
+{
+	protected:
+		neutrino_locale_t text;
+		std::string textString;
+
+		//
+		virtual const char* getName(void);
+
+	public:
+		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, const char * const Icon = NULL);
+
+		ClistBoxEntryItem(const char * const Text, const bool Active = true, const char * const Option = NULL, const char * const IconName = NULL);
+		
+		int paint(bool selected = false, bool AfterPulldown = false);
+		int getHeight(void) const;
+		int getWidth(void) const;
+
 		bool isSelectable(void) const {return active;}
 };
 

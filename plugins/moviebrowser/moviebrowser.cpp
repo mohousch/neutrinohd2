@@ -1695,10 +1695,9 @@ void CMovieBrowser::refreshTitle(void)
 	
 	title = g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD);
 
-	headers.setHeadPosition(&m_cBoxFrameTitleRel);
 	headers.enablePaintDate();
 	headers.setHeaderButtons(MBHeadButtons, MB_HEAD_BUTTONS_COUNT);
-	headers.paintHead(title, NEUTRINO_ICON_MOVIE);
+	headers.paintHead(m_cBoxFrameTitleRel, title.c_str(), NEUTRINO_ICON_MOVIE);
 }
 
 #define MB_FOOT_BUTTONS_COUNT	4

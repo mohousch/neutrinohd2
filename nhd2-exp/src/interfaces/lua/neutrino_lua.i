@@ -31,8 +31,9 @@
 #define SWIG_COMPILE
 
 #include <config.h>
-#include <src/global.h>
-#include <src/neutrino.h>
+
+#include <global.h>
+#include <neutrino.h>
 #include <swig_helpers.h>
 
 // libconfigfile

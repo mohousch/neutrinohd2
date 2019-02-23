@@ -207,9 +207,8 @@ const struct button_label HButton = { NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOC
 
 void CInfoBox::refreshTitle(void)
 {
-	headers.setHeadPosition(&m_cBoxFrameTitleRel);
 	headers.setHeaderButtons(&HButton, 1);
-	headers.paintHead(m_cTitle.c_str(), m_cIcon.c_str());
+	headers.paintHead(m_cBoxFrameTitleRel, m_cTitle.c_str(), m_cIcon.c_str());
 }
 
 //////////////////////////////////////////////////////////////////////
