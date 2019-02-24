@@ -2613,7 +2613,7 @@ void CTestMenu::testClistBox()
 	listMenu->addWidget(WIDGET_TYPE_STANDARD);
 	listMenu->addWidget(WIDGET_TYPE_FRAME);
 	listMenu->addWidget(WIDGET_TYPE_EXTENDED);
-	listMenu->addWidget(WIDGET_TYPE_INFO);
+	//listMenu->addWidget(WIDGET_TYPE_INFO);
 	listMenu->enableWidgetChange();
 
 	listMenu->setSelected(selected);
