@@ -1451,10 +1451,6 @@ int ClistBoxItem::getHeight(void) const
 		ih = ITEM_ICON_H_MINI;
 		return std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()) + 6;
 	}
-	else if(widgetType == WIDGET_TYPE_INFO)
-	{
-		return item_height;
-	}
 	else
 	{
 		CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iw, &ih);
@@ -1466,10 +1462,6 @@ int ClistBoxItem::getHeight(void) const
 int ClistBoxItem::getWidth(void) const
 {
 	if(widgetType == WIDGET_TYPE_FRAME)
-	{
-		return item_width;
-	}
-	else if(widgetType == WIDGET_TYPE_INFO)
 	{
 		return item_width;
 	}
@@ -1551,16 +1543,6 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		}
 
 		return 0;
-	}
-	else if(widgetType == WIDGET_TYPE_INFO)
-	{
-		// vfd
-		if (selected)
-		{
-			CVFD::getInstance()->showMenuText(0, l_text, -1, true);
-		}
-
-		return y + height;
 	}
 	else // standard|classic|extended
 	{	
@@ -2749,11 +2731,13 @@ void CMenuWidget::hideItemInfo()
 	{
 		itemsLine.clear(x, y, width + ConnectLineBox_Width, height, cFrameFootInfo.iHeight);
 
+/*
 		if(textBox)
 		{
 			delete textBox;
 			textBox = NULL;
 		}
+*/
 	}  
 }
 
@@ -3527,57 +3511,6 @@ void ClistBoxWidget::initFrames()
 			item->item_height = item_height;
 		} 
 	}
-	else if(widgetType == WIDGET_TYPE_INFO)
-	{
-		// head height
-		icon_head_w = 0;
-		icon_head_h = 0;
-		frameBuffer->getIconSize(iconfile.c_str(), &icon_head_w, &icon_head_h);
-		hheight = std::max(icon_head_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
-	
-		// foot height
-		int icon_foot_w = 0;
-		int icon_foot_h = 0;
-		frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_foot_w, &icon_foot_h);
-		fheight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
-
-		//
-		full_width = width;
-		full_height = height;
-
-		//
-		item_height = height - hheight - fheight;
-		item_width = width;
-
-		for (unsigned int count = 0; count < items.size(); count++) 
-		{
-			CMenuItem * item = items[count];
-
-			item->item_width = item_width;
-			item->item_height = item_height;
-		} 
-		
-		page_start.clear();
-		page_start.push_back(0);
-		total_pages = 1;
-
-		for (unsigned int i = 0; i < items.size(); i++) 
-		{
-			page_start.push_back(i);
-			total_pages++;
-		}
-
-		page_start.push_back(items.size());
-		
-		// coordinations
-		x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - full_width ) >> 1 );
-		y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
-
-		cFrameBoxText.iX = x;
-		cFrameBoxText.iY = y + hheight;
-		cFrameBoxText.iWidth = full_width;
-		cFrameBoxText.iHeight = item_height;
-	}
 	else
 	{
 		// footInfo height
@@ -3763,31 +3696,25 @@ void ClistBoxWidget::paint()
 
 	item_start_y = y + hheight;
 
-	if(widgetType == WIDGET_TYPE_INFO)
+	if(widgetType == WIDGET_TYPE_FRAME)
+		item_start_y = y + hheight + 2*ICON_OFFSET;
+
+	// widget frame paint background hlines
+	if(widgetType == WIDGET_TYPE_FRAME)
 	{
+		// paint background
+		frameBuffer->paintBoxRel(x, y, width, height, backgroundColor);
+
+		// paint horizontal line top
+		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + hheight, COL_MENUCONTENT_PLUS_5);
+	
+		// paint horizontal line bottom
+		fheight = hheight;
+		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight, COL_MENUCONTENT_PLUS_5);
 	}
 	else
 	{
-		if(widgetType == WIDGET_TYPE_FRAME)
-			item_start_y = y + hheight + 2*ICON_OFFSET;
-
-		// widget frame paint background hlines
-		if(widgetType == WIDGET_TYPE_FRAME)
-		{
-			// paint background
-			frameBuffer->paintBoxRel(x, y, width, height, backgroundColor);
-
-			// paint horizontal line top
-			frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + hheight, COL_MENUCONTENT_PLUS_5);
-	
-			// paint horizontal line bottom
-			fheight = hheight;
-			frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight, COL_MENUCONTENT_PLUS_5);
-		}
-		else
-		{
-			frameBuffer->paintBoxRel(x, item_start_y, width, height - hheight - fheight, COL_MENUCONTENT_PLUS_0);
-		}
+		frameBuffer->paintBoxRel(x, item_start_y, width, height - hheight - fheight, COL_MENUCONTENT_PLUS_0);
 	}
 
 	//
@@ -3882,15 +3809,6 @@ void ClistBoxWidget::paintItems()
 
 			textBox = new CTextBox("", g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER], CTextBox::SCROLL, &cFrameBoxText, COL_MENUCONTENTDARK_PLUS_0);
 		}
-		else if(widgetType == WIDGET_TYPE_INFO)
-		{
-			cFrameBoxText.iX = x;
-			cFrameBoxText.iY = y + hheight;
-			cFrameBoxText.iWidth = width;
-			cFrameBoxText.iHeight = items_height;
-
-			textBox = new CTextBox("", /*CMenuItem::optionFont*/g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR], CTextBox::SCROLL, &cFrameBoxText, COL_MENUCONTENT_PLUS_0);
-		}
 	
 		// item not currently on screen
 		if (selected >= 0)
@@ -3911,12 +3829,9 @@ void ClistBoxWidget::paintItems()
 			frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENT_PLUS_0);
 	
 		// paint right scrollBar if we have more then one page
-		if(widgetType != WIDGET_TYPE_INFO)
+		if(total_pages > 1)
 		{
-			if(total_pages > 1)
-			{
-				scrollBar.paint(x + width - SCROLLBAR_WIDTH, item_start_y, items_height, total_pages, current_page);
-			}
+			scrollBar.paint(x + width - SCROLLBAR_WIDTH, item_start_y, items_height, total_pages, current_page);
 		}
 
 		// paint items
@@ -4061,22 +3976,6 @@ void ClistBoxWidget::paintItemInfo(int pos)
 		CFrameBuffer::getInstance()->scaleImage(fname, &p_w, &p_h);
 
 		textBox->setText(&item->info1, item->itemIcon, p_w, p_h, CTextBox::TOP_CENTER);
-	}
-	else if(widgetType == WIDGET_TYPE_INFO)
-	{
-		CMenuItem* item = items[pos];
-
-		item->getYPosition();
-
-		//
-		int p_w = 0;
-		int p_h = 0;
-
-		std::string fname = item->itemIcon;
-
-		CFrameBuffer::getInstance()->scaleImage(fname, &p_w, &p_h);
-
-		textBox->setText(&item->info1, item->itemIcon, p_w, p_h, CTextBox::TOP_RIGHT);
 	}
 }
 
@@ -4345,10 +4244,6 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 							}
 						}
 					}
-					else if(widgetType == WIDGET_TYPE_INFO)
-					{
-						textBox->scrollPageUp(1);
-					}
 
 					break;
 
@@ -4395,10 +4290,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 							pos++;
 						}
 					}
-					else if(widgetType == WIDGET_TYPE_INFO)
-					{
-						textBox->scrollPageDown(1);
-					}
+
 					break;
 					
 				case (CRCInput::RC_up) :
@@ -4554,38 +4446,6 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					{
 						textBox->scrollPageUp(1);
 					}
-					else if(widgetType == WIDGET_TYPE_INFO)
-					{
-						//search next / prev selectable item
-						for (unsigned int count = 1; count < items.size(); count++) 
-						{
-							pos = selected - count;
-							if ( pos < 0 )
-								pos += items.size();
-
-							CMenuItem * item = items[pos];
-
-							if ( item->isSelectable() ) 
-							{
-								if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
-								{ 
-									// Item is currently on screen
-									//clear prev. selected
-									items[selected]->paint(false);
-									//select new
-									paintItemInfo(pos);
-									item->paint(true);
-									selected = pos;
-								} 
-								else 
-								{
-									selected = pos;
-									paintItems();
-								}
-								break;
-							}
-						}
-					}
 					
 					break;
 					
@@ -4623,36 +4483,6 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					else if (widgetType == WIDGET_TYPE_EXTENDED)
 					{
 						textBox->scrollPageDown(1);
-					}
-					else if(widgetType == WIDGET_TYPE_INFO)
-					{
-						//search next / prev selectable item
-						for (unsigned int count = 1; count < items.size(); count++) 
-						{
-							pos = (selected + count)%items.size();
-
-							CMenuItem * item = items[pos];
-
-							if ( item->isSelectable() ) 
-							{
-								if ((pos < (int)page_start[current_page + 1]) && (pos >= (int)page_start[current_page]))
-								{ 
-									// Item is currently on screen
-									//clear prev. selected
-									items[selected]->paint(false);
-									//select new
-									paintItemInfo(pos);
-									item->paint(true);
-									selected = pos;
-								} 
-								else 
-								{
-									selected = pos;
-									paintItems();
-								}
-								break;
-							}
-						}
 					}
 
 					break;

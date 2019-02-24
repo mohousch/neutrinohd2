@@ -391,7 +391,6 @@ void CTSBrowser::showMenu()
 
 	// widget
 	mlist->addWidget(WIDGET_TYPE_EXTENDED);
-	mlist->addWidget(WIDGET_TYPE_INFO);
 	mlist->enableWidgetChange();
 
 	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
