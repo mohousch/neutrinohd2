@@ -262,11 +262,6 @@ void CScreenSetup::paintCoords()
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x1 + BORDER_LEFT, y1 + 90, 200, yepos, COL_MENUCONTENT);
 }
 
-inline unsigned int make16color(__u32 rgb)
-{
-        return 0xFF000000 | rgb;
-}
-
 void CScreenSetup::paint()
 {
 	dprintf(DEBUG_DEBUG, "CScreenSetup::paint\n");

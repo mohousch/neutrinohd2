@@ -866,10 +866,10 @@ void CTestMenu::testCWindowCustomColor()
 	dprintf(DEBUG_NORMAL, "\ntesting CWindow with custom color\n");
 
 	// set custom color
-#define COL_TEST 254-8*13
-#define COL_TEST_PLUS_0              (CFrameBuffer::getInstance()->realcolor[(COL_TEST + 0)])
+//#define COL_TEST 254-8*13
+//#define COL_TEST_PLUS_0              (CFrameBuffer::getInstance()->realcolor[(COL_TEST + 0)])
 
-	setColor(COL_TEST, 50, 50, 50, 50);
+	//setColor(COL_TEST, 0x50, 0x50, 0x50, 0x00);
 	//
 
 	CBox Box;
@@ -877,12 +877,12 @@ void CTestMenu::testCWindowCustomColor()
 	Box.iX = g_settings.screen_StartX + 10;
 	Box.iY = g_settings.screen_StartY + 10;
 	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/2;
-	Box.iHeight = 200; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+	Box.iHeight = 200;
 
 	//
 	CWindow* window = new CWindow(&Box);
 
-	window->setColor(COL_TEST_PLUS_0);
+	window->setColor(/*COL_TEST_PLUS_0*/make16color(0x505050));
 	window->setCorner(RADIUS_MID, CORNER_ALL);
 	window->enableShadow();
 	window->enableSaveScreen();
