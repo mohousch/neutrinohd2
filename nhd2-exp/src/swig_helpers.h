@@ -23,7 +23,7 @@
 #include <driver/framebuffer.h>
 #include <driver/rcinput.h>
 
-
+/*
 #define RC0        	CRCInput::RC_0
 #define RC1        	CRCInput::RC_1
 #define RC2        	CRCInput::RC_2
@@ -53,6 +53,7 @@
 #define RCHOME     	CRCInput::RC_home
 #define RCPAGEUP	CRCInput::RC_page_up
 #define RCPAGEDOWN	CRCInput::RC_page_down
+*/
 
 class CSwigHelpers
 {
@@ -90,7 +91,7 @@ class CSwigHelpers
 		int getHeight(int font_type);
 
 		// CRCInput
-		int getRCCode(int ms = 10);
+		int getRCCode(int timeout = 10);
 };
 
 #endif

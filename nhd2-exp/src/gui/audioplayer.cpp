@@ -259,39 +259,39 @@ void CAudioPlayerGui::playFile()
 		
 		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
 
-		if (msg == CRCInput::RC_home)
+		if (msg == RC_home)
 		{ 
 			loop = false;
 		}
-		else if (msg == CRCInput::RC_left || msg == CRCInput::RC_prev)
+		else if (msg == RC_left || msg == RC_prev)
 		{
 			playPrev();
 		}
-		else if (msg == CRCInput::RC_right || msg == CRCInput::RC_next)
+		else if (msg == RC_right || msg == RC_next)
 		{
 			playNext();
 		}
-		else if (msg == CRCInput::RC_stop)
+		else if (msg == RC_stop)
 		{
 			stop();
 		}
-		else if( msg == CRCInput::RC_pause)
+		else if( msg == RC_pause)
 		{
 			pause();
 		}
-		else if(msg == CRCInput::RC_play)
+		else if(msg == RC_play)
 		{
 			play(m_current);
 		}
-		else if(msg == CRCInput::RC_forward)
+		else if(msg == RC_forward)
 		{
 			ff(1);
 		}
-		else if(msg == CRCInput::RC_rewind)
+		else if(msg == RC_rewind)
 		{
 			rev(1);
 		}
-		else if(msg == CRCInput::RC_red)
+		else if(msg == RC_red)
 		{
 			if(m_state == CAudioPlayerGui::STOP)
 			{
@@ -305,7 +305,7 @@ void CAudioPlayerGui::playFile()
 				}
 			}
 		} 
-		else if(msg == CRCInput::RC_green)
+		else if(msg == RC_green)
 		{
 			if(m_state != CAudioPlayerGui::STOP)
 			{
@@ -323,7 +323,7 @@ void CAudioPlayerGui::playFile()
 					rev(seconds);
 			}
 		}
-		else if(msg == CRCInput::RC_yellow)
+		else if(msg == RC_yellow)
 		{
 			if (m_state != CAudioPlayerGui::STOP)
 			{
@@ -341,22 +341,22 @@ void CAudioPlayerGui::playFile()
 					ff(seconds);
 			}
 		}
-		else if(msg == CRCInput::RC_blue)
+		else if(msg == RC_blue)
 		{
 			shufflePlaylist();
 		}
-		else if( ((msg == CRCInput::RC_setup) || (msg == CRCInput::RC_vfdmenu)))
+		else if( ((msg == RC_setup) || (msg == RC_vfdmenu)))
 		{
 			CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
 			audioPlayerSettingsMenu->exec(NULL, "");
 			delete audioPlayerSettingsMenu;
 			audioPlayerSettingsMenu = NULL;					
 		}
-		else if(msg == CRCInput::RC_info)
+		else if(msg == RC_info)
 		{
 			showHelp();
 		}
-		else if(msg == CRCInput::RC_ok)
+		else if(msg == RC_ok)
 		{
 
 			ok_pressed = true;

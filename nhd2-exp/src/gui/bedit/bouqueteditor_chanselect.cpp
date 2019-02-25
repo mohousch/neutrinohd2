@@ -217,7 +217,7 @@ int CBEChannelSelectWidget::exec(CMenuTarget* parent, const std::string& actionK
 		if ( msg <= CRCInput::RC_MaxRC )
 			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
 
-		if( msg == CRCInput::RC_ok)
+		if( msg == RC_ok)
 		{
 			selected = listBox->getSelected();
 
@@ -232,25 +232,25 @@ int CBEChannelSelectWidget::exec(CMenuTarget* parent, const std::string& actionK
 	
 			listBox->clearItems();
 			paint();
-			g_RCInput->postMsg(CRCInput::RC_down, 0);
+			g_RCInput->postMsg(RC_down, 0);
 		}
-		else if (msg == CRCInput::RC_home)
+		else if (msg == RC_home)
 		{
 			loop = false;
 		}
-		else if (msg == CRCInput::RC_page_up)
+		else if (msg == RC_page_up)
 		{
 			listBox->scrollPageUp();
 		}
-		else if (msg == CRCInput::RC_page_down)
+		else if (msg == RC_page_down)
 		{
 			listBox->scrollPageDown();
 		}
-		else if (msg == CRCInput::RC_up)
+		else if (msg == RC_up)
 		{
 			listBox->scrollLineUp();
 		}
-		else if (msg == CRCInput::RC_down)
+		else if (msg == RC_down)
 		{
 			listBox->scrollLineDown();
 		}

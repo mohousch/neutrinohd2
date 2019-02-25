@@ -163,9 +163,9 @@ void CSatIPClient::showMenu()
 
 	satIPClientMenu->setSelected(selected);
 
-	satIPClientMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	satIPClientMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	satIPClientMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
-	satIPClientMenu->addItem(new CMenuForwarder("Einstellungen speichern", true, NULL, this, "save", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	satIPClientMenu->addItem(new CMenuForwarder("Einstellungen speichern", true, NULL, this, "save", RC_red, NEUTRINO_ICON_BUTTON_RED));
 	satIPClientMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	// enabled
@@ -192,10 +192,10 @@ void CSatIPClient::showMenu()
 	satIPClientMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	// start satipclient
-	satIPClientMenu->addItem(new CMenuForwarder("Start SatIP Client", SatIPEnabled, NULL, this, "start", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
+	satIPClientMenu->addItem(new CMenuForwarder("Start SatIP Client", SatIPEnabled, NULL, this, "start", RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 
 	// stop satipclient
-	satIPClientMenu->addItem(new CMenuForwarder("Stop SatIP Client", SatIPEnabled, NULL, this, "stop", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
+	satIPClientMenu->addItem(new CMenuForwarder("Stop SatIP Client", SatIPEnabled, NULL, this, "stop", RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
 	satIPClientMenu->exec(NULL, "");
 	satIPClientMenu->hide();

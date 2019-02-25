@@ -721,42 +721,42 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	strcpy(g_settings.repeat_blocker, configfile.getString("repeat_blocker", "250").c_str());
 	strcpy(g_settings.repeat_genericblocker, configfile.getString("repeat_genericblocker", "25").c_str());
 
-	g_settings.key_tvradio_mode = configfile.getInt32( "key_tvradio_mode", CRCInput::RC_mode );
-	g_settings.key_channelList_pageup = configfile.getInt32( "key_channelList_pageup",  CRCInput::RC_page_up );
-	g_settings.key_channelList_pagedown = configfile.getInt32( "key_channelList_pagedown", CRCInput::RC_page_down );
-	g_settings.key_channelList_cancel = configfile.getInt32( "key_channelList_cancel",  CRCInput::RC_home );
-	g_settings.key_channelList_reload = configfile.getInt32( "key_channelList_reload",  CRCInput::RC_setup );
-	g_settings.key_channelList_sort = configfile.getInt32( "key_channelList_sort",  CRCInput::RC_blue );
-	g_settings.key_channelList_addrecord = configfile.getInt32( "key_channelList_addrecord", CRCInput::RC_red );
-	g_settings.key_channelList_search = configfile.getInt32( "key_channelList_search", CRCInput::RC_green );
-	g_settings.key_channelList_addremind = configfile.getInt32( "key_channelList_addremind", CRCInput::RC_yellow );
-	g_settings.key_list_start = configfile.getInt32( "key_list_start", CRCInput::RC_nokey );
-	g_settings.key_list_end = configfile.getInt32( "key_list_end", CRCInput::RC_nokey );
+	g_settings.key_tvradio_mode = configfile.getInt32( "key_tvradio_mode", RC_mode );
+	g_settings.key_channelList_pageup = configfile.getInt32( "key_channelList_pageup", RC_page_up );
+	g_settings.key_channelList_pagedown = configfile.getInt32( "key_channelList_pagedown", RC_page_down );
+	g_settings.key_channelList_cancel = configfile.getInt32( "key_channelList_cancel", RC_home );
+	g_settings.key_channelList_reload = configfile.getInt32( "key_channelList_reload", RC_setup );
+	g_settings.key_channelList_sort = configfile.getInt32( "key_channelList_sort", RC_blue );
+	g_settings.key_channelList_addrecord = configfile.getInt32( "key_channelList_addrecord", RC_red );
+	g_settings.key_channelList_search = configfile.getInt32( "key_channelList_search", RC_green );
+	g_settings.key_channelList_addremind = configfile.getInt32( "key_channelList_addremind", RC_yellow );
+	g_settings.key_list_start = configfile.getInt32( "key_list_start", RC_nokey );
+	g_settings.key_list_end = configfile.getInt32( "key_list_end", RC_nokey );
 	
-	g_settings.key_bouquet_up = configfile.getInt32( "key_bouquet_up",  CRCInput::RC_right);
-	g_settings.key_bouquet_down = configfile.getInt32( "key_bouquet_down",  CRCInput::RC_left);
+	g_settings.key_bouquet_up = configfile.getInt32( "key_bouquet_up", RC_right);
+	g_settings.key_bouquet_down = configfile.getInt32( "key_bouquet_down", RC_left);
 
-	g_settings.key_quickzap_up = configfile.getInt32( "key_quickzap_up",  CRCInput::RC_up );
-	g_settings.key_quickzap_down = configfile.getInt32( "key_quickzap_down",  CRCInput::RC_down );
-	g_settings.key_subchannel_up = configfile.getInt32( "key_subchannel_up",  CRCInput::RC_right );
-	g_settings.key_subchannel_down = configfile.getInt32( "key_subchannel_down",  CRCInput::RC_left );
-	g_settings.key_zaphistory = configfile.getInt32( "key_zaphistory",  CRCInput::RC_home );	
-	g_settings.key_lastchannel = configfile.getInt32( "key_lastchannel",  CRCInput::RC_recall );
+	g_settings.key_quickzap_up = configfile.getInt32( "key_quickzap_up", RC_up );
+	g_settings.key_quickzap_down = configfile.getInt32( "key_quickzap_down", RC_down );
+	g_settings.key_subchannel_up = configfile.getInt32( "key_subchannel_up", RC_right );
+	g_settings.key_subchannel_down = configfile.getInt32( "key_subchannel_down", RC_left );
+	g_settings.key_zaphistory = configfile.getInt32( "key_zaphistory", RC_home );	
+	g_settings.key_lastchannel = configfile.getInt32( "key_lastchannel", RC_recall );
 	
 	// pip keys
-	g_settings.key_pip = configfile.getInt32("key_pip", CRCInput::RC_pip);
-	//g_settings.key_pip_subchannel = configfile.getInt32("key_pip_subchannel", CRCInput::RC_pipsubch);
+	g_settings.key_pip = configfile.getInt32("key_pip", RC_pip);
+	//g_settings.key_pip_subchannel = configfile.getInt32("key_pip_subchannel", RC_pipsubch);
 
 	// media keys
-	g_settings.key_recordsbrowser = configfile.getInt32( "key_recordsbrowser", CRCInput::RC_nokey );
-	g_settings.key_audioplayer = configfile.getInt32( "key_audioplayer", CRCInput::RC_nokey );
-	g_settings.key_pictureviewer = configfile.getInt32( "key_pictureviewer", CRCInput::RC_nokey );
-	g_settings.key_timerlist = configfile.getInt32( "key_timerlist", CRCInput::RC_nokey );
-	g_settings.key_inetradio = configfile.getInt32( "key_inetradio", CRCInput::RC_nokey );
-	g_settings.key_moviebrowser = configfile.getInt32( "key_moviebrowser", CRCInput::RC_nokey );
-	g_settings.key_filebrowser = configfile.getInt32( "key_filebrowser", CRCInput::RC_nokey );
-	g_settings.key_webtv = configfile.getInt32( "key_webtv", CRCInput::RC_nokey );
-	g_settings.key_screenshot = configfile.getInt32( "key_screenshot", CRCInput::RC_record );
+	g_settings.key_recordsbrowser = configfile.getInt32( "key_recordsbrowser", RC_nokey );
+	g_settings.key_audioplayer = configfile.getInt32( "key_audioplayer", RC_nokey );
+	g_settings.key_pictureviewer = configfile.getInt32( "key_pictureviewer", RC_nokey );
+	g_settings.key_timerlist = configfile.getInt32( "key_timerlist", RC_nokey );
+	g_settings.key_inetradio = configfile.getInt32( "key_inetradio", RC_nokey );
+	g_settings.key_moviebrowser = configfile.getInt32( "key_moviebrowser", RC_nokey );
+	g_settings.key_filebrowser = configfile.getInt32( "key_filebrowser", RC_nokey );
+	g_settings.key_webtv = configfile.getInt32( "key_webtv", RC_nokey );
+	g_settings.key_screenshot = configfile.getInt32( "key_screenshot", RC_record );
 	
 	// webtv
 	g_settings.webtv_userBouquet = configfile.getString("webtv_userBouquet", DEFAULT_WEBTV_FILE);
@@ -2804,7 +2804,7 @@ void CNeutrinoApp::RealRun(void)
 
 				StartSubtitles();
 			}
-			else if(msg == CRCInput::RC_epg) 
+			else if(msg == RC_epg) 
 			{
 				StopSubtitles();
 				
@@ -2815,7 +2815,7 @@ void CNeutrinoApp::RealRun(void)
 
 				StartSubtitles();
 			}
-			else if( msg == CRCInput::RC_text && (mode != mode_webtv)) 
+			else if( msg == RC_text && (mode != mode_webtv)) 
 			{
 				g_RCInput->clearRCMsg();
 
@@ -2846,7 +2846,7 @@ void CNeutrinoApp::RealRun(void)
 				
 				StartSubtitles();
 			}		
-			else if( msg == CRCInput::RC_setup ) 
+			else if( msg == RC_setup ) 
 			{
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
@@ -2908,7 +2908,7 @@ void CNeutrinoApp::RealRun(void)
 				}
 			}
 			// in case key_subchannel_up/down redefined
-			else if((msg == CRCInput::RC_left || msg == CRCInput::RC_right)) 
+			else if((msg == RC_left || msg == RC_right)) 
 			{
 				if(channelList->getSize()) 
 				{
@@ -2933,7 +2933,7 @@ void CNeutrinoApp::RealRun(void)
 
 				StartSubtitles(res < 0);
 			}
-			else if(msg == CRCInput::RC_pause) // start timeshift recording
+			else if(msg == RC_pause) // start timeshift recording
 			{
 				if(mode == mode_webtv)
 				{
@@ -2967,7 +2967,7 @@ void CNeutrinoApp::RealRun(void)
 					}
 				}
 			}
-			else if( ((msg == CRCInput::RC_play) && timeshiftstatus)) // play timeshift
+			else if( ((msg == RC_play) && timeshiftstatus)) // play timeshift
 			{
 				if(mode == mode_webtv)
 				{
@@ -3044,7 +3044,7 @@ void CNeutrinoApp::RealRun(void)
 					}
 				}
 			}
-			else if( (msg == CRCInput::RC_record || msg == CRCInput::RC_stop) ) 
+			else if( (msg == RC_record || msg == RC_stop) ) 
 			{
 				dprintf(DEBUG_NORMAL, "CNeutrinoApp::RealRun\n");
 				
@@ -3065,13 +3065,13 @@ void CNeutrinoApp::RealRun(void)
 					}
 				} 
 				// start record
-				else if(msg != CRCInput::RC_stop )
+				else if(msg != RC_stop )
 				{
 					recordingstatus = 1;
 					doGuiRecord( g_settings.network_nfs_recordingdir, true );
 				}
 			}
-			else if( msg == CRCInput::RC_red ) 
+			else if( msg == RC_red ) 
 			{
 				//
 				if(g_InfoViewer->is_visible)
@@ -3084,19 +3084,19 @@ void CNeutrinoApp::RealRun(void)
 				CMenuWidget redMenu(LOCALE_INFOVIEWER_EVENTLIST, NEUTRINO_ICON_FEATURES);
 
 				// intros
-				redMenu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+				redMenu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 				redMenu.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
 				// eventlist
-				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EVENTLIST, true, NULL, new CEventListHandler(), "", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EVENTLIST, true, NULL, new CEventListHandler(), "", RC_red, NEUTRINO_ICON_BUTTON_RED));
 
 				// epg view
-				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, new CEPGDataHandler(), "", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
+				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EVENTINFO, true, NULL, new CEPGDataHandler(), "", RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 		
 			       	// epgplus/tech info
-				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EPGPLUS, true, NULL, new CEPGplusHandler(), "", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
+				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EPGPLUS, true, NULL, new CEPGplusHandler(), "", RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
-				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_STREAMINFO, true, NULL, new CStreamInfo2Handler(), "", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_STREAMINFO, true, NULL, new CStreamInfo2Handler(), "", RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
 				
 				redMenu.exec(NULL, "");
 				redMenu.hide();
@@ -3104,7 +3104,7 @@ void CNeutrinoApp::RealRun(void)
 				//
 				StartSubtitles();
 			}
-			else if( ( msg == CRCInput::RC_green) || ( msg == CRCInput::RC_audio) )
+			else if( ( msg == RC_green) || ( msg == RC_audio) )
 			{
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
@@ -3132,7 +3132,7 @@ void CNeutrinoApp::RealRun(void)
 					StartSubtitles();
 				}
 			}
-			else if( (msg == CRCInput::RC_yellow || msg == CRCInput::RC_multifeed) && (mode != mode_webtv))
+			else if( (msg == RC_yellow || msg == RC_multifeed) && (mode != mode_webtv))
 			{ 
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
@@ -3147,7 +3147,7 @@ void CNeutrinoApp::RealRun(void)
 
 				StartSubtitles();
 			}
-			else if( msg == CRCInput::RC_blue ) 
+			else if( msg == RC_blue ) 
 			{
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
@@ -3160,32 +3160,32 @@ void CNeutrinoApp::RealRun(void)
 				StartSubtitles();
 			}
 #if defined (ENABLE_FUNCTIONKEYS)			
-			else if( msg == CRCInput::RC_f1 ) 
+			else if( msg == RC_f1 ) 
 			{
 				StopSubtitles();
 				showUserMenu(SNeutrinoSettings::BUTTON_F1);
 				StartSubtitles();
 			}
-			else if( msg == CRCInput::RC_f2 )
+			else if( msg == RC_f2 )
 			{
 				StopSubtitles();
 				showUserMenu(SNeutrinoSettings::BUTTON_F2);
 				StartSubtitles();
 			}
-			else if( msg == CRCInput::RC_f3 ) 
+			else if( msg == RC_f3 ) 
 			{ 
 				StopSubtitles();
 				showUserMenu(SNeutrinoSettings::BUTTON_F3);
 				StartSubtitles();
 			}
-			else if( msg == CRCInput::RC_f4 ) 
+			else if( msg == RC_f4 ) 
 			{
 				StopSubtitles();
 				showUserMenu(SNeutrinoSettings::BUTTON_F4);
 				StartSubtitles();
 			}
 #endif			
-			else if( (msg == CRCInput::RC_dvbsub) && (mode != mode_webtv) )
+			else if( (msg == RC_dvbsub) && (mode != mode_webtv) )
 			{
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
@@ -3319,32 +3319,32 @@ void CNeutrinoApp::RealRun(void)
 
 				// convert msg to int
 				int QKey = 0;
-				if(msg == CRCInput::RC_0)
+				if(msg == RC_0)
 					QKey = 0;
-				else if(msg == CRCInput::RC_1)
+				else if(msg == RC_1)
 					QKey = 1;
-				else if(msg == CRCInput::RC_2)
+				else if(msg == RC_2)
 					QKey = 2;
-				else if(msg == CRCInput::RC_3)
+				else if(msg == RC_3)
 					QKey = 3;
-				else if(msg == CRCInput::RC_4)
+				else if(msg == RC_4)
 					QKey = 4;
-				else if(msg == CRCInput::RC_5)
+				else if(msg == RC_5)
 					QKey = 5;
-				else if(msg == CRCInput::RC_6)
+				else if(msg == RC_6)
 					QKey = 6;
-				else if(msg == CRCInput::RC_7)
+				else if(msg == RC_7)
 					QKey = 7;
-				else if(msg == CRCInput::RC_8)
+				else if(msg == RC_8)
 					QKey = 8;
-				else if(msg == CRCInput::RC_9)
+				else if(msg == RC_9)
 					QKey = 9;
 
 				//FIXME: think about gallery i.e QKey > 9
 
 				g_Radiotext->RassImage(0, QKey, true);
 			}			
-			else if((msg == CRCInput::RC_info) || ( msg == NeutrinoMessages::SHOW_INFOBAR ))
+			else if((msg == RC_info) || ( msg == NeutrinoMessages::SHOW_INFOBAR ))
 			{
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
@@ -3373,7 +3373,7 @@ void CNeutrinoApp::RealRun(void)
 			}
 			else 
 			{
-				if ( msg == CRCInput::RC_home )
+				if ( msg == RC_home )
 				{ 
 					if(g_InfoViewer->is_visible)
 						g_InfoViewer->killTitle();
@@ -3386,7 +3386,7 @@ void CNeutrinoApp::RealRun(void)
 		}
 		else //other modes
 		{
-			if( msg == CRCInput::RC_home ) 
+			if( msg == RC_home ) 
 			{
 				if(g_InfoViewer->is_visible)
 					g_InfoViewer->killTitle();
@@ -3516,7 +3516,7 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 #endif	
 
 	// handle Keys
-	if( msg == CRCInput::RC_ok || msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
+	if( msg == RC_ok || msg == RC_sat || msg == RC_favorites)
 	{
 		if(g_InfoViewer->is_visible)
 			g_InfoViewer->killTitle();
@@ -3538,19 +3538,19 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 				old_num = bouquetList->Bouquets[old_b]->channelList->getActiveChannelNumber();
 			}
 
-			if( msg == CRCInput::RC_ok ) 
+			if( msg == RC_ok ) 
 			{
 				if(bouquetList->Bouquets.size() && bouquetList->Bouquets[old_b]->channelList->getSize() > 0)
 					nNewChannel = bouquetList->Bouquets[old_b]->channelList->exec();	//with ZAP!
 				else
 					nNewChannel = bouquetList->exec(true);
 			}
-			else if(msg == CRCInput::RC_sat) 
+			else if(msg == RC_sat) 
 			{
 				SetChannelMode(LIST_MODE_SAT, mode);
 				nNewChannel = bouquetList->exec(true);
 			}
-			else if(msg == CRCInput::RC_favorites) 
+			else if(msg == RC_favorites) 
 			{
 				SetChannelMode(LIST_MODE_FAV, mode);
 				nNewChannel = bouquetList->exec(true);
@@ -3587,7 +3587,7 @@ _repeat:
 			return messages_return::handled;
 		}
 	}
-	else if (msg == CRCInput::RC_standby ) 
+	else if (msg == RC_standby ) 
 	{
 		if (data == 0) 
 		{
@@ -3625,7 +3625,7 @@ _repeat:
 					{
 						g_RCInput->getMsg_ms(&lmsg, &ldata, timeout);
 						
-						if (lmsg == CRCInput::RC_timeout)
+						if (lmsg == RC_timeout)
 							break;
 
 						gettimeofday(&endtime, NULL);
@@ -3635,7 +3635,7 @@ _repeat:
 						
 						if (seconds >= 1) 
 						{
-							if ( lmsg == CRCInput::RC_standby )
+							if ( lmsg == RC_standby )
 								new_msg = NeutrinoMessages::SHUTDOWN;
 							break;
 						}
@@ -3660,12 +3660,12 @@ _repeat:
 			}
 		}
 	}
-	else if ( (msg == CRCInput::RC_plus) || (msg == CRCInput::RC_minus) )
+	else if ( (msg == RC_plus) || (msg == RC_minus) )
 	{
 		setVolume(msg, (mode != mode_scart));
 		return messages_return::handled;
 	}
-	else if( msg == CRCInput::RC_spkr ) 
+	else if( msg == RC_spkr ) 
 	{
 		if( mode == mode_standby ) 
 		{
@@ -3703,7 +3703,7 @@ _repeat:
 			{
 				bouquetList->activateBouquet(old_b_id, false);
 				old_b_id = -1;
-				g_RCInput->postMsg(CRCInput::RC_ok, 0);
+				g_RCInput->postMsg(RC_ok, 0);
 			}
 		}
 	}
@@ -4342,9 +4342,9 @@ void CNeutrinoApp::saveEpg()
 		while( true ) 
 		{
 			g_RCInput->getMsg(&msg, &data, 300); // 30 secs..
-			if (( msg == CRCInput::RC_timeout ) || (msg == NeutrinoMessages::EVT_SI_FINISHED)) 
+			if (( msg == RC_timeout ) || (msg == NeutrinoMessages::EVT_SI_FINISHED)) 
 			{
-				//printf("Msg %x timeout %d EVT_SI_FINISHED %x\n", msg, CRCInput::RC_timeout, NeutrinoMessages::EVT_SI_FINISHED);
+				//printf("Msg %x timeout %d EVT_SI_FINISHED %x\n", msg, RC_timeout, NeutrinoMessages::EVT_SI_FINISHED);
 				break;
 			}
 		}
@@ -4509,14 +4509,14 @@ void CNeutrinoApp::setVolume(const neutrino_msg_t key, const bool bDoPaint, bool
 	do {
 		if (msg <= CRCInput::RC_MaxRC) 
 		{
-			if ( msg == CRCInput::RC_plus ) 
+			if ( msg == RC_plus ) 
 			{ 
 				if (g_settings.current_volume < 100 - a_step )
 					g_settings.current_volume += a_step;
 				else
 					g_settings.current_volume = 100;
 			}
-			else if ( msg == CRCInput::RC_minus ) 
+			else if ( msg == RC_minus ) 
 			{ 
 				if (g_settings.current_volume > a_step)
 					g_settings.current_volume -= a_step;
@@ -4532,7 +4532,7 @@ void CNeutrinoApp::setVolume(const neutrino_msg_t key, const bool bDoPaint, bool
 			setvol(g_settings.current_volume);	
 			
 			//FIXME
-			if (current_muted && msg == CRCInput::RC_plus)
+			if (current_muted && msg == RC_plus)
 				AudioMute(0, true);
 
 			timeoutEnd = CRCInput::calcTimeoutEnd(nowait ? 1 : 3);
@@ -4577,13 +4577,13 @@ void CNeutrinoApp::setVolume(const neutrino_msg_t key, const bool bDoPaint, bool
 		CVFD::getInstance()->showVolume(g_settings.current_volume);
 #endif
 
-		if (msg != CRCInput::RC_timeout) 
+		if (msg != RC_timeout) 
 		{
 			g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd );
 		}
 
 		frameBuffer->blit();	
-	} while (msg != CRCInput::RC_timeout);
+	} while (msg != RC_timeout);
 
 	if( (bDoPaint) && (pixbuf != NULL) ) 
 	{
@@ -5403,7 +5403,7 @@ bool CNeutrinoApp::getNVODMenu(CMenuWidget * menu)
 		else 
 		{
 			if (count == 0)
-				menu->addItem(new CMenuForwarder(Latin1_to_UTF8(e->subservice_name.c_str()).c_str(), true, NULL, NVODChanger, nvod_id, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+				menu->addItem(new CMenuForwarder(Latin1_to_UTF8(e->subservice_name.c_str()).c_str(), true, NULL, NVODChanger, nvod_id, RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
 			else
 				menu->addItem(new CMenuForwarder(Latin1_to_UTF8(e->subservice_name.c_str()).c_str(), true, NULL, NVODChanger, nvod_id, CRCInput::convertDigitToKey(count)), (count == g_RemoteControl->selected_subchannel));
                 }
@@ -5414,7 +5414,7 @@ bool CNeutrinoApp::getNVODMenu(CMenuWidget * menu)
         if( g_RemoteControl->are_subchannels ) 
 	{
                 menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
-                CMenuOptionChooser* oj = new CMenuOptionChooser(LOCALE_NVODSELECTOR_DIRECTORMODE, &g_RemoteControl->director_mode, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW);
+                CMenuOptionChooser* oj = new CMenuOptionChooser(LOCALE_NVODSELECTOR_DIRECTORMODE, &g_RemoteControl->director_mode, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW);
                 menu->addItem(oj);
         }
 

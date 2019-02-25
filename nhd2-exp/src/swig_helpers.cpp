@@ -113,15 +113,19 @@ int CSwigHelpers::getHeight(int font_type)
 }
 
 // CRCInput
-int CSwigHelpers::getRCCode(int ms)
+int CSwigHelpers::getRCCode(int timeout)
 {
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
+
+	g_RCInput->getMsg_ms(&msg, &data, timeout);
 	
-	if (msg != CRCInput::RC_timeout && msg > CRCInput::RC_MaxRC)
+/*
+	if (msg != RC_timeout && msg > CRCInput::RC_MaxRC)
 	{
 		CNeutrinoApp::getInstance()->handleMsg(msg, data);
 	}
+*/
 
 	return (int)msg;
 }

@@ -677,7 +677,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 					CNeutrinoApp::getInstance()->handleMsg(msg, data);
 					break;
 					
-				case CRCInput::RC_left:
+				case RC_left:
 					if (prev_id != 0)
 					{
 						cLeftFWindow.setColor(COL_MENUCONTENT_PLUS_3);
@@ -689,7 +689,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 					}
 					break;
 
-				case CRCInput::RC_right:
+				case RC_right:
 					if (next_id != 0)
 					{
 						cRightFWindow.setColor(COL_MENUCONTENT_PLUS_3);
@@ -701,18 +701,18 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 					}
 					break;
 
-				case CRCInput::RC_down:
-				case CRCInput::RC_page_down:
+				case RC_down:
+				case RC_page_down:
 					textBox->scrollPageDown(1);
 					break;
 
-				case CRCInput::RC_up:
-				case CRCInput::RC_page_up:
+				case RC_up:
+				case RC_page_up:
 					textBox->scrollPageUp(1);
 					break;
 
 				// 31.05.2002 dirch		record timer
-				case CRCInput::RC_red:
+				case RC_red:
 					if (recDir != NULL)
 					{
 						if(g_Timerd->isTimerdAvailable())
@@ -754,7 +754,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 					break;
 
 				// 31.05.2002 dirch		zapto timer
-				case CRCInput::RC_yellow:
+				case RC_yellow:
 				{
 					{
 						if(g_Timerd->isTimerdAvailable())
@@ -772,7 +772,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 					break;
 				}
 				
-				case CRCInput::RC_info:
+				case RC_info:
 					showTimerEventBar(false);
 					start();
 					
@@ -782,13 +782,13 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 					show(channel_id, id, &startzeit, false);
 					break;
 
-				case CRCInput::RC_ok:
-				case CRCInput::RC_timeout:
+				case RC_ok:
+				case RC_timeout:
 					loop = false;
 					break;
 					
-				case CRCInput::RC_favorites:
-				case CRCInput::RC_sat:
+				case RC_favorites:
+				case RC_sat:
 					g_RCInput->postMsg (msg, 0);
 					loop = false;
 					break;

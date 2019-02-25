@@ -143,7 +143,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 
 		switch ( msg )
 		{
-			case CRCInput::RC_down:
+			case RC_down:
 			if(selected < 2) // max entries
 			{
 				paintSlider(x + BORDER_LEFT, y + hheight, brightness, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESS, false);
@@ -171,7 +171,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 			}
 			break;
 
-			case CRCInput::RC_up:
+			case RC_up:
 			if (selected > 0) 
 			{
 				paintSlider(x + BORDER_LEFT, y + hheight, brightness, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESS, false);
@@ -202,7 +202,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 			}
 			break;
 
-			case CRCInput::RC_right:
+			case RC_right:
 				switch (selected) 
 				{
 					case 0:
@@ -227,7 +227,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 				}
 				break;
 
-			case CRCInput::RC_left:
+			case RC_left:
 				switch (selected) 
 				{
 					case 0:
@@ -252,7 +252,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 				}
 				break;
 
-			case CRCInput::RC_home:
+			case RC_home:
 				if ( ((brightness != brightness_alt) || (brightnessstandby != brightnessstandby_alt) ) && (MessageBox(name.c_str(), LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
 					break;
 
@@ -262,7 +262,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 				loop = false;
 				break;
 
-			case CRCInput::RC_ok:
+			case RC_ok:
 				if (selected == 2) 
 				{
 					brightness = DEFAULT_LCD_BRIGHTNESS;
@@ -273,7 +273,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 					break;
 				}
 
-			case CRCInput::RC_timeout:
+			case RC_timeout:
 				loop = false;
 				break;
 	

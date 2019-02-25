@@ -148,12 +148,12 @@ void CYTBrowser::showMenu()
 
 	moviesMenu->setHeaderButtons(YTHeadButtons, YT_HEAD_BUTTONS_COUNT);
 
-	moviesMenu->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	moviesMenu->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
-	moviesMenu->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
-	moviesMenu->addKey(CRCInput::RC_record, this, CRCInput::getSpecialKeyName(CRCInput::RC_record));
-	moviesMenu->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
-	moviesMenu->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
+	moviesMenu->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
+	moviesMenu->addKey(RC_setup, this, CRCInput::getSpecialKeyName(RC_setup));
+	moviesMenu->addKey(RC_red, this, CRCInput::getSpecialKeyName(RC_red));
+	moviesMenu->addKey(RC_record, this, CRCInput::getSpecialKeyName(RC_record));
+	moviesMenu->addKey(RC_green, this, CRCInput::getSpecialKeyName(RC_green));
+	moviesMenu->addKey(RC_yellow, this, CRCInput::getSpecialKeyName(RC_yellow));
 
 	moviesMenu->exec(NULL, "");
 	//moviesMenu->hide();
@@ -316,16 +316,16 @@ int CYTBrowser::showCategoriesMenu(void)
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// search
-	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, ytsearch.c_str(), this, "search", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, ytsearch.c_str(), this, "search", RC_red, NEUTRINO_ICON_BUTTON_RED));
 	
 	// ytorder
-	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_ORDERBY, &m_settings.ytorderby, YT_ORDERBY_OPTIONS, YT_ORDERBY_OPTION_COUNT, true, NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true));
+	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_ORDERBY, &m_settings.ytorderby, YT_ORDERBY_OPTIONS, YT_ORDERBY_OPTION_COUNT, true, NULL, RC_green, NEUTRINO_ICON_BUTTON_GREEN, true));
 
 	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	char rstr[20];
 	sprintf(rstr, "%s", m_settings.ytregion.c_str());
-	CMenuOptionStringChooser * region = new CMenuOptionStringChooser(LOCALE_YT_REGION, rstr, true, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, true, true);
+	CMenuOptionStringChooser * region = new CMenuOptionStringChooser(LOCALE_YT_REGION, rstr, true, NULL, RC_blue, NEUTRINO_ICON_BUTTON_BLUE, true, true);
 	region->addOption("default");
 	region->addOption("DE");
 	region->addOption("PL");

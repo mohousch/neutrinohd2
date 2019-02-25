@@ -82,7 +82,7 @@ int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string& actionK
 CMenuItem::CMenuItem()
 {
 	x = -1;
-	directKey = CRCInput::RC_nokey;
+	directKey = RC_nokey;
 	iconName = "";
 	can_arrow = false;
 
@@ -199,7 +199,7 @@ int CMenuOptionChooser::exec(CMenuTarget* parent)
 		parent->hide();
 
 	// pulldown
-	if( (!parent || msg == CRCInput::RC_ok) && pulldown ) 
+	if( (!parent || msg == RC_ok) && pulldown ) 
 	{
 		int select = -1;
 		char cnt[5];
@@ -246,7 +246,7 @@ int CMenuOptionChooser::exec(CMenuTarget* parent)
 		{
 			if (options[count].key == (*optionValue)) 
 			{
-				if( msg == CRCInput::RC_left ) 
+				if( msg == RC_left ) 
 				{
 					if(count > 0)
 						*optionValue = options[(count-1) % number_of_options].key;
@@ -441,7 +441,7 @@ int CMenuOptionNumberChooser::exec(CMenuTarget*)
 {
 	dprintf(DEBUG_DEBUG, "CMenuOptionNumberChooser::exec:\n");
 
-	if( msg == CRCInput::RC_left ) 
+	if( msg == RC_left ) 
 	{
 		if (((*optionValue) > upper_bound) || ((*optionValue) <= lower_bound))
 			*optionValue = upper_bound;
@@ -605,7 +605,7 @@ int CMenuOptionStringChooser::exec(CMenuTarget* parent)
 		parent->hide();
 
 	// pulldown
-	if( (!parent || msg == CRCInput::RC_ok) && pulldown ) 
+	if( (!parent || msg == RC_ok) && pulldown ) 
 	{
 		int select = -1;
 		char cnt[5];
@@ -644,7 +644,7 @@ int CMenuOptionStringChooser::exec(CMenuTarget* parent)
 		{
 			if (strcmp(options[count].c_str(), optionValue) == 0) 
 			{
-				if( msg == CRCInput::RC_left ) 
+				if( msg == RC_left ) 
 				{
 					if(count > 0)
 						strcpy(optionValue, options[(count - 1) % options.size()].c_str());
@@ -766,7 +766,7 @@ CMenuOptionLanguageChooser::CMenuOptionLanguageChooser(char *Name, CChangeObserv
 	optionValue = Name;
 	observ = Observ;
 
-	directKey = CRCInput::RC_nokey;
+	directKey = RC_nokey;
 	iconName = IconName ? IconName : "";
 
 	itemHelpText = Name;
@@ -866,7 +866,7 @@ int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 /*
 CMenuSeparator::CMenuSeparator(const int Type, const neutrino_locale_t Text)
 {
-	directKey = CRCInput::RC_nokey;
+	directKey = RC_nokey;
 	iconName = "";
 	type = Type;
 	text = Text;
@@ -878,7 +878,7 @@ CMenuSeparator::CMenuSeparator(const int Type, const neutrino_locale_t Text)
 
 CMenuSeparator::CMenuSeparator(const int Type, const char * const Text)
 {
-	directKey = CRCInput::RC_nokey;
+	directKey = RC_nokey;
 	iconName = "";
 	type = Type;
 	//text = NONEXISTANT_LOCALE;
@@ -2768,7 +2768,7 @@ void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigne
 			}
 
 			//
-			neutrino_msg_t dk = (shortcut != CRCInput::RC_nokey) ? CRCInput::convertDigitToKey(sc++) : CRCInput::RC_nokey;
+			neutrino_msg_t dk = (shortcut != RC_nokey) ? CRCInput::convertDigitToKey(sc++) : RC_nokey;
 
 			//FIXME: iconName
 			CMenuForwarder *fw_plugin = new CMenuForwarder(g_PluginList->getName(count), enabled, NULL, CPluginsExec::getInstance(), to_string(count).c_str(), dk, NULL, IconName.c_str());
@@ -2816,7 +2816,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 		{
 			CMenuItem * titem = items[i];
 			
-			if ((titem->directKey != CRCInput::RC_nokey) && (titem->directKey == msg)) 
+			if ((titem->directKey != RC_nokey) && (titem->directKey == msg)) 
 			{
 				if (titem->isSelectable()) 
 				{
@@ -2832,7 +2832,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					paintItemInfo(selected);
 					pos = selected;
 
-					msg = CRCInput::RC_ok;
+					msg = RC_ok;
 				} 
 				else 
 				{
@@ -2851,11 +2851,11 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					if ( CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all ) 
 					{
 						retval = menu_return::RETURN_EXIT_ALL;
-						msg = CRCInput::RC_timeout;
+						msg = RC_timeout;
 					}
 					break;
 					
-				case (CRCInput::RC_page_up) :
+				case (RC_page_up) :
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						pos = (int) page_start[current_page + 1];
@@ -2920,7 +2920,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					}
 					break;
 
-				case (CRCInput::RC_page_down) :
+				case (RC_page_down) :
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						if(current_page) 
@@ -2960,7 +2960,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					}
 					break;
 					
-				case (CRCInput::RC_up) :
+				case (RC_up) :
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						pos = selected - itemsPerX;
@@ -3020,7 +3020,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					
 					break;
 
-				case (CRCInput::RC_down) :
+				case (RC_down) :
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						pos = selected + itemsPerX;
@@ -3078,7 +3078,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					
 					break;
 					
-				case (CRCInput::RC_left):
+				case (RC_left):
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						//search next / prev selectable item
@@ -3117,12 +3117,12 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 						//
 						if(!(items[selected]->can_arrow)) 
 						{
-							msg = CRCInput::RC_timeout;
+							msg = RC_timeout;
 							break;
 						}
 					}
 					
-				case (CRCInput::RC_right):
+				case (RC_right):
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						//search next / prev selectable item
@@ -3170,7 +3170,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 									retval = menu_return::RETURN_EXIT_ALL;
 									
 								case menu_return::RETURN_EXIT:
-									msg = CRCInput::RC_timeout;
+									msg = RC_timeout;
 									break;
 									
 								case menu_return::RETURN_REPAINT:
@@ -3180,11 +3180,11 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 							}
 						} 
 						else
-							msg = CRCInput::RC_timeout;
+							msg = RC_timeout;
 					}
 					break;
 
-				case (CRCInput::RC_ok):
+				case (RC_ok):
 					{
 						if(hasItem()) 
 						{
@@ -3200,7 +3200,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 									retval = menu_return::RETURN_EXIT_ALL;
 									
 								case menu_return::RETURN_EXIT:
-									msg = CRCInput::RC_timeout;
+									msg = RC_timeout;
 									break;
 									
 								case menu_return::RETURN_REPAINT:
@@ -3210,24 +3210,24 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 							}
 						} 
 						else
-							msg = CRCInput::RC_timeout;
+							msg = RC_timeout;
 					}
 					break;
 
-				case (CRCInput::RC_home):
+				case (RC_home):
 					exit_pressed = true;
-					msg = CRCInput::RC_timeout;
+					msg = RC_timeout;
 					break;
 					
-				case (CRCInput::RC_timeout):
+				case (RC_timeout):
 					break;
 
-				case (CRCInput::RC_sat):
-				case (CRCInput::RC_favorites):
+				case (RC_sat):
+				case (RC_favorites):
 					g_RCInput->postMsg (msg, 0);
 					
 				//
-				case (CRCInput::RC_setup):
+				case (RC_setup):
 					if(widgetChange)
 					{
 						hide();
@@ -3251,7 +3251,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all ) 
 					{
 						retval = menu_return::RETURN_EXIT_ALL;
-						msg = CRCInput::RC_timeout;
+						msg = RC_timeout;
 					}
 			}
 
@@ -3264,7 +3264,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 		
 		frameBuffer->blit();
 	}
-	while ( msg != CRCInput::RC_timeout );
+	while ( msg != RC_timeout );
 	
 	hide();
 
@@ -4113,7 +4113,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					case menu_return::RETURN_EXIT_ALL:
 						retval = menu_return::RETURN_EXIT_ALL;
 					case menu_return::RETURN_EXIT:
-						msg = CRCInput::RC_timeout;
+						msg = RC_timeout;
 						break;
 					case menu_return::RETURN_REPAINT:
 						paintHead();
@@ -4130,7 +4130,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 			{
 				CMenuItem * titem = items[i];
 			
-				if ((titem->directKey != CRCInput::RC_nokey) && (titem->directKey == msg)) 
+				if ((titem->directKey != RC_nokey) && (titem->directKey == msg)) 
 				{
 					if (titem->isSelectable()) 
 					{
@@ -4145,7 +4145,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 						paintItemInfo(selected);
 						pos = selected;
-						msg = CRCInput::RC_ok;
+						msg = RC_ok;
 					} 
 					else 
 					{
@@ -4171,11 +4171,11 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all ) 
 					{
 						retval = menu_return::RETURN_EXIT_ALL;
-						msg = CRCInput::RC_timeout;
+						msg = RC_timeout;
 					}
 					break;
 					
-				case (CRCInput::RC_page_up) :
+				case (RC_page_up) :
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						pos = (int) page_start[current_page + 1];
@@ -4247,7 +4247,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 					break;
 
-				case (CRCInput::RC_page_down) :
+				case (RC_page_down) :
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						if(current_page) 
@@ -4293,7 +4293,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 					break;
 					
-				case (CRCInput::RC_up) :
+				case (RC_up) :
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						pos = selected - itemsPerX;
@@ -4351,7 +4351,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					}
 					break;
 					
-				case (CRCInput::RC_down) :
+				case (RC_down) :
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						pos = selected + itemsPerX;
@@ -4408,7 +4408,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					}
 					break;
 
-				case (CRCInput::RC_left):
+				case (RC_left):
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						//search next / prev selectable item
@@ -4449,7 +4449,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					
 					break;
 					
-				case (CRCInput::RC_right):
+				case (RC_right):
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
 						//search next / prev selectable item
@@ -4487,7 +4487,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 					break;
 
-				case (CRCInput::RC_ok):
+				case (RC_ok):
 					{
 						if(hasItem()) 
 						{
@@ -4503,7 +4503,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 									retval = menu_return::RETURN_EXIT_ALL;
 									
 								case menu_return::RETURN_EXIT:
-									msg = CRCInput::RC_timeout;
+									msg = RC_timeout;
 									break;
 									
 								case menu_return::RETURN_REPAINT:
@@ -4517,16 +4517,16 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 									g_RCInput->killTimer(sec_timer_id);
 									sec_timer_id = 0;
 									retval = menu_return::RETURN_NONE;
-									msg = CRCInput::RC_timeout;
+									msg = RC_timeout;
 									break;	
 							}
 						} 
 						else
-							msg = CRCInput::RC_timeout;
+							msg = RC_timeout;
 					}
 					break;
 				//
-				case (CRCInput::RC_setup):
+				case (RC_setup):
 					if(widgetChange && widget.size())
 					{
 						hide();
@@ -4547,19 +4547,19 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					}
 					break;
 
-				case (CRCInput::RC_home):
+				case (RC_home):
 					exit_pressed = true;
-					msg = CRCInput::RC_timeout;
+					msg = RC_timeout;
 					break;
 					
-				case (CRCInput::RC_timeout):
+				case (RC_timeout):
 					break;
 
 				default:
 					if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all ) 
 					{
 						retval = menu_return::RETURN_EXIT_ALL;
-						msg = CRCInput::RC_timeout;
+						msg = RC_timeout;
 					}
 			}
 
@@ -4572,7 +4572,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 		
 		frameBuffer->blit();
 	}
-	while ( msg != CRCInput::RC_timeout );
+	while ( msg != RC_timeout );
 	
 	if(retval != menu_return::RETURN_NONE)
 		hide();

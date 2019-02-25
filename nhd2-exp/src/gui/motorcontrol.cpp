@@ -162,9 +162,9 @@ int CMotorControl::exec(CMenuTarget* parent, const std::string &)
 	while (!istheend)
 	{
 		uint64_t timeoutEnd = CRCInput::calcTimeoutEnd_MS(250);
-		msg = CRCInput::RC_nokey;
+		msg = RC_nokey;
 
-		while (!(msg == CRCInput::RC_timeout) && (!(msg == CRCInput::RC_home)))
+		while (!(msg == RC_timeout) && (!(msg == RC_home)))
 		{
 			g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
 			showSNR();
@@ -194,37 +194,37 @@ int CMotorControl::exec(CMenuTarget* parent, const std::string &)
 			{
 				switch(msg)
 				{
-					case CRCInput::RC_ok:
-					case CRCInput::RC_0:
+					case RC_ok:
+					case RC_0:
 						printf("[motorcontrol] 0 key received... goto userMenue\n");
 						installerMenue = false;
 						paintMenu();
 						paintStatus();
 						break;
 						
-					case CRCInput::RC_1:
-					case CRCInput::RC_right:
+					case RC_1:
+					case RC_right:
 						printf("[motorcontrol] left/1 key received... drive/Step motor west, stepMode: %d\n", stepMode);
 						motorStepWest();
 						paintStatus();
 						break;
 					
-					case CRCInput::RC_red:
-					case CRCInput::RC_2:
+					case RC_red:
+					case RC_2:
 						printf("[motorcontrol] 2 key received... halt motor\n");
 						g_Zapit->sendMotorCommand(0xE0, 0x31, 0x60, 0, 0, 0, feindex);
 						moving = 0;
 						paintStatus();
 						break;
 
-					case CRCInput::RC_3:
-					case CRCInput::RC_left:
+					case RC_3:
+					case RC_left:
 						printf("[motorcontrol] right/3 key received... drive/Step motor east, stepMode: %d\n", stepMode);
 						motorStepEast();
 						paintStatus();
 						break;
 						
-					case CRCInput::RC_4:
+					case RC_4:
 						printf("[motorcontrol] 4 key received... set west (soft) limit\n");
 						if(g_settings.rotor_swap) 
 							lim_cmd = 0x66;
@@ -234,12 +234,12 @@ int CMotorControl::exec(CMenuTarget* parent, const std::string &)
 						g_Zapit->sendMotorCommand(0xE1, 0x31, lim_cmd, 0, 0, 0, feindex);
 						break;
 						
-					case CRCInput::RC_5:
+					case RC_5:
 						printf("[motorcontrol] 5 key received... disable (soft) limits\n");
 						g_Zapit->sendMotorCommand(0xE0, 0x31, 0x63, 0, 0, 0, feindex);
 						break;
 					
-					case CRCInput::RC_6:
+					case RC_6:
 						printf("[motorcontrol] 6 key received... set east (soft) limit\n");
 						if(g_settings.rotor_swap) 
 							lim_cmd = 0x67;
@@ -249,39 +249,39 @@ int CMotorControl::exec(CMenuTarget* parent, const std::string &)
 						g_Zapit->sendMotorCommand(0xE1, 0x31, lim_cmd, 0, 0, 0, feindex);
 						break;
 					
-					case CRCInput::RC_7:
+					case RC_7:
 						printf("[motorcontrol] 7 key received... goto reference position\n");
 						g_Zapit->sendMotorCommand(0xE0, 0x31, 0x6B, 1, 0, 0, feindex);
 						satellitePosition = 0;
 						paintStatus();
 						break;
 					
-					case CRCInput::RC_8:
+					case RC_8:
 						printf("[motorcontrol] 8 key received... enable (soft) limits\n");
 						g_Zapit->sendMotorCommand(0xE0, 0x31, 0x6A, 1, 0, 0, feindex);
 						break;
 					
-					case CRCInput::RC_9:
+					case RC_9:
 						printf("[motorcontrol] 9 key received... (re)-calculate positions\n");
 						g_Zapit->sendMotorCommand(0xE0, 0x31, 0x6F, 1, 0, 0, feindex);
 						break;
 					
-					case CRCInput::RC_plus:
-					case CRCInput::RC_up:
+					case RC_plus:
+					case RC_up:
 						printf("[motorcontrol] up key received... increase satellite position: %d\n", ++motorPosition);
 						satellitePosition = 0;
 						paintStatus();
 						break;
 					
-					case CRCInput::RC_minus:
-					case CRCInput::RC_down:
+					case RC_minus:
+					case RC_down:
 						if (motorPosition > 1) motorPosition--;
 						printf("[motorcontrol] down key received... decrease satellite position: %d\n", motorPosition);
 						satellitePosition = 0;
 						paintStatus();
 						break;
 					
-					case CRCInput::RC_blue:
+					case RC_blue:
 						if (++stepMode > 3) 
 							stepMode = 0;
 						if (stepMode == STEP_MODE_OFF)
@@ -302,76 +302,76 @@ int CMotorControl::exec(CMenuTarget* parent, const std::string &)
 			{
 				switch(msg)
 				{
-					case CRCInput::RC_ok:
-					case CRCInput::RC_0:
+					case RC_ok:
+					case RC_0:
 						printf("[motorcontrol] 0 key received... goto installerMenue\n");
 						installerMenue = true;
 						paintMenu();
 						paintStatus();
 						break;
 						
-					case CRCInput::RC_1:
-					case CRCInput::RC_right:
+					case RC_1:
+					case RC_right:
 						printf("[motorcontrol] left/1 key received... drive/Step motor west, stepMode: %d\n", stepMode);
 						motorStepWest();
 						paintStatus();
 						break;
 					
-					case CRCInput::RC_red:
-					case CRCInput::RC_2:
+					case RC_red:
+					case RC_2:
 						printf("[motorcontrol] 2 key received... halt motor\n");
 						g_Zapit->sendMotorCommand(0xE0, 0x31, 0x60, 0, 0, 0, feindex);
 						break;
 
-					case CRCInput::RC_3:
-					case CRCInput::RC_left:
+					case RC_3:
+					case RC_left:
 						printf("[motorcontrol] right/3 key received... drive/Step motor east, stepMode: %d\n", stepMode);
 						motorStepEast();
 						paintStatus();
 						break;
 					
-					case CRCInput::RC_green:
-					case CRCInput::RC_5:
+					case RC_green:
+					case RC_5:
 						printf("[motorcontrol] 5 key received... store present satellite number: %d\n", motorPosition);
 						g_Zapit->sendMotorCommand(0xE0, 0x31, 0x6A, 1, motorPosition, 0, feindex);
 						break;
 					
-					case CRCInput::RC_6:
+					case RC_6:
 						if (stepSize < 0x7F) stepSize++;
 						printf("[motorcontrol] 6 key received... increase Step size: %d\n", stepSize);
 						paintStatus();
 						break;
 					
-					case CRCInput::RC_yellow:
-					case CRCInput::RC_7:
+					case RC_yellow:
+					case RC_7:
 						printf("[motorcontrol] 7 key received... goto satellite number: %d\n", motorPosition);
 						g_Zapit->sendMotorCommand(0xE0, 0x31, 0x6B, 1, motorPosition, 0, feindex);
 						satellitePosition = 0;
 						paintStatus();
 						break;
 					
-					case CRCInput::RC_9:
+					case RC_9:
 						if (stepSize > 1) stepSize--;
 						printf("[motorcontrol] 9 key received... decrease Step size: %d\n", stepSize);
 						paintStatus();
 						break;
 					
-					case CRCInput::RC_plus:
-					case CRCInput::RC_up:
+					case RC_plus:
+					case RC_up:
 						printf("[motorcontrol] up key received... increase satellite position: %d\n", ++motorPosition);
 						satellitePosition = 0;
 						paintStatus();
 						break;
 					
-					case CRCInput::RC_minus:
-					case CRCInput::RC_down:
+					case RC_minus:
+					case RC_down:
 						if (motorPosition > 1) motorPosition--;
 						printf("[motorcontrol] down key received... decrease satellite position: %d\n", motorPosition);
 						satellitePosition = 0;
 						paintStatus();
 						break;
 					
-					case CRCInput::RC_blue:
+					case RC_blue:
 						if (++stepMode > 2) 
 							stepMode = 0;
 						if (stepMode == STEP_MODE_OFF)
@@ -389,7 +389,7 @@ int CMotorControl::exec(CMenuTarget* parent, const std::string &)
 			}
 		}
 		
-		istheend = (msg == CRCInput::RC_home);
+		istheend = (msg == RC_home);
 		
 		//NOTE: think about multi tuner, this zap back to the last shown channel (live_channel_id will not change)
 		if(istheend)

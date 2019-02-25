@@ -74,7 +74,7 @@ CKeyChooser::CKeyChooser(int * const Key, const neutrino_locale_t Title, const s
 
 	addItem(new CKeyValue());
 	addItem(new CMenuSeparator(CMenuSeparator::LINE));
-	addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNEW , true, NULL, keyChooser));
 	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNONE, true, NULL, keyDeleter));
@@ -89,7 +89,7 @@ CKeyChooser::CKeyChooser(int * const Key, const char * const Title, const std::s
 
 	addItem(new CKeyValue());
 	addItem(new CMenuSeparator(CMenuSeparator::LINE));
-	addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNEW , true, NULL, keyChooser));
 	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNONE, true, NULL, keyDeleter));
@@ -145,7 +145,7 @@ int CKeyChooserItem::exec(CMenuTarget* parent, const std::string &)
  get_Message:
 	g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
 	
-	if (msg != CRCInput::RC_timeout)
+	if (msg != RC_timeout)
 	{
 		if ((msg > 0) && (msg <= CRCInput::RC_MaxRC))
 			*key = msg;

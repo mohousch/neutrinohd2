@@ -395,10 +395,10 @@ void CTSBrowser::showMenu()
 
 	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 
-	mlist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	mlist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
-	mlist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
-	mlist->addKey(CRCInput::RC_spkr, this, CRCInput::getSpecialKeyName(CRCInput::RC_spkr));
+	mlist->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
+	mlist->addKey(RC_red, this, CRCInput::getSpecialKeyName(RC_red));
+	mlist->addKey(RC_green, this, CRCInput::getSpecialKeyName(RC_green));
+	mlist->addKey(RC_spkr, this, CRCInput::getSpecialKeyName(RC_spkr));
 
 	mlist->exec(NULL, "");
 	//mlist->hide();

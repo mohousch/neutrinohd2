@@ -385,23 +385,23 @@ int CInfoBox::exec(int timeout)
 	{
 		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
 
-		if (((msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_home)))
+		if (((msg == RC_timeout) || (msg == RC_home)))
 		{
 			loop = false;
 		}
-		else if (msg == CRCInput::RC_up || msg == CRCInput::RC_page_up)
+		else if (msg == RC_up || msg == RC_page_up)
 		{
 			scrollPageUp(1);
 		}
-		else if (msg == CRCInput::RC_down || msg == CRCInput::RC_page_down)
+		else if (msg == RC_down || msg == RC_page_down)
 		{
 			scrollPageDown(1);
 		}
-		else if(msg == CRCInput::RC_ok)
+		else if(msg == RC_ok)
 		{
 			loop = false;
 		}
-		else if(msg == CRCInput::RC_info)
+		else if(msg == RC_info)
 		{
 			bigFonts = bigFonts? false : true;
 

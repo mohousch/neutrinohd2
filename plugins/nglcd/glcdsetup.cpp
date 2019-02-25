@@ -296,9 +296,9 @@ void GLCD_Menu::GLCD_Menu_Settings()
 
 	CMenuWidget * m = new CMenuWidget(LOCALE_GLCD_HEAD, NEUTRINO_ICON_SETTINGS);
 	
-	m->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	m->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	m->addItem(new CMenuSeparator(CMenuSeparator::LINE));
-	m->addItem(new CMenuForwarder("Einstellungen speichern", true, NULL, this, "save", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	m->addItem(new CMenuForwarder("Einstellungen speichern", true, NULL, this, "save", RC_red, NEUTRINO_ICON_BUTTON_RED));
 	m->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_ENABLE, &glcd_enable, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier));
@@ -314,9 +314,9 @@ void GLCD_Menu::GLCD_Menu_Settings()
 	m->addItem(new CMenuOptionNumberChooser(LOCALE_GLCD_SIZE_TIME, &glcd_percent_time, true, 0, 100, notifier));
 	m->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_TIME_IN_STANDBY, &glcd_time_in_standby, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
-	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_MIRROR_OSD, &glcd_mirror_osd, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
+	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_MIRROR_OSD, &glcd_mirror_osd, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier, RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 	m->addItem(new CMenuSeparator(CMenuSeparator::LINE));
-	m->addItem(new CMenuForwarder(LOCALE_GLCD_RESTART, true, "", this, "rescan", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
+	m->addItem(new CMenuForwarder(LOCALE_GLCD_RESTART, true, "", this, "rescan", RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 	
 	m->exec(NULL, "");
 	m->hide();

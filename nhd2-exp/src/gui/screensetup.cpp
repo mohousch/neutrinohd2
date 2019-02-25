@@ -97,7 +97,7 @@ int CScreenSetup::exec(CMenuTarget *parent, const std::string &)
 
 		switch ( msg )
 		{
-			case CRCInput::RC_ok:
+			case RC_ok:
 				// save
 				g_settings.screen_StartX = x_coord[0];
 				g_settings.screen_EndX = x_coord[1];
@@ -106,19 +106,19 @@ int CScreenSetup::exec(CMenuTarget *parent, const std::string &)
 				loop = false;
 				break;
 
-			case CRCInput::RC_home:
+			case RC_home:
 				if ( ( ( g_settings.screen_StartX != x_coord[0] ) || ( g_settings.screen_EndX != x_coord[1] ) || ( g_settings.screen_StartY != y_coord[0] ) || ( g_settings.screen_EndY != y_coord[1] ) ) &&
 						(MessageBox(LOCALE_VIDEOMENU_SCREENSETUP, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
 					break;
 
-			case CRCInput::RC_timeout:
+			case RC_timeout:
 				loop = false;
 				break;
 
-			case CRCInput::RC_red:
-			case CRCInput::RC_green:
+			case RC_red:
+			case RC_green:
 				{
-					selected = ( msg == CRCInput::RC_green ) ? 1 : 0 ;
+					selected = ( msg == RC_green ) ? 1 : 0 ;
 
 					frameBuffer->paintBoxRel(x, y, BoxWidth, BoxHeight/2, (selected == 0)? COL_MENUCONTENTSELECTED_PLUS_0 : COL_MENUCONTENT_PLUS_0);
 					frameBuffer->paintBoxRel(x, y + BoxHeight/2,  BoxWidth, BoxHeight/2, (selected == 1)? COL_MENUCONTENTSELECTED_PLUS_0 : COL_MENUCONTENT_PLUS_0);
@@ -130,7 +130,7 @@ int CScreenSetup::exec(CMenuTarget *parent, const std::string &)
 					break;
 				}
 				
-			case CRCInput::RC_up:
+			case RC_up:
 				{
 					y_coord[selected]--;
 
@@ -142,7 +142,7 @@ int CScreenSetup::exec(CMenuTarget *parent, const std::string &)
 					break;
 				}
 				
-			case CRCInput::RC_down:
+			case RC_down:
 				{
 					y_coord[selected]++;
 
@@ -157,7 +157,7 @@ int CScreenSetup::exec(CMenuTarget *parent, const std::string &)
 					break;
 				}
 				
-			case CRCInput::RC_left:
+			case RC_left:
 				{
 					x_coord[selected]--;
 
@@ -169,7 +169,7 @@ int CScreenSetup::exec(CMenuTarget *parent, const std::string &)
 					break;
 				}
 				
-			case CRCInput::RC_right:
+			case RC_right:
 				{
 					x_coord[selected]++;
 

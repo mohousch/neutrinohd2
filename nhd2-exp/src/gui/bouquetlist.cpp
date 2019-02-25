@@ -262,7 +262,7 @@ int CBouquetList::doMenu()
 	sprintf(cnt, "%d", i);
 	if(!zapitBouquet->bUser) 
 	{
-		menu->addItem(new CMenuForwarder(LOCALE_FAVORITES_COPY, true, NULL, selector, cnt, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i ++);
+		menu->addItem(new CMenuForwarder(LOCALE_FAVORITES_COPY, true, NULL, selector, cnt, RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i ++);
 		ret = menu->exec(NULL, "");
 		delete menu;
 		delete selector;
@@ -302,7 +302,7 @@ int CBouquetList::doMenu()
 	} 
 	else 
 	{
-		menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_DELETE, true, NULL, selector, cnt, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i ++);
+		menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_DELETE, true, NULL, selector, cnt, RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i ++);
 		ret = menu->exec(NULL, "");
 		delete menu;
 		delete selector;
@@ -368,29 +368,29 @@ int CBouquetList::show(bool bShowChannelList)
 		if ( msg <= CRCInput::RC_MaxRC )
 			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 
-		if ((msg == CRCInput::RC_timeout) || (msg == (neutrino_msg_t)g_settings.key_channelList_cancel))
+		if ((msg == RC_timeout) || (msg == (neutrino_msg_t)g_settings.key_channelList_cancel))
 		{
 			loop = false;
 		}
-		else if(msg == CRCInput::RC_red || msg == CRCInput::RC_favorites) 
+		else if(msg == RC_red || msg == RC_favorites) 
 		{
 			CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_FAV, mode);
 			hide();
 			return -3;
 		} 
-		else if(msg == CRCInput::RC_green) 
+		else if(msg == RC_green) 
 		{
 			CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_PROV, mode);
 			hide();
 			return -3;
 		} 
-		else if(msg == CRCInput::RC_yellow || msg == CRCInput::RC_sat)
+		else if(msg == RC_yellow || msg == RC_sat)
 		{
 			CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_SAT, mode);
 			hide();
 			return -3;
 		} 
-		else if(msg == CRCInput::RC_blue) 
+		else if(msg == RC_blue) 
 		{
 			CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, mode);
 			hide();
@@ -400,7 +400,7 @@ int CBouquetList::show(bool bShowChannelList)
 		{
 			continue; //FIXME msgs not forwarded to neutrino !!
 		}
-		else if ( msg == CRCInput::RC_setup ) 
+		else if ( msg == RC_setup ) 
 		{
 			selected = listBox->getSelected();
 
@@ -424,15 +424,15 @@ int CBouquetList::show(bool bShowChannelList)
 			listBox->clearItems();
 			paint();
 		}
-		else if (msg == CRCInput::RC_up || (int) msg == g_settings.key_channelList_pageup )
+		else if (msg == RC_up || (int) msg == g_settings.key_channelList_pageup )
 		{
 			listBox->scrollLineUp();
 		}
-		else if ( msg == CRCInput::RC_down || (int) msg == g_settings.key_channelList_pagedown )
+		else if ( msg == RC_down || (int) msg == g_settings.key_channelList_pagedown )
 		{
 			listBox->scrollLineDown();
 		}
-		else if ( msg == CRCInput::RC_ok ) 
+		else if ( msg == RC_ok ) 
 		{
 			selected = listBox->getSelected();
 

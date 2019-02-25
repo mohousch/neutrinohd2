@@ -371,11 +371,11 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 		if (!(msg & CRCInput::RC_Release))
 			g_RCInput->killTimer(smstimer);
 
-		if (msg == CRCInput::RC_left)
+		if (msg == RC_left)
 		{
 			keyLeftPressed();
 		}
-		else if ((msg == CRCInput::RC_right) || (msg == NeutrinoMessages::EVT_TIMER && data == smstimer))
+		else if ((msg == RC_right) || (msg == NeutrinoMessages::EVT_TIMER && data == smstimer))
 		{
 			keyRightPressed();
 		}
@@ -383,15 +383,15 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 		{
 			NormalKeyPressed(msg);
 		}
-		else if (msg == CRCInput::RC_red)
+		else if (msg == RC_red)
 		{
 			keyRedPressed();
 		}
-		else if (msg == CRCInput::RC_yellow)
+		else if (msg == RC_yellow)
 		{
 			keyYellowPressed();
 		}
-		else if ( (msg == CRCInput::RC_green) && (index(validchars, '.') != NULL))
+		else if ( (msg == RC_green) && (index(validchars, '.') != NULL))
 		{
 			value[selected] = '.';
 
@@ -403,29 +403,29 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
   
 			paintChar(selected);
 		}
-		else if (msg == CRCInput::RC_blue)
+		else if (msg == RC_blue)
 		{
 			keyBluePressed();
 		}
-		else if (msg == CRCInput::RC_up)
+		else if (msg == RC_up)
 		{
 			keyUpPressed();
 		}
-		else if (msg == CRCInput::RC_down)
+		else if (msg == RC_down)
 		{
 			keyDownPressed();
-		} else if (msg == CRCInput::RC_plus)
+		} else if (msg == RC_plus)
 		{
 			keyPlusPressed();
-		} else if (msg == CRCInput::RC_minus)
+		} else if (msg == RC_minus)
 		{
 			keyMinusPressed();
 		}
-		else if (msg == CRCInput::RC_ok)
+		else if (msg == RC_ok)
 		{
 			loop = false;
 		}
-		else if ( (msg == CRCInput::RC_home) || (msg == CRCInput::RC_timeout) )
+		else if ( (msg == RC_home) || (msg == RC_timeout) )
 		{
 			if ( ( strcmp(value, oldval) != 0) && (MessageBox(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
 				continue;
@@ -472,7 +472,7 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
                 *valueString = value;
         }
 
-        if ( (observ) && (msg == CRCInput::RC_ok) )
+        if ( (observ) && (msg == RC_ok) )
         {
                 observ->changeNotify(name, value);
         }
@@ -778,11 +778,11 @@ int CPINInput::exec( CMenuTarget* parent, const std::string&)
 	{
 		g_RCInput->getMsg( &msg, &data, 300 );
 
-		if (msg == CRCInput::RC_left)
+		if (msg == RC_left)
 		{
 			keyLeftPressed();
 		}
-		else if (msg == CRCInput::RC_right)
+		else if (msg == RC_right)
 		{
 			keyRightPressed();
 		}
@@ -793,13 +793,13 @@ int CPINInput::exec( CMenuTarget* parent, const std::string&)
 			if ( old_selected == ( size- 1 ) )
 				loop = false;
 		}
-		else if ( (msg == CRCInput::RC_up) || (msg == CRCInput::RC_down) )
+		else if ( (msg == RC_up) || (msg == RC_down) )
 		{
 			g_RCInput->postMsg( msg, data );
 			res = menu_return::RETURN_EXIT;
 			loop = false;
 		}
-		else if ( (msg == CRCInput::RC_home) || (msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_ok) )
+		else if ( (msg == RC_home) || (msg == RC_timeout) || (msg == RC_ok) )
 		{
 			loop = false;
 		}
@@ -837,7 +837,7 @@ int CPINInput::exec( CMenuTarget* parent, const std::string&)
 	}
 	value[size] = 0;
 
-	if ( (observ) && (msg == CRCInput::RC_ok) )
+	if ( (observ) && (msg == RC_ok) )
 	{
 		observ->changeNotify(name, value);
 	}

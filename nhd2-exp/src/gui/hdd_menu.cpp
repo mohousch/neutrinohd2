@@ -185,21 +185,21 @@ int CHDDMenuHandler::hddMenu()
 
 	CMenuWidget * hddmenu = new CMenuWidget(LOCALE_HDD_SETTINGS, NEUTRINO_ICON_SETTINGS);
 	
-	hddmenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	hddmenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	hddmenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// save settings
-	hddmenu->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savehddsettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	hddmenu->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savehddsettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
 	hddmenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
 	// activate settings
-	hddmenu->addItem(new CMenuForwarder(LOCALE_HDD_ACTIVATE, true, NULL, this, "activateNow", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
+	hddmenu->addItem(new CMenuForwarder(LOCALE_HDD_ACTIVATE, true, NULL, this, "activateNow", RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 
 	// sleep time
-	hddmenu->addItem( new CMenuOptionChooser(LOCALE_HDD_SLEEP, &g_settings.hdd_sleep, HDD_SLEEP_OPTIONS, HDD_SLEEP_OPTION_COUNT, true, NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, true));
+	hddmenu->addItem( new CMenuOptionChooser(LOCALE_HDD_SLEEP, &g_settings.hdd_sleep, HDD_SLEEP_OPTIONS, HDD_SLEEP_OPTION_COUNT, true, NULL, RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, true));
 	
 	// noise
-	hddmenu->addItem( new CMenuOptionChooser(LOCALE_HDD_NOISE, &g_settings.hdd_noise, HDD_NOISE_OPTIONS, HDD_NOISE_OPTION_COUNT, true, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, true ));
+	hddmenu->addItem( new CMenuOptionChooser(LOCALE_HDD_NOISE, &g_settings.hdd_noise, HDD_NOISE_OPTIONS, HDD_NOISE_OPTION_COUNT, true, NULL, RC_blue, NEUTRINO_ICON_BUTTON_BLUE, true ));
 	
 	// HDDs
 	hddmenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
@@ -299,11 +299,11 @@ int CHDDMenuHandler::hddMenu()
 		tempMenu[i] = new CMenuWidget(str, NEUTRINO_ICON_SETTINGS);
 		tempMenu[i]->enableSaveScreen();
 		
-		tempMenu[i]->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+		tempMenu[i]->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 		tempMenu[i]->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 		
 		//init hdd	
-		tempMenu[i]->addItem(new CMenuForwarder(LOCALE_HDD_INIT, enabled, "", new CHDDInit, namelist[i]->d_name, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+		tempMenu[i]->addItem(new CMenuForwarder(LOCALE_HDD_INIT, enabled, "", new CHDDInit, namelist[i]->d_name, RC_red, NEUTRINO_ICON_BUTTON_RED));
 		tempMenu[i]->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 		
 		/* check for parts */
@@ -340,20 +340,20 @@ int CHDDMenuHandler::hddMenu()
 			PartMenu[j]->enableSaveScreen();
 			
 
-			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 			PartMenu[j]->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 			
 			/* format part */
-			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_HDD_FORMAT, true, NULL, new CHDDFmtExec, PART, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_HDD_FORMAT, true, NULL, new CHDDFmtExec, PART, RC_red, NEUTRINO_ICON_BUTTON_RED));
 			
 			/* fs check */
-			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_HDD_CHECK, true, NULL, new CHDDChkExec, PART, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
+			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_HDD_CHECK, true, NULL, new CHDDChkExec, PART, RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 			
 			/* mount part */
-			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_HDD_MOUNT, true, NULL, new CHDDMountMSGExec, PART, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
+			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_HDD_MOUNT, true, NULL, new CHDDMountMSGExec, PART, RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
 			/* umount part */
-			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_HDD_UMOUNT, true, NULL, new CHDDuMountMSGExec, PART, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_HDD_UMOUNT, true, NULL, new CHDDuMountMSGExec, PART, RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
 			
 			// hdd explorer
 			PartMenu[j]->addItem(new CMenuSeparator(CMenuSeparator::LINE));
@@ -1251,7 +1251,7 @@ REPEAT:
 			
 			g_RCInput->getMsg_ms(&msg, &data, 10);
 			
-			if (msg != CRCInput::RC_home) 
+			if (msg != RC_home) 
 			{
 				goto REPEAT;
 			}

@@ -272,7 +272,7 @@ bool CVCRControl::CVCRDevice::Record(const t_channel_id channel_id, int mode, co
 	dprintf(DEBUG_NORMAL, "[CVCRControl] Record channel_id: " PRINTF_CHANNEL_ID_TYPE " epg: %llx, apids %x mode\n", channel_id, epgid, apids);
 	
 	// leave menu (if in any)
-	g_RCInput->postMsg( CRCInput::RC_timeout, 0 );
+	g_RCInput->postMsg(RC_timeout, 0);
 	
 	last_mode = CNeutrinoApp::getInstance()->getMode();
 

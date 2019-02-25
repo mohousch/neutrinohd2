@@ -136,11 +136,11 @@ void CPluginList::showMenu()
 	plist->setFooterButtons(CPluginListButtons, NUM_LIST_BUTTONS);
 
 	//
-	plist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
-	plist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
-	plist->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
-	plist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	plist->addKey(CRCInput::RC_ok, this, CRCInput::getSpecialKeyName(CRCInput::RC_ok));
+	plist->addKey(RC_red, this, CRCInput::getSpecialKeyName(RC_red));
+	plist->addKey(RC_green, this, CRCInput::getSpecialKeyName(RC_green));
+	plist->addKey(RC_yellow, this, CRCInput::getSpecialKeyName(RC_yellow));
+	plist->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
+	plist->addKey(RC_ok, this, CRCInput::getSpecialKeyName(RC_ok));
 
 	plist->exec(NULL, "");
 	//plist->hide();

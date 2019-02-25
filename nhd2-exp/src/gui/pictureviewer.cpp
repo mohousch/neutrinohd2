@@ -188,11 +188,11 @@ void CPictureViewerGui::show()
 
 		g_RCInput->getMsg(&msg, &data, timeout);
 
-		if( msg == CRCInput::RC_home)
+		if( msg == RC_home)
 		{
 			loop = false;
 		}
-		else if (msg == CRCInput::RC_timeout)
+		else if (msg == RC_timeout)
 		{
 			if(m_state == SLIDESHOW)
 			{
@@ -204,14 +204,14 @@ void CPictureViewerGui::show()
 				view(next);
 			}
 		}
-		else if (msg == CRCInput::RC_left)
+		else if (msg == RC_left)
 		{
 			if (!playlist.empty())
 			{
 				view((selected == 0) ? (playlist.size() - 1) : (selected - 1));
 			}
 		}
-		else if (msg == CRCInput::RC_right)
+		else if (msg == RC_right)
 		{
 			if (!playlist.empty())
 			{
@@ -221,49 +221,49 @@ void CPictureViewerGui::show()
 				view(next);
 			}
 		}
-		else if( msg == CRCInput::RC_1 )
+		else if( msg == RC_1 )
 		{ 
 			g_PicViewer->zoom(2.0/3);
 		}
-		else if( msg == CRCInput::RC_2 )
+		else if( msg == RC_2 )
 		{ 
 			g_PicViewer->move(0, -10);
 		}
-		else if( msg == CRCInput::RC_3 )
+		else if( msg == RC_3 )
 		{ 
 			g_PicViewer->zoom(1.5);
 		}
-		else if( msg == CRCInput::RC_4 )
+		else if( msg == RC_4 )
 		{ 
 			g_PicViewer->move(-10, 0);
 		}
-		else if( msg == CRCInput::RC_6 )
+		else if( msg == RC_6 )
 		{ 
 			if (playlist.empty())
 			{
 				g_PicViewer->move(10, 0);
 			}
 		}
-		else if( msg == CRCInput::RC_8 )
+		else if( msg == RC_8 )
 		{ 
 			if (playlist.empty())
 			{
 				g_PicViewer->move(0, 10);
 			}
 		}
-		else if(msg == CRCInput::RC_0)
+		else if(msg == RC_0)
 		{
 			if (!playlist.empty())
 				view(selected);
 		}
-		else if(msg == CRCInput::RC_setup)
+		else if(msg == RC_setup)
 		{
 			CPictureViewerSettings * pictureViewerSettingsMenu = new CPictureViewerSettings();
 			pictureViewerSettingsMenu->exec(NULL, "");
 			delete pictureViewerSettingsMenu;
 			pictureViewerSettingsMenu = NULL;					
 		}
-		else if(msg == CRCInput::RC_ok)
+		else if(msg == RC_ok)
 		{
 			ok_pressed = true;
 			loop = false;

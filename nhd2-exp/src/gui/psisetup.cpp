@@ -136,8 +136,8 @@ int CPSISetup::exec(CMenuTarget * parent, const std::string &)
 
 		switch ( msg )
 		{
-			case CRCInput::RC_down:
-			case CRCInput::RC_vfddown:
+			case RC_down:
+			case RC_vfddown:
 				{
 					if(selected < max)
 					{
@@ -170,8 +170,8 @@ int CPSISetup::exec(CMenuTarget * parent, const std::string &)
 					break;
 				}
 				
-			case CRCInput::RC_up:
-			case CRCInput::RC_vfdup:
+			case RC_up:
+			case RC_vfdup:
 				{
 					if (selected > 0)
 					{
@@ -204,8 +204,8 @@ int CPSISetup::exec(CMenuTarget * parent, const std::string &)
 					break;
 				}
 
-			case CRCInput::RC_right:
-			case CRCInput::RC_vfdright:
+			case RC_right:
+			case RC_vfdright:
 				{
 					switch(selected)
 					{
@@ -268,8 +268,8 @@ int CPSISetup::exec(CMenuTarget * parent, const std::string &)
 					break;
 				}
 				
-			case CRCInput::RC_left:
-			case CRCInput::RC_vfdleft:
+			case RC_left:
+			case RC_vfdleft:
 				{
 					switch(selected)
 					{
@@ -332,8 +332,8 @@ int CPSISetup::exec(CMenuTarget * parent, const std::string &)
 					break;
 				}
 
-			case CRCInput::RC_home:
-			case CRCInput::RC_vfdexit:
+			case RC_home:
+			case RC_vfdexit:
 				if ( *contrast != contrast_old || *saturation != saturation_old || *brightness != brightness_old || *tint != tint_old )
 				{
 					if (MessageBox(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel)
@@ -348,9 +348,9 @@ int CPSISetup::exec(CMenuTarget * parent, const std::string &)
 				*brightness = brightness_old;
 				*tint = tint_old;
 
-			case CRCInput::RC_timeout:
-			case CRCInput::RC_ok:
-			case CRCInput::RC_vfdok:
+			case RC_timeout:
+			case RC_ok:
+			case RC_vfdok:
 				loop = false;
 				break;
 

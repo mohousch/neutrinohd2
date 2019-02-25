@@ -112,9 +112,9 @@ void CTuxdnsConf::showMenu()
 	//
 	CMenuWidget * tuxDNSMenu = new CMenuWidget("TuxDNS", NEUTRINO_ICON_BUTTON_SETUP);
 	
-	tuxDNSMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	tuxDNSMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	tuxDNSMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
-	tuxDNSMenu->addItem(new CMenuForwarder("Save settings", true, "", this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED) );
+	tuxDNSMenu->addItem(new CMenuForwarder("Save settings", true, "", this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED) );
 	tuxDNSMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	//user

@@ -115,7 +115,7 @@ void CCAMMenuHandler::doMainMenu()
 	CMenuWidget * cammenu = new CMenuWidget(LOCALE_CAM_SETTINGS, NEUTRINO_ICON_SETTINGS);
 	
 	// intros
-	cammenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	cammenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 
 	CMenuWidget * tempMenu;
 	
@@ -130,14 +130,14 @@ void CCAMMenuHandler::doMainMenu()
 			char CAM[255];
 			sprintf(CAM, "cam%d", i + 1);
 
-			cammenu->addItem(new CMenuForwarder(name, true, NULL, this, CAM, CRCInput::RC_nokey));
+			cammenu->addItem(new CMenuForwarder(name, true, NULL, this, CAM, RC_nokey));
 
 			char RESET[32];
 			sprintf(RESET, "reset%d", i + 1);
 
 			cammenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
-			cammenu->addItem(new CMenuForwarder(LOCALE_CAM_RESET, true, NULL, this, RESET, CRCInput::RC_nokey));
+			cammenu->addItem(new CMenuForwarder(LOCALE_CAM_RESET, true, NULL, this, RESET, RC_nokey));
 		} 
 		else 
 		{
@@ -474,7 +474,7 @@ int CCAMMenuHandler::doMenu(int slot)
 			
 			dprintf(DEBUG_NORMAL, "CCAMMenuHandler::doMenu: msg %x data %x\n", msg, data);
 			
-			if (msg == CRCInput::RC_timeout) 
+			if (msg == RC_timeout) 
 			{
 				if(hintBox)
 				{

@@ -398,7 +398,7 @@ bool CFileBrowser::exec(const char * const dirname)
 			m_SMSKeyInput.resetOldKey();
 		}
 
-		if (msg == CRCInput::RC_yellow)
+		if (msg == RC_yellow)
 		{
 			selected = listBox->getSelected();
 
@@ -414,32 +414,32 @@ bool CFileBrowser::exec(const char * const dirname)
 						paint();
 					}
 				}
-				msg_repeatok = CRCInput::RC_down;	// jump to next item
+				msg_repeatok = RC_down;	// jump to next item
 			}
 		}
 
-		if ((msg == CRCInput::RC_red) || msg == CRCInput::RC_page_down)
+		if ((msg == RC_red) || msg == RC_page_down)
 		{
 			listBox->scrollPageDown();
 		}
-		else if ((msg == CRCInput::RC_green) || (msg == CRCInput::RC_page_up) )
+		else if ((msg == RC_green) || (msg == RC_page_up) )
 		{
 			listBox->scrollPageUp();
 		}
-		else if (msg_repeatok == CRCInput::RC_up)
+		else if (msg_repeatok == RC_up)
 		{
 			listBox->scrollLineUp();
 		}
-		else if (msg_repeatok == CRCInput::RC_down)
+		else if (msg_repeatok == RC_down)
 		{
 			listBox->scrollLineDown();
 		}
-		else if ( ( msg == CRCInput::RC_timeout ) )
+		else if ( ( msg == RC_timeout ) )
 		{
 			selected = oldselected;
 			loop = false;
 		}
-		else if ( msg == CRCInput::RC_right )
+		else if ( msg == RC_right )
 		{
 			selected = listBox->getSelected();
 
@@ -458,7 +458,7 @@ bool CFileBrowser::exec(const char * const dirname)
 				}
 			}
 		}
-		else if ( msg == CRCInput::RC_left )
+		else if ( msg == RC_left )
 		{
 			if (selections.size() > 0)
 			{
@@ -482,7 +482,7 @@ bool CFileBrowser::exec(const char * const dirname)
 				paint();
 			}
 		}
-		else if ( msg == CRCInput::RC_blue )
+		else if ( msg == RC_blue )
 		{
 			if(Filter != NULL)
 			{
@@ -494,11 +494,11 @@ bool CFileBrowser::exec(const char * const dirname)
 				paint();
 			}
 		}
-		else if ( msg == CRCInput::RC_home )
+		else if ( msg == RC_home )
 		{
 			loop = false;
 		}
-		else if ( msg == CRCInput::RC_spkr)
+		else if ( msg == RC_spkr)
 		{
 			selected = listBox->getSelected();
 
@@ -529,7 +529,7 @@ bool CFileBrowser::exec(const char * const dirname)
 				}
 			}
 		}
-		else if (msg == CRCInput::RC_ok)
+		else if (msg == RC_ok)
 		{
 			selected = listBox->getSelected();
 
@@ -586,7 +586,7 @@ bool CFileBrowser::exec(const char * const dirname)
 				}
 			}
 		}
-		else if ( msg == CRCInput::RC_info )
+		else if ( msg == RC_info )
 		{
 			if (++g_settings.filebrowser_sortmethod >= FILEBROWSER_NUMBER_OF_SORT_VARIANTS)
 				g_settings.filebrowser_sortmethod = 0;
@@ -652,12 +652,12 @@ void CFileBrowser::addRecursiveDir(CFileList * re_filelist, std::string rpath, b
 
 	g_RCInput->getMsg_us(&msg, &data, 1);
 
-	if (msg == CRCInput::RC_home)
+	if (msg == RC_home)
 	{
 		// home key cancel scan
 		bCancel = true;
 	}
-	else if (msg != CRCInput::RC_timeout)
+	else if (msg != RC_timeout)
 	{
 		// other event, save to low priority queue
 		g_RCInput->postMsg( msg, data, false );

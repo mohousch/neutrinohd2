@@ -90,7 +90,7 @@ DVD_BROWSER:
 
 		g_RCInput->getMsg_ms(&msg, &data, 10);
 		
-		if (msg != CRCInput::RC_home) 
+		if (msg != RC_home) 
 		{
 			goto DVD_BROWSER;
 		}

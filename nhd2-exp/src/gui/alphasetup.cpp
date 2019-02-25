@@ -135,7 +135,7 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 
 		switch ( msg )
 		{
-			case CRCInput::RC_down:
+			case RC_down:
 				{
 					if(selected < max)
 					{
@@ -149,7 +149,7 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 					break;
 				}
 				
-			case CRCInput::RC_up:
+			case RC_up:
 				{
 					if (selected > 0)
 					{
@@ -163,7 +163,7 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 					break;
 				}
 
-			case CRCInput::RC_right:
+			case RC_right:
 				{
 					if(selected == 0)
 					{
@@ -182,7 +182,7 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 					break;
 				}
 				
-			case CRCInput::RC_left:
+			case RC_left:
 				{
 					if(selected == 0)
 					{
@@ -200,7 +200,7 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 					break;
 				}
 					
-			case CRCInput::RC_home:
+			case RC_home:
 				if ( *alpha != alpha_alt)
 				{
 					if (MessageBox(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel)
@@ -212,8 +212,8 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 				// sonst abbruch...
 				*alpha = alpha_alt;
 
-			case CRCInput::RC_timeout:
-			case CRCInput::RC_ok:
+			case RC_timeout:
+			case RC_ok:
 				loop = false;
 				break;
 

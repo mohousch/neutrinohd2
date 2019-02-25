@@ -559,18 +559,18 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 		show_Data();
 		showSNR();
 
-		if (msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
+		if (msg == RC_sat || msg == RC_favorites)
 		{
 			g_RCInput->postMsg(msg, 0);
 			res = messages_return::cancel_info;
 		}
-		else if (msg == CRCInput::RC_info)
+		else if (msg == RC_info)
 		{
 			g_RCInput->postMsg(NeutrinoMessages::SHOW_EPG, 0);
 				
 			res = messages_return::cancel_info;
 		} 
-		else if ((msg == CRCInput::RC_ok) || (msg == CRCInput::RC_home) || (msg == CRCInput::RC_timeout)) 
+		else if ((msg == RC_ok) || (msg == RC_home) || (msg == RC_timeout)) 
 		{
 			res = messages_return::cancel_info;
 			// add this here, now OK and EXIT/HOME has effect
@@ -591,7 +591,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 			if (showButtonBar) 
 				showIcon_Resolution();
 		} 
-		else if ( g_settings.virtual_zap_mode && ((msg == CRCInput::RC_right) || msg == CRCInput::RC_left) && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv)) 
+		else if ( g_settings.virtual_zap_mode && ((msg == RC_right) || msg == RC_left) && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv)) 
 		{
 			virtual_zap_mode = true;
 			res = messages_return::cancel_all;
@@ -599,7 +599,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 		} 
 		else if ( !CNeutrinoApp::getInstance()->timeshiftstatus) 
 		{
-			if ((msg == (neutrino_msg_t) g_settings.key_quickzap_up) || (msg == (neutrino_msg_t) g_settings.key_quickzap_down) || (msg == CRCInput::RC_0) || (msg == NeutrinoMessages::SHOW_INFOBAR)) 
+			if ((msg == (neutrino_msg_t) g_settings.key_quickzap_up) || (msg == (neutrino_msg_t) g_settings.key_quickzap_down) || (msg == RC_0) || (msg == NeutrinoMessages::SHOW_INFOBAR)) 
 			{
 				// radiotext					
 				if ((g_settings.radiotext_enable) && (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio))
@@ -620,7 +620,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 			} 
 			else 
 			{
-				if (msg == CRCInput::RC_standby) 
+				if (msg == RC_standby) 
 				{
 					g_RCInput->killTimer(sec_timer_id);
 				}
@@ -649,7 +649,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 
 	if (virtual_zap_mode)
 	{
-		CNeutrinoApp::getInstance()->channelList->virtual_zap_mode(msg == CRCInput::RC_right);
+		CNeutrinoApp::getInstance()->channelList->virtual_zap_mode(msg == RC_right);
 		virtual_zap_mode = false;
 	}
 }
@@ -831,7 +831,7 @@ void CInfoViewer::showSubchan()
 		{
 	  		g_RCInput->getMsgAbsoluteTimeout (&msg, &data, &timeoutEnd);
 
-	  		if (msg == CRCInput::RC_timeout) 
+	  		if (msg == RC_timeout) 
 			{
 				res = messages_return::cancel_info;
 	  		} 

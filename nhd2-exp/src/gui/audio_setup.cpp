@@ -157,11 +157,11 @@ void CAudioSettings::showMenu()
 	int shortcutAudio = 1;
 	
 	// intros
-	audioSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	audioSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	audioSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
 	// save settings
-	audioSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	audioSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
 	audioSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
 	// analog output
@@ -194,7 +194,7 @@ void CAudioSettings::showMenu()
 	
 	for(int i = 0; i < 3; i++) 
 	{
-		audiolangSelect[i] = new CMenuOptionStringChooser(LOCALE_AUDIOMENU_PREF_LANG, g_settings.pref_lang[i], g_settings.auto_lang, NULL, CRCInput::RC_nokey, "", true);
+		audiolangSelect[i] = new CMenuOptionStringChooser(LOCALE_AUDIOMENU_PREF_LANG, g_settings.pref_lang[i], g_settings.auto_lang, NULL, RC_nokey, "", true);
 		
 		audiolangSelect[i]->addOption("");
 		std::map<std::string, std::string>::const_iterator it;
@@ -220,7 +220,7 @@ void CAudioSettings::showMenu()
 	CMenuOptionStringChooser * sublangSelect[3];
 	for(int i = 0; i < 3; i++) 
 	{
-		sublangSelect[i] = new CMenuOptionStringChooser(LOCALE_AUDIOMENU_PREF_SUBS, g_settings.pref_subs[i], g_settings.auto_subs, NULL, CRCInput::RC_nokey, "", true);
+		sublangSelect[i] = new CMenuOptionStringChooser(LOCALE_AUDIOMENU_PREF_SUBS, g_settings.pref_subs[i], g_settings.auto_subs, NULL, RC_nokey, "", true);
 		std::map<std::string, std::string>::const_iterator it;
 		
 		sublangSelect[i]->addOption("");

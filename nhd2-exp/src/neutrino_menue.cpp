@@ -83,17 +83,17 @@ void CNeutrinoApp::mainMenu(void)
 	nMenu->enableFootInfo();
 	  
 	// tv modus
-	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE), true);
+	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE), true);
 
 	// radio modus
-	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE));	
+	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE));	
 	
 	// webtv
-	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE));
+	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE));
 	
 #if defined (ENABLE_SCART)
 	// scart
-	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART));
+	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART));
 #endif
 
 	// mediaplayer
@@ -113,10 +113,10 @@ void CNeutrinoApp::mainMenu(void)
 	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES));
 
 	// power menu
-	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU));
+	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU));
 
 	//box info
-	nMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO));
+	nMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, RC_info, NEUTRINO_ICON_BUTTON_HELP, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO));
 
 	nMenu->integratePlugins(CPlugins::I_TYPE_MAIN, shortcut++);
 
@@ -131,10 +131,10 @@ void CNeutrinoApp::mainMenu(void)
 #define BUTTONMAX 4
 
 const neutrino_msg_t key_helper_msg_def[BUTTONMAX] = {
-	CRCInput::RC_red,
-	CRCInput::RC_green,
-	CRCInput::RC_yellow,
-	CRCInput::RC_blue
+	RC_red,
+	RC_green,
+	RC_yellow,
+	RC_blue
 };
 
 const char * key_helper_icon_def[BUTTONMAX]={
@@ -163,20 +163,20 @@ class CKeyHelper
                  * A color button could be requested as prefered button (other buttons are not supported yet).
                  * If the appropriate button is already in used, the next number_key button is returned instead
                  * (first 1-9 and than 0). */
-                bool get(neutrino_msg_t* msg, const char** icon, neutrino_msg_t prefered_key = CRCInput::RC_nokey)
+                bool get(neutrino_msg_t* msg, const char** icon, neutrino_msg_t prefered_key = RC_nokey)
                 {
                         bool result = false;
                         int button = -1;
-                        if(prefered_key == CRCInput::RC_red)
+                        if(prefered_key == RC_red)
                                 button = 0;
-                        if(prefered_key == CRCInput::RC_green)
+                        if(prefered_key == RC_green)
                                 button = 1;
-                        if(prefered_key == CRCInput::RC_yellow)
+                        if(prefered_key == RC_yellow)
                                 button = 2;
-                        if(prefered_key == CRCInput::RC_blue)
+                        if(prefered_key == RC_blue)
                                 button = 3;
 
-                        *msg = CRCInput::RC_nokey;
+                        *msg = RC_nokey;
                         *icon = "";
                         if(button >= 0 && button < BUTTONMAX)
                         {
@@ -216,7 +216,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 
         CMenuItem * menu_item = NULL;
         CKeyHelper keyhelper;
-        neutrino_msg_t key = CRCInput::RC_nokey;
+        neutrino_msg_t key = RC_nokey;
         const char * icon = NULL;
 
         int menu_items = 0;
@@ -265,7 +265,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 		       case SNeutrinoSettings::ITEM_TIMERLIST:
 		                menu_items++;
 		                menu_prev = SNeutrinoSettings::ITEM_TIMERLIST;
-		                keyhelper.get(&key, &icon, CRCInput::RC_yellow);
+		                keyhelper.get(&key, &icon, RC_yellow);
 				menu_item = new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, "-1", key, icon, NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST);
 		                menu->addItem(menu_item, false);
 		                break;
@@ -296,7 +296,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 			{
 				menu_item++;
 				menu_prev = SNeutrinoSettings::ITEM_PLUGIN;
-				keyhelper.get(&key, &icon, CRCInput::RC_blue);
+				keyhelper.get(&key, &icon, RC_blue);
 				menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, NULL, new CPluginList(), "-1", key, icon, NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES);
 				menu->addItem(menu_item, false);
 			}

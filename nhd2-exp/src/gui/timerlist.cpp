@@ -488,20 +488,20 @@ int CTimerList::show()
 		if( msg <= CRCInput::RC_MaxRC )
 			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
 
-		if( ( msg == CRCInput::RC_timeout ) || ( msg == CRCInput::RC_home) )
+		if( ( msg == RC_timeout ) || ( msg == RC_home) )
 		{ 
 			//Exit after timeout or cancel key
 			loop = false;
 		}
-		else if ((msg == CRCInput::RC_up) && !(timerlist.empty()))
+		else if ((msg == RC_up) && !(timerlist.empty()))
 		{
 			listBox->scrollLineUp();
 		}
-		else if ((msg == CRCInput::RC_down) && !(timerlist.empty()))
+		else if ((msg == RC_down) && !(timerlist.empty()))
 		{
 			listBox->scrollLineDown();
 		}
-		else if ((msg == CRCInput::RC_ok) && !(timerlist.empty()))
+		else if ((msg == RC_ok) && !(timerlist.empty()))
 		{
 			if (modifyTimer() == menu_return::RETURN_EXIT_ALL)
 			{
@@ -511,7 +511,7 @@ int CTimerList::show()
 			else
 				update = true;
 		}
-		else if((msg == CRCInput::RC_red) && !(timerlist.empty()))
+		else if((msg == RC_red) && !(timerlist.empty()))
 		{
 			selected = listBox->getSelected();
 
@@ -519,7 +519,7 @@ int CTimerList::show()
 			skipEventID = timerlist[selected].eventID;
 			update = true;
 		}
-		else if(msg == CRCInput::RC_green)
+		else if(msg == RC_green)
 		{
 			if (newTimer() == menu_return::RETURN_EXIT_ALL)
 			{
@@ -529,22 +529,22 @@ int CTimerList::show()
 			else
 				update = true;
 		}
-		else if(msg == CRCInput::RC_yellow)
+		else if(msg == RC_yellow)
 		{
 			update = true;
 		}
-		else if((msg == CRCInput::RC_blue)|| (CRCInput::isNumeric(msg)) )
+		else if((msg == RC_blue)|| (CRCInput::isNumeric(msg)) )
 		{
 			//pushback key if...
 			g_RCInput->postMsg( msg, data );
 			loop = false;
 		}
-		else if(msg == CRCInput::RC_setup)
+		else if(msg == RC_setup)
 		{
 			res = menu_return::RETURN_EXIT_ALL;
 			loop = false;
 		}
-		else if(msg == CRCInput::RC_info)
+		else if(msg == RC_info)
 		{
 			selected = listBox->getSelected();
 
@@ -565,7 +565,7 @@ int CTimerList::show()
 				}
 			}
 		}
-		else if (msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
+		else if (msg == RC_sat || msg == RC_favorites)
 		{
 			g_RCInput->postMsg (msg, 0);
 			loop = false;
@@ -896,11 +896,11 @@ int CTimerList::modifyTimer()
 	timerSettings.enableShrinkMenu();
 	
 	// intros
-	timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	timerSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	//
-	timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "modifytimer", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "modifytimer", RC_red, NEUTRINO_ICON_BUTTON_RED));
 	timerSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	char type[80];
@@ -959,7 +959,7 @@ int CTimerList::modifyTimer()
 	timer_apids_ac3 = (timer->apids & TIMERD_APIDS_AC3) ? 1 : 0 ;
 	timer_apids_alt = (timer->apids & TIMERD_APIDS_ALT) ? 1 : 0 ;
 
-	timerSettings_apids.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	timerSettings_apids.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	timerSettings_apids.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	CMenuOptionChooser* ma1 = new CMenuOptionChooser(LOCALE_TIMERLIST_APIDS_DFLT, &timer_apids_dflt, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, &apid_notifier);
 	timerSettings_apids.addItem(ma1);
@@ -996,11 +996,11 @@ int CTimerList::newTimer()
 	timerSettings.enableShrinkMenu();
 	
 	// intros
-	timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	timerSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	//
-	timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "newtimer", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "newtimer", RC_red, NEUTRINO_ICON_BUTTON_RED));
 	timerSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	CDateInput timerSettings_alarmTime(LOCALE_TIMERLIST_ALARMTIME, &(timerNew.alarmTime) , LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);

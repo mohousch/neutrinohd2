@@ -744,16 +744,16 @@ void CMoviePlayerGui::PlayFile(void)
 			else
 			{
 				if(filelist.size() > 1 && selected + 1 < filelist.size())
-					g_RCInput->postMsg(CRCInput::RC_next, 0);
+					g_RCInput->postMsg(RC_next, 0);
 				else
-					g_RCInput->postMsg(CRCInput::RC_stop, 0);
+					g_RCInput->postMsg(RC_stop, 0);
 			}
 		}
 		
 		// loop msg
 		g_RCInput->getMsg(&msg, &data, 10);	// 1 secs
 		
-		if (msg == CRCInput::RC_stop) 
+		if (msg == RC_stop) 
 		{
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (1)\n");
 
@@ -787,7 +787,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			exit = true;
 		} 
-		else if (msg == CRCInput::RC_play) 
+		else if (msg == RC_play) 
 		{
 			if (playstate >= CMoviePlayerGui::PLAY) 
 			{
@@ -833,7 +833,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 			}
 		} 
-		else if ( msg == CRCInput::RC_pause) 
+		else if ( msg == RC_pause) 
 		{
 			update_lcd = true;
 			
@@ -878,7 +878,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 			}
 		} 
-		else if (msg == CRCInput::RC_blue) 
+		else if (msg == RC_blue) 
 		{
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
@@ -976,7 +976,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 			}		
 		} 
-		else if ( msg == CRCInput::RC_audio || msg == CRCInput::RC_green) 
+		else if ( msg == RC_audio || msg == RC_green) 
 		{
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
@@ -987,7 +987,7 @@ void CMoviePlayerGui::PlayFile(void)
 			delete AVSelectHandler;
 			AVSelectHandler = NULL;
 		} 
-		else if(msg == CRCInput::RC_yellow)
+		else if(msg == RC_yellow)
 		{
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
@@ -995,7 +995,7 @@ void CMoviePlayerGui::PlayFile(void)
 			//show help
 			showHelpTS();
 		}
-		else if (msg == CRCInput::RC_info)
+		else if (msg == RC_info)
 		{
 			//if(!timeshift)
 			if(filelist[selected].ytid != "timeshift")
@@ -1032,7 +1032,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 			}
 		}
-		else if(msg == CRCInput::RC_setup)
+		else if(msg == RC_setup)
 		{
 			CMoviePlayerSettings* moviePlayerSettings = new CMoviePlayerSettings();
 
@@ -1040,7 +1040,7 @@ void CMoviePlayerGui::PlayFile(void)
 			delete moviePlayerSettings;
 			moviePlayerSettings = NULL;
 		} 
-		else if (msg == CRCInput::RC_rewind) 
+		else if (msg == RC_rewind) 
 		{
 			// backward
 			speed = (speed >= 0) ? -1 : speed - 1;
@@ -1069,7 +1069,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		}
-		else if (msg == CRCInput::RC_forward) 
+		else if (msg == RC_forward) 
 		{	// fast-forward
 			speed = (speed <= 0) ? 2 : speed + 1;
 						
@@ -1099,7 +1099,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		} 
-		else if (msg == CRCInput::RC_1) 
+		else if (msg == RC_1) 
 		{	// Jump Backwards 1 minute
 			//update_lcd = true;
 			playback->SetPosition(-60 * 1000);
@@ -1114,7 +1114,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		} 
-		else if (msg == CRCInput::RC_3) 
+		else if (msg == RC_3) 
 		{	// Jump Forward 1 minute
 			//update_lcd = true;
 			playback->SetPosition(60 * 1000);
@@ -1129,7 +1129,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		} 
-		else if (msg == CRCInput::RC_4) 
+		else if (msg == RC_4) 
 		{	// Jump Backwards 5 minutes
 			playback->SetPosition(-5 * 60 * 1000);
 			
@@ -1143,7 +1143,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		} 
-		else if (msg == CRCInput::RC_6) 
+		else if (msg == RC_6) 
 		{	// Jump Forward 5 minutes
 			playback->SetPosition(5 * 60 * 1000);
 			
@@ -1157,7 +1157,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		} 
-		else if (msg == CRCInput::RC_7) 
+		else if (msg == RC_7) 
 		{	// Jump Backwards 10 minutes
 			playback->SetPosition(-10 * 60 * 1000);
 			
@@ -1171,7 +1171,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		} 
-		else if (msg == CRCInput::RC_9) 
+		else if (msg == RC_9) 
 		{	// Jump Forward 10 minutes
 			playback->SetPosition(10 * 60 * 1000);
 			
@@ -1185,7 +1185,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		} 
-		else if ( msg == CRCInput::RC_2 )
+		else if ( msg == RC_2 )
 		{	// goto start
 			playback->SetPosition((int64_t)startposition);
 			
@@ -1199,7 +1199,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		} 
-		else if ( msg == CRCInput::RC_repeat )
+		else if ( msg == RC_loop )
 		{
 			if(m_loop)
 				m_loop = false;
@@ -1208,7 +1208,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: Repeat Modus: [%s]\n", m_loop? "ON" : "OFF");
 		} 
-		else if (msg == CRCInput::RC_5) 
+		else if (msg == RC_5) 
 		{	
 			// goto middle
 			playback->SetPosition((int64_t)duration/2);
@@ -1223,7 +1223,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		} 
-		else if (msg == CRCInput::RC_8) 
+		else if (msg == RC_8) 
 		{	
 			// goto end
 			playback->SetPosition((int64_t)duration - 60 * 1000);
@@ -1238,7 +1238,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		} 
-		else if (msg == CRCInput::RC_page_up) 
+		else if (msg == RC_page_up) 
 		{
 			playback->SetPosition(10 * 1000);
 			
@@ -1253,7 +1253,7 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 
 		} 
-		else if (msg == CRCInput::RC_page_down) 
+		else if (msg == RC_page_down) 
 		{
 			playback->SetPosition(-10 * 1000);
 			
@@ -1267,7 +1267,7 @@ void CMoviePlayerGui::PlayFile(void)
 				timeStartShowingInfo = time(NULL);
 			}
 		} 
-		else if (msg == CRCInput::RC_0) 
+		else if (msg == RC_0) 
 		{
 			// cancel bookmark
 			if (new_bookmark.pos != 0) 
@@ -1282,7 +1282,7 @@ void CMoviePlayerGui::PlayFile(void)
 			jump_not_until = (position / 1000) + 10;
 		} 
 #if !defined (PLATFORM_COOLSTREAM)		
-		else if (msg == CRCInput::RC_slow) 
+		else if (msg == RC_slow) 
 		{
 			if (slow > 0)
 				slow = 0;
@@ -1296,19 +1296,19 @@ void CMoviePlayerGui::PlayFile(void)
 			update_lcd = true;
 		}
 #endif		
-		else if(msg == CRCInput::RC_red)
+		else if(msg == RC_red)
 		{
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
 			
 			cMovieInfo.showMovieInfo(filelist[selected]);
 		}
-		else if(msg == CRCInput::RC_home)
+		else if(msg == RC_home)
 		{
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
 		}
-		else if(msg == CRCInput::RC_left || msg == CRCInput::RC_prev)
+		else if(msg == RC_left || msg == RC_prev)
 		{
 			//FIXME:
 			if(!filelist.empty() && selected > 0 && playstate == CMoviePlayerGui::PLAY) 
@@ -1361,7 +1361,7 @@ void CMoviePlayerGui::PlayFile(void)
 				start_play = true;
 			}
 		}
-		else if(msg == CRCInput::RC_right || msg == CRCInput::RC_next)
+		else if(msg == RC_right || msg == RC_next)
 		{
 			//FIXME:
 			if(!filelist.empty() && selected + 1 < filelist.size() && playstate == CMoviePlayerGui::PLAY) 

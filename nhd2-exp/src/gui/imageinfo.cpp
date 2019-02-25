@@ -102,7 +102,7 @@ int CImageInfo::exec(CMenuTarget *parent, const std::string &)
 			break;
 		}
 
-		if ( msg >  CRCInput::RC_MaxRC && msg != CRCInput::RC_timeout)
+		if ( msg >  CRCInput::RC_MaxRC && msg != RC_timeout)
 		{
 			CNeutrinoApp::getInstance()->handleMsg( msg, data );
 		}

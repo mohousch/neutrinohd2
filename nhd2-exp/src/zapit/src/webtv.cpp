@@ -166,7 +166,7 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 			
 			if (l1) 
 			{
-				while ( ((xmlGetNextOccurence(l1, "webtv")) || (xmlGetNextOccurence(l1, "station"))) && msg != CRCInput::RC_home) 
+				while ( ((xmlGetNextOccurence(l1, "webtv")) || (xmlGetNextOccurence(l1, "station"))) && msg != RC_home) 
 				{
 					char * title;
 					char * url;

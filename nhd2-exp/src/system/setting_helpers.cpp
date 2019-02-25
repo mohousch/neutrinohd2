@@ -285,7 +285,7 @@ int CUserMenuMenu::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
 
         CMenuWidget menu(local, NEUTRINO_ICON_KEYBINDING);
 	
-        menu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+        menu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
         menu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
         CStringInputSMS name(LOCALE_USERMENU_NAME, &g_settings.usermenu_text[button]);
@@ -298,7 +298,7 @@ int CUserMenuMenu::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
                 snprintf(text, 10, "%d:", item);
                 text[9] = 0;// terminate for sure
                 
-                menu.addItem( new CMenuOptionChooser(text, &g_settings.usermenu[button][item], USERMENU_ITEM_OPTIONS, USERMENU_ITEM_OPTION_COUNT,true, NULL, CRCInput::RC_nokey, "", true ));
+                menu.addItem( new CMenuOptionChooser(text, &g_settings.usermenu[button][item], USERMENU_ITEM_OPTIONS, USERMENU_ITEM_OPTION_COUNT,true, NULL, RC_nokey, "", true ));
         }
 
         menu.exec(NULL, "");

@@ -297,9 +297,9 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 			if (test && (msg <= CRCInput::RC_MaxRC)) 
 			{
 				istheend = true;
-				msg = CRCInput::RC_timeout;
+				msg = RC_timeout;
 			}
-			else if(msg == CRCInput::RC_home) 
+			else if(msg == RC_home) 
 			{
 				// dont abort scan
 				if(manual && scanSettings->scan_mode)
@@ -313,7 +313,7 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 			else
 				msg = handleMsg(msg, data);
 		}
-		while (!(msg == CRCInput::RC_timeout));
+		while (!(msg == RC_timeout));
 		
 		showSNR(); // FIXME commented until scan slowdown will be solved
 		
@@ -355,10 +355,10 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 		do {
 			g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
 			if ( msg <= CRCInput::RC_MaxRC )
-				msg = CRCInput::RC_timeout;
+				msg = RC_timeout;
 			else
 				CNeutrinoApp::getInstance()->handleMsg( msg, data );
-		} while (!(msg == CRCInput::RC_timeout));
+		} while (!(msg == RC_timeout));
 	}
 
 	hide();
@@ -470,13 +470,13 @@ int CScanTs::handleMsg(neutrino_msg_t msg, neutrino_msg_data_t data)
 		case NeutrinoMessages::EVT_SCAN_FAILED:
 			success = (msg == NeutrinoMessages::EVT_SCAN_COMPLETE);
 			istheend = true;
-			msg = CRCInput::RC_timeout;
+			msg = RC_timeout;
 			break;
 			
-		case CRCInput::RC_plus:
-		case CRCInput::RC_minus:
-		case CRCInput::RC_left:
-		case CRCInput::RC_right:
+		case RC_plus:
+		case RC_minus:
+		case RC_left:
+		case RC_right:
 			CNeutrinoApp::getInstance()->setVolume(msg, true, true);
 			break;
 			

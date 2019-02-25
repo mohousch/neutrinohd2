@@ -368,16 +368,16 @@ int CChannelList::doChannelMenu(void)
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 
 	sprintf(cnt, "%d", i);
-	menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_DELETE, true, NULL, selector, cnt, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED), old_selected == i++);
+	menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_DELETE, true, NULL, selector, cnt, RC_red, NEUTRINO_ICON_BUTTON_RED), old_selected == i++);
 
 	sprintf(cnt, "%d", i);
-	menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_MOVE, true, NULL, selector, cnt, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN), old_selected == i++);
+	menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_MOVE, true, NULL, selector, cnt, RC_green, NEUTRINO_ICON_BUTTON_GREEN), old_selected == i++);
 
 	sprintf(cnt, "%d", i);
-	menu->addItem(new CMenuForwarder(LOCALE_EXTRA_ADD_TO_BOUQUET, true, NULL, selector, cnt, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW), old_selected == i++);
+	menu->addItem(new CMenuForwarder(LOCALE_EXTRA_ADD_TO_BOUQUET, true, NULL, selector, cnt, RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW), old_selected == i++);
 
 	sprintf(cnt, "%d", i);
-	menu->addItem(new CMenuForwarder(LOCALE_FAVORITES_MENUEADD, true, NULL, selector, cnt, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i++);
+	menu->addItem(new CMenuForwarder(LOCALE_FAVORITES_MENUEADD, true, NULL, selector, cnt, RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i++);
 
 	menu->exec(NULL, "");
 	delete menu;
@@ -547,7 +547,7 @@ int CChannelList::show()
 		if ( msg <= CRCInput::RC_MaxRC )
 			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 
-		if ( ( msg == CRCInput::RC_timeout ) || ( msg == (neutrino_msg_t)g_settings.key_channelList_cancel) ) 
+		if ( ( msg == RC_timeout ) || ( msg == (neutrino_msg_t)g_settings.key_channelList_cancel) ) 
 		{
 			if(!actzap)
 				selected = oldselected;
@@ -555,7 +555,7 @@ int CChannelList::show()
 			loop = false;
 			res = -1;
 		}
-		else if ((msg == CRCInput::RC_red) || (msg == CRCInput::RC_epg)) // epg
+		else if ((msg == RC_red) || (msg == RC_epg)) // epg
 		{
 			selected = listBox->getSelected();
 
@@ -570,14 +570,14 @@ int CChannelList::show()
 			listBox->clearItems();
 			paint();
 		}
-		else if ( msg == CRCInput::RC_yellow && ( bouquetList != NULL ) ) //bouquets
+		else if ( msg == RC_yellow && ( bouquetList != NULL ) ) //bouquets
 		{ 
 			//FIXME: show bqt list
 			bShowBouquetList = true;
 
 			loop = false;
 		}
-		else if( msg == CRCInput::RC_blue ) //epgplus
+		else if( msg == RC_blue ) //epgplus
 		{
 			selected = listBox->getSelected();
 
@@ -589,13 +589,13 @@ int CChannelList::show()
 			listBox->clearItems();
 			paint();
 		}
-		else if ( msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
+		else if ( msg == RC_sat || msg == RC_favorites)
 		{
 			g_RCInput->postMsg (msg, 0);
 			loop = false;
 			res = -1;
 		}
-		else if ( msg == CRCInput::RC_setup ) 
+		else if ( msg == RC_setup ) 
 		{
 			//
 			selected = listBox->getSelected();
@@ -643,7 +643,7 @@ int CChannelList::show()
 				zapTo(selected); 
 			}
 		}
-                else if (msg == CRCInput::RC_up)
+                else if (msg == RC_up)
                 {
 			listBox->scrollLineUp();
 
@@ -655,7 +655,7 @@ int CChannelList::show()
 				zapTo(selected); 
 			}
                 }
-		else if ( msg == CRCInput::RC_page_up )
+		else if ( msg == RC_page_up )
                 {
 			listBox->scrollPageUp();
 
@@ -667,7 +667,7 @@ int CChannelList::show()
 				zapTo(selected); 
 			}
                 }
-                else if (msg == CRCInput::RC_down)
+                else if (msg == RC_down)
                 {
 			listBox->scrollLineDown();
 
@@ -679,7 +679,7 @@ int CChannelList::show()
 				zapTo(selected); 
 			}
                 }
-		else if (msg == CRCInput::RC_page_down )
+		else if (msg == RC_page_down )
                 {
 			listBox->scrollPageDown();
 
@@ -750,7 +750,7 @@ int CChannelList::show()
 				}
 			}
 		}
-		else if ( msg == CRCInput::RC_ok ) 
+		else if ( msg == RC_ok ) 
 		{
 			selected = listBox->getSelected();
 	  
@@ -758,7 +758,7 @@ int CChannelList::show()
 			
 			loop = false;
 		}
-		else if ( msg == CRCInput::RC_spkr ) 
+		else if ( msg == RC_spkr ) 
 		{
 			new_mode_active = (new_mode_active ? 0 : 1);
 			
@@ -781,7 +781,7 @@ int CChannelList::show()
 			g_RCInput->postMsg( msg, data );
 			loop = false;
 		}
-		else if ( msg == CRCInput::RC_green ) //next
+		else if ( msg == RC_green ) //next
 		{
 			selected = listBox->getSelected();
 
@@ -792,7 +792,7 @@ int CChannelList::show()
 			listBox->clearItems();
 			paint();
 		} 
-		else if ( (msg == CRCInput::RC_info) )
+		else if ( (msg == RC_info) )
 		{
 			selected = listBox->getSelected();
 
@@ -1231,7 +1231,7 @@ int CChannelList::numericZap(int key)
 
 		g_RCInput->getMsg( &msg, &data, g_settings.timing[SNeutrinoSettings::TIMING_NUMERICZAP] * 10 );
 
-		if ( msg == CRCInput::RC_timeout ) 
+		if ( msg == RC_timeout ) 
 		{
 			if ( ( chn > (int)chanlist.size() ) || (chn == 0) )
 				chn = tuned + 1;
@@ -1251,7 +1251,7 @@ int CChannelList::numericZap(int key)
 			}
 			chn += CRCInput::getNumericValue(msg);
 		}
-		else if ( msg == CRCInput::RC_ok ) 
+		else if ( msg == RC_ok ) 
 		{
 			if ( ( chn > (signed int) chanlist.size() ) || ( chn == 0 ) ) 
 			{
@@ -1277,12 +1277,12 @@ int CChannelList::numericZap(int key)
 			if (chn > (int)chanlist.size())
 				chn = 1;
 		}
-		else if ( ( msg == CRCInput::RC_home ) || ( msg == CRCInput::RC_left ) || ( msg == CRCInput::RC_right) )
+		else if ( ( msg == RC_home ) || ( msg == RC_left ) || ( msg == RC_right) )
 		{
 			doZap = false;
 			break;
 		}
-		else if ( msg == CRCInput::RC_red ) 
+		else if ( msg == RC_red ) 
 		{
 			if ( ( chn <= (signed int) chanlist.size() ) && ( chn != 0 ) ) 
 			{
@@ -1368,10 +1368,8 @@ void CChannelList::virtual_zap_mode(bool up)
 
 		epgpos = 0;
                 g_RCInput->getMsg( &msg, &data, 15*10 ); // 15 seconds, not user changable
-		
-                //dprintf(DEBUG_NORMAL, "%u %u %u\n", msg, NeutrinoMessages::EVT_TIMER, CRCInput::RC_timeout);
 
-                if ( msg == CRCInput::RC_ok )
+                if ( msg == RC_ok )
                 {
                         if ( ( chn > (signed int) chanlist.size() ) || ( chn == 0 ) )
                         {
@@ -1379,7 +1377,7 @@ void CChannelList::virtual_zap_mode(bool up)
                         }
                         break;
                 }
-                else if ( msg == CRCInput::RC_left )
+                else if ( msg == RC_left )
                 {
                         if ( chn == 1 )
                                 chn = chanlist.size();
@@ -1391,28 +1389,28 @@ void CChannelList::virtual_zap_mode(bool up)
                                         chn = (int)chanlist.size();
                         }
                 }
-                else if ( msg == CRCInput::RC_right )
+                else if ( msg == RC_right )
                 {
                         chn++;
 
                         if (chn > (int)chanlist.size())
                                 chn = 1;
                 }
-                else if ( msg == CRCInput::RC_up )
+                else if ( msg == RC_up )
                 {
                         epgpos = -1;
                 }
-                else if ( msg == CRCInput::RC_down )
+                else if ( msg == RC_down )
                 {
                         epgpos = 1;
                 }
-                else if ( ( msg == CRCInput::RC_home ) || ( msg == CRCInput::RC_timeout ) )
+                else if ( ( msg == RC_home ) || ( msg == RC_timeout ) )
                 {
                         // Abbruch ohne Channel zu wechseln
                         doZap = false;
                         break;
                 }
-                else if ( msg == CRCInput::RC_red )
+                else if ( msg == RC_red )
                 {
                         // Rote Taste zeigt EPG fuer gewaehlten Kanal an
                         if ( ( chn <= (signed int) chanlist.size() ) && ( chn != 0 ) )
@@ -1458,14 +1456,14 @@ void CChannelList::quickZap(int key, bool cycle)
         if(chanlist.size() == 0)
                 return;
 
-	if ( (key == g_settings.key_quickzap_down) || (key == CRCInput::RC_left) )
+	if ( (key == g_settings.key_quickzap_down) || (key == RC_left) )
 	{
                 if(selected == 0)
                         selected = chanlist.size() - 1;
                 else
                         selected--;
         }
-	else if ((key == g_settings.key_quickzap_up) || (key == CRCInput::RC_right) )
+	else if ((key == g_settings.key_quickzap_up) || (key == RC_right) )
 	{
                 selected = (selected + 1)%chanlist.size();
         }

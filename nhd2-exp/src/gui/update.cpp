@@ -168,7 +168,7 @@ bool CFlashUpdate::selectHttpImage(void)
 	CMenuWidget SelectionWidget(LOCALE_FLASHUPDATE_SELECTIMAGE, NEUTRINO_ICON_UPDATE , MENU_WIDTH + 50);
 	
 	// intros
-	SelectionWidget.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	SelectionWidget.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 
 	std::ifstream urlFile(g_settings.softupdate_url_file);
 
@@ -846,18 +846,18 @@ void CUpdateSettings::showMenu()
 	CMenuWidget updateSettings(LOCALE_SERVICEMENU_UPDATE, NEUTRINO_ICON_UPDATE);
 		
 	// intros
-	updateSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	updateSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// save settings
-	updateSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	updateSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
 	updateSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
 	// expert-function for mtd read/write
 	CMenuWidget * mtdexpert = new CMenuWidget(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, NEUTRINO_ICON_UPDATE);
 		
 	// intros
-	mtdexpert->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	mtdexpert->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	mtdexpert->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 		
 	CFlashExpert * fe = new CFlashExpert();
@@ -870,7 +870,7 @@ void CUpdateSettings::showMenu()
 
 	// experten function
 	//FIXME: allow update only when the rootfs is jffs2/squashfs
-	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, true, NULL, mtdexpert, "", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, true, NULL, mtdexpert, "", RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 		
 	// update dir
@@ -910,10 +910,10 @@ void CUpdateSettings::showMenu()
 	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// offline
-	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_MANUAL, false, NULL, new CFlashUpdate(CFlashUpdate::UPDATEMODE_MANUAL), "", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_MANUAL, false, NULL, new CFlashUpdate(CFlashUpdate::UPDATEMODE_MANUAL), "", RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
 	// online
-	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_INTERNET, false, NULL, new CFlashUpdate(CFlashUpdate::UPDATEMODE_INTERNET), "", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_INTERNET, false, NULL, new CFlashUpdate(CFlashUpdate::UPDATEMODE_INTERNET), "", RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
 	
 	updateSettings.exec(NULL, "");
 	updateSettings.hide();

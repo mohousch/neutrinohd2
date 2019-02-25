@@ -315,10 +315,10 @@ void CTVShows::showMenu()
 
 	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 
-	mlist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	mlist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
-	mlist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
-	mlist->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
+	mlist->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
+	mlist->addKey(RC_setup, this, CRCInput::getSpecialKeyName(RC_setup));
+	mlist->addKey(RC_green, this, CRCInput::getSpecialKeyName(RC_green));
+	mlist->addKey(RC_yellow, this, CRCInput::getSpecialKeyName(RC_yellow));
 
 	mlist->exec(NULL, "");
 	//mlist->hide();

@@ -198,12 +198,12 @@ void CPicViewer::showMenu()
 	
 	plist->enablePaintDate();
 
-	plist->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
-	plist->addKey(CRCInput::RC_setup, this, CRCInput::getSpecialKeyName(CRCInput::RC_setup));
-	plist->addKey(CRCInput::RC_red, this, CRCInput::getSpecialKeyName(CRCInput::RC_red));
-	plist->addKey(CRCInput::RC_green, this, CRCInput::getSpecialKeyName(CRCInput::RC_green));
-	plist->addKey(CRCInput::RC_yellow, this, CRCInput::getSpecialKeyName(CRCInput::RC_yellow));
-	plist->addKey(CRCInput::RC_blue, this, CRCInput::getSpecialKeyName(CRCInput::RC_blue));
+	plist->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
+	plist->addKey(RC_setup, this, CRCInput::getSpecialKeyName(RC_setup));
+	plist->addKey(RC_red, this, CRCInput::getSpecialKeyName(RC_red));
+	plist->addKey(RC_green, this, CRCInput::getSpecialKeyName(RC_green));
+	plist->addKey(RC_yellow, this, CRCInput::getSpecialKeyName(RC_yellow));
+	plist->addKey(RC_blue, this, CRCInput::getSpecialKeyName(RC_blue));
 
 	plist->exec(NULL, "");
 	//plist->hide();

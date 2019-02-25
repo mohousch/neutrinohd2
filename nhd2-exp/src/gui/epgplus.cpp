@@ -865,7 +865,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 	  		if (msg <= CRCInput::RC_MaxRC)
 				timeoutEnd = CRCInput::calcTimeoutEnd (g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 
-	  		if ((msg == CRCInput::RC_page_down) || (msg == CRCInput::RC_yellow)) 
+	  		if ((msg == RC_page_down) || (msg == RC_yellow)) 
 			{
 				switch (this->currentSwapMode) 
 				{
@@ -909,7 +909,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 		  			break;
 				}
 	  		}
-	  		else if ((msg == CRCInput::RC_page_up) || (msg == CRCInput::RC_green)) 
+	  		else if ((msg == RC_page_up) || (msg == RC_green)) 
 			{
 				switch (this->currentSwapMode) 
 				{
@@ -952,25 +952,25 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 		  			break;
 				}
 	  		} 
-			else if (msg == (neutrino_msg_t) CRCInput::RC_red) 
+			else if (msg == (neutrino_msg_t) RC_red) 
 			{
 				CMenuWidget menuWidgetActions(LOCALE_EPGPLUS_ACTIONS, NEUTRINO_ICON_FEATURES, 400);
 				menuWidgetActions.enableSaveScreen();
 
 				// record
-		  		menuWidgetActions.addItem (new CMenuForwarder (LOCALE_EPGPLUS_RECORD, true, NULL, new MenuTargetAddRecordTimer(this), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED), false);
+		  		menuWidgetActions.addItem (new CMenuForwarder (LOCALE_EPGPLUS_RECORD, true, NULL, new MenuTargetAddRecordTimer(this), NULL, RC_red, NEUTRINO_ICON_BUTTON_RED), false);
 
 				// refresh
-				menuWidgetActions.addItem (new CMenuForwarder (LOCALE_EPGPLUS_REFRESH_EPG, true, NULL, new MenuTargetRefreshEpg(this), NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN), false);
+				menuWidgetActions.addItem (new CMenuForwarder (LOCALE_EPGPLUS_REFRESH_EPG, true, NULL, new MenuTargetRefreshEpg(this), NULL, RC_green, NEUTRINO_ICON_BUTTON_GREEN), false);
 
 				// shedulde
-				menuWidgetActions.addItem (new CMenuForwarder (LOCALE_EPGPLUS_REMIND, true, NULL, new MenuTargetAddReminder(this), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW), false);
+				menuWidgetActions.addItem (new CMenuForwarder (LOCALE_EPGPLUS_REMIND, true, NULL, new MenuTargetAddReminder(this), NULL, RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW), false);
 
 				menuWidgetActions.exec (NULL, "");
 
 		  		//this->refreshAll = true;
 	  		} 
-			else if (msg == (neutrino_msg_t) CRCInput::RC_blue) 
+			else if (msg == (neutrino_msg_t) RC_blue) 
 			{
 				CMenuWidget menuWidgetOptions(LOCALE_EPGPLUS_OPTIONS, NEUTRINO_ICON_FEATURES, 500);
 				menuWidgetOptions.enableSaveScreen();
@@ -996,7 +996,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 		  			this->paint ();
 				}
 	  		} 
-			else if (msg == CRCInput::RC_up) 
+			else if (msg == RC_up) 
 			{
 				int selectedChannelEntryIndex = this->selectedChannelEntry->index;
 				int prevSelectedChannelEntryIndex = selectedChannelEntryIndex;
@@ -1025,7 +1025,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 		  			this->paintChannelEntry (selectedChannelEntryIndex - this->channelListStartIndex);
 				}
 	  		} 
-			else if (msg == CRCInput::RC_down) 
+			else if (msg == RC_down) 
 			{
 				int selectedChannelEntryIndex = this->selectedChannelEntry->index;
 				int prevSelectedChannelEntryIndex = this->selectedChannelEntry->index;
@@ -1049,11 +1049,11 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 		  			this->paintChannelEntry (this->selectedChannelEntry->index - this->channelListStartIndex);
 				}
 	  		} 
-			else if ((msg == CRCInput::RC_timeout) || (msg == (neutrino_msg_t) g_settings.key_channelList_cancel)) 
+			else if ((msg == RC_timeout) || (msg == (neutrino_msg_t) g_settings.key_channelList_cancel)) 
 			{
 				loop = false;
 	  		}
-	  		else if (msg == CRCInput::RC_left) 
+	  		else if (msg == RC_left) 
 			{
 				switch (this->currentViewMode) 
 				{
@@ -1105,7 +1105,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 		  			break;
 				}
 	  		} 
-			else if (msg == CRCInput::RC_right) 
+			else if (msg == RC_right) 
 			{
 				switch (this->currentViewMode) 
 				{
@@ -1150,11 +1150,11 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 		  			break;
 				}
 	  		} 
-			else if (msg == CRCInput::RC_ok) 
+			else if (msg == RC_ok) 
 			{
 				this->channelList->zapTo (this->selectedChannelEntry->index);
 			} 
-			else if ( msg == CRCInput::RC_info ) 
+			else if ( msg == RC_info ) 
 			{
 				TCChannelEventEntries::const_iterator It = this->getSelectedEvent ();
 
@@ -1175,7 +1175,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 						{
 			  				g_RCInput->getMsg (&msg, &data, 0);
 
-			  				if ((msg != CRCInput::RC_red) && (msg != CRCInput::RC_timeout)) 
+			  				if ((msg != RC_red) && (msg != RC_timeout)) 
 							{
 								// RC_red schlucken
 								g_RCInput->postMsg (msg, data);
@@ -1188,7 +1188,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 		  			}
 				}
 			}
-			else if ( msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
+			else if ( msg == RC_sat || msg == RC_favorites)
 			{
 				g_RCInput->postMsg (msg, 0);
 				res = menu_return::RETURN_EXIT_ALL;
@@ -1416,7 +1416,7 @@ struct CMenuOptionChooser::keyval menuOptionChooserSwitchSwapModes[] = {
 
 EpgPlus::MenuOptionChooserSwitchSwapMode::MenuOptionChooserSwitchSwapMode (EpgPlus * _epgPlus)
 :CMenuOptionChooser (LOCALE_EPGPLUS_SWAP_MODE, (int *) &_epgPlus->currentSwapMode, menuOptionChooserSwitchSwapModes, sizeof (menuOptionChooserSwitchSwapModes) / sizeof (CMenuOptionChooser::keyval)
-					  , true, NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW) 
+					  , true, NULL, RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW) 
 {
 	this->epgPlus = _epgPlus;
 	this->oldSwapMode = _epgPlus->currentSwapMode;
@@ -1465,7 +1465,7 @@ struct CMenuOptionChooser::keyval menuOptionChooserSwitchViewModes[] = {
 
 EpgPlus::MenuOptionChooserSwitchViewMode::MenuOptionChooserSwitchViewMode (EpgPlus * epgPlus)
 :CMenuOptionChooser (LOCALE_EPGPLUS_VIEW_MODE, (int *) &epgPlus->currentViewMode, menuOptionChooserSwitchViewModes, sizeof (menuOptionChooserSwitchViewModes) / sizeof (CMenuOptionChooser::keyval)
-					  , true, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE) 
+					  , true, NULL, RC_blue, NEUTRINO_ICON_BUTTON_BLUE) 
 {
   	this->oldTimingMenuSettings = g_settings.timing[SNeutrinoSettings::TIMING_MENU];
 }

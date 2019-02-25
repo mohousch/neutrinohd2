@@ -198,7 +198,7 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 
 		switch ( msg ) 
 		{
-			case CRCInput::RC_down:
+			case RC_down:
 				{
 					if (selected < ((value[VALUE_ALPHA]) ? 3 : 2))
 					{
@@ -215,7 +215,7 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 					break;
 				}
 				
-			case CRCInput::RC_up:
+			case RC_up:
 				{
 					if (selected > 0)
 					{
@@ -232,7 +232,7 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 					break;
 				}
 				
-			case CRCInput::RC_right:
+			case RC_right:
 				{
 					if ((*value[selected]) < 100)
 					{
@@ -247,7 +247,7 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 					break;
 				}
 				
-			case CRCInput::RC_left:
+			case RC_left:
 				{
 					if ((*value[selected]) > 0)
 					{
@@ -262,7 +262,7 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 					break;
 				}
 				
-			case CRCInput::RC_home:
+			case RC_home:
 				if (((*value[VALUE_R] != r_alt) || (*value[VALUE_G] != g_alt) || (*value[VALUE_B] != b_alt) || ((value[VALUE_ALPHA]) && (*(value[VALUE_ALPHA]) != a_alt))) &&
 						(MessageBox(name.c_str(), LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
 					break;
@@ -280,8 +280,8 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 				if (value[VALUE_ALPHA])
 					*value[VALUE_ALPHA] = a_alt;
 	
-			case CRCInput::RC_timeout:
-			case CRCInput::RC_ok:
+			case RC_timeout:
+			case RC_ok:
 				loop = false;
 				break;
 

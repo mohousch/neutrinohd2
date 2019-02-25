@@ -481,11 +481,11 @@ REPEAT:
 		{
 			headers.paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
 		} 
-		else if (msg == CRCInput::RC_home) 
+		else if (msg == RC_home) 
 		{
 			loop = false;
 		}
-		else if(msg == CRCInput::RC_right)
+		else if(msg == RC_right)
 		{
 /*
 			if(focus == WIDGET_TOP)
@@ -494,7 +494,7 @@ REPEAT:
 */ 			if(focus == WIDGET_RIGHT)
 				rightWidget->swipRight();
 		}
-		else if(msg == CRCInput::RC_left)
+		else if(msg == RC_left)
 		{
 /*
 			if(focus == WIDGET_TOP)
@@ -502,21 +502,21 @@ REPEAT:
 			else*/ if(focus == WIDGET_RIGHT)
 				rightWidget->swipLeft();
 		}
-		else if(msg == CRCInput::RC_up)
+		else if(msg == RC_up)
 		{
 			if(focus == WIDGET_LEFT)
 				leftWidget->scrollLineUp();
 			else if(focus == WIDGET_RIGHT)
 				rightWidget->scrollLineUp();
 		}
-		else if(msg == CRCInput::RC_down)
+		else if(msg == RC_down)
 		{
 			if(focus == WIDGET_LEFT)
 				leftWidget->scrollLineDown();
 			else if(focus == WIDGET_RIGHT)
 				rightWidget->scrollLineDown();
 		}
-		else if(msg == CRCInput::RC_yellow)
+		else if(msg == RC_yellow)
 		{
 /*
 			if(focus == WIDGET_TOP)
@@ -561,7 +561,7 @@ REPEAT:
 
 			goto REPEAT;
 		}
-		else if(msg == CRCInput::RC_red)
+		else if(msg == RC_red)
 		{
 			page++;
 			right_selected = 0;
@@ -569,7 +569,7 @@ REPEAT:
 			rightWidget->clearItems();
 			goto DOFILM;
 		}
-		else if(msg == CRCInput::RC_green)
+		else if(msg == RC_green)
 		{
 			page--;
 
@@ -582,7 +582,7 @@ REPEAT:
 			rightWidget->clearItems();
 			goto DOFILM;
 		}
-		else if(msg == CRCInput::RC_blue)
+		else if(msg == RC_blue)
 		{
 			right_selected = 0;
 			left_selected = 3;
@@ -592,7 +592,7 @@ REPEAT:
 			rightWidget->clearItems();
 			goto DOFILM;
 		}
-		else if(msg == CRCInput::RC_ok)
+		else if(msg == RC_ok)
 		{
 			if(focus == WIDGET_RIGHT)
 			{
@@ -674,7 +674,7 @@ REPEAT:
 					loop = false;
 			}
 		}
-		else if(msg == CRCInput::RC_info)
+		else if(msg == RC_info)
 		{
 			if(focus == WIDGET_RIGHT)
 			{
@@ -684,14 +684,14 @@ REPEAT:
 				goto REPEAT;
 			}
 		}
-		else if(msg == CRCInput::RC_page_down)
+		else if(msg == RC_page_down)
 		{
 			if(focus == WIDGET_RIGHT)
 			{
 				rightWidget->scrollPageDown();
 			}
 		}
-		else if(msg == CRCInput::RC_page_up)
+		else if(msg == RC_page_up)
 		{
 			if(focus == WIDGET_RIGHT)
 			{
@@ -1187,14 +1187,14 @@ void CTestMenu::testCTextBox()
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
-		if (msg == CRCInput::RC_home) 
+		if (msg == RC_home) 
 		{
 			textBox->hide();
 			CFrameBuffer::getInstance()->blit();
 
 			loop = false;
 		}
-		else if(msg == CRCInput::RC_info)
+		else if(msg == RC_info)
 		{
 			bigFonts = bigFonts? false : true;
 			textBox->setBigFonts(bigFonts);
@@ -1368,7 +1368,7 @@ REPEAT:
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
-		if (msg == CRCInput::RC_home) 
+		if (msg == RC_home) 
 		{
 			//
 			if (CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
@@ -1386,27 +1386,27 @@ REPEAT:
 
 			loop = false;
 		}
-		else if(msg == CRCInput::RC_down)
+		else if(msg == RC_down)
 		{
 			listFrame->scrollLineDown(1);
 			listFrame->refresh();
 		}
-		else if(msg == CRCInput::RC_up)
+		else if(msg == RC_up)
 		{
 			listFrame->scrollLineUp(1);
 			listFrame->refresh();
 		}
-		else if(msg == CRCInput::RC_page_down)
+		else if(msg == RC_page_down)
 		{
 			listFrame->scrollPageDown(1);
 			listFrame->refresh();
 		}
-		else if(msg == CRCInput::RC_page_up)
+		else if(msg == RC_page_up)
 		{
 			listFrame->scrollPageUp(1);
 			listFrame->refresh();
 		}
-		else if(msg == CRCInput::RC_ok)
+		else if(msg == RC_ok)
 		{
 			selected = listFrame->getSelectedLine();
 
@@ -1702,27 +1702,27 @@ REPEAT:
 		{
 			listBox->paintHead();
 		} 
-		else if (msg == CRCInput::RC_home) 
+		else if (msg == RC_home) 
 		{
 			loop = false;
 		}
-		else if(msg == CRCInput::RC_down)
+		else if(msg == RC_down)
 		{
 			listBox->scrollLineDown();
 		}
-		else if(msg == CRCInput::RC_up)
+		else if(msg == RC_up)
 		{
 			listBox->scrollLineUp();
 		}
-		else if(msg == CRCInput::RC_page_down)
+		else if(msg == RC_page_down)
 		{
 			listBox->scrollPageDown();
 		}
-		else if(msg == CRCInput::RC_page_up)
+		else if(msg == RC_page_up)
 		{
 			listBox->scrollPageUp();
 		}
-		else if(msg == CRCInput::RC_ok)
+		else if(msg == RC_ok)
 		{
 
 			hide();
@@ -1737,7 +1737,7 @@ REPEAT:
 
 			goto REPEAT;
 		}
-		else if(msg == CRCInput::RC_info)
+		else if(msg == RC_info)
 		{
 			hide();
 			selected = listBox->getSelected();
@@ -1801,19 +1801,19 @@ REPEAT:
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
-		if (msg == CRCInput::RC_home) 
+		if (msg == RC_home) 
 		{
 			loop = false;
 		}
-		else if(msg == CRCInput::RC_right)
+		else if(msg == RC_right)
 		{
 			topWidget->swipRight();
 		}
-		else if(msg == CRCInput::RC_left)
+		else if(msg == RC_left)
 		{
 			topWidget->swipLeft();
 		}
-		else if(msg == CRCInput::RC_ok)
+		else if(msg == RC_ok)
 		{
 			MessageBox(LOCALE_MESSAGEBOX_INFO, "testing CFrameBox\ncoole Widget ;-)", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 		}
@@ -1886,7 +1886,7 @@ BROWSER:
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
-		if (msg != CRCInput::RC_home) 
+		if (msg != RC_home) 
 		{
 			goto BROWSER;
 		}
@@ -1942,7 +1942,7 @@ BROWSER:
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
-		if (msg != CRCInput::RC_home) 
+		if (msg != RC_home) 
 		{
 			goto BROWSER;
 		}
@@ -1989,7 +1989,7 @@ BROWSER:
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
-		if (msg != CRCInput::RC_home) 
+		if (msg != RC_home) 
 		{
 			goto BROWSER;
 		}
@@ -2056,7 +2056,7 @@ BROWSER:
 
 		g_RCInput->getMsg_ms(&msg, &data, 10);
 		
-		if (msg != CRCInput::RC_home) 
+		if (msg != RC_home) 
 		{
 			goto BROWSER;
 		}
@@ -2120,7 +2120,7 @@ BROWSER:
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
-		if (msg != CRCInput::RC_home) 
+		if (msg != RC_home) 
 		{
 			goto BROWSER;
 		}
@@ -2173,7 +2173,7 @@ BROWSER:
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
-		if (msg != CRCInput::RC_home) 
+		if (msg != RC_home) 
 		{
 			goto BROWSER;
 		}
@@ -2622,7 +2622,7 @@ void CTestMenu::testClistBox()
 
 	listMenu->enablePaintDate();
 
-	listMenu->addKey(CRCInput::RC_info, this, "minfo");
+	listMenu->addKey(RC_info, this, "minfo");
 
 	listMenu->exec(NULL, "");
 	listMenu->hide();
@@ -2643,17 +2643,17 @@ void CTestMenu::testCMenuWidget()
 	mainMenu->enableWidgetChange();
 	  
 	// tv modus
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
 
 	// radio modus
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE ));	
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE ));	
 	
 	// webtv
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE) );
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE) );
 	
 #if defined (ENABLE_SCART)
 	// scart
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART) );
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART) );
 #endif
 
 	// mediaplayer
@@ -2673,10 +2673,10 @@ void CTestMenu::testCMenuWidget()
 	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES ));
 
 	// power menu
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU ));
+	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU ));
 
 	//box info
-	mainMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
+	mainMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, RC_info, NEUTRINO_ICON_BUTTON_HELP, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
 
 	mainMenu->integratePlugins(CPlugins::I_TYPE_MAIN, shortcut++);
 
@@ -2781,7 +2781,7 @@ void CTestMenu::spinner(void)
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
-		if (msg == CRCInput::RC_home) 
+		if (msg == RC_home) 
 		{
 			break;
 		}

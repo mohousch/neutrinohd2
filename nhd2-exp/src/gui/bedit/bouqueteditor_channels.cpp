@@ -177,7 +177,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 		if ( msg <= CRCInput::RC_MaxRC )
 			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
 
-		if ((msg == CRCInput::RC_timeout) || (msg == (neutrino_msg_t)g_settings.key_channelList_cancel))
+		if ((msg == RC_timeout) || (msg == (neutrino_msg_t)g_settings.key_channelList_cancel))
 		{
 			if (state == beDefault)
 			{
@@ -188,7 +188,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				cancelMoveChannel();
 			}
 		}
-		else if (msg == CRCInput::RC_page_up)
+		else if (msg == RC_page_up)
 		{
 			if (state == beDefault)
 				listBox->scrollPageUp();
@@ -203,7 +203,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				internalMoveChannel(selected, next_selected);
 			}
 		}
-		else if (msg == CRCInput::RC_page_down)
+		else if (msg == RC_page_down)
 		{
 			if (state == beDefault)
 				listBox->scrollPageDown();
@@ -219,7 +219,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				internalMoveChannel(selected, next_selected);
 			}
 		}
-		else if (msg == CRCInput::RC_up)
+		else if (msg == RC_up)
 		{
 			if (!(Channels->empty()))
 			{
@@ -240,7 +240,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				}
 			}
 		}
-		else if (msg == CRCInput::RC_down)
+		else if (msg == RC_down)
 		{
 			selected = listBox->getSelected();
 
@@ -258,21 +258,21 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				internalMoveChannel(prev_selected, next_selected);
 			}
 		}
-		else if(msg == CRCInput::RC_red)
+		else if(msg == RC_red)
 		{
 			selected = listBox->getSelected();
 
 			if (state == beDefault)
 				deleteChannel();
 		}
-		else if(msg == CRCInput::RC_green)
+		else if(msg == RC_green)
 		{
 			selected = listBox->getSelected();
 
 			if (state == beDefault)
 				addChannel();
 		}
-		else if(msg == CRCInput::RC_yellow)
+		else if(msg == RC_yellow)
 		{
 			selected = listBox->getSelected();
 
@@ -282,7 +282,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 			listBox->clearItems();
 			paint();
 		}
-		else if(msg == CRCInput::RC_blue)
+		else if(msg == RC_blue)
 		{
 			if (state == beDefault)
 			{
@@ -299,7 +299,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				paint();
 			}
 		}
-		else if(msg == CRCInput::RC_ok)
+		else if(msg == RC_ok)
 		{
 			selected = listBox->getSelected();
 			if (state == beDefault)

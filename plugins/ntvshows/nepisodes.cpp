@@ -212,7 +212,7 @@ void CNEpisodes::showMenu()
 
 	listBox->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 
-	listBox->addKey(CRCInput::RC_info, this, CRCInput::getSpecialKeyName(CRCInput::RC_info));
+	listBox->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
 
 	listBox->exec(NULL, "");
 	//listBox->hide();
