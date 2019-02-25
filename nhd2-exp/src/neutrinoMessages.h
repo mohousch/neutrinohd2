@@ -53,109 +53,109 @@ struct messages_return
 struct NeutrinoMessages {
 	enum
 	{
-		SHOW_EPG				 = CRCInput::RC_Messages + 1,
-		SHOW_INFOBAR				 = CRCInput::RC_Messages + 2,
-		VCR_ON					 = CRCInput::RC_Messages + 3,
-		VCR_OFF					 = CRCInput::RC_Messages + 4,
-		STANDBY_ON				 = CRCInput::RC_Messages + 5,
-		STANDBY_OFF				 = CRCInput::RC_Messages + 6,
-		STANDBY_TOGGLE				 = CRCInput::RC_Messages + 7,
-		SHUTDOWN				 = CRCInput::RC_Messages + 8,
-		ANNOUNCE_SHUTDOWN			 = CRCInput::RC_Messages + 9,
-		ANNOUNCE_ZAPTO				 = CRCInput::RC_Messages + 10,
-		ZAPTO					 = CRCInput::RC_Messages + 11,
-		ANNOUNCE_RECORD				 = CRCInput::RC_Messages + 12,
-		RECORD_START				 = CRCInput::RC_Messages + 13,
-		RECORD_STOP				 = CRCInput::RC_Messages + 14,
-		ANNOUNCE_SLEEPTIMER			 = CRCInput::RC_Messages + 15,
-		SLEEPTIMER				 = CRCInput::RC_Messages + 16,
-		CHANGEMODE				 = CRCInput::RC_Messages + 17,
-		REMIND					 = CRCInput::RC_Messages + 18,
-		LOCK_RC                 		 = CRCInput::RC_Messages + 19,
-		UNLOCK_RC               		 = CRCInput::RC_Messages + 20,
-		REBOOT					 = CRCInput::RC_Messages + 21,
-		RESTART					 = CRCInput::RC_Messages + 22,
+		SHOW_EPG				 = RC_Messages + 1,
+		SHOW_INFOBAR				 = RC_Messages + 2,
+		VCR_ON					 = RC_Messages + 3,
+		VCR_OFF					 = RC_Messages + 4,
+		STANDBY_ON				 = RC_Messages + 5,
+		STANDBY_OFF				 = RC_Messages + 6,
+		STANDBY_TOGGLE				 = RC_Messages + 7,
+		SHUTDOWN				 = RC_Messages + 8,
+		ANNOUNCE_SHUTDOWN			 = RC_Messages + 9,
+		ANNOUNCE_ZAPTO				 = RC_Messages + 10,
+		ZAPTO					 = RC_Messages + 11,
+		ANNOUNCE_RECORD				 = RC_Messages + 12,
+		RECORD_START				 = RC_Messages + 13,
+		RECORD_STOP				 = RC_Messages + 14,
+		ANNOUNCE_SLEEPTIMER			 = RC_Messages + 15,
+		SLEEPTIMER				 = RC_Messages + 16,
+		CHANGEMODE				 = RC_Messages + 17,
+		REMIND					 = RC_Messages + 18,
+		LOCK_RC                 		 = RC_Messages + 19,
+		UNLOCK_RC               		 = RC_Messages + 20,
+		REBOOT					 = RC_Messages + 21,
+		RESTART					 = RC_Messages + 22,
 
-		EVT_VOLCHANGED                           = CRCInput::RC_Events + 1,
-		EVT_MUTECHANGED                          = CRCInput::RC_Events + 2,
-		EVT_VCRCHANGED                           = CRCInput::RC_Events + 3,
-		EVT_MODECHANGED                          = CRCInput::RC_Events + 4,
-		EVT_BOUQUETSCHANGED                      = CRCInput::RC_Events + 6,
-		EVT_SERVICESCHANGED                      = CRCInput::RC_Events + 7,
-		EVT_SCAN_COMPLETE                        = CRCInput::RC_Events + 16,
-		EVT_SCAN_NUM_TRANSPONDERS                = CRCInput::RC_Events + 17,
-		EVT_SCAN_NUM_CHANNELS                    = CRCInput::RC_Events + 18,
-		EVT_SHUTDOWN                             = CRCInput::RC_Events + 19,
-		EVT_TIMER                                = CRCInput::RC_Events + 20,
-		EVT_PROGRAMLOCKSTATUS                    = CRCInput::RC_Events + 22,
-		EVT_RECORDMODE                           = CRCInput::RC_Events + 24,
+		EVT_VOLCHANGED                           = RC_Events + 1,
+		EVT_MUTECHANGED                          = RC_Events + 2,
+		EVT_VCRCHANGED                           = RC_Events + 3,
+		EVT_MODECHANGED                          = RC_Events + 4,
+		EVT_BOUQUETSCHANGED                      = RC_Events + 6,
+		EVT_SERVICESCHANGED                      = RC_Events + 7,
+		EVT_SCAN_COMPLETE                        = RC_Events + 16,
+		EVT_SCAN_NUM_TRANSPONDERS                = RC_Events + 17,
+		EVT_SCAN_NUM_CHANNELS                    = RC_Events + 18,
+		EVT_SHUTDOWN                             = RC_Events + 19,
+		EVT_TIMER                                = RC_Events + 20,
+		EVT_PROGRAMLOCKSTATUS                    = RC_Events + 22,
+		EVT_RECORDMODE                           = RC_Events + 24,
 		
-		EVT_ZAP_CA_ID				 = CRCInput::RC_Events + 50,
-		EVT_ZAP_CA_CLEAR                         = CRCInput::RC_Events + 26,
-		EVT_ZAP_CA_LOCK                          = CRCInput::RC_Events + 27,
-		EVT_ZAP_CA_FTA                           = CRCInput::RC_Events + 28,
+		EVT_ZAP_CA_ID				 = RC_Events + 50,
+		EVT_ZAP_CA_CLEAR                         = RC_Events + 26,
+		EVT_ZAP_CA_LOCK                          = RC_Events + 27,
+		EVT_ZAP_CA_FTA                           = RC_Events + 28,
 		
-		EVT_SCAN_FAILED                          = CRCInput::RC_Events + 29,
-		EVT_SCAN_REPORT_NUM_SCANNED_TRANSPONDERS = CRCInput::RC_Events + 30,
- 		EVT_SCAN_REPORT_FREQUENCY                = CRCInput::RC_Events + 31,
- 		EVT_SCAN_FOUND_RADIO_CHAN                = CRCInput::RC_Events + 32,
- 		EVT_SCAN_FOUND_DATA_CHAN                 = CRCInput::RC_Events + 33,
- 		EVT_SCAN_FOUND_TV_CHAN                   = CRCInput::RC_Events + 34,
- 		EVT_SCAN_REPORT_FREQUENCYP               = CRCInput::RC_Events + 36,
- 		EVT_ZAP_MOTOR                            = CRCInput::RC_Events + 37,
+		EVT_SCAN_FAILED                          = RC_Events + 29,
+		EVT_SCAN_REPORT_NUM_SCANNED_TRANSPONDERS = RC_Events + 30,
+ 		EVT_SCAN_REPORT_FREQUENCY                = RC_Events + 31,
+ 		EVT_SCAN_FOUND_RADIO_CHAN                = RC_Events + 32,
+ 		EVT_SCAN_FOUND_DATA_CHAN                 = RC_Events + 33,
+ 		EVT_SCAN_FOUND_TV_CHAN                   = RC_Events + 34,
+ 		EVT_SCAN_REPORT_FREQUENCYP               = RC_Events + 36,
+ 		EVT_ZAP_MOTOR                            = RC_Events + 37,
 
  		/* sectionsd */
-		EVT_SERVICES_UPD                         = CRCInput::RC_Events + 38,
-		EVT_SI_FINISHED                          = CRCInput::RC_Events + 39,
+		EVT_SERVICES_UPD                         = RC_Events + 38,
+		EVT_SI_FINISHED                          = RC_Events + 39,
 		
 		/* zapit */
-		EVT_PMT_CHANGED				 = CRCInput::RC_Events + 40,
+		EVT_PMT_CHANGED				 = RC_Events + 40,
 
 		/* NEVER CHANGE THIS */
-		EVT_CI_INSERTED				 = CRCInput::RC_Events + 60, /* data = slot num */
-		EVT_CI_REMOVED				 = CRCInput::RC_Events + 61, /* data = slot num */
-		EVT_CI_INIT_OK				 = CRCInput::RC_Events + 62, /* data = slot num */
-		EVT_CI_MMI_MENU				 = CRCInput::RC_Events + 63,
-		EVT_CI_MMI_LIST				 = CRCInput::RC_Events + 64,
-		EVT_CI_MMI_TEXT				 = CRCInput::RC_Events + 65,
-		EVT_CI_MMI_REQUEST_INPUT		 = CRCInput::RC_Events + 66,
-		EVT_CI_MMI_CLOSE			 = CRCInput::RC_Events + 67,
+		EVT_CI_INSERTED				 = RC_Events + 60, /* data = slot num */
+		EVT_CI_REMOVED				 = RC_Events + 61, /* data = slot num */
+		EVT_CI_INIT_OK				 = RC_Events + 62, /* data = slot num */
+		EVT_CI_MMI_MENU				 = RC_Events + 63,
+		EVT_CI_MMI_LIST				 = RC_Events + 64,
+		EVT_CI_MMI_TEXT				 = RC_Events + 65,
+		EVT_CI_MMI_REQUEST_INPUT		 = RC_Events + 66,
+		EVT_CI_MMI_CLOSE			 = RC_Events + 67,
 		/* END */
 
-		EVT_CURRENTEPG                           = CRCInput::RC_WithData +  1,
-		EVT_NEXTEPG                              = CRCInput::RC_WithData +  2,
-		EVT_POPUP                                = CRCInput::RC_WithData +  3,
-		EVT_EXTMSG                               = CRCInput::RC_WithData +  4,
-		EVT_START_PLUGIN                         = CRCInput::RC_WithData +  5,
+		EVT_CURRENTEPG                           = RC_WithData +  1,
+		EVT_NEXTEPG                              = RC_WithData +  2,
+		EVT_POPUP                                = RC_WithData +  3,
+		EVT_EXTMSG                               = RC_WithData +  4,
+		EVT_START_PLUGIN                         = RC_WithData +  5,
 
 		/* sectionsd */
-		EVT_CURRENTNEXT_EPG                      = CRCInput::RC_WithData +  6, /* data: (t_channel_id *) */
-		EVT_TIMESET                              = CRCInput::RC_WithData +  7, /* data: (long long *)    */
+		EVT_CURRENTNEXT_EPG                      = RC_WithData +  6, /* data: (t_channel_id *) */
+		EVT_TIMESET                              = RC_WithData +  7, /* data: (long long *)    */
 
 		/* "sectionsd" events triggered by neutrino */
-		EVT_NOEPG_YET                            = CRCInput::RC_WithData +  8, /* data: (t_channel_id *) */
+		EVT_NOEPG_YET                            = RC_WithData +  8, /* data: (t_channel_id *) */
 
 		/* "timerd" events triggered by neutrino */
-		EVT_NEXTPROGRAM                          = CRCInput::RC_WithData +  9, /* data: (t_channel_id *) */
+		EVT_NEXTPROGRAM                          = RC_WithData +  9, /* data: (t_channel_id *) */
 
 		/* zapit */
- 		EVT_SCAN_FOUND_A_CHAN                    = CRCInput::RC_WithData + 10,
-		EVT_SCAN_PROVIDER                        = CRCInput::RC_WithData + 11,
-		EVT_SCAN_SATELLITE                       = CRCInput::RC_WithData + 12,
-		EVT_SCAN_SERVICENAME                     = CRCInput::RC_WithData + 13,
-		EVT_ZAP_COMPLETE                         = CRCInput::RC_WithData + 14, /* data: (t_channel_id *) */
-		EVT_ZAP_FAILED                           = CRCInput::RC_WithData + 15, /* data: (t_channel_id *) */
-		EVT_ZAP_ISNVOD                           = CRCInput::RC_WithData + 16, /* data: (t_channel_id *) */
-		EVT_ZAP_SUB_COMPLETE                     = CRCInput::RC_WithData + 17, /* data: (t_channel_id *) */
-		EVT_ZAP_SUB_FAILED                       = CRCInput::RC_WithData + 18, /* data: (t_channel_id *) */
+ 		EVT_SCAN_FOUND_A_CHAN                    = RC_WithData + 10,
+		EVT_SCAN_PROVIDER                        = RC_WithData + 11,
+		EVT_SCAN_SATELLITE                       = RC_WithData + 12,
+		EVT_SCAN_SERVICENAME                     = RC_WithData + 13,
+		EVT_ZAP_COMPLETE                         = RC_WithData + 14, /* data: (t_channel_id *) */
+		EVT_ZAP_FAILED                           = RC_WithData + 15, /* data: (t_channel_id *) */
+		EVT_ZAP_ISNVOD                           = RC_WithData + 16, /* data: (t_channel_id *) */
+		EVT_ZAP_SUB_COMPLETE                     = RC_WithData + 17, /* data: (t_channel_id *) */
+		EVT_ZAP_SUB_FAILED                       = RC_WithData + 18, /* data: (t_channel_id *) */
 
 		/* "zapit" events triggered by neutrino */
-		EVT_ZAP_GOT_SUBSERVICES                  = CRCInput::RC_WithData + 19, /* data: (t_channel_id *) */
-		EVT_ZAP_GOTAPIDS                         = CRCInput::RC_WithData + 20, /* data: (t_channel_id *) */
-		EVT_ZAP_GOTPIDS                          = CRCInput::RC_WithData + 21, /* data: (t_channel_id *) */
+		EVT_ZAP_GOT_SUBSERVICES                  = RC_WithData + 19, /* data: (t_channel_id *) */
+		EVT_ZAP_GOTAPIDS                         = RC_WithData + 20, /* data: (t_channel_id *) */
+		EVT_ZAP_GOTPIDS                          = RC_WithData + 21, /* data: (t_channel_id *) */
 
 		/* neutrino */
-		EVT_RECORDING_ENDED                      = CRCInput::RC_WithData + 22
+		EVT_RECORDING_ENDED                      = RC_WithData + 22
 	};
 
 	enum

@@ -504,7 +504,7 @@ int CCAMMenuHandler::doMenu(int slot)
 			
 			/* -1 = not our event, 0 = back to top menu, 1 = continue loop, 2 = quit */
 			int ret = handleCamMsg(msg, data, true);
-			if(ret < 0 && (msg > CRCInput::RC_Messages)) 
+			if(ret < 0 && (msg > RC_Messages)) 
 			{
 				if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & ( messages_return::cancel_all | messages_return::cancel_info ) )
 				{

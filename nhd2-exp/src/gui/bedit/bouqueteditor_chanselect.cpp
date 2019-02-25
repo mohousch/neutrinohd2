@@ -214,7 +214,7 @@ int CBEChannelSelectWidget::exec(CMenuTarget* parent, const std::string& actionK
 	{
 		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
 
-		if ( msg <= CRCInput::RC_MaxRC )
+		if ( msg <= RC_MaxRC )
 			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
 
 		if( msg == RC_ok)

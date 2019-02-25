@@ -300,12 +300,12 @@ int CStreamInfo2::doSignalStrengthLoop()
 			continue;
 		}
 		// -- any key --> abort
-		if (msg <= CRCInput::RC_MaxRC) 
+		if (msg <= RC_MaxRC) 
 		{
 			break;
 		}
 		// -- push other events
-		if (msg > CRCInput::RC_MaxRC && msg != RC_timeout) 
+		if (msg > RC_MaxRC && msg != RC_timeout) 
 		{
 			CNeutrinoApp::getInstance ()->handleMsg (msg, data);
 		}

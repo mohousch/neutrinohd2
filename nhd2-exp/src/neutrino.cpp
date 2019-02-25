@@ -3500,7 +3500,7 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 	
 	if( res != messages_return::unhandled ) 
 	{
-		if( ( msg>= CRCInput::RC_WithData ) && ( msg< CRCInput::RC_WithData + 0x10000000 ) )
+		if( ( msg >= RC_WithData ) && ( msg < RC_WithData + 0x10000000 ) )
 			delete [] (unsigned char*) data;
 
 		return( res & ( 0xFFFFFFFF - messages_return::unhandled ) );
@@ -4191,7 +4191,7 @@ skip_message:
 			channelList->adjustToChannelID(live_channel_id);
 	}
 	
-	if ((msg >= CRCInput::RC_WithData) && (msg < CRCInput::RC_WithData + 0x10000000))
+	if ((msg >= RC_WithData) && (msg < RC_WithData + 0x10000000))
 		delete[] (unsigned char*) data;
 
 	return messages_return::unhandled;
@@ -4507,7 +4507,7 @@ void CNeutrinoApp::setVolume(const neutrino_msg_t key, const bool bDoPaint, bool
 	unsigned long long timeoutEnd;
 
 	do {
-		if (msg <= CRCInput::RC_MaxRC) 
+		if (msg <= RC_MaxRC) 
 		{
 			if ( msg == RC_plus ) 
 			{ 

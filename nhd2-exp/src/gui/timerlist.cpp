@@ -485,7 +485,7 @@ int CTimerList::show()
 
 		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
 
-		if( msg <= CRCInput::RC_MaxRC )
+		if( msg <= RC_MaxRC )
 			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
 
 		if( ( msg == RC_timeout ) || ( msg == RC_home) )

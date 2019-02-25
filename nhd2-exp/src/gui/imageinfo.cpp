@@ -97,12 +97,12 @@ int CImageInfo::exec(CMenuTarget *parent, const std::string &)
 		uint64_t timeoutEnd = CRCInput::calcTimeoutEnd_MS(100);
 		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
 
-		if (msg <= CRCInput::RC_MaxRC)
+		if (msg <= RC_MaxRC)
 		{
 			break;
 		}
 
-		if ( msg >  CRCInput::RC_MaxRC && msg != RC_timeout)
+		if ( msg > RC_MaxRC && msg != RC_timeout)
 		{
 			CNeutrinoApp::getInstance()->handleMsg( msg, data );
 		}

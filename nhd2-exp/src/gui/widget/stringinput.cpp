@@ -364,11 +364,11 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 
 		g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd, true );
 
-		if ( msg <= CRCInput::RC_MaxRC )
+		if ( msg <= RC_MaxRC )
 			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
 		
 		//
-		if (!(msg & CRCInput::RC_Release))
+		if (!(msg & RC_Release))
 			g_RCInput->killTimer(smstimer);
 
 		if (msg == RC_left)

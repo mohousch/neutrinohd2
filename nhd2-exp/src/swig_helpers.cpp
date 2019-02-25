@@ -120,14 +120,10 @@ int CSwigHelpers::getRCCode(int timeout)
 
 	g_RCInput->getMsg_ms(&msg, &data, timeout);
 	
-/*
-	if (msg != RC_timeout && msg > CRCInput::RC_MaxRC)
-	{
-		CNeutrinoApp::getInstance()->handleMsg(msg, data);
-	}
-*/
-
-	return (int)msg;
+	if (msg <= RC_MaxRC) 
+		return (int)msg;
+	else 
+		return 0;
 }
 
 

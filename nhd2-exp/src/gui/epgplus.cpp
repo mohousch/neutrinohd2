@@ -862,7 +862,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 		{
 	  		g_RCInput->getMsgAbsoluteTimeout (&msg, &data, &timeoutEnd);
 
-	  		if (msg <= CRCInput::RC_MaxRC)
+	  		if (msg <= RC_MaxRC)
 				timeoutEnd = CRCInput::calcTimeoutEnd (g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 
 	  		if ((msg == RC_page_down) || (msg == RC_yellow)) 

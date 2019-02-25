@@ -98,15 +98,16 @@ class CTestMenu : public CMenuTarget
 		void testColorChooser();
 		void testKeyChooser();
 		void testMountChooser();
+		void testCHeaders();
 
 		//
 		void testCTextBox();
 		void testCListFrame();
-		void testClistBoxEntry();
+		void testClistBox();
 		void testCFrameBox();
 
 		//
-		void testClistBox();
+		void testClistBoxWidget();
 		void testCMenuWidget();
 
 		//
@@ -898,6 +899,69 @@ void CTestMenu::testCWindowCustomColor()
 	window = NULL;
 }
 
+void CTestMenu::testCHeaders()
+{
+	CBox headBox;
+	headBox.iX = g_settings.screen_StartX + 10;
+	headBox.iY = g_settings.screen_StartY + 10;
+	headBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	headBox.iHeight = 40;
+
+	CBox footBox;
+	footBox.iHeight = 40;
+	footBox.iX = g_settings.screen_StartX + 10;
+	footBox.iY = g_settings.screen_EndY - 10 - footBox.iHeight;
+	footBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+
+	headers.enablePaintDate();
+	headers.setHeaderButtons(frameBoxHeadButtons, FRAMEBOX_HEAD_BUTTONS_COUNT);
+	//headers.setHeadColor(COL_BLUE);
+	//headers.setHeadCorner();
+	//headers.setHeadGradient(nogradient);
+
+	//headers.setFootColor(COL_BLUE);
+	//headers.setFootCorner();
+	//headers.setFootGradient(nogradient);
+
+	headers.paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
+	headers.paintFoot(footBox, 4, frameButtons);	
+	CFrameBuffer::getInstance()->blit();
+
+	// loop
+	//g_RCInput->messageLoop();
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	uint32_t sec_timer_id = 0;
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
+	bool loop = true;
+
+	while(loop)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+
+		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			headers.paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
+		} 
+		else if (msg == RC_home) 
+		{
+			loop = false;
+		}
+
+		CFrameBuffer::getInstance()->blit();
+	}
+	
+	hide();
+
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
+}
+
 // CStringInput
 void CTestMenu::testCStringInput()
 {
@@ -1428,6 +1492,8 @@ REPEAT:
 	
 	delete listFrame;
 	listFrame = NULL;
+
+	audioFileList.clear();
 }
 
 // CProgressBar
@@ -1550,8 +1616,8 @@ void CTestMenu::testCButtons()
 	hide();
 }
 
-// ClistBoxEntry
-void CTestMenu::testClistBoxEntry()
+// ClistBox
+void CTestMenu::testClistBox()
 {
 	dprintf(DEBUG_NORMAL, "\ntesting ClistBox\n");
 
@@ -2505,7 +2571,7 @@ const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
 };
 
-void CTestMenu::testClistBox()
+void CTestMenu::testClistBoxWidget()
 {
 	listMenu = new ClistBoxWidget("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
@@ -2606,14 +2672,13 @@ void CTestMenu::testClistBox()
 		listMenu->addItem(item);
 	}
 
-	listMenu->setWidgetType(WIDGET_TYPE_CLASSIC);
+	listMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	listMenu->setItemsPerPage(6, 2);
 	//listMenu->setItemBoxColor(COL_YELLOW);
 
 	listMenu->addWidget(WIDGET_TYPE_STANDARD);
-	listMenu->addWidget(WIDGET_TYPE_FRAME);
+	listMenu->addWidget(WIDGET_TYPE_CLASSIC);
 	listMenu->addWidget(WIDGET_TYPE_EXTENDED);
-	//listMenu->addWidget(WIDGET_TYPE_INFO);
 	listMenu->enableWidgetChange();
 
 	listMenu->setSelected(selected);
@@ -2836,6 +2901,11 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		testCWindowCustomColor();
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "headers")
+	{
+		testCHeaders();
+		return menu_return::RETURN_REPAINT;
+	}
 	else if(actionKey == "stringinput")
 	{
 		testCStringInput();
@@ -2956,9 +3026,9 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "listboxentry")
+	else if(actionKey == "listbox")
 	{
-		testClistBoxEntry();
+		testClistBox();
 
 		return menu_return::RETURN_REPAINT;
 	}
@@ -3112,9 +3182,9 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "listbox")
+	else if(actionKey == "listboxwidget")
 	{
-		testClistBox();
+		testClistBoxWidget();
 
 		return menu_return::RETURN_REPAINT;
 	}
@@ -3238,31 +3308,6 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
-
-/*
-	else if(actionKey == "listboxnlines")
-	{
-		testClistBoxnLines();
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "pred")
-	{
-		g_PluginList->removePlugin(listMenu->getSelected());
-		//return menu_return::RETURN_EXIT_ALL;
-		listMenu->hide();
-		listMenu->exec(NULL, "");
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "pgreen")
-	{
-		g_PluginList->startPlugin(listMenu->getSelected());
-
-		return menu_return::RETURN_REPAINT;
-	}
-*/
-
 	else if(actionKey == "mplay")
 	{
 		selected = listMenu->getSelected();
@@ -3318,9 +3363,23 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CBox", true, NULL, this, "box"));
 	mainMenu->addItem(new CMenuForwarder("CIcon", true, NULL, this, "icon"));
 	mainMenu->addItem(new CMenuForwarder("CImage", true, NULL, this, "image"));
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("CWindow", true, NULL, this, "window"));
 	mainMenu->addItem(new CMenuForwarder("CWindow(with shadow)", true, NULL, this, "windowshadow"));
-	mainMenu->addItem(new CMenuForwarder("customColor", true, NULL, this, "windowcustomcolor"));
+	mainMenu->addItem(new CMenuForwarder("CWindow(customColor)", true, NULL, this, "windowcustomcolor"));
+	mainMenu->addItem(new CMenuForwarder("CHeaders", true, NULL, this, "headers"));
+	mainMenu->addItem(new CMenuForwarder("CTextBox", true, NULL, this, "textbox"));
+	mainMenu->addItem(new CMenuForwarder("CListFrame", true, NULL, this, "listframe"));
+	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
+	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
+	mainMenu->addItem(new CMenuForwarder("ClistBox", true, NULL, this, "listbox"));
+	mainMenu->addItem(new CMenuForwarder("CFrameBox", true, NULL, this, "framebox"));
+	
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget", true, NULL, this, "listboxwidget"));
+	mainMenu->addItem(new CMenuForwarder("CMenuWidget", true, NULL, this, "testmenuwidget"));
+
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("CStringInput", true, NULL, this, "stringinput"));
 	mainMenu->addItem(new CMenuForwarder("CStringInputSMS", true, NULL, this, "stringinputsms"));
 	mainMenu->addItem(new CMenuForwarder("CPINInput", true, NULL, this, "pininput"));
@@ -3336,15 +3395,7 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CHintBox", true, NULL, this, "hintbox"));
 	mainMenu->addItem(new CMenuForwarder("CHintBoxInfo", true, NULL, this, "hintboxinfo"));
 	mainMenu->addItem(new CMenuForwarder("CHelpBox", true, NULL, this, "helpbox"));
-	mainMenu->addItem(new CMenuForwarder("CTextBox", true, NULL, this, "textbox"));
-	mainMenu->addItem(new CMenuForwarder("CListFrame", true, NULL, this, "listframe"));
-	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
 	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
-	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
-	mainMenu->addItem(new CMenuForwarder("ClistBox", true, NULL, this, "listboxentry"));
-	mainMenu->addItem(new CMenuForwarder("CFrameBox", true, NULL, this, "framebox"));
-	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget", true, NULL, this, "listbox"));
-	mainMenu->addItem(new CMenuForwarder("CMenuWidget", true, NULL, this, "testmenuwidget"));
 
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ColorChooser", true, NULL, this, "colorchooser"));

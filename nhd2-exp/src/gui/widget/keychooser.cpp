@@ -147,7 +147,7 @@ int CKeyChooserItem::exec(CMenuTarget* parent, const std::string &)
 	
 	if (msg != RC_timeout)
 	{
-		if ((msg > 0) && (msg <= CRCInput::RC_MaxRC))
+		if ((msg > 0) && (msg <= RC_MaxRC))
 			*key = msg;
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 			res = menu_return::RETURN_EXIT_ALL;

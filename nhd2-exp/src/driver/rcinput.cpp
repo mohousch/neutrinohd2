@@ -572,7 +572,7 @@ int CRCInput::messageLoop( bool anyKeyCancels, int timeout )
 			}
 			else if ( mr & messages_return::unhandled )
 			{
-				if ( (msg <= CRCInput::RC_MaxRC) && (data == 0) )                     // <- button pressed
+				if ( (msg <= RC_MaxRC) && (data == 0) )                     // <- button pressed
 				{
 					if ( anyKeyCancels )
 						doLoop = false;
@@ -1270,7 +1270,7 @@ void CRCInput::getMsg_us(neutrino_msg_t * msg, neutrino_msg_data_t * data, uint6
 								printf("CRCInput::getMsg_us: event INITID_ZAPIT - unknown eventID 0x%x\n",  emsg.eventID );
 						}
 						
-						if (((*msg) >= CRCInput::RC_WithData) && ((*msg) < CRCInput::RC_WithData + 0x10000000))
+						if (((*msg) >= RC_WithData) && ((*msg) < RC_WithData + 0x10000000))
 						{
 							*data         = (neutrino_msg_data_t) p;
 							dont_delete_p = true;

@@ -44,7 +44,7 @@ int getRCcode()
 	g_RCInput->getMsg_ms(&msg, &data, 40);
 	rccode = -1;
 
-	if (msg <= CRCInput::RC_MaxRC) 
+	if (msg <= RC_MaxRC) 
 	{
 		rccode = msg;
 		return 1;

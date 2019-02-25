@@ -2803,7 +2803,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 	do {
 		g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
 
-		if ( msg <= CRCInput::RC_MaxRC ) 
+		if ( msg <= RC_MaxRC ) 
 		{
 			timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
 		}
@@ -3255,7 +3255,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					}
 			}
 
-			if ( msg <= CRCInput::RC_MaxRC )
+			if ( msg <= RC_MaxRC )
 			{
 				// recalculate timeout f�r RC-Tasten
 				timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
@@ -4100,7 +4100,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 		dprintf(DEBUG_DEBUG, "ClistBoxWidget::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
-		if ( msg <= CRCInput::RC_MaxRC ) 
+		if ( msg <= RC_MaxRC ) 
 		{
 			timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
 			std::map<neutrino_msg_t, keyAction>::iterator it = keyActionMap.find(msg);
@@ -4563,7 +4563,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					}
 			}
 
-			if ( msg <= CRCInput::RC_MaxRC )
+			if ( msg <= RC_MaxRC )
 			{
 				// recalculate timeout for RC-Tasten
 				timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);

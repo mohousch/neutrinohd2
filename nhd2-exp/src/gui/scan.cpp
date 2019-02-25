@@ -294,7 +294,7 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 		do {
 			g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
 
-			if (test && (msg <= CRCInput::RC_MaxRC)) 
+			if (test && (msg <= RC_MaxRC)) 
 			{
 				istheend = true;
 				msg = RC_timeout;
@@ -354,7 +354,7 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 
 		do {
 			g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
-			if ( msg <= CRCInput::RC_MaxRC )
+			if ( msg <= RC_MaxRC )
 				msg = RC_timeout;
 			else
 				CNeutrinoApp::getInstance()->handleMsg( msg, data );
@@ -481,7 +481,7 @@ int CScanTs::handleMsg(neutrino_msg_t msg, neutrino_msg_data_t data)
 			break;
 			
 		default:
-			if ((msg >= CRCInput::RC_WithData) && (msg < CRCInput::RC_WithData + 0x10000000)) 
+			if ((msg >= RC_WithData) && (msg < RC_WithData + 0x10000000)) 
 				delete (unsigned char*) data;
 			break;
 	}

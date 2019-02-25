@@ -443,7 +443,7 @@ bool CUpnpBrowserGui::loadItem(std::string id, int _selected)
 		}
 
 		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
-		neutrino_msg_t msg_repeatok = msg & ~CRCInput::RC_Repeat;
+		neutrino_msg_t msg_repeatok = msg & ~RC_Repeat;
 
 		if( msg == RC_timeout)
 		{
@@ -800,7 +800,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 		m_frameBuffer->blit();
 
 		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
-		neutrino_msg_t msg_repeatok = msg & ~CRCInput::RC_Repeat;
+		neutrino_msg_t msg_repeatok = msg & ~RC_Repeat;
 
 		if( msg == RC_timeout)
 		{
@@ -1123,7 +1123,7 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 		}
 
 		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
-		neutrino_msg_t msg_repeatok = msg & ~CRCInput::RC_Repeat;
+		neutrino_msg_t msg_repeatok = msg & ~RC_Repeat;
 
 		if( msg == RC_timeout)
 		{

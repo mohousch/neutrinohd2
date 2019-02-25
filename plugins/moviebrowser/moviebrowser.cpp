@@ -1214,7 +1214,7 @@ int CMovieBrowser::exec(const char * path)
 		
 		m_pcWindow->blit();	
 
-		if ( msg <= CRCInput::RC_MaxRC )
+		if ( msg <= RC_MaxRC )
 			timeoutEnd = CRCInput::calcTimeoutEnd(timeout); // calcualate next timeout
 	}
 	

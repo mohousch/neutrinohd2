@@ -176,7 +176,7 @@ int CSysInfoWidget::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 	{
 		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
 
-		if (msg <= CRCInput::RC_MaxRC  ) 
+		if (msg <= RC_MaxRC  ) 
 			timeoutEnd = g_RCInput->calcTimeoutEnd(5);
 		
 		// dont cancel by timeout

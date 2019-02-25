@@ -144,19 +144,7 @@ int displaywidth;
 #define hold_mosaic         0x1E
 #define release_mosaic      0x1F
 
-/* rc codes */
-/*
-#define RC_0        CRCInput::RC_0
-#define RC_1        CRCInput::RC_1
-#define RC_2        CRCInput::RC_2
-#define RC_3        CRCInput::RC_3
-#define RC_4        CRCInput::RC_4
-#define RC_5        CRCInput::RC_5
-#define RC_6        CRCInput::RC_6
-#define RC_7        CRCInput::RC_7
-#define RC_8        CRCInput::RC_8
-#define RC_9        CRCInput::RC_9
-*/
+/* rc codes */ 
 #define RC_RIGHT    RC_right
 #define RC_LEFT     RC_left
 #define RC_UP       RC_up

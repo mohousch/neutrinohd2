@@ -1431,7 +1431,7 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 				exit = true;
-			else if ( msg <= CRCInput::RC_MaxRC ) 
+			else if ( msg <= RC_MaxRC ) 
 			{
 				CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
 	

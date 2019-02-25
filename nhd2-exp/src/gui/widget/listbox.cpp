@@ -438,8 +438,13 @@ void ClistBox::paintHead()
 		headers.setHeadColor(headColor);
 		headers.setHeadCorner(headRadius, headCorner);
 		headers.setHeadGradient(headGradient);
-		headers.enablePaintDate();
-		headers.enableLogo();
+		
+		if(paintDate)
+			headers.enablePaintDate();
+
+		if(logo)
+			headers.enableLogo();
+
 		headers.setHeaderButtons(hbutton_labels, hbutton_count);
 
 		headers.paintHead(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, l_name.c_str(), iconfile.c_str());

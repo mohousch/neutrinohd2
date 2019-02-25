@@ -94,7 +94,7 @@ void CRCLock::lockBox()
 		// -- Zwen told me: Eating only RC events would be nice
 		// -- so be it...
 
-		if (msg >  CRCInput::RC_MaxRC) 
+		if (msg > RC_MaxRC) 
 		{
 			CNeutrinoApp::getInstance()->handleMsg(msg, data); 
 		} 
