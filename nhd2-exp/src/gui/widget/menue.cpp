@@ -2304,12 +2304,13 @@ void CMenuWidget::paint()
 			if( (heightCurrPage + hheight + fheight) > height)
 			{
 				page_start.push_back(i);
-				heightFirstPage = heightCurrPage - item_height;
 				total_pages++;
+				heightFirstPage = std::max(heightCurrPage - item_height, heightFirstPage);
 				heightCurrPage = item_height;
 			}
 		}
 
+		heightFirstPage = std::max(heightCurrPage, heightFirstPage);
 		page_start.push_back(items.size());
 
 		// icon offset
@@ -2337,10 +2338,7 @@ void CMenuWidget::paint()
 		}
 
 		// shrink menu if less items
-		if(hheight + itemHeightTotal + fheight < height)
-			height = hheight + heightCurrPage + fheight;
-		else 	
-			height = hheight + heightFirstPage + fheight;
+		height = std::min(height, hheight + heightFirstPage + fheight);
 
 		//	
 		full_width = width;
@@ -2381,7 +2379,6 @@ void CMenuWidget::paint()
 			saveScreen();
 
 		// paint head
-		//headers.paintHead(x, y, width, hheight, l_name, iconfile.c_str()); //FIXME
 		frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 
 		frameBuffer->paintIcon(iconfile.c_str(), x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
@@ -3572,12 +3569,13 @@ void ClistBoxWidget::initFrames()
 			if( (heightCurrPage + hheight + fheight) > height)
 			{
 				page_start.push_back(i);
-				heightFirstPage = heightCurrPage - item_height;
 				total_pages++;
+				heightFirstPage = std::max(heightCurrPage - item_height, heightFirstPage);
 				heightCurrPage = item_height;
 			}
 		}
 
+		heightFirstPage = std::max(heightCurrPage, heightFirstPage);
 		page_start.push_back(items.size());
 
 		// icon offset
@@ -3599,10 +3597,7 @@ void ClistBoxWidget::initFrames()
 		// shrink menu if less items
 		if(shrinkMenu)
 		{
-			if(hheight + itemHeightTotal + fheight < height)
-				height = hheight + heightCurrPage + fheight;
-			else 	
-				height = hheight + heightFirstPage + fheight;
+			height = std::min(height, hheight + heightFirstPage + fheight);
 		}
 
 		//

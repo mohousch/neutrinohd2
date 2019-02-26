@@ -805,8 +805,8 @@ void CTestMenu::testCWindow()
 	
 	Box.iX = g_settings.screen_StartX + 10;
 	Box.iY = g_settings.screen_StartY + 10;
-	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/2;
-	Box.iHeight = 40; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20);
 
 	//
 	CWindow* window = new CWindow();
@@ -815,7 +815,7 @@ void CTestMenu::testCWindow()
 
 	window->setColor(COL_MENUHEAD_PLUS_0);
 	window->setCorner(RADIUS_MID, CORNER_ALL);
-	window->setGradient(gradientDark2Light2Dark);
+	//window->setGradient(gradientDark2Light2Dark);
 
 	window->paint();
 	CFrameBuffer::getInstance()->blit();
@@ -3364,16 +3364,18 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CIcon", true, NULL, this, "icon"));
 	mainMenu->addItem(new CMenuForwarder("CImage", true, NULL, this, "image"));
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem(new CMenuForwarder("CHeaders", true, NULL, this, "headers"));
 	mainMenu->addItem(new CMenuForwarder("CWindow", true, NULL, this, "window"));
 	mainMenu->addItem(new CMenuForwarder("CWindow(with shadow)", true, NULL, this, "windowshadow"));
 	mainMenu->addItem(new CMenuForwarder("CWindow(customColor)", true, NULL, this, "windowcustomcolor"));
-	mainMenu->addItem(new CMenuForwarder("CHeaders", true, NULL, this, "headers"));
 	mainMenu->addItem(new CMenuForwarder("CTextBox", true, NULL, this, "textbox"));
 	mainMenu->addItem(new CMenuForwarder("CListFrame", true, NULL, this, "listframe"));
-	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
-	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarder("CFrameBox", true, NULL, this, "framebox"));
+
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
+	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget", true, NULL, this, "listboxwidget"));
