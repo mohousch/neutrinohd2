@@ -89,6 +89,7 @@ int CImageInfo::exec(CMenuTarget *parent, const std::string &)
 
 	frameBuffer->blit();	
 
+/*
 	neutrino_msg_t msg;
 
 	while (1)
@@ -109,6 +110,8 @@ int CImageInfo::exec(CMenuTarget *parent, const std::string &)
 		
 		frameBuffer->blit();		
 	}
+*/
+	g_RCInput->messageLoop();
 
 	hide();
 
@@ -190,7 +193,7 @@ void CImageInfo::paint()
 	const char * gitrev = GIT;
 	
 	//static CFlashVersionInfo versionInfo(version);
-	const char * releaseCycle = "4.0";
+	const char * releaseCycle = "3.3";
 	//releaseCycle = versionInfo.getReleaseCycle();
 	const char * imageType = "Snapshot";
 	//imageType = versionInfo.getType();
