@@ -2299,7 +2299,17 @@ void CTestMenu::testShowActuellEPG()
 void CTestMenu::testChannelSelectWidget()
 {
 	CSelectChannelWidget * CSelectChannelWidgetHandler = new CSelectChannelWidget();
-	CSelectChannelWidgetHandler->exec(NULL, "tv");
+
+	std::string mode = "tv";
+
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_tv)
+		mode = "tv";
+	else if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio)
+		mode = "radio";
+	else if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
+		mode = "webtv";
+
+	CSelectChannelWidgetHandler->exec(NULL, mode);
 		
 	//CSelectChannelWidget_TVChanID;
 	//CSelectChannelWidget_TVChanName.c_str();
@@ -2686,6 +2696,8 @@ void CTestMenu::testClistBoxWidget()
 	listMenu->setHeaderButtons(mHeadButtons, mHEAD_BUTTONS_COUNT);
 
 	listMenu->enablePaintDate();
+
+	listMenu->enablePaintFootInfo();
 
 	listMenu->addKey(RC_info, this, "minfo");
 

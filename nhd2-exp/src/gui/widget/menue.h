@@ -653,7 +653,7 @@ class CMenuWidget : public CMenuTarget
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 
 		//
-		void enableFootInfo(){FootInfo = true;};
+		void enablePaintFootInfo(){FootInfo = true;};
 };
 
 /// CMenulistBox
@@ -808,7 +808,7 @@ class ClistBoxWidget : public CMenuTarget
 
 		//
 		void resizeFrames();
-		void enableFootInfo(){FootInfo = true; initFrames();};
+		void enablePaintFootInfo(){FootInfo = true; initFrames();};
 		void setFootInfoHeight(int _height = 70){footInfoHeight = _height; resizeFrames();};
 
 		void setTimeOut(int to = 0){timeout = to;};
@@ -827,6 +827,8 @@ class ClistBoxWidget : public CMenuTarget
 		void setName(const std::string& p_name){nameString = p_name;};
 
 		void enableShrinkMenu(){shrinkMenu = true;};
+
+		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = RC_nokey, bool enabled = true);
 };
 
 #endif

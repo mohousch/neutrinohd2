@@ -2491,10 +2491,12 @@ void CMenuWidget::paintItems()
 		}
 	
 		// paint items background
+		frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENT_PLUS_0);
+
 		if(widgetType == WIDGET_TYPE_EXTENDED)
-			frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENTDARK_PLUS_0);
-		else
-			frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENT_PLUS_0);
+		{
+			frameBuffer->paintBoxRel(x + items_width, item_start_y, width - items_width, items_height, COL_MENUCONTENTDARK_PLUS_0);
+		}
 	
 		// paint right scroll bar if we have more then one page
 		if(total_pages > 1)
@@ -3815,13 +3817,8 @@ void ClistBoxWidget::paintItems()
 				current_page++;
 		}
 	
-		if(widgetType == WIDGET_TYPE_EXTENDED)
-		{
-			// paint items background
-			frameBuffer->paintBoxRel(x, item_start_y, width, height - hheight - fheight, COL_MENUCONTENTDARK_PLUS_0);
-		}
-		else
-			frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENT_PLUS_0);
+		// paint items background
+		frameBuffer->paintBoxRel(x, item_start_y, width, items_height, COL_MENUCONTENT_PLUS_0);
 	
 		// paint right scrollBar if we have more then one page
 		if(total_pages > 1)
@@ -4051,6 +4048,45 @@ void ClistBoxWidget::hide()
 	{
 		delete textBox;
 		textBox = NULL;
+	}
+}
+
+void ClistBoxWidget::integratePlugins(CPlugins::i_type_t integration, const unsigned int shortcut, bool enabled)
+{
+	unsigned int number_of_plugins = (unsigned int) g_PluginList->getNumberOfPlugins();
+
+	std::string IconName;
+	unsigned int sc = shortcut;
+
+	for (unsigned int count = 0; count < number_of_plugins; count++)
+	{
+		if ((g_PluginList->getIntegration(count) == integration) && !g_PluginList->isHidden(count))
+		{
+			//
+			IconName = NEUTRINO_ICON_MENUITEM_PLUGIN;
+
+			std::string icon("");
+			icon = g_PluginList->getIcon(count);
+
+			if(!icon.empty())
+			{
+				IconName = PLUGINDIR;
+				IconName += "/";
+				IconName += g_PluginList->getFileName(count);
+				IconName += "/";
+				IconName += g_PluginList->getIcon(count);
+			}
+
+			//
+			neutrino_msg_t dk = (shortcut != RC_nokey) ? CRCInput::convertDigitToKey(sc++) : RC_nokey;
+
+			//FIXME: iconName
+			CMenuForwarder *fw_plugin = new CMenuForwarder(g_PluginList->getName(count), enabled, NULL, CPluginsExec::getInstance(), to_string(count).c_str(), dk, NULL, IconName.c_str());
+
+			fw_plugin->setHelpText(g_PluginList->getDescription(count).c_str());
+
+			addItem(fw_plugin);
+		}
 	}
 }
 

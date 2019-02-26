@@ -222,7 +222,7 @@ void CMiscSettings::showMenu(void)
 
 	miscSettings->enableMenuPosition();
 	miscSettings->enableWidgetChange();
-	miscSettings->enableFootInfo();
+	miscSettings->enablePaintFootInfo();
 
 	//miscSettings general
 	miscSettings->addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_GENERAL, true, NULL, new CGeneralSettings(), NULL, RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_GENERALSETTINGS, LOCALE_HELPTEXT_GENERALSETTINGS));
