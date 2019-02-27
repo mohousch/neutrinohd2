@@ -45,14 +45,11 @@
 #include <system/settings.h>
 
 
-CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const CBox * position, fb_pixel_t textBackgroundColor)
+CTextBox::CTextBox(CFont * font_text, const int _mode, const CBox * position, fb_pixel_t textBackgroundColor)
 {
 	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
 	
 	initVar();
-
- 	if(text != NULL)
-		m_cText = text;
 	
 	if(font_text != NULL)	
 		m_pcFontText = font_text;
@@ -79,22 +76,6 @@ CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const 
 	m_nFontTextHeight = m_pcFontText->getHeight();
 	
 	dprintf(DEBUG_DEBUG, " CTextBox::CTextBox: m_nFontTextHeight: %d\t\r\n", m_nFontTextHeight);
-
-	// initialise the window frames first
-	initFramesRel();
-
-	// than refresh text line array 
-	refreshTextLineArray();
-}
-
-CTextBox::CTextBox(const char * text)
-{
-	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
-	
-	initVar();
-
-	if(text != NULL)		
-		m_cText = *text;
 
 	// initialise the window frames first
 	initFramesRel();

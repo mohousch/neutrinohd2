@@ -130,8 +130,7 @@ class CTextBox
 	public:
 		// Constructor
 		CTextBox();
-		CTextBox(const char* text);
-		CTextBox(const char* text, CFont* font_text, const int mode, const CBox* position, fb_pixel_t textBackgroundColor);
+		CTextBox(CFont* font_text, const int mode, const CBox* position, fb_pixel_t textBackgroundColor);
 
 		virtual ~CTextBox();
 

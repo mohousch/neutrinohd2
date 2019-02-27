@@ -47,7 +47,8 @@ class CScrollBar
 {
 	private:
 	public:
-		CScrollBar();
+		CScrollBar(){};
+		virtual ~CScrollBar(){};
 
 		void paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage);
 		void paint(CBox* position, const int NrOfPages, const int CurrentPage);

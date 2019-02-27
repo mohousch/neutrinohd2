@@ -25,10 +25,6 @@
 #include <gui/widget/scrollbar.h>
 
 
-CScrollBar::CScrollBar()
-{
-}
-
 void CScrollBar::paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage)
 {
 	// scrollBar

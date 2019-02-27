@@ -491,7 +491,7 @@ void ClistBox::paintItemInfo(int pos)
 		item->getYPosition();
 	
 		// detailslines
-		itemsLine.paintD(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight - footInfoHeight, footInfoHeight, hheight, item->getHeight(), item->getYPosition());
+		itemsLine.paint(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight - footInfoHeight, footInfoHeight, item->getHeight(), item->getYPosition());
 
 		// option_info1
 		int l_ow1 = 0;

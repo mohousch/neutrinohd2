@@ -1102,7 +1102,7 @@ void CTestMenu::testCInfoBox()
 	
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox("testing CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_INFO);
+	CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_INFO);
 
 	infoBox->setText(&buffer, tname, p_w, p_h);
 	infoBox->exec();
@@ -1224,9 +1224,15 @@ void CTestMenu::testCTextBox()
 	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
 	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20);
 	
-	CTextBox * textBox = new CTextBox("CTextBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &Box, COL_MENUCONTENT_PLUS_0);
+	CTextBox * textBox = new CTextBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &Box, COL_MENUCONTENT_PLUS_0);
 	
-	std::string text = "testing CTextBox: blah blah blah boaah";
+	std::string buffer;
+	
+	// prepare print buffer  
+	buffer = "CTextBox";
+	buffer += "\n";
+	buffer += "testing CTextBox";
+	buffer += "\n";
 		
 	std::string tname = PLUGINDIR "/netzkino/netzkino.png";
 	
@@ -1236,7 +1242,7 @@ void CTestMenu::testCTextBox()
 	
 	CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
 	
-	textBox->setText(&text, tname, p_w, p_h);
+	textBox->setText(&buffer, tname, p_w, p_h);
 	
 	textBox->paint();
 	CFrameBuffer::getInstance()->blit();
@@ -2288,7 +2294,9 @@ void CTestMenu::testShowActuellEPG()
 	
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox(buffer.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NULL);
+	CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NULL);
+
+	infoBox->setText(&buffer);
 	
 	infoBox->exec();
 	delete infoBox;

@@ -55,13 +55,7 @@
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-CInfoBox::CInfoBox(  const char * text, 
-				   CFont *fontText,
-				   const int _mode, 
-				   const CBox* position, 
-				   const char * title,
-				   CFont *fontTitle,
-				   const char * icon)
+CInfoBox::CInfoBox(CFont *fontText, const int _mode, const CBox* position, const char * title, CFont *fontTitle, const char * icon)
 {
 	initVar();
 
@@ -82,7 +76,7 @@ CInfoBox::CInfoBox(  const char * text,
 	// initialise the window frames first
 	initFramesRel();
 
-	m_pcTextBox = new CTextBox(text, fontText, _mode, &m_cBoxFrameText, COL_MENUCONTENT_PLUS_0);
+	m_pcTextBox = new CTextBox(fontText, _mode, &m_cBoxFrameText, COL_MENUCONTENT_PLUS_0);
 
 	if(_mode & CTextBox::AUTO_WIDTH || _mode & CTextBox::AUTO_HIGH)
 	{
@@ -100,24 +94,6 @@ CInfoBox::CInfoBox(  const char * text,
 		m_cBoxFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - m_cBoxFrame.iWidth) >>1);
 		m_cBoxFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - m_cBoxFrame.iHeight) >>2);
 	}
-}
-
-//////////////////////////////////////////////////////////////////////
-// Function Name:	CInfoBox	
-// Description:		
-// Parameters:		
-// Data IN/OUT:		
-// Return:		
-// Notes:		
-//////////////////////////////////////////////////////////////////////
-CInfoBox::CInfoBox(const char* text)
-{
-	initVar();
-
-	m_pcTextBox = new CTextBox(text);
-	
-	// initialise the window frames first
-	initFramesRel();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -449,7 +425,7 @@ void InfoBox(const char * text, const char * title, const char * icon, std::stri
 
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox(text, g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, title, g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], icon);
+	CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, title, g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], icon);
 
 	infoBox->setText(&buffer, thumbnail, tw, th, tmode);
 	infoBox->exec();

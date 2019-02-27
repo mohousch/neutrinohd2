@@ -51,7 +51,7 @@ class CHeaders
 	
 	public:
 		CHeaders();
-		~CHeaders(){};
+		virtual ~CHeaders(){};
 
 		// head
 		void setHeadColor(fb_pixel_t col){bgcolor = col;};

@@ -89,28 +89,6 @@ int CImageInfo::exec(CMenuTarget *parent, const std::string &)
 
 	frameBuffer->blit();	
 
-/*
-	neutrino_msg_t msg;
-
-	while (1)
-	{
-		neutrino_msg_data_t data;
-		uint64_t timeoutEnd = CRCInput::calcTimeoutEnd_MS(100);
-		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
-
-		if (msg <= RC_MaxRC)
-		{
-			break;
-		}
-
-		if ( msg > RC_MaxRC && msg != RC_timeout)
-		{
-			CNeutrinoApp::getInstance()->handleMsg( msg, data );
-		}
-		
-		frameBuffer->blit();		
-	}
-*/
 	g_RCInput->messageLoop();
 
 	hide();
