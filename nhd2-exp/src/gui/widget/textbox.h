@@ -54,10 +54,29 @@
 #include <gui/widget/widget_helpers.h>
 
 
+// mode
+typedef enum mode_
+{
+	AUTO_WIDTH	= 0x01,
+	AUTO_HIGH	= 0x02,
+	SCROLL		= 0x04,
+	CENTER		= 0x40,
+	NO_AUTO_LINEBREAK = 0x80
+}mode;
+
+// tmode
+typedef enum tmode_
+{
+	TOP_RIGHT = 0,
+	TOP_LEFT = 1,
+	TOP_CENTER
+}tmode;
+
 class CTextBox  
 {
 	public:
-		// Variables
+#if 0
+		// mode
 		typedef enum mode_
 		{
 			AUTO_WIDTH	= 0x01,
@@ -74,6 +93,7 @@ class CTextBox
 			TOP_LEFT = 1,
 			TOP_CENTER
 		}tmode;
+#endif
 
 	private:
 		CBox m_cFrame;

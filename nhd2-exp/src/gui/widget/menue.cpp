@@ -2689,7 +2689,7 @@ void CMenuWidget::paintItemInfo(int pos)
 				textBox = NULL;
 			}
 	
-			textBox = new CTextBox(NULL, CTextBox::SCROLL, &cFrameBoxText);
+			textBox = new CTextBox(NULL, SCROLL, &cFrameBoxText);
 
 			textBox->setBackGroundColor(COL_MENUFOOT_INFO_PLUS_0);
 			textBox->setGradient(g_settings.Foot_Info_gradient);
@@ -3805,7 +3805,7 @@ void ClistBoxWidget::paintItems()
 			cFrameBoxText.iWidth = width - items_width;
 			cFrameBoxText.iHeight = items_height;
 
-			textBox = new CTextBox(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER], CTextBox::SCROLL, &cFrameBoxText, COL_MENUCONTENTDARK_PLUS_0);
+			textBox = new CTextBox(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER], SCROLL, &cFrameBoxText, COL_MENUCONTENTDARK_PLUS_0);
 		}
 	
 		// item not currently on screen
@@ -3968,7 +3968,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 
 		CFrameBuffer::getInstance()->scaleImage(fname, &p_w, &p_h);
 
-		textBox->setText(&item->info1, item->itemIcon, p_w, p_h, CTextBox::TOP_CENTER);
+		textBox->setText(&item->info1, item->itemIcon, p_w, p_h, TOP_CENTER);
 		textBox->paint();
 	}
 }

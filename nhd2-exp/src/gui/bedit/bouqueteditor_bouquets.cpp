@@ -206,21 +206,21 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 			{
 				if (bouquetsChanged)
 				{
-					int result = MessageBox(LOCALE_BOUQUETEDITOR_NAME, LOCALE_BOUQUETEDITOR_SAVECHANGES, CMessageBox::mbrYes, CMessageBox::mbAll);
+					int result = MessageBox(LOCALE_BOUQUETEDITOR_NAME, LOCALE_BOUQUETEDITOR_SAVECHANGES, mbrYes, mbAll);
 
 					switch( result )
 					{
-						case CMessageBox::mbrYes :
+						case mbrYes :
 							loop = false;
 							saveChanges();
 						break;
 						
-						case CMessageBox::mbrNo :
+						case mbrNo :
 							loop = false;
 							discardChanges();
 						break;
 						
-						case CMessageBox::mbrCancel :
+						case mbrCancel :
 							listBox->clearItems();
 							paint();
 						break;
@@ -444,7 +444,7 @@ void CBEBouquetWidget::deleteBouquet()
 	if (selected >= Bouquets->size()) /* Bouquets->size() might be 0 */
 		return;
 
-	if (MessageBox(LOCALE_FILEBROWSER_DELETE, (*Bouquets)[selected]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[selected]->Name.c_str(), CMessageBox::mbrNo, CMessageBox::mbYes|CMessageBox::mbNo) != CMessageBox::mbrYes)
+	if (MessageBox(LOCALE_FILEBROWSER_DELETE, (*Bouquets)[selected]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[selected]->Name.c_str(), mbrNo, mbYes | mbNo) != mbrYes)
 		return;
 
 	g_bouquetManager->deleteBouquet(selected);

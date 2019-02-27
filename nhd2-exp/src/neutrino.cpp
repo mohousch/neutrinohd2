@@ -823,7 +823,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	strcpy( g_settings.network_nfs_picturedir, configfile.getString( "network_nfs_picturedir", "/media/hdd/picture" ).c_str() );
 
 	g_settings.picviewer_slide_time = configfile.getInt32("picviewer_slide_time", 10);
-	g_settings.picviewer_scaling = configfile.getInt32("picviewer_scaling", (int)CFrameBuffer::SIMPLE);
+	g_settings.picviewer_scaling = configfile.getInt32("picviewer_scaling", (int)SIMPLE);
 	// end pictureviewer
 
 	// misc opts
@@ -3058,7 +3058,7 @@ void CNeutrinoApp::RealRun(void)
 				// stop record if recording
 				if( recordingstatus ) 
 				{
-					if(MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 30, true) == CMessageBox::mbrYes)
+					if(MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, mbrYes, mbYes | mbNo, NULL, 450, 30, true) == mbrYes)
 					{
 						g_Timerd->stopTimerEvent(recording_id);
 						CVFD::getInstance()->ShowIcon(VFD_ICON_TIMESHIFT, false );
@@ -3981,7 +3981,7 @@ _repeat:
 	else if( msg == NeutrinoMessages::ANNOUNCE_SHUTDOWN) 
 	{
 		if( mode != mode_scart )
-			skipShutdownTimer = (MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWNTIMER_ANNOUNCE, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 5) == CMessageBox::mbrYes);
+			skipShutdownTimer = (MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWNTIMER_ANNOUNCE, mbrNo, mbYes | mbNo, NULL, 450, 5) == mbrYes);
 	}
 	else if( msg == NeutrinoMessages::SHUTDOWN ) 
 	{
@@ -4031,7 +4031,7 @@ _repeat:
 	else if (msg == NeutrinoMessages::EVT_EXTMSG) 
 	{
 		if (mode != mode_scart)
-			MessageBox(LOCALE_MESSAGEBOX_INFO, (const char *) data, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
+			MessageBox(LOCALE_MESSAGEBOX_INFO, (const char *) data, mbrBack, mbBack, NEUTRINO_ICON_INFO); // UTF-8
 		delete[] (unsigned char*) data;
 		return messages_return::handled;
 	}
@@ -4049,7 +4049,7 @@ _repeat:
 			else
 				goto skip_message;
 
-			MessageBox(LOCALE_MESSAGEBOX_INFO, msgbody, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO, 450, 5);
+			MessageBox(LOCALE_MESSAGEBOX_INFO, msgbody, mbrBack, mbBack, NEUTRINO_ICON_INFO, 450, 5);
 
 skip_message:
 			;
@@ -4076,7 +4076,7 @@ skip_message:
 		}
 		
 		if( mode != mode_scart )
-			MessageBox(LOCALE_TIMERLIST_TYPE_REMIND, text.c_str(), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
+			MessageBox(LOCALE_TIMERLIST_TYPE_REMIND, text.c_str(), mbrBack, mbBack, NEUTRINO_ICON_INFO); // UTF-8
 			
 		delete[] (unsigned char*) data;
 		
@@ -4209,7 +4209,7 @@ void CNeutrinoApp::ExitRun(int retcode)
 	}
 	
 	//
-	if (!recordingstatus || MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 30, true) == CMessageBox::mbrYes)  
+	if (!recordingstatus || MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, mbrNo, mbYes | mbNo, NULL, 450, 30, true) == mbrYes)  
 	{
 		// stop recording
 		if(recordingstatus) 

@@ -490,7 +490,7 @@ void testNetworkSettings(const char* ip, const char* netmask, const char* broadc
 	text += "\nwww.google.de: ";
 	text += mypinghost("173.194.35.152");
 
-	MessageBox(LOCALE_NETWORKMENU_TEST, text.c_str(), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
+	MessageBox(LOCALE_NETWORKMENU_TEST, text.c_str(), mbrBack, mbBack, NEUTRINO_ICON_INFO); // UTF-8
 }
 
 void showCurrentNetworkSettings()
@@ -539,7 +539,7 @@ void showCurrentNetworkSettings()
 		text += router;
 	}
 	
-	MessageBox(LOCALE_NETWORKMENU_SHOW, text.c_str(), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
+	MessageBox(LOCALE_NETWORKMENU_SHOW, text.c_str(), mbrBack, mbBack, NEUTRINO_ICON_INFO); // UTF-8
 }
 
 

@@ -555,8 +555,8 @@ int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionK
 
 	if( actionKey == "factory") 
 	{
-		int result = MessageBox(LOCALE_RESET_SETTINGS, g_Locale->getText(LOCALE_RESET_CONFIRM), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo);
-		if(result != CMessageBox::mbrYes) 
+		int result = MessageBox(LOCALE_RESET_SETTINGS, g_Locale->getText(LOCALE_RESET_CONFIRM), mbrNo, mbYes | mbNo);
+		if(result != mbrYes) 
 			return true;
 		
 		// neutrino settings
@@ -625,7 +625,7 @@ int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionK
 				system(fname);
 			} 
 			else
-				MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_SETTINGS_BACKUP_FAILED),CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_ERROR);
+				MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_SETTINGS_BACKUP_FAILED), mbrBack, mbBack, NEUTRINO_ICON_ERROR);
 		}
 	}
 	else if(actionKey == "restore") 
@@ -634,8 +634,8 @@ int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionK
 		fileBrowser.Filter = &fileFilter;
 		if (fileBrowser.exec("/media") == true) 
 		{
-			int result = MessageBox(LOCALE_SETTINGS_RESTORE, g_Locale->getText(LOCALE_SETTINGS_RESTORE_WARN), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo);
-			if(result == CMessageBox::mbrYes) 
+			int result = MessageBox(LOCALE_SETTINGS_RESTORE, g_Locale->getText(LOCALE_SETTINGS_RESTORE_WARN), mbrNo, mbYes | mbNo);
+			if(result == mbrYes) 
 			{
 				char  fname[256];
 				

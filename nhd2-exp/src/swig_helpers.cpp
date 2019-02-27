@@ -37,7 +37,7 @@ bool CSwigHelpers::paintIcon(const std::string & filename, const int x, const in
 	return CFrameBuffer::getInstance()->paintIcon(filename, x, y, h, paint, width, height);
 }
 
-bool CSwigHelpers::displayImage(const std::string & name, int posx, int posy, int width, int height, CFrameBuffer::ScalingMode scaling, int x_pan, int y_pan, bool clearfb)
+bool CSwigHelpers::displayImage(const std::string & name, int posx, int posy, int width, int height, ScalingMode scaling, int x_pan, int y_pan, bool clearfb)
 {
 	return CFrameBuffer::getInstance()->displayImage(name, posx, posy, width, height, scaling, x_pan, y_pan, clearfb);
 }
@@ -97,6 +97,27 @@ void CSwigHelpers::restoreScreen(int x, int y, int dx, int dy, fb_pixel_t * cons
 	CFrameBuffer::getInstance()->restoreScreen(x, y, dx, dy, memp);
 }
 
+void CSwigHelpers::blit(int mode3d)
+{
+	CFrameBuffer::getInstance()->blit(mode3d);
+}
+
+void CSwigHelpers::getSize(const std::string &name, int * width, int * height, int * nbpp)
+{
+	CFrameBuffer::getInstance()->getSize(name, width, height, nbpp);
+}
+
+void CSwigHelpers::getIconSize(const char * const filename, int* width, int *height)
+{
+	CFrameBuffer::getInstance()->getIconSize(filename, width, height);
+}
+
+void CSwigHelpers::scaleImage(const std::string &tname, int *p_w, int *p_h)
+{
+	CFrameBuffer::getInstance()->scaleImage(tname, p_w, p_h);
+}
+
+// fontRenderer
 void CSwigHelpers::RenderString(int font_type, int x, int y, const int width, const char * text, const uint8_t color, const int boxheight, bool utf8_encoded, const bool useBackground)
 {
 	g_Font[font_type]->RenderString(x, y, width, text, color, boxheight, utf8_encoded, useBackground);
@@ -126,6 +147,15 @@ int CSwigHelpers::getRCCode(int timeout)
 		return 0;
 }
 
+int CSwigHelpers::addTimer(uint64_t Interval, bool oneshot, bool correct_time)
+{
+	g_RCInput->addTimer(Interval, oneshot, correct_time);
+}
+
+void CSwigHelpers::killTimer(uint32_t id)
+{
+	g_RCInput->killTimer(id);
+}
 
 
 

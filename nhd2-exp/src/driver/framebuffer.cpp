@@ -1852,7 +1852,7 @@ void * CFrameBuffer::convertRGB2FB(unsigned char * rgbbuff, unsigned long x, uns
 	{
 		switch (m_transparent) 
 		{
-			case CFrameBuffer::TM_BLACK:
+			case TM_BLACK:
 				for(i = 0; i < count ; i++) 
 				{
 					transp = 0;
@@ -1862,12 +1862,12 @@ void * CFrameBuffer::convertRGB2FB(unsigned char * rgbbuff, unsigned long x, uns
 				}
 				break;
 							
-			case CFrameBuffer::TM_INI:
+			case TM_INI:
 				for(i = 0; i < count ; i++)
 					fbbuff[i] = (transp << 24) | ((rgbbuff[i*3] << 16) & 0xFF0000) | ((rgbbuff[i*3 + 1] << 8) & 0xFF00) | (rgbbuff[i*3 + 2] & 0xFF);
 				break;
 							
-			case CFrameBuffer::TM_NONE:
+			case TM_NONE:
 			default:
 				for(i = 0; i < count ; i++)
 					fbbuff[i] = 0xFF000000 | ((rgbbuff[i*3] << 16) & 0xFF0000) | ((rgbbuff[i*3 + 1] << 8) & 0xFF00) | (rgbbuff[i*3 + 2] & 0xFF);

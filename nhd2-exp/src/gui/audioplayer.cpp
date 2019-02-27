@@ -1098,7 +1098,7 @@ void CAudioPlayerGui::savePlaylist()
 				g_Locale->getText(LOCALE_AUDIOPLAYER_PLAYLIST_FILEERROR_MSG),
 				absPlaylistFilename.c_str());
 
-			MessageBox(LOCALE_MESSAGEBOX_ERROR, msg, CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+			MessageBox(LOCALE_MESSAGEBOX_ERROR, msg, mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
 			// refresh view
 			std::cout << "CAudioPlayerGui: could not create play list file " 
 			<< absPlaylistFilename << std::endl;
@@ -1126,7 +1126,7 @@ bool CAudioPlayerGui::askToOverwriteFile(const std::string& filename)
 	char msg[filename.length() + 127];
 	
 	snprintf(msg, filename.length() + 126, "%s\n%s", g_Locale->getText(LOCALE_AUDIOPLAYER_PLAYLIST_FILEOVERWRITE_MSG), filename.c_str());
-	bool res = (MessageBox(LOCALE_AUDIOPLAYER_PLAYLIST_FILEOVERWRITE_TITLE, msg, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes);
+	bool res = (MessageBox(LOCALE_AUDIOPLAYER_PLAYLIST_FILEOVERWRITE_TITLE, msg, mbrYes, mbYes | mbNo) == mbrYes);
 	
 	return res;
 }

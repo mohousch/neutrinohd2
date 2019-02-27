@@ -641,7 +641,7 @@ void CUpnpBrowserGui::loadDevices(bool hint)
 
 	if (!m_devices.size())
 	{
-		MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_UPNPBROWSER_NOSERVERS, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_UPDATE);
+		MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_UPNPBROWSER_NOSERVERS, mbrBack, mbBack, NEUTRINO_ICON_UPDATE);
 		delete scanBox;
 		return;
 	}

@@ -253,7 +253,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 				break;
 
 			case RC_home:
-				if ( ((brightness != brightness_alt) || (brightnessstandby != brightnessstandby_alt) ) && (MessageBox(name.c_str(), LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
+				if ( ((brightness != brightness_alt) || (brightnessstandby != brightnessstandby_alt) ) && (MessageBox(name.c_str(), LOCALE_MESSAGEBOX_DISCARD, mbrYes, mbYes | mbCancel) == mbrCancel))
 					break;
 
 				brightness = brightness_alt;

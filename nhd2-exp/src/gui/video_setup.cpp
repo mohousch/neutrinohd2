@@ -431,7 +431,7 @@ bool CVideoSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void 
 
 		if(prev_video_Mode != g_settings.video_Mode) 
 		{
-			if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_VIDEOMODE_OK), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_INFO) != CMessageBox::mbrYes) 
+			if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_VIDEOMODE_OK), mbrNo, mbYes | mbNo, NEUTRINO_ICON_INFO) != mbrYes) 
 			{
 				g_settings.video_Mode = prev_video_Mode;
 				if(videoDecoder)

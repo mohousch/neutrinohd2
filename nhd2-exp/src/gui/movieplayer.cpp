@@ -90,9 +90,6 @@
 #include <playback_cs.h>
 #include <video_cs.h>
 
-//
-//#include <channel.h>
-
 
 // scripts
 #define MOVIEPLAYER_START_SCRIPT 	CONFIGDIR "/movieplayer.start" 
@@ -461,12 +458,12 @@ void CMoviePlayerGui::PlayFile(void)
 	CBox boxposition(x, y, width, height);	// window position for the hint boxes
 
 	// backword hintbox
-	CTextBox newBackwordHintBox(NULL, CTextBox::CENTER , &boxposition, COL_MENUCONTENT_PLUS_0);
+	CTextBox newBackwordHintBox(NULL, CENTER , &boxposition, COL_MENUCONTENT_PLUS_0);
 	std::string backwordHint = g_Locale->getText(LOCALE_MOVIEBROWSER_HINT_NEWBOOK_BACKWARD);
 	newBackwordHintBox.setText(&backwordHint);
 
 	// forward hintbox
-	CTextBox newForwardHintBox(NULL, CTextBox::CENTER, &boxposition, COL_MENUCONTENT_PLUS_0);
+	CTextBox newForwardHintBox(NULL, CENTER, &boxposition, COL_MENUCONTENT_PLUS_0);
 	std::string forwardHint = g_Locale->getText(LOCALE_MOVIEBROWSER_HINT_NEWBOOK_FORWARD);
 	newForwardHintBox.setText(&forwardHint);
 
@@ -769,7 +766,7 @@ void CMoviePlayerGui::PlayFile(void)
 				// stop record if recording
 				if( CNeutrinoApp::getInstance()->recordingstatus) 
 				{
-					if(MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 30, true) == CMessageBox::mbrYes)
+					if(MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, mbrYes, mbYes | mbNo, NULL, 450, 30, true) == mbrYes)
 					{
 						CVCRControl::getInstance()->Stop();
 						g_Timerd->stopTimerEvent(CNeutrinoApp::getInstance()->recording_id);
@@ -1420,7 +1417,7 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 		else if (msg == (neutrino_msg_t)g_settings.key_screenshot)
 		{
-         		if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SCREENSHOT_ANNOUNCE), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
+         		if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SCREENSHOT_ANNOUNCE), mbrNo, mbYes | mbNo) == mbrYes) 
 			{
 				CVCRControl::getInstance()->Screenshot(0, (char *)filelist[selected].file.Name.c_str());
 			}

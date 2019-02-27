@@ -46,7 +46,7 @@ CRestartEnigma::~CRestartEnigma()
 
 void CRestartEnigma::showMenu()
 {
-	if(MessageBox(LOCALE_MESSAGEBOX_INFO, "do you want really to restart enigma2?", CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 30, true) == CMessageBox::mbrYes)
+	if(MessageBox(LOCALE_MESSAGEBOX_INFO, "do you want really to restart enigma2?", mbrYes, mbYes | mbNo, NULL, 450, 30, true) == mbrYes)
 					
 	{
 		system("rm -f /etc/.nhd2");

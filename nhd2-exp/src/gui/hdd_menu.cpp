@@ -414,9 +414,9 @@ int CHDDInit::exec(CMenuTarget * /*parent*/, const std::string& actionKey)
 	
 	sprintf(src, "/dev/%s", actionKey.c_str());
 
-	res = MessageBox( LOCALE_HDD_FORMAT, g_Locale->getText(LOCALE_HDD_INIT_WARN), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo );
+	res = MessageBox( LOCALE_HDD_FORMAT, g_Locale->getText(LOCALE_HDD_INIT_WARN), mbrNo, mbYes | mbNo );
 
-	if(res != CMessageBox::mbrYes)
+	if(res != mbrYes)
 		return 0;
 	
 	f = fopen("/proc/sys/kernel/hotplug", "w");
@@ -605,9 +605,9 @@ int CHDDFmtExec::exec(CMenuTarget *parent, const std::string& actionKey)
 
 	sprintf(src, "/dev/%s", actionKey.c_str());
 
-	res = MessageBox(LOCALE_HDD_FORMAT, g_Locale->getText(LOCALE_HDD_FORMAT_WARN), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo );
+	res = MessageBox(LOCALE_HDD_FORMAT, g_Locale->getText(LOCALE_HDD_FORMAT_WARN), mbrNo, mbYes | mbNo );
 
-	if(res != CMessageBox::mbrYes)
+	if(res != mbrYes)
 		return 0;
 
 	bool srun = system("killall -9 smbd");
@@ -1242,7 +1242,7 @@ REPEAT:
 
 					CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 					
-					CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, file->getFileName().c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_FILE);
+					CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &position, file->getFileName().c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_FILE);
 					infoBox->setText(&buffer);
 					infoBox->exec();
 					delete infoBox;

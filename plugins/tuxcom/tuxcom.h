@@ -122,9 +122,9 @@ enum {
 };
 
 enum {
-	LEFT, 
-	CENTER, 
-	RIGHT
+	TC_LEFT, 
+	TC_CENTER, 
+	TC_RIGHT
 };
 
 enum {

@@ -427,7 +427,7 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 		}
 		else if ( (msg == RC_home) || (msg == RC_timeout) )
 		{
-			if ( ( strcmp(value, oldval) != 0) && (MessageBox(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
+			if ( ( strcmp(value, oldval) != 0) && (MessageBox(name, LOCALE_MESSAGEBOX_DISCARD, mbrYes, mbYes | mbCancel) == mbrCancel))
 				continue;
 
 			strncpy(value, oldval, size);

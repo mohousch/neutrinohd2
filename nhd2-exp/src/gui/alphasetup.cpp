@@ -203,7 +203,7 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 			case RC_home:
 				if ( *alpha != alpha_alt)
 				{
-					if (MessageBox(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel)
+					if (MessageBox(name, LOCALE_MESSAGEBOX_DISCARD, mbrYes, mbYes | mbCancel) == mbrCancel)
 					{
 						break;
 					}

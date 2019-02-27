@@ -227,7 +227,7 @@ REPEAT:
 		else 
 		{
 			//FIXME show error
-			MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_YT_ERROR), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+			MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_YT_ERROR), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
 			
 			//return;
 			if(mode == cYTFeedParser::PREV)

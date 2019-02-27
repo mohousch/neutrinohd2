@@ -67,7 +67,7 @@ class CSwigHelpers
 
 		bool paintIcon(const std::string & filename, const int x, const int y, const int h = 0, bool paint = true, int width = 0, int height = 0);
 
-		bool displayImage(const std::string & name, int posx = 0, int posy = 0, int width = DEFAULT_XRES, int height = DEFAULT_YRES, CFrameBuffer::ScalingMode scaling = CFrameBuffer::COLOR, int x_pan = 0, int y_pan = 0, bool clearfb = false);
+		bool displayImage(const std::string & name, int posx = 0, int posy = 0, int width = DEFAULT_XRES, int height = DEFAULT_YRES, ScalingMode scaling = COLOR, int x_pan = 0, int y_pan = 0, bool clearfb = false);
 
 		bool displayLogo(t_channel_id channel_id, int posx, int posy, int width, int height, bool upscale = false, bool center_x = true, bool center_y = true);
 
@@ -83,6 +83,12 @@ class CSwigHelpers
 		void paintHLineRel(int x, int dx, int y, const fb_pixel_t col);
 
 		void paintFrameBox(const int x, const int y, const int dx, const int dy, const fb_pixel_t col);
+		void blit(int mode3d = THREE_NONE);
+
+		void getSize(const std::string &name, int * width, int * height, int * nbpp);
+		void getIconSize(const char * const filename, int* width, int *height);
+
+		void scaleImage(const std::string &tname, int *p_w, int *p_h);
 
 		// fontrenderer
 		void RenderString(int font_type, int x, int y, const int width, const char * text, const uint8_t color, const int boxheight = 0, bool utf8_encoded = true, const bool useBackground = false);
@@ -92,6 +98,8 @@ class CSwigHelpers
 
 		// CRCInput
 		int getRCCode(int timeout = 10);
+		int addTimer(uint64_t Interval, bool oneshot = true, bool correct_time = true );
+		void killTimer(uint32_t id);
 };
 
 #endif

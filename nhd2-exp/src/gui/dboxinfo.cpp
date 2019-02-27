@@ -307,7 +307,7 @@ void CDBoxInfoWidget::showInfo()
 		dboxInfo->add2Line(tbuf, tbuf1, g_Font[SNeutrinoSettings::FONT_TYPE_MENU], COL_MENUCONTENTINACTIVE, false, g_Font[SNeutrinoSettings::FONT_TYPE_MENU], COL_MENUCONTENT);
 	}
 
-	dboxInfo->show("Box Info", HELPBOX_WIDTH, -1, CMessageBox::mbrBack, CMessageBox::mbNone);
+	dboxInfo->show("Box Info", HELPBOX_WIDTH, -1, mbrBack, mbNone);
 
 	delete dboxInfo;
 	dboxInfo = NULL;	

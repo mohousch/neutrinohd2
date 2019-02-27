@@ -201,7 +201,7 @@ void CEpgData::start()
 	cTextBox.iHeight = cFrameBox.iHeight - cHeadBox.iHeight - cFootBox.iHeight - cFollowScreeningBox.iHeight;
 
 	if(textBox == NULL)
-		textBox = new CTextBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &cTextBox, COL_MENUCONTENT_PLUS_0);
+		textBox = new CTextBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &cTextBox, COL_MENUCONTENT_PLUS_0);
 }
 
 #define GENRE_MOVIE_COUNT 9
@@ -739,12 +739,12 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 														 epgData.epg_times.startzeit - (ANNOUNCETIME + 120 ),
 														 TIMERD_APIDS_CONF, true, recDir,true);
 														 
-										MessageBox(LOCALE_TIMER_EVENTRECORD_TITLE, LOCALE_TIMER_EVENTRECORD_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+										MessageBox(LOCALE_TIMER_EVENTRECORD_TITLE, LOCALE_TIMER_EVENTRECORD_MSG, mbrBack, mbBack, NEUTRINO_ICON_INFO);
 									}
 								} 
 								else 
 								{
-									MessageBox(LOCALE_TIMER_EVENTRECORD_TITLE, LOCALE_TIMER_EVENTRECORD_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+									MessageBox(LOCALE_TIMER_EVENTRECORD_TITLE, LOCALE_TIMER_EVENTRECORD_MSG, mbrBack, mbBack, NEUTRINO_ICON_INFO);
 								}
 							}
 						}
@@ -764,7 +764,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 											epgData.epg_times.startzeit - ANNOUNCETIME, 0,
 											epgData.eventID, epgData.epg_times.startzeit, 0);
 										
-							MessageBox(LOCALE_TIMER_EVENTTIMED_TITLE, LOCALE_TIMER_EVENTTIMED_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+							MessageBox(LOCALE_TIMER_EVENTTIMED_TITLE, LOCALE_TIMER_EVENTTIMED_MSG, mbrBack, mbBack, NEUTRINO_ICON_INFO);
 						}
 						else
 							printf("timerd not available\n");

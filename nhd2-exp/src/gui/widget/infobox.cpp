@@ -78,7 +78,7 @@ CInfoBox::CInfoBox(CFont *fontText, const int _mode, const CBox* position, const
 
 	m_pcTextBox = new CTextBox(fontText, _mode, &m_cBoxFrameText, COL_MENUCONTENT_PLUS_0);
 
-	if(_mode & CTextBox::AUTO_WIDTH || _mode & CTextBox::AUTO_HIGH)
+	if(_mode & AUTO_WIDTH || _mode & AUTO_HIGH)
 	{
 		// window might changed in size
 		m_cBoxFrameText = m_pcTextBox->getWindowsPos();
@@ -89,7 +89,7 @@ CInfoBox::CInfoBox(CFont *fontText, const int _mode, const CBox* position, const
 		initFramesRel();
 	}
 
-	if(_mode & CTextBox::CENTER)
+	if(_mode & CENTER)
 	{
 		m_cBoxFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - m_cBoxFrame.iWidth) >>1);
 		m_cBoxFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - m_cBoxFrame.iHeight) >>2);
@@ -125,7 +125,7 @@ void CInfoBox::initVar(void)
 {
 	m_cTitle = g_Locale->getText(LOCALE_MESSAGEBOX_INFO);
 	m_cIcon = NEUTRINO_ICON_INFO;
-	m_nMode = CTextBox::SCROLL;
+	m_nMode = SCROLL;
 
 	// set the title variables
 	m_pcFontTitle = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE];
@@ -425,7 +425,7 @@ void InfoBox(const char * text, const char * title, const char * icon, std::stri
 
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], CTextBox::SCROLL, &position, title, g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], icon);
+	CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &position, title, g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], icon);
 
 	infoBox->setText(&buffer, thumbnail, tw, th, tmode);
 	infoBox->exec();

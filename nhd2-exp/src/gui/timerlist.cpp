@@ -1103,13 +1103,7 @@ bool askUserOnTimerConflict(time_t announceTime, time_t stopTime)
 		strftime(st,20,"%d.%m. %H:%M",sTime);
 		timerbuf += st;
 		timerbuf += "\n";
-		
-		//printf("%d\t%d\t%d\n",it->announceTime,it->alarmTime,it->stopTime);
 	}
-	
-	//printf("message:\n%s\n",timerbuf.c_str());
-	// todo: localize message
-	//g_Locale->getText(TIMERLIST_OVERLAPPING_MESSAGE);
 
-	return (MessageBox(LOCALE_MESSAGEBOX_INFO, timerbuf.c_str(), CMessageBox::mbrNo, CMessageBox::mbNo|CMessageBox::mbYes) == CMessageBox::mbrYes);
+	return (MessageBox(LOCALE_MESSAGEBOX_INFO, timerbuf.c_str(), mbrNo, mbNo | mbYes) == mbrYes);
 }

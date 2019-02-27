@@ -100,10 +100,10 @@ class CInfoBox
 
 		// functions
 		int exec(int timeout = -1);
-		bool setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int tmode = CTextBox::TOP_RIGHT);
+		bool setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int tmode = TOP_RIGHT);
 };
 
 //
-void InfoBox(const char * text, const char * title, const char * icon = NEUTRINO_ICON_INFO, std::string thumbnail = "", int tw = 0, int th = 0, int tmode = CTextBox::TOP_RIGHT);
+void InfoBox(const char * text, const char * title, const char * icon = NEUTRINO_ICON_INFO, std::string thumbnail = "", int tw = 0, int th = 0, int tmode = TOP_RIGHT);
 
 #endif

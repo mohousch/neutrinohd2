@@ -392,9 +392,9 @@ int CChannelList::doChannelMenu(void)
 		switch(select) 
 		{
 			case 0: //delete
-				result = MessageBox( LOCALE_BOUQUETEDITOR_DELETE, "Delete channel from bouquet?", CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo );
+				result = MessageBox( LOCALE_BOUQUETEDITOR_DELETE, "Delete channel from bouquet?", mbrNo, mbYes | mbNo );
 
-				if(result == CMessageBox::mbrYes) 
+				if(result == mbrYes) 
 				{
 					bouquet_id = bouquetList->getActiveBouquetNumber();
 					bouquet_id = g_bouquetManager->existsBouquet(bouquetList->Bouquets[bouquet_id]->channelList->getName());
@@ -1019,7 +1019,7 @@ void CChannelList::zapTo(int pos, bool /*forceStoreToLastChannels*/)
 	if (chanlist.empty()) 
 	{
 		if (FrontendCount >= 1) 
-			MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+			MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
 		return;
 	}
 
@@ -1078,7 +1078,7 @@ int CChannelList::numericZap(int key)
 	if (chanlist.empty()) 
 	{
 		if (FrontendCount >= 1) 
-			MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+			MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
 			
 		return res;
 	}
@@ -1340,7 +1340,7 @@ void CChannelList::virtual_zap_mode(bool up)
         if (chanlist.empty()) 
 	{
 		if (FrontendCount >= 1) 
-			MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+			MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
 			
                 return;
         }

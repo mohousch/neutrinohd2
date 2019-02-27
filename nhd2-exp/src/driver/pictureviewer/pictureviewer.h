@@ -39,7 +39,7 @@
 class CPictureViewer
 {
 	private:
-		CFrameBuffer::ScalingMode m_scaling;
+		ScalingMode m_scaling;
 		float m_aspect;
 		
 		std::string m_Pic_Name;
@@ -66,7 +66,7 @@ class CPictureViewer
 		~CPictureViewer(){cleanup();};
 		
 		//
-		void setScaling( CFrameBuffer::ScalingMode s){m_scaling = s;}
+		void setScaling(ScalingMode s){m_scaling = s;}
 		void setAspectRatio(float aspect_ratio) {m_aspect = aspect_ratio;}
 		void cleanup();
 		void setVisible(int startx, int endx, int starty, int endy);

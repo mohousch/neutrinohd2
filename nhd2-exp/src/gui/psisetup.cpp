@@ -336,7 +336,7 @@ int CPSISetup::exec(CMenuTarget * parent, const std::string &)
 			case RC_vfdexit:
 				if ( *contrast != contrast_old || *saturation != saturation_old || *brightness != brightness_old || *tint != tint_old )
 				{
-					if (MessageBox(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel)
+					if (MessageBox(name, LOCALE_MESSAGEBOX_DISCARD, mbrYes, mbYes | mbCancel) == mbrCancel)
 					{
 						break;
 					}

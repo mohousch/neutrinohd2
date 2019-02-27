@@ -287,7 +287,7 @@ extern uint32_t shift_timer;
 extern uint32_t scrambled_timer;
 extern char recDir[255];
 extern char timeshiftDir[255];
-extern std::string tmode;
+extern std::string timeshiftMode;
 
 void sectionsd_getChannelEvents(CChannelEventList &eList, const bool tv_mode, t_channel_id *chidlist, int clen);
 void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventList &eList, char search = 0, std::string search_text = "");

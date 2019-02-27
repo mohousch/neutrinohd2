@@ -1,7 +1,7 @@
 /*
 	TuxCom - TuxBox-Commander Plugin
 
-	Copyright (C) 2004 'dbluelle' (dbluelle@blau-weissoedingen.de)
+	CopyTC_RIGHT (C) 2004 'dbluelle' (dbluelle@blau-weissoedingen.de)
 	Tripledragon adaption: (C) 2009 Stefan Seyfried
 	More neutrino-hd fixes: (C) 2011-2012 Stefan Seyfried
 	adaptation to use exported neutrino API mohousch 2014.01.18
@@ -71,18 +71,18 @@ int GetStringLen(const char *string, int size)
 void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, uint8_t color)
 {
 	//set alignment
-	if(layout != LEFT)
+	if(layout != TC_LEFT)
 	{
 		int stringlen = GetStringLen(string, size);
 
 		switch(layout)
 		{
-			case CENTER:	
+			case TC_CENTER:	
 				if (stringlen < maxwidth) 
 					_sx += (maxwidth - stringlen)/2;
 				break;
 
-			case RIGHT:	
+			case TC_RIGHT:	
 				if (stringlen < maxwidth) 
 					_sx += maxwidth - stringlen;
 		}
@@ -153,23 +153,23 @@ void RenderMenuLine(int highlight, int refresh)
 		RenderBox(menuitemwidth * i,viewy-MENUSIZE, menuitemwidth * i   + menuitemnumber, viewy-MENUSIZE / 2 , FILL, BLUE1);
 
 		sprintf(szEntry,"%d",(i+1)%MENUITEMS);
-		RenderString(szEntry, menuitemwidth * i + 1, viewy-(MENUSIZE/2 + FONT_OFFSET_BIG) , menuitemnumber, CENTER, SMALL, WHITE);
+		RenderString(szEntry, menuitemwidth * i + 1, viewy-(MENUSIZE/2 + FONT_OFFSET_BIG) , menuitemnumber, TC_CENTER, SMALL, WHITE);
 		if (refresh == EDIT)
 		{
 			if (textuppercase == 0)
-				RenderString(numberchars[(i+1)%10], menuitemwidth * i + menuitemnumber, viewy-(MENUSIZE/2 + FONT_OFFSET_BIG) , menuitemwidth-menuitemnumber, CENTER, SMALL, WHITE);
+				RenderString(numberchars[(i+1)%10], menuitemwidth * i + menuitemnumber, viewy-(MENUSIZE/2 + FONT_OFFSET_BIG) , menuitemwidth-menuitemnumber, TC_CENTER, SMALL, WHITE);
 			else
 			{
 				strcpy(szEntry,numberchars[(i+1)%10]);
 				for (j = 0; j < strlen(szEntry); j++) szEntry[j] = toupper(szEntry[j]);
-				RenderString(szEntry, menuitemwidth * i + menuitemnumber, viewy-(MENUSIZE/2 + FONT_OFFSET_BIG) , menuitemwidth-menuitemnumber, CENTER, SMALL, WHITE);
+				RenderString(szEntry, menuitemwidth * i + menuitemnumber, viewy-(MENUSIZE/2 + FONT_OFFSET_BIG) , menuitemwidth-menuitemnumber, TC_CENTER, SMALL, WHITE);
 			}
 
 		}
 		else if (refresh == EDITOR)
-			RenderString(editorline[tool[i]*NUM_LANG+language], menuitemwidth * i + menuitemnumber, viewy-(MENUSIZE/2 + FONT_OFFSET_BIG) , menuitemwidth-menuitemnumber, CENTER, SMALL, WHITE);
+			RenderString(editorline[tool[i]*NUM_LANG+language], menuitemwidth * i + menuitemnumber, viewy-(MENUSIZE/2 + FONT_OFFSET_BIG) , menuitemwidth-menuitemnumber, TC_CENTER, SMALL, WHITE);
 		else
-			RenderString(menuline[tool[i]*NUM_LANG+language], menuitemwidth * i + menuitemnumber, viewy-(MENUSIZE/2 + FONT_OFFSET_BIG) , menuitemwidth-menuitemnumber, CENTER, SMALL, WHITE);
+			RenderString(menuline[tool[i]*NUM_LANG+language], menuitemwidth * i + menuitemnumber, viewy-(MENUSIZE/2 + FONT_OFFSET_BIG) , menuitemwidth-menuitemnumber, TC_CENTER, SMALL, WHITE);
 
 
 	}
@@ -183,7 +183,7 @@ void RenderMenuLine(int highlight, int refresh)
 		RenderBox( (viewx/COLORBUTTONS) *i, viewy-MENUSIZE/2, (viewx/COLORBUTTONS) *(i+1), viewy, FILL, (i == 0 ? RED    :
 		                                                            					                   (i == 1 ? GREEN  :                                                        					                   (i == 2 ? YELLOW : BLUE1))));
 		RenderBox( (viewx/COLORBUTTONS) *i ,viewy-MENUSIZE/2, (i < COLORBUTTONS-1 ? (viewx/COLORBUTTONS) *(i+1) : viewx) , viewy , GRID,  WHITE );
-		RenderString(colorline[colortool[i]*NUM_LANG+language], (viewx/COLORBUTTONS) *i , viewy- FONT_OFFSET_BIG , viewx/COLORBUTTONS, CENTER, SMALL  , (i == 2 ? BLACK : WHITE));
+		RenderString(colorline[colortool[i]*NUM_LANG+language], (viewx/COLORBUTTONS) *i , viewy- FONT_OFFSET_BIG , viewx/COLORBUTTONS, TC_CENTER, SMALL  , (i == 2 ? BLACK : WHITE));
 	}
 	
 	if (refresh == YES)
@@ -317,8 +317,8 @@ void RenderFrame(int frame)
 		PosX = (singleview ? 0 : frame * FrameWidth) + BORDERSIZE;
 
 		RenderBox(PosX, PosY-FONTHEIGHT_SMALL,((1+frame+singleview)*FrameWidth), PosY, FILL, bcolor);
-		RenderString(pfe->name, PosX+2, PosY-FONT_OFFSET, NameWidth*(1+(singleview*1.4))-2, LEFT, SMALL, fcolor);
-		RenderString(sizeString, (singleview ? 2 :1+frame)*FrameWidth -2*BORDERSIZE - 2*SizeWidth*(1+singleview), PosY-FONT_OFFSET, 2*SizeWidth*(1+singleview), RIGHT, SMALL,fcolor);
+		RenderString(pfe->name, PosX+2, PosY-FONT_OFFSET, NameWidth*(1+(singleview*1.4))-2, TC_LEFT, SMALL, fcolor);
+		RenderString(sizeString, (singleview ? 2 :1+frame)*FrameWidth -2*BORDERSIZE - 2*SizeWidth*(1+singleview), PosY-FONT_OFFSET, 2*SizeWidth*(1+singleview), TC_RIGHT, SMALL,fcolor);
 		row++;
 	}
 	
@@ -326,9 +326,9 @@ void RenderFrame(int frame)
 	RenderBox(PosX, PosY,((1+frame+singleview)*FrameWidth), PosY+ FONTHEIGHT_SMALL*(framerows-row+1), FILL, nBackColor);
 
 	// draw Rectangle
-	// left border
+	// TC_LEFT border
 	RenderBox((singleview ? 0 :  frame) *FrameWidth, 0,(singleview ? 0 : frame)*FrameWidth + BORDERSIZE, viewy-MENUSIZE, FILL, (curframe == frame ? WHITE : BLUE2));
-	// right border
+	// TC_RIGHT border
 	RenderBox((singleview ? 2 :1+frame) *FrameWidth -BORDERSIZE, 0,(singleview ? 2 : 1+frame)*FrameWidth, viewy-MENUSIZE, FILL, (curframe == frame ? WHITE : BLUE2));
 	// top border
 	RenderBox((singleview ? 0 :  frame) *FrameWidth, 0,(singleview ? 2 : 1+frame)*FrameWidth, BORDERSIZE, FILL, (curframe == frame ? WHITE : BLUE2));
@@ -344,15 +344,15 @@ void RenderFrame(int frame)
 	if (finfo[frame].markcount > 0)
 	{
 		sprintf(sizeString,info[INFO_MARKER*NUM_LANG+language],finfo[frame].markcount);
-		RenderString(sizeString, PosX+2, viewy-BORDERSIZE-FONT_OFFSET-MENUSIZE , NameWidth*(1+singleview)-2, LEFT, SMALL,(curframe == frame ? WHITE : BLUE2));
+		RenderString(sizeString, PosX+2, viewy-BORDERSIZE-FONT_OFFSET-MENUSIZE , NameWidth*(1+singleview)-2, TC_LEFT, SMALL,(curframe == frame ? WHITE : BLUE2));
 		GetSizeString(sizeString,finfo[frame].marksize,0);
 	}
 	else
 	{
-		RenderString(finfo[frame].zipfile[0] != 0x00 ? finfo[frame].zipfile : finfo[frame].path, PosX+2, viewy-BORDERSIZE-FONT_OFFSET-MENUSIZE , NameWidth*(1+singleview)-2, LEFT, SMALL,(curframe == frame ? WHITE : BLUE2));
+		RenderString(finfo[frame].zipfile[0] != 0x00 ? finfo[frame].zipfile : finfo[frame].path, PosX+2, viewy-BORDERSIZE-FONT_OFFSET-MENUSIZE , NameWidth*(1+singleview)-2, TC_LEFT, SMALL,(curframe == frame ? WHITE : BLUE2));
 		GetSizeString(sizeString,finfo[frame].size,0);
 	}
-	RenderString(sizeString, (singleview ? 2 : 1+frame)*FrameWidth -BORDERSIZE - 2*SizeWidth, viewy-BORDERSIZE-FONT_OFFSET-MENUSIZE , 2*SizeWidth, RIGHT, SMALL,(curframe == frame ? WHITE : BLUE2));
+	RenderString(sizeString, (singleview ? 2 : 1+frame)*FrameWidth -BORDERSIZE - 2*SizeWidth, viewy-BORDERSIZE-FONT_OFFSET-MENUSIZE , 2*SizeWidth, TC_RIGHT, SMALL,(curframe == frame ? WHITE : BLUE2));
 }
 
 //
@@ -433,9 +433,9 @@ int MessageBox(const char* msg1, const char* msg2, int mode)
 
 	RenderBox((viewx-wi)/2 - 2*BORDERSIZE, (viewy-he) /2, viewx-(viewx-wi)/2+ 2*BORDERSIZE, viewy-(viewy-he)/2, FILL, trans_map[curvisibility]);
 	RenderBox((viewx-wi)/2 - 2*BORDERSIZE, (viewy-he) /2, viewx-(viewx-wi)/2+ 2*BORDERSIZE, viewy-(viewy-he)/2, GRID, WHITE);
-	RenderString(msg1,(viewx-wi)/2-BORDERSIZE , (viewy-he)/2 + BORDERSIZE + FONTHEIGHT_BIG-FONT_OFFSET , wi+2*BORDERSIZE, CENTER, BIG, WHITE);
+	RenderString(msg1,(viewx-wi)/2-BORDERSIZE , (viewy-he)/2 + BORDERSIZE + FONTHEIGHT_BIG-FONT_OFFSET , wi+2*BORDERSIZE, TC_CENTER, BIG, WHITE);
 	if (le2 > 0)
-		RenderString(msg2,(viewx-wi)/2-BORDERSIZE , (viewy-he)/2 + BORDERSIZE + 2*FONTHEIGHT_BIG-FONT_OFFSET , wi+2*BORDERSIZE, CENTER, BIG, WHITE);
+		RenderString(msg2,(viewx-wi)/2-BORDERSIZE , (viewy-he)/2 + BORDERSIZE + 2*FONTHEIGHT_BIG-FONT_OFFSET , wi+2*BORDERSIZE, TC_CENTER, BIG, WHITE);
 
 
 	RenderButtons(he, mode);
@@ -549,8 +549,8 @@ void RenderButtons(int he, int mode)
 		case OKCANCEL:
 			RenderBox(viewx/2 - 2* BORDERSIZE -BUTTONWIDTH , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx/2 - 2* BORDERSIZE              ,viewy-(viewy-he)/2- 2* BORDERSIZE, FILL, RED  );
 			RenderBox(viewx/2 + 2* BORDERSIZE              , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx/2 + 2* BORDERSIZE +BUTTONWIDTH ,viewy-(viewy-he)/2- 2* BORDERSIZE, FILL, GREEN);
-			RenderString(mbox[BTN_OK    *NUM_LANG+language],viewx/2 - 2* BORDERSIZE -BUTTONWIDTH , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, WHITE);
-			RenderString(mbox[BTN_CANCEL*NUM_LANG+language],viewx/2 + 2* BORDERSIZE              , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_OK    *NUM_LANG+language],viewx/2 - 2* BORDERSIZE -BUTTONWIDTH , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_CANCEL*NUM_LANG+language],viewx/2 + 2* BORDERSIZE              , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, WHITE);
 			RenderBox(viewx/2 + 2* BORDERSIZE                , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT  , viewx/2 + 2* BORDERSIZE +BUTTONWIDTH   ,viewy-(viewy-he)/2- 2* BORDERSIZE  , GRID, WHITE);
 			RenderBox(viewx/2 + 2* BORDERSIZE              +1, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT+1, viewx/2 + 2* BORDERSIZE +BUTTONWIDTH -1,viewy-(viewy-he)/2- 2* BORDERSIZE-1, GRID, WHITE);
 			break;
@@ -558,9 +558,9 @@ void RenderButtons(int he, int mode)
 			RenderBox(viewx/2 - 4* BORDERSIZE - BUTTONWIDTH - BUTTONWIDTH/2, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx/2 - 4* BORDERSIZE - BUTTONWIDTH/2             ,viewy-(viewy-he)/2- 2* BORDERSIZE, FILL, RED   );
 			RenderBox(viewx/2 - BUTTONWIDTH/2                              , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx/2 + BUTTONWIDTH/2                             ,viewy-(viewy-he)/2- 2* BORDERSIZE, FILL, GREEN );
 			RenderBox(viewx/2 + 4* BORDERSIZE + BUTTONWIDTH/2              , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx/2 + 4* BORDERSIZE +BUTTONWIDTH + BUTTONWIDTH/2,viewy-(viewy-he)/2- 2* BORDERSIZE, FILL, YELLOW);
-			RenderString(mbox[BTN_OK    *NUM_LANG+language],viewx/2 - 4* BORDERSIZE -BUTTONWIDTH - BUTTONWIDTH/2 , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, WHITE);
-			RenderString(mbox[BTN_CANCEL*NUM_LANG+language],(viewx-BUTTONWIDTH)/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, WHITE);
-			RenderString(mbox[BTN_HIDDEN*NUM_LANG+language],viewx/2 + 4* BORDERSIZE +BUTTONWIDTH/2            , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, BLACK);
+			RenderString(mbox[BTN_OK    *NUM_LANG+language],viewx/2 - 4* BORDERSIZE -BUTTONWIDTH - BUTTONWIDTH/2 , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_CANCEL*NUM_LANG+language],(viewx-BUTTONWIDTH)/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_HIDDEN*NUM_LANG+language],viewx/2 + 4* BORDERSIZE +BUTTONWIDTH/2            , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, BLACK);
 			RenderBox(viewx/2 -BUTTONWIDTH/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT  , viewx/2 + BUTTONWIDTH/2   ,viewy-(viewy-he)/2- 2* BORDERSIZE  , GRID, WHITE);
 			RenderBox(viewx/2 -BUTTONWIDTH/2+1, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT+1, viewx/2 + BUTTONWIDTH/2 -1,viewy-(viewy-he)/2- 2* BORDERSIZE-1, GRID, WHITE);
 			break;
@@ -568,9 +568,9 @@ void RenderButtons(int he, int mode)
 			RenderBox(viewx/2 - 4* BORDERSIZE - BUTTONWIDTH - BUTTONWIDTH/2, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx/2 - 4* BORDERSIZE - BUTTONWIDTH/2             ,viewy-(viewy-he)/2- 2* BORDERSIZE, FILL, RED   );
 			RenderBox(viewx/2 - BUTTONWIDTH/2                              , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx/2 + BUTTONWIDTH/2                             ,viewy-(viewy-he)/2- 2* BORDERSIZE, FILL, GREEN );
 			RenderBox(viewx/2 + 4* BORDERSIZE + BUTTONWIDTH/2              , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx/2 + 4* BORDERSIZE +BUTTONWIDTH + BUTTONWIDTH/2,viewy-(viewy-he)/2- 2* BORDERSIZE, FILL, YELLOW);
-			RenderString(mbox[BTN_YES   *NUM_LANG+language],viewx/2 - 4* BORDERSIZE -BUTTONWIDTH - BUTTONWIDTH/2 , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, WHITE);
-			RenderString(mbox[BTN_CANCEL*NUM_LANG+language],(viewx-BUTTONWIDTH)/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, WHITE);
-			RenderString(mbox[BTN_NO    *NUM_LANG+language],viewx/2 + 4* BORDERSIZE +BUTTONWIDTH/2            , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, BLACK);
+			RenderString(mbox[BTN_YES   *NUM_LANG+language],viewx/2 - 4* BORDERSIZE -BUTTONWIDTH - BUTTONWIDTH/2 , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_CANCEL*NUM_LANG+language],(viewx-BUTTONWIDTH)/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_NO    *NUM_LANG+language],viewx/2 + 4* BORDERSIZE +BUTTONWIDTH/2            , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, BLACK);
 			RenderBox(viewx/2 -BUTTONWIDTH/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT  , viewx/2 + BUTTONWIDTH/2   ,viewy-(viewy-he)/2- 2* BORDERSIZE  , GRID, WHITE);
 			RenderBox(viewx/2 -BUTTONWIDTH/2+1, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT+1, viewx/2 + BUTTONWIDTH/2 -1,viewy-(viewy-he)/2- 2* BORDERSIZE-1, GRID, WHITE);
 			break;
@@ -578,9 +578,9 @@ void RenderButtons(int he, int mode)
 			RenderBox(viewx/2 - 4* BORDERSIZE - BUTTONWIDTH - BUTTONWIDTH/2, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx/2 - 4* BORDERSIZE - BUTTONWIDTH/2             ,viewy-(viewy-he)/2- 2* BORDERSIZE, FILL, RED   );
 			RenderBox(viewx/2 - BUTTONWIDTH/2                              , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx/2 + BUTTONWIDTH/2                             ,viewy-(viewy-he)/2- 2* BORDERSIZE, FILL, GREEN );
 			RenderBox(viewx/2 + 4* BORDERSIZE + BUTTONWIDTH/2              , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx/2 + 4* BORDERSIZE +BUTTONWIDTH + BUTTONWIDTH/2,viewy-(viewy-he)/2- 2* BORDERSIZE, FILL, YELLOW);
-			RenderString(mbox[BTN_OVERWRITE*NUM_LANG+language],viewx/2 - 4* BORDERSIZE -BUTTONWIDTH - BUTTONWIDTH/2 , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, WHITE);
-			RenderString(mbox[BTN_CANCEL   *NUM_LANG+language],(viewx-BUTTONWIDTH)/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, WHITE);
-			RenderString(mbox[BTN_RENAME   *NUM_LANG+language],viewx/2 + 4* BORDERSIZE +BUTTONWIDTH/2            , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, BLACK);
+			RenderString(mbox[BTN_OVERWRITE*NUM_LANG+language],viewx/2 - 4* BORDERSIZE -BUTTONWIDTH - BUTTONWIDTH/2 , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_CANCEL   *NUM_LANG+language],(viewx-BUTTONWIDTH)/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_RENAME   *NUM_LANG+language],viewx/2 + 4* BORDERSIZE +BUTTONWIDTH/2            , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, BLACK);
 			RenderBox(viewx/2 -BUTTONWIDTH/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT  , viewx/2 + BUTTONWIDTH/2   ,viewy-(viewy-he)/2- 2* BORDERSIZE  , GRID, WHITE);
 			RenderBox(viewx/2 -BUTTONWIDTH/2+1, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT+1, viewx/2 + BUTTONWIDTH/2 -1,viewy-(viewy-he)/2- 2* BORDERSIZE-1, GRID, WHITE);
 			break;
@@ -590,23 +590,23 @@ void RenderButtons(int he, int mode)
 			RenderBox(viewx/2 + 4* BORDERSIZE + BUTTONWIDTH/2              , viewy-(viewy-he)/2 - 4*BORDERSIZE - 2*BUTTONHEIGHT, viewx/2 + 4* BORDERSIZE +BUTTONWIDTH + BUTTONWIDTH/2,viewy-(viewy-he)/2- 4* BORDERSIZE - BUTTONHEIGHT, FILL, YELLOW );
 			RenderBox(viewx/2 - 4* BORDERSIZE - BUTTONWIDTH - BUTTONWIDTH/2, viewy-(viewy-he)/2 - 2*BORDERSIZE -   BUTTONHEIGHT, viewx/2 - 2* BORDERSIZE                             ,viewy-(viewy-he)/2- 2* BORDERSIZE               , FILL, BLUE2  );
 			RenderBox(viewx/2 + 2* BORDERSIZE                              , viewy-(viewy-he)/2 - 2*BORDERSIZE -   BUTTONHEIGHT, viewx/2 + 4* BORDERSIZE +BUTTONWIDTH + BUTTONWIDTH/2,viewy-(viewy-he)/2- 2* BORDERSIZE               , FILL, BLUE2  );
-			RenderString(mbox[BTN_OVERWRITE   *NUM_LANG+language],viewx/2 - 4* BORDERSIZE - BUTTONWIDTH - BUTTONWIDTH/2, viewy-(viewy-he)/2 - 4*BORDERSIZE-FONT_OFFSET-BUTTONHEIGHT , BUTTONWIDTH, CENTER, BIG, WHITE);
-			RenderString(mbox[BTN_CANCEL      *NUM_LANG+language],(viewx-BUTTONWIDTH)/2                                , viewy-(viewy-he)/2 - 4*BORDERSIZE-FONT_OFFSET-BUTTONHEIGHT , BUTTONWIDTH, CENTER, BIG, WHITE);
-			RenderString(mbox[BTN_SKIP        *NUM_LANG+language],viewx/2 + 4* BORDERSIZE +BUTTONWIDTH/2               , viewy-(viewy-he)/2 - 4*BORDERSIZE-FONT_OFFSET-BUTTONHEIGHT , BUTTONWIDTH, CENTER, BIG, BLACK);
-			RenderString(mbox[BTN_OVERWRITEALL*NUM_LANG+language],viewx/2 - 4* BORDERSIZE - BUTTONWIDTH - BUTTONWIDTH/2, viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET              , BUTTONWIDTH + BUTTONWIDTH/2 + 2* BORDERSIZE, CENTER, BIG, WHITE);
-			RenderString(mbox[BTN_SKIPALL     *NUM_LANG+language],viewx/2 + 2* BORDERSIZE                              , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET              , BUTTONWIDTH + BUTTONWIDTH/2 + 2* BORDERSIZE, CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_OVERWRITE   *NUM_LANG+language],viewx/2 - 4* BORDERSIZE - BUTTONWIDTH - BUTTONWIDTH/2, viewy-(viewy-he)/2 - 4*BORDERSIZE-FONT_OFFSET-BUTTONHEIGHT , BUTTONWIDTH, TC_CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_CANCEL      *NUM_LANG+language],(viewx-BUTTONWIDTH)/2                                , viewy-(viewy-he)/2 - 4*BORDERSIZE-FONT_OFFSET-BUTTONHEIGHT , BUTTONWIDTH, TC_CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_SKIP        *NUM_LANG+language],viewx/2 + 4* BORDERSIZE +BUTTONWIDTH/2               , viewy-(viewy-he)/2 - 4*BORDERSIZE-FONT_OFFSET-BUTTONHEIGHT , BUTTONWIDTH, TC_CENTER, BIG, BLACK);
+			RenderString(mbox[BTN_OVERWRITEALL*NUM_LANG+language],viewx/2 - 4* BORDERSIZE - BUTTONWIDTH - BUTTONWIDTH/2, viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET              , BUTTONWIDTH + BUTTONWIDTH/2 + 2* BORDERSIZE, TC_CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_SKIPALL     *NUM_LANG+language],viewx/2 + 2* BORDERSIZE                              , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET              , BUTTONWIDTH + BUTTONWIDTH/2 + 2* BORDERSIZE, TC_CENTER, BIG, WHITE);
 			RenderBox(viewx/2 -BUTTONWIDTH/2  , viewy-(viewy-he)/2 - 4*BORDERSIZE - 2*BUTTONHEIGHT  , viewx/2 + BUTTONWIDTH/2  ,viewy-(viewy-he)/2- 4* BORDERSIZE - BUTTONHEIGHT  , GRID, WHITE);
 			RenderBox(viewx/2 -BUTTONWIDTH/2+1, viewy-(viewy-he)/2 - 4*BORDERSIZE - 2*BUTTONHEIGHT+1, viewx/2 + BUTTONWIDTH/2-1,viewy-(viewy-he)/2- 4* BORDERSIZE - BUTTONHEIGHT-1, GRID, WHITE);
 			break;
 		case CANCELRUN:
 			RenderBox((viewx-BUTTONWIDTH)/2 , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx - (viewx-BUTTONWIDTH)/2,viewy-(viewy-he)/2 - 2*BORDERSIZE , FILL, RED  );
-			RenderString(mbox[BTN_CANCEL*NUM_LANG+language],(viewx-BUTTONWIDTH)/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_CANCEL*NUM_LANG+language],(viewx-BUTTONWIDTH)/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, WHITE);
 			RenderBox((viewx-BUTTONWIDTH)/2 , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx - (viewx-BUTTONWIDTH)/2,viewy-(viewy-he)/2 - 2*BORDERSIZE , GRID, WHITE);
 		case NOBUTTON:
 		    break;
 		default:
 			RenderBox((viewx-BUTTONWIDTH)/2 , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx - (viewx-BUTTONWIDTH)/2,viewy-(viewy-he)/2 - 2*BORDERSIZE , FILL, RED  );
-			RenderString(mbox[BTN_OK*NUM_LANG+language],(viewx-BUTTONWIDTH)/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, CENTER, BIG, WHITE);
+			RenderString(mbox[BTN_OK*NUM_LANG+language],(viewx-BUTTONWIDTH)/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE-FONT_OFFSET , BUTTONWIDTH, TC_CENTER, BIG, WHITE);
 			RenderBox((viewx-BUTTONWIDTH)/2 , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx - (viewx-BUTTONWIDTH)/2,viewy-(viewy-he)/2 - 2*BORDERSIZE , GRID, WHITE);
 			break;
 	}
@@ -646,7 +646,7 @@ int ShowProperties()
 	{
 		tm_len[0][i] = GetStringLen(tm_info[i], BIG);
 		tm_len[1][i] = GetStringLen(tm[i], BIG);
-		int tmp = tm_len[0][i] + tm_len[1][i] + 8 * BORDERSIZE; /* 3 left and right, 2 in the middle */
+		int tmp = tm_len[0][i] + tm_len[1][i] + 8 * BORDERSIZE; /* 3 TC_LEFT and TC_RIGHT, 2 in the middle */
 		if (tmp > wi)
 			wi = tmp;
 	}
@@ -667,26 +667,26 @@ int ShowProperties()
 	mode  =  (finfo[curframe].writable ? OKCANCEL : OK);
 	RenderBox(bstartx, bstarty, bendx, bendy, FILL, trans_map[curvisibility]);
 	RenderBox(bstartx, bstarty, bendx, bendy, GRID, WHITE);
-	RenderString(pfe->name, sstartx, sstarty + FONTHEIGHT_BIG, swidth, CENTER, BIG, WHITE);
+	RenderString(pfe->name, sstartx, sstarty + FONTHEIGHT_BIG, swidth, TC_CENTER, BIG, WHITE);
 
 	char sizeString[200];
 	GetSizeString(sizeString,pfe->fentry.st_size,1);
 	sprintf(sizeString,"%s byte(s)",sizeString);
 
-	RenderString(sizeString, sstartx, sstarty + 2 * FONTHEIGHT_BIG, wi, CENTER, BIG, WHITE);
+	RenderString(sizeString, sstartx, sstarty + 2 * FONTHEIGHT_BIG, wi, TC_CENTER, BIG, WHITE);
 
 	int ytmp = sstarty + 3 * FONTHEIGHT_BIG;
 	for (i = 0; i < 3 ; i++)
 	{
-		RenderString(tm_info[i], sstartx, ytmp, swidth, LEFT,  BIG, WHITE);
-		RenderString(tm[i],      sstartx, ytmp, swidth, RIGHT, BIG, WHITE);
+		RenderString(tm_info[i], sstartx, ytmp, swidth, TC_LEFT,  BIG, WHITE);
+		RenderString(tm[i],      sstartx, ytmp, swidth, TC_RIGHT, BIG, WHITE);
 		ytmp += FONTHEIGHT_BIG;
 	}
 
 	ytmp = sstarty + 6 * FONTHEIGHT_BIG + BORDERSIZE * 2;
 	for (i = 0; i < 3 ; i++)
 	{
-		RenderString(props[i*NUM_LANG+language], sstartx, ytmp - FONT_OFFSET, wi, LEFT, BIG, WHITE);
+		RenderString(props[i*NUM_LANG+language], sstartx, ytmp - FONT_OFFSET, wi, TC_LEFT, BIG, WHITE);
 		RenderBox(sstartx + swidth - FONTHEIGHT_BIG, ytmp - FONTHEIGHT_BIG + 8, sstartx + swidth,                ytmp - 1, FILL, (ri[i] == 0 ? RED : GREEN));
 		RenderBox(sstartx - BORDERSIZE + 1,          ytmp - FONTHEIGHT_BIG + 4, sstartx + swidth + BORDERSIZE-1, ytmp + 2, GRID, (pos == i ? WHITE :trans_map[curvisibility]));
 		RenderBox(sstartx - BORDERSIZE + 2,          ytmp - FONTHEIGHT_BIG + 5, sstartx + swidth + BORDERSIZE-2, ytmp + 1, GRID, (pos == i ? WHITE :trans_map[curvisibility]));
@@ -785,7 +785,7 @@ int ShowProperties()
 		ytmp = sstarty + 6 * FONTHEIGHT_BIG + BORDERSIZE * 2;
 		for (i = 0; i < 3 ; i++)
 		{
-			RenderString(props[i*NUM_LANG+language], sstartx, ytmp - FONT_OFFSET, wi, LEFT, BIG, WHITE);
+			RenderString(props[i*NUM_LANG+language], sstartx, ytmp - FONT_OFFSET, wi, TC_LEFT, BIG, WHITE);
 			RenderBox(sstartx + swidth - FONTHEIGHT_BIG, ytmp - FONTHEIGHT_BIG + 8, sstartx + swidth,                ytmp - 1, FILL, (ri[i] == 0 ? RED : GREEN));
 			RenderBox(sstartx - BORDERSIZE + 1,          ytmp - FONTHEIGHT_BIG + 4, sstartx + swidth + BORDERSIZE-1, ytmp + 2, GRID, (pos == i ? WHITE :trans_map[curvisibility]));
 			RenderBox(sstartx - BORDERSIZE + 2,          ytmp - FONTHEIGHT_BIG + 5, sstartx + swidth + BORDERSIZE-2, ytmp + 1, GRID, (pos == i ? WHITE :trans_map[curvisibility]));
@@ -857,12 +857,12 @@ void DoEditFTP(char* szFile,char* szTitle)
 
 	RenderBox((viewx-wi)/2 , (viewy-he) /2, viewx-(viewx-wi)/2, viewy-(viewy-he)/2, FILL, trans_map[curvisibility]);
 	RenderBox((viewx-wi)/2 , (viewy-he) /2, viewx-(viewx-wi)/2, viewy-(viewy-he)/2, GRID, WHITE);
-	RenderString(szFile,(viewx-wi)/2+  2* BORDERSIZE , (viewy-he)/2 + 2*BORDERSIZE + FONTHEIGHT_BIG-FONT_OFFSET , wi, CENTER, BIG, WHITE);
+	RenderString(szFile,(viewx-wi)/2+  2* BORDERSIZE , (viewy-he)/2 + 2*BORDERSIZE + FONTHEIGHT_BIG-FONT_OFFSET , wi, TC_CENTER, BIG, WHITE);
 
 	for (i = 0; i < 5 ; i++)
 	{
-		RenderString(ftpstr[i*NUM_LANG+language],(viewx-wi)/2+ 3* BORDERSIZE , (viewy-he)/2 + 3*BORDERSIZE + (i+2)*FONTHEIGHT_BIG-FONT_OFFSET , wi, LEFT, BIG, WHITE);
-		RenderString(entries[i],viewx/2 , (viewy-he)/2 + 3*BORDERSIZE + (i+2)*FONTHEIGHT_BIG-FONT_OFFSET , wi, LEFT, BIG, WHITE);
+		RenderString(ftpstr[i*NUM_LANG+language],(viewx-wi)/2+ 3* BORDERSIZE , (viewy-he)/2 + 3*BORDERSIZE + (i+2)*FONTHEIGHT_BIG-FONT_OFFSET , wi, TC_LEFT, BIG, WHITE);
+		RenderString(entries[i],viewx/2 , (viewy-he)/2 + 3*BORDERSIZE + (i+2)*FONTHEIGHT_BIG-FONT_OFFSET , wi, TC_LEFT, BIG, WHITE);
 		RenderBox(viewx/2 - 2* BORDERSIZE  , (viewy-he)/2 + 3*BORDERSIZE + (i+1)*FONTHEIGHT_BIG  , viewx-(viewx-wi)/2 - 2*BORDERSIZE  , (viewy-he)/2 + 3*BORDERSIZE + (i+2)*FONTHEIGHT_BIG  , GRID, (pos == i ? WHITE :trans_map[curvisibility]));
 		RenderBox(viewx/2 - 2* BORDERSIZE-1, (viewy-he)/2 + 3*BORDERSIZE + (i+1)*FONTHEIGHT_BIG-1, viewx-(viewx-wi)/2 - 2*BORDERSIZE+1, (viewy-he)/2 + 3*BORDERSIZE + (i+2)*FONTHEIGHT_BIG+1, GRID, (pos == i ? WHITE :trans_map[curvisibility]));
 	}
@@ -930,7 +930,7 @@ void DoEditFTP(char* szFile,char* szTitle)
 		{
 			for (i = 0; i < 5; i++)
 			{
-				RenderString(entries[i],viewx/2 , (viewy-he)/2 + 3*BORDERSIZE + (i+2)*FONTHEIGHT_BIG-FONT_OFFSET , wi, LEFT, BIG, WHITE);
+				RenderString(entries[i],viewx/2 , (viewy-he)/2 + 3*BORDERSIZE + (i+2)*FONTHEIGHT_BIG-FONT_OFFSET , wi, TC_LEFT, BIG, WHITE);
 				RenderBox(viewx/2 - 2* BORDERSIZE+1, (viewy-he)/2 + 3*BORDERSIZE + (i+1)*FONTHEIGHT_BIG+1, viewx-(viewx-wi)/2 - 2*BORDERSIZE-1, (viewy-he)/2 + 3*BORDERSIZE + (i+2)*FONTHEIGHT_BIG-1, GRID, (pos == i ? WHITE :trans_map[curvisibility]));
 				RenderBox(viewx/2 - 2* BORDERSIZE+2, (viewy-he)/2 + 3*BORDERSIZE + (i+1)*FONTHEIGHT_BIG+2, viewx-(viewx-wi)/2 - 2*BORDERSIZE-2, (viewy-he)/2 + 3*BORDERSIZE + (i+2)*FONTHEIGHT_BIG-2, GRID, (pos == i ? WHITE :trans_map[curvisibility]));
 			}
@@ -998,7 +998,7 @@ void DoMainMenu()
 				strcpy(szEntry,mainmenu[i*NUM_LANG+language]);
 				break;
 		}
-		RenderString(szEntry,(viewx-wi)/2+ BORDERSIZE , (viewy-he)/2 + BORDERSIZE + (i+1)*FONTHEIGHT_BIG-FONT_OFFSET , wi, CENTER, BIG, WHITE);
+		RenderString(szEntry,(viewx-wi)/2+ BORDERSIZE , (viewy-he)/2 + BORDERSIZE + (i+1)*FONTHEIGHT_BIG-FONT_OFFSET , wi, TC_CENTER, BIG, WHITE);
 	}
 	//memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
 	CFrameBuffer::getInstance()->blit();
@@ -1133,7 +1133,7 @@ void DoMainMenu()
 						strcpy(szEntry,mainmenu[i*NUM_LANG+language]);
 						break;
 				}
-				RenderString(szEntry,(viewx-wi)/2+ BORDERSIZE , (viewy-he)/2 + BORDERSIZE + (i+1)*FONTHEIGHT_BIG-FONT_OFFSET , wi, CENTER, BIG, WHITE);
+				RenderString(szEntry,(viewx-wi)/2+ BORDERSIZE , (viewy-he)/2 + BORDERSIZE + (i+1)*FONTHEIGHT_BIG-FONT_OFFSET , wi, TC_CENTER, BIG, WHITE);
 			}
 			//memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
 			CFrameBuffer::getInstance()->blit();
@@ -1187,7 +1187,7 @@ int GetInputString(int width, int maxchars, char *str, char *message, int pass)
 
 	RenderBox((viewx-wi)/2 , (viewy-he) /2, viewx-(viewx-wi)/2, viewy-(viewy-he)/2, FILL, trans_map[curvisibility]);
 	RenderBox((viewx-wi)/2 , (viewy-he) /2, viewx-(viewx-wi)/2, viewy-(viewy-he)/2, GRID, WHITE);
-	RenderString(message, (viewx-wi)/2-BORDERSIZE, (viewy-he)/2 + BORDERSIZE + FONTHEIGHT_BIG-FONT_OFFSET, wi+2*BORDERSIZE, CENTER, BIG, WHITE);
+	RenderString(message, (viewx-wi)/2-BORDERSIZE, (viewy-he)/2 + BORDERSIZE + FONTHEIGHT_BIG-FONT_OFFSET, wi+2*BORDERSIZE, TC_CENTER, BIG, WHITE);
 
 	x = (viewx-width)/2 - BORDERSIZE;
 	y = (viewy-he)/2+ 2*BORDERSIZE + FONTHEIGHT_BIG;
@@ -1221,7 +1221,7 @@ int DoEditString(int x, int y, int width, unsigned int maxchars, char* str, int 
 
 	RenderBox(x-1,y, x+width+1, y+he, FILL, back);
 	RenderBox(x-1,y, x+GetStringLen(szbuf, vsize)+1, y+he, FILL, RED);
-	RenderString(szdst,x, y+he-FONT_OFFSET, width, LEFT, vsize, WHITE);
+	RenderString(szdst,x, y+he-FONT_OFFSET, width, TC_LEFT, vsize, WHITE);
 
 	colortool[0] = ACTION_CLEAR ;
 	colortool[1] = (pass == NO ? ACTION_MARKTEXT : ACTION_NOACTION);
@@ -1457,12 +1457,12 @@ int DoEditString(int x, int y, int width, unsigned int maxchars, char* str, int 
 		RenderBox(x-1,y, x+width+1, y+he, FILL, back);
 		RenderBox(x+slen2-1,y, x+slen+1, y+he, FILL, (markmode == 0 ? RED : GREEN));
 		if (pass == NO)
-			RenderString((char*)(szdst+start),x, y+he-FONT_OFFSET, width, LEFT, vsize, WHITE);
+			RenderString((char*)(szdst+start),x, y+he-FONT_OFFSET, width, TC_LEFT, vsize, WHITE);
 		else
 		{
 			strcpy(szbuf,"******************");
 			szbuf[strlen(szdst)]=0x00;
-			RenderString(szbuf,x, y+he-FONT_OFFSET, width, LEFT, vsize, WHITE);
+			RenderString(szbuf,x, y+he-FONT_OFFSET, width, TC_LEFT, vsize, WHITE);
 		}
 		if (markmode == 0)
 		{
@@ -2499,8 +2499,8 @@ void DoEditFile(char* szFile, char* szTitle,  int writable)
 		}
 		sprintf(szLineNumber,msg[MSG_LINE*NUM_LANG+language],curcount+sel+1, totalcount,(readall == YES ? "":"+"));
 		strsize = GetStringLen(szLineNumber, BIG);
-		RenderString(szTitle     ,2*BORDERSIZE               , BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , viewx-5*BORDERSIZE-strsize, LEFT, BIG, WHITE);
-		RenderString(szLineNumber,viewx-2*BORDERSIZE-strsize , BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , strsize+BORDERSIZE        , RIGHT, BIG, WHITE);
+		RenderString(szTitle     ,2*BORDERSIZE               , BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , viewx-5*BORDERSIZE-strsize, TC_LEFT, BIG, WHITE);
+		RenderString(szLineNumber,viewx-2*BORDERSIZE-strsize , BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , strsize+BORDERSIZE        , TC_RIGHT, BIG, WHITE);
 
 		if ( p )
 		{
@@ -2534,7 +2534,7 @@ void DoEditFile(char* szFile, char* szTitle,  int writable)
 				if (pMarkStop != NULL && pMarkStart != NULL && pMarkStart <=  p && pMarkStop >= p)
 					RenderBox(BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+i*FONTHEIGHT_SMALL , viewx- BORDERSIZE , 2*BORDERSIZE+FONTHEIGHT_BIG+(i+1)*FONTHEIGHT_SMALL, FILL, (sel == row + i)? GRAY : GRAY2);
 
-          		RenderString(p,2*BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+(i+1)*FONTHEIGHT_SMALL -FONT_OFFSET, viewx-4*BORDERSIZE, LEFT, SMALL, WHITE);
+          		RenderString(p,2*BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+(i+1)*FONTHEIGHT_SMALL -FONT_OFFSET, viewx-4*BORDERSIZE, TC_LEFT, SMALL, WHITE);
           		p1=strchr(p,'\n');
 	            if (p1 == NULL)
 	            {
@@ -2973,11 +2973,11 @@ void DoTaskManager()
 			p= p1+1;
 		}
 		strsize = GetStringLen(MSG_COPYRIGHT, BIG);
-		RenderString(MSG_VERSION  ,2*BORDERSIZE              , BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , viewx-5*BORDERSIZE-strsize, LEFT, BIG, WHITE);
-		RenderString(MSG_COPYRIGHT,viewx-2*BORDERSIZE-strsize, BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , strsize+BORDERSIZE        , RIGHT, BIG, WHITE);
-		RenderString(msg[MSG_PROCESSID  *NUM_LANG+language]  , p_start[0]+2*BORDERSIZE    , 2*BORDERSIZE+FONTHEIGHT_BIG+FONTHEIGHT_SMALL-FONT_OFFSET, p_end[0]-2*BORDERSIZE, RIGHT, SMALL, WHITE);
-		RenderString(msg[MSG_PROCESSUSER*NUM_LANG+language]  , p_start[1]+2*BORDERSIZE    , 2*BORDERSIZE+FONTHEIGHT_BIG+FONTHEIGHT_SMALL-FONT_OFFSET, p_end[1]-2*BORDERSIZE, LEFT , SMALL, WHITE);
-		RenderString(msg[MSG_PROCESSNAME*NUM_LANG+language]  , p_start[2]+2*BORDERSIZE    , 2*BORDERSIZE+FONTHEIGHT_BIG+FONTHEIGHT_SMALL-FONT_OFFSET, p_end[2]-2*BORDERSIZE, LEFT , SMALL, WHITE);
+		RenderString(MSG_VERSION  ,2*BORDERSIZE              , BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , viewx-5*BORDERSIZE-strsize, TC_LEFT, BIG, WHITE);
+		RenderString(MSG_COPYRIGHT,viewx-2*BORDERSIZE-strsize, BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , strsize+BORDERSIZE        , TC_RIGHT, BIG, WHITE);
+		RenderString(msg[MSG_PROCESSID  *NUM_LANG+language]  , p_start[0]+2*BORDERSIZE    , 2*BORDERSIZE+FONTHEIGHT_BIG+FONTHEIGHT_SMALL-FONT_OFFSET, p_end[0]-2*BORDERSIZE, TC_RIGHT, SMALL, WHITE);
+		RenderString(msg[MSG_PROCESSUSER*NUM_LANG+language]  , p_start[1]+2*BORDERSIZE    , 2*BORDERSIZE+FONTHEIGHT_BIG+FONTHEIGHT_SMALL-FONT_OFFSET, p_end[1]-2*BORDERSIZE, TC_LEFT , SMALL, WHITE);
+		RenderString(msg[MSG_PROCESSNAME*NUM_LANG+language]  , p_start[2]+2*BORDERSIZE    , 2*BORDERSIZE+FONTHEIGHT_BIG+FONTHEIGHT_SMALL-FONT_OFFSET, p_end[2]-2*BORDERSIZE, TC_LEFT , SMALL, WHITE);
 		RenderBox(               0, BORDERSIZE+FONTHEIGHT_BIG + 2*FONTHEIGHT_SMALL-FONT_OFFSET  , viewx     , 2*BORDERSIZE+FONTHEIGHT_BIG + 2*FONTHEIGHT_SMALL-FONT_OFFSET, FILL, WHITE);
 
 		if ( p )
@@ -2991,9 +2991,9 @@ void DoTaskManager()
 				}
 				if (*p == 0x00) break;
 				getUidPidProcname(p, procname, uid, prid);
-			RenderString(    prid,p_start[0]+2*BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+2*FONTHEIGHT_SMALL+(i+1)*FONTHEIGHT_SMALL -FONT_OFFSET, p_end[0]-p_start[0]-3*BORDERSIZE, RIGHT, SMALL, WHITE);
-			RenderString(     uid,p_start[1]+2*BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+2*FONTHEIGHT_SMALL+(i+1)*FONTHEIGHT_SMALL -FONT_OFFSET, p_end[1]-p_start[1]-3*BORDERSIZE, LEFT , SMALL, WHITE);
-			RenderString(procname,p_start[2]+2*BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+2*FONTHEIGHT_SMALL+(i+1)*FONTHEIGHT_SMALL -FONT_OFFSET, p_end[2]-p_start[2]-3*BORDERSIZE, LEFT , SMALL, WHITE);
+			RenderString(    prid,p_start[0]+2*BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+2*FONTHEIGHT_SMALL+(i+1)*FONTHEIGHT_SMALL -FONT_OFFSET, p_end[0]-p_start[0]-3*BORDERSIZE, TC_RIGHT, SMALL, WHITE);
+			RenderString(     uid,p_start[1]+2*BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+2*FONTHEIGHT_SMALL+(i+1)*FONTHEIGHT_SMALL -FONT_OFFSET, p_end[1]-p_start[1]-3*BORDERSIZE, TC_LEFT , SMALL, WHITE);
+			RenderString(procname,p_start[2]+2*BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+2*FONTHEIGHT_SMALL+(i+1)*FONTHEIGHT_SMALL -FONT_OFFSET, p_end[2]-p_start[2]-3*BORDERSIZE, TC_LEFT , SMALL, WHITE);
           		p1=strchr(p,'\n');
 	            if (p1 == NULL)
 	            {
@@ -3499,7 +3499,7 @@ void ShowFile(FILE* _pipe, char* szAction)
 	RenderBox(               0, 0                          , viewx     , BORDERSIZE                 , FILL, WHITE);
 	RenderBox(               0, BORDERSIZE+FONTHEIGHT_BIG  , viewx     , 2*BORDERSIZE+FONTHEIGHT_BIG, FILL, WHITE);
 	RenderBox(               0, viewy-BORDERSIZE- MENUSIZE , viewx     , viewy-MENUSIZE             , FILL, WHITE);
-	RenderString(szAction,2*BORDERSIZE, BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , viewx-4*BORDERSIZE, CENTER, BIG, WHITE);
+	RenderString(szAction,2*BORDERSIZE, BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , viewx-4*BORDERSIZE, TC_CENTER, BIG, WHITE);
 
 	int row = 0;
 	while (fgets(line, 128, _pipe))
@@ -3508,7 +3508,7 @@ void ShowFile(FILE* _pipe, char* szAction)
 		if ( p )
 			*p = 0;
 		row++;
-		RenderString(line,2*BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+row*FONTHEIGHT_SMALL -FONT_OFFSET, viewx-4*BORDERSIZE, LEFT, SMALL, WHITE);
+		RenderString(line,2*BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+row*FONTHEIGHT_SMALL -FONT_OFFSET, viewx-4*BORDERSIZE, TC_LEFT, SMALL, WHITE);
 
 		if (row > framerows - 2)
 		{
@@ -3529,7 +3529,7 @@ void ShowFile(FILE* _pipe, char* szAction)
 			RenderBox(               0, 0                          , viewx     , BORDERSIZE                 , FILL, WHITE);
 			RenderBox(               0, BORDERSIZE+FONTHEIGHT_BIG  , viewx     , 2*BORDERSIZE+FONTHEIGHT_BIG, FILL, WHITE);
 			RenderBox(               0, viewy-BORDERSIZE- MENUSIZE , viewx     , viewy-MENUSIZE             , FILL, WHITE);
-			RenderString(szAction,2*BORDERSIZE, BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , viewx-4*BORDERSIZE, CENTER, BIG, WHITE);
+			RenderString(szAction,2*BORDERSIZE, BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , viewx-4*BORDERSIZE, TC_CENTER, BIG, WHITE);
 		}
 	}
 	
@@ -3838,7 +3838,7 @@ void plugin_exec(void)
 	memset(&finfo[0], 0, sizeof(finfo[0]));
 	memset(&finfo[1], 0, sizeof(finfo[0]));
 
-	// center output on screen
+	// TC_CENTER output on screen
 	StartX = sx;
 	StartY = sy;
 	viewx = ex - sx;
