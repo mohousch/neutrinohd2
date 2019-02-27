@@ -44,7 +44,7 @@
 #include <system/settings.h>
 
 #include <gui/widget/icons.h>
-#include <gui/widget/scrollbar.h>
+#include <gui/widget/widget_helpers.h>
 #include <gui/widget/headers.h>
 
 

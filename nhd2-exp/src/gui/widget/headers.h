@@ -23,7 +23,7 @@
 #include <driver/fontrenderer.h>
 #include <driver/framebuffer.h>
 
-#include <gui/widget/buttons.h>
+#include <gui/widget/widget_helpers.h>
 
 #include <system/settings.h>
 

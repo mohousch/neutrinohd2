@@ -38,7 +38,6 @@
 
 #include <driver/framebuffer.h>
 #include <gui/widget/window.h>
-#include <gui/widget/scrollbar.h>
 #include <gui/widget/listbox.h>
 
 // zapit includes

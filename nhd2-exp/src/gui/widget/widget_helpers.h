@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __gui_widget_buttons_h__
-#define __gui_widget_buttons_h__
+#ifndef __gui_widget_helpers_h__
+#define __gui_widget_helpers_h__
 
 #include <driver/fontrenderer.h>
 #include <driver/framebuffer.h>
@@ -47,4 +47,28 @@ class CButtons
 		void paintHeadButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content);
 };
 
-#endif /* __gui_widget_buttons_h__ */
+//scrollBar
+class CScrollBar
+{
+	private:
+	public:
+		CScrollBar(){};
+		virtual ~CScrollBar(){};
+
+		void paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage);
+		void paint(CBox* position, const int NrOfPages, const int CurrentPage);
+};
+
+// detailsLine
+class CItems2DetailsLine
+{
+	private:
+	public:
+		CItems2DetailsLine(){};
+		virtual ~CItems2DetailsLine(){};
+		
+		void paint(int x, int y, int width, int height, int info_height, int iheight, int iy);
+		void clear(int x, int y, int width, int height, int info_height);
+};
+
+#endif /* __gui_widget_helpers_h__ */

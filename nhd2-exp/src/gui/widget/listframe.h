@@ -56,7 +56,7 @@
 
 #include <driver/fontrenderer.h>
 
-#include <gui/widget/scrollbar.h>
+#include <gui/widget/widget_helpers.h>
 
 
 #define LF_MAX_ROWS 6

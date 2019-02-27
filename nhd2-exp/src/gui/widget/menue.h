@@ -44,11 +44,8 @@
 #include <system/localize.h>
 #include <system/helpers.h>
 
-#include <gui/widget/buttons.h>
-#include <gui/widget/items2detailsline.h>
-#include <gui/widget/scrollbar.h>
+#include <gui/widget/widget_helpers.h>
 #include <gui/widget/headers.h>
-#include <gui/widget/buttons.h>
 
 #include <driver/color.h>
 #include <gui/plugins.h>

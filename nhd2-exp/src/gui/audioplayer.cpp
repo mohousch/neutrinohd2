@@ -60,7 +60,7 @@
 #include <gui/infoviewer.h>
 #include <gui/nfs.h>
 
-#include <gui/widget/buttons.h>
+#include <gui/widget/widget_helpers.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/menue.h>
 #include <gui/widget/messagebox.h>
@@ -68,7 +68,6 @@
 #include <gui/widget/stringinput.h>
 #include <gui/widget/stringinput_ext.h>
 #include <gui/widget/progresswindow.h>
-#include <gui/widget/items2detailsline.h>
 #include <gui/widget/helpbox.h>
 
 #include <gui/audioplayer_setup.h>

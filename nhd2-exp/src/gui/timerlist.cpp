@@ -55,7 +55,7 @@
 #include <gui/infoviewer.h>
 #include <gui/channellist.h>
 
-#include <gui/widget/buttons.h>
+#include <gui/widget/widget_helpers.h>
 #include <gui/widget/hintbox.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/menue.h>

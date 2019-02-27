@@ -91,18 +91,17 @@
 #include <gui/widget/stringinput.h>
 #include <gui/widget/stringinput_ext.h>
 #include <gui/widget/mountchooser.h>
-#include <gui/widget/buttons.h>
 #include <gui/widget/helpbox.h>
 #include <gui/widget/infobox.h>
 #include <gui/widget/textbox.h>
 #include <gui/widget/window.h>
 #include <gui/widget/progressbar.h>
 #include <gui/widget/icons.h>
-#include <gui/widget/items2detailsline.h>
 #include <gui/widget/headers.h>
 #include <gui/widget/listbox.h>
 #include <gui/widget/listframe.h>
 #include <gui/widget/framebox.h>
+#include <gui/widget/widget_helpers.h>
 
 #include <gui/bedit/bouqueteditor_bouquets.h>
 #include <gui/bedit/bouqueteditor_chanselect.h>

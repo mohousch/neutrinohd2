@@ -23,10 +23,8 @@ noinst_LIBRARIES = libneutrino_gui_widget.a libneutrino_gui_widget2.a
 
 libneutrino_gui_widget_a_SOURCES = \
 	drawable.cpp \
-	buttons.cpp \
-	items2detailsline.cpp \
+	widget_helpers.cpp \
 	headers.cpp \
-	scrollbar.cpp \
 	window.cpp \
 	menue.cpp \
 	stringinput.cpp \

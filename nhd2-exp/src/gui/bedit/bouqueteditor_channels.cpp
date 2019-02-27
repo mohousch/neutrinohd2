@@ -35,10 +35,9 @@
 #include <config.h>
 #endif
 
-#include <gui/widget/buttons.h>
+#include <gui/widget/widget_helpers.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/messagebox.h>
-#include <gui/widget/items2detailsline.h>
 
 #include <gui/bedit/bouqueteditor_channels.h>
 
@@ -48,7 +47,8 @@
 #include <driver/fontrenderer.h>
 #include <driver/screen_max.h>
 #include <gui/bedit/bouqueteditor_chanselect.h>
-#include <gui/widget/buttons.h>
+
+#include <gui/widget/widget_helpers.h>
 #include <gui/widget/icons.h>
 
 //

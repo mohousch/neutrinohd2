@@ -36,10 +36,10 @@
 #include <sectionsdclient/sectionsdclient.h>
 
 #include <gui/widget/icons.h>
-#include <gui/widget/buttons.h>
 #include <gui/widget/messagebox.h>
 #include <gui/widget/stringinput.h>
-#include "bouquetlist.h"
+
+#include <gui/bouquetlist.h>
 
 #include <driver/rcinput.h>
 #include <driver/screen_max.h>

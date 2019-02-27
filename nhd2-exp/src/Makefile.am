@@ -67,7 +67,6 @@ neutrino_LDADD = \
 	gui/video_setup.o \
 	gui/psisetup.o \
 	gui/alphasetup.o \
-	gui/widget/items2detailsline.o \
 	gui/widget/window.o \
 	gui/widget/headers.o \
 	gui/widget/listbox.o \

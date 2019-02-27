@@ -43,7 +43,8 @@
 #include <driver/fontrenderer.h>
 #include <driver/screen_max.h>
 #include <gui/bedit/bouqueteditor_channels.h>
-#include <gui/widget/buttons.h>
+
+#include <gui/widget/widget_helpers.h>
 #include <gui/widget/hintbox.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/messagebox.h>

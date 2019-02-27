@@ -51,7 +51,7 @@
 #include <driver/fontrenderer.h>
 
 #include <gui/widget/window.h>
-#include <gui/widget/scrollbar.h>
+#include <gui/widget/widget_helpers.h>
 
 
 class CTextBox  
