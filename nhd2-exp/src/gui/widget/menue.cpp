@@ -2698,6 +2698,7 @@ void CMenuWidget::paintItemInfo(int pos)
 			if(!item->itemHelpText.empty())
 			{
 				textBox->setText(&item->itemHelpText);
+				textBox->paint();
 			}
 */
 		}
@@ -3968,6 +3969,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 		CFrameBuffer::getInstance()->scaleImage(fname, &p_w, &p_h);
 
 		textBox->setText(&item->info1, item->itemIcon, p_w, p_h, CTextBox::TOP_CENTER);
+		textBox->paint();
 	}
 }
 

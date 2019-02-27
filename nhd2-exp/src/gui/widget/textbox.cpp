@@ -571,7 +571,6 @@ bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _
 	{
 		m_cText = *newText;
 		refreshTextLineArray();
-		refresh();
 		
 		result = true;
 	}
