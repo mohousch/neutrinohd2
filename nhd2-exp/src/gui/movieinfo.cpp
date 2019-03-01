@@ -644,7 +644,7 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 
 	CFrameBuffer::getInstance()->scaleImage(movie_info.tfile, &p_w, &p_h);
 
-	infoBox->setText(&print_buffer, movie_info.tfile, p_w, p_h);
+	infoBox->setText(print_buffer.c_str(), movie_info.tfile.c_str(), p_w, p_h);
 	infoBox->exec();
 	delete infoBox;
 }

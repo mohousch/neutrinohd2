@@ -257,7 +257,7 @@ void CTSBrowser::doTMDB(MI_MOVIE_INFO& movieFile)
 	
 		CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
 
-		infoBox->setText(&buffer, tname, p_w, p_h);
+		infoBox->setText(buffer.c_str(), tname.c_str(), p_w, p_h);
 		infoBox->exec();
 		delete infoBox;
 

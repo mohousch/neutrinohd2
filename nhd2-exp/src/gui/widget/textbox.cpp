@@ -89,6 +89,13 @@ CTextBox::CTextBox()
 	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
 	
 	initVar();
+
+	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+
+	m_cFrame = position;
+	m_nMaxHeight = m_cFrame.iHeight;
+	m_nMaxWidth = m_cFrame.iWidth;
+
 	initFramesRel();
 }
 
@@ -97,7 +104,7 @@ CTextBox::~CTextBox()
 	dprintf(DEBUG_DEBUG, "CTextBox::~CTextBox\r\n");
 	
 	m_cLineArray.clear();
-	hide();
+	//hide();
 }
 
 void CTextBox::initVar(void)
@@ -113,7 +120,7 @@ void CTextBox::initVar(void)
 
 	m_nNrOfPages = 1;
 	m_nNrOfLines = 0;
-	m_nLinesPerPage = 0;
+	m_nLinesPerPage = 1;
 	m_nCurrentLine = 0;
 	m_nCurrentPage = 0;
 
@@ -365,7 +372,7 @@ void CTextBox::refreshTextLineArray(void)
 			m_nLinesPerPage = (m_cFrameTextRel.iHeight - th - 10) / m_nFontTextHeight;
 
 		// NrOfPages
-		m_nNrOfPages =	((m_nNrOfLines - 1) / m_nLinesPerPage) + 1;
+		m_nNrOfPages = ((m_nNrOfLines - 1) / m_nLinesPerPage) + 1; //FIXME: 
 
 		if(m_nCurrentPage >= m_nNrOfPages)
 		{
@@ -497,7 +504,7 @@ void CTextBox::refresh(void)
 	refreshScroll();	
 }
 
-bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _tw, int _th, int _tmode)
+bool CTextBox::setText(const char * const newText, const char * const _thumbnail, int _tw, int _th, int _tmode)
 {
 	dprintf(DEBUG_INFO, "CTextBox::setText:\r\n");
 
@@ -506,7 +513,7 @@ bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _
 	// thumbnail
 	thumbnail = "";
 	
-	if(!_thumbnail.empty() && !access(_thumbnail.c_str(), F_OK))
+	if(_thumbnail!= NULL && !access(_thumbnail, F_OK))
 	{
 		thumbnail = _thumbnail;
 
@@ -519,7 +526,7 @@ bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _
 			if(th > m_cFrame.iHeight/2)
 				th = m_cFrame.iHeight/2 - 20;
 		}
-		else /*if(m_cFrame.iHeight <= MAX_WINDOW_HEIGHT/2)*/
+		else
 		{
 			if(th >= (m_cFrame.iHeight - 20))
 				th = m_cFrame.iHeight - 20;
@@ -567,9 +574,9 @@ bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _
 		
 	bool result = false;
 	
-	if (newText != NULL || !thumbnail.empty())
+	if (newText != NULL || thumbnail.empty())
 	{
-		m_cText = *newText;
+		m_cText = newText;
 		refreshTextLineArray();
 		
 		result = true;

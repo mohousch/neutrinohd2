@@ -1018,7 +1018,7 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 	
 					CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
 
-					infoBox->setText(&buffer, tname, p_w, p_h);
+					infoBox->setText(buffer.c_str(), tname.c_str(), p_w, p_h);
 					infoBox->exec();
 					delete infoBox;
 
@@ -1369,14 +1369,14 @@ void CMovieBrowser::refreshMovieInfo(void)
 	if(m_vMovieInfo.size() <= 0) 
 	{
 		if(m_pcInfo != NULL)
-			m_pcInfo->setText(&emptytext);
+			m_pcInfo->setText(emptytext.c_str());
 		return;
 	}
 	
 	if (m_movieSelectionHandler == NULL)
 	{
 		// There is no selected element, clear LCD
-		m_pcInfo->setText(&emptytext);
+		m_pcInfo->setText(emptytext.c_str());
 	}
 	else
 	{
@@ -1387,9 +1387,10 @@ void CMovieBrowser::refreshMovieInfo(void)
 		
 		CFrameBuffer::getInstance()->scaleImage(fname, &p_w, &p_h);
 		
-		m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, fname, p_w, p_h);
+		m_pcInfo->setText(m_movieSelectionHandler->epgInfo2.c_str(), fname.c_str(), p_w, p_h);
 	}
 	
+	m_pcInfo->paint();
 	m_pcWindow->blit();
 }
 
@@ -1911,7 +1912,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	
 					CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &position, "", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_TMDB);
 
-					infoBox->setText(&buffer, tname, p_w, p_h);
+					infoBox->setText(buffer.c_str(), tname.c_str(), p_w, p_h);
 					infoBox->exec();
 					delete infoBox;
 

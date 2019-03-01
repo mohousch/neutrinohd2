@@ -1104,7 +1104,7 @@ void CTestMenu::testCInfoBox()
 	
 	CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &position, "CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NEUTRINO_ICON_INFO);
 
-	infoBox->setText(&buffer, tname, p_w, p_h);
+	infoBox->setText(buffer.c_str(), tname.c_str(), p_w, p_h);
 	infoBox->exec();
 	delete infoBox;
 	infoBox = NULL;
@@ -1226,13 +1226,13 @@ void CTestMenu::testCTextBox()
 	
 	CTextBox * textBox = new CTextBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &Box, COL_MENUCONTENT_PLUS_0);
 	
-	std::string buffer;
+	const char * buffer = NULL;
 	
 	// prepare print buffer  
-	buffer = "CTextBox";
-	buffer += "\n";
-	buffer += "testing CTextBox";
-	buffer += "\n";
+	buffer = "CTextBox\n";
+	//buffer += "\n";
+	//buffer += "testing CTextBox";
+	//buffer += "\n";
 		
 	std::string tname = PLUGINDIR "/netzkino/netzkino.png";
 	
@@ -1242,7 +1242,7 @@ void CTestMenu::testCTextBox()
 	
 	CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
 	
-	textBox->setText(&buffer, tname, p_w, p_h);
+	textBox->setText(buffer, tname.c_str(), p_w, p_h);
 	
 	textBox->paint();
 	CFrameBuffer::getInstance()->blit();
@@ -2296,7 +2296,7 @@ void CTestMenu::testShowActuellEPG()
 	
 	CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &position, title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], NULL);
 
-	infoBox->setText(&buffer);
+	infoBox->setText(buffer.c_str());
 	
 	infoBox->exec();
 	delete infoBox;

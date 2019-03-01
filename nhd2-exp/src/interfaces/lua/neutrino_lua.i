@@ -34,6 +34,7 @@
 
 #include <global.h>
 #include <neutrino.h>
+#include <neutrinoMessages.h>
 #include <swig_helpers.h>
 
 // libconfigfile
@@ -140,6 +141,7 @@
 %include <config.h>
 %include <src/global.h>
 %include <src/neutrino.h>
+%include <src/neutrinoMessages.h>
 %include <src/swig_helpers.h>
 
 // libconfigfile

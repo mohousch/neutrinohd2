@@ -75,25 +75,6 @@ typedef enum tmode_
 class CTextBox  
 {
 	public:
-#if 0
-		// mode
-		typedef enum mode_
-		{
-			AUTO_WIDTH	= 0x01,
-			AUTO_HIGH	= 0x02,
-			SCROLL		= 0x04,
-			CENTER		= 0x40,
-			NO_AUTO_LINEBREAK = 0x80
-		}mode;
-
-		// tmode
-		typedef enum tmode_
-		{
-			TOP_RIGHT = 0,
-			TOP_LEFT = 1,
-			TOP_CENTER
-		}tmode;
-#endif
 
 	private:
 		CBox m_cFrame;
@@ -122,7 +103,7 @@ class CTextBox
 
 		// text
 		CFont* m_pcFontText;
-		int m_nFontTextHeight;
+		unsigned int m_nFontTextHeight;
 
 		// backgrond
 		fb_pixel_t m_textBackgroundColor;
@@ -158,7 +139,7 @@ class CTextBox
 		void refresh(void);
 		void scrollPageDown(const int pages);
 		void scrollPageUp(const int pages);				
-		bool setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int _tmode = TOP_RIGHT);
+		bool setText(const char * const newText, const char * const _thumbnail = NULL, int _tw = 0, int _th = 0, int _tmode = TOP_RIGHT);
 		
 		inline bool isPainted(void){return painted;};
 

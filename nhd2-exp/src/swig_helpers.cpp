@@ -144,7 +144,7 @@ int CSwigHelpers::getRCCode(int timeout)
 	if (msg <= RC_MaxRC) 
 		return (int)msg;
 	else 
-		return 0;
+		return -1;
 }
 
 int CSwigHelpers::addTimer(uint64_t Interval, bool oneshot, bool correct_time)
@@ -156,6 +156,20 @@ void CSwigHelpers::killTimer(uint32_t id)
 {
 	g_RCInput->killTimer(id);
 }
+
+int CSwigHelpers::getRCData(int timeout)
+{
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	g_RCInput->getMsg_ms(&msg, &data, timeout);
+	
+	if (msg <= RC_MaxRC) 
+		return (int)data;
+	else 
+		return -1;
+}
+
 
 
 

@@ -64,6 +64,9 @@ CInfoBox::CInfoBox(CFont *fontText, const int _mode, const CBox* position, const
 	
 	if(fontTitle != NULL)	
 		m_pcFontTitle = fontTitle;
+
+	if(fontText != NULL)
+		m_pcFontText = fontText;
 	
 	if(icon != NULL)		
 		m_cIcon = icon;
@@ -76,7 +79,7 @@ CInfoBox::CInfoBox(CFont *fontText, const int _mode, const CBox* position, const
 	// initialise the window frames first
 	initFramesRel();
 
-	m_pcTextBox = new CTextBox(fontText, _mode, &m_cBoxFrameText, COL_MENUCONTENT_PLUS_0);
+	m_pcTextBox = new CTextBox(m_pcFontText, _mode, &m_cBoxFrameText, COL_MENUCONTENT_PLUS_0);
 
 	if(_mode & AUTO_WIDTH || _mode & AUTO_HIGH)
 	{
@@ -90,6 +93,45 @@ CInfoBox::CInfoBox(CFont *fontText, const int _mode, const CBox* position, const
 	}
 
 	if(_mode & CENTER)
+	{
+		m_cBoxFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - m_cBoxFrame.iWidth) >>1);
+		m_cBoxFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - m_cBoxFrame.iHeight) >>2);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////
+// Function Name:	CInfoBox()	
+// Description:		
+// Parameters:		
+// Data IN/OUT:		
+// Return:		
+// Notes:		
+//////////////////////////////////////////////////////////////////////
+CInfoBox::CInfoBox()
+{
+	initVar();
+
+	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+
+	m_cBoxFrame = position;
+
+	// initialise the window frames first
+	initFramesRel();
+
+	m_pcTextBox = new CTextBox(m_pcFontText, m_nMode, &m_cBoxFrameText, COL_MENUCONTENT_PLUS_0);
+
+	if(m_nMode & AUTO_WIDTH || m_nMode & AUTO_HIGH)
+	{
+		// window might changed in size
+		m_cBoxFrameText = m_pcTextBox->getWindowsPos();
+
+		m_cBoxFrame.iWidth = m_cBoxFrameText.iWidth;
+		m_cBoxFrame.iHeight = m_cBoxFrameText.iHeight +  m_cBoxFrameTitleRel.iHeight;
+
+		initFramesRel();
+	}
+
+	if(m_nMode & CENTER)
 	{
 		m_cBoxFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - m_cBoxFrame.iWidth) >>1);
 		m_cBoxFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - m_cBoxFrame.iHeight) >>2);
@@ -130,6 +172,8 @@ void CInfoBox::initVar(void)
 	// set the title variables
 	m_pcFontTitle = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE];
 	m_nFontTitleHeight = m_pcFontTitle->getHeight();
+
+	m_pcFontText = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1];
 
 	// set the main frame to default
 	m_cBoxFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - MIN_WINDOW_WIDTH) >>1);
@@ -405,7 +449,7 @@ int CInfoBox::exec(int timeout)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _tw, int _th, int tmode)
+bool CInfoBox::setText(const char * const newText, const char * const _thumbnail, int _tw, int _th, int tmode)
 {
 	bool _result = false;
 	
@@ -418,16 +462,14 @@ bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _
 	return(_result);
 }
 
-// helpers
-void InfoBox(const char * text, const char * title, const char * icon, std::string thumbnail, int tw, int th, int tmode)
+//
+void InfoBox(const char * const text, const char * const title, const char * const icon, const char * const thumbnail, int tw, int th, int tmode)
 {
-	std::string buffer = text;
-
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
 	CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &position, title, g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE], icon);
 
-	infoBox->setText(&buffer, thumbnail, tw, th, tmode);
+	infoBox->setText(text, thumbnail, tw, th, tmode);
 	infoBox->exec();
 	delete infoBox;
 	infoBox = NULL;

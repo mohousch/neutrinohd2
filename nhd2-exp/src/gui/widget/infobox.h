@@ -67,6 +67,8 @@ class CInfoBox
 		CFont *m_pcFontTitle;
 		int m_nFontTitleHeight;
 
+		CFont* m_pcFontText;
+
 		CHeaders headers;
 		CTextBox *m_pcTextBox;
 
@@ -91,6 +93,7 @@ class CInfoBox
 
 	public:
 		virtual ~CInfoBox();
+		CInfoBox();
 		CInfoBox(CFont *fontText,
 				   const int mode, 
 				   const CBox* position, 
@@ -100,10 +103,10 @@ class CInfoBox
 
 		// functions
 		int exec(int timeout = -1);
-		bool setText(const std::string* newText, std::string _thumbnail = "", int _tw = 0, int _th = 0, int tmode = TOP_RIGHT);
+		bool setText(const char * const newText, const char * const _thumbnail = NULL, int _tw = 0, int _th = 0, int tmode = TOP_RIGHT);
 };
 
 //
-void InfoBox(const char * text, const char * title, const char * icon = NEUTRINO_ICON_INFO, std::string thumbnail = "", int tw = 0, int th = 0, int tmode = TOP_RIGHT);
+void InfoBox(const char * const text, const char * const title, const char * const icon = NEUTRINO_ICON_INFO, const char * const thumbnail = NULL, int tw = 0, int th = 0, int tmode = TOP_RIGHT);
 
 #endif

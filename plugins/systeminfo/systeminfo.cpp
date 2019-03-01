@@ -70,7 +70,7 @@ void CSysInfoWidget::paint()
 	textBox->paint();
 
 	// settext
-	textBox->setText(&buffer);
+	textBox->setText(buffer.c_str());
 }
 
 // paint head

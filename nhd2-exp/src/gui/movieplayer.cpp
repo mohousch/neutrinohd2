@@ -459,13 +459,11 @@ void CMoviePlayerGui::PlayFile(void)
 
 	// backword hintbox
 	CTextBox newBackwordHintBox(NULL, CENTER , &boxposition, COL_MENUCONTENT_PLUS_0);
-	std::string backwordHint = g_Locale->getText(LOCALE_MOVIEBROWSER_HINT_NEWBOOK_BACKWARD);
-	newBackwordHintBox.setText(&backwordHint);
+	newBackwordHintBox.setText(g_Locale->getText(LOCALE_MOVIEBROWSER_HINT_NEWBOOK_BACKWARD));
 
 	// forward hintbox
 	CTextBox newForwardHintBox(NULL, CENTER, &boxposition, COL_MENUCONTENT_PLUS_0);
-	std::string forwardHint = g_Locale->getText(LOCALE_MOVIEBROWSER_HINT_NEWBOOK_FORWARD);
-	newForwardHintBox.setText(&forwardHint);
+	newForwardHintBox.setText(g_Locale->getText(LOCALE_MOVIEBROWSER_HINT_NEWBOOK_FORWARD));
 
 	//
 	int jump_not_until = 0;		// any jump shall be avoided until this time (in seconds from moviestart)

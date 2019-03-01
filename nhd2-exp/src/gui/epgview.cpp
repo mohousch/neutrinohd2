@@ -571,7 +571,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 	g_Font[SNeutrinoSettings::FONT_TYPE_EPG_DATE]->RenderString(cFrameBox.iX + cFrameBox.iWidth - 40 - widthr, cFrameBox.iY + cFrameBox.iHeight - cFootBox.iHeight - cFollowScreeningBox.iHeight + (cFollowScreeningBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_DATE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_DATE]->getHeight(), widthr, epg_date, COL_MENUHEAD);
 
 	//epg-text
-	textBox->setText(&epgBuffer);
+	textBox->setText(epgBuffer.c_str());
 	textBox->paint();
 
 	// show Timer Event Buttons

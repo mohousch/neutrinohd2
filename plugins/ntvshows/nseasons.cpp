@@ -143,7 +143,7 @@ void CNSeasons::showMovieInfo(MI_MOVIE_INFO& movie)
 	
 	CInfoBox * infoBox = new CInfoBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &position, movie.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_MOVIE);
 
-	infoBox->setText(&buffer, thumbnail, picw, pich);
+	infoBox->setText(buffer.c_str(), thumbnail.c_str(), picw, pich);
 	infoBox->exec();
 	delete infoBox;
 }

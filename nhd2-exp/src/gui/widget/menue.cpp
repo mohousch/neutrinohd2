@@ -2697,7 +2697,7 @@ void CMenuWidget::paintItemInfo(int pos)
 			// itemHelpText
 			if(!item->itemHelpText.empty())
 			{
-				textBox->setText(&item->itemHelpText);
+				textBox->setText(item->itemHelpText.c_str());
 				textBox->paint();
 			}
 */
@@ -3968,7 +3968,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 
 		CFrameBuffer::getInstance()->scaleImage(fname, &p_w, &p_h);
 
-		textBox->setText(&item->info1, item->itemIcon, p_w, p_h, TOP_CENTER);
+		textBox->setText(item->info1.c_str(), item->itemIcon.c_str(), p_w, p_h, TOP_CENTER);
 		textBox->paint();
 	}
 }
