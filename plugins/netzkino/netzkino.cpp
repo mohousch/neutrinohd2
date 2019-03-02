@@ -264,7 +264,7 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "search")
 	{
-		CStringInputSMS stringInput(LOCALE_YT_SEARCH, &nksearch);
+		CStringInputSMS stringInput(LOCALE_YT_SEARCH, nksearch.c_str());
 		int ret = stringInput.exec(NULL, "");
 
 		if(ret && !nksearch.empty())

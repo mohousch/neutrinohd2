@@ -55,12 +55,12 @@
 #define borderwidth 4
 
 
-CStringInput::CStringInput(const neutrino_locale_t Name, char *Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver *Observ, const char * const Icon)
+CStringInput::CStringInput(const neutrino_locale_t Name, const char * const Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver *Observ, const char * const Icon)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	name =  Name;
 	head = NULL;
-	value = Value;
+	value = (char *)Value;
 	valueString = NULL;
 	size =  Size;
 
@@ -73,6 +73,7 @@ CStringInput::CStringInput(const neutrino_locale_t Name, char *Value, int Size, 
 	init();
 }
 
+/*
 CStringInput::CStringInput(const neutrino_locale_t Name, std::string* Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
 {
         frameBuffer = CFrameBuffer::getInstance();
@@ -92,12 +93,13 @@ CStringInput::CStringInput(const neutrino_locale_t Name, std::string* Value, int
         observ = Observ;
         init();
 }
+*/
 
-CStringInput::CStringInput(char * Head, char* Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
+CStringInput::CStringInput(const char * const Head, const char * const Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
 {
         frameBuffer = CFrameBuffer::getInstance();
         head = strdup(Head);
-        value = Value;
+        value = (char *)Value;
         valueString = NULL;
         size =  Size;
 
@@ -110,6 +112,7 @@ CStringInput::CStringInput(char * Head, char* Value, int Size, const neutrino_lo
         init();
 }
 
+/*
 CStringInput::CStringInput(char* Head, std::string* Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
 {
         frameBuffer = CFrameBuffer::getInstance();
@@ -128,6 +131,7 @@ CStringInput::CStringInput(char* Head, std::string* Value, int Size, const neutr
         observ = Observ;
         init();
 }
+*/
 
 CStringInput::~CStringInput() 
 {
@@ -566,29 +570,33 @@ void CStringInput::paintChar(int pos)
 }
 
 // CStringInputSMS
+/*
 CStringInputSMS::CStringInputSMS(const neutrino_locale_t Name, std::string* Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
 		: CStringInput(Name, Value, Size, Hint_1, Hint_2, Valid_Chars, Observ, Icon)
 {
 	initSMS(Valid_Chars);
 }
+*/
 
-CStringInputSMS::CStringInputSMS(const neutrino_locale_t Name, char* Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
+CStringInputSMS::CStringInputSMS(const neutrino_locale_t Name, const char * const Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
    		: CStringInput(Name, Value, Size, Hint_1, Hint_2, Valid_Chars, Observ, Icon)
 {
 	initSMS(Valid_Chars);
 }
 
-CStringInputSMS::CStringInputSMS(char * Head, char* Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
+CStringInputSMS::CStringInputSMS(const char * const Head, const char * const Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
    		: CStringInput(Head, Value, Size, Hint_1, Hint_2, Valid_Chars, Observ, Icon)
 {
 	initSMS(Valid_Chars);
 }
 
+/*
 CStringInputSMS::CStringInputSMS(char* Head, std::string* Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
 		: CStringInput(Head, Value, Size, Hint_1, Hint_2, Valid_Chars, Observ, Icon)
 {
 	initSMS(Valid_Chars);
 }
+*/
 
 void CStringInputSMS::initSMS(const char * const Valid_Chars)
 {

@@ -431,7 +431,7 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		//ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		ytmode = cYTFeedParser::SEARCH;
 
-		CStringInputSMS stringInput(LOCALE_YT_SEARCH, &ytsearch);
+		CStringInputSMS stringInput(LOCALE_YT_SEARCH, ytsearch.c_str());
 		int ret = stringInput.exec(NULL, "");
 
 		if(ret && !ytsearch.empty())

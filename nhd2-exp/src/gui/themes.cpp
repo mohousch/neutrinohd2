@@ -84,7 +84,7 @@ int CThemes::exec(CMenuTarget * parent, const std::string & actionKey)
 		else if(actionKey == "saveCurrentTheme")
 		{
 			std::string file_name = "";
-			CStringInputSMS nameInput(LOCALE_COLORTHEMEMENU_NAME, &file_name);
+			CStringInputSMS nameInput(LOCALE_COLORTHEMEMENU_NAME, file_name.c_str());
 
 			nameInput.exec(NULL, "");
 			

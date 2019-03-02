@@ -954,7 +954,7 @@ int CEventFinderMenu::showMenu(void)
 		m_search_channelname =="";
 	}
 	
-	CStringInputSMS stringInput(LOCALE_EVENTFINDER_KEYWORD, m_search_keyword);
+	CStringInputSMS stringInput(LOCALE_EVENTFINDER_KEYWORD, m_search_keyword->c_str());
 	
 	CMenuForwarder * mf2 = new CMenuForwarder(LOCALE_EVENTFINDER_KEYWORD, true, m_search_keyword->c_str(), &stringInput, NULL, RC_1 );
 	CMenuOptionChooser * mo0 = new CMenuOptionChooser(LOCALE_EVENTFINDER_SEARCH_WITHIN_LIST, m_search_list, SEARCH_LIST_OPTIONS, SEARCH_LIST_OPTION_COUNT, true, NULL, RC_2);

@@ -968,7 +968,7 @@ void CTestMenu::testCStringInput()
 	dprintf(DEBUG_NORMAL, "\ntesting CStringInput\n");
 
 	std::string value;
-	CStringInput * stringInput = new CStringInput("CStringInput", &value);
+	CStringInput * stringInput = new CStringInput("CStringInput", value.c_str());
 	
 	stringInput->exec(NULL, "");
 	stringInput->hide();
@@ -983,7 +983,7 @@ void CTestMenu::testCStringInputSMS()
 	dprintf(DEBUG_NORMAL, "\ntesting CStringInputSMS\n");
 
 	std::string value;
-	CStringInputSMS * stringInputSMS = new CStringInputSMS("CStringInputSMS", &value);
+	CStringInputSMS * stringInputSMS = new CStringInputSMS("CStringInputSMS", value.c_str());
 	
 	stringInputSMS->exec(NULL, "");
 	stringInputSMS->hide();

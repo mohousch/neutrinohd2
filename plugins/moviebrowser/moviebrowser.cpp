@@ -2994,7 +2994,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 
 	for(int i1 = 0 ; i1 < MI_MOVIE_BOOK_USER_MAX && i1 < MAX_NUMBER_OF_BOOKMARK_ITEMS; i1++ )
 	{
-		pBookNameInput[i1] =    new CStringInputSMS (LOCALE_MOVIEBROWSER_EDIT_BOOK, &movie_info->bookmarks.user[i1].name, MAX_INPUT_CHARS, LOCALE_MOVIEBROWSER_EDIT_BOOK_NAME_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_NAME_INFO2);
+		pBookNameInput[i1] = new CStringInputSMS (LOCALE_MOVIEBROWSER_EDIT_BOOK, movie_info->bookmarks.user[i1].name.c_str(), MAX_INPUT_CHARS, LOCALE_MOVIEBROWSER_EDIT_BOOK_NAME_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_NAME_INFO2);
 		pBookPosIntInput[i1] =  new CIntInput (LOCALE_MOVIEBROWSER_EDIT_BOOK, (int&) movie_info->bookmarks.user[i1].pos, 20, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO2);
 		pBookTypeIntInput[i1] = new CIntInput (LOCALE_MOVIEBROWSER_EDIT_BOOK, (int&) movie_info->bookmarks.user[i1].length, 20, LOCALE_MOVIEBROWSER_EDIT_BOOK_TYPE_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_TYPE_INFO2);
 
@@ -3010,7 +3010,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	}
 
 	// serie Menu
-	CStringInputSMS serieUserInput(LOCALE_MOVIEBROWSER_EDIT_SERIE, &movie_info->serieName);
+	CStringInputSMS serieUserInput(LOCALE_MOVIEBROWSER_EDIT_SERIE, movie_info->serieName.c_str());
 
 	CMenuWidget serieMenu(LOCALE_MOVIEBROWSER_SERIE_HEAD, NEUTRINO_ICON_MOVIE);
 	//serieMenu.enableSaveScreen();
@@ -3072,16 +3072,16 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	}
 
 	// title
-	CStringInputSMS titelUserInput(LOCALE_MOVIEBROWSER_INFO_TITLE, &movie_info->epgTitle);
+	CStringInputSMS titelUserInput(LOCALE_MOVIEBROWSER_INFO_TITLE, movie_info->epgTitle.c_str());
 
 	// channel
-	CStringInputSMS channelUserInput(LOCALE_MOVIEBROWSER_INFO_CHANNEL, &movie_info->epgChannel);
+	CStringInputSMS channelUserInput(LOCALE_MOVIEBROWSER_INFO_CHANNEL, movie_info->epgChannel.c_str());
 
 	// epgInfo1
-	CStringInputSMS epgUserInput(LOCALE_MOVIEBROWSER_INFO_INFO1, &movie_info->epgInfo1);
+	CStringInputSMS epgUserInput(LOCALE_MOVIEBROWSER_INFO_INFO1, movie_info->epgInfo1.c_str());
 
 	// epgInfo2
-	CStringInputSMS epgUser2Input(LOCALE_MOVIEBROWSER_INFO_INFO1, &movie_info->epgInfo2);
+	CStringInputSMS epgUser2Input(LOCALE_MOVIEBROWSER_INFO_INFO1, movie_info->epgInfo2.c_str());
 
 	// date of last play
 	CDateInput dateUserDateInput(LOCALE_MOVIEBROWSER_INFO_LENGTH, &movie_info->dateOfLastPlay, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE);
@@ -3093,7 +3093,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	CIntInput lengthUserIntInput(LOCALE_MOVIEBROWSER_INFO_LENGTH, (int&)movie_info->length, 3, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE);
 
 	// country
-	CStringInputSMS countryUserInput(LOCALE_MOVIEBROWSER_INFO_PRODCOUNTRY, &movie_info->productionCountry, MAX_INPUT_CHARS, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE, "ABCDEFGHIJKLMNOPQRSTUVWXYZ ");
+	CStringInputSMS countryUserInput(LOCALE_MOVIEBROWSER_INFO_PRODCOUNTRY, movie_info->productionCountry.c_str(), MAX_INPUT_CHARS, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE, "ABCDEFGHIJKLMNOPQRSTUVWXYZ ");
 	// prod date
 	CIntInput yearUserIntInput(LOCALE_MOVIEBROWSER_INFO_PRODYEAR, (int&)movie_info->productionDate, 4, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE);
 
