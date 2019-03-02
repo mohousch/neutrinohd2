@@ -50,11 +50,11 @@
 #include <gui/widget/stringinput_ext.h>
 
 
-CExtendedInput::CExtendedInput(const neutrino_locale_t Name, char* Value, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, CChangeObserver* Observ, bool* Cancel)
+CExtendedInput::CExtendedInput(const neutrino_locale_t Name, const char * const Value, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, CChangeObserver* Observ, bool* Cancel)
 {
 	nameStringOption = Name;
 	name = g_Locale->getText(Name);
-	value = Value;
+	value = (char *)Value;
 	cancel = Cancel;
 
 	hint_1 = Hint_1;
@@ -64,11 +64,11 @@ CExtendedInput::CExtendedInput(const neutrino_locale_t Name, char* Value, const 
 	Init();
 }
 
-CExtendedInput::CExtendedInput(const char * const Name, char* Value, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, CChangeObserver* Observ, bool* Cancel)
+CExtendedInput::CExtendedInput(const char * const Name, const char * const Value, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, CChangeObserver* Observ, bool* Cancel)
 {
 	nameStringOption = NONEXISTANT_LOCALE;
 	name = Name;
-	value = Value;
+	value = (char *)Value;
 	cancel = Cancel;
 
 	hint_1 = Hint_1;

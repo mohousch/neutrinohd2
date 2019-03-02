@@ -19,12 +19,12 @@ from neutrino import button_label_struct
 from neutrino import NONEXISTANT_LOCALE
 from neutrino import NeutrinoMessages
 
-class main(CMessageBox):
-	msgTitle = "pythonTest:"
-	msgText = "first test\ntesting CMessageBox\nthat's all Folk!"
+class main(CStringInputSMS):
+	title = "pythonTest: CStringInputSMS"
+	value = ''
 	def __init__(self):
-		CMessageBox.__init__(self, self.msgTitle, self.msgText)
-		self._exec(-1)
+		CStringInputSMS.__init__(self, self.title, self.value)
+		self._exec(None, "")
 
 if __name__ == "__main__":
 	main()

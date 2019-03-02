@@ -79,6 +79,8 @@ class CTestMenu : public CMenuTarget
 		void testCStringInput();
 		void testCStringInputSMS();
 		void testCPINInput();
+		void testCPLPINInput();
+		void testCPINChangeWidget();
 		void testCIPInput();
 		void testCDateInput();
 		void testCMACInput();
@@ -997,7 +999,37 @@ void CTestMenu::testCPINInput()
 	dprintf(DEBUG_NORMAL, "\ntesting CPINInput\n");
 
 	std::string value;
-	CPINInput * pinInput = new CPINInput("CPINInput", (char*)value.c_str());
+	CPINInput * pinInput = new CPINInput("CPINInput", value.c_str());
+	
+	pinInput->exec(NULL, "");
+	pinInput->hide();
+	delete pinInput;
+	pinInput = NULL;
+	value.clear();
+}
+
+// CPLPINInput
+void CTestMenu::testCPLPINInput()
+{
+	dprintf(DEBUG_NORMAL, "\ntesting CPLPINInput\n");
+
+	std::string value;
+	CPLPINInput * pinInput = new CPLPINInput("CPLPINInput", value.c_str());
+	
+	pinInput->exec(NULL, "");
+	pinInput->hide();
+	delete pinInput;
+	pinInput = NULL;
+	value.clear();
+}
+
+// CPINChangeWidget
+void CTestMenu::testCPINChangeWidget()
+{
+	dprintf(DEBUG_NORMAL, "\ntesting CPINChangeWidget\n");
+
+	std::string value;
+	CPINChangeWidget * pinInput = new CPINChangeWidget("CPINChangeWidget", value.c_str());
 	
 	pinInput->exec(NULL, "");
 	pinInput->hide();
@@ -2944,6 +2976,18 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "plpininput")
+	{
+		testCPLPINInput();
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "pinchangewidget")
+	{
+		testCPINChangeWidget();
+
+		return menu_return::RETURN_REPAINT;
+	}
 	else if(actionKey == "ipinput")
 	{
 		testCIPInput();
@@ -3405,11 +3449,13 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CStringInput", true, NULL, this, "stringinput"));
 	mainMenu->addItem(new CMenuForwarder("CStringInputSMS", true, NULL, this, "stringinputsms"));
 	mainMenu->addItem(new CMenuForwarder("CPINInput", true, NULL, this, "pininput"));
+	mainMenu->addItem(new CMenuForwarder("CPLPINInput", true, NULL, this, "plpininput"));
+	mainMenu->addItem(new CMenuForwarder("CPINChangeWidget", true, NULL, this, "pinchangewidget"));
 	mainMenu->addItem(new CMenuForwarder("CIPInput", true, NULL, this, "ipinput"));
 	mainMenu->addItem(new CMenuForwarder("CMACInput", true, NULL, this, "macinput"));
-	mainMenu->addItem(new CMenuForwarder("CDateInput", true, NULL, this, "dateinput"));
-	mainMenu->addItem(new CMenuForwarder("CTimeInput", true, NULL, this, "timeinput"));
-	mainMenu->addItem(new CMenuForwarder("CIntInput", true, NULL, this, "intinput"));
+	//mainMenu->addItem(new CMenuForwarder("CDateInput", true, NULL, this, "dateinput"));
+	//mainMenu->addItem(new CMenuForwarder("CTimeInput", true, NULL, this, "timeinput"));
+	//mainMenu->addItem(new CMenuForwarder("CIntInput", true, NULL, this, "intinput"));
 	mainMenu->addItem(new CMenuForwarder("CInfoBox", true, NULL, this, "infobox"));
 	mainMenu->addItem(new CMenuForwarder("CMessageBox", true, NULL, this, "messagebox"));
 	mainMenu->addItem(new CMenuForwarder("CMessageBoxInfoMsg", true, NULL, this, "messageboxinfomsg"));

@@ -67,7 +67,7 @@ class CExtendedInput : public CMenuTarget
 		neutrino_locale_t hint_1;
 		neutrino_locale_t hint_2;
 
-		char*	value;
+		char * value;
 		CChangeObserver*   observ;
 		bool* cancel;
 
@@ -77,8 +77,8 @@ class CExtendedInput : public CMenuTarget
 
 	public:
 
-		CExtendedInput(const neutrino_locale_t Name, char* Value, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, CChangeObserver* Observ = NULL, bool* cancel = NULL);
-		CExtendedInput(const char * const Name, char* Value, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, CChangeObserver* Observ = NULL, bool* cancel = NULL);
+		CExtendedInput(const neutrino_locale_t Name, const char * const Value, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, CChangeObserver* Observ = NULL, bool* cancel = NULL);
+		CExtendedInput(const char * const Name, const char * const Value, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, CChangeObserver* Observ = NULL, bool* cancel = NULL);
 		~CExtendedInput();
 
 		void hide();
