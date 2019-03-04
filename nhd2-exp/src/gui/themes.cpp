@@ -230,10 +230,10 @@ void CThemes::readFile(char* themename)
 		g_settings.menu_Content_Text_green = themefile.getInt32( "menu_Content_Text_green", 0x64 );
 		g_settings.menu_Content_Text_blue = themefile.getInt32( "menu_Content_Text_blue", 0x64 );
 
-		g_settings.menu_Content_Selected_alpha = themefile.getInt32( "menu_Content_Selected_alpha", 0x14 );
-		g_settings.menu_Content_Selected_red = themefile.getInt32( "menu_Content_Selected_red", 0x19 );
-		g_settings.menu_Content_Selected_green = themefile.getInt32( "menu_Content_Selected_green", 0x37 );
-		g_settings.menu_Content_Selected_blue = themefile.getInt32( "menu_Content_Selected_blue", 0x64 );
+		g_settings.menu_Content_Selected_alpha = themefile.getInt32( "menu_Content_Selected_alpha", 0);
+		g_settings.menu_Content_Selected_red = themefile.getInt32( "menu_Content_Selected_red", 25);
+		g_settings.menu_Content_Selected_green = themefile.getInt32( "menu_Content_Selected_green", 25);
+		g_settings.menu_Content_Selected_blue = themefile.getInt32( "menu_Content_Selected_blue", 25);
 
 		g_settings.menu_Content_Selected_Text_alpha = themefile.getInt32( "menu_Content_Selected_Text_alpha", 0x00 );
 		g_settings.menu_Content_Selected_Text_red = themefile.getInt32( "menu_Content_Selected_Text_red", 0x00 );
@@ -393,10 +393,10 @@ void CThemes::setupDefaultColors()
 	g_settings.menu_Content_Text_green = 100;
 	g_settings.menu_Content_Text_blue = 100;
 	
-	g_settings.menu_Content_Selected_alpha = 15;
-	g_settings.menu_Content_Selected_red = 20;
-	g_settings.menu_Content_Selected_green = 20;
-	g_settings.menu_Content_Selected_blue = 20;
+	g_settings.menu_Content_Selected_alpha = 0;
+	g_settings.menu_Content_Selected_red = 25;
+	g_settings.menu_Content_Selected_green = 25;
+	g_settings.menu_Content_Selected_blue = 25;
 
 	g_settings.menu_Content_Selected_Text_alpha = 0;
 	g_settings.menu_Content_Selected_Text_red = 100;

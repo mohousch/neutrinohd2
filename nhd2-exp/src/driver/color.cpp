@@ -405,12 +405,17 @@ fb_pixel_t* gradientColorToColor(fb_pixel_t start_col,fb_pixel_t end_col, fb_pix
 
 }
 
-void setColor(int col, unsigned char r, unsigned char g, unsigned char b, unsigned char alpha)
+uint32_t setColor(unsigned char r, unsigned char g, unsigned char b, unsigned char alpha)
 {
-	CFrameBuffer::getInstance()->paletteGenFade(col, convertSetupColor2RGB(r, g, b), convertSetupColor2RGB(r, g, b), 8, convertSetupAlpha2Alpha(alpha) );
+	int color = convertSetupColor2RGB(r, g, b);
+	int tAlpha = convertSetupAlpha2Alpha(alpha);
 
-	CFrameBuffer::getInstance()->paletteSet();
+	fb_pixel_t col = ((tAlpha << 24) & 0xFF000000) | color;
+
+	return col;
 }
+
+
 
 
 

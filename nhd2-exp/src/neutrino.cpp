@@ -635,10 +635,10 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.menu_Content_Text_green = configfile.getInt32( "menu_Content_Text_green", 100 );
 	g_settings.menu_Content_Text_blue = configfile.getInt32( "menu_Content_Text_blue", 100 );
 	
-	g_settings.menu_Content_Selected_alpha = configfile.getInt32( "menu_Content_Selected_alpha", 15);
-	g_settings.menu_Content_Selected_red = configfile.getInt32( "menu_Content_Selected_red", 20);
-	g_settings.menu_Content_Selected_green = configfile.getInt32( "menu_Content_Selected_green", 20);
-	g_settings.menu_Content_Selected_blue = configfile.getInt32( "menu_Content_Selected_blue", 20);
+	g_settings.menu_Content_Selected_alpha = configfile.getInt32( "menu_Content_Selected_alpha", 0);
+	g_settings.menu_Content_Selected_red = configfile.getInt32( "menu_Content_Selected_red", 25);
+	g_settings.menu_Content_Selected_green = configfile.getInt32( "menu_Content_Selected_green", 25);
+	g_settings.menu_Content_Selected_blue = configfile.getInt32( "menu_Content_Selected_blue", 25);
 	g_settings.menu_Content_Selected_Text_alpha = configfile.getInt32( "menu_Content_Selected_Text_alpha", 0);
 	g_settings.menu_Content_Selected_Text_red = configfile.getInt32( "menu_Content_Selected_Text_red", 100 );
 	g_settings.menu_Content_Selected_Text_green = configfile.getInt32( "menu_Content_Selected_Text_green", 100 );

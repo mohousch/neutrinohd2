@@ -70,19 +70,6 @@ static const char *charset = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW
 #define MSG_COPYRIGHT  "� (C) dbluelle 2004-2007"
 
 //
-/* rc codes */
-/*
-#define RC_0        	CRCInput::RC_0
-#define RC_1        	CRCInput::RC_1
-#define RC_2        	CRCInput::RC_2
-#define RC_3        	CRCInput::RC_3
-#define RC_4        	CRCInput::RC_4
-#define RC_5        	CRCInput::RC_5
-#define RC_6        	CRCInput::RC_6
-#define RC_7        	CRCInput::RC_7
-#define RC_8        	CRCInput::RC_8
-#define RC_9        	CRCInput::RC_9
-*/
 #define RC_RIGHT    	RC_right
 #define RC_LEFT     	RC_left
 #define RC_UP       	RC_up
@@ -192,10 +179,10 @@ enum {
 	RED = COL_RED0, 
 	GRAY = COL_LIGHT_GRAY0,
 	GREEN2 = COL_GREEN0,
-	GRAY2 = COL_LIGHT_GRAY0, 
+	GRAY2 = COL_LIGHT_GRAY0 + 0, 
 	BLUE_TRANSP = COL_LIGHT_BLUE0, 
-	GRAY_TRANSP = COL_LIGHT_GRAY0, 
-	BLUE3 = COL_LIGHT_BLUE0
+	GRAY_TRANSP = COL_LIGHT_GRAY0 + 1, 
+	BLUE3 = COL_LIGHT_BLUE0 + 0
 };
 
 #define CONFIG_FILE PLUGINDIR "/tuxcom/tuxcom.conf"

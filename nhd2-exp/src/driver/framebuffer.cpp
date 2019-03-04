@@ -60,7 +60,6 @@
 
 #define ICON_CACHE_SIZE 1024*1024*2 // 2mb
 
-
 // png/jpg handling
 CFormathandler * fh_root;
 void init_handlers(void);
@@ -128,7 +127,7 @@ CFrameBuffer* CFrameBuffer::getInstance()
 
 void CFrameBuffer::init(const char * const fbDevice)
 {
-	int tr = 0xFF;
+	//int tr = 0xFF;
 	
 #if defined (USE_OPENGL)
 	fd = -1;
@@ -221,25 +220,25 @@ void CFrameBuffer::init(const char * const fbDevice)
 	// icons cache
 	cache_size = 0;
 	
-	// windows colors
-	paletteSetColor(0x1, 0x010101, tr);
-        paletteSetColor(COL_DARK_RED0, 0x800000, tr);
-        paletteSetColor(COL_DARK_GREEN0, 0x008000, tr);
-	paletteSetColor(0x4, 0x808000, tr);
-        paletteSetColor(COL_DARK_BLUE0, 0x000080, tr);
-        paletteSetColor(0x6, 0x800080, tr);
-        paletteSetColor(0x7, 0x008080, tr);
-        paletteSetColor(COL_LIGHT_GRAY0, 0xA0A0A0, tr);
-        paletteSetColor(COL_DARK_GRAY0, 0x505050, tr);
-        paletteSetColor(COL_RED0, 0xFF0000, tr);
-        paletteSetColor(COL_GREEN0, 0x00FF00, tr);
-        paletteSetColor(COL_YELLOW0, 0xFFFF00, tr);
-        paletteSetColor(COL_BLUE0, 0x0000FF, tr);
-        paletteSetColor(COL_PURPLE0, 0xFF00FF, tr);
-        paletteSetColor(COL_LIGHT_BLUE0, 0x00FFFF, tr);
-        paletteSetColor(COL_WHITE0, 0xFFFFFF, tr);
-        paletteSetColor(COL_BLACK0, 0x000000, tr);
-        paletteSetColor(COL_BACKGROUND0, 0x000000, 0xffff);
+	// set colors
+	paletteSetColor(COL_TRANSP0, 0x010101, 0xFF);
+        paletteSetColor(COL_DARK_RED0, 0x800000, 0xFF);
+        paletteSetColor(COL_DARK_GREEN0, 0x008000, 0xFF);
+	paletteSetColor(COL_DARK_OLIVE0, 0x808000, 0xFF);
+        paletteSetColor(COL_DARK_BLUE0, 0x000080, 0xFF);
+        paletteSetColor(COL_DARK_PURPLE0, 0x800080, 0xFF);
+        paletteSetColor(COL_DARK_TURQUOISE0, 0x008080, 0xFF);
+        paletteSetColor(COL_LIGHT_GRAY0, 0xA0A0A0, 0xFF);
+        paletteSetColor(COL_DARK_GRAY0, 0x505050, 0xFF);
+        paletteSetColor(COL_RED0, 0xFF0000, 0xFF);
+        paletteSetColor(COL_GREEN0, 0x00FF00, 0xFF);
+        paletteSetColor(COL_YELLOW0, 0xFFFF00, 0xFF);
+        paletteSetColor(COL_BLUE0, 0x0000FF, 0xFF);
+        paletteSetColor(COL_PURPLE0, 0xFF00FF, 0xFF);
+        paletteSetColor(COL_LIGHT_BLUE0, 0x00FFFF, 0xFF);
+        paletteSetColor(COL_WHITE0, 0xFFFFFF, 0xFF);
+        paletteSetColor(COL_BLACK0, 0x000000, 0xFF);
+        paletteSetColor(COL_BACKGROUND0, 0x000000, 0x0);
 
         paletteSet(&cmap);
 
@@ -1012,11 +1011,11 @@ bool CFrameBuffer::paintIconRaw(const std::string & filename, const int x, const
 				unsigned char pix1 = (compressed & 0xf0) >> 4;
 				unsigned char pix2 = (compressed & 0x0f);
 				if (pix1 != header.transp)
-					*data++ = realcolor[pix1+offset];
+					*data++ = realcolor[pix1 + offset];
 				else
 					*data++ = 0;
 				if (pix2 != header.transp)
-					*data++ = realcolor[pix2+offset];
+					*data++ = realcolor[pix2 + offset];
 				else
 					*data++ = 0;
 				pixpos++;

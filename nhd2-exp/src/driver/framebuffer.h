@@ -194,33 +194,6 @@ class CFrameBuffer
 #endif		
 
 	public:
-#if 0
-		// transparency
-		enum 
-		{
-			TM_EMPTY  = 0,
-			TM_NONE   = 1,
-			TM_BLACK  = 2,
-			TM_INI    = 3
-		};
-		
-		// three mode
-		enum threeMode
-		{
-			THREE_NONE = 0,
-			THREE_SIDE_BY_SIDE,
-			THREE_TOP_AND_BUTTOM
-		};
-		
-		// scaling mode
-		enum ScalingMode
-		{
-			NONE = 0,
-			SIMPLE = 1,
-			COLOR = 2
-		};
-#endif
-
 		int *q_circle;
 		bool corner_tl, corner_tr, corner_bl, corner_br;
 		
@@ -258,7 +231,7 @@ class CFrameBuffer
 		void paletteSetColor(int i, __u32 rgb, int tr);
 		void paletteSet(struct fb_cmap * map = NULL);
 
-		// paint functions 
+		// paint functions
 		inline void paintPixel(fb_pixel_t * const dest, const uint8_t color) const
 		{			
 			// 16/32 bit
