@@ -405,15 +405,6 @@ fb_pixel_t* gradientColorToColor(fb_pixel_t start_col,fb_pixel_t end_col, fb_pix
 
 }
 
-uint32_t setColor(unsigned char r, unsigned char g, unsigned char b, unsigned char alpha)
-{
-	int color = convertSetupColor2RGB(r, g, b);
-	int tAlpha = convertSetupAlpha2Alpha(alpha);
-
-	fb_pixel_t col = ((tAlpha << 24) & 0xFF000000) | color;
-
-	return col;
-}
 
 
 

@@ -273,21 +273,21 @@ void CScreenSetup::paint()
 	int h = (int) frameBuffer->getScreenHeight(true);
 
 	// box(background)
-	frameBuffer->paintBox(0, 0, w, h, make16color(0xA0A0A0));
+	frameBuffer->paintBox(0, 0, w, h, setColor(0xA0A0A0));
 
 	// hlines grid
 	for(int count = 0; count < h; count += 15)
-		frameBuffer->paintHLine(0, w - 1, count, make16color(0x505050) );
+		frameBuffer->paintHLine(0, w - 1, count, setColor(0x505050) );
 
 	// vlines grid
 	for(int count = 0; count < w; count += 15)
-		frameBuffer->paintVLine(count, 0, h - 1, make16color(0x505050) );
+		frameBuffer->paintVLine(count, 0, h - 1, setColor(0x505050) );
 
 	// box top left
-	frameBuffer->paintBox(0, 0, w/3, h/3, make16color(0xA0A0A0));
+	frameBuffer->paintBox(0, 0, w/3, h/3, setColor(0xA0A0A0));
 	
 	// box buttom right
-	frameBuffer->paintBox(w-w/3, h-h/3, w - 1, h - 1, make16color(0xA0A0A0));
+	frameBuffer->paintBox(w-w/3, h-h/3, w - 1, h - 1, setColor(0xA0A0A0));
 
         frameBuffer->paintBoxRel(x, y, BoxWidth, BoxHeight/2, COL_MENUCONTENTSELECTED_PLUS_0);   //upper selected box
         frameBuffer->paintBoxRel(x, y + BoxHeight/2, BoxWidth, BoxHeight/2, COL_MENUCONTENT_PLUS_0);  //lower selected box
