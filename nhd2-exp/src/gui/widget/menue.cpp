@@ -1291,7 +1291,7 @@ int CLockedMenuForwarder::exec(CMenuTarget * parent)
 }
 
 //ClistBoxItem
-ClistBoxItem::ClistBoxItem(const neutrino_locale_t Text, const bool Active, const char* const Option, CMenuTarget* Target, const char* const ActionKey, const char* const IconName, const char* const ItemIcon)
+ClistBoxItem::ClistBoxItem(const neutrino_locale_t Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, const char * const IconName, const char * const ItemIcon)
 {
 	text = Text;
 	textString = g_Locale->getText(Text);
@@ -1308,7 +1308,7 @@ ClistBoxItem::ClistBoxItem(const neutrino_locale_t Text, const bool Active, cons
 	itemType = ITEM_TYPE_LISTBOX;
 }
 
-ClistBoxItem::ClistBoxItem(const char* Text, const bool Active, const char* const Option, CMenuTarget* Target, const char* const ActionKey, const char* const IconName, const char* const ItemIcon)
+ClistBoxItem::ClistBoxItem(const char * const Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, const char * const IconName, const char* const ItemIcon)
 {
 	text = NONEXISTANT_LOCALE;
 	textString = Text;
@@ -1636,28 +1636,28 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 }
 
 //ClistBoxEntryItem
-ClistBoxEntryItem::ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active, const char* const Option, const char* const IconName)
+ClistBoxEntryItem::ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active, const char* const Option)
 {
 	text = Text;
 	textString = g_Locale->getText(Text);
+
 	option = Option? Option : "";
 
 	active = Active;
 
-	iconName = IconName ? IconName : "";
 	itemName = g_Locale->getText(Text);
 	itemType = ITEM_TYPE_LISTBOX_ENTRY;
 }
 
-ClistBoxEntryItem::ClistBoxEntryItem(const char* Text, const bool Active, const char* const Option, const char* const IconName)
+ClistBoxEntryItem::ClistBoxEntryItem(const char * const Text, const bool Active, const char* const Option)
 {
 	text = NONEXISTANT_LOCALE;
 	textString = Text;
+
 	option = Option? Option : "";
 
 	active = Active;
 
-	iconName = IconName ? IconName : "";
 	itemName = Text;
 	itemType = ITEM_TYPE_LISTBOX_ENTRY;
 }

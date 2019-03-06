@@ -2682,7 +2682,9 @@ void CTestMenu::testClistBoxWidget()
 
 		item->setInfo1(tmp.c_str());
 
-		//item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]);
+		// standard design
+		item->setHelpText(tmp.c_str());
+		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
 		listMenu->addItem(item);
 	}

@@ -110,9 +110,9 @@ class CChangeObserver
 class CMenuTarget
 {
 	public:
-		CMenuTarget(){}
-		virtual ~CMenuTarget(){}
-		virtual void hide(){}
+		CMenuTarget(){};
+		virtual ~CMenuTarget(){};
+		virtual void hide(){};
 		virtual int exec(CMenuTarget *parent, const std::string &actionKey) = 0;
 };
 
@@ -338,7 +338,7 @@ class CMenuOptionLanguageChooser : public CMenuItem
 
 	public:
 		CMenuOptionLanguageChooser(char *Name, CChangeObserver *Observ = NULL, const char *const IconName = NULL);
-		~CMenuOptionLanguageChooser();
+		virtual ~CMenuOptionLanguageChooser();
 
 		void addOption(const char* value);
 
@@ -507,9 +507,9 @@ class ClistBoxEntryItem : public CMenuItem
 		virtual const char* getName(void);
 
 	public:
-		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, const char * const IconName = NULL);
+		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL);
 
-		ClistBoxEntryItem(const char * const Text, const bool Active = true, const char * const Option = NULL, const char * const IconName = NULL);
+		ClistBoxEntryItem(const char * const Text, const bool Active = true, const char * const Option = NULL);
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
