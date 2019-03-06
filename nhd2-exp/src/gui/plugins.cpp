@@ -156,11 +156,11 @@ void CPlugins::addPlugin(const char * dir)
 						} 
 						else 
 						{
-							dprintf(DEBUG_DEBUG, "[CPlugins] try init...\n");				
+							dprintf(DEBUG_DEBUG, "CPlugins::addPlugin try init...\n");				
 								
 							initPlugin();
 							dlclose(handle);
-							dprintf(DEBUG_DEBUG, "[CPlugins] init done...\n");
+							dprintf(DEBUG_DEBUG, "CPlugins::addPlugin init done...\n");
 						}
 					}
 				}
@@ -304,7 +304,7 @@ void CPlugins::startPlugin(const char * const name)
 		startPlugin(pluginnr);
 	else
 	{
-		dprintf(DEBUG_NORMAL, "[CPlugins] could not find %s\n", name);
+		dprintf(DEBUG_NORMAL, "CPlugins::startPlugin: could not find %s\n", name);
 		
 		std::string hint = name;
 		hint += " ";
@@ -318,11 +318,11 @@ void CPlugins::startScriptPlugin(int number)
 {
 	const char * script = plugin_list[number].pluginfile.c_str();
 	
-	dprintf(DEBUG_NORMAL, "[CPlugins] executing script %s\n", script);
+	dprintf(DEBUG_NORMAL, "CPlugins::startScriptPlugin: executing script %s\n", script);
 	
 	if (!pluginfile_exists(plugin_list[number].pluginfile))
 	{
-		dprintf(DEBUG_NORMAL, "[CPlugins] could not find %s,\nperhaps wrong plugin type in %s\n", script, plugin_list[number].cfgfile.c_str());
+		dprintf(DEBUG_NORMAL, "CPlugins::startScriptPlugin: could not find %s,\nperhaps wrong plugin type in %s\n", script, plugin_list[number].cfgfile.c_str());
 		return;
 	}
 	
@@ -332,7 +332,7 @@ void CPlugins::startScriptPlugin(int number)
 	} 
 	else 
 	{	
-		dprintf(DEBUG_NORMAL, "[CPlugins] can't execute %s\n",script);
+		dprintf(DEBUG_NORMAL, "CPlugins::startScriptPlugin: can't execute %s\n",script);
 	}
 }
 
@@ -393,7 +393,7 @@ void CPlugins::startPlugin(int number)
 			} 
 			else 
 			{
-				dprintf(DEBUG_NORMAL, "[CPlugins] try exec...\n");
+				dprintf(DEBUG_NORMAL, "\nCPlugins::startPlugin: try exec...\n");
 				
 				frameBuffer->paintBackground();
 
@@ -401,7 +401,7 @@ void CPlugins::startPlugin(int number)
 					
 				execPlugin();
 				dlclose(handle);
-				dprintf(DEBUG_NORMAL, "[CPlugins] exec done...\n");
+				dprintf(DEBUG_NORMAL, "\nCPlugins::startPlugin: exec done...\n");
 			}
 		}
 			
@@ -460,11 +460,11 @@ void CPlugins::removePlugin(int number)
 			} 
 			else 
 			{
-				dprintf(DEBUG_NORMAL, "[CPlugins] try del...\n");			
+				dprintf(DEBUG_NORMAL, "CPlugins::removePlugin: try del...\n");			
 					
 				delPlugin();
 				dlclose(handle);
-				dprintf(DEBUG_NORMAL, "[CPlugins] del done...\n");
+				dprintf(DEBUG_NORMAL, "CPlugins::removePlugin: del done...\n");
 			}
 		}
 	}

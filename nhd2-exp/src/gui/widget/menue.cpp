@@ -60,23 +60,10 @@ extern CPlugins * g_PluginList;    // defined in neutrino.cpp
 
 //
 static CBox cFrameBoxText;
-static CTextBox* textBox = NULL;
+static CTextBox * textBox = NULL;
 
 //CFont* CMenuItem::nameFont = NULL;
 //CFont* CMenuItem::optionFont = NULL;
-
-// CMenuSelectorTarget
-int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string& actionKey)
-{
-	dprintf(DEBUG_DEBUG, "CMenuSelectorTarget::exec:\n");
-
-        if (actionKey != "")
-                *m_select = atoi(actionKey.c_str());
-        else
-                *m_select = -1;
-	
-        return menu_return::RETURN_EXIT;
-}
 
 // CMenuItem
 CMenuItem::CMenuItem()
@@ -188,7 +175,7 @@ int CMenuOptionChooser::getOptionValue(void) const
 	return *optionValue;
 }
 
-int CMenuOptionChooser::exec(CMenuTarget* parent)
+int CMenuOptionChooser::exec(CMenuTarget * parent)
 {
 	dprintf(DEBUG_DEBUG, "CMenuOptionChooser::exec:\n");
 
@@ -202,7 +189,7 @@ int CMenuOptionChooser::exec(CMenuTarget* parent)
 	if( (!parent || msg == RC_ok) && pulldown ) 
 	{
 		int select = -1;
-		char cnt[5];
+
 		CMenuWidget *menu = new CMenuWidget(optionNameString.c_str(), NEUTRINO_ICON_SETTINGS);
 		
 		//if(parent)
@@ -211,8 +198,6 @@ int CMenuOptionChooser::exec(CMenuTarget* parent)
 		menu->enableSaveScreen();
 		if(enableMenuPos)
 			menu->enableMenuPosition();
-		
-		CMenuSelectorTarget* selector = new CMenuSelectorTarget(&select);
 
 		for(unsigned int count = 0; count < number_of_options; count++) 
 		{
@@ -227,18 +212,18 @@ int CMenuOptionChooser::exec(CMenuTarget* parent)
 			else
 				l_option = g_Locale->getText(options[count].value);
 			
-			sprintf(cnt, "%d", count);
-			menu->addItem(new CMenuForwarder(l_option, true, NULL, selector, cnt), selected);
+			menu->addItem(new CMenuForwarder(l_option), selected);
 		}
 		
 		menu->exec(NULL, "");
 		ret = menu_return::RETURN_REPAINT;
+
+		select = menu->getSelected();
 		
 		if(select >= 0) 
 			*optionValue = options[select].key;
 		
 		delete menu;
-		delete selector;
 	} 
 	else 
 	{
@@ -608,7 +593,6 @@ int CMenuOptionStringChooser::exec(CMenuTarget* parent)
 	if( (!parent || msg == RC_ok) && pulldown ) 
 	{
 		int select = -1;
-		char cnt[5];
 		
 		CMenuWidget * menu = new CMenuWidget(nameString.c_str(), NEUTRINO_ICON_SETTINGS);
 		
@@ -619,23 +603,22 @@ int CMenuOptionStringChooser::exec(CMenuTarget* parent)
 		if(enableMenuPos)
 			menu->enableMenuPosition();
 		
-		CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
-		
 		for(unsigned int count = 0; count < options.size(); count++) 
 		{
 			bool selected = false;
 			if (strcmp(options[count].c_str(), optionValue) == 0)
 				selected = true;
-			sprintf(cnt, "%d", count);
-			menu->addItem(new CMenuForwarder(options[count].c_str(), true, NULL, selector, cnt), selected);
+
+			menu->addItem(new CMenuForwarder(options[count].c_str()), selected);
 		}
 		menu->exec(NULL, "");
 		ret = menu_return::RETURN_REPAINT;
+
+		select = menu->getSelected();
 		
 		if(select >= 0)
 			strcpy(optionValue, options[select].c_str());
 		delete menu;
-		delete selector;
 	} 
 	else 
 	{
@@ -863,19 +846,6 @@ int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 }
 
 // CMenuSeparator
-/*
-CMenuSeparator::CMenuSeparator(const int Type, const neutrino_locale_t Text)
-{
-	directKey = RC_nokey;
-	iconName = "";
-	type = Type;
-	text = Text;
-	textString = g_Locale->getText(Text);
-
-	itemType = ITEM_TYPE_SEPARATOR;
-}
-*/
-
 CMenuSeparator::CMenuSeparator(const int Type, const char * const Text)
 {
 	directKey = RC_nokey;
@@ -992,27 +962,12 @@ bool CZapProtection::check()
 }
 
 // CMenuSelector
-CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , char * OptionValue, int* ReturnInt ,int ReturnIntValue ) : CMenuItem()
+CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , const char * const OptionValue, int* ReturnInt ,int ReturnIntValue ) : CMenuItem()
 {
 	height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 	optionValueString = NULL;
 	optionName = OptionName;
-	optionValue = OptionValue;
-	active = Active;
-	returnIntValue = ReturnIntValue;
-	returnInt = ReturnInt;
-
-	itemType = ITEM_TYPE_SELECTOR;
-};
-
-CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , std::string& OptionValue, int* ReturnInt ,int ReturnIntValue ) : CMenuItem()
-{
-	height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	optionValueString = &OptionValue;
-	optionName = OptionName;
-	strncpy(buffer,OptionValue.c_str(), 20);
-	buffer[19] = 0;// terminate string
-	optionValue = buffer;
+	optionValue = (char *)OptionValue;
 	active = Active;
 	returnIntValue = ReturnIntValue;
 	returnInt = ReturnInt;
@@ -1025,7 +980,7 @@ int CMenuSelector::exec(CMenuTarget*)
 	dprintf(DEBUG_DEBUG, "CMenuSelector::exec:\n");
 
 	if(returnInt != NULL)
-		*returnInt= returnIntValue;
+		*returnInt = returnIntValue;
 		
 	if(optionValue != NULL && optionName != NULL) 
 	{
@@ -1079,7 +1034,6 @@ int CMenuSelector::paint(bool selected, bool /*AfterPulldown*/)
 CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
 {
 	option = Option? Option : "";
-	//option_string = NULL;
 
 	textString = g_Locale->getText(Text);
 	text = Text;
@@ -1096,35 +1050,9 @@ CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, 
 	itemType = ITEM_TYPE_FORWARDER;
 	itemName = g_Locale->getText(Text);
 }
-
-/*
-CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
-{
-	option = NULL;
-	option_string = &Option;
-
-	textString = g_Locale->getText(Text);
-	text = Text;
-	
-	active = Active;
-	jumpTarget = Target;
-	actionKey = ActionKey ? ActionKey : "";
-	directKey = DirectKey;
-	
-	iconName = IconName ? IconName : "";
-	
-	itemIcon = ItemIcon ? ItemIcon : "";
-	itemHelpText = g_Locale->getText(HelpText);
-	itemType = ITEM_TYPE_FORWARDER;
-	itemName = g_Locale->getText(Text);
-}
-*/
 
 CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
 {
-	//option = Option;
-	//option_string = NULL;
-
 	textString = Text;
 	text = NONEXISTANT_LOCALE;
 
@@ -1142,29 +1070,6 @@ CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const
 	itemType = ITEM_TYPE_FORWARDER;
 	itemName = Text;
 }
-
-/*
-CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
-{
-	option = NULL;
-	option_string = &Option;
-
-	textString = Text;
-	text = NONEXISTANT_LOCALE;
-	
-	active = Active;
-	jumpTarget = Target;
-	actionKey = ActionKey ? ActionKey : "";
-	directKey = DirectKey;
-	
-	iconName = IconName ? IconName : "";
-	
-	itemIcon = ItemIcon ? ItemIcon : "";
-	itemHelpText = g_Locale->getText(HelpText);
-	itemType = ITEM_TYPE_FORWARDER;
-	itemName = Text;
-}
-*/
 
 int CMenuForwarder::getHeight(void) const
 {
@@ -1195,23 +1100,15 @@ int CMenuForwarder::getWidth(void) const
 {
 	int tw = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(textString);
 
-	//const char * option_text = NULL;
-
-	//if (option.empyt())
-	//	option_text = option;
-	//else if (option_string)
-	//	option_text = option_string->c_str();
-	
-        //if (option_text != NULL)
 	if(!option.empty())
                 tw += g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(option.c_str(), true);
 
 	return tw;
 }
 
-int CMenuForwarder::exec(CMenuTarget* parent)
+int CMenuForwarder::exec(CMenuTarget * parent)
 {
-	dprintf(DEBUG_DEBUG, "CMenuForwarderExtended::exec:\n");
+	dprintf(DEBUG_DEBUG, "CMenuForwarder::exec: %s\n", actionKey.c_str());
 
 	if(jumpTarget)
 		return jumpTarget->exec(parent, actionKey);
@@ -1233,13 +1130,6 @@ const char * CMenuForwarder::getName(void)
 
 const char * CMenuForwarder::getOption(void)
 {
-	//if (option)
-	//	return option;
-	//else
-		//if (option_string)
-		//	return option_string->c_str();
-		//else
-		//	return NULL;
 	if(!option.empty())
 		return option.c_str();
 	else
@@ -1256,7 +1146,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	const char * l_text = getName();
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
+	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : item_backgroundColor;
 
 	if (selected)
 	{
@@ -1310,7 +1200,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		// paint item
 		frameBuffer->paintBoxRel(x, y, dx, height, bgcolor);
 
-		// paint icon/direkt-key
+		// iconName
 		int icon_w = 0;
 		int icon_h = 0;
 	
@@ -1343,7 +1233,6 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		}
 		else if(widgetType == WIDGET_TYPE_CLASSIC)
 		{
-			//frameBuffer->getIconSize(NEUTRINO_ICON_MENUITEM_NOPREVIEW, &icon_w, &icon_h);
 			icon_w = ITEM_ICON_W_MINI;
 			icon_h = ITEM_ICON_H_MINI;
 
@@ -1381,7 +1270,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 }
 
 // lockedMenuForward
-int CLockedMenuForwarder::exec(CMenuTarget* parent)
+int CLockedMenuForwarder::exec(CMenuTarget * parent)
 {
 	dprintf(DEBUG_DEBUG, "CLockedMenuForwarder::exec\n");
 
@@ -1416,7 +1305,7 @@ ClistBoxItem::ClistBoxItem(const neutrino_locale_t Text, const bool Active, cons
 	iconName = IconName ? IconName : "";
 	itemIcon = ItemIcon? ItemIcon : "";
 	itemName = g_Locale->getText(Text);
-	itemType = ITEM_TYPE_LIST_BOX;
+	itemType = ITEM_TYPE_LISTBOX;
 }
 
 ClistBoxItem::ClistBoxItem(const char* Text, const bool Active, const char* const Option, CMenuTarget* Target, const char* const ActionKey, const char* const IconName, const char* const ItemIcon)
@@ -1433,7 +1322,7 @@ ClistBoxItem::ClistBoxItem(const char* Text, const bool Active, const char* cons
 	iconName = IconName ? IconName : "";
 	itemIcon = ItemIcon? ItemIcon : "";
 	itemName = Text;
-	itemType = ITEM_TYPE_LIST_BOX;
+	itemType = ITEM_TYPE_LISTBOX;
 }
 
 int ClistBoxItem::getHeight(void) const
@@ -1505,7 +1394,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	const char * l_text = getName();
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
+	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : item_backgroundColor;
 
 	if (selected)
 	{
@@ -1757,7 +1646,7 @@ ClistBoxEntryItem::ClistBoxEntryItem(const neutrino_locale_t Text, const bool Ac
 
 	iconName = IconName ? IconName : "";
 	itemName = g_Locale->getText(Text);
-	itemType = ITEM_TYPE_LIST_BOX_ENTRY;
+	itemType = ITEM_TYPE_LISTBOX_ENTRY;
 }
 
 ClistBoxEntryItem::ClistBoxEntryItem(const char* Text, const bool Active, const char* const Option, const char* const IconName)
@@ -1770,7 +1659,7 @@ ClistBoxEntryItem::ClistBoxEntryItem(const char* Text, const bool Active, const 
 
 	iconName = IconName ? IconName : "";
 	itemName = Text;
-	itemType = ITEM_TYPE_LIST_BOX_ENTRY;
+	itemType = ITEM_TYPE_LISTBOX_ENTRY;
 }
 
 int ClistBoxEntryItem::getHeight(void) const
@@ -1823,6 +1712,11 @@ const char * ClistBoxEntryItem::getName(void)
         	l_name = g_Locale->getText(text);
 	
 	return l_name;
+}
+
+int ClistBoxEntryItem::exec(CMenuTarget * /*parent*/)
+{
+	return menu_return::RETURN_EXIT;
 }
 
 int ClistBoxEntryItem::paint(bool selected, bool /*AfterPulldown*/)
@@ -2118,6 +2012,8 @@ void CMenuWidget::move(int xoff, int yoff)
 
 CMenuWidget::~CMenuWidget()
 {
+	dprintf(DEBUG_NORMAL, "CMenuWidget:: del\n");
+
 	items.clear();
 	page_start.clear();
 }
@@ -2782,7 +2678,7 @@ void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigne
 
 int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 {
-	dprintf(DEBUG_DEBUG, "CMenuWidget::exec:\n");
+	dprintf(DEBUG_NORMAL, "CMenuWidget::exec:\n");
 
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
@@ -3216,6 +3112,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 
 				case (RC_home):
 					exit_pressed = true;
+					dprintf(DEBUG_NORMAL, "exit_pressed\n");
 					msg = RC_timeout;
 					break;
 					
@@ -3426,6 +3323,8 @@ void ClistBoxWidget::move(int xoff, int yoff)
 
 ClistBoxWidget::~ClistBoxWidget()
 {
+	dprintf(DEBUG_NORMAL, "ClistBoxWidget:: del\n");
+
 	items.clear();
 	page_start.clear();
 }
@@ -4094,7 +3993,7 @@ void ClistBoxWidget::integratePlugins(CPlugins::i_type_t integration, const unsi
 
 int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 {
-	dprintf(DEBUG_DEBUG, "ClistBoxWidget::exec:\n");
+	dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec:\n");
 
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
@@ -4582,6 +4481,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 				case (RC_home):
 					exit_pressed = true;
+					dprintf(DEBUG_NORMAL, "exit_pressed\n");
 					msg = RC_timeout;
 					break;
 					

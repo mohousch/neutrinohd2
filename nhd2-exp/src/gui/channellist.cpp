@@ -355,7 +355,6 @@ int CChannelList::doChannelMenu(void)
 	static int old_selected = 0;
 	signed int bouquet_id, old_bouquet_id, new_bouquet_id;
 	int result;
-	char cnt[5];
 	t_channel_id channel_id;
 	
 	if( !bouquetList )
@@ -363,24 +362,18 @@ int CChannelList::doChannelMenu(void)
 
 	CMenuWidget * menu = new CMenuWidget(LOCALE_CHANNELLIST_EDIT, NEUTRINO_ICON_SETTINGS);
 	menu->enableSaveScreen();
-	
-	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 
-	sprintf(cnt, "%d", i);
-	menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_DELETE, true, NULL, selector, cnt, RC_red, NEUTRINO_ICON_BUTTON_RED), old_selected == i++);
+	menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_DELETE, true, NULL, NULL, NULL, RC_red, NEUTRINO_ICON_BUTTON_RED), old_selected == i++);
 
-	sprintf(cnt, "%d", i);
-	menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_MOVE, true, NULL, selector, cnt, RC_green, NEUTRINO_ICON_BUTTON_GREEN), old_selected == i++);
+	menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_MOVE, true, NULL, NULL, NULL, RC_green, NEUTRINO_ICON_BUTTON_GREEN), old_selected == i++);
 
-	sprintf(cnt, "%d", i);
-	menu->addItem(new CMenuForwarder(LOCALE_EXTRA_ADD_TO_BOUQUET, true, NULL, selector, cnt, RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW), old_selected == i++);
+	menu->addItem(new CMenuForwarder(LOCALE_EXTRA_ADD_TO_BOUQUET, true, NULL, NULL, NULL, RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW), old_selected == i++);
 
-	sprintf(cnt, "%d", i);
-	menu->addItem(new CMenuForwarder(LOCALE_FAVORITES_MENUEADD, true, NULL, selector, cnt, RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i++);
+	menu->addItem(new CMenuForwarder(LOCALE_FAVORITES_MENUEADD, true, NULL, NULL, NULL, RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i++);
 
 	menu->exec(NULL, "");
+	select = menu->getSelected();
 	delete menu;
-	delete selector;
 
 	if(select >= 0) 
 	{
@@ -1650,7 +1643,7 @@ void CChannelList::webTVBouquets(void)
 	m.enableSaveScreen();
 
 	int select = -1;
-	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
+	//CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 	int count = 0;
 	static int old_select = 0;
 
@@ -1667,14 +1660,15 @@ void CChannelList::webTVBouquets(void)
 
 			removeExtension(bTitle);
 
-			m.addItem(new CMenuForwarder(bTitle.c_str(), true, NULL, selector, to_string(count).c_str()), old_select == count);
+			m.addItem(new CMenuForwarder(bTitle.c_str(), true, NULL, /*selector*/NULL, to_string(count).c_str()), old_select == count);
 
 			count++;
 		}
 	}
 
 	m.exec(NULL, "");
-	delete selector;
+	select = m.getSelected();
+	//delete selector;
 
 	// select
 	if(select >= 0)

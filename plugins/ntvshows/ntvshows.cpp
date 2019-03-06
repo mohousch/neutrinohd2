@@ -341,7 +341,7 @@ int CTVShows::showCategoriesMenu()
 
 	menu->exec(NULL, "");
 	menu->hide();
-	res = menu->getSelectedLine();
+	res = menu->getSelected();
 	delete menu;
 	menu = NULL;
 

@@ -67,8 +67,8 @@ enum
 	ITEM_TYPE_SEPARATOR,
 	ITEM_TYPE_FORWARDER,
 	ITEM_TYPE_SELECTOR,
-	ITEM_TYPE_LIST_BOX,
-	ITEM_TYPE_LIST_BOX_ENTRY
+	ITEM_TYPE_LISTBOX,
+	ITEM_TYPE_LISTBOX_ENTRY
 };
 
 enum
@@ -114,26 +114,6 @@ class CMenuTarget
 		virtual ~CMenuTarget(){}
 		virtual void hide(){}
 		virtual int exec(CMenuTarget *parent, const std::string &actionKey) = 0;
-};
-
-// CMenuSeletorTarget
-class CMenuSelectorTarget : public CMenuTarget
-{
-	private:
-                int *m_select;
-
-        public:
-                CMenuSelectorTarget(int *select) {m_select = select;};
-                int exec(CMenuTarget * parent, const std::string &actionKey);
-};
-
-// CSelectedMenu: used in movieplayer for bookmarks
-class CSelectedMenu : public CMenuTarget
-{
-	public:
-		bool selected;
-		CSelectedMenu(void){selected = false;};
-		inline	int exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/){selected = true; return menu_return::RETURN_EXIT;};
 };
 
 // CMenuItem
@@ -367,7 +347,7 @@ class CMenuOptionLanguageChooser : public CMenuItem
 
 		bool isSelectable(void) const {return true;}
 
-		int exec(CMenuTarget* parent);
+		int exec(CMenuTarget * parent);
 };
 
 // CMenuSeparator
@@ -376,7 +356,6 @@ class CMenuSeparator : public CMenuItem
 	int type;
 
 	public:
-		//neutrino_locale_t text;
 		const char * textString;
 
 		enum
@@ -389,8 +368,6 @@ class CMenuSeparator : public CMenuItem
 			ALIGN_RIGHT = 16
 		};
 
-
-		//CMenuSeparator(const int Type = EMPTY, const neutrino_locale_t Text = NONEXISTANT_LOCALE);
 		CMenuSeparator(const int Type = EMPTY, const char * const Text = NULL);
 
 		int paint(bool selected = false, bool AfterPulldown = false);
@@ -408,14 +385,13 @@ class CMenuSelector : public CMenuItem
 		char * optionValue;
 		std::string* optionValueString;
 		int  returnIntValue;
-		int* returnInt;
+		int * returnInt;
 		int height;
 		char buffer[20];
 	public:
-		CMenuSelector(const char * OptionName, const bool Active = true, char * OptionValue = NULL, int * ReturnInt = NULL, int ReturnIntValue = 0);
-		CMenuSelector(const char * OptionName, const bool Active , std::string & OptionValue, int * ReturnInt = NULL, int ReturnIntValue = 0);
+		CMenuSelector(const char * OptionName, const bool Active = true, const char * const OptionValue = NULL, int * ReturnInt = NULL, int ReturnIntValue = 0);
 
-		int exec(CMenuTarget* parent);
+		int exec(CMenuTarget * parent);
 
 		int paint(bool selected, bool AfterPulldown = false);
 		int getHeight(void) const{return height;};
@@ -531,7 +507,7 @@ class ClistBoxEntryItem : public CMenuItem
 		virtual const char* getName(void);
 
 	public:
-		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, const char * const Icon = NULL);
+		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, const char * const IconName = NULL);
 
 		ClistBoxEntryItem(const char * const Text, const bool Active = true, const char * const Option = NULL, const char * const IconName = NULL);
 		
@@ -540,6 +516,8 @@ class ClistBoxEntryItem : public CMenuItem
 		int getWidth(void) const;
 
 		bool isSelectable(void) const {return active;}
+
+		int exec(CMenuTarget * parent);
 };
 
 // CMenuWidget
@@ -625,9 +603,8 @@ class CMenuWidget : public CMenuTarget
 		virtual void hide();
 		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
-		int getSelected() { return selected; };
+		int getSelected() {return exit_pressed ? -1 : selected;};
 		void move(int xoff, int yoff);
-		int getSelectedLine(void){return exit_pressed ? -1 : selected;};
 		
 		int getHeight(void) const {return height;}
 		
@@ -779,10 +756,10 @@ class ClistBoxWidget : public CMenuTarget
 		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
-		int getSelected() {return selected;};
+		int getSelected(){return exit_pressed ? -1 : selected;};
 
 		void move(int xoff, int yoff);
-		int getSelectedLine(void){return exit_pressed ? -1 : selected;};
+		//int getSelectedLine(void){return exit_pressed ? -1 : selected;};
 		int getHeight(void) const {return height;}
 		int getWidth(void) const {return width;};
 		int getX(void) const {return x;};

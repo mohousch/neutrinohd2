@@ -240,7 +240,6 @@ int CBouquetList::doMenu()
 	static int old_selected = 0;
 	int ret = menu_return::RETURN_NONE;
 	signed int bouquet_id;
-	char cnt[5];
 	CZapitBouquet * tmp, * zapitBouquet;
 	ZapitChannelList * channels;
 
@@ -255,16 +254,13 @@ int CBouquetList::doMenu()
 
 	CMenuWidget * menu = new CMenuWidget(LOCALE_CHANNELLIST_EDIT, NEUTRINO_ICON_SETTINGS);
 	menu->enableSaveScreen();
-	
-	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 
-	sprintf(cnt, "%d", i);
 	if(!zapitBouquet->bUser) 
 	{
-		menu->addItem(new CMenuForwarder(LOCALE_FAVORITES_COPY, true, NULL, selector, cnt, RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i ++);
+		menu->addItem(new CMenuForwarder(LOCALE_FAVORITES_COPY, true, NULL, NULL, NULL, RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i ++);
 		ret = menu->exec(NULL, "");
+		select = menu->getSelected();
 		delete menu;
-		delete selector;
 		
 		dprintf(DEBUG_NORMAL, "CBouquetList::doMenu: %d selected\n", select);
 
@@ -301,10 +297,10 @@ int CBouquetList::doMenu()
 	} 
 	else 
 	{
-		menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_DELETE, true, NULL, selector, cnt, RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i ++);
+		menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_DELETE, true, NULL, NULL, NULL, RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i ++);
 		ret = menu->exec(NULL, "");
+		select = menu->getSelected();
 		delete menu;
-		delete selector;
 		
 		dprintf(DEBUG_NORMAL, "CBouquetList::doMenu: %d selected\n", select);
 		

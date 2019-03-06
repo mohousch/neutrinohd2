@@ -41,7 +41,7 @@
 
 
 // common
-#define COL_TRANSP0			0x01
+#define COL_TRANSPARENT0			0x01
 #define COL_DARK_RED0	 		0x02
 #define COL_DARK_GREEN0	 		0x03
 #define COL_DARK_OLIVE0	 		0x04
@@ -62,7 +62,7 @@
 #define COL_DARK_ORANGE0		0xBC
 #define COL_BACKGROUND0 		0xFF
 
-#define COL_TRANSP			CFrameBuffer::getInstance()->realcolor[COL_TRANSP0]
+#define COL_TRANSPARENT			CFrameBuffer::getInstance()->realcolor[COL_TRANSPENT0]
 #define COL_DARK_RED			CFrameBuffer::getInstance()->realcolor[COL_DARK_RED0]
 #define COL_DARK_GREEN			CFrameBuffer::getInstance()->realcolor[COL_DARK_GREEN0]
 #define COL_DARK_OLIVE			CFrameBuffer::getInstance()->realcolor[COL_DARK_OLIVE0]
@@ -75,7 +75,7 @@
 #define COL_GREEN			CFrameBuffer::getInstance()->realcolor[COL_GREEN0]
 #define COL_YELLOW			CFrameBuffer::getInstance()->realcolor[COL_YELLOW0]
 #define COL_BLUE                        CFrameBuffer::getInstance()->realcolor[COL_BLUE0]
-#define COL_PURP 			CFrameBuffer::getInstance()->realcolor[COL_PURPLE0]
+#define COL_PURPLE 			CFrameBuffer::getInstance()->realcolor[COL_PURPLE0]
 #define COL_LIGHT_BLUE 			CFrameBuffer::getInstance()->realcolor[COL_LIGHT_BLUE0]
 #define COL_WHITE                       CFrameBuffer::getInstance()->realcolor[COL_WHITE0]
 #define COL_BLACK                       CFrameBuffer::getInstance()->realcolor[COL_BLACK0]
@@ -161,7 +161,7 @@ fb_pixel_t* gradientOneColor(fb_pixel_t col, fb_pixel_t *gradientBuf, int bSize,
 
 fb_pixel_t* gradientColorToColor(fb_pixel_t start_col, fb_pixel_t end_col, fb_pixel_t *gradientBuf, int bSize, int mode, int intensity = normal);
 
-inline uint32_t setColor(__u32 rgb)
+inline uint32_t make16color(__u32 rgb)
 {
         return 0xFF000000 | rgb;
 }

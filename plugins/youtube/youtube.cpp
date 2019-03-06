@@ -349,7 +349,7 @@ int CYTBrowser::showCategoriesMenu(void)
 		m_settings.ytregion = rstr;
 	}
 
-	res = mainMenu.getSelectedLine();
+	res = mainMenu.getSelected();
 
 	return res;
 }

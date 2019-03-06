@@ -102,7 +102,6 @@ class CUpnpBrowserGui : public CMenuTarget
 		void splitProtocol(std::string &protocol, std::string &prot, std::string &network, std::string &mime, std::string &additional);
 
 		bool loadItem(std::string, int _selected);
-		//bool selectItem(std::string);
 		void loadDevices(bool hint = true);
 
 		void showMenuDevice();

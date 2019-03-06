@@ -831,7 +831,6 @@ int CTPSelectHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	std::map<int, transponder> tmplist;
 	std::map<int, transponder>::iterator tmpI;
 	int i;
-	char cnt[5];
 	int select = -1;
 	static int old_selected = 0;
 	static t_satellite_position old_position = 0;
@@ -858,7 +857,6 @@ int CTPSelectHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	printf("CTPSelectHandler::exec: fe(%d) %s position(%d)\n", feindex, scanSettings->satNameNoDiseqc, position);
 
         CMenuWidget * menu = new CMenuWidget(LOCALE_SCANTS_SELECT_TP, NEUTRINO_ICON_SETTINGS);
-        CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 	
 	i = 0;
 
@@ -872,7 +870,6 @@ int CTPSelectHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 			continue;
 
 		char buf[128];
-		sprintf(cnt, "%d", i);
 		char * f, *s, *m;
 		
 		switch( getFE(feindex)->getInfo()->type) 
@@ -905,14 +902,14 @@ int CTPSelectHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				break;
 		}
 		
-		menu->addItem(new CMenuForwarder(buf, true, NULL, selector, cnt), old_selected == i);
+		menu->addItem(new CMenuForwarder(buf), old_selected == i);
 		tmplist.insert(std::pair <int, transponder>(i, tI->second));
 		i++;
 	}
 
 	int retval = menu->exec(NULL, "");
+	select = menu->getSelected();
 	delete menu;
-	delete selector;
 
 	if(select >= 0) 
 	{

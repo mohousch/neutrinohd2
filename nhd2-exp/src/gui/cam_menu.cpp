@@ -172,7 +172,6 @@ int CCAMMenuHandler::handleCamMsg (const neutrino_msg_t msg, neutrino_msg_data_t
 {
 	int ret = 0;
 	char str[255];
-	char cnt[5];
 	int i;
 	MMI_MENU_LIST_INFO Menu;
 	MMI_ENGUIRY_INFO MmiEnquiry;
@@ -287,7 +286,6 @@ int CCAMMenuHandler::handleCamMsg (const neutrino_msg_t msg, neutrino_msg_data_t
 
 			menu->enableSaveScreen();
 
-			CMenuSelectorTarget * selector = new CMenuSelectorTarget(&selected);
 			int slen = strlen(pMenu->subtitle);
 			
 			if(slen) 
@@ -320,11 +318,10 @@ int CCAMMenuHandler::handleCamMsg (const neutrino_msg_t msg, neutrino_msg_data_t
 			
 			for(i = 0; i < pMenu->choice_nb; i++) 
 			{
-				sprintf(cnt, "%d", i);
 				if(sublevel)
-					menu->addItem(new CMenuForwarder(convertDVBUTF8(pMenu->choice_item[i], strlen(pMenu->choice_item[i]), 0).c_str(), true, NULL, selector, cnt));
+					menu->addItem(new CMenuForwarder(convertDVBUTF8(pMenu->choice_item[i], strlen(pMenu->choice_item[i]), 0).c_str()));
 				else
-					menu->addItem(new CMenuForwarder(convertDVBUTF8(pMenu->choice_item[i], strlen(pMenu->choice_item[i]), 0).c_str(), true, NULL, selector, cnt, CRCInput::convertDigitToKey(i+1)));
+					menu->addItem(new CMenuForwarder(convertDVBUTF8(pMenu->choice_item[i], strlen(pMenu->choice_item[i]), 0).c_str(), true, NULL, NULL, NULL, CRCInput::convertDigitToKey(i+1)));
 			}
 			slen = strlen(pMenu->bottom);
 			
@@ -336,9 +333,9 @@ int CCAMMenuHandler::handleCamMsg (const neutrino_msg_t msg, neutrino_msg_data_t
 			}
 
 			menu->exec(NULL, "");
+			selected = menu->getSelected();
 
 			delete menu;
-			delete selector;
 		} 
 		else 
 		{
@@ -375,7 +372,7 @@ int CCAMMenuHandler::handleCamMsg (const neutrino_msg_t msg, neutrino_msg_data_t
 		{
 			dprintf(DEBUG_NORMAL, "CCAMMenuHandler::handleCamMsg: selected %d:%s sublevel %s\n", selected, pMenu->choice_item[i], sublevel ? "yes" : "no");
 
-			ci->CI_MenuAnswer(curslot, selected+1);
+			ci->CI_MenuAnswer(curslot, selected + 1);
 
 			timeoutEnd = CRCInput::calcTimeoutEnd(10);
 			return 1;

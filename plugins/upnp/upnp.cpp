@@ -80,10 +80,13 @@ extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
 
 
-const struct button_label RescanButton = {NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_UPNPBROWSER_RESCAN, NULL };
-const struct button_label PlayButton   = {NEUTRINO_ICON_BUTTON_RED, LOCALE_AUDIOPLAYER_PLAY, NULL };
-const struct button_label PUpButton    = {NEUTRINO_ICON_BUTTON_GREEN, LOCALE_FILEBROWSER_NEXTPAGE, NULL };
-const struct button_label PDownButton  = {NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE, NULL };
+const struct button_label RescanButton[4] = 
+{
+	{ NULL, NONEXISTANT_LOCALE, NULL },
+	{ NULL, NONEXISTANT_LOCALE, NULL },
+	{ NULL, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_UPNPBROWSER_RESCAN, NULL }
+};
 
 CUpnpBrowserGui::CUpnpBrowserGui(UPNP_GUI g)
 {
@@ -465,22 +468,19 @@ bool CUpnpBrowserGui::loadItem(std::string id, int _selected)
 			//changed = true;
 		}
 
-		else if( (msg == RC_yellow || (int) msg == RC_page_up) /*&& selected > 0*/)
+		else if( (msg == RC_yellow || (int) msg == RC_page_up))
 		{
 			listBox->scrollPageUp();
 			rchanged = true;
 			changed = true;
 		}
-		else if (msg_repeatok == RC_down /*&& selected + 1 < dirnum*/)
+		else if (msg_repeatok == RC_down)
 		{
-			//selected++;
-			//	if(selected > listBox->getItemsCount())
-			//		selected = 0;
 			listBox->scrollLineDown();
 			//rchanged = true;
 			//changed = true;
 		}
-		else if( (msg == RC_green || (int) msg == RC_page_down) /*&& selected + 1 < dirnum*/)
+		else if( (msg == RC_green || (int) msg == RC_page_down))
 		{
 			listBox->scrollPageDown();
 			rchanged = true;
@@ -572,21 +572,11 @@ bool CUpnpBrowserGui::loadItem(std::string id, int _selected)
 						
 						changed = true;
 					}
-					
-					//m_playing_entry = (*entries)[selected - index];
 				}
 
 			}
-/* 
-			else 
-			{
-				m_playfolder = (*entries)[selected - index].id;
-				m_playid = 0;
-				handleFolder();
-			}
-*/
 			
-			//changed = true;
+			changed = true;
 		}
 		else if(msg == NeutrinoMessages::RECORD_START ||
 			msg == NeutrinoMessages::ZAPTO ||
@@ -610,9 +600,6 @@ bool CUpnpBrowserGui::loadItem(std::string id, int _selected)
 								
 		m_frameBuffer->blit();	
 	}
-	
-	//if (entries)
-	//	delete entries;
 	
 	hide();
 
@@ -683,302 +670,15 @@ void CUpnpBrowserGui::showMenuDevice()
 
 	// foot
 	listBox->enablePaintFoot();
-	listBox->setFooterButtons(&RescanButton, 1);
+	listBox->setFooterButtons(RescanButton, 4);
 
 	// foot info
 	listBox->enablePaintFootInfo();
 
 	//
 	listBox->setSelected(selected);
-	listBox->paint(/*reinit*/);
+	listBox->paint();
 }
-
-#if 0
-bool CUpnpBrowserGui::selectItem(std::string id)
-{
-	bool loop = true;
-	bool endall = false;
-	bool changed = true;
-	bool rchanged = true;
-	neutrino_msg_t      msg;
-	neutrino_msg_data_t data;
-	std::vector<UPnPEntry> *entries;
-	unsigned int index, selected, dirnum;
-
-	index = 0;
-	selected = 0;
-	dirnum = 0;
-	entries = NULL;
-
-	while (loop)
-	{
-		if (rchanged)
-		{
-			if (entries)
-				delete entries;
-			
-			entries = NULL;
-
-			std::list<UPnPAttribute>attribs;
-			std::list<UPnPAttribute>results;
-			std::list<UPnPAttribute>::iterator i;
-			std::stringstream sindex;
-			std::stringstream scount;
-			unsigned int returned = 0;
-
-			bool rfound = false;
-			bool nfound = false;
-			bool tfound = false;
-
-			sindex << index;
-			scount << /*m_listmaxshow*/100;
-
-			attribs.push_back(UPnPAttribute("ObjectID", id));
-			attribs.push_back(UPnPAttribute("BrowseFlag", "BrowseDirectChildren"));
-			attribs.push_back(UPnPAttribute("Filter", "*"));
-			attribs.push_back(UPnPAttribute("StartingIndex", sindex.str()));
-			attribs.push_back(UPnPAttribute("RequestedCount", scount.str()));
-			attribs.push_back(UPnPAttribute("SortCriteria", ""));
-
-			results = m_devices[/*m_selecteddevice*/0].SendSOAP("urn:schemas-upnp-org:service:ContentDirectory:1", "Browse", attribs);
-
-			for (i = results.begin(); i != results.end(); i++)
-			{
-				if (i->first == "NumberReturned")
-				{
-					returned = atoi(i->second.c_str());
-					nfound = true;
-				}
-
-				if (i->first == "TotalMatches")
-				{
-					dirnum = atoi(i->second.c_str());
-					tfound = true;
-				}
-
-				if (i->first == "Result")
-				{
-					entries = decodeResult(i->second);
-					rfound = true;
-				}
-			}
-
-			if (!entries)
-				return endall;
-
-			if (!nfound || !tfound || !rfound)
-			{
-				delete entries;
-				return endall;
-			}
-
-			if (returned != entries->size())
-			{
-				delete entries;
-				return endall;
-			}
-
-			if (returned == 0)
-			{
-				delete entries;
-				return endall;
-			}
-
-			rchanged = false;
-			changed = true;
-		}
-
-		if (changed)
-		{
-			//selectItem(entries, selected - index, dirnum - index, index);
-			//listBox->clearItems();
-			//showMenuEntry();
-			changed = false;
-		}
-		
-		m_frameBuffer->blit();
-
-		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
-		neutrino_msg_t msg_repeatok = msg & ~RC_Repeat;
-
-		if( msg == RC_timeout)
-		{
-			// nothing
-		}
-		else if(msg == RC_home)
-		{
-			loop = false;
-			endall = true;
-		}
-		else if(msg == RC_left)
-		{
-			loop = false;
-
-		}
-		else if (msg == RC_up /*&& selected > 0*/)
-		{
-			selected--;
-			if(selected < 0)
-				selected = 0;
-
-			listBox->scrollLineUp();
-			rchanged = true;
-		}
-
-		else if( (msg == RC_yellow || (int) msg == RC_page_up) /*&& selected > 0*/)
-		{
-			listBox->scrollPageUp();
-			rchanged = true;
-			changed = true;
-		}
-		else if (msg == RC_down /*&& selected + 1 < dirnum*/)
-		{
-			selected++;
-			if(selected > listBox->getItemsCount())
-				selected = 0;
-			listBox->scrollLineDown();
-			rchanged = true;
-			changed = true;
-		}
-		else if( (msg == RC_green || (int) msg == RC_page_down) /*&& selected + 1 < dirnum*/)
-		{
-			listBox->scrollPageDown();
-			rchanged = true;
-		}
-		else if(msg == RC_right)
-		{
-			selected = 0 /*listBox->getSelected()*/;
-
-			if ((*entries)[selected - index].isdir)
-			{
-				endall = selectItem((*entries)[selected - index].id);
-				if (endall)
-					loop = false;
-			}
-			changed = true;
-		}
-		else if(msg == RC_red || msg == RC_ok)
-		{
-			selected = listBox->getSelected();
-
-			if (!(*entries)[selected - index].isdir)
-			{
-				int preferred = (*entries)[selected - index].preferred;
-				if (preferred != -1)
-				{
-					std::string protocol, prot, network, mime, additional;
-					protocol=(*entries)[selected - index].resources[preferred].protocol;
-					splitProtocol(protocol, prot, network, mime, additional);
-					
-					if (mime == "audio/mpeg")
-					{
-						CAudiofile audiofile((*entries)[selected - index].resources[preferred].url, CFile::EXTENSION_MP3);
-						tmpAudioPlayerGui.addToPlaylist(audiofile);
-						tmpAudioPlayerGui.exec(this, "urlplayback");
-					}
-					else if ((mime == "image/gif") || (mime == "image/jpeg"))
-					{
-						std::string fname;
-
-						//DownloadImage
-						if(!((*entries)[selected - index].resources[preferred].url).empty())
-						{
-							fname = thumbnail_dir;
-
-							fname += (*entries)[selected - index].resources[preferred].url.substr((*entries)[selected - index].resources[preferred].url.find_last_of("/"));
-
-							int ext_pos = 0;
-							ext_pos = fname.rfind('?');
-	
-							if( ext_pos > 0)
-							{
-								std::string extension;
-								extension = fname.substr(ext_pos + 1, fname.length() - ext_pos);
-
-								fname = fname.substr(0, fname.length() - (extension.length() + 1));
-							}
-
-							::downloadUrl((*entries)[selected - index].resources[preferred].url, fname);
-						}
-					
-						//
-						CPicture pic;
-						struct stat statbuf;
-				
-						pic.Filename = fname;
-						std::string tmp = fname.substr(fname.rfind('/') + 1);
-						pic.Name = tmp.substr(0, tmp.rfind('.'));
-						pic.Type = tmp.substr(tmp.rfind('.') + 1);
-			
-						if(stat(pic.Filename.c_str(), &statbuf) != 0)
-							printf("stat error");
-						pic.Date = statbuf.st_mtime;
-				
-						tmpPictureViewerGui.addToPlaylist(pic);
-						tmpPictureViewerGui.exec(this, "urlplayback");
-
-						changed = true;
-					}
-
-					else if (mime.substr(0,6) == "video/")
-					{
-						MI_MOVIE_INFO mfile;
-						mfile.file.Name = (*entries)[selected - index].resources[preferred].url.c_str(); 
-						mfile.epgTitle = (*entries)[selected - index].title;
-						mfile.ytid = "upnp"; 
-						
-						tmpMoviePlayerGui.addToPlaylist(mfile);
-						tmpMoviePlayerGui.exec(this, "urlplayback");
-						
-						changed = true;
-					}
-					
-					//m_playing_entry = (*entries)[selected - index];
-				}
-
-			}
-/* 
-			else 
-			{
-				m_playfolder = (*entries)[selected - index].id;
-				m_playid = 0;
-				handleFolder();
-			}
-*/
-			
-			changed = true;
-		}
-		else if(msg == NeutrinoMessages::RECORD_START ||
-			msg == NeutrinoMessages::ZAPTO ||
-			msg == NeutrinoMessages::STANDBY_ON ||
-			msg == NeutrinoMessages::SHUTDOWN ||
-			msg == NeutrinoMessages::SLEEPTIMER)
-		{
-			loop = false;
-			g_RCInput->postMsg(msg, data);
-		}
-		else if(msg == NeutrinoMessages::EVT_TIMER)
-		{
-			CNeutrinoApp::getInstance()->handleMsg( msg, data );
-		}
-		else
-		{
-			if( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
-				loop = false;
-			changed = true;
-		}
-								
-		m_frameBuffer->blit();	
-	}
-	
-	if (entries)
-		delete entries;
-	
-	hide();
-	
-	return endall;
-}
-#endif
 
 void CUpnpBrowserGui::showMenuEntry()
 {
@@ -1075,14 +775,14 @@ void CUpnpBrowserGui::showMenuEntry()
 
 	// foot
 	listBox->enablePaintFoot();
-	listBox->setFooterButtons(&RescanButton, 1);
+	listBox->setFooterButtons(RescanButton, 4);
 
 	// foot info
 	listBox->enablePaintFootInfo();
 
 	//
 	listBox->setSelected(selected);
-	listBox->paint(/*reinit*/);
+	listBox->paint();
 }
 
 int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -1106,8 +806,6 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	// add sec timer
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
-
-	//uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_EPG]);
 
 	bool loop = true;
 
@@ -1151,7 +849,6 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 		else if (msg == RC_right)
 		{
 			loadItem("0", listBox->getSelected());
-			//selectItem("0");
 			changed = true;
 			listBox->clearItems();
 			showMenuEntry();
@@ -1163,7 +860,6 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 		else if (msg == RC_ok)
 		{
 			//listBox->clearItems();
-			//selectItem("0");
 			loadItem("0", listBox->getSelected());
 			changed = true;
 		} 

@@ -30,6 +30,11 @@ class CTestMenu : public CMenuTarget
 	private:
 		// variables
 		CFrameBuffer* frameBuffer;
+
+		CMenuWidget * mainMenu;
+		int select;
+
+		//
 		ClistBoxWidget* listMenu;
 		CMenuItem* item;
 
@@ -155,13 +160,15 @@ class CTestMenu : public CMenuTarget
 		// new
 		void spinner(void);
 
-		// our widgetMenu
-		void showMenu();
-
 	public:
 		CTestMenu();
 		~CTestMenu();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
+
+		// paint()
+		void showMenu();
+
+		// hide()
 		void hide();
 };
 
@@ -178,6 +185,10 @@ CTestMenu::CTestMenu()
 	//
 	listMenu = NULL;
 	item = NULL;
+
+	// 
+	mainMenu = NULL;
+	select = -1;
 }
 
 CTestMenu::~CTestMenu()
@@ -240,55 +251,30 @@ void CTestMenu::test()
 
 	headers.enablePaintDate();
 	headers.setHeaderButtons(frameBoxHeadButtons, FRAMEBOX_HEAD_BUTTONS_COUNT);
-	headers.setHeadColor(COL_BLUE);
+	headers.setHeadColor(COL_PURPLE);
 	headers.setHeadCorner();
 	headers.setHeadGradient(nogradient);
 
-	headers.setFootColor(COL_BLUE);
+	headers.setFootColor(COL_PURPLE);
 	headers.setFootCorner();
 	headers.setFootGradient(nogradient);
 
-	// frameBox
-/*
-	CBox topBox;
-	
-	topBox.iX = g_settings.screen_StartX + 10;
-	topBox.iY = headBox.iY + headBox.iHeight + 5;
-	topBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
-	topBox.iHeight = 120; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
-
-	CFrameBox *topWidget = new CFrameBox(&topBox);
-	CFrame * frame = NULL;
-
-	frame = new CFrame("Neu Filme");
-	topWidget->addFrame(frame);
-	
-	frame = new CFrame("Im Kino");
-	topWidget->addFrame(frame);
-
-	frame = new CFrame("Am populärsten");
-	frame->setOption("(2019)");
-	topWidget->addFrame(frame);
-
-	topWidget->setSelected(selected);
-	//topWidget->setOutFocus(false);
-	topWidget->setBackgroundColor(COL_RED);
-*/
-
 	// leftWidget
 	CBox leftBox;
-/*
-	leftBox.iX = g_settings.screen_StartX + 10;
-	leftBox.iY = headBox.iY + headBox.iHeight + 5 + topBox.iHeight + 5;
-	leftBox.iWidth = 150;
-	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - topBox.iHeight - 5 - footBox.iHeight - 5;
-*/
+
 	leftBox.iX = g_settings.screen_StartX + 10;
 	leftBox.iY = g_settings.screen_StartY + 10 + headBox.iHeight + INTER_FRAME_SPACE;
 	leftBox.iWidth = 200;
 	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
 
 	ClistBox *leftWidget = new ClistBox(&leftBox);
+
+	leftWidget->disableCenter();
+	leftWidget->setSelected(left_selected);
+	leftWidget->setOutFocus(false);
+	leftWidget->disableShrinkMenu();
+
+	leftWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 
 	ClistBoxEntryItem *item1 = new ClistBoxEntryItem("In den Kinos");
 	ClistBoxEntryItem *item2 = new ClistBoxEntryItem("Am");
@@ -310,22 +296,9 @@ void CTestMenu::test()
 	leftWidget->addItem(item6);
 	leftWidget->addItem(item7);
 
-	leftWidget->disableCenter();
-	leftWidget->setSelected(left_selected);
-	leftWidget->setOutFocus(false);
-	leftWidget->disableShrinkMenu();
-
-	leftWidget->setBackgroundColor(COL_BLUE);
-
 	// right menu
 	CBox rightBox;
 
-/*
-	rightBox.iX = g_settings.screen_StartX + 10 + leftBox.iWidth + 5;
-	rightBox.iY = headBox.iY + headBox.iHeight + 5 + topBox.iHeight + 5;
-	rightBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20) - 150 - 5;
-	rightBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 5 - topBox.iHeight - 5 - footBox.iHeight - 5;
-*/
 	rightBox.iX = g_settings.screen_StartX + 10 + leftBox.iWidth + INTER_FRAME_SPACE;
 	rightBox.iY = g_settings.screen_StartY + 10 + headBox.iHeight + INTER_FRAME_SPACE;
 	rightBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20) - leftBox.iWidth - INTER_FRAME_SPACE;
@@ -333,6 +306,16 @@ void CTestMenu::test()
 
 	//
 	ClistBox *rightWidget = new ClistBox(&rightBox);
+	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
+	rightWidget->setItemsPerPage(5, 2);
+	rightWidget->setSelected(-1);
+	rightWidget->setOutFocus(true);
+
+	rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
+	//rightWidget->enablePaintHead();
+	//rightWidget->setHeaderButtons(frameBoxHeadButtons, 2);
+	//rightWidget->enablePaintFoot();
+	//rightWidget->setFooterButtons(frameButtons, 4);
 
 	thumbnail_dir = "/tmp/nfilm";
 	page = 1;
@@ -422,17 +405,6 @@ DOFILM:
 
 		rightWidget->addItem(item);
 	}
-
-	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
-	rightWidget->setItemsPerPage(5, 2);
-	rightWidget->setSelected(-1);
-	rightWidget->setOutFocus(true);
-
-	rightWidget->setBackgroundColor(COL_BLUE);
-	//rightWidget->enablePaintHead();
-	//rightWidget->setHeaderButtons(frameBoxHeadButtons, 2);
-	//rightWidget->enablePaintFoot();
-	//rightWidget->setFooterButtons(frameButtons, 4);
 
 	enum {
 		WIDGET_TOP,
@@ -1883,7 +1855,7 @@ void CTestMenu::testCFrameBox()
 	//topWidget->setOutFocus(false);
 	//topWidget->setBackgroundColor(COL_RED);
 
-REPEAT:
+//REPEAT:
 	topWidget->paint();
 
 	CFrameBuffer::getInstance()->blit();
@@ -2911,6 +2883,24 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "menuforwarder")
+	{
+		MessageBox(LOCALE_MESSAGEBOX_INFO, "testing CMenuForwarder", mbrBack, mbBack, NEUTRINO_ICON_INFO);
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "listboxitem")
+	{
+		MessageBox(LOCALE_MESSAGEBOX_INFO, "testing ClistBoxItem", mbrBack, mbBack, NEUTRINO_ICON_INFO);
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "listboxentryitem" || select == 4)
+	{
+		MessageBox(LOCALE_MESSAGEBOX_INFO, "testing ClistBoxEntryItem", mbrBack, mbBack, NEUTRINO_ICON_INFO);
+
+		return menu_return::RETURN_REPAINT;
+	}
 	else if(actionKey == "box")
 	{
 		testCBox();
@@ -3269,96 +3259,6 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
-/*
-	else if(actionKey == "menuwidgetlistbox")
-	{
-		testCMenuWidgetListBox();
-
-		return menu_return::RETURN_REPAINT;
-	}
-*/
-/*
-	else if(actionKey == "RC_setup")
-	{
-		CChannelListSettings * testChannelMenu = new CChannelListSettings();
-		testChannelMenu->exec(NULL, "");
-		delete testChannelMenu;
-		testChannelMenu = NULL;	
-
-		return menu_return::RETURN_REPAINT;	
-	}
-	else if(actionKey == "RC_info")
-	{
-		g_EpgData->show(Channels[listMenu->getSelected()]->channel_id);
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "RC_red")
-	{
-		g_EventList->exec(Channels[listMenu->getSelected()]->channel_id, Channels[listMenu->getSelected()]->getName());
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "RC_green")
-	{
-		selected = listMenu->getSelected();
-		displayNext = !displayNext;
-		testCMenuWidgetListBox();
-
-		return menu_return::RETURN_EXIT_ALL;		
-	}
-	else if(actionKey == "RC_yellow")
-	{
-		bouquetList->exec(true);
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "RC_blue")
-	{
-		CEPGplusHandler eplus;
-		eplus.exec(NULL, "");
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "zapto")
-	{
-		selected = listMenu->getSelected();
-		g_Zapit->zapTo_serviceID(Channels[listMenu->getSelected()]->channel_id);
-
-		return menu_return::RETURN_REPAINT;
-	}
-*/
-
-/*
-	else if(actionKey == "menuwidgetlistbox1")
-	{
-		testCMenuWidgetListBox1();
-
-		return menu_return::RETURN_REPAINT;
-	}
-*/
-
-/*
-	else if(actionKey == "aplay")
-	{
-		selected = listMenu->getSelected();
-
-		tmpAudioPlayerGui.addToPlaylist(audioFileList[listMenu->getSelected()].Name.c_str());
-		tmpAudioPlayerGui.exec(NULL, "");
-
-		return menu_return::RETURN_REPAINT;		
-	}
-	else if(actionKey == "asetup")
-	{
-		CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
-		audioPlayerSettingsMenu->exec(this, "");
-		delete audioPlayerSettingsMenu;
-		audioPlayerSettingsMenu = NULL;
-
-		return menu_return::RETURN_REPAINT;	
-	}
-*/
-
 	else if(actionKey == "testmenuwidget")
 	{
 		testCMenuWidget();
@@ -3403,20 +3303,29 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		return menu_return::RETURN_REPAINT;
 	}
 
-	showMenu();
+	//showMenu();
 	
 	return menu_return::RETURN_REPAINT;
 }
 
 void CTestMenu::showMenu()
 {
-	CMenuWidget * mainMenu = new CMenuWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
+	dprintf(DEBUG_NORMAL, "CTestMenu::showMenu:\n");
+
+	mainMenu = new CMenuWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
 
 	mainMenu->enableMenuPosition();
 	
 	mainMenu->addItem(new CMenuForwarder("TEST", true, NULL, this, "testing"));
+
+	//
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem(new CMenuForwarder("CMenuForwarder", true, NULL, this, "menuforwarder"));
+	mainMenu->addItem(new ClistBoxItem("listBoxItem", true, NULL, this, "listboxitem"));
+	mainMenu->addItem(new ClistBoxEntryItem("listBoxEntryItem")); 
 	
+	//
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("CBox", true, NULL, this, "box"));
 	mainMenu->addItem(new CMenuForwarder("CIcon", true, NULL, this, "icon"));
 	mainMenu->addItem(new CMenuForwarder("CImage", true, NULL, this, "image"));
@@ -3430,14 +3339,17 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("ClistBox", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarder("CFrameBox", true, NULL, this, "framebox"));
 
+	//
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	
+	//
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget", true, NULL, this, "listboxwidget"));
 	mainMenu->addItem(new CMenuForwarder("CMenuWidget", true, NULL, this, "testmenuwidget"));
 
+	//
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("CStringInput", true, NULL, this, "stringinput"));
 	mainMenu->addItem(new CMenuForwarder("CStringInputSMS", true, NULL, this, "stringinputsms"));
@@ -3458,12 +3370,14 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CHelpBox", true, NULL, this, "helpbox"));
 	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
 
+	//
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ColorChooser", true, NULL, this, "colorchooser"));
 	mainMenu->addItem(new CMenuForwarder("KeyChooser", true, NULL, this, "keychooser"));
 	mainMenu->addItem(new CMenuForwarder("VFDController", true, NULL, this, "vfdcontroller"));
 	mainMenu->addItem(new CMenuForwarder("MountChooser", true, NULL, this, "mountchooser"));
 	
+	//
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ChannelSelectWidget", true, NULL, this, "channelselect"));
 	mainMenu->addItem(new CMenuForwarder("BEWidget", true, NULL, this, "bewidget"));
@@ -3479,33 +3393,44 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("MountSmallMenu", true, NULL, this, "mountsmallmenu"));
 	mainMenu->addItem(new CMenuForwarder("PluginsList", true, NULL, this, "pluginslist"));
 
+	//
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("PlayMovieURL", true, NULL, this, "playmovieurl"));
 	mainMenu->addItem(new CMenuForwarder("PlayAudioURL", true, NULL, this, "playaudiourl"));
 	mainMenu->addItem(new CMenuForwarder("ShowPictureURL", true, NULL, this, "showpictureurl"));
 
+	//
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("PlayMovieFolder", true, NULL, this, "playmoviefolder"));
 	mainMenu->addItem(new CMenuForwarder("PlayAudioFolder", true, NULL, this, "playaudiofolder"));
 	mainMenu->addItem(new CMenuForwarder("ShowPictureFolder", true, NULL, this, "showpicturefolder"));
 
+	//
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("PlayMovieDir(without Browser)", true, NULL, this, "playmoviedir"));
 	mainMenu->addItem(new CMenuForwarder("PlayAudioDir(without Browser)", true, NULL, this, "playaudiodir"));
 	mainMenu->addItem(new CMenuForwarder("ShowPictureDir(without Browser)", true, NULL, this, "showpicturedir"));
 
+	//
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
 	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));
 
+	//
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("CChannelList:", true, NULL, this, "channellist"));
 	mainMenu->addItem(new CMenuForwarder("CBouquetList:", true, NULL, this, "bouquetlist"));
 
+	//
+	//mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	//mainMenu->addItem(new CMenuForwarder("Spinner", true, NULL, this, "spinner"));
 	
 	mainMenu->exec(NULL, "");
-	mainMenu->hide();
+	//mainMenu->hide();
+
+	select = mainMenu->getSelected();
+	printf("\nCTestMenu::exec: select:%d\n", select);
+
 	delete mainMenu;
 	mainMenu = NULL;
 }
@@ -3524,7 +3449,9 @@ void plugin_exec(void)
 {
 	CTestMenu *testMenu = new CTestMenu();
 	
+	testMenu->showMenu();
 	testMenu->exec(NULL, "");
+	testMenu->hide();
 	
 	delete testMenu;
 	testMenu = NULL;

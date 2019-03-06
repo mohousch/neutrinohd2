@@ -472,16 +472,13 @@ void CMoviePlayerGui::PlayFile(void)
 	new_bookmark.length = 0;
 
 	//
-#define BOOKMARK_START_MENU_MAX_ITEMS 5
-	CSelectedMenu cSelectedMenuBookStart[BOOKMARK_START_MENU_MAX_ITEMS];
-
 	CMenuWidget bookStartMenu(LOCALE_MOVIEBROWSER_BOOK_NEW, NEUTRINO_ICON_MOVIE);
 
-	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_NEW, true, NULL, &cSelectedMenuBookStart[0]));
-	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_TYPE_FORWARD, true, NULL, &cSelectedMenuBookStart[1]));
-	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_TYPE_BACKWARD, true, NULL, &cSelectedMenuBookStart[2]));
-	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIESTART, true, NULL, &cSelectedMenuBookStart[3]));
-	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIEEND, true, NULL, &cSelectedMenuBookStart[4]));
+	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_NEW));
+	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_TYPE_FORWARD));
+	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_TYPE_BACKWARD));
+	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIESTART));
+	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIEEND));
 
 	// play loop
  go_repeat:
@@ -922,9 +919,11 @@ void CMoviePlayerGui::PlayFile(void)
 
 					//
 					bookStartMenu.exec(NULL, "none");
+					int select = -1;
+					select = bookStartMenu.getSelected();
 					
 					//
-					if (cSelectedMenuBookStart[0].selected == true) 
+					if(select == 0) 
 					{
 						// new bookmark
 						new_bookmark.pos = pos_sec;
@@ -933,26 +932,22 @@ void CMoviePlayerGui::PlayFile(void)
 						if (cMovieInfo.addNewBookmark(&filelist[selected], new_bookmark) == true)
 							cMovieInfo.saveMovieInfo(filelist[selected]);	// save immediately in xml file
 						new_bookmark.pos = 0;	// clear again, since this is used as flag for bookmark activity
-						cSelectedMenuBookStart[0].selected = false;	// clear for next bookmark menu
 					} 
-					else if (cSelectedMenuBookStart[1].selected == true)
+					else if(select == 1) 
 					{
 						// jump forward bookmark
 						new_bookmark.pos = pos_sec;
 						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: new bookmark 1. pos: %d\r\n", new_bookmark.pos);
 						newForwardHintBox.paint();
-
-						cSelectedMenuBookStart[1].selected = false;	// clear for next bookmark menu
 					} 
-					else if (cSelectedMenuBookStart[2].selected == true) 
+					else if(select == 2) 
 					{
 						// jump backward bookmark
 						new_bookmark.pos = pos_sec;
 						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: new bookmark 1. pos: %d\r\n", new_bookmark.pos);
 						newBackwordHintBox.paint();
-						cSelectedMenuBookStart[2].selected = false;	// clear for next bookmark menu
 					} 
-					else if (cSelectedMenuBookStart[3].selected == true) 
+					else if(select == 3) 
 					{
 						// movie start bookmark
 						filelist[selected].bookmarks.start = pos_sec;
@@ -960,9 +955,8 @@ void CMoviePlayerGui::PlayFile(void)
 						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: New movie start pos: %d\r\n", filelist[selected].bookmarks.start);
 
 						cMovieInfo.saveMovieInfo(filelist[selected]);	// save immediately in xml file
-						cSelectedMenuBookStart[3].selected = false;	// clear for next bookmark menu
 					} 
-					else if (cSelectedMenuBookStart[4].selected == true) 
+					else if(select == 4) 
 					{
 						// Moviebrowser movie end bookmark
 						filelist[selected].bookmarks.end = pos_sec;
@@ -970,7 +964,6 @@ void CMoviePlayerGui::PlayFile(void)
 						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: New movie end pos: %d\r\n", filelist[selected].bookmarks.start);
 
 						cMovieInfo.saveMovieInfo(filelist[selected]);	//save immediately in xml file
-						cSelectedMenuBookStart[4].selected = false;	// clear for next bookmark menu
 					}
 				}
 			}		
@@ -1575,7 +1568,7 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	startPosSelectionMenu.exec(NULL, "12345");
 	
 	// check what menu item was ok'd  and set the appropriate play offset*/
-	result = startPosSelectionMenu.getSelectedLine();
+	result = startPosSelectionMenu.getSelected();
 	
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showStartPosSelectionMenu: result %d\n", result);
 	
