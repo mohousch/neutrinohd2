@@ -172,11 +172,11 @@ void CSatIPClient::showMenu()
 	satIPClientMenu->addItem(new CMenuOptionChooser("SatIP Client enabled", &SatIPEnabled, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL));
 	
 	// satipserver ip
-	CStringInputSMS * SATIPSERVER_IP = new CStringInputSMS((char *)"SatIP Server IP", (char *)SatIPServerIP.c_str());
+	CIPInput * SATIPSERVER_IP = new CIPInput("SatIP Server IP", SatIPServerIP);
 	satIPClientMenu->addItem(new CMenuForwarder("SatIP Server IP", true, SatIPServerIP.c_str(), SATIPSERVER_IP, NULL));
 	
 	// satipserver port
-	CStringInputSMS * SATIPSERVER_PORT = new CStringInputSMS((char *)"SatIP Server Port", (char *)SatIPServerPort.c_str());
+	CStringInput * SATIPSERVER_PORT = new CStringInput("SatIP Server Port", SatIPServerPort.c_str());
 	satIPClientMenu->addItem(new CMenuForwarder("SatIP Server Port", false, SatIPServerPort.c_str(), SATIPSERVER_PORT, NULL));
 	
 	// frontendtyp

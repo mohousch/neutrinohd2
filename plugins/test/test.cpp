@@ -1252,9 +1252,6 @@ void CTestMenu::testCTextBox()
 		
 		if (msg == RC_home) 
 		{
-			textBox->hide();
-			CFrameBuffer::getInstance()->blit();
-
 			loop = false;
 		}
 		else if(msg == RC_info)
@@ -1262,7 +1259,11 @@ void CTestMenu::testCTextBox()
 			bigFonts = bigFonts? false : true;
 			textBox->setBigFonts(bigFonts);
 		}
+
+		CFrameBuffer::getInstance()->blit();
 	}
+
+	textBox->hide();
 	
 	delete textBox;
 	textBox = NULL;
@@ -1287,8 +1288,6 @@ void CTestMenu::testCListFrame()
 	listFrameBox.iY = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - listFrameBox.iHeight) / 2);
 
 	//
-	#define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
-	#define MAX_WINDOW_HEIGHT 		(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
 	#define MAX_ROWS 		LF_MAX_ROWS //6
 
 	

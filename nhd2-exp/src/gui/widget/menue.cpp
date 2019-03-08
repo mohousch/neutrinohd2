@@ -1146,7 +1146,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	const char * l_text = getName();
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : item_backgroundColor;
+	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : COL_MENUCONTENT_PLUS_0;
 
 	if (selected)
 	{
@@ -1394,7 +1394,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	const char * l_text = getName();
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : item_backgroundColor;
+	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : COL_MENUCONTENT_PLUS_0;
 
 	if (selected)
 	{
@@ -2819,13 +2819,13 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 				case (RC_page_down) :
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
-						if(current_page) 
-						{
-							pos = (int) page_start[current_page] - 1;
+						pos = (int) page_start[current_page] - 1;
 
-							selected = pos;
-							paintItems();
-						}
+						if (pos < 0)
+							pos = 0;
+
+						selected = pos;
+						paintItems();
 					}
 					else
 					{
@@ -4182,13 +4182,13 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 				case (RC_page_down) :
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
-						if(current_page) 
-						{
-							pos = (int) page_start[current_page] - 1;
+						pos = (int) page_start[current_page] - 1;
+			
+						if(pos < 0)
+							pos = 0;
 
-							selected = pos;
-							paintItems();
-						}
+						selected = pos;
+						paintItems();
 					}
 					else if(widgetType == WIDGET_TYPE_STANDARD || widgetType == WIDGET_TYPE_CLASSIC || widgetType == WIDGET_TYPE_EXTENDED)
 					{

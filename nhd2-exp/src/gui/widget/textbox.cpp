@@ -104,7 +104,6 @@ CTextBox::~CTextBox()
 	dprintf(DEBUG_DEBUG, "CTextBox::~CTextBox\r\n");
 	
 	m_cLineArray.clear();
-	//hide();
 }
 
 void CTextBox::initVar(void)
