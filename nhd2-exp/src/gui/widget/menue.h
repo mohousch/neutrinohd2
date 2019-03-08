@@ -90,6 +90,16 @@ struct menu_return
 	};
 };
 
+enum
+{
+	EMPTY =	0,
+	LINE = 1,
+	STRING = 2,
+	ALIGN_CENTER = 4,
+	ALIGN_LEFT = 8,
+	ALIGN_RIGHT = 16
+};
+
 // CChangeObserver
 class CChangeObserver
 {
@@ -358,6 +368,7 @@ class CMenuSeparator : public CMenuItem
 	public:
 		const char * textString;
 
+/*
 		enum
 		{
 			EMPTY =	0,
@@ -367,6 +378,7 @@ class CMenuSeparator : public CMenuItem
 			ALIGN_LEFT = 8,
 			ALIGN_RIGHT = 16
 		};
+*/
 
 		CMenuSeparator(const int Type = EMPTY, const char * const Text = NULL);
 

@@ -217,7 +217,7 @@ void COSDMenuColorSettings::showMenu()
 	OSDmenuColorsSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 
 	// save settings
-	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	OSDmenuColorsSettings.addItem( new CMenuSeparator(LINE) );
 	OSDmenuColorsSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
 
 	// head
@@ -245,37 +245,37 @@ void COSDMenuColorSettings::showMenu()
 	CColorChooser * chFootInfoTextColor = new CColorChooser(LOCALE_COLORMENU_TEXTCOLOR, &g_settings.menu_FootInfo_Text_red, &g_settings.menu_FootInfo_Text_green, &g_settings.menu_FootInfo_Text_blue, NULL, CNeutrinoApp::getInstance()->colorSetupNotifier);
 
 	// head
-	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_COLORMENUSETUP_MENUHEAD)));
+	OSDmenuColorsSettings.addItem( new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_COLORMENUSETUP_MENUHEAD)));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_BACKGROUND, true, NULL, chHeadcolor ));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chHeadTextcolor ));
 
 	// window content
-	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_COLORMENUSETUP_MENUCONTENT)));
+	OSDmenuColorsSettings.addItem( new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_COLORMENUSETUP_MENUCONTENT)));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_BACKGROUND, true, NULL, chContentcolor ));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chContentTextcolor ));
 
 	// window content inactiv
-	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_COLORMENUSETUP_MENUCONTENT_INACTIVE)));
+	OSDmenuColorsSettings.addItem( new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_COLORMENUSETUP_MENUCONTENT_INACTIVE)));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_BACKGROUND, true, NULL, chContentInactivecolor ));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chContentInactiveTextcolor));
 
 	// window content selected
-	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_COLORMENUSETUP_MENUCONTENT_SELECTED)));
+	OSDmenuColorsSettings.addItem( new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_COLORMENUSETUP_MENUCONTENT_SELECTED)));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_BACKGROUND, true, NULL, chContentSelectedcolor ));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chContentSelectedTextcolor ));
 	
 	// foot
-	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_COLORMENU_HELPBAR)));
+	OSDmenuColorsSettings.addItem( new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_COLORMENU_HELPBAR)));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_BACKGROUND, true, NULL, chFootcolor ));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chFootTextcolor ));
 
 	// foot info
-	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_COLORMENU_FOOT_TITLE)));
+	OSDmenuColorsSettings.addItem( new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_COLORMENU_FOOT_TITLE)));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_BACKGROUND, true, NULL, chFootInfoColor ));
 	OSDmenuColorsSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chFootInfoTextColor ));
 
 	//
-	OSDmenuColorsSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	OSDmenuColorsSettings.addItem( new CMenuSeparator(LINE) );
 	// head gradient
 	OSDmenuColorsSettings.addItem(new CMenuOptionChooser(LOCALE_HEAD_GRADIENT, &g_settings.Head_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, RC_nokey, "", true ));
 
@@ -329,7 +329,7 @@ void COSDInfoBarColorSettings::showMenu()
 	// intros
 	OSDinfobarColorSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 
-	OSDinfobarColorSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	OSDinfobarColorSettings.addItem(new CMenuSeparator(LINE));
 	OSDinfobarColorSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
 
 	// bg
@@ -341,18 +341,18 @@ void COSDInfoBarColorSettings::showMenu()
 	// clolored events
 	CColorChooser * chColored_Events = new CColorChooser(LOCALE_COLORMENU_TEXTCOLOR, &g_settings.infobar_colored_events_red, &g_settings.infobar_colored_events_green, &g_settings.infobar_colored_events_blue, NULL, CNeutrinoApp::getInstance()->colorSetupNotifier);
 
-	OSDinfobarColorSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_COLORSTATUSBAR_TEXT)));
+	OSDinfobarColorSettings.addItem( new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_COLORSTATUSBAR_TEXT)));
 
 	OSDinfobarColorSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_BACKGROUND, true, NULL, chInfobarcolor ));
 
 	OSDinfobarColorSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chInfobarTextcolor ));
 	
 	// colored events
-	OSDinfobarColorSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_MISCSETTINGS_INFOBAR_COLORED_EVENTS)));
+	OSDinfobarColorSettings.addItem( new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_MISCSETTINGS_INFOBAR_COLORED_EVENTS)));
 	OSDinfobarColorSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chColored_Events ));
 
 	//
-	OSDinfobarColorSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	OSDinfobarColorSettings.addItem(new CMenuSeparator(LINE));
 	// infobar gradient
 	OSDinfobarColorSettings.addItem(new CMenuOptionChooser(LOCALE_INFOBAR_GRADIENT, &g_settings.infobar_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, RC_nokey, "", true ));
 	
@@ -428,10 +428,10 @@ void CLanguageSettings::showMenu()
 	
 	// intros
 	languageSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	languageSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	languageSettings.addItem(new CMenuSeparator(LINE));
 
 	languageSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	languageSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	languageSettings.addItem(new CMenuSeparator(LINE));
 
 	struct dirent **namelist;
 	int n;
@@ -520,10 +520,10 @@ void COSDTimingSettings::showMenu()
 	
 	// intros
 	osdTimingSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	osdTimingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	osdTimingSettings.addItem(new CMenuSeparator(LINE));
 
 	osdTimingSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	osdTimingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	osdTimingSettings.addItem(new CMenuSeparator(LINE));
 
 	for (int i = 0; i < TIMING_SETTING_COUNT; i++)
 	{
@@ -532,7 +532,7 @@ void COSDTimingSettings::showMenu()
 		osdTimingSettings.addItem(new CMenuForwarder(timing_setting_name[i], true, g_settings.timing_string[i], colorSettings_timing_item));
 	}
 
-	osdTimingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	osdTimingSettings.addItem(new CMenuSeparator(LINE));
 	osdTimingSettings.addItem(new CMenuForwarder(LOCALE_OPTIONS_DEFAULT, true, NULL, this, "osd.def"));
 	
 	osdTimingSettings.exec(NULL, "");

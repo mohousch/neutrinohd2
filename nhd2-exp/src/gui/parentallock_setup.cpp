@@ -98,11 +98,11 @@ void CParentalLockSettings::showMenu()
 	
 	// intro
 	parentallockSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	parentallockSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	parentallockSettings.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
 	parentallockSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	parentallockSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	parentallockSettings.addItem( new CMenuSeparator(LINE) );
 
 	// prompt
 	parentallockSettings.addItem(new CMenuOptionChooser(LOCALE_PARENTALLOCK_PROMPT, &g_settings.parentallock_prompt, PARENTALLOCK_PROMPT_OPTIONS, PARENTALLOCK_PROMPT_OPTION_COUNT, !parentallocked, NULL, CRCInput::convertDigitToKey(shortcutLock++), "", true ));

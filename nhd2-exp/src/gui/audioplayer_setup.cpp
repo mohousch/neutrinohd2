@@ -110,11 +110,11 @@ void CAudioPlayerSettings::showMenu()
 	
 	// intros
 	audioPlayerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	audioPlayerSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	audioPlayerSettings.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
 	audioPlayerSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	audioPlayerSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	audioPlayerSettings.addItem( new CMenuSeparator(LINE) );
 
 	// auto select
 	//audioPlayerSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOPLAYER_FOLLOW, &g_settings.audioplayer_follow, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutAudioPlayer++) ));

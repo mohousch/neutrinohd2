@@ -263,11 +263,11 @@ void CNetworkSettings::showMenu()
 
 	// intros
 	networkSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	networkSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	networkSettings.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
 	networkSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	networkSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	networkSettings.addItem( new CMenuSeparator(LINE) );
 	
 	// setup network on start
 	networkSettings.addItem( oj );
@@ -282,7 +282,7 @@ void CNetworkSettings::showMenu()
 	networkSettings.addItem( m0 );
 	
 	// mac id
-	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	networkSettings.addItem(new CMenuSeparator(LINE));
 	networkSettings.addItem(mac);	//eth id
 	
 	// interface
@@ -291,7 +291,7 @@ void CNetworkSettings::showMenu()
 	else
 		delete ifSelect;
 
-	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	networkSettings.addItem(new CMenuSeparator(LINE));
 
 	// dhcp on/off
 	oj = new CMenuOptionChooser(LOCALE_NETWORKMENU_DHCP, &network_dhcp, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, dhcpNotifier);
@@ -301,7 +301,7 @@ void CNetworkSettings::showMenu()
 	networkSettings.addItem( m8);
 
 	// ip
-	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	networkSettings.addItem(new CMenuSeparator(LINE));
 	networkSettings.addItem( m1);
 
 	// netmask
@@ -311,7 +311,7 @@ void CNetworkSettings::showMenu()
 	networkSettings.addItem( m3);
 
 	// default gateway
-	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	networkSettings.addItem(new CMenuSeparator(LINE));
 	networkSettings.addItem( m4);
 
 	// nameserver
@@ -332,7 +332,7 @@ void CNetworkSettings::showMenu()
 		wlanEnable[1] = m10;
 		
 		// ssid
-		networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+		networkSettings.addItem(new CMenuSeparator(LINE));
 		networkSettings.addItem( m9);
 
 		// key
@@ -345,7 +345,7 @@ void CNetworkSettings::showMenu()
 	}
 	
 	// ntp
-	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_NETWORKMENU_NTPTITLE)));
+	networkSettings.addItem(new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_NETWORKMENU_NTPTITLE)));
 
 	networkSettings.addItem(new CMenuOptionChooser(LOCALE_NETWORKMENU_NTPENABLE, &g_settings.network_ntpenable, OPTIONS_NTPENABLE_OPTIONS, OPTIONS_NTPENABLE_OPTION_COUNT, true, sectionsdConfigNotifier));
 
@@ -356,11 +356,11 @@ void CNetworkSettings::showMenu()
         networkSettings.addItem( m7);
 	
 	//proxyserver submenu
-	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	networkSettings.addItem(new CMenuSeparator(LINE));
 	networkSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_PROXYSERVER_SEP, true, NULL, new CProxySetup(LOCALE_FLASHUPDATE_PROXYSERVER_SEP), NULL, RC_nokey, NULL));
 
 	// mount manager
-	networkSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_NETWORKMENU_MOUNT)));
+	networkSettings.addItem(new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_NETWORKMENU_MOUNT)));
 
 	networkSettings.addItem(new CMenuForwarder(LOCALE_NFS_MOUNT , true, NULL, new CNFSMountGui(), NULL, RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 

@@ -135,7 +135,7 @@ void CCAMMenuHandler::doMainMenu()
 			char RESET[32];
 			sprintf(RESET, "reset%d", i + 1);
 
-			cammenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+			cammenu->addItem(new CMenuSeparator(LINE));
 
 			cammenu->addItem(new CMenuForwarder(LOCALE_CAM_RESET, true, NULL, this, RESET, RC_nokey));
 		} 
@@ -144,7 +144,7 @@ void CCAMMenuHandler::doMainMenu()
 			sprintf(str, "%s %d", g_Locale->getText(LOCALE_CAM_EMPTY), i + 1);
 			tempMenu = new CMenuWidget(str, NEUTRINO_ICON_SETTINGS);
 
-			cammenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+			cammenu->addItem(new CMenuSeparator(LINE));
 			cammenu->addItem(new CMenuForwarder(str, false, NULL, tempMenu));
 		}
 	}	

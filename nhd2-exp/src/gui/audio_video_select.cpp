@@ -252,7 +252,7 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 			AVPIDSelector->addItem(new CMenuForwarder(apidtitle.c_str(), enabled, NULL, &AVPIDChanger, apidnumber, CRCInput::convertDigitToKey(count + 1)), (count == currentapid) );
 		}
 		
-		AVPIDSelector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+		AVPIDSelector->addItem(new CMenuSeparator(LINE));
 	} 
 	
 	//ac3
@@ -261,7 +261,7 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 #endif				
 				
 	// policy/aspect ratio
-	AVPIDSelector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	AVPIDSelector->addItem(new CMenuSeparator(LINE));
 				
 	// video aspect ratio 4:3/16:9
 	AVPIDSelector->addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEORATIO, &g_settings.video_Ratio, VIDEOMENU_VIDEORATIO_OPTIONS, VIDEOMENU_VIDEORATIO_OPTION_COUNT, true, CVideoSettings::getInstance()->videoSetupNotifier, RC_green, NEUTRINO_ICON_BUTTON_GREEN, true, true));

@@ -371,11 +371,11 @@ void CGeneralSettings::showMenu()
 	
 	// intros
 	miscSettingsGeneral.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	miscSettingsGeneral.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	miscSettingsGeneral.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
 	miscSettingsGeneral.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	miscSettingsGeneral.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	miscSettingsGeneral.addItem( new CMenuSeparator(LINE) );
 
 	// rc delay
 	CMenuOptionChooser * m1 = new CMenuOptionChooser(LOCALE_MISCSETTINGS_SHUTDOWN_REAL_RCDELAY, &g_settings.shutdown_real_rcdelay, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, !g_settings.shutdown_real);
@@ -461,7 +461,7 @@ void CGeneralSettings::showMenu()
 	miscSettingsGeneral.addItem(as);
 
 	// osd
-	miscSettingsGeneral.addItem( new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_VIDEOMENU_OSD)));
+	miscSettingsGeneral.addItem( new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_VIDEOMENU_OSD)));
 
 	// menu position
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_EXTRA_MENU_POSITION, &g_settings.menu_position, MENU_POSITION_OPTIONS, MENU_POSITION_OPTION_COUNT, true));
@@ -473,7 +473,7 @@ void CGeneralSettings::showMenu()
 	miscSettingsGeneral.addItem(new CMenuOptionChooser(LOCALE_PROGRESSBAR_COLOR, &g_settings.progressbar_color, PROGRESSBAR_COLOR_OPTIONS, PROGRESSBAR_COLOR_OPTION_COUNT, true));
 
 	// key
-	miscSettingsGeneral.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	miscSettingsGeneral.addItem(new CMenuSeparator(LINE));
 
 	miscSettingsGeneral.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO, (int*)(&g_settings.prefer_tmdb_info), MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true ));
 
@@ -483,7 +483,7 @@ void CGeneralSettings::showMenu()
 	miscSettingsGeneral.addItem(new CMenuForwarder("YT:", true, key.c_str(), keyInput));
 
 	// reset factory setup
-	miscSettingsGeneral.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	miscSettingsGeneral.addItem(new CMenuSeparator(LINE));
 	
 	CDataResetNotifier * resetNotifier = new CDataResetNotifier();
 	miscSettingsGeneral.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_RESET, true, NULL, resetNotifier, "factory", RC_green, NEUTRINO_ICON_BUTTON_GREEN ));
@@ -722,11 +722,11 @@ void CChannelListSettings::showMenu()
 	
 	// intros
 	miscSettingsChannelList.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	miscSettingsChannelList.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	miscSettingsChannelList.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
 	miscSettingsChannelList.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	miscSettingsChannelList.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	miscSettingsChannelList.addItem( new CMenuSeparator(LINE) );
 	
 	// HD list
 	miscSettingsChannelList.addItem(new CMenuOptionChooser(LOCALE_CHANNELLIST_MAKE_HDLIST, &g_settings.make_hd_list, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, this, CRCInput::convertDigitToKey(shortcutMiscChannel++) ));
@@ -833,11 +833,11 @@ void CEPGSettings::showMenu()
 	
 	// intros
 	miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	miscSettingsEPG.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	miscSettingsEPG.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
 	miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	miscSettingsEPG.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	miscSettingsEPG.addItem( new CMenuSeparator(LINE) );
 
 	// read epg from xml
 	CEPGConfigNotifier* epgConfigNotifier = new CEPGConfigNotifier;
@@ -867,7 +867,7 @@ void CEPGSettings::showMenu()
         miscSettingsEPG.addItem(new CMenuForwarder(LOCALE_MISCSETTINGS_EPG_DIR, true, g_settings.epg_dir.c_str(), this, "epgdir", CRCInput::convertDigitToKey(shortcutMiscEpg++) ));
 	
 	// epglang
-	miscSettingsEPG.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_MISCSETTINGS_PREF_EPGS_HEAD)));
+	miscSettingsEPG.addItem(new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_MISCSETTINGS_PREF_EPGS_HEAD)));
 	
 	CMenuOptionStringChooser * epglangSelect[3];
 	CEPGlangSelectNotifier * EPGlangNotifier = new CEPGlangSelectNotifier();
@@ -887,7 +887,7 @@ void CEPGSettings::showMenu()
 		miscSettingsEPG.addItem(epglangSelect[i]);
 
 	// online EPG
-	miscSettingsEPG.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	miscSettingsEPG.addItem( new CMenuSeparator(LINE) );
 
 	// server box ip
 	CIPInput * epg_IP = new CIPInput(LOCALE_STREAMINGMENU_SERVER_IP, g_settings.epg_serverbox_ip);
@@ -1027,11 +1027,11 @@ void CFileBrowserSettings::showMenu()
 	
 	// intros
 	miscSettingsFileBrowser.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	miscSettingsFileBrowser.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	miscSettingsFileBrowser.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
 	miscSettingsFileBrowser.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	miscSettingsFileBrowser.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	miscSettingsFileBrowser.addItem( new CMenuSeparator(LINE) );
 
 	// UTF 
 	miscSettingsFileBrowser.addItem(new CMenuOptionChooser(LOCALE_FILESYSTEM_IS_UTF8, &g_settings.filesystem_is_utf8, MISCSETTINGS_FILESYSTEM_IS_UTF8_OPTIONS, MISCSETTINGS_FILESYSTEM_IS_UTF8_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscFileBrowser++), "", true ));

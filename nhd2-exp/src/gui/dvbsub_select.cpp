@@ -124,7 +124,7 @@ int CDVBSubSelectMenuHandler::doMenu()
 		
 		if(sep_added) 
 		{
-			DVBSubSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+			DVBSubSelector.addItem(new CMenuSeparator(LINE));
 			DVBSubSelector.addItem(new CMenuForwarder(LOCALE_SUBTITLES_STOP, true, NULL, &SubtitleChanger, "off", RC_red, NEUTRINO_ICON_BUTTON_RED ));
 		}
 		else

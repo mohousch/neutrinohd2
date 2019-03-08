@@ -219,7 +219,7 @@ int CNKMovies::showCategoriesMenu()
 	}
 
 	// search
-	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	mainMenu.addItem(new CMenuSeparator(LINE));
 
 	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, nksearch.c_str(), this, "search", RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
 

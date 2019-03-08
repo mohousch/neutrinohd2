@@ -31,6 +31,13 @@ class moviePlayer(CFileBrowser):
 class testMenu(CMenuTarget):
 	selected = 0
 	listWidget = CMenuWidget("pythonTest:CMenuWidget", NEUTRINO_ICON_MOVIE)
+
+	def __init__(self):
+		CMenuTarget.__init__
+		self.showMenu()
+		self._exec = self.onAction(None, "")
+		self.hide = self.unPaint()
+
 	def showMenu(self):
 		print("showMenu")
 		
@@ -76,7 +83,10 @@ class testMenu(CMenuTarget):
 
 		if self.selected == 0:
 			messageBox()
-			return menu_return().RETURN_REPAINT
+			#return menu_return().RETURN_REPAINT
+			#self.unPaint()
+			#self.showMenu()
+			#self.onAction()
 
 		elif self.selected == 1:
 			return menu_return().RETURN_REPAINT
@@ -84,18 +94,10 @@ class testMenu(CMenuTarget):
 		elif self.selected == 2:
 			moviePlayer()
 			return menu_return().RETURN_REPAINT
-		
-	def __init__(self):
-		#CMenuTarget.__init__(self, session)
-		self.paint = self.showMenu()
-		self._exec = self.onAction(None, "")
-		self.hide = self.unPaint()
 
 if __name__ == "__main__":
 	testMenu()
 
-#def main(session, **kwargs):
-#	session.open(test)
 
 
 

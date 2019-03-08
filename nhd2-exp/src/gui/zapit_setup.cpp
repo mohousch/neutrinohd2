@@ -127,11 +127,11 @@ void CZapitSetup::showMenu()
 	
 	// intros
 	zapit->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	zapit->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	zapit->addItem(new CMenuSeparator(LINE));
 	
 	// save settings
 	zapit->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "save", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	zapit->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	zapit->addItem(new CMenuSeparator(LINE));
 	
 	// last mode
 	CMenuOptionChooser * m2 = new CMenuOptionChooser(LOCALE_ZAPITSETUP_LAST_MODE, &g_settings.lastChannelMode, OPTIONS_LASTMODE_OPTIONS, OPTIONS_LASTMODE_OPTION_COUNT, !g_settings.uselastchannel, NULL, CRCInput::convertDigitToKey(shortcut++));

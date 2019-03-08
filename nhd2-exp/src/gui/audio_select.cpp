@@ -122,7 +122,7 @@ void CAudioSelectMenuHandler::doMenu()
 	}
 
 	if(g_RemoteControl->current_PIDs.APIDs.size())
-		AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+		AudioSelector.addItem(new CMenuSeparator(LINE));
 
 	// analogue output
 	AudioSelector.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_ANALOGOUT, &g_settings.audio_AnalogMode, AUDIOMENU_ANALOGOUT_OPTIONS, AUDIOMENU_ANALOGOUT_OPTION_COUNT, true, CAudioSettings::getInstance()->audioSetupNotifier, RC_red, NEUTRINO_ICON_BUTTON_RED));
@@ -152,7 +152,7 @@ void CAudioSelectMenuHandler::doMenu()
 				if(!sep_added) 
 				{
 					sep_added = true;
-					AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_SUBTITLES_HEAD)));
+					AudioSelector.addItem(new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_SUBTITLES_HEAD)));
 				}
 				char spid[10];
 				//int pid = sd->pId;
@@ -171,7 +171,7 @@ void CAudioSelectMenuHandler::doMenu()
 				if(!sep_added) 
 				{
 					sep_added = true;
-					AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_SUBTITLES_HEAD)));
+					AudioSelector.addItem(new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_SUBTITLES_HEAD)));
 				}
 				char spid[64];
 				int page = ((sd->teletext_magazine_number & 0xFF) << 8) | sd->teletext_page_number;
@@ -186,7 +186,7 @@ void CAudioSelectMenuHandler::doMenu()
 		
 		if(sep_added) 
 		{
-			AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+			AudioSelector.addItem(new CMenuSeparator(LINE));
 			AudioSelector.addItem(new CMenuForwarder(LOCALE_SUBTITLES_STOP, true, NULL, &SubtitleChanger, "off", RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW ));
 		}
 
@@ -204,7 +204,7 @@ void CAudioSelectMenuHandler::doMenu()
 		if(!sep_added) 
 		{
 			sep_added = true;
-			AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_AUDIOMENU_VOLUME_ADJUST)));
+			AudioSelector.addItem(new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_AUDIOMENU_VOLUME_ADJUST)));
 		}
 		
 		AudioSelector.addItem(new CMenuOptionNumberChooser(NONEXISTANT_LOCALE, &percent[count],

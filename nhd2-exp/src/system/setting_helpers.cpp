@@ -286,11 +286,11 @@ int CUserMenuMenu::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
         CMenuWidget menu(local, NEUTRINO_ICON_KEYBINDING);
 	
         menu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-        menu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+        menu.addItem(new CMenuSeparator(LINE));
 
         CStringInputSMS name(LOCALE_USERMENU_NAME, g_settings.usermenu_text[button].c_str());
         menu.addItem(new CMenuForwarder(LOCALE_USERMENU_NAME, true, g_settings.usermenu_text[button].c_str(), &name));
-        menu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+        menu.addItem(new CMenuSeparator(LINE));
 
         char text[10];
         for(int item = 0; item < SNeutrinoSettings::ITEM_MAX; item++)

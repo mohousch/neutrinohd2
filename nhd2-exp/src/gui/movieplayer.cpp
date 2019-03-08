@@ -1525,7 +1525,7 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	
 	// intros
 	//WARNING: dont delete this line , without getselected line return line - 1
-	startPosSelectionMenu.addItem(new CMenuSeparator(CMenuSeparator::EMPTY));
+	startPosSelectionMenu.addItem(new CMenuSeparator(EMPTY));
 	
 	// bookmark start
 	if(filelist[selected].bookmarks.start != 0)
@@ -1559,7 +1559,7 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 			snprintf(book[i], 19,"%5d min", position[menu_nr]/60);
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showStartPosSelectionMenu adding boomark menu N %d, position %d\n", menu_nr, position[menu_nr]);
 			
-			startPosSelectionMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+			startPosSelectionMenu.addItem(new CMenuSeparator(LINE));
 			startPosSelectionMenu.addItem(new CMenuForwarder(filelist[selected].bookmarks.user[i].name.c_str(), true, book[i]));
 			menu_nr++;
 		}

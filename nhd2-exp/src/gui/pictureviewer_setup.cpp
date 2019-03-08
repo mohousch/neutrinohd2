@@ -116,11 +116,11 @@ void CPictureViewerSettings::showMenu()
 	
 	// intros
 	PicViewerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	PicViewerSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	PicViewerSettings.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
 	PicViewerSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	PicViewerSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	PicViewerSettings.addItem( new CMenuSeparator(LINE) );
 
 	// Pic Viewer Scaling
 	PicViewerSettings.addItem(new CMenuOptionChooser(LOCALE_PICTUREVIEWER_SCALING, &g_settings.picviewer_scaling, PICTUREVIEWER_SCALING_OPTIONS, PICTUREVIEWER_SCALING_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutPicViewer++),"", true ));

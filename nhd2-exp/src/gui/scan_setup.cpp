@@ -359,11 +359,11 @@ void CScanSetup::showScanService()
 	
 	// intros
 	scansetup->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	scansetup->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	scansetup->addItem(new CMenuSeparator(LINE));
 	
 	//save settings
 	scansetup->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "save_scansettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	scansetup->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	scansetup->addItem(new CMenuSeparator(LINE));
 			
 	// init satNotify
 	CSatelliteSetupNotifier * satNotify = new CSatelliteSetupNotifier(feindex);
@@ -373,13 +373,13 @@ void CScanSetup::showScanService()
 	CMenuWidget * satSetup = new CMenuWidget(LOCALE_SATSETUP_SAT_SETUP, NEUTRINO_ICON_SETTINGS);
 	
 	satSetup->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	satSetup->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	satSetup->addItem(new CMenuSeparator(LINE));
 
 	// satfind menu
 	CMenuWidget * satfindMenu = new CMenuWidget(LOCALE_MOTORCONTROL_HEAD, NEUTRINO_ICON_SETTINGS);
 
 	satfindMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	satfindMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	satfindMenu->addItem(new CMenuSeparator(LINE));
 		
 	// satname (list)
 	CMenuOptionStringChooser * satSelect = NULL;
@@ -394,7 +394,7 @@ void CScanSetup::showScanService()
 	
 		// intros
 		satOnOff->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-		satOnOff->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+		satOnOff->addItem(new CMenuSeparator(LINE));
 
 		for(sit = satellitePositions.begin(); sit != satellitePositions.end(); sit++) 
 		{
@@ -407,11 +407,11 @@ void CScanSetup::showScanService()
 				CMenuWidget * tempsat = new CMenuWidget(sit->second.name.c_str(), NEUTRINO_ICON_SETTINGS);
 				
 				tempsat->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-				tempsat->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+				tempsat->addItem(new CMenuSeparator(LINE));
 				
 				// save settings
 				tempsat->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "save_scansettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-				tempsat->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+				tempsat->addItem(new CMenuSeparator(LINE));
 
 				// satname
 				CMenuOptionChooser * inuse = new CMenuOptionChooser(sit->second.name.c_str(),  &sit->second.use_in_scan, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true);
@@ -495,7 +495,7 @@ void CScanSetup::showScanService()
 		motorMenu = new CMenuWidget(LOCALE_SATSETUP_EXTENDED_MOTOR, NEUTRINO_ICON_SETTINGS);
 		
 		// intros
-		motorMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+		motorMenu->addItem(new CMenuSeparator(LINE));
 		motorMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 
 		// save settings
@@ -503,7 +503,7 @@ void CScanSetup::showScanService()
 
 		motorMenu->addItem(new CMenuForwarder(LOCALE_MOTORCONTROL_HEAD, true, NULL, satfindMenu, "", RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 
-		motorMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+		motorMenu->addItem(new CMenuSeparator(LINE));
 
 		motorMenu->addItem(new CMenuOptionNumberChooser(LOCALE_EXTRA_ZAPIT_ROTATION_SPEED, (int *)&getFE(feindex)->motorRotationSpeed, true, 0, 64, NULL) );
 
@@ -553,7 +553,7 @@ void CScanSetup::showScanService()
 	}
 	scansetup->addItem(new CMenuOptionChooser(LOCALE_SCANSETUP_FEMODE,  (int *)&getFE(feindex)->mode, FRONTEND_MODE_OPTIONS, have_twin? FRONTEND_MODE_TWIN_OPTION_COUNT:FRONTEND_MODE_SINGLE_OPTION_COUNT, true, feModeNotifier, RC_green, NEUTRINO_ICON_BUTTON_GREEN, true ));
 	
-	scansetup->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	scansetup->addItem( new CMenuSeparator(LINE) );
 
 	// scan type
 	CMenuOptionChooser * ojScantype = new CMenuOptionChooser(LOCALE_ZAPIT_SCANTYPE, (int *)&scanSettings->scanType, SCANTS_ZAPIT_SCANTYPE, SCANTS_ZAPIT_SCANTYPE_COUNT, ((getFE(feindex)->mode != (fe_mode_t)FE_NOTCONNECTED) && (getFE(feindex)->mode != (fe_mode_t)FE_LOOP)), NULL, CRCInput::convertDigitToKey(shortcut++), "", true);
@@ -570,7 +570,7 @@ void CScanSetup::showScanService()
 	feModeNotifier->addItem(0, useNit);
 	scansetup->addItem(useNit);
 		
-	scansetup->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	scansetup->addItem(new CMenuSeparator(LINE));
 		
 	// diseqc/diseqcrepeat/unisetup/lnb/motor
 	CMenuOptionChooser * ojDiseqc = NULL;
@@ -619,11 +619,11 @@ void CScanSetup::showScanService()
 
 	// intros
 	manualScan->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	manualScan->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	manualScan->addItem(new CMenuSeparator(LINE));
 	
 	// save settings
 	manualScan->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "save_scansettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	manualScan->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	manualScan->addItem(new CMenuSeparator(LINE));
 
 	// sat select
 	manualScan->addItem(satSelect);
@@ -724,7 +724,7 @@ void CScanSetup::showScanService()
 		manualScan->addItem(HR);
 	}	
 
-	manualScan->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	manualScan->addItem(new CMenuSeparator(LINE));
 		
 	// test signal
 	manualScan->addItem(new CMenuForwarder(LOCALE_SCANTS_TEST, true, NULL, scanTs, "test", RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW) );
@@ -741,11 +741,11 @@ void CScanSetup::showScanService()
 	
 	// intros
 	autoScan->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	autoScan->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	autoScan->addItem(new CMenuSeparator(LINE));
 	
 	// save settings
 	autoScan->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "save_scansettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	autoScan->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	autoScan->addItem(new CMenuSeparator(LINE));
 		
 	// sat select
 	autoScan->addItem(satSelect);
@@ -772,11 +772,11 @@ void CScanSetup::showScanService()
 
 		// intros
 		autoScanAll->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-		autoScanAll->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+		autoScanAll->addItem(new CMenuSeparator(LINE));
 		
 		// save settings
 		autoScanAll->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "save_scansettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-		autoScanAll->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+		autoScanAll->addItem(new CMenuSeparator(LINE));
 		
 		// sat
 		autoScanAll->addItem(new CMenuForwarder(LOCALE_SATSETUP_SATELLITE, true, NULL, satOnOff, "", RC_green, NEUTRINO_ICON_BUTTON_GREEN ));
@@ -797,7 +797,7 @@ int CScanSetup::showUnicableSetup()
 {
 	CMenuWidget * uni_setup = new CMenuWidget(LOCALE_SATSETUP_UNICABLE_SETUP, NEUTRINO_ICON_SETTINGS);
 	uni_setup->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	uni_setup->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	uni_setup->addItem(new CMenuSeparator(LINE));
 
 	// uni_scr
 	CMenuOptionNumberChooser * uniscr = new CMenuOptionNumberChooser(LOCALE_SATSETUP_UNISCR, &getFE(feindex)->uni_scr, true, \
@@ -1394,7 +1394,7 @@ void CTunerSetup::showMenu()
 	
 	// intros
 	TunerSetup.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	TunerSetup.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	TunerSetup.addItem( new CMenuSeparator(LINE) );
 			
 	for(int i = 0; i < FrontendCount; i++)
 	{

@@ -131,11 +131,11 @@ void CLCDSettings::showMenu()
 	
 	// intros
 	lcdSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	lcdSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	lcdSettings.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
 	lcdSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	lcdSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	lcdSettings.addItem(new CMenuSeparator(LINE));
 	
 	CLcdNotifier * lcdnotifier = new CLcdNotifier();
 	
@@ -183,7 +183,7 @@ void CLCDSettings::showMenu()
 	//lcdSettings.addItem(new CMenuForwarder(LOCALE_LCDMENU_DIM_BRIGHTNESS,true, g_settings.lcd_setting_dim_brightness, dim_brightness, NULL, CRCInput::convertDigitToKey(shortcutVFD++) ));
 
 	// vfd controller
-	lcdSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	lcdSettings.addItem(new CMenuSeparator(LINE));
 	lcdSettings.addItem(new CMenuForwarder(LOCALE_LCDMENU_LCDCONTROLER, true, NULL, lcdsliders, NULL, CRCInput::convertDigitToKey(shortcutVFD++) ));	
 #endif	
 #endif	

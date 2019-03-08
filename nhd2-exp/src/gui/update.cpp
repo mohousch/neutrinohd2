@@ -139,7 +139,7 @@ class CNonLocalizedMenuSeparator : public CMenuSeparator
 	const char * the_text;
 
 	public:
-		CNonLocalizedMenuSeparator(const char *ltext, const neutrino_locale_t Text) : CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(Text))
+		CNonLocalizedMenuSeparator(const char *ltext, const neutrino_locale_t Text) : CMenuSeparator(LINE | STRING, g_Locale->getText(Text))
 		{
 			the_text = ltext;
 		}
@@ -643,7 +643,7 @@ void CFlashExpert::showMTDSelector(const std::string & actionkey)
 	
 	// intros
 	mtdselector->addItem(new CMenuForwarder(LOCALE_MESSAGEBOX_CANCEL));
-	mtdselector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	mtdselector->addItem(new CMenuSeparator(LINE));
 	
 	CMTDInfo* mtdInfo =CMTDInfo::getInstance();
 
@@ -699,7 +699,7 @@ void CFlashExpert::showFileSelector(const std::string & actionkey)
 	
 	// intros
 	fileselector->addItem(new CMenuForwarder(LOCALE_MESSAGEBOX_CANCEL));
-	fileselector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	fileselector->addItem(new CMenuSeparator(LINE));
 
 	struct dirent **namelist;
 	int n = scandir("/tmp", &namelist, 0, alphasort);
@@ -847,18 +847,18 @@ void CUpdateSettings::showMenu()
 		
 	// intros
 	updateSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	updateSettings.addItem(new CMenuSeparator(LINE));
 	
 	// save settings
 	updateSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	updateSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	updateSettings.addItem( new CMenuSeparator(LINE) );
 
 	// expert-function for mtd read/write
 	CMenuWidget * mtdexpert = new CMenuWidget(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, NEUTRINO_ICON_UPDATE);
 		
 	// intros
 	mtdexpert->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	mtdexpert->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	mtdexpert->addItem(new CMenuSeparator(LINE));
 		
 	CFlashExpert * fe = new CFlashExpert();
 
@@ -871,7 +871,7 @@ void CUpdateSettings::showMenu()
 	// experten function
 	//FIXME: allow update only when the rootfs is jffs2/squashfs
 	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, true, NULL, mtdexpert, "", RC_green, NEUTRINO_ICON_BUTTON_GREEN));
-	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	updateSettings.addItem(new CMenuSeparator(LINE));
 		
 	// update dir
 	updateSettings.addItem( new CMenuForwarder(LOCALE_EXTRA_UPDATE_DIR, true, g_settings.update_dir , this, "update_dir") );
@@ -881,7 +881,7 @@ void CUpdateSettings::showMenu()
 	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_URL_FILE, true, g_settings.softupdate_url_file, updateSettings_url_file));
 
 	// show current version
-	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_FLASHUPDATE_CURRENTVERSION_SEP)));
+	updateSettings.addItem(new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_FLASHUPDATE_CURRENTVERSION_SEP)));
 
 	// get current version SBBB YYYY MM TT HH MM -- formatsting
 	//CConfigFile lconfigfile('\t');
@@ -907,7 +907,7 @@ void CUpdateSettings::showMenu()
 
 	// check update
 	//FIXME: allow update only when the rootfs is jffs2/squashfs
-	updateSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	updateSettings.addItem(new CMenuSeparator(LINE));
 	
 	// offline
 	updateSettings.addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_MANUAL, false, NULL, new CFlashUpdate(CFlashUpdate::UPDATEMODE_MANUAL), "", RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));

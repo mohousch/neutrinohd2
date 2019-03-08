@@ -255,7 +255,7 @@ int COPKGManager::showMenu()
 	
 	// return
 	menu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	menu->addItem(new CMenuSeparator(LINE));
 
 	menu->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_INTERNET, true, NULL, this, "internet" ));
 	menu->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_MANUAL, true, NULL, this, "manual" ));

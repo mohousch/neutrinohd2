@@ -313,7 +313,7 @@ int CYTBrowser::showCategoriesMenu(void)
 
 	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_MOST_POPULAR, true, NULL, new CYTBrowser(cYTFeedParser::MOST_POPULAR), NULL));
 
-	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	mainMenu.addItem(new CMenuSeparator(LINE));
 	
 	// search
 	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, ytsearch.c_str(), this, "search", RC_red, NEUTRINO_ICON_BUTTON_RED));
@@ -321,7 +321,7 @@ int CYTBrowser::showCategoriesMenu(void)
 	// ytorder
 	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_ORDERBY, &m_settings.ytorderby, YT_ORDERBY_OPTIONS, YT_ORDERBY_OPTION_COUNT, true, NULL, RC_green, NEUTRINO_ICON_BUTTON_GREEN, true));
 
-	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	mainMenu.addItem(new CMenuSeparator(LINE));
 
 	char rstr[20];
 	sprintf(rstr, "%s", m_settings.ytregion.c_str());
@@ -337,7 +337,7 @@ int CYTBrowser::showCategoriesMenu(void)
 	region->addOption("US");
 	mainMenu.addItem(region);
 
-	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	mainMenu.addItem(new CMenuSeparator(LINE));
 
 	// autoplay
 	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_AUTOPLAY, &m_settings.ytautoplay, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true));

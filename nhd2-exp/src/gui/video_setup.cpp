@@ -365,11 +365,11 @@ void CVideoSettings::showMenu()
 	
 	// intros
 	videoSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	videoSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	videoSettings.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
 	videoSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	videoSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	videoSettings.addItem( new CMenuSeparator(LINE) );
 
 	// video aspect ratio 4:3/16:9
 	videoSettings.addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEORATIO, &g_settings.video_Ratio, VIDEOMENU_VIDEORATIO_OPTIONS, VIDEOMENU_VIDEORATIO_OPTION_COUNT, true, videoSetupNotifier, CRCInput::convertDigitToKey(shortcutVideo++), "", true ));

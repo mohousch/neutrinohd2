@@ -251,11 +251,11 @@ void CTestMenu::test()
 
 	headers.enablePaintDate();
 	headers.setHeaderButtons(frameBoxHeadButtons, FRAMEBOX_HEAD_BUTTONS_COUNT);
-	headers.setHeadColor(COL_PURPLE);
+	headers.setHeadColor(COL_DARK_TURQUOISE);
 	headers.setHeadCorner();
 	headers.setHeadGradient(nogradient);
 
-	headers.setFootColor(COL_PURPLE);
+	headers.setFootColor(COL_DARK_TURQUOISE);
 	headers.setFootCorner();
 	headers.setFootGradient(nogradient);
 
@@ -312,10 +312,6 @@ void CTestMenu::test()
 	rightWidget->setOutFocus(true);
 
 	rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
-	//rightWidget->enablePaintHead();
-	//rightWidget->setHeaderButtons(frameBoxHeadButtons, 2);
-	//rightWidget->enablePaintFoot();
-	//rightWidget->setFooterButtons(frameButtons, 4);
 
 	thumbnail_dir = "/tmp/nfilm";
 	page = 1;
@@ -414,7 +410,7 @@ DOFILM:
 	
 	int focus = WIDGET_LEFT; // frameBox
 
-REPEAT:
+REPAINT:
 	// background
 	bool usedBackground = CFrameBuffer::getInstance()->getuseBackground();
 	if (usedBackground)
@@ -534,7 +530,7 @@ REPEAT:
 				//topWidget->setOutFocus(false);
 			}
 
-			goto REPEAT;
+			goto REPAINT;
 		}
 		else if(msg == RC_red)
 		{
@@ -542,7 +538,7 @@ REPEAT:
 			right_selected = 0;
 			hide();
 			rightWidget->clearItems();
-			goto DOFILM;
+			goto DOFILM; // include REPAINT
 		}
 		else if(msg == RC_green)
 		{
@@ -555,7 +551,7 @@ REPEAT:
 
 			hide();
 			rightWidget->clearItems();
-			goto DOFILM;
+			goto DOFILM; // include REPAINT
 		}
 		else if(msg == RC_blue)
 		{
@@ -603,7 +599,7 @@ REPEAT:
 					tmpMoviePlayerGui.exec(NULL, "");
 				}
 
-				goto REPEAT;
+				goto REPAINT;
 			}
 			else if(focus == WIDGET_LEFT)
 			{
@@ -616,7 +612,7 @@ REPEAT:
 					page = 1;
 					hide();
 					rightWidget->clearItems();
-					goto DOFILM;
+					goto DOFILM; // include REPAINT
 				}
 				else if(left_selected == 1)
 				{
@@ -625,7 +621,7 @@ REPEAT:
 					page = 1;
 					hide();
 					rightWidget->clearItems();
-					goto DOFILM;
+					goto DOFILM; // include REPAINT
 				}
 				else if(left_selected == 2)
 				{
@@ -634,7 +630,7 @@ REPEAT:
 					page = 1;
 					hide();
 					rightWidget->clearItems();
-					goto DOFILM;
+					goto DOFILM; // include REPAINT
 				}
 				else if(left_selected == 3)
 				{
@@ -643,7 +639,7 @@ REPEAT:
 					page = 1;
 					hide();
 					rightWidget->clearItems();
-					goto DOFILM;
+					goto DOFILM; // include REPAINT
 				}
 				else if(left_selected == 6)
 					loop = false;
@@ -656,7 +652,7 @@ REPEAT:
 				hide();
 				right_selected = rightWidget->getSelected();
 				m_movieInfo.showMovieInfo(m_vMovieInfo[right_selected]);
-				goto REPEAT;
+				goto REPAINT;
 			}
 		}
 		else if(msg == RC_page_down)
@@ -3321,17 +3317,17 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("TEST", true, NULL, this, "testing"));
 
 	//
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "CMenuItems") );
 	mainMenu->addItem(new CMenuForwarder("CMenuForwarder", true, NULL, this, "menuforwarder"));
 	mainMenu->addItem(new ClistBoxItem("listBoxItem", true, NULL, this, "listboxitem"));
 	mainMenu->addItem(new ClistBoxEntryItem("listBoxEntryItem")); 
 	
 	//
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE) );
 	mainMenu->addItem(new CMenuForwarder("CBox", true, NULL, this, "box"));
 	mainMenu->addItem(new CMenuForwarder("CIcon", true, NULL, this, "icon"));
 	mainMenu->addItem(new CMenuForwarder("CImage", true, NULL, this, "image"));
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "Widget Components") );
 	mainMenu->addItem(new CMenuForwarder("CHeaders", true, NULL, this, "headers"));
 	mainMenu->addItem(new CMenuForwarder("CWindow", true, NULL, this, "window"));
 	mainMenu->addItem(new CMenuForwarder("CWindow(with shadow)", true, NULL, this, "windowshadow"));
@@ -3340,19 +3336,16 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CListFrame", true, NULL, this, "listframe"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarder("CFrameBox", true, NULL, this, "framebox"));
-
-	//
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	
 	//
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "menu<>listBox Widget") );
 	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget", true, NULL, this, "listboxwidget"));
 	mainMenu->addItem(new CMenuForwarder("CMenuWidget", true, NULL, this, "testmenuwidget"));
 
 	//
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "other Widget") );
 	mainMenu->addItem(new CMenuForwarder("CStringInput", true, NULL, this, "stringinput"));
 	mainMenu->addItem(new CMenuForwarder("CStringInputSMS", true, NULL, this, "stringinputsms"));
 	mainMenu->addItem(new CMenuForwarder("CPINInput", true, NULL, this, "pininput"));
@@ -3373,14 +3366,14 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
 
 	//
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE) );
 	mainMenu->addItem(new CMenuForwarder("ColorChooser", true, NULL, this, "colorchooser"));
 	mainMenu->addItem(new CMenuForwarder("KeyChooser", true, NULL, this, "keychooser"));
 	mainMenu->addItem(new CMenuForwarder("VFDController", true, NULL, this, "vfdcontroller"));
 	mainMenu->addItem(new CMenuForwarder("MountChooser", true, NULL, this, "mountchooser"));
 	
 	//
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE) );
 	mainMenu->addItem(new CMenuForwarder("ChannelSelectWidget", true, NULL, this, "channelselect"));
 	mainMenu->addItem(new CMenuForwarder("BEWidget", true, NULL, this, "bewidget"));
 	mainMenu->addItem(new CMenuForwarder("AudioVideoSelectWidget", true, NULL, this, "avselect"));
@@ -3396,35 +3389,35 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("PluginsList", true, NULL, this, "pluginslist"));
 
 	//
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE) );
 	mainMenu->addItem(new CMenuForwarder("PlayMovieURL", true, NULL, this, "playmovieurl"));
 	mainMenu->addItem(new CMenuForwarder("PlayAudioURL", true, NULL, this, "playaudiourl"));
 	mainMenu->addItem(new CMenuForwarder("ShowPictureURL", true, NULL, this, "showpictureurl"));
 
 	//
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE) );
 	mainMenu->addItem(new CMenuForwarder("PlayMovieFolder", true, NULL, this, "playmoviefolder"));
 	mainMenu->addItem(new CMenuForwarder("PlayAudioFolder", true, NULL, this, "playaudiofolder"));
 	mainMenu->addItem(new CMenuForwarder("ShowPictureFolder", true, NULL, this, "showpicturefolder"));
 
 	//
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE) );
 	mainMenu->addItem(new CMenuForwarder("PlayMovieDir(without Browser)", true, NULL, this, "playmoviedir"));
 	mainMenu->addItem(new CMenuForwarder("PlayAudioDir(without Browser)", true, NULL, this, "playaudiodir"));
 	mainMenu->addItem(new CMenuForwarder("ShowPictureDir(without Browser)", true, NULL, this, "showpicturedir"));
 
 	//
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE) );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
 	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));
 
 	//
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE) );
 	mainMenu->addItem(new CMenuForwarder("CChannelList:", true, NULL, this, "channellist"));
 	mainMenu->addItem(new CMenuForwarder("CBouquetList:", true, NULL, this, "bouquetlist"));
 
 	//
-	//mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	//mainMenu->addItem( new CMenuSeparator(LINE) );
 	//mainMenu->addItem(new CMenuForwarder("Spinner", true, NULL, this, "spinner"));
 	
 	mainMenu->exec(NULL, "");

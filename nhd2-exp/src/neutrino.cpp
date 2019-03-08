@@ -3085,7 +3085,7 @@ void CNeutrinoApp::RealRun(void)
 
 				// intros
 				redMenu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-				redMenu.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+				redMenu.addItem( new CMenuSeparator(LINE) );
 
 				// eventlist
 				redMenu.addItem(new CMenuForwarder(LOCALE_EPGMENU_EVENTLIST, true, NULL, new CEventListHandler(), "", RC_red, NEUTRINO_ICON_BUTTON_RED));
@@ -5413,7 +5413,7 @@ bool CNeutrinoApp::getNVODMenu(CMenuWidget * menu)
 
         if( g_RemoteControl->are_subchannels ) 
 	{
-                menu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+                menu->addItem(new CMenuSeparator(LINE));
                 CMenuOptionChooser* oj = new CMenuOptionChooser(LOCALE_NVODSELECTOR_DIRECTORMODE, &g_RemoteControl->director_mode, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW);
                 menu->addItem(oj);
         }

@@ -152,12 +152,12 @@ void CThemes::readThemes(CMenuWidget &themes)
 				{
 					if ( p == 0 && hasCVSThemes == false ) 
 					{
-						themes.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_COLORTHEMEMENU_SELECT2)));
+						themes.addItem(new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_COLORTHEMEMENU_SELECT2)));
 						hasCVSThemes = true;
 					} 
 					else if ( p == 1 && hasUserThemes == false ) 
 					{
-						themes.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_COLORTHEMEMENU_SELECT1)));
+						themes.addItem(new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_COLORTHEMEMENU_SELECT1)));
 						hasUserThemes = true;
 					}
 					
@@ -187,14 +187,14 @@ int CThemes::Show()
 
 	// intros
 	themes.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	themes.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	themes.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
 	themes.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
 
 	themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_SAVE, true , NULL, this, "saveCurrentTheme", RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 
-	themes.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	themes.addItem( new CMenuSeparator(LINE) );
 	
 	//set default theme
 	themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_DEFAULT_THEME, true, NULL, this, "theme_default" ));

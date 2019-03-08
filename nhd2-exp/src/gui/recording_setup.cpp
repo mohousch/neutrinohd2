@@ -213,37 +213,37 @@ void CRecordingSettings::showMenu()
 
 	// intros
 	recordingSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	recordingSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	recordingSettings.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
 	recordingSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
 	recordingSettings.addItem(new CMenuForwarder(LOCALE_RECORDINGMENU_SETUPNOW, true, NULL, this, "recording", RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 
-	recordingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_TIMERSETTINGS_SEPARATOR)));
+	recordingSettings.addItem(new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_TIMERSETTINGS_SEPARATOR)));
 	recordingSettings.addItem(fTimerBefore);
 	recordingSettings.addItem(fTimerAfter);
 
 	//apids
-	recordingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_RECORDINGMENU_APIDS)));
+	recordingSettings.addItem(new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_RECORDINGMENU_APIDS)));
 	recordingSettings.addItem(aoj1);
 	recordingSettings.addItem(aoj2);
 	recordingSettings.addItem(aoj3);
 
 	//
-	recordingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	recordingSettings.addItem(new CMenuSeparator(LINE));
 	//epg in name format
 	recordingSettings.addItem(oj11);
 	
 	// save in channeldir
 	recordingSettings.addItem(oj13);
 
-	recordingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	recordingSettings.addItem(new CMenuSeparator(LINE));
 
 	//recdir
 	recordingSettings.addItem(fRecDir);
 	
 	// timeshift
-	recordingSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, g_Locale->getText(LOCALE_EXTRA_TIMESHIFT)));
+	recordingSettings.addItem(new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_EXTRA_TIMESHIFT)));
 	
 	// record time
 	recordingSettings.addItem(new CMenuOptionNumberChooser(LOCALE_EXTRA_RECORD_TIME, &g_settings.record_hours, true, 1, 24, NULL) );

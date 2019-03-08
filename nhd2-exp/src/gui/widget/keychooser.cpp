@@ -52,7 +52,7 @@ class CKeyValue : public CMenuSeparator
 	public:
 		int         keyvalue;
 
-		CKeyValue() : CMenuSeparator(CMenuSeparator::STRING, g_Locale->getText(LOCALE_KEYCHOOSERMENU_CURRENTKEY))
+		CKeyValue() : CMenuSeparator(STRING, g_Locale->getText(LOCALE_KEYCHOOSERMENU_CURRENTKEY))
 		{
 		};
 
@@ -73,9 +73,9 @@ CKeyChooser::CKeyChooser(int * const Key, const neutrino_locale_t Title, const s
 	keyDeleter = new CKeyChooserItemNoKey(key);
 
 	addItem(new CKeyValue());
-	addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	addItem(new CMenuSeparator(LINE));
 	addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	addItem(new CMenuSeparator(LINE));
 	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNEW , true, NULL, keyChooser));
 	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNONE, true, NULL, keyDeleter));
 }
@@ -88,9 +88,9 @@ CKeyChooser::CKeyChooser(int * const Key, const char * const Title, const std::s
 	keyDeleter = new CKeyChooserItemNoKey(key);
 
 	addItem(new CKeyValue());
-	addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	addItem(new CMenuSeparator(LINE));
 	addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	addItem(new CMenuSeparator(LINE));
 	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNEW , true, NULL, keyChooser));
 	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNONE, true, NULL, keyDeleter));
 }
