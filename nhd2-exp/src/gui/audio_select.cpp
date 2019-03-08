@@ -62,14 +62,14 @@ extern int tuxtx_subtitle_running(int * pid, int * page, int * running);
 // -- this is a copy from neutrino.cpp!!
 /* option off0_on1 */
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
-const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
+const keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
 {
         { 0, LOCALE_OPTIONS_OFF, NULL },
         { 1, LOCALE_OPTIONS_ON, NULL  }
 }; 
 
 #define AUDIOMENU_ANALOGOUT_OPTION_COUNT 3
-const CMenuOptionChooser::keyval AUDIOMENU_ANALOGOUT_OPTIONS[AUDIOMENU_ANALOGOUT_OPTION_COUNT] =
+const keyval AUDIOMENU_ANALOGOUT_OPTIONS[AUDIOMENU_ANALOGOUT_OPTION_COUNT] =
 {
 	{ 0, LOCALE_AUDIOMENU_STEREO, NULL   },
 	{ 1, LOCALE_AUDIOMENU_MONOLEFT, NULL  },
@@ -79,7 +79,7 @@ const CMenuOptionChooser::keyval AUDIOMENU_ANALOGOUT_OPTIONS[AUDIOMENU_ANALOGOUT
 // ac3
 #if !defined (PLATFORM_COOLSTREAM)
 #define AC3_OPTION_COUNT 2
-const CMenuOptionChooser::keyval AC3_OPTIONS[AC3_OPTION_COUNT] =
+const keyval AC3_OPTIONS[AC3_OPTION_COUNT] =
 {
 	{ AC3_PASSTHROUGH, NONEXISTANT_LOCALE, "passthrough" },
 	{ AC3_DOWNMIX, NONEXISTANT_LOCALE, "downmix" }

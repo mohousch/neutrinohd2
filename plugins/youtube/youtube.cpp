@@ -30,7 +30,7 @@ extern "C" void plugin_del(void);
 YTB_SETTINGS m_settings;
 
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
-const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
+const keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
 {
         { 0, LOCALE_OPTIONS_OFF, NULL },
         { 1, LOCALE_OPTIONS_ON, NULL }
@@ -263,7 +263,7 @@ REPEAT:
 		loadBox.hide();
 }
 
-const CMenuOptionChooser::keyval YT_FEED_OPTIONS[] =
+const keyval YT_FEED_OPTIONS[] =
 {
        	{ cYTFeedParser::MOST_POPULAR, LOCALE_YT_MOST_POPULAR, NULL },
         //{ cYTFeedParser::MOST_POPULAR_ALL_TIME, LOCALE_YT_MOST_POPULAR_ALL_TIME, NULL },
@@ -271,9 +271,9 @@ const CMenuOptionChooser::keyval YT_FEED_OPTIONS[] =
 	//{ cYTFeedParser::PREV, LOCALE_YT_PREV_RESULTS, NULL }
 };
 
-#define YT_FEED_OPTION_COUNT (sizeof(YT_FEED_OPTIONS)/sizeof(CMenuOptionChooser::keyval))
+#define YT_FEED_OPTION_COUNT (sizeof(YT_FEED_OPTIONS)/sizeof(keyval))
 
-const CMenuOptionChooser::keyval YT_ORDERBY_OPTIONS[] =
+const keyval YT_ORDERBY_OPTIONS[] =
 {
         { cYTFeedParser::ORDERBY_PUBLISHED, LOCALE_YT_ORDERBY_PUBLISHED, NULL },
         { cYTFeedParser::ORDERBY_RELEVANCE, LOCALE_YT_ORDERBY_RELEVANCE, NULL },
@@ -281,7 +281,7 @@ const CMenuOptionChooser::keyval YT_ORDERBY_OPTIONS[] =
         { cYTFeedParser::ORDERBY_RATING, LOCALE_YT_ORDERBY_RATING, NULL },
 };
 
-#define YT_ORDERBY_OPTION_COUNT (sizeof(YT_ORDERBY_OPTIONS)/sizeof(CMenuOptionChooser::keyval))
+#define YT_ORDERBY_OPTION_COUNT (sizeof(YT_ORDERBY_OPTIONS)/sizeof(keyval))
 
 neutrino_locale_t CYTBrowser::getFeedLocale(void)
 {

@@ -29,7 +29,7 @@ extern "C" void plugin_del(void);
 #define TuxdnsCFG PLUGINDIR "/tuxdns/tuxdns.conf"
 
 #define OPTIONS_OFF_ON_OPTION_COUNT 2
-const CMenuOptionChooser::keyval OPTIONS_OFF_ON_OPTIONS[OPTIONS_OFF_ON_OPTION_COUNT] =
+const keyval OPTIONS_OFF_ON_OPTIONS[OPTIONS_OFF_ON_OPTION_COUNT] =
 {
 	{ 0, LOCALE_OPTIONS_OFF, NULL },
 	{ 1, LOCALE_OPTIONS_ON, NULL }

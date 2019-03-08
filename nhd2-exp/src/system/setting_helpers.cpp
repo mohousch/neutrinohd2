@@ -269,7 +269,7 @@ int CTuxtxtChangeExec::exec(CMenuTarget *parent, const std::string &actionKey)
 
 // USERMENU
 #define USERMENU_ITEM_OPTION_COUNT SNeutrinoSettings::ITEM_MAX
-const CMenuOptionChooser::keyval USERMENU_ITEM_OPTIONS[USERMENU_ITEM_OPTION_COUNT] =
+const keyval USERMENU_ITEM_OPTIONS[USERMENU_ITEM_OPTION_COUNT] =
 {
 	{SNeutrinoSettings::ITEM_NONE, NONEXISTANT_LOCALE, NULL},  
         {SNeutrinoSettings::ITEM_TIMERLIST, LOCALE_TIMERLIST_NAME, NULL},

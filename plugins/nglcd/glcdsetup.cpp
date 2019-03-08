@@ -27,7 +27,7 @@ extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
 
 #define ONOFF_OPTION_COUNT 2
-static const CMenuOptionChooser::keyval ONOFF_OPTIONS[ONOFF_OPTION_COUNT] = {
+static const keyval ONOFF_OPTIONS[ONOFF_OPTION_COUNT] = {
 	{ 0, LOCALE_OPTIONS_OFF, NULL},
 	{ 1, LOCALE_OPTIONS_ON, NULL}
 };
@@ -78,7 +78,7 @@ const uint32_t GLCD_EXTRA_COLOR_Purple           = 0xFF7F007F;
 const uint32_t GLCD_EXTRA_COLOR_Mint             = 0xFF007F7F;
 const uint32_t GLCD_EXTRA_COLOR_Golden           = 0xFF7F7F00;
 
-static const CMenuOptionChooser::keyval GLCD_COLOR_OPTIONS[GLCD_COLOR_OPTION_COUNT] =
+static const keyval GLCD_COLOR_OPTIONS[GLCD_COLOR_OPTION_COUNT] =
 {
 	{ KEY_GLCD_BLACK,	LOCALE_GLCD_COLOR_BLACK },
 	{ KEY_GLCD_WHITE,	LOCALE_GLCD_COLOR_WHITE },

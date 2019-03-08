@@ -29,7 +29,7 @@ extern "C" void plugin_del(void);
 
 // option off0_on1
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
-const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
+const keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
 {
         { 0, LOCALE_OPTIONS_OFF, NULL },
         { 1, LOCALE_OPTIONS_ON, NULL }

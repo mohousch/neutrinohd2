@@ -3306,6 +3306,15 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	return menu_return::RETURN_REPAINT;
 }
 
+#define MESSAGEBOX_NO_YES_OPTION_COUNT 2
+const keyval MESSAGEBOX_NO_YES_OPTIONS[MESSAGEBOX_NO_YES_OPTION_COUNT] =
+{
+	{ 0, LOCALE_MESSAGEBOX_NO, NULL },
+	{ 1, LOCALE_MESSAGEBOX_YES, NULL }
+};
+
+char * testValue = NULL;
+
 void CTestMenu::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CTestMenu::showMenu:\n");
@@ -3317,13 +3326,28 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("TEST", true, NULL, this, "testing"));
 
 	//
-	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "CMenuItems") );
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "menu CMenuItems") );
 	mainMenu->addItem(new CMenuForwarder("CMenuForwarder", true, NULL, this, "menuforwarder"));
+
+	//
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "list CMenuItems") );
 	mainMenu->addItem(new ClistBoxItem("listBoxItem", true, NULL, this, "listboxitem"));
-	mainMenu->addItem(new ClistBoxEntryItem("listBoxEntryItem")); 
+	mainMenu->addItem(new ClistBoxEntryItem("listBoxEntryItem"));
+
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "setup CMenuItems") );
+	mainMenu->addItem(new CMenuOptionChooser("CMenuOptionChooser:", &selected, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true));
+
+	mainMenu->addItem(new CMenuOptionNumberChooser("CMenuOptionNumberChooser:", &selected, true, 0, 100));
+/*
+	CMenuOptionStringChooser * item = new CMenuOptionStringChooser("CMenuOptionStringChooser:", testValue, true);
+	item->addOption("test");
+	mainMenu->addItem(item);
+	delete item;
+	item = NULL;
+*/
 	
 	//
-	mainMenu->addItem( new CMenuSeparator(LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "widget Helpers") );
 	mainMenu->addItem(new CMenuForwarder("CBox", true, NULL, this, "box"));
 	mainMenu->addItem(new CMenuForwarder("CIcon", true, NULL, this, "icon"));
 	mainMenu->addItem(new CMenuForwarder("CImage", true, NULL, this, "image"));

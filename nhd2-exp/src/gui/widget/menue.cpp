@@ -139,7 +139,7 @@ CMenuOptionChooser::CMenuOptionChooser(const neutrino_locale_t OptionName, int *
 	itemType = ITEM_TYPE_OPTION_CHOOSER;
 }
 
-CMenuOptionChooser::CMenuOptionChooser(const char* OptionName, int* const OptionValue, const struct keyval *const Options, const unsigned Number_Of_Options, const bool Active, CChangeObserver* const Observ, const neutrino_msg_t DirectKey, const std::string & IconName, bool Pulldown, bool EnableMenuPos)
+CMenuOptionChooser::CMenuOptionChooser(const char * const OptionName, int* const OptionValue, const struct keyval *const Options, const unsigned Number_Of_Options, const bool Active, CChangeObserver* const Observ, const neutrino_msg_t DirectKey, const std::string & IconName, bool Pulldown, bool EnableMenuPos)
 {
 	int iconName_w = 0;
 	int iconName_h = 0;

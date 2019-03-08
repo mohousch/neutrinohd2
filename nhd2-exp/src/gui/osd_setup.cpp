@@ -169,7 +169,7 @@ void COSDSettings::showMenu(void)
 
 // osd menucolor settings
 #define COLOR_GRADIENT_TYPE_OPTION_COUNT 5
-const CMenuOptionChooser::keyval COLOR_GRADIENT_TYPE_OPTIONS[COLOR_GRADIENT_TYPE_OPTION_COUNT] =
+const keyval COLOR_GRADIENT_TYPE_OPTIONS[COLOR_GRADIENT_TYPE_OPTION_COUNT] =
 {
 	{ nogradient, NONEXISTANT_LOCALE, "no gradient" },
 	{ gradientDark2Light, NONEXISTANT_LOCALE, "Dark to Light" },

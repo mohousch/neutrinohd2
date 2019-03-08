@@ -828,19 +828,19 @@ int EventList::findEvents(void)
 }
   
 #define SEARCH_LIST_OPTION_COUNT 3
-const CMenuOptionChooser::keyval SEARCH_LIST_OPTIONS[SEARCH_LIST_OPTION_COUNT] =
+const keyval SEARCH_LIST_OPTIONS[SEARCH_LIST_OPTION_COUNT] =
 {
-	{ EventList::SEARCH_LIST_CHANNEL     , LOCALE_TIMERLIST_CHANNEL, NULL },
-	{ EventList::SEARCH_LIST_BOUQUET     , LOCALE_BOUQUETLIST_HEAD, NULL },
-	{ EventList::SEARCH_LIST_ALL         , LOCALE_CHANNELLIST_HEAD, NULL }
+	{ EventList::SEARCH_LIST_CHANNEL, LOCALE_TIMERLIST_CHANNEL, NULL },
+	{ EventList::SEARCH_LIST_BOUQUET, LOCALE_BOUQUETLIST_HEAD, NULL },
+	{ EventList::SEARCH_LIST_ALL, LOCALE_CHANNELLIST_HEAD, NULL }
 };
 
 #define SEARCH_EPG_OPTION_COUNT 3
-const CMenuOptionChooser::keyval SEARCH_EPG_OPTIONS[SEARCH_EPG_OPTION_COUNT] =
+const keyval SEARCH_EPG_OPTIONS[SEARCH_EPG_OPTION_COUNT] =
 {
-	{ EventList::SEARCH_EPG_TITLE       , LOCALE_FONTSIZE_EPG_TITLE, NULL },
-	{ EventList::SEARCH_EPG_INFO1     	, LOCALE_FONTSIZE_EPG_INFO1, NULL },
-	{ EventList::SEARCH_EPG_INFO2       , LOCALE_FONTSIZE_EPG_INFO2, NULL }
+	{ EventList::SEARCH_EPG_TITLE, LOCALE_FONTSIZE_EPG_TITLE, NULL },
+	{ EventList::SEARCH_EPG_INFO1, LOCALE_FONTSIZE_EPG_INFO1, NULL },
+	{ EventList::SEARCH_EPG_INFO2, LOCALE_FONTSIZE_EPG_INFO2, NULL }
 };
 
 CEventFinderMenu::CEventFinderMenu(int * event, int * search_epg_item, std::string * search_keyword, int * search_list, t_channel_id * search_channel_id, t_bouquet_id * search_bouquet_id)

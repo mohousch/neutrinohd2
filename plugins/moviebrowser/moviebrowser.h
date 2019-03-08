@@ -438,7 +438,7 @@ class CDirMenu : public CMenuWidget
 
 // EPG Genre , taken from epgview, TODO: migth be splitted in major/minor to increase handling, might be moved to CMovieInfo
 #define GENRE_ALL_COUNT 76
-const CMenuOptionChooser::keyval GENRE_ALL[GENRE_ALL_COUNT] =
+const keyval GENRE_ALL[GENRE_ALL_COUNT] =
 {
 	{ 0x00, LOCALE_GENRE_UNKNOWN, NULL },
 	{ 0x10, LOCALE_GENRE_MOVIE_0, NULL },
@@ -519,7 +519,7 @@ const CMenuOptionChooser::keyval GENRE_ALL[GENRE_ALL_COUNT] =
 };
 
 #define GENRE_MOVIE_COUNT 9
-const CMenuOptionChooser::keyval genre_movie[GENRE_MOVIE_COUNT] =
+const keyval genre_movie[GENRE_MOVIE_COUNT] =
 {
 	{ 0, LOCALE_GENRE_MOVIE_0, NULL },
 	{ 1, LOCALE_GENRE_MOVIE_1, NULL },
@@ -533,7 +533,7 @@ const CMenuOptionChooser::keyval genre_movie[GENRE_MOVIE_COUNT] =
 };
 
 #define GENRE_NEWS_COUNT 5
-const CMenuOptionChooser::keyval genre_news[GENRE_NEWS_COUNT] =
+const keyval genre_news[GENRE_NEWS_COUNT] =
 {
 	{ 0, LOCALE_GENRE_NEWS_0, NULL },
 	{ 1, LOCALE_GENRE_NEWS_1, NULL },
@@ -543,7 +543,7 @@ const CMenuOptionChooser::keyval genre_news[GENRE_NEWS_COUNT] =
 };
 
 #define GENRE_SHOW_COUNT 4
-const CMenuOptionChooser::keyval genre_show[GENRE_SHOW_COUNT] =
+const keyval genre_show[GENRE_SHOW_COUNT] =
 {
 	{ 0, LOCALE_GENRE_SHOW_0, NULL },
 	{ 1, LOCALE_GENRE_SHOW_1, NULL },
@@ -552,7 +552,7 @@ const CMenuOptionChooser::keyval genre_show[GENRE_SHOW_COUNT] =
 };
 
 #define GENRE_SPORTS_COUNT 12
-const CMenuOptionChooser::keyval genre_sports[GENRE_SPORTS_COUNT] =
+const keyval genre_sports[GENRE_SPORTS_COUNT] =
 {
 	{ 0, LOCALE_GENRE_SPORTS_0, NULL },
 	{ 1, LOCALE_GENRE_SPORTS_1, NULL },
@@ -569,7 +569,7 @@ const CMenuOptionChooser::keyval genre_sports[GENRE_SPORTS_COUNT] =
 };
 
 #define GENRE_CHILDRENS_PROGRAMMES_COUNT 6
-const CMenuOptionChooser::keyval genre_childrens_programmes[GENRE_CHILDRENS_PROGRAMMES_COUNT] =
+const keyval genre_childrens_programmes[GENRE_CHILDRENS_PROGRAMMES_COUNT] =
 {
 	{ 0, LOCALE_GENRE_CHILDRENS_PROGRAMMES_0, NULL },
 	{ 1, LOCALE_GENRE_CHILDRENS_PROGRAMMES_1, NULL },
@@ -580,7 +580,7 @@ const CMenuOptionChooser::keyval genre_childrens_programmes[GENRE_CHILDRENS_PROG
 };
 
 #define GENRE_MUSIC_DANCE_COUNT 7
-const CMenuOptionChooser::keyval genre_music_dance[GENRE_MUSIC_DANCE_COUNT] =
+const keyval genre_music_dance[GENRE_MUSIC_DANCE_COUNT] =
 {
 	{ 0, LOCALE_GENRE_MUSIC_DANCE_0, NULL },
 	{ 1, LOCALE_GENRE_MUSIC_DANCE_1, NULL },
@@ -592,7 +592,7 @@ const CMenuOptionChooser::keyval genre_music_dance[GENRE_MUSIC_DANCE_COUNT] =
 };
 
 #define GENRE_ARTS_COUNT 12
-const CMenuOptionChooser::keyval genre_arts_dance[GENRE_ARTS_COUNT] =
+const keyval genre_arts_dance[GENRE_ARTS_COUNT] =
 {
 	{ 0, LOCALE_GENRE_ARTS_0, NULL },
 	{ 1, LOCALE_GENRE_ARTS_1, NULL },
@@ -609,7 +609,7 @@ const CMenuOptionChooser::keyval genre_arts_dance[GENRE_ARTS_COUNT] =
 };
 
 #define GENRE_SOCIAL_POLITICAL_COUNT 4
-const CMenuOptionChooser::keyval genre_social_political[GENRE_SOCIAL_POLITICAL_COUNT] =
+const keyval genre_social_political[GENRE_SOCIAL_POLITICAL_COUNT] =
 {
 	{ 0, LOCALE_GENRE_SOCIAL_POLITICAL_0, NULL },
 	{ 1, LOCALE_GENRE_SOCIAL_POLITICAL_1, NULL },
@@ -618,7 +618,7 @@ const CMenuOptionChooser::keyval genre_social_political[GENRE_SOCIAL_POLITICAL_C
 };
 
 #define GENRE_DOCUS_MAGAZINES_COUNT 8
-const CMenuOptionChooser::keyval genre_docus_magazines[GENRE_DOCUS_MAGAZINES_COUNT] =
+const keyval genre_docus_magazines[GENRE_DOCUS_MAGAZINES_COUNT] =
 {
 	{ 0, LOCALE_GENRE_DOCUS_MAGAZINES_0, NULL },
 	{ 1, LOCALE_GENRE_DOCUS_MAGAZINES_1, NULL },
@@ -631,7 +631,7 @@ const CMenuOptionChooser::keyval genre_docus_magazines[GENRE_DOCUS_MAGAZINES_COU
 };
 
 #define GENRE_TRAVEL_HOBBIES_COUNT 8
-const CMenuOptionChooser::keyval genre_travel_hobbies[GENRE_TRAVEL_HOBBIES_COUNT] =
+const keyval genre_travel_hobbies[GENRE_TRAVEL_HOBBIES_COUNT] =
 {
 	{ 0, LOCALE_GENRE_TRAVEL_HOBBIES_0, NULL },
 	{ 1, LOCALE_GENRE_TRAVEL_HOBBIES_1, NULL },
@@ -644,7 +644,7 @@ const CMenuOptionChooser::keyval genre_travel_hobbies[GENRE_TRAVEL_HOBBIES_COUNT
 };
 
 #define GENRE_MAJOR_COUNT 10
-const CMenuOptionChooser::keyval genre_major[GENRE_MAJOR_COUNT] =
+const keyval genre_major[GENRE_MAJOR_COUNT] =
 {
 	{ 1, LOCALE_GENRE_MOVIE_0, NULL },
 	{ 2, LOCALE_GENRE_NEWS_0, NULL },
