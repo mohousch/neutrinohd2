@@ -495,9 +495,9 @@ class ClistBoxItem : public CMenuItem
 		virtual const char* getName(void);
 
 	public:
-		ClistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = NULL, CMenuTarget * Target = NULL, const char* const ActionKey = NULL, const char* const Icon = NULL, const char* const ItemIcon = NULL);
+		ClistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = NULL, CMenuTarget * Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = RC_nokey, const char* const Icon = NULL, const char* const ItemIcon = NULL);
 
-		ClistBoxItem(const char* const Text, const bool Active = true, const char* const Option = NULL, CMenuTarget * Target = NULL, const char* const ActionKey = NULL, const char* const IconName = NULL, const char* const ItemIcon = NULL);
+		ClistBoxItem(const char* const Text, const bool Active = true, const char* const Option = NULL, CMenuTarget * Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = RC_nokey, const char* const IconName = NULL, const char* const ItemIcon = NULL);
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
@@ -505,30 +505,6 @@ class ClistBoxItem : public CMenuItem
 
 		int exec(CMenuTarget* parent);
 		bool isSelectable(void) const {return active;}
-};
-
-// CMenulistBoxEntryItem
-class ClistBoxEntryItem : public CMenuItem
-{
-	protected:
-		neutrino_locale_t text;
-		std::string textString;
-
-		//
-		virtual const char* getName(void);
-
-	public:
-		ClistBoxEntryItem(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL);
-
-		ClistBoxEntryItem(const char * const Text, const bool Active = true, const char * const Option = NULL);
-		
-		int paint(bool selected = false, bool AfterPulldown = false);
-		int getHeight(void) const;
-		int getWidth(void) const;
-
-		bool isSelectable(void) const {return active;}
-
-		int exec(CMenuTarget * parent);
 };
 
 // CMenuWidget

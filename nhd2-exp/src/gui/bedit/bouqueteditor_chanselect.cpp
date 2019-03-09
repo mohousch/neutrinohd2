@@ -116,7 +116,7 @@ void CBEChannelSelectWidget::paint()
 
 	for (unsigned int count = 0; count < Channels.size(); count++)
 	{
-		item = new ClistBoxEntryItem(Channels[count]->getName().c_str(), true);
+		item = new ClistBoxItem(Channels[count]->getName().c_str());
 
 		// marked
 		std::string marked_icon = "";

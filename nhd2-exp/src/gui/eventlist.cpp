@@ -625,7 +625,7 @@ void EventList::paint(t_channel_id channel_id)
 
 	for (unsigned int count = 0; count < evtlist.size(); count++)
 	{
-		item = new ClistBoxEntryItem(evtlist[count].description.c_str(), true);
+		item = new ClistBoxItem(evtlist[count].description.c_str());
 
 		//
 		std::string datetime1_str, datetime2_str, duration_str;
@@ -694,6 +694,7 @@ void EventList::paint(t_channel_id channel_id)
 
 	logo = frameBuffer->getLogoName(channel_id);
 
+	//listBox->setWidgetType(WIDGET_TYPE_CLASSIC);
 	listBox->setTitle(name.c_str(), logo.c_str(), true);
 	listBox->enablePaintHead();
 	listBox->enablePaintDate();

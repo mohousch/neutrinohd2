@@ -740,7 +740,7 @@ void CTimerList::paint()
 			default:{}
 		}
 
-		item = new ClistBoxEntryItem(alarm.c_str());
+		item = new ClistBoxItem(alarm.c_str());
 		item->setnLinesItem();
 		item->setOption(zAddData.c_str());
 		item->setOptionInfo(convertTimerType2String(timer.eventType));

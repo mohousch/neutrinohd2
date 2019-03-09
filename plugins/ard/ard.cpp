@@ -147,7 +147,7 @@ void CARDaz::showMenu(void)
 
 	//items
 	for (int i = 0; i < 6; i++)
-		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
+		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
 	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
@@ -186,7 +186,7 @@ void CARDTVlive::showMenu(void)
 
 	//items
 	for (int i = 0; i < 6; i++)
-		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
+		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
 	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
@@ -225,7 +225,7 @@ void CARDRadiolive::showMenu(void)
 
 	//items
 	for (int i = 0; i < 6; i++)
-		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
+		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
 	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
@@ -265,7 +265,7 @@ void CARDstreams::showMenu(void)
 	
 	//items
 	for (int i = 0; i < 6; i++)
-		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
+		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 
 	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);

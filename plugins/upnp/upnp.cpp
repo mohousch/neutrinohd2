@@ -649,7 +649,7 @@ void CUpnpBrowserGui::showMenuDevice()
 		char sNr[20];
 		sprintf(sNr, "%2d", i + 1);
 
-		item = new ClistBoxEntryItem(m_devices[i].modelname.c_str(), true);
+		item = new ClistBoxItem(m_devices[i].modelname.c_str());
 
 		item->setOptionInfo(m_devices[i].friendlyname.c_str());
 		item->setNumber(i + 1);
@@ -730,7 +730,7 @@ void CUpnpBrowserGui::showMenuEntry()
 		}
 		//
 
-		item = new ClistBoxEntryItem((*entries)[i].title.c_str(), true);
+		item = new ClistBoxItem((*entries)[i].title.c_str());
 
 		item->setIconName(fileicon.c_str());
 		item->setOptionInfo(info.c_str());

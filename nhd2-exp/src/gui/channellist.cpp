@@ -1572,7 +1572,7 @@ void CChannelList::paint()
 				}
 			}
 
-			item = new ClistBoxEntryItem(chanlist[i]->name.c_str(), true, p_event->description.c_str());
+			item = new ClistBoxItem(chanlist[i]->name.c_str(), true, p_event->description.c_str());
 
 			item->setNumber(i + 1);
 			item->setPercent(runningPercent);

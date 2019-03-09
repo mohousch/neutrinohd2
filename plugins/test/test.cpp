@@ -276,17 +276,17 @@ void CTestMenu::test()
 
 	leftWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 
-	ClistBoxEntryItem *item1 = new ClistBoxEntryItem("In den Kinos");
-	ClistBoxEntryItem *item2 = new ClistBoxEntryItem("Am");
+	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos");
+	ClistBoxItem *item2 = new ClistBoxItem("Am");
 	item2->setOption("populärsten");
 	item2->setnLinesItem();
-	ClistBoxEntryItem *item3 = new ClistBoxEntryItem("Am besten");
+	ClistBoxItem *item3 = new ClistBoxItem("Am besten");
 	item3->setOption("bewertet");
 	item3->setnLinesItem();
-	ClistBoxEntryItem *item4 = new ClistBoxEntryItem("Neue Filme");
-	ClistBoxEntryItem *item5 = new ClistBoxEntryItem("", false); // FIXME
-	ClistBoxEntryItem *item6 = new ClistBoxEntryItem("", false); // FIXME
-	ClistBoxEntryItem *item7 = new ClistBoxEntryItem("Beenden");
+	ClistBoxItem *item4 = new ClistBoxItem("Neue Filme");
+	ClistBoxItem *item5 = new ClistBoxItem("", false); // FIXME
+	ClistBoxItem *item6 = new ClistBoxItem("", false); // FIXME
+	ClistBoxItem *item7 = new ClistBoxItem("Beenden");
 
 	leftWidget->addItem(item1);
 	leftWidget->addItem(item2);
@@ -389,7 +389,7 @@ DOFILM:
 	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxEntryItem(m_vMovieInfo[i].epgTitle.c_str());
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
 
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
 
@@ -1713,7 +1713,7 @@ void CTestMenu::testClistBox()
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxEntryItem(m_vMovieInfo[i].epgTitle.c_str());
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
 
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
 		//item->setOptionInfo("OptionInfo");
@@ -2666,7 +2666,7 @@ void CTestMenu::testClistBoxWidget()
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", RC_nokey, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
 		//
 		std::string tmp = m_vMovieInfo[i].epgTitle;
@@ -2889,12 +2889,6 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	else if(actionKey == "listboxitem")
 	{
 		MessageBox(LOCALE_MESSAGEBOX_INFO, "testing ClistBoxItem", mbrBack, mbBack, NEUTRINO_ICON_INFO);
-
-		return menu_return::RETURN_REPAINT;
-	}
-	else if(actionKey == "listboxentryitem" || select == 4)
-	{
-		MessageBox(LOCALE_MESSAGEBOX_INFO, "testing ClistBoxEntryItem", mbrBack, mbBack, NEUTRINO_ICON_INFO);
 
 		return menu_return::RETURN_REPAINT;
 	}
@@ -3331,7 +3325,6 @@ void CTestMenu::showMenu()
 	//
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "list CMenuItems") );
 	mainMenu->addItem(new ClistBoxItem("listBoxItem", true, NULL, this, "listboxitem"));
-	mainMenu->addItem(new ClistBoxEntryItem("listBoxEntryItem"));
 
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "setup CMenuItems") );
 	mainMenu->addItem(new CMenuOptionChooser("CMenuOptionChooser:", &selected, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true));

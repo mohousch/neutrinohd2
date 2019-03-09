@@ -99,7 +99,7 @@ void CBEChannelWidget::paint()
 
 	for (unsigned int count = 0; count < Channels->size(); count++)
 	{
-		item = new ClistBoxEntryItem((*Channels)[count]->getName().c_str(), true);
+		item = new ClistBoxItem((*Channels)[count]->getName().c_str());
 
 		if(state == beMoving && count == selected)
 			item->setIconName(NEUTRINO_ICON_BUTTON_YELLOW);

@@ -100,7 +100,7 @@ void CBEBouquetWidget::paint()
 
 	for (unsigned int count = 0; count < Bouquets->size(); count++)
 	{
-		item = new ClistBoxEntryItem((*Bouquets)[count]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[count]->Name.c_str(), true);
+		item = new ClistBoxItem((*Bouquets)[count]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[count]->Name.c_str());
 
 		if(state == beMoving && count == selected)
 			item->setIconName(NEUTRINO_ICON_BUTTON_YELLOW);
