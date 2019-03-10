@@ -1887,7 +1887,6 @@ void CMenuWidget::paint()
 		full_width = width;
 		full_height = height;
 
-		//
 		if(savescreen) 
 			saveScreen();
 
@@ -2042,6 +2041,9 @@ void CMenuWidget::paint()
 			y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
 		}
 
+		if(savescreen) 
+			saveScreen();
+
 		//
 		if(FootInfo)
 		{
@@ -2050,10 +2052,6 @@ void CMenuWidget::paint()
 
 			interFrame = INTER_FRAME_SPACE;
 		}
-
-		//
-		if(savescreen) 
-			saveScreen();
 
 		// paint head
 		frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
@@ -2219,7 +2217,11 @@ void CMenuWidget::saveScreen()
 	if(!savescreen)
 		return;
 
-	delete[] background;
+	if(background)
+	{
+		delete[] background;
+		background = NULL;
+	}
 
 	background = new fb_pixel_t[full_width*full_height];
 	
@@ -2946,13 +2948,6 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 	
 	hide();
 
-	//test
-	if (background) 
-	{
-		delete[] background;
-		background = NULL;
-	}	
-
 	// vfd
 	if(!parent)
 	{
@@ -3165,10 +3160,6 @@ void ClistBoxWidget::initFrames()
 
 		full_width = width;
 		full_height = height;
-
-		//
-		if(savescreen) 
-			saveScreen();
 
 		//head height
 		icon_head_w = 0;
