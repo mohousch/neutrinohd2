@@ -3,7 +3,7 @@ from neutrino import menu_return
 from neutrino import CMessageBox, CHelpBox, CInfoBox, CHintBox, CStringInput, CStringInputSMS, CPINInput, CProgressWindow
 from neutrino import ClistBox, CHeaders, CWindow, CTextBox, CListFrame, CProgressBar
 from neutrino import ClistBoxWidget, CMenuWidget
-from neutrino import CMenuForwarder, ClistBoxItem, ClistBoxEntryItem
+from neutrino import CMenuForwarder, ClistBoxItem
 from neutrino import CFrameBuffer, CRCInput
 from neutrino import cPlayback
 from neutrino import CAudioPlayerGui, CMoviePlayerGui, CPictureViewerGui

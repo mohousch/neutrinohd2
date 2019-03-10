@@ -121,6 +121,8 @@ CChannelList::CChannelList(const char * const Name, bool _historyMode, bool _vli
 	this->historyMode = _historyMode;
 	vlist = _vlist;
 
+	displayNext = false;
+
 	//
 	listBox = NULL;
 	item = NULL;
@@ -186,7 +188,6 @@ void CChannelList::updateEvents(void)
 			
 			for (count = 0; count < chanlist.size(); count++)
 			{		
-				//
 				events.clear();
 
 				sectionsd_getEventsServiceKey(chanlist[count]->channel_id, events);
@@ -205,6 +206,7 @@ void CChannelList::updateEvents(void)
 	} 
 	else 
 	{
+//FIXME:
 		t_channel_id * p_requested_channels = NULL;
 		int size_requested_channels = 0;
 
@@ -234,12 +236,13 @@ void CChannelList::updateEvents(void)
 					}
 				}
 			}
+
+			pevents.clear();
+
 			if (p_requested_channels != NULL) 
 				free(p_requested_channels);
 		}
 	}
-	
-	events.clear();
 }
 
 struct CmpChannelBySat: public binary_function <const CZapitChannel * const, const CZapitChannel * const, bool>
@@ -479,7 +482,7 @@ int CChannelList::exec()
 {
 	dprintf(DEBUG_NORMAL, "CChannelList::exec\n");
 
-	displayNext = 0; // always start with current events
+	displayNext = false; // always start with current events
 	
 	int nNewChannel = show();
 	
@@ -1521,6 +1524,10 @@ void CChannelList::paint()
 	{
 		for(unsigned int i = 0; i < chanlist.size(); i++)
 		{
+			p_event = NULL;
+			jetzt = time(NULL);
+			runningPercent = 0;
+
 			std::string desc = chanlist[i]->description;
 			char cSeit[50] = " ";
 			char cNoch[50] = " ";
@@ -1543,14 +1550,12 @@ void CChannelList::paint()
 			}
 			else
 			{
-				//printf("(jetzt:%d) (p_event->startTime:%d) (p_event->duration:%d)\n", jetzt, p_event->startTime, p_event->duration);
-
 				if(p_event->duration > 0)
 					runningPercent = (jetzt - p_event->startTime) * 30 / p_event->duration;
 			}
 
 			// description
-			if (p_event != NULL && !(p_event->description.empty())) 
+			if (p_event != NULL && !p_event->description.empty()) 
 			{
 				desc = p_event->description;
 
@@ -1572,7 +1577,7 @@ void CChannelList::paint()
 				}
 			}
 
-			item = new ClistBoxItem(chanlist[i]->name.c_str(), true, p_event->description.c_str());
+			item = new ClistBoxItem(chanlist[i]->name.c_str(), true, /*p_event->description*/desc.c_str());
 
 			item->setNumber(i + 1);
 			item->setPercent(runningPercent);

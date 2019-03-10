@@ -2637,11 +2637,11 @@ void CTestMenu::testClistBoxWidget()
 			// load movie infos (from xml file)
 			m_movieInfo.loadMovieInfo(&movieInfo);
 
+			// refill if empty
 			std::string tmp_str = files->getFileName();
 
 			removeExtension(tmp_str);
 
-			// refill if empty
 			if(movieInfo.epgTitle.empty())
 				movieInfo.epgTitle = tmp_str;
 
@@ -2668,29 +2668,21 @@ void CTestMenu::testClistBoxWidget()
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", RC_nokey, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		//
-		std::string tmp = m_vMovieInfo[i].epgTitle;
-		tmp += "\n";
-		tmp += m_vMovieInfo[i].epgInfo1;
-		tmp += "\n";
-		tmp += m_vMovieInfo[i].epgInfo2;
+		item->setHelpText(m_vMovieInfo[i].epgInfo2.c_str());
 
-		item->setInfo1(tmp.c_str());
-
-		// standard design
-		item->setHelpText(tmp.c_str());
-		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 
 		listMenu->addItem(item);
 	}
 
-	listMenu->setWidgetType(WIDGET_TYPE_FRAME);
+	listMenu->setWidgetType(WIDGET_TYPE_STANDARD);
 	listMenu->setItemsPerPage(6, 2);
 	//listMenu->setItemBoxColor(COL_YELLOW);
 
-	listMenu->addWidget(WIDGET_TYPE_STANDARD);
 	listMenu->addWidget(WIDGET_TYPE_CLASSIC);
 	listMenu->addWidget(WIDGET_TYPE_EXTENDED);
+	listMenu->addWidget(WIDGET_TYPE_FRAME);
 	listMenu->enableWidgetChange();
 
 	listMenu->setSelected(selected);

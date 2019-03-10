@@ -210,80 +210,76 @@ void CThemes::readFile(char* themename)
 {
 	if(themefile.loadConfig(themename))
 	{
-		g_settings.menu_Head_alpha = themefile.getInt32( "menu_Head_alpha", 0x00 );
-		g_settings.menu_Head_red = themefile.getInt32( "menu_Head_red", 0x00 );
-		g_settings.menu_Head_green = themefile.getInt32( "menu_Head_green", 0x0A );
-		g_settings.menu_Head_blue = themefile.getInt32( "menu_Head_blue", 0x19 );
+		g_settings.menu_Head_alpha = themefile.getInt32( "menu_Head_alpha", 0);
+		g_settings.menu_Head_red = themefile.getInt32( "menu_Head_red", 0);
+		g_settings.menu_Head_green = themefile.getInt32( "menu_Head_green", 0);
+		g_settings.menu_Head_blue = themefile.getInt32( "menu_Head_blue", 0);
+
+		g_settings.menu_Head_Text_alpha = themefile.getInt32( "menu_Head_Text_alpha", 0);
+		g_settings.menu_Head_Text_red = themefile.getInt32( "menu_Head_Text_red", 100 );
+		g_settings.menu_Head_Text_green = themefile.getInt32( "menu_Head_Text_green", 100 );
+		g_settings.menu_Head_Text_blue = themefile.getInt32( "menu_Head_Text_blue", 100 );
+	
+		g_settings.menu_Content_alpha = themefile.getInt32( "menu_Content_alpha", 20);
+		g_settings.menu_Content_red = themefile.getInt32( "menu_Content_red", 25);
+		g_settings.menu_Content_green = themefile.getInt32( "menu_Content_green", 25);
+		g_settings.menu_Content_blue = themefile.getInt32( "menu_Content_blue", 25);
+		g_settings.menu_Content_Text_alpha = themefile.getInt32( "menu_Content_Text_alpha", 0);
+		g_settings.menu_Content_Text_red = themefile.getInt32( "menu_Content_Text_red", 85 );
+		g_settings.menu_Content_Text_green = themefile.getInt32( "menu_Content_Text_green", 85 );
+		g_settings.menu_Content_Text_blue = themefile.getInt32( "menu_Content_Text_blue", 85 );
+	
+		g_settings.menu_Content_Selected_alpha = themefile.getInt32( "menu_Content_Selected_alpha", 20);
+		g_settings.menu_Content_Selected_red = themefile.getInt32( "menu_Content_Selected_red", 75);
+		g_settings.menu_Content_Selected_green = themefile.getInt32( "menu_Content_Selected_green", 75);
+		g_settings.menu_Content_Selected_blue = themefile.getInt32( "menu_Content_Selected_blue", 75);
+		g_settings.menu_Content_Selected_Text_alpha = themefile.getInt32( "menu_Content_Selected_Text_alpha", 0);
+		g_settings.menu_Content_Selected_Text_red = themefile.getInt32( "menu_Content_Selected_Text_red", 25 );
+		g_settings.menu_Content_Selected_Text_green = themefile.getInt32( "menu_Content_Selected_Text_green", 25 );
+		g_settings.menu_Content_Selected_Text_blue = themefile.getInt32( "menu_Content_Selected_Text_blue", 25 );
+	
+		g_settings.menu_Content_inactive_alpha = themefile.getInt32( "menu_Content_inactive_alpha", 20);
+		g_settings.menu_Content_inactive_red = themefile.getInt32( "menu_Content_inactive_red", 25);
+		g_settings.menu_Content_inactive_green = themefile.getInt32( "menu_Content_inactive_green", 25);
+		g_settings.menu_Content_inactive_blue = themefile.getInt32( "menu_Content_inactive_blue", 25);
+		g_settings.menu_Content_inactive_Text_alpha = themefile.getInt32( "menu_Content_inactive_Text_alpha", 0);
+		g_settings.menu_Content_inactive_Text_red = themefile.getInt32( "menu_Content_inactive_Text_red", 55);
+		g_settings.menu_Content_inactive_Text_green = themefile.getInt32( "menu_Content_inactive_Text_green", 55);
+		g_settings.menu_Content_inactive_Text_blue = themefile.getInt32( "menu_Content_inactive_Text_blue", 55);
+
+		g_settings.infobar_alpha = themefile.getInt32( "infobar_alpha", 0 );
+		g_settings.infobar_red = themefile.getInt32( "infobar_red", 0 );
+		g_settings.infobar_green = themefile.getInt32( "infobar_green", 0 );
+		g_settings.infobar_blue = themefile.getInt32( "infobar_blue", 0 );
+		g_settings.infobar_Text_alpha = themefile.getInt32( "infobar_Text_alpha", 0 );
+		g_settings.infobar_Text_red = themefile.getInt32( "infobar_Text_red", 100 );
+		g_settings.infobar_Text_green = themefile.getInt32( "infobar_Text_green", 100 );
+		g_settings.infobar_Text_blue = themefile.getInt32( "infobar_Text_blue", 100 );
 		
-		g_settings.menu_Head_Text_alpha = themefile.getInt32( "menu_Head_Text_alpha", 0x00 );
-		g_settings.menu_Head_Text_red = themefile.getInt32( "menu_Head_Text_red", 0x5f );
-		g_settings.menu_Head_Text_green = themefile.getInt32( "menu_Head_Text_green", 0x46 );
-		g_settings.menu_Head_Text_blue = themefile.getInt32( "menu_Head_Text_blue", 0x00 );
-
-		g_settings.menu_Content_alpha = themefile.getInt32( "menu_Content_alpha", 0x14 );
-		g_settings.menu_Content_red = themefile.getInt32( "menu_Content_red", 0x00 );
-		g_settings.menu_Content_green = themefile.getInt32( "menu_Content_green", 0x0f );
-		g_settings.menu_Content_blue = themefile.getInt32( "menu_Content_blue", 0x23 );
-
-		g_settings.menu_Content_Text_alpha = themefile.getInt32( "menu_Content_Text_alpha", 0x00 );
-		g_settings.menu_Content_Text_red = themefile.getInt32( "menu_Content_Text_red", 0x64 );
-		g_settings.menu_Content_Text_green = themefile.getInt32( "menu_Content_Text_green", 0x64 );
-		g_settings.menu_Content_Text_blue = themefile.getInt32( "menu_Content_Text_blue", 0x64 );
-
-		g_settings.menu_Content_Selected_alpha = themefile.getInt32( "menu_Content_Selected_alpha", 0);
-		g_settings.menu_Content_Selected_red = themefile.getInt32( "menu_Content_Selected_red", 25);
-		g_settings.menu_Content_Selected_green = themefile.getInt32( "menu_Content_Selected_green", 25);
-		g_settings.menu_Content_Selected_blue = themefile.getInt32( "menu_Content_Selected_blue", 25);
-
-		g_settings.menu_Content_Selected_Text_alpha = themefile.getInt32( "menu_Content_Selected_Text_alpha", 0x00 );
-		g_settings.menu_Content_Selected_Text_red = themefile.getInt32( "menu_Content_Selected_Text_red", 0x00 );
-		g_settings.menu_Content_Selected_Text_green = themefile.getInt32( "menu_Content_Selected_Text_green", 0x00 );
-		g_settings.menu_Content_Selected_Text_blue = themefile.getInt32( "menu_Content_Selected_Text_blue", 0x00 );
-
-		g_settings.menu_Content_inactive_alpha = themefile.getInt32( "menu_Content_inactive_alpha", 0x14 );
-		g_settings.menu_Content_inactive_red = themefile.getInt32( "menu_Content_inactive_red", 0x00 );
-		g_settings.menu_Content_inactive_green = themefile.getInt32( "menu_Content_inactive_green", 0x0f );
-		g_settings.menu_Content_inactive_blue = themefile.getInt32( "menu_Content_inactive_blue", 0x23 );
-
-		g_settings.menu_Content_inactive_Text_alpha = themefile.getInt32( "menu_Content_inactive_Text_alpha", 0x00 );
-		g_settings.menu_Content_inactive_Text_red = themefile.getInt32( "menu_Content_inactive_Text_red", 55 );
-		g_settings.menu_Content_inactive_Text_green = themefile.getInt32( "menu_Content_inactive_Text_green", 70 );
-		g_settings.menu_Content_inactive_Text_blue = themefile.getInt32( "menu_Content_inactive_Text_blue", 85 );
-
-		g_settings.infobar_alpha = themefile.getInt32( "infobar_alpha", 0x14 );
-		g_settings.infobar_red = themefile.getInt32( "infobar_red", 0x00 );
-		g_settings.infobar_green = themefile.getInt32( "infobar_green", 0x0e );
-		g_settings.infobar_blue = themefile.getInt32( "infobar_blue", 0x23 );
-
-		g_settings.infobar_Text_alpha = themefile.getInt32( "infobar_Text_alpha", 0x00 );
-		g_settings.infobar_Text_red = themefile.getInt32( "infobar_Text_red", 0x64 );
-		g_settings.infobar_Text_green = themefile.getInt32( "infobar_Text_green", 0x64 );
-		g_settings.infobar_Text_blue = themefile.getInt32( "infobar_Text_blue", 0x64 );
+		g_settings.infobar_colored_events_alpha = themefile.getInt32( "infobar_colored_events_alpha", 0);
+		g_settings.infobar_colored_events_red = themefile.getInt32( "infobar_colored_events_red", 95);
+		g_settings.infobar_colored_events_green = themefile.getInt32( "infobar_colored_events_green", 70);
+		g_settings.infobar_colored_events_blue = themefile.getInt32( "infobar_colored_events_blue", 0);
+	
+		g_settings.menu_Foot_alpha = themefile.getInt32( "menu_Foot_alpha", 0);
+		g_settings.menu_Foot_red = themefile.getInt32( "menu_Foot_red", 0);
+		g_settings.menu_Foot_green = themefile.getInt32( "menu_Foot_green", 0);
+		g_settings.menu_Foot_blue = themefile.getInt32( "menu_Foot_blue", 0);
 		
-		g_settings.infobar_colored_events_alpha = themefile.getInt32( "infobar_colored_events_alpha", 0x00 );
-		g_settings.infobar_colored_events_red = themefile.getInt32( "infobar_colored_events_red", 95 );
-		g_settings.infobar_colored_events_green = themefile.getInt32( "infobar_colored_events_green", 70 );
-		g_settings.infobar_colored_events_blue = themefile.getInt32( "infobar_colored_events_blue", 0 );
-		
-		g_settings.menu_Foot_alpha = themefile.getInt32( "menu_Foot_alpha", 0x00 );
-		g_settings.menu_Foot_red = themefile.getInt32( "menu_Foot_red", 0x00 );
-		g_settings.menu_Foot_green = themefile.getInt32( "menu_Foot_green", 0x0A );
-		g_settings.menu_Foot_blue = themefile.getInt32( "menu_Foot_blue", 0x19 );
-		
-		g_settings.menu_Foot_Text_alpha = themefile.getInt32( "menu_Foot_Text_alpha", 0x00 );
-		g_settings.menu_Foot_Text_red = themefile.getInt32( "menu_Foot_Text_red", 0x5f );
-		g_settings.menu_Foot_Text_green = themefile.getInt32( "menu_Foot_Text_green", 0x46 );
-		g_settings.menu_Foot_Text_blue = themefile.getInt32( "menu_Foot_Text_blue", 0x00 );
+		g_settings.menu_Foot_Text_alpha = themefile.getInt32( "menu_Foot_Text_alpha", 0);
+		g_settings.menu_Foot_Text_red = themefile.getInt32( "menu_Foot_Text_red", 100);
+		g_settings.menu_Foot_Text_green = themefile.getInt32( "menu_Foot_Text_green", 100);
+		g_settings.menu_Foot_Text_blue = themefile.getInt32( "menu_Foot_Text_blue", 100);
 
-		g_settings.menu_FootInfo_alpha = themefile.getInt32( "menu_FootInfo_alpha", 0x00 );
-		g_settings.menu_FootInfo_red = themefile.getInt32( "menu_FootInfo_red", 0x00 );
-		g_settings.menu_FootInfo_green = themefile.getInt32( "menu_FootInfo_green", 0x0A );
-		g_settings.menu_FootInfo_blue = themefile.getInt32( "menu_FootInfo_blue", 0x19 );
+		g_settings.menu_FootInfo_alpha = themefile.getInt32( "menu_FootInfo_alpha", 0);
+		g_settings.menu_FootInfo_red = themefile.getInt32( "menu_FootInfo_red", 0);
+		g_settings.menu_FootInfo_green = themefile.getInt32( "menu_FootInfo_green", 0);
+		g_settings.menu_FootInfo_blue = themefile.getInt32( "menu_FootInfo_blue", 0);
 		
-		g_settings.menu_FootInfo_Text_alpha = themefile.getInt32( "menu_FootInfo_Text_alpha", 0x00 );
-		g_settings.menu_FootInfo_Text_red = themefile.getInt32( "menu_FootInfo_Text_red", 0x5f );
-		g_settings.menu_FootInfo_Text_green = themefile.getInt32( "menu_FootInfo_Text_green", 0x46 );
-		g_settings.menu_FootInfo_Text_blue = themefile.getInt32( "menu_FootInfo_Text_blue", 0x00 );
+		g_settings.menu_FootInfo_Text_alpha = themefile.getInt32( "menu_FootInfo_Text_alpha", 0);
+		g_settings.menu_FootInfo_Text_red = themefile.getInt32( "menu_FootInfo_Text_red", 50);
+		g_settings.menu_FootInfo_Text_green = themefile.getInt32( "menu_FootInfo_Text_green", 50);
+		g_settings.menu_FootInfo_Text_blue = themefile.getInt32( "menu_FootInfo_Text_blue", 50);
 
 		notifier = new CColorSetupNotifier;
 		notifier->changeNotify(NONEXISTANT_LOCALE, NULL);
@@ -374,9 +370,9 @@ void CThemes::saveFile(char * themename)
 void CThemes::setupDefaultColors()
 {
 	g_settings.menu_Head_alpha = 0;
-	g_settings.menu_Head_red = 30;
-	g_settings.menu_Head_green = 30;
-	g_settings.menu_Head_blue = 30;
+	g_settings.menu_Head_red = 0;
+	g_settings.menu_Head_green = 0;
+	g_settings.menu_Head_blue = 0;
 
 	g_settings.menu_Head_Text_alpha = 0;
 	g_settings.menu_Head_Text_red = 100;
@@ -384,39 +380,39 @@ void CThemes::setupDefaultColors()
 	g_settings.menu_Head_Text_blue = 100;
 	
 	g_settings.menu_Content_alpha = 20;
-	g_settings.menu_Content_red = 50;
-	g_settings.menu_Content_green = 50;
-	g_settings.menu_Content_blue = 50;
+	g_settings.menu_Content_red = 25;
+	g_settings.menu_Content_green = 25;
+	g_settings.menu_Content_blue = 25;
 
 	g_settings.menu_Content_Text_alpha = 0;
-	g_settings.menu_Content_Text_red = 100;
-	g_settings.menu_Content_Text_green = 100;
-	g_settings.menu_Content_Text_blue = 100;
+	g_settings.menu_Content_Text_red = 85;
+	g_settings.menu_Content_Text_green = 85;
+	g_settings.menu_Content_Text_blue = 85;
 	
-	g_settings.menu_Content_Selected_alpha = 0;
-	g_settings.menu_Content_Selected_red = 25;
-	g_settings.menu_Content_Selected_green = 25;
-	g_settings.menu_Content_Selected_blue = 25;
+	g_settings.menu_Content_Selected_alpha = 20;
+	g_settings.menu_Content_Selected_red = 75;
+	g_settings.menu_Content_Selected_green = 75;
+	g_settings.menu_Content_Selected_blue = 75;
 
 	g_settings.menu_Content_Selected_Text_alpha = 0;
-	g_settings.menu_Content_Selected_Text_red = 100;
-	g_settings.menu_Content_Selected_Text_green = 100;
-	g_settings.menu_Content_Selected_Text_blue = 100;
+	g_settings.menu_Content_Selected_Text_red = 25;
+	g_settings.menu_Content_Selected_Text_green = 25;
+	g_settings.menu_Content_Selected_Text_blue = 25;
 	
 	g_settings.menu_Content_inactive_alpha = 20;
-	g_settings.menu_Content_inactive_red = 50;
-	g_settings.menu_Content_inactive_green = 50;
-	g_settings.menu_Content_inactive_blue = 50;
+	g_settings.menu_Content_inactive_red = 25;
+	g_settings.menu_Content_inactive_green = 25;
+	g_settings.menu_Content_inactive_blue = 25;
 
 	g_settings.menu_Content_inactive_Text_alpha = 0;
-	g_settings.menu_Content_inactive_Text_red = 70;
-	g_settings.menu_Content_inactive_Text_green = 70;
-	g_settings.menu_Content_inactive_Text_blue = 70;
+	g_settings.menu_Content_inactive_Text_red = 55;
+	g_settings.menu_Content_inactive_Text_green = 55;
+	g_settings.menu_Content_inactive_Text_blue = 55;
 
-	g_settings.infobar_alpha = 20;
-	g_settings.infobar_red = 50;
-	g_settings.infobar_green = 50;
-	g_settings.infobar_blue = 50;
+	g_settings.infobar_alpha = 0;
+	g_settings.infobar_red = 0;
+	g_settings.infobar_green = 0;
+	g_settings.infobar_blue = 0;
 
 	g_settings.infobar_Text_alpha = 0;
 	g_settings.infobar_Text_red = 100;
@@ -429,9 +425,9 @@ void CThemes::setupDefaultColors()
 	g_settings.infobar_colored_events_blue = 0;
 	
 	g_settings.menu_Foot_alpha = 0;
-	g_settings.menu_Foot_red = 30;
-	g_settings.menu_Foot_green = 30;
-	g_settings.menu_Foot_blue = 30;
+	g_settings.menu_Foot_red = 0;
+	g_settings.menu_Foot_green = 0;
+	g_settings.menu_Foot_blue = 0;
 		
 	g_settings.menu_Foot_Text_alpha = 0;
 	g_settings.menu_Foot_Text_red = 100;
@@ -439,13 +435,13 @@ void CThemes::setupDefaultColors()
 	g_settings.menu_Foot_Text_blue = 100;
 
 	g_settings.menu_FootInfo_alpha = 0;
-	g_settings.menu_FootInfo_red = 30;
-	g_settings.menu_FootInfo_green = 30;
-	g_settings.menu_FootInfo_blue = 30;
+	g_settings.menu_FootInfo_red = 0;
+	g_settings.menu_FootInfo_green = 0;
+	g_settings.menu_FootInfo_blue = 0;
 		
 	g_settings.menu_FootInfo_Text_alpha = 0;
-	g_settings.menu_FootInfo_Text_red = 100;
-	g_settings.menu_FootInfo_Text_green = 100;
-	g_settings.menu_FootInfo_Text_blue = 100;
+	g_settings.menu_FootInfo_Text_red = 50;
+	g_settings.menu_FootInfo_Text_green = 50;
+	g_settings.menu_FootInfo_Text_blue = 50;
 }
 

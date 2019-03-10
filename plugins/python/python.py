@@ -53,7 +53,7 @@ class testMenu(CMenuTarget):
 		item2 = ClistBoxItem("item2", True, "", None, "green action")
 		item2.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
 
-		item3 = ClistBoxEntryItem("moviePlayer")
+		item3 = ClistBoxItem("moviePlayer")
 		item3.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
 		item3.setHelpText("testing CMoviePlayerGui")
 

@@ -1,7 +1,7 @@
 from neutrino import CMenuTarget
 from neutrino import CMessageBox, CHelpBox, CHeaders, CWindow, CScrollBar, CItems2DetailsLine, CInfoBox 
 from neutrino import ClistBoxWidget, CMenuWidget, CMenuForwarder, ClistBoxItem
-from neutrino import ClistBox, ClistBoxEntryItem
+from neutrino import ClistBox
 from neutrino import CFrameBuffer, CRCInput
 from neutrino import cPlayback
 from neutrino import CAudioPlayerGui, CMoviePlayerGui, CPictureViewerGui

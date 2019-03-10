@@ -45,7 +45,7 @@ function showMenu(parent)
 	item2 = neutrino.ClistBoxItem("item2", true, "", null, "green action")
 	item2:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 
-	item3 = neutrino.ClistBoxEntryItem("moviePlayer")
+	item3 = neutrino.ClistBoxItem("moviePlayer")
 	item3:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item3:setHelpText("testing CMoviePlayerGui")
 
