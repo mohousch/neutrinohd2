@@ -125,7 +125,10 @@ void CLCDSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CLCDSettings::showMenu:\n");
 	
-	CMenuWidget lcdSettings(LOCALE_LCDMENU_HEAD, NEUTRINO_ICON_LCD );
+	ClistBoxWidget lcdSettings(LOCALE_LCDMENU_HEAD, NEUTRINO_ICON_LCD );
+
+	lcdSettings.setMode(MODE_SETUP);
+	lcdSettings.enableShrinkMenu();
 	
 	int shortcutVFD = 1;
 	

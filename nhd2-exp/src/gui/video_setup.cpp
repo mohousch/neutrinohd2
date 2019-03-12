@@ -355,21 +355,29 @@ int CVideoSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 	return ret;
 }
 
+const struct button_label FButtons = { NEUTRINO_ICON_BUTTON_RED, LOCALE_MAINSETTINGS_SAVESETTINGSNOW, NULL };
+
 void CVideoSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CVideoSettings::showMenu\n");
 	
 	int shortcutVideo = 1;
 	
-	CMenuWidget videoSettings(LOCALE_VIDEOMENU_HEAD, NEUTRINO_ICON_VIDEO);
+	ClistBoxWidget videoSettings(LOCALE_VIDEOMENU_HEAD, NEUTRINO_ICON_VIDEO);
+
+	videoSettings.setMode(MODE_SETUP);
+	videoSettings.enableShrinkMenu();
+
+	videoSettings.setFooterButtons(&FButtons, 1);
+	videoSettings.addKey(RC_red, this, "savesettings");
 	
 	// intros
-	videoSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	videoSettings.addItem( new CMenuSeparator(LINE) );
+	//videoSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	//videoSettings.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
-	videoSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	videoSettings.addItem( new CMenuSeparator(LINE) );
+	//videoSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
+	//videoSettings.addItem( new CMenuSeparator(LINE) );
 
 	// video aspect ratio 4:3/16:9
 	videoSettings.addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEORATIO, &g_settings.video_Ratio, VIDEOMENU_VIDEORATIO_OPTIONS, VIDEOMENU_VIDEORATIO_OPTION_COUNT, true, videoSetupNotifier, CRCInput::convertDigitToKey(shortcutVideo++), "", true ));

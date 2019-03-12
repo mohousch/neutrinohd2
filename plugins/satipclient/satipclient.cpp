@@ -153,20 +153,28 @@ bool CSatIPClient::stopSatIPClient()
 	return true;
 }
 
+const struct button_label FButtons = { NEUTRINO_ICON_BUTTON_RED, LOCALE_MAINSETTINGS_SAVESETTINGSNOW, NULL };
+
 void CSatIPClient::showMenu()
 {
 	// read settings
 	ReadSettings();
 	
 	// create menu
-	satIPClientMenu = new CMenuWidget("SatIP Client", NEUTRINO_ICON_SETTINGS);
+	satIPClientMenu = new ClistBoxWidget("SatIP Client", NEUTRINO_ICON_SETTINGS);
+
+	satIPClientMenu->setMode(MODE_SETUP);
+	satIPClientMenu->enableShrinkMenu();
+
+	satIPClientMenu->setFooterButtons(&FButtons, 1);
+	satIPClientMenu->addKey(RC_red, this, "savesettings");
 
 	satIPClientMenu->setSelected(selected);
 
-	satIPClientMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	satIPClientMenu->addItem(new CMenuSeparator(LINE));
-	satIPClientMenu->addItem(new CMenuForwarder("Einstellungen speichern", true, NULL, this, "save", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	satIPClientMenu->addItem(new CMenuSeparator(LINE));
+	//satIPClientMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	//satIPClientMenu->addItem(new CMenuSeparator(LINE));
+	//satIPClientMenu->addItem(new CMenuForwarder("Einstellungen speichern", true, NULL, this, "save", RC_red, NEUTRINO_ICON_BUTTON_RED));
+	//satIPClientMenu->addItem(new CMenuSeparator(LINE));
 
 	// enabled
 	satIPClientMenu->addItem(new CMenuOptionChooser("SatIP Client enabled", &SatIPEnabled, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL));

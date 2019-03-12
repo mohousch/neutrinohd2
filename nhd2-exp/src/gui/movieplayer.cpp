@@ -472,7 +472,10 @@ void CMoviePlayerGui::PlayFile(void)
 	new_bookmark.length = 0;
 
 	//
-	CMenuWidget bookStartMenu(LOCALE_MOVIEBROWSER_BOOK_NEW, NEUTRINO_ICON_MOVIE);
+	ClistBoxWidget bookStartMenu(LOCALE_MOVIEBROWSER_BOOK_NEW, NEUTRINO_ICON_MOVIE);
+
+	bookStartMenu.setMode(MODE_MENU);
+	bookStartMenu.enableShrinkMenu();
 
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_NEW));
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_TYPE_FORWARD));
@@ -1520,11 +1523,14 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	
 	char book[MI_MOVIE_BOOK_USER_MAX][20];
 
-	CMenuWidget startPosSelectionMenu(LOCALE_MOVIEBROWSER_START_HEAD, NEUTRINO_ICON_MOVIE);
+	ClistBoxWidget startPosSelectionMenu(LOCALE_MOVIEBROWSER_START_HEAD, NEUTRINO_ICON_MOVIE);
 	startPosSelectionMenu.enableSaveScreen();
+
+	startPosSelectionMenu.setMode(MODE_MENU);
+	startPosSelectionMenu.enableShrinkMenu();
 	
 	// intros
-	//WARNING: dont delete this line , without getselected line return line - 1
+	//WARNING: dont delete this line , without getselected return line - 1
 	startPosSelectionMenu.addItem(new CMenuSeparator(EMPTY));
 	
 	// bookmark start

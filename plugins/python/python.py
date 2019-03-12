@@ -30,7 +30,7 @@ class moviePlayer(CFileBrowser):
 
 class testMenu(CMenuTarget):
 	selected = 0
-	listWidget = CMenuWidget("pythonTest:CMenuWidget", NEUTRINO_ICON_MOVIE)
+	listWidget = ClistBoxWidget("pythonTest:ClistBoxWidget", NEUTRINO_ICON_MOVIE)
 
 	def __init__(self):
 		CMenuTarget.__init__
@@ -42,7 +42,8 @@ class testMenu(CMenuTarget):
 		print("showMenu")
 		
 		self.listWidget.setSelected(self.selected)
-		self.listWidget.setWidgetType(WIDGET_TYPE_CLASSIC)
+		self.listWidget.setMode(MODE_MENU)
+		self.listWidget.enableShrinkMenu()
 		self.listWidget.enableWidgetChange()
 		self.listWidget.enablePaintFootInfo()
 

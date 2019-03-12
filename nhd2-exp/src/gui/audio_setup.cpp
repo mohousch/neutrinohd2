@@ -148,21 +148,29 @@ int CAudioSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 	return ret;
 }
 
+const struct button_label FButtons = { NEUTRINO_ICON_BUTTON_RED, LOCALE_MAINSETTINGS_SAVESETTINGSNOW, NULL };
+
 void CAudioSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CAudioSettings::showMenu:\n");
 	
-	CMenuWidget audioSettings(LOCALE_AUDIOMENU_HEAD, NEUTRINO_ICON_AUDIO);
+	ClistBoxWidget audioSettings(LOCALE_AUDIOMENU_HEAD, NEUTRINO_ICON_AUDIO);
+
+	audioSettings.setMode(MODE_SETUP);
+	audioSettings.enableShrinkMenu();
+
+	audioSettings.setFooterButtons(&FButtons, 1);
+	audioSettings.addKey(RC_red, this, "savesettings");
 	
 	int shortcutAudio = 1;
 	
 	// intros
-	audioSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	audioSettings.addItem( new CMenuSeparator(LINE) );
+	//audioSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	//audioSettings.addItem( new CMenuSeparator(LINE) );
 	
 	// save settings
-	audioSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	audioSettings.addItem( new CMenuSeparator(LINE) );
+	//audioSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED));
+	//audioSettings.addItem( new CMenuSeparator(LINE) );
 
 	// analog output
 	audioSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_ANALOGOUT, &g_settings.audio_AnalogMode, AUDIOMENU_ANALOGOUT_OPTIONS, AUDIOMENU_ANALOGOUT_OPTION_COUNT, true, audioSetupNotifier, CRCInput::convertDigitToKey(shortcutAudio++), "", true ));

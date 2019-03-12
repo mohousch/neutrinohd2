@@ -67,8 +67,10 @@ void CMediaPlayerMenu::showMenu()
 
 	int shortcutMediaPlayer = 1;
 	
-	CMenuWidget * MediaPlayer = new CMenuWidget(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_MOVIE);
+	ClistBoxWidget * MediaPlayer = new ClistBoxWidget(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_MOVIE);
 
+	MediaPlayer->setMode(MODE_MENU);
+	MediaPlayer->enableShrinkMenu();
 	MediaPlayer->enableMenuPosition();
 	MediaPlayer->enableWidgetChange();
 	MediaPlayer->enablePaintFootInfo();

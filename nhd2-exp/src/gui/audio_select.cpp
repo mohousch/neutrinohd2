@@ -105,7 +105,10 @@ void CAudioSelectMenuHandler::doMenu()
 {
 	dprintf(DEBUG_NORMAL, "CAudioSelectMenuHandler::doMenu\n");
 
-	CMenuWidget AudioSelector(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
+	ClistBoxWidget AudioSelector(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
+
+	AudioSelector.setMode(MODE_SETUP);
+	AudioSelector.enableShrinkMenu();
 	
 	unsigned int count;
 	

@@ -67,7 +67,10 @@ int CDVBSubSelectMenuHandler::doMenu()
 {
 	dprintf(DEBUG_NORMAL, "CDVBSubSelectMenuHandler::doMenu:\n");
 
-	CMenuWidget DVBSubSelector(LOCALE_SUBTITLES_HEAD, NEUTRINO_ICON_SUBT);
+	ClistBoxWidget DVBSubSelector(LOCALE_SUBTITLES_HEAD, NEUTRINO_ICON_SUBT);
+
+	DVBSubSelector.setMode(MODE_SETUP);
+	DVBSubSelector.enableShrinkMenu();
 	
 	CSubtitleChangeExec SubtitleChanger;
 	unsigned int count;

@@ -31,7 +31,7 @@ class CTestMenu : public CMenuTarget
 		// variables
 		CFrameBuffer* frameBuffer;
 
-		CMenuWidget * mainMenu;
+		/*CMenuWidget*/ClistBoxWidget * mainMenu;
 		int select;
 
 		//
@@ -284,9 +284,11 @@ void CTestMenu::test()
 	item3->setOption("bewertet");
 	item3->setnLinesItem();
 	ClistBoxItem *item4 = new ClistBoxItem("Neue Filme");
-	ClistBoxItem *item5 = new ClistBoxItem("", false); // FIXME
-	ClistBoxItem *item6 = new ClistBoxItem("", false); // FIXME
-	ClistBoxItem *item7 = new ClistBoxItem("Beenden");
+	CMenuSeparator *item5 = new CMenuSeparator();
+	CMenuSeparator *item6 = new CMenuSeparator();
+	CMenuSeparator *item7 = new CMenuSeparator();
+	CMenuSeparator *item8 = new CMenuSeparator();
+	ClistBoxItem *item9 = new ClistBoxItem("Beenden");
 
 	leftWidget->addItem(item1);
 	leftWidget->addItem(item2);
@@ -295,6 +297,8 @@ void CTestMenu::test()
 	leftWidget->addItem(item5);
 	leftWidget->addItem(item6);
 	leftWidget->addItem(item7);
+	leftWidget->addItem(item8);
+	leftWidget->addItem(item9);
 
 	// right menu
 	CBox rightBox;
@@ -641,7 +645,7 @@ REPAINT:
 					rightWidget->clearItems();
 					goto DOFILM; // include REPAINT
 				}
-				else if(left_selected == 6)
+				else if(left_selected == 8)
 					loop = false;
 			}
 		}
@@ -2676,6 +2680,7 @@ void CTestMenu::testClistBoxWidget()
 		listMenu->addItem(item);
 	}
 
+	listMenu->setMode(MODE_LISTBOX);
 	listMenu->setWidgetType(WIDGET_TYPE_STANDARD);
 	listMenu->setItemsPerPage(6, 2);
 	//listMenu->setItemBoxColor(COL_YELLOW);
@@ -2708,10 +2713,13 @@ void CTestMenu::testCMenuWidget()
 
 	dprintf(DEBUG_NORMAL, "testCMenuWidget\n");
 
-	CMenuWidget* mainMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
-
+	/*CMenuWidget*/ClistBoxWidget * mainMenu = new /*CMenuWidget*/ClistBoxWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
+	
+	mainMenu->setMode(MODE_MENU);
 	mainMenu->enableMenuPosition();
+	mainMenu->enableShrinkMenu();
 	mainMenu->enableWidgetChange();
+	mainMenu->enablePaintFootInfo();
 	  
 	// tv modus
 	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
@@ -3304,8 +3312,10 @@ void CTestMenu::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CTestMenu::showMenu:\n");
 
-	mainMenu = new CMenuWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
+	mainMenu = new /*CMenuWidget*/ClistBoxWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
 
+	mainMenu->setMode(MODE_MENU);
+	mainMenu->enableShrinkMenu(),
 	mainMenu->enableMenuPosition();
 	
 	mainMenu->addItem(new CMenuForwarder("TEST", true, NULL, this, "testing"));
@@ -3350,7 +3360,7 @@ void CTestMenu::showMenu()
 	//
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "menu<>listBox Widget") );
 	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget", true, NULL, this, "listboxwidget"));
-	mainMenu->addItem(new CMenuForwarder("CMenuWidget", true, NULL, this, "testmenuwidget"));
+	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget(MENU_MODE)", true, NULL, this, "testmenuwidget"));
 
 	//
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "other Widget") );

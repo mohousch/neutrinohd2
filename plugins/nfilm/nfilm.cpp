@@ -302,7 +302,10 @@ int CNFilm::showCategoriesMenu()
 
 	int res = -1;
 
-	CMenuWidget* menu = new CMenuWidget("Kino Trailer");
+	ClistBoxWidget * menu = new ClistBoxWidget("Kino Trailer");
+
+	menu->setMode(MODE_MENU);
+	menu->enableShrinkMenu();
 
 	menu->addItem(new CMenuForwarder("In den Kinos", true, NULL, new CNFilm("now_playing"), NULL));
 	menu->addItem(new CMenuForwarder("Am populärsten", true, NULL, new CNFilm("popular"), NULL));

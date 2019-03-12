@@ -2055,7 +2055,7 @@ bool CFrameBuffer::checkLogo(t_channel_id channel_id)
 		if(!access(logo_name.c_str(), F_OK)) 
 		{
 			logo_ok = true;
-			dprintf(DEBUG_INFO, "%s found logo: %s\n", __FUNCTION__, logo_name.c_str());
+			dprintf(DEBUG_DEBUG, "CFrameBuffer::checkLogo: found logo: %s\n", logo_name.c_str());
 			break;
 		}
 	}
@@ -2091,7 +2091,7 @@ void CFrameBuffer::getLogoSize(t_channel_id channel_id, int * width, int * heigh
 		// get logo real size
 		getSize(logo_name.c_str(), width, height, bpp);
 		
-		dprintf(DEBUG_INFO, "%s logo: %s (%dx%d) %dbpp\n", __FUNCTION__, logo_name.c_str(), *width, *height, *bpp);
+		dprintf(DEBUG_DEBUG, "CFrameBuffer::getLogoSize: logo: %s (%dx%d) %dbpp\n", logo_name.c_str(), *width, *height, *bpp);
 	}
 }
 

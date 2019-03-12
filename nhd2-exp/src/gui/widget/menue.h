@@ -55,7 +55,7 @@
 //extern CFont* g_Font[FONT_TYPE_COUNT];
 
 
-#define MENU_WIDTH			590
+#define MENU_WIDTH			600
 #define MENU_HEIGHT			700
 
 enum 
@@ -77,6 +77,13 @@ enum
 	WIDGET_TYPE_CLASSIC,
 	WIDGET_TYPE_EXTENDED,
 	WIDGET_TYPE_FRAME
+};
+
+enum 
+{
+	MODE_MENU = 0,
+	MODE_SETUP,
+	MODE_LISTBOX
 };
 
 struct menu_return
@@ -367,18 +374,6 @@ class CMenuSeparator : public CMenuItem
 	public:
 		const char * textString;
 
-/*
-		enum
-		{
-			EMPTY =	0,
-			LINE = 1,
-			STRING = 2,
-			ALIGN_CENTER = 4,
-			ALIGN_LEFT = 8,
-			ALIGN_RIGHT = 16
-		};
-*/
-
 		CMenuSeparator(const int Type = EMPTY, const char * const Text = NULL);
 
 		int paint(bool selected = false, bool AfterPulldown = false);
@@ -508,6 +503,7 @@ class ClistBoxItem : public CMenuItem
 };
 
 // CMenuWidget
+#if 0
 class CMenuWidget : public CMenuTarget
 {
 	protected:
@@ -576,6 +572,8 @@ class CMenuWidget : public CMenuTarget
 		CHeaders headers;
 		CItems2DetailsLine itemsLine;
 		CScrollBar scrollBar;
+
+		int widgetMode;
 		
 	public:
 		CMenuWidget();
@@ -615,7 +613,10 @@ class CMenuWidget : public CMenuTarget
 
 		//
 		void enablePaintFootInfo(){FootInfo = true;};
+
+		void setMode(int mode){widgetMode = mode;};
 };
+#endif
 
 /// CMenulistBox
 class ClistBoxWidget : public CMenuTarget
@@ -717,6 +718,9 @@ class ClistBoxWidget : public CMenuTarget
 		CItems2DetailsLine itemsLine;
 		CScrollBar scrollBar;
 		CButtons buttons;
+
+		int widgetMode;
+		bool MenuPos;
 		
 	public:
 		ClistBoxWidget();
@@ -790,6 +794,9 @@ class ClistBoxWidget : public CMenuTarget
 		void enableShrinkMenu(){shrinkMenu = true;};
 
 		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = RC_nokey, bool enabled = true);
+
+		void setMode(int mode){widgetMode = mode;};
+		void enableMenuPosition(){MenuPos = true;};
 };
 
 #endif

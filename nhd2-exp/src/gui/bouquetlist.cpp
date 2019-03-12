@@ -252,8 +252,10 @@ int CBouquetList::doMenu()
 	if(!zapitBouquet)
 		return 0;
 
-	CMenuWidget * menu = new CMenuWidget(LOCALE_CHANNELLIST_EDIT, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget * menu = new ClistBoxWidget(LOCALE_CHANNELLIST_EDIT, NEUTRINO_ICON_SETTINGS);
 	menu->enableSaveScreen();
+	menu->setMode(MODE_MENU);
+	menu->enableShrinkMenu();
 
 	if(!zapitBouquet->bUser) 
 	{

@@ -121,13 +121,11 @@ void CPluginList::showMenu()
 		plist->addItem(item);
 	}
 
+	plist->setMode(MODE_LISTBOX);
 	plist->setWidgetType(WIDGET_TYPE_CLASSIC);
 	plist->enablePaintDate();
-	//plist->setItemBoxColor(COL_YELLOW);
-	plist->setSelected(selected);
 
-	plist->addWidget(WIDGET_TYPE_FRAME);
-	plist->enableWidgetChange();
+	plist->setSelected(selected);
 
 	// head
 	plist->setHeaderButtons(&CPluginListHeadButtons, 1);

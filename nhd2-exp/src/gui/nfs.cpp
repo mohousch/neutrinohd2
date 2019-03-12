@@ -188,7 +188,10 @@ int CNFSMountGui::exec( CMenuTarget *parent, const std::string &actionKey )
 
 int CNFSMountGui::menu()
 {
-	CMenuWidget mountMenuW(LOCALE_NFS_MOUNT, NEUTRINO_ICON_NETWORK, 720);
+	ClistBoxWidget mountMenuW(LOCALE_NFS_MOUNT, NEUTRINO_ICON_NETWORK, 720);
+
+	mountMenuW.setMode(MODE_MENU);
+	mountMenuW.enableShrinkMenu();
 	
 	// intros
 	mountMenuW.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -274,7 +277,10 @@ int CNFSMountGui::menuEntry(int nr)
 	   (m_lufs_sup != CFSMounter::FS_UNSUPPORTED && *type != (int)CFSMounter::LUFS) ||
 	   (m_smbfs_sup != CFSMounter::FS_UNSUPPORTED && *type != (int)CFSMounter::SMBFS);
 
-	CMenuWidget mountMenuEntryW(LOCALE_NFS_MOUNT, NEUTRINO_ICON_NETWORK);
+	ClistBoxWidget mountMenuEntryW(LOCALE_NFS_MOUNT, NEUTRINO_ICON_NETWORK);
+
+	mountMenuEntryW.setMode(MODE_SETUP);
+	mountMenuEntryW.enableShrinkMenu();
 	
 	// intros
 	mountMenuEntryW.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -355,7 +361,10 @@ int CNFSUmountGui::menu()
 {
 	int count = 0;
 	CFSMounter::MountInfos infos;
-	CMenuWidget umountMenu(LOCALE_NFS_UMOUNT, NEUTRINO_ICON_NETWORK);
+	ClistBoxWidget umountMenu(LOCALE_NFS_UMOUNT, NEUTRINO_ICON_NETWORK);
+
+	umountMenu.setMode(MODE_MENU);
+	umountMenu.enableShrinkMenu();
 	
 	// intros
 	umountMenu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -378,7 +387,7 @@ int CNFSUmountGui::menu()
 		}
 	}
 	if(infos.size() > 0)
-		return umountMenu.exec(this,"");
+		return umountMenu.exec(this, "");
 	else
 		return menu_return::RETURN_REPAINT;
 }
@@ -398,7 +407,10 @@ int CNFSSmallMenu::exec( CMenuTarget* parent, const std::string & actionKey )
 
 	if (actionKey.empty())
 	{
-		CMenuWidget menu(LOCALE_NFSMENU_HEAD, NEUTRINO_ICON_NETWORK);
+		ClistBoxWidget menu(LOCALE_NFSMENU_HEAD, NEUTRINO_ICON_NETWORK);
+
+		menu.setMode(MODE_MENU);
+		menu.enableShrinkMenu();
 
 		CNFSMountGui mountGui;
 		CNFSUmountGui umountGui;

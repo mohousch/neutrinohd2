@@ -283,10 +283,13 @@ int CUserMenuMenu::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
         if(parent)
                 parent->hide();
 
-        CMenuWidget menu(local, NEUTRINO_ICON_KEYBINDING);
+        ClistBoxWidget menu(local, NEUTRINO_ICON_KEYBINDING);
+
+	menu.setMode(MODE_SETUP);
+	menu.enableShrinkMenu();
 	
-        menu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-        menu.addItem(new CMenuSeparator(LINE));
+        //menu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+        //menu.addItem(new CMenuSeparator(LINE));
 
         CStringInputSMS name(LOCALE_USERMENU_NAME, g_settings.usermenu_text[button].c_str());
         menu.addItem(new CMenuForwarder(LOCALE_USERMENU_NAME, true, g_settings.usermenu_text[button].c_str(), &name));

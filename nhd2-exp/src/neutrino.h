@@ -143,7 +143,7 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		void mainMenu(void);
 		bool showUserMenu(int button);
 		void SelectNVOD();
-                bool getNVODMenu(CMenuWidget * menu);
+                bool getNVODMenu(ClistBoxWidget * menu);
 
 		void AudioMute( int newValue, bool isEvent= false );
 		void setVolume(const neutrino_msg_t key, const bool bDoPaint = true, bool nowait = false);

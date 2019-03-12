@@ -105,17 +105,25 @@ bool CTuxdnsConf::SaveSettings()
 	return true;
 }
 
+const struct button_label FButtons = { NEUTRINO_ICON_BUTTON_RED, LOCALE_MAINSETTINGS_SAVESETTINGSNOW, NULL };
+
 void CTuxdnsConf::showMenu()
 {
 	readSettings();
 	
 	//
-	CMenuWidget * tuxDNSMenu = new CMenuWidget("TuxDNS", NEUTRINO_ICON_BUTTON_SETUP);
+	ClistBoxWidget * tuxDNSMenu = new ClistBoxWidget("TuxDNS", NEUTRINO_ICON_BUTTON_SETUP);
+
+	tuxDNSMenu->setMode(MODE_SETUP);
+	tuxDNSMenu->enableShrinkMenu();
+
+	tuxDNSMenu->setFooterButtons(&FButtons, 1);
+	tuxDNSMenu->addKey(RC_red, this, "savesettings");
 	
-	tuxDNSMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	tuxDNSMenu->addItem(new CMenuSeparator(LINE));
-	tuxDNSMenu->addItem(new CMenuForwarder("Save settings", true, "", this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED) );
-	tuxDNSMenu->addItem(new CMenuSeparator(LINE));
+	//tuxDNSMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	//tuxDNSMenu->addItem(new CMenuSeparator(LINE));
+	//tuxDNSMenu->addItem(new CMenuForwarder("Save settings", true, "", this, "savesettings", RC_red, NEUTRINO_ICON_BUTTON_RED) );
+	//tuxDNSMenu->addItem(new CMenuSeparator(LINE));
 
 	//user
 	CStringInputSMS*  ojuser = new CStringInputSMS((char *)"User Name", user);

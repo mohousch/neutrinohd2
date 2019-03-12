@@ -40,7 +40,7 @@ class CThemes : public CMenuTarget, CChangeObserver
 		int Show();
 		void readFile(char* themename);
 		void saveFile(char* themename);
-		void readThemes(CMenuWidget &);
+		void readThemes(ClistBoxWidget &);
 
 	public:
 		CThemes();

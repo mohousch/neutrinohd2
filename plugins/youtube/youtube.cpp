@@ -308,8 +308,11 @@ int CYTBrowser::showCategoriesMenu(void)
 
 	int res = -1;
 
-	CMenuWidget mainMenu(LOCALE_YOUTUBE, NEUTRINO_ICON_YT_SMALL, MENU_WIDTH + 100);
+	ClistBoxWidget mainMenu(LOCALE_YOUTUBE, NEUTRINO_ICON_YT_SMALL);
+
 	mainMenu.enableSaveScreen();
+	mainMenu.setMode(MODE_MENU);
+	mainMenu.enableShrinkMenu();
 
 	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_MOST_POPULAR, true, NULL, new CYTBrowser(cYTFeedParser::MOST_POPULAR), NULL));
 

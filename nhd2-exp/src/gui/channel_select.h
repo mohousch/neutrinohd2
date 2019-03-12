@@ -30,7 +30,7 @@
 #include <client/zapitclient.h>
 
 		
-class CSelectChannelWidget : public CMenuWidget
+class CSelectChannelWidget : public CMenuTarget
 {	
 	private:
 		t_channel_id ChannelTVID;

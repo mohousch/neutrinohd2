@@ -158,9 +158,8 @@ void CMediaPortal::showMenu(void)
 {
 	mediaPortal = new ClistBoxWidget("Media Portal", PLUGINDIR "/mediaportal/mp.png");
 
+	mediaPortal->setMode(MODE_LISTBOX);
 	mediaPortal->setWidgetType(WIDGET_TYPE_FRAME);
-	mediaPortal->addWidget(WIDGET_TYPE_CLASSIC);
-	mediaPortal->enableWidgetChange();
 
 	// youtube
 	item = new ClistBoxItem("You Tube", true, "", this, "youtube", RC_nokey, NULL, PLUGINDIR "/youtube/youtube.png");

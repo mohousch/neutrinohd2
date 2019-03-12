@@ -112,12 +112,15 @@ void CCAMMenuHandler::doMainMenu()
 	char name[255];
 	char str[255];
 
-	CMenuWidget * cammenu = new CMenuWidget(LOCALE_CAM_SETTINGS, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget * cammenu = new ClistBoxWidget(LOCALE_CAM_SETTINGS, NEUTRINO_ICON_SETTINGS);
+
+	cammenu->setMode(MODE_SETUP);
+	cammenu->enableShrinkMenu();
 	
 	// intros
 	cammenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 
-	CMenuWidget * tempMenu;
+	ClistBoxWidget * tempMenu;
 	
 	for (unsigned int i = 0; i < ci->ci_num; i++)
 	{
@@ -142,7 +145,10 @@ void CCAMMenuHandler::doMainMenu()
 		else 
 		{
 			sprintf(str, "%s %d", g_Locale->getText(LOCALE_CAM_EMPTY), i + 1);
-			tempMenu = new CMenuWidget(str, NEUTRINO_ICON_SETTINGS);
+			tempMenu = new ClistBoxWidget(str, NEUTRINO_ICON_SETTINGS);
+
+			tempMenu->setMode(MODE_SETUP);
+			tempMenu->enableShrinkMenu();
 
 			cammenu->addItem(new CMenuSeparator(LINE));
 			cammenu->addItem(new CMenuForwarder(str, false, NULL, tempMenu));
@@ -282,9 +288,11 @@ int CCAMMenuHandler::handleCamMsg (const neutrino_msg_t msg, neutrino_msg_data_t
 		int selected = -1;
 		if(pMenu->choice_nb) 
 		{
-			CMenuWidget * menu = new CMenuWidget(convertDVBUTF8(pMenu->title, strlen(pMenu->title), 0).c_str(), NEUTRINO_ICON_SETTINGS);
+			ClistBoxWidget * menu = new ClistBoxWidget(convertDVBUTF8(pMenu->title, strlen(pMenu->title), 0).c_str(), NEUTRINO_ICON_SETTINGS);
 
 			menu->enableSaveScreen();
+			menu->setMode(MODE_SETUP);
+			menu->enableShrinkMenu();
 
 			int slen = strlen(pMenu->subtitle);
 			

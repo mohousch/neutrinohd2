@@ -332,7 +332,10 @@ int CTVShows::showCategoriesMenu()
 
 	int res = -1;
 
-	CMenuWidget* menu = new CMenuWidget("Serien Trailer");
+	ClistBoxWidget * menu = new ClistBoxWidget("Serien Trailer");
+
+	menu->setMode(MODE_MENU);
+	menu->enableShrinkMenu();
 
 	menu->addItem(new CMenuForwarder("Heute auf Sendung", true, NULL, new CTVShows("airing_today"), "airing_today"));
 	menu->addItem(new CMenuForwarder("Auf Sendung", true, NULL, new CTVShows("on_the_air"), "on_the_air"));

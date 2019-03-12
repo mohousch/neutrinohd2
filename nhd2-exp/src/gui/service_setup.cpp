@@ -99,8 +99,10 @@ void CServiceSetup::showMenu(void)
 	
 	int shortcutService = 1;
 	
-	CMenuWidget * service = new CMenuWidget(LOCALE_SERVICEMENU_HEAD, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget * service = new ClistBoxWidget(LOCALE_SERVICEMENU_HEAD, NEUTRINO_ICON_SETTINGS);
 
+	service->setMode(MODE_MENU);
+	service->enableShrinkMenu();
 	service->enableMenuPosition();
 	service->enableWidgetChange();
 	service->enablePaintFootInfo();

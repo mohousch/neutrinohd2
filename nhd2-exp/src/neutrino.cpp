@@ -3081,7 +3081,10 @@ void CNeutrinoApp::RealRun(void)
 				StopSubtitles();
 
 				// event list
-				CMenuWidget redMenu(LOCALE_INFOVIEWER_EVENTLIST, NEUTRINO_ICON_FEATURES);
+				ClistBoxWidget redMenu(LOCALE_INFOVIEWER_EVENTLIST, NEUTRINO_ICON_FEATURES);
+
+				redMenu.setMode(MODE_MENU);
+				redMenu.enableShrinkMenu();
 
 				// intros
 				redMenu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -5339,7 +5342,7 @@ void CNeutrinoApp::SelectNVOD()
         if (!(g_RemoteControl->subChannels.empty()))
         {
                 // NVOD/SubService- Kanal!
-                CMenuWidget NVODSelector(g_RemoteControl->are_subchannels ? LOCALE_NVODSELECTOR_SUBSERVICE : LOCALE_NVODSELECTOR_HEAD, NEUTRINO_ICON_VIDEO);
+                ClistBoxWidget NVODSelector(g_RemoteControl->are_subchannels ? LOCALE_NVODSELECTOR_SUBSERVICE : LOCALE_NVODSELECTOR_HEAD, NEUTRINO_ICON_VIDEO);
 
 		
                 if(getNVODMenu(&NVODSelector))
@@ -5355,7 +5358,7 @@ const keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
         { 1, LOCALE_OPTIONS_ON, NULL }
 };
 
-bool CNeutrinoApp::getNVODMenu(CMenuWidget * menu)
+bool CNeutrinoApp::getNVODMenu(ClistBoxWidget * menu)
 {
         if(menu == NULL)
                 return false;

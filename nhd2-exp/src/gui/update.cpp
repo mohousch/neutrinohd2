@@ -165,7 +165,10 @@ bool CFlashUpdate::selectHttpImage(void)
 	showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_GETINFOFILE)); // UTF-8
 
 	// NOTE: remember me : i dont like this menu GUI :-(
-	CMenuWidget SelectionWidget(LOCALE_FLASHUPDATE_SELECTIMAGE, NEUTRINO_ICON_UPDATE , MENU_WIDTH + 50);
+	ClistBoxWidget SelectionWidget(LOCALE_FLASHUPDATE_SELECTIMAGE, NEUTRINO_ICON_UPDATE , MENU_WIDTH + 50);
+
+	SelectionWidget.setMode(MODE_SETUP);
+	SelectionWidget.enableShrinkMenu();
 	
 	// intros
 	SelectionWidget.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -639,7 +642,10 @@ void CFlashExpert::writemtd(const std::string & filename, int mtdNumber)
 void CFlashExpert::showMTDSelector(const std::string & actionkey)
 {
 	//mtd-selector erzeugen
-	CMenuWidget * mtdselector = new CMenuWidget(LOCALE_FLASHUPDATE_MTDSELECTOR, NEUTRINO_ICON_UPDATE);
+	ClistBoxWidget * mtdselector = new ClistBoxWidget(LOCALE_FLASHUPDATE_MTDSELECTOR, NEUTRINO_ICON_UPDATE);
+
+	mtdselector->setMode(MODE_SETUP);
+	mtdselector->enableShrinkMenu();
 	
 	// intros
 	mtdselector->addItem(new CMenuForwarder(LOCALE_MESSAGEBOX_CANCEL));
@@ -695,7 +701,10 @@ void CFlashExpert::showMTDSelector(const std::string & actionkey)
 
 void CFlashExpert::showFileSelector(const std::string & actionkey)
 {
-	CMenuWidget * fileselector = new CMenuWidget(LOCALE_FLASHUPDATE_FILESELECTOR, NEUTRINO_ICON_UPDATE);
+	ClistBoxWidget * fileselector = new ClistBoxWidget(LOCALE_FLASHUPDATE_FILESELECTOR, NEUTRINO_ICON_UPDATE);
+
+	fileselector->setMode(MODE_SETUP);
+	fileselector->enableShrinkMenu();
 	
 	// intros
 	fileselector->addItem(new CMenuForwarder(LOCALE_MESSAGEBOX_CANCEL));
@@ -843,7 +852,10 @@ void CUpdateSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CUpdateSettings::showMenu\n");
 	
-	CMenuWidget updateSettings(LOCALE_SERVICEMENU_UPDATE, NEUTRINO_ICON_UPDATE);
+	ClistBoxWidget updateSettings(LOCALE_SERVICEMENU_UPDATE, NEUTRINO_ICON_UPDATE);
+
+	updateSettings.setMode(MODE_SETUP);
+	updateSettings.enableShrinkMenu();
 		
 	// intros
 	updateSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -854,7 +866,10 @@ void CUpdateSettings::showMenu()
 	updateSettings.addItem( new CMenuSeparator(LINE) );
 
 	// expert-function for mtd read/write
-	CMenuWidget * mtdexpert = new CMenuWidget(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, NEUTRINO_ICON_UPDATE);
+	ClistBoxWidget * mtdexpert = new ClistBoxWidget(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, NEUTRINO_ICON_UPDATE);
+
+	mtdexpert->setMode(MODE_SETUP);
+	mtdexpert->enableShrinkMenu();
 		
 	// intros
 	mtdexpert->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));

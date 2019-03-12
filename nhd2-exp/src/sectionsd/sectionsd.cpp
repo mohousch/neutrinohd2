@@ -357,7 +357,8 @@ struct OrderServiceUniqueKeyFirstStartTimeEventUniqueKey
 	}
 };
 
-typedef std::set<SIeventPtr, OrderServiceUniqueKeyFirstStartTimeEventUniqueKey > MySIeventsOrderServiceUniqueKeyFirstStartTimeEventUniqueKey;
+typedef std::set<SIeventPtr, OrderServiceUniqueKeyFirstStartTimeEventUniqueKey> MySIeventsOrderServiceUniqueKeyFirstStartTimeEventUniqueKey;
+
 static MySIeventsOrderServiceUniqueKeyFirstStartTimeEventUniqueKey mySIeventsOrderServiceUniqueKeyFirstStartTimeEventUniqueKey;
 
 struct OrderFirstEndTimeServiceIDEventUniqueKey
@@ -5500,21 +5501,21 @@ void sectionsd_main_thread(void */*data*/)
 /* was: commandAllEventsChannelID sendAllEvents */
 void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventList &eList, char search = 0, std::string search_text = "")
 {
-	dprintf(DEBUG_DEBUG, "sendAllEvents for " PRINTF_CHANNEL_ID_TYPE "\n", serviceUniqueKey);
+	dprintf(DEBUG_NORMAL, "sendAllEvents for " PRINTF_CHANNEL_ID_TYPE "\n", serviceUniqueKey&0xFFFFFFFFFFFFULL);
 
 	if ((serviceUniqueKey& 0xFFFFFFFFFFFFULL) != 0) 
 	{ 
-		//0xFFFFFFFFFFFFULL for CREATE_CHANNEL_ID64
 		// service Found
 		readLockEvents();
 		int serviceIDfound = 0;
 
-		if (search_text.length()) std::transform(search_text.begin(), search_text.end(), search_text.begin(), tolower);
+		if (search_text.length()) 
+			std::transform(search_text.begin(), search_text.end(), search_text.begin(), tolower);
+
 		for (MySIeventsOrderServiceUniqueKeyFirstStartTimeEventUniqueKey::iterator e = mySIeventsOrderServiceUniqueKeyFirstStartTimeEventUniqueKey.begin(); e != mySIeventsOrderServiceUniqueKeyFirstStartTimeEventUniqueKey.end(); ++e)
 		{
-			if ((*e)->get_channel_id() == (serviceUniqueKey& 0xFFFFFFFFFFFFULL)) 
+			if ((*e)->get_channel_id() == (serviceUniqueKey&0xFFFFFFFFFFFFULL)) 
 			{ 
-				//0xFFFFFFFFFFFFULL for CREATE_CHANNEL_ID64
 				serviceIDfound = 1;
 
 				bool copy = true;

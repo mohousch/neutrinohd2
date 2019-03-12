@@ -126,7 +126,7 @@ int CThemes::exec(CMenuTarget * parent, const std::string & actionKey)
 	return Show();
 }
 
-void CThemes::readThemes(CMenuWidget &themes)
+void CThemes::readThemes(ClistBoxWidget &themes)
 {
 	struct dirent **themelist;
 	int n;
@@ -183,7 +183,10 @@ int CThemes::Show()
 {
 	dprintf(DEBUG_NORMAL, "CThemes::Show:\n");
 
-	CMenuWidget themes(LOCALE_COLORMENU_MENUCOLORS, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget themes(LOCALE_COLORMENU_MENUCOLORS, NEUTRINO_ICON_SETTINGS);
+
+	themes.setMode(MODE_MENU);
+	themes.enableShrinkMenu();
 
 	// intros
 	themes.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));

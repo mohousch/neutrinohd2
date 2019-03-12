@@ -116,12 +116,20 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 	return res;
 }
 
+//const struct button_label FButtons = { NEUTRINO_ICON_BUTTON_RED, LOCALE_MAINSETTINGS_SAVESETTINGSNOW, NULL };
+
 void CZapitSetup::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CZapitSetup::showMenu:\n");
 
 	//menue init
-	CMenuWidget * zapit = new CMenuWidget(LOCALE_MISCSETTINGS_ZAPIT, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget * zapit = new ClistBoxWidget(LOCALE_MISCSETTINGS_ZAPIT, NEUTRINO_ICON_SETTINGS);
+
+	zapit->setMode(MODE_SETUP);
+	zapit->enableShrinkMenu();
+
+	//zapit->setFooterButtons(&FButtons, 1);
+	//zapit->addKey(RC_red, this, "savesettings");
 	
 	int shortcut = 1;
 	

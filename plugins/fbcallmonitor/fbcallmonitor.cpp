@@ -103,13 +103,21 @@ bool CFBCallMonitor::saveSettings()
 	return true;
 }
 
+const struct button_label FButtons = { NEUTRINO_ICON_BUTTON_RED, LOCALE_MAINSETTINGS_SAVESETTINGSNOW, NULL };
+
 void CFBCallMonitor::showMenu()
 {
 	// read settings
 	readSettings();
 	
 	// create menu
-	CMenuWidget * FritzBoxCallSettingsMenu = new CMenuWidget("FritzBoxCallMonitor", NEUTRINO_ICON_SETTINGS);
+	 ClistBoxWidget * FritzBoxCallSettingsMenu = new ClistBoxWidget("FritzBoxCallMonitor", NEUTRINO_ICON_SETTINGS);
+
+	FritzBoxCallSettingsMenu->setMode(MODE_SETUP);
+	FritzBoxCallSettingsMenu->enableShrinkMenu();
+
+	FritzBoxCallSettingsMenu->setFooterButtons(&FButtons, 1);
+	FritzBoxCallSettingsMenu->addKey(RC_red, this, "savesettings");
 
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	FritzBoxCallSettingsMenu->addItem(new CMenuSeparator(LINE));

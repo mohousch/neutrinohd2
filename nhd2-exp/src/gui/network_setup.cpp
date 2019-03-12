@@ -185,7 +185,10 @@ void CNetworkSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CNetworkSettings::showMenu:\n");
 	
-	CMenuWidget networkSettings(LOCALE_NETWORKMENU_HEAD, NEUTRINO_ICON_NETWORK);
+	ClistBoxWidget networkSettings(LOCALE_NETWORKMENU_HEAD, NEUTRINO_ICON_NETWORK);
+
+	networkSettings.setMode(MODE_SETUP);
+	networkSettings.enableShrinkMenu();
 	
 	struct dirent **namelist;
 

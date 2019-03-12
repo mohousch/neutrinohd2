@@ -99,8 +99,10 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 		if(parent)
 			parent->hide();
 		
-		CMenuWidget fontscale(LOCALE_FONTMENU_HEAD, NEUTRINO_ICON_COLORS);
+		ClistBoxWidget fontscale(LOCALE_FONTMENU_HEAD, NEUTRINO_ICON_COLORS);
 		fontscale.enableSaveScreen();
+		fontscale.setMode(MODE_SETUP);
+		fontscale.enableShrinkMenu();
 
 		fontscale.addItem(new CMenuOptionNumberChooser(LOCALE_FONTMENU_SCALING_X, &g_settings.screen_xres, true, 50, 200, NULL) );
 		fontscale.addItem(new CMenuOptionNumberChooser(LOCALE_FONTMENU_SCALING_Y, &g_settings.screen_yres, true, 50, 200, NULL) );
@@ -124,8 +126,10 @@ void COSDSettings::showMenu(void)
 	
 	int shortcutOSD = 1;
 	
-	CMenuWidget * osdSettings = new CMenuWidget(LOCALE_MAINSETTINGS_OSD, NEUTRINO_ICON_COLORS );
+	ClistBoxWidget * osdSettings = new ClistBoxWidget(LOCALE_MAINSETTINGS_OSD, NEUTRINO_ICON_COLORS );
 
+	osdSettings->setMode(MODE_MENU);
+	osdSettings->enableShrinkMenu();
 	osdSettings->enableMenuPosition();
 	osdSettings->enableWidgetChange();
 	osdSettings->enablePaintFootInfo();
@@ -211,7 +215,10 @@ void COSDMenuColorSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "COSDMenuColorSettings::showMenu:\n");
 	
-	CMenuWidget OSDmenuColorsSettings(LOCALE_COLORMENUSETUP_HEAD, NEUTRINO_ICON_SETTINGS );
+	ClistBoxWidget OSDmenuColorsSettings(LOCALE_COLORMENUSETUP_HEAD, NEUTRINO_ICON_SETTINGS );
+
+	OSDmenuColorsSettings.setMode(MODE_SETUP);
+	OSDmenuColorsSettings.enableShrinkMenu();
 	
 	// intros
 	OSDmenuColorsSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -324,7 +331,10 @@ void COSDInfoBarColorSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "COSDInfoBarColorSettings::showMenu:\n");
 	
-	CMenuWidget OSDinfobarColorSettings(LOCALE_COLORMENU_STATUSBAR, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget OSDinfobarColorSettings(LOCALE_COLORMENU_STATUSBAR, NEUTRINO_ICON_SETTINGS);
+
+	OSDinfobarColorSettings.setMode(MODE_SETUP);
+	OSDinfobarColorSettings.enableShrinkMenu();
 	
 	// intros
 	OSDinfobarColorSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -424,7 +434,10 @@ void CLanguageSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CLanguageSettings::showMenu:\n");
 	
-	CMenuWidget languageSettings(LOCALE_LANGUAGESETUP_HEAD, NEUTRINO_ICON_LANGUAGE );
+	ClistBoxWidget languageSettings(LOCALE_LANGUAGESETUP_HEAD, NEUTRINO_ICON_LANGUAGE );
+
+	languageSettings.setMode(MODE_SETUP);
+	languageSettings.enableShrinkMenu();
 	
 	// intros
 	languageSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -516,7 +529,10 @@ void COSDTimingSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "COSDTimingSettings::showMenu:\n");
 	
-	CMenuWidget osdTimingSettings(LOCALE_COLORMENU_TIMING, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget osdTimingSettings(LOCALE_COLORMENU_TIMING, NEUTRINO_ICON_SETTINGS);
+
+	osdTimingSettings.setMode(MODE_SETUP);
+	osdTimingSettings.enableShrinkMenu();
 	
 	// intros
 	osdTimingSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));

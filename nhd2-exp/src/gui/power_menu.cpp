@@ -93,8 +93,10 @@ void CPowerMenu::showMenu(void)
 
 	int shortcut = 1;
 
-	CMenuWidget * powerMenu = new CMenuWidget(LOCALE_MAINMENU_POWERMENU, NEUTRINO_ICON_BUTTON_POWER);
+	ClistBoxWidget * powerMenu = new ClistBoxWidget(LOCALE_MAINMENU_POWERMENU, NEUTRINO_ICON_BUTTON_POWER);
 
+	powerMenu->setMode(MODE_MENU);
+	powerMenu->enableShrinkMenu();
 	powerMenu->enableMenuPosition();
 	powerMenu->enableWidgetChange();
 	powerMenu->enablePaintFootInfo();

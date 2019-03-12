@@ -202,7 +202,7 @@ bool COPKGManager::showPkgMenu(const int pkg_content_id)
 		return false;
 	}
 		
-	CMenuWidget menu("OPKG-Manager", NEUTRINO_ICON_UPDATE, MENU_WIDTH + 50);
+	ClistBoxWidget menu("OPKG-Manager", NEUTRINO_ICON_UPDATE, MENU_WIDTH + 50);
 	
 	if(!getPkgData(pkg_content_id))
 	{
@@ -251,11 +251,10 @@ int COPKGManager::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "COPKGManager::showMenu\n");
 
-	CMenuWidget * menu = new CMenuWidget("OPKG-Manager", NEUTRINO_ICON_UPDATE);
-	
-	// return
-	menu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	menu->addItem(new CMenuSeparator(LINE));
+	ClistBoxWidget * menu = new ClistBoxWidget("OPKG-Manager", NEUTRINO_ICON_UPDATE);
+
+	menu->setMode(MODE_SETUP);
+	menu->enableShrinkMenu();
 
 	menu->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_INTERNET, true, NULL, this, "internet" ));
 	menu->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_MANUAL, true, NULL, this, "manual" ));

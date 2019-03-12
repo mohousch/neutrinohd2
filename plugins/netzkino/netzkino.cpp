@@ -208,8 +208,10 @@ int CNKMovies::showCategoriesMenu()
 	}
 
 	// menu
-	CMenuWidget mainMenu(LOCALE_NETZKINO, NEUTRINO_ICON_NETZKINO_SMALL);
+	ClistBoxWidget mainMenu(LOCALE_NETZKINO, NEUTRINO_ICON_NETZKINO_SMALL);
 
+	mainMenu.setMode(MODE_MENU);
+	mainMenu.enableShrinkMenu();
 	mainMenu.setWidgetType(WIDGET_TYPE_CLASSIC);
 
 	// categories

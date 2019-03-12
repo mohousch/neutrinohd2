@@ -108,9 +108,11 @@ void CPictureViewerSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CPicTureViewerSettings::showMenu:\n");
 	
-	CMenuWidget PicViewerSettings(LOCALE_PICTUREVIEWERSETTINGS_GENERAL, NEUTRINO_ICON_SETTINGS );
+	ClistBoxWidget PicViewerSettings(LOCALE_PICTUREVIEWERSETTINGS_GENERAL, NEUTRINO_ICON_SETTINGS );
 
 	PicViewerSettings.enableSaveScreen();
+	PicViewerSettings.setMode(MODE_SETUP);
+	PicViewerSettings.enableShrinkMenu();
 	
 	int shortcutPicViewer = 1;
 	

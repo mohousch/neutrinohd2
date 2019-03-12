@@ -218,8 +218,10 @@ void CMiscSettings::showMenu(void)
 	
 	int shortcutMiscSettings = 1;
 
-	CMenuWidget * miscSettings = new CMenuWidget(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget * miscSettings = new ClistBoxWidget(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
 
+	miscSettings->setMode(MODE_MENU);
+	miscSettings->enableShrinkMenu();
 	miscSettings->enableMenuPosition();
 	miscSettings->enableWidgetChange();
 	miscSettings->enablePaintFootInfo();
@@ -367,7 +369,10 @@ void CGeneralSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CGeneralSettings::showMenu:\n");
 	
-	CMenuWidget miscSettingsGeneral(LOCALE_MISCSETTINGS_GENERAL, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget miscSettingsGeneral(LOCALE_MISCSETTINGS_GENERAL, NEUTRINO_ICON_SETTINGS);
+
+	miscSettingsGeneral.setMode(MODE_SETUP);
+	miscSettingsGeneral.enableShrinkMenu();
 	
 	// intros
 	miscSettingsGeneral.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -715,8 +720,10 @@ void CChannelListSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CChannelListSettings::showMenu:\n");
 	
-	CMenuWidget miscSettingsChannelList(LOCALE_MISCSETTINGS_CHANNELLIST, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget miscSettingsChannelList(LOCALE_MISCSETTINGS_CHANNELLIST, NEUTRINO_ICON_SETTINGS);
 	miscSettingsChannelList.enableSaveScreen();
+	miscSettingsChannelList.setMode(MODE_SETUP);
+	miscSettingsChannelList.enableShrinkMenu();
 	
 	int shortcutMiscChannel = 1;
 	
@@ -827,7 +834,10 @@ void CEPGSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CEPGSettings::showMenu:\n");
 	
-	CMenuWidget miscSettingsEPG(LOCALE_MISCSETTINGS_EPG_HEAD, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget miscSettingsEPG(LOCALE_MISCSETTINGS_EPG_HEAD, NEUTRINO_ICON_SETTINGS);
+	
+	miscSettingsEPG.setMode(MODE_SETUP);
+	miscSettingsEPG.enableShrinkMenu();
 	
 	int shortcutMiscEpg = 1;
 	
@@ -1021,7 +1031,10 @@ void CFileBrowserSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CFileBrowserSettings::showMenu:\n");
 	
-	CMenuWidget miscSettingsFileBrowser(LOCALE_FILEBROWSER_HEAD, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget miscSettingsFileBrowser(LOCALE_FILEBROWSER_HEAD, NEUTRINO_ICON_SETTINGS);
+
+	miscSettingsFileBrowser.setMode(MODE_SETUP);
+	miscSettingsFileBrowser.enableShrinkMenu();
 	
 	int shortcutMiscFileBrowser = 1;
 	

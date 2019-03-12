@@ -34,7 +34,8 @@ function showMenu(parent)
 	selected = 0
 
 	parent:setSelected(selected)
-	parent:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
+	parent:setMode(neutrino.MODE_MENU)
+	parent:enableShrinkMenu()
 	parent:enableWidgetChange()
 	parent:enablePaintFootInfo()
 
@@ -85,7 +86,7 @@ end
 -- main
 function main()
 	-- variables
-	listWidget = neutrino.CMenuWidget("pythonTest:CMenuWidget", neutrino.NEUTRINO_ICON_MOVIE)
+	listWidget = neutrino.ClistBoxWidget("pythonTest:ClistBoxWidget", neutrino.NEUTRINO_ICON_MOVIE)
 
 	-- paint
 	showMenu(listWidget)

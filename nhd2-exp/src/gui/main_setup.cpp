@@ -84,8 +84,10 @@ void CMainSetup::showMenu(void)
 	
 	int shortcutMainSettings = 1;
 
-	CMenuWidget * mainSettings = new CMenuWidget(LOCALE_MAINSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget * mainSettings = new ClistBoxWidget(LOCALE_MAINSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
 
+	mainSettings->setMode(MODE_MENU);
+	mainSettings->enableShrinkMenu();
 	mainSettings->enableMenuPosition();
 	mainSettings->enableWidgetChange();
 	mainSettings->enablePaintFootInfo();

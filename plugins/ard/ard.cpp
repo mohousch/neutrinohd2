@@ -21,7 +21,10 @@ CARDverpasst::~CARDverpasst()
 
 void CARDverpasst::showMenu(void)
 {
-	CMenuWidget * catMenu = new CMenuWidget("Sendung verpasst", PLUGINDIR "/ard/ard_small.png");
+	ClistBoxWidget * catMenu = new ClistBoxWidget("Sendung verpasst", PLUGINDIR "/ard/ard_small.png");
+
+	catMenu->setMode(MODE_MENU);
+	catMenu->enableShrinkMenu();
 
 	catMenu->addItem(new CMenuForwarder("Das Erste", true, NULL, new CARDverpasstSub("Das Erste"), ""));
 	catMenu->addItem(new CMenuForwarder("Tagesschau24", true, NULL, new CARDverpasstSub("Tagesschau24"), ""));
@@ -67,7 +70,10 @@ CARDverpasstSub::~CARDverpasstSub()
 
 void CARDverpasstSub::showMenu(void)
 {
-	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");
+	ClistBoxWidget * catMenu = new ClistBoxWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");
+
+	catMenu->setMode(MODE_MENU);
+	catMenu->enableShrinkMenu();
 
 	catMenu->addItem(new CMenuForwarder("Heute", true, getNowTimeStr("%d.%m.%Y").c_str(), new CARDtime("Heute"), ""));
 	catMenu->addItem(new CMenuForwarder("Gestern", true, NULL, new CARDtime("Gestern"), ""));
@@ -107,7 +113,10 @@ CARDtime::~CARDtime()
 
 void CARDtime::showMenu(void)
 {
-	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");
+	ClistBoxWidget * catMenu = new ClistBoxWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");
+
+	catMenu->setMode(MODE_MENU);
+	catMenu->enableShrinkMenu();
 
 	catMenu->addItem(new CMenuForwarder("00:00-12:00", true, NULL, new CARDstreams("00:00-12:00"), ""));
 	catMenu->addItem(new CMenuForwarder("12:00-18:00", true, NULL, new CARDstreams("12:00-18:00"), ""));
@@ -300,7 +309,10 @@ CARD::~CARD()
 
 void CARD::showMenu(void)
 {
-	CMenuWidget * catMenu = new CMenuWidget("ARD Mediathek", PLUGINDIR "/ard/ard_small.png");
+	ClistBoxWidget * catMenu = new ClistBoxWidget("ARD Mediathek", PLUGINDIR "/ard/ard_small.png");
+
+	catMenu->setMode(MODE_MENU);
+	catMenu->enableShrinkMenu();
 
 	catMenu->addItem(new CMenuForwarder("Sendung verpasst", true, NULL, new CARDverpasst(), ""));
 	catMenu->addItem(new CMenuForwarder("Sendungen A-Z", true, NULL, new CARDaz(), ""));

@@ -177,9 +177,11 @@ void CChannelList::putChannel(CZapitChannel * channel)
 
 void CChannelList::updateEvents(void)
 {
+	dprintf(DEBUG_NORMAL, "CChannelList::updateEvents\n");
+
 	CChannelEventList events;
 
-	if (displayNext) 
+	//if (displayNext) 
 	{
 		if (chanlist.size()) 
 		{
@@ -190,20 +192,33 @@ void CChannelList::updateEvents(void)
 			{		
 				events.clear();
 
-				sectionsd_getEventsServiceKey(chanlist[count]->channel_id, events);
+				sectionsd_getEventsServiceKey(chanlist[count]->channel_id& 0xFFFFFFFFFFFFULL, events);
 				chanlist[count]->nextEvent.startTime = (long)0x7fffffff;
 				
 				for ( CChannelEventList::iterator e = events.begin(); e != events.end(); ++e ) 
 				{
+					if(displayNext)
+					{
 					if (((long)(e->startTime) > atime) && ((e->startTime) < (long)(chanlist[count]->nextEvent.startTime)))
 					{
 						chanlist[count]->nextEvent= *e;
+					
 						break;
+					}
+					}
+					else
+					{
+						if ((chanlist[count]->channel_id)& 0xFFFFFFFFFFFFULL == e->get_channel_id()& 0xFFFFFFFFFFFFULL)
+						{
+							chanlist[count]->currentEvent= *e;
+							break;
+						}
 					}
 				}
 			}
 		}
-	} 
+	}
+#if 0 
 	else 
 	{
 //FIXME:
@@ -221,6 +236,9 @@ void CChannelList::updateEvents(void)
 			}
 
 			CChannelEventList pevents;
+
+			pevents.clear();
+			
 			sectionsd_getChannelEvents(pevents, (CNeutrinoApp::getInstance()->getMode()) != NeutrinoMessages::mode_radio, p_requested_channels, size_requested_channels);
 			
 			for (uint32_t count = 0; count < chanlist.size(); count++) 
@@ -229,7 +247,7 @@ void CChannelList::updateEvents(void)
 				
 				for ( CChannelEventList::iterator e = pevents.begin(); e != pevents.end(); ++e )
 				{
-					if ((chanlist[count]->channel_id&0xFFFFFFFFFFFFULL) == e->get_channel_id())
+					if ((chanlist[count]->channel_id&0xFFFFFFFFFFFFULL) == e->get_channel_id()&0xFFFFFFFFFFFFULL)
 					{
 						chanlist[count]->currentEvent= *e;
 						break;
@@ -237,12 +255,11 @@ void CChannelList::updateEvents(void)
 				}
 			}
 
-			pevents.clear();
-
 			if (p_requested_channels != NULL) 
 				free(p_requested_channels);
 		}
 	}
+#endif
 }
 
 struct CmpChannelBySat: public binary_function <const CZapitChannel * const, const CZapitChannel * const, bool>
@@ -363,8 +380,10 @@ int CChannelList::doChannelMenu(void)
 	if( !bouquetList )
 		return 0;
 
-	CMenuWidget * menu = new CMenuWidget(LOCALE_CHANNELLIST_EDIT, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget * menu = new ClistBoxWidget(LOCALE_CHANNELLIST_EDIT, NEUTRINO_ICON_SETTINGS);
 	menu->enableSaveScreen();
+	menu->setMode(MODE_MENU);
+	menu->enableShrinkMenu();
 
 	menu->addItem(new CMenuForwarder(LOCALE_BOUQUETEDITOR_DELETE, true, NULL, NULL, NULL, RC_red, NEUTRINO_ICON_BUTTON_RED), old_selected == i++);
 
@@ -844,13 +863,15 @@ int CChannelList::show()
 	if(zapOnExit)
 		res = selected;
 
-	printf("CChannelList::show res %d\n", res);
+	dprintf(DEBUG_NORMAL, "CChannelList::show res %d\n", res);
 			
 	return(res);
 }
 
 void CChannelList::hide()
 {
+	dprintf(DEBUG_NORMAL, "CChannelList::hide\n");
+
 	listBox->hide();
 }
 
@@ -1516,17 +1537,13 @@ void CChannelList::paint()
 {
 	dprintf(DEBUG_NORMAL, "CChannelList::paint\n");
 
-	CChannelEvent* p_event = NULL;
-	time_t jetzt = time(NULL);
-	int runningPercent = 0;
-
 	if(chanlist.size())
 	{
 		for(unsigned int i = 0; i < chanlist.size(); i++)
 		{
-			p_event = NULL;
-			jetzt = time(NULL);
-			runningPercent = 0;
+			CChannelEvent * p_event = NULL;
+			time_t jetzt = time(NULL);
+			int runningPercent = 0;
 
 			std::string desc = chanlist[i]->description;
 			char cSeit[50] = " ";
@@ -1541,9 +1558,7 @@ void CChannelList::paint()
 				p_event = &chanlist[i]->currentEvent;
 			}
 
-			// runningPercent
-			runningPercent = 0;
-			
+			// runningPercent	
 			if (((jetzt - p_event->startTime + 30) / 60) < 0 )
 			{
 				runningPercent = 0;
@@ -1555,7 +1570,7 @@ void CChannelList::paint()
 			}
 
 			// description
-			if (p_event != NULL && !p_event->description.empty()) 
+			if (p_event != NULL && !(p_event->description.empty())) 
 			{
 				desc = p_event->description;
 
@@ -1577,7 +1592,7 @@ void CChannelList::paint()
 				}
 			}
 
-			item = new ClistBoxItem(chanlist[i]->name.c_str(), true, /*p_event->description*/desc.c_str());
+			item = new ClistBoxItem(chanlist[i]->name.c_str(), true, desc.c_str());
 
 			item->setNumber(i + 1);
 			item->setPercent(runningPercent);
@@ -1644,8 +1659,11 @@ void CChannelList::webTVBouquets(void)
 
 	//
 	CFileList filelist;
-	CMenuWidget m("WebTV", NEUTRINO_ICON_WEBTV_SMALL, MENU_WIDTH + 100);
+	ClistBoxWidget m("WebTV", NEUTRINO_ICON_WEBTV_SMALL, MENU_WIDTH + 100);
 	m.enableSaveScreen();
+
+	m.setMode(MODE_MENU);
+	m.enableShrinkMenu();
 
 	int select = -1;
 	//CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);

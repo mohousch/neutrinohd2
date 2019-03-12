@@ -75,7 +75,10 @@ int CProxySetup::showProxySetup()
 	dprintf(DEBUG_DEBUG, "CProxySetup::showProxySetup\n");
 
 	//init
-	CMenuWidget * mn = new CMenuWidget(menue_title, menue_icon);
+	ClistBoxWidget * mn = new ClistBoxWidget(menue_title, menue_icon);
+
+	mn->setMode(MODE_SETUP);
+	mn->enableShrinkMenu();
 
 	CStringInputSMS * softUpdate_proxy = new CStringInputSMS(LOCALE_FLASHUPDATE_PROXYSERVER, g_settings.softupdate_proxyserver, MAX_INPUT_CHARS, LOCALE_FLASHUPDATE_PROXYSERVER_HINT1, LOCALE_FLASHUPDATE_PROXYSERVER_HINT2, "abcdefghijklmnopqrstuvwxyz0123456789-.: ");
 	mn->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_PROXYSERVER, true, g_settings.softupdate_proxyserver, softUpdate_proxy, NULL, RC_red, NEUTRINO_ICON_BUTTON_RED));

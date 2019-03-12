@@ -885,6 +885,8 @@ const keyval MESSAGEBOX_NO_YES_OPTIONS[MESSAGEBOX_NO_YES_OPTION_COUNT] =
 	{ 1, LOCALE_MESSAGEBOX_YES, NULL }
 };
 
+const struct button_label newTimerButtons = { NEUTRINO_ICON_BUTTON_RED, LOCALE_TIMERLIST_SAVE, NULL };
+
 int CTimerList::modifyTimer()
 {
 	selected = listBox->getSelected();
@@ -894,14 +896,16 @@ int CTimerList::modifyTimer()
 	ClistBoxWidget timerSettings(LOCALE_TIMERLIST_MENUMODIFY, NEUTRINO_ICON_SETTINGS);
 	timerSettings.enablePaintDate();
 	timerSettings.enableShrinkMenu();
+	timerSettings.setMode(MODE_SETUP);
 	
 	// intros
-	timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	timerSettings.addItem(new CMenuSeparator(LINE));
+	//timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	//timerSettings.addItem(new CMenuSeparator(LINE));
 	
 	//
-	timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "modifytimer", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	timerSettings.addItem(new CMenuSeparator(LINE));
+	//timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "modifytimer", RC_red, NEUTRINO_ICON_BUTTON_RED));
+	//timerSettings.addItem(new CMenuSeparator(LINE));
+	timerSettings.addItem(new CMenuSeparator());
 
 	char type[80];
 	strcpy(type, convertTimerType2String(timer->eventType)); // UTF
@@ -952,7 +956,11 @@ int CTimerList::modifyTimer()
 	timerSettings.addItem(new CMenuSeparator(LINE));
 	timerSettings.addItem(m6);
 
-	CMenuWidget timerSettings_apids(LOCALE_TIMERLIST_APIDS, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget timerSettings_apids(LOCALE_TIMERLIST_APIDS, NEUTRINO_ICON_SETTINGS);
+
+	timerSettings_apids.setMode(MODE_SETUP);
+	timerSettings_apids.enableShrinkMenu();
+
 	CTimerListApidNotifier apid_notifier(&timer_apids_dflt, &timer_apids_std, &timer_apids_ac3, &timer_apids_alt);
 	timer_apids_dflt = (timer->apids == 0) ? 1 : 0 ;
 	timer_apids_std = (timer->apids & TIMERD_APIDS_STD) ? 1 : 0 ;
@@ -975,8 +983,13 @@ int CTimerList::modifyTimer()
 		timerSettings.addItem( new CMenuForwarder(LOCALE_TIMERLIST_APIDS, true, NULL, &timerSettings_apids ));
 	}
 
+	timerSettings.setFooterButtons(&newTimerButtons, 1);
+	timerSettings.addKey(RC_red, this, "newtimer");
+
 	return timerSettings.exec(this, "");
 }
+
+//const struct button_label newTimerButtons = { NEUTRINO_ICON_BUTTON_RED, LOCALE_TIMERLIST_SAVE, NULL };
 
 int CTimerList::newTimer()
 {
@@ -994,14 +1007,15 @@ int CTimerList::newTimer()
 	ClistBoxWidget timerSettings(LOCALE_TIMERLIST_MENUNEW, NEUTRINO_ICON_SETTINGS);
 	timerSettings.enablePaintDate();
 	timerSettings.enableShrinkMenu();
+	timerSettings.setMode(MODE_SETUP);
 	
 	// intros
-	timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	timerSettings.addItem(new CMenuSeparator(LINE));
+	//timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	//timerSettings.addItem(new CMenuSeparator(LINE));
 	
 	//
-	timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "newtimer", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	timerSettings.addItem(new CMenuSeparator(LINE));
+	//timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "newtimer", RC_red, NEUTRINO_ICON_BUTTON_RED));
+	//timerSettings.addItem(new CMenuSeparator(LINE));
 
 	CDateInput timerSettings_alarmTime(LOCALE_TIMERLIST_ALARMTIME, &(timerNew.alarmTime) , LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
 	CMenuForwarder *m1 = new CMenuForwarder(LOCALE_TIMERLIST_ALARMTIME, true, timerSettings_alarmTime.getValue(), &timerSettings_alarmTime );
@@ -1041,6 +1055,7 @@ int CTimerList::newTimer()
 					timerSettings_stopTime.getValue());
 	CMenuOptionChooser *m0 = new CMenuOptionChooser(LOCALE_TIMERLIST_TYPE, (int *)&timerNew.eventType, TIMERLIST_TYPE_OPTIONS, TIMERLIST_TYPE_OPTION_COUNT, true, &notifier2);
 
+	timerSettings.addItem(new CMenuSeparator());
 	timerSettings.addItem( m0);
 	timerSettings.addItem( m1);
 	timerSettings.addItem( m2);
@@ -1054,6 +1069,9 @@ int CTimerList::newTimer()
 	timerSettings.addItem( m8);
 	timerSettings.addItem( m9);
 	timerSettings.addItem( m10);
+
+	timerSettings.setFooterButtons(&newTimerButtons, 1);
+	timerSettings.addKey(RC_red, this, "newtimer");
 
 	int ret = timerSettings.exec(this, "");
 

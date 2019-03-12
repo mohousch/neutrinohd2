@@ -183,7 +183,10 @@ int CHDDMenuHandler::hddMenu()
                 return menu_return::RETURN_REPAINT;
         }
 
-	CMenuWidget * hddmenu = new CMenuWidget(LOCALE_HDD_SETTINGS, NEUTRINO_ICON_SETTINGS);
+	ClistBoxWidget * hddmenu = new ClistBoxWidget(LOCALE_HDD_SETTINGS, NEUTRINO_ICON_SETTINGS);
+
+	hddmenu->setMode(MODE_SETUP);
+	hddmenu->enableShrinkMenu();
 	
 	hddmenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	hddmenu->addItem(new CMenuSeparator(LINE));
@@ -215,7 +218,7 @@ int CHDDMenuHandler::hddMenu()
 	printf("HDD: root_dev: 0x%04x\n", root_dev);
 	
 	//hdd manage
-	CMenuWidget * tempMenu[n];
+	ClistBoxWidget * tempMenu[n];
 
 	for(int i = 0; i < n; i++) 
 	{
@@ -296,8 +299,11 @@ int CHDDMenuHandler::hddMenu()
 		bool enabled = !CNeutrinoApp::getInstance()->recordingstatus && !isroot;
 
 		/* hdd menu */
-		tempMenu[i] = new CMenuWidget(str, NEUTRINO_ICON_SETTINGS);
+		tempMenu[i] = new ClistBoxWidget(str, NEUTRINO_ICON_SETTINGS);
 		tempMenu[i]->enableSaveScreen();
+
+		tempMenu[i]->setMode(MODE_MENU);
+		tempMenu[i]->enableShrinkMenu();
 		
 		tempMenu[i]->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 		tempMenu[i]->addItem(new CMenuSeparator(LINE));
@@ -311,7 +317,7 @@ int CHDDMenuHandler::hddMenu()
 		char DEVICE[256];
 		char PART[256];
 		
-		CMenuWidget * PartMenu[MAX_PARTS];
+		ClistBoxWidget * PartMenu[MAX_PARTS];
 		
 		for (int j = 1; j<= MAX_PARTS; j++)
 		{
@@ -336,8 +342,11 @@ int CHDDMenuHandler::hddMenu()
 			mounted = check_if_mounted(DEVICE);
 			
 			/* part submenu */
-			PartMenu[j] = new CMenuWidget(PART, NEUTRINO_ICON_SETTINGS);
+			PartMenu[j] = new ClistBoxWidget(PART, NEUTRINO_ICON_SETTINGS);
 			PartMenu[j]->enableSaveScreen();
+
+			PartMenu[j]->setMode(MODE_MENU);
+			PartMenu[j]->enableShrinkMenu();
 			
 
 			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));

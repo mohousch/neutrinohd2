@@ -385,13 +385,8 @@ void CTSBrowser::showMenu()
 
 	mlist->setWidgetType(WIDGET_TYPE_FRAME);
 	mlist->setItemsPerPage(6, 2);
-	//mlist->setItemBoxColor(COL_YELLOW);
 	mlist->setSelected(selected);
 	mlist->enablePaintDate();
-
-	// widget
-	mlist->addWidget(WIDGET_TYPE_EXTENDED);
-	mlist->enableWidgetChange();
 
 	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 
