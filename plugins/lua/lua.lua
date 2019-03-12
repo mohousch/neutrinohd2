@@ -2,7 +2,9 @@
 --
 
 function messageBox()
-	mBox = neutrino.CMessageBox("CMessageBox: lua","first test\ntesting CMessageBox\ndas ist alles ;-)")
+	title = "luaTest"
+	msg = "TEST"
+	mBox = neutrino.CMessageBox(title, msg)
 	mBox:exec(-1)
 end
 

@@ -3292,10 +3292,6 @@ void ClistBoxWidget::initFrames()
 			}
 		}
 
-		// recalculate height
-		//listmaxshow = (height - hheight - fheight)/item_height;
-		//height = hheight + listmaxshow*item_height + fheight;
-
 		// shrink menu if less items
 		if(shrinkMenu)
 		{
@@ -3991,6 +3987,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 						msg = RC_timeout;
 						break;
 					case menu_return::RETURN_REPAINT:
+						initFrames();
 						paintHead();
 						paintFoot();
 						paint();
@@ -4383,6 +4380,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 									
 								case menu_return::RETURN_REPAINT:
 									hide();
+									initFrames();
 									paintHead();
 									paintFoot();
 									paint();

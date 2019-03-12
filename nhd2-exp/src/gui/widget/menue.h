@@ -665,7 +665,6 @@ class ClistBoxWidget : public CMenuTarget
 		int sb_width;
 		int items_height;
 		int items_width;
-		int listmaxshow;
 
 		//
 		int fbutton_count;
@@ -756,7 +755,6 @@ class ClistBoxWidget : public CMenuTarget
 		int getX(void) const {return x;};
 		int getY(void) const {return y;};
 		bool getExitPressed(){return exit_pressed;};
-		int getListMaxShow(void) const {return listmaxshow;};
 		
 		//
 		void enableSaveScreen();
