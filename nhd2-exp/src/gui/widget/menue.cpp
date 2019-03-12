@@ -3138,7 +3138,6 @@ void ClistBoxWidget::initFrames()
 	else
         	l_name = g_Locale->getText(name);
 
-	////TEST
 	// widget type
 	if(widgetChange && widgetMode == MODE_MENU)
 	{
@@ -3151,7 +3150,6 @@ void ClistBoxWidget::initFrames()
 		else if(g_settings.menu_design == SNeutrinoSettings::MENU_DESIGN_FRAME)
 			widgetType = WIDGET_TYPE_FRAME;
 	}
-	////
 
 	// widgettype forwarded to item 
 	for (unsigned int count = 0; count < items.size(); count++) 
@@ -3209,6 +3207,9 @@ void ClistBoxWidget::initFrames()
 			item->item_width = item_width;
 			item->item_height = item_height;
 		} 
+
+		if(savescreen) 
+			saveScreen();
 	}
 	else
 	{
@@ -3306,7 +3307,6 @@ void ClistBoxWidget::initFrames()
 		x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - full_width ) >> 1 );
 		y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
 
-		////TEST
 		// menu position
 		if(widgetMode == MODE_MENU)
 		{
@@ -3326,7 +3326,6 @@ void ClistBoxWidget::initFrames()
 				y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
 			}
 		}
-		////
 
 		//
 		if(FootInfo && widgetType == WIDGET_TYPE_STANDARD)
@@ -3335,6 +3334,9 @@ void ClistBoxWidget::initFrames()
 			cFrameFootInfo.iY = y + height + interFrame;
 			cFrameFootInfo.iWidth = width;
 		}
+
+		if(savescreen) 
+			saveScreen();
 	}
 }
 
@@ -3813,7 +3815,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 
 void ClistBoxWidget::hideItemInfo()
 {
-	if(widgetType == WIDGET_TYPE_STANDARD)
+	if(widgetType == WIDGET_TYPE_STANDARD && FootInfo)
 	{
 		itemsLine.clear(x, y, width + ConnectLineBox_Width, height, cFrameFootInfo.iHeight);
 	}  
@@ -3843,12 +3845,18 @@ void ClistBoxWidget::saveScreen()
 	if(!savescreen)
 		return;
 
-	delete[] background;
+	if(background)
+	{
+		delete[] background;
+		background = NULL;
+	}
 
 	background = new fb_pixel_t[full_width*full_height];
 	
 	if(background)
+	{
 		frameBuffer->saveScreen(x, y, full_width, full_height, background);
+	}
 }
 
 void ClistBoxWidget::restoreScreen()
@@ -3946,11 +3954,6 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 	//
 	initFrames();
-
-	//
-	if(savescreen) 
-		saveScreen();
-
 	paintHead();
 	paintFoot();
 	paint();
@@ -4475,14 +4478,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 	while ( msg != RC_timeout );
 	
 	if(retval != menu_return::RETURN_NONE)
-		hide();
-
-	//test
-	if (background) 
-	{
-		delete[] background;
-		background = NULL;
-	}		
+		hide();	
 
 	//
 	if(PaintDate)
