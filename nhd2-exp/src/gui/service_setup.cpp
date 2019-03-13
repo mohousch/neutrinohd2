@@ -106,6 +106,7 @@ void CServiceSetup::showMenu(void)
 	service->enableMenuPosition();
 	service->enableWidgetChange();
 	service->enablePaintFootInfo();
+	service->enablePaintDate();
 	
 	// scan setup
 	if(FrontendCount > 1)

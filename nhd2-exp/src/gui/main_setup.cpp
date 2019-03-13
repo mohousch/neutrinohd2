@@ -91,6 +91,7 @@ void CMainSetup::showMenu(void)
 	mainSettings->enableMenuPosition();
 	mainSettings->enableWidgetChange();
 	mainSettings->enablePaintFootInfo();
+	mainSettings->enablePaintDate();
 
 	// video settings
 	mainSettings->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_VIDEO, true, NULL, new CVideoSettings(), NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_VIDEOSETTINGS, LOCALE_HELPTEXT_VIDEOSETTINGS));

@@ -3391,7 +3391,9 @@ void ClistBoxWidget::paintHead()
 	}
 	else
 	{
-		headers.enablePaintDate();
+		if(PaintDate)
+			headers.enablePaintDate();
+
 		headers.setHeaderButtons(hbutton_labels, hbutton_count);
 		headers.paintHead(x, y, width, hheight, l_name, iconfile.c_str());
 	}
@@ -3399,7 +3401,11 @@ void ClistBoxWidget::paintHead()
 
 void ClistBoxWidget::paintFoot()
 {
-	if(widgetType != WIDGET_TYPE_FRAME)
+	if(widgetType == WIDGET_TYPE_FRAME)
+	{
+		headers.paintFoot(x, y + height - fheight, width, fheight);
+	}
+	else
 	{
 		headers.paintFoot(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
 	}
@@ -3414,20 +3420,20 @@ void ClistBoxWidget::paint()
 	item_start_y = y + hheight;
 
 	if(widgetType == WIDGET_TYPE_FRAME)
-		item_start_y = y + hheight + 2*ICON_OFFSET;
+		item_start_y = y + hheight + 10;
 
 	// widget frame paint background hlines
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		// paint background
-		frameBuffer->paintBoxRel(x, y, width, height, backgroundColor);
+		frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight - fheight, backgroundColor);
 
 		// paint horizontal line top
-		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + hheight, COL_MENUCONTENT_PLUS_5);
+		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + hheight + 2, COL_MENUCONTENT_PLUS_5);
 	
 		// paint horizontal line bottom
 		fheight = hheight;
-		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight, COL_MENUCONTENT_PLUS_5);
+		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight - 2, COL_MENUCONTENT_PLUS_5);
 	}
 	else
 	{
@@ -3444,7 +3450,7 @@ void ClistBoxWidget::paintItems()
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		// items background
-		frameBuffer->paintBoxRel(x, y + hheight + 2*ICON_OFFSET, width, height - hheight - fheight - 2*ICON_OFFSET, backgroundColor);
+		frameBuffer->paintBoxRel(x, y + hheight + 10, width, height - hheight - fheight - 20, backgroundColor);
 
 		// item not currently on screen
 		if (selected >= 0)
@@ -3588,7 +3594,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 {
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
-		frameBuffer->paintBoxRel(x, y + height - fheight + 3, width, fheight - 3, backgroundColor);
+		frameBuffer->paintBoxRel(x, y + height - fheight, width, fheight, backgroundColor);
 
 		if(items.size() > 0)
 		{
@@ -3632,7 +3638,6 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	}
 	else if(widgetType == WIDGET_TYPE_STANDARD)
 	{
-		////
 		if(widgetMode == MODE_MENU)
 		{
 			if(FootInfo)
