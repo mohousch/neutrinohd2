@@ -438,11 +438,11 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 {
 	// title info box shadow
 	m_frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
-		
+	
+	// box	
 	m_frameBuffer->paintBoxRel(cFrameBox.iX + 1, cFrameBox.iY + 1 , cFrameBox.iWidth - 2, cFrameBox.iHeight - 2, COL_MENUFOOT_INFO_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Foot_Info_gradient); //FIXME:gradient
 
-	// first line 
-	// Track number
+	// first line (Track number)
 	std::string tmp;
 	if (m_inetmode) 
 	{
@@ -462,10 +462,9 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 	if(xstart < (BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET))
 		xstart = BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET;
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + 4 + cFrameBox.iHeight/3, cFrameBox.iWidth - 20, tmp, COL_MENUFOOT_INFO, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + 4 + cFrameBox.iHeight/3, cFrameBox.iWidth - 20, tmp, COL_MENUFOOT_INFO); // UTF-8
 
-	// second line 
-	// Artist/Title
+	// second line (Artist/Title)
 	if (File.MetaData.title.empty())
 		tmp = File.MetaData.artist;
 	else if (File.MetaData.artist.empty())
@@ -483,7 +482,7 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 		xstart = BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET;
 
 		
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + 2 + cFrameBox.iHeight/3 + 2 + cFrameBox.iHeight/3, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - 2*cFrameBox.iHeight - ICON_OFFSET, tmp, COL_MENUFOOT_INFO, 0, true); // UTF-8		
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + 2 + cFrameBox.iHeight/3 + 2 + cFrameBox.iHeight/3, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - 2*cFrameBox.iHeight - ICON_OFFSET, tmp, COL_MENUFOOT_INFO); // UTF-8		
 		
 	// cover
 	if (!File.MetaData.cover.empty())
@@ -740,9 +739,10 @@ void CAudioPlayerGui::updateTimes(const bool force)
 		bool updateTotal = force;
 		bool updatePlayed = force;
 
-		//
+		// shadow
 		m_frameBuffer->paintBoxRel(timeBox.iX, timeBox.iY, timeBox.iWidth, timeBox.iHeight, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
 		
+		// box
 	m_frameBuffer->paintBoxRel(timeBox.iX + 1, timeBox.iY + 1, timeBox.iWidth - 2, timeBox.iHeight - 2, COL_MENUFOOT_INFO_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Foot_Info_gradient); //FIXME:gradient
 
 		if (m_time_total != CAudioPlayer::getInstance()->getTimeTotal())

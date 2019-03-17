@@ -266,10 +266,14 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "search")
 	{
+		nksearch.clear();
+
 		CStringInputSMS stringInput(LOCALE_YT_SEARCH, nksearch.c_str());
 		int ret = stringInput.exec(NULL, "");
 
-		if(ret && !nksearch.empty())
+		printf("ret:%d nksearch:%s\n", ret, nksearch.c_str());
+
+		if(ret && !(nksearch.empty()))
 		{
 			loadNKTitles(cNKFeedParser::SEARCH, nksearch, 0);
 			showMenu();

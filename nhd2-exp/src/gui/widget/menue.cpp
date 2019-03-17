@@ -3715,7 +3715,6 @@ void ClistBoxWidget::paintItemInfo(int pos)
 		}
 		else if(widgetMode == MODE_LISTBOX)
 		{
-		////
 			if(FootInfo)
 			{
 				CMenuItem* item = items[pos];

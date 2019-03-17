@@ -822,7 +822,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 
 void CEpgData::hide()
 {
-	frameBuffer->paintBackgroundBox(cFrameBox.iX, cFrameBox.iY, cFrameBox.iX + cFrameBox.iWidth, cFrameBox.iY + cFrameBox.iHeight);
+	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iX + cFrameBox.iWidth, cFrameBox.iY + cFrameBox.iHeight);
 
 	frameBuffer->blit();
 	
@@ -896,20 +896,20 @@ void CEpgData::GetPrevNextEPGData(uint64_t id, time_t* startzeit)
         next_id = 0;
         unsigned int i;
 
-        for ( i = 0; i< evtlist.size(); i++ )
+        for ( i = 0; i < evtlist.size(); i++ )
         {
                 if ( ( evtlist[i].eventID == id ) && ( evtlist[i].startTime == *startzeit ) )
                 {
                         if ( i > 0 )
                         {
                                 prev_id = evtlist[i - 1].eventID;
-                                prev_zeit= evtlist[i - 1].startTime;
+                                prev_zeit = evtlist[i - 1].startTime;
                         }
                         
                         if ( i < ( evtlist.size()- 1 ) )
                         {
-                                next_id= evtlist[i + 1].eventID;
-                                next_zeit= evtlist[i + 1].startTime;
+                                next_id = evtlist[i + 1].eventID;
+                                next_zeit = evtlist[i + 1].startTime;
                         }
                         break;
                 }
@@ -952,7 +952,7 @@ int CEpgData::FollowScreenings (const t_channel_id /*channel_id*/, const std::st
 	// alredy read: evtlist = g_Sectionsd->getEventsServiceKey( channel_id&0xFFFFFFFFFFFFULL );
     	curtime = time(NULL);
 
-	for ( e= evtlist.begin(); e != evtlist.end(); ++e )
+	for ( e = evtlist.begin(); e != evtlist.end(); ++e )
 	{
 	    	if (e->startTime <= curtime) 
 			continue;

@@ -74,7 +74,7 @@ class CStringInput : public CMenuTarget
 		std::string iconfile;
 		const char * validchars;
 		char * value;
-		std::string  *valueString;
+		std::string * valueString;
 		int size;
 		int selected;
 		CChangeObserver * observ;
@@ -114,9 +114,9 @@ class CStringInput : public CMenuTarget
 
 class CStringInputSMS : public CStringInput
 {
-		bool	capsMode;
-		int 	arraySizes[10];
-		char	Chars[10][9];					// maximal 9 character in one CharList entry!
+		bool capsMode;
+		int arraySizes[10];
+		char Chars[10][9];					// maximal 9 character in one CharList entry!
 
 		int keyCounter;
 		int last_digit;
