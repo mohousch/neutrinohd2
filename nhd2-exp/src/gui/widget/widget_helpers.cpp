@@ -160,7 +160,7 @@ void CItems2DetailsLine::paint(int x, int y, int width, int height, int info_hei
 	int ypos2a = ypos2 + (info_height/2) - 2;
 	
 	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
-	fb_pixel_t col2 = COL_MENUCONTENT_PLUS_1;
+	fb_pixel_t col2 = COL_MENUFOOT_INFO_PLUS_0;
 
 	// clear
 	CFrameBuffer::getInstance()->paintBackgroundBoxRel(xpos, y, ConnectLineBox_Width, height + info_height);
