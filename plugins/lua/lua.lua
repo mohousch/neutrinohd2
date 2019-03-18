@@ -85,9 +85,10 @@ function showMenu(parent)
 	selected = 0
 
 	parent:setSelected(selected)
+	parent:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
 	parent:setMode(neutrino.MODE_MENU)
 	parent:enableShrinkMenu()
-	parent:enableWidgetChange()
+	--parent:enableWidgetChange()
 	parent:enablePaintFootInfo()
 
 	-- CMessageBox
