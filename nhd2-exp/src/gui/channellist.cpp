@@ -181,7 +181,7 @@ void CChannelList::updateEvents(void)
 
 	CChannelEventList events;
 
-	//if (displayNext) 
+	if (displayNext) 
 	{
 		if (chanlist.size()) 
 		{
@@ -197,31 +197,18 @@ void CChannelList::updateEvents(void)
 				
 				for ( CChannelEventList::iterator e = events.begin(); e != events.end(); ++e ) 
 				{
-					if(displayNext)
-					{
 					if (((long)(e->startTime) > atime) && ((e->startTime) < (long)(chanlist[count]->nextEvent.startTime)))
 					{
 						chanlist[count]->nextEvent= *e;
 					
 						break;
 					}
-					}
-					else
-					{
-						if ((chanlist[count]->channel_id)& 0xFFFFFFFFFFFFULL == e->get_channel_id()& 0xFFFFFFFFFFFFULL)
-						{
-							chanlist[count]->currentEvent= *e;
-							break;
-						}
-					}
 				}
 			}
 		}
-	}
-#if 0 
+	} 
 	else 
 	{
-//FIXME:
 		t_channel_id * p_requested_channels = NULL;
 		int size_requested_channels = 0;
 
@@ -259,7 +246,6 @@ void CChannelList::updateEvents(void)
 				free(p_requested_channels);
 		}
 	}
-#endif
 }
 
 struct CmpChannelBySat: public binary_function <const CZapitChannel * const, const CZapitChannel * const, bool>
@@ -1568,6 +1554,9 @@ void CChannelList::paint()
 				if(p_event->duration > 0)
 					runningPercent = (jetzt - p_event->startTime) * 30 / p_event->duration;
 			}
+
+			////
+			printf("TEST:%s\n\n", p_event->description.c_str());
 
 			// description
 			if (p_event != NULL && !(p_event->description.empty())) 

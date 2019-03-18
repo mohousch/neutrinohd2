@@ -5963,7 +5963,9 @@ void sectionsd_getChannelEvents(CChannelEventList &eList, const bool tv_mode = t
 	for (MySIeventsOrderServiceUniqueKeyFirstStartTimeEventUniqueKey::iterator e = mySIeventsOrderServiceUniqueKeyFirstStartTimeEventUniqueKey.begin(); e != mySIeventsOrderServiceUniqueKeyFirstStartTimeEventUniqueKey.end(); ++e)
 	{
 		uniqueNow = (*e)->get_channel_id();
-		if (!channel_in_requested_list(chidlist, uniqueNow, clen)) continue;
+		if (!channel_in_requested_list(chidlist, uniqueNow, clen)) 
+			continue;
+
 		if ( uniqueNow != uniqueOld )
 		{
 			found_already = true;
