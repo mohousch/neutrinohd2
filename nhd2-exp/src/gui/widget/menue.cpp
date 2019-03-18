@@ -4325,6 +4325,16 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					{
 						textBox->scrollPageUp(1);
 					}
+					else if(widgetType == WIDGET_TYPE_STANDARD)
+					{
+						if(widgetMode == MODE_SETUP)
+						{
+							if(!(items[selected]->can_arrow)) 
+							{
+								msg = RC_timeout;
+							}
+						}
+					}
 					
 					break;
 					
@@ -4362,6 +4372,47 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					else if (widgetType == WIDGET_TYPE_EXTENDED)
 					{
 						textBox->scrollPageDown(1);
+					}
+					else if(widgetType == WIDGET_TYPE_STANDARD)
+					{
+						if(widgetMode == MODE_SETUP)
+						{
+							if(hasItem()) 
+							{
+								//exec this item...
+								CMenuItem * item = items[selected];
+								item->msg = msg;
+							
+								int rv = item->exec(this);
+							
+								switch ( rv ) 
+								{
+									case menu_return::RETURN_EXIT_ALL:
+										retval = menu_return::RETURN_EXIT_ALL;
+									
+									case menu_return::RETURN_EXIT:
+										msg = RC_timeout;
+										break;
+									
+									case menu_return::RETURN_REPAINT:
+										hide();
+										initFrames();
+										paintHead();
+										paintFoot();
+										paint();
+										break;
+
+									case menu_return::RETURN_NONE:
+										g_RCInput->killTimer(sec_timer_id);
+										sec_timer_id = 0;
+										retval = menu_return::RETURN_NONE;
+										msg = RC_timeout;
+										break;	
+								}
+							} 
+							else
+								msg = RC_timeout;
+						}
 					}
 
 					break;
