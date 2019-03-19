@@ -135,13 +135,15 @@ void CYTBrowser::showMenu()
 	{
 		itemTitle = m_vMovieInfo[i].epgTitle + " (" + to_string(m_vMovieInfo[i].length) + " Min)";
 
-		item = new ClistBoxItem(itemTitle.c_str(), true, m_vMovieInfo[i].epgInfo2.c_str(), this, "play", RC_nokey, NULL,  file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(itemTitle.c_str(), true, /*m_vMovieInfo[i].epgInfo2.c_str()*/NULL, this, "play", RC_nokey, NULL,  file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
+		//item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
+		item->setHelpText(m_vMovieInfo[i].epgInfo2.c_str());
  
 		moviesMenu->addItem(item);
 	}
 
+	moviesMenu->setMode(MODE_LISTBOX);
 	moviesMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	moviesMenu->setItemsPerPage(3, 2);
 	//moviesMenu->setItemBoxColor(COL_YELLOW);
@@ -328,7 +330,7 @@ int CYTBrowser::showCategoriesMenu(void)
 
 	char rstr[20];
 	sprintf(rstr, "%s", m_settings.ytregion.c_str());
-	CMenuOptionStringChooser * region = new CMenuOptionStringChooser(LOCALE_YT_REGION, rstr, true, NULL, RC_blue, NEUTRINO_ICON_BUTTON_BLUE, true, true);
+	CMenuOptionStringChooser * region = new CMenuOptionStringChooser(LOCALE_YT_REGION, rstr, true, NULL, RC_blue, NEUTRINO_ICON_BUTTON_BLUE, true);
 	region->addOption("default");
 	region->addOption("DE");
 	region->addOption("PL");

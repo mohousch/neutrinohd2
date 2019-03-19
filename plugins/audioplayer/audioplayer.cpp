@@ -244,7 +244,7 @@ void CMP3Player::showMenu()
 		}
 
 		//
-		item = new ClistBoxItem(title.c_str(), true, "", this, "aplay");
+		item = new ClistBoxItem(title.c_str(), true, NULL, this, "aplay");
 			
 		item->setOptionInfo(duration);
 		item->setNumber(i + 1);

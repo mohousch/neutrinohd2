@@ -2670,10 +2670,11 @@ void CTestMenu::testClistBoxWidget()
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgChannel.c_str(), this, "mplay", RC_nokey, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "mplay", RC_nokey, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
 		item->setHelpText(m_vMovieInfo[i].epgInfo2.c_str());
 
+		// standard
 		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
 		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 

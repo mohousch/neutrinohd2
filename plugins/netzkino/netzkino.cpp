@@ -127,14 +127,15 @@ void CNKMovies::showMenu()
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, m_vMovieInfo[i].epgInfo2.c_str(), this, "play", RC_nokey, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "play", RC_nokey, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
+		item->setHelpText(m_vMovieInfo[i].epgInfo2.c_str());
 
 		//
 		moviesMenu->addItem(item);
 	}
 
+	moviesMenu->setMode(MODE_LISTBOX);
 	moviesMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	moviesMenu->setItemsPerPage(6, 2);
 	//moviesMenu->setItemBoxColor(COL_YELLOW);

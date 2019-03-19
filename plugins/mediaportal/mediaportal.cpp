@@ -162,43 +162,43 @@ void CMediaPortal::showMenu(void)
 	mediaPortal->setWidgetType(WIDGET_TYPE_FRAME);
 
 	// youtube
-	item = new ClistBoxItem("You Tube", true, "", this, "youtube", RC_nokey, NULL, PLUGINDIR "/youtube/youtube.png");
+	item = new ClistBoxItem("You Tube", true, NULL, this, "youtube", RC_nokey, NULL, PLUGINDIR "/youtube/youtube.png");
 
 	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("youtube")).c_str());
 
 	mediaPortal->addItem(item);
 
 	// netzkino
-	item = new ClistBoxItem("NetzKino", true, "", this, "netzkino", RC_nokey, NULL, PLUGINDIR "/netzkino/netzkino.png");
+	item = new ClistBoxItem("NetzKino", true, NULL, this, "netzkino", RC_nokey, NULL, PLUGINDIR "/netzkino/netzkino.png");
 	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("netzkino")).c_str());
 
 	mediaPortal->addItem(item);
 
 	// icecast
-	item = new ClistBoxItem("Ice Cast", true, "", this, "icecast", RC_nokey, NULL, PLUGINDIR "/icecast/icecast.png");
+	item = new ClistBoxItem("Ice Cast", true, NULL, this, "icecast", RC_nokey, NULL, PLUGINDIR "/icecast/icecast.png");
 	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("icecast")).c_str());
 
 	mediaPortal->addItem(item);
 
 	// internetradio
-	item = new ClistBoxItem("Internet Radio", true, "", this, "internetradio", RC_nokey, NULL,  PLUGINDIR "/internetradio/internetradio.png");
+	item = new ClistBoxItem("Internet Radio", true, NULL, this, "internetradio", RC_nokey, NULL,  PLUGINDIR "/internetradio/internetradio.png");
 	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("internetradio")).c_str());
 	
 	mediaPortal->addItem(item);
 
 	// ard
-	//item = new ClistBoxItem("ARD Mediathek", true, "", this, "ard", RC_nokey, NULL, PLUGINDIR "/mediaportal/ard.png");
+	//item = new ClistBoxItem("ARD Mediathek", true, NULL, this, "ard", RC_nokey, NULL, PLUGINDIR "/mediaportal/ard.png");
 
 	//mediaPortal->addItem(item);
 
 	// nFilm
-	item = new ClistBoxItem("Movie Trailer", true, "", this, "nfilm", RC_nokey, NULL, PLUGINDIR "/nfilm/nfilm.png");
+	item = new ClistBoxItem("Movie Trailer", true, NULL, this, "nfilm", RC_nokey, NULL, PLUGINDIR "/nfilm/nfilm.png");
 	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("nfilm")).c_str());
 
 	mediaPortal->addItem(item);
 
 	// nTVShows
-	item = new ClistBoxItem("Serien Trailer", true, "", this, "ntvshows", RC_nokey, NULL, PLUGINDIR "/ntvshows/ntvshows.png");
+	item = new ClistBoxItem("Serien Trailer", true, NULL, this, "ntvshows", RC_nokey, NULL, PLUGINDIR "/ntvshows/ntvshows.png");
 	item->setHelpText(g_PluginList->getDescription(g_PluginList->find_plugin("ntvshows")).c_str());
 
 	mediaPortal->addItem(item);

@@ -156,8 +156,9 @@ void CARDaz::showMenu(void)
 
 	//items
 	for (int i = 0; i < 6; i++)
-		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
+		catMenu->addItem(new ClistBoxItem("coming soon!", true, NULL, this, NULL, RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
+	catMenu->setMode(MODE_LISTBOX);
 	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
 	//catMenu->setItemBoxColor(COL_YELLOW);
@@ -195,8 +196,9 @@ void CARDTVlive::showMenu(void)
 
 	//items
 	for (int i = 0; i < 6; i++)
-		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
+		catMenu->addItem(new ClistBoxItem("coming soon!", true, NULL, this, NULL, RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
+	catMenu->setMode(MODE_LISTBOX);
 	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
 	//catMenu->setItemBoxColor(COL_YELLOW);
@@ -234,8 +236,9 @@ void CARDRadiolive::showMenu(void)
 
 	//items
 	for (int i = 0; i < 6; i++)
-		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
+		catMenu->addItem(new ClistBoxItem("coming soon!", true, NULL, this, NULL, RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 	
+	catMenu->setMode(MODE_LISTBOX);
 	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
 	//catMenu->setItemBoxColor(COL_YELLOW);
@@ -274,8 +277,9 @@ void CARDstreams::showMenu(void)
 	
 	//items
 	for (int i = 0; i < 6; i++)
-		catMenu->addItem(new ClistBoxItem("coming soon!", true, "", this, NULL, RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
+		catMenu->addItem(new ClistBoxItem("coming soon!", true, NULL, this, NULL, RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg"));
 
+	catMenu->setMode(MODE_LISTBOX);
 	catMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	catMenu->setItemsPerPage(3, 2);
 	//catMenu->setItemBoxColor(COL_YELLOW);

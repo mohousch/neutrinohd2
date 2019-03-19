@@ -209,6 +209,8 @@ class CMenuItem
 		//
 		virtual void setOption(const char* text){option = text;};
 		virtual void setOptionInfo(const char* text){optionInfo = text;};
+
+		//
 		virtual void setInfo1(const char* const text){info1 = text;};
 		virtual void setInfo2(const char* const text){info2 = text;};
 		virtual void setOptionInfo1(const char* const text){option_info1 = text;};
@@ -260,11 +262,10 @@ class CMenuOptionChooser : public CMenuItem
 		std::string optionNameString;
 		
 		bool pulldown;
-		bool enableMenuPos;
 
 	public:
-		CMenuOptionChooser(const neutrino_locale_t OptionName, int * const OptionValue, const struct keyval * const Options, const unsigned Number_Of_Options, const bool Active = false, CChangeObserver * const Observ = NULL, const neutrino_msg_t DirectKey = RC_nokey, const std::string & IconName= "", bool Pulldown = false, bool EnableMenuPos = false);
-		CMenuOptionChooser(const char* const OptionName, int * const OptionValue, const struct keyval * const Options, const unsigned Number_Of_Options, const bool Active = false, CChangeObserver * const Observ = NULL, const neutrino_msg_t DirectKey = RC_nokey, const std::string & IconName= "", bool Pulldown = false, bool EnableMenuPos = false); 
+		CMenuOptionChooser(const neutrino_locale_t OptionName, int * const OptionValue, const struct keyval * const Options, const unsigned Number_Of_Options, const bool Active = false, CChangeObserver * const Observ = NULL, const neutrino_msg_t DirectKey = RC_nokey, const std::string & IconName= "", bool Pulldown = false);
+		CMenuOptionChooser(const char* const OptionName, int * const OptionValue, const struct keyval * const Options, const unsigned Number_Of_Options, const bool Active = false, CChangeObserver * const Observ = NULL, const neutrino_msg_t DirectKey = RC_nokey, const std::string & IconName= "", bool Pulldown = false); 
 
 		void setOptionValue(const int newvalue);
 		int getOptionValue(void) const;
@@ -327,11 +328,10 @@ class CMenuOptionStringChooser : public CMenuItem
 	std::vector<std::string> options;
 	CChangeObserver * observ;
 	bool pulldown;
-	bool enableMenuPos;
 
 	public:
-		CMenuOptionStringChooser(const neutrino_locale_t Name, char* OptionValue, bool Active = false, CChangeObserver* Observ = NULL, const neutrino_msg_t DirectKey = RC_nokey, const std::string & IconName= "", bool Pulldown = false, bool EnableMenuPos = false);
-		CMenuOptionStringChooser(const char * Name, char * OptionValue, bool Active = false, CChangeObserver* Observ = NULL, const neutrino_msg_t DirectKey = RC_nokey, const std::string & IconName= "", bool Pulldown = false, bool EnableMenuPos = false);
+		CMenuOptionStringChooser(const neutrino_locale_t Name, char* OptionValue, bool Active = false, CChangeObserver* Observ = NULL, const neutrino_msg_t DirectKey = RC_nokey, const std::string & IconName= "", bool Pulldown = false);
+		CMenuOptionStringChooser(const char * Name, char * OptionValue, bool Active = false, CChangeObserver* Observ = NULL, const neutrino_msg_t DirectKey = RC_nokey, const std::string & IconName= "", bool Pulldown = false);
 		~CMenuOptionStringChooser();
 
 		void addOption(const char * value);
@@ -502,122 +502,6 @@ class ClistBoxItem : public CMenuItem
 		bool isSelectable(void) const {return active;}
 };
 
-// CMenuWidget
-#if 0
-class CMenuWidget : public CMenuTarget
-{
-	protected:
-		CFrameBuffer *frameBuffer;
-
-		//
-		std::string nameString;
-		neutrino_locale_t name;
-		std::vector<CMenuItem*>	items;
-		std::vector<unsigned int> page_start;
-		std::string iconfile;
-
-		int width;
-		int height;
-		int wanted_height;
-		int x;
-		int y;
-		int offx, offy;
-		int iconOffset;
-		unsigned int item_start_y;
-		unsigned int current_page;
-		unsigned int total_pages;
-		
-		int selected;
-		bool exit_pressed;
-		
-		fb_pixel_t * background;
-		int full_width;
-		int full_height;
-		bool savescreen;
-		
-		void Init(const std::string & Icon, const int mwidth, const int mheight);
-		virtual void paintItems();
-		
-		void saveScreen();
-		void restoreScreen();
-		
-		int hheight;
-		int fheight;
-		int item_height;
-		int sb_width;
-		int items_height;
-		int items_width;
-		int listmaxshow;
-
-		bool MenuPos;
-
-		//
-		int widgetType;
-		bool widgetChange;
-
-		// frame
-		fb_pixel_t backgroundColor;
-		fb_pixel_t itemBoxColor;
-		int itemsPerX;
-		int itemsPerY;
-		int maxItemsPerPage;
-		int item_width;
-
-		// footInfo
-		bool FootInfo;
-		CBox cFrameFootInfo;
-		int interFrame;
-
-		//
-		CHeaders headers;
-		CItems2DetailsLine itemsLine;
-		CScrollBar scrollBar;
-
-		int widgetMode;
-		
-	public:
-		CMenuWidget();
-		CMenuWidget(const char * const Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
-		CMenuWidget(const neutrino_locale_t Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
-		
-		~CMenuWidget();
-
-		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
-		bool hasItem();
-		virtual void paint();
-		virtual void hide();
-		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
-		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
-		int getSelected() {return exit_pressed ? -1 : selected;};
-		void move(int xoff, int yoff);
-		
-		int getHeight(void) const {return height;}
-		
-		void enableSaveScreen();
-		void enableMenuPosition(){MenuPos = true;};
-
-		virtual void paintItemInfo(int pos);
-		virtual void hideItemInfo();
-
-		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = RC_nokey, bool enabled = true);
-
-		//
-		void enableWidgetChange(){widgetChange = true;};
-		void setWidgetType(int type){widgetType = type;};
-		int getWidgetType(){return widgetType;};
-
-		// Frame
-		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
-		void setItemBoxColor(fb_pixel_t col) {itemBoxColor = col;};
-		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
-
-		//
-		void enablePaintFootInfo(){FootInfo = true;};
-
-		void setMode(int mode){widgetMode = mode;};
-};
-#endif
-
 /// CMenulistBox
 class ClistBoxWidget : public CMenuTarget
 {
@@ -749,7 +633,6 @@ class ClistBoxWidget : public CMenuTarget
 		int getSelected(){return exit_pressed ? -1 : selected;};
 
 		void move(int xoff, int yoff);
-		//int getSelectedLine(void){return exit_pressed ? -1 : selected;};
 		int getHeight(void) const {return height;}
 		int getWidth(void) const {return width;};
 		int getX(void) const {return x;};

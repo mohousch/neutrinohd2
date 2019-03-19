@@ -694,7 +694,7 @@ void CIceCast::showMenu()
 		snprintf(duration, 8, "%ldk", playlist[i].MetaData.total_time);
 
 		//
-		item = new ClistBoxItem(tmp.c_str(), true, "", this, "iplay");
+		item = new ClistBoxItem(tmp.c_str(), true, NULL, this, "iplay");
 			
 		item->setOptionInfo(duration);
 		item->setNumber(i + 1);
