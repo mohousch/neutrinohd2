@@ -1,6 +1,7 @@
 -- 
 --
 
+-- CMessageBox
 function messageBox()
 	title = "luaTest"
 	msg = "TEST"
@@ -8,6 +9,7 @@ function messageBox()
 	mBox:exec(-1)
 end
 
+-- CMoviePlayerGui
 function moviePlayer()
 	settings = neutrino.SNeutrinoSettings()
 	PATH = settings.network_nfs_moviedir
@@ -79,17 +81,68 @@ function infoBox()
 	info:exec()
 end
 
-function showMenu(parent)
+-- CAudioPlayerGui
+function audioPlayer()
+	settings = neutrino.SNeutrinoSettings()
+	PATH = settings.network_nfs_audioplayerdir
+
+	fileBrowser = neutrino.CFileBrowser()
+	fileFilter = neutrino.CFileFilter()
+	fileFilter:addFilter("mp3")
+
+	fileBrowser.Multi_Select = false
+	fileBrowser.Dirs_Selectable = false
+	fileBrowser.Filter = fileFilter
+
+	fileBrowser:exec(PATH)
+	
+	--cFile = neutrino.CFile()	
+	cFile = fileBrowser:getSelectedFile()
+
+	player = neutrino.CAudioPlayerGui()
+	
+	player:addToPlaylist(cFile)
+	player:exec(None, "")
+end
+
+-- CPictureViewerGui
+function picPlayer()
+	settings = neutrino.SNeutrinoSettings()
+	PATH = settings.network_nfs_picturedir
+
+	fileBrowser = neutrino.CFileBrowser()
+	fileFilter = neutrino.CFileFilter()
+	fileFilter:addFilter("jpeg")
+	fileFilter:addFilter("jpg")
+
+	fileBrowser.Multi_Select = false
+	fileBrowser.Dirs_Selectable = false
+	fileBrowser.Filter = fileFilter
+
+	fileBrowser:exec(PATH)
+	
+	--cFile = neutrino.CFile()	
+	cFile = fileBrowser:getSelectedFile()
+
+	player = neutrino.CPictureViewerGui()
+	
+	player:addToPlaylist(cFile)
+	player:exec(None, "")
+end
+
+function showMenu()
 	print("showMenu")
 
 	selected = 0
 
-	parent:setSelected(selected)
-	parent:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
-	parent:setMode(neutrino.MODE_MENU)
-	parent:enableShrinkMenu()
-	--parent:enableWidgetChange()
-	parent:enablePaintFootInfo()
+	listWidget = neutrino.ClistBoxWidget("pythonTest:ClistBoxWidget", neutrino.NEUTRINO_ICON_MOVIE)
+
+	listWidget:setSelected(selected)
+	listWidget:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
+	listWidget:setMode(neutrino.MODE_MENU)
+	listWidget:enableShrinkMenu()
+	--listWidget:enableWidgetChange()
+	listWidget:enablePaintFootInfo()
 
 	-- CMessageBox
 	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", null, "red action")
@@ -97,55 +150,61 @@ function showMenu(parent)
 	item1:setHelpText("testing CMessageBox")
 
 	-- CFileBrowser|CMoviePlayerGui
-	item2 = neutrino.ClistBoxItem("CFileBrowser|CMoviePlayerGui")
+	item2 = neutrino.CMenuForwarder("CFileBrowser|CMoviePlayerGui")
 	item2:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item2:setHelpText("testing CFileBrowser|CMoviePlayerGui")
 
 	-- CHelpBox
-	item3 = neutrino.ClistBoxItem("CHelpBox")
+	item3 = neutrino.CMenuForwarder("CHelpBox")
 	item3:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item3:setHelpText("testing CHelpBox")
 
 	-- CHeaders
-	item4 = neutrino.ClistBoxItem("CHeaders")
+	item4 = neutrino.CMenuForwarder("CHeaders")
 	item4:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item4:setHelpText("testing CHeaders")
 
 	-- CHintBox
-	item5 = neutrino.ClistBoxItem("CHintBox")
+	item5 = neutrino.CMenuForwarder("CHintBox")
 	item5:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item5:setHelpText("testing CHintBox")
 
 	-- CInfoBox
-	item6 = neutrino.ClistBoxItem("CInfoBox")
+	item6 = neutrino.CMenuForwarder("CInfoBox")
 	item6:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item6:setHelpText("testing CInfoBox")
 
-	parent:addItem(item1)
-	parent:addItem(item2)
-	parent:addItem(item3)
-	parent:addItem(item4)
-	parent:addItem(item5)
-	parent:addItem(item6)
+	-- CAudioPlayerGui
+	item7 = neutrino.CMenuForwarder("CAudioPlayerGui")
+	item7:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item7:setHelpText("testing CAudioPlayerGui")
 
-	parent:exec(null, "")
-end
+	-- CPictureViewerGui
+	item8 = neutrino.CMenuForwarder("CPictureViewerGui")
+	item8:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item8:setHelpText("testing CPictureViewerGui")
 
-function exec(parent, actionKey)
-	print("_exec")
+	listWidget:addItem(item1)
+	listWidget:addItem(item2)
+	listWidget:addItem(item3)
+	listWidget:addItem(item4)
+	listWidget:addItem(item5)
+	listWidget:addItem(item6)
+	listWidget:addItem(item7)
+	listWidget:addItem(item8)
 
-	selected = parent:getSelected()
+	listWidget:exec(null, "")
+
+	selected = listWidget:getSelected()
 
 	print(selected)
 
 	if selected == 0 then
 		messageBox()
 	end
-
 	if selected == 1 then
 		moviePlayer()
 	end
-
 	if selected == 2 then
 		helpBox()
 	end
@@ -158,25 +217,22 @@ function exec(parent, actionKey)
 	if selected == 5 then
 		infoBox()
 	end
-end
+	if selected == 6 then
+		audioPlayer()
+	end
+	if selected == 7 then
+		picPlayer()
+	end
 
-function hide(parent)
-	parent:hide()
+	if selected ~= -1 then
+		listWidget:clearItems()
+		showMenu()
+	end
 end
 
 -- main
 function main()
-	-- variables
-	listWidget = neutrino.ClistBoxWidget("pythonTest:ClistBoxWidget", neutrino.NEUTRINO_ICON_MOVIE)
-
-	-- paint
-	showMenu(listWidget)
-
-	-- exec
-	exec(listWidget, actionKey)
-
-	-- hide
-	hide(listWidget)
+	showMenu()
 end
 
 main()

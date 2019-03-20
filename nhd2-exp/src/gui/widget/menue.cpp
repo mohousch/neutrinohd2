@@ -2332,7 +2332,8 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	}
 	else if(widgetType == WIDGET_TYPE_CLASSIC)
 	{
-		if(fbutton_count == 0)
+		//if(fbutton_count == 0)
+		if(widgetMode == MODE_MENU)
 		{
 			CMenuItem* item = items[pos];
 
