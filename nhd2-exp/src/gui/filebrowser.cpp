@@ -219,10 +219,15 @@ CFileBrowser::~CFileBrowser()
 
 CFile * CFileBrowser::getSelectedFile()
 {
-	if ((!(filelist.empty())) && (!(filelist[selected].Name.empty())))
-		return &filelist[selected];
-	else
+	if(exit_pressed)
 		return NULL;
+	else
+	{
+		if ((!(filelist.empty())) && (!(filelist[selected].Name.empty())))
+			return &filelist[selected];
+		else
+			return NULL;
+	}
 }
 
 void CFileBrowser::ChangeDir(const std::string& filename, int selection)
@@ -497,7 +502,8 @@ bool CFileBrowser::exec(const char * const dirname)
 		}
 		else if ( msg == RC_home )
 		{
-			exit_pressed = false;
+			selected = -1;
+			exit_pressed = true;
 			loop = false;
 		}
 		else if ( msg == RC_spkr)

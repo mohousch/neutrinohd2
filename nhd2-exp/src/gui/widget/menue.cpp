@@ -1633,7 +1633,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 			}
 #endif
 
-			////
+			//
 			if (nLinesItem)
 			{
 				if(l_text_width >= dx - BORDER_LEFT - BORDER_RIGHT)
@@ -1677,7 +1677,6 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 					/*optionFont*/g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + BORDER_LEFT + numwidth + pBarWidth + ICON_OFFSET + l_text_width + ICON_OFFSET, y + (height - /*optionFont*/g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + /*optionFont*/g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), dx - BORDER_LEFT - BORDER_RIGHT - numwidth - ICON_OFFSET - pBarWidth - ICON_OFFSET - l_text_width - icon_w - icon1_w - ICON_OFFSET - icon2_w - ICON_OFFSET - 2*iw, Option.c_str(), COL_COLORED_EVENTS_CHANNELLIST, 0, true);
 				}
 			}
-			////
 		}
 
 		// vfd
@@ -2665,9 +2664,6 @@ void ClistBoxWidget::integratePlugins(CPlugins::i_type_t integration, const unsi
 int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 {
 	dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec:\n");
-
-	//neutrino_msg_t      msg;
-	//neutrino_msg_data_t data;
 
 	int pos = 0;
 	exit_pressed = false;

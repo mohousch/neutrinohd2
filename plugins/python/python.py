@@ -20,13 +20,17 @@ class moviePlayer(CFileBrowser):
 		self.Filter = fileFilter
 
 		self._exec(self.PATH)
-		
-		cFile = self.getSelectedFile()
+
+		self.PATH = self.getCurrentDir()
 
 		player = CMoviePlayerGui()
 	
-		player.addToPlaylist(cFile)
-		player._exec(None, "")
+		if self.getSelectedFile() is not None:
+			player.addToPlaylist(self.getSelectedFile())
+			player._exec(None, "")
+
+		if self.getExitPressed() is not True:
+			self.__init__()
 
 class headers(CHeaders):
 	def __init__(self):
@@ -137,8 +141,7 @@ class textBox(CTextBox):
 		CFrameBuffer.getInstance().blit()
 
 class audioPlayer(CFileBrowser):
-	settings = SNeutrinoSettings()
-	PATH = settings.network_nfs_audioplayerdir
+	PATH = "/"
 	def __init__(self):
 		CFileBrowser.__init__(self)
 		fileFilter = CFileFilter()
@@ -151,22 +154,18 @@ class audioPlayer(CFileBrowser):
 		self._exec(self.PATH)
 
 		self.PATH = self.getCurrentDir()
-		
-		cFile = self.getSelectedFile()
 
 		player = CAudioPlayerGui()
 
-		#if cFile is not None:
-	
-		player.addToPlaylist(cFile)
-		player._exec(None, "")
+		if self.getSelectedFile() is not None:
+			player.addToPlaylist(self.getSelectedFile())
+			player._exec(None, "")
 
-		if self.getExitPressed() is False:
+		if self.getExitPressed() is not True:
 			self.__init__()
 
 class pictureViewer(CFileBrowser):
-	settings = SNeutrinoSettings()
-	PATH = settings.network_nfs_picturedir
+	PATH = "/"
 	def __init__(self):
 		CFileBrowser.__init__(self)
 		fileFilter = CFileFilter()
@@ -178,13 +177,17 @@ class pictureViewer(CFileBrowser):
 		self.Filter = fileFilter
 
 		self._exec(self.PATH)
-		
-		cFile = self.getSelectedFile()
+
+		self.PATH = self.getCurrentDir()
 
 		player = CPictureViewerGui()
-	
-		player.addToPlaylist(cFile)
-		player._exec(None, "")
+
+		if self.getSelectedFile() is not None:
+			player.addToPlaylist(self.getSelectedFile())
+			player._exec(None, "")
+
+		if self.getExitPressed() is not True:
+			self.__init__()
 
 class testMenu(CMenuTarget):
 	selected = 0

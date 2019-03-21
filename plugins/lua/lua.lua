@@ -13,8 +13,7 @@ end
 
 -- CMoviePlayerGui
 function moviePlayer()
-	settings = neutrino.SNeutrinoSettings()
-	PATH = settings.network_nfs_moviedir
+	PATH = "/"
 
 	fileBrowser = neutrino.CFileBrowser()
 	fileFilter = neutrino.CFileFilter()
@@ -25,13 +24,19 @@ function moviePlayer()
 	fileBrowser.Filter = fileFilter
 
 	fileBrowser:exec(PATH)
-		
-	cFile = fileBrowser:getSelectedFile()
+
+	PATH = fileBrowser:getCurrentDir()
 
 	player = neutrino.CMoviePlayerGui()
 	
-	player:addToPlaylist(cFile)
-	player:exec(None, "")
+	if fileBrowser:getSelectedFile() ~= null then
+		player:addToPlaylist(fileBrowser:getSelectedFile())
+		player:exec(None, "")
+	end
+
+	if fileBrowser:getExitPressed() ~= true then
+		moviePlayer()
+	end
 end
 
 -- CHelpBox
@@ -85,8 +90,7 @@ end
 
 -- CAudioPlayerGui
 function audioPlayer()
-	settings = neutrino.SNeutrinoSettings()
-	PATH = settings.network_nfs_audioplayerdir
+	PATH = "/"
 
 	fileBrowser = neutrino.CFileBrowser()
 	fileFilter = neutrino.CFileFilter()
@@ -97,20 +101,24 @@ function audioPlayer()
 	fileBrowser.Filter = fileFilter
 
 	fileBrowser:exec(PATH)
-	
-	--cFile = neutrino.CFile()	
-	cFile = fileBrowser:getSelectedFile()
+
+	PATH = fileBrowser:getCurrentDir()
 
 	player = neutrino.CAudioPlayerGui()
 	
-	player:addToPlaylist(cFile)
-	player:exec(None, "")
+	if fileBrowser:getSelectedFile() ~= null then
+		player:addToPlaylist(fileBrowser:getSelectedFile())
+		player:exec(None, "")
+	end
+
+	if fileBrowser:getExitPressed() ~= true then
+		moviePlayer()
+	end
 end
 
 -- CPictureViewerGui
 function picPlayer()
-	settings = neutrino.SNeutrinoSettings()
-	PATH = settings.network_nfs_picturedir
+	PATH = "/"
 
 	fileBrowser = neutrino.CFileBrowser()
 	fileFilter = neutrino.CFileFilter()
@@ -122,14 +130,19 @@ function picPlayer()
 	fileBrowser.Filter = fileFilter
 
 	fileBrowser:exec(PATH)
-	
-	--cFile = neutrino.CFile()	
-	cFile = fileBrowser:getSelectedFile()
+
+	PATH = fileBrowser:getCurrentDir()
 
 	player = neutrino.CPictureViewerGui()
 	
-	player:addToPlaylist(cFile)
-	player:exec(None, "")
+	if fileBrowser:getSelectedFile() ~= null then
+		player:addToPlaylist(fileBrowser:getSelectedFile())
+		player:exec(None, "")
+	end
+
+	if fileBrowser:getExitPressed() ~= true then
+		moviePlayer()
+	end
 end
 
 listWidget = neutrino.ClistBoxWidget("pythonTest:ClistBoxWidget", neutrino.NEUTRINO_ICON_MOVIE)
