@@ -1,6 +1,8 @@
 -- 
 --
 
+local selected = -1
+
 -- CMessageBox
 function messageBox()
 	title = "luaTest"
@@ -130,14 +132,12 @@ function picPlayer()
 	player:exec(None, "")
 end
 
+listWidget = neutrino.ClistBoxWidget("pythonTest:ClistBoxWidget", neutrino.NEUTRINO_ICON_MOVIE)
+
 function showMenu()
 	print("showMenu")
 
-	selected = 0
-
-	listWidget = neutrino.ClistBoxWidget("pythonTest:ClistBoxWidget", neutrino.NEUTRINO_ICON_MOVIE)
-
-	listWidget:setSelected(selected)
+	--listWidget:setSelected(selected)
 	listWidget:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
 	listWidget:setMode(neutrino.MODE_MENU)
 	listWidget:enableShrinkMenu()
@@ -193,11 +193,16 @@ function showMenu()
 	listWidget:addItem(item7)
 	listWidget:addItem(item8)
 
+	listWidget:addKey(neutrino.RC_info)
+
 	listWidget:exec(null, "")
 
 	selected = listWidget:getSelected()
+	key = listWidget:getKey()
 
-	print(selected)
+	if key == neutrino.RC_info then
+		messageBox()
+	end
 
 	if selected == 0 then
 		messageBox()
@@ -224,7 +229,7 @@ function showMenu()
 		picPlayer()
 	end
 
-	if selected ~= -1 then
+	if listWidget:getExitPressed() == false then
 		listWidget:clearItems()
 		showMenu()
 	end

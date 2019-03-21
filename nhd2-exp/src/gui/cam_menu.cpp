@@ -122,7 +122,7 @@ void CCAMMenuHandler::doMainMenu()
 
 	ClistBoxWidget * tempMenu;
 	
-	for (unsigned int i = 0; i < ci->ci_num; i++)
+	for (int i = 0; i < ci->ci_num; i++)
 	{
 		if(ci->CamPresent(i)) 
 		{
@@ -476,8 +476,6 @@ int CCAMMenuHandler::doMenu(int slot)
 				hintBox->paint();
 
 			g_RCInput->getMsgAbsoluteTimeout (&msg, &data, &timeoutEnd);
-			
-			dprintf(DEBUG_NORMAL, "CCAMMenuHandler::doMenu: msg %x data %x\n", msg, data);
 			
 			if (msg == RC_timeout) 
 			{

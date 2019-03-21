@@ -527,6 +527,10 @@ class ClistBoxWidget : public CMenuTarget
 		unsigned int item_start_y;
 		unsigned int current_page;
 		unsigned int total_pages;
+
+		//
+		neutrino_msg_t      msg;
+		neutrino_msg_data_t data;
 		
 		int selected;
 		bool exit_pressed;
@@ -627,9 +631,9 @@ class ClistBoxWidget : public CMenuTarget
 		virtual void hide();
 
 		//
-		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
+		virtual int exec(CMenuTarget * parent, const std::string & actionKey);
 
-		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
+		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; if (selected < 0) selected = 0;};
 		int getSelected(){return exit_pressed ? -1 : selected;};
 
 		void move(int xoff, int yoff);
@@ -643,7 +647,8 @@ class ClistBoxWidget : public CMenuTarget
 		void enableSaveScreen();
 
 		//
-		void addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string &action);
+		void addKey(neutrino_msg_t key, CMenuTarget *menue = NULL, const std::string &action = "");
+		neutrino_msg_t getKey(){return msg;};
 
 		//
 		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count, const int _fbutton_width = 0);

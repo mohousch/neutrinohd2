@@ -2332,7 +2332,6 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	}
 	else if(widgetType == WIDGET_TYPE_CLASSIC)
 	{
-		//if(fbutton_count == 0)
 		if(widgetMode == MODE_MENU)
 		{
 			CMenuItem* item = items[pos];
@@ -2667,8 +2666,8 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 {
 	dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec:\n");
 
-	neutrino_msg_t      msg;
-	neutrino_msg_data_t data;
+	//neutrino_msg_t      msg;
+	//neutrino_msg_data_t data;
 
 	int pos = 0;
 	exit_pressed = false;
@@ -2702,30 +2701,44 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 		if ( msg <= RC_MaxRC ) 
 		{
 			timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
+
+			// keymap
 			std::map<neutrino_msg_t, keyAction>::iterator it = keyActionMap.find(msg);
 			
 			if (it != keyActionMap.end()) 
 			{
-				int rv = it->second.menue->exec(this, it->second.action);
-				switch ( rv ) 
+				if (it->second.menue != NULL)
 				{
-					case menu_return::RETURN_EXIT_ALL:
-						retval = menu_return::RETURN_EXIT_ALL;
-					case menu_return::RETURN_EXIT:
-						msg = RC_timeout;
-						break;
-					case menu_return::RETURN_REPAINT:
-						initFrames();
-						paintHead();
-						paintFoot();
-						paint();
-						break;
+					int rv = it->second.menue->exec(this, it->second.action);
+
+					switch ( rv ) 
+					{
+						case menu_return::RETURN_EXIT_ALL:
+							retval = menu_return::RETURN_EXIT_ALL;
+						case menu_return::RETURN_EXIT:
+							msg = RC_timeout;
+							break;
+						case menu_return::RETURN_REPAINT:
+							initFrames();
+							paintHead();
+							paintFoot();
+							paint();
+							break;
+					}
+				}
+				else
+				{
+					selected = -1;
+					handled = true;
+
+					break;
 				}
 
 				frameBuffer->blit();
 				continue;
 			}
 
+			// direkKey
 			for (unsigned int i = 0; i < items.size(); i++) 
 			{
 				CMenuItem * titem = items[i];

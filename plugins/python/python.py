@@ -127,13 +127,14 @@ class textBox(CTextBox):
 				elif bigFonts == True:
 					bigFonts = False
 				self.setBigFonts(bigFonts)
-				self.refresh()
+				self.paint()
 
 			if msg == RC_home:
-				self.hide()
-				CFrameBuffer.getInstance().blit()
 				loop = False
 				break
+
+		self.hide()
+		CFrameBuffer.getInstance().blit()
 
 class audioPlayer(CFileBrowser):
 	settings = SNeutrinoSettings()
@@ -148,13 +149,20 @@ class audioPlayer(CFileBrowser):
 		self.Filter = fileFilter
 
 		self._exec(self.PATH)
+
+		self.PATH = self.getCurrentDir()
 		
 		cFile = self.getSelectedFile()
 
 		player = CAudioPlayerGui()
+
+		#if cFile is not None:
 	
 		player.addToPlaylist(cFile)
 		player._exec(None, "")
+
+		if self.getExitPressed() is False:
+			self.__init__()
 
 class pictureViewer(CFileBrowser):
 	settings = SNeutrinoSettings()
@@ -189,7 +197,7 @@ class testMenu(CMenuTarget):
 	def showMenu(self):
 		print("showMenu")
 		
-		self.listWidget.setSelected(self.selected)
+		#self.listWidget.setSelected(self.selected)
 		self.listWidget.setWidgetType(WIDGET_TYPE_CLASSIC)
 		self.listWidget.setMode(MODE_MENU)
 		self.listWidget.enableShrinkMenu()
@@ -257,10 +265,18 @@ class testMenu(CMenuTarget):
 		self.listWidget.addItem(item9)
 		self.listWidget.addItem(item10)
 
+		self.listWidget.addKey(RC_info)
+
 		self.listWidget._exec(None, "")
 
 		self.selected = self.listWidget.getSelected()
+		key = self.listWidget.getKey()
 
+		# first handle keys
+		if key == RC_info:
+			messageBox()
+
+		# handle selected line
 		if self.selected == 0:
 			messageBox()
 		elif self.selected == 1:
@@ -282,7 +298,8 @@ class testMenu(CMenuTarget):
 		elif self.selected == 9:
 			pictureViewer()
 
-		if self.selected != -1:
+		# exit pressed
+		if self.listWidget.getExitPressed() is False:
 			self.listWidget.clearItems()
 			self.showMenu()
 

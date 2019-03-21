@@ -225,6 +225,7 @@ void CAudioPlayerGui::playFile()
 
 	bool loop = true;
 	bool ok_pressed = false;
+	exit_pressed = false;
 	
 	//
 	if(!m_playlist.empty())
@@ -260,6 +261,7 @@ void CAudioPlayerGui::playFile()
 
 		if (msg == RC_home)
 		{ 
+			exit_pressed = true;
 			loop = false;
 		}
 		else if (msg == RC_left || msg == RC_prev)

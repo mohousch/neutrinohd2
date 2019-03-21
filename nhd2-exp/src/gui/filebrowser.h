@@ -81,6 +81,7 @@ class CFileBrowser
 		void SMSInput(const neutrino_msg_t msg);
 
 		unsigned int selected;
+		bool exit_pressed;
 
 		std::vector<unsigned int> selections;
 		
@@ -123,6 +124,9 @@ class CFileBrowser
 		{
 			return Path;
 		}
+
+		//
+		bool getExitPressed(){return exit_pressed;};
 };
 
 #endif

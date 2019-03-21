@@ -362,6 +362,7 @@ bool CFileBrowser::exec(const char * const dirname)
 	neutrino_msg_data_t data;
 
 	bool res = false;
+	exit_pressed = false;
 
 	listBox = new ClistBox(&cFrameBox);
 
@@ -496,6 +497,7 @@ bool CFileBrowser::exec(const char * const dirname)
 		}
 		else if ( msg == RC_home )
 		{
+			exit_pressed = false;
 			loop = false;
 		}
 		else if ( msg == RC_spkr)
