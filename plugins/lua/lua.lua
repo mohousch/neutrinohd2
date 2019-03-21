@@ -2,6 +2,7 @@
 --
 
 local selected = -1
+local PATH = "/"
 
 -- CMessageBox
 function messageBox()
@@ -12,9 +13,9 @@ function messageBox()
 end
 
 -- CMoviePlayerGui
-function moviePlayer()
-	PATH = "/"
+PATH = "/"
 
+function moviePlayer()
 	fileBrowser = neutrino.CFileBrowser()
 	fileFilter = neutrino.CFileFilter()
 	fileFilter:addFilter("ts")
@@ -89,9 +90,9 @@ function infoBox()
 end
 
 -- CAudioPlayerGui
-function audioPlayer()
-	PATH = "/"
+PATH = "/"
 
+function audioPlayer()
 	fileBrowser = neutrino.CFileBrowser()
 	fileFilter = neutrino.CFileFilter()
 	fileFilter:addFilter("mp3")
@@ -117,9 +118,9 @@ function audioPlayer()
 end
 
 -- CPictureViewerGui
-function picPlayer()
-	PATH = "/"
+PATH = "/"
 
+function picPlayer()
 	fileBrowser = neutrino.CFileBrowser()
 	fileFilter = neutrino.CFileFilter()
 	fileFilter:addFilter("jpeg")
