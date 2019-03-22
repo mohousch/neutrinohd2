@@ -13,8 +13,6 @@ function messageBox()
 end
 
 -- CMoviePlayerGui
-PATH = "/"
-
 function moviePlayer()
 	fileBrowser = neutrino.CFileBrowser()
 	fileFilter = neutrino.CFileFilter()
@@ -90,8 +88,6 @@ function infoBox()
 end
 
 -- CAudioPlayerGui
-PATH = "/"
-
 function audioPlayer()
 	fileBrowser = neutrino.CFileBrowser()
 	fileFilter = neutrino.CFileFilter()
@@ -113,14 +109,12 @@ function audioPlayer()
 	end
 
 	if fileBrowser:getExitPressed() ~= true then
-		moviePlayer()
+		audioPlayer()
 	end
 end
 
 -- CPictureViewerGui
-PATH = "/"
-
-function picPlayer()
+function pictureViewer()
 	fileBrowser = neutrino.CFileBrowser()
 	fileFilter = neutrino.CFileFilter()
 	fileFilter:addFilter("jpeg")
@@ -142,7 +136,7 @@ function picPlayer()
 	end
 
 	if fileBrowser:getExitPressed() ~= true then
-		moviePlayer()
+		pictureViewer()
 	end
 end
 
@@ -240,7 +234,7 @@ function showMenu()
 		audioPlayer()
 	end
 	if selected == 7 then
-		picPlayer()
+		pictureViewer()
 	end
 
 	if listWidget:getExitPressed() == false then
