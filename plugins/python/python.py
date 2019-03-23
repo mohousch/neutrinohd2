@@ -7,75 +7,6 @@ class messageBox(CMessageBox):
 		CMessageBox.__init__(self, self.title, self.msg)
 		self._exec(-1)
 
-class moviePlayer(CFileBrowser):
-	settings = SNeutrinoSettings()
-	PATH = settings.network_nfs_moviedir
-	def __init__(self):
-		CFileBrowser.__init__(self)
-		fileFilter = CFileFilter()
-		fileFilter.addFilter("ts")
-
-		self.Multi_Select = False
-		self.Dirs_Selectable = False
-		self.Filter = fileFilter
-
-		self._exec(self.PATH)
-
-		self.PATH = self.getCurrentDir()
-
-		player = CMoviePlayerGui()
-	
-		if self.getSelectedFile() is not None:
-			player.addToPlaylist(self.getSelectedFile())
-			player._exec(None, "")
-
-		if self.getExitPressed() is not True:
-			self.__init__()
-
-class headers(CHeaders):
-	def __init__(self):
-		CHeaders.__init__(self)
-
-		buttons = button_label_struct()
-		buttons.button = NEUTRINO_ICON_BUTTON_HELP
-		buttons.locale = NONEXISTANT_LOCALE
-		buttons.localename = None
-
-		fButtons = button_label_struct()
-		fButtons.button = NEUTRINO_ICON_BUTTON_RED
-		fButtons.locale = NONEXISTANT_LOCALE
-		fButtons.localename = "red"
-		
-		self.enablePaintDate()
-		self.enableLogo()
-
-		self.setHeaderButtons(buttons, 1)
-
-		self.paintHead(150, 50, 750, 40, "pythonTest", NEUTRINO_ICON_MOVIE)
-		self.paintFoot(150, 570, 750, 40, 1, fButtons)
-
-		CSwigHelpers().blit()
-
-		SEC_TIMER_ID = 0
-		SEC_TIMER_ID = CSwigHelpers().addTimer(1*1000*1000, False);
-
-		msg = -1
-		data = -1
-		loop = True
-
-		while loop:
-			msg = CSwigHelpers().getRCCode()
-			data = CSwigHelpers().getRCData()
-
-			if msg == NeutrinoMessages().EVT_TIMER and data == SEC_TIMER_ID:
-				self.paintHead(150, 50, 750, 40, "pythonTest", NEUTRINO_ICON_MOVIE)
-
-			elif msg == RC_home:
-				loop = False
-				break
-
-		CFrameBuffer.getInstance().paintBackground()
-
 class helpBox(CHelpBox):
 	line1 = "Test"
 	line2 = "Huhu"
@@ -189,6 +120,31 @@ class pictureViewer(CFileBrowser):
 		if self.getExitPressed() is not True:
 			self.__init__()
 
+class moviePlayer(CFileBrowser):
+	settings = SNeutrinoSettings()
+	PATH = settings.network_nfs_moviedir
+	def __init__(self):
+		CFileBrowser.__init__(self)
+		fileFilter = CFileFilter()
+		fileFilter.addFilter("ts")
+
+		self.Multi_Select = False
+		self.Dirs_Selectable = False
+		self.Filter = fileFilter
+
+		self._exec(self.PATH)
+
+		self.PATH = self.getCurrentDir()
+
+		player = CMoviePlayerGui()
+	
+		if self.getSelectedFile() is not None:
+			player.addToPlaylist(self.getSelectedFile())
+			player._exec(None, "")
+
+		if self.getExitPressed() is not True:
+			self.__init__()
+
 class testMenu(CMenuTarget):
 	selected = 0
 	listWidget = ClistBoxWidget("pythonTest:ClistBoxWidget", NEUTRINO_ICON_MOVIE)
@@ -212,50 +168,40 @@ class testMenu(CMenuTarget):
 		item1.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
 		item1.setHelpText("testing CMessageBox")
 
-		# CFileBrowser | CMoviePlayerGui
-		item2 = CMenuForwarder("CFileBrowser|CMoviePlayerGui")
-		item2.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
-		item2.setHelpText("testing CMoviePlayerGui")
-
-		# CHeaders
-		item3 = CMenuForwarder("CHeaders")
-		item3.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
-		item3.setHelpText("testing CHeaders")
-
 		# CHelpBox
-		item4 = CMenuForwarder("CHelpBox")
-		item4.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
-		item4.setHelpText("testing CHelpBox")
+		item2 = CMenuForwarder("CHelpBox")
+		item2.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
+		item2.setHelpText("testing CHelpBox")
 
 		# CHintBox
-		item5 = CMenuForwarder("CHintBox")
-		item5.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
-		item5.setHelpText("testing CHintBox")
+		item3 = CMenuForwarder("CHintBox")
+		item3.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
+		item3.setHelpText("testing CHintBox")
 
 		# CInfoBox
-		item6 = CMenuForwarder("CInfoBox")
-		item6.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
-		item6.setHelpText("testing CInfoBox")
+		item4 = CMenuForwarder("CInfoBox")
+		item4.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
+		item4.setHelpText("testing CInfoBox")
 
 		# CStringInput
-		item7 = CMenuForwarder("CStringInput")
-		item7.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
-		item7.setHelpText("testing CStringInput")
-
-		# CTextBox
-		item8 = CMenuForwarder("CTextBox")
-		item8.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
-		item8.setHelpText("testing CTextBox")
+		item5 = CMenuForwarder("CStringInput")
+		item5.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
+		item5.setHelpText("testing CStringInput")
 
 		# CAudioPlayerGui
-		item9 = CMenuForwarder("CAudioPlayerGui")
-		item9.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
-		item9.setHelpText("testing CAudioPlayerGui")
+		item6 = CMenuForwarder("CAudioPlayerGui")
+		item6.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
+		item6.setHelpText("testing CAudioPlayerGui")
 
 		# CPictureViewerGui
-		item10 = CMenuForwarder("CPictureViewerGui")
-		item10.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
-		item10.setHelpText("testing CPictureViewerGui")
+		item7 = CMenuForwarder("CPictureViewerGui")
+		item7.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
+		item7.setHelpText("testing CPictureViewerGui")
+
+		# CFileBrowser | CMoviePlayerGui
+		item8 = CMenuForwarder("CFileBrowser|CMoviePlayerGui")
+		item8.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
+		item8.setHelpText("testing CMoviePlayerGui")
 
 		self.listWidget.addItem(item1)
 		self.listWidget.addItem(item2)
@@ -265,8 +211,6 @@ class testMenu(CMenuTarget):
 		self.listWidget.addItem(item6)
 		self.listWidget.addItem(item7)
 		self.listWidget.addItem(item8)
-		self.listWidget.addItem(item9)
-		self.listWidget.addItem(item10)
 
 		self.listWidget.addKey(RC_info)
 
@@ -283,23 +227,19 @@ class testMenu(CMenuTarget):
 		if self.selected == 0:
 			messageBox()
 		elif self.selected == 1:
-			moviePlayer()
-		elif self.selected == 2:
-			headers()
-		elif self.selected == 3:
 			helpBox()
-		elif self.selected == 4:
+		elif self.selected == 2:
 			hintBox()
-		elif self.selected == 5:
+		elif self.selected == 3:
 			infoBox()
-		elif self.selected == 6:
+		elif self.selected == 4:
 			stringInput()
-		elif self.selected == 7:
-			textBox()
-		elif self.selected == 8:
+		elif self.selected == 5:
 			audioPlayer()
-		elif self.selected == 9:
+		elif self.selected == 6:
 			pictureViewer()
+		elif self.selected == 7:
+			moviePlayer()
 
 		# exit pressed
 		if self.listWidget.getExitPressed() is False:

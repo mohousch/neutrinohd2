@@ -429,6 +429,8 @@ class CMenuForwarder : public CMenuItem
 
 		int exec(CMenuTarget* parent);
 		bool isSelectable(void) const {return active;}
+
+		void setName(const char * const name){textString = name;};
 };
 
 // CPINProtection
