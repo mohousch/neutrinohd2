@@ -35,6 +35,14 @@ function infoBox()
 	info:exec()
 end
 
+-- CStringInput
+function stringInput()
+	title = "luaTest: CStringInputSMS"
+	local value
+	input = neutrino.CStringInputSMS(title, vale)
+	input:exec(null, "")
+end
+
 -- CAudioPlayerGui
 function audioPlayer()
 	fileBrowser = neutrino.CFileBrowser()
@@ -146,20 +154,25 @@ function showMenu()
 	item4:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item4:setHelpText("testing CInfoBox")
 
-	-- CAudioPlayerGui
-	item5 = neutrino.CMenuForwarder("CAudioPlayerGui")
+	-- CStringInput
+	item5 = neutrino.CMenuForwarder("CStringInput")
 	item5:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
-	item5:setHelpText("testing CAudioPlayerGui")
+	item5:setHelpText("testing CStringInput")
+
+	-- CAudioPlayerGui
+	item6 = neutrino.CMenuForwarder("CAudioPlayerGui")
+	item6:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item6:setHelpText("testing CAudioPlayerGui")
 
 	-- CPictureViewerGui
-	item6 = neutrino.CMenuForwarder("CPictureViewerGui")
-	item6:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
-	item6:setHelpText("testing CPictureViewerGui")
+	item7 = neutrino.CMenuForwarder("CPictureViewerGui")
+	item7:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item7:setHelpText("testing CPictureViewerGui")
 
 	-- CMoviePlayerGui
-	item7 = neutrino.CMenuForwarder("CMoviePlayerGui")
-	item7:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
-	item7:setHelpText("testing CMoviePlayerGui")
+	item8 = neutrino.CMenuForwarder("CMoviePlayerGui")
+	item8:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item8:setHelpText("testing CMoviePlayerGui")
 
 	listWidget:addItem(item1)
 	listWidget:addItem(item2)
@@ -168,6 +181,7 @@ function showMenu()
 	listWidget:addItem(item5)
 	listWidget:addItem(item6)
 	listWidget:addItem(item7)
+	listWidget:addItem(item8)
 
 	listWidget:addKey(neutrino.RC_info)
 
@@ -193,12 +207,15 @@ function showMenu()
 		infoBox()
 	end
 	if selected == 4 then
-		audioPlayer()
+		stringInput()
 	end
 	if selected == 5 then
-		pictureViewer()
+		audioPlayer()
 	end
 	if selected == 6 then
+		pictureViewer()
+	end
+	if selected == 7 then
 		moviePlayer()
 	end
 

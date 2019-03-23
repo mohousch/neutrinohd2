@@ -1932,7 +1932,7 @@ void ClistBoxWidget::initFrames()
 		cFrameFootInfo.iHeight = 0;
 		interFrame = 0;
 
-		if(FootInfo && widgetType == WIDGET_TYPE_STANDARD)
+		if(FootInfo && widgetType == WIDGET_TYPE_STANDARD && widgetMode != MODE_SETUP)
 		{
 			cFrameFootInfo.iHeight = footInfoHeight;
 			interFrame = INTER_FRAME_SPACE;
@@ -2042,7 +2042,7 @@ void ClistBoxWidget::initFrames()
 			}
 		}
 
-		//
+		// re-set FrameFootInfo position
 		if(FootInfo && widgetType == WIDGET_TYPE_STANDARD)
 		{
 			cFrameFootInfo.iX = x;

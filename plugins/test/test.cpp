@@ -31,7 +31,7 @@ class CTestMenu : public CMenuTarget
 		// variables
 		CFrameBuffer* frameBuffer;
 
-		/*CMenuWidget*/ClistBoxWidget * mainMenu;
+		ClistBoxWidget * mainMenu;
 		int select;
 
 		//
@@ -2714,7 +2714,7 @@ void CTestMenu::testCMenuWidget()
 
 	dprintf(DEBUG_NORMAL, "testCMenuWidget\n");
 
-	/*CMenuWidget*/ClistBoxWidget * mainMenu = new /*CMenuWidget*/ClistBoxWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
+	ClistBoxWidget * mainMenu = new ClistBoxWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
 	
 	mainMenu->setMode(MODE_MENU);
 	mainMenu->enableMenuPosition();
@@ -3313,7 +3313,7 @@ void CTestMenu::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CTestMenu::showMenu:\n");
 
-	mainMenu = new /*CMenuWidget*/ClistBoxWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
+	mainMenu = new ClistBoxWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
 
 	mainMenu->setMode(MODE_MENU);
 	mainMenu->enableShrinkMenu(),
