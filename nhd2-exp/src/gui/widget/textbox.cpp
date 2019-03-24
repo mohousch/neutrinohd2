@@ -44,58 +44,12 @@
 #include <system/debug.h>
 #include <system/settings.h>
 
-#if 0
-CTextBox::CTextBox(CFont * font_text, const int _mode, const CBox * position, fb_pixel_t textBackgroundColor)
-{
-	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
-	
-	initVar();
-	
-	if(font_text != NULL)	
-		m_pcFontText = font_text;
-	
-	if(position != NULL)
-	{
-		m_cFrame = *position;
-		m_nMaxHeight = m_cFrame.iHeight;
-		m_nMaxWidth = m_cFrame.iWidth;
-	}
-
-	m_nMode	= _mode;
-	m_tMode = TOP_RIGHT;
-
-	// in case of auto line break, we do no support auto width  yet
-	if( !(_mode & NO_AUTO_LINEBREAK))
-	{
-		m_nMode = m_nMode & ~AUTO_WIDTH; // delete any AUTO_WIDTH
-	}
-
-	dprintf(DEBUG_DEBUG, " CTextBox::CTextBox: m_cText: %d, m_nMode %d\t\r\n", m_cText.size(), m_nMode);
-
-	m_textBackgroundColor = textBackgroundColor;
-	m_nFontTextHeight = m_pcFontText->getHeight();
-	
-	dprintf(DEBUG_DEBUG, " CTextBox::CTextBox: m_nFontTextHeight: %d\t\r\n", m_nFontTextHeight);
-
-	// initialise the window frames first
-	initFramesRel();
-
-	// than refresh text line array 
-	refreshTextLineArray();
-}
-#endif
 
 CTextBox::CTextBox()
 {
 	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
 	
 	initVar();
-
-	//CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
-
-	//m_cFrame = position;
-	//m_nMaxHeight = m_cFrame.iHeight;
-	//m_nMaxWidth = m_cFrame.iWidth;
 
 	initFramesRel();
 }
