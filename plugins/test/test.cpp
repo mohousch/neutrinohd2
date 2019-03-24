@@ -2685,22 +2685,6 @@ void CTestMenu::testClistBoxWidget()
 		listMenu->addItem(item);
 	}
 
-/*
-	for (unsigned int i = 0; i < filelist.size(); i++)
-	{
-		item = new ClistBoxItem(filelist[i].getFileName().c_str(), true, NULL, this, "mplay", RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg");
-
-		std::string tmp = filelist[i].getFileName();
-		//tmp += "\n";
-
-		item->setHelpText(tmp.c_str());
-
-		item->setInfo1(filelist[i].getFileName().c_str());
-
-		listMenu->addItem(item);
-	}
-*/
-
 	listMenu->setMode(MODE_LISTBOX);
 	listMenu->setWidgetType(WIDGET_TYPE_STANDARD);
 	listMenu->setItemsPerPage(6, 2);
