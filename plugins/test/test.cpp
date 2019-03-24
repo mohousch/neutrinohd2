@@ -1221,7 +1221,9 @@ void CTestMenu::testCTextBox()
 	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
 	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20);
 	
-	CTextBox * textBox = new CTextBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &Box, COL_MENUCONTENT_PLUS_0);
+	CTextBox * textBox = new CTextBox();
+
+	textBox->setPosition(&Box);
 	
 	const char * buffer = NULL;
 	
@@ -2587,8 +2589,6 @@ const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
 
 void CTestMenu::testClistBoxWidget()
 {
-	listMenu = new ClistBoxWidget("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
-	
 	//
 	CFileFilter fileFilter;
 	
@@ -2668,6 +2668,10 @@ void CTestMenu::testClistBoxWidget()
 		}
 	}
 
+	// our listBox
+	listMenu = new ClistBoxWidget("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	
+	// add items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "mplay", RC_nokey, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
@@ -2680,6 +2684,22 @@ void CTestMenu::testClistBoxWidget()
 
 		listMenu->addItem(item);
 	}
+
+/*
+	for (unsigned int i = 0; i < filelist.size(); i++)
+	{
+		item = new ClistBoxItem(filelist[i].getFileName().c_str(), true, NULL, this, "mplay", RC_nokey, NULL, DATADIR "/neutrino/icons/nopreview.jpg");
+
+		std::string tmp = filelist[i].getFileName();
+		//tmp += "\n";
+
+		item->setHelpText(tmp.c_str());
+
+		item->setInfo1(filelist[i].getFileName().c_str());
+
+		listMenu->addItem(item);
+	}
+*/
 
 	listMenu->setMode(MODE_LISTBOX);
 	listMenu->setWidgetType(WIDGET_TYPE_STANDARD);
@@ -3360,7 +3380,7 @@ void CTestMenu::showMenu()
 	
 	//
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "menu<>listBox Widget") );
-	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget", true, NULL, this, "listboxwidget"));
+	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget(MODE_LISTBOX)", true, NULL, this, "listboxwidget"));
 	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget(MENU_MODE)", true, NULL, this, "testmenuwidget"));
 
 	//

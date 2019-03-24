@@ -116,6 +116,7 @@ class CTextBox
 
 		bool bigFonts;
 		bool painted;
+		bool paintBG;
 
 		CScrollBar scrollBar;
 
@@ -129,16 +130,17 @@ class CTextBox
 		void reSizeMainFrameHeight(int maxTextHeight);
 
 	public:
-		// Constructor
 		CTextBox();
-		CTextBox(CFont* font_text, const int mode, const CBox* position, fb_pixel_t textBackgroundColor);
+		//CTextBox(CFont* font_text, const int mode, const CBox* position, fb_pixel_t textBackgroundColor);
 
 		virtual ~CTextBox();
 
 		// Functions
 		void refresh(void);
 		void scrollPageDown(const int pages);
-		void scrollPageUp(const int pages);				
+		void scrollPageUp(const int pages);
+
+		//				
 		bool setText(const char * const newText, const char * const _thumbnail = NULL, int _tw = 0, int _th = 0, int _tmode = TOP_RIGHT);
 		
 		inline bool isPainted(void){return painted;};
@@ -149,7 +151,11 @@ class CTextBox
 		inline int getPages(void){return(m_nNrOfPages);};
 		inline void movePosition(int x, int y){m_cFrame.iX = x; m_cFrame.iY = y;};
 
+		void setPosition(const CBox * position);
 		void setBackGroundColor(fb_pixel_t col){m_textBackgroundColor = col;};
+		void setFontText(CFont * font_text){m_pcFontText = font_text;};
+		void setMode(const int mode);
+		void disablePaintBackground(){paintBG = false;};
 
 		void paint(void);
 		void hide(void);

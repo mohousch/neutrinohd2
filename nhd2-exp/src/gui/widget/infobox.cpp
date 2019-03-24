@@ -79,7 +79,9 @@ CInfoBox::CInfoBox(CFont *fontText, const int _mode, const CBox* position, const
 	// initialise the window frames first
 	initFramesRel();
 
-	m_pcTextBox = new CTextBox(m_pcFontText, _mode, &m_cBoxFrameText, COL_MENUCONTENT_PLUS_0);
+	m_pcTextBox = new CTextBox();
+	
+	m_pcTextBox->setPosition(&m_cBoxFrameText);
 
 	if(_mode & AUTO_WIDTH || _mode & AUTO_HIGH)
 	{
@@ -118,7 +120,7 @@ CInfoBox::CInfoBox()
 	// initialise the window frames first
 	initFramesRel();
 
-	m_pcTextBox = new CTextBox(m_pcFontText, m_nMode, &m_cBoxFrameText, COL_MENUCONTENT_PLUS_0);
+	m_pcTextBox = new CTextBox();
 
 	if(m_nMode & AUTO_WIDTH || m_nMode & AUTO_HIGH)
 	{

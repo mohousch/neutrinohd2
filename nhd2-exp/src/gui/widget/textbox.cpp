@@ -44,7 +44,7 @@
 #include <system/debug.h>
 #include <system/settings.h>
 
-
+#if 0
 CTextBox::CTextBox(CFont * font_text, const int _mode, const CBox * position, fb_pixel_t textBackgroundColor)
 {
 	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
@@ -83,6 +83,7 @@ CTextBox::CTextBox(CFont * font_text, const int _mode, const CBox * position, fb
 	// than refresh text line array 
 	refreshTextLineArray();
 }
+#endif
 
 CTextBox::CTextBox()
 {
@@ -90,11 +91,11 @@ CTextBox::CTextBox()
 	
 	initVar();
 
-	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	//CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 
-	m_cFrame = position;
-	m_nMaxHeight = m_cFrame.iHeight;
-	m_nMaxWidth = m_cFrame.iWidth;
+	//m_cFrame = position;
+	//m_nMaxHeight = m_cFrame.iHeight;
+	//m_nMaxWidth = m_cFrame.iWidth;
 
 	initFramesRel();
 }
@@ -142,6 +143,29 @@ void CTextBox::initVar(void)
 
 	bigFonts = false;
 	painted = false;
+	paintBG = true;
+}
+
+void CTextBox::setPosition(const CBox * position)
+{
+	if(position != NULL)
+	{
+		m_cFrame = *position;
+		m_nMaxHeight = m_cFrame.iHeight;
+		m_nMaxWidth = m_cFrame.iWidth;
+	}
+
+	initFramesRel();
+}
+
+void CTextBox::setMode(const int mode)
+{
+	m_nMode = mode; 
+
+	if( !(mode & NO_AUTO_LINEBREAK))
+	{
+		m_nMode = m_nMode & ~AUTO_WIDTH;
+	}
 }
 
 void CTextBox::setBigFonts(bool bigfont)
@@ -222,7 +246,7 @@ void CTextBox::initFramesRel(void)
 
 	m_cFrameTextRel.iWidth = m_cFrame.iWidth - BORDER_LEFT - BORDER_RIGHT - m_cFrameScrollRel.iWidth;
 
-	m_nLinesPerPage = (m_cFrameTextRel.iHeight)/m_nFontTextHeight;
+	m_nLinesPerPage = m_cFrameTextRel.iHeight/m_nFontTextHeight;
 }
 
 void CTextBox::refreshTextLineArray(void)
@@ -266,6 +290,8 @@ void CTextBox::refreshTextLineArray(void)
 	// do not parse, if text is empty 
 	if(!m_cText.empty())
 	{
+		m_cText += "\n";
+
 		while(loop)
 		{
 			if(m_nMode & NO_AUTO_LINEBREAK)
@@ -371,7 +397,10 @@ void CTextBox::refreshTextLineArray(void)
 			m_nLinesPerPage = (m_cFrameTextRel.iHeight - th - 10) / m_nFontTextHeight;
 
 		// NrOfPages
-		m_nNrOfPages = ((m_nNrOfLines - 1) / m_nLinesPerPage) + 1; //FIXME: 
+		if(m_nLinesPerPage > 0)
+			m_nNrOfPages = ((m_nNrOfLines - 1) / m_nLinesPerPage) + 1; //FIXME: 
+		else
+			m_nNrOfPages = 1;
 
 		if(m_nCurrentPage >= m_nNrOfPages)
 		{
@@ -405,9 +434,12 @@ void CTextBox::refreshText(void)
 	dprintf(DEBUG_DEBUG, "CTextBox::refreshText:\r\n");
 
 	// paint text background
-	m_cBoxWindow.setPosition(&m_cFrame);
-	m_cBoxWindow.setColor(m_textBackgroundColor);
-	m_cBoxWindow.paint();
+	if(paintBG)
+	{
+		m_cBoxWindow.setPosition(&m_cFrame);
+		m_cBoxWindow.setColor(m_textBackgroundColor);
+		m_cBoxWindow.paint();
+	}
 	
 	// paint thumbnail (paint picture only on first page)
 	if(m_nCurrentPage == 0 && !access(thumbnail.c_str(), F_OK) )

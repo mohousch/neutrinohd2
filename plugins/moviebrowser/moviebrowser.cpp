@@ -1286,7 +1286,8 @@ int CMovieBrowser::paint(void)
 
 	m_pcFilter = new CListFrame(&m_FilterLines, NULL, CListFrame::SCROLL | CListFrame::TITLE, &m_cBoxFrameFilter, g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD_FILTER), g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
 
-	m_pcInfo = new CTextBox(NULL, SCROLL, &m_cBoxFrameInfo, COL_MENUCONTENT_PLUS_0);	
+	m_pcInfo = new CTextBox();
+	m_pcInfo->setPosition(&m_cBoxFrameInfo);	
 
 	if(m_pcBrowser == NULL || m_pcLastPlay == NULL || m_pcLastRecord == NULL || m_pcInfo == NULL || m_pcFilter == NULL)
 	{

@@ -458,11 +458,13 @@ void CMoviePlayerGui::PlayFile(void)
 	CBox boxposition(x, y, width, height);	// window position for the hint boxes
 
 	// backword hintbox
-	CTextBox newBackwordHintBox(NULL, CENTER , &boxposition, COL_MENUCONTENT_PLUS_0);
+	CTextBox newBackwordHintBox;
+	newBackwordHintBox.setPosition(&boxposition);
 	newBackwordHintBox.setText(g_Locale->getText(LOCALE_MOVIEBROWSER_HINT_NEWBOOK_BACKWARD));
 
 	// forward hintbox
-	CTextBox newForwardHintBox(NULL, CENTER, &boxposition, COL_MENUCONTENT_PLUS_0);
+	CTextBox newForwardHintBox;
+	newForwardHintBox.setPosition(&boxposition);
 	newForwardHintBox.setText(g_Locale->getText(LOCALE_MOVIEBROWSER_HINT_NEWBOOK_FORWARD));
 
 	//

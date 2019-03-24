@@ -201,7 +201,10 @@ void CEpgData::start()
 	cTextBox.iHeight = cFrameBox.iHeight - cHeadBox.iHeight - cFootBox.iHeight - cFollowScreeningBox.iHeight;
 
 	if(textBox == NULL)
-		textBox = new CTextBox(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1], SCROLL, &cTextBox, COL_MENUCONTENT_PLUS_0);
+	{
+		textBox = new CTextBox();
+		textBox->setPosition(&cTextBox);
+	}
 }
 
 #define GENRE_MOVIE_COUNT 9

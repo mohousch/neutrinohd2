@@ -73,8 +73,6 @@ CProgressBar::CProgressBar(int w, int h, int r, int g, int b, bool inv)
 
 void CProgressBar::paint(unsigned int x, unsigned int y, unsigned char pcr)
 {
-	//dprintf(DEBUG_NORMAL, "CProgressBar::paint (x:%d) (y:%d) (pcr:%d)\n", x, y, pcr);
-
 	int i, siglen;
 	unsigned int posx;
 	unsigned int posy;

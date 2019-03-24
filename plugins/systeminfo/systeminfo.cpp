@@ -56,7 +56,8 @@ CSysInfoWidget::CSysInfoWidget(int m)
 	cFrameBoxText.iWidth = cFrameBox.iWidth;
 	cFrameBoxText.iHeight = cFrameBox.iHeight - cFrameBoxTitle.iHeight - cFrameBoxFoot.iHeight;
 
-	textBox = new CTextBox(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST], SCROLL, &cFrameBoxText, COL_MENUCONTENT_PLUS_0);
+	textBox = new CTextBox();
+	textBox->setPosition(&cFrameBoxText);
 }
 
 CSysInfoWidget::~CSysInfoWidget()
