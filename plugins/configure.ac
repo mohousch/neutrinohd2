@@ -40,13 +40,10 @@ AC_OUTPUT([
 Makefile
 test/Makefile
 netzkino/Makefile
-fbcallmonitor/Makefile
 youtube/Makefile
 systeminfo/Makefile
-tuxdns/Makefile
 restart_enigma/Makefile
 tuxcom/Makefile
-dvdplayer/Makefile
 mediaplayer/Makefile
 tuxcal/Makefile
 tuxcal/daemon/Makefile

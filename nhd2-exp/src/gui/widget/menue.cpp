@@ -1047,7 +1047,7 @@ CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, 
 
 CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
 {
-	textString = Text;
+	textString = Text? Text : "";
 	text = NONEXISTANT_LOCALE;
 
 	option = Option? Option : "";
@@ -1062,7 +1062,7 @@ CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const
 	itemIcon = ItemIcon ? ItemIcon : "";
 	itemHelpText = g_Locale->getText(HelpText);
 	itemType = ITEM_TYPE_FORWARDER;
-	itemName = Text;
+	itemName = Text? Text : "";
 }
 
 int CMenuForwarder::getHeight(void) const
@@ -1307,7 +1307,7 @@ ClistBoxItem::ClistBoxItem(const neutrino_locale_t Text, const bool Active, cons
 ClistBoxItem::ClistBoxItem(const char * const Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, const neutrino_msg_t DirectKey, const char * const IconName, const char* const ItemIcon)
 {
 	text = NONEXISTANT_LOCALE;
-	textString = Text;
+	textString = Text? Text : "";
 
 	option = Option? Option : "";
 
@@ -1319,7 +1319,7 @@ ClistBoxItem::ClistBoxItem(const char * const Text, const bool Active, const cha
 
 	iconName = IconName ? IconName : "";
 	itemIcon = ItemIcon? ItemIcon : "";
-	itemName = Text;
+	itemName = Text? Text : "";
 	itemType = ITEM_TYPE_LISTBOX;
 }
 
@@ -1397,18 +1397,20 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	const char * l_text = getName();
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : COL_MENUCONTENT_PLUS_0;
+	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : item_backgroundColor;
 
 	if (selected)
 	{
 		color = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 	}
+/*
 	else if (!active)
 	{
 		color = COL_MENUCONTENTINACTIVE;
 		bgcolor = COL_MENUCONTENTINACTIVE_PLUS_0;
 	}
+*/
 
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{

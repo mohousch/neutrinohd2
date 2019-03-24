@@ -32,10 +32,7 @@ endif
 #testing
 if ENABLE_TESTING
 SUBDIRS += ard \
-	fbcallmonitor \
-	tuxdns \
 	restart_enigma \
-	dvdplayer \
 	satipclient \
 	opkg_manager
 endif

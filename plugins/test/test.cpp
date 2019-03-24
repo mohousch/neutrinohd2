@@ -284,10 +284,10 @@ void CTestMenu::test()
 	item3->setOption("bewertet");
 	item3->setnLinesItem();
 	ClistBoxItem *item4 = new ClistBoxItem("Neue Filme");
-	CMenuSeparator *item5 = new CMenuSeparator();
-	CMenuSeparator *item6 = new CMenuSeparator();
-	CMenuSeparator *item7 = new CMenuSeparator();
-	CMenuSeparator *item8 = new CMenuSeparator();
+	ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
+	ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
+	ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
+	ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
 	ClistBoxItem *item9 = new ClistBoxItem("Beenden");
 
 	leftWidget->addItem(item1);
