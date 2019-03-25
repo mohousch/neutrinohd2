@@ -349,6 +349,8 @@ void CTextBox::refreshTextLineArray(void)
 
 		if(m_tMode == TOP_CENTER && m_nCurrentPage == 0)
 			m_nLinesPerPage = (m_cFrameTextRel.iHeight - th - 10) / m_nFontTextHeight;
+		else if(m_tMode == TOP_CENTER && m_nCurrentPage > 0)
+			m_nLinesPerPage = (m_cFrameTextRel.iHeight) / m_nFontTextHeight;
 
 		// NrOfPages
 		if(m_nLinesPerPage > 0)

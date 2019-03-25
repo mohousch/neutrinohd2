@@ -1185,12 +1185,6 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 
 		const char * option_text = getOption();	
 	
-		// vfd
-		if (selected)
-		{
-			CVFD::getInstance()->showMenuText(0, l_text, -1, true);
-		}
-	
 		// paint item
 		frameBuffer->paintBoxRel(x, y, dx, height, bgcolor);
 
@@ -1239,7 +1233,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		//local-text
 		stringstartposX = x + BORDER_LEFT + icon_w + ICON_OFFSET;
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_RIGHT - icon_w - (stringstartposX - x), l_text, color, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_RIGHT - BORDER_LEFT - icon_w - ICON_OFFSET/*(stringstartposX - x)*/, l_text, color, 0, true); // UTF-8
 
 		//option-text
 		if(widgetType == WIDGET_TYPE_STANDARD)
@@ -2531,6 +2525,8 @@ void ClistBoxWidget::paintItemInfo(int pos)
 			std::string fname = item->itemIcon;
 
 			CFrameBuffer::getInstance()->scaleImage(fname, &p_w, &p_h);
+
+			textBox->setBackgroundColor(COL_MENUCONTENTDARK_PLUS_0);
 
 			// helpText
 			textBox->setText(item->itemHelpText.c_str(), item->itemIcon.c_str(), p_w, p_h, TOP_CENTER);

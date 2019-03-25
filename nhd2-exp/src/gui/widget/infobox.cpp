@@ -122,6 +122,8 @@ CInfoBox::CInfoBox()
 
 	m_pcTextBox = new CTextBox();
 
+	m_pcTextBox->setPosition(&m_cBoxFrameText);
+
 	if(m_nMode & AUTO_WIDTH || m_nMode & AUTO_HIGH)
 	{
 		// window might changed in size

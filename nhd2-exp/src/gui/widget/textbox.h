@@ -151,7 +151,7 @@ class CTextBox
 		inline void movePosition(int x, int y){m_cFrame.iX = x; m_cFrame.iY = y;};
 
 		void setPosition(const CBox * position);
-		void setBackGroundColor(fb_pixel_t col){m_textBackgroundColor = col;};
+		void setBackgroundColor(fb_pixel_t col){m_textBackgroundColor = col;};
 		void setFontText(CFont * font_text){m_pcFontText = font_text;};
 		void setMode(const int mode);
 		void disablePaintBackground(){paintBG = false;};
