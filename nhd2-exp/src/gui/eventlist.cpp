@@ -681,7 +681,7 @@ void EventList::paint(t_channel_id channel_id)
 		icontype = etype == CTimerd::TIMER_ZAPTO ? NEUTRINO_ICON_BUTTON_YELLOW : etype == CTimerd::TIMER_RECORD ? NEUTRINO_ICON_BUTTON_RED : "";
 
 		item->setIconName(icontype.c_str());
-		item->setnLinesItem();
+		item->set2lines();
 
 		if(count == current_event)
 			item->setMarked(true);

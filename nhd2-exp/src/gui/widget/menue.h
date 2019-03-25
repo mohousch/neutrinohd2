@@ -232,7 +232,7 @@ class CMenuItem
 		//virtual void setNameFont(CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]){nameFont = font;};
 		//virtual void setOptionFont(CFont* font = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]){optionFont = font;};
 
-		virtual void setnLinesItem(void){nLinesItem = true;};
+		virtual void set2lines(void){nLinesItem = true;};
 		virtual void setWidgetType(int type){widgetType = type;};
 };
 

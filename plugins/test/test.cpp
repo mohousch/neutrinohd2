@@ -279,10 +279,10 @@ void CTestMenu::test()
 	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos");
 	ClistBoxItem *item2 = new ClistBoxItem("Am");
 	item2->setOption("populärsten");
-	item2->setnLinesItem();
+	item2->set2lines();
 	ClistBoxItem *item3 = new ClistBoxItem("Am besten");
 	item3->setOption("bewertet");
-	item3->setnLinesItem();
+	item3->set2lines();
 	ClistBoxItem *item4 = new ClistBoxItem("Neue Filme");
 	ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
 	ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
@@ -1730,7 +1730,7 @@ void CTestMenu::testClistBox()
 		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 		//item->setOptionInfo2("OptionInfo2");
 
-		item->setnLinesItem();
+		item->set2lines();
 
 		listBox->addItem(item);
 	}
@@ -2675,6 +2675,9 @@ void CTestMenu::testClistBoxWidget()
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "mplay", RC_nokey, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+		item->set2lines();
 
 		item->setHelpText(m_vMovieInfo[i].epgInfo2.c_str());
 

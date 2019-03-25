@@ -116,7 +116,7 @@ void CPluginList::showMenu()
 
 		item->setInfo1(g_PluginList->getDescription(count).c_str());
 
-		item->setnLinesItem(); 
+		item->set2lines(); 
 
 		plist->addItem(item);
 	}
