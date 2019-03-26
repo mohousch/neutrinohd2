@@ -102,8 +102,6 @@ class ClistBox
 
 		//
 		int widgetType;
-		bool widgetChange;
-		//std::vector<int> widget;
 
 		// head
 		fb_pixel_t headColor;
@@ -185,10 +183,8 @@ class ClistBox
 		virtual void swipRight();
 
 		//
-		void setWidgetType(int type){widgetType = type; /*widget.push_back(widgetType);*/};
+		void setWidgetType(int type){widgetType = type;};
 		int getWidgetType(){return widgetType;};
-		void enableWidgetChange(){widgetChange = true;};
-		//void addWidget(int wtype){widget.push_back(wtype);};
 };
 
 #endif // LISTBOX_H_

@@ -358,8 +358,8 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL },
 };
 
 void CTSBrowser::showMenu()
@@ -377,8 +377,6 @@ void CTSBrowser::showMenu()
 		tmp += m_vMovieInfo[i].epgInfo2;
 
 		item->setHelpText(tmp.c_str());
-
-		//item->setOptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]); //FIXME: menue.cpp
 
 		mlist->addItem(item);
 	}

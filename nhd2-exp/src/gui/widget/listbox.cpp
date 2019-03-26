@@ -104,7 +104,6 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 
 	//
 	widgetType = WIDGET_TYPE_STANDARD;
-	widgetChange = false;
 }
 
 ClistBox::ClistBox(CBox* position)
@@ -164,7 +163,6 @@ ClistBox::ClistBox(CBox* position)
 
 	//
 	widgetType = WIDGET_TYPE_STANDARD;
-	widgetChange = false;
 }
 
 ClistBox::~ClistBox()

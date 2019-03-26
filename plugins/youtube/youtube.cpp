@@ -433,13 +433,12 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "search")
 	{
-		//ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		ytmode = cYTFeedParser::SEARCH;
 
 		CStringInputSMS stringInput(LOCALE_YT_SEARCH, ytsearch.c_str());
 		int ret = stringInput.exec(NULL, "");
 
-		if(ret && !ytsearch.empty())
+		if(ret /*&& !ytsearch.empty()*/) //FIXME:
 		{
 			loadYTTitles(ytmode, ytsearch, ytvid);
 			showMenu();
@@ -449,18 +448,6 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		else
 			return menu_return::RETURN_REPAINT;
 	}
-/*
-	else if(actionKey == "most_popular")
-	{
-		ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
-		ytmode = cYTFeedParser::MOST_POPULAR;
-
-		loadYTTitles(ytmode, ytsearch, ytvid);
-		showMenu();
-
-		return menu_return::RETURN_EXIT_ALL;
-	}
-*/
 
 	loadYTTitles(ytmode, ytsearch, ytvid);
 	showMenu();
