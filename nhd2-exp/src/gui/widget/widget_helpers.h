@@ -120,4 +120,22 @@ class CHeaders
 		void setFootGradient(int grad){fgradient = grad;};
 };
 
+// progressbar
+class CProgressBar
+{
+	private:
+		CFrameBuffer * frameBuffer;
+		short width;
+		short height;
+		unsigned char percent;
+		short red, green, yellow;
+		bool inverse;
+
+	public:
+		CProgressBar(int w, int h, int r = 40, int g = 100, int b = 70, bool inv = true);
+		void paint(unsigned int x, unsigned int y, unsigned char pcr);
+		void reset();
+		int getPercent() { return percent; };
+};
+
 #endif /* __gui_widget_helpers_h__ */

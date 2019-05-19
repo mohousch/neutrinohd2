@@ -52,7 +52,6 @@
 #include <driver/encoding.h>
 #include <driver/screen_max.h>
 #include <gui/filebrowser.h>
-#include <gui/widget/progressbar.h>
 #include <gui/pictureviewer.h>
 
 #include <system/debug.h>

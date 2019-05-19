@@ -27,7 +27,7 @@
 
 #include <driver/framebuffer.h>
 
-#include <gui/widget/progressbar.h>
+#include <gui/widget/widget_helpers.h>
 
 #include <dmx_cs.h>
 

@@ -35,7 +35,7 @@
 #include <gui/widget/menue.h>
 #include <driver/framebuffer.h>
 #include <system/localize.h>
-#include <gui/widget/progressbar.h>
+#include <gui/widget/widget_helpers.h>
 #include <string>
 
 #define NEUTRINO_SCAN_SETTINGS_FILE	CONFIGDIR "/scan.conf"

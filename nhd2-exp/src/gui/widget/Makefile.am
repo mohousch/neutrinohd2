@@ -36,7 +36,6 @@ libneutrino_gui_widget_a_SOURCES = \
 	listframe.cpp \
 	listbox.cpp \
 	progresswindow.cpp \
-	progressbar.cpp \
 	framebox.cpp
 
 libneutrino_gui_widget2_a_SOURCES = \

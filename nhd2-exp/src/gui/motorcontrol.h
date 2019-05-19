@@ -35,7 +35,7 @@
 
 #include <gui/widget/menue.h>
 #include <driver/framebuffer.h>
-#include <gui/widget/progressbar.h>
+#include <gui/widget/widget_helpers.h>
 #include <string>
 
 

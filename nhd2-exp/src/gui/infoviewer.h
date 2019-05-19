@@ -47,8 +47,6 @@
 
 #include <gui/widget/menue.h>
 
-#include <gui/widget/progressbar.h>
-
 
 class CInfoViewer
 {

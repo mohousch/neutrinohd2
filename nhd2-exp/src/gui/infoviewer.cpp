@@ -52,7 +52,6 @@
 
 #include <gui/infoviewer.h>
 
-#include <gui/widget/progressbar.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/hintbox.h>
 

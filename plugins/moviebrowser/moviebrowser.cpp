@@ -70,7 +70,6 @@
 #include <gui/widget/icons.h>
 #include <sys/mount.h>
 #include <utime.h>
-#include <gui/widget/progressbar.h>
 
 #include <system/debug.h>
 #include <system/helpers.h>

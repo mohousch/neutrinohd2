@@ -26,14 +26,13 @@
 
 #include <neutrino.h>
 #include <gui/widget/stringinput.h>
+#include <gui/widget/widget_helpers.h>
 
 #include <sys/vfs.h> // for statfs
 #include <sys/types.h>
 #include <fcntl.h>
 
 #include <utime.h>
-
-#include <gui/widget/progressbar.h>
 
 #include <system/debug.h>
 

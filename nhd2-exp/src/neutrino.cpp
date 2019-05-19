@@ -111,7 +111,6 @@
 #include <gui/pictureviewer.h>
 #include <gui/motorcontrol.h>
 #include <gui/filebrowser.h>
-#include <gui/widget/progressbar.h>
 #if !defined (PLATFORM_COOLSTREAM)
 #include <gui/cam_menu.h>
 #endif
