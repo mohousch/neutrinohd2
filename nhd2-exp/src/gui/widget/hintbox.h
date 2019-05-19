@@ -45,7 +45,6 @@
 
 #include <gui/widget/icons.h>
 #include <gui/widget/widget_helpers.h>
-#include <gui/widget/headers.h>
 
 
 #define HINTBOX_WIDTH			550

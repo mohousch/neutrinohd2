@@ -97,7 +97,6 @@
 #include <gui/widget/window.h>
 #include <gui/widget/progressbar.h>
 #include <gui/widget/icons.h>
-#include <gui/widget/headers.h>
 #include <gui/widget/listbox.h>
 #include <gui/widget/listframe.h>
 #include <gui/widget/framebox.h>

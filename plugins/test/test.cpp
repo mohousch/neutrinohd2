@@ -311,7 +311,7 @@ void CTestMenu::test()
 	//
 	ClistBox *rightWidget = new ClistBox(&rightBox);
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
-	rightWidget->setItemsPerPage(5, 2);
+	rightWidget->setItemsPerPage(5,2);
 	rightWidget->setSelected(-1);
 	rightWidget->setOutFocus(true);
 

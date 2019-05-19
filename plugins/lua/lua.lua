@@ -122,7 +122,7 @@ function moviePlayer()
 	end
 end
 
-listWidget = neutrino.ClistBoxWidget("pythonTest:ClistBoxWidget", neutrino.NEUTRINO_ICON_MOVIE)
+listWidget = neutrino.ClistBoxWidget("luaTest:ClistBoxWidget", neutrino.NEUTRINO_ICON_MOVIE)
 
 function showMenu()
 	print("showMenu")

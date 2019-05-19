@@ -78,7 +78,6 @@
 #include <gui/widget/icons.h>
 #include <gui/widget/drawable.h>
 #include <gui/widget/window.h>
-#include <gui/widget/headers.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/widget_helpers.h>
 #include <gui/widget/progressbar.h>
@@ -186,7 +185,6 @@
 %include <src/gui/widget/icons.h>
 %include <src/gui/widget/drawable.h>
 %include <src/gui/widget/window.h>
-%include <src/gui/widget/headers.h>
 %include <src/gui/widget/icons.h>
 %include <src/gui/widget/widget_helpers.h>
 %include <src/gui/widget/progressbar.h>

@@ -40,11 +40,12 @@
 #include <driver/framebuffer.h>
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
+
 #include <system/localize.h>
 
 #include <gui/widget/menue.h>
 #include <gui/widget/window.h>
-#include <gui/widget/headers.h>
+#include <gui/widget/widget_helpers.h>
 
 
 class CKeyChooserItem;

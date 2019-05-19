@@ -35,7 +35,7 @@
 #include <gui/widget/menue.h>
 #include <gui/widget/progressbar.h>
 #include <gui/widget/window.h>
-#include <gui/widget/headers.h>
+#include <gui/widget/widget_helpers.h>
 
 
 class CProgressWindow : public CMenuTarget

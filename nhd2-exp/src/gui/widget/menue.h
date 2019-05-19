@@ -45,7 +45,6 @@
 #include <system/helpers.h>
 
 #include <gui/widget/widget_helpers.h>
-#include <gui/widget/headers.h>
 
 #include <driver/color.h>
 #include <gui/plugins.h>

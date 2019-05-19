@@ -33,7 +33,6 @@
 #include <gui/widget/icons.h>
 #include <gui/widget/textbox.h>
 #include <gui/widget/stringinput.h>
-#include <gui/widget/headers.h>
 
 #include <driver/color.h>
 

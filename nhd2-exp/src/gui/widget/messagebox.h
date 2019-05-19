@@ -47,7 +47,6 @@
 #include <gui/widget/icons.h>
 #include <gui/widget/window.h>
 #include <gui/widget/widget_helpers.h>
-#include <gui/widget/headers.h>
 
 
 #define MESSAGEBOX_WIDTH			550

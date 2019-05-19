@@ -43,7 +43,7 @@
 
 #include <gui/widget/textbox.h>
 #include <gui/widget/icons.h>
-#include <gui/widget/headers.h>
+#include <gui/widget/widget_helpers.h>
 
 #include <driver/framebuffer.h>
 
