@@ -353,13 +353,14 @@ void CTSBrowser::onDeleteFile(MI_MOVIE_INFO& movieFile)
 	}
 }
 
-#define HEAD_BUTTONS_COUNT	4
+#define HEAD_BUTTONS_COUNT	5
 const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_MUTE_SMALL, NONEXISTANT_LOCALE, NULL},
+	{ NEUTRINO_ICON_BUTTON_2, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_1, NONEXISTANT_LOCALE, NULL },
 };
 
 void CTSBrowser::showMenu()
@@ -390,8 +391,8 @@ void CTSBrowser::showMenu()
 	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 
 	mlist->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
-	mlist->addKey(RC_red, this, CRCInput::getSpecialKeyName(RC_red));
-	mlist->addKey(RC_green, this, CRCInput::getSpecialKeyName(RC_green));
+	mlist->addKey(RC_1, this, CRCInput::getSpecialKeyName(RC_1));
+	mlist->addKey(RC_2, this, CRCInput::getSpecialKeyName(RC_2));
 	mlist->addKey(RC_spkr, this, CRCInput::getSpecialKeyName(RC_spkr));
 
 	mlist->exec(NULL, "");
@@ -426,7 +427,7 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "RC_red")
+	else if(actionKey == "RC_1")
 	{
 		selected = mlist->getSelected();
 		hide();
@@ -434,7 +435,7 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		showMenu();
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "RC_green")
+	else if(actionKey == "RC_2")
 	{
 		openFileBrowser();
 		showMenu();

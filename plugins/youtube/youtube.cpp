@@ -108,9 +108,9 @@ const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL},
-	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL},
-	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL},
-	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL}
+	{ NEUTRINO_ICON_BUTTON_3, NONEXISTANT_LOCALE, NULL},
+	{ NEUTRINO_ICON_BUTTON_2, NONEXISTANT_LOCALE, NULL},
+	{ NEUTRINO_ICON_BUTTON_1, NONEXISTANT_LOCALE, NULL}
 };
 
 void CYTBrowser::showMenu()
@@ -152,10 +152,11 @@ void CYTBrowser::showMenu()
 
 	moviesMenu->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
 	moviesMenu->addKey(RC_setup, this, CRCInput::getSpecialKeyName(RC_setup));
-	moviesMenu->addKey(RC_red, this, CRCInput::getSpecialKeyName(RC_red));
+	moviesMenu->addKey(RC_1, this, CRCInput::getSpecialKeyName(RC_1));
+	moviesMenu->addKey(RC_2, this, CRCInput::getSpecialKeyName(RC_2));
+	moviesMenu->addKey(RC_3, this, CRCInput::getSpecialKeyName(RC_3));
+
 	moviesMenu->addKey(RC_record, this, CRCInput::getSpecialKeyName(RC_record));
-	moviesMenu->addKey(RC_green, this, CRCInput::getSpecialKeyName(RC_green));
-	moviesMenu->addKey(RC_yellow, this, CRCInput::getSpecialKeyName(RC_yellow));
 
 	moviesMenu->exec(NULL, "");
 	//moviesMenu->hide();
@@ -396,7 +397,7 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		else
 			return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "RC_red")
+	else if(actionKey == "RC_1")
 	{
 		ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		ytmode = cYTFeedParser::RELATED;
@@ -406,7 +407,7 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "RC_green")
+	else if(actionKey == "RC_2")
 	{
 		ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		ytmode = cYTFeedParser::NEXT;
@@ -416,7 +417,7 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "RC_yellow")
+	else if(actionKey == "RC_3")
 	{
 		ytvid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
 		ytmode = cYTFeedParser::PREV;

@@ -265,8 +265,8 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL }
+	{ NEUTRINO_ICON_BUTTON_2, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_1, NONEXISTANT_LOCALE, NULL }
 };
 
 void CTVShows::showMenu()
@@ -317,8 +317,8 @@ void CTVShows::showMenu()
 
 	mlist->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
 	mlist->addKey(RC_setup, this, CRCInput::getSpecialKeyName(RC_setup));
-	mlist->addKey(RC_green, this, CRCInput::getSpecialKeyName(RC_green));
-	mlist->addKey(RC_yellow, this, CRCInput::getSpecialKeyName(RC_yellow));
+	mlist->addKey(RC_1, this, CRCInput::getSpecialKeyName(RC_1));
+	mlist->addKey(RC_2, this, CRCInput::getSpecialKeyName(RC_2));
 
 	mlist->exec(NULL, "");
 	//mlist->hide();
@@ -380,7 +380,7 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 		else
 			return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "RC_green")
+	else if(actionKey == "RC_1")
 	{
 		page++;
 		selected = 0;
@@ -389,7 +389,7 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "RC_yellow")
+	else if(actionKey == "RC_2")
 	{
 		page--;
 

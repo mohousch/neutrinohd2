@@ -1845,10 +1845,10 @@ void ClistBoxWidget::initFrames()
 		page_start.push_back(items.size());
 
 		//
-		x = g_settings.screen_StartX /*+ 20*/;
-		y = g_settings.screen_StartY /*+ 20*/;
-		width = g_settings.screen_EndX - g_settings.screen_StartX /*- 40*/;
-		height = g_settings.screen_EndY - g_settings.screen_StartY /*- 40*/;
+		x = g_settings.screen_StartX;
+		y = g_settings.screen_StartY;
+		width = g_settings.screen_EndX - g_settings.screen_StartX;
+		height = g_settings.screen_EndY - g_settings.screen_StartY;
 
 		full_width = width;
 		full_height = height;
@@ -1983,7 +1983,7 @@ void ClistBoxWidget::initFrames()
 			}
 			else if(g_settings.menu_position == SNeutrinoSettings::MENU_POSITION_LEFT && MenuPos)
 			{
-				x = offx + frameBuffer->getScreenX() + BORDER_LEFT;
+				x = offx + frameBuffer->getScreenX() + BORDER_LEFT + ConnectLineBox_Width;
 				y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
 			}
 			else if(g_settings.menu_position == SNeutrinoSettings::MENU_POSITION_RIGHT && MenuPos)

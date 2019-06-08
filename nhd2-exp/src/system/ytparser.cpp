@@ -292,7 +292,7 @@ bool cYTFeedParser::ParseVideoInfo(cYTVideoInfo &vinfo)
 
 	for (unsigned i = 0; i < estr.size(); i++) 
 	{
-		std::string vurl = "http://www.youtube.com/get_video_info?video_id=";
+		std::string vurl = "https://www.youtube.com/get_video_info?video_id=";
 		vurl += vinfo.id;
 		vurl += estr[i];
 		vurl += "&ps=default&eurl=&gl=US&hl=en";

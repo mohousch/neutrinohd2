@@ -114,27 +114,6 @@ class CMessageBox
 		void paintButtons();
 
 	public:
-#if 0
-		enum result_
-		{
-			mbrYes    = 0,
-			mbrNo     = 1,
-			mbrCancel = 2,
-			mbrBack   = 3,
-			mbrOk     = 4
-		} result;
-	
-		enum buttons_
-		{
-			mbYes= 0x01,
-			mbNo = 0x02,
-			mbCancel = 0x04,
-			mbAll = 0x07,
-			mbBack = 0x08,
-			mbOk = 0x10,
-			mbNone = 0x20
-		} buttons;
-#endif
 		result_ result;
 		buttons_  buttons;
 		
@@ -156,9 +135,7 @@ class CMessageBox
 
 int MessageBox(const neutrino_locale_t Caption, const neutrino_locale_t Text, const result_ Default, const uint32_t ShowButtons, const char * const Icon = NULL, const int Width = MENU_WIDTH, const int timeout = -1, bool returnDefaultOnTimeout = false);
 int MessageBox(const neutrino_locale_t Caption, const char * const Text, const result_ Default, const uint32_t ShowButtons, const char * const Icon = NULL, const int Width = MENU_WIDTH, const int timeout = -1, bool returnDefaultOnTimeout = false); // UTF-8
-//int MessageBox(const neutrino_locale_t Caption, const std::string & Text, const result_ Default, const uint32_t ShowButtons, const char * const Icon = NULL, const int Width = MENU_WIDTH, const int timeout = -1, bool returnDefaultOnTimeout = false); // UTF-8
 int MessageBox(const char * const Caption, const neutrino_locale_t Text, const result_ Default, const uint32_t ShowButtons, const char * const Icon = NULL, const int Width = MENU_WIDTH, const int timeout = -1, bool returnDefaultOnTimeout = false);
 int MessageBox(const char * const Caption, const char * const Text, const result_ Default, const uint32_t ShowButtons, const char * const Icon = NULL, const int Width = MENU_WIDTH, const int timeout = -1, bool returnDefaultOnTimeout = false); // UTF-8
-//int MessageBox(const char * const Caption, const std::string & Text, const gresult_ Default, const uint32_t ShowButtons, const char * const Icon = NULL, const int Width = MENU_WIDTH, const int timeout = -1, bool returnDefaultOnTimeout = false); // UTF-8
 
 #endif
