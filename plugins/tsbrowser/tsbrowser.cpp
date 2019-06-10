@@ -388,6 +388,11 @@ void CTSBrowser::showMenu()
 	mlist->setSelected(selected);
 	mlist->enablePaintDate();
 
+	mlist->addWidget(WIDGET_TYPE_STANDARD);
+	mlist->addWidget(WIDGET_TYPE_CLASSIC);
+	mlist->addWidget(WIDGET_TYPE_EXTENDED);
+	mlist->enableWidgetChange();
+
 	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 
 	mlist->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));

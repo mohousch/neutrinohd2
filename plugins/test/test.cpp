@@ -111,6 +111,9 @@ class CTestMenu : public CMenuTarget
 		void testCTextBox();
 		void testCListFrame();
 		void testClistBox();
+		void testClistBox2();
+		void testClistBox3();
+		void testClistBox4();
 		void testCFrameBox();
 
 		//
@@ -1625,7 +1628,7 @@ void CTestMenu::testCButtons()
 // ClistBox
 void CTestMenu::testClistBox()
 {
-	dprintf(DEBUG_NORMAL, "\ntesting ClistBox\n");
+	dprintf(DEBUG_NORMAL, "\ntesting ClistBox(standard)\n");
 
 	CBox Box;
 	
@@ -1738,7 +1741,7 @@ void CTestMenu::testClistBox()
 	}
 
 	// head
-	listBox->setTitle("ClistBox", NEUTRINO_ICON_MOVIE);
+	listBox->setTitle("ClistBox(standard)", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
 	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
 	listBox->enablePaintDate();
@@ -1793,6 +1796,693 @@ REPEAT:
 		else if(msg == RC_page_up)
 		{
 			listBox->scrollPageUp();
+		}
+		else if(msg == RC_ok)
+		{
+
+			hide();
+
+			selected = listBox->getSelected();
+
+			if (&m_vMovieInfo[selected].file != NULL) 
+			{
+				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
+				tmpMoviePlayerGui.exec(NULL, "");
+			}
+
+			goto REPEAT;
+		}
+		else if(msg == RC_info)
+		{
+			hide();
+			selected = listBox->getSelected();
+			m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
+			goto REPEAT;
+		}
+
+		CFrameBuffer::getInstance()->blit();
+	}
+
+	hide();
+	listBox->hide();
+	delete listBox;
+	listBox = NULL;
+
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
+}
+
+// ClistBox(classic)
+void CTestMenu::testClistBox2()
+{
+	dprintf(DEBUG_NORMAL, "\ntesting ClistBox(classic)\n");
+
+	CBox Box;
+	
+	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
+	Box.iHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20;
+
+	Box.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - Box.iWidth ) >> 1 );
+	Box.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - Box.iHeight) >> 1 );
+
+	ClistBox *listBox = new ClistBox(&Box);
+
+	CMenuItem* item = NULL;
+
+	//
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
+
+	CFileList filelist;
+	
+	// recordingdir
+	std::string Path_local = g_settings.network_nfs_recordingdir;
+	m_vMovieInfo.clear();
+	
+	//
+	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	{
+		// filter them
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
+		{
+			//
+			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+					
+			movieInfo.file.Name = files->Name;
+					
+			// load movie infos (from xml file)
+			m_movieInfo.loadMovieInfo(&movieInfo);
+
+			std::string tmp_str = files->getFileName();
+
+			removeExtension(tmp_str);
+
+			// refill if empty
+			if(movieInfo.epgTitle.empty())
+				movieInfo.epgTitle = tmp_str;
+
+			if(movieInfo.epgInfo1.empty())
+				movieInfo.epgInfo1 = tmp_str;
+
+			//if(movieInfo.epgInfo2.empty())
+			//	movieInfo.epgInfo2 = tmp_str;
+
+			//thumbnail
+			std::string fname = "";
+			fname = files->Name;
+			changeFileNameExt(fname, ".jpg");
+					
+			if(!access(fname.c_str(), F_OK) )
+				movieInfo.tfile = fname.c_str();
+					
+			// 
+			m_vMovieInfo.push_back(movieInfo);
+		}
+	}
+
+	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+	{
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+		//item->setOptionInfo("OptionInfo");
+
+		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+		//item->setOptionInfo1("OptionInfo1");
+
+		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+		//item->setOptionInfo2("OptionInfo2");
+
+		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		item->set2lines();
+
+		std::string tmp = m_vMovieInfo[i].epgTitle;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo1;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo2;
+
+		item->setHelpText(tmp.c_str());
+
+		listBox->addItem(item);
+	}
+
+	// widgettype
+	listBox->setWidgetType(WIDGET_TYPE_CLASSIC);
+	listBox->setItemsPerPage(5,2);
+
+	// head
+	listBox->setTitle("ClistBox(Frame)", NEUTRINO_ICON_MOVIE);
+	listBox->enablePaintHead();
+	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
+	listBox->enablePaintDate();
+
+	// footer
+	listBox->enablePaintFoot();
+	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+
+	// footinfo
+	listBox->enablePaintFootInfo(80);
+
+REPEAT:
+	listBox->setSelected(selected);
+	listBox->paint();
+
+	CFrameBuffer::getInstance()->blit();
+
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+	uint32_t sec_timer_id = 0;
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
+	bool loop = true;
+
+	while(loop)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+
+		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			listBox->paintHead();
+		} 
+		else if (msg == RC_home) 
+		{
+			loop = false;
+		}
+		else if(msg == RC_down)
+		{
+			listBox->scrollLineDown();
+		}
+		else if(msg == RC_up)
+		{
+			listBox->scrollLineUp();
+		}
+		else if(msg == RC_page_down)
+		{
+			listBox->scrollPageDown();
+		}
+		else if(msg == RC_page_up)
+		{
+			listBox->scrollPageUp();
+		}
+		else if(msg == RC_left)
+		{
+			listBox->swipLeft();
+		}
+		else if(msg == RC_right)
+		{
+			listBox->swipRight();
+		}
+		else if(msg == RC_ok)
+		{
+
+			hide();
+
+			selected = listBox->getSelected();
+
+			if (&m_vMovieInfo[selected].file != NULL) 
+			{
+				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
+				tmpMoviePlayerGui.exec(NULL, "");
+			}
+
+			goto REPEAT;
+		}
+		else if(msg == RC_info)
+		{
+			hide();
+			selected = listBox->getSelected();
+			m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
+			goto REPEAT;
+		}
+
+		CFrameBuffer::getInstance()->blit();
+	}
+
+	hide();
+	listBox->hide();
+	delete listBox;
+	listBox = NULL;
+
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
+}
+
+// ClistBox(extended)
+void CTestMenu::testClistBox3()
+{
+	dprintf(DEBUG_NORMAL, "\ntesting ClistBox(extended)\n");
+
+	CBox Box;
+	
+	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
+	Box.iHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20;
+
+	Box.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - Box.iWidth ) >> 1 );
+	Box.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - Box.iHeight) >> 1 );
+
+	ClistBox *listBox = new ClistBox(&Box);
+
+	CMenuItem* item = NULL;
+
+	//
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
+
+	CFileList filelist;
+	
+	// recordingdir
+	std::string Path_local = g_settings.network_nfs_recordingdir;
+	m_vMovieInfo.clear();
+	
+	//
+	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	{
+		// filter them
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
+		{
+			//
+			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+					
+			movieInfo.file.Name = files->Name;
+					
+			// load movie infos (from xml file)
+			m_movieInfo.loadMovieInfo(&movieInfo);
+
+			std::string tmp_str = files->getFileName();
+
+			removeExtension(tmp_str);
+
+			// refill if empty
+			if(movieInfo.epgTitle.empty())
+				movieInfo.epgTitle = tmp_str;
+
+			if(movieInfo.epgInfo1.empty())
+				movieInfo.epgInfo1 = tmp_str;
+
+			//if(movieInfo.epgInfo2.empty())
+			//	movieInfo.epgInfo2 = tmp_str;
+
+			//thumbnail
+			std::string fname = "";
+			fname = files->Name;
+			changeFileNameExt(fname, ".jpg");
+					
+			if(!access(fname.c_str(), F_OK) )
+				movieInfo.tfile = fname.c_str();
+					
+			// 
+			m_vMovieInfo.push_back(movieInfo);
+		}
+	}
+
+	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+	{
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+		//item->setOptionInfo("OptionInfo");
+
+		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+		//item->setOptionInfo1("OptionInfo1");
+
+		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+		//item->setOptionInfo2("OptionInfo2");
+
+		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		item->set2lines();
+
+		std::string tmp = m_vMovieInfo[i].epgTitle;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo1;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo2;
+
+		item->setHelpText(tmp.c_str());
+
+		listBox->addItem(item);
+	}
+
+	// widgettype
+	listBox->setWidgetType(WIDGET_TYPE_EXTENDED);
+	listBox->setItemsPerPage(5,2);
+
+	// head
+	listBox->setTitle("ClistBox(Frame)", NEUTRINO_ICON_MOVIE);
+	listBox->enablePaintHead();
+	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
+	listBox->enablePaintDate();
+
+	// footer
+	listBox->enablePaintFoot();
+	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+
+	// footinfo
+	listBox->enablePaintFootInfo(80);
+
+REPEAT:
+	listBox->setSelected(selected);
+	listBox->paint();
+
+	CFrameBuffer::getInstance()->blit();
+
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+	uint32_t sec_timer_id = 0;
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
+	bool loop = true;
+
+	while(loop)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+
+		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			listBox->paintHead();
+		} 
+		else if (msg == RC_home) 
+		{
+			loop = false;
+		}
+		else if(msg == RC_down)
+		{
+			listBox->scrollLineDown();
+		}
+		else if(msg == RC_up)
+		{
+			listBox->scrollLineUp();
+		}
+		else if(msg == RC_page_down)
+		{
+			listBox->scrollPageDown();
+		}
+		else if(msg == RC_page_up)
+		{
+			listBox->scrollPageUp();
+		}
+		else if(msg == RC_left)
+		{
+			listBox->swipLeft();
+		}
+		else if(msg == RC_right)
+		{
+			listBox->swipRight();
+		}
+		else if(msg == RC_ok)
+		{
+
+			hide();
+
+			selected = listBox->getSelected();
+
+			if (&m_vMovieInfo[selected].file != NULL) 
+			{
+				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
+				tmpMoviePlayerGui.exec(NULL, "");
+			}
+
+			goto REPEAT;
+		}
+		else if(msg == RC_info)
+		{
+			hide();
+			selected = listBox->getSelected();
+			m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
+			goto REPEAT;
+		}
+
+		CFrameBuffer::getInstance()->blit();
+	}
+
+	hide();
+	listBox->hide();
+	delete listBox;
+	listBox = NULL;
+
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
+}
+
+// ClistBox(frame)
+void CTestMenu::testClistBox4()
+{
+	dprintf(DEBUG_NORMAL, "\ntesting ClistBox(frame)\n");
+
+	CBox Box;
+	
+	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
+	Box.iHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20;
+
+	Box.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - Box.iWidth ) >> 1 );
+	Box.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - Box.iHeight) >> 1 );
+
+	ClistBox *listBox = new ClistBox(&Box);
+
+	CMenuItem* item = NULL;
+
+	//
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
+
+	CFileList filelist;
+	
+	// recordingdir
+	std::string Path_local = g_settings.network_nfs_recordingdir;
+	m_vMovieInfo.clear();
+	
+	//
+	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	{
+		// filter them
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
+		{
+			//
+			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+					
+			movieInfo.file.Name = files->Name;
+					
+			// load movie infos (from xml file)
+			m_movieInfo.loadMovieInfo(&movieInfo);
+
+			std::string tmp_str = files->getFileName();
+
+			removeExtension(tmp_str);
+
+			// refill if empty
+			if(movieInfo.epgTitle.empty())
+				movieInfo.epgTitle = tmp_str;
+
+			if(movieInfo.epgInfo1.empty())
+				movieInfo.epgInfo1 = tmp_str;
+
+			//if(movieInfo.epgInfo2.empty())
+			//	movieInfo.epgInfo2 = tmp_str;
+
+			//thumbnail
+			std::string fname = "";
+			fname = files->Name;
+			changeFileNameExt(fname, ".jpg");
+					
+			if(!access(fname.c_str(), F_OK) )
+				movieInfo.tfile = fname.c_str();
+					
+			// 
+			m_vMovieInfo.push_back(movieInfo);
+		}
+	}
+
+	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+	{
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+		//item->setOptionInfo("OptionInfo");
+
+		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+		//item->setOptionInfo1("OptionInfo1");
+
+		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+		//item->setOptionInfo2("OptionInfo2");
+
+		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		item->set2lines();
+
+		std::string tmp = m_vMovieInfo[i].epgTitle;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo1;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo2;
+
+		item->setHelpText(tmp.c_str());
+
+		listBox->addItem(item);
+	}
+
+	// widgettype
+	listBox->setWidgetType(WIDGET_TYPE_FRAME);
+	listBox->setItemsPerPage(5,2);
+
+	// head
+	listBox->setTitle("ClistBox(Frame)", NEUTRINO_ICON_MOVIE);
+	listBox->enablePaintHead();
+	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
+	listBox->enablePaintDate();
+
+	// footer
+	listBox->enablePaintFoot();
+	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+
+	// footinfo
+	listBox->enablePaintFootInfo(80);
+
+REPEAT:
+	listBox->setSelected(selected);
+	listBox->paint();
+
+	CFrameBuffer::getInstance()->blit();
+
+	// loop
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+	uint32_t sec_timer_id = 0;
+
+	// add sec timer
+	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
+
+	bool loop = true;
+
+	while(loop)
+	{
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+
+		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			listBox->paintHead();
+		} 
+		else if (msg == RC_home) 
+		{
+			loop = false;
+		}
+		else if(msg == RC_down)
+		{
+			listBox->scrollLineDown();
+		}
+		else if(msg == RC_up)
+		{
+			listBox->scrollLineUp();
+		}
+		else if(msg == RC_page_down)
+		{
+			listBox->scrollPageDown();
+		}
+		else if(msg == RC_page_up)
+		{
+			listBox->scrollPageUp();
+		}
+		else if(msg == RC_left)
+		{
+			listBox->swipLeft();
+		}
+		else if(msg == RC_right)
+		{
+			listBox->swipRight();
 		}
 		else if(msg == RC_ok)
 		{
@@ -3080,6 +3770,24 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "listbox2")
+	{
+		testClistBox2();
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "listbox3")
+	{
+		testClistBox3();
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "listbox4")
+	{
+		testClistBox4();
+
+		return menu_return::RETURN_REPAINT;
+	}
 	else if(actionKey == "framebox")
 	{
 		testCFrameBox();
@@ -3362,7 +4070,10 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CWindow(customColor)", true, NULL, this, "windowcustomcolor"));
 	mainMenu->addItem(new CMenuForwarder("CTextBox", true, NULL, this, "textbox"));
 	mainMenu->addItem(new CMenuForwarder("CListFrame", true, NULL, this, "listframe"));
-	mainMenu->addItem(new CMenuForwarder("ClistBox", true, NULL, this, "listbox"));
+	mainMenu->addItem(new CMenuForwarder("ClistBox(standard)", true, NULL, this, "listbox"));
+	mainMenu->addItem(new CMenuForwarder("ClistBox(classic)", true, NULL, this, "listbox2"));
+	mainMenu->addItem(new CMenuForwarder("ClistBox(extended)", true, NULL, this, "listbox3"));
+	mainMenu->addItem(new CMenuForwarder("ClistBox(Frame)", true, NULL, this, "listbox4"));
 	mainMenu->addItem(new CMenuForwarder("CFrameBox", true, NULL, this, "framebox"));
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));

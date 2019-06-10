@@ -2069,7 +2069,6 @@ void ClistBoxWidget::paintFoot()
 {
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
-		//headers.paintFoot(x, y + height - fheight, width, fheight);
 		frameBuffer->paintBoxRel(x, y + height - fheight, width, fheight, backgroundColor);
 	}
 	else
@@ -2187,6 +2186,7 @@ void ClistBoxWidget::paintItems()
 	
 		items_width = width - sb_width;
 
+		// extended
 		if(widgetType == WIDGET_TYPE_EXTENDED)
 		{
 			items_width = 2*(width/3) - sb_width;

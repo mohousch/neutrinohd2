@@ -87,6 +87,7 @@ class ClistBox
 		CItems2DetailsLine itemsLine;
 		CScrollBar scrollBar;
 		CHeaders headers;
+		CButtons buttons;
 
 		// frame
 		fb_pixel_t backgroundColor;
