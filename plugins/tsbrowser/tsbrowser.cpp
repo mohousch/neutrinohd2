@@ -369,7 +369,12 @@ void CTSBrowser::showMenu()
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "mplay", RC_nokey, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "mplay");
+
+		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		item->set2lines();
+		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
 
 		std::string tmp = m_vMovieInfo[i].epgTitle;
 		tmp += "\n";
@@ -378,6 +383,10 @@ void CTSBrowser::showMenu()
 		tmp += m_vMovieInfo[i].epgInfo2;
 
 		item->setHelpText(tmp.c_str());
+
+		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 
 		mlist->addItem(item);
 	}
@@ -393,6 +402,8 @@ void CTSBrowser::showMenu()
 	mlist->addWidget(WIDGET_TYPE_EXTENDED);
 	mlist->enableWidgetChange();
 
+	mlist->enablePaintFootInfo();
+
 	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 
 	mlist->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
@@ -401,7 +412,6 @@ void CTSBrowser::showMenu()
 	mlist->addKey(RC_spkr, this, CRCInput::getSpecialKeyName(RC_spkr));
 
 	mlist->exec(NULL, "");
-	//mlist->hide();
 	delete mlist;
 	mlist = NULL;
 }

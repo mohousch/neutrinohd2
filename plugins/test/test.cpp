@@ -2392,13 +2392,10 @@ void CTestMenu::testClistBox4()
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
 
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
-		//item->setOptionInfo("OptionInfo");
 
 		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
-		//item->setOptionInfo1("OptionInfo1");
 
 		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
-		//item->setOptionInfo2("OptionInfo2");
 
 		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
