@@ -1625,7 +1625,7 @@ void CTestMenu::testCButtons()
 	hide();
 }
 
-// ClistBox
+// ClistBox(standard)
 void CTestMenu::testClistBox()
 {
 	dprintf(DEBUG_NORMAL, "\ntesting ClistBox(standard)\n");
@@ -1962,7 +1962,7 @@ void CTestMenu::testClistBox2()
 	listBox->setItemsPerPage(5,2);
 
 	// head
-	listBox->setTitle("ClistBox(Frame)", NEUTRINO_ICON_MOVIE);
+	listBox->setTitle("ClistBox(classic)", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
 	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
 	listBox->enablePaintDate();
@@ -2191,7 +2191,7 @@ void CTestMenu::testClistBox3()
 	listBox->setItemsPerPage(5,2);
 
 	// head
-	listBox->setTitle("ClistBox(Frame)", NEUTRINO_ICON_MOVIE);
+	listBox->setTitle("ClistBox(extended)", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
 	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
 	listBox->enablePaintDate();
