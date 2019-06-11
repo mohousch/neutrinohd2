@@ -284,21 +284,35 @@ void ClistBox::initFrames()
 			cFrameBox.iHeight = hheight + listmaxshow*item_height + fheight + footInfoHeight + interFrame;
 		}
 
+		// sanity check
+		if(cFrameBox.iHeight > ((int)frameBuffer->getScreenHeight() - 20))
+			cFrameBox.iHeight = frameBuffer->getScreenHeight() - 20;
+
+		// recalcultae width
+		if(paintFootInfo)
+		{
+			cFrameBox.iWidth += ConnectLineBox_Width;
+		}
+
+		// sanity check
+		if(cFrameBox.iWidth > (int)frameBuffer->getScreenWidth() - 20)
+			cFrameBox.iWidth = frameBuffer->getScreenWidth() - 20;
+
+		if(paintFootInfo)
+		{
+			cFrameBox.iWidth -= ConnectLineBox_Width;
+		}
+
 		if(enableCenter)
 		{
 			cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth ) >> 1 );
 			cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
 		}
 
-		//
+		// sanity check
 		if(paintFootInfo)
 		{
-			if(widgetType == WIDGET_TYPE_STANDARD || widgetType == WIDGET_TYPE_CLASSIC)
-			{
-				if(cFrameBox.iX < (BORDER_LEFT + ConnectLineBox_Width))
-					cFrameBox.iX = BORDER_LEFT + ConnectLineBox_Width;
-			}
-			else if(widgetType == WIDGET_TYPE_EXTENDED || widgetType == WIDGET_TYPE_FRAME)
+			if(widgetType == WIDGET_TYPE_EXTENDED || widgetType == WIDGET_TYPE_FRAME)
 			{
 				footInfoHeight = 0;
 				interFrame = 0;

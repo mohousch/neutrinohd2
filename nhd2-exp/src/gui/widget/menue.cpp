@@ -1181,7 +1181,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	else
 	{
-		int stringstartposX = x + (offx == 0? 0: offx);
+		int stringstartposX = x + (offx == 0? 0 : offx);
 
 		const char * option_text = getOption();	
 	
@@ -1892,21 +1892,24 @@ void ClistBoxWidget::initFrames()
 		height = wanted_height;
 
 		// recalculate height
-		if(height > ((int)frameBuffer->getScreenHeight() - 10))
-			height = frameBuffer->getScreenHeight() - 10;
+		if(height > ((int)frameBuffer->getScreenHeight() - 20))
+			height = frameBuffer->getScreenHeight() - 20;
 
 		width = wanted_width;
 
 		int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(l_name, true); // UTF-8
 
 		// recalculate width
-		if (neededWidth > width - 48) 
+		if (neededWidth > width - BORDER_LEFT - BORDER_RIGHT) 
 		{
-			width = neededWidth + 49;
-		
-			if(width > (int)frameBuffer->getScreenWidth())
-				width = frameBuffer->getScreenWidth();
+			width = neededWidth + BORDER_LEFT + BORDER_RIGHT;
 		}
+
+		if(FootInfo)
+			width += ConnectLineBox_Width;
+		
+		if(width > (int)frameBuffer->getScreenWidth() - 20)
+			width = frameBuffer->getScreenWidth() - 20;
 
 		// head height
 		icon_head_w = 0;
