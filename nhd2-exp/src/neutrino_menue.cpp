@@ -82,8 +82,8 @@ void CNeutrinoApp::mainMenu(void)
 	nMenu->enableShrinkMenu();
 	nMenu->enableMenuPosition();
 	nMenu->enableWidgetChange();
-	nMenu->enablePaintFootInfo();
 	nMenu->enablePaintDate();
+	nMenu->enablePaintFootInfo();
 	  
 	// tv modus
 	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE), true);

@@ -131,7 +131,7 @@ function showMenu()
 	listWidget:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
 	listWidget:setMode(neutrino.MODE_MENU)
 	listWidget:enableShrinkMenu()
-	--listWidget:enableWidgetChange()
+	listWidget:enableWidgetChange()
 	listWidget:enablePaintFootInfo()
 
 	-- CMessageBox

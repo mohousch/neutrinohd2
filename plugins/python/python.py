@@ -129,7 +129,7 @@ class testMenu(CMenuTarget):
 		self.listWidget.setWidgetType(WIDGET_TYPE_CLASSIC)
 		self.listWidget.setMode(MODE_MENU)
 		self.listWidget.enableShrinkMenu()
-		#self.listWidget.enableWidgetChange()
+		self.listWidget.enableWidgetChange()
 		self.listWidget.enablePaintFootInfo()
 
 		# messageBox
@@ -168,7 +168,7 @@ class testMenu(CMenuTarget):
 		item7.setHelpText("testing CPictureViewerGui")
 
 		# CFileBrowser | CMoviePlayerGui
-		item8 = CMenuForwarder("CFileBrowser|CMoviePlayerGui")
+		item8 = CMenuForwarder("CMoviePlayerGui")
 		item8.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
 		item8.setHelpText("testing CMoviePlayerGui")
 
