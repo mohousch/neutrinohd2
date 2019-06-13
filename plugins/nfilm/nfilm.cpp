@@ -403,7 +403,7 @@ void CNFilm::showMenu()
 
 	mlist->setMode(MODE_LISTBOX);
 	mlist->setWidgetType(WIDGET_TYPE_FRAME);
-	mlist->setItemsPerPage(3, 1);
+	mlist->setItemsPerPage(6, 2);
 	//mlist->setItemBoxColor(COL_YELLOW);
 	mlist->setSelected(selected);
 	mlist->enablePaintDate();
