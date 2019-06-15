@@ -1827,6 +1827,7 @@ void ClistBoxWidget::initFrames()
 		item->item_selectedColor = itemBoxColor;
 	} 
 
+	// init frames
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		page_start.clear();
@@ -2278,16 +2279,9 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				itemsLine.paint(x, y, width, height + interFrame, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
 
 
-				// info icon
-				int iw, ih;
-
-				// check for minimum hight
-				if(full_height - hheight - fheight >= ITEM_ICON_H)
-				{ 
-					frameBuffer->getIconSize(item->itemIcon.c_str(), &iw, &ih);
-
+				// item icon
+				if(!item->itemIcon.empty())
 					frameBuffer->displayImage(item->itemIcon.c_str(), x + ICON_OFFSET, y + height + interFrame + (cFrameFootInfo.iHeight - 40)/2, 100, 40);
-				}
 
 				// HelpText
 				cFrameBoxText.iX = x + 100 + ICON_OFFSET;
@@ -2304,6 +2298,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				textBox = new CTextBox();
 				textBox->setPosition(&cFrameBoxText);
 				textBox->disablePaintBackground();
+				textBox->setMode(~SCROLL);
 
 				// HelpText
 				if(!item->itemHelpText.empty())
