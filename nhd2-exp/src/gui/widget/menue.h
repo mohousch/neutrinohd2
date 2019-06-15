@@ -602,7 +602,7 @@ class ClistBoxWidget : public CMenuTarget
 		bool shrinkMenu;
 
 		//
-		CHeaders headers;
+		CHeaders * headers;
 		CItems2DetailsLine itemsLine;
 		CScrollBar scrollBar;
 		CButtons buttons;

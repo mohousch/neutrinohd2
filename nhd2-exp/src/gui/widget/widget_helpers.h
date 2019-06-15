@@ -90,7 +90,7 @@ class CHeaders
 		const struct button_label* hbutton_labels;
 
 		// foot
-		CBox footBox;
+		//CBox footBox;
 		fb_pixel_t fbgcolor;
 		int fradius;
 		int fcorner;
@@ -104,6 +104,7 @@ class CHeaders
 		void setHeadColor(fb_pixel_t col){bgcolor = col;};
 		void setHeadCorner(int ra = NO_RADIUS, int co = CORNER_NONE){radius = ra; corner = co;};
 		void setHeadGradient(int grad){gradient = grad;};
+
 		void enablePaintDate(void){paintDate = true;};
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 		void enableLogo(void){logo = true;};

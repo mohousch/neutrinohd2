@@ -147,7 +147,7 @@ int CSwigHelpers::getRCCode(int timeout)
 		return -1;
 }
 
-int CSwigHelpers::addTimer(uint64_t Interval, bool oneshot, bool correct_time)
+void CSwigHelpers::addTimer(uint64_t Interval, bool oneshot, bool correct_time)
 {
 	g_RCInput->addTimer(Interval, oneshot, correct_time);
 }

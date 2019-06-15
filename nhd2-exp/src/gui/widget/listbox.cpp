@@ -257,6 +257,16 @@ void ClistBox::initFrames()
 	}
 	else 
 	{
+		// sanity check
+		if(paintFootInfo)
+		{
+			if(widgetType == WIDGET_TYPE_EXTENDED || widgetType == WIDGET_TYPE_FRAME || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_MENU) || widgetMode == MODE_SETUP)
+			{
+				cFrameFootInfo.iHeight = 0;
+				interFrame = 0;
+			}
+		}
+
 		// calculate some values
 		int itemHeightTotal = 0;
 		item_height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 3;
@@ -325,16 +335,6 @@ void ClistBox::initFrames()
 		{
 			cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth ) >> 1 );
 			cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
-		}
-
-		// sanity check
-		if(paintFootInfo)
-		{
-			if(widgetType == WIDGET_TYPE_EXTENDED || widgetType == WIDGET_TYPE_FRAME || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_MENU) || widgetMode == MODE_SETUP)
-			{
-				cFrameFootInfo.iHeight = 0;
-				interFrame = 0;
-			}
 		}
 	}
 }

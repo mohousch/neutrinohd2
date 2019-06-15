@@ -69,7 +69,7 @@ class CTestMenu : public CMenuTarget
 		CBouquetList* webTVBouquetList;
 
 		CButtons buttons;
-		CHeaders headers;
+		CHeaders * headers;
 
 		// testing
 		void test();
@@ -256,15 +256,17 @@ void CTestMenu::test()
 	footBox.iY = g_settings.screen_EndY - 10 - footBox.iHeight;
 	footBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
 
-	headers.enablePaintDate();
-	headers.setHeaderButtons(frameBoxHeadButtons, FRAMEBOX_HEAD_BUTTONS_COUNT);
-	headers.setHeadColor(COL_DARK_TURQUOISE);
-	headers.setHeadCorner();
-	headers.setHeadGradient(nogradient);
+	headers = new CHeaders();
 
-	headers.setFootColor(COL_DARK_TURQUOISE);
-	headers.setFootCorner();
-	headers.setFootGradient(nogradient);
+	headers->enablePaintDate();
+	headers->setHeaderButtons(frameBoxHeadButtons, FRAMEBOX_HEAD_BUTTONS_COUNT);
+	headers->setHeadColor(COL_DARK_TURQUOISE);
+	headers->setHeadCorner();
+	headers->setHeadGradient(nogradient);
+
+	headers->setFootColor(COL_DARK_TURQUOISE);
+	headers->setFootCorner();
+	headers->setFootGradient(nogradient);
 
 	// leftWidget
 	CBox leftBox;
@@ -436,8 +438,8 @@ REPAINT:
 	}
 
 	// paint all widget
-	headers.paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
-	headers.paintFoot(footBox, 4, frameButtons);
+	headers->paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
+	headers->paintFoot(footBox, 4, frameButtons);
 	//topWidget->paint();
 	leftWidget->paint();
 	rightWidget->paint();
@@ -461,7 +463,7 @@ REPAINT:
 
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			headers.paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
+			headers->paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
 		} 
 		else if (msg == RC_home) 
 		{
@@ -711,6 +713,12 @@ REPAINT:
 	
 	delete tmdb;
 	tmdb = NULL;
+
+	if(headers)
+	{
+		delete headers;
+		headers = NULL;
+	}
 }
 
 // CBox
@@ -887,18 +895,20 @@ void CTestMenu::testCHeaders()
 	footBox.iY = g_settings.screen_EndY - 10 - footBox.iHeight;
 	footBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
 
-	headers.enablePaintDate();
-	headers.setHeaderButtons(frameBoxHeadButtons, FRAMEBOX_HEAD_BUTTONS_COUNT);
-	//headers.setHeadColor(COL_BLUE);
-	//headers.setHeadCorner();
-	//headers.setHeadGradient(nogradient);
+	headers = new CHeaders();
 
-	//headers.setFootColor(COL_BLUE);
-	//headers.setFootCorner();
-	//headers.setFootGradient(nogradient);
+	headers->enablePaintDate();
+	headers->setHeaderButtons(frameBoxHeadButtons, FRAMEBOX_HEAD_BUTTONS_COUNT);
+	//headers->setHeadColor(COL_BLUE);
+	//headers->setHeadCorner();
+	//headers->setHeadGradient(nogradient);
 
-	headers.paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
-	headers.paintFoot(footBox, 4, frameButtons);	
+	//headers->setFootColor(COL_BLUE);
+	//headers->setFootCorner();
+	//headers->setFootGradient(nogradient);
+
+	headers->paintHead(headBox, "test CHeaders", NEUTRINO_ICON_MP3);
+	headers->paintFoot(footBox, 4, frameButtons);	
 	CFrameBuffer::getInstance()->blit();
 
 	// loop
@@ -920,7 +930,7 @@ void CTestMenu::testCHeaders()
 
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			headers.paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
+			headers->paintHead(headBox, "test CHeaders", NEUTRINO_ICON_MP3);
 		} 
 		else if (msg == RC_home) 
 		{
@@ -934,6 +944,12 @@ void CTestMenu::testCHeaders()
 
 	g_RCInput->killTimer(sec_timer_id);
 	sec_timer_id = 0;
+
+	if(headers)
+	{
+		delete headers;
+		headers = NULL;
+	}
 }
 
 // CStringInput
@@ -4589,6 +4605,7 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CBox", true, NULL, this, "box"));
 	mainMenu->addItem(new CMenuForwarder("CIcon", true, NULL, this, "icon"));
 	mainMenu->addItem(new CMenuForwarder("CImage", true, NULL, this, "image"));
+	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "Widget Components") );
 	mainMenu->addItem(new CMenuForwarder("CHeaders", true, NULL, this, "headers"));
 	mainMenu->addItem(new CMenuForwarder("CWindow", true, NULL, this, "window"));
@@ -4604,7 +4621,6 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("ClistBox(list mode)", true, NULL, this, "listbox6"));
 	mainMenu->addItem(new CMenuForwarder("CFrameBox", true, NULL, this, "framebox"));
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
-	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	
 	//
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "menu<>listBox Widget") );

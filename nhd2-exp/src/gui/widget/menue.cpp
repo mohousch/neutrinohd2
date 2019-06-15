@@ -1687,6 +1687,8 @@ ClistBoxWidget::ClistBoxWidget()
 
 	widgetMode = MODE_LISTBOX;
 	MenuPos = false;
+
+	headers = new CHeaders();
 }
 
 ClistBoxWidget::ClistBoxWidget(const neutrino_locale_t Name, const std::string & Icon, const int mwidth, const int mheight)
@@ -1768,6 +1770,8 @@ void ClistBoxWidget::Init(const std::string & Icon, const int mwidth, const int 
 
 	widgetMode = MODE_LISTBOX;
 	MenuPos = false;
+
+	headers = new CHeaders();
 }
 
 void ClistBoxWidget::move(int xoff, int yoff)
@@ -1782,6 +1786,12 @@ ClistBoxWidget::~ClistBoxWidget()
 
 	items.clear();
 	page_start.clear();
+
+	if(headers)
+	{
+		delete headers;
+		headers = NULL;
+	}
 }
 
 void ClistBoxWidget::addItem(CMenuItem *menuItem, const bool defaultselected)
@@ -2062,10 +2072,10 @@ void ClistBoxWidget::paintHead()
 	else
 	{
 		if(PaintDate)
-			headers.enablePaintDate();
+			headers->enablePaintDate();
 
-		headers.setHeaderButtons(hbutton_labels, hbutton_count);
-		headers.paintHead(x, y, width, hheight, l_name, iconfile.c_str());
+		headers->setHeaderButtons(hbutton_labels, hbutton_count);
+		headers->paintHead(x, y, width, hheight, l_name, iconfile.c_str());
 	}
 }
 
@@ -2077,7 +2087,7 @@ void ClistBoxWidget::paintFoot()
 	}
 	else
 	{
-		headers.paintFoot(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
+		headers->paintFoot(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
 	}
 }
 

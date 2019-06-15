@@ -98,7 +98,7 @@ class CSwigHelpers
 
 		// CRCInput
 		int getRCCode(int timeout = 10);
-		int addTimer(uint64_t Interval, bool oneshot = true, bool correct_time = true );
+		void addTimer(uint64_t Interval, bool oneshot = true, bool correct_time = true );
 		void killTimer(uint32_t id);
 		int getRCData(int timeout = 10);
 };

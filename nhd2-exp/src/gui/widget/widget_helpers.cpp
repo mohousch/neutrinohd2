@@ -356,7 +356,7 @@ void CHeaders::paintHead(CBox position, const char * const title, const char * c
 void CHeaders::paintFoot(int x, int y, int dx, int dy, const unsigned int count, const struct button_label * const content)
 {
 	// box
-	CFrameBuffer::getInstance()->paintBoxRel(x, y, dx, dy, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+	CFrameBuffer::getInstance()->paintBoxRel(x, y, dx, dy, fbgcolor, fradius, fcorner, fgradient);
 
 
 	// buttons
