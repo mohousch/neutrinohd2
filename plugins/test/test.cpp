@@ -346,10 +346,18 @@ void CTestMenu::test()
 	ClistBox *rightWidget = new ClistBox(&rightBox);
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
 	rightWidget->setItemsPerPage(5,2);
-	rightWidget->setSelected(-1);
+	rightWidget->setSelected(right_selected);
 	rightWidget->setOutFocus(true);
 
 	rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
+
+	enum {
+		WIDGET_TOP,
+		WIDGET_LEFT,
+		WIDGET_RIGHT
+	};
+	
+	int focus = WIDGET_LEFT; // frameBox
 
 	thumbnail_dir = "/tmp/nfilm";
 	page = 1;
@@ -441,14 +449,6 @@ DOFILM:
 
 		rightWidget->addItem(item);
 	}
-
-	enum {
-		WIDGET_TOP,
-		WIDGET_LEFT,
-		WIDGET_RIGHT
-	};
-	
-	int focus = WIDGET_LEFT; // frameBox
 
 REPAINT:
 	// background
@@ -556,7 +556,7 @@ REPAINT:
 			{
 				focus = WIDGET_TOP;
 
-				leftWidget->setSelected(left_selected);
+				leftWidget->setSelected(-1);
 				leftWidget->setOutFocus(true);
 
 				rightWidget->setSelected(-1);
@@ -641,7 +641,7 @@ REPAINT:
 			{
 				left_selected = leftWidget->getSelected();
 
-				if(top_selected == 0)
+				if(top_selected == 0) // movies
 				{
 					if(left_selected == 0)
 					{
@@ -682,7 +682,7 @@ REPAINT:
 					else if(left_selected == 8)
 						loop = false;
 				}
-				else if(top_selected == 1)
+				else if(top_selected == 1) // tv
 				{
 					if(left_selected == 0)
 					{
@@ -766,7 +766,7 @@ REPAINT:
 					//
 					goto DOFILM; // include REPAINT
 				}
-				else if(left_selected == 0)
+				else if(top_selected == 0)
 				{
 					right_selected = 0;
 					left_selected = 0;
