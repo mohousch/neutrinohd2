@@ -330,7 +330,7 @@ void ClistBox::initFrames()
 		// sanity check
 		if(paintFootInfo)
 		{
-			if(widgetType == WIDGET_TYPE_EXTENDED || widgetType == WIDGET_TYPE_FRAME || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_MENU))
+			if(widgetType == WIDGET_TYPE_EXTENDED || widgetType == WIDGET_TYPE_FRAME || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_MENU) || widgetMode == MODE_SETUP)
 			{
 				cFrameFootInfo.iHeight = 0;
 				interFrame = 0;

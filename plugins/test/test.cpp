@@ -2682,6 +2682,8 @@ void CTestMenu::testClistBox5()
 	listBox->addWidget(WIDGET_TYPE_FRAME);
 	listBox->enableWidgetChange();
 
+	listBox->setItemsPerPage(5, 2);
+
 	// head
 	listBox->setTitle("ClistBox(menu)", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
@@ -2922,6 +2924,8 @@ void CTestMenu::testClistBox6()
 	listBox->addWidget(WIDGET_TYPE_EXTENDED);
 	listBox->addWidget(WIDGET_TYPE_FRAME);
 	listBox->enableWidgetChange();
+
+	listBox->setItemsPerPage(5, 2);
 
 	// head
 	listBox->setTitle("ClistBox(list mode)", NEUTRINO_ICON_MOVIE);
