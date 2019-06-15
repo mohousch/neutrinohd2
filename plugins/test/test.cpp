@@ -63,6 +63,7 @@ class CTestMenu : public CMenuTarget
 		cYTFeedParser ytparser;
 		std::string plist;
 		unsigned int page;
+		std::string TVShows;
 
 		//
 		CChannelList* webTVchannelList;
@@ -243,6 +244,7 @@ void CTestMenu::test()
 
 	int left_selected = -1;
 	int right_selected = -1;
+	int top_selected = -1;
 
 	CBox headBox;
 	headBox.iX = g_settings.screen_StartX + 10;
@@ -268,13 +270,36 @@ void CTestMenu::test()
 	headers->setFootCorner();
 	headers->setFootGradient(nogradient);
 
+	// top widget
+	CBox topBox;
+	
+	topBox.iX = g_settings.screen_StartX + 10;
+	topBox.iY = headBox.iY + headBox.iHeight;
+	topBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	topBox.iHeight = 120; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+
+	CFrameBox *topWidget = new CFrameBox(&topBox);
+	CFrame * frame = NULL;
+
+	frame = new CFrame("Filme");
+	topWidget->addFrame(frame);
+	
+	frame = new CFrame("Serien");
+	topWidget->addFrame(frame);
+
+	frame = new CFrame("Suche");
+	topWidget->addFrame(frame);
+
+	topWidget->setSelected(top_selected); 
+	topWidget->setOutFocus(true);
+
 	// leftWidget
 	CBox leftBox;
 
 	leftBox.iX = g_settings.screen_StartX + 10;
-	leftBox.iY = g_settings.screen_StartY + 10 + headBox.iHeight + INTER_FRAME_SPACE;
+	leftBox.iY = /*g_settings.screen_StartY + 10 + headBox.iHeight*/ topBox.iY + topBox.iHeight + INTER_FRAME_SPACE;
 	leftBox.iWidth = 200;
-	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
+	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - topBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
 
 	ClistBox *leftWidget = new ClistBox(&leftBox);
 
@@ -313,9 +338,9 @@ void CTestMenu::test()
 	CBox rightBox;
 
 	rightBox.iX = g_settings.screen_StartX + 10 + leftBox.iWidth + INTER_FRAME_SPACE;
-	rightBox.iY = g_settings.screen_StartY + 10 + headBox.iHeight + INTER_FRAME_SPACE;
+	rightBox.iY = /*g_settings.screen_StartY + 10 + headBox.iHeight*/topBox.iY + topBox.iHeight + INTER_FRAME_SPACE;
 	rightBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20) - leftBox.iWidth - INTER_FRAME_SPACE;
-	rightBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
+	rightBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - topBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
 
 	//
 	ClistBox *rightWidget = new ClistBox(&rightBox);
@@ -333,6 +358,8 @@ void CTestMenu::test()
 	//
 	tmdb = new CTmdb();
 
+	TVShows = "movie";
+
 DOFILM:
 	fileHelper.removeDir(thumbnail_dir.c_str());
 	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
@@ -342,7 +369,7 @@ DOFILM:
 
 	tmdb->clearMovieList();
 
-	tmdb->getMovieTVList("movie", plist, page);
+	tmdb->getMovieTVList(TVShows, plist, page);
 
 	std::vector<tmdbinfo> &mvlist = tmdb->getMovies();
 
@@ -355,7 +382,7 @@ DOFILM:
 		m_movieInfo.clearMovieInfo(&movieInfo); 
 
 		tmdb->clearMovieInfo();
-		tmdb->getMovieTVInfo("movie", mvlist[i].id);
+		tmdb->getMovieTVInfo(TVShows, mvlist[i].id);
 		std::vector<tmdbinfo>& movieInfo_list = tmdb->getMovieInfos();
 
 		movieInfo.epgTitle = mvlist[i].title;
@@ -440,7 +467,7 @@ REPAINT:
 	// paint all widget
 	headers->paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
 	headers->paintFoot(footBox, 4, frameButtons);
-	//topWidget->paint();
+	topWidget->paint();
 	leftWidget->paint();
 	rightWidget->paint();
 
@@ -471,19 +498,16 @@ REPAINT:
 		}
 		else if(msg == RC_right)
 		{
-/*
 			if(focus == WIDGET_TOP)
 				topWidget->swipRight();
-			else
-*/ 			if(focus == WIDGET_RIGHT)
+			else if(focus == WIDGET_RIGHT)
 				rightWidget->swipRight();
 		}
 		else if(msg == RC_left)
 		{
-/*
 			if(focus == WIDGET_TOP)
 				topWidget->swipLeft();
-			else*/ if(focus == WIDGET_RIGHT)
+			else if(focus == WIDGET_RIGHT)
 				rightWidget->swipLeft();
 		}
 		else if(msg == RC_up)
@@ -502,7 +526,6 @@ REPAINT:
 		}
 		else if(msg == RC_yellow)
 		{
-/*
 			if(focus == WIDGET_TOP)
 			{
 				focus = WIDGET_LEFT;
@@ -513,34 +536,34 @@ REPAINT:
 				rightWidget->setSelected(-1);
 				rightWidget->setOutFocus(true);
 
-				leftWidget->setSelected(0);
+				leftWidget->setSelected(left_selected);
 				leftWidget->setOutFocus(false);
 			}
-			else*/ if (focus == WIDGET_LEFT)
+			else if (focus == WIDGET_LEFT)
 			{
 				focus = WIDGET_RIGHT;
 
 				leftWidget->setSelected(-1);
 				leftWidget->setOutFocus(true);
 
-				//topWidget->setSelected(-1);
-				//topWidget->setOutFocus(true);
+				topWidget->setSelected(-1);
+				topWidget->setOutFocus(true);
 
 				rightWidget->setSelected(right_selected);
 				rightWidget->setOutFocus(false);
 			}
 			else if (focus == WIDGET_RIGHT)
 			{
-				focus = WIDGET_LEFT;
+				focus = WIDGET_TOP;
 
 				leftWidget->setSelected(left_selected);
-				leftWidget->setOutFocus(false);
+				leftWidget->setOutFocus(true);
 
 				rightWidget->setSelected(-1);
 				rightWidget->setOutFocus(true);
 
-				//topWidget->setSelected(0);
-				//topWidget->setOutFocus(false);
+				topWidget->setSelected(top_selected);
+				topWidget->setOutFocus(false);
 			}
 
 			goto REPAINT;
@@ -618,44 +641,169 @@ REPAINT:
 			{
 				left_selected = leftWidget->getSelected();
 
-				if(left_selected == 0)
+				if(top_selected == 0)
+				{
+					if(left_selected == 0)
+					{
+						right_selected = 0;
+						plist = "now_playing";
+						page = 1;
+						hide();
+						rightWidget->clearItems();
+						goto DOFILM; // include REPAINT
+					}
+					else if(left_selected == 1)
+					{
+						right_selected = 0;
+						plist = "popular";
+						page = 1;
+						hide();
+						rightWidget->clearItems();
+						goto DOFILM; // include REPAINT
+					}
+					else if(left_selected == 2)
+					{
+						right_selected = 0;
+						plist = "top_rated";
+						page = 1;
+						hide();
+						rightWidget->clearItems();
+						goto DOFILM; // include REPAINT
+					}
+					else if(left_selected == 3)
+					{
+						right_selected = 0;
+						plist = "upcoming";
+						page = 1;
+						hide();
+						rightWidget->clearItems();
+						goto DOFILM; // include REPAINT
+					}
+					else if(left_selected == 8)
+						loop = false;
+				}
+				else if(top_selected == 1)
+				{
+					if(left_selected == 0)
+					{
+						right_selected = 0;
+						plist = "airing_today";
+						page = 1;
+						hide();
+						rightWidget->clearItems();
+						goto DOFILM; // include REPAINT
+					}
+					else if(left_selected == 1)
+					{
+						right_selected = 0;
+						plist = "on_the_air";
+						page = 1;
+						hide();
+						rightWidget->clearItems();
+						goto DOFILM; // include REPAINT
+					}
+					else if(left_selected == 2)
+					{
+						right_selected = 0;
+						plist = "popular";
+						page = 1;
+						hide();
+						rightWidget->clearItems();
+						goto DOFILM; // include REPAINT
+					}
+					else if(left_selected == 3)
+					{
+						right_selected = 0;
+						plist = "top_rated";
+						page = 1;
+						hide();
+						rightWidget->clearItems();
+						goto DOFILM; // include REPAINT
+					}
+					else if(left_selected == 8)
+						loop = false;
+				}
+			}
+			else if(focus == WIDGET_TOP)
+			{
+				top_selected = topWidget->getSelected();
+
+				if(top_selected == 1)
 				{
 					right_selected = 0;
-					plist = "now_playing";
+					left_selected = 0;
+
+					TVShows = "tv";
+					plist = "airing_today";
 					page = 1;
 					hide();
 					rightWidget->clearItems();
+					//
+					leftWidget->clearItems();
+					ClistBoxItem *item1 = new ClistBoxItem("Heute auf Sendung");
+					ClistBoxItem *item2 = new ClistBoxItem("Auf Sendung");
+					ClistBoxItem *item3 = new ClistBoxItem("Am");
+					item3->setOption("populärsten");
+					item3->set2lines();
+					ClistBoxItem *item4 = new ClistBoxItem("am");
+					item4->setOption("besten bewertet");
+					item4->set2lines();
+					ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
+					ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
+					ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
+					ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
+					ClistBoxItem *item9 = new ClistBoxItem("Beenden");
+
+					leftWidget->addItem(item1);
+					leftWidget->addItem(item2);
+					leftWidget->addItem(item3);
+					leftWidget->addItem(item4);
+					leftWidget->addItem(item5);
+					leftWidget->addItem(item6);
+					leftWidget->addItem(item7);
+					leftWidget->addItem(item8);
+					leftWidget->addItem(item9);
+					//
 					goto DOFILM; // include REPAINT
 				}
-				else if(left_selected == 1)
+				else if(left_selected == 0)
 				{
 					right_selected = 0;
+					left_selected = 0;
+
+					TVShows = "movie";
 					plist = "popular";
 					page = 1;
 					hide();
 					rightWidget->clearItems();
+					leftWidget->clearItems();
+
+					ClistBoxItem *item1 = new ClistBoxItem("In den Kinos");
+					ClistBoxItem *item2 = new ClistBoxItem("Am");
+					item2->setOption("populärsten");
+					item2->set2lines();
+					ClistBoxItem *item3 = new ClistBoxItem("Am besten");
+					item3->setOption("bewertet");
+					item3->set2lines();
+					ClistBoxItem *item4 = new ClistBoxItem("Neue Filme");
+					ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
+					ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
+					ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
+					ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
+					ClistBoxItem *item9 = new ClistBoxItem("Beenden");
+
+					leftWidget->addItem(item1);
+					leftWidget->addItem(item2);
+					leftWidget->addItem(item3);
+					leftWidget->addItem(item4);
+					leftWidget->addItem(item5);
+					leftWidget->addItem(item6);
+					leftWidget->addItem(item7);
+					leftWidget->addItem(item8);
+					leftWidget->addItem(item9);
+					
 					goto DOFILM; // include REPAINT
 				}
-				else if(left_selected == 2)
-				{
-					right_selected = 0;
-					plist = "top_rated";
-					page = 1;
-					hide();
-					rightWidget->clearItems();
-					goto DOFILM; // include REPAINT
-				}
-				else if(left_selected == 3)
-				{
-					right_selected = 0;
-					plist = "upcoming";
-					page = 1;
-					hide();
-					rightWidget->clearItems();
-					goto DOFILM; // include REPAINT
-				}
-				else if(left_selected == 8)
-					loop = false;
 			}
 		}
 		else if(msg == RC_info)
@@ -696,8 +844,8 @@ REPAINT:
 
 	hide();
 
-	//delete topWidget;
-	//topWidget = NULL;
+	delete topWidget;
+	topWidget = NULL;
 
 	delete leftWidget;
 	leftWidget = NULL;
