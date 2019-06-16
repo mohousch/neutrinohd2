@@ -58,6 +58,8 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	cFrameBox.iHeight = dy;
 	full_height = dy;
 	full_width = dx;
+	start_x = x;
+	start_y = y;
 
 	hheight = 0;
 	fheight = 0;
@@ -122,6 +124,8 @@ ClistBox::ClistBox(CBox* position)
 	cFrameBox = *position;
 	full_height = position->iHeight;
 	full_width = position->iWidth;
+	start_x = position->iX;
+	start_y = position->iY;
 
 	hheight = 0;
 	fheight = 0;
@@ -195,6 +199,12 @@ bool ClistBox::hasItem()
 
 void ClistBox::initFrames()
 {
+	// reinit position
+	cFrameBox.iHeight = full_height;
+	cFrameBox.iWidth = full_width;
+	cFrameBox.iX = start_x;
+	cFrameBox.iY = start_y;
+
 	// widgettype forwarded to item 
 	for (unsigned int count = 0; count < items.size(); count++) 
 	{
@@ -230,10 +240,6 @@ void ClistBox::initFrames()
 		//
 		cFrameFootInfo.iHeight = 0;
 		interFrame = 0;
-
-		// reinit width and height
-		cFrameBox.iHeight = full_height;
-		cFrameBox.iWidth = full_width;
 
 		//
 		page_start.clear();
@@ -274,10 +280,6 @@ void ClistBox::initFrames()
 				interFrame = 0;
 			}
 		}
-
-		// reinit width and height
-		cFrameBox.iHeight = full_height;
-		cFrameBox.iWidth = full_width;
 
 		// calculate some values
 		int itemHeightTotal = 0;

@@ -125,9 +125,11 @@ class ClistBox
 		//
 		int full_height;
 		int full_width;
+		int start_x;
+		int start_y;
 
 	public:
-		ClistBox(const int x, int const y, const int dx, const int dy);
+		ClistBox(const int x, int const y, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		ClistBox(CBox* position);
 		virtual ~ClistBox();
 
