@@ -41,7 +41,7 @@
 
 
 // common
-#define COL_TRANSPARENT0			0x01
+#define COL_TRANSPARENT0		0x01
 #define COL_DARK_RED0	 		0x02
 #define COL_DARK_GREEN0	 		0x03
 #define COL_DARK_OLIVE0	 		0x04

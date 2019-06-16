@@ -122,6 +122,10 @@ class ClistBox
 		// methods
 		virtual void paintItems();
 
+		//
+		int full_height;
+		int full_width;
+
 	public:
 		ClistBox(const int x, int const y, const int dx, const int dy);
 		ClistBox(CBox* position);
@@ -186,7 +190,7 @@ class ClistBox
 		virtual void swipLeft();
 		virtual void swipRight();
 
-		//
+		// widget type|mode
 		void setWidgetType(int type){widgetType = type; ; widget.push_back(widgetType);};
 		int getWidgetType(){return widgetType;};
 

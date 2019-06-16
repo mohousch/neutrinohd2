@@ -56,6 +56,8 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	cFrameBox.iY = y;
 	cFrameBox.iWidth = dx;
 	cFrameBox.iHeight = dy;
+	full_height = dy;
+	full_width = dx;
 
 	hheight = 0;
 	fheight = 0;
@@ -118,6 +120,8 @@ ClistBox::ClistBox(CBox* position)
 	pos = 0;
 
 	cFrameBox = *position;
+	full_height = position->iHeight;
+	full_width = position->iWidth;
 
 	hheight = 0;
 	fheight = 0;
@@ -227,6 +231,10 @@ void ClistBox::initFrames()
 		cFrameFootInfo.iHeight = 0;
 		interFrame = 0;
 
+		// reinit width and height
+		cFrameBox.iHeight = full_height;
+		cFrameBox.iWidth = full_width;
+
 		//
 		page_start.clear();
 		page_start.push_back(0);
@@ -253,7 +261,7 @@ void ClistBox::initFrames()
 
 			item->item_width = item_width;
 			item->item_height = item_height;
-		} 
+		}
 	}
 	else 
 	{
@@ -266,6 +274,10 @@ void ClistBox::initFrames()
 				interFrame = 0;
 			}
 		}
+
+		// reinit width and height
+		cFrameBox.iHeight = full_height;
+		cFrameBox.iWidth = full_width;
 
 		// calculate some values
 		int itemHeightTotal = 0;
@@ -315,12 +327,6 @@ void ClistBox::initFrames()
 		// sanity check
 		if(cFrameBox.iHeight > ((int)frameBuffer->getScreenHeight() - 20))
 			cFrameBox.iHeight = frameBuffer->getScreenHeight() - 20;
-
-		// recalcultae width
-		if(paintFootInfo)
-		{
-			cFrameBox.iWidth += ConnectLineBox_Width;
-		}
 
 		// sanity check
 		if(cFrameBox.iWidth > (int)frameBuffer->getScreenWidth() - 20)

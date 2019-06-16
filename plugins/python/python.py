@@ -126,9 +126,12 @@ class testMenu(CMenuTarget):
 		print("showMenu")
 		
 		#self.listWidget.setSelected(self.selected)
-		self.listWidget.setWidgetType(WIDGET_TYPE_CLASSIC)
-		self.listWidget.setMode(MODE_MENU)
+		self.listWidget.setWidgetType(WIDGET_TYPE_STANDARD)
+		self.listWidget.setMode(MODE_LISTBOX)
 		self.listWidget.enableShrinkMenu()
+		self.listWidget.addWidget(WIDGET_TYPE_CLASSIC)
+		self.listWidget.addWidget(WIDGET_TYPE_EXTENDED)
+		self.listWidget.addWidget(WIDGET_TYPE_FRAME)
 		self.listWidget.enableWidgetChange()
 		self.listWidget.enablePaintFootInfo()
 
@@ -136,41 +139,49 @@ class testMenu(CMenuTarget):
 		item1 = CMenuForwarder("CMessageBox", True, "", None, "red action")
 		item1.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
 		item1.setHelpText("testing CMessageBox")
+		item1.setInfo1("testing CMessageBox")
 
 		# CHelpBox
 		item2 = CMenuForwarder("CHelpBox")
 		item2.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
 		item2.setHelpText("testing CHelpBox")
+		item2.setInfo1("testing CHelpBox")
 
 		# CHintBox
 		item3 = CMenuForwarder("CHintBox")
 		item3.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
 		item3.setHelpText("testing CHintBox")
+		item3.setInfo1("testing CHintBox")
 
 		# CInfoBox
 		item4 = CMenuForwarder("CInfoBox")
 		item4.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
 		item4.setHelpText("testing CInfoBox")
+		item4.setInfo1("testing CInfoBox")
 
 		# CStringInput
 		item5 = CMenuForwarder("CStringInput")
 		item5.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
 		item5.setHelpText("testing CStringInput")
+		item5.setInfo1("testing CStringInput")
 
 		# CAudioPlayerGui
 		item6 = CMenuForwarder("CAudioPlayerGui")
 		item6.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
 		item6.setHelpText("testing CAudioPlayerGui")
+		item6.setInfo1("testing CAudioPlayerGui")
 
 		# CPictureViewerGui
 		item7 = CMenuForwarder("CPictureViewerGui")
 		item7.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
 		item7.setHelpText("testing CPictureViewerGui")
+		item7.setInfo1("testing CPictureViewerGui")
 
 		# CFileBrowser | CMoviePlayerGui
 		item8 = CMenuForwarder("CMoviePlayerGui")
 		item8.setItemIcon(DATADIR + "/neutrino/icons/plugin.png")
 		item8.setHelpText("testing CMoviePlayerGui")
+		item8.setInfo1("testing CMoviePlayerGui")
 
 		self.listWidget.addItem(item1)
 		self.listWidget.addItem(item2)

@@ -128,9 +128,12 @@ function showMenu()
 	print("showMenu")
 
 	--listWidget:setSelected(selected)
-	listWidget:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
-	listWidget:setMode(neutrino.MODE_MENU)
+	listWidget:setWidgetType(neutrino.WIDGET_TYPE_STANDARD)
+	listWidget:setMode(neutrino.MODE_LISTBOX)
 	listWidget:enableShrinkMenu()
+	listWidget:addWidget(neutrino.WIDGET_TYPE_CLASSIC)
+	listWidget:addWidget(neutrino.WIDGET_TYPE_EXTENDED)
+	listWidget:addWidget(neutrino.WIDGET_TYPE_FRAME)
 	listWidget:enableWidgetChange()
 	listWidget:enablePaintFootInfo()
 
@@ -138,41 +141,49 @@ function showMenu()
 	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", null, "red action")
 	item1:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item1:setHelpText("testing CMessageBox")
+	item1:setInfo1("testing CMessageBox")
 
 	-- CHelpBox
 	item2 = neutrino.CMenuForwarder("CHelpBox")
 	item2:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item2:setHelpText("testing CHelpBox")
+	item2:setInfo1("testing CHelpBox")
 
 	-- CHintBox
 	item3 = neutrino.CMenuForwarder("CHintBox")
 	item3:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item3:setHelpText("testing CHintBox")
+	item3:setInfo1("testing CHintBox")
 
 	-- CInfoBox
 	item4 = neutrino.CMenuForwarder("CInfoBox")
 	item4:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item4:setHelpText("testing CInfoBox")
+	item4:setInfo1("testing CInfoBox")
 
 	-- CStringInput
 	item5 = neutrino.CMenuForwarder("CStringInput")
 	item5:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item5:setHelpText("testing CStringInput")
+	item5:setInfo1("testing CStringInput")
 
 	-- CAudioPlayerGui
 	item6 = neutrino.CMenuForwarder("CAudioPlayerGui")
 	item6:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item6:setHelpText("testing CAudioPlayerGui")
+	item6:setInfo1("testing CAudioPlayerGui")
 
 	-- CPictureViewerGui
 	item7 = neutrino.CMenuForwarder("CPictureViewerGui")
 	item7:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item7:setHelpText("testing CPictureViewerGui")
+	item7:setInfo1("testing CPictureViewerGui")
 
 	-- CMoviePlayerGui
 	item8 = neutrino.CMenuForwarder("CMoviePlayerGui")
 	item8:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item8:setHelpText("testing CMoviePlayerGui")
+	item8:setInfo1("testing CMoviePlayerGui")
 
 	listWidget:addItem(item1)
 	listWidget:addItem(item2)

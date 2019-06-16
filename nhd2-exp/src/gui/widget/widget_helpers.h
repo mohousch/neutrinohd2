@@ -79,7 +79,6 @@ class CHeaders
 {
 	private:
 		// head
-		//CBox headBox;
 		fb_pixel_t bgcolor;
 		int radius;
 		int corner;
@@ -90,7 +89,6 @@ class CHeaders
 		const struct button_label* hbutton_labels;
 
 		// foot
-		//CBox footBox;
 		fb_pixel_t fbgcolor;
 		int fradius;
 		int fcorner;
