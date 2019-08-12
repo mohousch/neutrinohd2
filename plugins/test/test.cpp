@@ -345,11 +345,13 @@ void CTestMenu::test()
 	//
 	ClistBox *rightWidget = new ClistBox(&rightBox);
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
-	rightWidget->setItemsPerPage(5,2);
+	rightWidget->setItemsPerPage(6,2);
 	rightWidget->setSelected(right_selected);
 	rightWidget->setOutFocus(true);
 
 	rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
+
+	rightWidget->enablePaintFootInfo();
 
 	enum {
 		WIDGET_TOP,
@@ -2608,7 +2610,7 @@ void CTestMenu::testClistBox4()
 
 	// widgettype
 	listBox->setWidgetType(WIDGET_TYPE_FRAME);
-	listBox->setItemsPerPage(5,2);
+	listBox->setItemsPerPage(6,2);
 	listBox->setWidgetMode(MODE_LISTBOX);
 
 	// head
