@@ -74,12 +74,12 @@ class CNFilm : public CMenuTarget
 		void loadMoviesTitle(void);
 
 		void showMenu();
+		void hide();
 
 	public:
 		CNFilm(std::string movielist = "popular", int id = 0);
 		~CNFilm();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
-		void hide();
 };
 
 CNFilm::CNFilm(std::string movielist, int id)
@@ -350,13 +350,22 @@ int CNFilm::showCategoriesMenu()
 	return res;
 }
 
-#define HEAD_BUTTONS_COUNT	4
+#define HEAD_BUTTONS_COUNT	2
 const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_2, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_1, NONEXISTANT_LOCALE, NULL }
+	//{ NEUTRINO_ICON_BUTTON_2, NONEXISTANT_LOCALE, NULL },
+	//{ NEUTRINO_ICON_BUTTON_1, NONEXISTANT_LOCALE, NULL }
+};
+
+#define FOOT_BUTTONS_COUNT	4
+const struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_YT_NEXT_RESULTS, NULL },
+	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_YT_PREV_RESULTS, NULL },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, NULL }
 };
 
 void CNFilm::showMenu()
@@ -409,14 +418,14 @@ void CNFilm::showMenu()
 	mlist->enablePaintDate();
 
 	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	mlist->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	mlist->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
 	mlist->addKey(RC_setup, this, CRCInput::getSpecialKeyName(RC_setup));
-	mlist->addKey(RC_1, this, CRCInput::getSpecialKeyName(RC_1));
-	mlist->addKey(RC_2, this, CRCInput::getSpecialKeyName(RC_2));
+	mlist->addKey(RC_red, this, CRCInput::getSpecialKeyName(RC_red));
+	mlist->addKey(RC_green, this, CRCInput::getSpecialKeyName(RC_green));
 
 	mlist->exec(NULL, "");
-	//mlist->hide();
 	delete mlist;
 	mlist = NULL;
 }
@@ -469,7 +478,7 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 		else
 			return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "RC_1")
+	else if(actionKey == "RC_red")
 	{
 		page++;
 		selected = 0;
@@ -483,7 +492,7 @@ int CNFilm::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return menu_return::RETURN_EXIT_ALL;
 	}
-	else if(actionKey == "RC_2")
+	else if(actionKey == "RC_green")
 	{
 		page--;
 

@@ -1663,6 +1663,8 @@ netzkino.nk_error Failed to load Netzkino categories
 netzkino.nk_categories Select category
 netzkino.nk_scan_for_categories Scan for Categories
 
+tmdb.tmdb_info TMDB Infos
+
 glcd.color.black Black
 glcd.color.blue Blue
 glcd.color.cyan Blue-Green

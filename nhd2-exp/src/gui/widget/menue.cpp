@@ -2036,6 +2036,9 @@ void ClistBoxWidget::paintHead()
 		// box
 		frameBuffer->paintBoxRel(x, y, width, hheight, backgroundColor);
 
+		// paint horizontal line top
+		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + hheight - 2, COL_MENUCONTENT_PLUS_5);
+
 		// icon
 		frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
 
@@ -2120,8 +2123,13 @@ void ClistBoxWidget::paintFoot()
 {
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
+		//
 		frameBuffer->paintBoxRel(x, y + height - fheight, width, fheight, backgroundColor);
 
+		// paint horizontal line buttom
+		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight + 2, COL_MENUCONTENT_PLUS_5);
+
+		// buttons
 		buttons.paintFootButtons(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
 	}
 	else
@@ -2145,14 +2153,14 @@ void ClistBoxWidget::paint()
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		// paint background
-		frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight - fheight, backgroundColor);
+		frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight - fheight - (fbutton_count != 0? fheight : 0), backgroundColor);
 
 		// paint horizontal line top
-		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + hheight + 2, COL_MENUCONTENT_PLUS_5);
+		//frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + hheight + 2, COL_MENUCONTENT_PLUS_5);
 	
 		// paint horizontal line bottom
-		fheight = hheight;
-		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight - (fbutton_count != 0? fheight : 0) - 2, COL_MENUCONTENT_PLUS_5);
+		//fheight = hheight;
+		//frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight - (fbutton_count != 0? fheight : 0) - 2, COL_MENUCONTENT_PLUS_5);
 	}
 	else
 	{
@@ -2564,6 +2572,9 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	else if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		frameBuffer->paintBoxRel(x, y + height - fheight - (fbutton_count != 0? fheight : 0), width, fheight, backgroundColor);
+
+		// refresh horizontal line buttom
+		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight - (fbutton_count != 0? fheight : 0) + 2, COL_MENUCONTENT_PLUS_5);
 
 		if(items.size() > 0)
 		{

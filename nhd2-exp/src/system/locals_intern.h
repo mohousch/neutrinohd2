@@ -1675,6 +1675,9 @@ const char * locale_real_names[] = {
 	"netzkino.nk_error",
 	"netzkino.nk_categories",
 	"netzkino.nk_scan_for_categories",
+
+	// tmdb
+	"tmdb.tmdb_info",
 	
 	// GLCD
 	"glcd.color.black",

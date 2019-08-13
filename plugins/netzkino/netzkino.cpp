@@ -147,7 +147,6 @@ void CNKMovies::showMenu()
 	moviesMenu->addKey(RC_record, this, CRCInput::getSpecialKeyName(RC_record));
 
 	moviesMenu->exec(NULL, "");
-	//moviesMenu->hide();
 	delete moviesMenu;
 	moviesMenu = NULL;
 }

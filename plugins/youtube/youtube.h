@@ -68,6 +68,7 @@ class CYTBrowser : public CMenuTarget
 		CMenuItem* item;
 
 		void showMenu();
+		void hide();
 		
 	public:
 		CYTBrowser(int mode = cYTFeedParser::MOST_POPULAR);
