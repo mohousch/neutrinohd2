@@ -2154,13 +2154,6 @@ void ClistBoxWidget::paint()
 	{
 		// paint background
 		frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight - fheight - (fbutton_count != 0? fheight : 0), backgroundColor);
-
-		// paint horizontal line top
-		//frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + hheight + 2, COL_MENUCONTENT_PLUS_5);
-	
-		// paint horizontal line bottom
-		//fheight = hheight;
-		//frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight - (fbutton_count != 0? fheight : 0) - 2, COL_MENUCONTENT_PLUS_5);
 	}
 	else
 	{

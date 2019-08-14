@@ -369,7 +369,7 @@ void ClistBox::paintItems()
 		item_start_y = cFrameBox.iY + hheight + 10;
 
 		// items background
-		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight, backgroundColor);
+		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight, backgroundColor);
 
 		// item not currently on screen
 		if (selected >= 0)

@@ -217,19 +217,16 @@ void CTestMenu::hide()
 }
 
 // CFrameBox
-#define FRAMEBOX_HEAD_BUTTONS_COUNT	1
-const struct button_label frameBoxHeadButtons[FRAMEBOX_HEAD_BUTTONS_COUNT] =
+#define HEAD_BUTTONS_COUNT	3
+const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
-	//{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
-	//{ NEUTRINO_ICON_BUTTON_MUTE_SMALL, NONEXISTANT_LOCALE, NULL},
-	//{ NEUTRINO_ICON_BUTTON_3, NONEXISTANT_LOCALE, NULL },
-	//{ NEUTRINO_ICON_BUTTON_2, NONEXISTANT_LOCALE, NULL },
-	//{ NEUTRINO_ICON_BUTTON_1, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_MUTE_SMALL, NONEXISTANT_LOCALE, NULL}
 };
 
-#define FRAMEBOX_FOOT_BUTTONS_COUNT	4
-const struct button_label frameButtons[FRAMEBOX_FOOT_BUTTONS_COUNT] =
+#define FOOT_BUTTONS_COUNT	4
+const struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, "next Page" },
 	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, "prev Page" },
@@ -261,7 +258,7 @@ void CTestMenu::test()
 	headers = new CHeaders();
 
 	headers->enablePaintDate();
-	headers->setHeaderButtons(frameBoxHeadButtons, FRAMEBOX_HEAD_BUTTONS_COUNT);
+	headers->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	headers->setHeadColor(COL_DARK_TURQUOISE);
 	headers->setHeadCorner();
 	headers->setHeadGradient(nogradient);
@@ -468,7 +465,7 @@ REPAINT:
 
 	// paint all widget
 	headers->paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
-	headers->paintFoot(footBox, 4, frameButtons);
+	headers->paintFoot(footBox, FOOT_BUTTONS_COUNT, FootButtons);
 	topWidget->paint();
 	leftWidget->paint();
 	rightWidget->paint();
@@ -1048,7 +1045,7 @@ void CTestMenu::testCHeaders()
 	headers = new CHeaders();
 
 	headers->enablePaintDate();
-	headers->setHeaderButtons(frameBoxHeadButtons, FRAMEBOX_HEAD_BUTTONS_COUNT);
+	headers->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	//headers->setHeadColor(COL_BLUE);
 	//headers->setHeadCorner();
 	//headers->setHeadGradient(nogradient);
@@ -1058,7 +1055,7 @@ void CTestMenu::testCHeaders()
 	//headers->setFootGradient(nogradient);
 
 	headers->paintHead(headBox, "test CHeaders", NEUTRINO_ICON_MP3);
-	headers->paintFoot(footBox, 4, frameButtons);	
+	headers->paintFoot(footBox, FOOT_BUTTONS_COUNT, FootButtons);	
 	CFrameBuffer::getInstance()->blit();
 
 	// loop
@@ -1768,23 +1765,13 @@ void CTestMenu::testCProgressWindow()
 }
 
 // CButtons
-#define BUTTONS_COUNT	4
-const struct button_label Buttons[BUTTONS_COUNT] =
-{
-	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, "add" },
-	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, "remove" },
-	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, "delete" },
-	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, "rename" },
-	
-};
-
 void CTestMenu::testCButtons()
 {
 	dprintf(DEBUG_NORMAL, "\ntesting CButtons\n");
 
 	int icon_w, icon_h;
 	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-	buttons.paintFootButtons(g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, (g_settings.screen_EndX - g_settings.screen_StartX - 100), icon_h, BUTTONS_COUNT, Buttons);
+	buttons.paintFootButtons(g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, (g_settings.screen_EndX - g_settings.screen_StartX - 100), icon_h, FOOT_BUTTONS_COUNT, FootButtons);
 
 	CFrameBuffer::getInstance()->blit();
 
@@ -1925,12 +1912,12 @@ void CTestMenu::testClistBox()
 	// head
 	listBox->setTitle("ClistBox(standard)", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
-	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
+	listBox->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	listBox->enablePaintDate();
 
 	// footer
 	listBox->enablePaintFoot();
-	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+	listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
 	listBox->enablePaintFootInfo(80);
@@ -2160,12 +2147,12 @@ void CTestMenu::testClistBox2()
 	// head
 	listBox->setTitle("ClistBox(classic)", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
-	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
+	listBox->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	listBox->enablePaintDate();
 
 	// footer
 	listBox->enablePaintFoot();
-	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+	listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
 	listBox->enablePaintFootInfo(80);
@@ -2389,12 +2376,12 @@ void CTestMenu::testClistBox3()
 	// head
 	listBox->setTitle("ClistBox(extended)", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
-	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
+	listBox->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	listBox->enablePaintDate();
 
 	// footer
 	listBox->enablePaintFoot();
-	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+	listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
 	listBox->enablePaintFootInfo(80);
@@ -2616,12 +2603,12 @@ void CTestMenu::testClistBox4()
 	// head
 	listBox->setTitle("ClistBox(Frame)", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
-	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
+	listBox->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	listBox->enablePaintDate();
 
 	// footer
 	listBox->enablePaintFoot();
-	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+	listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
 	listBox->enablePaintFootInfo(80);
@@ -2853,12 +2840,12 @@ void CTestMenu::testClistBox5()
 	// head
 	listBox->setTitle("ClistBox(menu)", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
-	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
+	listBox->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	listBox->enablePaintDate();
 
 	// footer
 	listBox->enablePaintFoot();
-	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+	listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
 	listBox->enablePaintFootInfo(80);
@@ -3096,12 +3083,12 @@ void CTestMenu::testClistBox6()
 	// head
 	listBox->setTitle("ClistBox(list mode)", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
-	listBox->setHeaderButtons(Buttons, BUTTONS_COUNT);
+	listBox->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	listBox->enablePaintDate();
 
 	// footer
 	listBox->enablePaintFoot();
-	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
+	listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
 	listBox->enablePaintFootInfo(80);
@@ -3951,14 +3938,7 @@ void CTestMenu::testShowPictureDir()
 	}
 }
 
-// ClistBox
-#define mHEAD_BUTTONS_COUNT	2
-const struct button_label mHeadButtons[mHEAD_BUTTONS_COUNT] =
-{
-	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
-};
-
+// ClistBoxWidget
 void CTestMenu::testClistBoxWidget()
 {
 	//
@@ -4072,7 +4052,8 @@ void CTestMenu::testClistBoxWidget()
 
 	listMenu->setSelected(selected);
 
-	listMenu->setHeaderButtons(mHeadButtons, mHEAD_BUTTONS_COUNT);
+	listMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	listMenu->enablePaintDate();
 
