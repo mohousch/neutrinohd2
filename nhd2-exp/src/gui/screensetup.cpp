@@ -146,7 +146,7 @@ int CScreenSetup::exec(CMenuTarget *parent, const std::string &)
 				{
 					y_coord[selected]++;
 
-					int max = ( selected == 0 ) ? 200 : frameBuffer->getScreenHeight(true) - 1;
+					int max = ( selected == 0 ) ? 200 : frameBuffer->getScreenHeight(true);
 					
 					//printf("selected %d y %d max %d\n", selected, y_coord[selected], max);
 					
@@ -173,7 +173,7 @@ int CScreenSetup::exec(CMenuTarget *parent, const std::string &)
 				{
 					x_coord[selected]++;
 
-					int max = ( selected == 0 ) ? 200 : frameBuffer->getScreenWidth(true) -1 ;
+					int max = ( selected == 0 ) ? 200 : frameBuffer->getScreenWidth(true);
 					
 					//printf("selected %d y %d max %d\n", selected, x_coord[selected], max);
 					
