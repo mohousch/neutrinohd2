@@ -2149,11 +2149,10 @@ void ClistBoxWidget::paint()
 	if(widgetType == WIDGET_TYPE_FRAME)
 		item_start_y = y + hheight + 10;
 
-	// widget frame paint background hlines
+	// paint background
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
-		// paint background
-		frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight - fheight - (fbutton_count != 0? fheight : 0), backgroundColor);
+		frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight - fheight, backgroundColor);
 	}
 	else
 	{

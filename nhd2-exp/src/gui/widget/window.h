@@ -72,6 +72,12 @@ class CWindow
 		void hide(void);
 
 		CBox getWindowsPos(void){return(cFrameBox);};
+
+		// pig
+		void paintPig();
+		void hidePig();
+
+		// grid
 };
 
 #endif

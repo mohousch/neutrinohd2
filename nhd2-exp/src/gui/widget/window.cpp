@@ -38,6 +38,10 @@
 
 #include <gui/widget/window.h>
 
+#include <video_cs.h>
+
+
+extern cVideo * videoDecoder;
 
 CWindow::CWindow()
 {
@@ -145,6 +149,26 @@ void CWindow::hide()
 	else
 		frameBuffer->paintBackgroundBoxRel(enableshadow?cFrameBox.iX - 1 : cFrameBox.iX, enableshadow?cFrameBox.iY - 1 : cFrameBox.iY, full_width, full_height);
 }
+
+// pig
+void CWindow::paintPig()
+{
+	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);	
+		
+
+	if(videoDecoder)
+		videoDecoder->Pig(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);	
+}
+
+void CWindow::hidePig()
+{
+	if(videoDecoder)  
+		videoDecoder->Pig(-1, -1, -1, -1);
+
+	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
+}
+
+
 
 
 

@@ -457,6 +457,7 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		hide();
 		doTMDB(m_vMovieInfo[mlist->getSelected()]);
 		showMenu();
+
 		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
@@ -476,8 +477,8 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 			}
 		}
 
-		loadPlaylist();
 		showMenu();
+
 		return menu_return::RETURN_EXIT_ALL;
 	}
 
