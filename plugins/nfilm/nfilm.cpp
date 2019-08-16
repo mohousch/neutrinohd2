@@ -74,12 +74,12 @@ class CNFilm : public CMenuTarget
 		void loadMoviesTitle(void);
 
 		void showMenu();
-		void hide();
 
 	public:
 		CNFilm(std::string movielist = "popular", int id = 0);
 		~CNFilm();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
+		void hide();
 };
 
 CNFilm::CNFilm(std::string movielist, int id)

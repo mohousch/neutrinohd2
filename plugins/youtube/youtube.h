@@ -68,12 +68,12 @@ class CYTBrowser : public CMenuTarget
 		CMenuItem* item;
 
 		void showMenu();
-		void hide();
 		
 	public:
 		CYTBrowser(int mode = cYTFeedParser::MOST_POPULAR);
 		~CYTBrowser();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
+		void hide();
 }; 
 
 #endif //__YT__
