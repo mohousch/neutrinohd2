@@ -581,6 +581,8 @@ int CRCInput::messageLoop( bool anyKeyCancels, int timeout )
 				}
 			}
 		}
+
+		CFrameBuffer::getInstance()->blit();
 	}
 
 	return res;

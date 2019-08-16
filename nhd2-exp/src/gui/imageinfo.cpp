@@ -52,7 +52,7 @@ CImageInfo::CImageInfo()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
-	font_head   = SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME;;
+	font_head   = SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME;
 	font_small  = SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL;
 	font_info   = SNeutrinoSettings::FONT_TYPE_MENU;
 
@@ -76,7 +76,7 @@ CImageInfo::~CImageInfo()
 		videoDecoder->Pig(-1, -1, -1, -1);
 }
 
-int CImageInfo::exec(CMenuTarget *parent, const std::string &)
+int CImageInfo::exec(CMenuTarget *parent, const std::string&)
 {
 	dprintf(DEBUG_NORMAL, "CImageInfo::exec:\n");
 

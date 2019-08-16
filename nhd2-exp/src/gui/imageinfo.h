@@ -38,9 +38,10 @@ class CImageInfo : public CMenuTarget
 		CFrameBuffer	*frameBuffer;
 		int x;
 		int y;
-		int ypos;
 		int width;
 		int height;
+
+		int ypos;
 		int hheight, iheight, sheight; 	// head/info/small font height
 
 		int max_height;	// Frambuffer 0.. max
@@ -60,7 +61,7 @@ class CImageInfo : public CMenuTarget
 		~CImageInfo();
 
 		void hide();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
 #endif
