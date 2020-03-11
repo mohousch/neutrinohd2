@@ -254,3 +254,5 @@ void CImageInfo::paint()
 	ypos += sheight;
 	paintLine(xpos + x_offset, font_small, "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.");	
 }
+
+
