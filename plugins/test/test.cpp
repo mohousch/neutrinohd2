@@ -4754,9 +4754,9 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
 	
 	//
-	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "menu<>listBox Widget") );
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "ClistBoxWidget") );
 	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget(MODE_LISTBOX)", true, NULL, this, "listboxwidget"));
-	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget(MENU_MODE)", true, NULL, this, "testmenuwidget"));
+	mainMenu->addItem(new CMenuForwarder("ClistBoxWidget(MODE_MENU)", true, NULL, this, "testmenuwidget"));
 
 	//
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "other Widget") );
