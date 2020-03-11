@@ -4803,7 +4803,7 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("PluginsList", true, NULL, this, "pluginslist"));
 
 	//
-	mainMenu->addItem( new CMenuSeparator(LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "Players") );
 	mainMenu->addItem(new CMenuForwarder("PlayMovieURL", true, NULL, this, "playmovieurl"));
 	mainMenu->addItem(new CMenuForwarder("PlayAudioURL", true, NULL, this, "playaudiourl"));
 	mainMenu->addItem(new CMenuForwarder("ShowPictureURL", true, NULL, this, "showpictureurl"));
@@ -4821,12 +4821,14 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("ShowPictureDir(without Browser)", true, NULL, this, "showpicturedir"));
 
 	//
-	mainMenu->addItem( new CMenuSeparator(LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "Plugins") );
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
+
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "EPG") );
 	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));
 
 	//
-	mainMenu->addItem( new CMenuSeparator(LINE) );
+	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "Channellist") );
 	mainMenu->addItem(new CMenuForwarder("CChannelList:", true, NULL, this, "channellist"));
 	mainMenu->addItem(new CMenuForwarder("CBouquetList:", true, NULL, this, "bouquetlist"));
 
