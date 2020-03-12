@@ -47,5 +47,17 @@ class CMenuTarget
 		virtual int exec(CMenuTarget *parent, const std::string &actionKey) = 0;
 };
 
+class CWidget : public CMenuTarget
+{
+	public:
+		CWidget(){};
+		virtual ~CWidget(){};
+		virtual void paint(){};
+		virtual void hide(){};
+		virtual int exec(CMenuTarget *parent, const std::string &actionKey) = 0;
+
+		virtual void addWidgetItem(CWidgetItem *widgetItem, const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
+};
+
 #endif // WIDGET_H_
 

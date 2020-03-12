@@ -72,7 +72,7 @@ typedef enum tmode_
 	TOP_CENTER
 }tmode;
 
-class CTextBox  
+class CTextBox : public CWidgetItem
 {
 	public:
 

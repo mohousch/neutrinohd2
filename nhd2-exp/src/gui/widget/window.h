@@ -30,9 +30,10 @@
 #include <driver/framebuffer.h>
 #include <system/settings.h>
 #include <driver/color.h>
+#include <gui/widget/widget_helpers.h>
 
 
-class CWindow  
+class CWindow : public CWidgetItem 
 {
 	private:
 		CFrameBuffer* frameBuffer;

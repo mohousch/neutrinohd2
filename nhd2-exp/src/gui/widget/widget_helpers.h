@@ -29,6 +29,35 @@
 #include <system/settings.h>
 
 
+//
+enum {
+	WIDGET_ITEM_HEAD = 0,
+	WIDGET_ITEM_FOOT,
+	WIDGET_ITEM_LISTBOX,
+	WIDGET_ITEM_FRAMEBOX,
+	WIDGET_ITEM_LISTFRAME,
+	WIDGET_ITEM_TEXTBOX,
+	WIDGET_ITEM_WINDOW,
+	WIDGET_ITEM_BUTTON,
+	WIDGET_ITEM_SCROLLBAR,
+	WIDGET_ITEM_DETAILSLINE
+};
+
+class CWidgetItem
+{
+	private:
+	public:
+		int x;
+		int y;
+		int width;
+		int height;
+
+		int itemType;
+
+		CWidgetItem(){};
+		virtual ~CWidgetItem(){};
+};
+
 // buttons
 typedef struct button_label
 {
@@ -38,7 +67,7 @@ typedef struct button_label
 } button_label_struct;
 
 
-class CButtons
+class CButtons : public CWidgetItem
 {
 	private:
 	public:
@@ -51,7 +80,7 @@ class CButtons
 };
 
 //scrollBar
-class CScrollBar
+class CScrollBar : public CWidgetItem 
 {
 	private:
 	public:
@@ -63,7 +92,7 @@ class CScrollBar
 };
 
 // detailsLine
-class CItems2DetailsLine
+class CItems2DetailsLine : public CWidgetItem
 {
 	private:
 	public:
@@ -75,7 +104,7 @@ class CItems2DetailsLine
 };
 
 // headers
-class CHeaders
+class CHeaders : public CWidgetItem
 {
 	private:
 		// head
@@ -120,7 +149,7 @@ class CHeaders
 };
 
 // progressbar
-class CProgressBar
+class CProgressBar : public CWidgetItem
 {
 	private:
 		CFrameBuffer * frameBuffer;
