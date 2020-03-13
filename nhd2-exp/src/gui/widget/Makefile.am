@@ -36,7 +36,8 @@ libneutrino_gui_widget_a_SOURCES = \
 	listframe.cpp \
 	listbox.cpp \
 	progresswindow.cpp \
-	framebox.cpp
+	framebox.cpp \
+	widget.cpp
 
 libneutrino_gui_widget2_a_SOURCES = \
 	colorchooser.cpp \

@@ -57,16 +57,33 @@ class CWidget : public CMenuTarget
 
 		//bool enablePaintMainFrame;
 
-	public:
-		CWidget(){};
-		CWidget(const int x, int const y, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT){};
-		CWidget(CBox* position){};
-		virtual ~CWidget(){};
-		virtual void paint(){};
-		virtual void hide(){};
-		virtual int exec(CMenuTarget *parent, const std::string &actionKey){return menu_return::RETURN_REPAINT;};
+				//
+		neutrino_msg_t      msg;
+		neutrino_msg_data_t data;
+		
+		int selected;
+		bool exit_pressed;
+		
+		fb_pixel_t * background;
+		int full_width;
+		int full_height;
+		bool savescreen;
+		void saveScreen(){};
+		void restoreScreen(){};
 
-		virtual void addWidgetItem(CWidgetItem *widgetItem, const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT, const bool defaultselected = false){};
+	public:
+		CWidget(const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
+		virtual ~CWidget();
+
+		virtual void paintItems();
+		virtual void paint();
+		virtual void hide();
+		virtual int exec(CMenuTarget *parent, const std::string &actionKey);
+
+		virtual void addItem(CWidgetItem *widgetItem, const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT, const bool defaultselected = false);
+		bool hasItem();
+		int getItemsCount()const{return items.size();};
+		virtual void clearItems(void){items.clear();};
 
 		//void paintMainFrame(){enablePaintMainFrame = true;};
 };

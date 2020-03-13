@@ -74,6 +74,7 @@ class CTestMenu : public CMenuTarget
 
 		// testing
 		void test();
+		void widget();
 
 		// widgets
 		void testCBox();
@@ -214,6 +215,13 @@ void CTestMenu::hide()
 {
 	frameBuffer->paintBackground();
 	frameBuffer->blit();
+}
+
+void CTestMenu::widget()
+{
+	CWidget * test = new CWidget();
+
+	test->exec(NULL, "");
 }
 
 // CFrameBox
@@ -4241,6 +4249,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "widget")
+	{
+		widget();
+
+		return menu_return::RETURN_REPAINT;
+	}
 	else if(actionKey == "menuforwarder")
 	{
 		MessageBox(LOCALE_MESSAGEBOX_INFO, "testing CMenuForwarder", mbrBack, mbBack, NEUTRINO_ICON_INFO);
@@ -4709,6 +4723,7 @@ void CTestMenu::showMenu()
 	mainMenu->enableShrinkMenu(),
 	mainMenu->enableMenuPosition();
 	
+	mainMenu->addItem(new CMenuForwarder("CWidget", true, NULL, this, "widget"));
 	mainMenu->addItem(new CMenuForwarder("TEST", true, NULL, this, "testing"));
 
 	//
