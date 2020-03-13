@@ -49,14 +49,26 @@ class CMenuTarget
 
 class CWidget : public CMenuTarget
 {
+	protected:
+		CFrameBuffer *frameBuffer;
+		CBox mainFrameBox;
+
+		std::vector<CWidgetItem*> items;
+
+		//bool enablePaintMainFrame;
+
 	public:
 		CWidget(){};
+		CWidget(const int x, int const y, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT){};
+		CWidget(CBox* position){};
 		virtual ~CWidget(){};
 		virtual void paint(){};
 		virtual void hide(){};
-		virtual int exec(CMenuTarget *parent, const std::string &actionKey) = 0;
+		virtual int exec(CMenuTarget *parent, const std::string &actionKey){return menu_return::RETURN_REPAINT;};
 
-		virtual void addWidgetItem(CWidgetItem *widgetItem, const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
+		virtual void addWidgetItem(CWidgetItem *widgetItem, const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT, const bool defaultselected = false){};
+
+		//void paintMainFrame(){enablePaintMainFrame = true;};
 };
 
 #endif // WIDGET_H_

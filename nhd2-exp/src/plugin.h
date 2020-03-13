@@ -100,6 +100,7 @@
 #include <gui/widget/listframe.h>
 #include <gui/widget/framebox.h>
 #include <gui/widget/widget_helpers.h>
+#include <gui/widget/widget.h>
 
 #include <gui/bedit/bouqueteditor_bouquets.h>
 #include <gui/bedit/bouqueteditor_chanselect.h>

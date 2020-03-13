@@ -54,7 +54,7 @@
 
 
 /// CMenulistBox
-class ClistBoxWidget : public CMenuTarget
+class ClistBoxWidget : public CWidget
 {
 	protected:
 		//

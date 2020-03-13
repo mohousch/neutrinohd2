@@ -44,9 +44,10 @@
 #include <gui/widget/menue.h>
 #include <gui/widget/window.h>
 #include <gui/widget/widget_helpers.h>
+#include <gui/widget/widget.h>
 
 
-class CColorChooser : public CMenuTarget
+class CColorChooser : public CWidget
 {
 	private:
 		CFrameBuffer	*frameBuffer;

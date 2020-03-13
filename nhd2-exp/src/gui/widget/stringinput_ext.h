@@ -45,7 +45,7 @@
 
 
 class CExtendedInput_Item;
-class CExtendedInput : public CMenuTarget
+class CExtendedInput : public CWidget
 {
 	protected:
 		void Init(void);
@@ -221,8 +221,8 @@ class CIntInput : public CExtendedInput
 		/**
 		 *@param Size how many digits can be entered
 		 */
-		CIntInput(const neutrino_locale_t Name, int& Value, const unsigned int Size = MAX_CINTINPUT_SIZE, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, CChangeObserver* Observ = NULL);
-		CIntInput(const char * const Name, int& Value, const unsigned int Size = MAX_CINTINPUT_SIZE, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, CChangeObserver* Observ = NULL);
+		CIntInput(const neutrino_locale_t Name, int &Value, const unsigned int Size = MAX_CINTINPUT_SIZE, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, CChangeObserver* Observ = NULL);
+		CIntInput(const char * const Name, int &Value, const unsigned int Size = MAX_CINTINPUT_SIZE, const neutrino_locale_t Hint_1 = NONEXISTANT_LOCALE, const neutrino_locale_t Hint_2 = NONEXISTANT_LOCALE, CChangeObserver* Observ = NULL);
 		
 		char* getValue() 
 		{
@@ -231,3 +231,4 @@ class CIntInput : public CExtendedInput
 };
 
 #endif
+
