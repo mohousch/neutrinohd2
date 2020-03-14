@@ -219,7 +219,186 @@ void CTestMenu::hide()
 
 void CTestMenu::widget()
 {
-	CWidget * test = new CWidget();
+	CWidget * test = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
+
+	CBox topBox;
+	
+	topBox.iWidth = test->getWindowsPos().iWidth;
+	topBox.iHeight = 120;
+	topBox.iX = test->getWindowsPos().iX;
+	topBox.iY = test->getWindowsPos().iY;
+
+	int top_selected = -1;
+
+	CFrameBox *topWidget = new CFrameBox(&topBox);
+	CFrame * frame = NULL;
+
+	frame = new CFrame("Filme");
+	topWidget->addFrame(frame);
+	
+	frame = new CFrame("Serien");
+	topWidget->addFrame(frame);
+
+	frame = new CFrame("Suche");
+	topWidget->addFrame(frame);
+
+	//topWidget->setSelected(0); 
+	//topWidget->setOutFocus(false);
+
+	// leftWidget
+	CBox leftBox;
+
+	leftBox.iWidth = 200;
+	leftBox.iHeight = test->getWindowsPos().iHeight - topBox.iHeight - INTER_FRAME_SPACE;
+	leftBox.iX = test->getWindowsPos().iX;
+	leftBox.iY = test->getWindowsPos().iY + topBox.iHeight + INTER_FRAME_SPACE;
+
+	ClistBox *leftWidget = new ClistBox(&leftBox);
+
+	leftWidget->disableCenter();
+	//leftWidget->setSelected(-1);
+	//leftWidget->setOutFocus(true);
+	leftWidget->disableShrinkMenu();
+
+	leftWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+
+	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos");
+	ClistBoxItem *item2 = new ClistBoxItem("Am");
+	item2->setOption("populärsten");
+	item2->set2lines();
+	ClistBoxItem *item3 = new ClistBoxItem("Am besten");
+	item3->setOption("bewertet");
+	item3->set2lines();
+	ClistBoxItem *item4 = new ClistBoxItem("Neue Filme");
+	ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
+	ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
+	ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
+	ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
+	ClistBoxItem *item9 = new ClistBoxItem("Beenden");
+
+	leftWidget->addItem(item1);
+	leftWidget->addItem(item2);
+	leftWidget->addItem(item3);
+	leftWidget->addItem(item4);
+	leftWidget->addItem(item5);
+	leftWidget->addItem(item6);
+	leftWidget->addItem(item7);
+	leftWidget->addItem(item8);
+	leftWidget->addItem(item9);
+
+	// right menu
+	CBox rightBox;
+
+	rightBox.iWidth = test->getWindowsPos().iWidth - INTER_FRAME_SPACE - leftBox.iWidth;
+	rightBox.iHeight = test->getWindowsPos().iHeight - topBox.iHeight - INTER_FRAME_SPACE;
+	rightBox.iX = test->getWindowsPos().iX + leftBox.iWidth + INTER_FRAME_SPACE;
+	rightBox.iY = test->getWindowsPos().iY + topBox.iHeight + INTER_FRAME_SPACE;
+
+	//
+	ClistBox *rightWidget = new ClistBox(&rightBox);
+	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
+	rightWidget->setItemsPerPage(3,2);
+	//rightWidget->setSelected(-1);
+	//rightWidget->setOutFocus(true);
+
+	rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
+
+	rightWidget->enablePaintFootInfo();
+
+	thumbnail_dir = "/tmp/nfilm";
+	page = 1;
+	plist = "popular";
+
+	//
+	tmdb = new CTmdb();
+
+	TVShows = "movie";
+
+//DOFILM:
+	fileHelper.removeDir(thumbnail_dir.c_str());
+	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
+
+	CHintBox loadBox("Movie Trailer", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	loadBox.paint();
+
+	tmdb->clearMovieList();
+
+	tmdb->getMovieTVList(TVShows, plist, page);
+
+	std::vector<tmdbinfo> &mvlist = tmdb->getMovies();
+
+	m_vMovieInfo.clear();
+	
+	// fill our structure
+	for(unsigned int i = 0; i < mvlist.size(); i++)
+	{
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); 
+
+		tmdb->clearMovieInfo();
+		tmdb->getMovieTVInfo(TVShows, mvlist[i].id);
+		std::vector<tmdbinfo>& movieInfo_list = tmdb->getMovieInfos();
+
+		movieInfo.epgTitle = mvlist[i].title;
+
+		movieInfo.epgInfo1 = movieInfo_list[0].overview;
+		movieInfo.ytdate = movieInfo_list[0].release_date;
+		movieInfo.vote_average = movieInfo_list[0].vote_average;
+		movieInfo.vote_count = movieInfo_list[0].vote_count;
+		movieInfo.original_title = movieInfo_list[0].original_title;
+		movieInfo.release_date = movieInfo_list[0].release_date;
+		movieInfo.media_type = movieInfo_list[0].media_type;
+		movieInfo.length = movieInfo_list[0].runtime;
+		movieInfo.runtimes = movieInfo_list[0].runtimes;
+		movieInfo.genres = movieInfo_list[0].genres;
+		movieInfo.cast = movieInfo_list[0].cast;
+		movieInfo.seasons = movieInfo_list[0].seasons;
+		movieInfo.episodes = movieInfo_list[0].episodes;
+			
+		std::string tname = thumbnail_dir;
+		tname += "/";
+		tname += movieInfo.epgTitle;
+		tname += ".jpg";
+
+		tmdb->getSmallCover(movieInfo_list[0].poster_path, tname);
+
+		if(!tname.empty())
+			movieInfo.tfile = tname;
+
+		// video url
+		tmdb->clearVideoInfo();
+		tmdb->getVideoInfo("movie", mvlist[i].id);
+
+		std::vector<tmdbinfo>& videoInfo_list = tmdb->getVideoInfos();
+
+		movieInfo.vid = videoInfo_list[0].vid;
+		movieInfo.vkey = videoInfo_list[0].vkey;
+		movieInfo.vname = videoInfo_list[0].vname;
+
+		m_vMovieInfo.push_back(movieInfo);
+	}
+
+	loadBox.hide();
+
+	// load items
+	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+	{
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		rightWidget->addItem(item);
+	}
+
+	test->addItem(topWidget);
+	test->addItem(leftWidget);
+	test->addItem(rightWidget);
 
 	test->exec(NULL, "");
 }
@@ -302,7 +481,7 @@ void CTestMenu::test()
 	CBox leftBox;
 
 	leftBox.iX = g_settings.screen_StartX + 10;
-	leftBox.iY = /*g_settings.screen_StartY + 10 + headBox.iHeight*/ topBox.iY + topBox.iHeight + INTER_FRAME_SPACE;
+	leftBox.iY = topBox.iY + topBox.iHeight + INTER_FRAME_SPACE;
 	leftBox.iWidth = 200;
 	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - topBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
 

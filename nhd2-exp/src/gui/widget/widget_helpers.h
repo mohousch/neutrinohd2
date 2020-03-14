@@ -28,6 +28,8 @@
 #include <system/localize.h>
 #include <system/settings.h>
 
+//#include <gui/widget/widget.h>
+
 
 //
 enum {
@@ -52,10 +54,30 @@ class CWidgetItem
 		int width;
 		int height;
 
+		//neutrino_msg_t directKey;
+		//neutrino_msg_t msg;
+
 		int itemType;
+		bool outFocus;
 
 		CWidgetItem(){};
 		virtual ~CWidgetItem(){};
+
+		//virtual bool isSelectable(void) const {return false;}
+		//virtual int exec(CMenuTarget */*parent*/) {return 0;}
+
+		virtual void paint(){};
+		virtual void hide(){};
+
+		virtual void scrollLineDown(){};
+		virtual void scrollLineUp(){};
+		virtual void scrollPageDown(){};
+		virtual void scrollPageUp(){};
+		virtual void swipLeft(){};
+		virtual void swipRight(){};
+
+		void setOutFocus(bool focus){outFocus = focus;};
+		void setSelected(unsigned int _new) {};
 };
 
 // buttons

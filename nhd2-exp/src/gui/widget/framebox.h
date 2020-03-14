@@ -53,7 +53,7 @@ class CFrame
 		virtual void setOption(const char* text){option = text;};
 };
 
-class CFrameBox
+class CFrameBox : public CWidgetItem
 {
 	private:
 		CFrameBuffer* frameBuffer;

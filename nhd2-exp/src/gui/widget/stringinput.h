@@ -49,7 +49,7 @@
 #include <system/settings.h>
 
 
-class CStringInput : public CWidget
+class CStringInput : public CMenuTarget
 {
 	protected:
 		CFrameBuffer* frameBuffer;

@@ -69,7 +69,7 @@ typedef struct
 	int rowWidth[LF_MAX_ROWS];
 }LF_LINES;
 
-class CListFrame  
+class CListFrame : public CWidgetItem
 {
 	private:
 		// Functions 

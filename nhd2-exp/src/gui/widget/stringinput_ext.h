@@ -45,7 +45,7 @@
 
 
 class CExtendedInput_Item;
-class CExtendedInput : public CWidget
+class CExtendedInput : public CMenuTarget
 {
 	protected:
 		void Init(void);

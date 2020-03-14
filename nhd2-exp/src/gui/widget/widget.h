@@ -71,10 +71,21 @@ class CWidget : public CMenuTarget
 		void saveScreen(){};
 		void restoreScreen(){};
 
+		bool enableCenter;
+
+		struct keyAction { std::string action; CMenuTarget *menue; };
+		std::map<neutrino_msg_t, keyAction> keyActionMap;
+
+		unsigned long long int timeout;
+		uint32_t sec_timer_id;
+
 	public:
-		CWidget(const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
+		CWidget();
+		CWidget(const int x, const int y, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
+		CWidget(CBox *position);
 		virtual ~CWidget();
 
+		virtual void initFrames();
 		virtual void paintItems();
 		virtual void paint();
 		virtual void hide();
@@ -84,6 +95,19 @@ class CWidget : public CMenuTarget
 		bool hasItem();
 		int getItemsCount()const{return items.size();};
 		virtual void clearItems(void){items.clear();};
+
+		void disableCenter(){enableCenter = false;};
+
+		void setTimeOut(int to = 0){timeout = to;};
+
+		void addKey(neutrino_msg_t key, CMenuTarget *menue = NULL, const std::string &action = "");
+		neutrino_msg_t getKey(){return msg;};
+
+		inline CBox getWindowsPos(void){return(mainFrameBox);};
+		bool getExitPressed(){return exit_pressed;};
+
+		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; if (selected < 0) selected = 0;};
+		int getSelected(){return exit_pressed ? -1 : selected;};
 
 		//void paintMainFrame(){enablePaintMainFrame = true;};
 };

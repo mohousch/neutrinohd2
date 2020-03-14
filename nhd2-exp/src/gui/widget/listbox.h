@@ -465,7 +465,7 @@ class ClistBoxItem : public CMenuItem
 };
 
 //
-class ClistBox
+class ClistBox : public CWidgetItem
 {
 	private:
 		CFrameBuffer* frameBuffer;
