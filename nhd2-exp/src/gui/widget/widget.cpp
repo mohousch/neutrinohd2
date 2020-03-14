@@ -264,6 +264,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 					items[selected]->swipRight();
 					break;
 
+				#if 0
 				case (RC_ok):
 					{
 						if(hasItem()) 
@@ -271,7 +272,6 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 							//exec this item...
 							CWidgetItem* item = items[selected];
 
-							/*
 							item->msg = msg;
 							
 							int rv = item->exec(this);
@@ -298,60 +298,12 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 									msg = RC_timeout;
 									break;	
 							}
-							*/
 						} 
 						else
 							msg = RC_timeout;
 					}
 					break;
-				/*
-				case (RC_setup):
-					if(widgetMode == MODE_MENU)
-					{
-						if(widgetChange)
-						{
-							hide();
-
-							if(widgetType == WIDGET_TYPE_STANDARD)
-								widgetType = WIDGET_TYPE_CLASSIC;
-							else if(widgetType == WIDGET_TYPE_CLASSIC)
-								widgetType = WIDGET_TYPE_EXTENDED;
-							else if(widgetType == WIDGET_TYPE_EXTENDED)
-								widgetType = WIDGET_TYPE_FRAME;
-							else if(widgetType == WIDGET_TYPE_FRAME)
-								widgetType = WIDGET_TYPE_STANDARD;
-
-							g_settings.menu_design = widgetType;
-
-							initFrames();
-							paintHead();
-							paintFoot();
-							paint();
-						}
-					}
-					else if(widgetMode == MODE_LISTBOX)
-					{
-						if(widgetChange && widget.size())
-						{
-							hide();
-
-							cnt++;
-
-							if(cnt >= (int)widget.size())
-							{
-								cnt = 0;
-							}
-					
-							widgetType = widget[cnt];
-
-							initFrames();
-							paintHead();
-							paintFoot();
-							paint();
-						}
-					}
-					break;
-				*/
+				#endif
 
 				case (RC_yellow):
 					items[selected]->setSelected(-1);
