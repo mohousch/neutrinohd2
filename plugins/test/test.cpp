@@ -84,7 +84,9 @@ class CTestMenu : public CMenuTarget
 
 		CBox rightBox;
 		ClistBox *rightWidget;
-		int right_selected;	
+		int right_selected;
+
+		void loadPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1);	
 
 		// testing
 		void test();
@@ -231,112 +233,105 @@ void CTestMenu::hide()
 	frameBuffer->blit();
 }
 
-void CTestMenu::widget()
+void CTestMenu::loadPlaylist(const char *txt, const char *list, const int seite)
 {
-	testWidget = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
-
-	//CBox topBox;
+#if 0
+	CFileFilter fileFilter;
 	
-	topBox.iWidth = testWidget->getWindowsPos().iWidth;
-	topBox.iHeight = 120;
-	topBox.iX = testWidget->getWindowsPos().iX;
-	topBox.iY = testWidget->getWindowsPos().iY;
+	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
 
-	top_selected = -1;
-
-	topWidget = new CFrameBox(&topBox);
-	CFrame * frame = NULL;
-
-	frame = new CFrame("Filme");
-	topWidget->addFrame(frame);
+	CFileList filelist;
 	
-	frame = new CFrame("Serien");
-	topWidget->addFrame(frame);
+	// recordingdir
+	std::string Path_local = g_settings.network_nfs_recordingdir;
+	m_vMovieInfo.clear();
 
-	frame = new CFrame("Suche");
-	topWidget->addFrame(frame);
-
-	//topWidget->setSelected(0); 
-	//topWidget->setOutFocus(false);
-
-	// leftWidget
-	CBox leftBox;
-
-	leftBox.iWidth = 200;
-	leftBox.iHeight = testWidget->getWindowsPos().iHeight - topBox.iHeight - INTER_FRAME_SPACE;
-	leftBox.iX = testWidget->getWindowsPos().iX;
-	leftBox.iY = testWidget->getWindowsPos().iY + topBox.iHeight + INTER_FRAME_SPACE;
-
-	left_selected = -1;
-
-	leftWidget = new ClistBox(&leftBox);
-
-	leftWidget->disableCenter();
-	//leftWidget->setSelected(-1);
-	//leftWidget->setOutFocus(true);
-	leftWidget->disableShrinkMenu();
-
-	leftWidget->setBackgroundColor(COL_DARK_TURQUOISE);
-
-	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos");
-	ClistBoxItem *item2 = new ClistBoxItem("Am");
-	item2->setOption("populärsten");
-	item2->set2lines();
-	ClistBoxItem *item3 = new ClistBoxItem("Am besten");
-	item3->setOption("bewertet");
-	item3->set2lines();
-	ClistBoxItem *item4 = new ClistBoxItem("Neue Filme");
-	ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
-	ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
-	ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
-	ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
-	ClistBoxItem *item9 = new ClistBoxItem("Beenden");
-
-	leftWidget->addItem(item1);
-	leftWidget->addItem(item2);
-	leftWidget->addItem(item3);
-	leftWidget->addItem(item4);
-	leftWidget->addItem(item5);
-	leftWidget->addItem(item6);
-	leftWidget->addItem(item7);
-	leftWidget->addItem(item8);
-	leftWidget->addItem(item9);
-
-	// right menu
-	CBox rightBox;
-
-	rightBox.iWidth = testWidget->getWindowsPos().iWidth - INTER_FRAME_SPACE - leftBox.iWidth;
-	rightBox.iHeight = testWidget->getWindowsPos().iHeight - topBox.iHeight - INTER_FRAME_SPACE;
-	rightBox.iX = testWidget->getWindowsPos().iX + leftBox.iWidth + INTER_FRAME_SPACE;
-	rightBox.iY = testWidget->getWindowsPos().iY + topBox.iHeight + INTER_FRAME_SPACE;
-
-	right_selected = -1;
-
+	CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	loadBox.paint();
+	
 	//
-	rightWidget = new ClistBox(&rightBox);
-	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
-	rightWidget->setItemsPerPage(3,2);
-	//rightWidget->setSelected(-1);
-	//rightWidget->setOutFocus(true);
+	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	{
+		// filter them
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
 
-	rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
+		{
+			//
+			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+					
+			movieInfo.file.Name = files->Name;
+					
+			// load movie infos (from xml file)
+			m_movieInfo.loadMovieInfo(&movieInfo);
 
-	rightWidget->enablePaintFootInfo();
+			std::string tmp_str = files->getFileName();
 
+			removeExtension(tmp_str);
+
+			// refill if empty
+			if(movieInfo.epgTitle.empty())
+				movieInfo.epgTitle = tmp_str;
+
+			if(movieInfo.epgInfo1.empty())
+				movieInfo.epgInfo1 = tmp_str;
+
+			//if(movieInfo.epgInfo2.empty())
+			//	movieInfo.epgInfo2 = tmp_str;
+
+			//thumbnail
+			std::string fname = "";
+			fname = files->Name;
+			changeFileNameExt(fname, ".jpg");
+					
+			if(!access(fname.c_str(), F_OK) )
+				movieInfo.tfile = fname.c_str();
+					
+			// 
+			m_vMovieInfo.push_back(movieInfo);
+		}
+	}
+
+	loadBox.paint();
+#else
 	thumbnail_dir = "/tmp/nfilm";
-	page = 1;
-	plist = "popular";
+	page = seite;
+	plist = list;
+	TVShows = txt;
 
 	//
 	tmdb = new CTmdb();
 
-	TVShows = "movie";
-
-//DOFILM:
 	fileHelper.removeDir(thumbnail_dir.c_str());
 	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
 
-	CHintBox loadBox("Movie Trailer", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	loadBox.paint();
 
 	tmdb->clearMovieList();
@@ -397,6 +392,7 @@ void CTestMenu::widget()
 	}
 
 	loadBox.hide();
+#endif
 
 	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
@@ -413,6 +409,98 @@ void CTestMenu::widget()
 
 		rightWidget->addItem(item);
 	}
+}
+
+void CTestMenu::widget()
+{
+	testWidget = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
+	
+	topBox.iWidth = testWidget->getWindowsPos().iWidth;
+	topBox.iHeight = 120;
+	topBox.iX = testWidget->getWindowsPos().iX;
+	topBox.iY = testWidget->getWindowsPos().iY;
+
+	top_selected = 0;
+
+	topWidget = new CFrameBox(&topBox);
+	topWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+
+	CFrame * frame = NULL;
+
+	frame = new CFrame("Filme");
+	topWidget->addFrame(frame);
+	
+	frame = new CFrame("Serien");
+	topWidget->addFrame(frame);
+
+	frame = new CFrame("Suche");
+	topWidget->addFrame(frame);
+
+	topWidget->setSelected(top_selected); 
+	//topWidget->setOutFocus(false);
+
+	// leftWidget
+	leftBox.iWidth = 200;
+	leftBox.iHeight = testWidget->getWindowsPos().iHeight - topBox.iHeight - INTER_FRAME_SPACE;
+	leftBox.iX = testWidget->getWindowsPos().iX;
+	leftBox.iY = testWidget->getWindowsPos().iY + topBox.iHeight + INTER_FRAME_SPACE;
+
+	left_selected = 0;
+
+	leftWidget = new ClistBox(&leftBox);
+
+	leftWidget->disableCenter();
+	leftWidget->setSelected(left_selected);
+	//leftWidget->setOutFocus(true);
+	leftWidget->disableShrinkMenu();
+
+	leftWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+
+	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos");
+	ClistBoxItem *item2 = new ClistBoxItem("Am");
+	item2->setOption("populärsten");
+	item2->set2lines();
+	ClistBoxItem *item3 = new ClistBoxItem("Am besten");
+	item3->setOption("bewertet");
+	item3->set2lines();
+	ClistBoxItem *item4 = new ClistBoxItem("Neue Filme");
+	ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
+	ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
+	ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
+	ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
+	ClistBoxItem *item9 = new ClistBoxItem("Beenden");
+
+	leftWidget->addItem(item1);
+	leftWidget->addItem(item2);
+	leftWidget->addItem(item3);
+	leftWidget->addItem(item4);
+	leftWidget->addItem(item5);
+	leftWidget->addItem(item6);
+	leftWidget->addItem(item7);
+	leftWidget->addItem(item8);
+	leftWidget->addItem(item9);
+
+	// right menu
+	rightBox.iWidth = testWidget->getWindowsPos().iWidth - INTER_FRAME_SPACE - leftBox.iWidth;
+	rightBox.iHeight = testWidget->getWindowsPos().iHeight - topBox.iHeight - INTER_FRAME_SPACE;
+	rightBox.iX = testWidget->getWindowsPos().iX + leftBox.iWidth + INTER_FRAME_SPACE;
+	rightBox.iY = testWidget->getWindowsPos().iY + topBox.iHeight + INTER_FRAME_SPACE;
+
+	right_selected = 0;
+
+	//
+	rightWidget = new ClistBox(&rightBox);
+	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
+	rightWidget->setItemsPerPage(6,2);
+	rightWidget->setSelected(right_selected);
+	//rightWidget->setOutFocus(true);
+
+	rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
+
+	rightWidget->enablePaintFootInfo();
+
+	// loadPlaylist
+	loadPlaylist();
 
 	testWidget->addItem(topWidget);
 	testWidget->addItem(leftWidget);
@@ -4941,8 +5029,6 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[right_selected]);
 				tmpMoviePlayerGui.exec(NULL, "");
 			}
-
-			//goto REPAINT;
 		}
 		else if(focus == 1)
 		{
@@ -4953,162 +5039,139 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				if(left_selected == 0)
 				{
 					right_selected = 0;
-					plist = "now_playing";
-					page = 1;
-					//hide();
 					rightWidget->clearItems();
-					//goto DOFILM; // include REPAINT
+					loadPlaylist("movie", "now_playing", 1);
 				}
 				else if(left_selected == 1)
 				{
 					right_selected = 0;
-					plist = "popular";
-					page = 1;
-					//hide();
 					rightWidget->clearItems();
-					//goto DOFILM; // include REPAINT
+					loadPlaylist("movie", "popular", 1);
 				}
 				else if(left_selected == 2)
 				{
 					right_selected = 0;
-					plist = "top_rated";
-					page = 1;
-					hide();
 					rightWidget->clearItems();
-					//goto DOFILM; // include REPAINT
+					loadPlaylist("movie", "top_rated", 1);
 				}
 				else if(left_selected == 3)
 				{
 					right_selected = 0;
-					plist = "upcoming";
-					page = 1;
-					//hide();
 					rightWidget->clearItems();
-					//goto DOFILM; // include REPAINT
+					loadPlaylist("movie", "upcoming", 1);
 				}
 			}
 			else if(top_selected == 1) // tv
 			{
 				if(left_selected == 0)
 				{
-						right_selected = 0;
-						plist = "airing_today";
-						page = 1;
-						//hide();
-						rightWidget->clearItems();
-						//goto DOFILM; // include REPAINT
+					right_selected = 0;
+					rightWidget->clearItems();
+					loadPlaylist("tv", "airing_today", 1);
 				}
 				else if(left_selected == 1)
 				{
-						right_selected = 0;
-						plist = "on_the_air";
-						page = 1;
-						//hide();
-						rightWidget->clearItems();
-						//goto DOFILM; // include REPAINT
+					right_selected = 0;
+					rightWidget->clearItems();
+					loadPlaylist("tv", "on_the_air", 1);
 				}
 				else if(left_selected == 2)
 				{
-						right_selected = 0;
-						plist = "popular";
-						page = 1;
-						//hide();
-						rightWidget->clearItems();
-						//goto DOFILM; // include REPAINT
+					right_selected = 0;
+					rightWidget->clearItems();
+					loadPlaylist("tv", "popular", 1);
 				}
 				else if(left_selected == 3)
 				{
-						right_selected = 0;
-						plist = "top_rated";
-						page = 1;
-						//hide();
-						rightWidget->clearItems();
-						//goto DOFILM; // include REPAINT
+					right_selected = 0;
+					rightWidget->clearItems();
+					loadPlaylist("tv", "top_rated", 1);
 				}
 			}
+
+			if(left_selected == 8)
+				return menu_return::RETURN_EXIT;
 		}
 		else if(focus == 0)
 		{
 			top_selected = topWidget->getSelected();
 
-			if(top_selected == 1)
-			{
-					right_selected = 0;
-					left_selected = 0;
-
-					TVShows = "tv";
-					plist = "airing_today";
-					page = 1;
-					//hide();
-					rightWidget->clearItems();
-					//
-					leftWidget->clearItems();
-
-					ClistBoxItem *item1 = new ClistBoxItem("Heute auf Sendung");
-					ClistBoxItem *item2 = new ClistBoxItem("Auf Sendung");
-					ClistBoxItem *item3 = new ClistBoxItem("Am");
-					item3->setOption("populärsten");
-					item3->set2lines();
-					ClistBoxItem *item4 = new ClistBoxItem("am");
-					item4->setOption("besten bewertet");
-					item4->set2lines();
-					ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
-					ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
-					ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
-					ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
-					ClistBoxItem *item9 = new ClistBoxItem("Beenden");
-
-					leftWidget->addItem(item1);
-					leftWidget->addItem(item2);
-					leftWidget->addItem(item3);
-					leftWidget->addItem(item4);
-					leftWidget->addItem(item5);
-					leftWidget->addItem(item6);
-					leftWidget->addItem(item7);
-					leftWidget->addItem(item8);
-					leftWidget->addItem(item9);
-
-					leftWidget->paint();
-					//
-					//goto DOFILM; // include REPAINT
-			}
-			else if(top_selected == 0)
+			if(top_selected == 1) //tv
 			{
 				right_selected = 0;
 				left_selected = 0;
 
-				TVShows = "movie";
-				plist = "popular";
-				page = 1;
-				//hide();
+				rightWidget->clearItems();
+				//
+				leftWidget->clearItems();
+
+				ClistBoxItem *item1 = new ClistBoxItem("Heute auf");
+				item1->setOption("Sendung");
+				item1->set2lines();
+				ClistBoxItem *item2 = new ClistBoxItem("Auf Sendung");
+				ClistBoxItem *item3 = new ClistBoxItem("Am");
+				item3->setOption("populärsten");
+				item3->set2lines();
+				ClistBoxItem *item4 = new ClistBoxItem("am");
+				item4->setOption("besten bewertet");
+				item4->set2lines();
+				ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
+				ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
+				ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
+				ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
+				ClistBoxItem *item9 = new ClistBoxItem("Beenden");
+
+				leftWidget->addItem(item1);
+				leftWidget->addItem(item2);
+				leftWidget->addItem(item3);
+				leftWidget->addItem(item4);
+				leftWidget->addItem(item5);
+				leftWidget->addItem(item6);
+				leftWidget->addItem(item7);
+				leftWidget->addItem(item8);
+				leftWidget->addItem(item9);
+
+				loadPlaylist("tv", "airing_today", 1);
+
+				leftWidget->setSelected(0);
+				rightWidget->setSelected(0);
+			}
+			else if(top_selected == 0) // movie
+			{
+				right_selected = 0;
+				left_selected = 0;
+
 				rightWidget->clearItems();
 				leftWidget->clearItems();
 
 				ClistBoxItem *item1 = new ClistBoxItem("In den Kinos");
-					ClistBoxItem *item2 = new ClistBoxItem("Am");
-					item2->setOption("populärsten");
-					item2->set2lines();
-					ClistBoxItem *item3 = new ClistBoxItem("Am besten");
-					item3->setOption("bewertet");
-					item3->set2lines();
-					ClistBoxItem *item4 = new ClistBoxItem("Neue Filme");
-					ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
-					ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
-					ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
-					ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
-					ClistBoxItem *item9 = new ClistBoxItem("Beenden");
+				ClistBoxItem *item2 = new ClistBoxItem("Am");
+				item2->setOption("populärsten");
+				item2->set2lines();
+				ClistBoxItem *item3 = new ClistBoxItem("Am besten");
+				item3->setOption("bewertet");
+				item3->set2lines();
+				ClistBoxItem *item4 = new ClistBoxItem("Neue Filme");
+				ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
+				ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
+				ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
+				ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
+				ClistBoxItem *item9 = new ClistBoxItem("Beenden");
 
-					leftWidget->addItem(item1);
-					leftWidget->addItem(item2);
-					leftWidget->addItem(item3);
-					leftWidget->addItem(item4);
-					leftWidget->addItem(item5);
-					leftWidget->addItem(item6);
-					leftWidget->addItem(item7);
-					leftWidget->addItem(item8);
-					leftWidget->addItem(item9);
+				leftWidget->addItem(item1);
+				leftWidget->addItem(item2);
+				leftWidget->addItem(item3);
+				leftWidget->addItem(item4);
+				leftWidget->addItem(item5);
+				leftWidget->addItem(item6);
+				leftWidget->addItem(item7);
+				leftWidget->addItem(item8);
+				leftWidget->addItem(item9);
 
-				leftWidget->paint();
+				loadPlaylist();
+
+				leftWidget->setSelected(0);
+				rightWidget->setSelected(0);
 			}
 		}
 

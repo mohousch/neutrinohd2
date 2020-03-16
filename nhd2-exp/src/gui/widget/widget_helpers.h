@@ -49,13 +49,8 @@ class CWidgetItem
 {
 	private:
 	public:
-		int x;
-		int y;
-		int width;
-		int height;
+		CBox itemBox;
 
-		//neutrino_msg_t directKey;
-		//neutrino_msg_t msg;
 
 		int itemType;
 		bool outFocus;
@@ -78,6 +73,8 @@ class CWidgetItem
 
 		void setOutFocus(bool focus){outFocus = focus;};
 		void setSelected(unsigned int _new) {};
+
+		inline CBox getItemPos(void){return (itemBox);};
 };
 
 // buttons

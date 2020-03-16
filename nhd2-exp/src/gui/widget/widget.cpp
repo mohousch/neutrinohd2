@@ -207,6 +207,12 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 							initFrames();
 							paint();
 							break;
+						case menu_return::RETURN_NONE:
+							g_RCInput->killTimer(sec_timer_id);
+							sec_timer_id = 0;
+							retval = menu_return::RETURN_NONE;
+							msg = RC_timeout;
+							break;	
 					}
 				}
 				else
@@ -264,58 +270,17 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 					items[selected]->swipRight();
 					break;
 
-				#if 0
-				case (RC_ok):
-					{
-						if(hasItem()) 
-						{
-							//exec this item...
-							CWidgetItem* item = items[selected];
-
-							item->msg = msg;
-							
-							int rv = item->exec(this);
-							
-							switch ( rv ) 
-							{
-								case menu_return::RETURN_EXIT_ALL:
-									retval = menu_return::RETURN_EXIT_ALL;
-									
-								case menu_return::RETURN_EXIT:
-									msg = RC_timeout;
-									break;
-									
-								case menu_return::RETURN_REPAINT:
-									hide();
-									initFrames();
-									paint();
-									break;
-
-								case menu_return::RETURN_NONE:
-									g_RCInput->killTimer(sec_timer_id);
-									sec_timer_id = 0;
-									retval = menu_return::RETURN_NONE;
-									msg = RC_timeout;
-									break;	
-							}
-						} 
-						else
-							msg = RC_timeout;
-					}
-					break;
-				#endif
-
 				case (RC_yellow):
-					items[selected]->setSelected(-1);
-					items[selected]->setOutFocus(true);
+					//items[selected]->setSelected(-1);
+					//items[selected]->setOutFocus(true);
 
 					selected += 1;
 
 					if(selected >= items.size())
 						selected = 0;
 
-					items[selected]->setSelected(0);
-					items[selected]->setOutFocus(false);
+					//items[selected]->setSelected(0);
+					//items[selected]->setOutFocus(false);
 					break;
 
 				case (RC_home):
@@ -345,6 +310,8 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 		frameBuffer->blit();
 	}
 	while ( msg != RC_timeout );
+
+	printf("CWidget: retval: (%d)\n", retval);
 	
 	if(retval != menu_return::RETURN_NONE)
 		hide();	
