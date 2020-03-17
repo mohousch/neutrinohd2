@@ -2484,7 +2484,7 @@ void ClistBox::hide()
 	}
 }
 
-void ClistBox::scrollLineDown()
+void ClistBox::scrollLineDown(const int)
 {
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
@@ -2545,7 +2545,7 @@ void ClistBox::scrollLineDown()
 	}
 }
 
-void ClistBox::scrollLineUp()
+void ClistBox::scrollLineUp(const int)
 {
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
@@ -2607,7 +2607,7 @@ void ClistBox::scrollLineUp()
 	}
 }
 
-void ClistBox::scrollPageDown()
+void ClistBox::scrollPageDown(const int)
 {
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
@@ -2656,7 +2656,7 @@ void ClistBox::scrollPageDown()
 	}
 }
 
-void ClistBox::scrollPageUp()
+void ClistBox::scrollPageUp(const int)
 {
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{

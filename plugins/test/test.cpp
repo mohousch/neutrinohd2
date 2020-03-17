@@ -53,8 +53,19 @@ class CTestMenu : public CMenuTarget
 		CFileList audioFileList;
 
 		//
+		CFileFilter fileFilter;
+		CFileList filelist;
+
+		// movie
 		CMovieInfo m_movieInfo;
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
+
+		// audio
+		CAudioPlayList AudioPlaylist;
+
+		// pictures
+		CPicture pic;
+		CPicturePlayList PicPlaylist;
 
 		//
 		CTmdb* tmdb;
@@ -86,11 +97,20 @@ class CTestMenu : public CMenuTarget
 		ClistBox *rightWidget;
 		int right_selected;
 
-		void loadPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1);	
+		//
+		CListFrame * listFrame;
+
+		void loadTMDBPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1);
+
+		void loadMoviePlaylist();
+		void loadAudioPlaylist();
+		void loadPicturePlaylist();	
 
 		// testing
 		void test();
 		void widget();
+		void listFrameWidget();
+		void listBoxWidget();
 
 		// widgets
 		void testCBox();
@@ -212,6 +232,13 @@ CTestMenu::CTestMenu()
 	// 
 	mainMenu = NULL;
 	select = -1;
+
+	//
+	testWidget = NULL;
+	topWidget = NULL;
+	leftWidget = NULL;
+	rightWidget = NULL;
+	listFrame = NULL;
 }
 
 CTestMenu::~CTestMenu()
@@ -233,11 +260,86 @@ void CTestMenu::hide()
 	frameBuffer->blit();
 }
 
-void CTestMenu::loadPlaylist(const char *txt, const char *list, const int seite)
+void CTestMenu::loadAudioPlaylist()
 {
-#if 0
-	CFileFilter fileFilter;
-	
+	CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	loadBox.paint();
+
+	fileFilter.addFilter("cdr");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("m2a");
+	fileFilter.addFilter("mpa");
+	fileFilter.addFilter("mp2");
+	fileFilter.addFilter("ogg");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("aac");
+	fileFilter.addFilter("dts");
+	fileFilter.addFilter("m4a");
+
+	AudioPlaylist.clear();
+
+	std::string Path = g_settings.network_nfs_audioplayerdir;
+
+	if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
+	{		
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
+		{
+			if ( (files->getExtension() == CFile::EXTENSION_CDR)
+					||  (files->getExtension() == CFile::EXTENSION_MP3)
+					||  (files->getExtension() == CFile::EXTENSION_WAV)
+					||  (files->getExtension() == CFile::EXTENSION_FLAC))
+			{
+				CAudiofile audiofile(files->Name, files->getExtension());
+
+				// refill
+				std::string title;
+				std::string artist;
+				std::string genre;
+				std::string date;
+				char duration[9] = "";
+
+				CAudioPlayer::getInstance()->init();
+
+				int ret = CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
+
+				if (!ret || (audiofile.MetaData.artist.empty() && audiofile.MetaData.title.empty() ))
+				{
+					//remove extension (.mp3)
+					std::string tmp = files->getFileName().substr(files->getFileName().rfind('/') + 1);
+					tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
+
+					std::string::size_type i = tmp.rfind(" - ");
+		
+					if(i != std::string::npos)
+					{ 
+						audiofile.MetaData.title = tmp.substr(0, i);
+						audiofile.MetaData.artist = tmp.substr(i + 3);
+					}
+					else
+					{
+						i = tmp.rfind('-');
+						if(i != std::string::npos)
+						{
+							audiofile.MetaData.title = tmp.substr(0, i);
+							audiofile.MetaData.artist = tmp.substr(i + 1);
+						}
+						else
+							audiofile.MetaData.title = tmp;
+					}
+				}
+				
+				AudioPlaylist.push_back(audiofile);
+			}
+		}
+	}
+
+	loadBox.hide();
+}
+
+void CTestMenu::loadMoviePlaylist()
+{
 	fileFilter.addFilter("ts");
 	fileFilter.addFilter("mpg");
 	fileFilter.addFilter("mpeg");
@@ -263,8 +365,6 @@ void CTestMenu::loadPlaylist(const char *txt, const char *list, const int seite)
 	fileFilter.addFilter("mp3");
 	fileFilter.addFilter("wma");
 	fileFilter.addFilter("ogg");
-
-	CFileList filelist;
 	
 	// recordingdir
 	std::string Path_local = g_settings.network_nfs_recordingdir;
@@ -318,8 +418,47 @@ void CTestMenu::loadPlaylist(const char *txt, const char *list, const int seite)
 		}
 	}
 
+	loadBox.hide();
+}
+
+void CTestMenu::loadPicturePlaylist()
+{
+	CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	loadBox.paint();
-#else
+
+	PicPlaylist.clear();
+
+	std::string Path = g_settings.network_nfs_picturedir;
+
+	if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
+	{
+		struct stat statbuf;
+				
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
+		{
+			if (files->getType() == CFile::FILE_PICTURE)
+			{
+				// fill 
+				pic.Filename = files->Name;
+				std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
+				pic.Name = tmp.substr(0, tmp.rfind('.'));
+				pic.Type = tmp.substr(tmp.rfind('.') + 1);
+			
+				if(stat(pic.Filename.c_str(), &statbuf) != 0)
+					printf("stat error");
+				pic.Date = statbuf.st_mtime;
+				
+				PicPlaylist.push_back(pic);
+			}
+		}
+	}
+
+	loadBox.hide();
+}
+
+void CTestMenu::loadTMDBPlaylist(const char *txt, const char *list, const int seite)
+{
 	thumbnail_dir = "/tmp/nfilm";
 	page = seite;
 	plist = list;
@@ -392,23 +531,6 @@ void CTestMenu::loadPlaylist(const char *txt, const char *list, const int seite)
 	}
 
 	loadBox.hide();
-#endif
-
-	// load items
-	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
-	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
-
-		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
-
-		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
-
-		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
-
-		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
-
-		rightWidget->addItem(item);
-	}
 }
 
 void CTestMenu::widget()
@@ -500,7 +622,23 @@ void CTestMenu::widget()
 	rightWidget->enablePaintFootInfo();
 
 	// loadPlaylist
-	loadPlaylist();
+	loadTMDBPlaylist();
+
+	// load items
+	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+	{
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		rightWidget->addItem(item);
+	}
 
 	testWidget->addItem(topWidget);
 	testWidget->addItem(leftWidget);
@@ -510,6 +648,248 @@ void CTestMenu::widget()
 	testWidget->addKey(RC_ok, this, "wok");
 
 	testWidget->exec(NULL, "");
+
+	delete testWidget;
+	testWidget = NULL;
+
+	delete topWidget;
+	topWidget = NULL;
+
+	delete leftWidget;
+	leftWidget = NULL;
+
+	delete rightWidget;
+	rightWidget = NULL;
+}
+
+void CTestMenu::listFrameWidget()
+{
+	testWidget = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
+
+	///
+	CBox listFrameBox;
+	LF_LINES listFrameLines;
+	int selected = 0;
+	
+	listFrameBox.iX = frameBuffer->getScreenX();
+	listFrameBox.iY = frameBuffer->getScreenY();
+	listFrameBox.iWidth = frameBuffer->getScreenWidth();
+	listFrameBox.iHeight = frameBuffer->getScreenHeight();
+
+	//
+	#define MAX_ROWS 		LF_MAX_ROWS //6
+
+	
+
+	// init
+	listFrameLines.rows = MAX_ROWS;
+
+	for(int row = 0; row < MAX_ROWS; row++)
+	{
+		listFrameLines.lineArray[row].clear();
+	}
+
+	// rowwidth
+	listFrameLines.rowWidth[0] = MAX_WINDOW_WIDTH / 20;
+	listFrameLines.rowWidth[1] = MAX_WINDOW_WIDTH / 4;
+	listFrameLines.rowWidth[2] = MAX_WINDOW_WIDTH / 12;
+	listFrameLines.rowWidth[3] = MAX_WINDOW_WIDTH / 8;
+	listFrameLines.rowWidth[4] = MAX_WINDOW_WIDTH / 5;
+	listFrameLines.rowWidth[5] = MAX_WINDOW_WIDTH / 10;
+
+	// headertitle
+	listFrameLines.lineHeader[0] = "Nr";
+	listFrameLines.lineHeader[1] = "title";
+	listFrameLines.lineHeader[2] = "duration";
+	listFrameLines.lineHeader[3] = "genre";
+	listFrameLines.lineHeader[4] = "artist";
+	listFrameLines.lineHeader[5] = "date";
+	
+
+	listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::TITLE | CListFrame::HEADER_LINE | CListFrame::SCROLL, &listFrameBox);
+
+	// title
+	listFrame->setTitle("listFrame (AudioPlayer)", NEUTRINO_ICON_MOVIE);
+
+	loadAudioPlaylist();
+
+	//
+	int count = 0;
+	for (unsigned int i = 0; i < AudioPlaylist.size(); i++)
+	{
+		std::string title;
+		std::string artist;
+		std::string genre;
+		std::string date;
+		char duration[9] = "";
+
+		CAudioPlayer::getInstance()->init();
+
+		CAudioPlayer::getInstance()->readMetaData(&AudioPlaylist[i], true);
+
+		title = AudioPlaylist[i].MetaData.title;
+		artist = AudioPlaylist[i].MetaData.artist;
+		genre = AudioPlaylist[i].MetaData.genre;	
+		date = AudioPlaylist[i].MetaData.date;
+
+		snprintf(duration, 8, "(%ld:%02ld)", AudioPlaylist[i].MetaData.total_time / 60, AudioPlaylist[i].MetaData.total_time % 60);
+
+		listFrameLines.lineArray[0].push_back(to_string(i));
+		listFrameLines.lineArray[1].push_back(title);
+		listFrameLines.lineArray[2].push_back(duration);
+		listFrameLines.lineArray[3].push_back(genre);
+		listFrameLines.lineArray[4].push_back(artist);
+		listFrameLines.lineArray[5].push_back(date);
+	}
+	
+	// fill lineArrays list
+	//CFileFilter fileFilter;
+#if 0
+	// music
+	fileFilter.addFilter("cdr");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("m2a");
+	fileFilter.addFilter("mpa");
+	fileFilter.addFilter("mp2");
+	fileFilter.addFilter("ogg");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("aac");
+	fileFilter.addFilter("dts");
+	fileFilter.addFilter("m4a");
+	
+	std::string Path_local = g_settings.network_nfs_audioplayerdir;
+
+	if(CFileHelpers::getInstance()->readDir(Path_local, &audioFileList, &fileFilter))
+	{
+		int count = 0;
+				
+		CFileList::iterator files = audioFileList.begin();
+		for(; files != audioFileList.end() ; files++)
+		{
+			count++;
+			if (files->getType() == CFile::FILE_AUDIO)
+			{
+				std::string title;
+				std::string artist;
+				std::string genre;
+				std::string date;
+				char duration[9] = "";
+
+				// metaData
+				CAudiofile audiofile(files->Name, files->getExtension());
+
+				CAudioPlayer::getInstance()->init();
+
+				int ret = CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
+
+				if (!ret || (audiofile.MetaData.artist.empty() && audiofile.MetaData.title.empty() ))
+				{
+					// //remove extension (.mp3)
+					std::string tmp = files->getFileName().substr(files->getFileName().rfind('/') + 1);
+					tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
+
+					std::string::size_type i = tmp.rfind(" - ");
+		
+					if(i != std::string::npos)
+					{ 
+						title = tmp.substr(0, i);
+						artist = tmp.substr(i + 3);
+					}
+					else
+					{
+						i = tmp.rfind('-');
+						if(i != std::string::npos)
+						{
+							title = tmp.substr(0, i);
+							artist = tmp.substr(i + 1);
+						}
+						else
+							title = tmp;
+					}
+				}
+				else
+				{
+					title = audiofile.MetaData.title;
+					artist = audiofile.MetaData.artist;
+					genre = audiofile.MetaData.genre;	
+					date = audiofile.MetaData.date;
+
+					snprintf(duration, 8, "(%ld:%02ld)", audiofile.MetaData.total_time / 60, audiofile.MetaData.total_time % 60);
+				}
+
+				listFrameLines.lineArray[0].push_back(to_string(count));
+				listFrameLines.lineArray[1].push_back(title);
+				listFrameLines.lineArray[2].push_back(duration);
+				listFrameLines.lineArray[3].push_back(genre);
+				listFrameLines.lineArray[4].push_back(artist);
+				listFrameLines.lineArray[5].push_back(date);
+			}
+		}
+	}
+#endif
+	//
+	listFrame->setLines(&listFrameLines);
+	
+	// paint
+	//listFrame->paint();
+	listFrame->showSelection(true);
+	///
+
+	testWidget->addItem(listFrame);
+
+	testWidget->addKey(RC_ok, this, "aok");
+
+	testWidget->exec(this, "");
+	delete testWidget;
+	testWidget = NULL;
+}
+
+void CTestMenu::listBoxWidget()
+{
+	testWidget = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
+
+	//
+	rightWidget = new ClistBox(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
+
+	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
+	rightWidget->setItemsPerPage(6,2);
+	rightWidget->setSelected(selected);
+	//rightWidget->setOutFocus(true);
+	rightWidget->enablePaintFootInfo();
+	rightWidget->enableWidgetChange();
+	rightWidget->addWidget(WIDGET_TYPE_STANDARD);
+	rightWidget->addWidget(WIDGET_TYPE_CLASSIC);
+	rightWidget->addWidget(WIDGET_TYPE_EXTENDED);
+
+	// loadPlaylist
+	loadMoviePlaylist();
+
+	// load items
+	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+	{
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		rightWidget->addItem(item);
+	}
+
+
+	testWidget->addKey(RC_ok, this, "lok");
+	testWidget->addKey(RC_info, this, "linfo");
+	testWidget->addKey(RC_setup, this, "lsetup");
+
+	testWidget->addItem(rightWidget);
+	testWidget->exec(this, "");
+	delete testWidget;
+	testWidget = NULL;
 }
 
 // CFrameBox
@@ -4952,7 +5332,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		if (&m_vMovieInfo[listMenu->getSelected()].file != NULL) 
 		{
 			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[listMenu->getSelected()]);
-			tmpMoviePlayerGui.exec(NULL, "urlplayback");
+			tmpMoviePlayerGui.exec(NULL, "");
 		}
 
 		return menu_return::RETURN_REPAINT;
@@ -5040,25 +5420,88 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadPlaylist("movie", "now_playing", 1);
+					loadTMDBPlaylist("movie", "now_playing", 1);
+
+					// load items
+					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+					{
+						item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+						item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+						item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+						item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+						item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+						rightWidget->addItem(item);
+					}
 				}
 				else if(left_selected == 1)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadPlaylist("movie", "popular", 1);
+					loadTMDBPlaylist("movie", "popular", 1);
+
+					// load items
+					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+					{
+						item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+						item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+						item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+						item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+						item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+						rightWidget->addItem(item);
+					}
 				}
 				else if(left_selected == 2)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadPlaylist("movie", "top_rated", 1);
+					loadTMDBPlaylist("movie", "top_rated", 1);
+					// load items
+					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+					{
+						item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+						item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+						item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+						item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+						item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+						rightWidget->addItem(item);
+					}
 				}
 				else if(left_selected == 3)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadPlaylist("movie", "upcoming", 1);
+					loadTMDBPlaylist("movie", "upcoming", 1);
+
+					// load items
+					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+					{
+						item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+						item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+						item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+						item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+						item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+						rightWidget->addItem(item);
+					}
 				}
 			}
 			else if(top_selected == 1) // tv
@@ -5067,30 +5510,94 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadPlaylist("tv", "airing_today", 1);
+					loadTMDBPlaylist("tv", "airing_today", 1);
+
+					// load items
+					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+					{
+						item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+						item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+						item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+						item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+						item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+						rightWidget->addItem(item);
+					}
 				}
 				else if(left_selected == 1)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadPlaylist("tv", "on_the_air", 1);
+					loadTMDBPlaylist("tv", "on_the_air", 1);
+
+					// load items
+					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+					{
+						item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+						item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+						item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+						item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+						item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+						rightWidget->addItem(item);
+					}
 				}
 				else if(left_selected == 2)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadPlaylist("tv", "popular", 1);
+					loadTMDBPlaylist("tv", "popular", 1);
+
+					// load items
+					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+					{
+						item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+						item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+						item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+						item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+						item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+						rightWidget->addItem(item);
+					}
 				}
 				else if(left_selected == 3)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadPlaylist("tv", "top_rated", 1);
+					loadTMDBPlaylist("tv", "top_rated", 1);
+
+					// load items
+					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+					{
+						item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+						item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+						item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+						item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+						item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+						rightWidget->addItem(item);
+					}
 				}
 			}
 
 			if(left_selected == 8)
-				return menu_return::RETURN_EXIT;
+				return menu_return::RETURN_EXIT_ALL;
 		}
 		else if(focus == 0)
 		{
@@ -5131,7 +5638,23 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				leftWidget->addItem(item8);
 				leftWidget->addItem(item9);
 
-				loadPlaylist("tv", "airing_today", 1);
+				loadTMDBPlaylist("tv", "airing_today", 1);
+
+				// load items
+				for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+				{
+					item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+					item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+					item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+					item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+					item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+					rightWidget->addItem(item);
+				}
 
 				leftWidget->setSelected(0);
 				rightWidget->setSelected(0);
@@ -5168,7 +5691,23 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				leftWidget->addItem(item8);
 				leftWidget->addItem(item9);
 
-				loadPlaylist();
+				loadTMDBPlaylist();
+
+				// load items
+				for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+				{
+					item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+
+					item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+					item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+					item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+					item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+					rightWidget->addItem(item);
+				}
 
 				leftWidget->setSelected(0);
 				rightWidget->setSelected(0);
@@ -5177,8 +5716,53 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "listframewidget")
+	{
+		listFrameWidget();
+	}
+	else if(actionKey == "aok")
+	{
+		for (unsigned int i = 0; i < AudioPlaylist.size(); i++)
+		{
+			tmpAudioPlayerGui.addToPlaylist(AudioPlaylist[i]);
+		}
 
-	//showMenu();
+		tmpAudioPlayerGui.setCurrent(listFrame->getSelectedLine());
+		tmpAudioPlayerGui.exec(NULL, "");
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "listboxmwidget")
+	{
+		listBoxWidget();
+	}
+	else if(actionKey == "lok")
+	{
+		selected = rightWidget->getSelected();
+
+		if (&m_vMovieInfo[selected].file != NULL) 
+		{
+			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
+			tmpMoviePlayerGui.exec(NULL, "");
+		}
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "linfo")
+	{
+		selected = rightWidget->getSelected();
+		m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "lsetup")
+	{
+		hide();
+
+		rightWidget->changeWidgetType();
+
+		testWidget->paint();
+	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -5203,6 +5787,9 @@ void CTestMenu::showMenu()
 	mainMenu->enableMenuPosition();
 	
 	mainMenu->addItem(new CMenuForwarder("CWidget", true, NULL, this, "widget"));
+	mainMenu->addItem(new CMenuForwarder("CWidget(listFrame)", true, NULL, this, "listframewidget"));
+	mainMenu->addItem(new CMenuForwarder("CWidget(listBox)", true, NULL, this, "listboxmwidget"));
+	mainMenu->addItem( new CMenuSeparator(LINE) );
 	mainMenu->addItem(new CMenuForwarder("TEST", true, NULL, this, "testing"));
 
 	//

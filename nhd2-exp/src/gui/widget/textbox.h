@@ -136,8 +136,8 @@ class CTextBox : public CWidgetItem
 
 		// Functions
 		void refresh(void);
-		void scrollPageDown(const int pages);
-		void scrollPageUp(const int pages);
+		void scrollPageDown(const int pages = 1);
+		void scrollPageUp(const int pages = 1);
 
 		//				
 		bool setText(const char * const newText, const char * const _thumbnail = NULL, int _tw = 0, int _th = 0, int _tmode = TOP_RIGHT);

@@ -53,6 +53,8 @@ CWidget::CWidget()
 
 	mainFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - full_width ) >> 1 );
 	mainFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
+
+	timeout = 0;
 }
 
 CWidget::CWidget(const int x, const int y, const int dx, const int dy)
@@ -71,6 +73,8 @@ CWidget::CWidget(const int x, const int y, const int dx, const int dy)
 	background = NULL;
 
 	enableCenter = true;
+
+	timeout = 0;
 }
 
 CWidget::CWidget(CBox *position)
@@ -86,6 +90,8 @@ CWidget::CWidget(CBox *position)
 	background = NULL;
 
 	enableCenter = true;
+
+	timeout = 0;
 }
 
 CWidget::~CWidget()
@@ -181,7 +187,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 		
 		int handled = false;
 
-		dprintf(DEBUG_DEBUG, "CWidget::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
+		dprintf(DEBUG_NORMAL, "CWidget::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
 		if ( msg <= RC_MaxRC ) 
 		{
@@ -196,6 +202,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 				{
 					int rv = it->second.menue->exec(this, it->second.action);
 
+					//FIXME:review this
 					switch ( rv ) 
 					{
 						case menu_return::RETURN_EXIT_ALL:

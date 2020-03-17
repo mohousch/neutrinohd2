@@ -595,10 +595,10 @@ class ClistBox : public CWidgetItem
 		// itemInfo
 		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh; interFrame = 5;};
 
-		virtual void scrollLineDown();
-		virtual void scrollLineUp();
-		virtual void scrollPageDown();
-		virtual void scrollPageUp();
+		virtual void scrollLineDown(const int lines = 1);
+		virtual void scrollLineUp(const int lines = 1);
+		virtual void scrollPageDown(const int pages = 1);
+		virtual void scrollPageUp(const int pages = 1);
 
 		int getItemsCount()const{return items.size();};
 		int getSelected(){return selected;};

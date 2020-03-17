@@ -64,10 +64,10 @@ class CWidgetItem
 		virtual void paint(){};
 		virtual void hide(){};
 
-		virtual void scrollLineDown(){};
-		virtual void scrollLineUp(){};
-		virtual void scrollPageDown(){};
-		virtual void scrollPageUp(){};
+		virtual void scrollLineDown(const int lines = 1){};
+		virtual void scrollLineUp(const int lines = 1){};
+		virtual void scrollPageDown(const int pages = 1){};
+		virtual void scrollPageUp(const int pages = 1){};
 		virtual void swipLeft(){};
 		virtual void swipRight(){};
 
