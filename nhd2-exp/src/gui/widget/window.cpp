@@ -85,6 +85,8 @@ void CWindow::init(void)
 
 	full_width = cFrameBox.iWidth;
 	full_height = cFrameBox.iHeight;
+
+	itemType = WIDGET_ITEM_WINDOW;
 }
 
 void CWindow::saveScreen()

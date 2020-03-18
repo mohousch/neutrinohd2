@@ -43,18 +43,17 @@ CWidget::CWidget()
 	mainFrameBox.iWidth = MENU_WIDTH;
 	mainFrameBox.iHeight = MENU_HEIGHT;
 
-	full_width = mainFrameBox.iWidth;
-	full_height = mainFrameBox.iHeight;
-
 	savescreen = false;
 	background = NULL;
 
 	enableCenter = true;
 
-	mainFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - full_width ) >> 1 );
-	mainFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
+	mainFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - mainFrameBox.iWidth ) >> 1 );
+	mainFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - mainFrameBox.iHeight) >> 1 );
 
 	timeout = 0;
+
+	backgroundColor = COL_MENUCONTENT_PLUS_0;
 }
 
 CWidget::CWidget(const int x, const int y, const int dx, const int dy)
@@ -66,15 +65,14 @@ CWidget::CWidget(const int x, const int y, const int dx, const int dy)
 	mainFrameBox.iWidth = dx;
 	mainFrameBox.iHeight = dy;
 
-	full_width = mainFrameBox.iWidth;
-	full_height = mainFrameBox.iHeight;
-
 	savescreen = false;
 	background = NULL;
 
 	enableCenter = true;
 
 	timeout = 0;
+
+	backgroundColor = COL_MENUCONTENT_PLUS_0;
 }
 
 CWidget::CWidget(CBox *position)
@@ -82,9 +80,6 @@ CWidget::CWidget(CBox *position)
 	frameBuffer = CFrameBuffer::getInstance();
 
 	mainFrameBox = *position;
-
-	full_width = mainFrameBox.iWidth;
-	full_height = mainFrameBox.iHeight;
 
 	savescreen = false;
 	background = NULL;
@@ -118,9 +113,12 @@ void CWidget::initFrames()
 {
 	if(enableCenter)
 	{
-		mainFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - full_width ) >> 1 );
-		mainFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
+		mainFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - mainFrameBox.iWidth) >> 1 );
+		mainFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - mainFrameBox.iHeight) >> 1 );
 	}
+
+	if(savescreen) 
+		saveScreen();
 }
 
 void CWidget::paintItems()
@@ -137,17 +135,58 @@ void CWidget::paint()
 {
 	dprintf(DEBUG_NORMAL, "CWidget:: paint\n");
 
-	frameBuffer->paintBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight, COL_MENUCONTENT_PLUS_0);
+	frameBuffer->paintBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight, backgroundColor);
 
 	paintItems();
 }
 
+void CWidget::saveScreen()
+{
+	if(!savescreen)
+		return;
+
+	if(background)
+	{
+		delete[] background;
+		background = NULL;
+	}
+
+	background = new fb_pixel_t[mainFrameBox.iWidth*mainFrameBox.iHeight];
+	
+	if(background)
+	{
+		frameBuffer->saveScreen(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight, background);
+	}
+}
+
+void CWidget::restoreScreen()
+{
+	if(background) 
+	{
+		if(savescreen)
+			frameBuffer->restoreScreen(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight, background);
+	}
+}
+
+void CWidget::enableSaveScreen()
+{
+	savescreen = true;
+	
+	if(!savescreen && background) 
+	{
+		delete[] background;
+		background = NULL;
+	}
+}
 
 void CWidget::hide()
 {
 	dprintf(DEBUG_NORMAL, "CWidget:: hide\n");
 
-	frameBuffer->paintBackgroundBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight);
+	if( savescreen && background)
+		restoreScreen();
+	else
+		frameBuffer->paintBackgroundBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight);
 
 	frameBuffer->blit();
 }
@@ -160,7 +199,7 @@ void CWidget::addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string &
 
 int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 {
-	dprintf(DEBUG_NORMAL, "CWidget:: exec\n");
+	dprintf(DEBUG_NORMAL, "CWidget:: exec: actionKey:%s\n", actionKey.c_str());
 
 	int pos = 0;
 	exit_pressed = false;
@@ -294,6 +333,35 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 					exit_pressed = true;
 					dprintf(DEBUG_NORMAL, "exit_pressed\n");
 					msg = RC_timeout;
+					break;
+
+				case (RC_ok):
+					{
+						if(items[selected]->itemType == WIDGET_ITEM_LISTBOX)
+						{
+							int rv = items[selected]->OKPressed(this);
+
+							//FIXME:review this
+							switch ( rv ) 
+							{
+								case menu_return::RETURN_EXIT_ALL:
+									retval = menu_return::RETURN_EXIT_ALL;
+								case menu_return::RETURN_EXIT:
+									msg = RC_timeout;
+									break;
+								case menu_return::RETURN_REPAINT:
+									initFrames();
+									paint();
+									break;
+								case menu_return::RETURN_NONE:
+									g_RCInput->killTimer(sec_timer_id);
+									sec_timer_id = 0;
+									retval = menu_return::RETURN_NONE;
+									msg = RC_timeout;
+									break;	
+							}
+						}
+					}
 					break;
 					
 				case (RC_timeout):

@@ -25,6 +25,8 @@
 #include <config.h>
 #endif
 
+#include <gui/widget/widget_helpers.h>
+
 
 // CMenuTarget
 struct menu_return
@@ -65,11 +67,9 @@ class CWidget : public CMenuTarget
 		bool exit_pressed;
 		
 		fb_pixel_t * background;
-		int full_width;
-		int full_height;
 		bool savescreen;
-		void saveScreen(){};
-		void restoreScreen(){};
+		void saveScreen();
+		void restoreScreen();
 
 		bool enableCenter;
 
@@ -78,6 +78,8 @@ class CWidget : public CMenuTarget
 
 		unsigned long long int timeout;
 		uint32_t sec_timer_id;
+
+		fb_pixel_t backgroundColor;
 
 	public:
 		CWidget();
@@ -110,6 +112,9 @@ class CWidget : public CMenuTarget
 		int getSelected(){return exit_pressed ? -1 : selected;};
 
 		//void paintMainFrame(){enablePaintMainFrame = true;};
+		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
+
+		void enableSaveScreen();
 };
 
 #endif // WIDGET_H_

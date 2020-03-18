@@ -32,10 +32,14 @@
 #include <driver/framebuffer.h>
 
 #include <gui/widget/window.h>
+#include <gui/widget/widget.h>
 
 
 class CFrame
 {
+	CMenuTarget* jumpTarget;
+	std::string actionKey;
+
 	public:
 		CWindow window;
 		std::string iconName;
@@ -44,13 +48,15 @@ class CFrame
 
 		fb_pixel_t item_backgroundColor;
 
-		CFrame(const std::string title, const char * const icon = NULL);
+		CFrame(const std::string title, const char * const icon = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL);
 		virtual ~CFrame(){}
 
 		int paint(bool selected = false, bool AfterPulldown = false);
 
 		virtual void setIconName(const char* const icon){iconName = icon;};
 		virtual void setOption(const char* text){option = text;};
+
+		int exec(CMenuTarget* parent);
 };
 
 class CFrameBox : public CWidgetItem
@@ -91,6 +97,9 @@ class CFrameBox : public CWidgetItem
 
 		void setOutFocus(bool focus){outFocus = focus;};
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
+
+		//
+		int OKPressed(CMenuTarget *parent);
 };
 
 #endif

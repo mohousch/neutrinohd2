@@ -467,9 +467,11 @@ class ClistBoxItem : public CMenuItem
 //
 class ClistBox : public CWidgetItem
 {
+	public:
+		std::vector<CMenuItem*>	items;
 	private:
 		CFrameBuffer* frameBuffer;
-		std::vector<CMenuItem*>	items;
+		//std::vector<CMenuItem*>	items;
 
 		CBox cFrameBox;
 		CBox cFrameFootInfo;
@@ -630,6 +632,9 @@ class ClistBox : public CWidgetItem
 		void enableWidgetChange(){widgetChange = true;};
 		void addWidget(int wtype){widget.push_back(wtype);};
 		void changeWidgetType();
+
+		//
+		int OKPressed(CMenuTarget *parent);
 };
 
 #endif // LISTBOX_H_

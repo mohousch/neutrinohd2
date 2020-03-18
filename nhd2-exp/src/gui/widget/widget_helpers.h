@@ -28,8 +28,8 @@
 #include <system/localize.h>
 #include <system/settings.h>
 
-//#include <gui/widget/widget.h>
 
+class CMenuTarget;
 
 //
 enum {
@@ -50,7 +50,6 @@ class CWidgetItem
 	private:
 	public:
 		CBox itemBox;
-
 
 		int itemType;
 		bool outFocus;
@@ -75,6 +74,8 @@ class CWidgetItem
 		void setSelected(unsigned int _new) {};
 
 		inline CBox getItemPos(void){return (itemBox);};
+
+		virtual int OKPressed(CMenuTarget *parent){return 0;};
 };
 
 // buttons

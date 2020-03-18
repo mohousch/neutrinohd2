@@ -200,11 +200,22 @@ void CFrameBox::swipLeft()
 	}
 }
 
+int CFrameBox::OKPressed(CMenuTarget *parent)
+{
+	if(parent)
+		return frames[selected]->exec(parent);
+	else
+		return menu_return::RETURN_EXIT;
+}
+
 // CFrame
-CFrame::CFrame(const std::string title, const char * const icon)
+CFrame::CFrame(const std::string title, const char * const icon, CMenuTarget * Target, const char * const ActionKey)
 {
 	caption = title;
 	iconName = icon ? icon : "";
+
+	jumpTarget = Target;
+	actionKey = ActionKey ? ActionKey : "";
 }
 
 int CFrame::paint(bool selected, bool /*AfterPulldown*/)
@@ -270,6 +281,14 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 	return 0;
 }
 
+int CFrame::exec(CMenuTarget *parent)
+{
+	dprintf(DEBUG_NORMAL, "CFrame::exec:\n");
 
+	if(jumpTarget)
+		return jumpTarget->exec(parent, actionKey);
+	else
+		return menu_return::RETURN_EXIT;
+}
 
 

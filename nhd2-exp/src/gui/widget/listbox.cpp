@@ -1341,7 +1341,7 @@ int ClistBoxItem::getWidth(void) const
 
 int ClistBoxItem::exec(CMenuTarget* parent)
 {
-	dprintf(DEBUG_DEBUG, "ClistBoxItem::exec:\n");
+	dprintf(DEBUG_NORMAL, "ClistBoxItem::exec:\n");
 
 	if(jumpTarget)
 		return jumpTarget->exec(parent, actionKey);
@@ -1689,6 +1689,8 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	widgetType = WIDGET_TYPE_STANDARD;
 	widgetMode = MODE_LISTBOX;
 	widgetChange = false;
+
+	itemType = WIDGET_ITEM_LISTBOX;
 }
 
 ClistBox::ClistBox(CBox* position)
@@ -1755,6 +1757,8 @@ ClistBox::ClistBox(CBox* position)
 	widgetType = WIDGET_TYPE_STANDARD;
 	widgetMode = MODE_LISTBOX;
 	widgetChange = false;
+
+	itemType = WIDGET_ITEM_LISTBOX;
 }
 
 ClistBox::~ClistBox()
@@ -2864,6 +2868,13 @@ void ClistBox::changeWidgetType()
 	}
 }
 
-
+///
+int ClistBox::OKPressed(CMenuTarget* parent)
+{
+	if(parent)
+		return items[selected]->exec(parent);
+	else
+		return menu_return::RETURN_EXIT;
+}
 
 
