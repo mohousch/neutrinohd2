@@ -75,7 +75,6 @@ class CKeyChooserItem : public CMenuTarget
 		CBox m_cTitle;
 
 		CWindow m_cBoxWindow;
-		CHeaders headers;
 
 		std::string name;
 		int* key;

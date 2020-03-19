@@ -153,6 +153,7 @@ class ClistBoxWidget : public CMenuTarget
 
 		//
 		CHeaders * headers;
+		CFooters *footers;
 		CItems2DetailsLine itemsLine;
 		CScrollBar scrollBar;
 		CButtons buttons;

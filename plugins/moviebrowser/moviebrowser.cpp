@@ -1696,9 +1696,10 @@ void CMovieBrowser::refreshTitle(void)
 	
 	title = g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD);
 
+	CHeaders headers(m_cBoxFrameTitleRel, title.c_str(), NEUTRINO_ICON_MOVIE);
 	headers.enablePaintDate();
 	headers.setHeaderButtons(MBHeadButtons, MB_HEAD_BUTTONS_COUNT);
-	headers.paintHead(m_cBoxFrameTitleRel, title.c_str(), NEUTRINO_ICON_MOVIE);
+	headers.paint();
 }
 
 #define MB_FOOT_BUTTONS_COUNT	4
@@ -1748,7 +1749,9 @@ void CMovieBrowser::refreshFoot(void)
 	//MBFootButtons[2].localename = next_text.c_str();
 	MBFootButtons[2].locale = LOCALE_MOVIEBROWSER_NEXT_FOCUS;
 
-	headers.paintFoot(m_cBoxFrameFootRel, MB_FOOT_BUTTONS_COUNT, MBFootButtons);
+	CFooters footers(m_cBoxFrameFootRel, MB_FOOT_BUTTONS_COUNT, MBFootButtons);
+
+	footers.paint();
 }
 
 bool CMovieBrowser::onButtonPress(neutrino_msg_t msg)

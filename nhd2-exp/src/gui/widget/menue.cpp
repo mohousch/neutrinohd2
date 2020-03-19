@@ -110,7 +110,7 @@ ClistBoxWidget::ClistBoxWidget()
 	widgetMode = MODE_LISTBOX;
 	MenuPos = false;
 
-	headers = new CHeaders();
+	//headers = new CHeaders();
 }
 
 ClistBoxWidget::ClistBoxWidget(const neutrino_locale_t Name, const std::string & Icon, const int mwidth, const int mheight)
@@ -193,7 +193,7 @@ void ClistBoxWidget::Init(const std::string & Icon, const int mwidth, const int 
 	widgetMode = MODE_LISTBOX;
 	MenuPos = false;
 
-	headers = new CHeaders();
+	//headers = new CHeaders();
 }
 
 void ClistBoxWidget::move(int xoff, int yoff)
@@ -213,6 +213,12 @@ ClistBoxWidget::~ClistBoxWidget()
 	{
 		delete headers;
 		headers = NULL;
+	}
+
+	if(footers)
+	{
+		delete footers;
+		footers = NULL;
 	}
 }
 
@@ -437,6 +443,9 @@ void ClistBoxWidget::initFrames()
 			cFrameFootInfo.iWidth = width;
 		}
 
+		headers = new CHeaders(x, y, width, hheight, l_name, iconfile.c_str());
+		footers = new CFooters(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
+
 		if(savescreen) 
 			saveScreen();
 	}
@@ -501,7 +510,7 @@ void ClistBoxWidget::paintHead()
 			headers->enablePaintDate();
 
 		headers->setHeaderButtons(hbutton_labels, hbutton_count);
-		headers->paintHead(x, y, width, hheight, l_name, iconfile.c_str());
+		headers->paint();
 */
 		// paint head
 		frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
@@ -556,7 +565,7 @@ void ClistBoxWidget::paintFoot()
 	}
 	else
 	{
-		headers->paintFoot(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
+		footers->paint();
 	}
 }
 

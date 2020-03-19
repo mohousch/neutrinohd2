@@ -322,7 +322,9 @@ void CColorChooser::paint()
 	cFrameBoxTitle.iY = cFrameBox.iY;
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
-	headers.paintHead(cFrameBoxTitle, name.c_str(), titleIcon.iconName.c_str());
+	CHeaders headers(cFrameBoxTitle, name.c_str(), titleIcon.iconName.c_str());
+
+	headers.paint();
 
 	// slider
 	for (int i = 0; i < ITEMS_COUNT; i++)

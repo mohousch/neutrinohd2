@@ -170,8 +170,9 @@ void CProgressWindow::paint()
 	else
 		l_caption = captionString.c_str();
 
+	CHeaders headers(x, y, width, hheight, l_caption, NEUTRINO_ICON_INFO);
 	headers.setHeadCorner();
-	headers.paintHead(x, y, width, hheight, l_caption, NEUTRINO_ICON_INFO);
+	headers.paint();
 
 	// msg status
 	ypos += hheight + (mheight>>1);

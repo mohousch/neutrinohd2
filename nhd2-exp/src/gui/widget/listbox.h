@@ -519,7 +519,6 @@ class ClistBox : public CWidgetItem
 		//
 		CItems2DetailsLine itemsLine;
 		CScrollBar scrollBar;
-		CHeaders headers;
 		CButtons buttons;
 
 		// frame

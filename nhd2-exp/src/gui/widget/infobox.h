@@ -69,7 +69,6 @@ class CInfoBox
 
 		CFont* m_pcFontText;
 
-		CHeaders headers;
 		CTextBox *m_pcTextBox;
 
 		bool bigFonts;

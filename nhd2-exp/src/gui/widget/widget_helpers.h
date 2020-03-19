@@ -126,7 +126,6 @@ class CItems2DetailsLine : public CWidgetItem
 class CHeaders : public CWidgetItem
 {
 	private:
-		// head
 		fb_pixel_t bgcolor;
 		int radius;
 		int corner;
@@ -135,15 +134,12 @@ class CHeaders : public CWidgetItem
 		bool logo;
 		int hbutton_count;
 		const struct button_label* hbutton_labels;
-
-		// foot
-		fb_pixel_t fbgcolor;
-		int fradius;
-		int fcorner;
-		int fgradient;
+		const char *htitle;
+		const char *hicon;
 	
 	public:
-		CHeaders();
+		CHeaders(const int x, const int y, const int dx, const int dy, const char * const title, const char * const icon = NULL);
+		CHeaders(CBox position, const char * const title, const char * const icon = NULL);
 		virtual ~CHeaders(){};
 
 		// head
@@ -155,16 +151,31 @@ class CHeaders : public CWidgetItem
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 		void enableLogo(void){logo = true;};
 
-		void paintHead(const int x, const int y, const int dx, const int dy, const char * const title, const char * const icon = NULL);
-		void paintHead(CBox position, const char * const title, const char * const icon = NULL);
+		void paint();
+};
 
-		// foot
-		void paintFoot(int x, int y, int dx, int dy, const unsigned int count = 0, const struct button_label * const content = NULL);
-		void paintFoot(CBox position, const unsigned int count = 0, const struct button_label * const content = NULL);
+// Footers
+class CFooters : public CWidgetItem
+{
+	private:
+		unsigned int fcount;
+		const struct button_label *fcontent;
+
+		fb_pixel_t fbgcolor;
+		int fradius;
+		int fcorner;
+		int fgradient;
+	
+	public:
+		CFooters(int x, int y, int dx, int dy, const unsigned int count = 0, const struct button_label *content = NULL);
+		CFooters(CBox position, const unsigned int count = 0, const struct button_label *content = NULL);
+		virtual ~CFooters(){};
 
 		void setFootColor(fb_pixel_t col){fbgcolor = col;};
 		void setFootCorner(int ra = NO_RADIUS, int co = CORNER_NONE){fradius = ra; fcorner = co;};
 		void setFootGradient(int grad){fgradient = grad;};
+
+		void paint();
 };
 
 // progressbar

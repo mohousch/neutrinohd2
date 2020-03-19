@@ -58,7 +58,6 @@ class CHintBox
 		
 		CWindow m_cBoxWindow;
 		CWindow m_cBodyWindow;
-		CHeaders headers;
 
 		unsigned int entries_per_page;
 		unsigned int current_page;

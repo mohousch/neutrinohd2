@@ -1981,7 +1981,7 @@ void ClistBox::paintItems()
 
 					item->init(cFrameBox.iX + _x*item_width, item_start_y + _y*item_height, items_width, iconOffset);
 
-					if( !outFocus && ((item->isSelectable()) && (selected == -1)) ) 
+					if((item->isSelectable()) && (selected == -1)) 
 					{
 						selected = count;
 					} 
@@ -2073,7 +2073,7 @@ void ClistBox::paintItems()
 			{
 				item->init(xpos, ypos, items_width, iconOffset);
 			
-				if( !outFocus && ((item->isSelectable()) && (selected == -1)) ) 
+				if((item->isSelectable()) && (selected == -1)) 
 				{
 					selected = count;
 				} 
@@ -2150,6 +2150,8 @@ void ClistBox::paintHead()
 		}
 		else
 		{
+			CHeaders headers(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, l_name.c_str(), iconfile.c_str());
+
 			headers.setHeadColor(headColor);
 			headers.setHeadCorner(headRadius, headCorner);
 			headers.setHeadGradient(headGradient);
@@ -2162,7 +2164,7 @@ void ClistBox::paintHead()
 
 			headers.setHeaderButtons(hbutton_labels, hbutton_count);
 
-			headers.paintHead(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, l_name.c_str(), iconfile.c_str());
+			headers.paint();
 		}
 	}	
 }
@@ -2183,11 +2185,13 @@ void ClistBox::paintFoot()
 		}
 		else
 		{
-			headers.setFootColor(footColor);
-			headers.setFootCorner(footRadius, footCorner);
-			headers.setFootGradient(footGradient);
+			CFooters footers(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight - interFrame, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
 
-			headers.paintFoot(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight - interFrame, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
+			footers.setFootColor(footColor);
+			footers.setFootCorner(footRadius, footCorner);
+			footers.setFootGradient(footGradient);
+
+			footers.paint();
 		}
 	}
 }

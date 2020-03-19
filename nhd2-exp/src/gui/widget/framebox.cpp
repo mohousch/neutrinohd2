@@ -125,7 +125,7 @@ void CFrameBox::paintFrames()
 		frame->window.enableShadow();
 		frame->item_backgroundColor = backgroundColor;
 		
-		if(!outFocus && (selected == -1)) 
+		if(selected == -1) 
 		{
 			selected = count;
 		}

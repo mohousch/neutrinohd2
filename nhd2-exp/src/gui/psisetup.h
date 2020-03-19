@@ -56,7 +56,6 @@ class CPSISetup : public CMenuTarget
 		int hheight;		// head font height
 		int mheight; 		// menu font height
 
-		CHeaders headers;
 		CWindow mainWindow;
 
 		unsigned char *contrast;

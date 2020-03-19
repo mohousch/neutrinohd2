@@ -192,7 +192,8 @@ void CKeyChooserItem::paint()
 	m_cTitle.iX = m_cBox.iX;
 	m_cTitle.iY = m_cBox.iY;
 
-	headers.paintHead(m_cTitle, name.c_str(), NEUTRINO_ICON_KEYBINDING);
+	CHeaders headers(m_cTitle, name.c_str(), NEUTRINO_ICON_KEYBINDING);
+	headers.paint();
 
 	//paint msg...
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_cBox.iX + BORDER_LEFT, m_cBox.iY + hheight + mheight, m_cBox.iWidth, g_Locale->getText(LOCALE_KEYCHOOSER_TEXT1), COL_MENUCONTENT, 0, true); // UTF-8

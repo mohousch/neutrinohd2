@@ -57,7 +57,6 @@ class CVfdControler : public CMenuTarget
 
 		int hheight, mheight; // head/menu font height
 
-		CHeaders headers;
 		CWindow mainWindow;
 
 		unsigned char brightness;

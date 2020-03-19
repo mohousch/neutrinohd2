@@ -411,11 +411,13 @@ void CEpgData::showHead(const t_channel_id channel_id)
 
 	logo = frameBuffer->getLogoName(channel_id);
 
+	CHeaders headers(cHeadBox, text1.c_str(), logo.c_str());
+
 	headers.enablePaintDate();
 	headers.enableLogo();
 	headers.setHeaderButtons(&HButton, 1);
 
-	headers.paintHead(cHeadBox, text1.c_str(), logo.c_str());
+	headers.paint();
 }
 
 int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_startzeit, bool doLoop )
@@ -1019,7 +1021,8 @@ void CEpgData::showTimerEventBar(bool _show)
 		FButtons[0].locale = LOCALE_EVENTLISTBAR_RECORDEVENT;
 	}
 
-	headers.paintFoot(cFootBox.iX, cFootBox.iY, cFootBox.iWidth, cFootBox.iHeight, 4, FButtons);
+	CFooters footers(cFootBox.iX, cFootBox.iY, cFootBox.iWidth, cFootBox.iHeight, 4, FButtons);
+	footers.paint();
 }
 
 //  -- EPG Data Viewer Menu Handler Class

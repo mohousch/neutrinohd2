@@ -71,7 +71,6 @@ class CEpgData
 		CBox cRightFBox;
 		CWindow cRightFWindow;
 
-		CHeaders headers;
 		CBox cHeadBox;
 		CBox cFootBox;
 

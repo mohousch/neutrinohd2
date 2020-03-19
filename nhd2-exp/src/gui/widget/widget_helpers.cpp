@@ -207,9 +207,16 @@ void CItems2DetailsLine::clear(int x, int y, int width, int height, int info_hei
 }
 
 // headers
-CHeaders::CHeaders()
+CHeaders::CHeaders(const int x, const int y, const int dx, const int dy, const char * const title, const char * const icon)
 {
-	// head
+	itemBox.iX = x;
+	itemBox.iY = y;
+	itemBox.iWidth = dx;
+	itemBox.iHeight = dy;
+
+	htitle = title;
+	hicon = icon;
+
 	bgcolor = COL_MENUHEAD_PLUS_0;
 	radius = RADIUS_MID;
 	corner = CORNER_TOP;
@@ -219,12 +226,24 @@ CHeaders::CHeaders()
 	logo = false;
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
+}
 
-	// foot
-	fbgcolor = COL_MENUFOOT_PLUS_0;
-	fradius = RADIUS_MID;
-	fcorner = CORNER_BOTTOM;
-	fgradient = g_settings.Foot_gradient;
+CHeaders::CHeaders(CBox position, const char * const title, const char * const icon)
+{
+	itemBox = position;
+
+	htitle = title;
+	hicon = icon;
+
+	bgcolor = COL_MENUHEAD_PLUS_0;
+	radius = RADIUS_MID;
+	corner = CORNER_TOP;
+	gradient = g_settings.Head_gradient;
+
+	paintDate = false;
+	logo = false;
+	hbutton_count	= 0;
+	hbutton_labels	= NULL;
 }
 
 void CHeaders::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
@@ -233,35 +252,35 @@ void CHeaders::setHeaderButtons(const struct button_label* _hbutton_labels, cons
 	hbutton_labels = _hbutton_labels;
 }
 
-void CHeaders::paintHead(const int x, const int y, const int dx, const int dy, const char * const title, const char * const icon)
+void CHeaders::paint()
 {
 	// box
-	CFrameBuffer::getInstance()->paintBoxRel(x, y, dx, dy, bgcolor, radius, corner, gradient);
+	CFrameBuffer::getInstance()->paintBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight, bgcolor, radius, corner, gradient);
 
 	// left icon
 	int i_w = 0;
 	int i_h = 0;
-	if(icon != NULL)
+	if(hicon != NULL)
 	{
-		CFrameBuffer::getInstance()->getIconSize(icon, &i_w, &i_h);
+		CFrameBuffer::getInstance()->getIconSize(hicon, &i_w, &i_h);
 
 		// limit icon dimensions
-		if(i_h > dy)
-			i_h = dy - 2;
+		if(i_h > itemBox.iHeight)
+			i_h = itemBox.iHeight - 2;
 
 		if(logo)
 		{
 			i_w = i_h*1.67;
 
-			CFrameBuffer::getInstance()->paintIcon(icon, x + BORDER_LEFT, y + (dy - i_h)/2, 0, true, i_w, i_h);
+			CFrameBuffer::getInstance()->paintIcon(hicon, itemBox.iX + BORDER_LEFT, itemBox.iY + (itemBox.iHeight - i_h)/2, 0, true, i_w, i_h);
 		}
 		else
-			CFrameBuffer::getInstance()->paintIcon(icon, x + BORDER_LEFT, y + (dy - i_h)/2);
+			CFrameBuffer::getInstance()->paintIcon(hicon, itemBox.iX + BORDER_LEFT, itemBox.iY + (itemBox.iHeight - i_h)/2);
 	}
 
 	// right buttons
 	int iw[hbutton_count], ih[hbutton_count];
-	int startx = x + dx - BORDER_RIGHT;
+	int startx = itemBox.iX + itemBox.iWidth - BORDER_RIGHT;
 	int buttonWidth = 0;
 
 	if(hbutton_count)
@@ -273,7 +292,7 @@ void CHeaders::paintHead(const int x, const int y, const int dx, const int dy, c
 			startx -= (iw[i] + ICON_TO_ICON_OFFSET);
 			buttonWidth += iw[i];
 
-			CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, startx, y + (dy - ih[i])/2);
+			CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, startx, itemBox.iY + (itemBox.iHeight - ih[i])/2);
 		}
 	}
 
@@ -285,143 +304,75 @@ void CHeaders::paintHead(const int x, const int y, const int dx, const int dy, c
 		
 		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
 	
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(startx - timestr_len, y + (dy - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(startx - timestr_len, itemBox.iY + (itemBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
 	}
 
 	// title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + i_w + ICON_OFFSET, y + (dy - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), dx - BORDER_LEFT - BORDER_RIGHT - i_w - 2*ICON_OFFSET - buttonWidth - (hbutton_count - 1)*ICON_TO_ICON_OFFSET - timestr_len, title, COL_MENUHEAD);
-	
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(itemBox.iX + BORDER_LEFT + i_w + ICON_OFFSET, itemBox.iY + (itemBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), itemBox.iWidth - BORDER_LEFT - BORDER_RIGHT - i_w - 2*ICON_OFFSET - buttonWidth - (hbutton_count - 1)*ICON_TO_ICON_OFFSET - timestr_len, htitle, COL_MENUHEAD);
 }
 
-void CHeaders::paintHead(CBox position, const char * const title, const char * const icon)
+// footers
+CFooters::CFooters(int x, int y, int dx, int dy, const unsigned int count, const struct button_label *content)
 {
-	// box
-	CFrameBuffer::getInstance()->paintBoxRel(position.iX, position.iY, position.iWidth, position.iHeight, bgcolor, radius, corner, gradient);
+	itemBox.iX = x;
+	itemBox.iY = y;
+	itemBox.iWidth = dx;
+	itemBox.iHeight = dy;
 
-	// left icon
-	int i_w = 0;
-	int i_h = 0;
-	if(icon != NULL)
-	{
-		CFrameBuffer::getInstance()->getIconSize(icon, &i_w, &i_h);
+	fcount = count;
+	fcontent = content;
 
-		// limit icon dimensions
-		if(i_h > position.iHeight)
-			i_h = position.iHeight - 2;
-
-		if(logo)
-		{
-			i_w = i_h*1.67;
-
-			CFrameBuffer::getInstance()->paintIcon(icon, position.iX + BORDER_LEFT, position.iY + (position.iHeight - i_h)/2, 0, true, i_w, i_h);
-		}
-		else
-			CFrameBuffer::getInstance()->paintIcon(icon, position.iX + BORDER_LEFT, position.iY + (position.iHeight - i_h)/2);
-	}
-
-	// right buttons
-	int iw[hbutton_count], ih[hbutton_count];
-	int startx = position.iX + position.iWidth - BORDER_RIGHT;
-	int buttonWidth = 0;
-
-	if(hbutton_count)
-	{
-		for (int i = 0; i < hbutton_count; i++)
-		{
-			CFrameBuffer::getInstance()->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
-		
-			startx -= (iw[i] + ICON_TO_ICON_OFFSET);
-			buttonWidth += iw[i];
-
-			CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, startx, position.iY + (position.iHeight - ih[i])/2);
-		}
-	}
-
-	// paint time/date
-	int timestr_len = 0;
-	if(paintDate)
-	{
-		std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
-		
-		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
-	
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(startx - timestr_len, position.iY + (position.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
-	}
-
-	// title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(position.iX + BORDER_LEFT + i_w + ICON_OFFSET, position.iY + (position.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), position.iWidth - BORDER_LEFT - BORDER_RIGHT - i_w - 2*ICON_OFFSET - buttonWidth - (hbutton_count - 1)*ICON_TO_ICON_OFFSET - timestr_len, title, COL_MENUHEAD);
+	fbgcolor = COL_MENUFOOT_PLUS_0;
+	fradius = RADIUS_MID;
+	fcorner = CORNER_BOTTOM;
+	fgradient = g_settings.Foot_gradient;
 }
 
-// foot
-void CHeaders::paintFoot(int x, int y, int dx, int dy, const unsigned int count, const struct button_label * const content)
+CFooters::CFooters(CBox position, const unsigned int count, const struct button_label *content)
+{
+	itemBox = position;
+
+	fcount = count;
+	fcontent = content;
+
+	fbgcolor = COL_MENUFOOT_PLUS_0;
+	fradius = RADIUS_MID;
+	fcorner = CORNER_BOTTOM;
+	fgradient = g_settings.Foot_gradient;
+}
+
+void CFooters::paint()
 {
 	// box
-	CFrameBuffer::getInstance()->paintBoxRel(x, y, dx, dy, fbgcolor, fradius, fcorner, fgradient);
+	CFrameBuffer::getInstance()->paintBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight, fbgcolor, fradius, fcorner, fgradient);
 
 
 	// buttons
 	int buttonWidth = 0;
 
-	if(count)
+	if(fcount)
 	{
-		buttonWidth = (dx - BORDER_LEFT - BORDER_RIGHT)/count;
+		buttonWidth = (itemBox.iWidth - BORDER_LEFT - BORDER_RIGHT)/fcount;
 	
-		for (unsigned int i = 0; i < count; i++)
+		for (unsigned int i = 0; i < fcount; i++)
 		{
-			if(content[i].button != NULL)
+			if(fcontent[i].button != NULL)
 			{
 				const char * l_option = NULL;
 				int iw = 0;
 				int ih = 0;
 
-				CFrameBuffer::getInstance()->getIconSize(content[i].button, &iw, &ih);
+				CFrameBuffer::getInstance()->getIconSize(fcontent[i].button, &iw, &ih);
 				int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
-				if(content[i].localename != NULL)
-					l_option = content[i].localename;
+				if(fcontent[i].localename != NULL)
+					l_option = fcontent[i].localename;
 				else
-					l_option = g_Locale->getText(content[i].locale);
+					l_option = g_Locale->getText(fcontent[i].locale);
 		
-				CFrameBuffer::getInstance()->paintIcon(content[i].button, x + BORDER_LEFT + i*buttonWidth, y + (dy - ih)/2);
+				CFrameBuffer::getInstance()->paintIcon(fcontent[i].button, itemBox.iX + BORDER_LEFT + i*buttonWidth, itemBox.iY + (itemBox.iHeight - ih)/2);
 
-				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET + i*buttonWidth, y + f_h + (dy - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
-			}
-		}
-	}
-}
-
-void CHeaders::paintFoot(CBox position, const unsigned int count, const struct button_label * const content)
-{
-	// box
-	CFrameBuffer::getInstance()->paintBoxRel(position.iX, position.iY, position.iWidth, position.iHeight, fbgcolor, fradius, fcorner, fgradient);
-
-	// buttons
-	int buttonWidth = 0;
-	if(count)
-	{
-		buttonWidth = (position.iWidth - BORDER_LEFT - BORDER_RIGHT)/count;
-	
-		for (unsigned int i = 0; i < count; i++)
-		{
-			if(content[i].button != NULL)
-			{
-				const char * l_option = NULL;
-				int iw = 0;
-				int ih = 0;
-
-				CFrameBuffer::getInstance()->getIconSize(content[i].button, &iw, &ih);
-				int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
-
-				if(content[i].localename != NULL)
-					l_option = content[i].localename;
-				else
-					l_option = g_Locale->getText(content[i].locale);
-		
-				// paint button
-				CFrameBuffer::getInstance()->paintIcon(content[i].button, position.iX + BORDER_LEFT+ i * buttonWidth, position.iY + (position.iHeight - ih)/2);
-
-				// paint button caption
-				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(position.iX + BORDER_LEFT + iw + ICON_OFFSET + i*buttonWidth, position.iY + f_h + (position.iHeight - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
+				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(itemBox.iX + BORDER_LEFT + iw + ICON_OFFSET + i*buttonWidth, itemBox.iY + f_h + (itemBox.iHeight - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
 			}
 		}
 	}

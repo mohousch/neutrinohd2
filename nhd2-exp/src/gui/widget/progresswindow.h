@@ -44,7 +44,6 @@ class CProgressWindow : public CWidget
 		CFrameBuffer* frameBuffer;
 
 		CWindow m_cBoxWindow;
-		CHeaders headers;
 
 		neutrino_locale_t caption;
 		std::string captionString;

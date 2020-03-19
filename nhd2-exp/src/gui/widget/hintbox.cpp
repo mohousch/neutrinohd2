@@ -228,8 +228,9 @@ void CHintBox::refresh(void)
 	cFrameBoxTitle.iY = cFrameBox.iY;
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
+	CHeaders headers(cFrameBoxTitle, caption.c_str(), iconfile.c_str());
 	headers.setHeadCorner();
-	headers.paintHead(cFrameBoxTitle, caption.c_str(), iconfile.c_str());
+	headers.paint();
 
 	// body text
 	int count = entries_per_page;

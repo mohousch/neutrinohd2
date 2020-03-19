@@ -79,6 +79,7 @@ class CTestMenu : public CMenuTarget
 
 		CButtons buttons;
 		CHeaders * headers;
+		CFooters *footers;
 
 		CWidget *testWidget;
 
@@ -283,6 +284,7 @@ void CTestMenu::loadAudioPlaylist()
 	fileFilter.addFilter("dts");
 	fileFilter.addFilter("m4a");
 
+	filelist.clear();
 	AudioPlaylist.clear();
 
 	std::string Path = g_settings.network_nfs_audioplayerdir;
@@ -375,6 +377,7 @@ void CTestMenu::loadMoviePlaylist()
 	// recordingdir
 	std::string Path_local = g_settings.network_nfs_recordingdir;
 	m_vMovieInfo.clear();
+	filelist.clear();
 
 	CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	loadBox.paint();
@@ -432,6 +435,7 @@ void CTestMenu::loadPicturePlaylist()
 	CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	loadBox.paint();
 
+	filelist.clear();
 	PicPlaylist.clear();
 
 	std::string Path = g_settings.network_nfs_picturedir;
@@ -892,6 +896,10 @@ void CTestMenu::test()
 {
 	dprintf(DEBUG_NORMAL, "\ntesting multi Widgets\n");
 
+	top_selected = 0;
+	left_selected = 0;
+	right_selected = 0;
+
 	CBox headBox;
 	headBox.iX = g_settings.screen_StartX + 10;
 	headBox.iY = g_settings.screen_StartY + 10;
@@ -904,7 +912,7 @@ void CTestMenu::test()
 	footBox.iY = g_settings.screen_EndY - 10 - footBox.iHeight;
 	footBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
 
-	headers = new CHeaders();
+	headers = new CHeaders(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
 
 	headers->enablePaintDate();
 	headers->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
@@ -912,9 +920,11 @@ void CTestMenu::test()
 	headers->setHeadCorner();
 	headers->setHeadGradient(nogradient);
 
-	headers->setFootColor(COL_DARK_TURQUOISE);
-	headers->setFootCorner();
-	headers->setFootGradient(nogradient);
+	footers = new CFooters(footBox, FOOT_BUTTONS_COUNT, FootButtons);
+
+	footers->setFootColor(COL_DARK_TURQUOISE);
+	footers->setFootCorner();
+	footers->setFootGradient(nogradient);
 
 	// top widget
 	CBox topBox;
@@ -1113,8 +1123,10 @@ REPAINT:
 	}
 
 	// paint all widget
-	headers->paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
-	headers->paintFoot(footBox, FOOT_BUTTONS_COUNT, FootButtons);
+	//headers->paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
+	headers->paint();
+	//headers->paintFoot(footBox, FOOT_BUTTONS_COUNT, FootButtons);
+	footers->paint();
 	topWidget->paint();
 	leftWidget->paint();
 	rightWidget->paint();
@@ -1138,7 +1150,8 @@ REPAINT:
 
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			headers->paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
+			//headers->paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
+			headers->paint();
 		} 
 		else if (msg == RC_home) 
 		{
@@ -1178,10 +1191,10 @@ REPAINT:
 			{
 				focus = WIDGET_LEFT;
 
-				topWidget->setSelected(-1);
+				//topWidget->setSelected(-1);
 				topWidget->setOutFocus(true);
 
-				rightWidget->setSelected(-1);
+				//rightWidget->setSelected(-1);
 				rightWidget->setOutFocus(true);
 
 				leftWidget->setSelected(left_selected);
@@ -1191,10 +1204,10 @@ REPAINT:
 			{
 				focus = WIDGET_RIGHT;
 
-				leftWidget->setSelected(-1);
+				//leftWidget->setSelected(-1);
 				leftWidget->setOutFocus(true);
 
-				topWidget->setSelected(-1);
+				//topWidget->setSelected(-1);
 				topWidget->setOutFocus(true);
 
 				rightWidget->setSelected(right_selected);
@@ -1204,10 +1217,10 @@ REPAINT:
 			{
 				focus = WIDGET_TOP;
 
-				leftWidget->setSelected(-1);
+				//leftWidget->setSelected(-1);
 				leftWidget->setOutFocus(true);
 
-				rightWidget->setSelected(-1);
+				//rightWidget->setSelected(-1);
 				rightWidget->setOutFocus(true);
 
 				topWidget->setSelected(top_selected);
@@ -1515,6 +1528,12 @@ REPAINT:
 		delete headers;
 		headers = NULL;
 	}
+
+	if(footers)
+	{
+		delete footers;
+		footers = NULL;
+	}
 }
 
 // CBox
@@ -1691,7 +1710,7 @@ void CTestMenu::testCHeaders()
 	footBox.iY = g_settings.screen_EndY - 10 - footBox.iHeight;
 	footBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
 
-	headers = new CHeaders();
+	headers = new CHeaders(headBox, "test CHeaders", NEUTRINO_ICON_MP3);
 
 	headers->enablePaintDate();
 	headers->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
@@ -1699,12 +1718,15 @@ void CTestMenu::testCHeaders()
 	//headers->setHeadCorner();
 	//headers->setHeadGradient(nogradient);
 
+	footers = new CFooters(footBox, FOOT_BUTTONS_COUNT, FootButtons);
 	//headers->setFootColor(COL_BLUE);
 	//headers->setFootCorner();
 	//headers->setFootGradient(nogradient);
 
-	headers->paintHead(headBox, "test CHeaders", NEUTRINO_ICON_MP3);
-	headers->paintFoot(footBox, FOOT_BUTTONS_COUNT, FootButtons);	
+	//headers->paintHead(headBox, "test CHeaders", NEUTRINO_ICON_MP3);
+	//headers->paintFoot(footBox, FOOT_BUTTONS_COUNT, FootButtons);	
+	headers->paint();
+	footers->paint();
 	CFrameBuffer::getInstance()->blit();
 
 	// loop
@@ -1726,7 +1748,8 @@ void CTestMenu::testCHeaders()
 
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			headers->paintHead(headBox, "test CHeaders", NEUTRINO_ICON_MP3);
+			//headers->paintHead(headBox, "test CHeaders", NEUTRINO_ICON_MP3);
+			headers->paint();
 		} 
 		else if (msg == RC_home) 
 		{
@@ -1745,6 +1768,12 @@ void CTestMenu::testCHeaders()
 	{
 		delete headers;
 		headers = NULL;
+	}
+
+	if(footers)
+	{
+		delete footers;
+		footers = NULL;
 	}
 }
 

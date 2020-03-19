@@ -62,7 +62,6 @@ class CColorChooser : public CMenuTarget
 		CIcon volumeBodyIcon;
 
 		CWindow m_cBoxWindow;
-		CHeaders headers;
 
 		unsigned char * value[4]; // r, g, b, alpha
 
