@@ -71,6 +71,7 @@ CWidget::CWidget(const int x, const int y, const int dx, const int dy)
 	enableCenter = true;
 
 	timeout = 0;
+	selected = 0;
 
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 }
@@ -87,6 +88,9 @@ CWidget::CWidget(CBox *position)
 	enableCenter = true;
 
 	timeout = 0;
+	selected = 0;
+
+	backgroundColor = COL_MENUCONTENT_PLUS_0;
 }
 
 CWidget::~CWidget()
@@ -203,16 +207,21 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 	int pos = 0;
 	exit_pressed = false;
-	int cnt = 0;
 	selected = 0;
 
 	if (parent)
 		parent->hide();
 
 	initFrames();
-	paint();
 
-	//items[selected]->setOutFocus(false);
+	items[0]->setOutFocus(false);
+
+	for (unsigned int i = 1; i < items.size(); i++)
+	{
+		items[i]->setOutFocus(true);
+	}
+
+	paint();
 
 	// add sec timer
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
@@ -226,7 +235,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 		
 		int handled = false;
 
-		dprintf(DEBUG_NORMAL, "CWidget::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
+		dprintf(DEBUG_DEBUG, "CWidget::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
 		if ( msg <= RC_MaxRC ) 
 		{
@@ -318,15 +327,19 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 				case (RC_yellow):
 					//items[selected]->setSelected(-1);
-					//items[selected]->setOutFocus(true);
+					items[selected]->setOutFocus(true);
 
-					selected += 1;
+					pos += 1;
 
-					if(selected >= items.size())
-						selected = 0;
+					if(pos >= items.size())
+						pos = 0;
 
-					//items[selected]->setSelected(0);
-					//items[selected]->setOutFocus(false);
+					selected = pos;
+
+					items[selected]->setOutFocus(false);
+
+					paint();
+
 					break;
 
 				case (RC_home):
@@ -337,7 +350,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 				case (RC_ok):
 					{
-						if(items[selected]->itemType == WIDGET_ITEM_LISTBOX)
+						if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) || (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
 						{
 							int rv = items[selected]->OKPressed(this);
 

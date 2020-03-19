@@ -58,7 +58,6 @@ class CWidgetItem
 		virtual ~CWidgetItem(){};
 
 		//virtual bool isSelectable(void) const {return false;}
-		//virtual int exec(CMenuTarget */*parent*/) {return 0;}
 
 		virtual void paint(){};
 		virtual void hide(){};
@@ -70,10 +69,10 @@ class CWidgetItem
 		virtual void swipLeft(){};
 		virtual void swipRight(){};
 
-		void setOutFocus(bool focus){outFocus = focus;};
-		void setSelected(unsigned int _new) {};
+		virtual void setOutFocus(bool focus){outFocus = focus;};
+		virtual void setSelected(unsigned int _new) {};
 
-		inline CBox getItemPos(void){return (itemBox);};
+		virtual inline CBox getItemPos(void){return (itemBox);};
 
 		virtual int OKPressed(CMenuTarget *parent){return 0;};
 };

@@ -43,6 +43,8 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 	outFocus = false;
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 
+	itemType = WIDGET_ITEM_FRAMEBOX;
+
 	initFrames();
 }
 
@@ -58,6 +60,8 @@ CFrameBox::CFrameBox(CBox* position)
 	pos = 0;
 	outFocus = false;
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
+
+	itemType = WIDGET_ITEM_FRAMEBOX;
 
 	initFrames();
 }
@@ -112,21 +116,24 @@ void CFrameBox::paintFrames()
 
 	for (unsigned int count = 0; count < (unsigned int)frames.size(); count++) 
 	{
-		CFrame * frame = frames[count];
+		CFrame *frame = frames[count];
 
 		// init frame
 		// frame
-		frame->window.setPosition(frame_x + count*frame_width, /*cFrameBox.iY + (cFrameBox.iHeight - frame_height)/2*/frame_y, frame_width - BORDER_LEFT - BORDER_RIGHT, frame_height);
+		frame->window.setPosition(frame_x + count*frame_width, frame_y, frame_width - BORDER_LEFT - BORDER_RIGHT, frame_height);
 
 		frame->window.enableShadow();
 		frame->item_backgroundColor = backgroundColor;
-
+		
 		if(!outFocus && (selected == -1)) 
 		{
 			selected = count;
 		}
 
-		frame->paint( selected == ((signed int) count));
+		if(outFocus)
+			frame->paint(false);
+		else
+			frame->paint( selected == ((signed int) count));
 	}
 }
 

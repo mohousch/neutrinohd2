@@ -544,6 +544,7 @@ void CTestMenu::widget()
 	testWidget = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
 
 	testWidget->enableSaveScreen();
+	testWidget->setSelected(selected);
 	
 	topBox.iWidth = testWidget->getWindowsPos().iWidth;
 	topBox.iHeight = 120;
@@ -676,15 +677,17 @@ void CTestMenu::listFrameWidget()
 {
 	testWidget = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
 
+	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+
 	///
 	CBox listFrameBox;
 	LF_LINES listFrameLines;
 	int selected = 0;
 	
-	listFrameBox.iX = frameBuffer->getScreenX();
-	listFrameBox.iY = frameBuffer->getScreenY();
-	listFrameBox.iWidth = frameBuffer->getScreenWidth();
-	listFrameBox.iHeight = frameBuffer->getScreenHeight();
+	listFrameBox.iX = frameBuffer->getScreenX() + 10;
+	listFrameBox.iY = frameBuffer->getScreenY() + 10;
+	listFrameBox.iWidth = frameBuffer->getScreenWidth() - 20;
+	listFrameBox.iHeight = frameBuffer->getScreenHeight() - 20;
 
 	//
 	#define MAX_ROWS 		LF_MAX_ROWS //6
@@ -773,8 +776,10 @@ void CTestMenu::listBoxWidget()
 {
 	testWidget = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
 
+	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+
 	//
-	rightWidget = new ClistBox(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
+	rightWidget = new ClistBox(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10, frameBuffer->getScreenWidth() - 20, frameBuffer->getScreenHeight() - 20);
 
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
 	rightWidget->setItemsPerPage(6,2);

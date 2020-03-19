@@ -1341,7 +1341,7 @@ int ClistBoxItem::getWidth(void) const
 
 int ClistBoxItem::exec(CMenuTarget* parent)
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxItem::exec:\n");
+	dprintf(DEBUG_DEBUG, "ClistBoxItem::exec:\n");
 
 	if(jumpTarget)
 		return jumpTarget->exec(parent, actionKey);
@@ -1991,7 +1991,10 @@ void ClistBox::paintItems()
 						paintItemInfo(count);
 					}
 
-					item->paint( selected == ((signed int) count));
+					if(outFocus)
+						item->paint(false);
+					else
+						item->paint( selected == ((signed int) count));
 
 					count++;
 
@@ -2080,7 +2083,10 @@ void ClistBox::paintItems()
 					paintItemInfo(count);
 				}
 
-				ypos = item->paint(selected == ((signed int) count));
+				if(outFocus)
+					ypos = item->paint(false);
+				else
+					ypos = item->paint(selected == ((signed int) count));
 			} 
 			else 
 			{
