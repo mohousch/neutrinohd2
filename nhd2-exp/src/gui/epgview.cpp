@@ -415,7 +415,7 @@ void CEpgData::showHead(const t_channel_id channel_id)
 
 	headers.enablePaintDate();
 	headers.enableLogo();
-	headers.setHeaderButtons(&HButton, 1);
+	headers.setButtons(&HButton, 1);
 
 	headers.paint();
 }

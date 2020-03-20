@@ -476,7 +476,7 @@ void CStringInput::paint()
 	// head
 	CHeaders headers(x, y, width, hheight, head ? head : g_Locale->getText(name), iconfile.c_str());
 
-	headers.setHeadCorner();
+	headers.setCorner();
 	headers.paint();
 
 	if (hint_1 != NONEXISTANT_LOCALE)

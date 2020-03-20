@@ -250,7 +250,7 @@ CHeaders::CHeaders(CBox position, const char * const title, const char * const i
 	outFocus = true;
 }
 
-void CHeaders::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
+void CHeaders::setButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
 {
 	hbutton_count = _hbutton_count;
 	hbutton_labels = _hbutton_labels;

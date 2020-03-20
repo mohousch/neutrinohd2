@@ -1703,7 +1703,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 							if(cnt >= (int)widget.size())
 							{
-								cnt = 0;
+								cnt = WIDGET_TYPE_STANDARD;
 							}
 					
 							widgetType = widget[cnt];

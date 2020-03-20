@@ -1689,6 +1689,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	widgetType = WIDGET_TYPE_STANDARD;
 	widgetMode = MODE_LISTBOX;
 	widgetChange = false;
+	cnt = 0;
 
 	itemType = WIDGET_ITEM_LISTBOX;
 }
@@ -1757,6 +1758,7 @@ ClistBox::ClistBox(CBox* position)
 	widgetType = WIDGET_TYPE_STANDARD;
 	widgetMode = MODE_LISTBOX;
 	widgetChange = false;
+	cnt = 0;
 
 	itemType = WIDGET_ITEM_LISTBOX;
 }
@@ -2152,9 +2154,9 @@ void ClistBox::paintHead()
 		{
 			CHeaders headers(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, l_name.c_str(), iconfile.c_str());
 
-			headers.setHeadColor(headColor);
-			headers.setHeadCorner(headRadius, headCorner);
-			headers.setHeadGradient(headGradient);
+			headers.setColor(headColor);
+			headers.setCorner(headRadius, headCorner);
+			headers.setGradient(headGradient);
 		
 			if(paintDate)
 				headers.enablePaintDate();
@@ -2162,7 +2164,7 @@ void ClistBox::paintHead()
 			if(logo)
 				headers.enableLogo();
 
-			headers.setHeaderButtons(hbutton_labels, hbutton_count);
+			headers.setButtons(hbutton_labels, hbutton_count);
 
 			headers.paint();
 		}
@@ -2187,9 +2189,9 @@ void ClistBox::paintFoot()
 		{
 			CFooters footers(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight - interFrame, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
 
-			footers.setFootColor(footColor);
-			footers.setFootCorner(footRadius, footCorner);
-			footers.setFootGradient(footGradient);
+			footers.setColor(footColor);
+			footers.setCorner(footRadius, footCorner);
+			footers.setGradient(footGradient);
 
 			footers.paint();
 		}
@@ -2834,9 +2836,11 @@ void ClistBox::swipRight()
 	}
 }
 
-void ClistBox::changeWidgetType()
+void ClistBox::changeWidgetType(int)
 {
-	int cnt = widgetType;
+	dprintf(DEBUG_NORMAL, "ClistBox::changeWidgetType:\n");
+
+	printf("cnt:%d\n", cnt);
 
 	if(widgetMode == MODE_MENU)
 	{
@@ -2860,18 +2864,26 @@ void ClistBox::changeWidgetType()
 	}
 	else if(widgetMode == MODE_LISTBOX)
 	{
+		dprintf(DEBUG_NORMAL, "ClistBox::changeWidgetType1:\n");
+
 		if(widgetChange && widget.size())
 		{
+			dprintf(DEBUG_NORMAL, "ClistBox::changeWidgetType2: widgetsize:%d\n", (int)widget.size());
+
 			hide();
 
 			cnt++;
+			
+			printf("cnt2:%d\n", cnt);
 
 			if(cnt >= (int)widget.size())
 			{
 				cnt = 0;
 			}
-					
+			
 			widgetType = widget[cnt];
+
+			dprintf(DEBUG_NORMAL, "ClistBox::changeWidgetType: widgetType:%d cnt:%d\n", widgetType, cnt);
 
 			paint();
 		}

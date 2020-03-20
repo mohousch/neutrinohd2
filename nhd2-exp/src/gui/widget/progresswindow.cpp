@@ -171,7 +171,7 @@ void CProgressWindow::paint()
 		l_caption = captionString.c_str();
 
 	CHeaders headers(x, y, width, hheight, l_caption, NEUTRINO_ICON_INFO);
-	headers.setHeadCorner();
+	headers.setCorner();
 	headers.paint();
 
 	// msg status

@@ -581,7 +581,8 @@ void CTestMenu::widget()
 
 	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, "Multi Widget", NEUTRINO_ICON_MP3);
 
-	headersWidget->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	headersWidget->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	//ĥeadersWidget->setCorner(RADIUS_MID, CORNER_TOP);
 
 	// foot
 	footBox.iWidth = frameBuffer->getScreenWidth();
@@ -590,6 +591,8 @@ void CTestMenu::widget()
 	footBox.iY = frameBuffer->getScreenY() + frameBuffer->getScreenHeight() - footBox.iHeight;
 
 	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight, FOOT_BUTTONS_COUNT, FootButtons);
+
+	footersWidget->setCorner(RADIUS_MID, CORNER_BOTTOM);
 	
 	// topwidget
 	topBox.iWidth = testWidget->getWindowsPos().iWidth;
@@ -911,14 +914,14 @@ void CTestMenu::testWindowWidget()
 	footersWidget = new CFooters(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10 + frameBuffer->getScreenHeight() - 20 - 40, frameBuffer->getScreenWidth() - 20, 40, FOOT_BUTTONS_COUNT, FootButtons);
 
 	headersWidget->enablePaintDate();
-	headersWidget->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
-	headersWidget->setHeadColor(COL_DARK_TURQUOISE);
-	//headersWidget->setHeadCorner();
-	//headersWidget->setHeadGradient(nogradient);
+	headersWidget->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	headersWidget->setColor(COL_DARK_TURQUOISE);
+	//headersWidget->setCorner();
+	//headersWidget->setGradient(nogradient);
 
-	footersWidget->setFootColor(COL_DARK_TURQUOISE);
-	//footersWidget->setFootCorner();
-	//footersWidget->setFootGradient(nogradient);
+	footersWidget->setColor(COL_DARK_TURQUOISE);
+	//footersWidget->setCorner();
+	//footersWidget->setGradient(nogradient);
 
 	testWidget->addItem(windowWidget);
 	testWidget->addItem(headersWidget);
@@ -954,16 +957,16 @@ void CTestMenu::test()
 	headers = new CHeaders(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
 
 	headers->enablePaintDate();
-	headers->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
-	headers->setHeadColor(COL_DARK_TURQUOISE);
-	headers->setHeadCorner();
-	headers->setHeadGradient(nogradient);
+	headers->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	headers->setColor(COL_DARK_TURQUOISE);
+	headers->setCorner();
+	headers->setGradient(nogradient);
 
 	footers = new CFooters(footBox, FOOT_BUTTONS_COUNT, FootButtons);
 
-	footers->setFootColor(COL_DARK_TURQUOISE);
-	footers->setFootCorner();
-	footers->setFootGradient(nogradient);
+	footers->setColor(COL_DARK_TURQUOISE);
+	footers->setCorner();
+	footers->setGradient(nogradient);
 
 	// top widget
 	CBox topBox;
@@ -1752,15 +1755,15 @@ void CTestMenu::testCHeaders()
 	headers = new CHeaders(headBox, "test CHeaders", NEUTRINO_ICON_MP3);
 
 	headers->enablePaintDate();
-	headers->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
-	//headers->setHeadColor(COL_BLUE);
-	//headers->setHeadCorner();
-	//headers->setHeadGradient(nogradient);
+	headers->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	//headers->setColor(COL_BLUE);
+	//headers->setCorner();
+	//headers->setGradient(nogradient);
 
 	footers = new CFooters(footBox, FOOT_BUTTONS_COUNT, FootButtons);
-	//headers->setFootColor(COL_BLUE);
-	//headers->setFootCorner();
-	//headers->setFootGradient(nogradient);
+	//headers->setColor(COL_BLUE);
+	//headers->setCorner();
+	//headers->setGradient(nogradient);
 
 	//headers->paintHead(headBox, "test CHeaders", NEUTRINO_ICON_MP3);
 	//headers->paintFoot(footBox, FOOT_BUTTONS_COUNT, FootButtons);	
@@ -2625,6 +2628,11 @@ void CTestMenu::testClistBox()
 	// mode
 	listBox->setWidgetType(WIDGET_TYPE_STANDARD);
 	listBox->setWidgetMode(MODE_LISTBOX);
+
+	//listBox->enableWidgetChange();
+	listBox->addWidget(WIDGET_TYPE_CLASSIC);
+	listBox->addWidget(WIDGET_TYPE_EXTENDED);
+	listBox->addWidget(WIDGET_TYPE_FRAME);	
 
 	// head
 	listBox->setTitle("ClistBox(standard)", NEUTRINO_ICON_MOVIE);
@@ -4948,6 +4956,8 @@ void CTestMenu::spinner(void)
 int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
+
+	int cnt = 0;
 	
 	if(parent)
 		hide();
@@ -5848,11 +5858,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	else if(actionKey == "lsetup")
 	{
-		hide();
-
+		cnt++;
 		rightWidget->changeWidgetType();
-
-		testWidget->paint();
 	}
 	else if(actionKey == "textboxwidget")
 	{

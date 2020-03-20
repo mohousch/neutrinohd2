@@ -380,7 +380,7 @@ void CMessageBox::refresh()
 
 	// title
 	CHeaders headers(CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - m_width ) >> 1), CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - m_height) >> 2), m_width, m_theight, m_caption.c_str(), m_iconfile.c_str());
-	headers.setHeadCorner();
+	headers.setCorner();
 	headers.paint();
 
 	//Body

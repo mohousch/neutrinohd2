@@ -1698,7 +1698,7 @@ void CMovieBrowser::refreshTitle(void)
 
 	CHeaders headers(m_cBoxFrameTitleRel, title.c_str(), NEUTRINO_ICON_MOVIE);
 	headers.enablePaintDate();
-	headers.setHeaderButtons(MBHeadButtons, MB_HEAD_BUTTONS_COUNT);
+	headers.setButtons(MBHeadButtons, MB_HEAD_BUTTONS_COUNT);
 	headers.paint();
 }
 

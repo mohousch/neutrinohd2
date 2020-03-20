@@ -53,11 +53,10 @@ enum
 
 enum
 {
-	WIDGET_TYPE_NONE = 0,
-	WIDGET_TYPE_STANDARD,
+	WIDGET_TYPE_STANDARD = 0,
 	WIDGET_TYPE_CLASSIC,
 	WIDGET_TYPE_EXTENDED,
-	WIDGET_TYPE_FRAME
+	WIDGET_TYPE_FRAME,
 };
 
 enum 
@@ -549,6 +548,7 @@ class ClistBox : public CWidgetItem
 		int widgetMode;
 		bool widgetChange;
 		std::vector<int> widget;
+		int cnt;
 
 		// head
 		fb_pixel_t headColor;
@@ -636,13 +636,13 @@ class ClistBox : public CWidgetItem
 		virtual void swipRight();
 
 		// widget type|mode
-		void setWidgetType(int type){widgetType = type; ; widget.push_back(widgetType);};
+		void setWidgetType(int type){widgetType = type; widget.push_back(widgetType);};
 		int getWidgetType(){return widgetType;};
 
 		void setWidgetMode(int mode){widgetMode = mode; if(widgetMode == MODE_SETUP) enableCenter = true;};
 		void enableWidgetChange(){widgetChange = true;};
 		void addWidget(int wtype){widget.push_back(wtype);};
-		void changeWidgetType();
+		void changeWidgetType(int cnt = 0);
 
 		//
 		int OKPressed(CMenuTarget *parent);

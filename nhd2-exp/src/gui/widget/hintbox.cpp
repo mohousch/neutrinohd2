@@ -229,7 +229,7 @@ void CHintBox::refresh(void)
 	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
 
 	CHeaders headers(cFrameBoxTitle, caption.c_str(), iconfile.c_str());
-	headers.setHeadCorner();
+	headers.setCorner();
 	headers.paint();
 
 	// body text

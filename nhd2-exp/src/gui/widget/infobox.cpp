@@ -233,7 +233,7 @@ void CInfoBox::refreshTitle(void)
 {
 	CHeaders headers(m_cBoxFrameTitleRel, m_cTitle.c_str(), m_cIcon.c_str());
 
-	headers.setHeaderButtons(&HButton, 1);
+	headers.setButtons(&HButton, 1);
 	headers.paint();
 }
 
