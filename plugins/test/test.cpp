@@ -581,6 +581,8 @@ void CTestMenu::widget()
 
 	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, "Multi Widget", NEUTRINO_ICON_MP3);
 
+	headersWidget->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+
 	// foot
 	footBox.iWidth = frameBuffer->getScreenWidth();
 	footBox.iHeight = 40;
@@ -5407,7 +5409,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	else if(actionKey == "winfo")
 	{
-		if(testWidget->getSelected() == 2)
+		if(testWidget->getSelected() == 3)
 		{
 			right_selected = rightWidget->getSelected();
 			m_movieInfo.showMovieInfo(m_vMovieInfo[right_selected]);
@@ -5419,7 +5421,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	{
 		int focus = testWidget->getSelected();
 
-		if(focus == 2)
+		if(focus == 3)
 		{
 			//hide();
 /*
@@ -5454,7 +5456,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			}
 */
 		}
-		else if(focus == 1)
+		else if(focus == 2)
 		{
 			left_selected = leftWidget->getSelected();
 
@@ -5683,7 +5685,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			if(left_selected == 8)
 				return menu_return::RETURN_EXIT_ALL;
 		}
-		else if(focus == 0)
+		else if(focus == 1)
 		{
 			top_selected = topWidget->getSelected();
 
