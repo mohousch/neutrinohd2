@@ -53,7 +53,8 @@ enum
 
 enum
 {
-	WIDGET_TYPE_STANDARD = 0,
+	WIDGET_TYPE_NONE = 0,
+	WIDGET_TYPE_STANDARD,
 	WIDGET_TYPE_CLASSIC,
 	WIDGET_TYPE_EXTENDED,
 	WIDGET_TYPE_FRAME
@@ -144,7 +145,7 @@ class CMenuItem
 		bool nLinesItem; // 2 lines Item (classicWidget)
 
 		CMenuItem();
-		virtual ~CMenuItem(){}
+		virtual ~CMenuItem(){};
 
 		virtual void init(const int X, const int Y, const int DX, const int OFFX);
 		virtual int paint(bool selected = false, bool AfterPulldown = false) = 0;
@@ -225,7 +226,9 @@ class CMenuOptionChooser : public CMenuItem
 
 	public:
 		CMenuOptionChooser(const neutrino_locale_t OptionName, int * const OptionValue, const struct keyval * const Options, const unsigned Number_Of_Options, const bool Active = false, CChangeObserver * const Observ = NULL, const neutrino_msg_t DirectKey = RC_nokey, const std::string & IconName= "", bool Pulldown = false);
-		CMenuOptionChooser(const char* const OptionName, int * const OptionValue, const struct keyval * const Options, const unsigned Number_Of_Options, const bool Active = false, CChangeObserver * const Observ = NULL, const neutrino_msg_t DirectKey = RC_nokey, const std::string & IconName= "", bool Pulldown = false); 
+		CMenuOptionChooser(const char* const OptionName, int * const OptionValue, const struct keyval * const Options, const unsigned Number_Of_Options, const bool Active = false, CChangeObserver * const Observ = NULL, const neutrino_msg_t DirectKey = RC_nokey, const std::string & IconName= "", bool Pulldown = false);
+
+		~CMenuOptionChooser(){};
 
 		void setOptionValue(const int newvalue);
 		int getOptionValue(void) const;
@@ -272,6 +275,8 @@ class CMenuOptionNumberChooser : public CMenuItem
 	public:
 		CMenuOptionNumberChooser(const neutrino_locale_t Name, int * const OptionValue, const bool Active, const int min_value, const int max_value, CChangeObserver * const Observ = NULL, const int print_offset = 0, const int special_value = 0, const neutrino_locale_t special_value_name = NONEXISTANT_LOCALE, const char * non_localized_name = NULL);
 		CMenuOptionNumberChooser(const char * const Name, int * const OptionValue, const bool Active, const int min_value, const int max_value, CChangeObserver * const Observ = NULL, const int print_offset = 0, const int special_value = 0, const neutrino_locale_t special_value_name = NONEXISTANT_LOCALE, const char * non_localized_name = NULL);
+
+		~CMenuOptionNumberChooser(){};
 		
 		int paint(bool selected, bool AfterPulldown = false);
 
@@ -314,7 +319,7 @@ class CMenuOptionLanguageChooser : public CMenuItem
 
 	public:
 		CMenuOptionLanguageChooser(char *Name, CChangeObserver *Observ = NULL, const char *const IconName = NULL);
-		virtual ~CMenuOptionLanguageChooser();
+		~CMenuOptionLanguageChooser();
 
 		void addOption(const char* value);
 
@@ -335,6 +340,7 @@ class CMenuSeparator : public CMenuItem
 		const char * textString;
 
 		CMenuSeparator(const int Type = EMPTY, const char * const Text = NULL);
+		~CMenuSeparator(){};
 
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
@@ -356,6 +362,7 @@ class CMenuSelector : public CMenuItem
 		char buffer[20];
 	public:
 		CMenuSelector(const char * OptionName, const bool Active = true, const char * const OptionValue = NULL, int * ReturnInt = NULL, int ReturnIntValue = 0);
+		~CMenuSelector(){};
 
 		int exec(CMenuTarget * parent);
 
@@ -382,6 +389,8 @@ class CMenuForwarder : public CMenuItem
 		CMenuForwarder(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = RC_nokey, const char* const IconName = NULL, const char* const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
 		
 		CMenuForwarder(const char* const Text, const bool Active = true, const char* const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = RC_nokey, const char* const IconName = NULL, const char* const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
+
+		~CMenuForwarder(){};
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
@@ -413,7 +422,8 @@ class CZapProtection : public CPINProtection
 	public:
 		int fsk;
 
-		CZapProtection( char * validpin, int FSK ) : CPINProtection(validpin){ fsk = FSK; };
+		CZapProtection(char * validpin, int FSK) : CPINProtection(validpin){ fsk = FSK; };
+		~CZapProtection(){};
 		bool check();
 };
 
@@ -455,6 +465,8 @@ class ClistBoxItem : public CMenuItem
 		ClistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = NULL, CMenuTarget * Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = RC_nokey, const char* const Icon = NULL, const char* const ItemIcon = NULL);
 
 		ClistBoxItem(const char* const Text, const bool Active = true, const char* const Option = NULL, CMenuTarget * Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = RC_nokey, const char* const IconName = NULL, const char* const ItemIcon = NULL);
+		
+		~ClistBoxItem(){};
 		
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;

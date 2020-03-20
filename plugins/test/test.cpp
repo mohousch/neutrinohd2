@@ -70,7 +70,7 @@ class CTestMenu : public CMenuTarget
 		CFileHelpers fileHelper;
 		cYTFeedParser ytparser;
 		std::string plist;
-		unsigned int page;
+		int page;
 		std::string TVShows;
 
 		//
@@ -99,6 +99,9 @@ class CTestMenu : public CMenuTarget
 		CListFrame *listFrame;
 		CTextBox *textWidget;
 		CWindow *windowWidget;
+
+		CBox headBox;
+		CBox footBox;
 		CHeaders *headersWidget;
 		CFooters *footersWidget;
 
@@ -569,11 +572,28 @@ void CTestMenu::widget()
 
 	testWidget->enableSaveScreen();
 	testWidget->setSelected(selected);
+
+	// head
+	headBox.iWidth = frameBuffer->getScreenWidth();
+	headBox.iHeight = 40;
+	headBox.iX = frameBuffer->getScreenX();
+	headBox.iY = frameBuffer->getScreenY();
+
+	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, "Multi Widget", NEUTRINO_ICON_MP3);
+
+	// foot
+	footBox.iWidth = frameBuffer->getScreenWidth();
+	footBox.iHeight = 40;
+	footBox.iX = frameBuffer->getScreenX();
+	footBox.iY = frameBuffer->getScreenY() + frameBuffer->getScreenHeight() - footBox.iHeight;
+
+	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight, FOOT_BUTTONS_COUNT, FootButtons);
 	
+	// topwidget
 	topBox.iWidth = testWidget->getWindowsPos().iWidth;
-	topBox.iHeight = 120;
+	topBox.iHeight = 100;
 	topBox.iX = testWidget->getWindowsPos().iX;
-	topBox.iY = testWidget->getWindowsPos().iY;
+	topBox.iY = testWidget->getWindowsPos().iY + headBox.iHeight + INTER_FRAME_SPACE;
 
 	top_selected = 0;
 
@@ -592,13 +612,12 @@ void CTestMenu::widget()
 	topWidget->addFrame(frame);
 
 	topWidget->setSelected(top_selected); 
-	//topWidget->setOutFocus(false);
 
 	// leftWidget
 	leftBox.iWidth = 200;
-	leftBox.iHeight = testWidget->getWindowsPos().iHeight - topBox.iHeight - INTER_FRAME_SPACE;
+	leftBox.iHeight = testWidget->getWindowsPos().iHeight - headBox.iHeight - INTER_FRAME_SPACE - topBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
 	leftBox.iX = testWidget->getWindowsPos().iX;
-	leftBox.iY = testWidget->getWindowsPos().iY + topBox.iHeight + INTER_FRAME_SPACE;
+	leftBox.iY = testWidget->getWindowsPos().iY + headBox.iHeight + INTER_FRAME_SPACE + topBox.iHeight + INTER_FRAME_SPACE;
 
 	left_selected = 0;
 
@@ -606,9 +625,7 @@ void CTestMenu::widget()
 
 	leftWidget->disableCenter();
 	leftWidget->setSelected(left_selected);
-	//leftWidget->setOutFocus(true);
 	leftWidget->disableShrinkMenu();
-
 	//leftWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 
 	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos");
@@ -635,11 +652,11 @@ void CTestMenu::widget()
 	leftWidget->addItem(item8);
 	leftWidget->addItem(item9);
 
-	// right menu
+	// rightwidget
 	rightBox.iWidth = testWidget->getWindowsPos().iWidth - INTER_FRAME_SPACE - leftBox.iWidth;
-	rightBox.iHeight = testWidget->getWindowsPos().iHeight - topBox.iHeight - INTER_FRAME_SPACE;
+	rightBox.iHeight = testWidget->getWindowsPos().iHeight - headBox.iHeight - INTER_FRAME_SPACE - topBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
 	rightBox.iX = testWidget->getWindowsPos().iX + leftBox.iWidth + INTER_FRAME_SPACE;
-	rightBox.iY = testWidget->getWindowsPos().iY + topBox.iHeight + INTER_FRAME_SPACE;
+	rightBox.iY = testWidget->getWindowsPos().iY + headBox.iHeight + INTER_FRAME_SPACE + topBox.iHeight + INTER_FRAME_SPACE;
 
 	right_selected = 0;
 
@@ -648,10 +665,7 @@ void CTestMenu::widget()
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
 	rightWidget->setItemsPerPage(6,2);
 	rightWidget->setSelected(right_selected);
-	//rightWidget->setOutFocus(true);
-
 	//rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
-
 	rightWidget->enablePaintFootInfo();
 
 	// loadPlaylist
@@ -673,14 +687,18 @@ void CTestMenu::widget()
 		rightWidget->addItem(item);
 	}
 
+	testWidget->addItem(headersWidget);
 	testWidget->addItem(topWidget);
 	testWidget->addItem(leftWidget);
 	testWidget->addItem(rightWidget);
+	testWidget->addItem(footersWidget);
 
 	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 
 	testWidget->addKey(RC_info, this, "winfo");
 	//testWidget->addKey(RC_ok, this, "wok");
+	testWidget->addKey(RC_red, this, "nextPage");
+	testWidget->addKey(RC_green, this, "prevPage");
 
 	testWidget->exec(NULL, "");
 
@@ -5446,7 +5464,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadTMDBPlaylist("movie", "now_playing", 1);
+					//loadTMDBPlaylist("movie", "now_playing", 1);
+					TVShows = "movie";
+					plist = "now_playing";
+					page = 1;
+
+					loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
 
 					// load items
 					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
@@ -5468,7 +5491,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadTMDBPlaylist("movie", "popular", 1);
+					//loadTMDBPlaylist("movie", "popular", 1);
+					TVShows = "movie";
+					plist = "popular";
+					page = 1;
+
+					loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
 
 					// load items
 					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
@@ -5490,7 +5518,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadTMDBPlaylist("movie", "top_rated", 1);
+					//loadTMDBPlaylist("movie", "top_rated", 1);
+					TVShows = "movie";
+					plist = "top_reated";
+					page = 1;
+
+					loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
 					// load items
 					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 					{
@@ -5511,7 +5544,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadTMDBPlaylist("movie", "upcoming", 1);
+
+					TVShows = "movie";
+					plist = "upcoming";
+					page = 1;
+
+					loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
 
 					// load items
 					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
@@ -5536,7 +5574,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadTMDBPlaylist("tv", "airing_today", 1);
+					//loadTMDBPlaylist("tv", "airing_today", 1);
+					TVShows = "tv";
+					plist = "airing_today";
+					page = 1;
+
+					loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
 
 					// load items
 					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
@@ -5558,7 +5601,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadTMDBPlaylist("tv", "on_the_air", 1);
+					//loadTMDBPlaylist("tv", "on_the_air", 1);
+					TVShows = "tv";
+					plist = "on_the_air";
+					page = 1;
+
+					loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
 
 					// load items
 					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
@@ -5580,7 +5628,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadTMDBPlaylist("tv", "popular", 1);
+					//loadTMDBPlaylist("tv", "popular", 1);
+					TVShows = "tv";
+					plist = "popular";
+					page = 1;
+
+					loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
 
 					// load items
 					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
@@ -5602,7 +5655,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				{
 					right_selected = 0;
 					rightWidget->clearItems();
-					loadTMDBPlaylist("tv", "top_rated", 1);
+					//loadTMDBPlaylist("tv", "top_rated", 1);
+					TVShows = "tv";
+					plist = "top_rated";
+					page = 1;
+
+					loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
 
 					// load items
 					for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
@@ -5664,7 +5722,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				leftWidget->addItem(item8);
 				leftWidget->addItem(item9);
 
-				loadTMDBPlaylist("tv", "airing_today", 1);
+				//loadTMDBPlaylist("tv", "airing_today", 1);
+				TVShows = "tv";
+				plist = "airing_today";
+				page = 1;
+
+				loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
 
 				// load items
 				for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
@@ -5919,7 +5982,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		leftWidget->addItem(item8);
 		leftWidget->addItem(item9);
 
-		loadTMDBPlaylist("tv", "airing_today", 1);
+		//loadTMDBPlaylist("tv", "airing_today", 1);
+		TVShows = "tv";
+		plist = "airing_today";
+		page = 1;
+
+		loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
 
 		// load items
 		for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
@@ -5939,6 +6007,56 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		leftWidget->setSelected(0);
 		rightWidget->setSelected(0);
+	}
+	else if(actionKey == "nextPage")
+	{
+		page++;
+		right_selected = 0;
+		rightWidget->clearItems();
+
+		loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
+
+		// load items
+		for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+		{
+			item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "yplay");
+
+			item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+			item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			rightWidget->addItem(item);
+		}
+	}
+	else if(actionKey == "prevPage")
+	{
+		page--;
+		if(page <= 1)
+			page = 1;
+		right_selected = 0;
+		rightWidget->clearItems();
+
+		loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
+
+		// load items
+		for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+		{
+			item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "yplay");
+
+			item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+			item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			rightWidget->addItem(item);
+		}
 	}
 	else if(actionKey == "search")
 	{

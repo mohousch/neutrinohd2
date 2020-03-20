@@ -75,6 +75,8 @@ class CWidgetItem
 		virtual inline CBox getItemPos(void){return (itemBox);};
 
 		virtual int OKPressed(CMenuTarget *parent){return 0;};
+
+		virtual int getWidgetType(){return 0;};
 };
 
 // buttons

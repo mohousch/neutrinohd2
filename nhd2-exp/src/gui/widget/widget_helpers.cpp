@@ -226,6 +226,8 @@ CHeaders::CHeaders(const int x, const int y, const int dx, const int dy, const c
 	logo = false;
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
+
+	outFocus = true;
 }
 
 CHeaders::CHeaders(CBox position, const char * const title, const char * const icon)
@@ -244,6 +246,8 @@ CHeaders::CHeaders(CBox position, const char * const title, const char * const i
 	logo = false;
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
+
+	outFocus = true;
 }
 
 void CHeaders::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
@@ -326,6 +330,8 @@ CFooters::CFooters(int x, int y, int dx, int dy, const unsigned int count, const
 	fradius = RADIUS_MID;
 	fcorner = CORNER_BOTTOM;
 	fgradient = g_settings.Foot_gradient;
+
+	outFocus = true;
 }
 
 CFooters::CFooters(CBox position, const unsigned int count, const struct button_label *content)
@@ -339,6 +345,8 @@ CFooters::CFooters(CBox position, const unsigned int count, const struct button_
 	fradius = RADIUS_MID;
 	fcorner = CORNER_BOTTOM;
 	fgradient = g_settings.Foot_gradient;
+
+	outFocus = true;
 }
 
 void CFooters::paint()
@@ -380,7 +388,6 @@ void CFooters::paint()
 
 // progressbar
 #define ITEMW 1
-
 
 CProgressBar::CProgressBar(int w, int h, int r, int g, int b, bool inv)
 {

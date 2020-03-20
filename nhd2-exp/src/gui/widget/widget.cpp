@@ -71,7 +71,7 @@ CWidget::CWidget(const int x, const int y, const int dx, const int dy)
 	enableCenter = true;
 
 	timeout = 0;
-	selected = 0;
+	selected = -1;
 
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 }
@@ -88,7 +88,7 @@ CWidget::CWidget(CBox *position)
 	enableCenter = true;
 
 	timeout = 0;
-	selected = 0;
+	selected = -1;
 
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 }
@@ -131,6 +131,18 @@ void CWidget::paintItems()
 
 	for (unsigned int i = 0; i < items.size(); i++)
 	{
+		if( (items[i]->isSelectable()) && (selected == -1)) 
+		{
+			selected = i;
+		}
+
+/*
+		if (selected == (signed int)i) 
+		{
+			items[i]->setOutFocus(false);
+		}
+*/
+
 		items[i]->paint();
 	}
 }
@@ -207,18 +219,25 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 	int pos = 0;
 	exit_pressed = false;
-	selected = 0;
 
 	if (parent)
 		parent->hide();
 
 	initFrames();
 
-	items[0]->setOutFocus(false);
-
-	for (unsigned int i = 1; i < items.size(); i++)
+	for (unsigned int i = 0; i < items.size(); i++)
 	{
 		items[i]->setOutFocus(true);
+	}
+
+	for (unsigned int i = 0; i < items.size(); i++)
+	{
+		if(items[i]->isSelectable())
+		{
+			items[i]->setOutFocus(false);
+			selected = i;
+			break;
+		}
 	}
 
 	paint();
@@ -310,36 +329,113 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 					break;
 					
 				case (RC_up) :
-					items[selected]->scrollLineUp();
+					{
+						if(items[selected]->itemType == WIDGET_ITEM_FRAMEBOX)
+						{
+							items[selected]->setOutFocus(true);
+							pos -= 1;
+
+							if(pos < 0)
+								pos = 0;
+
+							selected = pos;
+
+							items[selected]->setOutFocus(false);
+
+							paint();
+						}
+						else
+							items[selected]->scrollLineUp();
+					}
 					break;
 					
 				case (RC_down) :
-					items[selected]->scrollLineDown();
+					{
+						if(items[selected]->itemType == WIDGET_ITEM_FRAMEBOX)
+						{
+							items[selected]->setOutFocus(true);
+							pos += 1;
+
+							if(pos >= items.size())
+								pos = 0;
+
+							selected = pos;
+
+							items[selected]->setOutFocus(false);
+
+							paint();
+						}
+						else
+							items[selected]->scrollLineDown();
+					}
 					break;
 
 				case (RC_left):
-					items[selected]->swipLeft();
+					{
+						if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME))
+						{
+							items[selected]->setOutFocus(true);
+
+							pos -= 1;
+
+							if(pos < 0)
+								pos = 0;
+
+							selected = pos;
+
+							items[selected]->setOutFocus(false);
+
+							paint();
+						}
+						else
+							items[selected]->swipLeft();
+					}
 					break;
 					
 				case (RC_right):
-					items[selected]->swipRight();
+					{
+						if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME))
+						{
+							items[selected]->setOutFocus(true);
+
+							pos += 1;
+
+							if(pos >= items.size())
+								pos = 0;
+
+							selected = pos;
+
+							items[selected]->setOutFocus(false);
+
+							paint();
+						}
+						else
+							items[selected]->swipRight();
+					}
 					break;
 
 				case (RC_yellow):
-					//items[selected]->setSelected(-1);
-					items[selected]->setOutFocus(true);
+					{
+						for (unsigned int count = 1; count < items.size(); count++) 
+						{
+							pos = (selected + count)%items.size();
 
-					pos += 1;
+							CWidgetItem * item = items[pos];
 
-					if(pos >= items.size())
-						pos = 0;
+							if(item->isSelectable())
+							{
+								items[selected]->setOutFocus(true);
 
-					selected = pos;
+								selected = pos;
 
-					items[selected]->setOutFocus(false);
+								item->setOutFocus(false);
 
-					paint();
+								paint();
 
+								break;
+							}
+						}
+					}
 					break;
 
 				case (RC_home):
