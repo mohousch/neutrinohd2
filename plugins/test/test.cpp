@@ -99,6 +99,8 @@ class CTestMenu : public CMenuTarget
 		CListFrame *listFrame;
 		CTextBox *textWidget;
 		CWindow *windowWidget;
+		CHeaders *headersWidget;
+		CFooters *footersWidget;
 
 		void loadTMDBPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1);
 
@@ -218,6 +220,24 @@ class CTestMenu : public CMenuTarget
 
 		// hide()
 		void hide();
+};
+
+#define HEAD_BUTTONS_COUNT	3
+const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_MUTE_SMALL, NONEXISTANT_LOCALE, NULL}
+};
+
+#define FOOT_BUTTONS_COUNT	4
+const struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, "next Page" },
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, "prev Page" },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, "Focus" },
+	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, "Neue Filme" },
+	
 };
 
 CTestMenu::CTestMenu()
@@ -866,7 +886,24 @@ void CTestMenu::testWindowWidget()
 	windowWidget->setColor(COL_DARK_TURQUOISE);
 	windowWidget->setCorner(RADIUS_MID, CORNER_ALL);
 
+	headersWidget = new CHeaders(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10, frameBuffer->getScreenWidth() - 20, 40, "Movie Trailer", NEUTRINO_ICON_MP3);
+
+	footersWidget = new CFooters(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10 + frameBuffer->getScreenHeight() - 20 - 40, frameBuffer->getScreenWidth() - 20, 40, FOOT_BUTTONS_COUNT, FootButtons);
+
+	headersWidget->enablePaintDate();
+	headersWidget->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	headersWidget->setHeadColor(COL_DARK_TURQUOISE);
+	//headersWidget->setHeadCorner();
+	//headersWidget->setHeadGradient(nogradient);
+
+	footersWidget->setFootColor(COL_DARK_TURQUOISE);
+	//footersWidget->setFootCorner();
+	//footersWidget->setFootGradient(nogradient);
+
 	testWidget->addItem(windowWidget);
+	testWidget->addItem(headersWidget);
+	testWidget->addItem(footersWidget);
+
 	testWidget->exec(NULL, "");
 
 	delete testWidget;
@@ -874,24 +911,6 @@ void CTestMenu::testWindowWidget()
 }
 
 // CFrameBox
-#define HEAD_BUTTONS_COUNT	3
-const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
-{
-	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_MUTE_SMALL, NONEXISTANT_LOCALE, NULL}
-};
-
-#define FOOT_BUTTONS_COUNT	4
-const struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
-{
-	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, "next Page" },
-	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, "prev Page" },
-	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, "Focus" },
-	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, "Neue Filme" },
-	
-};
-
 void CTestMenu::test()
 {
 	dprintf(DEBUG_NORMAL, "\ntesting multi Widgets\n");

@@ -170,6 +170,9 @@ class CListFrame : public CWidgetItem
 			TITLE  		= 0x08,
 			HEADER_LINE 	= 0x80
 		}mode;
+
+		//
+		bool isSelectable(void) const {return true;}
 };
 
 #endif //LISTFRAME_H_

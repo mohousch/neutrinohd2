@@ -160,6 +160,9 @@ class CTextBox : public CWidgetItem
 		void hide(void);
 
 		void setBigFonts(bool bigfont = false);
+
+		//
+		bool isSelectable(void) const {return true;}
 };
 
 #endif // !defined(AFX_TEXTBOX_H__208DED01_ABEC_491C_A632_5B21057DC5D8__INCLUDED_)

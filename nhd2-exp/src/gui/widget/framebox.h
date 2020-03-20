@@ -100,6 +100,7 @@ class CFrameBox : public CWidgetItem
 
 		//
 		int OKPressed(CMenuTarget *parent);
+		bool isSelectable(void) const {return true;}
 };
 
 #endif
