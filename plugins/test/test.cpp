@@ -689,6 +689,16 @@ void CTestMenu::widget()
 
 		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
+		item->set2lines();
+
+		std::string tmp = m_vMovieInfo[i].epgTitle;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo1;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo2;
+
+		item->setHelpText(tmp.c_str());
+
 		rightWidget->addItem(item);
 	}
 
@@ -853,6 +863,16 @@ void CTestMenu::listBoxWidget()
 		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 
 		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+		item->set2lines();
+
+		std::string tmp = m_vMovieInfo[i].epgTitle;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo1;
+		tmp += "\n";
+		tmp += m_vMovieInfo[i].epgInfo2;
+
+		item->setHelpText(tmp.c_str());
 
 		rightWidget->addItem(item);
 	}
@@ -5858,7 +5878,6 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	else if(actionKey == "lsetup")
 	{
-		cnt++;
 		rightWidget->changeWidgetType();
 	}
 	else if(actionKey == "textboxwidget")
