@@ -54,6 +54,39 @@ CTextBox::CTextBox()
 	initFramesRel();
 }
 
+CTextBox::CTextBox(const int x, const int y, const int dx, const int dy)
+{
+	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
+	
+	initVar();
+
+	m_cFrame.iX = x;
+	m_cFrame.iY = y;
+	m_cFrame.iWidth = dx;
+	m_cFrame.iHeight = dy;
+	
+	m_nMaxHeight = m_cFrame.iHeight;
+	m_nMaxWidth = m_cFrame.iWidth;
+
+	initFramesRel();
+}
+
+CTextBox::CTextBox(CBox* position)
+{
+	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
+	
+	initVar();
+
+	if(position != NULL)
+	{
+		m_cFrame = *position;
+		m_nMaxHeight = m_cFrame.iHeight;
+		m_nMaxWidth = m_cFrame.iWidth;
+	}
+
+	initFramesRel();
+}
+
 CTextBox::~CTextBox()
 {
 	dprintf(DEBUG_DEBUG, "CTextBox::~CTextBox\r\n");
@@ -79,8 +112,8 @@ void CTextBox::initVar(void)
 	m_nCurrentPage = 0;
 
 	m_cFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - MIN_WINDOW_WIDTH) >>1);
-	m_cFrame.iWidth	= MIN_WINDOW_WIDTH;
 	m_cFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - MIN_WINDOW_HEIGHT) >>1);
+	m_cFrame.iWidth	= MIN_WINDOW_WIDTH;
 	m_cFrame.iHeight = MIN_WINDOW_HEIGHT;
 
 	m_nMaxHeight = MAX_WINDOW_HEIGHT;

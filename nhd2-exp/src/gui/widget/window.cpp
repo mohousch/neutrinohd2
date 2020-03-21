@@ -45,6 +45,11 @@ extern cVideo * videoDecoder;
 
 CWindow::CWindow()
 {
+	cFrameBox.iX = frameBuffer->getScreenX() + 10;
+	cFrameBox.iY = frameBuffer->getScreenX() + 10;
+	cFrameBox.iWidth = frameBuffer->getScreenWidth() - 20;
+	cFrameBox.iHeight = frameBuffer->getScreenWidth() - 20;
+
 	init();
 }
 

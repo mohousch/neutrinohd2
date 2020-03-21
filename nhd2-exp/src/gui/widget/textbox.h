@@ -131,6 +131,8 @@ class CTextBox : public CWidgetItem
 
 	public:
 		CTextBox();
+		CTextBox(const int x, const int y, const int dx, const int dy);
+		CTextBox(CBox* position);
 
 		virtual ~CTextBox();
 

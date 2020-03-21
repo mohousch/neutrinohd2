@@ -105,6 +105,8 @@ class CTestMenu : public CMenuTarget
 		CHeaders *headersWidget;
 		CFooters *footersWidget;
 
+		bool bigFonts;
+
 		void loadTMDBPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1);
 
 		void loadMoviePlaylist();
@@ -260,6 +262,9 @@ CTestMenu::CTestMenu()
 	// 
 	mainMenu = NULL;
 	select = -1;
+
+	//
+	bigFonts = false;
 
 	//
 	testWidget = NULL;
@@ -579,7 +584,7 @@ void CTestMenu::widget()
 	headBox.iX = frameBuffer->getScreenX();
 	headBox.iY = frameBuffer->getScreenY();
 
-	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, "Multi Widget", NEUTRINO_ICON_MP3);
+	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, "CWidget(Multi Widget)", NEUTRINO_ICON_MP3);
 
 	headersWidget->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	//ĥeadersWidget->setCorner(RADIUS_MID, CORNER_TOP);
@@ -633,19 +638,19 @@ void CTestMenu::widget()
 	leftWidget->disableShrinkMenu();
 	//leftWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 
-	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos");
-	ClistBoxItem *item2 = new ClistBoxItem("Am");
+	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos", true, NULL, this, "movie_in_cinema");
+	ClistBoxItem *item2 = new ClistBoxItem("Am", true, NULL, this, "movie_popular");
 	item2->setOption("populärsten");
 	item2->set2lines();
-	ClistBoxItem *item3 = new ClistBoxItem("Am besten");
+	ClistBoxItem *item3 = new ClistBoxItem("Am besten", true, NULL, this, "movie_top_rated");
 	item3->setOption("bewertet");
 	item3->set2lines();
-	ClistBoxItem *item4 = new ClistBoxItem("Neue Filme");
+	ClistBoxItem *item4 = new ClistBoxItem("Neue Filme", true, NULL, this, "movie_new");
 	ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
 	ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
 	ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
 	ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
-	ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "beenden");
+	ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "exit");
 
 	leftWidget->addItem(item1);
 	leftWidget->addItem(item2);
@@ -728,6 +733,12 @@ void CTestMenu::widget()
 
 	delete rightWidget;
 	rightWidget = NULL;
+
+	delete headersWidget;
+	headersWidget = NULL;
+
+	delete footersWidget;
+	footersWidget = NULL;
 }
 
 void CTestMenu::listFrameWidget()
@@ -779,7 +790,7 @@ void CTestMenu::listFrameWidget()
 	listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::TITLE | CListFrame::HEADER_LINE | CListFrame::SCROLL, &listFrameBox);
 
 	// title
-	listFrame->setTitle("listFrame (AudioPlayer)", NEUTRINO_ICON_MOVIE);
+	listFrame->setTitle("CWidget(ClistFrame)", NEUTRINO_ICON_MOVIE);
 
 	loadAudioPlaylist();
 
@@ -816,7 +827,6 @@ void CTestMenu::listFrameWidget()
 	listFrame->setLines(&listFrameLines);
 	
 	// paint
-	//listFrame->paint();
 	listFrame->showSelection(true);
 	///
 
@@ -824,9 +834,13 @@ void CTestMenu::listFrameWidget()
 
 	testWidget->addKey(RC_ok, this, "aok");
 
-	testWidget->exec(this, "");
+	testWidget->exec(NULL, "");
+
 	delete testWidget;
 	testWidget = NULL;
+
+	delete listFrame;
+	listFrame = NULL;
 }
 
 void CTestMenu::listBoxWidget()
@@ -834,14 +848,40 @@ void CTestMenu::listBoxWidget()
 	testWidget = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
 
 	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+	testWidget->enableSaveScreen();
+
+	// head
+	headBox.iWidth = frameBuffer->getScreenWidth();
+	headBox.iHeight = 40;
+	headBox.iX = frameBuffer->getScreenX();
+	headBox.iY = frameBuffer->getScreenY();
+
+	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, "CWidget(ClistBox)", NEUTRINO_ICON_MP3);
+
+	headersWidget->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	//ĥeadersWidget->setCorner(RADIUS_MID, CORNER_TOP);
+
+	// foot
+	footBox.iWidth = frameBuffer->getScreenWidth();
+	footBox.iHeight = 40;
+	footBox.iX = frameBuffer->getScreenX();
+	footBox.iY = frameBuffer->getScreenY() + frameBuffer->getScreenHeight() - footBox.iHeight;
+
+	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight, FOOT_BUTTONS_COUNT, FootButtons);
+
+	footersWidget->setCorner(RADIUS_MID, CORNER_BOTTOM);
 
 	//
-	rightWidget = new ClistBox(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10, frameBuffer->getScreenWidth() - 20, frameBuffer->getScreenHeight() - 20);
+	rightBox.iWidth = testWidget->getWindowsPos().iWidth;
+	rightBox.iHeight = testWidget->getWindowsPos().iHeight - headBox.iHeight - footBox.iHeight;
+	rightBox.iX = testWidget->getWindowsPos().iX;
+	rightBox.iY = testWidget->getWindowsPos().iY + headBox.iHeight;
+
+	rightWidget = new ClistBox(&rightBox);
 
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
 	rightWidget->setItemsPerPage(6,2);
 	rightWidget->setSelected(selected);
-	//rightWidget->setOutFocus(true);
 	rightWidget->enablePaintFootInfo();
 	rightWidget->enableWidgetChange();
 	rightWidget->addWidget(WIDGET_TYPE_STANDARD);
@@ -882,17 +922,54 @@ void CTestMenu::listBoxWidget()
 	testWidget->addKey(RC_info, this, "linfo");
 	testWidget->addKey(RC_setup, this, "lsetup");
 
+	testWidget->addItem(headersWidget);
 	testWidget->addItem(rightWidget);
-	testWidget->exec(this, "");
+	testWidget->addItem(footersWidget);
+
+	testWidget->exec(NULL, "");
+
 	delete testWidget;
 	testWidget = NULL;
+
+	delete rightWidget;
+	rightWidget = NULL;
+
+	delete headersWidget;
+	headersWidget = NULL;
+
+	delete footersWidget;
+	footersWidget = NULL;
 }
 
 void CTestMenu::textBoxWidget()
 {
 	testWidget = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
 
-	textWidget = new CTextBox();
+	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+
+	// head
+	headBox.iWidth = frameBuffer->getScreenWidth();
+	headBox.iHeight = 40;
+	headBox.iX = frameBuffer->getScreenX();
+	headBox.iY = frameBuffer->getScreenY();
+
+	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, "CWidget(CTextBox)", NEUTRINO_ICON_MP3);
+
+	headersWidget->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	//ĥeadersWidget->setCorner(RADIUS_MID, CORNER_TOP);
+
+	// foot
+	footBox.iWidth = frameBuffer->getScreenWidth();
+	footBox.iHeight = 40;
+	footBox.iX = frameBuffer->getScreenX();
+	footBox.iY = frameBuffer->getScreenY() + frameBuffer->getScreenHeight() - footBox.iHeight;
+
+	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight, FOOT_BUTTONS_COUNT, FootButtons);
+
+	footersWidget->setCorner(RADIUS_MID, CORNER_BOTTOM);
+
+	//textBox
+	textWidget = new CTextBox(frameBuffer->getScreenX(), frameBuffer->getScreenY() + headBox.iHeight, frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight() - headBox.iHeight - footBox.iHeight);
 	
 	const char *buffer = NULL;
 	
@@ -910,14 +987,26 @@ void CTestMenu::textBoxWidget()
 	textWidget->setText(buffer, tname.c_str(), p_w, p_h);
 
 	//testWidget->addKey(RC_ok, this, "lok");
-	//testWidget->addKey(RC_info, this, "linfo");
+	testWidget->addKey(RC_info, this, "txtinfo");
 	//testWidget->addKey(RC_setup, this, "lsetup");
 
+	testWidget->addItem(headersWidget);
 	testWidget->addItem(textWidget);
-	testWidget->exec(this, "");
+	testWidget->addItem(footersWidget);
+
+	testWidget->exec(NULL, "");
 
 	delete testWidget;
 	testWidget = NULL;
+
+	delete textWidget;
+	textWidget = NULL;
+
+	delete headersWidget;
+	headersWidget = NULL;
+
+	delete footersWidget;
+	footersWidget = NULL;
 }
 
 void CTestMenu::testWindowWidget()
@@ -929,7 +1018,7 @@ void CTestMenu::testWindowWidget()
 	windowWidget->setColor(COL_DARK_TURQUOISE);
 	windowWidget->setCorner(RADIUS_MID, CORNER_ALL);
 
-	headersWidget = new CHeaders(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10, frameBuffer->getScreenWidth() - 20, 40, "Movie Trailer", NEUTRINO_ICON_MP3);
+	headersWidget = new CHeaders(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10, frameBuffer->getScreenWidth() - 20, 40, "CWidget(CWindow)", NEUTRINO_ICON_MP3);
 
 	footersWidget = new CFooters(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10 + frameBuffer->getScreenHeight() - 20 - 40, frameBuffer->getScreenWidth() - 20, 40, FOOT_BUTTONS_COUNT, FootButtons);
 
@@ -951,6 +1040,15 @@ void CTestMenu::testWindowWidget()
 
 	delete testWidget;
 	testWidget = NULL;
+
+	delete windowWidget;
+	windowWidget = NULL;
+
+	delete headersWidget;
+	headersWidget = NULL;
+
+	delete footersWidget;
+	footersWidget = NULL;
 }
 
 // CFrameBox
@@ -2159,7 +2257,6 @@ void CTestMenu::testCTextBox()
 	// loop
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
-	bool bigFonts = false;
 	bool loop = true;
 
 	while(loop)
@@ -5552,7 +5649,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 					rightWidget->clearItems();
 					//loadTMDBPlaylist("movie", "top_rated", 1);
 					TVShows = "movie";
-					plist = "top_reated";
+					plist = "top_rated";
 					page = 1;
 
 					loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
@@ -5884,9 +5981,225 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	{
 		textBoxWidget();
 	}
-	else if(actionKey == "beenden")
+	else if(actionKey == "exit")
 	{
 		return menu_return::RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "movie_in_cinema")
+	{
+		right_selected = 0;
+		rightWidget->clearItems();
+		//loadTMDBPlaylist("movie", "now_playing", 1);
+		TVShows = "movie";
+		plist = "now_playing";
+		page = 1;
+
+		loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
+
+		// load items
+		for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+		{
+			item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "yplay");
+
+			item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+			item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			rightWidget->addItem(item);
+		}
+	}
+	else if(actionKey == "movie_popular")
+	{
+		right_selected = 0;
+		rightWidget->clearItems();
+		//loadTMDBPlaylist("movie", "now_playing", 1);
+		TVShows = "movie";
+		plist = "popular";
+		page = 1;
+
+		loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
+
+		// load items
+		for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+		{
+			item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "yplay");
+
+			item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+			item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			rightWidget->addItem(item);
+		}
+	}
+	else if(actionKey == "movie_top_rated")
+	{
+		right_selected = 0;
+		rightWidget->clearItems();
+		//loadTMDBPlaylist("movie", "now_playing", 1);
+		TVShows = "movie";
+		plist = "top_rated";
+		page = 1;
+
+		loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
+
+		// load items
+		for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+		{
+			item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "yplay");
+
+			item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+			item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			rightWidget->addItem(item);
+		}
+	}
+	else if(actionKey == "movie_new")
+	{
+		right_selected = 0;
+		rightWidget->clearItems();
+		//loadTMDBPlaylist("movie", "now_playing", 1);
+		TVShows = "movie";
+		plist = "upcoming";
+		page = 1;
+
+		loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
+
+		// load items
+		for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+		{
+			item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "yplay");
+
+			item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+			item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			rightWidget->addItem(item);
+		}
+	}
+	else if(actionKey == "tv_today")
+	{
+		right_selected = 0;
+		rightWidget->clearItems();
+		//loadTMDBPlaylist("movie", "now_playing", 1);
+		TVShows = "tv";
+		plist = "airing_today";
+		page = 1;
+
+		loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
+
+		// load items
+		for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+		{
+			item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "yplay");
+
+			item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+			item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			rightWidget->addItem(item);
+		}
+	}
+	else if(actionKey == "tv_on_air")
+	{
+		right_selected = 0;
+		rightWidget->clearItems();
+		//loadTMDBPlaylist("movie", "now_playing", 1);
+		TVShows = "tv";
+		plist = "on_the_air";
+		page = 1;
+
+		loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
+
+		// load items
+		for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+		{
+			item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "yplay");
+
+			item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+			item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			rightWidget->addItem(item);
+		}
+	}
+	else if(actionKey == "tv_popular")
+	{
+		right_selected = 0;
+		rightWidget->clearItems();
+		//loadTMDBPlaylist("movie", "now_playing", 1);
+		TVShows = "tv";
+		plist = "popular";
+		page = 1;
+
+		loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
+
+		// load items
+		for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+		{
+			item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "yplay");
+
+			item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+			item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			rightWidget->addItem(item);
+		}
+	}
+	else if(actionKey == "tv_top_rated")
+	{
+		right_selected = 0;
+		rightWidget->clearItems();
+		//loadTMDBPlaylist("movie", "now_playing", 1);
+		TVShows = "tv";
+		plist = "top_rated";
+		page = 1;
+
+		loadTMDBPlaylist(TVShows.c_str(), plist.c_str(), page);
+
+		// load items
+		for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+		{
+			item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "yplay");
+
+			item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+
+			item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+
+			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			rightWidget->addItem(item);
+		}
 	}
 	else if(actionKey == "yplay")
 	{
@@ -5930,19 +6243,19 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		rightWidget->clearItems();
 		leftWidget->clearItems();
 
-		ClistBoxItem *item1 = new ClistBoxItem("In den Kinos");
-		ClistBoxItem *item2 = new ClistBoxItem("Am");
+		ClistBoxItem *item1 = new ClistBoxItem("In den Kinos", true, NULL, this, "movie_in_cinema");
+		ClistBoxItem *item2 = new ClistBoxItem("Am", true, NULL, this, "movie_popular");
 		item2->setOption("populärsten");
 		item2->set2lines();
-		ClistBoxItem *item3 = new ClistBoxItem("Am besten");
+		ClistBoxItem *item3 = new ClistBoxItem("Am besten", true, NULL, this, "movie_top_rated");
 		item3->setOption("bewertet");
 		item3->set2lines();
-		ClistBoxItem *item4 = new ClistBoxItem("Neue Filme");
+		ClistBoxItem *item4 = new ClistBoxItem("Neue Filme", true, NULL, this, "movie_new");
 		ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
 		ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
 		ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
 		ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
-		ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "beenden");
+		ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "exit");
 
 		leftWidget->addItem(item1);
 		leftWidget->addItem(item2);
@@ -5984,21 +6297,21 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				//
 		leftWidget->clearItems();
 
-		ClistBoxItem *item1 = new ClistBoxItem("Heute auf");
+		ClistBoxItem *item1 = new ClistBoxItem("Heute auf", true, NULL, this, "tv_today");
 		item1->setOption("Sendung");
 		item1->set2lines();
-		ClistBoxItem *item2 = new ClistBoxItem("Auf Sendung");
-		ClistBoxItem *item3 = new ClistBoxItem("Am");
+		ClistBoxItem *item2 = new ClistBoxItem("Auf Sendung", true, NULL, this, "tv_on_air");
+		ClistBoxItem *item3 = new ClistBoxItem("Am", true, NULL, this, "tv_popular");
 		item3->setOption("populärsten");
 		item3->set2lines();
-		ClistBoxItem *item4 = new ClistBoxItem("am");
+		ClistBoxItem *item4 = new ClistBoxItem("am", true, NULL, this, "tv_top_rated");
 		item4->setOption("besten bewertet");
 		item4->set2lines();
 		ClistBoxItem *item5 = new ClistBoxItem(NULL, false);
 		ClistBoxItem *item6 = new ClistBoxItem(NULL, false);
 		ClistBoxItem *item7 = new ClistBoxItem(NULL, false);
 		ClistBoxItem *item8 = new ClistBoxItem(NULL, false);
-		ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "beenden");
+		ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "exit");
 
 		leftWidget->addItem(item1);
 		leftWidget->addItem(item2);
@@ -6093,6 +6406,13 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	{
 		testWindowWidget();
 	}
+	else if(actionKey == "txtinfo")
+	{
+		bigFonts = bigFonts? false : true;
+
+		if(textWidget)
+			textWidget->setBigFonts(bigFonts);
+	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -6116,10 +6436,11 @@ void CTestMenu::showMenu()
 	mainMenu->enableShrinkMenu(),
 	mainMenu->enableMenuPosition();
 	
-	mainMenu->addItem(new CMenuForwarder("CWidget", true, NULL, this, "widget"));
+	mainMenu->addItem(new CMenuForwarder("CWidget(multi widget)", true, NULL, this, "widget"));
 	mainMenu->addItem(new CMenuForwarder("CWidget(listFrame)", true, NULL, this, "listframewidget"));
 	mainMenu->addItem(new CMenuForwarder("CWidget(listBox)", true, NULL, this, "listboxmwidget"));
 	mainMenu->addItem(new CMenuForwarder("CWidget(textBox)", true, NULL, this, "textboxwidget"));
+	mainMenu->addItem( new CMenuSeparator(LINE) );
 	mainMenu->addItem(new CMenuForwarder("CWidget(CWindow)", true, NULL, this, "windowwidget"));
 	mainMenu->addItem( new CMenuSeparator(LINE) );
 	mainMenu->addItem(new CMenuForwarder("TEST", true, NULL, this, "testing"));
