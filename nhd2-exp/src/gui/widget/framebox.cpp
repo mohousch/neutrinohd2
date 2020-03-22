@@ -87,7 +87,7 @@ void CFrameBox::addFrame(CFrame *frame, const bool defaultselected)
 	frames.push_back(frame);
 }
 
-bool CFrameBox::hasFrame()
+bool CFrameBox::hasItem()
 {
 	return !frames.empty();
 }

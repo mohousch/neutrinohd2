@@ -82,7 +82,7 @@ class CFrameBox : public CWidgetItem
 		virtual ~CFrameBox();
 
 		virtual void addFrame(CFrame *frame, const bool defaultselected = false);
-		bool hasFrame();
+		bool hasItem();
 		void clearFrames(void){frames.clear();};
 		void setSelected(unsigned int _new) { /*if(_new <= frames.size())*/ selected = _new; };
 

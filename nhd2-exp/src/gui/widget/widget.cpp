@@ -136,13 +136,6 @@ void CWidget::paintItems()
 			selected = i;
 		}
 
-/*
-		if (selected == (signed int)i) 
-		{
-			items[i]->setOutFocus(false);
-		}
-*/
-
 		items[i]->paint();
 	}
 }
@@ -338,7 +331,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 								CWidgetItem * item = items[pos];
 
-								if(item->isSelectable())
+								if(item->isSelectable() && item->hasItem())
 								{
 									items[selected]->setOutFocus(true);
 
@@ -367,7 +360,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 								CWidgetItem * item = items[pos];
 
-								if(item->isSelectable())
+								if(item->isSelectable() && item->hasItem())
 								{
 									items[selected]->setOutFocus(true);
 
@@ -396,7 +389,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 								CWidgetItem * item = items[pos];
 
-								if(item->isSelectable())
+								if(item->isSelectable() && item->hasItem())
 								{
 									items[selected]->setOutFocus(true);
 
@@ -425,7 +418,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 								CWidgetItem * item = items[pos];
 
-								if(item->isSelectable())
+								if(item->isSelectable() && item->hasItem())
 								{
 									items[selected]->setOutFocus(true);
 
@@ -450,9 +443,11 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 						{
 							pos = (selected + count)%items.size();
 
+							printf("RC_yellow: %d\n", pos);
+
 							CWidgetItem * item = items[pos];
 
-							if(item->isSelectable())
+							if(item->isSelectable() && item->hasItem())
 							{
 								items[selected]->setOutFocus(true);
 

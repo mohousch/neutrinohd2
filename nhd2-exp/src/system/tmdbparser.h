@@ -112,14 +112,28 @@ class CTmdb
 		bool getSmallCover(std::string cover, std::string tname);
 
 
+		// movielist
+		bool getMovieTVList(std::string mtype = "movie", std::string list = "now_playing", int page = 1);
+
 		//
 		bool getMovieTVInfo(std::string mtype = "movie", int id = 0); //FIXME
-		bool getMovieTVList(std::string mtype = "movie", std::string list = "now_playing", int page = 1);
+
+		// genre list
 		bool getGenreList(std::string mtype = "movie");
+
+		//
 		bool getGenreMovieList(int id);
+
+		// season list
 		bool getSeasonsList(int id);
+
+		// episode list
 		bool getEpisodesList(int id, int nr = 0);
+
+		//
 		bool getVideoInfo(std::string mtype = "movie", int id = 0, int s_nr = 0); //FIXME
+
+		//
 		bool searchMovieInfo(std::string text);
 
 		// minfo

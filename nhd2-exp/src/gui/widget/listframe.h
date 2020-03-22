@@ -173,6 +173,7 @@ class CListFrame : public CWidgetItem
 
 		//
 		bool isSelectable(void) const {return true;}
+		bool hasItem(){if (m_pLines != NULL) return true;};
 };
 
 #endif //LISTFRAME_H_

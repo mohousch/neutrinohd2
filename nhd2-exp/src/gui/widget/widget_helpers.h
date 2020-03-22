@@ -58,6 +58,7 @@ class CWidgetItem
 		virtual ~CWidgetItem(){};
 
 		virtual bool isSelectable(void) const {return false;}
+		virtual bool hasItem(){return false;};
 
 		virtual void paint(){};
 		virtual void hide(){};

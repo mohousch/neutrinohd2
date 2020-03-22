@@ -673,14 +673,14 @@ bool CTmdb::searchMovieInfo(std::string text)
 
 	if (!parsedSuccess) 
 	{
-		dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: Failed to parse JSON\n");
-		dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: %s\n", reader.getFormattedErrorMessages().c_str());
+		dprintf(DEBUG_NORMAL, "CTmdb::searchMovieInfo: Failed to parse JSON\n");
+		dprintf(DEBUG_NORMAL, "CTmdb::searchMovieInfo: %s\n", reader.getFormattedErrorMessages().c_str());
 		return false;
 	}
 
 	Json::Value results = root.get("results", "");
 
-	dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: results: %d\n", results.size());
+	dprintf(DEBUG_NORMAL, "CTmdb::searchMovieInfo: results: %d\n", results.size());
 
 	for (unsigned int i = 0; i < results.size(); i++) 
 	{
@@ -709,6 +709,7 @@ bool CTmdb::searchMovieInfo(std::string text)
 		}
 
 		// credits infos
+#if 0
 		url = "http://api.themoviedb.org/3/" + tmp.media_type + "/" + to_string(tmp.id) + "?api_key=" + key + "&language=" + lang + "&append_to_response=credits";
 
 		answer.clear();
@@ -718,8 +719,8 @@ bool CTmdb::searchMovieInfo(std::string text)
 		parsedSuccess = reader.parse(answer, root);
 		if (!parsedSuccess) 
 		{
-			dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: Failed to parse JSON\n");
-			dprintf(DEBUG_NORMAL, "CTmdb::getMovieInfo: %s\n", reader.getFormattedErrorMessages().c_str());
+			dprintf(DEBUG_NORMAL, "CTmdb::searchMovieInfo: Failed to parse JSON\n");
+			dprintf(DEBUG_NORMAL, "CTmdb::searchMovieInfo: %s\n", reader.getFormattedErrorMessages().c_str());
 
 			return false;
 		}
@@ -753,6 +754,7 @@ bool CTmdb::searchMovieInfo(std::string text)
 		{
 			tmp.runtime = root.get("runtime", "").asInt();
 		}
+#endif
 
 		minfo.push_back(tmp);
 	} 
