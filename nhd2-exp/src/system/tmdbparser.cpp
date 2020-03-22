@@ -248,7 +248,6 @@ std::string CTmdb::createInfoText()
 	return infoText;
 }
 
-/// neu
 // movie/tv list
 bool CTmdb::getMovieTVList(std::string mtype, std::string list, int page)
 {
@@ -519,7 +518,7 @@ bool CTmdb::getEpisodesList(int id, int nr)
 	return false;
 }
 
-// video info
+// video info with id | s_nr
 bool CTmdb::getVideoInfo(std::string mtype, int id, int s_nr)
 {
 	dprintf(DEBUG_NORMAL, "cTmdb::getVideoInfo: %s (id:%d) (ep_nr:%d)\n", mtype.c_str(), id, s_nr);

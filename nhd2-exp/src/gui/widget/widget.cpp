@@ -443,8 +443,6 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 						{
 							pos = (selected + count)%items.size();
 
-							printf("RC_yellow: %d\n", pos);
-
 							CWidgetItem * item = items[pos];
 
 							if(item->isSelectable() && item->hasItem())
