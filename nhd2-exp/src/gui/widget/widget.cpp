@@ -300,7 +300,14 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 			if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 			{
 				// update time
-				//paintHead();
+				for (unsigned int i = 0; i < items.size(); i++)
+				{
+					if( (items[i]->itemType == WIDGET_ITEM_HEAD) && (items[i]->paintDate))
+					{
+						items[i]->paint();
+						break;
+					}
+				}
 			} 
 
 			switch (msg) 

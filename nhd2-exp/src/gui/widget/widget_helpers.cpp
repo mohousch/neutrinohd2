@@ -31,6 +31,315 @@
 #include <gui/widget/widget_helpers.h>
 
 
+// headers
+CHeaders::CHeaders(const int x, const int y, const int dx, const int dy, const char * const title, const char * const icon)
+{
+	itemBox.iX = x;
+	itemBox.iY = y;
+	itemBox.iWidth = dx;
+	itemBox.iHeight = dy;
+
+	htitle = title;
+	hicon = icon;
+
+	bgcolor = COL_MENUHEAD_PLUS_0;
+	radius = RADIUS_MID;
+	corner = CORNER_TOP;
+	gradient = g_settings.Head_gradient;
+
+	paintDate = false;
+	logo = false;
+	hbutton_count	= 0;
+	hbutton_labels	= NULL;
+
+	outFocus = true;
+
+	itemType = WIDGET_ITEM_HEAD;
+}
+
+CHeaders::CHeaders(CBox position, const char * const title, const char * const icon)
+{
+	itemBox = position;
+
+	htitle = title;
+	hicon = icon;
+
+	bgcolor = COL_MENUHEAD_PLUS_0;
+	radius = RADIUS_MID;
+	corner = CORNER_TOP;
+	gradient = g_settings.Head_gradient;
+
+	paintDate = false;
+	logo = false;
+	hbutton_count	= 0;
+	hbutton_labels	= NULL;
+
+	outFocus = true;
+
+	itemType = WIDGET_ITEM_HEAD;
+}
+
+void CHeaders::setButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
+{
+	hbutton_count = _hbutton_count;
+	hbutton_labels = _hbutton_labels;
+}
+
+void CHeaders::paint()
+{
+	// box
+	CFrameBuffer::getInstance()->paintBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight, bgcolor, radius, corner, gradient);
+
+	// left icon
+	int i_w = 0;
+	int i_h = 0;
+	if(hicon != NULL)
+	{
+		CFrameBuffer::getInstance()->getIconSize(hicon, &i_w, &i_h);
+
+		// limit icon dimensions
+		if(i_h > itemBox.iHeight)
+			i_h = itemBox.iHeight - 2;
+
+		if(logo)
+		{
+			i_w = i_h*1.67;
+
+			CFrameBuffer::getInstance()->paintIcon(hicon, itemBox.iX + BORDER_LEFT, itemBox.iY + (itemBox.iHeight - i_h)/2, 0, true, i_w, i_h);
+		}
+		else
+			CFrameBuffer::getInstance()->paintIcon(hicon, itemBox.iX + BORDER_LEFT, itemBox.iY + (itemBox.iHeight - i_h)/2);
+	}
+
+	// right buttons
+	int iw[hbutton_count], ih[hbutton_count];
+	int startx = itemBox.iX + itemBox.iWidth - BORDER_RIGHT;
+	int buttonWidth = 0;
+
+	if(hbutton_count)
+	{
+		for (int i = 0; i < hbutton_count; i++)
+		{
+			CFrameBuffer::getInstance()->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
+		
+			startx -= (iw[i] + ICON_TO_ICON_OFFSET);
+			buttonWidth += iw[i];
+
+			CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, startx, itemBox.iY + (itemBox.iHeight - ih[i])/2);
+		}
+	}
+
+	// paint time/date
+	int timestr_len = 0;
+	if(paintDate)
+	{
+		std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
+		
+		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
+	
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(startx - timestr_len, itemBox.iY + (itemBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
+	}
+
+	// title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(itemBox.iX + BORDER_LEFT + i_w + ICON_OFFSET, itemBox.iY + (itemBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), itemBox.iWidth - BORDER_LEFT - BORDER_RIGHT - i_w - 2*ICON_OFFSET - buttonWidth - (hbutton_count - 1)*ICON_TO_ICON_OFFSET - timestr_len, htitle, COL_MENUHEAD);
+}
+
+// footers
+CFooters::CFooters(int x, int y, int dx, int dy, const unsigned int count, const struct button_label *content)
+{
+	itemBox.iX = x;
+	itemBox.iY = y;
+	itemBox.iWidth = dx;
+	itemBox.iHeight = dy;
+
+	fcount = count;
+	fcontent = content;
+
+	fbgcolor = COL_MENUFOOT_PLUS_0;
+	fradius = RADIUS_MID;
+	fcorner = CORNER_BOTTOM;
+	fgradient = g_settings.Foot_gradient;
+
+	outFocus = true;
+
+	itemType = WIDGET_ITEM_FOOT;
+}
+
+CFooters::CFooters(CBox position, const unsigned int count, const struct button_label *content)
+{
+	itemBox = position;
+
+	fcount = count;
+	fcontent = content;
+
+	fbgcolor = COL_MENUFOOT_PLUS_0;
+	fradius = RADIUS_MID;
+	fcorner = CORNER_BOTTOM;
+	fgradient = g_settings.Foot_gradient;
+
+	outFocus = true;
+
+	itemType = WIDGET_ITEM_FOOT;
+}
+
+void CFooters::paint()
+{
+	// box
+	CFrameBuffer::getInstance()->paintBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight, fbgcolor, fradius, fcorner, fgradient);
+
+
+	// buttons
+	int buttonWidth = 0;
+
+	if(fcount)
+	{
+		buttonWidth = (itemBox.iWidth - BORDER_LEFT - BORDER_RIGHT)/fcount;
+	
+		for (unsigned int i = 0; i < fcount; i++)
+		{
+			if(fcontent[i].button != NULL)
+			{
+				const char * l_option = NULL;
+				int iw = 0;
+				int ih = 0;
+
+				CFrameBuffer::getInstance()->getIconSize(fcontent[i].button, &iw, &ih);
+				int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
+
+				if(fcontent[i].localename != NULL)
+					l_option = fcontent[i].localename;
+				else
+					l_option = g_Locale->getText(fcontent[i].locale);
+		
+				CFrameBuffer::getInstance()->paintIcon(fcontent[i].button, itemBox.iX + BORDER_LEFT + i*buttonWidth, itemBox.iY + (itemBox.iHeight - ih)/2);
+
+				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(itemBox.iX + BORDER_LEFT + iw + ICON_OFFSET + i*buttonWidth, itemBox.iY + f_h + (itemBox.iHeight - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
+			}
+		}
+	}
+}
+
+// progressbar
+#define ITEMW 1
+
+CProgressBar::CProgressBar(int w, int h, int r, int g, int b, bool inv)
+{
+	frameBuffer = CFrameBuffer::getInstance();
+	
+	double div;
+	width = w;
+	height = h;
+	inverse = inv;
+	
+	div = (double) 100 / (double) width;
+
+	red = (double) r / (double) div / (double) ITEMW;
+	green = (double) g / (double) div / (double) ITEMW;
+	yellow = (double) b / (double) div / (double) ITEMW;
+	
+	percent = 255;
+}
+
+void CProgressBar::paint(unsigned int x, unsigned int y, unsigned char pcr)
+{
+	int i, siglen;
+	unsigned int posx;
+	unsigned int posy;
+	unsigned int xpos;
+	unsigned int ypos;
+
+	double div;
+	uint32_t rgb;
+	
+	fb_pixel_t color = COL_MENUCONTENT_PLUS_7;
+	int b = 0;
+	
+	i = 0;
+	xpos = x;
+	ypos = y;
+
+	frameBuffer->paintBoxRel(x, y, width, height, COL_MENUCONTENT_PLUS_2);	//fill passive
+	
+	if (pcr != percent) 
+	{
+		if(percent == 255) 
+			percent = 0;
+
+		div = (double) 100 / (double) width;
+		siglen = (double) pcr / (double) div;
+		posx = xpos;
+		posy = ypos;
+		int maxi = siglen/ITEMW;
+		int total = width/ITEMW;
+		int step = 255/total;
+
+		if (pcr > percent) 
+		{
+			if(g_settings.progressbar_color == 0)
+			{
+				//red
+				for (i = 0; (i < red) && (i < maxi); i++) 
+				{
+					step = 255/red;
+
+					if(inverse) 
+						rgb = COL_GREEN + ((unsigned char)(step*i) << 16); // adding red
+					else
+						rgb = COL_RED + ((unsigned char)(step*i) <<  8); // adding green
+				
+					color = rgb;
+				
+					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
+				}
+	
+				//yellow
+				for (; (i < yellow) && (i < maxi); i++) 
+				{
+					step = 255/yellow/2;
+
+					if(inverse) 
+						rgb = COL_YELLOW - (((unsigned char)step*(b++)) <<  8); // removing green
+					else
+						rgb = COL_YELLOW - ((unsigned char)(step*(b++)) << 16); // removing red
+	
+					color = rgb;		    
+				
+					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
+				}
+
+				//green
+				for (; (i < green) && (i < maxi); i++) 
+				{
+					step = 255/green;
+
+					if(inverse) 
+						rgb = COL_YELLOW - ((unsigned char) (step*(b++)) <<  8); // removing green
+					else
+						rgb = COL_YELLOW - ((unsigned char) (step*(b++)) << 16); // removing red
+				
+					color = rgb;
+				
+					frameBuffer->paintBoxRel (posx + i*ITEMW, posy, ITEMW, height, color);
+				}
+			}
+			else
+			{
+				for(; (i < maxi); i++) 
+				{
+					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
+				}
+			}
+		}
+		
+		percent = pcr;
+	}
+}
+
+void CProgressBar::reset()
+{
+  	percent = 255;
+}
+
 CButtons::CButtons()
 {
 }
@@ -206,305 +515,5 @@ void CItems2DetailsLine::clear(int x, int y, int width, int height, int info_hei
 	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x, y + height, width, info_height);
 }
 
-// headers
-CHeaders::CHeaders(const int x, const int y, const int dx, const int dy, const char * const title, const char * const icon)
-{
-	itemBox.iX = x;
-	itemBox.iY = y;
-	itemBox.iWidth = dx;
-	itemBox.iHeight = dy;
-
-	htitle = title;
-	hicon = icon;
-
-	bgcolor = COL_MENUHEAD_PLUS_0;
-	radius = RADIUS_MID;
-	corner = CORNER_TOP;
-	gradient = g_settings.Head_gradient;
-
-	paintDate = false;
-	logo = false;
-	hbutton_count	= 0;
-	hbutton_labels	= NULL;
-
-	outFocus = true;
-}
-
-CHeaders::CHeaders(CBox position, const char * const title, const char * const icon)
-{
-	itemBox = position;
-
-	htitle = title;
-	hicon = icon;
-
-	bgcolor = COL_MENUHEAD_PLUS_0;
-	radius = RADIUS_MID;
-	corner = CORNER_TOP;
-	gradient = g_settings.Head_gradient;
-
-	paintDate = false;
-	logo = false;
-	hbutton_count	= 0;
-	hbutton_labels	= NULL;
-
-	outFocus = true;
-}
-
-void CHeaders::setButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
-{
-	hbutton_count = _hbutton_count;
-	hbutton_labels = _hbutton_labels;
-}
-
-void CHeaders::paint()
-{
-	// box
-	CFrameBuffer::getInstance()->paintBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight, bgcolor, radius, corner, gradient);
-
-	// left icon
-	int i_w = 0;
-	int i_h = 0;
-	if(hicon != NULL)
-	{
-		CFrameBuffer::getInstance()->getIconSize(hicon, &i_w, &i_h);
-
-		// limit icon dimensions
-		if(i_h > itemBox.iHeight)
-			i_h = itemBox.iHeight - 2;
-
-		if(logo)
-		{
-			i_w = i_h*1.67;
-
-			CFrameBuffer::getInstance()->paintIcon(hicon, itemBox.iX + BORDER_LEFT, itemBox.iY + (itemBox.iHeight - i_h)/2, 0, true, i_w, i_h);
-		}
-		else
-			CFrameBuffer::getInstance()->paintIcon(hicon, itemBox.iX + BORDER_LEFT, itemBox.iY + (itemBox.iHeight - i_h)/2);
-	}
-
-	// right buttons
-	int iw[hbutton_count], ih[hbutton_count];
-	int startx = itemBox.iX + itemBox.iWidth - BORDER_RIGHT;
-	int buttonWidth = 0;
-
-	if(hbutton_count)
-	{
-		for (int i = 0; i < hbutton_count; i++)
-		{
-			CFrameBuffer::getInstance()->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
-		
-			startx -= (iw[i] + ICON_TO_ICON_OFFSET);
-			buttonWidth += iw[i];
-
-			CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, startx, itemBox.iY + (itemBox.iHeight - ih[i])/2);
-		}
-	}
-
-	// paint time/date
-	int timestr_len = 0;
-	if(paintDate)
-	{
-		std::string timestr = getNowTimeStr("%d.%m.%Y %H:%M");;
-		
-		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr.c_str(), true); // UTF-8
-	
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(startx - timestr_len, itemBox.iY + (itemBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr.c_str(), COL_MENUHEAD, 0, true); 
-	}
-
-	// title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(itemBox.iX + BORDER_LEFT + i_w + ICON_OFFSET, itemBox.iY + (itemBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), itemBox.iWidth - BORDER_LEFT - BORDER_RIGHT - i_w - 2*ICON_OFFSET - buttonWidth - (hbutton_count - 1)*ICON_TO_ICON_OFFSET - timestr_len, htitle, COL_MENUHEAD);
-}
-
-// footers
-CFooters::CFooters(int x, int y, int dx, int dy, const unsigned int count, const struct button_label *content)
-{
-	itemBox.iX = x;
-	itemBox.iY = y;
-	itemBox.iWidth = dx;
-	itemBox.iHeight = dy;
-
-	fcount = count;
-	fcontent = content;
-
-	fbgcolor = COL_MENUFOOT_PLUS_0;
-	fradius = RADIUS_MID;
-	fcorner = CORNER_BOTTOM;
-	fgradient = g_settings.Foot_gradient;
-
-	outFocus = true;
-}
-
-CFooters::CFooters(CBox position, const unsigned int count, const struct button_label *content)
-{
-	itemBox = position;
-
-	fcount = count;
-	fcontent = content;
-
-	fbgcolor = COL_MENUFOOT_PLUS_0;
-	fradius = RADIUS_MID;
-	fcorner = CORNER_BOTTOM;
-	fgradient = g_settings.Foot_gradient;
-
-	outFocus = true;
-}
-
-void CFooters::paint()
-{
-	// box
-	CFrameBuffer::getInstance()->paintBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight, fbgcolor, fradius, fcorner, fgradient);
-
-
-	// buttons
-	int buttonWidth = 0;
-
-	if(fcount)
-	{
-		buttonWidth = (itemBox.iWidth - BORDER_LEFT - BORDER_RIGHT)/fcount;
-	
-		for (unsigned int i = 0; i < fcount; i++)
-		{
-			if(fcontent[i].button != NULL)
-			{
-				const char * l_option = NULL;
-				int iw = 0;
-				int ih = 0;
-
-				CFrameBuffer::getInstance()->getIconSize(fcontent[i].button, &iw, &ih);
-				int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
-
-				if(fcontent[i].localename != NULL)
-					l_option = fcontent[i].localename;
-				else
-					l_option = g_Locale->getText(fcontent[i].locale);
-		
-				CFrameBuffer::getInstance()->paintIcon(fcontent[i].button, itemBox.iX + BORDER_LEFT + i*buttonWidth, itemBox.iY + (itemBox.iHeight - ih)/2);
-
-				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(itemBox.iX + BORDER_LEFT + iw + ICON_OFFSET + i*buttonWidth, itemBox.iY + f_h + (itemBox.iHeight - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
-			}
-		}
-	}
-}
-
-// progressbar
-#define ITEMW 1
-
-CProgressBar::CProgressBar(int w, int h, int r, int g, int b, bool inv)
-{
-	frameBuffer = CFrameBuffer::getInstance();
-	
-	double div;
-	width = w;
-	height = h;
-	inverse = inv;
-	
-	div = (double) 100 / (double) width;
-
-	red = (double) r / (double) div / (double) ITEMW;
-	green = (double) g / (double) div / (double) ITEMW;
-	yellow = (double) b / (double) div / (double) ITEMW;
-	
-	percent = 255;
-}
-
-void CProgressBar::paint(unsigned int x, unsigned int y, unsigned char pcr)
-{
-	int i, siglen;
-	unsigned int posx;
-	unsigned int posy;
-	unsigned int xpos;
-	unsigned int ypos;
-
-	double div;
-	uint32_t rgb;
-	
-	fb_pixel_t color = COL_MENUCONTENT_PLUS_7;
-	int b = 0;
-	
-	i = 0;
-	xpos = x;
-	ypos = y;
-
-	frameBuffer->paintBoxRel(x, y, width, height, COL_MENUCONTENT_PLUS_2);	//fill passive
-	
-	if (pcr != percent) 
-	{
-		if(percent == 255) 
-			percent = 0;
-
-		div = (double) 100 / (double) width;
-		siglen = (double) pcr / (double) div;
-		posx = xpos;
-		posy = ypos;
-		int maxi = siglen/ITEMW;
-		int total = width/ITEMW;
-		int step = 255/total;
-
-		if (pcr > percent) 
-		{
-			if(g_settings.progressbar_color == 0)
-			{
-				//red
-				for (i = 0; (i < red) && (i < maxi); i++) 
-				{
-					step = 255/red;
-
-					if(inverse) 
-						rgb = COL_GREEN + ((unsigned char)(step*i) << 16); // adding red
-					else
-						rgb = COL_RED + ((unsigned char)(step*i) <<  8); // adding green
-				
-					color = rgb;
-				
-					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
-				}
-	
-				//yellow
-				for (; (i < yellow) && (i < maxi); i++) 
-				{
-					step = 255/yellow/2;
-
-					if(inverse) 
-						rgb = COL_YELLOW - (((unsigned char)step*(b++)) <<  8); // removing green
-					else
-						rgb = COL_YELLOW - ((unsigned char)(step*(b++)) << 16); // removing red
-	
-					color = rgb;		    
-				
-					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
-				}
-
-				//green
-				for (; (i < green) && (i < maxi); i++) 
-				{
-					step = 255/green;
-
-					if(inverse) 
-						rgb = COL_YELLOW - ((unsigned char) (step*(b++)) <<  8); // removing green
-					else
-						rgb = COL_YELLOW - ((unsigned char) (step*(b++)) << 16); // removing red
-				
-					color = rgb;
-				
-					frameBuffer->paintBoxRel (posx + i*ITEMW, posy, ITEMW, height, color);
-				}
-			}
-			else
-			{
-				for(; (i < maxi); i++) 
-				{
-					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
-				}
-			}
-		}
-		
-		percent = pcr;
-	}
-}
-
-void CProgressBar::reset()
-{
-  	percent = 255;
-}
 
 

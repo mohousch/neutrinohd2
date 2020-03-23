@@ -171,7 +171,7 @@ void CImageInfo::paint()
 	const char * gitrev = GIT;
 	
 	//static CFlashVersionInfo versionInfo(version);
-	const char * releaseCycle = "3.3";
+	const char * releaseCycle = "3.4";
 	//releaseCycle = versionInfo.getReleaseCycle();
 	const char * imageType = "Snapshot";
 	//imageType = versionInfo.getType();

@@ -108,6 +108,9 @@ class CTestMenu : public CMenuTarget
 		CHeaders *headersWidget;
 		CFooters *footersWidget;
 
+		CPig *pig;
+		CGrid *grid;
+
 		bool bigFonts;
 
 		void loadTMDBPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1, bool search = false);
@@ -277,6 +280,8 @@ CTestMenu::CTestMenu()
 	listFrame = NULL;
 	textWidget = NULL;
 	windowWidget = NULL;
+	pig = NULL;
+	grid = NULL;
 }
 
 CTestMenu::~CTestMenu()
@@ -1041,6 +1046,12 @@ void CTestMenu::testWindowWidget()
 
 	footersWidget = new CFooters(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10 + frameBuffer->getScreenHeight() - 20 - 40, frameBuffer->getScreenWidth() - 20, 40, FOOT_BUTTONS_COUNT, FootButtons);
 
+	//
+	pig = new CPig(frameBuffer->getScreenX() + 10 + frameBuffer->getScreenWidth() - 20 - 400, frameBuffer->getScreenY() + 10 + 40 + 20, 380, 260);
+
+	// grid
+	grid = new CGrid(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10 + 40, frameBuffer->getScreenWidth() - 20, frameBuffer->getScreenHeight() - 20 - 80);
+
 	headersWidget->enablePaintDate();
 	headersWidget->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	headersWidget->setColor(COL_DARK_TURQUOISE);
@@ -1054,6 +1065,8 @@ void CTestMenu::testWindowWidget()
 	testWidget->addItem(windowWidget);
 	testWidget->addItem(headersWidget);
 	testWidget->addItem(footersWidget);
+	testWidget->addItem(grid);
+	testWidget->addItem(pig);
 
 	testWidget->exec(NULL, "");
 
@@ -1068,6 +1081,12 @@ void CTestMenu::testWindowWidget()
 
 	delete footersWidget;
 	footersWidget = NULL;
+
+	delete pig;
+	pig = NULL;
+
+	delete grid;
+	grid = NULL;
 }
 
 // CFrameBox

@@ -40,6 +40,8 @@ enum {
 	WIDGET_ITEM_LISTFRAME,
 	WIDGET_ITEM_TEXTBOX,
 	WIDGET_ITEM_WINDOW,
+	WIDGET_ITEM_PIG,
+	WIDGET_ITEM_GRID,
 	WIDGET_ITEM_BUTTON,
 	WIDGET_ITEM_SCROLLBAR,
 	WIDGET_ITEM_DETAILSLINE
@@ -53,6 +55,7 @@ class CWidgetItem
 
 		int itemType;
 		bool outFocus;
+		bool paintDate;
 
 		CWidgetItem(){};
 		virtual ~CWidgetItem(){};
@@ -78,6 +81,7 @@ class CWidgetItem
 		virtual int OKPressed(CMenuTarget *parent){return 0;};
 
 		virtual int getWidgetType(){return (4);};
+		virtual void enablePaintDate(void){paintDate = true;};
 };
 
 // buttons
@@ -87,43 +91,6 @@ typedef struct button_label
 	neutrino_locale_t locale;
 	const char * localename;
 } button_label_struct;
-
-
-class CButtons : public CWidgetItem
-{
-	private:
-	public:
-		CButtons();
-
-		void paintFootButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label* const content);
-
-		// head buttons right
-		void paintHeadButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content);
-};
-
-//scrollBar
-class CScrollBar : public CWidgetItem 
-{
-	private:
-	public:
-		CScrollBar(){};
-		virtual ~CScrollBar(){};
-
-		void paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage);
-		void paint(CBox* position, const int NrOfPages, const int CurrentPage);
-};
-
-// detailsLine
-class CItems2DetailsLine : public CWidgetItem
-{
-	private:
-	public:
-		CItems2DetailsLine(){};
-		virtual ~CItems2DetailsLine(){};
-		
-		void paint(int x, int y, int width, int height, int info_height, int iheight, int iy);
-		void clear(int x, int y, int width, int height, int info_height);
-};
 
 // headers
 class CHeaders : public CWidgetItem
@@ -197,6 +164,42 @@ class CProgressBar : public CWidgetItem
 		void paint(unsigned int x, unsigned int y, unsigned char pcr);
 		void reset();
 		int getPercent() { return percent; };
+};
+
+class CButtons : public CWidgetItem
+{
+	private:
+	public:
+		CButtons();
+
+		void paintFootButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label* const content);
+
+		// head buttons right
+		void paintHeadButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content);
+};
+
+//scrollBar
+class CScrollBar : public CWidgetItem 
+{
+	private:
+	public:
+		CScrollBar(){};
+		virtual ~CScrollBar(){};
+
+		void paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage);
+		void paint(CBox* position, const int NrOfPages, const int CurrentPage);
+};
+
+// detailsLine
+class CItems2DetailsLine : public CWidgetItem
+{
+	private:
+	public:
+		CItems2DetailsLine(){};
+		virtual ~CItems2DetailsLine(){};
+		
+		void paint(int x, int y, int width, int height, int info_height, int iheight, int iy);
+		void clear(int x, int y, int width, int height, int info_height);
 };
 
 #endif /* __gui_widget_helpers_h__ */

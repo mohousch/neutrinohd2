@@ -158,7 +158,35 @@ void CWindow::hide()
 }
 
 // pig
-void CWindow::paintPig()
+CPig::CPig(const int x, const int y, const int dx, const int dy)
+{
+	cFrameBox.iX = x;
+	cFrameBox.iY = y;
+	cFrameBox.iWidth = dx;
+	cFrameBox.iHeight = dy;
+
+	init();
+}
+
+CPig::CPig(CBox* position)
+{
+	cFrameBox = *position;
+
+	init();
+}
+
+CPig::~CPig(void)
+{
+}
+
+void CPig::init(void)
+{
+	frameBuffer = CFrameBuffer::getInstance();
+
+	itemType = WIDGET_ITEM_PIG;
+}
+
+void CPig::paint()
 {
 	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);	
 		
@@ -167,7 +195,7 @@ void CWindow::paintPig()
 		videoDecoder->Pig(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);	
 }
 
-void CWindow::hidePig()
+void CPig::hide()
 {
 	if(videoDecoder)  
 		videoDecoder->Pig(-1, -1, -1, -1);
@@ -175,6 +203,52 @@ void CWindow::hidePig()
 	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 }
 
+// grid
+CGrid::CGrid(const int x, const int y, const int dx, const int dy)
+{
+	cFrameBox.iX = x;
+	cFrameBox.iY = y;
+	cFrameBox.iWidth = dx;
+	cFrameBox.iHeight = dy;
+
+	init();
+}
+
+CGrid::CGrid(CBox* position)
+{
+	cFrameBox = *position;
+
+	init();
+}
+
+CGrid::~CGrid(void)
+{
+}
+
+void CGrid::init(void)
+{
+	frameBuffer = CFrameBuffer::getInstance();
+
+	rgb = 0x505050;
+
+	itemType = WIDGET_ITEM_GRID;
+}
+
+void CGrid::paint()
+{
+	// hlines grid
+	for(int count = 0; count < cFrameBox.iHeight; count += 15)
+		frameBuffer->paintHLine(cFrameBox.iX, cFrameBox.iX + cFrameBox.iWidth, cFrameBox.iY + count, make16color(rgb) );
+
+	// vlines grid
+	for(int count = 0; count < cFrameBox.iWidth; count += 15)
+		frameBuffer->paintVLine(cFrameBox.iX + count, cFrameBox.iY, cFrameBox.iY + cFrameBox.iHeight, make16color(rgb) );
+}
+
+void CGrid::hide()
+{
+	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
+}
 
 
 

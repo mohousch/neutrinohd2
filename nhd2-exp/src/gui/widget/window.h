@@ -33,6 +33,7 @@
 #include <gui/widget/widget_helpers.h>
 
 
+// window
 class CWindow : public CWidgetItem 
 {
 	private:
@@ -73,12 +74,52 @@ class CWindow : public CWidgetItem
 		void hide(void);
 
 		CBox getWindowsPos(void){return(cFrameBox);};
+};
 
-		// pig
-		void paintPig();
-		void hidePig();
+// pig
+class CPig : public CWidgetItem 
+{
+	private:
+		CFrameBuffer* frameBuffer;
+		CBox cFrameBox;
 
-		// grid
+	public:
+		CPig(const int x, const int y, const int dx, const int dy);
+		CPig(CBox* position);
+		~CPig();
+
+		void init(void);
+
+		void paint(void);
+		void hide(void);
+
+		CBox getWindowsPos(void){return(cFrameBox);};
+};
+
+//
+class CGrid : public CWidgetItem 
+{
+	private:
+		CFrameBuffer* frameBuffer;
+		CBox cFrameBox;
+
+		__u32 rgb;
+
+	public:
+		CGrid(const int x, const int y, const int dx, const int dy);
+		CGrid(CBox* position);
+		~CGrid();
+
+		void init(void);
+
+		void setColor(__u32 col){rgb = col;};
+
+		void paint(void);
+		void hide(void);
+
+		CBox getWindowsPos(void){return(cFrameBox);};
 };
 
 #endif
+
+
