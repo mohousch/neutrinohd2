@@ -38,7 +38,7 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 	cFrameBox.iWidth = dx;
 	cFrameBox.iHeight = dy;
 
-	selected = -1;
+	selected = 0;
 	pos = 0;
 	outFocus = false;
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
@@ -56,7 +56,7 @@ CFrameBox::CFrameBox(CBox* position)
 
 	cFrameBox = *position;
 
-	selected = -1;
+	selected = 0;
 	pos = 0;
 	outFocus = false;
 	backgroundColor = COL_MENUCONTENT_PLUS_0;

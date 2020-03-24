@@ -186,7 +186,7 @@ class ClistBoxWidget : public CMenuTarget
 		virtual int exec(CMenuTarget * parent, const std::string &actionKey);
 
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; if (selected < 0) selected = 0;};
-		int getSelected(){return exit_pressed ? -1 : selected;};
+		int getSelected(){return selected;};
 
 		void move(int xoff, int yoff);
 		int getHeight(void) const {return height;}

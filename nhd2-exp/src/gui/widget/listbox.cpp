@@ -1626,7 +1626,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
-	selected = -1;
+	selected = 0;
 	current_page = 0;
 	pos = 0;
 
@@ -1698,7 +1698,7 @@ ClistBox::ClistBox(CBox* position)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
-	selected = -1;
+	selected = 0;
 	current_page = 0;
 	pos = 0;
 

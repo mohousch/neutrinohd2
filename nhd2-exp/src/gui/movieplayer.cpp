@@ -443,6 +443,9 @@ void CMoviePlayerGui::PlayFile(void)
 		//
 		if(filelist.size() > 1)
 			m_multiselect = true;
+
+		if(startposition < 0)
+			exit = true;
 	}
 						
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);	
@@ -534,6 +537,9 @@ void CMoviePlayerGui::PlayFile(void)
 
 					// startposition			
 					startposition = 1000 * showStartPosSelectionMenu();
+
+					if(startposition < 0)
+						exit = true;
 				}
 				
 				//
@@ -1351,6 +1357,9 @@ void CMoviePlayerGui::PlayFile(void)
 
 					// startposition			
 					startposition = 1000 * showStartPosSelectionMenu();
+
+					if(startposition < 0)
+						exit = true;
 				}
 
 				//
@@ -1404,6 +1413,9 @@ void CMoviePlayerGui::PlayFile(void)
 
 					// startposition			
 					startposition = 1000 * showStartPosSelectionMenu();
+
+					if(startposition < 0)
+						exit = true;
 				}
 				
 				//
@@ -1531,10 +1543,6 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	startPosSelectionMenu.setMode(MODE_MENU);
 	startPosSelectionMenu.enableShrinkMenu();
 	
-	// intros
-	//WARNING: dont delete this line , without getselected return line - 1
-	startPosSelectionMenu.addItem(new CMenuSeparator(EMPTY));
-	
 	// bookmark start
 	if(filelist[selected].bookmarks.start != 0)
 	{
@@ -1551,6 +1559,7 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	
 	// movie start
 	startPosSelectionMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_START_RECORD_START, true, NULL));
+
 	position[menu_nr++] = 0;
 
 	int sep_pos = menu_nr;
@@ -1565,9 +1574,9 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 				position[menu_nr] = filelist[selected].bookmarks.user[i].pos + filelist[selected].bookmarks.user[i].length;
 				
 			snprintf(book[i], 19,"%5d min", position[menu_nr]/60);
+
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showStartPosSelectionMenu adding boomark menu N %d, position %d\n", menu_nr, position[menu_nr]);
 			
-			startPosSelectionMenu.addItem(new CMenuSeparator(LINE));
 			startPosSelectionMenu.addItem(new CMenuForwarder(filelist[selected].bookmarks.user[i].name.c_str(), true, book[i]));
 			menu_nr++;
 		}
@@ -1575,15 +1584,16 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 
 	startPosSelectionMenu.exec(NULL, "12345");
 	
-	// check what menu item was ok'd  and set the appropriate play offset*/
+	// check what menu item was ok'd  and set the appropriate play offset
 	result = startPosSelectionMenu.getSelected();
+
+	if(startPosSelectionMenu.getExitPressed())
+		return -1;
 	
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showStartPosSelectionMenu: result %d\n", result);
 	
-	if(result < 0)
-		return -1;
-	
-	if(result != 0 && result <= MI_MOVIE_BOOK_USER_MAX)
+/*
+	if(result != 1 && result <= MI_MOVIE_BOOK_USER_MAX)
 	{
 		result--;
 		if(result > sep_pos) 
@@ -1591,6 +1601,9 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 		
 		pos = position[result];
 	}
+*/
+
+	pos = position[result];
 	
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showStartPosSelectionMenu: selected bookmark %d position %d\n", result, pos);
 	

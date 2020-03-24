@@ -68,7 +68,7 @@ ClistBoxWidget::ClistBoxWidget()
         nameString = g_Locale->getText(NONEXISTANT_LOCALE);
 	name = NONEXISTANT_LOCALE;
         iconfile = "";
-        selected = -1;
+        selected = 0;
         iconOffset = 0;
 	offx = offy = 0;
 	
@@ -133,7 +133,7 @@ void ClistBoxWidget::Init(const std::string & Icon, const int mwidth, const int 
 {
         frameBuffer = CFrameBuffer::getInstance();
         iconfile = Icon;
-        selected = -1;
+        selected = 0;
         width = mwidth;
 	wanted_width = mwidth;
 	
@@ -630,10 +630,12 @@ void ClistBoxWidget::paintItems()
 
 					item->init(x + _x*item_width, item_start_y + _y*item_height, items_width, iconOffset);
 
-					if( (item->isSelectable()) && (selected == -1) ) 
+					/*
+					if( (item->isSelectable()) && (selected == -1)) 
 					{
 						selected = count;
 					} 
+					*/
 
 					if (selected == count) 
 					{
@@ -721,11 +723,13 @@ void ClistBoxWidget::paintItems()
 			if ((count >= page_start[current_page]) && (count < page_start[current_page + 1])) 
 			{
 				item->init(xpos, ypos, items_width, iconOffset);
-			
+	
+				/*
 				if( (item->isSelectable()) && (selected == -1) ) 
 				{
 					selected = count;
 				} 
+				*/
 
 				if (selected == (signed int)count) 
 				{
@@ -1206,7 +1210,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 				}
 				else
 				{
-					selected = -1;
+					selected = 0;
 					handled = true;
 
 					break;

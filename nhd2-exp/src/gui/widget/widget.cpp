@@ -219,18 +219,23 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 	initFrames();
 
-	for (unsigned int i = 0; i < items.size(); i++)
-	{
-		items[i]->setOutFocus(true);
-	}
+	printf("items.size: %d\d", (int)items.size());
 
-	for (unsigned int i = 0; i < items.size(); i++)
+	if(hasItem() && items.size() > 1)
 	{
-		if(items[i]->isSelectable())
+		for (unsigned int i = 0; i < items.size(); i++)
 		{
-			items[i]->setOutFocus(false);
-			selected = i;
-			break;
+			items[i]->setOutFocus(true);
+		}
+
+		for (unsigned int i = 0; i < items.size(); i++)
+		{
+			if(items[i]->isSelectable())
+			{
+				items[i]->setOutFocus(false);
+				selected = i;
+				break;
+			}
 		}
 	}
 

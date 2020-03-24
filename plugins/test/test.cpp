@@ -611,7 +611,6 @@ void CTestMenu::widget()
 	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, "CWidget(Multi Widget)", NEUTRINO_ICON_MP3);
 
 	headersWidget->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
-	//ĥeadersWidget->setCorner(RADIUS_MID, CORNER_TOP);
 	headersWidget->enablePaintDate();
 
 	// foot
@@ -850,6 +849,8 @@ void CTestMenu::listFrameWidget()
 	
 	// fill lineArrays list
 	listFrame->setLines(&listFrameLines);
+
+	listFrame->setSelectedLine(selected);
 	
 	// paint
 	listFrame->showSelection(true);
@@ -875,39 +876,23 @@ void CTestMenu::listBoxWidget()
 	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 	testWidget->enableSaveScreen();
 
-	// head
-	headBox.iWidth = frameBuffer->getScreenWidth();
-	headBox.iHeight = 40;
-	headBox.iX = frameBuffer->getScreenX();
-	headBox.iY = frameBuffer->getScreenY();
-
-	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, "CWidget(ClistBox)", NEUTRINO_ICON_MP3);
-
-	headersWidget->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
-	//ĥeadersWidget->setCorner(RADIUS_MID, CORNER_TOP);
-	headersWidget->enablePaintDate();
-
-	// foot
-	footBox.iWidth = frameBuffer->getScreenWidth();
-	footBox.iHeight = 40;
-	footBox.iX = frameBuffer->getScreenX();
-	footBox.iY = frameBuffer->getScreenY() + frameBuffer->getScreenHeight() - footBox.iHeight;
-
-	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight, FOOT_BUTTONS_COUNT, FootButtons);
-
-	footersWidget->setCorner(RADIUS_MID, CORNER_BOTTOM);
-
 	//
 	rightBox.iWidth = testWidget->getWindowsPos().iWidth;
-	rightBox.iHeight = testWidget->getWindowsPos().iHeight - headBox.iHeight - footBox.iHeight;
+	rightBox.iHeight = testWidget->getWindowsPos().iHeight;
 	rightBox.iX = testWidget->getWindowsPos().iX;
-	rightBox.iY = testWidget->getWindowsPos().iY + headBox.iHeight;
+	rightBox.iY = testWidget->getWindowsPos().iY;
 
 	rightWidget = new ClistBox(&rightBox);
 
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
 	rightWidget->setItemsPerPage(6,2);
 	rightWidget->setSelected(selected);
+	rightWidget->enablePaintHead();
+	rightWidget->setTitle("CWidget(ClistBox)", NEUTRINO_ICON_MP3);
+	rightWidget->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	rightWidget->enablePaintDate();
+	rightWidget->enablePaintFoot();
+	rightWidget->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 	rightWidget->enablePaintFootInfo();
 	rightWidget->enableWidgetChange();
 	rightWidget->addWidget(WIDGET_TYPE_STANDARD);
@@ -948,9 +933,7 @@ void CTestMenu::listBoxWidget()
 	testWidget->addKey(RC_info, this, "linfo");
 	testWidget->addKey(RC_setup, this, "lsetup");
 
-	testWidget->addItem(headersWidget);
 	testWidget->addItem(rightWidget);
-	testWidget->addItem(footersWidget);
 
 	testWidget->exec(NULL, "");
 
@@ -959,12 +942,6 @@ void CTestMenu::listBoxWidget()
 
 	delete rightWidget;
 	rightWidget = NULL;
-
-	delete headersWidget;
-	headersWidget = NULL;
-
-	delete footersWidget;
-	footersWidget = NULL;
 }
 
 void CTestMenu::textBoxWidget()
