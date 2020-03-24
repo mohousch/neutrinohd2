@@ -645,8 +645,10 @@ class ClistBox : public CWidgetItem
 		void changeWidgetType(int cnt = 0);
 
 		//
-		int OKPressed(CMenuTarget *parent);
-		bool isSelectable(void) const {return true;}
+		bool isSelectable(void) const {return true;};
+
+		int oKKeyPressed(CMenuTarget *parent);
+		void otherKeyPressed(neutrino_msg_t msg);
 };
 
 #endif // LISTBOX_H_

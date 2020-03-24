@@ -2890,13 +2890,48 @@ void ClistBox::changeWidgetType(int)
 	}
 }
 
-///
-int ClistBox::OKPressed(CMenuTarget* parent)
+//
+int ClistBox::oKKeyPressed(CMenuTarget* parent)
 {
 	if(parent)
 		return items[selected]->exec(parent);
 	else
 		return menu_return::RETURN_EXIT;
 }
+
+void ClistBox::otherKeyPressed(neutrino_msg_t msg)
+{
+	switch (msg) 
+	{
+		case RC_page_up:
+			scrollPageUp();
+			break;
+
+		case RC_page_down:
+			scrollPageDown();
+			break;
+
+		case RC_up:
+			scrollLineUp();
+			break;
+
+		case RC_down:
+			scrollLineDown();
+			break;
+
+		case RC_left:
+			swipLeft();
+			break;
+	
+		case RC_right:
+			swipRight();
+			break;
+
+		default:
+			break;
+	}
+}
+
+
 
 

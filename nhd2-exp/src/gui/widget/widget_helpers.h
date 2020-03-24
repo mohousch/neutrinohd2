@@ -28,6 +28,8 @@
 #include <system/localize.h>
 #include <system/settings.h>
 
+#include <driver/rcinput.h>
+
 
 class CMenuTarget;
 
@@ -47,6 +49,99 @@ enum {
 	WIDGET_ITEM_DETAILSLINE
 };
 
+/// helpers
+class CBox
+{
+	public:
+		// Variables
+		int iX;
+		int iY;
+		int iWidth;
+		int iHeight;
+
+		// Constructor
+		inline CBox(){;};
+		inline CBox( const int _iX, const int _iY, const int _iWidth, const int _iHeight){iX =_iX; iY=_iY; iWidth =_iWidth; iHeight =_iHeight;};
+		inline ~CBox(){;};
+};
+
+class CIcon
+{
+	public:
+		int iWidth;
+		int iHeight;
+		std::string iconName;
+
+		inline CIcon(){;};
+		void setIcon(const std::string& icon)
+		{
+			iconName = icon; 
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
+		};
+
+		void setIcon(const char* icon)
+		{
+			iconName = std::string(icon); 
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
+		};
+
+		inline CIcon(const std::string& icon)
+		{
+			iconName = icon; 
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
+		};
+
+		inline CIcon(const char* icon)
+		{
+			iconName = std::string(icon); 
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
+		};
+};
+
+class CImage
+{
+	public:
+		int iWidth;
+		int iHeight;
+		int iNbp;
+		std::string imageName;
+
+		inline CImage(){;};
+		void setImage(const std::string& image)
+		{
+			imageName = image; 
+			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
+		};
+
+		void setImage(const char* image)
+		{
+			imageName = std::string(image); 
+			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
+		};
+
+		inline CImage(const std::string& image)
+		{
+			imageName = image; 
+			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
+		};
+
+		inline CImage(const char* image)
+		{
+			imageName = std::string(image); 
+			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
+		};
+};
+///
+
+// buttons
+typedef struct button_label
+{
+	const char * button;
+	neutrino_locale_t locale;
+	const char * localename;
+} button_label_struct;
+
+// CWidgetItem
 class CWidgetItem
 {
 	private:
@@ -78,21 +173,14 @@ class CWidgetItem
 
 		virtual inline CBox getItemPos(void){return (itemBox);};
 
-		virtual int OKPressed(CMenuTarget *parent){return 0;};
-
 		virtual int getWidgetType(){return (4);};
 		virtual void enablePaintDate(void){paintDate = true;};
+
+		virtual int oKKeyPressed(CMenuTarget *parent){return 0;};
+		virtual void otherKeyPressed(neutrino_msg_t msg){switch(msg){default:break;}};
 };
 
-// buttons
-typedef struct button_label
-{
-	const char * button;
-	neutrino_locale_t locale;
-	const char * localename;
-} button_label_struct;
-
-// headers
+// CHeaders
 class CHeaders : public CWidgetItem
 {
 	private:
@@ -124,7 +212,7 @@ class CHeaders : public CWidgetItem
 		void paint();
 };
 
-// Footers
+// CFooters
 class CFooters : public CWidgetItem
 {
 	private:
@@ -148,7 +236,8 @@ class CFooters : public CWidgetItem
 		void paint();
 };
 
-// progressbar
+////
+// CProgressbar
 class CProgressBar : public CWidgetItem
 {
 	private:
@@ -166,6 +255,7 @@ class CProgressBar : public CWidgetItem
 		int getPercent() { return percent; };
 };
 
+// CButtons
 class CButtons : public CWidgetItem
 {
 	private:
@@ -178,7 +268,7 @@ class CButtons : public CWidgetItem
 		void paintHeadButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content);
 };
 
-//scrollBar
+//CScrollBar
 class CScrollBar : public CWidgetItem 
 {
 	private:

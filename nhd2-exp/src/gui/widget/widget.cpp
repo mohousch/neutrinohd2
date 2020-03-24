@@ -52,6 +52,7 @@ CWidget::CWidget()
 	mainFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - mainFrameBox.iHeight) >> 1 );
 
 	timeout = 0;
+	selected = 0;
 
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 }
@@ -71,7 +72,7 @@ CWidget::CWidget(const int x, const int y, const int dx, const int dy)
 	enableCenter = true;
 
 	timeout = 0;
-	selected = -1;
+	selected = 0;
 
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 }
@@ -88,7 +89,7 @@ CWidget::CWidget(CBox *position)
 	enableCenter = true;
 
 	timeout = 0;
-	selected = -1;
+	selected = 0;
 
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 }
@@ -284,7 +285,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 				}
 				else
 				{
-					selected = -1;
+					//selected = -1;
 					handled = true;
 
 					break;
@@ -302,13 +303,19 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 				// update time
 				for (unsigned int i = 0; i < items.size(); i++)
 				{
-					if( (items[i]->itemType == WIDGET_ITEM_HEAD) && (items[i]->paintDate))
+					if( (items[i]->itemType == WIDGET_ITEM_HEAD) /*&& (items[i]->paintDate)*/)
 					{
 						items[i]->paint();
 						break;
 					}
 				}
 			} 
+
+			//
+			if ( msg <= RC_MaxRC )
+			{
+				items[selected]->otherKeyPressed(msg);
+			}
 
 			switch (msg) 
 			{
@@ -319,18 +326,10 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 						msg = RC_timeout;
 					}
 					break;
-					
-				case (RC_page_up) :
-					items[selected]->scrollPageUp();
-					break;
-
-				case (RC_page_down) :
-					items[selected]->scrollPageDown();
-					break;
-					
+		
 				case (RC_up) :
 					{
-						if(items[selected]->itemType == WIDGET_ITEM_FRAMEBOX)
+						if(items[selected]->isSelectable() && (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
 						{
 							for (unsigned int count = 1; count < items.size(); count++) 
 							{
@@ -352,14 +351,12 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 								}
 							}
 						}
-						else
-							items[selected]->scrollLineUp();
 					}
 					break;
 					
 				case (RC_down) :
 					{
-						if(items[selected]->itemType == WIDGET_ITEM_FRAMEBOX)
+						if(items[selected]->isSelectable() && (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
 						{
 							for (unsigned int count = 1; count < items.size(); count++) 
 							{
@@ -381,14 +378,12 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 								}
 							}
 						}
-						else
-							items[selected]->scrollLineDown();
 					}
 					break;
 
 				case (RC_left):
 					{
-						if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME))
+						if(items[selected]->isSelectable() && ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME)))
 						{
 							for (unsigned int count = 1; count < items.size(); count++) 
 							{
@@ -410,14 +405,12 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 								}
 							}
 						}
-						else
-							items[selected]->swipLeft();
 					}
 					break;
 					
 				case (RC_right):
 					{
-						if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME))
+						if(items[selected]->isSelectable() && ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME)))
 						{
 							for (unsigned int count = 1; count < items.size(); count++) 
 							{
@@ -439,8 +432,6 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 								}
 							}
 						}
-						else
-							items[selected]->swipRight();
 					}
 					break;
 
@@ -478,7 +469,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 					{
 						if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) || (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
 						{
-							int rv = items[selected]->OKPressed(this);
+							int rv = items[selected]->oKKeyPressed(this);
 
 							//FIXME:review this
 							switch ( rv ) 

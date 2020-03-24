@@ -612,6 +612,7 @@ void CTestMenu::widget()
 
 	headersWidget->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	//ĥeadersWidget->setCorner(RADIUS_MID, CORNER_TOP);
+	headersWidget->enablePaintDate();
 
 	// foot
 	footBox.iWidth = frameBuffer->getScreenWidth();
@@ -839,7 +840,7 @@ void CTestMenu::listFrameWidget()
 
 		snprintf(duration, 8, "(%ld:%02ld)", AudioPlaylist[i].MetaData.total_time / 60, AudioPlaylist[i].MetaData.total_time % 60);
 
-		listFrameLines.lineArray[0].push_back(to_string(i));
+		listFrameLines.lineArray[0].push_back(to_string(i + 1));
 		listFrameLines.lineArray[1].push_back(title);
 		listFrameLines.lineArray[2].push_back(duration);
 		listFrameLines.lineArray[3].push_back(genre);
@@ -884,6 +885,7 @@ void CTestMenu::listBoxWidget()
 
 	headersWidget->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	//ĥeadersWidget->setCorner(RADIUS_MID, CORNER_TOP);
+	headersWidget->enablePaintDate();
 
 	// foot
 	footBox.iWidth = frameBuffer->getScreenWidth();
@@ -981,6 +983,7 @@ void CTestMenu::textBoxWidget()
 
 	headersWidget->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	//ĥeadersWidget->setCorner(RADIUS_MID, CORNER_TOP);
+	headersWidget->enablePaintDate();
 
 	// foot
 	footBox.iWidth = frameBuffer->getScreenWidth();

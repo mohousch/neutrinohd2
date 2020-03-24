@@ -718,3 +718,37 @@ void CListFrame::paint(void)
 	refresh();
 }
 
+void CListFrame::otherKeyPressed(neutrino_msg_t msg)
+{
+	switch (msg) 
+	{
+		case RC_page_up:
+			scrollPageUp();
+			break;
+
+		case RC_page_down:
+			scrollPageDown();
+			break;
+
+		case RC_up:
+			scrollLineUp();
+			break;
+
+		case RC_down:
+			scrollLineDown();
+			break;
+
+		case RC_left:
+			swipLeft();
+			break;
+	
+		case RC_right:
+			swipRight();
+			break;
+
+		default:
+			break;
+	}
+}
+
+

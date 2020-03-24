@@ -35,8 +35,9 @@
 #include <string>
 #include <vector>
 
-#include <gui/widget/menue.h>
 #include <gui/widget/window.h>
+#include <gui/widget/listbox.h>
+#include <gui/widget/menue.h>
 
 #include <driver/framebuffer.h>
 #include <system/localize.h>

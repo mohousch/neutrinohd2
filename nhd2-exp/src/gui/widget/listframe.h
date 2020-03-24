@@ -174,6 +174,8 @@ class CListFrame : public CWidgetItem
 		//
 		bool isSelectable(void) const {return true;}
 		bool hasItem(){if (m_pLines != NULL) return true;};
+
+		void otherKeyPressed(neutrino_msg_t msg);
 };
 
 #endif //LISTFRAME_H_

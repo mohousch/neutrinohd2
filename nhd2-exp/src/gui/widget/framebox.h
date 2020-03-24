@@ -99,8 +99,10 @@ class CFrameBox : public CWidgetItem
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
 
 		//
-		int OKPressed(CMenuTarget *parent);
-		bool isSelectable(void) const {return true;}
+		bool isSelectable(void) const {return true;};
+
+		int oKKeyPressed(CMenuTarget *parent);
+		void otherKeyPressed(neutrino_msg_t msg);
 };
 
 #endif

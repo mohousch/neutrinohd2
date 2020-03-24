@@ -28,7 +28,7 @@
 #include <gui/widget/widget_helpers.h>
 
 
-// CMenuTarget
+//
 struct menu_return
 {
 	enum
@@ -59,7 +59,7 @@ class CWidget : public CMenuTarget
 
 		//bool enablePaintMainFrame;
 
-				//
+		//
 		neutrino_msg_t      msg;
 		neutrino_msg_data_t data;
 		
