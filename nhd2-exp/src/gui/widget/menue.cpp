@@ -1724,6 +1724,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					exit_pressed = true;
 					dprintf(DEBUG_NORMAL, "exit_pressed\n");
 					msg = RC_timeout;
+					selected = -1;
 					break;
 					
 				case (RC_timeout):

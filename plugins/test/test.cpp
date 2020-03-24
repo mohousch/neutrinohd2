@@ -978,7 +978,7 @@ void CTestMenu::textBoxWidget()
 	const char *buffer = NULL;
 	
 	// prepare print buffer
-	buffer = "\nCTextBox\ntesting CTextBox\n";  
+	buffer = "CTextBox\ntesting CTextBox with CWidget\n";  
 		
 	std::string tname = PLUGINDIR "/netzkino/netzkino.png";
 	
