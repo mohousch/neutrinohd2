@@ -1586,11 +1586,12 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	
 	// check what menu item was ok'd  and set the appropriate play offset
 	result = startPosSelectionMenu.getSelected();
-
-	if(startPosSelectionMenu.getExitPressed())
-		return -1;
 	
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showStartPosSelectionMenu: result %d\n", result);
+
+	//if(startPosSelectionMenu.getExitPressed())
+	if(result < 0)
+		return -1;
 	
 /*
 	if(result != 1 && result <= MI_MOVIE_BOOK_USER_MAX)
