@@ -27,235 +27,10 @@
 #include <system/debug.h>
 
 
-CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
-{
-	dprintf(DEBUG_NORMAL, "CFrameBox::CFrameBox:\n");
-
-	frameBuffer = CFrameBuffer::getInstance();
-
-	cFrameBox.iX = x;
-	cFrameBox.iY = y;
-	cFrameBox.iWidth = dx;
-	cFrameBox.iHeight = dy;
-
-	selected = 0;
-	pos = 0;
-	outFocus = false;
-	backgroundColor = COL_MENUCONTENT_PLUS_0;
-
-	itemType = WIDGET_ITEM_FRAMEBOX;
-
-	initFrames();
-}
-
-CFrameBox::CFrameBox(CBox* position)
-{
-	dprintf(DEBUG_NORMAL, "CFrameBox::CFrameBox:\n");
-
-	frameBuffer = CFrameBuffer::getInstance();
-
-	cFrameBox = *position;
-
-	selected = 0;
-	pos = 0;
-	outFocus = false;
-	backgroundColor = COL_MENUCONTENT_PLUS_0;
-
-	itemType = WIDGET_ITEM_FRAMEBOX;
-
-	initFrames();
-}
-
-CFrameBox::~CFrameBox()
-{
-	for(unsigned int count = 0; count < (unsigned int)frames.size(); count++) 
-	{
-		CFrame * frame = frames[count];
-		
-		delete frame;
-		frame = NULL;
-	}
-
-	frames.clear();
-}
-
-void CFrameBox::addFrame(CFrame *frame, const bool defaultselected)
-{
-	if (defaultselected)
-		selected = frames.size();
-	
-	frames.push_back(frame);
-}
-
-bool CFrameBox::hasItem()
-{
-	return !frames.empty();
-}
-
-void CFrameBox::initFrames()
-{
-	cFrameWindow.setPosition(&cFrameBox);
-}
-
-void CFrameBox::paintFrames()
-{
-	dprintf(DEBUG_NORMAL, "CFrameBox::paintFrames:\n");
-
-	// frame width
-	int frame_width = 0;
-
-	if(frames.size())
-		frame_width = cFrameBox.iWidth/((int)frames.size());
-
-	// frame hight
-	int frame_height = 0;
-	frame_height = cFrameBox.iHeight - 2*(cFrameBox.iHeight/4);
-
-	int frame_x = cFrameBox.iX + BORDER_LEFT;
-	int frame_y = cFrameBox.iY + (cFrameBox.iHeight - frame_height)/2;
-
-	for (unsigned int count = 0; count < (unsigned int)frames.size(); count++) 
-	{
-		CFrame *frame = frames[count];
-
-		// init frame
-		// frame
-		frame->window.setPosition(frame_x + count*frame_width, frame_y, frame_width - BORDER_LEFT - BORDER_RIGHT, frame_height);
-
-		frame->window.enableShadow();
-		frame->item_backgroundColor = backgroundColor;
-		
-		if(selected == -1) 
-		{
-			selected = count;
-		}
-
-		if(outFocus)
-			frame->paint(false);
-		else
-			frame->paint( selected == ((signed int) count));
-	}
-}
-
-void CFrameBox::paint()
-{
-	dprintf(DEBUG_NORMAL, "CFrameBox::paint:\n");
-
-	cFrameWindow.setColor(backgroundColor);
-	//cFrameWindow.setCorner(RADIUS_MID, CORNER_ALL);
-	//cFrameWindow.enableShadow();
-	//cFrameWindow.enableSaveScreen();
-
-	cFrameWindow.paint();
-
-	paintFrames();
-
-	CFrameBuffer::getInstance()->blit();
-}
-
-void CFrameBox::hide()
-{
-	dprintf(DEBUG_NORMAL, "CFrameBox::hide:\n");
-
-	cFrameWindow.hide();
-}
-
-void CFrameBox::swipRight()
-{
-	dprintf(DEBUG_NORMAL, "CFrameBox::swipRight:\n");
-
-	for (unsigned int count = 0; count < frames.size(); count++) 
-	{
-		pos = selected + 1;
-
-		if(pos >= (int)frames.size())
-			pos = 0;
-
-		CFrame * frame = frames[pos];
-
-		if(pos < (int)frames.size())
-		{
-			frames[selected]->paint(false);
-			frame->paint(true);
-
-			selected = pos;
-		}
-		break;
-	}
-}
-
-void CFrameBox::swipLeft()
-{
-	dprintf(DEBUG_NORMAL, "CFrameBox::swipLeft:\n");
-
-	for (unsigned int count = 0; count < frames.size(); count++) 
-	{
-		pos = selected - 1;
-		if(pos < 0)
-			pos = frames.size() - 1;
-
-		CFrame * frame = frames[pos];
-
-		if(pos < (int)frames.size())
-		{
-			frames[selected]->paint(false);
-			frame->paint(true);
-
-			selected = pos;
-		}
-		break;
-	}
-}
-
-int CFrameBox::oKKeyPressed(CMenuTarget *parent)
-{
-	if(parent)
-		return frames[selected]->exec(parent);
-	else
-		return menu_return::RETURN_EXIT;
-}
-
-void CFrameBox::otherKeyPressed(neutrino_msg_t msg)
-{
-	switch (msg) 
-	{
-		case RC_page_up:
-			scrollPageUp();
-			break;
-
-		case RC_page_down:
-			scrollPageDown();
-			break;
-
-		case RC_up:
-			scrollLineUp();
-			break;
-
-		case RC_down:
-			scrollLineDown();
-			break;
-
-		case RC_left:
-			swipLeft();
-			break;
-	
-		case RC_right:
-			swipRight();
-			break;
-
-		default:
-			break;
-	}
-}
-
 // CFrame
-CFrame::CFrame(const std::string title, const char * const icon, CMenuTarget * Target, const char * const ActionKey)
+CFrame::CFrame(const std::string title)
 {
 	caption = title;
-	iconName = icon ? icon : "";
-
-	jumpTarget = Target;
-	actionKey = ActionKey ? ActionKey : "";
 }
 
 int CFrame::paint(bool selected, bool /*AfterPulldown*/)
@@ -271,7 +46,7 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 	}
 
-	// frame
+	// paint frame
 	window.setColor(bgcolor);
 	window.paint();
 
@@ -329,6 +104,305 @@ int CFrame::exec(CMenuTarget *parent)
 		return jumpTarget->exec(parent, actionKey);
 	else
 		return menu_return::RETURN_EXIT;
+}
+
+// CFrameBox
+CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
+{
+	dprintf(DEBUG_NORMAL, "CFrameBox::CFrameBox:\n");
+
+	frameBuffer = CFrameBuffer::getInstance();
+
+	cFrameBox.iX = x;
+	cFrameBox.iY = y;
+	cFrameBox.iWidth = dx;
+	cFrameBox.iHeight = dy;
+
+	selected = 0;
+	pos = 0;
+	outFocus = false;
+	backgroundColor = COL_MENUCONTENT_PLUS_0;
+
+	frameMode = FRAME_MODE_HORIZONTAL;
+
+	itemType = WIDGET_ITEM_FRAMEBOX;
+
+	initFrames();
+}
+
+CFrameBox::CFrameBox(CBox* position)
+{
+	dprintf(DEBUG_NORMAL, "CFrameBox::CFrameBox:\n");
+
+	frameBuffer = CFrameBuffer::getInstance();
+
+	cFrameBox = *position;
+
+	selected = 0;
+	pos = 0;
+	outFocus = false;
+	backgroundColor = COL_MENUCONTENT_PLUS_0;
+
+	frameMode = FRAME_MODE_HORIZONTAL;
+
+	itemType = WIDGET_ITEM_FRAMEBOX;
+
+	initFrames();
+}
+
+CFrameBox::~CFrameBox()
+{
+	for(unsigned int count = 0; count < (unsigned int)frames.size(); count++) 
+	{
+		CFrame * frame = frames[count];
+		
+		delete frame;
+		frame = NULL;
+	}
+
+	frames.clear();
+}
+
+void CFrameBox::addFrame(CFrame *frame, const bool defaultselected)
+{
+	if (defaultselected)
+		selected = frames.size();
+	
+	frames.push_back(frame);
+}
+
+bool CFrameBox::hasItem()
+{
+	return !frames.empty();
+}
+
+void CFrameBox::initFrames()
+{
+	cFrameWindow.setPosition(&cFrameBox);
+}
+
+void CFrameBox::paintFrames()
+{
+	dprintf(DEBUG_NORMAL, "CFrameBox::paintFrames:\n");
+
+	//
+	int frame_width = 0;
+	int frame_height = 0;
+
+	if(frames.size())
+	{
+		if(frameMode == FRAME_MODE_HORIZONTAL)
+		{
+			frame_width = (cFrameBox.iWidth - 2*ICON_OFFSET)/((int)frames.size());
+			frame_height = cFrameBox.iHeight - 2*ICON_OFFSET;
+		}
+		else
+		{
+			frame_width = cFrameBox.iWidth - 2*ICON_OFFSET;
+			frame_height = (cFrameBox.iHeight - 2*ICON_OFFSET)/((int)frames.size());
+		}
+	}
+
+	int frame_x = cFrameBox.iX + ICON_OFFSET;
+	int frame_y = cFrameBox.iY + ICON_OFFSET;
+
+	for (unsigned int count = 0; count < (unsigned int)frames.size(); count++) 
+	{
+		CFrame *frame = frames[count];
+
+		// init frame
+		if(frameMode == FRAME_MODE_HORIZONTAL)
+			frame->window.setPosition(frame_x + count*(frame_width) + ICON_OFFSET, frame_y, frame_width - 2*ICON_OFFSET, frame_height);
+		else
+			frame->window.setPosition(frame_x, frame_y + count*(frame_height) + ICON_OFFSET, frame_width, frame_height - 2*ICON_OFFSET);
+
+		if(frame->isSelectable())
+			frame->window.enableShadow();
+		frame->item_backgroundColor = backgroundColor;
+
+		if(outFocus)
+			frame->paint(false);
+		else
+			frame->paint( selected == ((signed int) count));
+	}
+}
+
+void CFrameBox::paint()
+{
+	dprintf(DEBUG_NORMAL, "CFrameBox::paint:\n");
+
+	cFrameWindow.setColor(backgroundColor);
+	//cFrameWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	//cFrameWindow.enableShadow();
+	//cFrameWindow.enableSaveScreen();
+
+	cFrameWindow.paint();
+
+	paintFrames();
+
+	CFrameBuffer::getInstance()->blit();
+}
+
+void CFrameBox::hide()
+{
+	dprintf(DEBUG_NORMAL, "CFrameBox::hide:\n");
+
+	cFrameWindow.hide();
+}
+
+void CFrameBox::swipRight()
+{
+	dprintf(DEBUG_NORMAL, "CFrameBox::swipRight:\n");
+
+	if(frameMode == FRAME_MODE_HORIZONTAL)
+	{
+		for (unsigned int count = 1; count < frames.size(); count++) 
+		{
+			//pos = selected + 1;
+
+			//if(pos >= (int)frames.size())
+			//	pos = 0;
+			pos = (selected + count)%frames.size();
+
+			CFrame * frame = frames[pos];
+
+			if(frame->isSelectable() /*&& pos < (int)frames.size()*/)
+			{
+				frames[selected]->paint(false);
+				frame->paint(true);
+
+				selected = pos;
+				
+				break;
+			}
+		}
+	}
+}
+
+void CFrameBox::swipLeft()
+{
+	dprintf(DEBUG_NORMAL, "CFrameBox::swipLeft:\n");
+
+	if(frameMode == FRAME_MODE_HORIZONTAL)
+	{
+		for (unsigned int count = 1; count < frames.size(); count++) 
+		{
+			//pos = selected - 1;
+			//if(pos < 0)
+			//	pos = frames.size() - 1;
+			pos = (selected - count)%frames.size();
+
+			CFrame * frame = frames[pos];
+
+			if(frame->isSelectable() /*&& pos < (int)frames.size()*/)
+			{
+				frames[selected]->paint(false);
+				frame->paint(true);
+
+				selected = pos;
+
+				break;
+			}
+		}
+	}
+}
+
+void CFrameBox::scrollLineDown(const int lines)
+{
+	dprintf(DEBUG_NORMAL, "CFrameBox::scrollLineDown:\n");
+
+	if(frameMode == FRAME_MODE_VERTICAL)
+	{
+		for (unsigned int count = 1; count < frames.size(); count++) 
+		{
+			//pos = selected + 1;
+
+			//if(pos >= (int)frames.size())
+			//	pos = 0;
+			pos = (selected + count)%frames.size();
+
+			CFrame * frame = frames[pos];
+
+			if(frame->isSelectable() /*&& pos < (int)frames.size()*/)
+			{
+				frames[selected]->paint(false);
+				frame->paint(true);
+
+				selected = pos;
+
+				break;
+			}
+		}
+	}
+}
+
+void CFrameBox::scrollLineUp(const int lines)
+{
+	dprintf(DEBUG_NORMAL, "CFrameBox::scrollLineUp:\n");
+
+	if(frameMode == FRAME_MODE_VERTICAL)
+	{
+		for (unsigned int count = 1; count < frames.size(); count++) 
+		{
+			//pos = selected - 1;
+			//if(pos < 0)
+				//pos = frames.size() - 1;
+			pos = (selected - count)%frames.size();
+
+			CFrame * frame = frames[pos];
+
+			if(frame->isSelectable() /*&& pos < (int)frames.size()*/)
+			{
+				frames[selected]->paint(false);
+				frame->paint(true);
+
+				selected = pos;
+
+				break;
+			}
+		}
+	}
+}
+
+int CFrameBox::oKKeyPressed(CMenuTarget *parent)
+{
+	if(parent)
+		return frames[selected]->exec(parent);
+	else
+		return menu_return::RETURN_EXIT;
+}
+
+void CFrameBox::otherKeyPressed(neutrino_msg_t msg)
+{
+	switch (msg) 
+	{
+		case RC_page_up:
+			scrollPageUp();
+			break;
+
+		case RC_page_down:
+			scrollPageDown();
+			break;
+
+		case RC_up:
+			scrollLineUp();
+			break;
+
+		case RC_down:
+			scrollLineDown();
+			break;
+
+		case RC_left:
+			swipLeft();
+			break;
+	
+		case RC_right:
+			swipRight();
+			break;
+
+		default:
+			break;
+	}
 }
 
 

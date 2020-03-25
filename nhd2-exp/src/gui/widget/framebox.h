@@ -35,6 +35,11 @@
 #include <gui/widget/widget.h>
 
 
+enum{
+	FRAME_MODE_HORIZONTAL = 0,
+	FRAME_MODE_VERTICAL
+};
+
 class CFrame
 {
 	CMenuTarget* jumpTarget;
@@ -47,18 +52,41 @@ class CFrame
 		std::string option;
 
 		fb_pixel_t item_backgroundColor;
-
-		CFrame(const std::string title, const char * const icon = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL);
+		
+		CFrame(){};
+		CFrame(const std::string title);
 		virtual ~CFrame(){}
 
 		int paint(bool selected = false, bool AfterPulldown = false);
 
+		virtual void setTitle(const char * text){caption = text;};
 		virtual void setIconName(const char* const icon){iconName = icon;};
 		virtual void setOption(const char* text){option = text;};
+		virtual void setMenuTarget(CMenuTarget *Target, const char *const ActionKey){jumpTarget = Target; actionKey = ActionKey;};
 
 		int exec(CMenuTarget* parent);
+
+		virtual bool isSelectable(void) const {return true;}
 };
 
+class CFrameSeparator : public CFrame
+{
+	public:
+		CWindow window;
+
+		fb_pixel_t item_backgroundColor;
+
+		CFrameSeparator(){};
+		~CFrameSeparator(){};
+
+		int paint(bool selected = false, bool AfterPulldown = false){return 0;};
+
+		int exec(CMenuTarget* parent){return menu_return::RETURN_EXIT;};
+
+		virtual bool isSelectable(void) const {return false;}
+};
+
+// CFrameBox
 class CFrameBox : public CWidgetItem
 {
 	private:
@@ -76,6 +104,8 @@ class CFrameBox : public CWidgetItem
 
 		virtual void paintFrames();
 
+		int frameMode;
+
 	public:
 		CFrameBox(const int x, int const y, const int dx, const int dy);
 		CFrameBox(CBox* position);
@@ -92,11 +122,15 @@ class CFrameBox : public CWidgetItem
 
 		virtual void swipRight();
 		virtual void swipLeft();
+		virtual void scrollLineDown(const int lines = 1);
+		virtual void scrollLineUp(const int lines = 1);
 
 		int getSelected(){return selected;};
 
 		void setOutFocus(bool focus){outFocus = focus;};
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
+
+		void setMode(int mode){frameMode = mode;};
 
 		//
 		bool isSelectable(void) const {return true;};

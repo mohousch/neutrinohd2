@@ -331,8 +331,10 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 						msg = RC_timeout;
 					}
 					break;
-		
+				
+				#if 0
 				case (RC_up) :
+					/*
 					{
 						if(items[selected]->isSelectable() && (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
 						{
@@ -357,9 +359,11 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 							}
 						}
 					}
+					*/
 					break;
 					
 				case (RC_down) :
+					/*
 					{
 						if(items[selected]->isSelectable() && (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
 						{
@@ -384,9 +388,11 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 							}
 						}
 					}
+					*/
 					break;
 
 				case (RC_left):
+					/*
 					{
 						if(items[selected]->isSelectable() && ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME)))
 						{
@@ -411,9 +417,11 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 							}
 						}
 					}
+					*/
 					break;
 					
 				case (RC_right):
+					/*
 					{
 						if(items[selected]->isSelectable() && ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME)))
 						{
@@ -438,7 +446,9 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 							}
 						}
 					}
+					*/
 					break;
+				#endif
 
 				case (RC_yellow):
 					{

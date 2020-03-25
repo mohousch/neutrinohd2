@@ -113,6 +113,8 @@ class CTestMenu : public CMenuTarget
 
 		bool bigFonts;
 
+		CFrameBox *leftFrame;
+
 		void loadTMDBPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1, bool search = false);
 
 		void loadMoviePlaylist();
@@ -282,6 +284,7 @@ CTestMenu::CTestMenu()
 	windowWidget = NULL;
 	pig = NULL;
 	grid = NULL;
+	leftFrame = NULL;
 }
 
 CTestMenu::~CTestMenu()
@@ -633,16 +636,23 @@ void CTestMenu::widget()
 
 	topWidget = new CFrameBox(&topBox);
 	//topWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+	//topWidget->setMode(FRAME_MODE_VERTICAL);
 
 	CFrame * frame = NULL;
 
-	frame = new CFrame("Filme", NULL, this, "movie");
+	frame = new CFrame("Filme");
+	frame->setMenuTarget(this, "movie");
 	topWidget->addFrame(frame);
 	
-	frame = new CFrame("Serien", NULL, this, "tv");
+	frame = new CFrame("Serien");
+	frame->setMenuTarget(this, "tv");
 	topWidget->addFrame(frame);
 
-	frame = new CFrame("Suche", tmdbsearch.c_str(), this, "search");
+	topWidget->addFrame(new CFrameSeparator());
+
+	frame = new CFrame("Suche");
+	frame->setOption(tmdbsearch.c_str());
+	frame->setMenuTarget(this, "search");
 	topWidget->addFrame(frame);
 
 	topWidget->setSelected(top_selected); 
@@ -656,6 +666,8 @@ void CTestMenu::widget()
 	left_selected = 0;
 
 	leftWidget = new ClistBox(&leftBox);
+	leftFrame = new CFrameBox(&leftBox);
+	leftFrame->setMode(FRAME_MODE_VERTICAL);
 
 	leftWidget->disableCenter();
 	leftWidget->setSelected(left_selected);
@@ -675,6 +687,31 @@ void CTestMenu::widget()
 	CMenuSeparator *item7 = new CMenuSeparator();
 	CMenuSeparator *item8 = new CMenuSeparator();
 	ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "exit");
+
+	CFrame *frame1 = new CFrame("in den");
+	frame1->setOption("kinos");
+	frame1->setMenuTarget(this, "movie_in_cinema");
+
+	CFrame *frame2 = new CFrame("Am");
+	frame2->setOption("populärsten");
+	frame2->setMenuTarget(this, "movie_popular");
+
+	CFrame *frame3 = new CFrame("am besten");
+	frame3->setOption("bewertet");
+	frame3->setMenuTarget(this, "movie_top_rated");
+
+	CFrame *frame4 = new CFrameSeparator();
+	CFrame *frame5 = new CFrameSeparator();
+
+	CFrame *frame6 = new CFrame("Beenden");
+	frame6->setMenuTarget(this, "exit");
+
+	leftFrame->addFrame(frame1);
+	leftFrame->addFrame(frame2);
+	leftFrame->addFrame(frame3);
+	leftFrame->addFrame(frame4);
+	leftFrame->addFrame(frame5);
+	leftFrame->addFrame(frame6);
 
 	leftWidget->addItem(item1);
 	leftWidget->addItem(item2);
@@ -733,7 +770,8 @@ void CTestMenu::widget()
 
 	testWidget->addItem(headersWidget);
 	testWidget->addItem(topWidget);
-	testWidget->addItem(leftWidget);
+	//testWidget->addItem(leftWidget);
+	testWidget->addItem(leftFrame);
 	testWidget->addItem(rightWidget);
 	testWidget->addItem(footersWidget);
 
@@ -763,6 +801,9 @@ void CTestMenu::widget()
 
 	delete footersWidget;
 	footersWidget = NULL;
+
+	delete leftFrame;
+	leftFrame = NULL;
 }
 
 void CTestMenu::listFrameWidget()

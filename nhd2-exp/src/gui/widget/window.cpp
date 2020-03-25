@@ -126,14 +126,16 @@ void CWindow::setPosition(const int x, const int y, const int dx, const int dy)
 	cFrameBox.iWidth = dx;
 	cFrameBox.iHeight = dy;
 
-	init();
+	full_width = cFrameBox.iWidth;
+	full_height = cFrameBox.iHeight;
 }
 
 void CWindow::setPosition(CBox* position)
 {
 	cFrameBox = *position;
 
-	init();
+	full_width = cFrameBox.iWidth;
+	full_height = cFrameBox.iHeight;
 }
 
 void CWindow::paint()
