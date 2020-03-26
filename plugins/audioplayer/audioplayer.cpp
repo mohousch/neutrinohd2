@@ -136,6 +136,43 @@ void CMP3Player::loadPlaylist()
 					||  (files->getExtension() == CFile::EXTENSION_FLAC))
 			{
 				CAudiofile audiofile(files->Name, files->getExtension());
+
+				// refill
+				std::string title;
+				std::string artist;
+				std::string genre;
+				std::string date;
+				char duration[9] = "";
+
+				CAudioPlayer::getInstance()->init();
+
+				int ret = CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
+
+				if (!ret || (audiofile.MetaData.artist.empty() && audiofile.MetaData.title.empty() ))
+				{
+					//remove extension (.mp3)
+					std::string tmp = files->getFileName().substr(files->getFileName().rfind('/') + 1);
+					tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
+
+					std::string::size_type i = tmp.rfind(" - ");
+		
+					if(i != std::string::npos)
+					{ 
+						audiofile.MetaData.title = tmp.substr(0, i);
+						audiofile.MetaData.artist = tmp.substr(i + 3);
+					}
+					else
+					{
+						i = tmp.rfind('-');
+						if(i != std::string::npos)
+						{
+							audiofile.MetaData.title = tmp.substr(0, i);
+							audiofile.MetaData.artist = tmp.substr(i + 1);
+						}
+						else
+							audiofile.MetaData.title = tmp;
+					}
+				}
 				
 				playlist.push_back(audiofile);
 			}
@@ -169,6 +206,43 @@ void CMP3Player::openFileBrowser()
 				{
 					if(playlist[i].Filename == audiofile.Filename)
 						playlist.erase(playlist.begin() + i); 
+				}
+
+				// refill
+				std::string title;
+				std::string artist;
+				std::string genre;
+				std::string date;
+				char duration[9] = "";
+
+				CAudioPlayer::getInstance()->init();
+
+				int ret = CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
+
+				if (!ret || (audiofile.MetaData.artist.empty() && audiofile.MetaData.title.empty() ))
+				{
+					//remove extension (.mp3)
+					std::string tmp = files->getFileName().substr(files->getFileName().rfind('/') + 1);
+					tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
+
+					std::string::size_type i = tmp.rfind(" - ");
+		
+					if(i != std::string::npos)
+					{ 
+						audiofile.MetaData.title = tmp.substr(0, i);
+						audiofile.MetaData.artist = tmp.substr(i + 3);
+					}
+					else
+					{
+						i = tmp.rfind('-');
+						if(i != std::string::npos)
+						{
+							audiofile.MetaData.title = tmp.substr(0, i);
+							audiofile.MetaData.artist = tmp.substr(i + 1);
+						}
+						else
+							audiofile.MetaData.title = tmp;
+					}
 				}
 		
 				playlist.push_back(audiofile);
@@ -208,40 +282,12 @@ void CMP3Player::showMenu()
 		// read metadata
 		int ret = CAudioPlayer::getInstance()->readMetaData(&playlist[i], true);
 
-		if (!ret || (playlist[i].MetaData.artist.empty() && playlist[i].MetaData.title.empty() ))
-		{
-			//remove extension (.mp3)
-			std::string tmp = playlist[i].Filename.substr(playlist[i].Filename.rfind('/') + 1);
-			tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
+		title = playlist[i].MetaData.title;
+		artist = playlist[i].MetaData.artist;
+		genre = playlist[i].MetaData.genre;	
+		date = playlist[i].MetaData.date;
 
-			std::string::size_type j = tmp.rfind(" - ");
-		
-			if(j != std::string::npos)
-			{ 
-				title = tmp.substr(0, j);
-				artist = tmp.substr(j + 3);
-			}
-			else
-			{
-				j = tmp.rfind('-');
-				if(j != std::string::npos)
-				{
-					title = tmp.substr(0, j);
-					artist = tmp.substr(j + 1);
-				}
-				else
-					title = tmp;
-			}
-		}
-		else
-		{
-			title = playlist[i].MetaData.title;
-			artist = playlist[i].MetaData.artist;
-			genre = playlist[i].MetaData.genre;	
-			date = playlist[i].MetaData.date;
-
-			snprintf(duration, 8, "(%ld:%02ld)", playlist[i].MetaData.total_time / 60, playlist[i].MetaData.total_time % 60);
-		}
+		snprintf(duration, 8, "(%ld:%02ld)", playlist[i].MetaData.total_time / 60, playlist[i].MetaData.total_time % 60);
 
 		//
 		item = new ClistBoxItem(title.c_str(), true, NULL, this, "aplay");

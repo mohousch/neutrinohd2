@@ -86,6 +86,8 @@ class CExtendedInput : public CMenuTarget
 		void calculateDialog();
 
 		void addInputField( CExtendedInput_Item* );
+
+		bool getExitPressed(){return *cancel;};
 };
 
 

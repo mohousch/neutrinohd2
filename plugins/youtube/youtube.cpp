@@ -451,7 +451,7 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		CStringInputSMS stringInput(LOCALE_YT_SEARCH, ytsearch.c_str());
 		int ret = stringInput.exec(NULL, "");
 
-		if(ret /*&& !ytsearch.empty()*/) //FIXME:
+		if(!stringInput.getExitPressed() /*&& !ytsearch.empty()*/) //FIXME:
 		{
 			loadYTTitles(ytmode, ytsearch, ytvid);
 			showMenu();

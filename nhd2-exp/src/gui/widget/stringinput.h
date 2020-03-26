@@ -75,6 +75,7 @@ class CStringInput : public CMenuTarget
 		std::string * valueString;
 		int size;
 		int selected;
+		bool exit_pressed;
 		CChangeObserver * observ;
 
 		CButtons buttons;
@@ -108,6 +109,8 @@ class CStringInput : public CMenuTarget
 
 		void hide();
 		int exec(CMenuTarget* parent, const std::string& actionKey);
+
+		bool getExitPressed(){return exit_pressed;};
 };
 
 class CStringInputSMS : public CStringInput

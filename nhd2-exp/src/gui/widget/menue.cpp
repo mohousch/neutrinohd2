@@ -209,6 +209,7 @@ ClistBoxWidget::~ClistBoxWidget()
 	items.clear();
 	page_start.clear();
 
+/*
 	if(headers)
 	{
 		delete headers;
@@ -220,6 +221,7 @@ ClistBoxWidget::~ClistBoxWidget()
 		delete footers;
 		footers = NULL;
 	}
+*/
 }
 
 void ClistBoxWidget::addItem(CMenuItem *menuItem, const bool defaultselected)

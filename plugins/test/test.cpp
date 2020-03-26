@@ -926,6 +926,7 @@ void CTestMenu::listBoxWidget()
 	rightWidget = new ClistBox(&rightBox);
 
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
+	rightWidget->disableShrinkMenu();
 	rightWidget->setItemsPerPage(6,2);
 	rightWidget->setSelected(selected);
 	rightWidget->enablePaintHead();
@@ -1949,8 +1950,6 @@ void CTestMenu::testCHeaders()
 	CFrameBuffer::getInstance()->blit();
 
 	// loop
-	//g_RCInput->messageLoop();
-	// loop
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 
@@ -2295,10 +2294,7 @@ void CTestMenu::testCTextBox()
 	const char * buffer = NULL;
 	
 	// prepare print buffer  
-	buffer = "CTextBox\n";
-	//buffer += "\n";
-	//buffer += "testing CTextBox";
-	//buffer += "\n";
+	buffer = "CTextBox\ntesting CTextBox\n";
 		
 	std::string tname = PLUGINDIR "/netzkino/netzkino.png";
 	
@@ -2692,87 +2688,10 @@ void CTestMenu::testClistBox()
 	ClistBox *listBox = new ClistBox(&Box);
 
 	CMenuItem* item = NULL;
-
-	//
-	CFileFilter fileFilter;
 	
-	fileFilter.addFilter("ts");
-	fileFilter.addFilter("mpg");
-	fileFilter.addFilter("mpeg");
-	fileFilter.addFilter("divx");
-	fileFilter.addFilter("avi");
-	fileFilter.addFilter("mkv");
-	fileFilter.addFilter("asf");
-	fileFilter.addFilter("aiff");
-	fileFilter.addFilter("m2p");
-	fileFilter.addFilter("mpv");
-	fileFilter.addFilter("m2ts");
-	fileFilter.addFilter("vob");
-	fileFilter.addFilter("mp4");
-	fileFilter.addFilter("mov");	
-	fileFilter.addFilter("flv");	
-	fileFilter.addFilter("dat");
-	fileFilter.addFilter("trp");
-	fileFilter.addFilter("vdr");
-	fileFilter.addFilter("mts");
-	fileFilter.addFilter("wmv");
-	fileFilter.addFilter("wav");
-	fileFilter.addFilter("flac");
-	fileFilter.addFilter("mp3");
-	fileFilter.addFilter("wma");
-	fileFilter.addFilter("ogg");
+	loadMoviePlaylist();
 
-	CFileList filelist;
-	
-	// recordingdir
-	std::string Path_local = g_settings.network_nfs_recordingdir;
-	m_vMovieInfo.clear();
-	
-	//
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		// filter them
-		MI_MOVIE_INFO movieInfo;
-		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-
-		CFileList::iterator files = filelist.begin();
-		for(; files != filelist.end() ; files++)
-		{
-			//
-			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-					
-			movieInfo.file.Name = files->Name;
-					
-			// load movie infos (from xml file)
-			m_movieInfo.loadMovieInfo(&movieInfo);
-
-			std::string tmp_str = files->getFileName();
-
-			removeExtension(tmp_str);
-
-			// refill if empty
-			if(movieInfo.epgTitle.empty())
-				movieInfo.epgTitle = tmp_str;
-
-			if(movieInfo.epgInfo1.empty())
-				movieInfo.epgInfo1 = tmp_str;
-
-			//if(movieInfo.epgInfo2.empty())
-			//	movieInfo.epgInfo2 = tmp_str;
-
-			//thumbnail
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-					
-			if(!access(fname.c_str(), F_OK) )
-				movieInfo.tfile = fname.c_str();
-					
-			// 
-			m_vMovieInfo.push_back(movieInfo);
-		}
-	}
-
+	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
@@ -2933,86 +2852,9 @@ void CTestMenu::testClistBox2()
 
 	CMenuItem* item = NULL;
 
-	//
-	CFileFilter fileFilter;
-	
-	fileFilter.addFilter("ts");
-	fileFilter.addFilter("mpg");
-	fileFilter.addFilter("mpeg");
-	fileFilter.addFilter("divx");
-	fileFilter.addFilter("avi");
-	fileFilter.addFilter("mkv");
-	fileFilter.addFilter("asf");
-	fileFilter.addFilter("aiff");
-	fileFilter.addFilter("m2p");
-	fileFilter.addFilter("mpv");
-	fileFilter.addFilter("m2ts");
-	fileFilter.addFilter("vob");
-	fileFilter.addFilter("mp4");
-	fileFilter.addFilter("mov");	
-	fileFilter.addFilter("flv");	
-	fileFilter.addFilter("dat");
-	fileFilter.addFilter("trp");
-	fileFilter.addFilter("vdr");
-	fileFilter.addFilter("mts");
-	fileFilter.addFilter("wmv");
-	fileFilter.addFilter("wav");
-	fileFilter.addFilter("flac");
-	fileFilter.addFilter("mp3");
-	fileFilter.addFilter("wma");
-	fileFilter.addFilter("ogg");
+	loadMoviePlaylist();
 
-	CFileList filelist;
-	
-	// recordingdir
-	std::string Path_local = g_settings.network_nfs_recordingdir;
-	m_vMovieInfo.clear();
-	
-	//
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		// filter them
-		MI_MOVIE_INFO movieInfo;
-		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-
-		CFileList::iterator files = filelist.begin();
-		for(; files != filelist.end() ; files++)
-		{
-			//
-			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-					
-			movieInfo.file.Name = files->Name;
-					
-			// load movie infos (from xml file)
-			m_movieInfo.loadMovieInfo(&movieInfo);
-
-			std::string tmp_str = files->getFileName();
-
-			removeExtension(tmp_str);
-
-			// refill if empty
-			if(movieInfo.epgTitle.empty())
-				movieInfo.epgTitle = tmp_str;
-
-			if(movieInfo.epgInfo1.empty())
-				movieInfo.epgInfo1 = tmp_str;
-
-			//if(movieInfo.epgInfo2.empty())
-			//	movieInfo.epgInfo2 = tmp_str;
-
-			//thumbnail
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-					
-			if(!access(fname.c_str(), F_OK) )
-				movieInfo.tfile = fname.c_str();
-					
-			// 
-			m_vMovieInfo.push_back(movieInfo);
-		}
-	}
-
+	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
@@ -3162,86 +3004,9 @@ void CTestMenu::testClistBox3()
 
 	CMenuItem* item = NULL;
 
-	//
-	CFileFilter fileFilter;
-	
-	fileFilter.addFilter("ts");
-	fileFilter.addFilter("mpg");
-	fileFilter.addFilter("mpeg");
-	fileFilter.addFilter("divx");
-	fileFilter.addFilter("avi");
-	fileFilter.addFilter("mkv");
-	fileFilter.addFilter("asf");
-	fileFilter.addFilter("aiff");
-	fileFilter.addFilter("m2p");
-	fileFilter.addFilter("mpv");
-	fileFilter.addFilter("m2ts");
-	fileFilter.addFilter("vob");
-	fileFilter.addFilter("mp4");
-	fileFilter.addFilter("mov");	
-	fileFilter.addFilter("flv");	
-	fileFilter.addFilter("dat");
-	fileFilter.addFilter("trp");
-	fileFilter.addFilter("vdr");
-	fileFilter.addFilter("mts");
-	fileFilter.addFilter("wmv");
-	fileFilter.addFilter("wav");
-	fileFilter.addFilter("flac");
-	fileFilter.addFilter("mp3");
-	fileFilter.addFilter("wma");
-	fileFilter.addFilter("ogg");
+	loadMoviePlaylist();
 
-	CFileList filelist;
-	
-	// recordingdir
-	std::string Path_local = g_settings.network_nfs_recordingdir;
-	m_vMovieInfo.clear();
-	
-	//
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		// filter them
-		MI_MOVIE_INFO movieInfo;
-		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-
-		CFileList::iterator files = filelist.begin();
-		for(; files != filelist.end() ; files++)
-		{
-			//
-			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-					
-			movieInfo.file.Name = files->Name;
-					
-			// load movie infos (from xml file)
-			m_movieInfo.loadMovieInfo(&movieInfo);
-
-			std::string tmp_str = files->getFileName();
-
-			removeExtension(tmp_str);
-
-			// refill if empty
-			if(movieInfo.epgTitle.empty())
-				movieInfo.epgTitle = tmp_str;
-
-			if(movieInfo.epgInfo1.empty())
-				movieInfo.epgInfo1 = tmp_str;
-
-			//if(movieInfo.epgInfo2.empty())
-			//	movieInfo.epgInfo2 = tmp_str;
-
-			//thumbnail
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-					
-			if(!access(fname.c_str(), F_OK) )
-				movieInfo.tfile = fname.c_str();
-					
-			// 
-			m_vMovieInfo.push_back(movieInfo);
-		}
-	}
-
+	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
@@ -3391,86 +3156,9 @@ void CTestMenu::testClistBox4()
 
 	CMenuItem* item = NULL;
 
-	//
-	CFileFilter fileFilter;
-	
-	fileFilter.addFilter("ts");
-	fileFilter.addFilter("mpg");
-	fileFilter.addFilter("mpeg");
-	fileFilter.addFilter("divx");
-	fileFilter.addFilter("avi");
-	fileFilter.addFilter("mkv");
-	fileFilter.addFilter("asf");
-	fileFilter.addFilter("aiff");
-	fileFilter.addFilter("m2p");
-	fileFilter.addFilter("mpv");
-	fileFilter.addFilter("m2ts");
-	fileFilter.addFilter("vob");
-	fileFilter.addFilter("mp4");
-	fileFilter.addFilter("mov");	
-	fileFilter.addFilter("flv");	
-	fileFilter.addFilter("dat");
-	fileFilter.addFilter("trp");
-	fileFilter.addFilter("vdr");
-	fileFilter.addFilter("mts");
-	fileFilter.addFilter("wmv");
-	fileFilter.addFilter("wav");
-	fileFilter.addFilter("flac");
-	fileFilter.addFilter("mp3");
-	fileFilter.addFilter("wma");
-	fileFilter.addFilter("ogg");
+	loadMoviePlaylist();
 
-	CFileList filelist;
-	
-	// recordingdir
-	std::string Path_local = g_settings.network_nfs_recordingdir;
-	m_vMovieInfo.clear();
-	
-	//
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		// filter them
-		MI_MOVIE_INFO movieInfo;
-		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-
-		CFileList::iterator files = filelist.begin();
-		for(; files != filelist.end() ; files++)
-		{
-			//
-			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-					
-			movieInfo.file.Name = files->Name;
-					
-			// load movie infos (from xml file)
-			m_movieInfo.loadMovieInfo(&movieInfo);
-
-			std::string tmp_str = files->getFileName();
-
-			removeExtension(tmp_str);
-
-			// refill if empty
-			if(movieInfo.epgTitle.empty())
-				movieInfo.epgTitle = tmp_str;
-
-			if(movieInfo.epgInfo1.empty())
-				movieInfo.epgInfo1 = tmp_str;
-
-			//if(movieInfo.epgInfo2.empty())
-			//	movieInfo.epgInfo2 = tmp_str;
-
-			//thumbnail
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-					
-			if(!access(fname.c_str(), F_OK) )
-				movieInfo.tfile = fname.c_str();
-					
-			// 
-			m_vMovieInfo.push_back(movieInfo);
-		}
-	}
-
+	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
@@ -3618,86 +3306,9 @@ void CTestMenu::testClistBox5()
 
 	CMenuItem* item = NULL;
 
-	//
-	CFileFilter fileFilter;
-	
-	fileFilter.addFilter("ts");
-	fileFilter.addFilter("mpg");
-	fileFilter.addFilter("mpeg");
-	fileFilter.addFilter("divx");
-	fileFilter.addFilter("avi");
-	fileFilter.addFilter("mkv");
-	fileFilter.addFilter("asf");
-	fileFilter.addFilter("aiff");
-	fileFilter.addFilter("m2p");
-	fileFilter.addFilter("mpv");
-	fileFilter.addFilter("m2ts");
-	fileFilter.addFilter("vob");
-	fileFilter.addFilter("mp4");
-	fileFilter.addFilter("mov");	
-	fileFilter.addFilter("flv");	
-	fileFilter.addFilter("dat");
-	fileFilter.addFilter("trp");
-	fileFilter.addFilter("vdr");
-	fileFilter.addFilter("mts");
-	fileFilter.addFilter("wmv");
-	fileFilter.addFilter("wav");
-	fileFilter.addFilter("flac");
-	fileFilter.addFilter("mp3");
-	fileFilter.addFilter("wma");
-	fileFilter.addFilter("ogg");
+	loadMoviePlaylist();
 
-	CFileList filelist;
-	
-	// recordingdir
-	std::string Path_local = g_settings.network_nfs_recordingdir;
-	m_vMovieInfo.clear();
-	
-	//
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		// filter them
-		MI_MOVIE_INFO movieInfo;
-		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-
-		CFileList::iterator files = filelist.begin();
-		for(; files != filelist.end() ; files++)
-		{
-			//
-			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-					
-			movieInfo.file.Name = files->Name;
-					
-			// load movie infos (from xml file)
-			m_movieInfo.loadMovieInfo(&movieInfo);
-
-			std::string tmp_str = files->getFileName();
-
-			removeExtension(tmp_str);
-
-			// refill if empty
-			if(movieInfo.epgTitle.empty())
-				movieInfo.epgTitle = tmp_str;
-
-			if(movieInfo.epgInfo1.empty())
-				movieInfo.epgInfo1 = tmp_str;
-
-			//if(movieInfo.epgInfo2.empty())
-			//	movieInfo.epgInfo2 = tmp_str;
-
-			//thumbnail
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-					
-			if(!access(fname.c_str(), F_OK) )
-				movieInfo.tfile = fname.c_str();
-					
-			// 
-			m_vMovieInfo.push_back(movieInfo);
-		}
-	}
-
+	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
@@ -3861,86 +3472,9 @@ void CTestMenu::testClistBox6()
 
 	CMenuItem* item = NULL;
 
-	//
-	CFileFilter fileFilter;
-	
-	fileFilter.addFilter("ts");
-	fileFilter.addFilter("mpg");
-	fileFilter.addFilter("mpeg");
-	fileFilter.addFilter("divx");
-	fileFilter.addFilter("avi");
-	fileFilter.addFilter("mkv");
-	fileFilter.addFilter("asf");
-	fileFilter.addFilter("aiff");
-	fileFilter.addFilter("m2p");
-	fileFilter.addFilter("mpv");
-	fileFilter.addFilter("m2ts");
-	fileFilter.addFilter("vob");
-	fileFilter.addFilter("mp4");
-	fileFilter.addFilter("mov");	
-	fileFilter.addFilter("flv");	
-	fileFilter.addFilter("dat");
-	fileFilter.addFilter("trp");
-	fileFilter.addFilter("vdr");
-	fileFilter.addFilter("mts");
-	fileFilter.addFilter("wmv");
-	fileFilter.addFilter("wav");
-	fileFilter.addFilter("flac");
-	fileFilter.addFilter("mp3");
-	fileFilter.addFilter("wma");
-	fileFilter.addFilter("ogg");
+	loadMoviePlaylist();
 
-	CFileList filelist;
-	
-	// recordingdir
-	std::string Path_local = g_settings.network_nfs_recordingdir;
-	m_vMovieInfo.clear();
-	
-	//
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		// filter them
-		MI_MOVIE_INFO movieInfo;
-		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-
-		CFileList::iterator files = filelist.begin();
-		for(; files != filelist.end() ; files++)
-		{
-			//
-			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-					
-			movieInfo.file.Name = files->Name;
-					
-			// load movie infos (from xml file)
-			m_movieInfo.loadMovieInfo(&movieInfo);
-
-			std::string tmp_str = files->getFileName();
-
-			removeExtension(tmp_str);
-
-			// refill if empty
-			if(movieInfo.epgTitle.empty())
-				movieInfo.epgTitle = tmp_str;
-
-			if(movieInfo.epgInfo1.empty())
-				movieInfo.epgInfo1 = tmp_str;
-
-			//if(movieInfo.epgInfo2.empty())
-			//	movieInfo.epgInfo2 = tmp_str;
-
-			//thumbnail
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-					
-			if(!access(fname.c_str(), F_OK) )
-				movieInfo.tfile = fname.c_str();
-					
-			// 
-			m_vMovieInfo.push_back(movieInfo);
-		}
-	}
-
+	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
@@ -6068,6 +5602,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
+			item->set2lines();
+
+			std::string tmp = m_vMovieInfo[i].epgTitle;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo1;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo2;
+
+		item->setHelpText(tmp.c_str());
+
 			rightWidget->addItem(item);
 		}
 	}
@@ -6094,6 +5638,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 
 			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			item->set2lines();
+
+			std::string tmp = m_vMovieInfo[i].epgTitle;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo1;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo2;
+
+			item->setHelpText(tmp.c_str());
 
 			rightWidget->addItem(item);
 		}
@@ -6122,6 +5676,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
+			item->set2lines();
+
+			std::string tmp = m_vMovieInfo[i].epgTitle;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo1;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo2;
+
+			item->setHelpText(tmp.c_str());
+
 			rightWidget->addItem(item);
 		}
 	}
@@ -6148,6 +5712,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 
 			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			item->set2lines();
+
+			std::string tmp = m_vMovieInfo[i].epgTitle;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo1;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo2;
+
+			item->setHelpText(tmp.c_str());
 
 			rightWidget->addItem(item);
 		}
@@ -6176,6 +5750,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
+			item->set2lines();
+
+			std::string tmp = m_vMovieInfo[i].epgTitle;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo1;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo2;
+
+			item->setHelpText(tmp.c_str());
+
 			rightWidget->addItem(item);
 		}
 	}
@@ -6202,6 +5786,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 
 			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			item->set2lines();
+
+			std::string tmp = m_vMovieInfo[i].epgTitle;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo1;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo2;
+
+			item->setHelpText(tmp.c_str());
 
 			rightWidget->addItem(item);
 		}
@@ -6230,6 +5824,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
+			item->set2lines();
+
+			std::string tmp = m_vMovieInfo[i].epgTitle;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo1;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo2;
+
+			item->setHelpText(tmp.c_str());
+
 			rightWidget->addItem(item);
 		}
 	}
@@ -6256,6 +5860,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 
 			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			item->set2lines();
+
+			std::string tmp = m_vMovieInfo[i].epgTitle;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo1;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo2;
+
+			item->setHelpText(tmp.c_str());
 
 			rightWidget->addItem(item);
 		}
@@ -6341,6 +5955,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
+			item->set2lines();
+
+			std::string tmp = m_vMovieInfo[i].epgTitle;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo1;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo2;
+
+			item->setHelpText(tmp.c_str());
+
 			rightWidget->addItem(item);
 		}
 
@@ -6402,6 +6026,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
+			item->set2lines();
+
+			std::string tmp = m_vMovieInfo[i].epgTitle;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo1;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo2;
+
+			item->setHelpText(tmp.c_str());
+
 			rightWidget->addItem(item);
 		}
 
@@ -6434,6 +6068,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 
 			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+			item->set2lines();
+
+			std::string tmp = m_vMovieInfo[i].epgTitle;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo1;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo2;
+
+			item->setHelpText(tmp.c_str());
 
 			rightWidget->addItem(item);
 		}
@@ -6470,6 +6114,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
+			item->set2lines();
+
+			std::string tmp = m_vMovieInfo[i].epgTitle;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo1;
+			tmp += "\n";
+			tmp += m_vMovieInfo[i].epgInfo2;
+
+			item->setHelpText(tmp.c_str());
+
 			rightWidget->addItem(item);
 		}
 
@@ -6482,31 +6136,44 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		tmdbsearch.clear();
 
 		CStringInputSMS stringInput(LOCALE_YT_SEARCH, tmdbsearch.c_str());
-		int ret = stringInput.exec(NULL, "");
+		stringInput.exec(NULL, "");
 
-		rightWidget->clearItems();
-
-		loadTMDBPlaylist(tmdbsearch.c_str(), "", 1, true);
-
-		// load items
-		for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+		if(!stringInput.getExitPressed())
 		{
-			item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "yplay");
+			rightWidget->clearItems();
 
-			item->setOption(m_vMovieInfo[i].epgChannel.c_str());
+			loadTMDBPlaylist(tmdbsearch.c_str(), "", 1, true);
 
-			item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+			// load items
+			for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+			{
+				item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "yplay");
 
-			item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+				item->setOption(m_vMovieInfo[i].epgChannel.c_str());
 
-			item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+				item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
 
-			rightWidget->addItem(item);
+				item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+
+				item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+
+				item->set2lines();
+
+				std::string tmp = m_vMovieInfo[i].epgTitle;
+				tmp += "\n";
+				tmp += m_vMovieInfo[i].epgInfo1;
+				tmp += "\n";
+				tmp += m_vMovieInfo[i].epgInfo2;
+
+				item->setHelpText(tmp.c_str());
+
+				rightWidget->addItem(item);
+			}
+
+			rightWidget->setSelected(0);
+
+			tmdbsearch.clear();
 		}
-
-		rightWidget->setSelected(0);
-
-		tmdbsearch.clear();
 	}
 	else if(actionKey == "windowwidget")
 	{

@@ -145,6 +145,7 @@ void CStringInput::init()
 	smstimer = 0;
 	
 	selected = 0;
+	exit_pressed = false;
 
 	m_cBoxWindow.setPosition(x, y, width, height);
 }
@@ -375,10 +376,12 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 		else if (msg == RC_down)
 		{
 			keyDownPressed();
-		} else if (msg == RC_plus)
+		} 
+		else if (msg == RC_plus)
 		{
 			keyPlusPressed();
-		} else if (msg == RC_minus)
+		} 
+		else if (msg == RC_minus)
 		{
 			keyMinusPressed();
 		}
@@ -393,6 +396,7 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 
 			strncpy(value, oldval, size);
 			loop = false;
+			exit_pressed = true;
 		}
 		else
 		{

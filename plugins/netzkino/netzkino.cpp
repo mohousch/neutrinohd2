@@ -273,7 +273,7 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		printf("ret:%d nksearch:%s\n", ret, nksearch.c_str());
 
-		if(ret) //FIXME:
+		if(!stringInput.getExitPressed()) //FIXME:
 		{
 			loadNKTitles(cNKFeedParser::SEARCH, nksearch, 0);
 			showMenu();
