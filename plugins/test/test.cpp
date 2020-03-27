@@ -294,6 +294,7 @@ CTestMenu::~CTestMenu()
 {
 	Channels.clear();
 	filelist.clear();
+	fileFilter.clear();
 	m_vMovieInfo.clear();
 
 	if(webTVchannelList)
@@ -314,6 +315,10 @@ void CTestMenu::loadAudioPlaylist()
 	CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	loadBox.paint();
 
+	fileFilter.clear();
+	filelist.clear();
+	AudioPlaylist.clear();
+
 	fileFilter.addFilter("cdr");
 	fileFilter.addFilter("mp3");
 	fileFilter.addFilter("m2a");
@@ -325,9 +330,6 @@ void CTestMenu::loadAudioPlaylist()
 	fileFilter.addFilter("aac");
 	fileFilter.addFilter("dts");
 	fileFilter.addFilter("m4a");
-
-	filelist.clear();
-	AudioPlaylist.clear();
 
 	std::string Path = g_settings.network_nfs_audioplayerdir;
 
@@ -390,7 +392,7 @@ void CTestMenu::loadAudioPlaylist()
 
 void CTestMenu::openAudioFileBrowser()
 {
-	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
+	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_audioplayerdir : "");
 
 	filebrowser.Multi_Select = true;
 	filebrowser.Dirs_Selectable = true;
@@ -463,6 +465,9 @@ void CTestMenu::openAudioFileBrowser()
 
 void CTestMenu::loadMoviePlaylist()
 {
+	fileFilter.clear();
+	filelist.clear();
+
 	fileFilter.addFilter("ts");
 	fileFilter.addFilter("mpg");
 	fileFilter.addFilter("mpeg");
@@ -492,7 +497,6 @@ void CTestMenu::loadMoviePlaylist()
 	// recordingdir
 	std::string Path = g_settings.network_nfs_recordingdir;
 	m_vMovieInfo.clear();
-	filelist.clear();
 
 	CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	loadBox.paint();
@@ -547,7 +551,7 @@ void CTestMenu::loadMoviePlaylist()
 
 void CTestMenu::openMovieFileBrowser()
 {
-	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
+	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_recordingdir : "");
 
 	filebrowser.Multi_Select = true;
 	filebrowser.Dirs_Selectable = true;
@@ -617,6 +621,7 @@ void CTestMenu::loadPicturePlaylist()
 	CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	loadBox.paint();
 
+	fileFilter.clear();
 	filelist.clear();
 	PicPlaylist.clear();
 
@@ -3848,8 +3853,8 @@ void CTestMenu::testPlayMovieURL()
 	CFileBrowser * fileBrowser;
 	
 	fileBrowser = new CFileBrowser();
-	
-	CFileFilter fileFilter;
+
+	fileFilter.clear();
 	
 	fileFilter.addFilter("ts");
 	fileFilter.addFilter("mpg");
@@ -3916,8 +3921,8 @@ void CTestMenu::testPlayAudioURL()
 	CFileBrowser * fileBrowser;
 	
 	fileBrowser = new CFileBrowser();
-	
-	CFileFilter fileFilter;
+
+	fileFilter.clear();
 	
 	fileFilter.addFilter("cdr");
 	fileFilter.addFilter("mp3");
@@ -3972,8 +3977,8 @@ void CTestMenu::testShowPictureURL()
 	CFileBrowser * fileBrowser;
 	
 	fileBrowser = new CFileBrowser();
-	
-	CFileFilter fileFilter;
+
+	fileFilter.clear();
 	
 	fileFilter.addFilter("png");
 	fileFilter.addFilter("bmp");
@@ -3984,7 +3989,7 @@ void CTestMenu::testShowPictureURL()
 	fileBrowser->Dirs_Selectable = false;
 	fileBrowser->Filter = &fileFilter;
 	
-	std::string Path_local = g_settings.network_nfs_audioplayerdir;
+	std::string Path_local = g_settings.network_nfs_picturedir;
 
 BROWSER:
 	if (fileBrowser->exec(Path_local.c_str()))
@@ -4016,8 +4021,8 @@ void CTestMenu::testPlayMovieFolder()
 	CFileBrowser * fileBrowser;
 	
 	fileBrowser = new CFileBrowser();
-	
-	CFileFilter fileFilter;
+
+	fileFilter.clear();
 	
 	fileFilter.addFilter("ts");
 	fileFilter.addFilter("mpg");
@@ -4085,9 +4090,7 @@ void CTestMenu::testPlayAudioFolder()
 		
 	CFileBrowser * fileBrowser;
 
-	CFileFilter fileFilter;
-	
-	CFileList filelist;
+	fileFilter.clear();
 	
 	fileFilter.addFilter("cdr");
 	fileFilter.addFilter("mp3");
@@ -4149,9 +4152,7 @@ void CTestMenu::testShowPictureFolder()
 
 	CFileBrowser * fileBrowser;
 	
-	CFileFilter fileFilter;
-	
-	CFileList filelist;
+	fileFilter.clear();
 	
 	fileFilter.addFilter("png");
 	fileFilter.addFilter("bmp");
@@ -4163,7 +4164,7 @@ void CTestMenu::testShowPictureFolder()
 	fileBrowser->Dirs_Selectable = true;
 	fileBrowser->Filter = &fileFilter;
 	
-	std::string Path_local = g_settings.network_nfs_audioplayerdir;
+	std::string Path_local = g_settings.network_nfs_picturedir;
 
 BROWSER:
 	if (fileBrowser->exec(Path_local.c_str()))
@@ -4406,8 +4407,8 @@ void CTestMenu::testPluginsList()
 
 void CTestMenu::testPlayMovieDir()
 {
-	//
-	CFileFilter fileFilter;
+	filelist.clear();
+	fileFilter.clear();
 	
 	fileFilter.addFilter("ts");
 	fileFilter.addFilter("mpg");
@@ -4437,8 +4438,6 @@ void CTestMenu::testPlayMovieDir()
 	
 	std::string Path_local = g_settings.network_nfs_moviedir;
 
-	CFileList filelist;
-
 	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
 	{
 		CFileList::iterator files = filelist.begin();
@@ -4453,8 +4452,8 @@ void CTestMenu::testPlayMovieDir()
 
 void CTestMenu::testPlayAudioDir()
 {
-	//
-	CFileFilter fileFilter;
+	filelist.clear();
+	fileFilter.clear();
 	
 	fileFilter.addFilter("cdr");
 	fileFilter.addFilter("mp3");
@@ -4469,8 +4468,6 @@ void CTestMenu::testPlayAudioDir()
 	fileFilter.addFilter("m4a");
 	
 	std::string Path_local = g_settings.network_nfs_audioplayerdir;
-
-	CFileList filelist;
 
 	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
 	{
@@ -4494,8 +4491,8 @@ void CTestMenu::testPlayAudioDir()
 
 void CTestMenu::testShowPictureDir()
 {
-	//
-	CFileFilter fileFilter;
+	filelist.clear();
+	fileFilter.clear();
 
 	fileFilter.addFilter("png");
 	fileFilter.addFilter("bmp");
@@ -4503,8 +4500,6 @@ void CTestMenu::testShowPictureDir()
 	fileFilter.addFilter("jpeg");
 	
 	std::string Path_local = g_settings.network_nfs_picturedir;
-
-	CFileList filelist;
 
 	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
 	{		
@@ -4669,16 +4664,14 @@ void CTestMenu::testBouquetlist()
 {
 	webTVBouquetList = new CBouquetList("CTestMenu::testBouquetlist");
 
-	CBouquet* webBouquet = NULL;
+	filelist.clear();
+	fileFilter.clear();
 
-	CFileFilter fileFilter;
+	CBouquet* webBouquet = NULL;
 	
 	fileFilter.addFilter("xml");
 	fileFilter.addFilter("tv");
 	fileFilter.addFilter("m3u");
-
-	//
-	CFileList filelist;
 
 	if(CFileHelpers::getInstance()->readDir(CONFIGDIR "/webtv", &filelist, &fileFilter))
 	{

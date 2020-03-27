@@ -73,7 +73,8 @@ class CFileFilter
 			}
 			return false;
 		};
-		void Clear(void) { Filter.clear();};
+
+		void clear(void) { Filter.clear();};
 };
 
 class CFile
