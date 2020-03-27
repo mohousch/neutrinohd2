@@ -131,7 +131,6 @@ class CImage
 			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
 		};
 };
-///
 
 // buttons
 typedef struct button_label

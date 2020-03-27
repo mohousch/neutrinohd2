@@ -47,6 +47,7 @@ CWidget::CWidget()
 	background = NULL;
 
 	enableCenter = true;
+	paintMainFrame = false;
 
 	mainFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - mainFrameBox.iWidth ) >> 1 );
 	mainFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - mainFrameBox.iHeight) >> 1 );
@@ -70,6 +71,7 @@ CWidget::CWidget(const int x, const int y, const int dx, const int dy)
 	background = NULL;
 
 	enableCenter = true;
+	paintMainFrame = false;
 
 	timeout = 0;
 	selected = 0;
@@ -87,6 +89,7 @@ CWidget::CWidget(CBox *position)
 	background = NULL;
 
 	enableCenter = true;
+	paintMainFrame = false;
 
 	timeout = 0;
 	selected = 0;
@@ -145,8 +148,11 @@ void CWidget::paint()
 {
 	dprintf(DEBUG_NORMAL, "CWidget:: paint\n");
 
-	frameBuffer->paintBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight, backgroundColor);
+	// paint mainFrame
+	if(paintMainFrame)
+		frameBuffer->paintBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight, backgroundColor);
 
+	// paint items
 	paintItems();
 }
 
@@ -219,7 +225,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 	initFrames();
 
-	printf("items.size: %d\d", (int)items.size());
+	printf("items.size: %d\n", (int)items.size());
 
 	if(hasItem() && items.size() > 1)
 	{
@@ -331,144 +337,29 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 						msg = RC_timeout;
 					}
 					break;
-				
-				#if 0
-				case (RC_up) :
-					/*
-					{
-						if(items[selected]->isSelectable() && (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
-						{
-							for (unsigned int count = 1; count < items.size(); count++) 
-							{
-								pos = (selected - count)%items.size();
-
-								CWidgetItem * item = items[pos];
-
-								if(item->isSelectable() && item->hasItem())
-								{
-									items[selected]->setOutFocus(true);
-
-									selected = pos;
-
-									item->setOutFocus(false);
-
-									paint();
-
-									break;
-								}
-							}
-						}
-					}
-					*/
-					break;
-					
-				case (RC_down) :
-					/*
-					{
-						if(items[selected]->isSelectable() && (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
-						{
-							for (unsigned int count = 1; count < items.size(); count++) 
-							{
-								pos = (selected + count)%items.size();
-
-								CWidgetItem * item = items[pos];
-
-								if(item->isSelectable() && item->hasItem())
-								{
-									items[selected]->setOutFocus(true);
-
-									selected = pos;
-
-									item->setOutFocus(false);
-
-									paint();
-
-									break;
-								}
-							}
-						}
-					}
-					*/
-					break;
-
-				case (RC_left):
-					/*
-					{
-						if(items[selected]->isSelectable() && ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME)))
-						{
-							for (unsigned int count = 1; count < items.size(); count++) 
-							{
-								pos = (selected - count)%items.size();
-
-								CWidgetItem * item = items[pos];
-
-								if(item->isSelectable() && item->hasItem())
-								{
-									items[selected]->setOutFocus(true);
-
-									selected = pos;
-
-									item->setOutFocus(false);
-
-									paint();
-
-									break;
-								}
-							}
-						}
-					}
-					*/
-					break;
-					
-				case (RC_right):
-					/*
-					{
-						if(items[selected]->isSelectable() && ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME)))
-						{
-							for (unsigned int count = 1; count < items.size(); count++) 
-							{
-								pos = (selected + count)%items.size();
-
-								CWidgetItem * item = items[pos];
-
-								if(item->isSelectable() && item->hasItem())
-								{
-									items[selected]->setOutFocus(true);
-
-									selected = pos;
-
-									item->setOutFocus(false);
-
-									paint();
-
-									break;
-								}
-							}
-						}
-					}
-					*/
-					break;
-				#endif
 
 				case (RC_yellow):
 					{
-						for (unsigned int count = 1; count < items.size(); count++) 
+						if(hasItem())
 						{
-							pos = (selected + count)%items.size();
-
-							CWidgetItem * item = items[pos];
-
-							if(item->isSelectable() && item->hasItem())
+							for (unsigned int count = 1; count < items.size(); count++) 
 							{
-								items[selected]->setOutFocus(true);
+								pos = (selected + count)%items.size();
 
-								selected = pos;
+								CWidgetItem * item = items[pos];
 
-								item->setOutFocus(false);
+								if(item->isSelectable() && item->hasItem())
+								{
+									items[selected]->setOutFocus(true);
 
-								paint();
+									selected = pos;
 
-								break;
+									item->setOutFocus(false);
+
+									paint();
+
+									break;
+								}
 							}
 						}
 					}

@@ -118,8 +118,11 @@ class CTestMenu : public CMenuTarget
 		void loadTMDBPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1, bool search = false);
 
 		void loadMoviePlaylist();
+		void openMovieFileBrowser();
 		void loadAudioPlaylist();
-		void loadPicturePlaylist();	
+		void openAudioFileBrowser();
+		void loadPicturePlaylist();
+		void openPictureFileBrowser();	
 
 		// testing
 		void test();
@@ -385,6 +388,79 @@ void CTestMenu::loadAudioPlaylist()
 	loadBox.hide();
 }
 
+void CTestMenu::openAudioFileBrowser()
+{
+	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
+
+	filebrowser.Multi_Select = true;
+	filebrowser.Dirs_Selectable = true;
+	filebrowser.Filter = &fileFilter;
+
+	std::string Path = g_settings.network_nfs_audioplayerdir;
+
+	if (filebrowser.exec(Path.c_str()))
+	{
+		Path = filebrowser.getCurrentDir();
+		CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
+		for(; files != filebrowser.getSelectedFiles().end(); files++)
+		{
+			if ( (files->getExtension() == CFile::EXTENSION_CDR)
+					||  (files->getExtension() == CFile::EXTENSION_MP3)
+					||  (files->getExtension() == CFile::EXTENSION_WAV)
+					||  (files->getExtension() == CFile::EXTENSION_FLAC))
+			{
+				CAudiofile audiofile(files->Name, files->getExtension());
+
+				// skip duplicate
+				for (unsigned long i = 0; i < AudioPlaylist.size(); i++)
+				{
+					if(AudioPlaylist[i].Filename == audiofile.Filename)
+						AudioPlaylist.erase(AudioPlaylist.begin() + i); 
+				}
+
+				// refill
+				std::string title;
+				std::string artist;
+				std::string genre;
+				std::string date;
+				char duration[9] = "";
+
+				CAudioPlayer::getInstance()->init();
+
+				int ret = CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
+
+				if (!ret || (audiofile.MetaData.artist.empty() && audiofile.MetaData.title.empty() ))
+				{
+					//remove extension (.mp3)
+					std::string tmp = files->getFileName().substr(files->getFileName().rfind('/') + 1);
+					tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
+
+					std::string::size_type i = tmp.rfind(" - ");
+		
+					if(i != std::string::npos)
+					{ 
+						audiofile.MetaData.title = tmp.substr(0, i);
+						audiofile.MetaData.artist = tmp.substr(i + 3);
+					}
+					else
+					{
+						i = tmp.rfind('-');
+						if(i != std::string::npos)
+						{
+							audiofile.MetaData.title = tmp.substr(0, i);
+							audiofile.MetaData.artist = tmp.substr(i + 1);
+						}
+						else
+							audiofile.MetaData.title = tmp;
+					}
+				}
+		
+				AudioPlaylist.push_back(audiofile);
+			}
+		}
+	}
+}
+
 void CTestMenu::loadMoviePlaylist()
 {
 	fileFilter.addFilter("ts");
@@ -414,7 +490,7 @@ void CTestMenu::loadMoviePlaylist()
 	fileFilter.addFilter("ogg");
 	
 	// recordingdir
-	std::string Path_local = g_settings.network_nfs_recordingdir;
+	std::string Path = g_settings.network_nfs_recordingdir;
 	m_vMovieInfo.clear();
 	filelist.clear();
 
@@ -422,7 +498,7 @@ void CTestMenu::loadMoviePlaylist()
 	loadBox.paint();
 	
 	//
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
 	{
 		// filter them
 		MI_MOVIE_INFO movieInfo;
@@ -469,6 +545,73 @@ void CTestMenu::loadMoviePlaylist()
 	loadBox.hide();
 }
 
+void CTestMenu::openMovieFileBrowser()
+{
+	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
+
+	filebrowser.Multi_Select = true;
+	filebrowser.Dirs_Selectable = true;
+	filebrowser.Filter = &fileFilter;
+
+	std::string Path = g_settings.network_nfs_recordingdir;
+
+	if (filebrowser.exec(Path.c_str()))
+	{
+		Path = filebrowser.getCurrentDir();
+
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+
+		CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
+		for(; files != filebrowser.getSelectedFiles().end(); files++)
+		{
+			// filter them
+			MI_MOVIE_INFO movieInfo;
+			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+
+			//
+			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+					
+			movieInfo.file.Name = files->Name;
+					
+			// load movie infos (from xml file)
+			m_movieInfo.loadMovieInfo(&movieInfo);
+
+			std::string tmp_str = files->getFileName();
+
+			removeExtension(tmp_str);
+
+			// refill if empty
+			if(movieInfo.epgTitle.empty())
+				movieInfo.epgTitle = tmp_str;
+
+			if(movieInfo.epgInfo1.empty())
+				movieInfo.epgInfo1 = tmp_str;
+
+			//if(movieInfo.epgInfo2.empty())
+			//	movieInfo.epgInfo2 = tmp_str;
+
+			//thumbnail
+			std::string fname = "";
+			fname = files->Name;
+			changeFileNameExt(fname, ".jpg");
+					
+			if(!access(fname.c_str(), F_OK) )
+				movieInfo.tfile = fname.c_str();
+
+			// skip duplicate
+			for (unsigned long i = 0; i < m_vMovieInfo.size(); i++)
+			{
+				if(m_vMovieInfo[i].file.getFileName() == movieInfo.file.getFileName())
+					m_vMovieInfo.erase(m_vMovieInfo.begin() + i); 
+			}
+					
+			// 
+			m_vMovieInfo.push_back(movieInfo);
+		}
+	}
+}
+
 void CTestMenu::loadPicturePlaylist()
 {
 	CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
@@ -504,6 +647,47 @@ void CTestMenu::loadPicturePlaylist()
 	}
 
 	loadBox.hide();
+}
+
+void CTestMenu::openPictureFileBrowser()
+{
+	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
+
+	filebrowser.Multi_Select = true;
+	filebrowser.Dirs_Selectable = true;
+	filebrowser.Filter = &fileFilter;
+
+	std::string Path = g_settings.network_nfs_picturedir;
+
+	if (filebrowser.exec(Path.c_str()))
+	{
+		Path = filebrowser.getCurrentDir();
+		CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
+		for(; files != filebrowser.getSelectedFiles().end(); files++)
+		{
+			if(files->getType() == CFile::FILE_PICTURE)
+			{
+				CPicture pic;
+				pic.Filename = files->Name;
+				std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
+				pic.Name = tmp.substr(0, tmp.rfind('.'));
+				pic.Type = tmp.substr(tmp.rfind('.') + 1);
+				struct stat statbuf;
+				if(stat(pic.Filename.c_str(),&statbuf) != 0)
+					printf("stat error");
+				pic.Date = statbuf.st_mtime;
+
+				// skip duplicate
+				for (unsigned long i = 0; i < PicPlaylist.size(); i++)
+				{
+					if(PicPlaylist[i].Filename == pic.Filename)
+						PicPlaylist.erase(PicPlaylist.begin() + i); 
+				}
+							
+				PicPlaylist.push_back(pic);
+			}
+		}
+	}
 }
 
 void CTestMenu::loadTMDBPlaylist(const char *txt, const char *list, const int seite, bool search)
@@ -812,20 +996,39 @@ void CTestMenu::listFrameWidget()
 
 	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 
-	///
+	// head
+	headBox.iWidth = frameBuffer->getScreenWidth();
+	headBox.iHeight = 40;
+	headBox.iX = frameBuffer->getScreenX();
+	headBox.iY = frameBuffer->getScreenY();
+
+	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, "CWidget(ClistFrame)", NEUTRINO_ICON_MP3);
+
+	headersWidget->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+	headersWidget->enablePaintDate();
+
+	// foot
+	footBox.iWidth = frameBuffer->getScreenWidth();
+	footBox.iHeight = 40;
+	footBox.iX = frameBuffer->getScreenX();
+	footBox.iY = frameBuffer->getScreenY() + frameBuffer->getScreenHeight() - footBox.iHeight;
+
+	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight, FOOT_BUTTONS_COUNT, FootButtons);
+
+	footersWidget->setCorner(RADIUS_MID, CORNER_BOTTOM);
+
+	//
 	CBox listFrameBox;
 	LF_LINES listFrameLines;
 	int selected = 0;
 	
-	listFrameBox.iX = frameBuffer->getScreenX() + 10;
-	listFrameBox.iY = frameBuffer->getScreenY() + 10;
-	listFrameBox.iWidth = frameBuffer->getScreenWidth() - 20;
-	listFrameBox.iHeight = frameBuffer->getScreenHeight() - 20;
+	listFrameBox.iX = frameBuffer->getScreenX();
+	listFrameBox.iY = frameBuffer->getScreenY() + headBox.iHeight;
+	listFrameBox.iWidth = frameBuffer->getScreenWidth();
+	listFrameBox.iHeight = frameBuffer->getScreenHeight() - headBox.iHeight - footBox.iHeight;
 
 	//
-	#define MAX_ROWS 		LF_MAX_ROWS //6
-
-	
+#define MAX_ROWS 		LF_MAX_ROWS //6
 
 	// init
 	listFrameLines.rows = MAX_ROWS;
@@ -837,8 +1040,8 @@ void CTestMenu::listFrameWidget()
 
 	// rowwidth
 	listFrameLines.rowWidth[0] = MAX_WINDOW_WIDTH / 20;
-	listFrameLines.rowWidth[1] = MAX_WINDOW_WIDTH / 4;
-	listFrameLines.rowWidth[2] = MAX_WINDOW_WIDTH / 12;
+	listFrameLines.rowWidth[1] = MAX_WINDOW_WIDTH / 3;
+	listFrameLines.rowWidth[2] = MAX_WINDOW_WIDTH / 10;
 	listFrameLines.rowWidth[3] = MAX_WINDOW_WIDTH / 8;
 	listFrameLines.rowWidth[4] = MAX_WINDOW_WIDTH / 5;
 	listFrameLines.rowWidth[5] = MAX_WINDOW_WIDTH / 10;
@@ -852,10 +1055,10 @@ void CTestMenu::listFrameWidget()
 	listFrameLines.lineHeader[5] = "date";
 	
 
-	listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::TITLE | CListFrame::HEADER_LINE | CListFrame::SCROLL, &listFrameBox);
+	listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::CListFrame::HEADER_LINE | CListFrame::SCROLL, &listFrameBox);
 
 	// title
-	listFrame->setTitle("CWidget(ClistFrame)", NEUTRINO_ICON_MOVIE);
+	//listFrame->setTitle("CWidget(ClistFrame)", NEUTRINO_ICON_MOVIE);
 
 	loadAudioPlaylist();
 
@@ -868,10 +1071,6 @@ void CTestMenu::listFrameWidget()
 		std::string genre;
 		std::string date;
 		char duration[9] = "";
-
-		CAudioPlayer::getInstance()->init();
-
-		CAudioPlayer::getInstance()->readMetaData(&AudioPlaylist[i], true);
 
 		title = AudioPlaylist[i].MetaData.title;
 		artist = AudioPlaylist[i].MetaData.artist;
@@ -891,13 +1090,16 @@ void CTestMenu::listFrameWidget()
 	// fill lineArrays list
 	listFrame->setLines(&listFrameLines);
 
+	// set selected line
 	listFrame->setSelectedLine(selected);
 	
 	// paint
 	listFrame->showSelection(true);
-	///
 
+	//
+	testWidget->addItem(headersWidget);
 	testWidget->addItem(listFrame);
+	testWidget->addItem(footersWidget);
 
 	testWidget->addKey(RC_ok, this, "aok");
 
@@ -908,6 +1110,12 @@ void CTestMenu::listFrameWidget()
 
 	delete listFrame;
 	listFrame = NULL;
+
+	delete headersWidget;
+	headersWidget = NULL;
+
+	delete footersWidget;
+	footersWidget = NULL;
 }
 
 void CTestMenu::listBoxWidget()
@@ -2391,89 +2599,31 @@ void CTestMenu::testCListFrame()
 	listFrame->setTitle("listFrame (AudioPlayer)", NEUTRINO_ICON_MOVIE);
 	
 	// fill lineArrays list
-	CFileFilter fileFilter;
+	loadAudioPlaylist();
 
-	// music
-	fileFilter.addFilter("cdr");
-	fileFilter.addFilter("mp3");
-	fileFilter.addFilter("m2a");
-	fileFilter.addFilter("mpa");
-	fileFilter.addFilter("mp2");
-	fileFilter.addFilter("ogg");
-	fileFilter.addFilter("wav");
-	fileFilter.addFilter("flac");
-	fileFilter.addFilter("aac");
-	fileFilter.addFilter("dts");
-	fileFilter.addFilter("m4a");
-	
-	std::string Path_local = g_settings.network_nfs_audioplayerdir;
-
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	//
+	int count = 0;
+	for (unsigned int i = 0; i < AudioPlaylist.size(); i++)
 	{
-		int count = 0;
-				
-		CFileList::iterator files = filelist.begin();
-		for(; files != filelist.end() ; files++)
-		{
-			count++;
-			if (files->getType() == CFile::FILE_AUDIO)
-			{
-				std::string title;
-				std::string artist;
-				std::string genre;
-				std::string date;
-				char duration[9] = "";
+		std::string title;
+		std::string artist;
+		std::string genre;
+		std::string date;
+		char duration[9] = "";
 
-				// metaData
-				CAudiofile audiofile(files->Name, files->getExtension());
+		title = AudioPlaylist[i].MetaData.title;
+		artist = AudioPlaylist[i].MetaData.artist;
+		genre = AudioPlaylist[i].MetaData.genre;	
+		date = AudioPlaylist[i].MetaData.date;
 
-				CAudioPlayer::getInstance()->init();
+		snprintf(duration, 8, "(%ld:%02ld)", AudioPlaylist[i].MetaData.total_time / 60, AudioPlaylist[i].MetaData.total_time % 60);
 
-				int ret = CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
-
-				if (!ret || (audiofile.MetaData.artist.empty() && audiofile.MetaData.title.empty() ))
-				{
-					// //remove extension (.mp3)
-					std::string tmp = files->getFileName().substr(files->getFileName().rfind('/') + 1);
-					tmp = tmp.substr(0, tmp.length() - 4);	//remove extension (.mp3)
-
-					std::string::size_type i = tmp.rfind(" - ");
-		
-					if(i != std::string::npos)
-					{ 
-						title = tmp.substr(0, i);
-						artist = tmp.substr(i + 3);
-					}
-					else
-					{
-						i = tmp.rfind('-');
-						if(i != std::string::npos)
-						{
-							title = tmp.substr(0, i);
-							artist = tmp.substr(i + 1);
-						}
-						else
-							title = tmp;
-					}
-				}
-				else
-				{
-					title = audiofile.MetaData.title;
-					artist = audiofile.MetaData.artist;
-					genre = audiofile.MetaData.genre;	
-					date = audiofile.MetaData.date;
-
-					snprintf(duration, 8, "(%ld:%02ld)", audiofile.MetaData.total_time / 60, audiofile.MetaData.total_time % 60);
-				}
-
-				listFrameLines.lineArray[0].push_back(to_string(count));
-				listFrameLines.lineArray[1].push_back(title);
-				listFrameLines.lineArray[2].push_back(duration);
-				listFrameLines.lineArray[3].push_back(genre);
-				listFrameLines.lineArray[4].push_back(artist);
-				listFrameLines.lineArray[5].push_back(date);
-			}
-		}
+		listFrameLines.lineArray[0].push_back(to_string(i + 1));
+		listFrameLines.lineArray[1].push_back(title);
+		listFrameLines.lineArray[2].push_back(duration);
+		listFrameLines.lineArray[3].push_back(genre);
+		listFrameLines.lineArray[4].push_back(artist);
+		listFrameLines.lineArray[5].push_back(date);
 	}
 	//
 	listFrame->setLines(&listFrameLines);
@@ -2540,9 +2690,9 @@ REPEAT:
 		{
 			selected = listFrame->getSelectedLine();
 
-			for (unsigned int i = 0; i < filelist.size(); i++)
+			for (unsigned int i = 0; i < AudioPlaylist.size(); i++)
 			{
-				tmpAudioPlayerGui.addToPlaylist(filelist[i]);
+				tmpAudioPlayerGui.addToPlaylist(AudioPlaylist[i]);
 			}
 
 			tmpAudioPlayerGui.setCurrent(selected);
@@ -2558,8 +2708,6 @@ REPEAT:
 	
 	delete listFrame;
 	listFrame = NULL;
-
-	filelist.clear();
 }
 
 // CProgressBar
@@ -4376,87 +4524,11 @@ void CTestMenu::testShowPictureDir()
 // ClistBoxWidget
 void CTestMenu::testClistBoxWidget()
 {
-	//
-	CFileFilter fileFilter;
-	
-	fileFilter.addFilter("ts");
-	fileFilter.addFilter("mpg");
-	fileFilter.addFilter("mpeg");
-	fileFilter.addFilter("divx");
-	fileFilter.addFilter("avi");
-	fileFilter.addFilter("mkv");
-	fileFilter.addFilter("asf");
-	fileFilter.addFilter("aiff");
-	fileFilter.addFilter("m2p");
-	fileFilter.addFilter("mpv");
-	fileFilter.addFilter("m2ts");
-	fileFilter.addFilter("vob");
-	fileFilter.addFilter("mp4");
-	fileFilter.addFilter("mov");	
-	fileFilter.addFilter("flv");	
-	fileFilter.addFilter("dat");
-	fileFilter.addFilter("trp");
-	fileFilter.addFilter("vdr");
-	fileFilter.addFilter("mts");
-	fileFilter.addFilter("wmv");
-	fileFilter.addFilter("wav");
-	fileFilter.addFilter("flac");
-	fileFilter.addFilter("mp3");
-	fileFilter.addFilter("wma");
-	fileFilter.addFilter("ogg");
-
-	CFileList filelist;
-	
-	// recordingdir
-	std::string Path_local = g_settings.network_nfs_recordingdir;
-	
-	//
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		// filter them
-		MI_MOVIE_INFO movieInfo;
-		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-
-		CFileList::iterator files = filelist.begin();
-		for(; files != filelist.end() ; files++)
-		{
-			//
-			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-					
-			movieInfo.file.Name = files->Name;
-					
-			// load movie infos (from xml file)
-			m_movieInfo.loadMovieInfo(&movieInfo);
-
-			// refill if empty
-			std::string tmp_str = files->getFileName();
-
-			removeExtension(tmp_str);
-
-			if(movieInfo.epgTitle.empty())
-				movieInfo.epgTitle = tmp_str;
-
-			if(movieInfo.epgInfo1.empty())
-				movieInfo.epgInfo1 = tmp_str;
-
-			//if(movieInfo.epgInfo2.empty())
-			//	movieInfo.epgInfo2 = tmp_str;
-
-			//thumbnail
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-					
-			if(!access(fname.c_str(), F_OK) )
-				movieInfo.tfile = fname.c_str();
-					
-			// 
-			m_vMovieInfo.push_back(movieInfo);
-		}
-	}
-
 	// our listBox
 	listMenu = new ClistBoxWidget("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+
+	//
+	loadMoviePlaylist();
 	
 	// add items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
@@ -4559,6 +4631,15 @@ void CTestMenu::testClistBoxWidget1()
 	mainMenu->hide();
 	delete mainMenu;
 	mainMenu = NULL;
+}
+
+void CTestMenu::testClistBoxWidget2()
+{
+	CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
+
+	audioPlayerSettingsMenu->exec(this, "");
+	delete audioPlayerSettingsMenu;
+	audioPlayerSettingsMenu = NULL;	
 }
 
 // CChannellist
@@ -5090,6 +5171,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "listboxwidget2")
+	{
+		testClistBoxWidget2();
+
+		return menu_return::RETURN_REPAINT;
+	}
 	else if(actionKey == "mplay")
 	{
 		selected = listMenu->getSelected();
@@ -5530,6 +5617,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	else if(actionKey == "listframewidget")
 	{
 		listFrameWidget();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "aok")
 	{
@@ -5546,6 +5635,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	else if(actionKey == "listboxmwidget")
 	{
 		listBoxWidget();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "mmwplay")
 	{
@@ -5569,10 +5660,14 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	else if(actionKey == "lsetup")
 	{
 		rightWidget->changeWidgetType();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "textboxwidget")
 	{
 		textBoxWidget();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "exit")
 	{
@@ -5614,6 +5709,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			rightWidget->addItem(item);
 		}
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "movie_popular")
 	{
@@ -5651,6 +5748,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			rightWidget->addItem(item);
 		}
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "movie_top_rated")
 	{
@@ -5688,6 +5787,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			rightWidget->addItem(item);
 		}
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "movie_new")
 	{
@@ -5725,6 +5826,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			rightWidget->addItem(item);
 		}
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "tv_today")
 	{
@@ -5762,6 +5865,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			rightWidget->addItem(item);
 		}
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "tv_on_air")
 	{
@@ -5799,6 +5904,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			rightWidget->addItem(item);
 		}
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "tv_popular")
 	{
@@ -5836,6 +5943,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			rightWidget->addItem(item);
 		}
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "tv_top_rated")
 	{
@@ -5873,6 +5982,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			rightWidget->addItem(item);
 		}
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "yplay")
 	{
@@ -5905,6 +6016,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[right_selected]);
 			tmpMoviePlayerGui.exec(NULL, "");
 		}
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "movie")
 	{
@@ -5970,6 +6083,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		leftWidget->setSelected(0);
 		rightWidget->setSelected(0);
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "tv")
 	{
@@ -6041,6 +6156,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		leftWidget->setSelected(0);
 		rightWidget->setSelected(0);
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "nextPage")
 	{
@@ -6083,6 +6200,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		}
 
 		rightWidget->setSelected(0);
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "prevPage")
 	{
@@ -6128,6 +6247,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		}
 
 		rightWidget->setSelected(0);
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "search")
 	{
@@ -6174,10 +6295,14 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 			tmdbsearch.clear();
 		}
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "windowwidget")
 	{
 		testWindowWidget();
+
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "txtinfo")
 	{
@@ -6185,7 +6310,11 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		if(textWidget)
 			textWidget->setBigFonts(bigFonts);
+
+		return menu_return::RETURN_REPAINT;
 	}
+
+	showMenu();
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -6341,8 +6470,8 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CBouquetList:", true, NULL, this, "bouquetlist"));
 
 	//
-	//mainMenu->addItem( new CMenuSeparator(LINE) );
-	//mainMenu->addItem(new CMenuForwarder("Spinner", true, NULL, this, "spinner"));
+	mainMenu->addItem( new CMenuSeparator(LINE) );
+	mainMenu->addItem(new CMenuForwarder("Spinner", false, NULL, this, "spinner"));
 	
 	mainMenu->exec(NULL, "");
 	//mainMenu->hide();
@@ -6368,9 +6497,7 @@ void plugin_exec(void)
 {
 	CTestMenu *testMenu = new CTestMenu();
 	
-	testMenu->showMenu();
 	testMenu->exec(NULL, "");
-	testMenu->hide();
 	
 	delete testMenu;
 	testMenu = NULL;

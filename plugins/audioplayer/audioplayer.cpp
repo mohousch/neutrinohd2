@@ -279,9 +279,6 @@ void CMP3Player::showMenu()
 		std::string date;
 		char duration[9] = "";
 
-		// read metadata
-		int ret = CAudioPlayer::getInstance()->readMetaData(&playlist[i], true);
-
 		title = playlist[i].MetaData.title;
 		artist = playlist[i].MetaData.artist;
 		genre = playlist[i].MetaData.genre;	

@@ -683,6 +683,7 @@ bool CListFrame::setSelectedLine(int selection)
 	dprintf(DEBUG_DEBUG, "CListFrame::setSelectedLine %d \r\n",selection);
 	
 	bool result = false;
+
 	if(selection >= 0 && selection < m_nNrOfLines)
 	{ 
 		m_nSelectedLine = selection;
