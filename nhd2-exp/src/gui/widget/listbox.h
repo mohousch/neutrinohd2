@@ -482,7 +482,6 @@ class ClistBox : public CWidgetItem
 		std::vector<CMenuItem*>	items;
 	private:
 		CFrameBuffer* frameBuffer;
-		//std::vector<CMenuItem*>	items;
 
 		CBox cFrameBox;
 		CBox cFrameFootInfo;

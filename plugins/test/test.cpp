@@ -277,6 +277,10 @@ CTestMenu::CTestMenu()
 	//
 	bigFonts = false;
 
+	plist = "popular";
+	page = 1;
+	TVShows = "movies";
+
 	//
 	testWidget = NULL;
 	topWidget = NULL;
@@ -850,6 +854,8 @@ void CTestMenu::widget()
 
 	testWidget->enableSaveScreen();
 	testWidget->setSelected(selected);
+	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+	testWidget->enablePaintMainFrame();
 
 	// head
 	headBox.iWidth = frameBuffer->getScreenWidth();
@@ -918,7 +924,6 @@ void CTestMenu::widget()
 	leftWidget->disableCenter();
 	leftWidget->setSelected(left_selected);
 	leftWidget->disableShrinkMenu();
-	//leftWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 
 	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos", true, NULL, this, "movie_in_cinema");
 	ClistBoxItem *item2 = new ClistBoxItem("Am", true, NULL, this, "movie_popular");
@@ -988,7 +993,6 @@ void CTestMenu::widget()
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
 	rightWidget->setItemsPerPage(6,2);
 	rightWidget->setSelected(right_selected);
-	//rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
 	rightWidget->enablePaintFootInfo();
 
 	// loadPlaylist
@@ -1026,8 +1030,6 @@ void CTestMenu::widget()
 	//testWidget->addItem(leftFrame);
 	testWidget->addItem(rightWidget);
 	testWidget->addItem(footersWidget);
-
-	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 
 	testWidget->addKey(RC_info, this, "winfo");
 	//testWidget->addKey(RC_ok, this, "wok");
@@ -6412,7 +6414,9 @@ void CTestMenu::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CTestMenu::showMenu:\n");
 
-	mainMenu = new ClistBoxWidget("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
+	mainMenu = new ClistBoxWidget(/*"testMenu", NEUTRINO_ICON_BUTTON_SETUP*/);
+
+	mainMenu->setTitle("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
 
 	mainMenu->setMode(MODE_MENU);
 	mainMenu->enableShrinkMenu(),
@@ -6453,6 +6457,9 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CIcon", true, NULL, this, "icon"));
 	mainMenu->addItem(new CMenuForwarder("CImage", true, NULL, this, "image"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
+	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
+	mainMenu->addItem(new CMenuForwarder("CScrollBar", false, NULL, this, "scrollbar"));
+	mainMenu->addItem(new CMenuForwarder("CItems2DetailsLine", false, NULL, this, "detailsline"));
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "Widget Components") );
 	mainMenu->addItem(new CMenuForwarder("CHeaders", true, NULL, this, "headers"));
 	mainMenu->addItem(new CMenuForwarder("CWindow", true, NULL, this, "window"));
@@ -6467,7 +6474,6 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("ClistBox(menu mode)", true, NULL, this, "listbox5"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(list mode)", true, NULL, this, "listbox6"));
 	mainMenu->addItem(new CMenuForwarder("CFrameBox", true, NULL, this, "framebox"));
-	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
 	
 	//
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "ClistBoxWidget") );

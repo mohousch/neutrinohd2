@@ -79,12 +79,6 @@ CHeaders::CHeaders(CBox position, const char * const title, const char * const i
 	itemType = WIDGET_ITEM_HEAD;
 }
 
-void CHeaders::setButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
-{
-	hbutton_count = _hbutton_count;
-	hbutton_labels = _hbutton_labels;
-}
-
 void CHeaders::paint()
 {
 	// box

@@ -217,6 +217,8 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CWidget:: exec: actionKey:%s\n", actionKey.c_str());
 
+	int retval = menu_return::RETURN_REPAINT;
+
 	int pos = 0;
 	exit_pressed = false;
 
@@ -224,8 +226,6 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 		parent->hide();
 
 	initFrames();
-
-	printf("items.size: %d\n", (int)items.size());
 
 	if(hasItem() && items.size() > 1)
 	{
@@ -250,7 +250,6 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 	// add sec timer
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 	
-	int retval = menu_return::RETURN_REPAINT;
 	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
 
 	//control loop
@@ -278,7 +277,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 					switch ( rv ) 
 					{
 						case menu_return::RETURN_EXIT_ALL:
-							retval = menu_return::RETURN_EXIT_ALL;
+							retval = menu_return::RETURN_EXIT_ALL; //fall through
 						case menu_return::RETURN_EXIT:
 							msg = RC_timeout;
 							break;
@@ -287,8 +286,8 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 							paint();
 							break;
 						case menu_return::RETURN_NONE:
-							g_RCInput->killTimer(sec_timer_id);
-							sec_timer_id = 0;
+							//g_RCInput->killTimer(sec_timer_id);
+							//sec_timer_id = 0;
 							retval = menu_return::RETURN_NONE;
 							msg = RC_timeout;
 							break;	
@@ -382,7 +381,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 							switch ( rv ) 
 							{
 								case menu_return::RETURN_EXIT_ALL:
-									retval = menu_return::RETURN_EXIT_ALL;
+									retval = menu_return::RETURN_EXIT_ALL; //fall through
 								case menu_return::RETURN_EXIT:
 									msg = RC_timeout;
 									break;
@@ -391,8 +390,8 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 									paint();
 									break;
 								case menu_return::RETURN_NONE:
-									g_RCInput->killTimer(sec_timer_id);
-									sec_timer_id = 0;
+									//g_RCInput->killTimer(sec_timer_id);
+									//sec_timer_id = 0;
 									retval = menu_return::RETURN_NONE;
 									msg = RC_timeout;
 									break;	
@@ -423,9 +422,9 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	while ( msg != RC_timeout );
 
-	printf("CWidget: retval: (%d)\n", retval);
+	printf("CWidget: retval: (%d) selected:%d\n", retval, selected);
 	
-	if(retval != menu_return::RETURN_NONE)
+	//if(retval != menu_return::RETURN_NONE) //FIXME: why???
 		hide();	
 
 	//

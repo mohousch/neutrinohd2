@@ -67,50 +67,8 @@ ClistBoxWidget::ClistBoxWidget()
 {
         nameString = g_Locale->getText(NONEXISTANT_LOCALE);
 	name = NONEXISTANT_LOCALE;
-        iconfile = "";
-        selected = 0;
-        iconOffset = 0;
-	offx = offy = 0;
-	
-	//
-	savescreen = false;
-	background = NULL;
 
-	//
-	fbutton_count	= 0;
-	fbutton_labels	= NULL;
-
-	//
-	PaintDate = false;
-	timestr_len = 0;
-
-	//
-	hbutton_count	= 0;
-	hbutton_labels	= NULL;
-
-	//
-	FootInfo = false;
-	footInfoHeight = 70;
-	cFrameFootInfo.iHeight = 0;
-	interFrame = 0;
-
-	//
-	widgetType = WIDGET_TYPE_STANDARD;
-	widgetChange = false;
-
-	// frame
-	backgroundColor = COL_MENUCONTENT_PLUS_0;
-	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
-	itemsPerX = 6;
-	itemsPerY = 3;
-	maxItemsPerPage = itemsPerX*itemsPerY;
-
-	shrinkMenu = false;
-
-	widgetMode = MODE_LISTBOX;
-	MenuPos = false;
-
-	//headers = new CHeaders();
+	Init("", MENU_WIDTH, MENU_HEIGHT);
 }
 
 ClistBoxWidget::ClistBoxWidget(const neutrino_locale_t Name, const std::string & Icon, const int mwidth, const int mheight)
@@ -129,7 +87,7 @@ ClistBoxWidget::ClistBoxWidget(const char* Name, const std::string & Icon, const
 	Init(Icon, mwidth, mheight);
 }
 
-void ClistBoxWidget::Init(const std::string & Icon, const int mwidth, const int mheight)
+void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int mheight)
 {
         frameBuffer = CFrameBuffer::getInstance();
         iconfile = Icon;
@@ -1153,6 +1111,8 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 {
 	dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec:\n");
 
+	int retval = menu_return::RETURN_REPAINT;
+
 	int pos = 0;
 	exit_pressed = false;
 	int cnt = 0;
@@ -1171,7 +1131,6 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 	// add sec timer
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
 
-	int retval = menu_return::RETURN_REPAINT;
 	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd(timeout == 0 ? 0xFFFF : timeout);
 
 	//control loop
@@ -1198,7 +1157,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					switch ( rv ) 
 					{
 						case menu_return::RETURN_EXIT_ALL:
-							retval = menu_return::RETURN_EXIT_ALL;
+							retval = menu_return::RETURN_EXIT_ALL; //fall through
 						case menu_return::RETURN_EXIT:
 							msg = RC_timeout;
 							break;
@@ -1606,7 +1565,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 								switch ( rv ) 
 								{
 									case menu_return::RETURN_EXIT_ALL:
-										retval = menu_return::RETURN_EXIT_ALL;
+										retval = menu_return::RETURN_EXIT_ALL; //fall through
 									
 									case menu_return::RETURN_EXIT:
 										msg = RC_timeout;
@@ -1751,7 +1710,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 	}
 	while ( msg != RC_timeout );
 	
-	if(retval != menu_return::RETURN_NONE)
+	if(retval != menu_return::RETURN_NONE) //FIXME:why???
 		hide();	
 
 	//

@@ -193,6 +193,8 @@ bool CTmdb::getBigCover(std::string cover, std::string tname)
 
 bool CTmdb::getSmallCover(std::string cover, std::string tname)
 { 
+	dprintf(DEBUG_NORMAL, "CTmdb::getSmallCover: %s\n", tname.c_str());
+
 	bool ret = false;
 
 	if (!cover.empty())
@@ -392,19 +394,39 @@ bool CTmdb::getGenreMovieList(const int id)
 
 	genreMovieList.clear();
 
-	Json::Value items = root.get("items", "");
+	Json::Value results = root.get("items", "");
 
-	if (items.type() != Json::arrayValue)
+	if (results.type() != Json::arrayValue)
 		return false;
 
-	for(unsigned int i = 0; i < items.size(); ++i)
+	for(unsigned int i = 0; i < results.size(); ++i)
 	{
-		tmdbinfo vinfo;
+		tmdbinfo tmp;
 
-		vinfo.title = items[i].get("title", "").asString();
+		tmp.vote_count = results[i].get("vote_count", 0).asInt();
+		tmp.id = results[i].get("id", 0).asInt();
+		tmp.media_type = results[i].get("media_type", "").asString();
+		tmp.video = results[i].get("video", false).asBool();
+		tmp.vote_average = results[i].get("vote_average", 0.0).asFloat();
+		tmp.popularity = results[i].get("popularity", 0.0).asFloat();
+		tmp.poster_path = results[i].get("poster_path", "").asString();
+		tmp.original_language = results[i].get("original_language", "").asString();
+		tmp.original_title = results[i].get("original_title", "").asString();
+		tmp.overview = results[i].get("overview", "").asString();
 
-		if (!vinfo.title.empty())
-			genreMovieList.push_back(vinfo);
+		if(tmp.media_type == "tv")
+		{
+			tmp.title = results[i].get("name", "").asString();
+			tmp.release_date = results[i].get("first_air_date", "").asString();
+		}
+		else
+		{
+			tmp.title = results[i].get("title", "").asString();
+			tmp.release_date = results[i].get("release_date", "").asString();
+		}
+
+		if (!tmp.title.empty())
+			genreMovieList.push_back(tmp);
 	} 
 
 	if(!genreMovieList.empty())

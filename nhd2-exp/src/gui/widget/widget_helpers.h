@@ -195,17 +195,21 @@ class CHeaders : public CWidgetItem
 		const char *hicon;
 	
 	public:
-		CHeaders(const int x, const int y, const int dx, const int dy, const char * const title, const char * const icon = NULL);
-		CHeaders(CBox position, const char * const title, const char * const icon = NULL);
+		CHeaders(const int x, const int y, const int dx, const int dy, const char * const title = NULL, const char * const icon = NULL);
+		CHeaders(CBox position, const char * const title = NULL, const char * const icon = NULL);
 		virtual ~CHeaders(){};
+
+		void setTitle(const char * const title){htitle = title;};
+		void setIcon(const char * const icon){hicon = icon;};
 
 		// head
 		void setColor(fb_pixel_t col){bgcolor = col;};
 		void setCorner(int ra = NO_RADIUS, int co = CORNER_NONE){radius = ra; corner = co;};
-		void setGradient(int grad){gradient = grad;};
+		void setGradient(int grad = nogradient){gradient = grad;};
+
+		void setButtons(const struct button_label* _hbutton_labels, const int _hbutton_count){hbutton_count = _hbutton_count; hbutton_labels = _hbutton_labels;}
 
 		void enablePaintDate(void){paintDate = true;};
-		void setButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 		void enableLogo(void){logo = true;};
 
 		void paint();
@@ -230,7 +234,9 @@ class CFooters : public CWidgetItem
 
 		void setColor(fb_pixel_t col){fbgcolor = col;};
 		void setCorner(int ra = NO_RADIUS, int co = CORNER_NONE){fradius = ra; fcorner = co;};
-		void setGradient(int grad){fgradient = grad;};
+		void setGradient(int grad = nogradient){fgradient = grad;};
+
+		void setButtons(const struct button_label* button_label, const int button_count){fcontent = button_label; fcount = button_count;};
 
 		void paint();
 };

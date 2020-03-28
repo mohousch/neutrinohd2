@@ -185,6 +185,8 @@ class ClistBoxWidget : public CMenuTarget
 		//
 		virtual int exec(CMenuTarget * parent, const std::string &actionKey);
 
+		void setTitle(const char* title = "", const char* icon = NULL){nameString = title; if(icon != NULL) iconfile = icon;};
+
 		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; if (selected < 0) selected = 0;};
 		int getSelected(){return selected;};
 
