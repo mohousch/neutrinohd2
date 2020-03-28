@@ -394,6 +394,21 @@ void CTestMenu::openAudioFileBrowser()
 {
 	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_audioplayerdir : "");
 
+	fileFilter.clear();
+	filelist.clear();
+
+	fileFilter.addFilter("cdr");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("m2a");
+	fileFilter.addFilter("mpa");
+	fileFilter.addFilter("mp2");
+	fileFilter.addFilter("ogg");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("aac");
+	fileFilter.addFilter("dts");
+	fileFilter.addFilter("m4a");
+
 	filebrowser.Multi_Select = true;
 	filebrowser.Dirs_Selectable = true;
 	filebrowser.Filter = &fileFilter;
@@ -553,6 +568,35 @@ void CTestMenu::openMovieFileBrowser()
 {
 	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_recordingdir : "");
 
+	fileFilter.clear();
+	filelist.clear();
+
+	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
+
 	filebrowser.Multi_Select = true;
 	filebrowser.Dirs_Selectable = true;
 	filebrowser.Filter = &fileFilter;
@@ -625,6 +669,11 @@ void CTestMenu::loadPicturePlaylist()
 	filelist.clear();
 	PicPlaylist.clear();
 
+	fileFilter.addFilter("png");
+	fileFilter.addFilter("bmp");
+	fileFilter.addFilter("jpg");
+	fileFilter.addFilter("jpeg");
+
 	std::string Path = g_settings.network_nfs_picturedir;
 
 	if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
@@ -657,6 +706,14 @@ void CTestMenu::loadPicturePlaylist()
 void CTestMenu::openPictureFileBrowser()
 {
 	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_picturedir : "");
+
+	fileFilter.clear();
+	filelist.clear();
+
+	fileFilter.addFilter("png");
+	fileFilter.addFilter("bmp");
+	fileFilter.addFilter("jpg");
+	fileFilter.addFilter("jpeg");
 
 	filebrowser.Multi_Select = true;
 	filebrowser.Dirs_Selectable = true;

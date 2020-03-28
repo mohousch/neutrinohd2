@@ -45,7 +45,18 @@ class audioPlayer(CFileBrowser):
 	def __init__(self):
 		CFileBrowser.__init__(self)
 		fileFilter = CFileFilter()
+
+		fileFilter.addFilter("cdr")
 		fileFilter.addFilter("mp3")
+		fileFilter.addFilter("m2a")
+		fileFilter.addFilter("mpa")
+		fileFilter.addFilter("mp2")
+		fileFilter.addFilter("ogg")
+		fileFilter.addFilter("wav")
+		fileFilter.addFilter("flac")
+		fileFilter.addFilter("aac")
+		fileFilter.addFilter("dts")
+		fileFilter.addFilter("m4a")
 
 		self.Multi_Select = False
 		self.Dirs_Selectable = False
@@ -69,8 +80,11 @@ class pictureViewer(CFileBrowser):
 	def __init__(self):
 		CFileBrowser.__init__(self)
 		fileFilter = CFileFilter()
+
 		fileFilter.addFilter("jpeg")
 		fileFilter.addFilter("jpg")
+		fileFilter.addFilter("png")
+		fileFilter.addFilter("bmp")
 
 		self.Multi_Select = False
 		self.Dirs_Selectable = False
@@ -95,7 +109,32 @@ class moviePlayer(CFileBrowser):
 	def __init__(self):
 		CFileBrowser.__init__(self)
 		fileFilter = CFileFilter()
+
 		fileFilter.addFilter("ts")
+		fileFilter.addFilter("mpg");
+		fileFilter.addFilter("mpeg");
+		fileFilter.addFilter("divx");
+		fileFilter.addFilter("avi");
+		fileFilter.addFilter("mkv");
+		fileFilter.addFilter("asf");
+		fileFilter.addFilter("aiff");
+		fileFilter.addFilter("m2p");
+		fileFilter.addFilter("mpv");
+		fileFilter.addFilter("m2ts");
+		fileFilter.addFilter("vob");
+		fileFilter.addFilter("mp4");
+		fileFilter.addFilter("mov");	
+		fileFilter.addFilter("flv");	
+		fileFilter.addFilter("dat");
+		fileFilter.addFilter("trp");
+		fileFilter.addFilter("vdr");
+		fileFilter.addFilter("mts");
+		fileFilter.addFilter("wmv");
+		fileFilter.addFilter("wav");
+		fileFilter.addFilter("flac");
+		fileFilter.addFilter("mp3");
+		fileFilter.addFilter("wma");
+		fileFilter.addFilter("ogg");
 
 		self.Multi_Select = False
 		self.Dirs_Selectable = False
