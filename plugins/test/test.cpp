@@ -903,14 +903,20 @@ void CTestMenu::widget()
 	leftFrame->addFrame(frame6);
 
 	leftWidget->addItem(item1);
+	leftWidget->addItem(new CMenuSeparator(LINE));
 	leftWidget->addItem(item2);
+	leftWidget->addItem(new CMenuSeparator(LINE));
 	leftWidget->addItem(item3);
+	leftWidget->addItem(new CMenuSeparator(LINE));
 	leftWidget->addItem(item4);
+	leftWidget->addItem(new CMenuSeparator(LINE));
 	leftWidget->addItem(item5);
 	leftWidget->addItem(item6);
 	leftWidget->addItem(item7);
 	leftWidget->addItem(item8);
+	leftWidget->addItem(new CMenuSeparator(LINE));
 	leftWidget->addItem(item9);
+	leftWidget->addItem(new CMenuSeparator(LINE));
 
 	// rightwidget
 	rightBox.iWidth = testWidget->getWindowsPos().iWidth - INTER_FRAME_SPACE - leftBox.iWidth;
@@ -959,8 +965,8 @@ void CTestMenu::widget()
 
 	testWidget->addItem(headersWidget);
 	testWidget->addItem(topWidget);
-	//testWidget->addItem(leftWidget);
-	testWidget->addItem(leftFrame);
+	testWidget->addItem(leftWidget);
+	//testWidget->addItem(leftFrame);
 	testWidget->addItem(rightWidget);
 	testWidget->addItem(footersWidget);
 
@@ -5515,14 +5521,20 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				ClistBoxItem *item9 = new ClistBoxItem("Beenden");
 
 				leftWidget->addItem(item1);
+				leftWidget->addItem(new CMenuSeparator(LINE));
 				leftWidget->addItem(item2);
+				leftWidget->addItem(new CMenuSeparator(LINE));
 				leftWidget->addItem(item3);
+				leftWidget->addItem(new CMenuSeparator(LINE));
 				leftWidget->addItem(item4);
+				leftWidget->addItem(new CMenuSeparator(LINE));
 				leftWidget->addItem(item5);
 				leftWidget->addItem(item6);
 				leftWidget->addItem(item7);
 				leftWidget->addItem(item8);
+				leftWidget->addItem(new CMenuSeparator(LINE));
 				leftWidget->addItem(item9);
+				leftWidget->addItem(new CMenuSeparator(LINE));
 
 				//loadTMDBPlaylist("tv", "airing_today", 1);
 				TVShows = "tv";
@@ -5573,14 +5585,20 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 				ClistBoxItem *item9 = new ClistBoxItem("Beenden");
 
 				leftWidget->addItem(item1);
+				leftWidget->addItem(new CMenuSeparator(LINE));
 				leftWidget->addItem(item2);
+				leftWidget->addItem(new CMenuSeparator(LINE));
 				leftWidget->addItem(item3);
+				leftWidget->addItem(new CMenuSeparator(LINE));
 				leftWidget->addItem(item4);
+				leftWidget->addItem(new CMenuSeparator(LINE));
 				leftWidget->addItem(item5);
 				leftWidget->addItem(item6);
 				leftWidget->addItem(item7);
 				leftWidget->addItem(item8);
+				leftWidget->addItem(new CMenuSeparator(LINE));
 				leftWidget->addItem(item9);
+				leftWidget->addItem(new CMenuSeparator(LINE));
 
 				loadTMDBPlaylist();
 
@@ -6037,14 +6055,20 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "exit");
 
 		leftWidget->addItem(item1);
+		leftWidget->addItem(new CMenuSeparator(LINE));
 		leftWidget->addItem(item2);
+		leftWidget->addItem(new CMenuSeparator(LINE));
 		leftWidget->addItem(item3);
+		leftWidget->addItem(new CMenuSeparator(LINE));
 		leftWidget->addItem(item4);
+		leftWidget->addItem(new CMenuSeparator(LINE));
 		leftWidget->addItem(item5);
 		leftWidget->addItem(item6);
 		leftWidget->addItem(item7);
 		leftWidget->addItem(item8);
+		leftWidget->addItem(new CMenuSeparator(LINE));
 		leftWidget->addItem(item9);
+		leftWidget->addItem(new CMenuSeparator(LINE));
 
 		loadTMDBPlaylist();
 
@@ -6105,14 +6129,20 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "exit");
 
 		leftWidget->addItem(item1);
+		leftWidget->addItem(new CMenuSeparator(LINE));
 		leftWidget->addItem(item2);
+		leftWidget->addItem(new CMenuSeparator(LINE));
 		leftWidget->addItem(item3);
+		leftWidget->addItem(new CMenuSeparator(LINE));
 		leftWidget->addItem(item4);
+		leftWidget->addItem(new CMenuSeparator(LINE));
 		leftWidget->addItem(item5);
 		leftWidget->addItem(item6);
 		leftWidget->addItem(item7);
 		leftWidget->addItem(item8);
+		leftWidget->addItem(new CMenuSeparator(LINE));
 		leftWidget->addItem(item9);
+		leftWidget->addItem(new CMenuSeparator(LINE));
 
 		//loadTMDBPlaylist("tv", "airing_today", 1);
 		TVShows = "tv";
