@@ -211,6 +211,7 @@ bool cYTFeedParser::supportedFormat(int fmt)
 	return false;
 }
 
+//FIXME: review this
 bool cYTFeedParser::decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo)
 {
 	dprintf(DEBUG_NORMAL, "cYTFeedParser::decodeVideoInfo\n");
@@ -221,15 +222,18 @@ bool cYTFeedParser::decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo)
 
 	if(answer.find("token=") == std::string::npos)
 		return ret;
+
+	printf("\n\ntrue1\n\n");
 	
 	vinfo.formats.clear();
 
 	//FIXME check expire
 	std::vector<std::string> ulist;
-	unsigned fmt = answer.find("url_encoded_fmt_stream_map=");
+	unsigned fmt = answer.find("url_encoded_fmt_stream_map");
 	
 	if (fmt != std::string::npos) 
 	{
+		printf("\n\ntrue2\n\n");
 		fmt = answer.find("=", fmt);
 		::splitString(answer, ",", ulist, fmt + 1);
 		
@@ -268,6 +272,7 @@ bool cYTFeedParser::decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo)
 			int id = atoi(smap["itag"].c_str());
 			if (supportedFormat(id) && !yurl.url.empty() && !yurl.sig.empty()) 
 			{
+				printf("true3\n");
 				yurl.quality = smap["quality"];
 				yurl.type = smap["type"];
 				
@@ -423,9 +428,12 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 		
 			// url/fill videos list
 			if(ParseVideoInfo(vinfo))
+			{
 				videos.push_back(vinfo);
-
-			return true;
+				return true;
+			}
+			else
+				return false;
 		}
 
 		return false;

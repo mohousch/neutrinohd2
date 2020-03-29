@@ -97,11 +97,7 @@ class CTmdb
 		bool getVideo(){return minfo[0].video;};
 		std::string getPosterPath(){return minfo[0].poster_path;};
 		std::string getOriginalLanguage(){return minfo[0].original_language;};
-
-		//
 		std::string getThumbnailDir(void){return thumbnail_dir;};
-
-		//
 		std::string getVID(){return minfo[0].vid;};
 		std::string getVKey(){return minfo[0].vkey;};
 		std::string getVName(){return minfo[0].vname;};
@@ -115,9 +111,6 @@ class CTmdb
 		// movielist
 		bool getMovieTVList(std::string mtype = "movie", std::string list = "now_playing", int page = 1);
 
-		//
-		bool getMovieTVInfo(std::string mtype = "movie", int id = 0); //FIXME
-
 		// genre list
 		bool getGenreList(std::string mtype = "movie");
 
@@ -130,12 +123,16 @@ class CTmdb
 		// episode list
 		bool getEpisodesList(int id, int nr = 0);
 
-		//
+		// movieInfo
+		bool getMovieTVInfo(std::string mtype = "movie", int id = 0); //FIXME
+
+		// videoInfo
 		bool getVideoInfo(std::string mtype = "movie", int id = 0, int s_nr = 0); //FIXME
 
-		//
+		// search for movie
 		bool searchMovieInfo(std::string text);
 
+		////
 		// minfo
 		void clearMInfo(void){return minfo.clear();};
 		std::vector<tmdbinfo>& getMInfos(){return minfo;};

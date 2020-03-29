@@ -73,7 +73,6 @@ class CTestMenu : public CMenuTarget
 		int page;
 		std::string TVShows;
 		std::vector<tmdbinfo> mvlist;
-		std::vector<tmdbinfo>movieInfo_list; 
 		std::string tmdbsearch;
 
 		//
@@ -797,30 +796,20 @@ void CTestMenu::loadTMDBPlaylist(const char *txt, const char *list, const int se
 		m_movieInfo.clearMovieInfo(&movieInfo);
 
 		movieInfo.epgTitle = mvlist[i].title;
-
-		tmdb->clearMovieInfo();
-
-		// refill with detailed infos
-		if(search)
-			tmdb->getMovieTVInfo(mvlist[i].media_type, mvlist[i].id);
-		else
-			tmdb->getMovieTVInfo(TVShows, mvlist[i].id);
-
-		movieInfo_list = tmdb->getMovieInfos();
 		
-		movieInfo.epgInfo1 = movieInfo_list[0].overview;
-		movieInfo.ytdate = movieInfo_list[0].release_date;
-		movieInfo.vote_average = movieInfo_list[0].vote_average;
-		movieInfo.vote_count = movieInfo_list[0].vote_count;
-		movieInfo.original_title = movieInfo_list[0].original_title;
-		movieInfo.release_date = movieInfo_list[0].release_date;
-		movieInfo.media_type = movieInfo_list[0].media_type;
-		movieInfo.length = movieInfo_list[0].runtime;
-		movieInfo.runtimes = movieInfo_list[0].runtimes;
-		movieInfo.genres = movieInfo_list[0].genres;
-		movieInfo.cast = movieInfo_list[0].cast;
-		movieInfo.seasons = movieInfo_list[0].seasons;
-		movieInfo.episodes = movieInfo_list[0].episodes;
+		movieInfo.epgInfo1 = mvlist[i].overview;
+		movieInfo.ytdate = mvlist[i].release_date;
+		movieInfo.vote_average = mvlist[i].vote_average;
+		movieInfo.vote_count = mvlist[i].vote_count;
+		movieInfo.original_title = mvlist[i].original_title;
+		movieInfo.release_date = mvlist[i].release_date;
+		movieInfo.media_type = mvlist[i].media_type;
+		movieInfo.length = mvlist[i].runtime;
+		movieInfo.runtimes = mvlist[i].runtimes;
+		movieInfo.genres = mvlist[i].genres;
+		movieInfo.cast = mvlist[i].cast;
+		movieInfo.seasons = mvlist[i].seasons;
+		movieInfo.episodes = mvlist[i].episodes;
 			
 		std::string tname = thumbnail_dir;
 		tname += "/";
@@ -1545,32 +1534,28 @@ DOFILM:
 		MI_MOVIE_INFO movieInfo;
 		m_movieInfo.clearMovieInfo(&movieInfo); 
 
-		tmdb->clearMovieInfo();
-		tmdb->getMovieTVInfo(TVShows, mvlist[i].id);
-		std::vector<tmdbinfo>& movieInfo_list = tmdb->getMovieInfos();
-
 		movieInfo.epgTitle = mvlist[i].title;
 
-		movieInfo.epgInfo1 = movieInfo_list[0].overview;
-		movieInfo.ytdate = movieInfo_list[0].release_date;
-		movieInfo.vote_average = movieInfo_list[0].vote_average;
-		movieInfo.vote_count = movieInfo_list[0].vote_count;
-		movieInfo.original_title = movieInfo_list[0].original_title;
-		movieInfo.release_date = movieInfo_list[0].release_date;
-		movieInfo.media_type = movieInfo_list[0].media_type;
-		movieInfo.length = movieInfo_list[0].runtime;
-		movieInfo.runtimes = movieInfo_list[0].runtimes;
-		movieInfo.genres = movieInfo_list[0].genres;
-		movieInfo.cast = movieInfo_list[0].cast;
-		movieInfo.seasons = movieInfo_list[0].seasons;
-		movieInfo.episodes = movieInfo_list[0].episodes;
+		movieInfo.epgInfo1 = mvlist[i].overview;
+		movieInfo.ytdate = mvlist[i].release_date;
+		movieInfo.vote_average = mvlist[i].vote_average;
+		movieInfo.vote_count = mvlist[i].vote_count;
+		movieInfo.original_title = mvlist[i].original_title;
+		movieInfo.release_date = mvlist[i].release_date;
+		movieInfo.media_type = mvlist[i].media_type;
+		movieInfo.length = mvlist[i].runtime;
+		movieInfo.runtimes = mvlist[i].runtimes;
+		movieInfo.genres = mvlist[i].genres;
+		movieInfo.cast = mvlist[i].cast;
+		movieInfo.seasons = mvlist[i].seasons;
+		movieInfo.episodes = mvlist[i].episodes;
 			
 		std::string tname = thumbnail_dir;
 		tname += "/";
 		tname += movieInfo.epgTitle;
 		tname += ".jpg";
 
-		tmdb->getSmallCover(movieInfo_list[0].poster_path, tname);
+		tmdb->getSmallCover(mvlist[i].poster_path, tname);
 
 		if(!tname.empty())
 			movieInfo.tfile = tname;
