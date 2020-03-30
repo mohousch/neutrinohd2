@@ -169,6 +169,7 @@ class ClistBoxWidget : public CMenuTarget
 		~ClistBoxWidget();
 
 		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
+		virtual void removeItem(long pos);
 		bool hasItem();
 		int getItemsCount()const{return items.size();};
 		void clearItems(void){items.clear();};

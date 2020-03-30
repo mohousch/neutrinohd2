@@ -855,6 +855,8 @@ int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
 	int height;
 	height = getHeight();
 
+	if(widgetType != WIDGET_TYPE_FRAME)
+	{
 	frameBuffer->paintBoxRel(x, y, dx, height, COL_MENUCONTENT_PLUS_0);
 
 	// line
@@ -888,6 +890,7 @@ int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + height, dx - (stringstartposX - x) , l_text, COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
 		}
+	}
 	}
 
 	return y + height;
@@ -2756,14 +2759,18 @@ void ClistBox::swipLeft()
 		if(items.size())
 		{
 			//search next / prev selectable item
-			for (int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
+			//for (int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
+			for (unsigned int count = 1; count < items.size(); count++) 
 			{
-				//pos = selected - count;
-				pos = selected - 1;
+				//pos = selected - 1;
 
 				// jump to page end
-				if(pos < (int)page_start[current_page])
-					pos = (int)page_start[current_page + 1] - 1;
+				//if(pos < (int)page_start[current_page])
+				//	pos = (int)page_start[current_page + 1] - 1;
+
+				pos = selected - count;
+				if ( pos < 0 )
+					pos += items.size();
 
 				CMenuItem * item = items[pos];
 
@@ -2778,6 +2785,11 @@ void ClistBox::swipLeft()
 						item->paint(true);
 						paintItemInfo(pos);
 						selected = pos;
+					}
+					else 
+					{
+						selected = pos;
+						paintItems();
 					}
 								
 					break;
@@ -2801,13 +2813,16 @@ void ClistBox::swipRight()
 		if(items.size())
 		{
 			//search next / prev selectable item
-			for (int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
-			{
-				pos = selected + 1;
+			//for (int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
+			//{
+			//	pos = selected + 1;
 
 				// jump to page start
-				if(pos == (int)page_start[current_page + 1])
-					pos = (int)page_start[current_page];
+			//	if(pos == (int)page_start[current_page + 1])
+			//		pos = (int)page_start[current_page];
+			for (unsigned int count = 1; count < items.size(); count++) 
+			{
+				pos = (selected + count)%items.size();
 
 				CMenuItem * item = items[pos];
 
@@ -2822,6 +2837,11 @@ void ClistBox::swipRight()
 						item->paint(true);
 						paintItemInfo(pos);
 						selected = pos;
+					}
+					else 
+					{
+						selected = pos;
+						paintItems();
 					}
 								
 					break;

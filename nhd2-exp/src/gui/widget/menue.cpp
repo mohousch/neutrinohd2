@@ -190,6 +190,11 @@ void ClistBoxWidget::addItem(CMenuItem *menuItem, const bool defaultselected)
 	items.push_back(menuItem);
 }
 
+void ClistBoxWidget::removeItem(long pos)
+{
+	items.erase(items.begin() + pos); 
+}
+
 bool ClistBoxWidget::hasItem()
 {
 	return !items.empty();
@@ -572,6 +577,7 @@ void ClistBoxWidget::paintItems()
 				current_page++;
 		}
 
+		// reset items
 		for (unsigned int i = 0; i < items.size(); i++) 
 		{
 			CMenuItem * item = items[i];	
@@ -1116,6 +1122,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 	int pos = 0;
 	exit_pressed = false;
 	int cnt = 0;
+	current_page = 0;
 
 	if (parent)
 		parent->hide();
@@ -1139,7 +1146,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 		
 		int handled = false;
 
-		dprintf(DEBUG_DEBUG, "ClistBoxWidget::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
+		dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
 		if ( msg <= RC_MaxRC ) 
 		{
@@ -1215,6 +1222,8 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 		if (!handled) 
 		{
+			printf("pos: %d current_page:%d (selected:%d)\n\n", pos,  current_page, selected);
+
 			if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 			{
 				// head
@@ -1467,16 +1476,11 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 				case (RC_left):
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
-						//search next / prev selectable item
-						for (int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
+						for (unsigned int count = 1; count < items.size(); count++) 
 						{
-							//pos = selected - count;
-							pos = selected - 1;
-
-							// jump to page end
-							if(pos < (int)page_start[current_page])
-								pos = (int)page_start[current_page + 1] - 1;
-
+							pos = selected - count;
+							if ( pos < 0 )
+								pos += items.size();
 
 							CMenuItem * item = items[pos];
 
@@ -1492,7 +1496,12 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 									paintItemInfo(pos);
 									selected = pos;
 								}
-								
+								else 
+								{
+									selected = pos;
+									paintItems();
+								}
+
 								break;
 							}
 						}
@@ -1518,14 +1527,9 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 				case (RC_right):
 					if(widgetType == WIDGET_TYPE_FRAME)
 					{
-						//search next / prev selectable item
-						for (int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
+						for (unsigned int count = 1; count < items.size(); count++) 
 						{
-							pos = selected + 1;
-
-							// jump to page start
-							if(pos == (int)page_start[current_page + 1])
-								pos = (int)page_start[current_page];
+							pos = (selected + count)%items.size();
 
 							CMenuItem * item = items[pos];
 
@@ -1540,6 +1544,11 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 									item->paint(true);
 									paintItemInfo(pos);
 									selected = pos;
+								}
+								else 
+								{
+									selected = pos;
+									paintItems();
 								}
 								
 								break;
@@ -1646,7 +1655,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 							else if(widgetType == WIDGET_TYPE_CLASSIC)
 								widgetType = WIDGET_TYPE_EXTENDED;
 							else if(widgetType == WIDGET_TYPE_EXTENDED)
-								widgetType = WIDGET_TYPE_FRAME;
+								widgetType = WIDGET_TYPE_FRAME;	
 							else if(widgetType == WIDGET_TYPE_FRAME)
 								widgetType = WIDGET_TYPE_STANDARD;
 

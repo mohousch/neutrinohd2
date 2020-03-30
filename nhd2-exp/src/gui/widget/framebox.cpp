@@ -258,15 +258,11 @@ void CFrameBox::swipRight()
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
-			//pos = selected + 1;
-
-			//if(pos >= (int)frames.size())
-			//	pos = 0;
 			pos = (selected + count)%frames.size();
 
 			CFrame * frame = frames[pos];
 
-			if(frame->isSelectable() /*&& pos < (int)frames.size()*/)
+			if(frame->isSelectable())
 			{
 				frames[selected]->paint(false);
 				frame->paint(true);
@@ -287,14 +283,13 @@ void CFrameBox::swipLeft()
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
-			//pos = selected - 1;
-			//if(pos < 0)
-			//	pos = frames.size() - 1;
-			pos = (selected - count)%frames.size();
+			pos = selected - count;
+			if ( pos < 0 )
+				pos += frames.size();
 
 			CFrame * frame = frames[pos];
 
-			if(frame->isSelectable() /*&& pos < (int)frames.size()*/)
+			if(frame->isSelectable())
 			{
 				frames[selected]->paint(false);
 				frame->paint(true);
@@ -315,15 +310,11 @@ void CFrameBox::scrollLineDown(const int lines)
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
-			//pos = selected + 1;
-
-			//if(pos >= (int)frames.size())
-			//	pos = 0;
 			pos = (selected + count)%frames.size();
 
 			CFrame * frame = frames[pos];
 
-			if(frame->isSelectable() /*&& pos < (int)frames.size()*/)
+			if(frame->isSelectable())
 			{
 				frames[selected]->paint(false);
 				frame->paint(true);
@@ -344,14 +335,13 @@ void CFrameBox::scrollLineUp(const int lines)
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
-			//pos = selected - 1;
-			//if(pos < 0)
-				//pos = frames.size() - 1;
-			pos = (selected - count)%frames.size();
+			pos = selected - count;
+			if ( pos < 0 )
+				pos += frames.size();
 
 			CFrame * frame = frames[pos];
 
-			if(frame->isSelectable() /*&& pos < (int)frames.size()*/)
+			if(frame->isSelectable())
 			{
 				frames[selected]->paint(false);
 				frame->paint(true);
