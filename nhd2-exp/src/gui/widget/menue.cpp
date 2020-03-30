@@ -1146,7 +1146,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 		
 		int handled = false;
 
-		dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
+		dprintf(DEBUG_DEBUG, "ClistBoxWidget::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
 		if ( msg <= RC_MaxRC ) 
 		{
@@ -1222,8 +1222,6 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 		if (!handled) 
 		{
-			printf("pos: %d current_page:%d (selected:%d)\n\n", pos,  current_page, selected);
-
 			if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 			{
 				// head
