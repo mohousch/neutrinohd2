@@ -52,6 +52,19 @@ CMenuItem::CMenuItem()
 	directKey = RC_nokey;
 	iconName = "";
 	can_arrow = false;
+	itemIcon = "";
+	itemName = "";
+	option = "";
+	optionInfo = "";
+	itemHelpText = "";
+	itemIcon = "";
+	info1 = "";
+	option_info1 = "";
+	info2 = "";
+	option_info2 = "";
+
+	icon1 = "";
+	icon2 = "";
 
 	number = 0;
 	runningPercent = -1;
@@ -934,75 +947,6 @@ bool CZapProtection::check()
 			 ( fsk < g_settings.parentallock_lockage ) );
 }
 
-// CMenuSelector
-CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , const char * const OptionValue, int* ReturnInt ,int ReturnIntValue ) : CMenuItem()
-{
-	height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	optionValueString = NULL;
-	optionName = OptionName;
-	optionValue = (char *)OptionValue;
-	active = Active;
-	returnIntValue = ReturnIntValue;
-	returnInt = ReturnInt;
-
-	itemType = ITEM_TYPE_SELECTOR;
-};
-
-int CMenuSelector::exec(CMenuTarget*)
-{ 
-	dprintf(DEBUG_DEBUG, "CMenuSelector::exec:\n");
-
-	if(returnInt != NULL)
-		*returnInt = returnIntValue;
-		
-	if(optionValue != NULL && optionName != NULL) 
-	{
-		if(optionValueString == NULL)
-			strcpy(optionValue, optionName); 
-		else
-			*optionValueString = optionName;
-	}
-	
-	return menu_return::RETURN_EXIT;
-};
-
-int CMenuSelector::paint(bool selected, bool /*AfterPulldown*/)
-{
-	dprintf(DEBUG_DEBUG, "CMenuSelector::paint\n");
-
-	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
-
-	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
-
-	if (selected)
-	{
-		color = COL_MENUCONTENTSELECTED;
-		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-	}
-	
-	if (!active)
-	{
-		color = COL_MENUCONTENTINACTIVE;
-		bgcolor = COL_MENUCONTENTINACTIVE_PLUS_0;
-	}
-
-	// paintItem
-	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor);
-
-	int stringstartposName = x + offx + BORDER_LEFT;
-
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposName, y + height, dx - (stringstartposName - x), optionName, color, 0, true); // UTF-8
-
-	// vfd
-	if (selected)
-	{
-		CVFD::getInstance()->showMenuText(0, optionName, -1, true); // UTF-8
-	}
-
-	return y + height;
-}
-
 // CMenuForwarder
 CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
 {
@@ -1022,6 +966,8 @@ CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, 
 	itemHelpText = g_Locale->getText(HelpText);
 	itemType = ITEM_TYPE_FORWARDER;
 	itemName = g_Locale->getText(Text);
+
+	optionValueString = "";
 }
 
 CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
@@ -1042,6 +988,8 @@ CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const
 	itemHelpText = g_Locale->getText(HelpText);
 	itemType = ITEM_TYPE_FORWARDER;
 	itemName = Text? Text : "";
+
+	optionValueString = "";
 }
 
 int CMenuForwarder::getHeight(void) const
@@ -1086,6 +1034,12 @@ int CMenuForwarder::exec(CMenuTarget *parent)
 	if(jumpTarget)
 	{
 		int ret = jumpTarget->exec(parent, actionKey);
+
+		if(ret) 
+		{
+			optionValueString = jumpTarget->getString().c_str();
+		}
+
 		return ret;
 	}
 	else
@@ -1106,8 +1060,8 @@ const char * CMenuForwarder::getName(void)
 
 const char * CMenuForwarder::getOption(void)
 {
-	if(!optionValue.empty())
-		return optionValue.c_str();
+	if(!optionValueString.empty())
+		return optionValueString.c_str();
 	else if(!option.empty())
 		return option.c_str();
 	else

@@ -73,7 +73,7 @@ class CStringInput : public CMenuTarget
 		char * head;
 		const char * validchars;
 		char * value;
-		std::string *valueString;
+		std::string valueString;
 		int size;
 
 		int selected;
@@ -113,6 +113,7 @@ class CStringInput : public CMenuTarget
 		int exec(CMenuTarget* parent, const std::string &actionKey);
 
 		bool getExitPressed(){return exit_pressed;};
+		virtual std::string& getString(void) { return valueString; };
 };
 
 class CStringInputSMS : public CStringInput

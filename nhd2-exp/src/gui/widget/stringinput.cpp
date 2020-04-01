@@ -61,7 +61,7 @@ CStringInput::CStringInput(const neutrino_locale_t Name, const char * const Valu
 	name =  Name;
 	head = NULL;
 	value = (char *)Value;
-	valueString = NULL;
+	valueString = Value;
 	size =  Size;
 
 	hint_1 = Hint_1;
@@ -79,7 +79,7 @@ CStringInput::CStringInput(const char * const Head, const char * const Value, in
         frameBuffer = CFrameBuffer::getInstance();
         head = strdup(Head);
         value = (char *)Value;
-        valueString = NULL;
+        valueString = Value;
         size =  Size;
 
         hint_1 = Hint_1;
@@ -94,18 +94,20 @@ CStringInput::CStringInput(const char * const Head, const char * const Value, in
 
 CStringInput::~CStringInput() 
 {
-	if (valueString != NULL) 
+/*
+	if (value != NULL) 
 	{
 		delete[] value;
 		value = NULL;
-
-		valueString->clear();
 	}
+*/
 	
-	if(head) 
+	if(head != NULL) 
 	{
 		free(head);
 	}
+
+	valueString.clear();
 }
 
 void CStringInput::init() 
@@ -446,11 +448,11 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 			break;
 	}
 
-	//value[size] = 0;
+	value[size] = 0;
 
-	if (valueString != NULL)
+	if (value != NULL)
         {
-                *valueString = value;
+                valueString = value;
         }
 
         if ( (observ) && (msg == RC_ok) )
@@ -807,7 +809,7 @@ int CPINInput::exec( CMenuTarget* parent, const std::string&)
 			break;
 	}
 
-	//value[size] = 0;
+	value[size] = 0;
 
 	if ( (observ) && (msg == RC_ok) )
 	{

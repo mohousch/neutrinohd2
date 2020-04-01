@@ -348,29 +348,6 @@ class CMenuSeparator : public CMenuItem
 		virtual const char * getString(void);
 };
 
-// CMenuSelector
-class CMenuSelector : public CMenuItem
-{
-	private:
-		const char * optionName;
-		char * optionValue;
-		std::string *optionValueString;
-		int  returnIntValue;
-		int * returnInt;
-		int height;
-		char buffer[20];
-	public:
-		CMenuSelector(const char * OptionName, const bool Active = true, const char * const OptionValue = NULL, int * ReturnInt = NULL, int ReturnIntValue = 0);
-		~CMenuSelector(){};
-
-		int exec(CMenuTarget * parent);
-
-		int paint(bool selected, bool AfterPulldown = false);
-		int getHeight(void) const{return height;};
-
-		bool isSelectable(void) const {	return active;}
-};
-
 // CMenuForwarder
 class CMenuForwarder : public CMenuItem
 {
@@ -378,7 +355,7 @@ class CMenuForwarder : public CMenuItem
 	std::string actionKey;
 
 	////
-	std::string optionValue;
+	std::string optionValueString;
 
 	protected:
 		std::string textString;

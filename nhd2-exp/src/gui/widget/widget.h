@@ -42,11 +42,16 @@ struct menu_return
 
 class CMenuTarget
 {
+	protected:
+		std::string *valueString;
+		std::string valueStringTmp;
+
 	public:
-		CMenuTarget(){};
+		CMenuTarget(){ valueStringTmp = std::string(); valueString = &valueStringTmp; };
 		virtual ~CMenuTarget(){};
 		virtual void hide(){};
 		virtual int exec(CMenuTarget *parent, const std::string &actionKey) = 0;
+		virtual std::string& getString(void) { return *valueString; };
 };
 
 class CWidget : public CMenuTarget

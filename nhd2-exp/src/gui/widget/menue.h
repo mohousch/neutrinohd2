@@ -238,6 +238,8 @@ class ClistBoxWidget : public CMenuTarget
 
 		void setMode(int mode){widgetMode = mode;};
 		void enableMenuPosition(){MenuPos = true;};
+
+		virtual std::string& getString(void) { if (hasItem())return items[selected]->itemName; };
 };
 
 #endif

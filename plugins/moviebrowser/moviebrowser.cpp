@@ -3028,7 +3028,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	serieMenu.addItem(new CMenuSeparator(LINE));
 	
 	for(unsigned int i2 = 0; i2 < m_vHandleSerienames.size(); i2++)
-		serieMenu.addItem( new CMenuSelector(m_vHandleSerienames[i2]->serieName.c_str(), true,  movie_info->serieName.c_str()));
+		serieMenu.addItem( new CMenuForwarder(m_vHandleSerienames[i2]->serieName.c_str(), true,  movie_info->serieName.c_str()));
 
 	// update movie info Menu
         for(i = 0; i < MB_INFO_MAX_NUMBER; i++)
@@ -3046,6 +3046,8 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
         movieInfoMenuUpdate.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_MENU_SAVE_ALL, true, NULL, this, "save_movie_info_all", RC_red, NEUTRINO_ICON_BUTTON_RED));
 
         movieInfoMenuUpdate.addItem(new CMenuSeparator(LINE));
+
+	// save all
         movieInfoMenuUpdate.addItem(new CMenuOptionChooser(LOCALE_MOVIEBROWSER_UPDATE_IF_DEST_EMPTY_ONLY, (&movieInfoUpdateAllIfDestEmptyOnly), MESSAGEBOX_YES_NO_OPTIONS, MESSAGEBOX_YES_NO_OPTIONS_COUNT, true, NULL, RC_blue, NEUTRINO_ICON_BUTTON_BLUE ));
 
 	// title
