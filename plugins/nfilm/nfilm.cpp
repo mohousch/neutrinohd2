@@ -129,6 +129,8 @@ CNFilm::CNFilm(std::string movielist, int id)
 	plist = movielist;
 	genre_id = id;
 	page = 1;
+
+	tmdbsearch.clear();
 }
 
 CNFilm::~CNFilm()
@@ -138,7 +140,8 @@ CNFilm::~CNFilm()
 
 	mvlist.clear();
 	genres.clear();
-	//movieInfo_list.clear();
+
+	tmdbsearch.clear();
 }
 
 void CNFilm::hide()
@@ -442,6 +445,7 @@ void CNFilm::showMenu()
 	leftWidget->disableCenter();
 	leftWidget->setSelected(left_selected);
 	leftWidget->disableShrinkMenu();
+	leftWidget->setBackgroundColor(make16color(0xA0B0A0));
 
 	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos", true, NULL, this, "movie_in_cinema");
 	ClistBoxItem *item2 = new ClistBoxItem("Am", true, NULL, this, "movie_popular");
@@ -458,7 +462,7 @@ void CNFilm::showMenu()
 	CMenuSeparator *item8 = new CMenuSeparator();
 	ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "exit");
 	
-	leftWidget->addItem(new ClistBoxItem("Suche", true, NULL, this, "search"));
+	leftWidget->addItem(new ClistBoxItem("Suche", true, tmdbsearch.c_str(), this, "search"));
 	leftWidget->addItem(new CMenuSeparator(LINE));
 	leftWidget->addItem(new CMenuSeparator());
 	leftWidget->addItem(new CMenuSeparator());
@@ -668,7 +672,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 
 			rightWidget->setSelected(0);
 
-			tmdbsearch.clear();
+			//tmdbsearch.clear();
 		}
 
 		return menu_return::RETURN_REPAINT;

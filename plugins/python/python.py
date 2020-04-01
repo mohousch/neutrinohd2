@@ -222,11 +222,15 @@ class testMenu(CWidget):
 		item8.setHelpText("testing CMoviePlayerGui")
 		item8.setInfo1("testing CMoviePlayerGui")
 
+		item = CMenuSeparator(LINE)
+
 		self.listWidget.addItem(item1)
 		self.listWidget.addItem(item2)
 		self.listWidget.addItem(item3)
 		self.listWidget.addItem(item4)
+		self.listWidget.addItem(item)
 		self.listWidget.addItem(item5)
+		self.listWidget.addItem(item)
 		self.listWidget.addItem(item6)
 		self.listWidget.addItem(item7)
 		self.listWidget.addItem(item8)

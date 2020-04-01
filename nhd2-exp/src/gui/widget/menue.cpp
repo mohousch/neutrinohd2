@@ -1717,7 +1717,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 	}
 	while ( msg != RC_timeout );
 	
-	if(retval != menu_return::RETURN_NONE) //FIXME:why???
+	//if(retval != menu_return::RETURN_NONE) //FIXME:why???
 		hide();	
 
 	//

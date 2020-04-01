@@ -3036,6 +3036,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	
         movieInfoUpdateAllIfDestEmptyOnly = true;
 
+	// movieInfoMenuUpdate
         ClistBoxWidget movieInfoMenuUpdate(LOCALE_MOVIEBROWSER_INFO_HEAD_UPDATE, NEUTRINO_ICON_MOVIE);
 	//movieInfoMenuUpdate.enableSaveScreen();
 	movieInfoMenuUpdate.setMode(MODE_MENU);
@@ -3108,13 +3109,13 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	// prod date
 	CIntInput yearUserIntInput(LOCALE_MOVIEBROWSER_INFO_PRODYEAR, (int&)movie_info->productionDate, 4, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE);
 
-	// 
+	// movieInfoMenu
 	ClistBoxWidget movieInfoMenu(LOCALE_MOVIEBROWSER_INFO_HEAD, NEUTRINO_ICON_MOVIE, m_cBoxFrame.iWidth);
 
 	movieInfoMenu.setMode(MODE_MENU);
 	movieInfoMenu.enableShrinkMenu();
 
-	// save
+	// save changes
 	movieInfoMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_MENU_SAVE, true, NULL, this, "save_movie_info", RC_red, NEUTRINO_ICON_BUTTON_RED));
 
 	// save change in all menu 
@@ -3131,10 +3132,10 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	movieInfoMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_INFO_SERIE, true, movie_info->serieName.c_str(), &serieMenu, NULL, RC_2, NEUTRINO_ICON_BUTTON_2));
 
 	// epgInfo1
-	movieInfoMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_INFO_INFO1, /*(movie_info->epgInfo1.size() <= MAX_INPUT_CHARS)*/true, movie_info->epgInfo1.c_str(), &epgUserInput, NULL, RC_3, NEUTRINO_ICON_BUTTON_3));
+	movieInfoMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_INFO_INFO1, true, movie_info->epgInfo1.c_str(), &epgUserInput, NULL, RC_3, NEUTRINO_ICON_BUTTON_3));
 
 	// epgInfo2
-	movieInfoMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_INFO_INFO2, /*(movie_info->epgInfo2.size() <= MAX_INPUT_CHARS)*/true, movie_info->epgInfo2.c_str(), &epgUser2Input, NULL, RC_4, NEUTRINO_ICON_BUTTON_4));
+	movieInfoMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_INFO_INFO2, true, movie_info->epgInfo2.c_str(), &epgUser2Input, NULL, RC_4, NEUTRINO_ICON_BUTTON_4));
 
 	// genre
 	movieInfoMenu.addItem(new CMenuOptionChooser(LOCALE_MOVIEBROWSER_INFO_GENRE_MAJOR, &movie_info->genreMajor, GENRE_ALL, GENRE_ALL_COUNT, true, NULL, RC_5, NEUTRINO_ICON_BUTTON_5, true));
@@ -3156,7 +3157,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	movieInfoMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_INFO_LENGTH, true, lengthUserIntInput.getValue(), &lengthUserIntInput,NULL, RC_9, NEUTRINO_ICON_BUTTON_9));
 
 	// channel
-	movieInfoMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_INFO_CHANNEL, true, movie_info->epgChannel.c_str(), &channelUserInput,NULL, RC_0, NEUTRINO_ICON_BUTTON_0));//LOCALE_TIMERLIST_CHANNEL
+	movieInfoMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_INFO_CHANNEL, true, movie_info->epgChannel.c_str(), &channelUserInput, NULL, RC_0, NEUTRINO_ICON_BUTTON_0));//LOCALE_TIMERLIST_CHANNEL
 
 	// path
 	movieInfoMenu.addItem(new CMenuSeparator(LINE));
@@ -3187,8 +3188,6 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 
 	// remove screenshot
 	movieInfoMenu.addItem(new CMenuForwarder(LOCALE_SCREENSHOT_REMOVE, true, NULL, this, "remove_screenshot"));
-
-
 
 	movieInfoMenu.exec(NULL, "");
 
@@ -3632,6 +3631,7 @@ void CMovieBrowser::updateSerienames(void)
 	//	return;
 		
 	m_vHandleSerienames.clear();
+
 	for(unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		if(!m_vMovieInfo[i].serieName.empty())
@@ -3828,6 +3828,7 @@ int CDirMenu::exec(CMenuTarget* parent, const std::string & actionKey)
 			}
 		}
 	}
+
 	return returnval;
 }
 

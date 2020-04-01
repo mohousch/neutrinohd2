@@ -157,7 +157,7 @@ int CMenuOptionChooser::exec(CMenuTarget * parent)
 	dprintf(DEBUG_DEBUG, "CMenuOptionChooser::exec:\n");
 
 	bool wantsRepaint = false;
-	int ret = menu_return::RETURN_NONE;
+	int ret = menu_return::RETURN_REPAINT;
 	
 	if (parent)
 		parent->hide();
@@ -423,7 +423,7 @@ int CMenuOptionNumberChooser::exec(CMenuTarget*)
 	if(observ)
 		observ->changeNotify(optionName, optionValue);
 
-	return menu_return::RETURN_NONE;
+	return menu_return::RETURN_REPAINT;
 }
 
 int CMenuOptionNumberChooser::paint(bool selected, bool /*AfterPulldown*/)
@@ -554,12 +554,12 @@ void CMenuOptionStringChooser::addOption(const char * const value)
 	options.push_back(std::string(value));
 }
 
-int CMenuOptionStringChooser::exec(CMenuTarget* parent)
+int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 {
 	dprintf(DEBUG_DEBUG, "CMenuOptionStringChooser::exec:\n");
 
 	bool wantsRepaint = false;
-	int ret = menu_return::RETURN_NONE;
+	int ret = menu_return::RETURN_REPAINT;
 
 	if (parent)
 		parent->hide();
@@ -761,15 +761,11 @@ int CMenuOptionLanguageChooser::exec(CMenuTarget*)
 	if(observ)
 		wantsRepaint = observ->changeNotify(LOCALE_LANGUAGESETUP_SELECT, optionValue);
 
-	return menu_return::RETURN_EXIT;
-
-	//FIXME:
-/*	
+	//FIXME:	
 	if ( wantsRepaint )
 		return menu_return::RETURN_REPAINT;
 	else
-		return menu_return::RETURN_NONE;
-*/
+		return menu_return::RETURN_EXIT;
 }
 
 int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
@@ -857,40 +853,40 @@ int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
 
 	if(widgetType != WIDGET_TYPE_FRAME)
 	{
-	frameBuffer->paintBoxRel(x, y, dx, height, COL_MENUCONTENT_PLUS_0);
+		frameBuffer->paintBoxRel(x, y, dx, height, item_backgroundColor);
 
-	// line
-	if ((type & LINE))
-	{
-		frameBuffer->paintHLineRel(x + BORDER_LEFT, dx - BORDER_LEFT - BORDER_RIGHT, y + (height >> 1), COL_MENUCONTENTDARK_PLUS_0 );
-		frameBuffer->paintHLineRel(x + BORDER_LEFT, dx - BORDER_LEFT - BORDER_RIGHT, y + (height >> 1) + 1, COL_MENUCONTENTDARK_PLUS_0 );
-	}
-
-	// string
-	if ((type & STRING))
-	{
-
-		//if (!textString.empty())
-		if(textString != NULL)
+		// line
+		if ((type & LINE))
 		{
-			int stringstartposX;
-
-			const char * l_text = getString();
-			int stringwidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true); // UTF-8
-
-			// if no alignment is specified, align centered
-			if (type & ALIGN_LEFT)
-				stringstartposX = x + BORDER_LEFT;
-			else if (type & ALIGN_RIGHT)
-				stringstartposX = x + dx - stringwidth - BORDER_RIGHT;
-			else // ALIGN_CENTER
-				stringstartposX = x + (dx >> 1) - (stringwidth >> 1);
-
-			frameBuffer->paintBoxRel(stringstartposX - 5, y, stringwidth + 10, height, COL_MENUCONTENT_PLUS_0);
-
-			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + height, dx - (stringstartposX - x) , l_text, COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+			frameBuffer->paintHLineRel(x + BORDER_LEFT, dx - BORDER_LEFT - BORDER_RIGHT, y + (height >> 1), COL_MENUCONTENTDARK_PLUS_0 );
+			frameBuffer->paintHLineRel(x + BORDER_LEFT, dx - BORDER_LEFT - BORDER_RIGHT, y + (height >> 1) + 1, COL_MENUCONTENTDARK_PLUS_0 );
 		}
-	}
+
+		// string
+		if ((type & STRING))
+		{
+
+			//if (!textString.empty())
+			if(textString != NULL)
+			{
+				int stringstartposX;
+
+				const char * l_text = getString();
+				int stringwidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true); // UTF-8
+
+				// if no alignment is specified, align centered
+				if (type & ALIGN_LEFT)
+					stringstartposX = x + BORDER_LEFT;
+				else if (type & ALIGN_RIGHT)
+					stringstartposX = x + dx - stringwidth - BORDER_RIGHT;
+				else // ALIGN_CENTER
+					stringstartposX = x + (dx >> 1) - (stringwidth >> 1);
+
+				frameBuffer->paintBoxRel(stringstartposX - 5, y, stringwidth + 10, height, COL_MENUCONTENT_PLUS_0);
+
+				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + height, dx - (stringstartposX - x) , l_text, COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+			}
+		}
 	}
 
 	return y + height;
@@ -1083,12 +1079,15 @@ int CMenuForwarder::getWidth(void) const
 	return tw;
 }
 
-int CMenuForwarder::exec(CMenuTarget * parent)
+int CMenuForwarder::exec(CMenuTarget *parent)
 {
 	dprintf(DEBUG_DEBUG, "CMenuForwarder::exec: %s\n", actionKey.c_str());
 
 	if(jumpTarget)
-		return jumpTarget->exec(parent, actionKey);
+	{
+		int ret = jumpTarget->exec(parent, actionKey);
+		return ret;
+	}
 	else
 		return menu_return::RETURN_EXIT;
 }
@@ -1107,7 +1106,9 @@ const char * CMenuForwarder::getName(void)
 
 const char * CMenuForwarder::getOption(void)
 {
-	if(!option.empty())
+	if(!optionValue.empty())
+		return optionValue.c_str();
+	else if(!option.empty())
 		return option.c_str();
 	else
 		return NULL;

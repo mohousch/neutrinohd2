@@ -66,14 +66,16 @@ class CStringInput : public CMenuTarget
 		
 		uint32_t smstimer;
 
-		char * head;
 		neutrino_locale_t name;
 		neutrino_locale_t hint_1, hint_2;
 		std::string iconfile;
+
+		char * head;
 		const char * validchars;
 		char * value;
-		std::string * valueString;
+		std::string *valueString;
 		int size;
+
 		int selected;
 		bool exit_pressed;
 		CChangeObserver * observ;
@@ -108,7 +110,7 @@ class CStringInput : public CMenuTarget
 		~CStringInput();
 
 		void hide();
-		int exec(CMenuTarget* parent, const std::string& actionKey);
+		int exec(CMenuTarget* parent, const std::string &actionKey);
 
 		bool getExitPressed(){return exit_pressed;};
 };

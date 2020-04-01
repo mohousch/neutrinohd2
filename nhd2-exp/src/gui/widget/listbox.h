@@ -234,7 +234,7 @@ class CMenuOptionChooser : public CMenuItem
 
 		int paint(bool selected, bool AfterPulldown = false);
 
-		int exec(CMenuTarget* parent);
+		int exec(CMenuTarget *parent);
 };
 
 // CMenuOptionNumberChooser
@@ -354,7 +354,7 @@ class CMenuSelector : public CMenuItem
 	private:
 		const char * optionName;
 		char * optionValue;
-		std::string* optionValueString;
+		std::string *optionValueString;
 		int  returnIntValue;
 		int * returnInt;
 		int height;
@@ -376,6 +376,9 @@ class CMenuForwarder : public CMenuItem
 {
 	CMenuTarget* jumpTarget;
 	std::string actionKey;
+
+	////
+	std::string optionValue;
 
 	protected:
 		std::string textString;
@@ -611,6 +614,8 @@ class ClistBox : public CWidgetItem
 		virtual void scrollLineUp(const int lines = 1);
 		virtual void scrollPageDown(const int pages = 1);
 		virtual void scrollPageUp(const int pages = 1);
+		virtual void swipLeft();
+		virtual void swipRight();
 
 		int getItemsCount()const{return items.size();};
 		int getSelected(){return selected;};
@@ -626,13 +631,12 @@ class ClistBox : public CWidgetItem
 
 		void disableShrinkMenu(){shrinkMenu = false;};
 
-		// Frame
+		//
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
 		void setItemBoxColor(fb_pixel_t col) {itemBoxColor = col;};
-		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 
-		virtual void swipLeft();
-		virtual void swipRight();
+		//
+		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 
 		// widget type|mode
 		void setWidgetType(int type){widgetType = type; widget.push_back(widgetType);};

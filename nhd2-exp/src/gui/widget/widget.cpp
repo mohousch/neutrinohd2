@@ -389,12 +389,14 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 									initFrames();
 									paint();
 									break;
+								/*
 								case menu_return::RETURN_NONE:
-									//g_RCInput->killTimer(sec_timer_id);
-									//sec_timer_id = 0;
+									g_RCInput->killTimer(sec_timer_id);
+									sec_timer_id = 0;
 									retval = menu_return::RETURN_NONE;
 									msg = RC_timeout;
 									break;	
+								*/
 							}
 						}
 					}

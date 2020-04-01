@@ -175,7 +175,7 @@ class ClistBoxWidget : public CMenuTarget
 		void clearItems(void){items.clear();};
 
 		//
-		void initFrames();
+		virtual void initFrames();
 		virtual void paintHead();
 		virtual void paintFoot();
 		virtual void paint();
@@ -225,12 +225,12 @@ class ClistBoxWidget : public CMenuTarget
 		void enableWidgetChange(){widgetChange = true;};
 		void addWidget(int wtype){widget.push_back(wtype);};
 
-		// Frame
+		//
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
 		void setItemBoxColor(fb_pixel_t col) {itemBoxColor = col;};
-		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 
-		void setName(const std::string& p_name){nameString = p_name;};
+		//
+		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 
 		void enableShrinkMenu(){shrinkMenu = true;};
 

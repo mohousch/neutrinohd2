@@ -70,6 +70,7 @@ CStringInput::CStringInput(const neutrino_locale_t Name, const char * const Valu
 	iconfile = Icon ? Icon : "";
 
 	observ = Observ;
+
 	init();
 }
 
@@ -87,6 +88,7 @@ CStringInput::CStringInput(const char * const Head, const char * const Value, in
         iconfile = Icon ? Icon : "";
 
         observ = Observ;
+
         init();
 }
 
@@ -95,6 +97,9 @@ CStringInput::~CStringInput()
 	if (valueString != NULL) 
 	{
 		delete[] value;
+		value = NULL;
+
+		valueString->clear();
 	}
 	
 	if(head) 
@@ -185,6 +190,7 @@ void CStringInput::keyRedPressed()
 void CStringInput::keyYellowPressed()
 {
 	selected = 0;
+
 	for(int i = 0 ; i < size ; i++)
 	{
 		value[i] = ' ';
@@ -208,13 +214,16 @@ void CStringInput::keyBluePressed()
 void CStringInput::keyUpPressed()
 {
 	int npos = 0;
+
 	for(int count = 0; count < (int)strlen(validchars);count++)
 		if(value[selected]==validchars[count])
 			npos = count;
 	npos++;
-	if(npos>=(int)strlen(validchars))
+	if(npos >= (int)strlen(validchars))
 		npos = 0;
+
 	value[selected]=validchars[npos];
+
 	paintChar(selected);
 }
 
@@ -303,7 +312,7 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 	if (parent)
 		parent->hide();
 
-	for(int count = strlen(value) - 1; count < size-1; count++)
+	for(int count = strlen(value) - 1; count < size - 1; count++)
 		strcat(value, " ");
 	
 	strncpy(oldval, value, size);
@@ -333,11 +342,17 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 		if (!(msg & RC_Release))
 			g_RCInput->killTimer(smstimer);
 
+		if ((msg == NeutrinoMessages::EVT_TIMER) && (data == smstimer))
+			msg = RC_right;
+
+		if (msg < RC_nokey)
+			g_RCInput->killTimer (smstimer);
+
 		if (msg == RC_left)
 		{
 			keyLeftPressed();
 		}
-		else if ((msg == RC_right) || (msg == NeutrinoMessages::EVT_TIMER && data == smstimer))
+		else if (msg == RC_right)
 		{
 			keyRightPressed();
 		}
@@ -430,7 +445,8 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 		else
 			break;
 	}
-	value[size] = 0;
+
+	//value[size] = 0;
 
 	if (valueString != NULL)
         {
@@ -790,7 +806,8 @@ int CPINInput::exec( CMenuTarget* parent, const std::string&)
 		else
 			break;
 	}
-	value[size] = 0;
+
+	//value[size] = 0;
 
 	if ( (observ) && (msg == RC_ok) )
 	{
