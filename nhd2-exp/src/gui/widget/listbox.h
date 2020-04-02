@@ -354,15 +354,15 @@ class CMenuForwarder : public CMenuItem
 	CMenuTarget* jumpTarget;
 	std::string actionKey;
 
-	////
+	//
 	std::string optionValueString;
 
 	protected:
 		std::string textString;
 		neutrino_locale_t text;
 
-		virtual const char* getName(void);
-		virtual const char* getOption(void);
+		virtual const char *getName(void);
+		virtual const char *getOption(void);
 	public:
 
 		CMenuForwarder(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget* Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = RC_nokey, const char* const IconName = NULL, const char* const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE );
@@ -432,13 +432,16 @@ class ClistBoxItem : public CMenuItem
 	CMenuTarget* jumpTarget;
 	std::string actionKey;
 
+	std::string optionValueString;
+
 	protected:
 		//
 		neutrino_locale_t text;
 		std::string textString;
 
 		//
-		virtual const char* getName(void);
+		virtual const char *getName(void);
+		virtual const char *getOption(void);
 
 	public:
 		ClistBoxItem(const neutrino_locale_t Text, const bool Active = true, const char* const Option = NULL, CMenuTarget * Target = NULL, const char* const ActionKey = NULL, const neutrino_msg_t DirectKey = RC_nokey, const char* const Icon = NULL, const char* const ItemIcon = NULL);
@@ -584,8 +587,8 @@ class ClistBox : public CWidgetItem
 		void setFootCorner(int ra, int co){footRadius = ra; footCorner = co;};
 		void setFootGradient(int grad){footGradient = grad;};
 
-		// itemInfo
-		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh; interFrame = 5;};
+		// item footInfo
+		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh; interFrame = INTER_FRAME_SPACE;};
 
 		virtual void scrollLineDown(const int lines = 1);
 		virtual void scrollLineUp(const int lines = 1);
@@ -605,7 +608,6 @@ class ClistBox : public CWidgetItem
 
 		void disableCenter(){enableCenter = false;};
 		void setOutFocus(bool focus){outFocus = focus;};
-
 		void disableShrinkMenu(){shrinkMenu = false;};
 
 		//
@@ -618,7 +620,6 @@ class ClistBox : public CWidgetItem
 		// widget type|mode
 		void setWidgetType(int type){widgetType = type; widget.push_back(widgetType);};
 		int getWidgetType(){return widgetType;};
-
 		void setWidgetMode(int mode){widgetMode = mode; if(widgetMode == MODE_SETUP) enableCenter = true;};
 		void enableWidgetChange(){widgetChange = true;};
 		void addWidget(int wtype){widget.push_back(wtype);};

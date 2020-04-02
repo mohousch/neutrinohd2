@@ -1083,6 +1083,7 @@ bool CMovieInfo::saveFile(const CFile & file, const char *text, const int text_s
 {
 	bool result = false;
 	int fd;
+
 	if ((fd = open(file.Name.c_str(), O_SYNC | O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) >= 0) 
 	{
 		int nr;
@@ -1095,6 +1096,7 @@ bool CMovieInfo::saveFile(const CFile & file, const char *text, const int text_s
 	{
 		dprintf(DEBUG_NORMAL, "[mi] ERROR: cannot open\r\n");
 	}
+
 	return (result);
 }
 

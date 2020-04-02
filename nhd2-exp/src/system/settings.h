@@ -536,7 +536,7 @@ extern const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT];
 #define BORDER_RIGHT			10
 #define SCROLLBAR_WIDTH			15
 #define SCROLLBAR_INNER_WIDTH		11
-#define ConnectLineBox_Width    	16
+#define CONNECTLINEBOX_WIDTH    	15
 #define ICON_OFFSET			5	// offset from left border
 #define ICON_TO_ICON_OFFSET		2
 
@@ -570,7 +570,7 @@ extern const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT];
 #define BIG_FONT_FAKTOR 	1.5
 
 // multi widget
-#define INTER_FRAME_SPACE 	4 
+#define INTER_FRAME_SPACE 	5 
 
 // widget
 #define MENU_WIDTH			600

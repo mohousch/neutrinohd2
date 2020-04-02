@@ -445,7 +445,7 @@ void CNFilm::showMenu()
 	leftWidget->disableCenter();
 	leftWidget->setSelected(left_selected);
 	leftWidget->disableShrinkMenu();
-	leftWidget->setBackgroundColor(make16color(0xA0B0A0));
+	leftWidget->setBackgroundColor(/*make16color(0xA0B0A0)*/COL_DARK_BLUE);
 
 	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos", true, NULL, this, "movie_in_cinema");
 	ClistBoxItem *item2 = new ClistBoxItem("Am", true, NULL, this, "movie_popular");

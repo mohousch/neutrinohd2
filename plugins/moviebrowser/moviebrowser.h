@@ -83,7 +83,7 @@
 
 
 #define MAX_NUMBER_OF_BOOKMARK_ITEMS MI_MOVIE_BOOK_USER_MAX // we just use the same size as used in Movie info (MAX_NUMBER_OF_BOOKMARK_ITEMS is used for the number of menu items)
-#define MOVIEBROWSER_SETTINGS_FILE          PLUGINDIR "/movieplayer/moviebrowser.conf"
+#define MOVIEBROWSER_SETTINGS_FILE          PLUGINDIR "/moviebrowser/moviebrowser.conf"
 
 #define MIN_BROWSER_FRAME_HEIGHT 100
 #define MAX_BROWSER_FRAME_HEIGHT 400
