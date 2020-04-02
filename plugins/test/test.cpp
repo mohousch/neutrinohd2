@@ -1238,7 +1238,6 @@ void CTestMenu::listBoxWidget()
 	}
 
 
-	//testWidget->addKey(RC_ok, this, "lok");
 	testWidget->addKey(RC_info, this, "linfo");
 	testWidget->addKey(RC_setup, this, "lsetup");
 
@@ -1299,9 +1298,7 @@ void CTestMenu::textBoxWidget()
 	
 	textWidget->setText(buffer, tname.c_str(), p_w, p_h);
 
-	//testWidget->addKey(RC_ok, this, "lok");
 	testWidget->addKey(RC_info, this, "txtinfo");
-	//testWidget->addKey(RC_setup, this, "lsetup");
 
 	testWidget->addItem(headersWidget);
 	testWidget->addItem(textWidget);
@@ -5716,7 +5713,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	{
 		rightWidget->changeWidgetType();
 
-		return menu_return::RETURN_REPAINT;
+		return menu_return::RETURN_NONE;
 	}
 	else if(actionKey == "textboxwidget")
 	{

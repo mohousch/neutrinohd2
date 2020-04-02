@@ -491,6 +491,7 @@ class ClistBox : public CWidgetItem
 		int fheight;
 		int footInfoHeight;
 		int interFrame;
+		int connectLineWidth;
 
 		//
 		int hbutton_count;

@@ -298,9 +298,10 @@ void ClistBoxWidget::initFrames()
 			cFrameFootInfo.iHeight = footInfoHeight;
 			interFrame = INTER_FRAME_SPACE;
 			connectLineWidth = CONNECTLINEBOX_WIDTH;
-
-			width -= connectLineWidth;
 		}
+
+		// width
+		width -= connectLineWidth;
 
 		// head height
 		icon_head_w = 0;
@@ -1548,13 +1549,6 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 										paintHead();
 										paintFoot();
 										paint();
-										break;
-
-									case menu_return::RETURN_NONE:
-										g_RCInput->killTimer(sec_timer_id);
-										sec_timer_id = 0;
-										retval = menu_return::RETURN_NONE;
-										msg = RC_timeout;
 										break;	
 								}
 							} 
@@ -1591,13 +1585,6 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 									paintFoot();
 									paint();
 									break;
-
-								case menu_return::RETURN_NONE:
-									g_RCInput->killTimer(sec_timer_id);
-									sec_timer_id = 0;
-									retval = menu_return::RETURN_NONE;
-									msg = RC_timeout;
-									break;	
 							}
 						} 
 						else
@@ -1654,7 +1641,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 				case (RC_home):
 					exit_pressed = true;
-					dprintf(DEBUG_NORMAL, "exit_pressed\n");
+					dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec: exit_pressed\n");
 					msg = RC_timeout;
 					selected = -1;
 					break;
@@ -1680,9 +1667,10 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 		frameBuffer->blit();
 	}
 	while ( msg != RC_timeout );
+
+	dprintf(DEBUG_NORMAL, "ClistBoxWidget: retval: (%d) selected:%d\n", retval, selected);
 	
-	//if(retval != menu_return::RETURN_NONE) //FIXME:why???
-		hide();	
+	hide();	
 
 	//
 	if(PaintDate)

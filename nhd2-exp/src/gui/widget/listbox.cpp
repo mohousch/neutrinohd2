@@ -1622,6 +1622,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	footInfoHeight = 0;
 	interFrame = 0;
 	cFrameFootInfo.iHeight = 0;
+	connectLineWidth = 0;
 
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
@@ -1691,6 +1692,7 @@ ClistBox::ClistBox(CBox* position)
 	footInfoHeight = 0;
 	interFrame = 0;
 	cFrameFootInfo.iHeight = 0;
+	connectLineWidth = 0;
 
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
@@ -1801,6 +1803,8 @@ void ClistBox::initFrames()
 		{
 			cFrameFootInfo.iHeight = footInfoHeight;
 			interFrame = INTER_FRAME_SPACE;
+
+			connectLineWidth = CONNECTLINEBOX_WIDTH;
 		}
 	}
 
@@ -1844,6 +1848,7 @@ void ClistBox::initFrames()
 			{
 				cFrameFootInfo.iHeight = 0;
 				interFrame = 0;
+				connectLineWidth = 0;
 			}
 		}
 
@@ -1902,7 +1907,7 @@ void ClistBox::initFrames()
 
 		if(paintFootInfo)
 		{
-			cFrameBox.iWidth -= CONNECTLINEBOX_WIDTH;
+			cFrameBox.iWidth -= connectLineWidth;
 		}
 
 		// position xy
@@ -2860,17 +2865,11 @@ void ClistBox::changeWidgetType(int)
 	}
 	else if(widgetMode == MODE_LISTBOX)
 	{
-		dprintf(DEBUG_NORMAL, "ClistBox::changeWidgetType1:\n");
-
 		if(widgetChange && widget.size())
 		{
-			dprintf(DEBUG_NORMAL, "ClistBox::changeWidgetType2: widgetsize:%d\n", (int)widget.size());
-
 			hide();
 
 			cnt++;
-			
-			printf("cnt2:%d\n", cnt);
 
 			if(cnt >= (int)widget.size())
 			{
@@ -2878,8 +2877,6 @@ void ClistBox::changeWidgetType(int)
 			}
 			
 			widgetType = widget[cnt];
-
-			dprintf(DEBUG_NORMAL, "ClistBox::changeWidgetType: widgetType:%d cnt:%d\n", widgetType, cnt);
 
 			paint();
 		}

@@ -215,7 +215,7 @@ void CWidget::addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string &
 
 int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 {
-	dprintf(DEBUG_NORMAL, "CWidget:: exec: actionKey:%s\n", actionKey.c_str());
+	dprintf(DEBUG_NORMAL, "CWidget:: exec:\n");
 
 	int retval = menu_return::RETURN_REPAINT;
 
@@ -285,12 +285,6 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 							initFrames();
 							paint();
 							break;
-						case menu_return::RETURN_NONE:
-							//g_RCInput->killTimer(sec_timer_id);
-							//sec_timer_id = 0;
-							retval = menu_return::RETURN_NONE;
-							msg = RC_timeout;
-							break;	
 					}
 				}
 				else
@@ -366,7 +360,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 				case (RC_home):
 					exit_pressed = true;
-					dprintf(DEBUG_NORMAL, "exit_pressed\n");
+					dprintf(DEBUG_NORMAL, "CWidget:: exec: exit_pressed\n");
 					msg = RC_timeout;
 					selected = -1;
 					break;
@@ -389,14 +383,6 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 									initFrames();
 									paint();
 									break;
-								/*
-								case menu_return::RETURN_NONE:
-									g_RCInput->killTimer(sec_timer_id);
-									sec_timer_id = 0;
-									retval = menu_return::RETURN_NONE;
-									msg = RC_timeout;
-									break;	
-								*/
 							}
 						}
 					}
@@ -424,10 +410,9 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	while ( msg != RC_timeout );
 
-	printf("CWidget: retval: (%d) selected:%d\n", retval, selected);
+	dprintf(DEBUG_NORMAL, "CWidget: retval: (%d) selected:%d\n", retval, selected);
 	
-	//if(retval != menu_return::RETURN_NONE) //FIXME: why???
-		hide();	
+	hide();	
 
 	//
 	g_RCInput->killTimer(sec_timer_id);
