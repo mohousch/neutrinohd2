@@ -701,7 +701,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				// HelpText
 				cFrameBoxText.iX = x + 100 + ICON_OFFSET;
 				cFrameBoxText.iY = y + full_height - cFrameFootInfo.iHeight + 2;
-				cFrameBoxText.iWidth = full_width - 100 - ICON_OFFSET - 2;
+				cFrameBoxText.iWidth = full_width - CONNECTLINEBOX_WIDTH - 4 - ICON_OFFSET - 100 - BORDER_RIGHT;
 				cFrameBoxText.iHeight = cFrameFootInfo.iHeight - 4;
 
 				if(textBox)
@@ -710,8 +710,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 					textBox = NULL;
 				}
 	
-				textBox = new CTextBox();
-				textBox->setPosition(&cFrameBoxText);
+				textBox = new CTextBox(&cFrameBoxText);
 				textBox->disablePaintBackground();
 				textBox->setMode(~SCROLL);
 

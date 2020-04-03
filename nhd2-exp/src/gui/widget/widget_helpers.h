@@ -49,7 +49,7 @@ enum {
 	WIDGET_ITEM_DETAILSLINE
 };
 
-/// helpers
+//// helpers
 class CBox
 {
 	public:
@@ -139,6 +139,61 @@ typedef struct button_label
 	neutrino_locale_t locale;
 	const char * localename;
 } button_label_struct;
+
+// CProgressbar
+class CProgressBar
+{
+	private:
+		CFrameBuffer * frameBuffer;
+		short width;
+		short height;
+		unsigned char percent;
+		short red, green, yellow;
+		bool inverse;
+
+	public:
+		CProgressBar(int w, int h, int r = 40, int g = 100, int b = 70, bool inv = true);
+		void paint(unsigned int x, unsigned int y, unsigned char pcr);
+		void reset();
+		int getPercent() { return percent; };
+};
+
+// CButtons
+class CButtons
+{
+	private:
+	public:
+		CButtons(){};
+
+		void paintFootButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label* const content);
+
+		// head buttons right
+		void paintHeadButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content);
+};
+
+//CScrollBar
+class CScrollBar
+{
+	private:
+	public:
+		CScrollBar(){};
+		virtual ~CScrollBar(){};
+
+		void paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage);
+		void paint(CBox* position, const int NrOfPages, const int CurrentPage);
+};
+
+// detailsLine
+class CItems2DetailsLine
+{
+	private:
+	public:
+		CItems2DetailsLine(){};
+		virtual ~CItems2DetailsLine(){};
+		
+		void paint(int x, int y, int width, int height, int info_height, int iheight, int iy);
+		void clear(int x, int y, int width, int height, int info_height);
+};
 
 // CWidgetItem
 class CWidgetItem
@@ -239,62 +294,6 @@ class CFooters : public CWidgetItem
 		void setButtons(const struct button_label* button_label, const int button_count){fcontent = button_label; fcount = button_count;};
 
 		void paint();
-};
-
-////
-// CProgressbar
-class CProgressBar : public CWidgetItem
-{
-	private:
-		CFrameBuffer * frameBuffer;
-		short width;
-		short height;
-		unsigned char percent;
-		short red, green, yellow;
-		bool inverse;
-
-	public:
-		CProgressBar(int w, int h, int r = 40, int g = 100, int b = 70, bool inv = true);
-		void paint(unsigned int x, unsigned int y, unsigned char pcr);
-		void reset();
-		int getPercent() { return percent; };
-};
-
-// CButtons
-class CButtons : public CWidgetItem
-{
-	private:
-	public:
-		CButtons();
-
-		void paintFootButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label* const content);
-
-		// head buttons right
-		void paintHeadButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content);
-};
-
-//CScrollBar
-class CScrollBar : public CWidgetItem 
-{
-	private:
-	public:
-		CScrollBar(){};
-		virtual ~CScrollBar(){};
-
-		void paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage);
-		void paint(CBox* position, const int NrOfPages, const int CurrentPage);
-};
-
-// detailsLine
-class CItems2DetailsLine : public CWidgetItem
-{
-	private:
-	public:
-		CItems2DetailsLine(){};
-		virtual ~CItems2DetailsLine(){};
-		
-		void paint(int x, int y, int width, int height, int info_height, int iheight, int iy);
-		void clear(int x, int y, int width, int height, int info_height);
 };
 
 #endif /* __gui_widget_helpers_h__ */

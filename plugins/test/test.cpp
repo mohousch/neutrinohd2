@@ -6440,8 +6440,8 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CImage", true, NULL, this, "image"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
-	mainMenu->addItem(new CMenuForwarder("CScrollBar", false, NULL, this, "scrollbar"));
-	mainMenu->addItem(new CMenuForwarder("CItems2DetailsLine", false, NULL, this, "detailsline"));
+	mainMenu->addItem(new CMenuForwarder("CScrollBar", true, NULL, this, "scrollbar"));
+	mainMenu->addItem(new CMenuForwarder("CItems2DetailsLine", true, NULL, this, "detailsline"));
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "Widget Components") );
 	mainMenu->addItem(new CMenuForwarder("CHeaders", true, NULL, this, "headers"));
 	mainMenu->addItem(new CMenuForwarder("CWindow", true, NULL, this, "window"));

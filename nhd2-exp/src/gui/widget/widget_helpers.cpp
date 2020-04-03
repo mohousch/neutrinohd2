@@ -31,6 +31,299 @@
 #include <gui/widget/widget_helpers.h>
 
 
+// progressbar
+#define ITEMW 1
+
+CProgressBar::CProgressBar(int w, int h, int r, int g, int b, bool inv)
+{
+	frameBuffer = CFrameBuffer::getInstance();
+	
+	double div;
+	width = w;
+	height = h;
+	inverse = inv;
+	
+	div = (double) 100 / (double) width;
+
+	red = (double) r / (double) div / (double) ITEMW;
+	green = (double) g / (double) div / (double) ITEMW;
+	yellow = (double) b / (double) div / (double) ITEMW;
+	
+	percent = 255;
+}
+
+void CProgressBar::paint(unsigned int x, unsigned int y, unsigned char pcr)
+{
+	int i, siglen;
+	unsigned int posx;
+	unsigned int posy;
+	unsigned int xpos;
+	unsigned int ypos;
+
+	double div;
+	uint32_t rgb;
+	
+	fb_pixel_t color = COL_MENUCONTENT_PLUS_7;
+	int b = 0;
+	
+	i = 0;
+	xpos = x;
+	ypos = y;
+
+	frameBuffer->paintBoxRel(x, y, width, height, COL_MENUCONTENT_PLUS_2);	//fill passive
+	
+	if (pcr != percent) 
+	{
+		if(percent == 255) 
+			percent = 0;
+
+		div = (double) 100 / (double) width;
+		siglen = (double) pcr / (double) div;
+		posx = xpos;
+		posy = ypos;
+		int maxi = siglen/ITEMW;
+		int total = width/ITEMW;
+		int step = 255/total;
+
+		if (pcr > percent) 
+		{
+			if(g_settings.progressbar_color == 0)
+			{
+				//red
+				for (i = 0; (i < red) && (i < maxi); i++) 
+				{
+					step = 255/red;
+
+					if(inverse) 
+						rgb = COL_GREEN + ((unsigned char)(step*i) << 16); // adding red
+					else
+						rgb = COL_RED + ((unsigned char)(step*i) <<  8); // adding green
+				
+					color = rgb;
+				
+					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
+				}
+	
+				//yellow
+				for (; (i < yellow) && (i < maxi); i++) 
+				{
+					step = 255/yellow/2;
+
+					if(inverse) 
+						rgb = COL_YELLOW - (((unsigned char)step*(b++)) <<  8); // removing green
+					else
+						rgb = COL_YELLOW - ((unsigned char)(step*(b++)) << 16); // removing red
+	
+					color = rgb;		    
+				
+					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
+				}
+
+				//green
+				for (; (i < green) && (i < maxi); i++) 
+				{
+					step = 255/green;
+
+					if(inverse) 
+						rgb = COL_YELLOW - ((unsigned char) (step*(b++)) <<  8); // removing green
+					else
+						rgb = COL_YELLOW - ((unsigned char) (step*(b++)) << 16); // removing red
+				
+					color = rgb;
+				
+					frameBuffer->paintBoxRel (posx + i*ITEMW, posy, ITEMW, height, color);
+				}
+			}
+			else
+			{
+				for(; (i < maxi); i++) 
+				{
+					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
+				}
+			}
+		}
+		
+		percent = pcr;
+	}
+}
+
+void CProgressBar::reset()
+{
+  	percent = 255;
+}
+
+// Buttons
+void CButtons::paintFootButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content)
+{
+	int iw, ih;
+
+	int buttonWidth = 0;
+	
+	if(count)
+	{
+		buttonWidth = (dx - BORDER_LEFT - BORDER_RIGHT)/count;
+
+		for (unsigned int i = 0; i < count; i++)
+		{
+			if(content[i].button != NULL)
+			{
+				//const char * l_option = NULL;
+				std::string l_option("");
+
+				l_option.clear();
+
+				CFrameBuffer::getInstance()->getIconSize(content[i].button, &iw, &ih);
+				int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
+
+				if(content[i].localename != NULL)
+					l_option = content[i].localename;
+				else
+					l_option = g_Locale->getText(content[i].locale);
+		
+				CFrameBuffer::getInstance()->paintIcon(content[i].button, x + BORDER_LEFT + i*buttonWidth, y + (dy - ih)/2);
+
+				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET + i*buttonWidth, y + f_h + (dy - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
+			}
+		}
+	}
+}
+
+// head buttons (right)
+void CButtons::paintHeadButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content)
+{
+	int iw[count], ih[count];
+	int startx = x + dx - BORDER_RIGHT;
+	
+	for (unsigned int i = 0; i < count; i++)
+	{
+		if(content[i].button != NULL)
+		{
+			CFrameBuffer::getInstance()->getIconSize(content[i].button, &iw[i], &ih[i]);
+		
+			startx -= (iw[i] + ICON_TO_ICON_OFFSET);
+
+			CFrameBuffer::getInstance()->paintIcon(content[i].button, startx, y + (dy - ih[i])/2);
+		}
+	}
+}
+
+// scrollBar
+void CScrollBar::paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage)
+{
+	// scrollBar
+	CBox cFrameScrollBar;
+	CWindow cScrollBarWindow;
+
+	cFrameScrollBar.iX = x;
+	cFrameScrollBar.iY = y;
+	cFrameScrollBar.iWidth = SCROLLBAR_WIDTH;
+	cFrameScrollBar.iHeight = dy;
+
+
+	cScrollBarWindow.setPosition(&cFrameScrollBar);
+	cScrollBarWindow.setColor(COL_SCROLLBAR);
+	cScrollBarWindow.setCorner(NO_RADIUS, CORNER_ALL);
+	cScrollBarWindow.paint();
+		
+	// scrollBar slider
+	CBox cFrameSlider;
+	CWindow cSliderWindow;	
+
+	cFrameSlider.iX = cFrameScrollBar.iX + 2;
+	cFrameSlider.iY = cFrameScrollBar.iY + CurrentPage*(cFrameScrollBar.iHeight/NrOfPages);
+	cFrameSlider.iWidth = cFrameScrollBar.iWidth - 4;
+	cFrameSlider.iHeight = cFrameScrollBar.iHeight/NrOfPages;
+
+	cSliderWindow.setPosition(&cFrameSlider);
+	cSliderWindow.setColor(COL_SCROLLBAR_SLIDER);
+	cSliderWindow.setCorner(NO_RADIUS, CORNER_ALL);
+	cSliderWindow.paint();
+}
+
+void CScrollBar::paint(CBox* position, const int NrOfPages, const int CurrentPage)
+{
+	// scrollBar
+	CBox cFrameScrollBar;
+	CWindow cScrollBarWindow;
+
+	cFrameScrollBar = *position;
+
+	cScrollBarWindow.setPosition(&cFrameScrollBar);
+	cScrollBarWindow.setColor(COL_SCROLLBAR);
+	cScrollBarWindow.setCorner(NO_RADIUS, CORNER_ALL);
+	cScrollBarWindow.paint();
+		
+	// scrollBar slider
+	CBox cFrameSlider;
+	CWindow cSliderWindow;	
+
+	cFrameSlider.iX = cFrameScrollBar.iX + 2;
+	cFrameSlider.iY = cFrameScrollBar.iY + CurrentPage*(cFrameScrollBar.iHeight/NrOfPages);
+	cFrameSlider.iWidth = cFrameScrollBar.iWidth - 4;
+	cFrameSlider.iHeight = cFrameScrollBar.iHeight/NrOfPages;
+
+	cSliderWindow.setPosition(&cFrameSlider);
+	cSliderWindow.setColor(COL_SCROLLBAR_SLIDER);
+	cSliderWindow.setCorner(NO_RADIUS, CORNER_ALL);
+	cSliderWindow.paint();
+}
+
+// detailsLine
+void CItems2DetailsLine::paint(int x, int y, int width, int height, int info_height, int iheight, int iy)
+{
+	int xpos  = x - CONNECTLINEBOX_WIDTH;
+	int ypos1 = iy;
+	int ypos2 = y + height;
+	int ypos1a = ypos1 + (iheight/2) - 2;
+	int ypos2a = ypos2 + (info_height/2) - 2;
+	
+	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
+	fb_pixel_t col2 = COL_MENUFOOT_INFO_PLUS_0;
+
+	// clear infoBox
+	CFrameBuffer::getInstance()->paintBackgroundBoxRel(xpos, y, CONNECTLINEBOX_WIDTH, height + info_height);
+
+	//
+	int fh = iheight > 10 ? iheight - 10 : 5;
+		
+	// vertical line connected to item	
+	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 4, ypos1 + 5, 4, fh, col1);
+	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 4, ypos1 + 5, 1, fh, col2);
+		
+	// vertical line connected to infobox	
+	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 4, ypos2 + 7, 4, info_height - 14, col1);
+	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 4, ypos2 + 7, 1, info_height - 14, col2);			
+
+	// vertical line
+	CFrameBuffer::getInstance()->paintBoxRel(xpos, ypos1a, 4, ypos2a - ypos1a, col1);
+	CFrameBuffer::getInstance()->paintBoxRel(xpos, ypos1a, 1, ypos2a - ypos1a + 4, col2);		
+
+	// Hline (item)
+	CFrameBuffer::getInstance()->paintBoxRel(xpos, ypos1a, 12, 4, col1);
+	CFrameBuffer::getInstance()->paintBoxRel(xpos, ypos1a, 1, 4, col2);
+		
+	// Hline (infobox)
+	CFrameBuffer::getInstance()->paintBoxRel(xpos, ypos2a, 12, 4, col1);
+	CFrameBuffer::getInstance()->paintBoxRel(xpos, ypos2a, 1, 4, col2);
+
+	// untere info box background
+	CFrameBuffer::getInstance()->paintBoxRel(x, ypos2, width, info_height, col1);
+
+	// infoBox
+	CFrameBuffer::getInstance()->paintBoxRel(x + 2, ypos2 + 2, width - 4, info_height - 4, COL_MENUFOOT_INFO_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Foot_Info_gradient);	
+}
+
+
+void CItems2DetailsLine::clear(int x, int y, int width, int height, int info_height)
+{ 
+	// lines
+	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x - CONNECTLINEBOX_WIDTH, y, CONNECTLINEBOX_WIDTH, height + info_height);
+
+	// info box
+	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x, y + height, width, info_height);
+}
+
+// Components
 // headers
 CHeaders::CHeaders(const int x, const int y, const int dx, const int dy, const char * const title, const char * const icon)
 {
@@ -211,301 +504,6 @@ void CFooters::paint()
 			}
 		}
 	}
-}
-
-// progressbar
-#define ITEMW 1
-
-CProgressBar::CProgressBar(int w, int h, int r, int g, int b, bool inv)
-{
-	frameBuffer = CFrameBuffer::getInstance();
-	
-	double div;
-	width = w;
-	height = h;
-	inverse = inv;
-	
-	div = (double) 100 / (double) width;
-
-	red = (double) r / (double) div / (double) ITEMW;
-	green = (double) g / (double) div / (double) ITEMW;
-	yellow = (double) b / (double) div / (double) ITEMW;
-	
-	percent = 255;
-}
-
-void CProgressBar::paint(unsigned int x, unsigned int y, unsigned char pcr)
-{
-	int i, siglen;
-	unsigned int posx;
-	unsigned int posy;
-	unsigned int xpos;
-	unsigned int ypos;
-
-	double div;
-	uint32_t rgb;
-	
-	fb_pixel_t color = COL_MENUCONTENT_PLUS_7;
-	int b = 0;
-	
-	i = 0;
-	xpos = x;
-	ypos = y;
-
-	frameBuffer->paintBoxRel(x, y, width, height, COL_MENUCONTENT_PLUS_2);	//fill passive
-	
-	if (pcr != percent) 
-	{
-		if(percent == 255) 
-			percent = 0;
-
-		div = (double) 100 / (double) width;
-		siglen = (double) pcr / (double) div;
-		posx = xpos;
-		posy = ypos;
-		int maxi = siglen/ITEMW;
-		int total = width/ITEMW;
-		int step = 255/total;
-
-		if (pcr > percent) 
-		{
-			if(g_settings.progressbar_color == 0)
-			{
-				//red
-				for (i = 0; (i < red) && (i < maxi); i++) 
-				{
-					step = 255/red;
-
-					if(inverse) 
-						rgb = COL_GREEN + ((unsigned char)(step*i) << 16); // adding red
-					else
-						rgb = COL_RED + ((unsigned char)(step*i) <<  8); // adding green
-				
-					color = rgb;
-				
-					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
-				}
-	
-				//yellow
-				for (; (i < yellow) && (i < maxi); i++) 
-				{
-					step = 255/yellow/2;
-
-					if(inverse) 
-						rgb = COL_YELLOW - (((unsigned char)step*(b++)) <<  8); // removing green
-					else
-						rgb = COL_YELLOW - ((unsigned char)(step*(b++)) << 16); // removing red
-	
-					color = rgb;		    
-				
-					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
-				}
-
-				//green
-				for (; (i < green) && (i < maxi); i++) 
-				{
-					step = 255/green;
-
-					if(inverse) 
-						rgb = COL_YELLOW - ((unsigned char) (step*(b++)) <<  8); // removing green
-					else
-						rgb = COL_YELLOW - ((unsigned char) (step*(b++)) << 16); // removing red
-				
-					color = rgb;
-				
-					frameBuffer->paintBoxRel (posx + i*ITEMW, posy, ITEMW, height, color);
-				}
-			}
-			else
-			{
-				for(; (i < maxi); i++) 
-				{
-					frameBuffer->paintBoxRel(posx + i*ITEMW, posy, ITEMW, height, color);
-				}
-			}
-		}
-		
-		percent = pcr;
-	}
-}
-
-void CProgressBar::reset()
-{
-  	percent = 255;
-}
-
-CButtons::CButtons()
-{
-}
-
-void CButtons::paintFootButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content)
-{
-	int iw, ih;
-
-	int buttonWidth = 0;
-	
-	if(count)
-	{
-		buttonWidth = (dx - BORDER_LEFT - BORDER_RIGHT)/count;
-
-		for (unsigned int i = 0; i < count; i++)
-		{
-			if(content[i].button != NULL)
-			{
-				//const char * l_option = NULL;
-				std::string l_option("");
-
-				l_option.clear();
-
-				CFrameBuffer::getInstance()->getIconSize(content[i].button, &iw, &ih);
-				int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
-
-				if(content[i].localename != NULL)
-					l_option = content[i].localename;
-				else
-					l_option = g_Locale->getText(content[i].locale);
-		
-				CFrameBuffer::getInstance()->paintIcon(content[i].button, x + BORDER_LEFT + i*buttonWidth, y + (dy - ih)/2);
-
-				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET + i*buttonWidth, y + f_h + (dy - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
-			}
-		}
-	}
-}
-
-// head buttons (right)
-void CButtons::paintHeadButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content)
-{
-	int iw[count], ih[count];
-	int startx = x + dx - BORDER_RIGHT;
-	
-	for (unsigned int i = 0; i < count; i++)
-	{
-		if(content[i].button != NULL)
-		{
-			CFrameBuffer::getInstance()->getIconSize(content[i].button, &iw[i], &ih[i]);
-		
-			startx -= (iw[i] + ICON_TO_ICON_OFFSET);
-
-			CFrameBuffer::getInstance()->paintIcon(content[i].button, startx, y + (dy - ih[i])/2);
-		}
-	}
-}
-
-// scrollBar
-void CScrollBar::paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage)
-{
-	// scrollBar
-	CBox cFrameScrollBar;
-	CWindow cScrollBarWindow;
-
-	cFrameScrollBar.iX = x;
-	cFrameScrollBar.iY = y;
-	cFrameScrollBar.iWidth = SCROLLBAR_WIDTH;
-	cFrameScrollBar.iHeight = dy;
-
-
-	cScrollBarWindow.setPosition(&cFrameScrollBar);
-	cScrollBarWindow.setColor(COL_SCROLLBAR);
-	cScrollBarWindow.setCorner(NO_RADIUS, CORNER_ALL);
-	cScrollBarWindow.paint();
-		
-	// scrollBar slider
-	CBox cFrameSlider;
-	CWindow cSliderWindow;	
-
-	cFrameSlider.iX = cFrameScrollBar.iX + 2;
-	cFrameSlider.iY = cFrameScrollBar.iY + CurrentPage*(cFrameScrollBar.iHeight/NrOfPages);
-	cFrameSlider.iWidth = cFrameScrollBar.iWidth - 4;
-	cFrameSlider.iHeight = cFrameScrollBar.iHeight/NrOfPages;
-
-	cSliderWindow.setPosition(&cFrameSlider);
-	cSliderWindow.setColor(COL_SCROLLBAR_SLIDER);
-	cSliderWindow.setCorner(NO_RADIUS, CORNER_ALL);
-	cSliderWindow.paint();
-}
-
-void CScrollBar::paint(CBox* position, const int NrOfPages, const int CurrentPage)
-{
-	// scrollBar
-	CBox cFrameScrollBar;
-	CWindow cScrollBarWindow;
-
-	cFrameScrollBar = *position;
-
-	cScrollBarWindow.setPosition(&cFrameScrollBar);
-	cScrollBarWindow.setColor(COL_SCROLLBAR);
-	cScrollBarWindow.setCorner(NO_RADIUS, CORNER_ALL);
-	cScrollBarWindow.paint();
-		
-	// scrollBar slider
-	CBox cFrameSlider;
-	CWindow cSliderWindow;	
-
-	cFrameSlider.iX = cFrameScrollBar.iX + 2;
-	cFrameSlider.iY = cFrameScrollBar.iY + CurrentPage*(cFrameScrollBar.iHeight/NrOfPages);
-	cFrameSlider.iWidth = cFrameScrollBar.iWidth - 4;
-	cFrameSlider.iHeight = cFrameScrollBar.iHeight/NrOfPages;
-
-	cSliderWindow.setPosition(&cFrameSlider);
-	cSliderWindow.setColor(COL_SCROLLBAR_SLIDER);
-	cSliderWindow.setCorner(NO_RADIUS, CORNER_ALL);
-	cSliderWindow.paint();
-}
-
-// detailsLine
-void CItems2DetailsLine::paint(int x, int y, int width, int height, int info_height, int iheight, int iy)
-{
-	int xpos  = x - CONNECTLINEBOX_WIDTH;
-	int ypos1 = iy;
-	int ypos2 = y + height;
-	int ypos1a = ypos1 + (iheight/2) - 2;
-	int ypos2a = ypos2 + (info_height/2) - 2;
-	
-	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
-	fb_pixel_t col2 = COL_MENUFOOT_INFO_PLUS_0;
-
-	// clear infoBox
-	CFrameBuffer::getInstance()->paintBackgroundBoxRel(xpos, y, CONNECTLINEBOX_WIDTH, height + info_height);
-
-	//
-	int fh = iheight > 10 ? iheight - 10 : 5;
-		
-	// vertical line connected to item	
-	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 4, ypos1 + 5, 4, fh, col1);
-	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 4, ypos1 + 5, 1, fh, col2);
-		
-	// vertical line connected to infobox	
-	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 4, ypos2 + 7, 4, info_height - 14, col1);
-	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 4, ypos2 + 7, 1, info_height - 14, col2);			
-
-	// vertical line
-	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 16, ypos1a, 4, ypos2a - ypos1a, col1);
-	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 16, ypos1a, 1, ypos2a - ypos1a + 4, col2);		
-
-	// Hline (item)
-	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 15, ypos1a, 12, 4, col1);
-	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 16, ypos1a, 12, 1, col2);
-		
-	// Hline (infobox)
-	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 15, ypos2a, 12, 4, col1);
-	CFrameBuffer::getInstance()->paintBoxRel(xpos + CONNECTLINEBOX_WIDTH - 12, ypos2a, 8, 1, col2);
-
-	// untere info box background
-	CFrameBuffer::getInstance()->paintBoxRel(x, ypos2, width, info_height, col1);
-
-	// infoBox
-	CFrameBuffer::getInstance()->paintBoxRel(x + 2, ypos2 + 2, width - 4, info_height - 4, COL_MENUFOOT_INFO_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.Foot_Info_gradient);	
-}
-
-
-void CItems2DetailsLine::clear(int x, int y, int width, int height, int info_height)
-{ 
-	// lines
-	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x - CONNECTLINEBOX_WIDTH, y, CONNECTLINEBOX_WIDTH, height + info_height);
-
-	// info box
-	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x, y + height, width, info_height);
 }
 
 
