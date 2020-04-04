@@ -114,6 +114,8 @@ class CTestMenu : public CMenuTarget
 
 		CFrameBox *leftFrame;
 
+		ClistBox *listBox;
+
 		void loadTMDBPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1, bool search = false);
 
 		void loadMoviePlaylist();
@@ -291,6 +293,8 @@ CTestMenu::CTestMenu()
 	pig = NULL;
 	grid = NULL;
 	leftFrame = NULL;
+
+	listBox = NULL;
 }
 
 CTestMenu::~CTestMenu()
@@ -304,6 +308,12 @@ CTestMenu::~CTestMenu()
 	{
 		delete webTVchannelList;
 		webTVchannelList = NULL;
+	}
+
+	if(listBox)
+	{
+		delete listBox;
+		listBox = NULL;
 	}
 }
 
@@ -2885,16 +2895,16 @@ void CTestMenu::testClistBox()
 	Box.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - Box.iWidth ) >> 1 );
 	Box.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - Box.iHeight) >> 1 );
 
-	ClistBox *listBox = new ClistBox(&Box);
+	listBox = new ClistBox(&Box);
 
-	CMenuItem* item = NULL;
+	item = NULL;
 	
 	loadMoviePlaylist();
 
 	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "listplay");
 
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
 		//item->setOptionInfo("OptionInfo");
@@ -2924,11 +2934,6 @@ void CTestMenu::testClistBox()
 	listBox->setWidgetType(WIDGET_TYPE_STANDARD);
 	listBox->setWidgetMode(MODE_LISTBOX);
 
-	//listBox->enableWidgetChange();
-	listBox->addWidget(WIDGET_TYPE_CLASSIC);
-	listBox->addWidget(WIDGET_TYPE_EXTENDED);
-	listBox->addWidget(WIDGET_TYPE_FRAME);	
-
 	// head
 	listBox->setTitle("ClistBox(standard)", NEUTRINO_ICON_MOVIE);
 	listBox->enablePaintHead();
@@ -2942,12 +2947,8 @@ void CTestMenu::testClistBox()
 	// footinfo
 	listBox->enablePaintFootInfo(80);
 
-
-REPEAT:
 	listBox->setSelected(selected);
 	listBox->paint();
-
-	CFrameBuffer::getInstance()->blit();
 
 	// loop
 	neutrino_msg_t msg;
@@ -2963,6 +2964,8 @@ REPEAT:
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
+		listBox->otherKeyPressed(msg);
+
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			listBox->paintHead();
@@ -2971,62 +2974,24 @@ REPEAT:
 		{
 			loop = false;
 		}
-		else if(msg == RC_down)
-		{
-			listBox->scrollLineDown();
-		}
-		else if(msg == RC_up)
-		{
-			listBox->scrollLineUp();
-		}
-		else if(msg == RC_page_down)
-		{
-			listBox->scrollPageDown();
-		}
-		else if(msg == RC_page_up)
-		{
-			listBox->scrollPageUp();
-		}
-		else if(msg == RC_left)
-		{
-			listBox->swipLeft();
-		}
-		else if(msg == RC_right)
-		{
-			listBox->swipRight();
-		}
 		else if(msg == RC_ok)
 		{
-
-			hide();
-
-			selected = listBox->getSelected();
-
-			if (&m_vMovieInfo[selected].file != NULL) 
-			{
-				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
-				tmpMoviePlayerGui.exec(NULL, "");
-			}
-
-			goto REPEAT;
+			listBox->oKKeyPressed(this);
+			listBox->paint();
 		}
 		else if(msg == RC_info)
 		{
-			hide();
+			listBox->hide();
+
 			selected = listBox->getSelected();
 			m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
-			goto REPEAT;
-		}
-		//
-		else if(msg == RC_setup)
-		{
-			listBox->changeWidgetType();
+
+			listBox->paint();
 		}
 
 		CFrameBuffer::getInstance()->blit();
 	}
 
-	hide();
 	listBox->hide();
 	delete listBox;
 	listBox = NULL;
@@ -3048,16 +3013,16 @@ void CTestMenu::testClistBox2()
 	Box.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - Box.iWidth ) >> 1 );
 	Box.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - Box.iHeight) >> 1 );
 
-	ClistBox *listBox = new ClistBox(&Box);
+	listBox = new ClistBox(&Box);
 
-	CMenuItem* item = NULL;
+	item = NULL;
 
 	loadMoviePlaylist();
 
 	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "listplay");
 
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
 		//item->setOptionInfo("OptionInfo");
@@ -3100,11 +3065,8 @@ void CTestMenu::testClistBox2()
 	// footinfo
 	listBox->enablePaintFootInfo(80);
 
-REPEAT:
 	listBox->setSelected(selected);
 	listBox->paint();
-
-	CFrameBuffer::getInstance()->blit();
 
 	// loop
 	neutrino_msg_t msg;
@@ -3120,6 +3082,8 @@ REPEAT:
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
+		listBox->otherKeyPressed(msg);
+
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			listBox->paintHead();
@@ -3128,57 +3092,24 @@ REPEAT:
 		{
 			loop = false;
 		}
-		else if(msg == RC_down)
-		{
-			listBox->scrollLineDown();
-		}
-		else if(msg == RC_up)
-		{
-			listBox->scrollLineUp();
-		}
-		else if(msg == RC_page_down)
-		{
-			listBox->scrollPageDown();
-		}
-		else if(msg == RC_page_up)
-		{
-			listBox->scrollPageUp();
-		}
-		else if(msg == RC_left)
-		{
-			listBox->swipLeft();
-		}
-		else if(msg == RC_right)
-		{
-			listBox->swipRight();
-		}
 		else if(msg == RC_ok)
 		{
-
-			hide();
-
-			selected = listBox->getSelected();
-
-			if (&m_vMovieInfo[selected].file != NULL) 
-			{
-				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
-				tmpMoviePlayerGui.exec(NULL, "");
-			}
-
-			goto REPEAT;
+			listBox->oKKeyPressed(this);
+			listBox->paint();
 		}
 		else if(msg == RC_info)
 		{
-			hide();
+			listBox->hide();
+
 			selected = listBox->getSelected();
 			m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
-			goto REPEAT;
+			
+			listBox->paint();
 		}
 
 		CFrameBuffer::getInstance()->blit();
 	}
 
-	hide();
 	listBox->hide();
 	delete listBox;
 	listBox = NULL;
@@ -3200,16 +3131,15 @@ void CTestMenu::testClistBox3()
 	Box.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - Box.iWidth ) >> 1 );
 	Box.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - Box.iHeight) >> 1 );
 
-	ClistBox *listBox = new ClistBox(&Box);
-
-	CMenuItem* item = NULL;
+	listBox = new ClistBox(&Box);
+	item = NULL;
 
 	loadMoviePlaylist();
 
 	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "listplay");
 
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
 		//item->setOptionInfo("OptionInfo");
@@ -3252,11 +3182,8 @@ void CTestMenu::testClistBox3()
 	// footinfo
 	listBox->enablePaintFootInfo(80);
 
-REPEAT:
 	listBox->setSelected(selected);
 	listBox->paint();
-
-	CFrameBuffer::getInstance()->blit();
 
 	// loop
 	neutrino_msg_t msg;
@@ -3272,6 +3199,8 @@ REPEAT:
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
+		listBox->otherKeyPressed(msg);
+
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			listBox->paintHead();
@@ -3280,57 +3209,24 @@ REPEAT:
 		{
 			loop = false;
 		}
-		else if(msg == RC_down)
-		{
-			listBox->scrollLineDown();
-		}
-		else if(msg == RC_up)
-		{
-			listBox->scrollLineUp();
-		}
-		else if(msg == RC_page_down)
-		{
-			listBox->scrollPageDown();
-		}
-		else if(msg == RC_page_up)
-		{
-			listBox->scrollPageUp();
-		}
-		else if(msg == RC_left)
-		{
-			listBox->swipLeft();
-		}
-		else if(msg == RC_right)
-		{
-			listBox->swipRight();
-		}
 		else if(msg == RC_ok)
 		{
-
-			hide();
-
-			selected = listBox->getSelected();
-
-			if (&m_vMovieInfo[selected].file != NULL) 
-			{
-				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
-				tmpMoviePlayerGui.exec(NULL, "");
-			}
-
-			goto REPEAT;
+			listBox->oKKeyPressed(this);
+			listBox->paint();
 		}
 		else if(msg == RC_info)
 		{
-			hide();
+			listBox->hide();
+
 			selected = listBox->getSelected();
 			m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
-			goto REPEAT;
+			
+			listBox->paint();
 		}
 
 		CFrameBuffer::getInstance()->blit();
 	}
 
-	hide();
 	listBox->hide();
 	delete listBox;
 	listBox = NULL;
@@ -3352,16 +3248,15 @@ void CTestMenu::testClistBox4()
 	Box.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - Box.iWidth ) >> 1 );
 	Box.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - Box.iHeight) >> 1 );
 
-	ClistBox *listBox = new ClistBox(&Box);
-
-	CMenuItem* item = NULL;
+	listBox = new ClistBox(&Box);
+	item = NULL;
 
 	loadMoviePlaylist();
 
 	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "listplay");
 
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
 
@@ -3402,11 +3297,8 @@ void CTestMenu::testClistBox4()
 	// footinfo
 	listBox->enablePaintFootInfo(80);
 
-REPEAT:
 	listBox->setSelected(selected);
 	listBox->paint();
-
-	CFrameBuffer::getInstance()->blit();
 
 	// loop
 	neutrino_msg_t msg;
@@ -3422,6 +3314,8 @@ REPEAT:
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
+		listBox->otherKeyPressed(msg);
+
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			listBox->paintHead();
@@ -3430,57 +3324,24 @@ REPEAT:
 		{
 			loop = false;
 		}
-		else if(msg == RC_down)
-		{
-			listBox->scrollLineDown();
-		}
-		else if(msg == RC_up)
-		{
-			listBox->scrollLineUp();
-		}
-		else if(msg == RC_page_down)
-		{
-			listBox->scrollPageDown();
-		}
-		else if(msg == RC_page_up)
-		{
-			listBox->scrollPageUp();
-		}
-		else if(msg == RC_left)
-		{
-			listBox->swipLeft();
-		}
-		else if(msg == RC_right)
-		{
-			listBox->swipRight();
-		}
 		else if(msg == RC_ok)
 		{
-
-			hide();
-
-			selected = listBox->getSelected();
-
-			if (&m_vMovieInfo[selected].file != NULL) 
-			{
-				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
-				tmpMoviePlayerGui.exec(NULL, "");
-			}
-
-			goto REPEAT;
+			listBox->oKKeyPressed(this);
+			listBox->paint();
 		}
 		else if(msg == RC_info)
 		{
-			hide();
+			listBox->hide();
+
 			selected = listBox->getSelected();
 			m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
-			goto REPEAT;
+			
+			listBox->paint();
 		}
 
 		CFrameBuffer::getInstance()->blit();
 	}
 
-	hide();
 	listBox->hide();
 	delete listBox;
 	listBox = NULL;
@@ -3502,16 +3363,15 @@ void CTestMenu::testClistBox5()
 	Box.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - Box.iWidth ) >> 1 );
 	Box.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - Box.iHeight) >> 1 );
 
-	ClistBox *listBox = new ClistBox(&Box);
-
-	CMenuItem* item = NULL;
+	listBox = new ClistBox(&Box);
+	item = NULL;
 
 	loadMoviePlaylist();
 
 	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "listplay");
 
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
 		//item->setOptionInfo("OptionInfo");
@@ -3562,8 +3422,6 @@ void CTestMenu::testClistBox5()
 	// footinfo
 	listBox->enablePaintFootInfo(80);
 
-
-REPEAT:
 	listBox->setSelected(selected);
 	listBox->paint();
 
@@ -3583,6 +3441,8 @@ REPEAT:
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
+		listBox->otherKeyPressed(msg);
+
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			listBox->paintHead();
@@ -3591,53 +3451,20 @@ REPEAT:
 		{
 			loop = false;
 		}
-		else if(msg == RC_down)
-		{
-			listBox->scrollLineDown();
-		}
-		else if(msg == RC_up)
-		{
-			listBox->scrollLineUp();
-		}
-		else if(msg == RC_page_down)
-		{
-			listBox->scrollPageDown();
-		}
-		else if(msg == RC_page_up)
-		{
-			listBox->scrollPageUp();
-		}
-		else if(msg == RC_left)
-		{
-			listBox->swipLeft();
-		}
-		else if(msg == RC_right)
-		{
-			listBox->swipRight();
-		}
 		else if(msg == RC_ok)
 		{
-
-			hide();
-
-			selected = listBox->getSelected();
-
-			if (&m_vMovieInfo[selected].file != NULL) 
-			{
-				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
-				tmpMoviePlayerGui.exec(NULL, "");
-			}
-
-			goto REPEAT;
+			listBox->oKKeyPressed(this);
+			listBox->paint();
 		}
 		else if(msg == RC_info)
 		{
-			hide();
+			listBox->hide();
+
 			selected = listBox->getSelected();
 			m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
-			goto REPEAT;
+			
+			listBox->paint();
 		}
-		//
 		else if(msg == RC_setup)
 		{
 			listBox->changeWidgetType();
@@ -3646,7 +3473,6 @@ REPEAT:
 		CFrameBuffer::getInstance()->blit();
 	}
 
-	hide();
 	listBox->hide();
 	delete listBox;
 	listBox = NULL;
@@ -3668,16 +3494,16 @@ void CTestMenu::testClistBox6()
 	Box.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - Box.iWidth ) >> 1 );
 	Box.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - Box.iHeight) >> 1 );
 
-	ClistBox *listBox = new ClistBox(&Box);
+	listBox = new ClistBox(&Box);
 
-	CMenuItem* item = NULL;
+	item = NULL;
 
 	loadMoviePlaylist();
 
 	// load items
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
-		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str());
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "listplay");
 
 		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
 		//item->setOptionInfo("OptionInfo");
@@ -3728,12 +3554,8 @@ void CTestMenu::testClistBox6()
 	// footinfo
 	listBox->enablePaintFootInfo(80);
 
-
-REPEAT:
 	listBox->setSelected(selected);
 	listBox->paint();
-
-	CFrameBuffer::getInstance()->blit();
 
 	// loop
 	neutrino_msg_t msg;
@@ -3749,6 +3571,8 @@ REPEAT:
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
+		listBox->otherKeyPressed(msg);
+
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			listBox->paintHead();
@@ -3757,51 +3581,19 @@ REPEAT:
 		{
 			loop = false;
 		}
-		else if(msg == RC_down)
-		{
-			listBox->scrollLineDown();
-		}
-		else if(msg == RC_up)
-		{
-			listBox->scrollLineUp();
-		}
-		else if(msg == RC_page_down)
-		{
-			listBox->scrollPageDown();
-		}
-		else if(msg == RC_page_up)
-		{
-			listBox->scrollPageUp();
-		}
-		else if(msg == RC_left)
-		{
-			listBox->swipLeft();
-		}
-		else if(msg == RC_right)
-		{
-			listBox->swipRight();
-		}
 		else if(msg == RC_ok)
 		{
-
-			hide();
-
-			selected = listBox->getSelected();
-
-			if (&m_vMovieInfo[selected].file != NULL) 
-			{
-				tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
-				tmpMoviePlayerGui.exec(NULL, "");
-			}
-
-			goto REPEAT;
+			listBox->oKKeyPressed(this);
+			listBox->paint();
 		}
 		else if(msg == RC_info)
 		{
-			hide();
+			listBox->hide();
+
 			selected = listBox->getSelected();
 			m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
-			goto REPEAT;
+			
+			listBox->paint();
 		}
 		//
 		else if(msg == RC_setup)
@@ -3812,7 +3604,6 @@ REPEAT:
 		CFrameBuffer::getInstance()->blit();
 	}
 
-	hide();
 	listBox->hide();
 	delete listBox;
 	listBox = NULL;
@@ -5221,9 +5012,21 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	{
 		selected = listMenu->getSelected();
 
-		if (&m_vMovieInfo[listMenu->getSelected()].file != NULL) 
+		if (&m_vMovieInfo[selected].file != NULL) 
 		{
-			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[listMenu->getSelected()]);
+			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
+			tmpMoviePlayerGui.exec(NULL, "");
+		}
+
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "listplay")
+	{
+		selected = listBox->getSelected();
+
+		if (&m_vMovieInfo[selected].file != NULL) 
+		{
+			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
 			tmpMoviePlayerGui.exec(NULL, "");
 		}
 
@@ -6440,8 +6243,8 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CImage", true, NULL, this, "image"));
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
-	mainMenu->addItem(new CMenuForwarder("CScrollBar", true, NULL, this, "scrollbar"));
-	mainMenu->addItem(new CMenuForwarder("CItems2DetailsLine", true, NULL, this, "detailsline"));
+	mainMenu->addItem(new CMenuForwarder("CScrollBar", false, NULL, this, "scrollbar"));
+	mainMenu->addItem(new CMenuForwarder("CItems2DetailsLine", false, NULL, this, "detailsline"));
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "Widget Components") );
 	mainMenu->addItem(new CMenuForwarder("CHeaders", true, NULL, this, "headers"));
 	mainMenu->addItem(new CMenuForwarder("CWindow", true, NULL, this, "window"));

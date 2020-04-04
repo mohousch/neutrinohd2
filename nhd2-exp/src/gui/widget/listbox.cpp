@@ -2014,9 +2014,9 @@ void ClistBox::paintItems()
 			items_width = 2*(cFrameBox.iWidth/3) - sb_width;
 
 			// extended
-			cFrameBoxText.iX = cFrameBox.iX + items_width;
+			cFrameBoxText.iX = cFrameBox.iX + 2*(cFrameBox.iWidth/3);
 			cFrameBoxText.iY = cFrameBox.iY + hheight;
-			cFrameBoxText.iWidth = cFrameBox.iWidth - items_width;
+			cFrameBoxText.iWidth = (cFrameBox.iWidth/3);
 			cFrameBoxText.iHeight = items_height;
 
 			textBox = new CTextBox();
@@ -2044,7 +2044,10 @@ void ClistBox::paintItems()
 		// paint right scrollBar if we have more then one page
 		if(total_pages > 1)
 		{
-			scrollBar.paint(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, cFrameBox.iY + hheight, cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight - interFrame, total_pages, current_page);
+			if(widgetType == WIDGET_TYPE_EXTENDED)
+				scrollBar.paint(cFrameBox.iX + 2*(cFrameBox.iWidth/3) - SCROLLBAR_WIDTH, cFrameBox.iY + hheight, cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight - interFrame, total_pages, current_page);
+			else
+				scrollBar.paint(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, cFrameBox.iY + hheight, cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight - interFrame, total_pages, current_page);
 		}
 
 		// paint items
@@ -2886,6 +2889,8 @@ void ClistBox::changeWidgetType(int)
 //
 int ClistBox::oKKeyPressed(CMenuTarget* parent)
 {
+	dprintf(DEBUG_NORMAL, "ClistBox::okKeyPressed:\n");
+
 	if(parent)
 		return items[selected]->exec(parent);
 	else
@@ -2894,6 +2899,8 @@ int ClistBox::oKKeyPressed(CMenuTarget* parent)
 
 void ClistBox::otherKeyPressed(neutrino_msg_t msg)
 {
+	dprintf(DEBUG_DEBUG, "ClistBox::otherKeyPressed:\n");
+
 	switch (msg) 
 	{
 		case RC_page_up:

@@ -616,9 +616,9 @@ void ClistBoxWidget::paintItems()
 			items_width = 2*(width/3) - sb_width;
 
 			// extended
-			cFrameBoxText.iX = x + items_width;
+			cFrameBoxText.iX = x + 2*(width/3);
 			cFrameBoxText.iY = y + hheight;
-			cFrameBoxText.iWidth = width - items_width;
+			cFrameBoxText.iWidth = width/3;
 			cFrameBoxText.iHeight = items_height;
 
 			textBox = new CTextBox();
@@ -647,7 +647,10 @@ void ClistBoxWidget::paintItems()
 		// paint right scrollBar if we have more then one page
 		if(total_pages > 1)
 		{
-			scrollBar.paint(x + width - SCROLLBAR_WIDTH, item_start_y, items_height, total_pages, current_page);
+			if(widgetType == WIDGET_TYPE_EXTENDED)
+				scrollBar.paint(x + 2*(width/3) - SCROLLBAR_WIDTH, item_start_y, items_height, total_pages, current_page);
+			else
+				scrollBar.paint(x + width - SCROLLBAR_WIDTH, item_start_y, items_height, total_pages, current_page);
 		}
 
 		// paint items

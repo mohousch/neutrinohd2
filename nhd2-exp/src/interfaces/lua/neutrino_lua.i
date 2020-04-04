@@ -46,6 +46,9 @@
 #include <libdvbapi/video_cs.h>
 #include <libdvbapi/dmx_cs.h>
 
+// jsoncpp
+#include <jsoncpp/include/json/json.h>
+
 // driver
 #include <driver/framebuffer.h>
 #include <driver/fontrenderer.h>
@@ -151,6 +154,9 @@
 %include <lib/libdvbapi/audio_cs.h>
 //%include <lib/libdvbapi/video_cs.h>
 %include <lib/libdvbapi/dmx_cs.h>
+
+// jsoncpp
+%include <lib/jsoncpp/include/json/json.h>
 
 // driver
 %include <src/driver/fontrenderer.h>
