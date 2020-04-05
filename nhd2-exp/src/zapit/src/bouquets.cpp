@@ -99,9 +99,9 @@ CZapitChannel * CZapitBouquet::getChannelByChannelID(const t_channel_id channel_
 	}
 
 	unsigned int i;
-	for (i=0; (i<channels->size()) && ((*channels)[i]->getChannelID() != channel_id); i++);
+	for (i = 0; (i<channels->size()) && ((*channels)[i]->getChannelID() != channel_id); i++);
 
-	if (i<channels->size())
+	if (i < channels->size())
 		result = (*channels)[i];
 
 	if ((serviceType == ST_RESERVED) && (result == NULL)) 
@@ -772,6 +772,7 @@ CBouquetManager::ChannelIterator::ChannelIterator(CBouquetManager* owner, const 
 {
 	Owner = owner;
 	tv = TV;
+
 	if (Owner->Bouquets.size() == 0)
 		c = -2;
 	else 

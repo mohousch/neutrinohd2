@@ -67,8 +67,6 @@
 #include <driver/encoding.h>
 
 
-extern CRemoteControl * g_RemoteControl;	// defined neutrino.cpp
-
 // mainmenu
 void CNeutrinoApp::mainMenu(void)
 {
@@ -113,7 +111,7 @@ void CNeutrinoApp::mainMenu(void)
 	nMenu->addItem(new CMenuSeparator(LINE));
 	
 	// timerlist
-	nMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST));
+	nMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList(), NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST));
 	
 	// features
 	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES));
@@ -124,7 +122,7 @@ void CNeutrinoApp::mainMenu(void)
 	nMenu->addItem(new CMenuSeparator(LINE));
 
 	//box info
-	nMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, RC_info, NEUTRINO_ICON_BUTTON_HELP, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO));
+	nMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget(), NULL, RC_info, NEUTRINO_ICON_BUTTON_HELP, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO));
 
 	nMenu->integratePlugins(CPlugins::I_TYPE_MAIN, shortcut++);
 
@@ -209,8 +207,10 @@ class CKeyHelper
                                         number_key = 10;
                                 else
                                         number_key++;
+
                                 result = true;
                         }
+
                         return (result);
                 };
 };

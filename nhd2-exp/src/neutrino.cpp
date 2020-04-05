@@ -848,6 +848,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.lastChannelMode = configfile.getInt32("lastChannelMode", 1);		//TV mode
 	g_settings.StartChannelTV = configfile.getString("startchanneltv", "");
 	g_settings.StartChannelRadio = configfile.getString("startchannelradio", "");
+	g_settings.StartChannelWEBTV = configfile.getString("startchannelwebtv", "");
 	g_settings.startchanneltv_id =  configfile.getInt64("startchanneltv_id", 0) & 0xFFFFFFFFFFFFULL; 
 	g_settings.startchannelradio_id = configfile.getInt64("startchannelradio_id", 0) & 0xFFFFFFFFFFFFULL;
 	g_settings.startchannelwebtv_id = configfile.getInt64("startchannelwebtv_id", 0) & 0xFFFFFFFFFFFFULL;
@@ -1318,6 +1319,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32("lastChannelMode", g_settings.lastChannelMode);
 	configfile.setString("startchanneltv", g_settings.StartChannelTV );
 	configfile.setString("startchannelradio", g_settings.StartChannelRadio );
+	configfile.setString("startchannelwebtv", g_settings.StartChannelWEBTV );
 	configfile.setInt64("startchanneltv_id", g_settings.startchanneltv_id);
 	configfile.setInt64("startchannelradio_id", g_settings.startchannelradio_id);
 	configfile.setInt64("startchannelwebtv_id", g_settings.startchannelwebtv_id);
@@ -2274,7 +2276,7 @@ void CNeutrinoApp::InitZapper()
 	{
 		tvMode(false);
 	} 
-	else 
+	else if(firstchannel.mode == 'r') 
 	{
 #if defined (ENABLE_LCD)	  
 			g_RCInput->killTimer(g_InfoViewer->lcdUpdateTimer);
@@ -2283,6 +2285,10 @@ void CNeutrinoApp::InitZapper()
 		
 			radioMode(false);
 	}
+	else if(firstchannel.mode == 'w') 
+	{
+		webtvMode(false);
+	} 
 
 	//
 	if(channelList->getSize() && live_channel_id) 
@@ -2479,8 +2485,10 @@ int CNeutrinoApp::run(int argc, char **argv)
 	ZapStart_arg.lastchannelmode = g_settings.lastChannelMode;
 	ZapStart_arg.startchanneltv_id = g_settings.startchanneltv_id;
 	ZapStart_arg.startchannelradio_id = g_settings.startchannelradio_id;
+	ZapStart_arg.startchannelwebtv_id = g_settings.startchannelwebtv_id;
 	ZapStart_arg.startchanneltv_nr = g_settings.startchanneltv_nr;
 	ZapStart_arg.startchannelradio_nr = g_settings.startchannelradio_nr;
+	ZapStart_arg.startchannelwebtv_nr = g_settings.startchannelwebtv_nr;
 	ZapStart_arg.uselastchannel = g_settings.uselastchannel;
 	
 	ZapStart_arg.video_mode = g_settings.video_Mode;
@@ -4846,6 +4854,8 @@ void CNeutrinoApp::webtvMode( bool rezap)
 	frameBuffer->paintBackground();
 	frameBuffer->blit();
 
+	g_RemoteControl->webTVMode();
+
 	// pause epg scanning
 	g_Sectionsd->setPauseScanning(true);
 			
@@ -4859,6 +4869,7 @@ void CNeutrinoApp::webtvMode( bool rezap)
 
 	if(rezap) 
 	{
+		firstChannel();
 		channelList->tuned = 0xfffffff;
 		channelList->zapTo(g_settings.startchannelwebtv_nr - 1);
 	}

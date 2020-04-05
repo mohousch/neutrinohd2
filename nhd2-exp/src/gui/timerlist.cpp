@@ -250,6 +250,8 @@ class CTimerListApidNotifier : public CChangeObserver
 
 CTimerList::CTimerList()
 {
+	dprintf(DEBUG_DEBUG, "CTimerList::CTimerList:\n");
+
 	frameBuffer = CFrameBuffer::getInstance();
 
 	visible = false;
@@ -270,6 +272,8 @@ CTimerList::CTimerList()
 
 CTimerList::~CTimerList()
 {
+	dprintf(DEBUG_DEBUG, "CTimerList::del\n");
+
 	timerlist.clear();
 }
 
@@ -905,7 +909,6 @@ int CTimerList::modifyTimer()
 	//
 	//timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "modifytimer", RC_red, NEUTRINO_ICON_BUTTON_RED));
 	//timerSettings.addItem(new CMenuSeparator(LINE));
-	timerSettings.addItem(new CMenuSeparator());
 
 	char type[80];
 	strcpy(type, convertTimerType2String(timer->eventType)); // UTF
@@ -989,8 +992,6 @@ int CTimerList::modifyTimer()
 	return timerSettings.exec(this, "");
 }
 
-//const struct button_label newTimerButtons = { NEUTRINO_ICON_BUTTON_RED, LOCALE_TIMERLIST_SAVE, NULL };
-
 int CTimerList::newTimer()
 {
 	// Defaults
@@ -1055,7 +1056,6 @@ int CTimerList::newTimer()
 					timerSettings_stopTime.getValue());
 	CMenuOptionChooser *m0 = new CMenuOptionChooser(LOCALE_TIMERLIST_TYPE, (int *)&timerNew.eventType, TIMERLIST_TYPE_OPTIONS, TIMERLIST_TYPE_OPTION_COUNT, true, &notifier2);
 
-	timerSettings.addItem(new CMenuSeparator());
 	timerSettings.addItem( m0);
 	timerSettings.addItem( m1);
 	timerSettings.addItem( m2);

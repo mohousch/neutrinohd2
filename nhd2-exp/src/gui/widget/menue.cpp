@@ -1082,8 +1082,6 @@ void ClistBoxWidget::integratePlugins(CPlugins::i_type_t integration, const unsi
 
 int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec:\n");
-
 	int retval = menu_return::RETURN_REPAINT;
 
 	int pos = 0;
@@ -1100,7 +1098,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 	paintFoot();
 	paint();
 
-	frameBuffer->blit();
+	dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec: (%s)\n", l_name);
 
 	// add sec timer
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
@@ -1595,6 +1593,8 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					break;
 				//
 				case (RC_setup):
+					dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec: (%s) changeWidgetType\n", l_name);
+
 					if(widgetMode == MODE_MENU)
 					{
 						if(widgetChange)
@@ -1670,7 +1670,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 	}
 	while ( msg != RC_timeout );
 
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget: retval: (%d) selected:%d\n", retval, selected);
+	dprintf(DEBUG_NORMAL, "ClistBoxWidget: retval: (%d) selected:%d\n\n", retval, selected);
 	
 	hide();	
 

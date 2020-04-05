@@ -411,6 +411,7 @@ struct SNeutrinoSettings
 	int lastChannelMode;
 	std::string StartChannelTV;
 	std::string StartChannelRadio;
+	std::string StartChannelWEBTV;
 	t_channel_id startchanneltv_id;
 	t_channel_id startchannelradio_id;
 	t_channel_id startchannelwebtv_id;

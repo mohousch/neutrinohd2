@@ -183,6 +183,7 @@ enum {
 	TV_MODE = 0x01,
 	RADIO_MODE = 0x02,
 	RECORD_MODE = 0x04,
+	WEBTV_MODE = 0x08
 };
 
 int currentMode = 1;
@@ -214,9 +215,10 @@ void * scan_transponder(void * arg);
 
 // zapit config
 bool saveLastChannel = true;
-int lastChannelMode = 1;
+int lastChannelMode = TV_MODE;
 uint32_t  lastChannelRadio = 0;
 uint32_t  lastChannelTV = 0;
+uint32_t lastChannelWEBTV = 0;
 bool makeRemainingChannelsBouquet = false;
 
 // set/get zapit.config
@@ -859,15 +861,22 @@ void saveZapitSettings(bool write, bool write_a)
 	// last channel
 	if (live_channel) 
 	{
-		// now save the lowest channel number with the current channel_id
-		int c = ((currentMode & RADIO_MODE) ? g_bouquetManager->radioChannelsBegin() : g_bouquetManager->tvChannelsBegin()).getLowestChannelNumberWithChannelID(live_channel->getChannelID());
-		
+		int c = 0;
+		if(currentMode & RADIO_MODE)
+			c = g_bouquetManager->radioChannelsBegin().getLowestChannelNumberWithChannelID(live_channel->getChannelID());
+		else if(currentMode & TV_MODE)
+			c = g_bouquetManager->tvChannelsBegin().getLowestChannelNumberWithChannelID(live_channel->getChannelID());
+		else if(currentMode & WEBTV_MODE)
+			c = g_WebTV->getActiveChannelNumber(live_channel->getChannelID());
+
 		if (c >= 0) 
 		{
 			if ((currentMode & RADIO_MODE))
 				lastChannelRadio = c;
-			else
+			else if ((currentMode & TV_MODE))
 				lastChannelTV = c;
+			else if ((currentMode & WEBTV_MODE))
+				lastChannelWEBTV = c;
 		}
 	}
 
@@ -878,9 +887,16 @@ void saveZapitSettings(bool write, bool write_a)
 		
 		if (config.getBool("saveLastChannel", true)) 
 		{
-			config.setInt32("lastChannelMode", (currentMode & RADIO_MODE) ? 0 : 1);
+			if (currentMode & RADIO_MODE)
+				config.setInt32("lastChannelMode", RADIO_MODE);
+			else if (currentMode & TV_MODE)
+				config.setInt32("lastChannelMode", TV_MODE);
+			else if (currentMode & WEBTV_MODE)
+				config.setInt32("lastChannelMode", WEBTV_MODE);
+
 			config.setInt32("lastChannelRadio", lastChannelRadio);
 			config.setInt32("lastChannelTV", lastChannelTV);
+			config.setInt32("lastChannelWEBTV", lastChannelWEBTV);
 			config.setInt64("lastChannel", live_channel_id);
 		}
 		
@@ -916,6 +932,7 @@ void loadZapitSettings()
 	live_channel_id = config.getInt64("lastChannel", 0) & 0xFFFFFFFFFFFFULL;
 	lastChannelRadio = config.getInt32("lastChannelRadio", 0);
 	lastChannelTV = config.getInt32("lastChannelTV", 0);
+	lastChannelWEBTV = config.getInt32("lastChannelWEBTV", 0);
 
 	dprintf(DEBUG_NORMAL, "lastChannelMode:%d\n", lastChannelMode);
 	
@@ -938,10 +955,18 @@ CZapitClient::responseGetLastChannel load_settings(void)
 
 	if (currentMode & RADIO_MODE)
 		lastchannel.mode = 'r';
-	else
+	else if (currentMode & TV_MODE)
 		lastchannel.mode = 't';
+	else if (currentMode & WEBTV_MODE)
+		lastchannel.mode = 'w';
 
-	lastchannel.channelNumber = (currentMode & RADIO_MODE) ? lastChannelRadio : lastChannelTV;
+	//lastchannel.channelNumber = (currentMode & RADIO_MODE) ? lastChannelRadio : lastChannelTV;
+	if(currentMode & RADIO_MODE)
+		lastchannel.channelNumber = lastChannelRadio;
+	else if(currentMode & TV_MODE)
+		lastchannel.channelNumber = lastChannelTV;
+	else if(currentMode & WEBTV_MODE)
+		lastchannel.channelNumber = lastChannelWEBTV;
 	
 	return lastchannel;
 }
@@ -1675,6 +1700,7 @@ void setRadioMode(void)
 
 	currentMode |= RADIO_MODE;
 	currentMode &= ~TV_MODE;
+	currentMode &= ~WEBTV_MODE;
 }
 
 void setTVMode(void)
@@ -1683,6 +1709,16 @@ void setTVMode(void)
 
 	currentMode |= TV_MODE;
 	currentMode &= ~RADIO_MODE;
+	currentMode &= ~WEBTV_MODE;
+}
+
+void setWEBTVMode(void)
+{
+	dprintf(DEBUG_NORMAL, "zapit::setWEBTVMode:\n");
+
+	currentMode |= WEBTV_MODE;
+	currentMode &= ~RADIO_MODE;
+	currentMode &= ~TV_MODE;
 }
 
 int getMode(void)
@@ -1692,6 +1728,9 @@ int getMode(void)
 
 	if (currentMode & RADIO_MODE)
 		return CZapitClient::MODE_RADIO;
+
+	if (currentMode & WEBTV_MODE)
+		return CZapitClient::MODE_WEBTV;
 
 	return 0;
 }
@@ -1755,6 +1794,8 @@ int prepare_channels()
 
 	// load bouquets
 	g_bouquetManager->loadBouquets();		// 2004.08.02 g_bouquetManager->storeBouquets();
+
+	// webtv bouquets|channels
 
 	return 0;
 }
@@ -1881,6 +1922,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 		{
 			CZapitMessages::commandZaptoServiceID msgZaptoServiceID;
 			CBasicServer::receive_data(connfd, &msgZaptoServiceID, sizeof(msgZaptoServiceID));
+
 			zapTo_ChannelID(msgZaptoServiceID.channel_id, (rmsg.cmd == CZapitMessages::CMD_ZAPTO_SUBSERVICEID_NOWAIT));
 			break;
 		}
@@ -1918,6 +1960,8 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 				setTVMode();
 			else if (msgSetMode.mode == CZapitClient::MODE_RADIO)
 				setRadioMode();
+			else if (msgSetMode.mode == CZapitClient::MODE_WEBTV)
+				setWEBTVMode();
 			break;
 		}
 		
@@ -3223,6 +3267,9 @@ void sendBouquets(int connfd, const bool emptyBouquetsToo, CZapitClient::channel
                 case CZapitClient::MODE_RADIO:
                         curMode = RADIO_MODE;
                         break;
+		case CZapitClient::MODE_WEBTV:
+                        curMode = WEBTV_MODE;
+                        break;
                 case CZapitClient::MODE_CURRENT:
                 default:
                         curMode = currentMode;
@@ -4508,22 +4555,33 @@ int zapit_main_thread(void *data)
 	if(ZapStart_arg->uselastchannel == 0)
 	{
 		// mode
-		if (ZapStart_arg->lastchannelmode == 0)
+		if (ZapStart_arg->lastchannelmode == RADIO_MODE)
 			setRadioMode();
-		else
+		else if (ZapStart_arg->lastchannelmode == TV_MODE)
 			setTVMode();
+		else if (ZapStart_arg->lastchannelmode == WEBTV_MODE)
+			setWEBTVMode();
 		
-		// last channel
-		live_channel_id = (currentMode & RADIO_MODE) ? ZapStart_arg->startchannelradio_id & 0xFFFFFFFFFFFFULL : ZapStart_arg->startchanneltv_id & 0xFFFFFFFFFFFFULL;
+		// live channel id
+		if (currentMode & RADIO_MODE)
+			live_channel_id = ZapStart_arg->startchannelradio_id;
+		else if (currentMode & TV_MODE)
+			live_channel_id = ZapStart_arg->startchanneltv_id;
+		else if (currentMode & WEBTV_MODE)
+			live_channel_id = ZapStart_arg->startchannelwebtv_id;
+
 		lastChannelRadio = ZapStart_arg->startchannelradio_nr;
 		lastChannelTV    = ZapStart_arg->startchanneltv_nr;
+		lastChannelWEBTV = ZapStart_arg->startchannelwebtv_nr;
 	}
 	else
 	{
-		if (lastChannelMode == 0)
+		if (lastChannelMode == RADIO_MODE)
 			setRadioMode();
-		else
+		else if (lastChannelMode == TV_MODE)
 			setTVMode();
+		else if (lastChannelMode == WEBTV_MODE)
+			setWEBTVMode();
 	}
 
 	// load services
@@ -4562,72 +4620,78 @@ int zapit_main_thread(void *data)
 	
 	while (zapit_server.run(zapit_parse_command, CZapitMessages::ACTVERSION, true)) 
 	{
-		//check for lock
-#ifdef CHECK_FOR_LOCK
-		if (check_lock && !standby && live_channel && time(NULL) > lastlockcheck && scan_runs == 0) 
+		if (currentMode & WEBTV_MODE)
 		{
-			if ( (live_fe->getStatus() & FE_HAS_LOCK) == 0) 
-			{
-				zapit( live_channel->getChannelID(), current_is_nvod, true);
-			}
-			
-			lastlockcheck = time(NULL);
 		}
-#endif
-		
-		// pmt update
-		if (pmt_update_fd != -1) 
+		else
 		{
-			unsigned char buf[4096];
-			int ret = pmtDemux->Read(buf, 4095, 10); /* every 10 msec */
-
-			if (ret > 0) 
+			//check for lock
+	#ifdef CHECK_FOR_LOCK
+			if (check_lock && !standby && live_channel && time(NULL) > lastlockcheck && scan_runs == 0) 
 			{
-				pmt_stop_update_filter(&pmt_update_fd);
-
-				dprintf(DEBUG_INFO, "[zapit] pmt updated, sid 0x%x new version 0x%x\n", (buf[3] << 8) + buf[4], (buf[5] >> 1) & 0x1F);
-
-				// zap channel
-				if(live_channel) 
+				if ( (live_fe->getStatus() & FE_HAS_LOCK) == 0) 
 				{
-					t_channel_id channel_id = live_channel->getChannelID();
-					int vpid = live_channel->getVideoPid();
-					int apid = live_channel->getAudioPid();
-					
-					parse_pmt(live_channel, live_fe);
-					
-					bool apid_found = false;
-					// check if selected audio pid still present
-					for (int i = 0; i <  live_channel->getAudioChannelCount(); i++) 
-					{
-						if (live_channel->getAudioChannel(i)->pid == apid) 
-						{
-							apid_found = true;
-							break;
-						}
-					}
-					
-					if(!apid_found || vpid != live_channel->getVideoPid()) 
-					{
-						zapit(live_channel->getChannelID(), current_is_nvod, true);
-					} 
-					else 
-					{
-						sendCaPmtPlayBackStart(live_channel, live_fe);
-						
-						// ci cam
-#if defined (ENABLE_CI)
-						if(live_channel != NULL)
-						{
-							if(live_fe != NULL)
-								ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
-						}
-#endif	
+					zapit( live_channel->getChannelID(), current_is_nvod, true);
+				}
+			
+				lastlockcheck = time(NULL);
+			}
+	#endif
+		
+			// pmt update
+			if (pmt_update_fd != -1) 
+			{
+				unsigned char buf[4096];
+				int ret = pmtDemux->Read(buf, 4095, 10); /* every 10 msec */
 
-						pmt_set_update_filter(live_channel, &pmt_update_fd, live_fe);
-					}
+				if (ret > 0) 
+				{
+					pmt_stop_update_filter(&pmt_update_fd);
+
+					dprintf(DEBUG_INFO, "[zapit] pmt updated, sid 0x%x new version 0x%x\n", (buf[3] << 8) + buf[4], (buf[5] >> 1) & 0x1F);
+
+					// zap channel
+					if(live_channel) 
+					{
+						t_channel_id channel_id = live_channel->getChannelID();
+						int vpid = live_channel->getVideoPid();
+						int apid = live_channel->getAudioPid();
+					
+						parse_pmt(live_channel, live_fe);
+					
+						bool apid_found = false;
+						// check if selected audio pid still present
+						for (int i = 0; i <  live_channel->getAudioChannelCount(); i++) 
+						{
+							if (live_channel->getAudioChannel(i)->pid == apid) 
+							{
+								apid_found = true;
+								break;
+							}
+						}
+					
+						if(!apid_found || vpid != live_channel->getVideoPid()) 
+						{
+							zapit(live_channel->getChannelID(), current_is_nvod, true);
+						} 
+						else 
+						{
+							sendCaPmtPlayBackStart(live_channel, live_fe);
 						
-					eventServer->sendEvent(CZapitClient::EVT_PMT_CHANGED, CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
+							// ci cam
+	#if defined (ENABLE_CI)
+							if(live_channel != NULL)
+							{
+								if(live_fe != NULL)
+									ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
+							}
+	#endif	
+
+							pmt_set_update_filter(live_channel, &pmt_update_fd, live_fe);
+						}
+						
+						eventServer->sendEvent(CZapitClient::EVT_PMT_CHANGED, CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
+					}
 				}
 			}
 		}

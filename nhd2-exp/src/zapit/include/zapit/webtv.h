@@ -35,6 +35,7 @@
 
 #include <channel.h>
 #include <client/zapitclient.h>
+//#include <bouquets.h>
 
 
 #define DEFAULT_WEBTV_FILE 		CONFIGDIR "/webtv/webtv.xml"
@@ -50,6 +51,7 @@ class CWebTV
 
 	public:
 		std::vector<CZapitChannel*> channels;
+		//ZapitChannelList channels;
 
 		void loadWebTVBouquet(std::string filename);
 		
@@ -73,6 +75,7 @@ class CWebTV
 		const std::string& getChannelName(t_channel_id id);
 		const std::string& getChannelURL(t_channel_id id);
 		const std::string& getBouquetName(){return title;};
+		int getActiveChannelNumber(t_channel_id id);
 
 		std::vector<CZapitChannel*> getChannels(void){return channels;};
 		

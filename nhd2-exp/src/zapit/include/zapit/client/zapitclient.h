@@ -71,8 +71,9 @@ class CZapitClient : public CBasicClient
 			EVT_ZAP_CA_ID,
 			EVT_SDT_CHANGED,
 			EVT_SERVICES_CHANGED,
-
 			EVT_PMT_CHANGED,
+
+			EVT_ZAP_COMPLETE_IS_WEBTV,
 			
 			LAST_EVENT_MARKER             // <- no actual event, needed by pzapit
 		};
@@ -81,7 +82,8 @@ class CZapitClient : public CBasicClient
 		{
 			ZAP_OK = 0x01,
 			ZAP_IS_NVOD = 0x02,
-			ZAP_INVALID_PARAM = 0x04
+			ZAP_INVALID_PARAM = 0x04,
+			ZAP_IS_WEBTV = 0x08
 		};
 
 		enum bouquetMode

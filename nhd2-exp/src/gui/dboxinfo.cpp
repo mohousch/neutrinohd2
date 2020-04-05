@@ -88,7 +88,7 @@ static int my_filter(const struct dirent * dent)
 
 CDBoxInfoWidget::CDBoxInfoWidget()
 {
-	dprintf(DEBUG_NORMAL, "CDBoxInfoWidget::CDBoxInfoWidge:\n");
+	dprintf(DEBUG_DEBUG, "CDBoxInfoWidget::CDBoxInfoWidget:\n");
 }
 
 int CDBoxInfoWidget::exec(CMenuTarget * parent, const std::string &)

@@ -1556,7 +1556,7 @@ void CChannelList::paint()
 			}
 
 			////
-			printf("TEST:%s\n\n", p_event->description.c_str());
+			//printf("TEST:%s\n\n", p_event->description.c_str());
 
 			// description
 			if (p_event != NULL && !(p_event->description.empty())) 

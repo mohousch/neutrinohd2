@@ -234,6 +234,7 @@ int CRemoteControl::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data
 		}
 	}
 
+	//
 	if ( msg == NeutrinoMessages::EVT_CURRENTEPG )
 	{
 		if ((*(t_channel_id *)data) != (current_channel_id & 0xFFFFFFFFFFFFULL) && (*(t_channel_id *)data) != (current_sub_channel_id & 0xFFFFFFFFFFFFULL))
@@ -289,6 +290,7 @@ int CRemoteControl::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data
 			else
 				g_RCInput->postMsg(NeutrinoMessages::EVT_PROGRAMLOCKSTATUS, info_CN.current_fsk, false);
 		}
+
 		return messages_return::handled;
 	}
 	else if ( msg == NeutrinoMessages::EVT_NEXTEPG )
@@ -833,12 +835,24 @@ void CRemoteControl::tvMode()
 	CVFD::getInstance()->ShowIcon(VFD_ICON_TV, true);
 }
 
+void CRemoteControl::webTVMode()
+{
+	dprintf(DEBUG_NORMAL, "CRemoteControl::webTVMode\n");
+	
+	g_Zapit->setMode( CZapitClient::MODE_WEBTV );
+	
+	CVFD::getInstance()->ShowIcon(VFD_ICON_RADIO, false);
+	CVFD::getInstance()->ShowIcon(VFD_ICON_TV, false);
+}
+
 // defined in sectionsd.cpp
 void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid);
 
-// get events
+// online epg get events
 void CRemoteControl::getEvents(t_channel_id chid)
 {
+	dprintf(DEBUG_NORMAL, "CRemoteControl::getEvents\n");
+
 	std::string evUrl = "http://";
 	evUrl += g_settings.epg_serverbox_ip;
 

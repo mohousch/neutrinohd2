@@ -273,7 +273,7 @@ void CWebTV::loadChannels(void)
 {
 	dprintf(DEBUG_INFO, "CWebTV::loadChannels\n");
 
-	// load all tv channels
+	// load all webtv channels
 	channels.clear();
 
 	loadWebTVBouquet(g_settings.webtv_userBouquet);
@@ -336,6 +336,15 @@ const std::string& CWebTV::getChannelURL(t_channel_id id)
 	}
 
 	return std::string("");
+}
+
+int CWebTV::getActiveChannelNumber(t_channel_id id)
+{
+	for(unsigned int i = 0; i < channels.size(); i++)
+	{
+		if(channels[i]->channel_id == id)
+			return i;
+	}
 }
 
 bool CWebTV::startPlayBack(t_channel_id chid)

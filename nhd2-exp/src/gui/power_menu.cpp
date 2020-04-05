@@ -41,10 +41,12 @@
 
 CPowerMenu::CPowerMenu()
 {
+	dprintf(DEBUG_DEBUG, "CPowerMenu::CPowerMenu:\n");
 }
 
 CPowerMenu::~CPowerMenu()
 {
+	dprintf(DEBUG_DEBUG, "CPowerMenu::del\n");
 }
 
 int CPowerMenu::exec(CMenuTarget* parent, const std::string& actionKey)
