@@ -47,7 +47,7 @@
 #include <libdvbapi/dmx_cs.h>
 
 // jsoncpp
-#include <jsoncpp/include/json/json.h>
+//#include <jsoncpp/include/json/json.h>
 
 // driver
 #include <driver/framebuffer.h>
@@ -156,7 +156,7 @@
 %include <lib/libdvbapi/dmx_cs.h>
 
 // jsoncpp
-%include <lib/jsoncpp/include/json/json.h>
+//%include <lib/jsoncpp/include/json/json.h>
 
 // driver
 %include <src/driver/fontrenderer.h>
