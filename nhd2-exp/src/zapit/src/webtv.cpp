@@ -49,9 +49,11 @@
 #include <playback_cs.h>
 
 #include <webtv.h>
+#include <client/zapitclient.h>
 
 
 extern cPlayback *playback;
+extern tallchans allchans;  
 
 CWebTV::CWebTV()
 {	
@@ -168,17 +170,17 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 			{
 				while ( ((xmlGetNextOccurence(l1, "webtv")) || (xmlGetNextOccurence(l1, "station"))) && msg != RC_home) 
 				{
-					char * title;
-					char * url;
-					char * description;
+					const char * title;
+					const char * url;
+					const char * description;
 					t_channel_id id = 0;
 					
 					// title
 					if(xmlGetNextOccurence(l1, "webtv"))
 					{
-						title = xmlGetAttribute(l1, (char *)"title");
-						url = xmlGetAttribute(l1, (char *)"url");
-						description = xmlGetAttribute(l1, (char *)"description");
+						title = xmlGetAttribute(l1, (const char *)"title");
+						url = xmlGetAttribute(l1, (const char *)"url");
+						description = xmlGetAttribute(l1, (const char *)"description");
 						const char *epgid = xmlGetAttribute(l1, "epgid");
 
 						if (epgid)
@@ -194,6 +196,10 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 						{
 							chan->number = cnt;
 							channels.push_back(chan);
+
+
+							//
+							allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 						}
 					}
 
@@ -345,6 +351,8 @@ int CWebTV::getActiveChannelNumber(t_channel_id id)
 		if(channels[i]->channel_id == id)
 			return i;
 	}
+
+	return 0;
 }
 
 bool CWebTV::startPlayBack(t_channel_id chid)
@@ -385,36 +393,4 @@ void CWebTV::continuePlayBack(void)
 	playback->SetSpeed(1);
 	playstate = PLAY;
 }
-
-#include <libeventserver/eventserver.h>
-extern CEventServer *eventServer;
-unsigned int CWebTV::zapTo_ChannelID_NOWAIT(t_channel_id channel_id)
-{
-	dprintf(DEBUG_NORMAL, "CWebTV::zapTo_ChannelID: %llx\n", channel_id);
-
-	unsigned int result = 0;
-
-	stopPlayBack();
-	
-	if(!startPlayBack(channel_id))
-	{
-		dprintf(DEBUG_NORMAL, "CWebTV::zapTo_ChannelID: zapit failed, chid %llx\n", channel_id);
-		
-		eventServer->sendEvent(CZapitClient::EVT_ZAP_FAILED, CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
-		
-		return result;
-	}
-
-	playstate = PLAY;
-
-	result |= CZapitClient::ZAP_OK;
-
-	dprintf(DEBUG_NORMAL, "CWebTV::zapTo_ChannelID: zapit OK, chid %llx\n", channel_id);
-	
-	eventServer->sendEvent(CZapitClient::EVT_ZAP_COMPLETE, CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
-
-	return result;
-}
-
-
 

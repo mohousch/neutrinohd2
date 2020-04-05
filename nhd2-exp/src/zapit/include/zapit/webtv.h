@@ -35,7 +35,6 @@
 
 #include <channel.h>
 #include <client/zapitclient.h>
-//#include <bouquets.h>
 
 
 #define DEFAULT_WEBTV_FILE 		CONFIGDIR "/webtv/webtv.xml"
@@ -86,8 +85,6 @@ class CWebTV
 		//
 		CZapitClient::CCurrentServiceInfo getServiceInfo();
 		void getPIDS(CZapitClient::responseGetPIDs& pids);
-
-		unsigned int zapTo_ChannelID_NOWAIT(const t_channel_id channel_id);
 };
 
 #endif

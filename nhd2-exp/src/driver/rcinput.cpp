@@ -1835,7 +1835,7 @@ const char * CRCInput::getSpecialKeyName(const unsigned int key)
 			return "RC_none";
 			
 		default:
-			//printf("CRCInput::getSpecialKeyName: unknown key: 0x%x\n", key);
+			printf("CRCInput::getSpecialKeyName: unknown key: 0x%x\n", key);
 			return "RC_unknown";
 	}
 }

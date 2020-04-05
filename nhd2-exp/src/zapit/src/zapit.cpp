@@ -869,6 +869,8 @@ void saveZapitSettings(bool write, bool write_a)
 		else if(currentMode & WEBTV_MODE)
 			c = g_WebTV->getActiveChannelNumber(live_channel->getChannelID());
 
+		printf("zapit:lastChannel:%d\n\n", c);
+
 		if (c >= 0) 
 		{
 			if ((currentMode & RADIO_MODE))
@@ -3804,13 +3806,39 @@ unsigned int zapTo_ChannelID(t_channel_id channel_id, bool isSubService)
 {
 	unsigned int result = 0;
 
-	if (zapit(channel_id, isSubService) < 0) 
+	if (currentMode & WEBTV_MODE)
 	{
-		dprintf(DEBUG_NORMAL, "zapTo_ChannelID: zapit failed, chid %llx\n", channel_id);
+		g_WebTV->stopPlayBack();
+	
+		if(!g_WebTV->startPlayBack(channel_id))
+		{
+			dprintf(DEBUG_NORMAL, "CWebTV::zapTo_ChannelID: zapit failed, chid %llx\n", channel_id);
 		
-		eventServer->sendEvent((isSubService ? CZapitClient::EVT_ZAP_SUB_FAILED : CZapitClient::EVT_ZAP_FAILED), CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
+			eventServer->sendEvent(CZapitClient::EVT_ZAP_FAILED, CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
 		
-		return result;
+			return result;
+		}
+
+		live_channel_id = channel_id;
+
+		//get live channel
+		tallchans_iterator cit;
+		cit = allchans.find(live_channel_id);
+
+		if(cit != allchans.end())
+			live_channel = &(cit->second);
+		
+	}
+	else
+	{
+		if (zapit(channel_id, isSubService) < 0) 
+		{
+			dprintf(DEBUG_NORMAL, "zapTo_ChannelID: zapit failed, chid %llx\n", channel_id);
+		
+			eventServer->sendEvent((isSubService ? CZapitClient::EVT_ZAP_SUB_FAILED : CZapitClient::EVT_ZAP_FAILED), CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
+		
+			return result;
+		}
 	}
 
 	result |= CZapitClient::ZAP_OK;
@@ -4586,6 +4614,10 @@ int zapit_main_thread(void *data)
 
 	// load services
 	prepare_channels();
+
+	// load webtv channels
+	if (g_WebTV)
+		g_WebTV->loadChannels();
 
 	//set basic server
 	CBasicServer zapit_server;
