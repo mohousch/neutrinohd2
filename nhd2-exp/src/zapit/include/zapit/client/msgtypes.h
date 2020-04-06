@@ -147,6 +147,9 @@ class CZapitMessages
 			
 			CMD_SET_VOLUME_PERCENT		  = 112,
 			CMD_GET_VOLUME_PERCENT		  = 113,
+
+			CMD_SB_PAUSE_PLAYBACK		  = 114,
+			CMD_SB_CONTINUE_PLAYBACK	  = 115
 		};
 
 		struct commandBoolean

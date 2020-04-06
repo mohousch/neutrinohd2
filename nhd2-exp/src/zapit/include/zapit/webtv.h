@@ -66,8 +66,8 @@ class CWebTV
 		CWebTV();
 		~CWebTV();
 		
-		bool startPlayBack(t_channel_id chid);
-		void stopPlayBack(void);
+		//bool startPlayBack(t_channel_id chid);
+		//void stopPlayBack(void);
 		void pausePlayBack(void);
 		void continuePlayBack(void);
 

@@ -135,6 +135,8 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 					{
 						chan->number = cnt;
 						channels.push_back(chan);
+
+						allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 					}
 
 					cnt++;
@@ -252,6 +254,8 @@ void CWebTV::loadWebTVBouquet(std::string filename)
 						{
 							chan->number = cnt;
 							channels.push_back(chan);
+
+							allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, url, description)));
 						}
 
 						cnt++;
@@ -355,6 +359,7 @@ int CWebTV::getActiveChannelNumber(t_channel_id id)
 	return 0;
 }
 
+/*
 bool CWebTV::startPlayBack(t_channel_id chid)
 {
 	dprintf(DEBUG_NORMAL, "CWebTV::startPlayBack\n");
@@ -377,6 +382,7 @@ void CWebTV::stopPlayBack(void)
 	playback->Close();
 	playstate = STOPPED;
 }
+*/
 
 void CWebTV::pausePlayBack(void)
 {

@@ -1123,6 +1123,20 @@ void CZapitClient::unlockPlayBack()
 	close_connection();
 }
 
+// pause playback
+void CZapitClient::pausePlayBack()
+{
+	send(CZapitMessages::CMD_SB_PAUSE_PLAYBACK);
+	close_connection();
+}
+
+// pause playback
+void CZapitClient::continuePlayBack()
+{
+	send(CZapitMessages::CMD_SB_CONTINUE_PLAYBACK);
+	close_connection();
+}
+
 /* is playback activ? */
 bool CZapitClient::isPlayBackActive()
 {

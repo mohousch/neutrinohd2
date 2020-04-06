@@ -2741,7 +2741,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	// init shutdown count
 	SHTDCNT::getInstance()->init();
 
-	// real run ;-)
+	// real run loop ;-)
 	RealRun();
 
 	// exitRun
@@ -2797,9 +2797,6 @@ void CNeutrinoApp::RealRun(void)
 		// mode TV/Radio/IPTV
 		if( (mode == mode_tv) || (mode == mode_radio) || (mode == mode_webtv) ) 
 		{
-			if(g_InfoViewer->is_visible)
-				g_InfoViewer->killTitle();
-
 			if(msg == NeutrinoMessages::SHOW_EPG) 
 			{
 				StopSubtitles();
@@ -2944,8 +2941,9 @@ void CNeutrinoApp::RealRun(void)
 			{
 				if(mode == mode_webtv)
 				{
-					if(g_WebTV->playstate == CWebTV::PLAY)
-						g_WebTV->pausePlayBack();
+					//if(g_WebTV->playstate == CWebTV::PLAY)
+					//	g_WebTV->pausePlayBack();
+					g_Zapit->pausePlayBack();
 				}
 				else
 				{
@@ -2978,8 +2976,9 @@ void CNeutrinoApp::RealRun(void)
 			{
 				if(mode == mode_webtv)
 				{
-					if(g_WebTV->playstate == CWebTV::PLAY)
-						g_WebTV->continuePlayBack();
+					//if(g_WebTV->playstate == CWebTV::PLAY)
+					//	g_WebTV->continuePlayBack();
+					g_Zapit->continuePlayBack();
 				}
 				else
 				{		
@@ -3435,7 +3434,7 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 
 	int res = 0;
 
-	// handle neutrino msg
+	// zap complete event
 	if(msg == NeutrinoMessages::EVT_ZAP_COMPLETE) 
 	{
 		// set audio map after channel zap
@@ -3478,6 +3477,7 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 		StartSubtitles(!g_InfoViewer->is_visible);
 	}
 
+	// timer event
 	if ((msg == NeutrinoMessages::EVT_TIMER)) 
 	{
 		if(data == shift_timer) 
@@ -3541,7 +3541,7 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 			int old_b = bouquetList->getActiveBouquetNumber();
 			int old_mode = g_settings.channel_mode;
 			
-			dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: ZAP START: bouquetList %x size %d old_b %d\n", (size_t) bouquetList, bouquetList->Bouquets.size(), old_b);
+			dprintf(DEBUG_NORMAL, "\n\nCNeutrinoApp::handleMsg: ZAP START: bouquetList %x size %d old_b %d\n", (size_t) bouquetList, bouquetList->Bouquets.size(), old_b);
 
 			if(bouquetList->Bouquets.size()) 
 			{
@@ -4654,11 +4654,13 @@ void CNeutrinoApp::tvMode( bool rezap )
 	}
 	else if(mode == mode_webtv)
 	{
+/*
 		if(g_WebTV)
 		{
 			g_WebTV->stopPlayBack();
 			g_WebTV->clearChannels();
 		}
+*/
 			
 		// start playback
 		g_Zapit->unlockPlayBack();
@@ -4738,11 +4740,13 @@ void CNeutrinoApp::radioMode( bool rezap)
 	}
 	if(mode == mode_webtv)
 	{
+/*
 		if(g_WebTV)
 		{
 			g_WebTV->stopPlayBack();
 			g_WebTV->clearChannels();
 		}
+*/
 
 		// start playback
 		g_Zapit->unlockPlayBack();
@@ -4860,7 +4864,7 @@ void CNeutrinoApp::webtvMode( bool rezap)
 	g_Sectionsd->setPauseScanning(true);
 			
 	// stop playback
-	g_Zapit->lockPlayBack();
+	//g_Zapit->lockPlayBack();
 	
 	mode = mode_webtv;
 
@@ -4891,8 +4895,8 @@ void CNeutrinoApp::scartMode( bool bOnOff )
 		// FIXME:modes?
 		if(mode == mode_webtv)
 		{
-			if(g_WebTV)
-				g_WebTV->stopPlayBack();
+			//if(g_WebTV)
+			g_Zapit->stopPlayBack();
 		}
 
 		lastMode = mode;
@@ -4985,8 +4989,8 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 		
 		if(mode == mode_webtv)
 		{
-			if(g_WebTV)
-				g_WebTV->stopPlayBack();
+			//if(g_WebTV)
+			g_Zapit->stopPlayBack();
 		}
 		else
 		{
@@ -5061,8 +5065,8 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 
 		if(lastMode == mode_webtv)
 		{
-			if(g_WebTV)
-				g_WebTV->startPlayBack(channelList->getActiveChannel_ChannelID());
+			//if(g_WebTV)
+			g_Zapit->startPlayBack()/*(channelList->getActiveChannel_ChannelID())*/;
 			
 			mode = mode_webtv;
 		}
@@ -5440,12 +5444,14 @@ void CNeutrinoApp::lockPlayBack(void)
 	StopSubtitles();
 
 	// stop playback
+/*
 	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_webtv)
 	{
 		if(g_WebTV)
 			g_WebTV->stopPlayBack();
 	}
 	else
+*/
 	{
 		// stop/lock live playback	
 		g_Zapit->lockPlayBack();
@@ -5458,12 +5464,14 @@ void CNeutrinoApp::lockPlayBack(void)
 void CNeutrinoApp::unlockPlayBack(void)
 {
 	// start playback
+/*
 	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_webtv)
 	{
 		if(g_WebTV)
 			g_WebTV->startPlayBack(channelList->getActiveChannel_ChannelID());
 	}
 	else
+*/
 	{
 		// unlock playback	
 		g_Zapit->unlockPlayBack();	

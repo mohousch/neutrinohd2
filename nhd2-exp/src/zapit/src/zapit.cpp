@@ -962,7 +962,6 @@ CZapitClient::responseGetLastChannel load_settings(void)
 	else if (currentMode & WEBTV_MODE)
 		lastchannel.mode = 'w';
 
-	//lastchannel.channelNumber = (currentMode & RADIO_MODE) ? lastChannelRadio : lastChannelTV;
 	if(currentMode & RADIO_MODE)
 		lastchannel.channelNumber = lastChannelRadio;
 	else if(currentMode & TV_MODE)
@@ -1329,22 +1328,29 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0)
 		return -1;
 	}
 	
-	// save pids
-	if (!firstzap && live_channel)
-		save_channel_pids(live_channel);
+	//if(!newchannel->isWebTV)
+	if(!(currentMode & WEBTV_MODE))
+	{
+		// save pids
+		if (!firstzap && live_channel)
+			save_channel_pids(live_channel);
 
-	// firstzap right now does nothing but control saving the audio channel
-	firstzap = false;
+		// firstzap right now does nothing but control saving the audio channel
+		firstzap = false;
 
-	// stop update pmt filter
-	pmt_stop_update_filter(&pmt_update_fd);
+		// stop update pmt filter
+		pmt_stop_update_filter(&pmt_update_fd);
+	}
 	
 	// FIXME: how to stop ci_capmt or we dont need this???
 	stopPlayBack(!forupdate);
 
-	// reset channel pids
-	if(!forupdate && live_channel)
-		live_channel->resetPids();
+	if(!(currentMode & WEBTV_MODE))
+	{
+		// reset channel pids
+		if(!forupdate && live_channel)
+			live_channel->resetPids();
+	}
 
 	live_channel = newchannel;
 
@@ -1352,83 +1358,90 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0)
 
 	saveZapitSettings(false, false);
 	
-	// find live_fe to tune
-	CFrontend * fe = getFrontend(live_channel);
-	if(fe == NULL) 
+	//if(!newchannel->isWebTV)
+	if(!(currentMode & WEBTV_MODE))
 	{
-		dprintf(DEBUG_INFO, "%s can not allocate live frontend\n", __FUNCTION__);
-		return -1;
-	}
+		// find live_fe to tune
+		CFrontend * fe = getFrontend(live_channel);
+		if(fe == NULL) 
+		{
+			dprintf(DEBUG_INFO, "%s can not allocate live frontend\n", __FUNCTION__);
+			return -1;
+		}
 	
-	live_fe = fe;
+		live_fe = fe;
 	
-	dprintf(DEBUG_NORMAL, "%s zap to %s(%llx) fe(%d,%d)\n", __FUNCTION__, live_channel->getName().c_str(), live_channel_id, live_fe->fe_adapter, live_fe->fenumber );
+		dprintf(DEBUG_NORMAL, "%s zap to %s(%llx) fe(%d,%d)\n", __FUNCTION__, live_channel->getName().c_str(), live_channel_id, live_fe->fe_adapter, live_fe->fenumber );
 
-	// tune live frontend
-	if(!tune_to_channel(live_fe, live_channel, transponder_change))
-		return -1;
+		// tune live frontend
+		if(!tune_to_channel(live_fe, live_channel, transponder_change))
+			return -1;
 
-	// check if nvod
-	if (live_channel->getServiceType() == ST_NVOD_REFERENCE_SERVICE) 
-	{
-		current_is_nvod = true;
-		return 0;
-	}
+		// check if nvod
+		if (live_channel->getServiceType() == ST_NVOD_REFERENCE_SERVICE) 
+		{
+			current_is_nvod = true;
+			return 0;
+		}
 		
-	int retry = false;
+		int retry = false;
 	
 tune_again:
-	// parse pat pmt
-	failed = !parse_channel_pat_pmt(live_channel, live_fe);
+		// parse pat pmt
+		failed = !parse_channel_pat_pmt(live_channel, live_fe);
 
-	if(failed && !retry)
-	{
-		usleep(2500);  /* give some 2500us for demuxer: borrowed from e2*/
-		retry = true;
-		dprintf(DEBUG_NORMAL, "[zapit] trying again\n");
-		goto tune_again;
-	}	
+		if(failed && !retry)
+		{
+			usleep(2500);  /* give some 2500us for demuxer: borrowed from e2*/
+			retry = true;
+			dprintf(DEBUG_NORMAL, "[zapit] trying again\n");
+			goto tune_again;
+		}	
 
-	if ((!failed) && (live_channel->getAudioPid() == 0) && (live_channel->getVideoPid() == 0)) 
-	{
-		dprintf(DEBUG_NORMAL, "[zapit] neither audio nor video pid found\n");
-		failed = true;
-	}
+		if ((!failed) && (live_channel->getAudioPid() == 0) && (live_channel->getVideoPid() == 0)) 
+		{
+			dprintf(DEBUG_NORMAL, "[zapit] neither audio nor video pid found\n");
+			failed = true;
+		}
 
 	
-	if (transponder_change)
-		sdt_wakeup = true;
+		if (transponder_change)
+			sdt_wakeup = true;
 
-	if (failed)
-		return -1;
+		if (failed)
+			return -1;
 
-	live_channel->getCaPmt()->ca_pmt_list_management = transponder_change ? 0x03 : 0x04;
+		live_channel->getCaPmt()->ca_pmt_list_management = transponder_change ? 0x03 : 0x04;
 
-	// restore channel pids
-	restore_channel_pids(live_channel);
+		// restore channel pids
+		restore_channel_pids(live_channel);
+	}
 
 	// start playback (live)
 	startPlayBack(live_channel);
 
-	// cam
-	sendCaPmtPlayBackStart(live_channel, live_fe);
-	
-	// ci cam
-#if defined (ENABLE_CI)	
-	if(live_channel != NULL)
+	if(!(currentMode & WEBTV_MODE))
 	{
-		if(live_fe != NULL)
-			ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
-	}
+		// cam
+		sendCaPmtPlayBackStart(live_channel, live_fe);
+	
+		// ci cam
+#if defined (ENABLE_CI)	
+		if(live_channel != NULL)
+		{
+			if(live_fe != NULL)
+				ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
+		}
 #endif		
 	
-	// send caid
-	int caid = 1;
+		// send caid
+		int caid = 1;
 
-	eventServer->sendEvent(CZapitClient::EVT_ZAP_CA_ID, CEventServer::INITID_ZAPIT, &caid, sizeof(int));
+		eventServer->sendEvent(CZapitClient::EVT_ZAP_CA_ID, CEventServer::INITID_ZAPIT, &caid, sizeof(int));
 
-	// start pmt update filter
-	pmt_set_update_filter(live_channel, &pmt_update_fd, live_fe);	
+		// start pmt update filter
+		pmt_set_update_filter(live_channel, &pmt_update_fd, live_fe);
+	}	
 
 	return 0;
 }
@@ -3358,11 +3371,11 @@ void sendChannels(int connfd, const CZapitClient::channelsMode mode, const CZapi
 	internalSendChannels(connfd, &channels, 0, false);
 }
 
-void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid);
-
 // startplayback
 int startPlayBack(CZapitChannel * thisChannel)
 {
+	dprintf(DEBUG_NORMAL, "[zapit] startPlayBack: chid:%llx\n\n", thisChannel->getChannelID());
+
 	if(!thisChannel)
 		thisChannel = live_channel;
 
@@ -3372,7 +3385,18 @@ int startPlayBack(CZapitChannel * thisChannel)
 	if (!thisChannel || playing)
 		return -1;
 
-	//{
+	//if(thisChannel->isWebTV)
+	if(currentMode & WEBTV_MODE)
+	{
+		printf("zapit:webtv: url:%s\n\n", (char *)thisChannel->getUrl().c_str());
+
+		playback->Open();
+	
+		if (!playback->Start((char *)thisChannel->getUrl().c_str()))
+			return -1;
+	}
+	else
+	{
 		if (playbackStopForced)
 			return -1;
 
@@ -3625,7 +3649,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 #if defined (USE_PLAYBACK)
 		startOpenGLplayback();
 #endif
-	//}
+	}
 
 	playing = true;
 	
@@ -3639,60 +3663,86 @@ int stopPlayBack(bool sendPmt)
 	if (!playing)
 		return 0;
 	
-	if (playbackStopForced)
-		return -1;
+	//if(live_channel->isWebTV)
+	if(currentMode & WEBTV_MODE)
+	{
+		playback->Close();
+	}
+	else
+	{
+		if (playbackStopForced)
+			return -1;
 
-	// capmt
-	sendcapmtPlayBackStop(sendPmt);
+		// capmt
+		sendcapmtPlayBackStop(sendPmt);
 		
-	// stop audio decoder
-	audioDecoder->Stop();
+		// stop audio decoder
+		audioDecoder->Stop();
 
-	// stop audio demux
-	if (audioDemux)
-	{
-		// stop
-		audioDemux->Stop();
-		delete audioDemux;  //destructor closes dmx
-		audioDemux = NULL;
-	}
+		// stop audio demux
+		if (audioDemux)
+		{
+			// stop
+			audioDemux->Stop();
+			delete audioDemux;  //destructor closes dmx
+			audioDemux = NULL;
+		}
 
-	// stop video demux
-	if (videoDemux)
-	{
-		// stop
-		videoDemux->Stop();
-		delete videoDemux;	//destructor closes dmx
-		videoDemux = NULL;
-	}
+		// stop video demux
+		if (videoDemux)
+		{
+			// stop
+			videoDemux->Stop();
+			delete videoDemux;	//destructor closes dmx
+			videoDemux = NULL;
+		}
 	
-	// stop video decoder (blanking)
-	videoDecoder->Stop(true);
+		// stop video decoder (blanking)
+		videoDecoder->Stop(true);
 	
-	if (pcrDemux)
-	{
-		// stop
-		pcrDemux->Stop();
-		delete pcrDemux; //destructor closes dmx
-		pcrDemux = NULL;
-	}
+		if (pcrDemux)
+		{
+			// stop
+			pcrDemux->Stop();
+			delete pcrDemux; //destructor closes dmx
+			pcrDemux = NULL;
+		}
 
 #if defined (USE_PLAYBACK)
-	stopOpenGLplayback();
+		stopOpenGLplayback();
 #endif
+	
+		// stop tuxtxt subtitle
+		tuxtx_stop_subtitle();
+
+		// stop?pause dvbsubtitle
+		if(standby)
+			dvbsub_pause();
+		else
+			dvbsub_stop();
+	}
 
 	playing = false;
-	
-	// stop tuxtxt subtitle
-	tuxtx_stop_subtitle();
-
-	// stop?pause dvbsubtitle
-	if(standby)
-		dvbsub_pause();
-	else
-		dvbsub_stop();
 
 	return 0;
+}
+
+void pausePlayBack(void)
+{
+	dprintf(DEBUG_NORMAL, "[zapit] pausePlayBack\n");
+
+	if(currentMode & WEBTV_MODE)
+		playback->SetSpeed(0);
+	//playstate = PAUSE;
+}
+
+void continuePlayBack(void)
+{
+	dprintf(DEBUG_DEBUG, "[zapit] continuePlayBack\n");
+
+	if(currentMode & WEBTV_MODE)
+		playback->SetSpeed(1);
+	//playstate = PLAY;
 }
 
 void closeAVDecoder(void)
@@ -3806,44 +3856,25 @@ unsigned int zapTo_ChannelID(t_channel_id channel_id, bool isSubService)
 {
 	unsigned int result = 0;
 
-	if (currentMode & WEBTV_MODE)
+	dprintf(DEBUG_NORMAL, "zapTo_ChannelID: chid %llx\n", channel_id);
+
+	if (zapit(channel_id, isSubService) < 0) 
 	{
-		g_WebTV->stopPlayBack();
-	
-		if(!g_WebTV->startPlayBack(channel_id))
-		{
-			dprintf(DEBUG_NORMAL, "CWebTV::zapTo_ChannelID: zapit failed, chid %llx\n", channel_id);
+		dprintf(DEBUG_NORMAL, "zapTo_ChannelID: zapit failed, chid %llx\n", channel_id);
 		
-			eventServer->sendEvent(CZapitClient::EVT_ZAP_FAILED, CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
+		eventServer->sendEvent((isSubService ? CZapitClient::EVT_ZAP_SUB_FAILED : CZapitClient::EVT_ZAP_FAILED), CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
 		
-			return result;
-		}
-
-		live_channel_id = channel_id;
-
-		//get live channel
-		tallchans_iterator cit;
-		cit = allchans.find(live_channel_id);
-
-		if(cit != allchans.end())
-			live_channel = &(cit->second);
-		
-	}
-	else
-	{
-		if (zapit(channel_id, isSubService) < 0) 
-		{
-			dprintf(DEBUG_NORMAL, "zapTo_ChannelID: zapit failed, chid %llx\n", channel_id);
-		
-			eventServer->sendEvent((isSubService ? CZapitClient::EVT_ZAP_SUB_FAILED : CZapitClient::EVT_ZAP_FAILED), CEventServer::INITID_ZAPIT, &channel_id, sizeof(channel_id));
-		
-			return result;
-		}
+		return result;
 	}
 
 	result |= CZapitClient::ZAP_OK;
 
 	dprintf(DEBUG_NORMAL, "zapTo_ChannelID: zapit OK, chid %llx\n", channel_id);
+
+	if (currentMode & WEBTV_MODE)
+	{
+		dprintf(DEBUG_NORMAL, "zapTo_ChannelID: isWEBTV chid %llx\n", channel_id);
+	}
 	
 	if (isSubService) 
 	{
@@ -4658,7 +4689,7 @@ int zapit_main_thread(void *data)
 		else
 		{
 			//check for lock
-	#ifdef CHECK_FOR_LOCK
+#ifdef CHECK_FOR_LOCK
 			if (check_lock && !standby && live_channel && time(NULL) > lastlockcheck && scan_runs == 0) 
 			{
 				if ( (live_fe->getStatus() & FE_HAS_LOCK) == 0) 
@@ -4668,7 +4699,7 @@ int zapit_main_thread(void *data)
 			
 				lastlockcheck = time(NULL);
 			}
-	#endif
+#endif
 		
 			// pmt update
 			if (pmt_update_fd != -1) 
@@ -4711,13 +4742,13 @@ int zapit_main_thread(void *data)
 							sendCaPmtPlayBackStart(live_channel, live_fe);
 						
 							// ci cam
-	#if defined (ENABLE_CI)
+#if defined (ENABLE_CI)
 							if(live_channel != NULL)
 							{
 								if(live_fe != NULL)
 									ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
 							}
-	#endif	
+#endif	
 
 							pmt_set_update_filter(live_channel, &pmt_update_fd, live_fe);
 						}
