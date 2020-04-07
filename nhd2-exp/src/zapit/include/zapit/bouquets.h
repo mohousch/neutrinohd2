@@ -40,6 +40,7 @@ class CZapitBouquet
 
 		ZapitChannelList radioChannels;
 		ZapitChannelList tvChannels;
+		ZapitChannelList webtvChannels;
 
 		inline CZapitBouquet(const std::string name) { Name = name; bHidden = false; bLocked = false; bUser = true; bWebTV = false;}
 
@@ -100,7 +101,7 @@ class CBouquetManager
 		void loadBouquets(bool loadCurrentBouquet = false);
 		void renumServices();
 
-		CZapitBouquet* addBouquet(const std::string & name, bool ub = false, bool myfav = false);
+		CZapitBouquet* addBouquet(const std::string & name, bool ub = false, bool myfav = false, bool iswebtv = false);
 		CZapitBouquet* addBouquetIfNotExist(const std::string& name);
 		void deleteBouquet(const unsigned int id);
 		void deleteBouquet(const CZapitBouquet* bouquet);
@@ -114,6 +115,11 @@ class CBouquetManager
 		CZapitChannel* findChannelByChannelID(const t_channel_id channel_id);
 		void sortBouquets(void);
 		CZapitChannel* findChannelByName(std::string name, const t_service_id sid);
+
+		// webtv
+		void loadWebTVBouquet(void);
+		void loadChannels(void);
+		int getActiveChannelNumber(t_channel_id id);
 };
 
 /*

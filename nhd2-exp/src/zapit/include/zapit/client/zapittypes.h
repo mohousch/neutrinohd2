@@ -272,9 +272,10 @@ typedef enum {
 	ST_3DTV2_TELEVISION_SERVICE = 0x1D,
 	ST_3DTV3_TELEVISION_SERVICE = 0x1E,
 	
-	ST_MULTIFEED				= 0x69
+	ST_MULTIFEED				= 0x69,
 	
 	/* 0x80 - 0xFE: user defined*/
+	ST_WEBTV				= 0x80
 	/* 0xFF: reserved for future use*/
 } service_type_t;
 

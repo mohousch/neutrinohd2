@@ -1671,6 +1671,9 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	cnt = 0;
 
 	itemType = WIDGET_ITEM_LISTBOX;
+
+	savescreen = false;
+	background = NULL;
 }
 
 ClistBox::ClistBox(CBox* position)
@@ -1741,6 +1744,9 @@ ClistBox::ClistBox(CBox* position)
 	cnt = 0;
 
 	itemType = WIDGET_ITEM_LISTBOX;
+
+	savescreen = false;
+	background = NULL;
 }
 
 ClistBox::~ClistBox()
@@ -1917,6 +1923,9 @@ void ClistBox::initFrames()
 			cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
 		}
 	}
+
+	if(savescreen) 
+		saveScreen();
 }
 
 void ClistBox::paint()
@@ -2470,11 +2479,53 @@ void ClistBox::hideItemInfo()
 		itemsLine.clear(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth + CONNECTLINEBOX_WIDTH, cFrameBox.iHeight - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight);
 }
 
+void ClistBox::saveScreen()
+{
+	if(!savescreen)
+		return;
+
+	if(background)
+	{
+		delete[] background;
+		background = NULL;
+	}
+
+	background = new fb_pixel_t[cFrameBox.iWidth*cFrameBox.iHeight];
+	
+	if(background)
+	{
+		frameBuffer->saveScreen(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, background);
+	}
+}
+
+void ClistBox::restoreScreen()
+{
+	if(background) 
+	{
+		if(savescreen)
+			frameBuffer->restoreScreen(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, background);
+	}
+}
+
+void ClistBox::enableSaveScreen()
+{
+	savescreen = true;
+	
+	if(!savescreen && background) 
+	{
+		delete[] background;
+		background = NULL;
+	}
+}
+
 void ClistBox::hide()
 {
 	dprintf(DEBUG_NORMAL, "ClistBox::hide:\n");
 
-	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
+	if( savescreen && background)
+		restoreScreen();
+	else
+		frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 
 	hideItemInfo(); 
 	

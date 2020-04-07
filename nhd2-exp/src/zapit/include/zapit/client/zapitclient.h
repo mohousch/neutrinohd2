@@ -319,8 +319,16 @@ class CZapitClient : public CBasicClient
 		/* channel name */
 		std::string getChannelName(const t_channel_id channel_id);
 
+		// webtv channel url
+		std::string getChannelURL(const t_channel_id channel_id);
+
+		// webtv channel description
+		std::string getChannelDescription(const t_channel_id channel_id);
+
 		/* is channel a TV channel ? */
 		bool isChannelTVChannel(const t_channel_id channel_id);
+		bool isChannelRadioChannel(const t_channel_id channel_id);
+		bool isChannelWEBTVChannel(const t_channel_id channel_id);
 
 		/* get the current_TP */
 		bool get_current_TP(TP_params *TP);

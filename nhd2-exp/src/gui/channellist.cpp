@@ -74,8 +74,9 @@
 #include <misc_setup.h>
 
 
-extern CBouquetList * bouquetList;      		// neutrino.cpp
 extern CRemoteControl * g_RemoteControl; 		// neutrino.cpp	
+
+extern CBouquetList * bouquetList;      		// neutrino.cpp
 extern CBouquetList   * TVbouquetList;
 extern CBouquetList   * TVsatList;
 extern CBouquetList   * TVfavList;
@@ -84,6 +85,8 @@ extern CBouquetList   * RADIObouquetList;
 extern CBouquetList   * RADIOsatList;
 extern CBouquetList   * RADIOfavList;
 extern CBouquetList   * RADIOallList;
+
+extern CBouquetList   * webTVBouquetList;
 
 
 extern t_channel_id rec_channel_id;
@@ -162,6 +165,9 @@ void CChannelList::addChannel(CZapitChannel * channel, int num)
 void CChannelList::putChannel(CZapitChannel * channel)
 {
 	int num = channel->number - 1;
+
+	//testing
+	//printf("CChannelList::putChannel: %d\n", num);
 	
 	if(num < 0) 
 	{
@@ -172,6 +178,7 @@ void CChannelList::putChannel(CZapitChannel * channel)
 	{
 		chanlist.resize((unsigned) num + 1);
 	}
+
 	chanlist[num] = channel;
 }
 
@@ -490,10 +497,12 @@ int CChannelList::exec()
 	displayNext = false; // always start with current events
 	
 	int nNewChannel = show();
+
+	dprintf(DEBUG_NORMAL, "CChannelList::exec: chanlist.size:%d\n", (int)chanlist.size());
 	
 	// zapto
 	if ( nNewChannel > -1 && nNewChannel < (int) chanlist.size()) 
-		CNeutrinoApp::getInstance()->channelList->zapTo(getKey(nNewChannel)-1);
+		CNeutrinoApp::getInstance()->channelList->zapTo(getKey(nNewChannel) - 1);
 
 	return nNewChannel;
 }
@@ -597,24 +606,27 @@ int CChannelList::show()
 		}
 		else if ( msg == RC_setup ) 
 		{
-			//
-			selected = listBox->getSelected();
+			if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv) 
+			{
+				//
+				selected = listBox->getSelected();
 
-			// chan list setup (add/move)
-			old_b_id = bouquetList->getActiveBouquetNumber();
-			int ret = doChannelMenu();
+				// chan list setup (add/move)
+				old_b_id = bouquetList->getActiveBouquetNumber();
+				int ret = doChannelMenu();
 		
-			if(ret) 
-			{
-				res = -4;
-				loop = false;
-			} 
-			else 
-			{
-				old_b_id = -1;
+				if(ret) 
+				{
+					res = -4;
+					loop = false;
+				} 
+				else 
+				{
+					old_b_id = -1;
 
-				listBox->clearItems();
-				paint();
+					listBox->clearItems();
+					paint();
+				}
 			}
 		}
 		else if (msg == (neutrino_msg_t) g_settings.key_list_start) 
@@ -830,13 +842,8 @@ int CChannelList::show()
 	// bouquets mode
 	if (bShowBouquetList)
 	{
-		//FIXME:
-		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-		{
-			webTVBouquets();
-		}
- 
 		res = bouquetList->exec(true);
+		printf("CChannelList:: bouquetList->exec res %d\n", res);
 	}
 	
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
@@ -961,6 +968,10 @@ bool CChannelList::adjustToChannelID(const t_channel_id channel_id, bool bToo)
 					RADIOfavList->adjustToChannelID(channel_id);
 					RADIOallList->adjustToChannelID(channel_id);
 				}
+				else if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv) 
+				{
+					webTVBouquetList->adjustToChannelID(channel_id);
+				} 
 			}
 			
 			return true;
@@ -1519,6 +1530,20 @@ const struct button_label HeadNewModeButtons[HEAD_BUTTONS_COUNT] =
 	{ NEUTRINO_ICON_BUTTON_MUTE_ZAP_ACTIVE, NONEXISTANT_LOCALE, NULL }
 };
 
+const struct button_label HeadWEBTVModeButtons[2] =
+{
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
+	//{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_MUTE_ZAP_INACTIVE, NONEXISTANT_LOCALE, NULL }
+};
+
+const struct button_label HeadWEBTVNewModeButtons[2] =
+{
+	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
+	//{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_MUTE_ZAP_ACTIVE, NONEXISTANT_LOCALE, NULL }
+};
+
 void CChannelList::paint()
 {
 	dprintf(DEBUG_NORMAL, "CChannelList::paint\n");
@@ -1601,7 +1626,11 @@ void CChannelList::paint()
 	listBox->setTitle(name.c_str());
 	listBox->enablePaintHead();
 	listBox->enablePaintDate();
-	listBox->setHeaderButtons(new_mode_active? HeadNewModeButtons : HeadButtons, HEAD_BUTTONS_COUNT);
+
+	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
+		listBox->setHeaderButtons(new_mode_active? HeadWEBTVNewModeButtons : HeadWEBTVModeButtons, 2); 
+	else
+		listBox->setHeaderButtons(new_mode_active? HeadNewModeButtons : HeadButtons, HEAD_BUTTONS_COUNT);
 
 	// foot
 	listBox->enablePaintFoot();
@@ -1635,66 +1664,4 @@ int CChannelList::getSelectedChannelIndex() const
 	return this->selected;
 }
 
-//
-void CChannelList::webTVBouquets(void)
-{
-	dprintf(DEBUG_NORMAL, "CChannelList::Bouquets\n");
-
-	CFileFilter fileFilter;
-	
-	fileFilter.addFilter("xml");
-	fileFilter.addFilter("tv");
-	fileFilter.addFilter("m3u");
-
-	//
-	CFileList filelist;
-	ClistBoxWidget m("WebTV", NEUTRINO_ICON_WEBTV_SMALL, MENU_WIDTH + 100);
-	m.enableSaveScreen();
-
-	m.setMode(MODE_MENU);
-	m.enableShrinkMenu();
-
-	int select = -1;
-	//CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
-	int count = 0;
-	static int old_select = 0;
-
-	std::string Path_local = CONFIGDIR "/webtv";
-
-	// read list
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		std::string bTitle;
-
-		for (unsigned int i = 0; i < filelist.size(); i++)
-		{
-			bTitle = filelist[i].getFileName();
-
-			removeExtension(bTitle);
-
-			m.addItem(new CMenuForwarder(bTitle.c_str(), true, NULL, /*selector*/NULL, to_string(count).c_str()), old_select == count);
-
-			count++;
-		}
-	}
-
-	m.exec(NULL, "");
-	select = m.getSelected();
-	//delete selector;
-
-	// select
-	if(select >= 0)
-	{
-		old_select = select;
-
-		g_settings.webtv_userBouquet.clear();
-		
-		g_settings.webtv_userBouquet = filelist[select].Name.c_str();
-		
-		dprintf(DEBUG_NORMAL, "CChannelList::addUserBouquet: settings file %s\n", g_settings.webtv_userBouquet.c_str());
-		
-		// load channels
-		CNeutrinoApp::getInstance()->webTVChannelsInit();
-	}
-}
 

@@ -157,6 +157,7 @@ class CFile
 		FileType getType(void) const;
 		std::string	getFileName(void) const;
 		std::string	getPath(void) const;
+		std::string	getName(void) const;
 
 		//
 		CFile();

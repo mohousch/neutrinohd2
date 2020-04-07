@@ -107,7 +107,6 @@
 // zapit
 #include <zapit/include/zapit/bouquets.h>
 #include <zapit/include/zapit/channel.h>
-#include <zapit/include/zapit/webtv.h>
 #include <zapit/include/zapit/client/zapittypes.h>
 #include <zapit/include/zapit/client/zapitclient.h>
 
@@ -217,7 +216,6 @@
 // zapit
 //%include <src/zapit/include/zapit/bouquets.h>
 %include <src/zapit/include/zapit/channel.h>
-%include <src/zapit/include/zapit/webtv.h>
 %include <src/zapit/include/zapit/client/zapittypes.h>
 %include <src/zapit/include/zapit/client/zapitclient.h>
 

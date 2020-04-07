@@ -64,7 +64,7 @@ CZapitChannel::CZapitChannel(const std::string& p_name, t_channel_id p_chid, con
 	service_id = 0;
 	transport_stream_id = 0;
 	original_network_id = 0;
-	serviceType = ST_DIGITAL_TELEVISION_SERVICE;
+	serviceType = ST_WEBTV;
 	satellitePosition = 0;
 	freq = 0;
 	caPmt = NULL;
@@ -172,7 +172,14 @@ unsigned char CZapitChannel::getServiceType(bool real)
 	if(real)
 		return serviceType; 
 	else
-		return serviceType == ST_DIGITAL_RADIO_SOUND_SERVICE ? ST_DIGITAL_RADIO_SOUND_SERVICE : ST_DIGITAL_TELEVISION_SERVICE;	
+	{
+		if (serviceType == ST_DIGITAL_RADIO_SOUND_SERVICE)
+			return ST_DIGITAL_RADIO_SOUND_SERVICE;
+		else if (serviceType == ST_DIGITAL_TELEVISION_SERVICE)
+			return ST_DIGITAL_TELEVISION_SERVICE;
+		else if (serviceType == ST_WEBTV)
+			return ST_WEBTV;
+	}
 }
 
 bool CZapitChannel::isHD()

@@ -179,7 +179,7 @@ class CZapitChannel
 		int videoType;
 		t_channel_id channel_id;
 		unsigned char scrambled;
-		char * pname; //?
+		char * pname; //makeRemainingChannelsBouquet
 		
 		uint8_t	polarization;
 

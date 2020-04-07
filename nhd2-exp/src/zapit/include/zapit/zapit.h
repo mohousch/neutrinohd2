@@ -47,6 +47,8 @@ void sendChannels(int connfd, const CZapitClient::channelsMode mode = CZapitClie
 
 int startPlayBack(CZapitChannel *);
 int stopPlayBack(bool sendPmt = false);
+void pausePlayBack(void);
+void continuePlayBack(void);
 
 unsigned int zapTo(const unsigned int channel);
 unsigned int zapTo(const unsigned int bouquet, const unsigned int channel);

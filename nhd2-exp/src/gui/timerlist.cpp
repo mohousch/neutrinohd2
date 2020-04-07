@@ -320,7 +320,7 @@ int CTimerList::exec(CMenuTarget* parent, const std::string& actionKey)
 		CSelectChannelWidgetHandler->exec(NULL, "webtv");
 		
 		timerNew_chan_id = CSelectChannelWidgetHandler->getChanWebTVID();
-		timerNew_channel_name = g_WebTV->getChannelName(CSelectChannelWidgetHandler->getChanWebTVID());
+		timerNew_channel_name = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChanWebTVID());
 		
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;
@@ -833,10 +833,7 @@ std::string CTimerList::convertChannelId2String(const t_channel_id id) // UTF-8
 	
 	std::string name;
 
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-		name = g_WebTV->getChannelName(id);
-	else
-		name = g_Zapit->getChannelName(id); // UTF-8
+	name = g_Zapit->getChannelName(id); // UTF-8
 
 	if (name.empty())
 		name = g_Locale->getText(LOCALE_TIMERLIST_PROGRAM_UNKNOWN);

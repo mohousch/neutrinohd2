@@ -149,7 +149,13 @@ class CZapitMessages
 			CMD_GET_VOLUME_PERCENT		  = 113,
 
 			CMD_SB_PAUSE_PLAYBACK		  = 114,
-			CMD_SB_CONTINUE_PLAYBACK	  = 115
+			CMD_SB_CONTINUE_PLAYBACK	  = 115,
+
+			CMD_GET_CHANNEL_URL		  = 116,
+			CMD_GET_CHANNEL_DESCRIPTION	  = 117,
+
+			CMD_IS_WEBTV_CHANNEL		  = 118,
+			CMD_IS_RADIO_CHANNEL		  = 119
 		};
 
 		struct commandBoolean
@@ -288,6 +294,16 @@ class CZapitMessages
 		struct responseGetChannelName
 		{
 			char name[CHANNEL_NAME_SIZE];
+		};
+
+		struct responseGetChannelURL
+		{
+			char url[CHANNEL_NAME_SIZE];
+		};
+
+		struct responseGetChannelDescription
+		{
+			char description[CHANNEL_NAME_SIZE];
 		};
 
 		struct responseGetRecordModeState

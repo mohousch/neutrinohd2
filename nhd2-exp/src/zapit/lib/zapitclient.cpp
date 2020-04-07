@@ -520,10 +520,54 @@ std::string CZapitClient::getChannelName(const t_channel_id channel_id)
 	return std::string(response.name);
 }
 
+/* channel url */
+std::string CZapitClient::getChannelURL(const t_channel_id channel_id)
+{
+	send(CZapitMessages::CMD_GET_CHANNEL_URL, (char *) & channel_id, sizeof(channel_id));
+
+	CZapitMessages::responseGetChannelURL response;
+	CBasicClient::receive_data((char* )&response, sizeof(response));
+	close_connection();
+	return std::string(response.url);
+}
+
+/* channel description */
+std::string CZapitClient::getChannelDescription(const t_channel_id channel_id)
+{
+	send(CZapitMessages::CMD_GET_CHANNEL_DESCRIPTION, (char *) & channel_id, sizeof(channel_id));
+
+	CZapitMessages::responseGetChannelDescription response;
+	CBasicClient::receive_data((char* )&response, sizeof(response));
+	close_connection();
+	return std::string(response.description);
+}
+
 /* is channel a TV channel ? */
 bool CZapitClient::isChannelTVChannel(const t_channel_id channel_id)
 {
 	send(CZapitMessages::CMD_IS_TV_CHANNEL, (char *) & channel_id, sizeof(channel_id));
+
+	CZapitMessages::responseGeneralTrueFalse response;
+	CBasicClient::receive_data((char* )&response, sizeof(response));
+	close_connection();
+	return response.status;
+}
+
+/* is channel a Radio channel ? */
+bool CZapitClient::isChannelRadioChannel(const t_channel_id channel_id)
+{
+	send(CZapitMessages::CMD_IS_RADIO_CHANNEL, (char *) & channel_id, sizeof(channel_id));
+
+	CZapitMessages::responseGeneralTrueFalse response;
+	CBasicClient::receive_data((char* )&response, sizeof(response));
+	close_connection();
+	return response.status;
+}
+
+/* is channel a WEBTV channel ? */
+bool CZapitClient::isChannelWEBTVChannel(const t_channel_id channel_id)
+{
+	send(CZapitMessages::CMD_IS_WEBTV_CHANNEL, (char *) & channel_id, sizeof(channel_id));
 
 	CZapitMessages::responseGeneralTrueFalse response;
 	CBasicClient::receive_data((char* )&response, sizeof(response));

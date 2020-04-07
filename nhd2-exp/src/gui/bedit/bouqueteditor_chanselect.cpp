@@ -169,20 +169,32 @@ int CBEChannelSelectWidget::exec(CMenuTarget* parent, const std::string& actionK
 	dprintf(DEBUG_NORMAL, "CBEChannelSelectWidget::exec: actionKey:%s\n", actionKey.c_str());
 
 	//
-	bouquetChannels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
+	//bouquetChannels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
+	if (mode == CZapitClient::MODE_TV)
+		bouquetChannels = &(g_bouquetManager->Bouquets[bouquet]->tvChannels);
+	else if (mode == CZapitClient::MODE_RADIO)
+		bouquetChannels = &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
+	else if (mode == CZapitClient::MODE_WEBTV)
+		bouquetChannels = &(g_bouquetManager->Bouquets[bouquet]->webtvChannels);
 
 	Channels.clear();
 	
-	if (mode == CZapitClient::MODE_RADIO) 
+	if (mode == CZapitClient::MODE_TV) 
+	{
+		for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+			if (it->second.getServiceType() == ST_DIGITAL_TELEVISION_SERVICE)
+				Channels.push_back(&(it->second));
+	}
+	else if (mode == CZapitClient::MODE_RADIO) 
 	{
 		for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
 			if (it->second.getServiceType() == ST_DIGITAL_RADIO_SOUND_SERVICE)
 				Channels.push_back(&(it->second));
 	} 
-	else 
+	else if (mode == CZapitClient::MODE_WEBTV) 
 	{
 		for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
-			if (it->second.getServiceType() != ST_DIGITAL_RADIO_SOUND_SERVICE)
+			if (it->second.getServiceType() == ST_WEBTV)
 				Channels.push_back(&(it->second));
 	}
 	sort(Channels.begin(), Channels.end(), CmpChannelByChName());

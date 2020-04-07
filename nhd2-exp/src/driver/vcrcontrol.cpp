@@ -142,10 +142,7 @@ void CVCRControl::CDevice::getAPIDs(const unsigned char ap, APIDList & apid_list
         apid_list.clear();
         CZapitClient::responseGetPIDs allpids;
 	
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-		g_WebTV->getPIDS(allpids);
-	else
-        	g_Zapit->getRecordPIDS(allpids);
+	g_Zapit->getRecordPIDS(allpids);
 
         // assume smallest apid ist std apid
         if (apids & TIMERD_APIDS_STD)
@@ -439,17 +436,11 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
 	//
 	CZapitClient::responseGetPIDs pids;
 
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-		g_WebTV->getPIDS(pids);
-	else
-		g_Zapit->getRecordPIDS(pids);
+	g_Zapit->getRecordPIDS(pids);
 
 	CZapitClient::CCurrentServiceInfo si;
 
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-		si = g_WebTV->getServiceInfo();
-	else
-	 	si = g_Zapit->getRecordServiceInfo();
+	si = g_Zapit->getRecordServiceInfo();
 
         APIDList apid_list;
         getAPIDs(apids, apid_list);
@@ -464,10 +455,7 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
         }
 
 	std::string tmpstring;
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-		tmpstring = g_WebTV->getChannelName(channel_id);
-	else
-		tmpstring = g_Zapit->getChannelName(channel_id);
+	tmpstring = g_Zapit->getChannelName(channel_id);
 
 	if (tmpstring.empty())
 		extMessage += "unknown";
@@ -582,10 +570,7 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 
 	CZapitClient::CCurrentServiceInfo si;
 
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-		si = g_WebTV->getServiceInfo();
-	else
-		si = g_Zapit->getRecordServiceInfo();
+	si = g_Zapit->getRecordServiceInfo();
 
 	numpids = 0;
 
@@ -605,10 +590,7 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
         
         CZapitClient::responseGetPIDs allpids;
 
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-		g_WebTV->getPIDS(allpids);
-	else
-        	g_Zapit->getRecordPIDS(allpids);
+	g_Zapit->getRecordPIDS(allpids);
 
 	//record file name format
 	char filename[512]; // UTF-8
@@ -626,10 +608,7 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 
 	pos = strlen(filename);
 
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-		ext_channel_name = g_WebTV->getChannelName(channel_id);
-	else
-		ext_channel_name = g_Zapit->getChannelName(channel_id);
+	ext_channel_name = g_Zapit->getChannelName(channel_id);
 
 	if (!(ext_channel_name.empty()))
 	{
@@ -732,7 +711,7 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 			      si.vpid, 
 			      pids, 
 			      numpids,
-			      g_WebTV->getChannelURL(channel_id));
+			      g_Zapit->getChannelURL(channel_id));
 
 	if (error_msg == STREAM2FILE_OK) 
 	{
@@ -786,10 +765,7 @@ bool CVCRControl::Screenshot(const t_channel_id channel_id, char * fname, bool m
 	
 		pos = strlen(filename);
 
-		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-			channel_name = g_WebTV->getChannelName(channel_id);
-		else
-			channel_name = g_Zapit->getChannelName(channel_id);
+		channel_name = g_Zapit->getChannelName(channel_id);
 
 		if (!(channel_name.empty())) 
 		{
@@ -880,25 +856,16 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 
 	g_cMovieInfo->clearMovieInfo(g_movieInfo);
 
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-		g_WebTV->getPIDS(pids);
-	else
-		g_Zapit->getRecordPIDS(pids);
+	g_Zapit->getRecordPIDS(pids);
 
 
 	CZapitClient::CCurrentServiceInfo si;
 
-	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv)
-		si = g_WebTV->getServiceInfo();
-	else
-		si = g_Zapit->getRecordServiceInfo();
+	si = g_Zapit->getRecordServiceInfo();
 
 	std::string tmpstring;
 
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-		tmpstring = g_WebTV->getChannelName(channel_id);
-	else
-		tmpstring = g_Zapit->getChannelName(channel_id);
+	tmpstring = g_Zapit->getChannelName(channel_id);
 
 	if (tmpstring.empty())
 		g_movieInfo->epgChannel = "unknown";

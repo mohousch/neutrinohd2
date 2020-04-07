@@ -4478,21 +4478,20 @@ void CTestMenu::testClistBoxWidget2()
 // CChannellist
 void CTestMenu::testChannellist()
 {
-	g_WebTV->loadChannels();
+	webTVchannelList = new CChannelList("CTestMenu::testWebTVChannellist:");
 
-	Channels.clear();
-
-	Channels = g_WebTV->getChannels();
-
-	webTVchannelList = new CChannelList("CTestMenu::testChannellist:");
-
-	webTVchannelList->setSize(Channels.size());
-
-	for(unsigned count = 0; count < Channels.size(); count++)
+	int cnt = 0;
+	for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++) 
 	{
-		webTVchannelList->addChannel(Channels[count]);
+		if (it->second.isWebTV) 
+		{
+			cnt++;
+			//webTVchannelList->putChannel(&(it->second));
+			webTVchannelList->addChannel(&(it->second));
+		}
 	}
 
+	webTVchannelList->setSize(cnt);
 	webTVchannelList->exec();
 }
 
@@ -4500,12 +4499,12 @@ void CTestMenu::testChannellist()
 // CBouquetlist
 void CTestMenu::testBouquetlist()
 {
-	webTVBouquetList = new CBouquetList("CTestMenu::testBouquetlist");
+	webTVBouquetList = new CBouquetList("CTestMenu::testWebTVBouquetlist");
 
 	filelist.clear();
 	fileFilter.clear();
 
-	CBouquet* webBouquet = NULL;
+	CBouquet* webTVBouquet = NULL;
 	
 	fileFilter.addFilter("xml");
 	fileFilter.addFilter("tv");
@@ -4517,23 +4516,21 @@ void CTestMenu::testBouquetlist()
 
 		for (unsigned int i = 0; i < filelist.size(); i++)
 		{
-			g_settings.webtv_userBouquet = filelist[i].Name.c_str();
-			g_WebTV->loadChannels();
-			Channels.clear();
-			Channels = g_WebTV->getChannels();
-
 			bTitle = filelist[i].getFileName();
 
 			removeExtension(bTitle);
 
-			webBouquet = new CBouquet(0, (char *)bTitle.c_str(), 0);
+			webTVBouquet = new CBouquet(0, (char *)bTitle.c_str(), 0);
 
-			for(unsigned count = 0; count < Channels.size(); count++)
+			for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++) 
 			{
-				webBouquet->channelList->addChannel(Channels[count]);
+				if (it->second.isWebTV) 
+				{
+					webTVBouquet->channelList->addChannel(&(it->second));
+				}
 			}
 
-			webTVBouquetList->Bouquets.push_back(webBouquet);
+			webTVBouquetList->Bouquets.push_back(webTVBouquet);
 		}
 	}
 

@@ -1338,6 +1338,7 @@ int CEPGplusHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 	channelList = CNeutrinoApp::getInstance()->channelList;
 
 	e->exec(channelList, channelList->getSelectedChannelIndex(), bouquetList);
+
 	delete e;
 	e = NULL;
 	

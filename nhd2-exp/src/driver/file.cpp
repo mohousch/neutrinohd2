@@ -282,3 +282,10 @@ std::string CFile::getPath(void) const      // return complete path including tr
 
 	return ((pos = Name.rfind('/')) > 1) ? Name.substr(0, pos + 1) : "/";
 }
+
+std::string CFile::getName(void) const
+{
+	return Name;
+}
+
+

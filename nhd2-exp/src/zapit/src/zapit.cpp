@@ -867,7 +867,7 @@ void saveZapitSettings(bool write, bool write_a)
 		else if(currentMode & TV_MODE)
 			c = g_bouquetManager->tvChannelsBegin().getLowestChannelNumberWithChannelID(live_channel->getChannelID());
 		else if(currentMode & WEBTV_MODE)
-			c = g_WebTV->getActiveChannelNumber(live_channel->getChannelID());
+			c = g_bouquetManager->getActiveChannelNumber(live_channel->getChannelID());
 
 		printf("zapit:lastChannel:%d\n\n", c);
 
@@ -2175,6 +2175,68 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			CBasicServer::send_data(connfd, &response, sizeof(response));
 			break;
 		}
+
+		// webtv channel url
+		case CZapitMessages::CMD_GET_CHANNEL_URL: 
+		{
+			t_channel_id requested_channel_id;
+			CZapitMessages::responseGetChannelURL response;
+			CBasicServer::receive_data(connfd, &requested_channel_id, sizeof(requested_channel_id));
+			if(requested_channel_id == 0) 
+			{
+				if(live_channel) 
+				{
+					strncpy(response.url, live_channel->getUrl().c_str(), CHANNEL_NAME_SIZE);
+					response.url[CHANNEL_NAME_SIZE - 1] = 0;
+				} 
+				else
+					response.url[0] = 0;
+			} 
+			else 
+			{
+				tallchans_iterator it = allchans.find(requested_channel_id);
+				if (it == allchans.end())
+					response.url[0] = 0;
+				else
+					strncpy(response.url, it->second.getUrl().c_str(), CHANNEL_NAME_SIZE);
+
+				response.url[CHANNEL_NAME_SIZE - 1] = 0;
+			}
+
+			CBasicServer::send_data(connfd, &response, sizeof(response));
+			break;
+		}
+
+		// webtv channel description
+		case CZapitMessages::CMD_GET_CHANNEL_DESCRIPTION: 
+		{
+			t_channel_id requested_channel_id;
+			CZapitMessages::responseGetChannelDescription response;
+			CBasicServer::receive_data(connfd, &requested_channel_id, sizeof(requested_channel_id));
+			if(requested_channel_id == 0) 
+			{
+				if(live_channel) 
+				{
+					strncpy(response.description, live_channel->getDescription().c_str(), CHANNEL_NAME_SIZE);
+					response.description[CHANNEL_NAME_SIZE - 1] = 0;
+				} 
+				else
+					response.description[0] = 0;
+			} 
+			else 
+			{
+				tallchans_iterator it = allchans.find(requested_channel_id);
+				if (it == allchans.end())
+					response.description[0] = 0;
+				else
+					strncpy(response.description, it->second.getDescription().c_str(), CHANNEL_NAME_SIZE);
+
+				response.description[CHANNEL_NAME_SIZE - 1] = 0;
+			}
+
+			CBasicServer::send_data(connfd, &response, sizeof(response));
+			break;
+		}
 		
 		case CZapitMessages::CMD_IS_TV_CHANNEL: 
 		{
@@ -2191,9 +2253,48 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 				else
 				/* FIXME: the following check is no even remotely accurate */
 					response.status = (it->second.getServiceType() != ST_DIGITAL_RADIO_SOUND_SERVICE);
-				} else
+			} 
+			else
 				/* FIXME: the following check is no even remotely accurate */
 				response.status = (it->second.getServiceType() != ST_DIGITAL_RADIO_SOUND_SERVICE);
+		
+			CBasicServer::send_data(connfd, &response, sizeof(response));
+			break;
+		}
+
+		// radio channel
+		case CZapitMessages::CMD_IS_RADIO_CHANNEL: 
+		{
+			t_channel_id requested_channel_id;
+			CZapitMessages::responseGeneralTrueFalse response;
+			CBasicServer::receive_data(connfd, &requested_channel_id, sizeof(requested_channel_id));
+			tallchans_iterator it = allchans.find(requested_channel_id);
+			if (it == allchans.end()) 
+			{
+				/* FIXME: the following check is no even remotely accurate */
+				response.status = (it->second.getServiceType() == ST_DIGITAL_RADIO_SOUND_SERVICE);
+			}
+
+			response.status = (it->second.getServiceType() == ST_DIGITAL_RADIO_SOUND_SERVICE);
+		
+			CBasicServer::send_data(connfd, &response, sizeof(response));
+			break;
+		}
+
+		// webtv channel
+		case CZapitMessages::CMD_IS_WEBTV_CHANNEL: 
+		{
+			t_channel_id requested_channel_id;
+			CZapitMessages::responseGeneralTrueFalse response;
+			CBasicServer::receive_data(connfd, &requested_channel_id, sizeof(requested_channel_id));
+			tallchans_iterator it = allchans.find(requested_channel_id);
+			if (it == allchans.end()) 
+			{
+				/* FIXME: the following check is no even remotely accurate */
+				response.status = it->second.isWebTV;
+			}
+
+			response.status = it->second.isWebTV;
 		
 			CBasicServer::send_data(connfd, &response, sizeof(response));
 			break;
@@ -2781,6 +2882,16 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 					zapit(live_channel->getChannelID(), current_is_nvod);
 #endif				
 			
+			break;
+
+		case CZapitMessages::CMD_SB_PAUSE_PLAYBACK:
+			pausePlayBack();
+						
+			break;
+
+		case CZapitMessages::CMD_SB_CONTINUE_PLAYBACK:
+			continuePlayBack();
+						
 			break;
 	
 		case CZapitMessages::CMD_SET_AUDIO_MODE: 
@@ -3733,7 +3844,6 @@ void pausePlayBack(void)
 
 	if(currentMode & WEBTV_MODE)
 		playback->SetSpeed(0);
-	//playstate = PAUSE;
 }
 
 void continuePlayBack(void)
@@ -3742,7 +3852,6 @@ void continuePlayBack(void)
 
 	if(currentMode & WEBTV_MODE)
 		playback->SetSpeed(1);
-	//playstate = PLAY;
 }
 
 void closeAVDecoder(void)
@@ -4645,10 +4754,6 @@ int zapit_main_thread(void *data)
 
 	// load services
 	prepare_channels();
-
-	// load webtv channels
-	if (g_WebTV)
-		g_WebTV->loadChannels();
 
 	//set basic server
 	CBasicServer zapit_server;

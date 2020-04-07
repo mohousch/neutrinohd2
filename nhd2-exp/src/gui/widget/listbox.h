@@ -554,6 +554,11 @@ class ClistBox : public CWidgetItem
 		int start_x;
 		int start_y;
 
+		fb_pixel_t * background;
+		bool savescreen;
+		void saveScreen();
+		void restoreScreen();
+
 	public:
 		ClistBox(const int x, int const y, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		ClistBox(CBox* position);
@@ -631,6 +636,8 @@ class ClistBox : public CWidgetItem
 
 		int oKKeyPressed(CMenuTarget *parent);
 		void otherKeyPressed(neutrino_msg_t msg);
+
+		void enableSaveScreen();
 };
 
 #endif // LISTBOX_H_

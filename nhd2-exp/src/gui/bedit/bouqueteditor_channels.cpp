@@ -60,7 +60,7 @@
 #include <system/debug.h>
 
 
-extern tallchans allchans;			// defined in zapit.cpp
+//extern tallchans allchans;			// defined in zapit.cpp
 extern CBouquetManager * g_bouquetManager;	// defined in zapit.cpp
 
 CBEChannelWidget::CBEChannelWidget(const std::string & Caption, unsigned int Bouquet)
@@ -155,7 +155,13 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	if (parent)
 		parent->hide();
 
-	Channels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
+	//Channels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
+	if (mode == CZapitClient::MODE_TV)
+		Channels = &(g_bouquetManager->Bouquets[bouquet]->tvChannels);
+	else if (mode == CZapitClient::MODE_RADIO)
+		Channels = &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
+	else if (mode == CZapitClient::MODE_WEBTV)
+		Channels = &(g_bouquetManager->Bouquets[bouquet]->webtvChannels);
 
 	listBox = new ClistBox(&cFrameBox);
 	

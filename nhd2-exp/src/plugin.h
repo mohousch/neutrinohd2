@@ -179,7 +179,6 @@
 #include <satconfig.h>
 #include <channel.h>
 #include <bouquets.h>
-#include <webtv.h>
 
 // libdvbapi
 #include <playback_cs.h>
@@ -273,8 +272,6 @@ extern SMSKeyInput 		* c_SMSKeyInput;	//defined in filebrowser and used in Chann
 extern CPictureViewer 		* g_PicViewer;
 //extern CCAMMenuHandler 	* g_CamHandler;
 
-// webtv
-extern CWebTV * g_WebTV;
 extern CVCRControl::CDevice * recordingdevice;
 
 //
