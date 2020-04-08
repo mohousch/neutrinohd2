@@ -165,9 +165,6 @@ void CChannelList::addChannel(CZapitChannel * channel, int num)
 void CChannelList::putChannel(CZapitChannel * channel)
 {
 	int num = channel->number - 1;
-
-	//testing
-	//printf("CChannelList::putChannel: %d\n", num);
 	
 	if(num < 0) 
 	{
@@ -216,7 +213,7 @@ void CChannelList::updateEvents(void)
 	} 
 	else 
 	{
-		t_channel_id * p_requested_channels = NULL;
+		t_channel_id *p_requested_channels = NULL;
 		int size_requested_channels = 0;
 
 		if (chanlist.size()) 
@@ -237,13 +234,12 @@ void CChannelList::updateEvents(void)
 			
 			for (uint32_t count = 0; count < chanlist.size(); count++) 
 			{
-				chanlist[count]->currentEvent = CChannelEvent();
-				
 				for ( CChannelEventList::iterator e = pevents.begin(); e != pevents.end(); ++e )
 				{
-					if ((chanlist[count]->channel_id&0xFFFFFFFFFFFFULL) == e->get_channel_id()&0xFFFFFFFFFFFFULL)
+					if ((chanlist[count]->channel_id&0xFFFFFFFFFFFFULL) == e->channelID&0xFFFFFFFFFFFFULL)//FIXME: get_channel_id()
 					{
 						chanlist[count]->currentEvent= *e;
+
 						break;
 					}
 				}
@@ -1186,7 +1182,7 @@ int CChannelList::numericZap(int key)
 		{
 			if((orgList->chanlist[i]->channel_id >> 16) == pipid) 
 			{
-					channelList->addChannel(orgList->chanlist[i]);
+				channelList->addChannel(orgList->chanlist[i]);
 			}
 		}
 			
@@ -1579,9 +1575,6 @@ void CChannelList::paint()
 				if(p_event->duration > 0)
 					runningPercent = (jetzt - p_event->startTime) * 30 / p_event->duration;
 			}
-
-			////
-			//printf("TEST:%s\n\n", p_event->description.c_str());
 
 			// description
 			if (p_event != NULL && !(p_event->description.empty())) 

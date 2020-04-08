@@ -1512,20 +1512,19 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 		}
 		else if(it->second.getServiceType() == ST_WEBTV)
 		{
-			webTVchannelList->putChannel(&(it->second));
 			webTVchannelList->addChannel(&(it->second), webtvi + 1);
-
-			webtvi++;
 
 			if(it->second.isHD()) 
 			{
 				webtvhi++;
 			}
+
+			webtvi++;
 		}
 	}
 
 	//
-	//webTVchannelList->setSize(webtvi);
+	webTVchannelList->setSize(webtvi);
 
 	//testing
 	printf("CNeutrinoApp::channelsInit1: TVchannellist.size:%d Radiochannellist.size:%d WEBTVchannellist.size:%d\n", (int)TVchannelList->getSize(), (int)RADIOchannelList->getSize(), (int)webTVchannelList->getSize());
@@ -1533,7 +1532,7 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	if(g_settings.make_hd_list)
 		hdBouquet->channelList->SortSat();
 
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit: got %d TV (%d is HD) and %d RADIO and %d WEBTV (%d is HD) channels\n", tvi, hi, ri, webtvi, webtvhi);
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit: got %d TV (%d is HD) and %d RADIO and %d WEBTV (%d is HD) channels\n", tvi, hi, ri, webtvi, webtvhi - 1);
 
 	CBouquet * tmp;
 
@@ -1656,7 +1655,7 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 
 			for(int j = 0; j < (int) channels->size(); j++) 
 			{
-				ltmp->channelList->addChannel((*channels)[j]);
+				ltmp->channelList->addChannel((*channels)[j], j + 1);
 			}
 
 			bnum++;

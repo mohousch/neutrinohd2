@@ -56,7 +56,6 @@ int CSectionsdClient::readResponse(char* data,unsigned int size)
 		return responseHeader.dataLength;
 }
 
-
 bool CSectionsdClient::send(const unsigned char command, const char* data, const unsigned int size)
 {
 	sectionsd::msgRequestHeader msgHead;
@@ -170,7 +169,6 @@ void CSectionsdClient::setServiceChanged(const t_channel_id channel_id, const bo
 	readResponse();
 	close_connection();
 }
-
 
 bool CSectionsdClient::getComponentTagsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::ComponentTagList& tags)
 {

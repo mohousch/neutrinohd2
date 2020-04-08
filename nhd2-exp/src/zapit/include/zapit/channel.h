@@ -249,6 +249,7 @@ class CZapitChannel
 		void setCaPmt(CCaPmt * pCaPmt);				//{ caPmt = pCaPmt; }
 		void setRawPmt(unsigned char * pmt, int len = 0);
 		void setaitPid(unsigned short aitPID)			{aitPid = aitPID;};
+		void setNumber(unsigned int num)			{number = num;};
 		
 		/* cleanup methods */
 		void resetPids(void);

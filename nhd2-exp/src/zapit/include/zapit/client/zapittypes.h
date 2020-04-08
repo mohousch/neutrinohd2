@@ -85,6 +85,7 @@ static inline t_channel_id create_channel_id64(t_service_id service_id, t_origin
 		memcpy(&cid, md5, sizeof(cid));
 		return cid | 0xFFFFFFFF00000000;
 	}
+
 	return ((uint64_t)(satellitePosition+freq*4) << 48) | ((uint64_t) transport_stream_id << 32) | ((uint64_t)original_network_id << 16) | (uint64_t)service_id;
 }
 #define CREATE_CHANNEL_ID64 create_channel_id64(service_id, original_network_id, transport_stream_id, satellitePosition, freq)

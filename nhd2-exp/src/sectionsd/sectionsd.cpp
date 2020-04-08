@@ -5501,7 +5501,7 @@ void sectionsd_main_thread(void */*data*/)
 /* was: commandAllEventsChannelID sendAllEvents */
 void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventList &eList, char search = 0, std::string search_text = "")
 {
-	dprintf(DEBUG_NORMAL, "sendAllEvents for " PRINTF_CHANNEL_ID_TYPE "\n", serviceUniqueKey&0xFFFFFFFFFFFFULL);
+	dprintf(DEBUG_NORMAL, "sectionsd_getEventsServiceKey:sendAllEvents for " PRINTF_CHANNEL_ID_TYPE "\n", serviceUniqueKey&0xFFFFFFFFFFFFULL);
 
 	if ((serviceUniqueKey& 0xFFFFFFFFFFFFULL) != 0) 
 	{ 
@@ -5970,6 +5970,7 @@ void sectionsd_getChannelEvents(CChannelEventList &eList, const bool tv_mode = t
 		{
 			found_already = true;
 			readLockServices();
+
 			// new service, check service- type
 			MySIservicesOrderUniqueKey::iterator s = mySIservicesOrderUniqueKey.find(uniqueNow);
 
@@ -5998,6 +5999,8 @@ void sectionsd_getChannelEvents(CChannelEventList &eList, const bool tv_mode = t
 				if (t->startzeit <= azeit && azeit <= (long)(t->startzeit + t->dauer))
 				{
 					CChannelEvent aEvent;
+
+					aEvent.channelID = (*e)->get_channel_id();//FIXME: get_channel_id()
 					aEvent.eventID = (*e)->uniqueKey();
 					aEvent.startTime = t->startzeit;
 					aEvent.duration = t->dauer;
@@ -6006,6 +6009,7 @@ void sectionsd_getChannelEvents(CChannelEventList &eList, const bool tv_mode = t
 						aEvent.text = (*e)->getExtendedText().substr(0, 120);
 					else
 						aEvent.text = (*e)->getText();
+
 					eList.push_back(aEvent);
 
 					found_already = true;

@@ -527,6 +527,7 @@ void CBouquetManager::loadWebTVBouquet(void)
 	// read list
 	std::string filename;
 	std::string name;
+	int cnt = 1;
 
 	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
 	{
@@ -543,7 +544,6 @@ void CBouquetManager::loadWebTVBouquet(void)
 			bool iptv = false;
 			bool webtv = false;
 			bool playlist = false;
-			int cnt = 0;
 					
 			std::string extension = getFileExt(filename);
 						
@@ -610,7 +610,9 @@ void CBouquetManager::loadWebTVBouquet(void)
 
 							if (chan != NULL) 
 							{
-								chan->number = cnt;
+								//testing
+								//printf("cnt:%d\n", cnt);
+								//chan->setNumber(cnt);
 								//chan->setServiceType(ST_WEBTV);
 								//chan->isWebTV = true;
 
@@ -618,7 +620,9 @@ void CBouquetManager::loadWebTVBouquet(void)
 
 								newBouquet->addService(chan);
 
+								//
 								allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+
 							}
 
 							cnt++;
@@ -678,7 +682,7 @@ void CBouquetManager::loadWebTVBouquet(void)
 
 								if (chan != NULL) 
 								{
-									chan->number = cnt;
+									//chan->setNumber(cnt);
 									//chan->setServiceType(ST_WEBTV);
 									//chan->isWebTV = true;
 								
@@ -738,14 +742,15 @@ void CBouquetManager::loadWebTVBouquet(void)
 
 								if (chan != NULL) 
 								{
-									chan->number = cnt;
+									//chan->setNumber(cnt);
 									//chan->setServiceType(ST_WEBTV);
 									//chan->isWebTV = true;
 
 									//newBouquet->webtvChannels.push_back(chan);
 
 									newBouquet->addService(chan);
-
+			
+									//
 									allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, url, description)));
 								}
 
@@ -757,6 +762,16 @@ void CBouquetManager::loadWebTVBouquet(void)
 
 				infile.close();
 			}
+		}
+	}
+
+	// renum
+	int k = 1;
+	for (tallchans::iterator it = allchans.begin(); it != allchans.end(); it++)
+	{
+		if(it->second.getServiceType() == ST_WEBTV)
+		{
+			it->second.setNumber(k++);
 		}
 	}
 }
@@ -792,6 +807,8 @@ void CBouquetManager::loadBouquets(bool loadCurrentBouquet)
 	loadWebTVBouquet();
 
 	renumServices();
+
+	//loadWebTVBouquet();
 }
 
 void CBouquetManager::makeRemainingChannelsBouquet(void)
@@ -803,9 +820,10 @@ void CBouquetManager::makeRemainingChannelsBouquet(void)
 	for (tallchans::iterator it = allchans.begin(); it != allchans.end(); it++)
 		it->second.number = 0;
 
-	int i = 1, j = 1;
+	int i = 1, j = 1, k = 1;
 	for (vector<CZapitBouquet*>::const_iterator it = Bouquets.begin(); it != Bouquets.end(); it++) 
 	{
+		// tvChannels
 		for (vector<CZapitChannel*>::iterator jt = (*it)->tvChannels.begin(); jt != (*it)->tvChannels.end(); jt++) 
 		{
 			if(tomake) 
@@ -818,6 +836,7 @@ void CBouquetManager::makeRemainingChannelsBouquet(void)
 				(*jt)->pname = (char *) (*it)->Name.c_str();
 		}
 
+		// radioChannels
 		for (vector<CZapitChannel*>::iterator jt = (*it) ->radioChannels.begin(); jt != (*it)->radioChannels.end(); jt++) 
 		{
 			if(tomake) 
@@ -825,8 +844,22 @@ void CBouquetManager::makeRemainingChannelsBouquet(void)
 			
 			if(!(*jt)->number) 
 				(*jt)->number = j++;
+
 			if(!(*jt)->pname && !(*it)->bUser) 
 				(*jt)->pname = (char *) (*it)->Name.c_str();
+		}
+
+		// webtvChannels
+		for (vector<CZapitChannel*>::iterator jt = (*it)->webtvChannels.begin(); jt != (*it)->webtvChannels.end(); jt++) 
+		{
+			if(!(*jt)->number) 
+				(*jt)->number = k++;
+
+			//testing
+			//printf("k:%d\n", k);
+
+			//if(!(*jt)->pname && !(*it)->bUser) 
+			//	(*jt)->pname = (char *) (*it)->Name.c_str();
 		}
 	}
 
@@ -854,12 +887,15 @@ void CBouquetManager::makeRemainingChannelsBouquet(void)
 		return;
 	}
 
+	// renum remainsChannels
+	// tv
 	for (vector<CZapitChannel*>::iterator jt = remainChannels->tvChannels.begin(); jt != remainChannels->tvChannels.end(); jt++)
 	{
 		if(!(*jt)->number) 
 			(*jt)->number = i++;
 	}
 
+	// radio
 	for (vector<CZapitChannel*>::iterator jt = remainChannels->radioChannels.begin(); jt != remainChannels->radioChannels.end(); jt++)
 	{
 		if(!(*jt)->number) 
