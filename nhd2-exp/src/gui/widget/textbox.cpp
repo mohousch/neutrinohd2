@@ -45,15 +45,6 @@
 #include <system/settings.h>
 
 
-CTextBox::CTextBox()
-{
-	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
-	
-	initVar();
-
-	initFramesRel();
-}
-
 CTextBox::CTextBox(const int x, const int y, const int dx, const int dy)
 {
 	dprintf(DEBUG_DEBUG, "CTextBox::CTextBox:\r\n");
@@ -111,8 +102,11 @@ void CTextBox::initVar(void)
 	m_nCurrentLine = 0;
 	m_nCurrentPage = 0;
 
-	m_cFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - MIN_WINDOW_WIDTH) >>1);
-	m_cFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - MIN_WINDOW_HEIGHT) >>1);
+	m_cFrame.iWidth	= MENU_WIDTH;
+	m_cFrame.iHeight = MENU_HEIGHT;
+
+	m_cFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - m_cFrame.iWidth) >>1);
+	m_cFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - m_cFrame.iHeight) >>1);
 	m_cFrame.iWidth	= MIN_WINDOW_WIDTH;
 	m_cFrame.iHeight = MIN_WINDOW_HEIGHT;
 

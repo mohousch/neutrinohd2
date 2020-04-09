@@ -1641,7 +1641,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	logo = false;
 	enableCenter = true;
 	outFocus = false;
-	shrinkMenu = true;
+	shrinkMenu = false;
 
 	//
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
@@ -1714,7 +1714,7 @@ ClistBox::ClistBox(CBox* position)
 	logo = false;
 	enableCenter = true;
 	outFocus = false;
-	shrinkMenu = true;
+	shrinkMenu = false;
 
 	//
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
@@ -2794,15 +2794,8 @@ void ClistBox::swipLeft()
 		if(items.size())
 		{
 			//search next / prev selectable item
-			//for (int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
 			for (unsigned int count = 1; count < items.size(); count++) 
 			{
-				//pos = selected - 1;
-
-				// jump to page end
-				//if(pos < (int)page_start[current_page])
-				//	pos = (int)page_start[current_page + 1] - 1;
-
 				pos = selected - count;
 				if ( pos < 0 )
 					pos += items.size();
@@ -2847,14 +2840,6 @@ void ClistBox::swipRight()
 	{
 		if(items.size())
 		{
-			//search next / prev selectable item
-			//for (int count = (int)page_start[current_page] + 1; count < (int)page_start[current_page + 1]; count++)
-			//{
-			//	pos = selected + 1;
-
-				// jump to page start
-			//	if(pos == (int)page_start[current_page + 1])
-			//		pos = (int)page_start[current_page];
 			for (unsigned int count = 1; count < items.size(); count++) 
 			{
 				pos = (selected + count)%items.size();
@@ -2943,7 +2928,10 @@ int ClistBox::oKKeyPressed(CMenuTarget* parent)
 	dprintf(DEBUG_NORMAL, "ClistBox::okKeyPressed:\n");
 
 	if(parent)
-		return items[selected]->exec(parent);
+		if(hasItem())
+			return items[selected]->exec(parent);
+		else
+			menu_return::RETURN_EXIT;
 	else
 		return menu_return::RETURN_EXIT;
 }

@@ -560,7 +560,7 @@ class ClistBox : public CWidgetItem
 		void restoreScreen();
 
 	public:
-		ClistBox(const int x, int const y, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
+		ClistBox(const int x = 0, int const y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		ClistBox(CBox* position);
 		virtual ~ClistBox();
 
@@ -614,7 +614,7 @@ class ClistBox : public CWidgetItem
 
 		void disableCenter(){enableCenter = false;};
 		void setOutFocus(bool focus){outFocus = focus;};
-		void disableShrinkMenu(){shrinkMenu = false;};
+		void enableShrinkMenu(){shrinkMenu = true;};
 
 		//
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};

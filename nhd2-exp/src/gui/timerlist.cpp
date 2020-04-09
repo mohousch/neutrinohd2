@@ -752,6 +752,8 @@ void CTimerList::paint()
 		listBox->addItem(item);
 	}
 
+	listBox->enableShrinkMenu();
+
 	// head
 	listBox->setTitle(g_Locale->getText(LOCALE_TIMERLIST_NAME), NEUTRINO_ICON_TIMER);
 	listBox->enablePaintHead();

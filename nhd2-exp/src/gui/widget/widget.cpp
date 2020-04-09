@@ -36,28 +36,6 @@
 #include <system/debug.h>
 
 
-CWidget::CWidget()
-{
-	frameBuffer = CFrameBuffer::getInstance();
-
-	mainFrameBox.iWidth = MENU_WIDTH;
-	mainFrameBox.iHeight = MENU_HEIGHT;
-
-	savescreen = false;
-	background = NULL;
-
-	enableCenter = true;
-	paintMainFrame = false;
-
-	mainFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - mainFrameBox.iWidth ) >> 1 );
-	mainFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - mainFrameBox.iHeight) >> 1 );
-
-	timeout = 0;
-	selected = 0;
-
-	backgroundColor = COL_MENUCONTENT_PLUS_0;
-}
-
 CWidget::CWidget(const int x, const int y, const int dx, const int dy)
 {
 	frameBuffer = CFrameBuffer::getInstance();
@@ -205,9 +183,14 @@ void CWidget::hide()
 	}
 
 	if( savescreen && background)
+	{
 		restoreScreen();
+	}
 	else
-		frameBuffer->paintBackgroundBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight);
+	{
+		if(paintMainFrame)
+			frameBuffer->paintBackgroundBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight);
+	}
 
 	frameBuffer->blit();
 }
@@ -323,7 +306,8 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 			//
 			if ( msg <= RC_MaxRC )
 			{
-				items[selected]->otherKeyPressed(msg);
+				if(hasItem())
+					items[selected]->otherKeyPressed(msg);
 			}
 
 			switch (msg) 
@@ -372,22 +356,25 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 				case (RC_ok):
 					{
-						if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) || (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
+						if(hasItem())
 						{
-							int rv = items[selected]->oKKeyPressed(this);
-
-							//FIXME:review this
-							switch ( rv ) 
+							if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) || (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
 							{
-								case menu_return::RETURN_EXIT_ALL:
-									retval = menu_return::RETURN_EXIT_ALL; //fall through
-								case menu_return::RETURN_EXIT:
-									msg = RC_timeout;
-									break;
-								case menu_return::RETURN_REPAINT:
-									initFrames();
-									paint();
-									break;
+								int rv = items[selected]->oKKeyPressed(this);
+
+								//FIXME:review this
+								switch ( rv ) 
+								{
+									case menu_return::RETURN_EXIT_ALL:
+										retval = menu_return::RETURN_EXIT_ALL; //fall through
+									case menu_return::RETURN_EXIT:
+										msg = RC_timeout;
+										break;
+									case menu_return::RETURN_REPAINT:
+										initFrames();
+										paint();
+										break;
+								}
 							}
 						}
 					}

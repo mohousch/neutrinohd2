@@ -123,11 +123,10 @@ void CPluginList::showMenu()
 
 	plist->setMode(MODE_LISTBOX);
 	plist->setWidgetType(WIDGET_TYPE_CLASSIC);
-	plist->enablePaintDate();
-
-	plist->setSelected(selected);
+	plist->enableShrinkMenu();
 
 	// head
+	plist->enablePaintDate();
 	plist->setHeaderButtons(&CPluginListHeadButtons, 1);
 
 	// footer
@@ -139,6 +138,8 @@ void CPluginList::showMenu()
 	plist->addKey(RC_yellow, this, CRCInput::getSpecialKeyName(RC_yellow));
 	plist->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
 	plist->addKey(RC_ok, this, CRCInput::getSpecialKeyName(RC_ok));
+
+	plist->setSelected(selected);
 
 	plist->exec(NULL, "");
 	//plist->hide();

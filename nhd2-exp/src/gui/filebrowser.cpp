@@ -846,8 +846,10 @@ void CFileBrowser::paint()
 	char l_name[100];
 	snprintf(l_name, sizeof(l_name), "%s %s", g_Locale->getText(LOCALE_FILEBROWSER_HEAD), FILESYSTEM_ENCODING_TO_UTF8(std::string(name).c_str())); // UTF-8
 
-	listBox->setTitle(l_name);
+	listBox->enableShrinkMenu();
+
 	listBox->enablePaintHead();
+	listBox->setTitle(l_name);
 	listBox->enablePaintDate();
 	listBox->setHeaderButtons(HButtons, 2);
 

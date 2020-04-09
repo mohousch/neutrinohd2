@@ -922,7 +922,7 @@ void CTestMenu::widget()
 
 	leftWidget->disableCenter();
 	leftWidget->setSelected(left_selected);
-	leftWidget->disableShrinkMenu();
+//	leftWidget->enableShrinkMenu();
 
 	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos", true, NULL, this, "movie_in_cinema");
 	ClistBoxItem *item2 = new ClistBoxItem("Am", true, NULL, this, "movie_popular");
@@ -1203,7 +1203,7 @@ void CTestMenu::listBoxWidget()
 	rightWidget = new ClistBox(&rightBox);
 
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
-	rightWidget->disableShrinkMenu();
+	rightWidget->enableShrinkMenu();
 	rightWidget->setItemsPerPage(6,2);
 	rightWidget->setSelected(selected);
 	rightWidget->enablePaintHead();
@@ -1456,7 +1456,7 @@ void CTestMenu::test()
 	leftWidget->disableCenter();
 	leftWidget->setSelected(left_selected);
 	leftWidget->setOutFocus(false);
-	leftWidget->disableShrinkMenu();
+	leftWidget->enableShrinkMenu();
 
 	leftWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 

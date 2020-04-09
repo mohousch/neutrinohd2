@@ -56,8 +56,7 @@ class CWindow : public CWidgetItem
 		void restoreScreen();
 
 	public:
-		CWindow();
-		CWindow(const int x, const int y, const int dx, const int dy);
+		CWindow(const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		CWindow(CBox* position);
 		~CWindow();
 
@@ -84,7 +83,7 @@ class CPig : public CWidgetItem
 		CBox cFrameBox;
 
 	public:
-		CPig(const int x, const int y, const int dx, const int dy);
+		CPig(const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		CPig(CBox* position);
 		~CPig();
 
@@ -106,7 +105,7 @@ class CGrid : public CWidgetItem
 		__u32 rgb;
 
 	public:
-		CGrid(const int x, const int y, const int dx, const int dy);
+		CGrid(const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		CGrid(CBox* position);
 		~CGrid();
 

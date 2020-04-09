@@ -87,8 +87,7 @@ class CWidget : public CMenuTarget
 		fb_pixel_t backgroundColor;
 
 	public:
-		CWidget();
-		CWidget(const int x, const int y, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
+		CWidget(const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		CWidget(CBox *position);
 		virtual ~CWidget();
 

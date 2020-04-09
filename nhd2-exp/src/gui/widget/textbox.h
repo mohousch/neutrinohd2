@@ -130,8 +130,7 @@ class CTextBox : public CWidgetItem
 		void reSizeMainFrameHeight(int maxTextHeight);
 
 	public:
-		CTextBox();
-		CTextBox(const int x, const int y, const int dx, const int dy);
+		CTextBox(const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		CTextBox(CBox* position);
 
 		virtual ~CTextBox();

@@ -695,8 +695,10 @@ void EventList::paint(t_channel_id channel_id)
 	logo = frameBuffer->getLogoName(channel_id);
 
 	//listBox->setWidgetType(WIDGET_TYPE_CLASSIC);
-	listBox->setTitle(name.c_str(), logo.c_str(), true);
+	listBox->enableShrinkMenu();
+
 	listBox->enablePaintHead();
+	listBox->setTitle(name.c_str(), logo.c_str(), true);
 	listBox->enablePaintDate();
 	listBox->setHeaderButtons(HeadButtons, 2);
 
@@ -712,7 +714,7 @@ void EventList::paint(t_channel_id channel_id)
 
 	//
 	listBox->setSelected(selected);
-	listBox->paint(/*reinit*/);
+	listBox->paint();
 }
 
 int CEventListHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)

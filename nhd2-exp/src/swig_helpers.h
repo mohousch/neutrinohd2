@@ -23,37 +23,6 @@
 #include <driver/framebuffer.h>
 #include <driver/rcinput.h>
 
-/*
-#define RC0        	CRCInput::RC_0
-#define RC1        	CRCInput::RC_1
-#define RC2        	CRCInput::RC_2
-#define RC3        	CRCInput::RC_3
-#define RC4        	CRCInput::RC_4
-#define RC5        	CRCInput::RC_5
-#define RC6        	CRCInput::RC_6
-#define RC7        	CRCInput::RC_7
-#define RC8        	CRCInput::RC_8
-#define RC9        	CRCInput::RC_9
-#define RCRIGHT    	CRCInput::RC_right
-#define RCLEFT     	CRCInput::RC_left
-#define RCUP       	CRCInput::RC_up
-#define RCDOWN     	CRCInput::RC_down
-#define RCOK       	CRCInput::RC_ok
-#define RCMUTE     	CRCInput::RC_spkr
-#define RCSTANDBY  	CRCInput::RC_standby
-#define RCGREEN    	CRCInput::RC_green
-#define RCYELLOW   	CRCInput::RC_yellow
-#define RCRED      	CRCInput::RC_red
-#define RCBLUE     	CRCInput::RC_blue
-#define RCPLUS     	CRCInput::RC_plus
-#define RCMINUS    	CRCInput::RC_minus
-#define RCHELP     	CRCInput::RC_info
-#define RCDBOX     	CRCInput::RC_setup
-#define RCTEXT     	CRCInput::RC_text
-#define RCHOME     	CRCInput::RC_home
-#define RCPAGEUP	CRCInput::RC_page_up
-#define RCPAGEDOWN	CRCInput::RC_page_down
-*/
 
 class CSwigHelpers
 {

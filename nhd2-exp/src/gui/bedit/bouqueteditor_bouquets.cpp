@@ -122,6 +122,8 @@ void CBEBouquetWidget::paint()
 		listBox->addItem(item);
 	}
 
+	listBox->enableShrinkMenu();
+
 	listBox->setTitle(g_Locale->getText(LOCALE_BOUQUETLIST_HEAD));
 	listBox->enablePaintHead();
 	listBox->enablePaintDate();

@@ -179,10 +179,10 @@ void CListFrame::initVar(void)
 	m_nCurrentPage = 0;
 	m_nSelectedLine = 0;
 
-	m_cFrame.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - MIN_WINDOW_WIDTH) >>1);
-	m_cFrame.iWidth	= MIN_WINDOW_WIDTH;
-	m_cFrame.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - MIN_WINDOW_HEIGHT) >>1);
-	m_cFrame.iHeight = MIN_WINDOW_HEIGHT;
+	m_cFrame.iWidth	= MENU_WIDTH;
+	m_cFrame.iHeight = MENU_HEIGHT;
+	m_cFrame.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - m_cFrame.iWidth) >>1);
+	m_cFrame.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - m_cFrame.iHeight) >>1);
 
 	m_nMaxHeight = MAX_WINDOW_HEIGHT;
 	m_nMaxWidth = MAX_WINDOW_WIDTH;
