@@ -64,11 +64,11 @@ extern int FrontendCount;
 extern CFrontend * getFE(int index);
 
 bool have_s = false;
-bool have_c = true;
+bool have_c = false;
 bool have_t = false;
 
 // fake tuner (for testing without dvb device)
-bool fake_tuner = true;
+bool fake_tuner = false;
 
 extern void parseScanInputXml(fe_type_t fe_type);	// defined in zapit.cpp
 
