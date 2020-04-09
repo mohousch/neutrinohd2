@@ -102,7 +102,7 @@ class CWidget : public CMenuTarget
 		int getItemsCount()const{return items.size();};
 		virtual void clearItems(void){items.clear();};
 
-		void disableCenter(){enableCenter = false;};
+		void enableCenterPos(){enableCenter = true;};
 
 		void setTimeOut(int to = 0){timeout = to;};
 

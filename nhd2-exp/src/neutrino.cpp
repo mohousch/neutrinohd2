@@ -2667,6 +2667,15 @@ int CNeutrinoApp::run(int argc, char **argv)
 	// start assistant
 	if(loadSettingsErg) 
 	{
+		int tvmode = g_Zapit->getMode();
+
+		if (tvmode == CZapitClient::MODE_TV)
+			mode = NeutrinoMessages::mode_tv;
+		else if (tvmode == CZapitClient::MODE_RADIO)
+			mode = NeutrinoMessages::mode_radio;
+		else if (tvmode == CZapitClient::MODE_WEBTV)
+			mode = NeutrinoMessages::mode_webtv;
+
 		// startup pic
 		frameBuffer->loadBackgroundPic("start.jpg");	
 		frameBuffer->blit();

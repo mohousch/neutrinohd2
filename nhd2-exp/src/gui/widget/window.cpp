@@ -50,12 +50,16 @@ CWindow::CWindow(const int x, const int y, const int dx, const int dy)
 	cFrameBox.iWidth = dx;
 	cFrameBox.iHeight = dy;
 
+	centerPos = false;
+
 	init();
 }
 
 CWindow::CWindow(CBox* position)
 {
 	cFrameBox = *position;
+
+	centerPos = false;
 
 	init();
 }
@@ -82,6 +86,12 @@ void CWindow::init(void)
 	full_height = cFrameBox.iHeight;
 
 	itemType = WIDGET_ITEM_WINDOW;
+
+	if(centerPos)
+	{
+		cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth) >> 1 );
+		cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
+	}
 }
 
 void CWindow::saveScreen()

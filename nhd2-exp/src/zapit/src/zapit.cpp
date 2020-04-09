@@ -930,7 +930,7 @@ void loadZapitSettings()
 		printf("%s not found\n", ZAPIT_CONFIGFILE);
 
 	saveLastChannel = config.getBool("saveLastChannel", true);
-	lastChannelMode = config.getInt32("lastChannelMode", 1);
+	lastChannelMode = config.getInt32("lastChannelMode", TV_MODE);
 	live_channel_id = config.getInt64("lastChannel", 0) & 0xFFFFFFFFFFFFULL;
 	lastChannelRadio = config.getInt32("lastChannelRadio", 0);
 	lastChannelTV = config.getInt32("lastChannelTV", 0);

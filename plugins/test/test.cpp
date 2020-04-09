@@ -920,7 +920,6 @@ void CTestMenu::widget()
 	leftFrame = new CFrameBox(&leftBox);
 	leftFrame->setMode(FRAME_MODE_VERTICAL);
 
-	leftWidget->disableCenter();
 	leftWidget->setSelected(left_selected);
 //	leftWidget->enableShrinkMenu();
 
@@ -1204,6 +1203,7 @@ void CTestMenu::listBoxWidget()
 
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
 	rightWidget->enableShrinkMenu();
+	rightWidget->enableCenterPos();
 	rightWidget->setItemsPerPage(6,2);
 	rightWidget->setSelected(selected);
 	rightWidget->enablePaintHead();
@@ -1453,7 +1453,6 @@ void CTestMenu::test()
 
 	leftWidget = new ClistBox(&leftBox);
 
-	leftWidget->disableCenter();
 	leftWidget->setSelected(left_selected);
 	leftWidget->setOutFocus(false);
 	leftWidget->enableShrinkMenu();
@@ -2933,6 +2932,7 @@ void CTestMenu::testClistBox()
 	// mode
 	listBox->setWidgetType(WIDGET_TYPE_STANDARD);
 	listBox->setWidgetMode(MODE_LISTBOX);
+	listBox->enableCenterPos();
 
 	// head
 	listBox->setTitle("ClistBox(standard)", NEUTRINO_ICON_MOVIE);
@@ -3051,6 +3051,7 @@ void CTestMenu::testClistBox2()
 	// widgettype
 	listBox->setWidgetType(WIDGET_TYPE_CLASSIC);
 	listBox->setWidgetMode(MODE_LISTBOX);
+	listBox->enableCenterPos();
 
 	// head
 	listBox->setTitle("ClistBox(classic)", NEUTRINO_ICON_MOVIE);
@@ -3168,6 +3169,7 @@ void CTestMenu::testClistBox3()
 	// widgettype
 	listBox->setWidgetType(WIDGET_TYPE_EXTENDED);
 	listBox->setWidgetMode(MODE_LISTBOX);
+	listBox->enableCenterPos();
 
 	// head
 	listBox->setTitle("ClistBox(extended)", NEUTRINO_ICON_MOVIE);
@@ -3283,6 +3285,7 @@ void CTestMenu::testClistBox4()
 	listBox->setWidgetType(WIDGET_TYPE_FRAME);
 	listBox->setItemsPerPage(6,2);
 	listBox->setWidgetMode(MODE_LISTBOX);
+	listBox->enableCenterPos();
 
 	// head
 	listBox->setTitle("ClistBox(Frame)", NEUTRINO_ICON_MOVIE);
@@ -3400,6 +3403,7 @@ void CTestMenu::testClistBox5()
 	// mode
 	listBox->setWidgetType(WIDGET_TYPE_STANDARD);
 	listBox->setWidgetMode(MODE_MENU);
+	listBox->enableCenterPos();
 
 	//
 	listBox->addWidget(WIDGET_TYPE_CLASSIC);
@@ -3532,6 +3536,7 @@ void CTestMenu::testClistBox6()
 	// mode
 	listBox->setWidgetType(WIDGET_TYPE_STANDARD);
 	listBox->setWidgetMode(MODE_LISTBOX);
+	listBox->enableCenterPos();
 
 	//
 	listBox->addWidget(WIDGET_TYPE_CLASSIC);

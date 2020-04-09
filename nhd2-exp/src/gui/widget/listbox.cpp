@@ -1639,7 +1639,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	iconfile = "";
 
 	logo = false;
-	enableCenter = true;
+	enableCenter = false;
 	outFocus = false;
 	shrinkMenu = false;
 
@@ -1712,7 +1712,7 @@ ClistBox::ClistBox(CBox* position)
 	iconfile = "";
 
 	logo = false;
-	enableCenter = true;
+	enableCenter = false;
 	outFocus = false;
 	shrinkMenu = false;
 

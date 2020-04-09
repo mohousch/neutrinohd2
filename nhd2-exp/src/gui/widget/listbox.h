@@ -612,7 +612,7 @@ class ClistBox : public CWidgetItem
 		int getFootInfoHeight(){return footInfoHeight;};
 		int getListMaxShow(void) const {return listmaxshow;};
 
-		void disableCenter(){enableCenter = false;};
+		void enableCenterPos(){enableCenter = true;};
 		void setOutFocus(bool focus){outFocus = focus;};
 		void enableShrinkMenu(){shrinkMenu = true;};
 

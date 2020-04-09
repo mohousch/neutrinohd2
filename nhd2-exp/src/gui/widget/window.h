@@ -55,6 +55,8 @@ class CWindow : public CWidgetItem
 		void saveScreen();
 		void restoreScreen();
 
+		bool centerPos;
+
 	public:
 		CWindow(const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		CWindow(CBox* position);
@@ -68,6 +70,8 @@ class CWindow : public CWidgetItem
 		void setGradient(int grad){gradient = grad;};
 		void enableShadow(void){enableshadow = true;};
 		void enableSaveScreen(void){savescreen = true;};
+
+		void enableCenterPos(){centerPos = true; init();};
 
 		void paint(void);
 		void hide(void);

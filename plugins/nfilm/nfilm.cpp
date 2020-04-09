@@ -442,7 +442,6 @@ void CNFilm::showMenu()
 
 	leftWidget = new ClistBox(&leftBox);
 
-	leftWidget->disableCenter();
 	leftWidget->setSelected(left_selected);
 	leftWidget->enableShrinkMenu();
 	leftWidget->setBackgroundColor(/*make16color(0xA0B0A0)*/COL_DARK_BLUE);

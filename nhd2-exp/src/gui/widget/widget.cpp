@@ -48,7 +48,7 @@ CWidget::CWidget(const int x, const int y, const int dx, const int dy)
 	savescreen = false;
 	background = NULL;
 
-	enableCenter = true;
+	enableCenter = false;
 	paintMainFrame = false;
 
 	timeout = 0;
@@ -66,7 +66,7 @@ CWidget::CWidget(CBox *position)
 	savescreen = false;
 	background = NULL;
 
-	enableCenter = true;
+	enableCenter = false;
 	paintMainFrame = false;
 
 	timeout = 0;

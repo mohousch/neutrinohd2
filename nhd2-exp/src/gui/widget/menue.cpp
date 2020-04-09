@@ -365,6 +365,7 @@ void ClistBoxWidget::initFrames()
 		full_height = height + cFrameFootInfo.iHeight + interFrame;
 		
 		// position
+		// default centered
 		x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - full_width ) >> 1 );
 		y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
 
