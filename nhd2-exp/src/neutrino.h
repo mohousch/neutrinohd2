@@ -153,10 +153,12 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		CChannelList* TVchannelList;
 		CChannelList* RADIOchannelList;
 		CChannelList* webTVchannelList;
+
 		CChannelList* channelList;
 
 		//
 		void channelsInit(bool bOnly = false);
+		void webtvChannelsInit(void);
 		
 		CColorSetupNotifier *colorSetupNotifier;
 

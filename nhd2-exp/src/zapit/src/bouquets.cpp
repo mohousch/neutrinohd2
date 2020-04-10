@@ -508,272 +508,238 @@ void CBouquetManager::makeBouquetfromCurrentservices(const _xmlNodePtr root)
 			}
 			transponder = transponder->xmlNextNode;
 		}
+
 		provider = provider->xmlNextNode;
 	}
 }
 
 void CBouquetManager::loadWebTVBouquet(void)
 {
-	CFileFilter fileFilter;
+#if 0
+	std::string filename = g_settings.webtv_userBouquet;
 	
-	fileFilter.addFilter("xml");
-	fileFilter.addFilter("tv");
-	fileFilter.addFilter("m3u");
+	int cnt = 0;
 
-	CFileList filelist;
+	dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet: parsing %s\n", filename.c_str());
 
-	std::string Path_local = CONFIGDIR "/webtv";
-
-	// read list
-	std::string filename;
-	std::string name;
-	int cnt = 1;
-
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		for (unsigned int i = 0; i < filelist.size(); i++)
-		{
-			name = filelist[i].getFileName();
-			filename = filelist[i].getName();
-
-			dprintf(DEBUG_NORMAL, "CWebTV::loadWebTVBouquet: parsing %s\n", filename.c_str());
-
-			_xmlDocPtr parser = NULL;
+	_xmlDocPtr parser = NULL;
 	
-			// check for extension
-			bool iptv = false;
-			bool webtv = false;
-			bool playlist = false;
+	// check for extension
+	bool iptv = false;
+	bool webtv = false;
+	bool playlist = false;
 					
-			std::string extension = getFileExt(filename);
+	std::string extension = getFileExt(filename);
 						
-			if( strcasecmp("tv", extension.c_str()) == 0)
-				iptv = true;
-			else if( strcasecmp("m3u", extension.c_str()) == 0)
-				playlist = true;
-			if( strcasecmp("xml", extension.c_str()) == 0)
-				webtv = true;
+	if( strcasecmp("tv", extension.c_str()) == 0)
+		iptv = true;
+	else if( strcasecmp("m3u", extension.c_str()) == 0)
+		playlist = true;
+	if( strcasecmp("xml", extension.c_str()) == 0)
+		webtv = true;
 
-			removeExtension(name);
+	//removeExtension(name);
 
-			CZapitBouquet *newBouquet = addBouquet(name, true, false, true);
-			//CZapitBouquet *newBouquet = addBouquetIfNotExist(name);
-			newBouquet->bWebTV = true;
-			newBouquet->bUser = true;
+	//CZapitBouquet *newBouquet = addBouquet(name, true, false, true);
+	//CZapitBouquet *newBouquet = addBouquetIfNotExist(name);
+	//newBouquet->bWebTV = true;
+	//newBouquet->bUser = true;
 
-			//newBouquet->webtvChannels.clear();
+	// remove from allchan
+
+	// clear webtvChannels
+	//newBouquet->webtvChannels.clear();
 	
-			if(iptv)
-			{
-				FILE * f = fopen(filename.c_str(), "r");
+	if(iptv)
+	{
+		FILE * f = fopen(filename.c_str(), "r");
 
-				std::string title;
-				std::string URL;
-				std::string url;
-				std::string description;
-				t_channel_id id = 0;
+		std::string title;
+		std::string URL;
+		std::string url;
+		std::string description;
+		t_channel_id id = 0;
 		
-				if(f != NULL)
+		if(f != NULL)
+		{
+			while(true)
+			{
+				char line[1024];
+				if (!fgets(line, 1024, f))
+					break;
+				
+				size_t len = strlen(line);
+				if (len < 2)
+					// Lines with less than one char aren't meaningful
+					continue;
+				
+				// strip newline
+				line[--len] = 0;
+				
+				// strip carriage return (when found)
+				if (line[len - 1] == '\r')
+					line[len - 1 ] = 0;
+				
+				if (strncmp(line, "#SERVICE 4097:0:1:0:0:0:0:0:0:0:", 32) == 0)
+					url = line + 32;
+				else if (strncmp(line, "#DESCRIPTION", 12) == 0)
 				{
-					while(true)
-					{
-						char line[1024];
-						if (!fgets(line, 1024, f))
-							break;
-				
-						size_t len = strlen(line);
-						if (len < 2)
-							// Lines with less than one char aren't meaningful
-							continue;
-				
-						// strip newline
-						line[--len] = 0;
-				
-						// strip carriage return (when found)
-						if (line[len - 1] == '\r')
-							line[len - 1 ] = 0;
-				
-						if (strncmp(line, "#SERVICE 4097:0:1:0:0:0:0:0:0:0:", 32) == 0)
-							url = line + 32;
-						else if (strncmp(line, "#DESCRIPTION", 12) == 0)
-						{
-							int offs = line[12] == ':' ? 14 : 13;
+					int offs = line[12] == ':' ? 14 : 13;
 			
-							title = line + offs;
+					title = line + offs;
 				
-							description = "stream";
+					description = "stream";
 
-							if(id == 0)
-								 id = create_channel_id64(0, 0, 0, 0, 0, url.c_str());
+					if(id == 0)
+						id = create_channel_id64(0, 0, 0, 0, 0, url.c_str());
 					
-							CZapitChannel * chan = new CZapitChannel(title, id, url, description);
+					CZapitChannel * chan = new CZapitChannel(title, id, url, description);
 
-							if (chan != NULL) 
-							{
-								//testing
-								//printf("cnt:%d\n", cnt);
-								//chan->setNumber(cnt);
-								//chan->setServiceType(ST_WEBTV);
-								//chan->isWebTV = true;
+					if (chan != NULL) 
+					{
+						//chan->setNumber(cnt);
+						//chan->setServiceType(ST_WEBTV);
+						//chan->isWebTV = true;
 
-								//newBouquet->webtvChannels.push_back(chan);
+						//newBouquet->addService(chan);
 
-								newBouquet->addService(chan);
+						//
+						allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 
-								//
-								allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
-
-							}
-
-							cnt++;
-						}
 					}
-			
-					fclose(f);
+
+					cnt++;
 				}
 			}
-			else if(webtv)
-			{
-				if (parser != NULL)
-				{
-					xmlFreeDoc(parser);
-					parser = NULL;
-				}
+			
+			fclose(f);
+		}
+	}
+	else if(webtv)
+	{
+		if (parser != NULL)
+		{
+			xmlFreeDoc(parser);
+			parser = NULL;
+		}
 
-				parser = parseXmlFile(filename.c_str());
+		parser = parseXmlFile(filename.c_str());
 		
-				if (parser) 
+		if (parser) 
+		{
+			_xmlNodePtr l0 = NULL;
+			_xmlNodePtr l1 = NULL;
+			l0 = xmlDocGetRootElement(parser);
+			l1 = l0->xmlChildrenNode;
+			
+			neutrino_msg_t      msg;
+			neutrino_msg_data_t data;
+			
+			g_RCInput->getMsg(&msg, &data, 0);
+			
+			if (l1) 
+			{
+				while ( ((xmlGetNextOccurence(l1, "webtv")) || (xmlGetNextOccurence(l1, "station"))) && msg != RC_home) 
 				{
-					_xmlNodePtr l0 = NULL;
-					_xmlNodePtr l1 = NULL;
-					l0 = xmlDocGetRootElement(parser);
-					l1 = l0->xmlChildrenNode;
-			
-					neutrino_msg_t      msg;
-					neutrino_msg_data_t data;
-			
+					const char * title;
+					const char * url;
+					const char * description;
+					t_channel_id id = 0;
+					
+					// title
+					if(xmlGetNextOccurence(l1, "webtv"))
+					{
+						title = xmlGetAttribute(l1, (const char *)"title");
+						url = xmlGetAttribute(l1, (const char *)"url");
+						description = xmlGetAttribute(l1, (const char *)"description");
+						const char *epgid = xmlGetAttribute(l1, "epgid");
+
+						if (epgid)
+							id = strtoull(epgid, NULL, 16);
+
+						if(id == 0)
+							id = create_channel_id64(0, 0, 0, 0, 0, url);
+						
+						CZapitChannel * chan = new CZapitChannel(title, id, url,  description);
+
+
+						if (chan != NULL) 
+						{
+							//chan->setNumber(cnt);
+							//chan->setServiceType(ST_WEBTV);
+
+							//newBouquet->addService(chan);
+
+							//
+							allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+						}
+					}
+
+					l1 = l1->xmlNextNode;
 					g_RCInput->getMsg(&msg, &data, 0);
-			
-					if (l1) 
-					{
-						while ( ((xmlGetNextOccurence(l1, "webtv")) || (xmlGetNextOccurence(l1, "station"))) && msg != RC_home) 
-						{
-							const char * title;
-							const char * url;
-							const char * description;
-							t_channel_id id = 0;
-					
-							// title
-							if(xmlGetNextOccurence(l1, "webtv"))
-							{
-								title = xmlGetAttribute(l1, (const char *)"title");
-								url = xmlGetAttribute(l1, (const char *)"url");
-								description = xmlGetAttribute(l1, (const char *)"description");
-								const char *epgid = xmlGetAttribute(l1, "epgid");
-
-								if (epgid)
-									id = strtoull(epgid, NULL, 16);
-
-								if(id == 0)
-									id = create_channel_id64(0, 0, 0, 0, 0, url);
-						
-								CZapitChannel * chan = new CZapitChannel(title, id, url,  description);
-
-
-								if (chan != NULL) 
-								{
-									//chan->setNumber(cnt);
-									//chan->setServiceType(ST_WEBTV);
-									//chan->isWebTV = true;
-								
-									//newBouquet->webtvChannels.push_back(chan);
-
-									newBouquet->addService(chan);
-
-									//
-									allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
-								}
-							}
-
-							l1 = l1->xmlNextNode;
-							g_RCInput->getMsg(&msg, &data, 0);
-							cnt++;
-						}
-					}
+					cnt++;
 				}
+			}
+		}
 		
-				xmlFreeDoc(parser);
-				parser = NULL;
-			}
-			else if(playlist)
-			{
-				std::ifstream infile;
-				char cLine[1024];
-				char name[1024] = { 0 };
-				int duration;
-				std::string description;
-				t_channel_id id = 0;
+		xmlFreeDoc(parser);
+		parser = NULL;
+	}
+	else if(playlist)
+	{
+		std::ifstream infile;
+		char cLine[1024];
+		char name[1024] = { 0 };
+		int duration;
+		std::string description;
+		t_channel_id id = 0;
 				
-				infile.open(filename.c_str(), std::ifstream::in);
+		infile.open(filename.c_str(), std::ifstream::in);
 
-				while (infile.good())
+		while (infile.good())
+		{
+			infile.getline(cLine, sizeof(cLine));
+					
+			// remove CR
+			if(cLine[strlen(cLine) - 1] == '\r')
+				cLine[strlen(cLine) - 1] = 0;
+					
+			sscanf(cLine, "#EXTINF:%d,%[^\n]\n", &duration, name);
+					
+			if(strlen(cLine) > 0 && cLine[0] != '#')
+			{
+				char *url = NULL;
+				if ((url = strstr(cLine, "http://")) || (url = strstr(cLine, "rtmp://")) || (url = strstr(cLine, "rtsp://")) || (url = strstr(cLine, "mmsh://")) ) 
 				{
-					infile.getline(cLine, sizeof(cLine));
-					
-					// remove CR
-					if(cLine[strlen(cLine) - 1] == '\r')
-						cLine[strlen(cLine) - 1] = 0;
-					
-					sscanf(cLine, "#EXTINF:%d,%[^\n]\n", &duration, name);
-					
-					if(strlen(cLine) > 0 && cLine[0] != '#')
+					if (url != NULL) 
 					{
-						char *url = NULL;
-						if ((url = strstr(cLine, "http://")) || (url = strstr(cLine, "rtmp://")) || (url = strstr(cLine, "rtsp://")) || (url = strstr(cLine, "mmsh://")) ) 
-						{
-							if (url != NULL) 
-							{
-								description = "stream";
+						description = "stream";
 
-								if(id == 0)
-									id = create_channel_id64(0, 0, 0, 0, 0, url);
+						if(id == 0)
+							id = create_channel_id64(0, 0, 0, 0, 0, url);
 					
-								CZapitChannel * chan = new CZapitChannel(name, id, url,  description);
+						CZapitChannel * chan = new CZapitChannel(name, id, url,  description);
 
-								if (chan != NULL) 
-								{
-									//chan->setNumber(cnt);
-									//chan->setServiceType(ST_WEBTV);
-									//chan->isWebTV = true;
+						if (chan != NULL) 
+						{
+							//chan->setNumber(cnt);
+							//chan->setServiceType(ST_WEBTV);
 
-									//newBouquet->webtvChannels.push_back(chan);
-
-									newBouquet->addService(chan);
+							//newBouquet->addService(chan);
 			
-									//
-									allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, url, description)));
-								}
-
-								cnt++;
-							}
+							//
+							allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, url, description)));
 						}
+
+						cnt++;
 					}
 				}
-
-				infile.close();
 			}
 		}
-	}
 
-	// renum
-	int k = 1;
-	for (tallchans::iterator it = allchans.begin(); it != allchans.end(); it++)
-	{
-		if(it->second.getServiceType() == ST_WEBTV)
-		{
-			it->second.setNumber(k++);
-		}
+		infile.close();
 	}
+#endif
 }
 
 void CBouquetManager::loadBouquets(bool loadCurrentBouquet)
@@ -807,8 +773,6 @@ void CBouquetManager::loadBouquets(bool loadCurrentBouquet)
 	loadWebTVBouquet();
 
 	renumServices();
-
-	//loadWebTVBouquet();
 }
 
 void CBouquetManager::makeRemainingChannelsBouquet(void)
@@ -850,6 +814,7 @@ void CBouquetManager::makeRemainingChannelsBouquet(void)
 		}
 
 		// webtvChannels
+/*
 		for (vector<CZapitChannel*>::iterator jt = (*it)->webtvChannels.begin(); jt != (*it)->webtvChannels.end(); jt++) 
 		{
 			if(!(*jt)->number) 
@@ -861,6 +826,7 @@ void CBouquetManager::makeRemainingChannelsBouquet(void)
 			//if(!(*jt)->pname && !(*it)->bUser) 
 			//	(*jt)->pname = (char *) (*it)->Name.c_str();
 		}
+*/
 	}
 
 	if(!tomake)

@@ -44,6 +44,7 @@ int loadServices(bool only_current);
 void SaveServices(bool tocopy=false);
 void SaveMotorPositions();
 int loadMotorPositions(void);
+void loadWebTVBouquet(void);
 
 struct transponder
 {

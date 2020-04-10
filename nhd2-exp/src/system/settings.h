@@ -327,8 +327,7 @@ struct SNeutrinoSettings
 	int key_screenshot;
 	
 	// webtv
-	//std::string webtv_userBouquet;
-	//unsigned int webtv_lastselectedchannel;
+	std::string webtv_userBouquet;
 
 	// USERMENU
         typedef enum
