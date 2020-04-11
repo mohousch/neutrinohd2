@@ -260,6 +260,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 	menu->enableWidgetChange();
 	menu->enablePaintFootInfo();
 	menu->enablePaintDate();
+	menu->enableSaveScreen();
 
 	// go through any postition number
 	for(int pos = 0; pos < SNeutrinoSettings::ITEM_MAX ; pos++) 

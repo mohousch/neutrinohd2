@@ -177,6 +177,7 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 
 	AVPIDSelector->setMode(MODE_SETUP);
 	AVPIDSelector->enableShrinkMenu();
+	AVPIDSelector->enableSaveScreen();
 	
 	CAVPIDChangeExec AVPIDChanger;
 	if(playback)

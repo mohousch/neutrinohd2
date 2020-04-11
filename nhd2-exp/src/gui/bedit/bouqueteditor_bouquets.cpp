@@ -100,26 +100,29 @@ void CBEBouquetWidget::paint()
 
 	for (unsigned int count = 0; count < Bouquets->size(); count++)
 	{
-		item = new ClistBoxItem((*Bouquets)[count]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[count]->Name.c_str());
+		if (!(*Bouquets)[count]->bWebTV)
+		{
+			item = new ClistBoxItem((*Bouquets)[count]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[count]->Name.c_str());
 
-		if(state == beMoving && count == selected)
-			item->setIconName(NEUTRINO_ICON_BUTTON_YELLOW);
+			if(state == beMoving && count == selected)
+				item->setIconName(NEUTRINO_ICON_BUTTON_YELLOW);
 
-		// locked
-		std::string locked_icon = "";
-		if((*Bouquets)[count]->bLocked)
-			locked_icon = NEUTRINO_ICON_LOCK;
+			// locked
+			std::string locked_icon = "";
+			if((*Bouquets)[count]->bLocked)
+				locked_icon = NEUTRINO_ICON_LOCK;
 
-		item->setIcon1(locked_icon.c_str());
+			item->setIcon1(locked_icon.c_str());
 
-		// hidden
-		std::string hiden_icon = "";
-		if((*Bouquets)[count]->bHidden)
-			hiden_icon = NEUTRINO_ICON_HIDDEN;
+			// hidden
+			std::string hiden_icon = "";
+			if((*Bouquets)[count]->bHidden)
+				hiden_icon = NEUTRINO_ICON_HIDDEN;
 
-		item->setIcon2(hiden_icon.c_str()); 
+			item->setIcon2(hiden_icon.c_str()); 
 
-		listBox->addItem(item);
+			listBox->addItem(item);
+		}
 	}
 
 	listBox->enableShrinkMenu();

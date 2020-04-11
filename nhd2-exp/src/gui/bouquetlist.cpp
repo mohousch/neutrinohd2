@@ -345,6 +345,12 @@ int CBouquetList::show(bool bShowChannelList)
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);	
 
 	//
+	if(listBox)
+	{
+		delete listBox;
+		listBox = NULL;
+	}
+
 	listBox = new ClistBox(&cFrameBox);
 
 	paint();
@@ -374,10 +380,7 @@ int CBouquetList::show(bool bShowChannelList)
 		}
 		else if(msg == RC_red || msg == RC_favorites) 
 		{
-			if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-				 CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_PROV, mode);
-			else
-				CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_FAV, mode);
+			CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_FAV, mode);
 
 			hide();
 			return -3;
@@ -390,20 +393,14 @@ int CBouquetList::show(bool bShowChannelList)
 		} 
 		else if(msg == RC_yellow || msg == RC_sat)
 		{
-			if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-				 CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_PROV, mode);
-			else
-				CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_SAT, mode);
+			CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_SAT, mode);
 
 			hide();
 			return -3;
 		} 
 		else if(msg == RC_blue) 
 		{
-			if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-				 CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_PROV, mode);
-			else
-				CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, mode);
+			CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, mode);
 
 			hide();
 			return -3;
@@ -492,7 +489,8 @@ int CBouquetList::show(bool bShowChannelList)
 
 void CBouquetList::hide()
 {
-	listBox->hide();
+	if(listBox)
+		listBox->hide();
 }
 
 const struct button_label HButton = {NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL };

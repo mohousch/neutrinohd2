@@ -879,7 +879,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	
 	//crypticon on channellist
 	g_settings.channellist_ca = configfile.getInt32("channellist_ca", 1);
-	g_settings.channellist_extended	= configfile.getBool("channellist_extended", true);
 	
 	// record screenshot
 	g_settings.recording_screenshot = configfile.getInt32("recording_screenshot", 1);
@@ -1280,9 +1279,8 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	//crypticon channellist
 	configfile.setInt32("channellist_ca", g_settings.channellist_ca);
 	configfile.setInt32("make_hd_list", g_settings.make_hd_list);
-	configfile.setBool("channellist_extended", g_settings.channellist_extended);
-	//
 
+	//
 	configfile.setString("timezone", g_settings.timezone);
 
 	// epg
@@ -1483,11 +1481,13 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 
 	webTVchannelList = new CChannelList(g_Locale->getText(LOCALE_CHANNELLIST_HEAD));
 	webTVBouquetList = new CBouquetList("WebTV");
-	//webTVBouquetList->orgChannelList = webTVchannelList;
+
+	webTVBouquetList->orgChannelList = webTVchannelList;
+
 	std::string name = std::string(rindex(g_settings.webtv_userBouquet.c_str(), '/') + 1);
 	removeExtension(name);
 
-	CBouquet *webtvBouquet = new CBouquet(0, name.c_str(), 0);
+	CBouquet *webtvBouquet = new CBouquet(0, /*name.c_str()*/"WebTV-Test", 0);
 
 	//
 	uint32_t i;
@@ -1523,31 +1523,46 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 		else if(it->second.getServiceType() == ST_WEBTV)
 		{
 			it->second.number = webtvi + 1;
+			//webTVchannelList->putChannel(&(it->second)); // if remaing in bouquet.cpp succed
+			Channels.push_back(&(it->second));
+
+			webtvi++;
 
 			if(it->second.isHD()) 
 			{
 				webtvhi++;
 			}
-
-			Channels.push_back(&(it->second));
-
-			webtvi++;
 		}
 	}
-
+	
+	//testing
+#if 0
+	for (i = 0; i < g_bouquetManager->Bouquets.size(); i++) 
+	{
+		if (g_bouquetManager->Bouquets[i]->bWebTV)
+		{
+			// webtvChannels
+			for (int j = 0; j < g_bouquetManager->Bouquets[i]->webtvChannels.size(); j++)
+			{
+				webTVchannelList->putChannel(g_bouquetManager->Bouquets[i]->webtvChannels[j]);
+			}
+		}
+	}
+#endif
 	webTVchannelList->setSize(Channels.size());
 	webTVBouquetList->orgChannelList = webTVchannelList;
 
+#if 1
 	for(int count = 0; count < (int)Channels.size(); count++)
 	{
 		webtvBouquet->channelList->addChannel(Channels[count]);
 		webTVchannelList->putChannel(Channels[count]);
 	}
+#endif
 
+#if 1
 	webTVBouquetList->Bouquets.push_back(webtvBouquet);
-
-	//testing
-	printf("CNeutrinoApp::channelsInit1: TVchannellist.size:%d Radiochannellist.size:%d WEBTVchannellist.size:%d\n", (int)TVchannelList->getSize(), (int)RADIOchannelList->getSize(), (int)webTVchannelList->getSize());
+#endif
 	
 	if(g_settings.make_hd_list)
 		hdBouquet->channelList->SortSat();
@@ -1663,11 +1678,12 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit: got %d RADIO bouquets\n", bnum);
 
 	// webtv bouquets
-/*
+#if 1
 	bnum = 0;
 	for (i = 0; i < g_bouquetManager->Bouquets.size(); i++) 
 	{
-		if (!g_bouquetManager->Bouquets[i]->bHidden && !g_bouquetManager->Bouquets[i]->webtvChannels.empty())
+		//if (!g_bouquetManager->Bouquets[i]->bHidden && !g_bouquetManager->Bouquets[i]->webtvChannels.empty())
+		if (g_bouquetManager->Bouquets[i]->bWebTV && !g_bouquetManager->Bouquets[i]->webtvChannels.empty())
 		{
 			CBouquet *ltmp = webTVBouquetList->addBouquet(g_bouquetManager->Bouquets[i]);
 
@@ -1676,18 +1692,18 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 
 			for(int j = 0; j < (int) channels->size(); j++) 
 			{
-				ltmp->channelList->addChannel((*channels)[j], j + 1);
+				ltmp->channelList->addChannel((*channels)[j]);
 			}
 
 			bnum++;
 		}
 	}
-*/
 
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit: got %d WEBTV bouquets\n", bnum);
+#endif
 
 	//testing
-	printf("CNeutrinoApp::channelsInit2: TVchannellist.size:%d Radiochannellist.size:%d WEBTVchannellist.size:%d\n", (int)TVchannelList->getSize(), (int)RADIOchannelList->getSize(), (int)webTVchannelList->getSize());
+	printf("CNeutrinoApp::channelsInit: TVchannellist.size:%d Radiochannellist.size:%d WEBTVchannellist.size:%d\n", (int)TVchannelList->getSize(), (int)RADIOchannelList->getSize(), (int)webTVchannelList->getSize());
 
 	//
 	SetChannelMode( g_settings.channel_mode, mode);
@@ -3180,6 +3196,7 @@ void CNeutrinoApp::RealRun(void)
 
 				redMenu.setMode(MODE_MENU);
 				redMenu.enableShrinkMenu();
+				redMenu.enableSaveScreen();
 
 				// intros
 				redMenu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));

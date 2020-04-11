@@ -236,7 +236,7 @@ void CChannelList::updateEvents(void)
 			{
 				for ( CChannelEventList::iterator e = pevents.begin(); e != pevents.end(); ++e )
 				{
-					if ((chanlist[count]->channel_id&0xFFFFFFFFFFFFULL) == e->channelID&0xFFFFFFFFFFFFULL)//FIXME: get_channel_id()
+					if ((chanlist[count]->channel_id&0xFFFFFFFFFFFFULL) == (e->channelID&0xFFFFFFFFFFFFULL))//FIXME: get_channel_id()
 					{
 						chanlist[count]->currentEvent= *e;
 
@@ -492,6 +492,7 @@ int CChannelList::exec()
 
 	displayNext = false; // always start with current events
 	
+	// show list
 	int nNewChannel = show();
 
 	dprintf(DEBUG_NORMAL, "CChannelList::exec: chanlist.size:%d\n", (int)chanlist.size());
@@ -525,6 +526,12 @@ int CChannelList::show()
 	updateEvents();
 
 	//
+	if(listBox)
+	{
+		delete listBox;
+		listBox = NULL;
+	}
+
 	listBox = new ClistBox(&cFrameBox);
 
 	paint();
@@ -838,15 +845,21 @@ int CChannelList::show()
 	// bouquets mode
 	if (bShowBouquetList)
 	{
+#if 1
 		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
 		{
 			webTVBouquets();
+
+			//res = CNeutrinoApp::getInstance()->webTVchannelList->exec();
+			//res = -3;
 		}
 		else
+#endif
 		{
 			res = bouquetList->exec(true);
-			printf("CChannelList:: bouquetList->exec res %d\n", res);
 		}
+
+		printf("CChannelList:: bouquetList->exec res %d\n", res);
 	}
 	
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
@@ -868,7 +881,8 @@ void CChannelList::hide()
 {
 	dprintf(DEBUG_NORMAL, "CChannelList::hide\n");
 
-	listBox->hide();
+	if(listBox)
+		listBox->hide();
 }
 
 bool CChannelList::showInfo(int pos, int epgpos)
@@ -1667,7 +1681,7 @@ int CChannelList::getSelectedChannelIndex() const
 //
 void CChannelList::webTVBouquets(void)
 {
-	dprintf(DEBUG_NORMAL, "CChannelList::Bouquets\n");
+	dprintf(DEBUG_NORMAL, "CChannelList::webTVBouquets\n");
 
 	CFileFilter fileFilter;
 	
@@ -1680,12 +1694,10 @@ void CChannelList::webTVBouquets(void)
 	ClistBoxWidget m("WebTV", NEUTRINO_ICON_WEBTV_SMALL, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 18), (frameBuffer->getScreenHeight() / 20)));
 	m.enableSaveScreen();
 
-	m.setMode(MODE_MENU);
-	//m.enableShrinkMenu();
+	m.setMode(MODE_LISTBOX);
 	m.enablePaintDate();
 
 	int select = -1;
-	//CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 	int count = 0;
 	static int old_select = 0;
 
@@ -1702,7 +1714,7 @@ void CChannelList::webTVBouquets(void)
 
 			removeExtension(bTitle);
 
-			m.addItem(new CMenuForwarder(bTitle.c_str(), true, NULL, /*selector*/NULL, to_string(count).c_str()), old_select == count);
+			m.addItem(new CMenuForwarder(bTitle.c_str(), true, NULL, NULL, to_string(count).c_str()), old_select == count);
 
 			count++;
 		}
@@ -1710,10 +1722,9 @@ void CChannelList::webTVBouquets(void)
 
 	m.exec(NULL, "");
 	select = m.getSelected();
-	//delete selector;
 
 	// select
-	if(select >= 0)
+	if(select > -1)
 	{
 		old_select = select;
 

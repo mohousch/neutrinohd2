@@ -449,7 +449,7 @@ static void addEPGFilter(t_original_network_id onid, t_transport_stream_id tsid,
 {
 	if (!checkEPGFilter(onid, tsid, sid))
 	{
-		dprintf(DEBUG_DEBUG, "Add EPGFilter for onid=\"%04x\" tsid=\"%04x\" service_id=\"%04x\"\n", onid, tsid, sid);
+		dprintf(DEBUG_DEBUG, "[sectionsd] Add EPGFilter for onid=\"%04x\" tsid=\"%04x\" service_id=\"%04x\"\n", onid, tsid, sid);
 
 		EPGFilter *node = new EPGFilter;
 		node->onid = onid;
@@ -470,7 +470,7 @@ static void addBlacklist(t_original_network_id onid, t_transport_stream_id tsid,
 		);
 	if (!checkBlacklist(channel_id))
 	{
-		dprintf(DEBUG_DEBUG, "Add Channel Blacklist for channel 0x%012llx, mask 0x%012llx\n", channel_id, mask);
+		dprintf(DEBUG_DEBUG, "[sectionsd] Add Channel Blacklist for channel 0x%012llx, mask 0x%012llx\n", channel_id, mask);
 
 		ChannelBlacklist *node = new ChannelBlacklist;
 		node->chan = channel_id;
@@ -492,7 +492,7 @@ static void addNoDVBTimelist(t_original_network_id onid, t_transport_stream_id t
 
 	if (!checkNoDVBTimelist(channel_id))
 	{
-		dprintf(DEBUG_DEBUG, "Add channel 0x%012llx, mask 0x%012llx to NoDVBTimelist\n", channel_id, mask);
+		dprintf(DEBUG_DEBUG, "[sectionsd] Add channel 0x%012llx, mask 0x%012llx to NoDVBTimelist\n", channel_id, mask);
 		ChannelNoDVBTimelist *node = new ChannelNoDVBTimelist;
 		node->chan = channel_id;
 		node->mask = mask;
@@ -586,21 +586,21 @@ static bool deleteEvent(const event_id_t uniqueKey)
 					messaging_got_CN |= 0x01;
 					if (myNextEvent && (*myNextEvent).uniqueKey() == evt.uniqueKey()) 
 					{
-						dprintf(DEBUG_DEBUG, "addevent-cn: removing next-event\n");
+						dprintf(DEBUG_DEBUG, "[sectionsd] addevent-cn: removing next-event\n");
 						/* next got "promoted" to current => trigger re-read */
 						delete myNextEvent;
 						myNextEvent = NULL;
 						messaging_got_CN &= 0x01;
 					}
 					unlockMessaging();
-					dprintf(DEBUG_DEBUG, "addevent-cn: added running (%d) event 0x%04x '%s'\n", evt.runningStatus(), evt.eventID, evt.getName().c_str());
+					dprintf(DEBUG_DEBUG, "[sectionsd] addevent-cn: added running (%d) event 0x%04x '%s'\n", evt.runningStatus(), evt.eventID, evt.getName().c_str());
 				} 
 				else 
 				{
 					writeLockMessaging();
 					messaging_got_CN |= 0x01;
 					unlockMessaging();
-					dprintf(DEBUG_DEBUG, "addevent-cn: not add runn. (%d) event 0x%04x '%s'\n", evt.runningStatus(), evt.eventID, evt.getName().c_str());
+					dprintf(DEBUG_DEBUG, "[sectionsd] addevent-cn: not add runn. (%d) event 0x%04x '%s'\n", evt.runningStatus(), evt.eventID, evt.getName().c_str());
 				}
 			} 
 			else 
@@ -616,11 +616,11 @@ static bool deleteEvent(const event_id_t uniqueKey)
 					messaging_got_CN |= 0x02;
 					unlockMessaging();
 
-					dprintf(DEBUG_DEBUG, "addevent-cn: added next    (%d) event 0x%04x '%s'\n", evt.runningStatus(), evt.eventID, evt.getName().c_str());
+					dprintf(DEBUG_DEBUG, "[sectionsd] addevent-cn: added next    (%d) event 0x%04x '%s'\n", evt.runningStatus(), evt.eventID, evt.getName().c_str());
 				} 
 				else 
 				{
-					dprintf(DEBUG_DEBUG, "addevent-cn: not added next(%d) event 0x%04x '%s'\n", evt.runningStatus(), evt.eventID, evt.getName().c_str());
+					dprintf(DEBUG_DEBUG, "[sectionsd] addevent-cn: not added next(%d) event 0x%04x '%s'\n", evt.runningStatus(), evt.eventID, evt.getName().c_str());
 
 					writeLockMessaging();
 					messaging_got_CN |= 0x02;
@@ -642,12 +642,12 @@ static bool deleteEvent(const event_id_t uniqueKey)
 	{
 		/* if the new event has a lower (== more recent) table ID, replace the old one */
 		already_exists = false;
-		dprintf(DEBUG_DEBUG, "replacing event %016llx:%02x with %04x:%02x '%.40s'\n", si->second->uniqueKey(), si->second->table_id, evt.eventID, evt.table_id, evt.getName().c_str());
+		dprintf(DEBUG_DEBUG, "[sectionsd] replacing event %016llx:%02x with %04x:%02x '%.40s'\n", si->second->uniqueKey(), si->second->table_id, evt.eventID, evt.table_id, evt.getName().c_str());
 	}
 	else if (already_exists && ( (evt.table_id == 0x51 || evt.table_id == 0x50 || evt.table_id == 0x4e) && evt.table_id == si->second->table_id && evt.version != si->second->version ))
 	{
 		//replace event if new version
-		dprintf(DEBUG_DEBUG, "replacing event version old 0x%02x new 0x%02x'\n", si->second->version, evt.version );
+		dprintf(DEBUG_DEBUG, "[sectionsd] replacing event version old 0x%02x new 0x%02x'\n", si->second->version, evt.version );
 		already_exists = false;
 	}
 
@@ -771,7 +771,7 @@ static bool deleteEvent(const event_id_t uniqueKey)
 
 		if (!eptr)
 		{
-			dprintf(DEBUG_INFO, "[sectionsd::addEvent] new SIevent failed.\n");
+			dprintf(DEBUG_INFO, "[sectionsd] addEvent new SIevent failed.\n");
 			unlockEvents();
 			return;
 		}
@@ -823,7 +823,7 @@ static bool deleteEvent(const event_id_t uniqueKey)
 					if ((*x)->times.begin()->startzeit + (long)(*x)->times.begin()->dauer <= start_time)
 						break;
 					/* here we have an overlapping event */
-					dprintf(DEBUG_DEBUG, "%s: delete 0x%016llx.%02x time = 0x%016llx.%02x\n", __func__, x_key, (*x)->table_id, e_key, e->table_id);
+					dprintf(DEBUG_DEBUG, "[sectionsd] %s: delete 0x%016llx.%02x time = 0x%016llx.%02x\n", __func__, x_key, (*x)->table_id, e_key, e->table_id);
 					to_delete.push_back(x_key);
 				}
 			}
@@ -944,7 +944,7 @@ static void addNVODevent(const SIevent &evt)
 
 	if (!eptr)
 	{
-		dprintf(DEBUG_INFO, "[sectionsd::addNVODevent] new SIevent failed.\n");
+		dprintf(DEBUG_INFO, "[sectionsd] addNVODevent: new SIevent failed.\n");
 		return;
 		//throw std::bad_alloc();
 	}
@@ -1074,7 +1074,7 @@ static void removeDupEvents(void)
 
 		if ((*e1)->table_id == (*e2)->table_id)
 		{
-			dprintf(DEBUG_DEBUG, "%s: not removing events %llx %llx, t:%02x '%s'\n", __func__, (*e1)->uniqueKey(), (*e2)->uniqueKey(), (*e1)->table_id, (*e1)->getName().c_str());
+			dprintf(DEBUG_DEBUG, "[sectionsd] %s: not removing events %llx %llx, t:%02x '%s'\n", __func__, (*e1)->uniqueKey(), (*e2)->uniqueKey(), (*e1)->table_id, (*e1)->getName().c_str());
 			continue;
 		}
 
@@ -1083,7 +1083,7 @@ static void removeDupEvents(void)
 		if ((*e1)->table_id < (*e2)->table_id)
 			del = e2;
 
-		dprintf(DEBUG_DEBUG, "%s: removing event %llx.%02x '%s'\n", __func__, (*del)->uniqueKey(), (*del)->table_id, (*del)->getName().c_str());
+		dprintf(DEBUG_DEBUG, "[sectionsd] %s: removing event %llx.%02x '%s'\n", __func__, (*del)->uniqueKey(), (*del)->table_id, (*del)->getName().c_str());
 		/* remember the unique ID for later deletion */
 		to_delete.push_back((*del)->uniqueKey());
 	}
@@ -1374,7 +1374,7 @@ static void commandPauseScanning(int connfd, char *data, const unsigned dataLeng
 	if (pause && pause != 1)
 		return ;
 
-	dprintf(DEBUG_DEBUG, "Request of %s scanning.\n", pause ? "stop" : "continue" );
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of %s scanning.\n", pause ? "stop" : "continue" );
 
 	if (scanning && pause)
 	{
@@ -1448,7 +1448,7 @@ static void commandGetIsScanningActive(int connfd, char* /*data*/, const unsigne
 
 static void commandDumpAllServices(int connfd, char* /*data*/, const unsigned /*dataLength*/)
 {
-	dprintf(DEBUG_DEBUG, "Request of service list.\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of service list.\n");
 	
 	long count=0;
 	
@@ -1489,7 +1489,7 @@ static void commandDumpAllServices(int connfd, char* /*data*/, const unsigned /*
 			strcat(serviceList, s->second->providerName.c_str());
 			strcat(serviceList, "\n");
 		} else {
-			dprintf(DEBUG_DEBUG, "warning: commandDumpAllServices: serviceList cut\n");
+			dprintf(DEBUG_DEBUG, "[sectionsd] warning: commandDumpAllServices: serviceList cut\n");
 			break;
 		}
 	}
@@ -1531,7 +1531,7 @@ static void sendAllEvents(int connfd, t_channel_id serviceUniqueKey, bool oldFor
 		goto out;
 	}
 
-	dprintf(DEBUG_DEBUG, "sendAllEvents for " PRINTF_CHANNEL_ID_TYPE "\n", serviceUniqueKey);
+	dprintf(DEBUG_DEBUG, "[sectionsd] sendAllEvents for " PRINTF_CHANNEL_ID_TYPE "\n", serviceUniqueKey);
 	
 	*evtList = 0;
 	liste = evtList;
@@ -1596,7 +1596,7 @@ static void sendAllEvents(int connfd, t_channel_id serviceUniqueKey, bool oldFor
 								strcat(liste, (*e)->getName().c_str());
 								strcat(liste, "\n");
 							} else {
-								dprintf(DEBUG_DEBUG, "warning: sendAllEvents eventlist cut\n");
+								dprintf(DEBUG_DEBUG, "[sectionsd] warning: sendAllEvents eventlist cut\n");
 								break;
 							}
 						}
@@ -1639,7 +1639,7 @@ static void sendAllEvents(int connfd, t_channel_id serviceUniqueKey, bool oldFor
 							} 
 							else 
 							{
-								dprintf(DEBUG_DEBUG, "warning: sendAllEvents eventlist cut\n");
+								dprintf(DEBUG_DEBUG, "[sectionsd] warning: sendAllEvents eventlist cut\n");
 								break;
 							}
 						}
@@ -1684,7 +1684,7 @@ static void commandAllEventsChannelID(int connfd, char *data, const unsigned dat
 
 	t_channel_id serviceUniqueKey = *(t_channel_id *)data;
 
-	dprintf(DEBUG_DEBUG, "Request of all events for " PRINTF_CHANNEL_ID_TYPE "\n", serviceUniqueKey);
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of all events for " PRINTF_CHANNEL_ID_TYPE "\n", serviceUniqueKey);
 
 	sendAllEvents(connfd, serviceUniqueKey, false);
 
@@ -1693,7 +1693,7 @@ static void commandAllEventsChannelID(int connfd, char *data, const unsigned dat
 
 static void commandDumpStatusInformation(int /*connfd*/, char* /*data*/, const unsigned /*dataLength*/)
 {
-	dprintf(DEBUG_DEBUG, "Request of status information");
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of status information");
 
 	readLockEvents();
 
@@ -1766,7 +1766,7 @@ static void commandComponentTagsUniqueKey(int connfd, char *data, const unsigned
 
 	event_id_t uniqueKey = *(event_id_t *)data;
 
-	dprintf(DEBUG_DEBUG, "Request of ComponentTags for 0x%llx\n", uniqueKey);
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of ComponentTags for 0x%llx\n", uniqueKey);
 
 	readLockEvents();
 
@@ -1777,12 +1777,12 @@ static void commandComponentTagsUniqueKey(int connfd, char *data, const unsigned
 	if (eFirst != mySIeventsOrderUniqueKey.end())
 	{
 		//Found
-		dprintf(DEBUG_DEBUG, "ComponentTags found.\n");
-		dprintf(DEBUG_DEBUG, "components.size %d \n", eFirst->second->components.size());
+		dprintf(DEBUG_DEBUG, "[sectionsd] ComponentTags found.\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] components.size %d \n", eFirst->second->components.size());
 
 		for (SIcomponents::iterator cmp = eFirst->second->components.begin(); cmp != eFirst->second->components.end(); ++cmp)
 		{
-			dprintf(DEBUG_DEBUG, " %s \n", cmp->component.c_str());
+			dprintf(DEBUG_DEBUG, "[sectionsd]  %s \n", cmp->component.c_str());
 			nResultDataSize += cmp->component.length() + 1 +	// name
 					   sizeof(unsigned char) +		// componentType
 					   sizeof(unsigned char) +		// componentTag
@@ -1858,7 +1858,7 @@ static void commandLinkageDescriptorsUniqueKey(int connfd, char *data, const uns
 
 	uniqueKey = *(event_id_t *)data;
 
-	dprintf(DEBUG_DEBUG, "Request of LinkageDescriptors for 0x%llx\n", uniqueKey);
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of LinkageDescriptors for 0x%llx\n", uniqueKey);
 
 	readLockEvents();
 
@@ -1869,15 +1869,15 @@ static void commandLinkageDescriptorsUniqueKey(int connfd, char *data, const uns
 	if (eFirst != mySIeventsOrderUniqueKey.end())
 	{
 		//Found
-		dprintf(DEBUG_DEBUG, "LinkageDescriptors found.\n");
-		dprintf(DEBUG_DEBUG, "linkage_descs.size %d \n", eFirst->second->linkage_descs.size());
+		dprintf(DEBUG_DEBUG, "[sectionsd] LinkageDescriptors found.\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] linkage_descs.size %d \n", eFirst->second->linkage_descs.size());
 
 		for (SIlinkage_descs::iterator linkage_desc = eFirst->second->linkage_descs.begin(); linkage_desc != eFirst->second->linkage_descs.end(); ++linkage_desc)
 		{
 			if (linkage_desc->linkageType == 0xB0)
 			{
 				countDescs++;
-				dprintf(DEBUG_DEBUG, " %s \n", linkage_desc->name.c_str());
+				dprintf(DEBUG_DEBUG, "[sectionsd]  %s \n", linkage_desc->name.c_str());
 				nResultDataSize += linkage_desc->name.length() + 1 +	// name
 						   sizeof(t_transport_stream_id) +	//transportStreamId
 						   sizeof(t_original_network_id) +	//originalNetworkId
@@ -2068,7 +2068,7 @@ static void commandCurrentNextInfoChannelID(int connfd, char *data, const unsign
 		/* ...check for myCurrentEvent and myNextEvent */
 		if (!myCurrentEvent) 
 		{
-			dprintf(DEBUG_DEBUG, "!myCurrentEvent ");
+			dprintf(DEBUG_DEBUG, "[sectionsd] !myCurrentEvent ");
 			change = true;
 			flag |= CSectionsdClient::epgflags::not_broadcast;
 		} 
@@ -2081,14 +2081,14 @@ static void commandCurrentNextInfoChannelID(int connfd, char *data, const unsign
 
 		if (!myNextEvent) 
 		{
-			dprintf(DEBUG_DEBUG, "!myNextEvent ");
+			dprintf(DEBUG_DEBUG, "[sectionsd] !myNextEvent ");
 			change = true;
 		} 
 		else 
 		{
 			nextEvt = *myNextEvent;
 			if (flag & CSectionsdClient::epgflags::not_broadcast) {
-				dprintf(DEBUG_DEBUG, "CSectionsdClient::epgflags::has_no_current\n");
+				dprintf(DEBUG_DEBUG, "[sectionsd] epgflags::has_no_current\n");
 				flag = CSectionsdClient::epgflags::has_no_current;
 			}
 			flag |= CSectionsdClient::epgflags::has_next; // aktuelles event da...
@@ -2115,7 +2115,7 @@ static void commandCurrentNextInfoChannelID(int connfd, char *data, const unsign
 
 		if (currentEvt.getName().empty() && flag2 != 0)
 		{
-			dprintf(DEBUG_DEBUG, "commandCurrentNextInfoChannelID change1\n");
+			dprintf(DEBUG_DEBUG, "[sectionsd] commandCurrentNextInfoChannelID change1\n");
 			change = true;
 		}
 
@@ -2128,7 +2128,7 @@ static void commandCurrentNextInfoChannelID(int connfd, char *data, const unsign
 
 			if (!(flag & CSectionsdClient::epgflags::has_next)) 
 			{
-				dprintf(DEBUG_DEBUG, "*nextEvt not from cur/next V1!\n");
+				dprintf(DEBUG_DEBUG, "[sectionsd] *nextEvt not from cur/next V1!\n");
 				nextEvt = findNextSIevent(currentEvt.uniqueKey(), zeitEvt2);
 			}
 		}
@@ -2156,7 +2156,7 @@ static void commandCurrentNextInfoChannelID(int connfd, char *data, const unsign
 				flag |= CSectionsdClient::epgflags::has_anything;
 				if (!(flag & CSectionsdClient::epgflags::has_next)) 
 				{
-					dprintf(DEBUG_DEBUG, "*nextEvt not from cur/next V2!\n");
+					dprintf(DEBUG_DEBUG, "[sectionsd] *nextEvt not from cur/next V2!\n");
 					nextEvt = findNextSIeventForServiceUniqueKey(*uniqueServiceKey, zeitEvt2);
 				}
 
@@ -2192,7 +2192,7 @@ static void commandCurrentNextInfoChannelID(int connfd, char *data, const unsign
 		}
 		else if (flag != 0)
 		{
-			dprintf(DEBUG_DEBUG, "commandCurrentNextInfoChannelID change2 flag: 0x%02x\n", flag);
+			dprintf(DEBUG_DEBUG, "[sectionsd] commandCurrentNextInfoChannelID change2 flag: 0x%02x\n", flag);
 			change = true;
 		}
 	}
@@ -2232,7 +2232,7 @@ static void commandCurrentNextInfoChannelID(int connfd, char *data, const unsign
 		goto out;
 	}
 
-	dprintf(DEBUG_DEBUG, "currentEvt: '%s' (%04x) nextEvt: '%s' (%04x) flag: 0x%02x\n",
+	dprintf(DEBUG_DEBUG, "[sectionsd] currentEvt: '%s' (%04x) nextEvt: '%s' (%04x) flag: 0x%02x\n",
 		currentEvt.getName().c_str(), currentEvt.eventID,
 		nextEvt.getName().c_str(), nextEvt.eventID, flag);
 
@@ -2296,7 +2296,7 @@ static void commandCurrentNextInfoChannelID(int connfd, char *data, const unsign
 	if (change && !messaging_eit_is_busy && (time_monotonic() - messaging_last_requested) < 11) 
 	{
 		/* restart dmxCN, but only if it is not already running, and only for 10 seconds */
-		dprintf(DEBUG_DEBUG, "change && !messaging_eit_is_busy => dmxCN.change(0)\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] change && !messaging_eit_is_busy => dmxCN.change(0)\n");
 		dmxCN.change(0);
 	}
 
@@ -2436,7 +2436,7 @@ static void commandGetNextEPG(int connfd, char *data, const unsigned dataLength)
 
 	time_t *starttime = (time_t *)(data + 8);
 
-	dprintf(DEBUG_DEBUG, "Request of next epg for 0x%llx %s", *uniqueEventKey, ctime(starttime));
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of next epg for 0x%llx %s", *uniqueEventKey, ctime(starttime));
 
 	readLockEvents();
 
@@ -2446,7 +2446,7 @@ static void commandGetNextEPG(int connfd, char *data, const unsigned dataLength)
 
 	if (nextEvt.service_id != 0)
 	{
-		dprintf(DEBUG_DEBUG, "next epg found.\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] next epg found.\n");
 		sendEPG(connfd, nextEvt, zeit);
 // this call is made in sendEPG()
 //		unlockEvents();
@@ -2454,7 +2454,7 @@ static void commandGetNextEPG(int connfd, char *data, const unsigned dataLength)
 	}
 
 	unlockEvents();
-	dprintf(DEBUG_DEBUG, "next epg not found!\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] next epg not found!\n");
 
 	writeNbytes(connfd, (const char *)&responseHeader, sizeof(responseHeader), WRITE_TIMEOUT_IN_SECONDS);
 	return ;
@@ -2469,7 +2469,7 @@ static void commandActualEPGchannelID(int connfd, char *data, const unsigned dat
 	SIevent evt;
 	SItime zeit(0, 0);
 
-	dprintf(DEBUG_DEBUG, "[commandActualEPGchannelID] Request of current EPG for " PRINTF_CHANNEL_ID_TYPE "\n", * uniqueServiceKey);
+	dprintf(DEBUG_DEBUG, "[sectionsd] [commandActualEPGchannelID] Request of current EPG for " PRINTF_CHANNEL_ID_TYPE "\n", * uniqueServiceKey);
 
 	readLockEvents();
 	if (*uniqueServiceKey == messaging_current_servicekey) 
@@ -2497,19 +2497,19 @@ static void commandActualEPGchannelID(int connfd, char *data, const unsigned dat
 
 	if (evt.service_id == 0)
 	{
-		dprintf(DEBUG_DEBUG, "[commandActualEPGchannelID] evt.service_id == 0 ==> no myCurrentEvent!\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] [commandActualEPGchannelID] evt.service_id == 0 ==> no myCurrentEvent!\n");
 		evt = findActualSIeventForServiceUniqueKey(*uniqueServiceKey, zeit);
 	}
 
 	if (evt.service_id != 0)
 	{
-		dprintf(DEBUG_DEBUG, "EPG found.\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] EPG found.\n");
 		sendEPG(connfd, evt, zeit);
 		return;
 	}
 
 	unlockEvents();
-	dprintf(DEBUG_DEBUG, "EPG not found!\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] EPG not found!\n");
 
 // out:
 	struct sectionsd::msgResponseHeader responseHeader;
@@ -2540,7 +2540,7 @@ static void commandGetEPGPrevNext(int connfd, char *data, const unsigned dataLen
 	SIevent prev_evt;
 	SIevent next_evt;
 
-	dprintf(DEBUG_DEBUG, "Request of Prev/Next EPG for 0x%llx %s", *uniqueEventKey, ctime(starttime));
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of Prev/Next EPG for 0x%llx %s", *uniqueEventKey, ctime(starttime));
 
 	readLockEvents();
 
@@ -2679,7 +2679,7 @@ static void sendEventList(int connfd, const unsigned char serviceTyp1, const uns
 						} 
 						else 
 						{
-							dprintf(DEBUG_DEBUG, "warning: sendEventList - eventlist cut\n");
+							dprintf(DEBUG_DEBUG, "[sectionsd] warning: sendEventList - eventlist cut\n");
 							break;
 						}
 
@@ -2723,7 +2723,7 @@ static void sendEventList(int connfd, const unsigned char serviceTyp1, const uns
 						} 
 						else 
 						{
-							dprintf(DEBUG_DEBUG, "warning: sendEventList - eventlist cut\n");
+							dprintf(DEBUG_DEBUG, "[sectionsd] warning: sendEventList - eventlist cut\n");
 							break;
 						}
 					} // else !sendServiceName
@@ -2821,7 +2821,7 @@ static void commandGetNextShort(int connfd, char *data, const unsigned dataLengt
 	time_t *starttime = (time_t *)(data + 8);
 	SItime zeit(*starttime, 0);
 
-	dprintf(DEBUG_DEBUG, "Request of next short for 0x%llx %s", *uniqueEventKey, ctime(starttime));
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of next short for 0x%llx %s", *uniqueEventKey, ctime(starttime));
 
 	readLockEvents();
 
@@ -2829,35 +2829,35 @@ static void commandGetNextShort(int connfd, char *data, const unsigned dataLengt
 
 	if (nextEvt.service_id != 0)
 	{
-		dprintf(DEBUG_DEBUG, "next short found.\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] next short found.\n");
 		sendShort(connfd, nextEvt, zeit);
 		// this call is made in sendShort()
 		//unlockEvents();
 		return;
 	}
 	unlockEvents();
-	dprintf(DEBUG_DEBUG, "next short not found!\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] next short not found!\n");
 
 	writeNbytes(connfd, (const char *)&responseHeader, sizeof(responseHeader), WRITE_TIMEOUT_IN_SECONDS);
 }
 
 static void commandEventListTV(int connfd, char* /*data*/, const unsigned /*dataLength*/)
 {
-	dprintf(DEBUG_DEBUG, "Request of TV event list.\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of TV event list.\n");
 	
 	sendEventList(connfd, 0x01, 0x04);
 }
 
 static void commandEventListTVids(int connfd, char* data, const unsigned dataLength)
 {
-	dprintf(DEBUG_DEBUG, "Request of TV event list (IDs).\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of TV event list (IDs).\n");
 	
 	sendEventList(connfd, 0x01, 0x04, 0, (t_channel_id *) data, dataLength/sizeof(t_channel_id));
 }
 
 static void commandEventListRadio(int connfd, char* /*data*/, const unsigned /*dataLength*/)
 {
-	dprintf(DEBUG_DEBUG, "Request of radio event list.\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of radio event list.\n");
 	sendEventList(connfd, 0x02);
 }
 
@@ -2881,7 +2881,7 @@ static void commandEPGepgID(int connfd, char *data, const unsigned dataLength)
 
 	time_t* startzeit = (time_t *)(data + 8);
 
-	dprintf(DEBUG_DEBUG, "Request of current EPG for 0x%llx 0x%lx\n", *epgID, *startzeit);
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of current EPG for 0x%llx 0x%lx\n", *epgID, *startzeit);
 
 	readLockEvents();
 
@@ -2897,7 +2897,7 @@ static void commandEPGepgID(int connfd, char *data, const unsigned dataLength)
 
 		if (t != evt.times.end())
 		{
-			dprintf(DEBUG_DEBUG, "EPG found.");
+			dprintf(DEBUG_DEBUG, "[sectionsd] EPG found.");
 			// Sendet ein EPG, unlocked die events, unpaused dmxEIT
 			sendEPG(connfd, evt, *t);
 			// this call is made in sendEPG()
@@ -2906,7 +2906,7 @@ static void commandEPGepgID(int connfd, char *data, const unsigned dataLength)
 		}
 	}
 
-	dprintf(DEBUG_DEBUG, "EPG not found!");
+	dprintf(DEBUG_DEBUG, "[sectionsd] EPG not found!");
 	unlockEvents();
 	// response
 
@@ -2926,7 +2926,7 @@ static void commandEPGepgIDshort(int connfd, char *data, const unsigned dataLeng
 
 	event_id_t * epgID = (event_id_t *)data;
 
-	dprintf(DEBUG_DEBUG, "Request of current EPG for 0x%llx\n", *epgID);
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of current EPG for 0x%llx\n", *epgID);
 
 	readLockEvents();
 
@@ -2934,14 +2934,14 @@ static void commandEPGepgIDshort(int connfd, char *data, const unsigned dataLeng
 
 	if (evt.service_id != 0)
 	{	// Event found
-		dprintf(DEBUG_DEBUG, "EPG found.");
+		dprintf(DEBUG_DEBUG, "[sectionsd] EPG found.");
 		sendEPG(connfd, evt, SItime(0, 0), 1);
 		// this call is made in sendEPG()
 		//unlockEvents();
 		return;
 	}
 
-	dprintf(DEBUG_DEBUG, "EPG not found!");
+	dprintf(DEBUG_DEBUG, "[sectionsd] EPG not found!");
 	unlockEvents();
 	// response
 
@@ -2961,7 +2961,7 @@ static void commandTimesNVODservice(int connfd, char *data, const unsigned dataL
 
 	uniqueServiceKey = *(t_channel_id *)data;
 
-	dprintf(DEBUG_DEBUG, "Request of NVOD times for " PRINTF_CHANNEL_ID_TYPE "\n", uniqueServiceKey);
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of NVOD times for " PRINTF_CHANNEL_ID_TYPE "\n", uniqueServiceKey);
 
 	readLockServices();
 	readLockEvents();
@@ -2970,7 +2970,7 @@ static void commandTimesNVODservice(int connfd, char *data, const unsigned dataL
 
 	if (si != mySIservicesNVODorderUniqueKey.end())
 	{
-		dprintf(DEBUG_DEBUG, "NVODServices: %u\n", si->second->nvods.size());
+		dprintf(DEBUG_DEBUG, "[sectionsd] NVODServices: %u\n", si->second->nvods.size());
 
 		if (si->second->nvods.size())
 		{
@@ -3007,7 +3007,7 @@ static void commandTimesNVODservice(int connfd, char *data, const unsigned dataL
 	unlockEvents();
 	unlockServices();
 
-	dprintf(DEBUG_DEBUG, "data bytes: %u\n", responseHeader.dataLength);
+	dprintf(DEBUG_DEBUG, "[sectionsd] data bytes: %u\n", responseHeader.dataLength);
 
 out:
 	if (writeNbytes(connfd, (const char *)&responseHeader, sizeof(responseHeader), WRITE_TIMEOUT_IN_SECONDS))
@@ -3026,7 +3026,7 @@ static void commandGetIsTimeSet(int connfd, char* /*data*/, const unsigned /*dat
 
 	rmsg.IsTimeSet = timeset;
 
-	dprintf(DEBUG_DEBUG, "Request of Time-Is-Set %d\n", rmsg.IsTimeSet);
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of Time-Is-Set %d\n", rmsg.IsTimeSet);
 
 	struct sectionsd::msgResponseHeader responseHeader;
 
@@ -3066,7 +3066,7 @@ static void commandSetConfig(int connfd, char *data, const unsigned /*dataLength
 
 	if (secondsToCache != (long)(pmsg->epg_cache)*24*60L*60L) 
 	{
-		dprintf(DEBUG_DEBUG, "new epg_cache = %d\n", pmsg->epg_cache);
+		dprintf(DEBUG_DEBUG, "[sectionsd] new epg_cache = %d\n", pmsg->epg_cache);
 		
 		writeLockEvents();
 		secondsToCache = (long)(pmsg->epg_cache)*24*60L*60L;
@@ -3075,7 +3075,7 @@ static void commandSetConfig(int connfd, char *data, const unsigned /*dataLength
 
 	if (oldEventsAre != (long)(pmsg->epg_old_events)*60L*60L) 
 	{
-		dprintf(DEBUG_DEBUG, "new epg_old_events = %d\n", pmsg->epg_old_events);
+		dprintf(DEBUG_DEBUG, "[sectionsd] new epg_old_events = %d\n", pmsg->epg_old_events);
 		
 		writeLockEvents();
 		oldEventsAre = (long)(pmsg->epg_old_events)*60L*60L;
@@ -3084,7 +3084,7 @@ static void commandSetConfig(int connfd, char *data, const unsigned /*dataLength
 	
 	if (secondsExtendedTextCache != (long)(pmsg->epg_extendedcache)*60L*60L) 
 	{
-		dprintf(DEBUG_DEBUG, "new epg_extendedcache = %d\n", pmsg->epg_extendedcache);
+		dprintf(DEBUG_DEBUG, "[sectionsd] new epg_extendedcache = %d\n", pmsg->epg_extendedcache);
 		
 		//lockEvents();
 		writeLockEvents();
@@ -3094,7 +3094,7 @@ static void commandSetConfig(int connfd, char *data, const unsigned /*dataLength
 	
 	if (max_events != pmsg->epg_max_events) 
 	{
-		dprintf(DEBUG_DEBUG, "new epg_max_events = %d\n", pmsg->epg_max_events);
+		dprintf(DEBUG_DEBUG, "[sectionsd] new epg_max_events = %d\n", pmsg->epg_max_events);
 		writeLockEvents();
 		max_events = pmsg->epg_max_events;
 		unlockEvents();
@@ -3102,7 +3102,7 @@ static void commandSetConfig(int connfd, char *data, const unsigned /*dataLength
 
 	if (ntprefresh != pmsg->network_ntprefresh) 
 	{
-		dprintf(DEBUG_DEBUG, "new network_ntprefresh = %d\n", pmsg->network_ntprefresh);
+		dprintf(DEBUG_DEBUG, "[sectionsd] new network_ntprefresh = %d\n", pmsg->network_ntprefresh);
 		
 		pthread_mutex_lock(&timeThreadSleepMutex);
 		ntprefresh = pmsg->network_ntprefresh;
@@ -3116,7 +3116,7 @@ static void commandSetConfig(int connfd, char *data, const unsigned /*dataLength
 
 	if (ntpenable ^ (pmsg->network_ntpenable == 1))	
 	{
-		dprintf(DEBUG_DEBUG, "new network_ntpenable = %d\n", pmsg->network_ntpenable);
+		dprintf(DEBUG_DEBUG, "[sectionsd] new network_ntpenable = %d\n", pmsg->network_ntpenable);
 		
 		pthread_mutex_lock(&timeThreadSleepMutex);
 		ntpenable = (pmsg->network_ntpenable == 1);
@@ -3131,7 +3131,7 @@ static void commandSetConfig(int connfd, char *data, const unsigned /*dataLength
 	if (ntpserver.compare((std::string)&data[sizeof(struct sectionsd::commandSetConfig)])) 
 	{
 		ntpserver = (std::string)&data[sizeof(struct sectionsd::commandSetConfig)];
-		dprintf(DEBUG_DEBUG, "new network_ntpserver = %s\n", ntpserver.c_str());
+		dprintf(DEBUG_DEBUG, "[sectionsd] new network_ntpserver = %s\n", ntpserver.c_str());
 		
 		// check for rdate
 		if( !access("/bin/rdate", F_OK) || !access("/sbin/rdate", F_OK) || !access("/usr/bin/rdate", F_OK) || !access("/usr/sbin/rdate", F_OK)) 
@@ -3141,7 +3141,7 @@ static void commandSetConfig(int connfd, char *data, const unsigned /*dataLength
 
 	if (epg_dir.compare((std::string)&data[sizeof(struct sectionsd::commandSetConfig) + strlen(&data[sizeof(struct sectionsd::commandSetConfig)]) + 1])) {
 		epg_dir= (std::string)&data[sizeof(struct sectionsd::commandSetConfig) + strlen(&data[sizeof(struct sectionsd::commandSetConfig)]) + 1];
-		dprintf(DEBUG_DEBUG, "new epg_dir = %s\n", epg_dir.c_str());
+		dprintf(DEBUG_DEBUG, "[sectionsd] new epg_dir = %s\n", epg_dir.c_str());
 	}
 
 	responseHeader.dataLength = 0;
@@ -3194,7 +3194,7 @@ static void commandFreeMemory(int connfd, char * /*data*/, const unsigned /*data
 
 static void *insertEventsfromFile(void *)
 {
-	dprintf(DEBUG_NORMAL, "insertEventsfromFile\n");
+	dprintf(DEBUG_NORMAL, "[sectionsd] insertEventsfromFile\n");
 
 	_xmlDocPtr event_parser = NULL;
 	_xmlNodePtr eventfile = NULL;
@@ -3235,7 +3235,7 @@ static void *insertEventsfromFile(void *)
 				epgname = epg_dir + filename;
 				if (!(event_parser = parseXmlFile(epgname.c_str()))) 
 				{
-					dprintf(DEBUG_DEBUG, "unable to open %s for reading\n", epgname.c_str());
+					dprintf(DEBUG_DEBUG, "[sectionsd] unable to open %s for reading\n", epgname.c_str());
 				}
 				else 
 				{
@@ -3367,7 +3367,7 @@ static void *insertEventsfromFile(void *)
 
 static void commandReadSIfromXML(int connfd, char *data, const unsigned dataLength)
 {
-	dprintf(DEBUG_NORMAL, "commandReadSIfromXML\n");
+	dprintf(DEBUG_NORMAL, "[sectionsd] commandReadSIfromXML\n");
 
 	pthread_t thrInsert;
 
@@ -3746,7 +3746,7 @@ bool sectionsd_parse_command(CBasicMessage::Header &rmsg, int connfd)
 	// spart die thread-creation-zeit, und die Locks lassen ohnehin nur ein cmd gleichzeitig zu
 	try
 	{
-		dprintf(DEBUG_DEBUG, "Connection from UDS\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] Connection from UDS\n");
 
 		struct sectionsd::msgRequestHeader header;
 
@@ -3757,11 +3757,11 @@ bool sectionsd_parse_command(CBasicMessage::Header &rmsg, int connfd)
 
 		if (readbytes == true)
 		{
-			dprintf(DEBUG_DEBUG, "version: %hhd, cmd: %hhd, numbytes: %d\n", header.version, header.command, readbytes);
+			dprintf(DEBUG_DEBUG, "[sectionsd] version: %hhd, cmd: %hhd, numbytes: %d\n", header.version, header.command, readbytes);
 
 			if (header.command < sectionsd::numberOfCommands)
 			{
-				dprintf(DEBUG_DEBUG, "data length: %hd\n", header.dataLength);
+				dprintf(DEBUG_DEBUG, "[sectionsd] data length: %hd\n", header.dataLength);
 				char *data = new char[header.dataLength + 1];
 
 				if (!data)
@@ -3775,7 +3775,7 @@ bool sectionsd_parse_command(CBasicMessage::Header &rmsg, int connfd)
 
 					if (rc == true)
 					{
-						dprintf(DEBUG_DEBUG, "%s\n", connectionCommands[header.command].sCmd.c_str());
+						dprintf(DEBUG_DEBUG, "[sectionsd] %s\n", connectionCommands[header.command].sCmd.c_str());
 						connectionCommands[header.command].cmd(connfd, data, header.dataLength);
 					}
 
@@ -3815,7 +3815,7 @@ static void *timeThread(void *)
 
 	pthread_setcanceltype (PTHREAD_CANCEL_ASYNCHRONOUS, 0);
 
-	dprintf(DEBUG_DEBUG, "[%sThread] pid %d (%lu) start\n", "time", getpid(), pthread_self());
+	dprintf(DEBUG_DEBUG, "[sectionsd] [%sThread] pid %d (%lu) start\n", "time", getpid(), pthread_self());
 
 	while(!sectionsd_stop)
 	{
@@ -3839,7 +3839,7 @@ static void *timeThread(void *)
 				pthread_cond_broadcast(&timeIsSetCond);
 				pthread_mutex_unlock(&timeIsSetMutex );
 				eventServer->sendEvent(CSectionsdClient::EVT_TIMESET, CEventServer::INITID_SECTIONSD, &actTime, sizeof(actTime) );
-				dprintf(DEBUG_NORMAL, "timeThread: Time is already set by system, no further timeThread work!\n");
+				dprintf(DEBUG_NORMAL, "[sectionsd] timeThread: Time is already set by system, no further timeThread work!\n");
 				break;
 			}
 		}
@@ -3854,7 +3854,7 @@ static void *timeThread(void *)
 			pthread_cond_broadcast(&timeIsSetCond);
 			pthread_mutex_unlock(&timeIsSetMutex );
 			eventServer->sendEvent(CSectionsdClient::EVT_TIMESET, CEventServer::INITID_SECTIONSD, &actTime, sizeof(actTime) );
-			dprintf(DEBUG_NORMAL, "timeThread: Time is already set by system\n");
+			dprintf(DEBUG_NORMAL, "[sectionsd] timeThread: Time is already set by system\n");
 		} 
 		else 
 		{
@@ -3885,7 +3885,7 @@ static void *timeThread(void *)
 					actTime=time(NULL);
 					tmTime = localtime(&actTime);
 					
-					dprintf(DEBUG_DEBUG, "[%sThread] - %02d.%02d.%04d %02d:%02d:%02d, tim: %s", "time\n", tmTime->tm_mday, tmTime->tm_mon+1, tmTime->tm_year+1900, tmTime->tm_hour, tmTime->tm_min, tmTime->tm_sec, ctime(&tim));
+					dprintf(DEBUG_DEBUG, "[sectionsd] [%sThread] - %02d.%02d.%04d %02d:%02d:%02d, tim: %s", "time\n", tmTime->tm_mday, tmTime->tm_mon+1, tmTime->tm_year+1900, tmTime->tm_hour, tmTime->tm_min, tmTime->tm_sec, ctime(&tim));
 					
 					pthread_mutex_lock(&timeIsSetMutex);
 					timeset = true;
@@ -3893,7 +3893,7 @@ static void *timeThread(void *)
 					pthread_cond_broadcast(&timeIsSetCond);
 					pthread_mutex_unlock(&timeIsSetMutex );
 					eventServer->sendEvent(CSectionsdClient::EVT_TIMESET, CEventServer::INITID_SECTIONSD, &tim, sizeof(tim));
-					dprintf(DEBUG_NORMAL, "timeThread: Time is already set by DVB\n");
+					dprintf(DEBUG_NORMAL, "[sectionsd] timeThread: Time is already set by DVB\n");
 				}
 			}
 		}
@@ -3907,11 +3907,11 @@ static void *timeThread(void *)
 
 			if(time_ntp) 
 			{
-				dprintf(DEBUG_DEBUG, "[%sThread] Time set via NTP, going to sleep for %d seconds.\n", "time", seconds);
+				dprintf(DEBUG_DEBUG, "[sectionsd] [%sThread] Time set via NTP, going to sleep for %d seconds.\n", "time", seconds);
 			}
 			else 
 			{
-				dprintf(DEBUG_DEBUG, "[%sThread] Time %sset via DVB(%s), going to sleep for %d seconds.\n", "time", success?"":"not ", first_time?"TDT":"TOT", seconds);
+				dprintf(DEBUG_DEBUG, "[sectionsd] [%sThread] Time %sset via DVB(%s), going to sleep for %d seconds.\n", "time", success?"":"not ", first_time?"TDT":"TOT", seconds);
 			}
 			first_time = false;
 		}
@@ -3933,7 +3933,7 @@ static void *timeThread(void *)
 			
 			if (!dvb_time_update && !first_time) 
 			{
-				dprintf(DEBUG_DEBUG, "[%sThread] Time NOT set via DVB due to blocked channel, going to sleep for %d seconds.\n", "time", seconds);
+				dprintf(DEBUG_DEBUG, "[sectionsd] [%sThread] Time NOT set via DVB due to blocked channel, going to sleep for %d seconds.\n", "time", seconds);
 			}
 		}
 		
@@ -3947,11 +3947,11 @@ static void *timeThread(void *)
 		int ret = pthread_cond_timedwait( &timeThreadSleepCond, &timeThreadSleepMutex, &restartWait );
 		if (ret == ETIMEDOUT)
 		{
-			dprintf(DEBUG_DEBUG, "TDT-Thread sleeping is over - no signal received\n");
+			dprintf(DEBUG_DEBUG, "[sectionsd] TDT-Thread sleeping is over - no signal received\n");
 		}
 		else if (ret == EINTR)
 		{
-			dprintf(DEBUG_DEBUG, "TDT-Thread sleeping interrupted\n");
+			dprintf(DEBUG_DEBUG, "[sectionsd] TDT-Thread sleeping interrupted\n");
 		}
 		// else if (ret == 0) //everything is fine :) e.g. timeThreadSleepCond maybe signalled @zap time to get a valid time
 		pthread_mutex_unlock( &timeThreadSleepMutex );
@@ -3965,10 +3965,10 @@ static void *timeThread(void *)
 static cDemux * eitDmx;
 int eit_set_update_filter(int *fd)
 {
-	dprintf(DEBUG_DEBUG, "eit_set_update_filter\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] eit_set_update_filter\n");
 
 	unsigned char cur_eit = dmxCN.get_eit_version();
-	dprintf(DEBUG_DEBUG, "eit_set_update_filter, servicekey = 0x"
+	dprintf(DEBUG_DEBUG, "[sectionsd] eit_set_update_filter, servicekey = 0x"
 		PRINTF_CHANNEL_ID_TYPE
 		", current version 0x%x got events %d\n",
 		messaging_current_servicekey, cur_eit, messaging_have_CN);
@@ -4050,9 +4050,9 @@ static void *fseitThread(void *)
 	int policy;
 	struct sched_param parm;
 	int rc = pthread_getschedparam(pthread_self(), &policy, &parm);
-	dprintf(DEBUG_DEBUG, "freesatEitThread getschedparam: %d pol %d, prio %d\n", rc, policy, parm.sched_priority);
+	dprintf(DEBUG_DEBUG, "[sectionsd] freesatEitThread getschedparam: %d pol %d, prio %d\n", rc, policy, parm.sched_priority);
 
-	dprintf(DEBUG_DEBUG, "[%sThread] pid %d (%lu) start\n", "fseit", getpid(), pthread_self());
+	dprintf(DEBUG_DEBUG, "[sectionsd] [%sThread] pid %d (%lu) start\n", "fseit", getpid(), pthread_self());
 	
 	int timeoutsDMX = 0;
 	uint8_t *static_buf = new uint8_t[MAX_SECTION_LENGTH];
@@ -4123,18 +4123,18 @@ static void *fseitThread(void *)
 						((dmxFSEIT.filter_index == 1 || dmxFSEIT.filter_index == 3) && !si->second->eitScheduleFlag()))
 				{
 					timeoutsDMX = 0;
-					dprintf(DEBUG_DEBUG, "[freesatEitThread] timeoutsDMX for 0x"
+					dprintf(DEBUG_DEBUG, "[sectionsd] [freesatEitThread] timeoutsDMX for 0x"
 						PRINTF_CHANNEL_ID_TYPE
 						" reset to 0 (not broadcast)\n", messaging_current_servicekey );
 
-					dprintf(DEBUG_DEBUG, "New Filterindex: %d (ges. %d)\n", dmxFSEIT.filter_index + 1, (signed) dmxFSEIT.filters.size() );
+					dprintf(DEBUG_DEBUG, "[sectionsd] New Filterindex: %d (ges. %d)\n", dmxFSEIT.filter_index + 1, (signed) dmxFSEIT.filters.size() );
 					dmxFSEIT.change( dmxFSEIT.filter_index + 1 );
 				}
 				else if (dmxFSEIT.filter_index >= 1)
 				{
 					if (dmxFSEIT.filter_index + 1 < (signed) dmxFSEIT.filters.size() )
 					{
-						dprintf(DEBUG_DEBUG, "New Filterindex: %d (ges. %d)\n", dmxFSEIT.filter_index + 1, (signed) dmxFSEIT.filters.size() );
+						dprintf(DEBUG_DEBUG, "[sectionsd] New Filterindex: %d (ges. %d)\n", dmxFSEIT.filter_index + 1, (signed) dmxFSEIT.filters.size() );
 						dmxFSEIT.change(dmxFSEIT.filter_index + 1);
 						//dprintf(DEBUG_DEBUG, "[eitThread] timeoutsDMX for 0x%x reset to 0 (skipping to next filter)\n" );
 						timeoutsDMX = 0;
@@ -4142,7 +4142,7 @@ static void *fseitThread(void *)
 					else
 					{
 						sendToSleepNow = true;
-						dprintf(DEBUG_DEBUG, "sendToSleepNow = true\n");
+						dprintf(DEBUG_DEBUG, "[sectionsd] sendToSleepNow = true\n");
 					}
 				}
 			}
@@ -4154,7 +4154,7 @@ static void *fseitThread(void *)
 		{
 			if ( dmxFSEIT.filter_index + 1 < (signed) dmxFSEIT.filters.size() )
 			{
-				dprintf(DEBUG_DEBUG, "[freesatEitThread] skipping to next filter(%d) (> DMX_TIMEOUT_SKIPPING)\n", dmxFSEIT.filter_index+1 );
+				dprintf(DEBUG_DEBUG, "[sectionsd] [freesatEitThread] skipping to next filter(%d) (> DMX_TIMEOUT_SKIPPING)\n", dmxFSEIT.filter_index+1 );
 				dmxFSEIT.change(dmxFSEIT.filter_index + 1);
 			}
 			else
@@ -4180,7 +4180,7 @@ static void *fseitThread(void *)
 			gettimeofday(&now, NULL);
 			TIMEVAL_TO_TIMESPEC(&now, &abs_wait);
 			abs_wait.tv_sec += TIME_EIT_SCHEDULED_PAUSE;
-			dprintf(DEBUG_DEBUG, "dmxFSEIT: going to sleep for %d seconds...\n", TIME_EIT_SCHEDULED_PAUSE);
+			dprintf(DEBUG_DEBUG, "[sectionsd] dmxFSEIT: going to sleep for %d seconds...\n", TIME_EIT_SCHEDULED_PAUSE);
 
 			int rs = pthread_cond_timedwait( &dmxFSEIT.change_cond, &dmxFSEIT.start_stop_mutex, &abs_wait );
 
@@ -4188,20 +4188,20 @@ static void *fseitThread(void *)
 
 			if (rs == ETIMEDOUT)
 			{
-				dprintf(DEBUG_DEBUG, "dmxFSEIT: waking up again - timed out\n");
+				dprintf(DEBUG_DEBUG, "[sectionsd] dmxFSEIT: waking up again - timed out\n");
 				// must call dmxFSEIT.change after! unpause otherwise dev is not open,
 				// dmxFSEIT.lastChanged will not be set, and filter is advanced the next iteration
 				// maybe .change should imply .real_unpause()? -- seife
-				dprintf(DEBUG_DEBUG, "New Filterindex: %d (ges. %d)\n", 2, (signed) dmxFSEIT.filters.size() );
+				dprintf(DEBUG_DEBUG, "[sectionsd] New Filterindex: %d (ges. %d)\n", 2, (signed) dmxFSEIT.filters.size() );
 				dmxFSEIT.change(1); // -> restart
 			}
 			else if (rs == 0)
 			{
-				dprintf(DEBUG_DEBUG, "dmxFSEIT: waking up again - requested from .change()\n");
+				dprintf(DEBUG_DEBUG, "[sectionsd] dmxFSEIT: waking up again - requested from .change()\n");
 			}
 			else
 			{
-				dprintf(DEBUG_DEBUG, "dmxFSEIT:  waking up again - unknown reason %d\n",rs);
+				dprintf(DEBUG_DEBUG, "[sectionsd] dmxFSEIT:  waking up again - unknown reason %d\n",rs);
 			}
 			// update zeit after sleep
 			zeit = time_monotonic();
@@ -4212,7 +4212,7 @@ static void *fseitThread(void *)
 
 			if ( dmxFSEIT.filter_index + 1 < (signed) dmxFSEIT.filters.size() )
 			{
-				dprintf(DEBUG_DEBUG, "[freesatEitThread] skipping to next filter(%d) (> TIME_FSEIT_SKIPPING)\n", dmxFSEIT.filter_index+1 );
+				dprintf(DEBUG_DEBUG, "[sectionsd] [freesatEitThread] skipping to next filter(%d) (> TIME_FSEIT_SKIPPING)\n", dmxFSEIT.filter_index+1 );
 				dmxFSEIT.change(dmxFSEIT.filter_index + 1);
 			}
 			else
@@ -4223,7 +4223,7 @@ static void *fseitThread(void *)
 
 		if (rc <= (int)sizeof(struct SI_section_header))
 		{
-			dprintf(DEBUG_DEBUG, "%s rc < sizeof(SI_Section_header) (%d < %d)\n", __FUNCTION__, rc, sizeof(struct SI_section_header));
+			dprintf(DEBUG_DEBUG, "[sectionsd] %s rc < sizeof(SI_Section_header) (%d < %d)\n", __FUNCTION__, rc, sizeof(struct SI_section_header));
 			continue;
 		}
 
@@ -4289,7 +4289,7 @@ static void *fseitThread(void *)
 			//dprintf(DEBUG_DEBUG, "[eitThread] skipped sections for table 0x%x\n", header.table_id);
 		}
 	} // for
-	dprintf(DEBUG_DEBUG, "[freesatEitThread] end\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] [freesatEitThread] end\n");
 
 	pthread_exit(NULL);
 }
@@ -4311,9 +4311,9 @@ static void *viasateitThread(void *)
 	struct sched_param parm;
 	int rc = pthread_getschedparam(pthread_self(), &policy, &parm);
 	
-	dprintf(DEBUG_DEBUG, "viasatEitThread getschedparam: %d pol %d, prio %d\n", rc, policy, parm.sched_priority);
+	dprintf(DEBUG_DEBUG, "[sectionsd] viasatEitThread getschedparam: %d pol %d, prio %d\n", rc, policy, parm.sched_priority);
 
-	dprintf(DEBUG_DEBUG, "[%sThread] pid %d (%lu) start\n", "viasateit", getpid(), pthread_self());
+	dprintf(DEBUG_DEBUG, "[sectionsd] [%sThread] pid %d (%lu) start\n", "viasateit", getpid(), pthread_self());
 	
 	int timeoutsDMX = 0;
 	uint8_t *static_buf = new uint8_t[MAX_SECTION_LENGTH];
@@ -4382,16 +4382,16 @@ static void *viasateitThread(void *)
 				if ((dmxVIASAT.filter_index == 2 && !si->second->eitPresentFollowingFlag()) || ((dmxVIASAT.filter_index == 1 || dmxVIASAT.filter_index == 3) && !si->second->eitScheduleFlag()))
 				{
 					timeoutsDMX = 0;
-					dprintf(DEBUG_DEBUG, "[freesatEitThread] timeoutsDMX for 0x" PRINTF_CHANNEL_ID_TYPE " reset to 0 (not broadcast)\n", messaging_current_servicekey );
+					dprintf(DEBUG_DEBUG, "[sectionsd] [freesatEitThread] timeoutsDMX for 0x" PRINTF_CHANNEL_ID_TYPE " reset to 0 (not broadcast)\n", messaging_current_servicekey );
 
-					dprintf(DEBUG_DEBUG, "New Filterindex: %d (ges. %d)\n", dmxVIASAT.filter_index + 1, (signed) dmxVIASAT.filters.size() );
+					dprintf(DEBUG_DEBUG, "[sectionsd] New Filterindex: %d (ges. %d)\n", dmxVIASAT.filter_index + 1, (signed) dmxVIASAT.filters.size() );
 					dmxVIASAT.change(dmxVIASAT.filter_index + 1);
 				}
 				else if (dmxVIASAT.filter_index >= 1)
 				{
 					if (dmxVIASAT.filter_index + 1 < (signed) dmxVIASAT.filters.size() )
 					{
-						dprintf(DEBUG_DEBUG, "New Filterindex: %d (ges. %d)\n", dmxVIASAT.filter_index + 1, (signed) dmxVIASAT.filters.size() );
+						dprintf(DEBUG_DEBUG, "[sectionsd] New Filterindex: %d (ges. %d)\n", dmxVIASAT.filter_index + 1, (signed) dmxVIASAT.filters.size() );
 						dmxVIASAT.change(dmxFSEIT.filter_index + 1);
 						
 						timeoutsDMX = 0;
@@ -4399,7 +4399,7 @@ static void *viasateitThread(void *)
 					else
 					{
 						sendToSleepNow = true;
-						dprintf(DEBUG_DEBUG, "sendToSleepNow = true\n");
+						dprintf(DEBUG_DEBUG, "[sectionsd] sendToSleepNow = true\n");
 					}
 				}
 			}
@@ -4411,7 +4411,7 @@ static void *viasateitThread(void *)
 		{
 			if ( dmxVIASAT.filter_index + 1 < (signed) dmxVIASAT.filters.size() )
 			{
-				dprintf(DEBUG_DEBUG, "[viasatEitThread] skipping to next filter(%d) (> DMX_TIMEOUT_SKIPPING)\n", dmxVIASAT.filter_index+1 );
+				dprintf(DEBUG_DEBUG, "[sectionsd] [viasatEitThread] skipping to next filter(%d) (> DMX_TIMEOUT_SKIPPING)\n", dmxVIASAT.filter_index+1 );
 				dmxVIASAT.change(dmxVIASAT.filter_index + 1);
 			}
 			else
@@ -4439,7 +4439,7 @@ static void *viasateitThread(void *)
 			TIMEVAL_TO_TIMESPEC(&now, &abs_wait);
 			abs_wait.tv_sec += TIME_EIT_SCHEDULED_PAUSE;
 			
-			dprintf(DEBUG_DEBUG, "dmxVIASAT: going to sleep for %d seconds...\n", TIME_EIT_SCHEDULED_PAUSE);
+			dprintf(DEBUG_DEBUG, "[sectionsd] dmxVIASAT: going to sleep for %d seconds...\n", TIME_EIT_SCHEDULED_PAUSE);
 
 			int rs = pthread_cond_timedwait( &dmxVIASAT.change_cond, &dmxVIASAT.start_stop_mutex, &abs_wait );
 
@@ -4447,20 +4447,20 @@ static void *viasateitThread(void *)
 
 			if (rs == ETIMEDOUT)
 			{
-				dprintf(DEBUG_DEBUG, "dmxVIASAT: waking up again - timed out\n");
+				dprintf(DEBUG_DEBUG, "[sectionsd] dmxVIASAT: waking up again - timed out\n");
 				// must call dmxFSEIT.change after! unpause otherwise dev is not open,
 				// dmxFSEIT.lastChanged will not be set, and filter is advanced the next iteration
 				// maybe .change should imply .real_unpause()? -- seife
-				dprintf(DEBUG_DEBUG, "New Filterindex: %d (ges. %d)\n", 2, (signed) dmxVIASAT.filters.size() );
+				dprintf(DEBUG_DEBUG, "[sectionsd] New Filterindex: %d (ges. %d)\n", 2, (signed) dmxVIASAT.filters.size() );
 				dmxVIASAT.change(1); // -> restart
 			}
 			else if (rs == 0)
 			{
-				dprintf(DEBUG_DEBUG, "dmxVIASAT: waking up again - requested from .change()\n");
+				dprintf(DEBUG_DEBUG, "[sectionsd] dmxVIASAT: waking up again - requested from .change()\n");
 			}
 			else
 			{
-				dprintf(DEBUG_DEBUG, "dmxVIASAT:  waking up again - unknown reason %d\n",rs);
+				dprintf(DEBUG_DEBUG, "[sectionsd] dmxVIASAT:  waking up again - unknown reason %d\n",rs);
 			}
 			// update zeit after sleep
 			zeit = time_monotonic();
@@ -4471,7 +4471,7 @@ static void *viasateitThread(void *)
 
 			if ( dmxVIASAT.filter_index + 1 < (signed) dmxVIASAT.filters.size() )
 			{
-				dprintf(DEBUG_DEBUG, "[viasatEitThread] skipping to next filter(%d) (> TIME_FSEIT_SKIPPING)\n", dmxVIASAT.filter_index+1 );
+				dprintf(DEBUG_DEBUG, "[sectionsd] [viasatEitThread] skipping to next filter(%d) (> TIME_FSEIT_SKIPPING)\n", dmxVIASAT.filter_index+1 );
 				dmxVIASAT.change(dmxVIASAT.filter_index + 1);
 			}
 			else
@@ -4482,7 +4482,7 @@ static void *viasateitThread(void *)
 
 		if (rc <= (int)sizeof(struct SI_section_header))
 		{
-			dprintf(DEBUG_DEBUG, "%s rc < sizeof(SI_Section_header) (%d < %d)\n", __FUNCTION__, rc, sizeof(struct SI_section_header));
+			dprintf(DEBUG_DEBUG, "[sectionsd] %s rc < sizeof(SI_Section_header) (%d < %d)\n", __FUNCTION__, rc, sizeof(struct SI_section_header));
 			continue;
 		}
 
@@ -4547,7 +4547,7 @@ static void *viasateitThread(void *)
 			//dprintf(DEBUG_DEBUG, "[eitThread] skipped sections for table 0x%x\n", header.table_id);
 		}
 	} // for
-	dprintf(DEBUG_DEBUG, "[viasatEitThread] end\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] [viasatEitThread] end\n");
 
 	pthread_exit(NULL);
 }
@@ -4589,16 +4589,16 @@ static void *eitThread(void *)
 	int policy;
 	struct sched_param parm;
 	int rc = pthread_getschedparam(pthread_self(), &policy, &parm);
-	dprintf(DEBUG_DEBUG, "eitThread getschedparam: %d pol %d, prio %d\n", rc, policy, parm.sched_priority);
+	dprintf(DEBUG_DEBUG, "[sectionsd] eitThread getschedparam: %d pol %d, prio %d\n", rc, policy, parm.sched_priority);
 	
-	dprintf(DEBUG_DEBUG, "[%sThread] pid %d (%lu) start\n", "eit", getpid(), pthread_self());
+	dprintf(DEBUG_DEBUG, "[sectionsd] [%sThread] pid %d (%lu) start\n", "eit", getpid(), pthread_self());
 	
 	int timeoutsDMX = 0;
 	uint8_t *static_buf = new uint8_t[MAX_SECTION_LENGTH];
 
 	if (static_buf == NULL)
 	{
-		dprintf(DEBUG_DEBUG, "%s: could not allocate static_buf\n", __FUNCTION__);
+		dprintf(DEBUG_DEBUG, "[sectionsd] %s: could not allocate static_buf\n", __FUNCTION__);
 		pthread_exit(NULL);
 		//throw std::bad_alloc();
 	}
@@ -4663,18 +4663,18 @@ static void *eitThread(void *)
 						(dmxEIT.filter_index == 1 && !si->second->eitScheduleFlag()))
 				{
 					timeoutsDMX = 0;
-					dprintf(DEBUG_DEBUG, "[eitThread] timeoutsDMX for 0x"
+					dprintf(DEBUG_DEBUG, "[sectionsd] [eitThread] timeoutsDMX for 0x"
 						PRINTF_CHANNEL_ID_TYPE
 						" reset to 0 (not broadcast)\n", messaging_current_servicekey );
 
-					dprintf(DEBUG_DEBUG, "New Filterindex: %d (ges. %d)\n", dmxEIT.filter_index + 1, (signed) dmxEIT.filters.size() );
+					dprintf(DEBUG_DEBUG, "[sectionsd] New Filterindex: %d (ges. %d)\n", dmxEIT.filter_index + 1, (signed) dmxEIT.filters.size() );
 					dmxEIT.change( dmxEIT.filter_index + 1 );
 				}
 				else if (dmxEIT.filter_index >= 1)
 				{
 					if (dmxEIT.filter_index + 1 < (signed) dmxEIT.filters.size() )
 					{
-						dprintf(DEBUG_DEBUG, "[eitThread] New Filterindex: %d (ges. %d)\n", dmxEIT.filter_index + 1, (signed) dmxEIT.filters.size() );
+						dprintf(DEBUG_DEBUG, "[sectionsd] [eitThread] New Filterindex: %d (ges. %d)\n", dmxEIT.filter_index + 1, (signed) dmxEIT.filters.size() );
 						dmxEIT.change(dmxEIT.filter_index + 1);
 						//dprintf(DEBUG_DEBUG, "[eitThread] timeoutsDMX for 0x%x reset to 0 (skipping to next filter)\n" );
 						timeoutsDMX = 0;
@@ -4682,7 +4682,7 @@ static void *eitThread(void *)
 					else
 					{
 						sendToSleepNow = true;
-						dprintf(DEBUG_DEBUG, "sendToSleepNow = true\n");
+						dprintf(DEBUG_DEBUG, "[sectionsd] sendToSleepNow = true\n");
 					}
 				}
 			}
@@ -4691,7 +4691,7 @@ static void *eitThread(void *)
 
 		if (timeoutsDMX >= CHECK_RESTART_DMX_AFTER_TIMEOUTS && scanning && !channel_is_blacklisted)
 		{
-			dprintf(DEBUG_DEBUG, "[eitThread] skipping to next filter(%d) (> DMX_TIMEOUT_SKIPPING %d)\n", dmxEIT.filter_index+1, timeoutsDMX);
+			dprintf(DEBUG_DEBUG, "[sectionsd] [eitThread] skipping to next filter(%d) (> DMX_TIMEOUT_SKIPPING %d)\n", dmxEIT.filter_index+1, timeoutsDMX);
 			if ( dmxEIT.filter_index + 1 < (signed) dmxEIT.filters.size() )
 			{
 				dmxEIT.change(dmxEIT.filter_index + 1);
@@ -4718,7 +4718,7 @@ static void *eitThread(void *)
 				gettimeofday(&now, NULL);
 				TIMEVAL_TO_TIMESPEC(&now, &abs_wait);
 				abs_wait.tv_sec += TIME_EIT_SCHEDULED_PAUSE;
-				dprintf(DEBUG_DEBUG, "dmxEIT: going to sleep for %d seconds...\n", TIME_EIT_SCHEDULED_PAUSE);
+				dprintf(DEBUG_DEBUG, "[sectionsd] dmxEIT: going to sleep for %d seconds...\n", TIME_EIT_SCHEDULED_PAUSE);
 				if(sectionsd_stop)
 					break;
 
@@ -4729,17 +4729,17 @@ static void *eitThread(void *)
 
 			if (rs == ETIMEDOUT)
 			{
-				dprintf(DEBUG_DEBUG, "dmxEIT: waking up again - timed out\n");
-				dprintf(DEBUG_DEBUG, "New Filterindex: %d (ges. %d)\n", 2, (signed) dmxEIT.filters.size() );
+				dprintf(DEBUG_DEBUG, "[sectionsd] dmxEIT: waking up again - timed out\n");
+				dprintf(DEBUG_DEBUG, "[sectionsd] New Filterindex: %d (ges. %d)\n", 2, (signed) dmxEIT.filters.size() );
 				dmxEIT.change(1); // -> restart
 			}
 			else if (rs == 0)
 			{
-				dprintf(DEBUG_DEBUG, "dmxEIT: waking up again - requested from .change()\n");
+				dprintf(DEBUG_DEBUG, "[sectionsd] dmxEIT: waking up again - requested from .change()\n");
 			}
 			else
 			{
-				dprintf(DEBUG_DEBUG, "dmxEIT:  waking up again - unknown reason %d\n",rs);
+				dprintf(DEBUG_DEBUG, "[sectionsd] dmxEIT:  waking up again - unknown reason %d\n",rs);
 				dmxEIT.real_unpause();
 			}
 			// update zeit after sleep
@@ -4749,7 +4749,7 @@ static void *eitThread(void *)
 		{
 			readLockMessaging();
 
-			dprintf(DEBUG_DEBUG, "[eitThread] skipping to next filter(%d) (> TIME_EIT_SKIPPING)\n", dmxEIT.filter_index+1 );
+			dprintf(DEBUG_DEBUG, "[sectionsd] [eitThread] skipping to next filter(%d) (> TIME_EIT_SKIPPING)\n", dmxEIT.filter_index+1 );
 			if ( dmxEIT.filter_index + 1 < (signed) dmxEIT.filters.size() )
 			{
 				dmxEIT.change(dmxEIT.filter_index + 1);
@@ -4765,7 +4765,7 @@ static void *eitThread(void *)
 
 		if (rc < (int)sizeof(struct SI_section_header))
 		{
-			dprintf(DEBUG_DEBUG, "%s rc < sizeof(SI_Section_header) (%d < %d)\n", __FUNCTION__, rc, sizeof(struct SI_section_header));
+			dprintf(DEBUG_DEBUG, "[sectionsd] %s rc < sizeof(SI_Section_header) (%d < %d)\n", __FUNCTION__, rc, sizeof(struct SI_section_header));
 			continue;
 		}
 
@@ -4829,12 +4829,12 @@ static void *eitThread(void *)
 		} // if
 		else
 		{
-			printf("[eitThread] skipped sections for table 0x%x\n", header->table_id);
+			printf("[sectionsd] [eitThread] skipped sections for table 0x%x\n", header->table_id);
 		}
 	} // for
 	delete[] static_buf;
 
-	dprintf(DEBUG_DEBUG, "[sectionsd] eitThread ended\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] [sectionsd] eitThread ended\n");
 
 	pthread_exit(NULL);
 }
@@ -4854,7 +4854,7 @@ static void *cnThread(void *)
 	// set EIT filter  0x4e
 	dmxCN.addfilter(0x4e, 0xff); //0  current TS, current/next
 
-	dprintf(DEBUG_DEBUG, "[%sThread] pid %d (%lu) start\n", "cn", getpid(), pthread_self());
+	dprintf(DEBUG_DEBUG, "[sectionsd] [%sThread] pid %d (%lu) start\n", "cn", getpid(), pthread_self());
 	
 	t_channel_id time_trigger_last = 0;
 	int timeoutsDMX = 0;
@@ -4863,7 +4863,7 @@ static void *cnThread(void *)
 
 	if (static_buf == NULL)
 	{
-		dprintf(DEBUG_DEBUG, "%s: could not allocate static_buf\n", __FUNCTION__);
+		dprintf(DEBUG_DEBUG, "[sectionsd] %s: could not allocate static_buf\n", __FUNCTION__);
 		pthread_exit(NULL);
 		//throw std::bad_alloc();
 	}
@@ -4913,7 +4913,7 @@ static void *cnThread(void *)
 				if (!messaging_need_eit_version) 
 				{
 					unlockMessaging();
-					dprintf(DEBUG_DEBUG, "waiting for eit_version...\n");
+					dprintf(DEBUG_DEBUG, "[sectionsd] waiting for eit_version...\n");
 					zeit = time_monotonic();  /* reset so that we don't get negative */
 					eit_waiting_since = zeit; /* and still compensate for getSection */
 					dmxCN.lastChanged = zeit; /* this is ugly - needs somehting better */
@@ -4926,7 +4926,7 @@ static void *cnThread(void *)
 				
 				if (zeit - eit_waiting_since > TIME_EIT_VERSION_WAIT) 
 				{
-					dprintf(DEBUG_DEBUG, "waiting for more than %d seconds - bail out...\n", TIME_EIT_VERSION_WAIT);
+					dprintf(DEBUG_DEBUG, "[sectionsd] waiting for more than %d seconds - bail out...\n", TIME_EIT_VERSION_WAIT);
 					/* send event anyway, so that we know there is no EPG */
 					eventServer->sendEvent(CSectionsdClient::EVT_GOT_CN_EPG,
 							       CEventServer::INITID_SECTIONSD,
@@ -4949,7 +4949,7 @@ static void *cnThread(void *)
 			writeLockMessaging();
 			messaging_have_CN = messaging_got_CN;
 			unlockMessaging();
-			dprintf(DEBUG_DEBUG, "[cnThread] got current_next (0x%x) - sending event!\n", messaging_have_CN);
+			dprintf(DEBUG_DEBUG, "[sectionsd] [cnThread] got current_next (0x%x) - sending event!\n", messaging_have_CN);
 			eventServer->sendEvent(CSectionsdClient::EVT_GOT_CN_EPG,
 					       CEventServer::INITID_SECTIONSD,
 					       &messaging_current_servicekey,
@@ -4977,7 +4977,7 @@ static void *cnThread(void *)
 
 			dmxCN.real_pause();
 			
-			dprintf(DEBUG_DEBUG, "dmxCN: going to sleep...\n");
+			dprintf(DEBUG_DEBUG, "[sectionsd] dmxCN: going to sleep...\n");
 
 			writeLockMessaging();
 			messaging_eit_is_busy = false;
@@ -5017,7 +5017,7 @@ static void *cnThread(void *)
 
 			if (rs == 0)
 			{
-				dprintf(DEBUG_DEBUG, "dmxCN: waking up again - requested from .change()\n");
+				dprintf(DEBUG_DEBUG, "[sectionsd] dmxCN: waking up again - requested from .change()\n");
 				
 				// fix EPG problems on IPBox
 				// http://tuxbox-forum.dreambox-fan.de/forum/viewtopic.php?p=367937#p367937
@@ -5027,14 +5027,14 @@ static void *cnThread(void *)
 			}
 			else
 			{
-				dprintf(DEBUG_DEBUG, "dmxCN:  waking up again - unknown reason %d\n",rs);
+				dprintf(DEBUG_DEBUG, "[sectionsd] dmxCN:  waking up again - unknown reason %d\n",rs);
 				dmxCN.real_unpause();
 			}
 			zeit = time_monotonic();
 		}
 		else if (zeit > dmxCN.lastChanged + TIME_EIT_VERSION_WAIT && !messaging_need_eit_version)
 		{
-			dprintf(DEBUG_DEBUG, "zeit > dmxCN.lastChanged + TIME_EIT_VERSION_WAIT\n");
+			dprintf(DEBUG_DEBUG, "[sectionsd] zeit > dmxCN.lastChanged + TIME_EIT_VERSION_WAIT\n");
 			sendToSleepNow = true;
 			/* we can get here if we got the EIT version but no events */
 			/* send a "no epg" event anyway before going to sleep */
@@ -5051,7 +5051,7 @@ static void *cnThread(void *)
 
 		if (rc < (int)sizeof(struct SI_section_header))
 		{
-			dprintf(DEBUG_DEBUG, "%s: rc < sizeof(SI_Section_header) (%d < %d)\n", __FUNCTION__, rc, sizeof(struct SI_section_header));
+			dprintf(DEBUG_DEBUG, "[sectionsd] %s: rc < sizeof(SI_Section_header) (%d < %d)\n", __FUNCTION__, rc, sizeof(struct SI_section_header));
 			continue;
 		}
 
@@ -5096,7 +5096,7 @@ static void print_meminfo(void)
 {
 	struct mallinfo meminfo = mallinfo();
 	
-	dprintf(DEBUG_DEBUG, "total size of memory occupied by chunks handed out by malloc: %d\n"
+	dprintf(DEBUG_DEBUG, "[sectionsd] total size of memory occupied by chunks handed out by malloc: %d\n"
 		"total bytes memory allocated with `sbrk' by malloc, in bytes: %d (%dkB)\n",
 		meminfo.uordblks, meminfo.arena, meminfo.arena / 1024);
 }
@@ -5109,7 +5109,7 @@ static void *houseKeepingThread(void *)
 {
 	int count = 0;
 
-	dprintf(DEBUG_DEBUG, "housekeeping-thread started.\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] housekeeping-thread started.\n");
 	
 	pthread_setcanceltype (PTHREAD_CANCEL_ASYNCHRONOUS, 0);
 
@@ -5117,7 +5117,7 @@ static void *houseKeepingThread(void *)
 	{
 		if (count == META_HOUSEKEEPING) 
 		{
-			dprintf(DEBUG_DEBUG, "meta housekeeping - deleting all transponders, services, bouquets.\n");
+			dprintf(DEBUG_DEBUG, "[sectionsd] meta housekeeping - deleting all transponders, services, bouquets.\n");
 			deleteSIexceptEPG();
 			count = 0;
 		}
@@ -5134,23 +5134,23 @@ static void *houseKeepingThread(void *)
 				break;
 		}
 
-		dprintf(DEBUG_DEBUG, "housekeeping.\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] housekeeping.\n");
 
 		// TODO: maybe we need to stop scanning here?...
 
 		readLockEvents();
 
 		unsigned anzEventsAlt = mySIeventsOrderUniqueKey.size();
-		dprintf(DEBUG_DEBUG, "before removeoldevents\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] before removeoldevents\n");
 		unlockEvents();
 		removeOldEvents(oldEventsAre); // alte Events
-		dprintf(DEBUG_DEBUG, "after removeoldevents\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] after removeoldevents\n");
 		readLockEvents();
 		dprintf(DEBUG_DEBUG, "[sectionsd] Removed %d old events.\n", anzEventsAlt - mySIeventsOrderUniqueKey.size());
 		if (mySIeventsOrderUniqueKey.size() != anzEventsAlt)
 		{
 			print_meminfo();
-			dprintf(DEBUG_DEBUG, "Removed %d old events.\n", anzEventsAlt - mySIeventsOrderUniqueKey.size());
+			dprintf(DEBUG_DEBUG, "[sectionsd] Removed %d old events.\n", anzEventsAlt - mySIeventsOrderUniqueKey.size());
 		}
 		anzEventsAlt = mySIeventsOrderUniqueKey.size();
 		unlockEvents();
@@ -5163,20 +5163,20 @@ static void *houseKeepingThread(void *)
 		anzEventsAlt = mySIeventsOrderUniqueKey.size();
 		unlockEvents();
 #endif
-		dprintf(DEBUG_DEBUG, "before removewasteepg\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] before removewasteepg\n");
 
 		readLockEvents();
 		if (mySIeventsOrderUniqueKey.size() != anzEventsAlt)
 		{
 			print_meminfo();
-			dprintf(DEBUG_DEBUG, "Removed %d waste events.\n", anzEventsAlt - mySIeventsOrderUniqueKey.size());
+			dprintf(DEBUG_DEBUG, "[sectionsd] Removed %d waste events.\n", anzEventsAlt - mySIeventsOrderUniqueKey.size());
 		}
 
-		dprintf(DEBUG_DEBUG, "Number of sptr events (event-ID): %u\n", mySIeventsOrderUniqueKey.size());
-		dprintf(DEBUG_DEBUG, "Number of sptr events (service-id, start time, event-id): %u\n", mySIeventsOrderServiceUniqueKeyFirstStartTimeEventUniqueKey.size());
-		dprintf(DEBUG_DEBUG, "Number of sptr events (end time, service-id, event-id): %u\n", mySIeventsOrderFirstEndTimeServiceIDEventUniqueKey.size());
-		dprintf(DEBUG_DEBUG, "Number of sptr nvod events (event-ID): %u\n", mySIeventsNVODorderUniqueKey.size());
-		dprintf(DEBUG_DEBUG, "Number of cached meta-services: %u\n", mySIeventUniqueKeysMetaOrderServiceUniqueKey.size());
+		dprintf(DEBUG_DEBUG, "[sectionsd] Number of sptr events (event-ID): %u\n", mySIeventsOrderUniqueKey.size());
+		dprintf(DEBUG_DEBUG, "[sectionsd] Number of sptr events (service-id, start time, event-id): %u\n", mySIeventsOrderServiceUniqueKeyFirstStartTimeEventUniqueKey.size());
+		dprintf(DEBUG_DEBUG, "[sectionsd] Number of sptr events (end time, service-id, event-id): %u\n", mySIeventsOrderFirstEndTimeServiceIDEventUniqueKey.size());
+		dprintf(DEBUG_DEBUG, "[sectionsd] Number of sptr nvod events (event-ID): %u\n", mySIeventsNVODorderUniqueKey.size());
+		dprintf(DEBUG_DEBUG, "[sectionsd] Number of cached meta-services: %u\n", mySIeventUniqueKeysMetaOrderServiceUniqueKey.size());
 
 		unlockEvents();
 
@@ -5185,7 +5185,7 @@ static void *houseKeepingThread(void *)
 		count++;
 
 	} // for endlos
-	dprintf(DEBUG_DEBUG, "housekeeping-thread ended.\n");
+	dprintf(DEBUG_DEBUG, "[sectionsd] housekeeping-thread ended.\n");
 
 	pthread_exit(NULL);
 }
@@ -5200,7 +5200,7 @@ static void readEPGFilter(void)
 
 	if (filter_parser != NULL)
 	{
-		dprintf(DEBUG_DEBUG, "Reading EPGFilters\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] Reading EPGFilters\n");
 
 		_xmlNodePtr filter = xmlDocGetRootElement(filter_parser);
 		if (xmlGetNumericAttribute(filter, "is_whitelist", 10) == 1)
@@ -5235,7 +5235,7 @@ static void readDVBTimeFilter(void)
 
 	if (filter_parser != NULL)
 	{
-		dprintf(DEBUG_DEBUG, "Reading DVBTimeFilters\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] Reading DVBTimeFilters\n");
 
 		_xmlNodePtr filter = xmlDocGetRootElement(filter_parser);
 		filter = filter->xmlChildrenNode;
@@ -5267,7 +5267,7 @@ void sectionsd_main_thread(void */*data*/)
 
 	struct sched_param parm;
 
-	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: startup, tid %ld\n", syscall(__NR_gettid));
+	dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_main_thread: startup, tid %ld\n", syscall(__NR_gettid));
 
 	// load languages
 	SIlanguage::loadLanguages();
@@ -5310,7 +5310,7 @@ void sectionsd_main_thread(void */*data*/)
 
 	if (!sectionsd_server.prepare(SECTIONSD_UDS_NAME)) 
 	{
-		dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to prepare basic server\n");
+		dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_main_thread: failed to prepare basic server\n");
 		return;
 	}
 	
@@ -5321,7 +5321,7 @@ void sectionsd_main_thread(void */*data*/)
 
 	if (rc) 
 	{
-		dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create time-thread (rc=%d)\n", rc);
+		dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_main_thread: failed to create time-thread (rc=%d)\n", rc);
 		return;
 	}
 
@@ -5332,7 +5332,7 @@ void sectionsd_main_thread(void */*data*/)
 
 		if (rc) 
 		{
-			dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create eit-thread (rc=%d)\n", rc);
+			dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_main_thread: failed to create eit-thread (rc=%d)\n", rc);
 			return;
 		}
 
@@ -5341,7 +5341,7 @@ void sectionsd_main_thread(void */*data*/)
 
 		if (rc) 
 		{
-			dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create eit-thread (rc=%d)\n", rc);
+			dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_main_thread: failed to create eit-thread (rc=%d)\n", rc);
 			return;
 		}
 
@@ -5350,7 +5350,7 @@ void sectionsd_main_thread(void */*data*/)
 
 		if (rc) 
 		{
-			dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create fseit-thread (rc=%d)\n", rc);
+			dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_main_thread: failed to create fseit-thread (rc=%d)\n", rc);
 			return;
 		}
 		
@@ -5359,7 +5359,7 @@ void sectionsd_main_thread(void */*data*/)
 
 		if (rc) 
 		{
-			dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create viasateit-thread (rc=%d)\n", rc);
+			dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_main_thread: failed to create viasateit-thread (rc=%d)\n", rc);
 			return;
 		}
 	}
@@ -5369,13 +5369,13 @@ void sectionsd_main_thread(void */*data*/)
 
 	if (rc) 
 	{
-		dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create housekeeping-thread (rc=%d)\n", rc);
+		dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_main_thread: failed to create housekeeping-thread (rc=%d)\n", rc);
 		return;
 	}
 
 	int policy;
 	rc = pthread_getschedparam(pthread_self(), &policy, &parm);
-	dprintf(DEBUG_DEBUG, "sectionsd_main_thread: mainloop getschedparam %d policy %d prio %d\n", rc, policy, parm.sched_priority);
+	dprintf(DEBUG_DEBUG, "[sectionsd] sectionsd_main_thread: mainloop getschedparam %d policy %d prio %d\n", rc, policy, parm.sched_priority);
 	
 	sectionsd_ready = true;
 	
@@ -5420,12 +5420,12 @@ void sectionsd_main_thread(void */*data*/)
 		usleep(20000);
 	}
 
-	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: stopping...\n");
+	dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_main_thread: stopping...\n");
 	
 	scanning = 0;
 	timeset = true;
 	
-	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: broadcasting...\n");
+	dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_main_thread: broadcasting...\n");
 	
 	pthread_mutex_lock(&timeIsSetMutex);
 	pthread_cond_broadcast(&timeIsSetCond);
@@ -5446,7 +5446,7 @@ void sectionsd_main_thread(void */*data*/)
 		pthread_mutex_unlock(&dmxCN.start_stop_mutex);
 	}
 
-	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: pausing...\n");
+	dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_main_thread: pausing...\n");
 	
 	if(FrontendCount)
 	{
@@ -5493,7 +5493,7 @@ void sectionsd_main_thread(void */*data*/)
 		dmxVIASAT.close();
 	}
 
-	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: ended\n");
+	dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_main_thread: ended\n");
 
 	return;
 }
@@ -5501,7 +5501,7 @@ void sectionsd_main_thread(void */*data*/)
 /* was: commandAllEventsChannelID sendAllEvents */
 void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventList &eList, char search = 0, std::string search_text = "")
 {
-	dprintf(DEBUG_NORMAL, "sectionsd_getEventsServiceKey:sendAllEvents for " PRINTF_CHANNEL_ID_TYPE "\n", serviceUniqueKey&0xFFFFFFFFFFFFULL);
+	dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd_getEventsServiceKey:sendAllEvents for " PRINTF_CHANNEL_ID_TYPE "\n", serviceUniqueKey&0xFFFFFFFFFFFFULL);
 
 	if ((serviceUniqueKey& 0xFFFFFFFFFFFFULL) != 0) 
 	{ 
@@ -5791,7 +5791,7 @@ void sectionsd_getCurrentNextServiceKey(t_channel_id uniqueServiceKey, CSections
 	if (change && !messaging_eit_is_busy && (time_monotonic() - messaging_last_requested) < 11) 
 	{
 		/* restart dmxCN, but only if it is not already running, and only for 10 seconds */
-		dprintf(DEBUG_DEBUG, "change && !messaging_eit_is_busy => dmxCN.change(0)\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] change && !messaging_eit_is_busy => dmxCN.change(0)\n");
 		dmxCN.change(0);
 	}
 }
@@ -5800,7 +5800,7 @@ void sectionsd_getCurrentNextServiceKey(t_channel_id uniqueServiceKey, CSections
 bool sectionsd_getEPGidShort(event_id_t epgID, CShortEPGData * epgdata)
 {
 	bool ret = false;
-	dprintf(DEBUG_DEBUG, "Request of current EPG for 0x%llx\n", epgID);
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of current EPG for 0x%llx\n", epgID);
 
 	readLockEvents();
 
@@ -5808,14 +5808,14 @@ bool sectionsd_getEPGidShort(event_id_t epgID, CShortEPGData * epgdata)
 
 	if (e.service_id != 0)
 	{	// Event found
-		dprintf(DEBUG_DEBUG, "EPG found.\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] EPG found.\n");
 		epgdata->title = e.getName();
 		epgdata->info1 = e.getText();
 		epgdata->info2 = e.getExtendedText();
 		ret = true;
 	} 
 	else
-		dprintf(DEBUG_DEBUG, "EPG not found!\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] EPG not found!\n");
 	unlockEvents();
 	
 	return ret;
@@ -5825,7 +5825,7 @@ bool sectionsd_getEPGidShort(event_id_t epgID, CShortEPGData * epgdata)
 bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData * epgdata)
 {
 	bool ret = false;
-	dprintf(DEBUG_DEBUG, "Request of actual EPG for 0x%llx 0x%lx\n", epgID, startzeit);
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of actual EPG for 0x%llx 0x%lx\n", epgID, startzeit);
 
 	const SIevent& evt = findSIeventForEventUniqueKey(epgID);
 
@@ -5843,11 +5843,11 @@ bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData
 
 		if (t == evt.times.end()) 
 		{
-			dprintf(DEBUG_DEBUG, "EPG not found!\n");
+			dprintf(DEBUG_DEBUG, "[sectionsd] EPG not found!\n");
 		} 
 		else 
 		{
-			dprintf(DEBUG_DEBUG, "EPG found.\n");
+			dprintf(DEBUG_DEBUG, "[sectionsd] EPG found.\n");
 			epgdata->eventID = evt.uniqueKey();
 			epgdata->title = evt.getName();
 			epgdata->info1 = evt.getText();
@@ -5866,7 +5866,7 @@ bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData
 	} 
 	else 
 	{
-		dprintf(DEBUG_DEBUG, "EPG not found!\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] EPG not found!\n");
 	}
 	
 	unlockEvents();
@@ -5880,7 +5880,7 @@ bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGD
 	SIevent evt;
 	SItime zeit(0, 0);
 
-	dprintf(DEBUG_DEBUG, "[commandActualEPGchannelID] Request of current EPG for " PRINTF_CHANNEL_ID_TYPE "\n", uniqueServiceKey);
+	dprintf(DEBUG_DEBUG, "[sectionsd] [commandActualEPGchannelID] Request of current EPG for " PRINTF_CHANNEL_ID_TYPE "\n", uniqueServiceKey);
 
 	readLockEvents();
 	if (uniqueServiceKey == messaging_current_servicekey) 
@@ -5908,13 +5908,13 @@ bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGD
 
 	if (evt.service_id == 0)
 	{
-		dprintf(DEBUG_DEBUG, "[commandActualEPGchannelID] evt.service_id == 0 ==> no myCurrentEvent!\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] [commandActualEPGchannelID] evt.service_id == 0 ==> no myCurrentEvent!\n");
 		evt = findActualSIeventForServiceUniqueKey(uniqueServiceKey, zeit);
 	}
 
 	if (evt.service_id != 0)
 	{
-		dprintf(DEBUG_DEBUG, "EPG found.\n");
+		dprintf(DEBUG_DEBUG, "[sectionsd] EPG found.\n");
 		epgdata->eventID = evt.uniqueKey();
 		epgdata->title = evt.getName();
 		epgdata->info1 = evt.getText();
@@ -6026,7 +6026,7 @@ void sectionsd_getChannelEvents(CChannelEventList &eList, const bool tv_mode = t
 bool sectionsd_getComponentTagsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::ComponentTagList& tags)
 {
 	bool ret = false;
-	dprintf(DEBUG_DEBUG, "Request of ComponentTags for 0x%llx\n", uniqueKey);
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of ComponentTags for 0x%llx\n", uniqueKey);
 
 	tags.clear();
 
@@ -6057,7 +6057,7 @@ bool sectionsd_getComponentTagsUniqueKey(const event_id_t uniqueKey, CSectionsdC
 bool sectionsd_getLinkageDescriptorsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::LinkageDescriptorList& descriptors)
 {
 	bool ret = false;
-	dprintf(DEBUG_DEBUG, "Request of LinkageDescriptors for 0x%llx\n", uniqueKey);
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of LinkageDescriptors for 0x%llx\n", uniqueKey);
 
 	descriptors.clear();
 	readLockEvents();
@@ -6089,7 +6089,7 @@ bool sectionsd_getLinkageDescriptorsUniqueKey(const event_id_t uniqueKey, CSecti
 bool sectionsd_getNVODTimesServiceKey(const t_channel_id uniqueServiceKey, CSectionsdClient::NVODTimesList& nvod_list)
 {
 	bool ret = false;
-	dprintf(DEBUG_DEBUG, "Request of NVOD times for " PRINTF_CHANNEL_ID_TYPE "\n", uniqueServiceKey);
+	dprintf(DEBUG_DEBUG, "[sectionsd] Request of NVOD times for " PRINTF_CHANNEL_ID_TYPE "\n", uniqueServiceKey);
 
 	nvod_list.clear();
 
@@ -6099,7 +6099,7 @@ bool sectionsd_getNVODTimesServiceKey(const t_channel_id uniqueServiceKey, CSect
 	MySIservicesNVODorderUniqueKey::iterator si = mySIservicesNVODorderUniqueKey.find(uniqueServiceKey);
 	if (si != mySIservicesNVODorderUniqueKey.end())
 	{
-		dprintf(DEBUG_DEBUG, "NVODServices: %u\n", si->second->nvods.size());
+		dprintf(DEBUG_DEBUG, "[sectionsd] NVODServices: %u\n", si->second->nvods.size());
 
 		if (si->second->nvods.size()) {
 			for (SInvodReferences::iterator ni = si->second->nvods.begin(); ni != si->second->nvods.end(); ++ni) {
@@ -6138,7 +6138,7 @@ bool sectionsd_isReady(void)
 
 void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_transport_stream_id _tsid, t_service_id _sid)
 {
-	dprintf(DEBUG_NORMAL, "sectionsd:insertEventsfromHttp: url:%s\n", url.c_str());
+	dprintf(DEBUG_NORMAL, "[sectionsd] sectionsd:insertEventsfromHttp: url:%s\n", url.c_str());
 
 	if(!g_settings.epg_enable_online_epg)
 		return;

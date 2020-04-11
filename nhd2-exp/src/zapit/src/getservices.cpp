@@ -144,7 +144,7 @@ void ParseTransponders(_xmlNodePtr node, t_satellite_position satellitePosition,
 		ret = transponders.insert (std::pair <transponder_id_t, transponder> ( tid, transponder(transport_stream_id, feparams, polarization, original_network_id)));
 		
 		if (ret.second == false)
-			printf("[zapit] duplicate transponder id %llx freq %d\n", tid, feparams.frequency);
+			printf("[getservices] duplicate transponder id %llx freq %d\n", tid, feparams.frequency);
 
 		// read channels that belong to the current transponder
 		ParseChannels(node->xmlChildrenNode, transport_stream_id, original_network_id, satellitePosition, freq, polarization);
@@ -195,7 +195,7 @@ void ParseChannels(_xmlNodePtr node, const t_transport_stream_id transport_strea
 		if (remove) 
 		{
 			int result = allchans.erase(chid);
-			dprintf(DEBUG_INFO, "%s '%s' (sid=0x%x): %s", add ? "replacing" : "removing", name.c_str(), service_id, result ? "succeded.\n" : "FAILED!\n");
+			dprintf(DEBUG_INFO, "[getservices] %s '%s' (sid=0x%x): %s", add ? "replacing" : "removing", name.c_str(), service_id, result ? "succeded.\n" : "FAILED!\n");
 		}
 
 		if(!add) 
@@ -225,7 +225,7 @@ void ParseChannels(_xmlNodePtr node, const t_transport_stream_id transport_strea
 
 		if(ret.second == false) 
 		{
-			dprintf(DEBUG_DEBUG, "getSevices:ParseChannels: duplicate channel %s id %llx freq %d (old %s at %d)\n", name.c_str(), chid, freq, ret.first->second.getName().c_str(), ret.first->second.getFreqId());
+			dprintf(DEBUG_DEBUG, "[getservices] ParseChannels: duplicate channel %s id %llx freq %d (old %s at %d)\n", name.c_str(), chid, freq, ret.first->second.getName().c_str(), ret.first->second.getFreqId());
 		} 
 		else 
 		{
@@ -288,7 +288,7 @@ void FindTransponder(_xmlNodePtr search)
 				}
 			}
 			
-			dprintf(DEBUG_NORMAL, "getservices:FindTransponder: going to parse dvb-%c provider %s\n", xmlGetName(search)[0], xmlGetAttribute(search, "name"));
+			dprintf(DEBUG_NORMAL, "[getservices] FindTransponder: going to parse dvb-%c provider %s\n", xmlGetName(search)[0], xmlGetAttribute(search, "name"));
 		}
 		else if ( !(strcmp(xmlGetName(search), "terrestrial")) && have_t)
 		{
@@ -303,14 +303,14 @@ void FindTransponder(_xmlNodePtr search)
 				}
 			}
 			
-			dprintf(DEBUG_NORMAL, "getservices:FindTransponder: going to parse dvb-%c provider %s\n", xmlGetName(search)[0], xmlGetAttribute(search, "name"));
+			dprintf(DEBUG_NORMAL, "[getservices] FindTransponder: going to parse dvb-%c provider %s\n", xmlGetName(search)[0], xmlGetAttribute(search, "name"));
 		}
 		else if ( !(strcmp(xmlGetName(search), "sat")) && have_s) 
 		{
 			Source = DVB_S;
 			satellitePosition = xmlGetSignedNumericAttribute(search, "position", 10);
 			
-			dprintf(DEBUG_NORMAL, "getservices:FindTransponder: going to parse dvb-%c provider %s position %d\n", xmlGetName(search)[0], xmlGetAttribute(search, "name"), satellitePosition);
+			dprintf(DEBUG_NORMAL, "[getservices] FindTransponder: going to parse dvb-%c provider %s position %d\n", xmlGetName(search)[0], xmlGetAttribute(search, "name"), satellitePosition);
 		}
 		else // unknow
 		{
@@ -419,7 +419,7 @@ int loadMotorPositions(void)
 	int spos = 0, mpos = 0, diseqc = 0, uncom = 0, com = 0, usals = 0, inuse;
 	int offH = 10600, offL = 9750, sw = 11700;
 
-	dprintf(DEBUG_NORMAL, "getservices:loadingmotorpositions...\n");
+	dprintf(DEBUG_NORMAL, "[getservices] loadingmotorpositions...\n");
 
 	if ((fd = fopen(SATCONFIG, "r"))) 
 	{
@@ -464,7 +464,7 @@ void SaveMotorPositions()
 	fd = fopen(SATCONFIG, "w");
 	if(fd == NULL) 
 	{
-		printf("[zapit] cannot open %s\n", SATCONFIG);
+		printf("[getservices] cannot open %s\n", SATCONFIG);
 		return;
 	}
 	
@@ -513,7 +513,7 @@ int loadTransponders()
 	
 	t_satellite_position position = 0; //first position
 
-	dprintf(DEBUG_NORMAL, "getServices:loadTransponders:\n");
+	dprintf(DEBUG_NORMAL, "[getservices] loadTransponders:\n");
 	
 	select_transponders.clear();
 	fake_tid = fake_nid = 0;
@@ -684,7 +684,7 @@ int loadServices(bool only_current)
 	_xmlDocPtr parser;
 	scnt = 0;
 
-	dprintf(DEBUG_NORMAL, "getServices:loadServices:\n");
+	dprintf(DEBUG_NORMAL, "[getservices] loadServices:\n");
 
 	if(only_current)
 		goto do_current;
@@ -731,13 +731,8 @@ int loadServices(bool only_current)
 		}
 	}
 
-	// webtv services
-	loadWebTVBouquet();
-
-	dprintf(DEBUG_NORMAL, "[zapit] %d services loaded (%d)...\n", scnt, allchans.size());
-
 do_current:
-	dprintf(DEBUG_DEBUG, "loading current services\n");
+	dprintf(DEBUG_DEBUG, "[getservices] loading current services\n");
 
 	if (scanSDT && (parser = parseXmlFile(CURRENTSERVICES_XML))) 
 	{
@@ -764,6 +759,11 @@ do_current:
 			xmlFreeDoc(parser);
 		}
 	}
+
+	// webtv services
+	loadWebTVBouquet();
+
+	dprintf(DEBUG_NORMAL, "[getservices] services loaded (%d)...\n", allchans.size());
 
 	return 0;
 }
@@ -794,7 +794,7 @@ void SaveServices(bool tocopy)
 	sat_iterator_t spos_it;
 	updated = 0;
 
-	dprintf(DEBUG_INFO, "total channels: %d\n", allchans.size());
+	dprintf(DEBUG_INFO, "[getservices] total channels: %d\n", allchans.size());
 	
 	fd = fopen(SERVICES_TMP, "w");
 	if(!fd) 
@@ -822,7 +822,7 @@ void SaveServices(bool tocopy)
 
 			if(satpos != spos_it->first) 
 			{
-				dprintf(DEBUG_DEBUG, "Sat position %d not found !!\n", satpos);
+				dprintf(DEBUG_DEBUG, "[getservices] Sat position %d not found !!\n", satpos);
 
 				continue;
 			}
@@ -975,17 +975,17 @@ void SaveServices(bool tocopy)
 		unlink(SERVICES_TMP);
 	}
 
-	dprintf(DEBUG_INFO, "processed channels: %d\n", processed);
+	dprintf(DEBUG_INFO, "[getservices] processed channels: %d\n", processed);
 }
 
 // webtv
-void loadWebTVBouquet(void)
+void parseWebTVServices(std::string filename)
 {
-	std::string filename = g_settings.webtv_userBouquet;
+	//std::string filename = g_settings.webtv_userBouquet;
 	
 	int cnt = 0;
 
-	dprintf(DEBUG_NORMAL, "[getservices] loadWebTVBouquet: parsing %s\n", filename.c_str());
+	dprintf(DEBUG_NORMAL, "[getservices] parseWebTVServices: parsing %s\n", filename.c_str());
 
 	_xmlDocPtr parser = NULL;
 	
@@ -1002,18 +1002,6 @@ void loadWebTVBouquet(void)
 		playlist = true;
 	if( strcasecmp("xml", extension.c_str()) == 0)
 		webtv = true;
-
-	//removeExtension(name);
-
-	//CZapitBouquet *newBouquet = addBouquet(name, true, false, true);
-	//CZapitBouquet *newBouquet = addBouquetIfNotExist(name);
-	//newBouquet->bWebTV = true;
-	//newBouquet->bUser = true;
-
-	// remove from allchan
-
-	// clear webtvChannels
-	//newBouquet->webtvChannels.clear();
 	
 	if(iptv)
 	{
@@ -1062,13 +1050,6 @@ void loadWebTVBouquet(void)
 
 					if (chan != NULL) 
 					{
-						//chan->setNumber(cnt);
-						//chan->setServiceType(ST_WEBTV);
-						//chan->isWebTV = true;
-
-						//newBouquet->addService(chan);
-
-						//
 						allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 
 					}
@@ -1130,12 +1111,6 @@ void loadWebTVBouquet(void)
 
 						if (chan != NULL) 
 						{
-							//chan->setNumber(cnt);
-							//chan->setServiceType(ST_WEBTV);
-
-							//newBouquet->addService(chan);
-
-							//
 							allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 						}
 					}
@@ -1187,12 +1162,6 @@ void loadWebTVBouquet(void)
 
 						if (chan != NULL) 
 						{
-							//chan->setNumber(cnt);
-							//chan->setServiceType(ST_WEBTV);
-
-							//newBouquet->addService(chan);
-			
-							//
 							allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, url, description)));
 						}
 
@@ -1204,6 +1173,41 @@ void loadWebTVBouquet(void)
 
 		infile.close();
 	}
+
+	dprintf(DEBUG_NORMAL, "[getservices] parseWebTVServices: load %d WEBTV services\n", cnt);
+}
+
+void loadWebTVBouquet(void)
+{
+	dprintf(DEBUG_NORMAL, "[getservcices] loadWebTVBouquet:\n");
+
+#if 0
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("xml");
+	fileFilter.addFilter("tv");
+	fileFilter.addFilter("m3u");
+
+	CFileList filelist;
+
+	std::string Path_local = CONFIGDIR "/webtv";
+
+	std::string file;
+
+	// read list
+	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	{
+		for (unsigned int i = 0; i < filelist.size(); i++)
+		{
+			file = filelist[i].getName();
+
+			dprintf(DEBUG_NORMAL, "[getservcices] loadWebTVBouquet: load %s\n", file.c_str());
+
+			parseWebTVServices(file);
+		}
+	}
+#endif
+	parseWebTVServices(g_settings.webtv_userBouquet);
 }
 
 

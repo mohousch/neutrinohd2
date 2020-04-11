@@ -116,8 +116,6 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 	return res;
 }
 
-//const struct button_label FButtons = { NEUTRINO_ICON_BUTTON_RED, LOCALE_MAINSETTINGS_SAVESETTINGSNOW, NULL };
-
 void CZapitSetup::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CZapitSetup::showMenu:\n");
@@ -127,9 +125,6 @@ void CZapitSetup::showMenu()
 
 	zapit->setMode(MODE_SETUP);
 	zapit->enableShrinkMenu();
-
-	//zapit->setFooterButtons(&FButtons, 1);
-	//zapit->addKey(RC_red, this, "savesettings");
 	
 	int shortcut = 1;
 	

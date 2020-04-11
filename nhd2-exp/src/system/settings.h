@@ -389,7 +389,6 @@ struct SNeutrinoSettings
 	int virtual_zap_mode;
 	int channellist_ca;
 	int make_hd_list;
-	int channellist_extended;
 
 	// epg
 	int epg_save;
