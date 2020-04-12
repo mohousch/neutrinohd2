@@ -444,12 +444,23 @@ function testClistBoxWidget()
 	end
 end
 
+function testCWindow()
+	window = neutrino.CWindow()
+
+	window:enableCenterPos()
+	window:paint()
+	
+	neutrino.CWidget():exec(null, "")
+
+	window:hide()
+end
+
 -- main
 function main()
-	--showMenu()
 	--testCWidget()
 	--testClistBox()
 	testClistBoxWidget()
+	--testCWindow()
 end
 
 main()

@@ -1596,7 +1596,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	}
 }
 
-/// ClistBox
+//// ClistBox
 ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 {
 	frameBuffer = CFrameBuffer::getInstance();

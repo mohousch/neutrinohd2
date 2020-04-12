@@ -87,6 +87,14 @@ void CWindow::init(void)
 
 	itemType = WIDGET_ITEM_WINDOW;
 
+	// sanity check
+	if(cFrameBox.iHeight > ((int)frameBuffer->getScreenHeight() - 20))
+		cFrameBox.iHeight = frameBuffer->getScreenHeight() - 20;
+
+	// sanity check
+	if(cFrameBox.iWidth > (int)frameBuffer->getScreenWidth() - 20)
+		cFrameBox.iWidth = frameBuffer->getScreenWidth() - 20;
+
 	if(centerPos)
 	{
 		cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth) >> 1 );

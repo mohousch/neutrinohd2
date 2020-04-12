@@ -97,6 +97,14 @@ bool CWidget::hasItem()
 
 void CWidget::initFrames()
 {
+	// sanity check
+	if(mainFrameBox.iHeight > ((int)frameBuffer->getScreenHeight() - 20))
+		mainFrameBox.iHeight = frameBuffer->getScreenHeight() - 20;
+
+	// sanity check
+	if(mainFrameBox.iWidth > (int)frameBuffer->getScreenWidth() - 20)
+		mainFrameBox.iWidth = frameBuffer->getScreenWidth() - 20;
+
 	if(enableCenter)
 	{
 		mainFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - mainFrameBox.iWidth) >> 1 );
@@ -128,7 +136,7 @@ void CWidget::paint()
 
 	// paint mainFrame
 	if(paintMainFrame)
-		frameBuffer->paintBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight, backgroundColor);
+		frameBuffer->paintBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight, backgroundColor, RADIUS_MID, CORNER_ALL, nogradient);
 
 	// paint items
 	paintItems();
