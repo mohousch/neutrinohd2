@@ -57,7 +57,7 @@ class CTimerList : public CMenuTarget
 		uint32_t sec_timer_id;
 
 		void paint();
-		void hide();
+		int show();
 
 		unsigned int selected;
 		bool visible;			
@@ -80,12 +80,15 @@ class CTimerList : public CMenuTarget
 		int modifyTimer();
 		int newTimer();
 
+		void updateEvents(void);
+
 	public:
 		CTimerList();
 		~CTimerList();
-		void updateEvents(void);
-		int  show();
+		void hide();
 		int  exec(CMenuTarget* parent, const std::string & actionKey);
+
+		//
 		static const char * convertTimerType2String(const CTimerd::CTimerEventTypes type); // UTF-8
 		static std::string convertTimerRepeat2String(const CTimerd::CTimerEventRepeat rep); // UTF-8
 		static std::string convertChannelId2String(const t_channel_id id); // UTF-8

@@ -58,9 +58,8 @@ class CPluginList : public CMenuTarget
 		CMenuItem* item;
 
 	private:
-		CFrameBuffer* frameBuffer;
-
 		int selected;
+		void showMenu();
 
 	protected:
 		virtual CPluginList::result_ pluginSelected();
@@ -71,7 +70,6 @@ class CPluginList : public CMenuTarget
 
 		void hide();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
-		void showMenu();
 };
 
 class CPluginChooser : public CPluginList

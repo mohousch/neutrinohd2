@@ -1135,6 +1135,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 							msg = RC_timeout;
 							break;
 						case menu_return::RETURN_REPAINT:
+							hide();
 							initFrames();
 							paintHead();
 							paintFoot();

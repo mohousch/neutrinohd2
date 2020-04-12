@@ -304,6 +304,11 @@ int CExtendedInput::exec( CMenuTarget* parent, const std::string & )
 
 	onAfterExec();
 
+	if (value != NULL)
+        {
+                valueString = value;
+        }
+
 	if ((observ) && (msg == RC_ok))
 	{
 		observ->changeNotify(nameStringOption, value);

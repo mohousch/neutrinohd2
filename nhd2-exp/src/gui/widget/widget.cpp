@@ -270,6 +270,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 							msg = RC_timeout;
 							break;
 						case menu_return::RETURN_REPAINT:
+							hide();
 							initFrames();
 							paint();
 							break;
@@ -371,6 +372,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 										msg = RC_timeout;
 										break;
 									case menu_return::RETURN_REPAINT:
+										hide();
 										initFrames();
 										paint();
 										break;

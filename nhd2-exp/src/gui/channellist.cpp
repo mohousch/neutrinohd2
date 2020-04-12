@@ -1737,6 +1737,7 @@ void CChannelList::webTVBouquets(void)
 		// reload channels
 		g_Zapit->reinitChannels();
 		CNeutrinoApp::getInstance()->channelsInit();
+		CNeutrinoApp::getInstance()->channelList->adjustToChannelID(live_channel_id);
 	}
 }
 

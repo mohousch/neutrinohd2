@@ -165,7 +165,7 @@ int CMenuOptionChooser::getOptionValue(void) const
 	return *optionValue;
 }
 
-int CMenuOptionChooser::exec(CMenuTarget * parent)
+int CMenuOptionChooser::exec(CMenuTarget *parent)
 {
 	dprintf(DEBUG_DEBUG, "CMenuOptionChooser::exec:\n");
 
@@ -236,9 +236,6 @@ int CMenuOptionChooser::exec(CMenuTarget * parent)
 			}
 		}
 	}
-	
-	if(parent)
-		paint(true, true);
 	
 	if(observ)
 		wantsRepaint = observ->changeNotify(optionName, optionValue);

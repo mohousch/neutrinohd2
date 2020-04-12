@@ -160,52 +160,6 @@ int CMiscSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(parent)
 		parent->hide();
 	
-	if(actionKey == "savesettings")
-	{
-		CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
-		
-		return ret;
-	}
-	else if(actionKey == "logos_dir") 
-	{
-		if(parent)
-			parent->hide();
-		
-		CFileBrowser b;
-		b.Dir_Mode = true;
-		
-		if (b.exec(g_settings.logos_dir.c_str())) 
-		{
-			g_settings.logos_dir = b.getSelectedFile()->Name;
-
-			dprintf(DEBUG_NORMAL, "CMiscSettings::exec: new logos dir %s\n", b.getSelectedFile()->Name.c_str());
-		}
-
-		return ret;
-	}
-	else if(actionKey == "epgdir") 
-	{
-		if(parent)
-			parent->hide();
-		
-		CFileBrowser b;
-		b.Dir_Mode = true;
-		
-		if ( b.exec(g_settings.epg_dir.c_str())) 
-		{
-			const char * newdir = b.getSelectedFile()->Name.c_str();
-			if(check_dir(newdir))
-				printf("CNeutrinoApp::exec: Wrong/unsupported epg dir %s\n", newdir);
-			else
-			{
-				g_settings.epg_dir = b.getSelectedFile()->Name;
-				CNeutrinoApp::getInstance()->SendSectionsdConfig();
-			}
-		}
-
-		return ret;
-	}
-	
 	showMenu();
 	
 	return ret;
@@ -253,7 +207,7 @@ void CMiscSettings::showMenu(void)
 	miscSettings = NULL;
 }
 
-// general settings
+//// general settings
 // progressbar color
 #define PROGRESSBAR_COLOR_OPTION_COUNT 2
 const keyval PROGRESSBAR_COLOR_OPTIONS[PROGRESSBAR_COLOR_OPTION_COUNT] =
@@ -610,6 +564,8 @@ int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionK
 			audioDecoder->SetHdmiDD(g_settings.hdmi_dd );
 
 		CNeutrinoApp::getInstance()->SetupTiming();
+
+		return true;
 	}
 	else if(actionKey == "backup") 
 	{
@@ -633,6 +589,8 @@ int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionK
 			else
 				MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_SETTINGS_BACKUP_FAILED), mbrBack, mbBack, NEUTRINO_ICON_ERROR);
 		}
+
+		return true;
 	}
 	else if(actionKey == "restore") 
 	{
@@ -656,13 +614,15 @@ int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionK
 			
 			
 		}
+
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 
-// channellist settings
+//// channellist settings
 extern t_channel_id live_channel_id;
 
 CChannelListSettings::CChannelListSettings()
@@ -698,20 +658,28 @@ bool CChannelListSettings::changeNotify(const neutrino_locale_t OptionName, void
 {
 	dprintf(DEBUG_NORMAL, "CChannelListSettings::changeNotify:\n");
 	
-	if(ARE_LOCALES_EQUAL(OptionName, LOCALE_CHANNELLIST_MAKE_HDLIST)) 
+	if(ARE_LOCALES_EQUAL(OptionName, LOCALE_CHANNELLIST_MAKE_HDLIST)) // HD bouquet
 	{
 		CNeutrinoApp::getInstance()->channelsInit();
 		CNeutrinoApp::getInstance()->channelList->adjustToChannelID(live_channel_id);
 		
 		return true;
 	}
-	else if(ARE_LOCALES_EQUAL(OptionName, LOCALE_EXTRA_ZAPIT_MAKE_BOUQUET)) 
+	else if(ARE_LOCALES_EQUAL(OptionName, LOCALE_EXTRA_ZAPIT_MAKE_BOUQUET)) // rmains channel
 	{
 		setZapitConfig(&zapitCfg);
 		
 		g_Zapit->reinitChannels();
 		
 		return true;
+	}
+	else if(ARE_LOCALES_EQUAL(OptionName, LOCALE_ZAPIT_SCANSDT))
+	{
+		setZapitConfig(&zapitCfg);
+		bool ret = (MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SERVICEMENU_RESTART), mbrNo, mbNo | mbYes) == mbrYes);
+
+		if(ret)
+			CNeutrinoApp::getInstance()->ExitRun(CNeutrinoApp::RESTART);
 	}
 	
 	return false;
@@ -752,16 +720,16 @@ void CChannelListSettings::showMenu()
 	getZapitConfig(&zapitCfg);
 	
 	// other
-	miscSettingsChannelList.addItem(new CMenuOptionChooser(LOCALE_EXTRA_ZAPIT_MAKE_BOUQUET, (int *)&zapitCfg.makeRemainingChannelsBouquet, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscChannel++) ));
+	miscSettingsChannelList.addItem(new CMenuOptionChooser(LOCALE_EXTRA_ZAPIT_MAKE_BOUQUET, (int *)&zapitCfg.makeRemainingChannelsBouquet, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, this, CRCInput::convertDigitToKey(shortcutMiscChannel++) ));
 
 	// scanSDT
-	miscSettingsChannelList.addItem( new CMenuOptionChooser(LOCALE_ZAPIT_SCANSDT, (int *)&zapitCfg.scanSDT, SECTIONSD_SCAN_OPTIONS, SECTIONSD_SCAN_OPTIONS_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscChannel++)) );
+	miscSettingsChannelList.addItem( new CMenuOptionChooser(LOCALE_ZAPIT_SCANSDT, (int *)&zapitCfg.scanSDT, SECTIONSD_SCAN_OPTIONS, SECTIONSD_SCAN_OPTIONS_COUNT, true, this, CRCInput::convertDigitToKey(shortcutMiscChannel++)) );
 	
 	miscSettingsChannelList.exec(NULL, "");
 	miscSettingsChannelList.hide();
 }
 
-// epg settings
+//// epg settings
 CEPGSettings::CEPGSettings()
 {
 }
@@ -925,7 +893,7 @@ void CEPGSettings::showMenu()
 	onlineEPGNotifier = NULL;
 }
 
-// satipcast notifier
+// onlineepg notifier
 COnlineEPGNotifier::COnlineEPGNotifier(CMenuForwarder* m1, CMenuOptionChooser* m2, CMenuOptionChooser* m3)
 {
 	item1 = m1;
@@ -995,7 +963,7 @@ bool CEPGConfigNotifier::changeNotify(const neutrino_locale_t, void *)
         return true;
 }
 
-// filebrowser settings
+//// filebrowser settings
 CFileBrowserSettings::CFileBrowserSettings()
 {
 }

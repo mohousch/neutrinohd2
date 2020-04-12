@@ -277,7 +277,7 @@ CTimerList::~CTimerList()
 	timerlist.clear();
 }
 
-int CTimerList::exec(CMenuTarget* parent, const std::string& actionKey)
+int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CTimerList::exec: actionKey:%s\n", actionKey.c_str());
 
@@ -286,7 +286,7 @@ int CTimerList::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	const char * key = actionKey.c_str();
 	
-	CSelectChannelWidget*  CSelectChannelWidgetHandler;
+	CSelectChannelWidget * CSelectChannelWidgetHandler;
 	
 	if(actionKey == "tv")
 	{
@@ -295,6 +295,8 @@ int CTimerList::exec(CMenuTarget* parent, const std::string& actionKey)
 		
 		timerNew_chan_id = CSelectChannelWidgetHandler->getChanTVID();
 		timerNew_channel_name = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChanTVID());
+
+		this->getString() = timerNew_channel_name;
 		
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;
@@ -766,7 +768,7 @@ void CTimerList::paint()
 
 	//
 	listBox->setSelected(selected);
-	listBox->paint(/*reinit*/);
+	listBox->paint();
 
 	visible = true;
 }
@@ -888,8 +890,6 @@ const keyval MESSAGEBOX_NO_YES_OPTIONS[MESSAGEBOX_NO_YES_OPTION_COUNT] =
 	{ 1, LOCALE_MESSAGEBOX_YES, NULL }
 };
 
-const struct button_label newTimerButtons = { NEUTRINO_ICON_BUTTON_RED, LOCALE_TIMERLIST_SAVE, NULL };
-
 int CTimerList::modifyTimer()
 {
 	selected = listBox->getSelected();
@@ -902,12 +902,12 @@ int CTimerList::modifyTimer()
 	timerSettings.setMode(MODE_SETUP);
 	
 	// intros
-	//timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	//timerSettings.addItem(new CMenuSeparator(LINE));
+	timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	timerSettings.addItem(new CMenuSeparator(LINE));
 	
 	//
-	//timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "modifytimer", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	//timerSettings.addItem(new CMenuSeparator(LINE));
+	timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "modifytimer", RC_red, NEUTRINO_ICON_BUTTON_RED));
+	timerSettings.addItem(new CMenuSeparator(LINE));
 
 	char type[80];
 	strcpy(type, convertTimerType2String(timer->eventType)); // UTF
@@ -933,6 +933,7 @@ int CTimerList::modifyTimer()
 
 	CMenuForwarder *m5 = new CMenuForwarder(LOCALE_TIMERLIST_REPEATCOUNT, timer->eventRepeat != (int)CTimerd::TIMERREPEAT_ONCE, timerSettings_repeatCount.getValue(), &timerSettings_repeatCount);
 
+	// repeat
 	CTimerListRepeatNotifier notifier((int *)&timer->eventRepeat, m4, m5);
 	CMenuOptionChooser * m3 = new CMenuOptionChooser(LOCALE_TIMERLIST_REPEAT, (int *)&timer->eventRepeat, TIMERLIST_REPEAT_OPTIONS, TIMERLIST_REPEAT_OPTION_COUNT, true, &notifier);
 
@@ -980,13 +981,11 @@ int CTimerList::modifyTimer()
 	CMenuOptionChooser* ma4 = new CMenuOptionChooser(LOCALE_RECORDINGMENU_APIDS_AC3, &timer_apids_ac3, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, &apid_notifier);
 	timerSettings_apids.addItem(ma4);
 	apid_notifier.setItems(ma1,ma2,ma3,ma4);
+
 	if(timer->eventType ==  CTimerd::TIMER_RECORD)
 	{  
 		timerSettings.addItem( new CMenuForwarder(LOCALE_TIMERLIST_APIDS, true, NULL, &timerSettings_apids ));
 	}
-
-	timerSettings.setFooterButtons(&newTimerButtons, 1);
-	timerSettings.addKey(RC_red, this, "newtimer");
 
 	return timerSettings.exec(this, "");
 }
@@ -1010,43 +1009,55 @@ int CTimerList::newTimer()
 	timerSettings.setMode(MODE_SETUP);
 	
 	// intros
-	//timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	//timerSettings.addItem(new CMenuSeparator(LINE));
+	timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	timerSettings.addItem(new CMenuSeparator(LINE));
 	
 	//
-	//timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "newtimer", RC_red, NEUTRINO_ICON_BUTTON_RED));
-	//timerSettings.addItem(new CMenuSeparator(LINE));
+	timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "newtimer", RC_red, NEUTRINO_ICON_BUTTON_RED));
+	timerSettings.addItem(new CMenuSeparator(LINE));
 
+	// alarm time
 	CDateInput timerSettings_alarmTime(LOCALE_TIMERLIST_ALARMTIME, &(timerNew.alarmTime) , LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
 	CMenuForwarder *m1 = new CMenuForwarder(LOCALE_TIMERLIST_ALARMTIME, true, timerSettings_alarmTime.getValue(), &timerSettings_alarmTime );
 
+	// stop time
 	CDateInput timerSettings_stopTime(LOCALE_TIMERLIST_STOPTIME, &(timerNew.stopTime) , LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
 	CMenuForwarder *m2 = new CMenuForwarder(LOCALE_TIMERLIST_STOPTIME, true, timerSettings_stopTime.getValue(), &timerSettings_stopTime );
 
+	// weeks
 	CStringInput timerSettings_weekdays(LOCALE_TIMERLIST_WEEKDAYS, (char *)m_weekdaysStr.c_str(), 7, LOCALE_TIMERLIST_WEEKDAYS_HINT_1, LOCALE_TIMERLIST_WEEKDAYS_HINT_2, "-X");
 	CMenuForwarder *m4 = new CMenuForwarder(LOCALE_TIMERLIST_WEEKDAYS, false, m_weekdaysStr.c_str(), &timerSettings_weekdays);
 
+	// repeat count
 	CIntInput timerSettings_repeatCount(LOCALE_TIMERLIST_REPEATCOUNT, (int&)timerNew.repeatCount, 3, LOCALE_TIMERLIST_REPEATCOUNT_HELP1, LOCALE_TIMERLIST_REPEATCOUNT_HELP2);
 	CMenuForwarder *m5 = new CMenuForwarder(LOCALE_TIMERLIST_REPEATCOUNT, false, timerSettings_repeatCount.getValue(), &timerSettings_repeatCount);
 
 	CTimerListRepeatNotifier notifier((int *)&timerNew.eventRepeat, m4, m5);
 	
-	CMenuOptionChooser* m3 = new CMenuOptionChooser(LOCALE_TIMERLIST_REPEAT, (int *)&timerNew.eventRepeat, TIMERLIST_REPEAT_OPTIONS, TIMERLIST_REPEAT_OPTION_COUNT, true, &notifier);
+	// repeat
+	CMenuOptionChooser* m3 = new CMenuOptionChooser(LOCALE_TIMERLIST_REPEAT, (int *)&timerNew.eventRepeat, TIMERLIST_REPEAT_OPTIONS, TIMERLIST_REPEAT_OPTION_COUNT, true, &notifier, RC_nokey, "", true);
 	
+	// channel
 	CMenuForwarder *m6 = new CMenuForwarder(LOCALE_TIMERLIST_CHANNEL, true, timerNew_channel_name.c_str(), this, CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_tv? "tv" : CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio? "radio" : "webtv");
 
+	// recording dir
 	CMountChooser recDirs(LOCALE_TIMERLIST_RECORDING_DIR,NEUTRINO_ICON_SETTINGS, NULL, timerNew.recordingDir, g_settings.network_nfs_recordingdir);
+
 	if (!recDirs.hasItem())
 	{
 		dprintf(DEBUG_NORMAL, "CTimerList::modifyTimer: warning: no network devices available\n");
 	}
+
 	CMenuForwarder* m7 = new CMenuForwarder(LOCALE_TIMERLIST_RECORDING_DIR, recDirs.hasItem(), timerNew.recordingDir, &recDirs);
 
+	// sb
 	CMenuOptionChooser* m8 = new CMenuOptionChooser(LOCALE_TIMERLIST_STANDBY, &timerNew_standby_on, TIMERLIST_STANDBY_OPTIONS, TIMERLIST_STANDBY_OPTION_COUNT, false);
 
+	// message
 	CStringInputSMS timerSettings_msg(LOCALE_TIMERLIST_MESSAGE, timerNew.message);
 	CMenuForwarder *m9 = new CMenuForwarder(LOCALE_TIMERLIST_MESSAGE, false, timerNew.message, &timerSettings_msg );
 
+	// plugin
 	CPluginChooser plugin_chooser(timerNew.pluginName);
 	CMenuForwarder *m10 = new CMenuForwarder(LOCALE_TIMERLIST_PLUGIN, false, timerNew.pluginName, &plugin_chooser);
 
@@ -1068,9 +1079,6 @@ int CTimerList::newTimer()
 	timerSettings.addItem( m8);
 	timerSettings.addItem( m9);
 	timerSettings.addItem( m10);
-
-	timerSettings.setFooterButtons(&newTimerButtons, 1);
-	timerSettings.addKey(RC_red, this, "newtimer");
 
 	int ret = timerSettings.exec(this, "");
 

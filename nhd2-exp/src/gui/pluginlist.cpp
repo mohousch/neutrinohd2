@@ -63,8 +63,6 @@ extern CPlugins * g_PluginList;    /* neutrino.cpp */
 
 CPluginList::CPluginList()
 {
-	frameBuffer = CFrameBuffer::getInstance();
-
 	selected = 0;
 
 	plist = NULL;
@@ -77,8 +75,7 @@ CPluginList::~CPluginList()
 
 void CPluginList::hide()
 {
-	frameBuffer->paintBackground();
-	frameBuffer->blit();	
+	plist->hide();	
 }
 
 #define NUM_LIST_BUTTONS 3

@@ -68,6 +68,8 @@ class CExtendedInput : public CMenuTarget
 		neutrino_locale_t hint_2;
 
 		char * value;
+		std::string valueString;
+
 		CChangeObserver*   observ;
 		bool* cancel;
 
@@ -88,6 +90,7 @@ class CExtendedInput : public CMenuTarget
 		void addInputField( CExtendedInput_Item* );
 
 		bool getExitPressed(){return *cancel;};
+		virtual std::string& getString(void) { return valueString; };
 };
 
 
