@@ -463,7 +463,7 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 //
 void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_satellite_position _satellitePosition, const t_channel_id _new_channel_id, const bool _calledFromNumZap, int _epgpos)
 {
-	dprintf(DEBUG_NORMAL, "\n\nCInfoViewer::show:\n");
+	dprintf(DEBUG_NORMAL, "CInfoViewer::show:\n");
 
 	//
 	std::string ChannelName = _Channel;

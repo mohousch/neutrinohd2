@@ -845,7 +845,7 @@ int CChannelList::show()
 	// bouquets mode
 	if (bShowBouquetList)
 	{
-#if 1
+#if 0
 		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
 		{
 			webTVBouquets();

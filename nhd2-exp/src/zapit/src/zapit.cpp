@@ -1118,7 +1118,7 @@ CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in_nvod)
 
 		if (cit == nvodchannels.end()) 
 		{
-			dprintf(DEBUG_INFO, "[zapit] %s channel_id (%llx) AS NVOD not found\n", __FUNCTION__, channel_id);
+			dprintf(DEBUG_INFO, "[zapit] %s: channel_id (%llx) AS NVOD not found\n", __FUNCTION__, channel_id);
 			return NULL;
 		}
 	} 
@@ -1130,7 +1130,7 @@ CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in_nvod)
 
 		if (cit == allchans.end()) 
 		{
-			dprintf(DEBUG_INFO, "[zapit] %s channel_id (%llx) not found\n", __FUNCTION__, channel_id);
+			dprintf(DEBUG_INFO, "[zapit] %s: channel_id (%llx) not found\n", __FUNCTION__, channel_id);
 			return NULL;
 		}
 	}
@@ -1317,12 +1317,12 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0)
 	bool failed = false;
 	CZapitChannel * newchannel;
 
-	dprintf(DEBUG_NORMAL, "[zapit]  zapto channel id %llx nvod %d\n", channel_id, in_nvod);
+	dprintf(DEBUG_NORMAL, "[zapit] zapit: channel id %llx nvod %d\n", channel_id, in_nvod);
 
 	// find channel to zap
 	if( (newchannel = find_channel_tozap(channel_id, in_nvod)) == NULL ) 
 	{
-		dprintf(DEBUG_INFO, "[zapit] channel_id " PRINTF_CHANNEL_ID_TYPE " not found\n", channel_id);
+		dprintf(DEBUG_INFO, "[zapit] zapit: channel_id " PRINTF_CHANNEL_ID_TYPE " not found\n", channel_id);
 		return -1;
 	}
 	

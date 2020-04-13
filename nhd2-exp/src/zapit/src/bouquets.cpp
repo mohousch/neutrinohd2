@@ -515,7 +515,7 @@ void CBouquetManager::makeBouquetfromCurrentservices(const _xmlNodePtr root)
 
 void CBouquetManager::loadWebTVBouquet(void)
 {
-#if 0
+#if 1
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");
@@ -571,12 +571,13 @@ void CBouquetManager::loadWebTVBouquet(void)
 				std::string URL;
 				std::string url;
 				std::string description;
-				t_channel_id id = 0;
 		
 				if(f != NULL)
 				{
 					while(true)
 					{
+						t_channel_id id = 0;
+
 						char line[1024];
 						if (!fgets(line, 1024, f))
 							break;
@@ -689,14 +690,15 @@ void CBouquetManager::loadWebTVBouquet(void)
 				std::ifstream infile;
 				char cLine[1024];
 				char name[1024] = { 0 };
-				int duration;
-				std::string description;
-				t_channel_id id = 0;
 				
 				infile.open(filename.c_str(), std::ifstream::in);
 
 				while (infile.good())
 				{
+					int duration;
+					std::string description;
+					t_channel_id id = 0;
+
 					infile.getline(cLine, sizeof(cLine));
 					
 					// remove CR

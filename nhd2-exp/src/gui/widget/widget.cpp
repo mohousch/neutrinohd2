@@ -98,12 +98,12 @@ bool CWidget::hasItem()
 void CWidget::initFrames()
 {
 	// sanity check
-	if(mainFrameBox.iHeight > ((int)frameBuffer->getScreenHeight() - 20))
-		mainFrameBox.iHeight = frameBuffer->getScreenHeight() - 20;
+	if(mainFrameBox.iHeight > ((int)frameBuffer->getScreenHeight()))
+		mainFrameBox.iHeight = frameBuffer->getScreenHeight();
 
 	// sanity check
-	if(mainFrameBox.iWidth > (int)frameBuffer->getScreenWidth() - 20)
-		mainFrameBox.iWidth = frameBuffer->getScreenWidth() - 20;
+	if(mainFrameBox.iWidth > (int)frameBuffer->getScreenWidth())
+		mainFrameBox.iWidth = frameBuffer->getScreenWidth();
 
 	if(enableCenter)
 	{
