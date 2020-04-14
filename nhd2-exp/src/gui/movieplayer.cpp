@@ -488,6 +488,9 @@ void CMoviePlayerGui::PlayFile(void)
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIESTART));
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIEEND));
 
+
+	sec_timer_id = g_RCInput->addTimer(g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]);
+
 	// play loop
  go_repeat:
 	do {
@@ -666,10 +669,10 @@ void CMoviePlayerGui::PlayFile(void)
 
 			FileTime.show(filelist[selected].epgTitle, (filelist[selected].epgInfo1.empty())? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, (duration >= 10 && position >= 10)? (position / (duration / 100)) : 0, ac3state, speed, playstate, (filelist[selected].ytid.empty())? true : false);
 
-			time_t jetzt = time(NULL);
+			//time_t jetzt = time(NULL);
 
-			if((jetzt - timeStartShowingInfo) >= 60) // 60 sec
-				FileTime.hide();
+			//if((jetzt - timeStartShowingInfo) >= 30) // 60 sec
+			//	FileTime.hide();
 		}
 
 		// start playing
@@ -1436,6 +1439,11 @@ void CMoviePlayerGui::PlayFile(void)
 			exit = true;
 			g_RCInput->postMsg(msg, data);
 		}
+		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
+		{
+			if (FileTime.IsVisible()) 
+				FileTime.hide();
+		}
 		else 
 		{
 			if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
@@ -1483,6 +1491,9 @@ void CMoviePlayerGui::PlayFile(void)
 		
 		goto go_repeat;
 	}
+
+	g_RCInput->killTimer(sec_timer_id);
+	sec_timer_id = 0;
 }
 
 void CMoviePlayerGui::showHelpTS()

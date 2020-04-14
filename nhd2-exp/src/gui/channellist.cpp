@@ -845,7 +845,7 @@ int CChannelList::show()
 	// bouquets mode
 	if (bShowBouquetList)
 	{
-#if 0
+#if 1
 		if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
 		{
 			webTVBouquets();
@@ -1737,6 +1737,7 @@ void CChannelList::webTVBouquets(void)
 		// reload channels
 		g_Zapit->reinitChannels();
 		CNeutrinoApp::getInstance()->channelsInit();
+		CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_PROV, NeutrinoMessages::mode_webtv);
 		CNeutrinoApp::getInstance()->channelList->adjustToChannelID(live_channel_id);
 	}
 }

@@ -1672,7 +1672,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 	}
 	while ( msg != RC_timeout );
 
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget: retval: (%d) selected:%d\n\n", retval, selected);
+	dprintf(DEBUG_NORMAL, "ClistBoxWidget: retval: (%d) selected:%d\n", retval, selected);
 	
 	hide();	
 

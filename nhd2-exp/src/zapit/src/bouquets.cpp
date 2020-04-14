@@ -515,7 +515,7 @@ void CBouquetManager::makeBouquetfromCurrentservices(const _xmlNodePtr root)
 
 void CBouquetManager::loadWebTVBouquet(void)
 {
-#if 1
+#if 0
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");
@@ -529,7 +529,7 @@ void CBouquetManager::loadWebTVBouquet(void)
 	std::string filename;
 	std::string name;
 
-	int cnt = 1;
+	int cnt = 0;
 
 	// read list
 	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
@@ -561,14 +561,13 @@ void CBouquetManager::loadWebTVBouquet(void)
 
 			CZapitBouquet *newBouquet = addBouquetIfNotExist(name);
 			newBouquet->bWebTV = true;
-			newBouquet->bUser = false;
+			newBouquet->bUser = true;
 	
 			if(iptv)
 			{
 				FILE * f = fopen(filename.c_str(), "r");
 
 				std::string title;
-				std::string URL;
 				std::string url;
 				std::string description;
 		
@@ -576,7 +575,7 @@ void CBouquetManager::loadWebTVBouquet(void)
 				{
 					while(true)
 					{
-						t_channel_id id = 0;
+						//t_channel_id id = 0;
 
 						char line[1024];
 						if (!fgets(line, 1024, f))
@@ -601,20 +600,29 @@ void CBouquetManager::loadWebTVBouquet(void)
 							int offs = line[12] == ':' ? 14 : 13;
 			
 							title = line + offs;
-				
+
 							description = "stream";
 
-							if(id == 0)
-								id = create_channel_id64(0, 0, 0, 0, 0, url.c_str());
-					
-							CZapitChannel * chan = new CZapitChannel(title, id, url, description);
-
-							if (chan != NULL) 
+							if(!url.empty())
 							{
-								newBouquet->addService(chan);
-							}
+								//if(id == 0)
+								t_channel_id id = create_channel_id64(0, 0, 0, 0, 0, url.c_str());
+					
+								CZapitChannel * chan = new CZapitChannel(title, id, url, description);
 
-							cnt++;
+								if (chan != NULL) 
+								{
+									pair<map<t_channel_id, CZapitChannel>::iterator, bool> ret;
+									ret = allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+
+									if(ret.second == true)
+									{
+										newBouquet->addService(chan);
+
+										cnt++;
+									}
+								}
+							}
 						}
 					}
 			
@@ -638,14 +646,10 @@ void CBouquetManager::loadWebTVBouquet(void)
 					l0 = xmlDocGetRootElement(parser);
 					l1 = l0->xmlChildrenNode;
 			
-					neutrino_msg_t      msg;
-					neutrino_msg_data_t data;
-			
-					g_RCInput->getMsg(&msg, &data, 0);
 			
 					if (l1) 
 					{
-						while ( ((xmlGetNextOccurence(l1, "webtv")) || (xmlGetNextOccurence(l1, "station"))) && msg != RC_home) 
+						while ( ((xmlGetNextOccurence(l1, "webtv")) || (xmlGetNextOccurence(l1, "station")))) 
 						{
 							const char * title;
 							const char * url;
@@ -668,16 +672,21 @@ void CBouquetManager::loadWebTVBouquet(void)
 						
 								CZapitChannel * chan = new CZapitChannel(title, id, url,  description);
 
-
 								if (chan != NULL) 
 								{
-									newBouquet->addService(chan);
+									pair<map<t_channel_id, CZapitChannel>::iterator, bool> ret;
+									ret = allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+
+									if(ret.second == true)
+									{
+										newBouquet->addService(chan);
+
+										cnt++;
+									}
 								}
 							}
 
 							l1 = l1->xmlNextNode;
-							g_RCInput->getMsg(&msg, &data, 0);
-							cnt++;
 						}
 					}
 				}
@@ -689,7 +698,7 @@ void CBouquetManager::loadWebTVBouquet(void)
 			{
 				std::ifstream infile;
 				char cLine[1024];
-				char name[1024] = { 0 };
+				char title[1024] = { 0 };
 				
 				infile.open(filename.c_str(), std::ifstream::in);
 
@@ -697,7 +706,7 @@ void CBouquetManager::loadWebTVBouquet(void)
 				{
 					int duration;
 					std::string description;
-					t_channel_id id = 0;
+					//t_channel_id id = 0;
 
 					infile.getline(cLine, sizeof(cLine));
 					
@@ -705,7 +714,7 @@ void CBouquetManager::loadWebTVBouquet(void)
 					if(cLine[strlen(cLine) - 1] == '\r')
 						cLine[strlen(cLine) - 1] = 0;
 					
-					sscanf(cLine, "#EXTINF:%d,%[^\n]\n", &duration, name);
+					sscanf(cLine, "#EXTINF:%d,%[^\n]\n", &duration, title);
 					
 					if(strlen(cLine) > 0 && cLine[0] != '#')
 					{
@@ -716,17 +725,23 @@ void CBouquetManager::loadWebTVBouquet(void)
 							{
 								description = "stream";
 
-								if(id == 0)
-									id = create_channel_id64(0, 0, 0, 0, 0, url);
+								//if(id == 0)
+								t_channel_id id = create_channel_id64(0, 0, 0, 0, 0, url);
 					
-								CZapitChannel * chan = new CZapitChannel(name, id, url,  description);
+								CZapitChannel * chan = new CZapitChannel(title, id, url,  description);
 
 								if (chan != NULL) 
 								{
-									newBouquet->addService(chan);
-								}
+									pair<map<t_channel_id, CZapitChannel>::iterator, bool> ret;
+									ret = allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 
-								cnt++;
+									if(ret.second == true)
+									{
+										newBouquet->addService(chan);
+
+										cnt++;
+									}
+								}
 							}
 						}
 					}
@@ -736,6 +751,8 @@ void CBouquetManager::loadWebTVBouquet(void)
 			}
 		}
 	}
+
+	dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet: load %d WEBTV Channels (allchans:%d)\n", cnt, (int) allchans.size());
 #endif
 }
 
@@ -813,6 +830,7 @@ void CBouquetManager::makeRemainingChannelsBouquet(void)
 		}
 
 		// webtvChannels
+#if 0
 		for (vector<CZapitChannel*>::iterator jt = (*it)->webtvChannels.begin(); jt != (*it)->webtvChannels.end(); jt++) 
 		{
 			if(!(*jt)->number) 
@@ -821,7 +839,10 @@ void CBouquetManager::makeRemainingChannelsBouquet(void)
 			if(!(*jt)->pname && !(*it)->bUser) 
 				(*jt)->pname = (char *) (*it)->Name.c_str();
 		}
+#endif
 	}
+
+	printf("CBouquetManager::makeRemainingChannelsBouquet: webtvChannels: %d\n", k - 1);
 
 	if(!tomake)
 		return;
@@ -1029,10 +1050,10 @@ CZapitChannel *CBouquetManager::findChannelByName(std::string name, const t_serv
 	return NULL;
 }
 
-CBouquetManager::ChannelIterator::ChannelIterator(CBouquetManager* owner, const bool TV)
+CBouquetManager::ChannelIterator::ChannelIterator(CBouquetManager* owner, const CZapitClient::channelsMode Mode)
 {
 	Owner = owner;
-	tv = TV;
+	mode = Mode;
 
 	if (Owner->Bouquets.size() == 0)
 		c = -2;

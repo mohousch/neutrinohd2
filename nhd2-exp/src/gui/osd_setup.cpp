@@ -550,7 +550,7 @@ void COSDTimingSettings::showMenu()
 	}
 
 	osdTimingSettings.addItem(new CMenuSeparator(LINE));
-	osdTimingSettings.addItem(new CMenuForwarder(LOCALE_OPTIONS_DEFAULT, true, NULL, this, "osd.def"));
+	osdTimingSettings.addItem(new CMenuForwarder(LOCALE_OPTIONS_DEFAULT, true, NULL, this, "osd.def", RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 	
 	osdTimingSettings.exec(NULL, "");
 	osdTimingSettings.hide();

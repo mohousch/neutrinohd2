@@ -1525,13 +1525,13 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 		{
 			it->second.number = webtvi + 1;
 			webTVchannelList->putChannel(&(it->second));
-			//webtvBouquet->channelList->addChannel(&(it->second));
+			webtvBouquet->channelList->addChannel(&(it->second));
 
 			webtvi++;
 		}
 	}
 
-#if 0
+#if 1
 	webTVBouquetList->Bouquets.push_back(webtvBouquet);
 #endif
 	
@@ -1656,7 +1656,7 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit: got %d RADIO bouquets\n", bnum);
 
 	// webtv bouquets
-#if 1
+#if 0
 	bnum = 0;
 	for (i = 0; i < g_bouquetManager->Bouquets.size(); i++) 
 	{
@@ -1700,7 +1700,7 @@ void CNeutrinoApp::SetChannelMode(int newmode, int nMode)
 		"LIST_MODE_ALL"
 	};
 	
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetChannelMode: ChannelsMode%s nMode:%d\n", aLISTMODE[newmode], nMode);
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetChannelMode: ChannelsMode: %s nMode: %d\n", aLISTMODE[newmode], nMode);
 
 	// channelList
 	if(nMode == mode_radio)
@@ -1709,9 +1709,6 @@ void CNeutrinoApp::SetChannelMode(int newmode, int nMode)
 		channelList = TVchannelList;
 	else if(nMode == mode_webtv)
 		channelList = webTVchannelList;
-
-	//testing
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetChannelMode: channelList.size:%d\n", channelList->getSize());
 
 	// bouquetList
 	switch(newmode) 
@@ -1757,7 +1754,7 @@ void CNeutrinoApp::SetChannelMode(int newmode, int nMode)
 			}
 			else if(nMode == mode_webtv) 
 			{
-				bouquetList = webTVallList;
+				bouquetList = webTVBouquetList;
 			}
 			break;
 
@@ -2346,9 +2343,6 @@ void CNeutrinoApp::InitZapper()
 	{
 		webtvMode(false);
 	} 
-
-	//testing
-	printf("CNeutrinoApp::initZapper: channellist.size:%d\n", (int)channelList->getSize());
 
 	if(channelList->getSize() && live_channel_id)
 	{
@@ -3461,9 +3455,6 @@ void CNeutrinoApp::RealRun(void)
 					
 				// turn on LCD display
 				CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
-
-				//testing
-				printf("CNeutrinoApp::RealRun:channellist.size:%d\n", (int)channelList->getSize());
 					
 				if(show_info && channelList->getSize()) 
 				{
@@ -3643,12 +3634,9 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 			int old_b = bouquetList->getActiveBouquetNumber();
 			int old_mode = g_settings.channel_mode;
 
-			dprintf(DEBUG_NORMAL, "\n\nCNeutrinoApp::handleMsg: ZAP START:\n\n");
+			dprintf(DEBUG_NORMAL, "\n\nCNeutrinoApp::handleMsg: ZAP START:\n");
 			
 			dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: bouquetList %x size %d old_b %d\n", (size_t) bouquetList, bouquetList->Bouquets.size(), old_b);
-
-			//testing
-			//printf("CNeutrinoApp::handleMsg:channelList.size:%d\n", channelList->getSize());
 
 			if(bouquetList->Bouquets.size()) 
 			{
@@ -3657,9 +3645,6 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 
 			if( msg == RC_ok ) 
 			{
-				//testing
-				//printf("CNeutrinoApp::handleMsg:old_b: %d bouquetlist.size:%d channellist.size:%d\n", old_b, (int)bouquetList->Bouquets.size(), (int)bouquetList->Bouquets[old_b]->channelList->getSize());
-
 				if(bouquetList->Bouquets.size() && bouquetList->Bouquets[old_b]->channelList->getSize() > 0)
 					nNewChannel = bouquetList->Bouquets[old_b]->channelList->exec();	//with ZAP!
 				else
@@ -4419,7 +4404,7 @@ void CNeutrinoApp::ExitRun(int retcode)
 		if(g_Zapit)
 			delete g_Zapit;
 			
-		delete CVFD::getInstance();
+		//delete CVFD::getInstance();
 			
 		if (frameBuffer != NULL)
 			delete frameBuffer;

@@ -355,8 +355,11 @@ void CInfoViewer::showTitle(const int ChanNum, const std::string & Channel, cons
 			// because some sat-names are longer than : (CHANNUMBER_WIDTH + 70)
 			if (satNameWidth > ((BoxEndX - BoxStartX) / 3) ) 
 				satNameWidth = (BoxEndX - BoxStartX) / 3;
-				
-			g_SignalFont->RenderString( BoxStartX + BORDER_LEFT, BoxStartY + (SAT_INFOBOX_HEIGHT - satNameHeight)/2 + satNameHeight, satNameWidth, sit->second.name, COL_INFOBAR );
+			
+			if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
+				g_SignalFont->RenderString( BoxStartX + BORDER_LEFT, BoxStartY + (SAT_INFOBOX_HEIGHT - satNameHeight)/2 + satNameHeight, satNameWidth, "WebTV", COL_INFOBAR );
+			else	
+				g_SignalFont->RenderString( BoxStartX + BORDER_LEFT, BoxStartY + (SAT_INFOBOX_HEIGHT - satNameHeight)/2 + satNameHeight, satNameWidth, sit->second.name, COL_INFOBAR );
 		}
 	}
 
@@ -546,8 +549,6 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 	while (!(res & (messages_return::cancel_info | messages_return::cancel_all))) 
 	{
 		g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
-
-		dprintf(DEBUG_NORMAL, "CInfoViewer::show: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
 		sigscale->reset(); 
 		snrscale->reset(); 
@@ -917,7 +918,7 @@ void CInfoViewer::showIcon_Resolution() const
 			case 1980:
 				icon_name_res = NEUTRINO_ICON_RESOLUTION_UHD2;
 				//test
-				CVFD::getInstance()->ShowIcon(VFD_ICON_HD, true); //FIXME: remove this to remotecontrol
+				//CVFD::getInstance()->ShowIcon(VFD_ICON_HD, true); //FIXME: remove this to remotecontrol
 				break;
 
 			case 1920:
@@ -928,7 +929,7 @@ void CInfoViewer::showIcon_Resolution() const
 			case 720:
 				icon_name_res = NEUTRINO_ICON_RESOLUTION_HD2;
 				//test
-				CVFD::getInstance()->ShowIcon(VFD_ICON_HD, true); //FIXME: remove this to remotecontrol
+				//CVFD::getInstance()->ShowIcon(VFD_ICON_HD, true); //FIXME: remove this to remotecontrol
 				break;
 				
 			case 704:
@@ -941,12 +942,14 @@ void CInfoViewer::showIcon_Resolution() const
 			case 288:
 				icon_name_res = NEUTRINO_ICON_RESOLUTION_SD2;
 				//test
-				CVFD::getInstance()->ShowIcon(VFD_ICON_HD, false);
+				//CVFD::getInstance()->ShowIcon(VFD_ICON_HD, false);
 				break;
 				
 			default:
 				icon_name_res = NEUTRINO_ICON_RESOLUTION_000;
-				CVFD::getInstance()->ShowIcon(VFD_ICON_HD, false);
+
+				//testing
+				//CVFD::getInstance()->ShowIcon(VFD_ICON_HD, false);
 				break;	
 		}
 		
@@ -1760,6 +1763,8 @@ void CInfoViewer::showButton_Audio()
 	if(is_visible)
 		frameBuffer->paintIcon(dd_icon, BoxEndX - (BORDER_RIGHT + icon_w_subt + ICON_TO_ICON_OFFSET + icon_w_vtxt + ICON_TO_ICON_OFFSET + icon_w_dd), buttonBarStartY + (buttonBarHeight - icon_h_dd)/2 );
 	
+	//testing
+/*
 	if (ac3state == AC3_ACTIVE)
 	{
 		CVFD::getInstance()->ShowIcon(VFD_ICON_DOLBY, true);
@@ -1777,6 +1782,7 @@ void CInfoViewer::showButton_Audio()
 		CVFD::getInstance()->ShowIcon(VFD_ICON_MP3, true); //FIXME:@dbo: why???
 #endif
 	}
+*/
 }
 
 void CInfoViewer::killTitle()
@@ -1872,9 +1878,10 @@ void CInfoViewer::showIcon_CA_Status(int notfirst)
 		
 			frameBuffer->paintIcon( fta ? NEUTRINO_ICON_SCRAMBLED2_GREY : NEUTRINO_ICON_SCRAMBLED2, BoxEndX - (ICON_OFFSET + icon_w_subt + 2 + icon_w_vtxt + 2 + icon_w_dd + 2 + icon_w_aspect + 2 + icon_w_sd + 2 + icon_w_reso + 2 + icon_w_ca), buttonBarStartY + (buttonBarHeight - icon_h_ca)/2 );
 
-	#if !defined (PLATFORM_COOLSTREAM)
-			CVFD::getInstance()->ShowIcon(VFD_ICON_LOCK, !fta);
-	#endif			
+			//testing
+#if !defined (PLATFORM_COOLSTREAM)
+			//CVFD::getInstance()->ShowIcon(VFD_ICON_LOCK, !fta);
+#endif			
 			return;
 		}
 	}

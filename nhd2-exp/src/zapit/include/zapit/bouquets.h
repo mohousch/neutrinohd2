@@ -75,12 +75,22 @@ class CBouquetManager
 		{
 			private:
 				CBouquetManager * Owner;
-				bool tv;           // true -> tvChannelIterator, false -> radioChannelIterator
+				//bool tv;           // true -> tvChannelIterator, false -> radioChannelIterator
+				CZapitClient::channelsMode mode;
 				unsigned int b;
 				int c;
-				ZapitChannelList* getBouquet() { return (tv ? &(Owner->Bouquets[b]->tvChannels) : &(Owner->Bouquets[b]->radioChannels)); };
+				ZapitChannelList* getBouquet() 
+				{ 
+					//return (tv ? &(Owner->Bouquets[b]->tvChannels) : &(Owner->Bouquets[b]->radioChannels)); 
+					if (mode == CZapitClient::MODE_TV)
+						return &(Owner->Bouquets[b]->tvChannels);
+					else if (mode == CZapitClient::MODE_RADIO)
+						return &(Owner->Bouquets[b]->radioChannels);
+					if (mode == CZapitClient::MODE_WEBTV)
+						return &(Owner->Bouquets[b]->webtvChannels);
+				};
 			public:
-				ChannelIterator(CBouquetManager* owner, const bool TV = true);
+				ChannelIterator(CBouquetManager *owner, const CZapitClient::channelsMode Mode = CZapitClient::MODE_TV);
 				ChannelIterator operator ++(int);
 				CZapitChannel* operator *();
 				ChannelIterator FindChannelNr(const unsigned int channel);
@@ -89,8 +99,9 @@ class CBouquetManager
 				bool EndOfChannels() { return (c == -2); };
 		};
 
-		ChannelIterator tvChannelsBegin() { return ChannelIterator(this, true); };
-		ChannelIterator radioChannelsBegin() { return ChannelIterator(this, false); };
+		ChannelIterator tvChannelsBegin() { return ChannelIterator(this, CZapitClient::MODE_TV); };
+		ChannelIterator radioChannelsBegin() { return ChannelIterator(this, CZapitClient::MODE_RADIO); };
+		ChannelIterator webtvChannelsBegin() { return ChannelIterator(this, CZapitClient::MODE_WEBTV); };
 
 		BouquetList Bouquets;
 

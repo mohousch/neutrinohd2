@@ -69,8 +69,10 @@ static inline t_channel_id create_channel_id(t_service_id service_id, t_original
 		unsigned char md5[16];
 		md5_buffer(url, strlen(url), md5);
 		memcpy(&cid, md5, sizeof(cid));
+
 		return cid | 0xFFFFFFFF00000000;
 	}
+
 	return (((t_channel_id)transport_stream_id) << 32) | (((t_channel_id)original_network_id) << 16) | (t_channel_id)service_id;
 }
 #define CREATE_CHANNEL_ID create_channel_id
@@ -83,6 +85,7 @@ static inline t_channel_id create_channel_id64(t_service_id service_id, t_origin
 		unsigned char md5[16];
 		md5_buffer(url, strlen(url), md5);
 		memcpy(&cid, md5, sizeof(cid));
+
 		return cid | 0xFFFFFFFF00000000;
 	}
 

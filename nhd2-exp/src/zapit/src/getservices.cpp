@@ -78,6 +78,8 @@ extern void parseScanInputXml(fe_type_t fe_type);	// defined in zapit.cpp
 
 void ParseTransponders(_xmlNodePtr node, t_satellite_position satellitePosition, uint8_t Source )
 {
+	dprintf(DEBUG_NORMAL, "[getservices] ParseTransponders:\n");
+
 	t_transport_stream_id transport_stream_id;
 	t_original_network_id original_network_id;
 	FrontendParameters feparams;
@@ -158,6 +160,8 @@ void ParseTransponders(_xmlNodePtr node, t_satellite_position satellitePosition,
 
 void ParseChannels(_xmlNodePtr node, const t_transport_stream_id transport_stream_id, const t_original_network_id original_network_id, t_satellite_position satellitePosition, freq_id_t freq, uint8_t polarisation)
 {
+	dprintf(DEBUG_NORMAL, "[getservices] ParseChannels:\n");
+
 	t_service_id service_id;
 	std::string  name;
 	uint8_t service_type;
@@ -256,6 +260,8 @@ void ParseChannels(_xmlNodePtr node, const t_transport_stream_id transport_strea
 // scan services.xml
 void FindTransponder(_xmlNodePtr search)
 {
+	dprintf(DEBUG_NORMAL, "[getservices] FindTransponder:\n");
+
 	t_satellite_position satellitePosition = 0;
 	uint8_t Source;
 	newtpid = 0xC000;
@@ -331,6 +337,8 @@ void FindTransponder(_xmlNodePtr search)
 static uint32_t fake_tid, fake_nid;
 void ParseSatTransponders(fe_type_t frontendType, _xmlNodePtr search, t_satellite_position satellitePosition)
 {
+	dprintf(DEBUG_NORMAL, "[getservices] ParseSatTransponders:\n");
+
 	uint8_t polarization = 0;
 	uint8_t system = 0;
 	uint8_t modulation = 1;
@@ -413,6 +421,8 @@ void ParseSatTransponders(fe_type_t frontendType, _xmlNodePtr search, t_satellit
 
 int loadMotorPositions(void)
 {
+	dprintf(DEBUG_NORMAL, "[getservices] loadMotorPositions:\n");
+
 	FILE *fd = NULL;
 	char buffer[256] = "";
 	t_satellite_position satellitePosition;
@@ -492,6 +502,8 @@ void SaveMotorPositions()
 
 void init_sat(t_satellite_position position)
 {
+	dprintf(DEBUG_NORMAL, "[getservices] init_sat:\n");
+
 	satellitePositions[position].position = 0;
 	satellitePositions[position].diseqc = -1;
 	satellitePositions[position].commited = -1;
@@ -1006,7 +1018,6 @@ void parseWebTVServices(std::string filename)
 		FILE * f = fopen(filename.c_str(), "r");
 
 		std::string title;
-		std::string URL;
 		std::string url;
 		std::string description;
 		
@@ -1041,21 +1052,34 @@ void parseWebTVServices(std::string filename)
 					title = line + offs;
 				
 					description = "stream";
-
-					if(id == 0)
-						id = create_channel_id64(0, 0, 0, 0, 0, url.c_str());
-					
-					pair<map<t_channel_id, CZapitChannel>::iterator, bool> ret;
-
-					ret = allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
-
-					if(ret.second == true)
+				
+					if(!url.empty())
 					{
-						tallchans_iterator cit1 = ret.first;
-						cit1->second.number = cnt + 1;
-						cit1->second.setServiceType(ST_WEBTV);
+						//if(id == 0)
+						//t_channel_id id = 0;
 
-						cnt++;
+						// grab channel id from channellist
+						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+						{
+							if(strcasecmp(it->second.getName().c_str(), title.c_str()) == 0)
+								id = it->second.getChannelID();
+						}
+
+						if(id == 0)
+							id = create_channel_id64(0, 0, 0, 0, 0, url.c_str());
+					
+						pair<map<t_channel_id, CZapitChannel>::iterator, bool> ret;
+
+						ret = allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
+
+						if(ret.second == true)
+						{
+							tallchans_iterator cit1 = ret.first;
+							cit1->second.number = cnt + 1;
+							cit1->second.setServiceType(ST_WEBTV);
+
+							cnt++;
+						}
 					}
 				}
 			}
@@ -1080,14 +1104,9 @@ void parseWebTVServices(std::string filename)
 			l0 = xmlDocGetRootElement(parser);
 			l1 = l0->xmlChildrenNode;
 			
-			neutrino_msg_t      msg;
-			neutrino_msg_data_t data;
-			
-			g_RCInput->getMsg(&msg, &data, 0);
-			
 			if (l1) 
 			{
-				while ( ((xmlGetNextOccurence(l1, "webtv")) || (xmlGetNextOccurence(l1, "station"))) && msg != RC_home) 
+				while ( ((xmlGetNextOccurence(l1, "webtv")) || (xmlGetNextOccurence(l1, "station")))) 
 				{
 					const char * title;
 					const char * url;
@@ -1106,6 +1125,16 @@ void parseWebTVServices(std::string filename)
 							id = strtoull(epgid, NULL, 16);
 
 						if(id == 0)
+						{
+							// grab channel id from channellist
+							for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+							{
+								if(strcasecmp(it->second.getName().c_str(), title) == 0)
+									id = it->second.getChannelID();
+							}
+						}
+
+						if(id == 0)
 							id = create_channel_id64(0, 0, 0, 0, 0, url);
 						
 						pair<map<t_channel_id, CZapitChannel>::iterator, bool> ret;
@@ -1122,7 +1151,6 @@ void parseWebTVServices(std::string filename)
 					}
 
 					l1 = l1->xmlNextNode;
-					g_RCInput->getMsg(&msg, &data, 0);
 				}
 			}
 		}
@@ -1134,7 +1162,7 @@ void parseWebTVServices(std::string filename)
 	{
 		std::ifstream infile;
 		char cLine[1024];
-		char name[1024] = { 0 };
+		char title[1024] = { 0 };
 				
 		infile.open(filename.c_str(), std::ifstream::in);
 
@@ -1150,7 +1178,7 @@ void parseWebTVServices(std::string filename)
 			if(cLine[strlen(cLine) - 1] == '\r')
 				cLine[strlen(cLine) - 1] = 0;
 					
-			sscanf(cLine, "#EXTINF:%d,%[^\n]\n", &duration, name);
+			sscanf(cLine, "#EXTINF:%d,%[^\n]\n", &duration, title);
 					
 			if(strlen(cLine) > 0 && cLine[0] != '#')
 			{
@@ -1161,11 +1189,18 @@ void parseWebTVServices(std::string filename)
 					{
 						description = "stream";
 
+						// grab channel id from channellist
+						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
+						{
+							if(strcasecmp(it->second.getName().c_str(), title) == 0)
+								id = it->second.getChannelID();
+						}
+
 						if(id == 0)
 							id = create_channel_id64(0, 0, 0, 0, 0, url);
 					
 						pair<map<t_channel_id, CZapitChannel>::iterator, bool> ret;
-						ret = allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(name, id, url, description)));
+						ret = allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 
 						if(ret.second == true)
 						{
@@ -1184,14 +1219,13 @@ void parseWebTVServices(std::string filename)
 	}
 
 	dprintf(DEBUG_NORMAL, "[getservices] parseWebTVServices: load %d WEBTV services\n", cnt);
-	dprintf(DEBUG_INFO, "[getservices] parseWebTVServices: %d\n", allchans.size());
 }
 
 void loadWebTVBouquet(void)
 {
 	dprintf(DEBUG_NORMAL, "[getservcices] loadWebTVBouquet:\n");
 
-#if 1
+#if 0
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");
@@ -1216,8 +1250,9 @@ void loadWebTVBouquet(void)
 			parseWebTVServices(file);
 		}
 	}
+#else
+	parseWebTVServices(g_settings.webtv_userBouquet);
 #endif
-	//parseWebTVServices(g_settings.webtv_userBouquet);
 }
 
 
