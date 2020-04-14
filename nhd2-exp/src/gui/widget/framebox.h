@@ -130,7 +130,7 @@ class CFrameBox : public CWidgetItem
 		void setOutFocus(bool focus){outFocus = focus;};
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
 
-		void setMode(int mode){frameMode = mode;};
+		void setMode(int mode = FRAME_MODE_HORIZONTAL){frameMode = mode;};
 
 		//
 		bool isSelectable(void) const {return true;};

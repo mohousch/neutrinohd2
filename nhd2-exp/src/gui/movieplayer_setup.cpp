@@ -66,14 +66,13 @@ int CMoviePlayerSettings::exec(CMenuTarget* parent, const std::string& actionKey
 	}
 	else if(actionKey == "moviedir")
 	{
-		if(parent)
-			parent->hide();
-		
 		CFileBrowser b;
 		b.Dir_Mode = true;
 
 		if (b.exec(g_settings.network_nfs_moviedir))
 			strncpy(g_settings.network_nfs_moviedir, b.getSelectedFile()->Name.c_str(), sizeof(g_settings.network_nfs_moviedir)-1);
+
+		getString() = g_settings.network_nfs_moviedir;
 		
 		return ret;
 	}

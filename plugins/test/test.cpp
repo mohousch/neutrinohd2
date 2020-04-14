@@ -46,7 +46,7 @@ class CTestMenu : public CMenuTarget
 		int selected;
 
 		//
-		ZapitChannelList Channels;
+		//ZapitChannelList Channels;
 		//bool displayNext;
 
 		//
@@ -299,7 +299,7 @@ CTestMenu::CTestMenu()
 
 CTestMenu::~CTestMenu()
 {
-	Channels.clear();
+	//Channels.clear();
 	filelist.clear();
 	fileFilter.clear();
 	m_vMovieInfo.clear();
@@ -308,6 +308,12 @@ CTestMenu::~CTestMenu()
 	{
 		delete webTVchannelList;
 		webTVchannelList = NULL;
+	}
+
+	if(webTVBouquetList)
+	{
+		delete webTVBouquetList;
+		webTVBouquetList = NULL;
 	}
 
 	if(listBox)
@@ -879,7 +885,7 @@ void CTestMenu::widget()
 	
 	// topwidget
 	topBox.iWidth = testWidget->getWindowsPos().iWidth;
-	topBox.iHeight = 100;
+	topBox.iHeight = 50;
 	topBox.iX = testWidget->getWindowsPos().iX;
 	topBox.iY = testWidget->getWindowsPos().iY + headBox.iHeight + INTER_FRAME_SPACE;
 
@@ -1394,17 +1400,19 @@ void CTestMenu::test()
 	left_selected = 0;
 	right_selected = 0;
 
+	CBox mainBox(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
+
 	CBox headBox;
-	headBox.iX = g_settings.screen_StartX + 10;
-	headBox.iY = g_settings.screen_StartY + 10;
-	headBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	headBox.iX = mainBox.iX;
+	headBox.iY = mainBox.iY;
+	headBox.iWidth = mainBox.iWidth;
 	headBox.iHeight = 40;
 
 	CBox footBox;
 	footBox.iHeight = 40;
-	footBox.iX = g_settings.screen_StartX + 10;
-	footBox.iY = g_settings.screen_EndY - 10 - footBox.iHeight;
-	footBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	footBox.iX = mainBox.iX;
+	footBox.iY = mainBox.iY + mainBox.iHeight - footBox.iHeight;
+	footBox.iWidth = mainBox.iWidth;
 
 	headers = new CHeaders(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
 
@@ -1423,12 +1431,15 @@ void CTestMenu::test()
 	// top widget
 	CBox topBox;
 	
-	topBox.iX = g_settings.screen_StartX + 10;
+	topBox.iX = mainBox.iX;
 	topBox.iY = headBox.iY + headBox.iHeight;
-	topBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
-	topBox.iHeight = 120; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+	topBox.iWidth = mainBox.iWidth;
+	topBox.iHeight = 50;
 
 	topWidget = new CFrameBox(&topBox);
+	topWidget->setMode(FRAME_MODE_HORIZONTAL);
+	topWidget->setBackgroundColor(COL_DARK_GREEN);
+
 	CFrame * frame = NULL;
 
 	frame = new CFrame("Filme");
@@ -1438,6 +1449,8 @@ void CTestMenu::test()
 	topWidget->addFrame(frame);
 
 	frame = new CFrame("Suche");
+	frame->setOption(tmdbsearch.c_str());
+	frame->setMenuTarget(this, "search");
 	topWidget->addFrame(frame);
 
 	topWidget->setSelected(top_selected); 
@@ -1446,18 +1459,17 @@ void CTestMenu::test()
 	// leftWidget
 	CBox leftBox;
 
-	leftBox.iX = g_settings.screen_StartX + 10;
+	leftBox.iX = mainBox.iX;
 	leftBox.iY = topBox.iY + topBox.iHeight + INTER_FRAME_SPACE;
 	leftBox.iWidth = 200;
-	leftBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - topBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
+	leftBox.iHeight = mainBox.iHeight - headBox.iHeight - topBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
 
 	leftWidget = new ClistBox(&leftBox);
 
 	leftWidget->setSelected(left_selected);
 	leftWidget->setOutFocus(false);
-	leftWidget->enableShrinkMenu();
 
-	leftWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+	leftWidget->setBackgroundColor(COL_DARK_RED);
 
 	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos");
 	ClistBoxItem *item2 = new ClistBoxItem("Am");
@@ -1486,10 +1498,10 @@ void CTestMenu::test()
 	// right menu
 	CBox rightBox;
 
-	rightBox.iX = g_settings.screen_StartX + 10 + leftBox.iWidth + INTER_FRAME_SPACE;
-	rightBox.iY = /*g_settings.screen_StartY + 10 + headBox.iHeight*/topBox.iY + topBox.iHeight + INTER_FRAME_SPACE;
-	rightBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20) - leftBox.iWidth - INTER_FRAME_SPACE;
-	rightBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20) - headBox.iHeight - topBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
+	rightBox.iX = mainBox.iX + leftBox.iWidth + INTER_FRAME_SPACE;
+	rightBox.iY = topBox.iY + topBox.iHeight + INTER_FRAME_SPACE;
+	rightBox.iWidth = mainBox.iWidth - leftBox.iWidth - INTER_FRAME_SPACE;
+	rightBox.iHeight = mainBox.iHeight - headBox.iHeight - topBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
 
 	//
 	rightWidget = new ClistBox(&rightBox);
@@ -1612,9 +1624,7 @@ REPAINT:
 	}
 
 	// paint all widget
-	//headers->paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
 	headers->paint();
-	//headers->paintFoot(footBox, FOOT_BUTTONS_COUNT, FootButtons);
 	footers->paint();
 	topWidget->paint();
 	leftWidget->paint();
@@ -1953,6 +1963,11 @@ REPAINT:
 					leftWidget->addItem(item9);
 					
 					goto DOFILM; // include REPAINT
+				}
+				else if(top_selected == 2)
+				{
+					topWidget->oKKeyPressed(this);
+					goto DOFILM;
 				}
 			}
 		}

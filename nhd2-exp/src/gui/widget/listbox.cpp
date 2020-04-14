@@ -1026,7 +1026,7 @@ int CMenuForwarder::getWidth(void) const
 
 int CMenuForwarder::exec(CMenuTarget *parent)
 {
-	dprintf(DEBUG_DEBUG, "CMenuForwarder::exec: %s\n", actionKey.c_str());
+	dprintf(DEBUG_DEBUG, "CMenuForwarder::exec: actionKey:%s\n", actionKey.c_str());
 
 	if(jumpTarget)
 	{

@@ -43,6 +43,8 @@
 
 #include <driver/framebuffer.h>
 
+#include <gui/pluginlist.h>
+
 
 class CTimerList : public CMenuTarget
 {
@@ -81,6 +83,8 @@ class CTimerList : public CMenuTarget
 		int newTimer();
 
 		void updateEvents(void);
+
+		CPluginChooser * plugin_chooser;
 
 	public:
 		CTimerList();

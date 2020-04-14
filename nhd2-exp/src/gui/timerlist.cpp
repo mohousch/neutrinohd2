@@ -54,6 +54,7 @@
 #include <gui/eventlist.h>
 #include <gui/infoviewer.h>
 #include <gui/channellist.h>
+#include <gui/filebrowser.h>
 
 #include <gui/widget/widget_helpers.h>
 #include <gui/widget/hintbox.h>
@@ -262,6 +263,8 @@ CTimerList::CTimerList()
 	listBox = NULL;
 	item = NULL;
 
+	plugin_chooser = NULL;
+
 	// box	
 	cFrameBox.iWidth = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
 	cFrameBox.iHeight = h_max ( (frameBuffer->getScreenHeight() / 20 * 18), (frameBuffer->getScreenHeight() / 20));
@@ -275,6 +278,8 @@ CTimerList::~CTimerList()
 	dprintf(DEBUG_DEBUG, "CTimerList::del\n");
 
 	timerlist.clear();
+
+	delete plugin_chooser;
 }
 
 int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
@@ -313,6 +318,8 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 		
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;
+
+		this->getString() = timerNew_channel_name;
 		
 		return menu_return::RETURN_REPAINT;
 	}
@@ -326,7 +333,21 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 		
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;
+
+		this->getString() = timerNew_channel_name;
 		
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "recording_dir")
+	{
+		CFileBrowser b;
+		b.Dir_Mode = true;
+		
+		if (b.exec(g_settings.network_nfs_audioplayerdir))
+			strncpy(timerNew.recordingDir, b.getSelectedFile()->Name.c_str(), sizeof(timerNew.recordingDir) - 1);
+
+		this->getString() = g_settings.network_nfs_audioplayerdir;
+
 		return menu_return::RETURN_REPAINT;
 	}
 	else if (strcmp(key, "modifytimer") == 0)
@@ -395,6 +416,7 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 				recinfo.recordingSafety = false;
 
 				timerNew.announceTime -= 120; // 2 more mins for rec timer
+
 				strncpy(recinfo.recordingDir, timerNew.recordingDir, sizeof(recinfo.recordingDir));
 				data = &recinfo;
 			} 
@@ -414,7 +436,12 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 		else if (timerNew.eventType == CTimerd::TIMER_EXEC_PLUGIN)
 		{
 			if (strcmp(timerNew.pluginName, "") == 0)
+			{
+				plugin_chooser->getString() = timerNew.pluginName;
 				return menu_return::RETURN_REPAINT;
+			}
+
+			plugin_chooser->getString() = timerNew.pluginName;
 			
 			data = timerNew.pluginName;
 		}
@@ -1048,7 +1075,9 @@ int CTimerList::newTimer()
 		dprintf(DEBUG_NORMAL, "CTimerList::modifyTimer: warning: no network devices available\n");
 	}
 
-	CMenuForwarder* m7 = new CMenuForwarder(LOCALE_TIMERLIST_RECORDING_DIR, recDirs.hasItem(), timerNew.recordingDir, &recDirs);
+	//CMenuForwarder* m7 = new CMenuForwarder(LOCALE_TIMERLIST_RECORDING_DIR, recDirs.hasItem(), timerNew.recordingDir, &recDirs);
+
+	CMenuForwarder* m7 = new CMenuForwarder(LOCALE_TIMERLIST_RECORDING_DIR, true, timerNew.recordingDir, this, "recording_dir");
 
 	// sb
 	CMenuOptionChooser* m8 = new CMenuOptionChooser(LOCALE_TIMERLIST_STANDBY, &timerNew_standby_on, TIMERLIST_STANDBY_OPTIONS, TIMERLIST_STANDBY_OPTION_COUNT, false);
@@ -1058,8 +1087,9 @@ int CTimerList::newTimer()
 	CMenuForwarder *m9 = new CMenuForwarder(LOCALE_TIMERLIST_MESSAGE, false, timerNew.message, &timerSettings_msg );
 
 	// plugin
-	CPluginChooser plugin_chooser(timerNew.pluginName);
-	CMenuForwarder *m10 = new CMenuForwarder(LOCALE_TIMERLIST_PLUGIN, false, timerNew.pluginName, &plugin_chooser);
+	//CPluginChooser plugin_chooser(timerNew.pluginName);
+	plugin_chooser = new CPluginChooser(timerNew.pluginName);
+	CMenuForwarder *m10 = new CMenuForwarder(LOCALE_TIMERLIST_PLUGIN, false, timerNew.pluginName, plugin_chooser);
 
 	CTimerListNewNotifier notifier2((int *)&timerNew.eventType,
 					&timerNew.stopTime, m2, m6, m8, m9, m10, m7,

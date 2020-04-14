@@ -70,8 +70,6 @@ int CAudioPlayerSettings::exec(CMenuTarget* parent, const std::string& actionKey
 {
 	dprintf(DEBUG_NORMAL, "CAudioPlayerSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
-	
 	if(parent)
 		parent->hide();
 	
@@ -79,25 +77,24 @@ int CAudioPlayerSettings::exec(CMenuTarget* parent, const std::string& actionKey
 	{
 		CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
 		
-		return ret;
+		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "audioplayerdir")
 	{
-		if(parent)
-			parent->hide();
-		
 		CFileBrowser b;
 		b.Dir_Mode = true;
 		
 		if (b.exec(g_settings.network_nfs_audioplayerdir))
-			strncpy(g_settings.network_nfs_audioplayerdir, b.getSelectedFile()->Name.c_str(), sizeof(g_settings.network_nfs_audioplayerdir)-1);
+			strncpy(g_settings.network_nfs_audioplayerdir, b.getSelectedFile()->Name.c_str(), sizeof(g_settings.network_nfs_audioplayerdir) - 1);
+
+		getString() = g_settings.network_nfs_audioplayerdir;
 		
-		return ret;
+		return menu_return::RETURN_REPAINT;
 	}
 	
 	showMenu();
 	
-	return ret;
+	return menu_return::RETURN_REPAINT;
 }
 
 void CAudioPlayerSettings::showMenu()
