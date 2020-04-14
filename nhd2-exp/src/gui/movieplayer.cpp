@@ -489,7 +489,7 @@ void CMoviePlayerGui::PlayFile(void)
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIEEND));
 
 
-	sec_timer_id = g_RCInput->addTimer(g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]);
+	sec_timer_id = g_RCInput->addTimer(g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]*10*1000*1000);
 
 	// play loop
  go_repeat:
