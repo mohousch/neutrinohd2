@@ -309,6 +309,21 @@ void CMoviePlayerGui::hide()
 	frameBuffer->blit();
 }
 
+void CMoviePlayerGui::startMovieInfoViewer(void)
+{
+	if(sec_timer_id == 0)
+		sec_timer_id = g_RCInput->addTimer(g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]*10*1000*1000);
+}
+
+void CMoviePlayerGui::killMovieInfoViewer(void)
+{
+	if(sec_timer_id)
+	{
+		g_RCInput->killTimer(sec_timer_id);
+		sec_timer_id = 0;
+	}
+}
+
 int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::exec: actionKey:%s\n", actionKey.c_str());
@@ -488,8 +503,7 @@ void CMoviePlayerGui::PlayFile(void)
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIESTART));
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIEEND));
 
-
-	sec_timer_id = g_RCInput->addTimer(g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]*10*1000*1000);
+	startMovieInfoViewer();
 
 	// play loop
  go_repeat:
@@ -730,8 +744,6 @@ void CMoviePlayerGui::PlayFile(void)
 
 				// movieInfoviewer
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-
-				timeStartShowingInfo = time(NULL);	
 			}
 		}
 
@@ -815,10 +827,16 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = false;
 				
 				FileTime.hide();
+
+				killMovieInfoViewer();
 			}
 			
-			if (FileTime.IsVisible()) 
+			if (FileTime.IsVisible())
+			{ 
 				FileTime.hide();
+
+				killMovieInfoViewer();
+			}
 
 			// movie title
 			if(filelist[selected].ytid != "timeshift")
@@ -833,6 +851,8 @@ void CMoviePlayerGui::PlayFile(void)
 					else 
 					{
 						FileTime.hide();
+
+						killMovieInfoViewer();
 					}
 				}
 				else 
@@ -840,6 +860,8 @@ void CMoviePlayerGui::PlayFile(void)
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
 
 					timeStartShowingInfo = time(NULL);
+
+					startMovieInfoViewer();
 				}
 			}
 		} 
@@ -878,20 +900,27 @@ void CMoviePlayerGui::PlayFile(void)
 					else 
 					{
 						FileTime.hide();
+
+						killMovieInfoViewer();
 					}
 				}
 				else 
 				{
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
 
-					//timeStartShowingInfo = time(NULL); 
+					//timeStartShowingInfo = time(NULL);
+					//startMovieInfoViewer();
 				}
 			}
 		} 
 		else if (msg == RC_blue) 
 		{
-			if (FileTime.IsVisible()) 
+			if (FileTime.IsVisible())
+			{ 
 				FileTime.hide();
+
+				killMovieInfoViewer();
+			}
 			
 			//			
 			if(filelist[selected].ytid.empty())
@@ -984,8 +1013,12 @@ void CMoviePlayerGui::PlayFile(void)
 		} 
 		else if ( msg == RC_audio || msg == RC_green) 
 		{
-			if (FileTime.IsVisible()) 
+			if (FileTime.IsVisible())
+			{ 
 				FileTime.hide();
+
+				killMovieInfoViewer();
+			}
 			
 			CAVPIDSelectWidget * AVSelectHandler = new CAVPIDSelectWidget();
 			AVSelectHandler->exec(NULL, "");
@@ -995,15 +1028,18 @@ void CMoviePlayerGui::PlayFile(void)
 		} 
 		else if(msg == RC_yellow)
 		{
-			if (FileTime.IsVisible()) 
+			if (FileTime.IsVisible())
+			{ 
 				FileTime.hide();
+		
+				killMovieInfoViewer();
+			}
 			
 			//show help
 			showHelpTS();
 		}
 		else if (msg == RC_info)
 		{
-			//if(!timeshift)
 			if(filelist[selected].ytid != "timeshift")
 			{
 				if (FileTime.IsVisible()) 
@@ -1016,6 +1052,8 @@ void CMoviePlayerGui::PlayFile(void)
 					else 
 					{
 						FileTime.hide();
+
+						killMovieInfoViewer();
 					}
 				}
 				else 
@@ -1023,18 +1061,26 @@ void CMoviePlayerGui::PlayFile(void)
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
 
 					timeStartShowingInfo = time(NULL);
+
+					startMovieInfoViewer();
 				}
 
 			}
 			else
 			{
 				if (FileTime.IsVisible()) 
+				{
 					FileTime.hide();
+
+					killMovieInfoViewer();
+				}
 				else
 				{
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
 
 					timeStartShowingInfo = time(NULL);
+					
+					startMovieInfoViewer();
 				}
 			}
 		}
@@ -1063,7 +1109,11 @@ void CMoviePlayerGui::PlayFile(void)
 			update_lcd = true;
 
 			if (FileTime.IsVisible()) 
+			{
 				FileTime.hide();
+
+				killMovieInfoViewer();
+			}
 			
 			// time
 			if (!FileTime.IsVisible()) 
@@ -1073,6 +1123,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 		}
 		else if (msg == RC_forward) 
@@ -1091,8 +1143,12 @@ void CMoviePlayerGui::PlayFile(void)
 			update_lcd = true;
 			playstate = CMoviePlayerGui::FF;
 
-			if (FileTime.IsVisible()) 
+			if (FileTime.IsVisible())
+			{ 
 				FileTime.hide();
+
+				killMovieInfoViewer();
+			}
 
 			// movie info viewer
 			// time
@@ -1103,6 +1159,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 		} 
 		else if (msg == RC_1) 
@@ -1118,6 +1176,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 		} 
 		else if (msg == RC_3) 
@@ -1133,6 +1193,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 		} 
 		else if (msg == RC_4) 
@@ -1147,6 +1209,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 		} 
 		else if (msg == RC_6) 
@@ -1161,6 +1225,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 		} 
 		else if (msg == RC_7) 
@@ -1175,6 +1241,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 		} 
 		else if (msg == RC_9) 
@@ -1189,6 +1257,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 		} 
 		else if ( msg == RC_2 )
@@ -1203,6 +1273,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 		} 
 		else if ( msg == RC_loop )
@@ -1227,6 +1299,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 		} 
 		else if (msg == RC_8) 
@@ -1242,6 +1316,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 		} 
 		else if (msg == RC_page_up) 
@@ -1256,6 +1332,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 
 		} 
@@ -1271,6 +1349,8 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = true;
 
 				timeStartShowingInfo = time(NULL);
+
+				startMovieInfoViewer();
 			}
 		} 
 		else if (msg == RC_0) 
@@ -1304,15 +1384,23 @@ void CMoviePlayerGui::PlayFile(void)
 #endif		
 		else if(msg == RC_red)
 		{
-			if (FileTime.IsVisible()) 
+			if (FileTime.IsVisible())
+			{ 
 				FileTime.hide();
+
+				killMovieInfoViewer();
+			}
 			
 			cMovieInfo.showMovieInfo(filelist[selected]);
 		}
 		else if(msg == RC_home)
 		{
 			if (FileTime.IsVisible()) 
+			{
 				FileTime.hide();
+
+				killMovieInfoViewer();
+			}
 		}
 		else if(msg == RC_left || msg == RC_prev)
 		{
@@ -1441,8 +1529,12 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			if (FileTime.IsVisible()) 
+			if (FileTime.IsVisible())
+			{ 
 				FileTime.hide();
+
+				killMovieInfoViewer();
+			}
 		}
 		else 
 		{
@@ -1476,7 +1568,11 @@ void CMoviePlayerGui::PlayFile(void)
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (4)\n");	
 
 	if(FileTime.IsVisible())
+	{
 		FileTime.hide();
+
+		killMovieInfoViewer();
+	}
 	
 	playback->Close();
 
@@ -1492,8 +1588,7 @@ void CMoviePlayerGui::PlayFile(void)
 		goto go_repeat;
 	}
 
-	g_RCInput->killTimer(sec_timer_id);
-	sec_timer_id = 0;
+	killMovieInfoViewer();
 }
 
 void CMoviePlayerGui::showHelpTS()

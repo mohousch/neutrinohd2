@@ -178,6 +178,9 @@ class CMoviePlayerGui : public CMenuTarget
 
 		//
 		uint32_t sec_timer_id;
+
+		void startMovieInfoViewer(void);
+		void killMovieInfoViewer(void);
 		
 	public:
 		CMoviePlayerGui();

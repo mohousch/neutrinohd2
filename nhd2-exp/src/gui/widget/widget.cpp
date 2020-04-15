@@ -52,7 +52,7 @@ CWidget::CWidget(const int x, const int y, const int dx, const int dy)
 	paintMainFrame = false;
 
 	timeout = 0;
-	selected = 0;
+	selected = -1;
 
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 }
@@ -70,7 +70,7 @@ CWidget::CWidget(CBox *position)
 	paintMainFrame = false;
 
 	timeout = 0;
-	selected = 0;
+	selected = -1;
 
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 }

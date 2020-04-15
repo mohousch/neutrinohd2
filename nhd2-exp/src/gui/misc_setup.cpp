@@ -256,6 +256,8 @@ int CGeneralSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 			dprintf(DEBUG_NORMAL, "CMiscSettings::exec: new logos dir %s\n", b.getSelectedFile()->Name.c_str());
 		}
 
+		getString() = g_settings.logos_dir;
+
 		return ret;
 	}
 	
@@ -755,9 +757,6 @@ int CEPGSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "epgdir") 
 	{
-		if(parent)
-			parent->hide();
-		
 		CFileBrowser b;
 		b.Dir_Mode = true;
 		
@@ -772,6 +771,8 @@ int CEPGSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 				CNeutrinoApp::getInstance()->SendSectionsdConfig();
 			}
 		}
+
+		getString() = g_settings.epg_dir;
 
 		return ret;
 	}

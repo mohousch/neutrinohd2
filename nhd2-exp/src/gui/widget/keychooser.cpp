@@ -72,6 +72,8 @@ CKeyChooser::CKeyChooser(int * const Key, const neutrino_locale_t Title, const s
 	keyChooser = new CKeyChooserItem(LOCALE_KEYCHOOSER_HEAD, key);
 	keyDeleter = new CKeyChooserItemNoKey(key);
 
+	enableShrinkMenu();
+
 	addItem(new CKeyValue());
 	addItem(new CMenuSeparator(LINE));
 	addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -86,6 +88,8 @@ CKeyChooser::CKeyChooser(int * const Key, const char * const Title, const std::s
 	key = Key;
 	keyChooser = new CKeyChooserItem(LOCALE_KEYCHOOSER_HEAD, key);
 	keyDeleter = new CKeyChooserItemNoKey(key);
+
+	enableShrinkMenu();
 
 	addItem(new CKeyValue());
 	addItem(new CMenuSeparator(LINE));

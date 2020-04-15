@@ -1032,7 +1032,7 @@ int CMenuForwarder::exec(CMenuTarget *parent)
 	{
 		int ret = jumpTarget->exec(parent, actionKey);
 
-		if(ret) 
+		if(ret && !option.empty()) 
 		{
 			optionValueString = jumpTarget->getString().c_str();
 		}
@@ -1601,7 +1601,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
-	selected = 0;
+	selected = -1;
 	current_page = 0;
 	pos = 0;
 
@@ -1677,7 +1677,7 @@ ClistBox::ClistBox(CBox* position)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
-	selected = 0;
+	selected = -1;
 	current_page = 0;
 	pos = 0;
 

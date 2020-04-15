@@ -49,9 +49,9 @@ class CMenuTarget
 	public:
 		CMenuTarget(){ valueStringTmp = std::string(); valueString = &valueStringTmp; };
 		virtual ~CMenuTarget(){};
-		virtual void hide(){};
+		virtual void hide(){valueString->clear();};
 		virtual int exec(CMenuTarget *parent, const std::string &actionKey) = 0;
-		virtual std::string& getString(void) { return *valueString; };
+		virtual std::string &getString(void) { return *valueString; };
 };
 
 class CWidget : public CMenuTarget

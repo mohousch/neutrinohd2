@@ -91,7 +91,7 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 {
         frameBuffer = CFrameBuffer::getInstance();
         iconfile = Icon;
-        selected = 0;
+        selected = -1;
         width = mwidth;
 	height = mheight;
 	
@@ -576,6 +576,11 @@ void ClistBoxWidget::paintItems()
 
 					item->init(x + _x*item_width, item_start_y + _y*item_height, items_width, iconOffset);
 
+					if( (item->isSelectable()) && (selected == -1)) 
+					{
+						selected = count;
+					} 
+
 					if (selected == count) 
 					{
 						paintItemInfo(count);
@@ -665,6 +670,11 @@ void ClistBoxWidget::paintItems()
 			if ((count >= page_start[current_page]) && (count < page_start[current_page + 1])) 
 			{
 				item->init(xpos, ypos, items_width, iconOffset);
+
+				if( (item->isSelectable()) && (selected == -1)) 
+				{
+					selected = count;
+				} 
 	
 				if (selected == (signed int)count) 
 				{

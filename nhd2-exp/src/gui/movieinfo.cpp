@@ -276,27 +276,28 @@ bool CMovieInfo::saveMovieInfo(MI_MOVIE_INFO & movie_info, CFile * file)
 		file_xml.Name = file->Name;
 	}
 	
-	dprintf(DEBUG_INFO, "[mi] saveXml: %s\r\n", file_xml.Name.c_str());
+	dprintf(DEBUG_INFO, "CMovieInfo::saveMovieInfo: %s\r\n", file_xml.Name.c_str());
 
 	if (result == true) 
 	{
 		result = encodeMovieInfoXml(&text, &movie_info);
+
 		if (result == true)
 		{
 			result = saveFile(file_xml, text.c_str(), text.size());	// save
 			if (result == false) 
 			{
-				dprintf(DEBUG_NORMAL, "[mi] saveXml: save error\r\n");
+				dprintf(DEBUG_NORMAL, "CMovieInfo::saveMovieInfo: save error\r\n");
 			}
 		} 
 		else 
 		{
-			dprintf(DEBUG_NORMAL, "[mi] saveXml: encoding error\r\n");
+			dprintf(DEBUG_NORMAL, "CMovieInfo::saveMovieInfo: encoding error\r\n");
 		}
 	} 
 	else 
 	{
-		dprintf(DEBUG_NORMAL, "[mi] saveXml: error\r\n");
+		dprintf(DEBUG_NORMAL, "CMovieInfo::saveMovieInfo: error\r\n");
 	}
 	
 	return (result);
@@ -946,7 +947,7 @@ bool CMovieInfo::parseXmlQuickFix(char *text, MI_MOVIE_INFO * movie_info)
 
 bool CMovieInfo::addNewBookmark(MI_MOVIE_INFO * movie_info, MI_BOOKMARK & new_bookmark)
 {
-	dprintf(DEBUG_INFO, "[mi] addNewBookmark\r\n");
+	dprintf(DEBUG_INFO, "CMovieInfo::addNewBookmark:\n");
 	
 	bool result = false;
 	
@@ -986,6 +987,8 @@ bool CMovieInfo::addNewBookmark(MI_MOVIE_INFO * movie_info, MI_BOOKMARK & new_bo
 
 void CMovieInfo::clearMovieInfo(MI_MOVIE_INFO * movie_info)
 {
+	dprintf(DEBUG_INFO, "CMovieInfo::clearMovieInfo:\n");
+
 	tm timePlay;
 	timePlay.tm_hour = 0;
 	timePlay.tm_min = 0;
@@ -1058,11 +1061,13 @@ bool CMovieInfo::loadFile(CFile & file, char *buffer, int buffer_size)
 {
 	bool result = true;
 
+	dprintf(DEBUG_INFO, "CMovieInfo::laodFile: %s\n", file.getFileName().c_str());
+
 	// open file
 	int fd = open(file.Name.c_str(), O_RDONLY);
 	if (fd == -1)		// cannot open file, return!!!!! 
 	{
-		dprintf(DEBUG_NORMAL, "[mi] loadXml: cannot open (%s)\r\n", file.getFileName().c_str());
+		dprintf(DEBUG_NORMAL, "CMovieInfo::laodFile: cannot open (%s)\r\n", file.getFileName().c_str());
 		return false;
 	}
 	
@@ -1070,9 +1075,10 @@ bool CMovieInfo::loadFile(CFile & file, char *buffer, int buffer_size)
 	int bytes = read(fd, buffer, buffer_size - 1);
 	if (bytes <= 0)		// cannot read file into buffer, return!!!! 
 	{
-		dprintf(DEBUG_NORMAL, "[mi] loadXml: cannot read (%s)\r\n", file.getFileName().c_str());
+		dprintf(DEBUG_NORMAL, "CMovieInfo::laodFile: cannot read (%s)\r\n", file.getFileName().c_str());
 		return false;
 	}
+
 	close(fd);
 	buffer[bytes] = 0;	// terminate string
 	
@@ -1081,6 +1087,8 @@ bool CMovieInfo::loadFile(CFile & file, char *buffer, int buffer_size)
 
 bool CMovieInfo::saveFile(const CFile & file, const char *text, const int text_size)
 {
+	dprintf(DEBUG_INFO, "CMovieInfo::saveFile: %s\n", file.getName().c_str());
+
 	bool result = false;
 	int fd;
 
@@ -1094,7 +1102,7 @@ bool CMovieInfo::saveFile(const CFile & file, const char *text, const int text_s
 	} 
 	else 
 	{
-		dprintf(DEBUG_NORMAL, "[mi] ERROR: cannot open\r\n");
+		dprintf(DEBUG_NORMAL, "CMovieInfo::saveFile: cannot open\r\n");
 	}
 
 	return (result);

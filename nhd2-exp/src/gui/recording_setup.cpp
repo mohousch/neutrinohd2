@@ -128,6 +128,8 @@ int CRecordingSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 				dprintf(DEBUG_NORMAL, "CRecordingSettings::exec: New timeshift dir: %s\n", timeshiftDir);
 			}
 		}
+
+		getString() = g_settings.network_nfs_recordingdir;
 		
 		return ret;
 	}

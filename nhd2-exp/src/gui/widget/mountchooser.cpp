@@ -47,6 +47,8 @@
 CMountChooser::CMountChooser(const neutrino_locale_t Name, const std::string& Icon, int* chosenIndex, char * chosenLocalDir, const char * const selectedLocalDir, const int mwidth, const int mheight)
 	: ClistBoxWidget(Name, Icon, mwidth, mheight), index(chosenIndex), localDir(chosenLocalDir)
 {
+	enableShrinkMenu();
+
 	char indexStr[2];
 	for(int i = 0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++)
 	{
@@ -70,6 +72,8 @@ CMountChooser::CMountChooser(const neutrino_locale_t Name, const std::string& Ic
 CMountChooser::CMountChooser(const char* const Name, const std::string& Icon, int* chosenIndex, char* chosenLocalDir, const char* const selectedLocalDir, const int mwidth, const int mheight)
 	: ClistBoxWidget(Name, Icon, mwidth, mheight), index(chosenIndex), localDir(chosenLocalDir)
 {
+	enableShrinkMenu();	
+
 	char indexStr[2];
 	for(int i = 0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++)
 	{

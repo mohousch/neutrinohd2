@@ -4474,6 +4474,9 @@ void CNeutrinoApp::AudioMute( int newValue, bool isEvent )
 	int x = g_settings.screen_EndX - 10 - dx;
 	int y = g_settings.screen_StartY + 10;
 
+	//FIXME:
+	fb_pixel_t * mute_pixbuf = NULL;
+
 #if ENABLE_LCD
 	CVFD::getInstance()->setMuted(newValue);
 #endif
@@ -4486,18 +4489,14 @@ void CNeutrinoApp::AudioMute( int newValue, bool isEvent )
 
 	if( isEvent && ( mode != mode_scart ) && ( mode != mode_audio) && ( mode != mode_pic))
 	{
-		//FIXME:
-		fb_pixel_t * mute_pixbuf = NULL;
-
 		if( current_muted ) 
 		{
 			if(!mute_pixbuf)
-				mute_pixbuf = new fb_pixel_t[dx * dy];
+				mute_pixbuf = new fb_pixel_t[dx*dy];
 			
 			if(mute_pixbuf)
 			{
-				frameBuffer->saveScreen(x, y, dx, dy, mute_pixbuf);
-				frameBuffer->blit();						
+				frameBuffer->saveScreen(x, y, dx, dy, mute_pixbuf);		
 			}
 		
 			frameBuffer->paintBoxRel(x, y, dx, dy, COL_MENUCONTENT_PLUS_0);
@@ -4508,7 +4507,6 @@ void CNeutrinoApp::AudioMute( int newValue, bool isEvent )
 			if( mute_pixbuf) 
 			{
 				frameBuffer->restoreScreen(x, y, dx, dy, mute_pixbuf);
-				frameBuffer->blit();
 	
 				delete [] mute_pixbuf;
 			}
