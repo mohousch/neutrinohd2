@@ -32,8 +32,19 @@ CNKMovies::CNKMovies(int mode, int id, std::string title)
 {
 	dprintf(DEBUG_NORMAL, "CNKMovies: mode:%d id:%d title:%s\n", mode, id, title.c_str());
 
-	moviesMenu = NULL;
+	//
+	mainWidget = NULL;
+	leftWidget = NULL;
+	rightWidget = NULL;
+	headersWidget = NULL;
+	footersWidget = NULL;
+
 	item = NULL;
+
+	//
+	selected = 0;
+	left_selected = 0;
+	right_selected = 0;
 
 	catMode = mode;
 	catID = id;
@@ -123,7 +134,81 @@ void CNKMovies::showMenu()
 	title += ": ";
 	title += caption;
 
-	moviesMenu = new ClistBoxWidget(title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	////
+	mainWidget = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
+
+	mainWidget->enableSaveScreen();
+	mainWidget->setSelected(selected);
+	mainWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+	mainWidget->enablePaintMainFrame();
+
+	// headwidget
+	headBox.iWidth = frameBuffer->getScreenWidth();
+	headBox.iHeight = 40;
+	headBox.iX = frameBuffer->getScreenX();
+	headBox.iY = frameBuffer->getScreenY();
+
+	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL);
+
+	headersWidget->setButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
+	headersWidget->enablePaintDate();
+
+	// foot
+	footBox.iWidth = frameBuffer->getScreenWidth();
+	footBox.iHeight = 40;
+	footBox.iX = frameBuffer->getScreenX();
+	footBox.iY = frameBuffer->getScreenY() + frameBuffer->getScreenHeight() - footBox.iHeight;
+
+	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight);
+
+	footersWidget->setCorner(RADIUS_MID, CORNER_BOTTOM);
+
+	// leftwidget
+	leftBox.iWidth = 280;
+	leftBox.iHeight = mainWidget->getWindowsPos().iHeight - headBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
+	leftBox.iX = mainWidget->getWindowsPos().iX;
+	leftBox.iY = mainWidget->getWindowsPos().iY + headBox.iHeight + INTER_FRAME_SPACE;
+
+	leftWidget = new ClistBox(&leftBox);
+
+	leftWidget->setSelected(left_selected);
+	leftWidget->enableShrinkMenu();
+
+	leftWidget->addItem(new ClistBoxItem("Suche", true, nksearch.c_str(), this, "search"));
+	leftWidget->addItem(new CMenuSeparator(LINE));
+
+	cats = nkparser.GetCategoryList();
+
+	// categories
+	for (unsigned i = 0; i < cats.size(); i++)
+	{
+		leftWidget->addItem(new ClistBoxItem(cats[i].title.c_str(), true, NULL, new CNKMovies(cNKFeedParser::CATEGORY, cats[i].id, cats[i].title)));
+	}
+
+	leftWidget->addItem(new CMenuSeparator(LINE));
+	leftWidget->addItem(new CMenuSeparator());
+	leftWidget->addItem(new CMenuSeparator());
+	leftWidget->addItem(new CMenuSeparator());
+	leftWidget->addItem(new CMenuSeparator());
+	leftWidget->addItem(new CMenuSeparator());
+	leftWidget->addItem(new CMenuSeparator(LINE));
+	leftWidget->addItem(new ClistBoxItem("Beenden", true, NULL, this, "exit"));
+
+	// rightwidget
+	rightBox.iWidth = mainWidget->getWindowsPos().iWidth - INTER_FRAME_SPACE - leftBox.iWidth;
+	rightBox.iHeight = mainWidget->getWindowsPos().iHeight - headBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
+	rightBox.iX = mainWidget->getWindowsPos().iX + leftBox.iWidth + INTER_FRAME_SPACE;
+	rightBox.iY = mainWidget->getWindowsPos().iY + headBox.iHeight + INTER_FRAME_SPACE;
+
+	//
+	rightWidget = new ClistBox(&rightBox);
+	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
+	rightWidget->setItemsPerPage(5,2);
+	rightWidget->setSelected(right_selected);
+	rightWidget->enablePaintFootInfo();
+
+	loadNKTitles(catMode, caption, catID);
+	////
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
@@ -131,104 +216,66 @@ void CNKMovies::showMenu()
 
 		item->setHelpText(m_vMovieInfo[i].epgInfo2.c_str());
 
-		//
-		moviesMenu->addItem(item);
+		rightWidget->addItem(item);
 	}
 
-	moviesMenu->setMode(MODE_LISTBOX);
-	moviesMenu->setWidgetType(WIDGET_TYPE_FRAME);
-	moviesMenu->setItemsPerPage(6, 2);
-	//moviesMenu->setItemBoxColor(COL_YELLOW);
+	mainWidget->addItem(headersWidget);
+	mainWidget->addItem(leftWidget);
+	mainWidget->addItem(rightWidget);
+	mainWidget->addItem(footersWidget);
 
-	moviesMenu->setHeaderButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
+	mainWidget->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
+	mainWidget->addKey(RC_record, this, CRCInput::getSpecialKeyName(RC_record));
 
-	moviesMenu->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
-	moviesMenu->addKey(RC_setup, this, CRCInput::getSpecialKeyName(RC_setup));
-	moviesMenu->addKey(RC_record, this, CRCInput::getSpecialKeyName(RC_record));
+	mainWidget->exec(NULL, "");
 
-	moviesMenu->exec(NULL, "");
-	delete moviesMenu;
-	moviesMenu = NULL;
+	delete mainWidget;
+	mainWidget = NULL;
+
+	delete headersWidget;
+	headersWidget = NULL;
+
+	delete leftWidget;
+	leftWidget = NULL;
+
+	delete rightWidget;
+	rightWidget = NULL;
+
+	delete footersWidget;
+	footersWidget = NULL;
 }
 
-void CNKMovies::playMovie(void)
+void CNKMovies::playMovie(MI_MOVIE_INFO& movie)
 {
-	if (&m_vMovieInfo[moviesMenu->getSelected()].file != NULL) 
+	if (&movie.file != NULL) 
 	{
-		tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[moviesMenu->getSelected()]);
+		tmpMoviePlayerGui.addToPlaylist(movie);
 		tmpMoviePlayerGui.exec(NULL, "");
 	}
 }
 
-void CNKMovies::showMovieInfo(void)
+void CNKMovies::showMovieInfo(MI_MOVIE_INFO& movie)
 {
-	m_movieInfo.showMovieInfo(m_vMovieInfo[moviesMenu->getSelected()]);
+	m_movieInfo.showMovieInfo(movie);
 }
 
-void CNKMovies::recordMovie(void)
+void CNKMovies::recordMovie(MI_MOVIE_INFO& movie)
 {
 	std::string infoString;
 
 	MI_MOVIE_INFO g_movieInfo;
 	m_movieInfo.clearMovieInfo(&g_movieInfo); // refresh structure
 		
-	g_movieInfo.epgTitle = m_vMovieInfo[moviesMenu->getSelected()].epgTitle;
-	g_movieInfo.epgInfo2 = m_vMovieInfo[moviesMenu->getSelected()].epgInfo2;
-	g_movieInfo.tfile = m_vMovieInfo[moviesMenu->getSelected()].tfile;
-	g_movieInfo.ytdate = m_vMovieInfo[moviesMenu->getSelected()].ytdate;
-	g_movieInfo.ytid = m_vMovieInfo[moviesMenu->getSelected()].ytid;
-	g_movieInfo.file.Name = m_vMovieInfo[moviesMenu->getSelected()].file.Name;
+	g_movieInfo.epgTitle = movie.epgTitle;
+	g_movieInfo.epgInfo2 = movie.epgInfo2;
+	g_movieInfo.tfile = movie.tfile;
+	g_movieInfo.ytdate = movie.ytdate;
+	g_movieInfo.ytid = movie.ytid;
+	g_movieInfo.file.Name = movie.file.Name;
 
 	m_movieInfo.encodeMovieInfoXml(&infoString, &g_movieInfo);
 
-	::start_file_recording(m_vMovieInfo[moviesMenu->getSelected()].epgTitle.c_str(), infoString.c_str(), m_vMovieInfo[moviesMenu->getSelected()].file.Name.c_str());
-}
-
-int CNKMovies::showCategoriesMenu()
-{
-	dprintf(DEBUG_NORMAL, "CNKMovies::showCategoriesMenu:\n");
-
-	int res = -1;
-
-	// load Categories
-	CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_NK_SCAN_FOR_CATEGORIES));
-	
-	loadBox.paint();
-
-	cats = nkparser.GetCategoryList();
-
-	loadBox.hide();
-
-	if(cats.empty())
-	{
-		//FIXME show error
-		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_NK_ERROR), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
-		
-		return false;
-	}
-
-	// menu
-	ClistBoxWidget mainMenu(LOCALE_NETZKINO, NEUTRINO_ICON_NETZKINO_SMALL);
-
-	mainMenu.setMode(MODE_MENU);
-	mainMenu.enableShrinkMenu();
-	mainMenu.setWidgetType(WIDGET_TYPE_CLASSIC);
-
-	// categories
-	for (unsigned i = 0; i < cats.size(); i++)
-	{
-		mainMenu.addItem(new CMenuForwarder(cats[i].title.c_str(), true, NULL, new CNKMovies(cNKFeedParser::CATEGORY, cats[i].id, cats[i].title), "", RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
-	}
-
-	// search
-	mainMenu.addItem(new CMenuSeparator(LINE));
-
-	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, nksearch.c_str(), this, "search", RC_nokey, NULL, NEUTRINO_ICON_NETZKINO));
-
-	mainMenu.exec(NULL, "");
-	res = mainMenu.getSelected();
-
-	return res;
+	::start_file_recording(movie.epgTitle.c_str(), infoString.c_str(), movie.file.Name.c_str());
 }
 
 int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -240,28 +287,22 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	if(actionKey == "play")
 	{
-		playMovie();
+		right_selected = rightWidget->getSelected();
+		playMovie(m_vMovieInfo[right_selected]);
 
 		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_info")
 	{
-		showMovieInfo();
+		right_selected = rightWidget->getSelected();
+		showMovieInfo(m_vMovieInfo[right_selected]);
 
 		return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "RC_setup")
-	{
-		int res = showCategoriesMenu();
-		
-		if(res >= 0 && res <= 24)
-			return menu_return::RETURN_EXIT_ALL;
-		else
-			return menu_return::RETURN_REPAINT;
-	}
 	else if(actionKey == "RC_record")
 	{
-		recordMovie();
+		right_selected = rightWidget->getSelected();
+		recordMovie(m_vMovieInfo[right_selected]);
 		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "search")
@@ -282,6 +323,10 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 		}
 		else
 			return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "exit")
+	{
+		return menu_return::RETURN_EXIT_ALL;
 	}
 
 	loadNKTitles(catMode, caption, catID);

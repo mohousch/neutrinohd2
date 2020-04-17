@@ -53,8 +53,6 @@ class CNFilm : public CMenuTarget
 
 		CMenuItem* item;
 
-		//std::string caption;
-
 		int selected;
 		int left_selected;
 		int right_selected;

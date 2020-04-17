@@ -27,7 +27,33 @@
 
 class CNKMovies : public CMenuTarget
 {
+	public:
+		enum{
+			WIDGET_LEFT = 1,
+			WIDGET_RIGHT
+		};
+
 	private:
+		CFrameBuffer* frameBuffer;
+
+		CBox mainBox;
+		CBox headBox;
+		CBox footBox;
+		CBox leftBox;
+		CBox rightBox;
+
+		CHeaders *headersWidget;
+		CWidget *mainWidget;
+		ClistBox *leftWidget;
+		ClistBox *rightWidget;
+		CFooters *footersWidget;
+
+		CMenuItem* item;
+
+		int selected;
+		int left_selected;
+		int right_selected;
+
 		//
 		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
 		CMovieInfo m_movieInfo;
@@ -43,18 +69,14 @@ class CNKMovies : public CMenuTarget
 		int catMode;
 		std::string caption;
 
-		ClistBoxWidget* moviesMenu;
-		CMenuItem* item;
-
 		std::string nksearch;
 
 		void loadNKTitles(int mode, std::string search, int id);
 
-		void playMovie(void);
-		void showMovieInfo(void);
-		void recordMovie(void);
+		void playMovie(MI_MOVIE_INFO& movie);
+		void showMovieInfo(MI_MOVIE_INFO& movie);
+		void recordMovie(MI_MOVIE_INFO& movie);
 
-		int showCategoriesMenu();
 		void showMenu();
 
 	public:
