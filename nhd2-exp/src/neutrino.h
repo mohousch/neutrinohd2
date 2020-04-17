@@ -158,7 +158,6 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 
 		//
 		void channelsInit(bool bOnly = false);
-		void webtvChannelsInit(void);
 		
 		CColorSetupNotifier *colorSetupNotifier;
 

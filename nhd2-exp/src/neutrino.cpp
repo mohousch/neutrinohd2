@@ -1686,11 +1686,6 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	SetChannelMode( g_settings.channel_mode, mode);
 }
 
-void CNeutrinoApp::webtvChannelsInit(void)
-{
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::webtvChannelsInit:\n");
-}
-
 void CNeutrinoApp::SetChannelMode(int newmode, int nMode)
 {
 	const char *aLISTMODE[] = {

@@ -445,7 +445,15 @@ function testClistBoxWidget()
 end
 
 function testCWindow()
-	window = neutrino.CWindow()
+	box = neutrino.CBox()
+	fb = neutrino.CSwigHelpers()
+
+	box.iX = fb:getScreenX()
+	box.iY = fb:getScreenY()
+	box.iWidth = fb:getScreenWidth()
+	box.iHeight = fb:getScreenHeight()
+
+	window = neutrino.CWindow(box)
 
 	window:enableCenterPos()
 	window:paint()

@@ -4542,6 +4542,16 @@ void CTestMenu::testBouquetlist()
 
 			webTVBouquet = new CBouquet(0, (char *)bTitle.c_str(), 0);
 
+			//
+			g_settings.webtv_userBouquet = filelist[i].Name.c_str();
+
+			parseWebTVServices(g_settings.webtv_userBouquet);
+			//g_Zapit->reinitChannels();
+			//CNeutrinoApp::getInstance()->channelsInit();
+			//CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_PROV, NeutrinoMessages::mode_webtv);
+			//CNeutrinoApp::getInstance()->channelList->adjustToChannelID(live_channel_id);
+			//
+
 			for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++) 
 			{
 				if (it->second.isWebTV) 

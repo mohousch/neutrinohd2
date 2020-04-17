@@ -194,13 +194,13 @@ class CFrameBuffer
 #endif		
 
 	public:
+		~CFrameBuffer();
+
 		int *q_circle;
 		bool corner_tl, corner_tr, corner_bl, corner_br;
 		
 		// 16/32 bits
 		fb_pixel_t realcolor[256];
-
-		~CFrameBuffer();
 
 		static CFrameBuffer * getInstance();
 
