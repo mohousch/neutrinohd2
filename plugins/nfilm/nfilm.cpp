@@ -481,9 +481,9 @@ void CNFilm::showMenu(bool genre)
 
 	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight, FOOT_BUTTONS_COUNT, FootButtons);
 
-	footersWidget->setCorner(NO_RADIUS);
 	//footersWidget->setColor(COL_BLUE);
 	footersWidget->setGradient(nogradient);
+	footersWidget->setCorner(NO_RADIUS);
 
 	// leftwidget
 	leftBox.iWidth = 200;

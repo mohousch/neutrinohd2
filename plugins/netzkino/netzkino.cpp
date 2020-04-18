@@ -109,12 +109,7 @@ void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 	loadBox.hide();
 }
 
-#define NK_HEAD_BUTTONS_COUNT	2
-const struct button_label NKHeadButtons[NK_HEAD_BUTTONS_COUNT] =
-{
-	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL}
-};
+const struct button_label NKHeadButtons = { NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL};
 
 void CNKMovies::showMenu()
 {
@@ -150,8 +145,10 @@ void CNKMovies::showMenu()
 
 	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL);
 
-	headersWidget->setButtons(NKHeadButtons, NK_HEAD_BUTTONS_COUNT);
+	headersWidget->setButtons(&NKHeadButtons, 1);
 	headersWidget->enablePaintDate();
+	headersWidget->setGradient(nogradient);
+	headersWidget->setCorner(NO_RADIUS);
 
 	// foot
 	footBox.iWidth = frameBuffer->getScreenWidth();
@@ -161,7 +158,8 @@ void CNKMovies::showMenu()
 
 	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight);
 
-	footersWidget->setCorner(RADIUS_MID, CORNER_BOTTOM);
+	footersWidget->setGradient(nogradient);
+	footersWidget->setCorner(NO_RADIUS);
 
 	// leftwidget
 	leftBox.iWidth = 280;
@@ -177,7 +175,8 @@ void CNKMovies::showMenu()
 	leftWidget->addItem(new ClistBoxItem("Suche", true, nksearch.c_str(), this, "search"));
 	leftWidget->addItem(new CMenuSeparator(LINE));
 
-	cats = nkparser.GetCategoryList();
+	if(cats.empty())
+		cats = nkparser.GetCategoryList();
 
 	// categories
 	for (unsigned i = 0; i < cats.size(); i++)
@@ -206,9 +205,6 @@ void CNKMovies::showMenu()
 	rightWidget->setItemsPerPage(5,2);
 	rightWidget->setSelected(right_selected);
 	rightWidget->enablePaintFootInfo();
-
-	loadNKTitles(catMode, caption, catID);
-	////
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
@@ -317,6 +313,8 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 		if(!stringInput.getExitPressed()) //FIXME:
 		{
 			loadNKTitles(cNKFeedParser::SEARCH, nksearch, 0);
+
+			rightWidget->clearItems();
 			showMenu();
 
 			return menu_return::RETURN_EXIT_ALL;
