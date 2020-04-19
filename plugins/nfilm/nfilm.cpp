@@ -435,8 +435,7 @@ void CNFilm::paintRightWidgetItems(ClistBox *listBox)
 		listBox->addItem(item);
 	}
 }
-
-#define HEAD_BUTTONS_COUNT	
+	
 const struct button_label HeadButtons = { NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL };
 
 #define FOOT_BUTTONS_COUNT	4
@@ -465,7 +464,7 @@ void CNFilm::showMenu(bool genre)
 	headBox.iX = frameBuffer->getScreenX();
 	headBox.iY = frameBuffer->getScreenY();
 
-	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, "Movie Trailer", NEUTRINO_ICON_MP3);
+	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, "Movie Trailer", NEUTRINO_ICON_TMDB);
 
 	headersWidget->setButtons(&HeadButtons, 1);
 	headersWidget->enablePaintDate();

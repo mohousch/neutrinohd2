@@ -50,7 +50,7 @@ cNKFeedParser::cNKFeedParser()
 {
 	thumbnail_dir = "/tmp/netzkino";
 	parsed = false;
-	max_results = 25; //maxi 500
+	max_results = 50; //maxi 500
 
 	fileHelper.createDir(thumbnail_dir.c_str(), 0755);
 }

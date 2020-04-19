@@ -111,6 +111,15 @@ void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 
 const struct button_label NKHeadButtons = { NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL};
 
+#define FOOT_BUTTONS_COUNT	4
+const struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, NULL },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, "Focus" },
+	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, "Highlight" }
+};
+
 void CNKMovies::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CNKMovies::showMenu: mode:%d id:%d title:%s\n", catMode, catID, caption.c_str());
@@ -158,6 +167,7 @@ void CNKMovies::showMenu()
 
 	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight);
 
+	footersWidget->setButtons(FootButtons, FOOT_BUTTONS_COUNT);
 	footersWidget->setGradient(nogradient);
 	footersWidget->setCorner(NO_RADIUS);
 
@@ -181,7 +191,7 @@ void CNKMovies::showMenu()
 	// categories
 	for (unsigned i = 0; i < cats.size(); i++)
 	{
-		leftWidget->addItem(new ClistBoxItem(cats[i].title.c_str(), true, NULL, new CNKMovies(cNKFeedParser::CATEGORY, cats[i].id, cats[i].title)));
+		leftWidget->addItem(new ClistBoxItem(cats[i].title.c_str(), true, NULL, new CNKMovies(cNKFeedParser::CATEGORY, cats[i].id, cats[i].title), "", RC_nokey, NEUTRINO_ICON_NETZKINO_SMALL));
 	}
 
 	leftWidget->addItem(new CMenuSeparator(LINE));
@@ -191,7 +201,7 @@ void CNKMovies::showMenu()
 	leftWidget->addItem(new CMenuSeparator());
 	leftWidget->addItem(new CMenuSeparator());
 	leftWidget->addItem(new CMenuSeparator(LINE));
-	leftWidget->addItem(new ClistBoxItem("Beenden", true, NULL, this, "exit"));
+	leftWidget->addItem(new ClistBoxItem("Beenden", true, NULL, this, "exit", RC_nokey, NEUTRINO_ICON_BUTTON_POWER));
 
 	// rightwidget
 	rightBox.iWidth = mainWidget->getWindowsPos().iWidth - INTER_FRAME_SPACE - leftBox.iWidth;
@@ -222,6 +232,7 @@ void CNKMovies::showMenu()
 
 	mainWidget->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
 	mainWidget->addKey(RC_record, this, CRCInput::getSpecialKeyName(RC_record));
+	mainWidget->addKey(RC_blue, this, "startMenu");
 
 	mainWidget->exec(NULL, "");
 
@@ -321,6 +332,21 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 		}
 		else
 			return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "nextPage")
+	{
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "prevPage")
+	{
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "startMenu")
+	{
+		loadNKTitles(cNKFeedParser::CATEGORY, "Highlights", 8);
+		showMenu();
+
+		return menu_return::RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "exit")
 	{
