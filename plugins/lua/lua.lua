@@ -368,6 +368,15 @@ listWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
 function testClistBoxWidget()
 	--listWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
 
+	listWidget:setWidgetType(neutrino.WIDGET_TYPE_STANDARD)
+	listWidget:setMode(neutrino.MODE_LISTBOX)
+	listWidget:enableShrinkMenu()
+	listWidget:addWidget(neutrino.WIDGET_TYPE_CLASSIC)
+	listWidget:addWidget(neutrino.WIDGET_TYPE_EXTENDED)
+	listWidget:addWidget(neutrino.WIDGET_TYPE_FRAME)
+	listWidget:enableWidgetChange()
+	listWidget:enablePaintFootInfo()
+
 	listWidget:setSelected(selected)
 
 	-- CMessageBox

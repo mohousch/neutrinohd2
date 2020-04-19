@@ -255,13 +255,13 @@ class testMenu(CWidget):
 			hintBox()
 		elif self.selected == 3:
 			infoBox()
-		elif self.selected == 4:
-			stringInput()
 		elif self.selected == 5:
-			audioPlayer()
-		elif self.selected == 6:
-			pictureViewer()
+			stringInput()
 		elif self.selected == 7:
+			audioPlayer()
+		elif self.selected == 8:
+			pictureViewer()
+		elif self.selected == 9:
 			moviePlayer()
 
 		# exit pressed
