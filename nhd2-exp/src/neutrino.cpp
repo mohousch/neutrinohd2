@@ -5592,7 +5592,7 @@ int main(int argc, char *argv[])
 
 	// set python path
 #if ENABLE_PYTHON
-	setenv("PYTHONPATH", DATADIR "/neutrinohd2/python", 0);
+	setenv("PYTHONPATH", DATADIR "/neutrino/python", 0);
 #endif
 
 	return CNeutrinoApp::getInstance()->run(argc, argv);

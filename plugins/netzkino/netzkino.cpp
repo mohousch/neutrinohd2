@@ -109,7 +109,12 @@ void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 	loadBox.hide();
 }
 
-const struct button_label NKHeadButtons = { NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL};
+#define HEAD_BUTTONS_COUNT	2
+const struct button_label NKHeadButtons[HEAD_BUTTONS_COUNT] = 
+{
+	{NEUTRINO_ICON_REC, NONEXISTANT_LOCALE, NULL}, 
+	{NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL}
+};
 
 #define FOOT_BUTTONS_COUNT	4
 const struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
@@ -154,7 +159,7 @@ void CNKMovies::showMenu()
 
 	headersWidget = new CHeaders(headBox.iX, headBox.iY, headBox.iWidth, headBox.iHeight, title.c_str(), NEUTRINO_ICON_NETZKINO_SMALL);
 
-	headersWidget->setButtons(&NKHeadButtons, 1);
+	headersWidget->setButtons(NKHeadButtons, HEAD_BUTTONS_COUNT);
 	headersWidget->enablePaintDate();
 	headersWidget->setGradient(nogradient);
 	headersWidget->setCorner(NO_RADIUS);
