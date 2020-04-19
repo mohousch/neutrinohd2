@@ -244,7 +244,7 @@ class testMenu(CWidget):
 
 		# first handle keys
 		if key == RC_info:
-			messageBox()
+			infoBox()
 
 		# handle selected line
 		if self.selected == 0:

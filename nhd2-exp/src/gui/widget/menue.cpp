@@ -1155,7 +1155,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 				}
 				else
 				{
-					selected = 0;
+					selected = -1;
 					handled = true;
 
 					break;
@@ -1490,10 +1490,39 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					{
 						if(widgetMode == MODE_SETUP)
 						{
-							if(!(items[selected]->can_arrow)) 
+							if(hasItem()) 
 							{
+								if((items[selected]->can_arrow)) 
+								{
+									//exec this item...
+									CMenuItem * item = items[selected];
+									item->msg = msg;
+							
+									int rv = item->exec(this);
+							
+									switch ( rv ) 
+									{
+										case menu_return::RETURN_EXIT_ALL:
+											retval = menu_return::RETURN_EXIT_ALL; //fall through
+									
+										case menu_return::RETURN_EXIT:
+											msg = RC_timeout;
+											break;
+									
+										case menu_return::RETURN_REPAINT:
+											hide();
+											initFrames();
+											paintHead();
+											paintFoot();
+											paint();
+											break;	
+									}
+								}
+								else
+									msg = RC_timeout;
+							} 
+							else
 								msg = RC_timeout;
-							}
 						}
 					}
 					
@@ -1540,29 +1569,34 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 						{
 							if(hasItem()) 
 							{
-								//exec this item...
-								CMenuItem * item = items[selected];
-								item->msg = msg;
-							
-								int rv = item->exec(this);
-							
-								switch ( rv ) 
+								if((items[selected]->can_arrow)) 
 								{
-									case menu_return::RETURN_EXIT_ALL:
-										retval = menu_return::RETURN_EXIT_ALL; //fall through
+									//exec this item...
+									CMenuItem * item = items[selected];
+									item->msg = msg;
+							
+									int rv = item->exec(this);
+							
+									switch ( rv ) 
+									{
+										case menu_return::RETURN_EXIT_ALL:
+											retval = menu_return::RETURN_EXIT_ALL; //fall through
 									
-									case menu_return::RETURN_EXIT:
-										msg = RC_timeout;
-										break;
+										case menu_return::RETURN_EXIT:
+											msg = RC_timeout;
+											break;
 									
-									case menu_return::RETURN_REPAINT:
-										hide();
-										initFrames();
-										paintHead();
-										paintFoot();
-										paint();
-										break;	
+										case menu_return::RETURN_REPAINT:
+											hide();
+											initFrames();
+											paintHead();
+											paintFoot();
+											paint();
+											break;	
+									}
 								}
+								else
+									msg = RC_timeout;
 							} 
 							else
 								msg = RC_timeout;

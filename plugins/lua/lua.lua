@@ -162,7 +162,7 @@ end
 function exec(id, msg)
 	-- handle keys
 	if msg == neutrino.RC_info then
-		messageBox()
+		infoBox()
 	end
 
 	-- handle others
@@ -437,6 +437,8 @@ function testClistBoxWidget()
 	listWidget:addItem(item6)
 	listWidget:addItem(item7)
 	listWidget:addItem(item8)
+
+	listWidget:addKey(neutrino.RC_info)
 
 	listWidget:exec(null, "")
 
