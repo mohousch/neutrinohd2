@@ -486,7 +486,7 @@ void CNFilm::showMenu(bool genre)
 	footersWidget->setCorner(NO_RADIUS);
 
 	// leftwidget
-	leftBox.iWidth = 200;
+	leftBox.iWidth = 250;
 	leftBox.iHeight = mainWidget->getWindowsPos().iHeight - headBox.iHeight - 2*INTER_FRAME_SPACE - footBox.iHeight;
 	leftBox.iX = mainWidget->getWindowsPos().iX;
 	leftBox.iY = mainWidget->getWindowsPos().iY + headBox.iHeight + INTER_FRAME_SPACE;
@@ -745,7 +745,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 	loadTMDBPlaylist(loadGenres);
 	showMenu(loadGenres);
 
-	return menu_return::RETURN_REPAINT;
+	return menu_return::RETURN_EXIT;
 }
 
 void plugin_init(void)
