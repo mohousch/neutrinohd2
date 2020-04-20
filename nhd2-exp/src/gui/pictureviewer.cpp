@@ -172,11 +172,18 @@ void CPictureViewerGui::show()
 	//		
 	if (!playlist.empty())
 		view(selected);
+
+	if (m_state == SLIDESHOW)
+	{
+		m_time = (long)time(NULL);
+	}
 	
 	while(loop)
 	{
 		if(m_state != SLIDESHOW)
+		{
 			timeout = 10; 
+		}
 		else
 		{
 			timeout = (int)(m_time + g_settings.picviewer_slide_time - (long)time(NULL))*10;
