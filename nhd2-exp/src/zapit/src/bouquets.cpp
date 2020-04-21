@@ -515,7 +515,7 @@ void CBouquetManager::makeBouquetfromCurrentservices(const _xmlNodePtr root)
 
 void CBouquetManager::loadWebTVBouquet(void)
 {
-#if 0
+#if LOAD_WEBTV_BOUQUETS
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");

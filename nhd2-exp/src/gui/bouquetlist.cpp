@@ -411,10 +411,20 @@ int CBouquetList::show(bool bShowChannelList)
 		}
 		else if ( msg == RC_setup ) 
 		{
-			if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv) 
-			{
-				selected = listBox->getSelected();
+			selected = listBox->getSelected();
 
+			if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
+			{
+				int ret = webTVBouquets();
+
+				if(ret) 
+				{
+					res = -1; //FIXME: dont show channellist (worlaround)
+					loop = false;
+				} 
+			}
+			else 
+			{
 				int ret = doMenu();
 				if(ret) 
 				{
@@ -431,7 +441,7 @@ int CBouquetList::show(bool bShowChannelList)
 		}
 		else if ( msg == (neutrino_msg_t) g_settings.key_list_end ) 
 		{
-			selected = Bouquets.size()- 1;
+			selected = Bouquets.size() - 1;
 
 			listBox->clearItems();
 			paint();
@@ -471,6 +481,8 @@ int CBouquetList::show(bool bShowChannelList)
 	}
 	
 	hide();
+	
+	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 
 	//
 	g_RCInput->killTimer(sec_timer_id);
@@ -478,8 +490,6 @@ int CBouquetList::show(bool bShowChannelList)
 
 	delete listBox;
 	listBox = NULL;
-	
-	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 	
 	if(zapOnExit) 
 		return (selected);
@@ -491,6 +501,8 @@ void CBouquetList::hide()
 {
 	if(listBox)
 		listBox->hide();
+	else
+		CFrameBuffer::getInstance()->clearFrameBuffer();
 }
 
 const struct button_label HButton = {NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL };
@@ -519,8 +531,7 @@ void CBouquetList::paint()
 	listBox->enablePaintHead();
 	listBox->enablePaintDate();
 
-	if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv) 
-		listBox->setHeaderButtons(&HButton, 1);
+	listBox->setHeaderButtons(&HButton, 1);
 
 	// foot
 	listBox->enablePaintFoot();
@@ -530,5 +541,74 @@ void CBouquetList::paint()
 	listBox->setSelected(selected);
 	listBox->paint();
 }
+
+//
+int CBouquetList::webTVBouquets(void)
+{
+	dprintf(DEBUG_NORMAL, "CBouquetList::webTVBouquets\n");
+
+	int ret = menu_return::RETURN_NONE;
+
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("xml");
+	fileFilter.addFilter("tv");
+	fileFilter.addFilter("m3u");
+
+	//
+	CFileList filelist;
+	ClistBoxWidget m("WebTV", NEUTRINO_ICON_WEBTV_SMALL/*, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 18), (frameBuffer->getScreenHeight() / 20))*/);
+	m.enableSaveScreen();
+	m.enableShrinkMenu();
+
+	m.setMode(MODE_LISTBOX);
+	m.enablePaintDate();
+
+	int select = -1;
+	int count = 0;
+	static int old_select = 0;
+
+	std::string Path_local = CONFIGDIR "/webtv";
+
+	// read list
+	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	{
+		std::string bTitle;
+
+		for (unsigned int i = 0; i < filelist.size(); i++)
+		{
+			bTitle = filelist[i].getFileName();
+
+			removeExtension(bTitle);
+
+			m.addItem(new CMenuForwarder(bTitle.c_str(), true, NULL, NULL, to_string(count).c_str()), old_select == count);
+
+			count++;
+		}
+	}
+
+	ret = m.exec(NULL, "");
+	select = m.getSelected();
+
+	// select
+	if(select >= 0)
+	{
+		old_select = select;
+
+		g_settings.webtv_userBouquet.clear();
+		
+		g_settings.webtv_userBouquet = filelist[select].Name.c_str();
+		
+		dprintf(DEBUG_NORMAL, "CBouquetList::addUserBouquet: settings file %s\n", g_settings.webtv_userBouquet.c_str());
+		
+		// reload channels
+		g_Zapit->reinitChannels();
+
+		return 1;
+	}
+
+	return ret;
+}
+
 
 

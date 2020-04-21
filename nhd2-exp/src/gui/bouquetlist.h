@@ -96,6 +96,7 @@ class CBouquetList
 		std::string name;
 		
 		int doMenu();
+		int webTVBouquets();
 
 	public:
 		CBouquetList(const char* const Name = NULL);

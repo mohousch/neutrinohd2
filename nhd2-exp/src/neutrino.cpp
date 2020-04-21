@@ -3629,14 +3629,17 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 			int old_b = bouquetList->getActiveBouquetNumber();
 			int old_mode = g_settings.channel_mode;
 
-			dprintf(DEBUG_NORMAL, "\n\nCNeutrinoApp::handleMsg: ZAP START:\n");
+			dprintf(DEBUG_NORMAL, "\nCNeutrinoApp::handleMsg: ZAP START:\n");
 			
-			dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: bouquetList %x size %d old_b %d\n", (size_t) bouquetList, bouquetList->Bouquets.size(), old_b);
+			//dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: bouquetList %x size %d old_b %d\n", (size_t) bouquetList, bouquetList->Bouquets.size(), old_b);
 
 			if(bouquetList->Bouquets.size()) 
 			{
 				old_num = bouquetList->Bouquets[old_b]->channelList->getActiveChannelNumber();
 			}
+
+			//testing
+			dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: old_b:%d old_num:%d\n", old_b, old_num);
 
 			if( msg == RC_ok ) 
 			{
@@ -3671,8 +3674,6 @@ _repeat:
 			}
 			else if(nNewChannel == -3) // list mode changed
 			{ 
-				dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: bouquetList %x size %d\n", (size_t) bouquetList, bouquetList->Bouquets.size());
-				
 				nNewChannel = bouquetList->exec(true);
 				goto _repeat;
 			}

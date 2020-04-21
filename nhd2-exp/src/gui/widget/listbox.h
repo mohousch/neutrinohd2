@@ -564,6 +564,10 @@ class ClistBox : public CWidgetItem
 		ClistBox(CBox* position);
 		virtual ~ClistBox();
 
+		void setPosition(const int x, const int y, const int dx, const int dy){cFrameBox.iX = x;
+	cFrameBox.iY = y; cFrameBox.iWidth = dx; cFrameBox.iHeight = dy; full_height = dy; full_width = dx; start_x = x; start_y = y;};
+		void setPosition(CBox* position){cFrameBox = *position; full_height = position->iHeight; full_width = position->iWidth; start_x = position->iX; start_y = position->iY;};
+
 		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
 		bool hasItem();
 		void clearItems(void){items.clear(); current_page = 0;};
