@@ -1221,11 +1221,12 @@ void parseWebTVServices(std::string filename)
 	dprintf(DEBUG_NORMAL, "[getservices] parseWebTVServices: load %d WEBTV services\n", cnt);
 }
 
+# define LOAD_ALL_WEBTV_SERVICES 1
 void loadWebTVBouquet(void)
 {
 	dprintf(DEBUG_NORMAL, "[getservcices] loadWebTVBouquet:\n");
 
-#if 0
+#if LOAD_ALL_WEBTV_SERVICES
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");

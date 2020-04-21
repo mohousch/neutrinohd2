@@ -1484,11 +1484,12 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 
 	webTVBouquetList = new CBouquetList("WebTV");
 	webTVBouquetList->orgChannelList = webTVchannelList;
-
+/*
 	std::string name = std::string(rindex(g_settings.webtv_userBouquet.c_str(), '/') + 1);
 	removeExtension(name);
 
 	CBouquet *webtvBouquet = new CBouquet(0, name.c_str(), 0);
+*/
 
 	//
 	uint32_t i;
@@ -1523,15 +1524,15 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 		}
 		else if(it->second.getServiceType() == ST_WEBTV)
 		{
-			it->second.number = webtvi + 1;
+			//it->second.number = webtvi + 1;
 			webTVchannelList->putChannel(&(it->second));
-			webtvBouquet->channelList->addChannel(&(it->second));
+			//webtvBouquet->channelList->addChannel(&(it->second));
 
 			webtvi++;
 		}
 	}
 
-#if 1
+#if 0
 	webTVBouquetList->Bouquets.push_back(webtvBouquet);
 #endif
 	
@@ -1656,7 +1657,7 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit: got %d RADIO bouquets\n", bnum);
 
 	// webtv bouquets
-#if 0
+#if 1
 	bnum = 0;
 	for (i = 0; i < g_bouquetManager->Bouquets.size(); i++) 
 	{
