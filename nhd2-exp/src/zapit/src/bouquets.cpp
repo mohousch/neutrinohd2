@@ -514,9 +514,11 @@ void CBouquetManager::makeBouquetfromCurrentservices(const _xmlNodePtr root)
 }
 
 #define LOAD_ALL_WEBTV_BOUQUETS 1
-void CBouquetManager::loadWebTVBouquet(void)
+
+void CBouquetManager::parseWebTVBouquet(std::string filename)
 {
 #if LOAD_ALL_WEBTV_BOUQUETS
+/*
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");
@@ -529,16 +531,17 @@ void CBouquetManager::loadWebTVBouquet(void)
 
 	std::string filename;
 	std::string name;
+*/
 
 	int cnt = 0;
 
 	// read list
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	//if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
 	{
-		for (unsigned int i = 0; i < filelist.size(); i++)
+		//for (unsigned int i = 0; i < filelist.size(); i++)
 		{
-			filename = filelist[i].getName();
-			name = filelist[i].getFileName();	
+			//filename = filelist[i].getName();
+			//name = filelist[i].getFileName();	
 
 			dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet: parsing %s\n", filename.c_str());
 
@@ -557,6 +560,8 @@ void CBouquetManager::loadWebTVBouquet(void)
 				playlist = true;
 			if( strcasecmp("xml", extension.c_str()) == 0)
 				webtv = true;
+
+			std::string name = std::string(rindex(filename.c_str(), '/') + 1);
 
 			removeExtension(name);
 
@@ -751,6 +756,42 @@ void CBouquetManager::loadWebTVBouquet(void)
 	dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet: load %d WEBTV Channels (allchans:%d)\n", cnt, (int) allchans.size());
 #endif
 }
+
+//testing
+void CBouquetManager::loadWebTVBouquet(void)
+{
+	dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet:\n");
+
+#if LOAD_ALL_WEBTV_BOUQUETS
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("xml");
+	fileFilter.addFilter("tv");
+	fileFilter.addFilter("m3u");
+
+	CFileList filelist;
+
+	std::string Path_local = CONFIGDIR "/webtv";
+
+	std::string file;
+
+	// read list
+	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
+	{
+		for (unsigned int i = 0; i < filelist.size(); i++)
+		{
+			file = filelist[i].getName();
+
+			dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet: load %s\n", file.c_str());
+
+			parseWebTVBouquet(file);
+		}
+	}
+#else
+	parseWebTVBouquet(g_settings.webtv_userBouquet);
+#endif
+}
+
 
 void CBouquetManager::loadBouquets(bool loadCurrentBouquet)
 {

@@ -128,8 +128,9 @@ class CBouquetManager
 		CZapitChannel* findChannelByName(std::string name, const t_service_id sid);
 
 		// webtv
+		void parseWebTVBouquet(std::string filename);
 		void loadWebTVBouquet(void);
-		void loadChannels(void);
+		//void loadChannels(void);
 		int getActiveChannelNumber(t_channel_id id);
 };
 
