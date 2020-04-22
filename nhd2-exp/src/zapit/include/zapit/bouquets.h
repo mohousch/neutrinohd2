@@ -131,7 +131,7 @@ class CBouquetManager
 		void parseWebTVBouquet(std::string filename);
 		void loadWebTVBouquet(void);
 		//void loadChannels(void);
-		int getActiveChannelNumber(t_channel_id id);
+		//int getActiveChannelNumber(t_channel_id id);
 };
 
 /*
