@@ -1480,7 +1480,7 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	RADIOfavList->orgChannelList = RADIOchannelList;
 
 	//
-	webTVchannelList = new CChannelList(g_Locale->getText(LOCALE_CHANNELLIST_HEAD));
+	webTVchannelList = new CChannelList("WebTV");
 
 	webTVBouquetList = new CBouquetList("WebTV");
 	webTVBouquetList->orgChannelList = webTVchannelList;
@@ -1546,8 +1546,8 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	RADIOallList->orgChannelList = RADIOchannelList;
 
 	// webtv all list
-	webTVallList = new CBouquetList(g_Locale->getText(LOCALE_CHANNELLIST_HEAD));
-	tmp = webTVallList->addBouquet(g_Locale->getText(LOCALE_CHANNELLIST_HEAD));
+	webTVallList = new CBouquetList("WebTV");
+	tmp = webTVallList->addBouquet("WebTV");
 	*(tmp->channelList) = *webTVchannelList;
 	tmp->channelList->SortAlpha();
 	webTVallList->orgChannelList = webTVchannelList;

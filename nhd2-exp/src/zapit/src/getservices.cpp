@@ -1237,14 +1237,14 @@ void loadWebTVBouquet(void)
 
 	std::string Path_local = CONFIGDIR "/webtv";
 
-	std::string file;
+	//std::string file;
 
 	// read list
 	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
 	{
 		for (unsigned int i = 0; i < filelist.size(); i++)
 		{
-			file = filelist[i].getName();
+			std::string file = filelist[i].getName();
 
 			dprintf(DEBUG_NORMAL, "[getservcices] loadWebTVBouquet: load %s\n", file.c_str());
 
