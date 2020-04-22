@@ -1327,7 +1327,6 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0)
 		return -1;
 	}
 	
-	//if(!newchannel->isWebTV)
 	if(!(currentMode & WEBTV_MODE))
 	{
 		// save pids
@@ -1357,7 +1356,6 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0)
 
 	saveZapitSettings(false, false);
 	
-	//if(!newchannel->isWebTV)
 	if(!(currentMode & WEBTV_MODE))
 	{
 		// find live_fe to tune
@@ -2863,7 +2861,8 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 				startPlayBack(live_channel);
 			
 				// cam
-				sendCaPmtPlayBackStart(live_channel, live_fe);
+				if( !(currentMode & WEBTV_MODE))
+					sendCaPmtPlayBackStart(live_channel, live_fe);
 			}
 			
 			// ci cam
@@ -3514,6 +3513,9 @@ int startPlayBack(CZapitChannel * thisChannel)
 	if (!thisChannel || playing)
 		return -1;
 
+	if (playbackStopForced)
+			return -1;
+
 	if(currentMode & WEBTV_MODE)
 	{
 		playback->Open();
@@ -3523,9 +3525,6 @@ int startPlayBack(CZapitChannel * thisChannel)
 	}
 	else
 	{
-		if (playbackStopForced)
-			return -1;
-
 		bool have_pcr = false;
 		bool have_audio = false;
 		bool have_video = false;
@@ -3788,17 +3787,16 @@ int stopPlayBack(bool sendPmt)
 
 	if (!playing)
 		return 0;
+
+	if (playbackStopForced)
+			return -1;
 	
-	//if(live_channel->isWebTV)
 	if(currentMode & WEBTV_MODE)
 	{
 		playback->Close();
 	}
 	else
 	{
-		if (playbackStopForced)
-			return -1;
-
 		// capmt
 		sendcapmtPlayBackStop(sendPmt);
 		

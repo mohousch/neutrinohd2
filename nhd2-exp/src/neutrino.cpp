@@ -4736,10 +4736,10 @@ void CNeutrinoApp::tvMode( bool rezap )
 	else if(mode == mode_webtv)
 	{			
 		// stop playback
-		//g_Zapit->stopPlayBack();
-		// start playback
-		g_Zapit->unlockPlayBack();
+		g_Zapit->stopPlayBack();
 
+		// unlock playback
+		g_Zapit->unlockPlayBack();
 		// start epg scanning
 		g_Sectionsd->setPauseScanning(false);
 	}
@@ -4749,8 +4749,6 @@ void CNeutrinoApp::tvMode( bool rezap )
 	
 	if(stopauto && autoshift) 
 	{
-		//printf("standby on: autoshift ! stopping ...\n");
-		
 		stopAutoRecord();
 		recordingstatus = 0;
 		timeshiftstatus = 0;
@@ -4812,10 +4810,11 @@ void CNeutrinoApp::radioMode( bool rezap)
 	}
 	if(mode == mode_webtv)
 	{
-		//g_Zapit->stopPlayBack();
-		// start playback
-		g_Zapit->unlockPlayBack();
+		// stop playback
+		g_Zapit->stopPlayBack();
 
+		// unlock playback
+		g_Zapit->unlockPlayBack();
 		// start epg scanning
 		g_Sectionsd->setPauseScanning(false);
 	}
@@ -4831,7 +4830,7 @@ void CNeutrinoApp::radioMode( bool rezap)
 	}
 
 	g_RemoteControl->radioMode();
-	SetChannelMode( g_settings.channel_mode, mode);//FIXME needed?
+	SetChannelMode( g_settings.channel_mode, mode);
 
 	if( rezap ) 
 	{
@@ -4910,6 +4909,8 @@ void CNeutrinoApp::webtvMode( bool rezap)
 
 	// stop playback
 	g_Zapit->lockPlayBack();
+	// pause epg scanning
+	g_Sectionsd->setPauseScanning(true);
 
 	mode = mode_webtv;
 
@@ -4927,16 +4928,12 @@ void CNeutrinoApp::webtvMode( bool rezap)
 
 	g_RemoteControl->webTVMode();
 
-	// pause epg scanning
-	g_Sectionsd->setPauseScanning(true);
-
-	SetChannelMode(/*g_settings.channel_mode*/LIST_MODE_PROV, mode);//FIXME needed ?
+	SetChannelMode(g_settings.channel_mode, mode);
 
 	if(rezap) 
 	{
 		firstChannel();
 		channelList->tuned = 0xfffffff;
-		//channelList->zapTo(g_settings.startchannelwebtv_nr - 1);
 		channelList->zapTo( firstchannel.channelNumber -1 );
 	}
 }
