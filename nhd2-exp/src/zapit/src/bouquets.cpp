@@ -718,13 +718,11 @@ void CBouquetManager::parseWebTVBouquet(std::string filename)
 	dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet: load %d WEBTV Channels (allchans:%d)\n", cnt, (int) allchans.size());
 }
 
-#define LOAD_ALL_WEBTV_BOUQUETS 1
-
 void CBouquetManager::loadWebTVBouquet(void)
 {
 	dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet:\n");
 
-#if LOAD_ALL_WEBTV_BOUQUETS
+#if defined ENABLE_LOAD_ALL_WEBTV_BOUQUETS
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");

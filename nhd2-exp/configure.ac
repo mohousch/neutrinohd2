@@ -167,6 +167,16 @@ AX_LUA_LIBS
 AC_DEFINE(ENABLE_LUA,1,[include lua interface support])
 fi
 
+# all webtv bouquets
+AC_ARG_ENABLE(load_all_webtv_bouquets,
+	AS_HELP_STRING(--enable-load_all_webtv_bouquets,enable loading all webtv bouquets),
+	,[enable_load_all_webtv_bouquets=no])
+AM_CONDITIONAL(ENABLE_LOAD_ALL_WEBTV_BOUQUETS,test "$enable_load_all_webtv_bouquets" = "yes")
+
+if test "$enable_load_all_webtv_bouquets" = "yes"; then
+AC_DEFINE(ENABLE_LOAD_ALL_WEBTV_BOUQUETS,1,[include loading all webtv bouquets support])
+fi
+
 AC_OUTPUT([
 Makefile
 lib/Makefile
