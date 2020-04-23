@@ -4500,19 +4500,15 @@ void CTestMenu::testChannellist()
 {
 	webTVchannelList = new CChannelList("CTestMenu::testWebTVChannellist:");
 
-	int cnt = 0;
 	for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++) 
 	{
 		if (it->second.isWebTV) 
 		{
-			cnt++;
-			//webTVchannelList->putChannel(&(it->second));
-			webTVchannelList->addChannel(&(it->second));
+			webTVchannelList->putChannel(&(it->second));
 		}
 	}
 
-	webTVchannelList->setSize(cnt);
-	webTVchannelList->exec();
+	webTVchannelList->exec(); // with zap
 }
 
 
@@ -4521,50 +4517,23 @@ void CTestMenu::testBouquetlist()
 {
 	webTVBouquetList = new CBouquetList("CTestMenu::testWebTVBouquetlist");
 
-	filelist.clear();
-	fileFilter.clear();
-
-	CBouquet* webTVBouquet = NULL;
-	
-	fileFilter.addFilter("xml");
-	fileFilter.addFilter("tv");
-	fileFilter.addFilter("m3u");
-
-	if(CFileHelpers::getInstance()->readDir(CONFIGDIR "/webtv", &filelist, &fileFilter))
+	for (int i = 0; i < g_bouquetManager->Bouquets.size(); i++) 
 	{
-		std::string bTitle;
-
-		for (unsigned int i = 0; i < filelist.size(); i++)
+		if (g_bouquetManager->Bouquets[i]->bWebTV && !g_bouquetManager->Bouquets[i]->webtvChannels.empty())
 		{
-			bTitle = filelist[i].getFileName();
+			CBouquet *ltmp = webTVBouquetList->addBouquet(g_bouquetManager->Bouquets[i]);
 
-			removeExtension(bTitle);
+			ZapitChannelList *channels = &(g_bouquetManager->Bouquets[i]->webtvChannels);
+			ltmp->channelList->setSize(channels->size());
 
-			webTVBouquet = new CBouquet(0, (char *)bTitle.c_str(), 0);
-
-			//
-			g_settings.webtv_userBouquet = filelist[i].Name.c_str();
-
-			parseWebTVServices(g_settings.webtv_userBouquet);
-			//g_Zapit->reinitChannels();
-			//CNeutrinoApp::getInstance()->channelsInit();
-			//CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_PROV, NeutrinoMessages::mode_webtv);
-			//CNeutrinoApp::getInstance()->channelList->adjustToChannelID(live_channel_id);
-			//
-
-			for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++) 
+			for(int j = 0; j < (int) channels->size(); j++) 
 			{
-				if (it->second.isWebTV) 
-				{
-					webTVBouquet->channelList->addChannel(&(it->second));
-				}
+				ltmp->channelList->addChannel((*channels)[j]);
 			}
-
-			webTVBouquetList->Bouquets.push_back(webTVBouquet);
 		}
 	}
 
-	webTVBouquetList->exec(true);
+	webTVBouquetList->exec(true); // with zap
 }
 
 void CTestMenu::spinner(void)

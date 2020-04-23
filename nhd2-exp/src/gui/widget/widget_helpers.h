@@ -73,21 +73,10 @@ class CIcon
 		std::string iconName;
 
 		inline CIcon(){;};
-		void setIcon(const std::string& icon)
-		{
-			iconName = icon; 
-			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
-		};
 
 		void setIcon(const char* icon)
 		{
 			iconName = std::string(icon); 
-			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
-		};
-
-		inline CIcon(const std::string& icon)
-		{
-			iconName = icon; 
 			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iWidth, &iHeight);
 		};
 
@@ -107,21 +96,10 @@ class CImage
 		std::string imageName;
 
 		inline CImage(){;};
-		void setImage(const std::string& image)
-		{
-			imageName = image; 
-			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
-		};
 
 		void setImage(const char* image)
 		{
 			imageName = std::string(image); 
-			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
-		};
-
-		inline CImage(const std::string& image)
-		{
-			imageName = image; 
 			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
 		};
 
@@ -139,24 +117,6 @@ typedef struct button_label
 	neutrino_locale_t locale;
 	const char * localename;
 } button_label_struct;
-
-// CProgressbar
-class CProgressBar
-{
-	private:
-		CFrameBuffer * frameBuffer;
-		short width;
-		short height;
-		unsigned char percent;
-		short red, green, yellow;
-		bool inverse;
-
-	public:
-		CProgressBar(int w, int h, int r = 40, int g = 100, int b = 70, bool inv = true);
-		void paint(unsigned int x, unsigned int y, unsigned char pcr);
-		void reset();
-		int getPercent() { return percent; };
-};
 
 // CButtons
 class CButtons
@@ -181,6 +141,24 @@ class CScrollBar
 
 		void paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage);
 		void paint(CBox* position, const int NrOfPages, const int CurrentPage);
+};
+
+// CProgressbar
+class CProgressBar
+{
+	private:
+		CFrameBuffer * frameBuffer;
+		short width;
+		short height;
+		unsigned char percent;
+		short red, green, yellow;
+		bool inverse;
+
+	public:
+		CProgressBar(int w, int h, int r = 40, int g = 100, int b = 70, bool inv = true);
+		void paint(unsigned int x, unsigned int y, unsigned char pcr);
+		void reset();
+		int getPercent() { return percent; };
 };
 
 // detailsLine

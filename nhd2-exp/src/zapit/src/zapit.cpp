@@ -3513,9 +3513,6 @@ int startPlayBack(CZapitChannel * thisChannel)
 	if (!thisChannel || playing)
 		return -1;
 
-	if (playbackStopForced)
-			return -1;
-
 	if(currentMode & WEBTV_MODE)
 	{
 		playback->Open();
@@ -3525,6 +3522,9 @@ int startPlayBack(CZapitChannel * thisChannel)
 	}
 	else
 	{
+		if (playbackStopForced)
+			return -1;
+
 		bool have_pcr = false;
 		bool have_audio = false;
 		bool have_video = false;
@@ -3787,9 +3787,6 @@ int stopPlayBack(bool sendPmt)
 
 	if (!playing)
 		return 0;
-
-	if (playbackStopForced)
-			return -1;
 	
 	if(currentMode & WEBTV_MODE)
 	{
@@ -3797,6 +3794,9 @@ int stopPlayBack(bool sendPmt)
 	}
 	else
 	{
+		if (playbackStopForced)
+			return -1;
+
 		// capmt
 		sendcapmtPlayBackStop(sendPmt);
 		

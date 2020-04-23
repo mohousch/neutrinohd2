@@ -132,7 +132,6 @@ class ClistBoxWidget : public CMenuTarget
 		bool FootInfo;
 		CBox cFrameFootInfo;
 		int footInfoHeight;
-		int interFrame;
 		int connectLineWidth;
 
 		//
@@ -214,7 +213,7 @@ class ClistBoxWidget : public CMenuTarget
 		void enablePaintDate(void){PaintDate = true;};
 
 		//
-		void enablePaintFootInfo(int fh = 70){FootInfo = true; footInfoHeight = fh; interFrame = INTER_FRAME_SPACE; initFrames();};
+		void enablePaintFootInfo(int fh = 70){FootInfo = true; footInfoHeight = fh; initFrames();};
 
 		void setTimeOut(int to = 0){timeout = to;};
 

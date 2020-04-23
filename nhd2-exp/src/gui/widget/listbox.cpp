@@ -41,7 +41,7 @@
 
 #include <system/debug.h>
 
-static CBox cFrameBoxText;
+
 static CTextBox * textBox = NULL;
 
 ///
@@ -1617,7 +1617,6 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	hheight = 0;
 	fheight = 0;
 	footInfoHeight = 0;
-	interFrame = 0;
 	cFrameFootInfo.iHeight = 0;
 	connectLineWidth = 0;
 
@@ -1690,7 +1689,6 @@ ClistBox::ClistBox(CBox* position)
 	hheight = 0;
 	fheight = 0;
 	footInfoHeight = 0;
-	interFrame = 0;
 	cFrameFootInfo.iHeight = 0;
 	connectLineWidth = 0;
 
@@ -1800,13 +1798,10 @@ void ClistBox::initFrames()
 		if(widgetType == WIDGET_TYPE_FRAME)
 		{
 			cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
-			interFrame = 0;
 		}
 		else
 		{
 			cFrameFootInfo.iHeight = footInfoHeight;
-			interFrame = INTER_FRAME_SPACE;
-
 			connectLineWidth = CONNECTLINEBOX_WIDTH;
 		}
 	}
@@ -1850,7 +1845,6 @@ void ClistBox::initFrames()
 			if(widgetType == WIDGET_TYPE_EXTENDED || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_MENU) || widgetMode == MODE_SETUP)
 			{
 				cFrameFootInfo.iHeight = 0;
-				interFrame = 0;
 				connectLineWidth = 0;
 			}
 		}
@@ -1870,7 +1864,7 @@ void ClistBox::initFrames()
 			itemHeightTotal += item_height;
 			heightCurrPage += item_height;
 
-			if((heightCurrPage + hheight + fheight + cFrameFootInfo.iHeight + interFrame)> cFrameBox.iHeight)
+			if((heightCurrPage + hheight + fheight + cFrameFootInfo.iHeight)> cFrameBox.iHeight)
 			{
 				page_start.push_back(i);
 				heightFirstPage = heightCurrPage - item_height;
@@ -1896,8 +1890,8 @@ void ClistBox::initFrames()
 		// recalculate height
 		if(shrinkMenu)
 		{
-			listmaxshow = (cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight - interFrame)/item_height;
-			cFrameBox.iHeight = hheight + listmaxshow*item_height + fheight + cFrameFootInfo.iHeight + interFrame;
+			listmaxshow = (cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight)/item_height;
+			cFrameBox.iHeight = hheight + listmaxshow*item_height + fheight + cFrameFootInfo.iHeight;
 		}
 
 		// sanity check
@@ -2005,7 +1999,7 @@ void ClistBox::paintItems()
 	}
 	else
 	{
-		items_height = cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight - interFrame; 
+		items_height = cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight; 
 
 		sb_width = 0;
 	
@@ -2020,14 +2014,13 @@ void ClistBox::paintItems()
 			items_width = 2*(cFrameBox.iWidth/3) - sb_width;
 
 			// extended
-			cFrameBoxText.iX = cFrameBox.iX + 2*(cFrameBox.iWidth/3);
-			cFrameBoxText.iY = cFrameBox.iY + hheight;
-			cFrameBoxText.iWidth = (cFrameBox.iWidth/3);
-			cFrameBoxText.iHeight = items_height;
+			if(textBox)
+			{
+				delete textBox;
+				textBox = NULL;
+			}
 
-			textBox = new CTextBox();
-
-			textBox->setPosition(&cFrameBoxText);
+			textBox = new CTextBox(cFrameBox.iX + 2*(cFrameBox.iWidth/3), cFrameBox.iY + hheight, (cFrameBox.iWidth/3), items_height);
 		}
 
 		// item not currently on screen
@@ -2040,7 +2033,7 @@ void ClistBox::paintItems()
 				current_page++;
 		}
 
-		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight - interFrame, backgroundColor);
+		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight, backgroundColor);
 
 		if(widgetType == WIDGET_TYPE_EXTENDED && widgetMode == MODE_MENU)
 		{
@@ -2051,9 +2044,9 @@ void ClistBox::paintItems()
 		if(total_pages > 1)
 		{
 			if(widgetType == WIDGET_TYPE_EXTENDED)
-				scrollBar.paint(cFrameBox.iX + 2*(cFrameBox.iWidth/3) - SCROLLBAR_WIDTH, cFrameBox.iY + hheight, cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight - interFrame, total_pages, current_page);
+				scrollBar.paint(cFrameBox.iX + 2*(cFrameBox.iWidth/3) - SCROLLBAR_WIDTH, cFrameBox.iY + hheight, cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight, total_pages, current_page);
 			else
-				scrollBar.paint(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, cFrameBox.iY + hheight, cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight - interFrame, total_pages, current_page);
+				scrollBar.paint(cFrameBox.iX + cFrameBox.iWidth - SCROLLBAR_WIDTH, cFrameBox.iY + hheight, cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight, total_pages, current_page);
 		}
 
 		// paint items
@@ -2180,7 +2173,7 @@ void ClistBox::paintFoot()
 		}
 		else
 		{
-			CFooters footers(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight - interFrame, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
+			CFooters footers(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
 
 			footers.setColor(footColor);
 			footers.setCorner(footRadius, footCorner);
@@ -2223,7 +2216,7 @@ void ClistBox::paintItemInfo(int pos)
 				item->getYPosition();
 	
 				// detailslines
-				itemsLine.paint(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight - cFrameFootInfo.iHeight -interFrame, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
+				itemsLine.paint(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight - cFrameFootInfo.iHeight, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
 
 				// option_info1
 				int l_ow1 = 0;
@@ -2274,19 +2267,13 @@ void ClistBox::paintItemInfo(int pos)
 					frameBuffer->displayImage(item->itemIcon.c_str(), cFrameBox.iX + ICON_OFFSET, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight + (cFrameFootInfo.iHeight - 40)/2, 100, 40);
 
 				// HelpText
-				cFrameBoxText.iX = cFrameBox.iX + 100 + ICON_OFFSET;
-				cFrameBoxText.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight + 2;
-				cFrameBoxText.iWidth = cFrameBox.iWidth - 100 - ICON_OFFSET - 2;
-				cFrameBoxText.iHeight = cFrameFootInfo.iHeight - 4;
-
 				if(textBox)
 				{
 					delete textBox;
 					textBox = NULL;
 				}
 	
-				textBox = new CTextBox();
-				textBox->setPosition(&cFrameBoxText);
+				textBox = new CTextBox(cFrameBox.iX + 100 + ICON_OFFSET, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight + 2, cFrameBox.iWidth - 100 - ICON_OFFSET - 2, cFrameFootInfo.iHeight - 4);
 				textBox->disablePaintBackground();
 				textBox->setMode(~SCROLL);
 

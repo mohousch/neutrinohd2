@@ -59,7 +59,6 @@
 extern CPlugins * g_PluginList;    // defined in neutrino.cpp
 
 //
-static CBox cFrameBoxText;
 static CTextBox * textBox = NULL;
 
 /// ClistBoxWidget
@@ -131,7 +130,6 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 	FootInfo = false;
 	footInfoHeight = 0;
 	cFrameFootInfo.iHeight = 0;
-	interFrame = 0;
 	connectLineWidth = 0;
 
 	timeout = 0;
@@ -290,13 +288,11 @@ void ClistBoxWidget::initFrames()
 	{
 		// footInfo height
 		cFrameFootInfo.iHeight = 0;
-		interFrame = 0;
 		connectLineWidth = 0;
 
 		if(FootInfo && (widgetType == WIDGET_TYPE_STANDARD || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_LISTBOX))&& widgetMode != MODE_SETUP)
 		{
 			cFrameFootInfo.iHeight = footInfoHeight;
-			interFrame = INTER_FRAME_SPACE;
 			connectLineWidth = CONNECTLINEBOX_WIDTH;
 		}
 
@@ -362,7 +358,7 @@ void ClistBoxWidget::initFrames()
 
 		//
 		full_width = width;
-		full_height = height + cFrameFootInfo.iHeight + interFrame;
+		full_height = height + cFrameFootInfo.iHeight;
 		
 		// position
 		// default centered
@@ -393,7 +389,7 @@ void ClistBoxWidget::initFrames()
 		if(FootInfo && (widgetType == WIDGET_TYPE_STANDARD || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_LISTBOX)))
 		{
 			cFrameFootInfo.iX = x;
-			cFrameFootInfo.iY = y + height + interFrame;
+			cFrameFootInfo.iY = y + height;
 			cFrameFootInfo.iWidth = width;
 		}
 
@@ -622,14 +618,13 @@ void ClistBoxWidget::paintItems()
 			items_width = 2*(width/3) - sb_width;
 
 			// extended
-			cFrameBoxText.iX = x + 2*(width/3);
-			cFrameBoxText.iY = y + hheight;
-			cFrameBoxText.iWidth = width/3;
-			cFrameBoxText.iHeight = items_height;
+			if(textBox)
+			{
+				delete textBox;
+				textBox = NULL;
+			}
 
-			textBox = new CTextBox();
-
-			textBox->setPosition(&cFrameBoxText);
+			textBox = new CTextBox(x + 2*(width/3), y + hheight, width/3, items_height);
 		}
 	
 		// item not currently on screen
@@ -705,26 +700,21 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				item->getYPosition();
 	
 				// detailslines|box
-				itemsLine.paint(x, y, width, height + interFrame, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
+				itemsLine.paint(x, y, width, height, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
 
 
 				// item icon
 				if(!item->itemIcon.empty())
-					frameBuffer->displayImage(item->itemIcon.c_str(), x + ICON_OFFSET, y + height + interFrame + (cFrameFootInfo.iHeight - 40)/2, 100, 40);
+					frameBuffer->displayImage(item->itemIcon.c_str(), x + ICON_OFFSET, y + height + (cFrameFootInfo.iHeight - 40)/2, 100, 40);
 
 				// HelpText
-				cFrameBoxText.iX = x + 100 + ICON_OFFSET;
-				cFrameBoxText.iY = y + full_height - cFrameFootInfo.iHeight + 2;
-				cFrameBoxText.iWidth = full_width - CONNECTLINEBOX_WIDTH - 4 - ICON_OFFSET - 100 - BORDER_RIGHT;
-				cFrameBoxText.iHeight = cFrameFootInfo.iHeight - 4;
-
 				if(textBox)
 				{
 					delete textBox;
 					textBox = NULL;
 				}
 	
-				textBox = new CTextBox(&cFrameBoxText);
+				textBox = new CTextBox(x + 100 + ICON_OFFSET, y + full_height - cFrameFootInfo.iHeight + 2, width - 4 - ICON_OFFSET - 100, cFrameFootInfo.iHeight - 4);
 				textBox->disablePaintBackground();
 				textBox->setMode(~SCROLL);
 
@@ -765,7 +755,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				item->getYPosition();
 	
 				// detailslines
-				itemsLine.paint(x, y, width, height + interFrame, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
+				itemsLine.paint(x, y, width, height, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
 
 				// option_info1
 				int l_ow1 = 0;
@@ -773,7 +763,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				{
 					l_ow1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->option_info1.c_str());
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + width - BORDER_RIGHT - l_ow1, y + height + + interFrame + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->option_info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + width - BORDER_RIGHT - l_ow1, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->option_info1.c_str(), COL_MENUFOOT_INFO, 0, true);
 				}
 
 				// info1
@@ -785,7 +775,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 					if(l_w1 >= (width - BORDER_LEFT - BORDER_RIGHT - l_ow1))
 						l_w1 = 0;
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + + interFrame + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->info1.c_str(), COL_MENUFOOT_INFO, 0, true);
 				}
 
 				// option_info2
@@ -794,7 +784,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				{
 					l_ow2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(item->option_info2.c_str());
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + width - BORDER_RIGHT - l_ow2, y + height + + interFrame + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->option_info2.c_str(), COL_MENUFOOT_INFO, 0, true);
+					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + width - BORDER_RIGHT - l_ow2, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->option_info2.c_str(), COL_MENUFOOT_INFO, 0, true);
 				}
 
 				// info2
@@ -806,7 +796,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 					if(l_w2 >= (width - BORDER_LEFT - BORDER_RIGHT - l_ow2))
 						l_w2 = 0;
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + + interFrame + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->info2.c_str(), COL_MENUFOOT_INFO, 0, true); // UTF-8
+					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->info2.c_str(), COL_MENUFOOT_INFO, 0, true); // UTF-8
 				}
 			}
 		}
@@ -842,7 +832,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				item->getYPosition();
 	
 				// detailslines
-				itemsLine.paint(x, y, width, height + interFrame, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
+				itemsLine.paint(x, y, width, height, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
 
 				// option_info1
 				int l_ow1 = 0;
@@ -850,7 +840,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				{
 					l_ow1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->option_info1.c_str());
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + width - BORDER_RIGHT - l_ow1, y + height + + interFrame + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->option_info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + width - BORDER_RIGHT - l_ow1, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->option_info1.c_str(), COL_MENUFOOT_INFO, 0, true);
 				}
 
 				// info1
@@ -862,7 +852,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 					if(l_w1 >= (width - BORDER_LEFT - BORDER_RIGHT - l_ow1))
 						l_w1 = 0;
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + + interFrame + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->info1.c_str(), COL_MENUFOOT_INFO, 0, true);
 				}
 
 				// option_info2
@@ -871,7 +861,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				{
 					l_ow2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(item->option_info2.c_str());
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + width - BORDER_RIGHT - l_ow2, y + height + + interFrame + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->option_info2.c_str(), COL_MENUFOOT_INFO, 0, true);
+					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + width - BORDER_RIGHT - l_ow2, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->option_info2.c_str(), COL_MENUFOOT_INFO, 0, true);
 				}
 
 				// info2
@@ -883,7 +873,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 					if(l_w2 >= (width - BORDER_LEFT - BORDER_RIGHT - l_ow2))
 						l_w2 = 0;
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + + interFrame + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->info2.c_str(), COL_MENUFOOT_INFO, 0, true); // UTF-8
+					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->info2.c_str(), COL_MENUFOOT_INFO, 0, true); // UTF-8
 				}
 			}
 		}
