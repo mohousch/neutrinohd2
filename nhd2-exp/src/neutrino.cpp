@@ -4740,8 +4740,6 @@ void CNeutrinoApp::tvMode( bool rezap )
 
 		// unlock playback
 		g_Zapit->unlockPlayBack();
-		// start epg scanning
-		//g_Sectionsd->setPauseScanning(false);
 	}
 
 	bool stopauto = (mode != mode_ts);	
@@ -4815,8 +4813,6 @@ void CNeutrinoApp::radioMode( bool rezap)
 
 		// unlock playback
 		g_Zapit->unlockPlayBack();
-		// start epg scanning
-		//g_Sectionsd->setPauseScanning(false);
 	}
 
 	mode = mode_radio;
@@ -4908,9 +4904,7 @@ void CNeutrinoApp::webtvMode( bool rezap)
 	}
 
 	// lock playback
-	g_Zapit->lockPlayBack();
-	// pause epg scanning
-	//g_Sectionsd->setPauseScanning(true);
+	//g_Zapit->lockPlayBack();
 
 	mode = mode_webtv;
 

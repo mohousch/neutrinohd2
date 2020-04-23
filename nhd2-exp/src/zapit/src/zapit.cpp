@@ -188,6 +188,7 @@ enum {
 
 int currentMode = 1;
 bool playbackStopForced = false;
+bool avDecoderOpen = false;
 
 // list of near video on demand
 tallchans nvodchannels;         	// tallchans defined in "bouquets.h"
@@ -1713,6 +1714,9 @@ void setRadioMode(void)
 	currentMode |= RADIO_MODE;
 	currentMode &= ~TV_MODE;
 	currentMode &= ~WEBTV_MODE;
+
+	if (!avDecoderOpen)
+		openAVDecoder();
 }
 
 void setTVMode(void)
@@ -1722,6 +1726,9 @@ void setTVMode(void)
 	currentMode |= TV_MODE;
 	currentMode &= ~RADIO_MODE;
 	currentMode &= ~WEBTV_MODE;
+
+	if (!avDecoderOpen)
+		openAVDecoder();
 }
 
 void setWEBTVMode(void)
@@ -1731,6 +1738,9 @@ void setWEBTVMode(void)
 	currentMode |= WEBTV_MODE;
 	currentMode &= ~RADIO_MODE;
 	currentMode &= ~TV_MODE;
+
+	if (avDecoderOpen)
+		closeAVDecoder();
 }
 
 int getMode(void)
@@ -1806,8 +1816,6 @@ int prepare_channels()
 
 	// load bouquets
 	g_bouquetManager->loadBouquets();		// 2004.08.02 g_bouquetManager->storeBouquets();
-
-	// webtv bouquets|channels
 
 	return 0;
 }
@@ -3877,6 +3885,8 @@ void closeAVDecoder(void)
 	// close audiodecoder
 	if(audioDecoder)
 		audioDecoder->Close();
+
+	avDecoderOpen = false;
 #endif
 }
 
@@ -3899,7 +3909,9 @@ void openAVDecoder(void)
 		
 		// set source
 		audioDecoder->setSource(AUDIO_SOURCE_DEMUX);
-	}	
+	}
+
+	avDecoderOpen = true;	
 #endif
 }
 
