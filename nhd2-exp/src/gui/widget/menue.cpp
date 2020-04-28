@@ -139,8 +139,8 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 	widgetChange = false;
 
 	// frame
-	backgroundColor = COL_MENUCONTENT_PLUS_0;
-	itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
+	//backgroundColor = COL_MENUCONTENT_PLUS_0;
+	//itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
 	maxItemsPerPage = itemsPerX*itemsPerY;
@@ -229,8 +229,8 @@ void ClistBoxWidget::initFrames()
 		CMenuItem * item = items[count];
 
 		item->widgetType = widgetType;
-		item->item_backgroundColor = backgroundColor;
-		item->item_selectedColor = itemBoxColor;
+		//item->item_backgroundColor = backgroundColor;
+		//item->item_selectedColor = itemBoxColor;
 	} 
 
 	// init frames
@@ -406,7 +406,7 @@ void ClistBoxWidget::paintHead()
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		// box
-		frameBuffer->paintBoxRel(x, y, width, hheight, backgroundColor);
+		frameBuffer->paintBoxRel(x, y, width, hheight, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
 
 		// paint horizontal line top
 		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + hheight - 2, COL_MENUCONTENT_PLUS_5);
@@ -496,7 +496,7 @@ void ClistBoxWidget::paintFoot()
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		//
-		frameBuffer->paintBoxRel(x, y + height - fheight, width, fheight, backgroundColor);
+		frameBuffer->paintBoxRel(x, y + height - fheight, width, fheight, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
 
 		// paint horizontal line buttom
 		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight + 2, COL_MENUCONTENT_PLUS_5);
@@ -524,7 +524,7 @@ void ClistBoxWidget::paint()
 	// paint background
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
-		frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight - fheight, backgroundColor);
+		frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight - fheight, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
 	}
 	else
 	{
@@ -541,7 +541,7 @@ void ClistBoxWidget::paintItems()
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		// items background
-		frameBuffer->paintBoxRel(x, y + hheight + 10, width, height - hheight - fheight - (fbutton_count != 0? fheight : 0) - 20, backgroundColor);
+		frameBuffer->paintBoxRel(x, y + hheight + 10, width, height - hheight - fheight - (fbutton_count != 0? fheight : 0) - 20, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
 
 		// item not currently on screen
 		if (selected >= 0)
@@ -932,7 +932,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	}
 	else if(widgetType == WIDGET_TYPE_FRAME)
 	{
-		frameBuffer->paintBoxRel(x, y + height - fheight - (fbutton_count != 0? fheight : 0), width, fheight, backgroundColor);
+		frameBuffer->paintBoxRel(x, y + height - fheight - (fbutton_count != 0? fheight : 0), width, fheight, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
 
 		// refresh horizontal line buttom
 		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight - (fbutton_count != 0? fheight : 0) + 2, COL_MENUCONTENT_PLUS_5);

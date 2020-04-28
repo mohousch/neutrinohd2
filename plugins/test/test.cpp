@@ -1469,7 +1469,7 @@ void CTestMenu::test()
 	leftWidget->setSelected(left_selected);
 	leftWidget->setOutFocus(false);
 
-	leftWidget->setBackgroundColor(COL_DARK_RED);
+	//leftWidget->setBackgroundColor(COL_DARK_RED);
 
 	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos");
 	ClistBoxItem *item2 = new ClistBoxItem("Am");
@@ -1510,7 +1510,7 @@ void CTestMenu::test()
 	rightWidget->setSelected(right_selected);
 	rightWidget->setOutFocus(true);
 
-	rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
+	//rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
 
 	rightWidget->enablePaintFootInfo();
 

@@ -196,7 +196,7 @@ void CWidget::hide()
 	}
 	else
 	{
-		if(paintMainFrame)
+		//if(paintMainFrame) // always clear buffer
 			frameBuffer->paintBackgroundBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight);
 	}
 

@@ -153,17 +153,15 @@ class moviePlayer(CFileBrowser):
 		if self.getExitPressed() is not True:
 			self.__init__()
 
-class testMenu(CWidget):
+class testMenu(CMenuTarget):
 	selected = 0
 	listWidget = ClistBoxWidget("pythonTest:ClistBoxWidget", NEUTRINO_ICON_MOVIE)
 
 	def __init__(self):
-		CWidget.__init__
+		CMenuTarget.__init__
 		self.showMenu()
 
 	def showMenu(self):
-		print("showMenu")
-		
 		#self.listWidget.setSelected(self.selected)
 		self.listWidget.setWidgetType(WIDGET_TYPE_STANDARD)
 		self.listWidget.setMode(MODE_LISTBOX)

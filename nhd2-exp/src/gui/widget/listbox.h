@@ -134,8 +134,8 @@ class CMenuItem
 		//
 		int item_height;
 		int item_width;
-		fb_pixel_t item_backgroundColor;
-		fb_pixel_t item_selectedColor;
+		//fb_pixel_t item_backgroundColor;
+		//fb_pixel_t item_selectedColor;
 
 		//
 		//static CFont* nameFont;
@@ -515,8 +515,8 @@ class ClistBox : public CWidgetItem
 		CButtons buttons;
 
 		// frame
-		fb_pixel_t backgroundColor;
-		fb_pixel_t itemBoxColor;
+		//fb_pixel_t backgroundColor;
+		//fb_pixel_t itemBoxColor;
 		int itemsPerX;
 		int itemsPerY;
 		int maxItemsPerPage;
@@ -620,8 +620,8 @@ class ClistBox : public CWidgetItem
 		void enableShrinkMenu(){shrinkMenu = true;};
 
 		//
-		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
-		void setItemBoxColor(fb_pixel_t col) {itemBoxColor = col;};
+		//void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
+		//void setItemBoxColor(fb_pixel_t col) {itemBoxColor = col;};
 
 		//
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
