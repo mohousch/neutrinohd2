@@ -315,8 +315,10 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 			//
 			if ( msg <= RC_MaxRC )
 			{
-				if(hasItem())
+				if(selected >= 0)
+				{
 					items[selected]->otherKeyPressed(msg);
+				}
 			}
 
 			switch (msg) 
@@ -365,7 +367,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 				case (RC_ok):
 					{
-						if(hasItem())
+						if(hasItem() && selected >= 0)
 						{
 							if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) || (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
 							{
