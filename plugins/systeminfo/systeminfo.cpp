@@ -173,7 +173,7 @@ int CSysInfoWidget::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 	neutrino_msg_t msg; 
 	neutrino_msg_data_t data;
 	int timercount = 0;
-	unsigned long long timeoutEnd = g_RCInput->calcTimeoutEnd(5);
+	uint64_t timeoutEnd = g_RCInput->calcTimeoutEnd(5);
 
 	while (msg != RC_home)
 	{

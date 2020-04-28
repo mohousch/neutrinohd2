@@ -475,7 +475,7 @@ int CCAMMenuHandler::doMenu(int slot)
 			if(hintBox != NULL) 
 				hintBox->paint();
 
-			g_RCInput->getMsgAbsoluteTimeout (&msg, &data, &timeoutEnd);
+			g_RCInput->getMsgAbsoluteTimeout(&msg, &data, &timeoutEnd);
 			
 			if (msg == RC_timeout) 
 			{

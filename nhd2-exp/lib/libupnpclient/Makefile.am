@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libtuxbox-upnpclient.a
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/lib/libxmltree \
 	-I$(top_srcdir)/lib/libupnpclient \
 	-I$(top_srcdir)/src 

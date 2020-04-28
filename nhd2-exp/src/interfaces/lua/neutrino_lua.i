@@ -66,7 +66,7 @@
 #include <driver/vcrcontrol.h>
 
 // system
-#include <system/settings.h>
+//#include <system/settings.h>
 #include <system/debug.h>
 #include <system/localize.h>
 #include <system/locals.h>
@@ -175,7 +175,7 @@
 
 
 // system
-%include <src/system/settings.h>
+//%include <src/system/settings.h>
 %include <src/system/debug.h>
 %include <src/system/localize.h>
 %include <src/system/locals.h>

@@ -32,7 +32,27 @@
 #  --enable-ci             enable ci cam
 #  --enable-4digits        include 5 segment lcd support
 #  --enable-functionkeys   include RC functions keys support
+#
+#
+# build preqs
+# sudo apt-get install autoconf libtool libtool-bin g++ gdb swig flex bison make texinfo subversion intltool dialog wget cmake gperf
+#
+# sudo apt-get install libavformat-dev libswscale-dev libopenthreads-dev libglew-dev freeglut3-dev libcurl4-gnutls-dev libfreetype6-dev libid3tag0-dev libmad0-dev libogg-dev libpng12-dev libgif-dev libjpeg-dev libvorbis-dev libflac-dev libblkid-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libfribidi-dev libass-dev python-dev lua5.2 lua5.2-dev
 ################################################################################################################################################################################################################################################################
+SHELL = /bin/bash
+UID := $(shell id -u)
+ifeq ($(UID), 0)
+warn:
+	@echo "You are running as root. Do not do this, it is dangerous."
+	@echo "Aborting the build. Log in as a regular user and retry."
+else
+LC_ALL:=C
+LANG:=C
+export TOPDIR LC_ALL LANG
+
+#
+#
+#
 
 BOXTYPE = generic
 DEST = $(PWD)/$(BOXTYPE)
@@ -131,3 +151,5 @@ distclean: neutrino-distclean plugins-distclean
 
 PHONY = neutrino-checkout plugins-checkout
 .PHONY: $(PHONY)
+
+endif

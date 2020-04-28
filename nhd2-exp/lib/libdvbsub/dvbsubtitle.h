@@ -26,7 +26,8 @@ extern "C" {
 
 class cDvbSubtitleBitmaps;
 
-class cDvbSubtitleConverter  /*: public cThread */{
+class cDvbSubtitleConverter  /*: public cThread */
+{
 	private:
 		bool running;
 		pthread_mutex_t mutex;

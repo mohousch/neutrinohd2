@@ -25,6 +25,12 @@ extern "C" {
 #include "driver/framebuffer.h"
 #include "Debug.hpp"
 
+//#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(57, 1, 99)
+//	#define CODEC_DVB_SUB CODEC_ID_DVB_SUBTITLE
+//#else
+	#define CODEC_DVB_SUB AV_CODEC_ID_DVB_SUBTITLE
+//#endif
+
 // Set these to 'true' for debug output:
 static bool DebugConverter = false;
 
@@ -185,13 +191,10 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
 	avctx = NULL;
 	avcodec = NULL;
 
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(58, 9, 100)
 	avcodec_register_all();
-
-#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(57, 1, 99)
-	avcodec = avcodec_find_decoder(CODEC_ID_DVB_SUBTITLE);
-#else
-	avcodec = avcodec_find_decoder(AV_CODEC_ID_DVB_SUBTITLE);
 #endif
+	avcodec = avcodec_find_decoder(CODEC_DVB_SUB);//CODEC_ID_DVB_SUBTITLE or AV_CODEC_ID_DVB_SUBTITLE from 57.1.100
 
 	if (!avcodec) 
 	{

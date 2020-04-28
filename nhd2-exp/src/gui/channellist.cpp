@@ -948,7 +948,7 @@ bool CChannelList::adjustToChannelID(const t_channel_id channel_id, bool bToo)
 {
 	unsigned int i;
 
-	dprintf(DEBUG_NORMAL, "CChannelList::adjustToChannelID me %x list size %d channel_id %llx\n", (int) this, chanlist.size(), channel_id);
+	dprintf(DEBUG_NORMAL, "CChannelList::adjustToChannelID: channel_id %llx\n", channel_id);
 	
 	for (i = 0; i < chanlist.size(); i++) 
 	{

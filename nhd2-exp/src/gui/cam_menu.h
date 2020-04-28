@@ -33,7 +33,7 @@ class CCAMMenuHandler : public CMenuTarget
 {
 	private:
 		CHintBox* hintBox;
-		unsigned long long timeoutEnd;
+		uint64_t timeoutEnd;
 
 		int handleCamMsg (const neutrino_msg_t msg, neutrino_msg_data_t data, bool from_menu = false);
 		
