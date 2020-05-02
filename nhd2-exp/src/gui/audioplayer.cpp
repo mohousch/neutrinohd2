@@ -745,7 +745,7 @@ void CAudioPlayerGui::updateTimes(const bool force)
 		m_frameBuffer->paintBoxRel(timeBox.iX, timeBox.iY, timeBox.iWidth, timeBox.iHeight, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
 		
 		// box
-	m_frameBuffer->paintBoxRel(timeBox.iX + 1, timeBox.iY + 1, timeBox.iWidth - 2, timeBox.iHeight - 2, COL_INFOBAR_PLUS_0, NO_RADIUS, CORNER_NONE, g_settings.infobar_gradient); //FIXME:gradient
+	m_frameBuffer->paintBoxRel(timeBox.iX + 1, timeBox.iY + 1, timeBox.iWidth - 2, timeBox.iHeight - 2, COL_INFOBAR_PLUS_0/*, NO_RADIUS, CORNER_NONE, g_settings.infobar_gradient*/); //FIXME:gradient
 
 		if (m_time_total != CAudioPlayer::getInstance()->getTimeTotal())
 		{

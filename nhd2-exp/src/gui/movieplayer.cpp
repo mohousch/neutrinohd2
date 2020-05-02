@@ -1839,7 +1839,7 @@ void CMovieInfoViewer::update(time_t time_show)
 		frameBuffer->paintBoxRel(m_xend - m_width - 10, m_y, m_width + 10, m_height, COL_MENUCONTENT_PLUS_6);
 
 		// time window
-		frameBuffer->paintBoxRel(m_xend - m_width - 10 + 2, m_y + 2, m_width + 10 - 4, m_height - 4, color1, NO_RADIUS, CORNER_NONE, g_settings.infobar_gradient);
+		frameBuffer->paintBoxRel(m_xend - m_width - 10 + 2, m_y + 2, m_width + 10 - 4, m_height - 4, color1/*, NO_RADIUS, CORNER_NONE, g_settings.infobar_gradient*/);
 
 		// time
 		g_Font[TIMEOSD_FONT]->RenderString(m_xend - m_width - 5, m_y + m_height, m_width + 5, cDisplayTime, color2);
