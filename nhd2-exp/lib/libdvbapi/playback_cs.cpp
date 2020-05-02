@@ -268,7 +268,7 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 			break;
 		}
 		//
-#if 0
+#if 1
 #if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_WARNING:
 		{

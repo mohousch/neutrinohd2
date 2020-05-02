@@ -16,12 +16,12 @@ AM_CPPFLAGS =  \
 
 noinst_LTLIBRARIES = upnp.la
 
-upnp_la_SOURCES = upnp.cpp
+upnp_la_SOURCES = UPNPSocket.cpp UPNPDevice.cpp UPNPService.cpp upnp.cpp
 	 
 upnp_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 #upnp_la_LIBADD = $(top_srcdir)/../nhd2-exp/lib/libupnpclient/libtuxbox-upnpclient.a
 
-upnp_la_CXXFLAGS = -fno-rtti -fno-exceptions
+upnp_la_CXXFLAGS = -fno-rtti -fexceptions
 
 install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)/upnp
