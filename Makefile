@@ -95,7 +95,8 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--enable-gstreamer \
 			--with-gstversion=0.10 \
 			--enable-python \
-			--enable-lua
+			--enable-lua \
+			--enable-enable-load_all_webtv_bouquets
 				
 $(DEST):
 	mkdir $@
