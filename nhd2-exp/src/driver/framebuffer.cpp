@@ -1486,7 +1486,7 @@ void CFrameBuffer::enableManualBlit()
 #if !defined USE_OPENGL  
 	unsigned char tmp = 1;
 	
-	if (ioctl(fd,FBIO_SET_MANUAL_BLIT, &tmp) < 0) 
+	if (ioctl(fd, FBIO_SET_MANUAL_BLIT, &tmp) < 0) 
 	{
 		perror("FB: FBIO_SET_MANUAL_BLIT");
 		printf("FB: failed\n");
