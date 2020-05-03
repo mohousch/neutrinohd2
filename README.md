@@ -4,6 +4,14 @@
 </h1>
 
 <p align="center">
+  <img src="nhd2-exp/doc/resources/mainmenu.png">
+</p>
+
+<p align="center">
+  <img src="nhd2-exp/doc/resources/plugins.png">
+</p>
+
+<p align="center">
   <img src="nhd2-exp/doc/resources/netzkino.png">
 </p>
 
