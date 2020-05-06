@@ -91,7 +91,7 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--enable-scart \
 			--enable-ci \
 			--enable-gstreamer \
-			--with-gstversion=0.10 \
+			--with-gstversion=1.0 \
 			--enable-python \
 			--enable-lua \
 			--enable-enable-load_all_webtv_bouquets
