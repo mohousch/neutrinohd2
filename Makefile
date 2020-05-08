@@ -35,7 +35,7 @@
 #
 #
 # build preqs
-# sudo apt-get install autoconf libtool libtool-bin g++ gdb swig flex bison make texinfo subversion intltool dialog wget cmake gperf libavformat-dev libswscale-dev libopenthreads-dev libglew-dev freeglut3-dev libcurl4-gnutls-dev libfreetype6-dev libid3tag0-dev libmad0-dev libogg-dev libpng12-dev libgif-dev libjpeg-dev libvorbis-dev libflac-dev libblkid-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libfribidi-dev libass-dev python-dev lua5.2 lua5.2-dev
+# sudo apt-get install autoconf libtool libtool-bin g++ gdb swig flex bison make texinfo subversion intltool dialog wget cmake gperf libavformat-dev libswscale-dev libopenthreads-dev libglew-dev freeglut3-dev libcurl4-gnutls-dev libfreetype6-dev libid3tag0-dev libmad0-dev libogg-dev libpng12-dev libgif-dev libjpeg-dev libvorbis-dev libflac-dev libblkid-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libfribidi-dev libass-dev python-dev lua5.2 lua5.2-dev
 ################################################################################################################################################################################################################################################################
 SHELL = /bin/bash
 UID := $(shell id -u)
