@@ -44,9 +44,9 @@ if test "$enable_opengl" = "yes"; then
 AC_DEFINE(USE_OPENGL,1,[include opengl engine])
 fi
 
-# use playback (dirty) for opengl and satip
+# use playback (dirty) for opengl
 AC_ARG_ENABLE(playback,
-	AS_HELP_STRING(--enable-playback,enable playback for opengl and satip),
+	AS_HELP_STRING(--enable-playback,enable playback for opengl),
 	,[enable_playback=no])
 AM_CONDITIONAL(USE_PLAYBACK,test "$enable_playback" = "yes")
 

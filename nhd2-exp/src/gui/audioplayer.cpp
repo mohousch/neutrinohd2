@@ -224,7 +224,6 @@ void CAudioPlayerGui::playFile()
 	paintLCD();		
 
 	bool loop = true;
-	bool ok_pressed = false;
 	exit_pressed = false;
 	
 	//
@@ -357,12 +356,6 @@ void CAudioPlayerGui::playFile()
 		{
 			showHelp();
 		}
-		else if(msg == RC_ok)
-		{
-
-			ok_pressed = true;
-			loop = false;				
-		}
 		else if(msg == NeutrinoMessages::CHANGEMODE)
 		{
 			if((data & NeutrinoMessages::mode_mask) != NeutrinoMessages::mode_audio)
@@ -396,8 +389,7 @@ void CAudioPlayerGui::playFile()
 		m_frameBuffer->blit();	
 	}
 	
-	if(!ok_pressed)
-		stop();
+	stop();
 }
 
 void CAudioPlayerGui::hide()

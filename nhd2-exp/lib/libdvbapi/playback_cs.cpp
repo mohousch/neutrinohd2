@@ -46,6 +46,7 @@ bool isTS = false;
 
 #if defined ENABLE_GSTREAMER
 #include <gst/gst.h>
+#include <gst/tag/tag.h>
 #include <gst/pbutils/missing-plugins.h>
 
 #if defined (USE_OPENGL)
@@ -268,7 +269,6 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 			break;
 		}
 		//
-#if 1
 #if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_WARNING:
 		{
@@ -299,9 +299,7 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 			g_error_free(warn);
 			break;
 		}
-#endif
-#endif
-		
+#endif	
 		case GST_MESSAGE_STATE_CHANGED:
 		{
 			if(GST_MESSAGE_SRC(msg) != GST_OBJECT(m_gst_playbin))
@@ -332,7 +330,6 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 					GstIterator * children;
 
 					//
-					#if 0
 					subsink = gst_bin_get_by_name(GST_BIN(m_gst_playbin), "subtitle_sink");
 					if (subsink)
 					{
@@ -360,7 +357,6 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 						// eDebug("[eServiceMP3] subsink properties set!");
 						gst_object_unref(subsink);
 					}
-					#endif
 					
 					if (audioSink)
 					{
@@ -446,17 +442,17 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 #if defined (USE_OPENGL) //FIXME: ???	
 		case GST_MESSAGE_ELEMENT:
 		{
+#if 0
 			if( gst_structure_has_name(gst_message_get_structure(msg), "prepare-xwindow-id") || gst_structure_has_name(gst_message_get_structure(msg), "have-xwindow-id") ) 
 			{
 				// set window id
 				//NOTE: comment out if you want to overlay video window on osd window(still bugy)
-				#if 0
 				sink = gst_element_factory_make ("directdrawsink", "sink");
 				GstXOverlay* ov = (GstXOverlay*)sink;
 
 				gst_x_overlay_set_xwindow_id(/*GST_X_OVERLAY(GST_MESSAGE_SRC (msg))*/ov, (gulong)GLWinID);
-				#endif
 			}
+#endif
 		}
 		break;
 #endif		

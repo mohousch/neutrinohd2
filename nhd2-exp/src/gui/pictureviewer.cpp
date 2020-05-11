@@ -167,7 +167,6 @@ void CPictureViewerGui::show()
 	int timeout;
 
 	bool loop = true;
-	bool ok_pressed = false;
 
 	//		
 	if (!playlist.empty())
@@ -270,11 +269,6 @@ void CPictureViewerGui::show()
 			delete pictureViewerSettingsMenu;
 			pictureViewerSettingsMenu = NULL;					
 		}
-		else if(msg == RC_ok)
-		{
-			ok_pressed = true;
-			loop = false;
-		}
 		else if(msg == NeutrinoMessages::CHANGEMODE)
 		{
 			if((data & NeutrinoMessages::mode_mask) !=NeutrinoMessages::mode_pic)
@@ -304,10 +298,7 @@ void CPictureViewerGui::show()
 		frameBuffer->blit();	
 	}
 
-	if(!ok_pressed)
-	{
-		hide();
-	}
+	hide();
 }
 
 void CPictureViewerGui::view(unsigned int index)
