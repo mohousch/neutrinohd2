@@ -94,7 +94,7 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--with-gstversion=1.0 \
 			--enable-python \
 			--enable-lua \
-			--enable-enable-load_all_webtv_bouquets
+			--enable-load_all_webtv_bouquets
 				
 $(DEST):
 	mkdir $@
