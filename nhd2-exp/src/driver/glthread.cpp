@@ -38,9 +38,6 @@
 
 #include <system/debug.h>
 
-#include <playback_cs.h>
-extern cPlayback *playback;
-
 
 /*static*/ GLThreadObj *gThiz = 0; /* GLUT does not allow for an arbitrary argument to the render func */
 int GLWinID;
@@ -111,12 +108,14 @@ void GLThreadObj::run()
 {
 	setupCtx();
 	setupOSDBuffer();
-	setupDisplayBuffer();
 
-	initDone(); /* signal that setup is finished */
+	//setupDisplayBuffer();
 
-	/* init the good stuff */
+	initDone(); // signal that setup is finished
+
+	// init the good stuff
 	GLenum err = glewInit();
+
 	if(err == GLEW_OK)
 	{
 		if((!GLEW_VERSION_1_5)||(!GLEW_EXT_pixel_buffer_object)||(!GLEW_ARB_texture_non_power_of_two))
@@ -153,6 +152,7 @@ void GLThreadObj::run()
 	{ /* yeah, whatever... */
 		::kill(getpid(), SIGKILL);
 	}
+
 	dprintf(DEBUG_NORMAL, "GLThreadObj::run: GL thread stopping\n");
 }
 
@@ -388,7 +388,7 @@ void GLThreadObj::waitInit()
 
 void GLThreadObj::bltOSDBuffer()
 {
-	/* FIXME: copy each time  */
+	// FIXME: copy each time
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mState.osdpbo);
 	glBufferData(GL_PIXEL_UNPACK_BUFFER, mOSDBuffer.size(), &mOSDBuffer[0], GL_STREAM_DRAW_ARB);
 
@@ -402,16 +402,15 @@ void GLThreadObj::setupDisplayBuffer()
 {	
 	// set displayer buffer
 	mDisplayBuffer.resize(5*1024*1024);
-	dprintf(DEBUG_NORMAL, "GLThreadObj::bltDisplayBuffer: DisplayBuffer set to %d bytes\n", 5*1024*1024);
+
+	dprintf(DEBUG_NORMAL, "GLThreadObj::setupDisplayBuffer: DisplayBuffer set to %d bytes\n", 5*1024*1024);
 }
 
 void GLThreadObj::bltDisplayBuffer()
 {
-	//if(playback && !playback->playing)
-	//	return;
-	
 	// set displayer buffer
 	mDisplayBuffer.resize(5*1024*1024);
+
 	//dprintf(DEBUG_NORMAL, "GLThreadObj::bltDisplayBuffer: DisplayBuffer set to %d bytes\n", 5*1024*1024);
 	
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mState.displaypbo);

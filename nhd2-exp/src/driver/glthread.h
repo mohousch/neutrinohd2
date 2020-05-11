@@ -92,7 +92,12 @@ class GLThreadObj : public OpenThreads::Thread
 		} mState;
 
 		void bltOSDBuffer();
+
+		//
 		void bltDisplayBuffer();
 		void setupDisplayBuffer();
 };
+
 #endif
+
+
