@@ -1171,7 +1171,7 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 				language[i] = "Stream";
 				if (gst_tag_list_get_string(tags, GST_TAG_LANGUAGE_CODE, &g_lang))
 				{
-					printf("language:%s\n", std::string(g_lang).c_str());
+					printf("cPlayback::FindAllPids: language:%s\n", std::string(g_lang).c_str());
 					language[i] = std::string(g_lang).c_str();
 					g_free(g_lang);
 				}
@@ -1179,9 +1179,8 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 				// codec
 				if (gst_tag_list_get_string(tags, GST_TAG_AUDIO_CODEC, &g_codec))
 				{
-					printf("codec:%s\n", std::string(g_codec).c_str());
+					printf("cPlayback::FindAllPids: codec:%s\n", std::string(g_codec).c_str());
 
-					/*
 					if(std::string(g_codec) == "MPEG 1 Audio, Layer 2")
 						ac3flags[i] = 3;
 					else if(std::string(g_codec) == "Dolby Digital (AC-3)")
@@ -1190,7 +1189,6 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 						ac3flags[i] = 5;
 					else if(std::string(g_codec) == "MPEG 1 Audio, Layer 3 (MP3)")
 						ac3flags[i] = 4;
-					*/
 
 					language[i] += " (";
 					language[i] += std::string(g_codec).c_str();
@@ -1217,7 +1215,7 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 
 		if (TrackList != NULL) 
 		{
-			printf("AudioTrack List\n");
+			printf("cPlayback::FindAllPids: AudioTrack List\n");
 			int i = 0,j = 0;
 
 			for (i = 0, j = 0; TrackList[i] != NULL; i += 2, j++) 
@@ -1253,4 +1251,5 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 	}
 #endif	
 }
+
 

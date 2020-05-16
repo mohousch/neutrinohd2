@@ -55,7 +55,7 @@
 
 #include <global.h>
 
-/*zapit includes*/
+//zapit includes
 #include <frontend_c.h>
 #include <getservices.h>
 #include <satconfig.h>
@@ -1030,7 +1030,7 @@ bool CScanSettings::loadSettings(const char * const fileName, int index)
 {
 	printf("CScanSettings::loadSettings: fe%d\n", index);
 	
-	/* if scan.conf not exists load default */
+	// if scan.conf not exists load default
 	if(!configfile.loadConfig(fileName))
 		printf("%s not found\n", fileName);
 	
@@ -1136,7 +1136,7 @@ bool CScanSettings::saveSettings(const char * const fileName, int index)
 
 	if(configfile.getModifiedFlag())
 	{
-		/* save neu configuration */
+		// save neu configuration
 		configfile.saveConfig(fileName);
 	}
 

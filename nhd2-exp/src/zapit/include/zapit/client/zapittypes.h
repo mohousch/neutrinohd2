@@ -283,10 +283,10 @@ typedef enum {
 	/* 0xFF: reserved for future use*/
 } service_type_t;
 
-/* complete transponder-parameters in a struct */
+// complete transponder-parameters in a struct
 typedef struct TP_parameter
 {
-	uint64_t TP_id;					/* diseqc<<24 | feparams->frequency>>8 */
+	uint64_t TP_id;					// diseqc<<24 | feparams->frequency>>8
 	uint8_t polarization;
 	uint8_t diseqc;
 	int scan_mode;
