@@ -66,6 +66,8 @@
 #include <system/tmdbparser.h>
 #include <system/settings.h>
 
+#include <client/zapittools.h>
+
 
 CMovieInfo::CMovieInfo()
 {
@@ -128,50 +130,38 @@ bool CMovieInfo::convertTs2XmlName(std::string * filename)
 	return (result);
 }
 
-#define XML_ADD_TAG_STRING(_xml_text_,_tag_name_,_tag_content_){ \
-	_xml_text_ += "\t\t<"_tag_name_">"; \
-	_xml_text_ += _tag_content_; \
-	_xml_text_ += "</"_tag_name_">\n";}
+static void XML_ADD_TAG_STRING(std::string &_xml_text_, const char *_tag_name_, std::string _tag_content_)
+{
+	_xml_text_ += "\t\t<";
+	_xml_text_ += _tag_name_;
+	_xml_text_ += ">";
+	_xml_text_ += ZapitTools::UTF8_to_UTF8XML(_tag_content_.c_str());
+	_xml_text_ += "</";
+	_xml_text_ += _tag_name_;
+	_xml_text_ += ">\n";
+}
 
-#define XML_ADD_TAG_UNSIGNED(_xml_text_,_tag_name_,_tag_content_){\
-	_xml_text_ +=	"\t\t<"_tag_name_">";\
-	char _tmp_[50];\
-	sprintf(_tmp_, "%u", (unsigned int) _tag_content_);\
-	_xml_text_ +=	_tmp_;\
-	_xml_text_ +=	"</"_tag_name_">\n";}
+static void XML_ADD_TAG_UNSIGNED(std::string &_xml_text_, const char *_tag_name_, unsigned int _tag_content_)
+{
+	_xml_text_ += "\t\t<";
+	_xml_text_ += _tag_name_;
+	_xml_text_ += ">";
+	_xml_text_ += to_string(_tag_content_);
+	_xml_text_ += "</";
+	_xml_text_ += _tag_name_;
+	_xml_text_ += ">\n";
+}
 
-#define XML_ADD_TAG_LONG(_xml_text_,_tag_name_,_tag_content_){\
-	_xml_text_ +=	"\t\t<"_tag_name_">";\
-	char _tmp_[50];\
-	sprintf(_tmp_, "%llu", _tag_content_);\
-	_xml_text_ +=	_tmp_;\
-	_xml_text_ +=	"</"_tag_name_">\n";}
-
-#define	XML_GET_DATA_STRING(_node_,_tag_,_string_dest_){\
-	if(!strcmp(_node_->GetType(), _tag_))\
-	{\
-		if(_node_->GetData() != NULL)\
-		{\
-			_string_dest_ = _node_->GetData();\
-		}\
-	}}
-#define	XML_GET_DATA_INT(_node_,_tag_,_int_dest_){\
-	if(!strcmp(_node_->GetType(), _tag_))\
-	{\
-		if(_node_->GetData() != NULL)\
-		{\
-			_int_dest_ = atoi(_node_->GetData());\
-		}\
-	}}
-
-#define	XML_GET_DATA_LONG(_node_,_tag_,_int_dest_){\
-	if(!strcmp(_node_->GetType(), _tag_))\
-	{\
-		if(_node_->GetData() != NULL)\
-		{\
-			sscanf(_node_->GetData(), "%llu", &_int_dest_); \
-		}\
-	}}
+static void XML_ADD_TAG_LONG(std::string &_xml_text_, const char *_tag_name_, uint64_t _tag_content_)
+{
+	_xml_text_ += "\t\t<";
+	_xml_text_ += _tag_name_;
+	_xml_text_ += ">";\
+	_xml_text_ += to_string(_tag_content_);
+	_xml_text_ += "</";
+	_xml_text_ += _tag_name_;
+	_xml_text_ += ">\n";
+}
 
 bool CMovieInfo::encodeMovieInfoXml(std::string * extMessage, MI_MOVIE_INFO * movie_info)
 {

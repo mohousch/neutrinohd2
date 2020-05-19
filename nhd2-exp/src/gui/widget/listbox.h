@@ -77,12 +77,14 @@ enum
 	ALIGN_RIGHT = 16
 };
 
+#ifndef SWIG
 struct keyval
 {
 	const int key;
 	const neutrino_locale_t value;
 	const char* valname;
 };
+#endif
 
 // CChangeObserver
 class CChangeObserver
