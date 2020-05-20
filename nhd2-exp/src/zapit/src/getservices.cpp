@@ -355,9 +355,9 @@ void ParseSatTransponders(fe_type_t frontendType, _xmlNodePtr search, t_satellit
 		freq_id_t freq;
 
 		// frequency 
-		if (frontendType == FE_OFDM)
-			feparams.frequency = xmlGetNumericAttribute(tps, "centre_frequency", 0);
-		else
+		//if (frontendType == FE_OFDM)
+			//feparams.frequency = xmlGetNumericAttribute(tps, "centre_frequency", 0);
+		//else
 			feparams.frequency = xmlGetNumericAttribute(tps, "frequency", 0);
 
 		// inversion

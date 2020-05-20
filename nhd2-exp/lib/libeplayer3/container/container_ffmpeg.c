@@ -146,75 +146,75 @@ static char* Codec2Encoding(AVCodecContext *codec, int* version)
 {
 	switch (codec->codec_id)
 	{
-		case CODEC_ID_MPEG1VIDEO:
+		case AV_CODEC_ID_MPEG1VIDEO:
 			return "V_MPEG1";
 			
-		case CODEC_ID_MPEG2VIDEO:
+		case AV_CODEC_ID_MPEG2VIDEO:
 			return "V_MPEG2";
 			
-		case CODEC_ID_H263:
-		case CODEC_ID_H263P:
-		case CODEC_ID_H263I:
+		case AV_CODEC_ID_H263:
+		case AV_CODEC_ID_H263P:
+		case AV_CODEC_ID_H263I:
 			return "V_H263";
 			
-		case CODEC_ID_FLV1:
+		case AV_CODEC_ID_FLV1:
 			return "V_FLV";
 			
-		case CODEC_ID_VP5:
-		case CODEC_ID_VP6:
-		case CODEC_ID_VP6F:
+		case AV_CODEC_ID_VP5:
+		case AV_CODEC_ID_VP6:
+		case AV_CODEC_ID_VP6F:
 			return "V_VP6";
 			
-		case CODEC_ID_RV10:
-		case CODEC_ID_RV20:
+		case AV_CODEC_ID_RV10:
+		case AV_CODEC_ID_RV20:
 			return "V_RMV";
 			
-		case CODEC_ID_MPEG4:
+		case AV_CODEC_ID_MPEG4:
 #if LIBAVCODEC_VERSION_MAJOR < 53
 		case CODEC_ID_XVID:
 #endif
-		case CODEC_ID_MSMPEG4V1:
-		case CODEC_ID_MSMPEG4V2:
-		case CODEC_ID_MSMPEG4V3:
+		case AV_CODEC_ID_MSMPEG4V1:
+		case AV_CODEC_ID_MSMPEG4V2:
+		case AV_CODEC_ID_MSMPEG4V3:
 			return "V_MSCOMP";
 			
-		case CODEC_ID_WMV1:
+		case AV_CODEC_ID_WMV1:
 			*version = 1;
 			return "V_WMV";
 			
-		case CODEC_ID_WMV2:
+		case AV_CODEC_ID_WMV2:
 			*version = 2;
 			return "V_WMV";
 			
-		case CODEC_ID_WMV3:
+		case AV_CODEC_ID_WMV3:
 			*version = 3;
 			return "V_WMV";
 			
-		case CODEC_ID_VC1:
+		case AV_CODEC_ID_VC1:
 			return "V_VC1";
 			
-		case CODEC_ID_H264:
+		case AV_CODEC_ID_H264:
 #if LIBAVCODEC_VERSION_MAJOR < 54
 		case CODEC_ID_FFH264:
 #endif
 			return "V_MPEG4/ISO/AVC";
 		
-		case CODEC_ID_AVS:
+		case AV_CODEC_ID_AVS:
 			return "V_AVS";
 			
-		case CODEC_ID_MP2:
+		case AV_CODEC_ID_MP2:
 			return "A_MPEG/L3";
 			
-		case CODEC_ID_MP3:
+		case AV_CODEC_ID_MP3:
 			return "A_MP3";
 			
-		case CODEC_ID_AAC:
+		case AV_CODEC_ID_AAC:
 			return "A_AAC";
 			
-		case CODEC_ID_AC3:
+		case AV_CODEC_ID_AC3:
 			return "A_AC3";
 			
-		case CODEC_ID_DTS:
+		case AV_CODEC_ID_DTS:
 			return "A_DTS";
 		
 //#if LIBAVCODEC_VERSION_INT > AV_VERSION_INT(52, 72, 2)			
@@ -222,46 +222,46 @@ static char* Codec2Encoding(AVCodecContext *codec, int* version)
 //			return "A_EAC3";
 //#endif			
 			
-		case CODEC_ID_WMAV1:
-		case CODEC_ID_WMAV2:
+		case AV_CODEC_ID_WMAV1:
+		case AV_CODEC_ID_WMAV2:
 		case 86056: //CODEC_ID_WMAPRO
 			return "A_WMA";
 			
-		case CODEC_ID_MLP:
+		case AV_CODEC_ID_MLP:
 			return "A_MLP";
 			
-		case CODEC_ID_RA_144:
+		case AV_CODEC_ID_RA_144:
 			return "A_RMA";
 			
-		case CODEC_ID_RA_288:
+		case AV_CODEC_ID_RA_288:
 			return "A_RMA";
 			
-		case CODEC_ID_VORBIS:
+		case AV_CODEC_ID_VORBIS:
 			return "A_IPCM"; //return "A_VORBIS";
 			
-		case CODEC_ID_FLAC: //86030
+		case AV_CODEC_ID_FLAC: //86030
 			return "A_IPCM"; //return "A_FLAC";
 			
 		/* subtitle */
-		case CODEC_ID_SSA:
+		case AV_CODEC_ID_SSA:
 			return "S_TEXT/ASS"; /* Hellmaster1024: seems to be ASS instead of SSA */
 			
-		case CODEC_ID_TEXT: /* Hellmaster1024: i dont have most of this, but lets hope it is normal text :-) */
-		case CODEC_ID_DVD_SUBTITLE:
-		case CODEC_ID_DVB_SUBTITLE:
-		case CODEC_ID_XSUB:
-		case CODEC_ID_MOV_TEXT:
+		case AV_CODEC_ID_TEXT: /* Hellmaster1024: i dont have most of this, but lets hope it is normal text :-) */
+		case AV_CODEC_ID_DVD_SUBTITLE:
+		case AV_CODEC_ID_DVB_SUBTITLE:
+		case AV_CODEC_ID_XSUB:
+		case AV_CODEC_ID_MOV_TEXT:
 #if LIBAVCODEC_VERSION_INT > AV_VERSION_INT(56, 72, 2)      
-		case CODEC_ID_HDMV_PGS_SUBTITLE:
+		case AV_CODEC_ID_HDMV_PGS_SUBTITLE:
 #endif
 
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,38,1)
-		case CODEC_ID_DVB_TELETEXT:
+		case AV_CODEC_ID_DVB_TELETEXT:
 #endif      
 			return "S_TEXT/SRT"; /* fixme */
 		
 #if LIBAVCODEC_VERSION_INT > AV_VERSION_INT(52, 72, 2)
-		case CODEC_ID_SRT:
+		case AV_CODEC_ID_SRT:
 			return "S_TEXT/SRT"; /* fixme */
 #endif 
 
@@ -626,7 +626,9 @@ static void FFMPEGThread(Context_t *context)
 						{
 							int decoded_data_size = samples_size;
 
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(57, 1, 99)
+							bytesDone = avcodec_decode_audio4(( (AVStream*) audioTrack->stream)->codec, (short *)(samples), &decoded_data_size, &avpkt);
+#elif LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)
 							bytesDone = avcodec_decode_audio3(( (AVStream*) audioTrack->stream)->codec, (short *)(samples), &decoded_data_size, &avpkt);
 #else
 							bytesDone = avcodec_decode_audio2(( (AVStream*) audioTrack->stream)->codec, (short *)(samples), &decoded_data_size, avpkt.data, avpkt.size);
@@ -735,7 +737,7 @@ static void FFMPEGThread(Context_t *context)
 						duration=((float)packet.duration)/1000.0;
 					else if(packet.convergence_duration != 0 && packet.convergence_duration != AV_NOPTS_VALUE )
 						duration=((float)packet.convergence_duration)/1000.0;		    
-					else if(((AVStream*)subtitleTrack->stream)->codec->codec_id == CODEC_ID_SSA)
+					else if(((AVStream*)subtitleTrack->stream)->codec->codec_id == AV_CODEC_ID_SSA)
 					{
 						/*Hellmaster1024 if the duration is not stored in packet.duration or
 						  packet.convergence_duration we need to calculate it any other way, for SSA it is stored in
@@ -793,7 +795,7 @@ static void FFMPEGThread(Context_t *context)
 							}
 						}
 						else
-						if(((AVStream*)subtitleTrack->stream)->codec->codec_id == CODEC_ID_SSA)
+						if(((AVStream*)subtitleTrack->stream)->codec->codec_id == AV_CODEC_ID_SSA)
 						{
 							SubtitleData_t data;
 
@@ -1123,7 +1125,7 @@ int container_ffmpeg_init(Context_t *context, char * filename)
 						printf("AVCODEC__INIT__FAILED\n");
 				}
 				// aac
-				else if(stream->codec->codec_id == CODEC_ID_AAC) 
+				else if(stream->codec->codec_id == AV_CODEC_ID_AAC) 
 				{
 					ffmpeg_printf(10,"Create AAC ExtraData\n");
 					ffmpeg_printf(10,"stream->codec->extradata_size %d\n", stream->codec->extradata_size);
@@ -1175,7 +1177,7 @@ int container_ffmpeg_init(Context_t *context, char * filename)
 					track.have_aacheader = 1;
 				} 
 				// wma
-				else if(stream->codec->codec_id == CODEC_ID_WMAV1 || stream->codec->codec_id == CODEC_ID_WMAV2 || 86056 ) //CODEC_ID_WMAPRO) //if (stream->codec->extradata_size > 0)
+				else if(stream->codec->codec_id == AV_CODEC_ID_WMAV1 || stream->codec->codec_id == AV_CODEC_ID_WMAV2 || 86056 ) //CODEC_ID_WMAPRO) //if (stream->codec->extradata_size > 0)
 				{
 					ffmpeg_printf(10,"Create WMA ExtraData\n");
 					track.aacbuflen = 104 + stream->codec->extradata_size;
@@ -1221,10 +1223,10 @@ int container_ffmpeg_init(Context_t *context, char * filename)
 						case 86056/*CODEC_ID_WMAPRO*/:
 							codec_id = WMA_VERSION_9_PRO;
 							break;
-						case CODEC_ID_WMAV2:
+						case AV_CODEC_ID_WMAV2:
 							codec_id = WMA_VERSION_2_9 ;
 							break;
-						case CODEC_ID_WMAV1:
+						case AV_CODEC_ID_WMAV1:
 						default:
 							codec_id = WMA_VERSION_1;
 							break;

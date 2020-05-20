@@ -11,6 +11,7 @@
 
 #define TUXTXT_DEBUG 0
 
+#include <pthread.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
 
