@@ -41,10 +41,10 @@
 #include <libconfigfile/configfile.h>
 
 // libdvbapi
-#include <libdvbapi/playback_cs.h>
-#include <libdvbapi/audio_cs.h>
-#include <libdvbapi/video_cs.h>
-#include <libdvbapi/dmx_cs.h>
+//#include <libdvbapi/playback_cs.h>
+//#include <libdvbapi/audio_cs.h>
+//#include <libdvbapi/video_cs.h>
+//#include <libdvbapi/dmx_cs.h>
 
 // driver
 #include <driver/framebuffer.h>
@@ -148,10 +148,10 @@
 %include <lib/libconfigfile/configfile.h>
 
 // libdvbapi
-%include <lib/libdvbapi/playback_cs.h>
-%include <lib/libdvbapi/audio_cs.h>
-%include <lib/libdvbapi/video_cs.h>
-%include <lib/libdvbapi/dmx_cs.h>
+//%include <lib/libdvbapi/playback_cs.h>
+//%include <lib/libdvbapi/audio_cs.h>
+//%include <lib/libdvbapi/video_cs.h>
+//%include <lib/libdvbapi/dmx_cs.h>
 
 // driver
 %include <src/driver/fontrenderer.h>
