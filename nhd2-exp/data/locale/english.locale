@@ -134,6 +134,7 @@ colormenu.background Background
 colormenu.fade Fade menus
 colormenu.font Font size
 colormenu.blendmode Transparency mode
+colormenu.gradient Gradient
 colormenu.gtx_alpha Transparency
 colormenu.gain Color gain
 colormenu.head Color Settings
@@ -1634,12 +1635,6 @@ webtv.bouquets Favorites
 webtv.add_bouquets add User bouquet
 
 satipcast.rec_hint A record is active.\n Switching to sat-ip <> cast not possible.\nPlease cancel the record first.
-
-head.gradient Head gradient
-foot.gradient Foot gradient
-headinfo.gradient Head info gradient
-footinfo.gradient Foot info gradient
-infobar.gradient Infobar gradient
 
 youtube.youtube Youtube Player
 youtube.yt_error Failed to load youtube feed

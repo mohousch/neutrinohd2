@@ -252,6 +252,7 @@ const char * locale_real_names[] = {
 	"colormenu.fade",
 	"colormenu.font",
 	"colormenu.blendmode",
+	"colormenu.gradient",
 	"colormenu.gtx_alpha",
 	"colormenu.gain",
 	"colormenu.head",
@@ -1646,11 +1647,11 @@ const char * locale_real_names[] = {
 
 	"satipcast.rec_hint",
 
-	"head.gradient",
-	"foot.gradient",
-	"headinfo.gradient",
-	"footinfo.gradient",
-	"infobar.gradient",
+	//"head.gradient",
+	//"foot.gradient",
+	//"headinfo.gradient",
+	//"footinfo.gradient",
+	//"infobar.gradient",
 	
 	// youtube
 	"youtube.youtube",

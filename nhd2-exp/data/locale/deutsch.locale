@@ -134,6 +134,7 @@ colormenu.background Hintergrundfarbe
 colormenu.fade Menüs ausblenden
 colormenu.font Schriftgröße
 colormenu.blendmode Transparenz Modus
+colormenu.gradient Farbverlauf
 colormenu.gtx_alpha Transparenz
 colormenu.gain Farbe
 colormenu.head Farb-Einstellungen
@@ -1635,12 +1636,6 @@ webtv.bouquets Favoriten
 webtv.add_bouquets User Bouquet einfügen
 
 satipcast.rec_hint Eine Aufnahme ist aktiv.\nUmschaltung zu Sat-IP <> Cast nicht möglich.\nBitte die Aufnahme erst beenden.
-
-head.gradient Titel Leiste Farbverlauf
-foot.gradient Fuß leiste Farbverlauf
-headinfo.gradient Titel Info Farbverlauf
-footinfo.gradient Fuß Titel Farbverlauf
-infobar.gradient Infobar Farbverlauf
 
 youtube.youtube Youtube Player
 youtube.yt_error Fehler beim laden des Youtube Feed
