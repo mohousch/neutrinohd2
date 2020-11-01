@@ -356,7 +356,7 @@ void COSDInfoBarColorSettings::showMenu()
 	CColorChooser * chInfobarTextcolor = new CColorChooser(LOCALE_COLORMENU_TEXTCOLOR, &g_settings.infobar_Text_red, &g_settings.infobar_Text_green, &g_settings.infobar_Text_blue,NULL, CNeutrinoApp::getInstance()->colorSetupNotifier);
 	
 	// colored events
-	CColorChooser * chColored_Events = new CColorChooser(LOCALE_COLORMENU_TEXTCOLOR, &g_settings.infobar_colored_events_red, &g_settings.infobar_colored_events_green, &g_settings.infobar_colored_events_blue, NULL, CNeutrinoApp::getInstance()->colorSetupNotifier);
+	CColorChooser * chColored_Events = new CColorChooser(LOCALE_MISCSETTINGS_INFOBAR_COLORED_EVENTS, &g_settings.infobar_colored_events_red, &g_settings.infobar_colored_events_green, &g_settings.infobar_colored_events_blue, NULL, CNeutrinoApp::getInstance()->colorSetupNotifier);
 
 	OSDinfobarColorSettings.addItem( new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_COLORSTATUSBAR_TEXT)));
 
@@ -364,11 +364,9 @@ void COSDInfoBarColorSettings::showMenu()
 
 	OSDinfobarColorSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chInfobarTextcolor ));
 
+	OSDinfobarColorSettings.addItem( new CMenuForwarder(LOCALE_MISCSETTINGS_INFOBAR_COLORED_EVENTS, true, NULL, chColored_Events ));
+
 	OSDinfobarColorSettings.addItem(new CMenuOptionChooser(LOCALE_COLORMENU_GRADIENT, &g_settings.infobar_gradient, COLOR_GRADIENT_TYPE_OPTIONS, COLOR_GRADIENT_TYPE_OPTION_COUNT, true, NULL, RC_nokey, "", true ));
-	
-	// colored events
-	OSDinfobarColorSettings.addItem( new CMenuSeparator(LINE | STRING, g_Locale->getText(LOCALE_MISCSETTINGS_INFOBAR_COLORED_EVENTS)));
-	OSDinfobarColorSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_TEXTCOLOR, true, NULL, chColored_Events ));
 	
 	OSDinfobarColorSettings.exec(NULL, "");
 	OSDinfobarColorSettings.hide();
