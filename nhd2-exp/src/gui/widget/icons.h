@@ -171,6 +171,8 @@
 #define NEUTRINO_ICON_FF 			"mp_ff"
 #define NEUTRINO_ICON_FF_SMALL 			"mp_ff_small"
 #define NEUTRINO_ICON_STOP_SMALL 		"mp_stop_small"
+#define NEUTRINO_ICON_REPEAT_TRACK		"mp_play_repeat_track"
+#define NEUTRINO_ICON_REPEAT_ALL		"mp_play_repeat_all"
 
 // misc
 #define NEUTRINO_ICON_TMDB			"tmdb"

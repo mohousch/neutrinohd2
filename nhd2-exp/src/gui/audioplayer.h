@@ -61,6 +61,13 @@ class CAudioPlayerGui : public CMenuTarget
 			REV
 		};
 
+		enum
+		{
+			REPEAT_NONE = 0,
+			REPEAT_TRACK,
+			REPEAT_ALL
+		};
+
 	private:
 		CFrameBuffer* m_frameBuffer;
 		CBox cFrameBox;
@@ -75,6 +82,8 @@ class CAudioPlayerGui : public CMenuTarget
 		time_t         m_time_total;
 		time_t         m_time_played;
 		std::string    m_metainfo;
+
+		int repeatMode;
 
 		//
 		CAudioPlayList m_playlist;

@@ -816,7 +816,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	strcpy( g_settings.network_nfs_audioplayerdir, configfile.getString( "network_nfs_audioplayerdir", "/media/hdd/music" ).c_str() );
 
 	g_settings.audioplayer_highprio  = configfile.getInt32("audioplayer_highprio", 0);
-	g_settings.audioplayer_repeat_on = configfile.getInt32("audioplayer_repeat_on", 0);
 	// end audioplayer
 
 	// pictureviewer
@@ -1261,7 +1260,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	// AUDIOPLAYER
 	configfile.setString( "network_nfs_audioplayerdir", g_settings.network_nfs_audioplayerdir);
 	configfile.setInt32( "audioplayer_highprio", g_settings.audioplayer_highprio );
-	configfile.setInt32( "audioplayer_repeat_on", g_settings.audioplayer_repeat_on );
 
 	// PICVIEWER
 	configfile.setString("network_nfs_picturedir", g_settings.network_nfs_picturedir);

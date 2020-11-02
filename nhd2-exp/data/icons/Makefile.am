@@ -45,7 +45,7 @@ install_DATA += \
 # mp icons
 install_DATA += \
 	mp_rew_small.png mp_play_small.png mp_pause_small.png mp_ff_small.png mp_stop_small.png \
-	mp_play.png mp_pause.png mp_rew.png mp_ff.png mp.png
+	mp_play.png mp_pause.png mp_rew.png mp_ff.png mp.png mp_play_repeat_track.png mp_play_repeat_all.png
 
 # resolution
 install_DATA += \

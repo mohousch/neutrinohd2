@@ -359,7 +359,6 @@ struct SNeutrinoSettings
 	// AUDIOPLAYER
 	char network_nfs_audioplayerdir[100];
 	int   audioplayer_highprio;
-	int   audioplayer_repeat_on;
 	// END AUDIOPLAYER
 
 	// PICVIEWER
