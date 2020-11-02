@@ -454,7 +454,8 @@ void CAudioPlayerGui::paintFanArt(CAudiofile& File)
 
 void CAudioPlayerGui::paintInfo(CAudiofile& File)
 {
-	// title info box shadow
+	// title info box 
+	// shadow
 	m_frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, COL_MENUCONTENT_PLUS_6);//FIXME: gradient
 	
 	// box	
@@ -498,8 +499,7 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 	xstart = (cFrameBox.iWidth - w)/2;
 	if(xstart < (BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET))
 		xstart = BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET;
-
-		
+	
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + 2 + cFrameBox.iHeight/3 + 2 + cFrameBox.iHeight/3, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - 2*cFrameBox.iHeight - ICON_OFFSET, tmp, COL_INFOBAR); // UTF-8		
 		
 	// cover
@@ -528,15 +528,13 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 	m_frameBuffer->getIconSize(icon, &icon_w, &icon_h);
 	m_frameBuffer->paintIcon(icon, cFrameBox.iX + cFrameBox.iHeight + ICON_OFFSET, cFrameBox.iY + (cFrameBox.iHeight - icon_h)/2);
 
-	icon = NULL;
-
 	switch(repeatMode)
 	{
 		case CAudioPlayerGui::REPEAT_TRACK: icon = NEUTRINO_ICON_REPEAT_TRACK; break;
 		case CAudioPlayerGui::REPEAT_ALL: icon = NEUTRINO_ICON_REPEAT_ALL; break;
 	}
 
-	if (repeatMode != REPEAT_NONE)
+	if (repeatMode == REPEAT_TRACK || repeatMode == REPEAT_ALL)
 	{
 		m_frameBuffer->getIconSize(icon, &icon_w, &icon_h);
 		m_frameBuffer->paintIcon(icon, cFrameBox.iX + cFrameBox.iWidth - icon_w - ICON_OFFSET, cFrameBox.iY + (cFrameBox.iHeight - icon_h)/2);
