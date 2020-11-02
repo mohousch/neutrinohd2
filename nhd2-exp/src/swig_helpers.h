@@ -57,7 +57,7 @@ class CSwigHelpers
 		void paintHLineRel(int x, int dx, int y, const fb_pixel_t col);
 
 		void paintFrameBox(const int x, const int y, const int dx, const int dy, const fb_pixel_t col);
-		void blit(int mode3d = THREE_NONE);
+		void blit(/*int mode3d = THREE_NONE*/);
 
 		void getSize(const std::string &name, int * width, int * height, int * nbpp);
 		void getIconSize(const char * const filename, int* width, int *height);

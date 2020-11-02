@@ -104,7 +104,7 @@ enum
 };
 		
 // three mode
-enum threeMode
+enum
 {
 	THREE_NONE = 0,
 	THREE_SIDE_BY_SIDE,

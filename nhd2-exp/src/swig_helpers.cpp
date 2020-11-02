@@ -97,9 +97,9 @@ void CSwigHelpers::restoreScreen(int x, int y, int dx, int dy, fb_pixel_t * cons
 	CFrameBuffer::getInstance()->restoreScreen(x, y, dx, dy, memp);
 }
 
-void CSwigHelpers::blit(int mode3d)
+void CSwigHelpers::blit(/*int mode3d*/)
 {
-	CFrameBuffer::getInstance()->blit(mode3d);
+	CFrameBuffer::getInstance()->blit(/*mode3d*/);
 }
 
 void CSwigHelpers::getSize(const std::string &name, int * width, int * height, int * nbpp)
