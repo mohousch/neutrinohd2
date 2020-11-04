@@ -2920,41 +2920,46 @@ int ClistBox::oKKeyPressed(CMenuTarget* parent)
 		return menu_return::RETURN_EXIT;
 }
 
-void ClistBox::otherKeyPressed(neutrino_msg_t msg)
+void ClistBox::onUpKeyPressed()
 {
-	dprintf(DEBUG_DEBUG, "ClistBox::otherKeyPressed:\n");
+	dprintf(DEBUG_DEBUG, "ClistBox::UpKeyPressed:\n");
 
-	switch (msg) 
-	{
-		case RC_page_up:
-			scrollPageUp();
-			break;
-
-		case RC_page_down:
-			scrollPageDown();
-			break;
-
-		case RC_up:
-			scrollLineUp();
-			break;
-
-		case RC_down:
-			scrollLineDown();
-			break;
-
-		case RC_left:
-			swipLeft();
-			break;
-	
-		case RC_right:
-			swipRight();
-			break;
-
-		default:
-			break;
-	}
+	scrollLineUp();
 }
 
+void ClistBox::onDownKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "ClistBox::DownKeyPressed:\n");
 
+	scrollLineDown();
+}
+
+void ClistBox::onRightKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "ClistBox::RightKeyPressed:\n");
+
+	swipRight();
+}
+
+void ClistBox::onLeftKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "ClistBox::LeftKeyPressed:\n");
+
+	swipLeft();
+}
+
+void ClistBox::onPageUpKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "ClistBox::PageUpKeyPressed:\n");
+
+	scrollPageUp();
+}
+
+void ClistBox::onPageDownKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "ClistBox::PageDownKeyPressed:\n");
+
+	scrollPageDown();
+}
 
 

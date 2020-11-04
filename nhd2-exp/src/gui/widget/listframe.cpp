@@ -719,37 +719,47 @@ void CListFrame::paint(void)
 	refresh();
 }
 
-void CListFrame::otherKeyPressed(neutrino_msg_t msg)
+void CListFrame::onUpKeyPressed()
 {
-	switch (msg) 
-	{
-		case RC_page_up:
-			scrollPageUp();
-			break;
+	dprintf(DEBUG_DEBUG, "CListFrame::UpKeyPressed:\n");
 
-		case RC_page_down:
-			scrollPageDown();
-			break;
-
-		case RC_up:
-			scrollLineUp();
-			break;
-
-		case RC_down:
-			scrollLineDown();
-			break;
-
-		case RC_left:
-			swipLeft();
-			break;
-	
-		case RC_right:
-			swipRight();
-			break;
-
-		default:
-			break;
-	}
+	scrollLineUp();
 }
+
+void CListFrame::onDownKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CListFrame::DownKeyPressed:\n");
+
+	scrollLineDown();
+}
+
+void CListFrame::onRightKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CListFrame::RightKeyPressed:\n");
+
+	//swipRight();
+}
+
+void CListFrame::onLeftKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CListFrame::LeftKeyPressed:\n");
+
+	//swipLeft();
+}
+
+void CListFrame::onPageUpKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CListFrame::PageUpKeyPressed:\n");
+
+	scrollPageUp();
+}
+
+void CListFrame::onPageDownKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CListFrame::PageDownKeyPressed:\n");
+
+	scrollPageDown();
+}
+
 
 

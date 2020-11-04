@@ -136,7 +136,15 @@ class CFrameBox : public CWidgetItem
 		bool isSelectable(void) const {return true;};
 
 		int oKKeyPressed(CMenuTarget *parent);
-		void otherKeyPressed(neutrino_msg_t msg);
+		
+		//
+		virtual void onUpKeyPressed();
+		virtual void onDownKeyPressed();
+		virtual void onRightKeyPressed();
+		virtual void onLeftKeyPressed();
+
+		virtual void onPageUpKeyPressed();
+		virtual void onPageDownKeyPressed();
 };
 
 #endif

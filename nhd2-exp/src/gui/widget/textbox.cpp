@@ -621,3 +621,46 @@ void CTextBox::hide(void)
 	painted = false;
 }
 
+void CTextBox::onUpKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CTextBox::UpKeyPressed:\n");
+
+	scrollLineUp();
+}
+
+void CTextBox::onDownKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CTextBox::DownKeyPressed:\n");
+
+	scrollLineDown();
+}
+
+void CTextBox::onRightKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CTextBox::RightKeyPressed:\n");
+
+	//swipRight();
+}
+
+void CTextBox::onLeftKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CTextBox::LeftKeyPressed:\n");
+
+	//swipLeft();
+}
+
+void CTextBox::onPageUpKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CTextBox::PageUpKeyPressed:\n");
+
+	scrollPageUp();
+}
+
+void CTextBox::onPageDownKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CTextBox::PageDownKeyPressed:\n");
+
+	scrollPageDown();
+}
+
+

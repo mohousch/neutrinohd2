@@ -362,37 +362,48 @@ int CFrameBox::oKKeyPressed(CMenuTarget *parent)
 		return menu_return::RETURN_EXIT;
 }
 
-void CFrameBox::otherKeyPressed(neutrino_msg_t msg)
+void CFrameBox::onUpKeyPressed()
 {
-	switch (msg) 
-	{
-		case RC_page_up:
-			scrollPageUp();
-			break;
+	dprintf(DEBUG_DEBUG, "CFrameBox::UpKeyPressed:\n");
 
-		case RC_page_down:
-			scrollPageDown();
-			break;
-
-		case RC_up:
-			scrollLineUp();
-			break;
-
-		case RC_down:
-			scrollLineDown();
-			break;
-
-		case RC_left:
-			swipLeft();
-			break;
-	
-		case RC_right:
-			swipRight();
-			break;
-
-		default:
-			break;
-	}
+	scrollLineUp();
 }
+
+void CFrameBox::onDownKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CFrameBox::DownKeyPressed:\n");
+
+	scrollLineDown();
+}
+
+void CFrameBox::onRightKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CFrameBox::RightKeyPressed:\n");
+
+	swipRight();
+}
+
+void CFrameBox::onLeftKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CFrameBox::LeftKeyPressed:\n");
+
+	swipLeft();
+}
+
+void CFrameBox::onPageUpKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CFrameBox::PageUpKeyPressed:\n");
+
+	//scrollPageUp();
+}
+
+void CFrameBox::onPageDownKeyPressed()
+{
+	dprintf(DEBUG_DEBUG, "CFrameBox::PageDownKeyPressed:\n");
+
+	//scrollPageDown();
+}
+
+
 
 

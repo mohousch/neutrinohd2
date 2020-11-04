@@ -209,7 +209,15 @@ class CWidgetItem
 		virtual void enablePaintDate(void){paintDate = true;};
 
 		virtual int oKKeyPressed(CMenuTarget *parent){return 0;};
-		virtual void otherKeyPressed(neutrino_msg_t msg){switch(msg){default:break;}};
+		
+		//
+		virtual void onUpKeyPressed(){};
+		virtual void onDownKeyPressed(){};
+		virtual void onRightKeyPressed(){};
+		virtual void onLeftKeyPressed(){};
+
+		virtual void onPageUpKeyPressed(){};
+		virtual void onPageDownKeyPressed(){};
 };
 
 // CHeaders

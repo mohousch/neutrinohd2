@@ -160,7 +160,8 @@ enum
 	RC_up		= KEY_UP,	    
 	RC_left		= KEY_LEFT,	    
 	RC_right	= KEY_RIGHT,	    
-	RC_down		= KEY_DOWN,	    		
+	RC_down		= KEY_DOWN,
+	    		
 	RC_spkr		= KEY_MUTE,	   		
 	RC_minus        = KEY_VOLUMEDOWN,   
 	RC_plus         = KEY_VOLUMEUP,     

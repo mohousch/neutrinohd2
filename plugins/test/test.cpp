@@ -2979,12 +2979,34 @@ void CTestMenu::testClistBox()
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
-		listBox->otherKeyPressed(msg);
-
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			listBox->paintHead();
 		} 
+		else if (msg == RC_up)
+		{
+			listBox->onUpKeyPressed();
+		}
+		else if (msg == RC_down)
+		{
+			listBox->onDownKeyPressed();
+		}
+		else if (msg == RC_right)
+		{
+			listBox->onRightKeyPressed();
+		}
+		else if (msg == RC_left)
+		{
+			listBox->onLeftKeyPressed();
+		}
+		else if (msg == RC_page_up)
+		{
+			listBox->onPageUpKeyPressed();
+		}
+		else if (msg == RC_page_down)
+		{
+			listBox->onPageDownKeyPressed();
+		}
 		else if (msg == RC_home) 
 		{
 			loop = false;
@@ -3098,11 +3120,33 @@ void CTestMenu::testClistBox2()
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
-		listBox->otherKeyPressed(msg);
-
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			listBox->paintHead();
+		}
+		else if (msg == RC_up)
+		{
+			listBox->onUpKeyPressed();
+		}
+		else if (msg == RC_down)
+		{
+			listBox->onDownKeyPressed();
+		}
+		else if (msg == RC_right)
+		{
+			listBox->onRightKeyPressed();
+		}
+		else if (msg == RC_left)
+		{
+			listBox->onLeftKeyPressed();
+		}
+		else if (msg == RC_page_up)
+		{
+			listBox->onPageUpKeyPressed();
+		}
+		else if (msg == RC_page_down)
+		{
+			listBox->onPageDownKeyPressed();
 		} 
 		else if (msg == RC_home) 
 		{
@@ -3216,12 +3260,34 @@ void CTestMenu::testClistBox3()
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
-		listBox->otherKeyPressed(msg);
-
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			listBox->paintHead();
 		} 
+		else if (msg == RC_up)
+		{
+			listBox->onUpKeyPressed();
+		}
+		else if (msg == RC_down)
+		{
+			listBox->onDownKeyPressed();
+		}
+		else if (msg == RC_right)
+		{
+			listBox->onRightKeyPressed();
+		}
+		else if (msg == RC_left)
+		{
+			listBox->onLeftKeyPressed();
+		}
+		else if (msg == RC_page_up)
+		{
+			listBox->onPageUpKeyPressed();
+		}
+		else if (msg == RC_page_down)
+		{
+			listBox->onPageDownKeyPressed();
+		}
 		else if (msg == RC_home) 
 		{
 			loop = false;
@@ -3332,12 +3398,34 @@ void CTestMenu::testClistBox4()
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
-		listBox->otherKeyPressed(msg);
-
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			listBox->paintHead();
 		} 
+		else if (msg == RC_up)
+		{
+			listBox->onUpKeyPressed();
+		}
+		else if (msg == RC_down)
+		{
+			listBox->onDownKeyPressed();
+		}
+		else if (msg == RC_right)
+		{
+			listBox->onRightKeyPressed();
+		}
+		else if (msg == RC_left)
+		{
+			listBox->onLeftKeyPressed();
+		}
+		else if (msg == RC_page_up)
+		{
+			listBox->onPageUpKeyPressed();
+		}
+		else if (msg == RC_page_down)
+		{
+			listBox->onPageDownKeyPressed();
+		}
 		else if (msg == RC_home) 
 		{
 			loop = false;
@@ -3460,12 +3548,34 @@ void CTestMenu::testClistBox5()
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
-		listBox->otherKeyPressed(msg);
-
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			listBox->paintHead();
 		} 
+		else if (msg == RC_up)
+		{
+			listBox->onUpKeyPressed();
+		}
+		else if (msg == RC_down)
+		{
+			listBox->onDownKeyPressed();
+		}
+		else if (msg == RC_right)
+		{
+			listBox->onRightKeyPressed();
+		}
+		else if (msg == RC_left)
+		{
+			listBox->onLeftKeyPressed();
+		}
+		else if (msg == RC_page_up)
+		{
+			listBox->onPageUpKeyPressed();
+		}
+		else if (msg == RC_page_down)
+		{
+			listBox->onPageDownKeyPressed();
+		}
 		else if (msg == RC_home) 
 		{
 			loop = false;
@@ -3591,12 +3701,34 @@ void CTestMenu::testClistBox6()
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
-		listBox->otherKeyPressed(msg);
-
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			listBox->paintHead();
 		} 
+		else if (msg == RC_up)
+		{
+			listBox->onUpKeyPressed();
+		}
+		else if (msg == RC_down)
+		{
+			listBox->onDownKeyPressed();
+		}
+		else if (msg == RC_right)
+		{
+			listBox->onRightKeyPressed();
+		}
+		else if (msg == RC_left)
+		{
+			listBox->onLeftKeyPressed();
+		}
+		else if (msg == RC_page_up)
+		{
+			listBox->onPageUpKeyPressed();
+		}
+		else if (msg == RC_page_down)
+		{
+			listBox->onPageDownKeyPressed();
+		}
 		else if (msg == RC_home) 
 		{
 			loop = false;

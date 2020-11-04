@@ -70,6 +70,8 @@ class CWidget : public CMenuTarget
 		
 		int selected;
 		bool exit_pressed;
+		int retval;
+		int pos;
 		
 		fb_pixel_t * background;
 		bool savescreen;
@@ -119,6 +121,80 @@ class CWidget : public CMenuTarget
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
 
 		void enableSaveScreen();
+
+		// events
+		virtual void onOKKeyPressed();
+		virtual void onHomeKeyPressed();
+
+		virtual void onUpKeyPressed();
+		virtual void onDownKeyPressed();
+		virtual void onRightKeyPressed();
+		virtual void onLeftKeyPressed();
+
+		virtual void onPageUpKeyPressed();
+		virtual void onPageDownKeyPressed();
+
+		virtual void onRedKeyPressed(){};
+		virtual void onGreenKeyPressed(){};
+		virtual void onYellowKeyPressed();
+		virtual void onBlueKeyPressed(){};
+
+		virtual void onMenuKeyPressed(){};
+		virtual void onPowerKeyPressed(){};
+
+		virtual void onMuteKeyPressed(){};
+		virtual void onVolumeUpKeyPressed(){};
+		virtual void onVolumeDownKeyPressed(){};
+
+		virtual void on0KeyPressed(){};
+		virtual void on1KeyPressed(){};
+		virtual void on2KeyPressed(){};
+		virtual void on3KeyPressed(){};
+		virtual void on4KeyPressed(){};
+		virtual void on5KeyPressed(){};
+		virtual void on6KeyPressed(){};
+		virtual void on7KeyPressed(){};
+		virtual void on8KeyPressed(){};
+		virtual void on9KeyPressed(){};
+
+		virtual void onAudioKeyPressed(){};
+		virtual void onVideoKeyPressed(){};
+
+		virtual void onTextKeyPressed(){};
+		virtual void onInfoKeyPressed(){};
+		virtual void onEPGKeyPressed(){};
+		virtual void onBackKeyPressed(){};
+		virtual void onFavoritesKeyPressed(){};
+		virtual void onSatKeyPressed(){};
+
+		virtual void onRecordKeyPressed(){};
+		virtual void onPlayKeyPressed(){};
+		virtual void onPauseKeyPressed(){};
+		virtual void onFastForwardKeyPressed(){};
+		virtual void onRewindKeyPressed(){};
+		virtual void onStopKeyPressed(){};
+
+		virtual void onTimeshiftKeyPressed(){};
+		virtual void onModeKeyPressed(){};
+		virtual void onNextKeyPressed(){};
+		virtual void onPrevKeyPressed(){};
+
+		virtual void onMusicKeyPressed(){};
+		virtual void onPictureKeyPressed(){};
+		virtual void onLoopKeyPressed(){};
+		virtual void onSlowKeyPressed(){};
+		virtual void onDVBSubKeyPressed(){};
+		virtual void onPIPKeyPressed(){};
+		virtual void onPIPPosKeyPressed(){};
+		virtual void onPIPSwapKeyPressed(){};
+		virtual void onPIPSubChanKeyPressed(){};
+		virtual void onNetKeyPressed(){};
+		virtual void onBookmarkKeyPressed(){};
+		virtual void onMultifeedKeyPressed(){};
+		virtual void onF1KeyPressed(){};
+		virtual void onF2KeyPressed(){};
+		virtual void onF3KeyPressed(){};
+		virtual void onF4KeyPressed(){};
 };
 
 #endif // WIDGET_H_

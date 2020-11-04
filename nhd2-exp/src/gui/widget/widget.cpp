@@ -213,9 +213,8 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CWidget:: exec:\n");
 
-	int retval = menu_return::RETURN_REPAINT;
-
-	int pos = 0;
+	retval = menu_return::RETURN_REPAINT;
+	pos = 0;
 	exit_pressed = false;
 
 	if (parent)
@@ -312,15 +311,6 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 				}
 			} 
 
-			//
-			if ( msg <= RC_MaxRC )
-			{
-				if(selected >= 0)
-				{
-					items[selected]->otherKeyPressed(msg);
-				}
-			}
-
 			switch (msg) 
 			{
 				case (NeutrinoMessages::EVT_TIMER):
@@ -331,65 +321,41 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 					}
 					break;
 
+				//
+				case (RC_up):
+					onUpKeyPressed();
+					break;
+
+				case (RC_down):
+					onDownKeyPressed();
+					break;
+
+				case (RC_right):
+					onRightKeyPressed();
+					break;
+
+				case (RC_left):
+					onLeftKeyPressed();
+					break;
+
+				case (RC_page_up):
+					onPageUpKeyPressed();
+					break;
+
+				case (RC_page_down):
+					onPageDownKeyPressed();
+					break;
+
 				case (RC_yellow):
-					{
-						if(hasItem())
-						{
-							for (unsigned int count = 1; count < items.size(); count++) 
-							{
-								pos = (selected + count)%items.size();
-
-								CWidgetItem * item = items[pos];
-
-								if(item->isSelectable() && item->hasItem())
-								{
-									items[selected]->setOutFocus(true);
-
-									selected = pos;
-
-									item->setOutFocus(false);
-
-									paint();
-
-									break;
-								}
-							}
-						}
-					}
+					onYellowKeyPressed();
 					break;
 
 				case (RC_home):
-					exit_pressed = true;
-					dprintf(DEBUG_NORMAL, "CWidget:: exec: exit_pressed\n");
-					msg = RC_timeout;
-					selected = -1;
+					onHomeKeyPressed();
 					break;
 
 				case (RC_ok):
-					{
-						if(hasItem() && selected >= 0)
-						{
-							if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) || (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
-							{
-								int rv = items[selected]->oKKeyPressed(this);
-
-								//FIXME:review this
-								switch ( rv ) 
-								{
-									case menu_return::RETURN_EXIT_ALL:
-										retval = menu_return::RETURN_EXIT_ALL; //fall through
-									case menu_return::RETURN_EXIT:
-										msg = RC_timeout;
-										break;
-									case menu_return::RETURN_REPAINT:
-										hide();
-										initFrames();
-										paint();
-										break;
-								}
-							}
-						}
-					}
+					onOKKeyPressed();
 					break;
 					
 				case (RC_timeout):
@@ -432,6 +398,115 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	
 	return retval;
+}
+
+// events
+void CWidget::onOKKeyPressed()
+{
+	if(hasItem() && selected >= 0)
+	{
+		if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) || (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
+		{
+			int rv = items[selected]->oKKeyPressed(this);
+
+			//FIXME:review this
+			switch ( rv ) 
+			{
+				case menu_return::RETURN_EXIT_ALL:
+					retval = menu_return::RETURN_EXIT_ALL; //fall through
+				case menu_return::RETURN_EXIT:
+					msg = RC_timeout;
+					break;
+				case menu_return::RETURN_REPAINT:
+					hide();
+					initFrames();
+					paint();
+					break;
+			}
+		}
+	}
+}
+
+void CWidget::onHomeKeyPressed()
+{
+	exit_pressed = true;
+	dprintf(DEBUG_NORMAL, "CWidget:: exec: exit_pressed\n");
+	msg = RC_timeout;
+	selected = -1;
+}
+
+void CWidget::onYellowKeyPressed()
+{
+	if(hasItem())
+	{
+		for (unsigned int count = 1; count < items.size(); count++) 
+		{
+			pos = (selected + count)%items.size();
+
+			CWidgetItem * item = items[pos];
+
+			if(item->isSelectable() && item->hasItem())
+			{
+				items[selected]->setOutFocus(true);
+
+				selected = pos;
+
+				item->setOutFocus(false);
+
+				paint();
+
+				break;
+			}
+		}
+	}
+}
+
+void CWidget::onUpKeyPressed()
+{
+	if(hasItem() && selected >= 0)
+	{
+		items[selected]->onUpKeyPressed();
+	}
+}
+
+void CWidget::onDownKeyPressed()
+{
+	if(hasItem() && selected >= 0)
+	{
+		items[selected]->onDownKeyPressed();
+	}
+}
+
+void CWidget::onRightKeyPressed()
+{
+	if(hasItem() && selected >= 0)
+	{
+		items[selected]->onRightKeyPressed();
+	}
+}
+
+void CWidget::onLeftKeyPressed()
+{
+	if(hasItem() && selected >= 0)
+	{
+		items[selected]->onLeftKeyPressed();
+	}
+}
+
+void CWidget::onPageUpKeyPressed()
+{
+	if(hasItem() && selected >= 0)
+	{
+		items[selected]->onPageUpKeyPressed();
+	}
+}
+
+void CWidget::onPageDownKeyPressed()
+{
+	if(hasItem() && selected >= 0)
+	{
+		items[selected]->onPageDownKeyPressed();
+	}
 }
 
 
