@@ -287,7 +287,7 @@ void CAudioPlayerGui::playFile()
 		{
 			play(m_current);
 		}
-		else if(msg == RC_Repeat)
+		else if(msg == RC_loop)
 		{
 			if(repeatMode == CAudioPlayerGui::REPEAT_NONE)
 			{
