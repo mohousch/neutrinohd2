@@ -617,10 +617,10 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	strcpy(g_settings.language, configfile.getString("language", "english").c_str());
 
 	// themes
-	g_settings.menu_Head_alpha = configfile.getInt32( "menu_Head_alpha", 0);
-	g_settings.menu_Head_red = configfile.getInt32( "menu_Head_red", 0);
-	g_settings.menu_Head_green = configfile.getInt32( "menu_Head_green", 0);
-	g_settings.menu_Head_blue = configfile.getInt32( "menu_Head_blue", 0);
+	g_settings.menu_Head_alpha = configfile.getInt32( "menu_Head_alpha", 15);
+	g_settings.menu_Head_red = configfile.getInt32( "menu_Head_red", 15);
+	g_settings.menu_Head_green = configfile.getInt32( "menu_Head_green", 15);
+	g_settings.menu_Head_blue = configfile.getInt32( "menu_Head_blue", 15);
 
 	g_settings.menu_Head_Text_alpha = configfile.getInt32( "menu_Head_Text_alpha", 0);
 	g_settings.menu_Head_Text_red = configfile.getInt32( "menu_Head_Text_red", 100 );
@@ -668,20 +668,20 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.infobar_colored_events_green = configfile.getInt32( "infobar_colored_events_green", 70);
 	g_settings.infobar_colored_events_blue = configfile.getInt32( "infobar_colored_events_blue", 0);
 	
-	g_settings.menu_Foot_alpha = configfile.getInt32( "menu_Foot_alpha", 0);
-	g_settings.menu_Foot_red = configfile.getInt32( "menu_Foot_red", 0);
-	g_settings.menu_Foot_green = configfile.getInt32( "menu_Foot_green", 0);
-	g_settings.menu_Foot_blue = configfile.getInt32( "menu_Foot_blue", 0);
+	g_settings.menu_Foot_alpha = configfile.getInt32( "menu_Foot_alpha", 15);
+	g_settings.menu_Foot_red = configfile.getInt32( "menu_Foot_red", 15);
+	g_settings.menu_Foot_green = configfile.getInt32( "menu_Foot_green", 15);
+	g_settings.menu_Foot_blue = configfile.getInt32( "menu_Foot_blue", 15);
 		
 	g_settings.menu_Foot_Text_alpha = configfile.getInt32( "menu_Foot_Text_alpha", 0);
 	g_settings.menu_Foot_Text_red = configfile.getInt32( "menu_Foot_Text_red", 100);
 	g_settings.menu_Foot_Text_green = configfile.getInt32( "menu_Foot_Text_green", 100);
 	g_settings.menu_Foot_Text_blue = configfile.getInt32( "menu_Foot_Text_blue", 100);
 
-	g_settings.menu_FootInfo_alpha = configfile.getInt32( "menu_FootInfo_alpha", 0);
-	g_settings.menu_FootInfo_red = configfile.getInt32( "menu_FootInfo_red", 0);
-	g_settings.menu_FootInfo_green = configfile.getInt32( "menu_FootInfo_green", 0);
-	g_settings.menu_FootInfo_blue = configfile.getInt32( "menu_FootInfo_blue", 0);
+	g_settings.menu_FootInfo_alpha = configfile.getInt32( "menu_FootInfo_alpha", 15);
+	g_settings.menu_FootInfo_red = configfile.getInt32( "menu_FootInfo_red", 15);
+	g_settings.menu_FootInfo_green = configfile.getInt32( "menu_FootInfo_green", 15);
+	g_settings.menu_FootInfo_blue = configfile.getInt32( "menu_FootInfo_blue", 15);
 		
 	g_settings.menu_FootInfo_Text_alpha = configfile.getInt32( "menu_FootInfo_Text_alpha", 0);
 	g_settings.menu_FootInfo_Text_red = configfile.getInt32( "menu_FootInfo_Text_red", 50);

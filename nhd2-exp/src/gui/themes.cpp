@@ -213,10 +213,10 @@ void CThemes::readFile(char* themename)
 {
 	if(themefile.loadConfig(themename))
 	{
-		g_settings.menu_Head_alpha = themefile.getInt32( "menu_Head_alpha", 0);
-		g_settings.menu_Head_red = themefile.getInt32( "menu_Head_red", 0);
-		g_settings.menu_Head_green = themefile.getInt32( "menu_Head_green", 0);
-		g_settings.menu_Head_blue = themefile.getInt32( "menu_Head_blue", 0);
+		g_settings.menu_Head_alpha = themefile.getInt32( "menu_Head_alpha", 15);
+		g_settings.menu_Head_red = themefile.getInt32( "menu_Head_red", 15);
+		g_settings.menu_Head_green = themefile.getInt32( "menu_Head_green", 15);
+		g_settings.menu_Head_blue = themefile.getInt32( "menu_Head_blue", 15);
 
 		g_settings.menu_Head_Text_alpha = themefile.getInt32( "menu_Head_Text_alpha", 0);
 		g_settings.menu_Head_Text_red = themefile.getInt32( "menu_Head_Text_red", 100 );
@@ -264,20 +264,20 @@ void CThemes::readFile(char* themename)
 		g_settings.infobar_colored_events_green = themefile.getInt32( "infobar_colored_events_green", 70);
 		g_settings.infobar_colored_events_blue = themefile.getInt32( "infobar_colored_events_blue", 0);
 	
-		g_settings.menu_Foot_alpha = themefile.getInt32( "menu_Foot_alpha", 0);
-		g_settings.menu_Foot_red = themefile.getInt32( "menu_Foot_red", 0);
-		g_settings.menu_Foot_green = themefile.getInt32( "menu_Foot_green", 0);
-		g_settings.menu_Foot_blue = themefile.getInt32( "menu_Foot_blue", 0);
+		g_settings.menu_Foot_alpha = themefile.getInt32( "menu_Foot_alpha", 15);
+		g_settings.menu_Foot_red = themefile.getInt32( "menu_Foot_red", 15);
+		g_settings.menu_Foot_green = themefile.getInt32( "menu_Foot_green", 15);
+		g_settings.menu_Foot_blue = themefile.getInt32( "menu_Foot_blue", 15);
 		
 		g_settings.menu_Foot_Text_alpha = themefile.getInt32( "menu_Foot_Text_alpha", 0);
 		g_settings.menu_Foot_Text_red = themefile.getInt32( "menu_Foot_Text_red", 100);
 		g_settings.menu_Foot_Text_green = themefile.getInt32( "menu_Foot_Text_green", 100);
 		g_settings.menu_Foot_Text_blue = themefile.getInt32( "menu_Foot_Text_blue", 100);
 
-		g_settings.menu_FootInfo_alpha = themefile.getInt32( "menu_FootInfo_alpha", 0);
-		g_settings.menu_FootInfo_red = themefile.getInt32( "menu_FootInfo_red", 0);
-		g_settings.menu_FootInfo_green = themefile.getInt32( "menu_FootInfo_green", 0);
-		g_settings.menu_FootInfo_blue = themefile.getInt32( "menu_FootInfo_blue", 0);
+		g_settings.menu_FootInfo_alpha = themefile.getInt32( "menu_FootInfo_alpha", 15);
+		g_settings.menu_FootInfo_red = themefile.getInt32( "menu_FootInfo_red", 15);
+		g_settings.menu_FootInfo_green = themefile.getInt32( "menu_FootInfo_green", 15);
+		g_settings.menu_FootInfo_blue = themefile.getInt32( "menu_FootInfo_blue", 15);
 		
 		g_settings.menu_FootInfo_Text_alpha = themefile.getInt32( "menu_FootInfo_Text_alpha", 0);
 		g_settings.menu_FootInfo_Text_red = themefile.getInt32( "menu_FootInfo_Text_red", 50);
@@ -372,10 +372,10 @@ void CThemes::saveFile(char * themename)
 // setup default Colors
 void CThemes::setupDefaultColors()
 {
-	g_settings.menu_Head_alpha = 0;
-	g_settings.menu_Head_red = 0;
-	g_settings.menu_Head_green = 0;
-	g_settings.menu_Head_blue = 0;
+	g_settings.menu_Head_alpha = 15;
+	g_settings.menu_Head_red = 15;
+	g_settings.menu_Head_green = 15;
+	g_settings.menu_Head_blue = 15;
 
 	g_settings.menu_Head_Text_alpha = 0;
 	g_settings.menu_Head_Text_red = 100;
@@ -427,20 +427,20 @@ void CThemes::setupDefaultColors()
 	g_settings.infobar_colored_events_green = 70;
 	g_settings.infobar_colored_events_blue = 0;
 	
-	g_settings.menu_Foot_alpha = 0;
-	g_settings.menu_Foot_red = 0;
-	g_settings.menu_Foot_green = 0;
-	g_settings.menu_Foot_blue = 0;
+	g_settings.menu_Foot_alpha = 15;
+	g_settings.menu_Foot_red = 15;
+	g_settings.menu_Foot_green = 15;
+	g_settings.menu_Foot_blue = 15;
 		
 	g_settings.menu_Foot_Text_alpha = 0;
 	g_settings.menu_Foot_Text_red = 100;
 	g_settings.menu_Foot_Text_green = 100;
 	g_settings.menu_Foot_Text_blue = 100;
 
-	g_settings.menu_FootInfo_alpha = 0;
-	g_settings.menu_FootInfo_red = 0;
-	g_settings.menu_FootInfo_green = 0;
-	g_settings.menu_FootInfo_blue = 0;
+	g_settings.menu_FootInfo_alpha = 15;
+	g_settings.menu_FootInfo_red = 15;
+	g_settings.menu_FootInfo_green = 15;
+	g_settings.menu_FootInfo_blue = 15;
 		
 	g_settings.menu_FootInfo_Text_alpha = 0;
 	g_settings.menu_FootInfo_Text_red = 50;
