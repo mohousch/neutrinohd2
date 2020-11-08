@@ -288,8 +288,9 @@ void CInternetRadio::scanXmlData(_xmlDocPtr answer_parser, const char *nametag, 
 		{
 			CProgressWindow progress;
 			long maxProgress = 1;
+			int global = 0;
 			
-			// count # of entries
+			// count # of all entries
 			while (element) 
 			{
 				maxProgress++;
@@ -297,7 +298,7 @@ void CInternetRadio::scanXmlData(_xmlDocPtr answer_parser, const char *nametag, 
 			}
 			
 			element = element_tmp;
-			long listPos = -1;
+			long listPos = 1;
 			
 			progress.setTitle(LOCALE_AUDIOPLAYER_READING_FILES);
 			progress.exec(NULL, "");
@@ -318,7 +319,7 @@ void CInternetRadio::scanXmlData(_xmlDocPtr answer_parser, const char *nametag, 
 				listPos++;
 				
 				// show status
-				int global = 100*listPos / maxProgress;
+				global = 100*listPos / maxProgress;
 				progress.showGlobalStatus(global);
 
 				if (usechild) 
@@ -374,6 +375,7 @@ void CInternetRadio::scanXmlData(_xmlDocPtr answer_parser, const char *nametag, 
 			usleep(1000000);
 			progress.hide();
 		}
+
 		xmlFreeDoc(answer_parser);
 	}
 }

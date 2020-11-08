@@ -297,8 +297,9 @@ void CIceCast::scanXmlData(_xmlDocPtr answer_parser, const char *nametag, const 
 		{
 			CProgressWindow progress;
 			long maxProgress = 1;
+			int global = 0;
 			
-			// count # of entries
+			// count # of all entries
 			while (element) 
 			{
 				maxProgress++;
@@ -306,7 +307,8 @@ void CIceCast::scanXmlData(_xmlDocPtr answer_parser, const char *nametag, const 
 			}
 			
 			element = element_tmp;
-			long listPos = -1;
+
+			long listPos = 1;
 			
 			progress.setTitle(LOCALE_AUDIOPLAYER_READING_FILES);
 			progress.exec(NULL, "");
@@ -327,7 +329,7 @@ void CIceCast::scanXmlData(_xmlDocPtr answer_parser, const char *nametag, const 
 				listPos++;
 				
 				// show status
-				int global = 100*listPos / maxProgress;
+				global = 100*listPos / maxProgress;
 				progress.showGlobalStatus(global);
 
 				if (usechild) 
