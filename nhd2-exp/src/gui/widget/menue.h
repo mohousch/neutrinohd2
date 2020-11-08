@@ -129,7 +129,7 @@ class ClistBoxWidget : public CMenuTarget
 		const char * l_name;
 
 		// footInfo
-		bool FootInfo;
+		bool paintFootInfo;
 		CBox cFrameFootInfo;
 		int footInfoHeight;
 		int connectLineWidth;
@@ -152,7 +152,7 @@ class ClistBoxWidget : public CMenuTarget
 		bool shrinkMenu;
 
 		//
-		CHeaders * headers;
+		//CHeaders * headers;
 		CFooters *footers;
 		CItems2DetailsLine itemsLine;
 		CScrollBar scrollBar;
@@ -213,7 +213,7 @@ class ClistBoxWidget : public CMenuTarget
 		void enablePaintDate(void){PaintDate = true;};
 
 		//
-		void enablePaintFootInfo(int fh = 70){FootInfo = true; footInfoHeight = fh; initFrames();};
+		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh; initFrames();};
 
 		void setTimeOut(int to = 0){timeout = to;};
 

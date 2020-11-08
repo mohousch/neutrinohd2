@@ -127,7 +127,7 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 	hbutton_labels	= NULL;
 
 	//
-	FootInfo = false;
+	paintFootInfo = false;
 	footInfoHeight = 0;
 	cFrameFootInfo.iHeight = 0;
 	connectLineWidth = 0;
@@ -149,8 +149,6 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 
 	widgetMode = MODE_LISTBOX;
 	MenuPos = false;
-
-	//headers = new CHeaders();
 }
 
 void ClistBoxWidget::move(int xoff, int yoff)
@@ -165,20 +163,6 @@ ClistBoxWidget::~ClistBoxWidget()
 
 	items.clear();
 	page_start.clear();
-
-/*
-	if(headers)
-	{
-		delete headers;
-		headers = NULL;
-	}
-
-	if(footers)
-	{
-		delete footers;
-		footers = NULL;
-	}
-*/
 }
 
 void ClistBoxWidget::addItem(CMenuItem *menuItem, const bool defaultselected)
@@ -232,6 +216,19 @@ void ClistBoxWidget::initFrames()
 		//item->item_backgroundColor = backgroundColor;
 		//item->item_selectedColor = itemBoxColor;
 	} 
+
+	if(paintFootInfo)
+	{
+		if(widgetType == WIDGET_TYPE_FRAME)
+		{
+			cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
+		}
+		else
+		{
+			cFrameFootInfo.iHeight = footInfoHeight;
+			connectLineWidth = CONNECTLINEBOX_WIDTH;
+		}
+	}
 
 	// init frames
 	if(widgetType == WIDGET_TYPE_FRAME)
@@ -290,7 +287,7 @@ void ClistBoxWidget::initFrames()
 		cFrameFootInfo.iHeight = 0;
 		connectLineWidth = 0;
 
-		if(FootInfo && (widgetType == WIDGET_TYPE_STANDARD || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_LISTBOX))&& widgetMode != MODE_SETUP)
+		if(paintFootInfo && (widgetType == WIDGET_TYPE_STANDARD || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_LISTBOX))&& widgetMode != MODE_SETUP)
 		{
 			cFrameFootInfo.iHeight = footInfoHeight;
 			connectLineWidth = CONNECTLINEBOX_WIDTH;
@@ -386,14 +383,14 @@ void ClistBoxWidget::initFrames()
 		}
 
 		// re-set FrameFootInfo position
-		if(FootInfo && (widgetType == WIDGET_TYPE_STANDARD || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_LISTBOX)))
+		if(paintFootInfo && (widgetType == WIDGET_TYPE_STANDARD || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_LISTBOX)))
 		{
 			cFrameFootInfo.iX = x;
-			cFrameFootInfo.iY = y + height;
+			cFrameFootInfo.iY = y + height - cFrameFootInfo.iHeight;
 			cFrameFootInfo.iWidth = width;
 		}
 
-		headers = new CHeaders(x, y, width, hheight, l_name, iconfile.c_str());
+		//headers = new CHeaders(x, y, width, hheight, l_name, iconfile.c_str());
 		footers = new CFooters(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
 
 		if(savescreen) 
@@ -446,13 +443,6 @@ void ClistBoxWidget::paintHead()
 	}
 	else
 	{
-/*
-		if(PaintDate)
-			headers->enablePaintDate();
-
-		headers->setHeaderButtons(hbutton_labels, hbutton_count);
-		headers->paint();
-*/
 		// paint head
 		frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient);
 	
@@ -602,7 +592,7 @@ void ClistBoxWidget::paintItems()
 	else
 	{
 		// items height
-		items_height = height - hheight - fheight;
+		items_height = height - hheight - fheight - cFrameFootInfo.iHeight;
 	
 		// items width
 		sb_width = 0;
@@ -693,7 +683,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	{
 		if(widgetMode == MODE_MENU)
 		{
-			if(FootInfo)
+			if(paintFootInfo)
 			{
 				CMenuItem* item = items[pos];
 
@@ -701,7 +691,6 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	
 				// detailslines|box
 				itemsLine.paint(x, y, width, height, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
-
 
 				// item icon
 				if(!item->itemIcon.empty())
@@ -748,7 +737,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 		}
 		else if(widgetMode == MODE_LISTBOX)
 		{
-			if(FootInfo)
+			if(paintFootInfo)
 			{
 				CMenuItem * item = items[pos];
 
@@ -825,7 +814,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 		}
 		else if(widgetMode == MODE_LISTBOX)
 		{
-			if(FootInfo)
+			if(paintFootInfo)
 			{
 				CMenuItem * item = items[pos];
 
@@ -958,7 +947,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 
 void ClistBoxWidget::hideItemInfo()
 {
-	if((widgetType == WIDGET_TYPE_STANDARD || widgetType == WIDGET_TYPE_CLASSIC) && FootInfo)
+	if((widgetType == WIDGET_TYPE_STANDARD || widgetType == WIDGET_TYPE_CLASSIC) && paintFootInfo)
 	{
 		itemsLine.clear(x, y, width + CONNECTLINEBOX_WIDTH, height, cFrameFootInfo.iHeight);
 	}  
