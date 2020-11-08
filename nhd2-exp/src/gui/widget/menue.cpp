@@ -592,7 +592,7 @@ void ClistBoxWidget::paintItems()
 	else
 	{
 		// items height
-		items_height = height - hheight - fheight - cFrameFootInfo.iHeight;
+		items_height = height - hheight - fheight;
 	
 		// items width
 		sb_width = 0;
