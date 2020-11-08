@@ -289,23 +289,26 @@ void CAudioPlayerGui::playFile()
 		}
 		else if(msg == RC_loop)
 		{
-			if(repeatMode == CAudioPlayerGui::REPEAT_NONE)
+			if (!m_inetmode)
 			{
-				repeatMode = CAudioPlayerGui::REPEAT_TRACK;
-				printf("\nCAudioPlayerGui::PlayFile(): repeat track mode on\n");
-			}
-			else if(repeatMode == CAudioPlayerGui::REPEAT_TRACK)
-			{
-				repeatMode = CAudioPlayerGui::REPEAT_ALL;
-				printf("\nCAudioPlayerGui::PlayFile(): repeat all mode on\n");
-			}
-			else if(repeatMode == CAudioPlayerGui::REPEAT_ALL)
-			{
-				repeatMode = CAudioPlayerGui::REPEAT_NONE;
-				printf("\nCAudioPlayerGui::PlayFile(): repeat mode off\n");
-			}
+				if(repeatMode == CAudioPlayerGui::REPEAT_NONE)
+				{
+					repeatMode = CAudioPlayerGui::REPEAT_TRACK;
+					printf("\nCAudioPlayerGui::PlayFile(): repeat track mode on\n");
+				}
+				else if(repeatMode == CAudioPlayerGui::REPEAT_TRACK)
+				{
+					repeatMode = CAudioPlayerGui::REPEAT_ALL;
+					printf("\nCAudioPlayerGui::PlayFile(): repeat all mode on\n");
+				}
+				else if(repeatMode == CAudioPlayerGui::REPEAT_ALL)
+				{
+					repeatMode = CAudioPlayerGui::REPEAT_NONE;
+					printf("\nCAudioPlayerGui::PlayFile(): repeat mode off\n");
+				}
 
-			paintInfo(m_playlist[m_current]);
+				paintInfo(m_playlist[m_current]);
+			}
 		}
 		else if(msg == RC_forward)
 		{
