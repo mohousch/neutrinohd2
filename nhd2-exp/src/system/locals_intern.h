@@ -1519,6 +1519,7 @@ const char * locale_real_names[] = {
 	"zapitsetup.lastmode",
 	"zapitsetup.lasttv",
 	"zapitsetup.lastradio",
+	"zapitsetup.lastwebtv",
 	"keybindingmenu.reload",
 	"screenshot.announce",
 	"screenshot.token",

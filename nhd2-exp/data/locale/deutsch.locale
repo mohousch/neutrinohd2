@@ -1508,6 +1508,7 @@ zapitsetup.lastuse Kanal beim Runterfahren speichern
 zapitsetup.lastmode Start Mode
 zapitsetup.lasttv TV Kanal
 zapitsetup.lastradio Radio Kanal
+zapitsetup.lastwebtv WebTV Kanal
 keybindingmenu.reload EPG aktualisieren
 screenshot.announce erstelle screenshot?
 screenshot.token Screenshot wird erstellt...

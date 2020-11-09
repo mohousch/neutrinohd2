@@ -1507,6 +1507,7 @@ zapitsetup.lastuse from last Channel
 zapitsetup.lastmode Start Mode
 zapitsetup.lasttv TV Channel
 zapitsetup.lastradio Radio Channel
+zapitsetup.lastwebtv WebTV Channel
 keybindingmenu.reload Refresh EPG
 screenshot.announce create screenshot?
 screenshot.token creating screenshot...

@@ -43,10 +43,12 @@ class CZapitSetupNotifier : public CChangeObserver
 {
 	private:
 		CMenuOptionChooser * zapit1;
-		CMenuForwarder * zapit2, * zapit3;
+		CMenuForwarder * zapit2, * zapit3, *zapit4;
 	public:
-		CZapitSetupNotifier(CMenuOptionChooser* m1, CMenuForwarder* m2, CMenuForwarder* m3);
+		CZapitSetupNotifier(CMenuOptionChooser* m1, CMenuForwarder* m2, CMenuForwarder* m3, CMenuForwarder* m4);
 		bool changeNotify(const neutrino_locale_t, void * data);
 };
 
 #endif
+
+

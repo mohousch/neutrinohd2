@@ -53,11 +53,12 @@ const keyval OPTIONS_OFF1_ON0_OPTIONS[OPTIONS_OFF1_ON0_OPTION_COUNT] =
         { 0, LOCALE_OPTIONS_ON, NULL  }
 };
 
-#define OPTIONS_LASTMODE_OPTION_COUNT 2
+#define OPTIONS_LASTMODE_OPTION_COUNT 3
 const keyval OPTIONS_LASTMODE_OPTIONS[OPTIONS_LASTMODE_OPTION_COUNT] =
 {
-        { 0, NONEXISTANT_LOCALE, "Radio" },
-        { 1, NONEXISTANT_LOCALE, "TV"  }
+        { NeutrinoMessages::mode_radio, NONEXISTANT_LOCALE, "Radio" },
+        { NeutrinoMessages::mode_tv, NONEXISTANT_LOCALE, "TV" },
+	{ NeutrinoMessages::mode_webtv, NONEXISTANT_LOCALE, "WEBTV" }
 };
 
 CZapitSetup::CZapitSetup()
@@ -110,6 +111,19 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "webtv")
+	{
+		CSelectChannelWidgetHandler = new CSelectChannelWidget();
+		CSelectChannelWidgetHandler->exec(NULL, "webtv");
+		
+		g_settings.startchannelwebtv_id = CSelectChannelWidgetHandler->getChanWebTVID();
+		g_settings.StartChannelWEBTV = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChanWebTVID());
+		
+		delete CSelectChannelWidgetHandler;
+		CSelectChannelWidgetHandler = NULL;
+		
+		return menu_return::RETURN_REPAINT;
+	}
 
 	showMenu();
 
@@ -139,13 +153,16 @@ void CZapitSetup::showMenu()
 	// last mode
 	CMenuOptionChooser * m2 = new CMenuOptionChooser(LOCALE_ZAPITSETUP_LAST_MODE, &g_settings.lastChannelMode, OPTIONS_LASTMODE_OPTIONS, OPTIONS_LASTMODE_OPTION_COUNT, !g_settings.uselastchannel, NULL, CRCInput::convertDigitToKey(shortcut++));
 
-	// last channel TV
+	// last TV channel
 	CMenuForwarder * m3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, !g_settings.uselastchannel, g_settings.StartChannelTV.c_str(), this, "tv", CRCInput::convertDigitToKey(shortcut++));
 
-	// last channel radio
+	// last radio channel
 	CMenuForwarder * m4 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, !g_settings.uselastchannel, g_settings.StartChannelRadio.c_str(), this, "radio", CRCInput::convertDigitToKey(shortcut++));
+
+	// last webtv channel
+	CMenuForwarder * m5 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_WEBTV, !g_settings.uselastchannel, g_settings.StartChannelWEBTV.c_str(), this, "webtv", CRCInput::convertDigitToKey(shortcut++));
 	
-	CZapitSetupNotifier zapitSetupNotifier(m2, m3, m4);
+	CZapitSetupNotifier zapitSetupNotifier(m2, m3, m4, m5);
 
 	// use last channel
 	CMenuOptionChooser * m1 = new CMenuOptionChooser(LOCALE_MISCSETTINGS_ZAPIT, &g_settings.uselastchannel, OPTIONS_OFF1_ON0_OPTIONS, OPTIONS_OFF1_ON0_OPTION_COUNT, true, &zapitSetupNotifier, CRCInput::convertDigitToKey(shortcut++));
@@ -154,6 +171,7 @@ void CZapitSetup::showMenu()
 	zapit->addItem(m2);
 	zapit->addItem(m3);
 	zapit->addItem(m4);
+	zapit->addItem(m5);
 
 	zapit->exec(NULL, "");
 	zapit->hide();
@@ -161,11 +179,12 @@ void CZapitSetup::showMenu()
 	delete zapit;
 }
 
-CZapitSetupNotifier::CZapitSetupNotifier(CMenuOptionChooser* m1, CMenuForwarder* m2, CMenuForwarder* m3)
+CZapitSetupNotifier::CZapitSetupNotifier(CMenuOptionChooser* m1, CMenuForwarder* m2, CMenuForwarder* m3, CMenuForwarder* m4)
 {
 	zapit1 = m1;
 	zapit2 = m2;
 	zapit3 = m3;
+	zapit4 = m4;
 }
 
 bool CZapitSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void *)
@@ -175,6 +194,7 @@ bool CZapitSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void 
 		zapit1->setActive(!g_settings.uselastchannel);
 		zapit2->setActive(!g_settings.uselastchannel);
 		zapit3->setActive(!g_settings.uselastchannel);
+		zapit4->setActive(!g_settings.uselastchannel);
 	}
 
 	return true;
