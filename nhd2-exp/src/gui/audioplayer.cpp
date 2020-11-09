@@ -320,7 +320,7 @@ void CAudioPlayerGui::playFile()
 		}
 		else if(msg == RC_red)
 		{
-			if(m_state == CAudioPlayerGui::STOP)
+			//if(m_state == CAudioPlayerGui::STOP)
 			{
 				if (!m_playlist.empty()) 
 				{

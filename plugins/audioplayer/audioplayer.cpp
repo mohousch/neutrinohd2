@@ -251,11 +251,10 @@ void CMP3Player::openFileBrowser()
 	}
 }
 
-#define HEAD_BUTTONS_COUNT 2
+#define HEAD_BUTTONS_COUNT 1
 const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
-	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL }
+	{ NEUTRINO_ICON_BUTTON_SETUP, NONEXISTANT_LOCALE, NULL }
 };
 
 #define FOOT_BUTTONS_COUNT 4
@@ -311,7 +310,6 @@ void CMP3Player::showMenu()
 	alist->enablePaintDate();
 
 	alist->addKey(RC_setup, this, CRCInput::getSpecialKeyName(RC_setup));
-	alist->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
 	alist->addKey(RC_red, this, CRCInput::getSpecialKeyName(RC_red));
 	alist->addKey(RC_green, this, CRCInput::getSpecialKeyName(RC_green));
 	alist->addKey(RC_yellow, this, CRCInput::getSpecialKeyName(RC_yellow));
@@ -353,12 +351,6 @@ int CMP3Player::exec(CMenuTarget* parent, const std::string& actionKey)
 		audioPlayerSettingsMenu = NULL;	
 
 		return menu_return::RETURN_REPAINT;					
-	}
-	else if(actionKey == "RC_info")
-	{
-		tmpAudioPlayerGui.showHelp();
-
-		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_red")
 	{
