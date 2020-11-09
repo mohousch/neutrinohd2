@@ -927,7 +927,7 @@ void CTestMenu::widget()
 	leftFrame->setMode(FRAME_MODE_VERTICAL);
 
 	leftWidget->setSelected(left_selected);
-//	leftWidget->enableShrinkMenu();
+	//leftWidget->enableShrinkMenu();
 
 	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos", true, NULL, this, "movie_in_cinema");
 	ClistBoxItem *item2 = new ClistBoxItem("Am", true, NULL, this, "movie_popular");
@@ -1036,7 +1036,6 @@ void CTestMenu::widget()
 	testWidget->addItem(footersWidget);
 
 	testWidget->addKey(RC_info, this, "winfo");
-	//testWidget->addKey(RC_ok, this, "wok");
 	testWidget->addKey(RC_red, this, "nextPage");
 	testWidget->addKey(RC_green, this, "prevPage");
 

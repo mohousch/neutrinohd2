@@ -87,7 +87,11 @@ void CPicViewer::loadPlaylist()
 
 	Path = g_settings.network_nfs_picturedir;
 
-	if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
+	//if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
+
+	CFileHelpers::getInstance()->addRecursiveDir(&filelist, Path, &fileFilter);
+
+	if(filelist.size() > 0)
 	{
 		struct stat statbuf;
 				

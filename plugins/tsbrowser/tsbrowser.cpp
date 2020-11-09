@@ -94,7 +94,11 @@ void CTSBrowser::loadPlaylist()
 	Path = g_settings.network_nfs_recordingdir;
 	
 	//
-	if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
+	//if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
+	
+	CFileHelpers::getInstance()->addRecursiveDir(&filelist, Path, &fileFilter);
+
+	if(filelist.size() > 0)
 	{
 		// filter them
 		MI_MOVIE_INFO movieInfo;

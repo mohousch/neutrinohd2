@@ -357,6 +357,19 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 				case (RC_ok):
 					onOKKeyPressed();
 					break;
+
+				// colored keys
+				case (RC_red):
+					onRedKeyPressed();
+					break;
+
+				case (RC_green):
+					onGreenKeyPressed();
+					break;
+
+				case (RC_blue):
+					onBlueKeyPressed();
+					break;
 					
 				case (RC_timeout):
 					break;

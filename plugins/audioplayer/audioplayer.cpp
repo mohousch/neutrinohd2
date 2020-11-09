@@ -125,7 +125,10 @@ void CMP3Player::loadPlaylist()
 
 	Path = g_settings.network_nfs_audioplayerdir;
 
-	if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
+	//if(CFileHelpers::getInstance()->/*readDir*/addRecursiveDir(Path, &filelist, &fileFilter))
+	CFileHelpers::getInstance()->addRecursiveDir(&filelist, Path, &fileFilter);
+
+	if(filelist.size() > 0)
 	{		
 		CFileList::iterator files = filelist.begin();
 		for(; files != filelist.end() ; files++)
