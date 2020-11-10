@@ -377,6 +377,10 @@ function testClistBoxWidget()
 	listWidget:enableWidgetChange()
 	listWidget:enablePaintFootInfo()
 
+	if selected < 0 then
+		selected = 0
+	end
+
 	listWidget:setSelected(selected)
 
 	-- CMessageBox
