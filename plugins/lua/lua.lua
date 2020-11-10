@@ -160,6 +160,8 @@ function moviePlayer()
 end
 
 function exec(id, msg)
+	print("exec:id:", id)
+
 	-- handle keys
 	if msg == neutrino.RC_info then
 		infoBox()
@@ -203,6 +205,10 @@ function testCWidget()
 	listBox:enablePaintDate()
 	listBox:enablePaintFoot()
 	listBox:enableCenterPos()
+
+	if selected < 0 then
+		selected = 0
+	end
 
 	listBox:setSelected(selected)
 
@@ -279,89 +285,21 @@ function testCWidget()
 
 	-- handle
 	selected = listBox:getSelected()
+
 	key = testWidget:getKey()
+
+	if testWidget:getExitPressed() == true or key == neutrino.RC_info then
+		selected = -1
+	end
 
 	exec(selected, key)
 
+	-- repaint or exit
 	if testWidget:getExitPressed() == false then
 		listBox:clearItems()
 		testWidget:clearItems()
 		testCWidget()
 	end
-end
-
-function testClistBox()
-	listBox:enableCenterPos()
-	listBox:enablePaintHead()
-	listBox:setTitle("ClistBox")
-	listBox:enablePaintFoot()
-
-	listBox:setSelected(selected)
-
-	-- CMessageBox
-	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", self, "red action")
-	item1:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
-	item1:setHelpText("testing CMessageBox")
-	item1:setInfo1("testing CMessageBox")
-
-	-- CHelpBox
-	item2 = neutrino.CMenuForwarder("CHelpBox")
-	item2:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
-	item2:setHelpText("testing CHelpBox")
-	item2:setInfo1("testing CHelpBox")
-
-	-- CHintBox
-	item3 = neutrino.CMenuForwarder("CHintBox")
-	item3:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
-	item3:setHelpText("testing CHintBox")
-	item3:setInfo1("testing CHintBox")
-
-	-- CInfoBox
-	item4 = neutrino.CMenuForwarder("CInfoBox")
-	item4:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
-	item4:setHelpText("testing CInfoBox")
-	item4:setInfo1("testing CInfoBox")
-
-	-- CStringInput
-	item5 = neutrino.CMenuForwarder("CStringInput", false)
-	item5:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
-	item5:setHelpText("testing CStringInput")
-	item5:setInfo1("testing CStringInput")
-
-	-- CAudioPlayerGui
-	item6 = neutrino.CMenuForwarder("CAudioPlayerGui")
-	item6:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
-	item6:setHelpText("testing CAudioPlayerGui")
-	item6:setInfo1("testing CAudioPlayerGui")
-
-	-- CPictureViewerGui
-	item7 = neutrino.CMenuForwarder("CPictureViewerGui")
-	item7:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
-	item7:setHelpText("testing CPictureViewerGui")
-	item7:setInfo1("testing CPictureViewerGui")
-
-	-- CMoviePlayerGui
-	item8 = neutrino.CMenuForwarder("CMoviePlayerGui")
-	item8:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
-	item8:setHelpText("testing CMoviePlayerGui")
-	item8:setInfo1("testing CMoviePlayerGui")
-
-	listBox:addItem(item1)
-	listBox:addItem(item2)
-	listBox:addItem(item3)
-	listBox:addItem(item4)
-	listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
-	listBox:addItem(item5)
-	listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
-	listBox:addItem(item6)
-	listBox:addItem(item7)
-	listBox:addItem(item8)
-
-	listBox:paint()
-	
-	neutrino.CWidget():exec(null, "")
-
-	listBox:hide()
 end
 
 listWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
@@ -459,6 +397,80 @@ function testClistBoxWidget()
 	end
 end
 
+function testClistBox()
+	listBox:enableCenterPos()
+	listBox:enablePaintHead()
+	listBox:setTitle("ClistBox")
+	listBox:enablePaintFoot()
+
+	listBox:setSelected(selected)
+
+	-- CMessageBox
+	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", self, "red action")
+	item1:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item1:setHelpText("testing CMessageBox")
+	item1:setInfo1("testing CMessageBox")
+
+	-- CHelpBox
+	item2 = neutrino.CMenuForwarder("CHelpBox")
+	item2:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item2:setHelpText("testing CHelpBox")
+	item2:setInfo1("testing CHelpBox")
+
+	-- CHintBox
+	item3 = neutrino.CMenuForwarder("CHintBox")
+	item3:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item3:setHelpText("testing CHintBox")
+	item3:setInfo1("testing CHintBox")
+
+	-- CInfoBox
+	item4 = neutrino.CMenuForwarder("CInfoBox")
+	item4:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item4:setHelpText("testing CInfoBox")
+	item4:setInfo1("testing CInfoBox")
+
+	-- CStringInput
+	item5 = neutrino.CMenuForwarder("CStringInput", false)
+	item5:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item5:setHelpText("testing CStringInput")
+	item5:setInfo1("testing CStringInput")
+
+	-- CAudioPlayerGui
+	item6 = neutrino.CMenuForwarder("CAudioPlayerGui")
+	item6:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item6:setHelpText("testing CAudioPlayerGui")
+	item6:setInfo1("testing CAudioPlayerGui")
+
+	-- CPictureViewerGui
+	item7 = neutrino.CMenuForwarder("CPictureViewerGui")
+	item7:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item7:setHelpText("testing CPictureViewerGui")
+	item7:setInfo1("testing CPictureViewerGui")
+
+	-- CMoviePlayerGui
+	item8 = neutrino.CMenuForwarder("CMoviePlayerGui")
+	item8:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
+	item8:setHelpText("testing CMoviePlayerGui")
+	item8:setInfo1("testing CMoviePlayerGui")
+
+	listBox:addItem(item1)
+	listBox:addItem(item2)
+	listBox:addItem(item3)
+	listBox:addItem(item4)
+	listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
+	listBox:addItem(item5)
+	listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
+	listBox:addItem(item6)
+	listBox:addItem(item7)
+	listBox:addItem(item8)
+
+	listBox:paint()
+	
+	neutrino.CWidget():exec(null, "")
+
+	listBox:hide()
+end
+
 function testCWindow()
 	box = neutrino.CBox()
 	fb = neutrino.CSwigHelpers()
@@ -480,9 +492,9 @@ end
 
 -- main
 function main()
-	--testCWidget()
+	testCWidget()
+	--testClistBoxWidget()
 	--testClistBox()
-	testClistBoxWidget()
 	--testCWindow()
 end
 
