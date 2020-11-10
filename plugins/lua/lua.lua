@@ -6,10 +6,10 @@ local PATH = "/"
 
 -- CMessageBox
 function messageBox()
-	title = "luaTest"
-	msg = "TEST"
+	title = "CMessageBox"
+	msg = "neutrino lua:\n testing lua CMessageBox\n"
 	mBox = neutrino.CMessageBox(title, msg)
-	mBox:exec(-1)
+	mBox:exec()
 end
 
 -- CHelpBox
@@ -18,27 +18,27 @@ function helpBox()
 	hbox:addLine("neutrino: lua")
 	hbox:addSeparator()
 	hbox:addLine("first test")
-	hbox:addLine("testing CHelpBox\ndas ist alles ;-)")
+	hbox:addLine("testing CHelpBox ;-)\n")
 	hbox:show("CHelpBox: lua")
 end
 
 -- CHintBox
 function hintBox()
-	hint = neutrino.CHintBox("neutrino: lua","first test\ntesting CHintBox\ndas ist alles ;-)")
+	hint = neutrino.CHintBox("CHintBox","neutrino lua:\n first test\ntesting CHintBox\ndas ist alles ;-)")
 	hint:exec()
 end
 
 -- CInfoBox
 function infoBox()
 	info = neutrino.CInfoBox()
-	info:setText("first test\ntesting CHintBox\ndas ist alles ;-)")
+	info:setText("neutrino lua:\nfirst test\ntesting CHintBox ;-)\n")
 	info:exec()
 end
 
 -- CStringInput
 function stringInput()
 	title = "luaTest: CStringInputSMS"
-	local value
+	local value = "neutrino lua:"
 	input = neutrino.CStringInputSMS(title, vale)
 	input:exec(null, "")
 end
@@ -183,14 +183,18 @@ function exec(id, msg)
 	if id == 4 then
 		stringInput()
 	end
-	if id == 7 then
+	if id == 5 then
 		audioPlayer()
 	end
-	if id == 8 then
+	if id == 6 then
 		pictureViewer()
 	end
-	if id == 9 then
+	if id == 7 then
 		moviePlayer()
+	end
+
+	if id == 8 then
+		testCWidget()
 	end
 end
 
@@ -268,9 +272,9 @@ function testCWidget()
 	listBox:addItem(item2)
 	listBox:addItem(item3)
 	listBox:addItem(item4)
-	listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
+	--listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
 	listBox:addItem(item5)
-	listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
+	--listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
 	listBox:addItem(item6)
 	listBox:addItem(item7)
 	listBox:addItem(item8)
@@ -304,7 +308,6 @@ end
 
 listWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
 function testClistBoxWidget()
-	--listWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
 
 	listWidget:setWidgetType(neutrino.WIDGET_TYPE_STANDARD)
 	listWidget:setMode(neutrino.MODE_LISTBOX)
@@ -373,9 +376,9 @@ function testClistBoxWidget()
 	listWidget:addItem(item2)
 	listWidget:addItem(item3)
 	listWidget:addItem(item4)
-	listWidget:addItem(neutrino.CMenuSeparator(neutrino.LINE))
+	--listWidget:addItem(neutrino.CMenuSeparator(neutrino.LINE))
 	listWidget:addItem(item5)
-	listWidget:addItem(neutrino.CMenuSeparator(neutrino.LINE))
+	--listWidget:addItem(neutrino.CMenuSeparator(neutrino.LINE))
 	listWidget:addItem(item6)
 	listWidget:addItem(item7)
 	listWidget:addItem(item8)

@@ -96,7 +96,7 @@ class CMovieInfoViewer
 	public:
 		CMovieInfoViewer();
 		~CMovieInfoViewer();
-		void show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark = false);
+		void show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark = false, bool _m_loop = false);
 		void update(time_t time_show = 0);
 		void hide();
 		bool IsVisible() {return visible;};
@@ -104,7 +104,7 @@ class CMovieInfoViewer
 		mode GetMode() { return m_mode;};
 
 		//
-		void showMovieInfo(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark = false);
+		void showMovieInfo(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark = false, bool m_loop = false);
 };
 
 //

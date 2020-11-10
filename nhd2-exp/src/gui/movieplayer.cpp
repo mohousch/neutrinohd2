@@ -681,7 +681,7 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.update((duration - position) / 1000);
 			}
 
-			FileTime.show(filelist[selected].epgTitle, (filelist[selected].epgInfo1.empty())? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, (duration >= 10 && position >= 10)? (position / (duration / 100)) : 0, ac3state, speed, playstate, (filelist[selected].ytid.empty())? true : false);
+			FileTime.show(filelist[selected].epgTitle, (filelist[selected].epgInfo1.empty())? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, (duration >= 10 && position >= 10)? (position / (duration / 100)) : 0, ac3state, speed, playstate, (filelist[selected].ytid.empty())? true : false, m_loop);
 
 			//time_t jetzt = time(NULL);
 
@@ -1738,7 +1738,7 @@ CMovieInfoViewer::~CMovieInfoViewer()
 	hide();
 }
 
-void CMovieInfoViewer::show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark)
+void CMovieInfoViewer::show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark, bool _m_loop)
 {
 	// show / update
 	GetDimensions();
@@ -1747,7 +1747,7 @@ void CMovieInfoViewer::show(const std::string _Title, const std::string _Info, s
 
 	//FIXME
 #if !defined (PLATFORM_GIGABLUE)
-	showMovieInfo(_Title, _Info, _Percent, _ac3state, _speed, _playstate, _show_bookmark);
+	showMovieInfo(_Title, _Info, _Percent, _ac3state, _speed, _playstate, _show_bookmark, _m_loop);
 #endif
 }
 
@@ -1869,7 +1869,7 @@ void CMovieInfoViewer::hide()
 }
 
 //showMovieInfo
-void CMovieInfoViewer::showMovieInfo(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark)
+void CMovieInfoViewer::showMovieInfo(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark, bool m_loop)
 {
 	//dprintf(DEBUG_NORMAL, "CMovieInfoViewer::showMovieInfo:\n");
 
@@ -1996,6 +1996,9 @@ void CMovieInfoViewer::showMovieInfo(std::string Title, std::string Info, short 
 		case CMoviePlayerGui::SLOW: break;
 		case CMoviePlayerGui::STOPPED: break;
 	}
+
+	if(m_loop && playstate == CMoviePlayerGui::PLAY)
+		icon = NEUTRINO_ICON_REPEAT_TRACK;
 	
 	frameBuffer->getIconSize(icon, &icon_w, &icon_h);
 
