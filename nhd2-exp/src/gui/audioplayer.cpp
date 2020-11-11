@@ -527,21 +527,15 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 		case CAudioPlayerGui::FF: icon = NEUTRINO_ICON_FF; break;
 		case CAudioPlayerGui::STOP: icon = NEUTRINO_ICON_STOP_SMALL; break;
 	}
-	
-	m_frameBuffer->getIconSize(icon, &icon_w, &icon_h);
-	m_frameBuffer->paintIcon(icon, cFrameBox.iX + cFrameBox.iHeight + ICON_OFFSET, cFrameBox.iY + (cFrameBox.iHeight - icon_h)/2);
 
 	switch(repeatMode)
 	{
-		case CAudioPlayerGui::REPEAT_TRACK: icon = NEUTRINO_ICON_REPEAT_TRACK; break;
-		case CAudioPlayerGui::REPEAT_ALL: icon = NEUTRINO_ICON_REPEAT_ALL; break;
+		case CAudioPlayerGui::REPEAT_TRACK: if(m_state == CAudioPlayerGui::PLAY) icon = NEUTRINO_ICON_REPEAT_TRACK; break;
+		case CAudioPlayerGui::REPEAT_ALL: if(m_state == CAudioPlayerGui::PLAY)icon = NEUTRINO_ICON_REPEAT_ALL; break;
 	}
-
-	if (repeatMode == REPEAT_TRACK || repeatMode == REPEAT_ALL)
-	{
-		m_frameBuffer->getIconSize(icon, &icon_w, &icon_h);
-		m_frameBuffer->paintIcon(icon, cFrameBox.iX + cFrameBox.iWidth - icon_w - ICON_OFFSET, cFrameBox.iY + (cFrameBox.iHeight - icon_h)/2);
-	}
+	
+	m_frameBuffer->getIconSize(icon, &icon_w, &icon_h);
+	m_frameBuffer->paintIcon(icon, cFrameBox.iX + cFrameBox.iHeight + ICON_OFFSET, cFrameBox.iY + (cFrameBox.iHeight - icon_h)/2);
 		
 	//
 	m_metainfo.clear();
