@@ -2144,8 +2144,8 @@ void CTestMenu::testCWindowShadow()
 	
 	Box.iX = g_settings.screen_StartX + 10;
 	Box.iY = g_settings.screen_StartY + 10;
-	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/2;
-	Box.iHeight = 200; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20);
 
 	//
 	CWindow* window = new CWindow(&Box);
@@ -2176,13 +2176,13 @@ void CTestMenu::testCWindowCustomColor()
 	
 	Box.iX = g_settings.screen_StartX + 10;
 	Box.iY = g_settings.screen_StartY + 10;
-	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/2;
-	Box.iHeight = 200;
+	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20);
 
 	//
 	CWindow* window = new CWindow(&Box);
 
-	window->setColor(0xFF808080);
+	window->setColor(COL_DARK_GREEN);
 	window->setCorner(RADIUS_MID, CORNER_ALL);
 	window->enableShadow();
 	window->enableSaveScreen();
