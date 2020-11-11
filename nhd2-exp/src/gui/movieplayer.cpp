@@ -515,68 +515,6 @@ void CMoviePlayerGui::PlayFile(void)
 	// play loop
  go_repeat:
 	do {
-		// multi select
-		if (playstate == CMoviePlayerGui::STOPPED && selected >= 0) 
-		{
-			if(selected + 1 < filelist.size()) 
-			{
-				selected++;
-
-				//
-				if(filelist[selected].ytid.empty())
-				{ 
-					if(!filelist[selected].audioPids.empty()) 
-					{
-						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;
-						g_currentac3 = filelist[selected].audioPids[0].atype;
-
-						//
-						currentapid = g_currentapid;
-					}
-
-					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
-					{
-						if (filelist[selected].audioPids[i].selected) 
-						{
-#if defined (PLATFORM_COOLSTREAM)
-							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
-#else
-							g_currentapid = i;	//FIXME
-#endif							
-							g_currentac3 = filelist[selected].audioPids[i].atype;
-
-							//
-#if defined (PLATFORM_COOLSTREAM)
-							currentapid = g_currentapid;
-							currentac3 = g_currentac3;
-#else
-							currentapid = 0;
-#endif
-						}
-					}
-
-					//
-					g_vpid = filelist[selected].epgVideoPid;
-					g_vtype = filelist[selected].VideoType;
-
-					// startposition			
-					startposition = 1000 * showStartPosSelectionMenu();
-
-					if(startposition < 0)
-						exit = true;
-				}
-				
-				//
-				update_lcd = true;
-				start_play = true;
-			} 
-			else if(m_loop) // loop
-			{
-				update_lcd = true;
-				start_play = true;
-			}
-		}
-		
 		// exit
 		if (exit) 
 		{	  
@@ -767,9 +705,9 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 			else
 			{
-				if(filelist.size() > 1 && selected + 1 < filelist.size())
+				if (m_loop)
 					g_RCInput->postMsg(RC_next, 0);
-				else if (m_loop)
+				else if(filelist.size() > 1 && selected + 1 < filelist.size())
 					g_RCInput->postMsg(RC_next, 0);
 				else
 					g_RCInput->postMsg(RC_stop, 0);
@@ -1460,7 +1398,13 @@ void CMoviePlayerGui::PlayFile(void)
 		else if(msg == RC_right || msg == RC_next)
 		{
 			//FIXME:
-			if(!filelist.empty() && selected + 1 < filelist.size() && playstate == CMoviePlayerGui::PLAY) 
+			if(m_loop && playstate == CMoviePlayerGui::PLAY) // loop
+			{
+				//
+				update_lcd = true;
+				start_play = true;
+			}
+			else if(!filelist.empty() && selected + 1 < filelist.size() && playstate == CMoviePlayerGui::PLAY) 
 			{
 				selected++;
 
@@ -1508,12 +1452,6 @@ void CMoviePlayerGui::PlayFile(void)
 						exit = true;
 				}
 				
-				//
-				update_lcd = true;
-				start_play = true;
-			}
-			else if(m_loop && playstate == CMoviePlayerGui::PLAY) // loop
-			{
 				//
 				update_lcd = true;
 				start_play = true;
