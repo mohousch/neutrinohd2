@@ -95,6 +95,13 @@
 #define MOVIEPLAYER_START_SCRIPT 	CONFIGDIR "/movieplayer.start" 
 #define MOVIEPLAYER_END_SCRIPT 		CONFIGDIR "/movieplayer.end"
 
+// CMovieInfoViewer
+#define TIMEOSD_FONT 		SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME
+#define TIMEBARH 		38
+#define BOXHEIGHT_MOVIEINFO	125
+#define BUTTON_BAR_HEIGHT	25
+#define TIMESCALE_BAR_HEIGHT	7
+
 extern cPlayback *playback;
 
 // movieplayer
@@ -105,6 +112,11 @@ CMoviePlayerGui::CMoviePlayerGui()
 	frameBuffer = CFrameBuffer::getInstance();
 
 	selected = 0;
+
+	// infoViewer
+	visible = false;
+	m_mode = MODE_ASC;
+	GetDimensions();
 }
 
 CMoviePlayerGui::~CMoviePlayerGui()
@@ -301,12 +313,6 @@ void CMoviePlayerGui::removeFromPlaylist(long pos)
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::removeFromPlayList:\n");
 
 	filelist.erase(filelist.begin() + pos); 
-}
-
-void CMoviePlayerGui::hide()
-{
-	frameBuffer->clearFrameBuffer();
-	frameBuffer->blit();
 }
 
 void CMoviePlayerGui::startMovieInfoViewer(void)
@@ -513,7 +519,6 @@ void CMoviePlayerGui::PlayFile(void)
 	startMovieInfoViewer();
 
 	// play loop
- go_repeat:
 	do {
 		// exit
 		if (exit) 
@@ -615,18 +620,18 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 
 		// timeosd
-		if (FileTime.IsVisible()) 
+		if (IsVisible()) 
 		{
-			if (FileTime.GetMode() == CMovieInfoViewer::MODE_ASC) 
+			if (GetMode() == MODE_ASC) 
 			{
-				FileTime.update(position / 1000);
+				update(position / 1000);
 			} 
 			else 
 			{
-				FileTime.update((duration - position) / 1000);
+				update((duration - position) / 1000);
 			}
 
-			FileTime.show(filelist[selected].epgTitle, (filelist[selected].epgInfo1.empty())? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, (duration >= 10 && position >= 10)? (position / (duration / 100)) : 0, ac3state, speed, playstate, (filelist[selected].ytid.empty())? true : false, m_loop);
+			show(filelist[selected].epgTitle, (filelist[selected].epgInfo1.empty())? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, (duration >= 10 && position >= 10)? (position / (duration / 100)) : 0, ac3state, speed, playstate, (filelist[selected].ytid.empty())? true : false, m_loop);
 		}
 
 		// start playing
@@ -683,7 +688,7 @@ void CMoviePlayerGui::PlayFile(void)
 #endif
 
 				// movieInfoviewer
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 			}
 		}
 
@@ -767,14 +772,14 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				time_forced = false;
 				
-				FileTime.hide();
+				hide();
 
 				killMovieInfoViewer();
 			}
 			
-			if (FileTime.IsVisible())
+			if (IsVisible())
 			{ 
-				FileTime.hide();
+				hide();
 
 				killMovieInfoViewer();
 			}
@@ -782,23 +787,23 @@ void CMoviePlayerGui::PlayFile(void)
 			// movie title
 			if(filelist[selected].ytid != "timeshift")
 			{
-				if (FileTime.IsVisible()) 
+				if (IsVisible()) 
 				{
-					if (FileTime.GetMode() == CMovieInfoViewer::MODE_ASC) 
+					if (GetMode() == MODE_ASC) 
 					{
-						FileTime.SetMode(CMovieInfoViewer::MODE_DESC);
-						FileTime.update((duration - position) / 1000);
+						SetMode(MODE_DESC);
+						update((duration - position) / 1000);
 					} 
 					else 
 					{
-						FileTime.hide();
+						hide();
 
 						killMovieInfoViewer();
 					}
 				}
 				else 
 				{
-					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+					SetMode(MODE_ASC);
 
 					timeStartShowingInfo = time(NULL);
 
@@ -831,31 +836,31 @@ void CMoviePlayerGui::PlayFile(void)
 			//show MovieInfoBar
 			if(filelist[selected].ytid != "timeshift")
 			{
-				if (FileTime.IsVisible()) 
+				if (IsVisible()) 
 				{
-					if (FileTime.GetMode() == CMovieInfoViewer::MODE_ASC) 
+					if (GetMode() == MODE_ASC) 
 					{
-						FileTime.SetMode(CMovieInfoViewer::MODE_DESC);
-						FileTime.update((duration - position) / 1000);
+						SetMode(MODE_DESC);
+						update((duration - position) / 1000);
 					} 
 					else 
 					{
-						FileTime.hide();
+						hide();
 
 						killMovieInfoViewer();
 					}
 				}
 				else 
 				{
-					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+					SetMode(MODE_ASC);
 				}
 			}
 		} 
 		else if (msg == RC_blue) 
 		{
-			if (FileTime.IsVisible())
+			if (IsVisible())
 			{ 
-				FileTime.hide();
+				hide();
 
 				killMovieInfoViewer();
 			}
@@ -951,9 +956,9 @@ void CMoviePlayerGui::PlayFile(void)
 		} 
 		else if ( msg == RC_audio || msg == RC_green) 
 		{
-			if (FileTime.IsVisible())
+			if (IsVisible())
 			{ 
-				FileTime.hide();
+				hide();
 
 				killMovieInfoViewer();
 			}
@@ -966,9 +971,9 @@ void CMoviePlayerGui::PlayFile(void)
 		} 
 		else if(msg == RC_yellow)
 		{
-			if (FileTime.IsVisible())
+			if (IsVisible())
 			{ 
-				FileTime.hide();
+				hide();
 		
 				killMovieInfoViewer();
 			}
@@ -980,23 +985,23 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			if(filelist[selected].ytid != "timeshift")
 			{
-				if (FileTime.IsVisible()) 
+				if (IsVisible()) 
 				{
-					if (FileTime.GetMode() == CMovieInfoViewer::MODE_ASC) 
+					if (GetMode() == MODE_ASC) 
 					{
-						FileTime.SetMode(CMovieInfoViewer::MODE_DESC);
-						FileTime.update((duration - position) / 1000);
+						SetMode(MODE_DESC);
+						update((duration - position) / 1000);
 					} 
 					else 
 					{
-						FileTime.hide();
+						hide();
 
 						killMovieInfoViewer();
 					}
 				}
 				else 
 				{
-					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+					SetMode(MODE_ASC);
 
 					timeStartShowingInfo = time(NULL);
 
@@ -1006,15 +1011,15 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 			else
 			{
-				if (FileTime.IsVisible()) 
+				if (IsVisible()) 
 				{
-					FileTime.hide();
+					hide();
 
 					killMovieInfoViewer();
 				}
 				else
 				{
-					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+					SetMode(MODE_ASC);
 
 					timeStartShowingInfo = time(NULL);
 					
@@ -1046,17 +1051,17 @@ void CMoviePlayerGui::PlayFile(void)
 			playstate = CMoviePlayerGui::REW;
 			update_lcd = true;
 
-			if (FileTime.IsVisible()) 
+			if (IsVisible()) 
 			{
-				FileTime.hide();
+				hide();
 
 				killMovieInfoViewer();
 			}
 			
 			// time
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1081,17 +1086,17 @@ void CMoviePlayerGui::PlayFile(void)
 			update_lcd = true;
 			playstate = CMoviePlayerGui::FF;
 
-			if (FileTime.IsVisible())
+			if (IsVisible())
 			{ 
-				FileTime.hide();
+				hide();
 
 				killMovieInfoViewer();
 			}
 
 			// movie info viewer
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1106,9 +1111,9 @@ void CMoviePlayerGui::PlayFile(void)
 			playback->SetPosition(-60 * 1000);
 			
 			// time
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1123,9 +1128,9 @@ void CMoviePlayerGui::PlayFile(void)
 			playback->SetPosition(60 * 1000);
 			
 			// time
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1139,9 +1144,9 @@ void CMoviePlayerGui::PlayFile(void)
 			playback->SetPosition(-5 * 60 * 1000);
 			
 			// time
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1155,9 +1160,9 @@ void CMoviePlayerGui::PlayFile(void)
 			playback->SetPosition(5 * 60 * 1000);
 			
 			// time
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1171,9 +1176,9 @@ void CMoviePlayerGui::PlayFile(void)
 			playback->SetPosition(-10 * 60 * 1000);
 			
 			// time
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1187,9 +1192,9 @@ void CMoviePlayerGui::PlayFile(void)
 			playback->SetPosition(10 * 60 * 1000);
 			
 			// time
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1203,9 +1208,9 @@ void CMoviePlayerGui::PlayFile(void)
 			playback->SetPosition((int64_t)startposition);
 			
 			// time
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1229,9 +1234,9 @@ void CMoviePlayerGui::PlayFile(void)
 			playback->SetPosition((int64_t)duration/2);
 			
 			// time
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1246,9 +1251,9 @@ void CMoviePlayerGui::PlayFile(void)
 			playback->SetPosition((int64_t)duration - 60 * 1000);
 			
 			//time
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1262,9 +1267,9 @@ void CMoviePlayerGui::PlayFile(void)
 			playback->SetPosition(10 * 1000);
 			
 			// time
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1279,9 +1284,9 @@ void CMoviePlayerGui::PlayFile(void)
 			playback->SetPosition(-10 * 1000);
 			
 			// time
-			if (!FileTime.IsVisible()) 
+			if (!IsVisible()) 
 			{
-				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
+				SetMode(MODE_ASC);
 					
 				time_forced = true;
 
@@ -1321,9 +1326,9 @@ void CMoviePlayerGui::PlayFile(void)
 #endif		
 		else if(msg == RC_red)
 		{
-			if (FileTime.IsVisible())
+			if (IsVisible())
 			{ 
-				FileTime.hide();
+				hide();
 
 				killMovieInfoViewer();
 			}
@@ -1332,9 +1337,9 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 		else if(msg == RC_home)
 		{
-			if (FileTime.IsVisible()) 
+			if (IsVisible()) 
 			{
-				FileTime.hide();
+				hide();
 
 				killMovieInfoViewer();
 			}
@@ -1473,9 +1478,9 @@ void CMoviePlayerGui::PlayFile(void)
 /*
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			if (FileTime.IsVisible())
+			if (IsVisible())
 			{ 
-				FileTime.hide();
+				hide();
 
 				killMovieInfoViewer();
 			}
@@ -1512,9 +1517,9 @@ void CMoviePlayerGui::PlayFile(void)
 	
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (4)\n");	
 
-	if(FileTime.IsVisible())
+	if(IsVisible())
 	{
-		FileTime.hide();
+		hide();
 
 		killMovieInfoViewer();
 	}
@@ -1653,28 +1658,8 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	return(pos) ;
 }
 
-// CMovieInfoViewer
-#define TIMEOSD_FONT 		SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME
-#define TIMEBARH 		38
-#define BOXHEIGHT_MOVIEINFO	125
-#define BUTTON_BAR_HEIGHT	25
-#define TIMESCALE_BAR_HEIGHT	7
-
-CMovieInfoViewer::CMovieInfoViewer()
-{
-	frameBuffer = CFrameBuffer::getInstance();
-
-	visible = false;
-	m_mode = MODE_ASC;
-	GetDimensions();
-}
-
-CMovieInfoViewer::~CMovieInfoViewer()
-{
-	hide();
-}
-
-void CMovieInfoViewer::show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark, bool _m_loop)
+// InfoViewer
+void CMoviePlayerGui::show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark, bool _m_loop)
 {
 	// show / update
 	GetDimensions();
@@ -1687,7 +1672,7 @@ void CMovieInfoViewer::show(const std::string _Title, const std::string _Info, s
 #endif
 }
 
-void CMovieInfoViewer::GetDimensions()
+void CMoviePlayerGui::GetDimensions()
 {
 	// time
 	m_xstart = g_settings.screen_StartX + 10;
@@ -1718,7 +1703,7 @@ void CMovieInfoViewer::GetDimensions()
 	cFrameBoxButton.iY = cFrameBoxInfo.iY + cFrameBoxInfo.iHeight - cFrameBoxButton.iHeight;
 }
 
-void CMovieInfoViewer::update(time_t time_show)
+void CMoviePlayerGui::update(time_t time_show)
 {
 	time_t tDisplayTime = 0;
 	static time_t oldDisplayTime = 0;
@@ -1727,7 +1712,7 @@ void CMovieInfoViewer::update(time_t time_show)
 	
 	GetDimensions();
 
-	//dprintf(DEBUG_NORMAL, "CMovieInfoViewer::update time %ld\n", time_show);
+	//dprintf(DEBUG_NORMAL, "CMoviePlayerGui::update time %ld\n", time_show);
 	
 	if(!visible)
 		return;
@@ -1784,7 +1769,7 @@ void CMovieInfoViewer::update(time_t time_show)
 	frameBuffer->blit();
 }
 
-void CMovieInfoViewer::hide()
+void CMoviePlayerGui::hide()
 {
 	GetDimensions();
 	
@@ -1805,9 +1790,9 @@ void CMovieInfoViewer::hide()
 }
 
 //showMovieInfo
-void CMovieInfoViewer::showMovieInfo(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark, bool m_loop)
+void CMoviePlayerGui::showMovieInfo(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark, bool m_loop)
 {
-	//dprintf(DEBUG_NORMAL, "CMovieInfoViewer::showMovieInfo:\n");
+	//dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showMovieInfo:\n");
 
 	int runningPercent = 0;
 	
@@ -1981,4 +1966,6 @@ void CMovieInfoViewer::showMovieInfo(std::string Title, std::string Info, short 
 	
 	frameBuffer->blit();
 }
+
+
 
