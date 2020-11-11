@@ -2763,18 +2763,21 @@ REPEAT:
 		}
 		else if(msg == RC_ok)
 		{
-			selected = listFrame->getSelectedLine();
-
-			for (unsigned int i = 0; i < AudioPlaylist.size(); i++)
+			if(AudioPlaylist.size() > 0)
 			{
-				tmpAudioPlayerGui.addToPlaylist(AudioPlaylist[i]);
+				selected = listFrame->getSelectedLine();
+
+				for (unsigned int i = 0; i < AudioPlaylist.size(); i++)
+				{
+					tmpAudioPlayerGui.addToPlaylist(AudioPlaylist[i]);
+				}
+
+				tmpAudioPlayerGui.setCurrent(selected);
+				tmpAudioPlayerGui.exec(NULL, "");
+
+				//listFrame->refresh();
+				goto REPEAT;
 			}
-
-			tmpAudioPlayerGui.setCurrent(selected);
-			tmpAudioPlayerGui.exec(NULL, "");
-
-			//listFrame->refresh();
-			goto REPEAT;
 		}
 
 		//listFrame->refresh();
@@ -5604,13 +5607,16 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	else if(actionKey == "aok")
 	{
-		for (unsigned int i = 0; i < AudioPlaylist.size(); i++)
+		if(AudioPlaylist.size() > 0)
 		{
-			tmpAudioPlayerGui.addToPlaylist(AudioPlaylist[i]);
-		}
+			for (unsigned int i = 0; i < AudioPlaylist.size(); i++)
+			{
+				tmpAudioPlayerGui.addToPlaylist(AudioPlaylist[i]);
+			}
 
-		tmpAudioPlayerGui.setCurrent(listFrame->getSelectedLine());
-		tmpAudioPlayerGui.exec(NULL, "");
+			tmpAudioPlayerGui.setCurrent(listFrame->getSelectedLine());
+			tmpAudioPlayerGui.exec(NULL, "");
+		}
 
 		return menu_return::RETURN_REPAINT;
 	}
