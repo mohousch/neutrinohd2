@@ -515,7 +515,7 @@ void CMoviePlayerGui::PlayFile(void)
 	// play loop
  go_repeat:
 	do {
-		// multi select|loop
+		// multi select
 		if (playstate == CMoviePlayerGui::STOPPED && selected >= 0) 
 		{
 			if(selected + 1 < filelist.size()) 
@@ -769,6 +769,8 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				if(filelist.size() > 1 && selected + 1 < filelist.size())
 					g_RCInput->postMsg(RC_next, 0);
+				else if (m_loop)
+					g_RCInput->postMsg(RC_next, 0);
 				else
 					g_RCInput->postMsg(RC_stop, 0);
 			}
@@ -800,7 +802,6 @@ void CMoviePlayerGui::PlayFile(void)
 						CNeutrinoApp::getInstance()->timeshiftstatus = 0;
 					}
 				} 
-				//
 			}
 			
 			if(m_loop)
@@ -1511,6 +1512,12 @@ void CMoviePlayerGui::PlayFile(void)
 				update_lcd = true;
 				start_play = true;
 			}
+			else if(m_loop && playstate == CMoviePlayerGui::PLAY) // loop
+			{
+				//
+				update_lcd = true;
+				start_play = true;
+			}
 		}
 		else if (msg == (neutrino_msg_t)g_settings.key_screenshot)
 		{
@@ -1578,15 +1585,6 @@ void CMoviePlayerGui::PlayFile(void)
 
 	CVFD::getInstance()->ShowIcon(VFD_ICON_PLAY, false);
 	CVFD::getInstance()->ShowIcon(VFD_ICON_PAUSE, false);
-
-	if(m_multiselect || m_loop) 
-	{
-		usleep(3000);
-		
-		start_play = true;
-		
-		goto go_repeat;
-	}
 
 	killMovieInfoViewer();
 }
