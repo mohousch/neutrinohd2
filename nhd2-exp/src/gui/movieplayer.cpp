@@ -311,17 +311,22 @@ void CMoviePlayerGui::hide()
 
 void CMoviePlayerGui::startMovieInfoViewer(void)
 {
+	// commented out till work on embeded
+/*
 	if(sec_timer_id == 0)
 		sec_timer_id = g_RCInput->addTimer(g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]*10*1000*1000);
+*/
 }
 
 void CMoviePlayerGui::killMovieInfoViewer(void)
 {
+/*
 	if(sec_timer_id)
 	{
 		g_RCInput->killTimer(sec_timer_id);
 		sec_timer_id = 0;
 	}
+*/
 }
 
 int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
@@ -370,6 +375,8 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	g_vtype = 0;
 	g_currentapid = 0;
 	g_currentac3 = 0;
+
+	sec_timer_id = 0;
 	
 	// cutneutrino
 	cutNeutrino();
@@ -509,7 +516,7 @@ void CMoviePlayerGui::PlayFile(void)
  go_repeat:
 	do {
 		// multi select|loop
-		if (playstate == CMoviePlayerGui::STOPPED && selected > 0) 
+		if (playstate == CMoviePlayerGui::STOPPED && selected >= 0) 
 		{
 			if(selected + 1 < filelist.size()) 
 			{
@@ -580,7 +587,7 @@ void CMoviePlayerGui::PlayFile(void)
 			break;
 		}
 		
-		// do bookmarks
+		// bookmarks
 		bool doBookmark = true;
 		if (doBookmark)
 		{	  
@@ -682,11 +689,6 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 
 			FileTime.show(filelist[selected].epgTitle, (filelist[selected].epgInfo1.empty())? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, (duration >= 10 && position >= 10)? (position / (duration / 100)) : 0, ac3state, speed, playstate, (filelist[selected].ytid.empty())? true : false, m_loop);
-
-			//time_t jetzt = time(NULL);
-
-			//if((jetzt - timeStartShowingInfo) >= 30) // 60 sec
-			//	FileTime.hide();
 		}
 
 		// start playing
@@ -747,7 +749,7 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 		}
 
-		//get position/duration/speed during playing
+		//get position/duration/speed/play next/stop
 		if ( playstate >= CMoviePlayerGui::PLAY )
 		{
 #if defined (PLATFORM_COOLSTREAM)
@@ -907,9 +909,6 @@ void CMoviePlayerGui::PlayFile(void)
 				else 
 				{
 					FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
-
-					//timeStartShowingInfo = time(NULL);
-					//startMovieInfoViewer();
 				}
 			}
 		} 
@@ -1151,7 +1150,6 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 
 			// movie info viewer
-			// time
 			if (!FileTime.IsVisible()) 
 			{
 				FileTime.SetMode(CMovieInfoViewer::MODE_ASC);
@@ -1527,6 +1525,7 @@ void CMoviePlayerGui::PlayFile(void)
 			exit = true;
 			g_RCInput->postMsg(msg, data);
 		}
+/*
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			if (FileTime.IsVisible())
@@ -1536,6 +1535,7 @@ void CMoviePlayerGui::PlayFile(void)
 				killMovieInfoViewer();
 			}
 		}
+*/
 		else 
 		{
 			if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
@@ -1784,7 +1784,7 @@ void CMovieInfoViewer::GetDimensions()
 
 void CMovieInfoViewer::update(time_t time_show)
 {
-	time_t tDisplayTime;
+	time_t tDisplayTime = 0;
 	static time_t oldDisplayTime = 0;
 	char cDisplayTime[8 + 1];
 	fb_pixel_t color1, color2;
