@@ -120,7 +120,7 @@ class CMoviePlayerGui : public CMenuTarget
 		int showStartPosSelectionMenu(void);
 
 		//
-		time_t timeStartShowingInfo;
+		//time_t timeStartShowingInfo;
 		uint32_t sec_timer_id;
 
 		void startMovieInfoViewer(void);
@@ -179,7 +179,6 @@ class CMoviePlayerGui : public CMenuTarget
 		// infoViewer
 		void show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark = false, bool _m_loop = false);
 		void update(time_t time_show = 0);
-		//void hide();
 		bool IsVisible() {return visible;};
 		void SetMode(mode m) { m_mode = m; visible = true;};
 		mode GetMode() { return m_mode;};

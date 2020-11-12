@@ -317,6 +317,9 @@ void CMoviePlayerGui::removeFromPlaylist(long pos)
 
 void CMoviePlayerGui::startMovieInfoViewer(void)
 {
+	// old
+	//timeStartShowingInfo = time(NULL);
+
 	// commented out till work on embeded
 /*
 	if(sec_timer_id == 0)
@@ -805,8 +808,6 @@ void CMoviePlayerGui::PlayFile(void)
 				{
 					SetMode(MODE_ASC);
 
-					timeStartShowingInfo = time(NULL);
-
 					startMovieInfoViewer();
 				}
 			}
@@ -1003,8 +1004,6 @@ void CMoviePlayerGui::PlayFile(void)
 				{
 					SetMode(MODE_ASC);
 
-					timeStartShowingInfo = time(NULL);
-
 					startMovieInfoViewer();
 				}
 
@@ -1020,8 +1019,6 @@ void CMoviePlayerGui::PlayFile(void)
 				else
 				{
 					SetMode(MODE_ASC);
-
-					timeStartShowingInfo = time(NULL);
 					
 					startMovieInfoViewer();
 				}
@@ -1065,8 +1062,6 @@ void CMoviePlayerGui::PlayFile(void)
 					
 				time_forced = true;
 
-				timeStartShowingInfo = time(NULL);
-
 				startMovieInfoViewer();
 			}
 		}
@@ -1100,8 +1095,6 @@ void CMoviePlayerGui::PlayFile(void)
 					
 				time_forced = true;
 
-				timeStartShowingInfo = time(NULL);
-
 				startMovieInfoViewer();
 			}
 		} 
@@ -1116,8 +1109,6 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				timeStartShowingInfo = time(NULL);
 
 				startMovieInfoViewer();
 			}
@@ -1134,8 +1125,6 @@ void CMoviePlayerGui::PlayFile(void)
 					
 				time_forced = true;
 
-				timeStartShowingInfo = time(NULL);
-
 				startMovieInfoViewer();
 			}
 		} 
@@ -1149,8 +1138,6 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				timeStartShowingInfo = time(NULL);
 
 				startMovieInfoViewer();
 			}
@@ -1166,8 +1153,6 @@ void CMoviePlayerGui::PlayFile(void)
 					
 				time_forced = true;
 
-				timeStartShowingInfo = time(NULL);
-
 				startMovieInfoViewer();
 			}
 		} 
@@ -1181,8 +1166,6 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				timeStartShowingInfo = time(NULL);
 
 				startMovieInfoViewer();
 			}
@@ -1198,8 +1181,6 @@ void CMoviePlayerGui::PlayFile(void)
 					
 				time_forced = true;
 
-				timeStartShowingInfo = time(NULL);
-
 				startMovieInfoViewer();
 			}
 		} 
@@ -1213,8 +1194,6 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				timeStartShowingInfo = time(NULL);
 
 				startMovieInfoViewer();
 			}
@@ -1240,8 +1219,6 @@ void CMoviePlayerGui::PlayFile(void)
 					
 				time_forced = true;
 
-				timeStartShowingInfo = time(NULL);
-
 				startMovieInfoViewer();
 			}
 		} 
@@ -1257,8 +1234,6 @@ void CMoviePlayerGui::PlayFile(void)
 					
 				time_forced = true;
 
-				timeStartShowingInfo = time(NULL);
-
 				startMovieInfoViewer();
 			}
 		} 
@@ -1272,8 +1247,6 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				timeStartShowingInfo = time(NULL);
 
 				startMovieInfoViewer();
 			}
@@ -1289,8 +1262,6 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				timeStartShowingInfo = time(NULL);
 
 				startMovieInfoViewer();
 			}
@@ -1754,7 +1725,7 @@ void CMoviePlayerGui::update(time_t time_show)
 	if(tDisplayTime != oldDisplayTime) 
 	{
 		oldDisplayTime = tDisplayTime;
-		strftime(cDisplayTime, 9, "%T", gmtime(&tDisplayTime));
+		strftime(cDisplayTime, 9, "%T", gmtime(&tDisplayTime));//FIXME
 		
 		// time shadow
 		frameBuffer->paintBoxRel(m_xend - m_width - 10, m_y, m_width + 10, m_height, COL_MENUCONTENT_PLUS_6);
