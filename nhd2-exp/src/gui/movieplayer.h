@@ -120,7 +120,6 @@ class CMoviePlayerGui : public CMenuTarget
 		int showStartPosSelectionMenu(void);
 
 		//
-		//time_t timeStartShowingInfo;
 		uint32_t sec_timer_id;
 
 		void startMovieInfoViewer(void);

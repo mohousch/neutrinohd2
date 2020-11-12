@@ -317,25 +317,17 @@ void CMoviePlayerGui::removeFromPlaylist(long pos)
 
 void CMoviePlayerGui::startMovieInfoViewer(void)
 {
-	// old
-	//timeStartShowingInfo = time(NULL);
-
-	// commented out till work on embeded
-/*
 	if(sec_timer_id == 0)
 		sec_timer_id = g_RCInput->addTimer(g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]*10*1000*1000);
-*/
 }
 
 void CMoviePlayerGui::killMovieInfoViewer(void)
 {
-/*
 	if(sec_timer_id)
 	{
 		g_RCInput->killTimer(sec_timer_id);
 		sec_timer_id = 0;
 	}
-*/
 }
 
 int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
@@ -690,7 +682,7 @@ void CMoviePlayerGui::PlayFile(void)
 				playback->GetPosition((int64_t &)position, (int64_t &)duration);
 #endif
 
-				// movieInfoviewer
+				// Infoviewer
 				SetMode(MODE_ASC);
 			}
 		}
@@ -1446,7 +1438,6 @@ void CMoviePlayerGui::PlayFile(void)
 			exit = true;
 			g_RCInput->postMsg(msg, data);
 		}
-/*
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
 			if (IsVisible())
@@ -1456,7 +1447,6 @@ void CMoviePlayerGui::PlayFile(void)
 				killMovieInfoViewer();
 			}
 		}
-*/
 		else 
 		{
 			if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
