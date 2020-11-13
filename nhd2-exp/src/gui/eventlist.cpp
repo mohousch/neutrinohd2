@@ -696,6 +696,7 @@ void EventList::paint(t_channel_id channel_id)
 
 	//listBox->setWidgetType(WIDGET_TYPE_CLASSIC);
 	listBox->enableShrinkMenu();
+	listBox->enableCenterPos();
 
 	listBox->enablePaintHead();
 	listBox->setTitle(name.c_str(), logo.c_str(), true);
