@@ -1,5 +1,6 @@
--- 
---
+--[[
+neutrinoHD2 lua sample plugin
+]]
 
 local selected = 0
 local PATH = "/"

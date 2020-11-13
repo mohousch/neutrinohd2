@@ -37,7 +37,7 @@ const int default_timing[TIMING_SETTING_COUNT] =
 	0,
 	60,
 	240,
-	6,
+	6, 
 	60,
 	3
 };
