@@ -147,7 +147,7 @@ _repeat:
 	// set last activ bouquet and channel
 	if(bouquetList->Bouquets.size()) 
 	{
-		bouquetList->activateBouquet(activBouquet, false);
+		bouquetList->activateBouquet(activBouquet, false, false);
 		bouquetList->Bouquets[activBouquet]->channelList->setSelected(activChannel - 1);
 	}
 }
