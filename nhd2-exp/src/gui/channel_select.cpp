@@ -87,6 +87,7 @@ void CSelectChannelWidget::InitZapitChannelHelper(CZapitClient::channelsMode mod
 	// save channel mode
 	int channelMode = g_settings.channel_mode;
 	int nNewChannel = -1;
+	int nActivBouquet = -1;
 	int activBouquet = 0;
 	int activChannel = 0;
 	int nMode = CNeutrinoApp::getInstance()->getMode();
@@ -109,11 +110,20 @@ _repeat:
 		activChannel = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannelNumber();
 	}
 
+	printf("CChannellistWidget: activChannel: %d activBouquet:%d\n", activChannel, activBouquet);
+
 	// show channel list
 	if(bouquetList->Bouquets.size() && bouquetList->Bouquets[activBouquet]->channelList->getSize() > 0)
 		nNewChannel = bouquetList->Bouquets[activBouquet]->channelList->show(false);
 	else
 		nNewChannel = bouquetList->show(true);
+
+	if(bouquetList->Bouquets.size())
+	{ 
+		nActivBouquet = bouquetList->getActiveBouquetNumber();
+	}
+
+	printf("CChannellistWidget: nNewChannel: %d nActivBouquet:%d\n", nNewChannel, nActivBouquet);
 
 	// handle list mode changed
 	if(nNewChannel == -3) // channel mode changed
@@ -134,11 +144,11 @@ _repeat:
 	else
 	{
 		if(mode == CZapitClient::MODE_TV)
-			ChannelTVID = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannel_ChannelID();
+			ChannelTVID = bouquetList->Bouquets[nActivBouquet]->channelList->getActiveChannel_ChannelID();
 		else if(mode == CZapitClient::MODE_RADIO)
-			ChannelRadioID = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannel_ChannelID();
+			ChannelRadioID = bouquetList->Bouquets[nActivBouquet]->channelList->getActiveChannel_ChannelID();
 		else if(mode == CZapitClient::MODE_WEBTV)
-			ChannelWebTVID = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannel_ChannelID();
+			ChannelWebTVID = bouquetList->Bouquets[nActivBouquet]->channelList->getActiveChannel_ChannelID();
 	}
 	
 	// set last channel mode

@@ -210,8 +210,11 @@ int CBouquetList::activateBouquet( int id, bool bShowChannelList, bool zap)
 	{
 		res = Bouquets[selected]->channelList->exec(zap);
 
-		if(res > -1)
-			res = -2;
+		if(zap)
+		{
+			if(res > -1)
+				res = -2;
+		}
 	}
 	
 	return res;
