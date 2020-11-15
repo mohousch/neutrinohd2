@@ -178,14 +178,14 @@ void CBouquetList::adjustToChannelID(t_channel_id channel_id)
 }
 
 // used in channellist to switch bouquets up/down
-int CBouquetList::showChannelList( int nBouquet)
+int CBouquetList::showChannelList( int nBouquet, bool zap)
 {
 	dprintf(DEBUG_NORMAL, "CBouquetList::showChannelList\n");
 
 	if (nBouquet == -1)
 		nBouquet = selected;
 
-	int nNewChannel = Bouquets[nBouquet]->channelList->exec();
+	int nNewChannel = Bouquets[nBouquet]->channelList->exec(zap);
 	
 	if (nNewChannel > -1) 
 	{
@@ -197,8 +197,10 @@ int CBouquetList::showChannelList( int nBouquet)
 }
 
 // bShowChannelList default to false , return seems not checked anywhere
-int CBouquetList::activateBouquet( int id, bool bShowChannelList)
+int CBouquetList::activateBouquet( int id, bool bShowChannelList, bool zap)
 {
+	dprintf(DEBUG_NORMAL, "CBouquetList::activateBouquet: id:%d showChannelList:%s zap:%s\n", id, bShowChannelList? "yes" : "no", zap? "yes" : "no");
+
 	int res = -1;
 
 	if(id < (int) Bouquets.size())
@@ -206,7 +208,7 @@ int CBouquetList::activateBouquet( int id, bool bShowChannelList)
 
 	if (bShowChannelList) 
 	{
-		res = Bouquets[selected]->channelList->exec();
+		res = Bouquets[selected]->channelList->exec(zap);
 
 		if(res > -1)
 			res = -2;
@@ -215,9 +217,9 @@ int CBouquetList::activateBouquet( int id, bool bShowChannelList)
 	return res;
 }
 
-int CBouquetList::exec( bool bShowChannelList)
+int CBouquetList::exec( bool bShowChannelList, bool zap)
 {
-	dprintf(DEBUG_NORMAL, "CBouquetList::exec: %d\n", bShowChannelList? 1 : 0);
+	dprintf(DEBUG_NORMAL, "CBouquetList::exec: showChannelList:%s, zap:%s\n", bShowChannelList? "yes" : "no", zap? "yes" : "no");
 
 	// select bouquet to show
 	int res = show(bShowChannelList);
@@ -230,7 +232,7 @@ int CBouquetList::exec( bool bShowChannelList)
 	// if >= 0, call activateBouquet to show channel list
 	if ( res > -1) 
 	{
-		return activateBouquet(selected, bShowChannelList);
+		return activateBouquet(selected, bShowChannelList, zap);
 	}
 	
 	return res;
@@ -336,7 +338,7 @@ int CBouquetList::doMenu()
 // bShowChannelList default to true, returns new bouquet or -1/-2
 int CBouquetList::show(bool bShowChannelList)
 {
-	dprintf(DEBUG_NORMAL, "CBouquetList::show\n");
+	dprintf(DEBUG_NORMAL, "CBouquetList::show: showChannelList:%s\n", bShowChannelList? "yes" : "no");
 
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
@@ -427,7 +429,7 @@ int CBouquetList::show(bool bShowChannelList)
 
 				if(ret) 
 				{
-					res = -1; //FIXME: dont show channellist (worlaround)
+					res = -1; //FIXME: dont show channellist (workaround)
 					loop = false;
 				}  
 #endif

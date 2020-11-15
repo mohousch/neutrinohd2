@@ -111,8 +111,8 @@ class CChannelList
 		bool showInfo(int pos, int epgpos = 0);
 		void updateEvents(void);
 		int numericZap(int key);
-		int show();
-		int exec();
+		int show(bool zap = true);
+		int exec(bool zap = true);
 		void quickZap(int key, bool cycle = false);
 		int  hasChannel(int nChannelNr);
 		int  hasChannelID(t_channel_id channel_id);

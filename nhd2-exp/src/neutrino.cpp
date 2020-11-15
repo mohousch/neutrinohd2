@@ -3631,17 +3631,17 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 				if(bouquetList->Bouquets.size() && bouquetList->Bouquets[old_b]->channelList->getSize() > 0)
 					nNewChannel = bouquetList->Bouquets[old_b]->channelList->exec();	//with ZAP!
 				else
-					nNewChannel = bouquetList->exec(true);
+					nNewChannel = bouquetList->exec(true, true);
 			}
 			else if(msg == RC_sat) 
 			{
 				SetChannelMode(LIST_MODE_SAT, mode);
-				nNewChannel = bouquetList->exec(true);
+				nNewChannel = bouquetList->exec(true, true);
 			}
 			else if(msg == RC_favorites) 
 			{
 				SetChannelMode(LIST_MODE_FAV, mode);
-				nNewChannel = bouquetList->exec(true);
+				nNewChannel = bouquetList->exec(true, true);
 			}
 _repeat:
 			dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: ZAP RES: nNewChannel %d\n", nNewChannel);
@@ -3659,7 +3659,7 @@ _repeat:
 			}
 			else if(nNewChannel == -3) // list mode changed
 			{ 
-				nNewChannel = bouquetList->exec(true);
+				nNewChannel = bouquetList->exec(true, true);
 				goto _repeat;
 			}
 			else if(nNewChannel == -4) // list edited

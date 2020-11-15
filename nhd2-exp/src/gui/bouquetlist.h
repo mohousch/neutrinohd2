@@ -109,12 +109,12 @@ class CBouquetList
 		CBouquet* addBouquet(CZapitBouquet * zapitBouquet);
 		void deleteBouquet(CBouquet* bouquet);
 		int getActiveBouquetNumber();
-		int activateBouquet(int id, bool bShowChannelList);
+		int activateBouquet(int id, bool bShowChannelList, bool zap = true);
 		int show(bool bShowChannelList = true);
-		int showChannelList(int nBouquet = -1);
+		int showChannelList(int nBouquet = -1, bool zap = true);
 		void adjustToChannel(int nChannelNr);
 		void adjustToChannelID(t_channel_id channel_id);
-		int exec(bool bShowChannelList);
+		int exec(bool bShowChannelList = true, bool zap = true);
 };
 
 #endif

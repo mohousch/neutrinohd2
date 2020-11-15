@@ -424,7 +424,7 @@ int CChannelList::doChannelMenu(void)
 				old_bouquet_id = g_bouquetManager->existsBouquet(bouquetList->Bouquets[old_bouquet_id]->channelList->getName());
 
 				do {
-					new_bouquet_id = bouquetList->exec(false);
+					new_bouquet_id = bouquetList->exec(false, false);
 				} while(new_bouquet_id == -3);
 
 				hide();
@@ -449,7 +449,7 @@ int CChannelList::doChannelMenu(void)
 				
 			case 2: // add to
 				do {
-					bouquet_id = bouquetList->exec(false);
+					bouquet_id = bouquetList->exec(false, false);
 				} while(bouquet_id == -3);
 				
 				hide();
@@ -492,29 +492,32 @@ int CChannelList::doChannelMenu(void)
 	return 0;
 }
 
-int CChannelList::exec()
+int CChannelList::exec(bool zap)
 {
-	dprintf(DEBUG_NORMAL, "CChannelList::exec\n");
+	dprintf(DEBUG_NORMAL, "CChannelList::exec: zap:%s\n", zap? "yes" : "no");
 
 	displayNext = false; // always start with current events
 	
 	// show list
-	int nNewChannel = show();
+	int nNewChannel = show(zap);
 
-	dprintf(DEBUG_NORMAL, "CChannelList::exec: chanlist.size:%d\n", (int)chanlist.size());
+	dprintf(DEBUG_NORMAL, "CChannelList::exec: chanlist.size:%d nNewChannel:%d\n", (int)chanlist.size(), nNewChannel);
 	
 	// zapto
-	if ( nNewChannel > -1 && nNewChannel < (int) chanlist.size()) 
-		CNeutrinoApp::getInstance()->channelList->zapTo(getKey(nNewChannel) - 1);
+	if(zap)
+	{
+		if ( nNewChannel > -1 && nNewChannel < (int) chanlist.size()) 
+			CNeutrinoApp::getInstance()->channelList->zapTo(getKey(nNewChannel) - 1);
+	}
 
 	return nNewChannel;
 }
 
 #define CHANNEL_SMSKEY_TIMEOUT 800
 //return: >= 0 to zap, -1 on cancel, -3 on list mode change, -4 list edited, -2 zap but no restore old list/chan
-int CChannelList::show()
+int CChannelList::show(bool zap)
 {
-	dprintf(DEBUG_NORMAL, "CChannelList::show\n");
+	dprintf(DEBUG_NORMAL, "CChannelList::show: zap:%s\n", zap? "yes" : "no");
 
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
@@ -843,7 +846,7 @@ int CChannelList::show()
 	// bouquets mode
 	if (bShowBouquetList)
 	{
-		res = bouquetList->exec(true);
+		res = bouquetList->exec(true, zap);
 	}
 	
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
