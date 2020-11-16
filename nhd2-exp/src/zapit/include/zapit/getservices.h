@@ -1,5 +1,5 @@
 /*
- * $Id: getservices.h,v 1.52 2013/08/18 11:23:30 mohousch Exp $
+ * $Id: getservices.h 16.11.2020 mohousch Exp $
  *
  * (C) 2002 by Andreas Oberritter <obi@tuxbox.org>
  *

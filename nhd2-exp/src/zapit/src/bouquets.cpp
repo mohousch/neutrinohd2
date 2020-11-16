@@ -1,5 +1,5 @@
 /*
- * $Id: bouquets.cpp,v 1.101 2004/08/02 08:09:44 thegoodguy Exp $
+ * $Id: bouquets.cpp 16.11.2020 mohousch Exp $
  *
  * BouquetManager for zapit - d-box2 linux project
  *
@@ -53,6 +53,8 @@
 // curl
 #include <curl/curl.h>
 #include <curl/easy.h>
+
+#include <dirent.h>
 
 
 extern tallchans allchans;   			//  defined in zapit.cpp
@@ -636,11 +638,12 @@ void CBouquetManager::parseWebTVBouquet(std::string filename)
 						url = xmlGetAttribute(l1, (const char *)"url");
 						description = xmlGetAttribute(l1, (const char *)"description");
 						const char *epgid = xmlGetAttribute(l1, "epgid");
-
+/*
 						if (epgid)
 							id = strtoull(epgid, NULL, 16);
 
 						if(id == 0)
+*/
 							id = create_channel_id64(0, 0, 0, 0, 0, url);
 						
 						CZapitChannel * chan = findChannelByChannelID(id);
@@ -718,10 +721,28 @@ void CBouquetManager::parseWebTVBouquet(std::string filename)
 	dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet: load %d WEBTV Channels (allchans:%d)\n", cnt, (int) allchans.size());
 }
 
+#if defined (__USE_FILE_OFFSET64) || defined (_DARWIN_USE_64_BIT_INODE)
+typedef struct dirent64 dirent_struct;
+#define my_alphasort alphasort64
+#define my_scandir scandir64
+typedef struct stat64 stat_struct;
+#define my_stat stat64
+#define my_lstat lstat64
+#else
+typedef struct dirent dirent_struct;
+#define my_alphasort alphasort
+#define my_scandir scandir
+typedef struct stat stat_struct;
+#define my_stat stat
+#define my_lstat lstat
+#error not using 64 bit file offsets
+#endif
+
 void CBouquetManager::loadWebTVBouquet(void)
 {
 	dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet:\n");
 
+/*
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");
@@ -731,8 +752,6 @@ void CBouquetManager::loadWebTVBouquet(void)
 	CFileList filelist;
 
 	std::string Path_local = CONFIGDIR "/webtv";
-
-	//std::string file;
 
 	// read list
 	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
@@ -746,6 +765,35 @@ void CBouquetManager::loadWebTVBouquet(void)
 			parseWebTVBouquet(file);
 		}
 	}
+*/
+
+	//
+	std::string dirname = CONFIGDIR "/webtv";
+	dirent_struct **namelist;
+	int n;
+
+	n = my_scandir(dirname.c_str(), &namelist, 0, my_alphasort);
+
+	if (n < 0)
+	{
+		perror(("getServices: scandir: " + dirname).c_str());
+		return;
+	}
+	
+	for(int i = 0; i < n; i++)
+	{
+		std::string file;
+		if( (strcmp(namelist[i]->d_name, ".") != 0) && (strcmp(namelist[i]->d_name, "..") != 0) )
+		{
+			// name
+			file = dirname + "/" + namelist[i]->d_name;
+
+			parseWebTVBouquet(file);
+		}
+		free(namelist[i]);
+	}
+
+	free(namelist);
 }
 
 

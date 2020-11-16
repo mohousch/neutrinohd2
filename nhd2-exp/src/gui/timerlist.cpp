@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: timerlist.cpp 2013/09/03 10:45:30 mohousch Exp $
+	$Id: timerlist.cpp 16.11.2020 mohousch Exp $
 
 	Timerliste by Zwen
 
@@ -245,10 +245,12 @@ class CTimerListApidNotifier : public CChangeObserver
 				if(*o_std || *o_alt || *o_ac3)
 					*o_dflt = 0;
 			}
+
 			return true;
 		}
 };
 
+//
 CTimerList::CTimerList()
 {
 	dprintf(DEBUG_DEBUG, "CTimerList::CTimerList:\n");

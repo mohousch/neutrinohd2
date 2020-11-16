@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 	
-	$Id: timerlist.h 2013/09/03 10:45:30 mohousch Exp $
+	$Id: timerlist.h 16.11.2020 mohousch Exp $
 
 	Timerliste by Zwen
 	

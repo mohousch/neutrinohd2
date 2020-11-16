@@ -1,5 +1,5 @@
 /*
-	* $Id: channel_select.cpp 2015/07/26 11:23:30 mohousch Exp $
+	* $Id: channel_select.cpp 16.11.2020 mohousch Exp $
 	
 	License: GPL
 
@@ -40,21 +40,11 @@ extern CBouquetList * bouquetList;
 //select menu
 CSelectChannelWidget::CSelectChannelWidget()
 {
-/*
-	ChannelTVID = g_settings.startchanneltv_id;
-	ChannelRadioID = g_settings.startchannelradio_id;
-	ChannelWebTVID = g_settings.startchannelwebtv_id;
-*/
 	ChannelID = 0;
 }
 
 CSelectChannelWidget::~CSelectChannelWidget()
 {
-/*
-	ChannelTVID = -1;
-	ChannelRadioID = -1;
-	ChannelWebTVID = -1;
-*/
 	ChannelID = 0;
 }
 
@@ -98,17 +88,7 @@ void CSelectChannelWidget::InitZapitChannelHelper(CZapitClient::channelsMode mod
 	int activChannel = 0;
 	int nMode = CNeutrinoApp::getInstance()->getMode();
 	
-_repeat:
-	// set channel mode (allways list mode all)
-/*
-	if(mode == CZapitClient::MODE_TV)
-		CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, NeutrinoMessages::mode_tv);
-	else if(mode == CZapitClient::MODE_RADIO)
-		CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, NeutrinoMessages::mode_radio);
-	else if(mode == CZapitClient::MODE_WEBTV)
-		CNeutrinoApp::getInstance()->SetChannelMode(LIST_MODE_ALL, NeutrinoMessages::mode_webtv);
-*/
-	
+_repeat:	
 	// get activ channel number
 	if(bouquetList->Bouquets.size())
 	{ 
@@ -116,7 +96,7 @@ _repeat:
 		activChannel = bouquetList->Bouquets[activBouquet]->channelList->getActiveChannelNumber();
 	}
 
-	printf("CChannellistWidget: activChannel: %d activBouquet:%d\n", activChannel, activBouquet);
+	dprintf(DEBUG_NORMAL, "CChannellistWidget: activChannel: %d activBouquet:%d\n", activChannel, activBouquet);
 
 	// show channel list
 	if(bouquetList->Bouquets.size() && bouquetList->Bouquets[activBouquet]->channelList->getSize() > 0)
@@ -129,7 +109,7 @@ _repeat:
 		nActivBouquet = bouquetList->getActiveBouquetNumber();
 	}
 
-	printf("CChannellistWidget: nNewChannel: %d nActivBouquet:%d\n", nNewChannel, nActivBouquet);
+	dprintf(DEBUG_NORMAL, "CChannellistWidget: nNewChannel: %d nActivBouquet:%d\n", nNewChannel, nActivBouquet);
 
 	// handle list mode changed
 	if(nNewChannel == -3) // channel mode changed
@@ -138,7 +118,7 @@ _repeat:
 	}
 
 	// get our channel
-	if (nNewChannel == -1)
+	if (nNewChannel == -1) // by exit
 	{
 		if(mode == CZapitClient::MODE_TV)
 			ChannelID = g_settings.startchanneltv_id;

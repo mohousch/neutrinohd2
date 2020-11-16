@@ -1,5 +1,5 @@
 /*
- * $Id: channel.cpp,v 1.17 2003/10/14 12:48:59 thegoodguy Exp $
+ * $Id: channel.cpp 16.11.2020 mohouschExp $
  *
  * (C) 2002 by Steffen Hehn <mcclean@berlios.de>
  * (C) 2002, 2003 by Andreas Oberritter <obi@tuxbox.org>

@@ -1,5 +1,5 @@
 /*
- * $Id: getservices.cpp,v 1.85 2013/08/18 11:23:30 mohousch Exp $
+ * $Id: getservices.cpp 16.11.2020 mohousch Exp $
  *
  * (C) 2002, 2003 by Andreas Oberritter <obi@tuxbox.org>
  *
@@ -46,6 +46,8 @@
 #include <system/debug.h>
 #include <system/helpers.h>	// needed for safe_mkdir
 #include <system/settings.h>
+
+#include <dirent.h>
 
 
 extern _xmlDocPtr scanInputParser;				// defined in zapit.cpp
@@ -1055,9 +1057,6 @@ void parseWebTVServices(std::string filename)
 				
 					if(!url.empty())
 					{
-						//if(id == 0)
-						//t_channel_id id = 0;
-
 						// grab channel id from channellist
 						for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++)
 						{
@@ -1221,10 +1220,28 @@ void parseWebTVServices(std::string filename)
 	dprintf(DEBUG_NORMAL, "[getservices] parseWebTVServices: load %d WEBTV services\n", cnt);
 }
 
+#if defined (__USE_FILE_OFFSET64) || defined (_DARWIN_USE_64_BIT_INODE)
+typedef struct dirent64 dirent_struct;
+#define my_alphasort alphasort64
+#define my_scandir scandir64
+typedef struct stat64 stat_struct;
+#define my_stat stat64
+#define my_lstat lstat64
+#else
+typedef struct dirent dirent_struct;
+#define my_alphasort alphasort
+#define my_scandir scandir
+typedef struct stat stat_struct;
+#define my_stat stat
+#define my_lstat lstat
+#error not using 64 bit file offsets
+#endif
+
 void loadWebTVBouquet(void)
 {
 	dprintf(DEBUG_NORMAL, "[getservcices] loadWebTVBouquet:\n");
 
+/*
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");
@@ -1247,6 +1264,34 @@ void loadWebTVBouquet(void)
 			parseWebTVServices(file);
 		}
 	}
+*/
+	//
+	std::string dirname = CONFIGDIR "/webtv";
+	dirent_struct **namelist;
+	int n;
+
+	n = my_scandir(dirname.c_str(), &namelist, 0, my_alphasort);
+
+	if (n < 0)
+	{
+		perror(("getServices: scandir: " + dirname).c_str());
+		return;
+	}
+	
+	for(int i = 0; i < n; i++)
+	{
+		std::string file;
+		if( (strcmp(namelist[i]->d_name, ".") != 0) && (strcmp(namelist[i]->d_name, "..") != 0) )
+		{
+			// name
+			file = dirname + "/" + namelist[i]->d_name;
+
+			parseWebTVServices(file);
+		}
+		free(namelist[i]);
+	}
+
+	free(namelist);
 }
 
 

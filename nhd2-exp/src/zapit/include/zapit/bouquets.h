@@ -1,5 +1,5 @@
 /*
- * $Id: bouquets.h,v 1.57 2004/08/02 08:13:45 thegoodguy Exp $
+ * $Id: bouquets.h 16.11.2020 thegoodguy Exp $
  */
 
 #ifndef __bouquets_h__
@@ -75,13 +75,11 @@ class CBouquetManager
 		{
 			private:
 				CBouquetManager * Owner;
-				//bool tv;           // true -> tvChannelIterator, false -> radioChannelIterator
 				CZapitClient::channelsMode mode;
 				unsigned int b;
 				int c;
 				ZapitChannelList* getBouquet() 
 				{ 
-					//return (tv ? &(Owner->Bouquets[b]->tvChannels) : &(Owner->Bouquets[b]->radioChannels)); 
 					if (mode == CZapitClient::MODE_TV)
 						return &(Owner->Bouquets[b]->tvChannels);
 					else if (mode == CZapitClient::MODE_RADIO)
@@ -130,8 +128,6 @@ class CBouquetManager
 		// webtv
 		void parseWebTVBouquet(std::string filename);
 		void loadWebTVBouquet(void);
-		//void loadChannels(void);
-		//int getActiveChannelNumber(t_channel_id id);
 };
 
 /*

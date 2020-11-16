@@ -1,5 +1,5 @@
 /*
-	* $Id: zapit_setup.h 2013/08/18 11:23:30 mohousch Exp $
+	* $Id: zapit_setup.h 16.11.2020 mohousch Exp $
 
 	License: GPL
 

@@ -1,5 +1,5 @@
 /*
-	* $Id: channel_select.h 2015/07/ 11:23:30 mohousch Exp $
+	* $Id: channel_select.h 16.11.2020 mohousch Exp $
 
 	License: GPL
 
@@ -26,18 +26,13 @@
 
 #include <string>
 
-/*zapit includes*/
+// zapit includes
 #include <client/zapitclient.h>
 
 		
 class CSelectChannelWidget : public CMenuTarget
 {	
 	private:
-/*
-		t_channel_id ChannelTVID;
-		t_channel_id ChannelRadioID;
-		t_channel_id ChannelWebTVID;
-*/
 		t_channel_id ChannelID;
 
 		void InitZapitChannelHelper(CZapitClient::channelsMode mode);
@@ -47,11 +42,6 @@ class CSelectChannelWidget : public CMenuTarget
 		~CSelectChannelWidget();
 		int exec(CMenuTarget *parent, const std::string & actionKey);
 
-/*
-		t_channel_id getChanTVID(){return ChannelTVID;};
-		t_channel_id getChanRadioID(){return ChannelRadioID;};
-		t_channel_id getChanWebTVID(){return ChannelWebTVID;};
-*/
 		t_channel_id getChannelID(){return ChannelID;};
 };
 

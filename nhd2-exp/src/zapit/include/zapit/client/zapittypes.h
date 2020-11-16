@@ -308,8 +308,8 @@ typedef struct ZAPIT_start_arg
 	t_channel_id startchannelradio_id;
 	t_channel_id startchannelwebtv_id;
 	int startchanneltv_nr;
-	int startchannelwebtv_nr;
 	int startchannelradio_nr;
+	int startchannelwebtv_nr;
 	int uselastchannel;
 	
 	int video_mode;

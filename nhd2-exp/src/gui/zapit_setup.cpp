@@ -1,5 +1,5 @@
 /*
-	* $Id: zapit_setup.cpp 2013/08/18 11:23:30 mohousch Exp $
+	* $Id: zapit_setup.cpp 16.11.2020 mohousch Exp $
 	
 	License: GPL
 
@@ -36,6 +36,8 @@
 
 #include <system/debug.h>
 
+
+extern CBouquetManager * g_bouquetManager;	// defined in der zapit.cpp
 
 //option off0_on1
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
@@ -90,8 +92,10 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		CSelectChannelWidgetHandler = new CSelectChannelWidget();
 		CSelectChannelWidgetHandler->exec(NULL, "tv");
 		
-		g_settings.startchanneltv_id = CSelectChannelWidgetHandler->getChannelID();
+		g_settings.startchanneltv_id = CSelectChannelWidgetHandler->getChannelID() & 0xFFFFFFFFFFFFULL;
 		g_settings.StartChannelTV = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChannelID());
+		//test
+		g_settings.startchanneltv_nr = g_bouquetManager->tvChannelsBegin().getLowestChannelNumberWithChannelID(CSelectChannelWidgetHandler->getChannelID());
 
 		this->getString() = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChannelID());
 		
@@ -105,8 +109,10 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		CSelectChannelWidgetHandler = new CSelectChannelWidget();
 		CSelectChannelWidgetHandler->exec(NULL, "radio");
 		
-		g_settings.startchannelradio_id = CSelectChannelWidgetHandler->getChannelID();
+		g_settings.startchannelradio_id = CSelectChannelWidgetHandler->getChannelID() & 0xFFFFFFFFFFFFULL;
 		g_settings.StartChannelRadio = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChannelID());
+		//test
+		g_settings.startchannelradio_nr = g_bouquetManager->radioChannelsBegin().getLowestChannelNumberWithChannelID(CSelectChannelWidgetHandler->getChannelID());
 
 		this->getString() = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChannelID());
 		
@@ -120,13 +126,17 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		CSelectChannelWidgetHandler = new CSelectChannelWidget();
 		CSelectChannelWidgetHandler->exec(NULL, "webtv");
 		
-		g_settings.startchannelwebtv_id = CSelectChannelWidgetHandler->getChannelID();
+		g_settings.startchannelwebtv_id = CSelectChannelWidgetHandler->getChannelID() & 0xFFFFFFFFFFFFULL;
 		g_settings.StartChannelWEBTV = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChannelID());
+		//test
+		g_settings.startchannelwebtv_nr = g_bouquetManager->webtvChannelsBegin().getLowestChannelNumberWithChannelID(CSelectChannelWidgetHandler->getChannelID());
 
 		this->getString() = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChannelID());
 		
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;
+
+		printf("id:%llx name:%s nr:%d\n", g_settings.startchannelwebtv_id, g_settings.StartChannelWEBTV.c_str(), g_settings.startchannelwebtv_nr);
 		
 		return menu_return::RETURN_REPAINT;
 	}
@@ -205,3 +215,5 @@ bool CZapitSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void 
 
 	return true;
 }
+
+

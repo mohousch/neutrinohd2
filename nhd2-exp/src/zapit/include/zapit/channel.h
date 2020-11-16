@@ -1,5 +1,5 @@
 /*
- * $Id: channel.h,v 1.26 2003/10/14 12:48:57 thegoodguy Exp $
+ * $Id: channel.h 16.11.2020 mohousch Exp $
  *
  * (C) 2002 Steffen Hehn <mcclean@berlios.de>
  * (C) 2002-2003 Andreas Oberritter <obi@tuxbox.org>
