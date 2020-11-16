@@ -49,6 +49,16 @@ class CZapitSetupNotifier : public CChangeObserver
 		bool changeNotify(const neutrino_locale_t, void * data);
 };
 
+class CZapitSetupModeNotifier : public CChangeObserver
+{
+	private:
+		CMenuItem *item1, *item2, *item3;
+		int *mode;
+	public:
+		CZapitSetupModeNotifier(int *zMode, CMenuItem *m1, CMenuItem *m2, CMenuItem *m3);
+		bool changeNotify(const neutrino_locale_t, void *);
+};
+
 #endif
 
 

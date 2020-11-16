@@ -165,22 +165,37 @@ void CZapitSetup::showMenu()
 	// save settings
 	zapit->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "save", RC_red, NEUTRINO_ICON_BUTTON_RED));
 	zapit->addItem(new CMenuSeparator(LINE));
-	
-	// last mode
-	CMenuOptionChooser * m2 = new CMenuOptionChooser(LOCALE_ZAPITSETUP_LAST_MODE, &g_settings.lastChannelMode, OPTIONS_LASTMODE_OPTIONS, OPTIONS_LASTMODE_OPTION_COUNT, !g_settings.uselastchannel, NULL, CRCInput::convertDigitToKey(shortcut++));
+
+	bool activTV = false;
+	bool activRadio = false;
+	bool activWebTV = false;
+
+	if( (!g_settings.uselastchannel) && (g_settings.lastChannelMode == NeutrinoMessages::mode_tv) )
+		activTV = true;
+
+	if( (!g_settings.uselastchannel) && (g_settings.lastChannelMode == NeutrinoMessages::mode_radio) )
+		activRadio = true;
+
+	if( (!g_settings.uselastchannel) && (g_settings.lastChannelMode == NeutrinoMessages::mode_webtv) )
+		activWebTV = true;
 
 	// last TV channel
-	CMenuForwarder * m3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, !g_settings.uselastchannel, g_settings.StartChannelTV.c_str(), this, "tv", CRCInput::convertDigitToKey(shortcut++));
+	CMenuForwarder * m3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, /*!g_settings.uselastchannel*/activTV, g_settings.StartChannelTV.c_str(), this, "tv", CRCInput::convertDigitToKey(shortcut++));
 
 	// last radio channel
-	CMenuForwarder * m4 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, !g_settings.uselastchannel, g_settings.StartChannelRadio.c_str(), this, "radio", CRCInput::convertDigitToKey(shortcut++));
+	CMenuForwarder * m4 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, /*!g_settings.uselastchannel*/activRadio, g_settings.StartChannelRadio.c_str(), this, "radio", CRCInput::convertDigitToKey(shortcut++));
 
 	// last webtv channel
-	CMenuForwarder * m5 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_WEBTV, !g_settings.uselastchannel, g_settings.StartChannelWEBTV.c_str(), this, "webtv", CRCInput::convertDigitToKey(shortcut++));
+	CMenuForwarder * m5 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_WEBTV, /*!g_settings.uselastchannel*/activWebTV, g_settings.StartChannelWEBTV.c_str(), this, "webtv", CRCInput::convertDigitToKey(shortcut++));
+
+	// last mode
+	CZapitSetupModeNotifier zapitSetupModeNotifier((int *)&g_settings.lastChannelMode, m3, m4, m5);
+
+	CMenuOptionChooser * m2 = new CMenuOptionChooser(LOCALE_ZAPITSETUP_LAST_MODE, (int *)&g_settings.lastChannelMode, OPTIONS_LASTMODE_OPTIONS, OPTIONS_LASTMODE_OPTION_COUNT, !g_settings.uselastchannel, &zapitSetupModeNotifier, CRCInput::convertDigitToKey(shortcut++));
 	
+	// use lastchannel
 	CZapitSetupNotifier zapitSetupNotifier(m2, m3, m4, m5);
 
-	// use last channel
 	CMenuOptionChooser * m1 = new CMenuOptionChooser(LOCALE_MISCSETTINGS_ZAPIT, &g_settings.uselastchannel, OPTIONS_OFF1_ON0_OPTIONS, OPTIONS_OFF1_ON0_OPTION_COUNT, true, &zapitSetupNotifier, CRCInput::convertDigitToKey(shortcut++));
 	
 	zapit->addItem(m1);
@@ -195,6 +210,7 @@ void CZapitSetup::showMenu()
 	delete zapit;
 }
 
+//
 CZapitSetupNotifier::CZapitSetupNotifier(CMenuOptionChooser* m1, CMenuForwarder* m2, CMenuForwarder* m3, CMenuForwarder* m4)
 {
 	zapit1 = m1;
@@ -207,13 +223,63 @@ bool CZapitSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void 
 {
 	if (ARE_LOCALES_EQUAL(OptionName, LOCALE_MISCSETTINGS_ZAPIT))
 	{
+		bool activTV = false;
+		bool activRadio = false;
+		bool activWebTV = false;
+
+		if( (!g_settings.uselastchannel) && (g_settings.lastChannelMode == NeutrinoMessages::mode_tv) )
+			activTV = true;
+
+		if( (!g_settings.uselastchannel) && (g_settings.lastChannelMode == NeutrinoMessages::mode_radio) )
+			activRadio = true;
+
+		if( (!g_settings.uselastchannel) && (g_settings.lastChannelMode == NeutrinoMessages::mode_webtv) )
+			activWebTV = true;
+
 		zapit1->setActive(!g_settings.uselastchannel);
-		zapit2->setActive(!g_settings.uselastchannel);
-		zapit3->setActive(!g_settings.uselastchannel);
-		zapit4->setActive(!g_settings.uselastchannel);
+		zapit2->setActive(activTV);
+		zapit3->setActive(activRadio);
+		zapit4->setActive(activWebTV);
 	}
 
 	return true;
 }
+
+//
+CZapitSetupModeNotifier::CZapitSetupModeNotifier(int *zMode, CMenuItem *m1, CMenuItem *m2, CMenuItem *m3)
+{
+	mode = zMode;
+	item1 = m1;
+	item2 = m2;
+	item3 = m3;
+}
+
+bool CZapitSetupModeNotifier::changeNotify(const neutrino_locale_t, void *)
+{
+	int nmode = *mode;
+	
+	if(nmode == NeutrinoMessages::mode_radio)
+	{
+		item1->setActive(false);
+		item2->setActive(true);
+		item3->setActive(false);
+	}
+	else if(nmode == NeutrinoMessages::mode_tv)
+	{
+		item1->setActive(true);
+		item2->setActive(false);
+		item3->setActive(false);
+	}
+	else if(nmode == NeutrinoMessages::mode_webtv)
+	{
+		item1->setActive(false);
+		item2->setActive(false);
+		item3->setActive(true);
+	}
+
+	return true;
+}
+
+
 
 
