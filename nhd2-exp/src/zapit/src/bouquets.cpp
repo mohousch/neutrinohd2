@@ -638,12 +638,11 @@ void CBouquetManager::parseWebTVBouquet(std::string filename)
 						url = xmlGetAttribute(l1, (const char *)"url");
 						description = xmlGetAttribute(l1, (const char *)"description");
 						const char *epgid = xmlGetAttribute(l1, "epgid");
-/*
+
 						if (epgid)
 							id = strtoull(epgid, NULL, 16);
 
 						if(id == 0)
-*/
 							id = create_channel_id64(0, 0, 0, 0, 0, url);
 						
 						CZapitChannel * chan = findChannelByChannelID(id);
@@ -742,32 +741,6 @@ void CBouquetManager::loadWebTVBouquet(void)
 {
 	dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet:\n");
 
-/*
-	CFileFilter fileFilter;
-	
-	fileFilter.addFilter("xml");
-	fileFilter.addFilter("tv");
-	fileFilter.addFilter("m3u");
-
-	CFileList filelist;
-
-	std::string Path_local = CONFIGDIR "/webtv";
-
-	// read list
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		for (unsigned int i = 0; i < filelist.size(); i++)
-		{
-			std::string file = filelist[i].getName();
-
-			dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet: load %s\n", file.c_str());
-
-			parseWebTVBouquet(file);
-		}
-	}
-*/
-
-	//
 	std::string dirname = CONFIGDIR "/webtv";
 	dirent_struct **namelist;
 	int n;

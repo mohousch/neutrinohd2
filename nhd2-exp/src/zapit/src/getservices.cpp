@@ -1241,31 +1241,6 @@ void loadWebTVBouquet(void)
 {
 	dprintf(DEBUG_NORMAL, "[getservcices] loadWebTVBouquet:\n");
 
-/*
-	CFileFilter fileFilter;
-	
-	fileFilter.addFilter("xml");
-	fileFilter.addFilter("tv");
-	fileFilter.addFilter("m3u");
-
-	CFileList filelist;
-
-	std::string Path_local = CONFIGDIR "/webtv";
-
-	// read list
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		for (unsigned int i = 0; i < filelist.size(); i++)
-		{
-			std::string file = filelist[i].getName();
-
-			dprintf(DEBUG_NORMAL, "[getservcices] loadWebTVBouquet: load %s\n", file.c_str());
-
-			parseWebTVServices(file);
-		}
-	}
-*/
-	//
 	std::string dirname = CONFIGDIR "/webtv";
 	dirent_struct **namelist;
 	int n;
