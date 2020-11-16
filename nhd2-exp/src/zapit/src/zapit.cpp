@@ -1416,7 +1416,10 @@ tune_again:
 	}
 
 	// start playback (live)
-	startPlayBack(live_channel);
+	int res = startPlayBack(live_channel);
+
+	if(currentMode & WEBTV_MODE)
+		return res;
 
 	if(!(currentMode & WEBTV_MODE))
 	{

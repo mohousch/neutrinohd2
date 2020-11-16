@@ -1235,8 +1235,6 @@ void loadWebTVBouquet(void)
 
 	std::string Path_local = CONFIGDIR "/webtv";
 
-	//std::string file;
-
 	// read list
 	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
 	{
