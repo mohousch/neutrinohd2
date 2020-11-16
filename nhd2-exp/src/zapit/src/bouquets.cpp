@@ -722,7 +722,6 @@ void CBouquetManager::loadWebTVBouquet(void)
 {
 	dprintf(DEBUG_NORMAL, "CBouquetManager::loadWebTVBouquet:\n");
 
-#if defined ENABLE_LOAD_ALL_WEBTV_BOUQUETS
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");
@@ -747,9 +746,6 @@ void CBouquetManager::loadWebTVBouquet(void)
 			parseWebTVBouquet(file);
 		}
 	}
-#else
-	parseWebTVBouquet(g_settings.webtv_userBouquet);
-#endif
 }
 
 

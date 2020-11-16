@@ -90,8 +90,10 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		CSelectChannelWidgetHandler = new CSelectChannelWidget();
 		CSelectChannelWidgetHandler->exec(NULL, "tv");
 		
-		g_settings.startchanneltv_id = CSelectChannelWidgetHandler->getChanTVID();
-		g_settings.StartChannelTV = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChanTVID());
+		g_settings.startchanneltv_id = CSelectChannelWidgetHandler->getChannelID();
+		g_settings.StartChannelTV = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChannelID());
+
+		this->getString() = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChannelID());
 		
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;
@@ -103,8 +105,10 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		CSelectChannelWidgetHandler = new CSelectChannelWidget();
 		CSelectChannelWidgetHandler->exec(NULL, "radio");
 		
-		g_settings.startchannelradio_id = CSelectChannelWidgetHandler->getChanRadioID();
-		g_settings.StartChannelRadio = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChanRadioID());
+		g_settings.startchannelradio_id = CSelectChannelWidgetHandler->getChannelID();
+		g_settings.StartChannelRadio = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChannelID());
+
+		this->getString() = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChannelID());
 		
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;
@@ -116,8 +120,10 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		CSelectChannelWidgetHandler = new CSelectChannelWidget();
 		CSelectChannelWidgetHandler->exec(NULL, "webtv");
 		
-		g_settings.startchannelwebtv_id = CSelectChannelWidgetHandler->getChanWebTVID();
-		g_settings.StartChannelWEBTV = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChanWebTVID());
+		g_settings.startchannelwebtv_id = CSelectChannelWidgetHandler->getChannelID();
+		g_settings.StartChannelWEBTV = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChannelID());
+
+		this->getString() = g_Zapit->getChannelName(CSelectChannelWidgetHandler->getChannelID());
 		
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;

@@ -420,22 +420,12 @@ int CBouquetList::show(bool bShowChannelList)
 
 			if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
 			{
-#if defined ENABLE_LOAD_ALL_WEBTV_BOUQUETS
 				int ret = doMenu();
 				if(ret) 
 				{
 					res = -4;
 					loop = false;
 				}
-#else
-				int ret = webTVBouquets();
-
-				if(ret) 
-				{
-					res = -1; //FIXME: dont show channellist (workaround)
-					loop = false;
-				}  
-#endif
 			}
 			else 
 			{

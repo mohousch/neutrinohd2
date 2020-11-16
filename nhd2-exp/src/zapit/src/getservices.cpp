@@ -1225,7 +1225,6 @@ void loadWebTVBouquet(void)
 {
 	dprintf(DEBUG_NORMAL, "[getservcices] loadWebTVBouquet:\n");
 
-#if defined ENABLE_LOAD_ALL_WEBTV_BOUQUETS
 	CFileFilter fileFilter;
 	
 	fileFilter.addFilter("xml");
@@ -1250,9 +1249,6 @@ void loadWebTVBouquet(void)
 			parseWebTVServices(file);
 		}
 	}
-#else
-	parseWebTVServices(g_settings.webtv_userBouquet);
-#endif
 }
 
 
