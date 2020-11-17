@@ -132,7 +132,9 @@ $(PLUGINS_SRC)/config.status: $(PLUGINS_SRC) $(DEST)
 			--with-datadir=$(DEST)/share/tuxbox \
 			--with-plugindir=$(DEST)/var/tuxbox/plugins \
 			--with-configdir=$(DEST)/var/tuxbox/config \
-			--enable-testing
+			--enable-testing \
+			--enable-python \
+			--enable-lua
 
 plugins-clean:
 	-$(MAKE) -C $(PLUGINS_SRC) clean

@@ -84,6 +84,8 @@ void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 	{
 		//FIXME show error
 		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_NK_MOVIES_ERROR), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
+
+		loadBox.hide();
 		
 		return;
 	}

@@ -36,6 +36,18 @@ AC_ARG_ENABLE(testing,
 	,[enable_testing=no])
 AM_CONDITIONAL(ENABLE_TESTING,test "$enable_testing" = "yes")
 
+# python
+AC_ARG_ENABLE(python,
+	AS_HELP_STRING(--enable-python,include python interface),
+	,[enable_python=no])
+AM_CONDITIONAL(ENABLE_PYTHON,test "$enable_python" = "yes")
+
+# lua
+AC_ARG_ENABLE(lua,
+	AS_HELP_STRING(--enable-lua,include lua interface),
+	,[enable_lua=no])
+AM_CONDITIONAL(ENABLE_LUA,test "$enable_lua" = "yes")
+
 AC_OUTPUT([
 Makefile
 test/Makefile

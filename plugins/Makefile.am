@@ -17,9 +17,7 @@ SUBDIRS = \
 	picviewer \
 	audioplayer \
 	nfilm \
-	ntvshows \
-	python \
-	lua
+	ntvshows
 
 if ENABLE_NGLCD
 SUBDIRS += nglcd
@@ -36,5 +34,15 @@ SUBDIRS += ard \
 	satipclient \
 	opkg_manager
 endif
+
+if ENABLE_PYTHON
+SUBDIRS += python
+endif
+
+if ENABLE_LUA
+SUBDIRS += lua
+endif
+
+
 
 
