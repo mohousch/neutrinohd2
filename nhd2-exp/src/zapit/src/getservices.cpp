@@ -72,11 +72,7 @@ bool have_s = false;
 bool have_c = false;
 bool have_t = false;
 
-// fake tuner (for testing without dvb device)
-bool fake_tuner = false;
-
 extern void parseScanInputXml(fe_type_t fe_type);	// defined in zapit.cpp
-
 
 void ParseTransponders(_xmlNodePtr node, t_satellite_position satellitePosition, uint8_t Source )
 {
@@ -617,9 +613,25 @@ int loadTransponders()
 	}
 
 	// remove this
-	if(fake_tuner)
+#if defined (ENABLE_FAKE_TUNER)
+	have_s = true;
+	have_c = true;
+	have_t = true;
+
+	for(int i = 0; i < 3; i++)
 	{
-		parseScanInputXml(fe_type);
+		if(scanInputParser) 
+		{
+			delete scanInputParser;
+			scanInputParser = NULL;
+		}
+
+		if (i == 0)
+			scanInputParser = parseXmlFile(SATELLITES_XML);
+		else if(i == 1)
+			scanInputParser = parseXmlFile(CABLES_XML);
+		else if(i == 2)
+			scanInputParser = parseXmlFile(TERRESTRIALS_XML);			
 			
 		if ( scanInputParser != NULL ) 
 		{
@@ -688,6 +700,7 @@ int loadTransponders()
 			}
 		}
 	}
+#endif
 	
 	return 0;
 }	

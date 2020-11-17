@@ -148,6 +148,7 @@ void CBEChannelSelectWidget::paint()
 	}
 
 	listBox->enableShrinkMenu();
+	listBox->enableCenterPos();
 
 	listBox->setTitle(caption.c_str());
 	listBox->enablePaintHead();
