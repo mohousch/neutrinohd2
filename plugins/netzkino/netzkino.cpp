@@ -133,7 +133,7 @@ void CNKMovies::showMenu()
 	
 	if(m_vMovieInfo.empty())
 	{
-		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_NK_ERROR), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
+		//MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_NK_ERROR), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
 		
 		return;
 	}
