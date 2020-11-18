@@ -294,7 +294,7 @@ void CBouquetManager::saveUBouquets(void)
 	{
 		if (Bouquets[i] != remainChannels) 
 		{
-			if(Bouquets[i]->bUser) 
+			if(Bouquets[i]->bUser && !Bouquets[i]->bWebTV) 
 			{
 				writeBouquetHeader(ubouq_fd, i, convert_UTF8_To_UTF8_XML(Bouquets[i]->Name.c_str()).c_str());
 				writeBouquetChannels(ubouq_fd, i, true);
