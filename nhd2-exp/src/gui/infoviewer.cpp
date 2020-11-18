@@ -626,6 +626,8 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 				}
 					
 				res = neutrino->handleMsg(msg, data);
+
+				//dprintf(DEBUG_NORMAL, "CInfoViewer::show: TEST: res:%d\n\n", res);
 					
 				if (res & messages_return::unhandled) 
 				{
@@ -635,7 +637,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 					g_RCInput->postMsg(msg, data);
 					res = messages_return::cancel_info;
 
-					hideIt = true;
+					//hideIt = true;
 				}
 			}
 		}

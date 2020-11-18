@@ -868,7 +868,6 @@ void saveZapitSettings(bool write, bool write_a)
 		else if(currentMode & TV_MODE)
 			c = g_bouquetManager->tvChannelsBegin().getLowestChannelNumberWithChannelID(live_channel->getChannelID());
 		else if(currentMode & WEBTV_MODE)
-			//c = g_bouquetManager->getActiveChannelNumber(live_channel->getChannelID());
 			g_bouquetManager->webtvChannelsBegin().getLowestChannelNumberWithChannelID(live_channel->getChannelID());
 
 		if (c >= 0) 
@@ -1140,6 +1139,7 @@ CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in_nvod)
 	return &cit->second;
 }
 
+/*
 CZapitChannel * pids2Channel(unsigned short pmtPid, unsigned short videoPid, unsigned short audioPid)
 {
 	CZapitChannel * Channel = NULL;
@@ -1154,6 +1154,7 @@ CZapitChannel * pids2Channel(unsigned short pmtPid, unsigned short videoPid, uns
 	
 	return Channel;
 }
+*/
 
 static bool tune_to_channel(CFrontend * frontend, CZapitChannel * thischannel, bool &transponder_change)
 {
@@ -2778,7 +2779,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			if (msgMoveChannel.bouquet < g_bouquetManager->Bouquets.size())
 				g_bouquetManager->Bouquets[msgMoveChannel.bouquet]->moveService(msgMoveChannel.oldPos, msgMoveChannel.newPos,
 						(((currentMode & RADIO_MODE) && msgMoveChannel.mode == CZapitClient::MODE_CURRENT)
-						|| (msgMoveChannel.mode==CZapitClient::MODE_RADIO)) ? 2 : 1);
+						|| (msgMoveChannel.mode == CZapitClient::MODE_RADIO)) ? 2 : 1);
 			break;
 		}
 	
@@ -3156,11 +3157,13 @@ bool send_data_count(int connfd, int data_count)
 {
 	CZapitMessages::responseGeneralInteger responseInteger;
 	responseInteger.number = data_count;
+
 	if (CBasicServer::send_data(connfd, &responseInteger, sizeof(responseInteger)) == false) 
 	{
 		dprintf(DEBUG_INFO, "[zapit] could not send any return\n");
 		return false;
 	}
+
 	return true;
 }
 
@@ -3469,8 +3472,6 @@ void sendChannels(int connfd, const CZapitClient::channelsMode mode, const CZapi
 
 	if (order == CZapitClient::SORT_BOUQUET) 
 	{
-		//CBouquetManager::ChannelIterator cit = (((currentMode & RADIO_MODE) && (mode == CZapitClient::MODE_CURRENT)) || (mode==CZapitClient::MODE_RADIO)) ? g_bouquetManager->radioChannelsBegin() : g_bouquetManager->tvChannelsBegin();
-
 		CBouquetManager::ChannelIterator cit = g_bouquetManager->tvChannelsBegin();
 
 		if( (currentMode & RADIO_MODE) && ((mode == CZapitClient::MODE_CURRENT) || (mode == CZapitClient::MODE_RADIO)))
