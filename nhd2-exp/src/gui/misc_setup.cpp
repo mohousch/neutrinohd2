@@ -437,12 +437,15 @@ void CGeneralSettings::showMenu()
 	// key
 	miscSettingsGeneral.addItem(new CMenuSeparator(LINE));
 
-	miscSettingsGeneral.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_PREFER_TMDB_INFO, (int*)(&g_settings.prefer_tmdb_info), MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true ));
-
-	std::string key = g_settings.ytkey;
+	std::string ytkey = g_settings.ytkey;
 	
-	CStringInputSMS* keyInput = new CStringInputSMS("youtube ID Key:", key.c_str());
-	miscSettingsGeneral.addItem(new CMenuForwarder("YT:", true, key.c_str(), keyInput));
+	CStringInputSMS* keyInput = new CStringInputSMS("youtube ID Key:", ytkey.c_str());
+	miscSettingsGeneral.addItem(new CMenuForwarder("YT:", true, ytkey.c_str(), keyInput));
+
+	std::string tmdbkey = g_settings.tmdbkey;
+
+	CStringInputSMS* tmdbkeyInput = new CStringInputSMS("TMDB Key:", tmdbkey.c_str());
+	miscSettingsGeneral.addItem(new CMenuForwarder("TMDB:", true, tmdbkey.c_str(), tmdbkeyInput));
 
 	// reset factory setup
 	miscSettingsGeneral.addItem(new CMenuSeparator(LINE));

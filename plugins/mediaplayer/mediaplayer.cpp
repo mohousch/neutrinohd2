@@ -133,25 +133,8 @@ BROWSER:
 			if(!access(fname.c_str(), F_OK) )
 				mfile.tfile= fname.c_str();
 
+			// epginfo1
 			// epgInfo2
-			if(mfile.file.getType() != CFile::FILE_AUDIO)
-			{
-	 			if(g_settings.prefer_tmdb_info)
-				{
-					CTmdb * tmdb = new CTmdb();
-
-					if(tmdb->getMovieInfo(mfile.epgTitle))
-					{
-						// epgInfo2
-						if(mfile.epgInfo2.empty() && !tmdb->getDescription().empty())
-						{
-							mfile.epgInfo2 = tmdb->getDescription();
-						}
-					}
-					delete tmdb;
-					tmdb = NULL;
-				}
-			}
 					
 			tmpMoviePlayerGui.addToPlaylist(mfile);
 		}

@@ -539,7 +539,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 
 	CNeutrinoApp * neutrino = CNeutrinoApp::getInstance();
 
-	bool hideIt = false;
+	bool hideIt = true;
 	virtual_zap_mode = false;
 
 	uint64_t timeoutEnd = CRCInput::calcTimeoutEnd (g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]);
@@ -601,6 +601,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 		{
 			if ((msg == (neutrino_msg_t) g_settings.key_quickzap_up) || (msg == (neutrino_msg_t) g_settings.key_quickzap_down) || (msg == RC_0) || (msg == NeutrinoMessages::SHOW_INFOBAR)) 
 			{
+				hideIt = false;
 				// radiotext					
 				if ((g_settings.radiotext_enable) && (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio))
 					hideIt =  true;
@@ -608,6 +609,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 					hideIt = false;
 					
 				g_RCInput->postMsg(msg, data);
+
 				res = messages_return::cancel_info;
 			} 
 			else if (msg == NeutrinoMessages::EVT_TIMESET) 
@@ -615,7 +617,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 				// Handle anyway!
 				neutrino->handleMsg(msg, data);
 				g_RCInput->postMsg (NeutrinoMessages::SHOW_INFOBAR, 0);
-				hideIt = false;
+				
 				res = messages_return::cancel_all;
 			} 
 			else 
@@ -635,9 +637,8 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 
 					// raus hier und im Hauptfenster behandeln...
 					g_RCInput->postMsg(msg, data);
-					res = messages_return::cancel_info;
 
-					//hideIt = true;
+					res = messages_return::cancel_info;
 				}
 			}
 		}
@@ -1305,12 +1306,13 @@ int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 				CVFD::getInstance()->showServicename ("(" + g_RemoteControl->getCurrentChannelName () + ')');
 			
 	  		dprintf(DEBUG_NORMAL, "CInfoViewer::handleMsg: zap failed!\n");
-	  		showFailure ();
+	  		showFailure();
 
 #if ENABLE_LCD			
 	  		CVFD::getInstance()->showPercentOver(255);
 #endif			
 		}
+
 		return messages_return::handled;
   	} 
 	else if (msg == NeutrinoMessages::EVT_ZAP_MOTOR) 

@@ -546,7 +546,7 @@ void CBouquetList::paint()
 	listBox->paint();
 }
 
-//
+#if 0
 int CBouquetList::webTVBouquets(void)
 {
 	dprintf(DEBUG_NORMAL, "CBouquetList::webTVBouquets\n");
@@ -613,6 +613,7 @@ int CBouquetList::webTVBouquets(void)
 
 	return ret;
 }
+#endif
 
 
 

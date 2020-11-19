@@ -325,9 +325,6 @@ struct SNeutrinoSettings
 	int key_webtv;
 	
 	int key_screenshot;
-	
-	// webtv
-	std::string webtv_userBouquet;
 
 	// USERMENU
         typedef enum
@@ -482,7 +479,6 @@ struct SNeutrinoSettings
 
 	// tmdb
 	std::string tmdbkey;
-	int prefer_tmdb_info;
 
 	// youtube
 	std::string ytkey;

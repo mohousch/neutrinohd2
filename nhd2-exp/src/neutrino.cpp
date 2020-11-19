@@ -173,8 +173,6 @@
 #include <playback_cs.h>
 
 
-#define DEFAULT_WEBTV_FILE 		CONFIGDIR "/webtv/webtv.xml"
-
 cPlayback* playback = NULL;
 
 extern char rec_filename[1024];				// defined in stream2file.cpp
@@ -759,9 +757,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.key_webtv = configfile.getInt32( "key_webtv", RC_nokey );
 	g_settings.key_screenshot = configfile.getInt32( "key_screenshot", RC_record );
 	
-	// webtv
-	g_settings.webtv_userBouquet = configfile.getString("webtv_userBouquet", DEFAULT_WEBTV_FILE);
-	
         // USERMENU -> in system/settings.h
         //-------------------------------------------
         // this is as the current neutrino usermen
@@ -952,7 +947,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	//g_settings.mode = configfile.getInt32("mode", mode_tv);
 
 	// tmdb
-	g_settings.prefer_tmdb_info = configfile.getInt32("prefer_tmdb_info", 0);
+	g_settings.tmdbkey = configfile.getString("tmdbkey", "507930c8d6d400c85eae3a7e7b3f6c78");
 	g_settings.ytkey = configfile.getString("ytkey", "");
 	
 	//set OSD resolution
@@ -1229,9 +1224,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	
 	configfile.setInt32( "key_screenshot", g_settings.key_screenshot );
 	
-	// webtv
-	configfile.setString( "webtv_userBouquet", g_settings.webtv_userBouquet);
-	
         // USERMENU
         char txt1[81];
         char txt2[81];
@@ -1352,8 +1344,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32("Foot_Info_gradient", g_settings.Foot_Info_gradient);
 	configfile.setInt32("infobar_gradient", g_settings.infobar_gradient);
 
-	//configfile.setString("tmdbkey", g_settings.tmdbkey);
-	configfile.setInt32("prefer_tmdb_info", g_settings.prefer_tmdb_info);
+	configfile.setString("tmdbkey", g_settings.tmdbkey);
 	configfile.setString("ytkey", g_settings.ytkey);
 	// END MISC OPTS
 
