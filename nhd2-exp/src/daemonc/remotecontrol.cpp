@@ -203,9 +203,9 @@ int CRemoteControl::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data
 				g_Sectionsd->setServiceChanged( current_channel_id&0xFFFFFFFFFFFFULL, true );
 				CNeutrinoApp::getInstance()->channelList->adjustToChannelID(current_channel_id);
 				
-				// up				
-				//if ( g_InfoViewer->is_visible )
-				//	g_RCInput->postMsg( NeutrinoMessages::SHOW_INFOBAR, 0 );
+				// update info.				
+				if ( g_InfoViewer->is_visible )
+					g_RCInput->postMsg( NeutrinoMessages::SHOW_INFOBAR, 0 );
 			}
 
 			if ((!is_video_started) && (g_settings.parentallock_prompt != PARENTALLOCK_PROMPT_NEVER))

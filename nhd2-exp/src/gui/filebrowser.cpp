@@ -443,6 +443,7 @@ bool CFileBrowser::exec(const char * const dirname)
 		else if ( ( msg == RC_timeout ) )
 		{
 			selected = oldselected;
+			exit_pressed = true; //FIXME:
 			loop = false;
 		}
 		else if ( msg == RC_right )
