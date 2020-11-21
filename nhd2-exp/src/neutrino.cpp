@@ -5207,16 +5207,21 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 
 		HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MAINSETTINGS_SAVESETTINGSNOW_HINT));
 	}
-	else if(actionKey == "features")
+	if(actionKey == "plugins")
 	{
 		if(parent)
 			parent->hide();
 		
 		StopSubtitles();
-		showUserMenu(SNeutrinoSettings::BUTTON_BLUE);
+		
+		CPluginList * pluginList = new CPluginList();
+		pluginList->exec(NULL, "");
+		delete pluginList;
+		pluginList = NULL;
+
 		StartSubtitles();
 				
-		return menu_return::RETURN_REPAINT;	
+		return menu_return::RETURN_REPAINT;
 	}
 
 	return returnval;

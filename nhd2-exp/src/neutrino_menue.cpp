@@ -114,7 +114,7 @@ void CNeutrinoApp::mainMenu(void)
 	nMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList(), NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST));
 	
 	// features
-	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES));
+	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "plugins", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES));
 
 	// power menu
 	nMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU));
@@ -262,6 +262,8 @@ bool CNeutrinoApp::showUserMenu(int button)
 	menu->enablePaintDate();
 	menu->enableSaveScreen();
 
+	menu->addKey(RC_blue, this, "plugins");
+
 	// go through any postition number
 	for(int pos = 0; pos < SNeutrinoSettings::ITEM_MAX ; pos++) 
 	{
@@ -326,18 +328,19 @@ bool CNeutrinoApp::showUserMenu(int button)
 		keyhelper.get(&key, &icon);
 		menu->integratePlugins(CPlugins::I_TYPE_USER, key);
 	}
+	
+	if(menu && menu->getItemsCount() == 0)
+	{
+		menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, NULL, new CPluginList(), "-1", key, icon, NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES);
 
-	// show menu if there are more than 2 items only
-	// otherwise, we start the item directly (must be the last one)
-	//
-        if(menu_items > 1 ) 
+		menu_item->exec(NULL);
+	}
+	else
 	{
 		menu->setSelected(selected[button]);
                 menu->exec(NULL, "");
 		selected[button] = menu->getSelected();
 	}
-        else if (menu_item != NULL)
-                menu_item->exec(NULL);
 
         if(menu)
 		delete menu;
