@@ -84,16 +84,21 @@ int CThemes::exec(CMenuTarget * parent, const std::string & actionKey)
 		else if(actionKey == "saveCurrentTheme")
 		{
 			std::string file_name = "";
-			CStringInputSMS nameInput(LOCALE_COLORTHEMEMENU_NAME, file_name.c_str());
+			CStringInputSMS * nameInput = new CStringInputSMS(LOCALE_COLORTHEMEMENU_NAME, file_name.c_str());
 
-			nameInput.exec(NULL, "");
+			nameInput->exec(NULL, "");
 			
-			if (file_name.length() > 1)
+			if(!nameInput->getString().empty())
 			{
 				HintBox(LOCALE_COLORTHEMEMENU_SAVE, g_Locale->getText(LOCALE_MAINSETTINGS_SAVESETTINGSNOW_HINT));
 
-				saveFile((char*)((std::string)USERDIR + file_name + FILE_PREFIX).c_str());
+				saveFile((char*)((std::string)USERDIR + file_name.c_str() + FILE_PREFIX).c_str());
 			}
+
+			file_name.clear();
+
+			delete nameInput;
+			nameInput = NULL;
 
 			Show();
 
