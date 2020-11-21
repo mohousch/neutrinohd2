@@ -48,6 +48,10 @@
 #include <driver/framebuffer.h>
 
 
+#define TOP_RIGHT	0
+#define TOP_LEFT	1
+#define TOP_CENTER	2
+
 class CInfoBox  
 {
 	private:

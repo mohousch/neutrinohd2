@@ -55,22 +55,26 @@
 
 
 // mode
-typedef enum mode_
+enum
 {
 	AUTO_WIDTH	= 0x01,
 	AUTO_HIGH	= 0x02,
 	SCROLL		= 0x04,
 	CENTER		= 0x40,
 	NO_AUTO_LINEBREAK = 0x80
-}mode;
+};
 
-// tmode
-typedef enum tmode_
+/*
+enum 
 {
-	TOP_RIGHT = 0,
-	TOP_LEFT = 1,
+	TOP_RIGHT,
+	TOP_LEFT,
 	TOP_CENTER
-}tmode;
+};
+*/
+#define TOP_RIGHT	0
+#define TOP_LEFT	1
+#define TOP_CENTER	2
 
 class CTextBox : public CWidgetItem
 {
