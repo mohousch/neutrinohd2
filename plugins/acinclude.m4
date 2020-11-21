@@ -214,6 +214,10 @@ AC_ARG_WITH(boxtype,
 			BOXTYPE="gigablue"
 			BOXMODEL="$withval"
 			;;
+		tf*)
+			BOXTYPE="topfield"
+			BOXMODEL="$withval"
+			;;
 		dm*)
 			BOXTYPE="dreambox"
 			BOXMODEL="$withval"
@@ -345,6 +349,7 @@ AC_ARG_WITH(boxmodel,
 				valid for ipbox: hl101
 				valid for atevio: atevio700,atevio7000,atevio7500,atevio7600
 				valid for octagon: octagon1008
+				valid for topfield: tf7700
 				valid for vuplus: vusolo,vuduo,vuuno,vuultimo,vuduo2,vusolo2,vusolo4k,vusolose,vuzero
 				valid for azbox: azboxhd,azboxme,azboxminime
 				valid for technomate: tmtwin,tm2t,tmsingle,tmnano
@@ -372,6 +377,13 @@ AC_ARG_WITH(boxmodel,
 			;;
 		gb800solo|gb800se|gb800ue|gb800seplus|gb800ueplus|gbquad)
 			if test "$BOXTYPE" = "gigablue"; then
+				BOXMODEL="$withval"
+			else
+				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
+			fi
+			;;
+		tf7700)
+			if test "$BOXTYPE" = "topfield"; then
 				BOXMODEL="$withval"
 			else
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
@@ -705,6 +717,8 @@ AM_CONDITIONAL(BOXMODEL_ATEVIO7500, test "$BOXMODEL" = "atevio7500")
 AM_CONDITIONAL(BOXMODEL_ATEVIO7600, test "$BOXMODEL" = "atevio7600")
 
 AM_CONDITIONAL(BOXMODEL_OCTAGON_1008, test "$BOXMODEL" = "octagon1008")
+
+AM_CONDITIONAL(BOXMODEL_TOPFIELD_TF7700, test "$BOXMODEL" = "tf7700")
 
 AM_CONDITIONAL(BOXMODEL_VUSOLO2, test "$BOXMODEL" = "vusolo2")
 AM_CONDITIONAL(BOXMODEL_VUDUO2, test "$BOXMODEL" = "vuduo2")
