@@ -1084,7 +1084,7 @@ void parseWebTVServices(std::string filename)
 
 						ret = allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 
-						ret.first->second.number = cnt + 1;
+						//ret.first->second.number = cnt + 1;
 						ret.first->second.setServiceType(ST_WEBTV);
 						cnt++;
 					}
@@ -1147,7 +1147,7 @@ void parseWebTVServices(std::string filename)
 						pair<map<t_channel_id, CZapitChannel>::iterator, bool> ret;
 						ret = allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 
-						ret.first->second.number = cnt + 1;
+						//ret.first->second.number = cnt + 1;
 						ret.first->second.setServiceType(ST_WEBTV);
 						cnt++;
 					}
@@ -1204,7 +1204,7 @@ void parseWebTVServices(std::string filename)
 						pair<map<t_channel_id, CZapitChannel>::iterator, bool> ret;
 						ret = allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 
-						ret.first->second.number = cnt + 1;
+						//ret.first->second.number = cnt + 1;
 						ret.first->second.setServiceType(ST_WEBTV);
 						cnt++;
 					}

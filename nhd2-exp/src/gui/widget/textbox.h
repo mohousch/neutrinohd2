@@ -64,14 +64,6 @@ enum
 	NO_AUTO_LINEBREAK = 0x80
 };
 
-/*
-enum 
-{
-	TOP_RIGHT,
-	TOP_LEFT,
-	TOP_CENTER
-};
-*/
 #define TOP_RIGHT	0
 #define TOP_LEFT	1
 #define TOP_CENTER	2

@@ -329,11 +329,13 @@ bool CNeutrinoApp::showUserMenu(int button)
 		menu->integratePlugins(CPlugins::I_TYPE_USER, key);
 	}
 	
+	// start directly plugins if there is no items.
 	if(menu && menu->getItemsCount() == 0)
 	{
-		menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, NULL, new CPluginList(), "-1", key, icon, NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES);
-
-		menu_item->exec(NULL);
+		CPluginList * pluginList = new CPluginList();
+		pluginList->exec(NULL, "");
+		delete pluginList;
+		pluginList = NULL;
 	}
 	else
 	{
