@@ -1621,7 +1621,7 @@ void CChannelList::paint()
 
 			item = new ClistBoxItem(chanlist[i]->name.c_str(), true, desc.c_str());
 
-			item->setNumber(i + 1);
+			item->setNumber(chanlist[i]->number);
 			item->setPercent(runningPercent);
 			item->setInfo1(desc.c_str());
 			item->setOptionInfo1(cSeit);
