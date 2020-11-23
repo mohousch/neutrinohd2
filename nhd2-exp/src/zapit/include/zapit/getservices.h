@@ -45,7 +45,7 @@ void SaveServices(bool tocopy=false);
 void SaveMotorPositions();
 int loadMotorPositions(void);
 void parseWebTVServices(std::string filename);
-void loadWebTVBouquet(void);
+void loadWebTVServices(void);
 
 struct transponder
 {

@@ -758,6 +758,9 @@ int loadServices(bool only_current)
 		}
 	}
 
+	// webtv services
+	loadWebTVServices();
+
 do_current:
 	dprintf(DEBUG_DEBUG, "[getservices] loadServices: loading current services\n");
 
@@ -786,9 +789,6 @@ do_current:
 			xmlFreeDoc(parser);
 		}
 	}
-
-	// webtv services
-	loadWebTVBouquet();
 
 	dprintf(DEBUG_NORMAL, "[getservices] loadServices: services loaded (%d)...\n", allchans.size());
 
@@ -1084,7 +1084,6 @@ void parseWebTVServices(std::string filename)
 
 						ret = allchans.insert (std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 
-						//ret.first->second.number = cnt + 1;
 						ret.first->second.setServiceType(ST_WEBTV);
 						cnt++;
 					}
@@ -1147,7 +1146,6 @@ void parseWebTVServices(std::string filename)
 						pair<map<t_channel_id, CZapitChannel>::iterator, bool> ret;
 						ret = allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 
-						//ret.first->second.number = cnt + 1;
 						ret.first->second.setServiceType(ST_WEBTV);
 						cnt++;
 					}
@@ -1204,7 +1202,6 @@ void parseWebTVServices(std::string filename)
 						pair<map<t_channel_id, CZapitChannel>::iterator, bool> ret;
 						ret = allchans.insert(std::pair <t_channel_id, CZapitChannel> (id, CZapitChannel(title, id, url, description)));
 
-						//ret.first->second.number = cnt + 1;
 						ret.first->second.setServiceType(ST_WEBTV);
 						cnt++;
 					}
@@ -1235,9 +1232,9 @@ typedef struct stat stat_struct;
 #error not using 64 bit file offsets
 #endif
 
-void loadWebTVBouquet(void)
+void loadWebTVServices(void)
 {
-	dprintf(DEBUG_NORMAL, "[getservcices] loadWebTVBouquet:\n");
+	dprintf(DEBUG_NORMAL, "[getservcices] loadWebTVServices:\n");
 
 	std::string dirname = CONFIGDIR "/webtv";
 	dirent_struct **namelist;
