@@ -141,6 +141,7 @@ void CZapitClient::getLastChannel(unsigned int &channumber, char &mode)
 
 	CZapitClient::responseGetLastChannel response;
 	CBasicClient::receive_data((char* )&response, sizeof(response));
+
 	channumber = response.channelNumber + 1;
 	mode = response.mode;
 
@@ -248,7 +249,7 @@ void CZapitClient::zapTo_subServiceID_NOWAIT(const t_channel_id channel_id)
 	close_connection();
 }
 
-/* set mode tv/radio*/
+/* set mode tv/radio/webtv */
 void CZapitClient::setMode(const channelsMode mode)
 {
 	CZapitMessages::commandSetMode msg;

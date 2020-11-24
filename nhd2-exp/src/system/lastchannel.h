@@ -54,5 +54,6 @@ class CLastChannel
 		int  get_store_difftime (void) const;
 };
 
-
 #endif
+
+

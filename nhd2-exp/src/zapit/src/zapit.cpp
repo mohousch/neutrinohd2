@@ -859,25 +859,30 @@ void saveZapitSettings(bool write, bool write_a)
 {
 	dprintf(DEBUG_INFO, "[zapit] saveZapitSettings\n");
 	
-	// last channel
+	// lastchannel
 	if (live_channel) 
 	{
 		int c = 0;
+
+/*
 		if(currentMode & RADIO_MODE)
 			c = g_bouquetManager->radioChannelsBegin().getLowestChannelNumberWithChannelID(live_channel->getChannelID());
 		else if(currentMode & TV_MODE)
 			c = g_bouquetManager->tvChannelsBegin().getLowestChannelNumberWithChannelID(live_channel->getChannelID());
 		else if(currentMode & WEBTV_MODE)
 			g_bouquetManager->webtvChannelsBegin().getLowestChannelNumberWithChannelID(live_channel->getChannelID());
+*/
+
+		c = live_channel->number;
 
 		if (c >= 0) 
 		{
 			if ((currentMode & RADIO_MODE))
-				lastChannelRadio = c;
+				lastChannelRadio = c - 1;
 			else if ((currentMode & TV_MODE))
-				lastChannelTV = c;
+				lastChannelTV = c - 1;
 			else if ((currentMode & WEBTV_MODE))
-				lastChannelWEBTV = c;
+				lastChannelWEBTV = c - 1;
 		}
 	}
 
@@ -950,23 +955,25 @@ void loadZapitSettings()
 
 CZapitClient::responseGetLastChannel load_settings(void)
 {
-	dprintf(DEBUG_INFO, "CZapitClient::responseGetLastChannel load_settings\n");
+	dprintf(DEBUG_INFO, "CZapitClient::responseGetLastChannel load_settings:\n");
 	
 	CZapitClient::responseGetLastChannel lastchannel;
 
 	if (currentMode & RADIO_MODE)
+	{
 		lastchannel.mode = 'r';
-	else if (currentMode & TV_MODE)
-		lastchannel.mode = 't';
-	else if (currentMode & WEBTV_MODE)
-		lastchannel.mode = 'w';
-
-	if(currentMode & RADIO_MODE)
 		lastchannel.channelNumber = lastChannelRadio;
-	else if(currentMode & TV_MODE)
+	}
+	else if (currentMode & TV_MODE)
+	{
+		lastchannel.mode = 't';
 		lastchannel.channelNumber = lastChannelTV;
-	else if(currentMode & WEBTV_MODE)
+	}
+	else if (currentMode & WEBTV_MODE)
+	{
+		lastchannel.mode = 'w';
 		lastchannel.channelNumber = lastChannelWEBTV;
+	}
 	
 	return lastchannel;
 }
@@ -1356,6 +1363,7 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0)
 
 	live_channel_id = live_channel->getChannelID();
 
+	// save channel
 	saveZapitSettings(false, false);
 	
 	if(!(currentMode & WEBTV_MODE))
@@ -1421,8 +1429,7 @@ tune_again:
 
 	if(currentMode & WEBTV_MODE)
 		return res;
-
-	if(!(currentMode & WEBTV_MODE))
+	else//(!(currentMode & WEBTV_MODE))
 	{
 		// cam
 		sendCaPmtPlayBackStart(live_channel, live_fe);
@@ -3511,7 +3518,7 @@ void sendChannels(int connfd, const CZapitClient::channelsMode mode, const CZapi
 	internalSendChannels(connfd, &channels, 0, false);
 }
 
-// startplayback
+// startplayback return: 0=playing, -1= failed
 int startPlayBack(CZapitChannel * thisChannel)
 {
 	dprintf(DEBUG_NORMAL, "[zapit] startPlayBack: chid:%llx\n", thisChannel->getChannelID());

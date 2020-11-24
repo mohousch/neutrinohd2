@@ -78,7 +78,7 @@ class CBouquetManager
 				CZapitClient::channelsMode mode;
 				unsigned int b;
 				int c;
-				ZapitChannelList* getBouquet() 
+				ZapitChannelList *getBouquet() 
 				{ 
 					if (mode == CZapitClient::MODE_TV)
 						return &(Owner->Bouquets[b]->tvChannels);
@@ -165,3 +165,5 @@ struct CmpBouquetByChName: public binary_function <const CZapitBouquet * const, 
 };
 
 #endif /* __bouquets_h__ */
+
+

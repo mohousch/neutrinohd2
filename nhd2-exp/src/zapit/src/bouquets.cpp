@@ -1013,6 +1013,7 @@ bool CBouquetManager::existsChannelInBouquet( unsigned int bq_id, const t_channe
 		if (ch)  
 			status = true;
 	}
+
 	return status;
 }
 
@@ -1049,7 +1050,6 @@ CZapitChannel *CBouquetManager::findChannelByChannelID(const t_channel_id channe
 	return NULL;
 }
 
-//
 CZapitChannel *CBouquetManager::findChannelByName(std::string name, const t_service_id sid)
 {
 	for (tallchans_iterator itChannel = allchans.begin(); itChannel != allchans.end(); ++itChannel) 
@@ -1063,7 +1063,8 @@ CZapitChannel *CBouquetManager::findChannelByName(std::string name, const t_serv
 	return NULL;
 }
 
-CBouquetManager::ChannelIterator::ChannelIterator(CBouquetManager* owner, const CZapitClient::channelsMode Mode)
+//// ChannelIterator
+CBouquetManager::ChannelIterator::ChannelIterator(CBouquetManager *owner, const CZapitClient::channelsMode Mode)
 {
 	Owner = owner;
 	mode = Mode;

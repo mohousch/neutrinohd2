@@ -85,9 +85,9 @@ extern CBouquetList   * RADIObouquetList;
 extern CBouquetList   * RADIOsatList;
 extern CBouquetList   * RADIOfavList;
 extern CBouquetList   * RADIOallList;
-
-extern CBouquetList   * webTVBouquetList;
-
+extern CBouquetList   * webTVbouquetList;
+extern CBouquetList *webTVallList;
+extern CBouquetList *webTVfavList;
 
 extern t_channel_id rec_channel_id;
 extern t_channel_id live_channel_id;
@@ -986,7 +986,9 @@ bool CChannelList::adjustToChannelID(const t_channel_id channel_id, bool bToo)
 				}
 				else if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv) 
 				{
-					webTVBouquetList->adjustToChannelID(channel_id);
+					webTVbouquetList->adjustToChannelID(channel_id);
+					webTVfavList->adjustToChannelID(channel_id);
+					webTVallList->adjustToChannelID(channel_id);
 				} 
 			}
 			

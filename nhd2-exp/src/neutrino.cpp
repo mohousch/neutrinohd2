@@ -270,8 +270,9 @@ CBouquetList* RADIOsatList;
 CBouquetList* RADIOfavList;
 CBouquetList* RADIOallList;
 
-CBouquetList* webTVBouquetList;
+CBouquetList* webTVbouquetList;
 CBouquetList *webTVallList;
+CBouquetList *webTVfavList;
 
 //
 CPlugins* g_PluginList;
@@ -1396,6 +1397,8 @@ void CNeutrinoApp::firstChannel()
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::firstChannel\n");
 
 	g_Zapit->getLastChannel(firstchannel.channelNumber, firstchannel.mode);
+
+	//dprintf(DEBUG_NORMAL, "CNeutrinoApp::firstChannel: TEST: number:%d\n", firstchannel.channelNumber);
 }
 
 // CNeutrinoApp -  channelsInit, get the Channellist from zapit
@@ -1441,11 +1444,13 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	if(webTVchannelList)
 		delete webTVchannelList;
 
-	if(webTVBouquetList)
-		delete webTVBouquetList;
+	if(webTVbouquetList)
+		delete webTVbouquetList;
 
 	if(webTVallList) 
 		delete webTVallList;
+	if(webTVfavList)
+		delete webTVfavList;
 
 	TVchannelList = new CChannelList(g_Locale->getText(LOCALE_CHANNELLIST_HEAD));
 	RADIOchannelList = new CChannelList(g_Locale->getText(LOCALE_CHANNELLIST_HEAD));
@@ -1471,8 +1476,11 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	//
 	webTVchannelList = new CChannelList("WebTV");
 
-	webTVBouquetList = new CBouquetList("WebTV");
-	webTVBouquetList->orgChannelList = webTVchannelList;
+	webTVbouquetList = new CBouquetList("WebTV");
+	webTVbouquetList->orgChannelList = webTVchannelList;
+
+	webTVfavList = new CBouquetList("WebTV");
+	webTVfavList->orgChannelList = webTVchannelList;
 
 	//
 	uint32_t i;
@@ -1639,7 +1647,13 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	{
 		if (g_bouquetManager->Bouquets[i]->bWebTV && !g_bouquetManager->Bouquets[i]->webtvChannels.empty())
 		{
-			CBouquet *ltmp = webTVBouquetList->addBouquet(g_bouquetManager->Bouquets[i]);
+			//CBouquet *ltmp = webTVbouquetList->addBouquet(g_bouquetManager->Bouquets[i]);
+			CBouquet *ltmp;
+
+			if(g_bouquetManager->Bouquets[i]->bUser) 
+				ltmp = webTVfavList->addBouquet(g_bouquetManager->Bouquets[i]);
+			else
+				ltmp = webTVbouquetList->addBouquet(g_bouquetManager->Bouquets[i]);
 
 			ZapitChannelList *channels = &(g_bouquetManager->Bouquets[i]->webtvChannels);
 			ltmp->channelList->setSize(channels->size());
@@ -1655,8 +1669,7 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit: got %d WEBTV bouquets\n", bnum);
 
-	//testing
-	printf("CNeutrinoApp::channelsInit: TVchannellist.size:%d Radiochannellist.size:%d WEBTVchannellist.size:%d\n", (int)TVchannelList->getSize(), (int)RADIOchannelList->getSize(), (int)webTVchannelList->getSize());
+	//printf("CNeutrinoApp::channelsInit: TEST: TVchannellist.size:%d Radiochannellist.size:%d WEBTVchannellist.size:%d\n", (int)TVchannelList->getSize(), (int)RADIOchannelList->getSize(), (int)webTVchannelList->getSize());
 
 	//
 	SetChannelMode( g_settings.channel_mode, mode);
@@ -1695,7 +1708,7 @@ void CNeutrinoApp::SetChannelMode(int newmode, int nMode)
 			}
 			else if(nMode == mode_webtv) 
 			{
-				bouquetList = webTVBouquetList;
+				bouquetList = webTVfavList;
 			}
 			break;
 
@@ -1741,7 +1754,7 @@ void CNeutrinoApp::SetChannelMode(int newmode, int nMode)
 			}
 			else if(nMode == mode_webtv) 
 			{
-				bouquetList = webTVBouquetList;
+				bouquetList = webTVbouquetList;
 			}
 			break;
 	}
@@ -3614,8 +3627,7 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 				old_num = bouquetList->Bouquets[old_b]->channelList->getActiveChannelNumber();
 			}
 
-			//testing
-			dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: old_b:%d old_num:%d\n", old_b, old_num);
+			//dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: TEST: old_b:%d old_num:%d\n", old_b, old_num);
 
 			if( msg == RC_ok ) 
 			{
@@ -4752,7 +4764,7 @@ void CNeutrinoApp::tvMode( bool rezap )
 	if( rezap ) 
 	{
 		firstChannel();
-		channelList->tuned = 0xfffffff;;
+		channelList->tuned = 0xfffffff;
 		channelList->zapTo( firstchannel.channelNumber - 1 );
 	}
 }
@@ -4820,8 +4832,8 @@ void CNeutrinoApp::radioMode( bool rezap)
 	if( rezap ) 
 	{
 		firstChannel();
-		channelList->tuned = 0xfffffff;;
-		channelList->zapTo( firstchannel.channelNumber -1 );
+		channelList->tuned = 0xfffffff;
+		channelList->zapTo( firstchannel.channelNumber - 1 );
 	}
 
 	if (!g_settings.radiotext_enable)
@@ -4917,7 +4929,7 @@ void CNeutrinoApp::webtvMode( bool rezap)
 	{
 		firstChannel();
 		channelList->tuned = 0xfffffff;
-		channelList->zapTo( firstchannel.channelNumber -1 );
+		channelList->zapTo( firstchannel.channelNumber - 1 );
 	}
 }
 
