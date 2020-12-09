@@ -49,5 +49,4 @@ class cDvbSubtitleConverter  /*: public cThread */
 		bool Running() { return running; };
 };
 
-
 #endif //__DVBSUBTITLE_H
