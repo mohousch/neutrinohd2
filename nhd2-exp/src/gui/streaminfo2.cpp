@@ -393,10 +393,12 @@ void CStreamInfo2::paint_signal_fe_box(int _x, int _y, int w, int h)
 	sig_text_rate_x = _x + 10 + xd * 3;
 		
 	int maxmin_x; // x-position of min and max
-	if (paint_mode == 0) {
+	if (paint_mode == 0) 
+	{
 		maxmin_x = sig_text_ber_x-40;
 	}
-	else {
+	else 
+	{
 		maxmin_x = _x + 40 + xd * 3 + 45;
 	}
 	g_Font[font_small]->RenderString(maxmin_x, y1 - sheight - sheight - sheight, 50, "max", COL_MENUCONTENTDARK, 0, true);
@@ -954,4 +956,6 @@ void CStreamInfo2::showSNR ()
 		g_Font[font_info]->RenderString (posx + 2, posy + mheight-5, sw, percent, COL_MENUCONTENTDARK, 0, true);
 	}
 }
+
+
 
