@@ -56,6 +56,8 @@ typedef struct {
 	std::string vtype;
 }tmdbinfo;
 
+typedef std::vector<tmdbinfo> tmdb_video_list_t;
+
 class CTmdb
 {
 	private:
@@ -67,13 +69,13 @@ class CTmdb
 		CFileHelpers fileHelper;
 
 		//
-		std::vector<tmdbinfo> movieInfo;
-		std::vector<tmdbinfo> movieList;
-		std::vector<tmdbinfo> genreList;
-		std::vector<tmdbinfo> genreMovieList;
-		std::vector<tmdbinfo> seasonList;
-		std::vector<tmdbinfo> episodeList;
-		std::vector<tmdbinfo> videoInfo;
+		tmdb_video_list_t movieInfo;
+		tmdb_video_list_t movieList;
+		tmdb_video_list_t genreList;
+		tmdb_video_list_t genreMovieList;
+		tmdb_video_list_t seasonList;
+		tmdb_video_list_t episodeList;
+		tmdb_video_list_t videoInfo;
 
 	public:
 		CTmdb();

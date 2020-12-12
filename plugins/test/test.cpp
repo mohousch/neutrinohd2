@@ -46,16 +46,12 @@ class CTestMenu : public CMenuTarget
 		int selected;
 
 		//
-		//ZapitChannelList Channels;
-		//bool displayNext;
-
-		//
 		CFileFilter fileFilter;
 		CFileList filelist;
 
 		// movie
 		CMovieInfo m_movieInfo;
-		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
+		CMoviePlayList m_vMovieInfo;
 
 		// audio
 		CAudioPlayList AudioPlaylist;
@@ -72,7 +68,7 @@ class CTestMenu : public CMenuTarget
 		std::string plist;
 		int page;
 		std::string TVShows;
-		std::vector<tmdbinfo> mvlist;
+		tmdb_video_list_t mvlist;
 		std::string tmdbsearch;
 
 		//
@@ -117,7 +113,6 @@ class CTestMenu : public CMenuTarget
 		ClistBox *listBox;
 
 		void loadTMDBPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1, bool search = false);
-
 		void loadMoviePlaylist();
 		void openMovieFileBrowser();
 		void loadAudioPlaylist();
