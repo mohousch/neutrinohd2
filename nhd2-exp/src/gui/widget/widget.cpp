@@ -370,6 +370,198 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 				case (RC_blue):
 					onBlueKeyPressed();
 					break;
+
+				case (RC_setup):
+					onMenuKeyPressed();
+					break;
+
+				case (RC_standby):
+					onPowerKeyPressed();
+					break;
+
+				case (RC_spkr):
+					onMuteKeyPressed();
+					break;
+
+				case (RC_plus):
+					onVolumeUpKeyPressed();
+					break;
+
+				case (RC_minus):
+					onVolumeDownKeyPressed();
+					break;
+
+				case (RC_0):
+					on0KeyPressed();
+					break;
+
+				case (RC_1):
+					on1KeyPressed();
+					break;
+
+				case (RC_2):
+					on2KeyPressed();
+					break;
+
+				case (RC_3):
+					on3KeyPressed();
+					break;
+
+				case (RC_4):
+					on4KeyPressed();
+					break;
+
+				case (RC_5):
+					on5KeyPressed();
+					break;
+
+				case (RC_6):
+					on6KeyPressed();
+					break;
+
+				case (RC_7):
+					on7KeyPressed();
+					break;
+
+				case (RC_8):
+					on8KeyPressed();
+					break;
+
+				case (RC_9):
+					on9KeyPressed();
+					break;
+
+				case (RC_audio):
+					onAudioKeyPressed();
+					break;
+
+				case (RC_text):
+					onTextKeyPressed();
+					break;
+
+				case (RC_info):
+					onInfoKeyPressed();
+					break;
+
+				case (RC_epg):
+					onEPGKeyPressed();
+					break;
+
+				case (RC_recall):
+					onBackKeyPressed();
+					break;
+
+				case (RC_favorites):
+					onFavoritesKeyPressed();
+					break;
+
+				case (RC_sat):
+					onSatKeyPressed();
+					break;
+
+				case (RC_record):
+					onRecordKeyPressed();
+					break;
+
+				case (RC_play):
+					onPlayKeyPressed();
+					break;
+
+				case (RC_pause):
+					onPauseKeyPressed();
+					break;
+
+				case (RC_forward):
+					onFastForwardKeyPressed();
+					break;
+
+				case (RC_rewind):
+					onRewindKeyPressed();
+					break;
+
+				case (RC_stop):
+					onStopKeyPressed();
+					break;
+
+				case (RC_timeshift):
+					onTimeshiftKeyPressed();
+					break;
+
+				case (RC_mode):
+					onModeKeyPressed();
+					break;
+
+				case (RC_next):
+					onNextKeyPressed();
+					break;
+
+				case (RC_prev):
+					onPrevKeyPressed();
+					break;
+
+				case (RC_music):
+					onMusicKeyPressed();
+					break;
+
+				case (RC_picture):
+					onPictureKeyPressed();
+					break;
+
+				case (RC_loop):
+					onLoopKeyPressed();
+					break;
+
+				case (RC_slow):
+					onSlowKeyPressed();
+					break;
+
+				case (RC_dvbsub):
+					onDVBSubKeyPressed();
+					break;
+
+				case (RC_pip):
+					onPIPKeyPressed();
+					break;
+
+				case (RC_pippos):
+					onPIPPosKeyPressed();
+					break;
+
+				case (RC_pipswap):
+					onPIPSwapKeyPressed();
+					break;
+
+				case (RC_pipsubch):
+					onPIPSubChanKeyPressed();
+					break;
+
+				case (RC_net):
+					onNetKeyPressed();
+					break;
+
+				case (RC_bookmark):
+					onBookmarkKeyPressed();
+					break;
+
+				case (RC_multifeed):
+					onMultifeedKeyPressed();
+					break;
+
+				case (RC_f1):
+					onF1KeyPressed();
+					break;
+
+				case (RC_f2):
+					onF2KeyPressed();
+					break;
+
+				case (RC_f3):
+					onF3KeyPressed();
+					break;
+
+				case (RC_f4):
+					onF4KeyPressed();
+					break;
 					
 				case (RC_timeout):
 					break;
