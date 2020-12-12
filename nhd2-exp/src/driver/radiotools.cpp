@@ -21,7 +21,7 @@
  
 */
 
-#include "radiotools.h"
+#include <radiotools.h>
 #include <string.h>
 #include <stdio.h>
 #include <sys/time.h>
@@ -52,11 +52,6 @@ char *rtrim(char *text)
 		*s-- = 0;
 
 	return text;
-}
-
-cTimeMs::cTimeMs(void)
-{
-	Set();
 }
 
 

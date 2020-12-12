@@ -161,4 +161,16 @@ class eEnv {
 		static std::string resolve(const std::string &path);
 };
 
+class cTimeMs {
+	private:
+		uint64_t begin;
+
+	public:
+		cTimeMs(int Ms = 0);
+		static uint64_t Now(void);
+		void Set(int Ms = 0);
+		bool TimedOut(void);
+		uint64_t Elapsed(void);
+};
+
 #endif

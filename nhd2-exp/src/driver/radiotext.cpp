@@ -70,8 +70,9 @@
 /*zapit includes*/
 #include <frontend_c.h>
 #include <video_cs.h>
-#include <global.h>
-#include "framebuffer.h"
+//
+#include <framebuffer.h>
+#include <system/helpers.h>
 
 
 extern CFrontend * live_fe;
@@ -545,10 +546,6 @@ void CRadioText::RadiotextDecode(unsigned char *mtext, int len)
 								if (rtp_content.item_Index >= 0)
 								    asprintf(&rtp_content.item_Title[rtp_content.item_Index], "%s", rtrim(rtp_content.temptext));
 								RT_PlusShow = RT_MsgShow = rtp_itoggle = true;
-							
-								//
-								//g_InfoViewer->showRadiotext();
-								//
 							}
 						}
 						break;
@@ -576,10 +573,6 @@ void CRadioText::RadiotextDecode(unsigned char *mtext, int len)
 								if (rtp_content.item_Index >= 0)
 									asprintf(&rtp_content.item_Artist[rtp_content.item_Index], "%s", rtrim(rtp_content.temptext));
 								RT_PlusShow = RT_MsgShow = rtp_itoggle = true;
-								
-								//
-								//g_InfoViewer->showRadiotext();
-								//
 							}
 						}
 						break;

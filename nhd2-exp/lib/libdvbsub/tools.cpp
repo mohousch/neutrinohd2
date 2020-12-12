@@ -24,7 +24,7 @@ int SysLogLevel = 0;
 #define MAXSYSLOGBUF 256
 
 // --- cTimeMs ---------------------------------------------------------------
-
+#if 0
 cTimeMs::cTimeMs(int Ms)
 {
   Set(Ms);
@@ -89,6 +89,7 @@ uint64_t cTimeMs::Elapsed(void)
 {
   return Now() - begin;
 }
+#endif
 
 // --- cListObject -----------------------------------------------------------
 

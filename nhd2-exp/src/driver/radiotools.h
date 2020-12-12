@@ -31,16 +31,6 @@ unsigned short crc16_ccitt(unsigned char *daten, int len, bool skipfirst);
 
 char *rtrim(char *text);
 
-class cTimeMs {
-	private:
-		uint64_t begin;
-
-	public:
-		cTimeMs(void);
-		static uint64_t Now(void);
-		void Set(int Ms = 0);
-		bool TimedOut(void);
-		uint64_t Elapsed(void);
-};
-
 #endif //__RADIO_TOOLS_H
+
+

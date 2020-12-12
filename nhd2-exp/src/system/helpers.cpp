@@ -1432,4 +1432,33 @@ std::string eEnv::resolve(const std::string &src)
 	return dest;
 }
 
+// cTimeMs
+cTimeMs::cTimeMs(int Ms)
+{
+	Set(Ms);
+}
+
+uint64_t cTimeMs::Now(void)
+{
+	struct timeval t;
+  	if (gettimeofday(&t, NULL) == 0)
+     		return (uint64_t(t.tv_sec)) * 1000 + t.tv_usec / 1000;
+  	return 0;
+}
+
+void cTimeMs::Set(int Ms)
+{
+  	begin = Now() + Ms;
+}
+
+bool cTimeMs::TimedOut(void)
+{
+  	return Now() >= begin;
+}
+
+uint64_t cTimeMs::Elapsed(void)
+{
+  	return Now() - begin;
+}
+
 

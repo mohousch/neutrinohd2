@@ -60,6 +60,7 @@ template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 #endif
 
+/*
 class cTimeMs {
 private:
   uint64_t begin;
@@ -71,6 +72,7 @@ public:
   bool TimedOut(void);
   uint64_t Elapsed(void);
   };
+*/
 
 class cListObject {
 private:

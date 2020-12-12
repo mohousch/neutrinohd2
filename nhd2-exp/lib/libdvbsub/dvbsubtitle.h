@@ -23,6 +23,7 @@ extern "C" {
 }
 
 #include "tools.h"
+#include <system/helpers.h>
 
 class cDvbSubtitleBitmaps;
 
@@ -50,3 +51,5 @@ class cDvbSubtitleConverter  /*: public cThread */
 };
 
 #endif //__DVBSUBTITLE_H
+
+
