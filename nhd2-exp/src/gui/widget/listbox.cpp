@@ -1939,9 +1939,6 @@ void ClistBox::initFrames()
 			cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
 		}
 	}
-
-	if(savescreen) 
-		saveScreen();
 }
 
 void ClistBox::paint()
@@ -2526,6 +2523,8 @@ void ClistBox::enableSaveScreen()
 		delete[] background;
 		background = NULL;
 	}
+
+	saveScreen();
 }
 
 void ClistBox::hide()
@@ -2538,14 +2537,14 @@ void ClistBox::hide()
 		frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 
 	hideItemInfo(); 
-	
-	frameBuffer->blit();
 
 	if(textBox != NULL)
 	{
 		delete textBox;
 		textBox = NULL;
 	}
+
+	frameBuffer->blit();
 }
 
 void ClistBox::scrollLineDown(const int)

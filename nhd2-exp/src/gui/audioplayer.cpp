@@ -374,6 +374,7 @@ void CAudioPlayerGui::playFile()
 		}
 		else if( ((msg == RC_setup) || (msg == RC_vfdmenu)))
 		{
+			hide();
 			CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
 			audioPlayerSettingsMenu->exec(NULL, "");
 			delete audioPlayerSettingsMenu;

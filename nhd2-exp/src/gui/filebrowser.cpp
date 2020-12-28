@@ -369,9 +369,13 @@ bool CFileBrowser::exec(const char * const dirname)
 	bool res = false;
 	exit_pressed = false;
 
+	// create listBox
 	listBox = new ClistBox(&cFrameBox);
 
 	listBox->initFrames();
+	//listBox->enableSaveScreen();
+	//listBox->enableShrinkMenu();
+	listBox->enableCenterPos();
 
 	name = dirname;
 	std::replace(name.begin(), name.end(), '\\', '/');
@@ -416,7 +420,7 @@ bool CFileBrowser::exec(const char * const dirname)
 					{
 						filelist[selected].Marked = !filelist[selected].Marked;
 
-						listBox->clearItems();
+						//listBox->clearItems();
 						paint();
 					}
 				}
@@ -458,8 +462,8 @@ bool CFileBrowser::exec(const char * const dirname)
 					{
 						selections.push_back(selected);
 						ChangeDir(filelist[selected].Name);
-						hide();
-						listBox->clearItems();
+						//hide();
+						//listBox->clearItems();
 						paint();
 					}
 				}
@@ -471,21 +475,21 @@ bool CFileBrowser::exec(const char * const dirname)
 			{
 				ChangeDir("..", selections.back());
 				selections.pop_back();
-				hide();
-				listBox->clearItems();
+				//hide();
+				//listBox->clearItems();
 				paint();
 			} 
 			else
 			{
 				ChangeDir("..");
-				hide();
-				listBox->clearItems();
+				//hide();
+				//listBox->clearItems();
 				paint();
 			}
 
 			if (!(filelist.empty()))	
 			{
-				listBox->clearItems();
+				//listBox->clearItems();
 				paint();
 			}
 		}
@@ -496,8 +500,8 @@ bool CFileBrowser::exec(const char * const dirname)
 				use_filter = !use_filter;
 
 				ChangeDir(Path);
-				hide();
-				listBox->clearItems();
+				//hide();
+				//listBox->clearItems();
 				paint();
 			}
 		}
@@ -532,8 +536,8 @@ bool CFileBrowser::exec(const char * const dirname)
 						recursiveDelete((filelist[selected].Name.substr(0,filelist[selected].Name.length()-7)+".xml").c_str());//remove bla.xml von bla.ts
 					}
 					ChangeDir(Path);
-					hide();
-					listBox->clearItems();
+					//hide();
+					//listBox->clearItems();
 					paint();
 				}
 			}
@@ -550,8 +554,8 @@ bool CFileBrowser::exec(const char * const dirname)
 					{
 						ChangeDir("..", selections.back());
 						selections.pop_back();
-						hide();
-						listBox->clearItems();
+						//hide();
+						//listBox->clearItems();
 						paint();
 					} 
 					else
@@ -560,8 +564,8 @@ bool CFileBrowser::exec(const char * const dirname)
 						if (pos != std::string::npos) 
 						{
 							ChangeDir("..");
-							hide();
-							listBox->clearItems();
+							//hide();
+							//listBox->clearItems();
 							paint();
 						}
 						else 
@@ -581,8 +585,8 @@ bool CFileBrowser::exec(const char * const dirname)
 						{
 							selections.push_back(selected);
 							ChangeDir(filelist[selected].Name);
-							hide();
-							listBox->clearItems();
+							//hide();
+							//listBox->clearItems();
 							paint();
 						}
 						else
@@ -602,7 +606,7 @@ bool CFileBrowser::exec(const char * const dirname)
 
 			sort(filelist.begin(), filelist.end(), sortBy[g_settings.filebrowser_sortmethod]);
 
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 		}
 		else if (CRCInput::isNumeric(msg_repeatok))
@@ -713,6 +717,9 @@ void CFileBrowser::addRecursiveDir(CFileList * re_filelist, std::string rpath, b
 
 void CFileBrowser::hide()
 {
+	dprintf(DEBUG_NORMAL, "CFileBrowser::hide:\n");
+
+	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 	listBox->hide();
 }
 
@@ -733,6 +740,8 @@ const struct button_label HButtons[2] =
 void CFileBrowser::paint()
 {
 	dprintf(DEBUG_NORMAL, "CFileBrowser::paint:\n");
+
+	listBox->clearItems();
 
 	for (unsigned int count = 0; count < filelist.size(); count++)
 	{
@@ -844,12 +853,9 @@ void CFileBrowser::paint()
 		listBox->addItem(item);
 	}
 
+	// head
 	char l_name[100];
 	snprintf(l_name, sizeof(l_name), "%s %s", g_Locale->getText(LOCALE_FILEBROWSER_HEAD), FILESYSTEM_ENCODING_TO_UTF8(std::string(name).c_str())); // UTF-8
-
-	listBox->enableShrinkMenu();
-	listBox->enableCenterPos();
-	listBox->enableSaveScreen();
 
 	listBox->enablePaintHead();
 	listBox->setTitle(l_name);
@@ -891,7 +897,7 @@ void CFileBrowser::SMSInput(const neutrino_msg_t msg)
 		}
 	}
 
-	listBox->clearItems();
+	//listBox->clearItems();
 	paint();
 }
 
