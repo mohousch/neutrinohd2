@@ -512,6 +512,7 @@ void CNFilm::showMenu(bool genre)
 	rightWidget->setSelected(right_selected);
 	rightWidget->enablePaintFootInfo();
 	//rightWidget->setBackgroundColor(COL_BLUE);
+	rightWidget->setInFocus(true);
 
 	paintRightWidgetItems(rightWidget);
 
