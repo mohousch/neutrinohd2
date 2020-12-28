@@ -1386,7 +1386,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		// itemBox
 		frameBuffer->paintBoxRel(x, y, dx, height, bgcolor); //FIXME
 	
-		// left icon
+		// icon (left)
 		int icon_w = 0;
 		int icon_h = 0;
 
@@ -1411,17 +1411,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 			}
 		}
 
-		// optionInfo
-		int optionInfo_width = 0;
-	
-		if(!optionInfo.empty())
-		{
-			optionInfo_width = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(optionInfo.c_str());
-
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + dx - BORDER_RIGHT - optionInfo_width, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), optionInfo_width, optionInfo.c_str(), color, 0, true); // UTF-8
-		}
-
-		// right icon1
+		// icon1 (right)
 		int icon1_w = 0;
 		int icon1_h = 0;
 	
@@ -1433,7 +1423,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 			frameBuffer->paintIcon(icon1, x + dx - BORDER_LEFT - icon1_w, y + (height - icon1_h)/2 );
 		}
 
-		// right icon2
+		// icon2 (right)
 		int icon2_w = 0;
 		int icon2_h = 0;
 	
@@ -1443,6 +1433,16 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 			frameBuffer->getIconSize(icon2.c_str(), &icon2_w, &icon2_h);
 		
 			frameBuffer->paintIcon(icon2, x + dx - BORDER_LEFT - (icon1_w? icon1_w + ICON_OFFSET : 0) - icon2_w, y + (height - icon2_h)/2 );
+		}
+
+		// optionInfo (right)
+		int optionInfo_width = 0;
+	
+		if(!optionInfo.empty())
+		{
+			optionInfo_width = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(optionInfo.c_str());
+
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + dx - BORDER_RIGHT - (icon1_w? icon1_w + ICON_OFFSET : 0) - (icon2_w? icon2_w + ICON_OFFSET : 0) - optionInfo_width, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), optionInfo_width, optionInfo.c_str(), color, 0, true); // UTF-8
 		}
 
 		// number
@@ -1465,7 +1465,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		if(runningPercent > -1)
 		{
 			pBarWidth = 35;
-			int pBarHeight = height/3;
+			int pBarHeight = height/5;
 
 			CProgressBar timescale(pBarWidth, pBarHeight);
 		

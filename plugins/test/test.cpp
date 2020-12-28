@@ -3521,7 +3521,7 @@ void CTestMenu::testClistBox5()
 
 	// footer
 	listBox->enablePaintFoot();
-	listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
+	//listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
 	listBox->enablePaintFootInfo(80);
@@ -4509,7 +4509,7 @@ void CTestMenu::testShowPictureDir()
 void CTestMenu::testClistBoxWidget()
 {
 	// our listBox
-	listMenu = new ClistBoxWidget("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	listMenu = new ClistBoxWidget("list Mode", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
 	//
 	loadMoviePlaylist();
@@ -4533,21 +4533,22 @@ void CTestMenu::testClistBoxWidget()
 
 	listMenu->setMode(MODE_LISTBOX);
 	listMenu->setWidgetType(WIDGET_TYPE_STANDARD);
-	listMenu->setItemsPerPage(6, 2);
-	//listMenu->setItemBoxColor(COL_YELLOW);
-
 	listMenu->addWidget(WIDGET_TYPE_CLASSIC);
 	listMenu->addWidget(WIDGET_TYPE_EXTENDED);
 	listMenu->addWidget(WIDGET_TYPE_FRAME);
 	listMenu->enableWidgetChange();
+	listMenu->setItemsPerPage(6, 2);
 
 	listMenu->setSelected(selected);
 
+	// head
+	listMenu->enablePaintDate();
 	listMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+
+	// foot
 	listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
-	listMenu->enablePaintDate();
-
+	// footinfo
 	listMenu->enablePaintFootInfo();
 
 	listMenu->addKey(RC_info, this, "minfo");
@@ -4561,60 +4562,51 @@ void CTestMenu::testClistBoxWidget()
 // ClistBoxWidget1
 void CTestMenu::testClistBoxWidget1()
 {
-	int shortcut = 1;
+	// our listBox
+	listMenu = new ClistBoxWidget("Menu Mode", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
-	dprintf(DEBUG_NORMAL, "testClistBoxWidget\n");
-
-	ClistBoxWidget * mainMenu = new ClistBoxWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_MAINMENU);
+	//
+	loadMoviePlaylist();
 	
-	mainMenu->setMode(MODE_MENU);
-	mainMenu->enableMenuPosition();
-	mainMenu->enableShrinkMenu();
-	mainMenu->enableWidgetChange();
-	mainMenu->enablePaintFootInfo();
-	  
-	// tv modus
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
+	// add items
+	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
+	{
+		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "mplay", RC_nokey, NULL, file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-	// radio modus
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE ));	
-	
-	// webtv
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_WEBTVMODE) );
-	
-#if defined (ENABLE_SCART)
-	// scart
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART) );
-#endif
+		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
 
-	// mediaplayer
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, new CMediaPlayerMenu(), NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_MEDIAPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER ));
-	
-	// main setting menu
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SETTINGS, true, NULL, new CMainSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_SETTINGS, LOCALE_HELPTEXT_MAINSETTINGS ));
+		item->set2lines();
 
-	// service
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_SERVICE, true, NULL, new CServiceSetup(), NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SERVICE ));
-	
-	
-	// timerlist
-	mainMenu->addItem(new CMenuForwarder(LOCALE_TIMERLIST_NAME, true, NULL, new CTimerList, NULL, CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_TIMERLIST, LOCALE_HELPTEXT_TIMERLIST ));
-	
-	// features
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), "", NEUTRINO_ICON_MENUITEM_FEATURES, LOCALE_HELPTEXT_FEATURES ));
+		item->setHelpText(m_vMovieInfo[i].epgInfo2.c_str());
 
-	// power menu
-	mainMenu->addItem(new CMenuForwarder(LOCALE_MAINMENU_POWERMENU, true, NULL, new CPowerMenu(), NULL, RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_POWERMENU, LOCALE_HELPTEXT_POWERMENU ));
+		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
+		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 
-	//box info
-	mainMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, RC_info, NEUTRINO_ICON_BUTTON_HELP, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
+		listMenu->addItem(item);
+	}
 
-	mainMenu->integratePlugins(CPlugins::I_TYPE_MAIN, shortcut++);
+	listMenu->setMode(MODE_MENU);
+	listMenu->setItemsPerPage(6, 2);
+	listMenu->enableWidgetChange();
 
-	mainMenu->exec(NULL, "");
-	mainMenu->hide();
-	delete mainMenu;
-	mainMenu = NULL;
+	listMenu->setSelected(selected);
+
+	// head
+	listMenu->enablePaintDate();
+	listMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+
+	// foot
+	listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
+
+	// foot info
+	listMenu->enablePaintFootInfo();
+
+	listMenu->addKey(RC_info, this, "minfo");
+
+	listMenu->exec(NULL, "");
+	listMenu->hide();
+	delete listMenu;
+	listMenu = NULL;
 }
 
 void CTestMenu::testClistBoxWidget2()

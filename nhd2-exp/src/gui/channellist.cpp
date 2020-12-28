@@ -1562,6 +1562,7 @@ const struct button_label HeadWEBTVNewModeButtons[2] =
 	{ NEUTRINO_ICON_BUTTON_MUTE_ZAP_ACTIVE, NONEXISTANT_LOCALE, NULL }
 };
 
+bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGData * epgdata);
 void CChannelList::paint()
 {
 	dprintf(DEBUG_NORMAL, "CChannelList::paint\n");
@@ -1633,11 +1634,13 @@ void CChannelList::paint()
 			item->setIcon1(chanlist[i]->isHD() ? NEUTRINO_ICON_HD : chanlist[i]->isUHD()? NEUTRINO_ICON_UHD : "");
 			item->setIcon2(chanlist[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "");
 
-			//TEST
 			item->set2lines();
+
 			std::string tmp = cSeit;
 			tmp += "\n";
 			tmp += p_event->text.c_str();
+			tmp += "\n";
+			tmp += cNoch;
 
 			item->setHelpText(tmp.c_str());
 			//
