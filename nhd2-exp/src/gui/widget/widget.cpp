@@ -222,18 +222,13 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 
 	initFrames();
 
+	// set in focus
 	if(hasItem() && items.size() > 1)
 	{
 		for (unsigned int i = 0; i < items.size(); i++)
 		{
-			items[i]->setOutFocus(true);
-		}
-
-		for (unsigned int i = 0; i < items.size(); i++)
-		{
-			if(items[i]->isSelectable())
+			if((items[i]->isSelectable()) && (items[i]->inFocus == true))
 			{
-				items[i]->setOutFocus(false);
 				selected = i;
 				break;
 			}
@@ -652,11 +647,11 @@ void CWidget::onYellowKeyPressed()
 
 			if(item->isSelectable() && item->hasItem())
 			{
-				items[selected]->setOutFocus(true);
+				items[selected]->setInFocus(false);
 
 				selected = pos;
 
-				item->setOutFocus(false);
+				item->setInFocus(true);
 
 				paint();
 

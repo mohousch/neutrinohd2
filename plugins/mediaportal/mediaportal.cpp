@@ -160,6 +160,7 @@ void CMediaPortal::showMenu(void)
 
 	mediaPortal->setMode(MODE_LISTBOX);
 	mediaPortal->setWidgetType(WIDGET_TYPE_FRAME);
+	mediaPortal->enablePaintFootInfo();
 
 	// youtube
 	item = new ClistBoxItem("You Tube", true, NULL, this, "youtube", RC_nokey, NULL, PLUGINDIR "/youtube/youtube.png");

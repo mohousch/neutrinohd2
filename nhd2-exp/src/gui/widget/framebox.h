@@ -98,7 +98,7 @@ class CFrameBox : public CWidgetItem
 
 		fb_pixel_t backgroundColor;
 
-		bool outFocus;
+		//bool inFocus;
 
 		std::vector<CFrame*> frames;
 
@@ -127,7 +127,7 @@ class CFrameBox : public CWidgetItem
 
 		int getSelected(){return selected;};
 
-		void setOutFocus(bool focus){outFocus = focus;};
+		//void setInFocus(bool focus){inFocus = focus;};
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
 
 		void setMode(int mode = FRAME_MODE_HORIZONTAL){frameMode = mode;};

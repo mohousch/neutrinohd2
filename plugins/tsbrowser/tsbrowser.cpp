@@ -409,11 +409,6 @@ void CTSBrowser::showMenu()
 	mlist->setSelected(selected);
 	mlist->enablePaintDate();
 
-	mlist->addWidget(WIDGET_TYPE_STANDARD);
-	mlist->addWidget(WIDGET_TYPE_CLASSIC);
-	mlist->addWidget(WIDGET_TYPE_EXTENDED);
-	mlist->enableWidgetChange();
-
 	mlist->enablePaintFootInfo();
 
 	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);

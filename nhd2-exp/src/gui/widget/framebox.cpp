@@ -120,7 +120,7 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 
 	selected = 0;
 	pos = 0;
-	outFocus = false;
+	//inFocus = false;
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 
 	frameMode = FRAME_MODE_HORIZONTAL;
@@ -140,7 +140,7 @@ CFrameBox::CFrameBox(CBox* position)
 
 	selected = 0;
 	pos = 0;
-	outFocus = false;
+	//inFocus = false;
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 
 	frameMode = FRAME_MODE_HORIZONTAL;
@@ -220,10 +220,12 @@ void CFrameBox::paintFrames()
 			frame->window.enableShadow();
 		frame->item_backgroundColor = backgroundColor;
 
-		if(outFocus)
-			frame->paint(false);
-		else
+		if(inFocus)
+			//frame->paint(false);
 			frame->paint( selected == ((signed int) count));
+		else
+			//frame->paint( selected == ((signed int) count));
+			frame->paint(false);
 	}
 }
 

@@ -209,6 +209,7 @@ void CNEpisodes::showMenu()
 	//listBox->setItemBoxColor(COL_YELLOW);
 	listBox->setSelected(selected);
 	listBox->enablePaintDate();
+	listBox->enablePaintFootInfo();
 
 	listBox->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 

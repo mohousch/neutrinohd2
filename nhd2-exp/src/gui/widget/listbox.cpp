@@ -1661,7 +1661,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 
 	logo = false;
 	enableCenter = false;
-	outFocus = false;
+	//inFocus = false;
 	shrinkMenu = false;
 
 	//
@@ -1733,7 +1733,7 @@ ClistBox::ClistBox(CBox* position)
 
 	logo = false;
 	enableCenter = false;
-	outFocus = false;
+	//inFocus = false;
 	shrinkMenu = false;
 
 	//
@@ -1999,10 +1999,12 @@ void ClistBox::paintItems()
 						paintItemInfo(count);
 					}
 
-					if(outFocus)
-						item->paint(false);
-					else
+					if(inFocus)
 						item->paint( selected == ((signed int) count));
+						//item->paint(false);
+					else
+						//item->paint( selected == ((signed int) count));
+						item->paint(false);
 
 					count++;
 
@@ -2094,10 +2096,12 @@ void ClistBox::paintItems()
 					paintItemInfo(count);
 				}
 
-				if(outFocus)
-					ypos = item->paint(false);
-				else
+				if(inFocus)
+					//ypos = item->paint(false);
 					ypos = item->paint(selected == ((signed int) count));
+				else
+					//ypos = item->paint(selected == ((signed int) count));
+					ypos = item->paint(false);
 			} 
 			else 
 			{
