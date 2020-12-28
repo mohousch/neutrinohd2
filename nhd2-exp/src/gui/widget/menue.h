@@ -128,7 +128,7 @@ class ClistBoxWidget : public CMenuTarget
 		int icon_head_h;
 		const char * l_name;
 
-		// footInfo
+		// itemInfo
 		bool paintFootInfo;
 		CBox cFrameFootInfo;
 		int footInfoHeight;

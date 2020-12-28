@@ -1631,7 +1631,16 @@ void CChannelList::paint()
 			item->setOptionInfo2(cNoch);
 
 			item->setIcon1(chanlist[i]->isHD() ? NEUTRINO_ICON_HD : chanlist[i]->isUHD()? NEUTRINO_ICON_UHD : "");
-			item->setIcon2(chanlist[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : ""); 
+			item->setIcon2(chanlist[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "");
+
+			//TEST
+			item->set2lines();
+			std::string tmp = cSeit;
+			tmp += "\n";
+			tmp += p_event->text.c_str();
+
+			item->setHelpText(tmp.c_str());
+			//
 
 			listBox->addItem(item);
 		}
@@ -1641,6 +1650,8 @@ void CChannelList::paint()
 	listBox->setTitle(name.c_str());
 	listBox->enablePaintHead();
 	listBox->enablePaintDate();
+	//TEST
+	listBox->setWidgetType(WIDGET_TYPE_EXTENDED);
 
 	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
 		listBox->setHeaderButtons(new_mode_active? HeadWEBTVNewModeButtons : HeadWEBTVModeButtons, 2); 
