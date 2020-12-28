@@ -1627,10 +1627,7 @@ void CMoviePlayerGui::show(const std::string _Title, const std::string _Info, sh
 	
 	visible = true;
 
-	//FIXME
-#if !defined (PLATFORM_GIGABLUE)
 	showMovieInfo(_Title, _Info, _Percent, _ac3state, _speed, _playstate, _show_bookmark, _m_loop);
-#endif
 }
 
 void CMoviePlayerGui::GetDimensions()

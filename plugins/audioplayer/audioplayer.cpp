@@ -300,8 +300,20 @@ void CMP3Player::showMenu()
 		item->setInfo2(artist.c_str());
 		item->setOptionInfo2(date.c_str());
 
+		std::string tmp = title.c_str();
+		tmp += "\n";
+		tmp += genre.c_str();
+		tmp += "\n";
+		tmp += artist.c_str();
+		tmp += "\n";
+		tmp += date.c_str();
+
+		item->setHelpText(tmp.c_str());
+
 		alist->addItem(item);
 	}
+
+	alist->setWidgetType(WIDGET_TYPE_EXTENDED);
 
 	//alist->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	alist->setSelected(selected);
