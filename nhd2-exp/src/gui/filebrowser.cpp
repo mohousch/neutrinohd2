@@ -849,6 +849,7 @@ void CFileBrowser::paint()
 
 	listBox->enableShrinkMenu();
 	listBox->enableCenterPos();
+	listBox->enableSaveScreen();
 
 	listBox->enablePaintHead();
 	listBox->setTitle(l_name);
