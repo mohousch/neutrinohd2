@@ -234,6 +234,8 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 			}
 		}
 	}
+	else
+		selected = 0;
 
 	paint();
 

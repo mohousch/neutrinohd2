@@ -1661,7 +1661,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 
 	logo = false;
 	enableCenter = false;
-	//inFocus = false;
+	inFocus = true;
 	shrinkMenu = false;
 
 	//
@@ -1733,7 +1733,7 @@ ClistBox::ClistBox(CBox* position)
 
 	logo = false;
 	enableCenter = false;
-	//inFocus = false;
+	inFocus = true;
 	shrinkMenu = false;
 
 	//
