@@ -539,6 +539,9 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 
 	CNeutrinoApp * neutrino = CNeutrinoApp::getInstance();
 
+	if (!_calledFromNumZap) 
+	{
+
 	bool hideIt = true;
 	virtual_zap_mode = false;
 
@@ -638,7 +641,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 					// raus hier und im Hauptfenster behandeln...
 					g_RCInput->postMsg(msg, data);
 
-					//res = messages_return::cancel_info; //FIXME:
+					res = messages_return::cancel_info; //FIXME:
 				}
 			}
 		}
@@ -656,6 +659,8 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 	{
 		CNeutrinoApp::getInstance()->channelList->virtual_zap_mode(msg == RC_right);
 		virtual_zap_mode = false;
+	}
+
 	}
 }
 
