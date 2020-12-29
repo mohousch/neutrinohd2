@@ -73,7 +73,7 @@ void CMediaPlayerMenu::showMenu()
 	MediaPlayer->enableShrinkMenu();
 	MediaPlayer->enableMenuPosition();
 	MediaPlayer->enableWidgetChange();
-	MediaPlayer->enablePaintFootInfo();
+	MediaPlayer->enablePaintItemInfo();
 	MediaPlayer->enablePaintDate();
 
 	MediaPlayer->integratePlugins(CPlugins::I_TYPE_MULTIMEDIA, shortcutMediaPlayer++);

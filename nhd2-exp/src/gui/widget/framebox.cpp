@@ -221,10 +221,8 @@ void CFrameBox::paintFrames()
 		frame->item_backgroundColor = backgroundColor;
 
 		if(inFocus)
-			//frame->paint(false);
 			frame->paint( selected == ((signed int) count));
 		else
-			//frame->paint( selected == ((signed int) count));
 			frame->paint(false);
 	}
 }

@@ -694,7 +694,7 @@ void CInternetRadio::showMenu()
 	ilist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	ilist->setFooterButtons(AudioPlayerButtons, FOOT_BUTTONS_COUNT);
 	
-	ilist->enablePaintFootInfo();
+	ilist->enablePaintItemInfo();
 	ilist->enablePaintDate();
 
 	ilist->addKey(RC_setup, this, CRCInput::getSpecialKeyName(RC_setup));

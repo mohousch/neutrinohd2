@@ -345,8 +345,6 @@ CHeaders::CHeaders(const int x, const int y, const int dx, const int dy, const c
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
 
-	//inFocus = false;
-
 	itemType = WIDGET_ITEM_HEAD;
 }
 
@@ -366,8 +364,6 @@ CHeaders::CHeaders(CBox position, const char * const title, const char * const i
 	logo = false;
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
-
-	//inFocus = false;
 
 	itemType = WIDGET_ITEM_HEAD;
 }
@@ -447,8 +443,6 @@ CFooters::CFooters(int x, int y, int dx, int dy, const unsigned int count, const
 	fcorner = CORNER_BOTTOM;
 	fgradient = g_settings.Foot_gradient;
 
-	//inFocus = false;
-
 	itemType = WIDGET_ITEM_FOOT;
 }
 
@@ -463,8 +457,6 @@ CFooters::CFooters(CBox position, const unsigned int count, const struct button_
 	fradius = RADIUS_MID;
 	fcorner = CORNER_BOTTOM;
 	fgradient = g_settings.Foot_gradient;
-
-	//inFocus = false;
 
 	itemType = WIDGET_ITEM_FOOT;
 }

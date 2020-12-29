@@ -1675,8 +1675,8 @@ void CChannelList::paint()
 
 	listBox->setFooterButtons(CChannelListButtons, NUM_LIST_BUTTONS);
 
-	// foot info
-	listBox->enablePaintFootInfo();
+	// itemInfo
+	listBox->enablePaintItemInfo();
 
 	//
 	listBox->setSelected(selected);

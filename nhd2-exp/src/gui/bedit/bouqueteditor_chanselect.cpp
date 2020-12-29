@@ -155,7 +155,7 @@ void CBEChannelSelectWidget::paint()
 	listBox->enablePaintDate();
 	listBox->enablePaintFoot();
 	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
-	listBox->enablePaintFootInfo();
+	listBox->enablePaintItemInfo();
 
 	//
 	listBox->setSelected(selected);
@@ -172,7 +172,6 @@ int CBEChannelSelectWidget::exec(CMenuTarget* parent, const std::string& actionK
 	dprintf(DEBUG_NORMAL, "CBEChannelSelectWidget::exec: actionKey:%s\n", actionKey.c_str());
 
 	//
-	//bouquetChannels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
 	if (mode == CZapitClient::MODE_TV)
 		bouquetChannels = &(g_bouquetManager->Bouquets[bouquet]->tvChannels);
 	else if (mode == CZapitClient::MODE_RADIO)

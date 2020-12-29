@@ -178,7 +178,7 @@ void CMiscSettings::showMenu(void)
 	miscSettings->enableShrinkMenu();
 	miscSettings->enableMenuPosition();
 	miscSettings->enableWidgetChange();
-	miscSettings->enablePaintFootInfo();
+	miscSettings->enablePaintItemInfo();
 	miscSettings->enablePaintDate();
 
 	//miscSettings general

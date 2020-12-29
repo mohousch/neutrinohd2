@@ -2001,9 +2001,7 @@ void ClistBox::paintItems()
 
 					if(inFocus)
 						item->paint( selected == ((signed int) count));
-						//item->paint(false);
 					else
-						//item->paint( selected == ((signed int) count));
 						item->paint(false);
 
 					count++;
@@ -2097,10 +2095,8 @@ void ClistBox::paintItems()
 				}
 
 				if(inFocus)
-					//ypos = item->paint(false);
 					ypos = item->paint(selected == ((signed int) count));
 				else
-					//ypos = item->paint(selected == ((signed int) count));
 					ypos = item->paint(false);
 			} 
 			else 

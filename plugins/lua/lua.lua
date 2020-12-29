@@ -317,7 +317,7 @@ function testClistBoxWidget()
 	listWidget:addWidget(neutrino.WIDGET_TYPE_EXTENDED)
 	listWidget:addWidget(neutrino.WIDGET_TYPE_FRAME)
 	listWidget:enableWidgetChange()
-	listWidget:enablePaintFootInfo()
+	listWidget:enableItemFootInfo()
 
 	if selected < 0 then
 		selected = 0

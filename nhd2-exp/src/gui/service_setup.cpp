@@ -104,7 +104,7 @@ void CServiceSetup::showMenu(void)
 	service->enableShrinkMenu();
 	service->enableMenuPosition();
 	service->enableWidgetChange();
-	service->enablePaintFootInfo();
+	service->enablePaintItemInfo();
 	service->enablePaintDate();
 	
 	// scan setup

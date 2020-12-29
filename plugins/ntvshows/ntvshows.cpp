@@ -319,7 +319,7 @@ void CTVShows::showMenu()
 	//mlist->setItemBoxColor(COL_YELLOW);
 	mlist->setSelected(selected);
 	mlist->enablePaintDate();
-	mlist->enablePaintFootInfo();
+	mlist->enablePaintItemInfo();
 
 	mlist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 	mlist->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);

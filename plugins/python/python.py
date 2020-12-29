@@ -170,7 +170,7 @@ class testMenu(CMenuTarget):
 		self.listWidget.addWidget(WIDGET_TYPE_EXTENDED)
 		self.listWidget.addWidget(WIDGET_TYPE_FRAME)
 		self.listWidget.enableWidgetChange()
-		self.listWidget.enablePaintFootInfo()
+		self.listWidget.enablePaintItemInfo()
 
 		# messageBox
 		item1 = CMenuForwarder("CMessageBox", True, "", None, "red action")

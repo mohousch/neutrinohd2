@@ -465,7 +465,6 @@ class ClistBox : public CWidgetItem
 {
 	public:
 		std::vector<CMenuItem*>	items;
-		//bool inFocus;
 	private:
 		CFrameBuffer* frameBuffer;
 
@@ -600,7 +599,7 @@ class ClistBox : public CWidgetItem
 		void setFootGradient(int grad){footGradient = grad;};
 
 		// item footInfo
-		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh;};
+		void enablePaintItemInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh;};
 
 		virtual void scrollLineDown(const int lines = 1);
 		virtual void scrollLineUp(const int lines = 1);
@@ -619,7 +618,6 @@ class ClistBox : public CWidgetItem
 		int getListMaxShow(void) const {return listmaxshow;};
 
 		void enableCenterPos(){enableCenter = true;};
-		//void setInFocus(bool focus){inFocus = focus;};
 		void enableShrinkMenu(){shrinkMenu = true;};
 
 		//
