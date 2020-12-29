@@ -638,7 +638,7 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 					// raus hier und im Hauptfenster behandeln...
 					g_RCInput->postMsg(msg, data);
 
-					res = messages_return::cancel_info;
+					//res = messages_return::cancel_info; //FIXME:
 				}
 			}
 		}
