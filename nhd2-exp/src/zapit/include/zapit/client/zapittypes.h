@@ -60,7 +60,6 @@ extern "C" {
 }
 #include <string.h>
 
-
 static inline t_channel_id create_channel_id(t_service_id service_id, t_original_network_id original_network_id, t_transport_stream_id transport_stream_id, const char *url = NULL)
 {
 	if (url) 

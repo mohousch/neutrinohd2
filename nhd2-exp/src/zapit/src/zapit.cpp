@@ -914,7 +914,7 @@ void saveZapitSettings(bool write, bool write_a)
 			config.setInt32("lastChannelRadio", lastChannelRadio);
 			config.setInt32("lastChannelTV", lastChannelTV);
 			config.setInt32("lastChannelWEBTV", lastChannelWEBTV);
-			config.setInt64("lastChannel", live_channel_id&0xFFFFFFFFFFFFULL);
+			config.setInt64("lastChannel", live_channel_id);
 		}
 		
 		config.setBool("makeRemainingChannelsBouquet", makeRemainingChannelsBouquet);
@@ -950,7 +950,7 @@ void loadZapitSettings()
 	lastChannelTV = config.getInt32("lastChannelTV", 0);
 	lastChannelWEBTV = config.getInt32("lastChannelWEBTV", 0);
 
-	live_channel_id = config.getInt64("lastChannel", 0) & 0xFFFFFFFFFFFFULL;
+	live_channel_id = config.getInt64("lastChannel", 0);
 
 	dprintf(DEBUG_NORMAL, "[zapit] lastChannelMode:%d\n", lastChannelMode);
 	
@@ -4823,11 +4823,11 @@ int zapit_main_thread(void *data)
 		
 		// live channel id
 		if (currentMode & RADIO_MODE)
-			live_channel_id = ZapStart_arg->startchannelradio_id&0xFFFFFFFFFFFFULL;
+			live_channel_id = ZapStart_arg->startchannelradio_id;
 		else if (currentMode & TV_MODE)
-			live_channel_id = ZapStart_arg->startchanneltv_id&0xFFFFFFFFFFFFULL;
+			live_channel_id = ZapStart_arg->startchanneltv_id;
 		else if (currentMode & WEBTV_MODE)
-			live_channel_id = ZapStart_arg->startchannelwebtv_id&0xFFFFFFFFFFFFULL;
+			live_channel_id = ZapStart_arg->startchannelwebtv_id;
 
 		lastChannelRadio = ZapStart_arg->startchannelradio_nr;
 		lastChannelTV    = ZapStart_arg->startchanneltv_nr;

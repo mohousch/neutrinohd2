@@ -481,6 +481,7 @@ void CBouquetManager::makeBouquetfromCurrentservices(const _xmlNodePtr root)
 	t_service_id          service_id;
 	t_transport_stream_id transport_stream_id;
 	t_satellite_position  satellitePosition;
+	freq_id_t freq = 0;
 	
 	while (provider) 
 	{	
@@ -500,7 +501,8 @@ void CBouquetManager::makeBouquetfromCurrentservices(const _xmlNodePtr root)
 					GET_ATTR(transponder, "id", SCANF_TRANSPORT_STREAM_ID_TYPE, transport_stream_id);
 					GET_ATTR(channel_node, "service_id", SCANF_SERVICE_ID_TYPE, service_id);
 								
-					CZapitChannel *chan = findChannelByChannelID(CREATE_CHANNEL_ID(service_id, original_network_id, transport_stream_id));
+					//CZapitChannel *chan = findChannelByChannelID(CREATE_CHANNEL_ID(service_id, original_network_id, transport_stream_id));
+					CZapitChannel *chan = findChannelByChannelID(CREATE_CHANNEL_ID64);
 
 					if (chan != NULL)
 						newBouquet->addService(chan);
