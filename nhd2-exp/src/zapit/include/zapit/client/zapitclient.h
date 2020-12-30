@@ -319,6 +319,8 @@ class CZapitClient : public CBasicClient
 		/* channel name */
 		std::string getChannelName(const t_channel_id channel_id);
 
+		int getChannelNumber(const t_channel_id channel_id);
+
 		// webtv channel url
 		std::string getChannelURL(const t_channel_id channel_id);
 

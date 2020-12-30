@@ -155,7 +155,9 @@ class CZapitMessages
 			CMD_GET_CHANNEL_DESCRIPTION	  = 117,
 
 			CMD_IS_WEBTV_CHANNEL		  = 118,
-			CMD_IS_RADIO_CHANNEL		  = 119
+			CMD_IS_RADIO_CHANNEL		  = 119,
+
+			CMD_GET_CHANNEL_NUMBER		  = 120
 		};
 
 		struct commandBoolean
@@ -294,6 +296,11 @@ class CZapitMessages
 		struct responseGetChannelName
 		{
 			char name[CHANNEL_NAME_SIZE];
+		};
+
+		struct responseGetChannelNumber
+		{
+			int number;
 		};
 
 		struct responseGetChannelURL

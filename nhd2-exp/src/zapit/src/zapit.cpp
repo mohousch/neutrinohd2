@@ -864,14 +864,24 @@ void saveZapitSettings(bool write, bool write_a)
 	{
 		int c = 0;
 
-/*
+#if 0
 		if(currentMode & RADIO_MODE)
 			c = g_bouquetManager->radioChannelsBegin().getLowestChannelNumberWithChannelID(live_channel->getChannelID());
 		else if(currentMode & TV_MODE)
 			c = g_bouquetManager->tvChannelsBegin().getLowestChannelNumberWithChannelID(live_channel->getChannelID());
 		else if(currentMode & WEBTV_MODE)
 			g_bouquetManager->webtvChannelsBegin().getLowestChannelNumberWithChannelID(live_channel->getChannelID());
-*/
+
+		if (c >= 0) 
+		{
+			if ((currentMode & RADIO_MODE))
+				lastChannelRadio = c;
+			else if ((currentMode & TV_MODE))
+				lastChannelTV = c;
+			else if ((currentMode & WEBTV_MODE))
+				lastChannelWEBTV = c;
+		}
+#else
 
 		c = live_channel->number;
 
@@ -884,6 +894,7 @@ void saveZapitSettings(bool write, bool write_a)
 			else if ((currentMode & WEBTV_MODE))
 				lastChannelWEBTV = c - 1;
 		}
+#endif
 	}
 
 	// write zapit config
@@ -903,7 +914,7 @@ void saveZapitSettings(bool write, bool write_a)
 			config.setInt32("lastChannelRadio", lastChannelRadio);
 			config.setInt32("lastChannelTV", lastChannelTV);
 			config.setInt32("lastChannelWEBTV", lastChannelWEBTV);
-			config.setInt64("lastChannel", live_channel_id);
+			config.setInt64("lastChannel", live_channel_id&0xFFFFFFFFFFFFULL);
 		}
 		
 		config.setBool("makeRemainingChannelsBouquet", makeRemainingChannelsBouquet);
@@ -935,10 +946,11 @@ void loadZapitSettings()
 
 	saveLastChannel = config.getBool("saveLastChannel", true);
 	lastChannelMode = config.getInt32("lastChannelMode", TV_MODE);
-	live_channel_id = config.getInt64("lastChannel", 0) & 0xFFFFFFFFFFFFULL;
 	lastChannelRadio = config.getInt32("lastChannelRadio", 0);
 	lastChannelTV = config.getInt32("lastChannelTV", 0);
 	lastChannelWEBTV = config.getInt32("lastChannelWEBTV", 0);
+
+	live_channel_id = config.getInt64("lastChannel", 0) & 0xFFFFFFFFFFFFULL;
 
 	dprintf(DEBUG_NORMAL, "[zapit] lastChannelMode:%d\n", lastChannelMode);
 	
@@ -2191,6 +2203,35 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			CBasicServer::send_data(connfd, &response, sizeof(response));
 			break;
 		}
+
+		// channel number
+		case CZapitMessages::CMD_GET_CHANNEL_NUMBER: 
+		{
+			t_channel_id requested_channel_id;
+			CZapitMessages::responseGetChannelNumber response;
+			CBasicServer::receive_data(connfd, &requested_channel_id, sizeof(requested_channel_id));
+			if(requested_channel_id == 0) 
+			{
+				if(live_channel) 
+				{
+					response.number = live_channel->number;
+				} 
+				else
+					response.number = 0;
+			} 
+			else 
+			{
+				tallchans_iterator it = allchans.find(requested_channel_id);
+				if (it == allchans.end())
+					response.number = 0;
+				else
+					response.number = it->second.number;
+
+			}
+			CBasicServer::send_data(connfd, &response, sizeof(response));
+			break;
+		}
+
 
 		// webtv channel url
 		case CZapitMessages::CMD_GET_CHANNEL_URL: 
@@ -4782,11 +4823,11 @@ int zapit_main_thread(void *data)
 		
 		// live channel id
 		if (currentMode & RADIO_MODE)
-			live_channel_id = ZapStart_arg->startchannelradio_id;
+			live_channel_id = ZapStart_arg->startchannelradio_id&0xFFFFFFFFFFFFULL;
 		else if (currentMode & TV_MODE)
-			live_channel_id = ZapStart_arg->startchanneltv_id;
+			live_channel_id = ZapStart_arg->startchanneltv_id&0xFFFFFFFFFFFFULL;
 		else if (currentMode & WEBTV_MODE)
-			live_channel_id = ZapStart_arg->startchannelwebtv_id;
+			live_channel_id = ZapStart_arg->startchannelwebtv_id&0xFFFFFFFFFFFFULL;
 
 		lastChannelRadio = ZapStart_arg->startchannelradio_nr;
 		lastChannelTV    = ZapStart_arg->startchanneltv_nr;

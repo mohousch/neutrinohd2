@@ -521,6 +521,17 @@ std::string CZapitClient::getChannelName(const t_channel_id channel_id)
 	return std::string(response.name);
 }
 
+/* channel number */
+int CZapitClient::getChannelNumber(const t_channel_id channel_id)
+{
+	send(CZapitMessages::CMD_GET_CHANNEL_NUMBER, (char *) & channel_id, sizeof(channel_id));
+
+	CZapitMessages::responseGetChannelNumber response;
+	CBasicClient::receive_data((char* )&response, sizeof(response));
+	close_connection();
+	return response.number;
+}
+
 /* channel url */
 std::string CZapitClient::getChannelURL(const t_channel_id channel_id)
 {

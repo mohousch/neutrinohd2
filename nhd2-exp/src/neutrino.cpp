@@ -1310,9 +1310,9 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setString("startchanneltv", g_settings.StartChannelTV );
 	configfile.setString("startchannelradio", g_settings.StartChannelRadio );
 	configfile.setString("startchannelwebtv", g_settings.StartChannelWEBTV );
-	configfile.setInt64("startchanneltv_id", g_settings.startchanneltv_id);
-	configfile.setInt64("startchannelradio_id", g_settings.startchannelradio_id);
-	configfile.setInt64("startchannelwebtv_id", g_settings.startchannelwebtv_id);
+	configfile.setInt64("startchanneltv_id", g_settings.startchanneltv_id&0xFFFFFFFFFFFFULL);
+	configfile.setInt64("startchannelradio_id", g_settings.startchannelradio_id&0xFFFFFFFFFFFFULL);
+	configfile.setInt64("startchannelwebtv_id", g_settings.startchannelwebtv_id&0xFFFFFFFFFFFFULL);
 	configfile.setInt32("startchanneltv_nr", g_settings.startchanneltv_nr);
 	configfile.setInt32("startchannelradio_nr", g_settings.startchannelradio_nr);
 	configfile.setInt32("startchannelwebtv_nr", g_settings.startchannelwebtv_nr);
