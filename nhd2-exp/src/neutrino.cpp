@@ -1686,6 +1686,8 @@ void CNeutrinoApp::SetChannelMode(int newmode, int nMode)
 	
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetChannelMode: ChannelsMode: %s nMode: %d\n", aLISTMODE[newmode], nMode);
 
+	chmode = nMode;
+
 	// channelList
 	if(nMode == mode_radio)
 		channelList = RADIOchannelList;

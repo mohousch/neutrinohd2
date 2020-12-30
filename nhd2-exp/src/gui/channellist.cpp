@@ -515,7 +515,7 @@ int CChannelList::exec(bool zap)
 
 #define CHANNEL_SMSKEY_TIMEOUT 800
 //return: >= 0 to zap, -1 on cancel, -3 on list mode change, -4 list edited, -2 zap but no restore old list/chan
-int CChannelList::show(bool zap)
+int CChannelList::show(bool zap, bool customMode)
 {
 	dprintf(DEBUG_NORMAL, "CChannelList::show: zap:%s\n", zap? "yes" : "no");
 
@@ -846,7 +846,7 @@ int CChannelList::show(bool zap)
 	// bouquets mode
 	if (bShowBouquetList)
 	{
-		res = bouquetList->exec(true, zap);
+		res = bouquetList->exec(true, zap, customMode);
 	}
 	
 	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);

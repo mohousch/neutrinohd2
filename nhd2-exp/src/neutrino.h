@@ -99,6 +99,7 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		// modes
 		int mode;
 		int lastMode;
+		int chmode;
 		
 		CTimerd::RecordingInfo * nextRecordingInfo;
 
@@ -181,8 +182,9 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 
 		int handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data);
 
-		int getMode() { return mode; }
-		int getLastMode() { return lastMode; }
+		int getMode() { return mode; };
+		int getLastMode() { return lastMode; };
+		int getChMode(){return chmode;};
 		
 		void setupRecordingDevice(void);
 		void startNextRecording();
@@ -199,6 +201,8 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 #endif		
 		
 		void SendSectionsdConfig(void);
+
+		//
 		int GetChannelMode(void) { return g_settings.channel_mode; };
 		void SetChannelMode(int newmode, int nMode);
 		

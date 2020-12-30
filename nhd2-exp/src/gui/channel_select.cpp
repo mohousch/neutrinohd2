@@ -114,9 +114,9 @@ _repeat:
 
 	// show channel list
 	if(bouquetList->Bouquets.size() && bouquetList->Bouquets[activBouquet]->channelList->getSize() > 0)
-		nNewChannel = bouquetList->Bouquets[activBouquet]->channelList->show(false);
+		nNewChannel = bouquetList->Bouquets[activBouquet]->channelList->show(false, true);
 	else
-		nNewChannel = bouquetList->show(true);
+		nNewChannel = bouquetList->show(true, true);
 
 	if(bouquetList->Bouquets.size())
 	{ 
