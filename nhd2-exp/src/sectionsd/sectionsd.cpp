@@ -6156,7 +6156,166 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 
 	answer = "/tmp/epg.xml";
 
-	if(g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
+	if(g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NHD2)
+	{
+		if (!::downloadUrl(url, answer))
+			return;
+
+		//NHD2
+		/*
+		<epglist>
+			<channel_id>bf270f2b5e</channel_id>
+			<channel_short_id>bf270f2b5e</channel_short_id>
+			<channel_name>Disney SD</channel_name>
+			<prog>
+				<bouquetnr>0</bouquetnr>
+				<channel_id>bf270f2b5e</channel_id>
+				<eventid>365560600707</eventid>
+				<eventid_hex>551d1c1883</eventid_hex>
+				<start_sec>1609424700</start_sec>
+				<start_t>15:25</start_t>
+				<date>31.12.2020</date>
+				<stop_sec>1609426200</stop_sec>
+				<stop_t>15:50</stop_t>
+				<duration_min>25</duration_min>
+				<description>Phineas und Ferb</description>
+				<info1>
+				Carl liest Major Monogram eine Geschichte vor diese erzählt von einer abenteuerlichen Reise von Phineas und Ferb.
+				</info1>
+				<info2>
+				Phineas, Ferb und ihre nervige Schwester haben Sommerferien. Die zwei erfinderischen Jungen denken sich immer neue, abenteuerliche Dinge aus, um Spass zu haben und den Sommer zu nutzen.Candice dagegen findet wenig Vergnügen an den Abenteuern ihrer Brüder. Bei jeder Gelegenheit versucht sie, die Beiden bei ihrer Mutter zu verpetzen.
+				</info2>
+			</prog>
+		-</epglist>
+		*/
+
+		//
+		_xmlNodePtr event = NULL;
+		_xmlNodePtr node = NULL;
+
+		//
+		_xmlDocPtr index_parser = parseXmlFile(answer.c_str());
+
+		if (index_parser != NULL) 
+		{
+			event = xmlDocGetRootElement(index_parser)->xmlChildrenNode;
+
+			while (event) 
+			{
+				node = event->xmlChildrenNode;
+
+				// bouquetnr
+				while(xmlGetNextOccurence(node, "bouquetnr") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
+				// channel_id
+				while(xmlGetNextOccurence(node, "channel_id") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
+				// eventid
+				while(xmlGetNextOccurence(node, "eventid") != NULL)
+				{
+					id = atoi(xmlGetData(node) + 10);
+
+					node = node->xmlNextNode;
+				}
+
+				// eventid_hex
+				while(xmlGetNextOccurence(node, "eventid_hex") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
+				//start_sec
+				while(xmlGetNextOccurence(node, "start_sec") != NULL)
+				{
+					start_time = (time_t)atoi(xmlGetData(node));
+
+					node = node->xmlNextNode;
+				}
+
+				// start_t
+				while(xmlGetNextOccurence(node, "start_t") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
+				// date
+				while(xmlGetNextOccurence(node, "date") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+	
+				//stop_sec
+				while(xmlGetNextOccurence(node, "stop_sec") != NULL)
+				{
+					stop_time = (time_t)atoi(xmlGetData(node));
+					duration = stop_time - start_time;
+
+					node = node->xmlNextNode;
+				}
+
+				// stop_t
+				while(xmlGetNextOccurence(node, "stop_t") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
+				// duration_min
+				while(xmlGetNextOccurence(node, "duration_min") != NULL)
+				{
+					node = node->xmlNextNode;
+				}
+
+				//description (title)
+				while(xmlGetNextOccurence(node, "description") != NULL)
+				{
+					title = xmlGetData(node);
+					
+					node = node->xmlNextNode;
+				}
+
+				// info1 (description)
+				while(xmlGetNextOccurence(node, "info1") != NULL)
+				{
+					description = xmlGetData(node);
+					
+					node = node->xmlNextNode;
+				}
+
+				//info2 (descriptionextended)
+				while(xmlGetNextOccurence(node, "info2") != NULL)
+				{
+					descriptionextended = xmlGetData(node);
+					
+					node = node->xmlNextNode;
+				}
+
+				SIevent e(_onid, _tsid, _sid, id);
+
+				e.times.insert(SItime(start_time, duration));
+				if(title != NULL)
+					e.setName(std::string(UTF8_to_Latin1("ger")), std::string(title));
+
+				if(description != NULL)
+					e.setText(std::string(UTF8_to_Latin1("ger")), std::string(description));
+
+				if(descriptionextended != NULL)
+					e.appendExtendedText(std::string(UTF8_to_Latin1("ger")), std::string(descriptionextended));
+
+				addEvent(e, 0);
+				
+				event = event->xmlNextNode;
+			}
+
+			xmlFreeDoc(index_parser);
+		}
+	}
+	else if(g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
 	{
 		if (!::downloadUrl(url, answer))
 			return;
@@ -6164,27 +6323,27 @@ void insertEventsfromHttp(std::string& url, t_original_network_id _onid, t_trans
 		//NMP
 		/*
 		-<epglist>
-		<channel_name><![CDATA[XITE]]></channel_name>
-		<channel_id>f1270f5e38</channel_id>
-		<channel_short_id>f1270f5e38</channel_short_id>
-		<epg_id></epg_id>
-		<short_epg_id></short_epg_id>
-		-<prog>
-			<bouquetnr>0</bouquetnr>
+			<channel_name><![CDATA[XITE]]></channel_name>
 			<channel_id>f1270f5e38</channel_id>
-			<epg_id>b24403f300012b66</epg_id>
-			<eventid>67878416345993535</eventid>
-			<eventid_hex>f1270f5e38113f</eventid_hex>
-			<start_sec>1483102800</start_sec>
-			<start_t>14:00</start_t>
-			<date>30.12.2016</date>
-			<stop_sec>1483117200</stop_sec>
-			<stop_t>18:00</stop_t>
-			<duration_min>240</duration_min>
-			<info1><![CDATA[Xite wishes you happy holidays! To complete the holiday spirit, we have made a mix of all of your favourite music.]]></info1>
-			<info2><![CDATA[Xite wishes you happy holidays! To complete the holiday spirit, we have made a mix of all of your favourite music.]]></info2>
-			<description><![CDATA[Happy Holidays]]></description>
-		-</prog>
+			<channel_short_id>f1270f5e38</channel_short_id>
+			<epg_id></epg_id>
+			<short_epg_id></short_epg_id>
+			-<prog>
+				<bouquetnr>0</bouquetnr>
+				<channel_id>f1270f5e38</channel_id>
+				<epg_id>b24403f300012b66</epg_id>
+				<eventid>67878416345993535</eventid>
+				<eventid_hex>f1270f5e38113f</eventid_hex>
+				<start_sec>1483102800</start_sec>
+				<start_t>14:00</start_t>
+				<date>30.12.2016</date>
+				<stop_sec>1483117200</stop_sec>
+				<stop_t>18:00</stop_t>
+				<duration_min>240</duration_min>
+				<info1><![CDATA[Xite wishes you happy holidays! To complete the holiday spirit, we have made a mix of all of your favourite music.]]></info1>
+				<info2><![CDATA[Xite wishes you happy holidays! To complete the holiday spirit, we have made a mix of all of your favourite music.]]></info2>
+				<description><![CDATA[Happy Holidays]]></description>
+			-</prog>
 		-</epglist>
 		*/
 
