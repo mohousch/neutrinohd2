@@ -28,7 +28,8 @@ extern "C" void plugin_del(void);
 #define NEUTRINO_ICON_NETZKINO_SMALL		PLUGINDIR "/netzkino/netzkino_small.png"
 
 enum {
-	LOCALE_NETZKINO,
+	LOCALE_TEST,
+	LOCALE_NK_NETZKINO,
 	LOCALE_NK_MOVIES_ERROR,
 	LOCALE_NK_ERROR,
 	LOCALE_NK_CATEGORIES,
@@ -36,7 +37,8 @@ enum {
 };
 
 const char * locale_real_names_ntk[] = {
-	"netzkino.netzkino",
+	"",
+	"netzkino.nk_netzkino",
 	"netzkino.nk_movies_error",
 	"netzkino.nk_error",
 	"netzkino.nk_categories",
@@ -86,7 +88,7 @@ void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 {
 	dprintf(DEBUG_NORMAL, "CNKMovies::loadNKTitles: (mode:%d) search:%s (id:%d)\n", mode, search.c_str(), id);
 
-	CHintBox loadBox(g_Locale->getCustomText((neutrino_locale_t)LOCALE_NETZKINO), g_Locale->getCustomText((neutrino_locale_t)LOCALE_NK_SCAN_FOR_CATEGORIES));
+	CHintBox loadBox(g_Locale->getCustomText((neutrino_locale_t)LOCALE_NK_NETZKINO), g_Locale->getCustomText((neutrino_locale_t)LOCALE_NK_SCAN_FOR_CATEGORIES));
 	loadBox.paint();
 
 	nkparser.Cleanup();
