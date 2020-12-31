@@ -52,7 +52,8 @@ extern std::map<std::string, std::string> iso639rev;
 class CLocaleManager
 {
 	private:
-		char * * localeData;
+		char **localeData;
+		char **customData;
 		
 	public:
 		enum loadLocale_ret_t
@@ -66,11 +67,16 @@ class CLocaleManager
 		~CLocaleManager();
 
 		loadLocale_ret_t loadLocale(const char * const locale);
-
-		const char* getText(const neutrino_locale_t keyName) const;
+		const char *getText(const neutrino_locale_t keyName) const;
 
 		static neutrino_locale_t getMonth  (const struct tm * struct_tm_p);
 		static neutrino_locale_t getWeekday(const struct tm * struct_tm_p);
+
+		// custom locale
+		loadLocale_ret_t loadCustomLocale(const char * const locale, const char ** custom_locale_real_names, const size_t length, const char * path);  
+		void unloadCustomLocale(const char **custom_locale_real_names, const size_t length);
+
+		const char *getCustomText(const neutrino_locale_t keyName) const;
 };
 
 #endif

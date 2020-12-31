@@ -1666,11 +1666,13 @@ const char * locale_real_names[] = {
 	"youtube.yt_autoplay",
 	
 	// netzkino
+/*
 	"netzkino.netzkino",
 	"netzkino.nk_movies_error",
 	"netzkino.nk_error",
 	"netzkino.nk_categories",
 	"netzkino.nk_scan_for_categories",
+*/
 
 	// tmdb
 	"tmdb.tmdb_info",

@@ -26,6 +26,22 @@ extern "C" void plugin_del(void);
 
 #define NEUTRINO_ICON_NETZKINO			PLUGINDIR "/netzkino/netzkino.png"
 #define NEUTRINO_ICON_NETZKINO_SMALL		PLUGINDIR "/netzkino/netzkino_small.png"
+
+enum {
+	LOCALE_NETZKINO,
+	LOCALE_NK_MOVIES_ERROR,
+	LOCALE_NK_ERROR,
+	LOCALE_NK_CATEGORIES,
+	LOCALE_NK_SCAN_FOR_CATEGORIES
+};
+
+const char * locale_real_names_ntk[] = {
+	"netzkino.netzkino",
+	"netzkino.nk_movies_error",
+	"netzkino.nk_error",
+	"netzkino.nk_categories",
+	"netzkino.nk_scan_for_categories"
+};
   
 //
 CNKMovies::CNKMovies(int mode, int id, std::string title)
@@ -70,7 +86,7 @@ void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 {
 	dprintf(DEBUG_NORMAL, "CNKMovies::loadNKTitles: (mode:%d) search:%s (id:%d)\n", mode, search.c_str(), id);
 
-	CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	CHintBox loadBox(g_Locale->getCustomText((neutrino_locale_t)LOCALE_NETZKINO), g_Locale->getCustomText((neutrino_locale_t)LOCALE_NK_SCAN_FOR_CATEGORIES));
 	loadBox.paint();
 
 	nkparser.Cleanup();
@@ -83,7 +99,7 @@ void CNKMovies::loadNKTitles(int mode, std::string search, int id)
 	else 
 	{
 		//FIXME show error
-		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_NK_MOVIES_ERROR), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
+		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getCustomText((neutrino_locale_t)LOCALE_NK_MOVIES_ERROR), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
 
 		loadBox.hide();
 		
@@ -379,12 +395,18 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
+	// load locale
+	g_Locale->loadCustomLocale(g_settings.language, locale_real_names_ntk, sizeof(locale_real_names_ntk)/sizeof(const char *), PLUGINDIR "/netzkino/");
+
 	CNKMovies * NKHandler = new CNKMovies(cNKFeedParser::CATEGORY, 8, "Highlights");
 	
 	NKHandler->exec(NULL, "");
 	
 	delete NKHandler;
-	NKHandler = NULL;			
+	NKHandler = NULL;
+
+	// unload locale
+	g_Locale->unloadCustomLocale(locale_real_names_ntk, sizeof(locale_real_names_ntk)/sizeof(const char *));			
 }
 
 

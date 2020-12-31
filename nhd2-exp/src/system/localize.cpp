@@ -79,6 +79,7 @@ void initialize_iso639_map(void)
 const char * getISO639Description(const char * const iso)
 {
 	std::map<std::string, std::string>::const_iterator it = iso639.find(std::string(iso));
+
 	if (it == iso639.end())
 		return iso;
 	else
@@ -88,6 +89,7 @@ const char * getISO639Description(const char * const iso)
 CLocaleManager::CLocaleManager()
 {
 	localeData = new char * [sizeof(locale_real_names)/sizeof(const char *)];
+
 	for (unsigned int i = 0; i < (sizeof(locale_real_names)/sizeof(const char *)); i++)
 		localeData[i] = (char *)locale_real_names[i];
 }
@@ -142,7 +144,7 @@ CLocaleManager::loadLocale_ret_t CLocaleManager::loadLocale(const char * const l
 
 	while(!feof(fd))
 	{
-		if(fgets(buf,sizeof(buf),fd)!=NULL)
+		if(fgets(buf, sizeof(buf), fd) != NULL)
 		{
 			char * val    = NULL;
 			char * tmpptr = buf;
@@ -166,7 +168,8 @@ CLocaleManager::loadLocale_ret_t CLocaleManager::loadLocale(const char * const l
 			do
 			{
 				pos = text.find("\\n");
-				if ( pos!=-1 )
+
+				if ( pos != -1 )
 				{
 					text.replace(pos, 2, "\n", 1);
 				}
@@ -176,7 +179,7 @@ CLocaleManager::loadLocale_ret_t CLocaleManager::loadLocale(const char * const l
 			{
 				//printf("[%s] [%s]\n", buf,locale_real_names[i]);
 				
-				if(!strcmp(buf,locale_real_names[i]))
+				if(!strcmp(buf, locale_real_names[i]))
 				{
 					if(localeData[i] == locale_real_names[i])
 						localeData[i] = strdup(text.c_str());
@@ -185,11 +188,13 @@ CLocaleManager::loadLocale_ret_t CLocaleManager::loadLocale(const char * const l
 					break;
 				}
 			}
+
 			//printf("i=%d\n", i);
 			if(i == sizeof(locale_real_names)/sizeof(const char *))
 				printf("[%s.locale] superfluous entry: %s\n", locale, buf);
 		}
 	}
+
 	fclose(fd);
 	
 	for (unsigned j = 1; j < (sizeof(locale_real_names)/sizeof(const char *)); j++)
@@ -241,7 +246,6 @@ static const neutrino_locale_t locale_month[12] =
 	LOCALE_DATE_DEC
 };
 
-
 neutrino_locale_t CLocaleManager::getMonth(const struct tm * struct_tm_p)
 {
 	return locale_month[struct_tm_p->tm_mon];
@@ -250,5 +254,130 @@ neutrino_locale_t CLocaleManager::getMonth(const struct tm * struct_tm_p)
 neutrino_locale_t CLocaleManager::getWeekday(const struct tm * struct_tm_p)
 {
 	return locale_weekday[struct_tm_p->tm_wday];
+}
+
+//
+CLocaleManager::loadLocale_ret_t CLocaleManager::loadCustomLocale(const char * const locale, const char ** custom_locale_real_names, const size_t length, const char * path)
+{
+	//
+	customData = new char * [length];
+
+	for (unsigned int i = 0; i < length; i++)
+		customData[i] = (char *)custom_locale_real_names[i];
+
+	//
+	unsigned int i;
+	FILE * fd;
+
+	initialize_iso639_map();
+
+	//
+	std::string filename = path;
+	filename += locale;
+	filename += ".locale";
+		
+	fd = fopen(filename.c_str(), "r");
+	
+	if (!fd)
+	{		
+		perror("cannot read locale");
+		return NO_SUCH_LOCALE;
+	}
+
+	for (unsigned j = 0; j < length; j++)
+	{
+		if (customData[j] != custom_locale_real_names[j])
+		{
+			free(customData[j]);
+			customData[j] = (char *)custom_locale_real_names[j];
+		}
+	}
+
+	char buf[1000];
+
+	i = 1;
+
+	while(!feof(fd))
+	{
+		if(fgets(buf, sizeof(buf), fd) != NULL)
+		{
+			char * val    = NULL;
+			char * tmpptr = buf;
+
+			for(; (*tmpptr != 10) && (*tmpptr != 13); tmpptr++)
+			{
+				if ((*tmpptr == ' ') && (val == NULL))
+				{
+					*tmpptr  = 0;
+					val = tmpptr + 1;
+				}
+			}
+			*tmpptr = 0;
+
+			if (val == NULL)
+				continue;
+
+			std::string text = val;
+
+			int pos;
+			do
+			{
+				pos = text.find("\\n");
+
+				if ( pos != -1 )
+				{
+					text.replace(pos, 2, "\n", 1);
+				}
+			} while ( ( pos != -1 ) );
+
+
+			for(i = 1; i < length; i++)
+			{
+				if(!strcmp(buf, custom_locale_real_names[i]))
+				{
+					if(customData[i] == custom_locale_real_names[i])
+						customData[i] = strdup(text.c_str());
+					else
+						printf("[%s.locale] dup entry: %s\n", locale, custom_locale_real_names[i]);
+					break;
+				}
+			}
+
+			if(i == length)
+				printf("[%s.locale] superfluous entry: %s\n", locale, buf);
+		}
+	}
+
+	fclose(fd);
+	
+	for (unsigned j = 1; j < length; j++)
+	{
+		if (customData[j] == custom_locale_real_names[j])
+		{
+			printf("[%s.locale] missing entry: %s\n", locale, custom_locale_real_names[j]);
+		}
+	}
+
+	return (
+		(strcmp(locale, "bosanski") == 0) ||
+		(strcmp(locale, "ellinika") == 0) ||
+		(strcmp(locale, "russkij") == 0) ||
+		(strcmp(locale, "utf8") == 0)
+		/* utf8.locale is a generic name that can be used for new locales which need characters outside the ISO-8859-1 character set */
+		) ? UNICODE_FONT : ISO_8859_1_FONT;
+}
+
+void CLocaleManager::unloadCustomLocale(const char **custom_locale_real_names, const size_t length)
+{
+	for (unsigned j = 0; j < length; j++)
+		if (customData[j] != custom_locale_real_names[j])
+			free(customData[j]);
+
+	delete customData;
+}
+
+const char * CLocaleManager::getCustomText(const neutrino_locale_t keyName) const
+{
+	return customData[keyName];
 }
 

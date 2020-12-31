@@ -2470,7 +2470,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	int loadSettingsErg = loadSetup(NEUTRINO_SETTINGS_FILE);
 	
 	// init isomap
-	initialize_iso639_map();
+	//initialize_iso639_map();
 
 	// check locale language
 	CLocaleManager::loadLocale_ret_t loadLocale_ret = g_Locale->loadLocale(g_settings.language);
