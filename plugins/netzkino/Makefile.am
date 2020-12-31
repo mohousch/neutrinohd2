@@ -29,12 +29,14 @@ install-exec-local:
 	install -m 0644  netzkino.png $(DESTDIR)$(PLUGINDIR)/netzkino
 	install -m 0644  netzkino_small.png $(DESTDIR)$(PLUGINDIR)/netzkino
 	install -m 0644  english.locale $(DESTDIR)$(PLUGINDIR)/netzkino
+	install -m 0644  deutsch.locale $(DESTDIR)$(PLUGINDIR)/netzkino
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/netzkino.so
 	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/netzkino.cfg
 	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/netzkino.png
 	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/english.locale
+	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/deutsch.locale
 	-rmdir $(DESTDIR)$(PLUGINDIR)/netzkino
 
 

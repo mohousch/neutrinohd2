@@ -27,6 +27,7 @@ extern "C" void plugin_del(void);
 #define NEUTRINO_ICON_NETZKINO			PLUGINDIR "/netzkino/netzkino.png"
 #define NEUTRINO_ICON_NETZKINO_SMALL		PLUGINDIR "/netzkino/netzkino_small.png"
 
+// locale
 enum {
 	LOCALE_TEST,
 	LOCALE_NK_NETZKINO,
@@ -343,7 +344,7 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		nksearch.clear();
 
-		CStringInputSMS stringInput(LOCALE_YT_SEARCH, nksearch.c_str());
+		CStringInputSMS stringInput(LOCALE_EVENTFINDER_SEARCH, nksearch.c_str());
 		int ret = stringInput.exec(NULL, "");
 
 		printf("ret:%d nksearch:%s\n", ret, nksearch.c_str());

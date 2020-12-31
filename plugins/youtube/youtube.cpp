@@ -24,6 +24,45 @@ extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
 
+// locale
+enum {
+	LOCALE_YOUTUBE,
+	LOCALE_YT_YOUTUBE,
+	LOCALE_YT_ERROR,
+	LOCALE_YT_MOST_POPULAR,
+	LOCALE_YT_MOST_POPULAR_ALL_TIME,
+	LOCALE_YT_NEXT_RESULTS,
+	LOCALE_YT_PREV_RESULTS,
+	LOCALE_YT_REGION,
+	LOCALE_YT_RELATED,
+	LOCALE_YT_SEARCH,
+	LOCALE_YT_ORDERBY,
+	LOCALE_YT_ORDERBY_PUBLISHED,
+	LOCALE_YT_ORDERBY_RATING,
+	LOCALE_YT_ORDERBY_RELEVANCE,
+	LOCALE_YT_ORDERBY_VIEWCOUNT,
+	LOCALE_YT_AUTOPLAY
+};
+
+const char * locale_real_names_yt[] = {
+	"",
+	"youtube.yt_youtube",
+	"youtube.yt_error",
+	"youtube.yt_most_popular",
+	"youtube.yt_most_popular_all_time",
+	"youtube.yt_next_results",
+	"youtube.yt_prev_results",
+	"youtube.yt_region",
+	"youtube.yt_related",
+	"youtube.yt_search",
+	"youtube.yt_orderby",
+	"youtube.yt_orderby.published",
+	"youtube.yt_orderby.rating",
+	"youtube.yt_orderby.relevance",
+	"youtube.yt_orderby.viewcount",
+	"youtube.yt_autoplay"
+};
+
 #define NEUTRINO_ICON_YT			PLUGINDIR "/youtube/youtube.png"
 #define NEUTRINO_ICON_YT_SMALL			PLUGINDIR "/youtube/youtube_small.png"
 
@@ -119,10 +158,10 @@ const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
 #define YT_FOOT_BUTTONS_COUNT  4
 const struct button_label YTFootButtons[YT_FOOT_BUTTONS_COUNT] =
 {
-	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_YT_NEXT_RESULTS, NULL },
-	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_YT_PREV_RESULTS, NULL },
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_NEXT_RESULTS) },
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_PREV_RESULTS) },
 	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_YT_MOST_POPULAR, NULL }
+	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_MOST_POPULAR)}
 };
 
 void CYTBrowser::showMenu()
@@ -131,11 +170,11 @@ void CYTBrowser::showMenu()
 
 	//
 	std::string title;
-	title = g_Locale->getText(LOCALE_YOUTUBE);
+	title = g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_YOUTUBE);
 	title += " : ";
 		
 	neutrino_locale_t loc = getFeedLocale();
-	title += g_Locale->getText(loc);
+	title += g_Locale->getCustomText(loc);
 	if (loc == LOCALE_YT_SEARCH)
 		title += " \"" + ytsearch + "\"";
 
@@ -219,7 +258,7 @@ void CYTBrowser::loadYTTitles(int mode, std::string search, std::string id, bool
 {
 	dprintf(DEBUG_NORMAL, "CYTBrowser::loadYTTitles: parsed %d old mode %d new mode %d region %s\n", ytparser.Parsed(), ytparser.GetFeedMode(), ytmode, m_settings.ytregion.c_str());
 
-	CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	CHintBox loadBox(g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_YOUTUBE), g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 
 	if(show_hint)
 		loadBox.paint();
@@ -243,7 +282,7 @@ REPEAT:
 		else 
 		{
 			//FIXME show error
-			MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_YT_ERROR), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
+			MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_ERROR), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
 			
 			//return;
 			if(mode == cYTFeedParser::PREV)
@@ -281,33 +320,33 @@ REPEAT:
 
 const keyval YT_FEED_OPTIONS[] =
 {
-       	{ cYTFeedParser::MOST_POPULAR, LOCALE_YT_MOST_POPULAR, NULL },
-        //{ cYTFeedParser::MOST_POPULAR_ALL_TIME, LOCALE_YT_MOST_POPULAR_ALL_TIME, NULL },
-	//{ cYTFeedParser::NEXT, LOCALE_YT_NEXT_RESULTS, NULL },
-	//{ cYTFeedParser::PREV, LOCALE_YT_PREV_RESULTS, NULL }
+       	{ cYTFeedParser::MOST_POPULAR, (neutrino_locale_t)LOCALE_YT_MOST_POPULAR, NULL },
+        //{ cYTFeedParser::MOST_POPULAR_ALL_TIME, (neutrino_locale_t)LOCALE_YT_MOST_POPULAR_ALL_TIME, NULL },
+	//{ cYTFeedParser::NEXT, (neutrino_locale_t)LOCALE_YT_NEXT_RESULTS, NULL },
+	//{ cYTFeedParser::PREV, (neutrino_locale_t)LOCALE_YT_PREV_RESULTS, NULL }
 };
 
 #define YT_FEED_OPTION_COUNT (sizeof(YT_FEED_OPTIONS)/sizeof(keyval))
 
 const keyval YT_ORDERBY_OPTIONS[] =
 {
-        { cYTFeedParser::ORDERBY_PUBLISHED, LOCALE_YT_ORDERBY_PUBLISHED, NULL },
-        { cYTFeedParser::ORDERBY_RELEVANCE, LOCALE_YT_ORDERBY_RELEVANCE, NULL },
-        { cYTFeedParser::ORDERBY_VIEWCOUNT, LOCALE_YT_ORDERBY_VIEWCOUNT, NULL },
-        { cYTFeedParser::ORDERBY_RATING, LOCALE_YT_ORDERBY_RATING, NULL },
+        { cYTFeedParser::ORDERBY_PUBLISHED, (neutrino_locale_t)LOCALE_YT_ORDERBY_PUBLISHED, NULL },
+        { cYTFeedParser::ORDERBY_RELEVANCE, (neutrino_locale_t)LOCALE_YT_ORDERBY_RELEVANCE, NULL },
+        { cYTFeedParser::ORDERBY_VIEWCOUNT, (neutrino_locale_t)LOCALE_YT_ORDERBY_VIEWCOUNT, NULL },
+        { cYTFeedParser::ORDERBY_RATING, (neutrino_locale_t)LOCALE_YT_ORDERBY_RATING, NULL },
 };
 
 #define YT_ORDERBY_OPTION_COUNT (sizeof(YT_ORDERBY_OPTIONS)/sizeof(keyval))
 
 neutrino_locale_t CYTBrowser::getFeedLocale(void)
 {
-	neutrino_locale_t ret = LOCALE_YT_MOST_POPULAR;
+	neutrino_locale_t ret = (neutrino_locale_t)LOCALE_YT_MOST_POPULAR;
 
 	if (ytmode == cYTFeedParser::RELATED)
-		return LOCALE_YT_RELATED;
+		return (neutrino_locale_t)LOCALE_YT_RELATED;
 
 	if (ytmode == cYTFeedParser::SEARCH)
-		return LOCALE_YT_SEARCH;
+		return (neutrino_locale_t)LOCALE_YT_SEARCH;
 
 	for (unsigned i = 0; i < YT_FEED_OPTION_COUNT; i++) 
 	{
@@ -324,27 +363,27 @@ int CYTBrowser::showCategoriesMenu(void)
 
 	int res = -1;
 
-	ClistBoxWidget mainMenu(LOCALE_YOUTUBE, NEUTRINO_ICON_YT_SMALL);
+	ClistBoxWidget mainMenu(g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_YOUTUBE), NEUTRINO_ICON_YT_SMALL);
 
 	mainMenu.enableSaveScreen();
 	mainMenu.setMode(MODE_MENU);
 	mainMenu.enableShrinkMenu();
 
-	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_MOST_POPULAR, true, NULL, new CYTBrowser(cYTFeedParser::MOST_POPULAR), NULL));
+	mainMenu.addItem(new CMenuForwarder(g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_MOST_POPULAR), true, NULL, new CYTBrowser(cYTFeedParser::MOST_POPULAR), NULL));
 
 	mainMenu.addItem(new CMenuSeparator(LINE));
 	
 	// search
-	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, ytsearch.c_str(), this, "search", RC_red, NEUTRINO_ICON_BUTTON_RED));
+	mainMenu.addItem(new CMenuForwarder(g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_SEARCH), true, ytsearch.c_str(), this, "search", RC_red, NEUTRINO_ICON_BUTTON_RED));
 	
 	// ytorder
-	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_ORDERBY, &m_settings.ytorderby, YT_ORDERBY_OPTIONS, YT_ORDERBY_OPTION_COUNT, true, NULL, RC_green, NEUTRINO_ICON_BUTTON_GREEN, true));
+	mainMenu.addItem(new CMenuOptionChooser(g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_ORDERBY), &m_settings.ytorderby, YT_ORDERBY_OPTIONS, YT_ORDERBY_OPTION_COUNT, true, NULL, RC_green, NEUTRINO_ICON_BUTTON_GREEN, true));
 
 	mainMenu.addItem(new CMenuSeparator(LINE));
 
 	char rstr[20];
 	sprintf(rstr, "%s", m_settings.ytregion.c_str());
-	CMenuOptionStringChooser * region = new CMenuOptionStringChooser(LOCALE_YT_REGION, rstr, true, NULL, RC_blue, NEUTRINO_ICON_BUTTON_BLUE, true);
+	CMenuOptionStringChooser * region = new CMenuOptionStringChooser(g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_REGION), rstr, true, NULL, RC_blue, NEUTRINO_ICON_BUTTON_BLUE, true);
 	region->addOption("default");
 	region->addOption("DE");
 	region->addOption("PL");
@@ -359,7 +398,7 @@ int CYTBrowser::showCategoriesMenu(void)
 	mainMenu.addItem(new CMenuSeparator(LINE));
 
 	// autoplay
-	mainMenu.addItem(new CMenuOptionChooser(LOCALE_YT_AUTOPLAY, &m_settings.ytautoplay, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true));
+	mainMenu.addItem(new CMenuOptionChooser(g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_AUTOPLAY), &m_settings.ytautoplay, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true));
 
 	mainMenu.exec(NULL, "");
 	
@@ -449,7 +488,7 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		ytmode = cYTFeedParser::SEARCH;
 
-		CStringInputSMS stringInput(LOCALE_YT_SEARCH, ytsearch.c_str());
+		CStringInputSMS stringInput(g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_SEARCH), ytsearch.c_str());
 		int ret = stringInput.exec(NULL, "");
 
 		if(!stringInput.getExitPressed() /*&& !ytsearch.empty()*/) //FIXME:
@@ -480,12 +519,18 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
+	// load locale
+	g_Locale->loadCustomLocale(g_settings.language, locale_real_names_yt, sizeof(locale_real_names_yt)/sizeof(const char *), PLUGINDIR "/youtube/");
+
 	CYTBrowser* YTHandler = new CYTBrowser(cYTFeedParser::MOST_POPULAR);
 	
 	YTHandler->exec(NULL, "");
 	
 	delete YTHandler;
-	YTHandler = NULL;	
+	YTHandler = NULL;
+
+	// unload locale
+	g_Locale->unloadCustomLocale(locale_real_names_yt, sizeof(locale_real_names_yt)/sizeof(const char *));		
 }
 
 

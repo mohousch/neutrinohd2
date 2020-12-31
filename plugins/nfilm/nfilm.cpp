@@ -441,8 +441,8 @@ const struct button_label HeadButtons = { NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT
 #define FOOT_BUTTONS_COUNT	4
 const struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
 {
-	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_YT_NEXT_RESULTS, NULL },
-	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_YT_PREV_RESULTS, NULL },
+	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_FILEBROWSER_NEXTPAGE, NULL },
+	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_FILEBROWSER_PREVPAGE, NULL },
 	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, "Focus" },
 	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, "Start Menu" }
 };
@@ -614,7 +614,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 	{
 		tmdbsearch.clear();
 
-		CStringInputSMS stringInput(LOCALE_YT_SEARCH, tmdbsearch.c_str());
+		CStringInputSMS stringInput(LOCALE_EVENTFINDER_SEARCH, tmdbsearch.c_str());
 		stringInput.exec(NULL, "");
 
 		if(!stringInput.getExitPressed())

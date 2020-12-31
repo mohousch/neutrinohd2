@@ -1648,32 +1648,6 @@ const char * locale_real_names[] = {
 
 	"satipcast.rec_hint",
 	
-	// youtube
-	"youtube.youtube",
-	"youtube.yt_error",
-	"youtube.yt_most_popular",
-	"youtube.yt_most_popular_all_time",
-	"youtube.yt_next_results",
-	"youtube.yt_prev_results",
-	"youtube.yt_region",
-	"youtube.yt_related",
-	"youtube.yt_search",
-	"youtube.yt_orderby",
-	"youtube.yt_orderby.published",
-	"youtube.yt_orderby.rating",
-	"youtube.yt_orderby.relevance",
-	"youtube.yt_orderby.viewcount",
-	"youtube.yt_autoplay",
-	
-	// netzkino
-/*
-	"netzkino.netzkino",
-	"netzkino.nk_movies_error",
-	"netzkino.nk_error",
-	"netzkino.nk_categories",
-	"netzkino.nk_scan_for_categories",
-*/
-
 	// tmdb
 	"tmdb.tmdb_info",
 	

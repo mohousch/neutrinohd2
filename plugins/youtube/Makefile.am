@@ -28,11 +28,15 @@ install-exec-local:
 	install -m 0644 youtube.cfg $(DESTDIR)$(PLUGINDIR)/youtube
 	install -m 0644 youtube.png $(DESTDIR)$(PLUGINDIR)/youtube
 	install -m 0644 youtube_small.png $(DESTDIR)$(PLUGINDIR)/youtube
+	install -m 0644 english.locale $(DESTDIR)$(PLUGINDIR)/youtube
+	install -m 0644 deutsch.locale $(DESTDIR)$(PLUGINDIR)/youtube
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/youtube/youtube.so
 	-rm $(DESTDIR)$(PLUGINDIR)/youtube/youtube.cfg
 	-rm $(DESTDIR)$(PLUGINDIR)/youtube/youtube.png
+	-rm $(DESTDIR)$(PLUGINDIR)/youtube/english.locale
+	-rm $(DESTDIR)$(PLUGINDIR)/youtube/deutsch.locale
 	-rmdir $(DESTDIR)$(PLUGINDIR)/youtube
 
 
