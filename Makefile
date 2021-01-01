@@ -30,12 +30,12 @@
 #  --enable-lcd            include lcd support
 #  --enable-scart          enable scart output
 #  --enable-ci             enable ci cam
-#  --enable-4digits        include 5 segment lcd support
+#  --enable-4digits        include 4 segment lcd support
 #  --enable-functionkeys   include RC functions keys support
 #
 #
 # build preqs
-# sudo apt-get install autoconf libtool libtool-bin g++ gdb swig flex bison make texinfo subversion intltool dialog wget cmake gperf libavformat-dev libswscale-dev libopenthreads-dev libglew-dev freeglut3-dev libcurl4-gnutls-dev libfreetype6-dev libid3tag0-dev libmad0-dev libogg-dev libpng12-dev libgif-dev libjpeg-dev libvorbis-dev libflac-dev libblkid-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libfribidi-dev libass-dev python-dev lua5.2 lua5.2-dev
+# sudo apt-get install autoconf libtool libtool-bin g++ gdb swig flex bison make texinfo subversion intltool dialog wget cmake gperf libavformat-dev libswscale-dev libopenthreads-dev libglew-dev freeglut3-dev libcurl4-gnutls-dev libfreetype6-dev libid3tag0-dev libmad0-dev libogg-dev libpng-dev libgif-dev libjpeg-dev libvorbis-dev libflac-dev libblkid-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libfribidi-dev libass-dev python-dev lua5.2 lua5.2-dev
 ################################################################################################################################################################################################################################################################
 SHELL = /bin/bash
 UID := $(shell id -u)
@@ -86,15 +86,12 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--with-plugindir=$(DEST)/var/tuxbox/plugins \
 			--with-configdir=$(DEST)/var/tuxbox/config \
 			--enable-opengl \
-			--enable-playback \
 			--enable-lcd \
 			--enable-scart \
 			--enable-ci \
-			--enable-gstreamer \
-			--with-gstversion=1.0 \
 			--enable-python \
 			--enable-lua \
-			--enable-fake_tuner
+			--enable-fake_tuner 
 				
 $(DEST):
 	mkdir $@

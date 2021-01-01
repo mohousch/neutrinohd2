@@ -167,7 +167,7 @@ AX_LUA_LIBS
 AC_DEFINE(ENABLE_LUA,1,[include lua interface support])
 fi
 
-# lcd
+# fake tuner
 AC_ARG_ENABLE(fake_tuner,
 	AS_HELP_STRING(--enable-fake_tuner,include fake tuner support for testing),
 	,[enable_fake_tuner=no])
@@ -176,6 +176,12 @@ AM_CONDITIONAL(ENABLE_FAKE_TUNER,test "$enable_fake_tuner" = "yes")
 if test "$enable_fake_tuner" = "yes"; then
 AC_DEFINE(ENABLE_FAKE_TUNER,1,[include fake tuner support for testing])
 fi
+
+# testing
+AC_ARG_ENABLE(testing,
+	AS_HELP_STRING(--enable-testing,include testing plugins support),
+	,[enable_testing=no])
+AM_CONDITIONAL(ENABLE_TESTING,test "$enable_testing" = "yes")
 
 AC_OUTPUT([
 Makefile
