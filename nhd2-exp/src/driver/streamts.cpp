@@ -365,9 +365,9 @@ void * streamts_live_thread(void * data)
 	bp = &cbuf[5];
 	if (sscanf(bp, "id=%llx", &stream_channel_id) == 1) 
 	{
-		if(g_Zapit->zapTo_record(stream_channel_id&0xFFFFFFFFFFFFULL) == 0)
+		if(g_Zapit->zapTo_record(stream_channel_id) == 0)
 		{
-			stream_channel = find_channel_tozap(stream_channel_id&0xFFFFFFFFFFFFULL, false);
+			stream_channel = find_channel_tozap(stream_channel_id, false);
 
 			pids[0] = 0;
 

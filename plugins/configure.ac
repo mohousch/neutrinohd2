@@ -54,7 +54,6 @@ test/Makefile
 netzkino/Makefile
 youtube/Makefile
 systeminfo/Makefile
-restart_enigma/Makefile
 tuxcom/Makefile
 mediaplayer/Makefile
 tuxcal/Makefile

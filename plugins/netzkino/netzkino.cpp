@@ -409,7 +409,7 @@ void plugin_exec(void)
 	NKHandler = NULL;
 
 	// unload locale
-	g_Locale->unloadCustomLocale(locale_real_names_ntk, sizeof(locale_real_names_ntk)/sizeof(const char *));			
+	g_Locale->unloadCustomLocale(locale_real_names_ntk, sizeof(locale_real_names_ntk)/sizeof(const char *));		
 }
 
 

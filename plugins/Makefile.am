@@ -30,7 +30,6 @@ endif
 #testing
 if ENABLE_TESTING
 SUBDIRS += ard \
-	restart_enigma \
 	satipclient \
 	opkg_manager
 endif
