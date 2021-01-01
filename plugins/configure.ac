@@ -18,18 +18,6 @@ PKG_CHECK_MODULES(CURL,libcurl)
 PKG_CHECK_MODULES(FREETYPE,freetype2)
 PKG_CHECK_MODULES(PNG,libpng)
 
-# nglcd
-AC_ARG_ENABLE(nglcd,
-	AS_HELP_STRING(--enable-nglcd,include nglcd support),
-	,[enable_nglcd=no])
-AM_CONDITIONAL(ENABLE_NGLCD,test "$enable_nglcd" = "yes")
-
-# tuxcalender
-AC_ARG_ENABLE(tuxcal,
-	AS_HELP_STRING(--enable-tuxcal,include tuxcalender support),
-	,[enable_tuxcal=no])
-AM_CONDITIONAL(ENABLE_TUXCAL,test "$enable_tuxcal" = "yes")
-
 # testing
 AC_ARG_ENABLE(testing,
 	AS_HELP_STRING(--enable-testing,include testing plugins support),
@@ -58,7 +46,6 @@ tuxcom/Makefile
 mediaplayer/Makefile
 tuxcal/Makefile
 tuxcal/daemon/Makefile
-nglcd/Makefile
 fileexplorer/Makefile
 mediaportal/Makefile
 satipclient/Makefile

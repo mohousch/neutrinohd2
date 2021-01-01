@@ -318,7 +318,7 @@ int getRCcode()
 	g_RCInput->getMsg_ms(&msg, &data, 40);
 	rccode = -1;
 	
-	if (msg <= CRCInput::RC_MaxRC) 
+	if (msg <= RC_MaxRC) 
 	{
 		rccode = msg;
 		
@@ -361,7 +361,7 @@ void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout
 
 		switch(layout)
 		{
-			case CENTER:	
+			case TUXCAL_CENTER:	
 				if (stringlen < maxwidth) 
 					_sx += (maxwidth - stringlen)/2;
 				break;
@@ -495,14 +495,14 @@ int MessageBox(const char* header, const char* question)
 	RenderBox(MSGBOX_SX, HEADERSTART, MSGBOX_EX, MSGBOX_EY, GRID, SKIN2);
   
 	// render the strings
-	RenderString(header, MSGBOX_SX+2, HEADERTEXTSTART, TEXTWIDTH, CENTER, BIG, ORANGE);
-	RenderString(question, MSGBOX_SX+2, TEXTSTART, TEXTWIDTH, CENTER, BIG, WHITE);
+	RenderString(header, MSGBOX_SX+2, HEADERTEXTSTART, TEXTWIDTH, TUXCAL_CENTER, BIG, ORANGE);
+	RenderString(question, MSGBOX_SX+2, TEXTSTART, TEXTWIDTH, TUXCAL_CENTER, BIG, WHITE);
    
 	// paint the buttons
 	RenderBox(BUTTONSX, BUTTONSY, BUTTONSX+BUTTONX, BUTTONSY+FONTSIZE_SMALL, FILL, SKIN2);
-	RenderString("OK", BUTTONSX+2, BUTTONSY+FONTSIZE_SMALL-5, BUTTONX-4, CENTER, SMALL, WHITE);
+	RenderString("OK", BUTTONSX+2, BUTTONSY+FONTSIZE_SMALL-5, BUTTONX-4, TUXCAL_CENTER, SMALL, WHITE);
 	RenderBox(BUTTONSX+2*BUTTONX, BUTTONSY, BUTTONSX+3*BUTTONX, BUTTONSY+FONTSIZE_SMALL, FILL, SKIN2);
-	RenderString("EXIT", BUTTONSX+2*BUTTONX+2, BUTTONSY+FONTSIZE_SMALL-5, BUTTONX-4, CENTER, SMALL, WHITE);
+	RenderString("EXIT", BUTTONSX+2*BUTTONX+2, BUTTONSY+FONTSIZE_SMALL-5, BUTTONX-4, TUXCAL_CENTER, SMALL, WHITE);
   
 	// output to framebuffer
 	//memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
@@ -548,18 +548,18 @@ void ShowMessage(int message)
 	// message
 	if (message != INFO)
 	{
-		RenderString("TuxCal Statusinfo", MSGBOX_SX+2, HEADERTEXTSTART, TEXTWIDTH, CENTER, BIG, ORANGE);
+		RenderString("TuxCal Statusinfo", MSGBOX_SX+2, HEADERTEXTSTART, TEXTWIDTH, TUXCAL_CENTER, BIG, ORANGE);
 		strcpy(info,infomsg[message][osdidx]);
 	}
 	else
 	{
 		ControlDaemon(GET_VERSION);
 		sprintf(info, "TuxCal (P%s/D%s)", versioninfo_p, versioninfo_d);
-		RenderString(info, MSGBOX_SX+2, HEADERTEXTSTART, TEXTWIDTH, CENTER, BIG, ORANGE);
+		RenderString(info, MSGBOX_SX+2, HEADERTEXTSTART, TEXTWIDTH, TUXCAL_CENTER, BIG, ORANGE);
 		sprintf(info,"(c) 2006 Robert \"robspr1\" Spreitzer");
 	}
 
-	RenderString(info, MSGBOX_SX+2, TEXTSTART, TEXTWIDTH, CENTER, NORMAL, WHITE);
+	RenderString(info, MSGBOX_SX+2, TEXTSTART, TEXTWIDTH, TUXCAL_CENTER, NORMAL, WHITE);
 
 	//memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
 	CFrameBuffer::getInstance()->blit();
@@ -1258,7 +1258,7 @@ void PaintGrid(int last, int start, int end, int akt, int sel, int infolines, in
 	strftime(info, 80, infomsg[DATE][osdidx], at);
 	RenderString(info, 0, GRIDLINE - 4, MAXSCREEN_X - 4, FIXEDRIGHT, SMALL, GREY);
 	sprintf(info, "%s %u", monthmsg[tShow_mon-1][osdidx], tShow_year);
-	RenderString(info, 0 + 4, GRIDLINE - 4, MAXSCREEN_X/2, CENTER, NORMAL, BLACK);
+	RenderString(info, 0 + 4, GRIDLINE - 4, MAXSCREEN_X/2, TUXCAL_CENTER, NORMAL, BLACK);
 	
 	// only paint if a key has been pressed
 	//if (rccode != 0xFFFF) return;
@@ -1268,7 +1268,7 @@ void PaintGrid(int last, int start, int end, int akt, int sel, int infolines, in
 	{
 		RenderBox(0 + x*GRIDBOX_X, GRIDLINE, (x+1)*GRIDBOX_X, GRIDCAL, FILL, SKIN0);
 		RenderBox(0 + x*GRIDBOX_X, GRIDLINE, (x+1)*GRIDBOX_X, GRIDCAL, GRID, SKIN2);
-		RenderString(days[x][osdidx], x*GRIDBOX_X, GRIDCAL-2, GRIDBOX_X, CENTER, SMALL, WHITE);
+		RenderString(days[x][osdidx], x*GRIDBOX_X, GRIDCAL-2, GRIDBOX_X, TUXCAL_CENTER, SMALL, WHITE);
 	}
 
 	// paint calendar squares
@@ -1393,7 +1393,7 @@ void PaintGrid(int last, int start, int end, int akt, int sel, int infolines, in
 			sprintf(info,"W %d    %u. %s %u     %u %s",iW,tShow_day,monthmsg[tShow_mon-1][osdidx],tShow_year,iEvt,infotype[1][osdidx]);
 		else 
 			sprintf(info,"W %d    %s %u, %u     %u %s",iW,monthmsg[tShow_mon-1][osdidx],tShow_day,tShow_year,iEvt,infotype[1][osdidx]);
-		RenderString(info,0+4, GRIDCAL+GRIDBOX_CY2+GRIDLINE_INFO-4,MAXSCREEN_X, CENTER, NORMAL, BLACK);
+		RenderString(info,0+4, GRIDCAL+GRIDBOX_CY2+GRIDLINE_INFO-4,MAXSCREEN_X, TUXCAL_CENTER, NORMAL, BLACK);
 
 		int iMarkline=*iSelInfo;
 		if (*iSelInfo>3) iMarkline=3;

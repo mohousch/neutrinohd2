@@ -19,19 +19,12 @@ SUBDIRS = \
 	nfilm \
 	ntvshows
 
-if ENABLE_NGLCD
-SUBDIRS += nglcd
-endif
-
-if ENABLE_TUXCAL
-SUBDIRS += tuxcal
-endif
-
 #testing
 if ENABLE_TESTING
 SUBDIRS += ard \
 	satipclient \
-	opkg_manager
+	opkg_manager \
+	tuxcal
 endif
 
 if ENABLE_PYTHON
