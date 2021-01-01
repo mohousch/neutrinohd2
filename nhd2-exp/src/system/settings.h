@@ -324,6 +324,7 @@ struct SNeutrinoSettings
 	int key_filebrowser;
 	int key_webtv;
 	
+	// divers
 	int key_screenshot;
 
 	// USERMENU

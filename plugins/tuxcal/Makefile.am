@@ -30,9 +30,11 @@ install-exec-local:
 	install .libs/tuxcal.so $(DESTDIR)$(PLUGINDIR)/tuxcal
 	install -m 0644 $(srcdir)/tuxcal.cfg $(DESTDIR)$(PLUGINDIR)/tuxcal
 	install -m 0644 $(srcdir)/tuxcal.conf $(DESTDIR)$(PLUGINDIR)/tuxcal
+	install -m 0644 $(srcdir)/tuxcal.png $(DESTDIR)$(PLUGINDIR)/tuxcal
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/tuxcal/tuxcal.so
 	-rm $(DESTDIR)$(PLUGINDIR)/tuxcal/tuxcal.cfg
 	-rm $(DESTDIR)$(PLUGINDIR)/tuxcal/tuxcal.conf
+	-rm $(DESTDIR)$(PLUGINDIR)/tuxcal/tuxcal.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/tuxcal

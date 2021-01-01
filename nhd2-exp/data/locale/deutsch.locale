@@ -1640,36 +1640,4 @@ satipcast.rec_hint Eine Aufnahme ist aktiv.\nUmschaltung zu Sat-IP <> Cast nicht
 
 tmdb.tmdb_info TMDB Infos
 
-glcd.color.black Schwarz
-glcd.color.blue Blau
-glcd.color.cyan Blaugrün
-glcd.color.green Grün
-glcd.color.magenta Magenta
-glcd.color.red Rot
-glcd.color.white Weiss
-glcd.color.yellow Gelb
-glcd.color.orange Orange
-glcd.color.light_gray Hellgrau
-glcd.color.gray Grau
-glcd.color.dark_gray Dunkelgrau
-glcd.color.dark_red Dunkelrot
-glcd.color.dark_green Dunkelgrün
-glcd.color.dark_blue Dunkelblau
-glcd.color.purple Purpur
-glcd.color.mint Mint
-glcd.color.golden Gold
-glcd.enable GraphLCD aktiv
-glcd.font Schrift
-glcd.head GraphLCD
-glcd.mirror_osd OSD-Menü auf GraphLCD anzeigen
-glcd.restart Neu erkennen
-glcd.select.bar Fortschrittsbalken-Farbe
-glcd.select.bg Hintergrund-Farbe
-glcd.select.fg Vordergrund-Farbe
-glcd.size_bar Fortschrittsbalken-Größe
-glcd.size_channel Sender-Größe
-glcd.size_epg EPG-Größe
-glcd.size_time Uhrzeit-Größe
-glcd.time_in_standby Zeitanzeige in Standby
-glcd.volume Lautstärkeabsenkung
 
