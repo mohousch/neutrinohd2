@@ -209,7 +209,11 @@ static int writeData(void* _call)
 	    return 0;
 	}
 
+#if defined (USE_OPENGL)
+	if (call->fd == NULL)
+#else
 	if (call->fd < 0)
+#endif
 	{
 	    pcm_err("file pointer < 0. ignoring ...\n");
 	    return 0;
@@ -252,7 +256,8 @@ static int writeData(void* _call)
 			memcpy(&injectBufferDataPointer[breakBufferFillSize], &buffer[pos], sizeof(unsigned char)*(SubFrameLen - breakBufferFillSize));
 			pos += (SubFrameLen - breakBufferFillSize);
 			breakBufferFillSize = 0;
-		} else
+		} 
+		else
 		{
 		        memcpy(injectBufferDataPointer, &buffer[pos], sizeof(unsigned char)*SubFrameLen);
 			pos += SubFrameLen;
@@ -267,17 +272,18 @@ static int writeData(void* _call)
 		//write the PCM data
 		if(pcmPrivateData->uBitsPerSample == 16) 
 		{
-			for(n=0; n<SubFrameLen; n+=2) {
+			for(n = 0; n < SubFrameLen; n += 2) 
+			{
 				unsigned char tmp;
-				tmp=injectBufferDataPointer[n];
-				injectBufferDataPointer[n]=injectBufferDataPointer[n+1];
-				injectBufferDataPointer[n+1]=tmp;
+				tmp = injectBufferDataPointer[n];
+				injectBufferDataPointer[n] = injectBufferDataPointer[n + 1];
+				injectBufferDataPointer[n + 1] = tmp;
 			}
 		} 
 		else 
 		{
 			//A1cA1bA1a-B1cB1bB1a-A2cA2bA2a-B2cB2bB2a to A1aA1bB1aB1b.A2aA2bB2aB2b-A1cB1cA2cB2c
-			for(n=0; n<SubFrameLen; n+=12) 
+			for(n = 0; n < SubFrameLen; n += 12) 
 			{
 				unsigned char tmp[12];
 				tmp[ 0]=injectBufferDataPointer[n+2];
@@ -307,8 +313,11 @@ static int writeData(void* _call)
 	        lpcm_pes[15] = 0xFF;
 	        lpcm_pes[16] = 0xFF;
 
-
+#if defined (USE_OPENGL)
+		ao_play(call->fd, injectBuffer, injectBufferSize);  
+#else
 		write(call->fd, injectBuffer, injectBufferSize);
+#endif
 		//printf("PCM %d bytes injected\n", injectBufferSize);
 		//Hexdump(injectBuffer, 126);
 	}

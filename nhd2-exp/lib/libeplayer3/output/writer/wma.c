@@ -113,7 +113,11 @@ static int writeData(void* _call)
 		return 0;
 	}
 
+#if defined (USE_OPENGL)
+	if (call->fd == NULL)
+#else
 	if (call->fd < 0)
+#endif
 	{
 		wma_err("file pointer < 0. ignoring ...\n");
 		return 0;
@@ -154,7 +158,11 @@ static int writeData(void* _call)
 		memcpy (PacketStart, PesHeader, HeaderLength);
 		memcpy (PacketStart + HeaderLength, call->data, call->len);
 
+#if defined (USE_OPENGL)
+		len = ao_play(call->fd, PacketStart, call->len + HeaderLength);  
+#else
 		len = write(call->fd, PacketStart, call->len + HeaderLength);
+#endif
 
 		free(PacketStart);
 	}

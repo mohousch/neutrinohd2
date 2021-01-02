@@ -235,7 +235,11 @@ static int writeData(void* _call)
 		return 0;
 	}
 
+#if defined (USE_OPENGL)
+	if (call->fd == NULL)
+#else
 	if (call->fd < 0)
+#endif
 	{
 		aac_err("file pointer < 0. ignoring ...\n");
 		return 0;
@@ -263,7 +267,11 @@ static int writeData(void* _call)
 
 	aac_printf(100, "H %d d %d ExtraData %d\n", HeaderLength, call->len, sizeof(ExtraData));
 
+#if defined (USE_OPENGL)
+	int len = ao_play(call->fd, PacketStart, HeaderLength + call->len + sizeof(ExtraData));  
+#else
 	int len = write(call->fd, PacketStart, HeaderLength + call->len + sizeof(ExtraData));
+#endif
 
 	free(PacketStart);
 

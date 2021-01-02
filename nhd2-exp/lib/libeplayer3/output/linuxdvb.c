@@ -84,6 +84,21 @@ static int audiofd 	= -1;
 
 unsigned long long int sCURRENT_PTS = 0;
 
+#if defined (USE_OPENGL)
+#include <libavformat/avformat.h>
+#include <libavutil/opt.h>
+#include <libavutil/samplefmt.h>
+#include <libswresample/swresample.h>
+#include <ao/ao.h>
+
+
+static ao_device *adevice = NULL;
+static ao_sample_format sformat;
+
+static AVCodecContext *c = NULL;
+static AVCodecParameters *p = NULL;
+#endif
+
 pthread_mutex_t LinuxDVBmutex;
 
 /* ***************************** */
@@ -118,6 +133,10 @@ int LinuxDvbOpen(Context_t  *context, char * type)
 	unsigned char audio = !strcmp("audio", type);
 
 	linuxdvb_printf(10, "v%d a%d\n", video, audio);
+
+# if defined (USE_OPENGL)
+	ao_initialize();
+#endif
 	
 	if (audio && audiofd == -1) 
 	{
@@ -204,6 +223,14 @@ int LinuxDvbClose(Context_t  *context, char * type)
 	unsigned char audio = !strcmp("audio", type);
 
 	linuxdvb_printf(10, "v%d a%d\n", video, audio);
+
+#if defined (USE_OPENGL)
+	if (adevice)
+		ao_close(adevice);
+
+	adevice = NULL;
+	ao_shutdown();
+#endif
 
 	/* closing stand alone is not allowed, so prevent
 	* user from closing and dont call stop. stop will
@@ -1030,7 +1057,7 @@ static int Write(void  *_context, void* _out)
 	int                res       = 0;
 	unsigned char      video     = 0;
 	unsigned char      audio     = 0;
-	Writer_t *          writer = NULL;
+	Writer_t *         writer = NULL;
 	WriterAVCallData_t call;
 
 	if (out == NULL)
@@ -1068,7 +1095,22 @@ static int Write(void  *_context, void* _out)
 		} 
 		else
 		{
+#if defined (USE_OPENGL)
+			int driver = ao_default_driver_id();
+			sformat.bits = 16;
+			sformat.channels = 2;
+			sformat.rate = out->frameRate;
+			sformat.byte_format = AO_FMT_LITTLE;
+			sformat.matrix = 0;
+
+			//if (adevice)
+			//	ao_close(adevice);
+			adevice = ao_open_live(driver, &sformat, NULL);
+
+			call.fd		    = adevice;
+#else
 			call.fd             = audiofd;
+#endif
 			call.data           = out->data;
 			call.len            = out->len;
 			call.Pts            = out->pts;

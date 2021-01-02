@@ -112,7 +112,11 @@ static int writeData(void* _call)
 		return 0;
 	}
 
+#if defined (USE_OPENGL)
+	if (call->fd == NULL)
+#else
 	if (call->fd < 0)
+#endif
 	{
 		mpeg2_err("file pointer < 0. ignoring ...\n");
 		return 0;
@@ -132,7 +136,12 @@ static int writeData(void* _call)
 		memcpy (PacketStart, PesHeader, HeaderLength);
 		memcpy (PacketStart + HeaderLength, call->data + Position, PacketLength);
 
+#if defined (USE_OPENGL)
+		len = ao_play(call->fd, PacketStart, PacketLength + HeaderLength);  
+#else
 		len = write(call->fd, PacketStart, PacketLength + HeaderLength);
+#endif
+
 		free(PacketStart);
 
 		Position += PacketLength;

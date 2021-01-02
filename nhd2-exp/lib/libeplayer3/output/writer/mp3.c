@@ -111,7 +111,11 @@ static int writeData(void* _call)
 		return 0;
 	}
 
+#if defined (USE_OPENGL)
+	if (call->fd == NULL)
+#else
 	if (call->fd < 0)
+#endif
 	{
 		mp3_err("file pointer < 0. ignoring ...\n");
 		return 0;
@@ -119,12 +123,16 @@ static int writeData(void* _call)
 
 	int HeaderLength = InsertPesHeader (PesHeader, call->len , MPEG_AUDIO_PES_START_CODE, call->Pts, 0);
 
-	unsigned char* PacketStart = malloc(call->len + HeaderLength);
+	unsigned char *PacketStart = malloc(call->len + HeaderLength);
 
-	memcpy (PacketStart, PesHeader, HeaderLength);
-	memcpy (PacketStart + HeaderLength, call->data, call->len);
+	memcpy(PacketStart, PesHeader, HeaderLength);
+	memcpy(PacketStart + HeaderLength, call->data, call->len);
 
+#if defined (USE_OPENGL)
+	int len = ao_play(call->fd, PacketStart, call->len + HeaderLength);  
+#else
 	int len = write(call->fd, PacketStart, call->len + HeaderLength);
+#endif
 
 	free(PacketStart);
 

@@ -144,7 +144,11 @@ static int writeData(void* _call)
 		return 0;
 	}
 
+#if defined (USE_OPENGL)
+	if (call->fd == NULL)
+#else
 	if (call->fd < 0) 
+#endif
 	{
 		vc1_err("file pointer < 0. ignoring ...\n");
 		return 0;
@@ -198,7 +202,11 @@ static int writeData(void* _call)
 
 			int HeaderLength        = InsertPesHeader (PesPacket, MetadataLength, VC1_VIDEO_PES_START_CODE, INVALID_PTS_VALUE, 0);
 
+#if defined (USE_OPENGL)
+			len = ao_play(call->fd, PesPacket, HeaderLength + MetaDataLength);  
+#else
 			len = write(call->fd, PesPacket, HeaderLength + MetadataLength);
+#endif
 		}
 
 		{
@@ -213,7 +221,12 @@ static int writeData(void* _call)
 			vc1_printf(10, "\n");
 
 			int HeaderLength       = InsertPesHeader (PesPacket, call->private_size, VC1_VIDEO_PES_START_CODE, INVALID_PTS_VALUE, 0);
+
+#if defined (USE_OPENGL)
+			len = ao_play(call->fd, PesPacket, call->private_size + HeaderLength);  
+#else
 			len = write(call->fd, PesPacket, call->private_size + HeaderLength);
+#endif
 		}
 		initialHeader = 0;
 	}
@@ -261,7 +274,12 @@ static int writeData(void* _call)
 			memcpy (PacketStart, PesHeader, HeaderLength);
 			memcpy (PacketStart + HeaderLength, call->data + Position, PacketLength);
 
+#if defined (USE_OPENGL)
+			len = ao_play(call->fd, PacketStart, PacketLength + HeaderLength);  
+#else
 			len = write(call->fd, PacketStart, PacketLength + HeaderLength);
+#endif
+
 			free(PacketStart);
 
 			Position += PacketLength;

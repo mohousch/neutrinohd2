@@ -112,7 +112,11 @@ static int writeData(void* _call)
 		return 0;
 	}
 
+#if defined (USE_OPENGL)
+	if (call->fd == NULL)
+#else
 	if (call->fd < 0)
+#endif
 	{
 		h263_err("file pointer < 0. ignoring ...\n");
 		return 0;
@@ -136,7 +140,11 @@ static int writeData(void* _call)
 	memcpy(DataCopy, PacketData, HeaderLength);
 	memcpy(PacketData, PesHeader, HeaderLength);
 
+#if defined (USE_OPENGL)
+	len = ao_play(call->fd, PacketData, call->len + HeaderLength);  
+#else
 	len = write(call->fd, PacketData, call->len + HeaderLength);
+#endif
 
 	memcpy(PacketData, DataCopy, HeaderLength);
 
