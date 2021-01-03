@@ -127,14 +127,10 @@ static int writeData(void* _call)
 		return 0;
 	}
 
-	uint8_t *data = call->data;
-	uint32_t data_len = call->len;
-
 #if defined __sh__
 	while (Position < call->len)
 	{
-		int PacketLength = (call->len - Position) <= MAX_PES_PACKET_SIZE ?
-				   (call->len - Position) : MAX_PES_PACKET_SIZE;
+		int PacketLength = (call->len - Position) <= MAX_PES_PACKET_SIZE ? (call->len - Position) : MAX_PES_PACKET_SIZE;
 		int Remaining = call->len - Position - PacketLength;
 
 		mpeg2_printf(20, "PacketLength=%d, Remaining=%d, Position=%d\n", PacketLength, Remaining, Position);
@@ -294,8 +290,8 @@ static int writeData(void* _call)
 
 	UpdatePesHeaderPayloadSize(PesHeader, data_len + iov[0].iov_len - 6);
 
-	if (iov[0].iov_len != (unsigned)WriteExt(call->WriteV, call->fd, iov[0].iov_base, iov[0].iov_len)) return -1;
-	if (iov[1].iov_len != (unsigned)WriteExt(call->WriteV, call->fd, iov[1].iov_base, iov[1].iov_len)) return -1;
+	if (iov[0].iov_len != (unsigned)WriteExt(call->WriteV, call->fd, iov[0].iov_base, iov[0].iov_len)) 			return -1;
+	if (iov[1].iov_len != (unsigned)WriteExt(call->WriteV, call->fd, iov[1].iov_base, iov[1].iov_len)) 			return -1;
 #endif
 }
 
