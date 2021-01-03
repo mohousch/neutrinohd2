@@ -2,6 +2,7 @@
 #define WRITER_H_
 
 #include <stdio.h>
+#include <sys/uio.h>
 
 
 typedef enum { 
@@ -10,6 +11,8 @@ typedef enum {
 	eVideo, 
 	eGfx
 } eWriterType_t;
+
+typedef ssize_t (* WriteV_t)(int, const struct iovec *, int);
 
 typedef struct {
 	int                    fd;
@@ -23,6 +26,7 @@ typedef struct {
 	unsigned int           Width;
 	unsigned int           Height;
 	unsigned char          Version;
+	WriteV_t               WriteV;
 } WriterAVCallData_t;
 
 typedef struct {
@@ -81,6 +85,8 @@ extern Writer_t WriterVideoMSCOMP;
 extern Writer_t WriterVideoH263;
 extern Writer_t WriterVideoFLV;
 extern Writer_t WriterVideoVC1;
+
+// subtitle
 extern Writer_t WriterFramebuffer;
 
 static Writer_t * AvailableWriter[] = {
@@ -113,5 +119,8 @@ Writer_t* getWriter(char* encoding);
 Writer_t* getDefaultVideoWriter();
 Writer_t* getDefaultAudioWriter();
 Writer_t* getDefaultFramebufferWriter();
+
+//
+ssize_t WriteExt(WriteV_t _call, int fd, void *data, size_t size);
 
 #endif

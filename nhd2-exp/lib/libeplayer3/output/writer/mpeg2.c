@@ -462,7 +462,7 @@ static int writeData(void* _call)
 			iov[3].iov_len = data_len - pos;
 
 			must_send_header = false;
-			return writev(call->fd, iov, 4);
+			return call->WriteV(call->fd, iov, 4);
 		}
 	}
 
@@ -478,10 +478,8 @@ static int writeData(void* _call)
 
 	UpdatePesHeaderPayloadSize(PesHeader, data_len + iov[0].iov_len - 6);
 
-/*
 	if (iov[0].iov_len != (unsigned)WriteExt(call->WriteV, call->fd, iov[0].iov_base, iov[0].iov_len)) return -1;
 	if (iov[1].iov_len != (unsigned)WriteExt(call->WriteV, call->fd, iov[1].iov_base, iov[1].iov_len)) return -1;
-*/
 #endif
 }
 

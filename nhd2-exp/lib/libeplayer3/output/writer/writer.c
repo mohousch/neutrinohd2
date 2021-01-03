@@ -139,5 +139,13 @@ Writer_t* getDefaultFramebufferWriter()
 	return NULL;
 }
 
+ssize_t WriteExt(WriteV_t _call, int fd, void *data, size_t size)
+{
+	struct iovec iov[1];
+	iov[0].iov_base = data;
+	iov[0].iov_len = size;
+	return _call(fd, iov, 1);
+}
+
 
 
