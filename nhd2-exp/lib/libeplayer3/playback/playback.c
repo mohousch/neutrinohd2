@@ -51,6 +51,8 @@ if (debug_level >= level) printf("[%s:%s] " fmt, __FILE__, __FUNCTION__, ## x); 
 #define cMaxSpeed_ff   128 /* fixme: revise */
 #define cMaxSpeed_fr   -320 /* fixme: revise */
 
+#define MAX_PLAYBACK_DIE_NOW_CALLBACKS 10
+
 /* ***************************** */
 /* Varaibles                     */
 /* ***************************** */
@@ -63,6 +65,9 @@ static int hasThreadStarted = 0;
 /* ***************************** */
 static int PlaybackTerminate(Context_t  *context);
 
+static int8_t dieNow = 0;
+static PlaybackDieNowCallback playbackDieNowCallbacks[MAX_PLAYBACK_DIE_NOW_CALLBACKS] = {NULL};
+
 /* ***************************** */
 /* MISC Functions                */
 /* ***************************** */
@@ -70,6 +75,55 @@ static int PlaybackTerminate(Context_t  *context);
 /* **************************** */
 /* Supervisor Thread            */
 /* **************************** */
+
+int8_t PlaybackDieNow(int8_t val)
+{
+	if (val == 1 && dieNow == 0)
+	{
+		uint32_t i = 0;
+		dieNow = 1;
+		while (i < MAX_PLAYBACK_DIE_NOW_CALLBACKS)
+		{
+			if (playbackDieNowCallbacks[i] == NULL)
+			{
+				break;
+			}
+			playbackDieNowCallbacks[i]();
+			i += 1;
+		}
+	}
+	else if (val == 2)
+	{
+		dieNow = 0;
+	}
+	return dieNow;
+}
+
+bool PlaybackDieNowRegisterCallback(PlaybackDieNowCallback callback)
+{
+	bool ret = false;
+	if (callback)
+	{
+		uint32_t i = 0;
+		while (i < MAX_PLAYBACK_DIE_NOW_CALLBACKS)
+		{
+			if (playbackDieNowCallbacks[i] == callback)
+			{
+				ret = true;
+				break;
+			}
+
+			if (playbackDieNowCallbacks[i] == NULL)
+			{
+				playbackDieNowCallbacks[i] = callback;
+				ret = true;
+				break;
+			}
+			i += 1;
+		}
+	}
+	return ret;
+}
 
 static void SupervisorThread(Context_t *context) 
 {

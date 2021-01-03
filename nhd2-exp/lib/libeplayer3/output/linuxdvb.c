@@ -1078,6 +1078,7 @@ static int Write(void  *_context, void* _out)
 			call.FrameRate      = out->frameRate;
 			call.FrameScale     = out->timeScale;
 			call.Version        = 0; /* -1; unsigned char cannot be negative */
+			call.WriteV         = writev_with_retry;
 
 			if (writer->writeData)
 				res = writer->writeData(&call);
@@ -1125,6 +1126,7 @@ static int Write(void  *_context, void* _out)
 			call.Width        = out->width;
 			call.Height       = out->height;
 			call.Version      = 0; // is unsingned char
+			call.WriteV       = writev_with_retry;
 
 			if (writer->writeData)
 				res = writer->writeData(&call);

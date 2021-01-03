@@ -25,6 +25,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #include "writer.h"
 
@@ -139,12 +140,74 @@ Writer_t* getDefaultFramebufferWriter()
 	return NULL;
 }
 
+//
 ssize_t WriteExt(WriteV_t _call, int fd, void *data, size_t size)
 {
 	struct iovec iov[1];
 	iov[0].iov_base = data;
 	iov[0].iov_len = size;
 	return _call(fd, iov, 1);
+}
+
+//
+ssize_t write_with_retry(int fd, const void *buf, int size)
+{
+	ssize_t ret;
+	int retval = 0;
+	while (size > 0 && 0 == PlaybackDieNow(0))
+	{
+		ret = write(fd, buf, size);
+		if (ret < 0)
+		{
+			switch (errno)
+			{
+				case EINTR:
+				case EAGAIN:
+					usleep(1000);
+					continue;
+				default:
+					retval = -3;
+					break;
+			}
+			if (retval < 0)
+			{
+				break;
+			}
+		}
+
+		if (ret < 0)
+		{
+			return ret;
+		}
+
+		size -= ret;
+		buf += ret;
+
+		if (size > 0)
+		{
+			if (usleep(1000))
+			{
+				writer_err("usleep error \n");
+			}
+		}
+	}
+	return 0;
+}
+
+ssize_t writev_with_retry(int fd, const struct iovec *iov, int ic)
+{
+	ssize_t len = 0;
+	int i = 0;
+	for (i = 0; i < ic; ++i)
+	{
+		write_with_retry(fd, iov[i].iov_base, iov[i].iov_len);
+		len += iov[i].iov_len;
+		if (PlaybackDieNow(0))
+		{
+			return -1;
+		}
+	}
+	return len;
 }
 
 

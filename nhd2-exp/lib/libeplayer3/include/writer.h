@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <sys/uio.h>
+#include <stdint.h>
+#include "common.h"
 
 
 typedef enum { 
@@ -122,5 +124,7 @@ Writer_t* getDefaultFramebufferWriter();
 
 //
 ssize_t WriteExt(WriteV_t _call, int fd, void *data, size_t size);
+ssize_t write_with_retry(int fd, const void *buf, int size);
+ssize_t writev_with_retry(int fd, const struct iovec *iov, int ic);
 
 #endif

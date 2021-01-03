@@ -84,10 +84,6 @@ if (debug_level >= level) printf("[%s:%s] " fmt, __FILE__, __FUNCTION__, ## x); 
 /* MISC Functions                */
 /* ***************************** */
 
-typedef int bool;
-#define true 1
-#define false 0
-
 static bool must_send_header = true;
 static uint8_t *private_data = NULL;
 static uint32_t private_size = 0;
