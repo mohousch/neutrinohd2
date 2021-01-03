@@ -124,7 +124,7 @@ static int writeData(void* _call)
 	memcpy(PacketStart, PesHeader, HeaderLength);
 	memcpy(PacketStart + HeaderLength, call->data, call->len);
 
-	int len = write(call->fd, PacketStart, call->len + HeaderLength);
+	int len = call->WriteV(call->fd, PacketStart, call->len + HeaderLength);
 
 	free(PacketStart);
 
