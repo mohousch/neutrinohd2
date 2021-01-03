@@ -18,8 +18,7 @@ typedef enum {
 	CONTAINER_INFO, 
 	CONTAINER_STATUS, 
 	CONTAINER_LAST_PTS, 
-	CONTAINER_DATA,
-	CONTAINER_GET_METADATA
+	CONTAINER_DATA
 } ContainerCmd_t;
 
 typedef struct Container_s {
