@@ -38,6 +38,7 @@
 #include <pthread.h>
 #include <errno.h>
 #include <sys/uio.h>
+#include <assert.h>
 
 #include "common.h"
 #include "output.h"
