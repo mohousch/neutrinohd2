@@ -647,7 +647,7 @@ static int writeData(void* _call)
 		iov[ic].iov_base = "";
 		iov[ic++].iov_len = 1;
 		iov[0].iov_len = InsertPesHeader(PesHeader, PacketLength, MPEG_VIDEO_PES_START_CODE, call->Pts, FakeStartCode);
-		return writev(call->fd, iov, ic);
+		return call->WriteV(call->fd, iov, ic);
 	}
 	if (initialHeader)
 	{
@@ -695,7 +695,7 @@ static int writeData(void* _call)
 		iov[ic++].iov_len = InsertPesHeader(PesHeader, ParametersLength, MPEG_VIDEO_PES_START_CODE, INVALID_PTS_VALUE, 0);
 		iov[ic].iov_base = HeaderData;
 		iov[ic++].iov_len = ParametersLength;
-		len = writev(call->fd, iov, ic);
+		len = call->WriteV(call->fd, iov, ic);
 		if (len < 0)
 			return len;
 		NalLengthBytes  = (avcCHeader->NalLengthMinusOne & 0x03) + 1;
@@ -738,7 +738,7 @@ static int writeData(void* _call)
 			ParamOffset                += PsLength + 2;
 		}
 		iov[0].iov_len = InsertPesHeader(PesHeader, InitialHeaderLength, MPEG_VIDEO_PES_START_CODE, INVALID_PTS_VALUE, 0);
-		ssize_t l = writev(call->fd, iov, ic);
+		ssize_t l = call->WriteV(call->fd, iov, ic);
 		if (l < 0)
 			return l;
 		len += l;
@@ -794,7 +794,7 @@ static int writeData(void* _call)
 			VideoPosition += NalLength;
 			h264_printf(20, "  pts=%llu\n", VideoPts);
 			iov[0].iov_len = InsertPesHeader(PesHeader, NalLength, MPEG_VIDEO_PES_START_CODE, VideoPts, 0);
-			ssize_t l = writev(call->fd, iov, ic);
+			ssize_t l = call->WriteV(call->fd, iov, ic);
 			if (l < 0)
 				return l;
 			len += l;
@@ -843,7 +843,7 @@ static int writeData(void* _call)
 
 		iov[0].iov_len = InsertPesHeader(PesHeader, -1, MPEG_VIDEO_PES_START_CODE, VideoPts, FakeStartCode);
 
-		return writev(call->fd, iov, ic);
+		return call->WriteV(call->fd, iov, ic);
 	}
 	else if (!call->private_data || call->private_size < 7 || 1 != call->private_data[0])
 	{
@@ -929,7 +929,7 @@ static int writeData(void* _call)
 		h264_printf(10, "<<<< PacketLength [%d]\n", PacketLength);
 		iov[0].iov_len = InsertPesHeader(PesHeader, -1, MPEG_VIDEO_PES_START_CODE, VideoPts, 0);
 
-		len = writev(call->fd, iov, ic);
+		len = call->WriteV(call->fd, iov, ic);
 		PacketLength += iov[0].iov_len;
 		if (PacketLength != len)
 		{
