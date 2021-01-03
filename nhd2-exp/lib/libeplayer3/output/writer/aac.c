@@ -37,6 +37,7 @@
 #include <asm/types.h>
 #include <pthread.h>
 #include <errno.h>
+#include <sys/uio.h>
 
 #include "common.h"
 #include "output.h"
@@ -258,7 +259,7 @@ static int writeData(void* _call)
 
 	unsigned int  HeaderLength = InsertPesHeader(PesHeader, PacketLength, AAC_AUDIO_PES_START_CODE, call->Pts, 0);
 
-	unsigned char* PacketStart = malloc(HeaderLength + sizeof(ExtraData) + call->len);
+	//unsigned char* PacketStart = malloc(HeaderLength + sizeof(ExtraData) + call->len);
 
 #if defined __sh__
 	memcpy(ExtraData, call->private_data, AAC_HEADER_LENGTH);
@@ -267,22 +268,41 @@ static int writeData(void* _call)
 	ExtraData[4]        = (PacketLength >> 3) & 0xff;
 	ExtraData[5]       |= (PacketLength << 5) & 0xe0;
 
+/*
 	memcpy(PacketStart, PesHeader, HeaderLength);
 	memcpy(PacketStart + HeaderLength, ExtraData, sizeof(ExtraData));
 	memcpy(PacketStart + HeaderLength + sizeof(ExtraData), call->data, call->len);
+*/
 
 	aac_printf(100, "H %d d %d ExtraData %d\n", HeaderLength, call->len, sizeof(ExtraData));
 #endif
 
 #if defined __sh__
-	int len = write(call->fd, PacketStart, HeaderLength + call->len + sizeof(ExtraData));
+	struct iovec iov[3];
+	iov[0].iov_base = PesHeader;
+	iov[0].iov_len = HeaderLength;
+	iov[1].iov_base = ExtraData;
+	iov[1].iov_len = AAC_HEADER_LENGTH;
+	iov[2].iov_base = call->data;
+	iov[2].iov_len = call->len;
+
+	//int len = write(call->fd, PacketStart, HeaderLength + call->len + sizeof(ExtraData));
+	return writev(call->fd, iov, 3);
 #else
-	int len = write(call->fd, PesHeader, call->len + HeaderLength);
+	struct iovec iov[2];
+	iov[0].iov_base = PesHeader;
+	iov[0].iov_len  = HeaderLength;
+	iov[1].iov_base = call->data;
+	iov[1].iov_len  = call->len;
+
+	return writev(call->fd, iov, 2);
+
+	//int len = write(call->fd, PesHeader, call->len + HeaderLength);
 #endif
 
-	free(PacketStart);
+	//free(PacketStart);
 
-	return len;
+	//return len;
 }
 
 /* ***************************** */
