@@ -137,7 +137,7 @@ int cAudio::SetMute(int enable)
 	}
 #endif	
 	
-#if !defined (__sh__)
+#if 0 //!defined (__sh__)
 	if (audio_fd > 0)
 	{
 		ret = ioctl(audio_fd, AUDIO_SET_MUTE, enable);
@@ -183,7 +183,7 @@ int cAudio::setVolume(unsigned int left, unsigned int right)
 	}
 #endif	
 
-#if !defined (__sh__)
+#if 0 //!defined (__sh__)
 	// convert to -1dB steps
 	left = 63 - left * 0.63;
 	right = 63 - right * 0.63;
