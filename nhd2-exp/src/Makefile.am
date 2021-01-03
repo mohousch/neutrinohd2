@@ -112,7 +112,7 @@ endif
 if ENABLE_GSTREAMER
 neutrino_LDADD += @GSTREAMER_LIBS@
 else
-neutrino_LDADD += $(top_builddir)/lib/libeplayer3/libeplayer3.a
+neutrino_LDADD += $(top_builddir)/lib/libeplayer3/libeplayer3.a -lao
 endif
 
 # LCD display

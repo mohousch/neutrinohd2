@@ -203,7 +203,7 @@ static int writeData(void* _call)
 			int HeaderLength        = InsertPesHeader (PesPacket, MetadataLength, VC1_VIDEO_PES_START_CODE, INVALID_PTS_VALUE, 0);
 
 #if defined (USE_OPENGL)
-			len = ao_play(call->fd, PesPacket, HeaderLength + MetaDataLength);  
+			len = ao_play(call->fd, (char *)PesPacket, HeaderLength + MetadataLength);  
 #else
 			len = write(call->fd, PesPacket, HeaderLength + MetadataLength);
 #endif
@@ -223,7 +223,7 @@ static int writeData(void* _call)
 			int HeaderLength       = InsertPesHeader (PesPacket, call->private_size, VC1_VIDEO_PES_START_CODE, INVALID_PTS_VALUE, 0);
 
 #if defined (USE_OPENGL)
-			len = ao_play(call->fd, PesPacket, call->private_size + HeaderLength);  
+			len = ao_play(call->fd, (char *)PesPacket, call->private_size + HeaderLength);  
 #else
 			len = write(call->fd, PesPacket, call->private_size + HeaderLength);
 #endif
@@ -275,7 +275,7 @@ static int writeData(void* _call)
 			memcpy (PacketStart + HeaderLength, call->data + Position, PacketLength);
 
 #if defined (USE_OPENGL)
-			len = ao_play(call->fd, PacketStart, PacketLength + HeaderLength);  
+			len = ao_play(call->fd, (char *)PacketStart, PacketLength + HeaderLength);  
 #else
 			len = write(call->fd, PacketStart, PacketLength + HeaderLength);
 #endif

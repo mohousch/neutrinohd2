@@ -86,7 +86,15 @@ int InsertVideoPrivateDataHeader(unsigned char *data, int payload_size)
 
 }
 
-int InsertPesHeader (unsigned char *data, int size, unsigned char stream_id, unsigned long long int pts, int pic_start_code)
+void UpdatePesHeaderPayloadSize(uint8_t *data, int32_t size)
+{
+	if (size > MAX_PES_PACKET_SIZE || size < 0)
+		size = 0;
+	data[4] = size >> 8;
+	data[5] = size & 0xFF;
+}
+
+int InsertPesHeader(unsigned char *data, int size, unsigned char stream_id, unsigned long long int pts, int pic_start_code)
 {
 	BitPacker_t ld2 = {data, 0, 32};
 
@@ -153,3 +161,5 @@ int InsertPesHeader (unsigned char *data, int size, unsigned char stream_id, uns
 
 	return (ld2.Ptr - data);
 }
+
+

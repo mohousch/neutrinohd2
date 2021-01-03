@@ -23,7 +23,7 @@
 #include <linux/dvb/audio.h>
 
 #include <config.h>
-#include <string>
+//#include <string>
 
 #include <frontend_c.h>
 

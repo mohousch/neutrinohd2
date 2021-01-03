@@ -555,6 +555,7 @@ static void FFMPEGThread(Context_t *context)
 
 			ffmpeg_printf(200, "packet.size %d - index %d\n", packet.size, index);
 
+			// video
 			if (videoTrack != NULL) 
 			{
 				if (videoTrack->Id == index) 
@@ -592,6 +593,7 @@ static void FFMPEGThread(Context_t *context)
 				}
 			}
 
+			// audio
 			if (audioTrack != NULL) 
 			{
 				if (audioTrack->Id == index) 
@@ -794,8 +796,7 @@ static void FFMPEGThread(Context_t *context)
 								}
 							}
 						}
-						else
-						if(((AVStream*)subtitleTrack->stream)->codec->codec_id == AV_CODEC_ID_SSA)
+						else if(((AVStream*)subtitleTrack->stream)->codec->codec_id == AV_CODEC_ID_SSA)
 						{
 							SubtitleData_t data;
 
@@ -979,6 +980,7 @@ int container_ffmpeg_init(Context_t *context, char * filename)
 
 		switch (stream->codec->codec_type) 
 		{
+			// video
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)	  
 			case AVMEDIA_TYPE_VIDEO:
 #else
@@ -1888,6 +1890,93 @@ static int container_ffmpeg_get_info(Context_t* context, char ** infoString)
 	return cERR_CONTAINER_FFMPEG_NO_ERROR;
 }
 
+#define IPTV_AV_CONTEXT_MAX_NUM 2
+static AVFormatContext *avContextTab[IPTV_AV_CONTEXT_MAX_NUM] = {NULL, NULL};
+static int container_ffmpeg_get_metadata(Context_t *context, char ***p)
+{
+	Track_t *videoTrack = NULL;
+	Track_t *audioTrack = NULL;
+	AVDictionaryEntry *tag = NULL;
+	size_t psize = 1;
+	char **pp;
+
+	if (!context)
+	{
+		fprintf(stderr, "BUG %s:%d\n", __func__, __LINE__);
+		return cERR_CONTAINER_FFMPEG_ERR;
+	}
+
+	if (!p || *p)
+	{
+		fprintf(stderr, "BUG %s:%d\n", __func__, __LINE__);
+		return cERR_CONTAINER_FFMPEG_ERR;
+	}
+
+	context->manager->video->Command(context, MANAGER_GET_TRACK, &videoTrack);
+	context->manager->audio->Command(context, MANAGER_GET_TRACK, &audioTrack);
+
+	if (avContextTab[0]->metadata)
+		psize += av_dict_count(avContextTab[0]->metadata);
+	if (videoTrack)
+		psize += av_dict_count(((AVStream *)(videoTrack->stream))->metadata);
+	if (audioTrack)
+		psize += av_dict_count(((AVStream *)(audioTrack->stream))->metadata);
+
+	*p = malloc(sizeof(char *) * psize * 2);
+	if (!*p)
+	{
+		fprintf(stderr, "MALLOC %s:%d\n", __func__, __LINE__);
+		return cERR_CONTAINER_FFMPEG_ERR;
+	}
+	pp = *p;
+
+	if (avContextTab[0]->metadata)
+		while ((tag = av_dict_get(avContextTab[0]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
+		{
+			*pp++ = strdup(tag->key);
+			*pp++ = strdup(tag->value);
+		}
+
+	if (videoTrack)
+	{
+		tag = NULL;
+		while ((tag = av_dict_get(((AVStream *)(videoTrack->stream))->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
+		{
+			*pp++ = strdup(tag->key);
+			*pp++ = strdup(tag->value);
+		}
+	}
+	if (audioTrack)
+	{
+		tag = NULL;
+		while ((tag = av_dict_get(((AVStream *)(audioTrack->stream))->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
+		{
+			*pp++ = strdup(tag->key);
+			*pp++ = strdup(tag->value);
+		}
+	}
+	*pp++ = NULL;
+	*pp = NULL;
+
+	// find the first attached picture, if available
+	unlink("/tmp/.id3coverart");
+	for(unsigned int i = 0; i < avContextTab[0]->nb_streams; i++) {
+		if (avContextTab[0]->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) {
+			AVPacket *pkt = NULL;
+			pkt = av_packet_clone(&avContextTab[0]->streams[i]->attached_pic);
+			FILE *cover_art = fopen("/tmp/.id3coverart", "wb");
+			if (cover_art) {
+				fwrite(pkt->data, pkt->size, 1, cover_art);
+				fclose(cover_art);
+			}
+			av_packet_free(&pkt);
+			break;
+		}
+	}
+
+	return cERR_CONTAINER_FFMPEG_NO_ERROR;
+}
+
 static int Command(void  *_context, ContainerCmd_t command, void * argument)
 {
 	Context_t  *context = (Context_t*) _context;
@@ -1960,6 +2049,12 @@ static int Command(void  *_context, ContainerCmd_t command, void * argument)
 			*((long long int*)argument) = latestPts;
 			break;
 		}
+
+		case CONTAINER_GET_METADATA:
+		{
+			ret = container_ffmpeg_get_metadata(context, (char ***)argument);
+			break;
+		}
 		
 		default:
 			ffmpeg_err("ContainerCmd %d not supported!\n", command);
@@ -2006,3 +2101,5 @@ Container_t FFMPEGContainer = {
 	&Command,
 	FFMPEG_Capabilities
 };
+
+

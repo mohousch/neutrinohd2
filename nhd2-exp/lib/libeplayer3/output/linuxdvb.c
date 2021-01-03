@@ -84,6 +84,9 @@ static int audiofd 	= -1;
 
 unsigned long long int sCURRENT_PTS = 0;
 
+//
+#include <config.h>
+
 #if defined (USE_OPENGL)
 #include <libavformat/avformat.h>
 #include <libavutil/opt.h>
@@ -91,12 +94,9 @@ unsigned long long int sCURRENT_PTS = 0;
 #include <libswresample/swresample.h>
 #include <ao/ao.h>
 
-
+#include <pcm.h>
 static ao_device *adevice = NULL;
 static ao_sample_format sformat;
-
-static AVCodecContext *c = NULL;
-static AVCodecParameters *p = NULL;
 #endif
 
 pthread_mutex_t LinuxDVBmutex;
@@ -1096,16 +1096,28 @@ static int Write(void  *_context, void* _out)
 		else
 		{
 #if defined (USE_OPENGL)
+			pcmPrivateData_t*  pcmPrivateData = (pcmPrivateData_t*)out->extradata;
+
 			int driver = ao_default_driver_id();
-			sformat.bits = 16;
-			sformat.channels = 2;
-			sformat.rate = out->frameRate;
+			memset(&sformat, 0, sizeof(sformat));  
+
+			sformat.bits = 16; //pcmPrivateData->uBitsPerSample;
+			sformat.channels = 2; //pcmPrivateData->uNoOfChannels;
+			sformat.rate = 48000; //pcmPrivateData->uSampleRate;
 			sformat.byte_format = AO_FMT_LITTLE;
 			sformat.matrix = 0;
+
+			printf("\nbits:%d channels:%d rate:%d\n", sformat.bits, sformat.channels, sformat.rate);
+
+			ao_initialize();
 
 			//if (adevice)
 			//	ao_close(adevice);
 			adevice = ao_open_live(driver, &sformat, NULL);
+
+			ao_info *ai = ao_driver_info(driver);
+			if(ai && adevice)
+				printf("libao driver: %d name '%s' short '%s' author '%s'\n", driver, ai->name, ai->short_name, ai->author);
 
 			call.fd		    = adevice;
 #else
@@ -1120,8 +1132,10 @@ static int Write(void  *_context, void* _out)
 			call.FrameScale     = out->timeScale;
 			call.Version        = 0; /* -1; unsigned char cannot be negative */
 
+/*
 			if (writer->writeData)
 				res = writer->writeData(&call);
+*/
 
 			if (res <= 0)
 			{

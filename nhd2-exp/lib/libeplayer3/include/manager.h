@@ -46,9 +46,10 @@ typedef struct Track_s {
 
 	/* stream from ffmpeg */
 	void               *  stream;
+
 	/* codec extra data (header or some other stuff) */
 	void               *  extraData;
-	int		          extraSize;
+	int		      extraSize;
 
 	uint8_t*              aacbuf;
 	unsigned int          aacbuflen;
@@ -78,3 +79,5 @@ void freeTrack(Track_t* track);
 void copyTrack(Track_t* to, Track_t* from);
 
 #endif
+
+

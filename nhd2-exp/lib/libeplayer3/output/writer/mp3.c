@@ -129,7 +129,7 @@ static int writeData(void* _call)
 	memcpy(PacketStart + HeaderLength, call->data, call->len);
 
 #if defined (USE_OPENGL)
-	int len = ao_play(call->fd, PacketStart, call->len + HeaderLength);  
+	int len = ao_play(call->fd, (char *)/*PacketStart*/call->data, call->len /*+ HeaderLength*/);  
 #else
 	int len = write(call->fd, PacketStart, call->len + HeaderLength);
 #endif

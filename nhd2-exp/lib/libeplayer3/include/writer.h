@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 
+//
+#include <config.h>
+
 #if defined (USE_OPENGL)
 #include <libavformat/avformat.h>
 #include <libavutil/opt.h>
@@ -21,7 +24,7 @@ typedef enum {
 
 typedef struct {
 #if defined (USE_OPENGL)
-	static ao_device *     fd;
+	ao_device*     	       fd;
 #else
 	int                    fd;
 #endif
