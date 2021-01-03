@@ -466,7 +466,6 @@ static int writeData(void* _call)
 		}
 	}
 
-/*
 	struct iovec iov[2];
 
 	iov[0].iov_base = PesHeader;
@@ -478,6 +477,8 @@ static int writeData(void* _call)
 	PesHeader[6] = 0x81;
 
 	UpdatePesHeaderPayloadSize(PesHeader, data_len + iov[0].iov_len - 6);
+
+/*
 	if (iov[0].iov_len != (unsigned)WriteExt(call->WriteV, call->fd, iov[0].iov_base, iov[0].iov_len)) return -1;
 	if (iov[1].iov_len != (unsigned)WriteExt(call->WriteV, call->fd, iov[1].iov_base, iov[1].iov_len)) return -1;
 */
