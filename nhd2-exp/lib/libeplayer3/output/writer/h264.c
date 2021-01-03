@@ -140,11 +140,7 @@ static int writeData(void* _call)
 		return 0;
 	}
 
-#if defined (USE_OPENGL)
-	if (call->fd == NULL)
-#else
 	if (call->fd < 0)
-#endif
 	{
 		h264_err("file pointer < 0. ignoring ...\n");
 		return 0;
@@ -171,11 +167,7 @@ static int writeData(void* _call)
 		}
 		memcpy (PacketData + HeaderLength + PrivateLength, call->data, call->len);
 
-#if defined (USE_OPENGL)
-		len = ao_play(call->fd, PacketData, call->len + HeaderLength + PrivateLength + 1);  
-#else
 		len = write(call->fd, PacketData, call->len + HeaderLength + PrivateLength + 1);
-#endif
 
 		free(PacketData);
 
@@ -389,11 +381,9 @@ static int writeData(void* _call)
 				free(PacketStart);
 
 				PacketLength   += HeaderLength;
-#if defined (USE_OPENGL)
-				len += ao_play(call->fd, WritePacketStart, PacketLength);  
-#else
+
 				len += write (call->fd, WritePacketStart, PacketLength);
-#endif
+
 				free(WritePacketStart);
 
 				NalPresent      = 0;
@@ -433,11 +423,7 @@ static int writeReverseData(void* _call)
 		return 0;
 	}
 
-#if defined (USE_OPENGL)
-	if (call->fd == NULL)
-#else
 	if (call->fd < 0)
-#endif
 	{
 		h264_err("file pointer < 0. ignoring ...\n");
 		return 0;

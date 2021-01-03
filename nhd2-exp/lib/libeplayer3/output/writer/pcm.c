@@ -209,11 +209,7 @@ static int writeData(void* _call)
 	    return 0;
 	}
 
-#if defined (USE_OPENGL)
-	if (call->fd == NULL)
-#else
 	if (call->fd < 0)
-#endif
 	{
 	    pcm_err("file pointer < 0. ignoring ...\n");
 	    return 0;
@@ -313,11 +309,8 @@ static int writeData(void* _call)
 	        lpcm_pes[15] = 0xFF;
 	        lpcm_pes[16] = 0xFF;
 
-#if defined (USE_OPENGL)
-		ao_play(call->fd, injectBuffer, injectBufferSize);  
-#else
 		write(call->fd, injectBuffer, injectBufferSize);
-#endif
+
 		//printf("PCM %d bytes injected\n", injectBufferSize);
 		//Hexdump(injectBuffer, 126);
 	}

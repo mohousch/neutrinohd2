@@ -84,20 +84,6 @@ static int audiofd 	= -1;
 
 unsigned long long int sCURRENT_PTS = 0;
 
-//
-#include <config.h>
-
-#if defined (USE_OPENGL)
-#include <libavformat/avformat.h>
-#include <libavutil/opt.h>
-#include <libavutil/samplefmt.h>
-#include <libswresample/swresample.h>
-#include <ao/ao.h>
-
-#include <pcm.h>
-static ao_device *adevice = NULL;
-static ao_sample_format sformat;
-#endif
 
 pthread_mutex_t LinuxDVBmutex;
 
@@ -133,10 +119,6 @@ int LinuxDvbOpen(Context_t  *context, char * type)
 	unsigned char audio = !strcmp("audio", type);
 
 	linuxdvb_printf(10, "v%d a%d\n", video, audio);
-
-# if defined (USE_OPENGL)
-	ao_initialize();
-#endif
 	
 	if (audio && audiofd == -1) 
 	{
@@ -223,14 +205,6 @@ int LinuxDvbClose(Context_t  *context, char * type)
 	unsigned char audio = !strcmp("audio", type);
 
 	linuxdvb_printf(10, "v%d a%d\n", video, audio);
-
-#if defined (USE_OPENGL)
-	if (adevice)
-		ao_close(adevice);
-
-	adevice = NULL;
-	ao_shutdown();
-#endif
 
 	/* closing stand alone is not allowed, so prevent
 	* user from closing and dont call stop. stop will
@@ -1095,34 +1069,7 @@ static int Write(void  *_context, void* _out)
 		} 
 		else
 		{
-#if defined (USE_OPENGL)
-			pcmPrivateData_t*  pcmPrivateData = (pcmPrivateData_t*)out->extradata;
-
-			int driver = ao_default_driver_id();
-			memset(&sformat, 0, sizeof(sformat));  
-
-			sformat.bits = 16; //pcmPrivateData->uBitsPerSample;
-			sformat.channels = 2; //pcmPrivateData->uNoOfChannels;
-			sformat.rate = 48000; //pcmPrivateData->uSampleRate;
-			sformat.byte_format = AO_FMT_LITTLE;
-			sformat.matrix = 0;
-
-			printf("\nbits:%d channels:%d rate:%d\n", sformat.bits, sformat.channels, sformat.rate);
-
-			ao_initialize();
-
-			//if (adevice)
-			//	ao_close(adevice);
-			adevice = ao_open_live(driver, &sformat, NULL);
-
-			ao_info *ai = ao_driver_info(driver);
-			if(ai && adevice)
-				printf("libao driver: %d name '%s' short '%s' author '%s'\n", driver, ai->name, ai->short_name, ai->author);
-
-			call.fd		    = adevice;
-#else
 			call.fd             = audiofd;
-#endif
 			call.data           = out->data;
 			call.len            = out->len;
 			call.Pts            = out->pts;
@@ -1132,10 +1079,8 @@ static int Write(void  *_context, void* _out)
 			call.FrameScale     = out->timeScale;
 			call.Version        = 0; /* -1; unsigned char cannot be negative */
 
-/*
 			if (writer->writeData)
 				res = writer->writeData(&call);
-*/
 
 			if (res <= 0)
 			{

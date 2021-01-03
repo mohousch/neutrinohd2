@@ -35,6 +35,7 @@
 #include <unistd.h>
 
 #include <limits.h>
+
 #include "common.h"
 #include "misc.h"
 #include "subtitle.h"

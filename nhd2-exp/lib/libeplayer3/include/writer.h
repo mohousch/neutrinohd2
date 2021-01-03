@@ -3,17 +3,6 @@
 
 #include <stdio.h>
 
-//
-#include <config.h>
-
-#if defined (USE_OPENGL)
-#include <libavformat/avformat.h>
-#include <libavutil/opt.h>
-#include <libavutil/samplefmt.h>
-#include <libswresample/swresample.h>
-#include <ao/ao.h>
-#endif
-
 
 typedef enum { 
 	eNone, 
@@ -23,11 +12,7 @@ typedef enum {
 } eWriterType_t;
 
 typedef struct {
-#if defined (USE_OPENGL)
-	ao_device*     	       fd;
-#else
 	int                    fd;
-#endif
 	unsigned char*         data;
 	unsigned int           len;
 	unsigned long long int Pts;
