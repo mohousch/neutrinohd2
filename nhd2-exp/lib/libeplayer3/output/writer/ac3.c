@@ -118,19 +118,7 @@ static int writeData(void* _call)
 		return 0;
 	}
 
-/*
-	int HeaderLength = InsertPesHeader (PesHeader, call->len, PRIVATE_STREAM_1_PES_START_CODE, call->Pts, 0);
-
-	unsigned char* PacketStart = malloc(call->len + HeaderLength);
-	memcpy (PacketStart, PesHeader, HeaderLength);
-	memcpy (PacketStart + HeaderLength, call->data, call->len);
-
-	int len = write(call->fd, PacketStart, call->len + HeaderLength);
-
-	free(PacketStart);
-
-	return len;
-*/
+#if defined __sh__
 	struct iovec iov[2];
 
 	iov[0].iov_base = PesHeader;
@@ -138,7 +126,26 @@ static int writeData(void* _call)
 	iov[1].iov_base = call->data;
 	iov[1].iov_len = call->len;
 
-	return writev(call->fd, iov, 2);
+	return call->WriteV(call->fd, iov, 2);
+#else
+	struct iovec iov[3];
+
+	iov[0].iov_base = PesHeader;
+	iov[0].iov_len = InsertPesHeader(PesHeader, call->len, MPEG_AUDIO_PES_START_CODE, call->Pts, 0);  //+ sizeof(AC3_SYNC_HEADER)
+
+	//PesHeader[6] = 0x81;
+	//PesHeader[7] = 0x80;
+	//PesHeader[8] = 0x09;
+
+	//iov[1].iov_base = AC3_SYNC_HEADER;
+	//iov[1].iov_len = sizeof(AC3_SYNC_HEADER);
+	iov[1].iov_base = call->data;
+	iov[1].iov_len = call->len;
+
+	ac3_printf(40, "PES HEADER LEN %d\n", (int)iov[0].iov_len);
+
+	return call->WriteV(call->fd, iov, 2);
+#endif
 }
 
 /* ***************************** */

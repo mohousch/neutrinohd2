@@ -117,18 +117,6 @@ static int writeData(void* _call)
 		return 0;
 	}
 
-/*
-	int HeaderLength = InsertPesHeader (PesHeader, call->len , MPEG_AUDIO_PES_START_CODE, call->Pts, 0);
-
-	unsigned char *PacketStart = malloc(call->len + HeaderLength);
-
-	memcpy(PacketStart, PesHeader, HeaderLength);
-	memcpy(PacketStart + HeaderLength, call->data, call->len);
-
-	int len = call->WriteV(call->fd, PacketStart, call->len + HeaderLength);
-
-	free(PacketStart);
-*/
 #if defined __sh__
 	struct iovec iov[2];
 

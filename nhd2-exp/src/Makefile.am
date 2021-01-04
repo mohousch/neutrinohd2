@@ -122,7 +122,7 @@ endif
 
 if USE_OPENGL
 neutrino_LDADD += \
-	-lglut -lGL -lGLU -lGLEW -lOpenThreads 
+	-lglut -lGL -lGLU -lGLEW -lOpenThreads -lao
 endif
 
 if ENABLE_PYTHON

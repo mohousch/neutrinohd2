@@ -1126,7 +1126,11 @@ static int Write(void  *_context, void* _out)
 			call.Width        = out->width;
 			call.Height       = out->height;
 			call.Version      = 0; // is unsingned char
+#if defined __sh__
+			call.WriteV	  = writev;
+#else
 			call.WriteV       = writev_with_retry;
+#endif
 
 			if (writer->writeData)
 				res = writer->writeData(&call);

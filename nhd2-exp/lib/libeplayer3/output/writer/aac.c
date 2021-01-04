@@ -214,9 +214,9 @@ static int writeData(void* _call)
 {
 	WriterAVCallData_t* call = (WriterAVCallData_t*) _call;
 
-	unsigned char PesHeader[PES_MAX_HEADER_SIZE];
-	unsigned char ExtraData[AAC_HEADER_LENGTH];
-	unsigned int  PacketLength;
+	//unsigned char PesHeader[PES_MAX_HEADER_SIZE];
+	//unsigned char ExtraData[AAC_HEADER_LENGTH];
+	//unsigned int  PacketLength;
 
 	aac_printf(10, "\n");
 
@@ -227,12 +227,6 @@ static int writeData(void* _call)
 	}
 
 	aac_printf(10, "AudioPts %lld\n", call->Pts);
-
-#if defined __sh__
-	PacketLength = call->len + AAC_HEADER_LENGTH;
-#else
-	PacketLength = call->len;
-#endif
 
 	if ((call->data == NULL) || (call->len <= 0))
 	{
@@ -246,39 +240,15 @@ static int writeData(void* _call)
 		return 0;
 	}
 
-	//
-	if (call->private_data == NULL)
-	{
-		aac_printf(10, "private_data = NULL\n");
+	unsigned char PesHeader[PES_MAX_HEADER_SIZE];
 
-#if defined __sh__
-		call->private_data = DefaultAACHeader;
-		call->private_size = AAC_HEADER_LENGTH;
-#endif
-	}
+	aac_printf(10, "AudioPts %lld\n", call->Pts);
 
-	unsigned int  HeaderLength = InsertPesHeader(PesHeader, PacketLength, AAC_AUDIO_PES_START_CODE, call->Pts, 0);
-
-	//unsigned char* PacketStart = malloc(HeaderLength + sizeof(ExtraData) + call->len);
-
-#if defined __sh__
-	memcpy(ExtraData, call->private_data, AAC_HEADER_LENGTH);
-
-	ExtraData[3]       |= (PacketLength >> 12) & 0x3;
-	ExtraData[4]        = (PacketLength >> 3) & 0xff;
-	ExtraData[5]       |= (PacketLength << 5) & 0xe0;
-
-/*
-	memcpy(PacketStart, PesHeader, HeaderLength);
-	memcpy(PacketStart + HeaderLength, ExtraData, sizeof(ExtraData));
-	memcpy(PacketStart + HeaderLength + sizeof(ExtraData), call->data, call->len);
-*/
-
-	aac_printf(100, "H %d d %d ExtraData %d\n", HeaderLength, call->len, sizeof(ExtraData));
-#endif
+	unsigned int  HeaderLength = InsertPesHeader(PesHeader, call->len, MPEG_AUDIO_PES_START_CODE, call->Pts, 0);
 
 #if defined __sh__
 	struct iovec iov[3];
+
 	iov[0].iov_base = PesHeader;
 	iov[0].iov_len = HeaderLength;
 	iov[1].iov_base = ExtraData;
@@ -286,23 +256,17 @@ static int writeData(void* _call)
 	iov[2].iov_base = call->data;
 	iov[2].iov_len = call->len;
 
-	//int len = write(call->fd, PacketStart, HeaderLength + call->len + sizeof(ExtraData));
-	return writev(call->fd, iov, 3);
+	return call->WriteV(call->fd, iov, 3);
 #else
 	struct iovec iov[2];
+
 	iov[0].iov_base = PesHeader;
 	iov[0].iov_len  = HeaderLength;
 	iov[1].iov_base = call->data;
 	iov[1].iov_len  = call->len;
 
-	return writev(call->fd, iov, 2);
-
-	//int len = write(call->fd, PesHeader, call->len + HeaderLength);
+	return call->WriteV(call->fd, iov, 2);
 #endif
-
-	//free(PacketStart);
-
-	//return len;
 }
 
 /* ***************************** */
