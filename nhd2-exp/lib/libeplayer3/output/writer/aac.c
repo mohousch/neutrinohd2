@@ -212,11 +212,10 @@ static int reset()
 
 static int writeData(void* _call)
 {
-	WriterAVCallData_t* call = (WriterAVCallData_t*) _call;
-
-	//unsigned char PesHeader[PES_MAX_HEADER_SIZE];
-	//unsigned char ExtraData[AAC_HEADER_LENGTH];
-	//unsigned int  PacketLength;
+	WriterAVCallData_t *call = (WriterAVCallData_t *) _call;
+	unsigned char PesHeader[PES_MAX_HEADER_SIZE];
+	unsigned char ExtraData[AAC_HEADER_LENGTH];
+	unsigned int  PacketLength;
 
 	aac_printf(10, "\n");
 
@@ -225,35 +224,39 @@ static int writeData(void* _call)
 		aac_err("call data is NULL...\n");
 		return 0;
 	}
-
 	aac_printf(10, "AudioPts %lld\n", call->Pts);
-
+	PacketLength    = call->len + AAC_HEADER_LENGTH;
 	if ((call->data == NULL) || (call->len <= 0))
 	{
 		aac_err("parsing NULL Data. ignoring...\n");
 		return 0;
 	}
-
 	if (call->fd < 0)
 	{
 		aac_err("file pointer < 0. ignoring ...\n");
 		return 0;
 	}
-
-	unsigned char PesHeader[PES_MAX_HEADER_SIZE];
-
-	aac_printf(10, "AudioPts %lld\n", call->Pts);
-
-	unsigned int  HeaderLength = InsertPesHeader(PesHeader, call->len, MPEG_AUDIO_PES_START_CODE, call->Pts, 0);
-
-	struct iovec iov[2];
+	if (call->private_data == NULL)
+	{
+		aac_printf(10, "private_data = NULL\n");
+		call->private_data = DefaultAACHeader;
+		call->private_size = AAC_HEADER_LENGTH;
+	}
+	memcpy(ExtraData, call->private_data, AAC_HEADER_LENGTH);
+	ExtraData[3]       |= (PacketLength >> 11) & 0x3;
+	ExtraData[4]        = (PacketLength >> 3) & 0xff;
+	ExtraData[5]       |= (PacketLength << 5) & 0xe0;
+	unsigned int  HeaderLength = InsertPesHeader(PesHeader, PacketLength, AAC_AUDIO_PES_START_CODE, call->Pts, 0);
+	struct iovec iov[3];
 
 	iov[0].iov_base = PesHeader;
-	iov[0].iov_len  = HeaderLength;
-	iov[1].iov_base = call->data;
-	iov[1].iov_len  = call->len;
+	iov[0].iov_len = HeaderLength;
+	iov[1].iov_base = ExtraData;
+	iov[1].iov_len = AAC_HEADER_LENGTH;
+	iov[2].iov_base = call->data;
+	iov[2].iov_len = call->len;
 
-	return call->WriteV(call->fd, iov, 2);
+	return call->WriteV(call->fd, iov, 3);
 }
 
 /* ***************************** */
