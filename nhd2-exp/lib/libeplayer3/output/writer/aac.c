@@ -246,18 +246,6 @@ static int writeData(void* _call)
 
 	unsigned int  HeaderLength = InsertPesHeader(PesHeader, call->len, MPEG_AUDIO_PES_START_CODE, call->Pts, 0);
 
-#if defined __sh__
-	struct iovec iov[3];
-
-	iov[0].iov_base = PesHeader;
-	iov[0].iov_len = HeaderLength;
-	iov[1].iov_base = ExtraData;
-	iov[1].iov_len = AAC_HEADER_LENGTH;
-	iov[2].iov_base = call->data;
-	iov[2].iov_len = call->len;
-
-	return call->WriteV(call->fd, iov, 3);
-#else
 	struct iovec iov[2];
 
 	iov[0].iov_base = PesHeader;
@@ -266,7 +254,6 @@ static int writeData(void* _call)
 	iov[1].iov_len  = call->len;
 
 	return call->WriteV(call->fd, iov, 2);
-#endif
 }
 
 /* ***************************** */
