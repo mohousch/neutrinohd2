@@ -214,6 +214,7 @@ AC_ARG_WITH(boxtype,
 			BOXTYPE="gigablue"
 			BOXMODEL="$withval"
 			;;
+
 		tf*)
 			BOXTYPE="topfield"
 			BOXMODEL="$withval"
@@ -358,7 +359,7 @@ AC_ARG_WITH(boxmodel,
 				valid for iqonios: iqonios100hd,iqonios300hd,mediabox,optimussos1,optimussos2
 				valid for odin: odinm6,odinm7,odinm9
 				valid for wetek: wetekplay
-				valid for edision: osmini, osminiplus
+				valid for edision: osmini, osminiplus, osnino, osninoplus, osninopro, osmio4k, osmio4plus
 				valid for hd: hd11, hd51, hd500c, hd1100, hd1200, hd1265, hdhd1500, hd2400, ax51
 				valid for gi: et7000mini
 				valid for xpeedc: xpeedc
@@ -536,7 +537,7 @@ AC_ARG_WITH(boxmodel,
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
 			fi
 			;;
-		osmini|osminiplus)
+		osmini|osminiplus|osnino|osninoplus|osninopro|osmio4k|osmio4kplus)
 			if test "$BOXTYPE" = "edision"; then
 				BOXMODEL="$withval"
 			else
@@ -667,6 +668,8 @@ AM_CONDITIONAL(BOXMODEL_CUBEREVO_250HD, test "$BOXMODEL" = "cuberevo_250hd")
 AM_CONDITIONAL(BOXMODEL_CUBEREVO_2000HD, test "$BOXMODEL" = "cuberevo_2000hd")
 AM_CONDITIONAL(BOXMODEL_CUBEREVO_9500HD, test "$BOXMODEL" = "cuberevo_9500HD")
 
+AM_CONDITIONAL(BOXMODEL_TOPFIELD_TF7700, test "$BOXMODEL" = "tf7700")
+
 AM_CONDITIONAL(BOXMODEL_GB800SOLO,test "$BOXMODEL" = "gb800solo")
 AM_CONDITIONAL(BOXMODEL_GB800SE,test "$BOXMODEL" = "gb800se")
 AM_CONDITIONAL(BOXMODEL_GB800UE,test "$BOXMODEL" = "gb800ue")
@@ -718,8 +721,6 @@ AM_CONDITIONAL(BOXMODEL_ATEVIO7600, test "$BOXMODEL" = "atevio7600")
 
 AM_CONDITIONAL(BOXMODEL_OCTAGON_1008, test "$BOXMODEL" = "octagon1008")
 
-AM_CONDITIONAL(BOXMODEL_TOPFIELD_TF7700, test "$BOXMODEL" = "tf7700")
-
 AM_CONDITIONAL(BOXMODEL_VUSOLO2, test "$BOXMODEL" = "vusolo2")
 AM_CONDITIONAL(BOXMODEL_VUDUO2, test "$BOXMODEL" = "vuduo2")
 AM_CONDITIONAL(BOXMODEL_VUSOLO, test "$BOXMODEL" = "vusolo")
@@ -763,6 +764,11 @@ AM_CONDITIONAL(BOXMODEL_WETEKPLAY, test "$BOXMODEL" = "wetekplay")
 
 AM_CONDITIONAL(BOXMODEL_OSMINI, test "$BOXMODEL" = "osmini")
 AM_CONDITIONAL(BOXMODEL_OSMINIPLUS, test "$BOXMODEL" = "osminiplus")
+AM_CONDITIONAL(BOXMODEL_OSNINO, test "$BOXMODEL" = "osnino")
+AM_CONDITIONAL(BOXMODEL_OSNINOPLUS, test "$BOXMODEL" = "osninoplus")
+AM_CONDITIONAL(BOXMODEL_OSNINOPRO, test "$BOXMODEL" = "osninopro")
+AM_CONDITIONAL(BOXMODEL_OSMIO4K, test "$BOXMODEL" = "osmio4k")
+AM_CONDITIONAL(BOXMODEL_OSMIO4KPLUS, test "$BOXMODEL" = "osmio4kplus")
 
 AM_CONDITIONAL(BOXMODEL_HD11, test "$BOXMODEL" = "hd11")
 AM_CONDITIONAL(BOXMODEL_HD51, test "$BOXMODEL" = "hd51")
@@ -1062,6 +1068,16 @@ elif test "$BOXMODEL" = "osmini"; then
 	AC_DEFINE(BOXMODEL_OSMINI, 1, [building for osmini])
 elif test "$BOXMODEL" = "osminiplus"; then
 	AC_DEFINE(BOXMODEL_OSMINIPLUS, 1, [building for osminiplus])
+elif test "$BOXMODEL" = "osnino"; then
+	AC_DEFINE(BOXMODEL_OSNINO, 1, [building for osnino])
+elif test "$BOXMODEL" = "osninoplus"; then
+	AC_DEFINE(BOXMODEL_OSNINOPLUS, 1, [building for osninoplus])
+elif test "$BOXMODEL" = "osninopro"; then
+	AC_DEFINE(BOXMODEL_OSNINOPRO, 1, [building for osninopro])
+elif test "$BOXMODEL" = "osmio4k"; then
+	AC_DEFINE(BOXMODEL_OSMIO4K, 1, [building for osmio4k])
+elif test "$BOXMODEL" = "osmio4kplus"; then
+	AC_DEFINE(BOXMODEL_OSMIO4KPLUS, 1, [building for osmio4kplus])
 
 elif test "$BOXMODEL" = "hd11"; then
 	AC_DEFINE(BOXMODEL_HD11, 1, [building for hd11])
