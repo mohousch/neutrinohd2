@@ -289,7 +289,7 @@ AC_ARG_WITH(boxtype,
 			BOXMODEL="$withval"
 			;;
 
-		edi*)
+		os*)
 			BOXTYPE="edision"
 			BOXMODEL="$withval"
 			;;
