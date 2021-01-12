@@ -694,7 +694,7 @@ static void FFMPEGThread(Context_t *context)
 							avOut.height     = 0;
 							avOut.type       = "audio";
 
-#if defined (USE_OPENGL)
+#if 0 //defined (USE_OPENGL)
 							int driver = ao_default_driver_id();
 
 							sformat.bits = 16;
