@@ -622,7 +622,7 @@ static void FFMPEGThread(Context_t *context)
 
 					ffmpeg_printf(200, "AudioTrack index = %d\n",index);
 
-#if 0 //defined (USE_OPENGL)
+#if defined (USE_OPENGL)
 					int driver = ao_default_driver_id();
 
 					sformat.bits = 16;
@@ -694,34 +694,11 @@ static void FFMPEGThread(Context_t *context)
 							avOut.height     = 0;
 							avOut.type       = "audio";
 
-#if 0 //defined (USE_OPENGL)
-							int driver = ao_default_driver_id();
-
-							sformat.bits = 16;
-							sformat.channels = ((AVStream*) audioTrack->stream)->codec->channels;
-							sformat.rate = ((AVStream*) audioTrack->stream)->codec->sample_rate;
-							sformat.byte_format = AO_FMT_LITTLE;
-							sformat.matrix = 0;
-							//if (adevice)
-							//	ao_close(adevice);
-							adevice = ao_open_live(driver, &sformat, NULL);
-							//ao_info *ai = ao_driver_info(driver);
-					
-							//ffmpeg_printf(10, "\nbits:%d channels:%d rate:%d\n", sformat.bits, sformat.channels, sformat.rate);
-							//ffmpeg_printf(10, "libao driver: %d name '%s' short '%s' author '%s'\n", driver, ai->name, ai->short_name, ai->author);
-
-							//if(adevice)
-								if(ao_play(adevice, (char *)avOut.data, avOut.len) == 0)
-							//else
-								ffmpeg_err("writing data to audio device failed\n");
-#else
-
 #ifdef reverse_playback_3
 							if (!context->playback->BackWard)
 #endif
 							if (context->output->audio->Write(context, &avOut) < 0)
 								ffmpeg_err("writing data to audio device failed\n");
-#endif
 						}
 					}
 					else if (audioTrack->have_aacheader == 1)
@@ -1443,6 +1420,9 @@ int container_ffmpeg_init(Context_t *context, char * filename)
 
 	releaseMutex(FILENAME, __FUNCTION__,__LINE__);
 
+	//test
+	pthread_exit(0);
+
 	return cERR_CONTAINER_FFMPEG_NO_ERROR;
 }
 
@@ -1466,7 +1446,7 @@ static int container_ffmpeg_play(Context_t *context)
 	if (hasPlayThreadStarted == 0) 
 	{
 		pthread_attr_init(&attr);
-		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+		pthread_attr_setdetachstate(&attr, /*PTHREAD_CREATE_DETACHED*/PTHREAD_CREATE_JOINABLE);
 
 		if((error = pthread_create(&PlayThread, &attr, (void *)&FFMPEGThread, context)) != 0) 
 		{
@@ -1480,6 +1460,9 @@ static int container_ffmpeg_play(Context_t *context)
 			ffmpeg_printf(10, "Created thread\n");
 
 			hasPlayThreadStarted = 1;
+
+			//test
+			pthread_attr_destroy(&attr);
 		}
 	}
 	else 
@@ -1511,6 +1494,9 @@ static int container_ffmpeg_stop(Context_t *context)
 	{
 		ffmpeg_printf(10, "Waiting for ffmpeg thread to terminate itself, will try another %d times\n", wait_time);
 
+		//test
+		pthread_join(PlayThread, NULL);
+
 		usleep(100000);
 	}
 
@@ -1519,6 +1505,8 @@ static int container_ffmpeg_stop(Context_t *context)
 		ffmpeg_err( "Timeout waiting for thread!\n");
 
 		ret = cERR_CONTAINER_FFMPEG_ERR;
+
+		usleep(100000);
 	}
 
 	hasPlayThreadStarted = 0;
@@ -1547,6 +1535,7 @@ static int container_ffmpeg_stop(Context_t *context)
 	releaseMutex(FILENAME, __FUNCTION__,__LINE__);
 
 	ffmpeg_printf(10, "ret %d\n", ret);
+
 	return ret;
 }
 

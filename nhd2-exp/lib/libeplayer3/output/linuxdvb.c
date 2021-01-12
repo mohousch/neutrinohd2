@@ -44,15 +44,17 @@
 #include "pes.h"
 
 
-#if defined (__sh__)
-#define VIDEO_FLUSH                     _IO('o',  82)
-#define AUDIO_FLUSH                     _IO('o',  71)
-#endif
-
-
 /* ***************************** */
 /* Makros/Constants              */
 /* ***************************** */
+#if defined (__sh__)
+#define VIDEO_FLUSH                     _IO('o',  82)
+#define AUDIO_FLUSH                     _IO('o',  71)
+#else
+#ifndef AUDIO_GET_PTS
+#define AUDIO_GET_PTS              _IOR('o', 19, __u64)
+#endif
+#endif
 
 //#define LINUXDVB_DEBUG
 
@@ -967,7 +969,7 @@ int LinuxDvbSwitch(Context_t  *context, char * type)
 #if defined (__sh__)
 				if (ioctl(videofd, VIDEO_FLUSH) == -1)
 #else
-				if (ioctl(videofd, VIDEO_CLEAR_BUFFER ,NULL) == -1)
+				if (ioctl(videofd, VIDEO_CLEAR_BUFFER , NULL) == -1)
 #endif
 				{
 					linuxdvb_err("ioctl failed with errno %d\n", errno);

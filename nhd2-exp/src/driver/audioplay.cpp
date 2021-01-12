@@ -50,9 +50,6 @@ extern cPlayback *playback;
 void CAudioPlayer::stop()
 {
 	state = CBaseDec::STOP_REQ;
-	
-	//if(playback->playing)
-	//	playback->Close();
 
 	//
 	if(thrPlay)
