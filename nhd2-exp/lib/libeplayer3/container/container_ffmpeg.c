@@ -1420,9 +1420,6 @@ int container_ffmpeg_init(Context_t *context, char * filename)
 
 	releaseMutex(FILENAME, __FUNCTION__,__LINE__);
 
-	//test
-	pthread_exit(0);
-
 	return cERR_CONTAINER_FFMPEG_NO_ERROR;
 }
 
@@ -1446,7 +1443,7 @@ static int container_ffmpeg_play(Context_t *context)
 	if (hasPlayThreadStarted == 0) 
 	{
 		pthread_attr_init(&attr);
-		pthread_attr_setdetachstate(&attr, /*PTHREAD_CREATE_DETACHED*/PTHREAD_CREATE_JOINABLE);
+		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
 		if((error = pthread_create(&PlayThread, &attr, (void *)&FFMPEGThread, context)) != 0) 
 		{
@@ -1460,9 +1457,6 @@ static int container_ffmpeg_play(Context_t *context)
 			ffmpeg_printf(10, "Created thread\n");
 
 			hasPlayThreadStarted = 1;
-
-			//test
-			pthread_attr_destroy(&attr);
 		}
 	}
 	else 
@@ -1493,9 +1487,6 @@ static int container_ffmpeg_stop(Context_t *context)
 	while ( (hasPlayThreadStarted != 0) && (--wait_time) > 0 ) 
 	{
 		ffmpeg_printf(10, "Waiting for ffmpeg thread to terminate itself, will try another %d times\n", wait_time);
-
-		//test
-		pthread_join(PlayThread, NULL);
 
 		usleep(100000);
 	}
