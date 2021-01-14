@@ -36,7 +36,7 @@
 #include <string>
 
 #include <system/locals.h>
-#include_next<locale.h>
+#include <locale.h>
 #include <time.h>
 
 #include <map>
