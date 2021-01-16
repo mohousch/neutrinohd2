@@ -91,7 +91,8 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--enable-ci \
 			--enable-python \
 			--enable-lua \
-			--enable-fake_tuner 
+			--enable-fake_tuner \
+			--enable-gstreamer
 				
 $(DEST):
 	mkdir $@
@@ -132,7 +133,8 @@ $(PLUGINS_SRC)/config.status: $(PLUGINS_SRC) $(DEST)
 			--with-configdir=$(DEST)/var/tuxbox/config \
 			--enable-testing \
 			--enable-python \
-			--enable-lua
+			--enable-lua \
+			--enable-gstreamer
 
 plugins-clean:
 	-$(MAKE) -C $(PLUGINS_SRC) clean

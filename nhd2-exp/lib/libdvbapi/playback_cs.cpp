@@ -106,9 +106,10 @@ static Context_t * player = NULL;
 #endif
 
 #if defined ENABLE_GSTREAMER
-gint match_sinktype(GstElement *element, gpointer type)
+gint match_sinktype(const GValue *velement, const gchar *type)
 {
-	return strcmp(g_type_name(G_OBJECT_TYPE(element)), (const char*)type);
+	GstElement *element = GST_ELEMENT_CAST(g_value_get_object(velement));
+	return strcmp(g_type_name(G_OBJECT_TYPE(element)), type);
 }
 
 //

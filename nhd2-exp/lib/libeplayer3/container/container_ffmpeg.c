@@ -638,9 +638,7 @@ static void FFMPEGThread(Context_t *context)
 					//ffmpeg_printf(10, "\nbits:%d channels:%d rate:%d\n", sformat.bits, sformat.channels, sformat.rate);
 					ffmpeg_printf(10, "libao driver: %d name '%s' short '%s' author '%s'\n", driver, ai->name, ai->short_name, ai->author);
 
-					if(adevice)
-						ao_play(adevice, (char *)avOut.data, avOut.len);
-					else
+					if (ao_play(adevice, (char *)avOut.data, avOut.len) == 0)
 						ffmpeg_err("writing data to audio device failed\n");
 #else
 
