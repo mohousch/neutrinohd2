@@ -887,7 +887,7 @@ void CRemoteControl::getEvents(t_channel_id chid)
 		evUrl += ":";
 		evUrl += "0:0:0:";
 	}
-	else if(g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP)
+	else if( (g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NMP) || (g_settings.epg_serverbox_gui == SNeutrinoSettings::SATIP_SERVERBOX_GUI_NHD2) )
 	{
 		evUrl += "/control/epg?channelid=";
 

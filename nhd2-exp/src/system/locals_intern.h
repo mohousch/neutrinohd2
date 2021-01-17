@@ -1649,41 +1649,7 @@ const char * locale_real_names[] = {
 	"satipcast.rec_hint",
 	
 	// tmdb
-	"tmdb.tmdb_info",
-	
-	// GLCD
-	"glcd.color.black",
-	"glcd.color.blue",
-	"glcd.color.cyan",
-	"glcd.color.green",
-	"glcd.color.magenta",
-	"glcd.color.red",
-	"glcd.color.white",
-	"glcd.color.yellow",
-	"glcd.color.orange",
-	"glcd.color.light_gray",
-	"glcd.color.gray",
-	"glcd.color.dark_gray",
-	"glcd.color.dark_red",
-	"glcd.color.dark_green",
-	"glcd.color.dark_blue",
-	"glcd.color.purple",
-	"glcd.color.mint",
-	"glcd.color.golden",
-	"glcd.enable",
-	"glcd.font",
-	"glcd.head",
-	"glcd.mirror_osd",
-	"glcd.restart",
-	"glcd.select.bar",
-	"glcd.select.bg",
-	"glcd.select.fg",
-	"glcd.size_bar",
-	"glcd.size_channel",
-	"glcd.size_epg",
-	"glcd.size_time",
-	"glcd.time_in_standby",
-	"glcd.volume"
+	"tmdb.tmdb_info"
 };
 
 #endif

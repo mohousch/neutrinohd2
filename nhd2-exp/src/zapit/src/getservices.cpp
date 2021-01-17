@@ -158,7 +158,7 @@ void ParseTransponders(_xmlNodePtr node, t_satellite_position satellitePosition,
 
 void ParseChannels(_xmlNodePtr node, const t_transport_stream_id transport_stream_id, const t_original_network_id original_network_id, t_satellite_position satellitePosition, freq_id_t freq, uint8_t polarisation)
 {
-	dprintf(DEBUG_NORMAL, "[getservices] ParseChannels:\n");
+	dprintf(DEBUG_DEBUG, "[getservices] ParseChannels:\n");
 
 	t_service_id service_id;
 	std::string  name;
@@ -335,7 +335,7 @@ void FindTransponder(_xmlNodePtr search)
 static uint32_t fake_tid, fake_nid;
 void ParseSatTransponders(fe_type_t frontendType, _xmlNodePtr search, t_satellite_position satellitePosition)
 {
-	dprintf(DEBUG_NORMAL, "[getservices] ParseSatTransponders:\n");
+	dprintf(DEBUG_DEBUG, "[getservices] ParseSatTransponders:\n");
 
 	uint8_t polarization = 0;
 	uint8_t system = 0;
@@ -427,8 +427,6 @@ int loadMotorPositions(void)
 	int spos = 0, mpos = 0, diseqc = 0, uncom = 0, com = 0, usals = 0, inuse;
 	int offH = 10600, offL = 9750, sw = 11700;
 
-	dprintf(DEBUG_NORMAL, "[getservices] loadingmotorpositions...\n");
-
 	if ((fd = fopen(SATCONFIG, "r"))) 
 	{
 		fgets(buffer, 255, fd);
@@ -500,7 +498,7 @@ void SaveMotorPositions()
 
 void init_sat(t_satellite_position position)
 {
-	dprintf(DEBUG_NORMAL, "[getservices] init_sat:\n");
+	dprintf(DEBUG_DEBUG, "[getservices] init_sat:\n");
 
 	satellitePositions[position].position = 0;
 	satellitePositions[position].diseqc = -1;

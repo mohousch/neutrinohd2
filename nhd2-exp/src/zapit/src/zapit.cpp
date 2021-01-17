@@ -4630,9 +4630,6 @@ int zapit_main_thread(void *data)
 	Z_start_arg *ZapStart_arg = (Z_start_arg *) data;
 	
 	dprintf(DEBUG_INFO, "[zapit] zapit_main_thread: starting... tid %ld\n", syscall(__NR_gettid));
-
-	//test
-	printf("lastchannelmode:%d id:%llx nr:%d use_last:%d\n", ZapStart_arg->lastchannelmode, ZapStart_arg->startchannelwebtv_id, ZapStart_arg->startchannelwebtv_nr, ZapStart_arg->uselastchannel);
 	
 	abort_zapit = 0;
 	
