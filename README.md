@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="nhd2-exp/doc/resources/movietrailer.png">
+  <img src="nhd2-exp/doc/resources/tsbrowser.png">
 </p>
 
 neutrinoHD2 GUI software for:
