@@ -1640,14 +1640,6 @@ const char * locale_real_names[] = {
 	
 	"audiomenu.volumebar_audiosteps",
 	
-	"webtv.webtv_head",
-	"webtv.channellist_nonefound",
-	"webtv.user",
-	"webtv.bouquets",
-	"webtv.add_bouquets",
-
-	"satipcast.rec_hint",
-	
 	// tmdb
 	"tmdb.tmdb_info"
 };

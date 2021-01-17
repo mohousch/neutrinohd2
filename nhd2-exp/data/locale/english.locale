@@ -724,7 +724,7 @@ mainmenu.shutdown Shutdown
 mainmenu.sleeptimer SleepTimer
 mainmenu.standby Standby
 mainmenu.tvmode TV-Mode
-mainmenu.webtvmode WebTV-Mode
+mainmenu.webtvmode IPTV-Mode
 mainsettings.audio Audio settings
 mainsettings.head Settings
 mainsettings.keybinding Remote-Control settings
@@ -1507,7 +1507,7 @@ zapitsetup.lastuse from last Channel
 zapitsetup.lastmode Start Mode
 zapitsetup.lasttv TV Channel
 zapitsetup.lastradio Radio Channel
-zapitsetup.lastwebtv WebTV Channel
+zapitsetup.lastwebtv IPTV Channel
 keybindingmenu.reload Refresh EPG
 screenshot.announce create screenshot?
 screenshot.token creating screenshot...
@@ -1515,7 +1515,7 @@ screenshot.remove remove screenshot?
 servicemenu.restart_e2 Boot E2 as Standard
 helptext.tvmode Here you can switch to TV Modus.
 helptext.radiomode Here you can switch to Radio Modus.
-helptext.webtvmode Here you can switch to WebTV Modus.
+helptext.webtvmode Here you can switch to IPTV Modus.
 helptext.scart Here you can switch to Scart Modus.
 helptext.mediaplayer Here you can switch to Mediaplayer.
 helptext.internetradio Here you can switch to Internetradio.
@@ -1618,7 +1618,7 @@ keybinding.key_timerlist Timerlist
 keybinding.key_inetradio Internet Radio
 keybinding.key_moviebrowser Movies Browser
 keybinding.key_filebrowser Files Browser
-keybinding.key_webtv WebTV
+keybinding.key_webtv IPTV
 keybinding.key_screenshot Screenshot
 keybinding.savekeymap Save Keymap
 keybinding.savekeymap_hint Saving keymap, please wait...
@@ -1628,14 +1628,6 @@ keybinding.mb_cut_jump MB cut jump key
 keybinding.mb_truncate MB truncate key
 
 audiomenu.volumebar_audiosteps Volume Step Size
-
-webtv.webtv_head WebTV
-webtv.channellist_nonefound No WebTV channels were found!
-webtv.user User bouquet
-webtv.bouquets Favorites
-webtv.add_bouquets add User bouquet
-
-satipcast.rec_hint A record is active.\n Switching to sat-ip <> cast not possible.\nPlease cancel the record first.
 
 tmdb.tmdb_info TMDB Infos
 

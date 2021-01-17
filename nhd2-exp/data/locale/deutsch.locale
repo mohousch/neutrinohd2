@@ -724,7 +724,7 @@ mainmenu.shutdown Ausschalten
 mainmenu.sleeptimer Ausschalt Timer
 mainmenu.standby Standby
 mainmenu.tvmode TV-Modus
-mainmenu.webtvmode WebTV-Modus
+mainmenu.webtvmode IPTV-Modus
 mainsettings.audio Audio Einstellungen
 mainsettings.head Einstellungen
 mainsettings.keybinding Fernbedienung Einstellungen
@@ -1508,7 +1508,7 @@ zapitsetup.lastuse Kanal beim Runterfahren speichern
 zapitsetup.lastmode Start Mode
 zapitsetup.lasttv TV Kanal
 zapitsetup.lastradio Radio Kanal
-zapitsetup.lastwebtv WebTV Kanal
+zapitsetup.lastwebtv IPTV Kanal
 keybindingmenu.reload EPG aktualisieren
 screenshot.announce erstelle screenshot?
 screenshot.token Screenshot wird erstellt...
@@ -1517,7 +1517,7 @@ servicemenu.restart_e2 Boot E2 als Standard
 
 helptext.tvmode Hier können Sie in den TV Modus schalten.
 helptext.radiomode Hier können Sie in den Radio Modus schalten.
-helptext.webtvmode Hier können Sie in den WebTV Modus schalten.
+helptext.webtvmode Hier können Sie in den IPTV Modus schalten.
 helptext.scart Hier können Sie in den Scart Modus schalten.
 helptext.mediaplayer Hier können Sie in den Mediaplayer schalten.
 helptext.internetradio Hier können Sie in den Internetradio schalten.
@@ -1619,7 +1619,7 @@ keybinding.key_timerlist Timerlist
 keybinding.key_inetradio Internet Radio
 keybinding.key_moviebrowser Movies Browser
 keybinding.key_filebrowser Datei Browser
-keybinding.key_webtv WebTV
+keybinding.key_webtv IPTV
 keybinding.key_screenshot Screenshot
 keybinding.savekeymap Keymap speichern
 keybinding.savekeymap_hint keymap wird gespeichert, bitte warten...
@@ -1629,14 +1629,6 @@ keybinding.mb_cut_jump MB schneiden Taste
 keybinding.mb_truncate MB kürzen Taste
 
 audiomenu.volumebar_audiosteps Lautstärke Schrittweite
-
-webtv.webtv_head WebTV
-webtv.channellist_nonefound Es wurden keine WebTV Kanäle gefunden!
-webtv.user User Bouquet
-webtv.bouquets Favoriten
-webtv.add_bouquets User Bouquet einfügen
-
-satipcast.rec_hint Eine Aufnahme ist aktiv.\nUmschaltung zu Sat-IP <> Cast nicht möglich.\nBitte die Aufnahme erst beenden.
 
 tmdb.tmdb_info TMDB Infos
 
