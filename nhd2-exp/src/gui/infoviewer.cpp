@@ -631,15 +631,13 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 				}
 					
 				res = neutrino->handleMsg(msg, data);
-
-				//dprintf(DEBUG_NORMAL, "CInfoViewer::show: TEST: res:%d\n\n", res);
 					
 				if (res & messages_return::unhandled) 
 				{
 					dprintf(DEBUG_NORMAL, "CInfoViewer::show: message unhandled\n");
 
 					// raus hier und im Hauptfenster behandeln...
-					g_RCInput->postMsg(msg, data);
+					//g_RCInput->postMsg(msg, data);
 
 					res = messages_return::cancel_info; //FIXME:
 				}
@@ -1363,6 +1361,8 @@ int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 
 		return messages_return::handled;
   	}
+
+	dprintf(DEBUG_DEBUG, "CInfoViewer::handleMsg: messages_return::unhandled\n");
 
   	return messages_return::unhandled;
 }

@@ -4293,6 +4293,8 @@ skip_message:
 	if ((msg >= RC_WithData) && (msg < RC_WithData + 0x10000000))
 		delete[] (unsigned char*) data;
 
+	dprintf(DEBUG_DEBUG, "CNeutrinoApp::handleMsg: messages_return::unhandled\n");
+
 	return messages_return::unhandled;
 }
 
