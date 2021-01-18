@@ -62,6 +62,10 @@ cAudio::cAudio(int num)
 	
 	m_pcm_delay = -1,
 	m_ac3_delay = -1;
+
+#if not defined (__sh__) // dont reset volume on start
+	setVolume(100, 100);
+#endif
 }
 
 cAudio::~cAudio(void)
@@ -122,7 +126,17 @@ int cAudio::SetMute(int enable)
 	
 	Muted = enable?true:false;
 	
-	int ret = 0;
+	int ret = 0;	
+	
+#if !defined (__sh__)
+	if (audio_fd > 0)
+	{
+		ret = ioctl(audio_fd, AUDIO_SET_MUTE, enable);
+	
+		if(ret < 0)
+			perror("AUDIO_SET_MUTE"); 
+	}
+#endif
 
 #if !defined (USE_OPENGL)
 	char sMuted[4];
@@ -134,16 +148,6 @@ int cAudio::SetMute(int enable)
 	{
 		write(fd, sMuted, strlen(sMuted));
 		close(fd);
-	}
-#endif	
-	
-#if 0 //!defined (__sh__)
-	if (audio_fd > 0)
-	{
-		ret = ioctl(audio_fd, AUDIO_SET_MUTE, enable);
-	
-		if(ret < 0)
-			perror("AUDIO_SET_MUTE"); 
 	}
 #endif
 
@@ -163,30 +167,12 @@ int cAudio::setVolume(unsigned int left, unsigned int right)
 	if (volume < 0)
 		volume = 0;
 	else if (volume > 100)
-		volume = 100;
-	
-	volume = 63 - volume * 63/100;
-	
-#if !defined (USE_OPENGL) && !defined (PLATFORM_HYPERCUBE)
-	unsigned char vol = volume;
-	
-	char sVolume[4];
-	
-	sprintf(sVolume, "%d", (int)vol);
+		volume = 100;	
 
-	int fd = open("/proc/stb/avs/0/volume", O_RDWR);
-	
-	if(fd > 0)
-	{
-		write(fd, sVolume, strlen(sVolume));
-		close(fd);
-	}
-#endif	
-
-#if 0 //!defined (__sh__)
+#if !defined (__sh__)
 	// convert to -1dB steps
-	left = 63 - left * 0.63;
-	right = 63 - right * 0.63;
+	left = 63 - volume * 0.63;
+	right = 63 - volume * 0.63;
 	//now range is 63..0, where 0 is loudest
 	
 	audio_mixer_t mixer;
@@ -201,6 +187,22 @@ int cAudio::setVolume(unsigned int left, unsigned int right)
 		if(ret < 0)
 			perror("AUDIO_SET_MIXER");
 	}	
+#endif
+
+#if !defined (USE_OPENGL) && !defined (PLATFORM_HYPERCUBE)
+	unsigned char vol = left;
+	
+	char sVolume[4];
+	
+	sprintf(sVolume, "%d", (int)vol);
+
+	int fd = open("/proc/stb/avs/0/volume", O_RDWR);
+	
+	if(fd > 0)
+	{
+		write(fd, sVolume, strlen(sVolume));
+		close(fd);
+	}
 #endif
 	
 	return ret;
