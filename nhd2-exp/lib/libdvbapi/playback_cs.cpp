@@ -106,11 +106,18 @@ static Context_t * player = NULL;
 #endif
 
 #if defined ENABLE_GSTREAMER
+#if GST_VERSION_MAJOR < 1
+gint match_sinktype(GstElement *element, gpointer type)
+{
+	return strcmp(g_type_name(G_OBJECT_TYPE(element)), (const char*)type);
+}
+#else
 gint match_sinktype(const GValue *velement, const gchar *type)
 {
 	GstElement *element = GST_ELEMENT_CAST(g_value_get_object(velement));
 	return strcmp(g_type_name(G_OBJECT_TYPE(element)), type);
 }
+#endif
 
 //
 void playbinNotifySource(GObject *object, GParamSpec *unused, gpointer /*user_data*/)
