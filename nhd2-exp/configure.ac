@@ -68,6 +68,8 @@ AC_ARG_WITH(gstversion,
 	[GST_MAJORMINOR=$withval],[GST_MAJORMINOR=1.0])
 
 PKG_CHECK_MODULES(GSTREAMER, gstreamer-$GST_MAJORMINOR gstreamer-pbutils-$GST_MAJORMINOR)
+# to overlay video window
+#PKG_CHECK_MODULES(GSTREAMER, gstreamer-$GST_MAJORMINOR gstreamer-pbutils-$GST_MAJORMINOR gstreamer-video-$GST_MAJORMINOR)
 fi
 
 # lcd

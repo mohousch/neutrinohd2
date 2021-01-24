@@ -201,9 +201,9 @@ AC_DEFUN([AC_PROG_EGREP],
 AC_DEFUN([TUXBOX_BOXTYPE],[
 
 AC_ARG_WITH(boxtype,
-	[  --with-boxtype          valid values: generic,dgs,gigablue,dreambox,xtrend,fulan,kathrein,ipbox,topfield,fortis_hdbox,octagon,atevio,adb_box,whitebox,vip,homecast,vuplus,azbox,technomate,coolstream,hypercube,venton,xp1000,odin,ixuss,iqonios,e3hd,ebox5000,wetek,edision,hd,gi,xpeedc,formuler,miraclebox,spycat,xsarius,zgemma],
+	[  --with-boxtype          valid values: generic,dgs,gigablue,dreambox,xtrend,fulan,kathrein,ipbox,topfield,fortis_hdbox,octagon,atevio,adb_box,whitebox,vip,homecast,vuplus,azbox,technomate,coolstream,hypercube,venton,xp1000,odin,ixuss,iqonios,e3hd,ebox5000,wetek,edision,hd,gi,xpeedc,formuler,miraclebox,spycat,xsarius,zgemma,wwio],
 	[case "${withval}" in
-		generic|dgs|gigablue|dreambox|xtrend|fulan|kathrein|ipbox|hl101|topfield|fortis_hdbox|octagon|atevio|adb_box|whitebox|vip|homecast|vuplus|azbox|technomate|coolstream|hypercube|venton|xp1000|odin|ixuss|iqonios|e3hd|ebox5000|wetek|edision|hd|gi|xpeedc|formuler|miraclebox|spycat|xsarius|zgemma)
+		generic|dgs|gigablue|dreambox|xtrend|fulan|kathrein|ipbox|hl101|topfield|fortis_hdbox|octagon|atevio|adb_box|whitebox|vip|homecast|vuplus|azbox|technomate|coolstream|hypercube|venton|xp1000|odin|ixuss|iqonios|e3hd|ebox5000|wetek|edision|hd|gi|xpeedc|formuler|miraclebox|spycat|xsarius|zgemma|wwio)
 			BOXTYPE="$withval"
 			;;
 		cu*)
@@ -333,6 +333,11 @@ AC_ARG_WITH(boxtype,
 			BOXTYPE="zgemma"
 			BOXMODEL="$withval"
 			;;
+	
+		wwi*)
+			BOXTYPE="wwio"
+			BOXMODEL="$withval"
+			;;
 
 		*)
 			AC_MSG_ERROR([unsupported value $withval for --with-boxtype])
@@ -367,7 +372,8 @@ AC_ARG_WITH(boxmodel,
 				valid for miraclebox: mbmicro, mbtwinplus
 				valid for spycat: spycat, spycatmini
 				valid for xsarius: fusionhd, fusionhdse, purehd
-				valid for zgemma: h3, h4, h5, i55, lc, sh1],
+				valid for zgemma: h3, h4, h5, h7, i55, lc, sh1
+				valid for wwio: bre2ze4k],
 	[case "${withval}" in
 		cuberevo|cuberevo_mini|cuberevo_mini2|cuberevo_mini_fta|cuberevo_250hd|cuberevo_2000hd|cuberevo_9500hd)
 			if test "$BOXTYPE" = "dgs"; then
@@ -593,8 +599,15 @@ AC_ARG_WITH(boxmodel,
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
 			fi
 			;;
-		h3|h4|h5|i55|lc|sh1)
+		h3|h4|h5|h7|i55|lc|sh1)
 			if test "$BOXTYPE" = "zgemma"; then
+				BOXMODEL="$withval"
+			else
+				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
+			fi
+			;;
+		bre2ze4k)
+			if test "$BOXTYPE" = "wwio"; then
 				BOXMODEL="$withval"
 			else
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
@@ -611,7 +624,7 @@ AC_ARG_WITH(boxmodel,
 			AC_MSG_ERROR([unsupported value $withval for --with-boxmodel])
 			;;
 	esac],
-	[if test "$BOXTYPE" = "dgs" -o "$BOXTYPE" = "gigablue" -o "$BOXTYPE" = "dreambox" -o "$BOXTYPE" = "xtrend" -o "$BOXTYPE" = "fulan" -o "$BOXTYPE" = "kathrein" -o "$BOXTYPE" = "ipbox" -o "$BOXTYPE" = "atevio" -o "$BOXTYPE" = "octagon" -o "$BOXTYPE" = "vuplus" -o "$BOXTYPE" = "technomate" -o "$BOXTYPE" = "venton" -o "$BOXTYPE" = "ixuss" -o "$BOXTYPE" = "iqonios" -o "$BOXTYPE" = "odin" -o "$BOXTYPE" = "edision" -o "$BOXTYPE" = "hd" -o "$BOXTYPE" = "gi" -o "$BOXTYPE" = "formuler" -o "$BOXTYPE" = "miraclebox" -o "$BOXTYPE" = "spycat" -o "$BOXTYPE" = "xsarius" -o "$BOXTYPE" = "zgemma" && test -z "$BOXMODEL"; then
+	[if test "$BOXTYPE" = "dgs" -o "$BOXTYPE" = "gigablue" -o "$BOXTYPE" = "dreambox" -o "$BOXTYPE" = "xtrend" -o "$BOXTYPE" = "fulan" -o "$BOXTYPE" = "kathrein" -o "$BOXTYPE" = "ipbox" -o "$BOXTYPE" = "atevio" -o "$BOXTYPE" = "octagon" -o "$BOXTYPE" = "vuplus" -o "$BOXTYPE" = "technomate" -o "$BOXTYPE" = "venton" -o "$BOXTYPE" = "ixuss" -o "$BOXTYPE" = "iqonios" -o "$BOXTYPE" = "odin" -o "$BOXTYPE" = "edision" -o "$BOXTYPE" = "hd" -o "$BOXTYPE" = "gi" -o "$BOXTYPE" = "formuler" -o "$BOXTYPE" = "miraclebox" -o "$BOXTYPE" = "spycat" -o "$BOXTYPE" = "xsarius" -o "$BOXTYPE" = "zgemma" -o "$BOXTYPE" = "wwio" && test -z "$BOXMODEL"; then
 		AC_MSG_ERROR([this boxtype $BOXTYPE needs --with-boxmodel])
 	fi])
 
@@ -659,6 +672,7 @@ AM_CONDITIONAL(BOXTYPE_MIRACLEBOX, test "$BOXTYPE" = "miraclebox")
 AM_CONDITIONAL(BOXTYPE_SPYCAT, test "$BOXTYPE" = "spycat")
 AM_CONDITIONAL(BOXTYPE_XSARIUS, test "$BOXTYPE" = "xsarius")
 AM_CONDITIONAL(BOXTYPE_ZGEMMA, test "$BOXTYPE" = "zgemma")
+AM_CONDITIONAL(BOXTYPE_WWIO, test "$BOXTYPE" = "wwio")
 
 AM_CONDITIONAL(BOXMODEL_CUBEREVO, test "$BOXMODEL" = "cuberevo")
 AM_CONDITIONAL(BOXMODEL_CUBEREVO_MINI, test "$BOXMODEL" = "cuberevo_mini")
@@ -801,9 +815,12 @@ AM_CONDITIONAL(BOXMODEL_PUREHD, test "$BOXMODEL" = "purehd")
 AM_CONDITIONAL(BOXMODEL_H3, test "$BOXMODEL" = "h3")
 AM_CONDITIONAL(BOXMODEL_H4, test "$BOXMODEL" = "h4")
 AM_CONDITIONAL(BOXMODEL_H5, test "$BOXMODEL" = "h5")
+AM_CONDITIONAL(BOXMODEL_H7, test "$BOXMODEL" = "h7")
 AM_CONDITIONAL(BOXMODEL_I55, test "$BOXMODEL" = "i55")
 AM_CONDITIONAL(BOXMODEL_LC, test "$BOXMODEL" = "lc")
 AM_CONDITIONAL(BOXMODEL_SH1, test "$BOXMODEL" = "sh1")
+
+AM_CONDITIONAL(BOXMODEL_BRE2ZE4K, test "$BOXMODEL" = "bre2ze4k")
 
 if test "$BOXTYPE" = "generic"; then
 	AC_DEFINE(PLATFORM_GENERIC, 1, [building for generic])
@@ -883,6 +900,8 @@ elif test "$BOXTYPE" = "xsarius"; then
 	AC_DEFINE(PLATFORM_XSARIUS, 1, [building for xsarius])
 elif test "$BOXTYPE" = "zgemma"; then
 	AC_DEFINE(PLATFORM_ZGEMMA, 1, [building for zgemma])
+elif test "$BOXTYPE" = "wwio"; then
+	AC_DEFINE(PLATFORM_WWIO, 1, [building for wwio])
 fi
 
 if test "$BOXMODEL" = "cuberevo"; then
@@ -1134,12 +1153,17 @@ elif test "$BOXMODEL" = "h4"; then
 	AC_DEFINE(BOXMODEL_H4, 1, [building for h4])
 elif test "$BOXMODEL" = "h5"; then
 	AC_DEFINE(BOXMODEL_H5, 1, [building for h5])
+elif test "$BOXMODEL" = "h7"; then
+	AC_DEFINE(BOXMODEL_H7, 1, [building for h7])
 elif test "$BOXMODEL" = "i55"; then
 	AC_DEFINE(BOXMODEL_I55, 1, [building for i55])
 elif test "$BOXMODEL" = "lc"; then
 	AC_DEFINE(BOXMODEL_LC, 1, [building for lc])
 elif test "$BOXMODEL" = "sh1"; then
 	AC_DEFINE(BOXMODEL_SH1, 1, [building for sh1])
+
+elif test "$BOXMODEL" = "bre2ze4k"; then
+	AC_DEFINE(BOXMODEL_BRE2ZE4K, 1, [building for bre2ze4k])
 fi
 ])
 

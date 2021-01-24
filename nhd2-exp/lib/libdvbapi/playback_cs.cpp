@@ -149,7 +149,7 @@ void playbinNotifySource(GObject *object, GParamSpec *unused, gpointer /*user_da
 	}
 }
 
-GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user_data*/)
+GstBusSyncReply Gst_bus_call(GstBus *bus, GstMessage * msg, gpointer /*user_data*/)
 {
 	//source name
 	gchar * sourceName;
@@ -451,14 +451,18 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 		case GST_MESSAGE_ELEMENT:
 		{
 #if 0
-			if( gst_structure_has_name(gst_message_get_structure(msg), "prepare-xwindow-id") || gst_structure_has_name(gst_message_get_structure(msg), "have-xwindow-id") ) 
+#if GST_VERSION_MAJOR < 1
+			if( gst_structure_has_name(gst_message_get_structure(msg), "prepare-xwindow-id") || gst_structure_has_name(gst_message_get_structure(msg), "have-xwindow-id") )
+#else
+			if (gst_is_video_overlay_prepare_window_handle_message(msg))
+#endif 
 			{
-				// set window id
-				//NOTE: comment out if you want to overlay video window on osd window(still bugy)
-				sink = gst_element_factory_make ("directdrawsink", "sink");
-				GstXOverlay* ov = (GstXOverlay*)sink;
-
-				gst_x_overlay_set_xwindow_id(/*GST_X_OVERLAY(GST_MESSAGE_SRC (msg))*/ov, (gulong)GLWinID);
+#if GST_VERSION_MAJOR < 1
+				gst_x_overlay_set_xwindow_id(GST_X_OVERLAY(GST_MESSAGE_SRC (msg)), (gulong)GLWinID);
+#else
+				gst_video_overlay_set_window_handle(GST_VIDEO_OVERLAY(GST_MESSAGE_SRC (msg)), GLWinID);
+				gst_video_overlay_got_window_handle(GST_VIDEO_OVERLAY(GST_MESSAGE_SRC (msg)), GLWinID);
+#endif
 			}
 #endif
 		}
@@ -479,7 +483,7 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 /* its called only one time, (mainmenu/movieplayergui init)*/
 cPlayback::cPlayback(int /*num*/)
 { 
-	dprintf(DEBUG_NORMAL, "%s:%s\n", FILENAME, __FUNCTION__);	
+	dprintf(DEBUG_NORMAL, "%s:%s\n", FILENAME, __FUNCTION__);
 }
 
 /* called at housekepping */
@@ -723,7 +727,7 @@ bool cPlayback::Start(char *filename)
 #if GST_VERSION_MAJOR < 1
 		gst_bus_set_sync_handler(bus, Gst_bus_call, NULL);
 #else
-		gst_bus_set_sync_handler(bus, Gst_bus_call, NULL, NULL);	
+		gst_bus_set_sync_handler(bus, (GstBusSyncHandler)Gst_bus_call, m_gst_playbin, NULL);
 #endif
 		gst_object_unref(bus);
 		
@@ -1036,15 +1040,17 @@ bool cPlayback::GetPosition(int64_t &position, int64_t &duration)
 			g_signal_emit_by_name(audioSink ? audioSink : videoSink, "get-decoder-time", &pts);
 			GST_CLOCK_TIME_IS_VALID(pts);
 		}
-		
+		else
+		{
 #if GST_VERSION_MAJOR < 1
-		gst_element_query_position(m_gst_playbin, &fmt, &pts);
+			gst_element_query_position(m_gst_playbin, &fmt, &pts);
 #else
-		gst_element_query_position(m_gst_playbin, fmt, &pts);
+			gst_element_query_position(m_gst_playbin, fmt, &pts);
 #endif
+		}
 #endif		
 			
-		position = pts / 1000000;	// in ms
+		position = pts / 1000000.0;	// in ms
 		
 		dprintf(DEBUG_DEBUG, "%s: position: %lld ms ", __FUNCTION__, position);
 		
@@ -1057,7 +1063,7 @@ bool cPlayback::GetPosition(int64_t &position, int64_t &duration)
 		gst_element_query_duration(m_gst_playbin, fmt, &len);
 #endif
 		
-		duration = len / 1000000;	// in ms
+		duration = len / 1000000.0;	// in ms
 
 		dprintf(DEBUG_DEBUG, "(duration: %lld ms)\n", duration);
 	}
@@ -1110,11 +1116,23 @@ bool cPlayback::SetPosition(int64_t position)
 		
 	if(m_gst_playbin)
 	{
-		time_nanoseconds = (position * 1000000.0);
+		gint64 pos = 0;
+		GstFormat fmt = GST_FORMAT_TIME;
+
+		//gst_element_query_position(m_gst_playbin, fmt, &pos);
+#if GST_VERSION_MAJOR < 1
+		gst_element_query_duration(m_gst_playbin, &fmt, &pos);
+#else
+		gst_element_query_duration(m_gst_playbin, fmt, &pos);
+#endif
+
+		time_nanoseconds = pos + (position * 1000000.0);
+
 		if(time_nanoseconds < 0) 
 			time_nanoseconds = 0;
 		
-		gst_element_seek(m_gst_playbin, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, time_nanoseconds, GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
+		//gst_element_seek(m_gst_playbin, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, time_nanoseconds, GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
+		gst_element_seek(m_gst_playbin, 1.0, GST_FORMAT_TIME, (GstSeekFlags)(GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_ACCURATE), GST_SEEK_TYPE_SET, time_nanoseconds, GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
 	}
 #else
 	float pos = (position/1000.0);
