@@ -329,12 +329,12 @@ AC_ARG_WITH(boxtype,
 			BOXMODEL="$withval"
 			;;
 
-		zge*)
+		h7)
 			BOXTYPE="zgemma"
 			BOXMODEL="$withval"
 			;;
 	
-		wwi*)
+		bre*)
 			BOXTYPE="wwio"
 			BOXMODEL="$withval"
 			;;
