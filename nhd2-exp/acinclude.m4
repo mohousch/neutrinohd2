@@ -356,7 +356,7 @@ AC_ARG_WITH(boxmodel,
 				valid for atevio: atevio700,atevio7000,atevio7500,atevio7600
 				valid for octagon: octagon1008
 				valid for topfield: tf7700
-				valid for vuplus: vusolo,vuduo,vuuno,vuultimo,vuduo2,vusolo2,vusolo4k,vusolose,vuzero
+				valid for vuplus: vusolo,vuduo,vuuno,vuultimo,vuduo2,vusolo2,vusolo4k,vusolose,vuzero,vuduo4k
 				valid for azbox: azboxhd,azboxme,azboxminime
 				valid for technomate: tmtwin,tm2t,tmsingle,tmnano
 				valid for venton: ventonhde,ventonhdx,inihde,inihdp
@@ -452,7 +452,7 @@ AC_ARG_WITH(boxmodel,
 				AC_MSG_ERROR([unknown model $withval for boxtype $BOXTYPE])
 			fi
 			;;
-		vusolo2|vuduo2|vusolo|vuduo|vuuno|vuultimo|vusolose|vusolo4k|vuzero)
+		vusolo2|vuduo2|vusolo|vuduo|vuuno|vuultimo|vusolose|vusolo4k|vuzero|vuduo4k)
 			if test "$BOXTYPE" = "vuplus"; then
 				BOXMODEL="$withval"
 			else
@@ -744,6 +744,7 @@ AM_CONDITIONAL(BOXMODEL_VUULTIMO, test "$BOXMODEL" = "vuultimo")
 AM_CONDITIONAL(BOXMODEL_VUSOLOSE, test "$BOXMODEL" = "vusolose")
 AM_CONDITIONAL(BOXMODEL_VUSOLO4K, test "$BOXMODEL" = "vusolo4k")
 AM_CONDITIONAL(BOXMODEL_VUZERO, test "$BOXMODEL" = "vuzero")
+AM_CONDITIONAL(BOXMODEL_VUDUO4K, test "$BOXMODEL" = "vuduo4k")
 
 AM_CONDITIONAL(BOXMODEL_AZBOXHD, test "$BOXMODEL" = "azboxhd")
 AM_CONDITIONAL(BOXMODEL_AZBOXME, test "$BOXMODEL" = "azboxme")
@@ -1028,6 +1029,8 @@ elif test "$BOXMODEL" = "vusolo4k"; then
 	AC_DEFINE(BOXMODEL_VUSOLO4K, 1, [building for vuplus solo4k])
 elif test "$BOXMODEL" = "vuzero"; then
 	AC_DEFINE(BOXMODEL_VUZERO, 1, [building for vuplus zero])
+elif test "$BOXMODEL" = "vuduo4k"; then
+	AC_DEFINE(BOXMODEL_VUDUO4K, 1, [building for vuplus duo4k])
 
 elif test "$BOXMODEL" = "azboxhd"; then
 	AC_DEFINE(BOXMODEL_AZBOXHD, 1, [building for azbox hd])
