@@ -132,7 +132,7 @@ endif
 
 if ENABLE_LUA
 neutrino_LDADD += interfaces/lua/libneutrino_interfaces_lua.a \
-	@LUA_LIB@
+	@LUA_LIBS@
 endif
 
 

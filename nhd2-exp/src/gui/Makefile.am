@@ -47,7 +47,8 @@ AM_CPPFLAGS += -I$(top_srcdir)/lib/libeplayer3/include
 endif
 
 if ENABLE_LUA
-AM_CPPFLAGS += @LUA_INCLUDE@
+#AM_CPPFLAGS += @LUA_INCLUDE@
+AM_CPPFLAGS += @LUA_CFLAGS@
 endif
 
 AM_CPPFLAGS += -fno-rtti -fno-exceptions
