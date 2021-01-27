@@ -136,7 +136,7 @@ if test "$enable_functionkeys" = "yes"; then
 AC_DEFINE(ENABLE_FUNCTIONKEYS,1,[include RC function keys support])
 fi
 
-# python (experimental)
+# python
 AC_ARG_ENABLE(python,
 	AS_HELP_STRING(--enable-python,include python interface),
 	,[enable_python=no])
@@ -144,14 +144,11 @@ AM_CONDITIONAL(ENABLE_PYTHON,test "$enable_python" = "yes")
 
 if test "$enable_python" = "yes"; then
 AM_PATH_PYTHON
-
 AX_PKG_SWIG
 AX_SWIG_ENABLE_CXX
 AX_PTHREAD
 AX_SWIG_PYTHON
 AX_PYTHON_DEVEL
-
-#PKG_CHECK_MODULES(PYTHON, python-2.7)
 
 AC_DEFINE(ENABLE_PYTHON,1,[include python as interface support])
 fi
@@ -163,13 +160,11 @@ AC_ARG_ENABLE(lua,
 AM_CONDITIONAL(ENABLE_LUA,test "$enable_lua" = "yes")
 
 if test "$enable_lua" = "yes"; then
-#AX_PKG_SWIG
-#AX_SWIG_ENABLE_CXX
-#AX_PROG_LUA
-#AX_LUA_HEADERS
-#AX_LUA_LIBS
-
-PKG_CHECK_MODULES(LUA, [lua-5.2])
+AX_PKG_SWIG
+AX_SWIG_ENABLE_CXX
+AX_PROG_LUA
+AX_LUA_HEADERS
+AX_LUA_LIBS
 
 AC_DEFINE(ENABLE_LUA,1,[include lua interface support])
 fi
