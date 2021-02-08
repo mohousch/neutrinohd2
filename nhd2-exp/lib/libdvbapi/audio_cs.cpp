@@ -169,14 +169,12 @@ int cAudio::setVolume(unsigned int left, unsigned int right)
 	else if (volume > 100)
 		volume = 100;
 
-	dprintf(DEBUG_INFO, "%s:%s volume: %d\n", FILENAME, __FUNCTION__, volume);	
-
-//#if !defined (__sh__)
 	// convert to -1dB steps
 	int _left = 63 - volume * 0.63;
 	int _right = 63 - volume * 0.63;
 	//now range is 63..0, where 0 is loudest
 	
+#if !defined (__sh__)
 	audio_mixer_t mixer;
 
 	mixer.volume_left = _left;
@@ -188,8 +186,8 @@ int cAudio::setVolume(unsigned int left, unsigned int right)
 	
 		if(ret < 0)
 			perror("AUDIO_SET_MIXER");
-	}	
-//#endif
+	}
+#endif	
 
 #if !defined (USE_OPENGL) && !defined (PLATFORM_HYPERCUBE)
 	char sVolume[4];
