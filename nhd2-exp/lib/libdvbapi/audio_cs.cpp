@@ -167,9 +167,11 @@ int cAudio::setVolume(unsigned int left, unsigned int right)
 	if (volume < 0)
 		volume = 0;
 	else if (volume > 100)
-		volume = 100;	
+		volume = 100;
 
-#if !defined (__sh__)
+	dprintf(DEBUG_INFO, "%s:%s volume: %d\n", FILENAME, __FUNCTION__, volume);	
+
+//#if !defined (__sh__)
 	// convert to -1dB steps
 	int _left = 63 - volume * 0.63;
 	int _right = 63 - volume * 0.63;
@@ -187,14 +189,16 @@ int cAudio::setVolume(unsigned int left, unsigned int right)
 		if(ret < 0)
 			perror("AUDIO_SET_MIXER");
 	}	
-#endif
+//#endif
 
 #if !defined (USE_OPENGL) && !defined (PLATFORM_HYPERCUBE)
-	//unsigned char vol = left;
-	
 	char sVolume[4];
 	
+#if defined (__sh__)
+	sprintf(sVolume, "%d", _left);
+#else
 	sprintf(sVolume, "%d", volume);
+#endif
 
 	int fd = open("/proc/stb/avs/0/volume", O_RDWR);
 	
