@@ -158,10 +158,10 @@ const struct button_label YTHeadButtons[YT_HEAD_BUTTONS_COUNT] =
 #define YT_FOOT_BUTTONS_COUNT  4
 const struct button_label YTFootButtons[YT_FOOT_BUTTONS_COUNT] =
 {
-	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_NEXT_RESULTS) },
-	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_PREV_RESULTS) },
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE, /*g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_NEXT_RESULTS)*/"next results" },
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE, /*g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_PREV_RESULTS)*/"prev results" },
 	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_MOST_POPULAR)}
+	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, /*g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_MOST_POPULAR)*/"most popular"}
 };
 
 void CYTBrowser::showMenu()
@@ -175,7 +175,7 @@ void CYTBrowser::showMenu()
 		
 	neutrino_locale_t loc = getFeedLocale();
 	title += g_Locale->getCustomText(loc);
-	if (loc == LOCALE_YT_SEARCH)
+	if (loc == (neutrino_locale_t)LOCALE_YT_SEARCH)
 		title += " \"" + ytsearch + "\"";
 
 	moviesMenu = new ClistBoxWidget(title.c_str(), NEUTRINO_ICON_YT_SMALL);
