@@ -440,7 +440,6 @@ void CBouquetManager::parseBouquetsXml(const char* fname, bool bUser)
 						freq = it->second.getFreqId();
 					}
 				}
-				//
 
 				CZapitChannel *chan = findChannelByChannelID(CREATE_CHANNEL_ID64);
 
@@ -501,7 +500,6 @@ void CBouquetManager::makeBouquetfromCurrentservices(const _xmlNodePtr root)
 					GET_ATTR(transponder, "id", SCANF_TRANSPORT_STREAM_ID_TYPE, transport_stream_id);
 					GET_ATTR(channel_node, "service_id", SCANF_SERVICE_ID_TYPE, service_id);
 								
-					//CZapitChannel *chan = findChannelByChannelID(CREATE_CHANNEL_ID(service_id, original_network_id, transport_stream_id));
 					CZapitChannel *chan = findChannelByChannelID(CREATE_CHANNEL_ID64);
 
 					if (chan != NULL)

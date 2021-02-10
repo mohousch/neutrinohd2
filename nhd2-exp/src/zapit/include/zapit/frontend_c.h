@@ -260,5 +260,6 @@ class CFrontend
 typedef std::map<unsigned short, CFrontend*> fe_map_t;
 typedef fe_map_t::iterator fe_map_iterator_t;
 
-
 #endif /* __zapit_frontend_h__ */
+
+

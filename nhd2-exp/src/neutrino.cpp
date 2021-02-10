@@ -1493,9 +1493,10 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	if(g_settings.make_hd_list)
 		hdBouquet = new CBouquet(0, (char *) "HD", 0);
 
+	// TV/ Radio/WebTV Channellist
 	for (tallchans_iterator it = allchans.begin(); it != allchans.end(); it++) 
 	{
-		if (it->second.getServiceType() == ST_DIGITAL_TELEVISION_SERVICE) 
+		if ((it->second.getServiceType() == ST_DIGITAL_TELEVISION_SERVICE)) 
 		{
 			TVchannelList->putChannel(&(it->second));
 

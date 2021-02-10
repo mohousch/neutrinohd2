@@ -175,10 +175,10 @@ unsigned char CZapitChannel::getServiceType(bool real)
 	{
 		if (serviceType == ST_DIGITAL_RADIO_SOUND_SERVICE)
 			return ST_DIGITAL_RADIO_SOUND_SERVICE;
-		else if (serviceType == ST_DIGITAL_TELEVISION_SERVICE)
-			return ST_DIGITAL_TELEVISION_SERVICE;
 		else if (serviceType == ST_WEBTV)
 			return ST_WEBTV;
+		else
+			return ST_DIGITAL_TELEVISION_SERVICE;	
 	}
 }
 

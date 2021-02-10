@@ -227,7 +227,7 @@ void ParseChannels(_xmlNodePtr node, const t_transport_stream_id transport_strea
 
 		if(ret.second == false) 
 		{
-			dprintf(DEBUG_DEBUG, "[getservices] ParseChannels: duplicate channel %s id %llx freq %d (old %s at %d)\n", name.c_str(), chid, freq, ret.first->second.getName().c_str(), ret.first->second.getFreqId());
+			dprintf(DEBUG_INFO, "[getservices] ParseChannels: duplicate channel %s id %llx freq %d (old %s at %d)\n", name.c_str(), chid, freq, ret.first->second.getName().c_str(), ret.first->second.getFreqId());
 		} 
 		else 
 		{
@@ -745,6 +745,8 @@ int loadServices(bool only_current)
 		
 		xmlFreeDoc(parser);
 	}
+
+	dprintf(DEBUG_NORMAL, "[getservices] loadServices: services loaded (%d)...\n", scnt);
 
 	// load motor position
 	for(int i = 0; i < FrontendCount; i++)

@@ -188,7 +188,6 @@ void RenderMenuLine(int highlight, int refresh)
 	if (refresh == YES)
 		//memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
 		CFrameBuffer::getInstance()->blit();
-
 }
 
 
@@ -2295,9 +2294,9 @@ int DoMove(struct fileentry* pfe, int typ, int checktype)
 void DoViewFile()
 {
 	char action[4000];
-	//FILE* pFile;
+	FILE* pFile;
 	struct fileentry* pfe = GetSelected(curframe);
-	/*	
+	
 	if (pfe->fentry.st_size >= FILEBUFFER_SIZE)
 	{
 		if (finfo[curframe].zipfile[0] != 0x00)
@@ -2317,7 +2316,6 @@ void DoViewFile()
 		}
 	}
 	else
-	*/
 	{
 		if (finfo[curframe].zipfile[0] != 0x00)
 		{
@@ -2329,7 +2327,7 @@ void DoViewFile()
 		else
 		{
 			sprintf(action,"%s%s",finfo[curframe].path, pfe->name);
-			DoEditFile(action,action,NO);
+			DoEditFile(action, action, NO);
 		}
 	}
 
@@ -2355,12 +2353,17 @@ void InsertText(char* pStart, char* pEnd,char* szText, int sel, int* pcount)
 void DoEditFile(char* szFile, char* szTitle,  int writable)
 {
 	FILE* pFile = fopen(szFile,"r");
-	if (!pFile) {
+
+	if (!pFile) 
+	{
 		perror("DoEditFile fopen");
 		return;
 	};
+
 	char* szFileBuffer = (char*)malloc(FILEBUFFER_SIZE);
-	if (!szFileBuffer) {
+
+	if (!szFileBuffer) 
+	{
 		perror("DoEditFile malloc");
 		fclose(pFile);
 		return;
@@ -2402,8 +2405,6 @@ void DoEditFile(char* szFile, char* szTitle,  int writable)
 	}
 
 	int i,row = 0, sel = 0, presel=0, strsize, markmode=0;
-
-
 
 	while( 1 )
 	{
@@ -2482,8 +2483,6 @@ void DoEditFile(char* szFile, char* szTitle,  int writable)
 			}
 		}
 
-
-
 		if (sel >= count) sel = count-1;
 		if (sel < 0 ) sel = 0;
 		if (sel < row) row = sel;
@@ -2492,9 +2491,9 @@ void DoEditFile(char* szFile, char* szTitle,  int writable)
 		if (writable == NO) row = sel;
 		for (i =0; i < row; i++)
 		{
-          p1=strchr(p,'\n');
-          if (p1 == NULL) break;
-          p= p1+1;
+			  p1=strchr(p,'\n');
+			  if (p1 == NULL) break;
+			  p= p1+1;
 		}
 		sprintf(szLineNumber,msg[MSG_LINE*NUM_LANG+language],curcount+sel+1, totalcount,(readall == YES ? "":"+"));
 		strsize = GetStringLen(szLineNumber, BIG);
@@ -2545,7 +2544,7 @@ void DoEditFile(char* szFile, char* szTitle,  int writable)
 					}
 					break;
 				}
-	            p = p1+1;
+	           	p = p1+1;
 			}
 			pStop = p;
 			//memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
@@ -2695,7 +2694,7 @@ void DoEditFile(char* szFile, char* szTitle,  int writable)
 						strncpy(szInputBuffer,pcur,plen);
 						szInputBuffer[plen]=0x00;
 						RenderBox(0, 2*BORDERSIZE+FONTHEIGHT_BIG+(sel-row)*FONTHEIGHT_SMALL-1 , viewx, 2*BORDERSIZE+FONTHEIGHT_BIG+(sel-row+1)*FONTHEIGHT_SMALL+1, GRID, WHITE);
-						switch (DoEditString(BORDERSIZE,2*BORDERSIZE+FONTHEIGHT_BIG+(sel-row)*FONTHEIGHT_SMALL, viewx- 2*BORDERSIZE ,1000,szInputBuffer,BIG/*SMALL*/,BLUE2, NO))
+						switch (DoEditString(BORDERSIZE,2*BORDERSIZE+FONTHEIGHT_BIG+(sel-row)*FONTHEIGHT_SMALL, viewx- 2*BORDERSIZE ,1000,szInputBuffer,/*BIG*/SMALL,BLUE2, NO))
 						{
 							case RC_OK:
 							{
@@ -3507,7 +3506,7 @@ void ShowFile(FILE* _pipe, char* szAction)
 		if ( p )
 			*p = 0;
 		row++;
-		RenderString(line,2*BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+row*FONTHEIGHT_SMALL -FONT_OFFSET, viewx-4*BORDERSIZE, TC_LEFT, SMALL, WHITE);
+		RenderString(line, 2*BORDERSIZE, 2*BORDERSIZE + FONTHEIGHT_BIG + row*FONTHEIGHT_SMALL -FONT_OFFSET, viewx - 4*BORDERSIZE, TC_LEFT, SMALL, WHITE);
 
 		if (row > framerows - 2)
 		{
@@ -3543,6 +3542,7 @@ void ShowFile(FILE* _pipe, char* szAction)
 				break;
 		}
 	}
+
 	rccode = -1;
 }
 
