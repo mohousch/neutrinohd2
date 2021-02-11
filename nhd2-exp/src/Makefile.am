@@ -127,7 +127,7 @@ endif
 
 if ENABLE_PYTHON
 neutrino_LDADD += interfaces/python/libneutrino_interfaces_python.a \
-	@PYTHON_LDFLAGS@
+	@PYTHON_LIBS@
 endif
 
 if ENABLE_LUA
