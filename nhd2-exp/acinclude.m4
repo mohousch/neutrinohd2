@@ -1170,4 +1170,78 @@ elif test "$BOXMODEL" = "bre2ze4k"; then
 fi
 ])
 
+dnl =========================================================================
+dnl AX_LUA_LIBS([ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
+dnl =========================================================================
+AC_DEFUN([AX_LUA_LIBS],
+[
+  dnl TODO Should this macro also check various -L flags?
+
+  dnl Check for LUA_VERSION.
+  AC_MSG_CHECKING([if LUA_VERSION is defined])
+  AS_IF([test "x$LUA_VERSION" != 'x'],
+    [AC_MSG_RESULT([yes])],
+    [ AC_MSG_RESULT([no])
+      AC_MSG_ERROR([cannot check Lua libs without knowing LUA_VERSION])
+    ])
+
+  dnl Make LUA_LIB a precious variable.
+  AC_ARG_VAR([LUA_LIB], [The Lua library, e.g. -llua5.1])
+
+  AS_IF([test "x$LUA_LIB" != 'x'],
+  [ dnl Check that LUA_LIBS works.
+    _ax_lua_saved_libs=$LIBS
+    LIBS="$LIBS $LUA_LIB"
+    AC_SEARCH_LIBS([lua_load], [],
+      [_ax_found_lua_libs='yes'],
+      [_ax_found_lua_libs='no'])
+    LIBS=$_ax_lua_saved_libs
+
+    dnl Check the result.
+    AS_IF([test "x$_ax_found_lua_libs" != 'xyes'],
+      [AC_MSG_ERROR([cannot find libs for specified LUA_LIB])])
+  ],
+  [ dnl First search for extra libs.
+    _ax_lua_extra_libs=''
+
+    _ax_lua_saved_libs=$LIBS
+    LIBS="$LIBS $LUA_LIB"
+    AC_SEARCH_LIBS([exp], [m])
+    AC_SEARCH_LIBS([dlopen], [dl])
+    LIBS=$_ax_lua_saved_libs
+
+    AS_IF([test "x$ac_cv_search_exp" != 'xno' &&
+           test "x$ac_cv_search_exp" != 'xnone required'],
+      [_ax_lua_extra_libs="$_ax_lua_extra_libs $ac_cv_search_exp"])
+
+    AS_IF([test "x$ac_cv_search_dlopen" != 'xno' &&
+           test "x$ac_cv_search_dlopen" != 'xnone required'],
+      [_ax_lua_extra_libs="$_ax_lua_extra_libs $ac_cv_search_dlopen"])
+
+    dnl Try to find the Lua libs.
+    _ax_lua_saved_libs=$LIBS
+    LIBS="$LIBS $LUA_LIB"
+    AC_SEARCH_LIBS([lua_load],
+      [ lua$LUA_VERSION \
+        lua$LUA_SHORT_VERSION \
+        lua-$LUA_VERSION \
+        lua-$LUA_SHORT_VERSION \
+        lua \
+      ],
+      [_ax_found_lua_libs='yes'],
+      [_ax_found_lua_libs='no'],
+      [$_ax_lua_extra_libs])
+    LIBS=$_ax_lua_saved_libs
+
+    AS_IF([test "x$ac_cv_search_lua_load" != 'xno' &&
+           test "x$ac_cv_search_lua_load" != 'xnone required'],
+      [LUA_LIB="$ac_cv_search_lua_load $_ax_lua_extra_libs"])
+  ])
+
+  dnl Test the result and run user code.
+  AS_IF([test "x$_ax_found_lua_libs" = 'xyes'], [$1],
+#    [m4_default([$2], [AC_MSG_ERROR([cannot find Lua libs])])])
+     LUA_LIB="-llua -ldl")
+])
+
 
