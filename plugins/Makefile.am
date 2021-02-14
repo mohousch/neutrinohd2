@@ -32,7 +32,8 @@ SUBDIRS += python
 endif
 
 if ENABLE_LUA
-SUBDIRS += lua
+SUBDIRS += lua \
+	Wunderschön
 endif
 
 

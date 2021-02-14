@@ -62,5 +62,6 @@ upnp/Makefile
 ard/Makefile
 python/Makefile
 lua/Makefile
+Wunderschön/Makefile
 ])
 
