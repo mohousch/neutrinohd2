@@ -104,9 +104,11 @@ class CInfoBox
 				   CFont *fontTitle = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE],
 				   const char * icon = NEUTRINO_ICON_INFO);
 
-		// functions
-		int exec(int timeout = -1);
+		// 
+		void setTitle(const char *title){m_cTitle = title;};
 		bool setText(const char * const newText, const char * const _thumbnail = NULL, int _tw = 0, int _th = 0, int tmode = TOP_RIGHT);
+
+		int exec(int timeout = -1);
 };
 
 //

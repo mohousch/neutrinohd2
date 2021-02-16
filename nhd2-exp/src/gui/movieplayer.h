@@ -88,7 +88,7 @@ class CMoviePlayerGui : public CMenuTarget
 		unsigned int g_currentac3;
 		
 		// playlist
-		CMoviePlayList filelist;
+		CMoviePlayList playlist;
 		unsigned int selected;
 		
 		// global flags

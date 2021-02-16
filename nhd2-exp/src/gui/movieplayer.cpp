@@ -121,7 +121,7 @@ CMoviePlayerGui::CMoviePlayerGui()
 
 CMoviePlayerGui::~CMoviePlayerGui()
 {
-	filelist.clear();
+	playlist.clear();
 }
 
 void CMoviePlayerGui::cutNeutrino()
@@ -215,7 +215,7 @@ void CMoviePlayerGui::addToPlaylist(MI_MOVIE_INFO& mfile)
 {	
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::addToPlaylist: %s\n", mfile.file.Name.c_str());
 	
-	filelist.push_back(mfile);
+	playlist.push_back(mfile);
 }
 
 void CMoviePlayerGui::addToPlaylist(const CFile& file)
@@ -253,7 +253,7 @@ void CMoviePlayerGui::addToPlaylist(const CFile& file)
 		movieInfo.tfile = fname.c_str();
 					
 	// 
-	filelist.push_back(movieInfo);
+	playlist.push_back(movieInfo);
 }
 
 void CMoviePlayerGui::addToPlaylist(const char* fileName)
@@ -294,16 +294,16 @@ void CMoviePlayerGui::addToPlaylist(const char* fileName)
 		movieInfo.tfile = fname.c_str();
 					
 	// 
-	filelist.push_back(movieInfo);
+	playlist.push_back(movieInfo);
 }
 
 void CMoviePlayerGui::clearPlaylist(void)
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::clearPlaylist:\n");
 
-	if (!filelist.empty())
+	if (!playlist.empty())
 	{
-		filelist.clear();
+		playlist.clear();
 		selected = 0;
 	}
 }
@@ -312,7 +312,7 @@ void CMoviePlayerGui::removeFromPlaylist(long pos)
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::removeFromPlayList:\n");
 
-	filelist.erase(filelist.begin() + pos); 
+	playlist.erase(playlist.begin() + pos); 
 }
 
 void CMoviePlayerGui::startMovieInfoViewer(void)
@@ -395,9 +395,9 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		frameBuffer->blit();
 	}
 	
-	// clear filelist
-	if(!filelist.empty())
-		filelist.clear();
+	// clear playlist
+	if(!playlist.empty())
+		playlist.clear();
 
 	// restore neutrino
 	restoreNeutrino();
@@ -417,30 +417,30 @@ void CMoviePlayerGui::PlayFile(void)
 	neutrino_msg_data_t data;
 	
 	//
-	if(!filelist.empty())
+	if(!playlist.empty())
 	{
 		//
-		if(filelist[selected].ytid.empty())
+		if(playlist[selected].ytid.empty())
 		{
-			if(!filelist[selected].audioPids.empty()) 
+			if(!playlist[selected].audioPids.empty()) 
 			{
-				g_currentapid = filelist[selected].audioPids[0].epgAudioPid;
-				g_currentac3 = filelist[selected].audioPids[0].atype;
+				g_currentapid = playlist[selected].audioPids[0].epgAudioPid;
+				g_currentac3 = playlist[selected].audioPids[0].atype;
 
 				//
 				currentapid = g_currentapid;
 			}
 
-			for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
+			for (int i = 0; i < (int)playlist[selected].audioPids.size(); i++) 
 			{
-				if (filelist[selected].audioPids[i].selected) 
+				if (playlist[selected].audioPids[i].selected) 
 				{
 #if defined (PLATFORM_COOLSTREAM)
-					g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
+					g_currentapid = playlist[selected].audioPids[i].epgAudioPid;
 #else
 					g_currentapid = i;	//FIXME
 #endif						
-					g_currentac3 = filelist[selected].audioPids[i].atype;
+					g_currentac3 = playlist[selected].audioPids[i].atype;
 
 #if defined (PLATFORM_COOLSTREAM)
 					currentapid = g_currentapid;
@@ -452,8 +452,8 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 
 			//
-			g_vpid = filelist[selected].epgVideoPid;
-			g_vtype = filelist[selected].VideoType;
+			g_vpid = playlist[selected].epgVideoPid;
+			g_vtype = playlist[selected].VideoType;
 
 			// startposition			
 			startposition = 1000 * showStartPosSelectionMenu();
@@ -464,7 +464,7 @@ void CMoviePlayerGui::PlayFile(void)
 		start_play = true;
 
 		//
-		if(filelist.size() > 1)
+		if(playlist.size() > 1)
 			m_multiselect = true;
 
 		if(startposition < 0)
@@ -546,14 +546,14 @@ void CMoviePlayerGui::PlayFile(void)
 				if (new_bookmark.pos == 0)
 				{
 					// process bookmarks if we have any movie info
-					if (&filelist[selected] != NULL)
+					if (&playlist[selected] != NULL)
 					{
 						// movieend bookmark
-						if (filelist[selected].bookmarks.end != 0) 
+						if (playlist[selected].bookmarks.end != 0) 
 						{
 							// stop playing
 							// we ARE close behind the stop position, stop playing 
-							if (play_sec >= filelist[selected].bookmarks.end && play_sec <= filelist[selected].bookmarks.end + 2 && play_sec > jump_not_until)
+							if (play_sec >= playlist[selected].bookmarks.end && play_sec <= playlist[selected].bookmarks.end + 2 && play_sec > jump_not_until)
 							{
 								dprintf(DEBUG_INFO, "CMoviePlayerGui::PlayFile: bookmark stop\r\n");
 								playstate = CMoviePlayerGui::STOPPED;
@@ -565,31 +565,31 @@ void CMoviePlayerGui::PlayFile(void)
 
 						for (int book_nr = 0; book_nr < MI_MOVIE_BOOK_USER_MAX && loop == true; book_nr++) 
 						{
-							if (filelist[selected].bookmarks.user[book_nr].pos != 0 && filelist[selected].bookmarks.user[book_nr].length != 0) 
+							if (playlist[selected].bookmarks.user[book_nr].pos != 0 && playlist[selected].bookmarks.user[book_nr].length != 0) 
 							{
 								// do jump
-								if (play_sec >= filelist[selected].bookmarks.user[book_nr].pos && play_sec <= filelist[selected].bookmarks.user[book_nr].pos + 2 && play_sec > jump_not_until)	//
+								if (play_sec >= playlist[selected].bookmarks.user[book_nr].pos && play_sec <= playlist[selected].bookmarks.user[book_nr].pos + 2 && play_sec > jump_not_until)	//
 								{
-									g_jumpseconds = filelist[selected].bookmarks.user[book_nr].length;
+									g_jumpseconds = playlist[selected].bookmarks.user[book_nr].length;
 
 									// jump back
-									if (filelist[selected].bookmarks.user[book_nr].length < 0) 
+									if (playlist[selected].bookmarks.user[book_nr].length < 0) 
 									{
 										if (g_jumpseconds > -15)
 											g_jumpseconds = -15;
 
-										g_jumpseconds = g_jumpseconds + filelist[selected].bookmarks.user[book_nr].pos;
+										g_jumpseconds = g_jumpseconds + playlist[selected].bookmarks.user[book_nr].pos;
 
 										//playstate = CMoviePlayerGui::JPOS;	// bookmark  is of type loop, jump backward
 										playback->SetPosition((int64_t)g_jumpseconds * 1000);
 									} 
 									// jump forward
-									else if (filelist[selected].bookmarks.user[book_nr].length > 0) 
+									else if (playlist[selected].bookmarks.user[book_nr].length > 0) 
 									{
 										// jump at least 15 seconds
 										if (g_jumpseconds < 15)
 											g_jumpseconds = 15;
-										g_jumpseconds = g_jumpseconds + filelist[selected].bookmarks.user[book_nr].pos;
+										g_jumpseconds = g_jumpseconds + playlist[selected].bookmarks.user[book_nr].pos;
 
 										//
 										playback->SetPosition((int64_t)g_jumpseconds * 1000);
@@ -611,7 +611,7 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			update_lcd = false;
 
-			updateLcd(filelist[selected].epgTitle.empty()? filelist[selected].file.getFileName() : filelist[selected].epgTitle);
+			updateLcd(playlist[selected].epgTitle.empty()? playlist[selected].file.getFileName() : playlist[selected].epgTitle);
 		}
 
 		// timeosd
@@ -626,7 +626,7 @@ void CMoviePlayerGui::PlayFile(void)
 				update((duration - position) / 1000);
 			}
 
-			show(filelist[selected].epgTitle, (filelist[selected].epgInfo1.empty())? filelist[selected].epgInfo2 : filelist[selected].epgInfo1, (duration >= 10 && position >= 10)? (position / (duration / 100)) : 0, ac3state, speed, playstate, (filelist[selected].ytid.empty())? true : false, m_loop);
+			show(playlist[selected].epgTitle, (playlist[selected].epgInfo1.empty())? playlist[selected].epgInfo2 : playlist[selected].epgInfo1, (duration >= 10 && position >= 10)? (position / (duration / 100)) : 0, ac3state, speed, playstate, (playlist[selected].ytid.empty())? true : false, m_loop);
 		}
 
 		// start playing
@@ -642,7 +642,7 @@ void CMoviePlayerGui::PlayFile(void)
 
 			// init player
 #if defined (PLATFORM_COOLSTREAM)
-			if(filelist[selected].file.getExtension() != CFile::EXTENSION_TS)
+			if(playlist[selected].file.getExtension() != CFile::EXTENSION_TS)
 				is_file_player = true;
 
 			playback->Open(is_file_player ? PLAYMODE_FILE : PLAYMODE_TS);
@@ -651,14 +651,14 @@ void CMoviePlayerGui::PlayFile(void)
 #endif			
 			
 			duration = 0;
-			if(filelist[selected].length != 0)
-				duration = filelist[selected].length * 60 * 1000;
+			if(playlist[selected].length != 0)
+				duration = playlist[selected].length * 60 * 1000;
 			  
 			// PlayBack Start
 #if defined (PLATFORM_COOLSTREAM)			  
-			if(!playback->Start((char *)filelist[selected].file.Name.c_str(), g_vpid, g_vtype, g_currentapid, g_currentac3, duration))
+			if(!playback->Start((char *)playlist[selected].file.Name.c_str(), g_vpid, g_vtype, g_currentapid, g_currentac3, duration))
 #else
-			if(!playback->Start((char *)filelist[selected].file.Name.c_str()))
+			if(!playback->Start((char *)playlist[selected].file.Name.c_str()))
 #endif
 			{
 				dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: Starting Playback failed!\n");
@@ -707,7 +707,7 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				if (m_loop)
 					g_RCInput->postMsg(RC_next, 0);
-				else if(filelist.size() > 1 && selected + 1 < filelist.size())
+				else if(playlist.size() > 1 && selected + 1 < playlist.size())
 					g_RCInput->postMsg(RC_next, 0);
 				else
 					g_RCInput->postMsg(RC_stop, 0);
@@ -724,7 +724,7 @@ void CMoviePlayerGui::PlayFile(void)
 			//exit play
 			playstate = CMoviePlayerGui::STOPPED;
 			
-			if(filelist[selected].ytid == "timeshift")
+			if(playlist[selected].ytid == "timeshift")
 			{
 				// stop record if recording
 				if( CNeutrinoApp::getInstance()->recordingstatus) 
@@ -780,7 +780,7 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 
 			// movie title
-			if(filelist[selected].ytid != "timeshift")
+			if(playlist[selected].ytid != "timeshift")
 			{
 				if (IsVisible()) 
 				{
@@ -827,7 +827,7 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 
 			//show MovieInfoBar
-			if(filelist[selected].ytid != "timeshift")
+			if(playlist[selected].ytid != "timeshift")
 			{
 				if (IsVisible()) 
 				{
@@ -859,7 +859,7 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 			
 			//			
-			if(filelist[selected].ytid.empty())
+			if(playlist[selected].ytid.empty())
 			{
 				int pos_sec = position / 1000;
 
@@ -868,9 +868,9 @@ void CMoviePlayerGui::PlayFile(void)
 					// yes, let's get the end pos of the jump forward
 					new_bookmark.length = pos_sec - new_bookmark.pos;
 					dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: commercial length: %d\r\n", new_bookmark.length);
-					if (cMovieInfo.addNewBookmark(&filelist[selected], new_bookmark) == true) 
+					if (cMovieInfo.addNewBookmark(&playlist[selected], new_bookmark) == true) 
 					{
-						cMovieInfo.saveMovieInfo(filelist[selected]);	// save immediately in xml file
+						cMovieInfo.saveMovieInfo(playlist[selected]);	// save immediately in xml file
 					}
 					new_bookmark.pos = 0;	// clear again, since this is used as flag for bookmark activity
 					newForwardHintBox.hide();
@@ -881,9 +881,9 @@ void CMoviePlayerGui::PlayFile(void)
 					new_bookmark.length = new_bookmark.pos - pos_sec;
 					new_bookmark.pos = pos_sec;
 					dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: loop length: %d\r\n", new_bookmark.length);
-					if (cMovieInfo.addNewBookmark(&filelist[selected], new_bookmark) == true) 
+					if (cMovieInfo.addNewBookmark(&playlist[selected], new_bookmark) == true) 
 					{
-						cMovieInfo.saveMovieInfo(filelist[selected]);	// save immediately in xml file
+						cMovieInfo.saveMovieInfo(playlist[selected]);	// save immediately in xml file
 						jump_not_until = pos_sec + 5;	// avoid jumping for this time
 					}
 					new_bookmark.pos = 0;	// clear again, since this is used as flag for bookmark activity
@@ -908,8 +908,8 @@ void CMoviePlayerGui::PlayFile(void)
 						new_bookmark.pos = pos_sec;
 						new_bookmark.length = 0;
 
-						if (cMovieInfo.addNewBookmark(&filelist[selected], new_bookmark) == true)
-							cMovieInfo.saveMovieInfo(filelist[selected]);	// save immediately in xml file
+						if (cMovieInfo.addNewBookmark(&playlist[selected], new_bookmark) == true)
+							cMovieInfo.saveMovieInfo(playlist[selected]);	// save immediately in xml file
 						new_bookmark.pos = 0;	// clear again, since this is used as flag for bookmark activity
 					} 
 					else if(select == 1) 
@@ -929,20 +929,20 @@ void CMoviePlayerGui::PlayFile(void)
 					else if(select == 3) 
 					{
 						// movie start bookmark
-						filelist[selected].bookmarks.start = pos_sec;
+						playlist[selected].bookmarks.start = pos_sec;
 
-						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: New movie start pos: %d\r\n", filelist[selected].bookmarks.start);
+						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: New movie start pos: %d\r\n", playlist[selected].bookmarks.start);
 
-						cMovieInfo.saveMovieInfo(filelist[selected]);	// save immediately in xml file
+						cMovieInfo.saveMovieInfo(playlist[selected]);	// save immediately in xml file
 					} 
 					else if(select == 4) 
 					{
 						// Moviebrowser movie end bookmark
-						filelist[selected].bookmarks.end = pos_sec;
+						playlist[selected].bookmarks.end = pos_sec;
 
-						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: New movie end pos: %d\r\n", filelist[selected].bookmarks.start);
+						dprintf(DEBUG_DEBUG, "CMoviePlayerGui::PlayFile: New movie end pos: %d\r\n", playlist[selected].bookmarks.start);
 
-						cMovieInfo.saveMovieInfo(filelist[selected]);	//save immediately in xml file
+						cMovieInfo.saveMovieInfo(playlist[selected]);	//save immediately in xml file
 					}
 				}
 			}		
@@ -976,7 +976,7 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 		else if (msg == RC_info)
 		{
-			if(filelist[selected].ytid != "timeshift")
+			if(playlist[selected].ytid != "timeshift")
 			{
 				if (IsVisible()) 
 				{
@@ -1296,7 +1296,7 @@ void CMoviePlayerGui::PlayFile(void)
 				killMovieInfoViewer();
 			}
 			
-			cMovieInfo.showMovieInfo(filelist[selected]);
+			cMovieInfo.showMovieInfo(playlist[selected]);
 		}
 		else if(msg == RC_home)
 		{
@@ -1310,32 +1310,32 @@ void CMoviePlayerGui::PlayFile(void)
 		else if(msg == RC_left || msg == RC_prev)
 		{
 			//FIXME:
-			if(!filelist.empty() && selected > 0 && playstate == CMoviePlayerGui::PLAY) 
+			if(!playlist.empty() && selected > 0 && playstate == CMoviePlayerGui::PLAY) 
 			{
 				selected--;
 
 				//
-				if(filelist[selected].ytid.empty())
+				if(playlist[selected].ytid.empty())
 				{
-					if(!filelist[selected].audioPids.empty()) 
+					if(!playlist[selected].audioPids.empty()) 
 					{
-						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;
-						g_currentac3 = filelist[selected].audioPids[0].atype;
+						g_currentapid = playlist[selected].audioPids[0].epgAudioPid;
+						g_currentac3 = playlist[selected].audioPids[0].atype;
 
 							//
 							currentapid = g_currentapid;
 					}
 
-					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
+					for (int i = 0; i < (int)playlist[selected].audioPids.size(); i++) 
 					{
-						if (filelist[selected].audioPids[i].selected) 
+						if (playlist[selected].audioPids[i].selected) 
 						{
 #if defined (PLATFORM_COOLSTREAM)
-							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
+							g_currentapid = playlist[selected].audioPids[i].epgAudioPid;
 #else
 							g_currentapid = i;
 #endif
-							g_currentac3 = filelist[selected].audioPids[i].atype;
+							g_currentac3 = playlist[selected].audioPids[i].atype;
 
 							//
 #if defined (PLATFORM_COOLSTREAM)
@@ -1348,8 +1348,8 @@ void CMoviePlayerGui::PlayFile(void)
 					}
 
 					//
-					g_vpid = filelist[selected].epgVideoPid;
-					g_vtype = filelist[selected].VideoType;
+					g_vpid = playlist[selected].epgVideoPid;
+					g_vtype = playlist[selected].VideoType;
 
 					// startposition			
 					startposition = 1000 * showStartPosSelectionMenu();
@@ -1372,32 +1372,32 @@ void CMoviePlayerGui::PlayFile(void)
 				update_lcd = true;
 				start_play = true;
 			}
-			else if(!filelist.empty() && selected + 1 < filelist.size() && playstate == CMoviePlayerGui::PLAY) 
+			else if(!playlist.empty() && selected + 1 < playlist.size() && playstate == CMoviePlayerGui::PLAY) 
 			{
 				selected++;
 
 				//
-				if(filelist[selected].ytid.empty())
+				if(playlist[selected].ytid.empty())
 				{
-					if(!filelist[selected].audioPids.empty()) 
+					if(!playlist[selected].audioPids.empty()) 
 					{
-						g_currentapid = filelist[selected].audioPids[0].epgAudioPid;
-						g_currentac3 = filelist[selected].audioPids[0].atype;
+						g_currentapid = playlist[selected].audioPids[0].epgAudioPid;
+						g_currentac3 = playlist[selected].audioPids[0].atype;
 
 							//
 							currentapid = g_currentapid;
 					}
 
-					for (int i = 0; i < (int)filelist[selected].audioPids.size(); i++) 
+					for (int i = 0; i < (int)playlist[selected].audioPids.size(); i++) 
 					{
-						if (filelist[selected].audioPids[i].selected) 
+						if (playlist[selected].audioPids[i].selected) 
 						{
 #if defined (PLATFORM_COOLSTREAM)
-							g_currentapid = filelist[selected].audioPids[i].epgAudioPid;
+							g_currentapid = playlist[selected].audioPids[i].epgAudioPid;
 #else
 							g_currentapid = i;
 #endif							
-							g_currentac3 = filelist[selected].audioPids[i].atype;
+							g_currentac3 = playlist[selected].audioPids[i].atype;
 
 							//
 #if defined (PLATFORM_COOLSTREAM)
@@ -1410,8 +1410,8 @@ void CMoviePlayerGui::PlayFile(void)
 					}
 
 					//
-					g_vpid = filelist[selected].epgVideoPid;
-					g_vtype = filelist[selected].VideoType;
+					g_vpid = playlist[selected].epgVideoPid;
+					g_vtype = playlist[selected].VideoType;
 
 					// startposition			
 					startposition = 1000 * showStartPosSelectionMenu();
@@ -1429,7 +1429,7 @@ void CMoviePlayerGui::PlayFile(void)
 		{
          		if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SCREENSHOT_ANNOUNCE), mbrNo, mbYes | mbNo) == mbrYes) 
 			{
-				CVCRControl::getInstance()->Screenshot(0, (char *)filelist[selected].file.Name.c_str());
+				CVCRControl::getInstance()->Screenshot(0, (char *)playlist[selected].file.Name.c_str());
 			}
 		}
 		else if ((msg == NeutrinoMessages::ANNOUNCE_RECORD) || msg == NeutrinoMessages::RECORD_START || msg == NeutrinoMessages::ZAPTO || msg == NeutrinoMessages::STANDBY_ON || msg == NeutrinoMessages::SHUTDOWN || msg == NeutrinoMessages::SLEEPTIMER) 
@@ -1463,15 +1463,15 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (2)\n");	
 
-			if(filelist[selected].ytid.empty() && filelist[selected].file.getType() != CFile::FILE_AUDIO)
+			if(playlist[selected].ytid.empty() && playlist[selected].file.getType() != CFile::FILE_AUDIO)
 			{
 				// if we have a movie information, try to save the stop position
 				ftime(&current_time);
-				filelist[selected].dateOfLastPlay = current_time.time;
+				playlist[selected].dateOfLastPlay = current_time.time;
 				current_time.time = time(NULL);
-				filelist[selected].bookmarks.lastPlayStop = position / 1000;
+				playlist[selected].bookmarks.lastPlayStop = position / 1000;
 				
-				cMovieInfo.saveMovieInfo(filelist[selected]);
+				cMovieInfo.saveMovieInfo(playlist[selected]);
 			}
 		}
 	} while (playstate >= CMoviePlayerGui::PLAY);
@@ -1531,17 +1531,17 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	int menu_nr = 0;
 	int position[MI_MOVIE_BOOK_USER_MAX];
 	
-	if(filelist[selected].bookmarks.lastPlayStop == 0 /*|| filelist[selected].bookmarks.start == 0*/)
+	if(playlist[selected].bookmarks.lastPlayStop == 0 /*|| playlist[selected].bookmarks.start == 0*/)
 		return(result);
 
 	// reset all start pos
-	filelist[selected].bookmarks.start = 0;
+	playlist[selected].bookmarks.start = 0;
 	
 	char start_pos[13]; 
-	snprintf(start_pos, 12,"%3d min", filelist[selected].bookmarks.start/60);
+	snprintf(start_pos, 12,"%3d min", playlist[selected].bookmarks.start/60);
 	
 	char play_pos[13]; 	
-	snprintf(play_pos, 12,"%3d min", filelist[selected].bookmarks.lastPlayStop/60); 
+	snprintf(play_pos, 12,"%3d min", playlist[selected].bookmarks.lastPlayStop/60); 
 	
 	char book[MI_MOVIE_BOOK_USER_MAX][20];
 
@@ -1552,17 +1552,17 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 	startPosSelectionMenu.enableShrinkMenu();
 	
 	// bookmark start
-	if(filelist[selected].bookmarks.start != 0)
+	if(playlist[selected].bookmarks.start != 0)
 	{
 		startPosSelectionMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIESTART, true, start_pos));
-		position[menu_nr++] = filelist[selected].bookmarks.start;
+		position[menu_nr++] = playlist[selected].bookmarks.start;
 	}
 	
 	// bookmark laststop
-	if(filelist[selected].bookmarks.lastPlayStop != 0) 
+	if(playlist[selected].bookmarks.lastPlayStop != 0) 
 	{
 		startPosSelectionMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_LASTMOVIESTOP, true, play_pos));
-		position[menu_nr++] = filelist[selected].bookmarks.lastPlayStop;
+		position[menu_nr++] = playlist[selected].bookmarks.lastPlayStop;
 	}
 	
 	// movie start
@@ -1574,18 +1574,18 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 
 	for(int i = 0 ; i < MI_MOVIE_BOOK_USER_MAX && menu_nr < MI_MOVIE_BOOK_USER_MAX; i++ )
 	{
-		if( filelist[selected].bookmarks.user[i].pos != 0 )
+		if( playlist[selected].bookmarks.user[i].pos != 0 )
 		{
-			if(filelist[selected].bookmarks.user[i].length >= 0)
-				position[menu_nr] = filelist[selected].bookmarks.user[i].pos;
+			if(playlist[selected].bookmarks.user[i].length >= 0)
+				position[menu_nr] = playlist[selected].bookmarks.user[i].pos;
 			else
-				position[menu_nr] = filelist[selected].bookmarks.user[i].pos + filelist[selected].bookmarks.user[i].length;
+				position[menu_nr] = playlist[selected].bookmarks.user[i].pos + playlist[selected].bookmarks.user[i].length;
 				
 			snprintf(book[i], 19,"%5d min", position[menu_nr]/60);
 
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showStartPosSelectionMenu adding boomark menu N %d, position %d\n", menu_nr, position[menu_nr]);
 			
-			startPosSelectionMenu.addItem(new CMenuForwarder(filelist[selected].bookmarks.user[i].name.c_str(), true, book[i]));
+			startPosSelectionMenu.addItem(new CMenuForwarder(playlist[selected].bookmarks.user[i].name.c_str(), true, book[i]));
 			menu_nr++;
 		}
 	}

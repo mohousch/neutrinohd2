@@ -107,7 +107,10 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 	wanted_height = height;
 
         current_page = 0;
-	offx = offy = 0;
+	offx = 0;
+	offy = 0;
+	x = 0;
+	y = 0;
 	
 	//
 	savescreen = false;
@@ -129,8 +132,11 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 	//
 	paintFootInfo = false;
 	footInfoHeight = 0;
-	cFrameFootInfo.iHeight = 0;
 	connectLineWidth = 0;
+	cFrameFootInfo.iHeight = 0;
+	cFrameFootInfo.iX = 0;
+	cFrameFootInfo.iY = 0;
+	cFrameFootInfo.iWidth = 0;
 
 	timeout = 0;
 
@@ -287,10 +293,23 @@ void ClistBoxWidget::initFrames()
 		cFrameFootInfo.iHeight = 0;
 		connectLineWidth = 0;
 
+/*
 		if(paintFootInfo && (widgetType == WIDGET_TYPE_STANDARD || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_LISTBOX))&& widgetMode != MODE_SETUP)
 		{
 			cFrameFootInfo.iHeight = footInfoHeight;
 			connectLineWidth = CONNECTLINEBOX_WIDTH;
+		}
+*/
+		if(paintFootInfo)
+		{
+			if( (widgetType == WIDGET_TYPE_STANDARD) || (WIDGET_TYPE_CLASSIC) )
+			{
+				if(widgetMode == MODE_LISTBOX)
+				{
+					cFrameFootInfo.iHeight = footInfoHeight;
+					connectLineWidth = CONNECTLINEBOX_WIDTH;
+				}
+			}
 		}
 
 		// width
@@ -361,6 +380,8 @@ void ClistBoxWidget::initFrames()
 		// default centered
 		x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - full_width ) >> 1 );
 		y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
+
+		//printf("TEST:1- y:%d offy:%d frameBuffer->getScreenY():%d frameBuffer->getScreenHeight():%d height:%d cFrameFootInfo.iHeight:%d full_height:%d\n\n", y, offy, frameBuffer->getScreenY(), frameBuffer->getScreenHeight(), height, cFrameFootInfo.iHeight, full_height);
 
 		// menu position
 		if(widgetMode == MODE_MENU)
@@ -908,7 +929,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	else if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		// helpText
-		if(paintFootInfo)
+		//if(paintFootInfo)
 		{
 			frameBuffer->paintBoxRel(x, y + height - fheight - (fbutton_count != 0? fheight : 0), width, fheight, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
 
