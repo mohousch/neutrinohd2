@@ -208,57 +208,42 @@ end
 function select_playitem()
 --  local m=menu.new{name="", icon=kunst} 
   --local m=menu.new{name="Wunderschön", icon=""}
-    local m = neutrino.ClistBoxWidget("Wunderschön", neutrino.PLUGINDIR .. "/Wunderschön/Wunderschön_hint.png", 2*neutrino.MENU_WIDTH) 
-    local item
-    m:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC) -- if you want to change the design
-    m:setMode(neutrino.MODE_LISTBOX)
-    m:enableShrinkMenu()
-    m:addWidget(neutrino.WIDGET_TYPE_STANDARD)
-    m:addWidget(neutrino.WIDGET_TYPE_EXTENDED)
-    m:addWidget(neutrino.WIDGET_TYPE_FRAME)
-    m:enableWidgetChange()
-    --m:enablePaintItemInfo() --sucks
-    m:enablePaintDate()
+	local m = nil
+	local item = nil
 
-    if pmid < 0 then
-	pmid = 0
-    end
+	m = neutrino.ClistBoxWidget("Wunderschön", neutrino.PLUGINDIR .. "/Wunderschön/Wunderschön_hint.png", 2*neutrino.MENU_WIDTH) 
 
-    m:setSelected(pmid)
+	m:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC) -- if you want to change the design
+	m:setMode(neutrino.MODE_LISTBOX)
+	m:enableShrinkMenu()
+	m:addWidget(neutrino.WIDGET_TYPE_STANDARD)
+	m:addWidget(neutrino.WIDGET_TYPE_EXTENDED)
+	m:addWidget(neutrino.WIDGET_TYPE_FRAME)
+	m:enableWidgetChange()
+	--m:enablePaintItemInfo() --sucks
+	m:enablePaintDate()
 
-    for i,r in  ipairs(p) do
-      item = neutrino.ClistBoxItem(r.title)
-      item:setOption(r.from)
-      item:setHelpText(r.from)
-      item:setItemIcon(zdf)
-      item:set2lines()
-    --m:addItem{type="forwarder", action="set_pmid", id=i, icon="streaming", name=r.title, hint=r.from, hint_icon="hint_reload"}
-	m:addItem(item)
-  end 
+	if pmid < 0 then
+		pmid = 0
+	end
 
-  m:exec(null, "")
-  pmid = 0
-  pmid = m:getSelected() + 1
+	m:setSelected(pmid)
 
-  local vPlay = neutrino.CMoviePlayerGui()
+	for i,r in  ipairs(p) do
+		item = neutrino.ClistBoxItem(r.title)
+		item:setOption(r.from)
+		item:setHelpText(r.from)
+		item:setItemIcon(zdf)
+		item:set2lines()
 
---[[
-  movie = neutrino.MI_MOVIE_INFO()
-  movie.epgTitle = func[p[pmid].access](p[pmid].title)
-  movie.epgInfo1 = func[p[pmid].access](p[pmid].from)
-  movie.file.Name = func[p[pmid].access](p[pmid].url)
-]]
+    		--m:addItem{type="forwarder", action="set_pmid", id=i, icon="streaming", name=r.title, hint=r.from, hint_icon="hint_reload"}
+		m:addItem(item)
+	end 
 
-  local movie = func[p[pmid].access](p[pmid].url)
+	local vPlay = neutrino.CMoviePlayerGui()
+	local movie = nil
 
-  if movie ~= nil then
-    vPlay:addToPlaylist(movie)
-    vPlay:exec(None, "")
-  end
 
-  if m:getExitPressed() ~= true then
-     select_playitem()
-  end
 --[[ 
   repeat
     pmid=0
@@ -276,6 +261,25 @@ function select_playitem()
  	vPlay:PlayFile("Wunderschön",url,p[pmid].title, p[pmid].from ); 
    end
   until false]]
+
+	repeat
+		m:exec(null, "")
+
+		pmid = m:getSelected() + 1
+
+		movie = func[p[pmid].access](p[pmid].url)
+
+		--[[movie = neutrino.MI_MOVIE_INFO()
+		movie.epgTitle = func[p[pmid].access](p[pmid].title)
+		movie.epgInfo1 = func[p[pmid].access](p[pmid].from)
+		movie.file.Name = func[p[pmid].access](p[pmid].url)
+		]]
+
+		if movie ~= nil then
+			vPlay:addToPlaylist(movie)
+			vPlay:exec(None, "")
+		end
+	until m:getExitPressed() == true
 end
 
 --Main
