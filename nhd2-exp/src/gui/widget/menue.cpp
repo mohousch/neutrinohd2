@@ -381,8 +381,6 @@ void ClistBoxWidget::initFrames()
 		x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - full_width ) >> 1 );
 		y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - full_height) >> 1 );
 
-		//printf("TEST:1- y:%d offy:%d frameBuffer->getScreenY():%d frameBuffer->getScreenHeight():%d height:%d cFrameFootInfo.iHeight:%d full_height:%d\n\n", y, offy, frameBuffer->getScreenY(), frameBuffer->getScreenHeight(), height, cFrameFootInfo.iHeight, full_height);
-
 		// menu position
 		if(widgetMode == MODE_MENU)
 		{
@@ -922,7 +920,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 			textBox->setBackgroundColor(COL_MENUCONTENTDARK_PLUS_0);
 
 			// helpText
-			textBox->setText((paintFootInfo != 0)? item->itemHelpText.c_str() : NULL, item->itemIcon.c_str(), p_w, p_h, TOP_CENTER);
+			textBox->setText(/*(paintFootInfo != 0)?*/ item->itemHelpText.c_str() /*: NULL*/, item->itemIcon.c_str(), p_w, p_h, TOP_CENTER);
 			textBox->paint();
 		}
 	}

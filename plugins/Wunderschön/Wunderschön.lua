@@ -213,7 +213,7 @@ function select_playitem()
 
 	m = neutrino.ClistBoxWidget("Wunderschön", neutrino.PLUGINDIR .. "/Wunderschön/Wunderschön_hint.png", 2*neutrino.MENU_WIDTH) 
 
-	m:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC) -- if you want to change the design
+	m:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
 	m:setMode(neutrino.MODE_LISTBOX)
 	m:enableShrinkMenu()
 	m:addWidget(neutrino.WIDGET_TYPE_STANDARD)
