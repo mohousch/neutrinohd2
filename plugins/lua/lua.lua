@@ -2,7 +2,7 @@
 neutrinoHD2 lua sample plugin
 ]]
 
-local selected = 0
+local selected = -1
 
 -- CMessageBox
 function messageBox()
@@ -162,48 +162,34 @@ function moviePlayer()
 	until fileBrowser:getExitPressed() == true
 end
 
+-- exec
 function exec(id, msg)
 	print("exec:id:", id)
 
-	-- handle keys
 	if msg == neutrino.RC_info then
 		infoBox()
-	end
-
-	-- handle others
-	if id == 0 then
+	elseif id == 0 then
 		messageBox()
-	end
-	if id == 1 then
+	elseif id == 1 then
 		helpBox()
-	end
-	if id == 2 then
+	elseif id == 2 then
 		hintBox()
-	end
-	if id == 3 then
+	elseif id == 3 then
 		infoBox()
-	end
-	if id == 4 then
+	elseif id == 4 then
 		stringInput()
-	end
-	if id == 5 then
+	elseif id == 5 then
 		audioPlayer()
-	end
-	if id == 6 then
+	elseif id == 6 then
 		pictureViewer()
-	end
-	if id == 7 then
+	elseif id == 7 then
 		moviePlayer()
-	end
-
-	if id == 8 then
-		testCWidget()
+	else
+		-- do nothing
 	end
 end
 
---listBox = neutrino.ClistBox()
---testWidget = neutrino.CWidget()
-
+-- CWidget
 function testCWidget()
 	local testWidget = neutrino.CWidget()
 	local listBox = neutrino.ClistBox()
@@ -215,14 +201,6 @@ function testCWidget()
 	listBox:enablePaintDate()
 	listBox:enablePaintFoot()
 	listBox:enableCenterPos()
-
---[[
-	if selected < 0 then
-		selected = 0
-	end
-]]
-
-	listBox:setSelected(selected)
 
 	listBox:setWidgetMode(neutrino.MODE_LISTBOX)
 	listBox:enableShrinkMenu()
@@ -293,28 +271,6 @@ function testCWidget()
 
 	testWidget:addKey(neutrino.RC_info)
 
---[[
-	testWidget:exec(null, "")
-
-	-- handle
-	selected = listBox:getSelected()
-
-	key = testWidget:getKey()
-
-	if testWidget:getExitPressed() == true or key == neutrino.RC_info then
-		selected = -1
-	end
-
-	exec(selected, key)
-
-	-- repaint or exit
-	if testWidget:getExitPressed() == false then
-		listBox:clearItems()
-		testWidget:clearItems()
-		testCWidget()
-	end
-]]
-
 	repeat
 		testWidget:exec(null, "")
 		selected = listBox:getSelected()
@@ -327,7 +283,7 @@ function testCWidget()
 	until testWidget:getExitPressed() == true
 end
 
---listWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
+-- ClistBoxWidget
 function testClistBoxWidget()
 	local listBoxWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
 	listBoxWidget:setWidgetType(neutrino.WIDGET_TYPE_STANDARD)
@@ -338,13 +294,6 @@ function testClistBoxWidget()
 	listBoxWidget:addWidget(neutrino.WIDGET_TYPE_FRAME)
 	listBoxWidget:enableWidgetChange()
 	listBoxWidget:enablePaintItemInfo()
---[[
-	if selected < 0 then
-		selected = 0
-	end
-]]
-
-	listBoxWidget:setSelected(selected)
 
 	-- CMessageBox
 	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", self, "red action")
@@ -407,22 +356,6 @@ function testClistBoxWidget()
 
 	listBoxWidget:addKey(neutrino.RC_info)
 
---[[
-	listWidget:exec(null, "")
-
-	-- handle
-	selected = listWidget:getSelected()
-	key = listWidget:getKey()
-
-	exec(selected, key)
-
-	-- repaint or exit
-	if listWidget:getExitPressed() == false then
-		listWidget:clearItems()
-		testClistBoxWidget()
-	end
-]]
-
 	repeat
 		listBoxWidget:exec(null, "")
 		selected = listBoxWidget:getSelected()
@@ -433,6 +366,7 @@ function testClistBoxWidget()
 	until listBoxWidget:getExitPressed() == true
 end
 
+-- ClistBox
 function testClistBox()
 	local listBox = neutrino.ClistBox()
 	listBox:enableCenterPos()
@@ -503,9 +437,11 @@ function testClistBox()
 	listBox:addItem(item8)
 
 	local m = neutrino.CWidget()
+
 	m:addKey(neutrino.RC_ok)
 	m:addKey(neutrino.RC_down)
 	m:addKey(neutrino.RC_up)
+	m:addKey(neutrino.RC_info)
 
 	repeat
 		listBox:paint()
@@ -519,31 +455,63 @@ function testClistBox()
 		if key == neutrino.RC_up then
 			listBox:scrollLineUp()
 		end
-
-		if key == neutrino.RC_ok then
+		
+		if key == neutrino.RC_ok or key == neutrino.RC_info then
 			listBox:hide()
-			exec(selected, -1)
+			exec(selected, key)
 		end
 	until m:getExitPressed() == true
 
 	listBox:hide()
 end
 
+-- CWindow
 function testCWindow()
 	local box = neutrino.CBox()
 	local fb = neutrino.CSwigHelpers()
 
-	box.iX = fb:getScreenX()
-	box.iY = fb:getScreenY()
-	box.iWidth = fb:getScreenWidth()
-	box.iHeight = fb:getScreenHeight()
+	box.iX = fb:getScreenX() + 40
+	box.iY = fb:getScreenY() + 40
+	box.iWidth = fb:getScreenWidth() - 80
+	box.iHeight = fb:getScreenHeight() - 80
+
+--[[
+	local button = neutrino.button_label_struct
+	button[1].button = neutrino.NEUTRINO_ICON_MOVIE
+	button[1].locale = neutrino.NONEXISTANT_LOCALE
+	button[1].localename = nil
+]]
 
 	window = neutrino.CWindow(box)
+	head = neutrino.CHeaders(box.iX, box.iY, box.iWidth, 40, "CHeaders", neutrino.NEUTRINO_ICON_MOVIE)
+	foot = neutrino.CFooters(box.iX, box.iY + box.iHeight - 40, box.iWidth, 40)
 
 	window:enableCenterPos()
-	window:paint()
-	
-	neutrino.CWidget():exec(null, "")
+	head:enablePaintDate()
+	--head:setButtons(button, 1)
+
+	local m = neutrino.CWidget()
+
+	m:addKey(neutrino.RC_ok)
+	m:addKey(neutrino.RC_down)
+	m:addKey(neutrino.RC_up)
+	m:addKey(neutrino.RC_info)
+
+	repeat
+		window:paint()
+		head:paint()
+		foot:paint()
+
+		m:exec(null, "")
+
+		local selected = m:getSelected()
+		local key = m:getKey()
+		
+		if key == neutrino.RC_ok or key == neutrino.RC_info then
+			window:hide()
+			exec(selected, key)
+		end
+	until m:getExitPressed() == true
 
 	window:hide()
 end
@@ -551,8 +519,8 @@ end
 -- main
 function main()
 	--testCWidget()
-	--testClistBoxWidget()
-	testClistBox()
+	testClistBoxWidget()
+	--testClistBox()
 	--testCWindow()
 end
 

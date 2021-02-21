@@ -196,7 +196,7 @@ void CWidget::hide()
 	}
 	else
 	{
-		//if(paintMainFrame) // always clear buffer
+		if(paintMainFrame)
 			frameBuffer->paintBackgroundBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight);
 	}
 
@@ -235,7 +235,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 		}
 	}
 	else
-		selected = 0;
+		selected = -1;
 
 	paint();
 
@@ -282,7 +282,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 				}
 				else
 				{
-					//selected = -1;
+					selected = -1;
 					handled = true;
 
 					break;
