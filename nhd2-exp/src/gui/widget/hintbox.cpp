@@ -317,11 +317,11 @@ int CHintBox::exec(int timeout)
 		else
 		{
 			res = CNeutrinoApp::getInstance()->handleMsg(msg, data);
+
 			if (res & messages_return::unhandled)
 			{
-				// raus hier und dar�ber behandeln...
-				g_RCInput->postMsg(msg, data);
-				res = messages_return::cancel_info;
+				//res = messages_return::cancel_info;
+				//g_RCInput->postMsg(msg, data);
 			}
 		}
 

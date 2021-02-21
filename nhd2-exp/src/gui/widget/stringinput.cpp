@@ -61,7 +61,7 @@ CStringInput::CStringInput(const neutrino_locale_t Name, const char * const Valu
 	name =  Name;
 	head = NULL;
 	value = (char *)Value;
-	valueString = Value;
+	valueString.clear();
 	size =  Size;
 
 	hint_1 = Hint_1;
@@ -79,7 +79,7 @@ CStringInput::CStringInput(const char * const Head, const char * const Value, in
         frameBuffer = CFrameBuffer::getInstance();
         head = strdup(Head);
         value = (char *)Value;
-        valueString = Value;
+        valueString.clear();
         size =  Size;
 
         hint_1 = Hint_1;
@@ -291,7 +291,7 @@ void CStringInput::keyPlusPressed()
 	int item = size -1;
 	while (item > selected)
 	{
-		value[item] = value[item-1];
+		value[item] = value[item - 1];
 		paintChar(item);
 		item--;
 	}
@@ -318,6 +318,7 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 		strcat(value, " ");
 	
 	strncpy(oldval, value, size);
+
 
 	paint();
 	

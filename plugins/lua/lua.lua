@@ -37,7 +37,7 @@ end
 
 -- CStringInput
 function stringInput()
-	title = "luaTest: CStringInputSMS"
+	local title = "luaTest: CStringInputSMS"
 	local value = "neutrino lua:"
 	local input = neutrino.CStringInputSMS(title, vale)
 	input:exec(None, "")
@@ -423,9 +423,7 @@ function testClistBox()
 	listBox:addItem(item2)
 	listBox:addItem(item3)
 	listBox:addItem(item4)
-	--listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
 	listBox:addItem(item5)
-	--listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
 	listBox:addItem(item6)
 	listBox:addItem(item7)
 	listBox:addItem(item8)
@@ -577,10 +575,15 @@ function main()
 	m:enablePaintItemInfo()
 
 	item1 = neutrino.CMenuForwarder("testCWidget")
+	item1:setInfo1("lua: testing CWidget")
 	item2 = neutrino.CMenuForwarder("testClistBoxWidget")
+	item2:setInfo1("lua: testing ClistBoxWidget")
 	item3 = neutrino.CMenuForwarder("testClistBox")
+	item3:setInfo1("lua: testing ClistBox")
 	item4 = neutrino.CMenuForwarder("testCWindow")
+	item4:setInfo1("lua: testing CWindow")
 	item5 = neutrino.CMenuForwarder("testCFrameBox")
+	item5:setInfo1("lua: testing CFrameBox")
 
 	m:addItem(item1)
 	m:addItem(item2)

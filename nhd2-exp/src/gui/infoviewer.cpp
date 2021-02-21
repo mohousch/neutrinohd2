@@ -637,9 +637,9 @@ void CInfoViewer::show(const int _ChanNum, const std::string& _Channel, const t_
 					dprintf(DEBUG_NORMAL, "CInfoViewer::show: message unhandled\n");
 
 					// raus hier und im Hauptfenster behandeln...
-					g_RCInput->postMsg(msg, data);
+					//g_RCInput->postMsg(msg, data);
 
-					res = messages_return::cancel_info; //FIXME:
+					//res = messages_return::cancel_info; //FIXME:
 				}
 			}
 		}
