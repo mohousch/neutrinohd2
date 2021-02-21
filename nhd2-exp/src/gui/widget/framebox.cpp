@@ -78,9 +78,9 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		// option
 		if(!option.empty())
 		{
-			int o_w = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(option);
+			int o_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(option);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - o_w) >> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset -iw, option.c_str(), color, 0, true);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - o_w) >> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset -iw, option.c_str(), color, 0, true);
 		}
 	}
 	else

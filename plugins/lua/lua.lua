@@ -201,10 +201,10 @@ function testCWidget()
 	listBox:enablePaintDate()
 	listBox:enablePaintFoot()
 	listBox:enableCenterPos()
+	listBox:enableShrinkMenu()
 
 	listBox:setWidgetMode(neutrino.MODE_LISTBOX)
-	listBox:enableShrinkMenu()
-	listWidget:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
+	listBox:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
 
 	-- CMessageBox
 	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", self, "red action")
@@ -258,9 +258,7 @@ function testCWidget()
 	listBox:addItem(item2)
 	listBox:addItem(item3)
 	listBox:addItem(item4)
-	--listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
 	listBox:addItem(item5)
-	--listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
 	listBox:addItem(item6)
 	listBox:addItem(item7)
 	listBox:addItem(item8)
@@ -274,12 +272,11 @@ function testCWidget()
 	repeat
 		testWidget:exec(null, "")
 		selected = listBox:getSelected()
-		if selected < 0 then
-			selected = 0
-		end
 		key = testWidget:getKey()
 
-		exec(selected, key)
+		if key == neutrino.RC_ok then
+			exec(selected, key)
+		end
 	until testWidget:getExitPressed() == true
 end
 
@@ -347,9 +344,7 @@ function testClistBoxWidget()
 	listBoxWidget:addItem(item2)
 	listBoxWidget:addItem(item3)
 	listBoxWidget:addItem(item4)
-	--listBoxWidget:addItem(neutrino.CMenuSeparator(neutrino.LINE))
 	listBoxWidget:addItem(item5)
-	--listBoxWidget:addItem(neutrino.CMenuSeparator(neutrino.LINE))
 	listBoxWidget:addItem(item6)
 	listBoxWidget:addItem(item7)
 	listBoxWidget:addItem(item8)
@@ -374,8 +369,6 @@ function testClistBox()
 	listBox:setTitle("ClistBox")
 	listBox:enablePaintFoot()
 	listBox:enableShrinkMenu()
-
-	listBox:setSelected(selected)
 
 	-- CMessageBox
 	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", self, "red action")
@@ -516,12 +509,102 @@ function testCWindow()
 	window:hide()
 end
 
+-- CFrameBox
+function testCFrameBox()
+	local box = neutrino.CBox()
+	local fb = neutrino.CSwigHelpers()
+
+	box.iX = fb:getScreenX() + 40
+	box.iY = fb:getScreenY() + 40
+	box.iWidth = fb:getScreenWidth() - 80
+	box.iHeight = 80
+
+	local frameBox = neutrino.CFrameBox(box)
+
+	frame1 = neutrino.CFrame("MP3")
+	frame2 = neutrino.CFrame("PicViewer")
+	frame3 = neutrino.CFrame("MoviePlayer")
+	frame3:setIconName(neutrino.NEUTRINO_ICON_MOVIE)
+	frame3:setOption("spielt Movie Dateien")
+
+	frameBox:addFrame(frame1)
+	frameBox:addFrame(frame2)
+	frameBox:addFrame(frame3)
+
+	local m = neutrino.CWidget()
+
+	m:addKey(neutrino.RC_ok)
+	m:addKey(neutrino.RC_right)
+	m:addKey(neutrino.RC_left)
+	m:addKey(neutrino.RC_info)
+
+	repeat
+		frameBox:paint()
+
+		m:exec(null, "")
+
+		local selected = frameBox:getSelected()
+		local key = m:getKey()
+
+		if key == neutrino.RC_left then
+			frameBox:swipLeft()
+		elseif key == neutrino.RC_right then
+			frameBox:swipRight()
+		elseif key == neutrino.RC_info then
+			infoBox()
+		elseif key == neutrino.RC_ok then
+			frameBox:hide()
+			if selected == 0 then
+				audioPlayer()
+			elseif selected == 1 then
+				pictureViewer()
+			elseif selected == 2 then
+				moviePlayer()
+			end
+		end
+	until m:getExitPressed() == true
+
+	frameBox:hide()
+end
+
 -- main
 function main()
 	--testCWidget()
-	testClistBoxWidget()
+	--testClistBoxWidget()
 	--testClistBox()
 	--testCWindow()
+	--testCFrameBox()
+
+	local m = neutrino.ClistBoxWidget("lua sample")
+
+	item1 = neutrino.CMenuForwarder("testCWidget")
+	item2 = neutrino.CMenuForwarder("testClistBoxWidget")
+	item3 = neutrino.CMenuForwarder("testClistBox")
+	item4 = neutrino.CMenuForwarder("testCWindow")
+	item5 = neutrino.CMenuForwarder("testCFrameBox")
+
+	m:addItem(item1)
+	m:addItem(item2)
+	m:addItem(item3)
+	m:addItem(item4)
+	m:addItem(item5)
+
+	repeat
+		m:exec(None, "")
+		selected = m:getSelected() 
+
+		if selected == 0 then
+			testCWidget()
+		elseif selected == 1 then
+			testClistBoxWidget()
+		elseif selected == 2 then
+			testClistBox()
+		elseif selected == 3 then
+			testCWindow()
+		elseif selected == 4 then
+			testCFrameBox()
+		end
+	until m:getExitPressed() == true
 end
 
 main()
