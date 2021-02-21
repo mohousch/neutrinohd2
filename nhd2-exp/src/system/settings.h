@@ -481,9 +481,10 @@ struct SNeutrinoSettings
 
 	// tmdb
 	std::string tmdbkey;
-
 	// youtube
 	std::string ytkey;
+	//weather
+	std::string weather_api_key;
 
 	// progressbar color
 	int progressbar_color;

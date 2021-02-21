@@ -3,7 +3,6 @@ neutrinoHD2 lua sample plugin
 ]]
 
 local selected = 0
-local PATH = "/"
 
 -- CMessageBox
 function messageBox()
@@ -40,14 +39,15 @@ end
 function stringInput()
 	title = "luaTest: CStringInputSMS"
 	local value = "neutrino lua:"
-	input = neutrino.CStringInputSMS(title, vale)
-	input:exec(null, "")
+	local input = neutrino.CStringInputSMS(title, vale)
+	input:exec(None, "")
 end
 
-fileBrowser = neutrino.CFileBrowser()
 -- CAudioPlayerGui
 function audioPlayer()
-	fileFilter = neutrino.CFileFilter()
+	local fileBrowser = neutrino.CFileBrowser()
+	local fileFilter = neutrino.CFileFilter()
+	local PATH = "/"
 
 	fileFilter:addFilter("cdr")
 	fileFilter:addFilter("mp3")
@@ -65,25 +65,27 @@ function audioPlayer()
 	fileBrowser.Dirs_Selectable = false
 	fileBrowser.Filter = fileFilter
 
-	fileBrowser:exec(PATH)
+	local player = neutrino.CAudioPlayerGui()
+	local file = nil
 
-	PATH = fileBrowser:getCurrentDir()
+	repeat
+		fileBrowser:exec(PATH)
 
-	player = neutrino.CAudioPlayerGui()
-	
-	if fileBrowser:getSelectedFile() ~= null then
-		player:addToPlaylist(fileBrowser:getSelectedFile())
-		player:exec(None, "")
-	end
+		PATH = fileBrowser:getCurrentDir()
+		file = fileBrowser:getSelectedFile()
 
-	if fileBrowser:getExitPressed() ~= true then
-		audioPlayer()
-	end
+		if file ~= null then
+			player:addToPlaylist(file)
+			player:exec(None, "")
+		end
+	until fileBrowser:getExitPressed() == true
 end
 
 -- CPictureViewerGui
 function pictureViewer()
-	fileFilter = neutrino.CFileFilter()
+	local fileBrowser = neutrino.CFileBrowser()
+	local fileFilter = neutrino.CFileFilter()
+	local PATH = "/"
 
 	fileFilter:addFilter("jpeg")
 	fileFilter:addFilter("jpg")
@@ -94,25 +96,26 @@ function pictureViewer()
 	fileBrowser.Dirs_Selectable = false
 	fileBrowser.Filter = fileFilter
 
-	fileBrowser:exec(PATH)
+	local player = neutrino.CPictureViewerGui()
+	local file = nil
 
-	PATH = fileBrowser:getCurrentDir()
+	repeat
+		fileBrowser:exec(PATH)
+		PATH = fileBrowser:getCurrentDir()
+		file = fileBrowser:getSelectedFile()
 
-	player = neutrino.CPictureViewerGui()
-	
-	if fileBrowser:getSelectedFile() ~= null then
-		player:addToPlaylist(fileBrowser:getSelectedFile())
-		player:exec(None, "")
-	end
-
-	if fileBrowser:getExitPressed() ~= true then
-		pictureViewer()
-	end
+		if file ~= null then
+			player:addToPlaylist(file)
+			player:exec(None, "")
+		end
+	until fileBrowser:getExitPressed() == true
 end
 
 -- CMoviePlayerGui
 function moviePlayer()
-	fileFilter = neutrino.CFileFilter()
+	local fileBrowser = neutrino.CFileBrowser()
+	local fileFilter = neutrino.CFileFilter()
+	local PATH = "/"
 
 	fileFilter:addFilter("ts")
 	fileFilter:addFilter("mpg")
@@ -144,20 +147,19 @@ function moviePlayer()
 	fileBrowser.Dirs_Selectable = false
 	fileBrowser.Filter = fileFilter
 
-	fileBrowser:exec(PATH)
+	local player = neutrino.CMoviePlayerGui()
+	local file = nil
 
-	PATH = fileBrowser:getCurrentDir()
+	repeat
+		fileBrowser:exec(PATH)
+		PATH = fileBrowser:getCurrentDir()
+		file = fileBrowser:getSelectedFile()
 
-	player = neutrino.CMoviePlayerGui()
-	
-	if fileBrowser:getSelectedFile() ~= null then
-		player:addToPlaylist(fileBrowser:getSelectedFile())
-		player:exec(None, "")
-	end
-
-	if fileBrowser:getExitPressed() ~= true then
-		moviePlayer()
-	end
+		if file ~= null then
+			player:addToPlaylist(file)
+			player:exec(None, "")
+		end
+	until fileBrowser:getExitPressed() == true
 end
 
 function exec(id, msg)
@@ -199,10 +201,13 @@ function exec(id, msg)
 	end
 end
 
-listBox = neutrino.ClistBox()
-testWidget = neutrino.CWidget()
+--listBox = neutrino.ClistBox()
+--testWidget = neutrino.CWidget()
 
 function testCWidget()
+	local testWidget = neutrino.CWidget()
+	local listBox = neutrino.ClistBox()
+
 	testWidget:enableCenterPos()
 
 	listBox:setTitle("testCWidget(ClistBox)")
@@ -211,9 +216,11 @@ function testCWidget()
 	listBox:enablePaintFoot()
 	listBox:enableCenterPos()
 
+--[[
 	if selected < 0 then
 		selected = 0
 	end
+]]
 
 	listBox:setSelected(selected)
 
@@ -286,6 +293,7 @@ function testCWidget()
 
 	testWidget:addKey(neutrino.RC_info)
 
+--[[
 	testWidget:exec(null, "")
 
 	-- handle
@@ -305,25 +313,38 @@ function testCWidget()
 		testWidget:clearItems()
 		testCWidget()
 	end
+]]
+
+	repeat
+		testWidget:exec(null, "")
+		selected = listBox:getSelected()
+		if selected < 0 then
+			selected = 0
+		end
+		key = testWidget:getKey()
+
+		exec(selected, key)
+	until testWidget:getExitPressed() == true
 end
 
-listWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
+--listWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
 function testClistBoxWidget()
-
-	listWidget:setWidgetType(neutrino.WIDGET_TYPE_STANDARD)
-	listWidget:setMode(neutrino.MODE_LISTBOX)
-	listWidget:enableShrinkMenu()
-	listWidget:addWidget(neutrino.WIDGET_TYPE_CLASSIC)
-	listWidget:addWidget(neutrino.WIDGET_TYPE_EXTENDED)
-	listWidget:addWidget(neutrino.WIDGET_TYPE_FRAME)
-	listWidget:enableWidgetChange()
-	listWidget:enableItemFootInfo()
-
+	local listBoxWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
+	listBoxWidget:setWidgetType(neutrino.WIDGET_TYPE_STANDARD)
+	listBoxWidget:setMode(neutrino.MODE_LISTBOX)
+	listBoxWidget:enableShrinkMenu()
+	listBoxWidget:addWidget(neutrino.WIDGET_TYPE_CLASSIC)
+	listBoxWidget:addWidget(neutrino.WIDGET_TYPE_EXTENDED)
+	listBoxWidget:addWidget(neutrino.WIDGET_TYPE_FRAME)
+	listBoxWidget:enableWidgetChange()
+	listBoxWidget:enablePaintItemInfo()
+--[[
 	if selected < 0 then
 		selected = 0
 	end
+]]
 
-	listWidget:setSelected(selected)
+	listBoxWidget:setSelected(selected)
 
 	-- CMessageBox
 	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", self, "red action")
@@ -373,19 +394,20 @@ function testClistBoxWidget()
 	item8:setHelpText("testing CMoviePlayerGui")
 	item8:setInfo1("testing CMoviePlayerGui")
 
-	listWidget:addItem(item1)
-	listWidget:addItem(item2)
-	listWidget:addItem(item3)
-	listWidget:addItem(item4)
-	--listWidget:addItem(neutrino.CMenuSeparator(neutrino.LINE))
-	listWidget:addItem(item5)
-	--listWidget:addItem(neutrino.CMenuSeparator(neutrino.LINE))
-	listWidget:addItem(item6)
-	listWidget:addItem(item7)
-	listWidget:addItem(item8)
+	listBoxWidget:addItem(item1)
+	listBoxWidget:addItem(item2)
+	listBoxWidget:addItem(item3)
+	listBoxWidget:addItem(item4)
+	--listBoxWidget:addItem(neutrino.CMenuSeparator(neutrino.LINE))
+	listBoxWidget:addItem(item5)
+	--listBoxWidget:addItem(neutrino.CMenuSeparator(neutrino.LINE))
+	listBoxWidget:addItem(item6)
+	listBoxWidget:addItem(item7)
+	listBoxWidget:addItem(item8)
 
-	listWidget:addKey(neutrino.RC_info)
+	listBoxWidget:addKey(neutrino.RC_info)
 
+--[[
 	listWidget:exec(null, "")
 
 	-- handle
@@ -399,13 +421,25 @@ function testClistBoxWidget()
 		listWidget:clearItems()
 		testClistBoxWidget()
 	end
+]]
+
+	repeat
+		listBoxWidget:exec(null, "")
+		selected = listBoxWidget:getSelected()
+		key = listBoxWidget:getKey()
+
+		exec(selected, key)
+		
+	until listBoxWidget:getExitPressed() == true
 end
 
 function testClistBox()
+	local listBox = neutrino.ClistBox()
 	listBox:enableCenterPos()
 	listBox:enablePaintHead()
 	listBox:setTitle("ClistBox")
 	listBox:enablePaintFoot()
+	listBox:enableShrinkMenu()
 
 	listBox:setSelected(selected)
 
@@ -461,23 +495,43 @@ function testClistBox()
 	listBox:addItem(item2)
 	listBox:addItem(item3)
 	listBox:addItem(item4)
-	listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
+	--listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
 	listBox:addItem(item5)
-	listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
+	--listBox:addItem(neutrino.CMenuSeparator(neutrino.LINE))
 	listBox:addItem(item6)
 	listBox:addItem(item7)
 	listBox:addItem(item8)
 
-	listBox:paint()
-	
-	neutrino.CWidget():exec(null, "")
+	local m = neutrino.CWidget()
+	m:addKey(neutrino.RC_ok)
+	m:addKey(neutrino.RC_down)
+	m:addKey(neutrino.RC_up)
+
+	repeat
+		listBox:paint()
+		m:exec(null, "")
+		selected = listBox:getSelected()
+		local key = m:getKey()
+
+		if key == neutrino.RC_down then
+			listBox:scrollLineDown()
+		end
+		if key == neutrino.RC_up then
+			listBox:scrollLineUp()
+		end
+
+		if key == neutrino.RC_ok then
+			listBox:hide()
+			exec(selected, -1)
+		end
+	until m:getExitPressed() == true
 
 	listBox:hide()
 end
 
 function testCWindow()
-	box = neutrino.CBox()
-	fb = neutrino.CSwigHelpers()
+	local box = neutrino.CBox()
+	local fb = neutrino.CSwigHelpers()
 
 	box.iX = fb:getScreenX()
 	box.iY = fb:getScreenY()
@@ -496,9 +550,9 @@ end
 
 -- main
 function main()
-	testCWidget()
+	--testCWidget()
 	--testClistBoxWidget()
-	--testClistBox()
+	testClistBox()
 	--testCWindow()
 end
 

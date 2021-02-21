@@ -950,6 +950,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// tmdb
 	g_settings.tmdbkey = configfile.getString("tmdbkey", "507930c8d6d400c85eae3a7e7b3f6c78");
 	g_settings.ytkey = configfile.getString("ytkey", "");
+	g_settings.weather_api_key = configfile.getString("weather_api_key", "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 	
 	//set OSD resolution
 #if defined (USE_OPENGL)
@@ -1347,6 +1348,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 
 	configfile.setString("tmdbkey", g_settings.tmdbkey);
 	configfile.setString("ytkey", g_settings.ytkey);
+	configfile.setString("weather_api_key", g_settings.weather_api_key);
 	// END MISC OPTS
 
 	// HDD
