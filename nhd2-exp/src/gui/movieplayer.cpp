@@ -626,7 +626,7 @@ void CMoviePlayerGui::PlayFile(void)
 				update((duration - position) / 1000);
 			}
 
-			show(playlist[selected].epgTitle, (playlist[selected].epgInfo1.empty())? playlist[selected].epgInfo2 : playlist[selected].epgInfo1, (duration >= 10 && position >= 10)? (position / (duration / 100)) : 0, ac3state, speed, playstate, (playlist[selected].ytid.empty())? true : false, m_loop);
+			show(playlist[selected].epgTitle, (playlist[selected].epgInfo1.empty())? playlist[selected].epgInfo2 : playlist[selected].epgInfo1, duration == 0? 0 : (position / (duration / 100)), ac3state, speed, playstate, (playlist[selected].ytid.empty())? true : false, m_loop); //FIXME:
 		}
 
 		// start playing

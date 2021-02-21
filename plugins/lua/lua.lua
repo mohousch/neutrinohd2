@@ -286,12 +286,12 @@ function testClistBoxWidget()
 	local listBoxWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
 	listBoxWidget:setWidgetType(neutrino.WIDGET_TYPE_STANDARD)
 	listBoxWidget:setMode(neutrino.MODE_LISTBOX)
-	listBoxWidget:enableShrinkMenu()
 	listBoxWidget:addWidget(neutrino.WIDGET_TYPE_CLASSIC)
 	listBoxWidget:addWidget(neutrino.WIDGET_TYPE_EXTENDED)
 	listBoxWidget:addWidget(neutrino.WIDGET_TYPE_FRAME)
 	listBoxWidget:enableWidgetChange()
 	listBoxWidget:enablePaintItemInfo()
+	listBoxWidget:enableShrinkMenu()
 
 	-- CMessageBox
 	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", self, "red action")
@@ -570,13 +570,10 @@ end
 
 -- main
 function main()
-	--testCWidget()
-	--testClistBoxWidget()
-	--testClistBox()
-	--testCWindow()
-	--testCFrameBox()
-
 	local m = neutrino.ClistBoxWidget("lua sample")
+
+	m:setMode(neutrino.MODE_LISTBOX)
+	m:enableShrinkMenu()
 
 	item1 = neutrino.CMenuForwarder("testCWidget")
 	item2 = neutrino.CMenuForwarder("testClistBoxWidget")
