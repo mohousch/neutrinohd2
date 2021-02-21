@@ -574,6 +574,7 @@ function main()
 
 	m:setMode(neutrino.MODE_LISTBOX)
 	m:enableShrinkMenu()
+	m:enablePaintItemInfo()
 
 	item1 = neutrino.CMenuForwarder("testCWidget")
 	item2 = neutrino.CMenuForwarder("testClistBoxWidget")

@@ -152,14 +152,6 @@ CFrameBox::CFrameBox(CBox* position)
 
 CFrameBox::~CFrameBox()
 {
-	for(unsigned int count = 0; count < (unsigned int)frames.size(); count++) 
-	{
-		CFrame * frame = frames[count];
-		
-		delete frame;
-		frame = NULL;
-	}
-
 	frames.clear();
 }
 
