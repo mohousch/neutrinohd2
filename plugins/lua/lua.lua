@@ -268,13 +268,14 @@ function testCWidget()
 	testWidget:addItem(listBox)
 
 	testWidget:addKey(neutrino.RC_info)
+	testWidget:addKey(neutrino.RC_ok)
 
 	repeat
 		testWidget:exec(null, "")
 		selected = listBox:getSelected()
 		key = testWidget:getKey()
 
-		if key == neutrino.RC_ok then
+		if key == neutrino.RC_ok or key == neutrino.RC_info then
 			exec(selected, key)
 		end
 	until testWidget:getExitPressed() == true
