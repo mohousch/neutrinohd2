@@ -235,14 +235,11 @@ function select_playitem()
 		item:setHelpText(r.from)
 		item:setItemIcon(zdf)
 		item:set2lines()
-
-    		--m:addItem{type="forwarder", action="set_pmid", id=i, icon="streaming", name=r.title, hint=r.from, hint_icon="hint_reload"}
 		m:addItem(item)
 	end 
 
 	local vPlay = neutrino.CMoviePlayerGui()
 	local movie = nil
-
 
 --[[ 
   repeat
@@ -269,14 +266,11 @@ function select_playitem()
 
 		movie = func[p[pmid].access](p[pmid].url)
 
-		--[[movie = neutrino.MI_MOVIE_INFO()
-		movie.epgTitle = func[p[pmid].access](p[pmid].title)
-		movie.epgInfo1 = func[p[pmid].access](p[pmid].from)
-		movie.file.Name = func[p[pmid].access](p[pmid].url)
-		]]
+		title = func[p[pmid].access](p[pmid].title)
+		info1 = func[p[pmid].access](p[pmid].from)
 
 		if movie ~= nil then
-			vPlay:addToPlaylist(movie)
+			vPlay:addToPlaylist(movie, title, info1)
 			vPlay:exec(None, "")
 		end
 	until m:getExitPressed() == true

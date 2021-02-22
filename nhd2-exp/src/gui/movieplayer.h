@@ -169,8 +169,8 @@ class CMoviePlayerGui : public CMenuTarget
 
 		//
 		void addToPlaylist(MI_MOVIE_INFO& mfile);
-		void addToPlaylist(const CFile& file);
-		void addToPlaylist(const char* fileName);
+		void addToPlaylist(const CFile& file, std::string title = "", std::string info1 = "", std::string info2 = "", std::string tfile = "");
+		void addToPlaylist(const char* fileName, std::string title = "", std::string info1 = "", std::string info2 = "", std::string tfile = "");
 		void clearPlaylist(void);
 		void removeFromPlaylist(long pos);
 		void setCurrent(int pos){selected = pos;};

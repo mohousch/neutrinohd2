@@ -218,7 +218,7 @@ void CMoviePlayerGui::addToPlaylist(MI_MOVIE_INFO& mfile)
 	playlist.push_back(mfile);
 }
 
-void CMoviePlayerGui::addToPlaylist(const CFile& file)
+void CMoviePlayerGui::addToPlaylist(const CFile& file, std::string title, std::string info1, std::string info2, std::string tfile)
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::addToPlaylist: %s\n", file.Name.c_str());
 
@@ -226,37 +226,16 @@ void CMoviePlayerGui::addToPlaylist(const CFile& file)
 	cMovieInfo.clearMovieInfo(&movieInfo); // refresh structure
 
 	movieInfo.file.Name = file.Name;
-					
-	// load movie infos (from xml file)
-	cMovieInfo.loadMovieInfo(&movieInfo);
-
-	std::string tmp_str = file.getFileName();
-
-	removeExtension(tmp_str);
-
-	// refill if empty
-	if(movieInfo.epgTitle.empty())
-		movieInfo.epgTitle = tmp_str;
-
-	if(movieInfo.epgInfo1.empty())
-		movieInfo.epgInfo1 = tmp_str;
-
-	//if(movieInfo.epgInfo2.empty())
-		//movieInfo.epgInfo2 = tmp_str;
-
-	//thumbnail
-	std::string fname = "";
-	fname = file.Name;
-	changeFileNameExt(fname, ".jpg");
-					
-	if(!access(fname.c_str(), F_OK) )
-		movieInfo.tfile = fname.c_str();
+	movieInfo.epgTitle = title;
+	movieInfo.epgInfo1 = info1;
+	movieInfo.epgInfo2 = info2;
+	movieInfo.tfile = tfile;
 					
 	// 
 	playlist.push_back(movieInfo);
 }
 
-void CMoviePlayerGui::addToPlaylist(const char* fileName)
+void CMoviePlayerGui::addToPlaylist(const char* fileName, std::string title, std::string info1, std::string info2, std::string tfile)
 {
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::addToPlaylist: %s\n", fileName);
 
@@ -267,31 +246,10 @@ void CMoviePlayerGui::addToPlaylist(const char* fileName)
 	cMovieInfo.clearMovieInfo(&movieInfo); // refresh structure
 
 	movieInfo.file.Name = file.Name;
-					
-	// load movie infos (from xml file)
-	cMovieInfo.loadMovieInfo(&movieInfo);
-
-	std::string tmp_str = file.getFileName();
-
-	removeExtension(tmp_str);
-
-	// refill if empty
-	if(movieInfo.epgTitle.empty())
-		movieInfo.epgTitle = tmp_str;
-
-	if(movieInfo.epgInfo1.empty())
-		movieInfo.epgInfo1 = tmp_str;
-
-	//if(movieInfo.epgInfo2.empty())
-		//movieInfo.epgInfo2 = tmp_str;
-
-	//thumbnail
-	std::string fname = "";
-	fname = file.Name;
-	changeFileNameExt(fname, ".jpg");
-					
-	if(!access(fname.c_str(), F_OK) )
-		movieInfo.tfile = fname.c_str();
+	movieInfo.epgTitle = title;
+	movieInfo.epgInfo1 = info1;
+	movieInfo.epgInfo2 = info2;
+	movieInfo.tfile = tfile;
 					
 	// 
 	playlist.push_back(movieInfo);
