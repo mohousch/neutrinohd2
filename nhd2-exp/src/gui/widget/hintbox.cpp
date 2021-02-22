@@ -320,8 +320,10 @@ int CHintBox::exec(int timeout)
 
 			if (res & messages_return::unhandled)
 			{
-				//res = messages_return::cancel_info;
-				//g_RCInput->postMsg(msg, data);
+				dprintf(DEBUG_NORMAL, "CHintBox::exec: message unhandled\n");
+
+				res = messages_return::cancel_info;
+				g_RCInput->postMsg(msg, data);
 			}
 		}
 
