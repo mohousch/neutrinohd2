@@ -47,7 +47,12 @@ end
 function audioPlayer()
 	local fileBrowser = neutrino.CFileBrowser()
 	local fileFilter = neutrino.CFileFilter()
-	local PATH = "/"
+	
+	config = neutrino.CConfigFile('\t')
+
+	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
+
+	local PATH = config:getString("network_nfs_audioplayerdir")
 
 	fileFilter:addFilter("cdr")
 	fileFilter:addFilter("mp3")
@@ -85,7 +90,12 @@ end
 function pictureViewer()
 	local fileBrowser = neutrino.CFileBrowser()
 	local fileFilter = neutrino.CFileFilter()
-	local PATH = "/"
+	
+	config = neutrino.CConfigFile('\t')
+
+	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
+
+	local PATH = config:getString("network_nfs_picturedir")
 
 	fileFilter:addFilter("jpeg")
 	fileFilter:addFilter("jpg")
@@ -115,7 +125,12 @@ end
 function moviePlayer()
 	local fileBrowser = neutrino.CFileBrowser()
 	local fileFilter = neutrino.CFileFilter()
-	local PATH = "/"
+
+	config = neutrino.CConfigFile('\t')
+
+	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
+
+	local PATH = config:getString("network_nfs_recordingdir")
 
 	fileFilter:addFilter("ts")
 	fileFilter:addFilter("mpg")
@@ -515,10 +530,12 @@ function testCFrameBox()
 
 	box.iX = fb:getScreenX() + 40
 	box.iY = fb:getScreenY() + 40
-	box.iWidth = fb:getScreenWidth() - 80
-	box.iHeight = 80
+	box.iWidth = 350
+	box.iHeight = fb:getScreenHeight() - 80
 
 	local frameBox = neutrino.CFrameBox(box)
+
+	frameBox:setMode(neutrino.FRAME_MODE_VERTICAL)
 
 	frame1 = neutrino.CFrame("MP3")
 	frame2 = neutrino.CFrame("PicViewer")
@@ -529,12 +546,21 @@ function testCFrameBox()
 	frameBox:addFrame(frame1)
 	frameBox:addFrame(frame2)
 	frameBox:addFrame(frame3)
+	frameBox:addFrame(neutrino.CFrameSeparator())
+	frameBox:addFrame(neutrino.CFrameSeparator())
+	frameBox:addFrame(neutrino.CFrameSeparator())
+	frameBox:addFrame(neutrino.CFrameSeparator())
+	frameBox:addFrame(neutrino.CFrameSeparator())
+	frameBox:addFrame(neutrino.CFrameSeparator())
+	frameBox:addFrame(neutrino.CFrame("Beenden"))
 
 	local m = neutrino.CWidget()
 
 	m:addKey(neutrino.RC_ok)
 	m:addKey(neutrino.RC_right)
 	m:addKey(neutrino.RC_left)
+	m:addKey(neutrino.RC_down)
+	m:addKey(neutrino.RC_up)
 	m:addKey(neutrino.RC_info)
 
 	repeat
@@ -549,6 +575,10 @@ function testCFrameBox()
 			frameBox:swipLeft()
 		elseif key == neutrino.RC_right then
 			frameBox:swipRight()
+		elseif key == neutrino.RC_down then
+			frameBox:scrollLineDown()
+		elseif key == neutrino.RC_up then
+			frameBox:scrollLineUp()
 		elseif key == neutrino.RC_info then
 			infoBox()
 		elseif key == neutrino.RC_ok then
@@ -559,6 +589,8 @@ function testCFrameBox()
 				pictureViewer()
 			elseif selected == 2 then
 				moviePlayer()
+			elseif selected == 9 then
+				break
 			end
 		end
 	until m:getExitPressed() == true
