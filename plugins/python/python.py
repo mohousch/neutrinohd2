@@ -41,7 +41,12 @@ class stringInput(CStringInputSMS):
 		self._exec(None, "")
 
 class audioPlayer(CFileBrowser):
-	PATH = "/"
+	config = CConfigFile('\t')
+
+	config.loadConfig(CONFIGDIR + "/neutrino.conf")
+
+	PATH = config.getString("network_nfs_audioplayerdir")
+
 	def __init__(self):
 		CFileBrowser.__init__(self)
 		fileFilter = CFileFilter()
@@ -76,7 +81,12 @@ class audioPlayer(CFileBrowser):
 			self.__init__()
 
 class pictureViewer(CFileBrowser):
-	PATH = "/"
+	config = CConfigFile('\t')
+
+	config.loadConfig(CONFIGDIR + "/neutrino.conf")
+
+	PATH = config.getString("network_nfs_picturedir")
+
 	def __init__(self):
 		CFileBrowser.__init__(self)
 		fileFilter = CFileFilter()
@@ -90,22 +100,24 @@ class pictureViewer(CFileBrowser):
 		self.Dirs_Selectable = False
 		self.Filter = fileFilter
 
-		self._exec(self.PATH)
-
-		self.PATH = self.getCurrentDir()
-
 		player = CPictureViewerGui()
 
-		if self.getSelectedFile() is not None:
-			player.addToPlaylist(self.getSelectedFile())
-			player._exec(None, "")
+		while self.getExitPressed() is not True:
+			self._exec(self.PATH)
 
-		if self.getExitPressed() is not True:
-			self.__init__()
+			self.PATH = self.getCurrentDir()
+	
+			if self.getSelectedFile() is not None:
+				player.addToPlaylist(self.getSelectedFile())
+				player._exec(None, "")
 
 class moviePlayer(CFileBrowser):
-	settings = SNeutrinoSettings()
-	PATH = settings.network_nfs_moviedir
+	config = CConfigFile('\t')
+
+	config.loadConfig(CONFIGDIR + "/neutrino.conf")
+
+	PATH = config.getString("network_nfs_recordingdir")
+
 	def __init__(self):
 		CFileBrowser.__init__(self)
 		fileFilter = CFileFilter()
@@ -140,18 +152,16 @@ class moviePlayer(CFileBrowser):
 		self.Dirs_Selectable = False
 		self.Filter = fileFilter
 
-		self._exec(self.PATH)
-
-		self.PATH = self.getCurrentDir()
-
 		player = CMoviePlayerGui()
-	
-		if self.getSelectedFile() is not None:
-			player.addToPlaylist(self.getSelectedFile())
-			player._exec(None, "")
 
-		if self.getExitPressed() is not True:
-			self.__init__()
+		while self.getExitPressed() is not True:
+			self._exec(self.PATH)
+
+			self.PATH = self.getCurrentDir()
+	
+			if self.getSelectedFile() is not None:
+				player.addToPlaylist(self.getSelectedFile())
+				player._exec(None, "")
 
 class testMenu(CMenuTarget):
 	selected = 0
@@ -162,7 +172,6 @@ class testMenu(CMenuTarget):
 		self.showMenu()
 
 	def showMenu(self):
-		#self.listWidget.setSelected(self.selected)
 		self.listWidget.setWidgetType(WIDGET_TYPE_STANDARD)
 		self.listWidget.setMode(MODE_LISTBOX)
 		self.listWidget.enableShrinkMenu()

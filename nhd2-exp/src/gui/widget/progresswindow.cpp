@@ -41,26 +41,21 @@
 #include <gui/widget/progresswindow.h>
 
 
-CProgressWindow::CProgressWindow()
+CProgressWindow::CProgressWindow(int _x, int _y, int _width, int _height)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
 	caption = NONEXISTANT_LOCALE;
 	captionString = "";
-	
-	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	width = w_max (600, 0);
-	height = h_max(hheight + 3*mheight, 20);
+
+	paintHead = false;
 
 	global_progress = 101;
 	statusText = "";
 
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width ) >> 1 );
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
-	
-	// box
-	m_cBoxWindow.setPosition(x, y, width, height);
+	// initframes
+	hheight = 0;
+	initFrames(_x, _y, _width, _height);
 
 	// progressbar
 	progressBar = new CProgressBar(width - BORDER_LEFT - BORDER_RIGHT - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth("100%") - 10, 10);
@@ -68,8 +63,38 @@ CProgressWindow::CProgressWindow()
 	progressBar->reset();
 }
 
+void CProgressWindow::initFrames(int _x, int _y, int _width, int _height)
+{
+	if(paintHead)
+		hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+
+	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+
+	if(_x == 0 && _y == 0 && _width == 0 && _height == 0)
+	{
+		width = w_max (600, 0);
+		height = h_max(hheight + 3*mheight, 20);
+
+		x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width ) >> 1 );
+		y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
+	}
+	else
+	{
+		x = _x;
+		y = _y;
+		width = _width;
+		height = _height;
+	}
+
+	// box
+	m_cBoxWindow.setPosition(x, y, width, height);
+}
+
 void CProgressWindow::setTitle(const neutrino_locale_t title)
 {
+	paintHead = true;
+	initFrames();
+
 	caption = title;
 	captionString = g_Locale->getText(caption);
 
@@ -80,6 +105,9 @@ void CProgressWindow::setTitle(const neutrino_locale_t title)
 
 void CProgressWindow::setTitle(const char * const title)
 {
+	paintHead = true;
+	initFrames();
+
 	caption = NONEXISTANT_LOCALE;
 	captionString = title;
 
@@ -164,15 +192,18 @@ void CProgressWindow::paint()
 	m_cBoxWindow.paint();
 	
 	// title
-	const char * l_caption;
-	if (caption != NONEXISTANT_LOCALE)
-		l_caption = g_Locale->getText(caption);
-	else
-		l_caption = captionString.c_str();
+	if(paintHead)
+	{
+		const char * l_caption;
+		if (caption != NONEXISTANT_LOCALE)
+			l_caption = g_Locale->getText(caption);
+		else
+			l_caption = captionString.c_str();
 
-	CHeaders headers(x, y, width, hheight, l_caption, NEUTRINO_ICON_INFO);
-	headers.setCorner();
-	headers.paint();
+		CHeaders headers(x, y, width, hheight, l_caption, NEUTRINO_ICON_INFO);
+		headers.setCorner();
+		headers.paint();
+	}
 
 	// msg status
 	ypos += hheight + (mheight>>1);
@@ -188,16 +219,4 @@ void CProgressWindow::paint()
 	showGlobalStatus(global_progress);
 }
 
-int CProgressWindow::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
-{
-	dprintf(DEBUG_NORMAL, "CProgressWindow::exec\n");
 
-	if(parent)
-		parent->hide();
-	
-	paint();
-	
-	frameBuffer->blit();
-
-	return menu_return::RETURN_REPAINT;
-}

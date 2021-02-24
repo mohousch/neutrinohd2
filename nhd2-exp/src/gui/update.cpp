@@ -94,11 +94,13 @@
 
 
 CFlashUpdate::CFlashUpdate(int uMode)
-	:CProgressWindow()
+	/*:CProgressWindow()*/
 {
+	progressWindow = new CProgressWindow();
+
 	updateMode = uMode;
 	
-	setTitle(LOCALE_FLASHUPDATE_HEAD);
+	progressWindow->setTitle(LOCALE_FLASHUPDATE_HEAD);
 	
 	// check rootfs, allow flashing only when rootfs is jffs2/yaffs2/squashfs
 	struct statfs s;
@@ -161,8 +163,8 @@ bool CFlashUpdate::selectHttpImage(void)
 	char fileTypes[128];
 	int selected = -1;
 
-	httpTool.setStatusViewer(this);
-	showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_GETINFOFILE)); // UTF-8
+	httpTool.setStatusViewer(progressWindow);
+	progressWindow->showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_GETINFOFILE)); // UTF-8
 
 	// NOTE: remember me : i dont like this menu GUI :-(
 	ClistBoxWidget SelectionWidget(LOCALE_FLASHUPDATE_SELECTIMAGE, NEUTRINO_ICON_UPDATE , MENU_WIDTH + 50);
@@ -239,7 +241,7 @@ bool CFlashUpdate::selectHttpImage(void)
 		}
 	}
 
-	hide();
+	progressWindow->hide();
 
 	if (urls.empty())
 	{
@@ -266,7 +268,7 @@ bool CFlashUpdate::getUpdateImage(const std::string & version)
 {
 	CHTTPTool httpTool;
 	char * fname, dest_name[100];
-	httpTool.setStatusViewer(this);
+	httpTool.setStatusViewer(progressWindow);
 
 	fname = rindex(const_cast<char *>(filename.c_str()), '/');
 	if(fname != NULL) 
@@ -275,7 +277,7 @@ bool CFlashUpdate::getUpdateImage(const std::string & version)
 		return false;
 
 	sprintf(dest_name, "%s/%s", g_settings.update_dir, fname);
-	showStatusMessageUTF(std::string(g_Locale->getText(LOCALE_FLASHUPDATE_GETUPDATEFILE)) + ' ' + version); // UTF-8
+	progressWindow->showStatusMessageUTF(std::string(g_Locale->getText(LOCALE_FLASHUPDATE_GETUPDATEFILE)) + ' ' + version); // UTF-8
 
 	dprintf(DEBUG_NORMAL, "get update (url): %s - %s\n", filename.c_str(), dest_name);
 	
@@ -297,14 +299,14 @@ bool CFlashUpdate::checkVersion4Update()
 			return false;
 
 		//showLocalStatus(100);
-		showGlobalStatus(20);
-		showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_VERSIONCHECK) ); // UTF-8
+		progressWindow->showGlobalStatus(20);
+		progressWindow->showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_VERSIONCHECK) ); // UTF-8
 
 		dprintf(DEBUG_NORMAL, "internet version: %s\n", newVersion.c_str());
 
 		//showLocalStatus(100);
-		showGlobalStatus(20);
-		hide();
+		progressWindow->showGlobalStatus(20);
+		progressWindow->hide();
 		
 		msg_body = (fileType < '3')? LOCALE_FLASHUPDATE_FLASHMSGBOX : LOCALE_FLASHUPDATE_PACKAGEMSGBOX;
 		
@@ -373,7 +375,7 @@ bool CFlashUpdate::checkVersion4Update()
 			return false;
 		}
 		
-		hide();
+		progressWindow->hide();
 		
 		// just only for correct msg
 		char * ptr = rindex(const_cast<char *>(filename.c_str()), '.');
@@ -407,7 +409,7 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 	if(parent)
 		parent->hide();
 
-	paint();
+	progressWindow->paint();
 
 	if(!checkVersion4Update()) 
 	{
@@ -421,9 +423,9 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 	CVFD::getInstance()->setMode(CLCD::MODE_PROGRESSBAR2);	
 #endif // VFD_UPDATE
 
-	showGlobalStatus(19);
-	paint();
-	showGlobalStatus(20);
+	progressWindow->showGlobalStatus(19);
+	progressWindow->paint();
+	progressWindow->showGlobalStatus(20);
 
 	// check image version
 	if(updateMode == UPDATEMODE_INTERNET) //internet-update
@@ -442,7 +444,7 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 		filename = std::string(fullname);
 	}
 
-	showGlobalStatus(40);
+	progressWindow->showGlobalStatus(40);
 
 	CFlashTool ft;
 	
@@ -450,17 +452,17 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 	if(fileType < '3') 
 	{
 		ft.setMTDDevice(MTD_DEVICE_OF_UPDATE_PART);
-		ft.setStatusViewer(this);
+		ft.setStatusViewer(progressWindow);
 	}
 
 	// MD5summ check
-	showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_MD5CHECK)); // UTF-8
+	progressWindow->showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_MD5CHECK)); // UTF-8
 	
 	if((updateMode == UPDATEMODE_INTERNET) && !ft.check_md5(filename, file_md5)) 
 	{
 		// remove flash/package
 		remove(filename.c_str());
-		hide();
+		progressWindow->hide();
 		HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText( (fileType < '3') ? LOCALE_FLASHUPDATE_FLASHMD5SUMERROR : LOCALE_FLASHUPDATE_PACKAGEMD5SUMERROR)); // UTF-8
 		return menu_return::RETURN_REPAINT;
 	}
@@ -473,12 +475,12 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 		{
 			// remove flash/package
 			remove(filename.c_str());
-			hide();
+			progressWindow->hide();
 			return menu_return::RETURN_REPAINT;
 		}
 	}
 
-	showGlobalStatus(60);
+	progressWindow->showGlobalStatus(60);
 
 	// flash/install
 	dprintf(DEBUG_NORMAL, "[update] filename %s type %c\n", filename.c_str(), fileType);
@@ -494,16 +496,16 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 		{
 			// remove flash if flashing failed
 			remove(filename.c_str());
-			hide();
+			progressWindow->hide();
 			HintBox(LOCALE_MESSAGEBOX_ERROR, ft.getErrorMessage().c_str()); // UTF-8
 			return menu_return::RETURN_REPAINT;
 		}
 
 		//status anzeigen
-		showGlobalStatus(100);
-		showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_READY)); // UTF-8
+		progressWindow->showGlobalStatus(100);
+		progressWindow->showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_READY)); // UTF-8
 
-		hide();
+		progressWindow->hide();
 
 		// Unmount all NFS & CIFS volumes
 		nfs_mounted_once = false; /* needed by update.cpp to prevent removal of modules after flashing a new cramfs, since rmmod (busybox) might no longer be available */
@@ -539,26 +541,27 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 
 		if( system(cmd) )
 		{
-			hide();
+			progressWindow->hide();
 			HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_INSTALLFAILED)); // UTF-8
 			return menu_return::RETURN_REPAINT;
 		}
 		
 		// 100% status
-		showGlobalStatus(100);
+		progressWindow->showGlobalStatus(100);
 		
 		// show successfull msg :-)
 		HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FLASHUPDATE_READY)); // UTF-8
 	}
 	
-	hide();
+	progressWindow->hide();
 	
 	return menu_return::RETURN_REPAINT;
 }
 
 CFlashExpert::CFlashExpert()
-	:CProgressWindow()
+	/*:CProgressWindow()*/
 {
+	progressWindow = new CProgressWindow();
 	selectedMTD = -1;
 }
 
@@ -576,27 +579,27 @@ void CFlashExpert::readmtd(int _readmtd)
 		_readmtd = MTD_OF_WHOLE_IMAGE;
 	}
 	
-	setTitle(LOCALE_FLASHUPDATE_TITLEREADFLASH);
-	paint();
-	showGlobalStatus(0);
-	showStatusMessageUTF((std::string(g_Locale->getText(LOCALE_FLASHUPDATE_ACTIONREADFLASH)) + " (" + CMTDInfo::getInstance()->getMTDName(_readmtd) + ')')); // UTF-8
+	progressWindow->setTitle(LOCALE_FLASHUPDATE_TITLEREADFLASH);
+	progressWindow->paint();
+	progressWindow->showGlobalStatus(0);
+	progressWindow->showStatusMessageUTF((std::string(g_Locale->getText(LOCALE_FLASHUPDATE_ACTIONREADFLASH)) + " (" + CMTDInfo::getInstance()->getMTDName(_readmtd) + ')')); // UTF-8
 	CFlashTool ft;
-	ft.setStatusViewer( this );
+	ft.setStatusViewer(progressWindow);
 	ft.setMTDDevice(CMTDInfo::getInstance()->getMTDFileName(_readmtd));
 
 	if(!ft.readFromMTD(filename, 100)) 
 	{
-		showStatusMessageUTF(ft.getErrorMessage()); // UTF-8
+		progressWindow->showStatusMessageUTF(ft.getErrorMessage()); // UTF-8
 		sleep(10);
 	} 
 	else 
 	{
-		showGlobalStatus(100);
-		showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_READY)); // UTF-8
+		progressWindow->showGlobalStatus(100);
+		progressWindow->showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_READY)); // UTF-8
 		char message[500];
 		sprintf(message, g_Locale->getText(LOCALE_FLASHUPDATE_SAVESUCCESS), filename.c_str());
 		sleep(1);
-		hide();
+		progressWindow->hide();
 		HintBox(LOCALE_MESSAGEBOX_INFO, message);
 	}
 }
@@ -616,24 +619,24 @@ void CFlashExpert::writemtd(const std::string & filename, int mtdNumber)
         CVFD::getInstance()->setMode(CLCD::MODE_PROGRESSBAR2);	
 #endif // VFD_UPDATE
 
-	setTitle(LOCALE_FLASHUPDATE_TITLEWRITEFLASH);
-	paint();
-	showGlobalStatus(0);
+	progressWindow->setTitle(LOCALE_FLASHUPDATE_TITLEWRITEFLASH);
+	progressWindow->paint();
+	progressWindow->showGlobalStatus(0);
 	CFlashTool ft;
-	ft.setStatusViewer( this );
+	ft.setStatusViewer(progressWindow);
 	ft.setMTDDevice( CMTDInfo::getInstance()->getMTDFileName(mtdNumber) );
 
 	if(!ft.program( "/tmp/" + filename, 50, 100)) 
 	{
-		showStatusMessageUTF(ft.getErrorMessage()); // UTF-8
+		progressWindow->showStatusMessageUTF(ft.getErrorMessage()); // UTF-8
 		sleep(10);
 	} 
 	else 
 	{
-		showGlobalStatus(100);
-		showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_READY)); // UTF-8
+		progressWindow->showGlobalStatus(100);
+		progressWindow->showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_READY)); // UTF-8
 		sleep(1);
-		hide();
+		progressWindow->hide();
 		HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FLASHUPDATE_FLASHREADYREBOOT)); // UTF-8
 		ft.reboot();
 	}

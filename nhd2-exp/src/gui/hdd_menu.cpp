@@ -457,7 +457,7 @@ int CHDDInit::exec(CMenuTarget * /*parent*/, const std::string& actionKey)
 	
 	progress = new CProgressWindow();
 	progress->setTitle(LOCALE_HDD_INIT);
-	progress->exec(NULL, "");
+	progress->paint();
 	progress->showStatusMessageUTF("HDD init");
 	progress->showGlobalStatus(0);
 	
@@ -674,7 +674,7 @@ int CHDDFmtExec::exec(CMenuTarget *parent, const std::string& actionKey)
 
 	progress = new CProgressWindow();
 	progress->setTitle(LOCALE_HDD_FORMAT);
-	progress->exec(NULL,"");
+	progress->paint();
 	progress->showStatusMessageUTF("Executing fdisk");
 	progress->showGlobalStatus(0);
 	
@@ -860,7 +860,7 @@ int CHDDChkExec::exec(CMenuTarget *parent, const std::string& actionKey)
 
 	progress = new CProgressWindow();
 	progress->setTitle(LOCALE_HDD_CHECK);
-	progress->exec(NULL, "");
+	progress->paint();
 	progress->showGlobalStatus(20);
 
 	char buf[256];

@@ -301,7 +301,7 @@ void CInternetRadio::scanXmlData(_xmlDocPtr answer_parser, const char *nametag, 
 			long listPos = 1;
 			
 			progress.setTitle(LOCALE_AUDIOPLAYER_READING_FILES);
-			progress.exec(NULL, "");
+			progress.paint();
 			
 			neutrino_msg_t      msg;
 			neutrino_msg_data_t data;
@@ -403,8 +403,8 @@ bool CInternetRadio::openFileBrowser(void)
 		
 		if (maxProgress > SHOW_FILE_LOAD_LIMIT)
 		{
-			progress.setTitle(LOCALE_AUDIOPLAYER_READING_FILES);
-			progress.exec(NULL, "");	
+			progress.setTitle(LOCALE_AUDIOPLAYER_READING_FILES);	
+			progress.paint();
 		}
 
 		m_Path = filebrowser.getCurrentDir();

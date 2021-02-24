@@ -44,7 +44,7 @@
 
 
 // CFlashUpdate
-class CFlashUpdate : public CProgressWindow
+class CFlashUpdate : public CMenuTarget
 {
 	public:
 		enum {
@@ -55,6 +55,8 @@ class CFlashUpdate : public CProgressWindow
 		int updateMode;
 	  
 	private:
+		CProgressWindow *progressWindow;
+
 		bool allow_flash;
 
 		std::string filename;
@@ -75,9 +77,11 @@ class CFlashUpdate : public CProgressWindow
 };
 
 // CFlashExppert
-class CFlashExpert : public CProgressWindow
+class CFlashExpert : public CMenuTarget
 {
 	private:
+		CProgressWindow *progressWindow;
+
 		int selectedMTD;
 
 		void showMTDSelector(const std::string & actionkey);

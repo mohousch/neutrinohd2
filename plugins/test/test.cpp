@@ -2847,8 +2847,8 @@ void CTestMenu::testCProgressWindow()
 	CProgressWindow * progress;
 	
 	progress = new CProgressWindow();
-	progress->setTitle("CProgressWindow");
-	progress->exec(NULL, "");
+	//progress->setTitle("CProgressWindow");
+	progress->paint();
 	
 	progress->showStatusMessageUTF("testing CProgressWindow");
 	progress->showGlobalStatus(0);
@@ -6369,6 +6369,7 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
 	mainMenu->addItem(new CMenuForwarder("CScrollBar", false, NULL, this, "scrollbar"));
+	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
 	mainMenu->addItem(new CMenuForwarder("CItems2DetailsLine", false, NULL, this, "detailsline"));
 	mainMenu->addItem( new CMenuSeparator(LINE | STRING, "Widget Components") );
 	mainMenu->addItem(new CMenuForwarder("CHeaders", true, NULL, this, "headers"));
@@ -6410,7 +6411,7 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CHintBox", true, NULL, this, "hintbox"));
 	mainMenu->addItem(new CMenuForwarder("CHintBoxInfo", true, NULL, this, "hintboxinfo"));
 	mainMenu->addItem(new CMenuForwarder("CHelpBox", true, NULL, this, "helpbox"));
-	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
+	//mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
 
 	//
 	mainMenu->addItem( new CMenuSeparator(LINE) );

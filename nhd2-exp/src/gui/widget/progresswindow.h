@@ -37,7 +37,7 @@
 #include <gui/widget/widget_helpers.h>
 
 
-class CProgressWindow : public CWidget
+class CProgressWindow
 {
 	protected:
 
@@ -62,14 +62,15 @@ class CProgressWindow : public CWidget
 		
 		CProgressBar* progressBar;
 
-		virtual void paint();
+		bool paintHead;
+		void initFrames(int _x = 0, int _y = 0, int _width = 0, int _height = 0);
 
 	public:
 
-		CProgressWindow();
+		CProgressWindow(int _x = 0, int _y = 0, int _width = 0, int _height = 0);
 
+		void paint();
 		void hide();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
 
 		void setTitle(const neutrino_locale_t title);
 		void setTitle(const char* const title);
