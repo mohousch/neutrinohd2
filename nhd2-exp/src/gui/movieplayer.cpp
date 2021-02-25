@@ -647,6 +647,8 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				update((duration - position) / 1000);
 			}
+
+			showMovieInfo();
 		}
 
 		// start playing
@@ -705,7 +707,7 @@ void CMoviePlayerGui::PlayFile(void)
 				// Infoviewer
 				SetMode(MODE_ASC);
 
-				//showMovieInfo();//FIXME:
+				showMovieInfo();//FIXME:
 			}
 		}
 
@@ -1644,12 +1646,9 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 // InfoViewer
 void CMoviePlayerGui::showMovieInfo()
 {
-	// show / update
-	GetDimensions();
-	
 	visible = true;
 
-	show(playlist[selected].epgTitle, (playlist[selected].epgInfo1.empty())? playlist[selected].epgInfo2 : playlist[selected].epgInfo1, duration == 0? 0 : (position / (duration / 100)), ac3state, speed, playstate, (playlist[selected].ytid.empty())? true : false, m_loop); //FIXME:
+	show(playlist[selected].epgTitle, (playlist[selected].epgInfo1.empty())? playlist[selected].epgInfo2 : playlist[selected].epgInfo1, (short)(duration <= 1? 0 : (position / (duration / 100))), ac3state, speed, playstate, (playlist[selected].ytid.empty())? true : false, m_loop); //FIXME:
 }
 
 void CMoviePlayerGui::GetDimensions()
@@ -1689,8 +1688,6 @@ void CMoviePlayerGui::update(time_t time_show)
 	static time_t oldDisplayTime = 0;
 	char cDisplayTime[8 + 1];
 	fb_pixel_t color1, color2;
-	
-	GetDimensions();
 
 	//dprintf(DEBUG_NORMAL, "CMoviePlayerGui::update time %ld\n", time_show);
 	
@@ -1746,15 +1743,13 @@ void CMoviePlayerGui::update(time_t time_show)
 		g_Font[TIMEOSD_FONT]->RenderString(m_xend - m_width - 5, m_y + m_height, m_width + 5, cDisplayTime, color2);
 	}
 
-	show(playlist[selected].epgTitle, (playlist[selected].epgInfo1.empty())? playlist[selected].epgInfo2 : playlist[selected].epgInfo1, duration == 0? 0 : (position / (duration / 100)), ac3state, speed, playstate, (playlist[selected].ytid.empty())? true : false, m_loop); //FIXME:
+	//show(playlist[selected].epgTitle, (playlist[selected].epgInfo1.empty())? playlist[selected].epgInfo2 : playlist[selected].epgInfo1, duration == 0? 0 : (position / (duration / 100)), ac3state, speed, playstate, (playlist[selected].ytid.empty())? true : false, m_loop); //FIXME:
 	
-	frameBuffer->blit();
+	//frameBuffer->blit();
 }
 
 void CMoviePlayerGui::hide()
 {
-	GetDimensions();
-	
 	//printf("CMovieInfoViewer::hide: x %d y %d xend %d yend %d\n", m_xstart, m_y , m_xend, m_height + 15);
 
 	if(!visible)
