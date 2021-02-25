@@ -705,7 +705,7 @@ void CMoviePlayerGui::PlayFile(void)
 				// Infoviewer
 				SetMode(MODE_ASC);
 
-				showMovieInfo();
+				//showMovieInfo();//FIXME:
 			}
 		}
 
