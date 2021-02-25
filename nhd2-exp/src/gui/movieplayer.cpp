@@ -707,7 +707,7 @@ void CMoviePlayerGui::PlayFile(void)
 				// Infoviewer
 				SetMode(MODE_ASC);
 
-				showMovieInfo();//FIXME:
+				//showMovieInfo();//FIXME:
 			}
 		}
 
@@ -1758,12 +1758,12 @@ void CMoviePlayerGui::hide()
 	// hide time
 	frameBuffer->paintBackgroundBoxRel(m_xend - m_width - 10, m_y, m_width + 10, m_height);
 
-	visible = false;
-
 	// hide infoviewer
 	frameBuffer->paintBackgroundBoxRel(cFrameBoxInfo.iX - 1, cFrameBoxInfo.iY - 1, cFrameBoxInfo.iWidth + 2, cFrameBoxInfo.iHeight + 2);
 
 	frameBuffer->blit();
+
+	visible = false;
 }
 
 //showMovieInfo
