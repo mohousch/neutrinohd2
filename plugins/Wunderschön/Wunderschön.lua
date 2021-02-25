@@ -24,18 +24,7 @@
         Copyright (C) for the Base64 encoder/decoder function by Alex Kloss <alexthkloss@web.de>, licensed under the terms of the LGPL
 ]]
 
-local json = require "json"
-
---Objekte
---[[
-function script_path()
-	local str = debug.getinfo(2, "S").source:sub(2)
-	return str:match("(.*/)")
-end
-]]
-
 function init()
-	--n = neutrino();
 	p = {}
 	func = {}
 	pmid = 0
@@ -47,26 +36,6 @@ end
 function add_stream(t,u,f)
   p[#p+1]={title=t,url=u,from=f,access=stream}
 end
-
---[[
-function getdata(Url,outputfile)
-	if Url == nil then return nil end
-	--if Curl == nil then
-	--	Curl = curl.new()
-	--end
-	--local ret, data = Curl:download{url=Url,A="AppleSyndication/56.1",followRedir=true,o=outputfile }
-	--downloadUrl(std::string url, std::string file, const std::string userAgent = " ", unsigned int timeout = 60);
-	local ret = downloadUrl(Url, outputfile, "AppleSyndication/56.1")
-
-	--if ret == true then
-	--	return data
-	--else
-	--	return nil
-	--end
-end
-]]
-
--- Base64 encoder/decoder function
 
 -- character table string
 local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
@@ -197,17 +166,8 @@ function fill_playlist() --- > begin playlist
    add_stream("Wunderschoene Urlaubsinseln","http://wdrmedien-a.akamaihd.net/medp/ondemand/weltweit/fsk0/180/1807784/1807784_21186604.mp4","Folge 91")
    add_stream("Wunderschoen! Norderney im Winter","https://mediandr-a.akamaihd.net/progressive/2021/0117/TV-20210117-0943-5700.hd.mp4","Folge 92")
 end --- > end of playlist
- 
---[[
-function set_pmid(id)
-  pmid=tonumber(id);
-  return MENU_RETURN["EXIT_ALL"];
-end
-]]
 
 function select_playitem()
---  local m=menu.new{name="", icon=kunst} 
-  --local m=menu.new{name="Wunderschön", icon=""}
 	local m = nil
 	local item = nil
 
@@ -241,24 +201,6 @@ function select_playitem()
 	local vPlay = neutrino.CMoviePlayerGui()
 	local movie = nil
 
---[[ 
-  repeat
-    pmid=0
-    m:exec()
-    if pmid==0 then
-      return
-    end  
-
-    local vPlay = nil 
-    local url=func[p[pmid].access](p[pmid].url)
-    if url~=nil then
-      if  vPlay  ==  nil  then
-	vPlay  =  video.new()
-      end
- 	vPlay:PlayFile("Wunderschön",url,p[pmid].title, p[pmid].from ); 
-   end
-  until false]]
-
 	repeat
 		m:exec(null, "")
 
@@ -276,7 +218,6 @@ function select_playitem()
 	until m:getExitPressed() == true
 end
 
---Main
 function main()
 	init()
 	func={

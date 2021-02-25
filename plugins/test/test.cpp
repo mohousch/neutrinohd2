@@ -2054,9 +2054,15 @@ void CTestMenu::testCBox()
 	CFrameBuffer::getInstance()->blit();
 
 	// loop
-	g_RCInput->messageLoop();
+	//g_RCInput->messageLoop();
+	testWidget = new CWidget();
+
+	testWidget->exec(NULL, "");
 
 	hide();
+
+	delete testWidget;
+	testWidget = NULL;
 }
 
 // CIcon
@@ -2075,9 +2081,15 @@ void CTestMenu::testCIcon()
 	CFrameBuffer::getInstance()->blit();
 
 	// loop
-	g_RCInput->messageLoop();
+	//g_RCInput->messageLoop();
+	testWidget = new CWidget();
+
+	testWidget->exec(NULL, "");
 
 	hide();
+
+	delete testWidget;
+	testWidget = NULL;
 }
 
 // CImage
@@ -2096,9 +2108,18 @@ void CTestMenu::testCImage()
 	CFrameBuffer::getInstance()->blit();
 
 	// loop
-	g_RCInput->messageLoop();
+	//g_RCInput->messageLoop();
+
+	//hide();
+
+	testWidget = new CWidget();
+
+	testWidget->exec(NULL, "");
 
 	hide();
+
+	delete testWidget;
+	testWidget = NULL;
 }
 
 // Cwindow
@@ -2126,11 +2147,17 @@ void CTestMenu::testCWindow()
 	CFrameBuffer::getInstance()->blit();
 
 	// loop
-	g_RCInput->messageLoop();
+	//g_RCInput->messageLoop();
+	testWidget = new CWidget();
+
+	testWidget->exec(NULL, "");
 
 	window->hide();
 	delete window;
 	window = NULL;
+
+	delete testWidget;
+	testWidget = NULL;
 }
 
 // CWindow
@@ -2156,13 +2183,16 @@ void CTestMenu::testCWindowShadow()
 	window->paint();
 	CFrameBuffer::getInstance()->blit();
 
-	// loop
-	g_RCInput->messageLoop();
+	testWidget = new CWidget();
+
+	testWidget->exec(NULL, "");
 
 	window->hide();
-
 	delete window;
 	window = NULL;
+
+	delete testWidget;
+	testWidget = NULL;
 }
 
 // custom Color
@@ -2188,13 +2218,16 @@ void CTestMenu::testCWindowCustomColor()
 	window->paint();
 	CFrameBuffer::getInstance()->blit();
 
-	// loop
-	g_RCInput->messageLoop();
+	testWidget = new CWidget();
+
+	testWidget->exec(NULL, "");
 
 	window->hide();
-
 	delete window;
 	window = NULL;
+
+	delete testWidget;
+	testWidget = NULL;
 }
 
 void CTestMenu::testCHeaders()

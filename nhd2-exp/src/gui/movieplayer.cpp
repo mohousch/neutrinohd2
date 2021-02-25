@@ -378,6 +378,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	exit = false;
 	m_loop = false;
 	m_multiselect = false;
+	show_bookmark = true;
 	
 	// for playing
 	playstate = CMoviePlayerGui::STOPPED;
@@ -479,12 +480,17 @@ void CMoviePlayerGui::PlayFile(void)
 		update_lcd = true;
 		start_play = true;
 
-		//
+		// multi_select
 		if(playlist.size() > 1)
 			m_multiselect = true;
 
+		// secure
 		if(startposition < 0)
 			exit = true;
+
+		//
+		if (!playlist[selected].ytid.empty())
+			show_bookmark = false;
 	}
 						
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);	
@@ -641,8 +647,6 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				update((duration - position) / 1000);
 			}
-
-			show(playlist[selected].epgTitle, (playlist[selected].epgInfo1.empty())? playlist[selected].epgInfo2 : playlist[selected].epgInfo1, duration == 0? 0 : (position / (duration / 100)), ac3state, speed, playstate, (playlist[selected].ytid.empty())? true : false, m_loop); //FIXME:
 		}
 
 		// start playing
@@ -700,6 +704,8 @@ void CMoviePlayerGui::PlayFile(void)
 
 				// Infoviewer
 				SetMode(MODE_ASC);
+
+				showMovieInfo();
 			}
 		}
 
@@ -1636,14 +1642,14 @@ int CMoviePlayerGui::showStartPosSelectionMenu(void)
 }
 
 // InfoViewer
-void CMoviePlayerGui::show(const std::string _Title, const std::string _Info, short _Percent, const unsigned int _ac3state, const int _speed, const int _playstate, bool _show_bookmark, bool _m_loop)
+void CMoviePlayerGui::showMovieInfo()
 {
 	// show / update
 	GetDimensions();
 	
 	visible = true;
 
-	showMovieInfo(_Title, _Info, _Percent, _ac3state, _speed, _playstate, _show_bookmark, _m_loop);
+	show(playlist[selected].epgTitle, (playlist[selected].epgInfo1.empty())? playlist[selected].epgInfo2 : playlist[selected].epgInfo1, duration == 0? 0 : (position / (duration / 100)), ac3state, speed, playstate, (playlist[selected].ytid.empty())? true : false, m_loop); //FIXME:
 }
 
 void CMoviePlayerGui::GetDimensions()
@@ -1739,6 +1745,8 @@ void CMoviePlayerGui::update(time_t time_show)
 		// time
 		g_Font[TIMEOSD_FONT]->RenderString(m_xend - m_width - 5, m_y + m_height, m_width + 5, cDisplayTime, color2);
 	}
+
+	show(playlist[selected].epgTitle, (playlist[selected].epgInfo1.empty())? playlist[selected].epgInfo2 : playlist[selected].epgInfo1, duration == 0? 0 : (position / (duration / 100)), ac3state, speed, playstate, (playlist[selected].ytid.empty())? true : false, m_loop); //FIXME:
 	
 	frameBuffer->blit();
 }
@@ -1764,7 +1772,7 @@ void CMoviePlayerGui::hide()
 }
 
 //showMovieInfo
-void CMoviePlayerGui::showMovieInfo(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark, bool m_loop)
+void CMoviePlayerGui::show(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark, bool m_loop)
 {
 	//dprintf(DEBUG_NORMAL, "CMoviePlayerGui::showMovieInfo:\n");
 
