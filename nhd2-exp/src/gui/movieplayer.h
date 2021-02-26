@@ -160,6 +160,16 @@ class CMoviePlayerGui : public CMenuTarget
 		int icon_green_w, icon_green_h;
 		int icon_yellow_w, icon_yellow_h;
 		int icon_blue_w, icon_blue_h;
+
+		// infoViewer
+		void showMovieInfo();
+		void update(time_t time_show = 0);
+		bool IsVisible() {return visible;};
+		void SetMode(mode m) { m_mode = m; /*visible = true;*/};
+		mode GetMode() { return m_mode;};
+
+		//
+		void show(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark = false, bool m_loop = false);
 		
 	public:
 		CMoviePlayerGui();
@@ -174,16 +184,8 @@ class CMoviePlayerGui : public CMenuTarget
 		void clearPlaylist(void);
 		void removeFromPlaylist(long pos);
 		void setCurrent(int pos){selected = pos;};
-
-		// infoViewer
-		void showMovieInfo();
-		void update(time_t time_show = 0);
-		bool IsVisible() {return visible;};
-		void SetMode(mode m) { m_mode = m; visible = true;};
-		mode GetMode() { return m_mode;};
-
-		//
-		void show(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark = false, bool m_loop = false);
 };
 
 #endif
+
+

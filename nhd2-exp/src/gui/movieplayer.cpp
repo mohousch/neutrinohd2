@@ -705,7 +705,7 @@ void CMoviePlayerGui::PlayFile(void)
 #endif
 
 				// Infoviewer
-				SetMode(MODE_ASC);
+				//SetMode(MODE_ASC);
 
 				//showMovieInfo();//FIXME:
 			}
@@ -731,7 +731,7 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				if (m_loop)
 					g_RCInput->postMsg(RC_next, 0);
-				else if(playlist.size() > 1 && selected + 1 < playlist.size())
+				else if((playlist.size() > 1) && (selected + 1 < playlist.size()))
 					g_RCInput->postMsg(RC_next, 0);
 				else
 					g_RCInput->postMsg(RC_stop, 0);
@@ -1019,7 +1019,7 @@ void CMoviePlayerGui::PlayFile(void)
 				else 
 				{
 					SetMode(MODE_ASC);
-
+					showMovieInfo();//FIXME:
 					startMovieInfoViewer();
 				}
 
