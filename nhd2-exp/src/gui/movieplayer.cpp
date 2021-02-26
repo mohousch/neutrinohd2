@@ -533,8 +533,6 @@ void CMoviePlayerGui::PlayFile(void)
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIESTART));
 	bookStartMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_MOVIEEND));
 
-	startMovieInfoViewer();
-
 	// play loop
 	do {
 		// exit
@@ -705,8 +703,6 @@ void CMoviePlayerGui::PlayFile(void)
 #endif
 
 				// Infoviewer
-				//SetMode(MODE_ASC);
-
 				//showMovieInfo();//FIXME:
 			}
 		}
@@ -792,15 +788,11 @@ void CMoviePlayerGui::PlayFile(void)
 				time_forced = false;
 				
 				hide();
-
-				killMovieInfoViewer();
 			}
 			
 			if (IsVisible())
 			{ 
 				hide();
-
-				killMovieInfoViewer();
 			}
 
 			// movie title
@@ -816,15 +808,12 @@ void CMoviePlayerGui::PlayFile(void)
 					else 
 					{
 						hide();
-
-						killMovieInfoViewer();
 					}
 				}
 				else 
 				{
 					SetMode(MODE_ASC);
-
-					startMovieInfoViewer();
+					showMovieInfo();//FIXME:
 				}
 			}
 		} 
@@ -863,8 +852,6 @@ void CMoviePlayerGui::PlayFile(void)
 					else 
 					{
 						hide();
-
-						killMovieInfoViewer();
 					}
 				}
 				else 
@@ -878,8 +865,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (IsVisible())
 			{ 
 				hide();
-
-				killMovieInfoViewer();
 			}
 			
 			//			
@@ -976,8 +961,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (IsVisible())
 			{ 
 				hide();
-
-				killMovieInfoViewer();
 			}
 			
 			CAVPIDSelectWidget * AVSelectHandler = new CAVPIDSelectWidget();
@@ -991,8 +974,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (IsVisible())
 			{ 
 				hide();
-		
-				killMovieInfoViewer();
 			}
 			
 			//show help
@@ -1012,15 +993,12 @@ void CMoviePlayerGui::PlayFile(void)
 					else 
 					{
 						hide();
-
-						killMovieInfoViewer();
 					}
 				}
 				else 
 				{
 					SetMode(MODE_ASC);
 					showMovieInfo();//FIXME:
-					startMovieInfoViewer();
 				}
 
 			}
@@ -1029,14 +1007,11 @@ void CMoviePlayerGui::PlayFile(void)
 				if (IsVisible()) 
 				{
 					hide();
-
-					killMovieInfoViewer();
 				}
 				else
 				{
 					SetMode(MODE_ASC);
-					
-					startMovieInfoViewer();
+					showMovieInfo();//FIXME:
 				}
 			}
 		}
@@ -1067,8 +1042,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (IsVisible()) 
 			{
 				hide();
-
-				killMovieInfoViewer();
 			}
 			
 			// time
@@ -1077,8 +1050,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 		}
 		else if (msg == RC_forward) 
@@ -1100,8 +1072,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (IsVisible())
 			{ 
 				hide();
-
-				killMovieInfoViewer();
 			}
 
 			// movie info viewer
@@ -1110,8 +1080,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 		} 
 		else if (msg == RC_1) 
@@ -1125,8 +1094,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 		} 
 		else if (msg == RC_3) 
@@ -1140,8 +1108,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 		} 
 		else if (msg == RC_4) 
@@ -1154,8 +1121,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 		} 
 		else if (msg == RC_6) 
@@ -1168,8 +1134,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 		} 
 		else if (msg == RC_7) 
@@ -1182,8 +1147,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 		} 
 		else if (msg == RC_9) 
@@ -1196,8 +1160,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 		} 
 		else if ( msg == RC_2 )
@@ -1210,8 +1173,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 		} 
 		else if ( msg == RC_loop )
@@ -1234,8 +1196,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 		} 
 		else if (msg == RC_8) 
@@ -1249,8 +1210,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 		} 
 		else if (msg == RC_page_up) 
@@ -1263,8 +1223,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 
 		} 
@@ -1278,8 +1237,7 @@ void CMoviePlayerGui::PlayFile(void)
 				SetMode(MODE_ASC);
 					
 				time_forced = true;
-
-				startMovieInfoViewer();
+				showMovieInfo();//FIXME:
 			}
 		} 
 		else if (msg == RC_0) 
@@ -1316,8 +1274,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (IsVisible())
 			{ 
 				hide();
-
-				killMovieInfoViewer();
 			}
 			
 			cMovieInfo.showMovieInfo(playlist[selected]);
@@ -1327,8 +1283,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (IsVisible()) 
 			{
 				hide();
-
-				killMovieInfoViewer();
 			}
 		}
 		else if(msg == RC_left || msg == RC_prev)
@@ -1467,8 +1421,6 @@ void CMoviePlayerGui::PlayFile(void)
 			if (IsVisible())
 			{ 
 				hide();
-
-				killMovieInfoViewer();
 			}
 		}
 		else 
@@ -1498,6 +1450,8 @@ void CMoviePlayerGui::PlayFile(void)
 				cMovieInfo.saveMovieInfo(playlist[selected]);
 			}
 		}
+
+		frameBuffer->blit();
 	} while (playstate >= CMoviePlayerGui::PLAY);
 	
 	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (4)\n");	
@@ -1505,16 +1459,12 @@ void CMoviePlayerGui::PlayFile(void)
 	if(IsVisible())
 	{
 		hide();
-
-		killMovieInfoViewer();
 	}
 	
 	playback->Close();
 
 	CVFD::getInstance()->ShowIcon(VFD_ICON_PLAY, false);
 	CVFD::getInstance()->ShowIcon(VFD_ICON_PAUSE, false);
-
-	killMovieInfoViewer();
 }
 
 void CMoviePlayerGui::showHelpTS()
@@ -1649,6 +1599,8 @@ void CMoviePlayerGui::showMovieInfo()
 	visible = true;
 
 	show(playlist[selected].epgTitle, (playlist[selected].epgInfo1.empty())? playlist[selected].epgInfo2 : playlist[selected].epgInfo1, (short)(duration <= 1? 0 : (position / (duration / 100))), ac3state, speed, playstate, (playlist[selected].ytid.empty())? true : false, m_loop); //FIXME:
+
+	startMovieInfoViewer();
 }
 
 void CMoviePlayerGui::GetDimensions()
@@ -1742,10 +1694,6 @@ void CMoviePlayerGui::update(time_t time_show)
 		// time
 		g_Font[TIMEOSD_FONT]->RenderString(m_xend - m_width - 5, m_y + m_height, m_width + 5, cDisplayTime, color2);
 	}
-
-	//show(playlist[selected].epgTitle, (playlist[selected].epgInfo1.empty())? playlist[selected].epgInfo2 : playlist[selected].epgInfo1, duration == 0? 0 : (position / (duration / 100)), ac3state, speed, playstate, (playlist[selected].ytid.empty())? true : false, m_loop); //FIXME:
-	
-	//frameBuffer->blit();
 }
 
 void CMoviePlayerGui::hide()
@@ -1764,6 +1712,8 @@ void CMoviePlayerGui::hide()
 	frameBuffer->blit();
 
 	visible = false;
+
+	killMovieInfoViewer();
 }
 
 //showMovieInfo
@@ -1940,8 +1890,6 @@ void CMoviePlayerGui::show(std::string Title, std::string Info, short Percent, c
 		runningPercent = 100;
 	
 	moviescale.paint(cFrameBoxInfo.iX + BORDER_LEFT, cFrameBoxInfo.iY + 30, runningPercent);
-	
-	frameBuffer->blit();
 }
 
 
