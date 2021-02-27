@@ -63,5 +63,6 @@ ard/Makefile
 python/Makefile
 lua/Makefile
 Wunderschön/Makefile
+netzkino_hd/Makefile
 ])
 

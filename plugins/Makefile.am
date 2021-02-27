@@ -33,7 +33,8 @@ endif
 
 if ENABLE_LUA
 SUBDIRS += lua \
-	Wunderschön
+	Wunderschön \
+	netzkino_hd
 endif
 
 
