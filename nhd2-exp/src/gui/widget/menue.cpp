@@ -67,6 +67,11 @@ ClistBoxWidget::ClistBoxWidget()
         nameString = g_Locale->getText(NONEXISTANT_LOCALE);
 	name = NONEXISTANT_LOCALE;
 
+	if(name == NONEXISTANT_LOCALE)
+		l_name = nameString.c_str();
+	else
+        	l_name = g_Locale->getText(name);
+
 	Init("", MENU_WIDTH, MENU_HEIGHT);
 }
 
@@ -75,6 +80,11 @@ ClistBoxWidget::ClistBoxWidget(const neutrino_locale_t Name, const std::string &
 	name = Name;
         nameString = g_Locale->getText(NONEXISTANT_LOCALE);
 
+	if(name == NONEXISTANT_LOCALE)
+		l_name = nameString.c_str();
+	else
+        	l_name = g_Locale->getText(name);
+
 	Init(Icon, mwidth, mheight);
 }
 
@@ -82,6 +92,11 @@ ClistBoxWidget::ClistBoxWidget(const char* Name, const std::string & Icon, const
 {
 	name = NONEXISTANT_LOCALE;
         nameString = Name;
+
+	if(name == NONEXISTANT_LOCALE)
+		l_name = nameString.c_str();
+	else
+        	l_name = g_Locale->getText(name);
 
 	Init(Icon, mwidth, mheight);
 }
@@ -191,11 +206,6 @@ bool ClistBoxWidget::hasItem()
 
 void ClistBoxWidget::initFrames()
 {
-	if(name == NONEXISTANT_LOCALE)
-		l_name = nameString.c_str();
-	else
-        	l_name = g_Locale->getText(name);
-
 	// widget type
 	if(widgetChange && widgetMode == MODE_MENU)
 	{
@@ -521,7 +531,7 @@ void ClistBoxWidget::paintFoot()
 
 void ClistBoxWidget::paint()
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget::paint:\n");
+	dprintf(DEBUG_NORMAL, "ClistBoxWidget::paint: (%s)\n", l_name);
 
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8 );
 
@@ -947,7 +957,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				// helpText
 				if(!item->itemHelpText.empty())
 				{
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + BORDER_LEFT, y + height - (fbutton_count != 0? fheight : 0), width - BORDER_LEFT - BORDER_RIGHT, item->itemHelpText.c_str(), COL_MENUFOOT_INFO);
+					g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT, y + height - (fbutton_count != 0? fheight : 0), width - BORDER_LEFT - BORDER_RIGHT, item->itemHelpText.c_str(), COL_MENUFOOT_INFO);
 				}
 			}
 		}
@@ -1022,7 +1032,7 @@ void ClistBoxWidget::enableSaveScreen()
 
 void ClistBoxWidget::hide()
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget::hide:\n");
+	dprintf(DEBUG_NORMAL, "ClistBoxWidget::hide: (%s)\n", l_name);
 
 	if( savescreen && background)
 		restoreScreen();
@@ -1081,6 +1091,8 @@ void ClistBoxWidget::integratePlugins(CPlugins::i_type_t integration, const unsi
 
 int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 {
+	dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec: (%s)\n", l_name);
+
 	int retval = menu_return::RETURN_REPAINT;
 
 	int pos = 0;
@@ -1096,8 +1108,6 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 	paintHead();
 	paintFoot();
 	paint();
-
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec: (%s)\n", l_name);
 
 	// add sec timer
 	sec_timer_id = g_RCInput->addTimer(1*1000*1000, false);
@@ -1143,7 +1153,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 				}
 				else
 				{
-					selected = -1;
+					//selected = -1;
 					handled = true;
 
 					break;
@@ -1679,7 +1689,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					exit_pressed = true;
 					dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec: exit_pressed\n");
 					msg = RC_timeout;
-					selected = -1;
+					selected = -1; 
 					break;
 					
 				case (RC_timeout):
@@ -1704,7 +1714,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 	}
 	while ( msg != RC_timeout );
 
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget: retval: (%d) selected:%d\n", retval, selected);
+	dprintf(DEBUG_NORMAL, "ClistBoxWidget: (%s) retval: (%d) selected:%d\n", l_name, retval, selected);
 	
 	hide();	
 

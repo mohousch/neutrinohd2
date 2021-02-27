@@ -1127,6 +1127,7 @@ bool CFileHelpers::createDir(const char *Dir, mode_t mode)
 {
 	char dirPath[strlen(Dir) + 1];
 	DIR *dir;
+
 	if ((dir = opendir(Dir)) != NULL) 
 	{
 		closedir(dir);
@@ -1139,6 +1140,7 @@ bool CFileHelpers::createDir(const char *Dir, mode_t mode)
 	{
 		strcpy(dirPath, Dir);
 		ret = mkdir(dirPath, mode);
+
 		if ((errno == ENOENT) && (ret == -1)) 
 		{
 			char * pos = strrchr(dirPath,'/');
