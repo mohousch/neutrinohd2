@@ -115,7 +115,7 @@ function get_categories()
 		local s = fp:read("*a")
 		fp:close()
 
-		local j_table = json.decode(s)
+		local j_table = json:decode(s)
 
 		if j_table == nil  then 
 			return nil 
@@ -205,7 +205,7 @@ function get_movies(_id)
 	local h = neutrino.CHintBox(caption, "Movies wird geladen ...", neutrino.HINTBOX_WIDTH, netzkino_png)
 	h:paint();
 	
-	local url = "https://www.netzkino.de/capi/get_category_posts&id=" .. categories[_id].category_id .. "&count=50d&page=" .. page_nr .."&custom_fields=Streaming"
+	local url = "https://www.netzkino.de/capi/get_category_posts&id=" .. categories[_id].category_id .. "&count=25d&page=" .. page_nr .."&custom_fields=Streaming"
 
 	neutrino.downloadUrl(url, fname)
 
@@ -217,7 +217,7 @@ function get_movies(_id)
 		local s = fp:read("*a")
 		fp:close()
 
-		local j_table = json.decode(s)
+		local j_table = json:decode(s)
 		max_page = tonumber(j_table.pages);
 		local posts = j_table.posts
 
@@ -236,8 +236,8 @@ function get_movies(_id)
 				j_title = posts[i].title
 				j_content = posts[i].content
 
-				local j_cover = '';
-				local tfile = neutrino.DATADIR .. '/neutrino/icons/nopreview.jpg'
+				local j_cover = "";
+				local tfile = neutrino.DATADIR .. "/neutrino/icons/nopreview.jpg"
 				local attachments = posts[i].attachments[1]
 				if attachments ~= nil then
 					local images = attachments.images;
@@ -246,7 +246,7 @@ function get_movies(_id)
 						if full ~= nil then
 							j_cover = full.url
 
-							tfile = '/tmp/netzkino/" .. j_title .. ".jpg'
+							tfile = "/tmp/netzkino/" .. j_title .. ".jpg"
 							if j_cover ~= nil then
 								neutrino.downloadUrl(j_cover, tfile)
 							end
