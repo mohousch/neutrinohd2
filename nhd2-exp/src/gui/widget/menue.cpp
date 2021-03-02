@@ -54,6 +54,7 @@
 
 #include <system/debug.h>
 #include <system/settings.h>
+#include <system/helpers.h>
 	
 
 extern CPlugins * g_PluginList;    // defined in neutrino.cpp
@@ -180,7 +181,7 @@ void ClistBoxWidget::move(int xoff, int yoff)
 
 ClistBoxWidget::~ClistBoxWidget()
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget:: del\n");
+	dprintf(DEBUG_NORMAL, "ClistBoxWidget:: del (%s)\n", l_name);
 
 	items.clear();
 	page_start.clear();
@@ -712,6 +713,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	{
 		if(widgetMode == MODE_MENU)
 		{
+/*
 			if(paintFootInfo)
 			{
 				CMenuItem* item = items[pos];
@@ -740,6 +742,27 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				{
 					textBox->setText(item->itemHelpText.c_str());
 					textBox->paint();
+				}
+			}
+*/
+			if(paintFootInfo && (fbutton_count == 0))
+			{
+				CMenuItem* item = items[pos];
+
+				item->getYPosition();
+
+				// refresh box
+				frameBuffer->paintBoxRel(x, y + full_height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+
+				// info icon
+				int iw, ih;
+				frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &iw, &ih);
+				frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT, y + full_height - fheight + (fheight - ih)/2);
+
+				// HelpText
+				if(!item->itemHelpText.empty())
+				{
+					g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET, y + full_height - fheight + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - iw, item->itemHelpText.c_str(), COL_MENUFOOT, 0, true); // UTF-8
 				}
 			}
 		}
@@ -1153,9 +1176,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 				}
 				else
 				{
-					//selected = -1;
 					handled = true;
-
 					break;
 				}
 

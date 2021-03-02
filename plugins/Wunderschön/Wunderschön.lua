@@ -185,25 +185,35 @@ function select_playitem()
 		item:setItemIcon(zdf)
 		item:set2lines()
 		m:addItem(item)
-	end 
+	end
+
+	if selected < 0 then
+		selected = 0
+	end
+
+	m:setSelected(selected) 
 
 	local vPlay = neutrino.CMoviePlayerGui()
 	local movie = nil
 
-	repeat
-		m:exec(null, "")
+	m:exec(null, "")
 
-		selected = m:getSelected() + 1
+	selected = m:getSelected()
 
-		movie = func[p[selected].access](p[selected].url)
-		title = func[p[selected].access](p[selected].title)
-		info1 = func[p[selected].access](p[selected].from)
+	if selected >= 0 then
+		movie = func[p[selected + 1].access](p[selected + 1].url)
+		title = func[p[selected + 1].access](p[selected + 1].title)
+		info1 = func[p[selected + 1].access](p[selected + 1].from)
 
 		if movie ~= nil then
 			vPlay:addToPlaylist(movie, title, info1)
 			vPlay:exec(None, "")
 		end
-	until m:getExitPressed() == true
+	end
+
+	if m:getExitPressed() ~= true then
+		select_playitem()
+	end
 end
 
 function main()

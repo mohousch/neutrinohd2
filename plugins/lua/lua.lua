@@ -204,6 +204,10 @@ function exec(id, msg)
 	end
 end
 
+function red_action()
+	messageBox()
+end
+
 -- CWidget
 function testCWidget()
 	local testWidget = neutrino.CWidget()
@@ -222,7 +226,7 @@ function testCWidget()
 	listBox:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
 
 	-- CMessageBox
-	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", self, "red action")
+	item1 = neutrino.CMenuForwarder("CMessageBox")
 	item1:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item1:setHelpText("testing CMessageBox")
 	item1:setInfo1("testing CMessageBox")
@@ -278,33 +282,39 @@ function testCWidget()
 	listBox:addItem(item7)
 	listBox:addItem(item8)
 
-	testWidget:enablePaintMainFrame()
+	if selected < 0 then
+		selected = 0
+	end
+
+	listBox:setSelected(selected)
+
+	--testWidget:enablePaintMainFrame()
 
 	testWidget:addItem(listBox)
 
 	testWidget:addKey(neutrino.RC_info)
-	testWidget:addKey(neutrino.RC_ok)
+	--testWidget:addKey(neutrino.RC_ok)
 
-	repeat
-		testWidget:exec(null, "")
-		selected = listBox:getSelected()
-		key = testWidget:getKey()
+	--repeat
+	testWidget:exec(null, "")
+	selected = listBox:getSelected()
+	w_selected = testWidget:getSelected()
+	key = testWidget:getKey()
 
-		if key == neutrino.RC_ok or key == neutrino.RC_info then
-			exec(selected, key)
-		end
-	until testWidget:getExitPressed() == true
+	if selected >= 0 and w_selected >= 0 then
+		exec(selected, key)
+	end
+
+	if testWidget:getExitPressed() ~= true then
+		testCWidget()
+	end
 end
 
 -- ClistBoxWidget
 function testClistBoxWidget()
 	local listBoxWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
 	listBoxWidget:setWidgetType(neutrino.WIDGET_TYPE_STANDARD)
-	listBoxWidget:setMode(neutrino.MODE_LISTBOX)
-	listBoxWidget:addWidget(neutrino.WIDGET_TYPE_CLASSIC)
-	listBoxWidget:addWidget(neutrino.WIDGET_TYPE_EXTENDED)
-	listBoxWidget:addWidget(neutrino.WIDGET_TYPE_FRAME)
-	listBoxWidget:enableWidgetChange()
+	listBoxWidget:setMode(neutrino.MODE_MENU)
 	listBoxWidget:enablePaintItemInfo()
 	listBoxWidget:enableShrinkMenu()
 
@@ -367,14 +377,15 @@ function testClistBoxWidget()
 
 	listBoxWidget:addKey(neutrino.RC_info)
 
-	repeat
-		listBoxWidget:exec(null, "")
-		selected = listBoxWidget:getSelected()
-		key = listBoxWidget:getKey()
+	listBoxWidget:exec(null, "")
+	selected = listBoxWidget:getSelected()
+	key = listBoxWidget:getKey()
 
-		exec(selected, key)
+	exec(selected, key)
 		
-	until listBoxWidget:getExitPressed() == true
+	if listBoxWidget:getExitPressed() ~= true then
+		testClistBoxWidget()
+	end
 end
 
 -- ClistBox
@@ -451,22 +462,26 @@ function testClistBox()
 	m:addKey(neutrino.RC_info)
 
 	repeat
-		listBox:paint()
-		m:exec(null, "")
-		selected = listBox:getSelected()
-		local key = m:getKey()
+	listBox:paint()
+	m:exec(null, "")
+	local selected = listBox:getSelected()
+	m_selected = m:getSelected()
+	local key = m:getKey()
 
-		if key == neutrino.RC_down then
-			listBox:scrollLineDown()
-		end
-		if key == neutrino.RC_up then
+	if key == neutrino.RC_down then
+		listBox:scrollLineDown()
+	end
+	if key == neutrino.RC_up then
 			listBox:scrollLineUp()
-		end
+	end
 		
-		if key == neutrino.RC_ok or key == neutrino.RC_info then
-			listBox:hide()
+	if key == neutrino.RC_ok or key == neutrino.RC_info then
+		listBox:hide()
+		if selected >=0 and m_selected >= 0 then
 			exec(selected, key)
 		end
+	end
+
 	until m:getExitPressed() == true
 
 	listBox:hide()
@@ -476,49 +491,79 @@ end
 function testCWindow()
 	local box = neutrino.CBox()
 	local fb = neutrino.CSwigHelpers()
+	local button = neutrino.CButtons()
 
 	box.iX = fb:getScreenX() + 40
 	box.iY = fb:getScreenY() + 40
 	box.iWidth = fb:getScreenWidth() - 80
 	box.iHeight = fb:getScreenHeight() - 80
 
---[[
-	local button = neutrino.button_label_struct
-	button[1].button = neutrino.NEUTRINO_ICON_MOVIE
-	button[1].locale = neutrino.NONEXISTANT_LOCALE
-	button[1].localename = nil
-]]
+	--
+	btn = neutrino.button_label_struct()
+
+	btn.button = neutrino.NEUTRINO_ICON_AUDIO
+	btn.locale = neutrino.NONEXISTANT_LOCALE
+	btn.localename = "green"
+
+	local btnRed = neutrino.NEUTRINO_ICON_BUTTON_RED
+	local btnGreen = neutrino.NEUTRINO_ICON_BUTTON_GREEN
+	local btnYellow = neutrino.NEUTRINO_ICON_BUTTON_YELLOW
+	local btnBlue = neutrino.NEUTRINO_ICON_BUTTON_BLUE
 
 	window = neutrino.CWindow(box)
 	head = neutrino.CHeaders(box.iX, box.iY, box.iWidth, 40, "CHeaders", neutrino.NEUTRINO_ICON_MOVIE)
 	foot = neutrino.CFooters(box.iX, box.iY + box.iHeight - 40, box.iWidth, 40)
 
 	window:enableCenterPos()
-	head:enablePaintDate()
-	--head:setButtons(button, 1)
+	--head:enablePaintDate()
+	head:setButtons(btn, 1)
 
-	local m = neutrino.CWidget()
+	local m = neutrino.CWidget(box)
+	--m:enablePaintMainFrame()
+	m:enableCenterPos()
 
 	m:addKey(neutrino.RC_ok)
 	m:addKey(neutrino.RC_down)
 	m:addKey(neutrino.RC_up)
 	m:addKey(neutrino.RC_info)
+	m:addKey(neutrino.RC_red)
+	m:addKey(neutrino.RC_green)
+	m:addKey(neutrino.RC_yellow)
+	m:addKey(neutrino.RC_blue)
 
-	repeat
-		window:paint()
-		head:paint()
-		foot:paint()
+	window:paint()
+	head:paint()
+	foot:paint()
+	neutrino.CButtons():paintButton(btnRed, "AudioPlayer", box.iX + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
+	neutrino.CButtons():paintButton(btnGreen, "PicturePlayer", box.iX + (box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
+	neutrino.CButtons():paintButton(btnYellow, "MoviePlayer", box.iX + 2*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
+	neutrino.CButtons():paintButton(btnBlue, "InfoBox", box.iX + 3*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
 
-		m:exec(null, "")
+	m:exec(null, "")
 
-		local selected = m:getSelected()
-		local key = m:getKey()
+
+	local key = m:getKey()
 		
-		if key == neutrino.RC_ok or key == neutrino.RC_info then
-			window:hide()
-			exec(selected, key)
-		end
-	until m:getExitPressed() == true
+	if key == neutrino.RC_ok or key == neutrino.RC_info then
+		window:hide()
+		infoBox()
+	elseif key == neutrino.RC_red then
+		window:hide()
+		audioPlayer()
+	elseif key == neutrino.RC_green then
+		window:hide()
+		pictureViewer()
+	elseif key == neutrino.RC_yellow then
+		window:hide()
+		moviePlayer()
+	elseif key == neutrino.RC_blue then
+		window:hide()
+		infoBox()
+	end
+
+	if m:getExitPressed() ~= true then
+		testCWindow()
+	end
 
 	window:hide()
 end
@@ -564,25 +609,29 @@ function testCFrameBox()
 	m:addKey(neutrino.RC_info)
 
 	repeat
-		frameBox:paint()
+	frameBox:paint()
 
-		m:exec(null, "")
+	m:exec(null, "")
 
-		local selected = frameBox:getSelected()
-		local key = m:getKey()
+	local selected = frameBox:getSelected()
+	local m_selected = m:getSelected()
+	
+	local key = m:getKey()
 
-		if key == neutrino.RC_left then
-			frameBox:swipLeft()
-		elseif key == neutrino.RC_right then
-			frameBox:swipRight()
-		elseif key == neutrino.RC_down then
-			frameBox:scrollLineDown()
-		elseif key == neutrino.RC_up then
-			frameBox:scrollLineUp()
-		elseif key == neutrino.RC_info then
-			infoBox()
-		elseif key == neutrino.RC_ok then
-			frameBox:hide()
+	if key == neutrino.RC_left then
+		frameBox:swipLeft()
+	elseif key == neutrino.RC_right then
+		frameBox:swipRight()
+	elseif key == neutrino.RC_down then
+		frameBox:scrollLineDown()
+	elseif key == neutrino.RC_up then
+		frameBox:scrollLineUp()
+	elseif key == neutrino.RC_info then
+		infoBox()
+	elseif key == neutrino.RC_ok then
+		frameBox:hide()
+
+		if selected >=0 and m_selected >= 0 then
 			if selected == 0 then
 				audioPlayer()
 			elseif selected == 1 then
@@ -590,9 +639,11 @@ function testCFrameBox()
 			elseif selected == 2 then
 				moviePlayer()
 			elseif selected == 9 then
-				break
+				--break
 			end
 		end
+	end
+
 	until m:getExitPressed() == true
 
 	frameBox:hide()
@@ -623,10 +674,16 @@ function main()
 	m:addItem(item4)
 	m:addItem(item5)
 
-	repeat
-		m:exec(None, "")
-		selected = m:getSelected() 
+	if selected < 0 then
+		selected = 0
+	end
 
+	m:setSelected(selected)
+
+	m:exec(None, "")
+	selected = m:getSelected() 
+
+	if selected >= 0 then
 		if selected == 0 then
 			testCWidget()
 		elseif selected == 1 then
@@ -638,7 +695,11 @@ function main()
 		elseif selected == 4 then
 			testCFrameBox()
 		end
-	until m:getExitPressed() == true
+	end
+	
+	if m:getExitPressed() ~= true then
+		main()
+	end
 end
 
 main()

@@ -37,6 +37,8 @@
 #include <map>
 
 #include <driver/file.h>
+#include <driver/rcinput.h>
+#include <gui/widget/icons.h>
 
 
 int my_system(const char * cmd);
@@ -116,6 +118,9 @@ bool downloadUrl(std::string url, std::string file, std::string userAgent = "", 
 int _select(int maxfd, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 ssize_t _writeall(int fd, const void *buf, size_t count);
 ssize_t _read(int fd, void *buf, size_t count);
+
+//
+char * setIconName(neutrino_msg_t key);
 
 //
 class RandomNumber

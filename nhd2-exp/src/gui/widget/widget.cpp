@@ -119,14 +119,17 @@ void CWidget::paintItems()
 {
 	dprintf(DEBUG_NORMAL, "CWidget:: paintItems\n");
 
-	for (unsigned int i = 0; i < items.size(); i++)
+	if(hasItem())
 	{
-		if( (items[i]->isSelectable()) && (selected == -1)) 
+		for (unsigned int i = 0; i < items.size(); i++)
 		{
-			selected = i;
-		}
+			if( (items[i]->isSelectable()) && (selected == -1)) 
+			{
+				selected = i;
+			}
 
-		items[i]->paint();
+			items[i]->paint();
+		}
 	}
 }
 
@@ -185,9 +188,12 @@ void CWidget::hide()
 {
 	dprintf(DEBUG_NORMAL, "CWidget:: hide\n");
 
-	for(unsigned int i = 0; i < items.size(); i++)
+	if (hasItem())
 	{
-		items[i]->hide();
+		for(unsigned int i = 0; i < items.size(); i++)
+		{
+			items[i]->hide();
+		}
 	}
 
 	if( savescreen && background)
@@ -223,7 +229,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 	initFrames();
 
 	// set in focus
-	if(hasItem() && items.size() > 1)
+	if (hasItem() && items.size() > 1)
 	{
 		for (unsigned int i = 0; i < items.size(); i++)
 		{
@@ -632,7 +638,7 @@ void CWidget::onOKKeyPressed()
 void CWidget::onHomeKeyPressed()
 {
 	exit_pressed = true;
-	dprintf(DEBUG_NORMAL, "CWidget:: exec: exit_pressed\n");
+	dprintf(DEBUG_NORMAL, "CWidget::exec: exit_pressed\n");
 	msg = RC_timeout;
 	selected = -1;
 }

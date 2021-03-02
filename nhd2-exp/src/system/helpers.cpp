@@ -1463,4 +1463,74 @@ uint64_t cTimeMs::Elapsed(void)
   	return Now() - begin;
 }
 
+//
+char * setIconName(neutrino_msg_t key)
+{
+	char * iconName = NULL;
+
+	switch (key) 
+	{
+		case RC_red:
+			iconName = NEUTRINO_ICON_BUTTON_RED;
+			break;
+		case RC_green:
+			iconName = NEUTRINO_ICON_BUTTON_GREEN;
+			break;
+		case RC_yellow:
+			iconName = NEUTRINO_ICON_BUTTON_YELLOW;
+			break;
+		case RC_blue:
+			iconName = NEUTRINO_ICON_BUTTON_BLUE;
+			break;
+		case RC_standby:
+			iconName = NEUTRINO_ICON_BUTTON_POWER;
+			break;
+		//case RC_setup:
+		//	iconName = NEUTRINO_ICON_BUTTON_MENU_SMALL;
+		//	break;
+		//case RC_help:
+		//	iconName = NEUTRINO_ICON_BUTTON_HELP_SMALL;
+		//	break;
+		//case RC_info:
+		//	iconName = NEUTRINO_ICON_BUTTON_INFO_SMALL;
+		//	break;
+		//case RC_stop:
+		//	iconName = NEUTRINO_ICON_BUTTON_STOP;
+		//	break;
+		case RC_0:
+			iconName = NEUTRINO_ICON_BUTTON_0;
+			break;
+		case RC_1:
+			iconName = NEUTRINO_ICON_BUTTON_1;
+			break;
+		case RC_2:
+			iconName = NEUTRINO_ICON_BUTTON_2;
+			break;
+		case RC_3:
+			iconName = NEUTRINO_ICON_BUTTON_3;
+			break;
+		case RC_4:
+			iconName = NEUTRINO_ICON_BUTTON_4;
+			break;
+		case RC_5:
+			iconName = NEUTRINO_ICON_BUTTON_5;
+			break;
+		case RC_6:
+			iconName = NEUTRINO_ICON_BUTTON_6;
+			break;
+		case RC_7:
+			iconName = NEUTRINO_ICON_BUTTON_7;
+			break;
+		case RC_8:
+			iconName = NEUTRINO_ICON_BUTTON_8;
+			break;
+		case RC_9:
+			iconName = NEUTRINO_ICON_BUTTON_9;
+			break;
+	}
+
+	return iconName;
+}
+
+
 

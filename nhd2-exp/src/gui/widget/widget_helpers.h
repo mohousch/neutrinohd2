@@ -118,6 +118,8 @@ typedef struct button_label
 	const char * localename;
 } button_label_struct;
 
+typedef std::vector<button_label_struct> button_label_list_t;
+
 // CButtons
 class CButtons
 {
@@ -125,10 +127,15 @@ class CButtons
 	public:
 		CButtons(){};
 
+		// foot buttons
 		void paintFootButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label* const content);
 
 		// head buttons right
 		void paintHeadButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content);
+
+		// button
+		void paintButton(const char *button, neutrino_locale_t locale, const int x, const int y, const int dx, const int dy);
+		void paintButton(const char *button, const char * localename, const int x, const int y, const int dx, const int dy);
 };
 
 //CScrollBar
@@ -254,6 +261,7 @@ class CHeaders : public CWidgetItem
 		void enableLogo(void){logo = true;};
 
 		void paint();
+		void hide();
 };
 
 // CFooters
@@ -280,6 +288,7 @@ class CFooters : public CWidgetItem
 		void setButtons(const struct button_label* button_label, const int button_count){fcontent = button_label; fcount = button_count;};
 
 		void paint();
+		void hide();
 };
 
 #endif /* __gui_widget_helpers_h__ */

@@ -105,17 +105,20 @@ class ClistBoxWidget : public CMenuTarget
 		int items_height;
 		int items_width;
 
-		//
+		// foot buttons
 		int fbutton_count;
 		int fbutton_width;
 		const struct button_label* fbutton_labels;
 
-		//
+		// head buttons
 		int hbutton_count;
 		const struct button_label* hbutton_labels;
 
 		//
-		struct keyAction { std::string action; CMenuTarget *menue; };
+		struct keyAction { 
+			std::string action; 
+			CMenuTarget *menue; 
+		};
 		std::map<neutrino_msg_t, keyAction> keyActionMap;
 
 		//

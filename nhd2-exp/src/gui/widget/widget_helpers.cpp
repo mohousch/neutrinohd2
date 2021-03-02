@@ -167,7 +167,6 @@ void CButtons::paintFootButtons(const int x, const int y, const int dx, const in
 		{
 			if(content[i].button != NULL)
 			{
-				//const char * l_option = NULL;
 				std::string l_option("");
 
 				l_option.clear();
@@ -204,6 +203,52 @@ void CButtons::paintHeadButtons(const int x, const int y, const int dx, const in
 
 			CFrameBuffer::getInstance()->paintIcon(content[i].button, startx, y + (dy - ih[i])/2);
 		}
+	}
+}
+
+// button
+void CButtons::paintButton(const char *button, neutrino_locale_t locale, const int x, const int y, const int dx, const int dy)
+{
+	int iw = 0;
+	int ih = 0;
+
+	if(button != NULL)
+	{
+		std::string l_option("");
+
+		l_option.clear();
+
+		CFrameBuffer::getInstance()->getIconSize(button, &iw, &ih);
+		int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
+
+		l_option = g_Locale->getText(locale);
+		
+		CFrameBuffer::getInstance()->paintIcon(button, x, y + (dy - ih)/2);
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + iw + ICON_OFFSET, y + f_h + (dy - f_h)/2, dx - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
+	}
+}
+
+void CButtons::paintButton(const char *button, const char * localename, const int x, const int y, const int dx, const int dy)
+{
+	int iw = 0;
+	int ih = 0;
+
+	if(button != NULL)
+	{
+		std::string l_option("");
+
+		l_option.clear();
+
+		CFrameBuffer::getInstance()->getIconSize(button, &iw, &ih);
+		int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
+
+		if(localename != NULL)
+			l_option = localename;
+		
+		CFrameBuffer::getInstance()->paintIcon(button, x, y + (dy - ih)/2);
+
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + iw + ICON_OFFSET, y + f_h + (dy - f_h)/2, dx - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
 	}
 }
 
@@ -427,6 +472,11 @@ void CHeaders::paint()
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(itemBox.iX + BORDER_LEFT + i_w + ICON_OFFSET, itemBox.iY + (itemBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), itemBox.iWidth - BORDER_LEFT - BORDER_RIGHT - i_w - 2*ICON_OFFSET - buttonWidth - (hbutton_count - 1)*ICON_TO_ICON_OFFSET - timestr_len, htitle, COL_MENUHEAD);
 }
 
+void CHeaders::hide()
+{
+	CFrameBuffer::getInstance()->paintBackgroundBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight);
+}
+
 // footers
 CFooters::CFooters(int x, int y, int dx, int dy, const unsigned int count, const struct button_label *content)
 {
@@ -496,6 +546,11 @@ void CFooters::paint()
 			}
 		}
 	}
+}
+
+void CFooters::hide()
+{
+	CFrameBuffer::getInstance()->paintBackgroundBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight);
 }
 
 

@@ -125,7 +125,8 @@ CMenuOptionChooser::CMenuOptionChooser(const neutrino_locale_t OptionName, int *
 	
 	pulldown = Pulldown;
 
-	itemHelpText = optionNameString;
+	if (itemHelpText.empty())
+		itemHelpText = optionNameString;
 
 	itemType = ITEM_TYPE_OPTION_CHOOSER;
 }
@@ -150,7 +151,8 @@ CMenuOptionChooser::CMenuOptionChooser(const char * const OptionName, int* const
 	can_arrow = true;
 	pulldown = Pulldown;
 
-	itemHelpText = optionNameString;
+	if (itemHelpText.empty())
+		itemHelpText = optionNameString;
 
 	itemType = ITEM_TYPE_OPTION_CHOOSER;
 }
@@ -376,7 +378,9 @@ CMenuOptionNumberChooser::CMenuOptionNumberChooser(const neutrino_locale_t Name,
 	can_arrow = true;
 	observ = Observ;
 
-	itemHelpText = nameString;
+	if (itemHelpText.empty())
+		itemHelpText = nameString;
+
 	itemType = ITEM_TYPE_OPTION_NUMBER_CHOOSER;
 }
 
@@ -405,7 +409,9 @@ CMenuOptionNumberChooser::CMenuOptionNumberChooser(const char * const Name, int 
 	can_arrow = true;
 	observ = Observ;
 
-	itemHelpText = nameString;
+	if (itemHelpText.empty())
+		itemHelpText = nameString;
+
 	itemType = ITEM_TYPE_OPTION_NUMBER_CHOOSER;
 }
 
@@ -527,7 +533,9 @@ CMenuOptionStringChooser::CMenuOptionStringChooser(const neutrino_locale_t Name,
 	
 	pulldown = Pulldown;
 
-	itemHelpText = nameString;
+	if (itemHelpText.empty())
+		itemHelpText = nameString;
+
 	itemType = ITEM_TYPE_OPTION_STRING_CHOOSER;
 }
 
@@ -550,7 +558,9 @@ CMenuOptionStringChooser::CMenuOptionStringChooser(const char * const Name, char
 	
 	pulldown = Pulldown;
 
-	itemHelpText = nameString;
+	if (itemHelpText.empty())
+		itemHelpText = nameString;
+
 	itemType = ITEM_TYPE_OPTION_STRING_CHOOSER;
 }
 
@@ -736,7 +746,9 @@ CMenuOptionLanguageChooser::CMenuOptionLanguageChooser(char *Name, CChangeObserv
 	directKey = RC_nokey;
 	iconName = IconName ? IconName : "";
 
-	itemHelpText = Name;
+	if (itemHelpText.empty())
+		itemHelpText = Name;
+
 	itemType = ITEM_TYPE_OPTION_LANGUAGE_CHOOSER;
 }
 
@@ -964,6 +976,9 @@ CMenuForwarder::CMenuForwarder(const neutrino_locale_t Text, const bool Active, 
 	itemType = ITEM_TYPE_FORWARDER;
 	itemName = g_Locale->getText(Text);
 
+	if (itemHelpText.empty())
+		itemHelpText = itemName;
+
 	optionValueString = "";
 }
 
@@ -985,6 +1000,9 @@ CMenuForwarder::CMenuForwarder(const char * const Text, const bool Active, const
 	itemHelpText = g_Locale->getText(HelpText);
 	itemType = ITEM_TYPE_FORWARDER;
 	itemName = Text? Text : "";
+
+	if (itemHelpText.empty())
+		itemHelpText = itemName;
 
 	optionValueString = "";
 }
@@ -1026,7 +1044,7 @@ int CMenuForwarder::getWidth(void) const
 
 int CMenuForwarder::exec(CMenuTarget *parent)
 {
-	dprintf(DEBUG_DEBUG, "CMenuForwarder::exec: actionKey:%s\n", actionKey.c_str());
+	dprintf(DEBUG_INFO, "CMenuForwarder::exec: (%s) actionKey: (%s)\n", getName(), actionKey.c_str());
 
 	if(jumpTarget)
 	{
@@ -1231,6 +1249,10 @@ ClistBoxItem::ClistBoxItem(const neutrino_locale_t Text, const bool Active, cons
 	iconName = IconName ? IconName : "";
 	itemIcon = ItemIcon? ItemIcon : "";
 	itemName = g_Locale->getText(Text);
+
+	if (itemHelpText.empty())
+		itemHelpText = itemName;
+
 	itemType = ITEM_TYPE_LISTBOX;
 }
 
@@ -1250,6 +1272,10 @@ ClistBoxItem::ClistBoxItem(const char * const Text, const bool Active, const cha
 	iconName = IconName ? IconName : "";
 	itemIcon = ItemIcon? ItemIcon : "";
 	itemName = Text? Text : "";
+
+	if (itemHelpText.empty())
+		itemHelpText = itemName;
+
 	itemType = ITEM_TYPE_LISTBOX;
 }
 
@@ -1295,7 +1321,7 @@ int ClistBoxItem::getWidth(void) const
 
 int ClistBoxItem::exec(CMenuTarget* parent)
 {
-	dprintf(DEBUG_DEBUG, "ClistBoxItem::exec:\n");
+	dprintf(DEBUG_INFO, "ClistBoxItem::exec: (%s) actionKey: (%s)\n", getName(), actionKey.c_str());
 
 	if(jumpTarget)
 	{
@@ -2279,6 +2305,7 @@ void ClistBox::paintItemInfo(int pos)
 			}
 			else if(widgetMode == MODE_MENU)
 			{
+/*
 				CMenuItem* item = items[pos];
 	
 				// detailslines box
@@ -2305,6 +2332,24 @@ void ClistBox::paintItemInfo(int pos)
 				{
 					textBox->setText(item->itemHelpText.c_str());
 					textBox->paint();
+				}
+*/
+				CMenuItem* item = items[pos];
+
+				item->getYPosition();
+
+				// refresh box
+				frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight, cFrameBox.iWidth, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
+
+				// info icon
+				int iw, ih;
+				frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &iw, &ih);
+				frameBuffer->paintIcon(NEUTRINO_ICON_INFO, cFrameBox.iX + BORDER_LEFT, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight + (fheight - ih)/2);
+
+				// HelpText
+				if(!item->itemHelpText.empty())
+				{
+					g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(cFrameBox.iX + BORDER_LEFT + iw + ICON_OFFSET, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - iw, item->itemHelpText.c_str(), COL_MENUFOOT, 0, true); // UTF-8
 				}
 			}
 		}

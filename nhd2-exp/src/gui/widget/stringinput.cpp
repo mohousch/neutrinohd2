@@ -415,6 +415,7 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 			strncpy(value, oldval, size);
 			loop = false;
 			exit_pressed = true;
+			dprintf(DEBUG_NORMAL, "CStringInput::exec: exit_pressed\n");
 		}
 		else
 		{

@@ -295,7 +295,7 @@ function get_movies_menu(_id)
 	for _id, movie_detail in pairs(movies) do
 		item = neutrino.ClistBoxItem(conv_utf8(movie_detail.title))
 		item:setItemIcon(movie_detail.cover)
-		item:setHelpText(movie_detail.content)
+		--item:setHelpText(conv_utf8(movie_detail.content))
 
 		m_movies:addItem(item)
 	end
@@ -347,7 +347,7 @@ function showMovieInfo(_id)
 	infoBox = neutrino.CInfoBox()
 
 	infoBox:setTitle(conv_utf8(caption .. "* " .. movies[_id].title))
-	infoBox:setText(movies[_id].content, movies[_id].cover, 160, 320)
+	infoBox:setText(conv_utf8(movies[_id].content), movies[_id].cover, 160, 320)
 
 	infoBox:exec()
 end

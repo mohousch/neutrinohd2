@@ -69,7 +69,7 @@ class CPluginList : public CMenuTarget
 		~CPluginList();
 
 		void hide();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
+		int exec(CMenuTarget* parent, const std::string &actionKey);
 };
 
 class CPluginChooser : public CPluginList
@@ -88,7 +88,7 @@ class CPluginsExec : public CMenuTarget
 {
 	public:
 		static CPluginsExec* getInstance();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
+		int exec(CMenuTarget* parent, const std::string &actionKey);
 };
 
 #endif
