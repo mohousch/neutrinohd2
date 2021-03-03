@@ -1654,7 +1654,7 @@ void CChannelList::paint()
 	listBox->enablePaintHead();
 	listBox->enablePaintDate();
 	//TEST
-	listBox->setWidgetType(WIDGET_TYPE_EXTENDED);
+	//listBox->setWidgetType(WIDGET_TYPE_EXTENDED);
 
 	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
 		listBox->setHeaderButtons(new_mode_active? HeadWEBTVNewModeButtons : HeadWEBTVModeButtons, 2); 

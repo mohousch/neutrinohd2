@@ -83,6 +83,8 @@ function init()
 	page = 1;
 	max_page = 1;
 
+	neutrino.CFileHelpers():createDir("/tmp/netzkino")
+
 	-- use netzkino icon placed in same dir as the plugin ...
 	--netzkino_png = script_path() .. "netzkino.png"
 	-- ... or use icon placed in one of neutrino's icon dirs
@@ -96,9 +98,6 @@ function get_categories()
 	print("getCategories:")
 
 	local fname = "/tmp/netzkino/netzkino_categories.txt";
-	local fh = neutrino.CFileHelpers()
-	fh:removeDir("/tmp/netzkino")
-	fh:createDir("/tmp/netzkino")
 
 	local h = neutrino.CHintBox(caption, "Kategorien werden geladen ...", neutrino.HINTBOX_WIDTH, netzkino_png)
 	h:paint();
@@ -196,9 +195,6 @@ function get_movies(_id)
 	print("get_movies:")
 
 	local fname = "/tmp/netzkino/netzkino_movies.txt";
-	local fh = neutrino.CFileHelpers()
-	fh:removeDir("/tmp/netzkino")
-	fh:createDir("/tmp/netzkino")
 	local page_nr = page
 	movies = {};
 
@@ -247,7 +243,7 @@ function get_movies(_id)
 							j_cover = full.url
 
 							tfile = "/tmp/netzkino/" .. j_title .. ".jpg"
-							if j_cover ~= nil then
+							if j_cover ~= nil and neutrino.file_exists(tfile) ~= true then
 								neutrino.downloadUrl(j_cover, tfile)
 							end
 						end
@@ -344,12 +340,7 @@ end
 function showMovieInfo(_id)
 	print("showMovieInfo:")
 
-	infoBox = neutrino.CInfoBox()
-
-	infoBox:setTitle(conv_utf8(caption .. "* " .. movies[_id].title))
-	infoBox:setText(conv_utf8(movies[_id].content), movies[_id].cover, 160, 320)
-
-	infoBox:exec()
+	neutrino.InfoBox(conv_utf8(movies[_id].content), conv_utf8(caption .. "* " .. movies[_id].title), netzkino_png, movies[_id].cover, 160, 320)
 end
 
 --Stream downloaden
@@ -420,8 +411,7 @@ end
 function main()
 	init();
 	get_categories();
-	local fh = neutrino.CFileHelpers()
-	fh:removeDir("/tmp/netzkino")
+	neutrino.CFileHelpers():removeDir("/tmp/netzkino")
 	os.remove("/tmp/lua*")
 	collectgarbage();
 end

@@ -240,10 +240,6 @@ void ClistBoxWidget::initFrames()
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		//
-		//if(paintFootInfo)
-		//	cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
-
-		//
 		page_start.clear();
 		page_start.push_back(0);
 		total_pages = 1;
