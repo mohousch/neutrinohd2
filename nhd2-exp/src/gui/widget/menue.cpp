@@ -223,6 +223,8 @@ void ClistBoxWidget::initFrames()
 	// reinit
 	width = wanted_width;
 	height = wanted_height;
+	cFrameFootInfo.iHeight = 0;
+	connectLineWidth = 0;
 
 	// widgettype forwarded to item 
 	for (unsigned int count = 0; count < items.size(); count++) 
@@ -234,29 +236,12 @@ void ClistBoxWidget::initFrames()
 		//item->item_selectedColor = itemBoxColor;
 	} 
 
-/*
-	if(paintFootInfo)
-	{
-		if(widgetType == WIDGET_TYPE_FRAME)
-		{
-			cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
-		}
-		else
-		{
-			cFrameFootInfo.iHeight = footInfoHeight;
-			connectLineWidth = CONNECTLINEBOX_WIDTH;
-		}
-	}
-*/
-
 	// init frames
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		//
-		if(paintFootInfo)
-		{
-			cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
-		}
+		//if(paintFootInfo)
+		//	cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
 
 		//
 		page_start.clear();
@@ -310,16 +295,9 @@ void ClistBoxWidget::initFrames()
 	else
 	{
 		// footInfo height
-/*
-		if(paintFootInfo && (widgetType == WIDGET_TYPE_STANDARD || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_LISTBOX))&& widgetMode != MODE_SETUP)
-		{
-			cFrameFootInfo.iHeight = footInfoHeight;
-			connectLineWidth = CONNECTLINEBOX_WIDTH;
-		}
-*/
 		if(paintFootInfo)
 		{
-			if( (widgetType == WIDGET_TYPE_STANDARD) || (WIDGET_TYPE_CLASSIC) )
+			if( (widgetType == WIDGET_TYPE_STANDARD) || (widgetType == WIDGET_TYPE_CLASSIC) )
 			{
 				if(widgetMode == MODE_LISTBOX)
 				{

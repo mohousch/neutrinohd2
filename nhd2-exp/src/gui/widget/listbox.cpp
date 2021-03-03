@@ -1820,6 +1820,8 @@ void ClistBox::initFrames()
 	cFrameBox.iWidth = full_width;
 	cFrameBox.iX = start_x;
 	cFrameBox.iY = start_y;
+	cFrameFootInfo.iHeight = 0;
+	connectLineWidth = 0;
 
 	// widgettype forwarded to item 
 	for (unsigned int count = 0; count < items.size(); count++) 

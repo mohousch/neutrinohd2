@@ -3806,13 +3806,15 @@ void CTestMenu::testCFrameBox()
 	
 	topBox.iX = g_settings.screen_StartX + 10;
 	topBox.iY = g_settings.screen_StartY + 10;
-	topBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
-	topBox.iHeight = 120; //(g_settings.screen_EndY - g_settings.screen_StartY - 20);
+	topBox.iWidth = 250;
+	topBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20);
 
 	CFrameBox *topWidget = new CFrameBox(&topBox);
 	CFrame * frame = NULL;
 
 	frame = new CFrame("Neu Filme");
+	frame->setIconName(NEUTRINO_ICON_MOVIE);
+	frame->setOption("in allen Kinos");
 	topWidget->addFrame(frame);
 	
 	frame = new CFrame("Im Kino");
@@ -3822,14 +3824,23 @@ void CTestMenu::testCFrameBox()
 	frame->setOption("(2019)");
 	topWidget->addFrame(frame);
 
+	topWidget->addFrame(new CFrameSeparator());
+	topWidget->addFrame(new CFrameSeparator());
+	topWidget->addFrame(new CFrameSeparator());
+	topWidget->addFrame(new CFrameSeparator());
+	topWidget->addFrame(new CFrameSeparator());
+
+	frame = new CFrame("Exit");
+	frame->setMenuTarget(this, "exit");
+	topWidget->addFrame(frame);
+
+	topWidget->setMode(FRAME_MODE_VERTICAL);
+
 	topWidget->setSelected(selected);
-	//topWidget->setInFocus(false);
 	//topWidget->setBackgroundColor(COL_RED);
 
-//REPEAT:
+REPEAT:
 	topWidget->paint();
-
-	CFrameBuffer::getInstance()->blit();
 
 	// loop
 	neutrino_msg_t msg;
@@ -3841,7 +3852,7 @@ void CTestMenu::testCFrameBox()
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
-		if (msg == RC_home) 
+		if ( (msg == RC_home) || (topWidget->getSelected() == 9) )
 		{
 			loop = false;
 		}
@@ -3853,9 +3864,20 @@ void CTestMenu::testCFrameBox()
 		{
 			topWidget->swipLeft();
 		}
+		else if(msg == RC_down)
+		{
+			topWidget->scrollLineDown();
+		}
+		else if(msg == RC_up)
+		{
+			topWidget->scrollLineUp();
+		}
 		else if(msg == RC_ok)
 		{
-			MessageBox(LOCALE_MESSAGEBOX_INFO, "testing CFrameBox\ncoole Widget ;-)", mbrBack, mbBack, NEUTRINO_ICON_INFO);
+			if (topWidget->getSelected() == 8)
+				loop = false;
+			else
+				MessageBox(LOCALE_MESSAGEBOX_INFO, "testing CFrameBox\ncoole Widget ;-)", mbrBack, mbBack, NEUTRINO_ICON_INFO);
 		}
 
 		CFrameBuffer::getInstance()->blit();
