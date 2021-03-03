@@ -241,7 +241,7 @@ void CNKMovies::showMenu()
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
 	rightWidget->setItemsPerPage(5,2);
 	rightWidget->setSelected(right_selected);
-	rightWidget->enablePaintItemInfo();
+	rightWidget->enablePaintFootInfo();
 	rightWidget->setInFocus(true);
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)

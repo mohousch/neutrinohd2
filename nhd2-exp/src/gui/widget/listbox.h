@@ -599,7 +599,7 @@ class ClistBox : public CWidgetItem
 		void setFootGradient(int grad){footGradient = grad;};
 
 		// item footInfo
-		void enablePaintItemInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh;};
+		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh;};
 
 		virtual void scrollLineDown(const int lines = 1);
 		virtual void scrollLineUp(const int lines = 1);

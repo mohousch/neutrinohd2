@@ -994,7 +994,7 @@ void CTestMenu::widget()
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
 	rightWidget->setItemsPerPage(6,2);
 	rightWidget->setSelected(right_selected);
-	rightWidget->enablePaintItemInfo();
+	rightWidget->enablePaintFootInfo();
 	rightWidget->setInFocus(true);
 
 	// loadPlaylist
@@ -1215,7 +1215,7 @@ void CTestMenu::listBoxWidget()
 	rightWidget->enablePaintDate();
 	rightWidget->enablePaintFoot();
 	rightWidget->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
-	rightWidget->enablePaintItemInfo();
+	rightWidget->enablePaintFootInfo();
 	rightWidget->enableWidgetChange();
 	rightWidget->addWidget(WIDGET_TYPE_STANDARD);
 	rightWidget->addWidget(WIDGET_TYPE_CLASSIC);
@@ -1509,7 +1509,7 @@ void CTestMenu::test()
 
 	//rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
 
-	rightWidget->enablePaintItemInfo();
+	rightWidget->enablePaintFootInfo();
 
 	enum {
 		WIDGET_TOP,
@@ -2993,7 +2993,7 @@ void CTestMenu::testClistBox()
 	listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
-	listBox->enablePaintItemInfo(80);
+	listBox->enablePaintFootInfo(80);
 
 	listBox->setSelected(selected);
 	listBox->paint();
@@ -3134,7 +3134,7 @@ void CTestMenu::testClistBox2()
 	listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
-	listBox->enablePaintItemInfo(80);
+	listBox->enablePaintFootInfo(80);
 
 	listBox->setSelected(selected);
 	listBox->paint();
@@ -3274,7 +3274,7 @@ void CTestMenu::testClistBox3()
 	listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
-	listBox->enablePaintItemInfo(80);
+	listBox->enablePaintFootInfo(80);
 
 	listBox->setSelected(selected);
 	listBox->paint();
@@ -3412,7 +3412,7 @@ void CTestMenu::testClistBox4()
 	listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
-	listBox->enablePaintItemInfo(80);
+	listBox->enablePaintFootInfo(80);
 
 	listBox->setSelected(selected);
 	listBox->paint();
@@ -3560,7 +3560,7 @@ void CTestMenu::testClistBox5()
 	//listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
-	listBox->enablePaintItemInfo(80);
+	listBox->enablePaintFootInfo(80);
 
 	listBox->setSelected(selected);
 	listBox->paint();
@@ -3715,7 +3715,7 @@ void CTestMenu::testClistBox6()
 	listBox->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
-	listBox->enablePaintItemInfo(80);
+	listBox->enablePaintFootInfo(80);
 
 	listBox->setSelected(selected);
 	listBox->paint();
@@ -4585,7 +4585,7 @@ void CTestMenu::testClistBoxWidget()
 	listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
-	listMenu->enablePaintItemInfo();
+	listMenu->enablePaintFootInfo();
 
 	listMenu->addKey(RC_info, this, "minfo");
 
@@ -4635,7 +4635,7 @@ void CTestMenu::testClistBoxWidget1()
 	listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// foot info
-	listMenu->enablePaintItemInfo();
+	listMenu->enablePaintFootInfo();
 
 	listMenu->addKey(RC_info, this, "minfo");
 
@@ -6364,7 +6364,7 @@ void CTestMenu::showMenu()
 	mainMenu->setMode(MODE_MENU);
 	mainMenu->enableShrinkMenu(),
 	mainMenu->enableMenuPosition();
-	mainMenu->enablePaintItemInfo();
+	mainMenu->enablePaintFootInfo();
 	
 	mainMenu->addItem(new CMenuForwarder("CWidget(multi widget)", true, NULL, this, "widget"));
 	mainMenu->addItem(new CMenuForwarder("CWidget(listFrame)", true, NULL, this, "listframewidget"));

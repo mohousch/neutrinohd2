@@ -90,7 +90,7 @@ void CMainSetup::showMenu(void)
 	mainSettings->enableShrinkMenu();
 	mainSettings->enableMenuPosition();
 	mainSettings->enableWidgetChange();
-	mainSettings->enablePaintItemInfo();
+	mainSettings->enablePaintFootInfo();
 	mainSettings->enablePaintDate();
 
 	// video settings

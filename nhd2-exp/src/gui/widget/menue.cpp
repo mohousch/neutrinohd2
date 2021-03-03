@@ -234,6 +234,7 @@ void ClistBoxWidget::initFrames()
 		//item->item_selectedColor = itemBoxColor;
 	} 
 
+/*
 	if(paintFootInfo)
 	{
 		if(widgetType == WIDGET_TYPE_FRAME)
@@ -246,10 +247,18 @@ void ClistBoxWidget::initFrames()
 			connectLineWidth = CONNECTLINEBOX_WIDTH;
 		}
 	}
+*/
 
 	// init frames
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
+		//
+		if(paintFootInfo)
+		{
+			cFrameFootInfo.iHeight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight() + 6;
+		}
+
+		//
 		page_start.clear();
 		page_start.push_back(0);
 		total_pages = 1;
@@ -301,9 +310,6 @@ void ClistBoxWidget::initFrames()
 	else
 	{
 		// footInfo height
-		cFrameFootInfo.iHeight = 0;
-		connectLineWidth = 0;
-
 /*
 		if(paintFootInfo && (widgetType == WIDGET_TYPE_STANDARD || (widgetType == WIDGET_TYPE_CLASSIC && widgetMode == MODE_LISTBOX))&& widgetMode != MODE_SETUP)
 		{

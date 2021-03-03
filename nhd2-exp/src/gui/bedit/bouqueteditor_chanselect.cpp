@@ -155,7 +155,7 @@ void CBEChannelSelectWidget::paint()
 	listBox->enablePaintDate();
 	listBox->enablePaintFoot();
 	listBox->setFooterButtons(Buttons, BUTTONS_COUNT);
-	listBox->enablePaintItemInfo();
+	listBox->enablePaintFootInfo();
 
 	//
 	listBox->setSelected(selected);

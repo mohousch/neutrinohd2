@@ -511,7 +511,7 @@ void CNFilm::showMenu(bool genre)
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
 	rightWidget->setItemsPerPage(5,2);
 	rightWidget->setSelected(right_selected);
-	rightWidget->enablePaintItemInfo();
+	rightWidget->enablePaintFootInfo();
 	//rightWidget->setBackgroundColor(COL_BLUE);
 	rightWidget->setInFocus(true);
 

@@ -315,7 +315,7 @@ function testClistBoxWidget()
 	local listBoxWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
 	listBoxWidget:setWidgetType(neutrino.WIDGET_TYPE_STANDARD)
 	listBoxWidget:setMode(neutrino.MODE_MENU)
-	listBoxWidget:enablePaintItemInfo()
+	listBoxWidget:enablePaintFootInfo()
 	listBoxWidget:enableShrinkMenu()
 
 	-- CMessageBox
@@ -655,7 +655,7 @@ function main()
 
 	m:setMode(neutrino.MODE_LISTBOX)
 	m:enableShrinkMenu()
-	m:enablePaintItemInfo()
+	m:enablePaintFootInfo()
 
 	item1 = neutrino.CMenuForwarder("testCWidget")
 	item1:setInfo1("lua: testing CWidget")

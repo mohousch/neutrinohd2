@@ -132,7 +132,7 @@ void COSDSettings::showMenu(void)
 	osdSettings->enableShrinkMenu();
 	osdSettings->enableMenuPosition();
 	osdSettings->enableWidgetChange();
-	osdSettings->enablePaintItemInfo();
+	osdSettings->enablePaintFootInfo();
 	osdSettings->enablePaintDate();
 
 	// Themes
