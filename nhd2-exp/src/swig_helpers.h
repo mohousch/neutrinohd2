@@ -60,7 +60,7 @@ class CSwigHelpers
 		void blit(/*int mode3d = THREE_NONE*/);
 
 		void getSize(const std::string &name, int * width, int * height, int * nbpp);
-		void getIconSize(const char * const filename, int* width, int *height);
+		int getIconWidth(const char * const filename);
 
 		void scaleImage(const std::string &tname, int *p_w, int *p_h);
 

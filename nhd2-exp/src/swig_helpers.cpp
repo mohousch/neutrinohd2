@@ -107,9 +107,13 @@ void CSwigHelpers::getSize(const std::string &name, int * width, int * height, i
 	CFrameBuffer::getInstance()->getSize(name, width, height, nbpp);
 }
 
-void CSwigHelpers::getIconSize(const char * const filename, int* width, int *height)
+int CSwigHelpers::getIconWidth(const char * const filename)
 {
+	int* width;
+	int *height;
 	CFrameBuffer::getInstance()->getIconSize(filename, width, height);
+
+	return *width;
 }
 
 void CSwigHelpers::scaleImage(const std::string &tname, int *p_w, int *p_h)
