@@ -77,14 +77,12 @@ enum
 	ALIGN_RIGHT = 16
 };
 
-#ifndef SWIG
-struct keyval
+typedef struct keyval
 {
-	const int key;
-	const neutrino_locale_t value;
+	int key;
+	neutrino_locale_t value;
 	const char* valname;
-};
-#endif
+} keyval_struct;
 
 // CChangeObserver
 class CChangeObserver
@@ -180,10 +178,14 @@ class CMenuItem
 
 		//
 		virtual void setHelpText(const char* const Text){itemHelpText =  Text;};
+		virtual void setHelpText(const neutrino_locale_t locale){itemHelpText = g_Locale->getText(locale); };
 
 		//
 		virtual void setIconName(const char* const icon){iconName = icon;};
 		virtual void setItemIcon(const char* const icon){itemIcon = icon;};
+
+		//
+		virtual void setDirectKey(neutrino_msg_t key){directKey = key;};
 
 		//
 		virtual void setIcon1(const char* const icon){icon1 = icon;};
