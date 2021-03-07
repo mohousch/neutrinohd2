@@ -35,6 +35,8 @@
 #include <gui/widget/widget.h>
 
 
+
+extern CLocaleManager		*g_Locale;
 //extern CFont* g_Font[FONT_TYPE_COUNT];
 
 // item type
