@@ -171,10 +171,10 @@ function select_playitem()
 	local m = nil
 	local item = nil
 
-	m = neutrino.ClistBoxWidget("Wunderschön", neutrino.PLUGINDIR .. "/Wunderschön/Wunderschön_hint.png", 1.5*neutrino.MENU_WIDTH, 600) 
+	m = neutrino.ClistBoxWidget("Wunderschön", neutrino.PLUGINDIR .. "/Wunderschön/Wunderschön_hint.png", 2*neutrino.MENU_WIDTH) 
 
 	m:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
-	m:setMode(neutrino.MODE_LISTBOX)
+	m:setMode(neutrino.MODE_MENU)
 	m:enableShrinkMenu()
 	m:enablePaintDate()
 
@@ -206,7 +206,7 @@ function select_playitem()
 		info1 = func[p[selected + 1].access](p[selected + 1].from)
 
 		if movie ~= nil then
-			vPlay:addToPlaylist(movie, title, info1)
+			vPlay:addToPlaylist(movie, title, info1, "", neutrino.PLUGINDIR .. "/Wunderschön/Wunderschön_hint.png")
 			vPlay:exec(None, "")
 		end
 	end
