@@ -154,6 +154,8 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 	cFrameFootInfo.iY = 0;
 	cFrameFootInfo.iWidth = 0;
 
+	footInfoMode = FOOT_INFO_MODE;
+
 	timeout = 0;
 
 	//
@@ -693,39 +695,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	{
 		if(widgetMode == MODE_MENU)
 		{
-/*
-			if(paintFootInfo)
-			{
-				CMenuItem* item = items[pos];
-
-				item->getYPosition();
-	
-				// detailslines|box
-				itemsLine.paint(x, y, width, height, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
-
-				// item icon
-				if(!item->itemIcon.empty())
-					frameBuffer->displayImage(item->itemIcon.c_str(), x + ICON_OFFSET, y + height + (cFrameFootInfo.iHeight - 40)/2, 100, 40);
-
-				// HelpText
-				if(textBox)
-				{
-					delete textBox;
-					textBox = NULL;
-				}
-	
-				textBox = new CTextBox(x + 100 + ICON_OFFSET, y + full_height - cFrameFootInfo.iHeight + 2, width - 4 - ICON_OFFSET - 100, cFrameFootInfo.iHeight - 4);
-				textBox->disablePaintBackground();
-				textBox->setMode(~SCROLL);
-
-				if(!item->itemHelpText.empty())
-				{
-					textBox->setText(item->itemHelpText.c_str());
-					textBox->paint();
-				}
-			}
-*/
-			if(paintFootInfo && (fbutton_count == 0))
+			if(fbutton_count == 0)
 			{
 				CMenuItem* item = items[pos];
 
@@ -750,53 +720,83 @@ void ClistBoxWidget::paintItemInfo(int pos)
 		{
 			if(paintFootInfo)
 			{
-				CMenuItem * item = items[pos];
+				if (footInfoMode == FOOT_INFO_MODE)
+				{
+					CMenuItem * item = items[pos];
 
-				item->getYPosition();
+					item->getYPosition();
 	
-				// detailslines
-				itemsLine.paint(x, y, width, height, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
+					// detailslines
+					itemsLine.paint(x, y, width, height, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
 
-				// option_info1
-				int l_ow1 = 0;
-				if(!item->option_info1.empty())
-				{
-					l_ow1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->option_info1.c_str());
+					// option_info1
+					int l_ow1 = 0;
+					if(!item->option_info1.empty())
+					{
+						l_ow1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->option_info1.c_str());
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + width - BORDER_RIGHT - l_ow1, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->option_info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+						g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + width - BORDER_RIGHT - l_ow1, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->option_info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+					}
+
+					// info1
+					int l_w1 = 0;
+					if(!item->info1.empty())
+					{
+						l_w1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(item->info1.c_str());
+
+						if(l_w1 >= (width - BORDER_LEFT - BORDER_RIGHT - l_ow1))
+							l_w1 = 0;
+
+						g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+					}
+
+					// option_info2
+					int l_ow2 = 0;
+					if(!item->option_info2.empty())
+					{
+						l_ow2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(item->option_info2.c_str());
+
+						g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + width - BORDER_RIGHT - l_ow2, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->option_info2.c_str(), COL_MENUFOOT_INFO, 0, true);
+					}
+
+					// info2
+					int l_w2 = 0;
+					if(!item->info2.empty())
+					{
+						l_w2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->info2.c_str());
+
+						if(l_w2 >= (width - BORDER_LEFT - BORDER_RIGHT - l_ow2))
+							l_w2 = 0;
+
+						g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->info2.c_str(), COL_MENUFOOT_INFO, 0, true); // UTF-8
+					}
 				}
-
-				// info1
-				int l_w1 = 0;
-				if(!item->info1.empty())
+				else if (footInfoMode == FOOT_HINT_MODE)
 				{
-					l_w1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(item->info1.c_str());
+					CMenuItem* item = items[pos];
 
-					if(l_w1 >= (width - BORDER_LEFT - BORDER_RIGHT - l_ow1))
-						l_w1 = 0;
+					item->getYPosition();
+	
+					// detailslines|box
+					itemsLine.paint(x, y, width, height, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->info1.c_str(), COL_MENUFOOT_INFO, 0, true);
-				}
+					// HelpText
+					if(textBox)
+					{
+						delete textBox;
+						textBox = NULL;
+					}
+	
+					textBox = new CTextBox(x + 2, y + full_height - cFrameFootInfo.iHeight + 2, width - 4, cFrameFootInfo.iHeight - 4);
 
-				// option_info2
-				int l_ow2 = 0;
-				if(!item->option_info2.empty())
-				{
-					l_ow2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(item->option_info2.c_str());
+					textBox->disablePaintBackground();
+					textBox->setMode(~SCROLL);
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + width - BORDER_RIGHT - l_ow2, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->option_info2.c_str(), COL_MENUFOOT_INFO, 0, true);
-				}
-
-				// info2
-				int l_w2 = 0;
-				if(!item->info2.empty())
-				{
-					l_w2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->info2.c_str());
-
-					if(l_w2 >= (width - BORDER_LEFT - BORDER_RIGHT - l_ow2))
-						l_w2 = 0;
-
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->info2.c_str(), COL_MENUFOOT_INFO, 0, true); // UTF-8
+					if(!item->itemHelpText.empty())
+					{
+						textBox->setText(item->itemHelpText.c_str());
+						textBox->paint();
+					}
 				}
 			}
 		}
@@ -805,7 +805,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	{
 		if(widgetMode == MODE_MENU)
 		{
-			if(paintFootInfo && (fbutton_count == 0))
+			if(fbutton_count == 0)
 			{
 				CMenuItem* item = items[pos];
 
@@ -830,53 +830,83 @@ void ClistBoxWidget::paintItemInfo(int pos)
 		{
 			if(paintFootInfo)
 			{
-				CMenuItem * item = items[pos];
+				if (footInfoMode == FOOT_INFO_MODE)
+				{
+					CMenuItem * item = items[pos];
 
-				item->getYPosition();
+					item->getYPosition();
 	
-				// detailslines
-				itemsLine.paint(x, y, width, height, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
+					// detailslines
+					itemsLine.paint(x, y, width, height, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
 
-				// option_info1
-				int l_ow1 = 0;
-				if(!item->option_info1.empty())
-				{
-					l_ow1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->option_info1.c_str());
+					// option_info1
+					int l_ow1 = 0;
+					if(!item->option_info1.empty())
+					{
+						l_ow1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->option_info1.c_str());
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + width - BORDER_RIGHT - l_ow1, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->option_info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+						g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + width - BORDER_RIGHT - l_ow1, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->option_info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+					}
+
+					// info1
+					int l_w1 = 0;
+					if(!item->info1.empty())
+					{
+						l_w1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(item->info1.c_str());
+
+						if(l_w1 >= (width - BORDER_LEFT - BORDER_RIGHT - l_ow1))
+							l_w1 = 0;
+
+						g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->info1.c_str(), COL_MENUFOOT_INFO, 0, true);
+					}
+
+					// option_info2
+					int l_ow2 = 0;
+					if(!item->option_info2.empty())
+					{
+						l_ow2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(item->option_info2.c_str());
+
+						g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + width - BORDER_RIGHT - l_ow2, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->option_info2.c_str(), COL_MENUFOOT_INFO, 0, true);
+					}
+
+					// info2
+					int l_w2 = 0;
+					if(!item->info2.empty())
+					{
+						l_w2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->info2.c_str());
+
+						if(l_w2 >= (width - BORDER_LEFT - BORDER_RIGHT - l_ow2))
+							l_w2 = 0;
+
+						g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->info2.c_str(), COL_MENUFOOT_INFO, 0, true); // UTF-8
+					}
 				}
-
-				// info1
-				int l_w1 = 0;
-				if(!item->info1.empty())
+				else if (footInfoMode == FOOT_HINT_MODE)
 				{
-					l_w1 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(item->info1.c_str());
+					CMenuItem* item = items[pos];
 
-					if(l_w1 >= (width - BORDER_LEFT - BORDER_RIGHT - l_ow1))
-						l_w1 = 0;
+					item->getYPosition();
+	
+					// detailslines|box
+					itemsLine.paint(x, y, width, height, cFrameFootInfo.iHeight, item->getHeight(), item->getYPosition());
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow1, item->info1.c_str(), COL_MENUFOOT_INFO, 0, true);
-				}
+					// HelpText
+					if(textBox)
+					{
+						delete textBox;
+						textBox = NULL;
+					}
+	
+					textBox = new CTextBox(x + 2, y + full_height - cFrameFootInfo.iHeight + 2, width - 4, cFrameFootInfo.iHeight - 4);
 
-				// option_info2
-				int l_ow2 = 0;
-				if(!item->option_info2.empty())
-				{
-					l_ow2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(item->option_info2.c_str());
+					textBox->disablePaintBackground();
+					textBox->setMode(~SCROLL);
 
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(x + width - BORDER_RIGHT - l_ow2, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->option_info2.c_str(), COL_MENUFOOT_INFO, 0, true);
-				}
-
-				// info2
-				int l_w2 = 0;
-				if(!item->info2.empty())
-				{
-					l_w2 = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(item->info2.c_str());
-
-					if(l_w2 >= (width - BORDER_LEFT - BORDER_RIGHT - l_ow2))
-						l_w2 = 0;
-
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString (x + BORDER_LEFT, y + height + cFrameFootInfo.iHeight/2 + (cFrameFootInfo.iHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT - l_ow2, item->info2.c_str(), COL_MENUFOOT_INFO, 0, true); // UTF-8
+					if(!item->itemHelpText.empty())
+					{
+						textBox->setText(item->itemHelpText.c_str());
+						textBox->paint();
+					}
 				}
 			}
 		}
@@ -892,7 +922,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 			int iw, ih;
 
 			// helpText
-			if(fbutton_count == 0 && paintFootInfo)
+			if(fbutton_count == 0)
 			{
 				// refresh box
 				frameBuffer->paintBoxRel(x, y + full_height - fheight, width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM, g_settings.Foot_gradient);
@@ -940,28 +970,25 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	else if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		// helpText
-		//if(paintFootInfo)
+		frameBuffer->paintBoxRel(x, y + height - fheight - (fbutton_count != 0? fheight : 0), width, fheight, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
+
+		// refresh horizontal line buttom
+		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight - (fbutton_count != 0? fheight : 0) + 2, COL_MENUCONTENT_PLUS_5);
+
+		if(items.size() > 0)
 		{
-			frameBuffer->paintBoxRel(x, y + height - fheight - (fbutton_count != 0? fheight : 0), width, fheight, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
-
-			// refresh horizontal line buttom
-			frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight - (fbutton_count != 0? fheight : 0) + 2, COL_MENUCONTENT_PLUS_5);
-
-			if(items.size() > 0)
-			{
-				CMenuItem* item = items[pos];
+			CMenuItem* item = items[pos];
 	
-				// itemName
-				if(!item->itemName.empty())
-				{
-					g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height - fheight - (fbutton_count != 0? fheight : 0) + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE] ->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT, item->itemName.c_str(), COL_MENUFOOT_INFO);
-				}
+			// itemName
+			if(!item->itemName.empty())
+			{
+				g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, y + height - fheight - (fbutton_count != 0? fheight : 0) + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE] ->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), width - BORDER_LEFT - BORDER_RIGHT, item->itemName.c_str(), COL_MENUFOOT_INFO);
+			}
 
-				// helpText
-				if(!item->itemHelpText.empty())
-				{
-					g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT, y + height - (fbutton_count != 0? fheight : 0), width - BORDER_LEFT - BORDER_RIGHT, item->itemHelpText.c_str(), COL_MENUFOOT_INFO);
-				}
+			// helpText
+			if(!item->itemHelpText.empty())
+			{
+				g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT, y + height - (fbutton_count != 0? fheight : 0), width - BORDER_LEFT - BORDER_RIGHT, item->itemHelpText.c_str(), COL_MENUFOOT_INFO);
 			}
 		}
 	}

@@ -48,9 +48,8 @@ enum
 	ITEM_TYPE_OPTION_LANGUAGE_CHOOSER,
 	ITEM_TYPE_SEPARATOR,
 	ITEM_TYPE_FORWARDER,
-	ITEM_TYPE_SELECTOR,
-	ITEM_TYPE_LISTBOX,
-	ITEM_TYPE_LISTBOX_ENTRY
+	ITEM_TYPE_LOCKED_FORWARDER,
+	ITEM_TYPE_LISTBOXITEM
 };
 
 enum
@@ -58,7 +57,7 @@ enum
 	WIDGET_TYPE_STANDARD = 0,
 	WIDGET_TYPE_CLASSIC,
 	WIDGET_TYPE_EXTENDED,
-	WIDGET_TYPE_FRAME,
+	WIDGET_TYPE_FRAME
 };
 
 enum 
@@ -66,6 +65,12 @@ enum
 	MODE_MENU = 0,
 	MODE_SETUP,
 	MODE_LISTBOX
+};
+
+enum
+{
+	FOOT_INFO_MODE = 0,
+	FOOT_HINT_MODE
 };
 
 // line separator
@@ -519,6 +524,7 @@ class ClistBox : public CWidgetItem
 		CItems2DetailsLine itemsLine;
 		CScrollBar scrollBar;
 		CButtons buttons;
+		int footInfoMode;
 
 		// frame
 		//fb_pixel_t backgroundColor;
@@ -604,6 +610,7 @@ class ClistBox : public CWidgetItem
 
 		// item footInfo
 		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh;};
+		void setFootInfoMode(int mode = FOOT_INFO_MODE){footInfoMode = mode;};
 
 		virtual void scrollLineDown(const int lines = 1);
 		virtual void scrollLineUp(const int lines = 1);

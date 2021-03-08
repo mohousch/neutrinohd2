@@ -2968,9 +2968,7 @@ void CTestMenu::testClistBox()
 
 		listBox->addItem(item);
 
-		std::string tmp = m_vMovieInfo[i].epgTitle;
-		tmp += "\n";
-		tmp += m_vMovieInfo[i].epgInfo1;
+		std::string tmp = m_vMovieInfo[i].epgInfo1;
 		tmp += "\n";
 		tmp += m_vMovieInfo[i].epgInfo2;
 
@@ -2981,6 +2979,7 @@ void CTestMenu::testClistBox()
 	listBox->setWidgetType(WIDGET_TYPE_STANDARD);
 	listBox->setWidgetMode(MODE_LISTBOX);
 	listBox->enableCenterPos();
+	listBox->enableShrinkMenu();
 
 	// head
 	listBox->setTitle("ClistBox(standard)", NEUTRINO_ICON_MOVIE);
@@ -2994,6 +2993,7 @@ void CTestMenu::testClistBox()
 
 	// footinfo
 	listBox->enablePaintFootInfo(80);
+	listBox->setFootInfoMode(FOOT_HINT_MODE);
 
 	listBox->setSelected(selected);
 	listBox->paint();
@@ -3107,9 +3107,7 @@ void CTestMenu::testClistBox2()
 
 		item->set2lines();
 
-		std::string tmp = m_vMovieInfo[i].epgTitle;
-		tmp += "\n";
-		tmp += m_vMovieInfo[i].epgInfo1;
+		std::string tmp = m_vMovieInfo[i].epgInfo1;
 		tmp += "\n";
 		tmp += m_vMovieInfo[i].epgInfo2;
 
@@ -3122,6 +3120,7 @@ void CTestMenu::testClistBox2()
 	listBox->setWidgetType(WIDGET_TYPE_CLASSIC);
 	listBox->setWidgetMode(MODE_LISTBOX);
 	listBox->enableCenterPos();
+	listBox->enableShrinkMenu();
 
 	// head
 	listBox->setTitle("ClistBox(classic)", NEUTRINO_ICON_MOVIE);
@@ -3135,6 +3134,7 @@ void CTestMenu::testClistBox2()
 
 	// footinfo
 	listBox->enablePaintFootInfo(80);
+	listBox->setFootInfoMode(FOOT_HINT_MODE);
 
 	listBox->setSelected(selected);
 	listBox->paint();
@@ -3262,6 +3262,7 @@ void CTestMenu::testClistBox3()
 	listBox->setWidgetType(WIDGET_TYPE_EXTENDED);
 	listBox->setWidgetMode(MODE_LISTBOX);
 	listBox->enableCenterPos();
+	listBox->enableShrinkMenu();
 
 	// head
 	listBox->setTitle("ClistBox(extended)", NEUTRINO_ICON_MOVIE);
@@ -3400,6 +3401,7 @@ void CTestMenu::testClistBox4()
 	listBox->setItemsPerPage(6,2);
 	listBox->setWidgetMode(MODE_LISTBOX);
 	listBox->enableCenterPos();
+	listBox->enableShrinkMenu();
 
 	// head
 	listBox->setTitle("ClistBox(Frame)", NEUTRINO_ICON_MOVIE);
@@ -3540,6 +3542,7 @@ void CTestMenu::testClistBox5()
 	listBox->setWidgetType(WIDGET_TYPE_STANDARD);
 	listBox->setWidgetMode(MODE_MENU);
 	listBox->enableCenterPos();
+	listBox->enableShrinkMenu();
 
 	//
 	listBox->addWidget(WIDGET_TYPE_CLASSIC);
@@ -3695,6 +3698,7 @@ void CTestMenu::testClistBox6()
 	listBox->setWidgetType(WIDGET_TYPE_STANDARD);
 	listBox->setWidgetMode(MODE_LISTBOX);
 	listBox->enableCenterPos();
+	listBox->enableShrinkMenu();
 
 	//
 	listBox->addWidget(WIDGET_TYPE_CLASSIC);
@@ -4567,7 +4571,7 @@ void CTestMenu::testShowPictureDir()
 void CTestMenu::testClistBoxWidget()
 {
 	// our listBox
-	listMenu = new ClistBoxWidget("list Mode", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	listMenu = new ClistBoxWidget("ClistBoxWidget(list Mode)", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
 	//
 	loadMoviePlaylist();
@@ -4596,6 +4600,7 @@ void CTestMenu::testClistBoxWidget()
 	listMenu->addWidget(WIDGET_TYPE_FRAME);
 	listMenu->enableWidgetChange();
 	listMenu->setItemsPerPage(6, 2);
+	listMenu->enableShrinkMenu();
 
 	listMenu->setSelected(selected);
 
@@ -4607,7 +4612,8 @@ void CTestMenu::testClistBoxWidget()
 	listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// footinfo
-	listMenu->enablePaintFootInfo();
+	listMenu->enablePaintFootInfo(80);
+	listMenu->setFootInfoMode(FOOT_HINT_MODE);
 
 	listMenu->addKey(RC_info, this, "minfo");
 
@@ -4621,7 +4627,7 @@ void CTestMenu::testClistBoxWidget()
 void CTestMenu::testClistBoxWidget1()
 {
 	// our listBox
-	listMenu = new ClistBoxWidget("Menu Mode", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	listMenu = new ClistBoxWidget("ClistBoxWidget(Menu Mode)", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
 	//
 	loadMoviePlaylist();
@@ -4646,6 +4652,7 @@ void CTestMenu::testClistBoxWidget1()
 	listMenu->setMode(MODE_MENU);
 	listMenu->setItemsPerPage(6, 2);
 	listMenu->enableWidgetChange();
+	listMenu->enableShrinkMenu();
 
 	listMenu->setSelected(selected);
 
@@ -4654,10 +4661,11 @@ void CTestMenu::testClistBoxWidget1()
 	listMenu->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 
 	// foot
-	listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
+	//listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	// foot info
 	listMenu->enablePaintFootInfo();
+	listMenu->setFootInfoMode(FOOT_HINT_MODE);
 
 	listMenu->addKey(RC_info, this, "minfo");
 
