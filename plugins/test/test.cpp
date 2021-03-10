@@ -894,18 +894,18 @@ void CTestMenu::widget()
 	CFrame * frame = NULL;
 
 	frame = new CFrame("Filme");
-	frame->setMenuTarget(this, "movie");
+	frame->setActionKey(this, "movie");
 	topWidget->addFrame(frame);
 	
 	frame = new CFrame("Serien");
-	frame->setMenuTarget(this, "tv");
+	frame->setActionKey(this, "tv");
 	topWidget->addFrame(frame);
 
 	topWidget->addFrame(new CFrameSeparator());
 
 	frame = new CFrame("Suche");
 	frame->setOption(tmdbsearch.c_str());
-	frame->setMenuTarget(this, "search");
+	frame->setActionKey(this, "search");
 	topWidget->addFrame(frame);
 
 	topWidget->setSelected(top_selected); 
@@ -942,21 +942,21 @@ void CTestMenu::widget()
 
 	CFrame *frame1 = new CFrame("in den");
 	frame1->setOption("kinos");
-	frame1->setMenuTarget(this, "movie_in_cinema");
+	frame1->setActionKey(this, "movie_in_cinema");
 
 	CFrame *frame2 = new CFrame("Am");
 	frame2->setOption("populärsten");
-	frame2->setMenuTarget(this, "movie_popular");
+	frame2->setActionKey(this, "movie_popular");
 
 	CFrame *frame3 = new CFrame("am besten");
 	frame3->setOption("bewertet");
-	frame3->setMenuTarget(this, "movie_top_rated");
+	frame3->setActionKey(this, "movie_top_rated");
 
 	CFrame *frame4 = new CFrameSeparator();
 	CFrame *frame5 = new CFrameSeparator();
 
 	CFrame *frame6 = new CFrame("Beenden");
-	frame6->setMenuTarget(this, "exit");
+	frame6->setActionKey(this, "exit");
 
 	leftFrame->addFrame(frame1);
 	leftFrame->addFrame(frame2);
@@ -1447,7 +1447,7 @@ void CTestMenu::test()
 
 	frame = new CFrame("Suche");
 	frame->setOption(tmdbsearch.c_str());
-	frame->setMenuTarget(this, "search");
+	frame->setActionKey(this, "search");
 	topWidget->addFrame(frame);
 
 	topWidget->setSelected(top_selected); 
@@ -3835,7 +3835,7 @@ void CTestMenu::testCFrameBox()
 	topWidget->addFrame(new CFrameSeparator());
 
 	frame = new CFrame("Exit");
-	frame->setMenuTarget(this, "exit");
+	frame->setActionKey(this, "exit");
 	topWidget->addFrame(frame);
 
 	topWidget->setMode(FRAME_MODE_VERTICAL);

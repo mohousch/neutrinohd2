@@ -205,6 +205,7 @@ function exec(id, msg)
 end
 
 function red_action()
+	print("do red actionKey:")
 	messageBox()
 end
 
@@ -657,9 +658,10 @@ function main()
 	m:enableShrinkMenu()
 	m:enablePaintFootInfo()
 
-	item1 = neutrino.CMenuForwarder("testCWidget")
+	item1 = neutrino.CMenuForwarder("testCWidget", true, "", self, "listWidget")
 	item1:setInfo1("lua: testing CWidget")
 	item2 = neutrino.CMenuForwarder("testClistBoxWidget")
+	item2:setActionKey(neutrino.CAudioPlayerSettings(), "listBoxWidget")
 	item2:setInfo1("lua: testing ClistBoxWidget")
 	item3 = neutrino.CMenuForwarder("testClistBox")
 	item3:setInfo1("lua: testing ClistBox")
@@ -667,6 +669,7 @@ function main()
 	item4:setInfo1("lua: testing CWindow")
 	item5 = neutrino.CMenuForwarder("testCFrameBox")
 	item5:setInfo1("lua: testing CFrameBox")
+	item5:setActionKey(neutrino.CAudioPlayerSettings(), "")
 
 	m:addItem(item1)
 	m:addItem(item2)
@@ -681,7 +684,18 @@ function main()
 	m:setSelected(selected)
 
 	m:exec(None, "")
+
 	selected = m:getSelected() 
+	actionKey = m:getActionKey()
+	Key = m:getKey()
+
+	if actionKey == "listWidget" then
+		print("lua:sample: main(): listWidget")
+		testCWidget()
+	elseif actionKey == "listBoxWidget" then
+		print("lua:sample: main(): listBoxWidget")
+		testClistBoxWidget()
+	end
 
 	if selected >= 0 then
 		if selected == 0 then
@@ -692,8 +706,8 @@ function main()
 			testClistBox()
 		elseif selected == 3 then
 			testCWindow()
-		elseif selected == 4 then
-			testCFrameBox()
+		--elseif selected == 4 then
+		--	testCFrameBox()
 		end
 	end
 	

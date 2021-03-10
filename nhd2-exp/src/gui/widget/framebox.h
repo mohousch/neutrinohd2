@@ -62,7 +62,7 @@ class CFrame
 		virtual void setTitle(const char * text){caption = text;};
 		virtual void setIconName(const char* const icon){iconName = icon;};
 		virtual void setOption(const char* text){option = text;};
-		virtual void setMenuTarget(CMenuTarget *Target, const char *const ActionKey){jumpTarget = Target; actionKey = ActionKey;};
+		virtual void setActionKey(CMenuTarget *Target, const char *const ActionKey){jumpTarget = Target; actionKey = ActionKey;};
 
 		int exec(CMenuTarget* parent);
 

@@ -164,6 +164,8 @@ class ClistBoxWidget : public CMenuTarget
 
 		int widgetMode;
 		bool MenuPos;
+
+		std::string actionKey;
 		
 	public:
 		ClistBoxWidget();
@@ -244,6 +246,9 @@ class ClistBoxWidget : public CMenuTarget
 
 		virtual std::string& getString(void) { if (hasItem())return items[selected]->itemName; };
 		virtual CMenuItem *getSelectedItem(void){if (hasItem()) return items[selected];};
+
+		//
+		std::string getActionKey(){return actionKey;};
 };
 
 #endif

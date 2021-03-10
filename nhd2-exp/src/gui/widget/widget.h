@@ -88,6 +88,9 @@ class CWidget : public CMenuTarget
 
 		fb_pixel_t backgroundColor;
 
+		//
+		std::string actionKey;
+
 	public:
 		CWidget(const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		CWidget(CBox *position);
@@ -121,6 +124,9 @@ class CWidget : public CMenuTarget
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
 
 		void enableSaveScreen();
+
+		//
+		std::string getActionKey(){return actionKey;};
 
 		// events
 		virtual void onOKKeyPressed();

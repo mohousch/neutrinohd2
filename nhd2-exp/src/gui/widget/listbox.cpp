@@ -76,6 +76,9 @@ CMenuItem::CMenuItem()
 	widgetType = WIDGET_TYPE_STANDARD;
 
 	marked = false;
+
+	jumpTarget = NULL;
+	actionKey = "";
 }
 
 void CMenuItem::init(const int X, const int Y, const int DX, const int OFFX)

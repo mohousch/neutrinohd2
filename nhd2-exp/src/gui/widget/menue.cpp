@@ -173,6 +173,8 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 
 	widgetMode = MODE_LISTBOX;
 	MenuPos = false;
+
+	actionKey = "";
 }
 
 void ClistBoxWidget::move(int xoff, int yoff)
@@ -1161,6 +1163,8 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 			
 			if (it != keyActionMap.end()) 
 			{
+				actionKey = it->second.action;
+
 				if (it->second.menue != NULL)
 				{
 					int rv = it->second.menue->exec(this, it->second.action);
@@ -1212,6 +1216,9 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 						paintItemInfo(selected);
 						pos = selected;
 						msg = RC_ok;
+
+						if(titem->jumpTarget != NULL)
+							actionKey = titem->actionKey;
 					} 
 					else 
 					{
@@ -1638,6 +1645,9 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 							//exec this item...
 							CMenuItem* item = items[selected];
 							item->msg = msg;
+
+							if(item->jumpTarget != NULL)
+								actionKey = item->actionKey;
 							
 							int rv = item->exec(this);
 							

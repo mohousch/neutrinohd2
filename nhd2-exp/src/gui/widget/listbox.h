@@ -88,7 +88,7 @@ typedef struct keyval
 {
 	int key;
 	neutrino_locale_t value;
-	const char* valname;
+	char* valname;
 } keyval_struct;
 
 // CChangeObserver
@@ -150,6 +150,9 @@ class CMenuItem
 
 		bool nLinesItem; // 2 lines Item (classicWidget)
 
+		CMenuTarget *jumpTarget;
+		std::string actionKey;
+
 		CMenuItem();
 		virtual ~CMenuItem(){};
 
@@ -192,9 +195,6 @@ class CMenuItem
 		virtual void setItemIcon(const char* const icon){itemIcon = icon;};
 
 		//
-		virtual void setDirectKey(neutrino_msg_t key){directKey = key;};
-
-		//
 		virtual void setIcon1(const char* const icon){icon1 = icon;};
 		virtual void setIcon2(const char* const icon){icon2 = icon;};
 		virtual void setNumber(int nr){number = nr;};
@@ -205,6 +205,10 @@ class CMenuItem
 
 		virtual void set2lines(void){nLinesItem = true;};
 		virtual void setWidgetType(int type){widgetType = type;};
+
+		//
+		virtual void setDirectKey(neutrino_msg_t key){directKey = key;};
+		virtual void setActionKey(CMenuTarget *Target, const char *const ActionKey){jumpTarget = Target; actionKey = ActionKey;};
 };
 
 // CMenuOptionChooser
@@ -362,9 +366,6 @@ class CMenuSeparator : public CMenuItem
 // CMenuForwarder
 class CMenuForwarder : public CMenuItem
 {
-	CMenuTarget* jumpTarget;
-	std::string actionKey;
-
 	//
 	std::string optionValueString;
 
@@ -440,9 +441,6 @@ class CLockedMenuForwarder : public CMenuForwarder, public CPINProtection
 // CMenulistBoxItem
 class ClistBoxItem : public CMenuItem
 {
-	CMenuTarget* jumpTarget;
-	std::string actionKey;
-
 	std::string optionValueString;
 
 	protected:

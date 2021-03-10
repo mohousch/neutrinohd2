@@ -55,6 +55,8 @@ CWidget::CWidget(const int x, const int y, const int dx, const int dy)
 	selected = -1;
 
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
+
+	actionKey = "";
 }
 
 CWidget::CWidget(CBox *position)
@@ -73,6 +75,8 @@ CWidget::CWidget(CBox *position)
 	selected = -1;
 
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
+
+	actionKey = "";
 }
 
 CWidget::~CWidget()
