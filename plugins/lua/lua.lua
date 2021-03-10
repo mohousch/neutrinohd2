@@ -227,7 +227,7 @@ function testCWidget()
 	listBox:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
 
 	-- CMessageBox
-	item1 = neutrino.CMenuForwarder("CMessageBox")
+	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", null, "msgBox")
 	item1:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item1:setHelpText("testing CMessageBox")
 	item1:setInfo1("testing CMessageBox")
@@ -237,42 +237,49 @@ function testCWidget()
 	item2:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item2:setHelpText("testing CHelpBox")
 	item2:setInfo1("testing CHelpBox")
+	item2:setActionKey(null, "helpBox")
 
 	-- CHintBox
 	item3 = neutrino.CMenuForwarder("CHintBox")
 	item3:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item3:setHelpText("testing CHintBox")
 	item3:setInfo1("testing CHintBox")
+	item3:setActionKey(null, "hintBox")
 
 	-- CInfoBox
 	item4 = neutrino.CMenuForwarder("CInfoBox")
 	item4:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item4:setHelpText("testing CInfoBox")
 	item4:setInfo1("testing CInfoBox")
+	item4:setActionKey(null, "infoBox")
 
 	-- CStringInput
 	item5 = neutrino.CMenuForwarder("CStringInput", false)
 	item5:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item5:setHelpText("testing CStringInput")
 	item5:setInfo1("testing CStringInput")
+	item5:setActionKey(null, "cStringInput")
 
 	-- CAudioPlayerGui
 	item6 = neutrino.CMenuForwarder("CAudioPlayerGui")
 	item6:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item6:setHelpText("testing CAudioPlayerGui")
 	item6:setInfo1("testing CAudioPlayerGui")
+	item6:setActionKey(null, "audioPlayer")
 
 	-- CPictureViewerGui
 	item7 = neutrino.CMenuForwarder("CPictureViewerGui")
 	item7:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item7:setHelpText("testing CPictureViewerGui")
 	item7:setInfo1("testing CPictureViewerGui")
+	item7:setActionKey(null, "pictureViewer")
 
 	-- CMoviePlayerGui
 	item8 = neutrino.CMenuForwarder("CMoviePlayerGui")
 	item8:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item8:setHelpText("testing CMoviePlayerGui")
 	item8:setInfo1("testing CMoviePlayerGui")
+	item8:setActionKey(null, "moviePlayer")
 
 	listBox:addItem(item1)
 	listBox:addItem(item2)
@@ -293,17 +300,32 @@ function testCWidget()
 
 	testWidget:addItem(listBox)
 
-	testWidget:addKey(neutrino.RC_info)
-	--testWidget:addKey(neutrino.RC_ok)
+	testWidget:addKey(neutrino.RC_info, self, "info")
 
-	--repeat
 	testWidget:exec(null, "")
+
 	selected = listBox:getSelected()
+
 	w_selected = testWidget:getSelected()
 	key = testWidget:getKey()
+	actionKey = testWidget:getActionKey()
 
-	if selected >= 0 and w_selected >= 0 then
-		exec(selected, key)
+	if actionKey == "msgBox" then
+		messageBox()
+	elseif actionKey == "helpBox" then
+		helpBox()
+	elseif actionKey == "hintBox" then
+		hintBox()
+	elseif actionKey == "cStringInput" then
+		stringInput()
+	elseif actionKey == "audioPlayer" then
+		audioPlayer()
+	elseif actionKey == "pictureViewer" then
+		pictureViewer()
+	elseif actionKey == "moviePlayer" then
+		moviePlayer()
+	elseif actionKey == "info" or actionKey == "infoBox" then
+		infoBox()
 	end
 
 	if testWidget:getExitPressed() ~= true then
@@ -523,13 +545,13 @@ function testCWindow()
 	--m:enablePaintMainFrame()
 	m:enableCenterPos()
 
-	m:addKey(neutrino.RC_ok)
+	--m:addKey(neutrino.RC_ok)
 	m:addKey(neutrino.RC_down)
 	m:addKey(neutrino.RC_up)
 	m:addKey(neutrino.RC_info)
 	m:addKey(neutrino.RC_red)
 	m:addKey(neutrino.RC_green)
-	m:addKey(neutrino.RC_yellow)
+	m:addKey(neutrino.RC_yellow, null, "moviePlayer")
 	m:addKey(neutrino.RC_blue)
 
 	window:paint()
@@ -544,19 +566,26 @@ function testCWindow()
 
 
 	local key = m:getKey()
-		
-	if key == neutrino.RC_ok or key == neutrino.RC_info then
+	local actionKey = m:getActionKey()
+
+	print(actionKey)
+
+	if actionKey == "moviePlayer" then
+		print("lua sample: testCWindow(): actionKey: moviePlayer")
+
 		window:hide()
-		infoBox()
-	elseif key == neutrino.RC_red then
+		moviePlayer()
+	end
+		
+	if key == neutrino.RC_red then
 		window:hide()
 		audioPlayer()
 	elseif key == neutrino.RC_green then
 		window:hide()
 		pictureViewer()
-	elseif key == neutrino.RC_yellow then
-		window:hide()
-		moviePlayer()
+	--elseif key == neutrino.RC_yellow then
+	--	window:hide()
+	--	moviePlayer()
 	elseif key == neutrino.RC_blue then
 		window:hide()
 		infoBox()
@@ -588,6 +617,7 @@ function testCFrameBox()
 	frame3 = neutrino.CFrame("MoviePlayer")
 	frame3:setIconName(neutrino.NEUTRINO_ICON_MOVIE)
 	frame3:setOption("spielt Movie Dateien")
+	frame3:setActionKey(null, "moviePlayer")
 
 	frameBox:addFrame(frame1)
 	frameBox:addFrame(frame2)
@@ -610,41 +640,45 @@ function testCFrameBox()
 	m:addKey(neutrino.RC_info)
 
 	repeat
-	frameBox:paint()
+		frameBox:paint()
 
-	m:exec(null, "")
+		m:exec(null, "")
 
-	local selected = frameBox:getSelected()
-	local m_selected = m:getSelected()
-	
-	local key = m:getKey()
+		local selected = frameBox:getSelected()
+		local actionKey = frameBox:getActionKey()
 
-	if key == neutrino.RC_left then
-		frameBox:swipLeft()
-	elseif key == neutrino.RC_right then
-		frameBox:swipRight()
-	elseif key == neutrino.RC_down then
-		frameBox:scrollLineDown()
-	elseif key == neutrino.RC_up then
-		frameBox:scrollLineUp()
-	elseif key == neutrino.RC_info then
-		infoBox()
-	elseif key == neutrino.RC_ok then
-		frameBox:hide()
+		local key = m:getKey()
 
-		if selected >=0 and m_selected >= 0 then
-			if selected == 0 then
-				audioPlayer()
-			elseif selected == 1 then
-				pictureViewer()
-			elseif selected == 2 then
+		if key == neutrino.RC_left then
+			frameBox:swipLeft()
+		elseif key == neutrino.RC_right then
+			frameBox:swipRight()
+		elseif key == neutrino.RC_down then
+			frameBox:scrollLineDown()
+		elseif key == neutrino.RC_up then
+			frameBox:scrollLineUp()
+		elseif key == neutrino.RC_info then
+			infoBox()
+		elseif key == neutrino.RC_ok then
+			frameBox:hide()
+
+			if actionKey == "moviePlayer" then
+				print("testCFrameBox: actionKey: moviePlayer")
 				moviePlayer()
-			elseif selected == 9 then
-				--break
+			end
+
+			if selected >=0 then
+				if selected == 0 then
+					audioPlayer()
+				elseif selected == 1 then
+					pictureViewer()
+				--elseif selected == 2 then
+				--	moviePlayer()
+				elseif selected == 9 then
+					--break
+				end
 			end
 		end
-	end
-
 	until m:getExitPressed() == true
 
 	frameBox:hide()
@@ -657,11 +691,12 @@ function main()
 	m:setMode(neutrino.MODE_LISTBOX)
 	m:enableShrinkMenu()
 	m:enablePaintFootInfo()
+	m:setFootInfoMode(neutrino.FOOT_HINT_MODE)
 
-	item1 = neutrino.CMenuForwarder("testCWidget", true, "", self, "listWidget")
+	item1 = neutrino.CMenuForwarder("testCWidget", true, "", null, "listWidget")
 	item1:setInfo1("lua: testing CWidget")
 	item2 = neutrino.CMenuForwarder("testClistBoxWidget")
-	item2:setActionKey(neutrino.CAudioPlayerSettings(), "listBoxWidget")
+	item2:setActionKey(null, "listBoxWidget")
 	item2:setInfo1("lua: testing ClistBoxWidget")
 	item3 = neutrino.CMenuForwarder("testClistBox")
 	item3:setInfo1("lua: testing ClistBox")
@@ -669,13 +704,17 @@ function main()
 	item4:setInfo1("lua: testing CWindow")
 	item5 = neutrino.CMenuForwarder("testCFrameBox")
 	item5:setInfo1("lua: testing CFrameBox")
-	item5:setActionKey(neutrino.CAudioPlayerSettings(), "")
+	item5:setActionKey(null, "frameBox")
+	item6 = neutrino.CMenuForwarder("testActionKey/jumpTarget")
+	item6:setActionKey(neutrino.CAudioPlayerSettings(), "jumpTarget")
+	item6:setInfo1("lua: testing testActionKey/jumpTarget")
 
 	m:addItem(item1)
 	m:addItem(item2)
 	m:addItem(item3)
 	m:addItem(item4)
 	m:addItem(item5)
+	m:addItem(item6)
 
 	if selected < 0 then
 		selected = 0
@@ -690,17 +729,19 @@ function main()
 	Key = m:getKey()
 
 	if actionKey == "listWidget" then
-		print("lua:sample: main(): listWidget")
+		print("lua:sample: main(): actionKey: listWidget")
 		testCWidget()
-	elseif actionKey == "listBoxWidget" then
-		print("lua:sample: main(): listBoxWidget")
-		testClistBoxWidget()
+	elseif actionKey == "frameBox" then
+		print("lua:sample: main(): actionKey: frameBox")
+		testCFrameBox()
+	elseif actionKey == "jumpTarget" then
+		print("lua:sample: main(): actionKey: jumpTarget")
 	end
 
 	if selected >= 0 then
-		if selected == 0 then
+		--[[if selected == 0 then
 			testCWidget()
-		elseif selected == 1 then
+		else]]if selected == 1 then
 			testClistBoxWidget()
 		elseif selected == 2 then
 			testClistBox()

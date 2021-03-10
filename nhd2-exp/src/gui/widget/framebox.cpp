@@ -98,7 +98,7 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 
 int CFrame::exec(CMenuTarget *parent)
 {
-	dprintf(DEBUG_NORMAL, "CFrame::exec:\n");
+	dprintf(DEBUG_NORMAL, "CFrame::exec: actionKey:(%s)\n", actionKey.c_str());
 
 	if(jumpTarget)
 		return jumpTarget->exec(parent, actionKey);
@@ -127,6 +127,8 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 
 	itemType = WIDGET_ITEM_FRAMEBOX;
 
+	actionKey = "";
+
 	initFrames();
 }
 
@@ -146,6 +148,8 @@ CFrameBox::CFrameBox(CBox* position)
 	frameMode = FRAME_MODE_HORIZONTAL;
 
 	itemType = WIDGET_ITEM_FRAMEBOX;
+
+	actionKey = "";
 
 	initFrames();
 }

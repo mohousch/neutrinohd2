@@ -219,7 +219,7 @@ void CWidget::addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string &
 	keyActionMap[key].action = action;
 }
 
-int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
+int CWidget::exec(CMenuTarget *parent, const std::string &)
 {
 	dprintf(DEBUG_NORMAL, "CWidget:: exec:\n");
 
@@ -271,6 +271,8 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 			
 			if (it != keyActionMap.end()) 
 			{
+				actionKey = it->second.action;
+
 				if (it->second.menue != NULL)
 				{
 					int rv = it->second.menue->exec(this, it->second.action);
@@ -292,6 +294,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 				}
 				else
 				{
+					//actionKey = it->second.action;
 					selected = -1;
 					handled = true;
 
@@ -619,6 +622,8 @@ void CWidget::onOKKeyPressed()
 	{
 		if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) || (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
 		{
+			actionKey = items[selected]->getActionKey();
+
 			int rv = items[selected]->oKKeyPressed(this);
 
 			//FIXME:review this

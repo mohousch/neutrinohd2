@@ -568,6 +568,8 @@ class ClistBox : public CWidgetItem
 		void saveScreen();
 		void restoreScreen();
 
+		std::string actionKey;
+
 	public:
 		ClistBox(const int x = 0, int const y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		ClistBox(CBox* position);
@@ -625,6 +627,7 @@ class ClistBox : public CWidgetItem
 		int getItemHeight(){return item_height;};
 		int getFootInfoHeight(){return footInfoHeight;};
 		int getListMaxShow(void) const {return listmaxshow;};
+		std::string getActionKey(void){if (hasItem()) return items[selected]->actionKey; else return actionKey;};
 
 		void enableCenterPos(){enableCenter = true;};
 		void enableShrinkMenu(){shrinkMenu = true;};
@@ -659,6 +662,9 @@ class ClistBox : public CWidgetItem
 		virtual void onPageDownKeyPressed();
 
 		void enableSaveScreen();
+
+		//
+		std::string getName(){return l_name;};
 };
 
 #endif // LISTBOX_H_

@@ -42,9 +42,6 @@ enum{
 
 class CFrame
 {
-	CMenuTarget* jumpTarget;
-	std::string actionKey;
-
 	public:
 		CWindow window;
 		std::string iconName;
@@ -52,6 +49,9 @@ class CFrame
 		std::string option;
 
 		fb_pixel_t item_backgroundColor;
+
+		CMenuTarget* jumpTarget;
+		std::string actionKey;
 		
 		CFrame(){};
 		CFrame(const std::string title);
@@ -104,6 +104,8 @@ class CFrameBox : public CWidgetItem
 
 		int frameMode;
 
+		std::string actionKey;
+
 	public:
 		CFrameBox(const int x, int const y, const int dx, const int dy);
 		CFrameBox(CBox* position);
@@ -124,6 +126,7 @@ class CFrameBox : public CWidgetItem
 		virtual void scrollLineUp(const int lines = 1);
 
 		int getSelected(){return selected;};
+		std::string getActionKey(void){if (hasItem()) return frames[selected]->actionKey; else return actionKey;};
 
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
 

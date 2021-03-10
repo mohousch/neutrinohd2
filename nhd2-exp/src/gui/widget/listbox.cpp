@@ -1722,6 +1722,8 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 
 	itemType = WIDGET_ITEM_LISTBOX;
 
+	actionKey = "";
+
 	savescreen = false;
 	background = NULL;
 }
@@ -1794,6 +1796,8 @@ ClistBox::ClistBox(CBox* position)
 	cnt = 0;
 
 	itemType = WIDGET_ITEM_LISTBOX;
+
+	actionKey = "";
 
 	savescreen = false;
 	background = NULL;

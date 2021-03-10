@@ -1187,6 +1187,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 				}
 				else
 				{
+					//actionKey = it->second.action;
 					handled = true;
 					break;
 				}
@@ -1217,7 +1218,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 						pos = selected;
 						msg = RC_ok;
 
-						if(titem->jumpTarget != NULL)
+						//if(titem->jumpTarget != NULL)
 							actionKey = titem->actionKey;
 					} 
 					else 
@@ -1646,7 +1647,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 							CMenuItem* item = items[selected];
 							item->msg = msg;
 
-							if(item->jumpTarget != NULL)
+							//if(item->jumpTarget != NULL)
 								actionKey = item->actionKey;
 							
 							int rv = item->exec(this);

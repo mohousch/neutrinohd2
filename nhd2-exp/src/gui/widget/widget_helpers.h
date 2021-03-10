@@ -225,6 +225,9 @@ class CWidgetItem
 
 		virtual void onPageUpKeyPressed(){};
 		virtual void onPageDownKeyPressed(){};
+
+		//
+		virtual std::string getActionKey(void){ return "";};
 };
 
 // CHeaders

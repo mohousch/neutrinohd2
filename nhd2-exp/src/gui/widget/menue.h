@@ -248,6 +248,7 @@ class ClistBoxWidget : public CMenuTarget
 		virtual CMenuItem *getSelectedItem(void){if (hasItem()) return items[selected];};
 
 		//
+		std::string getName(void){ return l_name;};
 		std::string getActionKey(){return actionKey;};
 };
 
