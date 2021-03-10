@@ -34,7 +34,8 @@ endif
 if ENABLE_LUA
 SUBDIRS += lua \
 	Wunderschön \
-	netzkino_hd
+	netzkino_hd \
+	mtv
 endif
 
 
