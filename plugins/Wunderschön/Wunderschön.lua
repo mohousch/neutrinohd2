@@ -28,6 +28,7 @@ function init()
 	p = {}
 	func = {}
 	selected = -1
+	vPlay = neutrino.CMoviePlayerGui()
 	stream = 1
         tmpPath = "/tmp"
 	zdf = decodeImage("data:image/png;base64,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")
@@ -184,6 +185,8 @@ function select_playitem()
 		item:setHelpText(r.from)
 		item:setItemIcon(zdf)
 		item:set2lines()
+		item:setActionKey(null, "playMovie")
+
 		m:addItem(item)
 	end
 
@@ -193,26 +196,30 @@ function select_playitem()
 
 	m:setSelected(selected) 
 
-	local vPlay = neutrino.CMoviePlayerGui()
-	local movie = nil
-
 	m:exec(null, "")
 
 	selected = m:getSelected()
+	actionKey = m:getActionKey()
 
-	if selected >= 0 then
-		movie = func[p[selected + 1].access](p[selected + 1].url)
-		title = func[p[selected + 1].access](p[selected + 1].title)
-		info1 = func[p[selected + 1].access](p[selected + 1].from)
-
-		if movie ~= nil then
-			vPlay:addToPlaylist(movie, title, info1, "", neutrino.PLUGINDIR .. "/Wunderschön/Wunderschön_hint.png")
-			vPlay:exec(None, "")
-		end
+	if actionKey == "playMovie" then
+		playMovie(selected + 1)
 	end
 
 	if m:getExitPressed() ~= true then
 		select_playitem()
+	end
+end
+
+function playMovie(id)
+	local movie = nil
+
+	movie = func[p[id].access](p[id].url)
+	title = func[p[id].access](p[id].title)
+	info1 = func[p[id].access](p[id].from)
+
+	if movie ~= nil then
+		vPlay:addToPlaylist(movie, title, info1, "", neutrino.PLUGINDIR .. "/Wunderschön/Wunderschön_hint.png")
+		vPlay:exec(None, "")
 	end
 end
 
