@@ -611,6 +611,7 @@ function testCFrameBox()
 	local frameBox = neutrino.CFrameBox(box)
 
 	frameBox:setMode(neutrino.FRAME_MODE_VERTICAL)
+	frameBox:setBackgroundColor(neutrino.COL_BACKGROUND0)
 
 	frame1 = neutrino.CFrame("MP3")
 	frame2 = neutrino.CFrame("PicViewer")
@@ -628,7 +629,10 @@ function testCFrameBox()
 	frameBox:addFrame(neutrino.CFrameSeparator())
 	frameBox:addFrame(neutrino.CFrameSeparator())
 	frameBox:addFrame(neutrino.CFrameSeparator())
-	frameBox:addFrame(neutrino.CFrame("Beenden"))
+
+	frame4 = neutrino.CFrame("Beenden")
+	frame4:setActionKey(null, "exit")
+	frameBox:addFrame(frame4)
 
 	local m = neutrino.CWidget()
 
@@ -665,6 +669,9 @@ function testCFrameBox()
 			if actionKey == "moviePlayer" then
 				print("testCFrameBox: actionKey: moviePlayer")
 				moviePlayer()
+			elseif actionKey == "exit" then
+				print("testCFrameBox: actionKey: exit")
+				break;
 			end
 
 			if selected >=0 then
@@ -674,7 +681,7 @@ function testCFrameBox()
 					pictureViewer()
 				--elseif selected == 2 then
 				--	moviePlayer()
-				elseif selected == 9 then
+				--elseif selected == 9 then
 					--break
 				end
 			end
