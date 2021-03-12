@@ -69,7 +69,6 @@ function decodeImage(b64Image)
 	local f = io.open(retImg, "w+")
 	f:write(dec(b64Data))
 	f:close()
---	os.remove(tmpImg) -- enable only for testing
 
 	return retImg
 end

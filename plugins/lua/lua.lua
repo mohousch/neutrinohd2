@@ -3,6 +3,10 @@ neutrinoHD2 lua sample plugin
 ]]
 
 local selected = -1
+local RETURN_NONE	= 0
+local RETURN_REPAINT 	= 1
+local RETURN_EXIT 	= 2
+local RETURN_EXIT_ALL   = 4
 
 -- CMessageBox
 function messageBox()
@@ -177,11 +181,26 @@ function moviePlayer()
 	until fileBrowser:getExitPressed() == true
 end
 
--- exec
-function exec(id, msg)
-	print("exec:id:", id)
-
-	if msg == neutrino.RC_info then
+-- exec_actionKey
+function exec(id, msg, actionKey)
+	print("lua sample: exec: actionKey: (" .. actionKey ..")")
+	if actionKey == "msgBox" then
+		messageBox()
+	elseif actionKey == "helpBox" then
+		helpBox()
+	elseif actionKey == "hintBox" then
+		hintBox()
+	elseif actionKey == "cStringInput" then
+		stringInput()
+	elseif actionKey == "audioPlayer" then
+		audioPlayer()
+	elseif actionKey == "pictureViewer" then
+		pictureViewer()
+	elseif actionKey == "moviePlayer" then
+		moviePlayer()
+	elseif actionKey == "infoBox" then
+		infoBox()
+	elseif msg == neutrino.RC_info then
 		infoBox()
 	elseif id == 0 then
 		messageBox()
@@ -199,18 +218,13 @@ function exec(id, msg)
 		pictureViewer()
 	elseif id == 7 then
 		moviePlayer()
-	else
-		-- do nothing
 	end
-end
-
-function red_action()
-	print("do red actionKey:")
-	messageBox()
 end
 
 -- CWidget
 function testCWidget()
+	local ret = RETURN_REPAINT
+
 	local testWidget = neutrino.CWidget()
 	local listBox = neutrino.ClistBox()
 
@@ -302,39 +316,25 @@ function testCWidget()
 
 	testWidget:addKey(neutrino.RC_info, self, "info")
 
-	testWidget:exec(null, "")
+	ret = testWidget:exec(null, "")
 
 	selected = listBox:getSelected()
+	local key = testWidget:getKey()
+	local actionKey = testWidget:getActionKey()
 
-	w_selected = testWidget:getSelected()
-	key = testWidget:getKey()
-	actionKey = testWidget:getActionKey()
+	exec(selected, key, actionKey)
 
-	if actionKey == "msgBox" then
-		messageBox()
-	elseif actionKey == "helpBox" then
-		helpBox()
-	elseif actionKey == "hintBox" then
-		hintBox()
-	elseif actionKey == "cStringInput" then
-		stringInput()
-	elseif actionKey == "audioPlayer" then
-		audioPlayer()
-	elseif actionKey == "pictureViewer" then
-		pictureViewer()
-	elseif actionKey == "moviePlayer" then
-		moviePlayer()
-	elseif actionKey == "info" or actionKey == "infoBox" then
-		infoBox()
-	end
-
-	if testWidget:getExitPressed() ~= true then
+	if testWidget:getExitPressed() ~= true and ret == RETURN_REPAINT then
 		testCWidget()
 	end
+
+	return ret
 end
 
 -- ClistBoxWidget
 function testClistBoxWidget()
+	local ret = RETURN_REPAINT
+
 	local listBoxWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
 	listBoxWidget:setWidgetType(neutrino.WIDGET_TYPE_STANDARD)
 	listBoxWidget:setMode(neutrino.MODE_MENU)
@@ -342,7 +342,7 @@ function testClistBoxWidget()
 	listBoxWidget:enableShrinkMenu()
 
 	-- CMessageBox
-	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", self, "red action")
+	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", self, "msgBox")
 	item1:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item1:setHelpText("testing CMessageBox")
 	item1:setInfo1("testing CMessageBox")
@@ -398,21 +398,34 @@ function testClistBoxWidget()
 	listBoxWidget:addItem(item7)
 	listBoxWidget:addItem(item8)
 
+	if selected < 0 then
+		selected = 0
+	end
+
+	listBoxWidget:setSelected(selected)
+
 	listBoxWidget:addKey(neutrino.RC_info)
 
-	listBoxWidget:exec(null, "")
-	selected = listBoxWidget:getSelected()
-	key = listBoxWidget:getKey()
+	ret = listBoxWidget:exec(null, "")
 
-	exec(selected, key)
+	selected = listBoxWidget:getSelected()
+	local key = listBoxWidget:getKey()
+	local actionKey = listBoxWidget:getActionKey()
+	
+
+	exec(selected, key, actionKey)
 		
-	if listBoxWidget:getExitPressed() ~= true then
+	if listBoxWidget:getExitPressed() ~= true and ret == RETURN_REPAINT then
 		testClistBoxWidget()
 	end
+
+	return ret
 end
 
 -- ClistBox
 function testClistBox()
+	local ret = RETURN_REPAINT
+
 	local listBox = neutrino.ClistBox()
 	listBox:enableCenterPos()
 	listBox:enablePaintHead()
@@ -421,7 +434,7 @@ function testClistBox()
 	listBox:enableShrinkMenu()
 
 	-- CMessageBox
-	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", self, "red action")
+	item1 = neutrino.CMenuForwarder("CMessageBox", true, "", self, "msgBox")
 	item1:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item1:setHelpText("testing CMessageBox")
 	item1:setInfo1("testing CMessageBox")
@@ -485,33 +498,38 @@ function testClistBox()
 	m:addKey(neutrino.RC_info)
 
 	repeat
-	listBox:paint()
-	m:exec(null, "")
-	local selected = listBox:getSelected()
-	m_selected = m:getSelected()
-	local key = m:getKey()
+		listBox:paint()
+		ret = m:exec(null, "")
+		selected = listBox:getSelected()
+		local key = m:getKey()
+		local actionKey = m:getActionKey()
 
-	if key == neutrino.RC_down then
-		listBox:scrollLineDown()
-	end
-	if key == neutrino.RC_up then
-			listBox:scrollLineUp()
-	end
-		
-	if key == neutrino.RC_ok or key == neutrino.RC_info then
-		listBox:hide()
-		if selected >=0 and m_selected >= 0 then
-			exec(selected, key)
+		if key == neutrino.RC_down then
+			listBox:scrollLineDown()
 		end
-	end
-
+		if key == neutrino.RC_up then
+				listBox:scrollLineUp()
+		end
+		
+		if key == neutrino.RC_ok or key == neutrino.RC_info then
+			listBox:hide()
+			if selected >=0 then
+				exec(selected, key, actionKey)
+			end
+		end
 	until m:getExitPressed() == true
 
+	listBox:setSelected(selected)
+
 	listBox:hide()
+
+	return ret
 end
 
 -- CWindow
 function testCWindow()
+	local ret = RETURN_REPAINT
+
 	local box = neutrino.CBox()
 	local fb = neutrino.CSwigHelpers()
 	local button = neutrino.CButtons()
@@ -562,13 +580,11 @@ function testCWindow()
 	neutrino.CButtons():paintButton(btnYellow, "MoviePlayer", box.iX + 2*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
 	neutrino.CButtons():paintButton(btnBlue, "InfoBox", box.iX + 3*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
 
-	m:exec(null, "")
+	ret = m:exec(null, "")
 
 
 	local key = m:getKey()
 	local actionKey = m:getActionKey()
-
-	print(actionKey)
 
 	if actionKey == "moviePlayer" then
 		print("lua sample: testCWindow(): actionKey: moviePlayer")
@@ -600,6 +616,8 @@ end
 
 -- CFrameBox
 function testCFrameBox()
+	local ret = neutrino.menu_return().RETURN_REPAINT
+
 	local box = neutrino.CBox()
 	local fb = neutrino.CSwigHelpers()
 
@@ -611,7 +629,7 @@ function testCFrameBox()
 	local frameBox = neutrino.CFrameBox(box)
 
 	frameBox:setMode(neutrino.FRAME_MODE_VERTICAL)
-	frameBox:setBackgroundColor(neutrino.COL_BACKGROUND0)
+	--frameBox:setBackgroundColor(neutrino.COL_BACKGROUND0)
 
 	frame1 = neutrino.CFrame("MP3")
 	frame2 = neutrino.CFrame("PicViewer")
@@ -646,7 +664,7 @@ function testCFrameBox()
 	repeat
 		frameBox:paint()
 
-		m:exec(null, "")
+		ret = m:exec(null, "")
 
 		local selected = frameBox:getSelected()
 		local actionKey = frameBox:getActionKey()
@@ -689,13 +707,16 @@ function testCFrameBox()
 	until m:getExitPressed() == true
 
 	frameBox:hide()
+
+	return ret
 end
 
 -- main
 function main()
+	local ret = RETURN_REPAINT
 	local m = neutrino.ClistBoxWidget("lua sample")
 
-	m:setMode(neutrino.MODE_LISTBOX)
+	m:setMode(neutrino.MODE_MENU)
 	m:enableShrinkMenu()
 	m:enablePaintFootInfo()
 	m:setFootInfoMode(neutrino.FOOT_HINT_MODE)
@@ -729,7 +750,7 @@ function main()
 
 	m:setSelected(selected)
 
-	m:exec(None, "")
+	ret = m:exec(None, "")
 
 	selected = m:getSelected() 
 	actionKey = m:getActionKey()
@@ -740,7 +761,7 @@ function main()
 		testCWidget()
 	elseif actionKey == "frameBox" then
 		print("lua:sample: main(): actionKey: frameBox")
-		testCFrameBox()
+		ret = testCFrameBox()
 	elseif actionKey == "jumpTarget" then
 		print("lua:sample: main(): actionKey: jumpTarget")
 	end
@@ -759,9 +780,11 @@ function main()
 		end
 	end
 	
-	if m:getExitPressed() ~= true then
+	if m:getExitPressed() ~= true and ret == RETURN_REPAINT then
 		main()
 	end
+
+	return ret
 end
 
 main()

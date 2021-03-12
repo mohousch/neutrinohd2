@@ -22,7 +22,7 @@
 ]]
 
 local glob = {}
-local mtv_version="mtv.de Version 0.37" -- Lua API Version: " .. APIVERSION.MAJOR .. "." .. APIVERSION.MINOR
+local mtv_version = "mtv.de Version 0.37" -- Lua API Version: " .. APIVERSION.MAJOR .. "." .. APIVERSION.MINOR
 --local n = neutrino()
 local conf = {}
 --local on="ein"
@@ -43,12 +43,14 @@ function hideMenu(menu)
 end
 ]]
 
+--[[
 function setvar(k, v)
 	if v and #v > 0 then
 		conf[k]=v
 		conf.changed = true
 	end
 end
+]]
 
 --[[
 function file_exists(file)
@@ -172,6 +174,7 @@ function read_file(filename)
 
 	local data = fp:read("*a")
 	fp:close()
+
 	return data
 end
 
@@ -179,15 +182,20 @@ function get_json_data(url)
 	print("get_json_data: ")
 
 	local data = getdata(url)
+
 	if data == nil then 
 		return nil 
 	end
+
 	local videosection = string.match(data,"triforceManifestFeed = (.-});")
+
 	if glob.mtv_live_url == nil then
 		glob.mtv_live_url = data:match("(http[%w%./:]+mtv%-germany%-live)")
 	end
+
 	data = nil
 	collectgarbage()
+
 	return videosection
 end
 
@@ -195,6 +203,7 @@ function init()
 	print("init:")
 
 	collectgarbage()
+
 	if vodeoPlay == nil then
 		--vodeoPlay = video.new()
 		vodeoPlay = neutrino.CMoviePlayerGui()
@@ -236,7 +245,7 @@ function init()
 	end
 
 	local json = require "json"
-	local jnTab = json:decode(videosection)
+	local jnTab = json.decode(videosection)
 	if jnTab == nil  then 
 		return nil 
 	end
@@ -247,7 +256,7 @@ function init()
 		return nil 
 	end
 
-	jnTab = json:decode(videosection)
+	jnTab = json.decode(videosection)
 	local pages = 1
 	videosection_url = videosection_url:match("(.*)%d+$")
 
@@ -266,6 +275,7 @@ function init()
 			end
 		end
 	end
+
 	local mtvconf = get_conf_mtvfavFile()
 	local havefile = neutrino.file_exists(mtvconf)
 	if havefile == true then
@@ -286,7 +296,7 @@ function info(captxt, infotxt, sleep)
 	--local msg, data = 0,0
 	--local h = hintbox.new{caption=captxt, text=infotxt}
 	local h = neutrino.CHintBox(captxt, infotxt)
-	h:exec()
+	h:exec(10)
 	--h:paint()
 --[[
 	if sleep then
@@ -350,6 +360,7 @@ function exist_url(tab,_url)
 			return true
 		end
 	end
+
 	return false
 end
 
@@ -368,16 +379,19 @@ function getliste(url)
 
 	local liste = {}
 	local json = require "json"
-	local urlTab = json:decode(videosection)
+	local urlTab = json.decode(videosection)
 	local tc = {"t4_lc_promo1"}
-	if url == "http://www.mtv.de/musik" then tc = {"t4_lc_promo1","t5_lc_promo1","t6_lc_promo1","t7_lc_promo1","t8_lc_promo1","t9_lc_promo1","t10_lc_promo1","t11_lc_promo1"}  end
+	if url == "http://www.mtv.de/musik" then tc = {"t4_lc_promo1","t5_lc_promo1","t6_lc_promo1","t7_lc_promo1","t8_lc_promo1","t9_lc_promo1","t10_lc_promo1","t11_lc_promo1"}  		end
+
 	for t in pairs(tc) do
 		if urlTab.manifest.zones[tc[t]] and urlTab.manifest.zones[tc[t]].feed then
 			local videosection_url = urlTab.manifest.zones[tc[t]].feed
 			for p=1,6,1 do
 				if videosection_url then
 					local  pc = "?"
-					if videosection_url:find("?") then pc = "&" end
+					if videosection_url:find("?") then 
+						pc = "&" 
+					end
 					videosection = getdata(videosection_url .. pc .. "pageNumber=" .. p)
 					if videosection == nil then
 						if #liste > 0 then 
@@ -392,7 +406,7 @@ function getliste(url)
 					return nil
 				end
 
-				local jnTab = json:decode(videosection)
+				local jnTab = json.decode(videosection)
 				if jnTab == nil or jnTab.result == nil or jnTab.result.data == nil then 					h:hide()  
 					if #liste > 0 then 
 						return liste 
@@ -404,9 +418,11 @@ function getliste(url)
 				for k, v in ipairs(jnTab.result.data.items) do
 					if v.videoUrl or v.canonicalURL then
 						local video_url = v.videoUrl or v.canonicalURL
-							if exist_url(liste,video_url) == false then
+						if exist_url(liste,video_url) == false then
 							local artist = v.shortTitle or v.artist or ""
-							if #artist == 0 and v.artists then artist = v.artists[1].name end
+							if #artist == 0 and v.artists then 
+								artist = v.artists[1].name 
+							end
 							local _logo = nil
 							if v.images and v.images.url then 
 								_logo = v.images.url 
@@ -426,8 +442,8 @@ function getliste(url)
 							if v.chartPosition and v.chartPosition.current then 									chpos = v.chartPosition.current 
 							end
 							table.insert(liste,{name=artist .. ": " .. v.title, url=video_url,
-							logo=_logo,enabled=conf.dlflag, vid=id,chartpos=chpos
-							})
+								logo =_logo,enabled=conf.dlflag, vid=id,chartpos=chpos
+								})
 						end
 					end
 				end
@@ -435,11 +451,14 @@ function getliste(url)
 		end
 	end
 	h:hide()
+
+--[[
 	if liste ~= nil then
 		print(liste)
 	else
 		print("NULL")
 	end
+]]
 
 	return liste
 end
@@ -480,6 +499,7 @@ function get_m3u_url(m3u8_url)
 			end
 		end
 	end
+
 	return videoUrl
 end
 
@@ -491,7 +511,7 @@ function getvideourl(url, vidname, hls)
 	local id = data:match('itemId":"(.-)"')
 	local service_url = "http://media.mtvnservices.com/pmt/e1/access/index.html?uri=mgid:arc:episode:mtv.de:" .. id .. "&configtype=edge&ref=" .. url
 	data = getdata(service_url)
-	local jnTab = json:decode(data)
+	local jnTab = json.decode(data)
 	if jnTab.feed.items[1].group.content then
 		local jsUrl = jnTab.feed.items[1].group.content
 		if hls then
@@ -500,7 +520,7 @@ function getvideourl(url, vidname, hls)
 		end
 		data = getdata(jsUrl .. "&format=json")
 		if data then
-			jnTab = json:decode(data)
+			jnTab = json.decode(data)
 		end
 	end
 	data = nil
@@ -536,6 +556,7 @@ function getvideourl(url, vidname, hls)
 		end
 		info("Video Not Available", "Copyright Error\n" .. vidname,2)
 	end
+
 	return video_url
 end
 
@@ -579,7 +600,6 @@ function action_exec(id)
 			vodeoPlay:exec(null, "")
 		end
 	end
-	--return MENU_RETURN.EXIT_REPAINT
 end
 
 --[[
@@ -704,7 +724,7 @@ function dlstart(name)
 	local dlname = "/tmp/" .. name ..".dl"
 	local havefile = neutrino.file_exists("/tmp/.rtmpdl")
 	if havefile == true then
-		info("Info", "Ein anderer Download ist bereits aktiv.",4)
+		info("Info", "Ein anderer Download ist bereits aktiv.", 4)
 		return
 	end
 	local dl=io.open(dlname,"w")
@@ -982,7 +1002,7 @@ function mtv_liste(id)
 				cont = " (" .. v.chartpos .. ") "
 			end
 
-			item = neutrino.ClistBoxItem(v.name)
+			item = neutrino.ClistBoxItem(v.name, true, "", null, "play")
 
 			item:setItemIcon(v.logo)
 
@@ -996,12 +1016,14 @@ function mtv_liste(id)
 		glob.menu_liste:exec(null, "")
 
 		selected = glob.menu_liste:getSelected()
+		actionKey = glob.menu_liste:getActionKey()
 
-		if selected >= 0 then
+		--if selected >= 0 then
+		if actionKey == "play" then
 			--if selected == 0 then
 			--	playlist(selected + 1)
 			--else
-				action_exec(selected + 1)
+			action_exec(selected + 1)
 			--end
 		end
 	until glob.menu_liste:getExitPressed() == true
@@ -1205,13 +1227,13 @@ function gen_search_list(search)
 	if videosection == nil then return nil end
 
 	local json = require "json"
-	local jnTab = json:decode(videosection)
+	local jnTab = json.decode(videosection)
 	if jnTab == nil  then return nil end
 	local videosection_url = jnTab.manifest.zones.t5_lc_promo1.feed
 	videosection = getdata(videosection_url)
 	if videosection == nil then return nil end
 
-	jnTab = json:decode(videosection)
+	jnTab = json.decode(videosection)
 	local pages = 1
 	videosection_url = videosection_url:match("(.*)%d+$")
 	if jnTab.result.pages then pages = tonumber(jnTab.result.pages) end
@@ -1226,7 +1248,7 @@ function gen_search_list(search)
 			else
 				return MENU_RETURN.EXIT_REPAINT
 			end
-			jnTab = json:decode(videosection)
+			jnTab = json.decode(videosection)
 		end
 
 		if jnTab == nil or jnTab.result == nil or jnTab.result.artists == nil then return MENU_RETURN.EXIT_REPAINT end
@@ -1246,8 +1268,6 @@ function gen_search_list(search)
 			end
 		end
 	end
-
-	--return MENU_RETURN.EXIT_REPAINT
 end
 
 function searchliste(id)
@@ -1454,20 +1474,6 @@ function main_menu()
 	elseif actionKey == "settings" then
 		setings()
 	end
-
---[[
-	selected_mm = menu:getSelected()
-
-	if selected_mm == 0 then
-		mtv_listen_menu()
-	elseif selected_mm == 1 then
-		search_artists()
-	elseif selected_mm == 2 then
-		play_live()
-	elseif selected_mm == 3 then
-		setings()
-	end
-]]
 
 	if menu:getExitPressed() ~= true then
 		main_menu()
