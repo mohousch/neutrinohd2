@@ -325,20 +325,20 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 		right_selected = rightWidget->getSelected();
 		playMovie(m_vMovieInfo[right_selected]);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_info")
 	{
 		right_selected = rightWidget->getSelected();
 		showMovieInfo(m_vMovieInfo[right_selected]);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_record")
 	{
 		right_selected = rightWidget->getSelected();
 		recordMovie(m_vMovieInfo[right_selected]);
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "search")
 	{
@@ -356,35 +356,35 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 			rightWidget->clearItems();
 			showMenu();
 
-			return menu_return::RETURN_EXIT_ALL;
+			return RETURN_EXIT_ALL;
 		}
 		else
-			return menu_return::RETURN_REPAINT;
+			return RETURN_REPAINT;
 	}
 	else if(actionKey == "nextPage")
 	{
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "prevPage")
 	{
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "startMenu")
 	{
 		loadNKTitles(cNKFeedParser::CATEGORY, "Highlights", 8);
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "exit")
 	{
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 
 	loadNKTitles(catMode, caption, catID);
 	showMenu();
 	
-	return menu_return::RETURN_EXIT;
+	return RETURN_EXIT;
 }
 
 // plugin API

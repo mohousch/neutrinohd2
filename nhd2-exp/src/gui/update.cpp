@@ -132,7 +132,8 @@ class CUpdateMenuTarget : public CMenuTarget
 		virtual int exec(CMenuTarget *, const std::string &)
 		{
 			*myselectedID = myID;
-			return menu_return::RETURN_EXIT_ALL;
+
+			return RETURN_EXIT_ALL;
 		}
 };
 
@@ -414,7 +415,8 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 	if(!checkVersion4Update()) 
 	{
 		hide();
-		return menu_return::RETURN_REPAINT;
+
+		return RETURN_REPAINT;
 	}
 
 	// install
@@ -437,7 +439,7 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 		{
 			hide();
 			HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_GETUPDATEFILEERROR)); // UTF-8
-			return menu_return::RETURN_REPAINT;
+			return RETURN_REPAINT;
 		}
 		
 		sprintf(fullname, "%s/%s", g_settings.update_dir, fname);
@@ -464,7 +466,8 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 		remove(filename.c_str());
 		progressWindow->hide();
 		HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText( (fileType < '3') ? LOCALE_FLASHUPDATE_FLASHMD5SUMERROR : LOCALE_FLASHUPDATE_PACKAGEMD5SUMERROR)); // UTF-8
-		return menu_return::RETURN_REPAINT;
+
+		return RETURN_REPAINT;
 	}
 	
 	// download or not???
@@ -476,7 +479,8 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 			// remove flash/package
 			remove(filename.c_str());
 			progressWindow->hide();
-			return menu_return::RETURN_REPAINT;
+
+			return RETURN_REPAINT;
 		}
 	}
 
@@ -498,7 +502,8 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 			remove(filename.c_str());
 			progressWindow->hide();
 			HintBox(LOCALE_MESSAGEBOX_ERROR, ft.getErrorMessage().c_str()); // UTF-8
-			return menu_return::RETURN_REPAINT;
+
+			return RETURN_REPAINT;
 		}
 
 		//status anzeigen
@@ -543,7 +548,8 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 		{
 			progressWindow->hide();
 			HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_INSTALLFAILED)); // UTF-8
-			return menu_return::RETURN_REPAINT;
+
+			return RETURN_REPAINT;
 		}
 		
 		// 100% status
@@ -555,7 +561,7 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 	
 	progressWindow->hide();
 	
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 CFlashExpert::CFlashExpert()
@@ -790,12 +796,13 @@ int CFlashExpert::exec(CMenuTarget* parent, const std::string & actionKey)
 			}
 		}
 		hide();
-		return menu_return::RETURN_EXIT_ALL;
+
+		return RETURN_EXIT_ALL;
 	}
 
 	hide();
 	
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 //
@@ -811,7 +818,7 @@ int CUpdateSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CUpdateSettings::exec: actionKey:%s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();

@@ -3,10 +3,6 @@ neutrinoHD2 lua sample plugin
 ]]
 
 local selected = -1
-local RETURN_NONE	= 0
-local RETURN_REPAINT 	= 1
-local RETURN_EXIT 	= 2
-local RETURN_EXIT_ALL   = 4
 
 -- CMessageBox
 function messageBox()
@@ -29,7 +25,7 @@ end
 -- CHintBox
 function hintBox()
 	hint = neutrino.CHintBox("CHintBox","neutrino lua:\n first test\ntesting CHintBox\ndas ist alles ;-)")
-	hint:exec()
+	hint:exec(10)
 end
 
 -- CInfoBox
@@ -223,7 +219,7 @@ end
 
 -- CWidget
 function testCWidget()
-	local ret = RETURN_REPAINT
+	local ret = neutrino.RETURN_REPAINT
 
 	local testWidget = neutrino.CWidget()
 	local listBox = neutrino.ClistBox()
@@ -324,7 +320,7 @@ function testCWidget()
 
 	exec(selected, key, actionKey)
 
-	if testWidget:getExitPressed() ~= true and ret == RETURN_REPAINT then
+	if testWidget:getExitPressed() ~= true and ret == neutrino.RETURN_REPAINT then
 		testCWidget()
 	end
 
@@ -333,7 +329,7 @@ end
 
 -- ClistBoxWidget
 function testClistBoxWidget()
-	local ret = RETURN_REPAINT
+	local ret = neutrino.RETURN_REPAINT
 
 	local listBoxWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
 	listBoxWidget:setWidgetType(neutrino.WIDGET_TYPE_STANDARD)
@@ -415,7 +411,7 @@ function testClistBoxWidget()
 
 	exec(selected, key, actionKey)
 		
-	if listBoxWidget:getExitPressed() ~= true and ret == RETURN_REPAINT then
+	if listBoxWidget:getExitPressed() ~= true and ret == neutrino.RETURN_REPAINT then
 		testClistBoxWidget()
 	end
 
@@ -424,7 +420,7 @@ end
 
 -- ClistBox
 function testClistBox()
-	local ret = RETURN_REPAINT
+	local ret = neutrino.RETURN_REPAINT
 
 	local listBox = neutrino.ClistBox()
 	listBox:enableCenterPos()
@@ -528,7 +524,7 @@ end
 
 -- CWindow
 function testCWindow()
-	local ret = RETURN_REPAINT
+	local ret = neutrino.RETURN_REPAINT
 
 	local box = neutrino.CBox()
 	local fb = neutrino.CSwigHelpers()
@@ -612,11 +608,13 @@ function testCWindow()
 	end
 
 	window:hide()
+
+	return ret
 end
 
 -- CFrameBox
 function testCFrameBox()
-	local ret = neutrino.menu_return().RETURN_REPAINT
+	local ret = neutrino.RETURN_REPAINT
 
 	local box = neutrino.CBox()
 	local fb = neutrino.CSwigHelpers()
@@ -633,6 +631,7 @@ function testCFrameBox()
 
 	frame1 = neutrino.CFrame("MP3")
 	frame2 = neutrino.CFrame("PicViewer")
+
 	frame3 = neutrino.CFrame("MoviePlayer")
 	frame3:setIconName(neutrino.NEUTRINO_ICON_MOVIE)
 	frame3:setOption("spielt Movie Dateien")
@@ -641,6 +640,7 @@ function testCFrameBox()
 	frameBox:addFrame(frame1)
 	frameBox:addFrame(frame2)
 	frameBox:addFrame(frame3)
+
 	frameBox:addFrame(neutrino.CFrameSeparator())
 	frameBox:addFrame(neutrino.CFrameSeparator())
 	frameBox:addFrame(neutrino.CFrameSeparator())
@@ -680,6 +680,7 @@ function testCFrameBox()
 		elseif key == neutrino.RC_up then
 			frameBox:scrollLineUp()
 		elseif key == neutrino.RC_info then
+			frameBox:hide()
 			infoBox()
 		elseif key == neutrino.RC_ok then
 			frameBox:hide()
@@ -713,7 +714,7 @@ end
 
 -- main
 function main()
-	local ret = RETURN_REPAINT
+	local ret = neutrino.RETURN_REPAINT
 	local m = neutrino.ClistBoxWidget("lua sample")
 
 	m:setMode(neutrino.MODE_MENU)
@@ -758,7 +759,7 @@ function main()
 
 	if actionKey == "listWidget" then
 		print("lua:sample: main(): actionKey: listWidget")
-		testCWidget()
+		ret = testCWidget()
 	elseif actionKey == "frameBox" then
 		print("lua:sample: main(): actionKey: frameBox")
 		ret = testCFrameBox()
@@ -770,17 +771,19 @@ function main()
 		--[[if selected == 0 then
 			testCWidget()
 		else]]if selected == 1 then
-			testClistBoxWidget()
+			ret = testClistBoxWidget()
 		elseif selected == 2 then
-			testClistBox()
+			ret = testClistBox()
 		elseif selected == 3 then
-			testCWindow()
+			ret = testCWindow()
 		--elseif selected == 4 then
 		--	testCFrameBox()
 		end
 	end
+
+	print("ret: (" .. ret .. ")")
 	
-	if m:getExitPressed() ~= true and ret == RETURN_REPAINT then
+	if m:getExitPressed() ~= true and ret == neutrino.RETURN_REPAINT then
 		main()
 	end
 

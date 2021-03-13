@@ -581,7 +581,7 @@ int CChannelList::show(bool zap, bool customMode)
 
 			hide();
 
-			if ( g_EventList->exec(chanlist[selected]->channel_id, chanlist[selected]->name) == menu_return::RETURN_EXIT_ALL) 
+			if ( g_EventList->exec(chanlist[selected]->channel_id, chanlist[selected]->name) == RETURN_EXIT_ALL) 
 			{
 				res = -2;
 				loop = false;

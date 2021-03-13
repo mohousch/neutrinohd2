@@ -789,7 +789,7 @@ int CMovieBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMovieBrowser::exec: actionKey:%s\n", actionKey.c_str());
 
-	int returnval = menu_return::RETURN_REPAINT;
+	int returnval = RETURN_REPAINT;
 
 	if(actionKey == "loaddefault")
 	{
@@ -3703,7 +3703,7 @@ int CMovieHelp::exec(CMenuTarget* /*parent*/, const std::string&/*actionKey*/)
 
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 /////////////////////////////////////////////////
@@ -3729,7 +3729,7 @@ int CFileChooser::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
 			*dirPath = "";   // We clear the  string if the selected folder is not at leaset /mnt/ or /hdd (There is no other possibility to clear this) 
 	}
 	  
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 CDirMenu::CDirMenu(std::vector<MB_DIR>* dir_list)
@@ -3767,7 +3767,7 @@ int CDirMenu::exec(CMenuTarget* parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CDirMenu::exec:\n");
 
-	int returnval = menu_return::RETURN_REPAINT;
+	int returnval = RETURN_REPAINT;
 
 	if(actionKey == "")
 	{

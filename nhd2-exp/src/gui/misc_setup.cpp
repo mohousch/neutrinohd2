@@ -155,7 +155,7 @@ int CMiscSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMiscSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();
@@ -230,7 +230,7 @@ int CGeneralSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CGeneralSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();
@@ -642,7 +642,7 @@ int CChannelListSettings::exec(CMenuTarget* parent, const std::string& actionKey
 {
 	dprintf(DEBUG_NORMAL, "CChannelListSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();
@@ -747,7 +747,7 @@ int CEPGSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CEPGSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();
@@ -981,7 +981,7 @@ int CFileBrowserSettings::exec(CMenuTarget* parent, const std::string& actionKey
 {
 	dprintf(DEBUG_NORMAL, "CFileBrowserSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();

@@ -223,7 +223,7 @@ int CSatIPClient::exec(CMenuTarget* parent, const std::string &actionKey)
 		if(this->SaveSettings())
 		 	HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MAINSETTINGS_SAVESETTINGSNOW_HINT));
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "start")
 	{
@@ -244,7 +244,7 @@ int CSatIPClient::exec(CMenuTarget* parent, const std::string &actionKey)
 	
 	showMenu();
 
-	return menu_return::RETURN_EXIT_ALL;
+	return RETURN_EXIT_ALL;
 }
 
 void plugin_init(void)

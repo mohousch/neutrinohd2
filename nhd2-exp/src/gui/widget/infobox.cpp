@@ -396,7 +396,7 @@ int CInfoBox::exec(int timeout)
 
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 
 	// show infobox
 	paint();
@@ -436,7 +436,7 @@ int CInfoBox::exec(int timeout)
 		}
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 		{
-			res  = menu_return::RETURN_EXIT_ALL;
+			res  = RETURN_EXIT_ALL;
 			loop = false;
 		}
 

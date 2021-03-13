@@ -81,7 +81,7 @@ class CFrameSeparator : public CFrame
 
 		int paint(bool selected = false, bool AfterPulldown = false){return 0;};
 
-		int exec(CMenuTarget* parent){return menu_return::RETURN_EXIT;};
+		int exec(CMenuTarget* parent){return RETURN_EXIT;};
 
 		virtual bool isSelectable(void) const {return false;}
 };

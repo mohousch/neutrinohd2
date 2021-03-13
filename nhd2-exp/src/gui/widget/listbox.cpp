@@ -174,7 +174,7 @@ int CMenuOptionChooser::exec(CMenuTarget *parent)
 	dprintf(DEBUG_DEBUG, "CMenuOptionChooser::exec:\n");
 
 	bool wantsRepaint = false;
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if (parent)
 		parent->hide();
@@ -210,7 +210,7 @@ int CMenuOptionChooser::exec(CMenuTarget *parent)
 		}
 		
 		menu->exec(NULL, "");
-		ret = menu_return::RETURN_REPAINT;
+		ret = RETURN_REPAINT;
 
 		select = menu->getSelected();
 		
@@ -245,7 +245,7 @@ int CMenuOptionChooser::exec(CMenuTarget *parent)
 		wantsRepaint = observ->changeNotify(optionName, optionValue);
 
 	if ( wantsRepaint )
-		ret = menu_return::RETURN_REPAINT;
+		ret = RETURN_REPAINT;
 
 	return ret;
 }
@@ -441,7 +441,7 @@ int CMenuOptionNumberChooser::exec(CMenuTarget*)
 	if(observ)
 		observ->changeNotify(optionName, optionValue);
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 int CMenuOptionNumberChooser::paint(bool selected, bool /*AfterPulldown*/)
@@ -581,7 +581,7 @@ int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 	dprintf(DEBUG_DEBUG, "CMenuOptionStringChooser::exec:\n");
 
 	bool wantsRepaint = false;
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 
 	if (parent)
 		parent->hide();
@@ -608,7 +608,7 @@ int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 			menu->addItem(new CMenuForwarder(options[count].c_str()), selected);
 		}
 		menu->exec(NULL, "");
-		ret = menu_return::RETURN_REPAINT;
+		ret = RETURN_REPAINT;
 
 		select = menu->getSelected();
 		
@@ -646,7 +646,7 @@ int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 		wantsRepaint = observ->changeNotify(name, optionValue);
 	
 	if (wantsRepaint)
-		ret = menu_return::RETURN_REPAINT;
+		ret = RETURN_REPAINT;
 
 	return ret;
 }
@@ -787,9 +787,9 @@ int CMenuOptionLanguageChooser::exec(CMenuTarget*)
 
 	//FIXME:	
 	if ( wantsRepaint )
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	else
-		return menu_return::RETURN_EXIT;
+		return RETURN_EXIT;
 }
 
 int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
@@ -951,7 +951,7 @@ bool CZapProtection::check()
 		hint2 = LOCALE_PINPROTECTION_WRONGCODE;
 	} while ( (strncmp(cPIN,validPIN, 4) != 0) &&
 		  (cPIN[0] != 0) &&
-		  ( res == menu_return::RETURN_REPAINT ) &&
+		  ( res == RETURN_REPAINT ) &&
 		  ( fsk >= g_settings.parentallock_lockage ) );
 		  
 	return ( ( strncmp(cPIN, validPIN, 4) == 0 ) ||
@@ -1060,7 +1060,7 @@ int CMenuForwarder::exec(CMenuTarget *parent)
 		return ret;
 	}
 	else
-		return menu_return::RETURN_EXIT;
+		return RETURN_EXIT;
 }
 
 const char * CMenuForwarder::getName(void)
@@ -1225,7 +1225,7 @@ int CLockedMenuForwarder::exec(CMenuTarget * parent)
 		if (!check())
 		{
 			Parent = NULL;
-			return menu_return::RETURN_REPAINT;
+			return RETURN_REPAINT;
 		}
 	}
 
@@ -1337,7 +1337,7 @@ int ClistBoxItem::exec(CMenuTarget* parent)
 		return ret;
 	}
 	else
-		return menu_return::RETURN_EXIT;
+		return RETURN_EXIT;
 }
 
 const char * ClistBoxItem::getName(void)
@@ -3002,9 +3002,9 @@ int ClistBox::oKKeyPressed(CMenuTarget* parent)
 		if(hasItem())
 			return items[selected]->exec(parent);
 		else
-			return menu_return::RETURN_EXIT;
+			return RETURN_EXIT;
 	else
-		return menu_return::RETURN_EXIT;
+		return RETURN_EXIT;
 }
 
 void ClistBox::onUpKeyPressed()

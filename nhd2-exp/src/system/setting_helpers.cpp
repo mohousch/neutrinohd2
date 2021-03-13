@@ -181,7 +181,7 @@ int CSubtitleChangeExec::exec(CMenuTarget */*parent*/, const std::string & actio
 		dvbsub_stop();
 		//dvbsub_close();
 		
-		return menu_return::RETURN_EXIT;
+		return RETURN_EXIT;
 	}
 	
 	if(!strncmp(actionKey.c_str(), "DVB", 3)) 
@@ -218,7 +218,7 @@ int CSubtitleChangeExec::exec(CMenuTarget */*parent*/, const std::string & actio
 		tuxtx_main(pid, page, (live_fe)?live_fe->fenumber : 0 ); //FIXME
 	}
 	
-        return menu_return::RETURN_EXIT;
+        return RETURN_EXIT;
 }
 
 // nvod change exec
@@ -234,7 +234,7 @@ int CNVODChangeExec::exec(CMenuTarget* parent, const std::string &actionKey)
 	
 	g_InfoViewer->showSubchan();
 
-	return menu_return::RETURN_EXIT;
+	return RETURN_EXIT;
 }
 
 // tuxtxt changer
@@ -264,7 +264,7 @@ int CTuxtxtChangeExec::exec(CMenuTarget *parent, const std::string &actionKey)
 
 	CNeutrinoApp::getInstance()->StartSubtitles();
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 // USERMENU
@@ -308,7 +308,7 @@ int CUserMenuMenu::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
 
         menu.exec(NULL, "");
 
-        return menu_return::RETURN_REPAINT;
+        return RETURN_REPAINT;
 }
 
 

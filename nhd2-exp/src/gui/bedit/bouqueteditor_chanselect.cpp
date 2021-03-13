@@ -204,7 +204,7 @@ int CBEChannelSelectWidget::exec(CMenuTarget* parent, const std::string& actionK
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 	selected = 0;
 
 	if (parent)
@@ -274,7 +274,7 @@ int CBEChannelSelectWidget::exec(CMenuTarget* parent, const std::string& actionK
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 		{
 			loop = false;
-			res = menu_return::RETURN_EXIT_ALL;
+			res = RETURN_EXIT_ALL;
 		}
 
 		frameBuffer->blit();	

@@ -142,7 +142,7 @@ int CSysInfoWidget::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 {
 	dprintf(DEBUG_NORMAL, "CsysInfoWidget::exec:\n");
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 
 	if(mode == SYSINFO)
 	{

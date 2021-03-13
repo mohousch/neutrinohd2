@@ -423,7 +423,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 {
 	dprintf(DEBUG_NORMAL, "CEpgData::show: %llx\n", channel_id);
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 	static uint64_t id;
 	static time_t startzeit;
 	 
@@ -805,7 +805,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 						if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
 						{
 							loop = false;
-							res = menu_return::RETURN_EXIT_ALL;
+							res = RETURN_EXIT_ALL;
 						}
 					}
 			}
@@ -1018,7 +1018,7 @@ int CEPGDataHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
 	dprintf(DEBUG_NORMAL, "CEPGDataHandler::exec:\n");
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 	CChannelList* channelList;
 	CEpgData* e;
 
@@ -1035,4 +1035,6 @@ int CEPGDataHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 
 	return res;
 }
+
+
 

@@ -165,7 +165,7 @@ int CRemoteControlSettings::exec(CMenuTarget* parent, const std::string& actionK
 {
 	dprintf(DEBUG_NORMAL, "CRemoteControlSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();
@@ -252,7 +252,7 @@ int CKeysBindingSettings::exec(CMenuTarget* parent, const std::string& actionKey
 {
 	dprintf(DEBUG_NORMAL, "CKeysBindingSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();
@@ -277,7 +277,7 @@ int CKeysBindingSettings::exec(CMenuTarget* parent, const std::string& actionKey
 		delete hintBox;
 		hintBox = NULL;
 
-		return menu_return::RETURN_REPAINT;	
+		return RETURN_REPAINT;	
 	}
 	
 	showMenu();

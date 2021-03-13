@@ -101,7 +101,7 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CMediaPortal::exec: actionKey:%s\n", actionKey.c_str());
 
-	int returnval = menu_return::RETURN_REPAINT;
+	int returnval = RETURN_REPAINT;
 
 	if(parent) 
 		parent->hide();
@@ -110,43 +110,43 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 	{
 		youTube();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "netzkino")
 	{
 		netzKino();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "icecast")
 	{
 		iceCast();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "internetradio")
 	{
 		internetRadio();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "ard")
 	{
 		ard();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "nfilm")
 	{
 		nFilm();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "ntvshows")
 	{
 		nTVShows();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 
 	showMenu();

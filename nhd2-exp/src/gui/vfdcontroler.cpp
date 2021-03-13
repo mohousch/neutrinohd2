@@ -117,7 +117,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	int selected, res = menu_return::RETURN_REPAINT;
+	int selected, res = RETURN_REPAINT;
 	unsigned int brightness_alt, brightnessstandby_alt;
 
 	if (parent)
@@ -281,7 +281,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 				if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
 				{
 					loop = false;
-					res = menu_return::RETURN_EXIT_ALL;
+					res = RETURN_EXIT_ALL;
 				}
 		}
 

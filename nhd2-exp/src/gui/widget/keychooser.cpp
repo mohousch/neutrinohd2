@@ -133,7 +133,7 @@ int CKeyChooserItem::exec(CMenuTarget* parent, const std::string &)
 
 	uint64_t timeoutEnd;
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 
 	if (parent)
 		parent->hide();
@@ -154,7 +154,7 @@ int CKeyChooserItem::exec(CMenuTarget* parent, const std::string &)
 		if ((msg > 0) && (msg <= RC_MaxRC))
 			*key = msg;
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
-			res = menu_return::RETURN_EXIT_ALL;
+			res = RETURN_EXIT_ALL;
 		else
 			goto get_Message;
 	}

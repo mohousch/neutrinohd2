@@ -121,7 +121,7 @@ int CStreamInfo2::exec()
 		
 	hide();
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 int CStreamInfo2::exec(CMenuTarget * parent, const std::string &)
@@ -139,7 +139,7 @@ int CStreamInfo2::exec(CMenuTarget * parent, const std::string &)
 
 	hide();
 	
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 int CStreamInfo2::doSignalStrengthLoop()
@@ -788,7 +788,7 @@ void CStreamInfo2::paint_techinfo(int xpos, int ypos)
 
 int CStreamInfo2Handler::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 {
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 	
 	if (parent)
 		parent->hide();

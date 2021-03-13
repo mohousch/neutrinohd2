@@ -105,7 +105,7 @@ int COPKGManager::exec(CMenuTarget * parent, const std::string &actionKey)
 {
 	dprintf(DEBUG_NORMAL, "COPKGManager::exec: actionKey:%s\n", actionKey.c_str());
 
-	int   res = menu_return::RETURN_REPAINT;
+	int   res = RETURN_REPAINT;
 
 	if (parent)
 		parent->hide();
@@ -115,7 +115,7 @@ int COPKGManager::exec(CMenuTarget * parent, const std::string &actionKey)
 	{
 		if(!showPkgMenu(OM_LIST)) 
 		{
-			return menu_return::RETURN_REPAINT;
+			return RETURN_REPAINT;
 		}
 	}
 	
@@ -132,7 +132,7 @@ int COPKGManager::exec(CMenuTarget * parent, const std::string &actionKey)
 			filename = fileBrowser.getSelectedFile()->Name;
 		}
 		else
-			return menu_return::RETURN_REPAINT;
+			return RETURN_REPAINT;
 	}
 	
 	// install
@@ -178,7 +178,7 @@ class CUpdateMenuTarget : public CMenuTarget
 		virtual int exec(CMenuTarget *, const std::string &)
 		{
 			*myselectedID = myID;
-			return menu_return::RETURN_EXIT_ALL;
+			return RETURN_EXIT_ALL;
 		}
 };
 

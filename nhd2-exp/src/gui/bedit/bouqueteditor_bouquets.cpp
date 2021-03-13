@@ -179,7 +179,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 
 	if (parent)
 		parent->hide();

@@ -59,7 +59,7 @@ int CProxySetup::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
 {
 	dprintf(DEBUG_DEBUG, "CProxySetup::exec\n");
 	
-	int   res = menu_return::RETURN_REPAINT;
+	int   res = RETURN_REPAINT;
 
 	if (parent)
 		parent->hide();

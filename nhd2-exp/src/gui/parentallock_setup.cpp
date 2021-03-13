@@ -71,7 +71,7 @@ int CParentalLockSettings::exec(CMenuTarget* parent, const std::string& actionKe
 {
 	dprintf(DEBUG_NORMAL, "CParentalLockSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();

@@ -231,7 +231,7 @@ int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 		tmpPictureViewerGui.addToPlaylist(playlist[selected]);
 		tmpPictureViewerGui.exec(NULL, "");
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_setup")
 	{
@@ -240,13 +240,13 @@ int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 		delete pictureViewerSettingsMenu;
 		pictureViewerSettingsMenu = NULL;
 
-		return menu_return::RETURN_REPAINT;					
+		return RETURN_REPAINT;					
 	}
 	else if(actionKey == "RC_info")
 	{
 		tmpPictureViewerGui.showHelp();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_red")
 	{
@@ -257,21 +257,21 @@ int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 			selected = playlist.size() - 1;
 
 		showMenu();
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
 		openFileBrowser();
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_yellow")
 	{
 		playlist.clear();
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_blue")
 	{
@@ -284,13 +284,13 @@ int CPicViewer::exec(CMenuTarget* parent, const std::string& actionKey)
 		tmpPictureViewerGui.setState(CPictureViewerGui::SLIDESHOW);		
 		tmpPictureViewerGui.exec(NULL, "");
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 
 	loadPlaylist();
 	showMenu();
 	
-	return menu_return::RETURN_EXIT;
+	return RETURN_EXIT;
 }
 
 void plugin_init(void)

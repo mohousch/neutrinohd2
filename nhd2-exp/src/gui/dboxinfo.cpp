@@ -102,7 +102,7 @@ int CDBoxInfoWidget::exec(CMenuTarget * parent, const std::string &)
 
 	hide();	
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 void CDBoxInfoWidget::hide()

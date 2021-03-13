@@ -108,7 +108,7 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 	mainWindow.setPosition(&mainBox);
 */
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 	
 	if (parent)
 		parent->hide();
@@ -221,7 +221,7 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 				if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
 				{
 					loop = false;
-					res = menu_return::RETURN_EXIT_ALL;
+					res = RETURN_EXIT_ALL;
 				}
 		}
 		

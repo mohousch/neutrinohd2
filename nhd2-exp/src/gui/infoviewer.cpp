@@ -1913,7 +1913,7 @@ int CInfoViewerHandler::exec(CMenuTarget * parent, const std::string &/*actionke
 {
 	dprintf(DEBUG_NORMAL, "CInfoViewerHandler::exec:\n");
 
-	int res = menu_return::RETURN_EXIT_ALL;
+	int res = RETURN_EXIT_ALL;
 	CChannelList* channelList;
 	CInfoViewer* i;
 	

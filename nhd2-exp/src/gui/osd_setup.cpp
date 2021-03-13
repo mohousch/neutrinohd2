@@ -66,7 +66,7 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "COSDSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();
@@ -195,7 +195,7 @@ int COSDMenuColorSettings::exec(CMenuTarget* parent, const std::string& actionKe
 {
 	dprintf(DEBUG_NORMAL, "COSDMenuColorSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();
@@ -317,7 +317,7 @@ int COSDInfoBarColorSettings::exec(CMenuTarget* parent, const std::string& actio
 {
 	dprintf(DEBUG_NORMAL, "COSDInfoBarColorSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();
@@ -385,7 +385,7 @@ int CLanguageSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CLanguageSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();
@@ -501,7 +501,7 @@ int COSDTimingSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "COSDTimingSettings::exec: actionKey: %s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();

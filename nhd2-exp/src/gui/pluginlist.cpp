@@ -165,7 +165,7 @@ int CPluginList::exec(CMenuTarget * parent, const std::string& actionKey)
 			selected = (int)g_PluginList->getNumberOfPlugins() - 1;
 
 		showMenu();
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
@@ -176,7 +176,7 @@ int CPluginList::exec(CMenuTarget * parent, const std::string& actionKey)
 	{
 		g_PluginList->loadPlugins();
 		showMenu();
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_info")
 	{
@@ -202,21 +202,21 @@ int CPluginList::exec(CMenuTarget * parent, const std::string& actionKey)
 		}
 		
 		InfoBox(buffer.c_str(), g_Locale->getText(LOCALE_USERMENU_ITEM_PLUGINS), NEUTRINO_ICON_SHELL);
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_ok")
 	{
 		selected = plist->getSelected();
 
 		if(pluginSelected() == close)
-			return menu_return::RETURN_EXIT_ALL;
+			return RETURN_EXIT_ALL;
 		else
-			return menu_return::RETURN_REPAINT;
+			return RETURN_REPAINT;
 	}
 
 	showMenu();
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 CPluginList::result_ CPluginList::pluginSelected()
@@ -252,7 +252,7 @@ CPluginsExec* CPluginsExec::getInstance()
 int CPluginsExec::exec(CMenuTarget* parent, const std::string & actionKey)
 {
 	if (actionKey.empty())
-		return menu_return::RETURN_NONE;
+		return RETURN_NONE;
 
 	dprintf(DEBUG_NORMAL, "CPluginsExec exec: %s\n", actionKey.c_str());
 
@@ -265,9 +265,9 @@ int CPluginsExec::exec(CMenuTarget* parent, const std::string & actionKey)
 		g_PluginList->startPlugin(sel);
 
 	if (g_PluginList->getIntegration(sel) == CPlugins::I_TYPE_DISABLED)
-		return menu_return::RETURN_EXIT;
+		return RETURN_EXIT;
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 

@@ -90,7 +90,7 @@ int CAudioSelectMenuHandler::exec(CMenuTarget * parent, const std::string &/*act
 {
 	dprintf(DEBUG_NORMAL, "CAudioSelectMenuHandler::exec:\n");
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 
 	if (parent) 
 		parent->hide();
@@ -233,7 +233,7 @@ int CAPIDChangeExec::exec(CMenuTarget */*parent*/, const std::string & actionKey
 		g_RemoteControl->setAPID(sel);
 	}
 
-	return menu_return::RETURN_EXIT;
+	return RETURN_EXIT;
 }
 
 // volume conf

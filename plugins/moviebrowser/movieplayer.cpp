@@ -108,7 +108,7 @@ int CMoviePlayer::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	showMenu();
 	
-	return menu_return::RETURN_EXIT;
+	return RETURN_EXIT;
 }
 
 void plugin_init(void)

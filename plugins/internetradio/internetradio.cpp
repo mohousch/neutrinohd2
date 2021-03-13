@@ -727,7 +727,7 @@ int CInternetRadio::exec(CMenuTarget* parent, const std::string& actionKey)
 		tmpAudioPlayerGui.setInetMode();
 		tmpAudioPlayerGui.exec(NULL, "");
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_setup")
 	{
@@ -736,27 +736,27 @@ int CInternetRadio::exec(CMenuTarget* parent, const std::string& actionKey)
 		delete audioPlayerSettingsMenu;
 		audioPlayerSettingsMenu = NULL;	
 
-		return menu_return::RETURN_REPAINT;					
+		return RETURN_REPAINT;					
 	}
 	else if(actionKey == "RC_blue")
 	{
 		shufflePlaylist();
 		showMenu();
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
 		openFileBrowser();
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_yellow")
 	{
 		playlist.clear();
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_red")
 	{
@@ -768,13 +768,13 @@ int CInternetRadio::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	
 	loadPlaylist();
 	showMenu();
 
-	return menu_return::RETURN_EXIT_ALL;
+	return RETURN_EXIT_ALL;
 }
 
 void plugin_init(void)

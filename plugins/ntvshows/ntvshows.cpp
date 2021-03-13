@@ -372,7 +372,7 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		showMovieInfo(m_vMovieInfo[selected]);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_setup")
 	{
@@ -383,10 +383,10 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 			loadMoviesTitle();
 			showMenu();
 
-			return menu_return::RETURN_EXIT_ALL;
+			return RETURN_EXIT_ALL;
 		}
 		else
-			return menu_return::RETURN_REPAINT;
+			return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_red")
 	{
@@ -395,7 +395,7 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 		loadMoviesTitle();
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
@@ -409,13 +409,13 @@ int CTVShows::exec(CMenuTarget* parent, const std::string& actionKey)
 		loadMoviesTitle();
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 
 	loadMoviesTitle();
 	showMenu();
 
-	return menu_return::RETURN_EXIT_ALL;
+	return RETURN_EXIT_ALL;
 }
 
 void plugin_init(void)

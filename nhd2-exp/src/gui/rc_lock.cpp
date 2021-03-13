@@ -52,13 +52,14 @@ int CRCLock::exec(CMenuTarget* parent, const std::string &actionKey)
 	bool no_input = (actionKey == NO_USER_INPUT);
 
 	if (MessageBox(LOCALE_RCLOCK_TITLE, LOCALE_RCLOCK_LOCKMSG, mbrYes, mbYes | mbCancel, NEUTRINO_ICON_INFO, 450, no_input ? 5 : -1, no_input) == mbrCancel)
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 
 	// -- Lockup Box	
 	lockBox();
 
 	MessageBox(LOCALE_RCLOCK_TITLE, LOCALE_RCLOCK_UNLOCKMSG, mbrBack, mbBack, NEUTRINO_ICON_INFO, 450, no_input ? 5 : -1);
-	return  menu_return::RETURN_EXIT_ALL;
+
+	return  RETURN_EXIT_ALL;
 }
 
 void CRCLock::lockBox()

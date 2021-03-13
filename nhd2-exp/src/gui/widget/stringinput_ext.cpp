@@ -154,7 +154,7 @@ int CExtendedInput::exec( CMenuTarget* parent, const std::string & )
 	neutrino_msg_data_t data;
 
 	onBeforeExec();
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 	char oldval[inputFields.size()+10], dispval[inputFields.size()+10];
 
 	if (parent)
@@ -294,7 +294,7 @@ int CExtendedInput::exec( CMenuTarget* parent, const std::string & )
 		else if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
 		{
 			loop = false;
-			res = menu_return::RETURN_EXIT_ALL;
+			res = RETURN_EXIT_ALL;
 		}
 
 		frameBuffer->blit();	

@@ -225,7 +225,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 	neutrino_msg_data_t data;
 	bool in_search = 0;
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 	
 	if(m_search_list == SEARCH_LIST_NONE) // init globals once only
 	{
@@ -448,7 +448,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 
 				res = g_EpgData->show(channel_id, evtlist[selected].eventID, &evtlist[selected].startTime);
 				
-				if ( res == menu_return::RETURN_EXIT_ALL )
+				if ( res == RETURN_EXIT_ALL )
 				{
 					loop = false;
 				}
@@ -543,7 +543,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 		else if (msg == RC_sat || msg == RC_favorites)
 		{
 			g_RCInput->postMsg (msg, 0);
-			res = menu_return::RETURN_EXIT_ALL;
+			res = RETURN_EXIT_ALL;
 			loop = false;
 		}
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
@@ -555,7 +555,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 			if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
 			{
 				loop = false;
-				res = menu_return::RETURN_EXIT_ALL;
+				res = RETURN_EXIT_ALL;
 			}
 		}
 
@@ -722,7 +722,7 @@ int CEventListHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*
 {
 	dprintf(DEBUG_NORMAL, "CEventListHandler::exec:\n");
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 	EventList* e;
 	CChannelList* channelList;
 
@@ -859,7 +859,7 @@ CEventFinderMenu::CEventFinderMenu(int * event, int * search_epg_item, std::stri
 
 int CEventFinderMenu::exec(CMenuTarget * parent, const std::string &actionKey)
 {
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 	
 	if(actionKey == "")
 	{
@@ -871,7 +871,7 @@ int CEventFinderMenu::exec(CMenuTarget * parent, const std::string &actionKey)
 	else if(actionKey == "1")
 	{
 		*m_event = true;
-		res = menu_return::RETURN_EXIT_ALL;
+		res = RETURN_EXIT_ALL;
 	}	
 	else if(actionKey == "2")
 	{
@@ -942,7 +942,7 @@ int CEventFinderMenu::showMenu(void)
 {
 	dprintf(DEBUG_NORMAL, "CEventFinderMenu::showMenu:\n");
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 	*m_event = false;
 	
 	if(*m_search_list == EventList::SEARCH_LIST_CHANNEL)

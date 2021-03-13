@@ -234,7 +234,7 @@ int CNEpisodes::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		showMovieInfo(m_vMovieInfo[selected]);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "mplay")
 	{
@@ -249,12 +249,12 @@ int CNEpisodes::exec(CMenuTarget* parent, const std::string& actionKey)
 			tmpMoviePlayerGui.exec(NULL, "");
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 
 	showMenu();
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 

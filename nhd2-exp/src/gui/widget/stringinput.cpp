@@ -305,7 +305,7 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 
         char oldval[size + 1], dispval[size + 1];
         oldval[size] = 0;
@@ -422,7 +422,7 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 			int r = handleOthers( msg, data );
 			if (r & (messages_return::cancel_all | messages_return::cancel_info))
 			{
-				res = (r & messages_return::cancel_all) ? menu_return::RETURN_EXIT_ALL : menu_return::RETURN_EXIT;
+				res = (r & messages_return::cancel_all) ? RETURN_EXIT_ALL : RETURN_EXIT;
 				loop = false;
 			}
 			else if ( r & messages_return::unhandled )
@@ -430,7 +430,7 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 				if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
 				{
 					loop = false;
-					res = menu_return::RETURN_EXIT_ALL;
+					res = RETURN_EXIT_ALL;
 				}
 			}
 		}
@@ -736,7 +736,7 @@ int CPINInput::exec( CMenuTarget* parent, const std::string&)
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 
 	if (parent)
 		parent->hide();
@@ -771,7 +771,7 @@ int CPINInput::exec( CMenuTarget* parent, const std::string&)
 		else if ( (msg == RC_up) || (msg == RC_down) )
 		{
 			g_RCInput->postMsg( msg, data );
-			res = menu_return::RETURN_EXIT;
+			res = RETURN_EXIT;
 			loop = false;
 		}
 		else if ( (msg == RC_home) || (msg == RC_timeout) || (msg == RC_ok) )
@@ -783,7 +783,7 @@ int CPINInput::exec( CMenuTarget* parent, const std::string&)
 			int r = handleOthers(msg, data);
 			if (r & (messages_return::cancel_all | messages_return::cancel_info))
 			{
-				res = (r & messages_return::cancel_all) ? menu_return::RETURN_EXIT_ALL : menu_return::RETURN_EXIT;
+				res = (r & messages_return::cancel_all) ? RETURN_EXIT_ALL : RETURN_EXIT;
 				loop = false;
 			}
 			else if ( r & messages_return::unhandled )
@@ -791,7 +791,7 @@ int CPINInput::exec( CMenuTarget* parent, const std::string&)
 				if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & ( messages_return::cancel_all | messages_return::cancel_info ) )
 				{
 					loop = false;
-					res = menu_return::RETURN_EXIT_ALL;
+					res = RETURN_EXIT_ALL;
 				}
 			}
 		}

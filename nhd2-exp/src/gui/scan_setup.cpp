@@ -318,7 +318,7 @@ int CScanSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		delete hintBox;
 		hintBox = NULL;
 		
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "unisetup") 
 	{
@@ -327,7 +327,7 @@ int CScanSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 	
 	showScanService();
 	
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 void CScanSetup::showScanService()
@@ -844,7 +844,7 @@ int CScanSetup::showUnicableSetup()
 	uni_setup->hide();
 	delete uni_setup;
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 // TPSelectHandler
@@ -990,10 +990,10 @@ int CTPSelectHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 		}	
 	}
 	
-	if(retval == menu_return::RETURN_EXIT_ALL)
-		return menu_return::RETURN_EXIT_ALL;
+	if(retval == RETURN_EXIT_ALL)
+		return RETURN_EXIT_ALL;
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 // scan settings
@@ -1410,7 +1410,7 @@ int CTunerSetup::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CTunerSetup::exec: actionKey:%s\n", actionKey.c_str());
 	
-	int ret = menu_return::RETURN_REPAINT;
+	int ret = RETURN_REPAINT;
 	
 	if(parent)
 		parent->hide();

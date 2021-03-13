@@ -53,7 +53,7 @@ int CDVBSubSelectMenuHandler::exec(CMenuTarget * parent, const std::string &/*ac
 {
 	dprintf(DEBUG_NORMAL, "CDVBSubSelectMenuHandler::exec:\n");
 
-	int res = menu_return::RETURN_EXIT_ALL;
+	int res = RETURN_EXIT_ALL;
 
 	if (parent) 
 		parent->hide();

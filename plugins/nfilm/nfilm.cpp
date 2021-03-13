@@ -561,7 +561,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 			showMovieInfo(m_vMovieInfo[right_selected]);
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "mplay")
 	{
@@ -580,7 +580,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 			}
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "genres")
 	{
@@ -608,7 +608,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 		paintRightWidgetItems(rightWidget);
 		rightWidget->setSelected(0);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "search")
 	{
@@ -629,7 +629,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 			rightWidget->setSelected(0);
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "movie_in_cinema")
 	{
@@ -644,7 +644,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 		// load items
 		paintRightWidgetItems(rightWidget);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "movie_popular")
 	{
@@ -660,7 +660,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 		paintRightWidgetItems(rightWidget);
 		rightWidget->setSelected(0);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "movie_top_rated")
 	{
@@ -676,7 +676,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 		paintRightWidgetItems(rightWidget);
 		rightWidget->setSelected(0);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "movie_new")
 	{
@@ -692,7 +692,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 		paintRightWidgetItems(rightWidget);
 		rightWidget->setSelected(0);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "nextPage")
 	{
@@ -707,7 +707,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 
 		rightWidget->setSelected(0);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "prevPage")
 	{
@@ -724,7 +724,7 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 
 		rightWidget->setSelected(0);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "startMenu")
 	{
@@ -736,17 +736,17 @@ int CNFilm::exec(CMenuTarget *parent, const std::string& actionKey)
 		loadTMDBPlaylist();
 		showMenu();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "exit")
 	{
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 
 	loadTMDBPlaylist(loadGenres);
 	showMenu(loadGenres);
 
-	return menu_return::RETURN_EXIT;
+	return RETURN_EXIT;
 }
 
 void plugin_init(void)

@@ -1011,6 +1011,57 @@ void ClistBoxWidget::setFooterButtons(const struct button_label* _fbutton_labels
 	fbutton_width = (_fbutton_width == 0)? width : _fbutton_width;
 }
 
+void ClistBoxWidget::setFooterButtons(const char * btn1, const char * locale1, const char * btn2, const char * locale2, const char * btn3, const char * locale3, const char * btn4, const char * locale4)
+{
+/*
+	struct button_label *_fbutton_labels = NULL;
+
+	if (btn1 != NULL)
+	{
+		_fbutton_labels[0].button = btn1;
+		_fbutton_labels[0].locale = NONEXISTANT_LOCALE;
+		_fbutton_labels[0].localename = locale1;
+
+		fbutton_count += 1;
+	}
+
+	if (btn2 != NULL)
+	{
+		_fbutton_labels[1].button = btn2;
+		_fbutton_labels[1].locale = NONEXISTANT_LOCALE;
+		_fbutton_labels[1].localename = locale2;
+
+		fbutton_count += 1;
+	}
+
+	if (btn3 != NULL)
+	{
+		_fbutton_labels[2].button = btn3;
+		_fbutton_labels[2].locale = NONEXISTANT_LOCALE;
+		_fbutton_labels[2].localename = locale3;
+
+		fbutton_count += 1;
+	}
+
+	if (btn4 != NULL)
+	{
+		_fbutton_labels[3].button = btn4;
+		_fbutton_labels[3].locale = NONEXISTANT_LOCALE;
+		_fbutton_labels[3].localename = locale4;
+
+		fbutton_count += 1;
+	}
+
+	//fbutton_labels = &_fbutton_labels;
+	for (int i = 0; i < 4; i++)
+	{
+		fbutton_labels[i].button = _fbutton_labels[i].button;
+		fbutton_labels[i].locale = NONEXISTANT_LOCALE;
+		fbutton_labels[i].localename = _fbutton_labels[i].localename;
+	}
+*/
+}
+
 void ClistBoxWidget::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
 {
 	hbutton_count = _hbutton_count;
@@ -1125,7 +1176,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 {
 	dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec: (%s)\n", l_name);
 
-	int retval = menu_return::RETURN_REPAINT;
+	int retval = RETURN_REPAINT;
 
 	int pos = 0;
 	exit_pressed = false;
@@ -1171,12 +1222,12 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 					switch ( rv ) 
 					{
-						case menu_return::RETURN_EXIT_ALL:
-							retval = menu_return::RETURN_EXIT_ALL; //fall through
-						case menu_return::RETURN_EXIT:
+						case RETURN_EXIT_ALL:
+							retval = RETURN_EXIT_ALL; //fall through
+						case RETURN_EXIT:
 							msg = RC_timeout;
 							break;
-						case menu_return::RETURN_REPAINT:
+						case RETURN_REPAINT:
 							hide();
 							initFrames();
 							paintHead();
@@ -1187,7 +1238,6 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 				}
 				else
 				{
-					//actionKey = it->second.action;
 					handled = true;
 					break;
 				}
@@ -1217,9 +1267,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 						paintItemInfo(selected);
 						pos = selected;
 						msg = RC_ok;
-
-						//if(titem->jumpTarget != NULL)
-							actionKey = titem->actionKey;
+						actionKey = titem->actionKey;
 					} 
 					else 
 					{
@@ -1244,7 +1292,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 				case (NeutrinoMessages::EVT_TIMER):
 					if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all ) 
 					{
-						retval = menu_return::RETURN_EXIT_ALL;
+						retval = RETURN_EXIT_ALL;
 						msg = RC_timeout;
 					}
 					break;
@@ -1531,19 +1579,20 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 									//exec this item...
 									CMenuItem * item = items[selected];
 									item->msg = msg;
+									actionKey = item->actionKey;
 							
 									int rv = item->exec(this);
 							
 									switch ( rv ) 
 									{
-										case menu_return::RETURN_EXIT_ALL:
-											retval = menu_return::RETURN_EXIT_ALL; //fall through
+										case RETURN_EXIT_ALL:
+											retval = RETURN_EXIT_ALL; //fall through
 									
-										case menu_return::RETURN_EXIT:
+										case RETURN_EXIT:
 											msg = RC_timeout;
 											break;
 									
-										case menu_return::RETURN_REPAINT:
+										case RETURN_REPAINT:
 											hide();
 											initFrames();
 											paintHead();
@@ -1608,19 +1657,20 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 									//exec this item...
 									CMenuItem * item = items[selected];
 									item->msg = msg;
+									actionKey = item->actionKey;
 							
 									int rv = item->exec(this);
 							
 									switch ( rv ) 
 									{
-										case menu_return::RETURN_EXIT_ALL:
-											retval = menu_return::RETURN_EXIT_ALL; //fall through
+										case RETURN_EXIT_ALL:
+											retval = RETURN_EXIT_ALL; //fall through
 									
-										case menu_return::RETURN_EXIT:
+										case RETURN_EXIT:
 											msg = RC_timeout;
 											break;
 									
-										case menu_return::RETURN_REPAINT:
+										case RETURN_REPAINT:
 											hide();
 											initFrames();
 											paintHead();
@@ -1646,22 +1696,20 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 							//exec this item...
 							CMenuItem* item = items[selected];
 							item->msg = msg;
-
-							//if(item->jumpTarget != NULL)
-								actionKey = item->actionKey;
+							actionKey = item->actionKey;
 							
 							int rv = item->exec(this);
 							
 							switch ( rv ) 
 							{
-								case menu_return::RETURN_EXIT_ALL:
-									retval = menu_return::RETURN_EXIT_ALL;
+								case RETURN_EXIT_ALL:
+									retval = RETURN_EXIT_ALL;
 									
-								case menu_return::RETURN_EXIT:
+								case RETURN_EXIT:
 									msg = RC_timeout;
 									break;
 									
-								case menu_return::RETURN_REPAINT:
+								case RETURN_REPAINT:
 									hide();
 									initFrames();
 									paintHead();
@@ -1737,7 +1785,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 				default:
 					if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all ) 
 					{
-						retval = menu_return::RETURN_EXIT_ALL;
+						retval = RETURN_EXIT_ALL;
 						msg = RC_timeout;
 					}
 			}

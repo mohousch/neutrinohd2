@@ -68,7 +68,7 @@ int CAudioPlayerSettings::exec(CMenuTarget* parent, const std::string& actionKey
 	{
 		CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
 		
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "audioplayerdir")
 	{
@@ -80,12 +80,12 @@ int CAudioPlayerSettings::exec(CMenuTarget* parent, const std::string& actionKey
 
 		getString() = g_settings.network_nfs_audioplayerdir;
 		
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	
 	showMenu();
 	
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 void CAudioPlayerSettings::showMenu()

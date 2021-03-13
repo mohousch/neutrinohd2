@@ -113,7 +113,7 @@ int CMountChooser::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		hide();
 
-		return menu_return::RETURN_EXIT;
+		return RETURN_EXIT;
 	} 
 	else 
 	{

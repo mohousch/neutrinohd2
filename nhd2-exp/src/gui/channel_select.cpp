@@ -50,7 +50,7 @@ CSelectChannelWidget::~CSelectChannelWidget()
 
 int CSelectChannelWidget::exec(CMenuTarget *parent, const std::string &actionKey)
 {
-	int   res = menu_return::RETURN_REPAINT;
+	int   res = RETURN_REPAINT;
 	
 	dprintf(DEBUG_NORMAL, "CSelectChannelWidget::exec: actionKey:%s\n", actionKey.c_str());
 

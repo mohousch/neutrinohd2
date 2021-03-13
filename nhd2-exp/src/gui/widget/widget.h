@@ -29,15 +29,12 @@
 
 
 //
-struct menu_return
+enum
 {
-	enum
-	{
-		RETURN_NONE	= 0,
-		RETURN_REPAINT 	= 1,
-		RETURN_EXIT 	= 2,
-		RETURN_EXIT_ALL = 4
-	};
+	RETURN_NONE	= 0,
+	RETURN_REPAINT 	= 1,
+	RETURN_EXIT 	= 2,
+	RETURN_EXIT_ALL = 4
 };
 
 class CMenuTarget

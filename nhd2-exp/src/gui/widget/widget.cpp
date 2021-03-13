@@ -223,7 +223,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 {
 	dprintf(DEBUG_NORMAL, "CWidget:: exec:\n");
 
-	retval = menu_return::RETURN_REPAINT;
+	retval = RETURN_REPAINT;
 	pos = 0;
 	exit_pressed = false;
 
@@ -280,12 +280,12 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 					//FIXME:review this
 					switch ( rv ) 
 					{
-						case menu_return::RETURN_EXIT_ALL:
-							retval = menu_return::RETURN_EXIT_ALL; //fall through
-						case menu_return::RETURN_EXIT:
+						case RETURN_EXIT_ALL:
+							retval = RETURN_EXIT_ALL; //fall through
+						case RETURN_EXIT:
 							msg = RC_timeout;
 							break;
-						case menu_return::RETURN_REPAINT:
+						case RETURN_REPAINT:
 							hide();
 							initFrames();
 							paint();
@@ -326,7 +326,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 				case (NeutrinoMessages::EVT_TIMER):
 					if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all ) 
 					{
-						retval = menu_return::RETURN_EXIT_ALL;
+						retval = RETURN_EXIT_ALL;
 						msg = RC_timeout;
 					}
 					break;
@@ -579,7 +579,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 				default:
 					if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all ) 
 					{
-						retval = menu_return::RETURN_EXIT_ALL;
+						retval = RETURN_EXIT_ALL;
 						msg = RC_timeout;
 					}
 			}
@@ -629,12 +629,12 @@ void CWidget::onOKKeyPressed()
 			//FIXME:review this
 			switch ( rv ) 
 			{
-				case menu_return::RETURN_EXIT_ALL:
-					retval = menu_return::RETURN_EXIT_ALL; //fall through
-				case menu_return::RETURN_EXIT:
+				case RETURN_EXIT_ALL:
+					retval = RETURN_EXIT_ALL; //fall through
+				case RETURN_EXIT:
 					msg = RC_timeout;
 					break;
-				case menu_return::RETURN_REPAINT:
+				case RETURN_REPAINT:
 					hide();
 					initFrames();
 					paint();

@@ -308,7 +308,7 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;
 		
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "radio")
 	{
@@ -323,7 +323,7 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		this->getString() = timerNew_channel_name;
 		
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "webtv")
 	{
@@ -338,7 +338,7 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		this->getString() = timerNew_channel_name;
 		
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "recording_dir")
 	{
@@ -350,7 +350,7 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		this->getString() = g_settings.network_nfs_audioplayerdir;
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if (strcmp(key, "modifytimer") == 0)
 	{
@@ -382,7 +382,7 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 						timerlist[selected].repeatCount);
 		}
 		
-		return menu_return::RETURN_EXIT;
+		return RETURN_EXIT;
 	}
 	else if (strcmp(key, "newtimer") == 0)
 	{
@@ -405,7 +405,7 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 			timerNew.eventType == CTimerd::TIMER_RECORD)
 		{
 			if(timerNew_channel_name.empty())
-				return menu_return::RETURN_REPAINT;
+				return RETURN_REPAINT;
 			else
 				timerNew.channel_id = timerNew_chan_id;
 			
@@ -440,7 +440,7 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 			if (strcmp(timerNew.pluginName, "") == 0)
 			{
 				plugin_chooser->getString() = timerNew.pluginName;
-				return menu_return::RETURN_REPAINT;
+				return RETURN_REPAINT;
 			}
 
 			plugin_chooser->getString() = timerNew.pluginName;
@@ -461,7 +461,7 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 			}
 		}
 		
-		return menu_return::RETURN_EXIT;
+		return RETURN_EXIT;
 	}
 
 	int ret = show();
@@ -494,7 +494,7 @@ int CTimerList::show()
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 
 	//
 	listBox = new ClistBox(&cFrameBox);
@@ -538,9 +538,9 @@ int CTimerList::show()
 		}
 		else if ((msg == RC_ok) && !(timerlist.empty()))
 		{
-			if (modifyTimer() == menu_return::RETURN_EXIT_ALL)
+			if (modifyTimer() == RETURN_EXIT_ALL)
 			{
-				res = menu_return::RETURN_EXIT_ALL;
+				res = RETURN_EXIT_ALL;
 				loop = false;
 			}
 			else
@@ -556,9 +556,9 @@ int CTimerList::show()
 		}
 		else if(msg == RC_green)
 		{
-			if (newTimer() == menu_return::RETURN_EXIT_ALL)
+			if (newTimer() == RETURN_EXIT_ALL)
 			{
-				res = menu_return::RETURN_EXIT_ALL;
+				res = RETURN_EXIT_ALL;
 				loop = false;
 			}
 			else
@@ -576,7 +576,7 @@ int CTimerList::show()
 		}
 		else if(msg == RC_setup)
 		{
-			res = menu_return::RETURN_EXIT_ALL;
+			res = RETURN_EXIT_ALL;
 			loop = false;
 		}
 		else if(msg == RC_info)
@@ -590,7 +590,7 @@ int CTimerList::show()
 				{
 					hide();
 					res = g_EpgData->show(timer->channel_id, timer->epgID, &timer->epg_starttime);
-					if(res == menu_return::RETURN_EXIT_ALL)
+					if(res == RETURN_EXIT_ALL)
 						loop = false;
 					else
 					{
@@ -604,7 +604,7 @@ int CTimerList::show()
 		{
 			g_RCInput->postMsg (msg, 0);
 			loop = false;
-			res = menu_return::RETURN_EXIT_ALL;
+			res = RETURN_EXIT_ALL;
 		}
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
@@ -615,7 +615,7 @@ int CTimerList::show()
 			if( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
 			{
 				loop = false;
-				res = menu_return::RETURN_EXIT_ALL;
+				res = RETURN_EXIT_ALL;
 			}
 		}
 

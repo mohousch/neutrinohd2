@@ -103,7 +103,7 @@ int CFrame::exec(CMenuTarget *parent)
 	if(jumpTarget)
 		return jumpTarget->exec(parent, actionKey);
 	else
-		return menu_return::RETURN_EXIT;
+		return RETURN_EXIT;
 }
 
 // CFrameBox
@@ -355,7 +355,7 @@ int CFrameBox::oKKeyPressed(CMenuTarget *parent)
 	if(parent)
 		return frames[selected]->exec(parent);
 	else
-		return menu_return::RETURN_EXIT;
+		return RETURN_EXIT;
 }
 
 void CFrameBox::onUpKeyPressed()

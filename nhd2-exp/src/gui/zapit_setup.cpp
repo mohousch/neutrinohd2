@@ -75,7 +75,7 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CZapitSetup::exec: actionKey:%s\n", actionKey.c_str());
 	
-	int   res = menu_return::RETURN_REPAINT;
+	int   res = RETURN_REPAINT;
 	CSelectChannelWidget*  CSelectChannelWidgetHandler;
 	
 	if (parent)
@@ -85,7 +85,8 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 	{
 		CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
 		showMenu();
-		return menu_return::RETURN_EXIT;
+
+		return RETURN_EXIT;
 	}
 	else if(actionKey == "tv")
 	{
@@ -101,7 +102,7 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;
 		
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "radio")
 	{
@@ -117,7 +118,7 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		delete CSelectChannelWidgetHandler;
 		CSelectChannelWidgetHandler = NULL;
 		
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "webtv")
 	{
@@ -135,7 +136,7 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 
 		printf("id:%llx name:%s nr:%d\n", g_settings.startchannelwebtv_id, g_settings.StartChannelWEBTV.c_str(), g_settings.startchannelwebtv_nr);
 		
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 
 	showMenu();

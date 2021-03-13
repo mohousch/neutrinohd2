@@ -211,7 +211,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 		m_playlist.clear();
 
 	//always repaint
-	return menu_return::RETURN_EXIT;
+	return RETURN_EXIT;
 }
 
 void CAudioPlayerGui::playFile()
@@ -346,7 +346,7 @@ void CAudioPlayerGui::playFile()
 							
 				int res = secondsInput.exec(NULL, "");
 					
-				if (seconds != 0 && res != menu_return::RETURN_EXIT_ALL)
+				if (seconds != 0 && res != RETURN_EXIT_ALL)
 					rev(seconds);
 			}
 		}
@@ -364,7 +364,7 @@ void CAudioPlayerGui::playFile()
 							
 				int res = secondsInput.exec(NULL, "");
 					
-				if (seconds != 0 && res != menu_return::RETURN_EXIT_ALL)
+				if (seconds != 0 && res != RETURN_EXIT_ALL)
 					ff(seconds);
 			}
 		}

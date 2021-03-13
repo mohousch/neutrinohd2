@@ -151,7 +151,7 @@ int CAVPIDChangeExec::exec(CMenuTarget */*parent*/, const std::string & actionKe
 		dprintf(DEBUG_NORMAL, "CAPIDSelect::exec: apid changed to %d\n", currentapid);
 	}
 	
-	return menu_return::RETURN_EXIT;
+	return RETURN_EXIT;
 }
 
 //
@@ -159,7 +159,7 @@ int CAVPIDSelectWidget::exec(CMenuTarget * parent, const std::string & actionKey
 {
 	dprintf(DEBUG_NORMAL, "CAVPIDSelectWidget::exec: %s\n", actionKey.c_str());
 	
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 
 	if (parent) 
 		parent->hide();

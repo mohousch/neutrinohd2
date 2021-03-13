@@ -4773,425 +4773,425 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	{
 		test();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "widget")
 	{
 		widget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "menuforwarder")
 	{
 		MessageBox(LOCALE_MESSAGEBOX_INFO, "testing CMenuForwarder", mbrBack, mbBack, NEUTRINO_ICON_INFO);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listboxitem")
 	{
 		MessageBox(LOCALE_MESSAGEBOX_INFO, "testing ClistBoxItem", mbrBack, mbBack, NEUTRINO_ICON_INFO);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "box")
 	{
 		testCBox();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "icon")
 	{
 		testCIcon();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "image")
 	{
 		testCImage();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "window")
 	{
 		testCWindow();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "windowshadow")
 	{
 		testCWindowShadow();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "windowcustomcolor")
 	{
 		testCWindowCustomColor();
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "headers")
 	{
 		testCHeaders();
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "stringinput")
 	{
 		testCStringInput();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "stringinputsms")
 	{
 		testCStringInputSMS();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "pininput")
 	{
 		testCPINInput();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "plpininput")
 	{
 		testCPLPINInput();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "pinchangewidget")
 	{
 		testCPINChangeWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "ipinput")
 	{
 		testCIPInput();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "macinput")
 	{
 		testCMACInput();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "dateinput")
 	{
 		testCDateInput();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "timeinput")
 	{
 		testCTimeInput();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "intinput")
 	{
 		testCIntInput();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "infobox")
 	{
 		testCInfoBox();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "messagebox")
 	{
 		testCMessageBox();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "messageboxinfomsg")
 	{
 		testCMessageBoxInfoMsg();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "messageboxerrormsg")
 	{
 		testCMessageBoxErrorMsg();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "hintbox")
 	{
 		testCHintBox();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "hintboxinfo")
 	{
 		testCHintBoxInfo();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "helpbox")
 	{
 		testCHelpBox();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "textbox")
 	{
 		testCTextBox();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listframe")
 	{
 		testCListFrame();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "progressbar")
 	{
 		testCProgressBar();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "progresswindow")
 	{
 		testCProgressWindow();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "buttons")
 	{
 		testCButtons();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listbox")
 	{
 		testClistBox();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listbox2")
 	{
 		testClistBox2();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listbox3")
 	{
 		testClistBox3();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listbox4")
 	{
 		testClistBox4();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listbox5")
 	{
 		testClistBox5();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listbox6")
 	{
 		testClistBox6();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "framebox")
 	{
 		testCFrameBox();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "playmovieurl")
 	{
 		testPlayMovieURL();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "playaudiourl")
 	{
 		testPlayAudioURL();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "showpictureurl")
 	{
 		testShowPictureURL();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "playmoviefolder")
 	{
 		testPlayMovieFolder();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "playaudiofolder")
 	{
 		testPlayAudioFolder();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "showpicturefolder")
 	{
 		testShowPictureFolder();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "startplugin")
 	{
 		testStartPlugin();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "showepg")
 	{
 		testShowActuellEPG();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "channelselect")
 	{
 		testChannelSelectWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "bewidget")
 	{
 		testBEWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "avselect")
 	{
 		testAVSelectWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "aselect")
 	{
 		testAudioSelectWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "dvbsubselect")
 	{
 		testDVBSubSelectWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "alphasetup")
 	{
 		testAlphaSetupWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "psisetup")
 	{
 		testPSISetup();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "rclock")
 	{
 		testRCLock();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "sleeptimer")
 	{
 		testSleepTimerWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "mountgui")
 	{
 		testMountGUI();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "umountgui")
 	{
 		testUmountGUI();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "mountsmallmenu")
 	{
 		testMountSmallMenu();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "vfdcontroller")
 	{
 		testVFDController();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "colorchooser")
 	{
 		testColorChooser();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "keychooser")
 	{
 		testKeyChooser();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "mountchooser")
 	{
 		testMountChooser();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listboxwidget")
 	{
 		testClistBoxWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "pluginslist")
 	{
 		testPluginsList();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "playmoviedir")
 	{
 		testPlayMovieDir();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "playaudiodir")
 	{
 		testPlayAudioDir();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "showpicturedir")
 	{
 		testShowPictureDir();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listboxwidget1")
 	{
 		testClistBoxWidget1();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listboxwidget2")
 	{
 		testClistBoxWidget2();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "mplay")
 	{
@@ -5203,7 +5203,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			tmpMoviePlayerGui.exec(NULL, "");
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listplay")
 	{
@@ -5215,32 +5215,32 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			tmpMoviePlayerGui.exec(NULL, "");
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "minfo")
 	{
 		selected = listMenu->getSelected();
 		m_movieInfo.showMovieInfo(m_vMovieInfo[listMenu->getSelected()]);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "channellist")
 	{
 		testChannellist();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "bouquetlist")
 	{
 		testBouquetlist();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "spinner")
 	{
 		spinner();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "winfo")
 	{
@@ -5250,7 +5250,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			m_movieInfo.showMovieInfo(m_vMovieInfo[right_selected]);
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "wok")
 	{
@@ -5518,7 +5518,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			}
 
 			if(left_selected == 8)
-				return menu_return::RETURN_EXIT_ALL;
+				return RETURN_EXIT_ALL;
 		}
 		else if(focus == 1)
 		{
@@ -5652,13 +5652,13 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			}
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listframewidget")
 	{
 		listFrameWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "aok")
 	{
@@ -5673,13 +5673,13 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			tmpAudioPlayerGui.exec(NULL, "");
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "listboxmwidget")
 	{
 		listBoxWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "mmwplay")
 	{
@@ -5691,30 +5691,30 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			tmpMoviePlayerGui.exec(NULL, "");
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "linfo")
 	{
 		selected = rightWidget->getSelected();
 		m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "lsetup")
 	{
 		rightWidget->changeWidgetType();
 
-		return menu_return::RETURN_NONE;
+		return RETURN_NONE;
 	}
 	else if(actionKey == "textboxwidget")
 	{
 		textBoxWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "exit")
 	{
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "movie_in_cinema")
 	{
@@ -5753,7 +5753,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			rightWidget->addItem(item);
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "movie_popular")
 	{
@@ -5792,7 +5792,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			rightWidget->addItem(item);
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "movie_top_rated")
 	{
@@ -5831,7 +5831,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			rightWidget->addItem(item);
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "movie_new")
 	{
@@ -5870,7 +5870,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			rightWidget->addItem(item);
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "tv_today")
 	{
@@ -5909,7 +5909,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			rightWidget->addItem(item);
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "tv_on_air")
 	{
@@ -5948,7 +5948,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			rightWidget->addItem(item);
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "tv_popular")
 	{
@@ -5987,7 +5987,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			rightWidget->addItem(item);
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "tv_top_rated")
 	{
@@ -6026,7 +6026,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			rightWidget->addItem(item);
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "yplay")
 	{
@@ -6060,7 +6060,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			tmpMoviePlayerGui.exec(NULL, "");
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "movie")
 	{
@@ -6133,7 +6133,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		leftWidget->setSelected(0);
 		rightWidget->setSelected(0);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "tv")
 	{
@@ -6212,7 +6212,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		leftWidget->setSelected(0);
 		rightWidget->setSelected(0);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "nextPage")
 	{
@@ -6256,7 +6256,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		rightWidget->setSelected(0);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "prevPage")
 	{
@@ -6303,7 +6303,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		rightWidget->setSelected(0);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "search")
 	{
@@ -6351,13 +6351,13 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 			tmdbsearch.clear();
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "windowwidget")
 	{
 		testWindowWidget();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "txtinfo")
 	{
@@ -6366,12 +6366,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 		if(textWidget)
 			textWidget->setBigFonts(bigFonts);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 
 	showMenu();
 	
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 #define MESSAGEBOX_NO_YES_OPTION_COUNT 2

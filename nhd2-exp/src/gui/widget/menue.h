@@ -213,6 +213,9 @@ class ClistBoxWidget : public CMenuTarget
 
 		//
 		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count, const int _fbutton_width = 0);
+		void setFooterButtons(const char * btn1, const char *locale1, const char * btn2 = NULL, const char *locale2 = NULL, const char * btn3 = NULL, const char *locale3 = NULL, const char * btn4 = NULL, const char *locale4 = NULL);
+
+		//
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
 
 		//

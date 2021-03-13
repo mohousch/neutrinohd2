@@ -246,7 +246,7 @@ int CBouquetList::doMenu()
 	int i = 0;
 	int select = -1;
 	static int old_selected = 0;
-	int ret = menu_return::RETURN_NONE;
+	int ret = RETURN_NONE;
 	signed int bouquet_id;
 	CZapitBouquet * tmp, * zapitBouquet;
 	ZapitChannelList * channels;
@@ -549,74 +549,6 @@ void CBouquetList::paint()
 	listBox->paint();
 }
 
-#if 0
-int CBouquetList::webTVBouquets(void)
-{
-	dprintf(DEBUG_NORMAL, "CBouquetList::webTVBouquets\n");
-
-	int ret = menu_return::RETURN_NONE;
-
-	CFileFilter fileFilter;
-	
-	fileFilter.addFilter("xml");
-	fileFilter.addFilter("tv");
-	fileFilter.addFilter("m3u");
-
-	//
-	CFileList filelist;
-	ClistBoxWidget m("WebTV", NEUTRINO_ICON_WEBTV_SMALL/*, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 18), (frameBuffer->getScreenHeight() / 20))*/);
-	m.enableSaveScreen();
-	m.enableShrinkMenu();
-
-	m.setMode(MODE_LISTBOX);
-	m.enablePaintDate();
-
-	int select = -1;
-	int count = 0;
-	static int old_select = 0;
-
-	std::string Path_local = CONFIGDIR "/webtv";
-
-	// read list
-	if(CFileHelpers::getInstance()->readDir(Path_local, &filelist, &fileFilter))
-	{
-		std::string bTitle;
-
-		for (unsigned int i = 0; i < filelist.size(); i++)
-		{
-			bTitle = filelist[i].getFileName();
-
-			removeExtension(bTitle);
-
-			m.addItem(new CMenuForwarder(bTitle.c_str(), true, NULL, NULL, to_string(count).c_str()), old_select == count);
-
-			count++;
-		}
-	}
-
-	ret = m.exec(NULL, "");
-	select = m.getSelected();
-
-	// select
-	if(select >= 0)
-	{
-		old_select = select;
-
-		g_settings.webtv_userBouquet.clear();
-		
-		g_settings.webtv_userBouquet = filelist[select].Name.c_str();
-		
-		dprintf(DEBUG_NORMAL, "CBouquetList::addUserBouquet: settings file %s\n", g_settings.webtv_userBouquet.c_str());
-		
-		// reload channels
-		g_Zapit->reinitChannels();
-
-		return 1;
-	}
-
-	return ret;
-}
-#endif
 
 
 

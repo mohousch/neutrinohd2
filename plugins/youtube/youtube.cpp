@@ -426,16 +426,16 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		if(m_settings.ytautoplay)
 		{
 			showMenu();
-			return menu_return::RETURN_EXIT_ALL;
+			return RETURN_EXIT_ALL;
 		}
 		else
-			return menu_return::RETURN_REPAINT;
+			return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_info")
 	{
 		showMovieInfo();
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_setup")
 	{
@@ -444,10 +444,10 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		if( res >= 0 && res <= 6)
 		{
 			showMenu();
-			return menu_return::RETURN_EXIT_ALL;
+			return RETURN_EXIT_ALL;
 		}
 		else
-			return menu_return::RETURN_REPAINT;
+			return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_blue")
 	{
@@ -457,7 +457,7 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		loadYTTitles(ytmode, ytsearch, ytvid);
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_red")
 	{
@@ -467,7 +467,7 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		loadYTTitles(ytmode, ytsearch, ytvid);
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
@@ -477,12 +477,12 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		loadYTTitles(ytmode, ytsearch, ytvid);
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_record")
 	{
 		recordMovie();
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "search")
 	{
@@ -496,16 +496,16 @@ int CYTBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 			loadYTTitles(ytmode, ytsearch, ytvid);
 			showMenu();
 
-			return menu_return::RETURN_EXIT_ALL;
+			return RETURN_EXIT_ALL;
 		}
 		else
-			return menu_return::RETURN_REPAINT;
+			return RETURN_REPAINT;
 	}
 
 	loadYTTitles(ytmode, ytsearch, ytvid);
 	showMenu();
 	
-	return menu_return::RETURN_EXIT;
+	return RETURN_EXIT;
 }
 
 //

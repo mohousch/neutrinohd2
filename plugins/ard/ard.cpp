@@ -55,7 +55,7 @@ int CARDverpasst::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	showMenu();
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 // verpasstSub
@@ -98,7 +98,7 @@ int CARDverpasstSub::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	showMenu();
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 // time
@@ -138,7 +138,7 @@ int CARDtime::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	showMenu();
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 // A-Z
@@ -178,7 +178,7 @@ int CARDaz::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	showMenu();
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 // TVlive
@@ -218,7 +218,7 @@ int CARDTVlive::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	showMenu();
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 // radio live
@@ -258,7 +258,7 @@ int CARDRadiolive::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	showMenu();
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 // streams
@@ -299,7 +299,7 @@ int CARDstreams::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	showMenu();
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 // ard
@@ -338,7 +338,7 @@ int CARD::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	showMenu();
 
-	return menu_return::RETURN_REPAINT;
+	return RETURN_REPAINT;
 }
 
 //plugin API

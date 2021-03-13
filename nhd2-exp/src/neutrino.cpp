@@ -2688,82 +2688,82 @@ int CNeutrinoApp::run(int argc, char **argv)
 		int ret = languageSettings.exec(NULL, "");
 	
 		// video setup wizard
-		if(ret != menu_return::RETURN_EXIT_ALL)
+		if(ret != RETURN_EXIT_ALL)
 		{
 			CVideoSettings videoSettings;
 			videoSettings.exec(NULL, "");
 		}
 		
 		 // audio setup wizard
-		if(ret != menu_return::RETURN_EXIT_ALL)
+		if(ret != RETURN_EXIT_ALL)
 		{
 			CAudioSettings audioSettings;
 			audioSettings.exec(NULL, "");
 		}		
 
 		// setup color
-		if(ret != menu_return::RETURN_EXIT_ALL)
+		if(ret != RETURN_EXIT_ALL)
 		{
 			COSDSettings colorSettings;
 			colorSettings.exec(NULL, "");
 		}
 
 		// setup timezone
-		if(ret != menu_return::RETURN_EXIT_ALL)
+		if(ret != RETURN_EXIT_ALL)
 			if(tzSelect)
 				tzSelect->exec(NULL);
 
 		// setup network
-		if(ret != menu_return::RETURN_EXIT_ALL)
+		if(ret != RETURN_EXIT_ALL)
 		{
 			CNetworkSettings networkSettings;
 			networkSettings.exec(NULL, "");
 		}
 		
 		// recordingsettings
-		if(ret != menu_return::RETURN_EXIT_ALL)
+		if(ret != RETURN_EXIT_ALL)
 		{
 			CRecordingSettings recordingSettings;
 			recordingSettings.exec(NULL, "");
 		}
 		
 		// movieplayer settings
-		if(ret != menu_return::RETURN_EXIT_ALL)
+		if(ret != RETURN_EXIT_ALL)
 		{
 			CMoviePlayerSettings moviePlayerSettings;
 			moviePlayerSettings.exec(NULL, "");
 		}
 		
 		// audioplayersettings
-		if(ret != menu_return::RETURN_EXIT_ALL)
+		if(ret != RETURN_EXIT_ALL)
 		{
 			CAudioPlayerSettings audioPlayerSettings;
 			audioPlayerSettings.exec(NULL, "");
 		}
 		
 		// picviewersettings
-		if(ret != menu_return::RETURN_EXIT_ALL)
+		if(ret != RETURN_EXIT_ALL)
 		{
 			CPictureViewerSettings PicViewerSettings;
 			PicViewerSettings.exec(NULL, "");
 		}
 		
 		// keysettings
-		if(ret != menu_return::RETURN_EXIT_ALL)
+		if(ret != RETURN_EXIT_ALL)
 		{
 			CRemoteControlSettings bindSettings;
 			bindSettings.exec(NULL, "");
 		}
 		
 		// misc settings
-		if(ret != menu_return::RETURN_EXIT_ALL)
+		if(ret != RETURN_EXIT_ALL)
 		{
 			CMiscSettings miscSettings;
 			miscSettings.exec(NULL, "");
 		}
 		
 		// service settings
-		if(ret != menu_return::RETURN_EXIT_ALL)
+		if(ret != RETURN_EXIT_ALL)
 		{
 			CServiceSetup service;
 			service.exec(NULL, "");
@@ -5177,7 +5177,7 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::exec: actionKey: %s\n", actionKey.c_str());
 
-	int returnval = menu_return::RETURN_REPAINT;
+	int returnval = RETURN_REPAINT;
 
 	if(actionKey == "shutdown") 
 	{
@@ -5198,22 +5198,22 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	else if(actionKey == "tv") 
 	{
 		tvMode();
-		returnval = menu_return::RETURN_EXIT_ALL;
+		returnval = RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "radio") 
 	{
 		radioMode();
-		returnval = menu_return::RETURN_EXIT_ALL;
+		returnval = RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "webtv") 
 	{
 		webtvMode();
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "scart") 
 	{
 		g_RCInput->postMsg( NeutrinoMessages::VCR_ON, 0 );
-		returnval = menu_return::RETURN_EXIT_ALL;
+		returnval = RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "savesettings") 
 	{
@@ -5240,7 +5240,7 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 
 		StartSubtitles();
 				
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 
 	return returnval;

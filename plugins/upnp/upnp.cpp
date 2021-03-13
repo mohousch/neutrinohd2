@@ -794,7 +794,7 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	bool changed = false;
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 
 	if (parent)
 		parent->hide();

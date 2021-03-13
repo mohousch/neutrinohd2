@@ -441,14 +441,14 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 			tmpMoviePlayerGui.exec(NULL, "");
 		}
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_info")
 	{
 		selected = mlist->getSelected();
 		m_movieInfo.showMovieInfo(m_vMovieInfo[mlist->getSelected()]);
 
-		return menu_return::RETURN_REPAINT;
+		return RETURN_REPAINT;
 	}
 	else if(actionKey == "RC_red")
 	{
@@ -457,14 +457,14 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 		doTMDB(m_vMovieInfo[mlist->getSelected()]);
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if(actionKey == "RC_green")
 	{
 		openFileBrowser();
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 	else if (actionKey == "RC_spkr") 
 	{
@@ -478,13 +478,13 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		showMenu();
 
-		return menu_return::RETURN_EXIT_ALL;
+		return RETURN_EXIT_ALL;
 	}
 
 	loadPlaylist();
 	showMenu();
 	
-	return menu_return::RETURN_EXIT;
+	return RETURN_EXIT;
 }
 
 void plugin_init(void)

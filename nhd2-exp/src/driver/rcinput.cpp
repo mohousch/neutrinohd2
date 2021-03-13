@@ -544,7 +544,7 @@ int CRCInput::messageLoop( bool anyKeyCancels, int timeout )
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	int res = menu_return::RETURN_REPAINT;
+	int res = RETURN_REPAINT;
 
 	bool doLoop = true;
 
@@ -567,7 +567,7 @@ int CRCInput::messageLoop( bool anyKeyCancels, int timeout )
 
 			if ( mr & messages_return::cancel_all )
 			{
-				res = menu_return::RETURN_EXIT_ALL;
+				res = RETURN_EXIT_ALL;
 				doLoop = false;
 			}
 			else if ( mr & messages_return::unhandled )
