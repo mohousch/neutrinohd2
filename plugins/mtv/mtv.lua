@@ -23,10 +23,8 @@
 
 local glob = {}
 local mtv_version = "mtv.de Version 0.37" -- Lua API Version: " .. APIVERSION.MAJOR .. "." .. APIVERSION.MINOR
---local n = neutrino()
+
 local conf = {}
---local on="ein"
---local off="aus"
 
 function get_confFile()
 	return neutrino.PLUGINDIR .. "/mtv/mtv.conf"
@@ -167,7 +165,8 @@ function init()
 			{name = "Dance Charts",url="http://www.mtv.de/charts/2ny5w9/dance-charts",fav=false},
 	}
 
-	local url = "http://www.mtv.de/charts"
+	--local url = "http://www.mtv.de/charts"
+	local url = "http://www.mtv.de/charts/2ny5w9/dance-charts"
 	glob.mtv_live_url = nil
 
 	videosection = get_json_data(url)
@@ -227,7 +226,7 @@ function info(captxt, infotxt, sleep)
 	end
 	
 	local h = neutrino.CHintBox(captxt, infotxt)
-	h:exec(10)
+	h:exec(sleep)
 end
 
 function getdata(Url, outputfile)
@@ -281,12 +280,13 @@ function getliste(url)
 	local json = require "json"
 	local urlTab = json.decode(videosection)
 	local tc = {"t4_lc_promo1"}
-	if url == "http://www.mtv.de/musik" then tc = {"t4_lc_promo1","t5_lc_promo1","t6_lc_promo1","t7_lc_promo1","t8_lc_promo1","t9_lc_promo1","t10_lc_promo1","t11_lc_promo1"}  		end
+	if url == "http://www.mtv.de/musik" then 
+		tc  = {"t4_lc_promo1","t5_lc_promo1","t6_lc_promo1","t7_lc_promo1","t8_lc_promo1","t9_lc_promo1","t10_lc_promo1","t11_lc_promo1"}  		end
 
 	for t in pairs(tc) do
 		if urlTab.manifest.zones[tc[t]] and urlTab.manifest.zones[tc[t]].feed then
 			local videosection_url = urlTab.manifest.zones[tc[t]].feed
-			for p=1,6,1 do
+			for p = 1,6,1 do
 				if videosection_url then
 					local  pc = "?"
 					if videosection_url:find("?") then 
@@ -319,16 +319,17 @@ function getliste(url)
 					if v.videoUrl or v.canonicalURL then
 						local video_url = v.videoUrl or v.canonicalURL
 						if exist_url(liste,video_url) == false then
+							-- artist
 							local artist = v.shortTitle or v.artist or ""
 							if #artist == 0 and v.artists then 
 								artist = v.artists[1].name 
 							end
+
+							-- logo
 							local _logo = nil
 							if v.images and v.images.url then 
 								_logo = v.images.url 
-								--print("logo: ".. _logo .. "")
 							end
-							--_logo = _logo or ""
 							
 							tfile = "/tmp/mtv/" .. v.title ..".jpg"
 							if _logo ~= nil and neutrino.file_exists(tfile) ~= true then
@@ -338,11 +339,19 @@ function getliste(url)
 								_logo = neutrino.DATADIR .. "/neutrino/icons/nopreview.jpg"
 							end
 							
+							-- chart pos
 							local chpos = nil
 							if v.chartPosition and v.chartPosition.current then 									chpos = v.chartPosition.current 
 							end
+
+							-- movie url
+							local VideoUrl = nil
+							VideoUrl = getvideourl(video_url, v.title, conf.hlsflag)
+
+							-- our list
 							table.insert(liste,{name=artist .. ": " .. v.title, url=video_url,
-								logo =_logo,enabled=conf.dlflag, vid=id,chartpos=chpos
+								logo =_logo,enabled=conf.dlflag, vid=id,chartpos=chpos,
+vidurl = VideoUrl
 								})
 						end
 					end
@@ -454,15 +463,12 @@ end
 
 function playMovie(id)
 	if id  then
-		local i = id
-		if glob.MTVliste[i].name == nil then
-			glob.MTVliste[i].name = "NoName_" .. i
+		if glob.MTVliste[id].name == nil then
+			glob.MTVliste[id].name = "NoName_" .. id
 		end
 
-		local url = getvideourl(glob.MTVliste[i].url, glob.MTVliste[i].name, conf.hlsflag)
-
-		if url then
-			vodeoPlay:addToPlaylist(url, glob.MTVliste[i].name)
+		if glob.MTVliste[id].vidurl ~= nil then
+			vodeoPlay:addToPlaylist(glob.MTVliste[id].vidurl , glob.MTVliste[id].name, "", "", glob.MTVliste[id].logo)
 			vodeoPlay:exec(null, "")
 		end
 	end
@@ -538,11 +544,13 @@ function playlist(filename)
 		if tab[i].name == nil then
 			tab[i].name = "NoName"
 		end
-		local url = getvideourl(tab[i].url,tab[i].name, conf.hlsflag)
+
+		local url = tab[i].vidurl
+
 		if url then
 			local videoformat = url:sub(-4)
 			if videoformat ~= ".flv" or conf.playflvflag then
-				vodeoPlay:addToPlaylist(url, "(" .. i.. "/" .. #tab .. ") " .. tab[i].name)
+				vodeoPlay:addToPlaylist(tab[i].vidurl, "(" .. i.. "/" .. #tab .. ") " .. tab[i].name, "", "", tab[i].logo)
 			end
 		end
 
@@ -720,16 +728,16 @@ function chooser_menu(id)
 	end
 
 	if menu:getExitPressed() ~= true then
-		setings()
+		settings()
 	end
 end
 
 function set_bool_in_liste(k, v)
 	local i = tonumber(k)
 	if v == on then
-		glob.MTVliste[i].enabled=true
+		glob.MTVliste[i].enabled = true
 	else
-		glob.MTVliste[i].enabled=false
+		glob.MTVliste[i].enabled = false
 	end
 end
 
@@ -757,12 +765,11 @@ function mtv_liste(id)
 	neutrino.CFileHelpers():removeDir("/tmp/mtv")
 	neutrino.CFileHelpers():createDir("/tmp/mtv")
 
-	local i = id
 	glob.MTVliste = nil;
-	local url = glob.mtv[i].url
+	local url = glob.mtv[id].url --liste url
 	glob.MTVliste = getliste(url)
 
-	local menu = neutrino.ClistBoxWidget(glob.mtv[i].name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
+	local menu = neutrino.ClistBoxWidget(glob.mtv[id].name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
 	menu:setWidgetType(neutrino.WIDGET_TYPE_FRAME)
 	menu:setItemsPerPage(3, 2)
 	menu:addWidget(neutrino.WIDGET_TYPE_CLASSIC)
@@ -801,6 +808,12 @@ function mtv_liste(id)
 		selected = menu:getSelected()
 		actionKey = menu:getActionKey()
 
+		if selected < 0 then
+			selected = 0
+		end
+
+		menu:setSelected(selected)
+
 		if selected >= 0 then
 			if actionKey == "playlist" then
 				playlist(glob.MTVliste[selected + 1])
@@ -813,7 +826,7 @@ end
 
 function set_path(id,value)
 	if conf[id] ~= value then
-		conf[id]=value
+		conf[id] = value
 		conf.changed = true
 	end
 end
@@ -845,7 +858,7 @@ function bool2onoff(a)
 end
 
 local m_selected = -1
-function setings()
+function settings()
 	--hideMenu(glob.main_menu)
 --[[
 	local d =  1
@@ -991,7 +1004,7 @@ function setings()
 	end
 
 	if menu:getExitPressed() ~= true then
-		setings()
+		settings()
 	end
 end
 
@@ -1023,15 +1036,17 @@ function gen_search_list(search)
 			if videosection_url then
 				videosection = getdata(videosection_url .. p)
 				if videosection == nil then
-					return MENU_RETURN.EXIT_REPAINT
+					return neutrino.RETURN_EXIT
 				end
 			else
-				return MENU_RETURN.EXIT_REPAINT
+				return neutrino.RETURN_EXIT
 			end
 			jnTab = json.decode(videosection)
 		end
 
-		if jnTab == nil or jnTab.result == nil or jnTab.result.artists == nil then return MENU_RETURN.EXIT_REPAINT end
+		if jnTab == nil or jnTab.result == nil or jnTab.result.artists == nil then 
+			return neutrino.RETURN_EXIT 
+		end
 
 		local add = true
 		local use_seek = #search > 1
@@ -1144,6 +1159,7 @@ end
 
 function play_live()
 	local video_url = getvideourl(glob.mtv_live_url, "live", true)
+
 	if video_url then
 		vodeoPlay:addToPlaylist(video_url, "MTV Live Stream")
 		vodeoPlay:exec(null, "")
@@ -1159,7 +1175,6 @@ function mtv_listen_menu()
 	end
 
 	menu = neutrino.ClistBoxWidget("MTV Listen", neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
-	--glob.mtv_listen_menu = menu
 
 	menu:enableShrinkMenu()
 	menu:enablePaintDate()
@@ -1225,7 +1240,7 @@ function main_menu()
 	elseif actionKey == "live" then
 		play_live()
 	elseif actionKey == "settings" then
-		setings()
+		settings()
 	end
 
 	if menu:getExitPressed() ~= true then
@@ -1236,11 +1251,11 @@ end
 function main()
 	init()
 	loadConfig()
-	glob.have_rtmpdump=nil
+	glob.have_rtmpdump = nil
 	if conf.hlsflag then
-		glob.have_rtmpdump=which("ffmpeg")
+		glob.have_rtmpdump = which("ffmpeg")
 	else
-		glob.have_rtmpdump=which("rtmpdump")
+		glob.have_rtmpdump = which("rtmpdump")
 	end
 	main_menu()
 	saveConfig()
