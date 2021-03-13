@@ -159,7 +159,7 @@ function init()
 			--{name = "Midweek Album Top100",url="http://www.mtv.de/charts/ew735d/midweek-album-top-100",fav=false},
 			{name = "Singel Trending",url="http://www.mtv.de/charts/9gtiy5/single-trending",fav=false},
 			{name = "Top100 Musik Streaming",url="http://www.mtv.de/charts/h4oi23/top100-music-streaming",fav=false},
-			{name = "Download Charts Singel",url="http://www.mtv.de/charts/pcbqpc/downloads-charts-single",fav=false},
+			--{name = "Download Charts Singel",url="http://www.mtv.de/charts/pcbqpc/downloads-charts-single",fav=false},
 			--{name = "Download Charts Album",url="http://www.mtv.de/charts/ha7dbg/downloads-charts-album",fav=false},
 			{name = "Top15 deutsche Singel",url="http://www.mtv.de/charts/jlyhaa/top-15-deutschsprachige-single-charts",fav=false},
 			--{name = "Top15 deutsche Alben",url="http://www.mtv.de/charts/wp4sh5/top-15-deutschsprachige-alben-charts",fav=false},
@@ -767,6 +767,7 @@ function mtv_liste(id)
 	menu:setItemsPerPage(3, 2)
 	menu:addWidget(neutrino.WIDGET_TYPE_CLASSIC)
 	menu:enableWidgetChange()
+	menu:enablePaintDate()
 
 	btn = neutrino.button_label_struct()
 
