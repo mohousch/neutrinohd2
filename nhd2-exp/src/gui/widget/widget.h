@@ -100,7 +100,7 @@ class CWidget : public CMenuTarget
 		virtual void hide();
 		virtual int exec(CMenuTarget *parent, const std::string &actionKey);
 
-		virtual void addItem(CWidgetItem *widgetItem, const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT, const bool defaultselected = false);
+		virtual void addItem(CWidgetItem *widgetItem, const int x = 0, const int y = 0, const int dx = 0, const int dy = 0, const bool defaultselected = false);
 		bool hasItem();
 		int getItemsCount()const{return items.size();};
 		virtual void clearItems(void){items.clear();};

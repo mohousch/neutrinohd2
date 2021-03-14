@@ -787,16 +787,19 @@ void CTestMenu::loadTMDBPlaylist(const char *txt, const char *list, const int se
 	{
 		tmdb->clearMInfo();
 		tmdb->searchMovieInfo(txt);
+
 		mvlist = tmdb->getMInfos();
 	}
 	else
 	{
 		tmdb->clearMovieList();
-
 		tmdb->getMovieTVList(TVShows, plist, page);
 
 		mvlist = tmdb->getMovies();
 	}
+
+	if (mvlist.empty())
+		return;
 
 	m_vMovieInfo.clear();
 	

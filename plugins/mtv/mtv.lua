@@ -1068,8 +1068,6 @@ function search_artists()
 	end
 
 	local menu = neutrino.ClistBoxWidget(conf.search, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
-	
-	--menu:addItem(neutrino.CMenuForwarder("Neue Favoriten hinzufügen"))
 
 	if glob.mtv_artist then
 		for i, v in ipairs(glob.mtv_artist) do

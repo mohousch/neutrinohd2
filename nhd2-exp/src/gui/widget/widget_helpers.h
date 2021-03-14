@@ -229,7 +229,7 @@ class CWidgetItem
 		virtual void setInFocus(bool focus){inFocus = focus;};
 		virtual void setSelected(unsigned int _new) {};
 
-		virtual inline CBox getItemPos(void){return (itemBox);};
+		virtual inline CBox getWindowsPos(void){return (itemBox);};
 
 		virtual int getWidgetType(){return (4);};
 		virtual void enablePaintDate(void){paintDate = true;};

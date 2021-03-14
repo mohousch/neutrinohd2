@@ -90,9 +90,10 @@ CListFrame::CListFrame(	LF_LINES * lines, CFont * font_text, const int _mode, co
 
 	if(position != NULL) 
 	{
-		m_cFrame	= *position;
-		m_nMaxHeight = m_cFrame.iHeight;
-		m_nMaxWidth = m_cFrame.iWidth;
+		itemBox	= *position;
+
+		m_nMaxHeight = itemBox.iHeight;
+		m_nMaxWidth = itemBox.iWidth;
 	}
 
 	m_nMode	= _mode;
@@ -179,10 +180,10 @@ void CListFrame::initVar(void)
 	m_nCurrentPage = 0;
 	m_nSelectedLine = 0;
 
-	m_cFrame.iWidth	= MENU_WIDTH;
-	m_cFrame.iHeight = MENU_HEIGHT;
-	m_cFrame.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - m_cFrame.iWidth) >>1);
-	m_cFrame.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - m_cFrame.iHeight) >>1);
+	itemBox.iWidth	= MENU_WIDTH;
+	itemBox.iHeight = MENU_HEIGHT;
+	itemBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - itemBox.iWidth) >>1);
+	itemBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - itemBox.iHeight) >>1);
 
 	m_nMaxHeight = MAX_WINDOW_HEIGHT;
 	m_nMaxWidth = MAX_WINDOW_WIDTH;
@@ -201,7 +202,7 @@ void CListFrame::reSizeMainFrameWidth(int textWidth)
 	if((int) iNewWindowWidth < MIN_WINDOW_WIDTH) 
 		iNewWindowWidth = MIN_WINDOW_WIDTH;
 
-	m_cFrame.iWidth	= iNewWindowWidth;
+	itemBox.iWidth	= iNewWindowWidth;
 
 	// renit the children frames due to new main window
 	initFramesRel();
@@ -219,7 +220,7 @@ void CListFrame::reSizeMainFrameHeight(int textHeight)
 	if( iNewWindowHeight < MIN_WINDOW_HEIGHT) 
 		iNewWindowHeight = MIN_WINDOW_HEIGHT;
 
-	m_cFrame.iHeight = iNewWindowHeight;
+	itemBox.iHeight = iNewWindowHeight;
 
 	// reinit the children frames due to new main window
 	initFramesRel();
@@ -234,7 +235,7 @@ void CListFrame::initFramesRel(void)
 		m_cFrameTitleRel.iX = 0;
 		m_cFrameTitleRel.iY = 0;
 		m_cFrameTitleRel.iHeight = m_nFontTitleHeight + 2 ;
-		m_cFrameTitleRel.iWidth = m_cFrame.iWidth ;
+		m_cFrameTitleRel.iWidth = itemBox.iWidth ;
 	}
 	else
 	{
@@ -260,11 +261,11 @@ void CListFrame::initFramesRel(void)
 
 	m_cFrameListRel.iX = 0;
 	m_cFrameListRel.iY = m_cFrameHeaderListRel.iHeight + m_cFrameTitleRel.iHeight;
-	m_cFrameListRel.iHeight	= m_cFrame.iHeight - m_cFrameHeaderListRel.iHeight - m_cFrameTitleRel.iHeight;
+	m_cFrameListRel.iHeight	= itemBox.iHeight - m_cFrameHeaderListRel.iHeight - m_cFrameTitleRel.iHeight;
 
 	if(m_nMode & SCROLL)
 	{
-		m_cFrameScrollRel.iX = m_cFrame.iWidth - SCROLL_FRAME_WIDTH;
+		m_cFrameScrollRel.iX = itemBox.iWidth - SCROLL_FRAME_WIDTH;
 		m_cFrameScrollRel.iY = m_cFrameTitleRel.iHeight;
 		m_cFrameScrollRel.iWidth = SCROLL_FRAME_WIDTH;
 		m_cFrameScrollRel.iHeight = m_cFrameListRel.iHeight + m_cFrameHeaderListRel.iHeight;
@@ -277,11 +278,11 @@ void CListFrame::initFramesRel(void)
 		m_cFrameScrollRel.iWidth = 0;
 	}
 
-	m_cFrameListRel.iWidth	= m_cFrame.iWidth;
+	m_cFrameListRel.iWidth	= itemBox.iWidth;
 		
 	if(m_nMode & HEADER_LINE)
 	{
-		m_cFrameHeaderListRel.iWidth = m_cFrame.iWidth;
+		m_cFrameHeaderListRel.iWidth = itemBox.iWidth;
 	}
 
 	m_nLinesPerPage = (m_cFrameListRel.iHeight - (2*TEXT_BORDER_WIDTH)) / m_nFontListHeight;
@@ -346,17 +347,17 @@ void CListFrame::refreshTitle(void)
 	if( frameBuffer == NULL) 
 		return;
 
-	frameBuffer->paintBoxRel(m_cFrameTitleRel.iX + m_cFrame.iX, m_cFrameTitleRel.iY + m_cFrame.iY, m_cFrameTitleRel.iWidth, m_cFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR/*, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient*/);
+	frameBuffer->paintBoxRel(m_cFrameTitleRel.iX + itemBox.iX, m_cFrameTitleRel.iY + itemBox.iY, m_cFrameTitleRel.iWidth, m_cFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR/*, RADIUS_MID, CORNER_TOP, g_settings.Head_gradient*/);
 	
 	int iw = 0;
 	int ih = 0;
 	if(!m_iconTitle.empty())
 	{
 		frameBuffer->getIconSize(m_iconTitle.c_str(), &iw, &ih);
-		frameBuffer->paintIcon(m_iconTitle, m_cFrameTitleRel.iX + m_cFrame.iX + BORDER_LEFT, m_cFrameTitleRel.iY + m_cFrame.iY + (m_cFrameTitleRel.iHeight - ih)/2);
+		frameBuffer->paintIcon(m_iconTitle, m_cFrameTitleRel.iX + itemBox.iX + BORDER_LEFT, m_cFrameTitleRel.iY + itemBox.iY + (m_cFrameTitleRel.iHeight - ih)/2);
 	}
 	
-	m_pcFontTitle->RenderString(m_cFrameTitleRel.iX + m_cFrame.iX + BORDER_LEFT + iw + ICON_OFFSET, m_cFrameTitleRel.iY + m_cFrameTitleRel.iHeight + m_cFrame.iY, m_cFrameTitleRel.iWidth - iw - (TEXT_BORDER_WIDTH << 1), m_textTitle.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
+	m_pcFontTitle->RenderString(m_cFrameTitleRel.iX + itemBox.iX + BORDER_LEFT + iw + ICON_OFFSET, m_cFrameTitleRel.iY + m_cFrameTitleRel.iHeight + itemBox.iY, m_cFrameTitleRel.iWidth - iw - (TEXT_BORDER_WIDTH << 1), m_textTitle.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
 }
 
 void CListFrame::refreshScroll(void)
@@ -371,7 +372,7 @@ void CListFrame::refreshScroll(void)
 
 	if (m_nNrOfPages > 1) 
 	{
-		scrollBar.paint(m_cFrameScrollRel.iX + m_cFrame.iX, m_cFrameScrollRel.iY + m_cFrame.iY, m_cFrameScrollRel.iHeight, m_nNrOfPages, m_nCurrentPage);
+		scrollBar.paint(m_cFrameScrollRel.iX + itemBox.iX, m_cFrameScrollRel.iY + itemBox.iY, m_cFrameScrollRel.iHeight, m_nNrOfPages, m_nCurrentPage);
 	}
 }
 
@@ -382,7 +383,7 @@ void CListFrame::refreshList(void)
 	if( frameBuffer == NULL) 
 		return;
 	
-	frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, m_cFrameListRel.iY + m_cFrame.iY, m_cFrameListRel.iWidth, m_cFrameListRel.iHeight, LIST_BACKGROUND_COLOR);
+	frameBuffer->paintBoxRel(m_cFrameListRel.iX + itemBox.iX, m_cFrameListRel.iY + itemBox.iY, m_cFrameListRel.iWidth, m_cFrameListRel.iHeight, LIST_BACKGROUND_COLOR);
 
 	if(m_nNrOfLines <= 0) 
 		return;
@@ -397,9 +398,9 @@ void CListFrame::refreshList(void)
 			color = LIST_FONT_COLOR_SELECTED;
 
 			if(m_nNrOfPages > 1)
-				frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED, true);
+				frameBuffer->paintBoxRel(m_cFrameListRel.iX + itemBox.iX, y + itemBox.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED, true);
 			else
-				frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED, true);
+				frameBuffer->paintBoxRel(m_cFrameListRel.iX + itemBox.iX, y + itemBox.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED, true);
 		}
 		
 		int width;
@@ -414,7 +415,7 @@ void CListFrame::refreshList(void)
 				width = m_cFrameListRel.iWidth - x + m_cFrameListRel.iX - TEXT_BORDER_WIDTH;
 				dprintf(DEBUG_DEBUG, "   normalize width to %d , x:%d \r\n",width,x);
 			}
-			m_pcFontList->RenderString(x + m_cFrame.iX, y + m_cFrame.iY, width, m_pLines->lineArray[row][line].c_str(), color, 0, true); // UTF-8
+			m_pcFontList->RenderString(x + itemBox.iX, y + itemBox.iY, width, m_pLines->lineArray[row][line].c_str(), color, 0, true); // UTF-8
 			x += m_pLines->rowWidth[row] + ROW_BORDER_WIDTH;								
 		}
 	}	
@@ -440,18 +441,18 @@ void CListFrame::refreshLine(int line)
 		color = LIST_FONT_COLOR_SELECTED;
 
 		if(m_nNrOfPages > 1)
-			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED);
+			frameBuffer->paintBoxRel(m_cFrameListRel.iX + itemBox.iX, y + itemBox.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED);
 		else
-			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y + m_cFrame.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED);
+			frameBuffer->paintBoxRel(m_cFrameListRel.iX + itemBox.iX, y + itemBox.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED);
 	}
 	else
 	{
 		color = LIST_FONT_COLOR;
 		
 		if(m_nNrOfPages > 1)
-			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y+m_cFrame.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR);
+			frameBuffer->paintBoxRel(m_cFrameListRel.iX + itemBox.iX, y + itemBox.iY, m_cFrameListRel.iWidth - m_cFrameScrollRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR);
 		else
-			frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, y+m_cFrame.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR);
+			frameBuffer->paintBoxRel(m_cFrameListRel.iX + itemBox.iX, y + itemBox.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR);
 	}
 	
 	int width;
@@ -466,7 +467,7 @@ void CListFrame::refreshLine(int line)
 			dprintf(DEBUG_DEBUG, "   normalize to %d,x:%d\r\n",width,x);
 		}
 
-		m_pcFontList->RenderString(x + m_cFrame.iX, y + m_cFrame.iY, width, m_pLines->lineArray[row][line].c_str(), color, 0, true); // UTF-8
+		m_pcFontList->RenderString(x + itemBox.iX, y + itemBox.iY, width, m_pLines->lineArray[row][line].c_str(), color, 0, true); // UTF-8
 		x += m_pLines->rowWidth[row] + ROW_BORDER_WIDTH;								
 	}	
 }
@@ -481,7 +482,7 @@ void CListFrame::refreshHeaderList(void)
 	if(!(m_nMode & HEADER_LINE))
 		return;
 
-	frameBuffer->paintBoxRel(m_cFrameHeaderListRel.iX + m_cFrame.iX, m_cFrameHeaderListRel.iY + m_cFrame.iY, m_cFrameHeaderListRel.iWidth, m_cFrameHeaderListRel.iHeight, LIST_BACKGROUND_COLOR);
+	frameBuffer->paintBoxRel(m_cFrameHeaderListRel.iX + itemBox.iX, m_cFrameHeaderListRel.iY + itemBox.iY, m_cFrameHeaderListRel.iWidth, m_cFrameHeaderListRel.iHeight, LIST_BACKGROUND_COLOR);
 
 	int width;
 	int x = m_cFrameHeaderListRel.iX + TEXT_BORDER_WIDTH;
@@ -499,7 +500,7 @@ void CListFrame::refreshHeaderList(void)
 			dprintf(DEBUG_DEBUG, "   normalize width to %d , x:%d \r\n",width,x);
 			loop = false;
 		}
-		m_pcFontHeaderList->RenderString(x + m_cFrame.iX, y + m_cFrame.iY, width, m_pLines->lineHeader[row].c_str(), HEADER_LIST_FONT_COLOR, 0, true); // UTF-8
+		m_pcFontHeaderList->RenderString(x + itemBox.iX, y + itemBox.iY, width, m_pLines->lineHeader[row].c_str(), HEADER_LIST_FONT_COLOR, 0, true); // UTF-8
 		x += m_pLines->rowWidth[row] + ROW_BORDER_WIDTH;								
 	}	
 }
@@ -706,7 +707,7 @@ void CListFrame::hide(void)
 	
 	dprintf(DEBUG_DEBUG, "CListFrame::hide: %s\n", m_textTitle.c_str());
 
-	frameBuffer->paintBackgroundBoxRel(m_cFrame.iX, m_cFrame.iY, m_cFrame.iWidth, m_cFrame.iHeight);
+	frameBuffer->paintBackgroundBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight);
 	
 	frameBuffer = NULL;
 }

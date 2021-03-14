@@ -91,10 +91,14 @@ void CWidget::addItem(CWidgetItem *widgetItem, const int x, const int y, const i
 	if (defaultselected)
 		selected = items.size();
 
-	widgetItem->itemBox.iX = x;
-	widgetItem->itemBox.iY = y;
-	widgetItem->itemBox.iWidth = dx;
-	widgetItem->itemBox.iHeight = dy;
+	// reinit itemBox
+	if (dx != 0 && dy != 0)
+	{
+		widgetItem->itemBox.iX = x;
+		widgetItem->itemBox.iY = y;
+		widgetItem->itemBox.iWidth = dx;
+		widgetItem->itemBox.iHeight = dy;
+	}
 	
 	items.push_back(widgetItem);
 }

@@ -113,12 +113,6 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 
 	frameBuffer = CFrameBuffer::getInstance();
 
-/*
-	cFrameBox.iX = x;
-	cFrameBox.iY = y;
-	cFrameBox.iWidth = dx;
-	cFrameBox.iHeight = dy;
-*/
 	itemBox.iX = x;
 	itemBox.iY = y;
 	itemBox.iWidth = dx;
@@ -144,7 +138,6 @@ CFrameBox::CFrameBox(CBox* position)
 
 	frameBuffer = CFrameBuffer::getInstance();
 
-	//cFrameBox = *position;
 	itemBox = *position;
 
 	selected = 0;

@@ -135,6 +135,8 @@ class CFrameBox : public CWidgetItem
 		//
 		bool isSelectable(void) const {return true;};
 
+		//inline CBox getWindowsPos(void){return (cFrameBox);};
+
 		int oKKeyPressed(CMenuTarget *parent);
 		
 		//

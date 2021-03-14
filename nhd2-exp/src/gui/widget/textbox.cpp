@@ -51,13 +51,13 @@ CTextBox::CTextBox(const int x, const int y, const int dx, const int dy)
 	
 	initVar();
 
-	m_cFrame.iX = x;
-	m_cFrame.iY = y;
-	m_cFrame.iWidth = dx;
-	m_cFrame.iHeight = dy;
+	itemBox.iX = x;
+	itemBox.iY = y;
+	itemBox.iWidth = dx;
+	itemBox.iHeight = dy;
 	
-	m_nMaxHeight = m_cFrame.iHeight;
-	m_nMaxWidth = m_cFrame.iWidth;
+	m_nMaxHeight = itemBox.iHeight;
+	m_nMaxWidth = itemBox.iWidth;
 
 	initFramesRel();
 }
@@ -70,9 +70,10 @@ CTextBox::CTextBox(CBox* position)
 
 	if(position != NULL)
 	{
-		m_cFrame = *position;
-		m_nMaxHeight = m_cFrame.iHeight;
-		m_nMaxWidth = m_cFrame.iWidth;
+		itemBox = *position;
+
+		m_nMaxHeight = itemBox.iHeight;
+		m_nMaxWidth = itemBox.iWidth;
 	}
 
 	initFramesRel();
@@ -102,13 +103,13 @@ void CTextBox::initVar(void)
 	m_nCurrentLine = 0;
 	m_nCurrentPage = 0;
 
-	m_cFrame.iWidth	= MENU_WIDTH;
-	m_cFrame.iHeight = MENU_HEIGHT;
+	itemBox.iWidth	= MENU_WIDTH;
+	itemBox.iHeight = MENU_HEIGHT;
 
-	m_cFrame.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - m_cFrame.iWidth) >>1);
-	m_cFrame.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - m_cFrame.iHeight) >>1);
-	m_cFrame.iWidth	= MIN_WINDOW_WIDTH;
-	m_cFrame.iHeight = MIN_WINDOW_HEIGHT;
+	itemBox.iX = g_settings.screen_StartX + ((g_settings.screen_EndX - g_settings.screen_StartX - itemBox.iWidth) >>1);
+	itemBox.iY = g_settings.screen_StartY + ((g_settings.screen_EndY - g_settings.screen_StartY - itemBox.iHeight) >>1);
+	itemBox.iWidth	= MIN_WINDOW_WIDTH;
+	itemBox.iHeight = MIN_WINDOW_HEIGHT;
 
 	m_nMaxHeight = MAX_WINDOW_HEIGHT;
 	m_nMaxWidth = MAX_WINDOW_WIDTH;
@@ -117,8 +118,9 @@ void CTextBox::initVar(void)
 
 	m_cLineArray.clear();
 	
-	lx = m_cFrame.iX + 10;
-	ly = m_cFrame.iY + 10;
+	lx = itemBox.iX + 10;
+	ly = itemBox.iY + 10;
+
 	tw = th = 0;
 	thumbnail = "";
 
@@ -131,9 +133,10 @@ void CTextBox::setPosition(const CBox * position)
 {
 	if(position != NULL)
 	{
-		m_cFrame = *position;
-		m_nMaxHeight = m_cFrame.iHeight;
-		m_nMaxWidth = m_cFrame.iWidth;
+		itemBox = *position;
+
+		m_nMaxHeight = itemBox.iHeight;
+		m_nMaxWidth = itemBox.iWidth;
 	}
 
 	initFramesRel();
@@ -179,7 +182,7 @@ void CTextBox::reSizeMainFrameWidth(int textWidth)
 	if( iNewWindowWidth < MIN_WINDOW_WIDTH) 
 		iNewWindowWidth = MIN_WINDOW_WIDTH;
 
-	m_cFrame.iWidth	= iNewWindowWidth;
+	itemBox.iWidth	= iNewWindowWidth;
 
 	// Re-Init the children frames due to new main window
 	initFramesRel();
@@ -196,7 +199,7 @@ void CTextBox::reSizeMainFrameHeight(int textHeight)
 	if( iNewWindowHeight < MIN_WINDOW_HEIGHT) 
 		iNewWindowHeight = MIN_WINDOW_HEIGHT;
 
-	m_cFrame.iHeight = iNewWindowHeight;
+	itemBox.iHeight = iNewWindowHeight;
 
 	// reinit the children frames due to new main window
 	initFramesRel();
@@ -206,16 +209,16 @@ void CTextBox::initFramesRel(void)
 {
 	dprintf(DEBUG_DEBUG, "CTextBox::InitFramesRel:\r\n");
 
-	m_cFrameTextRel.iX = m_cFrame.iX + BORDER_LEFT;
-	m_cFrameTextRel.iY = m_cFrame.iY + 10;
-	m_cFrameTextRel.iHeight	= m_cFrame.iHeight - 20;
+	m_cFrameTextRel.iX = itemBox.iX + BORDER_LEFT;
+	m_cFrameTextRel.iY = itemBox.iY + 10;
+	m_cFrameTextRel.iHeight	= itemBox.iHeight - 20;
 	
 	if(m_nMode & SCROLL)
 	{
-		m_cFrameScrollRel.iX = m_cFrame.iX + m_cFrame.iWidth - SCROLLBAR_WIDTH;
-		m_cFrameScrollRel.iY = m_cFrame.iY;
+		m_cFrameScrollRel.iX = itemBox.iX + itemBox.iWidth - SCROLLBAR_WIDTH;
+		m_cFrameScrollRel.iY = itemBox.iY;
 		m_cFrameScrollRel.iWidth = SCROLLBAR_WIDTH;
-		m_cFrameScrollRel.iHeight = m_cFrame.iHeight;
+		m_cFrameScrollRel.iHeight = itemBox.iHeight;
 	}
 	else
 	{
@@ -225,7 +228,7 @@ void CTextBox::initFramesRel(void)
 		m_cFrameScrollRel.iWidth = 0;
 	}
 
-	m_cFrameTextRel.iWidth = m_cFrame.iWidth - BORDER_LEFT - BORDER_RIGHT - m_cFrameScrollRel.iWidth;
+	m_cFrameTextRel.iWidth = itemBox.iWidth - BORDER_LEFT - BORDER_RIGHT - m_cFrameScrollRel.iWidth;
 
 	m_nLinesPerPage = m_cFrameTextRel.iHeight/m_nFontTextHeight;
 }
@@ -419,7 +422,7 @@ void CTextBox::refreshText(void)
 	// paint text background
 	if(paintBG)
 	{
-		m_cBoxWindow.setPosition(&m_cFrame);
+		m_cBoxWindow.setPosition(&itemBox);
 		m_cBoxWindow.setColor(m_textBackgroundColor);
 		m_cBoxWindow.paint();
 	}
@@ -535,47 +538,47 @@ bool CTextBox::setText(const char * const newText, const char * const _thumbnail
 		th = _th;
 
 		// check th
-		if(m_cFrame.iHeight > MAX_WINDOW_HEIGHT/2)
+		if(itemBox.iHeight > MAX_WINDOW_HEIGHT/2)
 		{
-			if(th > m_cFrame.iHeight/2)
-				th = m_cFrame.iHeight/2 - 20;
+			if(th > itemBox.iHeight/2)
+				th = itemBox.iHeight/2 - 20;
 		}
 		else
 		{
-			if(th >= (m_cFrame.iHeight - 20))
-				th = m_cFrame.iHeight - 20;
+			if(th >= (itemBox.iHeight - 20))
+				th = itemBox.iHeight - 20;
 		}
 
-		if(th >= (m_cFrame.iHeight - 20))
-			th = m_cFrame.iHeight - 20;
+		if(th >= (itemBox.iHeight - 20))
+			th = itemBox.iHeight - 20;
 		
 		// check tw
-		if(m_cFrame.iWidth > MAX_WINDOW_WIDTH/2)
+		if(itemBox.iWidth > MAX_WINDOW_WIDTH/2)
 		{
-			if(tw > m_cFrame.iWidth/2)
-				tw = m_cFrame.iWidth/2 - 20;
+			if(tw > itemBox.iWidth/2)
+				tw = itemBox.iWidth/2 - 20;
 		}
-		else if(m_cFrame.iWidth <= MAX_WINDOW_WIDTH/2)
+		else if(itemBox.iWidth <= MAX_WINDOW_WIDTH/2)
 		{
-			if(tw >= m_cFrame.iWidth)
-				tw = m_cFrame.iWidth - 20;
+			if(tw >= itemBox.iWidth)
+				tw = itemBox.iWidth - 20;
 		}
 
 		// position
 		if(m_tMode == TOP_RIGHT)
 		{
-			lx = m_cFrame.iX + m_cFrame.iWidth - (tw + SCROLLBAR_WIDTH + 10);
-			ly = m_cFrame.iY + 10;
+			lx = itemBox.iX + itemBox.iWidth - (tw + SCROLLBAR_WIDTH + 10);
+			ly = itemBox.iY + 10;
 		}
 		else if(m_tMode == TOP_LEFT)
 		{
-			lx = m_cFrame.iX + 10;
-			ly = m_cFrame.iY + 10;
+			lx = itemBox.iX + 10;
+			ly = itemBox.iY + 10;
 		}
 		else if(m_tMode == TOP_CENTER)
 		{
-			lx = m_cFrame.iX + (m_cFrame.iWidth - tw)/2;
-			ly = m_cFrame.iY + 10;
+			lx = itemBox.iX + (itemBox.iWidth - tw)/2;
+			ly = itemBox.iY + 10;
 		}
 	}
 	
@@ -615,7 +618,7 @@ void CTextBox::hide(void)
 		m_pcFontText->setSize((int)(m_pcFontText->getSize() / BIG_FONT_FAKTOR));
 	}
 	
-	m_cBoxWindow.setPosition(&m_cFrame);
+	m_cBoxWindow.setPosition(&itemBox);
 	m_cBoxWindow.hide();
 
 	painted = false;

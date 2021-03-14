@@ -515,7 +515,6 @@ class ClistBox : public CWidgetItem
 		bool paintFootInfo;
 		bool logo;
 		bool enableCenter;
-		//bool outFocus;
 		bool shrinkMenu;
 
 		//

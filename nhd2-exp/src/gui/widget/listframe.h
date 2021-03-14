@@ -96,7 +96,7 @@ class CListFrame : public CWidgetItem
 		// Variables 
 		LF_LINES* m_pLines;
 
-		CBox m_cFrame;
+		//CBox m_cFrame;
 		CBox m_cFrameTitleRel;
 		CBox m_cFrameListRel;
 		CBox m_cFrameScrollRel;
@@ -160,7 +160,7 @@ class CListFrame : public CWidgetItem
 		void	hide(void);
 		void	paint(void);
 
-		inline	CBox	getWindowsPos(void)		{return(m_cFrame);};
+		//inline	CBox	getWindowsPos(void)		{return(m_cFrame);};
 		inline	int	getMaxLineWidth(void)		{return(m_nMaxLineWidth);};
 		inline  int     getSelectedLine(void)		{return(m_nSelectedLine);};
 		inline  int     getLines(void)			{return(m_nNrOfLines);};
@@ -169,7 +169,7 @@ class CListFrame : public CWidgetItem
 
 		//
 		inline  void    showSelection(bool show = true)	{m_showSelection = show; refreshLine(m_nSelectedLine);};
-		inline	void	movePosition(int x, int y)	{m_cFrame.iX = x; m_cFrame.iY = y;};
+		inline	void	movePosition(int x, int y)	{itemBox.iX = x; itemBox.iY = y;};
 
 		//
 		bool isSelectable(void) const {return true;}

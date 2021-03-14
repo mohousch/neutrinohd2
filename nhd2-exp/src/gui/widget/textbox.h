@@ -73,7 +73,7 @@ class CTextBox : public CWidgetItem
 	public:
 
 	private:
-		CBox m_cFrame;
+		//CBox m_cFrame;
 		CBox m_cFrameTextRel;
 		CBox m_cFrameScrollRel;
 
@@ -141,11 +141,11 @@ class CTextBox : public CWidgetItem
 		
 		inline bool isPainted(void){return painted;};
 
-		inline CBox getWindowsPos(void){return(m_cFrame);};
+		//inline CBox getWindowsPos(void){return(m_cFrame);};
 		inline int getMaxLineWidth(void){return(m_nMaxLineWidth);};
 		inline int getLines(void){return(m_nNrOfLines);};
 		inline int getPages(void){return(m_nNrOfPages);};
-		inline void movePosition(int x, int y){m_cFrame.iX = x; m_cFrame.iY = y;};
+		inline void movePosition(int x, int y){itemBox.iX = x; itemBox.iY = y;};
 
 		void setPosition(const CBox * position);
 		void setBackgroundColor(fb_pixel_t col){m_textBackgroundColor = col;};
