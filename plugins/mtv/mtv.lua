@@ -474,48 +474,6 @@ function playMovie(id)
 	end
 end
 
---[[
-function gen_m3u_list(filename)
-	local m3ufilename= conf.path_m3u .. "/" .. filename .. ".m3u"
-
-	local m3ufile=io.open(m3ufilename,"w")
-	if m3ufile then
-		m3ufile:write("#EXTM3U name=" .. filename .. "\n")
-		local infotext = "Dateien werden für M3U Liste vorbereitet.  "
-		--local pw = cprogresswindow.new{title=infotext}
-		local pw = neutrino.CProgressWindow()
-		pw:setTitle(infotext)
-		pw:paint()
-		pw:showStatusMessageUTF("Start")
-		--pw:paint()
-		--pw:showStatus{statusText="Start"}
-        	for k, v in ipairs(glob.MTVliste) do
-			if v.name == nil then
-				v.name = "NoName"
-			end
-			local url = getvideourl(v.url,v.name,conf.hlsflag)
-			if url then
-				local extinf = ", "
-				if v.logo and #v.logo > 1 then --TODO Add Logo parse to CMoviePlayerGui::parsePlaylist
-					extinf = " logo=" .. v.logo ..".jpg ,"
-				end
-				extinf = extinf .. v.name
-				m3ufile:write("#EXTINF:-1".. extinf .."\n")
-				m3ufile:write(url .."\n")
-				--pw:showStatus{prog=k,max=#glob.MTVliste,statusText=tostring(k) .. "/" .. tostring(#glob.MTVliste) .. "  " .. v.name}
-				pw:showGlobalStatus(k)
-			end
-		end
-		m3ufile:close()
-		pw:hide()
-		info("Info", filename.." - Playlist wurde erstellt\n" .. m3ufilename,2)
-	else
-		info("Info", filename.." - Fehler beim erstellen:\n " .. m3ufilename .. " ",3)
-	end
-	--return MENU_RETURN.EXIT_REPAINT
-end
-]]
-
 function make_shuffle_list(tab)
 	local randTable={}
 	for k=1 , #tab do
@@ -566,32 +524,36 @@ function dlstart(name)
 	name = name:gsub("[:'&()/]", "_")
 	local dlname = "/tmp/" .. name ..".dl"
 	local havefile = neutrino.file_exists("/tmp/.rtmpdl")
+
 	if havefile == true then
 		info("Info", "Ein anderer Download ist bereits aktiv.", 4)
 		return
 	end
-	local dl=io.open(dlname,"w")
+
+	local dl = io.open(dlname, "w")
 	local script_start = false
 
-	--local pw = cprogresswindow.new{title=infotext}
 	local pw = neutrino.CProgressWindow()
 
 	pw:setTitle(infotext)
 	pw:paint()
-	--pw:paint()
-	--pw:showStatus{statusText="Start"}
 	pw:showStatusMessageUTF("Start")
+
 	for i, v in ipairs(glob.MTVliste) do
 		if v.enabled == true then
 			if glob.MTVliste[i].name == nil then
 				glob.MTVliste[i].name = "NoName_" .. i
 			end
-			local url = getvideourl(glob.MTVliste[i].url,glob.MTVliste[i].name,conf.hlsflag)
+
+			local url = getvideourl(glob.MTVliste[i].url, glob.MTVliste[i].name, conf.hlsflag)
+
 			if url then
 				local fname = v.name:gsub([[%s+]], "_")
 				fname = fname:gsub("[:'()]", "_")
 				fname = fname:gsub("/", "-")
-				pw:showStatus{prog=i,max=#glob.MTVliste,statusText=tostring(i) .. "/" .. tostring(#glob.MTVliste) .. "  " .. fname}
+
+				pw:showGlobalStatus(i)
+
 				local videoformat = url:sub(-4)
 				if videoformat == nil then
 					videoformat = ".mp4"
@@ -606,33 +568,35 @@ function dlstart(name)
 			end
 		end
 	end
-	pw:hide()
-	if script_start == true then
-	dl:close()
-	local scriptname  = "/tmp/" .. name ..".sh"
-	local script=io.open(scriptname,"w")
-	script:write(
-	[[#!/bin/sh
-	while read -r i
-	do
-		$i
-	done < ]]
-	)
-	script:write("'" .. dlname .. "'\n")
-	script:write([[
-	wget -q 'http://127.0.0.1/control/message?popup=Video Liste ]])
-		script:write(name .. " wurde heruntergeladen.' -O /dev/null\n")
-		script:write("rm '" .. dlname .. "'\n")
-		script:write("rm '" .. scriptname .. "'\n")
-		script:write("rm /tmp/.rtmpdl\n")
 
-		script:close()
-		os.execute("echo >/tmp/.rtmpdl")
-		os.execute("sleep 2")
-		os.execute("chmod 755 '" .. scriptname .. "'")
-		os.execute("sh '"..scriptname.."' &")
+	pw:hide()
+
+	if script_start == true then
+		dl:close()
+		local scriptname  = "/tmp/" .. name ..".sh"
+		local script=io.open(scriptname,"w")
+		script:write(
+		[[#!/bin/sh
+		while read -r i
+		do
+			$i
+		done < ]]
+		)
+		script:write("'" .. dlname .. "'\n")
+		script:write([[
+		wget -q 'http://127.0.0.1/control/message?popup=Video Liste ]])
+			script:write(name .. " wurde heruntergeladen.' -O /dev/null\n")
+			script:write("rm '" .. dlname .. "'\n")
+			script:write("rm '" .. scriptname .. "'\n")
+			script:write("rm /tmp/.rtmpdl\n")
+
+			script:close()
+			os.execute("echo >/tmp/.rtmpdl")
+			os.execute("sleep 2")
+			os.execute("chmod 755 '" .. scriptname .. "'")
+			os.execute("sh '"..scriptname.."' &")
 	else
-		local er = hintbox.new{caption="Info", text=name .." - \nDownload ist fehlerhaft \noder Video in FLV-Format"}
+		local er = neutrino.CHintBox("Info", name .." - \nDownload ist fehlerhaft \noder Video in FLV-Format")
 		er:paint()
 		os.remove(dlname)
 		print("ERROR")
@@ -712,50 +676,27 @@ function chooser_menu(id)
 ]]
 	local menu = neutrino.ClistBoxWidget(name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
 
-	if id:sub(1,29) =="Erstelle Download Liste für " then
+	--if id:sub(1,29) =="Erstelle Download Liste für " then
 		menu:addItem(neutrino.CMenuForwarder("Download starten", true, "", null, "dlstart"))
-	elseif id:sub(1,15) =="Neue Favoriten" then
+	--[[elseif id:sub(1,15) =="Neue Favoriten" then
 		menu:addItem(neutrino.CMenuForwarder("Zu Favoriten hinzufügen", true, "", null, "set_bool_in_searchliste"))
 	elseif id =="favdel" then
 		menu:addItem(neutrino.CMenuForwarder("Favoriten löschen", true, "", null, "set_bool_in_mtv"))
-	end
+	end]]
 
 	menu:exec(null, "")
 
 	local selected = menu:getSelected()
+	local actionKey = menu:getActionKey()
 
 	if selected >= 0 then
+		if actionKey == "dlstart" then
+			dlstart(glob.MTVliste[selected + 1].name)
+		end
 	end
 
 	if menu:getExitPressed() ~= true then
 		settings()
-	end
-end
-
-function set_bool_in_liste(k, v)
-	local i = tonumber(k)
-	if v == on then
-		glob.MTVliste[i].enabled = true
-	else
-		glob.MTVliste[i].enabled = false
-	end
-end
-
-function set_bool_in_searchliste(k, v)
-	local i = tonumber(k)
-	if v == on then
-		glob.mtv_artist[i].enabled=true
-	else
-		glob.mtv_artist[i].enabled=false
-	end
-end
-
-function set_bool_in_mtv(k, v)
-	local i = tonumber(k)
-	if v == on then
-		glob.mtv[i].enabled=true
-	else
-		glob.mtv[i].enabled=false
 	end
 end
 
@@ -771,7 +712,7 @@ function mtv_liste(id)
 
 	local menu = neutrino.ClistBoxWidget(glob.mtv[id].name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
 	menu:setWidgetType(neutrino.WIDGET_TYPE_FRAME)
-	menu:setItemsPerPage(3, 2)
+	--menu:setItemsPerPage(3, 2)
 	menu:addWidget(neutrino.WIDGET_TYPE_CLASSIC)
 	menu:enableWidgetChange()
 	menu:enablePaintDate()
@@ -783,19 +724,21 @@ function mtv_liste(id)
 	btn.localename = "spiele die ganze Liste"
 
 	menu:setFooterButtons(btn, 1)
-
 	menu:addKey(neutrino.RC_red, null, "playlist")
+
+	btn2 = neutrino.button_label_struct()
+
+	btn2.button = neutrino.NEUTRINO_ICON_BUTTON_REC
+	btn2.locale = neutrino.NONEXISTANT_LOCALE
+	btn2.localename = nil
+
+	menu:setHeaderButtons(btn2, 1)
+	menu:addKey(neutrino.RC_record, null, "record")
 
 	local item = nil
 	if glob.MTVliste ~= nil then
 		for i, v in ipairs(glob.MTVliste) do
-			local cont = i .. ": "
-			if v.chartpos then
-				cont = " (" .. v.chartpos .. ") "
-			end
-
 			item = neutrino.ClistBoxItem(v.name, true, "", null, "play")
-
 			item:setItemIcon(v.logo)
 
 			menu:addItem(item)
@@ -819,86 +762,15 @@ function mtv_liste(id)
 				playlist(glob.MTVliste[selected + 1])
 			elseif actionKey == "play" then
 				playMovie(selected + 1)
+			elseif actionKey == "record" then
+				dlstart(glob.MTVliste[selected + 1].name)
 			end
 		end
 	until menu:getExitPressed() == true
 end
 
-function set_path(id,value)
-	if conf[id] ~= value then
-		conf[id] = value
-		conf.changed = true
-	end
-end
-
-function set_option(k, v)
-	if k == "maxRes" then
-		conf[k]=v
-	end
-
-	if v == on then
-		conf[k]=true
-	elseif v == off then
-		conf[k]=false
-	end
-	if k == "hlsflag" then
-		glob.have_rtmpdump=nil
-		if conf[k] then
-			glob.have_rtmpdump=which("ffmpeg")
-		else
-			glob.have_rtmpdump=which("rtmpdump")
-		end
-	end
-	conf.changed = true
-end
-
-function bool2onoff(a)
-	if a then return on end
-	return off
-end
-
 local m_selected = -1
 function settings()
-	--hideMenu(glob.main_menu)
---[[
-	local d =  1
-	local menu =  menu.new{name="Einstellungen", icon="icon_blue"}
-	glob.settings_menu = menu
-	menu:addItem{type="back"}
-	menu:addItem{type="separatorline"}
-	menu:addItem{ type="filebrowser", dir_mode="1", id="path", name="Verzeichnis: ", action="set_path",
-		   enabled=true,value=conf.path,directkey=godirectkey(d),
-		   hint_icon="hint_service",hint="In welchem Verzeichnis soll das Video gespeichert werden ?"
-		 }
-	d=d+1
-	menu:addItem{ type="filebrowser", dir_mode="1", id="path_m3u", name="Verzeichnis M3U: ", action="set_path",
-		   enabled=true,value=conf.path_m3u,directkey=godirectkey(d),
-		   hint_icon="hint_service",hint="In welchem Verzeichnis soll das M3U Playlist gespeichert werden ?"
-		 }
-	d=d+1
-	menu:addItem{type="chooser", action="set_option", options={ on, off }, id="hlsflag", value=bool2onoff(conf.hlsflag), directkey=godirectkey(d), name="Videos in HLS-Format",hint_icon="hint_service",hint="HLS als bevorzugte Video Format 'ein' oder 'aus'"}
-	d=d+1
-	local res_opt={ '3840x2160','2560x1440','1920x1080','1280x720','854x480','640x360' }
-	menu:addItem{type="chooser", action="set_option", options=res_opt, id="maxRes", value=conf.maxRes, name="Max. Auflösung" ,directkey=godirectkey(d),hint_icon="hint_service",hint="Max. Video Auflösung"}
-	d=d+1
-	menu:addItem{type="chooser", action="set_option", options={ on, off }, id="dlflag", value=bool2onoff(conf.dlflag), directkey=godirectkey(d), name="Auswahl vorbelegen mit",hint_icon="hint_service",hint="Erstelle Auswahlliste mit 'ein' oder 'aus'"}
-	d=d+1
-	menu:addItem{type="chooser", action="set_option", options={ on, off }, id="flvflag", value=bool2onoff(conf.flvflag), directkey=godirectkey(d), name="Videos in FLV-Format herunterladen ? ",hint_icon="hint_service",hint="Videos in FLV-Format sind meisten mit nicht kompatiblen Video-Codec (zB: vp6f)."}
-	d=d+1
-	menu:addItem{type="chooser", action="set_option", options={ on, off }, id="playflvflag", value=bool2onoff(conf.playflvflag),
-	directkey=godirectkey(d), name="Videos in FLV-Format abspielen ? ",hint_icon="hint_service",hint="Videos in FLV-Format sind meisten mit nicht kompatiblen Video-Codec (zB: vp6f)."}
-	d=d+1
-	menu:addItem{type="chooser", action="set_option", options={ on, off }, id="shuffleflag", value=bool2onoff(conf.shuffleflag),
-	directkey=godirectkey(d), name="Zufällig abspielen ? ",hint_icon="hint_service",hint="Video wiedergabelisten zufällig abspielen. "}
-
-	menu:addItem{type="separatorline"}
-	d=d+1
-	menu:addItem{type="forwarder", name="Ausgewählte Favoriten löschen.", action="chooser_menu", enabled=true,
-	id="favdel", directkey=godirectkey(d),hint="Favoriten bearbeiten"}
-	menu:exec()
-	menu:hide()
-	return MENU_RETURN.EXIT_REPAINT
-]]
 	loadConfig()
 
 	local menu = neutrino.ClistBoxWidget("Einstellungen", neutrino.NEUTRINO_ICON_SETTINGS)
@@ -933,6 +805,32 @@ function settings()
 		dl = "off"
 	end
 	menu:addItem(neutrino.CMenuForwarder("Auswahl vorbelegen mit", true, dl))
+
+	flv = ""
+	if conf.flvflag == true then
+		flv = "on"
+	else
+		flv = "off"
+	end
+	menu:addItem(neutrino.CMenuForwarder("Videos in FLV-Format herunterladen ?", true, flv))
+
+	playflv = ""
+	if conf.playflvflag == true then
+		playflv = "on"
+	else
+		playflv = "off"
+	end
+	menu:addItem(neutrino.CMenuForwarder("Videos in FLV-Format abspielen ?", true, playflv))
+
+	shuffle = ""
+	if conf.shuffleflag == true then
+		shuffle = "on"
+	else
+		shuffle = "off"
+	end
+	menu:addItem(neutrino.CMenuForwarder("Zufällig abspielen ? ", true, shuffle))
+
+	menu:addItem(neutrino.CMenuForwarder("Ausgewählte Favoriten löschen.", true, "", null, "del_fav"))
 
 	if m_selected < 0 then
 		m_selected = 0
@@ -997,6 +895,30 @@ function settings()
 				conf.dlflag = false
 			else
 				conf.dlflag = true
+			end
+
+			saveConfig()
+		elseif m_selected == 9 then 
+			if conf.flvflag == true then
+				conf.flvflag = false
+			else
+				conf.flvflag = true
+			end
+
+			saveConfig()
+		elseif m_selected == 10 then 
+			if conf.playflvflag == true then
+				conf.playflvflag = false
+			else
+				conf.playflvflag = true
+			end
+
+			saveConfig()
+		elseif m_selected == 11 then 
+			if conf.shuffleflag == true then
+				conf.shuffleflag = false
+			else
+				conf.shuffleflag = true
 			end
 
 			saveConfig()
@@ -1066,28 +988,43 @@ function gen_search_list(search)
 end
 
 function searchliste(id)
-	local i = id
 	glob.MTVliste = nil;
 
-	if glob.mtv_artist[i].disabled == true then 
+	if glob.mtv_artist[id].disabled == true then 
 		return 
 	end
 
-	local url = glob.mtv_artist[i].url
+	local url = glob.mtv_artist[id].url
 	glob.MTVliste = getliste(url)
 
-	local menu = neutrino.ClistBoxWidget(glob.mtv_artist[i].name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
+	local menu = neutrino.ClistBoxWidget(glob.mtv_artist[id].name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
+	menu:setWidgetType(neutrino.WIDGET_TYPE_FRAME)
+	menu:enablePaintDate()
+
+	btn = neutrino.button_label_struct()
+
+	btn.button = neutrino.NEUTRINO_ICON_BUTTON_RED
+	btn.locale = neutrino.NONEXISTANT_LOCALE
+	btn.localename = "spiele die ganze Liste"
+
+	menu:setFooterButtons(btn, 1)
+	menu:addKey(neutrino.RC_red, null, "playlist")
+
+	btn2 = neutrino.button_label_struct()
+
+	btn2.button = neutrino.NEUTRINO_ICON_BUTTON_REC
+	btn2.locale = neutrino.NONEXISTANT_LOCALE
+	btn2.localename = nil
+
+	menu:setHeaderButtons(btn2, 1)
+	menu:addKey(neutrino.RC_record, null, "record")
 
 	local item = nil
 
 	for i, v in ipairs(glob.MTVliste) do
-		local cont = i .. ": "
-		if v.chartpos then
-			cont = " (" .. v.chartpos .. ") "
-		end
-
-		item = neutrino.CMenuForwarder(cont .. v.name)
+		item = neutrino.ClistBoxItem(v.name)
 		item:setActionKey(null, "playMovie")
+		item:setItemIcon(v.logo)
 
 		menu:addItem(item)
 	end
@@ -1101,6 +1038,10 @@ function searchliste(id)
 		if selected >= 0 then
 			if actionKey == "playMovie" then
 				playMovie(selected + 1)
+			elseif actionKey == "playlist" then
+				playlist(glob.MTVliste[selected + 1])
+			elseif actionKey == "record" then
+				dlstart(glob.MTVliste[selected + 1].name)
 			end
 		end
 
@@ -1126,28 +1067,30 @@ function search_artists()
 		return
 	end
 
-	local d = 1
-
 	local menu = neutrino.ClistBoxWidget(conf.search, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
-	glob.search_artists_menu = menu
-	glob.artists_menu = menu
 	
-	menu:addItem(neutrino.CMenuForwarder("Neue Favoriten hinzufügen"))
+	--menu:addItem(neutrino.CMenuForwarder("Neue Favoriten hinzufügen"))
 
 	if glob.mtv_artist then
 		for i, v in ipairs(glob.mtv_artist) do
-			menu:addItem(neutrino.CMenuForwarder(i .. ": " .. v.name))
+			menu:addItem(neutrino.CMenuForwarder(i .. ": " .. v.name, true, "", null, "search"))
 		end
 	end
 
 	menu:exec(null, "")
 
 	local selected = menu:getSelected()
+	local actionKey = menu:getActionKey()
 
 	if selected >= 0 then
+		--[[
 		if selected == 0 then
-			--chooser_menu(glob.mtv_artist[selected + 1].id)
+			chooser_menu(selected + 1)
 		elseif selected > 0 then
+			searchliste(selected + 1)
+		end
+		]]
+		if actionKey == "search" then
 			searchliste(selected + 1)
 		end
 	end
@@ -1216,7 +1159,6 @@ function main_menu()
 	menu:setMode(neutrino.MODE_MENU)
 	menu:enableShrinkMenu()
 	menu:enablePaintDate()
-	--glob.main_menu = menu
 
 	if selected_mm < 0 then
 		selected_mm = 0

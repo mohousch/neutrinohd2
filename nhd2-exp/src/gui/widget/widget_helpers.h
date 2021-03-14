@@ -34,7 +34,21 @@
 class CMenuTarget;
 
 //
-enum {
+typedef enum {
+	WIDGET_COMPONENT_FRAME = 0,
+	WIDGET_COMPONENT_TEXT,
+	WIDGET_COMPONENT_PICTURE,
+	WIDGET_COMPONENT_BUTTON,
+	WIDGET_COMPONENT_SCROLLBAR,
+	WIDGET_COMPONENT_PROGRESSBAR,
+	WIDGET_COMPONENT_PROGRESSWINDOW,
+	WIDGET_COMPONENT_HEAD,
+	WIDGET_COMPONENT_FOOT,
+	WIDGET_COMPONENT_DETAILSLINE
+}widget_component_t;
+
+//
+typedef enum {
 	WIDGET_ITEM_HEAD = 0,
 	WIDGET_ITEM_FOOT,
 	WIDGET_ITEM_LISTBOX,
@@ -44,10 +58,7 @@ enum {
 	WIDGET_ITEM_WINDOW,
 	WIDGET_ITEM_PIG,
 	WIDGET_ITEM_GRID,
-	WIDGET_ITEM_BUTTON,
-	WIDGET_ITEM_SCROLLBAR,
-	WIDGET_ITEM_DETAILSLINE
-};
+}widget_item_t;
 
 //// helpers
 class CBox
@@ -108,6 +119,16 @@ class CImage
 			imageName = std::string(image); 
 			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
 		};
+};
+
+////
+class CWidgetComponent
+{
+	public:
+		CBox componentBox;
+
+		void paint(){};
+		void hide(){};
 };
 
 // buttons
@@ -171,7 +192,6 @@ class CProgressBar
 // detailsLine
 class CItems2DetailsLine
 {
-	private:
 	public:
 		CItems2DetailsLine(){};
 		virtual ~CItems2DetailsLine(){};
@@ -183,7 +203,6 @@ class CItems2DetailsLine
 // CWidgetItem
 class CWidgetItem
 {
-	private:
 	public:
 		CBox itemBox;
 

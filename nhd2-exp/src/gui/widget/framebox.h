@@ -91,7 +91,7 @@ class CFrameBox : public CWidgetItem
 {
 	private:
 		CFrameBuffer* frameBuffer;
-		CBox cFrameBox;
+		//CBox cFrameBox;
 		CWindow cFrameWindow;
 		int selected;
 		int pos;

@@ -113,10 +113,16 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 
 	frameBuffer = CFrameBuffer::getInstance();
 
+/*
 	cFrameBox.iX = x;
 	cFrameBox.iY = y;
 	cFrameBox.iWidth = dx;
 	cFrameBox.iHeight = dy;
+*/
+	itemBox.iX = x;
+	itemBox.iY = y;
+	itemBox.iWidth = dx;
+	itemBox.iHeight = dy;
 
 	selected = 0;
 	pos = 0;
@@ -138,7 +144,8 @@ CFrameBox::CFrameBox(CBox* position)
 
 	frameBuffer = CFrameBuffer::getInstance();
 
-	cFrameBox = *position;
+	//cFrameBox = *position;
+	itemBox = *position;
 
 	selected = 0;
 	pos = 0;
@@ -174,7 +181,7 @@ bool CFrameBox::hasItem()
 
 void CFrameBox::initFrames()
 {
-	cFrameWindow.setPosition(&cFrameBox);
+	cFrameWindow.setPosition(&itemBox);
 }
 
 void CFrameBox::paintFrames()
@@ -189,18 +196,18 @@ void CFrameBox::paintFrames()
 	{
 		if(frameMode == FRAME_MODE_HORIZONTAL)
 		{
-			frame_width = (cFrameBox.iWidth - 2*ICON_OFFSET)/((int)frames.size());
-			frame_height = cFrameBox.iHeight - 2*ICON_OFFSET;
+			frame_width = (itemBox.iWidth - 2*ICON_OFFSET)/((int)frames.size());
+			frame_height = itemBox.iHeight - 2*ICON_OFFSET;
 		}
 		else
 		{
-			frame_width = cFrameBox.iWidth - 2*ICON_OFFSET;
-			frame_height = (cFrameBox.iHeight - 2*ICON_OFFSET)/((int)frames.size());
+			frame_width = itemBox.iWidth - 2*ICON_OFFSET;
+			frame_height = (itemBox.iHeight - 2*ICON_OFFSET)/((int)frames.size());
 		}
 	}
 
-	int frame_x = cFrameBox.iX + ICON_OFFSET;
-	int frame_y = cFrameBox.iY + ICON_OFFSET;
+	int frame_x = itemBox.iX + ICON_OFFSET;
+	int frame_y = itemBox.iY + ICON_OFFSET;
 
 	for (unsigned int count = 0; count < (unsigned int)frames.size(); count++) 
 	{

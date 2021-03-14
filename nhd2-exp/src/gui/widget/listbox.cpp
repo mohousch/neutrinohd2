@@ -1657,11 +1657,19 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	selected = -1;
 	current_page = 0;
 	pos = 0;
-
+/*
 	cFrameBox.iX = x;
 	cFrameBox.iY = y;
 	cFrameBox.iWidth = dx;
 	cFrameBox.iHeight = dy;
+*/
+	itemBox.iX = x;
+	itemBox.iY = y;
+	itemBox.iWidth = dx;
+	itemBox.iHeight = dy;
+
+	cFrameBox = itemBox;
+
 	full_height = dy;
 	full_width = dx;
 	start_x = x;
@@ -1736,7 +1744,10 @@ ClistBox::ClistBox(CBox* position)
 	current_page = 0;
 	pos = 0;
 
-	cFrameBox = *position;
+	//cFrameBox = *position;
+	itemBox = *position;
+	cFrameBox = itemBox;
+
 	full_height = position->iHeight;
 	full_width = position->iWidth;
 	start_x = position->iX;
