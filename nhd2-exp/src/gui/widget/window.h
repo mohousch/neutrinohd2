@@ -38,7 +38,7 @@ class CWindow : public CWidgetItem
 {
 	private:
 		CFrameBuffer* frameBuffer;
-		CBox cFrameBox;
+		//CBox cFrameBox;
 
 		fb_pixel_t * background;
 		int full_width;
@@ -76,7 +76,7 @@ class CWindow : public CWidgetItem
 		void paint(void);
 		void hide(void);
 
-		CBox getWindowsPos(void){return(cFrameBox);};
+		//CBox getWindowsPos(void){return(cFrameBox);};
 };
 
 // pig
@@ -84,7 +84,7 @@ class CPig : public CWidgetItem
 {
 	private:
 		CFrameBuffer* frameBuffer;
-		CBox cFrameBox;
+		//CBox cFrameBox;
 
 	public:
 		CPig(const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
@@ -96,7 +96,7 @@ class CPig : public CWidgetItem
 		void paint(void);
 		void hide(void);
 
-		CBox getWindowsPos(void){return(cFrameBox);};
+		//CBox getWindowsPos(void){return(cFrameBox);};
 };
 
 //
@@ -104,7 +104,7 @@ class CGrid : public CWidgetItem
 {
 	private:
 		CFrameBuffer* frameBuffer;
-		CBox cFrameBox;
+		//CBox cFrameBox;
 
 		__u32 rgb;
 
@@ -120,7 +120,7 @@ class CGrid : public CWidgetItem
 		void paint(void);
 		void hide(void);
 
-		CBox getWindowsPos(void){return(cFrameBox);};
+		//CBox getWindowsPos(void){return(cFrameBox);};
 };
 
 #endif

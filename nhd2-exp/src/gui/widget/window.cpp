@@ -45,10 +45,10 @@ extern cVideo * videoDecoder;
 
 CWindow::CWindow(const int x, const int y, const int dx, const int dy)
 {
-	cFrameBox.iX = x;
-	cFrameBox.iY = y;
-	cFrameBox.iWidth = dx;
-	cFrameBox.iHeight = dy;
+	itemBox.iX = x;
+	itemBox.iY = y;
+	itemBox.iWidth = dx;
+	itemBox.iHeight = dy;
 
 	centerPos = false;
 
@@ -57,7 +57,7 @@ CWindow::CWindow(const int x, const int y, const int dx, const int dy)
 
 CWindow::CWindow(CBox* position)
 {
-	cFrameBox = *position;
+	itemBox = *position;
 
 	centerPos = false;
 
@@ -82,45 +82,45 @@ void CWindow::init(void)
 	savescreen = false;
 	background = NULL;
 
-	full_width = cFrameBox.iWidth;
-	full_height = cFrameBox.iHeight;
+	full_width = itemBox.iWidth;
+	full_height = itemBox.iHeight;
 
 	itemType = WIDGET_ITEM_WINDOW;
 
 	// sanity check
-	if(cFrameBox.iHeight > ((int)frameBuffer->getScreenHeight()))
-		cFrameBox.iHeight = frameBuffer->getScreenHeight();
+	if(itemBox.iHeight > ((int)frameBuffer->getScreenHeight()))
+		itemBox.iHeight = frameBuffer->getScreenHeight();
 
 	// sanity check
-	if(cFrameBox.iWidth > (int)frameBuffer->getScreenWidth())
-		cFrameBox.iWidth = frameBuffer->getScreenWidth();
+	if(itemBox.iWidth > (int)frameBuffer->getScreenWidth())
+		itemBox.iWidth = frameBuffer->getScreenWidth();
 
 	if(centerPos)
 	{
-		cFrameBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - cFrameBox.iWidth) >> 1 );
-		cFrameBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - cFrameBox.iHeight) >> 1 );
+		itemBox.iX = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - itemBox.iWidth) >> 1 );
+		itemBox.iY = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - itemBox.iHeight) >> 1 );
 	}
 }
 
 void CWindow::saveScreen()
 {
-	full_width = enableshadow? cFrameBox.iWidth + 2 : cFrameBox.iWidth;
-	full_height = enableshadow? cFrameBox.iHeight + 2 : cFrameBox.iHeight;
+	full_width = enableshadow? itemBox.iWidth + 2 : itemBox.iWidth;
+	full_height = enableshadow? itemBox.iHeight + 2 : itemBox.iHeight;
 
 	background = new fb_pixel_t[full_width*full_height];
 	
 	if(background)
-		frameBuffer->saveScreen(enableshadow? cFrameBox.iX - 1 : cFrameBox.iX, enableshadow? cFrameBox.iY - 1 : cFrameBox.iY, full_width, full_height, background);
+		frameBuffer->saveScreen(enableshadow? itemBox.iX - 1 : itemBox.iX, enableshadow? itemBox.iY - 1 : itemBox.iY, full_width, full_height, background);
 }
 
 void CWindow::restoreScreen()
 {
-	full_width = enableshadow? cFrameBox.iWidth + 2 : cFrameBox.iWidth;
-	full_height = enableshadow? cFrameBox.iHeight + 2 : cFrameBox.iHeight;
+	full_width = enableshadow? itemBox.iWidth + 2 : itemBox.iWidth;
+	full_height = enableshadow? itemBox.iHeight + 2 : itemBox.iHeight;
 
 	if(background) 
 	{
-		frameBuffer->restoreScreen(enableshadow? cFrameBox.iX - 1 : cFrameBox.iX, enableshadow? cFrameBox.iY - 1 : cFrameBox.iY, full_width, full_height, background);
+		frameBuffer->restoreScreen(enableshadow? itemBox.iX - 1 : itemBox.iX, enableshadow? itemBox.iY - 1 : itemBox.iY, full_width, full_height, background);
 	}
 
 	delete[] background;
@@ -129,21 +129,21 @@ void CWindow::restoreScreen()
 
 void CWindow::setPosition(const int x, const int y, const int dx, const int dy)
 {
-	cFrameBox.iX = x;
-	cFrameBox.iY = y;
-	cFrameBox.iWidth = dx;
-	cFrameBox.iHeight = dy;
+	itemBox.iX = x;
+	itemBox.iY = y;
+	itemBox.iWidth = dx;
+	itemBox.iHeight = dy;
 
-	full_width = cFrameBox.iWidth;
-	full_height = cFrameBox.iHeight;
+	full_width = itemBox.iWidth;
+	full_height = itemBox.iHeight;
 }
 
 void CWindow::setPosition(CBox* position)
 {
-	cFrameBox = *position;
+	itemBox = *position;
 
-	full_width = cFrameBox.iWidth;
-	full_height = cFrameBox.iHeight;
+	full_width = itemBox.iWidth;
+	full_height = itemBox.iHeight;
 }
 
 void CWindow::paint()
@@ -153,10 +153,10 @@ void CWindow::paint()
 
 	// shadow Box
 	if(enableshadow)
-		frameBuffer->paintBoxRel(cFrameBox.iX - 1, cFrameBox.iY - 1, cFrameBox.iWidth + 2, cFrameBox.iHeight + 2, COL_MENUCONTENT_PLUS_6);
+		frameBuffer->paintBoxRel(itemBox.iX - 1, itemBox.iY - 1, itemBox.iWidth + 2, itemBox.iHeight + 2, COL_MENUCONTENT_PLUS_6);
 
 	// window Box
-	frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight, bgcolor, enableshadow? NO_RADIUS : radius, enableshadow? CORNER_NONE : corner, gradient);
+	frameBuffer->paintBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight, bgcolor, enableshadow? NO_RADIUS : radius, enableshadow? CORNER_NONE : corner, gradient);
 }
 
 void CWindow::hide()
@@ -164,23 +164,23 @@ void CWindow::hide()
 	if( savescreen && background)
 		restoreScreen();
 	else
-		frameBuffer->paintBackgroundBoxRel(enableshadow?cFrameBox.iX - 1 : cFrameBox.iX, enableshadow?cFrameBox.iY - 1 : cFrameBox.iY, full_width, full_height);
+		frameBuffer->paintBackgroundBoxRel(enableshadow? itemBox.iX - 1 : itemBox.iX, enableshadow?itemBox.iY - 1 : itemBox.iY, full_width, full_height);
 }
 
 // pig
 CPig::CPig(const int x, const int y, const int dx, const int dy)
 {
-	cFrameBox.iX = x;
-	cFrameBox.iY = y;
-	cFrameBox.iWidth = dx;
-	cFrameBox.iHeight = dy;
+	itemBox.iX = x;
+	itemBox.iY = y;
+	itemBox.iWidth = dx;
+	itemBox.iHeight = dy;
 
 	init();
 }
 
 CPig::CPig(CBox* position)
 {
-	cFrameBox = *position;
+	itemBox = *position;
 
 	init();
 }
@@ -198,11 +198,11 @@ void CPig::init(void)
 
 void CPig::paint()
 {
-	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);	
+	frameBuffer->paintBackgroundBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight);	
 		
 
 	if(videoDecoder)
-		videoDecoder->Pig(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);	
+		videoDecoder->Pig(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight);	
 }
 
 void CPig::hide()
@@ -210,23 +210,23 @@ void CPig::hide()
 	if(videoDecoder)  
 		videoDecoder->Pig(-1, -1, -1, -1);
 
-	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
+	frameBuffer->paintBackgroundBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight);
 }
 
 // grid
 CGrid::CGrid(const int x, const int y, const int dx, const int dy)
 {
-	cFrameBox.iX = x;
-	cFrameBox.iY = y;
-	cFrameBox.iWidth = dx;
-	cFrameBox.iHeight = dy;
+	itemBox.iX = x;
+	itemBox.iY = y;
+	itemBox.iWidth = dx;
+	itemBox.iHeight = dy;
 
 	init();
 }
 
 CGrid::CGrid(CBox* position)
 {
-	cFrameBox = *position;
+	itemBox = *position;
 
 	init();
 }
@@ -247,17 +247,17 @@ void CGrid::init(void)
 void CGrid::paint()
 {
 	// hlines grid
-	for(int count = 0; count < cFrameBox.iHeight; count += 15)
-		frameBuffer->paintHLine(cFrameBox.iX, cFrameBox.iX + cFrameBox.iWidth, cFrameBox.iY + count, make16color(rgb) );
+	for(int count = 0; count < itemBox.iHeight; count += 15)
+		frameBuffer->paintHLine(itemBox.iX, itemBox.iX + itemBox.iWidth, itemBox.iY + count, make16color(rgb) );
 
 	// vlines grid
-	for(int count = 0; count < cFrameBox.iWidth; count += 15)
-		frameBuffer->paintVLine(cFrameBox.iX + count, cFrameBox.iY, cFrameBox.iY + cFrameBox.iHeight, make16color(rgb) );
+	for(int count = 0; count < itemBox.iWidth; count += 15)
+		frameBuffer->paintVLine(itemBox.iX + count, itemBox.iY, itemBox.iY + itemBox.iHeight, make16color(rgb) );
 }
 
 void CGrid::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
+	frameBuffer->paintBackgroundBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight);
 }
 
 

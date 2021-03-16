@@ -858,7 +858,7 @@ void CTestMenu::widget()
 	testWidget->enableSaveScreen();
 	testWidget->setSelected(selected);
 	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
-	testWidget->enablePaintMainFrame();
+	//testWidget->enablePaintMainFrame();
 
 	// head
 	headBox.iWidth = frameBuffer->getScreenWidth();
@@ -891,8 +891,8 @@ void CTestMenu::widget()
 
 	topWidget = new CFrameBox(&topBox);
 	//topWidget->setBackgroundColor(COL_DARK_TURQUOISE);
-	//topWidget->setMode(FRAME_MODE_VERTICAL);
-	topWidget->setInFocus(false);
+	//topWidget->setMode(FRAMEBOX_MODE_VERTICAL);
+	topWidget->setOutFocus();
 
 	CFrame * frame = NULL;
 
@@ -904,7 +904,9 @@ void CTestMenu::widget()
 	frame->setActionKey(this, "tv");
 	topWidget->addFrame(frame);
 
-	topWidget->addFrame(new CFrameSeparator());
+	frame = new CFrame();
+	frame->setMode(FRAME_SEPARATOR);
+	topWidget->addFrame(frame);
 
 	frame = new CFrame("Suche");
 	frame->setOption(tmdbsearch.c_str());
@@ -923,11 +925,11 @@ void CTestMenu::widget()
 
 	leftWidget = new ClistBox(&leftBox);
 	leftFrame = new CFrameBox(&leftBox);
-	leftFrame->setMode(FRAME_MODE_VERTICAL);
+	leftFrame->setMode(FRAMEBOX_MODE_VERTICAL);
 
 	leftWidget->setSelected(left_selected);
 	//leftWidget->enableShrinkMenu();
-	leftWidget->setInFocus(false);
+	leftWidget->setOutFocus();
 
 	ClistBoxItem *item1 = new ClistBoxItem("In den Kinos", true, NULL, this, "movie_in_cinema");
 	ClistBoxItem *item2 = new ClistBoxItem("Am", true, NULL, this, "movie_popular");
@@ -955,8 +957,10 @@ void CTestMenu::widget()
 	frame3->setOption("bewertet");
 	frame3->setActionKey(this, "movie_top_rated");
 
-	CFrame *frame4 = new CFrameSeparator();
-	CFrame *frame5 = new CFrameSeparator();
+	CFrame *frame4 = new CFrame();
+	frame4->setMode(FRAME_SEPARATOR);
+	CFrame *frame5 = new CFrame();
+	frame5->setMode(FRAME_SEPARATOR);
 
 	CFrame *frame6 = new CFrame("Beenden");
 	frame6->setActionKey(this, "exit");
@@ -998,7 +1002,7 @@ void CTestMenu::widget()
 	rightWidget->setItemsPerPage(6,2);
 	rightWidget->setSelected(right_selected);
 	rightWidget->enablePaintFootInfo();
-	rightWidget->setInFocus(true);
+	//rightWidget->setOutFocus(false);
 
 	// loadPlaylist
 	loadTMDBPlaylist();
@@ -1437,7 +1441,7 @@ void CTestMenu::test()
 	topBox.iHeight = 50;
 
 	topWidget = new CFrameBox(&topBox);
-	topWidget->setMode(FRAME_MODE_HORIZONTAL);
+	topWidget->setMode(FRAMEBOX_MODE_HORIZONTAL);
 	topWidget->setBackgroundColor(COL_DARK_GREEN);
 
 	CFrame * frame = NULL;
@@ -1454,7 +1458,7 @@ void CTestMenu::test()
 	topWidget->addFrame(frame);
 
 	topWidget->setSelected(top_selected); 
-	topWidget->setInFocus(false);
+	topWidget->setOutFocus();
 
 	// leftWidget
 	CBox leftBox;
@@ -1467,7 +1471,7 @@ void CTestMenu::test()
 	leftWidget = new ClistBox(&leftBox);
 
 	leftWidget->setSelected(left_selected);
-	leftWidget->setInFocus(false);
+	leftWidget->setOutFocus();
 
 	//leftWidget->setBackgroundColor(COL_DARK_RED);
 
@@ -1508,10 +1512,7 @@ void CTestMenu::test()
 	rightWidget->setWidgetType(WIDGET_TYPE_FRAME);
 	rightWidget->setItemsPerPage(6,2);
 	rightWidget->setSelected(right_selected);
-	rightWidget->setInFocus(true);
-
 	//rightWidget->setBackgroundColor(COL_LIGHT_BLUE);
-
 	rightWidget->enablePaintFootInfo();
 
 	enum {
@@ -1691,39 +1692,39 @@ REPAINT:
 				focus = WIDGET_LEFT;
 
 				//topWidget->setSelected(-1);
-				topWidget->setInFocus(false);
+				topWidget->setOutFocus();
 
 				//rightWidget->setSelected(-1);
-				rightWidget->setInFocus(false);
+				rightWidget->setOutFocus();
 
 				leftWidget->setSelected(left_selected);
-				leftWidget->setInFocus(true);
+				leftWidget->setOutFocus(false);
 			}
 			else if (focus == WIDGET_LEFT)
 			{
 				focus = WIDGET_RIGHT;
 
 				//leftWidget->setSelected(-1);
-				leftWidget->setInFocus(false);
+				leftWidget->setOutFocus();
 
 				//topWidget->setSelected(-1);
-				topWidget->setInFocus(false);
+				topWidget->setOutFocus();
 
 				rightWidget->setSelected(right_selected);
-				rightWidget->setInFocus(true);
+				rightWidget->setOutFocus(false);
 			}
 			else if (focus == WIDGET_RIGHT)
 			{
 				focus = WIDGET_TOP;
 
 				//leftWidget->setSelected(-1);
-				leftWidget->setInFocus(false);
+				leftWidget->setOutFocus();
 
 				//rightWidget->setSelected(-1);
-				rightWidget->setInFocus(false);
+				rightWidget->setOutFocus();
 
 				topWidget->setSelected(top_selected);
-				topWidget->setInFocus(true);
+				topWidget->setOutFocus(false);
 			}
 
 			goto REPAINT;
@@ -3831,17 +3832,31 @@ void CTestMenu::testCFrameBox()
 	frame->setOption("(2019)");
 	topWidget->addFrame(frame);
 
-	topWidget->addFrame(new CFrameSeparator());
-	topWidget->addFrame(new CFrameSeparator());
-	topWidget->addFrame(new CFrameSeparator());
-	topWidget->addFrame(new CFrameSeparator());
-	topWidget->addFrame(new CFrameSeparator());
+	frame = new CFrame();
+	frame->setMode(FRAME_SEPARATOR);
+	topWidget->addFrame(frame);
+
+	frame = new CFrame();
+	frame->setMode(FRAME_SEPARATOR);
+	topWidget->addFrame(frame);
+
+	frame = new CFrame();
+	frame->setMode(FRAME_SEPARATOR);
+	topWidget->addFrame(frame);
+
+	frame = new CFrame();
+	frame->setMode(FRAME_SEPARATOR);
+	topWidget->addFrame(frame);
+
+	frame = new CFrame();
+	frame->setMode(FRAME_SEPARATOR);
+	topWidget->addFrame(frame);
 
 	frame = new CFrame("Exit");
 	frame->setActionKey(this, "exit");
 	topWidget->addFrame(frame);
 
-	topWidget->setMode(FRAME_MODE_VERTICAL);
+	topWidget->setMode(FRAMEBOX_MODE_VERTICAL);
 
 	topWidget->setSelected(selected);
 	//topWidget->setBackgroundColor(COL_RED);

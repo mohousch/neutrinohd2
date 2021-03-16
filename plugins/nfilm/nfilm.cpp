@@ -495,7 +495,7 @@ void CNFilm::showMenu(bool genre)
 	leftWidget->setSelected(left_selected);
 	leftWidget->enableShrinkMenu();
 	//leftWidget->setBackgroundColor(COL_BLUE);
-	leftWidget->setInFocus(false);
+	leftWidget->setOutFocus();
 
 	loadGenreList(genre);
 	paintLeftWidgetItems(leftWidget, genre);
@@ -513,7 +513,7 @@ void CNFilm::showMenu(bool genre)
 	rightWidget->setSelected(right_selected);
 	rightWidget->enablePaintFootInfo();
 	//rightWidget->setBackgroundColor(COL_BLUE);
-	rightWidget->setInFocus(true);
+	//rightWidget->setInFocus(true);
 
 	paintRightWidgetItems(rightWidget);
 

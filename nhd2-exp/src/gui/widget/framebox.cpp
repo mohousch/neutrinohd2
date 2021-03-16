@@ -22,6 +22,7 @@
 #include <global.h>
 
 #include <gui/widget/framebox.h>
+#include <gui/widget/textbox.h>
 
 #include <system/settings.h>
 #include <system/debug.h>
@@ -31,11 +32,18 @@
 CFrame::CFrame(const std::string title)
 {
 	caption = title;
+	mode = FRAME_BOX;
+	shadow = true;
 }
 
 int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 {
 	dprintf(DEBUG_DEBUG, "CFrame::paint:\n");
+
+	if (mode == FRAME_SEPARATOR)
+	{
+		return 0;
+	}
 
 	uint8_t color = COL_MENUCONTENT;
 	fb_pixel_t bgcolor = item_backgroundColor;
@@ -55,18 +63,72 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 	int ih = 0;
 	int iconOffset = 0;
 
-	if(!iconName.empty())
+	if (mode == FRAME_BOX)
 	{
-		iconOffset = ICON_OFFSET;
+		if(!iconName.empty())
+		{
+			iconOffset = ICON_OFFSET;
 
-		CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iw, &ih);
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iw, &ih);
 
-		CFrameBuffer::getInstance()->paintIcon(iconName, window.getWindowsPos().iX + ICON_OFFSET, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - ih)/2);
+			CFrameBuffer::getInstance()->paintIcon(iconName, window.getWindowsPos().iX + ICON_OFFSET, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - ih)/2);
+		}
+
+		// caption
+		if(!option.empty())
+		{
+			// caption
+			if(!caption.empty())
+			{
+				int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getRenderWidth(caption);
+
+				g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w) >> 1), window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), color, 0, true); //
+			}
+
+			// option
+			if(!option.empty())
+			{
+				int o_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(option);
+
+				g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - o_w) >> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset -iw, option.c_str(), color, 0, true);
+			}
+		}
+		else
+		{
+			if(!caption.empty())
+			{
+				int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getRenderWidth(caption);
+
+				g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w)>> 1), window.getWindowsPos().iY + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), color);
+			}
+		}
 	}
-
-	// caption
-	if(!option.empty())
+	else if (mode == FRAME_PICTURE)
 	{
+		if(!iconName.empty())
+		{
+			CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 1, window.getWindowsPos().iY + 1, window.getWindowsPos().iWidth - 2, window.getWindowsPos().iHeight - 40);
+		}
+
+		if(!caption.empty())
+		{
+			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(caption);
+
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + ((window.getWindowsPos().iWidth - c_w)>> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight/*- g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight()*/, window.getWindowsPos().iWidth, caption.c_str(), color);
+		}
+	}
+	else if (mode == FRAME_BUTTON)
+	{
+		// iconName
+		if(!iconName.empty())
+		{
+			iconOffset = ICON_OFFSET;
+
+			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iw, &ih);
+
+			CFrameBuffer::getInstance()->paintIcon(iconName, window.getWindowsPos().iX + ICON_OFFSET, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - ih)/2);
+		}
+
 		// caption
 		if(!caption.empty())
 		{
@@ -74,22 +136,27 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w) >> 1), window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), color, 0, true); //
 		}
-
-		// option
-		if(!option.empty())
-		{
-			int o_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(option);
-
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - o_w) >> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset -iw, option.c_str(), color, 0, true);
-		}
 	}
-	else
+	else if (mode == FRAME_TEXT)
 	{
+		CTextBox * textBox = NULL;
+
+		if(textBox)
+		{
+			delete textBox;
+			textBox = NULL;
+		}
+
+		textBox = new CTextBox(window.getWindowsPos().iX + 1, window.getWindowsPos().iY + 1, window.getWindowsPos().iWidth - 2, window.getWindowsPos().iHeight - 2);
+
+		textBox->disablePaintBackground();
+		textBox->setMode(AUTO_WIDTH);
+
+		// caption
 		if(!caption.empty())
 		{
-			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getRenderWidth(caption);
-
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w)>> 1), window.getWindowsPos().iY + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), color);
+			textBox->setText(caption.c_str());
+			textBox->paint();
 		}
 	}
 
@@ -100,10 +167,19 @@ int CFrame::exec(CMenuTarget *parent)
 {
 	dprintf(DEBUG_NORMAL, "CFrame::exec: actionKey:(%s)\n", actionKey.c_str());
 
-	if(jumpTarget)
-		return jumpTarget->exec(parent, actionKey);
+	int ret = RETURN_EXIT;
+
+	if (mode == FRAME_SEPARATOR)
+		ret = RETURN_EXIT;
 	else
-		return RETURN_EXIT;
+	{
+		if(jumpTarget)
+			ret = jumpTarget->exec(parent, actionKey);
+		else
+			ret = RETURN_EXIT;
+	}
+
+	return ret;
 }
 
 // CFrameBox
@@ -123,11 +199,13 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 	inFocus = true;
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 
-	frameMode = FRAME_MODE_HORIZONTAL;
+	frameMode = FRAMEBOX_MODE_HORIZONTAL;
 
 	itemType = WIDGET_ITEM_FRAMEBOX;
 
 	actionKey = "";
+
+	paintFrame = true;
 
 	initFrames();
 }
@@ -145,11 +223,13 @@ CFrameBox::CFrameBox(CBox* position)
 	inFocus = true;
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 
-	frameMode = FRAME_MODE_HORIZONTAL;
+	frameMode = FRAMEBOX_MODE_HORIZONTAL;
 
 	itemType = WIDGET_ITEM_FRAMEBOX;
 
 	actionKey = "";
+
+	paintFrame = true;
 
 	initFrames();
 }
@@ -187,7 +267,7 @@ void CFrameBox::paintFrames()
 
 	if(frames.size())
 	{
-		if(frameMode == FRAME_MODE_HORIZONTAL)
+		if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
 		{
 			frame_width = (itemBox.iWidth - 2*ICON_OFFSET)/((int)frames.size());
 			frame_height = itemBox.iHeight - 2*ICON_OFFSET;
@@ -207,13 +287,14 @@ void CFrameBox::paintFrames()
 		CFrame *frame = frames[count];
 
 		// init frame
-		if(frameMode == FRAME_MODE_HORIZONTAL)
+		if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
 			frame->window.setPosition(frame_x + count*(frame_width) + ICON_OFFSET, frame_y, frame_width - 2*ICON_OFFSET, frame_height);
 		else
 			frame->window.setPosition(frame_x, frame_y + count*(frame_height) + ICON_OFFSET, frame_width, frame_height - 2*ICON_OFFSET);
 
-		if(frame->isSelectable())
+		if(frame->isSelectable() && frame->shadow)
 			frame->window.enableShadow();
+
 		frame->item_backgroundColor = backgroundColor;
 
 		if(inFocus)
@@ -232,7 +313,8 @@ void CFrameBox::paint()
 	//cFrameWindow.enableShadow();
 	//cFrameWindow.enableSaveScreen();
 
-	cFrameWindow.paint();
+	if (paintFrame)
+		cFrameWindow.paint();
 
 	paintFrames();
 
@@ -250,7 +332,7 @@ void CFrameBox::swipRight()
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::swipRight:\n");
 
-	if(frameMode == FRAME_MODE_HORIZONTAL)
+	if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
@@ -275,7 +357,7 @@ void CFrameBox::swipLeft()
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::swipLeft:\n");
 
-	if(frameMode == FRAME_MODE_HORIZONTAL)
+	if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
@@ -302,7 +384,7 @@ void CFrameBox::scrollLineDown(const int lines)
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::scrollLineDown:\n");
 
-	if(frameMode == FRAME_MODE_VERTICAL)
+	if(frameMode == FRAMEBOX_MODE_VERTICAL)
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
@@ -327,7 +409,7 @@ void CFrameBox::scrollLineUp(const int lines)
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::scrollLineUp:\n");
 
-	if(frameMode == FRAME_MODE_VERTICAL)
+	if(frameMode == FRAMEBOX_MODE_VERTICAL)
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{

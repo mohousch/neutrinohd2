@@ -210,7 +210,7 @@ class CWidgetItem
 		bool inFocus;
 		bool paintDate;
 
-		CWidgetItem(){inFocus = false;};
+		CWidgetItem(){inFocus = true;};
 		virtual ~CWidgetItem(){};
 
 		virtual bool isSelectable(void) const {return false;}
@@ -226,7 +226,7 @@ class CWidgetItem
 		virtual void swipLeft(){};
 		virtual void swipRight(){};
 
-		virtual void setInFocus(bool focus){inFocus = focus;};
+		virtual void setOutFocus(bool focus = true){inFocus = !focus;};
 		virtual void setSelected(unsigned int _new) {};
 
 		virtual inline CBox getWindowsPos(void){return (itemBox);};

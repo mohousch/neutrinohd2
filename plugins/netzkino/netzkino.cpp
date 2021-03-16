@@ -207,7 +207,7 @@ void CNKMovies::showMenu()
 
 	leftWidget->setSelected(left_selected);
 	leftWidget->enableShrinkMenu();
-	leftWidget->setInFocus(false);
+	leftWidget->setOutFocus();
 
 	leftWidget->addItem(new ClistBoxItem("Suche", true, nksearch.c_str(), this, "search"));
 	leftWidget->addItem(new CMenuSeparator(LINE));
@@ -242,7 +242,7 @@ void CNKMovies::showMenu()
 	rightWidget->setItemsPerPage(5,2);
 	rightWidget->setSelected(right_selected);
 	rightWidget->enablePaintFootInfo();
-	rightWidget->setInFocus(true);
+	//rightWidget->setInFocus(true);
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{

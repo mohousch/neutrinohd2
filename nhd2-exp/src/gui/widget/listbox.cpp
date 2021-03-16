@@ -1657,12 +1657,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	selected = -1;
 	current_page = 0;
 	pos = 0;
-/*
-	cFrameBox.iX = x;
-	cFrameBox.iY = y;
-	cFrameBox.iWidth = dx;
-	cFrameBox.iHeight = dy;
-*/
+
 	itemBox.iX = x;
 	itemBox.iY = y;
 	itemBox.iWidth = dx;

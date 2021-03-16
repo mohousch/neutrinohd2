@@ -36,8 +36,16 @@
 
 
 enum{
-	FRAME_MODE_HORIZONTAL = 0,
-	FRAME_MODE_VERTICAL
+	FRAMEBOX_MODE_HORIZONTAL = 0,
+	FRAMEBOX_MODE_VERTICAL
+};
+
+enum {
+	FRAME_BOX = 0,
+	FRAME_PICTURE,
+	FRAME_BUTTON,
+	FRAME_TEXT,
+	FRAME_SEPARATOR
 };
 
 class CFrame
@@ -52,6 +60,10 @@ class CFrame
 
 		CMenuTarget* jumpTarget;
 		std::string actionKey;
+		neutrino_msg_t directKey;
+
+		int mode;
+		bool shadow;
 		
 		CFrame(){};
 		CFrame(const std::string title);
@@ -62,13 +74,24 @@ class CFrame
 		virtual void setTitle(const char * text){caption = text;};
 		virtual void setIconName(const char* const icon){iconName = icon;};
 		virtual void setOption(const char* text){option = text;};
+		virtual void setMode(int m = FRAME_BOX){mode = m;};
 		virtual void setActionKey(CMenuTarget *Target, const char *const ActionKey){jumpTarget = Target; actionKey = ActionKey;};
+		virtual void setDirectKey(neutrino_msg_t key){directKey = key;};
 
-		int exec(CMenuTarget* parent);
+		int exec(CMenuTarget *parent);
 
-		virtual bool isSelectable(void) const {return true;}
+		virtual bool isSelectable(void) const 
+		{
+			if (mode == FRAME_SEPARATOR) 
+				return false; 
+			else 
+				return true;
+		}
+
+		virtual void disableShadow(void){shadow = false;};
 };
 
+#if 0
 class CFrameSeparator : public CFrame
 {
 	public:
@@ -85,6 +108,7 @@ class CFrameSeparator : public CFrame
 
 		virtual bool isSelectable(void) const {return false;}
 };
+#endif
 
 // CFrameBox
 class CFrameBox : public CWidgetItem
@@ -105,6 +129,8 @@ class CFrameBox : public CWidgetItem
 		int frameMode;
 
 		std::string actionKey;
+
+		bool paintFrame;
 
 	public:
 		CFrameBox(const int x, int const y, const int dx, const int dy);
@@ -130,7 +156,9 @@ class CFrameBox : public CWidgetItem
 
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
 
-		void setMode(int mode = FRAME_MODE_HORIZONTAL){frameMode = mode;};
+		void setMode(int mode = FRAMEBOX_MODE_HORIZONTAL){frameMode = mode;};
+
+		void disablePaintFrame(void){paintFrame = false;};
 
 		//
 		bool isSelectable(void) const {return true;};

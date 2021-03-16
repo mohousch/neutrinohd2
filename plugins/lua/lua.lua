@@ -529,35 +529,96 @@ function testCWindow()
 	local box = neutrino.CBox()
 	local fb = neutrino.CSwigHelpers()
 	local button = neutrino.CButtons()
+	local btnRed = neutrino.NEUTRINO_ICON_BUTTON_RED
+	local btnGreen = neutrino.NEUTRINO_ICON_BUTTON_GREEN
+	local btnYellow = neutrino.NEUTRINO_ICON_BUTTON_YELLOW
+	local btnBlue = neutrino.NEUTRINO_ICON_BUTTON_BLUE
 
 	box.iX = fb:getScreenX() + 40
 	box.iY = fb:getScreenY() + 40
 	box.iWidth = fb:getScreenWidth() - 80
 	box.iHeight = fb:getScreenHeight() - 80
 
-	--
 	btn = neutrino.button_label_struct()
 
 	btn.button = neutrino.NEUTRINO_ICON_AUDIO
 	btn.locale = neutrino.NONEXISTANT_LOCALE
 	btn.localename = "green"
 
-	local btnRed = neutrino.NEUTRINO_ICON_BUTTON_RED
-	local btnGreen = neutrino.NEUTRINO_ICON_BUTTON_GREEN
-	local btnYellow = neutrino.NEUTRINO_ICON_BUTTON_YELLOW
-	local btnBlue = neutrino.NEUTRINO_ICON_BUTTON_BLUE
-
+	-- window
 	window = neutrino.CWindow(box)
-	head = neutrino.CHeaders(box.iX, box.iY, box.iWidth, 40, "CHeaders", neutrino.NEUTRINO_ICON_MOVIE)
-	foot = neutrino.CFooters(box.iX, box.iY + box.iHeight - 40, box.iWidth, 40)
-
 	window:enableCenterPos()
-	--head:enablePaintDate()
+
+	-- head
+	head = neutrino.CHeaders(box.iX, box.iY, box.iWidth, 40, "lua sample Window", neutrino.NEUTRINO_ICON_MOVIE)
+	head:enablePaintDate()
 	head:setButtons(btn, 1)
 
+	-- foot
+	foot = neutrino.CFooters(box.iX, box.iY + box.iHeight - 40, box.iWidth, 40)
+
+	-- frame
+	frameBox1 = neutrino.CFrameBox(box.iX + 10, box.iY + 40 + 10, 350, 100)
+	frame1 = neutrino.CFrame()
+	frame1:setTitle("frame1")
+	frame1:setIconName(neutrino.NEUTRINO_ICON_MOVIE)
+	frame1:setOption("spielt Media Dateien")
+	frame1:setActionKey(null, "frame1")
+	frameBox1:addFrame(frame1)
+	frameBox1:setOutFocus()
+	frameBox1:disablePaintFrame()
+
+	-- frameIcon
+	frameBox2 = neutrino.CFrameBox(box.iX + 10, box.iY + box.iHeight - 10 - 40 - 40, 200, 40)
+	frame2 = neutrino.CFrame()
+	frame2:setMode(neutrino.FRAME_BUTTON)
+	frame2:setTitle("Exit")
+	frame2:setIconName(btnRed)
+	frame2:setActionKey(null, "frame2")
+	frameBox2:addFrame(frame2)
+	frameBox2:setOutFocus()
+	frameBox2:disablePaintFrame()
+
+	-- framepicture
+	config = neutrino.CConfigFile('\t')
+	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
+	local PATH = config:getString("network_nfs_recordingdir")
+
+	local itemIcon = PATH .. "/ProSieben_20121225_201400.jpg"
+	frameBox3 = neutrino.CFrameBox(box.iX + box.iWidth - 10 - 200, box.iY + 40 + 10, 200, 320)
+	frame3 = neutrino.CFrame()
+	frame3:setTitle("frame2")
+	frame3:setMode(neutrino.FRAME_PICTURE)
+	frame3:setIconName(itemIcon)
+	frame3:setActionKey(null, "frame3")
+	frameBox3:addFrame(frame3)
+	frameBox3:setOutFocus()
+	frameBox3:disablePaintFrame()
+
+	-- frameText
+	frameBox4 = neutrino.CFrameBox(box.iX + 10, box.iY + 150 + 10, 350, 350)
+	frame4 = neutrino.CFrame()
+	frame4:setTitle("frame2 bla vbzgstrrfasvghvschcgcqvs h bla h hdgvassbs")
+	frame4:setMode(neutrino.FRAME_TEXT)
+	frame4:setActionKey(null, "frame4")
+	frame4:disableShadow()
+	frameBox4:addFrame(frame4)
+	frameBox4:disablePaintFrame()
+	
+
 	local m = neutrino.CWidget(box)
-	--m:enablePaintMainFrame()
 	m:enableCenterPos()
+
+	if selected < 0 then
+		selected = 0
+	end
+	
+	m:setSelected(selected)
+
+	m:addItem(frameBox1)
+	m:addItem(frameBox2)
+	m:addItem(frameBox3)
+	m:addItem(frameBox4)
 
 	--m:addKey(neutrino.RC_ok)
 	m:addKey(neutrino.RC_down)
@@ -565,7 +626,7 @@ function testCWindow()
 	m:addKey(neutrino.RC_info)
 	m:addKey(neutrino.RC_red)
 	m:addKey(neutrino.RC_green)
-	m:addKey(neutrino.RC_yellow, null, "moviePlayer")
+	--m:addKey(neutrino.RC_yellow, null, "moviePlayer")
 	m:addKey(neutrino.RC_blue)
 
 	window:paint()
@@ -578,6 +639,8 @@ function testCWindow()
 
 	ret = m:exec(null, "")
 
+	selected = m:getSelected()
+
 
 	local key = m:getKey()
 	local actionKey = m:getActionKey()
@@ -587,6 +650,28 @@ function testCWindow()
 
 		window:hide()
 		moviePlayer()
+	elseif actionKey == "frame1" then
+		print("lua sample: testCWindow(): actionKey: frame1")
+
+		window:hide()
+		moviePlayer()
+	elseif actionKey == "frame2" then
+		print("lua sample: testCWindow(): actionKey: frame2")
+
+		window:hide()
+		--audioPlayer()
+		return neutrino.RETURN_REPAINT
+	elseif actionKey == "frame3" then
+		print("lua sample: testCWindow(): actionKey: frame3")
+
+		player = neutrino.CMoviePlayerGui()
+
+		window:hide()
+		--pictureViewer()
+		movie = PATH .. "/ProSieben_20121225_201400.ts"
+
+		player:addToPlaylist(movie)
+		player:exec(null, "")
 	end
 		
 	if key == neutrino.RC_red then
@@ -626,31 +711,47 @@ function testCFrameBox()
 
 	local frameBox = neutrino.CFrameBox(box)
 
-	frameBox:setMode(neutrino.FRAME_MODE_VERTICAL)
+	frameBox:setMode(neutrino.FRAMEBOX_MODE_VERTICAL)
 	--frameBox:setBackgroundColor(neutrino.COL_BACKGROUND0)
 
 	frame1 = neutrino.CFrame("MP3")
+	frameBox:addFrame(frame1)
 	frame2 = neutrino.CFrame("PicViewer")
+	frameBox:addFrame(frame2)
 
 	frame3 = neutrino.CFrame("MoviePlayer")
 	frame3:setIconName(neutrino.NEUTRINO_ICON_MOVIE)
 	frame3:setOption("spielt Movie Dateien")
 	frame3:setActionKey(null, "moviePlayer")
-
-	frameBox:addFrame(frame1)
-	frameBox:addFrame(frame2)
 	frameBox:addFrame(frame3)
 
-	frameBox:addFrame(neutrino.CFrameSeparator())
-	frameBox:addFrame(neutrino.CFrameSeparator())
-	frameBox:addFrame(neutrino.CFrameSeparator())
-	frameBox:addFrame(neutrino.CFrameSeparator())
-	frameBox:addFrame(neutrino.CFrameSeparator())
-	frameBox:addFrame(neutrino.CFrameSeparator())
-
-	frame4 = neutrino.CFrame("Beenden")
-	frame4:setActionKey(null, "exit")
+	frame4 = neutrino.CFrame()
+	frame4:setMode(neutrino.FRAME_SEPARATOR)
 	frameBox:addFrame(frame4)
+
+	frame5 = neutrino.CFrame()
+	frame5:setMode(neutrino.FRAME_SEPARATOR)
+	frameBox:addFrame(frame5)
+
+	frame6 = neutrino.CFrame()
+	frame6:setMode(neutrino.FRAME_SEPARATOR)
+	frameBox:addFrame(frame6)
+
+	frame7 = neutrino.CFrame()
+	frame7:setMode(neutrino.FRAME_SEPARATOR)
+	frameBox:addFrame(frame7)
+
+	frame8 = neutrino.CFrame()
+	frame8:setMode(neutrino.FRAME_SEPARATOR)
+	frameBox:addFrame(frame8)
+
+	frame9 = neutrino.CFrame()
+	frame9:setMode(neutrino.FRAME_SEPARATOR)
+	frameBox:addFrame(frame9)
+
+	frame10 = neutrino.CFrame("Beenden")
+	frame10:setActionKey(null, "exit")
+	frameBox:addFrame(frame10)
 
 	local m = neutrino.CWidget()
 

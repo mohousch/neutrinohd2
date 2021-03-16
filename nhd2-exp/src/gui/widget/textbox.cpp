@@ -567,7 +567,7 @@ bool CTextBox::setText(const char * const newText, const char * const _thumbnail
 		// position
 		if(m_tMode == TOP_RIGHT)
 		{
-			lx = itemBox.iX + itemBox.iWidth - (tw + SCROLLBAR_WIDTH + 10);
+			lx = itemBox.iX + itemBox.iWidth - (tw + m_cFrameScrollRel.iWidth + 10);
 			ly = itemBox.iY + 10;
 		}
 		else if(m_tMode == TOP_LEFT)
