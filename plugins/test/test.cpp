@@ -1036,7 +1036,6 @@ void CTestMenu::widget()
 	testWidget->addItem(headersWidget);
 	testWidget->addItem(topWidget);
 	testWidget->addItem(leftWidget);
-	//testWidget->addItem(leftFrame);
 	testWidget->addItem(rightWidget);
 	testWidget->addItem(footersWidget);
 
