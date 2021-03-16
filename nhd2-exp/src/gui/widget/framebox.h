@@ -45,7 +45,8 @@ enum {
 	FRAME_PICTURE,
 	FRAME_BUTTON,
 	FRAME_TEXT,
-	FRAME_SEPARATOR
+	FRAME_SEPARATOR,
+	FRAME_PLUGIN
 };
 
 class CFrame
@@ -65,8 +66,8 @@ class CFrame
 		int mode;
 		bool shadow;
 		
-		CFrame(){};
-		CFrame(const std::string title);
+		CFrame(int m = FRAME_BOX);
+		CFrame(const std::string title, int m = FRAME_BOX);
 		virtual ~CFrame(){}
 
 		int paint(bool selected = false, bool AfterPulldown = false);
@@ -74,7 +75,7 @@ class CFrame
 		virtual void setTitle(const char * text){caption = text;};
 		virtual void setIconName(const char* const icon){iconName = icon;};
 		virtual void setOption(const char* text){option = text;};
-		virtual void setMode(int m = FRAME_BOX){mode = m;};
+		//virtual void setMode(int m = FRAME_BOX){mode = m;};
 		virtual void setActionKey(CMenuTarget *Target, const char *const ActionKey){jumpTarget = Target; actionKey = ActionKey;};
 		virtual void setDirectKey(neutrino_msg_t key){directKey = key;};
 
@@ -91,26 +92,7 @@ class CFrame
 		virtual void disableShadow(void){shadow = false;};
 };
 
-#if 0
-class CFrameSeparator : public CFrame
-{
-	public:
-		CWindow window;
-
-		fb_pixel_t item_backgroundColor;
-
-		CFrameSeparator(){};
-		~CFrameSeparator(){};
-
-		int paint(bool selected = false, bool AfterPulldown = false){return 0;};
-
-		int exec(CMenuTarget* parent){return RETURN_EXIT;};
-
-		virtual bool isSelectable(void) const {return false;}
-};
-#endif
-
-// CFrameBox
+//// CFrameBox
 class CFrameBox : public CWidgetItem
 {
 	private:

@@ -124,6 +124,7 @@ void CNeutrinoApp::mainMenu(void)
 	//box info
 	nMenu->addItem( new CMenuForwarder(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget(), NULL, RC_info, NEUTRINO_ICON_BUTTON_HELP, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO));
 
+	// systeminfo plugin
 	nMenu->integratePlugins(CPlugins::I_TYPE_MAIN, shortcut++);
 
 	nMenu->exec(NULL, "");

@@ -904,8 +904,8 @@ void CTestMenu::widget()
 	frame->setActionKey(this, "tv");
 	topWidget->addFrame(frame);
 
-	frame = new CFrame();
-	frame->setMode(FRAME_SEPARATOR);
+	frame = new CFrame(FRAME_SEPARATOR);
+	//frame->setMode(FRAME_SEPARATOR);
 	topWidget->addFrame(frame);
 
 	frame = new CFrame("Suche");
@@ -957,10 +957,10 @@ void CTestMenu::widget()
 	frame3->setOption("bewertet");
 	frame3->setActionKey(this, "movie_top_rated");
 
-	CFrame *frame4 = new CFrame();
-	frame4->setMode(FRAME_SEPARATOR);
-	CFrame *frame5 = new CFrame();
-	frame5->setMode(FRAME_SEPARATOR);
+	CFrame *frame4 = new CFrame(FRAME_SEPARATOR);
+	//frame4->setMode(FRAME_SEPARATOR);
+	CFrame *frame5 = new CFrame(FRAME_SEPARATOR);
+	//frame5->setMode(FRAME_SEPARATOR);
 
 	CFrame *frame6 = new CFrame("Beenden");
 	frame6->setActionKey(this, "exit");
@@ -3832,24 +3832,24 @@ void CTestMenu::testCFrameBox()
 	frame->setOption("(2019)");
 	topWidget->addFrame(frame);
 
-	frame = new CFrame();
-	frame->setMode(FRAME_SEPARATOR);
+	frame = new CFrame(FRAME_SEPARATOR);
+	//frame->setMode(FRAME_SEPARATOR);
 	topWidget->addFrame(frame);
 
-	frame = new CFrame();
-	frame->setMode(FRAME_SEPARATOR);
+	frame = new CFrame(FRAME_SEPARATOR);
+	//frame->setMode(FRAME_SEPARATOR);
 	topWidget->addFrame(frame);
 
-	frame = new CFrame();
-	frame->setMode(FRAME_SEPARATOR);
+	frame = new CFrame(FRAME_SEPARATOR);
+	//frame->setMode(FRAME_SEPARATOR);
 	topWidget->addFrame(frame);
 
-	frame = new CFrame();
-	frame->setMode(FRAME_SEPARATOR);
+	frame = new CFrame(FRAME_SEPARATOR);
+	//frame->setMode(FRAME_SEPARATOR);
 	topWidget->addFrame(frame);
 
-	frame = new CFrame();
-	frame->setMode(FRAME_SEPARATOR);
+	frame = new CFrame(FRAME_SEPARATOR);
+	//frame->setMode(FRAME_SEPARATOR);
 	topWidget->addFrame(frame);
 
 	frame = new CFrame("Exit");

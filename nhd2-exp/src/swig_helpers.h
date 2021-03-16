@@ -24,6 +24,8 @@
 #include <driver/rcinput.h>
 
 
+extern CPlugins* g_PluginList;
+
 class CSwigHelpers
 {
 	private:

@@ -24,16 +24,101 @@
 #include <gui/widget/framebox.h>
 #include <gui/widget/textbox.h>
 
+#include <gui/pluginlist.h>
+
 #include <system/settings.h>
 #include <system/debug.h>
 
 
+extern CPlugins * g_PluginList;    // defined in neutrino.cpp
+
 // CFrame
-CFrame::CFrame(const std::string title)
+CFrame::CFrame(int m)
+{
+	caption = "";
+	mode = m;
+	shadow = true;
+
+	if (mode == FRAME_PLUGIN)
+	{
+		printf("mode: plugin\n");
+		if (g_PluginList->plugin_exists(caption))
+		{
+			printf("mode: plugin exists\n");
+			unsigned int count = g_PluginList->find_plugin(caption);
+
+			//iconName
+			iconName = NEUTRINO_ICON_MENUITEM_PLUGIN;
+
+			std::string icon("");
+			icon = g_PluginList->getIcon(count);
+
+			if(!icon.empty())
+			{
+					iconName = PLUGINDIR;
+					iconName += "/";
+					iconName += g_PluginList->getFileName(count);
+					iconName += "/";
+					iconName += g_PluginList->getIcon(count);
+			}
+
+			// caption
+			caption = g_PluginList->getName(count);
+
+			// option
+			option = g_PluginList->getDescription(count);
+
+			// jumpTarget
+			jumpTarget = CPluginsExec::getInstance();
+
+			// actionKey
+			actionKey = to_string(count).c_str();
+		}
+	}
+}
+
+CFrame::CFrame(const std::string title, int m)
 {
 	caption = title;
-	mode = FRAME_BOX;
+	mode = m;
 	shadow = true;
+
+	if (mode == FRAME_PLUGIN)
+	{
+		printf("mode: plugin\n");
+		if (g_PluginList->plugin_exists(caption))
+		{
+			printf("mode: plugin exists\n");
+			unsigned int count = g_PluginList->find_plugin(caption);
+
+			//iconName
+			iconName = NEUTRINO_ICON_MENUITEM_PLUGIN;
+
+			std::string icon("");
+			icon = g_PluginList->getIcon(count);
+
+			if(!icon.empty())
+			{
+					iconName = PLUGINDIR;
+					iconName += "/";
+					iconName += g_PluginList->getFileName(count);
+					iconName += "/";
+					iconName += g_PluginList->getIcon(count);
+			}
+
+			// caption
+			caption = g_PluginList->getName(count);
+
+			// option
+			option = g_PluginList->getDescription(count);
+
+			// jumpTarget
+			jumpTarget = CPluginsExec::getInstance();
+
+			// actionKey
+			actionKey = to_string(count).c_str();
+		}
+	}
 }
 
 int CFrame::paint(bool selected, bool /*AfterPulldown*/)
@@ -114,7 +199,7 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		{
 			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(caption);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + ((window.getWindowsPos().iWidth - c_w)>> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight/*- g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight()*/, window.getWindowsPos().iWidth, caption.c_str(), color);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + ((window.getWindowsPos().iWidth - c_w)>> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth, caption.c_str(), color);
 		}
 	}
 	else if (mode == FRAME_BUTTON)
@@ -132,9 +217,9 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		// caption
 		if(!caption.empty())
 		{
-			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getRenderWidth(caption);
+			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(caption);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w) >> 1), window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_TITLE]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), color, 0, true); //
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + ((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w) >> 1), window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), color, 0, true); //
 		}
 	}
 	else if (mode == FRAME_TEXT)
@@ -157,6 +242,20 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		{
 			textBox->setText(caption.c_str());
 			textBox->paint();
+		}
+	}
+	else if (mode == FRAME_PLUGIN)
+	{
+		if(!iconName.empty())
+		{
+			CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 1, window.getWindowsPos().iY + 1, window.getWindowsPos().iWidth - 2, window.getWindowsPos().iHeight - 40);
+		}
+
+		if(!caption.empty())
+		{
+			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(caption);
+
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + ((window.getWindowsPos().iWidth - c_w)>> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth, caption.c_str(), color);
 		}
 	}
 
