@@ -493,7 +493,7 @@ void CNFilm::showMenu(bool genre)
 	leftWidget = new ClistBox(&leftBox);
 
 	leftWidget->setSelected(left_selected);
-	leftWidget->enableShrinkMenu();
+	//leftWidget->enableShrinkMenu();
 	//leftWidget->setBackgroundColor(COL_BLUE);
 	leftWidget->setOutFocus();
 
