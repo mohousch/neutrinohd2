@@ -35,17 +35,16 @@ class CThemes : public CMenuTarget, CChangeObserver
 		CConfigFile themefile;
 		CColorSetupNotifier * notifier;
 
-		//int oldThemeValues[68];
-
 		int Show();
-		void readFile(char* themename);
-		void saveFile(char* themename);
 		void readThemes(ClistBoxWidget &);
 
 	public:
 		CThemes();
+
 		void setupDefaultColors();
-		void setupColors_nhd2();
+		void readFile(char* themename);
+		void saveFile(char* themename);
+
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 };
 

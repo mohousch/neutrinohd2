@@ -46,7 +46,9 @@ enum {
 	FRAME_BUTTON,
 	FRAME_TEXT,
 	FRAME_SEPARATOR,
-	FRAME_PLUGIN
+	FRAME_PLUGIN,
+	FRAME_PROGRESSBAR,
+	FRAME_PROGRESSWINDOW
 };
 
 class CFrame
@@ -97,7 +99,6 @@ class CFrameBox : public CWidgetItem
 {
 	private:
 		CFrameBuffer* frameBuffer;
-		//CBox cFrameBox;
 		CWindow cFrameWindow;
 		int selected;
 		int pos;

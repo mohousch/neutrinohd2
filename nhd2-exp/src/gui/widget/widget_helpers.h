@@ -1,5 +1,5 @@
 /*
- * $Id: buttons.h 2016/01/12 mohousch Exp $
+ * $Id: widget_helpers.h 2016/01/12 mohousch Exp $
  *
  * (C) 2003 by thegoodguy <thegoodguy@berlios.de>
  *
@@ -35,20 +35,6 @@ class CMenuTarget;
 
 //
 typedef enum {
-	WIDGET_COMPONENT_FRAME = 0,
-	WIDGET_COMPONENT_TEXT,
-	WIDGET_COMPONENT_PICTURE,
-	WIDGET_COMPONENT_BUTTON,
-	WIDGET_COMPONENT_SCROLLBAR,
-	WIDGET_COMPONENT_PROGRESSBAR,
-	WIDGET_COMPONENT_PROGRESSWINDOW,
-	WIDGET_COMPONENT_HEAD,
-	WIDGET_COMPONENT_FOOT,
-	WIDGET_COMPONENT_DETAILSLINE
-}widget_component_t;
-
-//
-typedef enum {
 	WIDGET_ITEM_HEAD = 0,
 	WIDGET_ITEM_FOOT,
 	WIDGET_ITEM_LISTBOX,
@@ -58,6 +44,7 @@ typedef enum {
 	WIDGET_ITEM_WINDOW,
 	WIDGET_ITEM_PIG,
 	WIDGET_ITEM_GRID,
+	WIDGET_ITEM_FRAMEITEM
 }widget_item_t;
 
 //// helpers
@@ -119,16 +106,6 @@ class CImage
 			imageName = std::string(image); 
 			CFrameBuffer::getInstance()->getSize(imageName, &iWidth, &iHeight, &iNbp);
 		};
-};
-
-////
-class CWidgetComponent
-{
-	public:
-		CBox componentBox;
-
-		void paint(){};
-		void hide(){};
 };
 
 // buttons

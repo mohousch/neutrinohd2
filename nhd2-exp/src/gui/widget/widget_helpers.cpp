@@ -553,5 +553,3 @@ void CFooters::hide()
 	CFrameBuffer::getInstance()->paintBackgroundBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight);
 }
 
-
-

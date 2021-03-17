@@ -453,3 +453,5 @@ void CThemes::setupDefaultColors()
 	g_settings.menu_FootInfo_Text_blue = 50;
 }
 
+
+

@@ -41,10 +41,8 @@ CFrame::CFrame(int m)
 
 	if (mode == FRAME_PLUGIN)
 	{
-		printf("mode: plugin\n");
 		if (g_PluginList->plugin_exists(caption))
 		{
-			printf("mode: plugin exists\n");
 			unsigned int count = g_PluginList->find_plugin(caption);
 
 			//iconName
@@ -85,10 +83,8 @@ CFrame::CFrame(const std::string title, int m)
 
 	if (mode == FRAME_PLUGIN)
 	{
-		printf("mode: plugin\n");
 		if (g_PluginList->plugin_exists(caption))
 		{
-			printf("mode: plugin exists\n");
 			unsigned int count = g_PluginList->find_plugin(caption);
 
 			//iconName

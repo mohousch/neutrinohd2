@@ -34,7 +34,7 @@
 
 
 // window
-class CWindow : public CWidgetItem 
+class CWindow : public CWidgetItem
 {
 	private:
 		CFrameBuffer* frameBuffer;
