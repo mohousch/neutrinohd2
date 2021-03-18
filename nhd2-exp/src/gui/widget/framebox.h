@@ -37,7 +37,8 @@
 
 enum{
 	FRAMEBOX_MODE_HORIZONTAL = 0,
-	FRAMEBOX_MODE_VERTICAL
+	FRAMEBOX_MODE_VERTICAL,
+	FRAMEBOX_MODE_RANDOM
 };
 
 enum {
@@ -92,6 +93,7 @@ class CFrame
 		}
 
 		virtual void disableShadow(void){shadow = false;};
+		virtual void setBackgroundColor(fb_pixel_t col) {item_backgroundColor = col;};
 };
 
 //// CFrameBox
@@ -116,7 +118,7 @@ class CFrameBox : public CWidgetItem
 		bool paintFrame;
 
 	public:
-		CFrameBox(const int x, int const y, const int dx, const int dy);
+		CFrameBox(const int x = 0, int const y = 0, const int dx = 0, const int dy = 0);
 		CFrameBox(CBox* position);
 		virtual ~CFrameBox();
 
@@ -139,14 +141,18 @@ class CFrameBox : public CWidgetItem
 
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
 
-		void setMode(int mode = FRAMEBOX_MODE_HORIZONTAL){frameMode = mode;};
+		void setMode(int mode = FRAMEBOX_MODE_HORIZONTAL)
+		{
+			frameMode = mode;
+
+			if (frameMode == FRAMEBOX_MODE_RANDOM)
+				paintFrame = false;
+		};
 
 		void disablePaintFrame(void){paintFrame = false;};
 
 		//
 		bool isSelectable(void) const {return true;};
-
-		//inline CBox getWindowsPos(void){return (cFrameBox);};
 
 		int oKKeyPressed(CMenuTarget *parent);
 		

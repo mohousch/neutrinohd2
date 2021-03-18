@@ -38,6 +38,7 @@ CFrame::CFrame(int m)
 	caption = "";
 	mode = m;
 	shadow = true;
+	item_backgroundColor = COL_MENUCONTENT_PLUS_0;
 
 	window.setPosition(-1, -1, 0, 0);
 
@@ -82,6 +83,7 @@ CFrame::CFrame(const std::string title, int m)
 	caption = title;
 	mode = m;
 	shadow = true;
+	item_backgroundColor = COL_MENUCONTENT_PLUS_0;
 
 	window.setPosition(-1, -1, 0, 0);
 
@@ -406,7 +408,7 @@ void CFrameBox::paintFrames()
 					frame->window.setPosition(frame_x + count*(frame_width) + ICON_OFFSET, frame_y, frame_width - 2*ICON_OFFSET, frame_height);
 				}
 			}
-			else
+			else if(frameMode == FRAMEBOX_MODE_VERTICAL)
 			{
 				if (frame->window.getWindowsPos().iWidth != 0 && frame->window.getWindowsPos().iHeight != 0)
 				{
@@ -417,12 +419,26 @@ void CFrameBox::paintFrames()
 					frame->window.setPosition(frame_x, frame_y + count*(frame_height) + ICON_OFFSET, frame_width, frame_height - 2*ICON_OFFSET);
 				}
 			}
+			else if(frameMode == FRAMEBOX_MODE_RANDOM)
+			{
+				if (frame->window.getWindowsPos().iWidth != 0 && frame->window.getWindowsPos().iHeight != 0)
+				{
+					frame->window.setPosition(frame->window.getWindowsPos().iX, frame->window.getWindowsPos().iY, frame->window.getWindowsPos().iWidth, frame->window.getWindowsPos().iHeight);
+				}
+				else // vertical
+				{
+					frame->window.setPosition(frame_x, frame_y + count*(frame_height) + ICON_OFFSET, frame_width, frame_height - 2*ICON_OFFSET);
+				}
+			}
 		}
 
 		if(frame->isSelectable() && frame->shadow)
 			frame->window.enableShadow();
 
-		frame->item_backgroundColor = backgroundColor;
+		if ( paintFrame )
+		{
+			frame->item_backgroundColor = backgroundColor;
+		}
 
 		if(inFocus)
 			frame->paint( selected == ((signed int) count));
@@ -452,14 +468,15 @@ void CFrameBox::hide()
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::hide:\n");
 
-	cFrameWindow.hide();
+	if (paintFrame)
+		cFrameWindow.hide();
 }
 
 void CFrameBox::swipRight()
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::swipRight:\n");
 
-	if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
+	if( (frameMode == FRAMEBOX_MODE_HORIZONTAL) || (frameMode == FRAMEBOX_MODE_RANDOM))
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
@@ -484,7 +501,7 @@ void CFrameBox::swipLeft()
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::swipLeft:\n");
 
-	if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
+	if( (frameMode == FRAMEBOX_MODE_HORIZONTAL) || (frameMode == FRAMEBOX_MODE_RANDOM))
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
@@ -511,7 +528,7 @@ void CFrameBox::scrollLineDown(const int lines)
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::scrollLineDown:\n");
 
-	if(frameMode == FRAMEBOX_MODE_VERTICAL)
+	if( (frameMode == FRAMEBOX_MODE_VERTICAL) || (frameMode == FRAMEBOX_MODE_RANDOM))
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
@@ -536,7 +553,7 @@ void CFrameBox::scrollLineUp(const int lines)
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::scrollLineUp:\n");
 
-	if(frameMode == FRAMEBOX_MODE_VERTICAL)
+	if( (frameMode == FRAMEBOX_MODE_VERTICAL) || (frameMode == FRAMEBOX_MODE_RANDOM))
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
