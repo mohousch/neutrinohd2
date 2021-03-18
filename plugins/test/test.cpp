@@ -1630,8 +1630,6 @@ REPAINT:
 	leftWidget->paint();
 	rightWidget->paint();
 
-	CFrameBuffer::getInstance()->blit();
-
 	// loop
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
@@ -1690,10 +1688,8 @@ REPAINT:
 			{
 				focus = WIDGET_LEFT;
 
-				//topWidget->setSelected(-1);
 				topWidget->setOutFocus();
 
-				//rightWidget->setSelected(-1);
 				rightWidget->setOutFocus();
 
 				leftWidget->setSelected(left_selected);
@@ -1703,10 +1699,8 @@ REPAINT:
 			{
 				focus = WIDGET_RIGHT;
 
-				//leftWidget->setSelected(-1);
 				leftWidget->setOutFocus();
 
-				//topWidget->setSelected(-1);
 				topWidget->setOutFocus();
 
 				rightWidget->setSelected(right_selected);
@@ -1716,10 +1710,8 @@ REPAINT:
 			{
 				focus = WIDGET_TOP;
 
-				//leftWidget->setSelected(-1);
 				leftWidget->setOutFocus();
 
-				//rightWidget->setSelected(-1);
 				rightWidget->setOutFocus();
 
 				topWidget->setSelected(top_selected);

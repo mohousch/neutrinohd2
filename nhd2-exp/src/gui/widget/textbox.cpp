@@ -274,7 +274,7 @@ void CTextBox::refreshTextLineArray(void)
 	// do not parse, if text is empty 
 	if(!m_cText.empty())
 	{
-		m_cText += "\n";
+		//m_cText += "\n";
 
 		while(loop)
 		{

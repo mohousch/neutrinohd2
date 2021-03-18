@@ -39,6 +39,8 @@ CFrame::CFrame(int m)
 	mode = m;
 	shadow = true;
 
+	window.setPosition(-1, -1, 0, 0);
+
 	if (mode == FRAME_PLUGIN)
 	{
 		if (g_PluginList->plugin_exists(caption))
@@ -80,6 +82,8 @@ CFrame::CFrame(const std::string title, int m)
 	caption = title;
 	mode = m;
 	shadow = true;
+
+	window.setPosition(-1, -1, 0, 0);
 
 	if (mode == FRAME_PLUGIN)
 	{
@@ -215,7 +219,7 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		{
 			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(caption);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + iconOffset + iw + iconOffset, window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), window.getWindowsPos().iWidth - iconOffset - iw - iconOffset, caption.c_str(), color, 0, true); //
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + iconOffset + iw + iconOffset, window.getWindowsPos().iY + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight() + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2, window.getWindowsPos().iWidth - iconOffset - iw - iconOffset, caption.c_str(), color, 0, true); //
 		}
 	}
 	else if (mode == FRAME_TEXT)
@@ -357,10 +361,12 @@ void CFrameBox::paintFrames()
 	dprintf(DEBUG_NORMAL, "CFrameBox::paintFrames:\n");
 
 	//
-	int frame_width = 0;
-	int frame_height = 0;
+	int frame_width = itemBox.iWidth;
+	int frame_height = itemBox.iHeight ;
+	int frame_x = itemBox.iX;
+	int frame_y = itemBox.iY;
 
-	if(frames.size())
+	if(frames.size() > 1)
 	{
 		if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
 		{
@@ -372,20 +378,46 @@ void CFrameBox::paintFrames()
 			frame_width = itemBox.iWidth - 2*ICON_OFFSET;
 			frame_height = (itemBox.iHeight - 2*ICON_OFFSET)/((int)frames.size());
 		}
-	}
 
-	int frame_x = itemBox.iX + ICON_OFFSET;
-	int frame_y = itemBox.iY + ICON_OFFSET;
+
+		frame_x = itemBox.iX + ICON_OFFSET;
+		frame_y = itemBox.iY + ICON_OFFSET;
+	}
 
 	for (unsigned int count = 0; count < (unsigned int)frames.size(); count++) 
 	{
 		CFrame *frame = frames[count];
 
 		// init frame
-		if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
-			frame->window.setPosition(frame_x + count*(frame_width) + ICON_OFFSET, frame_y, frame_width - 2*ICON_OFFSET, frame_height);
+		if (frames.size() == 1)
+		{
+			frame->window.setPosition(frame_x, frame_y, frame_width, frame_height);
+		}
 		else
-			frame->window.setPosition(frame_x, frame_y + count*(frame_height) + ICON_OFFSET, frame_width, frame_height - 2*ICON_OFFSET);
+		{
+			if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
+			{
+				if (frame->window.getWindowsPos().iWidth != 0 && frame->window.getWindowsPos().iHeight != 0)
+				{
+					frame->window.setPosition(frame->window.getWindowsPos().iX, frame->window.getWindowsPos().iY, frame->window.getWindowsPos().iWidth, frame->window.getWindowsPos().iHeight);
+				}
+				else
+				{
+					frame->window.setPosition(frame_x + count*(frame_width) + ICON_OFFSET, frame_y, frame_width - 2*ICON_OFFSET, frame_height);
+				}
+			}
+			else
+			{
+				if (frame->window.getWindowsPos().iWidth != 0 && frame->window.getWindowsPos().iHeight != 0)
+				{
+					frame->window.setPosition(frame->window.getWindowsPos().iX, frame->window.getWindowsPos().iY, frame->window.getWindowsPos().iWidth, frame->window.getWindowsPos().iHeight);
+				}
+				else
+				{
+					frame->window.setPosition(frame_x, frame_y + count*(frame_height) + ICON_OFFSET, frame_width, frame_height - 2*ICON_OFFSET);
+				}
+			}
+		}
 
 		if(frame->isSelectable() && frame->shadow)
 			frame->window.enableShadow();

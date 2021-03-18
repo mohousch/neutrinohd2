@@ -663,7 +663,7 @@ void CWidget::onOKKeyPressed()
 {
 	if(hasItem() && selected >= 0)
 	{
-		if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) || (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX))
+		if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) || (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) || (!items[selected]->hasItem() && items[selected]->isSelectable()))
 		{
 			actionKey = items[selected]->getActionKey();
 
