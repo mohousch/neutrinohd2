@@ -122,8 +122,9 @@ typedef std::vector<button_label_struct> button_label_list_t;
 class CButtons
 {
 	private:
+		button_label_list_t buttons;
 	public:
-		CButtons(){};
+		CButtons(){buttons.clear();};
 
 		// foot buttons
 		void paintFootButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label* const content);

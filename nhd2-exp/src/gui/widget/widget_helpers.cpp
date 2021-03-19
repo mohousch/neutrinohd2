@@ -161,6 +161,7 @@ void CButtons::paintFootButtons(const int x, const int y, const int dx, const in
 	
 	if(count)
 	{
+		//
 		buttonWidth = (dx - BORDER_LEFT - BORDER_RIGHT)/count;
 
 		for (unsigned int i = 0; i < count; i++)

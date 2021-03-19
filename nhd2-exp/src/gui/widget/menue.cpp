@@ -516,14 +516,42 @@ void ClistBoxWidget::paintFoot()
 
 		// buttons
 		//buttons.paintFootButtons(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
-		//footers->setGradient();
-		//if (footers)
-		//footers->paint();
+
+		//
+		int buttonWidth = 0;
+
+		if(fbutton_count)
+		{
+			buttonWidth = (width - BORDER_LEFT - BORDER_RIGHT)/fbutton_count;
+	
+			for (unsigned int i = 0; i < fbutton_count; i++)
+			{
+				if (fbutton_labels[i].button != NULL)
+				{
+						const char * l_option = NULL;
+						int iw = 0;
+						int ih = 0;
+
+						CFrameBuffer::getInstance()->getIconSize(fbutton_labels[i].button, &iw, &ih);
+						int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
+
+						if(fbutton_labels[i].localename != NULL)
+							l_option = fbutton_labels[i].localename;
+						else
+							l_option = g_Locale->getText(fbutton_labels[i].locale);
+		
+						CFrameBuffer::getInstance()->paintIcon(fbutton_labels[i].button, x + BORDER_LEFT + i*buttonWidth, y + height - fheight + (fheight - ih)/2);
+
+						g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + BORDER_LEFT + iw + ICON_OFFSET + i*buttonWidth, y + height - fheight + f_h + (fheight - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
+				}
+			}
+		}
+		
 	}
 	else
 	{
 		if (footers)
-		footers->paint();
+			footers->paint();
 	}
 }
 

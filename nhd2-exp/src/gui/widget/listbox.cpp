@@ -2228,25 +2228,39 @@ void ClistBox::paintFoot()
 			// buttons
 			//buttons.paintFootButtons(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - fheight, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
 
-			CFooters footers(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight, cFrameBox.iWidth, fheight);
+			//
+			int buttonWidth = 0;
 
-			if (fbutton_count)
+			if(fbutton_count)
 			{
+				buttonWidth = (cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT)/fbutton_count;
+	
 				for (unsigned int i = 0; i < fbutton_count; i++)
 				{
-					footers.setButtons(&fbutton_labels[i]);
+					if (fbutton_labels[i].button != NULL)
+					{
+						const char * l_option = NULL;
+						int iw = 0;
+						int ih = 0;
+
+						CFrameBuffer::getInstance()->getIconSize(fbutton_labels[i].button, &iw, &ih);
+						int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
+
+						if(fbutton_labels[i].localename != NULL)
+							l_option = fbutton_labels[i].localename;
+						else
+							l_option = g_Locale->getText(fbutton_labels[i].locale);
+		
+						CFrameBuffer::getInstance()->paintIcon(fbutton_labels[i].button, cFrameBox.iX + BORDER_LEFT + i*buttonWidth, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight + (fheight - ih)/2);
+
+						g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(cFrameBox.iX + BORDER_LEFT + iw + ICON_OFFSET + i*buttonWidth, cFrameBox.iY + cFrameBox.iHeight - fheight + f_h + (fheight - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
+					}
 				}
 			}
-
-			//footers.setColor(footColor);
-			//footers.setCorner(footRadius, footCorner);
-			//footers.setGradient();
-
-			footers.paint();
+			//
 		}
 		else
 		{
-			//CFooters footers(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
 			CFooters footers(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight, cFrameBox.iWidth, fheight);
 
 			if (fbutton_count)

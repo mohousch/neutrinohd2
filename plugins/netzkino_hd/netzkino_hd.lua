@@ -114,7 +114,7 @@ function get_categories()
 		local s = fp:read("*a")
 		fp:close()
 
-		local j_table = json:decode(s)
+		local j_table = json.decode(s)
 
 		if j_table == nil  then 
 			return nil 
@@ -213,7 +213,7 @@ function get_movies(_id)
 		local s = fp:read("*a")
 		fp:close()
 
-		local j_table = json:decode(s)
+		local j_table = json.decode(s)
 		max_page = tonumber(j_table.pages);
 		local posts = j_table.posts
 
@@ -278,7 +278,7 @@ end
 
 --Auswahlmenü der Filme anzeigen
 function get_movies_menu(_id)
-	local ret = neutrino.menu_return().RETURN_REPAINT
+	local ret = neutrino.RETURN_REPAINT
 	local menu_title = caption .. ": " .. categories[_id].title;
 
 	local box = neutrino.CBox()
@@ -294,19 +294,16 @@ function get_movies_menu(_id)
 	green.button = neutrino.NEUTRINO_ICON_BUTTON_GREEN
 	green.locale = neutrino.NONEXISTANT_LOCALE
 	green.localename = "pictureViewer"
-	foot:setButtons(green)
 
 	local yellow = neutrino.button_label_struct()
 	yellow.button = neutrino.NEUTRINO_ICON_BUTTON_YELLOW
 	yellow.locale = neutrino.NONEXISTANT_LOCALE
 	yellow.localename = "Focus"
-	foot:setButtons(yellow)
 
 	local blue = neutrino.button_label_struct()
 	blue.button = neutrino.NEUTRINO_ICON_BUTTON_BLUE
 	blue.locale = neutrino.NONEXISTANT_LOCALE
 	blue.localename = "InfoBox"
-	foot:setButtons(blue)
 
 	box.iX = fb:getScreenX()
 	box.iY = fb:getScreenY()
@@ -323,10 +320,10 @@ function get_movies_menu(_id)
 	m_movies:enableShrinkMenu()
 	m_movies:setTitle(menu_title, netzkino_png)
 	m_movies:enableCenterPos()
-	m_movies:setButtons(red)
-	m_movies:setButtons(green)
-	m_movies:setButtons(yellow)
-	m_movies:setButtons(blue)
+	m_movies:setFooterButtons(red)
+	m_movies:setFooterButtons(green)
+	m_movies:setFooterButtons(yellow)
+	m_movies:setFooterButtons(blue)
 	
 	local item = nil
 	for _id, movie_detail in pairs(movies) do
