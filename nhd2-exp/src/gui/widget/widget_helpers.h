@@ -268,7 +268,7 @@ class CFooters : public CWidgetItem
 {
 	private:
 		unsigned int fcount;
-		const struct button_label *fcontent;
+		button_label_list_t fbuttons;
 
 		fb_pixel_t fbgcolor;
 		int fradius;
@@ -284,7 +284,16 @@ class CFooters : public CWidgetItem
 		void setCorner(int ra = NO_RADIUS, int co = CORNER_NONE){fradius = ra; fcorner = co;};
 		void setGradient(int grad = nogradient){fgradient = grad;};
 
-		void setButtons(const struct button_label* button_label, const int button_count){fcontent = button_label; fcount = button_count;};
+		void setButtons(const struct button_label *button_label, const int button_count = 1)
+		{
+			if (button_count)
+			{
+				for (unsigned int i = 0; i < button_count; i++)
+				{
+					fbuttons.push_back(button_label[i]);
+				}
+			}	
+		};
 
 		void paint();
 		void hide();

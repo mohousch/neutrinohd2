@@ -134,7 +134,7 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 
 	//
 	fbutton_count	= 0;
-	fbutton_labels	= NULL;
+	fbutton_labels.clear();
 	fbutton_width = width;
 
 	//
@@ -405,7 +405,16 @@ void ClistBoxWidget::initFrames()
 		}
 
 		//headers = new CHeaders(x, y, width, hheight, l_name, iconfile.c_str());
-		footers = new CFooters(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
+		//footers = new CFooters(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
+		footers = new CFooters(x, y + height - fheight, width, fheight);
+
+		if (fbutton_count)
+		{
+			for (unsigned int i = 0; i < fbutton_count; i++)
+			{
+				footers->setButtons(&fbutton_labels[i]);
+			}
+		}
 
 		if(savescreen) 
 			saveScreen();
@@ -506,10 +515,14 @@ void ClistBoxWidget::paintFoot()
 		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight + 2, COL_MENUCONTENT_PLUS_5);
 
 		// buttons
-		buttons.paintFootButtons(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
+		//buttons.paintFootButtons(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
+		//footers->setGradient();
+		//if (footers)
+		//footers->paint();
 	}
 	else
 	{
+		if (footers)
 		footers->paint();
 	}
 }
@@ -1004,62 +1017,23 @@ void ClistBoxWidget::hideItemInfo()
 	}  
 }
 
-void ClistBoxWidget::setFooterButtons(const struct button_label* _fbutton_labels, const int _fbutton_count, const int _fbutton_width)
+void ClistBoxWidget::setFooterButtons(const struct button_label *_fbutton_labels, const int _fbutton_count, const int _fbutton_width)
 {
+/*
 	fbutton_count = _fbutton_count;
 	fbutton_labels = _fbutton_labels;
 	fbutton_width = (_fbutton_width == 0)? width : _fbutton_width;
-}
-
-void ClistBoxWidget::setFooterButtons(const char * btn1, const char * locale1, const char * btn2, const char * locale2, const char * btn3, const char * locale3, const char * btn4, const char * locale4)
-{
-/*
-	struct button_label *_fbutton_labels = NULL;
-
-	if (btn1 != NULL)
-	{
-		_fbutton_labels[0].button = btn1;
-		_fbutton_labels[0].locale = NONEXISTANT_LOCALE;
-		_fbutton_labels[0].localename = locale1;
-
-		fbutton_count += 1;
-	}
-
-	if (btn2 != NULL)
-	{
-		_fbutton_labels[1].button = btn2;
-		_fbutton_labels[1].locale = NONEXISTANT_LOCALE;
-		_fbutton_labels[1].localename = locale2;
-
-		fbutton_count += 1;
-	}
-
-	if (btn3 != NULL)
-	{
-		_fbutton_labels[2].button = btn3;
-		_fbutton_labels[2].locale = NONEXISTANT_LOCALE;
-		_fbutton_labels[2].localename = locale3;
-
-		fbutton_count += 1;
-	}
-
-	if (btn4 != NULL)
-	{
-		_fbutton_labels[3].button = btn4;
-		_fbutton_labels[3].locale = NONEXISTANT_LOCALE;
-		_fbutton_labels[3].localename = locale4;
-
-		fbutton_count += 1;
-	}
-
-	//fbutton_labels = &_fbutton_labels;
-	for (int i = 0; i < 4; i++)
-	{
-		fbutton_labels[i].button = _fbutton_labels[i].button;
-		fbutton_labels[i].locale = NONEXISTANT_LOCALE;
-		fbutton_labels[i].localename = _fbutton_labels[i].localename;
-	}
 */
+	if (_fbutton_count)
+	{
+		for (unsigned int i = 0; i < _fbutton_count; i++)
+		{
+			fbutton_labels.push_back(_fbutton_labels[i]);
+		}
+	}
+
+	fbutton_count = fbutton_labels.size();	
+	fbutton_width = (_fbutton_width == 0)? width : _fbutton_width;
 }
 
 void ClistBoxWidget::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)

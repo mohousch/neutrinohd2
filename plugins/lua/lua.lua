@@ -603,12 +603,30 @@ function testCWindow()
 
 	-- foot
 	foot = neutrino.CFooters(footBox)
-	fbtn = neutrino.button_label_struct()
 
-	fbtn.button = neutrino.NEUTRINO_ICON_BUTTON_YELLOW
-	fbtn.locale = neutrino.NONEXISTANT_LOCALE
-	fbtn.localename = "Focus"
-	foot:setButtons(fbtn, 1)
+	red = neutrino.button_label_struct()
+	red.button = neutrino.NEUTRINO_ICON_BUTTON_RED
+	red.locale = neutrino.NONEXISTANT_LOCALE
+	red.localename = "audioPlayer"
+	foot:setButtons(red, 1)
+
+	green = neutrino.button_label_struct()
+	green.button = neutrino.NEUTRINO_ICON_BUTTON_GREEN
+	green.locale = neutrino.NONEXISTANT_LOCALE
+	green.localename = "pictureViewer"
+	foot:setButtons(green)
+
+	yellow = neutrino.button_label_struct()
+	yellow.button = neutrino.NEUTRINO_ICON_BUTTON_YELLOW
+	yellow.locale = neutrino.NONEXISTANT_LOCALE
+	yellow.localename = "Focus"
+	foot:setButtons(yellow)
+
+	blue = neutrino.button_label_struct()
+	blue.button = neutrino.NEUTRINO_ICON_BUTTON_BLUE
+	blue.locale = neutrino.NONEXISTANT_LOCALE
+	blue.localename = "InfoBox"
+	foot:setButtons(blue)
 
 	-- frame
 	--frameBox1 = neutrino.CFrameBox(frame1Box)
@@ -717,7 +735,7 @@ function testCWindow()
 	
 	m:setSelected(selected)
 
-	--m:addItem(window, box.iX, box.iY, box.iWidth, box.iHeight)
+	--m:addItem(window)
 	m:addItem(head)
 	--m:addItem(frameBox1)
 	--m:addItem(frameBox2)
@@ -736,19 +754,8 @@ function testCWindow()
 	--window:paint()
 	--head:paint()
 	--foot:paint()
-	neutrino.CButtons():paintButton(btnRed, "AudioPlayer", box.iX + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	neutrino.CButtons():paintButton(btnGreen, "PicturePlayer", box.iX + (box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	neutrino.CButtons():paintButton(btnYellow, "Focus", box.iX + 2*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	neutrino.CButtons():paintButton(btnBlue, "InfoBox", box.iX + 3*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
 
 	ret = m:exec(null, "")
-
-	--
-	neutrino.CButtons():paintButton(btnRed, "AudioPlayer", box.iX + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	neutrino.CButtons():paintButton(btnGreen, "PicturePlayer", box.iX + (box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	neutrino.CButtons():paintButton(btnYellow, "Focus", box.iX + 2*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	neutrino.CButtons():paintButton(btnBlue, "InfoBox", box.iX + 3*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	--
 
 	local selected = m:getSelected()
 	local key = m:getKey()
@@ -757,12 +764,12 @@ function testCWindow()
 	if actionKey == "moviePlayer" then
 		print("lua sample: testCWindow(): actionKey: moviePlayer")
 
-		window:hide()
+		--window:hide()
 		audioPlayer()
 	elseif actionKey == "pictureViewer" then
 		print("lua sample: testCWindow(): actionKey: pictureViewer")
 
-		window:hide()
+		--window:hide()
 		pictureViewer()
 	elseif actionKey == "audioPlayer" then
 		print("lua sample: testCWindow(): actionKey: audioPlayer")
@@ -772,19 +779,19 @@ function testCWindow()
 	elseif actionKey == "frame1" then
 		print("lua sample: testCWindow(): actionKey: frame1")
 
-		window:hide()
+		--window:hide()
 		moviePlayer()
 	elseif actionKey == "exit" then
 		print("lua sample: testCWindow(): actionKey: exit")
 
-		window:hide()
+		--window:hide()
 		return neutrino.RETURN_REPAINT
 	elseif actionKey == "frame3" then
 		print("lua sample: testCWindow(): actionKey: frame3")
 
 		player = neutrino.CMoviePlayerGui()
 
-		window:hide()
+		--window:hide()
 		movie = PATH .. "/ProSieben_20121225_201400.ts"
 
 		player:addToPlaylist(movie)
@@ -792,17 +799,17 @@ function testCWindow()
 	elseif actionKey == "nfilm" then
 		print("lua sample: testCWindow(): actionKey: nfilm")
 
-		window:hide()
+		--window:hide()
 		neutrino.g_PluginList:startPlugin("nfilm")
 	elseif actionKey == "infoBox" then
 		print("lua sample: testCWindow(): actionKey: infoBox")
 		
-		window:hide()
+		--window:hide()
 		infoBox()
 	elseif actionKey == "frame4" then
 		print("lua sample: testCWindow(): actionKey: frame4")
 
-		window:hide()
+		--window:hide()
 		neutrino.InfoBox(title, "lua window|widget")
 	end
 
@@ -810,7 +817,7 @@ function testCWindow()
 		testCWindow()
 	end
 
-	window:hide()
+	--window:hide()
 
 	return ret
 end

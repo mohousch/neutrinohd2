@@ -281,16 +281,38 @@ function get_movies_menu(_id)
 	local ret = neutrino.menu_return().RETURN_REPAINT
 	local menu_title = caption .. ": " .. categories[_id].title;
 
-	--m_movies = neutrino.ClistBoxWidget(menu_title, netzkino_png)
-
 	local box = neutrino.CBox()
 	local fb = neutrino.CSwigHelpers()
 	local button = neutrino.CButtons()
+
+	local red = neutrino.button_label_struct()
+	red.button = neutrino.NEUTRINO_ICON_BUTTON_RED
+	red.locale = neutrino.NONEXISTANT_LOCALE
+	red.localename = "audioPlayer"
+
+	local green = neutrino.button_label_struct()
+	green.button = neutrino.NEUTRINO_ICON_BUTTON_GREEN
+	green.locale = neutrino.NONEXISTANT_LOCALE
+	green.localename = "pictureViewer"
+	foot:setButtons(green)
+
+	local yellow = neutrino.button_label_struct()
+	yellow.button = neutrino.NEUTRINO_ICON_BUTTON_YELLOW
+	yellow.locale = neutrino.NONEXISTANT_LOCALE
+	yellow.localename = "Focus"
+	foot:setButtons(yellow)
+
+	local blue = neutrino.button_label_struct()
+	blue.button = neutrino.NEUTRINO_ICON_BUTTON_BLUE
+	blue.locale = neutrino.NONEXISTANT_LOCALE
+	blue.localename = "InfoBox"
+	foot:setButtons(blue)
 
 	box.iX = fb:getScreenX()
 	box.iY = fb:getScreenY()
 	box.iWidth = fb:getScreenWidth()
 	box.iHeight = fb:getScreenHeight()
+
 	m_movies = neutrino.ClistBox(box)
 
 	m_movies:setWidgetType(neutrino.WIDGET_TYPE_FRAME)
@@ -301,6 +323,10 @@ function get_movies_menu(_id)
 	m_movies:enableShrinkMenu()
 	m_movies:setTitle(menu_title, netzkino_png)
 	m_movies:enableCenterPos()
+	m_movies:setButtons(red)
+	m_movies:setButtons(green)
+	m_movies:setButtons(yellow)
+	m_movies:setButtons(blue)
 	
 	local item = nil
 	for _id, movie_detail in pairs(movies) do
@@ -317,25 +343,7 @@ function get_movies_menu(_id)
 
 	m_movies:setSelected(selected_movie)
 
-	local btnRed = neutrino.NEUTRINO_ICON_BUTTON_RED
-	local btnGreen = neutrino.NEUTRINO_ICON_BUTTON_GREEN
-	local btnYellow = neutrino.NEUTRINO_ICON_BUTTON_YELLOW
-	local btnBlue = neutrino.NEUTRINO_ICON_BUTTON_BLUE
-	local btnInfo = neutrino.NEUTRINO_ICON_BUTTON_HELP
-	local btnRec = neutrino.NEUTRINO_ICON_REC
-
-	--i_w = fb:getIconWidth(neutrino.NEUTRINO_ICON_BUTTON_HELP)
-	--r_w = fb.CSwigHelpers():getIconWidth(neutrino.NEUTRINO_ICON_REC)
-
 	m_movies:paint()
-
-	button:paintButton(btnInfo, nil, box.iX + box.iWidth - 5 - 40, box.iY, (box.iWidth)/4, 40)
-	button:paintButton(btnRec, nil, box.iX + box.iWidth - 5 - 40 - 5 - 40, box.iY, (box.iWidth)/4, 40)
-
-	button:paintButton(btnRed, neutrino.g_Locale:getText(neutrino.LOCALE_FILEBROWSER_NEXTPAGE), box.iX + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	button:paintButton(btnGreen, neutrino.g_Locale:getText(neutrino.LOCALE_FILEBROWSER_PREVPAGE), box.iX + (box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	button:paintButton(btnYellow, nil, box.iX + 2*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	button:paintButton(btnBlue, "Main Page", box.iX + 3*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
 
 	local m = neutrino.CWidget()
 	m:addKey(neutrino.RC_ok)

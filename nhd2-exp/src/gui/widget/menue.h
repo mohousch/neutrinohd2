@@ -108,7 +108,7 @@ class ClistBoxWidget : public CMenuTarget
 		// foot buttons
 		int fbutton_count;
 		int fbutton_width;
-		const struct button_label* fbutton_labels;
+		button_label_list_t fbutton_labels;
 
 		// head buttons
 		int hbutton_count;
@@ -212,8 +212,7 @@ class ClistBoxWidget : public CMenuTarget
 		neutrino_msg_t getKey(){return msg;};
 
 		//
-		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count, const int _fbutton_width = 0);
-		void setFooterButtons(const char * btn1, const char *locale1, const char * btn2 = NULL, const char *locale2 = NULL, const char * btn3 = NULL, const char *locale3 = NULL, const char * btn4 = NULL, const char *locale4 = NULL);
+		void setFooterButtons(const struct button_label *_fbutton_label, const int _fbutton_count = 1, const int _fbutton_width = 0);
 
 		//
 		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);

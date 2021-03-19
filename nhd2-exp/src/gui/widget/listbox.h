@@ -507,7 +507,7 @@ class ClistBox : public CWidgetItem
 		//
 		int fbutton_count;
 		int fbutton_width;
-		const struct button_label* fbutton_labels;
+		button_label_list_t fbutton_labels;
 
 		bool paintDate;
 		bool paintTitle;
@@ -602,7 +602,7 @@ class ClistBox : public CWidgetItem
 		
 		// foot
 		void enablePaintFoot(){paint_Foot = true;};
-		void setFooterButtons(const struct button_label* _fbutton_label, const int _fbutton_count, const int _fbutton_width = 0);
+		void setFooterButtons(const struct button_label *_fbutton_label, const int _fbutton_count = 1, const int _fbutton_width = 0);
 		void setFootColor(fb_pixel_t col) {footColor = col;};
 		void setFootCorner(int ra, int co){footRadius = ra; footCorner = co;};
 		void setFootGradient(int grad){footGradient = grad;};

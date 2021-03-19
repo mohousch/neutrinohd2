@@ -485,8 +485,7 @@ CFooters::CFooters(int x, int y, int dx, int dy, const unsigned int count, const
 	itemBox.iWidth = dx;
 	itemBox.iHeight = dy;
 
-	fcount = count;
-	fcontent = content;
+	fbuttons.clear();
 
 	fbgcolor = COL_MENUFOOT_PLUS_0;
 	fradius = RADIUS_MID;
@@ -494,14 +493,21 @@ CFooters::CFooters(int x, int y, int dx, int dy, const unsigned int count, const
 	fgradient = g_settings.Foot_gradient;
 
 	itemType = WIDGET_ITEM_FOOT;
+
+	if (count)
+	{
+		for (unsigned int i = 0; i < count; i++)
+		{
+			fbuttons.push_back(content[i]);
+		}
+	}
 }
 
 CFooters::CFooters(CBox position, const unsigned int count, const struct button_label *content)
 {
 	itemBox = position;
 
-	fcount = count;
-	fcontent = content;
+	fbuttons.clear();
 
 	fbgcolor = COL_MENUFOOT_PLUS_0;
 	fradius = RADIUS_MID;
@@ -509,6 +515,14 @@ CFooters::CFooters(CBox position, const unsigned int count, const struct button_
 	fgradient = g_settings.Foot_gradient;
 
 	itemType = WIDGET_ITEM_FOOT;
+
+	if (count)
+	{
+		for (unsigned int i = 0; i < count; i++)
+		{
+			fbuttons.push_back(content[i]);
+		}
+	}
 }
 
 void CFooters::paint()
@@ -516,9 +530,9 @@ void CFooters::paint()
 	// box
 	CFrameBuffer::getInstance()->paintBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight, fbgcolor, fradius, fcorner, fgradient);
 
-
-	// buttons
 	int buttonWidth = 0;
+
+	fcount = fbuttons.size();
 
 	if(fcount)
 	{
@@ -526,21 +540,21 @@ void CFooters::paint()
 	
 		for (unsigned int i = 0; i < fcount; i++)
 		{
-			if(fcontent[i].button != NULL)
+			if (fbuttons[i].button != NULL)
 			{
 				const char * l_option = NULL;
 				int iw = 0;
 				int ih = 0;
 
-				CFrameBuffer::getInstance()->getIconSize(fcontent[i].button, &iw, &ih);
+				CFrameBuffer::getInstance()->getIconSize(fbuttons[i].button, &iw, &ih);
 				int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
-				if(fcontent[i].localename != NULL)
-					l_option = fcontent[i].localename;
+				if(fbuttons[i].localename != NULL)
+					l_option = fbuttons[i].localename;
 				else
-					l_option = g_Locale->getText(fcontent[i].locale);
+					l_option = g_Locale->getText(fbuttons[i].locale);
 		
-				CFrameBuffer::getInstance()->paintIcon(fcontent[i].button, itemBox.iX + BORDER_LEFT + i*buttonWidth, itemBox.iY + (itemBox.iHeight - ih)/2);
+				CFrameBuffer::getInstance()->paintIcon(fbuttons[i].button, itemBox.iX + BORDER_LEFT + i*buttonWidth, itemBox.iY + (itemBox.iHeight - ih)/2);
 
 				g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(itemBox.iX + BORDER_LEFT + iw + ICON_OFFSET + i*buttonWidth, itemBox.iY + f_h + (itemBox.iHeight - f_h)/2, buttonWidth - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
 			}

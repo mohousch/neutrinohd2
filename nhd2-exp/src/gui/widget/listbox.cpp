@@ -1680,7 +1680,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
 	fbutton_count	= 0;
-	fbutton_labels	= NULL;
+	fbutton_labels.clear();
 	fbutton_width = cFrameBox.iWidth;
 
 	paintDate = false;
@@ -1758,7 +1758,7 @@ ClistBox::ClistBox(CBox* position)
 	hbutton_count	= 0;
 	hbutton_labels	= NULL;
 	fbutton_count	= 0;
-	fbutton_labels	= NULL;
+	fbutton_labels.clear();
 	fbutton_width = cFrameBox.iWidth;
 
 	paintDate = false;
@@ -2226,11 +2226,36 @@ void ClistBox::paintFoot()
 			frameBuffer->paintHLineRel(cFrameBox.iX + BORDER_LEFT, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT, cFrameBox.iY + cFrameBox.iHeight - fheight + 2, COL_MENUCONTENT_PLUS_5);
 
 			// buttons
-			buttons.paintFootButtons(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - fheight, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
+			//buttons.paintFootButtons(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - fheight, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
+
+			CFooters footers(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight, cFrameBox.iWidth, fheight);
+
+			if (fbutton_count)
+			{
+				for (unsigned int i = 0; i < fbutton_count; i++)
+				{
+					footers.setButtons(&fbutton_labels[i]);
+				}
+			}
+
+			//footers.setColor(footColor);
+			//footers.setCorner(footRadius, footCorner);
+			//footers.setGradient();
+
+			footers.paint();
 		}
 		else
 		{
-			CFooters footers(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
+			//CFooters footers(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight, cFrameBox.iWidth, fheight, fbutton_count, fbutton_labels);
+			CFooters footers(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight - fheight, cFrameBox.iWidth, fheight);
+
+			if (fbutton_count)
+			{
+				for (unsigned int i = 0; i < fbutton_count; i++)
+				{
+					footers.setButtons(&fbutton_labels[i]);
+				}
+			}
 
 			footers.setColor(footColor);
 			footers.setCorner(footRadius, footCorner);
@@ -2254,8 +2279,21 @@ void ClistBox::setFooterButtons(const struct button_label* _fbutton_labels, cons
 {
 	if(paint_Foot && (widgetMode != MODE_MENU))
 	{
+/*
 		fbutton_count = _fbutton_count;
 		fbutton_labels = _fbutton_labels;
+		fbutton_width = (_fbutton_width == 0)? cFrameBox.iWidth : _fbutton_width;
+*/
+
+		if (_fbutton_count)
+		{
+			for (unsigned int i = 0; i < _fbutton_count; i++)
+			{
+				fbutton_labels.push_back(_fbutton_labels[i]);
+			}
+		}
+
+		fbutton_count = fbutton_labels.size();	
 		fbutton_width = (_fbutton_width == 0)? cFrameBox.iWidth : _fbutton_width;
 	}
 }
