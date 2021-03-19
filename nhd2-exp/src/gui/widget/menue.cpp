@@ -515,9 +515,6 @@ void ClistBoxWidget::paintFoot()
 		frameBuffer->paintHLineRel(x + BORDER_LEFT, width - BORDER_LEFT - BORDER_RIGHT, y + height - fheight + 2, COL_MENUCONTENT_PLUS_5);
 
 		// buttons
-		//buttons.paintFootButtons(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
-
-		//
 		int buttonWidth = 0;
 
 		if(fbutton_count)
