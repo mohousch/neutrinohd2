@@ -946,200 +946,6 @@ function testCFrameBox()
 	return ret
 end
 
--- CWindow2
-function testCWindow2()
-	local ret = neutrino.RETURN_REPAINT
-
-	local box = neutrino.CBox()
-	local fb = neutrino.CSwigHelpers()
-	local button = neutrino.CButtons()
-	local btnRed = neutrino.NEUTRINO_ICON_BUTTON_RED
-	local btnGreen = neutrino.NEUTRINO_ICON_BUTTON_GREEN
-	local btnYellow = neutrino.NEUTRINO_ICON_BUTTON_YELLOW
-	local btnBlue = neutrino.NEUTRINO_ICON_BUTTON_BLUE
-
-	box.iX = fb:getScreenX() + 40
-	box.iY = fb:getScreenY() + 40
-	box.iWidth = fb:getScreenWidth() - 80
-	box.iHeight = fb:getScreenHeight() - 80
-
-	btn = neutrino.button_label_struct()
-
-	btn.button = neutrino.NEUTRINO_ICON_AUDIO
-	btn.locale = neutrino.NONEXISTANT_LOCALE
-	btn.localename = "green"
-
-	-- window
-	window = neutrino.CWindow(box)
-	window:enableCenterPos()
-
-	-- head
-	head = neutrino.CHeaders(box.iX, box.iY, box.iWidth, 40, "lua sample Window|Widget", neutrino.NEUTRINO_ICON_MOVIE)
-	head:enablePaintDate()
-	head:setButtons(btn, 1)
-
-	-- foot
-	foot = neutrino.CFooters(box.iX, box.iY + box.iHeight - 40, box.iWidth, 40)
-
-	-- frame
-	--frameBox1 = neutrino.CFrameBox(box.iX + 10, box.iY + 40 + 10, 350, 60)
-	frame1 = neutrino.CFrameItem(neutrino.FRAMEITEM_BOX)
-	frame1.window:setPosition(box.iX + 10, box.iY + 40 + 10, 350, 60)
-	frame1:setTitle("Mediaplayer")
-	frame1:setIconName(neutrino.NEUTRINO_ICON_MOVIE)
-	frame1:setOption("spielt Media Dateien")
-	frame1:setActionKey(null, "frame1")
-	frame1:disableShadow()
-	--frameBox1:addFrame(frame1)
-	--frameBox1:setOutFocus()
-	--frameBox1:disablePaintFrame()
-
-	-- Icon
-	frameBox2 = neutrino.CFrameBox(box.iX + 10, box.iY + box.iHeight - 10 - 40 - 40, 100, 40)
-	frame2 = neutrino.CFrame(neutrino.FRAME_BUTTON)
-	frame2:setTitle("Exit")
-	frame2:setIconName(btnRed)
-	frame2:setActionKey(null, "exit")
-	frame2:disableShadow()
-	frameBox2:addFrame(frame2)
-	frameBox2:setOutFocus()
-	frameBox2:disablePaintFrame()
-
-	-- picture
-	config = neutrino.CConfigFile('\t')
-	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
-	local PATH = config:getString("network_nfs_recordingdir")
-
-	local itemIcon = PATH .. "/ProSieben_20121225_201400.jpg"
-	frameBox3 = neutrino.CFrameBox(box.iX + box.iWidth - 10 - 200, box.iY + 40 + 10, 200, 320)
-	frame3 = neutrino.CFrame(neutrino.FRAME_PICTURE)
-	frame3:setTitle("Transformers")
-	frame3:setIconName(itemIcon)
-	frame3:setActionKey(null, "frame3")
-	frame3:disableShadow()
-	frameBox3:addFrame(frame3)
-	frameBox3:setOutFocus()
-	frameBox3:disablePaintFrame()
-
-	-- Text
-	frameBox4 = neutrino.CFrameBox(box.iX + 10, box.iY + 150 + 10, 350, 350)
-	frame4 = neutrino.CFrame(neutrino.FRAME_TEXT)
-	frame4:setTitle("Lua Text\nframe2 bla vbzgstrrfasvghvschcgcqvs h bla h hdgvassbs")
-	frame4:setActionKey(null, "frame4")
-	frame4:disableShadow()
-	frameBox4:addFrame(frame4)
-	frameBox4:disablePaintFrame()
-	frameBox4:setOutFocus()
-
-	-- plugin
-	frameBox5 = neutrino.CFrameBox(box.iX + box.iWidth - 10 - 200 - 210, box.iY + 40 + 10, 100, 40 + 40)
-	frame5 = neutrino.CFrame("nfilm", neutrino.FRAME_PLUGIN)
-	frame5:setTitle("nfilm")
-	frame5:setActionKey(null, "nfilm")
-	frame5:disableShadow()
-	frameBox5:addFrame(frame5)
-	frameBox5:disablePaintFrame()
-	frameBox5:setOutFocus()
-
-	local m = neutrino.CWidget(box)
-	m:enableCenterPos()
-
-	if selected < 0 then
-		selected = 0
-	end
-	
-	m:setSelected(selected)
-
-	m:addItem(head)
-	m:addItem(frame1)
-	m:addItem(frameBox2)
-	m:addItem(frameBox3)
-	m:addItem(frameBox4)
-	m:addItem(frameBox5)
-
-	--m:addKey(neutrino.RC_ok)
-	m:addKey(neutrino.RC_down)
-	m:addKey(neutrino.RC_up)
-	m:addKey(neutrino.RC_info)
-	m:addKey(neutrino.RC_red)
-	m:addKey(neutrino.RC_green)
-	--m:addKey(neutrino.RC_yellow, null, "moviePlayer")
-	m:addKey(neutrino.RC_blue)
-
-	print("itemCount: " .. m:getItemsCount())
-
-	repeat
-	window:paint()
-	--head:paint()
-	foot:paint()
-	neutrino.CButtons():paintButton(btnRed, "AudioPlayer", box.iX + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	neutrino.CButtons():paintButton(btnGreen, "PicturePlayer", box.iX + (box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	neutrino.CButtons():paintButton(btnYellow, "Focus", box.iX + 2*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-	neutrino.CButtons():paintButton(btnBlue, "InfoBox", box.iX + 3*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-
-	ret = m:exec(null, "")
-
-	local selected = m:getSelected()
-	local key = m:getKey()
-	local actionKey = m:getActionKey()
-
-	if actionKey == "moviePlayer" then
-		print("lua sample: testCWindow(): actionKey: moviePlayer")
-
-		window:hide()
-		moviePlayer()
-	elseif actionKey == "frame1" then
-		print("lua sample: testCWindow(): actionKey: frame1")
-
-		window:hide()
-		moviePlayer()
-	elseif actionKey == "exit" then
-		print("lua sample: testCWindow(): actionKey: exit")
-
-		window:hide()
-		--audioPlayer()
-		return neutrino.RETURN_REPAINT
-	elseif actionKey == "frame3" then
-		print("lua sample: testCWindow(): actionKey: frame3")
-
-		player = neutrino.CMoviePlayerGui()
-
-		window:hide()
-		--pictureViewer()
-		movie = PATH .. "/ProSieben_20121225_201400.ts"
-
-		player:addToPlaylist(movie)
-		player:exec(null, "")
-	elseif actionKey == "nfilm" then
-		print("lua sample: testCWindow(): actionKey: nfilm")
-
-		window:hide()
-		neutrino.g_PluginList:startPlugin("nfilm")
-	end
-		
-	if key == neutrino.RC_red then
-		window:hide()
-		audioPlayer()
-	elseif key == neutrino.RC_green then
-		window:hide()
-		pictureViewer()
-	--elseif key == neutrino.RC_yellow then
-	--	window:hide()
-	--	moviePlayer()
-	elseif key == neutrino.RC_blue then
-		window:hide()
-		infoBox()
-	end
-
-	until m:getExitPressed() == true
-		--testCWindow()
-	--end
-
-	window:hide()
-
-	return ret
-end
-
 -- main
 function main()
 	local ret = neutrino.RETURN_REPAINT
@@ -1165,8 +971,6 @@ function main()
 	item6 = neutrino.CMenuForwarder("testActionKey/jumpTarget")
 	item6:setActionKey(neutrino.CAudioPlayerSettings(), "jumpTarget")
 	item6:setInfo1("lua: testing testActionKey/jumpTarget")
-	item7 = neutrino.CMenuForwarder("testCWindow2")
-	item7:setInfo1("lua: testing CWindow2")
 
 	m:addItem(item1)
 	m:addItem(item2)
@@ -1174,7 +978,6 @@ function main()
 	m:addItem(item4)
 	m:addItem(item5)
 	m:addItem(item6)
-	m:addItem(item7)
 
 	if selected < 0 then
 		selected = 0
@@ -1207,8 +1010,6 @@ function main()
 			ret = testClistBox()
 		elseif selected == 3 then
 			ret = testCWindow()
-		elseif selected == 6 then
-			testCWindow2()
 		end
 	end
 
