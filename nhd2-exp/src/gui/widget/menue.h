@@ -240,6 +240,7 @@ class ClistBoxWidget : public CMenuTarget
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
 
 		void enableShrinkMenu(){shrinkMenu = true;};
+		void enableCenterPos(){};
 
 		virtual void integratePlugins(CPlugins::i_type_t integration = CPlugins::I_TYPE_DISABLED, const unsigned int shortcut = RC_nokey, bool enabled = true);
 

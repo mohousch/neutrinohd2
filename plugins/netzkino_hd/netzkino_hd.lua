@@ -146,7 +146,7 @@ function get_categories()
 		if j > 1 then
 			get_categories_menu();
 		else
-			neutrino.CMessageBox("Fehler", "Keinen Kategorien gefunden!")
+			local mBox = neutrino.CMessageBox("Fehler", "Keinen Kategorien gefunden!")
 			mBox:exec()
 		end
 	end
@@ -268,7 +268,7 @@ function get_movies(_id)
 		if j > 1 then
 			get_movies_menu(_id);
 		else
-			neutrino.CMessageBox("Fehler", "Keinen Stream gefunden!")
+			local mBox = neutrino.CMessageBox("Fehler", "Keinen Stream gefunden!")
 			mBox:exec()
 
 			get_categories();
@@ -281,29 +281,25 @@ function get_movies_menu(_id)
 	local ret = neutrino.RETURN_REPAINT
 	local menu_title = caption .. ": " .. categories[_id].title;
 
-	local box = neutrino.CBox()
-	local fb = neutrino.CSwigHelpers()
-	local button = neutrino.CButtons()
-
 	local red = neutrino.button_label_struct()
 	red.button = neutrino.NEUTRINO_ICON_BUTTON_RED
 	red.locale = neutrino.NONEXISTANT_LOCALE
-	red.localename = "audioPlayer"
+	red.localename = "Action"
 
 	local green = neutrino.button_label_struct()
 	green.button = neutrino.NEUTRINO_ICON_BUTTON_GREEN
 	green.locale = neutrino.NONEXISTANT_LOCALE
-	green.localename = "pictureViewer"
+	green.localename = ""
 
 	local yellow = neutrino.button_label_struct()
 	yellow.button = neutrino.NEUTRINO_ICON_BUTTON_YELLOW
 	yellow.locale = neutrino.NONEXISTANT_LOCALE
-	yellow.localename = "Focus"
+	yellow.localename = "Neu bei NetzKino"
 
 	local blue = neutrino.button_label_struct()
 	blue.button = neutrino.NEUTRINO_ICON_BUTTON_BLUE
 	blue.locale = neutrino.NONEXISTANT_LOCALE
-	blue.localename = "InfoBox"
+	blue.localename = "Highlight"
 
 	local info = neutrino.button_label_struct()
 	info.button = neutrino.NEUTRINO_ICON_BUTTON_HELP
@@ -311,21 +307,11 @@ function get_movies_menu(_id)
 	local rec = neutrino.button_label_struct()
 	rec.button = neutrino.NEUTRINO_ICON_REC
 	
-
-	box.iX = fb:getScreenX()
-	box.iY = fb:getScreenY()
-	box.iWidth = fb:getScreenWidth()
-	box.iHeight = fb:getScreenHeight()
-
-	m_movies = neutrino.ClistBox(box)
+	m_movies = neutrino.ClistBoxWidget(menu_title, netzkino_png)
 
 	m_movies:setWidgetType(neutrino.WIDGET_TYPE_FRAME)
 	m_movies:setItemsPerPage(6, 2)
-	m_movies:enablePaintHead()
-	m_movies:enablePaintFoot()
 	m_movies:enableCenterPos()
-	m_movies:enableShrinkMenu()
-	m_movies:setTitle(menu_title, netzkino_png)
 	m_movies:enableCenterPos()
 	m_movies:setFooterButtons(red)
 	m_movies:setFooterButtons(green)
@@ -350,102 +336,38 @@ function get_movies_menu(_id)
 
 	m_movies:setSelected(selected_movie)
 
-	m_movies:paint()
+	m_movies:addKey(neutrino.RC_info, null, "info")
+	m_movies:addKey(neutrino.RC_record, null, "record")
+	m_movies:addKey(neutrino.RC_red, null, "action")
+	m_movies:addKey(neutrino.RC_green, null, "green")
+	m_movies:addKey(neutrino.RC_yellow, null, "new")
+	m_movies:addKey(neutrino.RC_blue, null, "highlight")
 
-	local m = neutrino.CWidget()
-
-	m:addItem(m_movies)
-
-	--m:addKey(neutrino.RC_ok)
-	m:addKey(neutrino.RC_info, null, "info")
-	--m:addKey(neutrino.RC_down)
-	--m:addKey(neutrino.RC_up)
-	--m:addKey(neutrino.RC_page_down)
-	--m:addKey(neutrino.RC_page_up)
-	--m:addKey(neutrino.RC_left)
-	--m:addKey(neutrino.RC_right)
-	m:addKey(neutrino.RC_record, null, "record")
-
-	repeat
-		m:exec(null, "")
+	m_movies:exec(null, "")
 	
-		selected_movie = m_movies:getSelected()
-		local key = m:getKey()
-		local actionKey = m:getActionKey()
+	selected_movie = m_movies:getSelected()
+	local key = m_movies:getKey()
+	local actionKey = m_movies:getActionKey()
 
-		if actionKey == "play" then
-			playMovie(selected_movie + 1)
-		elseif actionKey == "info" then
-			showMovieInfo(selected_movie + 1)
-		elseif actionKey == "record" then
-			download_stream(selected_movie + 1)
-		end
+	if actionKey == "play" then
+		playMovie(selected_movie + 1)
+	elseif actionKey == "info" then
+		showMovieInfo(selected_movie + 1)
+	elseif actionKey == "record" then
+		download_stream(selected_movie + 1)
+	elseif actionKey == "action" then
+		 get_movies(7551)
+	elseif actionKey == "green" then
+	elseif actionKey == "new" then
+		 get_movies(81)
+	elseif actionKey == "highlight" then
+		 get_movies(9692)
+	end
 	
---[[
-		if key == neutrino.RC_down then
-			m_movies:scrollLineDown()
-		elseif key == neutrino.RC_up then
-			m_movies:scrollLineUp()
-		elseif key == neutrino.RC_page_up then
-			m_movies:scrollPageUp()
-		elseif key == neutrino.RC_page_down then
-			m_movies:scrollPageDown()
-		elseif key == neutrino.RC_left then
-			m_movies:swipLeft()
-		elseif key == neutrino.RC_right then
-			m_movies:swipRight()
-		elseif key == neutrino.RC_info then
-			if selected_movie >= 0 then
-				m_movies:hide()
-			
-				showMovieInfo(selected_movie + 1)
+	if m_movies:getExitPressed() ~= true then
+		get_movies_menu(_id)
+	end
 
-				m_movies:paint()
-
-				button:paintButton(btnInfo, nil, box.iX + box.iWidth - 5 - 40, box.iY, (box.iWidth)/4, 40)
-				button:paintButton(btnRec, nil, box.iX + box.iWidth - 5 - 40 - 5 - 40, box.iY, (box.iWidth)/4, 40)
-
-				button:paintButton(btnRed, neutrino.g_Locale:getText(neutrino.LOCALE_FILEBROWSER_NEXTPAGE), box.iX + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-				button:paintButton(btnGreen, neutrino.g_Locale:getText(neutrino.LOCALE_FILEBROWSER_PREVPAGE), box.iX + (box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-				button:paintButton(btnYellow, nil, box.iX + 2*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-				button:paintButton(btnBlue, "Main Page", box.iX + 3*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-			end
-		elseif key == neutrino.RC_ok then
-			if selected_movie >= 0 then
-				m_movies:hide()
-				playMovie(selected_movie + 1)
-
-				m_movies:paint()
-
-				button:paintButton(btnInfo, nil, box.iX + box.iWidth - 5 - 40, box.iY, (box.iWidth)/4, 40)
-				button:paintButton(btnRec, nil, box.iX + box.iWidth - 5 - 40 - 5 - 40, box.iY, (box.iWidth)/4, 40)
-
-				button:paintButton(btnRed, neutrino.g_Locale:getText(neutrino.LOCALE_FILEBROWSER_NEXTPAGE), box.iX + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-				button:paintButton(btnGreen, neutrino.g_Locale:getText(neutrino.LOCALE_FILEBROWSER_PREVPAGE), box.iX + (box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-				button:paintButton(btnYellow, nil, box.iX + 2*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-				button:paintButton(btnBlue, "Main Page", box.iX + 3*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-			end
-		elseif key == neutrino.RC_record then
-			if selected_movie >= 0 then
-				m_movies:hide()
-				download_stream(selected_movie + 1)
-
-				m_movies:paint()
-
-				button:paintButton(btnInfo, nil, box.iX + box.iWidth - 5 - 40, box.iY, (box.iWidth)/4, 40)
-				button:paintButton(btnRec, nil, box.iX + box.iWidth - 5 - 40 - 5 - 40, box.iY, (box.iWidth)/4, 40)
-
-				button:paintButton(btnRed, neutrino.g_Locale:getText(neutrino.LOCALE_FILEBROWSER_NEXTPAGE), box.iX + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-				button:paintButton(btnGreen, neutrino.g_Locale:getText(neutrino.LOCALE_FILEBROWSER_PREVPAGE), box.iX + (box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-				button:paintButton(btnYellow, nil, box.iX + 2*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-				button:paintButton(btnBlue, "Main Page", box.iX + 3*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
-			end
-		end
-]]
-	until m:getExitPressed() == true
-
-	--m_movies:hide()
-	--selected_movie = 0
 end
 
 function playMovie(_id)
@@ -468,7 +390,7 @@ end
 function showMovieInfo(_id)
 	print("showMovieInfo:")
 
-	neutrino.InfoBox(conv_utf8(movies[_id].content), conv_utf8(caption .. "* " .. movies[_id].title), netzkino_png, movies[_id].cover, 160, 320)
+	neutrino.InfoBox(conv_utf8(movies[_id].content), conv_utf8(movies[_id].title), netzkino_png, movies[_id].cover, 160, 320)
 end
 
 --Stream downloaden
@@ -489,10 +411,8 @@ function download_stream(_id)
 
 	local h = neutrino.CHintBox(caption, "Download: "..conv_utf8(movies[_id].title).."", neutrino.HINTBOX_WIDTH, netzkino_png)
 	h:paint()
-	
-	--print("downloading " .. movie_file .. " https://pmd.netzkino-seite.netzkino.de/" .. stream_name .. ".mp4")
 
-	neutrino.downloadUrl("https://pmd.netzkino-seite.netzkino.de/" .. stream_name .. ".mp4", movie_file)
+	neutrino.downloadUrl("https://pmd.netzkino-seite.netzkino.de/" .. stream_name .. ".mp4", movie_file, "", 0)
 
 	h:hide()
 end

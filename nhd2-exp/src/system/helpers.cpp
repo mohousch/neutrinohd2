@@ -765,7 +765,7 @@ bool getUrl(std::string& url, std::string& answer, std::string userAgent, unsign
 
 bool downloadUrl(std::string url, std::string file, std::string userAgent, unsigned int timeout)
 {
-	dprintf(DEBUG_NORMAL ,"downloadUrl: url:%s file:%s userAgent:%s\n", url.c_str(), file.c_str(), userAgent.c_str());
+	dprintf(DEBUG_NORMAL ,"downloadUrl: url:%s file:%s userAgent:%s timeout:%d\n", url.c_str(), file.c_str(), userAgent.c_str(), timeout);
 
 	CURL * curl_handle = curl_easy_init();
 
