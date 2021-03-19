@@ -112,7 +112,7 @@ class ClistBoxWidget : public CMenuTarget
 
 		// head buttons
 		int hbutton_count;
-		const struct button_label* hbutton_labels;
+		button_label_list_t hbutton_labels;
 
 		//
 		struct keyAction { 
@@ -215,7 +215,7 @@ class ClistBoxWidget : public CMenuTarget
 		void setFooterButtons(const struct button_label *_fbutton_label, const int _fbutton_count = 1, const int _fbutton_width = 0);
 
 		//
-		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
+		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count = 1);
 
 		//
 		void enablePaintDate(void){PaintDate = true;};

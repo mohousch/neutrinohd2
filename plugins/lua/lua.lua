@@ -594,12 +594,20 @@ function testCWindow()
 	-- head
 	head = neutrino.CHeaders(headBox, "lua sample Window|Widget", neutrino.NEUTRINO_ICON_MOVIE)
 	head:enablePaintDate()
+
 	btn = neutrino.button_label_struct()
 
 	btn.button = neutrino.NEUTRINO_ICON_AUDIO
 	btn.locale = neutrino.NONEXISTANT_LOCALE
 	btn.localename = ""
-	head:setButtons(btn, 1)
+	head:setButtons(btn)
+
+	info = neutrino.button_label_struct()
+
+	info.button = neutrino.NEUTRINO_ICON_BUTTON_HELP
+	info.locale = neutrino.NONEXISTANT_LOCALE
+	info.localename = ""
+	head:setButtons(info)
 
 	-- foot
 	foot = neutrino.CFooters(footBox)

@@ -305,6 +305,13 @@ function get_movies_menu(_id)
 	blue.locale = neutrino.NONEXISTANT_LOCALE
 	blue.localename = "InfoBox"
 
+	local info = neutrino.button_label_struct()
+	info.button = neutrino.NEUTRINO_ICON_BUTTON_HELP
+	
+	local rec = neutrino.button_label_struct()
+	rec.button = neutrino.NEUTRINO_ICON_REC
+	
+
 	box.iX = fb:getScreenX()
 	box.iY = fb:getScreenY()
 	box.iWidth = fb:getScreenWidth()
@@ -324,12 +331,15 @@ function get_movies_menu(_id)
 	m_movies:setFooterButtons(green)
 	m_movies:setFooterButtons(yellow)
 	m_movies:setFooterButtons(blue)
+	m_movies:setHeaderButtons(info)
+	m_movies:setHeaderButtons(rec)
 	
 	local item = nil
 	for _id, movie_detail in pairs(movies) do
 		item = neutrino.ClistBoxItem(conv_utf8(movie_detail.title))
 		item:setItemIcon(movie_detail.cover)
 		--item:setHelpText(conv_utf8(movie_detail.content))
+		item:setActionKey(null, "play")
 
 		m_movies:addItem(item)
 	end
@@ -343,22 +353,35 @@ function get_movies_menu(_id)
 	m_movies:paint()
 
 	local m = neutrino.CWidget()
-	m:addKey(neutrino.RC_ok)
-	m:addKey(neutrino.RC_info)
-	m:addKey(neutrino.RC_down)
-	m:addKey(neutrino.RC_up)
-	m:addKey(neutrino.RC_page_down)
-	m:addKey(neutrino.RC_page_up)
-	m:addKey(neutrino.RC_left)
-	m:addKey(neutrino.RC_right)
-	m:addKey(neutrino.RC_record)
+
+	m:addItem(m_movies)
+
+	--m:addKey(neutrino.RC_ok)
+	m:addKey(neutrino.RC_info, null, "info")
+	--m:addKey(neutrino.RC_down)
+	--m:addKey(neutrino.RC_up)
+	--m:addKey(neutrino.RC_page_down)
+	--m:addKey(neutrino.RC_page_up)
+	--m:addKey(neutrino.RC_left)
+	--m:addKey(neutrino.RC_right)
+	m:addKey(neutrino.RC_record, null, "record")
 
 	repeat
 		m:exec(null, "")
 	
 		selected_movie = m_movies:getSelected()
-		key = m:getKey()
+		local key = m:getKey()
+		local actionKey = m:getActionKey()
+
+		if actionKey == "play" then
+			playMovie(selected_movie + 1)
+		elseif actionKey == "info" then
+			showMovieInfo(selected_movie + 1)
+		elseif actionKey == "record" then
+			download_stream(selected_movie + 1)
+		end
 	
+--[[
 		if key == neutrino.RC_down then
 			m_movies:scrollLineDown()
 		elseif key == neutrino.RC_up then
@@ -418,10 +441,11 @@ function get_movies_menu(_id)
 				button:paintButton(btnBlue, "Main Page", box.iX + 3*(box.iWidth)/4 + 5, box.iY + box.iHeight - 40, (box.iWidth)/4, 40)
 			end
 		end
+]]
 	until m:getExitPressed() == true
 
-	m_movies:hide()
-	selected_movie = 0
+	--m_movies:hide()
+	--selected_movie = 0
 end
 
 function playMovie(_id)

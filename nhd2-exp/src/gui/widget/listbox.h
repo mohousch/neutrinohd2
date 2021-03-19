@@ -503,7 +503,7 @@ class ClistBox : public CWidgetItem
 
 		//
 		int hbutton_count;
-		const struct button_label* hbutton_labels;
+		button_label_list_t hbutton_labels;
 		//
 		int fbutton_count;
 		int fbutton_width;
@@ -595,7 +595,7 @@ class ClistBox : public CWidgetItem
 		void enablePaintHead(){paintTitle = true;};
 		void enablePaintDate(void){paintDate = true;};
 		void setTitle(const char* title = "", const char* icon = NULL, bool logo_ok = false){l_name = title; if(icon != NULL) iconfile = icon; logo = logo_ok;};
-		void setHeaderButtons(const struct button_label* _hbutton_label, const int _hbutton_count);
+		void setHeaderButtons(const struct button_label *_hbutton_label, const int _hbutton_count = 1);
 		void setHeadColor(fb_pixel_t col) {headColor = col;};
 		void setHeadCorner(int ra, int co){headRadius = ra; headCorner = co;};
 		void setHeadGradient(int grad){headGradient = grad;};

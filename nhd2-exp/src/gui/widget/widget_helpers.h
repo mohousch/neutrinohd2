@@ -133,8 +133,8 @@ class CButtons
 		void paintHeadButtons(const int x, const int y, const int dx, const int dy, const unsigned int count, const struct button_label * const content);
 
 		// button
-		void paintButton(const char *button, neutrino_locale_t locale, const int x, const int y, const int dx, const int dy);
-		void paintButton(const char *button, const char * localename, const int x, const int y, const int dx, const int dy);
+		//void paintButton(const char *button, neutrino_locale_t locale, const int x, const int y, const int dx, const int dy);
+		//void paintButton(const char *button, const char * localename, const int x, const int y, const int dx, const int dy);
 };
 
 //CScrollBar
@@ -238,7 +238,7 @@ class CHeaders : public CWidgetItem
 		bool paintDate;
 		bool logo;
 		int hbutton_count;
-		const struct button_label* hbutton_labels;
+		button_label_list_t hbutton_labels;
 		const char *htitle;
 		const char *hicon;
 	
@@ -255,7 +255,19 @@ class CHeaders : public CWidgetItem
 		void setCorner(int ra = NO_RADIUS, int co = CORNER_NONE){radius = ra; corner = co;};
 		void setGradient(int grad = nogradient){gradient = grad;};
 
-		void setButtons(const struct button_label* _hbutton_labels, const int _hbutton_count){hbutton_count = _hbutton_count; hbutton_labels = _hbutton_labels;}
+		void setButtons(const struct button_label* _hbutton_labels, const int _hbutton_count = 1)		{
+/*
+			hbutton_count = _hbutton_count; 
+			hbutton_labels = _hbutton_labels;
+*/
+			if (_hbutton_count)
+			{
+				for (unsigned int i = 0; i < _hbutton_count; i++)
+				{
+					hbutton_labels.push_back(_hbutton_labels[i]);
+				}
+			}		
+		}
 
 		void enablePaintDate(void){paintDate = true;};
 		void enableLogo(void){logo = true;};

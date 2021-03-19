@@ -1678,7 +1678,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	footInfoMode = FOOT_INFO_MODE;
 
 	hbutton_count	= 0;
-	hbutton_labels	= NULL;
+	hbutton_labels.clear();
 	fbutton_count	= 0;
 	fbutton_labels.clear();
 	fbutton_width = cFrameBox.iWidth;
@@ -1756,7 +1756,7 @@ ClistBox::ClistBox(CBox* position)
 	footInfoMode = FOOT_INFO_MODE;
 
 	hbutton_count	= 0;
-	hbutton_labels	= NULL;
+	hbutton_labels.clear();
 	fbutton_count	= 0;
 	fbutton_labels.clear();
 	fbutton_width = cFrameBox.iWidth;
@@ -2170,12 +2170,17 @@ void ClistBox::paintHead()
 			{
 				for (int i = 0; i < hbutton_count; i++)
 				{
-					frameBuffer->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
-					xstartPos -= (iw[i] + ICON_TO_ICON_OFFSET);
-					buttonWidth += iw[i];
+					if (hbutton_labels[i].button != NULL)
+					{
+						frameBuffer->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
+						xstartPos -= (iw[i] + ICON_TO_ICON_OFFSET);
+						buttonWidth += iw[i];
+
+						CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, xstartPos, cFrameBox.iY + (hheight - ih[i])/2);
+					}
 				}
 
-				buttons.paintHeadButtons(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, hbutton_count, hbutton_labels);
+				//buttons.paintHeadButtons(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, hbutton_count, hbutton_labels);
 			}
 
 			// paint time/date
@@ -2207,7 +2212,10 @@ void ClistBox::paintHead()
 			if(logo)
 				headers.enableLogo();
 
-			headers.setButtons(hbutton_labels, hbutton_count);
+			for (int i = 0; i < hbutton_count; i++)
+			{			
+				headers.setButtons(&hbutton_labels[i]);
+			}
 
 			headers.paint();
 		}
@@ -2276,12 +2284,19 @@ void ClistBox::paintFoot()
 	}
 }
 
-void ClistBox::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
+void ClistBox::setHeaderButtons(const struct button_label *_hbutton_labels, const int _hbutton_count)
 {
 	if(paintTitle)
 	{
-		hbutton_count = _hbutton_count;
-		hbutton_labels = _hbutton_labels;
+		if (_hbutton_count)
+		{
+			for (unsigned int i = 0; i < _hbutton_count; i++)
+			{
+				hbutton_labels.push_back(_hbutton_labels[i]);
+			}
+		}
+
+		hbutton_count = hbutton_labels.size();
 	}
 }
 
@@ -2289,12 +2304,6 @@ void ClistBox::setFooterButtons(const struct button_label* _fbutton_labels, cons
 {
 	if(paint_Foot && (widgetMode != MODE_MENU))
 	{
-/*
-		fbutton_count = _fbutton_count;
-		fbutton_labels = _fbutton_labels;
-		fbutton_width = (_fbutton_width == 0)? cFrameBox.iWidth : _fbutton_width;
-*/
-
 		if (_fbutton_count)
 		{
 			for (unsigned int i = 0; i < _fbutton_count; i++)

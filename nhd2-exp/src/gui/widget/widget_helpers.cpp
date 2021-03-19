@@ -208,6 +208,7 @@ void CButtons::paintHeadButtons(const int x, const int y, const int dx, const in
 }
 
 // button
+/*
 void CButtons::paintButton(const char *button, neutrino_locale_t locale, const int x, const int y, const int dx, const int dy)
 {
 	int iw = 0;
@@ -252,6 +253,7 @@ void CButtons::paintButton(const char *button, const char * localename, const in
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + iw + ICON_OFFSET, y + f_h + (dy - f_h)/2, dx - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
 	}
 }
+*/
 
 // scrollBar
 void CScrollBar::paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage)
@@ -389,7 +391,7 @@ CHeaders::CHeaders(const int x, const int y, const int dx, const int dy, const c
 	paintDate = false;
 	logo = false;
 	hbutton_count	= 0;
-	hbutton_labels	= NULL;
+	hbutton_labels.clear();
 
 	itemType = WIDGET_ITEM_HEAD;
 }
@@ -409,7 +411,7 @@ CHeaders::CHeaders(CBox position, const char * const title, const char * const i
 	paintDate = false;
 	logo = false;
 	hbutton_count	= 0;
-	hbutton_labels	= NULL;
+	hbutton_labels.clear();
 
 	itemType = WIDGET_ITEM_HEAD;
 }
@@ -422,6 +424,7 @@ void CHeaders::paint()
 	// left icon
 	int i_w = 0;
 	int i_h = 0;
+
 	if(hicon != NULL)
 	{
 		CFrameBuffer::getInstance()->getIconSize(hicon, &i_w, &i_h);
@@ -445,16 +448,21 @@ void CHeaders::paint()
 	int startx = itemBox.iX + itemBox.iWidth - BORDER_RIGHT;
 	int buttonWidth = 0;
 
+	hbutton_count = hbutton_labels.size();
+
 	if(hbutton_count)
 	{
 		for (int i = 0; i < hbutton_count; i++)
 		{
-			CFrameBuffer::getInstance()->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
+			if (hbutton_labels[i].button != NULL)
+			{
+				CFrameBuffer::getInstance()->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
 		
-			startx -= (iw[i] + ICON_TO_ICON_OFFSET);
-			buttonWidth += iw[i];
+				startx -= (iw[i] + ICON_TO_ICON_OFFSET);
+				buttonWidth += iw[i];
 
-			CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, startx, itemBox.iY + (itemBox.iHeight - ih[i])/2);
+				CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, startx, itemBox.iY + (itemBox.iHeight - ih[i])/2);
+			}
 		}
 	}
 

@@ -143,7 +143,7 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 
 	//
 	hbutton_count	= 0;
-	hbutton_labels	= NULL;
+	hbutton_labels.clear();
 
 	//
 	paintFootInfo = false;
@@ -443,12 +443,17 @@ void ClistBoxWidget::paintHead()
 		{
 			for (int i = 0; i < hbutton_count; i++)
 			{
-				frameBuffer->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
-				xstartPos -= (iw[i] + ICON_TO_ICON_OFFSET);
-				buttonWidth += iw[i];
+				if (hbutton_labels[i].button != NULL)
+				{
+					frameBuffer->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
+					xstartPos -= (iw[i] + ICON_TO_ICON_OFFSET);
+					buttonWidth += iw[i];
+
+					CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, xstartPos, y + (hheight - ih[i])/2);
+				}
 			}
 
-			buttons.paintHeadButtons(x, y, width, hheight, hbutton_count, hbutton_labels);
+			//buttons.paintHeadButtons(x, y, width, hheight, hbutton_count, hbutton_labels);
 		}
 
 		// paint time/date
@@ -481,12 +486,17 @@ void ClistBoxWidget::paintHead()
 		{
 			for (unsigned int i = 0; i < hbutton_count; i++)
 			{
-				frameBuffer->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
-				xstartPos -= (iw[i] + ICON_TO_ICON_OFFSET);
-				buttonWidth += iw[i];
+				if (hbutton_labels[i].button != NULL)
+				{
+					frameBuffer->getIconSize(hbutton_labels[i].button, &iw[i], &ih[i]);
+					xstartPos -= (iw[i] + ICON_TO_ICON_OFFSET);
+					buttonWidth += iw[i];
+
+					CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, xstartPos, y + (hheight - ih[i])/2);
+				}
 			}
 
-			buttons.paintHeadButtons(x, y, width, hheight, hbutton_count, hbutton_labels);
+			//buttons.paintHeadButtons(x, y, width, hheight, hbutton_count, hbutton_labels);
 		}
 
 		// paint time/date
@@ -1063,8 +1073,15 @@ void ClistBoxWidget::setFooterButtons(const struct button_label *_fbutton_labels
 
 void ClistBoxWidget::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
 {
-	hbutton_count = _hbutton_count;
-	hbutton_labels = _hbutton_labels;
+	if (_hbutton_count)
+	{
+		for (unsigned int i = 0; i < _hbutton_count; i++)
+		{
+			hbutton_labels.push_back(_hbutton_labels[i]);
+		}
+	}
+
+	hbutton_count = hbutton_labels.size();
 }
 
 void ClistBoxWidget::addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string & action)
