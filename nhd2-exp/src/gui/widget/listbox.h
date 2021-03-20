@@ -652,11 +652,11 @@ class ClistBox : public CWidgetItem
 		int oKKeyPressed(CMenuTarget *parent);
 
 		//
+		virtual void onHomeKeyPressed();
 		virtual void onUpKeyPressed();
 		virtual void onDownKeyPressed();
 		virtual void onRightKeyPressed();
 		virtual void onLeftKeyPressed();
-
 		virtual void onPageUpKeyPressed();
 		virtual void onPageDownKeyPressed();
 

@@ -75,9 +75,9 @@ class CFrame
 
 		int paint(bool selected = false, bool AfterPulldown = false);
 
-		virtual void setTitle(const char * text){caption = text;};
-		virtual void setIconName(const char* const icon){iconName = icon;};
-		virtual void setOption(const char* text){option = text;};
+		virtual void setTitle(const char *text){if (text != NULL) caption = text;};
+		virtual void setIconName(const char *icon){ if (icon != NULL) iconName = icon;};
+		virtual void setOption(const char *text){if (text != NULL) option = text;};
 		//virtual void setMode(int m = FRAME_BOX){mode = m;};
 		virtual void setActionKey(CMenuTarget *Target, const char *const ActionKey){jumpTarget = Target; actionKey = ActionKey;};
 		virtual void setDirectKey(neutrino_msg_t key){directKey = key;};
@@ -157,11 +157,11 @@ class CFrameBox : public CWidgetItem
 		int oKKeyPressed(CMenuTarget *parent);
 		
 		//
+		virtual void onHomeKeyPressed();
 		virtual void onUpKeyPressed();
 		virtual void onDownKeyPressed();
 		virtual void onRightKeyPressed();
 		virtual void onLeftKeyPressed();
-
 		virtual void onPageUpKeyPressed();
 		virtual void onPageDownKeyPressed();
 };

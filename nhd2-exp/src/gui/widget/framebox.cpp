@@ -39,6 +39,8 @@ CFrame::CFrame(int m)
 	mode = m;
 	shadow = true;
 	item_backgroundColor = COL_MENUCONTENT_PLUS_0;
+	iconName.clear();
+	option.clear();
 
 	window.setPosition(-1, -1, 0, 0);
 
@@ -84,6 +86,8 @@ CFrame::CFrame(const std::string title, int m)
 	mode = m;
 	shadow = true;
 	item_backgroundColor = COL_MENUCONTENT_PLUS_0;
+	iconName.clear();
+	option.clear();
 
 	window.setPosition(-1, -1, 0, 0);
 
@@ -295,8 +299,9 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 	itemBox.iWidth = dx;
 	itemBox.iHeight = dy;
 
-	selected = 0;
+	selected = -1;
 	pos = 0;
+
 	inFocus = true;
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 
@@ -319,8 +324,9 @@ CFrameBox::CFrameBox(CBox* position)
 
 	itemBox = *position;
 
-	selected = 0;
+	selected = -1;
 	pos = 0;
+
 	inFocus = true;
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
 
@@ -431,6 +437,13 @@ void CFrameBox::paintFrames()
 				}
 			}
 		}
+
+		//
+		if((frame->isSelectable()) && (selected == -1)) 
+		{
+			selected = count;
+		} 
+		//
 
 		if(frame->isSelectable() && frame->shadow)
 			frame->window.enableShadow();
@@ -582,6 +595,13 @@ int CFrameBox::oKKeyPressed(CMenuTarget *parent)
 		return frames[selected]->exec(parent);
 	else
 		return RETURN_EXIT;
+}
+
+void CFrameBox::onHomeKeyPressed()
+{
+	dprintf(DEBUG_NORMAL, "CFrameBox::HomeKeyPressed:\n");
+
+	selected = -1;
 }
 
 void CFrameBox::onUpKeyPressed()

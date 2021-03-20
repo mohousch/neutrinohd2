@@ -3070,6 +3070,13 @@ int ClistBox::oKKeyPressed(CMenuTarget* parent)
 		return RETURN_EXIT;
 }
 
+void ClistBox::onHomeKeyPressed()
+{
+	dprintf(DEBUG_NORMAL, "ClistBox::HomeKeyPressed:\n");
+
+	selected = -1;
+}
+
 void ClistBox::onUpKeyPressed()
 {
 	dprintf(DEBUG_DEBUG, "ClistBox::UpKeyPressed:\n");

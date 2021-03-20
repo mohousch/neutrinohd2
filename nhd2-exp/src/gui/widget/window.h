@@ -59,7 +59,7 @@ class CWindow : public CWidgetItem
 	public:
 		CWindow(const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		CWindow(CBox* position);
-		~CWindow();
+		virtual ~CWindow(){};
 
 		void init(void);
 		void setPosition(const int x, const int y, const int dx, const int dy);
@@ -72,8 +72,8 @@ class CWindow : public CWidgetItem
 
 		void enableCenterPos(){centerPos = true; init();};
 
-		void paint(void);
-		void hide(void);
+		void paint();
+		void hide();
 };
 
 // pig
@@ -85,12 +85,12 @@ class CPig : public CWidgetItem
 	public:
 		CPig(const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		CPig(CBox* position);
-		~CPig();
+		virtual ~CPig(){};
 
 		void init(void);
 
-		void paint(void);
-		void hide(void);
+		void paint();
+		void hide();
 };
 
 //
@@ -104,14 +104,14 @@ class CGrid : public CWidgetItem
 	public:
 		CGrid(const int x = 0, const int y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		CGrid(CBox* position);
-		~CGrid();
+		virtual ~CGrid(){};
 
 		void init(void);
 
 		void setColor(__u32 col){rgb = col;};
 
-		void paint(void);
-		void hide(void);
+		void paint();
+		void hide();
 };
 
 #endif

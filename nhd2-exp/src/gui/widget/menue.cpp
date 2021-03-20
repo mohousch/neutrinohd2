@@ -1054,11 +1054,6 @@ void ClistBoxWidget::hideItemInfo()
 
 void ClistBoxWidget::setFooterButtons(const struct button_label *_fbutton_labels, const int _fbutton_count, const int _fbutton_width)
 {
-/*
-	fbutton_count = _fbutton_count;
-	fbutton_labels = _fbutton_labels;
-	fbutton_width = (_fbutton_width == 0)? width : _fbutton_width;
-*/
 	if (_fbutton_count)
 	{
 		for (unsigned int i = 0; i < _fbutton_count; i++)

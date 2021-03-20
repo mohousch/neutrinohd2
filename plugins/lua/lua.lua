@@ -527,11 +527,6 @@ function testCWindow()
 	local ret = neutrino.RETURN_REPAINT
 
 	local fb = neutrino.CSwigHelpers()
-	local button = neutrino.CButtons()
-	local btnRed = neutrino.NEUTRINO_ICON_BUTTON_RED
-	local btnGreen = neutrino.NEUTRINO_ICON_BUTTON_GREEN
-	local btnYellow = neutrino.NEUTRINO_ICON_BUTTON_YELLOW
-	local btnBlue = neutrino.NEUTRINO_ICON_BUTTON_BLUE
 
 	local box = neutrino.CBox()
 	box.iWidth = fb:getScreenWidth() - 80
@@ -582,7 +577,7 @@ function testCWindow()
 	iconBox.iY = box.iY + box.iHeight - 10 - 40 - 40
 
 	local frame1Box = neutrino.CBox()
-	frame1Box.iWidth = 350
+	frame1Box.iWidth = 250
 	frame1Box.iHeight = 60
 	frame1Box.iX = box.iX + box.iWidth - 10 - 200 - 10 - 100 - 10 - 350 + 10 + 100
 	frame1Box.iY = box.iY + box.iHeight - 10 - 40 - 60
@@ -654,7 +649,7 @@ function testCWindow()
 	frame2 = neutrino.CFrame(neutrino.FRAME_BUTTON)
 	frame2.window:setPosition(iconBox)
 	frame2:setTitle("Exit")
-	frame2:setIconName(btnRed)
+	frame2:setIconName(neutrino.NEUTRINO_ICON_BUTTON_RED)
 	frame2:setActionKey(null, "exit")
 	--frame2:disableShadow()
 	--frameBox2:addFrame(frame2)
@@ -713,7 +708,9 @@ function testCWindow()
 
 	--listbox
 	listBox = neutrino.ClistBox(listbox)
-	--listBox:setTitle("listBox", neutrino.NEUTRINO_ICON_MOVIE)
+	listBox:enablePaintHead()
+	listBox:setTitle("listBox", neutrino.NEUTRINO_ICON_MOVIE)
+	listBox:setHeadGradient(neutrino.nogradient)
 	listBox:setOutFocus()
 
 	listBox:addItem(neutrino.CMenuForwarder(neutrino.LOCALE_MENU_BACK))
@@ -745,39 +742,28 @@ function testCWindow()
 
 	--m:addItem(window)
 	m:addItem(head)
-	--m:addItem(frameBox1)
-	--m:addItem(frameBox2)
-	--m:addItem(frameBox3)
-	--m:addItem(frameBox4)
-	--m:addItem(frameBox5)
 	m:addItem(listBox)
-	m:addItem(foot)
 	m:addItem(testFrame)
+	m:addItem(foot)
 
 	m:addKey(neutrino.RC_red, null, "audioPlayer")
 	m:addKey(neutrino.RC_green, null, "pictureViewer")
 	--m:addKey(neutrino.RC_yellow, null, "moviePlayer")
 	m:addKey(neutrino.RC_blue, null, "infoBox")
-
-	--window:paint()
-	--head:paint()
-	--foot:paint()
+	m:addKey(neutrino.RC_info, null, "infoBox")
+	m:addKey(neutrino.RC_audio, null, "infoBox")
 
 	ret = m:exec(null, "")
 
-	local selected = m:getSelected()
-	local key = m:getKey()
 	local actionKey = m:getActionKey()
 
 	if actionKey == "moviePlayer" then
 		print("lua sample: testCWindow(): actionKey: moviePlayer")
 
-		--window:hide()
 		audioPlayer()
 	elseif actionKey == "pictureViewer" then
 		print("lua sample: testCWindow(): actionKey: pictureViewer")
 
-		--window:hide()
 		pictureViewer()
 	elseif actionKey == "audioPlayer" then
 		print("lua sample: testCWindow(): actionKey: audioPlayer")
@@ -787,45 +773,36 @@ function testCWindow()
 	elseif actionKey == "frame1" then
 		print("lua sample: testCWindow(): actionKey: frame1")
 
-		--window:hide()
 		moviePlayer()
 	elseif actionKey == "exit" then
 		print("lua sample: testCWindow(): actionKey: exit")
 
-		--window:hide()
 		return neutrino.RETURN_REPAINT
 	elseif actionKey == "frame3" then
 		print("lua sample: testCWindow(): actionKey: frame3")
 
 		player = neutrino.CMoviePlayerGui()
 
-		--window:hide()
 		movie = PATH .. "/ProSieben_20121225_201400.ts"
 
 		player:addToPlaylist(movie)
 		player:exec(null, "")
 	elseif actionKey == "nfilm" then
 		print("lua sample: testCWindow(): actionKey: nfilm")
-
-		--window:hide()
 		neutrino.g_PluginList:startPlugin("nfilm")
 	elseif actionKey == "infoBox" then
 		print("lua sample: testCWindow(): actionKey: infoBox")
 		
-		--window:hide()
 		infoBox()
 	elseif actionKey == "frame4" then
 		print("lua sample: testCWindow(): actionKey: frame4")
 
-		--window:hide()
 		neutrino.InfoBox(title, "lua window|widget")
 	end
 
 	if m:getExitPressed() ~= true then
 		testCWindow()
 	end
-
-	--window:hide()
 
 	return ret
 end
@@ -840,108 +817,53 @@ function testCFrameBox()
 	box.iX = fb:getScreenX() + 40
 	box.iY = fb:getScreenY() + 40
 	box.iWidth = 350
-	box.iHeight = fb:getScreenHeight() - 80
+	box.iHeight = 60 --fb:getScreenHeight() - 80
 
 	local frameBox = neutrino.CFrameBox(box)
 
-	frameBox:setMode(neutrino.FRAMEBOX_MODE_VERTICAL)
-	--frameBox:setBackgroundColor(neutrino.COL_BACKGROUND0)
+	frameBox:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
 
 	frame1 = neutrino.CFrame("MP3")
+	frame1.window:setPosition(box)
 	frameBox:addFrame(frame1)
+
 	frame2 = neutrino.CFrame("PicViewer")
+	frame2.window:setPosition(box.iX, box.iY + 60 + 2, 350, 60)
 	frameBox:addFrame(frame2)
 
 	frame3 = neutrino.CFrame("MoviePlayer")
+	frame3.window:setPosition(box.iX, box.iY + 2 + 60 + 2 + 60, 350, 60)
 	frame3:setIconName(neutrino.NEUTRINO_ICON_MOVIE)
 	frame3:setOption("spielt Movie Dateien")
 	frame3:setActionKey(null, "moviePlayer")
 	frameBox:addFrame(frame3)
 
-	frame4 = neutrino.CFrame()
-	frame4:setMode(neutrino.FRAME_SEPARATOR)
-	frameBox:addFrame(frame4)
-
-	frame5 = neutrino.CFrame()
-	frame5:setMode(neutrino.FRAME_SEPARATOR)
-	frameBox:addFrame(frame5)
-
-	frame6 = neutrino.CFrame()
-	frame6:setMode(neutrino.FRAME_SEPARATOR)
-	frameBox:addFrame(frame6)
-
-	frame7 = neutrino.CFrame()
-	frame7:setMode(neutrino.FRAME_SEPARATOR)
-	frameBox:addFrame(frame7)
-
-	frame8 = neutrino.CFrame()
-	frame8:setMode(neutrino.FRAME_SEPARATOR)
-	frameBox:addFrame(frame8)
-
-	frame9 = neutrino.CFrame()
-	frame9:setMode(neutrino.FRAME_SEPARATOR)
-	frameBox:addFrame(frame9)
-
 	frame10 = neutrino.CFrame("Beenden")
+	frame10.window:setPosition(box.iX, fb:getScreenHeight() - 80 - 60, 350, 60)
 	frame10:setActionKey(null, "exit")
 	frameBox:addFrame(frame10)
 
-	local m = neutrino.CWidget()
+	local m = neutrino.CWidget(box.iX, box.iY, fb:getScreenWidth(), fb:getScreenHeight() - 80)
 
-	m:addKey(neutrino.RC_ok)
-	m:addKey(neutrino.RC_right)
-	m:addKey(neutrino.RC_left)
-	m:addKey(neutrino.RC_down)
-	m:addKey(neutrino.RC_up)
-	m:addKey(neutrino.RC_info)
+	m:enablePaintMainFrame()
 
-	repeat
-		frameBox:paint()
+	m:addItem(frameBox)
 
-		ret = m:exec(null, "")
+	ret = m:exec(null, "")
 
-		local selected = frameBox:getSelected()
-		local actionKey = frameBox:getActionKey()
+	local actionKey = m:getActionKey()
 
-		local key = m:getKey()
+	if actionKey == "moviePlayer" then
+		print("testCFrameBox: actionKey: moviePlayer")
+		moviePlayer()
+	elseif actionKey == "exit" then
+		print("testCFrameBox: actionKey: exit")
+		return ret
+	end
 
-		if key == neutrino.RC_left then
-			frameBox:swipLeft()
-		elseif key == neutrino.RC_right then
-			frameBox:swipRight()
-		elseif key == neutrino.RC_down then
-			frameBox:scrollLineDown()
-		elseif key == neutrino.RC_up then
-			frameBox:scrollLineUp()
-		elseif key == neutrino.RC_info then
-			frameBox:hide()
-			infoBox()
-		elseif key == neutrino.RC_ok then
-			frameBox:hide()
-
-			if actionKey == "moviePlayer" then
-				print("testCFrameBox: actionKey: moviePlayer")
-				moviePlayer()
-			elseif actionKey == "exit" then
-				print("testCFrameBox: actionKey: exit")
-				break;
-			end
-
-			if selected >=0 then
-				if selected == 0 then
-					audioPlayer()
-				elseif selected == 1 then
-					pictureViewer()
-				--elseif selected == 2 then
-				--	moviePlayer()
-				--elseif selected == 9 then
-					--break
-				end
-			end
-		end
-	until m:getExitPressed() == true
-
-	frameBox:hide()
+	if m:getExitPressed() ~= true then
+		testCFrameBox()
+	end
 
 	return ret
 end
@@ -989,7 +911,6 @@ function main()
 
 	selected = m:getSelected() 
 	actionKey = m:getActionKey()
-	Key = m:getKey()
 
 	if actionKey == "listWidget" then
 		print("lua:sample: main(): actionKey: listWidget")
@@ -1002,9 +923,7 @@ function main()
 	end
 
 	if selected >= 0 then
-		--[[if selected == 0 then
-			testCWidget()
-		else]]if selected == 1 then
+		if selected == 1 then
 			ret = testClistBoxWidget()
 		elseif selected == 2 then
 			ret = testClistBox()
@@ -1012,8 +931,6 @@ function main()
 			ret = testCWindow()
 		end
 	end
-
-	print("ret: (" .. ret .. ")")
 	
 	if m:getExitPressed() ~= true and ret == neutrino.RETURN_REPAINT then
 		main()
