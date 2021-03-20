@@ -164,7 +164,7 @@ void CButtons::paintFootButtons(const int x, const int y, const int dx, const in
 		//
 		buttonWidth = (dx - BORDER_LEFT - BORDER_RIGHT)/count;
 
-		for (unsigned int i = 0; i < count; i++)
+		for (int i = 0; i < count; i++)
 		{
 			if(content[i].button != NULL)
 			{
@@ -194,7 +194,7 @@ void CButtons::paintHeadButtons(const int x, const int y, const int dx, const in
 	int iw[count], ih[count];
 	int startx = x + dx - BORDER_RIGHT;
 	
-	for (unsigned int i = 0; i < count; i++)
+	for (int i = 0; i < count; i++)
 	{
 		if(content[i].button != NULL)
 		{
@@ -206,54 +206,6 @@ void CButtons::paintHeadButtons(const int x, const int y, const int dx, const in
 		}
 	}
 }
-
-// button
-/*
-void CButtons::paintButton(const char *button, neutrino_locale_t locale, const int x, const int y, const int dx, const int dy)
-{
-	int iw = 0;
-	int ih = 0;
-
-	if(button != NULL)
-	{
-		std::string l_option("");
-
-		l_option.clear();
-
-		CFrameBuffer::getInstance()->getIconSize(button, &iw, &ih);
-		int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
-
-		l_option = g_Locale->getText(locale);
-		
-		CFrameBuffer::getInstance()->paintIcon(button, x, y + (dy - ih)/2);
-
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + iw + ICON_OFFSET, y + f_h + (dy - f_h)/2, dx - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
-	}
-}
-
-void CButtons::paintButton(const char *button, const char * localename, const int x, const int y, const int dx, const int dy)
-{
-	int iw = 0;
-	int ih = 0;
-
-	if(button != NULL)
-	{
-		std::string l_option("");
-
-		l_option.clear();
-
-		CFrameBuffer::getInstance()->getIconSize(button, &iw, &ih);
-		int f_h = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
-
-		if(localename != NULL)
-			l_option = localename;
-		
-		CFrameBuffer::getInstance()->paintIcon(button, x, y + (dy - ih)/2);
-
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + iw + ICON_OFFSET, y + f_h + (dy - f_h)/2, dx - iw - ICON_OFFSET, l_option, COL_MENUFOOT, 0, true); // UTF-8
-	}
-}
-*/
 
 // scrollBar
 void CScrollBar::paint(const int x, const int y, const int dy, const int NrOfPages, const int CurrentPage)
@@ -505,7 +457,7 @@ CFooters::CFooters(int x, int y, int dx, int dy, const unsigned int count, const
 
 	if (count)
 	{
-		for (unsigned int i = 0; i < count; i++)
+		for (int i = 0; i < count; i++)
 		{
 			fbuttons.push_back(content[i]);
 		}
@@ -527,7 +479,7 @@ CFooters::CFooters(CBox position, const unsigned int count, const struct button_
 
 	if (count)
 	{
-		for (unsigned int i = 0; i < count; i++)
+		for (int i = 0; i < count; i++)
 		{
 			fbuttons.push_back(content[i]);
 		}
@@ -547,7 +499,7 @@ void CFooters::paint()
 	{
 		buttonWidth = (itemBox.iWidth - BORDER_LEFT - BORDER_RIGHT)/fcount;
 	
-		for (unsigned int i = 0; i < fcount; i++)
+		for (int i = 0; i < fcount; i++)
 		{
 			if (fbuttons[i].button != NULL)
 			{
