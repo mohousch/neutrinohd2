@@ -42,6 +42,9 @@ CFrame::CFrame(int m)
 	iconName.clear();
 	option.clear();
 
+	jumpTarget = NULL;
+	actionKey.clear();
+
 	window.setPosition(-1, -1, 0, 0);
 
 	if (mode == FRAME_PLUGIN)
@@ -88,6 +91,9 @@ CFrame::CFrame(const std::string title, int m)
 	item_backgroundColor = COL_MENUCONTENT_PLUS_0;
 	iconName.clear();
 	option.clear();
+
+	jumpTarget = NULL;
+	actionKey.clear();
 
 	window.setPosition(-1, -1, 0, 0);
 
