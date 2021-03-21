@@ -763,7 +763,7 @@ bool getUrl(std::string& url, std::string& answer, std::string userAgent, unsign
 	return true;
 }
 
-////
+//
 std::string getUrlAnswer(std::string url, std::string userAgent, unsigned int timeout)
 {
 	dprintf(DEBUG_NORMAL, "getUrl: url:%s\n", url.c_str());
@@ -810,7 +810,6 @@ std::string getUrlAnswer(std::string url, std::string userAgent, unsigned int ti
 	
 	return answer;
 }
-////
 
 bool downloadUrl(std::string url, std::string file, std::string userAgent, unsigned int timeout)
 {
