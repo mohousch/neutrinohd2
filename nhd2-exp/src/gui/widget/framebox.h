@@ -94,6 +94,8 @@ class CFrame
 
 		virtual void disableShadow(void){shadow = false;};
 		virtual void setBackgroundColor(fb_pixel_t col) {item_backgroundColor = col;};
+		virtual void setPosition(int x, int y, int dx, int dy){window.setPosition(x, y, dx, dy);};
+		virtual void setPosition(CBox *position){window.setPosition(position);};
 };
 
 //// CFrameBox
@@ -121,6 +123,9 @@ class CFrameBox : public CWidgetItem
 		CFrameBox(const int x = 0, int const y = 0, const int dx = 0, const int dy = 0);
 		CFrameBox(CBox* position);
 		virtual ~CFrameBox();
+
+		void setPosition(const int x, const int y, const int dx, const int dy){cFrameWindow.setPosition(x, y, dx, dy);};
+		void setPosition(CBox* position){cFrameWindow.setPosition(position);};
 
 		virtual void addFrame(CFrame *frame, const bool defaultselected = false);
 		bool hasItem();

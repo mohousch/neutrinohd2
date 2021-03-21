@@ -64,7 +64,7 @@ CWindow::CWindow(CBox* position)
 	init();
 }
 
-void CWindow::init(void)
+void CWindow::init()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
@@ -77,9 +77,6 @@ void CWindow::init(void)
 
 	savescreen = false;
 	background = NULL;
-
-	full_width = itemBox.iWidth;
-	full_height = itemBox.iHeight;
 
 	itemType = WIDGET_ITEM_WINDOW;
 
@@ -100,9 +97,6 @@ void CWindow::init(void)
 
 void CWindow::saveScreen()
 {
-	full_width = itemBox.iWidth;
-	full_height = itemBox.iHeight;
-
 	background = new fb_pixel_t[itemBox.iWidth*itemBox.iHeight];
 	
 	if(background)
@@ -111,9 +105,6 @@ void CWindow::saveScreen()
 
 void CWindow::restoreScreen()
 {
-	full_width = itemBox.iWidth;
-	full_height = itemBox.iHeight;
-
 	if(background) 
 	{
 		frameBuffer->restoreScreen(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight, background);
@@ -129,17 +120,11 @@ void CWindow::setPosition(const int x, const int y, const int dx, const int dy)
 	itemBox.iY = y;
 	itemBox.iWidth = dx;
 	itemBox.iHeight = dy;
-
-	full_width = itemBox.iWidth;
-	full_height = itemBox.iHeight;
 }
 
 void CWindow::setPosition(CBox* position)
 {
 	itemBox = *position;
-
-	full_width = itemBox.iWidth;
-	full_height = itemBox.iHeight;
 }
 
 void CWindow::paint()
@@ -163,7 +148,7 @@ void CWindow::hide()
 	if( savescreen && background)
 		restoreScreen();
 	else
-		frameBuffer->paintBackgroundBoxRel(itemBox.iX, itemBox.iY, full_width, full_height);
+		frameBuffer->paintBackgroundBoxRel(itemBox.iX, itemBox.iY, itemBox.iWidth, itemBox.iHeight);
 }
 
 // pig
@@ -184,7 +169,7 @@ CPig::CPig(CBox* position)
 	init();
 }
 
-void CPig::init(void)
+void CPig::init()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 
@@ -226,7 +211,7 @@ CGrid::CGrid(CBox* position)
 	init();
 }
 
-void CGrid::init(void)
+void CGrid::init()
 {
 	frameBuffer = CFrameBuffer::getInstance();
 

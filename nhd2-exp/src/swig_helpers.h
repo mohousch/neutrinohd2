@@ -61,10 +61,10 @@ class CSwigHelpers
 		void paintFrameBox(const int x, const int y, const int dx, const int dy, const fb_pixel_t col);
 		void blit(/*int mode3d = THREE_NONE*/);
 
-		void getSize(const std::string &name, int * width, int * height, int * nbpp);
+		int getIconHeight(const char * const filename);
 		int getIconWidth(const char * const filename);
 
-		void scaleImage(const std::string &tname, int *p_w, int *p_h);
+		void scaleImage(const std::string tname, int p_w, int p_h);
 
 		// fontrenderer
 		void RenderString(int font_type, int x, int y, const int width, const char * text, const uint8_t color, const int boxheight = 0, bool utf8_encoded = true, const bool useBackground = false);

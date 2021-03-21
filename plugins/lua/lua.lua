@@ -226,7 +226,7 @@ function testCWidget()
 
 	testWidget:enableCenterPos()
 
-	listBox:setTitle("testCWidget(ClistBox)")
+	listBox:setTitle("CWidget(ClistBox)")
 	listBox:enablePaintHead()
 	listBox:enablePaintDate()
 	listBox:enablePaintFoot()
@@ -264,6 +264,7 @@ function testCWidget()
 	item4:setActionKey(null, "infoBox")
 
 	-- CStringInput
+	local data = ""
 	item5 = neutrino.CMenuForwarder("CStringInput", false)
 	item5:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item5:setHelpText("testing CStringInput")
@@ -362,7 +363,7 @@ function testClistBoxWidget()
 	item4:setInfo1("testing CInfoBox")
 
 	-- CStringInput
-	item5 = neutrino.CMenuForwarder("CStringInput", false)
+	item5 = neutrino.CMenuForwarder("CStringInput", true)
 	item5:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item5:setHelpText("testing CStringInput")
 	item5:setInfo1("testing CStringInput")
@@ -632,29 +633,19 @@ function testCWindow()
 	foot:setButtons(blue)
 
 	-- frame
-	--frameBox1 = neutrino.CFrameBox(frame1Box)
 	frame1 = neutrino.CFrame(neutrino.FRAME_BOX)
-	frame1.window:setPosition(frame1Box)
+	frame1:setPosition(frame1Box)
 	frame1:setTitle("Mediaplayer")
 	frame1:setIconName(neutrino.NEUTRINO_ICON_MOVIE)
 	frame1:setOption("spielt Media Dateien")
 	frame1:setActionKey(null, "frame1")
-	--frame1:disableShadow()
-	--frameBox1:addFrame(frame1)
-	--frameBox1:setOutFocus()
-	--frameBox1:disablePaintFrame()
 
 	-- Icon
-	--frameBox2 = neutrino.CFrameBox(iconBox)
 	frame2 = neutrino.CFrame(neutrino.FRAME_BUTTON)
-	frame2.window:setPosition(iconBox)
+	frame2:setPosition(iconBox)
 	frame2:setTitle("Exit")
 	frame2:setIconName(neutrino.NEUTRINO_ICON_BUTTON_RED)
 	frame2:setActionKey(null, "exit")
-	--frame2:disableShadow()
-	--frameBox2:addFrame(frame2)
-	--frameBox2:setOutFocus()
-	--frameBox2:disablePaintFrame()
 
 	-- picture
 	config = neutrino.CConfigFile('\t')
@@ -663,41 +654,28 @@ function testCWindow()
 
 	local itemIcon = PATH .. "/ProSieben_20121225_201400.jpg"
 
-	--frameBox3 = neutrino.CFrameBox(picBox)
 	frame3 = neutrino.CFrame(neutrino.FRAME_PICTURE)
-	frame3.window:setPosition(picBox)
+	frame3:setPosition(picBox)
 	frame3:setTitle("Transformers")
 	frame3:setIconName(itemIcon)
 	frame3:setActionKey(null, "frame3")
-	--frame3:disableShadow()
-	--frameBox3:addFrame(frame3)
-	--frameBox3:setOutFocus()
-	--frameBox3:disablePaintFrame()
 
 	-- Text
-	--frameBox4 = neutrino.CFrameBox(textbox)
 	frame4 = neutrino.CFrame(neutrino.FRAME_TEXT)
-	frame4.window:setPosition(textbox)
+	frame4:setPosition(textbox)
 	--frame4:setBackgroundColor(0xFFAAAA)
 	local title = "Lua Text\nframe2 bla vbzgstrrfasvghvschcgcqvs h bla h hdgvassbs\n454hjjhdsbbdhj\n"
 	frame4:setTitle(title)
 	frame4:setActionKey(null, "frame4")
 	--frame4:disableShadow()
-	--frameBox4:addFrame(frame4)
-	--frameBox4:disablePaintFrame()
 
 	-- plugin
-	--frameBox5 = neutrino.CFrameBox(pluginBox)
 	frame5 = neutrino.CFrame("nfilm", neutrino.FRAME_PLUGIN)
-	frame5.window:setPosition(pluginBox)
+	frame5:setPosition(pluginBox)
 	frame5:setTitle("nfilm")
 	frame5:setActionKey(null, "nfilm")
 	--frame5:disableShadow()
-	--frameBox5:addFrame(frame5)
-	--frameBox5:disablePaintFrame()
-	--frameBox5:setOutFocus()
 
-	--testFrame = neutrino.CFrameBox(textbox.iX, textbox.iY, textbox.iWidth + 10 + pluginBox.iWidth + 10 + picBox.iWidth, textbox.iHeight)
 	testFrame = neutrino.CFrameBox()
 	testFrame:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
 	testFrame:addFrame(frame4)
@@ -732,7 +710,7 @@ function testCWindow()
 
 	local m = neutrino.CWidget(box)
 	m:enableCenterPos()
-	m:enablePaintMainFrame()
+	--m:enablePaintMainFrame()
 
 	if selected < 0 then
 		selected = 0
@@ -740,7 +718,7 @@ function testCWindow()
 	
 	m:setSelected(selected)
 
-	--m:addItem(window)
+	m:addItem(window)
 	m:addItem(head)
 	m:addItem(listBox)
 	m:addItem(testFrame)
@@ -824,22 +802,22 @@ function testCFrameBox()
 	frameBox:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
 
 	frame1 = neutrino.CFrame("MP3")
-	frame1.window:setPosition(box)
+	frame1:setPosition(box)
 	frameBox:addFrame(frame1)
 
 	frame2 = neutrino.CFrame("PicViewer")
-	frame2.window:setPosition(box.iX, box.iY + 60 + 2, 350, 60)
+	frame2:setPosition(box.iX, box.iY + 60 + 2, 350, 60)
 	frameBox:addFrame(frame2)
 
 	frame3 = neutrino.CFrame("MoviePlayer")
-	frame3.window:setPosition(box.iX, box.iY + 2 + 60 + 2 + 60, 350, 60)
+	frame3:setPosition(box.iX, box.iY + 2 + 60 + 2 + 60, 350, 60)
 	frame3:setIconName(neutrino.NEUTRINO_ICON_MOVIE)
 	frame3:setOption("spielt Movie Dateien")
 	frame3:setActionKey(null, "moviePlayer")
 	frameBox:addFrame(frame3)
 
 	frame10 = neutrino.CFrame("Beenden")
-	frame10.window:setPosition(box.iX, fb:getScreenHeight() - 80 - 60, 350, 60)
+	frame10:setPosition(box.iX, fb:getScreenHeight() - 80 - 60, 350, 60)
 	frame10:setActionKey(null, "exit")
 	frameBox:addFrame(frame10)
 
@@ -866,6 +844,50 @@ function testCFrameBox()
 	end
 
 	return ret
+end
+
+function movieBrowser()
+	local ret = neutrino.RETURN_REPAINT
+	local selected = -1
+
+	-- load movies
+	--local fileBrowser = neutrino.CFileBrowser()
+	local fh = neutrino.CFileHelpers()
+	local fileFilter = neutrino.CFileFilter()
+
+	config = neutrino.CConfigFile('\t')
+
+	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
+
+	local PATH = config:getString("network_nfs_recordingdir")
+
+	fileFilter:addFilter("ts")
+	fileFilter:addFilter("mpg")
+	fileFilter:addFilter("mpeg")
+	fileFilter:addFilter("divx")
+	fileFilter:addFilter("avi")
+	fileFilter:addFilter("mkv")
+	fileFilter:addFilter("asf")
+	fileFilter:addFilter("aiff")
+	fileFilter:addFilter("m2p")
+	fileFilter:addFilter("mpv")
+	fileFilter:addFilter("m2ts")
+	fileFilter:addFilter("vob")
+	fileFilter:addFilter("mp4")
+	fileFilter:addFilter("mov")	
+	fileFilter:addFilter("flv")	
+	fileFilter:addFilter("dat")
+	fileFilter:addFilter("trp")
+	fileFilter:addFilter("vdr")
+	fileFilter:addFilter("mts")
+	fileFilter:addFilter("wmv")
+	fileFilter:addFilter("wav")
+	fileFilter:addFilter("flac")
+	fileFilter:addFilter("mp3")
+	fileFilter:addFilter("wma")
+	fileFilter:addFilter("ogg")
+
+	local movies = {}
 end
 
 -- main

@@ -40,8 +40,6 @@ class CWindow : public CWidgetItem
 		CFrameBuffer* frameBuffer;
 
 		fb_pixel_t * background;
-		int full_width;
-		int full_height;
 
 		int radius;
 		int corner;
@@ -61,7 +59,7 @@ class CWindow : public CWidgetItem
 		CWindow(CBox* position);
 		virtual ~CWindow(){};
 
-		void init(void);
+		void init();
 		void setPosition(const int x, const int y, const int dx, const int dy);
 		void setPosition(CBox* position);
 		void setColor(fb_pixel_t col){bgcolor = col;};
@@ -87,7 +85,7 @@ class CPig : public CWidgetItem
 		CPig(CBox* position);
 		virtual ~CPig(){};
 
-		void init(void);
+		void init();
 
 		void paint();
 		void hide();
@@ -106,7 +104,7 @@ class CGrid : public CWidgetItem
 		CGrid(CBox* position);
 		virtual ~CGrid(){};
 
-		void init(void);
+		void init();
 
 		void setColor(__u32 col){rgb = col;};
 

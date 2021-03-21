@@ -763,6 +763,55 @@ bool getUrl(std::string& url, std::string& answer, std::string userAgent, unsign
 	return true;
 }
 
+////
+std::string getUrlAnswer(std::string url, std::string userAgent, unsigned int timeout)
+{
+	dprintf(DEBUG_NORMAL, "getUrl: url:%s\n", url.c_str());
+
+	std::string answer;
+	answer.clear();
+
+	CURL * curl_handle = curl_easy_init();
+
+	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, &CurlWriteToString);
+	curl_easy_setopt(curl_handle, CURLOPT_FILE, answer);
+	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
+	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, timeout);
+	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
+	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+	curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, userAgent.c_str());
+	
+	if(strcmp(g_settings.softupdate_proxyserver, "") != 0)
+	{
+		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
+		
+		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
+		{
+			char tmp[200];
+			strcpy(tmp, g_settings.softupdate_proxyusername);
+			strcat(tmp, ":");
+			strcat(tmp, g_settings.softupdate_proxypassword);
+			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
+		}
+	}
+
+	char cerror[CURL_ERROR_SIZE];
+	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, cerror);
+	
+	CURLcode httpres = curl_easy_perform(curl_handle);
+
+	curl_easy_cleanup(curl_handle);
+
+	if (httpres != 0 || answer.empty()) 
+	{
+		dprintf(DEBUG_NORMAL, "getUrl: error: %s\n", cerror);
+	}
+	
+	return answer;
+}
+////
+
 bool downloadUrl(std::string url, std::string file, std::string userAgent, unsigned int timeout)
 {
 	dprintf(DEBUG_NORMAL ,"downloadUrl: url:%s file:%s userAgent:%s timeout:%d\n", url.c_str(), file.c_str(), userAgent.c_str(), timeout);

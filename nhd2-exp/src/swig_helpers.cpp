@@ -102,23 +102,29 @@ void CSwigHelpers::blit(/*int mode3d*/)
 	CFrameBuffer::getInstance()->blit(/*mode3d*/);
 }
 
-void CSwigHelpers::getSize(const std::string &name, int * width, int * height, int * nbpp)
+int CSwigHelpers::getIconHeight(const char * const filename)
 {
-	CFrameBuffer::getInstance()->getSize(name, width, height, nbpp);
+	int width = 0;
+	int height = 0;
+
+	CFrameBuffer::getInstance()->getIconSize(filename, &width, &height);
+
+	return height;
 }
 
 int CSwigHelpers::getIconWidth(const char * const filename)
 {
-	int* width;
-	int *height;
-	CFrameBuffer::getInstance()->getIconSize(filename, width, height);
+	int width = 0;
+	int height = 0;
 
-	return *width;
+	CFrameBuffer::getInstance()->getIconSize(filename, &width, &height);
+
+	return width;
 }
 
-void CSwigHelpers::scaleImage(const std::string &tname, int *p_w, int *p_h)
+void CSwigHelpers::scaleImage(const std::string tname, int p_w, int p_h)
 {
-	CFrameBuffer::getInstance()->scaleImage(tname, p_w, p_h);
+	CFrameBuffer::getInstance()->scaleImage(tname, &p_w, &p_h);
 }
 
 // fontRenderer

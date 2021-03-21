@@ -238,19 +238,7 @@ function getdata(Url, outputfile)
 
 	local data = nil
 
-	outputfile = "/tmp/mtv.txt"
-
-	local ret = neutrino.downloadUrl(Url, outputfile, 'Mozilla/5.0;', 90)
-
-	if ret == true then
-		local fp = io.open(outputfile, "r")
-		if fp == nil then
-			error("Error opening file '" .. fname .. "'.")
-		else
-			data = fp:read("*all")
-			fp:close()
-		end
-	end
+	data = neutrino.getUrlAnswer(Url, "Mozilla/5.0;")
 
 	return data
 end
@@ -459,6 +447,31 @@ function getvideourl(url, vidname, hls)
 	end
 
 	return video_url
+end
+
+function funArt(id)
+	if id  then
+		if glob.MTVliste[id].name == nil then
+			glob.MTVliste[id].name = "NoName_" .. id
+		end
+
+		--[[
+		if glob.MTVliste[id].vidurl ~= nil then
+			vodeoPlay:addToPlaylist(glob.MTVliste[id].vidurl , glob.MTVliste[id].name, "", "", glob.MTVliste[id].logo)
+			vodeoPlay:exec(null, "")
+		end
+		]]
+
+		-- show funArt
+		local fb = neutrino.CSwigHelpers()
+
+		fb:loadBackgroundPic(glob.MTVliste[id].logo)
+
+		-- show title
+		
+		--show frame play
+		local framePlay = neutrino.CFrame("play")
+	end
 end
 
 function playMovie(id)
@@ -712,7 +725,7 @@ function mtv_liste(id)
 
 	local menu = neutrino.ClistBoxWidget(glob.mtv[id].name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
 	menu:setWidgetType(neutrino.WIDGET_TYPE_FRAME)
-	--menu:setItemsPerPage(3, 2)
+	menu:setItemsPerPage(3, 2)
 	menu:addWidget(neutrino.WIDGET_TYPE_CLASSIC)
 	menu:enableWidgetChange()
 	menu:enablePaintDate()
