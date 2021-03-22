@@ -115,6 +115,16 @@ CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, con
 				cFrameBox.iWidth = HINTBOX_MAX_WIDTH;
 		}
 	}
+
+	//
+	cFrameBox.iX = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - cFrameBox.iWidth ) >> 1);
+	cFrameBox.iY = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - cFrameBox.iHeight) >> 2);
+	
+	m_cBoxWindow.setPosition(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
+	m_cBoxWindow.enableSaveScreen();
+	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	//m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.enableShadow();
 }
 
 CHintBox::CHintBox(const char * Caption, const char * const Text, const int Width, const char * const Icon)
@@ -185,11 +195,25 @@ CHintBox::CHintBox(const char * Caption, const char * const Text, const int Widt
 				cFrameBox.iWidth = HINTBOX_MAX_WIDTH;		
 		}
 	}
+
+	// Box
+	cFrameBox.iX = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - cFrameBox.iWidth ) >> 1);
+	cFrameBox.iY = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - cFrameBox.iHeight) >> 2);
+	
+	// Box
+	m_cBoxWindow.setPosition(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
+	m_cBoxWindow.enableSaveScreen();
+	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
+	//m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
+	m_cBoxWindow.enableShadow();
 }
 
 CHintBox::~CHintBox(void)
 {
+	dprintf(DEBUG_NORMAL, "CHintBox::del:\n");
+
 	free(message);
+	//hide();
 }
 
 void CHintBox::paint(void)
@@ -197,6 +221,7 @@ void CHintBox::paint(void)
 	dprintf(DEBUG_NORMAL, "CHintBox::paint\n");
 
 	// Box
+/*
 	cFrameBox.iX = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - cFrameBox.iWidth ) >> 1);
 	cFrameBox.iY = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - cFrameBox.iHeight) >> 2);
 	
@@ -207,7 +232,9 @@ void CHintBox::paint(void)
 	m_cBoxWindow.setColor(COL_MENUCONTENT_PLUS_0);
 	//m_cBoxWindow.setCorner(RADIUS_MID, CORNER_ALL);
 	m_cBoxWindow.enableShadow();
-	m_cBoxWindow.paint();
+*/
+	//m_cBoxWindow.paint();
+	m_cBoxWindow.enableSaveScreen();
 
 	refresh();
 	
@@ -217,16 +244,19 @@ void CHintBox::paint(void)
 void CHintBox::refresh(void)
 {
 	//body
+/*
 	m_cBodyWindow.setPosition(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 	m_cBodyWindow.setColor(COL_MENUCONTENT_PLUS_0);
 	//m_cBodyWindow.setCorner(RADIUS_MID, CORNER_ALL);
 	m_cBoxWindow.enableShadow();
 	m_cBodyWindow.paint();
+*/
+	m_cBoxWindow.paint();
 	
 	// title
-	cFrameBoxTitle.iX = cFrameBox.iX;
-	cFrameBoxTitle.iY = cFrameBox.iY;
-	cFrameBoxTitle.iWidth = cFrameBox.iWidth;
+	cFrameBoxTitle.iX = cFrameBox.iX + 1;
+	cFrameBoxTitle.iY = cFrameBox.iY + 1;
+	cFrameBoxTitle.iWidth = cFrameBox.iWidth - 2;
 
 	CHeaders headers(cFrameBoxTitle, caption.c_str(), iconfile.c_str());
 	headers.setCorner();
@@ -275,7 +305,15 @@ void CHintBox::scroll_down(void)
 
 void CHintBox::hide(void)
 {
-	m_cBoxWindow.hide();	
+	dprintf(DEBUG_NORMAL, "CHintBox::hide:\n");
+
+	// reinit
+	cFrameBox.iX = CFrameBuffer::getInstance()->getScreenX() + ((CFrameBuffer::getInstance()->getScreenWidth() - cFrameBox.iWidth ) >> 1);
+	cFrameBox.iY = CFrameBuffer::getInstance()->getScreenY() + ((CFrameBuffer::getInstance()->getScreenHeight() - cFrameBox.iHeight) >> 2);
+
+	m_cBoxWindow.hide();
+
+	CFrameBuffer::getInstance()->blit();	
 }
 
 int CHintBox::exec(int timeout)
@@ -286,8 +324,6 @@ int CHintBox::exec(int timeout)
 	neutrino_msg_data_t data;
 
 	paint();
-	
-	CFrameBuffer::getInstance()->blit();
 
 	if ( timeout == -1 )
 		timeout = g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR];

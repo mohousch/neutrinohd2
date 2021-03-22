@@ -775,7 +775,7 @@ std::string getUrlAnswer(std::string url, std::string userAgent, unsigned int ti
 
 	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, &CurlWriteToString);
-	curl_easy_setopt(curl_handle, CURLOPT_FILE, answer);
+	curl_easy_setopt(curl_handle, CURLOPT_FILE, (void *)&answer);
 	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
 	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, timeout);
 	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
