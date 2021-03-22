@@ -529,7 +529,7 @@ function testCWindow()
 
 	local fb = neutrino.CSwigHelpers()
 
-	local box = neutrino.CBox()
+	box = neutrino.CBox()
 	box.iWidth = fb:getScreenWidth() - 80
 	box.iHeight = fb:getScreenHeight() - 80
 	box.iX = fb:getScreenX() + 40
@@ -652,7 +652,7 @@ function testCWindow()
 	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
 	local PATH = config:getString("network_nfs_recordingdir")
 
-	local itemIcon = PATH .. "/ProSieben_20121225_201400.jpg"
+	local itemIcon = PATH .. '/ProSieben_20121225_201400.jpg'
 
 	frame3 = neutrino.CFrame(neutrino.FRAME_PICTURE)
 	frame3:setPosition(picBox)
@@ -670,7 +670,7 @@ function testCWindow()
 	--frame4:disableShadow()
 
 	-- plugin
-	frame5 = neutrino.CFrame("nfilm", neutrino.FRAME_PLUGIN)
+	frame5 = neutrino.CFrame(neutrino.FRAME_PLUGIN)
 	frame5:setPosition(pluginBox)
 	frame5:setTitle("nfilm")
 	frame5:setActionKey(null, "nfilm")
@@ -759,12 +759,16 @@ function testCWindow()
 	elseif actionKey == "frame3" then
 		print("lua sample: testCWindow(): actionKey: frame3")
 
+--[[
 		player = neutrino.CMoviePlayerGui()
 
 		movie = PATH .. "/ProSieben_20121225_201400.ts"
 
 		player:addToPlaylist(movie)
 		player:exec(null, "")
+]]
+		funArt()
+
 	elseif actionKey == "nfilm" then
 		print("lua sample: testCWindow(): actionKey: nfilm")
 		neutrino.g_PluginList:startPlugin("nfilm")
@@ -797,34 +801,41 @@ function testCFrameBox()
 	box.iWidth = 350
 	box.iHeight = 60 --fb:getScreenHeight() - 80
 
-	local frameBox = neutrino.CFrameBox(box)
+	local window = neutrino.CWindow(box.iX + 40, box.iY + 40, fb:getScreenWidth() - 80, fb:getScreenHeight() - 80)
+	window:enableCenterPos()
 
+	local frameBox = neutrino.CFrameBox(box)
 	frameBox:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
 
-	frame1 = neutrino.CFrame("MP3")
+	frame1 = neutrino.CFrame()
 	frame1:setPosition(box)
+	frame1:setTitle("MP3")
 	frameBox:addFrame(frame1)
 
-	frame2 = neutrino.CFrame("PicViewer")
+	frame2 = neutrino.CFrame()
 	frame2:setPosition(box.iX, box.iY + 60 + 2, 350, 60)
+	frame2:setTitle("PicViewer")
 	frameBox:addFrame(frame2)
 
-	frame3 = neutrino.CFrame("MoviePlayer")
+	frame3 = neutrino.CFrame()
 	frame3:setPosition(box.iX, box.iY + 2 + 60 + 2 + 60, 350, 60)
+	frame3:setTitle("MoviePlayer")
 	frame3:setIconName(neutrino.NEUTRINO_ICON_MOVIE)
 	frame3:setOption("spielt Movie Dateien")
 	frame3:setActionKey(null, "moviePlayer")
 	frameBox:addFrame(frame3)
 
-	frame10 = neutrino.CFrame("Beenden")
+	frame10 = neutrino.CFrame()
 	frame10:setPosition(box.iX, fb:getScreenHeight() - 80 - 60, 350, 60)
+	frame10:setTitle("Beenden")
 	frame10:setActionKey(null, "exit")
 	frameBox:addFrame(frame10)
 
-	local m = neutrino.CWidget(box.iX, box.iY, fb:getScreenWidth(), fb:getScreenHeight() - 80)
+	local m = neutrino.CWidget()
 
-	m:enablePaintMainFrame()
+	--m:enablePaintMainFrame()
 
+	m:addItem(window)
 	m:addItem(frameBox)
 
 	ret = m:exec(null, "")
@@ -888,6 +899,98 @@ function movieBrowser()
 	fileFilter:addFilter("ogg")
 
 	local movies = {}
+end
+
+function funArt()
+	config = neutrino.CConfigFile('\t')
+	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
+	local PATH = config:getString("network_nfs_recordingdir")
+
+	local movieInfo = neutrino.MI_MOVIE_INFO()
+	movieInfo.file.Name = PATH .. "/ProSieben_20121225_201400.ts"
+
+	local m_movieInfo = neutrino.CMovieInfo()
+
+	m_movieInfo:loadMovieInfo(movieInfo)
+
+	local fb = neutrino.CSwigHelpers()
+
+	local box = neutrino.CBox()
+	box.iWidth = fb:getScreenWidth() - 80
+	box.iHeight = fb:getScreenHeight() - 80
+	box.iX = fb:getScreenX() + 40
+	box.iY = fb:getScreenY() + 40
+
+	local frame = neutrino.CBox()
+	frame.iWidth = 250
+	frame.iHeight = 60
+	frame.iX = box.iX + 10
+	frame.iY = box.iY + box.iHeight - 10 - 40 - 60
+
+	local textbox = neutrino.CBox()
+	textbox.iWidth = 350
+	textbox.iHeight = 350
+	textbox.iX = box.iX + 10
+	textbox.iY = box.iY + 40 + 10
+
+	local window = neutrino.CWindow(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
+	window:enableCenterPos()
+
+	artFrame = neutrino.CFrame(neutrino.FRAME_PICTURE_NOTSELECTABLE)
+	artFrame:setPosition(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
+	artFrame:setIconName(PATH .. '/ProSieben_20121225_201400.jpg')
+
+	textFrame = neutrino.CFrame(neutrino.FRAME_TEXT)
+	textFrame:setPosition(textbox)
+	--frame4:setBackgroundColor(0xFFAAAA)
+	--local title = "Lua Text\nframe2 bla vbzgstrrfasvghvschcgcqvs h bla h hdgvassbs\n454hjjhdsbbdhj\n"
+	textFrame:setTitle(movieInfo.epgTitle .. "\n" .. movieInfo.epgInfo1 .."\n" .. movieInfo.epgInfo2)
+	textFrame:setActionKey(null, "info")
+	textFrame:disableShadow()
+	--textFrame:disablePaintFrame()
+
+	playFrame = neutrino.CFrame()
+	playFrame:setPosition(frame)
+	playFrame:setTitle("abspielen")
+	playFrame:setIconName(neutrino.NEUTRINO_ICON_PLAY)
+	playFrame:setActionKey(null, "playMovie")
+	playFrame:disableShadow()
+
+	infoFrame = neutrino.CFrame()
+	infoFrame:setPosition(frame.iX + 250 + 10, frame.iY, 250, 60)
+	infoFrame:setTitle("Info:")
+	infoFrame:setIconName(neutrino.NEUTRINO_ICON_INFO)
+	infoFrame:setActionKey(null, "info")
+	infoFrame:disableShadow()
+
+	testFrame = neutrino.CFrameBox(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
+	testFrame:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
+	testFrame:addFrame(artFrame)
+	testFrame:addFrame(textFrame)
+	testFrame:addFrame(playFrame)
+	testFrame:addFrame(infoFrame)
+
+	widget = neutrino.CWidget()
+	
+	widget:addItem(window)
+	widget:addItem(testFrame)
+
+	widget:exec(null, "")
+	local action = widget:getActionKey()
+
+	local player = neutrino.CMoviePlayerGui()
+	local movie = PATH .. "/ProSieben_20121225_201400.ts"
+
+	if action == "playMovie" then
+		player:addToPlaylist(movie)
+		player:exec(null, "")
+	elseif action == "info" then
+		neutrino.InfoBox(movieInfo.epgInfo2, movieInfo.epgTitle, neutrino.NEUTRINO_ICON_INFO, PATH .. "/ProSieben_20121225_201400.jpg", 160, 320)
+	end
+
+	if widget:getExitPressed() ~= true then
+		funArt()
+	end
 end
 
 -- main

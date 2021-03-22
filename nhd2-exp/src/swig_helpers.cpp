@@ -57,7 +57,7 @@ void CSwigHelpers::paintBackgroundBoxRel(int x, int y, int dx, int dy)
 	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x, y, dx, dy);
 }
 
-bool CSwigHelpers::loadBackgroundPic(const std::string& filename, bool show)
+bool CSwigHelpers::loadBackgroundPic(const std::string filename, bool show)
 {
 	return CFrameBuffer::getInstance()->loadBackgroundPic(filename, show);
 }

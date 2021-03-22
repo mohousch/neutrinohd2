@@ -33,6 +33,7 @@
 extern CPlugins * g_PluginList;    // defined in neutrino.cpp
 
 // CFrame
+#if 0
 CFrame::CFrame(int m)
 {
 	caption = "";
@@ -82,12 +83,14 @@ CFrame::CFrame(int m)
 		}
 	}
 }
+#endif
 
-CFrame::CFrame(const std::string title, int m)
+CFrame::CFrame(int m)
 {
-	caption = title;
+	caption = "";
 	mode = m;
 	shadow = true;
+	paintFrame = true;
 	item_backgroundColor = COL_MENUCONTENT_PLUS_0;
 	iconName.clear();
 	option.clear();
@@ -137,11 +140,6 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 {
 	dprintf(DEBUG_DEBUG, "CFrame::paint:\n");
 
-	if (mode == FRAME_SEPARATOR)
-	{
-		return 0;
-	}
-
 	uint8_t color = COL_MENUCONTENT;
 	fb_pixel_t bgcolor = item_backgroundColor;
 
@@ -152,8 +150,11 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 	}
 
 	// paint frame
-	window.setColor(bgcolor);
-	window.paint();
+	if (paintFrame)
+	{
+		window.setColor(bgcolor);
+		window.paint();
+	}
 
 	// icon
 	int iw = 0;
@@ -202,9 +203,14 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	else if (mode == FRAME_PICTURE)
 	{
+		int c_h = 0;
+
+		if(!caption.empty())
+			c_h = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight() + 20;
+
 		if(!iconName.empty())
 		{
-			CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 1, window.getWindowsPos().iY + 1, window.getWindowsPos().iWidth - 2, window.getWindowsPos().iHeight - 40);
+			CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 1, window.getWindowsPos().iY + 1, window.getWindowsPos().iWidth - 2, window.getWindowsPos().iHeight - c_h);
 		}
 
 		if(!caption.empty())
@@ -212,6 +218,13 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(caption);
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + ((window.getWindowsPos().iWidth - c_w)>> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth, caption.c_str(), color);
+		}
+	}
+	else if (mode == FRAME_PICTURE_NOTSELECTABLE)
+	{
+		if(!iconName.empty())
+		{
+			CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 1, window.getWindowsPos().iY + 1, window.getWindowsPos().iWidth - 2, window.getWindowsPos().iHeight);
 		}
 	}
 	else if (mode == FRAME_BUTTON)
@@ -280,15 +293,10 @@ int CFrame::exec(CMenuTarget *parent)
 
 	int ret = RETURN_EXIT;
 
-	if (mode == FRAME_SEPARATOR)
-		ret = RETURN_EXIT;
+	if(jumpTarget)
+		ret = jumpTarget->exec(parent, actionKey);
 	else
-	{
-		if(jumpTarget)
-			ret = jumpTarget->exec(parent, actionKey);
-		else
-			ret = RETURN_EXIT;
-	}
+		ret = RETURN_EXIT;
 
 	return ret;
 }
@@ -405,7 +413,10 @@ void CFrameBox::paintFrames()
 		// init frame
 		if (frames.size() == 1)
 		{
-			frame->window.setPosition(frame_x, frame_y, frame_width, frame_height);
+			if(frameMode == FRAMEBOX_MODE_RANDOM)
+				frame->window.setPosition(frame->window.getWindowsPos().iX, frame->window.getWindowsPos().iY, frame->window.getWindowsPos().iWidth, frame->window.getWindowsPos().iHeight);
+			else
+				frame->window.setPosition(frame_x, frame_y, frame_width, frame_height);
 		}
 		else
 		{
@@ -449,7 +460,6 @@ void CFrameBox::paintFrames()
 		{
 			selected = count;
 		} 
-		//
 
 		if(frame->isSelectable() && frame->shadow)
 			frame->window.enableShadow();

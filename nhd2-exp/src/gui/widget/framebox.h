@@ -44,12 +44,12 @@ enum{
 enum {
 	FRAME_BOX = 0,
 	FRAME_PICTURE,
+	FRAME_PICTURE_NOTSELECTABLE,
 	FRAME_BUTTON,
 	FRAME_TEXT,
-	FRAME_SEPARATOR,
 	FRAME_PLUGIN,
-	FRAME_PROGRESSBAR,
-	FRAME_PROGRESSWINDOW
+	FRAME_LINE_VERTICAL,
+	FRAME_LINE_HORIZONTAL
 };
 
 class CFrame
@@ -68,9 +68,9 @@ class CFrame
 
 		int mode;
 		bool shadow;
+		bool paintFrame;
 		
 		CFrame(int m = FRAME_BOX);
-		CFrame(const std::string title, int m = FRAME_BOX);
 		virtual ~CFrame(){}
 
 		int paint(bool selected = false, bool AfterPulldown = false);
@@ -84,15 +84,16 @@ class CFrame
 
 		int exec(CMenuTarget *parent);
 
-		virtual bool isSelectable(void) const 
+		virtual bool isSelectable(void)
 		{
-			if (mode == FRAME_SEPARATOR) 
+			if ((mode == FRAME_PICTURE_NOTSELECTABLE) || (mode == FRAME_LINE_HORIZONTAL) || (mode == FRAME_LINE_VERTICAL)) 
 				return false; 
 			else 
 				return true;
 		}
 
 		virtual void disableShadow(void){shadow = false;};
+		virtual void disablePaintFrame(void){paintFrame = false;};
 		virtual void setBackgroundColor(fb_pixel_t col) {item_backgroundColor = col;};
 		virtual void setPosition(int x, int y, int dx, int dy){window.setPosition(x, y, dx, dy);};
 		virtual void setPosition(CBox *position){window.setPosition(position);};

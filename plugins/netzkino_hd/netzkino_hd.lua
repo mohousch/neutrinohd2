@@ -350,7 +350,8 @@ function get_movies_menu(_id)
 	local actionKey = m_movies:getActionKey()
 
 	if actionKey == "play" then
-		playMovie(selected_movie + 1)
+		--playMovie(selected_movie + 1)
+		funArt(selected_movie + 1)
 	elseif actionKey == "info" then
 		showMovieInfo(selected_movie + 1)
 	elseif actionKey == "record" then
@@ -383,6 +384,97 @@ function playMovie(_id)
 	if file ~= nil then
 		video:addToPlaylist(file, title, info1, "", cover)
 		video:exec(null, "")
+	end
+end
+
+local f_selected = 0
+
+function funArt(_id)
+	stream_name = conv_utf8(movies[_id].stream)
+	title = conv_utf8(movies[_id].title)
+	info1 = conv_utf8(movies[_id].content)
+	cover = movies[_id].cover
+	file = "https://pmd.netzkino-seite.netzkino.de/" .. stream_name ..".mp4"
+
+	local fb = neutrino.CSwigHelpers()
+
+	local box = neutrino.CBox()
+	box.iWidth = fb:getScreenWidth() - 80
+	box.iHeight = fb:getScreenHeight() - 80
+	box.iX = fb:getScreenX() + 40
+	box.iY = fb:getScreenY() + 40
+
+	local frame = neutrino.CBox()
+	frame.iWidth = 250
+	frame.iHeight = 60
+	frame.iX = box.iX + 10
+	frame.iY = box.iY + box.iHeight - 10 - 40 - 60
+
+	local textbox = neutrino.CBox()
+	textbox.iWidth = 350
+	textbox.iHeight = 350
+	textbox.iX = box.iX + 10
+	textbox.iY = box.iY + 40 + 10
+
+	local window = neutrino.CWindow(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
+	window:enableCenterPos()
+
+	artFrame = neutrino.CFrame(neutrino.FRAME_PICTURE_NOTSELECTABLE)
+	artFrame:setPosition(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
+	artFrame:setIconName(cover)
+
+	textFrame = neutrino.CFrame(neutrino.FRAME_TEXT)
+	textFrame:setPosition(textbox)
+	textFrame:setTitle(conv_utf8(movies[_id].title) .. "\n" .. conv_utf8(movies[_id].content))
+	textFrame:setActionKey(null, "info")
+	textFrame:disableShadow()
+	--textFrame:disablePaintFrame()
+
+	playFrame = neutrino.CFrame()
+	playFrame:setPosition(frame)
+	playFrame:setTitle("abspielen")
+	playFrame:setIconName(neutrino.NEUTRINO_ICON_PLAY)
+	playFrame:setActionKey(null, "playMovie")
+	playFrame:disableShadow()
+
+	infoFrame = neutrino.CFrame()
+	infoFrame:setPosition(frame.iX + 250 + 10, frame.iY, 250, 60)
+	infoFrame:setTitle("Info:")
+	infoFrame:setIconName(neutrino.NEUTRINO_ICON_INFO)
+	infoFrame:setActionKey(null, "info")
+	infoFrame:disableShadow()
+
+	testFrame = neutrino.CFrameBox(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
+	testFrame:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
+	testFrame:addFrame(artFrame)
+	testFrame:addFrame(textFrame)
+	testFrame:addFrame(playFrame)
+	testFrame:addFrame(infoFrame)
+
+	if f_selected < 0 then
+		f_selected = 0
+	end
+
+	widget = neutrino.CWidget()
+	
+	widget:addItem(window)
+	widget:addItem(testFrame)
+
+	widget:exec(null, "")
+	local action = widget:getActionKey()
+	f_selected = testFrame:getSelected()
+
+	local player = neutrino.CMoviePlayerGui()
+
+	if action == "playMovie" then
+		player:addToPlaylist(file, title, info1, "", cover)
+		player:exec(null, "")
+	elseif action == "info" then
+		neutrino.InfoBox(info1, title, cover, neutrino.NEUTRINO_ICON_INFO, 160, 320)
+	end
+
+	if widget:getExitPressed() ~= true then
+		funArt(_id)
 	end
 end
 

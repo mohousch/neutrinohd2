@@ -897,19 +897,22 @@ void CTestMenu::widget()
 
 	CFrame * frame = NULL;
 
-	frame = new CFrame("Filme");
+	frame = new CFrame();
+	frame->setTitle("Filme");
 	frame->setActionKey(this, "movie");
 	topWidget->addFrame(frame);
 	
-	frame = new CFrame("Serien");
+	frame = new CFrame();
+	frame->setTitle("Serien");
 	frame->setActionKey(this, "tv");
 	topWidget->addFrame(frame);
 
-	frame = new CFrame(FRAME_SEPARATOR);
+	//frame = new CFrame(FRAME_SEPARATOR);
 	//frame->setMode(FRAME_SEPARATOR);
-	topWidget->addFrame(frame);
+	//topWidget->addFrame(frame);
 
-	frame = new CFrame("Suche");
+	frame = new CFrame();
+	frame->setTitle("Suche");
 	frame->setOption(tmdbsearch.c_str());
 	frame->setActionKey(this, "search");
 	topWidget->addFrame(frame);
@@ -946,31 +949,35 @@ void CTestMenu::widget()
 	CMenuSeparator *item8 = new CMenuSeparator();
 	ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "exit");
 
-	CFrame *frame1 = new CFrame("in den");
+	CFrame *frame1 = new CFrame();
+	frame1->setTitle("in den");
 	frame1->setOption("kinos");
 	frame1->setActionKey(this, "movie_in_cinema");
 
-	CFrame *frame2 = new CFrame("Am");
+	CFrame *frame2 = new CFrame();
+	frame2->setTitle("Am");
 	frame2->setOption("populärsten");
 	frame2->setActionKey(this, "movie_popular");
 
-	CFrame *frame3 = new CFrame("am besten");
+	CFrame *frame3 = new CFrame();
+	frame3->setTitle("am besten");
 	frame3->setOption("bewertet");
 	frame3->setActionKey(this, "movie_top_rated");
 
-	CFrame *frame4 = new CFrame(FRAME_SEPARATOR);
+	//CFrame *frame4 = new CFrame(FRAME_SEPARATOR);
 	//frame4->setMode(FRAME_SEPARATOR);
-	CFrame *frame5 = new CFrame(FRAME_SEPARATOR);
+	//CFrame *frame5 = new CFrame(FRAME_SEPARATOR);
 	//frame5->setMode(FRAME_SEPARATOR);
 
-	CFrame *frame6 = new CFrame("Beenden");
+	CFrame *frame6 = new CFrame();
+	frame6->setTitle("Beenden");
 	frame6->setActionKey(this, "exit");
 
 	leftFrame->addFrame(frame1);
 	leftFrame->addFrame(frame2);
 	leftFrame->addFrame(frame3);
-	leftFrame->addFrame(frame4);
-	leftFrame->addFrame(frame5);
+	//leftFrame->addFrame(frame4);
+	//leftFrame->addFrame(frame5);
 	leftFrame->addFrame(frame6);
 
 	leftWidget->addItem(item1);
@@ -1446,13 +1453,16 @@ void CTestMenu::test()
 
 	CFrame * frame = NULL;
 
-	frame = new CFrame("Filme");
+	frame = new CFrame();
+	frame->setTitle("Filme");
 	topWidget->addFrame(frame);
 	
-	frame = new CFrame("Serien");
+	frame = new CFrame();
+	frame->setTitle("Serien");
 	topWidget->addFrame(frame);
 
-	frame = new CFrame("Suche");
+	frame = new CFrame();
+	frame->setTitle("Suche");
 	frame->setOption(tmdbsearch.c_str());
 	frame->setActionKey(this, "search");
 	topWidget->addFrame(frame);
@@ -3812,39 +3822,43 @@ void CTestMenu::testCFrameBox()
 	CFrameBox *topWidget = new CFrameBox(&topBox);
 	CFrame * frame = NULL;
 
-	frame = new CFrame("Neu Filme");
+	frame = new CFrame();
+	frame->setTitle("Neu Filme");
 	frame->setIconName(NEUTRINO_ICON_MOVIE);
 	frame->setOption("in allen Kinos");
 	topWidget->addFrame(frame);
 	
-	frame = new CFrame("Im Kino");
+	frame = new CFrame();
+	frame->setTitle("Im Kino");
 	topWidget->addFrame(frame);
 
-	frame = new CFrame("Am populärsten");
+	frame = new CFrame();
+	frame->setTitle("Am populärsten");
 	frame->setOption("(2019)");
 	topWidget->addFrame(frame);
 
-	frame = new CFrame(FRAME_SEPARATOR);
+	//frame = new CFrame(FRAME_SEPARATOR);
 	//frame->setMode(FRAME_SEPARATOR);
-	topWidget->addFrame(frame);
+	//topWidget->addFrame(frame);
 
-	frame = new CFrame(FRAME_SEPARATOR);
+	//frame = new CFrame(FRAME_SEPARATOR);
 	//frame->setMode(FRAME_SEPARATOR);
-	topWidget->addFrame(frame);
+	//topWidget->addFrame(frame);
 
-	frame = new CFrame(FRAME_SEPARATOR);
+	//frame = new CFrame(FRAME_SEPARATOR);
 	//frame->setMode(FRAME_SEPARATOR);
-	topWidget->addFrame(frame);
+	//topWidget->addFrame(frame);
 
-	frame = new CFrame(FRAME_SEPARATOR);
+	//frame = new CFrame(FRAME_SEPARATOR);
 	//frame->setMode(FRAME_SEPARATOR);
-	topWidget->addFrame(frame);
+	//topWidget->addFrame(frame);
 
-	frame = new CFrame(FRAME_SEPARATOR);
+	//frame = new CFrame(FRAME_SEPARATOR);
 	//frame->setMode(FRAME_SEPARATOR);
-	topWidget->addFrame(frame);
+	//topWidget->addFrame(frame);
 
-	frame = new CFrame("Exit");
+	frame = new CFrame();
+	frame->setTitle("Exit");
 	frame->setActionKey(this, "exit");
 	topWidget->addFrame(frame);
 
