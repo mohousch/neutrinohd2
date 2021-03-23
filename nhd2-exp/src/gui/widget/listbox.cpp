@@ -1048,6 +1048,8 @@ int CMenuForwarder::exec(CMenuTarget *parent)
 {
 	dprintf(DEBUG_INFO, "CMenuForwarder::exec: (%s) actionKey: (%s)\n", getName(), actionKey.c_str());
 
+	int ret = RETURN_EXIT;
+
 	if(jumpTarget)
 	{
 		int ret = jumpTarget->exec(parent, actionKey);
@@ -1056,11 +1058,11 @@ int CMenuForwarder::exec(CMenuTarget *parent)
 		{
 			optionValueString = jumpTarget->getString().c_str();
 		}
-
-		return ret;
 	}
 	else
-		return RETURN_EXIT;
+		ret = RETURN_EXIT;
+
+	return ret;
 }
 
 const char * CMenuForwarder::getName(void)
@@ -1325,6 +1327,8 @@ int ClistBoxItem::exec(CMenuTarget* parent)
 {
 	dprintf(DEBUG_INFO, "ClistBoxItem::exec: (%s) actionKey: (%s)\n", getName(), actionKey.c_str());
 
+	int ret = RETURN_EXIT;
+
 	if(jumpTarget)
 	{
 		int ret = jumpTarget->exec(parent, actionKey);
@@ -1333,11 +1337,11 @@ int ClistBoxItem::exec(CMenuTarget* parent)
 		{
 			optionValueString = jumpTarget->getString().c_str();
 		}
-
-		return ret;
 	}
 	else
-		return RETURN_EXIT;
+		ret = RETURN_EXIT;
+
+	return ret;
 }
 
 const char * ClistBoxItem::getName(void)

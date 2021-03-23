@@ -303,7 +303,6 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 				}
 				else
 				{
-					//actionKey = it->second.action;
 					selected = -1;
 					handled = true;
 
@@ -313,40 +312,6 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 				frameBuffer->blit();
 				continue;
 			}
-
-			// direkKey
-/*
-			for (unsigned int i = 0; i < items.size(); i++) 
-			{
-				CMenuItem * titem = items[i];
-			
-				if ((titem->directKey != RC_nokey) && (titem->directKey == msg)) 
-				{
-					if (titem->isSelectable()) 
-					{
-						items[selected]->paint(false);
-						selected = i;
-
-						if (selected > (int)page_start[current_page + 1] || selected < (int)page_start[current_page]) 
-						{
-							// different page
-							paintItems();
-						}
-
-						paintItemInfo(selected);
-						pos = selected;
-						msg = RC_ok;
-						actionKey = titem->actionKey;
-					} 
-					else 
-					{
-						// swallow-key...
-						handled = true;
-					}
-					break;
-				}
-			}
-*/
 		}
 
 		if (!handled) 

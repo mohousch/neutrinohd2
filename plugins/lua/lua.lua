@@ -2,7 +2,7 @@
 neutrinoHD2 lua sample plugin
 ]]
 
-local selected = -1
+local selected = 0
 
 -- CMessageBox
 function messageBox()
@@ -226,7 +226,7 @@ function testCWidget()
 
 	testWidget:enableCenterPos()
 
-	listBox:setTitle("CWidget(ClistBox)")
+	listBox:setTitle("CWidget|ClistBox")
 	listBox:enablePaintHead()
 	listBox:enablePaintDate()
 	listBox:enablePaintFoot()
@@ -265,7 +265,7 @@ function testCWidget()
 
 	-- CStringInput
 	local data = ""
-	item5 = neutrino.CMenuForwarder("CStringInput", false)
+	item5 = neutrino.CMenuForwarder("CStringInput", true)
 	item5:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item5:setHelpText("testing CStringInput")
 	item5:setInfo1("testing CStringInput")
@@ -308,9 +308,7 @@ function testCWidget()
 	listBox:setSelected(selected)
 
 	--testWidget:enablePaintMainFrame()
-
 	testWidget:addItem(listBox)
-
 	testWidget:addKey(neutrino.RC_info, self, "info")
 
 	ret = testWidget:exec(null, "")
@@ -672,9 +670,13 @@ function testCWindow()
 	-- plugin
 	frame5 = neutrino.CFrame(neutrino.FRAME_PLUGIN)
 	frame5:setPosition(pluginBox)
-	frame5:setTitle("nfilm")
-	frame5:setActionKey(null, "nfilm")
+	frame5:setPlugin("nfilm")
+	--frame5:setActionKey(null, "nfilm")
 	--frame5:disableShadow()
+
+	-- vframe
+	vframe = neutrino.CFrame(neutrino.FRAME_LINE_VERTICAL)
+	vframe:setPosition(box.iX + listbox.iWidth + 10, box.iY + 50, 5, box.iHeight- 100)
 
 	testFrame = neutrino.CFrameBox()
 	testFrame:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
@@ -683,6 +685,7 @@ function testCWindow()
 	testFrame:addFrame(frame3)
 	testFrame:addFrame(frame2)
 	testFrame:addFrame(frame1)
+	testFrame:addFrame(vframe)
 
 	--listbox
 	listBox = neutrino.ClistBox(listbox)
@@ -799,7 +802,7 @@ function testCFrameBox()
 	box.iX = fb:getScreenX() + 40
 	box.iY = fb:getScreenY() + 40
 	box.iWidth = 350
-	box.iHeight = 60 --fb:getScreenHeight() - 80
+	box.iHeight = 60
 
 	local window = neutrino.CWindow(box.iX + 40, box.iY + 40, fb:getScreenWidth() - 80, fb:getScreenHeight() - 80)
 	window:enableCenterPos()
@@ -859,12 +862,59 @@ end
 
 function movieBrowser()
 	local ret = neutrino.RETURN_REPAINT
-	local selected = -1
+
+	local menu = neutrino.ClistBoxWidget("Movie Browser", neutrino.NEUTRINO_ICON_MOVIE)
+	menu:setWidgetType(neutrino.WIDGET_TYPE_FRAME)
+	menu:setItemsPerPage(6, 2)
+	menu:enablePaintDate()
+
+	-- head
+	info = neutrino.button_label_struct()
+
+	info.button = neutrino.NEUTRINO_ICON_BUTTON_HELP
+	info.locale = neutrino.NONEXISTANT_LOCALE
+	info.localename = ""
+	menu:setHeaderButtons(info)
+
+	btn = neutrino.button_label_struct()
+
+	btn.button = neutrino.NEUTRINO_ICON_BUTTON_MUTE_SMALL
+	btn.locale = neutrino.NONEXISTANT_LOCALE
+	btn.localename = ""
+	menu:setHeaderButtons(btn)
+
+	-- foot
+	btnRed = neutrino.button_label_struct()
+
+	btnRed.button = neutrino.NEUTRINO_ICON_BUTTON_RED
+	btnRed.locale = neutrino.NONEXISTANT_LOCALE
+	btnRed.localename = "delete all"
+	menu:setFooterButtons(btnRed)
+
+	btnGreen = neutrino.button_label_struct()
+
+	btnGreen.button = neutrino.NEUTRINO_ICON_BUTTON_GREEN
+	btnGreen.locale = neutrino.NONEXISTANT_LOCALE
+	btnGreen.localename = "Add"
+	menu:setFooterButtons(btnGreen)
+
+	if selected < 0 then
+		selected = 0
+	end
+
+	menu:setSelected(selected)
+	
+	local item = nil
+
+	local ret = neutrino.RETURN_REPAINT
+	local selected = 0
 
 	-- load movies
 	--local fileBrowser = neutrino.CFileBrowser()
 	local fh = neutrino.CFileHelpers()
 	local fileFilter = neutrino.CFileFilter()
+	filelist = neutrino.CFile()
+	--local filelist = {}
 
 	config = neutrino.CConfigFile('\t')
 
@@ -898,10 +948,27 @@ function movieBrowser()
 	fileFilter:addFilter("wma")
 	fileFilter:addFilter("ogg")
 
-	local movies = {}
+	local m_movieInfo = neutrino.CMovieInfo()
+	local movieInfo = neutrino.MI_MOVIE_INFO()
+
+	m_movieInfo:clearMovieInfo(movieInfo)
+
+	-- fill items
+	if fh:readDir(PATH, filelist, fileFilter) then
+	end
+
+	menu:exec(null, "")
+
+	if menu:getExitPressed() ~= true then
+		movieBrowser()
+	end
+
+	return ret
 end
 
 function funArt()
+	local ret = neutrino.RETURN_REPAINT
+
 	config = neutrino.CConfigFile('\t')
 	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
 	local PATH = config:getString("network_nfs_recordingdir")
@@ -936,17 +1003,18 @@ function funArt()
 	local window = neutrino.CWindow(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
 	window:enableCenterPos()
 
+	-- art
 	artFrame = neutrino.CFrame(neutrino.FRAME_PICTURE_NOTSELECTABLE)
 	artFrame:setPosition(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
 	artFrame:setIconName(PATH .. '/ProSieben_20121225_201400.jpg')
 
-	textFrame = neutrino.CFrame(neutrino.FRAME_TEXT)
+	-- text
+	textFrame = neutrino.CFrame(neutrino.FRAME_TEXT_NOTSELECTABLE)
 	textFrame:setPosition(textbox)
-	--frame4:setBackgroundColor(0xFFAAAA)
-	--local title = "Lua Text\nframe2 bla vbzgstrrfasvghvschcgcqvs h bla h hdgvassbs\n454hjjhdsbbdhj\n"
 	textFrame:setTitle(movieInfo.epgTitle .. "\n" .. movieInfo.epgInfo1 .."\n" .. movieInfo.epgInfo2)
 	textFrame:setActionKey(null, "info")
 	textFrame:disableShadow()
+	--textFrame:setBackgroundColor(0xFFAAAF00)
 	--textFrame:disablePaintFrame()
 
 	playFrame = neutrino.CFrame()
@@ -991,6 +1059,8 @@ function funArt()
 	if widget:getExitPressed() ~= true then
 		funArt()
 	end
+
+	return ret
 end
 
 -- main
@@ -1005,19 +1075,26 @@ function main()
 
 	item1 = neutrino.CMenuForwarder("testCWidget", true, "", null, "listWidget")
 	item1:setInfo1("lua: testing CWidget")
+
 	item2 = neutrino.CMenuForwarder("testClistBoxWidget")
 	item2:setActionKey(null, "listBoxWidget")
 	item2:setInfo1("lua: testing ClistBoxWidget")
+
 	item3 = neutrino.CMenuForwarder("testClistBox")
 	item3:setInfo1("lua: testing ClistBox")
+
 	item4 = neutrino.CMenuForwarder("testCWindow")
 	item4:setInfo1("lua: testing CWindow")
+
 	item5 = neutrino.CMenuForwarder("testCFrameBox")
 	item5:setInfo1("lua: testing CFrameBox")
 	item5:setActionKey(null, "frameBox")
+
 	item6 = neutrino.CMenuForwarder("testActionKey/jumpTarget")
 	item6:setActionKey(neutrino.CAudioPlayerSettings(), "jumpTarget")
 	item6:setInfo1("lua: testing testActionKey/jumpTarget")
+	
+	item7 = neutrino.CMenuForwarder("movieBrowser", true, "", self, "movieBrowser")
 
 	m:addItem(item1)
 	m:addItem(item2)
@@ -1025,6 +1102,7 @@ function main()
 	m:addItem(item4)
 	m:addItem(item5)
 	m:addItem(item6)
+	m:addItem(item7)
 
 	if selected < 0 then
 		selected = 0
@@ -1038,13 +1116,13 @@ function main()
 	actionKey = m:getActionKey()
 
 	if actionKey == "listWidget" then
-		print("lua:sample: main(): actionKey: listWidget")
 		ret = testCWidget()
 	elseif actionKey == "frameBox" then
-		print("lua:sample: main(): actionKey: frameBox")
 		ret = testCFrameBox()
 	elseif actionKey == "jumpTarget" then
-		print("lua:sample: main(): actionKey: jumpTarget")
+
+	elseif actionKey == "movieBrowser" then
+		ret = movieBrowser()
 	end
 
 	if selected >= 0 then
@@ -1062,6 +1140,12 @@ function main()
 	end
 
 	return ret
+end
+
+function exec(parent, actionKey)
+	if actionKey == "movieBrowser" then
+		movieBrowser()
+	end
 end
 
 main()

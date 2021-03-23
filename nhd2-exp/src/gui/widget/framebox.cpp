@@ -33,12 +33,12 @@
 extern CPlugins * g_PluginList;    // defined in neutrino.cpp
 
 // CFrame
-#if 0
 CFrame::CFrame(int m)
 {
 	caption = "";
 	mode = m;
 	shadow = true;
+	paintFrame = true;
 	item_backgroundColor = COL_MENUCONTENT_PLUS_0;
 	iconName.clear();
 	option.clear();
@@ -83,28 +83,14 @@ CFrame::CFrame(int m)
 		}
 	}
 }
-#endif
 
-CFrame::CFrame(int m)
+void CFrame::setPlugin(const char * const pluginName)
 {
-	caption = "";
-	mode = m;
-	shadow = true;
-	paintFrame = true;
-	item_backgroundColor = COL_MENUCONTENT_PLUS_0;
-	iconName.clear();
-	option.clear();
-
-	jumpTarget = NULL;
-	actionKey.clear();
-
-	window.setPosition(-1, -1, 0, 0);
-
 	if (mode == FRAME_PLUGIN)
 	{
-		if (g_PluginList->plugin_exists(caption))
+		if (g_PluginList->plugin_exists(pluginName))
 		{
-			unsigned int count = g_PluginList->find_plugin(caption);
+			unsigned int count = g_PluginList->find_plugin(pluginName);
 
 			//iconName
 			iconName = NEUTRINO_ICON_MENUITEM_PLUGIN;
@@ -201,7 +187,7 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 			}
 		}
 	}
-	else if (mode == FRAME_PICTURE)
+	else if ( (mode == FRAME_PICTURE) || (mode == FRAME_PICTURE_NOTSELECTABLE))
 	{
 		int c_h = 0;
 
@@ -218,13 +204,6 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(caption);
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + ((window.getWindowsPos().iWidth - c_w)>> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth, caption.c_str(), color);
-		}
-	}
-	else if (mode == FRAME_PICTURE_NOTSELECTABLE)
-	{
-		if(!iconName.empty())
-		{
-			CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 1, window.getWindowsPos().iY + 1, window.getWindowsPos().iWidth - 2, window.getWindowsPos().iHeight);
 		}
 	}
 	else if (mode == FRAME_BUTTON)
@@ -247,7 +226,7 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + iconOffset + iw + iconOffset, window.getWindowsPos().iY + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight() + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2, window.getWindowsPos().iWidth - iconOffset - iw - iconOffset, caption.c_str(), color, 0, true); //
 		}
 	}
-	else if (mode == FRAME_TEXT)
+	else if ( (mode == FRAME_TEXT) || (mode == FRAME_TEXT_NOTSELECTABLE))
 	{
 		CTextBox * textBox = NULL;
 
@@ -280,8 +259,16 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		{
 			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(caption);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + ((window.getWindowsPos().iWidth - c_w)>> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth, caption.c_str(), color);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + 2 /*((window.getWindowsPos().iWidth - c_w)>> 1)*/, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - 4, caption.c_str(), color);
 		}
+	}
+	else if (mode == FRAME_LINE_VERTICAL)
+	{
+		CFrameBuffer::getInstance()->paintVLineRel(window.getWindowsPos().iX, window.getWindowsPos().iY, window.getWindowsPos().iHeight, COL_MENUCONTENTDARK_PLUS_0);
+	}
+	else if (mode == FRAME_LINE_HORIZONTAL)
+	{
+		CFrameBuffer::getInstance()->paintHLineRel(window.getWindowsPos().iX, window.getWindowsPos().iWidth, window.getWindowsPos().iY, COL_MENUCONTENTDARK_PLUS_0);
 	}
 
 	return 0;
