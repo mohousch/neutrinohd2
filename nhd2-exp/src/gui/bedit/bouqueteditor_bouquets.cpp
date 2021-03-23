@@ -98,6 +98,8 @@ void CBEBouquetWidget::paint()
 {
 	dprintf(DEBUG_NORMAL, "CBEBouquetWidget::paint:\n");
 
+	listBox->clearAll();
+
 	for (unsigned int count = 0; count < Bouquets->size(); count++)
 	{
 		if (!(*Bouquets)[count]->bWebTV)
@@ -227,7 +229,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 						break;
 						
 						case mbrCancel :
-							listBox->clearItems();
+							//listBox->clearItems();
 							paint();
 						break;
 					}
@@ -335,7 +337,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				if (state == beDefault)
 					beginMoveBouquet();
 
-				listBox->clearItems();
+				//listBox->clearItems();
 				paint();
 			}
 		}
@@ -379,7 +381,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 					break;
 				}
 
-				listBox->clearItems();
+				//listBox->clearItems();
 				paint();
 			}
 		}
@@ -398,7 +400,7 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 						bouquetsChanged = true;
 					delete channelWidget;
 
-					listBox->clearItems();
+					//listBox->clearItems();
 					paint();
 				}
 			}
@@ -459,7 +461,7 @@ void CBEBouquetWidget::deleteBouquet()
 		selected = Bouquets->empty() ? 0 : (Bouquets->size() - 1);
 	bouquetsChanged = true;
 
-	listBox->clearItems();
+	//listBox->clearItems();
 	paint();
 }
 
@@ -474,7 +476,7 @@ void CBEBouquetWidget::addBouquet()
 		bouquetsChanged = true;
 	}
 	
-	listBox->clearItems();
+	//listBox->clearItems();
 	paint();
 }
 
@@ -494,7 +496,7 @@ void CBEBouquetWidget::finishMoveBouquet()
 		bouquetsChanged = true;
 	}
 
-	listBox->clearItems();
+	//listBox->clearItems();
 	paint();
 }
 
@@ -517,7 +519,7 @@ void CBEBouquetWidget::internalMoveBouquet( unsigned int fromPosition, unsigned 
 	selected = toPosition;
 	newPosition = toPosition;
 
-	listBox->clearItems();
+	//listBox->clearItems();
 	paint();
 }
 
@@ -535,7 +537,7 @@ void CBEBouquetWidget::renameBouquet()
 		bouquetsChanged = true;
 	}
 
-	listBox->clearItems();
+	//listBox->clearItems();
 	paint();
 }
 
@@ -544,7 +546,7 @@ void CBEBouquetWidget::switchHideBouquet()
 	bouquetsChanged = true;
 	(*Bouquets)[selected]->bHidden = !(*Bouquets)[selected]->bHidden;
 
-	listBox->clearItems();
+	//listBox->clearItems();
 	paint();
 }
 
@@ -553,7 +555,7 @@ void CBEBouquetWidget::switchLockBouquet()
 	bouquetsChanged = true;
 	(*Bouquets)[selected]->bLocked = !(*Bouquets)[selected]->bLocked;
 
-	listBox->clearItems();
+	//listBox->clearItems();
 	paint();
 }
 

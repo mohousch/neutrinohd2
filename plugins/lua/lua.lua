@@ -654,7 +654,7 @@ function testCWindow()
 
 	frame3 = neutrino.CFrame(neutrino.FRAME_PICTURE)
 	frame3:setPosition(picBox)
-	frame3:setTitle("Transformers")
+	--frame3:setTitle("Transformers")
 	frame3:setIconName(itemIcon)
 	frame3:setActionKey(null, "frame3")
 
@@ -670,8 +670,9 @@ function testCWindow()
 	-- plugin
 	frame5 = neutrino.CFrame(neutrino.FRAME_PLUGIN)
 	frame5:setPosition(pluginBox)
+	frame5:setTitle("nfilm")
 	frame5:setPlugin("nfilm")
-	--frame5:setActionKey(null, "nfilm")
+	--frame5:showPluginName()
 	--frame5:disableShadow()
 
 	-- vframe

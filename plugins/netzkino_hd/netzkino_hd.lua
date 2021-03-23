@@ -423,7 +423,7 @@ function funArt(_id)
 	artFrame:setPosition(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
 	artFrame:setIconName(cover)
 
-	textFrame = neutrino.CFrame(neutrino.FRAME_TEXT)
+	textFrame = neutrino.CFrame(neutrino.FRAME_TEXT_NOTSELECTABLE)
 	textFrame:setPosition(textbox)
 	textFrame:setTitle(conv_utf8(movies[_id].title) .. "\n" .. conv_utf8(movies[_id].content))
 	textFrame:setActionKey(null, "info")

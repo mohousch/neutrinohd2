@@ -97,6 +97,8 @@ void CBEChannelWidget::paint()
 {
 	dprintf(DEBUG_NORMAL, "CBEChannelWidget::paint:\n");
 
+	listBox->clearAll();
+
 	for (unsigned int count = 0; count < Channels->size(); count++)
 	{
 		item = new ClistBoxItem((*Channels)[count]->getName().c_str());
@@ -287,7 +289,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 			if (state == beDefault)
 				beginMoveChannel();
 
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 		}
 		else if(msg == RC_blue)
@@ -303,7 +305,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 
 				selected = 0;
 
-				listBox->clearItems();
+				//listBox->clearItems();
 				paint();
 			}
 		}
@@ -375,7 +377,7 @@ void CBEChannelWidget::deleteChannel()
 	
 	channelsChanged = true;
 
-	listBox->clearItems();
+	//listBox->clearItems();
 	paint();
 }
 
@@ -393,7 +395,7 @@ void CBEChannelWidget::addChannel()
 	
 	delete channelSelectWidget;
 
-	listBox->clearItems();
+	//listBox->clearItems();
 	paint();
 }
 
@@ -408,7 +410,7 @@ void CBEChannelWidget::finishMoveChannel()
 {
 	state = beDefault;
 
-	listBox->clearItems();
+	//listBox->clearItems();
 	paint();
 }
 
@@ -435,7 +437,7 @@ void CBEChannelWidget::internalMoveChannel(unsigned int fromPosition, unsigned i
 	selected = toPosition;
 	newPosition = toPosition;
 
-	listBox->clearItems();
+	//listBox;
 	paint();
 }
 

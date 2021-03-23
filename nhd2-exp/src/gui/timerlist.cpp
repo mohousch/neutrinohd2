@@ -514,7 +514,7 @@ int CTimerList::show()
 			hide();
 			updateEvents();
 			update = false;
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 		}
 
@@ -594,7 +594,7 @@ int CTimerList::show()
 						loop = false;
 					else
 					{
-						listBox->clearItems();
+						//listBox->clearItems();
 						paint();
 					}
 				}
@@ -661,6 +661,8 @@ struct button_label CTimerListHeadButtons = {NEUTRINO_ICON_BUTTON_HELP_SMALL, NO
 void CTimerList::paint()
 {
 	dprintf(DEBUG_NORMAL, "CTimerList::paint\n");
+
+	listBox->clearAll();
 
 	for (unsigned int count = 0; count < timerlist.size(); count++)
 	{

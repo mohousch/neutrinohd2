@@ -70,6 +70,7 @@ class CFrame
 		int mode;
 		bool shadow;
 		bool paintFrame;
+		bool pluginOrigName;
 		
 		CFrame(int m = FRAME_BOX);
 		virtual ~CFrame(){}
@@ -80,7 +81,8 @@ class CFrame
 		virtual void setIconName(const char *icon){ if (icon != NULL) iconName = icon;};
 		virtual void setOption(const char *text){if (text != NULL) option = text;};
 		virtual void setPlugin(const char * const pluginName);
-		//virtual void setMode(int m = FRAME_BOX){mode = m;};
+		virtual void showPluginName(){pluginOrigName = true;};
+		virtual void setMode(int m = FRAME_BOX){mode = m;};
 		virtual void setActionKey(CMenuTarget *Target, const char *const ActionKey){jumpTarget = Target; actionKey = ActionKey;};
 		virtual void setDirectKey(neutrino_msg_t key){directKey = key;};
 

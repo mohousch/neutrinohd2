@@ -587,7 +587,7 @@ int CChannelList::show(bool zap, bool customMode)
 				loop = false;
 			}
 
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 		}
 		else if ( msg == RC_yellow && ( bouquetList != NULL ) ) //bouquets
@@ -606,7 +606,7 @@ int CChannelList::show(bool zap, bool customMode)
 			CEPGplusHandler eplus;
 			eplus.exec(NULL, "");
 
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 		}
 		else if ( msg == RC_sat || msg == RC_favorites)
@@ -635,7 +635,7 @@ int CChannelList::show(bool zap, bool customMode)
 				{
 					old_b_id = -1;
 
-					listBox->clearItems();
+					//listBox->clearItems();
 					paint();
 				}
 			}
@@ -644,7 +644,7 @@ int CChannelList::show(bool zap, bool customMode)
 		{
 			selected = 0;
 
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 			
 			if(new_mode_active) 
@@ -657,7 +657,7 @@ int CChannelList::show(bool zap, bool customMode)
 		{
 			selected = chanlist.size() - 1;
 
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 			
 			if(new_mode_active) 
@@ -785,7 +785,7 @@ int CChannelList::show(bool zap, bool customMode)
 		{
 			new_mode_active = (new_mode_active ? 0 : 1);
 			
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 		}
 		else if (CRCInput::isNumeric(msg) && this->historyMode) 
@@ -812,7 +812,7 @@ int CChannelList::show(bool zap, bool customMode)
 
 			updateEvents();
 
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 		} 
 		else if ( (msg == RC_info) )
@@ -822,7 +822,7 @@ int CChannelList::show(bool zap, bool customMode)
 			hide();
 			g_EpgData->show(chanlist[selected]->channel_id); 
 
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 		}
 		else if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
@@ -1566,6 +1566,8 @@ bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGD
 void CChannelList::paint()
 {
 	dprintf(DEBUG_NORMAL, "CChannelList::paint\n");
+
+	listBox->clearAll();
 
 	if(chanlist.size())
 	{

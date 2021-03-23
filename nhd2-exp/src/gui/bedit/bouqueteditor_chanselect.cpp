@@ -114,6 +114,8 @@ void CBEChannelSelectWidget::paint()
 {
 	dprintf(DEBUG_DEBUG, "CBEChannelSelectWidget::paint\n");
 
+	listBox->clearAll();
+
 	for (unsigned int count = 0; count < Channels.size(); count++)
 	{
 		item = new ClistBoxItem(Channels[count]->getName().c_str());
@@ -243,7 +245,7 @@ int CBEChannelSelectWidget::exec(CMenuTarget* parent, const std::string& actionK
 
 			bouquetChannels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
 	
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 			g_RCInput->postMsg(RC_down, 0);
 		}

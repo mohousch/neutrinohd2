@@ -420,7 +420,6 @@ bool CFileBrowser::exec(const char * const dirname)
 					{
 						filelist[selected].Marked = !filelist[selected].Marked;
 
-						//listBox->clearItems();
 						paint();
 					}
 				}
@@ -463,7 +462,6 @@ bool CFileBrowser::exec(const char * const dirname)
 						selections.push_back(selected);
 						ChangeDir(filelist[selected].Name);
 						//hide();
-						//listBox->clearItems();
 						paint();
 					}
 				}
@@ -476,20 +474,17 @@ bool CFileBrowser::exec(const char * const dirname)
 				ChangeDir("..", selections.back());
 				selections.pop_back();
 				//hide();
-				//listBox->clearItems();
 				paint();
 			} 
 			else
 			{
 				ChangeDir("..");
 				//hide();
-				//listBox->clearItems();
 				paint();
 			}
 
 			if (!(filelist.empty()))	
 			{
-				//listBox->clearItems();
 				paint();
 			}
 		}
@@ -501,7 +496,6 @@ bool CFileBrowser::exec(const char * const dirname)
 
 				ChangeDir(Path);
 				//hide();
-				//listBox->clearItems();
 				paint();
 			}
 		}
@@ -537,7 +531,6 @@ bool CFileBrowser::exec(const char * const dirname)
 					}
 					ChangeDir(Path);
 					//hide();
-					//listBox->clearItems();
 					paint();
 				}
 			}
@@ -555,7 +548,6 @@ bool CFileBrowser::exec(const char * const dirname)
 						ChangeDir("..", selections.back());
 						selections.pop_back();
 						//hide();
-						//listBox->clearItems();
 						paint();
 					} 
 					else
@@ -565,7 +557,6 @@ bool CFileBrowser::exec(const char * const dirname)
 						{
 							ChangeDir("..");
 							//hide();
-							//listBox->clearItems();
 							paint();
 						}
 						else 
@@ -586,7 +577,6 @@ bool CFileBrowser::exec(const char * const dirname)
 							selections.push_back(selected);
 							ChangeDir(filelist[selected].Name);
 							//hide();
-							//listBox->clearItems();
 							paint();
 						}
 						else
@@ -606,7 +596,6 @@ bool CFileBrowser::exec(const char * const dirname)
 
 			sort(filelist.begin(), filelist.end(), sortBy[g_settings.filebrowser_sortmethod]);
 
-			//listBox->clearItems();
 			paint();
 		}
 		else if (CRCInput::isNumeric(msg_repeatok))
@@ -741,7 +730,7 @@ void CFileBrowser::paint()
 {
 	dprintf(DEBUG_NORMAL, "CFileBrowser::paint:\n");
 
-	listBox->clearItems();
+	listBox->clearAll();
 
 	for (unsigned int count = 0; count < filelist.size(); count++)
 	{
@@ -897,7 +886,6 @@ void CFileBrowser::SMSInput(const neutrino_msg_t msg)
 		}
 	}
 
-	//listBox->clearItems();
 	paint();
 }
 

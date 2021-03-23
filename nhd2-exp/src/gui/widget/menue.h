@@ -179,6 +179,7 @@ class ClistBoxWidget : public CMenuTarget
 		bool hasItem();
 		int getItemsCount()const{return items.size();};
 		void clearItems(void){items.clear();};
+		void clearAll(void){clearItems(); hbutton_labels.clear(); fbutton_labels.clear(); widget.clear();};
 
 		//
 		virtual void initFrames();

@@ -443,14 +443,14 @@ int CBouquetList::show(bool bShowChannelList, bool customMode)
 		else if ( msg == (neutrino_msg_t) g_settings.key_list_start ) 
 		{
 			selected = 0;
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 		}
 		else if ( msg == (neutrino_msg_t) g_settings.key_list_end ) 
 		{
 			selected = Bouquets.size() - 1;
 
-			listBox->clearItems();
+			//listBox->clearItems();
 			paint();
 		}
 		else if (msg == RC_up || (int) msg == g_settings.key_channelList_pageup )
@@ -525,6 +525,8 @@ const struct button_label CBouquetListButtons[4] =
 void CBouquetList::paint()
 {
 	dprintf(DEBUG_NORMAL, "CBouquetList::paint\n");
+
+	listBox->clearAll();
 
 	for (unsigned int count = 0; count < Bouquets.size(); count++)
 	{
