@@ -658,7 +658,7 @@ void CWidget::onHomeKeyPressed()
 	dprintf(DEBUG_NORMAL, "CWidget::exec: exit_pressed\n");
 	msg = RC_timeout;
 	
-	if (hasItem() && items[selected]->isSelectable())
+	if (hasItem())
 	{
 		for (unsigned int count = 0; count < items.size(); count++) 
 		{
