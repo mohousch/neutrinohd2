@@ -470,7 +470,7 @@ function funArt(_id)
 		player:addToPlaylist(file, title, info1, "", cover)
 		player:exec(null, "")
 	elseif action == "info" then
-		neutrino.InfoBox(info1, title, cover, neutrino.NEUTRINO_ICON_INFO, 160, 320)
+		neutrino.InfoBox(info1, title, neutrino.NEUTRINO_ICON_INFO, cover, 160, 320)
 	end
 
 	if widget:getExitPressed() ~= true then
