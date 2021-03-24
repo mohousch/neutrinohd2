@@ -330,6 +330,17 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 	if (movie_info->productionDate > 50 && movie_info->productionDate < 200)	// backwardcompaibility
 		movie_info->productionDate += 1900;
 
+	//grab for thumbnail
+	if (movie_info->tfile.empty())
+	{
+		std::string fname = "";
+		fname = movie_info->file.Name;
+		changeFileNameExt(fname, ".jpg");
+					
+		if(!access(fname.c_str(), F_OK) )
+			movie_info->tfile = fname.c_str();
+	}
+
 	return (result);
 }
 

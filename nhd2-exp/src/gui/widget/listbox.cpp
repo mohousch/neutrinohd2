@@ -1052,7 +1052,7 @@ int CMenuForwarder::exec(CMenuTarget *parent)
 
 	if(jumpTarget)
 	{
-		int ret = jumpTarget->exec(parent, actionKey);
+		ret = jumpTarget->exec(parent, actionKey);
 
 		if(ret && !option.empty()) 
 		{
@@ -1331,7 +1331,7 @@ int ClistBoxItem::exec(CMenuTarget* parent)
 
 	if(jumpTarget)
 	{
-		int ret = jumpTarget->exec(parent, actionKey);
+		ret = jumpTarget->exec(parent, actionKey);
 
 		if(ret) 
 		{

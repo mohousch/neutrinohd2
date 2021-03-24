@@ -1007,7 +1007,7 @@ function funArt()
 	-- art
 	artFrame = neutrino.CFrame(neutrino.FRAME_PICTURE_NOTSELECTABLE)
 	artFrame:setPosition(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
-	artFrame:setIconName(PATH .. '/ProSieben_20121225_201400.jpg')
+	artFrame:setIconName(movieInfo.tfile)
 
 	-- text
 	textFrame = neutrino.CFrame(neutrino.FRAME_TEXT_NOTSELECTABLE)
@@ -1048,13 +1048,12 @@ function funArt()
 	local action = widget:getActionKey()
 
 	local player = neutrino.CMoviePlayerGui()
-	local movie = PATH .. "/ProSieben_20121225_201400.ts"
 
 	if action == "playMovie" then
-		player:addToPlaylist(movie)
+		player:addToPlaylist(movieInfo)
 		player:exec(null, "")
 	elseif action == "info" then
-		neutrino.InfoBox(movieInfo.epgInfo2, movieInfo.epgTitle, neutrino.NEUTRINO_ICON_INFO, PATH .. "/ProSieben_20121225_201400.jpg", 160, 320)
+		neutrino.InfoBox(movieInfo.epgInfo2, movieInfo.epgTitle, neutrino.NEUTRINO_ICON_INFO, movieInfo.tfile, 160, 320)
 	end
 
 	if widget:getExitPressed() ~= true then
