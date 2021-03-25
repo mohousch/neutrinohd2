@@ -514,7 +514,6 @@ int CTimerList::show()
 			hide();
 			updateEvents();
 			update = false;
-			//listBox->clearItems();
 			paint();
 		}
 
@@ -594,7 +593,6 @@ int CTimerList::show()
 						loop = false;
 					else
 					{
-						//listBox->clearItems();
 						paint();
 					}
 				}

@@ -443,14 +443,12 @@ int CBouquetList::show(bool bShowChannelList, bool customMode)
 		else if ( msg == (neutrino_msg_t) g_settings.key_list_start ) 
 		{
 			selected = 0;
-			//listBox->clearItems();
 			paint();
 		}
 		else if ( msg == (neutrino_msg_t) g_settings.key_list_end ) 
 		{
 			selected = Bouquets.size() - 1;
 
-			//listBox->clearItems();
 			paint();
 		}
 		else if (msg == RC_up || (int) msg == g_settings.key_channelList_pageup )

@@ -289,7 +289,6 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 			if (state == beDefault)
 				beginMoveChannel();
 
-			//listBox->clearItems();
 			paint();
 		}
 		else if(msg == RC_blue)
@@ -305,7 +304,6 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 
 				selected = 0;
 
-				//listBox->clearItems();
 				paint();
 			}
 		}
@@ -377,7 +375,6 @@ void CBEChannelWidget::deleteChannel()
 	
 	channelsChanged = true;
 
-	//listBox->clearItems();
 	paint();
 }
 
@@ -395,7 +392,6 @@ void CBEChannelWidget::addChannel()
 	
 	delete channelSelectWidget;
 
-	//listBox->clearItems();
 	paint();
 }
 
@@ -410,7 +406,6 @@ void CBEChannelWidget::finishMoveChannel()
 {
 	state = beDefault;
 
-	//listBox->clearItems();
 	paint();
 }
 

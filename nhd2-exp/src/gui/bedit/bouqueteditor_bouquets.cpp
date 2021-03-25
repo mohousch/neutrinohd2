@@ -229,7 +229,6 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 						break;
 						
 						case mbrCancel :
-							//listBox->clearItems();
 							paint();
 						break;
 					}
@@ -337,7 +336,6 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				if (state == beDefault)
 					beginMoveBouquet();
 
-				//listBox->clearItems();
 				paint();
 			}
 		}
@@ -381,7 +379,6 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 					break;
 				}
 
-				//listBox->clearItems();
 				paint();
 			}
 		}
@@ -400,7 +397,6 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 						bouquetsChanged = true;
 					delete channelWidget;
 
-					//listBox->clearItems();
 					paint();
 				}
 			}
@@ -461,7 +457,6 @@ void CBEBouquetWidget::deleteBouquet()
 		selected = Bouquets->empty() ? 0 : (Bouquets->size() - 1);
 	bouquetsChanged = true;
 
-	//listBox->clearItems();
 	paint();
 }
 
@@ -476,7 +471,6 @@ void CBEBouquetWidget::addBouquet()
 		bouquetsChanged = true;
 	}
 	
-	//listBox->clearItems();
 	paint();
 }
 
@@ -496,7 +490,6 @@ void CBEBouquetWidget::finishMoveBouquet()
 		bouquetsChanged = true;
 	}
 
-	//listBox->clearItems();
 	paint();
 }
 
@@ -519,7 +512,6 @@ void CBEBouquetWidget::internalMoveBouquet( unsigned int fromPosition, unsigned 
 	selected = toPosition;
 	newPosition = toPosition;
 
-	//listBox->clearItems();
 	paint();
 }
 
@@ -537,7 +529,6 @@ void CBEBouquetWidget::renameBouquet()
 		bouquetsChanged = true;
 	}
 
-	//listBox->clearItems();
 	paint();
 }
 
@@ -546,7 +537,6 @@ void CBEBouquetWidget::switchHideBouquet()
 	bouquetsChanged = true;
 	(*Bouquets)[selected]->bHidden = !(*Bouquets)[selected]->bHidden;
 
-	//listBox->clearItems();
 	paint();
 }
 
@@ -555,7 +545,6 @@ void CBEBouquetWidget::switchLockBouquet()
 	bouquetsChanged = true;
 	(*Bouquets)[selected]->bLocked = !(*Bouquets)[selected]->bLocked;
 
-	//listBox->clearItems();
 	paint();
 }
 

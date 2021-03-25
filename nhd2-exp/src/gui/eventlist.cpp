@@ -305,7 +305,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 			}
 
 			hide();
-			//listBox->clearItems();
 			paint(channel_id);
 		}
 		// epg reload
@@ -313,8 +312,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 		{
 			sort_mode = SORT_DESCRIPTION;
 			hide();
-
-			//listBox->clearItems();
 			paint(channel_id);			
 		}
 		// add record
@@ -333,7 +330,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 					timerlist.clear();
 					g_Timerd->getTimerList(timerlist);
 
-					//listBox->clearItems();
 					paint(channel_id);
 					continue;
 				}
@@ -368,7 +364,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 				g_Timerd->getTimerList(timerlist);
 				
 				//
-				//listBox->clearItems();
 				paint(channel_id);
 			}					
 		}
@@ -386,7 +381,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 				timerlist.clear();
 				g_Timerd->getTimerList(timerlist);
 
-				//listBox->clearItems();
 				paint(channel_id);
 				continue;
 			}
@@ -401,7 +395,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 			g_Timerd->getTimerList (timerlist);
 			
 			//
-			//listBox->clearItems();
 			paint(channel_id);
 		}
 		else if (msg == RC_timeout)
@@ -416,7 +409,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 				in_search = false;
 				name = channelname;
 
-				//listBox->clearItems();
 				paint(channel_id);
 			} 
 			else 
@@ -464,7 +456,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 					timerlist.clear();
 					g_Timerd->getTimerList (timerlist);
 
-					//listBox->clearItems();
 					paint(channel_id);
 				}
 			}
@@ -531,7 +522,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 
 				}
 
-				//listBox->clearItems();
 				paint(channel_id);
 			}	
 		}
@@ -827,7 +817,6 @@ int EventList::findEvents(void)
 		name += "'";
 	}
 	
-	//listBox->clearItems();
 	paint();
 	
 	return(res);
