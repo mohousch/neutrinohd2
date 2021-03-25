@@ -627,7 +627,7 @@ class ClistBox : public CWidgetItem
 		int getItemHeight(){return item_height;};
 		int getFootInfoHeight(){return footInfoHeight;};
 		int getListMaxShow(void) const {return listmaxshow;};
-		std::string getActionKey(void){if (hasItem()) return items[selected]->actionKey; else return actionKey;};
+		std::string getActionKey(void){if (hasItem() && selected >= 0 && items[selected]->isSelectable()) return items[selected]->actionKey; else return actionKey;};
 
 		void enableCenterPos(){enableCenter = true;};
 		void enableShrinkMenu(){shrinkMenu = true;};

@@ -147,7 +147,7 @@ class CFrameBox : public CWidgetItem
 		virtual void scrollLineUp(const int lines = 1);
 
 		int getSelected(){return selected;};
-		std::string getActionKey(void){if (hasItem()) return frames[selected]->actionKey; else return actionKey;};
+		std::string getActionKey(void){if (hasItem() && selected >= 0 && frames[selected]->isSelectable()) return frames[selected]->actionKey; else return actionKey;};
 
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
 

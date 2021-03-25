@@ -51,6 +51,8 @@ class CTSBrowser : public CMenuTarget
 		void onDeleteFile(MI_MOVIE_INFO& movieFile);
 		void openFileBrowser();
 
+		void funArt(int i);
+
 		void showMenu();
 
 	public:
@@ -357,6 +359,87 @@ void CTSBrowser::onDeleteFile(MI_MOVIE_INFO& movieFile)
 	}
 }
 
+void CTSBrowser::funArt(int i)
+{
+	CBox box;
+	box.iX = CFrameBuffer::getInstance()->getScreenX();
+	box.iY = CFrameBuffer::getInstance()->getScreenY();
+	box.iWidth = CFrameBuffer::getInstance()->getScreenWidth();
+	box.iHeight = CFrameBuffer::getInstance()->getScreenHeight();
+
+	CBox textbox;
+	
+	textbox.iWidth = 350;
+	textbox.iHeight = 350;
+	textbox.iX = box.iX + 10;
+	textbox.iY = box.iY + 40 + 10;
+
+	// playBox
+	CBox frame;
+	frame.iWidth = 250;
+	frame.iHeight = 60;
+	frame.iX = box.iX + 10;
+	frame.iY = box.iY + box.iHeight - 10 - 40 - 60;
+
+	CWindow * window = new CWindow(&box);
+	CFrameBox * testFrame = new CFrameBox(&box);
+	testFrame->setMode(FRAMEBOX_MODE_RANDOM);
+
+	CWidget * widget = new CWidget();
+
+
+	// art
+	CFrame * artFrame = new CFrame(FRAME_PICTURE_NOTSELECTABLE);
+	artFrame->setPosition(box.iX + box.iWidth/2, box.iY, box.iWidth/2, box.iHeight);
+	artFrame->setIconName(m_vMovieInfo[i].tfile.c_str());
+
+	testFrame->addFrame(artFrame);
+
+	// text
+	CFrame *textFrame = new CFrame(FRAME_TEXT_NOTSELECTABLE);
+	textFrame->setPosition(&textbox);
+	std::string buffer;
+	buffer = m_vMovieInfo[i].epgTitle;
+	buffer += "\n";
+	buffer += m_vMovieInfo[i].epgInfo1;
+	buffer += "\n";
+	buffer += m_vMovieInfo[i].epgInfo2;
+
+	textFrame->setTitle(buffer.c_str());
+	textFrame->disableShadow();
+	
+	testFrame->addFrame(textFrame);
+
+	// play
+	CFrame *playFrame = new CFrame();
+	playFrame->setPosition(&frame);
+	playFrame->setTitle("abspielen");
+	playFrame->setIconName(NEUTRINO_ICON_PLAY);
+	playFrame->setActionKey(this, "playMovie");
+
+	testFrame->addFrame(playFrame);
+
+	// info
+	CFrame * infoFrame = new CFrame();
+	infoFrame->setPosition(frame.iX + 250 + 10, frame.iY, 250, 60);
+	infoFrame->setTitle("Info:");
+	infoFrame->setIconName(NEUTRINO_ICON_INFO);
+	infoFrame->setActionKey(this, "RC_info");
+
+	testFrame->addFrame(infoFrame);
+
+	widget->addItem(window);
+	widget->addItem(testFrame);
+
+	widget->exec(NULL, "");
+
+	delete widget;
+	widget = NULL;
+
+	delete window;
+	window = NULL;	
+}
+
 #define HEAD_BUTTONS_COUNT	2
 const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
@@ -435,9 +518,24 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		selected = mlist->getSelected();
 
+/*
 		if (&m_vMovieInfo[mlist->getSelected()].file != NULL) 
 		{
 			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[mlist->getSelected()]);
+			tmpMoviePlayerGui.exec(NULL, "");
+		}
+**/
+		funArt(selected);
+
+		return RETURN_REPAINT;
+	}
+	if(actionKey == "playMovie")
+	{
+		selected = mlist->getSelected();
+
+		if (&m_vMovieInfo[selected].file != NULL) 
+		{
+			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
 			tmpMoviePlayerGui.exec(NULL, "");
 		}
 

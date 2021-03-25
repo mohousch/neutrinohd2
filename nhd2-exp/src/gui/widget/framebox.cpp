@@ -570,7 +570,12 @@ void CFrameBox::scrollLineUp(const int lines)
 int CFrameBox::oKKeyPressed(CMenuTarget *parent)
 {
 	if(parent)
-		return frames[selected]->exec(parent);
+	{
+		if (hasItem() && selected >= 0 && frames[selected]->isSelectable())
+			return frames[selected]->exec(parent);
+		else
+			return RETURN_EXIT;
+	}
 	else
 		return RETURN_EXIT;
 }

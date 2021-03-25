@@ -3066,7 +3066,7 @@ int ClistBox::oKKeyPressed(CMenuTarget* parent)
 	dprintf(DEBUG_NORMAL, "ClistBox::okKeyPressed:\n");
 
 	if(parent)
-		if(hasItem())
+		if (hasItem() && selected >= 0 && items[selected]->isSelectable())
 			return items[selected]->exec(parent);
 		else
 			return RETURN_EXIT;
