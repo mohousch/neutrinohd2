@@ -369,7 +369,7 @@ void CTSBrowser::funArt(int i)
 
 	CBox textbox;
 	
-	textbox.iWidth = 350;
+	textbox.iWidth = box.iWidth/2 - 20;
 	textbox.iHeight = 350;
 	textbox.iX = box.iX + 10;
 	textbox.iY = box.iY + 40 + 10;
@@ -400,7 +400,7 @@ void CTSBrowser::funArt(int i)
 	textFrame->setPosition(&textbox);
 	std::string buffer;
 	buffer = m_vMovieInfo[i].epgTitle;
-	buffer += "\n";
+	buffer += "\n\n";
 	buffer += m_vMovieInfo[i].epgInfo1;
 	buffer += "\n";
 	buffer += m_vMovieInfo[i].epgInfo2;
@@ -410,15 +410,6 @@ void CTSBrowser::funArt(int i)
 	
 	testFrame->addFrame(textFrame);
 
-	// play
-	CFrame *playFrame = new CFrame();
-	playFrame->setPosition(&frame);
-	playFrame->setTitle("abspielen");
-	playFrame->setIconName(NEUTRINO_ICON_PLAY);
-	playFrame->setActionKey(this, "playMovie");
-
-	testFrame->addFrame(playFrame);
-
 	// info
 	CFrame * infoFrame = new CFrame();
 	infoFrame->setPosition(frame.iX + 250 + 10, frame.iY, 250, 60);
@@ -427,6 +418,15 @@ void CTSBrowser::funArt(int i)
 	infoFrame->setActionKey(this, "RC_info");
 
 	testFrame->addFrame(infoFrame);
+
+	// play
+	CFrame *playFrame = new CFrame();
+	playFrame->setPosition(&frame);
+	playFrame->setTitle("abspielen");
+	playFrame->setIconName(NEUTRINO_ICON_PLAY);
+	playFrame->setActionKey(this, "playMovie");
+
+	testFrame->addFrame(playFrame);
 
 	widget->addItem(window);
 	widget->addItem(testFrame);
