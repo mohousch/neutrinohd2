@@ -32,6 +32,10 @@ class CFileExplorer : public CMenuTarget
 		CFileBrowser filebrowser;
 		std::string Path_local;
 
+		CPictureViewerGui tmpPictureViewerGui;
+		CMoviePlayerGui tmpMoviePlayerGui;
+		CAudioPlayerGui tmpAudioPlayerGui;
+
 		neutrino_msg_t msg;
 		neutrino_msg_data_t data;
 
@@ -68,23 +72,17 @@ BROWSER:
 		{
 			// parse file extension
 			if(file->getType() == CFile::FILE_PICTURE)
-			{
-				CPictureViewerGui tmpPictureViewerGui;
-								
+			{				
 				tmpPictureViewerGui.addToPlaylist(*file);
 				tmpPictureViewerGui.exec(NULL, "urlplayback");
 			}
 			else if(file->getType() == CFile::FILE_VIDEO)
 			{
-				CMoviePlayerGui tmpMoviePlayerGui;
-
 				tmpMoviePlayerGui.addToPlaylist(*file);
 				tmpMoviePlayerGui.exec(NULL, "urlplayback");
 			}
 			else if(file->getType() == CFile::FILE_AUDIO)
 			{
-				CAudioPlayerGui tmpAudioPlayerGui;
-			
 				tmpAudioPlayerGui.addToPlaylist(*file);
 				tmpAudioPlayerGui.exec(NULL, "urlplayback");
 			}

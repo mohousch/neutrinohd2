@@ -71,8 +71,8 @@ class CFileBrowser
 		
 		std::string Path;
 		
-		bool readDir(const std::string & dirname, CFileList* flist);
-		void addRecursiveDir(CFileList * re_filelist, std::string path, bool bRootCall);
+		//bool readDir(const std::string & dirname, CFileList* flist);
+		//void addRecursiveDir(CFileList * re_filelist, std::string path, bool bRootCall);
 		/**
 		 * @param selection select the specified entry, ignored if selection == -1
 		 */
@@ -127,6 +127,9 @@ class CFileBrowser
 
 		//
 		bool getExitPressed(){return exit_pressed;};
+
+		bool readDir(const std::string & dirname, CFileList* flist);
+		void addRecursiveDir(CFileList * re_filelist, std::string path, bool bRootCall);
 };
 
 #endif

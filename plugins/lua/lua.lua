@@ -650,7 +650,14 @@ function testCWindow()
 	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
 	local PATH = config:getString("network_nfs_recordingdir")
 
-	local itemIcon = PATH .. '/ProSieben_20121225_201400.jpg'
+	local movieInfo = neutrino.MI_MOVIE_INFO()
+	movieInfo.file.Name = PATH .. "/ProSieben_20121225_201400.ts"
+
+	local m_movieInfo = neutrino.CMovieInfo()
+
+	m_movieInfo:loadMovieInfo(movieInfo)
+
+	local itemIcon = movieInfo.tfile
 
 	frame3 = neutrino.CFrame(neutrino.FRAME_PICTURE)
 	frame3:setPosition(picBox)
@@ -763,14 +770,6 @@ function testCWindow()
 	elseif actionKey == "frame3" then
 		print("lua sample: testCWindow(): actionKey: frame3")
 
---[[
-		player = neutrino.CMoviePlayerGui()
-
-		movie = PATH .. "/ProSieben_20121225_201400.ts"
-
-		player:addToPlaylist(movie)
-		player:exec(null, "")
-]]
 		funArt()
 
 	elseif actionKey == "nfilm" then
@@ -911,17 +910,17 @@ function movieBrowser()
 	local selected = 0
 
 	-- load movies
-	--local fileBrowser = neutrino.CFileBrowser()
+	local fileBrowser = neutrino.CFileBrowser()
 	local fh = neutrino.CFileHelpers()
 	local fileFilter = neutrino.CFileFilter()
-	filelist = neutrino.CFile()
+	filelist = neutrino.CFileList
 	--local filelist = {}
 
 	config = neutrino.CConfigFile('\t')
 
 	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
 
-	local PATH = config:getString("network_nfs_recordingdir")
+	local PATH = config:getString("network_nfs_recordingdir") .. "/"
 
 	fileFilter:addFilter("ts")
 	fileFilter:addFilter("mpg")
@@ -955,7 +954,8 @@ function movieBrowser()
 	m_movieInfo:clearMovieInfo(movieInfo)
 
 	-- fill items
-	if fh:readDir(PATH, filelist, fileFilter) then
+	fileBrowser.Filter = fileFilter
+	if fileBrowser:readDir(PATH, filelist) then
 	end
 
 	menu:exec(null, "")
@@ -1006,7 +1006,7 @@ function funArt()
 
 	-- art
 	artFrame = neutrino.CFrame(neutrino.FRAME_PICTURE_NOTSELECTABLE)
-	artFrame:setPosition(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
+	artFrame:setPosition(fb:getScreenX() + fb:getScreenWidth()/2, fb:getScreenY(), fb:getScreenWidth()/2, fb:getScreenHeight())
 	artFrame:setIconName(movieInfo.tfile)
 
 	-- text
@@ -1018,19 +1018,21 @@ function funArt()
 	--textFrame:setBackgroundColor(0xFFAAAF00)
 	--textFrame:disablePaintFrame()
 
+	-- play
 	playFrame = neutrino.CFrame()
 	playFrame:setPosition(frame)
 	playFrame:setTitle("abspielen")
 	playFrame:setIconName(neutrino.NEUTRINO_ICON_PLAY)
 	playFrame:setActionKey(null, "playMovie")
-	playFrame:disableShadow()
+	--playFrame:disableShadow()
 
+	-- info
 	infoFrame = neutrino.CFrame()
 	infoFrame:setPosition(frame.iX + 250 + 10, frame.iY, 250, 60)
 	infoFrame:setTitle("Info:")
 	infoFrame:setIconName(neutrino.NEUTRINO_ICON_INFO)
 	infoFrame:setActionKey(null, "info")
-	infoFrame:disableShadow()
+	--infoFrame:disableShadow()
 
 	testFrame = neutrino.CFrameBox(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
 	testFrame:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
@@ -1140,12 +1142,6 @@ function main()
 	end
 
 	return ret
-end
-
-function exec(parent, actionKey)
-	if actionKey == "movieBrowser" then
-		movieBrowser()
-	end
 end
 
 main()

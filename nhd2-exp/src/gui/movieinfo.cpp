@@ -275,6 +275,7 @@ bool CMovieInfo::saveMovieInfo(MI_MOVIE_INFO & movie_info, CFile * file)
 		if (result == true)
 		{
 			result = saveFile(file_xml, text.c_str(), text.size());	// save
+
 			if (result == false) 
 			{
 				dprintf(DEBUG_NORMAL, "CMovieInfo::saveMovieInfo: save error\r\n");
@@ -339,6 +340,28 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 					
 		if(!access(fname.c_str(), F_OK) )
 			movie_info->tfile = fname.c_str();
+		else //grab from tmdb
+		{
+			CTmdb * tmdb = new CTmdb();
+
+			if(tmdb->getMovieInfo(movie_info->epgTitle))
+			{
+				if ((!tmdb->getDescription().empty())) 
+				{
+					std::string tname = movie_info->file.getPath();
+					tname += movie_info->epgTitle;
+					tname += ".jpg";
+
+					tmdb->getSmallCover(tmdb->getPosterPath(), tname);
+
+					if(!tname.empty())
+						movie_info->tfile = tname;
+				}
+			}
+
+			delete tmdb;
+			tmdb = NULL;
+		}
 	}
 
 	return (result);
