@@ -313,9 +313,6 @@ void CMP3Player::showMenu()
 		alist->addItem(item);
 	}
 
-	//alist->setWidgetType(WIDGET_TYPE_EXTENDED);
-
-	//alist->setTimeOut(g_settings.timing[SNeutrinoSettings::TIMING_CHANLIST]);
 	alist->setSelected(selected);
 
 	alist->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);

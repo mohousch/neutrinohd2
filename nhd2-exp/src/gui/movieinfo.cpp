@@ -331,6 +331,20 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 	if (movie_info->productionDate > 50 && movie_info->productionDate < 200)	// backwardcompaibility
 		movie_info->productionDate += 1900;
 
+	//epgTitle
+	if (movie_info->epgTitle.empty())
+	{
+		std::string tmp_str = movie_info->file.getFileName();
+
+		removeExtension(tmp_str);
+
+		movie_info->epgTitle = tmp_str;
+
+		// epgInfo1
+		if(movie_info->epgInfo1.empty())
+			movie_info->epgInfo1 = tmp_str;
+	}
+
 	//grab for thumbnail
 	if (movie_info->tfile.empty())
 	{
@@ -338,29 +352,44 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 		fname = movie_info->file.Name;
 		changeFileNameExt(fname, ".jpg");
 					
-		if(!access(fname.c_str(), F_OK) )
+		//if(!access(fname.c_str(), F_OK) )
+		if (::file_exists(fname.c_str()))
 			movie_info->tfile = fname.c_str();
-		else //grab from tmdb
+		else
 		{
-			CTmdb * tmdb = new CTmdb();
+			fname.clear();
+			fname = movie_info->file.getPath();
+			fname += movie_info->epgTitle;
+			fname += ".jpg";
 
-			if(tmdb->getMovieInfo(movie_info->epgTitle))
+			if (::file_exists(fname.c_str()))
+				movie_info->tfile = fname.c_str();
+			else //grab from tmdb
 			{
-				if ((!tmdb->getDescription().empty())) 
+				CTmdb * tmdb = new CTmdb();
+
+				if(tmdb->getMovieInfo(movie_info->epgTitle))
 				{
-					std::string tname = movie_info->file.getPath();
-					tname += movie_info->epgTitle;
-					tname += ".jpg";
+					if ((!tmdb->getDescription().empty())) 
+					{
+						std::string tname = movie_info->file.getPath();
+						tname += movie_info->epgTitle;
+						tname += ".jpg";
 
-					tmdb->getSmallCover(tmdb->getPosterPath(), tname);
+						tmdb->getSmallCover(tmdb->getPosterPath(), tname);
 
-					if(!tname.empty())
-						movie_info->tfile = tname;
+						if(!tname.empty())
+							movie_info->tfile = tname;
+						else
+							movie_info->tfile = DATADIR "/neutrino/icons/nopreview.jpg";
+					}
 				}
-			}
+				else
+					movie_info->tfile = DATADIR "/neutrino/icons/nopreview.jpg";
 
-			delete tmdb;
-			tmdb = NULL;
+				delete tmdb;
+				tmdb = NULL;
+			}
 		}
 	}
 

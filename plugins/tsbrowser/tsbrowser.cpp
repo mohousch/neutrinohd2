@@ -52,6 +52,7 @@ class CTSBrowser : public CMenuTarget
 		void openFileBrowser();
 
 		void funArt(int i);
+		void playMovie(int i);
 
 		void showMenu();
 
@@ -75,6 +76,30 @@ CTSBrowser::CTSBrowser()
 
 	//
 	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
 }
 
 CTSBrowser::~CTSBrowser()
@@ -94,6 +119,9 @@ void CTSBrowser::loadPlaylist()
 
 	// recordingdir
 	Path = g_settings.network_nfs_recordingdir;
+
+	CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	loadBox.paint();
 	
 	//
 	//if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
@@ -116,33 +144,50 @@ void CTSBrowser::loadPlaylist()
 					
 			// load movie infos (from xml file)
 			m_movieInfo.loadMovieInfo(&movieInfo);
-
-			std::string tmp_str = files->getFileName();
-
-			removeExtension(tmp_str);
-
-			// refill if empty
-			if(movieInfo.epgTitle.empty())
-				movieInfo.epgTitle = tmp_str;
-
-			if(movieInfo.epgInfo1.empty())
-				movieInfo.epgInfo1 = tmp_str;
-
-			//if(movieInfo.epgInfo2.empty())
-			//	movieInfo.epgInfo2 = tmp_str;
-
-			//thumbnail
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-					
-			if(!access(fname.c_str(), F_OK) )
-				movieInfo.tfile = fname.c_str();
 					
 			// 
 			m_vMovieInfo.push_back(movieInfo);
 		}
 	}
+
+	// movie dir
+	Path = g_settings.network_nfs_moviedir;
+	filelist.clear();
+
+	//if(CFileHelpers::getInstance()->readDir(Path, &filelist, &fileFilter))
+	
+	CFileHelpers::getInstance()->addRecursiveDir(&filelist, Path, &fileFilter);
+
+	if(filelist.size() > 0)
+	{
+		// filter them
+		MI_MOVIE_INFO movieInfo;
+		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+
+		CFileList::iterator files = filelist.begin();
+		for(; files != filelist.end() ; files++)
+		{
+			//
+			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
+					
+			movieInfo.file.Name = files->Name;
+					
+			// load movie infos (from xml file)
+			m_movieInfo.loadMovieInfo(&movieInfo);
+
+			// skip duplicate
+			for (unsigned long i = 0; i < m_vMovieInfo.size(); i++)
+			{
+				if(m_vMovieInfo[i].file.getFileName() == movieInfo.file.getFileName())
+					m_vMovieInfo.erase(m_vMovieInfo.begin() + i); 
+			}
+					
+			// 
+			m_vMovieInfo.push_back(movieInfo);
+		}
+	}
+
+	loadBox.hide();
 }
 
 void CTSBrowser::openFileBrowser()
@@ -160,6 +205,9 @@ void CTSBrowser::openFileBrowser()
 		MI_MOVIE_INFO movieInfo;
 		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
 
+		CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+		loadBox.paint();
+
 		CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
 		for(; files != filebrowser.getSelectedFiles().end(); files++)
 		{
@@ -175,28 +223,6 @@ void CTSBrowser::openFileBrowser()
 			// load movie infos (from xml file)
 			m_movieInfo.loadMovieInfo(&movieInfo);
 
-			std::string tmp_str = files->getFileName();
-
-			removeExtension(tmp_str);
-
-			// refill if empty
-			if(movieInfo.epgTitle.empty())
-				movieInfo.epgTitle = tmp_str;
-
-			if(movieInfo.epgInfo1.empty())
-				movieInfo.epgInfo1 = tmp_str;
-
-			//if(movieInfo.epgInfo2.empty())
-			//	movieInfo.epgInfo2 = tmp_str;
-
-			//thumbnail
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-					
-			if(!access(fname.c_str(), F_OK) )
-				movieInfo.tfile = fname.c_str();
-
 			// skip duplicate
 			for (unsigned long i = 0; i < m_vMovieInfo.size(); i++)
 			{
@@ -207,6 +233,8 @@ void CTSBrowser::openFileBrowser()
 			// 
 			m_vMovieInfo.push_back(movieInfo);
 		}
+
+		loadBox.hide();
 	}
 }
 
@@ -376,7 +404,7 @@ void CTSBrowser::funArt(int i)
 
 	// playBox
 	CBox frame;
-	frame.iWidth = 250;
+	frame.iWidth = 300;
 	frame.iHeight = 60;
 	frame.iX = box.iX + 10;
 	frame.iY = box.iY + box.iHeight - 10 - 40 - 60;
@@ -412,8 +440,8 @@ void CTSBrowser::funArt(int i)
 
 	// info
 	CFrame * infoFrame = new CFrame();
-	infoFrame->setPosition(frame.iX + 250 + 10, frame.iY, 250, 60);
-	infoFrame->setTitle("Info:");
+	infoFrame->setPosition(frame.iX + 300 + 10, frame.iY, 300, 60);
+	infoFrame->setTitle("Movie Details:");
 	infoFrame->setIconName(NEUTRINO_ICON_INFO);
 	infoFrame->setActionKey(this, "RC_info");
 
@@ -422,7 +450,7 @@ void CTSBrowser::funArt(int i)
 	// play
 	CFrame *playFrame = new CFrame();
 	playFrame->setPosition(&frame);
-	playFrame->setTitle("abspielen");
+	playFrame->setTitle("Movie abspielen");
 	playFrame->setIconName(NEUTRINO_ICON_PLAY);
 	playFrame->setActionKey(this, "playMovie");
 
@@ -440,6 +468,15 @@ void CTSBrowser::funArt(int i)
 	window = NULL;	
 }
 
+void CTSBrowser::playMovie(int i)
+{
+	if (&m_vMovieInfo[i].file != NULL) 
+	{
+		tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[i]);
+		tmpMoviePlayerGui.exec(NULL, "");
+	}
+}
+
 #define HEAD_BUTTONS_COUNT	2
 const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
@@ -454,34 +491,21 @@ const struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_TMDB_INFO, NULL },
 	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_AUDIOPLAYER_ADD, NULL },
-	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE, NULL },
-	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE, NULL }
+	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_AUDIOPLAYER_DELETEALL, NULL },
+	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES, NULL },
 };
 
 void CTSBrowser::showMenu()
 {
-	mlist = new ClistBoxWidget("TS Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	mlist = new ClistBoxWidget("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "mplay");
 
 		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
-
-		item->set2lines();
-		item->setOption(m_vMovieInfo[i].epgChannel.c_str());
-
-		std::string tmp = m_vMovieInfo[i].epgTitle;
-		tmp += "\n";
-		tmp += m_vMovieInfo[i].epgInfo1;
-		tmp += "\n";
-		tmp += m_vMovieInfo[i].epgInfo2;
-
-		item->setHelpText(tmp.c_str());
-
-		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
-
-		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
+	
+		item->setHelpText(m_vMovieInfo[i].epgInfo1.empty() ? m_vMovieInfo[i].epgInfo2.c_str() : m_vMovieInfo[i].epgInfo1.c_str());
 
 		mlist->addItem(item);
 	}
@@ -501,6 +525,8 @@ void CTSBrowser::showMenu()
 	mlist->addKey(RC_red, this, CRCInput::getSpecialKeyName(RC_red));
 	mlist->addKey(RC_green, this, CRCInput::getSpecialKeyName(RC_green));
 	mlist->addKey(RC_spkr, this, CRCInput::getSpecialKeyName(RC_spkr));
+	mlist->addKey(RC_yellow, this, CRCInput::getSpecialKeyName(RC_yellow));
+	mlist->addKey(RC_blue, this, CRCInput::getSpecialKeyName(RC_blue));
 
 	mlist->exec(NULL, "");
 	delete mlist;
@@ -518,13 +544,6 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		selected = mlist->getSelected();
 
-/*
-		if (&m_vMovieInfo[mlist->getSelected()].file != NULL) 
-		{
-			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[mlist->getSelected()]);
-			tmpMoviePlayerGui.exec(NULL, "");
-		}
-**/
 		funArt(selected);
 
 		return RETURN_REPAINT;
@@ -533,11 +552,7 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		selected = mlist->getSelected();
 
-		if (&m_vMovieInfo[selected].file != NULL) 
-		{
-			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
-			tmpMoviePlayerGui.exec(NULL, "");
-		}
+		playMovie(selected);
 
 		return RETURN_REPAINT;
 	}
@@ -574,6 +589,20 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 			}
 		}
 
+		showMenu();
+
+		return RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_yellow")
+	{
+		m_vMovieInfo.clear();
+		showMenu();
+
+		return RETURN_EXIT_ALL;
+	}
+	else if(actionKey == "RC_blue")
+	{
+		loadPlaylist();
 		showMenu();
 
 		return RETURN_EXIT_ALL;

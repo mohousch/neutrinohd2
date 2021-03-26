@@ -1746,7 +1746,6 @@ void CMovieBrowser::refreshFoot(void)
 		next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
 	}
 
-	//MBFootButtons[2].localename = next_text.c_str();
 	MBFootButtons[2].locale = LOCALE_MOVIEBROWSER_NEXT_FOCUS;
 
 	CFooters footers(m_cBoxFrameFootRel, MB_FOOT_BUTTONS_COUNT, MBFootButtons);
