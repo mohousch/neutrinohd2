@@ -603,6 +603,7 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_blue")
 	{
 		loadPlaylist();
+		selected = 0;
 		showMenu();
 
 		return RETURN_EXIT_ALL;

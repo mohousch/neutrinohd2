@@ -96,6 +96,7 @@ void CAudioPlayerSettings::showMenu()
 
 	audioPlayerSettings.setMode(MODE_SETUP);
 	audioPlayerSettings.enableShrinkMenu();
+	audioPlayerSettings.enableSaveScreen();
 	
 	int shortcutAudioPlayer = 1;
 	

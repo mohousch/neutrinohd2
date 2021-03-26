@@ -764,7 +764,10 @@ void CMP3Dec::GetID3(FILE* in, CAudioMetaData * const m)
 #endif
 
 			// cover
-			const char * coverfile = "/tmp/cover.jpg";
+			//const char * coverfile = "/tmp/cover.jpg";
+			std::string coverfile = "/tmp/audioplayer/";
+			coverfile += m->title;
+			coverfile += ".jpg";
 
 			frame = id3_tag_findframe(tag, "APIC", 0);
 			
@@ -790,7 +793,7 @@ void CMP3Dec::GetID3(FILE* in, CAudioMetaData * const m)
 								m->cover = coverfile;
 
 								FILE * pFile;
-								pFile = fopen(coverfile, "wb");
+								pFile = fopen(coverfile.c_str(), "wb");
 								fwrite(data, 1 , size , pFile);
 								fclose (pFile);
 							}	

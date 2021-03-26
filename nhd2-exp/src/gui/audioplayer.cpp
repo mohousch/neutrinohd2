@@ -95,6 +95,8 @@ CAudioPlayerGui::CAudioPlayerGui()
 	m_frameBuffer = CFrameBuffer::getInstance();
 
 	Init();
+
+	CFileHelpers::getInstance()->createDir("/tmp/audioplayer", 0755);
 }
 
 void CAudioPlayerGui::Init(void)
@@ -127,6 +129,8 @@ void CAudioPlayerGui::Init(void)
 CAudioPlayerGui::~CAudioPlayerGui()
 {
 	m_playlist.clear();
+
+	CFileHelpers::getInstance()->removeDir("/tmp/audioplayer");
 }
 
 int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
@@ -202,10 +206,6 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	
 	//show infobar
 	g_RCInput->postMsg( NeutrinoMessages::SHOW_INFOBAR, 0 );
-	
-	// remove mp3 cover
-	if(!access("/tmp/cover.jpg", F_OK))
-		remove("/tmp/cover.jpg");
 
 	if(!m_playlist.empty())
 		m_playlist.clear();
@@ -374,7 +374,7 @@ void CAudioPlayerGui::playFile()
 		}
 		else if( ((msg == RC_setup) || (msg == RC_vfdmenu)))
 		{
-			hide();
+			//hide();
 			CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
 			audioPlayerSettingsMenu->exec(NULL, "");
 			delete audioPlayerSettingsMenu;
@@ -435,25 +435,27 @@ void CAudioPlayerGui::hide()
 
 void CAudioPlayerGui::paintFanArt(CAudiofile& File)
 {
+	m_frameBuffer->loadBackgroundPic("mp3.jpg");
+
 	if (!File.MetaData.cover.empty())
 	{
-		if(!access("/tmp/cover.jpg", F_OK))
+		if (file_exists(File.MetaData.cover.c_str()))
 		{
-			m_frameBuffer->loadBackgroundPic("/tmp/cover.jpg");
-			m_frameBuffer->blit();
+			//m_frameBuffer->loadBackgroundPic("/tmp/cover.jpg");
+			m_frameBuffer->displayImage(File.MetaData.cover, m_frameBuffer->getScreenX(), m_frameBuffer->getScreenY(), m_frameBuffer->getScreenWidth(), m_frameBuffer->getScreenHeight());
 		}
 		else
 		{
 			m_frameBuffer->loadBackgroundPic("mp3.jpg");
-			m_frameBuffer->blit();	
 		}
 				
 	}
 	else
 	{
 		m_frameBuffer->loadBackgroundPic("mp3.jpg");
-		m_frameBuffer->blit();	
 	}
+
+	m_frameBuffer->blit();	
 }
 
 void CAudioPlayerGui::paintInfo(CAudiofile& File)
@@ -482,8 +484,8 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 	int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
 	int xstart = (cFrameBox.iWidth - w) / 2;
 	
-	if(xstart < (BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET))
-		xstart = BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET;
+	if(xstart < (BORDER_LEFT + 1*cFrameBox.iHeight + ICON_OFFSET))
+		xstart = BORDER_LEFT + 1*cFrameBox.iHeight + ICON_OFFSET;
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + 4 + cFrameBox.iHeight/3, cFrameBox.iWidth - 20, tmp, COL_INFOBAR); // UTF-8
 
@@ -501,20 +503,10 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 
 	w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
 	xstart = (cFrameBox.iWidth - w)/2;
-	if(xstart < (BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET))
-		xstart = BORDER_LEFT + 2*cFrameBox.iHeight + ICON_OFFSET;
+	if(xstart < (BORDER_LEFT + 1*cFrameBox.iHeight + ICON_OFFSET))
+		xstart = BORDER_LEFT + 1*cFrameBox.iHeight + ICON_OFFSET;
 	
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + 2 + cFrameBox.iHeight/3 + 2 + cFrameBox.iHeight/3, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - 2*cFrameBox.iHeight - ICON_OFFSET, tmp, COL_INFOBAR); // UTF-8		
-		
-	// cover
-	if (!File.MetaData.cover.empty())
-	{
-		if(!access("/tmp/cover.jpg", F_OK))
-		{
-			m_frameBuffer->displayImage("/tmp/cover.jpg", cFrameBox.iX + 2, cFrameBox.iY + 2, cFrameBox.iHeight - 4, cFrameBox.iHeight - 4);
-
-		}		
-	}
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + 2 + cFrameBox.iHeight/3 + 2 + cFrameBox.iHeight/3, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT - 1*cFrameBox.iHeight - ICON_OFFSET, tmp, COL_INFOBAR); // UTF-8		
 
 	//playstate
 	int icon_w, icon_h;
@@ -536,7 +528,7 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 	}
 	
 	m_frameBuffer->getIconSize(icon, &icon_w, &icon_h);
-	m_frameBuffer->paintIcon(icon, cFrameBox.iX + cFrameBox.iHeight + ICON_OFFSET, cFrameBox.iY + (cFrameBox.iHeight - icon_h)/2);
+	m_frameBuffer->paintIcon(icon, cFrameBox.iX /*+ cFrameBox.iHeight*/ + ICON_OFFSET, cFrameBox.iY + (cFrameBox.iHeight - icon_h)/2);
 		
 	//
 	m_metainfo.clear();

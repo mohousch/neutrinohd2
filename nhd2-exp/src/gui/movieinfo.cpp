@@ -339,10 +339,6 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 		removeExtension(tmp_str);
 
 		movie_info->epgTitle = tmp_str;
-
-		// epgInfo1
-		if(movie_info->epgInfo1.empty())
-			movie_info->epgInfo1 = tmp_str;
 	}
 
 	//grab for thumbnail
