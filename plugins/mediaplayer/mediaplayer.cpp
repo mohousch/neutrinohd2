@@ -116,9 +116,10 @@ BROWSER:
 			mfile.file.Name = files->Name;
 
 			// info if there is xml file|skip audio files
-			if(mfile.file.getType() != CFile::FILE_AUDIO)
-				cMovieInfo.loadMovieInfo(&mfile, &mfile.file);
+			//if(mfile.file.getType() != CFile::FILE_AUDIO)
+			cMovieInfo.loadMovieInfo(&mfile, &mfile.file);
 
+/*
 			// epgTitle
 			if(mfile.epgTitle.empty())
 			{
@@ -135,6 +136,7 @@ BROWSER:
 
 			// epginfo1
 			// epgInfo2
+*/
 					
 			tmpMoviePlayerGui.addToPlaylist(mfile);
 		}

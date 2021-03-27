@@ -95,8 +95,6 @@ CAudioPlayerGui::CAudioPlayerGui()
 	m_frameBuffer = CFrameBuffer::getInstance();
 
 	Init();
-
-	CFileHelpers::getInstance()->createDir("/tmp/audioplayer", 0755);
 }
 
 void CAudioPlayerGui::Init(void)
@@ -129,8 +127,6 @@ void CAudioPlayerGui::Init(void)
 CAudioPlayerGui::~CAudioPlayerGui()
 {
 	m_playlist.clear();
-
-	CFileHelpers::getInstance()->removeDir("/tmp/audioplayer");
 }
 
 int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
@@ -441,8 +437,7 @@ void CAudioPlayerGui::paintFanArt(CAudiofile& File)
 	{
 		if (file_exists(File.MetaData.cover.c_str()))
 		{
-			//m_frameBuffer->loadBackgroundPic("/tmp/cover.jpg");
-			m_frameBuffer->displayImage(File.MetaData.cover, m_frameBuffer->getScreenX(), m_frameBuffer->getScreenY(), m_frameBuffer->getScreenWidth(), m_frameBuffer->getScreenHeight());
+			m_frameBuffer->loadBackgroundPic(File.MetaData.cover/*, m_frameBuffer->getScreenX(), m_frameBuffer->getScreenY(), m_frameBuffer->getScreenWidth(), m_frameBuffer->getScreenHeight()*/);
 		}
 		else
 		{

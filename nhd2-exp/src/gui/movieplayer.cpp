@@ -474,6 +474,13 @@ void CMoviePlayerGui::PlayFile(void)
 
 			// startposition			
 			startposition = 1000 * showStartPosSelectionMenu();
+
+			////TEST
+			if (getFileExt(playlist[selected].file.Name) == "mp3")
+			{
+				if (!playlist[selected].tfile.empty())
+					frameBuffer->loadBackgroundPic(playlist[selected].tfile/*, frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight()*/);
+			}
 		}
 
 		//
@@ -1339,6 +1346,13 @@ void CMoviePlayerGui::PlayFile(void)
 				//
 				update_lcd = true;
 				start_play = true;
+
+				////TEST
+				if (getFileExt(playlist[selected].file.Name) == "mp3")
+				{
+					if (!playlist[selected].tfile.empty())
+						frameBuffer->loadBackgroundPic(playlist[selected].tfile/*, frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight()*/);
+				}
 			}
 		}
 		else if(msg == RC_right || msg == RC_next)
@@ -1401,6 +1415,13 @@ void CMoviePlayerGui::PlayFile(void)
 				//
 				update_lcd = true;
 				start_play = true;
+
+				////TEST
+				if (getFileExt(playlist[selected].file.Name) == "mp3")
+				{
+					if (!playlist[selected].tfile.empty())
+						frameBuffer->loadBackgroundPic(playlist[selected].tfile/*, frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight()*/);
+				}
 			}
 		}
 		else if (msg == (neutrino_msg_t)g_settings.key_screenshot)

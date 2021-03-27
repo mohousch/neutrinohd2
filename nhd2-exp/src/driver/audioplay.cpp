@@ -231,6 +231,7 @@ CAudioPlayer::CAudioPlayer()
 
 CAudioPlayer::~CAudioPlayer()
 {
+	CFileHelpers::getInstance()->removeDir("/tmp/audioplayer");
 }
 
 void CAudioPlayer::init()
@@ -238,7 +239,9 @@ void CAudioPlayer::init()
 	CBaseDec::Init();
 	
 	state = CBaseDec::STOP;	
-	thrPlay = 0;	
+	thrPlay = 0;
+
+	CFileHelpers::getInstance()->createDir("/tmp/audioplayer", 0755);	
 }
 
 void CAudioPlayer::sc_callback(void *arg)

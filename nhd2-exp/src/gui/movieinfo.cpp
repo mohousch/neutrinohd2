@@ -68,6 +68,8 @@
 
 #include <client/zapittools.h>
 
+#include <driver/audioplay.h>
+
 
 CMovieInfo::CMovieInfo()
 {
@@ -341,6 +343,23 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 		movie_info->epgTitle = tmp_str;
 	}
 
+	//epgInfo1
+	if (movie_info->epgInfo1.empty() && g_settings.enable_tmdb_infos)
+	{
+		CTmdb * tmdb = new CTmdb();
+
+		if(tmdb->getMovieInfo(movie_info->epgTitle))
+		{
+			if ((!tmdb->getDescription().empty())) 
+			{
+				movie_info->epgInfo1 = tmdb->getDescription();
+			}
+		}
+
+		delete tmdb;
+		tmdb = NULL;
+	}
+
 	//grab for thumbnail
 	if (movie_info->tfile.empty())
 	{
@@ -348,7 +367,6 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 		fname = movie_info->file.Name;
 		changeFileNameExt(fname, ".jpg");
 					
-		//if(!access(fname.c_str(), F_OK) )
 		if (::file_exists(fname.c_str()))
 			movie_info->tfile = fname.c_str();
 		else
@@ -360,7 +378,7 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 
 			if (::file_exists(fname.c_str()))
 				movie_info->tfile = fname.c_str();
-			else //grab from tmdb
+			else if (g_settings.enable_tmdb_infos) //grab from tmdb
 			{
 				CTmdb * tmdb = new CTmdb();
 
@@ -386,6 +404,19 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 				delete tmdb;
 				tmdb = NULL;
 			}
+		}
+
+		// mp3
+		if (getFileExt(movie_info->file.Name) == "mp3")
+		{
+			CAudiofile audiofile(movie_info->file.Name, CFile::EXTENSION_MP3);
+
+			CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
+
+			if (!audiofile.MetaData.cover.empty())
+				movie_info->tfile = audiofile.MetaData.cover;
+			else
+				movie_info->tfile = DATADIR "/neutrino/icons/mp3.jpg";
 		}
 	}
 

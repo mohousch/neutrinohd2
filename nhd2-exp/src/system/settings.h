@@ -481,6 +481,7 @@ struct SNeutrinoSettings
 
 	// tmdb
 	std::string tmdbkey;
+	int enable_tmdb_infos;
 	// youtube
 	std::string ytkey;
 	//weather
