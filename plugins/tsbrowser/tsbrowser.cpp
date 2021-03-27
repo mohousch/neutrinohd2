@@ -120,7 +120,7 @@ void CTSBrowser::loadPlaylist()
 	// recordingdir
 	Path = g_settings.network_nfs_recordingdir;
 
-	CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	CHintBox loadBox("Movie Browser", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	loadBox.paint();
 	
 	//
@@ -205,7 +205,7 @@ void CTSBrowser::openFileBrowser()
 		MI_MOVIE_INFO movieInfo;
 		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
 
-		CHintBox loadBox("CWidget", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+		CHintBox loadBox("Movie Browser", g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 		loadBox.paint();
 
 		CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
@@ -498,6 +498,8 @@ const struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
 void CTSBrowser::showMenu()
 {
 	mlist = new ClistBoxWidget("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+
+	mlist->clearAll();
 
 	for (unsigned int i = 0; i < m_vMovieInfo.size(); i++)
 	{

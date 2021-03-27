@@ -475,11 +475,11 @@ void CMoviePlayerGui::PlayFile(void)
 			// startposition			
 			startposition = 1000 * showStartPosSelectionMenu();
 
-			////TEST
-			if (getFileExt(playlist[selected].file.Name) == "mp3")
+			// audio files
+			if(playlist[selected].file.getType() == CFile::FILE_AUDIO)
 			{
 				if (!playlist[selected].tfile.empty())
-					frameBuffer->loadBackgroundPic(playlist[selected].tfile/*, frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight()*/);
+					frameBuffer->loadBackgroundPic(playlist[selected].tfile);
 			}
 		}
 
@@ -1347,11 +1347,11 @@ void CMoviePlayerGui::PlayFile(void)
 				update_lcd = true;
 				start_play = true;
 
-				////TEST
-				if (getFileExt(playlist[selected].file.Name) == "mp3")
+				//
+				if(playlist[selected].file.getType() == CFile::FILE_AUDIO)
 				{
 					if (!playlist[selected].tfile.empty())
-						frameBuffer->loadBackgroundPic(playlist[selected].tfile/*, frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight()*/);
+						frameBuffer->loadBackgroundPic(playlist[selected].tfile);
 				}
 			}
 		}
@@ -1416,11 +1416,11 @@ void CMoviePlayerGui::PlayFile(void)
 				update_lcd = true;
 				start_play = true;
 
-				////TEST
-				if (getFileExt(playlist[selected].file.Name) == "mp3")
+				//
+				if(playlist[selected].file.getType() == CFile::FILE_AUDIO)
 				{
 					if (!playlist[selected].tfile.empty())
-						frameBuffer->loadBackgroundPic(playlist[selected].tfile/*, frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight()*/);
+						frameBuffer->loadBackgroundPic(playlist[selected].tfile);
 				}
 			}
 		}

@@ -955,8 +955,8 @@ function movieBrowser()
 
 	-- fill items
 	fileBrowser.Filter = fileFilter
-	if fileBrowser:readDir(PATH, filelist) then
-	end
+	--if fileBrowser:readDir(PATH, filelist) then
+	--end
 
 	menu:exec(null, "")
 

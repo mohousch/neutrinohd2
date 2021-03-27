@@ -44,6 +44,7 @@
 #include <system/localize.h>
 #include <system/helpers.h>
 
+#include <gui/widget/textbox.h>
 #include <gui/widget/widget_helpers.h>
 
 #include <driver/color.h>
@@ -166,6 +167,8 @@ class ClistBoxWidget : public CMenuTarget
 		bool MenuPos;
 
 		std::string actionKey;
+
+		CTextBox * textBox;
 		
 	public:
 		ClistBoxWidget();

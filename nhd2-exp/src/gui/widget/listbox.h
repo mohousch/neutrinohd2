@@ -31,6 +31,7 @@
 
 #include <driver/framebuffer.h>
 
+#include <gui/widget/textbox.h>
 #include <gui/widget/widget_helpers.h>
 #include <gui/widget/widget.h>
 
@@ -568,6 +569,8 @@ class ClistBox : public CWidgetItem
 		void restoreScreen();
 
 		std::string actionKey;
+
+		CTextBox * textBox;
 
 	public:
 		ClistBox(const int x = 0, int const y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);

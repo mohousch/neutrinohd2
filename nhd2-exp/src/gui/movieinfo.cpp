@@ -344,79 +344,90 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 	}
 
 	//epgInfo1
-	if (movie_info->epgInfo1.empty() && g_settings.enable_tmdb_infos)
+	if(movie_info->file.getType() == CFile::FILE_VIDEO)
 	{
-		CTmdb * tmdb = new CTmdb();
-
-		if(tmdb->getMovieInfo(movie_info->epgTitle))
+		if (movie_info->epgInfo1.empty() && g_settings.enable_tmdb_infos)
 		{
-			if ((!tmdb->getDescription().empty())) 
-			{
-				movie_info->epgInfo1 = tmdb->getDescription();
-			}
-		}
+			CTmdb * tmdb = new CTmdb();
 
-		delete tmdb;
-		tmdb = NULL;
+			if(tmdb->getMovieInfo(movie_info->epgTitle))
+			{
+				if ((!tmdb->getDescription().empty())) 
+				{
+					movie_info->epgInfo1 = tmdb->getDescription();
+				}
+			}
+
+			delete tmdb;
+			tmdb = NULL;
+		}
 	}
 
 	//grab for thumbnail
 	if (movie_info->tfile.empty())
 	{
-		std::string fname = "";
-		fname = movie_info->file.Name;
-		changeFileNameExt(fname, ".jpg");
-					
-		if (::file_exists(fname.c_str()))
-			movie_info->tfile = fname.c_str();
-		else
+		// audio files
+		if(movie_info->file.getType() == CFile::FILE_AUDIO)
 		{
-			fname.clear();
-			fname = movie_info->file.getPath();
-			fname += movie_info->epgTitle;
-			fname += ".jpg";
-
-			if (::file_exists(fname.c_str()))
-				movie_info->tfile = fname.c_str();
-			else if (g_settings.enable_tmdb_infos) //grab from tmdb
+			// mp3
+			if (getFileExt(movie_info->file.Name) == "mp3")
 			{
-				CTmdb * tmdb = new CTmdb();
+				CAudiofile audiofile(movie_info->file.Name, CFile::EXTENSION_MP3);
 
-				if(tmdb->getMovieInfo(movie_info->epgTitle))
-				{
-					if ((!tmdb->getDescription().empty())) 
-					{
-						std::string tname = movie_info->file.getPath();
-						tname += movie_info->epgTitle;
-						tname += ".jpg";
+				CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
 
-						tmdb->getSmallCover(tmdb->getPosterPath(), tname);
-
-						if(!tname.empty())
-							movie_info->tfile = tname;
-						else
-							movie_info->tfile = DATADIR "/neutrino/icons/nopreview.jpg";
-					}
-				}
+				if (!audiofile.MetaData.cover.empty())
+					movie_info->tfile = audiofile.MetaData.cover;
 				else
-					movie_info->tfile = DATADIR "/neutrino/icons/nopreview.jpg";
-
-				delete tmdb;
-				tmdb = NULL;
+					movie_info->tfile = DATADIR "/neutrino/icons/mp3.jpg";
 			}
-		}
-
-		// mp3
-		if (getFileExt(movie_info->file.Name) == "mp3")
-		{
-			CAudiofile audiofile(movie_info->file.Name, CFile::EXTENSION_MP3);
-
-			CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
-
-			if (!audiofile.MetaData.cover.empty())
-				movie_info->tfile = audiofile.MetaData.cover;
 			else
 				movie_info->tfile = DATADIR "/neutrino/icons/mp3.jpg";
+		}
+		else if(movie_info->file.getType() == CFile::FILE_VIDEO)
+		{
+			std::string fname = "";
+			fname = movie_info->file.Name;
+			changeFileNameExt(fname, ".jpg");
+					
+			if (::file_exists(fname.c_str()))
+				movie_info->tfile = fname.c_str();
+			else
+			{
+				fname.clear();
+				fname = movie_info->file.getPath();
+				fname += movie_info->epgTitle;
+				fname += ".jpg";
+
+				if (::file_exists(fname.c_str()))
+					movie_info->tfile = fname.c_str();
+				else if (g_settings.enable_tmdb_infos) //grab from tmdb
+				{
+					CTmdb * tmdb = new CTmdb();
+
+					if(tmdb->getMovieInfo(movie_info->epgTitle))
+					{
+						if ((!tmdb->getDescription().empty())) 
+						{
+							std::string tname = movie_info->file.getPath();
+							tname += movie_info->epgTitle;
+							tname += ".jpg";
+
+							tmdb->getSmallCover(tmdb->getPosterPath(), tname);
+
+							if(!tname.empty())
+								movie_info->tfile = tname;
+							else
+								movie_info->tfile = DATADIR "/neutrino/icons/nopreview.jpg";
+						}
+					}
+					else
+						movie_info->tfile = DATADIR "/neutrino/icons/nopreview.jpg";
+
+					delete tmdb;
+					tmdb = NULL;
+				}
+			}
 		}
 	}
 

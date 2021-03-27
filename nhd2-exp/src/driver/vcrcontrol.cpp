@@ -826,12 +826,18 @@ bool CVCRControl::Screenshot(const t_channel_id channel_id, char * fname, bool m
 	
 	printf("Executing %s\n", cmd);
 	
-	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SCREENSHOT_CREATING) );
+	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SCREENSHOT_CREATING));
+
 	if(msg)
 		hintBox->paint();
 	
 	if(system(cmd))
+	{
+		if(msg)
+			hintBox->hide();
+
 		return false;
+	}
 	
 	if(msg)
 		hintBox->hide();

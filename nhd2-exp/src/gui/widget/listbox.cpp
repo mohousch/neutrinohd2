@@ -42,7 +42,7 @@
 #include <system/debug.h>
 
 
-static CTextBox * textBox = NULL;
+//static CTextBox * textBox = NULL;
 
 ///
 // CMenuItem
@@ -1733,6 +1733,8 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 
 	savescreen = false;
 	background = NULL;
+
+	textBox = NULL;
 }
 
 ClistBox::ClistBox(CBox* position)
@@ -1811,6 +1813,8 @@ ClistBox::ClistBox(CBox* position)
 
 	savescreen = false;
 	background = NULL;
+
+	textBox = NULL;
 }
 
 ClistBox::~ClistBox()
