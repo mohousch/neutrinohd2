@@ -4610,7 +4610,7 @@ void CTestMenu::testClistBoxWidget()
 
 		item->setHelpText(m_vMovieInfo[i].epgInfo2.c_str());
 
-		// standard
+		// standard | classic
 		item->setInfo1(m_vMovieInfo[i].epgInfo1.c_str());
 		item->setInfo2(m_vMovieInfo[i].epgInfo2.c_str());
 
@@ -4634,8 +4634,6 @@ void CTestMenu::testClistBoxWidget()
 
 	// foot
 	listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
-
-	// footinfo
 	listMenu->enablePaintFootInfo(80);
 	listMenu->setFootInfoMode(FOOT_HINT_MODE);
 
@@ -4687,9 +4685,9 @@ void CTestMenu::testClistBoxWidget1()
 	// foot
 	//listMenu->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
-	// foot info
-	listMenu->enablePaintFootInfo();
-	listMenu->setFootInfoMode(FOOT_HINT_MODE);
+	// foot info in menu mode are always enabled
+	//listMenu->enablePaintFootInfo();
+	//listMenu->setFootInfoMode(FOOT_INFO_MODE);
 
 	listMenu->addKey(RC_info, this, "minfo");
 

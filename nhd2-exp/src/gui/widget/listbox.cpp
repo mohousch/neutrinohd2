@@ -2394,7 +2394,7 @@ void ClistBox::paintItemInfo(int pos)
 	
 					textBox = new CTextBox(cFrameBox.iX + 2, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight + 2, cFrameBox.iWidth - 4, cFrameFootInfo.iHeight - 4);
 					textBox->disablePaintBackground();
-					textBox->setMode(~SCROLL);
+					textBox->setMode(AUTO_WIDTH);
 
 					// HelpText
 					if(!item->itemHelpText.empty())
@@ -2496,7 +2496,7 @@ void ClistBox::paintItemInfo(int pos)
 	
 					textBox = new CTextBox(cFrameBox.iX + 2, cFrameBox.iY + cFrameBox.iHeight - cFrameFootInfo.iHeight + 2, cFrameBox.iWidth - 4, cFrameFootInfo.iHeight - 4);
 					textBox->disablePaintBackground();
-					textBox->setMode(~SCROLL);
+					textBox->setMode(AUTO_WIDTH);
 
 					// HelpText
 					if(!item->itemHelpText.empty())

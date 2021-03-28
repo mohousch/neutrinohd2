@@ -115,28 +115,7 @@ BROWSER:
 
 			mfile.file.Name = files->Name;
 
-			// info if there is xml file|skip audio files
-			//if(mfile.file.getType() != CFile::FILE_AUDIO)
 			cMovieInfo.loadMovieInfo(&mfile, &mfile.file);
-
-/*
-			// epgTitle
-			if(mfile.epgTitle.empty())
-			{
-				std::string Title = files->getFileName();
-				removeExtension(Title);
-				mfile.epgTitle = Title;
-			}
-
-			// tfile
-			std::string fname = files->Name;
-			changeFileNameExt(fname,".jpg");	
-			if(!access(fname.c_str(), F_OK) )
-				mfile.tfile= fname.c_str();
-
-			// epginfo1
-			// epgInfo2
-*/
 					
 			tmpMoviePlayerGui.addToPlaylist(mfile);
 		}

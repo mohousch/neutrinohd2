@@ -2637,28 +2637,6 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 					// load movie infos (from xml file)
 					m_movieInfo.loadMovieInfo(&movieInfo);
 					
-					// refill structure
-					if(flist[i].getExtension() != CFile::EXTENSION_TS)
-					{
-						std::string tmp_str = flist[i].getFileName();
-
-						removeExtension(tmp_str);
-
-						// refill if empty
-						if(movieInfo.epgTitle.empty())
-							movieInfo.epgTitle = tmp_str;
-
-						if(movieInfo.epgInfo1.empty())
-							movieInfo.epgInfo1 = tmp_str;
-
-						//if(movieInfo.epgInfo2.empty())
-						//	movieInfo.epgInfo2 = tmp_str;
-					}
-					
-					// serieName
-					//if(movieInfo.serieName.empty())
-					//	movieInfo.serieName = flist[i].getFileName();
-					
 					//
 					movieInfo.file.Mode = flist[i].Mode;
 					//movieInfo.file.Size = flist[i].Size;
@@ -2673,14 +2651,6 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 					}
 					
 					movieInfo.dirItNr = m_dirNames.size()-1;
-					
-					//thumbnail
-					std::string fname = "";
-					fname = flist[i].Name;
-					changeFileNameExt(fname, ".jpg");
-					
-					if(!access(fname.c_str(), F_OK) )
-						movieInfo.tfile = fname.c_str();
 					
 					// 
 					m_vMovieInfo.push_back(movieInfo);

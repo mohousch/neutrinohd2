@@ -186,9 +186,8 @@ void CYTBrowser::showMenu()
 	{
 		itemTitle = m_vMovieInfo[i].epgTitle + " (" + to_string(m_vMovieInfo[i].length) + " Min)";
 
-		item = new ClistBoxItem(itemTitle.c_str(), true, /*m_vMovieInfo[i].epgInfo2.c_str()*/NULL, this, "play", RC_nokey, NULL,  file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item = new ClistBoxItem(itemTitle.c_str(), true, NULL, this, "play", RC_nokey, NULL,  file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
 
-		//item->setInfo1(m_vMovieInfo[i].epgInfo2.c_str());
 		item->setHelpText(m_vMovieInfo[i].epgInfo2.c_str());
  
 		moviesMenu->addItem(item);
@@ -198,7 +197,6 @@ void CYTBrowser::showMenu()
 	moviesMenu->setWidgetType(WIDGET_TYPE_FRAME);
 	moviesMenu->setItemsPerPage(3, 2);
 	moviesMenu->enablePaintFootInfo();
-	//moviesMenu->setItemBoxColor(COL_YELLOW);
 
 	moviesMenu->setHeaderButtons(YTHeadButtons, YT_HEAD_BUTTONS_COUNT);
 	moviesMenu->setFooterButtons(YTFootButtons, YT_FOOT_BUTTONS_COUNT);
