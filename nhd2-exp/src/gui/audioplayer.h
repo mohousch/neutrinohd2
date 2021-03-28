@@ -71,7 +71,6 @@ class CAudioPlayerGui : public CMenuTarget
 	private:
 		CFrameBuffer* m_frameBuffer;
 		CBox cFrameBox;
-		CBox timeBox;
 
 		//
 		int m_current;
