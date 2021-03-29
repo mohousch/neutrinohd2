@@ -115,7 +115,6 @@ CMoviePlayerGui::CMoviePlayerGui()
 
 	// infoViewer
 	visible = false;
-	m_mode = MODE_ASC;
 	GetDimensions();
 }
 
@@ -586,15 +585,6 @@ void CMoviePlayerGui::PlayFile(void)
 		// timeosd
 		if (IsVisible()) 
 		{
-			if (GetMode() == MODE_ASC) 
-			{
-				update(position / 1000);
-			} 
-			else 
-			{
-				update((duration - position) / 1000);
-			}
-
 			showMovieInfo();
 		}
 
@@ -749,19 +739,10 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				if (IsVisible()) 
 				{
-					if (GetMode() == MODE_ASC) 
-					{
-						SetMode(MODE_DESC);
-						update((duration - position) / 1000);
-					} 
-					else 
-					{
-						hide();
-					}
+					showMovieInfo();//FIXME:
 				}
 				else 
 				{
-					SetMode(MODE_ASC);
 					showMovieInfo();//FIXME:
 				}
 			}
@@ -793,19 +774,11 @@ void CMoviePlayerGui::PlayFile(void)
 			{
 				if (IsVisible()) 
 				{
-					if (GetMode() == MODE_ASC) 
-					{
-						SetMode(MODE_DESC);
-						update((duration - position) / 1000);
-					} 
-					else 
-					{
-						hide();
-					}
+					showMovieInfo();//FIXME:
 				}
 				else 
 				{
-					SetMode(MODE_ASC);
+					showMovieInfo();//FIXME:
 				}
 			}
 		} 
@@ -930,39 +903,7 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 		else if (msg == RC_info)
 		{
-			if(playlist[selected].ytid != "timeshift")
-			{
-				if (IsVisible()) 
-				{
-					if (GetMode() == MODE_ASC) 
-					{
-						SetMode(MODE_DESC);
-						update((duration - position) / 1000);
-					} 
-					else 
-					{
-						hide();
-					}
-				}
-				else 
-				{
-					SetMode(MODE_ASC);
-					showMovieInfo();//FIXME:
-				}
-
-			}
-			else
-			{
-				if (IsVisible()) 
-				{
-					hide();
-				}
-				else
-				{
-					SetMode(MODE_ASC);
-					showMovieInfo();//FIXME:
-				}
-			}
+			showMovieInfo();//FIXME:
 		}
 		else if(msg == RC_setup)
 		{
@@ -995,9 +936,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			// time
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1025,9 +964,7 @@ void CMoviePlayerGui::PlayFile(void)
 
 			// movie info viewer
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1039,9 +976,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			// time
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1053,9 +988,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			// time
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1066,9 +999,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			// time
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1079,9 +1010,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			// time
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1092,9 +1021,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			// time
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1105,9 +1032,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			// time
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1118,9 +1043,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			// time
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1141,9 +1064,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			// time
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1155,9 +1076,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			//time
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1168,9 +1087,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			// time
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1182,9 +1099,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			// time
 			if (!IsVisible()) 
-			{
-				SetMode(MODE_ASC);
-					
+			{	
 				time_forced = true;
 				showMovieInfo();//FIXME:
 			}
@@ -1568,22 +1483,6 @@ void CMoviePlayerGui::showMovieInfo()
 
 void CMoviePlayerGui::GetDimensions()
 {
-	// time
-	m_xstart = g_settings.screen_StartX + 10;
-	m_xend = g_settings.screen_EndX - 10;
-	m_height = g_Font[TIMEOSD_FONT]->getHeight();
-	m_y = g_settings.screen_StartY + 10;
-	m_width = g_Font[TIMEOSD_FONT]->getRenderWidth("00:00:00");
-	twidth = m_xend - m_xstart;
-	
-	// infobar
-	BoxStartX = m_xstart;
-	BoxWidth = m_xend - m_xstart;
-	BoxHeight = TIMEBARH * 3;
-	BoxStartY = g_settings.screen_EndY - BoxHeight - 10;
-	BoxEndY = BoxStartY + BoxHeight;
-	BoxEndX = m_xend;
-
 	// movieinfo
 	cFrameBoxInfo.iHeight = BOXHEIGHT_MOVIEINFO;
 	cFrameBoxInfo.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - BORDER_LEFT - BORDER_RIGHT;
@@ -1597,77 +1496,12 @@ void CMoviePlayerGui::GetDimensions()
 	cFrameBoxButton.iY = cFrameBoxInfo.iY + cFrameBoxInfo.iHeight - cFrameBoxButton.iHeight;
 }
 
-void CMoviePlayerGui::update(time_t time_show)
-{
-	time_t tDisplayTime = 0;
-	static time_t oldDisplayTime = 0;
-	char cDisplayTime[8 + 1];
-	fb_pixel_t color1, color2;
-
-	//dprintf(DEBUG_NORMAL, "CMoviePlayerGui::update time %ld\n", time_show);
-	
-	if(!visible)
-		return;
-
-	if(m_mode == MODE_ASC) 
-	{
-		color1 = COL_MENUCONTENT_PLUS_0;
-		color2 = COL_MENUCONTENT;
-	} 
-	else 
-	{
-		color1 = COL_MENUCONTENTSELECTED_PLUS_0;
-		color2 = COL_MENUCONTENTSELECTED;
-		
-		if(!time_show) 
-			time_show = 1;
-	}
-
-	if(time_show) 
-	{
-		m_time_show = time_show;
-		tDisplayTime = m_time_show;
-	} 
-	else 
-	{
-		if(m_mode == MODE_ASC) 
-		{
-			tDisplayTime = m_time_show + (time(NULL) - m_time_dis);
-		} 
-		else 
-		{
-			tDisplayTime = m_time_show + (m_time_dis - time(NULL));
-		}
-	}
-
-	if(tDisplayTime < 0)
-		tDisplayTime = 0;
-
-	if(tDisplayTime != oldDisplayTime) 
-	{
-		oldDisplayTime = tDisplayTime;
-		strftime(cDisplayTime, 9, "%T", gmtime(&tDisplayTime));//FIXME
-		
-		// time shadow
-		frameBuffer->paintBoxRel(m_xend - m_width - 10, m_y, m_width + 10, m_height, COL_MENUCONTENT_PLUS_6);
-
-		// time window
-		frameBuffer->paintBoxRel(m_xend - m_width - 10 + 2, m_y + 2, m_width + 10 - 4, m_height - 4, color1/*, NO_RADIUS, CORNER_NONE, g_settings.infobar_gradient*/);
-
-		// time
-		g_Font[TIMEOSD_FONT]->RenderString(m_xend - m_width - 5, m_y + m_height, m_width + 5, cDisplayTime, color2);
-	}
-}
-
 void CMoviePlayerGui::hide()
 {
 	//printf("CMovieInfoViewer::hide: x %d y %d xend %d yend %d\n", m_xstart, m_y , m_xend, m_height + 15);
 
 	if(!visible)
 		return;
-
-	// hide time
-	frameBuffer->paintBackgroundBoxRel(m_xend - m_width - 10, m_y, m_width + 10, m_height);
 
 	// hide infoviewer
 	frameBuffer->paintBackgroundBoxRel(cFrameBoxInfo.iX - 1, cFrameBoxInfo.iY - 1, cFrameBoxInfo.iWidth + 2, cFrameBoxInfo.iHeight + 2);
@@ -1826,7 +1660,7 @@ void CMoviePlayerGui::show(std::string Title, std::string Info, short Percent, c
 		sprintf(strSpeed, "%d", speed);
 		
 		//FIXME:??? position
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->RenderString(icon_x + icon_w + ICON_OFFSET, icon_y + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->getHeight(), BoxWidth/5, strSpeed, COL_INFOBAR ); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->RenderString(icon_x + icon_w + ICON_OFFSET, icon_y + (icon_h - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_NUMBER]->getHeight(), cFrameBoxInfo.iWidth/5, strSpeed, COL_INFOBAR ); // UTF-8
 	}
 		
 	int speedWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth("-8");
@@ -1836,9 +1670,24 @@ void CMoviePlayerGui::show(std::string Title, std::string Info, short Percent, c
 	
 	// title
 	int TitleHeight = cFrameBoxInfo.iY + 30 + TIMESCALE_BAR_HEIGHT + (cFrameBoxInfo.iHeight - (30 + TIMESCALE_BAR_HEIGHT + cFrameBoxButton.iHeight) -2*g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight();	//40???
+
+	int t_w = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth("00:00:00 / 00:00:00");
 	
 	// Title	
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(InfoStartX, TitleHeight, InfoWidth, (char *)Title.c_str(), COL_INFOBAR, 0, true);
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(InfoStartX, TitleHeight, InfoWidth - t_w, (char *)Title.c_str(), COL_INFOBAR, 0, true);
+
+	// position/duration
+	time_t tDisplayTime = position/1000;
+	time_t dDisplayTime = duration/1000;
+	char cDisplayTime[9];
+	char durationTime[11];
+	strftime(cDisplayTime, 9, "%T", gmtime(&tDisplayTime));//FIXME
+	strftime(durationTime, 11, "/%T", gmtime(&dDisplayTime));//FIXME
+
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(cFrameBoxInfo.iX + cFrameBoxInfo.iWidth - 5 - t_w, cFrameBoxInfo.iY + 30 + TIMESCALE_BAR_HEIGHT + (cFrameBoxInfo.iHeight - (30 + TIMESCALE_BAR_HEIGHT + cFrameBoxButton.iHeight) -2*g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight(), t_w/2, cDisplayTime/*play_time*/, COL_INFOBAR);
+
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(cFrameBoxInfo.iX + cFrameBoxInfo.iWidth - 5 - t_w/2, cFrameBoxInfo.iY + 30 + TIMESCALE_BAR_HEIGHT + (cFrameBoxInfo.iHeight - (30 + TIMESCALE_BAR_HEIGHT + cFrameBoxButton.iHeight) -2*g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight(), t_w/2 + 1, durationTime/*tot_time*/, COL_INFOBAR);	
+	////
 
 	// Info
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(InfoStartX, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight() + TitleHeight, InfoWidth, (char *)Info.c_str(), COL_INFOBAR, 0, true);

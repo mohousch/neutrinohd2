@@ -125,28 +125,10 @@ class CMoviePlayerGui : public CMenuTarget
 		void startMovieInfoViewer(void);
 		void killMovieInfoViewer(void);
 
-	// infoViewer
-	public:
-		enum mode
-		{
-			MODE_ASC,
-			MODE_DESC
-		};
-	
+	// infoViewer	
 	private:
 		//
-		time_t m_time_dis;
-		time_t m_time_show;
-
-		//
 		bool visible;
-
-		//
-		int m_xstart, m_xend, m_y, m_height, m_width, twidth;
-		int BoxStartX, BoxStartY, BoxEndY, BoxEndX;
-		int BoxWidth, BoxHeight;
-
-		mode m_mode;
 
 		//
 		void GetDimensions();
@@ -163,10 +145,7 @@ class CMoviePlayerGui : public CMenuTarget
 
 		// infoViewer
 		void showMovieInfo();
-		void update(time_t time_show = 0);
 		bool IsVisible() {return visible;};
-		void SetMode(mode m) { m_mode = m; /*visible = true;*/};
-		mode GetMode() { return m_mode;};
 
 		//
 		void show(std::string Title, std::string Info, short Percent, const unsigned int ac3state, const int speed, const int playstate, bool show_bookmark = false, bool m_loop = false);
