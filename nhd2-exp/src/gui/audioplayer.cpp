@@ -238,8 +238,8 @@ void CAudioPlayerGui::playFile()
 				playNext();
 		}
 
-		if(!m_inetmode)
-			updateTimes(true);
+		//if(!m_inetmode)
+		//	updateTimes(true);
 
 		if(!infoPainted)
 			paintInfo(m_playlist[m_current]);
@@ -528,6 +528,10 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 	}
 
 	infoPainted = true;
+
+	////TEST
+	if(!m_inetmode)
+		updateTimes(true);
 }
 
 bool CAudioPlayerGui::playNext(bool allow_rotate)
