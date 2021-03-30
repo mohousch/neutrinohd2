@@ -20,6 +20,10 @@
 </p>
 
 <p align="center">
+  <img src="nhd2-exp/doc/resources/tsbrowser_art.png">
+</p>
+
+<p align="center">
   <img src="nhd2-exp/doc/resources/movietrailer.png">
 </p>
 
