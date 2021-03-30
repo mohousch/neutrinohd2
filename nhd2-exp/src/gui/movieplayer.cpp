@@ -274,21 +274,17 @@ void CMoviePlayerGui::removeFromPlaylist(long pos)
 
 void CMoviePlayerGui::startMovieInfoViewer(void)
 {
-/*
 	if(sec_timer_id == 0)
 		sec_timer_id = g_RCInput->addTimer(g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]*1000*1000);
-*/
 }
 
 void CMoviePlayerGui::killMovieInfoViewer(void)
 {
-/*
 	if(sec_timer_id)
 	{
 		g_RCInput->killTimer(sec_timer_id);
 		sec_timer_id = 0;
 	}
-*/
 }
 
 int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
