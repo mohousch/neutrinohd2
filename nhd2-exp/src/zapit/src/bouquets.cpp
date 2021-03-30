@@ -120,9 +120,8 @@ CZapitChannel * CZapitBouquet::getChannelByChannelID(const t_channel_id channel_
 
 void CZapitBouquet::sortBouquet(void)
 {
-	sort(tvChannels.begin(), tvChannels.end(), CmpChannelByChName());
-	
-	sort(radioChannels.begin(), radioChannels.end(), CmpChannelByChName());
+	//sort(tvChannels.begin(), tvChannels.end(), CmpChannelByChName());
+	//sort(radioChannels.begin(), radioChannels.end(), CmpChannelByChName());
 }
 
 void CZapitBouquet::addService(CZapitChannel *newChannel)
@@ -387,11 +386,12 @@ void CBouquetManager::sortBouquets(void)
 	sort(Bouquets.begin(), Bouquets.end(), CmpBouquetByChName());
 }
 
-void CBouquetManager::parseBouquetsXml(const char* fname, bool bUser)
+void CBouquetManager::parseBouquetsXml(const char *fname, bool bUser)
 {
 	_xmlDocPtr parser = NULL;
 
 	parser = parseXmlFile(fname);
+
 	if (parser == NULL)
 		return;
 
@@ -405,8 +405,6 @@ void CBouquetManager::parseBouquetsXml(const char* fname, bool bUser)
 		t_original_network_id original_network_id;
 		t_service_id service_id;
 		t_transport_stream_id transport_stream_id;
-
-		//
 		t_satellite_position  satellitePosition = 0;
 		freq_id_t freq = 0;
 		
@@ -872,7 +870,7 @@ void CBouquetManager::makeRemainingChannelsBouquet(void)
 		}
 	}
 
-	sort(unusedChannels.begin(), unusedChannels.end(), CmpChannelByChName());
+	//sort(unusedChannels.begin(), unusedChannels.end(), CmpChannelByChName());
 
 	for (ZapitChannelList::const_iterator it = unusedChannels.begin(); it != unusedChannels.end(); it++) 
 	{

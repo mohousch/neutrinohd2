@@ -45,7 +45,6 @@
 
 #define MAX_INPUT_CHARS		40
 
-
 struct SNeutrinoSettings
 {
 	// VIDEO
