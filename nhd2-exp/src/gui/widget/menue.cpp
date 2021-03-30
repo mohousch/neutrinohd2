@@ -122,7 +122,9 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 	wanted_width = width;
 	wanted_height = height;
 
+	exit_pressed = false;
         current_page = 0;
+
 	offx = 0;
 	offy = 0;
 	x = 0;
@@ -1192,9 +1194,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 	int retval = RETURN_REPAINT;
 
 	int pos = 0;
-	exit_pressed = false;
 	int cnt = 0;
-	current_page = 0;
 
 	if (parent)
 		parent->hide();

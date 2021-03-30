@@ -574,38 +574,7 @@ int CEpgData::show(const t_channel_id channel_id, uint64_t a_id, time_t * a_star
 	widthr = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_DATE]->getRenderWidth(epg_date);
 	g_Font[SNeutrinoSettings::FONT_TYPE_EPG_DATE]->RenderString(cFrameBox.iX + cFrameBox.iWidth - 40 - widthr, cFrameBox.iY + cFrameBox.iHeight - cFootBox.iHeight - cFollowScreeningBox.iHeight + (cFollowScreeningBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_DATE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_DATE]->getHeight(), widthr, epg_date, COL_MENUHEAD);
 
-	// tfile
-	std::string tfile = " ";
-
-	if (g_settings.enable_tmdb_infos && !epgData.title.empty())
-	{
-		CTmdb * tmdb = new CTmdb();
-
-		if(tmdb->getMovieInfo(epgData.title))
-		{
-			if ((!tmdb->getDescription().empty())) 
-			{
-				std::string tname = "/tmp/";
-				tname += epgData.title;
-				tname += ".jpg";
-
-				tmdb->getSmallCover(tmdb->getPosterPath(), tname);
-
-				if(!tname.empty())
-					tfile = tname;
-			}
-		}
-
-		delete tmdb;
-		tmdb = NULL;
-	}
-
-	//epg-text
-	if (!tfile.empty())
-		textBox->setText(epgBuffer.c_str(), tfile.c_str(), 160, 320);
-	else
-		textBox->setText(epgBuffer.c_str());
-
+	textBox->setText(epgBuffer.c_str());
 	textBox->paint();
 
 	// show Timer Event Buttons
