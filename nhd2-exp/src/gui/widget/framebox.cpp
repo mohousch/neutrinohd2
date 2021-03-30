@@ -35,6 +35,9 @@ extern CPlugins * g_PluginList;    // defined in neutrino.cpp
 // CFrame
 CFrame::CFrame(int m)
 {
+	captionFont = g_Font[SNeutrinoSettings::FONT_TYPE_MENU];
+	optionFont = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1];
+
 	caption = "";
 	mode = m;
 
@@ -134,26 +137,26 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 			// caption
 			if(!caption.empty())
 			{
-				int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(caption);
+				int c_w = captionFont->getRenderWidth(caption);
 
-				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + 2/*((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w) >> 1)*/, window.getWindowsPos().iY + 3 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), color, 0, true); //
+				captionFont->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + 2/*((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w) >> 1)*/, window.getWindowsPos().iY + 3 + captionFont->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), color, 0, true); //
 			}
 
 			// option
 			if(!option.empty())
 			{
-				int o_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(option);
+				int o_w = optionFont->getRenderWidth(option);
 
-				g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + 2 /*((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - o_w) >> 1)*/, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset -iw, option.c_str(), color, 0, true);
+				optionFont->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + 2 /*((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - o_w) >> 1)*/, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset -iw, option.c_str(), color, 0, true);
 			}
 		}
 		else
 		{
 			if(!caption.empty())
 			{
-				int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(caption);
+				int c_w = captionFont->getRenderWidth(caption);
 
-				g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + 2 /*((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w)>> 1)*/, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), color);
+				captionFont->RenderString(window.getWindowsPos().iX + BORDER_LEFT + iconOffset + iw + 2 /*((window.getWindowsPos().iWidth - BORDER_LEFT - iconOffset - iw - c_w)>> 1)*/, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + captionFont->getHeight(), window.getWindowsPos().iWidth - BORDER_LEFT - BORDER_RIGHT - iconOffset - iw, caption.c_str(), color);
 			}
 		}
 	}
@@ -162,7 +165,7 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		int c_h = 0;
 
 		if(!caption.empty())
-			c_h = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight() + 20;
+			c_h = optionFont->getHeight() + 20;
 
 		if(!iconName.empty())
 		{
@@ -171,9 +174,9 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 
 		if(!caption.empty())
 		{
-			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(caption);
+			int c_w = optionFont->getRenderWidth(caption);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + ((window.getWindowsPos().iWidth - c_w)>> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth, caption.c_str(), color);
+			optionFont->RenderString(window.getWindowsPos().iX + ((window.getWindowsPos().iWidth - c_w)>> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth, caption.c_str(), color);
 		}
 	}
 	else if (mode == FRAME_BUTTON)
@@ -191,9 +194,9 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		// caption
 		if(!caption.empty())
 		{
-			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(caption);
+			int c_w = optionFont->getRenderWidth(caption);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + iconOffset + iw + iconOffset, window.getWindowsPos().iY + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight() + (window.getWindowsPos().iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2, window.getWindowsPos().iWidth - iconOffset - iw - iconOffset, caption.c_str(), color, 0, true); //
+			optionFont->RenderString(window.getWindowsPos().iX + iconOffset + iw + iconOffset, window.getWindowsPos().iY + optionFont->getHeight() + (window.getWindowsPos().iHeight - optionFont->getHeight())/2, window.getWindowsPos().iWidth - iconOffset - iw - iconOffset, caption.c_str(), color, 0, true); //
 		}
 	}
 	else if ( (mode == FRAME_TEXT) || (mode == FRAME_TEXT_NOTSELECTABLE))
@@ -210,6 +213,7 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 
 		textBox->disablePaintBackground();
 		textBox->setMode(AUTO_WIDTH);
+		textBox->setFontText(optionFont);
 
 		// caption
 		if(!caption.empty())
@@ -223,7 +227,7 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		int c_h = 0;
 
 		if(!caption.empty() && pluginOrigName)
-			c_h = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight() + 20;
+			c_h = optionFont->getHeight() + 20;
 
 		if(!iconName.empty())
 		{
@@ -232,9 +236,9 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 
 		if(!caption.empty() && pluginOrigName)
 		{
-			int c_w = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getRenderWidth(caption);
+			int c_w = optionFont->getRenderWidth(caption);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(window.getWindowsPos().iX + 2 /*((window.getWindowsPos().iWidth - c_w)>> 1)*/, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - 4, caption.c_str(), color);
+			optionFont->RenderString(window.getWindowsPos().iX + 2 /*((window.getWindowsPos().iWidth - c_w)>> 1)*/, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - 4, caption.c_str(), color);
 		}
 	}
 	else if (mode == FRAME_LINE_VERTICAL)

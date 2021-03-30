@@ -30,6 +30,7 @@
 #include <vector>
 
 #include <driver/framebuffer.h>
+#include <driver/fontrenderer.h>
 
 #include <gui/widget/window.h>
 #include <gui/widget/widget.h>
@@ -61,6 +62,9 @@ class CFrame
 		std::string caption;
 		std::string option;
 
+		CFont *captionFont;
+		CFont *optionFont;
+
 		fb_pixel_t item_backgroundColor;
 
 		CMenuTarget* jumpTarget;
@@ -85,6 +89,8 @@ class CFrame
 		virtual void setMode(int m = FRAME_BOX){mode = m;};
 		virtual void setActionKey(CMenuTarget *Target, const char *const ActionKey){jumpTarget = Target; actionKey = ActionKey;};
 		virtual void setDirectKey(neutrino_msg_t key){directKey = key;};
+		virtual void setCaptionFont(CFont * font){captionFont = font;};
+		virtual void setOptionFont(CFont *font){optionFont = font;}; 
 
 		int exec(CMenuTarget *parent);
 

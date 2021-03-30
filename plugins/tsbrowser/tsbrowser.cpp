@@ -441,6 +441,7 @@ void CTSBrowser::funArt(int i)
 	// info
 	CFrame * infoFrame = new CFrame();
 	infoFrame->setPosition(frame.iX + 300 + 10, frame.iY, 300, 60);
+	infoFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
 	infoFrame->setTitle("Movie Details:");
 	infoFrame->setIconName(NEUTRINO_ICON_INFO);
 	infoFrame->setActionKey(this, "RC_info");
@@ -450,6 +451,7 @@ void CTSBrowser::funArt(int i)
 	// play
 	CFrame *playFrame = new CFrame();
 	playFrame->setPosition(&frame);
+	playFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
 	playFrame->setTitle("Movie abspielen");
 	playFrame->setIconName(NEUTRINO_ICON_PLAY);
 	playFrame->setActionKey(this, "playMovie");

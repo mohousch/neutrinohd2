@@ -669,7 +669,7 @@ function testCWindow()
 	frame4 = neutrino.CFrame(neutrino.FRAME_TEXT)
 	frame4:setPosition(textbox)
 	--frame4:setBackgroundColor(0xFFAAAA)
-	local title = "Lua Text\nframe2 bla vbzgstrrfasvghvschcgcqvs h bla h hdgvassbs\n454hjjhdsbbdhj\n"
+	local title = movieInfo.epgInfo2
 	frame4:setTitle(title)
 	frame4:setActionKey(null, "frame4")
 	--frame4:disableShadow()
