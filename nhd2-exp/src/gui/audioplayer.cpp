@@ -104,7 +104,7 @@ void CAudioPlayerGui::Init(void)
 	m_current = 0;
 	m_metainfo.clear();
 
-	infoPainted = false;
+	//infoPainted = false;
 
 	repeatMode = REPEAT_NONE;
 
@@ -241,7 +241,7 @@ void CAudioPlayerGui::playFile()
 		//if(!m_inetmode)
 		//	updateTimes(true);
 
-		if(!infoPainted)
+		//if(!infoPainted)
 			paintInfo(m_playlist[m_current]);
 		
 		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
@@ -409,7 +409,7 @@ void CAudioPlayerGui::hide()
 	// infos
 	m_frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 
-	infoPainted = false;
+	//infoPainted = false;
 
 	m_frameBuffer->blit();
 }
@@ -527,13 +527,11 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + cFrameBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()/2, cFrameBox.iWidth- 2*xstart, m_metainfo, COL_INFOBAR);
 	}
 
-	infoPainted = true;
+	//infoPainted = true;
 
 	////TEST
 	if(!m_inetmode)
 	{
-		//updateTimes(true);
-
 		m_time_total = CAudioPlayer::getInstance()->getTimeTotal();
 
 		if (m_playlist[m_current].MetaData.total_time != CAudioPlayer::getInstance()->getTimeTotal())
@@ -546,7 +544,6 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 		if ((m_time_played != CAudioPlayer::getInstance()->getTimePlayed()))
 		{
 			m_time_played = CAudioPlayer::getInstance()->getTimePlayed();
-			//updatePlayed = true;
 		}
 		
 		// total time
