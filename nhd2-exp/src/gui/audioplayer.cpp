@@ -104,12 +104,9 @@ void CAudioPlayerGui::Init(void)
 	m_current = 0;
 	m_metainfo.clear();
 
-	//infoPainted = false;
-
 	repeatMode = REPEAT_NONE;
 
 	// playInfo
-	//
 	cFrameBox.iWidth = m_frameBuffer->getScreenWidth(true) - 20; 
 	if((g_settings.screen_EndX - g_settings.screen_StartX) < cFrameBox.iWidth)
 		cFrameBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX) - 20;
@@ -132,7 +129,6 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	m_state = CAudioPlayerGui::STOP;
 
 	// playInfo
-	//
 	cFrameBox.iWidth = m_frameBuffer->getScreenWidth(true) - 20; 
 	if((g_settings.screen_EndX - g_settings.screen_StartX) < cFrameBox.iWidth)
 		cFrameBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX) - 20;
@@ -140,7 +136,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &actionKey)
 	cFrameBox.iX = (((g_settings.screen_EndX - g_settings.screen_StartX) - cFrameBox.iWidth)/ 2) + g_settings.screen_StartX;
 	cFrameBox.iY = g_settings.screen_EndY - 10 - cFrameBox.iHeight;
 	
-	m_idletime = time(NULL);
+	//m_idletime = time(NULL);
 
 	if(parent)
 		parent->hide(); 
@@ -238,11 +234,7 @@ void CAudioPlayerGui::playFile()
 				playNext();
 		}
 
-		//if(!m_inetmode)
-		//	updateTimes(true);
-
-		//if(!infoPainted)
-			paintInfo(m_playlist[m_current]);
+		paintInfo(m_playlist[m_current]);
 		
 		g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
 
@@ -409,8 +401,6 @@ void CAudioPlayerGui::hide()
 	// infos
 	m_frameBuffer->paintBackgroundBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, cFrameBox.iHeight);
 
-	//infoPainted = false;
-
 	m_frameBuffer->blit();
 }
 
@@ -527,9 +517,7 @@ void CAudioPlayerGui::paintInfo(CAudiofile& File)
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(cFrameBox.iX + xstart, cFrameBox.iY + cFrameBox.iHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()/2, cFrameBox.iWidth- 2*xstart, m_metainfo, COL_INFOBAR);
 	}
 
-	//infoPainted = true;
-
-	////TEST
+	// playTime/timeTotal
 	if(!m_inetmode)
 	{
 		m_time_total = CAudioPlayer::getInstance()->getTimeTotal();

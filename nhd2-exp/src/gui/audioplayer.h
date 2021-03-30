@@ -88,15 +88,11 @@ class CAudioPlayerGui : public CMenuTarget
 		CAudioPlayList m_playlist;
 
 		int            m_LastMode;
-		int            m_idletime;
 		bool           m_inetmode;
-
-		//
 		bool updateMeta;
 		bool updateLcd;
 		bool updateScreen;
-		bool infoPainted;
-
+	
 		//
 		void Init(void);
 
