@@ -6,9 +6,9 @@ install-exec-local:
 
 
 uninstall-local:
-	-rm $(DESTDIR)$(PLUGINDIR)/lua/netzkino_hd.cfg
-	-rm $(DESTDIR)$(PLUGINDIR)/lua/netzkino_hd.lua
-	-rm $(DESTDIR)$(PLUGINDIR)/lua/netzkino.png
+	-rm $(DESTDIR)$(PLUGINDIR)/netzkino_hd/netzkino_hd.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/netzkino_hd/netzkino_hd.lua
+	-rm $(DESTDIR)$(PLUGINDIR)/netzkino_hd/netzkino.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/netzkino_hd
 
 

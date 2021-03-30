@@ -36,7 +36,8 @@ SUBDIRS += lua \
 	Wunderschön \
 	netzkino_hd \
 	mtv \
-	media_one 
+	media_one \
+	arte_concert
 endif
 
 

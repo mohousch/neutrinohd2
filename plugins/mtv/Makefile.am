@@ -6,9 +6,9 @@ install-exec-local:
 
 
 uninstall-local:
-	-rm $(DESTDIR)$(PLUGINDIR)/lua/mtv.cfg
-	-rm $(DESTDIR)$(PLUGINDIR)/lua/mtv.lua
-	-rm $(DESTDIR)$(PLUGINDIR)/lua/mtv_hint.png
+	-rm $(DESTDIR)$(PLUGINDIR)/mtv/mtv.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/mtv/mtv.lua
+	-rm $(DESTDIR)$(PLUGINDIR)/mtv/mtv_hint.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/mtv
 
 
