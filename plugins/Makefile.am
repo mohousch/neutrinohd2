@@ -35,7 +35,8 @@ if ENABLE_LUA
 SUBDIRS += lua \
 	Wunderschön \
 	netzkino_hd \
-	mtv
+	mtv \
+	media_one 
 endif
 
 

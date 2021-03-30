@@ -65,5 +65,6 @@ lua/Makefile
 Wunderschön/Makefile
 netzkino_hd/Makefile
 mtv/Makefile
+media_one/Makefile
 ])
 
