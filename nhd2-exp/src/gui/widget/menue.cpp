@@ -60,7 +60,7 @@
 extern CPlugins * g_PluginList;    // defined in neutrino.cpp
 
 //
-//static CTextBox * textBox = NULL;
+static CTextBox * textBox = NULL;
 
 /// ClistBoxWidget
 ClistBoxWidget::ClistBoxWidget()
@@ -178,7 +178,7 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 
 	actionKey = "";
 
-	textBox = NULL;
+	//textBox = NULL;
 }
 
 void ClistBoxWidget::move(int xoff, int yoff)

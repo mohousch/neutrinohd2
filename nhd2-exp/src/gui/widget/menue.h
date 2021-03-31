@@ -168,7 +168,7 @@ class ClistBoxWidget : public CMenuTarget
 
 		std::string actionKey;
 
-		CTextBox * textBox;
+		//CTextBox * textBox;
 		
 	public:
 		ClistBoxWidget();

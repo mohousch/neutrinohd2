@@ -46,9 +46,12 @@ enum {
 	FRAME_BOX = 0,
 	FRAME_PICTURE,
 	FRAME_PICTURE_NOTSELECTABLE,
-	FRAME_BUTTON,
+	FRAME_ICON,
+	FRAME_ICON_NOTSELECTABLE,
 	FRAME_TEXT,
 	FRAME_TEXT_NOTSELECTABLE,
+	FRAME_TEXT_LINE,
+	FRAME_TEXT_LINE_NOTSELECTABLE,
 	FRAME_PLUGIN,
 	FRAME_LINE_VERTICAL,
 	FRAME_LINE_HORIZONTAL
@@ -86,7 +89,7 @@ class CFrame
 		virtual void setOption(const char *text){if (text != NULL) option = text;};
 		virtual void setPlugin(const char * const pluginName);
 		virtual void showPluginName(){pluginOrigName = true;};
-		virtual void setMode(int m = FRAME_BOX){mode = m;};
+		virtual void setMode(int m = FRAME_BOX);
 		virtual void setActionKey(CMenuTarget *Target, const char *const ActionKey){jumpTarget = Target; actionKey = ActionKey;};
 		virtual void setDirectKey(neutrino_msg_t key){directKey = key;};
 		virtual void setCaptionFont(CFont * font){captionFont = font;};
@@ -96,7 +99,7 @@ class CFrame
 
 		virtual bool isSelectable(void)
 		{
-			if ((mode == FRAME_PICTURE_NOTSELECTABLE) || (mode == FRAME_LINE_HORIZONTAL) || (mode == FRAME_LINE_VERTICAL) || (mode == FRAME_TEXT_NOTSELECTABLE)) 
+			if ((mode == FRAME_PICTURE_NOTSELECTABLE) || (mode == FRAME_LINE_HORIZONTAL) || (mode == FRAME_LINE_VERTICAL) || (mode == FRAME_TEXT_NOTSELECTABLE) || (mode == FRAME_TEXT_LINE_NOTSELECTABLE) || (mode == FRAME_ICON_NOTSELECTABLE)) 
 				return false; 
 			else 
 				return true;

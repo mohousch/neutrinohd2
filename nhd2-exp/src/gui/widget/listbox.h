@@ -570,7 +570,7 @@ class ClistBox : public CWidgetItem
 
 		std::string actionKey;
 
-		CTextBox * textBox;
+		//CTextBox * textBox;
 
 	public:
 		ClistBox(const int x = 0, int const y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);

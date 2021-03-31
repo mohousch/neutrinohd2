@@ -178,6 +178,9 @@
 #define NEUTRINO_ICON_TMDB			"tmdb"
 #define NEUTRINO_ICON_HDD	 		"hdd"
 #define NEUTRINO_ICON_TUNER	 		"tuner"
+#define NEUTRINO_ICON_STAR_ON			"star-on"
+#define NEUTRINO_ICON_STAR_OFF			"star-off"
+
 
 // design icons
 #define NEUTRINO_ICON_MENUITEM_TV			CONFIGDIR "/design/tv.png"

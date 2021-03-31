@@ -80,7 +80,6 @@
 // widget
 #include <gui/widget/icons.h>
 #include <gui/widget/drawable.h>
-#include <gui/widget/icons.h>
 #include <gui/widget/widget_helpers.h>
 #include <gui/widget/window.h>
 #include <gui/widget/progresswindow.h>
@@ -94,7 +93,6 @@
 #include <gui/widget/textbox.h>
 #include <gui/widget/menue.h>
 #include <gui/widget/framebox.h>
-#include <gui/widget/widget.h>
 #include <gui/widget/widget.h>
 
 // gui
@@ -158,9 +156,6 @@
 //%include <lib/libdvbapi/video_cs.h>
 %include <lib/libdvbapi/dmx_cs.h>
 
-// jsoncpp
-//%include <lib/jsoncpp/include/json/json.h>
-
 // driver
 %include <src/driver/fontrenderer.h>
 %include <src/driver/framebuffer.h>
@@ -192,8 +187,7 @@
 
 // widget
 %include <src/gui/widget/icons.h>
-%include <src/gui/widget/drawable.h>
-%include <src/gui/widget/icons.h>
+//%include <src/gui/widget/drawable.h>
 %include <src/gui/widget/widget_helpers.h>
 %include <src/gui/widget/window.h>
 %include <src/gui/widget/progresswindow.h>
@@ -208,8 +202,6 @@
 %include <src/gui/widget/menue.h>
 %include <src/gui/widget/framebox.h>
 %include <src/gui/widget/widget.h>
-%include <src/gui/widget/widget.h>
-
 
 // gui
 %include <src/gui/movieinfo.h>

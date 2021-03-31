@@ -561,7 +561,7 @@ function testCWindow()
 	textbox.iWidth = 350
 	textbox.iHeight = 350
 	textbox.iX = box.iX + box.iWidth - 10 - picBox.iWidth - 10 - 100 - 10 - textbox.iWidth
-	textbox.iY = box.iY + headBox.iHeight + 10
+	textbox.iY = box.iY + headBox.iHeight + 10 + 60 + 25
 
 	local pluginBox = neutrino.CBox()
 	pluginBox.iWidth = 100
@@ -639,7 +639,7 @@ function testCWindow()
 	frame1:setActionKey(null, "frame1")
 
 	-- Icon
-	frame2 = neutrino.CFrame(neutrino.FRAME_BUTTON)
+	frame2 = neutrino.CFrame(neutrino.FRAME_ICON)
 	frame2:setPosition(iconBox)
 	frame2:setTitle("Exit")
 	frame2:setIconName(neutrino.NEUTRINO_ICON_BUTTON_RED)
@@ -665,14 +665,39 @@ function testCWindow()
 	frame3:setIconName(itemIcon)
 	frame3:setActionKey(null, "frame3")
 
+	--title
+	titleFrame = neutrino.CFrame(neutrino.FRAME_TEXT_LINE_NOTSELECTABLE)
+	titleFrame:setPosition(textbox.iX, box.iY + headBox.iHeight + 10, 350, 40)
+	titleFrame:setTitle(movieInfo.epgTitle)
+
+	--icon
+	iconFrame1= neutrino.CFrame(neutrino.FRAME_ICON_NOTSELECTABLE)
+	iconFrame1:setPosition(textbox.iX, box.iY + headBox.iHeight + 50, 25, 25)
+	iconFrame1:setIconName(neutrino.NEUTRINO_ICON_STAR_ON)
+	iconFrame1:disablePaintFrame()
+
+	iconFrame2= neutrino.CFrame(neutrino.FRAME_ICON_NOTSELECTABLE)
+	iconFrame2:setPosition(textbox.iX + 25, box.iY + headBox.iHeight + 50, 25, 25)
+	iconFrame2:setIconName(neutrino.NEUTRINO_ICON_STAR_ON)
+	iconFrame2:disablePaintFrame()
+
+	iconFrame3= neutrino.CFrame(neutrino.FRAME_ICON_NOTSELECTABLE)
+	iconFrame3:setPosition(textbox.iX + 25 + 25, box.iY + headBox.iHeight + 50, 25, 25)
+	iconFrame3:setIconName(neutrino.NEUTRINO_ICON_STAR_ON)
+	iconFrame3:disablePaintFrame()
+
+	iconFrame4= neutrino.CFrame(neutrino.FRAME_ICON_NOTSELECTABLE)
+	iconFrame4:setPosition(textbox.iX + 25 +25 + 25, box.iY + headBox.iHeight + 50, 25, 25)
+	iconFrame4:setIconName(neutrino.NEUTRINO_ICON_STAR_OFF)
+	iconFrame4:disablePaintFrame()
+
 	-- Text
-	frame4 = neutrino.CFrame(neutrino.FRAME_TEXT)
+	frame4 = neutrino.CFrame(neutrino.FRAME_TEXT_NOTSELECTABLE)
 	frame4:setPosition(textbox)
 	--frame4:setBackgroundColor(0xFFAAAA)
-	local title = movieInfo.epgInfo2
-	frame4:setTitle(title)
+	frame4:setTitle(movieInfo.epgInfo2 .. "...")
 	frame4:setActionKey(null, "frame4")
-	--frame4:disableShadow()
+	frame4:disablePaintFrame()
 
 	-- plugin
 	frame5 = neutrino.CFrame(neutrino.FRAME_PLUGIN)
@@ -688,6 +713,11 @@ function testCWindow()
 
 	testFrame = neutrino.CFrameBox()
 	testFrame:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
+	testFrame:addFrame(titleFrame)
+	testFrame:addFrame(iconFrame1)
+	testFrame:addFrame(iconFrame2)
+	testFrame:addFrame(iconFrame3)
+	testFrame:addFrame(iconFrame4)
 	testFrame:addFrame(frame4)
 	testFrame:addFrame(frame5)
 	testFrame:addFrame(frame3)
@@ -990,7 +1020,7 @@ function funArt()
 	box.iY = fb:getScreenY() + 40
 
 	local frame = neutrino.CBox()
-	frame.iWidth = 250
+	frame.iWidth = 300
 	frame.iHeight = 60
 	frame.iX = box.iX + 10
 	frame.iY = box.iY + box.iHeight - 10 - 40 - 60
@@ -999,7 +1029,7 @@ function funArt()
 	textbox.iWidth = 350
 	textbox.iHeight = 350
 	textbox.iX = box.iX + 10
-	textbox.iY = box.iY + 40 + 10
+	textbox.iY = box.iY + 40 + 10 + 40
 
 	local window = neutrino.CWindow(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
 	window:enableCenterPos()
@@ -1012,7 +1042,7 @@ function funArt()
 	-- text
 	textFrame = neutrino.CFrame(neutrino.FRAME_TEXT_NOTSELECTABLE)
 	textFrame:setPosition(textbox)
-	textFrame:setTitle(movieInfo.epgTitle .. "\n" .. movieInfo.epgInfo1 .."\n" .. movieInfo.epgInfo2)
+	textFrame:setTitle(movieInfo.epgTitle .. "\n\n" .. movieInfo.epgInfo2)
 	--textFrame:setActionKey(null, "info")
 	textFrame:disableShadow()
 	--textFrame:setBackgroundColor(0xFFAAAF00)
@@ -1021,17 +1051,17 @@ function funArt()
 	-- play
 	playFrame = neutrino.CFrame()
 	playFrame:setPosition(frame)
-	--playFrame:setCaptionFont(neutrino.g_Font[neutrino.FONT_TYPE_EPG_INFO1])
-	playFrame:setTitle("abspielen")
+	--playFrame:setCaptionFont(neutrino.SWIG_FONT_TYPE_EPG_INFO1)
+	playFrame:setTitle("Movie abspielen")
 	playFrame:setIconName(neutrino.NEUTRINO_ICON_PLAY)
 	playFrame:setActionKey(null, "playMovie")
 	--playFrame:disableShadow()
 
 	-- info
 	infoFrame = neutrino.CFrame()
-	infoFrame:setPosition(frame.iX + 250 + 10, frame.iY, 250, 60)
-	--infoFrame:setCaptionFont(neutrino.g_Font[neutrino.FONT_TYPE_EPG_INFO1])
-	infoFrame:setTitle("Info:")
+	infoFrame:setPosition(frame.iX + 300 + 10, frame.iY, 300, 60)
+	--infoFrame:setCaptionFont(neutrino.SWIG_FONT_TYPE_EPG_INFO1)
+	infoFrame:setTitle("Movie Info:")
 	infoFrame:setIconName(neutrino.NEUTRINO_ICON_INFO)
 	infoFrame:setActionKey(null, "info")
 	--infoFrame:disableShadow()

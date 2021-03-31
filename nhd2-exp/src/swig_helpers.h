@@ -22,7 +22,13 @@
 
 #include <driver/framebuffer.h>
 #include <driver/rcinput.h>
+#include <driver/fontrenderer.h>
+#include <system/settings.h>
 
+
+// fonts
+extern CFont * g_Font[FONT_TYPE_COUNT];
+#define SWIG_FONT_TYPE_EPG_INFO1 g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]
 
 extern CPlugins* g_PluginList;
 

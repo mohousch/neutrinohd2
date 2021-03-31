@@ -63,5 +63,5 @@ install_DATA += \
 
 # misc
 install_DATA += \
-	nopreview.jpg tmdb.png hdd.png tuner.png
+	nopreview.jpg tmdb.png hdd.png tuner.png star-on.png star-off.png
 

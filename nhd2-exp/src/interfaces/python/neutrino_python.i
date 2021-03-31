@@ -77,7 +77,6 @@
 // widget
 #include <gui/widget/icons.h>
 #include <gui/widget/drawable.h>
-#include <gui/widget/icons.h>
 #include <gui/widget/widget_helpers.h>
 #include <gui/widget/window.h>
 #include <gui/widget/progresswindow.h>
@@ -183,8 +182,7 @@
 
 // widget
 %include <src/gui/widget/icons.h>
-%include <src/gui/widget/drawable.h>
-%include <src/gui/widget/icons.h>
+//%include <src/gui/widget/drawable.h>
 %include <src/gui/widget/widget_helpers.h>
 %include <src/gui/widget/window.h>
 %include <src/gui/widget/progresswindow.h>
@@ -196,7 +194,6 @@
 %include <src/gui/widget/listframe.h>
 %include <src/gui/widget/stringinput.h>
 %include <src/gui/widget/textbox.h>
-%include <src/gui/widget/infobox.h>
 %include <src/gui/widget/menue.h>
 %include <src/gui/widget/framebox.h>
 %include <src/gui/widget/widget.h>
@@ -224,9 +221,6 @@
 //%include <lib/timerdclient/timerdmsg.h>
 %include <lib/timerdclient/timerdtypes.h>
 %include <lib/timerdclient/timerdclient.h>
-
-// libupnp
-//%include <lib/libupnpclient/upnpclient.h>
 
 // deamonc
 %include <src/daemonc/remotecontrol.h>

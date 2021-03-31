@@ -35,7 +35,7 @@ extern CPlugins * g_PluginList;    // defined in neutrino.cpp
 // CFrame
 CFrame::CFrame(int m)
 {
-	captionFont = g_Font[SNeutrinoSettings::FONT_TYPE_MENU];
+	captionFont = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1];
 	optionFont = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1];
 
 	caption = "";
@@ -53,6 +53,23 @@ CFrame::CFrame(int m)
 	actionKey.clear();
 
 	window.setPosition(-1, -1, 0, 0);
+
+	if ((mode == FRAME_PICTURE_NOTSELECTABLE) || (mode == FRAME_LINE_HORIZONTAL) || (mode == FRAME_LINE_VERTICAL) || (mode == FRAME_TEXT_NOTSELECTABLE) || (mode == FRAME_TEXT_LINE_NOTSELECTABLE)) 
+	{
+		shadow = false;
+		paintFrame = false;
+	}
+}
+
+void CFrame::setMode(int m)
+{
+	mode = m;
+			
+	if ((mode == FRAME_PICTURE_NOTSELECTABLE) || (mode == FRAME_LINE_HORIZONTAL) || (mode == FRAME_LINE_VERTICAL) || (mode == FRAME_TEXT_NOTSELECTABLE) || (mode == FRAME_TEXT_LINE_NOTSELECTABLE)) 
+	{
+		shadow = false;
+		paintFrame = false;
+	}
 }
 
 void CFrame::setPlugin(const char * const pluginName)
@@ -108,10 +125,16 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 	}
 
-	// paint frame
+	// paint frameBackground
 	if (paintFrame)
 	{
 		window.setColor(bgcolor);
+
+		if (shadow)
+		{
+			window.enableShadow();
+		}
+	
 		window.paint();
 	}
 
@@ -179,12 +202,15 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 			optionFont->RenderString(window.getWindowsPos().iX + ((window.getWindowsPos().iWidth - c_w)>> 1), window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth, caption.c_str(), color);
 		}
 	}
-	else if (mode == FRAME_BUTTON)
+	else if ((mode == FRAME_ICON) || (mode == FRAME_ICON_NOTSELECTABLE))
 	{
 		// iconName
 		if(!iconName.empty())
 		{
 			iconOffset = ICON_OFFSET;
+
+			if (mode == FRAME_ICON_NOTSELECTABLE)
+				iconOffset = 0;
 
 			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iw, &ih);
 
@@ -248,6 +274,13 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 	else if (mode == FRAME_LINE_HORIZONTAL)
 	{
 		CFrameBuffer::getInstance()->paintHLineRel(window.getWindowsPos().iX, window.getWindowsPos().iWidth, window.getWindowsPos().iY, COL_MENUCONTENTDARK_PLUS_0);
+	}
+	else if ( (mode == FRAME_TEXT_LINE) || (mode == FRAME_TEXT_LINE_NOTSELECTABLE))
+	{
+		if(!caption.empty())
+		{
+			captionFont->RenderString(window.getWindowsPos().iX + 2 /*((window.getWindowsPos().iWidth - c_w)>> 1)*/, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - 4, caption.c_str(), color);
+		}
 	}
 
 	return 0;
@@ -427,6 +460,7 @@ void CFrameBox::paintFrames()
 			selected = count;
 		} 
 
+/*
 		if(frame->isSelectable() && frame->shadow)
 			frame->window.enableShadow();
 
@@ -434,6 +468,7 @@ void CFrameBox::paintFrames()
 		{
 			frame->item_backgroundColor = backgroundColor;
 		}
+*/
 
 		if(inFocus)
 			frame->paint( selected == ((signed int) count));
