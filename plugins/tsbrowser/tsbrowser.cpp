@@ -400,7 +400,7 @@ void CTSBrowser::funArt(int i)
 	textbox.iWidth = box.iWidth/2 - 20;
 	textbox.iHeight = 350;
 	textbox.iX = box.iX + 10;
-	textbox.iY = box.iY + 40 + 10;
+	textbox.iY = box.iY + 80;
 
 	// playBox
 	CBox frame;
@@ -423,18 +423,58 @@ void CTSBrowser::funArt(int i)
 
 	testFrame->addFrame(artFrame);
 
+	// title
+	CFrame *titleFrame = new CFrame(FRAME_TEXT_LINE_NOTSELECTABLE);
+	titleFrame->setPosition(box.iX + 10, box.iY + 10, 350, 40);
+	titleFrame->disablePaintFrame();
+	titleFrame->setTitle(m_vMovieInfo[i].epgTitle.c_str());
+
+	testFrame->addFrame(titleFrame);
+
+	// icon1
+	CFrame *icon1Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	icon1Frame->setPosition(box.iX + 10, box.iY + 10 + 40, 25, 25);
+	icon1Frame->setIconName(NEUTRINO_ICON_STAR_ON);
+	icon1Frame->disablePaintFrame();
+
+	testFrame->addFrame(icon1Frame);
+
+	// icon2
+	CFrame *icon2Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	icon2Frame->setPosition(box.iX + 10 + 25, box.iY + 10 + 40, 25, 25);
+	icon2Frame->setIconName(NEUTRINO_ICON_STAR_ON);
+	icon2Frame->disablePaintFrame();
+
+	testFrame->addFrame(icon2Frame);
+
+	// icon3
+	CFrame *icon3Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	icon3Frame->setPosition(box.iX + 10 + 25 + 25, box.iY + 10 + 40, 25, 25);
+	icon3Frame->setIconName(NEUTRINO_ICON_STAR_ON);
+	icon3Frame->disablePaintFrame();
+
+	testFrame->addFrame(icon3Frame);
+
+	// icon4
+	CFrame *icon4Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	icon4Frame->setPosition(box.iX + 10 + 25 + 25 +25, box.iY + 10 + 40, 25, 25);
+	icon4Frame->setIconName(NEUTRINO_ICON_STAR_OFF);
+	icon4Frame->disablePaintFrame();
+
+	testFrame->addFrame(icon4Frame);
+
 	// text
 	CFrame *textFrame = new CFrame(FRAME_TEXT_NOTSELECTABLE);
 	textFrame->setPosition(&textbox);
 	std::string buffer;
-	buffer = m_vMovieInfo[i].epgTitle;
-	buffer += "\n\n";
-	buffer += m_vMovieInfo[i].epgInfo1;
+	//buffer = m_vMovieInfo[i].epgTitle;
+	//buffer += "\n\n";
+	buffer = m_vMovieInfo[i].epgInfo1;
 	buffer += "\n";
 	buffer += m_vMovieInfo[i].epgInfo2;
 
 	textFrame->setTitle(buffer.c_str());
-	textFrame->disableShadow();
+	textFrame->disablePaintFrame();
 	
 	testFrame->addFrame(textFrame);
 
