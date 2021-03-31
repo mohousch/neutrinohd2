@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <img src="nhd2-exp/doc/resources/tsbrowser_art.png">
+  <img src="nhd2-exp/doc/resources/tsbrowser_art.bmp">
 </p>
 
 <p align="center">
