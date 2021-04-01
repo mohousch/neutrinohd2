@@ -138,8 +138,14 @@ class CFrameBox : public CWidgetItem
 		CFrameBox(CBox* position);
 		virtual ~CFrameBox();
 
-		void setPosition(const int x, const int y, const int dx, const int dy){cFrameWindow.setPosition(x, y, dx, dy);};
-		void setPosition(CBox* position){cFrameWindow.setPosition(position);};
+		void setPosition(const int x, const int y, const int dx, const int dy)
+		{
+			itemBox.iX = x;
+			itemBox.iY = y;
+			itemBox.iWidth = dx;
+			itemBox.iHeight = dy;
+		};
+		void setPosition(CBox* position){itemBox = *position;};
 
 		virtual void addFrame(CFrame *frame, const bool defaultselected = false);
 		bool hasItem();

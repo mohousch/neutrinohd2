@@ -832,10 +832,78 @@ function testCFrameBox()
 	box.iX = fb:getScreenX() + 40
 	box.iY = fb:getScreenY() + 40
 	box.iWidth = 350
-	box.iHeight = 60
+	box.iHeight = fb:getScreenHeight() - 80
 
 	local window = neutrino.CWindow(box.iX + 40, box.iY + 40, fb:getScreenWidth() - 80, fb:getScreenHeight() - 80)
 	window:enableCenterPos()
+
+	local frameBox = neutrino.CFrameBox(box)
+	frameBox:setMode(neutrino.FRAMEBOX_MODE_VERTICAL)
+
+	frame1 = neutrino.CFrame()
+	--frame1:setPosition(box)
+	frame1:setTitle("MP3")
+	frameBox:addFrame(frame1)
+
+	frame2 = neutrino.CFrame()
+	--frame2:setPosition(box.iX, box.iY + 60 + 2, 350, 60)
+	frame2:setTitle("PicViewer")
+	frameBox:addFrame(frame2)
+
+	frame3 = neutrino.CFrame()
+	--frame3:setPosition(box.iX, box.iY + 2 + 60 + 2 + 60, 350, 60)
+	frame3:setTitle("MoviePlayer")
+	frame3:setIconName(neutrino.NEUTRINO_ICON_MOVIE)
+	frame3:setOption("spielt Movie Dateien")
+	frame3:setActionKey(null, "moviePlayer")
+	frameBox:addFrame(frame3)
+
+	frame10 = neutrino.CFrame()
+	--frame10:setPosition(box.iX, fb:getScreenHeight() - 80 - 60, 350, 60)
+	frame10:setTitle("Beenden")
+	frame10:setActionKey(null, "exit")
+	frameBox:addFrame(frame10)
+
+	local m = neutrino.CWidget()
+
+	--m:enablePaintMainFrame()
+
+	--m:addItem(window)
+	m:addItem(frameBox)
+
+	ret = m:exec(null, "")
+
+	local actionKey = m:getActionKey()
+
+	if actionKey == "moviePlayer" then
+		print("testCFrameBox: actionKey: moviePlayer")
+		moviePlayer()
+	elseif actionKey == "exit" then
+		print("testCFrameBox: actionKey: exit")
+		return ret
+	end
+
+	if m:getExitPressed() ~= true then
+		testCFrameBox()
+	end
+
+	return ret
+end
+
+-- CFrameBox
+function testCFrameBoxRandom()
+	local ret = neutrino.RETURN_REPAINT
+
+	local box = neutrino.CBox()
+	local fb = neutrino.CSwigHelpers()
+
+	box.iX = fb:getScreenX() + 40
+	box.iY = fb:getScreenY() + 40
+	box.iWidth = 350
+	box.iHeight = 60
+
+	--local window = neutrino.CWindow(box.iX + 40, box.iY + 40, fb:getScreenWidth() - 80, fb:getScreenHeight() - 80)
+	--window:enableCenterPos()
 
 	local frameBox = neutrino.CFrameBox(box)
 	frameBox:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
@@ -868,7 +936,7 @@ function testCFrameBox()
 
 	--m:enablePaintMainFrame()
 
-	m:addItem(window)
+	--m:addItem(window)
 	m:addItem(frameBox)
 
 	ret = m:exec(null, "")
@@ -1039,10 +1107,15 @@ function funArt()
 	artFrame:setPosition(fb:getScreenX() + fb:getScreenWidth()/2, fb:getScreenY(), fb:getScreenWidth()/2, fb:getScreenHeight())
 	artFrame:setIconName(movieInfo.tfile)
 
+	--title
+	titleFrame = neutrino.CFrame(neutrino.FRAME_TEXT_LINE_NOTSELECTABLE)
+	titleFrame:setPosition(textbox.iX, fb:getScreenY() + 40, 350, 40)
+	titleFrame:setTitle(movieInfo.epgTitle)
+
 	-- text
 	textFrame = neutrino.CFrame(neutrino.FRAME_TEXT_NOTSELECTABLE)
 	textFrame:setPosition(textbox)
-	textFrame:setTitle(movieInfo.epgTitle .. "\n\n" .. movieInfo.epgInfo2)
+	textFrame:setTitle(movieInfo.epgInfo2)
 	--textFrame:setActionKey(null, "info")
 	textFrame:disableShadow()
 	--textFrame:setBackgroundColor(0xFFAAAF00)
@@ -1069,14 +1142,46 @@ function funArt()
 	testFrame = neutrino.CFrameBox(fb:getScreenX(), fb:getScreenY(), fb:getScreenWidth(), fb:getScreenHeight())
 	testFrame:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
 	testFrame:addFrame(artFrame)
+	testFrame:addFrame(titleFrame)
 	testFrame:addFrame(textFrame)
 	testFrame:addFrame(playFrame)
 	testFrame:addFrame(infoFrame)
+
+	--stars
+	starBox = neutrino.CFrameBox()
+	starBox:setPosition(box.iX + 10, fb:getScreenY() + 40 + 50, 100, 25)
+	starBox:setMode(neutrino.FRAMEBOX_MODE_HORIZONTAL)
+	--starBox:disablePaintFrame()
+
+	starFrame1 = neutrino.CFrame(neutrino.FRAME_ICON_NOTSELECTABLE)
+	starFrame1:setIconName(neutrino.NEUTRINO_ICON_STAR_ON)
+	starFrame1:disablePaintFrame()
+
+	starBox:addFrame(starFrame1)
+
+	starFrame2 = neutrino.CFrame(neutrino.FRAME_ICON_NOTSELECTABLE)
+	starFrame2:setIconName(neutrino.NEUTRINO_ICON_STAR_ON)
+	starFrame2:disablePaintFrame()
+
+	starBox:addFrame(starFrame2)
+
+	starFrame3 = neutrino.CFrame(neutrino.FRAME_ICON_NOTSELECTABLE)
+	starFrame3:setIconName(neutrino.NEUTRINO_ICON_STAR_ON)
+	starFrame3:disablePaintFrame()
+
+	starBox:addFrame(starFrame3)
+
+	starFrame4 = neutrino.CFrame(neutrino.FRAME_ICON_NOTSELECTABLE)
+	starFrame4:setIconName(neutrino.NEUTRINO_ICON_STAR_OFF)
+	starFrame4:disablePaintFrame()
+
+	starBox:addFrame(starFrame4)
 
 	widget = neutrino.CWidget()
 	
 	widget:addItem(window)
 	widget:addItem(testFrame)
+	widget:addItem(starBox)
 
 	widget:exec(null, "")
 	local action = widget:getActionKey()
@@ -1130,6 +1235,10 @@ function main()
 	
 	item7 = neutrino.CMenuForwarder("movieBrowser", true, "", self, "movieBrowser")
 
+	item8 = neutrino.CMenuForwarder("testCFrameBoxRandom")
+	item8:setInfo1("lua: testing CFrameBoxRandom")
+	item8:setActionKey(null, "frameBoxRandom")
+
 	m:addItem(item1)
 	m:addItem(item2)
 	m:addItem(item3)
@@ -1137,6 +1246,7 @@ function main()
 	m:addItem(item5)
 	m:addItem(item6)
 	m:addItem(item7)
+	m:addItem(item8)
 
 	if selected < 0 then
 		selected = 0
@@ -1157,6 +1267,8 @@ function main()
 
 	elseif actionKey == "movieBrowser" then
 		ret = movieBrowser()
+	elseif actionKey == "frameBoxRandom" then
+		ret = testCFrameBoxRandom()
 	end
 
 	if selected >= 0 then

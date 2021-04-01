@@ -52,7 +52,7 @@ CFrame::CFrame(int m)
 	jumpTarget = NULL;
 	actionKey.clear();
 
-	window.setPosition(-1, -1, 0, 0);
+	window.setPosition(0, 0, 0, 0);
 
 	if ((mode == FRAME_PICTURE_NOTSELECTABLE) || (mode == FRAME_LINE_HORIZONTAL) || (mode == FRAME_LINE_VERTICAL) || (mode == FRAME_TEXT_NOTSELECTABLE) || (mode == FRAME_TEXT_LINE_NOTSELECTABLE)) 
 	{
@@ -383,23 +383,22 @@ void CFrameBox::paintFrames()
 
 	//
 	int frame_width = itemBox.iWidth;
-	int frame_height = itemBox.iHeight ;
+	int frame_height = itemBox.iHeight;
 	int frame_x = itemBox.iX;
 	int frame_y = itemBox.iY;
 
-	if(frames.size() > 1)
+	if(frames.size() > 0)
 	{
 		if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
 		{
 			frame_width = (itemBox.iWidth - 2*ICON_OFFSET)/((int)frames.size());
 			frame_height = itemBox.iHeight - 2*ICON_OFFSET;
 		}
-		else
+		else if(frameMode == FRAMEBOX_MODE_VERTICAL)
 		{
 			frame_width = itemBox.iWidth - 2*ICON_OFFSET;
 			frame_height = (itemBox.iHeight - 2*ICON_OFFSET)/((int)frames.size());
 		}
-
 
 		frame_x = itemBox.iX + ICON_OFFSET;
 		frame_y = itemBox.iY + ICON_OFFSET;
@@ -410,37 +409,48 @@ void CFrameBox::paintFrames()
 		CFrame *frame = frames[count];
 
 		// init frame
-		if (frames.size() == 1)
-		{
+
+		//if (frames.size() == 1)
+		//{
+/*
 			if(frameMode == FRAMEBOX_MODE_RANDOM)
 				frame->window.setPosition(frame->window.getWindowsPos().iX, frame->window.getWindowsPos().iY, frame->window.getWindowsPos().iWidth, frame->window.getWindowsPos().iHeight);
 			else
-				frame->window.setPosition(frame_x, frame_y, frame_width, frame_height);
-		}
-		else
-		{
+*/
+			//if( (frameMode == FRAMEBOX_MODE_HORIZONTAL) || (frameMode == FRAMEBOX_MODE_VERTICAL))
+			//	frame->window.setPosition(frame_x, frame_y, frame_width, frame_height);
+		//}
+		//else
+		//{
 			if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
 			{
+/*
 				if (frame->window.getWindowsPos().iWidth != 0 && frame->window.getWindowsPos().iHeight != 0)
 				{
 					frame->window.setPosition(frame->window.getWindowsPos().iX, frame->window.getWindowsPos().iY, frame->window.getWindowsPos().iWidth, frame->window.getWindowsPos().iHeight);
 				}
 				else
+*/
+				//if (frame->window.getWindowsPos().iWidth == 0 && frame->window.getWindowsPos().iHeight == 0)
 				{
 					frame->window.setPosition(frame_x + count*(frame_width) + ICON_OFFSET, frame_y, frame_width - 2*ICON_OFFSET, frame_height);
 				}
 			}
 			else if(frameMode == FRAMEBOX_MODE_VERTICAL)
 			{
+/*
 				if (frame->window.getWindowsPos().iWidth != 0 && frame->window.getWindowsPos().iHeight != 0)
 				{
 					frame->window.setPosition(frame->window.getWindowsPos().iX, frame->window.getWindowsPos().iY, frame->window.getWindowsPos().iWidth, frame->window.getWindowsPos().iHeight);
 				}
 				else
+*/
+				//if (frame->window.getWindowsPos().iWidth == 0 && frame->window.getWindowsPos().iHeight == 0)
 				{
 					frame->window.setPosition(frame_x, frame_y + count*(frame_height) + ICON_OFFSET, frame_width, frame_height - 2*ICON_OFFSET);
 				}
 			}
+/*
 			else if(frameMode == FRAMEBOX_MODE_RANDOM)
 			{
 				if (frame->window.getWindowsPos().iWidth != 0 && frame->window.getWindowsPos().iHeight != 0)
@@ -452,23 +462,14 @@ void CFrameBox::paintFrames()
 					frame->window.setPosition(frame_x, frame_y + count*(frame_height) + ICON_OFFSET, frame_width, frame_height - 2*ICON_OFFSET);
 				}
 			}
-		}
+*/
+		//}
 
 		//
 		if((frame->isSelectable()) && (selected == -1)) 
 		{
 			selected = count;
 		} 
-
-/*
-		if(frame->isSelectable() && frame->shadow)
-			frame->window.enableShadow();
-
-		if ( paintFrame )
-		{
-			frame->item_backgroundColor = backgroundColor;
-		}
-*/
 
 		if(inFocus)
 			frame->paint( selected == ((signed int) count));
@@ -481,13 +482,15 @@ void CFrameBox::paint()
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::paint:\n");
 
-	cFrameWindow.setColor(backgroundColor);
-	//cFrameWindow.setCorner(RADIUS_MID, CORNER_ALL);
-	//cFrameWindow.enableShadow();
-	//cFrameWindow.enableSaveScreen();
-
 	if (paintFrame)
+	{
+		cFrameWindow.setColor(backgroundColor);
+		//cFrameWindow.setCorner(RADIUS_MID, CORNER_ALL);
+		//cFrameWindow.enableShadow();
+		//cFrameWindow.enableSaveScreen();
+
 		cFrameWindow.paint();
+	}
 
 	paintFrames();
 

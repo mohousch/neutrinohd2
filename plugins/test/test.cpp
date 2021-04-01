@@ -3837,32 +3837,12 @@ void CTestMenu::testCFrameBox()
 	frame->setOption("(2019)");
 	topWidget->addFrame(frame);
 
-	//frame = new CFrame(FRAME_SEPARATOR);
-	//frame->setMode(FRAME_SEPARATOR);
-	//topWidget->addFrame(frame);
-
-	//frame = new CFrame(FRAME_SEPARATOR);
-	//frame->setMode(FRAME_SEPARATOR);
-	//topWidget->addFrame(frame);
-
-	//frame = new CFrame(FRAME_SEPARATOR);
-	//frame->setMode(FRAME_SEPARATOR);
-	//topWidget->addFrame(frame);
-
-	//frame = new CFrame(FRAME_SEPARATOR);
-	//frame->setMode(FRAME_SEPARATOR);
-	//topWidget->addFrame(frame);
-
-	//frame = new CFrame(FRAME_SEPARATOR);
-	//frame->setMode(FRAME_SEPARATOR);
-	//topWidget->addFrame(frame);
-
 	frame = new CFrame();
 	frame->setTitle("Exit");
 	frame->setActionKey(this, "exit");
 	topWidget->addFrame(frame);
 
-	topWidget->setMode(FRAMEBOX_MODE_VERTICAL);
+	topWidget->setMode(FRAMEBOX_MODE_HORIZONTAL);
 
 	topWidget->setSelected(selected);
 	//topWidget->setBackgroundColor(COL_RED);
