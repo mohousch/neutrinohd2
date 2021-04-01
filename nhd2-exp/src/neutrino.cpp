@@ -331,7 +331,7 @@ CNeutrinoApp::CNeutrinoApp()
 	standby_pressed_at.tv_sec = 0;
 
 	frameBuffer = CFrameBuffer::getInstance();
-	frameBuffer->setIconBasePath(DATADIR "/neutrino/icons/");
+	//frameBuffer->setIconBasePath(DATADIR "/neutrino/icons/");
 	SetupFrameBuffer();
 
 	mode = mode_unknown;
@@ -953,6 +953,11 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.weather_api_key = configfile.getString("weather_api_key", "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 
 	g_settings.enable_tmdb_infos = configfile.getBool("enable_tmdb_infos", true);
+
+	// icons dir
+	g_settings.icons_dir = configfile.getString("icons_dir", DATADIR "/neutrino/icons/");
+	g_settings.hint_icons_dir = configfile.getString("hint_icons_dir", DATADIR "/neutrino/hint_icons/");
+	
 	
 	//set OSD resolution
 #if defined (USE_OPENGL)
@@ -1383,6 +1388,10 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setString("epg_serverbox_ip", g_settings.epg_serverbox_ip);
 	configfile.setInt32("epg_serverbox_type", g_settings.epg_serverbox_type);
 	configfile.setInt32("epg_serverbox_gui", g_settings.epg_serverbox_gui);
+
+	// icons dir
+	configfile.setString("icons_dir", g_settings.icons_dir);
+	configfile.setString("hint_icons_dir", g_settings.hint_icons_dir);
 
 	// mode
 	//configfile.setInt32("mode", mode);	
@@ -2475,9 +2484,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 
 	// load settings
 	int loadSettingsErg = loadSetup(NEUTRINO_SETTINGS_FILE);
-	
-	// init isomap
-	//initialize_iso639_map();
 
 	// check locale language
 	CLocaleManager::loadLocale_ret_t loadLocale_ret = g_Locale->loadLocale(g_settings.language);
@@ -2487,6 +2493,12 @@ int CNeutrinoApp::run(int argc, char **argv)
 		strcpy(g_settings.language, "english");
 		loadLocale_ret = g_Locale->loadLocale(g_settings.language);
 	}
+
+	////TEST
+	// icon path
+	frameBuffer->setIconBasePath(g_settings.icons_dir);
+	frameBuffer->setHintIconBasePath(g_settings.hint_icons_dir);
+	////
 
 	// setup fonts
 	SetupFonts();

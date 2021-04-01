@@ -164,6 +164,7 @@ class CFrameBuffer
 		};
 
 		std::string     iconBasePath;
+		std::string	hintIconBasePath;
 
 		int             fd;
 		fb_pixel_t *    lfb;
@@ -267,8 +268,10 @@ class CFrameBuffer
 		void paintFrameBox(const int x, const int y, const int dx, const int dy, const fb_pixel_t col);
 
 		void setIconBasePath(const std::string & iconPath);
+		void setHintIconBasePath(const std::string & iconPath);
 		void getIconSize(const char * const filename, int* width, int *height);
 		bool paintIcon(const std::string & filename, const int x, const int y, const int h = 0, bool paint = true, int width = 0, int height = 0);
+		bool paintHintIcon(const std::string & filename, int posx = 0, int posy = 0, int width = DEFAULT_XRES, int height = DEFAULT_YRES);
 		
 		// raw/pal icons
 		bool paintIcon8(const std::string & filename, const int x, const int y, const unsigned char offset = 0);

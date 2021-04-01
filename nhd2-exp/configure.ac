@@ -223,6 +223,7 @@ src/system/Makefile
 data/Makefile
 data/fonts/Makefile
 data/icons/Makefile
+data/hint_icons/Makefile
 data/iso-codes/Makefile
 data/inetradio/Makefile
 data/locale/Makefile
@@ -234,7 +235,6 @@ data/themes/Makefile
 data/zapit/Makefile
 data/webtv/Makefile
 data/scripts/Makefile
-data/design/Makefile
 src/sectionsd/Makefile
 src/timerd/Makefile
 src/zapit/Makefile

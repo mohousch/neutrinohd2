@@ -1,4 +1,4 @@
-installdir = $(CONFIGDIR)/design
+installdir = $(DATADIR)/neutrino/hint_icons
 
 # main menu
 install_DATA = \

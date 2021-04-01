@@ -240,6 +240,8 @@ void ClistBoxWidget::initFrames()
 		CMenuItem * item = items[count];
 
 		item->widgetType = widgetType;
+		if (!item->isPlugin)
+			item->widgetMode = widgetMode;
 		//item->item_backgroundColor = backgroundColor;
 		//item->item_selectedColor = itemBoxColor;
 	} 
@@ -1001,7 +1003,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 				// refreshbox
 				frameBuffer->paintBoxRel(x + items_width + (width - items_width - ITEM_ICON_W)/2, y + (full_height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H, COL_MENUCONTENTDARK_PLUS_0);
 
-				frameBuffer->displayImage(item->itemIcon.c_str(), x + items_width + (width - items_width - ITEM_ICON_W)/2, y + (height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H);
+				frameBuffer->paintHintIcon(item->itemIcon.c_str(), x + items_width + (width - items_width - ITEM_ICON_W)/2, y + (height - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H);
 			}
 		}
 		else if(widgetMode == MODE_LISTBOX)
@@ -1181,6 +1183,8 @@ void ClistBoxWidget::integratePlugins(CPlugins::i_type_t integration, const unsi
 			CMenuForwarder *fw_plugin = new CMenuForwarder(g_PluginList->getName(count), enabled, NULL, CPluginsExec::getInstance(), to_string(count).c_str(), dk, NULL, IconName.c_str());
 
 			fw_plugin->setHelpText(g_PluginList->getDescription(count).c_str());
+			fw_plugin->setWidgetMode(MODE_LISTBOX); //FIXME:
+			fw_plugin->isPlugin = true;
 
 			addItem(fw_plugin);
 		}

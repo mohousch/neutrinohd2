@@ -94,6 +94,38 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 		
 		return ret;
 	}
+	else if(actionKey == "select_icons_dir")
+	{
+		CFileBrowser b;
+		b.Dir_Mode = true;
+		
+		if (b.exec(g_settings.icons_dir.c_str())) 
+		{
+			g_settings.icons_dir = b.getSelectedFile()->Name + "/";
+
+			dprintf(DEBUG_NORMAL, "COSDSettings::exec: new icons dir %s\n", g_settings.icons_dir.c_str());
+
+			CFrameBuffer::getInstance()->setIconBasePath(g_settings.icons_dir);
+		}
+		
+		return ret;
+	}
+	else if(actionKey == "select_hint_icons_dir")
+	{
+		CFileBrowser b;
+		b.Dir_Mode = true;
+		
+		if (b.exec(g_settings.hint_icons_dir.c_str())) 
+		{
+			g_settings.hint_icons_dir = b.getSelectedFile()->Name + "/";
+
+			dprintf(DEBUG_NORMAL, "COSDSettings::exec: new hint_icons dir %s\n", g_settings.hint_icons_dir.c_str());
+
+			CFrameBuffer::getInstance()->setHintIconBasePath(g_settings.hint_icons_dir);
+		}
+		
+		return ret;
+	}
 	else if(actionKey == "font_scaling")
 	{
 		if(parent)
@@ -145,6 +177,12 @@ void COSDSettings::showMenu(void)
 
 	// infobar
 	osdSettings->addItem( new CMenuForwarder(LOCALE_COLORSTATUSBAR_HEAD, true, NULL, new COSDInfoBarColorSettings(), NULL, RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_INFOBARCOLORS, LOCALE_HELPTEXT_INFOBARCOLORS));
+
+	// icons dir
+	osdSettings->addItem(new CMenuForwarder("Icons Dir", true, NULL, this, "select_icons_dir", CRCInput::convertDigitToKey(shortcutOSD++), NULL, NEUTRINO_ICON_MENUITEM_FONT, LOCALE_HELPTEXT_FONT));
+
+	// hint icons dir
+	osdSettings->addItem(new CMenuForwarder("Hint Icons Dir", true, NULL, this, "select_hint_icons_dir", CRCInput::convertDigitToKey(shortcutOSD++), NULL, NEUTRINO_ICON_MENUITEM_FONT, LOCALE_HELPTEXT_FONT));
 
 	// language
 	osdSettings->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_LANGUAGE, true, NULL, new CLanguageSettings(), NULL, RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_LANGUAGE, LOCALE_HELPTEXT_LANGUAGE));

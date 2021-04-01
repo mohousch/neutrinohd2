@@ -74,6 +74,8 @@ CMenuItem::CMenuItem()
 	//
 	nLinesItem = false;
 	widgetType = WIDGET_TYPE_STANDARD;
+	widgetMode = MODE_LISTBOX;
+	isPlugin = false;
 
 	marked = false;
 
@@ -1116,17 +1118,35 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		//
 		frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_backgroundColor*/COL_MENUCONTENT_PLUS_0);
 
-		if(!itemIcon.empty())
-			frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
-
-		//
-		if(selected)
+		if(widgetMode == MODE_MENU)
 		{
-			frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/COL_MENUCONTENTSELECTED_PLUS_0);
-
 			if(!itemIcon.empty())
-				frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
+				frameBuffer->paintHintIcon(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
 
+			//
+			if(selected)
+			{
+				frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/COL_MENUCONTENTSELECTED_PLUS_0);
+
+				if(!itemIcon.empty())
+					frameBuffer->paintHintIcon(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
+
+			}
+		}
+		else
+		{
+			if(!itemIcon.empty())
+				frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
+
+			//
+			if(selected)
+			{
+				frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/COL_MENUCONTENTSELECTED_PLUS_0);
+
+				if(!itemIcon.empty())
+					frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
+
+			}
 		}
 
 		// vfd
@@ -1182,9 +1202,19 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 			icon_w = ITEM_ICON_W_MINI;
 			icon_h = ITEM_ICON_H_MINI;
 
-			if (!itemIcon.empty())
+			if(widgetMode == MODE_MENU)
 			{
-				frameBuffer->displayImage(itemIcon.c_str(), x + BORDER_LEFT, y + ((height - icon_h)/2), icon_w, icon_h);
+				if (!itemIcon.empty())
+				{
+					frameBuffer->paintHintIcon(itemIcon.c_str(), x + BORDER_LEFT, y + ((height - icon_h)/2), icon_w, icon_h);
+				}
+			}
+			else
+			{
+				if (!itemIcon.empty())
+				{
+					frameBuffer->displayImage(itemIcon.c_str(), x + BORDER_LEFT, y + ((height - icon_h)/2), icon_w, icon_h);
+				}
 			}
 		}
 	
@@ -1390,17 +1420,35 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		//
 		frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_backgroundColor*/COL_MENUCONTENT_PLUS_0);
 
-		if(!itemIcon.empty())
-			frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
-
-		//
-		if(selected)
+		if(widgetMode == MODE_MENU)
 		{
-			frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/COL_MENUCONTENTSELECTED_PLUS_0);
-
 			if(!itemIcon.empty())
-				frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
+				frameBuffer->paintHintIcon(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
 
+			//
+			if(selected)
+			{
+				frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/COL_MENUCONTENTSELECTED_PLUS_0);
+
+				if(!itemIcon.empty())
+					frameBuffer->paintHintIcon(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
+
+			}
+		}
+		else
+		{
+			if(!itemIcon.empty())
+				frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
+
+			//
+			if(selected)
+			{
+				frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/COL_MENUCONTENTSELECTED_PLUS_0);
+
+				if(!itemIcon.empty())
+					frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
+
+			}
 		}
 
 		// locale ???
@@ -1427,9 +1475,19 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 			icon_w = ITEM_ICON_W_MINI;
 			icon_h = ITEM_ICON_H_MINI;
 
-			if (!itemIcon.empty())
+			if(widgetMode == MODE_MENU)
 			{
-				frameBuffer->displayImage(itemIcon.c_str(), x + BORDER_LEFT, y + ((height - icon_h)/2), icon_w, icon_h);
+				if (!itemIcon.empty())
+				{
+					frameBuffer->paintHintIcon(itemIcon.c_str(), x + BORDER_LEFT, y + ((height - icon_h)/2), icon_w, icon_h);
+				}
+			}
+			else
+			{
+				if (!itemIcon.empty())
+				{
+					frameBuffer->displayImage(itemIcon.c_str(), x + BORDER_LEFT, y + ((height - icon_h)/2), icon_w, icon_h);
+				}
 			}
 		}
 		else if(widgetType == WIDGET_TYPE_STANDARD)
@@ -1851,6 +1909,7 @@ void ClistBox::initFrames()
 		CMenuItem * item = items[count];
 
 		item->widgetType = widgetType;
+		item->widgetMode = widgetMode;
 		//item->item_backgroundColor = backgroundColor;
 		//item->item_selectedColor = itemBoxColor;
 	} 
@@ -2566,7 +2625,7 @@ void ClistBox::paintItemInfo(int pos)
 				// refreshbox
 				frameBuffer->paintBoxRel(cFrameBox.iX + items_width + (cFrameBox.iWidth - items_width - ITEM_ICON_W)/2, cFrameBox.iY + (cFrameBox.iHeight - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H, COL_MENUCONTENTDARK_PLUS_0);
 
-				frameBuffer->displayImage(item->itemIcon.c_str(), cFrameBox.iX + items_width + (cFrameBox.iWidth - items_width - ITEM_ICON_W)/2, cFrameBox.iY + (cFrameBox.iHeight - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H);
+				frameBuffer->paintHintIcon(item->itemIcon.c_str(), cFrameBox.iX + items_width + (cFrameBox.iWidth - items_width - ITEM_ICON_W)/2, cFrameBox.iY + (cFrameBox.iHeight - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H);
 			}
 		}
 		else if(widgetMode == MODE_LISTBOX)

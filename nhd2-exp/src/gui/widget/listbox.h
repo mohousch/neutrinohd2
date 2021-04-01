@@ -138,6 +138,8 @@ class CMenuItem
 		//
 		int itemType;
 		int widgetType;
+		int widgetMode;
+		bool isPlugin;
 
 		//
 		int item_height;
@@ -206,6 +208,7 @@ class CMenuItem
 
 		virtual void set2lines(void){nLinesItem = true;};
 		virtual void setWidgetType(int type){widgetType = type;};
+		virtual void setWidgetMode(int mode){widgetMode = mode;};
 
 		//
 		virtual void setDirectKey(neutrino_msg_t key){directKey = key;};

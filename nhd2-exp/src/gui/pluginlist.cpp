@@ -111,8 +111,6 @@ void CPluginList::showMenu()
 			
 		item = new ClistBoxItem(g_PluginList->getName(count), enabled, g_PluginList->getDescription(count).c_str(), CPluginsExec::getInstance(), to_string(count).c_str(), RC_nokey, NULL, file_exists(IconName.c_str())? IconName.c_str() : NEUTRINO_ICON_MENUITEM_PLUGIN);
 
-		item->setInfo1(g_PluginList->getDescription(count).c_str());
-
 		item->set2lines(); 
 
 		plist->addItem(item);

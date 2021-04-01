@@ -524,8 +524,6 @@ const struct button_label HeadButtons[HEAD_BUTTONS_COUNT] =
 {
 	{ NEUTRINO_ICON_BUTTON_HELP, NONEXISTANT_LOCALE, NULL },
 	{ NEUTRINO_ICON_BUTTON_MUTE_SMALL, NONEXISTANT_LOCALE, NULL},
-	//{ NEUTRINO_ICON_BUTTON_2, NONEXISTANT_LOCALE, NULL },
-	//{ NEUTRINO_ICON_BUTTON_1, NONEXISTANT_LOCALE, NULL },
 };
 
 #define FOOT_BUTTONS_COUNT	4
@@ -547,7 +545,7 @@ void CTSBrowser::showMenu()
 	{
 		item = new ClistBoxItem(m_vMovieInfo[i].epgTitle.c_str(), true, NULL, this, "mplay");
 
-		item->setItemIcon(file_exists(m_vMovieInfo[i].tfile.c_str())? m_vMovieInfo[i].tfile.c_str() : DATADIR "/neutrino/icons/nopreview.jpg");
+		item->setItemIcon(m_vMovieInfo[i].tfile.c_str());
 	
 		item->setHelpText(m_vMovieInfo[i].epgInfo1.empty() ? m_vMovieInfo[i].epgInfo2.c_str() : m_vMovieInfo[i].epgInfo1.c_str());
 

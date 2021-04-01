@@ -1438,7 +1438,7 @@ usermenu.item_bar ---- Trennung ----
 usermenu.item_epg_misc EPG Funktionen
 usermenu.item_none  
 usermenu.item_vtxt Videotext
-usermenu.item_plugins Plugins
+usermenu.item_plugins Plugins Browser
 usermenu.name Name
 video_mode_ok Video-Einstellungen ok ?
 videomenu.analog_hd_rgb_cinch RGB auf Cinch (HD)
