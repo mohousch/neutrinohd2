@@ -475,9 +475,10 @@ void CNFilm::showMenu(bool genre)
 	footBox.iX = frameBuffer->getScreenX();
 	footBox.iY = frameBuffer->getScreenY() + frameBuffer->getScreenHeight() - footBox.iHeight;
 
-	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight, FOOT_BUTTONS_COUNT, FootButtons);
+	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight/*, FOOT_BUTTONS_COUNT, FootButtons*/);
 
 	//footersWidget->setColor(COL_BLUE);
+	footersWidget->setButtons(FootButtons, FOOT_BUTTONS_COUNT);
 	footersWidget->setGradient(nogradient);
 	footersWidget->setCorner(NO_RADIUS);
 

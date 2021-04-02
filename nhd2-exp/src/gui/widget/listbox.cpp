@@ -2246,8 +2246,6 @@ void ClistBox::paintHead()
 						CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, xstartPos, cFrameBox.iY + (hheight - ih[i])/2);
 					}
 				}
-
-				//buttons.paintHeadButtons(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, hbutton_count, hbutton_labels);
 			}
 
 			// paint time/date

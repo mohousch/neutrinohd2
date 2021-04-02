@@ -119,7 +119,9 @@ void CSysInfoWidget::paintFoot()
 	cFrameBoxFoot.iY = cFrameBox.iY + cFrameBox.iHeight - cFrameBoxFoot.iHeight;
 	cFrameBoxFoot.iWidth = cFrameBox.iWidth;
 
-	CFooters footers(cFrameBoxFoot, 4, Buttons);
+	CFooters footers(cFrameBoxFoot/*, 4, Buttons*/);
+
+	footers.setButtons(Buttons, 4);
 	footers.paint();
 }
 

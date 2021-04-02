@@ -410,8 +410,7 @@ void ClistBoxWidget::initFrames()
 			cFrameFootInfo.iWidth = width;
 		}
 
-		//headers = new CHeaders(x, y, width, hheight, l_name, iconfile.c_str());
-		//footers = new CFooters(x, y + height - fheight, width, fheight, fbutton_count, fbutton_labels);
+		// footers
 		footers = new CFooters(x, y + height - fheight, width, fheight);
 
 		if (fbutton_count)
@@ -458,8 +457,6 @@ void ClistBoxWidget::paintHead()
 					CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, xstartPos, y + (hheight - ih[i])/2);
 				}
 			}
-
-			//buttons.paintHeadButtons(x, y, width, hheight, hbutton_count, hbutton_labels);
 		}
 
 		// paint time/date
@@ -501,8 +498,6 @@ void ClistBoxWidget::paintHead()
 					CFrameBuffer::getInstance()->paintIcon(hbutton_labels[i].button, xstartPos, y + (hheight - ih[i])/2);
 				}
 			}
-
-			//buttons.paintHeadButtons(x, y, width, hheight, hbutton_count, hbutton_labels);
 		}
 
 		// paint time/date

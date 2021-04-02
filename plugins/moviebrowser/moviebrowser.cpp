@@ -1748,8 +1748,9 @@ void CMovieBrowser::refreshFoot(void)
 
 	MBFootButtons[2].locale = LOCALE_MOVIEBROWSER_NEXT_FOCUS;
 
-	CFooters footers(m_cBoxFrameFootRel, MB_FOOT_BUTTONS_COUNT, MBFootButtons);
+	CFooters footers(m_cBoxFrameFootRel/*, MB_FOOT_BUTTONS_COUNT, MBFootButtons*/);
 
+	footers.setButtons(MBFootButtons, MB_FOOT_BUTTONS_COUNT);
 	footers.paint();
 }
 

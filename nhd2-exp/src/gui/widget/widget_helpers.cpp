@@ -450,7 +450,7 @@ void CHeaders::hide()
 }
 
 // footers
-CFooters::CFooters(int x, int y, int dx, int dy, const unsigned int count, const struct button_label *content)
+CFooters::CFooters(int x, int y, int dx, int dy/*, const unsigned int count, const struct button_label *content*/)
 {
 	itemBox.iX = x;
 	itemBox.iY = y;
@@ -466,6 +466,7 @@ CFooters::CFooters(int x, int y, int dx, int dy, const unsigned int count, const
 
 	itemType = WIDGET_ITEM_FOOT;
 
+/*
 	if (count)
 	{
 		for (int i = 0; i < count; i++)
@@ -473,9 +474,10 @@ CFooters::CFooters(int x, int y, int dx, int dy, const unsigned int count, const
 			fbuttons.push_back(content[i]);
 		}
 	}
+*/
 }
 
-CFooters::CFooters(CBox position, const unsigned int count, const struct button_label *content)
+CFooters::CFooters(CBox position/*, const unsigned int count, const struct button_label *content*/)
 {
 	itemBox = position;
 
@@ -488,6 +490,7 @@ CFooters::CFooters(CBox position, const unsigned int count, const struct button_
 
 	itemType = WIDGET_ITEM_FOOT;
 
+/*
 	if (count)
 	{
 		for (int i = 0; i < count; i++)
@@ -495,6 +498,7 @@ CFooters::CFooters(CBox position, const unsigned int count, const struct button_
 			fbuttons.push_back(content[i]);
 		}
 	}
+*/
 }
 
 void CFooters::setButtons(const struct button_label *button_label, const int button_count)
