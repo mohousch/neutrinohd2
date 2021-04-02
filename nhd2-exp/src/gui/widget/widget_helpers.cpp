@@ -407,11 +407,11 @@ void CHeaders::paint()
 	}
 
 	// right buttons
+	hbutton_count = hbutton_labels.size();
+
 	int iw[hbutton_count], ih[hbutton_count];
 	int startx = itemBox.iX + itemBox.iWidth - BORDER_RIGHT;
 	int buttonWidth = 0;
-
-	hbutton_count = hbutton_labels.size();
 
 	if(hbutton_count)
 	{
@@ -450,7 +450,7 @@ void CHeaders::hide()
 }
 
 // footers
-CFooters::CFooters(int x, int y, int dx, int dy/*, const unsigned int count, const struct button_label *content*/)
+CFooters::CFooters(int x, int y, int dx, int dy)
 {
 	itemBox.iX = x;
 	itemBox.iY = y;
@@ -458,6 +458,7 @@ CFooters::CFooters(int x, int y, int dx, int dy/*, const unsigned int count, con
 	itemBox.iHeight = dy;
 
 	fbuttons.clear();
+	fcount = 0;
 
 	fbgcolor = COL_MENUFOOT_PLUS_0;
 	fradius = RADIUS_MID;
@@ -465,23 +466,14 @@ CFooters::CFooters(int x, int y, int dx, int dy/*, const unsigned int count, con
 	fgradient = g_settings.Foot_gradient;
 
 	itemType = WIDGET_ITEM_FOOT;
-
-/*
-	if (count)
-	{
-		for (int i = 0; i < count; i++)
-		{
-			fbuttons.push_back(content[i]);
-		}
-	}
-*/
 }
 
-CFooters::CFooters(CBox position/*, const unsigned int count, const struct button_label *content*/)
+CFooters::CFooters(CBox position)
 {
 	itemBox = position;
 
 	fbuttons.clear();
+	fcount = 0;
 
 	fbgcolor = COL_MENUFOOT_PLUS_0;
 	fradius = RADIUS_MID;
@@ -489,16 +481,6 @@ CFooters::CFooters(CBox position/*, const unsigned int count, const struct butto
 	fgradient = g_settings.Foot_gradient;
 
 	itemType = WIDGET_ITEM_FOOT;
-
-/*
-	if (count)
-	{
-		for (int i = 0; i < count; i++)
-		{
-			fbuttons.push_back(content[i]);
-		}
-	}
-*/
 }
 
 void CFooters::setButtons(const struct button_label *button_label, const int button_count)

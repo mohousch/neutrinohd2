@@ -1006,7 +1006,7 @@ void CEpgData::showTimerEventBar(bool _show)
 		FButtons[0].locale = LOCALE_EVENTLISTBAR_RECORDEVENT;
 	}
 
-	CFooters footers(cFootBox.iX, cFootBox.iY, cFootBox.iWidth, cFootBox.iHeight/*, 4, FButtons*/);
+	CFooters footers(cFootBox.iX, cFootBox.iY, cFootBox.iWidth, cFootBox.iHeight);
 	footers.setButtons(FButtons, 4);
 	footers.paint();
 }

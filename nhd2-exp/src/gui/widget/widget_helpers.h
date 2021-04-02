@@ -270,8 +270,8 @@ class CFooters : public CWidgetItem
 		int fgradient;
 	
 	public:
-		CFooters(int x, int y, int dx, int dy/*, const unsigned int count = 0, const struct button_label *content = NULL*/);
-		CFooters(CBox position/*, const unsigned int count = 0, const struct button_label *content = NULL*/);
+		CFooters(int x, int y, int dx, int dy);
+		CFooters(CBox position);
 		virtual ~CFooters(){};
 
 		void setColor(fb_pixel_t col){fbgcolor = col;};

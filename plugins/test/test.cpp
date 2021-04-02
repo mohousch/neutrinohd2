@@ -877,7 +877,7 @@ void CTestMenu::widget()
 	footBox.iX = frameBuffer->getScreenX();
 	footBox.iY = frameBuffer->getScreenY() + frameBuffer->getScreenHeight() - footBox.iHeight;
 
-	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight/*, FOOT_BUTTONS_COUNT, FootButtons*/);
+	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight);
 	footersWidget->setButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
 	footersWidget->setCorner(RADIUS_MID, CORNER_BOTTOM);
@@ -1098,7 +1098,7 @@ void CTestMenu::listFrameWidget()
 	footBox.iX = frameBuffer->getScreenX();
 	footBox.iY = frameBuffer->getScreenY() + frameBuffer->getScreenHeight() - footBox.iHeight;
 
-	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight/*, FOOT_BUTTONS_COUNT, FootButtons*/);
+	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight);
 
 	footersWidget->setButtons(FootButtons, FOOT_BUTTONS_COUNT);
 	footersWidget->setCorner(RADIUS_MID, CORNER_BOTTOM);
@@ -1304,7 +1304,7 @@ void CTestMenu::textBoxWidget()
 	footBox.iX = frameBuffer->getScreenX();
 	footBox.iY = frameBuffer->getScreenY() + frameBuffer->getScreenHeight() - footBox.iHeight;
 
-	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight/*, FOOT_BUTTONS_COUNT, FootButtons*/);
+	footersWidget = new CFooters(footBox.iX, footBox.iY, footBox.iWidth, footBox.iHeight);
 
 	footersWidget->setButtons(FootButtons, FOOT_BUTTONS_COUNT);
 	footersWidget->setCorner(RADIUS_MID, CORNER_BOTTOM);
@@ -1359,7 +1359,7 @@ void CTestMenu::testWindowWidget()
 
 	headersWidget = new CHeaders(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10, frameBuffer->getScreenWidth() - 20, 40, "CWidget(CWindow)", NEUTRINO_ICON_MP3);
 
-	footersWidget = new CFooters(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10 + frameBuffer->getScreenHeight() - 20 - 40, frameBuffer->getScreenWidth() - 20, 40/*, FOOT_BUTTONS_COUNT, FootButtons*/);
+	footersWidget = new CFooters(frameBuffer->getScreenX() + 10, frameBuffer->getScreenY() + 10 + frameBuffer->getScreenHeight() - 20 - 40, frameBuffer->getScreenWidth() - 20, 40);
 
 	footersWidget->setButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
@@ -1437,7 +1437,7 @@ void CTestMenu::test()
 	headers->setCorner();
 	headers->setGradient(nogradient);
 
-	footers = new CFooters(footBox/*, FOOT_BUTTONS_COUNT, FootButtons*/);
+	footers = new CFooters(footBox);
 
 	footers->setButtons(FootButtons, FOOT_BUTTONS_COUNT);
 	footers->setColor(COL_DARK_TURQUOISE);
@@ -2263,7 +2263,7 @@ void CTestMenu::testCHeaders()
 	//headers->setCorner();
 	//headers->setGradient(nogradient);
 
-	footers = new CFooters(footBox/*, FOOT_BUTTONS_COUNT, FootButtons*/);
+	footers = new CFooters(footBox);
 
 	footers->setButtons(FootButtons, FOOT_BUTTONS_COUNT);
 	//headers->setColor(COL_BLUE);
