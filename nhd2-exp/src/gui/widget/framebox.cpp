@@ -409,61 +409,18 @@ void CFrameBox::paintFrames()
 		CFrame *frame = frames[count];
 
 		// init frame
-
-		//if (frames.size() == 1)
-		//{
-/*
-			if(frameMode == FRAMEBOX_MODE_RANDOM)
-				frame->window.setPosition(frame->window.getWindowsPos().iX, frame->window.getWindowsPos().iY, frame->window.getWindowsPos().iWidth, frame->window.getWindowsPos().iHeight);
-			else
-*/
-			//if( (frameMode == FRAMEBOX_MODE_HORIZONTAL) || (frameMode == FRAMEBOX_MODE_VERTICAL))
-			//	frame->window.setPosition(frame_x, frame_y, frame_width, frame_height);
-		//}
-		//else
-		//{
-			if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
+		if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
+		{	
 			{
-/*
-				if (frame->window.getWindowsPos().iWidth != 0 && frame->window.getWindowsPos().iHeight != 0)
-				{
-					frame->window.setPosition(frame->window.getWindowsPos().iX, frame->window.getWindowsPos().iY, frame->window.getWindowsPos().iWidth, frame->window.getWindowsPos().iHeight);
-				}
-				else
-*/
-				//if (frame->window.getWindowsPos().iWidth == 0 && frame->window.getWindowsPos().iHeight == 0)
-				{
-					frame->window.setPosition(frame_x + count*(frame_width) + ICON_OFFSET, frame_y, frame_width - 2*ICON_OFFSET, frame_height);
-				}
+				frame->window.setPosition(frame_x + count*(frame_width) + ICON_OFFSET, frame_y, frame_width - 2*ICON_OFFSET, frame_height);
 			}
-			else if(frameMode == FRAMEBOX_MODE_VERTICAL)
+		}
+		else if(frameMode == FRAMEBOX_MODE_VERTICAL)
+		{
 			{
-/*
-				if (frame->window.getWindowsPos().iWidth != 0 && frame->window.getWindowsPos().iHeight != 0)
-				{
-					frame->window.setPosition(frame->window.getWindowsPos().iX, frame->window.getWindowsPos().iY, frame->window.getWindowsPos().iWidth, frame->window.getWindowsPos().iHeight);
-				}
-				else
-*/
-				//if (frame->window.getWindowsPos().iWidth == 0 && frame->window.getWindowsPos().iHeight == 0)
-				{
-					frame->window.setPosition(frame_x, frame_y + count*(frame_height) + ICON_OFFSET, frame_width, frame_height - 2*ICON_OFFSET);
-				}
+				frame->window.setPosition(frame_x, frame_y + count*(frame_height) + ICON_OFFSET, frame_width, frame_height - 2*ICON_OFFSET);
 			}
-/*
-			else if(frameMode == FRAMEBOX_MODE_RANDOM)
-			{
-				if (frame->window.getWindowsPos().iWidth != 0 && frame->window.getWindowsPos().iHeight != 0)
-				{
-					frame->window.setPosition(frame->window.getWindowsPos().iX, frame->window.getWindowsPos().iY, frame->window.getWindowsPos().iWidth, frame->window.getWindowsPos().iHeight);
-				}
-				else // vertical
-				{
-					frame->window.setPosition(frame_x, frame_y + count*(frame_height) + ICON_OFFSET, frame_width, frame_height - 2*ICON_OFFSET);
-				}
-			}
-*/
-		//}
+		}
 
 		//
 		if((frame->isSelectable()) && (selected == -1)) 

@@ -229,6 +229,9 @@ void CMoviePlayerGui::addToPlaylist(const CFile& file, std::string title, std::s
 	movieInfo.epgInfo1 = info1;
 	movieInfo.epgInfo2 = info2;
 	movieInfo.tfile = tfile;
+
+	// load movie infos (from xml file)
+	cMovieInfo.loadMovieInfo(&movieInfo);
 					
 	// 
 	playlist.push_back(movieInfo);
@@ -249,6 +252,9 @@ void CMoviePlayerGui::addToPlaylist(const char* fileName, std::string title, std
 	movieInfo.epgInfo1 = info1;
 	movieInfo.epgInfo2 = info2;
 	movieInfo.tfile = tfile;
+
+	// load movie infos (from xml file)
+	cMovieInfo.loadMovieInfo(&movieInfo);
 					
 	// 
 	playlist.push_back(movieInfo);
