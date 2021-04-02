@@ -51,7 +51,7 @@ class CTSBrowser : public CMenuTarget
 		void onDeleteFile(MI_MOVIE_INFO& movieFile);
 		void openFileBrowser();
 
-		void funArt(int i);
+		void funArt(MI_MOVIE_INFO& movieFile);
 		void playMovie(int i);
 
 		void showMenu();
@@ -387,102 +387,114 @@ void CTSBrowser::onDeleteFile(MI_MOVIE_INFO& movieFile)
 	}
 }
 
-void CTSBrowser::funArt(int i)
+void CTSBrowser::funArt(MI_MOVIE_INFO& movieFile)
 {
+	// mainBox
 	CBox box;
 	box.iX = CFrameBuffer::getInstance()->getScreenX();
 	box.iY = CFrameBuffer::getInstance()->getScreenY();
 	box.iWidth = CFrameBuffer::getInstance()->getScreenWidth();
 	box.iHeight = CFrameBuffer::getInstance()->getScreenHeight();
 
-	CBox textbox;
-	
-	textbox.iWidth = box.iWidth/2 - 20;
-	textbox.iHeight = 350;
-	textbox.iX = box.iX + 10;
-	textbox.iY = box.iY + 80;
+	// titleBox
+	CBox titleBox;
+	titleBox.iX = box.iX + 10;
+	titleBox.iY = box.iY + 10;
+	titleBox.iWidth = 350;
+	titleBox.iHeight = 40;
+
+	// starBox
+	CBox starBox;
+	starBox.iX = box.iX +10;
+	starBox.iY = box.iY + titleBox.iHeight + 10;
+	starBox.iWidth = 25;
+	starBox.iHeight = 25;
 
 	// playBox
-	CBox frame;
-	frame.iWidth = 300;
-	frame.iHeight = 60;
-	frame.iX = box.iX + 10;
-	frame.iY = box.iY + box.iHeight - 10 - 40 - 60;
+	CBox playBox;
+	playBox.iWidth = 300;
+	playBox.iHeight = 60;
+	playBox.iX = box.iX + 10;
+	playBox.iY = box.iY + box.iHeight - 10 - 60;
+
+	// textBox
+	CBox textBox;
+	textBox.iWidth = box.iWidth/2 - 20;
+	textBox.iHeight = box.iHeight - playBox.iHeight - starBox.iHeight - titleBox.iHeight - 4*10 - 100;
+	textBox.iX = box.iX + 10;
+	textBox.iY = starBox.iY + 10 + 60;
 
 	CWindow * window = new CWindow(&box);
-	CFrameBox * testFrame = new CFrameBox(&box);
+	CFrameBox * testFrame = new CFrameBox();
 	testFrame->setMode(FRAMEBOX_MODE_RANDOM);
-
 	CWidget * widget = new CWidget();
 
 
-	// art
+	// artFrame
 	CFrame * artFrame = new CFrame(FRAME_PICTURE_NOTSELECTABLE);
 	artFrame->setPosition(box.iX + box.iWidth/2, box.iY, box.iWidth/2, box.iHeight);
-	artFrame->setIconName(m_vMovieInfo[i].tfile.c_str());
+	artFrame->setIconName(movieFile.tfile.c_str());
 
 	testFrame->addFrame(artFrame);
 
 	// title
 	CFrame *titleFrame = new CFrame(FRAME_TEXT_LINE_NOTSELECTABLE);
-	titleFrame->setPosition(box.iX + 10, box.iY + 10, 350, 40);
+	titleFrame->setPosition(&titleBox);
 	titleFrame->disablePaintFrame();
-	titleFrame->setTitle(m_vMovieInfo[i].epgTitle.c_str());
+	titleFrame->setTitle(movieFile.epgTitle.c_str());
 
 	testFrame->addFrame(titleFrame);
 
-	// icon1
-	CFrame *icon1Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
-	icon1Frame->setPosition(box.iX + 10, box.iY + 10 + 40, 25, 25);
-	icon1Frame->setIconName(NEUTRINO_ICON_STAR_ON);
-	icon1Frame->disablePaintFrame();
+	// star1
+	CFrame *star1Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	star1Frame->setPosition(&starBox);
+	star1Frame->setIconName(NEUTRINO_ICON_STAR_ON);
+	star1Frame->disablePaintFrame();
 
-	testFrame->addFrame(icon1Frame);
+	testFrame->addFrame(star1Frame);
 
-	// icon2
-	CFrame *icon2Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
-	icon2Frame->setPosition(box.iX + 10 + 25, box.iY + 10 + 40, 25, 25);
-	icon2Frame->setIconName(NEUTRINO_ICON_STAR_ON);
-	icon2Frame->disablePaintFrame();
+	// star2
+	CFrame *star2Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	star2Frame->setPosition(starBox.iX + 25, starBox.iY, starBox.iWidth, starBox.iHeight);
+	star2Frame->setIconName(NEUTRINO_ICON_STAR_ON);
+	star2Frame->disablePaintFrame();
 
-	testFrame->addFrame(icon2Frame);
+	testFrame->addFrame(star2Frame);
 
-	// icon3
-	CFrame *icon3Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
-	icon3Frame->setPosition(box.iX + 10 + 25 + 25, box.iY + 10 + 40, 25, 25);
-	icon3Frame->setIconName(NEUTRINO_ICON_STAR_ON);
-	icon3Frame->disablePaintFrame();
+	// star3
+	CFrame *star3Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	star3Frame->setPosition(starBox.iX + 2*25, starBox.iY, starBox.iWidth, starBox.iHeight);
+	star3Frame->setIconName(NEUTRINO_ICON_STAR_ON);
+	star3Frame->disablePaintFrame();
 
-	testFrame->addFrame(icon3Frame);
+	testFrame->addFrame(star3Frame);
 
-	// icon4
-	CFrame *icon4Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
-	icon4Frame->setPosition(box.iX + 10 + 25 + 25 +25, box.iY + 10 + 40, 25, 25);
-	icon4Frame->setIconName(NEUTRINO_ICON_STAR_OFF);
-	icon4Frame->disablePaintFrame();
+	// star4
+	CFrame *star4Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	star4Frame->setPosition(starBox.iX + 3*25, starBox.iY, starBox.iWidth, starBox.iHeight);
+	star4Frame->setIconName(NEUTRINO_ICON_STAR_OFF);
+	star4Frame->disablePaintFrame();
 
-	testFrame->addFrame(icon4Frame);
+	testFrame->addFrame(star4Frame);
 
 	// text
 	CFrame *textFrame = new CFrame(FRAME_TEXT_NOTSELECTABLE);
-	textFrame->setPosition(&textbox);
+	textFrame->setPosition(&textBox);
 	std::string buffer;
-	//buffer = m_vMovieInfo[i].epgTitle;
-	//buffer += "\n\n";
-	buffer = m_vMovieInfo[i].epgInfo1;
+	buffer = movieFile.epgInfo1;
 	buffer += "\n";
-	buffer += m_vMovieInfo[i].epgInfo2;
+	buffer += movieFile.epgInfo2;
 
 	textFrame->setTitle(buffer.c_str());
 	textFrame->disablePaintFrame();
 	
 	testFrame->addFrame(textFrame);
 
-	// info
+	// infoFrame
 	CFrame * infoFrame = new CFrame();
-	infoFrame->setPosition(frame.iX + 300 + 10, frame.iY, 300, 60);
+	infoFrame->setPosition(playBox.iX + 300 + 10, playBox.iY, 300, 60);
 	infoFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
-	infoFrame->setTitle("Movie Details:");
+	infoFrame->setTitle("Movie Details");
 	infoFrame->setIconName(NEUTRINO_ICON_INFO);
 	infoFrame->setActionKey(this, "RC_info");
 
@@ -490,7 +502,7 @@ void CTSBrowser::funArt(int i)
 
 	// play
 	CFrame *playFrame = new CFrame();
-	playFrame->setPosition(&frame);
+	playFrame->setPosition(&playBox);
 	playFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
 	playFrame->setTitle("Movie abspielen");
 	playFrame->setIconName(NEUTRINO_ICON_PLAY);
@@ -586,7 +598,7 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		selected = mlist->getSelected();
 
-		funArt(selected);
+		funArt(m_vMovieInfo[selected]);
 
 		return RETURN_REPAINT;
 	}

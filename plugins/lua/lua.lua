@@ -899,11 +899,11 @@ function testCFrameBoxRandom()
 
 	box.iX = fb:getScreenX() + 40
 	box.iY = fb:getScreenY() + 40
-	box.iWidth = 350
-	box.iHeight = 60
+	box.iWidth = fb:getScreenWidth() - 80
+	box.iHeight = fb:getScreenHeight() - 80
 
-	--local window = neutrino.CWindow(box.iX + 40, box.iY + 40, fb:getScreenWidth() - 80, fb:getScreenHeight() - 80)
-	--window:enableCenterPos()
+	local window = neutrino.CWindow(box.iX + 40, box.iY + 40, fb:getScreenWidth() - 80, fb:getScreenHeight() - 80)
+	window:enableCenterPos()
 
 	local frameBox = neutrino.CFrameBox(box)
 	frameBox:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
@@ -932,11 +932,11 @@ function testCFrameBoxRandom()
 	frame10:setActionKey(null, "exit")
 	frameBox:addFrame(frame10)
 
-	local m = neutrino.CWidget()
+	local m = neutrino.CWidget(box)
 
-	--m:enablePaintMainFrame()
+	m:enablePaintMainFrame()
 
-	--m:addItem(window)
+	m:addItem(window)
 	m:addItem(frameBox)
 
 	ret = m:exec(null, "")

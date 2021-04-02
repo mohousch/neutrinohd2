@@ -368,6 +368,17 @@ CHeaders::CHeaders(CBox position, const char * const title, const char * const i
 	itemType = WIDGET_ITEM_HEAD;
 }
 
+void CHeaders::setButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)		
+{
+	if (_hbutton_count)
+	{
+		for (int i = 0; i < _hbutton_count; i++)
+		{
+			hbutton_labels.push_back(_hbutton_labels[i]);
+		}
+	}
+}		
+
 void CHeaders::paint()
 {
 	// box
@@ -484,6 +495,17 @@ CFooters::CFooters(CBox position, const unsigned int count, const struct button_
 			fbuttons.push_back(content[i]);
 		}
 	}
+}
+
+void CFooters::setButtons(const struct button_label *button_label, const int button_count)
+{
+	if (button_count)
+	{
+		for (int i = 0; i < button_count; i++)
+		{
+			fbuttons.push_back(button_label[i]);
+		}
+	}	
 }
 
 void CFooters::paint()

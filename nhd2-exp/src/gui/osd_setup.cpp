@@ -90,6 +90,7 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 			dprintf(DEBUG_NORMAL, "COSDSettings::exec: new font file %s\n", fileBrowser.getSelectedFile()->Name.c_str());
 			
 			CNeutrinoApp::getInstance()->SetupFonts();
+			CNeutrinoApp::getInstance()->saveSetup(NEUTRINO_SETTINGS_FILE);
 		}
 		
 		return ret;
@@ -106,6 +107,7 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 			dprintf(DEBUG_NORMAL, "COSDSettings::exec: new icons dir %s\n", g_settings.icons_dir.c_str());
 
 			CFrameBuffer::getInstance()->setIconBasePath(g_settings.icons_dir);
+			CNeutrinoApp::getInstance()->saveSetup(NEUTRINO_SETTINGS_FILE);
 		}
 		
 		return ret;
@@ -122,6 +124,7 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 			dprintf(DEBUG_NORMAL, "COSDSettings::exec: new hint_icons dir %s\n", g_settings.hint_icons_dir.c_str());
 
 			CFrameBuffer::getInstance()->setHintIconBasePath(g_settings.hint_icons_dir);
+			CNeutrinoApp::getInstance()->saveSetup(NEUTRINO_SETTINGS_FILE);
 		}
 		
 		return ret;
@@ -142,6 +145,7 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 		fontscale.exec(NULL, "");
 		
 		CNeutrinoApp::getInstance()->SetupFonts();
+		CNeutrinoApp::getInstance()->saveSetup(NEUTRINO_SETTINGS_FILE);
 		
 		return ret;
 	}

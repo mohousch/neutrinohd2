@@ -249,17 +249,7 @@ class CHeaders : public CWidgetItem
 		void setColor(fb_pixel_t col){bgcolor = col;};
 		void setCorner(int ra = NO_RADIUS, int co = CORNER_NONE){radius = ra; corner = co;};
 		void setGradient(int grad = nogradient){gradient = grad;};
-
-		void setButtons(const struct button_label* _hbutton_labels, const int _hbutton_count = 1)		{
-			if (_hbutton_count)
-			{
-				for (int i = 0; i < _hbutton_count; i++)
-				{
-					hbutton_labels.push_back(_hbutton_labels[i]);
-				}
-			}		
-		}
-
+		void setButtons(const struct button_label* _hbutton_labels, const int _hbutton_count = 1);
 		void enablePaintDate(void){paintDate = true;};
 		void enableLogo(void){logo = true;};
 
@@ -287,17 +277,7 @@ class CFooters : public CWidgetItem
 		void setColor(fb_pixel_t col){fbgcolor = col;};
 		void setCorner(int ra = NO_RADIUS, int co = CORNER_NONE){fradius = ra; fcorner = co;};
 		void setGradient(int grad = nogradient){fgradient = grad;};
-
-		void setButtons(const struct button_label *button_label, const int button_count = 1)
-		{
-			if (button_count)
-			{
-				for (int i = 0; i < button_count; i++)
-				{
-					fbuttons.push_back(button_label[i]);
-				}
-			}	
-		};
+		void setButtons(const struct button_label *button_label, const int button_count = 1);
 
 		void paint();
 		void hide();
