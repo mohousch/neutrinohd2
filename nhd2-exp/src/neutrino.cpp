@@ -711,7 +711,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.screen_xres = configfile.getInt32("screen_xres", 120);
 	g_settings.screen_yres = configfile.getInt32("screen_yres", 90);
 	
-	g_settings.rounded_corners = configfile.getInt32("rounded_corners", NO_RADIUS);
+	g_settings.rounded_corners = configfile.getInt32("rounded_corners", ROUNDED);
 	
 	g_settings.menu_design = configfile.getInt32("menu_design", SNeutrinoSettings::MENU_DESIGN_CLASSIC);
 	g_settings.menu_position = configfile.getInt32("menu_position", SNeutrinoSettings::MENU_POSITION_LEFT);
