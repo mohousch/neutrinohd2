@@ -442,6 +442,7 @@ void CTSBrowser::funArt(MI_MOVIE_INFO& movieFile)
 	titleFrame->setPosition(&titleBox);
 	titleFrame->disablePaintFrame();
 	titleFrame->setTitle(movieFile.epgTitle.c_str());
+	titleFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]);
 
 	testFrame->addFrame(titleFrame);
 
