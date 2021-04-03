@@ -142,7 +142,7 @@ void CTSBrowser::loadPlaylist()
 					
 			movieInfo.file.Name = files->Name;
 					
-			// load movie infos (from xml file)
+			// load movie infos
 			m_movieInfo.loadMovieInfo(&movieInfo);
 					
 			// 

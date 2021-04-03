@@ -186,17 +186,21 @@ stream2file_error_msg_t start_file_recording(const char * const filename, const 
 	if (filename != NULL)
 	{
 		strcpy(&(file[pos]), filename);
+
+/*
 		char * p_act = &(file[pos]);
 		do {
 			p_act += strcspn(p_act, "/ \"%&-\t`'�!,:;");
+
 			if (*p_act) 
 			{
 				*p_act++ = '_';
 			}
 		} while (*p_act);
+*/
 	}
 
-	dprintf(DEBUG_NORMAL, "[Stream2File] Record start: file: %s\n", file);
+	dprintf(DEBUG_NORMAL, "[Stream2File] Record start: file:%s (filename:%s)\n", file, filename);
 
 	// write stream information (should wakeup the disk from standby, too)
 	sprintf(buf, "%s.xml", file);
@@ -258,8 +262,6 @@ stream2file_error_msg_t start_file_recording(const char * const filename, const 
 
 	if(!fileFilter.matchFilter(uri))
 		return STREAM2FILE_INVALID_PID;
-	////
-
 
 	sprintf(buf, "%s.%s", file, ext.c_str());
 	sprintf(rec_filename, "%s.%s", file, ext.c_str());
