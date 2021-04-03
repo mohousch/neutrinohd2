@@ -2117,10 +2117,7 @@ bool CNeutrinoApp::doGuiRecord(char * preselectedDir, bool addTimer)
 			int pre = 0, post = 0;
 
 			// get EPG info
-			//if(mode == mode_webtv)
-			//	eventinfo.channel_id = channelList->getActiveChannel_ChannelID();
-			//else
-				eventinfo.channel_id = live_channel_id;
+			eventinfo.channel_id = live_channel_id;
 
 			CEPGData epgData;
 
@@ -2155,7 +2152,7 @@ bool CNeutrinoApp::doGuiRecord(char * preselectedDir, bool addTimer)
 			
 			dprintf(DEBUG_NORMAL, "CNeutrinoApp::doGuiRecord: start record to dir %s\n", recDir);
 
-			// start to record baby
+			// start to record 
 			if( !doRecord || (CVCRControl::getInstance()->Record(&eventinfo) == false ) ) 
 			{
 				recordingstatus = 0;
@@ -3148,6 +3145,7 @@ void CNeutrinoApp::RealRun(void)
 					if(MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, mbrYes, mbYes | mbNo, NULL, 450, 30, true) == mbrYes)
 					{
 						g_Timerd->stopTimerEvent(recording_id);
+						recordingstatus = 0; //FIXME???
 						CVFD::getInstance()->ShowIcon(VFD_ICON_TIMESHIFT, false );
 					}
 				} 

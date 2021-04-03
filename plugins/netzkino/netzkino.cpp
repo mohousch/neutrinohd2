@@ -313,7 +313,7 @@ void CNKMovies::recordMovie(MI_MOVIE_INFO& movie)
 	::start_file_recording(movie.epgTitle.c_str(), infoString.c_str(), movie.file.Name.c_str());
 
 	CNeutrinoApp::getInstance()->recordingstatus = 1;
-	CNeutrinoApp::getInstance()->recording_id = 0;
+	CNeutrinoApp::getInstance()->recording_id = 1;
 }
 
 int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
