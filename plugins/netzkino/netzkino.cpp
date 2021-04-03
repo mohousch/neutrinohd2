@@ -296,19 +296,9 @@ void CNKMovies::showMovieInfo(MI_MOVIE_INFO& movie)
 
 void CNKMovies::recordMovie(MI_MOVIE_INFO& movie)
 {
-	std::string infoString;
+	std::string infoString = " ";
 
-	MI_MOVIE_INFO g_movieInfo;
-	m_movieInfo.clearMovieInfo(&g_movieInfo); // refresh structure
-		
-	g_movieInfo.epgTitle = movie.epgTitle;
-	g_movieInfo.epgInfo2 = movie.epgInfo2;
-	g_movieInfo.tfile = movie.tfile;
-	g_movieInfo.ytdate = movie.ytdate;
-	g_movieInfo.ytid = movie.ytid;
-	g_movieInfo.file.Name = movie.file.Name;
-
-	m_movieInfo.encodeMovieInfoXml(&infoString, &g_movieInfo);
+	m_movieInfo.encodeMovieInfoXml(&infoString, &movie);
 
 	::start_file_recording(movie.epgTitle.c_str(), infoString.c_str(), movie.file.Name.c_str());
 
