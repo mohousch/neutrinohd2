@@ -168,7 +168,7 @@ void cRecord::RecordThread()
 		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, NULL);
 		curl_easy_setopt(curl_handle, CURLOPT_FILE, fp);
 		curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
-		curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 60);
+		curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 0);
 		curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
 		curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, false);
 		curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "");
