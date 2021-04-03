@@ -311,6 +311,9 @@ void CNKMovies::recordMovie(MI_MOVIE_INFO& movie)
 	m_movieInfo.encodeMovieInfoXml(&infoString, &g_movieInfo);
 
 	::start_file_recording(movie.epgTitle.c_str(), infoString.c_str(), movie.file.Name.c_str());
+
+	CNeutrinoApp::getInstance()->recordingstatus = 1;
+	CNeutrinoApp::getInstance()->recording_id = 0;
 }
 
 int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -337,7 +340,27 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	else if(actionKey == "RC_record")
 	{
 		right_selected = rightWidget->getSelected();
-		recordMovie(m_vMovieInfo[right_selected]);
+
+		if (CNeutrinoApp::getInstance()->recordingstatus == 0)
+			recordMovie(m_vMovieInfo[right_selected]);
+/*
+		else if (CNeutrinoApp::getInstance()->recordingstatus == 1)
+		{
+			if (MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, mbrYes, mbYes | mbNo, NULL, 450, 30, true) == mbrYes)
+			{
+				std::string extMessage = " ";
+
+				m_movieInfo.encodeMovieInfoXml(&extMessage, &m_vMovieInfo[right_selected]);
+
+				::stop_recording(extMessage.c_str());
+
+				CVFD::getInstance()->ShowIcon(VFD_ICON_TIMESHIFT, false );
+
+				CNeutrinoApp::getInstance()->recordingstatus = 0;
+			}
+		}
+*/
+
 		return RETURN_REPAINT;
 	}
 	else if(actionKey == "search")

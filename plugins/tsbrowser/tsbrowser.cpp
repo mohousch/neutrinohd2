@@ -400,7 +400,7 @@ void CTSBrowser::funArt(MI_MOVIE_INFO& movieFile)
 	CBox titleBox;
 	titleBox.iX = box.iX + 10;
 	titleBox.iY = box.iY + 10;
-	titleBox.iWidth = 350;
+	titleBox.iWidth = box.iWidth;
 	titleBox.iHeight = 40;
 
 	// starBox
