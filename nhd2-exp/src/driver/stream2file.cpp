@@ -93,6 +93,7 @@ stream2file_error_msg_t start_recording(const char * const filename, const char 
 	struct statfs s;
 
 	// rip rec_filename
+/*
 	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
 	{
 		if(autoshift || CNeutrinoApp::getInstance()->timeshiftstatus)
@@ -101,6 +102,7 @@ stream2file_error_msg_t start_recording(const char * const filename, const char 
 			sprintf(rec_filename, "%s.ts", filename);
 	}
 	else
+*/
 	{
 		if(autoshift || CNeutrinoApp::getInstance()->timeshiftstatus)
 			sprintf(rec_filename, "%s_temp", filename);
