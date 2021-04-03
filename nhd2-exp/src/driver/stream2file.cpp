@@ -86,29 +86,17 @@ static stream2file_status_t exit_flag = STREAM2FILE_STATUS_IDLE;
 
 char rec_filename[FILENAMEBUFFERSIZE];
 
-stream2file_error_msg_t start_recording(const char * const filename, const char * const info, const unsigned short vpid, const unsigned short * const pids, const unsigned int numpids, std::string uri)
+stream2file_error_msg_t start_recording(const char * const filename, const char * const info, const unsigned short vpid, const unsigned short * const pids, const unsigned int numpids)
 {
 	int fd;
 	char buf[FILENAMEBUFFERSIZE];
 	struct statfs s;
 
 	// rip rec_filename
-/*
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-	{
-		if(autoshift || CNeutrinoApp::getInstance()->timeshiftstatus)
-			sprintf(rec_filename, "%s_temp.ts", filename);
-		else
-			sprintf(rec_filename, "%s.ts", filename);
-	}
+	if(autoshift || CNeutrinoApp::getInstance()->timeshiftstatus)
+		sprintf(rec_filename, "%s_temp", filename);
 	else
-*/
-	{
-		if(autoshift || CNeutrinoApp::getInstance()->timeshiftstatus)
-			sprintf(rec_filename, "%s_temp", filename);
-		else
-			sprintf(rec_filename, "%s", filename);
-	}
+		sprintf(rec_filename, "%s", filename);
 
 	// write stream information (should wakeup the disk from standby, too)
 	sprintf(buf, "%s.xml", filename);
@@ -156,44 +144,16 @@ stream2file_error_msg_t start_recording(const char * const filename, const char 
 	record->Open();
 
 	// start_recording
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
-	{
-		if(!record->Start(fd, (unsigned short ) vpid, (unsigned short *) pids, numpids, record_fe, uri)) 
-		{
-			record->Stop();
-			delete record;
-			record = NULL;
-			return STREAM2FILE_INVALID_DIRECTORY;
-		}
-	}
-	else
-	{
 #if defined (PLATFORM_COOLSTREAM)
-		if(!record->Start(fd, (unsigned short ) vpid, (unsigned short *) pids, numpids, 0))
+	if(!record->Start(fd, (unsigned short ) vpid, (unsigned short *) pids, numpids, 0))
 #else	  
-		if(!record->Start(fd, (unsigned short ) vpid, (unsigned short *) pids, numpids, record_fe)) 
+	if(!record->Start(fd, (unsigned short ) vpid, (unsigned short *) pids, numpids, record_fe)) 
 #endif	  
-		{
-			record->Stop();
-			delete record;
-			record = NULL;
-			return STREAM2FILE_INVALID_DIRECTORY;
-		}
-	}
-	
-	// take screenshot if !standby
-	if ( (g_settings.recording_screenshot && rec_channel_id == live_channel_id) && !autoshift && !CNeutrinoApp::getInstance()->timeshiftstatus && (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_standby))
 	{
-		char fname[512];
-		
-		sprintf(fname, "%s.jpg", rec_filename);
-		
-		// check if dont exit
-		bool preview_ok = !access(fname, F_OK);
-		
-		// say "cheers :)"
-		if(!preview_ok)
-			CVCRControl::getInstance()->Screenshot(0, fname, false);
+		record->Stop();
+		delete record;
+		record = NULL;
+		return STREAM2FILE_INVALID_DIRECTORY;
 	}
 
 	return STREAM2FILE_OK;

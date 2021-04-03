@@ -53,8 +53,7 @@ stream2file_error_msg_t start_recording(const char * const filename,
 					const char * const info,
 					const unsigned short vpid,
 					const unsigned short * const apids,
-					const unsigned int numpids,
-					std::string uri = "");
+					const unsigned int numpids);
 
 stream2file_error_msg_t start_file_recording(const char* const filename, const char* const info, std::string uri = "");
 					

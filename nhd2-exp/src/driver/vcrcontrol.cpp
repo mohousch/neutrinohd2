@@ -706,12 +706,21 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 
 	start_time = time(0);
 
-	stream2file_error_msg_t error_msg = ::start_recording(filename,
+	stream2file_error_msg_t error_msg = STREAM2FILE_BUSY;
+
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
+	{
+		error_msg = ::start_file_recording(filename,
+			      getMovieInfoString(CMD_VCR_RECORD, channel_id, epgid, epgTitle, apid_list, epg_time).c_str(), g_Zapit->getChannelURL(channel_id));
+	}
+	else
+	{
+		error_msg = ::start_recording(filename,
 			      getMovieInfoString(CMD_VCR_RECORD, channel_id, epgid, epgTitle, apid_list, epg_time).c_str(), 
 			      si.vpid, 
 			      pids, 
-			      numpids,
-			      g_Zapit->getChannelURL(channel_id));
+			      numpids);
+	}
 
 	if (error_msg == STREAM2FILE_OK) 
 	{
