@@ -562,8 +562,8 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 {
 	#define MAXPIDS		64
 	unsigned short pids[MAXPIDS];
-	unsigned int numpids;
-	unsigned int pos;
+	unsigned int numpids = 0;
+	unsigned int pos = 0;
 
 	// cut neutrino
 	CutBackNeutrino(channel_id, mode);
@@ -596,17 +596,20 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 	char filename[512]; // UTF-8
 
 	// Create filename for recording
-	pos = Directory.size();
-	strcpy(filename, Directory.c_str());
-	
-	if ((pos == 0) || (filename[pos - 1] != '/')) 
+	if(CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_webtv)
 	{
-		filename[pos] = '/';
-		pos++;
-		filename[pos] = '\0';
-	}
+		pos = Directory.size();
+		strcpy(filename, Directory.c_str());
+	
+		if ((pos == 0) || (filename[pos - 1] != '/')) 
+		{
+			filename[pos] = '/';
+			pos++;
+			filename[pos] = '\0';
+		}
 
-	pos = strlen(filename);
+		pos = strlen(filename);
+	}
 
 	ext_channel_name = g_Zapit->getChannelName(channel_id);
 
@@ -636,7 +639,7 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 
 					if (res == 0) 
 					{
-						strcat(filename,"/");
+						strcat(filename, "/");
 					} 
 					else 
 					{
@@ -652,12 +655,14 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 			else 
 			{
 				// directory exists
-				strcat(filename,"/");
+				strcat(filename, "/");
 			}	
-					
+				
 		} 
 		else
+		{
 			strcat(filename, "_");
+		}
 	}
 
 	pos = strlen(filename);
@@ -704,6 +709,9 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 	time_t t = time(NULL);
 	strftime(&(filename[pos]), sizeof(filename) - pos - 1, "%Y%m%d_%H%M%S", localtime(&t));
 
+	////TEST
+	printf("CVCRControl::CFileDevice::Record: filename:%s (info: %s) \n", filename, getMovieInfoString(CMD_VCR_RECORD, channel_id, epgid, epgTitle, apid_list, epg_time).c_str());
+
 	start_time = time(0);
 
 	stream2file_error_msg_t error_msg = STREAM2FILE_BUSY;
@@ -734,7 +742,7 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(
 				      error_msg == STREAM2FILE_BUSY ? LOCALE_STREAMING_BUSY :
 				      error_msg == STREAM2FILE_INVALID_DIRECTORY ? LOCALE_STREAMING_DIR_NOT_WRITABLE :
-				      LOCALE_STREAMINGSERVER_NOCONNECT
+				      LOCALE_STREAMING_WRITE_ERROR_OPEN
 				      ), mbrCancel, mbCancel, NEUTRINO_ICON_ERROR);
 
 		return false;
@@ -748,7 +756,7 @@ bool CVCRControl::Screenshot(const t_channel_id channel_id, char * fname, bool m
 	std::string channel_name;
 	CEPGData epgData;
 	event_id_t epgid = 0;
-	unsigned int pos;
+	unsigned int pos = 0;
 
 	if(!fname) // live stream
 	{

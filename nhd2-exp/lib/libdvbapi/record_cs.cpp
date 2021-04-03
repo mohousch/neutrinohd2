@@ -57,7 +57,7 @@ cRecord::cRecord(int /*num*/)
 	exit_flag = RECORD_STOPPED;
 
 	//
-	fp = NULL;
+	//fp = NULL;
 }
 
 cRecord::~cRecord()
@@ -73,11 +73,11 @@ bool cRecord::Open()
 	return true;
 }
 
-bool cRecord::Start(int fd, unsigned short vpid, unsigned short * apids, int numpids, CFrontend *fe, const std::string& uri)
+bool cRecord::Start(int fd, unsigned short vpid, unsigned short * apids, int numpids, CFrontend *fe/*, const std::string& uri*/)
 {
 	dprintf(DEBUG_INFO, "%s %s\n", FILENAME, __FUNCTION__);
 
-	url = uri;
+	//url = uri;
 	
 	int i;
 
@@ -135,12 +135,13 @@ bool cRecord::Stop(void)
 		file_fd = -1;
 	}
 
-	//
+	/*
 	if(fp != NULL)
 	{
 		fclose(fp);
 		fp = NULL;
 	}
+	*/
 	
 	return true;
 }
@@ -150,6 +151,7 @@ void cRecord::RecordThread()
 #define BUFSIZE (1 << 20) /* 1024 kB */
 #define READSIZE (BUFSIZE / 16)
 
+/*
 	if (!url.empty())
 	{
 #define FILENAMEBUFFERSIZE 1024
@@ -197,6 +199,7 @@ void cRecord::RecordThread()
 		curl_easy_cleanup(curl_handle);
 	}
 	else
+*/
 	{
 		ssize_t r = 0;
 		int buf_pos = 0;
@@ -279,4 +282,6 @@ void cRecord::RecordThread()
 	
 	pthread_exit(NULL);
 }
+
+
 

@@ -167,7 +167,7 @@ stream2file_error_msg_t start_file_recording(const char * const filename, const 
 
 	//
 	char file[512];
-	unsigned int pos;
+	unsigned int pos = 0;
 
 	std::string Directory = g_settings.network_nfs_recordingdir;
 
@@ -195,6 +195,8 @@ stream2file_error_msg_t start_file_recording(const char * const filename, const 
 			}
 		} while (*p_act);
 	}
+
+	dprintf(DEBUG_NORMAL, "[Stream2File] Record start: file: %s\n", file);
 
 	// write stream information (should wakeup the disk from standby, too)
 	sprintf(buf, "%s.xml", file);
@@ -224,10 +226,45 @@ stream2file_error_msg_t start_file_recording(const char * const filename, const 
 	//TODO: get extension from uri
 	std::string ext =  getFileExt(uri);
 	printf("ext:%s\n", ext.c_str());
+
+	// check for extension
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
+
+	if(!fileFilter.matchFilter(uri))
+		return STREAM2FILE_INVALID_PID;
+	////
+
+
 	sprintf(buf, "%s.%s", file, ext.c_str());
 	sprintf(rec_filename, "%s.%s", file, ext.c_str());
 
-	dprintf(DEBUG_NORMAL, "[Stream2File] Record start: filename: %s\n", rec_filename);
+	dprintf(DEBUG_NORMAL, "[Stream2File] Record start: rec_filename: %s\n", rec_filename);
 
 	fd = open(buf, O_CREAT | O_RDWR | O_LARGEFILE | O_TRUNC , S_IRWXO | S_IRWXG | S_IRWXU);
 	if(fd < 0) 
@@ -244,6 +281,7 @@ stream2file_error_msg_t start_file_recording(const char * const filename, const 
 	record->Open();
 
 	// start_recording
+/*
 	if(!record->Start(fd, (unsigned short ) 0, (unsigned short *) 0, 0, NULL, uri)) 
 	{
 			record->Stop();
@@ -251,6 +289,7 @@ stream2file_error_msg_t start_file_recording(const char * const filename, const 
 			record = NULL;
 			return STREAM2FILE_INVALID_DIRECTORY;
 	}
+*/
 
 	return STREAM2FILE_OK;
 }
