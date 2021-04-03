@@ -709,9 +709,6 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 	time_t t = time(NULL);
 	strftime(&(filename[pos]), sizeof(filename) - pos - 1, "%Y%m%d_%H%M%S", localtime(&t));
 
-	////TEST
-	printf("CVCRControl::CFileDevice::Record: filename:%s (info: %s) \n", filename, getMovieInfoString(CMD_VCR_RECORD, channel_id, epgid, epgTitle, apid_list, epg_time).c_str());
-
 	start_time = time(0);
 
 	stream2file_error_msg_t error_msg = STREAM2FILE_BUSY;

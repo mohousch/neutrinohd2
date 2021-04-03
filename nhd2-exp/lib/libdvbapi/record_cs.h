@@ -47,15 +47,17 @@ class cRecord
 		bool record_thread_running;
 		record_state_t exit_flag;
 
-		//FILE * fp;
-		//std::string url;
+		// file recording
+		FILE * fp;
+		std::string url;
 		
 	public:
 		cRecord(int num = 0);
 		~cRecord();
 
 		bool Open();
-		bool Start(int fd, unsigned short vpid, unsigned short *apids, int numpids, CFrontend *fe = NULL/*, const std::string& uri = NULL*/);
+		bool Start(int fd, unsigned short vpid, unsigned short *apids, int numpids, CFrontend *fe = NULL);
+		bool Start(int fd, std::string uri);
 		bool Stop(void);
 
 		void RecordThread();

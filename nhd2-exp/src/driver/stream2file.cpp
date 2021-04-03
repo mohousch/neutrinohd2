@@ -281,15 +281,13 @@ stream2file_error_msg_t start_file_recording(const char * const filename, const 
 	record->Open();
 
 	// start_recording
-/*
-	if(!record->Start(fd, (unsigned short ) 0, (unsigned short *) 0, 0, NULL, uri)) 
+	if(!record->Start(fd, uri)) 
 	{
 			record->Stop();
 			delete record;
 			record = NULL;
 			return STREAM2FILE_INVALID_DIRECTORY;
 	}
-*/
 
 	return STREAM2FILE_OK;
 }

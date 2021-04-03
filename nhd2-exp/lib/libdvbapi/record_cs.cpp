@@ -57,7 +57,8 @@ cRecord::cRecord(int /*num*/)
 	exit_flag = RECORD_STOPPED;
 
 	//
-	//fp = NULL;
+	fp = NULL;
+	url.clear();
 }
 
 cRecord::~cRecord()
@@ -73,13 +74,13 @@ bool cRecord::Open()
 	return true;
 }
 
-bool cRecord::Start(int fd, unsigned short vpid, unsigned short * apids, int numpids, CFrontend *fe/*, const std::string& uri*/)
+bool cRecord::Start(int fd, unsigned short vpid, unsigned short * apids, int numpids, CFrontend *fe)
 {
 	dprintf(DEBUG_INFO, "%s %s\n", FILENAME, __FUNCTION__);
 
 	//url = uri;
 	
-	int i;
+	int i = 0;
 
 	if (!dmx)
 		dmx = new cDemux();
@@ -113,6 +114,30 @@ bool cRecord::Start(int fd, unsigned short vpid, unsigned short * apids, int num
 	return true;
 }
 
+bool cRecord::Start(int fd, std::string uri)
+{
+	dprintf(DEBUG_INFO, "%s %s\n", FILENAME, __FUNCTION__);
+
+	url = uri;
+	int i = 0;
+
+	file_fd = fd;
+	exit_flag = RECORD_RUNNING;
+
+	i = pthread_create(&record_thread, 0, execute_record_thread, this);
+	if (i != 0)
+	{
+		exit_flag = RECORD_FAILED_READ;
+		errno = i;
+		dprintf(DEBUG_INFO, "cRecord::Start: error creating thread!\n");
+		
+		return false;
+	}
+	record_thread_running = true;
+	
+	return true;
+}
+
 bool cRecord::Stop(void)
 {
 	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
@@ -135,13 +160,11 @@ bool cRecord::Stop(void)
 		file_fd = -1;
 	}
 
-	/*
 	if(fp != NULL)
 	{
 		fclose(fp);
 		fp = NULL;
 	}
-	*/
 	
 	return true;
 }
@@ -151,7 +174,6 @@ void cRecord::RecordThread()
 #define BUFSIZE (1 << 20) /* 1024 kB */
 #define READSIZE (BUFSIZE / 16)
 
-/*
 	if (!url.empty())
 	{
 #define FILENAMEBUFFERSIZE 1024
@@ -199,7 +221,6 @@ void cRecord::RecordThread()
 		curl_easy_cleanup(curl_handle);
 	}
 	else
-*/
 	{
 		ssize_t r = 0;
 		int buf_pos = 0;
