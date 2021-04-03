@@ -68,6 +68,8 @@ CNKMovies::CNKMovies(int mode, int id, std::string title)
 	catMode = mode;
 	catID = id;
 	caption = title;
+
+	recordingstatus = 0;
 }
 
 CNKMovies::~CNKMovies()
@@ -261,6 +263,7 @@ void CNKMovies::showMenu()
 	mainWidget->addKey(RC_info, this, CRCInput::getSpecialKeyName(RC_info));
 	mainWidget->addKey(RC_record, this, CRCInput::getSpecialKeyName(RC_record));
 	mainWidget->addKey(RC_blue, this, "startMenu");
+	mainWidget->addKey(RC_home, this, "exit");
 
 	mainWidget->exec(NULL, "");
 
@@ -302,8 +305,18 @@ void CNKMovies::recordMovie(MI_MOVIE_INFO& movie)
 
 	::start_file_recording(movie.epgTitle.c_str(), infoString.c_str(), movie.file.Name.c_str());
 
-	CNeutrinoApp::getInstance()->recordingstatus = 1;
-	CNeutrinoApp::getInstance()->recording_id = 1;
+	recordingstatus = 1;
+}
+
+void CNKMovies::stopRecord(MI_MOVIE_INFO& movie)
+{
+	std::string extMessage = " ";
+
+	m_movieInfo.encodeMovieInfoXml(&extMessage, &movie);
+
+	::stop_recording(extMessage.c_str());
+
+	recordingstatus = 0;
 }
 
 int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -331,25 +344,15 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		right_selected = rightWidget->getSelected();
 
-		if (CNeutrinoApp::getInstance()->recordingstatus == 0)
+		if (recordingstatus == 0)
 			recordMovie(m_vMovieInfo[right_selected]);
-/*
-		else if (CNeutrinoApp::getInstance()->recordingstatus == 1)
+		else if (recordingstatus == 1)
 		{
 			if (MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, mbrYes, mbYes | mbNo, NULL, 450, 30, true) == mbrYes)
 			{
-				std::string extMessage = " ";
-
-				m_movieInfo.encodeMovieInfoXml(&extMessage, &m_vMovieInfo[right_selected]);
-
-				::stop_recording(extMessage.c_str());
-
-				CVFD::getInstance()->ShowIcon(VFD_ICON_TIMESHIFT, false );
-
-				CNeutrinoApp::getInstance()->recordingstatus = 0;
+				stopRecord(m_vMovieInfo[right_selected]);
 			}
 		}
-*/
 
 		return RETURN_REPAINT;
 	}
@@ -391,6 +394,18 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "exit")
 	{
+		if (recordingstatus == 1)
+		{
+			if (MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, mbrYes, mbYes | mbNo, NULL, 450, 30, true) == mbrYes)
+			{
+				stopRecord(m_vMovieInfo[right_selected]);
+
+				return RETURN_EXIT_ALL;
+			}
+			else
+				return RETURN_REPAINT;
+		}
+
 		return RETURN_EXIT_ALL;
 	}
 

@@ -77,8 +77,6 @@ bool cRecord::Open()
 bool cRecord::Start(int fd, unsigned short vpid, unsigned short * apids, int numpids, CFrontend *fe)
 {
 	dprintf(DEBUG_INFO, "%s %s\n", FILENAME, __FUNCTION__);
-
-	//url = uri;
 	
 	int i = 0;
 
@@ -95,6 +93,7 @@ bool cRecord::Start(int fd, unsigned short vpid, unsigned short * apids, int num
 	exit_flag = RECORD_RUNNING;
 
 	i = pthread_create(&record_thread, 0, execute_record_thread, this);
+
 	if (i != 0)
 	{
 		exit_flag = RECORD_FAILED_READ;
@@ -107,6 +106,7 @@ bool cRecord::Start(int fd, unsigned short vpid, unsigned short * apids, int num
 			delete dmx;
 			dmx = NULL;
 		}
+
 		return false;
 	}
 	record_thread_running = true;
@@ -125,6 +125,7 @@ bool cRecord::Start(int fd, std::string uri)
 	exit_flag = RECORD_RUNNING;
 
 	i = pthread_create(&record_thread, 0, execute_record_thread, this);
+
 	if (i != 0)
 	{
 		exit_flag = RECORD_FAILED_READ;
@@ -133,6 +134,7 @@ bool cRecord::Start(int fd, std::string uri)
 		
 		return false;
 	}
+
 	record_thread_running = true;
 	
 	return true;
@@ -143,8 +145,12 @@ bool cRecord::Stop(void)
 	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
 
 	exit_flag = RECORD_STOPPED;
+
 	if (record_thread_running)
 		pthread_join(record_thread, NULL);
+
+	printf("RECORD STOPPED 1\n\n");
+
 	record_thread_running = false;
 
 	if (dmx)
@@ -154,17 +160,23 @@ bool cRecord::Stop(void)
 		dmx = NULL;
 	}
 
+	printf("RECORD STOPPED 2\n\n");
+
 	if (file_fd != -1)
 	{
 		close(file_fd);
 		file_fd = -1;
 	}
 
+	printf("RECORD STOPPED 3\n\n");
+
 	if(fp != NULL)
 	{
 		fclose(fp);
 		fp = NULL;
 	}
+
+	printf("RECORD STOPPED 4\n\n");
 	
 	return true;
 }

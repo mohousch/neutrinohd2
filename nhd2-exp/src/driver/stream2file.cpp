@@ -312,12 +312,15 @@ stream2file_error_msg_t stop_recording(const char * const info)
 		close(fd);
 	} 
 
+	//FIXME: not working now
+/*
 	if(record) 
 	{
 		record->Stop();
 		delete record;
 		record = NULL;
 	}
+*/
 
 	if (exit_flag == STREAM2FILE_STATUS_RUNNING) 
 	{

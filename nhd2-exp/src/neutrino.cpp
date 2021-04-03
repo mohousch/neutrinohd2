@@ -3803,24 +3803,20 @@ _repeat:
 	{
 		channelsInit();
 
-		//if(mode != mode_webtv)
-		{
-			channelList->adjustToChannelID(live_channel_id);//FIXME
+		channelList->adjustToChannelID(live_channel_id);
 		
-			if(old_b_id >= 0) 
-			{
-				bouquetList->activateBouquet(old_b_id, false);
-				old_b_id = -1;
-				g_RCInput->postMsg(RC_ok, 0);
-			}
+		if(old_b_id >= 0) 
+		{
+			bouquetList->activateBouquet(old_b_id, false);
+			old_b_id = -1;
+			g_RCInput->postMsg(RC_ok, 0);
 		}
 	}
 	else if( msg == NeutrinoMessages::EVT_BOUQUETSCHANGED ) 
 	{
 		channelsInit();
 
-		//if(mode != mode_webtv)
-			channelList->adjustToChannelID(live_channel_id);//FIXME
+		channelList->adjustToChannelID(live_channel_id);
 
 		return messages_return::handled;
 	}
@@ -4300,11 +4296,9 @@ skip_message:
 	}
 	else if (msg == NeutrinoMessages::EVT_SERVICES_UPD) 
 	{
-		//FIXME:remember this
 		channelsInit();
 
-		//if(mode != mode_webtv)
-			channelList->adjustToChannelID(live_channel_id);
+		channelList->adjustToChannelID(live_channel_id);
 	}
 	
 	if ((msg >= RC_WithData) && (msg < RC_WithData + 0x10000000))

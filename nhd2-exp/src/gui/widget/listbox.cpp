@@ -1017,7 +1017,11 @@ int CMenuForwarder::getHeight(void) const
 	int ih = 0;
 
 	if(widgetType == WIDGET_TYPE_STANDARD)
+	{
 		CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iw, &ih);
+
+		return std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()) + 3;
+	}
 	else if(widgetType == WIDGET_TYPE_EXTENDED)
 	{
 		CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iw, &ih);
@@ -1027,6 +1031,8 @@ int CMenuForwarder::getHeight(void) const
 	{
 		iw = ITEM_ICON_W_MINI;
 		ih = ITEM_ICON_H_MINI;
+
+		return std::max(ih, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()) + 3;
 	}
 	else if(widgetType == WIDGET_TYPE_FRAME)
 	{
@@ -1159,9 +1165,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	else
 	{
-		int stringstartposX = x + (offx == 0? 0 : offx);
-
-		//const char * option_text = getOption();	
+		int stringstartposX = x + (offx == 0? 0 : offx);	
 	
 		// paint item
 		frameBuffer->paintBoxRel(x, y, dx, height, bgcolor);
