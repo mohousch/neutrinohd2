@@ -321,6 +321,7 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 		// load xml file in buffer
 		char text[6000];
 		result = loadFile(file_xml, text, 6000);
+
 		if (result == true) 
 		{
 #ifdef XMLTREE_LIB
@@ -433,6 +434,149 @@ bool CMovieInfo::loadMovieInfo(MI_MOVIE_INFO * movie_info, CFile * file)
 	}
 
 	return (result);
+}
+
+//
+MI_MOVIE_INFO CMovieInfo::loadMovieInfo(const char *file)
+{
+	dprintf(DEBUG_NORMAL, "CMovieInfo::loadMovieInfo\n");
+
+	MI_MOVIE_INFO movie_info;
+	clearMovieInfo(&movie_info);
+
+	bool result = true;
+	CFile file_xml;
+
+	if (file != NULL) 
+	{
+		// if there is no give file, we use the file name from movie info but we have to convert the ts name to xml name first
+		file_xml.Name = file;
+		movie_info.file.Name = file;
+	} 
+
+	result = convertTs2XmlName(&file_xml.Name);
+
+	if (result == true) 
+	{
+		// load xml file in buffer
+		char text[6000];
+		result = loadFile(file_xml, text, 6000);
+
+		if (result == true) 
+		{
+#ifdef XMLTREE_LIB
+			result = parseXmlTree(text, &movie_info);
+#else /* XMLTREE_LIB */
+			result = parseXmlQuickFix(text, &movie_info);
+#endif /* XMLTREE_LIB */
+		}
+	}
+	
+	if (movie_info.productionDate > 50 && movie_info.productionDate < 200)	// backwardcompaibility
+		movie_info.productionDate += 1900;
+
+	//epgTitle
+	if (movie_info.epgTitle.empty())
+	{
+		std::string tmp_str = movie_info.file.getFileName();
+
+		removeExtension(tmp_str);
+
+		movie_info.epgTitle = tmp_str;
+	}
+
+	//epgInfo1
+	if(movie_info.file.getType() == CFile::FILE_VIDEO)
+	{
+		if (movie_info.epgInfo1.empty() && g_settings.enable_tmdb_infos)
+		{
+			CTmdb * tmdb = new CTmdb();
+
+			if(tmdb->getMovieInfo(movie_info.epgTitle))
+			{
+				if ((!tmdb->getDescription().empty())) 
+				{
+					movie_info.epgInfo1 = tmdb->getDescription();
+				}
+			}
+
+			delete tmdb;
+			tmdb = NULL;
+		}
+	}
+
+	//grab for thumbnail
+	//if (movie_info.tfile.empty())
+	{
+		// audio files
+		if(movie_info.file.getType() == CFile::FILE_AUDIO)
+		{
+			// mp3
+			if (getFileExt(movie_info.file.Name) == "mp3")
+			{
+				CAudiofile audiofile(movie_info.file.Name, CFile::EXTENSION_MP3);
+
+				CAudioPlayer::getInstance()->readMetaData(&audiofile, true);
+
+				if (!audiofile.MetaData.cover.empty())
+					movie_info.tfile = audiofile.MetaData.cover;
+				else
+					movie_info.tfile = DATADIR "/neutrino/icons/mp3.jpg";
+			}
+			else
+				movie_info.tfile = DATADIR "/neutrino/icons/mp3.jpg";
+		}
+		else if(movie_info.file.getType() == CFile::FILE_VIDEO)
+		{
+			std::string fname = "";
+			fname = movie_info.file.Name;
+			changeFileNameExt(fname, ".jpg");
+					
+			if (::file_exists(fname.c_str()))
+				movie_info.tfile = fname.c_str();
+			else
+			{
+				fname.clear();
+				fname = movie_info.file.getPath();
+				fname += movie_info.epgTitle;
+				fname += ".jpg";
+
+				////TEST
+				printf("PATH: %s\n", movie_info.file.getPath().c_str());
+
+				if (::file_exists(fname.c_str()))
+					movie_info.tfile = fname.c_str();
+				else if (g_settings.enable_tmdb_infos) //grab from tmdb
+				{
+					CTmdb * tmdb = new CTmdb();
+
+					if(tmdb->getMovieInfo(movie_info.epgTitle))
+					{
+						if ((!tmdb->getDescription().empty())) 
+						{
+							std::string tname = movie_info.file.getPath();
+							tname += movie_info.epgTitle;
+							tname += ".jpg";
+
+							tmdb->getSmallCover(tmdb->getPosterPath(), tname);
+
+							if(!tname.empty())
+								movie_info.tfile = tname;
+							else
+								movie_info.tfile = DATADIR "/neutrino/icons/nopreview.jpg";
+						}
+					}
+					else
+						movie_info.tfile = DATADIR "/neutrino/icons/nopreview.jpg";
+
+					delete tmdb;
+					tmdb = NULL;
+				}
+			}
+		}
+	}
+
+	return movie_info;
 }
 
 bool CMovieInfo::parseXmlTree(char */*text*/, MI_MOVIE_INFO */*movie_info*/)

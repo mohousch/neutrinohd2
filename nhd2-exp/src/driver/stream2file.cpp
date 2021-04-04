@@ -186,18 +186,6 @@ stream2file_error_msg_t start_file_recording(const char * const filename, const 
 	if (filename != NULL)
 	{
 		strcpy(&(file[pos]), filename);
-
-/*
-		char * p_act = &(file[pos]);
-		do {
-			p_act += strcspn(p_act, "/ \"%&-\t`'�!,:;");
-
-			if (*p_act) 
-			{
-				*p_act++ = '_';
-			}
-		} while (*p_act);
-*/
 	}
 
 	dprintf(DEBUG_NORMAL, "[Stream2File] Record start: file:%s (filename:%s)\n", file, filename);
@@ -294,7 +282,7 @@ stream2file_error_msg_t start_file_recording(const char * const filename, const 
 	return STREAM2FILE_OK;
 }
 
-stream2file_error_msg_t stop_recording(const char * const info)
+stream2file_error_msg_t stop_recording(const char * const info, bool file_recording)
 {
 	char buf[FILENAMEBUFFERSIZE];
 	char buf1[FILENAMEBUFFERSIZE];
@@ -313,14 +301,15 @@ stream2file_error_msg_t stop_recording(const char * const info)
 	} 
 
 	//FIXME: not working now
-/*
-	if(record) 
+	if (!file_recording)
 	{
-		record->Stop();
-		delete record;
-		record = NULL;
+		if(record) 
+		{
+			record->Stop();
+			delete record;
+			record = NULL;
+		}
 	}
-*/
 
 	if (exit_flag == STREAM2FILE_STATUS_RUNNING) 
 	{

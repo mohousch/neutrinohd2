@@ -57,6 +57,6 @@ stream2file_error_msg_t start_recording(const char * const filename,
 
 stream2file_error_msg_t start_file_recording(const char* const filename, const char* const info, std::string uri = "");
 					
-stream2file_error_msg_t stop_recording(const char * const info);
+stream2file_error_msg_t stop_recording(const char * const info, bool file_recording = false);
 
 #endif

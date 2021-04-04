@@ -314,7 +314,7 @@ void CNKMovies::stopRecord(MI_MOVIE_INFO& movie)
 
 	m_movieInfo.encodeMovieInfoXml(&extMessage, &movie);
 
-	::stop_recording(extMessage.c_str());
+	::stop_recording(extMessage.c_str(), true);
 
 	recordingstatus = 0;
 }

@@ -650,19 +650,16 @@ function testCWindow()
 	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
 	local PATH = config:getString("network_nfs_recordingdir")
 
-	local movieInfo = neutrino.MI_MOVIE_INFO()
-	movieInfo.file.Name = PATH .. "/ProSieben_20121225_201400.ts"
+	local mFile = PATH .. "/ProSieben_20121225_201400.ts"
 
 	local m_movieInfo = neutrino.CMovieInfo()
 
-	m_movieInfo:loadMovieInfo(movieInfo)
-
-	local itemIcon = movieInfo.tfile
+	local movieInfo = m_movieInfo:loadMovieInfo(mFile)
 
 	frame3 = neutrino.CFrame(neutrino.FRAME_PICTURE)
 	frame3:setPosition(picBox)
-	--frame3:setTitle("Transformers")
-	frame3:setIconName(itemIcon)
+	frame3:setTitle(movieInfo.epgTitle)
+	frame3:setIconName(movieInfo.tfile)
 	frame3:setActionKey(null, "frame3")
 
 	--title
@@ -695,7 +692,7 @@ function testCWindow()
 	frame4 = neutrino.CFrame(neutrino.FRAME_TEXT_NOTSELECTABLE)
 	frame4:setPosition(textbox)
 	--frame4:setBackgroundColor(0xFFAAAA)
-	frame4:setTitle(movieInfo.epgInfo2 .. "...")
+	frame4:setTitle(movieInfo.epgInfo1 .. "\n" .. movieInfo.epgInfo2)
 	frame4:setActionKey(null, "frame4")
 	frame4:disablePaintFrame()
 
@@ -1050,11 +1047,6 @@ function movieBrowser()
 	fileFilter:addFilter("wma")
 	fileFilter:addFilter("ogg")
 
-	local m_movieInfo = neutrino.CMovieInfo()
-	local movieInfo = neutrino.MI_MOVIE_INFO()
-
-	m_movieInfo:clearMovieInfo(movieInfo)
-
 	-- fill items
 	fileBrowser.Filter = fileFilter
 	--if fileBrowser:readDir(PATH, filelist) then
@@ -1076,12 +1068,9 @@ function funArt()
 	config:loadConfig(neutrino.CONFIGDIR .. "/neutrino.conf")
 	local PATH = config:getString("network_nfs_recordingdir")
 
-	local movieInfo = neutrino.MI_MOVIE_INFO()
-	movieInfo.file.Name = PATH .. "/ProSieben_20121225_201400.ts"
-
+	local mFile = PATH .. "/ProSieben_20121225_201400.ts"
 	local m_movieInfo = neutrino.CMovieInfo()
-
-	m_movieInfo:loadMovieInfo(movieInfo)
+	local movieInfo = m_movieInfo:loadMovieInfo(mFile)
 
 	local fb = neutrino.CSwigHelpers()
 
