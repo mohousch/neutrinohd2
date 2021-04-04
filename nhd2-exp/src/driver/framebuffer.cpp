@@ -1137,14 +1137,21 @@ _display:
 }
 
 // paintHintIcon
-bool CFrameBuffer::paintHintIcon(const std::string & filename, int posx, int posy, int width, int height)
+bool CFrameBuffer::paintHintIcon(const std::string &filename, int posx, int posy, int width, int height)
 {
 	if (!getActive())
 		return false;
 
-	std::string newname = hintIconBasePath + filename.c_str() + ".png";
+	if (::file_exists(filename.c_str()))
+		return displayImage(filename, posx, posy, width, height);
+	else
+	{
+		std::string newname = hintIconBasePath + filename.c_str() + ".png";		
 
-	return displayImage(newname, posx, posy, width, height);
+		return displayImage(newname, posx, posy, width, height);
+	}
+
+	return true;
 }
 
 void CFrameBuffer::loadPal(const std::string & filename, const unsigned char offset, const unsigned char endidx)

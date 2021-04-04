@@ -1142,7 +1142,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 		else
 		{
 			if(!itemIcon.empty())
-				frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
+				frameBuffer->paintHintIcon(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
 
 			//
 			if(selected)
@@ -1150,7 +1150,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 				frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/COL_MENUCONTENTSELECTED_PLUS_0);
 
 				if(!itemIcon.empty())
-					frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
+					frameBuffer->paintHintIcon(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
 
 			}
 		}
@@ -1217,7 +1217,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 			{
 				if (!itemIcon.empty())
 				{
-					frameBuffer->displayImage(itemIcon.c_str(), x + BORDER_LEFT, y + ((height - icon_h)/2), icon_w, icon_h);
+					frameBuffer->paintHintIcon(itemIcon.c_str(), x + BORDER_LEFT, y + ((height - icon_h)/2), icon_w, icon_h);
 				}
 			}
 		}
@@ -1442,7 +1442,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 		else
 		{
 			if(!itemIcon.empty())
-				frameBuffer->displayImage(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
+				frameBuffer->paintHintIcon(itemIcon, x + 4*ICON_OFFSET, y + 4*ICON_OFFSET, item_width - 8*ICON_OFFSET, item_height - 8*ICON_OFFSET);
 
 			//
 			if(selected)
@@ -1450,7 +1450,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 				frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/COL_MENUCONTENTSELECTED_PLUS_0);
 
 				if(!itemIcon.empty())
-					frameBuffer->displayImage(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
+					frameBuffer->paintHintIcon(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
 
 			}
 		}
@@ -1490,7 +1490,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 			{
 				if (!itemIcon.empty())
 				{
-					frameBuffer->displayImage(itemIcon.c_str(), x + BORDER_LEFT, y + ((height - icon_h)/2), icon_w, icon_h);
+					frameBuffer->paintHintIcon(itemIcon.c_str(), x + BORDER_LEFT, y + ((height - icon_h)/2), icon_w, icon_h);
 				}
 			}
 		}
