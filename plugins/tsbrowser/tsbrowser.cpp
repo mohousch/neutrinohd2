@@ -51,7 +51,7 @@ class CTSBrowser : public CMenuTarget
 		void onDeleteFile(MI_MOVIE_INFO& movieFile);
 		void openFileBrowser();
 
-		void funArt(MI_MOVIE_INFO& movieFile);
+		//void funArt(MI_MOVIE_INFO& movieFile);
 		void playMovie(int i);
 
 		void showMenu();
@@ -387,6 +387,7 @@ void CTSBrowser::onDeleteFile(MI_MOVIE_INFO& movieFile)
 	}
 }
 
+#if 0
 void CTSBrowser::funArt(MI_MOVIE_INFO& movieFile)
 {
 	// mainBox
@@ -522,6 +523,7 @@ void CTSBrowser::funArt(MI_MOVIE_INFO& movieFile)
 	delete window;
 	window = NULL;	
 }
+#endif
 
 void CTSBrowser::playMovie(int i)
 {
@@ -599,11 +601,16 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		selected = mlist->getSelected();
 
-		funArt(m_vMovieInfo[selected]);
+		//funArt(m_vMovieInfo[selected]);
+		CMovieInfoWidget movieInfoWidget;
+		movieInfoWidget.setMovie(m_vMovieInfo[selected]);
+		
+		movieInfoWidget.exec(NULL, "");
 
 		return RETURN_REPAINT;
 	}
-	if(actionKey == "playMovie")
+/*
+	else if(actionKey == "playMovie")
 	{
 		selected = mlist->getSelected();
 
@@ -611,6 +618,7 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return RETURN_REPAINT;
 	}
+*/
 	else if(actionKey == "RC_info")
 	{
 		selected = mlist->getSelected();

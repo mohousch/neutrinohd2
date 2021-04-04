@@ -54,6 +54,7 @@
 #include <vector>
 
 #include <driver/file.h>
+#include <gui/widget/widget.h>
 
 
 /* XML tags for xml file*/
@@ -208,6 +209,24 @@ class CMovieInfo
 		bool parseXmlQuickFix(char* text, MI_MOVIE_INFO* movie_info);			// OK, this is very quick an dirty. It does not waist execution time nor flash (this is QUICK). But, do not play to much with the xml files (e.g. with MS Notepad) since small changes in the structure could cause the parser to fail (this it DIRTY). 
 		bool loadFile(CFile& file, char* buffer, int buffer_size);
 		bool saveFile(const CFile& file, const char* text, const int text_size);
+};
+
+// CMovieInfoWidget
+class CMovieInfoWidget : public CMenuTarget
+{
+	private:
+		MI_MOVIE_INFO movieFile;
+		void funArt();
+	public:
+		CMovieInfoWidget();
+		~CMovieInfoWidget();
+
+		void hide();
+		int exec(CMenuTarget *parent, const std::string &actionKey);
+
+		void setMovie(MI_MOVIE_INFO& file);
+		void setMovie(const CFile& file, std::string title = "", std::string info1 = "", std::string info2 = "", std::string tfile = "");
+		void setMovie(const char* fileName, std::string title = "", std::string info1 = "", std::string info2 = "", std::string tfile = "");
 };
 
 #endif /*MOVIEINFO_H_*/

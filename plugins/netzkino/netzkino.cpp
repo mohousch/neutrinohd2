@@ -329,7 +329,12 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(actionKey == "play")
 	{
 		right_selected = rightWidget->getSelected();
-		playMovie(m_vMovieInfo[right_selected]);
+		//playMovie(m_vMovieInfo[right_selected]);
+
+		CMovieInfoWidget movieInfoWidget;
+		movieInfoWidget.setMovie(m_vMovieInfo[right_selected]);
+		
+		movieInfoWidget.exec(NULL, "");
 
 		return RETURN_REPAINT;
 	}

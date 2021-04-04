@@ -630,6 +630,7 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		print_buffer += "\n";
 	}
 	
+/*
 	if (movie_info.quality != 0) 
 	{
 		print_buffer += "\n";
@@ -677,8 +678,10 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 
 		print_buffer += "\n";
 	}
+*/
 
 	// ytdate
+/*
 	if(movie_info.ytdate.empty())
 	{
 		print_buffer += "\n";
@@ -696,8 +699,10 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 
 		print_buffer += "\n";
 	}
+*/
 	
 	// file size
+/*
 	if (movie_info.file.Size != 0) 
 	{
 		print_buffer += "\n";
@@ -709,6 +714,7 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 
 		print_buffer += "\n"; 
 	}
+*/
 	
 	// file path
 	if(movie_info.ytdate.empty())
@@ -1248,4 +1254,216 @@ void CMovieInfo::copy(MI_MOVIE_INFO * src, MI_MOVIE_INFO * dst)
 		dst->audioPids.push_back(audio_pids);
 	}
 }
+
+#include <gui/widget/widget_helpers.h>
+#include <gui/widget/framebox.h>
+#include <gui/movieplayer.h>
+
+// CMovieInfoWidget
+CMovieInfoWidget::CMovieInfoWidget()
+{
+}
+
+CMovieInfoWidget::~CMovieInfoWidget()
+{
+}
+
+void CMovieInfoWidget::hide()
+{
+	CFrameBuffer::getInstance()->paintBackground();
+	CFrameBuffer::getInstance()->blit();
+}
+
+void CMovieInfoWidget::setMovie(MI_MOVIE_INFO& file)
+{
+	movieFile = file;
+}
+
+void CMovieInfoWidget::setMovie(const CFile& file, std::string title, std::string info1, std::string info2, std::string tfile)
+{
+	movieFile.file.Name = file.Name;
+	movieFile.epgTitle = title;
+	movieFile.epgInfo1 = info1;
+	movieFile.epgInfo2 = info2;
+	movieFile.tfile = tfile;
+}
+
+void CMovieInfoWidget::setMovie(const char* fileName, std::string title, std::string info1, std::string info2, std::string tfile)
+{
+	CFile file;
+	file.Name = fileName;
+
+	movieFile.file.Name = file.Name;
+	movieFile.epgTitle = title;
+	movieFile.epgInfo1 = info1;
+	movieFile.epgInfo2 = info2;
+	movieFile.tfile = tfile;
+}
+
+void CMovieInfoWidget::funArt()
+{
+	// mainBox
+	CBox box;
+	box.iX = CFrameBuffer::getInstance()->getScreenX();
+	box.iY = CFrameBuffer::getInstance()->getScreenY();
+	box.iWidth = CFrameBuffer::getInstance()->getScreenWidth();
+	box.iHeight = CFrameBuffer::getInstance()->getScreenHeight();
+
+	// titleBox
+	CBox titleBox;
+	titleBox.iX = box.iX + 10;
+	titleBox.iY = box.iY + 10;
+	titleBox.iWidth = box.iWidth;
+	titleBox.iHeight = 40;
+
+	// starBox
+	CBox starBox;
+	starBox.iX = box.iX +10;
+	starBox.iY = box.iY + titleBox.iHeight + 10;
+	starBox.iWidth = 25;
+	starBox.iHeight = 25;
+
+	// playBox
+	CBox playBox;
+	playBox.iWidth = 300;
+	playBox.iHeight = 60;
+	playBox.iX = box.iX + 10;
+	playBox.iY = box.iY + box.iHeight - 10 - 60;
+
+	// textBox
+	CBox textBox;
+	textBox.iWidth = box.iWidth/2 - 20;
+	textBox.iHeight = box.iHeight - playBox.iHeight - starBox.iHeight - titleBox.iHeight - 4*10 - 100;
+	textBox.iX = box.iX + 10;
+	textBox.iY = starBox.iY + 10 + 60;
+
+	CWindow * window = new CWindow(&box);
+	CFrameBox * testFrame = new CFrameBox();
+	testFrame->setMode(FRAMEBOX_MODE_RANDOM);
+	CWidget * widget = new CWidget();
+
+
+	// artFrame
+	CFrame * artFrame = new CFrame(FRAME_PICTURE_NOTSELECTABLE);
+	artFrame->setPosition(box.iX + box.iWidth/2, box.iY, box.iWidth/2, box.iHeight);
+	artFrame->setIconName(movieFile.tfile.c_str());
+
+	testFrame->addFrame(artFrame);
+
+	// title
+	CFrame *titleFrame = new CFrame(FRAME_TEXT_LINE_NOTSELECTABLE);
+	titleFrame->setPosition(&titleBox);
+	titleFrame->disablePaintFrame();
+	titleFrame->setTitle(movieFile.epgTitle.c_str());
+	titleFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]);
+
+	testFrame->addFrame(titleFrame);
+
+	// star1
+	CFrame *star1Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	star1Frame->setPosition(&starBox);
+	star1Frame->setIconName(NEUTRINO_ICON_STAR_ON);
+	star1Frame->disablePaintFrame();
+
+	testFrame->addFrame(star1Frame);
+
+	// star2
+	CFrame *star2Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	star2Frame->setPosition(starBox.iX + 25, starBox.iY, starBox.iWidth, starBox.iHeight);
+	star2Frame->setIconName(NEUTRINO_ICON_STAR_ON);
+	star2Frame->disablePaintFrame();
+
+	testFrame->addFrame(star2Frame);
+
+	// star3
+	CFrame *star3Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	star3Frame->setPosition(starBox.iX + 2*25, starBox.iY, starBox.iWidth, starBox.iHeight);
+	star3Frame->setIconName(NEUTRINO_ICON_STAR_ON);
+	star3Frame->disablePaintFrame();
+
+	testFrame->addFrame(star3Frame);
+
+	// star4
+	CFrame *star4Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	star4Frame->setPosition(starBox.iX + 3*25, starBox.iY, starBox.iWidth, starBox.iHeight);
+	star4Frame->setIconName(NEUTRINO_ICON_STAR_OFF);
+	star4Frame->disablePaintFrame();
+
+	testFrame->addFrame(star4Frame);
+
+	// text
+	CFrame *textFrame = new CFrame(FRAME_TEXT_NOTSELECTABLE);
+	textFrame->setPosition(&textBox);
+	std::string buffer;
+	buffer = movieFile.epgInfo1;
+	buffer += "\n";
+	buffer += movieFile.epgInfo2;
+
+	textFrame->setTitle(buffer.c_str());
+	textFrame->disablePaintFrame();
+	
+	testFrame->addFrame(textFrame);
+
+	// infoFrame
+	CFrame * infoFrame = new CFrame();
+	infoFrame->setPosition(playBox.iX + 300 + 10, playBox.iY, 300, 60);
+	infoFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
+	infoFrame->setTitle("Movie Details");
+	infoFrame->setIconName(NEUTRINO_ICON_INFO);
+	infoFrame->setActionKey(this, "RC_info");
+
+	testFrame->addFrame(infoFrame);
+
+	// play
+	CFrame *playFrame = new CFrame();
+	playFrame->setPosition(&playBox);
+	playFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
+	playFrame->setTitle("Movie abspielen");
+	playFrame->setIconName(NEUTRINO_ICON_PLAY);
+	playFrame->setActionKey(this, "playMovie");
+
+	testFrame->addFrame(playFrame);
+
+	widget->addItem(window);
+	widget->addItem(testFrame);
+
+	widget->exec(NULL, "");
+
+	delete widget;
+	widget = NULL;
+
+	delete window;
+	window = NULL;	
+}
+
+int CMovieInfoWidget::exec(CMenuTarget* parent, const std::string& actionKey)
+{
+	dprintf(DEBUG_NORMAL, "CMovieInfoWidget::exec: actionKey:%s\n", actionKey.c_str());
+	
+	if(parent)
+		hide();
+	
+	if(actionKey == "playMovie")
+	{
+		CMoviePlayerGui tmpMoviePlayerGui;
+		tmpMoviePlayerGui.addToPlaylist(movieFile);
+
+		tmpMoviePlayerGui.exec(NULL, "");
+
+		return RETURN_REPAINT;
+	}
+	else if(actionKey == "RC_info")
+	{
+		CMovieInfo m_movieInfo;
+		m_movieInfo.showMovieInfo(movieFile);
+
+		return RETURN_REPAINT;
+	}
+
+	funArt();
+	
+	return RETURN_EXIT;
+}
+
+
 

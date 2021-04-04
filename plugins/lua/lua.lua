@@ -528,10 +528,10 @@ function testCWindow()
 	local fb = neutrino.CSwigHelpers()
 
 	box = neutrino.CBox()
-	box.iWidth = fb:getScreenWidth() - 80
-	box.iHeight = fb:getScreenHeight() - 80
-	box.iX = fb:getScreenX() + 40
-	box.iY = fb:getScreenY() + 40
+	box.iWidth = fb:getScreenWidth()
+	box.iHeight = fb:getScreenHeight()
+	box.iX = fb:getScreenX()
+	box.iY = fb:getScreenY()
 
 	local headBox = neutrino.CBox()
 	headBox.iWidth = box.iWidth
@@ -800,7 +800,11 @@ function testCWindow()
 	elseif actionKey == "frame3" then
 		print("lua sample: testCWindow(): actionKey: frame3")
 
-		funArt()
+		--funArt()
+		movieWidget = neutrino.CMovieInfoWidget()
+		movieWidget:setMovie(movieInfo)
+
+		movieWidget:exec(null, "")
 
 	elseif actionKey == "nfilm" then
 		print("lua sample: testCWindow(): actionKey: nfilm")

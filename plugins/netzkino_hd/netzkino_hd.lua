@@ -351,7 +351,18 @@ function get_movies_menu(_id)
 
 	if actionKey == "play" then
 		--playMovie(selected_movie + 1)
-		funArt(selected_movie + 1)
+		--funArt(selected_movie + 1)
+
+		stream_name = conv_utf8(movies[selected_movie + 1].stream)
+		title = conv_utf8(movies[selected_movie + 1].title)
+		info1 = conv_utf8(movies[selected_movie + 1].content)
+		cover = movies[selected_movie + 1].cover
+		file = "https://pmd.netzkino-seite.netzkino.de/" .. stream_name ..".mp4"
+
+		movieWidget = neutrino.CMovieInfoWidget()
+		movieWidget:setMovie(file, title, info1, "", cover)
+
+		movieWidget:exec(null, "")
 	elseif actionKey == "info" then
 		showMovieInfo(selected_movie + 1)
 	elseif actionKey == "record" then
