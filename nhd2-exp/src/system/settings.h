@@ -575,7 +575,7 @@ extern const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT];
 
 // widget
 #define MENU_WIDTH			600
-#define MENU_HEIGHT			700
+#define MENU_HEIGHT			600
 
 // parentallock
 const int PARENTALLOCK_PROMPT_NEVER          = 0;

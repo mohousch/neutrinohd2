@@ -316,13 +316,6 @@ function fill_playlist(id)
 	end
 end
 
---[[
-function set_pmid(id)
-  pmid=tonumber(id);
-  return MENU_RETURN["EXIT_ALL"];
-end
-]]
-
 local epg = ""
 local title = ""
 
@@ -370,7 +363,6 @@ end
 function select_playitem()
 	print("select_playitem:")
 
-  --local m=menu.new{name="", icon=arte_concert}
 	local m = neutrino.ClistBoxWidget("", arte_concert, 2*neutrino.MENU_WIDTH)
 	m:setWidgetType(neutrino.WIDGET_TYPE_EXTENDED)
 	m:enableShrinkMenu()
@@ -380,7 +372,6 @@ function select_playitem()
 		item = neutrino.ClistBoxItem(r.title)
 		item:setHelpText(r.epg)
 		item:setItemIcon(arte_concert)
-    		--m:addItem{type="forwarder", action="set_pmid", id=i, icon="streaming", name=r.title, hint=r.epg, hint_icon="hint_reload"}
 
 		m:addItem(item)
   	end
@@ -664,46 +655,11 @@ function select_playitem()
 ]]
 end
 
---[[
-function godirectkey(d)
-	if d  == nil then return d end
-	local  _dkey = ""
-	if d == 1 then
-		_dkey = RC.red
-	elseif d == 2 then
-		_dkey = RC.green
-	elseif d == 3 then
-		_dkey = RC.yellow
-	elseif d == 4 then
-		_dkey = RC.blue
-	elseif d < 14 then
-		_dkey = RC[""..d - 4 ..""]
-	elseif d == 14 then
-		_dkey = RC["0"]
-	else
-		-- rest
-		_dkey = ""
-	end
-	return _dkey
-end
-]]
-
 function selectmenu()
---[[
-	sm = menu.new{name="", icon=arte_concert}
-	sm:addItem{type="separator"}
-	local d = 0 -- directkey
-	for i,v in  ipairs(subs) do
-		d = d + 1
-		local dkey = godirectkey(d)
-		sm:addItem{type="forwarder", name=v[2], action="fill_playlist",id=v[1], hint='arte concert: ' .. v[2], directkey=dkey }
-	end
-	sm:exec()
-]]
 	local item = nil
 	sm = neutrino.ClistBoxWidget("Arte Konzerte", arte_concert)
 	for i,v in  ipairs(subs) do
-		item = neutrino.ClistBoxItem(v[2])
+		item = neutrino.ClistBoxItem(v[2], true, "", nil, v[1])
 
 		sm:addItem(item)
 	end
@@ -717,9 +673,10 @@ function selectmenu()
 	sm:exec(null, "")
 
 	selected_sm = sm:getSelected()
+	actionKey = sm:getActionKey()
 
 	if selected_sm >= 0 then
-		fill_playlist('MUA')
+		fill_playlist(actionKey)
 	end
 
 	if sm:getExitPressed() ~= true then
@@ -741,3 +698,5 @@ main()
 
 
 os.execute("rm /tmp/lua*.png");
+
+
