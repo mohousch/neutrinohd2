@@ -94,7 +94,7 @@ void CPluginList::showMenu()
 
 
 	// itemBox
-	plist = new ClistBoxWidget(LOCALE_USERMENU_ITEM_PLUGINS, NEUTRINO_ICON_SHELL, MENU_WIDTH, MENU_HEIGHT - 100);
+	plist = new ClistBoxWidget(LOCALE_USERMENU_ITEM_PLUGINS, NEUTRINO_ICON_SHELL, MENU_WIDTH, MENU_HEIGHT);
 
 	//
 	for(unsigned int count = 0; count < (unsigned int)g_PluginList->getNumberOfPlugins(); count++)

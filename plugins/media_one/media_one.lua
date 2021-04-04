@@ -132,43 +132,16 @@ end
 
 function getdata(Url, outputfile)
 	if Url == nil then return nil end
-	--[[if Curl == nil then
-		Curl = curl.new()
-	end
-	]]
 
 	if Url:sub(1, 2) == '//' then
 		Url =  'http:' .. Url
 	end
 
 	local data = nil
-	outputfile = "/tmp/txt.txt"
 
-	--local ret, data = Curl:download{url=Url,A="Mozilla/5.0;",maxRedirs=5,followRedir=true,o=outputfile }
-	local ret = neutrino.downloadUrl(Url, outputfile, 'Mozilla/5.0;', 90)
-
-	if ret == true then
-		local fp = io.open(outputfile, "r")
-		if fp == nil then
-			error("Error opening file '" .. fname .. "'.")
-		else
-			data = fp:read("*all")
-			fp:close()
-		end
-	end
+	data = neutrino.getUrlAnswer(Url, 'Mozilla/5.0;')
 
 	return data
-
-	--[[
-	if ret == CURL.OK then
-		if outputfile then
-			return 1
-		end
-		return data
-	else
-		return nil
-	end
-	]]
 end
 
 function getFeedDataFromUrl(url)

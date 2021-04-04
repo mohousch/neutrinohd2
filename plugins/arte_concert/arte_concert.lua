@@ -125,33 +125,10 @@ function getdata(Url,outputfile)
 	if Url == nil then 
 		return nil 
 	end
---[[
-	if Curl == nil then
-		Curl = curl.new()
-	end
-]]
---	local ret, data = Curl:download{url=Url,A="Mozilla/5.0 (Linux mips; U;HbbTV/1.1.1 (+RTSP;DMM;Dreambox;0.1a;1.0;) CE-HTML/1.0; en) AppleWebKit/535.19 no/Volksbox QtWebkit/2.2",followRedir=true,o=outputfile }
-	--[[local ret, data = Curl:download{url=Url,A="Mozilla/5.0 (X11; Linux armv7l) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.77 Large Screen Safari/534.24 GoogleTV/000000",followRedir=true,o=outputfile }
-	if ret == CURL.OK then
-		return data
-	else
-		return nil
-	end
-]]
+
 	local data = nil
-	outputfile = "/tmp/arte.txt"
 
-	local ret = neutrino.downloadUrl(Url, outputfile, "Mozilla/5.0 (Linux mips; U;HbbTV/1.1.1 (+RTSP;DMM;Dreambox;0.1a;1.0;) CE-HTML/1.0; en) AppleWebKit/535.19 no/Volksbox QtWebkit/2.2")
-
-	if ret == true then
-		local fp = io.open(outputfile, "r")
-		if fp == nil then
-			error("Error opening file '" .. fname .. "'.")
-		else
-			data = fp:read("*a")
-			fp:close()
-		end
-	end
+	data = neutrino.getUrlAnswer(Url, "Mozilla/5.0 (Linux mips; U;HbbTV/1.1.1 (+RTSP;DMM;Dreambox;0.1a;1.0;) CE-HTML/1.0; en) AppleWebKit/535.19 no/Volksbox QtWebkit/2.2")
 
 	return data
 end
@@ -319,7 +296,7 @@ end
 local epg = ""
 local title = ""
 
-function epgInfo (xres, yres, aspectRatio, framerate)
+function epgInfo(xres, yres, aspectRatio, framerate)
 --[[
 	if #epg < 1 then return end 
 	local dx = 800;
@@ -371,7 +348,7 @@ function select_playitem()
   	for i,r in  ipairs(p) do
 		item = neutrino.ClistBoxItem(r.title)
 		item:setHelpText(r.epg)
-		item:setItemIcon(arte_concert)
+		--item:setItemIcon(arte_concert)
 
 		m:addItem(item)
   	end
@@ -470,7 +447,7 @@ function select_playitem()
 					videoplayed = true
 	--				vPlay:PlayFile ("arte concert", conv_url(video_url), conv_str(title) ,conv_url(video_url)); -- with display of the web address when playing on the infobar
 					--vPlay:PlayFile ("arte concert", conv_url(video_url), conv_str(title) ); -- without displaying the web address when playing on the infobar = default
-					vPlay:addToPlaylist(conv_url(video_url), conv_str(title), conv_str(epg), "", arte_concert)
+					vPlay:addToPlaylist(conv_url(video_url), conv_str(title), conv_str(epg))
 					vPlay:exec(null, "")
 				end
 
