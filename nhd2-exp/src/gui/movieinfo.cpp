@@ -506,7 +506,7 @@ MI_MOVIE_INFO CMovieInfo::loadMovieInfo(const char *file)
 	}
 
 	//grab for thumbnail
-	//if (movie_info.tfile.empty())
+	if (movie_info.tfile.empty())
 	{
 		// audio files
 		if(movie_info.file.getType() == CFile::FILE_AUDIO)
@@ -540,9 +540,6 @@ MI_MOVIE_INFO CMovieInfo::loadMovieInfo(const char *file)
 				fname = movie_info.file.getPath();
 				fname += movie_info.epgTitle;
 				fname += ".jpg";
-
-				////TEST
-				printf("PATH: %s\n", movie_info.file.getPath().c_str());
 
 				if (::file_exists(fname.c_str()))
 					movie_info.tfile = fname.c_str();
@@ -1297,13 +1294,13 @@ bool CMovieInfo::loadFile(CFile & file, char *buffer, int buffer_size)
 {
 	bool result = true;
 
-	dprintf(DEBUG_INFO, "CMovieInfo::laodFile: %s\n", file.getFileName().c_str());
+	//dprintf(DEBUG_INFO, "CMovieInfo::laodFile: %s\n", file.getFileName().c_str());
 
 	// open file
 	int fd = open(file.Name.c_str(), O_RDONLY);
 	if (fd == -1)		// cannot open file, return!!!!! 
 	{
-		dprintf(DEBUG_NORMAL, "CMovieInfo::laodFile: cannot open (%s)\r\n", file.getFileName().c_str());
+		//dprintf(DEBUG_NORMAL, "CMovieInfo::laodFile: cannot open (%s)\r\n", file.getFileName().c_str());
 		return false;
 	}
 	
@@ -1311,7 +1308,7 @@ bool CMovieInfo::loadFile(CFile & file, char *buffer, int buffer_size)
 	int bytes = read(fd, buffer, buffer_size - 1);
 	if (bytes <= 0)		// cannot read file into buffer, return!!!! 
 	{
-		dprintf(DEBUG_NORMAL, "CMovieInfo::laodFile: cannot read (%s)\r\n", file.getFileName().c_str());
+		//dprintf(DEBUG_NORMAL, "CMovieInfo::laodFile: cannot read (%s)\r\n", file.getFileName().c_str());
 		return false;
 	}
 
