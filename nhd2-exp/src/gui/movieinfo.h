@@ -54,7 +54,10 @@
 #include <vector>
 
 #include <driver/file.h>
+
 #include <gui/widget/widget.h>
+#include <gui/widget/widget_helpers.h>
+#include <gui/widget/framebox.h>
 
 
 /* XML tags for xml file*/
@@ -216,6 +219,8 @@ class CMovieInfoWidget : public CMenuTarget
 {
 	private:
 		MI_MOVIE_INFO movieFile;
+		CMovieInfo m_movieInfo;
+
 		void funArt();
 	public:
 		CMovieInfoWidget();

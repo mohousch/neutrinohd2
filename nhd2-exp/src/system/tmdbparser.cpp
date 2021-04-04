@@ -75,7 +75,7 @@ bool CTmdb::getMovieInfo(std::string text)
 
 	std::string answer;
 
-	if (!::getUrl(url, answer))
+	if (!::getUrl(url, answer, "", 90))
 		return false;
 
 	Json::Value root;
@@ -124,7 +124,7 @@ bool CTmdb::getMovieInfo(std::string text)
 	url = "http://api.themoviedb.org/3/" + tmp.media_type + "/" + to_string(tmp.id) + "?api_key=" + key + "&language=" + lang + "&append_to_response=credits";
 
 	answer.clear();
-	if (!::getUrl(url, answer))
+	if (!::getUrl(url, answer, "", 90))
 		return false;
 
 	parsedSuccess = reader.parse(answer, root);
@@ -262,7 +262,7 @@ bool CTmdb::getMovieTVList(std::string mtype, std::string list, int page)
 
 	std::string answer;
 
-	if (!::getUrl(url, answer))
+	if (!::getUrl(url, answer, "", 90))
 		return false;
 
 	Json::Value root;
@@ -331,7 +331,7 @@ bool CTmdb::getGenreList(std::string mtype)
 
 	std::string answer;
 
-	if (!::getUrl(url, answer))
+	if (!::getUrl(url, answer, "", 90))
 		return false;
 
 	Json::Value root;
@@ -380,7 +380,7 @@ bool CTmdb::getGenreMovieList(const int id)
 
 	std::string answer;
 
-	if (!::getUrl(url, answer))
+	if (!::getUrl(url, answer, "", 90))
 		return false;
 
 	Json::Value root;
@@ -448,7 +448,7 @@ bool CTmdb::getSeasonsList(int id)
 
 	std::string answer;
 
-	if (!::getUrl(url, answer))
+	if (!::getUrl(url, answer, "", 90))
 		return false;
 
 	Json::Value root;
@@ -501,7 +501,7 @@ bool CTmdb::getEpisodesList(int id, int nr)
 
 	std::string answer;
 
-	if (!::getUrl(url, answer))
+	if (!::getUrl(url, answer, "", 90))
 		return false;
 
 	Json::Value root;
@@ -564,7 +564,7 @@ bool CTmdb::getVideoInfo(std::string mtype, int id, int s_nr)
 	Json::Value root;
 	Json::Reader reader;
 
-	if (!::getUrl(url, answer))
+	if (!::getUrl(url, answer, "", 90))
 		return false;
 
 	bool parsedSuccess = reader.parse(answer, root);
@@ -607,7 +607,7 @@ bool CTmdb::getMovieTVInfo(std::string mtype, int id)
 
 	std::string answer;
 
-	if (!::getUrl(url, answer))
+	if (!::getUrl(url, answer, "", 90))
 		return false;
 
 	Json::Value root;
@@ -687,7 +687,7 @@ bool CTmdb::searchMovieInfo(std::string text)
 
 	std::string answer;
 
-	if (!::getUrl(url, answer))
+	if (!::getUrl(url, answer, "", 90))
 		return false;
 
 	Json::Value root;

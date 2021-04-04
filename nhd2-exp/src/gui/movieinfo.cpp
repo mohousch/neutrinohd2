@@ -69,6 +69,7 @@
 #include <client/zapittools.h>
 
 #include <driver/audioplay.h>
+#include <gui/movieplayer.h>
 
 
 CMovieInfo::CMovieInfo()
@@ -630,7 +631,6 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		print_buffer += "\n";
 	}
 	
-/*
 	if (movie_info.quality != 0) 
 	{
 		print_buffer += "\n";
@@ -678,10 +678,8 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 
 		print_buffer += "\n";
 	}
-*/
 
 	// ytdate
-/*
 	if(movie_info.ytdate.empty())
 	{
 		print_buffer += "\n";
@@ -699,10 +697,8 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 
 		print_buffer += "\n";
 	}
-*/
 	
 	// file size
-/*
 	if (movie_info.file.Size != 0) 
 	{
 		print_buffer += "\n";
@@ -714,7 +710,6 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 
 		print_buffer += "\n"; 
 	}
-*/
 	
 	// file path
 	if(movie_info.ytdate.empty())
@@ -1255,17 +1250,15 @@ void CMovieInfo::copy(MI_MOVIE_INFO * src, MI_MOVIE_INFO * dst)
 	}
 }
 
-#include <gui/widget/widget_helpers.h>
-#include <gui/widget/framebox.h>
-#include <gui/movieplayer.h>
-
 // CMovieInfoWidget
 CMovieInfoWidget::CMovieInfoWidget()
 {
+	m_movieInfo.clearMovieInfo(&movieFile);
 }
 
 CMovieInfoWidget::~CMovieInfoWidget()
 {
+	m_movieInfo.clearMovieInfo(&movieFile);
 }
 
 void CMovieInfoWidget::hide()
@@ -1276,11 +1269,15 @@ void CMovieInfoWidget::hide()
 
 void CMovieInfoWidget::setMovie(MI_MOVIE_INFO& file)
 {
+	m_movieInfo.clearMovieInfo(&movieFile);
+
 	movieFile = file;
 }
 
 void CMovieInfoWidget::setMovie(const CFile& file, std::string title, std::string info1, std::string info2, std::string tfile)
 {
+	m_movieInfo.clearMovieInfo(&movieFile);
+
 	movieFile.file.Name = file.Name;
 	movieFile.epgTitle = title;
 	movieFile.epgInfo1 = info1;
@@ -1290,6 +1287,8 @@ void CMovieInfoWidget::setMovie(const CFile& file, std::string title, std::strin
 
 void CMovieInfoWidget::setMovie(const char* fileName, std::string title, std::string info1, std::string info2, std::string tfile)
 {
+	m_movieInfo.clearMovieInfo(&movieFile);
+
 	CFile file;
 	file.Name = fileName;
 
@@ -1410,7 +1409,7 @@ void CMovieInfoWidget::funArt()
 	infoFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
 	infoFrame->setTitle("Movie Details");
 	infoFrame->setIconName(NEUTRINO_ICON_INFO);
-	infoFrame->setActionKey(this, "RC_info");
+	infoFrame->setActionKey(this, "MovieInfo");
 
 	testFrame->addFrame(infoFrame);
 
@@ -1452,9 +1451,8 @@ int CMovieInfoWidget::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return RETURN_REPAINT;
 	}
-	else if(actionKey == "RC_info")
+	else if(actionKey == "MovieInfo")
 	{
-		CMovieInfo m_movieInfo;
 		m_movieInfo.showMovieInfo(movieFile);
 
 		return RETURN_REPAINT;
