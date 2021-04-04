@@ -1276,6 +1276,7 @@ function rssurlmenu(url)
 
 		m:addItem(item)
 	end
+
 	m:exec(null, "")
 
 	selected = m:getSelected()
