@@ -5208,8 +5208,13 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		if (&m_vMovieInfo[selected].file != NULL) 
 		{
-			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
-			tmpMoviePlayerGui.exec(NULL, "");
+			//tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
+			//tmpMoviePlayerGui.exec(NULL, "");
+
+			CMovieInfoWidget movieInfoWidget;
+			movieInfoWidget.setMovie(m_vMovieInfo[selected]);
+		
+			movieInfoWidget.exec(NULL, "");
 		}
 
 		return RETURN_REPAINT;
@@ -5220,8 +5225,13 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		if (&m_vMovieInfo[selected].file != NULL) 
 		{
-			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
-			tmpMoviePlayerGui.exec(NULL, "");
+			//tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
+			//tmpMoviePlayerGui.exec(NULL, "");
+
+			CMovieInfoWidget movieInfoWidget;
+			movieInfoWidget.setMovie(m_vMovieInfo[selected]);
+		
+			movieInfoWidget.exec(NULL, "");
 		}
 
 		return RETURN_REPAINT;
@@ -5696,8 +5706,13 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		if (&m_vMovieInfo[selected].file != NULL) 
 		{
-			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
-			tmpMoviePlayerGui.exec(NULL, "");
+			//tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[selected]);
+			//tmpMoviePlayerGui.exec(NULL, "");
+
+			CMovieInfoWidget movieInfoWidget;
+			movieInfoWidget.setMovie(m_vMovieInfo[selected]);
+		
+			movieInfoWidget.exec(NULL, "");
 		}
 
 		return RETURN_REPAINT;
@@ -6065,8 +6080,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		if (&m_vMovieInfo[right_selected].file != NULL) 
 		{
-			tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[right_selected]);
-			tmpMoviePlayerGui.exec(NULL, "");
+			//tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[right_selected]);
+			//tmpMoviePlayerGui.exec(NULL, "");
+			CMovieInfoWidget movieInfoWidget;
+			movieInfoWidget.setMovie(m_vMovieInfo[right_selected]);
+		
+			movieInfoWidget.exec(NULL, "");
 		}
 
 		return RETURN_REPAINT;

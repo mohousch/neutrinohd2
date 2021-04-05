@@ -1298,6 +1298,73 @@ bool CFileHelpers::readDir(const std::string& dirname, CFileList* flist, CFileFi
 	return true;
 }
 
+////
+CFileList CFileHelpers::readDir(const std::string& dirname, CFileFilter * fileFilter, bool skipDirs)
+{
+	CFileList flist;
+
+	stat_struct statbuf;
+	dirent_struct **namelist;
+	int n;
+	std::string dir = dirname + "/";
+
+	dprintf(DEBUG_NORMAL, "CFileHelpers::readDir %s\n", dir.c_str());
+
+	n = my_scandir(dir.c_str(), &namelist, 0, my_alphasort);
+	if (n < 0)
+	{
+		perror(("CFileHelpers scandir: " + dir).c_str());
+		//return false;
+	}
+	
+	for(int i = 0; i < n; i++)
+	{
+		CFile file;
+		if(strcmp(namelist[i]->d_name, ".") != 0)
+		{
+			// name
+			file.Name = dir + namelist[i]->d_name;
+
+			// stat
+			if(my_stat((file.Name).c_str(),&statbuf) != 0)
+				perror("stat error");
+			else
+			{
+				file.Mode = statbuf.st_mode;
+				file.Size = statbuf.st_size;
+				file.Time = statbuf.st_mtime;
+
+				// skip not wanted
+				if(skipDirs)
+				{
+					// skip dirs
+					if(S_ISDIR(file.Mode))
+					{
+						continue;
+					}
+
+					// skip not matched filter
+					if(fileFilter != NULL )
+					{
+						if(!fileFilter->matchFilter(file.Name))
+						{
+							continue;
+						}
+					}
+				}
+				
+				flist.push_back(file);
+			}
+		}
+		free(namelist[i]);
+	}
+
+	free(namelist);
+
+	//return true;
+	return flist;
+}
+
 void CFileHelpers::addRecursiveDir(CFileList * re_filelist, std::string rpath, CFileFilter * fileFilter)
 {
 	neutrino_msg_t      msg;

@@ -609,16 +609,6 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		return RETURN_REPAINT;
 	}
-/*
-	else if(actionKey == "playMovie")
-	{
-		selected = mlist->getSelected();
-
-		playMovie(selected);
-
-		return RETURN_REPAINT;
-	}
-*/
 	else if(actionKey == "RC_info")
 	{
 		selected = mlist->getSelected();

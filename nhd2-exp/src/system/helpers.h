@@ -154,6 +154,7 @@ class CFileHelpers
 		bool createDir(const char *Dir, mode_t mode = 0755);
 		bool removeDir(const char *Dir);
 		bool readDir(const std::string& dirname, CFileList* flist, CFileFilter* fileFilter = NULL, bool skipDirs = true);
+		CFileList readDir(const std::string& dirname, CFileFilter* fileFilter = NULL, bool skipDirs = true);
 		void addRecursiveDir(CFileList * re_filelist, std::string rpath, CFileFilter * fileFilter = NULL);
 };
 
