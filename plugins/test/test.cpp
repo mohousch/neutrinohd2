@@ -1804,8 +1804,13 @@ REPAINT:
 
 				if (&m_vMovieInfo[right_selected].file != NULL) 
 				{
-					tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[right_selected]);
-					tmpMoviePlayerGui.exec(NULL, "");
+					//tmpMoviePlayerGui.addToPlaylist(m_vMovieInfo[right_selected]);
+					//tmpMoviePlayerGui.exec(NULL, "");
+
+					CMovieInfoWidget movieInfoWidget;
+					movieInfoWidget.setMovie(m_vMovieInfo[right_selected]);
+		
+					movieInfoWidget.exec(NULL, "");
 				}
 
 				goto REPAINT;

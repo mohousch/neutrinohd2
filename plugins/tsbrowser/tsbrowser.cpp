@@ -601,7 +601,6 @@ int CTSBrowser::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		selected = mlist->getSelected();
 
-		//funArt(m_vMovieInfo[selected]);
 		CMovieInfoWidget movieInfoWidget;
 		movieInfoWidget.setMovie(m_vMovieInfo[selected]);
 		
