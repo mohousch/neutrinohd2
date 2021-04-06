@@ -37,7 +37,7 @@
 #include <gui/widget/widget_helpers.h>
 
 
-class CProgressWindow
+class CProgressWindow : public CWidgetItem
 {
 	protected:
 

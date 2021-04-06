@@ -148,8 +148,6 @@ class ClistBoxWidget : public CMenuTarget
 		std::vector<int> widget;
 
 		// frame
-		//fb_pixel_t backgroundColor;
-		//fb_pixel_t itemBoxColor;
 		int itemsPerX;
 		int itemsPerY;
 		int maxItemsPerPage;
@@ -168,7 +166,7 @@ class ClistBoxWidget : public CMenuTarget
 
 		std::string actionKey;
 
-		//CTextBox * textBox;
+		CTextBox * textBox;
 		
 	public:
 		ClistBoxWidget();
@@ -228,17 +226,13 @@ class ClistBoxWidget : public CMenuTarget
 		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh; initFrames();};
 		void setFootInfoMode(int mode = FOOT_INFO_MODE){footInfoMode = mode;};
 
-		void setTimeOut(int to = 0){timeout = to;};
+		void setTimeOut(unsigned long long int to = 0){timeout = to;};
 
 		//
 		void setWidgetType(int type){widgetType = type; widget.push_back(widgetType);};
 		int getWidgetType(){return widgetType;};
 		void enableWidgetChange(){widgetChange = true;};
 		void addWidget(int wtype){widget.push_back(wtype);};
-
-		//
-		//void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
-		//void setItemBoxColor(fb_pixel_t col) {itemBoxColor = col;};
 
 		//
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};

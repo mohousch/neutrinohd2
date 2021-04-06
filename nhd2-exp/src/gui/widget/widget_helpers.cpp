@@ -377,6 +377,8 @@ void CHeaders::setButtons(const struct button_label* _hbutton_labels, const int 
 			hbutton_labels.push_back(_hbutton_labels[i]);
 		}
 	}
+
+	hbutton_count = hbutton_labels.size();
 }		
 
 void CHeaders::paint()
@@ -491,7 +493,9 @@ void CFooters::setButtons(const struct button_label *button_label, const int but
 		{
 			fbuttons.push_back(button_label[i]);
 		}
-	}	
+	}
+
+	fcount = fbuttons.size();	
 }
 
 void CFooters::paint()

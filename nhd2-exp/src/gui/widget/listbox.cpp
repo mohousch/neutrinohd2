@@ -42,7 +42,7 @@
 #include <system/debug.h>
 
 
-static CTextBox * textBox = NULL;
+//static CTextBox * textBox = NULL;
 
 ///
 // CMenuItem
@@ -460,8 +460,7 @@ int CMenuOptionNumberChooser::paint(bool selected, bool /*AfterPulldown*/)
 		color = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 	}
-	
-	if (!active)
+	else if (!active)
 	{
 		color = COL_MENUCONTENTINACTIVE;
 		bgcolor = COL_MENUCONTENTINACTIVE_PLUS_0;
@@ -879,7 +878,7 @@ int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
 
 	if(widgetType != WIDGET_TYPE_FRAME)
 	{
-		frameBuffer->paintBoxRel(x, y, dx, height, /*item_backgroundColor*/COL_MENUCONTENT_PLUS_0);
+		frameBuffer->paintBoxRel(x, y, dx, height, COL_MENUCONTENT_PLUS_0);
 
 		// line
 		if ((type & LINE))
@@ -1122,7 +1121,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		//
-		frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_backgroundColor*/COL_MENUCONTENT_PLUS_0);
+		frameBuffer->paintBoxRel(x, y, item_width, item_height, COL_MENUCONTENT_PLUS_0);
 
 		if(widgetMode == MODE_MENU)
 		{
@@ -1132,7 +1131,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 			//
 			if(selected)
 			{
-				frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/COL_MENUCONTENTSELECTED_PLUS_0);
+				frameBuffer->paintBoxRel(x, y, item_width, item_height, COL_MENUCONTENTSELECTED_PLUS_0);
 
 				if(!itemIcon.empty())
 					frameBuffer->paintHintIcon(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
@@ -1147,7 +1146,7 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 			//
 			if(selected)
 			{
-				frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/COL_MENUCONTENTSELECTED_PLUS_0);
+				frameBuffer->paintBoxRel(x, y, item_width, item_height, COL_MENUCONTENTSELECTED_PLUS_0);
 
 				if(!itemIcon.empty())
 					frameBuffer->paintHintIcon(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
@@ -1411,18 +1410,23 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 	const char * option_text = getOption();	
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : /*item_backgroundColor*/COL_MENUCONTENT_PLUS_0;
+	fb_pixel_t bgcolor = marked? COL_MENUCONTENTSELECTED_PLUS_2 : COL_MENUCONTENT_PLUS_0;
 
 	if (selected)
 	{
 		color = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 	}
+	else if (!active)
+	{
+		color = COL_MENUCONTENTINACTIVE;
+		bgcolor = COL_MENUCONTENTINACTIVE_PLUS_0;
+	}
 
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		//
-		frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_backgroundColor*/COL_MENUCONTENT_PLUS_0);
+		frameBuffer->paintBoxRel(x, y, item_width, item_height, COL_MENUCONTENT_PLUS_0);
 
 		if(widgetMode == MODE_MENU)
 		{
@@ -1432,7 +1436,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 			//
 			if(selected)
 			{
-				frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/COL_MENUCONTENTSELECTED_PLUS_0);
+				frameBuffer->paintBoxRel(x, y, item_width, item_height, COL_MENUCONTENTSELECTED_PLUS_0);
 
 				if(!itemIcon.empty())
 					frameBuffer->paintHintIcon(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
@@ -1447,7 +1451,7 @@ int ClistBoxItem::paint(bool selected, bool /*AfterPulldown*/)
 			//
 			if(selected)
 			{
-				frameBuffer->paintBoxRel(x, y, item_width, item_height, /*item_selectedColor*/COL_MENUCONTENTSELECTED_PLUS_0);
+				frameBuffer->paintBoxRel(x, y, item_width, item_height, COL_MENUCONTENTSELECTED_PLUS_0);
 
 				if(!itemIcon.empty())
 					frameBuffer->paintHintIcon(itemIcon, x + ICON_OFFSET/2, y + ICON_OFFSET/2, item_width - ICON_OFFSET, item_height - ICON_OFFSET);
@@ -1763,10 +1767,6 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	shrinkMenu = false;
 
 	//
-	//backgroundColor = COL_MENUCONTENT_PLUS_0;
-
-	//
-	//itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
 	maxItemsPerPage = itemsPerX*itemsPerY;
@@ -1796,7 +1796,7 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	savescreen = false;
 	background = NULL;
 
-	//textBox = NULL;
+	textBox = NULL;
 }
 
 ClistBox::ClistBox(CBox* position)
@@ -1843,10 +1843,6 @@ ClistBox::ClistBox(CBox* position)
 	shrinkMenu = false;
 
 	//
-	//backgroundColor = COL_MENUCONTENT_PLUS_0;
-
-	//
-	//itemBoxColor = COL_MENUCONTENTSELECTED_PLUS_0;
 	itemsPerX = 6;
 	itemsPerY = 3;
 	maxItemsPerPage = itemsPerX*itemsPerY;
@@ -1876,7 +1872,7 @@ ClistBox::ClistBox(CBox* position)
 	savescreen = false;
 	background = NULL;
 
-	//textBox = NULL;
+	textBox = NULL;
 }
 
 ClistBox::~ClistBox()
@@ -1914,8 +1910,6 @@ void ClistBox::initFrames()
 
 		item->widgetType = widgetType;
 		item->widgetMode = widgetMode;
-		//item->item_backgroundColor = backgroundColor;
-		//item->item_selectedColor = itemBoxColor;
 	} 
 
 	// head
@@ -2064,7 +2058,7 @@ void ClistBox::paintItems()
 		item_start_y = cFrameBox.iY + hheight + 10;
 
 		// items background
-		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
+		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight, COL_MENUCONTENT_PLUS_0);
 
 		// item not currently on screen
 		if (selected >= 0)
@@ -2161,7 +2155,7 @@ void ClistBox::paintItems()
 		}
 
 		// paint items background
-		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
+		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + hheight, cFrameBox.iWidth, cFrameBox.iHeight - hheight - fheight - cFrameFootInfo.iHeight, COL_MENUCONTENT_PLUS_0);
 
 		if(widgetType == WIDGET_TYPE_EXTENDED && widgetMode == MODE_MENU)
 		{
@@ -2220,7 +2214,7 @@ void ClistBox::paintHead()
 		if(widgetType == WIDGET_TYPE_FRAME)
 		{
 			// box
-			frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
+			frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY, cFrameBox.iWidth, hheight, COL_MENUCONTENT_PLUS_0);
 
 			// paint horizontal line top
 			frameBuffer->paintHLineRel(cFrameBox.iX + BORDER_LEFT, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT, cFrameBox.iY + hheight - 2, COL_MENUCONTENT_PLUS_5);
@@ -2297,7 +2291,7 @@ void ClistBox::paintFoot()
 	{
 		if(widgetType == WIDGET_TYPE_FRAME)
 		{
-			frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - fheight, cFrameBox.iWidth, fheight, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
+			frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - fheight, cFrameBox.iWidth, fheight, COL_MENUCONTENT_PLUS_0);
 
 			// paint horizontal line buttom
 			frameBuffer->paintHLineRel(cFrameBox.iX + BORDER_LEFT, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT, cFrameBox.iY + cFrameBox.iHeight - fheight + 2, COL_MENUCONTENT_PLUS_5);
@@ -2650,7 +2644,7 @@ void ClistBox::paintItemInfo(int pos)
 	else if(widgetType == WIDGET_TYPE_FRAME)
 	{
 		// refresh
-		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - fheight - cFrameFootInfo.iHeight, cFrameBox.iWidth, cFrameFootInfo.iHeight, /*backgroundColor*/COL_MENUCONTENT_PLUS_0);
+		frameBuffer->paintBoxRel(cFrameBox.iX, cFrameBox.iY + cFrameBox.iHeight - fheight - cFrameFootInfo.iHeight, cFrameBox.iWidth, cFrameFootInfo.iHeight, COL_MENUCONTENT_PLUS_0);
 
 		// refresh horizontal line buttom
 		frameBuffer->paintHLineRel(cFrameBox.iX + BORDER_LEFT, cFrameBox.iWidth - BORDER_LEFT - BORDER_RIGHT, cFrameBox.iY + cFrameBox.iHeight - fheight - cFrameFootInfo.iHeight + 2, COL_MENUCONTENT_PLUS_5);

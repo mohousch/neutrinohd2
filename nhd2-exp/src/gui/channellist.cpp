@@ -1627,7 +1627,7 @@ void CChannelList::paint()
 			item->setIcon1(chanlist[i]->isHD() ? NEUTRINO_ICON_HD : chanlist[i]->isUHD()? NEUTRINO_ICON_UHD : "");
 			item->setIcon2(chanlist[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "");
 
-			item->set2lines();
+			//item->set2lines();
 
 			std::string tmp = cSeit;
 			tmp += "\n";
@@ -1635,7 +1635,8 @@ void CChannelList::paint()
 			tmp += "\n";
 			tmp += cNoch;
 
-			item->setHelpText(tmp.c_str());
+			//item->set2lines();
+			//item->setHelpText(tmp.c_str());
 			//
 
 			listBox->addItem(item);

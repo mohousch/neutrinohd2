@@ -107,7 +107,7 @@ class CWidget : public CMenuTarget
 
 		void enableCenterPos(){enableCenter = true;};
 
-		void setTimeOut(int to = 0){timeout = to;};
+		void setTimeOut(unsigned long long int to = 0){timeout = to;};
 
 		void addKey(neutrino_msg_t key, CMenuTarget *menue = NULL, const std::string &action = "");
 		neutrino_msg_t getKey(){return msg;};
