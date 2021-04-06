@@ -41,7 +41,8 @@ local json  = require "json"
 
 basisurl= "http://concert.arte.tv/"
 
-local selected_sm = -1
+local selected_sm = 0
+local pmid = 0
 
 --[[
     language version
@@ -108,17 +109,16 @@ function script_path()
 end
 
 function init()
-	--n = neutrino();
 	p = {}
 	func = {}
-	pmid = 0
+	--pmid = 0
 	stream = 1
         tmpPath = "/tmp"
         arte_concert = decodeImage("data:image/png;base64,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")
 end
 
 function add_stream(t,u,e)
-  p[#p+1]={title=t,url=u,epg=e,access=stream}
+  	p[#p+1] = {title=t, url=u, epg=e, access=stream}
 end
 
 function getdata(Url,outputfile)
@@ -272,7 +272,6 @@ function fill_playlist(id)
 
 	for i,v in  pairs(subs) do
 		if v[1] == id then
-			--sm:hide()
 			nameid = v[2]	
 			local data = getdata('https://www.arte.tv/guide/api/emac/v3/' .. language .. '/web/data/MOST_RECENT_SUBCATEGORY/?subCategoryCode=' .. id .. '&page=1&limit=100',nil) 
 
@@ -280,9 +279,9 @@ function fill_playlist(id)
 
 				if data then
 				    	for  page, title, teaser in data:gmatch('{"id":".-.-"programId":"(.-)",.-"title":"(.-)",.-"shortDescription":"(.-)",.-}')  do -- Version neu
---				    for  page, title, teaser in data:gmatch('{"programId":"(.-)",.-"title":"(.-)",.-"teaserText":"(.-)",.-}')  do -- Version Old
+--				    	for  page, title, teaser in data:gmatch('{"programId":"(.-)",.-"title":"(.-)",.-"teaserText":"(.-)",.-}')  do -- Version Old
 						if title then
-							add_stream( conv_str(title), page , conv_str(teaser) ) 
+							add_stream(conv_str(title), page , conv_str(teaser) ) 
 				        	end
 				    	end
 				else
@@ -295,47 +294,6 @@ end
 
 local epg = ""
 local title = ""
-
-function epgInfo(xres, yres, aspectRatio, framerate)
---[[
-	if #epg < 1 then return end 
-	local dx = 800;
-	local dy = 400;
-	local x = 0;
-	local y = 0;
-
-	local hw = n:getRenderWidth(FONT['MENU'],title) + 20
-	if hw > 400 then
-		dy = hw
-	end
-	if dy >  SCREEN.END_X - SCREEN.OFF_X - 20 then
-		dy = SCREEN.END_X - SCREEN.OFF_X - 20
-	end
-	local wh = cwindow.new{x=x, y=y, dx=dx, dy=dy, title=title, icon="", has_shadow="true", show_header="true", show_footer="false"};  -- with out footer
-	dy = dy + wh:headerHeight()
-
-	local ct = ctext.new{parent=wh, x=20, y=0, dx=0, dy=dy, text = epg, font_text=FONT['MENU'], mode = "ALIGN_SCROLL | DECODE_HTML"};
- 	h = ct:getLines() * n:FontHeight(FONT['MENU'])
-	h = (ct:getLines() +4) * n:FontHeight(FONT['MENU'])
-	if h > SCREEN.END_Y - SCREEN.OFF_Y -20 then
-		h = SCREEN.END_Y - SCREEN.OFF_Y -20
-	end
- 	wh:setDimensionsAll(x,y,dx,h)
-        ct:setDimensionsAll(20,0,dx-40,h)
-	wh:setCenterPos{3}
-	wh:paint()
-
-	repeat
-		msg, data = n:GetInput(500)
-		if msg == RC.up or msg == RC.page_up then
-			ct:scroll{dir="up"};
-		elseif msg == RC.down or msg == RC.page_down then
-			ct:scroll{dir="down"};
-		end
-	until msg == RC.ok or msg == RC.home
-	wh:hide()
-]]
-end
 
 function select_playitem()
 	print("select_playitem:")
@@ -353,12 +311,17 @@ function select_playitem()
 		m:addItem(item)
   	end
 
+	if pmid < 0 then
+		pmid = 0
+	end
+
+	m:setSelected(pmid)
+
 	m:exec(null, "")
 
 	local vPlay = neutrino.CMoviePlayerGui()
-	local page = nil
 
-	local pmid = m:getSelected() + 1
+	pmid = m:getSelected() + 1
 
 	if pmid >= 0 then
 		local page = func[p[pmid].access](p[pmid].url)
@@ -366,7 +329,7 @@ function select_playitem()
 		if page then --- https://api.arte.tv/api/player/v1/config/de/088439-000-A?lifeCycle=1
 			local js_page = getdata('https://api.arte.tv/api/player/v1/config/'.. language .. '/'.. page .. '?lifeCycle=1',nil) -- apicall
 		        if js_page ~= nil then
-				local jnTab = json.decode(js_page)
+				local jnTab = json:decode(js_page)
 				local video_url = nil
 
 				if jnTab.videoJsonPlayer.VSR and jnTab.videoJsonPlayer.VSR.HTTPS_SQ_1 then
@@ -392,7 +355,6 @@ function select_playitem()
 					title = (title .. " - " .. jnTab.videoJsonPlayer.subtitle)
 				end
 
-				local videoplayed = false
 				if title and video_url then
 					if jnTab.videoJsonPlayer.VDE then
 						epg = jnTab.videoJsonPlayer.VDE 
@@ -409,7 +371,6 @@ function select_playitem()
 						elseif language == "it" then
 							  epg = epg .. '\n\nDurata (min.) : ' .. jnTab.videoJsonPlayer.VDU
 		                                end
-							--vPlay:setInfoFunc("epgInfo")
 
 	 				elseif jnTab.videoJsonPlayer.V7T then
 						epg = jnTab.videoJsonPlayer.V7T 
@@ -426,7 +387,6 @@ function select_playitem()
 						elseif language == "it" then
 							   epg = epg .. '\n\nDurata (min.) : ' .. jnTab.videoJsonPlayer.VDU
 		                                 end
-						--vPlay:setInfoFunc("epgInfo")
 	 				else
 						epg = p[pmid].epg 
 		                                if language == "fr" then
@@ -442,48 +402,12 @@ function select_playitem()
 						elseif language == "it" then
 								 epg = epg .. '\n\nDurata (min.) : ' .. jnTab.videoJsonPlayer.VDU
 		                                end
-						--vPlay:setInfoFunc("epgInfo")
 					end
-					videoplayed = true
-	--				vPlay:PlayFile ("arte concert", conv_url(video_url), conv_str(title) ,conv_url(video_url)); -- with display of the web address when playing on the infobar
-					--vPlay:PlayFile ("arte concert", conv_url(video_url), conv_str(title) ); -- without displaying the web address when playing on the infobar = default
+
 					vPlay:addToPlaylist(conv_url(video_url), conv_str(title), conv_str(epg))
 					vPlay:exec(null, "")
 				end
 
-	--[[
-				if videoplayed == false then
-					local infotext = ""
-					local t = os.time()
-					if jnTab.videoJsonPlayer.custom_msg and jnTab.videoJsonPlayer.custom_msg.type == "error" then
-						infotext = jnTab.videoJsonPlayer.custom_msg.msg
-					elseif datetotime(jnTab.videoJsonPlayer.VRA) > t or t > datetotime(jnTab.videoJsonPlayer.VRU) then
-						local d1,m1,y1,h1,M1,s1 = jnTab.videoJsonPlayer.VRA:match("(%d+).(%d+).(%d+) (%d+):(%d+):(%d+)")
-						local d2,m2,y2,h2,M2,s2 = jnTab.videoJsonPlayer.VRU:match("(%d+).(%d+).(%d+) (%d+):(%d+):(%d+)") 
-		                                            if language == "fr" then
-								 infotext = "La vidéo est seulement " .. d1 .. "." ..  m1 .. "." ..  y1 .. " - " .. h1 .. ":" ..  M1 .. " heures à " .. d2 .. "." ..  m2 .. "." ..  y2 .. " - " .. h2 .. ":" ..  M2 .. " heures disponible."
-		                                            elseif language == "de" then
-								 infotext = "Video ist nur von " .. d1 .. "." ..  m1 .. "." ..  y1 .. " - " .. h1 .. ":" ..  M1 .. " Uhr bis " .. d2 .. "." ..  m2 .. "." ..  y2 .. " - " .. h2 .. ":" ..  M2 .. " Uhr verfügbar."
-		                                            elseif language == "en" then
-								 infotext = "Video is only from " .. d1 .. "." ..  m1 .. "." ..  y1 .. " - " .. h1 .. ":" ..  M1 .. " clock to " .. d2 .. "." ..  m2 .. "." ..  y2 .. " - " .. h2 .. ":" ..  M2 .. " watch available."
-		                                            elseif language == "es" then
-								 infotext = "Video es única " .. d1 .. "." ..  m1 .. "." ..  y1 .. " - " .. h1 .. ":" ..  M1 .. " reloj hacia arriba " .. d2 .. "." ..  m2 .. "." ..  y2 .. " - " .. h2 .. ":" ..  M2 .. " reloj."
-		                                            elseif language == "pl" then
-								 infotext = "Film jest tylko " .. d1 .. "." ..  m1 .. "." ..  y1 .. " - " .. h1 .. ":" ..  M1 .. " zegar up " .. d2 .. "." ..  m2 .. "." ..  y2 .. " - " .. h2 .. ":" ..  M2 .. " zegara."
-		                                            elseif language == "it" then
-								 infotext = "Il video è disponibile solo da " .. d1 .. "." ..  m1 .. "." ..  y1 .. " - " .. h1 .. ":" ..  M1 .. " orologio a " .. d2 .. "." ..  m2 .. "." ..  y2 .. " - " .. h2 .. ":" ..  M2 .. " orologio."
-		                                            end
-					end
-					local h = hintbox.new{caption="Information", text=infotext}
-					h:paint()
-		
-					repeat
-							msg, data = n:GetInput(500)
-						until msg == RC.ok or msg == RC.home
-						h:hide()
-					end
-				end
-				]]
 				epg = ""
 				title = ""
 			end
@@ -493,143 +417,6 @@ function select_playitem()
 	if m:getExitPressed() ~= true then
 		select_playitem()
 	end
---[[
-  repeat
-    pmid=0
-    m:exec()
-
-    if pmid==0 then
-      return
-    end
-
-    local vPlay = nil
-    local page=func[p[pmid].access](p[pmid].url)
-    if page~=nil then
-      if  vPlay  ==  nil  then
-	vPlay  =  video.new()
-      end
-
-	if page then --- https://api.arte.tv/api/player/v1/config/de/088439-000-A?lifeCycle=1
-		local js_page = getdata('https://api.arte.tv/api/player/v1/config/'.. language .. '/'.. page .. '?lifeCycle=1',nil) -- apicall
-                if js_page ~= nil then
-			local jnTab = json:decode(js_page)
-			local video_url = nil
-			if jnTab.videoJsonPlayer.VSR and jnTab.videoJsonPlayer.VSR.HTTPS_SQ_1 then
-				video_url = jnTab.videoJsonPlayer.VSR.HTTPS_SQ_1.url
-			elseif jnTab.videoJsonPlayer.VSR and jnTab.videoJsonPlayer.VSR.HLS_XQ_1 then 
-				video_url = jnTab.videoJsonPlayer.VSR.HLS_XQ_1.url
-			elseif jnTab.videoJsonPlayer.VSR and jnTab.videoJsonPlayer.VSR.HTTP_MP4_SQ_1 then
-				video_url = jnTab.videoJsonPlayer.VSR.HTTP_MP4_SQ_1.url
-			elseif jnTab.videoJsonPlayer.VSR and jnTab.videoJsonPlayer.VSR.HTTP_SQ_1 then
-				video_url = jnTab.videoJsonPlayer.VSR.HTTP_SQ_1.url
-			elseif jnTab.videoJsonPlayer.VSR and jnTab.videoJsonPlayer.VSR.HLS_SQ_1 then
-				video_url = jnTab.videoJsonPlayer.VSR.HLS_SQ_1.url
-			elseif jnTab.videoJsonPlayer.VSR and jnTab.videoJsonPlayer.VSR.HLS_XQ_1 then
-				video_url = jnTab.videoJsonPlayer.VSR.HLS_XQ_1.url
-			elseif jnTab.videoJsonPlayer.VSR and jnTab.videoJsonPlayer.VSR.HLS_EQ_1 then
-				video_url = jnTab.videoJsonPlayer.VSR.HLS_EQ_1.url
-			elseif jnTab.videoJsonPlayer.VSR and jnTab.videoJsonPlayer.VSR.RTMP_SQ_1 then
-				video_url = jnTab.videoJsonPlayer.VSR.RTMP_SQ_1.streamer .. jnTab.videoJsonPlayer.VSR.RTMP_SQ_1.url
-			end
-
-			title = p[pmid].title 
-			if jnTab.videoJsonPlayer.subtitle then
-				title = (title .. " - " .. jnTab.videoJsonPlayer.subtitle)
-			end
-
-				local videoplayed = false
-				if title and video_url then
-					if jnTab.videoJsonPlayer.VDE then
-						    epg = jnTab.videoJsonPlayer.VDE 
-                                                    if language == "fr" then
-						         epg = epg .. '\n\nTemps de lecture (mn.) : ' .. jnTab.videoJsonPlayer.VDU 
-						    elseif language == "de" then
-						         epg = epg .. '\n\nSpieldauer (Min.) : ' .. jnTab.videoJsonPlayer.VDU
-                                                    elseif language == "en" then
-						         epg = epg .. '\n\nPlaying time (min.) : ' .. jnTab.videoJsonPlayer.VDU
-						    elseif language == "es" then
-						         epg = epg .. '\n\nDuración (min.) : ' .. jnTab.videoJsonPlayer.VDU
-						    elseif language == "pl" then
-						         epg = epg .. '\n\nCzas (min.) : ' .. jnTab.videoJsonPlayer.VDU
-						    elseif language == "it" then
-						         epg = epg .. '\n\nDurata (min.) : ' .. jnTab.videoJsonPlayer.VDU
-                                                    end
-						vPlay:setInfoFunc("epgInfo")
-
- 					elseif jnTab.videoJsonPlayer.V7T then
-						    epg = jnTab.videoJsonPlayer.V7T 
-                                                    if language == "fr" then
-						         epg = epg .. '\n\nTemps de lecture (mn.) : ' .. jnTab.videoJsonPlayer.VDU 
-						    elseif language == "de" then
-						         epg = epg .. '\n\nSpieldauer (Min.) : ' .. jnTab.videoJsonPlayer.VDU
-                                                    elseif language == "en" then
-						         epg = epg .. '\n\nPlaying time (min.) : ' .. jnTab.videoJsonPlayer.VDU
-						    elseif language == "es" then
-						         epg = epg .. '\n\nDuración (min.) : ' .. jnTab.videoJsonPlayer.VDU
-						    elseif language == "pl" then
-						         epg = epg .. '\n\nCzas (min.) : ' .. jnTab.videoJsonPlayer.VDU
-						    elseif language == "it" then
-						         epg = epg .. '\n\nDurata (min.) : ' .. jnTab.videoJsonPlayer.VDU
-                                                    end
-						vPlay:setInfoFunc("epgInfo")
- 					else
-						    epg = p[pmid].epg 
-                                                    if language == "fr" then
-						         epg = epg .. '\n\nTemps de lecture (mn.) : ' .. jnTab.videoJsonPlayer.VDU 
-						    elseif language == "de" then
-						         epg = epg .. '\n\nSpieldauer (Min.) : ' .. jnTab.videoJsonPlayer.VDU
-                                                    elseif language == "en" then
-						         epg = epg .. '\n\nPlaying time (min.) : ' .. jnTab.videoJsonPlayer.VDU
-						    elseif language == "es" then
-						         epg = epg .. '\n\nDuración (min.) : ' .. jnTab.videoJsonPlayer.VDU
-						    elseif language == "pl" then
-						         epg = epg .. '\n\nCzas (min.) : ' .. jnTab.videoJsonPlayer.VDU
-						    elseif language == "it" then
-						         epg = epg .. '\n\nDurata (min.) : ' .. jnTab.videoJsonPlayer.VDU
-                                                    end
-						vPlay:setInfoFunc("epgInfo")
-					end
-					videoplayed = true
---					vPlay:PlayFile ("arte concert", conv_url(video_url), conv_str(title) ,conv_url(video_url)); -- with display of the web address when playing on the infobar
-					vPlay:PlayFile ("arte concert", conv_url(video_url), conv_str(title) ); -- without displaying the web address when playing on the infobar = default
-				end
-
-				if videoplayed == false then
-					local infotext = ""
-					local t = os.time()
-					if jnTab.videoJsonPlayer.custom_msg and jnTab.videoJsonPlayer.custom_msg.type == "error" then
-						infotext = jnTab.videoJsonPlayer.custom_msg.msg
-					elseif datetotime(jnTab.videoJsonPlayer.VRA) > t or t > datetotime(jnTab.videoJsonPlayer.VRU) then
-						local d1,m1,y1,h1,M1,s1 = jnTab.videoJsonPlayer.VRA:match("(%d+).(%d+).(%d+) (%d+):(%d+):(%d+)")
-						local d2,m2,y2,h2,M2,s2 = jnTab.videoJsonPlayer.VRU:match("(%d+).(%d+).(%d+) (%d+):(%d+):(%d+)") 
-                                                    if language == "fr" then
-						         infotext = "La vidéo est seulement " .. d1 .. "." ..  m1 .. "." ..  y1 .. " - " .. h1 .. ":" ..  M1 .. " heures à " .. d2 .. "." ..  m2 .. "." ..  y2 .. " - " .. h2 .. ":" ..  M2 .. " heures disponible."
-                                                    elseif language == "de" then
-						         infotext = "Video ist nur von " .. d1 .. "." ..  m1 .. "." ..  y1 .. " - " .. h1 .. ":" ..  M1 .. " Uhr bis " .. d2 .. "." ..  m2 .. "." ..  y2 .. " - " .. h2 .. ":" ..  M2 .. " Uhr verfügbar."
-                                                    elseif language == "en" then
-						         infotext = "Video is only from " .. d1 .. "." ..  m1 .. "." ..  y1 .. " - " .. h1 .. ":" ..  M1 .. " clock to " .. d2 .. "." ..  m2 .. "." ..  y2 .. " - " .. h2 .. ":" ..  M2 .. " watch available."
-                                                    elseif language == "es" then
-						         infotext = "Video es única " .. d1 .. "." ..  m1 .. "." ..  y1 .. " - " .. h1 .. ":" ..  M1 .. " reloj hacia arriba " .. d2 .. "." ..  m2 .. "." ..  y2 .. " - " .. h2 .. ":" ..  M2 .. " reloj."
-                                                    elseif language == "pl" then
-						         infotext = "Film jest tylko " .. d1 .. "." ..  m1 .. "." ..  y1 .. " - " .. h1 .. ":" ..  M1 .. " zegar up " .. d2 .. "." ..  m2 .. "." ..  y2 .. " - " .. h2 .. ":" ..  M2 .. " zegara."
-                                                    elseif language == "it" then
-						         infotext = "Il video è disponibile solo da " .. d1 .. "." ..  m1 .. "." ..  y1 .. " - " .. h1 .. ":" ..  M1 .. " orologio a " .. d2 .. "." ..  m2 .. "." ..  y2 .. " - " .. h2 .. ":" ..  M2 .. " orologio."
-                                                    end
-					end
-					local h = hintbox.new{caption="Information", text=infotext}
-					h:paint()
-					repeat
-						msg, data = n:GetInput(500)
-					until msg == RC.ok or msg == RC.home
-					h:hide()
-				end
-			end
-			epg = ""
-			title = ""
-		end
-	end
-  until false
-]]
 end
 
 function selectmenu()
@@ -661,19 +448,15 @@ function selectmenu()
 	end
 end
 
---Main
-init()
-	func={
-	[stream]=function (x) return x end,
-}
-
 function main()
+	init()
+	func={
+		[stream]=function (x) return x end,
+	}
 	selectmenu()
+	os.execute("rm /tmp/lua*.png");
 end
 
 main()
-
-
-os.execute("rm /tmp/lua*.png");
 
 

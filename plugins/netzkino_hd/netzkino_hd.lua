@@ -114,7 +114,7 @@ function get_categories()
 		local s = fp:read("*a")
 		fp:close()
 
-		local j_table = json.decode(s)
+		local j_table = json:decode(s)
 
 		if j_table == nil  then 
 			return nil 
@@ -213,7 +213,7 @@ function get_movies(_id)
 		local s = fp:read("*a")
 		fp:close()
 
-		local j_table = json.decode(s)
+		local j_table = json:decode(s)
 		max_page = tonumber(j_table.pages);
 		local posts = j_table.posts
 

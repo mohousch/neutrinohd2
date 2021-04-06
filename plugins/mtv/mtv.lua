@@ -175,7 +175,7 @@ function init()
 	end
 
 	local json = require "json"
-	local jnTab = json.decode(videosection)
+	local jnTab = json:decode(videosection)
 	if jnTab == nil  then 
 		return nil 
 	end
@@ -186,7 +186,7 @@ function init()
 		return nil 
 	end
 
-	jnTab = json.decode(videosection)
+	jnTab = json:decode(videosection)
 	local pages = 1
 	videosection_url = videosection_url:match("(.*)%d+$")
 
@@ -266,7 +266,7 @@ function getliste(url)
 
 	local liste = {}
 	local json = require "json"
-	local urlTab = json.decode(videosection)
+	local urlTab = json:decode(videosection)
 	local tc = {"t4_lc_promo1"}
 	if url == "http://www.mtv.de/musik" then 
 		tc  = {"t4_lc_promo1","t5_lc_promo1","t6_lc_promo1","t7_lc_promo1","t8_lc_promo1","t9_lc_promo1","t10_lc_promo1","t11_lc_promo1"}  		end
@@ -294,7 +294,7 @@ function getliste(url)
 					return nil
 				end
 
-				local jnTab = json.decode(videosection)
+				local jnTab = json:decode(videosection)
 				if jnTab == nil or jnTab.result == nil or jnTab.result.data == nil then 					h:hide()  
 					if #liste > 0 then 
 						return liste 
@@ -400,7 +400,7 @@ function getvideourl(url, vidname, hls)
 	local id = data:match('itemId":"(.-)"')
 	local service_url = "http://media.mtvnservices.com/pmt/e1/access/index.html?uri=mgid:arc:episode:mtv.de:" .. id .. "&configtype=edge&ref=" .. url
 	data = getdata(service_url)
-	local jnTab = json.decode(data)
+	local jnTab = json:decode(data)
 	if jnTab.feed.items[1].group.content then
 		local jsUrl = jnTab.feed.items[1].group.content
 		if hls then
@@ -409,7 +409,7 @@ function getvideourl(url, vidname, hls)
 		end
 		data = getdata(jsUrl .. "&format=json")
 		if data then
-			jnTab = json.decode(data)
+			jnTab = json:decode(data)
 		end
 	end
 	data = nil
@@ -955,13 +955,13 @@ function gen_search_list(search)
 	if videosection == nil then return nil end
 
 	local json = require "json"
-	local jnTab = json.decode(videosection)
+	local jnTab = json:decode(videosection)
 	if jnTab == nil  then return nil end
 	local videosection_url = jnTab.manifest.zones.t5_lc_promo1.feed
 	videosection = getdata(videosection_url)
 	if videosection == nil then return nil end
 
-	jnTab = json.decode(videosection)
+	jnTab = json:decode(videosection)
 	local pages = 1
 	videosection_url = videosection_url:match("(.*)%d+$")
 	if jnTab.result.pages then pages = tonumber(jnTab.result.pages) end
@@ -976,7 +976,7 @@ function gen_search_list(search)
 			else
 				return neutrino.RETURN_EXIT
 			end
-			jnTab = json.decode(videosection)
+			jnTab = json:decode(videosection)
 		end
 
 		if jnTab == nil or jnTab.result == nil or jnTab.result.artists == nil then 
