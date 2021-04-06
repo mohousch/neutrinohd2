@@ -112,6 +112,9 @@ class CTestMenu : public CMenuTarget
 
 		ClistBox *listBox;
 
+		CProgressWindow * progressWindow;
+
+		// functions helpers
 		void loadTMDBPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1, bool search = false);
 		void loadMoviePlaylist();
 		void openMovieFileBrowser();
@@ -120,21 +123,41 @@ class CTestMenu : public CMenuTarget
 		void loadPicturePlaylist();
 		void openPictureFileBrowser();	
 
-		// testing
+		// testing widgets helpers (without CWidget)
 		void test();
+
+		// testing (with CWidget)
 		void widget();
 		void listFrameWidget();
 		void listBoxWidget();
 		void textBoxWidget();
 		void testWindowWidget();
+		void testProgressWindowWidget();
 
-		// widgets
+		// compenents helpers
 		void testCBox();
 		void testCIcon();
 		void testCImage();
+		void testCProgressBar();
+		void testCButtons();
+
+		// widget_helpers
+		void testCHeaders();
 		void testCWindow();
 		void testCWindowShadow();
 		void testCWindowCustomColor();
+		void testCProgressWindow();
+		void testCTextBox();
+		void testCListFrame();
+		void testCFrameBox();
+		void testClistBox();
+		void testClistBox2();
+		void testClistBox3();
+		void testClistBox4();
+		void testClistBox5();
+		void testClistBox6();
+
+		// widgets
 		void testCStringInput();
 		void testCStringInputSMS();
 		void testCPINInput();
@@ -152,40 +175,19 @@ class CTestMenu : public CMenuTarget
 		void testCHintBox();
 		void testCHintBoxInfo();
 		void testCHelpBox();
-		void testCProgressBar();
-		void testCProgressWindow();
-		void testCButtons();
-		void testVFDController();
-		void testColorChooser();
-		void testKeyChooser();
-		void testMountChooser();
-		void testCHeaders();
 
-		//
-		void testCTextBox();
-		void testCListFrame();
-		void testCFrameBox();
-
-		//
-		void testClistBox();
-		void testClistBox2();
-		void testClistBox3();
-		void testClistBox4();
-		void testClistBox5();
-		void testClistBox6();
-
-		//
+		// listBoxWidget
 		void testClistBoxWidget();
 		void testClistBoxWidget1();
 		void testClistBoxWidget2();
 
-		//
-		void testStartPlugin();
+		// gui widgets
+		void testVFDController();
+		void testColorChooser();
+		void testKeyChooser();
+		void testMountChooser();
 
 		//
-		void testShowActuellEPG();
-
-		// gui
 		void testChannelSelectWidget();
 		void testBEWidget();
 		void testAVSelectWidget();
@@ -201,11 +203,17 @@ class CTestMenu : public CMenuTarget
 		void testPluginsList();
 
 		//
+		void testStartPlugin();
+
+		//
+		void testShowActuellEPG();
+
+		//
 		void testPlayMovieURL();
 		void testPlayAudioURL();
 		void testShowPictureURL();
 
-		//
+		// players
 		void testPlayMovieFolder();
 		void testPlayAudioFolder();
 		void testShowPictureFolder();
@@ -215,12 +223,9 @@ class CTestMenu : public CMenuTarget
 		void testPlayAudioDir();
 		void testShowPictureDir();
 
-		//
+		// channel/bouquet list
 		void testChannellist();
 		void testBouquetlist();
-
-		// new
-		void spinner(void);
 
 	public:
 		CTestMenu();
@@ -288,8 +293,8 @@ CTestMenu::CTestMenu()
 	pig = NULL;
 	grid = NULL;
 	leftFrame = NULL;
-
 	listBox = NULL;
+	progressWindow = NULL;
 }
 
 CTestMenu::~CTestMenu()
@@ -1406,7 +1411,7 @@ void CTestMenu::testWindowWidget()
 	grid = NULL;
 }
 
-// CFrameBox
+// test
 void CTestMenu::test()
 {
 	dprintf(DEBUG_NORMAL, "\ntesting multi Widgets\n");
@@ -4734,41 +4739,6 @@ void CTestMenu::testBouquetlist()
 	webTVBouquetList->exec(true); // with zap
 }
 
-void CTestMenu::spinner(void)
-{
-	CBox Box;
-	
-	Box.iX = g_settings.screen_StartX + 10;
-	Box.iY = g_settings.screen_StartY + 10;
-
-	//
-	int count = 0;
-
-	// loop
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
-
-	while(true)
-	{
-		char filename[30];
-		sprintf(filename, PLUGINDIR "/test/" "%d.png", count);
-		//printf("SPINNER:%s\n", filename);
-		CFrameBuffer::getInstance()->paintIcon(filename, Box.iX, Box.iY);
-		CFrameBuffer::getInstance()->blit();
-
-		count = (count + 1) % 11;
-
-		usleep(500000);
-
-		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
-		
-		if (msg == RC_home) 
-		{
-			break;
-		}
-	}
-}
-
 int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
@@ -5252,12 +5222,6 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	else if(actionKey == "bouquetlist")
 	{
 		testBouquetlist();
-
-		return RETURN_REPAINT;
-	}
-	else if(actionKey == "spinner")
-	{
-		spinner();
 
 		return RETURN_REPAINT;
 	}
@@ -6557,10 +6521,6 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuSeparator(LINE | STRING, "Channellist") );
 	mainMenu->addItem(new CMenuForwarder("CChannelList:", true, NULL, this, "channellist"));
 	mainMenu->addItem(new CMenuForwarder("CBouquetList:", true, NULL, this, "bouquetlist"));
-
-	//
-	mainMenu->addItem(new CMenuSeparator(LINE));
-	mainMenu->addItem(new CMenuForwarder("Spinner", false, NULL, this, "spinner"));
 	
 	mainMenu->exec(NULL, "");
 	//mainMenu->hide();
