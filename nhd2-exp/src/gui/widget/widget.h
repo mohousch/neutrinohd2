@@ -26,6 +26,7 @@
 #endif
 
 #include <gui/widget/widget_helpers.h>
+#include <gui/widget/framebox.h>
 
 
 //
@@ -52,13 +53,22 @@ class CMenuTarget
 		//virtual std::string getName(void){std::string ret = ""; return ret;};
 };
 
+enum 
+{
+	SINGLE_WIDGET_MODE = 0,
+	MULTI_WIDGET_MODE
+};
+
 class CWidget : public CMenuTarget
 {
 	protected:
 		CFrameBuffer *frameBuffer;
 		CBox mainFrameBox;
 
+		int mode;
+
 		std::vector<CWidgetItem*> items;
+		std::vector<CFrame*> frames;
 
 		bool paintMainFrame;
 
@@ -85,6 +95,8 @@ class CWidget : public CMenuTarget
 		uint32_t sec_timer_id;
 
 		fb_pixel_t backgroundColor;
+		int radius;
+		int corner;
 
 		//
 		std::string actionKey;
@@ -94,16 +106,21 @@ class CWidget : public CMenuTarget
 		CWidget(CBox *position);
 		virtual ~CWidget();
 
+		void setMode(int m){mode = m;};
+
 		virtual void initFrames();
 		virtual void paintItems();
 		virtual void paint();
+
+		//
 		virtual void hide();
 		virtual int exec(CMenuTarget *parent, const std::string &actionKey);
 
-		virtual void addItem(CWidgetItem *widgetItem, const int x = 0, const int y = 0, const int dx = 0, const int dy = 0, const bool defaultselected = false);
+		virtual void addItem(CWidgetItem *widgetItem, const bool defaultselected = false); // multi
+		virtual void addFrame(CFrame *frame, const bool defaultselected = false); // single mode enable only frames
 		bool hasItem();
-		int getItemsCount()const{return items.size();};
-		virtual void clearItems(void){items.clear();};
+		int getItemsCount();
+		virtual void clearItems(void);
 
 		void enableCenterPos(){enableCenter = true;};
 
@@ -115,11 +132,12 @@ class CWidget : public CMenuTarget
 		inline CBox getWindowsPos(void){return(mainFrameBox);};
 		bool getExitPressed(){return exit_pressed;};
 
-		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; if (selected < 0) selected = 0;};
+		void setSelected(unsigned int _new) {selected = _new; if (selected < 0) selected = 0;};
 		int getSelected(){return exit_pressed ? -1 : selected;};
 
 		void enablePaintMainFrame(){paintMainFrame = true;};
 		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
+		void setCorner(int ra = NO_RADIUS, int co = CORNER_NONE){radius = ra; corner = co;};
 
 		void enableSaveScreen();
 

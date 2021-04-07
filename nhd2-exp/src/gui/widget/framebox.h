@@ -43,7 +43,7 @@ enum{
 };
 
 enum {
-	FRAME_BOX = 0,
+	FRAME_BOX = 0, // caption, option and left icon
 	FRAME_PICTURE,
 	FRAME_PICTURE_NOTSELECTABLE,
 	FRAME_ICON,
@@ -54,7 +54,11 @@ enum {
 	FRAME_TEXT_LINE_NOTSELECTABLE,
 	FRAME_PLUGIN,
 	FRAME_LINE_VERTICAL,
-	FRAME_LINE_HORIZONTAL
+	FRAME_LINE_HORIZONTAL,
+	FRAME_HEAD,
+	FRAME_FOOT,
+	FRAME_WINDOW,
+	FRAME_PROGRESSBAR
 };
 
 class CFrame
@@ -68,17 +72,35 @@ class CFrame
 		CFont *captionFont;
 		CFont *optionFont;
 
-		fb_pixel_t item_backgroundColor;
-
 		CMenuTarget* jumpTarget;
 		std::string actionKey;
 		neutrino_msg_t directKey;
+		neutrino_msg_t msg;
 
 		int mode;
 		bool shadow;
 		bool paintFrame;
 		bool pluginOrigName;
+
+		// head
+		fb_pixel_t headColor;
+		int headRadius;
+		int headCorner;
+		int headGradient;
+		int hbutton_count;
+		button_label_list_t hbutton_labels;
+		bool paintDate;
+		bool logo;
+
+		// foot
+		fb_pixel_t footColor;
+		int footRadius;
+		int footCorner;
+		int footGradient;
+		int fbutton_count;
+		button_label_list_t fbutton_labels;
 		
+		//
 		CFrame(int m = FRAME_BOX);
 		virtual ~CFrame(){}
 
@@ -99,7 +121,7 @@ class CFrame
 
 		virtual bool isSelectable(void)
 		{
-			if ((mode == FRAME_PICTURE_NOTSELECTABLE) || (mode == FRAME_LINE_HORIZONTAL) || (mode == FRAME_LINE_VERTICAL) || (mode == FRAME_TEXT_NOTSELECTABLE) || (mode == FRAME_TEXT_LINE_NOTSELECTABLE) || (mode == FRAME_ICON_NOTSELECTABLE)) 
+			if ((mode == FRAME_PICTURE_NOTSELECTABLE) || (mode == FRAME_LINE_HORIZONTAL) || (mode == FRAME_LINE_VERTICAL) || (mode == FRAME_TEXT_NOTSELECTABLE) || (mode == FRAME_TEXT_LINE_NOTSELECTABLE) || (mode == FRAME_ICON_NOTSELECTABLE) || (mode == FRAME_HEAD) || (mode == FRAME_FOOT) || (mode == FRAME_WINDOW)) 
 				return false; 
 			else 
 				return true;
@@ -107,9 +129,22 @@ class CFrame
 
 		virtual void disableShadow(void){shadow = false;};
 		virtual void disablePaintFrame(void){paintFrame = false;};
-		virtual void setBackgroundColor(fb_pixel_t col) {item_backgroundColor = col;};
 		virtual void setPosition(int x, int y, int dx, int dy){window.setPosition(x, y, dx, dy);};
 		virtual void setPosition(CBox *position){window.setPosition(position);};
+
+		// headFrame
+		void enablePaintDate(void){paintDate = true;};
+		void enableLogo(){logo = true;};
+		void setHeadColor(fb_pixel_t col) {headColor = col;};
+		void setHeadCorner(int ra, int co){headRadius = ra; headCorner = co;};
+		void setHeadGradient(int grad){headGradient = grad;};
+		void setHeaderButtons(const struct button_label *_hbutton_label, const int _hbutton_count = 1);
+
+		// footFrame
+		void setFootColor(fb_pixel_t col) {footColor = col;};
+		void setFootCorner(int ra, int co){footRadius = ra; footCorner = co;};
+		void setFootGradient(int grad){footGradient = grad;};
+		void setFooterButtons(const struct button_label *_fbutton_label, const int _fbutton_count = 1);
 };
 
 //// CFrameBox
@@ -120,8 +155,6 @@ class CFrameBox : public CWidgetItem
 		CWindow cFrameWindow;
 		int selected;
 		int pos;
-
-		fb_pixel_t backgroundColor;
 
 		std::vector<CFrame*> frames;
 
@@ -148,7 +181,7 @@ class CFrameBox : public CWidgetItem
 		void setPosition(CBox* position){itemBox = *position;};
 
 		virtual void addFrame(CFrame *frame, const bool defaultselected = false);
-		bool hasItem();
+		bool hasFrame();
 		void clearFrames(void){frames.clear();};
 		void setSelected(unsigned int _new) { /*if(_new <= frames.size())*/ selected = _new; };
 
@@ -162,16 +195,16 @@ class CFrameBox : public CWidgetItem
 		virtual void scrollLineUp(const int lines = 1);
 
 		int getSelected(){return selected;};
-		std::string getActionKey(void){if (hasItem() && selected >= 0 && frames[selected]->isSelectable()) return frames[selected]->actionKey; else return actionKey;};
-
-		void setBackgroundColor(fb_pixel_t col) {backgroundColor = col;};
+		std::string getActionKey(void){if (hasFrame() && selected >= 0 && frames[selected]->isSelectable()) return frames[selected]->actionKey; else return actionKey;};
 
 		void setMode(int mode = FRAMEBOX_MODE_HORIZONTAL)
 		{
 			frameMode = mode;
 
+/*
 			if (frameMode == FRAMEBOX_MODE_RANDOM)
 				paintFrame = false;
+*/
 		};
 
 		void disablePaintFrame(void){paintFrame = false;};

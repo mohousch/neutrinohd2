@@ -128,6 +128,7 @@ class CTestMenu : public CMenuTarget
 
 		// testing (with CWidget)
 		void widget();
+		void testSingleWidget();
 		void listFrameWidget();
 		void listBoxWidget();
 		void textBoxWidget();
@@ -1080,6 +1081,153 @@ void CTestMenu::widget()
 	leftFrame = NULL;
 }
 
+void CTestMenu::testSingleWidget()
+{
+	testWidget = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
+
+	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+	testWidget->setMode(SINGLE_WIDGET_MODE);
+	testWidget->enablePaintMainFrame();
+
+	loadMoviePlaylist();
+
+	////
+	// mainBox
+	CBox box;
+	box.iX = CFrameBuffer::getInstance()->getScreenX();
+	box.iY = CFrameBuffer::getInstance()->getScreenY();
+	box.iWidth = CFrameBuffer::getInstance()->getScreenWidth();
+	box.iHeight = CFrameBuffer::getInstance()->getScreenHeight();
+
+	// titleBox
+	CBox titleBox;
+	titleBox.iX = box.iX + 10;
+	titleBox.iY = box.iY + 10;
+	titleBox.iWidth = box.iWidth;
+	titleBox.iHeight = 40;
+
+	// starBox
+	CBox starBox;
+	starBox.iX = box.iX +10;
+	starBox.iY = box.iY + titleBox.iHeight + 10;
+	starBox.iWidth = 25;
+	starBox.iHeight = 25;
+
+	// playBox
+	CBox playBox;
+	playBox.iWidth = 300;
+	playBox.iHeight = 60;
+	playBox.iX = box.iX + 10;
+	playBox.iY = box.iY + box.iHeight - 10 - 60;
+
+	// textBox
+	CBox textBox;
+	textBox.iWidth = box.iWidth/2 - 20;
+	textBox.iHeight = box.iHeight - playBox.iHeight - starBox.iHeight - titleBox.iHeight - 4*10 - 100;
+	textBox.iX = box.iX + 10 + 40;
+	textBox.iY = starBox.iY + 10 + 60;
+
+	// head
+	CFrame *headFrame = new CFrame(FRAME_HEAD);
+	headFrame->setPosition(box.iX, box.iY, box.iWidth, 40);
+	headFrame->setIconName(NEUTRINO_ICON_MOVIE);
+	headFrame->setTitle("single Widget");
+	headFrame->enablePaintDate();
+	headFrame->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
+
+	testWidget->addFrame(headFrame);
+
+	// artFrame
+	CFrame * artFrame = new CFrame(FRAME_PICTURE_NOTSELECTABLE);
+	artFrame->setPosition(box.iX + box.iWidth/2, box.iY + 40, box.iWidth/2, box.iHeight);
+	artFrame->setIconName(m_vMovieInfo[0].tfile.c_str());
+
+	testWidget->addFrame(artFrame);
+
+	// title
+	CFrame *titleFrame = new CFrame(FRAME_TEXT_LINE_NOTSELECTABLE);
+	titleFrame->setPosition(&titleBox);
+	titleFrame->disablePaintFrame();
+	titleFrame->setTitle(m_vMovieInfo[0].epgTitle.c_str());
+	titleFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]);
+
+	testWidget->addFrame(titleFrame);
+
+	// star1
+	CFrame *star1Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	star1Frame->setPosition(&starBox);
+	star1Frame->setIconName(NEUTRINO_ICON_STAR_ON);
+	star1Frame->disablePaintFrame();
+
+	testWidget->addFrame(star1Frame);
+
+	// star2
+	CFrame *star2Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	star2Frame->setPosition(starBox.iX + 25, starBox.iY, starBox.iWidth, starBox.iHeight);
+	star2Frame->setIconName(NEUTRINO_ICON_STAR_ON);
+	star2Frame->disablePaintFrame();
+
+	testWidget->addFrame(star2Frame);
+
+	// star3
+	CFrame *star3Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	star3Frame->setPosition(starBox.iX + 2*25, starBox.iY, starBox.iWidth, starBox.iHeight);
+	star3Frame->setIconName(NEUTRINO_ICON_STAR_ON);
+	star3Frame->disablePaintFrame();
+
+	testWidget->addFrame(star3Frame);
+
+	// star4
+	CFrame *star4Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
+	star4Frame->setPosition(starBox.iX + 3*25, starBox.iY, starBox.iWidth, starBox.iHeight);
+	star4Frame->setIconName(NEUTRINO_ICON_STAR_OFF);
+	star4Frame->disablePaintFrame();
+
+	testWidget->addFrame(star4Frame);
+
+	// text
+	CFrame *textFrame = new CFrame(FRAME_TEXT_NOTSELECTABLE);
+	textFrame->setPosition(&textBox);
+	std::string buffer;
+	buffer = m_vMovieInfo[0].epgInfo1;
+	buffer += "\n";
+	buffer += m_vMovieInfo[0].epgInfo2;
+
+	textFrame->setTitle(buffer.c_str());
+	textFrame->disablePaintFrame();
+	
+	testWidget->addFrame(textFrame);
+
+	// infoFrame
+	CFrame * infoFrame = new CFrame();
+	infoFrame->setPosition(playBox.iX + 300 + 10, playBox.iY, 300, 60);
+	infoFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
+	infoFrame->setTitle("Movie Details");
+	infoFrame->setIconName(NEUTRINO_ICON_INFO);
+	infoFrame->setActionKey(this, "minfo");
+
+	testWidget->addFrame(infoFrame);
+
+	// play
+	CFrame *playFrame = new CFrame();
+	playFrame->setPosition(&playBox);
+	playFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]);
+	playFrame->setTitle("Movie abspielen");
+	playFrame->setIconName(NEUTRINO_ICON_PLAY);
+	playFrame->setActionKey(this, "mplay");
+
+	testWidget->addFrame(playFrame);
+
+	// foot
+	CFrame *footFrame = new CFrame(FRAME_FOOT);
+	footFrame->setPosition(box.iX, box.iY + box.iHeight - 40, box.iWidth, 40);
+	footFrame->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
+
+	testWidget->addFrame(footFrame);
+
+	testWidget->exec(NULL, "");
+}
+
 void CTestMenu::listFrameWidget()
 {
 	testWidget = new CWidget(frameBuffer->getScreenX(), frameBuffer->getScreenY(), frameBuffer->getScreenWidth(), frameBuffer->getScreenHeight());
@@ -1459,7 +1607,6 @@ void CTestMenu::test()
 
 	topWidget = new CFrameBox(&topBox);
 	topWidget->setMode(FRAMEBOX_MODE_HORIZONTAL);
-	topWidget->setBackgroundColor(COL_DARK_GREEN);
 
 	CFrame * frame = NULL;
 
@@ -5179,7 +5326,10 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	else if(actionKey == "mplay")
 	{
-		selected = listMenu->getSelected();
+		if (listMenu)
+			selected = listMenu->getSelected();
+		else
+			selected = 0;
 
 		if (&m_vMovieInfo[selected].file != NULL) 
 		{
@@ -5213,8 +5363,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	else if(actionKey == "minfo")
 	{
-		selected = listMenu->getSelected();
-		m_movieInfo.showMovieInfo(m_vMovieInfo[listMenu->getSelected()]);
+		if (listMenu)
+			selected = listMenu->getSelected();
+		else
+			selected = 0;
+
+		m_movieInfo.showMovieInfo(m_vMovieInfo[selected]);
 
 		return RETURN_REPAINT;
 	}
@@ -6365,6 +6519,12 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 		return RETURN_REPAINT;
 	}
+	else if(actionKey == "singleWidget")
+	{
+		testSingleWidget();
+
+		return RETURN_REPAINT;
+	}
 
 	showMenu();
 	
@@ -6394,6 +6554,7 @@ void CTestMenu::showMenu()
 	mainMenu->enablePaintFootInfo();
 	
 	mainMenu->addItem(new CMenuForwarder("CWidget(multi widget)", true, NULL, this, "widget"));
+	mainMenu->addItem(new CMenuForwarder("CWidget(single widget)", true, NULL, this, "singleWidget"));
 	mainMenu->addItem(new CMenuForwarder("CWidget(listFrame)", true, NULL, this, "listframewidget"));
 	mainMenu->addItem(new CMenuForwarder("CWidget(listBox)", true, NULL, this, "listboxmwidget"));
 	mainMenu->addItem(new CMenuForwarder("CWidget(textBox)", true, NULL, this, "textboxwidget"));

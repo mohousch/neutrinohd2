@@ -45,12 +45,31 @@ CFrame::CFrame(int m)
 	paintFrame = true;
 	pluginOrigName = false;
 
-	item_backgroundColor = COL_MENUCONTENT_PLUS_0;
 	iconName.clear();
 	option.clear();
 
 	jumpTarget = NULL;
 	actionKey.clear();
+
+	// headFrame
+	headColor = COL_MENUHEAD_PLUS_0;
+	headRadius = RADIUS_MID;
+	headCorner = CORNER_TOP;
+	headGradient = g_settings.Head_gradient;
+	paintDate = false;
+	logo = false;
+	hbutton_count	= 0;
+	hbutton_labels.clear();
+
+	// footFrame
+	// foot
+	footColor = COL_MENUFOOT_PLUS_0;
+	footRadius = RADIUS_MID;
+	footCorner = CORNER_BOTTOM;
+	footGradient = g_settings.Foot_gradient;
+	fbutton_count	= 0;
+	fbutton_labels.clear();
+	//fbutton_width = cFrameBox.iWidth;
 
 	window.setPosition(0, 0, 0, 0);
 
@@ -112,12 +131,44 @@ void CFrame::setPlugin(const char * const pluginName)
 	}
 }
 
+void CFrame::setHeaderButtons(const struct button_label *_hbutton_labels, const int _hbutton_count)
+{
+	if (mode == FRAME_HEAD)
+	{
+		if (_hbutton_count)
+		{
+			for (unsigned int i = 0; i < _hbutton_count; i++)
+			{
+				hbutton_labels.push_back(_hbutton_labels[i]);
+			}
+		}
+
+		hbutton_count = hbutton_labels.size();
+	}
+}
+
+void CFrame::setFooterButtons(const struct button_label* _fbutton_labels, const int _fbutton_count)
+{
+	if (mode == FRAME_FOOT)
+	{
+		if (_fbutton_count)
+		{
+			for (unsigned int i = 0; i < _fbutton_count; i++)
+			{
+				fbutton_labels.push_back(_fbutton_labels[i]);
+			}
+		}
+
+		fbutton_count = fbutton_labels.size();	
+	}
+}
+
 int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 {
 	dprintf(DEBUG_DEBUG, "CFrame::paint:\n");
 
 	uint8_t color = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = item_backgroundColor;
+	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 
 	if (selected)
 	{
@@ -282,6 +333,42 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 			captionFont->RenderString(window.getWindowsPos().iX + 2, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - 4, caption.c_str(), color);
 		}
 	}
+	else if ( mode == FRAME_HEAD)
+	{
+		CHeaders headers(/*window.getWindowsPos().iX, window.getWindowsPos().iY, window.getWindowsPos().iWidth, window.getWindowsPos().iHeight*/window.getWindowsPos(), caption.c_str(), iconName.c_str());
+
+		headers.setColor(headColor);
+		headers.setCorner(headRadius, headCorner);
+		headers.setGradient(headGradient);
+		
+		if(paintDate)
+			headers.enablePaintDate();
+
+		if(logo)
+			headers.enableLogo();
+
+		for (int i = 0; i < hbutton_count; i++)
+		{			
+			headers.setButtons(&hbutton_labels[i]);
+		}
+
+		headers.paint();
+	}
+	else if ( mode == FRAME_FOOT)
+	{
+		CFooters footers(window.getWindowsPos());
+
+		footers.setColor(footColor);
+		footers.setCorner(footRadius, footCorner);
+		footers.setGradient(footGradient);
+
+		for (int i = 0; i < fbutton_count; i++)
+		{			
+			footers.setButtons(&fbutton_labels[i]);
+		}
+
+		footers.paint();
+	}
 
 	return 0;
 }
@@ -316,7 +403,6 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 	pos = 0;
 
 	inFocus = true;
-	backgroundColor = COL_MENUCONTENT_PLUS_0;
 
 	frameMode = FRAMEBOX_MODE_HORIZONTAL;
 
@@ -341,7 +427,6 @@ CFrameBox::CFrameBox(CBox* position)
 	pos = 0;
 
 	inFocus = true;
-	backgroundColor = COL_MENUCONTENT_PLUS_0;
 
 	frameMode = FRAMEBOX_MODE_HORIZONTAL;
 
@@ -367,7 +452,7 @@ void CFrameBox::addFrame(CFrame *frame, const bool defaultselected)
 	frames.push_back(frame);
 }
 
-bool CFrameBox::hasItem()
+bool CFrameBox::hasFrame()
 {
 	return !frames.empty();
 }
@@ -441,7 +526,7 @@ void CFrameBox::paint()
 
 	if (paintFrame)
 	{
-		cFrameWindow.setColor(backgroundColor);
+		cFrameWindow.setColor(COL_MENUCONTENT_PLUS_0);
 		//cFrameWindow.setCorner(RADIUS_MID, CORNER_ALL);
 		//cFrameWindow.enableShadow();
 		//cFrameWindow.enableSaveScreen();
@@ -570,7 +655,7 @@ int CFrameBox::oKKeyPressed(CMenuTarget *parent)
 {
 	if(parent)
 	{
-		if (hasItem() && selected >= 0 && frames[selected]->isSelectable())
+		if (hasFrame() && selected >= 0 && frames[selected]->isSelectable())
 			return frames[selected]->exec(parent);
 		else
 			return RETURN_EXIT;

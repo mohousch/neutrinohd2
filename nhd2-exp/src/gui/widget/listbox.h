@@ -482,10 +482,6 @@ class ClistBox : public CWidgetItem
 
 		int selected;
 
-		// title
-		std::string iconfile;
-		std::string l_name;
-
 		//
 		std::vector<unsigned int> page_start;
 		unsigned int current_page;
@@ -496,45 +492,23 @@ class ClistBox : public CWidgetItem
 		int listmaxshow;
 		int iconOffset;
 		int pos;
+		unsigned int item_start_y;
+		int items_height;
+		int items_width;
+
+		CScrollBar scrollBar;
 
 		//
-		int hheight;
-		int fheight;
-		int footInfoHeight;
-		int connectLineWidth;
-
-		//
-		int hbutton_count;
-		button_label_list_t hbutton_labels;
-		//
-		int fbutton_count;
-		int fbutton_width;
-		button_label_list_t fbutton_labels;
-
-		bool paintDate;
-		bool paintTitle;
-		bool paint_Foot;
-		bool paintFootInfo;
-		bool logo;
 		bool enableCenter;
 		bool shrinkMenu;
-
-		//
-		CItems2DetailsLine itemsLine;
-		CScrollBar scrollBar;
-		CButtons buttons;
-		int footInfoMode;
 
 		// frame
 		int itemsPerX;
 		int itemsPerY;
 		int maxItemsPerPage;
+		CButtons buttons;
 
-		unsigned int item_start_y;
-		int items_height;
-		int items_width;
-
-		//
+		// widget type
 		int widgetType;
 		int widgetMode;
 		bool widgetChange;
@@ -542,16 +516,36 @@ class ClistBox : public CWidgetItem
 		int cnt;
 
 		// head
+		std::string iconfile;
+		std::string l_name;
+		int hheight;
 		fb_pixel_t headColor;
 		int headRadius;
 		int headCorner;
 		int headGradient;
+		int hbutton_count;
+		button_label_list_t hbutton_labels;
+		bool paintDate;
+		bool paintTitle;
+		bool logo;
 
 		// foot
+		int fheight;
 		fb_pixel_t footColor;
 		int footRadius;
 		int footCorner;
 		int footGradient;
+		int fbutton_count;
+		int fbutton_width;
+		button_label_list_t fbutton_labels;
+		bool paint_Foot;
+
+		// footInfo
+		int footInfoHeight;
+		CItems2DetailsLine itemsLine;
+		int connectLineWidth;
+		bool paintFootInfo;
+		int footInfoMode;
 
 		// methods
 		virtual void paintItems();
