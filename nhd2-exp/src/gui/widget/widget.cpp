@@ -302,19 +302,19 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 	// set in focus
 	if (mode == MULTI_WIDGET_MODE)
 	{
-	if (hasItem() && items.size() > 1)
-	{
-		for (unsigned int i = 0; i < items.size(); i++)
+		if (hasItem() && items.size() > 1)
 		{
-			if((items[i]->isSelectable()) && (items[i]->inFocus == true))
+			for (unsigned int i = 0; i < items.size(); i++)
 			{
-				selected = i;
-				break;
+				if((items[i]->isSelectable()) && (items[i]->inFocus == true))
+				{
+					selected = i;
+					break;
+				}
 			}
 		}
-	}
-	else
-		selected = -1;
+		else
+			selected = -1;
 	}
 
 	paint();
@@ -380,12 +380,26 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 			if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 			{
 				// update time
-				for (unsigned int i = 0; i < items.size(); i++)
+				if (mode == MULTI_WIDGET_MODE)
 				{
-					if( (items[i]->itemType == WIDGET_ITEM_HEAD) /*&& (items[i]->paintDate)*/)
+					for (unsigned int i = 0; i < items.size(); i++)
 					{
-						items[i]->paint();
-						break;
+						if( (items[i]->itemType == WIDGET_ITEM_HEAD) /*&& (items[i]->paintDate)*/)
+						{
+							items[i]->paint();
+							break;
+						}
+					}
+				}
+				else
+				{
+					for (unsigned int i = 0; i < frames.size(); i++)
+					{
+						if( (frames[i]->mode == FRAME_HEAD) /*&& (items[i]->paintDate)*/)
+						{
+							frames[i]->paint();
+							break;
+						}
 					}
 				}
 			} 
