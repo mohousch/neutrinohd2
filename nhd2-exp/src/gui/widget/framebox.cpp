@@ -462,7 +462,7 @@ void CFrameBox::addFrame(CFrame *frame, const bool defaultselected)
 	frames.push_back(frame);
 }
 
-bool CFrameBox::hasFrame()
+bool CFrameBox::hasItem()
 {
 	return !frames.empty();
 }
@@ -638,7 +638,7 @@ void CFrameBox::scrollLineUp(const int lines)
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::scrollLineUp:\n");
 
-	if( (frameMode == FRAMEBOX_MODE_VERTICAL) || (frameMode == FRAMEBOX_MODE_RANDOM))
+	if( (frameMode == FRAMEBOX_MODE_VERTICAL) || (frameMode == FRAMEBOX_MODE_RANDOM) )
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
@@ -665,7 +665,7 @@ int CFrameBox::oKKeyPressed(CMenuTarget *parent)
 {
 	if(parent)
 	{
-		if (hasFrame() && selected >= 0 && frames[selected]->isSelectable())
+		if (hasItem() && selected >= 0 && frames[selected]->isSelectable())
 			return frames[selected]->exec(parent);
 		else
 			return RETURN_EXIT;

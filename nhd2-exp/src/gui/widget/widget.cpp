@@ -799,7 +799,10 @@ void CWidget::onUpKeyPressed()
 	{
 		if(hasItem() && selected >= 0)
 		{
-			items[selected]->onUpKeyPressed();
+			if( (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ((items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL)) )
+				onYellowKeyPressed();
+			else
+				items[selected]->onUpKeyPressed();
 		}
 	}
 	else
@@ -831,7 +834,12 @@ void CWidget::onDownKeyPressed()
 	{
 		if(hasItem() && selected >= 0)
 		{
-			items[selected]->onDownKeyPressed();
+			if( (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ( (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL)) )
+				onYellowKeyPressed();
+			else
+			{
+				items[selected]->onDownKeyPressed();
+			}
 		}
 	}
 	else

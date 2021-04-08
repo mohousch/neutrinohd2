@@ -181,7 +181,7 @@ class CFrameBox : public CWidgetItem
 		void setPosition(CBox* position){itemBox = *position;};
 
 		virtual void addFrame(CFrame *frame, const bool defaultselected = false);
-		bool hasFrame();
+		bool hasItem();
 		void clearFrames(void){frames.clear();};
 		void setSelected(unsigned int _new) { /*if(_new <= frames.size())*/ selected = _new; };
 
@@ -195,22 +195,16 @@ class CFrameBox : public CWidgetItem
 		virtual void scrollLineUp(const int lines = 1);
 
 		int getSelected(){return selected;};
-		std::string getActionKey(void){if (hasFrame() && selected >= 0 && frames[selected]->isSelectable()) return frames[selected]->actionKey; else return actionKey;};
+		std::string getActionKey(void){if (hasItem() && selected >= 0 && frames[selected]->isSelectable()) return frames[selected]->actionKey; else return actionKey;};
 
-		void setMode(int mode = FRAMEBOX_MODE_HORIZONTAL)
-		{
-			frameMode = mode;
-
-/*
-			if (frameMode == FRAMEBOX_MODE_RANDOM)
-				paintFrame = false;
-*/
-		};
+		void setMode(int mode = FRAMEBOX_MODE_HORIZONTAL){frameMode = mode;};
 
 		void disablePaintFrame(void){paintFrame = false;};
 
 		//
 		bool isSelectable(void) const {return true;};
+
+		virtual int getFrameBoxMode(){return frameMode;};
 
 		int oKKeyPressed(CMenuTarget *parent);
 		

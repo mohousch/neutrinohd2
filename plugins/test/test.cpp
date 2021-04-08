@@ -113,6 +113,8 @@ class CTestMenu : public CMenuTarget
 		ClistBox *listBox;
 
 		CProgressWindow * progressWindow;
+		CFrameBox *fireTVBox;
+		CFrameBox *fireTV1Box;
 
 		// functions helpers
 		void loadTMDBPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1, bool search = false);
@@ -297,6 +299,8 @@ CTestMenu::CTestMenu()
 	leftFrame = NULL;
 	listBox = NULL;
 	progressWindow = NULL;
+	fireTVBox = NULL;
+	fireTV1Box = NULL;
 }
 
 CTestMenu::~CTestMenu()
@@ -1094,8 +1098,12 @@ void CTestMenu::testSingleWidget()
 	testWidget = new CWidget(&box);
 
 	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
-	testWidget->setMode(SINGLE_WIDGET_MODE);
+	//testWidget->setMode(MULTI_WIDGET_MODE);
 	testWidget->enablePaintMainFrame();
+
+	CFrameBox *testFrame = new CFrameBox(&box);
+	testFrame->setMode(FRAMEBOX_MODE_RANDOM);
+	testFrame->disablePaintFrame();
 
 	loadMoviePlaylist();
 
@@ -1135,14 +1143,14 @@ void CTestMenu::testSingleWidget()
 	headFrame->enablePaintDate();
 	headFrame->setHeaderButtons(HeadButtons, HEAD_BUTTONS_COUNT);
 
-	testWidget->addFrame(headFrame);
+	testFrame->addFrame(headFrame);
 
 	// artFrame
 	CFrame * artFrame = new CFrame(FRAME_PICTURE_NOTSELECTABLE);
-	artFrame->setPosition(box.iX + box.iWidth/2, box.iY + 40, box.iWidth/2, box.iHeight);
+	artFrame->setPosition(box.iX + box.iWidth/2, box.iY + 40, box.iWidth/2, box.iHeight - 2*40);
 	artFrame->setIconName(m_vMovieInfo[0].tfile.c_str());
 
-	testWidget->addFrame(artFrame);
+	testFrame->addFrame(artFrame);
 
 	// title
 	CFrame *titleFrame = new CFrame(FRAME_TEXT_LINE_NOTSELECTABLE);
@@ -1151,7 +1159,7 @@ void CTestMenu::testSingleWidget()
 	titleFrame->setTitle(m_vMovieInfo[0].epgTitle.c_str());
 	titleFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]);
 
-	testWidget->addFrame(titleFrame);
+	testFrame->addFrame(titleFrame);
 
 	// star1
 	CFrame *star1Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
@@ -1159,7 +1167,7 @@ void CTestMenu::testSingleWidget()
 	star1Frame->setIconName(NEUTRINO_ICON_STAR_ON);
 	star1Frame->disablePaintFrame();
 
-	testWidget->addFrame(star1Frame);
+	testFrame->addFrame(star1Frame);
 
 	// star2
 	CFrame *star2Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
@@ -1167,7 +1175,7 @@ void CTestMenu::testSingleWidget()
 	star2Frame->setIconName(NEUTRINO_ICON_STAR_ON);
 	star2Frame->disablePaintFrame();
 
-	testWidget->addFrame(star2Frame);
+	testFrame->addFrame(star2Frame);
 
 	// star3
 	CFrame *star3Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
@@ -1175,7 +1183,7 @@ void CTestMenu::testSingleWidget()
 	star3Frame->setIconName(NEUTRINO_ICON_STAR_ON);
 	star3Frame->disablePaintFrame();
 
-	testWidget->addFrame(star3Frame);
+	testFrame->addFrame(star3Frame);
 
 	// star4
 	CFrame *star4Frame = new CFrame(FRAME_ICON_NOTSELECTABLE);
@@ -1183,7 +1191,7 @@ void CTestMenu::testSingleWidget()
 	star4Frame->setIconName(NEUTRINO_ICON_STAR_OFF);
 	star4Frame->disablePaintFrame();
 
-	testWidget->addFrame(star4Frame);
+	testFrame->addFrame(star4Frame);
 
 	// text
 	CFrame *textFrame = new CFrame(FRAME_TEXT_NOTSELECTABLE);
@@ -1196,7 +1204,7 @@ void CTestMenu::testSingleWidget()
 	textFrame->setTitle(buffer.c_str());
 	textFrame->disablePaintFrame();
 	
-	testWidget->addFrame(textFrame);
+	testFrame->addFrame(textFrame);
 
 	// infoFrame
 	CFrame * infoFrame = new CFrame();
@@ -1206,7 +1214,7 @@ void CTestMenu::testSingleWidget()
 	infoFrame->setIconName(NEUTRINO_ICON_INFO);
 	infoFrame->setActionKey(this, "minfo");
 
-	testWidget->addFrame(infoFrame);
+	testFrame->addFrame(infoFrame);
 
 	// play
 	CFrame *playFrame = new CFrame();
@@ -1216,14 +1224,16 @@ void CTestMenu::testSingleWidget()
 	playFrame->setIconName(NEUTRINO_ICON_PLAY);
 	playFrame->setActionKey(this, "mplay");
 
-	testWidget->addFrame(playFrame);
+	testFrame->addFrame(playFrame);
 
 	// foot
 	CFrame *footFrame = new CFrame(FRAME_FOOT);
-	footFrame->setPosition(box.iX + 10, box.iY + box.iHeight - 40, box.iWidth, 40);
+	footFrame->setPosition(box.iX, box.iY + box.iHeight - 40, box.iWidth, 40);
 	footFrame->setFooterButtons(FootButtons, FOOT_BUTTONS_COUNT);
 
-	testWidget->addFrame(footFrame);
+	testFrame->addFrame(footFrame);
+
+	testWidget->addItem(testFrame);
 
 	testWidget->exec(NULL, "");
 }
@@ -1239,9 +1249,13 @@ void CTestMenu::testFireTV()
 
 	testWidget = new CWidget(&box);
 
-	//testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
-	testWidget->setMode(SINGLE_WIDGET_MODE);
+	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+	//testWidget->setMode(SINGLE_WIDGET_MODE);
 	testWidget->enablePaintMainFrame();
+
+	CFrameBox *testFrameBox = new CFrameBox(&box);
+	testFrameBox->setMode(FRAMEBOX_MODE_RANDOM);
+	testFrameBox->disablePaintFrame();
 
 	loadMoviePlaylist();
 
@@ -1255,7 +1269,7 @@ void CTestMenu::testFireTV()
 	homeFrame->disablePaintFrame();
 	homeFrame->setActionKey(this, "home");
 
-	testWidget->addFrame(homeFrame);
+	testFrameBox->addFrame(homeFrame);
 
 	// setup
 	CFrame *setupFrame = new CFrame(FRAME_TEXT_LINE);
@@ -1267,7 +1281,7 @@ void CTestMenu::testFireTV()
 	setupFrame->disablePaintFrame();
 	setupFrame->setActionKey(this, "setup");
 
-	testWidget->addFrame(setupFrame);
+	testFrameBox->addFrame(setupFrame);
 
 	// help
 	int i_w = 0;
@@ -1279,7 +1293,12 @@ void CTestMenu::testFireTV()
 	//helpFrame->disablePaintFrame();
 	helpFrame->setActionKey(this, "help");
 
-	testWidget->addFrame(helpFrame);
+	testFrameBox->addFrame(helpFrame);
+
+	fireTV1Box = new CFrameBox();
+	fireTV1Box->setMode(FRAMEBOX_MODE_RANDOM);
+	fireTV1Box->setPosition(box.iX + 10, box.iY + 40 + s_h + 20, box.iWidth, 280);
+	fireTV1Box->setOutFocus();
 
 	// text
 	CFrame *textFrame = new CFrame(FRAME_TEXT_NOTSELECTABLE);
@@ -1291,14 +1310,15 @@ void CTestMenu::testFireTV()
 	textFrame->setTitle(buffer.c_str());
 	textFrame->disablePaintFrame();
 
-	testWidget->addFrame(textFrame);
+	fireTV1Box->addFrame(textFrame);
 
 	// pic
-	CFrame * artFrame = new CFrame(FRAME_PICTURE_NOTSELECTABLE);
+	CFrame * artFrame = new CFrame(FRAME_PICTURE);
 	artFrame->setPosition(box.iX + 10 + box.iWidth - 200 + 10, box.iY + 40 + s_h + 20, 160, 280);
 	artFrame->setIconName(m_vMovieInfo[0].tfile.c_str());
+	artFrame->setActionKey(this, "fire1play");
 
-	testWidget->addFrame(artFrame);
+	fireTV1Box->addFrame(artFrame);
 
 	// other
 	CFrame *otherFrame = new CFrame(FRAME_TEXT_LINE_NOTSELECTABLE);
@@ -1309,50 +1329,70 @@ void CTestMenu::testFireTV()
 	otherFrame->setTitle("andere Filme");
 	otherFrame->disablePaintFrame();
 
-	testWidget->addFrame(otherFrame);
+	testFrameBox->addFrame(otherFrame);
 
+	fireTVBox = new CFrameBox();
+	fireTVBox->setMode(FRAMEBOX_MODE_HORIZONTAL);
+	fireTVBox->setPosition(box.iX, box.iY + 40 + 10 + 300 + 40, box.iWidth, 280);
+	fireTVBox->setOutFocus();
+
+	CFrame * art1Frame = NULL;
+	for (int i = 1; i < 7; i++)
+	{
+		art1Frame = new CFrame(FRAME_PICTURE);
+		art1Frame->setIconName(m_vMovieInfo[i].tfile.c_str());
+		art1Frame->setActionKey(this, "fireplay");
+
+		fireTVBox->addFrame(art1Frame);
+	}
+
+/*
 	// pic1
 	CFrame * art1Frame = new CFrame(FRAME_PICTURE);
-	art1Frame->setPosition(box.iX + 10, box.iY + 40 + 10 + 300 + 40, 160, 280);
+	//art1Frame->setPosition(box.iX + 10, box.iY + 40 + 10 + 300 + 40, 160, 280);
 	art1Frame->setIconName(m_vMovieInfo[1].tfile.c_str());
 
-	testWidget->addFrame(art1Frame);
+	fireTVBox->addFrame(art1Frame);
 
 	// pic2
 	CFrame * art2Frame = new CFrame(FRAME_PICTURE);
-	art2Frame->setPosition(box.iX + 10 + 160 + 10, box.iY + 40 + 10 + 300 + 40, 160, 280);
+	//art2Frame->setPosition(box.iX + 10 + 160 + 10, box.iY + 40 + 10 + 300 + 40, 160, 280);
 	art2Frame->setIconName(m_vMovieInfo[2].tfile.c_str());
 
-	testWidget->addFrame(art2Frame);
+	fireTVBox->addFrame(art2Frame);
 
 	// pic3
 	CFrame * art3Frame = new CFrame(FRAME_PICTURE);
-	art3Frame->setPosition(box.iX + 10 + 160 + 10 + 160 + 10, box.iY + 40 + 10 + 300 + 40, 160, 280);
+	//art3Frame->setPosition(box.iX + 10 + 160 + 10 + 160 + 10, box.iY + 40 + 10 + 300 + 40, 160, 280);
 	art3Frame->setIconName(m_vMovieInfo[3].tfile.c_str());
 
-	testWidget->addFrame(art3Frame);
+	fireTVBox->addFrame(art3Frame);
 
 	// pic4
 	CFrame * art4Frame = new CFrame(FRAME_PICTURE);
-	art4Frame->setPosition(box.iX + 10 + 160 + 10 + 160 + 10 + 170, box.iY + 40 + 10 + 300 + 40, 160, 280);
+	//art4Frame->setPosition(box.iX + 10 + 160 + 10 + 160 + 10 + 170, box.iY + 40 + 10 + 300 + 40, 160, 280);
 	art4Frame->setIconName(m_vMovieInfo[4].tfile.c_str());
 
-	testWidget->addFrame(art4Frame);
+	fireTVBox->addFrame(art4Frame);
 
 	// pic5
 	CFrame * art5Frame = new CFrame(FRAME_PICTURE);
-	art5Frame->setPosition(box.iX + 10 + 160 + 10 + 160 + 10 + 170 + 170, box.iY + 40 + 10 + 300 + 40, 160, 280);
+	//art5Frame->setPosition(box.iX + 10 + 160 + 10 + 160 + 10 + 170 + 170, box.iY + 40 + 10 + 300 + 40, 160, 280);
 	art5Frame->setIconName(m_vMovieInfo[5].tfile.c_str());
 
-	testWidget->addFrame(art5Frame);
+	fireTVBox->addFrame(art5Frame);
 
 	// pic6
 	CFrame * art6Frame = new CFrame(FRAME_PICTURE);
-	art6Frame->setPosition(box.iX + 10 + 160 + 10 + 160 + 10 + 170 + 170 + 170, box.iY + 40 + 10 + 300 + 40, 160, 280);
+	//art6Frame->setPosition(box.iX + 10 + 160 + 10 + 160 + 10 + 170 + 170 + 170, box.iY + 40 + 10 + 300 + 40, 160, 280);
 	art6Frame->setIconName(m_vMovieInfo[6].tfile.c_str());
 
-	testWidget->addFrame(art6Frame);
+	fireTVBox->addFrame(art6Frame);
+*/
 
+	testWidget->addItem(testFrameBox);
+	testWidget->addItem(fireTV1Box);
+	testWidget->addItem(fireTVBox);
 	testWidget->exec(NULL, "");
 }
 
@@ -6676,6 +6716,37 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	else if(actionKey == "help")
 	{
 		testCHelpBox();
+
+		return RETURN_REPAINT;
+	}
+	else if(actionKey == "fireplay")
+	{
+		if (fireTVBox)
+			selected = fireTVBox->getSelected() + 1;
+		else
+			selected = 0;
+
+		if (&m_vMovieInfo[selected].file != NULL) 
+		{
+			CMovieInfoWidget movieInfoWidget;
+			movieInfoWidget.setMovie(m_vMovieInfo[selected]);
+		
+			movieInfoWidget.exec(NULL, "");
+		}
+
+		return RETURN_REPAINT;
+	}
+	else if(actionKey == "fire1play")
+	{
+			selected = 0;
+
+		if (&m_vMovieInfo[selected].file != NULL) 
+		{
+			CMovieInfoWidget movieInfoWidget;
+			movieInfoWidget.setMovie(m_vMovieInfo[selected]);
+		
+			movieInfoWidget.exec(NULL, "");
+		}
 
 		return RETURN_REPAINT;
 	}

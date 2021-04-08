@@ -220,6 +220,7 @@ class CWidgetItem
 
 		//
 		virtual std::string getActionKey(void){ return "";};
+		virtual int getFrameBoxMode(){return 0;};
 };
 
 // CHeaders
