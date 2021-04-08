@@ -81,8 +81,8 @@ CWidget::CWidget(CBox *position)
 	selected = -1;
 
 	backgroundColor = COL_MENUCONTENT_PLUS_0;
-	radius = NO_RADIUS;
-	corner = CORNER_NONE;
+	radius = RADIUS_MID;
+	corner = CORNER_ALL;
 
 	actionKey = "";
 }
@@ -99,17 +99,6 @@ void CWidget::addItem(CWidgetItem *widgetItem, const bool defaultselected)
 {
 	if (defaultselected)
 		selected = items.size();
-
-	// reinit itemBox
-/*
-	if (dx != 0 && dy != 0)
-	{
-		widgetItem->itemBox.iX = x;
-		widgetItem->itemBox.iY = y;
-		widgetItem->itemBox.iWidth = dx;
-		widgetItem->itemBox.iHeight = dy;
-	}
-*/
 	
 	items.push_back(widgetItem);
 }
@@ -175,12 +164,12 @@ void CWidget::paintItems()
 	{
 		for (int i = 0; i < items.size(); i++)
 		{
-				if( (items[i]->isSelectable()) && (selected == -1)) 
-				{
-					selected = i;
-				}
+			if( (items[i]->isSelectable()) && (selected == -1)) 
+			{
+				selected = i;
+			}
 
-				items[i]->paint();
+			items[i]->paint();
 		}
 	}
 	else if (mode == SINGLE_WIDGET_MODE)
@@ -207,7 +196,7 @@ void CWidget::paint()
 
 	// paint mainFrame
 	if(paintMainFrame)
-		frameBuffer->paintBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight, backgroundColor, RADIUS_MID, CORNER_ALL, nogradient);
+		frameBuffer->paintBoxRel(mainFrameBox.iX, mainFrameBox.iY, mainFrameBox.iWidth, mainFrameBox.iHeight, backgroundColor, radius, corner, nogradient);
 
 	// paint items
 	paintItems();

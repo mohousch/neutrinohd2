@@ -243,34 +243,44 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 
 		if(!iconName.empty())
 		{
-			CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 2, window.getWindowsPos().iY + 2, window.getWindowsPos().iWidth - 4, window.getWindowsPos().iHeight - c_h - 4);
+			CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 3, window.getWindowsPos().iY + 3, window.getWindowsPos().iWidth - 6, window.getWindowsPos().iHeight - c_h - 6);
 		}
 
 		if(!caption.empty())
 		{
 			int c_w = captionFont->getRenderWidth(caption);
 
-			captionFont->RenderString(window.getWindowsPos().iX + 2, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - 4, caption.c_str(), color);
+			captionFont->RenderString(window.getWindowsPos().iX + 3, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - 6, caption.c_str(), color);
 		}
 	}
 	else if ((mode == FRAME_ICON) || (mode == FRAME_ICON_NOTSELECTABLE))
 	{
+		iconOffset = ICON_OFFSET;
+
+		if (mode == FRAME_ICON_NOTSELECTABLE)
+			iconOffset = 0;
+
 		// iconName
-		if(!iconName.empty())
+		if(caption.empty())
 		{
-			iconOffset = ICON_OFFSET;
+			if(!iconName.empty())
+			{
+				CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iw, &ih);
 
-			if (mode == FRAME_ICON_NOTSELECTABLE)
-				iconOffset = 0;
-
-			CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iw, &ih);
-
-			CFrameBuffer::getInstance()->paintIcon(iconName, window.getWindowsPos().iX + ICON_OFFSET, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - ih)/2);
+				CFrameBuffer::getInstance()->paintIcon(iconName, window.getWindowsPos().iX + (window.getWindowsPos().iWidth - iw)/2, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - ih)/2);
+			}
 		}
-
-		// caption
-		if(!caption.empty())
+		else
 		{
+			// iconName
+			if(!iconName.empty())
+			{
+				CFrameBuffer::getInstance()->getIconSize(iconName.c_str(), &iw, &ih);
+
+				CFrameBuffer::getInstance()->paintIcon(iconName, window.getWindowsPos().iX + iconOffset, window.getWindowsPos().iY + (window.getWindowsPos().iHeight - ih)/2);
+			}		
+
+			// caption
 			int c_w = captionFont->getRenderWidth(caption);
 
 			captionFont->RenderString(window.getWindowsPos().iX + iconOffset + iw + iconOffset, window.getWindowsPos().iY + optionFont->getHeight() + (window.getWindowsPos().iHeight - optionFont->getHeight())/2, window.getWindowsPos().iWidth - iconOffset - iw - iconOffset, caption.c_str(), color, 0, true); //
@@ -290,7 +300,7 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 
 		textBox->disablePaintBackground();
 		textBox->setMode(AUTO_WIDTH);
-		textBox->setFontText(optionFont);
+		textBox->setFontText(captionFont);
 
 		// caption
 		if(!caption.empty())
@@ -335,7 +345,7 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 	}
 	else if ( mode == FRAME_HEAD)
 	{
-		CHeaders headers(/*window.getWindowsPos().iX, window.getWindowsPos().iY, window.getWindowsPos().iWidth, window.getWindowsPos().iHeight*/window.getWindowsPos(), caption.c_str(), iconName.c_str());
+		CHeaders headers(window.getWindowsPos(), caption.c_str(), iconName.c_str());
 
 		headers.setColor(headColor);
 		headers.setCorner(headRadius, headCorner);
