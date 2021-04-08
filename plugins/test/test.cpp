@@ -1253,6 +1253,7 @@ void CTestMenu::testFireTV()
 	homeFrame->setPosition(box.iX + 10, box.iY + 40, h_w + 10, h_h);
 	homeFrame->setTitle("Home");
 	homeFrame->disablePaintFrame();
+	homeFrame->setActionKey(this, "home");
 
 	testWidget->addFrame(homeFrame);
 
@@ -1264,6 +1265,7 @@ void CTestMenu::testFireTV()
 	setupFrame->setPosition(box.iX + 10 + 5 + h_w + 10, box.iY + 40, s_w + 10, s_h);
 	setupFrame->setTitle("Setup");
 	setupFrame->disablePaintFrame();
+	setupFrame->setActionKey(this, "setup");
 
 	testWidget->addFrame(setupFrame);
 
@@ -1275,6 +1277,7 @@ void CTestMenu::testFireTV()
 	helpFrame->setPosition(box.iX + 10 + 5 + h_w + 10 + s_w + 10, box.iY + 40, i_w + 4, i_h + 4);
 	helpFrame->setIconName(NEUTRINO_ICON_INFO);
 	//helpFrame->disablePaintFrame();
+	helpFrame->setActionKey(this, "help");
 
 	testWidget->addFrame(helpFrame);
 
@@ -6653,6 +6656,26 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	else if(actionKey == "firetv")
 	{
 		testFireTV();
+
+		return RETURN_REPAINT;
+	}
+	else if(actionKey == "home")
+	{
+		return RETURN_REPAINT;
+	}
+	else if(actionKey == "setup")
+	{
+		CAudioPlayerSettings * audioPlayerSettingsMenu = new CAudioPlayerSettings();
+
+		audioPlayerSettingsMenu->exec(this, "");
+		delete audioPlayerSettingsMenu;
+		audioPlayerSettingsMenu = NULL;	
+
+		return RETURN_REPAINT;
+	}
+	else if(actionKey == "help")
+	{
+		testCHelpBox();
 
 		return RETURN_REPAINT;
 	}
