@@ -779,12 +779,14 @@ void CWidget::onYellowKeyPressed()
 				if(item->isSelectable() && item->hasItem())
 				{
 					items[selected]->setOutFocus();
+					items[selected]->paint();
 
 					selected = pos;
 
 					item->setOutFocus(false);
+					item->paint();
 
-					paint();
+					//paint();
 
 					break;
 				}
