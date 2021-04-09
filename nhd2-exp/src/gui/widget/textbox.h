@@ -159,7 +159,7 @@ class CTextBox : public CWidgetItem
 		void setBigFonts(bool bigfont = false);
 
 		//
-		bool isSelectable(void) const {return true;}
+		bool isSelectable(void){return true;}
 
 		virtual void onUpKeyPressed();
 		virtual void onDownKeyPressed();

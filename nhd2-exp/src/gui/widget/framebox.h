@@ -202,7 +202,7 @@ class CFrameBox : public CWidgetItem
 		void disablePaintFrame(void){paintFrame = false;};
 
 		//
-		bool isSelectable(void) const {return true;};
+		bool isSelectable(void);
 
 		virtual int getFrameBoxMode(){return frameMode;};
 

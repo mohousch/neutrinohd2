@@ -1438,7 +1438,7 @@ usermenu.item_bar ---- Border ----
 usermenu.item_epg_misc EPG functions
 usermenu.item_none 
 usermenu.item_vtxt Videotext
-usermenu.item_plugins Plugins Browser
+usermenu.item_plugins Plugins
 usermenu.name Name
 video_mode_ok Is this video mode working ok ?
 videomenu.analog_hd_rgb_cinch RGB on cinch (HD)

@@ -172,7 +172,7 @@ class CListFrame : public CWidgetItem
 		inline	void	movePosition(int x, int y)	{itemBox.iX = x; itemBox.iY = y;};
 
 		//
-		bool isSelectable(void) const {return true;}
+		bool isSelectable(void){return true;}
 		bool hasItem(){if (m_pLines != NULL) return true;};
 
 		//

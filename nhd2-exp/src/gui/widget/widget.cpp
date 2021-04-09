@@ -30,9 +30,8 @@
 #include <neutrino.h>
 
 #include <driver/rcinput.h>
-
 #include <gui/widget/widget.h>
-
+#include <gui/widget/framebox.h>
 #include <system/debug.h>
 
 
@@ -45,7 +44,7 @@ CWidget::CWidget(const int x, const int y, const int dx, const int dy)
 	mainFrameBox.iWidth = dx;
 	mainFrameBox.iHeight = dy;
 
-	mode = MULTI_WIDGET_MODE;
+	//mode = MULTI_WIDGET_MODE;
 
 	savescreen = false;
 	background = NULL;
@@ -69,7 +68,7 @@ CWidget::CWidget(CBox *position)
 
 	mainFrameBox = *position;
 
-	mode = MULTI_WIDGET_MODE;
+	//mode = MULTI_WIDGET_MODE;
 
 	savescreen = false;
 	background = NULL;
@@ -92,7 +91,7 @@ CWidget::~CWidget()
 	dprintf(DEBUG_NORMAL, "CWidget:: del\n");
 
 	items.clear();
-	frames.clear();
+	//frames.clear();
 }
 
 void CWidget::addItem(CWidgetItem *widgetItem, const bool defaultselected)
@@ -103,6 +102,7 @@ void CWidget::addItem(CWidgetItem *widgetItem, const bool defaultselected)
 	items.push_back(widgetItem);
 }
 
+/*
 void CWidget::addFrame(CFrame *frame, const bool defaultselected)
 {
 	if (defaultselected)
@@ -110,29 +110,36 @@ void CWidget::addFrame(CFrame *frame, const bool defaultselected)
 	
 	frames.push_back(frame);
 }
+*/
 
 bool CWidget::hasItem()
 {
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
 		return !items.empty();
+/*
 	else if (mode == SINGLE_WIDGET_MODE)
 		return !frames.empty();
+*/
 }
 
 int CWidget::getItemsCount()
 {
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
 		return items.size();
+/*
 	else if (mode == SINGLE_WIDGET_MODE)
 		return frames.size();
+*/
 }
 
 void CWidget::clearItems(void)
 {
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
 		return items.clear();
+/*
 	else if (mode == SINGLE_WIDGET_MODE)
 		return frames.clear();
+*/
 }
 
 void CWidget::initFrames()
@@ -160,7 +167,7 @@ void CWidget::paintItems()
 	dprintf(DEBUG_NORMAL, "CWidget:: paintItems\n");
 
 	// multi
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
 	{
 		for (int i = 0; i < items.size(); i++)
 		{
@@ -172,6 +179,7 @@ void CWidget::paintItems()
 			items[i]->paint();
 		}
 	}
+/*
 	else if (mode == SINGLE_WIDGET_MODE)
 	{
 		// single
@@ -188,6 +196,7 @@ void CWidget::paintItems()
 			frame->paint( selected == ((signed int) count));
 		}
 	}
+*/
 }
 
 void CWidget::paint()
@@ -245,7 +254,7 @@ void CWidget::hide()
 {
 	dprintf(DEBUG_NORMAL, "CWidget:: hide\n");
 
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
 	{
 		if (hasItem())
 		{
@@ -289,7 +298,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 	initFrames();
 
 	// set in focus
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
 	{
 		if (hasItem() && items.size() > 1)
 		{
@@ -369,7 +378,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 			if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 			{
 				// update time
-				if (mode == MULTI_WIDGET_MODE)
+				//if (mode == MULTI_WIDGET_MODE)
 				{
 					for (unsigned int i = 0; i < items.size(); i++)
 					{
@@ -380,17 +389,19 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 						}
 					}
 				}
+/*
 				else
 				{
 					for (unsigned int i = 0; i < frames.size(); i++)
 					{
-						if( (frames[i]->mode == FRAME_HEAD) /*&& (items[i]->paintDate)*/)
+						if( (frames[i]->mode == FRAME_HEAD) )
 						{
 							frames[i]->paint();
 							break;
 						}
 					}
 				}
+*/
 			} 
 
 			switch (msg) 
@@ -690,33 +701,33 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 // events
 void CWidget::onOKKeyPressed()
 {
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
+	if(hasItem() && selected >= 0)
 	{
-		if(hasItem() && selected >= 0)
+		//if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) || (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) || (/*!items[selected]->hasItem() &&*/ items[selected]->isSelectable()))
+		if (items[selected]->hasItem() && items[selected]->isSelectable())
 		{
-			if((items[selected]->itemType == WIDGET_ITEM_LISTBOX) || (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) || (!items[selected]->hasItem() && items[selected]->isSelectable()))
+			actionKey = items[selected]->getActionKey();
+
+			int rv = items[selected]->oKKeyPressed(this);
+
+			//FIXME:review this
+			switch ( rv ) 
 			{
-				actionKey = items[selected]->getActionKey();
-
-				int rv = items[selected]->oKKeyPressed(this);
-
-				//FIXME:review this
-				switch ( rv ) 
-				{
-					case RETURN_EXIT_ALL:
-						retval = RETURN_EXIT_ALL; //fall through
-					case RETURN_EXIT:
-						msg = RC_timeout;
-						break;
-					case RETURN_REPAINT:
-						hide();
-						initFrames();
-						paint();
-						break;
-				}
+				case RETURN_EXIT_ALL:
+					retval = RETURN_EXIT_ALL; //fall through
+				case RETURN_EXIT:
+					msg = RC_timeout;
+					break;
+				case RETURN_REPAINT:
+					hide();
+					initFrames();
+					paint();
+					break;
 			}
 		}
 	}
+/*
 	else if (mode == SINGLE_WIDGET_MODE)
 	{
 		if (hasItem() && selected >= 0 && frames[selected]->isSelectable())
@@ -742,6 +753,7 @@ void CWidget::onOKKeyPressed()
 			}
 		}
 	}
+*/
 }
 
 void CWidget::onHomeKeyPressed()
@@ -750,14 +762,12 @@ void CWidget::onHomeKeyPressed()
 	dprintf(DEBUG_NORMAL, "CWidget::exec: exit_pressed\n");
 	msg = RC_timeout;
 	
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
+	if (hasItem())
 	{
-		if (hasItem())
+		for (unsigned int count = 0; count < items.size(); count++) 
 		{
-			for (unsigned int count = 0; count < items.size(); count++) 
-			{
-				items[count]->onHomeKeyPressed();
-			}
+			items[count]->onHomeKeyPressed();
 		}
 	}
 
@@ -766,30 +776,26 @@ void CWidget::onHomeKeyPressed()
 
 void CWidget::onYellowKeyPressed()
 {
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
+	if(hasItem())
 	{
-		if(hasItem())
+		for (unsigned int count = 1; count < items.size(); count++) 
 		{
-			for (unsigned int count = 1; count < items.size(); count++) 
+			pos = (selected + count)%items.size();
+
+			CWidgetItem * item = items[pos];
+
+			if(item->isSelectable() && item->hasItem())
 			{
-				pos = (selected + count)%items.size();
+				items[selected]->setOutFocus();
+				items[selected]->paint();
 
-				CWidgetItem * item = items[pos];
+				selected = pos;
 
-				if(item->isSelectable() && item->hasItem())
-				{
-					items[selected]->setOutFocus();
-					items[selected]->paint();
+				item->setOutFocus(false);
+				item->paint();
 
-					selected = pos;
-
-					item->setOutFocus(false);
-					item->paint();
-
-					//paint();
-
-					break;
-				}
+				break;
 			}
 		}
 	}
@@ -797,16 +803,15 @@ void CWidget::onYellowKeyPressed()
 
 void CWidget::onUpKeyPressed()
 {
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
+	if(hasItem() && selected >= 0)
 	{
-		if(hasItem() && selected >= 0)
-		{
-			if( (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ((items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL)) )
-				onYellowKeyPressed();
-			else
-				items[selected]->onUpKeyPressed();
-		}
+		if( (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ((items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL)) )
+			onYellowKeyPressed();
+		else
+			items[selected]->onUpKeyPressed();
 	}
+/*
 	else
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
@@ -828,22 +833,22 @@ void CWidget::onUpKeyPressed()
 			}
 		}
 	}
+*/
 }
 
 void CWidget::onDownKeyPressed()
 {
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
+	if(hasItem() && selected >= 0)
 	{
-		if(hasItem() && selected >= 0)
+		if( (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ( (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL)) )
+			onYellowKeyPressed();
+		else
 		{
-			if( (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ( (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL)) )
-				onYellowKeyPressed();
-			else
-			{
-				items[selected]->onDownKeyPressed();
-			}
+			items[selected]->onDownKeyPressed();
 		}
 	}
+/*
 	else
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
@@ -863,17 +868,17 @@ void CWidget::onDownKeyPressed()
 			}
 		}
 	}
+*/
 }
 
 void CWidget::onRightKeyPressed()
 {
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
+	if(hasItem() && selected >= 0)
 	{
-		if(hasItem() && selected >= 0)
-		{
-			items[selected]->onRightKeyPressed();
-		}
+		items[selected]->onRightKeyPressed();
 	}
+/*
 	else
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
@@ -893,17 +898,17 @@ void CWidget::onRightKeyPressed()
 			}
 		}
 	}
+*/
 }
 
 void CWidget::onLeftKeyPressed()
 {
-	if (mode == MULTI_WIDGET_MODE)
+	//if (mode == MULTI_WIDGET_MODE)
+	if(hasItem() && selected >= 0)
 	{
-		if(hasItem() && selected >= 0)
-		{
-			items[selected]->onLeftKeyPressed();
-		}
+		items[selected]->onLeftKeyPressed();
 	}
+/*
 	else
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
@@ -925,25 +930,22 @@ void CWidget::onLeftKeyPressed()
 			}
 		}
 	}
+*/
 }
 
 void CWidget::onPageUpKeyPressed()
 {
+	if(hasItem() && selected >= 0)
 	{
-		if(hasItem() && selected >= 0)
-		{
-			items[selected]->onPageUpKeyPressed();
-		}
+		items[selected]->onPageUpKeyPressed();
 	}
 }
 
 void CWidget::onPageDownKeyPressed()
 {
+	if(hasItem() && selected >= 0)
 	{
-		if(hasItem() && selected >= 0)
-		{
-			items[selected]->onPageDownKeyPressed();
-		}
+		items[selected]->onPageDownKeyPressed();
 	}
 }
 

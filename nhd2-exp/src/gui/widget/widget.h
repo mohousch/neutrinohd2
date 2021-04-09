@@ -26,7 +26,7 @@
 #endif
 
 #include <gui/widget/widget_helpers.h>
-#include <gui/widget/framebox.h>
+//#include <gui/widget/framebox.h>
 
 
 //
@@ -53,11 +53,13 @@ class CMenuTarget
 		//virtual std::string getName(void){std::string ret = ""; return ret;};
 };
 
+/*
 enum 
 {
 	SINGLE_WIDGET_MODE = 0,
 	MULTI_WIDGET_MODE
 };
+*/
 
 class CWidget : public CMenuTarget
 {
@@ -65,10 +67,10 @@ class CWidget : public CMenuTarget
 		CFrameBuffer *frameBuffer;
 		CBox mainFrameBox;
 
-		int mode;
+		//int mode;
 
 		std::vector<CWidgetItem*> items;
-		std::vector<CFrame*> frames;
+		//std::vector<CFrame*> frames;
 
 		bool paintMainFrame;
 
@@ -106,7 +108,7 @@ class CWidget : public CMenuTarget
 		CWidget(CBox *position);
 		virtual ~CWidget();
 
-		void setMode(int m){mode = m;};
+		//void setMode(int m){mode = m;};
 
 		virtual void initFrames();
 		virtual void paintItems();
@@ -117,7 +119,7 @@ class CWidget : public CMenuTarget
 		virtual int exec(CMenuTarget *parent, const std::string &actionKey);
 
 		virtual void addItem(CWidgetItem *widgetItem, const bool defaultselected = false); // multi
-		virtual void addFrame(CFrame *frame, const bool defaultselected = false); // single mode enable only frames
+		//virtual void addFrame(CFrame *frame, const bool defaultselected = false); // single mode enable only frames
 		bool hasItem();
 		int getItemsCount();
 		virtual void clearItems(void);

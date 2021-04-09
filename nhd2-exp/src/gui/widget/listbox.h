@@ -640,7 +640,7 @@ class ClistBox : public CWidgetItem
 		void changeWidgetType(int cnt = 0);
 
 		//
-		bool isSelectable(void) const {return true;};
+		bool isSelectable(void){return true;};
 
 		int oKKeyPressed(CMenuTarget *parent);
 

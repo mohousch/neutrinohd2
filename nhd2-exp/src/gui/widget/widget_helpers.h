@@ -44,7 +44,7 @@ typedef enum {
 	WIDGET_ITEM_WINDOW,
 	WIDGET_ITEM_PIG,
 	WIDGET_ITEM_GRID,
-	WIDGET_ITEM_FRAMEITEM
+	WIDGET_ITEM_PROGRESSWINDOW
 }widget_item_t;
 
 //// helpers
@@ -187,7 +187,7 @@ class CWidgetItem
 		CWidgetItem(){inFocus = true;};
 		virtual ~CWidgetItem(){};
 
-		virtual bool isSelectable(void) const {return false;}
+		virtual bool isSelectable(void){return false;}
 		virtual bool hasItem(){return false;};
 
 		virtual void paint(){};

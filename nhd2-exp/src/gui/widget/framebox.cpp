@@ -557,6 +557,20 @@ void CFrameBox::hide()
 		cFrameWindow.hide();
 }
 
+bool CFrameBox::isSelectable(void)
+{
+	if (hasItem())
+	{
+		for (int i = 0; i < frames.size(); i++)
+		{
+			if (frames[i]->isSelectable())
+				return true;
+		}
+	}
+
+	return false;
+}
+
 void CFrameBox::swipRight()
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::swipRight:\n");

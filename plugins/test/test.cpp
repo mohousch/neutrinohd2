@@ -1098,7 +1098,6 @@ void CTestMenu::testSingleWidget()
 	testWidget = new CWidget(&box);
 
 	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
-	//testWidget->setMode(MULTI_WIDGET_MODE);
 	testWidget->enablePaintMainFrame();
 
 	CFrameBox *testFrame = new CFrameBox(&box);
@@ -1250,12 +1249,12 @@ void CTestMenu::testFireTV()
 	testWidget = new CWidget(&box);
 
 	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
-	//testWidget->setMode(SINGLE_WIDGET_MODE);
 	testWidget->enablePaintMainFrame();
 
-	CFrameBox *testFrameBox = new CFrameBox(&box);
-	testFrameBox->setMode(FRAMEBOX_MODE_RANDOM);
-	testFrameBox->disablePaintFrame();
+	// menuFrameBox
+	CFrameBox *menuFrameBox = new CFrameBox(box.iX, box.iY, box.iWidth, 40 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10);
+	menuFrameBox->setMode(FRAMEBOX_MODE_RANDOM);
+	menuFrameBox->disablePaintFrame();
 
 	loadMoviePlaylist();
 
@@ -1269,7 +1268,7 @@ void CTestMenu::testFireTV()
 	homeFrame->disablePaintFrame();
 	homeFrame->setActionKey(this, "home");
 
-	testFrameBox->addFrame(homeFrame);
+	menuFrameBox->addFrame(homeFrame);
 
 	// setup
 	CFrame *setupFrame = new CFrame(FRAME_TEXT_LINE);
@@ -1281,7 +1280,7 @@ void CTestMenu::testFireTV()
 	setupFrame->disablePaintFrame();
 	setupFrame->setActionKey(this, "setup");
 
-	testFrameBox->addFrame(setupFrame);
+	menuFrameBox->addFrame(setupFrame);
 
 	// help
 	int i_w = 0;
@@ -1293,8 +1292,9 @@ void CTestMenu::testFireTV()
 	//helpFrame->disablePaintFrame();
 	helpFrame->setActionKey(this, "help");
 
-	testFrameBox->addFrame(helpFrame);
+	menuFrameBox->addFrame(helpFrame);
 
+	// fireTV1FrameBox
 	fireTV1Box = new CFrameBox();
 	fireTV1Box->setMode(FRAMEBOX_MODE_RANDOM);
 	fireTV1Box->setPosition(box.iX + 10, box.iY + 40 + s_h + 20, box.iWidth, 280);
@@ -1321,6 +1321,11 @@ void CTestMenu::testFireTV()
 	fireTV1Box->addFrame(artFrame);
 
 	// other
+	CFrameBox *otherTVBox = new CFrameBox();
+	otherTVBox->setMode(FRAMEBOX_MODE_RANDOM);
+	//otherTVBox->setPosition(box.iX, box.iY + 40 + 10 + 300 + 40, box.iWidth, 280);
+	otherTVBox->setOutFocus();
+	
 	CFrame *otherFrame = new CFrame(FRAME_TEXT_LINE_NOTSELECTABLE);
 	otherFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]);
 	int o_w = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth("andere Filme");
@@ -1329,8 +1334,9 @@ void CTestMenu::testFireTV()
 	otherFrame->setTitle("andere Filme");
 	otherFrame->disablePaintFrame();
 
-	testFrameBox->addFrame(otherFrame);
+	otherTVBox->addFrame(otherFrame);
 
+	//fireTV1FrameBox
 	fireTVBox = new CFrameBox();
 	fireTVBox->setMode(FRAMEBOX_MODE_HORIZONTAL);
 	fireTVBox->setPosition(box.iX, box.iY + 40 + 10 + 300 + 40, box.iWidth, 280);
@@ -1390,8 +1396,9 @@ void CTestMenu::testFireTV()
 	fireTVBox->addFrame(art6Frame);
 */
 
-	testWidget->addItem(testFrameBox);
+	testWidget->addItem(menuFrameBox);
 	testWidget->addItem(fireTV1Box);
+	testWidget->addItem(otherTVBox);
 	testWidget->addItem(fireTVBox);
 	testWidget->exec(NULL, "");
 }
