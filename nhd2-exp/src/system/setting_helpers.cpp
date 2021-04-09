@@ -283,7 +283,7 @@ int CUserMenuMenu::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
         if(parent)
                 parent->hide();
 
-        ClistBoxWidget menu(local, NEUTRINO_ICON_KEYBINDING);
+        CMenuWidget menu(local, NEUTRINO_ICON_KEYBINDING);
 
 	menu.setMode(MODE_SETUP);
 	menu.enableShrinkMenu();

@@ -62,8 +62,8 @@ extern CPlugins * g_PluginList;    // defined in neutrino.cpp
 //
 //static CTextBox * textBox = NULL;
 
-/// ClistBoxWidget
-ClistBoxWidget::ClistBoxWidget()
+/// CMenuWidget
+CMenuWidget::CMenuWidget()
 {
         nameString = g_Locale->getText(NONEXISTANT_LOCALE);
 	name = NONEXISTANT_LOCALE;
@@ -76,7 +76,7 @@ ClistBoxWidget::ClistBoxWidget()
 	Init("", MENU_WIDTH, MENU_HEIGHT);
 }
 
-ClistBoxWidget::ClistBoxWidget(const neutrino_locale_t Name, const std::string & Icon, const int mwidth, const int mheight)
+CMenuWidget::CMenuWidget(const neutrino_locale_t Name, const std::string & Icon, const int mwidth, const int mheight)
 {
 	name = Name;
         nameString = g_Locale->getText(NONEXISTANT_LOCALE);
@@ -89,7 +89,7 @@ ClistBoxWidget::ClistBoxWidget(const neutrino_locale_t Name, const std::string &
 	Init(Icon, mwidth, mheight);
 }
 
-ClistBoxWidget::ClistBoxWidget(const char* Name, const std::string & Icon, const int mwidth, const int mheight)
+CMenuWidget::CMenuWidget(const char* Name, const std::string & Icon, const int mwidth, const int mheight)
 {
 	name = NONEXISTANT_LOCALE;
         nameString = Name;
@@ -102,7 +102,7 @@ ClistBoxWidget::ClistBoxWidget(const char* Name, const std::string & Icon, const
 	Init(Icon, mwidth, mheight);
 }
 
-void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int mheight)
+void CMenuWidget::Init(const std::string &Icon, const int mwidth, const int mheight)
 {
         frameBuffer = CFrameBuffer::getInstance();
         iconfile = Icon;
@@ -179,21 +179,21 @@ void ClistBoxWidget::Init(const std::string &Icon, const int mwidth, const int m
 	textBox = NULL;
 }
 
-void ClistBoxWidget::move(int xoff, int yoff)
+void CMenuWidget::move(int xoff, int yoff)
 {
 	offx = xoff;
 	offy = yoff;
 }
 
-ClistBoxWidget::~ClistBoxWidget()
+CMenuWidget::~CMenuWidget()
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget:: del (%s)\n", l_name);
+	dprintf(DEBUG_NORMAL, "CMenuWidget:: del (%s)\n", l_name);
 
 	items.clear();
 	page_start.clear();
 }
 
-void ClistBoxWidget::addItem(CMenuItem *menuItem, const bool defaultselected)
+void CMenuWidget::addItem(CMenuItem *menuItem, const bool defaultselected)
 {
 	if (defaultselected)
 		selected = items.size();
@@ -201,17 +201,17 @@ void ClistBoxWidget::addItem(CMenuItem *menuItem, const bool defaultselected)
 	items.push_back(menuItem);
 }
 
-void ClistBoxWidget::removeItem(long pos)
+void CMenuWidget::removeItem(long pos)
 {
 	items.erase(items.begin() + pos); 
 }
 
-bool ClistBoxWidget::hasItem()
+bool CMenuWidget::hasItem()
 {
 	return !items.empty();
 }
 
-void ClistBoxWidget::initFrames()
+void CMenuWidget::initFrames()
 {
 	// widget type
 	if(widgetChange && widgetMode == MODE_MENU)
@@ -422,7 +422,7 @@ void ClistBoxWidget::initFrames()
 	}
 }
 
-void ClistBoxWidget::paintHead()
+void CMenuWidget::paintHead()
 {
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
@@ -511,7 +511,7 @@ void ClistBoxWidget::paintHead()
 	}
 }
 
-void ClistBoxWidget::paintFoot()
+void CMenuWidget::paintFoot()
 {
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
@@ -559,9 +559,9 @@ void ClistBoxWidget::paintFoot()
 	}
 }
 
-void ClistBoxWidget::paint()
+void CMenuWidget::paint()
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget::paint: (%s)\n", l_name);
+	dprintf(DEBUG_NORMAL, "CMenuWidget::paint: (%s)\n", l_name);
 
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8 );
 
@@ -585,7 +585,7 @@ void ClistBoxWidget::paint()
 }
 
 // paint items
-void ClistBoxWidget::paintItems()
+void CMenuWidget::paintItems()
 {
 	if(widgetType == WIDGET_TYPE_FRAME)
 	{
@@ -736,7 +736,7 @@ void ClistBoxWidget::paintItems()
 	}
 }
 
-void ClistBoxWidget::paintItemInfo(int pos)
+void CMenuWidget::paintItemInfo(int pos)
 {
 	if(widgetType == WIDGET_TYPE_STANDARD)
 	{
@@ -1042,7 +1042,7 @@ void ClistBoxWidget::paintItemInfo(int pos)
 	}
 }
 
-void ClistBoxWidget::hideItemInfo()
+void CMenuWidget::hideItemInfo()
 {
 	if((widgetType == WIDGET_TYPE_STANDARD || widgetType == WIDGET_TYPE_CLASSIC) && paintFootInfo)
 	{
@@ -1050,7 +1050,7 @@ void ClistBoxWidget::hideItemInfo()
 	}  
 }
 
-void ClistBoxWidget::setFooterButtons(const struct button_label *_fbutton_labels, const int _fbutton_count, const int _fbutton_width)
+void CMenuWidget::setFooterButtons(const struct button_label *_fbutton_labels, const int _fbutton_count, const int _fbutton_width)
 {
 	if (_fbutton_count)
 	{
@@ -1064,7 +1064,7 @@ void ClistBoxWidget::setFooterButtons(const struct button_label *_fbutton_labels
 	fbutton_width = (_fbutton_width == 0)? width : _fbutton_width;
 }
 
-void ClistBoxWidget::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
+void CMenuWidget::setHeaderButtons(const struct button_label* _hbutton_labels, const int _hbutton_count)
 {
 	if (_hbutton_count)
 	{
@@ -1077,13 +1077,13 @@ void ClistBoxWidget::setHeaderButtons(const struct button_label* _hbutton_labels
 	hbutton_count = hbutton_labels.size();
 }
 
-void ClistBoxWidget::addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string & action)
+void CMenuWidget::addKey(neutrino_msg_t key, CMenuTarget *menue, const std::string & action)
 {
 	keyActionMap[key].menue = menue;
 	keyActionMap[key].action = action;
 }
 
-void ClistBoxWidget::saveScreen()
+void CMenuWidget::saveScreen()
 {
 	if(!savescreen)
 		return;
@@ -1102,7 +1102,7 @@ void ClistBoxWidget::saveScreen()
 	}
 }
 
-void ClistBoxWidget::restoreScreen()
+void CMenuWidget::restoreScreen()
 {
 	if(background) 
 	{
@@ -1111,7 +1111,7 @@ void ClistBoxWidget::restoreScreen()
 	}
 }
 
-void ClistBoxWidget::enableSaveScreen()
+void CMenuWidget::enableSaveScreen()
 {
 	savescreen = true;
 	
@@ -1122,9 +1122,9 @@ void ClistBoxWidget::enableSaveScreen()
 	}
 }
 
-void ClistBoxWidget::hide()
+void CMenuWidget::hide()
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget::hide: (%s)\n", l_name);
+	dprintf(DEBUG_NORMAL, "CMenuWidget::hide: (%s)\n", l_name);
 
 	if( savescreen && background)
 		restoreScreen();
@@ -1142,7 +1142,7 @@ void ClistBoxWidget::hide()
 	}
 }
 
-void ClistBoxWidget::integratePlugins(CPlugins::i_type_t integration, const unsigned int shortcut, bool enabled)
+void CMenuWidget::integratePlugins(CPlugins::i_type_t integration, const unsigned int shortcut, bool enabled)
 {
 	unsigned int number_of_plugins = (unsigned int) g_PluginList->getNumberOfPlugins();
 
@@ -1183,9 +1183,9 @@ void ClistBoxWidget::integratePlugins(CPlugins::i_type_t integration, const unsi
 	}
 }
 
-int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
+int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 {
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec: (%s)\n", l_name);
+	dprintf(DEBUG_NORMAL, "CMenuWidget::exec: (%s)\n", l_name);
 
 	int retval = RETURN_REPAINT;
 
@@ -1212,7 +1212,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 		
 		int handled = false;
 
-		dprintf(DEBUG_DEBUG, "ClistBoxWidget::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
+		dprintf(DEBUG_DEBUG, "CMenuWidget::exec: msg:%s\n", CRCInput::getSpecialKeyName(msg));
 
 		if ( msg <= RC_MaxRC ) 
 		{
@@ -1733,7 +1733,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 					break;
 				//
 				case (RC_setup):
-					dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec: (%s) changeWidgetType\n", l_name);
+					dprintf(DEBUG_NORMAL, "CMenuWidget::exec: (%s) changeWidgetType\n", l_name);
 
 					if(widgetMode == MODE_MENU)
 					{
@@ -1783,7 +1783,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 
 				case (RC_home):
 					exit_pressed = true;
-					dprintf(DEBUG_NORMAL, "ClistBoxWidget::exec: exit_pressed\n");
+					dprintf(DEBUG_NORMAL, "CMenuWidget::exec: exit_pressed\n");
 					msg = RC_timeout;
 					selected = -1; 
 					break;
@@ -1810,7 +1810,7 @@ int ClistBoxWidget::exec(CMenuTarget* parent, const std::string&)
 	}
 	while ( msg != RC_timeout );
 
-	dprintf(DEBUG_NORMAL, "ClistBoxWidget: (%s) retval: (%d) selected:%d\n", l_name, retval, selected);
+	dprintf(DEBUG_NORMAL, "CMenuWidget: (%s) retval: (%d) selected:%d\n", l_name, retval, selected);
 	
 	hide();	
 

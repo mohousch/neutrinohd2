@@ -188,7 +188,7 @@ void CRemoteControlSettings::showMenu()
 	
 	int shortcutkeysettings = 1;
 	
-	ClistBoxWidget remoteControlSettings(LOCALE_MAINSETTINGS_KEYBINDING, NEUTRINO_ICON_KEYBINDING );
+	CMenuWidget remoteControlSettings(LOCALE_MAINSETTINGS_KEYBINDING, NEUTRINO_ICON_KEYBINDING );
 
 	remoteControlSettings.setMode(MODE_SETUP);
 	remoteControlSettings.enableShrinkMenu();
@@ -333,7 +333,7 @@ void CKeysBindingSettings::showMenu()
 		keychooser[i] = new CKeyChooser(keyvalue_p[i], keydescription_head[i], NEUTRINO_ICON_SETTINGS);
 	
 	// keybinding menu
-	ClistBoxWidget bindSettings(LOCALE_KEYBINDINGMENU_HEAD, NEUTRINO_ICON_KEYBINDING );
+	CMenuWidget bindSettings(LOCALE_KEYBINDINGMENU_HEAD, NEUTRINO_ICON_KEYBINDING );
 
 	bindSettings.setMode(MODE_SETUP);
 	bindSettings.enableShrinkMenu();

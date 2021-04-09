@@ -188,7 +188,7 @@ int CNFSMountGui::exec( CMenuTarget *parent, const std::string &actionKey )
 
 int CNFSMountGui::menu()
 {
-	ClistBoxWidget mountMenuW(LOCALE_NFS_MOUNT, NEUTRINO_ICON_NETWORK, 720);
+	CMenuWidget mountMenuW(LOCALE_NFS_MOUNT, NEUTRINO_ICON_NETWORK, 720);
 
 	mountMenuW.setMode(MODE_MENU);
 	mountMenuW.enableShrinkMenu();
@@ -277,7 +277,7 @@ int CNFSMountGui::menuEntry(int nr)
 	   (m_lufs_sup != CFSMounter::FS_UNSUPPORTED && *type != (int)CFSMounter::LUFS) ||
 	   (m_smbfs_sup != CFSMounter::FS_UNSUPPORTED && *type != (int)CFSMounter::SMBFS);
 
-	ClistBoxWidget mountMenuEntryW(LOCALE_NFS_MOUNT, NEUTRINO_ICON_NETWORK);
+	CMenuWidget mountMenuEntryW(LOCALE_NFS_MOUNT, NEUTRINO_ICON_NETWORK);
 
 	mountMenuEntryW.setMode(MODE_SETUP);
 	mountMenuEntryW.enableShrinkMenu();
@@ -361,7 +361,7 @@ int CNFSUmountGui::menu()
 {
 	int count = 0;
 	CFSMounter::MountInfos infos;
-	ClistBoxWidget umountMenu(LOCALE_NFS_UMOUNT, NEUTRINO_ICON_NETWORK);
+	CMenuWidget umountMenu(LOCALE_NFS_UMOUNT, NEUTRINO_ICON_NETWORK);
 
 	umountMenu.setMode(MODE_MENU);
 	umountMenu.enableShrinkMenu();
@@ -407,7 +407,7 @@ int CNFSSmallMenu::exec( CMenuTarget* parent, const std::string & actionKey )
 
 	if (actionKey.empty())
 	{
-		ClistBoxWidget menu(LOCALE_NFSMENU_HEAD, NEUTRINO_ICON_NETWORK);
+		CMenuWidget menu(LOCALE_NFSMENU_HEAD, NEUTRINO_ICON_NETWORK);
 
 		menu.setMode(MODE_MENU);
 		menu.enableShrinkMenu();

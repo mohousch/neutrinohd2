@@ -94,7 +94,7 @@ void CParentalLockSettings::showMenu()
 	
 	int shortcutLock = 1;
 	
-	ClistBoxWidget parentallockSettings(LOCALE_PARENTALLOCK_PARENTALLOCK, NEUTRINO_ICON_LOCK);
+	CMenuWidget parentallockSettings(LOCALE_PARENTALLOCK_PARENTALLOCK, NEUTRINO_ICON_LOCK);
 
 	parentallockSettings.setMode(MODE_SETUP);
 	parentallockSettings.enableShrinkMenu();

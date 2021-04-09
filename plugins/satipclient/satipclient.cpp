@@ -161,7 +161,7 @@ void CSatIPClient::showMenu()
 	ReadSettings();
 	
 	// create menu
-	satIPClientMenu = new ClistBoxWidget("SatIP Client", NEUTRINO_ICON_SETTINGS);
+	satIPClientMenu = new CMenuWidget("SatIP Client", NEUTRINO_ICON_SETTINGS);
 
 	satIPClientMenu->setMode(MODE_SETUP);
 	satIPClientMenu->enableShrinkMenu();

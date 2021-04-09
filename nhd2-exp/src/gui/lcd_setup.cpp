@@ -125,7 +125,7 @@ void CLCDSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CLCDSettings::showMenu:\n");
 	
-	ClistBoxWidget lcdSettings(LOCALE_LCDMENU_HEAD, NEUTRINO_ICON_LCD );
+	CMenuWidget lcdSettings(LOCALE_LCDMENU_HEAD, NEUTRINO_ICON_LCD );
 
 	lcdSettings.setMode(MODE_SETUP);
 	lcdSettings.enableShrinkMenu();

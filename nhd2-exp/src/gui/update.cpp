@@ -168,7 +168,7 @@ bool CFlashUpdate::selectHttpImage(void)
 	progressWindow->showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_GETINFOFILE)); // UTF-8
 
 	// NOTE: remember me : i dont like this menu GUI :-(
-	ClistBoxWidget SelectionWidget(LOCALE_FLASHUPDATE_SELECTIMAGE, NEUTRINO_ICON_UPDATE , MENU_WIDTH + 50);
+	CMenuWidget SelectionWidget(LOCALE_FLASHUPDATE_SELECTIMAGE, NEUTRINO_ICON_UPDATE , MENU_WIDTH + 50);
 
 	SelectionWidget.setMode(MODE_SETUP);
 	SelectionWidget.enableShrinkMenu();
@@ -651,7 +651,7 @@ void CFlashExpert::writemtd(const std::string & filename, int mtdNumber)
 void CFlashExpert::showMTDSelector(const std::string & actionkey)
 {
 	//mtd-selector erzeugen
-	ClistBoxWidget * mtdselector = new ClistBoxWidget(LOCALE_FLASHUPDATE_MTDSELECTOR, NEUTRINO_ICON_UPDATE);
+	CMenuWidget * mtdselector = new CMenuWidget(LOCALE_FLASHUPDATE_MTDSELECTOR, NEUTRINO_ICON_UPDATE);
 
 	mtdselector->setMode(MODE_SETUP);
 	mtdselector->enableShrinkMenu();
@@ -710,7 +710,7 @@ void CFlashExpert::showMTDSelector(const std::string & actionkey)
 
 void CFlashExpert::showFileSelector(const std::string & actionkey)
 {
-	ClistBoxWidget * fileselector = new ClistBoxWidget(LOCALE_FLASHUPDATE_FILESELECTOR, NEUTRINO_ICON_UPDATE);
+	CMenuWidget * fileselector = new CMenuWidget(LOCALE_FLASHUPDATE_FILESELECTOR, NEUTRINO_ICON_UPDATE);
 
 	fileselector->setMode(MODE_SETUP);
 	fileselector->enableShrinkMenu();
@@ -862,7 +862,7 @@ void CUpdateSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CUpdateSettings::showMenu\n");
 	
-	ClistBoxWidget updateSettings(LOCALE_SERVICEMENU_UPDATE, NEUTRINO_ICON_UPDATE);
+	CMenuWidget updateSettings(LOCALE_SERVICEMENU_UPDATE, NEUTRINO_ICON_UPDATE);
 
 	updateSettings.setMode(MODE_SETUP);
 	updateSettings.enableShrinkMenu();
@@ -876,7 +876,7 @@ void CUpdateSettings::showMenu()
 	updateSettings.addItem( new CMenuSeparator(LINE) );
 
 	// expert-function for mtd read/write
-	ClistBoxWidget * mtdexpert = new ClistBoxWidget(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, NEUTRINO_ICON_UPDATE);
+	CMenuWidget * mtdexpert = new CMenuWidget(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, NEUTRINO_ICON_UPDATE);
 
 	mtdexpert->setMode(MODE_SETUP);
 	mtdexpert->enableShrinkMenu();

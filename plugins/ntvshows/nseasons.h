@@ -25,7 +25,7 @@ class CNSeasons : public CMenuTarget
 {
 	private:
 		CFrameBuffer* frameBuffer;
-		ClistBoxWidget* listBox;
+		CMenuWidget* listBox;
 		CMenuItem* item;
 		int selected;
 

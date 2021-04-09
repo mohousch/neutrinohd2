@@ -54,8 +54,8 @@
 #include <gui/widget/listbox.h>
 
 
-/// CMenulistBox
-class ClistBoxWidget : public CMenuTarget
+/// CMenuWidget
+class CMenuWidget : public CMenuTarget
 {
 	protected:
 		//
@@ -169,11 +169,11 @@ class ClistBoxWidget : public CMenuTarget
 		CTextBox * textBox;
 		
 	public:
-		ClistBoxWidget();
-		ClistBoxWidget(const char * const Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
-		ClistBoxWidget(const neutrino_locale_t Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
+		CMenuWidget();
+		CMenuWidget(const char * const Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
+		CMenuWidget(const neutrino_locale_t Name, const std::string& Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
 		
-		~ClistBoxWidget();
+		~CMenuWidget();
 
 		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
 		virtual void removeItem(long pos);

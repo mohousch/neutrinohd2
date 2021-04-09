@@ -342,7 +342,7 @@ void CScanSetup::showScanService()
 		dprintf(DEBUG_NORMAL, "CScanSetup::CScanSetup: Loading of scan settings failed. Using defaults.\n");
 	
 	//menue init
-	ClistBoxWidget * scansetup = new ClistBoxWidget(LOCALE_SERVICEMENU_SCANTS, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget * scansetup = new CMenuWidget(LOCALE_SERVICEMENU_SCANTS, NEUTRINO_ICON_SETTINGS);
 	
 	scansetup->setMode(MODE_SETUP);
 	scansetup->enableShrinkMenu();
@@ -373,7 +373,7 @@ void CScanSetup::showScanService()
 	CScanSetupNotifier * feModeNotifier = new CScanSetupNotifier(feindex);
 	
 	// Sat Setup
-	ClistBoxWidget * satSetup = new ClistBoxWidget(LOCALE_SATSETUP_SAT_SETUP, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget * satSetup = new CMenuWidget(LOCALE_SATSETUP_SAT_SETUP, NEUTRINO_ICON_SETTINGS);
 
 	satSetup->setMode(MODE_SETUP);
 	satSetup->enableShrinkMenu();
@@ -382,7 +382,7 @@ void CScanSetup::showScanService()
 	satSetup->addItem(new CMenuSeparator(LINE));
 
 	// satfind menu
-	ClistBoxWidget * satfindMenu = new ClistBoxWidget(LOCALE_MOTORCONTROL_HEAD, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget * satfindMenu = new CMenuWidget(LOCALE_MOTORCONTROL_HEAD, NEUTRINO_ICON_SETTINGS);
 
 	satfindMenu->setMode(MODE_SETUP);
 	satfindMenu->enableShrinkMenu();
@@ -392,14 +392,14 @@ void CScanSetup::showScanService()
 		
 	// satname (list)
 	CMenuOptionStringChooser * satSelect = NULL;
-	ClistBoxWidget * satOnOff = NULL;
+	CMenuWidget * satOnOff = NULL;
 	
 	// scan setup SAT
 	if( getFE(feindex)->getInfo()->type == FE_QPSK) 
 	{
 		satSelect = new CMenuOptionStringChooser(LOCALE_SATSETUP_SATELLITE, scanSettings->satNameNoDiseqc, true, NULL, RC_green, NEUTRINO_ICON_BUTTON_GREEN, true);
 			
-		satOnOff = new ClistBoxWidget(LOCALE_SATSETUP_SATELLITE, NEUTRINO_ICON_SETTINGS);
+		satOnOff = new CMenuWidget(LOCALE_SATSETUP_SATELLITE, NEUTRINO_ICON_SETTINGS);
 
 		satOnOff->setMode(MODE_SETUP);
 		satOnOff->enableShrinkMenu();
@@ -416,7 +416,7 @@ void CScanSetup::showScanService()
 				satSelect->addOption(sit->second.name.c_str());
 				dprintf(DEBUG_DEBUG, "[neutrino] fe(%d) Adding sat menu for %s position %d\n", feindex, sit->second.name.c_str(), sit->first);
 
-				ClistBoxWidget * tempsat = new ClistBoxWidget(sit->second.name.c_str(), NEUTRINO_ICON_SETTINGS);
+				CMenuWidget * tempsat = new CMenuWidget(sit->second.name.c_str(), NEUTRINO_ICON_SETTINGS);
 
 				tempsat->setMode(MODE_SETUP);
 				tempsat->enableShrinkMenu();
@@ -501,13 +501,13 @@ void CScanSetup::showScanService()
 	satfindMenu->addItem(satSelect);
 
 	// motor menu
-	ClistBoxWidget * motorMenu = NULL;
+	CMenuWidget * motorMenu = NULL;
 
 	if ( getFE(feindex)->getInfo()->type == FE_QPSK) 
 	{
 		satfindMenu->addItem(new CMenuForwarder(LOCALE_MOTORCONTROL_HEAD, true, NULL, new CMotorControl(feindex), "", RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
 
-		motorMenu = new ClistBoxWidget(LOCALE_SATSETUP_EXTENDED_MOTOR, NEUTRINO_ICON_SETTINGS);
+		motorMenu = new CMenuWidget(LOCALE_SATSETUP_EXTENDED_MOTOR, NEUTRINO_ICON_SETTINGS);
 
 		motorMenu->setMode(MODE_SETUP);
 		motorMenu->enableShrinkMenu();
@@ -630,7 +630,7 @@ void CScanSetup::showScanService()
 	}
 
 	// manuel scan menu
-	ClistBoxWidget * manualScan = new ClistBoxWidget(LOCALE_SATSETUP_MANUAL_SCAN, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget * manualScan = new CMenuWidget(LOCALE_SATSETUP_MANUAL_SCAN, NEUTRINO_ICON_SETTINGS);
 
 	manualScan->setMode(MODE_SETUP);
 	manualScan->enableShrinkMenu();
@@ -758,7 +758,7 @@ void CScanSetup::showScanService()
 	scansetup->addItem(manScan);
 		
 	// auto scan menu
-	ClistBoxWidget * autoScan = new ClistBoxWidget(LOCALE_SATSETUP_AUTO_SCAN, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget * autoScan = new CMenuWidget(LOCALE_SATSETUP_AUTO_SCAN, NEUTRINO_ICON_SETTINGS);
 
 	autoScan->setMode(MODE_SETUP);
 	autoScan->enableShrinkMenu();
@@ -788,7 +788,7 @@ void CScanSetup::showScanService()
 		
 	if( getFE(feindex)->getInfo()->type == FE_QPSK )
 	{
-		ClistBoxWidget * autoScanAll = new ClistBoxWidget(LOCALE_SATSETUP_AUTO_SCAN_ALL, NEUTRINO_ICON_SETTINGS);
+		CMenuWidget * autoScanAll = new CMenuWidget(LOCALE_SATSETUP_AUTO_SCAN_ALL, NEUTRINO_ICON_SETTINGS);
 
 		autoScanAll->setMode(MODE_SETUP);
 		autoScanAll->enableShrinkMenu();
@@ -822,7 +822,7 @@ void CScanSetup::showScanService()
 
 int CScanSetup::showUnicableSetup()
 {
-	ClistBoxWidget * uni_setup = new ClistBoxWidget(LOCALE_SATSETUP_UNICABLE_SETUP, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget * uni_setup = new CMenuWidget(LOCALE_SATSETUP_UNICABLE_SETUP, NEUTRINO_ICON_SETTINGS);
 
 	uni_setup->setMode(MODE_SETUP);
 	uni_setup->enableShrinkMenu();
@@ -887,7 +887,7 @@ int CTPSelectHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	
 	printf("CTPSelectHandler::exec: fe(%d) %s position(%d)\n", feindex, scanSettings->satNameNoDiseqc, position);
 
-        ClistBoxWidget * menu = new ClistBoxWidget(LOCALE_SCANTS_SELECT_TP, NEUTRINO_ICON_SETTINGS);
+        CMenuWidget * menu = new CMenuWidget(LOCALE_SCANTS_SELECT_TP, NEUTRINO_ICON_SETTINGS);
 
 	menu->setMode(MODE_SETUP);
 	menu->enableShrinkMenu();
@@ -1424,7 +1424,7 @@ void CTunerSetup::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CTunerSetup::showMenu\n");
 	
-	ClistBoxWidget TunerSetup( LOCALE_SERVICEMENU_SCANTS, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget TunerSetup( LOCALE_SERVICEMENU_SCANTS, NEUTRINO_ICON_SETTINGS);
 
 	TunerSetup.setMode(MODE_SETUP);
 	TunerSetup.enableShrinkMenu();

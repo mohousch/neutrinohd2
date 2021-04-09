@@ -954,7 +954,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 	  		} 
 			else if (msg == (neutrino_msg_t) RC_red) 
 			{
-				ClistBoxWidget menuWidgetActions(LOCALE_EPGPLUS_ACTIONS, NEUTRINO_ICON_FEATURES, 400);
+				CMenuWidget menuWidgetActions(LOCALE_EPGPLUS_ACTIONS, NEUTRINO_ICON_FEATURES, 400);
 				menuWidgetActions.enableSaveScreen();
 				menuWidgetActions.setMode(MODE_MENU);
 				menuWidgetActions.enableShrinkMenu();
@@ -974,7 +974,7 @@ int EpgPlus::exec(CChannelList * _channelList, int selectedChannelIndex, CBouque
 	  		} 
 			else if (msg == (neutrino_msg_t) RC_blue) 
 			{
-				ClistBoxWidget menuWidgetOptions(LOCALE_EPGPLUS_OPTIONS, NEUTRINO_ICON_FEATURES, 500);
+				CMenuWidget menuWidgetOptions(LOCALE_EPGPLUS_OPTIONS, NEUTRINO_ICON_FEATURES, 500);
 				menuWidgetOptions.enableSaveScreen();
 				menuWidgetOptions.setMode(MODE_SETUP);
 				menuWidgetOptions.enableShrinkMenu();

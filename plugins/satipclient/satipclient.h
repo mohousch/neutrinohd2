@@ -39,7 +39,7 @@ class CSatIPClient : public CMenuTarget
 
 		void showMenu();
         public:
-		ClistBoxWidget * satIPClientMenu;
+		CMenuWidget * satIPClientMenu;
 		int selected;
 		CSatIPClient();
 		~CSatIPClient();

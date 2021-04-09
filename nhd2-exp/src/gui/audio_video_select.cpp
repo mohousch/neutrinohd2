@@ -173,7 +173,7 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 {
 	dprintf(DEBUG_NORMAL, "CAVPIDSelectWidget::showAudioDialog (currentapid:%d)\n", currentapid);
 
-	ClistBoxWidget * AVPIDSelector = new ClistBoxWidget(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
+	CMenuWidget * AVPIDSelector = new CMenuWidget(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
 
 	AVPIDSelector->setMode(MODE_SETUP);
 	AVPIDSelector->enableShrinkMenu();

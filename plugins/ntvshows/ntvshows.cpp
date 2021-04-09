@@ -38,7 +38,7 @@ class CTVShows : public CMenuTarget
 		int selected;
 
 		//
-		ClistBoxWidget* mlist;
+		CMenuWidget* mlist;
 		CMenuItem* item;
 
 		std::string caption;
@@ -289,7 +289,7 @@ void CTVShows::showMenu()
 	else if(plist == "top_rated")
 		caption = "Am besten bewertet";
 
-	mlist = new ClistBoxWidget(caption.c_str(), NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	mlist = new CMenuWidget(caption.c_str(), NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 	
 	
 	// load playlist
@@ -340,7 +340,7 @@ int CTVShows::showCategoriesMenu()
 
 	int res = -1;
 
-	ClistBoxWidget * menu = new ClistBoxWidget("Serien Trailer");
+	CMenuWidget * menu = new CMenuWidget("Serien Trailer");
 
 	menu->setMode(MODE_MENU);
 	menu->enableShrinkMenu();

@@ -183,7 +183,7 @@ int CHDDMenuHandler::hddMenu()
                 return RETURN_REPAINT;
         }
 
-	ClistBoxWidget * hddmenu = new ClistBoxWidget(LOCALE_HDD_SETTINGS, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget * hddmenu = new CMenuWidget(LOCALE_HDD_SETTINGS, NEUTRINO_ICON_SETTINGS);
 
 	hddmenu->setMode(MODE_SETUP);
 	hddmenu->enableShrinkMenu();
@@ -218,7 +218,7 @@ int CHDDMenuHandler::hddMenu()
 	printf("HDD: root_dev: 0x%04x\n", root_dev);
 	
 	//hdd manage
-	ClistBoxWidget * tempMenu[n];
+	CMenuWidget * tempMenu[n];
 
 	for(int i = 0; i < n; i++) 
 	{
@@ -299,7 +299,7 @@ int CHDDMenuHandler::hddMenu()
 		bool enabled = !CNeutrinoApp::getInstance()->recordingstatus && !isroot;
 
 		/* hdd menu */
-		tempMenu[i] = new ClistBoxWidget(str, NEUTRINO_ICON_SETTINGS);
+		tempMenu[i] = new CMenuWidget(str, NEUTRINO_ICON_SETTINGS);
 		tempMenu[i]->enableSaveScreen();
 
 		tempMenu[i]->setMode(MODE_MENU);
@@ -317,7 +317,7 @@ int CHDDMenuHandler::hddMenu()
 		char DEVICE[256];
 		char PART[256];
 		
-		ClistBoxWidget * PartMenu[MAX_PARTS];
+		CMenuWidget * PartMenu[MAX_PARTS];
 		
 		for (int j = 1; j<= MAX_PARTS; j++)
 		{
@@ -342,7 +342,7 @@ int CHDDMenuHandler::hddMenu()
 			mounted = check_if_mounted(DEVICE);
 			
 			/* part submenu */
-			PartMenu[j] = new ClistBoxWidget(PART, NEUTRINO_ICON_SETTINGS);
+			PartMenu[j] = new CMenuWidget(PART, NEUTRINO_ICON_SETTINGS);
 			PartMenu[j]->enableSaveScreen();
 
 			PartMenu[j]->setMode(MODE_MENU);

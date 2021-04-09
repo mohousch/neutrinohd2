@@ -65,7 +65,7 @@ class CKeyValue : public CMenuSeparator
 		};
 };
 
-CKeyChooser::CKeyChooser(int * const Key, const neutrino_locale_t Title, const std::string & Icon) : ClistBoxWidget(Title, Icon)
+CKeyChooser::CKeyChooser(int * const Key, const neutrino_locale_t Title, const std::string & Icon) : CMenuWidget(Title, Icon)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	key = Key;
@@ -82,7 +82,7 @@ CKeyChooser::CKeyChooser(int * const Key, const neutrino_locale_t Title, const s
 	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNONE, true, NULL, keyDeleter));
 }
 
-CKeyChooser::CKeyChooser(int * const Key, const char * const Title, const std::string & Icon) : ClistBoxWidget(Title, Icon)
+CKeyChooser::CKeyChooser(int * const Key, const char * const Title, const std::string & Icon) : CMenuWidget(Title, Icon)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	key = Key;
@@ -109,7 +109,7 @@ void CKeyChooser::paint()
 {
 	(((CKeyValue *)(items[0]))->keyvalue) = *key;
 
-	ClistBoxWidget::paint();
+	CMenuWidget::paint();
 }
 
 CKeyChooserItem::CKeyChooserItem(const neutrino_locale_t Name, int * Key)

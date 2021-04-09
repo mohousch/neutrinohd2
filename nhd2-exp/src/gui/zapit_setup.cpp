@@ -149,7 +149,7 @@ void CZapitSetup::showMenu()
 	dprintf(DEBUG_NORMAL, "CZapitSetup::showMenu:\n");
 
 	//menue init
-	ClistBoxWidget * zapit = new ClistBoxWidget(LOCALE_MISCSETTINGS_ZAPIT, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget * zapit = new CMenuWidget(LOCALE_MISCSETTINGS_ZAPIT, NEUTRINO_ICON_SETTINGS);
 
 	zapit->setMode(MODE_SETUP);
 	zapit->enableShrinkMenu();

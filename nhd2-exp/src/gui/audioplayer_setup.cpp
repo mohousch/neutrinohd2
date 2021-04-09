@@ -92,7 +92,7 @@ void CAudioPlayerSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CAudioPlayerSettings::showMenu:\n");
 	
-	ClistBoxWidget audioPlayerSettings(LOCALE_AUDIOPLAYERSETTINGS_GENERAL, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget audioPlayerSettings(LOCALE_AUDIOPLAYERSETTINGS_GENERAL, NEUTRINO_ICON_SETTINGS);
 
 	audioPlayerSettings.setMode(MODE_SETUP);
 	audioPlayerSettings.enableShrinkMenu();

@@ -172,7 +172,7 @@ void CMiscSettings::showMenu(void)
 	
 	int shortcutMiscSettings = 1;
 
-	ClistBoxWidget * miscSettings = new ClistBoxWidget(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget * miscSettings = new CMenuWidget(LOCALE_MISCSETTINGS_HEAD, NEUTRINO_ICON_SETTINGS);
 
 	miscSettings->setMode(MODE_MENU);
 	miscSettings->enableShrinkMenu();
@@ -326,7 +326,7 @@ void CGeneralSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CGeneralSettings::showMenu:\n");
 	
-	ClistBoxWidget miscSettingsGeneral(LOCALE_MISCSETTINGS_GENERAL, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget miscSettingsGeneral(LOCALE_MISCSETTINGS_GENERAL, NEUTRINO_ICON_SETTINGS);
 
 	miscSettingsGeneral.setMode(MODE_SETUP);
 	miscSettingsGeneral.enableShrinkMenu();
@@ -697,7 +697,7 @@ void CChannelListSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CChannelListSettings::showMenu:\n");
 	
-	ClistBoxWidget miscSettingsChannelList(LOCALE_MISCSETTINGS_CHANNELLIST, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget miscSettingsChannelList(LOCALE_MISCSETTINGS_CHANNELLIST, NEUTRINO_ICON_SETTINGS);
 	miscSettingsChannelList.enableSaveScreen();
 	miscSettingsChannelList.setMode(MODE_SETUP);
 	miscSettingsChannelList.enableShrinkMenu();
@@ -808,7 +808,7 @@ void CEPGSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CEPGSettings::showMenu:\n");
 	
-	ClistBoxWidget miscSettingsEPG(LOCALE_MISCSETTINGS_EPG_HEAD, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget miscSettingsEPG(LOCALE_MISCSETTINGS_EPG_HEAD, NEUTRINO_ICON_SETTINGS);
 	
 	miscSettingsEPG.setMode(MODE_SETUP);
 	miscSettingsEPG.enableShrinkMenu();
@@ -1005,7 +1005,7 @@ void CFileBrowserSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CFileBrowserSettings::showMenu:\n");
 	
-	ClistBoxWidget miscSettingsFileBrowser(LOCALE_FILEBROWSER_HEAD, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget miscSettingsFileBrowser(LOCALE_FILEBROWSER_HEAD, NEUTRINO_ICON_SETTINGS);
 
 	miscSettingsFileBrowser.setMode(MODE_SETUP);
 	miscSettingsFileBrowser.enableShrinkMenu();

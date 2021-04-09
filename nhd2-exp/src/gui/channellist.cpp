@@ -375,7 +375,7 @@ int CChannelList::doChannelMenu(void)
 	if( !bouquetList )
 		return 0;
 
-	ClistBoxWidget * menu = new ClistBoxWidget(LOCALE_CHANNELLIST_EDIT, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget * menu = new CMenuWidget(LOCALE_CHANNELLIST_EDIT, NEUTRINO_ICON_SETTINGS);
 	menu->enableSaveScreen();
 	menu->setMode(MODE_MENU);
 	menu->enableShrinkMenu();
@@ -1619,25 +1619,12 @@ void CChannelList::paint()
 
 			item->setNumber(chanlist[i]->number);
 			item->setPercent(runningPercent);
+			item->setIcon1(chanlist[i]->isHD() ? NEUTRINO_ICON_HD : chanlist[i]->isUHD()? NEUTRINO_ICON_UHD : "");
+			item->setIcon2(chanlist[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "");
 			item->setInfo1(desc.c_str());
 			item->setOptionInfo1(cSeit);
 			item->setInfo2(p_event->text.c_str());
 			item->setOptionInfo2(cNoch);
-
-			item->setIcon1(chanlist[i]->isHD() ? NEUTRINO_ICON_HD : chanlist[i]->isUHD()? NEUTRINO_ICON_UHD : "");
-			item->setIcon2(chanlist[i]->scrambled ? NEUTRINO_ICON_SCRAMBLED : "");
-
-			//item->set2lines();
-
-			std::string tmp = cSeit;
-			tmp += "\n";
-			tmp += p_event->text.c_str();
-			tmp += "\n";
-			tmp += cNoch;
-
-			//item->set2lines();
-			//item->setHelpText(tmp.c_str());
-			//
 
 			listBox->addItem(item);
 		}
@@ -1647,8 +1634,6 @@ void CChannelList::paint()
 	listBox->setTitle(name.c_str());
 	listBox->enablePaintHead();
 	listBox->enablePaintDate();
-	//TEST
-	//listBox->setWidgetType(WIDGET_TYPE_EXTENDED);
 
 	if (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_webtv)
 		listBox->setHeaderButtons(new_mode_active? HeadWEBTVNewModeButtons : HeadWEBTVModeButtons, 2); 

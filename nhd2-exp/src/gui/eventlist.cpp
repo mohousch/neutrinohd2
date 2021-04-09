@@ -957,7 +957,7 @@ int CEventFinderMenu::showMenu(void)
 	CMenuOptionChooser * mo1 = new CMenuOptionChooser(LOCALE_EVENTFINDER_SEARCH_WITHIN_EPG, m_search_epg_item, SEARCH_EPG_OPTIONS, SEARCH_EPG_OPTION_COUNT, true, NULL, RC_4);
 	CMenuForwarder * mf0 = new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, this, "1", RC_5 );
 	
-	ClistBoxWidget searchMenu(LOCALE_EVENTFINDER_HEAD, NEUTRINO_ICON_FEATURES);
+	CMenuWidget searchMenu(LOCALE_EVENTFINDER_HEAD, NEUTRINO_ICON_FEATURES);
 
 	searchMenu.setMode(MODE_SETUP);
 	searchMenu.enableShrinkMenu();

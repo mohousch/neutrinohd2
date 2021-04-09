@@ -396,7 +396,7 @@ class CMovieHelp : public CMenuTarget
 };
 
 //
-class CFileChooser : public ClistBoxWidget
+class CFileChooser : public CMenuWidget
 {
 	private:
 		std::string *dirPath;
@@ -416,7 +416,7 @@ typedef enum
 }DIR_STATE;
 
 #define MAX_DIR 10
-class CDirMenu : public ClistBoxWidget
+class CDirMenu : public CMenuWidget
 {
 	private:
 		std::vector<MB_DIR>* dirList;

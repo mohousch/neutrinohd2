@@ -74,7 +74,7 @@ void CNeutrinoApp::mainMenu(void)
 
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::mainMenu:\n");
 
-	ClistBoxWidget * nMenu = new ClistBoxWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
+	CMenuWidget * nMenu = new CMenuWidget(LOCALE_MAINMENU_HEAD, NEUTRINO_ICON_BUTTON_SETUP);
 
 	nMenu->setMode(MODE_MENU);
 	nMenu->enableShrinkMenu();
@@ -250,7 +250,7 @@ bool CNeutrinoApp::showUserMenu(int button)
 
 	// other function keys
 
-        ClistBoxWidget * menu = new ClistBoxWidget(txt.c_str(), NEUTRINO_ICON_FEATURES);
+        CMenuWidget * menu = new CMenuWidget(txt.c_str(), NEUTRINO_ICON_FEATURES);
         if (menu == NULL)
                 return 0;
 

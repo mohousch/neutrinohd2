@@ -33,7 +33,7 @@ class CTSBrowser : public CMenuTarget
 		int selected;
 
 		//
-		ClistBoxWidget* mlist;
+		CMenuWidget* mlist;
 		CMenuItem* item;
 
 		//
@@ -552,7 +552,7 @@ const struct button_label FootButtons[FOOT_BUTTONS_COUNT] =
 
 void CTSBrowser::showMenu()
 {
-	mlist = new ClistBoxWidget("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	mlist = new CMenuWidget("Movie Browser", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
 	mlist->clearAll();
 

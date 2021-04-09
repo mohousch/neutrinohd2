@@ -330,7 +330,7 @@ end
 function testClistBoxWidget()
 	local ret = neutrino.RETURN_REPAINT
 
-	local listBoxWidget = neutrino.ClistBoxWidget("ClistBoxWidget")
+	local listBoxWidget = neutrino.CMenuWidget("ClistBoxWidget")
 	listBoxWidget:setWidgetType(neutrino.WIDGET_TYPE_STANDARD)
 	listBoxWidget:setMode(neutrino.MODE_MENU)
 	listBoxWidget:enablePaintFootInfo()
@@ -964,7 +964,7 @@ end
 function movieBrowser()
 	local ret = neutrino.RETURN_REPAINT
 
-	local menu = neutrino.ClistBoxWidget("Movie Browser", neutrino.NEUTRINO_ICON_MOVIE)
+	local menu = neutrino.CMenuWidget("Movie Browser", neutrino.NEUTRINO_ICON_MOVIE)
 	menu:setWidgetType(neutrino.WIDGET_TYPE_FRAME)
 	menu:setItemsPerPage(6, 2)
 	menu:enablePaintDate()
@@ -1067,7 +1067,7 @@ end
 -- main
 function main()
 	local ret = neutrino.RETURN_REPAINT
-	local m = neutrino.ClistBoxWidget("lua sample")
+	local m = neutrino.CMenuWidget("lua sample")
 
 	m:setMode(neutrino.MODE_MENU)
 	m:enableShrinkMenu()

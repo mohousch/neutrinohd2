@@ -361,7 +361,7 @@ void CVideoSettings::showMenu()
 	
 	int shortcutVideo = 1;
 	
-	ClistBoxWidget videoSettings(LOCALE_VIDEOMENU_HEAD, NEUTRINO_ICON_VIDEO);
+	CMenuWidget videoSettings(LOCALE_VIDEOMENU_HEAD, NEUTRINO_ICON_VIDEO);
 
 	videoSettings.setMode(MODE_SETUP);
 	videoSettings.enableShrinkMenu();

@@ -241,9 +241,11 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		if(!caption.empty())
 			c_h = captionFont->getHeight() + 20;
 
+		window.paint();
+
 		if(!iconName.empty())
 		{
-			CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 3, window.getWindowsPos().iY + 3, window.getWindowsPos().iWidth - 6, window.getWindowsPos().iHeight - c_h - 6);
+			CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 5, window.getWindowsPos().iY + 5, window.getWindowsPos().iWidth - 10, window.getWindowsPos().iHeight - c_h - 10);
 		}
 
 		if(!caption.empty())
@@ -251,6 +253,23 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 			int c_w = captionFont->getRenderWidth(caption);
 
 			captionFont->RenderString(window.getWindowsPos().iX + 3, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - 6, caption.c_str(), color);
+		}
+
+		if (selected)
+		{
+			window.paint();
+
+			if(!iconName.empty())
+			{
+				CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX, window.getWindowsPos().iY, window.getWindowsPos().iWidth, window.getWindowsPos().iHeight - c_h);
+			}
+
+			if(!caption.empty())
+			{
+				int c_w = captionFont->getRenderWidth(caption);
+
+				captionFont->RenderString(window.getWindowsPos().iX + 3, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - 6, caption.c_str(), color);
+			}
 		}
 	}
 	else if ((mode == FRAME_ICON) || (mode == FRAME_ICON_NOTSELECTABLE))

@@ -171,7 +171,7 @@ function select_playitem()
 	local m = nil
 	local item = nil
 
-	m = neutrino.ClistBoxWidget("Wunderschön", neutrino.PLUGINDIR .. "/Wunderschön/Wunderschön_hint.png", 2*neutrino.MENU_WIDTH) 
+	m = neutrino.CMenuWidget("Wunderschön", neutrino.PLUGINDIR .. "/Wunderschön/Wunderschön_hint.png", 2*neutrino.MENU_WIDTH) 
 
 	m:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
 	m:setMode(neutrino.MODE_MENU)

@@ -75,7 +75,7 @@ int CProxySetup::showProxySetup()
 	dprintf(DEBUG_DEBUG, "CProxySetup::showProxySetup\n");
 
 	//init
-	ClistBoxWidget * mn = new ClistBoxWidget(menue_title, menue_icon);
+	CMenuWidget * mn = new CMenuWidget(menue_title, menue_icon);
 
 	mn->setMode(MODE_SETUP);
 	mn->enableShrinkMenu();

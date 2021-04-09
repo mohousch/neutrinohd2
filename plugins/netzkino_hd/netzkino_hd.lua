@@ -159,7 +159,7 @@ function get_categories_menu()
 	local m_categories = nil
 	local item = nil
 
-	m_categories = neutrino.ClistBoxWidget("" .. caption.." Kategorien", netzkino_png)
+	m_categories = neutrino.CMenuWidget("" .. caption.." Kategorien", netzkino_png)
 	m_categories:enableShrinkMenu()
 
 	for index, category_detail in pairs(categories) do
@@ -307,7 +307,7 @@ function get_movies_menu(_id)
 	local rec = neutrino.button_label_struct()
 	rec.button = neutrino.NEUTRINO_ICON_REC
 	
-	m_movies = neutrino.ClistBoxWidget(menu_title, netzkino_png)
+	m_movies = neutrino.CMenuWidget(menu_title, netzkino_png)
 
 	m_movies:setWidgetType(neutrino.WIDGET_TYPE_FRAME)
 	m_movies:setItemsPerPage(6, 2)

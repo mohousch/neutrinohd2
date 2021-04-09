@@ -298,7 +298,7 @@ local title = ""
 function select_playitem()
 	print("select_playitem:")
 
-	local m = neutrino.ClistBoxWidget("", arte_concert, 2*neutrino.MENU_WIDTH)
+	local m = neutrino.CMenuWidget("", arte_concert, 2*neutrino.MENU_WIDTH)
 	m:setWidgetType(neutrino.WIDGET_TYPE_EXTENDED)
 	m:enableShrinkMenu()
 
@@ -421,7 +421,7 @@ end
 
 function selectmenu()
 	local item = nil
-	sm = neutrino.ClistBoxWidget("Arte Konzerte", arte_concert)
+	sm = neutrino.CMenuWidget("Arte Konzerte", arte_concert)
 	for i,v in  ipairs(subs) do
 		item = neutrino.ClistBoxItem(v[2], true, "", nil, v[1])
 

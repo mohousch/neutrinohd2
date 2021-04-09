@@ -31,7 +31,7 @@ class CMP3Player : public CMenuTarget
 	private:
 		CFrameBuffer* frameBuffer;
 
-		ClistBoxWidget* alist;
+		CMenuWidget* alist;
 		CMenuItem* item;
 
 		CAudioPlayerGui tmpAudioPlayerGui;
@@ -271,7 +271,7 @@ const struct button_label AudioPlayerButtons[FOOT_BUTTONS_COUNT] =
 
 void CMP3Player::showMenu()
 {
-	alist = new ClistBoxWidget(LOCALE_AUDIOPLAYER_HEAD, NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	alist = new CMenuWidget(LOCALE_AUDIOPLAYER_HEAD, NEUTRINO_ICON_MP3, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	for(unsigned int i = 0; i < playlist.size(); i++)
 	{

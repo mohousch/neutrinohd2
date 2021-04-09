@@ -178,7 +178,7 @@ void CYTBrowser::showMenu()
 	if (loc == (neutrino_locale_t)LOCALE_YT_SEARCH)
 		title += " \"" + ytsearch + "\"";
 
-	moviesMenu = new ClistBoxWidget(title.c_str(), NEUTRINO_ICON_YT_SMALL);
+	moviesMenu = new CMenuWidget(title.c_str(), NEUTRINO_ICON_YT_SMALL);
 	
 	std::string itemTitle;
 
@@ -361,7 +361,7 @@ int CYTBrowser::showCategoriesMenu(void)
 
 	int res = -1;
 
-	ClistBoxWidget mainMenu(g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_YOUTUBE), NEUTRINO_ICON_YT_SMALL);
+	CMenuWidget mainMenu(g_Locale->getCustomText((neutrino_locale_t)LOCALE_YT_YOUTUBE), NEUTRINO_ICON_YT_SMALL);
 
 	mainMenu.enableSaveScreen();
 	mainMenu.setMode(MODE_MENU);

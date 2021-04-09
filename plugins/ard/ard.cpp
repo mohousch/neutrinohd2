@@ -21,7 +21,7 @@ CARDverpasst::~CARDverpasst()
 
 void CARDverpasst::showMenu(void)
 {
-	ClistBoxWidget * catMenu = new ClistBoxWidget("Sendung verpasst", PLUGINDIR "/ard/ard_small.png");
+	CMenuWidget * catMenu = new CMenuWidget("Sendung verpasst", PLUGINDIR "/ard/ard_small.png");
 
 	catMenu->setMode(MODE_MENU);
 	catMenu->enableShrinkMenu();
@@ -70,7 +70,7 @@ CARDverpasstSub::~CARDverpasstSub()
 
 void CARDverpasstSub::showMenu(void)
 {
-	ClistBoxWidget * catMenu = new ClistBoxWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");
+	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");
 
 	catMenu->setMode(MODE_MENU);
 	catMenu->enableShrinkMenu();
@@ -113,7 +113,7 @@ CARDtime::~CARDtime()
 
 void CARDtime::showMenu(void)
 {
-	ClistBoxWidget * catMenu = new ClistBoxWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");
+	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");
 
 	catMenu->setMode(MODE_MENU);
 	catMenu->enableShrinkMenu();
@@ -152,7 +152,7 @@ CARDaz::~CARDaz()
 
 void CARDaz::showMenu(void)
 {
-	ClistBoxWidget * catMenu = new ClistBoxWidget("Sendungen A-Z", PLUGINDIR "/ard/ard_small.png");
+	CMenuWidget * catMenu = new CMenuWidget("Sendungen A-Z", PLUGINDIR "/ard/ard_small.png");
 
 	//items
 	for (int i = 0; i < 6; i++)
@@ -192,7 +192,7 @@ CARDTVlive::~CARDTVlive()
 
 void CARDTVlive::showMenu(void)
 {
-	ClistBoxWidget * catMenu = new ClistBoxWidget("TV-Livestreams", PLUGINDIR "/ard/ard_small.png");
+	CMenuWidget * catMenu = new CMenuWidget("TV-Livestreams", PLUGINDIR "/ard/ard_small.png");
 
 	//items
 	for (int i = 0; i < 6; i++)
@@ -232,7 +232,7 @@ CARDRadiolive::~CARDRadiolive()
 
 void CARDRadiolive::showMenu(void)
 {
-	ClistBoxWidget * catMenu = new ClistBoxWidget("Radio-Livestreams", PLUGINDIR "/ard/ard_small.png");
+	CMenuWidget * catMenu = new CMenuWidget("Radio-Livestreams", PLUGINDIR "/ard/ard_small.png");
 
 	//items
 	for (int i = 0; i < 6; i++)
@@ -273,7 +273,7 @@ CARDstreams::~CARDstreams()
 
 void CARDstreams::showMenu(void)
 {
-	ClistBoxWidget * catMenu = new ClistBoxWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");	
+	CMenuWidget * catMenu = new CMenuWidget(Title.c_str(), PLUGINDIR "/ard/ard_small.png");	
 	
 	//items
 	for (int i = 0; i < 6; i++)
@@ -313,7 +313,7 @@ CARD::~CARD()
 
 void CARD::showMenu(void)
 {
-	ClistBoxWidget * catMenu = new ClistBoxWidget("ARD Mediathek", PLUGINDIR "/ard/ard_small.png");
+	CMenuWidget * catMenu = new CMenuWidget("ARD Mediathek", PLUGINDIR "/ard/ard_small.png");
 
 	catMenu->setMode(MODE_MENU);
 	catMenu->enableShrinkMenu();

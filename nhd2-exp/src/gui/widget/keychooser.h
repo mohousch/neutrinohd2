@@ -52,7 +52,7 @@
 class CKeyChooserItem;
 class CKeyChooserItemNoKey;
 
-class CKeyChooser : public ClistBoxWidget
+class CKeyChooser : public CMenuWidget
 {
 	private:
 		CFrameBuffer		*frameBuffer;

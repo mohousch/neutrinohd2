@@ -687,7 +687,7 @@ function chooser_menu(id)
 
 	end
 ]]
-	local menu = neutrino.ClistBoxWidget(name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
+	local menu = neutrino.CMenuWidget(name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
 
 	--if id:sub(1,29) =="Erstelle Download Liste für " then
 		menu:addItem(neutrino.CMenuForwarder("Download starten", true, "", null, "dlstart"))
@@ -723,7 +723,7 @@ function mtv_liste(id)
 	local url = glob.mtv[id].url --liste url
 	glob.MTVliste = getliste(url)
 
-	local menu = neutrino.ClistBoxWidget(glob.mtv[id].name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
+	local menu = neutrino.CMenuWidget(glob.mtv[id].name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
 	menu:setWidgetType(neutrino.WIDGET_TYPE_FRAME)
 	menu:setItemsPerPage(3, 2)
 	menu:addWidget(neutrino.WIDGET_TYPE_CLASSIC)
@@ -786,7 +786,7 @@ local m_selected = -1
 function settings()
 	loadConfig()
 
-	local menu = neutrino.ClistBoxWidget("Einstellungen", neutrino.NEUTRINO_ICON_SETTINGS)
+	local menu = neutrino.CMenuWidget("Einstellungen", neutrino.NEUTRINO_ICON_SETTINGS)
 	local item = nil
 	menu:setMode(neutrino.MODE_SETUP)
 	menu:enableShrinkMenu()
@@ -1010,7 +1010,7 @@ function searchliste(id)
 	local url = glob.mtv_artist[id].url
 	glob.MTVliste = getliste(url)
 
-	local menu = neutrino.ClistBoxWidget(glob.mtv_artist[id].name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
+	local menu = neutrino.CMenuWidget(glob.mtv_artist[id].name, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
 	menu:setWidgetType(neutrino.WIDGET_TYPE_FRAME)
 	menu:enablePaintDate()
 
@@ -1080,7 +1080,7 @@ function search_artists()
 		return
 	end
 
-	local menu = neutrino.ClistBoxWidget(conf.search, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
+	local menu = neutrino.CMenuWidget(conf.search, neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
 
 	if glob.mtv_artist then
 		for i, v in ipairs(glob.mtv_artist) do
@@ -1128,7 +1128,7 @@ function mtv_listen_menu()
 		return
 	end
 
-	menu = neutrino.ClistBoxWidget("MTV Listen", neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
+	menu = neutrino.CMenuWidget("MTV Listen", neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
 
 	menu:enableShrinkMenu()
 	menu:enablePaintDate()
@@ -1166,7 +1166,7 @@ local selected_mm = 0
 function main_menu()
 	print("mainMenu:")
 
-	local menu = neutrino.ClistBoxWidget("MTV", neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
+	local menu = neutrino.CMenuWidget("MTV", neutrino.PLUGINDIR .. "/mtv/mtv_hint.png")
 	menu:setMode(neutrino.MODE_MENU)
 	menu:enableShrinkMenu()
 	menu:enablePaintDate()

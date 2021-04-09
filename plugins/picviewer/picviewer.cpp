@@ -30,7 +30,7 @@ class CPicViewer : public CMenuTarget
 	private:
 		CFrameBuffer* frameBuffer;
 
-		ClistBoxWidget* plist;
+		CMenuWidget* plist;
 		CMenuItem* item;
 
 		CPictureViewerGui tmpPictureViewerGui;
@@ -172,7 +172,7 @@ const struct button_label PictureViewerButtons[FOOT_BUTTONS_COUNT] =
 
 void CPicViewer::showMenu()
 {
-	plist = new ClistBoxWidget(LOCALE_PICTUREVIEWER_HEAD, NEUTRINO_ICON_PICTURE, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
+	plist = new CMenuWidget(LOCALE_PICTUREVIEWER_HEAD, NEUTRINO_ICON_PICTURE, w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 )), h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20)));
 
 	for(unsigned int i = 0; i < playlist.size(); i++)
 	{

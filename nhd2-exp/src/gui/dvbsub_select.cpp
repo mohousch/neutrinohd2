@@ -67,7 +67,7 @@ int CDVBSubSelectMenuHandler::doMenu()
 {
 	dprintf(DEBUG_NORMAL, "CDVBSubSelectMenuHandler::doMenu:\n");
 
-	ClistBoxWidget DVBSubSelector(LOCALE_SUBTITLES_HEAD, NEUTRINO_ICON_SUBT);
+	CMenuWidget DVBSubSelector(LOCALE_SUBTITLES_HEAD, NEUTRINO_ICON_SUBT);
 
 	DVBSubSelector.setMode(MODE_SETUP);
 	DVBSubSelector.enableShrinkMenu();

@@ -54,7 +54,7 @@ class CPluginList : public CMenuTarget
 			resume = 1,
 		} result;
 
-		ClistBoxWidget* plist;
+		CMenuWidget* plist;
 		CMenuItem* item;
 
 	private:

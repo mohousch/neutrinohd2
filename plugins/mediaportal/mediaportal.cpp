@@ -29,7 +29,7 @@ extern "C" void plugin_del(void);
 class CMediaPortal : public CMenuTarget
 {
 	private:
-		ClistBoxWidget* mediaPortal;
+		CMenuWidget* mediaPortal;
 		CMenuItem* item;
 
 		void youTube(void);
@@ -156,7 +156,7 @@ int CMediaPortal::exec(CMenuTarget * parent, const std::string & actionKey)
 
 void CMediaPortal::showMenu(void)
 {
-	mediaPortal = new ClistBoxWidget("Media Portal", PLUGINDIR "/mediaportal/mp.png");
+	mediaPortal = new CMenuWidget("Media Portal", PLUGINDIR "/mediaportal/mp.png");
 
 	mediaPortal->setMode(MODE_LISTBOX);
 	mediaPortal->setWidgetType(WIDGET_TYPE_FRAME);

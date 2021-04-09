@@ -31,11 +31,11 @@ class CTestMenu : public CMenuTarget
 		// variables
 		CFrameBuffer* frameBuffer;
 
-		ClistBoxWidget * mainMenu;
+		CMenuWidget * mainMenu;
 		int select;
 
 		//
-		ClistBoxWidget* listMenu;
+		CMenuWidget* listMenu;
 		CMenuItem* item;
 
 		CAudioPlayerGui tmpAudioPlayerGui;
@@ -1248,7 +1248,7 @@ void CTestMenu::testFireTV()
 
 	testWidget = new CWidget(&box);
 
-	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+	//testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 	testWidget->enablePaintMainFrame();
 
 	// menuFrameBox
@@ -1316,6 +1316,7 @@ void CTestMenu::testFireTV()
 	CFrame * artFrame = new CFrame(FRAME_PICTURE);
 	artFrame->setPosition(box.iX + 10 + box.iWidth - 200 + 10, box.iY + 40 + s_h + 20, 160, 280);
 	artFrame->setIconName(m_vMovieInfo[0].tfile.c_str());
+	artFrame->disablePaintFrame();
 	artFrame->setActionKey(this, "fire1play");
 
 	fireTV1Box->addFrame(artFrame);
@@ -1347,7 +1348,9 @@ void CTestMenu::testFireTV()
 	{
 		art1Frame = new CFrame(FRAME_PICTURE);
 		art1Frame->setIconName(m_vMovieInfo[i].tfile.c_str());
+		art1Frame->disablePaintFrame();
 		art1Frame->setActionKey(this, "fireplay");
+		art1Frame->setTitle(m_vMovieInfo[i].epgTitle.c_str());
 
 		fireTVBox->addFrame(art1Frame);
 	}
@@ -4914,7 +4917,7 @@ void CTestMenu::testShowPictureDir()
 void CTestMenu::testClistBoxWidget()
 {
 	// our listBox
-	listMenu = new ClistBoxWidget("ClistBoxWidget(list Mode)", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	listMenu = new CMenuWidget("ClistBoxWidget(list Mode)", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
 	//
 	loadMoviePlaylist();
@@ -4968,7 +4971,7 @@ void CTestMenu::testClistBoxWidget()
 void CTestMenu::testClistBoxWidget1()
 {
 	// our listBox
-	listMenu = new ClistBoxWidget("ClistBoxWidget(Menu Mode)", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
+	listMenu = new CMenuWidget("ClistBoxWidget(Menu Mode)", NEUTRINO_ICON_MOVIE, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 17), (CFrameBuffer::getInstance()->getScreenHeight() / 20)));
 
 	//
 	loadMoviePlaylist();
@@ -6776,7 +6779,7 @@ void CTestMenu::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CTestMenu::showMenu:\n");
 
-	mainMenu = new ClistBoxWidget(/*"testMenu", NEUTRINO_ICON_BUTTON_SETUP*/);
+	mainMenu = new CMenuWidget(/*"testMenu", NEUTRINO_ICON_BUTTON_SETUP*/);
 
 	mainMenu->setTitle("testMenu", NEUTRINO_ICON_BUTTON_SETUP);
 

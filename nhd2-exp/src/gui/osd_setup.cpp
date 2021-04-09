@@ -134,7 +134,7 @@ int COSDSettings::exec(CMenuTarget* parent, const std::string& actionKey)
 		if(parent)
 			parent->hide();
 		
-		ClistBoxWidget fontscale(LOCALE_FONTMENU_HEAD, NEUTRINO_ICON_COLORS);
+		CMenuWidget fontscale(LOCALE_FONTMENU_HEAD, NEUTRINO_ICON_COLORS);
 		fontscale.enableSaveScreen();
 		fontscale.setMode(MODE_SETUP);
 		fontscale.enableShrinkMenu();
@@ -162,7 +162,7 @@ void COSDSettings::showMenu(void)
 	
 	int shortcutOSD = 1;
 	
-	ClistBoxWidget * osdSettings = new ClistBoxWidget(LOCALE_MAINSETTINGS_OSD, NEUTRINO_ICON_COLORS );
+	CMenuWidget * osdSettings = new CMenuWidget(LOCALE_MAINSETTINGS_OSD, NEUTRINO_ICON_COLORS );
 
 	osdSettings->setMode(MODE_MENU);
 	osdSettings->enableShrinkMenu();
@@ -258,7 +258,7 @@ void COSDMenuColorSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "COSDMenuColorSettings::showMenu:\n");
 	
-	ClistBoxWidget OSDmenuColorsSettings(LOCALE_COLORMENUSETUP_HEAD, NEUTRINO_ICON_SETTINGS );
+	CMenuWidget OSDmenuColorsSettings(LOCALE_COLORMENUSETUP_HEAD, NEUTRINO_ICON_SETTINGS );
 
 	OSDmenuColorsSettings.setMode(MODE_SETUP);
 	OSDmenuColorsSettings.enableShrinkMenu();
@@ -380,7 +380,7 @@ void COSDInfoBarColorSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "COSDInfoBarColorSettings::showMenu:\n");
 	
-	ClistBoxWidget OSDinfobarColorSettings(LOCALE_COLORMENU_STATUSBAR, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget OSDinfobarColorSettings(LOCALE_COLORMENU_STATUSBAR, NEUTRINO_ICON_SETTINGS);
 
 	OSDinfobarColorSettings.setMode(MODE_SETUP);
 	OSDinfobarColorSettings.enableShrinkMenu();
@@ -478,7 +478,7 @@ void CLanguageSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CLanguageSettings::showMenu:\n");
 	
-	ClistBoxWidget languageSettings(LOCALE_LANGUAGESETUP_HEAD, NEUTRINO_ICON_LANGUAGE );
+	CMenuWidget languageSettings(LOCALE_LANGUAGESETUP_HEAD, NEUTRINO_ICON_LANGUAGE );
 
 	languageSettings.setMode(MODE_SETUP);
 	languageSettings.enableShrinkMenu();
@@ -573,7 +573,7 @@ void COSDTimingSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "COSDTimingSettings::showMenu:\n");
 	
-	ClistBoxWidget osdTimingSettings(LOCALE_COLORMENU_TIMING, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget osdTimingSettings(LOCALE_COLORMENU_TIMING, NEUTRINO_ICON_SETTINGS);
 
 	osdTimingSettings.setMode(MODE_SETUP);
 	osdTimingSettings.enableShrinkMenu();

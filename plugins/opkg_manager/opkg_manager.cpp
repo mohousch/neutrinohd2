@@ -202,7 +202,7 @@ bool COPKGManager::showPkgMenu(const int pkg_content_id)
 		return false;
 	}
 		
-	ClistBoxWidget menu("OPKG-Manager", NEUTRINO_ICON_UPDATE, MENU_WIDTH + 50);
+	CMenuWidget menu("OPKG-Manager", NEUTRINO_ICON_UPDATE, MENU_WIDTH + 50);
 	
 	if(!getPkgData(pkg_content_id))
 	{
@@ -251,7 +251,7 @@ int COPKGManager::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "COPKGManager::showMenu\n");
 
-	ClistBoxWidget * menu = new ClistBoxWidget("OPKG-Manager", NEUTRINO_ICON_UPDATE);
+	CMenuWidget * menu = new CMenuWidget("OPKG-Manager", NEUTRINO_ICON_UPDATE);
 
 	menu->setMode(MODE_SETUP);
 	menu->enableShrinkMenu();

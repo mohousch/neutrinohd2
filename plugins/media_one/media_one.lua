@@ -1247,7 +1247,7 @@ function rssurlmenu(url)
 	end
 	local d = 0 -- directkey
 	--local m = menu.new{name=glob.feedpersed.feed.title, icon="icon_blue"}
-	local m = neutrino.ClistBoxWidget(glob.feedpersed.feed.title, neutrino.NEUTRINO_ICON_MOVIE, 2*neutrino.MENU_WIDTH)
+	local m = neutrino.CMenuWidget(glob.feedpersed.feed.title, neutrino.NEUTRINO_ICON_MOVIE, 2*neutrino.MENU_WIDTH)
 	glob.m = m
 	--m:addKey{directkey=RC.home, id="home", action="home"}
 	--m:addKey{directkey=RC.info, id="FEED Version: " .. fp.version, action="info"}
@@ -1360,7 +1360,7 @@ function exec_submenu(id, title)
 	subm:exec()
 ]]
 
-	local subm = neutrino.ClistBoxWidget(title, neutrino.NEUTRINO_ICON_MOVIE)
+	local subm = neutrino.CMenuWidget(title, neutrino.NEUTRINO_ICON_MOVIE)
 	glob.subm = subm
 
 	for v, w in ipairs(feedentries) do
@@ -1473,7 +1473,7 @@ function start()
 	sm:exec()
 ]]
 
-	local sm = neutrino.ClistBoxWidget("Media One", neutrino.NEUTRINO_ICON_MOVIE)
+	local sm = neutrino.CMenuWidget("Media One", neutrino.NEUTRINO_ICON_MOVIE)
 	glob.sm = sm
 	sm:enableShrinkMenu()
 

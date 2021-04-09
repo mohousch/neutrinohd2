@@ -925,7 +925,7 @@ int CTimerList::modifyTimer()
 
 	CTimerd::responseGetTimer* timer = &timerlist[selected];
 
-	ClistBoxWidget timerSettings(LOCALE_TIMERLIST_MENUMODIFY, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget timerSettings(LOCALE_TIMERLIST_MENUMODIFY, NEUTRINO_ICON_SETTINGS);
 	timerSettings.enablePaintDate();
 	timerSettings.enableShrinkMenu();
 	timerSettings.setMode(MODE_SETUP);
@@ -988,7 +988,7 @@ int CTimerList::modifyTimer()
 	timerSettings.addItem(new CMenuSeparator(LINE));
 	timerSettings.addItem(m6);
 
-	ClistBoxWidget timerSettings_apids(LOCALE_TIMERLIST_APIDS, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget timerSettings_apids(LOCALE_TIMERLIST_APIDS, NEUTRINO_ICON_SETTINGS);
 
 	timerSettings_apids.setMode(MODE_SETUP);
 	timerSettings_apids.enableShrinkMenu();
@@ -1032,7 +1032,7 @@ int CTimerList::newTimer()
 	timerNew_standby_on = false;
 	strncpy(timerNew.recordingDir, g_settings.network_nfs_recordingdir, sizeof(timerNew.recordingDir));
 
-	ClistBoxWidget timerSettings(LOCALE_TIMERLIST_MENUNEW, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget timerSettings(LOCALE_TIMERLIST_MENUNEW, NEUTRINO_ICON_SETTINGS);
 	timerSettings.enablePaintDate();
 	timerSettings.enableShrinkMenu();
 	timerSettings.setMode(MODE_SETUP);

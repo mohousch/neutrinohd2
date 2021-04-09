@@ -2948,13 +2948,13 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	CIntInput * pBookTypeIntInput[MAX_NUMBER_OF_BOOKMARK_ITEMS];
 	
 	//
-	ClistBoxWidget * pBookItemMenu[MAX_NUMBER_OF_BOOKMARK_ITEMS];
+	CMenuWidget * pBookItemMenu[MAX_NUMBER_OF_BOOKMARK_ITEMS];
 
 	CIntInput bookStartIntInput (LOCALE_MOVIEBROWSER_EDIT_BOOK, (int&)movie_info->bookmarks.start, 5, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO2);
 	CIntInput bookLastIntInput (LOCALE_MOVIEBROWSER_EDIT_BOOK,  (int&)movie_info->bookmarks.lastPlayStop, 5, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO2);
 	CIntInput bookEndIntInput (LOCALE_MOVIEBROWSER_EDIT_BOOK,   (int&)movie_info->bookmarks.end, 5, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO2);
 
-	ClistBoxWidget bookmarkMenu(LOCALE_MOVIEBROWSER_BOOK_HEAD, NEUTRINO_ICON_MOVIE);
+	CMenuWidget bookmarkMenu(LOCALE_MOVIEBROWSER_BOOK_HEAD, NEUTRINO_ICON_MOVIE);
 	//bookmarkMenu.enableSaveScreen(true);
 
 	// intros
@@ -2971,7 +2971,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 		pBookPosIntInput[i1] =  new CIntInput (LOCALE_MOVIEBROWSER_EDIT_BOOK, (int&) movie_info->bookmarks.user[i1].pos, 20, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_POS_INFO2);
 		pBookTypeIntInput[i1] = new CIntInput (LOCALE_MOVIEBROWSER_EDIT_BOOK, (int&) movie_info->bookmarks.user[i1].length, 20, LOCALE_MOVIEBROWSER_EDIT_BOOK_TYPE_INFO1, LOCALE_MOVIEBROWSER_EDIT_BOOK_TYPE_INFO2);
 
-		pBookItemMenu[i1] = new ClistBoxWidget(LOCALE_MOVIEBROWSER_BOOK_HEAD, NEUTRINO_ICON_MOVIE);
+		pBookItemMenu[i1] = new CMenuWidget(LOCALE_MOVIEBROWSER_BOOK_HEAD, NEUTRINO_ICON_MOVIE);
 		//pBookItemMenu[i1]->enableSaveScreen();
 
 		pBookItemMenu[i1]->setMode(MODE_MENU);
@@ -2988,7 +2988,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	// serie Menu
 	CStringInputSMS serieUserInput(LOCALE_MOVIEBROWSER_EDIT_SERIE, movie_info->serieName.c_str());
 
-	ClistBoxWidget serieMenu(LOCALE_MOVIEBROWSER_SERIE_HEAD, NEUTRINO_ICON_MOVIE);
+	CMenuWidget serieMenu(LOCALE_MOVIEBROWSER_SERIE_HEAD, NEUTRINO_ICON_MOVIE);
 	//serieMenu.enableSaveScreen();
 
 	serieMenu.setMode(MODE_MENU);
@@ -3007,7 +3007,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
         movieInfoUpdateAllIfDestEmptyOnly = true;
 
 	// movieInfoMenuUpdate
-        ClistBoxWidget movieInfoMenuUpdate(LOCALE_MOVIEBROWSER_INFO_HEAD_UPDATE, NEUTRINO_ICON_MOVIE);
+        CMenuWidget movieInfoMenuUpdate(LOCALE_MOVIEBROWSER_INFO_HEAD_UPDATE, NEUTRINO_ICON_MOVIE);
 	//movieInfoMenuUpdate.enableSaveScreen();
 	movieInfoMenuUpdate.setMode(MODE_MENU);
 	movieInfoMenuUpdate.enableShrinkMenu();
@@ -3082,7 +3082,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 	CIntInput yearUserIntInput(LOCALE_MOVIEBROWSER_INFO_PRODYEAR, (int&)movie_info->productionDate, 4, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE);
 
 	// movieInfoMenu
-	ClistBoxWidget movieInfoMenu(LOCALE_MOVIEBROWSER_INFO_HEAD, NEUTRINO_ICON_MOVIE, m_cBoxFrame.iWidth);
+	CMenuWidget movieInfoMenu(LOCALE_MOVIEBROWSER_INFO_HEAD, NEUTRINO_ICON_MOVIE, m_cBoxFrame.iWidth);
 
 	movieInfoMenu.setMode(MODE_MENU);
 	movieInfoMenu.enableShrinkMenu();
@@ -3185,7 +3185,7 @@ bool CMovieBrowser::showMenu()
 	CDirMenu dirMenu(&m_dir);
 
 	// parentallock menu
-	ClistBoxWidget parentalMenu(LOCALE_MOVIEBROWSER_MENU_PARENTAL_LOCK_HEAD, NEUTRINO_ICON_MOVIE);
+	CMenuWidget parentalMenu(LOCALE_MOVIEBROWSER_MENU_PARENTAL_LOCK_HEAD, NEUTRINO_ICON_MOVIE);
 
 	parentalMenu.setMode(MODE_SETUP);
 	parentalMenu.enableShrinkMenu();
@@ -3195,7 +3195,7 @@ bool CMovieBrowser::showMenu()
 	parentalMenu.addItem( new CMenuOptionChooser(LOCALE_MOVIEBROWSER_MENU_PARENTAL_LOCK_RATE_HEAD, (int*)(&m_settings.parentalLockAge), MESSAGEBOX_PARENTAL_LOCKAGE_OPTIONS, MESSAGEBOX_PARENTAL_LOCKAGE_OPTION_COUNT, true ));
 
 	// optionsMenuDir
-	ClistBoxWidget optionsMenuDir(LOCALE_MOVIEBROWSER_MENU_DIRECTORIES_HEAD , NEUTRINO_ICON_MOVIE);
+	CMenuWidget optionsMenuDir(LOCALE_MOVIEBROWSER_MENU_DIRECTORIES_HEAD , NEUTRINO_ICON_MOVIE);
 
 	optionsMenuDir.setMode(MODE_SETUP);
 	optionsMenuDir.enableShrinkMenu();
@@ -3236,7 +3236,7 @@ bool CMovieBrowser::showMenu()
 	for(i = 0; i < MB_MAX_ROWS ;i++)
 		browserRowWidthIntInput[i] = new CIntInput(LOCALE_MOVIEBROWSER_BROWSER_ROW_WIDTH,(int&) m_settings.browserRowWidth[i], 3, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE);
 
-	ClistBoxWidget optionsMenuBrowser(LOCALE_MOVIEBROWSER_OPTION_BROWSER , NEUTRINO_ICON_MOVIE);
+	CMenuWidget optionsMenuBrowser(LOCALE_MOVIEBROWSER_OPTION_BROWSER , NEUTRINO_ICON_MOVIE);
 
 	optionsMenuBrowser.setMode(MODE_SETUP);
 	optionsMenuBrowser.enableShrinkMenu();
@@ -3256,7 +3256,7 @@ bool CMovieBrowser::showMenu()
 	}
 
 	// optionsMenu
-	ClistBoxWidget optionsMenu(LOCALE_EPGPLUS_OPTIONS, NEUTRINO_ICON_MOVIE);
+	CMenuWidget optionsMenu(LOCALE_EPGPLUS_OPTIONS, NEUTRINO_ICON_MOVIE);
 
 	optionsMenu.setMode(MODE_SETUP);
 	optionsMenu.enableShrinkMenu();
@@ -3284,7 +3284,7 @@ bool CMovieBrowser::showMenu()
 	CMovieHelp * movieHelp = new CMovieHelp();
 	CNFSSmallMenu * nfs = new CNFSSmallMenu();
 
-	ClistBoxWidget mainMenu(LOCALE_MOVIEBROWSER_MENU_MAIN_HEAD, NEUTRINO_ICON_MOVIE);
+	CMenuWidget mainMenu(LOCALE_MOVIEBROWSER_MENU_MAIN_HEAD, NEUTRINO_ICON_MOVIE);
 
 	mainMenu.setMode(MODE_MENU);
 	mainMenu.enableShrinkMenu();
@@ -3873,7 +3873,7 @@ void CDirMenu::show(void)
 	
 	char tmp[20];
 	
-	ClistBoxWidget dirMenu(LOCALE_MOVIEBROWSER_MENU_DIRECTORIES_HEAD , NEUTRINO_ICON_MOVIE);
+	CMenuWidget dirMenu(LOCALE_MOVIEBROWSER_MENU_DIRECTORIES_HEAD , NEUTRINO_ICON_MOVIE);
 	dirMenu.enableSaveScreen();
 
 	dirMenu.setMode(MODE_MENU);

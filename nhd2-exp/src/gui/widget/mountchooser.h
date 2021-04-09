@@ -40,7 +40,7 @@
 #include <gui/widget/menue.h>
 
 
-class CMountChooser : public ClistBoxWidget
+class CMountChooser : public CMenuWidget
 {
 	private:
 		int * index;

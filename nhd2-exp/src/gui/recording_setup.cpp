@@ -168,7 +168,7 @@ void CRecordingSettings::showMenu()
 {
 	dprintf(DEBUG_NORMAL, "CRecordingSettings::showMenu:\n");
 	
-	ClistBoxWidget recordingSettings(LOCALE_RECORDINGMENU_HEAD, NEUTRINO_ICON_RECORDING );
+	CMenuWidget recordingSettings(LOCALE_RECORDINGMENU_HEAD, NEUTRINO_ICON_RECORDING );
 
 	recordingSettings.setMode(MODE_SETUP);
 	recordingSettings.enableShrinkMenu();

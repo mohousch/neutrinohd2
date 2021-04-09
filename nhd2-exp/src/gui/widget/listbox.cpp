@@ -186,7 +186,7 @@ int CMenuOptionChooser::exec(CMenuTarget *parent)
 	{
 		int select = -1;
 
-		ClistBoxWidget *menu = new ClistBoxWidget(optionNameString.c_str(), NEUTRINO_ICON_SETTINGS);
+		CMenuWidget *menu = new CMenuWidget(optionNameString.c_str(), NEUTRINO_ICON_SETTINGS);
 
 		menu->setMode(MODE_MENU);
 		menu->enableShrinkMenu();
@@ -592,7 +592,7 @@ int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 	{
 		int select = -1;
 		
-		ClistBoxWidget * menu = new ClistBoxWidget(nameString.c_str(), NEUTRINO_ICON_SETTINGS);
+		CMenuWidget * menu = new CMenuWidget(nameString.c_str(), NEUTRINO_ICON_SETTINGS);
 		
 		//if(parent) 
 		//	menu->move(20, 0);
