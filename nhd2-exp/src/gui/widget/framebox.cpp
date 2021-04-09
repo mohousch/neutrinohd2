@@ -241,6 +241,7 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 		if(!caption.empty())
 			c_h = captionFont->getHeight() + 20;
 
+		window.setColor(bgcolor);
 		window.paint();
 
 		if(!iconName.empty())
@@ -257,11 +258,12 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 
 		if (selected)
 		{
+			window.setColor(bgcolor);
 			window.paint();
 
 			if(!iconName.empty())
 			{
-				CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX, window.getWindowsPos().iY, window.getWindowsPos().iWidth, window.getWindowsPos().iHeight - c_h);
+				CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 2, window.getWindowsPos().iY + 2, window.getWindowsPos().iWidth - 4, window.getWindowsPos().iHeight - c_h - 4);
 			}
 
 			if(!caption.empty())
