@@ -61,7 +61,7 @@ typedef std::vector<tmdbinfo> tmdb_video_list_t;
 class CTmdb
 {
 	private:
-		std::vector<tmdbinfo> minfo;
+		tmdb_video_list_t minfo;
 		std::string key; // tmdb api key
 		std::string lang;
 		std::string thumbnail_dir;

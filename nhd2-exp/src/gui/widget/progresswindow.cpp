@@ -136,7 +136,7 @@ void CProgressWindow::showGlobalStatus(const unsigned int prog)
 	pos += int( float(width - w - 20)/100.0 * global_progress);
 		
 	// refresh Box (%)
-	frameBuffer->paintBoxRel(x + width - (w + 20), globalstatusY - 5, w + 20, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 8, COL_MENUCONTENT_PLUS_0);
+	frameBuffer->paintBoxRel(x + width - (w + 20), globalstatusY - 5, w + 20 - 2, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 8, COL_MENUCONTENT_PLUS_0);
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + width - (w + 10), globalstatusY + 18, w, strProg, COL_MENUCONTENT, 0, true); // UTF-8
 
@@ -153,7 +153,7 @@ void CProgressWindow::showGlobalStatus(const unsigned int prog)
 void CProgressWindow::showStatusMessageUTF(const std::string & text)
 {
 	statusText = text;
-	frameBuffer->paintBox(x, statusTextY - mheight, x + width, statusTextY, COL_MENUCONTENT_PLUS_0);
+	frameBuffer->paintBox(x + 2, statusTextY - mheight, x + width - 4, statusTextY, COL_MENUCONTENT_PLUS_0);
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + 10, statusTextY, width - 20, text, COL_MENUCONTENT, 0, true); // UTF-8
 	
 	frameBuffer->blit();
@@ -200,7 +200,7 @@ void CProgressWindow::paint()
 		else
 			l_caption = captionString.c_str();
 
-		CHeaders headers(x, y, width, hheight, l_caption, NEUTRINO_ICON_INFO);
+		CHeaders headers(x + 2, y + 2, width - 4, hheight - 2, l_caption, NEUTRINO_ICON_INFO);
 		headers.setCorner();
 		headers.paint();
 	}

@@ -223,13 +223,13 @@ std::string CTmdb::createInfoText()
 	if (minfo[0].media_type == "tv")
 	{
 		infoText += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + minfo[0].runtimes;
-		infoText += "\n";
 	}
 	else
 	{
 		infoText += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_LENGTH) + ": " + to_string(minfo[0].runtime);
-		infoText += "\n";
 	}
+
+	infoText += "\n";
 
 	infoText += (std::string)g_Locale->getText(LOCALE_EPGVIEWER_GENRE) + ": " + minfo[0].genres;
 	infoText += "\n";

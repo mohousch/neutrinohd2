@@ -115,6 +115,7 @@ class CTestMenu : public CMenuTarget
 		CProgressWindow * progressWindow;
 		CFrameBox *fireTVBox;
 		CFrameBox *fireTV1Box;
+		CFrameBox *frameBox;
 
 		// functions helpers
 		void loadTMDBPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1, bool search = false);
@@ -301,6 +302,7 @@ CTestMenu::CTestMenu()
 	progressWindow = NULL;
 	fireTVBox = NULL;
 	fireTV1Box = NULL;
+	frameBox = NULL;
 }
 
 CTestMenu::~CTestMenu()
@@ -1251,6 +1253,10 @@ void CTestMenu::testFireTV()
 	//testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 	testWidget->enablePaintMainFrame();
 
+	frameBox = new CFrameBox(&box);
+	frameBox->setMode(FRAMEBOX_MODE_RANDOM);
+	frameBox->disablePaintFrame();
+
 	// menuFrameBox
 	CFrameBox *menuFrameBox = new CFrameBox(box.iX, box.iY, box.iWidth, 40 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10);
 	menuFrameBox->setMode(FRAMEBOX_MODE_RANDOM);
@@ -1268,7 +1274,8 @@ void CTestMenu::testFireTV()
 	homeFrame->disablePaintFrame();
 	homeFrame->setActionKey(this, "home");
 
-	menuFrameBox->addFrame(homeFrame);
+	//menuFrameBox->addFrame(homeFrame);
+	frameBox->addFrame(homeFrame);
 
 	// setup
 	CFrame *setupFrame = new CFrame(FRAME_TEXT_LINE);
@@ -1280,7 +1287,8 @@ void CTestMenu::testFireTV()
 	setupFrame->disablePaintFrame();
 	setupFrame->setActionKey(this, "setup");
 
-	menuFrameBox->addFrame(setupFrame);
+	//menuFrameBox->addFrame(setupFrame);
+	frameBox->addFrame(setupFrame);
 
 	// help
 	int i_w = 0;
@@ -1292,7 +1300,8 @@ void CTestMenu::testFireTV()
 	//helpFrame->disablePaintFrame();
 	helpFrame->setActionKey(this, "help");
 
-	menuFrameBox->addFrame(helpFrame);
+	//menuFrameBox->addFrame(helpFrame);
+	frameBox->addFrame(helpFrame);
 
 	// fireTV1FrameBox
 	fireTV1Box = new CFrameBox();
@@ -1310,7 +1319,8 @@ void CTestMenu::testFireTV()
 	textFrame->setTitle(buffer.c_str());
 	textFrame->disablePaintFrame();
 
-	fireTV1Box->addFrame(textFrame);
+	//fireTV1Box->addFrame(textFrame);
+	frameBox->addFrame(textFrame);
 
 	// pic
 	CFrame * artFrame = new CFrame(FRAME_PICTURE);
@@ -1319,7 +1329,9 @@ void CTestMenu::testFireTV()
 	artFrame->disablePaintFrame();
 	artFrame->setActionKey(this, "fire1play");
 
-	fireTV1Box->addFrame(artFrame);
+	//fireTV1Box->addFrame(artFrame);
+	frameBox->addFrame(artFrame);
+	
 
 	// other
 	CFrameBox *otherTVBox = new CFrameBox();
@@ -1335,7 +1347,8 @@ void CTestMenu::testFireTV()
 	otherFrame->setTitle("andere Filme");
 	otherFrame->disablePaintFrame();
 
-	otherTVBox->addFrame(otherFrame);
+	//otherTVBox->addFrame(otherFrame);
+	frameBox->addFrame(otherFrame);
 
 	//fireTV1FrameBox
 	fireTVBox = new CFrameBox();
@@ -1347,12 +1360,14 @@ void CTestMenu::testFireTV()
 	for (int i = 1; i < 7; i++)
 	{
 		art1Frame = new CFrame(FRAME_PICTURE);
+		art1Frame->setPosition(box.iX + 10 + (i -1)*165, box.iY + 40 + 10 + 300 + 40, 160, 280);
 		art1Frame->setIconName(m_vMovieInfo[i].tfile.c_str());
 		art1Frame->disablePaintFrame();
 		art1Frame->setActionKey(this, "fireplay");
 		art1Frame->setTitle(m_vMovieInfo[i].epgTitle.c_str());
 
-		fireTVBox->addFrame(art1Frame);
+		//fireTVBox->addFrame(art1Frame);
+		frameBox->addFrame(art1Frame);
 	}
 
 /*
@@ -1399,11 +1414,18 @@ void CTestMenu::testFireTV()
 	fireTVBox->addFrame(art6Frame);
 */
 
-	testWidget->addItem(menuFrameBox);
-	testWidget->addItem(fireTV1Box);
-	testWidget->addItem(otherTVBox);
-	testWidget->addItem(fireTVBox);
+	//testWidget->addItem(menuFrameBox);
+	//testWidget->addItem(fireTV1Box);
+	//testWidget->addItem(otherTVBox);
+	//testWidget->addItem(fireTVBox);
+	testWidget->addItem(frameBox);
 	testWidget->exec(NULL, "");
+
+	delete frameBox;
+	frameBox = NULL;
+
+	delete testWidget;
+	testWidget = NULL;
 }
 
 void CTestMenu::testListFrameWidget()
@@ -6731,8 +6753,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	else if(actionKey == "fireplay")
 	{
-		if (fireTVBox)
-			selected = fireTVBox->getSelected() + 1;
+		if (frameBox)
+			selected = frameBox->getSelected() - 5;
 		else
 			selected = 0;
 
@@ -6748,7 +6770,7 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	else if(actionKey == "fire1play")
 	{
-			selected = 0;
+		selected = 0;
 
 		if (&m_vMovieInfo[selected].file != NULL) 
 		{
