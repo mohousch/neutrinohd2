@@ -113,8 +113,8 @@ class CTestMenu : public CMenuTarget
 		ClistBox *listBox;
 
 		CProgressWindow * progressWindow;
-		CFrameBox *fireTVBox;
-		CFrameBox *fireTV1Box;
+		//CFrameBox *fireTVBox;
+		//CFrameBox *fireTV1Box;
 		CFrameBox *frameBox;
 
 		// functions helpers
@@ -300,8 +300,8 @@ CTestMenu::CTestMenu()
 	leftFrame = NULL;
 	listBox = NULL;
 	progressWindow = NULL;
-	fireTVBox = NULL;
-	fireTV1Box = NULL;
+	//fireTVBox = NULL;
+	//fireTV1Box = NULL;
 	frameBox = NULL;
 }
 
@@ -1250,7 +1250,7 @@ void CTestMenu::testFireTV()
 
 	testWidget = new CWidget(&box);
 
-	//testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
+	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 	testWidget->enablePaintMainFrame();
 
 	frameBox = new CFrameBox(&box);
@@ -1258,9 +1258,11 @@ void CTestMenu::testFireTV()
 	frameBox->disablePaintFrame();
 
 	// menuFrameBox
+/*
 	CFrameBox *menuFrameBox = new CFrameBox(box.iX, box.iY, box.iWidth, 40 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10);
 	menuFrameBox->setMode(FRAMEBOX_MODE_RANDOM);
 	menuFrameBox->disablePaintFrame();
+*/
 
 	loadMoviePlaylist();
 
@@ -1291,10 +1293,10 @@ void CTestMenu::testFireTV()
 	frameBox->addFrame(setupFrame);
 
 	// help
+	CFrame *helpFrame = new CFrame(FRAME_ICON);
 	int i_w = 0;
 	int i_h = 0;
 	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_INFO, &i_w, &i_h);
-	CFrame *helpFrame = new CFrame(FRAME_ICON);
 	helpFrame->setPosition(box.iX + 10 + 5 + h_w + 10 + s_w + 10, box.iY + 40, i_w + 4, i_h + 4);
 	helpFrame->setIconName(NEUTRINO_ICON_INFO);
 	//helpFrame->disablePaintFrame();
@@ -1304,10 +1306,12 @@ void CTestMenu::testFireTV()
 	frameBox->addFrame(helpFrame);
 
 	// fireTV1FrameBox
+/*
 	fireTV1Box = new CFrameBox();
 	fireTV1Box->setMode(FRAMEBOX_MODE_RANDOM);
 	fireTV1Box->setPosition(box.iX + 10, box.iY + 40 + s_h + 20, box.iWidth, 280);
 	fireTV1Box->setOutFocus();
+*/
 
 	// text
 	CFrame *textFrame = new CFrame(FRAME_TEXT_NOTSELECTABLE);
@@ -1334,10 +1338,12 @@ void CTestMenu::testFireTV()
 	
 
 	// other
+/*
 	CFrameBox *otherTVBox = new CFrameBox();
 	otherTVBox->setMode(FRAMEBOX_MODE_RANDOM);
 	//otherTVBox->setPosition(box.iX, box.iY + 40 + 10 + 300 + 40, box.iWidth, 280);
 	otherTVBox->setOutFocus();
+*/
 	
 	CFrame *otherFrame = new CFrame(FRAME_TEXT_LINE_NOTSELECTABLE);
 	otherFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]);
@@ -1351,10 +1357,12 @@ void CTestMenu::testFireTV()
 	frameBox->addFrame(otherFrame);
 
 	//fireTV1FrameBox
+/*
 	fireTVBox = new CFrameBox();
 	fireTVBox->setMode(FRAMEBOX_MODE_HORIZONTAL);
 	fireTVBox->setPosition(box.iX, box.iY + 40 + 10 + 300 + 40, box.iWidth, 280);
 	fireTVBox->setOutFocus();
+*/
 
 	CFrame * art1Frame = NULL;
 	for (int i = 1; i < 7; i++)
@@ -1369,50 +1377,6 @@ void CTestMenu::testFireTV()
 		//fireTVBox->addFrame(art1Frame);
 		frameBox->addFrame(art1Frame);
 	}
-
-/*
-	// pic1
-	CFrame * art1Frame = new CFrame(FRAME_PICTURE);
-	//art1Frame->setPosition(box.iX + 10, box.iY + 40 + 10 + 300 + 40, 160, 280);
-	art1Frame->setIconName(m_vMovieInfo[1].tfile.c_str());
-
-	fireTVBox->addFrame(art1Frame);
-
-	// pic2
-	CFrame * art2Frame = new CFrame(FRAME_PICTURE);
-	//art2Frame->setPosition(box.iX + 10 + 160 + 10, box.iY + 40 + 10 + 300 + 40, 160, 280);
-	art2Frame->setIconName(m_vMovieInfo[2].tfile.c_str());
-
-	fireTVBox->addFrame(art2Frame);
-
-	// pic3
-	CFrame * art3Frame = new CFrame(FRAME_PICTURE);
-	//art3Frame->setPosition(box.iX + 10 + 160 + 10 + 160 + 10, box.iY + 40 + 10 + 300 + 40, 160, 280);
-	art3Frame->setIconName(m_vMovieInfo[3].tfile.c_str());
-
-	fireTVBox->addFrame(art3Frame);
-
-	// pic4
-	CFrame * art4Frame = new CFrame(FRAME_PICTURE);
-	//art4Frame->setPosition(box.iX + 10 + 160 + 10 + 160 + 10 + 170, box.iY + 40 + 10 + 300 + 40, 160, 280);
-	art4Frame->setIconName(m_vMovieInfo[4].tfile.c_str());
-
-	fireTVBox->addFrame(art4Frame);
-
-	// pic5
-	CFrame * art5Frame = new CFrame(FRAME_PICTURE);
-	//art5Frame->setPosition(box.iX + 10 + 160 + 10 + 160 + 10 + 170 + 170, box.iY + 40 + 10 + 300 + 40, 160, 280);
-	art5Frame->setIconName(m_vMovieInfo[5].tfile.c_str());
-
-	fireTVBox->addFrame(art5Frame);
-
-	// pic6
-	CFrame * art6Frame = new CFrame(FRAME_PICTURE);
-	//art6Frame->setPosition(box.iX + 10 + 160 + 10 + 160 + 10 + 170 + 170 + 170, box.iY + 40 + 10 + 300 + 40, 160, 280);
-	art6Frame->setIconName(m_vMovieInfo[6].tfile.c_str());
-
-	fireTVBox->addFrame(art6Frame);
-*/
 
 	//testWidget->addItem(menuFrameBox);
 	//testWidget->addItem(fireTV1Box);
