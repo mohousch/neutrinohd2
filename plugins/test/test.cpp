@@ -1317,7 +1317,7 @@ void CTestMenu::testFireTV()
 
 	// text
 	CFrame *textFrame = new CFrame(FRAME_TEXT_NOTSELECTABLE);
-	textFrame->setPosition(box.iX + 10, box.iY + 40 + s_h + 20, box.iWidth - 200, 280);
+	textFrame->setPosition(box.iX + 10, box.iY + 40 + s_h + 20, box.iWidth - 20 - pic_w - 20, 280);
 	std::string buffer;
 	buffer = m_vMovieInfo[0].epgInfo1;
 	buffer += "\n";
@@ -1330,7 +1330,7 @@ void CTestMenu::testFireTV()
 
 	// pic
 	CFrame * artFrame = new CFrame(FRAME_PICTURE);
-	artFrame->setPosition(box.iX + 10 + box.iWidth - 200 + 10, box.iY + 40 + s_h + 20, pic_w - 20, 280);
+	artFrame->setPosition(box.iX + 10 + box.iWidth - 10 - pic_w - 20, box.iY + 40 + s_h + 20, pic_w - 20, 280);
 	artFrame->setIconName(m_vMovieInfo[0].tfile.c_str());
 	artFrame->disablePaintFrame();
 	artFrame->setActionKey(this, "fire1play");
