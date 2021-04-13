@@ -1248,6 +1248,8 @@ void CTestMenu::testFireTV()
 	box.iWidth = CFrameBuffer::getInstance()->getScreenWidth();
 	box.iHeight = CFrameBuffer::getInstance()->getScreenHeight();
 
+	int pic_w = box.iWidth/6;
+
 	testWidget = new CWidget(&box);
 
 	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
@@ -1328,7 +1330,7 @@ void CTestMenu::testFireTV()
 
 	// pic
 	CFrame * artFrame = new CFrame(FRAME_PICTURE);
-	artFrame->setPosition(box.iX + 10 + box.iWidth - 200 + 10, box.iY + 40 + s_h + 20, 160, 280);
+	artFrame->setPosition(box.iX + 10 + box.iWidth - 200 + 10, box.iY + 40 + s_h + 20, pic_w - 20, 280);
 	artFrame->setIconName(m_vMovieInfo[0].tfile.c_str());
 	artFrame->disablePaintFrame();
 	artFrame->setActionKey(this, "fire1play");
@@ -1368,7 +1370,7 @@ void CTestMenu::testFireTV()
 	for (int i = 1; i < 7; i++)
 	{
 		art1Frame = new CFrame(FRAME_PICTURE);
-		art1Frame->setPosition(box.iX + 10 + (i -1)*165, box.iY + 40 + 10 + 300 + 40, 160, 280);
+		art1Frame->setPosition(box.iX + 10 + (i - 1)*10 + (i - 1)*(pic_w - 20), box.iY + 40 + 10 + 300 + 40, pic_w - 20, 280);
 		art1Frame->setIconName(m_vMovieInfo[i].tfile.c_str());
 		art1Frame->disablePaintFrame();
 		art1Frame->setActionKey(this, "fireplay");
