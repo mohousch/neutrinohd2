@@ -108,7 +108,7 @@ class CTestMenu : public CMenuTarget
 
 		bool bigFonts;
 
-		CFrameBox *leftFrame;
+		//CFrameBox *leftFrame;
 
 		ClistBox *listBox;
 
@@ -299,7 +299,7 @@ CTestMenu::CTestMenu()
 	windowWidget = NULL;
 	pig = NULL;
 	grid = NULL;
-	leftFrame = NULL;
+	//leftFrame = NULL;
 	listBox = NULL;
 	progressWindow = NULL;
 	frameBox = NULL;
@@ -908,7 +908,6 @@ void CTestMenu::testCWidget()
 
 	topWidget = new CFrameBox(&topBox);
 	//topWidget->setBackgroundColor(COL_DARK_TURQUOISE);
-	//topWidget->setMode(FRAMEBOX_MODE_VERTICAL);
 	topWidget->setOutFocus();
 
 	CFrame * frame = NULL;
@@ -944,8 +943,8 @@ void CTestMenu::testCWidget()
 	left_selected = 0;
 
 	leftWidget = new ClistBox(&leftBox);
-	leftFrame = new CFrameBox(&leftBox);
-	leftFrame->setMode(FRAMEBOX_MODE_VERTICAL);
+	//leftFrame = new CFrameBox(&leftBox);
+	//leftFrame->setMode(FRAMEBOX_MODE_HORIZONTAL);
 
 	leftWidget->setSelected(left_selected);
 	//leftWidget->enableShrinkMenu();
@@ -965,6 +964,7 @@ void CTestMenu::testCWidget()
 	CMenuSeparator *item8 = new CMenuSeparator();
 	ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "exit");
 
+/*
 	CFrame *frame1 = new CFrame();
 	frame1->setTitle("in den");
 	frame1->setOption("kinos");
@@ -995,6 +995,7 @@ void CTestMenu::testCWidget()
 	//leftFrame->addFrame(frame4);
 	//leftFrame->addFrame(frame5);
 	leftFrame->addFrame(frame6);
+*/
 
 	leftWidget->addItem(item1);
 	leftWidget->addItem(new CMenuSeparator(LINE));
@@ -1087,8 +1088,8 @@ void CTestMenu::testCWidget()
 	delete footersWidget;
 	footersWidget = NULL;
 
-	delete leftFrame;
-	leftFrame = NULL;
+	//delete leftFrame;
+	//leftFrame = NULL;
 }
 
 void CTestMenu::testSingleWidget()

@@ -839,7 +839,7 @@ function testCFrameBox()
 	window:enableCenterPos()
 
 	local frameBox = neutrino.CFrameBox(box)
-	frameBox:setMode(neutrino.FRAMEBOX_MODE_VERTICAL)
+	frameBox:setMode(neutrino.FRAMEBOX_MODE_HORIZONTAL)
 
 	frame1 = neutrino.CFrame()
 	frame1:setTitle("MP3")

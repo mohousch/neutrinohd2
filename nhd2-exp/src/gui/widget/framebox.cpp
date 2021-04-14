@@ -510,11 +510,6 @@ void CFrameBox::paintFrames()
 			frame_width = (itemBox.iWidth - 2*ICON_OFFSET)/((int)frames.size());
 			frame_height = itemBox.iHeight - 2*ICON_OFFSET;
 		}
-		else if(frameMode == FRAMEBOX_MODE_VERTICAL)
-		{
-			frame_width = itemBox.iWidth - 2*ICON_OFFSET;
-			frame_height = (itemBox.iHeight - 2*ICON_OFFSET)/((int)frames.size());
-		}
 
 		frame_x = itemBox.iX + ICON_OFFSET;
 		frame_y = itemBox.iY + ICON_OFFSET;
@@ -529,12 +524,6 @@ void CFrameBox::paintFrames()
 		{	
 			{
 				frame->window.setPosition(frame_x + count*(frame_width) + ICON_OFFSET, frame_y, frame_width - 2*ICON_OFFSET, frame_height);
-			}
-		}
-		else if(frameMode == FRAMEBOX_MODE_VERTICAL)
-		{
-			{
-				frame->window.setPosition(frame_x, frame_y + count*(frame_height) + ICON_OFFSET, frame_width, frame_height - 2*ICON_OFFSET);
 			}
 		}
 
@@ -648,7 +637,7 @@ void CFrameBox::scrollLineDown(const int lines)
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::scrollLineDown:\n");
 
-	if( (frameMode == FRAMEBOX_MODE_VERTICAL) || (frameMode == FRAMEBOX_MODE_RANDOM))
+	if(frameMode == FRAMEBOX_MODE_RANDOM)
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
@@ -673,7 +662,7 @@ void CFrameBox::scrollLineUp(const int lines)
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::scrollLineUp:\n");
 
-	if( (frameMode == FRAMEBOX_MODE_VERTICAL) || (frameMode == FRAMEBOX_MODE_RANDOM) )
+	if(frameMode == FRAMEBOX_MODE_RANDOM) 
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
