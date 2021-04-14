@@ -113,9 +113,11 @@ class CTestMenu : public CMenuTarget
 		ClistBox *listBox;
 
 		CProgressWindow * progressWindow;
-		//CFrameBox *fireTVBox;
-		//CFrameBox *fireTV1Box;
+
 		CFrameBox *frameBox;
+		CFrameBox *frameBox1;
+		CFrameBox *frameBox2;
+		CFrameBox *frameBox3;
 
 		// functions helpers
 		void loadTMDBPlaylist(const char *txt = "movie", const char *list = "popular", const int seite = 1, bool search = false);
@@ -300,9 +302,10 @@ CTestMenu::CTestMenu()
 	leftFrame = NULL;
 	listBox = NULL;
 	progressWindow = NULL;
-	//fireTVBox = NULL;
-	//fireTV1Box = NULL;
 	frameBox = NULL;
+	frameBox1 = NULL;
+	frameBox2 = NULL;
+	frameBox3 = NULL;
 }
 
 CTestMenu::~CTestMenu()
@@ -1255,16 +1258,9 @@ void CTestMenu::testFireTV()
 	testWidget->setBackgroundColor(COL_DARK_TURQUOISE);
 	testWidget->enablePaintMainFrame();
 
-	frameBox = new CFrameBox(&box);
+	frameBox = new CFrameBox(box.iX, box.iY, box.iWidth, 40 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10);
 	frameBox->setMode(FRAMEBOX_MODE_RANDOM);
 	frameBox->disablePaintFrame();
-
-	// menuFrameBox
-/*
-	CFrameBox *menuFrameBox = new CFrameBox(box.iX, box.iY, box.iWidth, 40 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10);
-	menuFrameBox->setMode(FRAMEBOX_MODE_RANDOM);
-	menuFrameBox->disablePaintFrame();
-*/
 
 	loadMoviePlaylist();
 
@@ -1278,7 +1274,6 @@ void CTestMenu::testFireTV()
 	homeFrame->disablePaintFrame();
 	homeFrame->setActionKey(this, "home");
 
-	//menuFrameBox->addFrame(homeFrame);
 	frameBox->addFrame(homeFrame);
 
 	// setup
@@ -1291,7 +1286,6 @@ void CTestMenu::testFireTV()
 	setupFrame->disablePaintFrame();
 	setupFrame->setActionKey(this, "setup");
 
-	//menuFrameBox->addFrame(setupFrame);
 	frameBox->addFrame(setupFrame);
 
 	// help
@@ -1304,16 +1298,14 @@ void CTestMenu::testFireTV()
 	//helpFrame->disablePaintFrame();
 	helpFrame->setActionKey(this, "help");
 
-	//menuFrameBox->addFrame(helpFrame);
 	frameBox->addFrame(helpFrame);
 
-	// fireTV1FrameBox
-/*
-	fireTV1Box = new CFrameBox();
-	fireTV1Box->setMode(FRAMEBOX_MODE_RANDOM);
-	fireTV1Box->setPosition(box.iX + 10, box.iY + 40 + s_h + 20, box.iWidth, 280);
-	fireTV1Box->setOutFocus();
-*/
+	// frameBox1
+	frameBox1 = new CFrameBox(box.iX, box.iY + 40 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10, box.iWidth, 280);
+	frameBox1->setMode(FRAMEBOX_MODE_RANDOM);
+	frameBox1->setPosition(box.iX + 10, box.iY + 40 + s_h + 20, box.iWidth, 280);
+	frameBox1->setOutFocus();
+	frameBox1->disablePaintFrame();
 
 	// text
 	CFrame *textFrame = new CFrame(FRAME_TEXT_NOTSELECTABLE);
@@ -1325,8 +1317,7 @@ void CTestMenu::testFireTV()
 	textFrame->setTitle(buffer.c_str());
 	textFrame->disablePaintFrame();
 
-	//fireTV1Box->addFrame(textFrame);
-	frameBox->addFrame(textFrame);
+	frameBox1->addFrame(textFrame);
 
 	// pic
 	CFrame * artFrame = new CFrame(FRAME_PICTURE);
@@ -1335,17 +1326,15 @@ void CTestMenu::testFireTV()
 	artFrame->disablePaintFrame();
 	artFrame->setActionKey(this, "fire1play");
 
-	//fireTV1Box->addFrame(artFrame);
-	frameBox->addFrame(artFrame);
+	frameBox1->addFrame(artFrame);
 	
 
 	// other
-/*
-	CFrameBox *otherTVBox = new CFrameBox();
-	otherTVBox->setMode(FRAMEBOX_MODE_RANDOM);
-	//otherTVBox->setPosition(box.iX, box.iY + 40 + 10 + 300 + 40, box.iWidth, 280);
-	otherTVBox->setOutFocus();
-*/
+	frameBox2 = new CFrameBox(box.iX, box.iY + 40 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10 + 280, box.iWidth, 80);
+	frameBox2->setMode(FRAMEBOX_MODE_RANDOM);
+	frameBox2->setPosition(box.iX, box.iY + 40 + 10 + 300 + 40, box.iWidth, 280);
+	frameBox2->setOutFocus();
+	frameBox2->disablePaintFrame();
 	
 	CFrame *otherFrame = new CFrame(FRAME_TEXT_LINE_NOTSELECTABLE);
 	otherFrame->setCaptionFont(g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]);
@@ -1355,16 +1344,14 @@ void CTestMenu::testFireTV()
 	otherFrame->setTitle("andere Filme");
 	otherFrame->disablePaintFrame();
 
-	//otherTVBox->addFrame(otherFrame);
-	frameBox->addFrame(otherFrame);
+	frameBox2->addFrame(otherFrame);
 
-	//fireTV1FrameBox
-/*
-	fireTVBox = new CFrameBox();
-	fireTVBox->setMode(FRAMEBOX_MODE_HORIZONTAL);
-	fireTVBox->setPosition(box.iX, box.iY + 40 + 10 + 300 + 40, box.iWidth, 280);
-	fireTVBox->setOutFocus();
-*/
+	//
+	frameBox3 = new CFrameBox();
+	frameBox3->setMode(FRAMEBOX_MODE_HORIZONTAL);
+	frameBox3->setPosition(box.iX, box.iY + 40 + 10 + 300 + 40, box.iWidth, 280);
+	frameBox3->setOutFocus();
+	frameBox3->disablePaintFrame();
 
 	CFrame * art1Frame = NULL;
 	for (int i = 1; i < 7; i++)
@@ -1376,19 +1363,26 @@ void CTestMenu::testFireTV()
 		art1Frame->setActionKey(this, "fireplay");
 		art1Frame->setTitle(m_vMovieInfo[i].epgTitle.c_str());
 
-		//fireTVBox->addFrame(art1Frame);
-		frameBox->addFrame(art1Frame);
+		frameBox3->addFrame(art1Frame);
 	}
 
-	//testWidget->addItem(menuFrameBox);
-	//testWidget->addItem(fireTV1Box);
-	//testWidget->addItem(otherTVBox);
-	//testWidget->addItem(fireTVBox);
 	testWidget->addItem(frameBox);
+	testWidget->addItem(frameBox1);
+	testWidget->addItem(frameBox2);
+	testWidget->addItem(frameBox3);
 	testWidget->exec(NULL, "");
 
 	delete frameBox;
 	frameBox = NULL;
+
+	delete frameBox1;
+	frameBox1 = NULL;
+
+	delete frameBox2;
+	frameBox2 = NULL;
+
+	delete frameBox3;
+	frameBox3 = NULL;
 
 	delete testWidget;
 	testWidget = NULL;
@@ -6719,8 +6713,8 @@ int CTestMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	else if(actionKey == "fireplay")
 	{
-		if (frameBox)
-			selected = frameBox->getSelected() - 5;
+		if (frameBox3)
+			selected = frameBox3->getSelected() + 1;
 		else
 			selected = 0;
 
