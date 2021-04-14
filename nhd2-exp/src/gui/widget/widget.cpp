@@ -701,7 +701,7 @@ void CWidget::onUpKeyPressed()
 {
 	if(hasItem() && selected >= 0)
 	{
-		if( (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ((items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL)) )
+		if( ((items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ((items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL))) || ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() == WIDGET_TYPE_FRAME)) )
 		{
 			for (unsigned int count = 1; count < items.size(); count++) 
 			{
@@ -735,7 +735,8 @@ void CWidget::onDownKeyPressed()
 {
 	if(hasItem() && selected >= 0)
 	{
-		if( (items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ( (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL)) )
+		if( ((items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ( (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL))) || ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() == WIDGET_TYPE_FRAME)) )
+		{
 			//onYellowKeyPressed();
 			for (unsigned int count = 1; count < items.size(); count++) 
 			{
@@ -761,6 +762,7 @@ void CWidget::onDownKeyPressed()
 					break;
 				}
 			}
+		}
 		else
 		{
 			items[selected]->onDownKeyPressed();
@@ -770,64 +772,64 @@ void CWidget::onDownKeyPressed()
 
 void CWidget::onRightKeyPressed()
 {
-	//if (mode == MULTI_WIDGET_MODE)
 	if(hasItem() && selected >= 0)
 	{
-		items[selected]->onRightKeyPressed();
-	}
-/*
-	else
-	{
-		for (unsigned int count = 1; count < frames.size(); count++) 
+		if( (items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME) )
 		{
-			pos = (selected + count)%frames.size();
-
-			CFrame * frame = frames[pos];
-
-			if(frame->isSelectable())
+			for (unsigned int count = 1; count < items.size(); count++) 
 			{
-				frames[selected]->paint(false);
-				frame->paint(true);
+				pos = (selected + count)%items.size();
 
-				selected = pos;
-				
-				break;
+				CWidgetItem * item = items[pos];
+
+				if(item->isSelectable() && item->hasItem())
+				{
+					items[selected]->setOutFocus();
+					items[selected]->paint();
+
+					selected = pos;
+
+					item->setOutFocus(false);
+					item->paint();
+
+					break;
+				}
 			}
 		}
+		else
+			items[selected]->onRightKeyPressed();
 	}
-*/
 }
 
 void CWidget::onLeftKeyPressed()
 {
-	//if (mode == MULTI_WIDGET_MODE)
 	if(hasItem() && selected >= 0)
 	{
-		items[selected]->onLeftKeyPressed();
-	}
-/*
-	else
-	{
-		for (unsigned int count = 1; count < frames.size(); count++) 
+		if( (items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME) )
 		{
-			pos = selected - count;
-			if ( pos < 0 )
-				pos += frames.size();
-
-			CFrame * frame = frames[pos];
-
-			if(frame->isSelectable())
+			for (unsigned int count = 1; count < items.size(); count++) 
 			{
-				frames[selected]->paint(false);
-				frame->paint(true);
+				pos = (selected - count)%items.size();
 
-				selected = pos;
+				CWidgetItem * item = items[pos];
 
-				break;
+				if(item->isSelectable() && item->hasItem())
+				{
+					items[selected]->setOutFocus();
+					items[selected]->paint();
+
+					selected = pos;
+
+					item->setOutFocus(false);
+					item->paint();
+
+					break;
+				}
 			}
 		}
+		else
+			items[selected]->onLeftKeyPressed();
 	}
-*/
 }
 
 void CWidget::onPageUpKeyPressed()
