@@ -174,6 +174,7 @@
 #include <system/helpers.h>
 #include <system/tmdbparser.h>
 #include <system/ytparser.h>
+#include <system/httptool.h>
 
 // zapit
 #include <frontend_c.h>

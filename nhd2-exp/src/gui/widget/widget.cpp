@@ -701,7 +701,7 @@ void CWidget::onUpKeyPressed()
 {
 	if(hasItem() && selected >= 0)
 	{
-		if( ((items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ((items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL))) || ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() == WIDGET_TYPE_FRAME) && items.size() > 1) )
+		if( ((items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ((items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL))) /*|| ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() == WIDGET_TYPE_FRAME) && items.size() > 1)*/ )
 		{
 			for (unsigned int count = 1; count < items.size(); count++) 
 			{
@@ -735,7 +735,7 @@ void CWidget::onDownKeyPressed()
 {
 	if(hasItem() && selected >= 0)
 	{
-		if( ((items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ( (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL))) || ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() == WIDGET_TYPE_FRAME) && items.size() > 1) )
+		if( ((items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ( (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL))) /*|| ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() == WIDGET_TYPE_FRAME) && items.size() > 1)*/ )
 		{
 			//onYellowKeyPressed();
 			for (unsigned int count = 1; count < items.size(); count++) 
@@ -774,7 +774,7 @@ void CWidget::onRightKeyPressed()
 {
 	if(hasItem() && selected >= 0)
 	{
-		if( (items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME) )
+		if( (items[selected]->itemType == WIDGET_ITEM_LISTBOX) && ( (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME) && (items[selected]->getWidgetType() != WIDGET_TYPE_EXTENDED)) )
 		{
 			for (unsigned int count = 1; count < items.size(); count++) 
 			{
@@ -805,7 +805,7 @@ void CWidget::onLeftKeyPressed()
 {
 	if(hasItem() && selected >= 0)
 	{
-		if( (items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() != WIDGET_TYPE_FRAME) )
+		if( (items[selected]->itemType == WIDGET_ITEM_LISTBOX) && ((items[selected]->getWidgetType() != WIDGET_TYPE_FRAME) && (items[selected]->getWidgetType() != WIDGET_TYPE_EXTENDED)) )
 		{
 			for (unsigned int count = 1; count < items.size(); count++) 
 			{

@@ -72,12 +72,12 @@ void CFlashTool::setMTDDevice( const std::string & mtddevice )
 	dprintf(DEBUG_NORMAL, "flashtool.cpp: set mtd device to %s\n", mtddevice.c_str());
 }
 
-void CFlashTool::setStatusViewer( CProgressWindow* statusview )
+void CFlashTool::setStatusViewer( CProgressWindow *statusview )
 {
 	statusViewer = statusview;
 }
 
-bool CFlashTool::readFromMTD( const std::string & filename, int globalProgressEnd )
+bool CFlashTool::readFromMTD( const std::string &filename, int globalProgressEnd )
 {
 	int fd1, fd2;
 	long filesize;
@@ -127,7 +127,7 @@ bool CFlashTool::readFromMTD( const std::string & filename, int globalProgressEn
 		
 		if(statusViewer)
 		{
-			if(globalProgressEnd!=-1)
+			if(globalProgressEnd != -1)
 			{
 				int globalProg = globalProgressBegin + int((globalProgressEnd-globalProgressBegin) * prog/100. );
 				statusViewer->showGlobalStatus(globalProg);

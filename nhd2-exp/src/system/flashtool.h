@@ -43,7 +43,7 @@ class CFlashTool
 {
 	private:
 	
-		CProgressWindow * statusViewer;
+		CProgressWindow *statusViewer;
 		std::string mtdDevice;
 		std::string ErrorMessage;
 
@@ -53,12 +53,12 @@ class CFlashTool
 		CFlashTool();
 		~CFlashTool();
 
-		const std::string & getErrorMessage(void) const;
+		const std::string &getErrorMessage(void) const;
 
 		void setMTDDevice( const std::string & mtddevice );
-		void setStatusViewer(CProgressWindow * statusview );
+		void setStatusViewer(CProgressWindow *statusview );
 
-		bool program( const std::string & filename, int globalProgressEndErase=-1, int globalProgressEndFlash=-1 );
+		bool program( const std::string & filename, int globalProgressEndErase = -1, int globalProgressEndFlash = -1 );
 		bool readFromMTD( const std::string & filename, int globalProgressEnd=-1 );
 
 		//bool check_cramfs( const std::string & filename );

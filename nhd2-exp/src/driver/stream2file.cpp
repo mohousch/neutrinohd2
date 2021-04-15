@@ -62,6 +62,7 @@
 #include <frontend_c.h>
 
 #include <system/debug.h>
+#include <system/httptool.h>
 
 extern "C" {
 #include <driver/genpsi.h>

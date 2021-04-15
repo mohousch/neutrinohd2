@@ -174,7 +174,7 @@ function select_playitem()
 	m = neutrino.CMenuWidget("Wunderschön", neutrino.PLUGINDIR .. "/Wunderschön/Wunderschön_hint.png", 2*neutrino.MENU_WIDTH) 
 
 	m:setWidgetType(neutrino.WIDGET_TYPE_CLASSIC)
-	m:setMode(neutrino.MODE_MENU)
+	--m:setMode(neutrino.MODE_MENU)
 	m:enableShrinkMenu()
 	m:enablePaintDate()
 

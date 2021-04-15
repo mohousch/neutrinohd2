@@ -69,7 +69,7 @@ CNKMovies::CNKMovies(int mode, int id, std::string title)
 	catID = id;
 	caption = title;
 
-	recordingstatus = 0;
+	//recordingstatus = 0;
 }
 
 CNKMovies::~CNKMovies()
@@ -303,20 +303,34 @@ void CNKMovies::recordMovie(MI_MOVIE_INFO& movie)
 
 	m_movieInfo.encodeMovieInfoXml(&infoString, &movie);
 
-	::start_file_recording(movie.epgTitle.c_str(), infoString.c_str(), movie.file.Name.c_str());
+	//::start_file_recording(movie.epgTitle.c_str(), infoString.c_str(), movie.file.Name.c_str());
 
-	recordingstatus = 1;
+	CProgressWindow * progressWindow = new CProgressWindow();
+	progressWindow->setTitle("NetzKino: downloading...");
+
+	CHTTPTool httpTool;
+
+	httpTool.setStatusViewer(progressWindow);
+
+	std::string target = g_settings.network_nfs_recordingdir;
+	target += "/";
+	target += movie.epgTitle.c_str();
+	target += "." + getFileExt(movie.file.Name);
+
+	httpTool.downloadFile(movie.file.Name.c_str(), target.c_str(), 100);
 }
 
 void CNKMovies::stopRecord(MI_MOVIE_INFO& movie)
 {
+/*
 	std::string extMessage = " ";
 
 	m_movieInfo.encodeMovieInfoXml(&extMessage, &movie);
 
 	::stop_recording(extMessage.c_str(), true);
 
-	recordingstatus = 0;
+	//recordingstatus = 0;
+*/
 }
 
 int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -349,8 +363,9 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		right_selected = rightWidget->getSelected();
 
-		if (recordingstatus == 0)
+		//if (recordingstatus == 0)
 			recordMovie(m_vMovieInfo[right_selected]);
+/*
 		else if (recordingstatus == 1)
 		{
 			if (MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, mbrYes, mbYes | mbNo, NULL, 450, 30, true) == mbrYes)
@@ -358,6 +373,7 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 				stopRecord(m_vMovieInfo[right_selected]);
 			}
 		}
+*/
 
 		return RETURN_REPAINT;
 	}
@@ -399,6 +415,7 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "exit")
 	{
+/*
 		if (recordingstatus == 1)
 		{
 			if (MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, mbrYes, mbYes | mbNo, NULL, 450, 30, true) == mbrYes)
@@ -410,6 +427,7 @@ int CNKMovies::exec(CMenuTarget* parent, const std::string& actionKey)
 			else
 				return RETURN_REPAINT;
 		}
+*/
 
 		return RETURN_EXIT_ALL;
 	}

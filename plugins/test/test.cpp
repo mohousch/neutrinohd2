@@ -563,28 +563,6 @@ void CTestMenu::loadMoviePlaylist()
 					
 			// load movie infos (from xml file)
 			m_movieInfo.loadMovieInfo(&movieInfo);
-
-			std::string tmp_str = files->getFileName();
-
-			removeExtension(tmp_str);
-
-			// refill if empty
-			if(movieInfo.epgTitle.empty())
-				movieInfo.epgTitle = tmp_str;
-
-			if(movieInfo.epgInfo1.empty())
-				movieInfo.epgInfo1 = tmp_str;
-
-			//if(movieInfo.epgInfo2.empty())
-			//	movieInfo.epgInfo2 = tmp_str;
-
-			//thumbnail
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-					
-			if(!access(fname.c_str(), F_OK) )
-				movieInfo.tfile = fname.c_str();
 					
 			// 
 			m_vMovieInfo.push_back(movieInfo);
@@ -646,36 +624,11 @@ void CTestMenu::openMovieFileBrowser()
 			// filter them
 			MI_MOVIE_INFO movieInfo;
 			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
-
-			//
-			m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
 					
 			movieInfo.file.Name = files->Name;
 					
 			// load movie infos (from xml file)
 			m_movieInfo.loadMovieInfo(&movieInfo);
-
-			std::string tmp_str = files->getFileName();
-
-			removeExtension(tmp_str);
-
-			// refill if empty
-			if(movieInfo.epgTitle.empty())
-				movieInfo.epgTitle = tmp_str;
-
-			if(movieInfo.epgInfo1.empty())
-				movieInfo.epgInfo1 = tmp_str;
-
-			//if(movieInfo.epgInfo2.empty())
-			//	movieInfo.epgInfo2 = tmp_str;
-
-			//thumbnail
-			std::string fname = "";
-			fname = files->Name;
-			changeFileNameExt(fname, ".jpg");
-					
-			if(!access(fname.c_str(), F_OK) )
-				movieInfo.tfile = fname.c_str();
 
 			// skip duplicate
 			for (unsigned long i = 0; i < m_vMovieInfo.size(); i++)
@@ -3208,33 +3161,35 @@ void CTestMenu::testCProgressWindow()
 {
 	dprintf(DEBUG_NORMAL, "\ntesting CProgressWindow\n");
 
-	CProgressWindow * progress;
-	
-	progress = new CProgressWindow();
-	//progress->setTitle("CProgressWindow");
+	CProgressWindow * progress = new CProgressWindow();
+	progress->setTitle("CProgressWindow");
 	progress->paint();
 	
-	progress->showStatusMessageUTF("testing CProgressWindow");
+	progress->showStatusMessageUTF("testing CProgressWindow:0");
 	progress->showGlobalStatus(0);
 	usleep(1000000);
 	progress->showGlobalStatus(10);
 	usleep(1000000);
 	progress->showGlobalStatus(20);
 	usleep(1000000);
+	progress->showStatusMessageUTF("testing CProgressWindow:30");
 	progress->showGlobalStatus(30);
 	usleep(1000000);
 	progress->showGlobalStatus(40);
 	usleep(1000000);
 	progress->showGlobalStatus(50);
 	usleep(1000000);
+	progress->showStatusMessageUTF("testing CProgressWindow:60");
 	progress->showGlobalStatus(60);
 	usleep(1000000);
 	progress->showGlobalStatus(70);
 	usleep(1000000);
+	progress->showStatusMessageUTF("testing CProgressWindow:80");
 	progress->showGlobalStatus(80);
 	usleep(1000000);
 	progress->showGlobalStatus(90);
 	usleep(1000000);
+	progress->showStatusMessageUTF("testing CProgressWindow:100");
 	progress->showGlobalStatus(100);
 	usleep(1000000);
 	
@@ -6810,7 +6765,6 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
 	mainMenu->addItem(new CMenuForwarder("CScrollBar", false, NULL, this, "scrollbar"));
-	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
 	mainMenu->addItem(new CMenuForwarder("CItems2DetailsLine", false, NULL, this, "detailsline"));
 	mainMenu->addItem(new CMenuSeparator(LINE | STRING, "Widget Components"));
 	mainMenu->addItem(new CMenuForwarder("CHeaders", true, NULL, this, "headers"));
@@ -6819,6 +6773,7 @@ void CTestMenu::showMenu()
 	mainMenu->addItem(new CMenuForwarder("CWindow(customColor)", true, NULL, this, "windowcustomcolor"));
 	mainMenu->addItem(new CMenuForwarder("CTextBox", true, NULL, this, "textbox"));
 	mainMenu->addItem(new CMenuForwarder("CListFrame", true, NULL, this, "listframe"));
+	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(standard)", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(classic)", true, NULL, this, "listbox2"));
 	mainMenu->addItem(new CMenuForwarder("ClistBox(extended)", true, NULL, this, "listbox3"));

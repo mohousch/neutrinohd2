@@ -150,7 +150,7 @@ void CProgressWindow::showGlobalStatus(const unsigned int prog)
 #endif // VFD_UPDATE
 }
 
-void CProgressWindow::showStatusMessageUTF(const std::string & text)
+void CProgressWindow::showStatusMessageUTF(const std::string &text)
 {
 	statusText = text;
 	frameBuffer->paintBox(x + 2, statusTextY - mheight, x + width - 4, statusTextY, COL_MENUCONTENT_PLUS_0);

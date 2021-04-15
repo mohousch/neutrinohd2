@@ -23,8 +23,8 @@
 #include <curl/easy.h>
 
 #include <global.h>
-#include <system/debug.h>
 
+#include <system/debug.h>
 #include <system/httptool.h>
 
 
@@ -34,13 +34,13 @@ CHTTPTool::CHTTPTool()
 	userAgent = "neutrino/httpdownloader";
 }
 
-void CHTTPTool::setStatusViewer( CProgressWindow* statusview )
+void CHTTPTool::setStatusViewer(CProgressWindow* statusview)
 {
 	statusViewer = statusview;
 }
 
 
-int CHTTPTool::show_progress( void * clientp, double dltotal, double dlnow, double /*ultotal*/, double /*ulnow*/ )
+int CHTTPTool::show_progress(void * clientp, double dltotal, double dlnow, double /*ultotal*/, double /*ulnow*/)
 {
 	CHTTPTool * hTool = ((CHTTPTool *)clientp);
 	
@@ -51,6 +51,7 @@ int CHTTPTool::show_progress( void * clientp, double dltotal, double dlnow, doub
 		if(hTool->iGlobalProgressEnd != -1)
 		{
 			int globalProg = hTool->iGlobalProgressBegin + int((hTool->iGlobalProgressEnd-hTool->iGlobalProgressBegin) * progress/100. );
+
 			hTool->statusViewer->showGlobalStatus(globalProg);
 		}
 	}
@@ -58,7 +59,7 @@ int CHTTPTool::show_progress( void * clientp, double dltotal, double dlnow, doub
 	return 0;
 }
 
-bool CHTTPTool::downloadFile(const std::string & URL, const char * const downloadTarget, int globalProgressEnd)
+bool CHTTPTool::downloadFile(const std::string &URL, const char * const downloadTarget, int globalProgressEnd)
 {
 	CURL *curl;
 	CURLcode res;
@@ -82,7 +83,10 @@ bool CHTTPTool::downloadFile(const std::string & URL, const char * const downloa
 		
 		if(statusViewer)
 		{
-			iGlobalProgressBegin = statusViewer->getGlobalStatus();
+			statusViewer->paint();
+			statusViewer->showStatusMessageUTF(URL.c_str());
+	
+			iGlobalProgressBegin = 0; //statusViewer->getGlobalStatus();
 		}
 		
 		curl_easy_setopt(curl, CURLOPT_URL, URL.c_str() );
@@ -98,7 +102,7 @@ bool CHTTPTool::downloadFile(const std::string & URL, const char * const downloa
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 		//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
 
-		if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
+		if(strcmp(g_settings.softupdate_proxyserver, "") != 0)
 		{
 			//use proxyserver
 			dprintf(DEBUG_INFO, "neutrino/httpdownloader: use proxyserver : %s\n", g_settings.softupdate_proxyserver);
@@ -128,6 +132,11 @@ bool CHTTPTool::downloadFile(const std::string & URL, const char * const downloa
 		fflush(headerfile);
 		fclose(headerfile);
 	}
+
+	if(statusViewer)
+	{
+		statusViewer->hide();
+	}	
 
 	return res == 0;
 }
