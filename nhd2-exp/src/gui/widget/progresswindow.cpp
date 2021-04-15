@@ -50,7 +50,7 @@ CProgressWindow::CProgressWindow(int _x, int _y, int _width, int _height)
 
 	paintHead = false;
 
-	global_progress = 101;
+	global_progress = 0;
 	statusText = "";
 
 	// initframes
@@ -162,12 +162,6 @@ void CProgressWindow::showStatusMessageUTF(const std::string &text)
 	CVFD::getInstance()->showProgressBar2(-1, text.c_str()); // set local text in VFD
 #endif // VFD_UPDATE
 }
-
-unsigned int CProgressWindow::getGlobalStatus(void)
-{
-	return global_progress;
-}
-
 
 void CProgressWindow::hide()
 {

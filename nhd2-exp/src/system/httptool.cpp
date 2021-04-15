@@ -86,7 +86,7 @@ bool CHTTPTool::downloadFile(const std::string &URL, const char * const download
 			statusViewer->paint();
 			statusViewer->showStatusMessageUTF(URL.c_str());
 	
-			iGlobalProgressBegin = 0; //statusViewer->getGlobalStatus();
+			iGlobalProgressBegin = statusViewer->getGlobalStatus();
 		}
 		
 		curl_easy_setopt(curl, CURLOPT_URL, URL.c_str() );

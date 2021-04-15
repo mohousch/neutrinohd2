@@ -77,7 +77,7 @@ class CProgressWindow : public CWidgetItem
 		void showGlobalStatus(const unsigned int prog);
 		void showStatusMessageUTF(const std::string & text); // UTF-8
 
-		unsigned int getGlobalStatus(void);
+		unsigned int getGlobalStatus(void){return global_progress;};
 };
 
 #endif
