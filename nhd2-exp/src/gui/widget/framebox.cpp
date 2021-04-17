@@ -246,14 +246,14 @@ int CFrame::paint(bool selected, bool /*AfterPulldown*/)
 
 		if(!iconName.empty())
 		{
-			CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 5, window.getWindowsPos().iY + 5, window.getWindowsPos().iWidth - 10, window.getWindowsPos().iHeight - c_h - 10);
+			CFrameBuffer::getInstance()->displayImage(iconName, window.getWindowsPos().iX + 10, window.getWindowsPos().iY + 10, window.getWindowsPos().iWidth - 20, window.getWindowsPos().iHeight - c_h - 20);
 		}
 
 		if(!caption.empty())
 		{
 			int c_w = captionFont->getRenderWidth(caption);
 
-			captionFont->RenderString(window.getWindowsPos().iX + 3, window.getWindowsPos().iY + window.getWindowsPos().iHeight, window.getWindowsPos().iWidth - 6, caption.c_str(), color);
+			captionFont->RenderString(window.getWindowsPos().iX + 3, window.getWindowsPos().iY + window.getWindowsPos().iHeight - 5, window.getWindowsPos().iWidth - 6, caption.c_str(), color);
 		}
 
 		if (selected)
@@ -563,8 +563,7 @@ void CFrameBox::hide()
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::hide:\n");
 
-	if (paintFrame)
-		cFrameWindow.hide();
+	cFrameWindow.hide();
 }
 
 bool CFrameBox::isSelectable(void)

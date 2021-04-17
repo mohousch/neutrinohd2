@@ -176,8 +176,10 @@ class CFrameBox : public CWidgetItem
 			itemBox.iY = y;
 			itemBox.iWidth = dx;
 			itemBox.iHeight = dy;
+
+			initFrames();
 		};
-		void setPosition(CBox* position){itemBox = *position;};
+		void setPosition(CBox* position){itemBox = *position; initFrames();};
 
 		virtual void addFrame(CFrame *frame, const bool defaultselected = false);
 		bool hasItem();
