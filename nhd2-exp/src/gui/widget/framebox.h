@@ -160,9 +160,6 @@ class CFrameBox : public CWidgetItem
 		virtual void paintFrames();
 
 		int frameMode;
-
-		std::string actionKey;
-
 		bool paintFrame;
 
 	public:
@@ -196,10 +193,7 @@ class CFrameBox : public CWidgetItem
 		virtual void scrollLineUp(const int lines = 1);
 
 		int getSelected(){return selected;};
-		std::string getActionKey(void){if (hasItem() && selected >= 0 && frames[selected]->isSelectable()) return frames[selected]->actionKey; else return actionKey;};
-
 		void setMode(int mode = FRAMEBOX_MODE_HORIZONTAL){frameMode = mode;};
-
 		void disablePaintFrame(void){paintFrame = false;};
 
 		//

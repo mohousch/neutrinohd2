@@ -36,6 +36,15 @@ class CSysInfoWidget : public CMenuTarget
 		
 		CFrameBuffer *frameBuffer;
 
+		CBox cFrameBox;
+		CBox cFrameBoxTitle;
+		CBox cFrameBoxText;
+		CBox cFrameBoxFoot;
+
+		CIcon titleIcon;
+
+		CTextBox* textBox;
+
 		std::string buffer;
 
 		bool syslistChanged;
@@ -52,19 +61,6 @@ class CSysInfoWidget : public CMenuTarget
 		void ps();
 
 		void readList();
-
-		CBox cFrameBox;
-		CBox cFrameBoxTitle;
-		CBox cFrameBoxText;
-		CBox cFrameBoxFoot;
-
-		CWindow HeadWindow;
-		CWindow FootWindow;
-
-		CIcon titleIcon;
-		CIcon footIcon;
-
-		CTextBox* textBox;
 	public:
 		CSysInfoWidget(int m = SYSINFO);
 		~CSysInfoWidget();

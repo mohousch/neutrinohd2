@@ -41,7 +41,6 @@ CSysInfoWidget::CSysInfoWidget(int m)
 	cFrameBoxTitle.iHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), titleIcon.iHeight) + 6;
        
 	//foot height
-	footIcon.setIcon(NEUTRINO_ICON_BUTTON_RED);
 	cFrameBoxFoot.iHeight = cFrameBoxTitle.iHeight;
 	
 	// coordinate
@@ -169,8 +168,6 @@ int CSysInfoWidget::exec(CMenuTarget* parent, const std::string& /*actionKey*/)
 	paintHead();
 	paint();
 	paintFoot();
-	
-	frameBuffer->blit();
 
 	neutrino_msg_t msg; 
 	neutrino_msg_data_t data;
@@ -294,25 +291,23 @@ void CSysInfoWidget::sysinfo()
 	const char *fmt = " %a %d %b %Y %H:%M";
 	long t;
 
-	/* Get and Format the SystemTime */
+	// Get and Format the SystemTime
 	t = time(NULL);
 	struct tm *tp;
 	tp = localtime(&t);
 	strftime(line, sizeof(line), fmt, tp);
-	/* Get and Format the SystemTime end */
 
-	/* Create tmpfile with date /tmp/sysinfo */
+	// Create tmpfile with date /tmp/sysinfo
 	system("echo 'DATUM:' > /tmp/sysinfo");
 	f=fopen("/tmp/sysinfo","a");
 	if(f)
 		fprintf(f,"%s\n", line);
 	fclose(f);
-	/* Create tmpfile with date /tmp/sysinfo end */
 
-	/* Get the statistics from /proc/stat */
+	// Get the statistics from /proc/stat
 	if(prevCPU[0] == 0)
 	{
-		f=fopen("/proc/stat","r");
+		f = fopen("/proc/stat","r");
 		if(f)
 		{
 			fgets(line, 256, f); /* cpu */
@@ -325,23 +320,23 @@ void CSysInfoWidget::sysinfo()
 	}
 	else
 	{
-		for(i=0;i<5;i++)
-				prevCPU[i]=curCPU[i];
+		for(i = 0; i < 5; i++)
+			prevCPU[i]=curCPU[i];
 	}
 
-	while(((curCPU[0]-prevCPU[0]) < 100) || (curCPU[0]==0))
+	while(((curCPU[0] - prevCPU[0]) < 100) || (curCPU[0] == 0))
 	{
-		f=fopen("/proc/stat","r");
+		f = fopen("/proc/stat","r");
 		if(f)
 		{
-			curCPU[0]=0;
-			fgets(line,256,f); /* cpu */
-			sscanf(line,"cpu %lu %lu %lu %lu",&curCPU[1],&curCPU[2],&curCPU[3],&curCPU[4]);
-			for(i=1;i<5;i++)
-				curCPU[0]+=curCPU[i];
+			curCPU[0] = 0;
+			fgets(line, 256, f); /* cpu */
+			sscanf(line, "cpu %lu %lu %lu %lu", &curCPU[1], &curCPU[2], &curCPU[3], &curCPU[4]);
+			for(i = 1; i < 5; i++)
+				curCPU[0] += curCPU[i];
 		}
 		fclose(f);
-		if((curCPU[0]-prevCPU[0])<100)
+		if((curCPU[0] - prevCPU[0]) < 100)
 			sleep(1);
 	}
 	
@@ -349,68 +344,66 @@ void CSysInfoWidget::sysinfo()
 	if(!(curCPU[0] - prevCPU[0])==0)
 	{
 		faktor = 100.0/(curCPU[0] - prevCPU[0]);
-		for(i=0;i<4;i++)
-			value[i]=(curCPU[i]-prevCPU[i])*faktor;
+		for(i = 0; i < 4; i++)
+			value[i] = (curCPU[i] - prevCPU[i])*faktor;
 
-		value[4]=100.0-value[1]-value[2]-value[3];
+		value[4] = 100.0 - value[1] - value[2] - value[3];
 
-		f=fopen("/tmp/sysinfo","a");
+		f = fopen("/tmp/sysinfo", "a");
 		if(f)
 		{
-			memset(line,0x20,sizeof(line));
-			for(i=1, j=0;i<5;i++)
+			memset(line, 0x20, sizeof(line));
+			for(i = 1, j = 0; i < 5; i++)
 			{
-				memset(strhelp,0,sizeof(strhelp));
-				sprintf(strhelp,"%.1f", value[i]);
-				memcpy(&line[(++j*7)-2-strlen(strhelp)], &strhelp[0], strlen(strhelp));
-				memcpy(&line[(j*7)-2], "%", 1);
+				memset(strhelp, 0, sizeof(strhelp));
+				sprintf(strhelp, "%.1f", value[i]);
+				memcpy(&line[(++j*7) - 2 - strlen(strhelp)], &strhelp[0], strlen(strhelp));
+				memcpy(&line[(j*7) - 2], "%", 1);
 			}
-			line[(j*7)-1]='\0';
+			line[(j*7) - 1] = '\0';
 			fprintf(f,"\nPERFORMANCE:\n USER:  NICE:   SYS:  IDLE:\n%s\n", line);
 		}
 		fclose(f);
 	}
-	/* Get the statistics from /proc/stat end*/
 
-	/* Get kernel-info from /proc/version*/
-	f=fopen("/proc/version","r");
+	// Get kernel-info from /proc/version
+	f = fopen("/proc/version", "r");
 	if(f)
 	{
 		char* token;
-		fgets(line,256,f); // version
+		fgets(line, 256, f); // version
 		token = strstr(line,") (");
 		if(token != NULL)
 			*++token = 0x0;
 		fclose(f);
-		f=fopen("/tmp/sysinfo","a");
+		f = fopen("/tmp/sysinfo", "a");
 		fprintf(f, "\nKERNEL:\n %s\n %s\n", line, ++token);
 	}
 	fclose(f);
-	/* Get kernel-info from /proc/version end*/
 
-	/* Get uptime-info from /proc/uptime*/
-	f=fopen("/proc/uptime","r");
+	// Get uptime-info from /proc/uptime
+	f = fopen("/proc/uptime", "r");
 	if(f)
 	{
-		fgets(line,256,f);
+		fgets(line, 256, f);
 		float ret[4];
 		const char* strTage[2] = {"Tage", "Tag"};
 		const char* strStunden[2] = {"Stunden", "Stunde"};
 		const char* strMinuten[2] = {"Minuten", "Minute"};
-		sscanf(line,"%f",&ret[0]);
-		ret[0]/=60;
-		ret[1]=long(ret[0])/60/24; // Tage
-		ret[2]=long(ret[0])/60-long(ret[1])*24; // Stunden
-		ret[3]=long(ret[0])-long(ret[2])*60-long(ret[1])*60*24; // Minuten
+		sscanf(line, "%f", &ret[0]);
+		ret[0] /= 60;
+		ret[1] = long(ret[0])/60/24; // Tage
+		ret[2] = long(ret[0])/60-long(ret[1])*24; // Stunden
+		ret[3] = long(ret[0])-long(ret[2])*60-long(ret[1])*60*24; // Minuten
 		fclose(f);
 
-		f=fopen("/tmp/sysinfo","a");
+		f = fopen("/tmp/sysinfo", "a");
 		if(f)
-			fprintf(f, "UPTIME:\n System laeuft seit: %.0f %s %.0f %s %.0f %s\n", ret[1], strTage[int(ret[1])==1], ret[2], strStunden[int(ret[2])==1], ret[3], strMinuten[int(ret[3])==1]);
+			fprintf(f, "UPTIME:\n System laeuft seit: %.0f %s %.0f %s %.0f %s\n", ret[1], strTage[int(ret[1]) == 1], ret[2], strStunden[int(ret[2]) == 1], ret[3], strMinuten[int(ret[3]) == 1]);
 	}
 	fclose(f);
-	/* Get uptime-info from /proc/uptime end*/
 
+	//
 	readList();
 }
 
@@ -427,12 +420,12 @@ void CSysInfoWidget::cpuinfo()
 	char line[256];
 	int i = 0;
 	
-	/* Get file-info from /proc/cpuinfo*/
+	// Get file-info from /proc/cpuinfo
 	system("df > /tmp/systmp");
-	f=fopen("/tmp/systmp","r");
+	f = fopen("/tmp/systmp", "r");
 	if(f)
 	{
-		w=fopen("/tmp/sysinfo","w");
+		w = fopen("/tmp/sysinfo","w");
 		if(w)
 		{
 			while((fgets(line,256, f)!=NULL))
@@ -441,7 +434,7 @@ void CSysInfoWidget::cpuinfo()
 				if(i++)
 					fprintf(w,"\nFilesystem: %s\n  1-KBlocks: %s\n  Used: %s\n  Free: %s\n  Use%%: %s\nMounted on: %s\n",Wert1,Wert2,Wert3,Wert4,Wert5,Wert6);
 			}
-			fprintf(w,"\nCPU:\n\n");
+			fprintf(w, "\nCPU:\n\n");
 			fclose(w);
 		}
 	}
@@ -473,10 +466,10 @@ void CSysInfoWidget::readList()
 {
 	buffer.clear();
 				
-	char buf[6000];
+	char buf[60000];
 
 	int fd = open("/tmp/sysinfo", O_RDONLY);
-	int bytes = read(fd, buf, 6000 - 1);
+	int bytes = read(fd, buf, 60000 - 1);
 	close(fd);
 	buf[bytes] = 0;
 	buffer = buf;
@@ -499,4 +492,5 @@ void plugin_exec(void)
 	SysInfoWidget->hide();
 	
 	delete SysInfoWidget;
+	SysInfoWidget = NULL;
 }

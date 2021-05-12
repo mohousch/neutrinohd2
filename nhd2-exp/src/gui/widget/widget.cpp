@@ -582,6 +582,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 					break;
 					
 				case (RC_timeout):
+					exit_pressed = true;
 					break;
 
 				default:

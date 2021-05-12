@@ -1477,11 +1477,10 @@ void CMovieInfoWidget::funArt()
 	textBox.iX = box.iX + 10;
 	textBox.iY = starBox.iY + 10 + 60;
 
-	CWindow * window = new CWindow(&box);
-	CFrameBox * testFrame = new CFrameBox();
+	CFrameBox * testFrame = new CFrameBox(&box);
 	testFrame->setMode(FRAMEBOX_MODE_RANDOM);
-	CWidget * widget = new CWidget();
 
+	CWidget * widget = new CWidget();
 
 	// artFrame
 	CFrame * artFrame = new CFrame(FRAME_PICTURE_NOTSELECTABLE);
@@ -1564,7 +1563,6 @@ void CMovieInfoWidget::funArt()
 
 	testFrame->addFrame(playFrame);
 
-	widget->addItem(window);
 	widget->addItem(testFrame);
 
 	widget->exec(NULL, "");
@@ -1572,8 +1570,8 @@ void CMovieInfoWidget::funArt()
 	delete widget;
 	widget = NULL;
 
-	delete window;
-	window = NULL;	
+	delete testFrame;
+	testFrame = NULL;
 }
 
 int CMovieInfoWidget::exec(CMenuTarget* parent, const std::string& actionKey)

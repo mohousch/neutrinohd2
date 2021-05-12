@@ -917,39 +917,6 @@ void CTestMenu::testCWidget()
 	CMenuSeparator *item8 = new CMenuSeparator();
 	ClistBoxItem *item9 = new ClistBoxItem("Beenden", true, NULL, this, "exit");
 
-/*
-	CFrame *frame1 = new CFrame();
-	frame1->setTitle("in den");
-	frame1->setOption("kinos");
-	frame1->setActionKey(this, "movie_in_cinema");
-
-	CFrame *frame2 = new CFrame();
-	frame2->setTitle("Am");
-	frame2->setOption("populärsten");
-	frame2->setActionKey(this, "movie_popular");
-
-	CFrame *frame3 = new CFrame();
-	frame3->setTitle("am besten");
-	frame3->setOption("bewertet");
-	frame3->setActionKey(this, "movie_top_rated");
-
-	//CFrame *frame4 = new CFrame(FRAME_SEPARATOR);
-	//frame4->setMode(FRAME_SEPARATOR);
-	//CFrame *frame5 = new CFrame(FRAME_SEPARATOR);
-	//frame5->setMode(FRAME_SEPARATOR);
-
-	CFrame *frame6 = new CFrame();
-	frame6->setTitle("Beenden");
-	frame6->setActionKey(this, "exit");
-
-	leftFrame->addFrame(frame1);
-	leftFrame->addFrame(frame2);
-	leftFrame->addFrame(frame3);
-	//leftFrame->addFrame(frame4);
-	//leftFrame->addFrame(frame5);
-	leftFrame->addFrame(frame6);
-*/
-
 	leftWidget->addItem(item1);
 	leftWidget->addItem(new CMenuSeparator(LINE));
 	leftWidget->addItem(item2);
@@ -4108,25 +4075,30 @@ void CTestMenu::testCFrameBox()
 	
 	topBox.iX = g_settings.screen_StartX + 10;
 	topBox.iY = g_settings.screen_StartY + 10;
-	topBox.iWidth = 250;
-	topBox.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20);
+	topBox.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	topBox.iHeight = 60;
 
 	CFrameBox *topWidget = new CFrameBox(&topBox);
+	topWidget->setMode();
+
 	CFrame * frame = NULL;
 
 	frame = new CFrame();
 	frame->setTitle("Neu Filme");
 	frame->setIconName(NEUTRINO_ICON_MOVIE);
 	frame->setOption("in allen Kinos");
+	frame->setActionKey(this, "help");
 	topWidget->addFrame(frame);
 	
 	frame = new CFrame();
 	frame->setTitle("Im Kino");
+	frame->setActionKey(this, "help");
 	topWidget->addFrame(frame);
 
 	frame = new CFrame();
 	frame->setTitle("Am populärsten");
 	frame->setOption("(2019)");
+	frame->setActionKey(this, "help");
 	topWidget->addFrame(frame);
 
 	frame = new CFrame();
@@ -4152,6 +4124,9 @@ REPEAT:
 	{
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 
+		if (topWidget->getActionKey() == "exit")
+			loop = false;
+
 		if ( (msg == RC_home) || (topWidget->getSelected() == 9) )
 		{
 			loop = false;
@@ -4174,10 +4149,33 @@ REPEAT:
 		}
 		else if(msg == RC_ok)
 		{
-			if (topWidget->getSelected() == 8)
+/*
+			if (topWidget->getSelected() == 3)
 				loop = false;
 			else
 				MessageBox(LOCALE_MESSAGEBOX_INFO, "testing CFrameBox\ncoole Widget ;-)", mbrBack, mbBack, NEUTRINO_ICON_INFO);
+*/
+			//actionKey = items[selected]->getActionKey();
+
+			int rv = topWidget->oKKeyPressed(this);
+
+			//FIXME:review this
+			switch ( rv ) 
+			{
+				case RETURN_EXIT_ALL:
+					//retval = RETURN_EXIT_ALL; //fall through
+					loop = false;
+				case RETURN_EXIT:
+					//msg = RC_timeout;
+					loop = false;
+					break;
+				case RETURN_REPAINT:
+					hide();
+					//initFrames();
+					//paint();
+					topWidget->paint();
+					break;
+			}
 		}
 
 		CFrameBuffer::getInstance()->blit();

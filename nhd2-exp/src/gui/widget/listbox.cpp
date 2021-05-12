@@ -1053,7 +1053,7 @@ int CMenuForwarder::getWidth(void) const
 
 int CMenuForwarder::exec(CMenuTarget *parent)
 {
-	dprintf(DEBUG_INFO, "CMenuForwarder::exec: (%s) actionKey: (%s)\n", getName(), actionKey.c_str());
+	dprintf(DEBUG_DEBUG, "CMenuForwarder::exec: (%s) actionKey: (%s)\n", getName(), actionKey.c_str());
 
 	int ret = RETURN_EXIT;
 
@@ -1358,7 +1358,7 @@ int ClistBoxItem::getWidth(void) const
 
 int ClistBoxItem::exec(CMenuTarget* parent)
 {
-	dprintf(DEBUG_INFO, "ClistBoxItem::exec: (%s) actionKey: (%s)\n", getName(), actionKey.c_str());
+	dprintf(DEBUG_DEBUG, "ClistBoxItem::exec: (%s) actionKey: (%s)\n", getName(), actionKey.c_str());
 
 	int ret = RETURN_EXIT;
 
@@ -1791,8 +1791,6 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 
 	itemType = WIDGET_ITEM_LISTBOX;
 
-	actionKey = "";
-
 	savescreen = false;
 	background = NULL;
 
@@ -1807,7 +1805,6 @@ ClistBox::ClistBox(CBox* position)
 	current_page = 0;
 	pos = 0;
 
-	//cFrameBox = *position;
 	itemBox = *position;
 	cFrameBox = itemBox;
 
@@ -1867,8 +1864,6 @@ ClistBox::ClistBox(CBox* position)
 
 	itemType = WIDGET_ITEM_LISTBOX;
 
-	actionKey = "";
-
 	savescreen = false;
 	background = NULL;
 
@@ -1877,6 +1872,8 @@ ClistBox::ClistBox(CBox* position)
 
 ClistBox::~ClistBox()
 {
+	dprintf(DEBUG_NORMAL, "ClistBox:: del\n");
+
 	items.clear();
 }
 
@@ -2042,6 +2039,8 @@ void ClistBox::initFrames()
 
 void ClistBox::paint()
 {
+	dprintf(DEBUG_NORMAL, "ClistBox::paint: (%s)\n", l_name.c_str());
+
 	initFrames();
 
 	paintHead();
@@ -2717,7 +2716,7 @@ void ClistBox::enableSaveScreen()
 
 void ClistBox::hide()
 {
-	dprintf(DEBUG_NORMAL, "ClistBox::hide:\n");
+	dprintf(DEBUG_NORMAL, "ClistBox::hide: (%s)\n", l_name.c_str());
 
 	if( savescreen && background)
 		restoreScreen();

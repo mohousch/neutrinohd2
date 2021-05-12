@@ -436,11 +436,7 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 	inFocus = true;
 
 	frameMode = FRAMEBOX_MODE_HORIZONTAL;
-
 	itemType = WIDGET_ITEM_FRAMEBOX;
-
-	actionKey = "";
-
 	paintFrame = true;
 
 	initFrames();
@@ -460,11 +456,7 @@ CFrameBox::CFrameBox(CBox* position)
 	inFocus = true;
 
 	frameMode = FRAMEBOX_MODE_HORIZONTAL;
-
 	itemType = WIDGET_ITEM_FRAMEBOX;
-
-	actionKey = "";
-
 	paintFrame = true;
 
 	initFrames();
