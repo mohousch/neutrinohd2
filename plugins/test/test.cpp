@@ -866,20 +866,19 @@ void CTestMenu::testCWidget()
 	CFrame * frame = NULL;
 
 	frame = new CFrame();
+	frame->setPosition(topBox.iX, topBox.iY, topBox.iWidth/3, topBox.iHeight);
 	frame->setTitle("Filme");
 	frame->setActionKey(this, "movie");
 	topWidget->addFrame(frame);
 	
 	frame = new CFrame();
+	frame->setPosition(topBox.iX + topBox.iWidth/3, topBox.iY, topBox.iWidth/3, topBox.iHeight);
 	frame->setTitle("Serien");
 	frame->setActionKey(this, "tv");
 	topWidget->addFrame(frame);
 
-	//frame = new CFrame(FRAME_SEPARATOR);
-	//frame->setMode(FRAME_SEPARATOR);
-	//topWidget->addFrame(frame);
-
 	frame = new CFrame();
+	frame->setPosition(topBox.iX + 2*topBox.iWidth/3, topBox.iY, topBox.iWidth/3, topBox.iHeight);
 	frame->setTitle("Suche");
 	frame->setOption(tmdbsearch.c_str());
 	frame->setActionKey(this, "search");
@@ -896,8 +895,6 @@ void CTestMenu::testCWidget()
 	left_selected = 0;
 
 	leftWidget = new ClistBox(&leftBox);
-	//leftFrame = new CFrameBox(&leftBox);
-	//leftFrame->setMode(FRAMEBOX_MODE_HORIZONTAL);
 
 	leftWidget->setSelected(left_selected);
 	//leftWidget->enableShrinkMenu();
@@ -1027,7 +1024,7 @@ void CTestMenu::testSingleWidget()
 	testWidget->enablePaintMainFrame();
 
 	CFrameBox *testFrame = new CFrameBox(&box);
-	testFrame->setMode(FRAMEBOX_MODE_RANDOM);
+	//testFrame->setMode(FRAMEBOX_MODE_RANDOM);
 	testFrame->disablePaintFrame();
 
 	loadMoviePlaylist();
@@ -1180,7 +1177,7 @@ void CTestMenu::testFireTV()
 	testWidget->enablePaintMainFrame();
 
 	frameBox = new CFrameBox(box.iX, box.iY, box.iWidth, 40 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10);
-	frameBox->setMode(FRAMEBOX_MODE_RANDOM);
+	//frameBox->setMode(FRAMEBOX_MODE_RANDOM);
 	frameBox->disablePaintFrame();
 
 	loadMoviePlaylist();
@@ -1224,7 +1221,7 @@ void CTestMenu::testFireTV()
 
 	// frameBox1
 	frameBox1 = new CFrameBox(box.iX, box.iY + 40 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10, box.iWidth, 280);
-	frameBox1->setMode(FRAMEBOX_MODE_RANDOM);
+	//frameBox1->setMode(FRAMEBOX_MODE_RANDOM);
 	//frameBox1->setPosition(box.iX + 10, box.iY + 40 + s_h + 20, box.iWidth, 280);
 	frameBox1->setOutFocus();
 	//frameBox1->disablePaintFrame();
@@ -1264,7 +1261,7 @@ void CTestMenu::testFireTV()
 
 	// other
 	frameBox2 = new CFrameBox(box.iX, box.iY + 40 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10 + 280, box.iWidth, 10 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10);
-	frameBox2->setMode(FRAMEBOX_MODE_RANDOM);
+	//frameBox2->setMode(FRAMEBOX_MODE_RANDOM);
 	//frameBox2->setPosition(box.iX, box.iY + 40 + 10 + 300 + 40, box.iWidth, 280);
 	frameBox2->setOutFocus();
 	frameBox2->disablePaintFrame();
@@ -1281,7 +1278,7 @@ void CTestMenu::testFireTV()
 
 	//
 	frameBox3 = new CFrameBox();
-	frameBox3->setMode(FRAMEBOX_MODE_HORIZONTAL);
+	//frameBox3->setMode(FRAMEBOX_MODE_HORIZONTAL);
 	frameBox3->setPosition(box.iX, box.iY + 40 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10 + 280 + 10 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10, box.iWidth, box.iHeight - (40 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10 + 280 + 10 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight() + 10));
 	frameBox3->setOutFocus();
 	frameBox3->disablePaintFrame();
@@ -1290,7 +1287,7 @@ void CTestMenu::testFireTV()
 	for (int i = 1; i < 7; i++)
 	{
 		art1Frame = new CFrame(FRAME_PICTURE);
-		//art1Frame->setPosition(box.iX + 10 + (i - 1)*10 + (i - 1)*(pic_w - 20), box.iY + 40 + 10 + 300 + 40, pic_w - 20, 280);
+		art1Frame->setPosition(box.iX + 10 + (i - 1)*10 + (i - 1)*(pic_w - 20), box.iY + 40 + 10 + 300 + 40, pic_w - 20, 280);
 		art1Frame->setIconName(m_vMovieInfo[i].tfile.c_str());
 		art1Frame->disablePaintFrame();
 		art1Frame->setActionKey(this, "fireplay");
@@ -1699,7 +1696,7 @@ void CTestMenu::test()
 	topBox.iHeight = 50;
 
 	topWidget = new CFrameBox(&topBox);
-	topWidget->setMode(FRAMEBOX_MODE_HORIZONTAL);
+	//topWidget->setMode(FRAMEBOX_MODE_HORIZONTAL);
 
 	CFrame * frame = NULL;
 
@@ -4079,11 +4076,12 @@ void CTestMenu::testCFrameBox()
 	topBox.iHeight = 60;
 
 	CFrameBox *topWidget = new CFrameBox(&topBox);
-	topWidget->setMode();
+	//topWidget->setMode();
 
 	CFrame * frame = NULL;
 
 	frame = new CFrame();
+	frame->setPosition(topBox.iX, topBox.iY, topBox.iWidth/4, topBox.iHeight);
 	frame->setTitle("Neu Filme");
 	frame->setIconName(NEUTRINO_ICON_MOVIE);
 	frame->setOption("in allen Kinos");
@@ -4091,22 +4089,25 @@ void CTestMenu::testCFrameBox()
 	topWidget->addFrame(frame);
 	
 	frame = new CFrame();
+	frame->setPosition(topBox.iX + topBox.iWidth/4, topBox.iY, topBox.iWidth/4, topBox.iHeight);
 	frame->setTitle("Im Kino");
 	frame->setActionKey(this, "help");
 	topWidget->addFrame(frame);
 
 	frame = new CFrame();
+	frame->setPosition(topBox.iX + 2*topBox.iWidth/4, topBox.iY, topBox.iWidth/4, topBox.iHeight);
 	frame->setTitle("Am populärsten");
 	frame->setOption("(2019)");
 	frame->setActionKey(this, "help");
 	topWidget->addFrame(frame);
 
 	frame = new CFrame();
+	frame->setPosition(topBox.iX + 3*topBox.iWidth/4, topBox.iY, topBox.iWidth/4, topBox.iHeight);
 	frame->setTitle("Exit");
 	frame->setActionKey(this, "exit");
 	topWidget->addFrame(frame);
 
-	topWidget->setMode(FRAMEBOX_MODE_HORIZONTAL);
+	//topWidget->setMode(FRAMEBOX_MODE_HORIZONTAL);
 
 	topWidget->setSelected(selected);
 	//topWidget->setBackgroundColor(COL_RED);

@@ -1478,7 +1478,6 @@ void CMovieInfoWidget::funArt()
 	textBox.iY = starBox.iY + 10 + 60;
 
 	CFrameBox * testFrame = new CFrameBox(&box);
-	testFrame->setMode(FRAMEBOX_MODE_RANDOM);
 
 	CWidget * widget = new CWidget();
 

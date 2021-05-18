@@ -631,9 +631,9 @@ void CWidget::onOKKeyPressed()
 	{
 		if (items[selected]->hasItem() && items[selected]->isSelectable())
 		{
-			actionKey = items[selected]->getActionKey();
-
 			int rv = items[selected]->oKKeyPressed(this);
+
+			actionKey = items[selected]->getActionKey();
 
 			//FIXME:review this
 			switch ( rv ) 
@@ -700,6 +700,7 @@ void CWidget::onUpKeyPressed()
 {
 	if(hasItem() && selected >= 0)
 	{
+#if 0
 		if( ((items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ((items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL))) /*|| ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() == WIDGET_TYPE_FRAME) && items.size() > 1)*/ )
 		{
 			for (unsigned int count = 1; count < items.size(); count++) 
@@ -726,6 +727,7 @@ void CWidget::onUpKeyPressed()
 			}
 		}
 		else
+#endif
 			items[selected]->onUpKeyPressed();
 	}
 }
@@ -734,6 +736,7 @@ void CWidget::onDownKeyPressed()
 {
 	if(hasItem() && selected >= 0)
 	{
+#if 0
 		if( ((items[selected]->itemType == WIDGET_ITEM_FRAMEBOX) && ( (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_RANDOM) || (items[selected]->getFrameBoxMode() == FRAMEBOX_MODE_HORIZONTAL))) /*|| ((items[selected]->itemType == WIDGET_ITEM_LISTBOX) && (items[selected]->getWidgetType() == WIDGET_TYPE_FRAME) && items.size() > 1)*/ )
 		{
 			//onYellowKeyPressed();
@@ -763,6 +766,7 @@ void CWidget::onDownKeyPressed()
 			}
 		}
 		else
+#endif
 		{
 			items[selected]->onDownKeyPressed();
 		}

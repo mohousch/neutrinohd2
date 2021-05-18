@@ -183,8 +183,9 @@ class CWidgetItem
 		int itemType;
 		bool inFocus;
 		bool paintDate;
+		std::string actionKey;
 
-		CWidgetItem(){inFocus = true;};
+		CWidgetItem(){inFocus = true; actionKey = "";};
 		virtual ~CWidgetItem(){};
 
 		virtual bool isSelectable(void){return false;}
@@ -219,8 +220,8 @@ class CWidgetItem
 		virtual void onPageDownKeyPressed(){};
 
 		//
-		virtual std::string getActionKey(void){ return "";};
-		virtual int getFrameBoxMode(){return 0;};
+		virtual std::string getActionKey(void){ return actionKey;};
+		//virtual int getFrameBoxMode(){return 0;};
 };
 
 // CHeaders

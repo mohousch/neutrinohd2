@@ -35,11 +35,12 @@
 #include <gui/widget/window.h>
 #include <gui/widget/widget.h>
 
-
+/*
 enum{
 	FRAMEBOX_MODE_HORIZONTAL = 0,
 	FRAMEBOX_MODE_RANDOM
 };
+*/
 
 enum {
 	FRAME_BOX = 0, // caption, option and left icon
@@ -159,8 +160,10 @@ class CFrameBox : public CWidgetItem
 
 		virtual void paintFrames();
 
-		int frameMode;
+		//int frameMode;
 		bool paintFrame;
+
+		std::string actionKey;
 
 	public:
 		CFrameBox(const int x = 0, int const y = 0, const int dx = 0, const int dy = 0);
@@ -193,13 +196,11 @@ class CFrameBox : public CWidgetItem
 		virtual void scrollLineUp(const int lines = 1);
 
 		int getSelected(){return selected;};
-		void setMode(int mode = FRAMEBOX_MODE_HORIZONTAL){frameMode = mode;};
+		//void setMode(int mode){frameMode = mode;};
 		void disablePaintFrame(void){paintFrame = false;};
 
 		//
 		bool isSelectable(void);
-
-		virtual int getFrameBoxMode(){return frameMode;};
 
 		int oKKeyPressed(CMenuTarget *parent);
 		
@@ -211,6 +212,8 @@ class CFrameBox : public CWidgetItem
 		virtual void onLeftKeyPressed();
 		virtual void onPageUpKeyPressed();
 		virtual void onPageDownKeyPressed();
+
+		std::string getActionKey(void){return actionKey;};
 };
 
 #endif

@@ -563,6 +563,8 @@ class ClistBox : public CWidgetItem
 
 		CTextBox * textBox;
 
+		std::string actionKey;
+
 	public:
 		ClistBox(const int x = 0, int const y = 0, const int dx = MENU_WIDTH, const int dy = MENU_HEIGHT);
 		ClistBox(CBox* position);
@@ -653,6 +655,7 @@ class ClistBox : public CWidgetItem
 
 		//
 		std::string getName(){return l_name;};
+		std::string getActionKey(void){return actionKey;};
 };
 
 #endif // LISTBOX_H_

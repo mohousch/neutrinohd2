@@ -1795,6 +1795,8 @@ ClistBox::ClistBox(const int x, const int y, const int dx, const int dy)
 	background = NULL;
 
 	textBox = NULL;
+
+	actionKey = "";
 }
 
 ClistBox::ClistBox(CBox* position)
@@ -1868,6 +1870,8 @@ ClistBox::ClistBox(CBox* position)
 	background = NULL;
 
 	textBox = NULL;
+
+	actionKey = "";
 }
 
 ClistBox::~ClistBox()
@@ -3122,6 +3126,9 @@ void ClistBox::changeWidgetType(int)
 int ClistBox::oKKeyPressed(CMenuTarget* parent)
 {
 	dprintf(DEBUG_NORMAL, "ClistBox::okKeyPressed:\n");
+
+	if (hasItem() && selected >= 0 && items[selected]->isSelectable())
+		actionKey = items[selected]->actionKey;
 
 	if(parent)
 		if (hasItem() && selected >= 0 && items[selected]->isSelectable())

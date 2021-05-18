@@ -435,9 +435,11 @@ CFrameBox::CFrameBox(const int x, int const y, const int dx, const int dy)
 
 	inFocus = true;
 
-	frameMode = FRAMEBOX_MODE_HORIZONTAL;
+	//frameMode = FRAMEBOX_MODE_HORIZONTAL;
 	itemType = WIDGET_ITEM_FRAMEBOX;
 	paintFrame = true;
+
+	actionKey = "";
 
 	initFrames();
 }
@@ -455,9 +457,11 @@ CFrameBox::CFrameBox(CBox* position)
 
 	inFocus = true;
 
-	frameMode = FRAMEBOX_MODE_HORIZONTAL;
+	//frameMode = FRAMEBOX_MODE_HORIZONTAL;
 	itemType = WIDGET_ITEM_FRAMEBOX;
 	paintFrame = true;
+
+	actionKey = "";
 
 	initFrames();
 }
@@ -497,11 +501,13 @@ void CFrameBox::paintFrames()
 
 	if(frames.size() > 0)
 	{
+/*
 		if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
 		{
 			frame_width = (itemBox.iWidth - 2*ICON_OFFSET)/((int)frames.size());
 			frame_height = itemBox.iHeight - 2*ICON_OFFSET;
 		}
+*/
 
 		frame_x = itemBox.iX + ICON_OFFSET;
 		frame_y = itemBox.iY + ICON_OFFSET;
@@ -512,12 +518,14 @@ void CFrameBox::paintFrames()
 		CFrame *frame = frames[count];
 
 		// init frame
+/*
 		if(frameMode == FRAMEBOX_MODE_HORIZONTAL)
 		{	
 			{
 				frame->window.setPosition(frame_x + count*(frame_width) + ICON_OFFSET, frame_y, frame_width - 2*ICON_OFFSET, frame_height);
 			}
 		}
+*/
 
 		//
 		if((frame->isSelectable()) && (selected == -1)) 
@@ -576,7 +584,7 @@ void CFrameBox::swipRight()
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::swipRight:\n");
 
-	if( (frameMode == FRAMEBOX_MODE_HORIZONTAL) || (frameMode == FRAMEBOX_MODE_RANDOM))
+	//if( (frameMode == FRAMEBOX_MODE_HORIZONTAL) || (frameMode == FRAMEBOX_MODE_RANDOM))
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
@@ -601,7 +609,7 @@ void CFrameBox::swipLeft()
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::swipLeft:\n");
 
-	if( (frameMode == FRAMEBOX_MODE_HORIZONTAL) || (frameMode == FRAMEBOX_MODE_RANDOM))
+	//if( (frameMode == FRAMEBOX_MODE_HORIZONTAL) || (frameMode == FRAMEBOX_MODE_RANDOM))
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
@@ -628,7 +636,7 @@ void CFrameBox::scrollLineDown(const int lines)
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::scrollLineDown:\n");
 
-	if(frameMode == FRAMEBOX_MODE_RANDOM)
+	//if(frameMode == FRAMEBOX_MODE_RANDOM)
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
@@ -653,7 +661,7 @@ void CFrameBox::scrollLineUp(const int lines)
 {
 	dprintf(DEBUG_NORMAL, "CFrameBox::scrollLineUp:\n");
 
-	if(frameMode == FRAMEBOX_MODE_RANDOM) 
+	//if(frameMode == FRAMEBOX_MODE_RANDOM) 
 	{
 		for (unsigned int count = 1; count < frames.size(); count++) 
 		{
@@ -678,10 +686,17 @@ void CFrameBox::scrollLineUp(const int lines)
 
 int CFrameBox::oKKeyPressed(CMenuTarget *parent)
 {
+	dprintf(DEBUG_NORMAL, "CFrameBox::okKeyPressed:\n");
+
+	if (hasItem() && selected >= 0 && frames[selected]->isSelectable())
+		actionKey = frames[selected]->actionKey;
+
 	if(parent)
 	{
 		if (hasItem() && selected >= 0 && frames[selected]->isSelectable())
+		{
 			return frames[selected]->exec(parent);
+		}
 		else
 			return RETURN_EXIT;
 	}

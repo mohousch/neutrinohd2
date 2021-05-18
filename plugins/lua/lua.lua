@@ -709,7 +709,7 @@ function testCWindow()
 	vframe:setPosition(box.iX + listbox.iWidth + 10, box.iY + 50, 5, box.iHeight- 100)
 
 	testFrame = neutrino.CFrameBox()
-	testFrame:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
+	--testFrame:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
 	testFrame:addFrame(titleFrame)
 	testFrame:addFrame(iconFrame1)
 	testFrame:addFrame(iconFrame2)
@@ -832,40 +832,39 @@ function testCFrameBox()
 
 	box.iX = fb:getScreenX() + 40
 	box.iY = fb:getScreenY() + 40
-	box.iWidth = 350
-	box.iHeight = fb:getScreenHeight() - 80
-
-	local window = neutrino.CWindow(box.iX + 40, box.iY + 40, fb:getScreenWidth() - 80, fb:getScreenHeight() - 80)
-	window:enableCenterPos()
+	box.iWidth = fb:getScreenWidth() - 80
+	box.iHeight = 60
 
 	local frameBox = neutrino.CFrameBox(box)
-	frameBox:setMode(neutrino.FRAMEBOX_MODE_HORIZONTAL)
 
 	frame1 = neutrino.CFrame()
+	frame1:setPosition(box.iX, box.iY, box.iWidth/4, box.iHeight)
 	frame1:setTitle("MP3")
+	frame1:setActionKey(null, "audioPlayer")
 	frameBox:addFrame(frame1)
 
 	frame2 = neutrino.CFrame()
+	frame2:setPosition(box.iX + box.iWidth/4, box.iY, box.iWidth/4, box.iHeight)
 	frame2:setTitle("PicViewer")
+	frame2:setActionKey(null, "pictureViewer")
 	frameBox:addFrame(frame2)
 
 	frame3 = neutrino.CFrame()
+	frame3:setPosition(box.iX + 2*box.iWidth/4, box.iY, box.iWidth/4, box.iHeight)
 	frame3:setTitle("MoviePlayer")
 	frame3:setIconName(neutrino.NEUTRINO_ICON_MOVIE)
 	frame3:setOption("spielt Movie Dateien")
 	frame3:setActionKey(null, "moviePlayer")
 	frameBox:addFrame(frame3)
 
-	frame10 = neutrino.CFrame()
-	frame10:setTitle("Beenden")
-	frame10:setActionKey(null, "exit")
-	frameBox:addFrame(frame10)
+	frame4 = neutrino.CFrame()
+	frame4:setPosition(box.iX + 3*box.iWidth/4, box.iY, box.iWidth/4, box.iHeight)
+	frame4:setTitle("Beenden")
+	frame4:setActionKey(null, "exit")
+	frameBox:addFrame(frame4)
 
 	local m = neutrino.CWidget()
-
 	--m:enablePaintMainFrame()
-
-	--m:addItem(window)
 	m:addItem(frameBox)
 
 	ret = m:exec(null, "")
@@ -875,6 +874,10 @@ function testCFrameBox()
 	if actionKey == "moviePlayer" then
 		print("testCFrameBox: actionKey: moviePlayer")
 		moviePlayer()
+	elseif actionKey == "audioPlayer" then
+		audioPlayer()
+	elseif actionKey == "pictureViewer" then
+		pictureViewer()
 	elseif actionKey == "exit" then
 		print("testCFrameBox: actionKey: exit")
 		return ret
@@ -899,11 +902,11 @@ function testCFrameBoxRandom()
 	box.iWidth = fb:getScreenWidth() - 80
 	box.iHeight = fb:getScreenHeight() - 80
 
-	local window = neutrino.CWindow(box.iX + 40, box.iY + 40, fb:getScreenWidth() - 80, fb:getScreenHeight() - 80)
-	window:enableCenterPos()
+	--local window = neutrino.CWindow(box.iX + 40, box.iY + 40, fb:getScreenWidth() - 80, fb:getScreenHeight() - 80)
+	--window:enableCenterPos()
 
 	local frameBox = neutrino.CFrameBox(box)
-	frameBox:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
+	--frameBox:setMode(neutrino.FRAMEBOX_MODE_RANDOM)
 
 	frame1 = neutrino.CFrame()
 	frame1:setPosition(box.iX, box.iY + 2, 350, 60)
@@ -935,7 +938,7 @@ function testCFrameBoxRandom()
 
 	m:enablePaintMainFrame()
 
-	m:addItem(window)
+	--m:addItem(window)
 	m:addItem(frameBox)
 
 	ret = m:exec(null, "")
