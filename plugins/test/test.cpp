@@ -1676,16 +1676,16 @@ void CTestMenu::test()
 
 	headers->enablePaintDate();
 	headers->setButtons(HeadButtons, HEAD_BUTTONS_COUNT);
-	headers->setColor(COL_DARK_TURQUOISE);
-	headers->setCorner();
-	headers->setGradient(nogradient);
+	//headers->setColor(COL_DARK_TURQUOISE);
+	//headers->setCorner();
+	//headers->setGradient(nogradient);
 
 	footers = new CFooters(footBox);
 
 	footers->setButtons(FootButtons, FOOT_BUTTONS_COUNT);
-	footers->setColor(COL_DARK_TURQUOISE);
-	footers->setCorner();
-	footers->setGradient(nogradient);
+	//footers->setColor(COL_DARK_TURQUOISE);
+	//footers->setCorner();
+	//footers->setGradient(nogradient);
 
 	// top widget
 	CBox topBox;
@@ -1701,14 +1701,17 @@ void CTestMenu::test()
 	CFrame * frame = NULL;
 
 	frame = new CFrame();
+	frame->setPosition(topBox.iX, topBox.iY, topBox.iWidth/3, topBox.iHeight);
 	frame->setTitle("Filme");
 	topWidget->addFrame(frame);
 	
 	frame = new CFrame();
+	frame->setPosition(topBox.iX + topBox.iWidth/3, topBox.iY, topBox.iWidth/3, topBox.iHeight);
 	frame->setTitle("Serien");
 	topWidget->addFrame(frame);
 
 	frame = new CFrame();
+	frame->setPosition(topBox.iX + 2*topBox.iWidth/3, topBox.iY, topBox.iWidth/3, topBox.iHeight);
 	frame->setTitle("Suche");
 	frame->setOption(tmdbsearch.c_str());
 	frame->setActionKey(this, "search");
@@ -1905,7 +1908,6 @@ REPAINT:
 
 		if ( (msg == NeutrinoMessages::EVT_TIMER) && (data == sec_timer_id) )
 		{
-			//headers->paintHead(headBox, "Movie Trailer", NEUTRINO_ICON_MP3);
 			headers->paint();
 		} 
 		else if (msg == RC_home) 
@@ -1918,6 +1920,18 @@ REPAINT:
 				topWidget->swipRight();
 			else if(focus == WIDGET_RIGHT)
 				rightWidget->swipRight();
+			else if (focus == WIDGET_LEFT)
+			{
+				focus = WIDGET_RIGHT;
+
+				leftWidget->setOutFocus();
+				topWidget->setOutFocus();
+
+				rightWidget->setSelected(right_selected);
+				rightWidget->setOutFocus(false);
+
+				goto REPAINT;
+			}
 		}
 		else if(msg == RC_left)
 		{
@@ -1939,6 +1953,18 @@ REPAINT:
 				leftWidget->scrollLineDown();
 			else if(focus == WIDGET_RIGHT)
 				rightWidget->scrollLineDown();
+			if(focus == WIDGET_TOP)
+			{
+				focus = WIDGET_LEFT;
+
+				topWidget->setOutFocus();
+				rightWidget->setOutFocus();
+
+				leftWidget->setSelected(left_selected);
+				leftWidget->setOutFocus(false);
+
+				goto REPAINT;
+			}
 		}
 		else if(msg == RC_yellow)
 		{
@@ -1947,7 +1973,6 @@ REPAINT:
 				focus = WIDGET_LEFT;
 
 				topWidget->setOutFocus();
-
 				rightWidget->setOutFocus();
 
 				leftWidget->setSelected(left_selected);
@@ -1958,7 +1983,6 @@ REPAINT:
 				focus = WIDGET_RIGHT;
 
 				leftWidget->setOutFocus();
-
 				topWidget->setOutFocus();
 
 				rightWidget->setSelected(right_selected);
@@ -1969,7 +1993,6 @@ REPAINT:
 				focus = WIDGET_TOP;
 
 				leftWidget->setOutFocus();
-
 				rightWidget->setOutFocus();
 
 				topWidget->setSelected(top_selected);

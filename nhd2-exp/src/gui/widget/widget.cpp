@@ -606,7 +606,7 @@ int CWidget::exec(CMenuTarget *parent, const std::string &)
 
 	dprintf(DEBUG_NORMAL, "CWidget: retval: (%d) selected:%d\n", retval, selected);
 	
-	hide();	
+	hide();
 
 	//
 	g_RCInput->killTimer(sec_timer_id);

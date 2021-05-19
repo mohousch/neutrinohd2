@@ -265,7 +265,7 @@ function testCWidget()
 
 	-- CStringInput
 	local data = ""
-	item5 = neutrino.CMenuForwarder("CStringInput", true)
+	item5 = neutrino.CMenuForwarder("CStringInput", false)
 	item5:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item5:setHelpText("testing CStringInput")
 	item5:setInfo1("testing CStringInput")
@@ -309,7 +309,7 @@ function testCWidget()
 
 	--testWidget:enablePaintMainFrame()
 	testWidget:addItem(listBox)
-	testWidget:addKey(neutrino.RC_info, self, "info")
+	testWidget:addKey(neutrino.RC_info, null, "info")
 
 	ret = testWidget:exec(null, "")
 
@@ -361,7 +361,7 @@ function testClistBoxWidget()
 	item4:setInfo1("testing CInfoBox")
 
 	-- CStringInput
-	item5 = neutrino.CMenuForwarder("CStringInput", true)
+	item5 = neutrino.CMenuForwarder("CStringInput", false)
 	item5:setItemIcon(neutrino.DATADIR .. "/neutrino/icons/plugin.png")
 	item5:setHelpText("testing CStringInput")
 	item5:setInfo1("testing CStringInput")

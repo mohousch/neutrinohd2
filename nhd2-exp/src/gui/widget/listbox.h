@@ -506,7 +506,6 @@ class ClistBox : public CWidgetItem
 		int itemsPerX;
 		int itemsPerY;
 		int maxItemsPerPage;
-		CButtons buttons;
 
 		// widget type
 		int widgetType;
@@ -608,6 +607,9 @@ class ClistBox : public CWidgetItem
 		void enablePaintFootInfo(int fh = 70){paintFootInfo = true; footInfoHeight = fh;};
 		void setFootInfoMode(int mode = FOOT_INFO_MODE){footInfoMode = mode;};
 
+		void enableCenterPos(){enableCenter = true;};
+		void enableShrinkMenu(){shrinkMenu = true;};
+
 		virtual void scrollLineDown(const int lines = 1);
 		virtual void scrollLineUp(const int lines = 1);
 		virtual void scrollPageDown(const int pages = 1);
@@ -616,6 +618,8 @@ class ClistBox : public CWidgetItem
 		virtual void swipRight();
 
 		int getItemsCount()const{return items.size();};
+		int getCurrentPage()const{return current_page;};
+		int getTotalPages()const{return total_pages;};
 		int getSelected(){return selected;};
 		inline CBox getWindowsPos(void){return(cFrameBox);};
 		int getTitleHeight(){return hheight;};
@@ -623,11 +627,12 @@ class ClistBox : public CWidgetItem
 		int getItemHeight(){return item_height;};
 		int getFootInfoHeight(){return footInfoHeight;};
 		int getListMaxShow(void) const {return listmaxshow;};
-		void enableCenterPos(){enableCenter = true;};
-		void enableShrinkMenu(){shrinkMenu = true;};
 
 		//
 		void setItemsPerPage(int itemsX = 6, int itemsY = 3){itemsPerX = itemsX; itemsPerY = itemsY; maxItemsPerPage = itemsPerX*itemsPerY;};
+		int getItemsPerX()const{return itemsPerX;};
+		int getItemsPerY()const{return itemsPerY;};
+		int getMaxItemsPerPage()const{return maxItemsPerPage;};
 
 		// widget type|mode
 		void setWidgetType(int type){widgetType = type; widget.push_back(widgetType);};

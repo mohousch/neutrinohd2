@@ -1588,9 +1588,9 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 									//exec this item...
 									CMenuItem * item = items[selected];
 									item->msg = msg;
-									actionKey = item->actionKey;
 							
 									int rv = item->exec(this);
+									actionKey = item->actionKey;
 							
 									switch ( rv ) 
 									{
@@ -1789,6 +1789,7 @@ int CMenuWidget::exec(CMenuTarget* parent, const std::string&)
 					break;
 					
 				case (RC_timeout):
+					exit_pressed = true;
 					break;
 
 				default:
